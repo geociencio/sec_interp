@@ -1,0 +1,114 @@
+SecInterp Plugin Documentation
+==============================
+
+**SecInterp** is a QGIS plugin designed to assist in geological interpretation by extracting data along a cross-section line. It integrates topographic data from DEMs, geological units from outcrop polygons, and structural measurements from point layers.
+
+.. toctree::
+   :maxdepth: 2
+
+Requirements
+------------
+
+To use SecInterp, you need the following layers in your QGIS project:
+
+1.  **Raster Layer (DEM)**: A Digital Elevation Model to extract the topographic profile.
+2.  **Crossline Layer**: A line vector layer defining the location of the cross-section.
+3.  **Outcrop Layer (Optional)**: A polygon vector layer representing geological units (outcrops).
+4.  **Structural Layer (Optional)**: A point vector layer containing structural measurements (strike and dip).
+
+Layer Data Requirements
+------------------------
+
+Raster Layer (DEM)
+~~~~~~~~~~~~~~~~~~
+
+The Digital Elevation Model must meet the following requirements:
+
+*   **Data Type**: Single-band or multi-band raster layer
+*   **Band Selection**: You can select which band to use for elevation (default is band 1)
+*   **Data Format**: Any GDAL-supported raster format (GeoTIFF, IMG, ASCII Grid, etc.)
+*   **Cell Values**: Numeric elevation values (typically in meters or feet)
+*   **NoData Handling**: NoData values should be properly defined in the raster metadata
+*   **Coordinate System**: Must use a projected CRS (not geographic) for accurate distance calculations
+*   **Resolution**: The plugin automatically adapts sampling to the raster resolution for optimal profile extraction
+*   **Coverage**: Should cover the entire extent of the crossline
+
+Crossline Layer
+~~~~~~~~~~~~~~~
+
+The cross-section line layer must meet the following requirements:
+
+*   **Geometry Type**: LineString or MultiLineString
+*   **Features**: Typically contains a single line feature defining the section location
+*   **Line Orientation**: The line direction determines the profile orientation (start to end point)
+*   **Coordinate System**: Must use the same CRS as the raster layer (projected CRS recommended)
+*   **Data Quality**: Line should be continuous without gaps
+*   **Length**: No specific length restrictions, but very long sections may result in large output files
+
+Outcrop Layer (Geology)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The outcrop layer must meet the following requirements:
+
+*   **Geometry Type**: Polygon or MultiPolygon
+*   **Required Fields**: At least one text or numeric field containing the geological unit identifier (e.g., unit name, code, or formation name)
+*   **Field Format**: 
+    *   Field can be of type String, Integer, or any other attribute type
+    *   Examples: "Qal" (Quaternary alluvium), "Kg" (Cretaceous granite), "Unit_1", etc.
+*   **Coordinate System**: Must use the same CRS as the crossline layer, or a compatible projected CRS
+*   **Data Quality**: Polygons should be topologically correct (no gaps, no overlaps if representing continuous geology)
+
+Structural Layer
+~~~~~~~~~~~~~~~~
+
+The structural layer must meet the following requirements:
+
+*   **Geometry Type**: Point
+*   **Required Fields**: Two numeric fields containing:
+    *   **Strike**: Azimuth direction of the strike line (0-360 degrees)
+    *   **Dip**: Dip angle from horizontal (0-90 degrees)
+*   **Field Format**:
+    *   Both fields must be numeric (Integer or Real/Double)
+    *   Strike: 0-360° (geographic azimuth, where 0° = North, 90° = East)
+    *   Dip: 0-90° (angle from horizontal plane)
+*   **Coordinate System**: Must use the same CRS as the crossline layer
+*   **Spatial Distribution**: Points within approximately 100m of the crossline will be projected onto the section
+
+Usage
+-----
+
+1.  **Select Layers**:
+    *   Choose the **Raster Layer** for elevation.
+    *   Choose the **Crossline Layer** for the section line.
+    *   (Optional) Select the **Outcrop Layer** and the field containing the unit name/code.
+    *   (Optional) Select the **Structural Layer** and the fields for **Dip** and **Strike**.
+
+2.  **Configuration**:
+    *   **Band**: Select the raster band to use for elevation (default is 1).
+    *   **Output Folder**: Choose a directory where the results will be saved.
+
+3.  **Process Data**:
+
+    The plugin provides four buttons with different actions:
+
+    *   **OK**: Processes the data (generates CSV files and preview) and closes the dialog window.
+    *   **Apply**: Processes the data (generates CSV files and preview) but keeps the dialog window open. Use this to process data and review results without closing the plugin.
+    *   **Save**: Saves the profile data as Shapefiles (topo_profile.shp, geol_profile.shp, structural_profile.shp) without generating CSV files. The dialog remains open after saving. Use this to export geometric representations of the profiles.
+    *   **Cancel**: Closes the dialog window without processing or saving any data.
+
+Outputs
+-------
+
+The plugin generates the following files in the selected output folder:
+
+*   **topo_profile.csv**: CSV file containing distance and elevation points along the section.
+*   **geol_profile.csv** (if Outcrop Layer selected): CSV file with distance, elevation, and geology code.
+*   **geol_profile.shp** (if Outcrop Layer selected): Shapefile (LineString) representing the geological units draped over the topography.
+*   **structural_profile.csv** (if Structural Layer selected): CSV file with projected structural data.
+*   **structural_profile.shp** (if Structural Layer selected): Shapefile (LineString) representing apparent dip lines projected onto the section.
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`search`

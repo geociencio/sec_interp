@@ -1,0 +1,6 @@
+# Runtime dependencies for development/testing of the plugin
+# Note: QGIS Python bindings (qgis.core / qgis.gui) are provided by QGIS itself
+# and are not pip-installable. Keep this file for supporting runtime packages
+# that can be installed with pip when available.
+
+PyQt5>=5.12,<6
