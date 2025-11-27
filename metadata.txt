@@ -12,8 +12,8 @@ email=juanbernales@gmail.com
 
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
 
-tracker=http://bugs
-repository=http://repo
+tracker=https://github.com/geociencio/sec_interp/issues
+repository=https://github.com/geociencio/sec_interp
 # End of mandatory metadata
 
 # Recommended items:
