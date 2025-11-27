@@ -26,7 +26,22 @@ Notas sobre QGIS
 - No intentes instalar el paquete `qgis` por pip — las bindings QGIS provienen del instalador de QGIS o del paquete del sistema.
 - Para ejecutar y depurar el plugin, carga el plugin desde la carpeta del proyecto en QGIS o instala el plugin en el entorno QGIS apropiado.
 
-Comandos útiles
+- Activar: `source .venv/bin/activate`
+- Linting (Black + isort + flake8): `black . && isort . && flake8` (instalar deps dev)
+- Tests: `pytest` (puede requerir adaptación si los tests dependen de QGIS)
+
+Despliegue / `deploy.sh`
+----------------------
+El script `deploy.sh` ahora soporta variables de entorno para mayor flexibilidad y seguridad:
+
+- Puedes sobreescribir el destino con `QGIS_PLUGINS_DIR` antes de ejecutar el script, por ejemplo:
+	```bash
+	QGIS_PLUGINS_DIR=/ruta/mi/qgis/plugins ./deploy.sh
+	```
+- `deploy.sh` crea un backup timestamped del directorio destino si detecta contenido previo (ej.: `/home/usuario/.../sec_interp.bak.20251127123000`).
+
+El script fallará de forma segura si faltan comandos requeridos o si ocurre un error durante la copia.
+
 - Activar: `source .venv/bin/activate`
 - Linting (Black + isort + flake8): `black . && isort . && flake8` (instalar deps dev)
 - Tests: `pytest` (puede requerir adaptación si los tests dependen de QGIS)
