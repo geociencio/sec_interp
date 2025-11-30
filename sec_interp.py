@@ -598,6 +598,15 @@ class SecInterp:
         """
         from . import validation_utils as vu
         
+        # Logging: Initial setup
+        logger.info("=" * 60)
+        logger.info("PROJECT_STRUCTURES - Starting analysis")
+        logger.info("=" * 60)
+        logger.info(f"Buffer distance: {buffer_m} (units depend on CRS)")
+        logger.info(f"Line azimuth: {line_az:.2f}°")
+        logger.info(f"Dip field: '{dip_field}'")
+        logger.info(f"Strike field: '{strike_field}'")
+        
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
             raise ValueError("Line layer has no features")
@@ -613,14 +622,38 @@ class SecInterp:
 
         buffer_geom = line_geom.buffer(buffer_m, 25)
         crs = struct_lyr.crs()
+        
+        # Logging: CRS information
+        logger.info(f"Structural layer CRS: {crs.authid()} - {crs.description()}")
+        logger.info(f"CRS units: {crs.mapUnits()}")
+        if crs.isGeographic():
+            logger.warning("⚠️  CRS is GEOGRAPHIC (lat/lon) - buffer is in DEGREES, not meters!")
+            logger.warning(f"   A buffer of {buffer_m} degrees ≈ {buffer_m * 111} km at equator")
+        else:
+            logger.info(f"✓ CRS is PROJECTED - buffer is in map units")
+        
         da = scu.create_distance_area(crs)
 
+        # Logging: Count total features
+        total_features = struct_lyr.featureCount()
+        logger.info(f"Total features in structural layer: {total_features}")
+
         projected_structs = []
-        skipped_count = 0
         
-        for f in struct_lyr.getFeatures():
+        # Detailed counters for logging
+        null_geom_count = 0
+        outside_buffer_count = 0
+        missing_field_count = 0
+        strike_parse_fail_count = 0
+        dip_parse_fail_count = 0
+        strike_range_fail_count = 0
+        dip_range_fail_count = 0
+        success_count = 0
+        
+        for idx, f in enumerate(struct_lyr.getFeatures()):
             struct_geom = f.geometry()
             if not struct_geom or struct_geom.isNull():
+                null_geom_count += 1
                 continue
             
             if struct_geom.intersects(buffer_geom):
@@ -628,38 +661,50 @@ class SecInterp:
                 dist = da.measureLine(line_start, p)
                 
                 try:
-                    strike = f[strike_field]
-                    dip = f[dip_field]
-                except KeyError:
-                    skipped_count += 1
+                    strike_raw = f[strike_field]
+                    dip_raw = f[dip_field]
+                except KeyError as e:
+                    missing_field_count += 1
+                    logger.debug(f"Feature {idx}: Missing field {e}")
                     continue
                 
-                # Validate strike and dip values
-                if strike is None or dip is None:
-                    skipped_count += 1
+                # Parse strike (supports field notation like "N 15° W" or numeric)
+                strike = scu.parse_strike(strike_raw)
+                if strike is None:
+                    strike_parse_fail_count += 1
+                    logger.debug(f"Feature {idx}: Failed to parse strike '{strike_raw}'")
                     continue
                 
-                # Convert to float if needed
-                try:
-                    strike = float(strike)
-                    dip = float(dip)
-                except (ValueError, TypeError):
-                    skipped_count += 1
+                # Parse dip (supports field notation like "22° SW" or numeric)
+                dip_angle, dip_direction = scu.parse_dip(dip_raw)
+                if dip_angle is None:
+                    dip_parse_fail_count += 1
+                    logger.debug(f"Feature {idx}: Failed to parse dip '{dip_raw}'")
                     continue
+                
+                # Use dip_angle for calculations
+                dip = dip_angle
+                # Note: dip_direction could be used for additional validation if needed
                 
                 # Validate ranges
-                is_valid, _ = vu.validate_angle_range(strike, "Strike", 0.0, 360.0)
+                is_valid, error_msg = vu.validate_angle_range(strike, "Strike", 0.0, 360.0)
                 if not is_valid:
-                    skipped_count += 1
+                    strike_range_fail_count += 1
+                    logger.debug(f"Feature {idx}: Strike validation failed - {error_msg} (value: {strike})")
                     continue
                 
-                is_valid, _ = vu.validate_angle_range(dip, "Dip", 0.0, 90.0)
+                is_valid, error_msg = vu.validate_angle_range(dip, "Dip", 0.0, 90.0)
                 if not is_valid:
-                    skipped_count += 1
+                    dip_range_fail_count += 1
+                    logger.debug(f"Feature {idx}: Dip validation failed - {error_msg} (value: {dip})")
                     continue
                 
                 app_dip = scu.calculate_apparent_dip(strike, dip, line_az)
                 projected_structs.append((round(dist, 1), round(app_dip, 1)))
+                success_count += 1
+                logger.debug(f"Feature {idx}: ✓ Success - dist={dist:.1f}, strike={strike:.1f}°, dip={dip:.1f}°, app_dip={app_dip:.1f}°")
+            else:
+                outside_buffer_count += 1
         
         # Sort by distance
         projected_structs.sort(key=lambda x: x[0])
@@ -669,8 +714,32 @@ class SecInterp:
             writer.writerow(['dist', 'apparent_dip'])
             writer.writerows(projected_structs)
         
-        if skipped_count > 0:
-            print(f"Warning: Skipped {skipped_count} structural measurements due to invalid or missing dip/strike values")
+        # Logging: Summary
+        logger.info("-" * 60)
+        logger.info("FILTERING SUMMARY:")
+        logger.info(f"  Total features processed: {total_features}")
+        logger.info(f"  ✓ Successfully projected: {success_count}")
+        logger.info(f"  ✗ Null/invalid geometry: {null_geom_count}")
+        logger.info(f"  ✗ Outside buffer ({buffer_m} units): {outside_buffer_count}")
+        logger.info(f"  ✗ Missing dip/strike fields: {missing_field_count}")
+        logger.info(f"  ✗ Strike parsing failed: {strike_parse_fail_count}")
+        logger.info(f"  ✗ Dip parsing failed: {dip_parse_fail_count}")
+        logger.info(f"  ✗ Strike out of range: {strike_range_fail_count}")
+        logger.info(f"  ✗ Dip out of range: {dip_range_fail_count}")
+        logger.info("-" * 60)
+        
+        total_skipped = (null_geom_count + outside_buffer_count + missing_field_count + 
+                        strike_parse_fail_count + dip_parse_fail_count + 
+                        strike_range_fail_count + dip_range_fail_count)
+        
+        if total_skipped > 0:
+            logger.warning(f"⚠️  Skipped {total_skipped} structural measurements")
+            if outside_buffer_count == total_features - null_geom_count:
+                logger.warning("⚠️  ALL valid features are outside the buffer!")
+                logger.warning("   → Try increasing the buffer distance")
+                logger.warning("   → Check that line and structural layers use the same CRS")
+        
+        logger.info("=" * 60)
 
         return projected_structs
 
