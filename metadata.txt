@@ -6,7 +6,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=0.1
+version=0.2
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -19,8 +19,31 @@ repository=https://github.com/geociencio/sec_interp
 # Recommended items:
 
 hasProcessingProvider=no
-# Uncomment the following line and add your changelog:
-# changelog=
+changelog=
+    0.2 (2025-11-30)
+    * Major UI Overhaul - Native QGIS Widget Integration:
+      - Replaced standard Qt ComboBoxes with QgsMapLayerComboBox for automatic layer population
+      - Integrated QgsRasterBandComboBox for intelligent raster band selection
+      - Added QgsFileWidget for native file/directory browsing with QGIS integration
+      - Eliminated manual layer population code - widgets auto-sync with QGIS project
+      - Improved user experience with native QGIS look and feel
+    * UI Enhancements:
+      - Collapsible results panel (QgsCollapsibleGroupBox) for better space management
+      - Read-only results field to prevent accidental edits
+      - Fixed Qt enum syntax for better cross-version compatibility
+    * New Features:
+      - Flexible parsers for geological structural measurements (dip/strike formats)
+      - Comprehensive logging system integrated with QGIS Message Panel
+      - Enhanced validation logic for QgsMapLayer objects
+    * Code Quality:
+      - Removed 200+ lines of manual widget population code
+      - Cleaner architecture leveraging QGIS native capabilities
+    
+    0.1 (Initial Release)
+    - DEM topographic profile extraction
+    - Geological outcrop data extraction
+    - Structural point data extraction
+    - Interactive preview visualization
 
 # Tags are comma separated with spaces allowed
 tags=csv, dem, point, polyline
