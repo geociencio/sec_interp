@@ -356,27 +356,60 @@ def validate_and_get_layers(values: dict) -> Tuple[bool, str, Optional[dict]]:
     """
     from qgis.core import QgsProject
     
-    selected_raster_name = values.get('raster_layer')
-    selected_line_name = values.get('crossline_layer')
-    selected_outcrop_name = values.get('outcrop_layer')
-    selected_structural_name = values.get('structural_layer')
-
-    # Get layers from the QGIS project
-    # Handle "Select..." items which return None as data
-    if not selected_raster_name or selected_raster_name == "Select a raster layer":
-        raster_layer = None
-    else:
-        layers = QgsProject.instance().mapLayersByName(selected_raster_name)
+    # Get layers from the values dictionary
+    # Values might be layer objects (from QgsMapLayerComboBox) or names (legacy)
+    
+    # Raster Layer
+    val = values.get('raster_layer')
+    if isinstance(val, QgsMapLayer):
+        raster_layer = val
+        selected_raster_name = val.name()
+    elif isinstance(val, str) and val and val != "Select a raster layer":
+        layers = QgsProject.instance().mapLayersByName(val)
         raster_layer = layers[0] if layers else None
-
-    if not selected_line_name or selected_line_name == "Select a crossline layer":
-        line_layer = None
+        selected_raster_name = val
     else:
-        layers = QgsProject.instance().mapLayersByName(selected_line_name)
+        raster_layer = None
+        selected_raster_name = "None"
+
+    # Crossline Layer
+    val = values.get('crossline_layer')
+    if isinstance(val, QgsMapLayer):
+        line_layer = val
+        selected_line_name = val.name()
+    elif isinstance(val, str) and val and val != "Select a crossline layer":
+        layers = QgsProject.instance().mapLayersByName(val)
         line_layer = layers[0] if layers else None
+        selected_line_name = val
+    else:
+        line_layer = None
+        selected_line_name = "None"
         
-    outcrop_layer = QgsProject.instance().mapLayersByName(selected_outcrop_name)[0] if selected_outcrop_name else None
-    structural_layer = QgsProject.instance().mapLayersByName(selected_structural_name)[0] if selected_structural_name else None
+    # Outcrop Layer
+    val = values.get('outcrop_layer')
+    if isinstance(val, QgsMapLayer):
+        outcrop_layer = val
+        selected_outcrop_name = val.name()
+    elif isinstance(val, str) and val:
+        layers = QgsProject.instance().mapLayersByName(val)
+        outcrop_layer = layers[0] if layers else None
+        selected_outcrop_name = val
+    else:
+        outcrop_layer = None
+        selected_outcrop_name = "None"
+
+    # Structural Layer
+    val = values.get('structural_layer')
+    if isinstance(val, QgsMapLayer):
+        structural_layer = val
+        selected_structural_name = val.name()
+    elif isinstance(val, str) and val:
+        layers = QgsProject.instance().mapLayersByName(val)
+        structural_layer = layers[0] if layers else None
+        selected_structural_name = val
+    else:
+        structural_layer = None
+        selected_structural_name = "None"
 
     # Validate required layers
     if not raster_layer or not line_layer:
