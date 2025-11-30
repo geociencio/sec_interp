@@ -25,9 +25,10 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsMapSettings,
     QgsMapRendererCustomPainterJob,
+    QgsTextAnnotation,
 )
-from qgis.PyQt.QtCore import QSize, QSizeF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtCore import QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont
 
 from .logger_config import get_logger
 
@@ -267,6 +268,175 @@ class PreviewRenderer:
         if target_dist < reference_data[0][0]:
             return reference_data[0][1]
         return reference_data[-1][1]
+
+    def _create_axes_layer(self, extent, vert_exag=1.0):
+        """Create temporary layer for axes and grid.
+        
+        Args:
+            extent: QgsRectangle defining the data extent
+            vert_exag: Vertical exaggeration factor
+            
+        Returns:
+            QgsVectorLayer with grid lines and annotations
+        """
+        if not extent:
+            return None
+            
+        # Create memory layer
+        layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Axes", "memory")
+        provider = layer.dataProvider()
+        
+        # Calculate grid intervals
+        width = extent.width()
+        height = extent.height()
+        
+        # Helper to find nice interval
+        def get_interval(range_val):
+            import math
+            if range_val == 0: return 100
+            exponent = math.floor(math.log10(range_val))
+            fraction = range_val / (10 ** exponent)
+            if fraction < 2: interval = 0.2
+            elif fraction < 5: interval = 0.5
+            else: interval = 1.0
+            return interval * (10 ** exponent)
+
+        x_interval = get_interval(width / 5)  # Aim for ~5 ticks
+        y_interval = get_interval(height / 5)
+        
+        # Adjust start points to be multiples of interval
+        import math
+        x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
+        y_start = math.floor(extent.yMinimum() / y_interval) * y_interval
+        
+        features = []
+        
+        # Create vertical grid lines
+        x = x_start
+        while x <= extent.xMaximum():
+            if x >= extent.xMinimum():
+                p1 = QgsPointXY(x, extent.yMinimum())
+                p2 = QgsPointXY(x, extent.yMaximum())
+                line = QgsLineString([p1, p2])
+                feat = QgsFeature()
+                feat.setGeometry(QgsGeometry(line))
+                features.append(feat)
+            x += x_interval
+            
+        # Create horizontal grid lines
+        y = y_start
+        while y <= extent.yMaximum():
+            if y >= extent.yMinimum():
+                p1 = QgsPointXY(extent.xMinimum(), y)
+                p2 = QgsPointXY(extent.xMaximum(), y)
+                line = QgsLineString([p1, p2])
+                feat = QgsFeature()
+                feat.setGeometry(QgsGeometry(line))
+                features.append(feat)
+            y += y_interval
+            
+        provider.addFeatures(features)
+        
+        # Apply symbology - light grey dashed line
+        symbol = QgsLineSymbol.createSimple({
+            'color': '200,200,200',
+            'width': '0.3',
+            'line_style': 'dash'
+        })
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+        
+        # Add annotations for labels if canvas is available
+        # Note: We are using a separate vector layer for labels (_create_axes_labels_layer)
+        # which is more robust than QgsTextAnnotation across QGIS versions.
+        # The QgsTextAnnotation code has been removed to avoid compatibility issues.
+            
+        return layer
+
+    def _create_axes_labels_layer(self, extent):
+        """Create a point layer for axes labels."""
+        if not extent:
+            return None
+            
+        layer = QgsVectorLayer("Point?crs=EPSG:4326&field=label:string&field=align:string", "Axes Labels", "memory")
+        provider = layer.dataProvider()
+        
+        width = extent.width()
+        height = extent.height()
+        
+        # Helper to find nice interval (duplicated for now, could be method)
+        def get_interval(range_val):
+            import math
+            if range_val == 0: return 100
+            exponent = math.floor(math.log10(range_val))
+            fraction = range_val / (10 ** exponent)
+            if fraction < 2: interval = 0.2
+            elif fraction < 5: interval = 0.5
+            else: interval = 1.0
+            return interval * (10 ** exponent)
+
+        x_interval = get_interval(width / 5)
+        y_interval = get_interval(height / 5)
+        
+        import math
+        x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
+        y_start = math.floor(extent.yMinimum() / y_interval) * y_interval
+        
+        features = []
+        
+        # X Axis Labels (bottom)
+        x = x_start
+        while x <= extent.xMaximum():
+            if x >= extent.xMinimum():
+                feat = QgsFeature(layer.fields())
+                feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(x, extent.yMinimum())))
+                feat.setAttribute('label', f"{x:.0f}")
+                feat.setAttribute('align', 'bottom')
+                features.append(feat)
+            x += x_interval
+            
+        # Y Axis Labels (left)
+        y = y_start
+        while y <= extent.yMaximum():
+            if y >= extent.yMinimum():
+                feat = QgsFeature(layer.fields())
+                feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(extent.xMinimum(), y)))
+                feat.setAttribute('label', f"{y:.0f}")
+                feat.setAttribute('align', 'left')
+                features.append(feat)
+            y += y_interval
+            
+        provider.addFeatures(features)
+        
+        # Configure labeling
+        from qgis.core import (
+            QgsPalLayerSettings, 
+            QgsTextFormat, 
+            QgsVectorLayerSimpleLabeling,
+            QgsLabeling
+        )
+        
+        settings = QgsPalLayerSettings()
+        settings.fieldName = 'label'
+        settings.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        
+        format = QgsTextFormat()
+        format.setColor(QColor(0, 0, 0))
+        format.setSize(8)
+        settings.setFormat(format)
+        
+        # Data defined properties for alignment
+        # This is complex to set up programmatically for simple preview
+        # Instead, we'll use a fixed offset
+        settings.yOffset = 2.0 # Below point
+        
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        layer.setLabelsEnabled(True)
+        
+        # Invisible symbol for points
+        symbol = QgsMarkerSymbol.createSimple({'size': '0', 'color': '0,0,0,0'})
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+        
+        return layer
     
     def render(self, topo_data, geol_data=None, struct_data=None, vert_exag=1.0):
         """Render preview with all data layers.
@@ -297,22 +467,30 @@ class PreviewRenderer:
         struct_layer = self._create_struct_layer(struct_data, reference_data) if struct_data else None
         
         # Collect valid layers
-        layers = [l for l in [struct_layer, geol_layer, topo_layer] if l is not None]
+        data_layers = [l for l in [struct_layer, geol_layer, topo_layer] if l is not None]
         
-        if not layers:
+        if not data_layers:
             logger.warning("No valid layers to render")
             return None, None
-        
-        self.layers = layers
-        
-        # Calculate combined extent with vertical exaggeration
+            
+        # Calculate extent from data layers
         extent = None
-        for layer in layers:
+        for layer in data_layers:
             layer_extent = layer.extent()
             if extent is None:
                 extent = layer_extent
             else:
                 extent.combineExtentWith(layer_extent)
+                
+        # Create axes layers based on data extent
+        axes_layer = self._create_axes_layer(extent, vert_exag)
+        labels_layer = self._create_axes_labels_layer(extent)
+        
+        # Combine all layers (labels on top, then data, then grid)
+        layers = [labels_layer] + data_layers + [axes_layer]
+        layers = [l for l in layers if l is not None]
+        
+        self.layers = layers
         
         # Apply vertical exaggeration to extent
         if extent and vert_exag != 1.0:
