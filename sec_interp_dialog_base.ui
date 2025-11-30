@@ -26,10 +26,10 @@
     <string/>
    </property>
    <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+    <enum>Qt::Orientation::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Save</set>
+    <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok|QDialogButtonBox::StandardButton::Save</set>
    </property>
   </widget>
   <widget class="QgsMapLayerComboBox" name="crossline">
@@ -62,7 +62,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>294</y>
+     <y>280</y>
      <width>101</width>
      <height>18</height>
     </rect>
@@ -90,7 +90,7 @@
     <string>SecInterp</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignmentFlag::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="label_9">
@@ -135,13 +135,13 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the polygon layer with geological outcrops (optional)&lt;/p&gt;&lt;p&gt;Leave as 'Do not use' to skip geological profile extraction&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
-  <widget class="QgsFileWidget" name="dest_fold">
+  <widget class="QgsFileWidget" name="dest_fold" native="true">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>314</y>
+     <y>300</y>
      <width>372</width>
-     <height>27</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -174,7 +174,7 @@
     <string>(Data along a cross-section line)</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignmentFlag::AlignCenter</set>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -317,21 +317,21 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>338</y>
+     <y>330</y>
      <width>370</width>
-     <height>120</height>
+     <height>250</height>
     </rect>
    </property>
    <property name="minimumSize">
     <size>
      <width>0</width>
-     <height>100</height>
+     <height>200</height>
     </size>
    </property>
    <property name="title">
     <string>Results</string>
    </property>
-   <property name="collapsed">
+   <property name="collapsed" stdset="0">
     <bool>false</bool>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -351,7 +351,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>484</y>
+     <y>470</y>
      <width>370</width>
      <height>211</height>
     </rect>
@@ -485,7 +485,7 @@
     <string>Name</string>
    </property>
   </widget>
-  <widget class="QgsFieldComboBox" name="ocropname">
+  <widget class="QgsFieldComboBox" name="ocropname" native="true">
    <property name="geometry">
     <rect>
      <x>269</x>
@@ -524,7 +524,7 @@
     <string>Strike</string>
    </property>
   </widget>
-  <widget class="QgsFieldComboBox" name="dip">
+  <widget class="QgsFieldComboBox" name="dip" native="true">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -537,7 +537,7 @@
     <string>Select the field containing dip values in degrees (0-90)</string>
    </property>
   </widget>
-  <widget class="QgsFieldComboBox" name="strike">
+  <widget class="QgsFieldComboBox" name="strike" native="true">
    <property name="geometry">
     <rect>
      <x>295</x>
@@ -567,7 +567,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>460</y>
+     <y>680</y>
      <width>88</width>
      <height>21</height>
     </rect>
@@ -580,7 +580,7 @@
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>460</y>
+     <y>680</y>
      <width>88</width>
      <height>21</height>
     </rect>
@@ -592,7 +592,74 @@
     <string>Export</string>
    </property>
   </widget>
+  <zorder>button_box</zorder>
+  <zorder>crossline</zorder>
+  <zorder>label_4</zorder>
+  <zorder>label_8</zorder>
+  <zorder>label_2</zorder>
+  <zorder>label_9</zorder>
+  <zorder>structural</zorder>
+  <zorder>outcrop</zorder>
+  <zorder>dest_fold</zorder>
+  <zorder>label_7</zorder>
+  <zorder>label</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_3</zorder>
+  <zorder>vertexag</zorder>
+  <zorder>label_6</zorder>
+  <zorder>scale</zorder>
+  <zorder>label_17</zorder>
+  <zorder>buffer_distance</zorder>
+  <zorder>label_18</zorder>
+  <zorder>dip_scale_factor</zorder>
+  <zorder>rasterdem</zorder>
+  <zorder>preview</zorder>
+  <zorder>show_topo_cb</zorder>
+  <zorder>show_geol_cb</zorder>
+  <zorder>show_struct_cb</zorder>
+  <zorder>band</zorder>
+  <zorder>label_12</zorder>
+  <zorder>label_13</zorder>
+  <zorder>resln</zorder>
+  <zorder>label_14</zorder>
+  <zorder>ocropname</zorder>
+  <zorder>label_15</zorder>
+  <zorder>label_16</zorder>
+  <zorder>dip</zorder>
+  <zorder>strike</zorder>
+  <zorder>unts</zorder>
+  <zorder>preview_button</zorder>
+  <zorder>export_pre</zorder>
+  <zorder>results_group</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -628,21 +695,4 @@
    </hints>
   </connection>
  </connections>
- <customwidgets>
-  <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgis.gui</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsRasterBandComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgis.gui</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
-  </customwidget>
- </customwidgets>
 </ui>
