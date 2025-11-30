@@ -37,7 +37,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsMapLayerProxyModel,
 )
-from qgis.gui import QgsMessageBar, QgsFileWidget
+from qgis.gui import QgsMessageBar, QgsFileWidget, QgsMapCanvas
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QDialogButtonBox
 from qgis.PyQt.QtSvg import QSvgGenerator
@@ -91,15 +91,25 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         self.buffer_distance.setText("100")
         self.dip_scale_factor.setText("4")
 
-        # Initialize zoom level tracking
-        self.current_zoom_level = 1.0
-        self.min_zoom = 0.1  # 10% of original size
-        self.max_zoom = 10.0  # 10x original size
-
+        # Replace QGraphicsView with QgsMapCanvas for preview
+        # Remove the old QGraphicsView widget
+        old_preview = self.preview
+        preview_geometry = old_preview.geometry()
+        preview_parent = old_preview.parent()
+        old_preview.setParent(None)
+        old_preview.deleteLater()
+        
+        # Create new QgsMapCanvas
+        self.preview = QgsMapCanvas(preview_parent)
+        self.preview.setGeometry(preview_geometry)
+        self.preview.setCanvasColor(QColor(255, 255, 255))  # White background
+        
         # Store current preview data for re-rendering when checkboxes change
         self.current_topo_data = None
         self.current_geol_data = None
         self.current_struct_data = None
+        self.current_canvas = None
+        self.current_layers = []
 
         # Configure outcrop layer combo box
         self.outcrop.setFilters(QgsMapLayerProxyModel.PolygonLayer)
@@ -147,8 +157,6 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         self.dest_fold.fileChanged.connect(self.update_button_state)
         self.preview_button.clicked.connect(self.preview_profile_handler)
         self.update_button_state()
-        self.setup_preview_interactivity()
-        self.current_scene = None
 
         # Connect preview checkboxes to update preview when toggled
         self.show_topo_cb.stateChanged.connect(self.update_preview_from_checkboxes)
@@ -158,41 +166,16 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         # Connect export button
         self.export_pre.clicked.connect(self.export_preview)
 
-    def setup_preview_interactivity(self):
-        """Configure preview widget for interactive zoom and pan."""
-        from qgis.PyQt.QtWidgets import QGraphicsView
-
-        # Enable drag mode for panning
-        self.preview.setDragMode(QGraphicsView.ScrollHandDrag)
-
-        # Set transformation anchors for smooth zooming
-        self.preview.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
-        self.preview.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
-
-        # Enable antialiasing for smoother graphics
-        from qgis.PyQt.QtGui import QPainter
-
-        self.preview.setRenderHint(QPainter.Antialiasing, True)
-
     def wheelEvent(self, event):
-        """Handle mouse wheel for zooming in preview with limits."""
+        """Handle mouse wheel for zooming in preview."""
         # Check if mouse is over preview widget
         if self.preview.underMouse():
-            zoom_factor = 1.15
-
+            # QgsMapCanvas has built-in zoom with wheel
+            # We can customize the zoom factor if needed
             if event.angleDelta().y() > 0:
-                # Zoom in - check if we're below max zoom
-                new_zoom = self.current_zoom_level * zoom_factor
-                if new_zoom <= self.max_zoom:
-                    self.preview.scale(zoom_factor, zoom_factor)
-                    self.current_zoom_level = new_zoom
+                self.preview.zoomIn()
             else:
-                # Zoom out - check if we're above min zoom
-                new_zoom = self.current_zoom_level / zoom_factor
-                if new_zoom >= self.min_zoom:
-                    self.preview.scale(1 / zoom_factor, 1 / zoom_factor)
-                    self.current_zoom_level = new_zoom
-
+                self.preview.zoomOut()
             event.accept()
         else:
             super().wheelEvent(event)
@@ -444,80 +427,106 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
 
     def export_preview(self):
-        """Export the current preview to a file (SVG, PDF, PNG, JPG)."""
-        if not self.current_scene:
+        """Export the current preview to a file (SVG, PDF, PNG, JPG) using PyQGIS native rendering."""
+        if not self.current_layers or not self.current_canvas:
             self.results.setPlainText("⚠ No preview to export. Please generate a preview first.")
             return
 
-        # Determine default directory: prioritize dest_fold, then last used dir, then home
+        # Determine default directory
         from qgis.core import QgsSettings
         settings = QgsSettings()
         
-        # Use dest_fold if available, otherwise fall back to last used directory
         dest_folder = self.dest_fold.filePath().strip()
         if dest_folder:
-            # Suggest a default filename in the destination folder
-            default_path = str(Path(dest_folder) / "preview.svg")
+            default_path = str(Path(dest_folder) / "preview.png")
         else:
             last_dir = settings.value("SecInterp/lastExportDir", "", type=str)
-            default_path = str(Path(last_dir) / "preview.svg") if last_dir else "preview.svg"
+            default_path = str(Path(last_dir) / "preview.png") if last_dir else "preview.png"
 
         filename, selected_filter = QFileDialog.getSaveFileName(
             self,
             "Export Preview",
             default_path,
-            "Scalable Vector Graphics (*.svg);;PDF Documents (*.pdf);;PNG Image (*.png);;JPEG Image (*.jpg)"
+            "PNG Image (*.png);;JPEG Image (*.jpg);;Scalable Vector Graphics (*.svg);;PDF Documents (*.pdf)"
         )
 
         if not filename:
             return
 
-        # Determine the correct extension based on the selected filter
+        # Determine the correct extension
         filter_ext_map = {
-            "Scalable Vector Graphics (*.svg)": ".svg",
-            "PDF Documents (*.pdf)": ".pdf",
             "PNG Image (*.png)": ".png",
-            "JPEG Image (*.jpg)": ".jpg"
+            "JPEG Image (*.jpg)": ".jpg",
+            "Scalable Vector Graphics (*.svg)": ".svg",
+            "PDF Documents (*.pdf)": ".pdf"
         }
         
-        # Get current extension
         current_ext = Path(filename).suffix.lower()
-        
-        # Get expected extension from filter
         expected_ext = filter_ext_map.get(selected_filter, "")
         
-        # If no extension or wrong extension, add/replace with the correct one
-        if not current_ext or current_ext not in ['.svg', '.pdf', '.png', '.jpg', '.jpeg']:
+        if not current_ext or current_ext not in ['.png', '.jpg', '.jpeg', '.svg', '.pdf']:
             if expected_ext:
                 filename = str(Path(filename).with_suffix(expected_ext))
         
-        # Normalize extension
         ext = Path(filename).suffix.lower()
-        
-        # Save last used directory
         settings.setValue("SecInterp/lastExportDir", str(Path(filename).parent))
 
         try:
             self.results.setPlainText(f"Exporting preview to {filename}...")
             
-            # Get scene rectangle - use sceneRect() to ensure we capture everything
-            # itemsBoundingRect() might miss some elements
-            source_rect = self.current_scene.sceneRect()
+            # Get extent from canvas
+            extent = self.current_canvas.extent()
             
-            # If sceneRect is empty, fall back to itemsBoundingRect with margin
-            if source_rect.isEmpty():
-                source_rect = self.current_scene.itemsBoundingRect()
-                source_rect.adjust(-10, -10, 10, 10)
+            # Export dimensions (use canvas size as reference)
+            width = self.preview.width()
+            height = self.preview.height()
             
-            # Ensure dimensions are valid
-            width = max(int(source_rect.width()), 100)
-            height = max(int(source_rect.height()), 100)
+            # For raster formats, use higher resolution
+            if ext in ['.png', '.jpg', '.jpeg']:
+                width = width * 3  # 3x resolution for better quality
+                height = height * 3
+                dpi = 300
+            else:
+                dpi = 96
             
-            if ext == '.svg':
+            # Use PyQGIS native export
+            from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
+            
+            settings = QgsMapSettings()
+            settings.setLayers(self.current_layers)
+            settings.setExtent(extent)
+            settings.setOutputSize(QSize(width, height))
+            settings.setOutputDpi(dpi)
+            settings.setBackgroundColor(QColor(255, 255, 255))
+            
+            if ext in ['.png', '.jpg', '.jpeg']:
+                # Raster export
+                image = QImage(QSize(width, height), QImage.Format_ARGB32)
+                
+                if ext in ['.jpg', '.jpeg']:
+                    image.fill(QColor(255, 255, 255))  # White background
+                else:
+                    image.fill(QColor(255, 255, 255))  # White background for PNG too
+                
+                painter = QPainter(image)
+                painter.setRenderHint(QPainter.Antialiasing)
+                painter.setRenderHint(QPainter.SmoothPixmapTransform)
+                
+                job = QgsMapRendererCustomPainterJob(settings, painter)
+                job.start()
+                job.waitForFinished()
+                
+                painter.end()
+                
+                quality = 95 if ext in ['.jpg', '.jpeg'] else -1
+                if not image.save(filename, None, quality):
+                    raise Exception(f"Failed to save image to {filename}")
+                    
+            elif ext == '.svg':
+                # SVG export
                 generator = QSvgGenerator()
                 generator.setFileName(filename)
                 generator.setSize(QSize(width, height))
-                # ViewBox should start at (0, 0) for SVG, not at source_rect origin
                 generator.setViewBox(QRectF(0, 0, width, height))
                 generator.setTitle("Section Interpretation Preview")
                 generator.setDescription("Generated by SecInterp QGIS Plugin")
@@ -525,52 +534,41 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                 painter = QPainter()
                 if painter.begin(generator):
                     painter.setRenderHint(QPainter.Antialiasing)
-                    # Render the entire scene, translating from source_rect to (0,0)
-                    self.current_scene.render(painter, QRectF(0, 0, width, height), source_rect)
+                    
+                    job = QgsMapRendererCustomPainterJob(settings, painter)
+                    job.start()
+                    job.waitForFinished()
+                    
                     painter.end()
                 else:
                     raise Exception("Failed to initialize SVG painter")
-                
+                    
             elif ext == '.pdf':
+                # PDF export
                 printer = QPrinter(QPrinter.HighResolution)
                 printer.setOutputFormat(QPrinter.PdfFormat)
                 printer.setOutputFileName(filename)
                 printer.setPageSize(QPageSize(QSizeF(width, height), QPageSize.Point))
-                printer.setPageMargins(QMarginsF(0, 0, 0, 0))
+                printer.setPageMargins(0.0, 0.0, 0.0, 0.0, QPrinter.Point)
                 printer.setFullPage(True)
                 
                 painter = QPainter()
                 if painter.begin(printer):
                     painter.setRenderHint(QPainter.Antialiasing)
-                    # Render with proper coordinate translation
-                    self.current_scene.render(painter, QRectF(0, 0, width, height), source_rect)
+                    
+                    # Update settings with actual printer device dimensions and DPI
+                    # This ensures the map fills the page regardless of HighResolution setting
+                    dev = painter.device()
+                    settings.setOutputSize(QSize(dev.width(), dev.height()))
+                    settings.setOutputDpi(printer.resolution())
+                    
+                    job = QgsMapRendererCustomPainterJob(settings, painter)
+                    job.start()
+                    job.waitForFinished()
+                    
                     painter.end()
                 else:
                     raise Exception("Failed to initialize PDF printer")
-                
-            elif ext in ['.png', '.jpg', '.jpeg']:
-                # Create image with appropriate background
-                image = QImage(width, height, QImage.Format_ARGB32)
-                
-                if ext in ['.jpg', '.jpeg']:
-                    image.fill(QColor(255, 255, 255))  # White background for JPEG
-                else:
-                    image.fill(QColor(0, 0, 0, 0))  # Transparent for PNG
-                
-                painter = QPainter()
-                if painter.begin(image):
-                    painter.setRenderHint(QPainter.Antialiasing)
-                    painter.setRenderHint(QPainter.SmoothPixmapTransform)
-                    # Render with proper coordinate translation
-                    self.current_scene.render(painter, QRectF(0, 0, width, height), source_rect)
-                    painter.end()
-                    
-                    # Save with appropriate quality
-                    quality = 95 if ext in ['.jpg', '.jpeg'] else -1
-                    if not image.save(filename, None, quality):
-                        raise Exception(f"Failed to save image to {filename}")
-                else:
-                    raise Exception("Failed to initialize image painter")
             else:
                 raise Exception(f"Unsupported file extension: {ext}")
             

@@ -1,27 +1,43 @@
 # -*- coding: utf-8 -*-
 """
-Preview Renderer Module
+Preview Renderer Module (PyQGIS Native)
 
-Handles rendering of interactive previews with topography, geology, and structural data.
-Includes coordinate axes, grid, and multi-layer visualization.
+Handles rendering of interactive previews using native QGIS resources:
+- QgsMapCanvas for rendering
+- Temporary memory layers for data
+- Native QGIS symbology
 """
 
-import math
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QPen, QColor, QBrush
-from qgis.PyQt.QtWidgets import QGraphicsScene
+from qgis.core import (
+    QgsVectorLayer,
+    QgsFeature,
+    QgsGeometry,
+    QgsPointXY,
+    QgsLineString,
+    QgsProject,
+    QgsSymbol,
+    QgsSingleSymbolRenderer,
+    QgsCategorizedSymbolRenderer,
+    QgsRendererCategory,
+    QgsMarkerSymbol,
+    QgsLineSymbol,
+    QgsRectangle,
+    QgsCoordinateReferenceSystem,
+    QgsMapSettings,
+    QgsMapRendererCustomPainterJob,
+)
+from qgis.PyQt.QtCore import QSize, QSizeF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
-from . import si_core_utils as scu
 from .logger_config import get_logger
 
 logger = get_logger(__name__)
 
 
 class PreviewRenderer:
-    """Renders interactive preview with multiple data layers."""
+    """Renders interactive preview using native PyQGIS resources."""
     
     # Color palette for geological units
-    # Color palette for geological units (expanded and refined)
     GEOLOGY_COLORS = [
         QColor(231, 76, 60),    # Red
         QColor(52, 152, 219),   # Blue
@@ -41,31 +57,216 @@ class PreviewRenderer:
         QColor(22, 160, 133),   # Green Sea
     ]
     
-    def _get_color_for_unit(self, name):
-        """Get a consistent color for a geological unit based on its name.
-        
-        Uses a hash of the name to select a color from the palette, ensuring
-        that the same unit always gets the same color.
-        """
-        if not name:
-            return QColor(100, 100, 100)  # Default grey for unnamed
-            
-        # Simple hash to map name to index
-        hash_val = sum(ord(c) for c in name)
-        index = hash_val % len(self.GEOLOGY_COLORS)
-        return self.GEOLOGY_COLORS[index]
-    
-    def __init__(self, view_width=600, view_height=400, margin=60):
+    def __init__(self, canvas=None):
         """Initialize preview renderer.
         
         Args:
-            view_width: Width of the preview canvas in pixels
-            view_height: Height of the preview canvas in pixels
-            margin: Margin for axes and labels in pixels
+            canvas: QgsMapCanvas instance (optional, will be created if not provided)
         """
-        self.view_w = view_width
-        self.view_h = view_height
-        self.margin = margin
+        self.canvas = canvas
+        self.layers = []  # Track created layers for cleanup
+    
+    def _get_color_for_unit(self, name):
+        """Get a consistent color for a geological unit based on its name."""
+        if not name:
+            return QColor(100, 100, 100)  # Default grey
+        
+        # Simple hash to map name to index
+        hash_val = sum(ord(c) for c in str(name))
+        index = hash_val % len(self.GEOLOGY_COLORS)
+        return self.GEOLOGY_COLORS[index]
+    
+    def _create_topo_layer(self, topo_data):
+        """Create temporary layer for topographic profile.
+        
+        Args:
+            topo_data: List of (distance, elevation) tuples
+            
+        Returns:
+            QgsVectorLayer with topographic profile
+        """
+        if not topo_data or len(topo_data) < 2:
+            return None
+        
+        # Create memory layer
+        layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Topography", "memory")
+        provider = layer.dataProvider()
+        
+        # Create line geometry from points
+        points = [QgsPointXY(dist, elev) for dist, elev in topo_data]
+        line = QgsLineString(points)
+        
+        # Add feature
+        feat = QgsFeature()
+        feat.setGeometry(QgsGeometry(line))
+        provider.addFeatures([feat])
+        
+        # Apply symbology - blue line, 2px width
+        symbol = QgsLineSymbol.createSimple({
+            'color': '0,102,204',
+            'width': '0.5',
+            'capstyle': 'round',
+            'joinstyle': 'round'
+        })
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+        
+        layer.updateExtents()
+        logger.debug(f"Created topography layer with {len(topo_data)} points")
+        return layer
+    
+    def _create_geol_layer(self, geol_data):
+        """Create temporary layer for geological profile.
+        
+        Args:
+            geol_data: List of (distance, elevation, unit_name) tuples
+            
+        Returns:
+            QgsVectorLayer with geological profile
+        """
+        if not geol_data or len(geol_data) < 2:
+            return None
+        
+        # Create memory layer with attributes
+        layer = QgsVectorLayer(
+            "LineString?crs=EPSG:4326&field=unit:string",
+            "Geology",
+            "memory"
+        )
+        provider = layer.dataProvider()
+        
+        # Group by geological unit
+        geol_groups = {}
+        for dist, elev, name in geol_data:
+            if name not in geol_groups:
+                geol_groups[name] = []
+            geol_groups[name].append((dist, elev))
+        
+        # Create features for each unit
+        features = []
+        for unit_name, points in geol_groups.items():
+            if len(points) < 2:
+                continue
+            
+            # Create line geometry
+            line_points = [QgsPointXY(dist, elev) for dist, elev in points]
+            line = QgsLineString(line_points)
+            
+            # Create feature with attributes
+            feat = QgsFeature(layer.fields())
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttribute('unit', str(unit_name))
+            features.append(feat)
+        
+        provider.addFeatures(features)
+        
+        # Apply categorized symbology
+        categories = []
+        for unit_name in geol_groups.keys():
+            color = self._get_color_for_unit(unit_name)
+            symbol = QgsLineSymbol.createSimple({
+                'color': f'{color.red()},{color.green()},{color.blue()}',
+                'width': '0.7',
+                'capstyle': 'round',
+                'joinstyle': 'round'
+            })
+            category = QgsRendererCategory(str(unit_name), symbol, str(unit_name))
+            categories.append(category)
+        
+        renderer = QgsCategorizedSymbolRenderer('unit', categories)
+        layer.setRenderer(renderer)
+        
+        layer.updateExtents()
+        logger.debug(f"Created geology layer with {len(geol_groups)} units")
+        return layer
+    
+    def _create_struct_layer(self, struct_data, reference_data):
+        """Create temporary layer for structural dips.
+        
+        Args:
+            struct_data: List of (distance, apparent_dip) tuples
+            reference_data: List of (distance, elevation) tuples for elevation lookup
+            
+        Returns:
+            QgsVectorLayer with structural dip lines
+        """
+        if not struct_data or len(struct_data) < 1:
+            return None
+        
+        # Create memory layer
+        layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Structures", "memory")
+        provider = layer.dataProvider()
+        
+        # Calculate extent for line length
+        if reference_data:
+            elevs = [e for _, e in reference_data]
+            e_range = max(elevs) - min(elevs)
+        else:
+            e_range = 100  # Default range
+        
+        line_length = e_range * 0.1  # 10% of elevation range
+        
+        # Create dip lines
+        features = []
+        for dist, app_dip in struct_data:
+            # Interpolate elevation from reference data
+            if reference_data:
+                elev = self._interpolate_elevation(reference_data, dist)
+            else:
+                elev = 0
+            
+            # Calculate dip line endpoints
+            import math
+            rad_dip = math.radians(abs(app_dip))
+            dx = line_length * math.cos(rad_dip)
+            dy = -line_length * math.sin(rad_dip)
+            
+            if app_dip < 0:
+                dx = -dx
+            
+            # Create line geometry
+            p1 = QgsPointXY(dist, elev)
+            p2 = QgsPointXY(dist + dx, elev + dy)
+            line = QgsLineString([p1, p2])
+            
+            feat = QgsFeature()
+            feat.setGeometry(QgsGeometry(line))
+            features.append(feat)
+        
+        provider.addFeatures(features)
+        
+        # Apply symbology - red line, 2px width
+        symbol = QgsLineSymbol.createSimple({
+            'color': '204,0,0',
+            'width': '0.5',
+            'capstyle': 'round'
+        })
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+        
+        layer.updateExtents()
+        logger.debug(f"Created structures layer with {len(struct_data)} dips")
+        return layer
+    
+    def _interpolate_elevation(self, reference_data, target_dist):
+        """Interpolate elevation at a given distance."""
+        if not reference_data:
+            return 0
+        
+        # Find bracketing points
+        for i in range(len(reference_data) - 1):
+            d1, e1 = reference_data[i]
+            d2, e2 = reference_data[i + 1]
+            
+            if d1 <= target_dist <= d2:
+                # Linear interpolation
+                if d2 == d1:
+                    return e1
+                t = (target_dist - d1) / (d2 - d1)
+                return e1 + t * (e2 - e1)
+        
+        # If outside range, use nearest
+        if target_dist < reference_data[0][0]:
+            return reference_data[0][1]
+        return reference_data[-1][1]
     
     def render(self, topo_data, geol_data=None, struct_data=None, vert_exag=1.0):
         """Render preview with all data layers.
@@ -74,339 +275,111 @@ class PreviewRenderer:
             topo_data: List of (dist, elev) tuples for topographic profile
             geol_data: Optional list of (dist, elev, geology_name) tuples
             struct_data: Optional list of (dist, app_dip) tuples
-            vert_exag: Vertical exaggeration factor (default 1.0 = no exaggeration)
+            vert_exag: Vertical exaggeration factor (default 1.0)
             
         Returns:
-            QGraphicsScene with rendered preview
+            Tuple of (QgsMapCanvas, list of layers) or (None, None) if no data
         """
-        scene = QGraphicsScene()
-
-        # Check if we have any data to display
-        has_any_data = False
-        if topo_data and len(topo_data) >= 2:
-            has_any_data = True
-        if geol_data and len(geol_data) >= 2:
-            has_any_data = True
-        if struct_data and len(struct_data) >= 1:
-            has_any_data = True
+        # Clean up previous layers
+        for layer in self.layers:
+            if layer:
+                QgsProject.instance().removeMapLayer(layer.id())
+        self.layers = []
         
-        if not has_any_data:
-            scene.addText("No data to preview.\nPlease ensure at least one data type is selected and has valid data.")
-            return scene
-
-        # Determine which data to use for bounds calculation
-        primary_data = None
+        # Create layers
+        topo_layer = self._create_topo_layer(topo_data) if topo_data else None
+        geol_layer = self._create_geol_layer(geol_data) if geol_data else None
         
-        # Try geological data first
-        if geol_data and len(geol_data) >= 2:
-            # Convert geological data to (dist, elev) tuples for bounds calculation
-            primary_data = [(d, e) for d, e, _ in geol_data]
-        # Then try topographic data
-        elif topo_data and len(topo_data) >= 2:
-            primary_data = topo_data
-        # If only structural data, create synthetic bounds
-        elif struct_data and len(struct_data) >= 1:
-            # Get distance range from structural data
-            dists = [d for d, _ in struct_data]
-            min_d, max_d = min(dists), max(dists)
-            # Create synthetic elevation range (arbitrary but reasonable)
-            # Use a range that will show the dip lines nicely
-            mid_elev = 1000  # Arbitrary middle elevation
-            elev_range = (max_d - min_d) * 0.3  # 30% of distance range
-            # Create two synthetic points to define bounds
-            primary_data = [
-                (min_d, mid_elev - elev_range/2),
-                (max_d, mid_elev + elev_range/2)
-            ]
+        # For structural layer, use topo or geol as reference
+        reference_data = topo_data if topo_data else (
+            [(d, e) for d, e, _ in geol_data] if geol_data else None
+        )
+        struct_layer = self._create_struct_layer(struct_data, reference_data) if struct_data else None
         
-        if not primary_data:
-            scene.addText("Insufficient data for preview.")
-            return scene
-
-        # Calculate bounds from all available data
-        bounds = scu.calculate_bounds(primary_data, geol_data if geol_data else None)
+        # Collect valid layers
+        layers = [l for l in [struct_layer, geol_layer, topo_layer] if l is not None]
         
-        # Create coordinate transformation with vertical exaggeration
-        transform = scu.create_coordinate_transform(bounds, self.view_w, self.view_h, self.margin, vert_exag)
+        if not layers:
+            logger.warning("No valid layers to render")
+            return None, None
         
-        # Draw grid and axes first (background)
-        self._draw_grid(scene, bounds, transform)
-        self._draw_axes(scene, bounds, transform)
+        self.layers = layers
         
-        # Track what data is being displayed
-        has_topo = False
-        has_geol = False
-        has_struct = False
-        
-        # Draw topographic layer if available
-        if topo_data and len(topo_data) >= 2:
-            self._draw_topo_layer(scene, topo_data, transform)
-            has_topo = True
-        
-        if geol_data and len(geol_data) > 0:
-            logger.debug("Drawing %d geological points", len(geol_data))
-            self._draw_geol_layer(scene, geol_data, transform)
-            has_geol = True
-        else:
-            logger.debug("No geological data to draw")
-        
-        if struct_data and len(struct_data) > 0:
-            logger.debug("Drawing %d structural points", len(struct_data))
-            # For structural data, we need reference data for elevation
-            # Use topographic or geological data if available, otherwise use synthetic data
-            if topo_data and len(topo_data) >= 2:
-                reference_data = topo_data
-            elif geol_data and len(geol_data) >= 2:
-                reference_data = [(d, e) for d, e, _ in geol_data]
+        # Calculate combined extent with vertical exaggeration
+        extent = None
+        for layer in layers:
+            layer_extent = layer.extent()
+            if extent is None:
+                extent = layer_extent
             else:
-                # Use synthetic data (flat line at middle elevation)
-                dists = [d for d, _ in struct_data]
-                min_d, max_d = min(dists), max(dists)
-                mid_elev = (bounds['min_e'] + bounds['max_e']) / 2
-                reference_data = [(min_d, mid_elev), (max_d, mid_elev)]
-            
-            self._draw_struct_layer(scene, struct_data, reference_data, transform, bounds)
-            has_struct = True
-        else:
-            logger.debug("No structural data to draw")
+                extent.combineExtentWith(layer_extent)
         
-        # Draw legend
-        if has_geol or has_struct:
-            logger.debug("Drawing legend (geol=%s, struct=%s)", has_geol, has_struct)
-            self._draw_legend(scene, geol_data, struct_data, bounds, transform)
+        # Apply vertical exaggeration to extent
+        if extent and vert_exag != 1.0:
+            center_y = (extent.yMinimum() + extent.yMaximum()) / 2
+            height = extent.height()
+            new_height = height * vert_exag
+            extent.setYMinimum(center_y - new_height / 2)
+            extent.setYMaximum(center_y + new_height / 2)
         
-        # Add informative message if only topography is shown
-        if has_topo and not has_geol and not has_struct:
-            info_text = scene.addText("Only topographic profile is displayed.\n"
-                                     "Geological and structural data may be missing or\n"
-                                     "not intersecting with the cross-section line.")
-            info_text.setPos(10, self.view_h - 80)
-            info_text.setScale(0.7)
-            info_text.setDefaultTextColor(QColor(200, 100, 0))  # Orange color
+        # Add 10% padding
+        if extent:
+            extent.scale(1.1)
         
-        # Add note if only structural data is shown
-        if has_struct and not has_topo and not has_geol:
-            info_text = scene.addText("Only structural data is displayed.\n"
-                                     "Elevations are synthetic (not from topography/geology).")
-            info_text.setPos(10, self.view_h - 60)
-            info_text.setScale(0.7)
-            info_text.setDefaultTextColor(QColor(100, 100, 200))  # Blue color
+        # Configure canvas if provided
+        if self.canvas:
+            self.canvas.setLayers(layers)
+            self.canvas.setExtent(extent)
+            self.canvas.refresh()
+            logger.debug(f"Canvas configured with {len(layers)} layers")
         
-        # Set explicit scene rect to ensure proper bounds for export
-        # This is especially important when only topography is displayed
-        items_rect = scene.itemsBoundingRect()
-        logger.debug("Scene has %d items", len(scene.items()))
-        logger.debug("Items bounding rect: x=%f, y=%f, w=%f, h=%f", 
-                    items_rect.x(), items_rect.y(), items_rect.width(), items_rect.height())
-        scene.setSceneRect(items_rect)
-        logger.debug("Scene rect set to items bounding rect")
-        
-        return scene
+        return self.canvas, layers
     
-
-    
-
-    
-    def _draw_grid(self, scene, bounds, transform):
-        """Draw background grid."""
-        pen = QPen(QColor(220, 220, 220))
-        pen.setStyle(Qt.DotLine)
-        
-        # Vertical grid lines
-        d_range = bounds['max_d'] - bounds['min_d']
-        d_interval = scu.calculate_interval(d_range)
-        
-        d = math.ceil(bounds['min_d'] / d_interval) * d_interval
-        while d <= bounds['max_d']:
-            x1, y1 = transform(d, bounds['min_e'])
-            x2, y2 = transform(d, bounds['max_e'])
-            scene.addLine(x1, y1, x1, y2, pen)
-            d += d_interval
-        
-        # Horizontal grid lines
-        e_range = bounds['max_e'] - bounds['min_e']
-        e_interval = scu.calculate_interval(e_range)
-        
-        e = math.ceil(bounds['min_e'] / e_interval) * e_interval
-        while e <= bounds['max_e']:
-            x1, y1 = transform(bounds['min_d'], e)
-            x2, y2 = transform(bounds['max_d'], e)
-            scene.addLine(x1, y1, x2, y1, pen)
-            e += e_interval
-    
-    def _draw_axes(self, scene, bounds, transform):
-        """Draw coordinate axes with labels."""
-        pen = QPen(Qt.black)
-        pen.setWidth(2)
-        
-        # X axis
-        x1, y1 = transform(bounds['min_d'], bounds['min_e'])
-        x2, y2 = transform(bounds['max_d'], bounds['min_e'])
-        scene.addLine(x1, y1, x2, y1, pen)
-        
-        # Y axis (Left)
-        x1, y1 = transform(bounds['min_d'], bounds['min_e'])
-        x2, y2 = transform(bounds['min_d'], bounds['max_e'])
-        scene.addLine(x1, y1, x1, y2, pen)
-        
-        # X axis (Top)
-        x1, y1 = transform(bounds['min_d'], bounds['max_e'])
-        x2, y2 = transform(bounds['max_d'], bounds['max_e'])
-        scene.addLine(x1, y1, x2, y1, pen)
-        
-        # Y axis (Right)
-        x1, y1 = transform(bounds['max_d'], bounds['min_e'])
-        x2, y2 = transform(bounds['max_d'], bounds['max_e'])
-        scene.addLine(x1, y1, x1, y2, pen)
-        
-        # X axis labels
-        d_range = bounds['max_d'] - bounds['min_d']
-        d_interval = scu.calculate_interval(d_range)
-        
-        d = math.ceil(bounds['min_d'] / d_interval) * d_interval
-        while d <= bounds['max_d']:
-            x, y = transform(d, bounds['min_e'])
-            text = scene.addText(f"{int(d)} m")
-            text.setPos(x - 15, y + 5)
-            text.setScale(0.7)
-            d += d_interval
-        
-        # Y axis labels
-        e_range = bounds['max_e'] - bounds['min_e']
-        e_interval = scu.calculate_interval(e_range)
-        
-        e = math.ceil(bounds['min_e'] / e_interval) * e_interval
-        while e <= bounds['max_e']:
-            x, y = transform(bounds['min_d'], e)
-            text = scene.addText(f"{int(e)} m")
-            text.setPos(x - 50, y - 10)
-            text.setScale(0.7)
-            e += e_interval
-        
-        # Axis titles - position dynamically based on actual content
-        # X axis title at bottom center of the actual data area
-        center_x, bottom_y = transform((bounds['min_d'] + bounds['max_d']) / 2, bounds['min_e'])
-        title_x = scene.addText("Distance (m)")
-        title_x.setPos(center_x - 40, bottom_y + 10)
-        title_x.setScale(0.8)
-        
-        # Y axis title at top left of the actual data area
-        left_x, top_y = transform(bounds['min_d'], bounds['max_e'])
-        title_y = scene.addText("Elevation (m)")
-        title_y.setPos(left_x - 55, top_y - 25)
-        title_y.setScale(0.8)
-    
-    def _draw_topo_layer(self, scene, points, transform):
-        """Draw topographic profile."""
-        logger.debug("Drawing topography with %d points", len(points))
-        pen = QPen(QColor(0, 102, 204))  # Blue
-        pen.setWidth(2)
-        
-        lines_added = 0
-        for i in range(len(points) - 1):
-            x1, y1 = transform(points[i][0], points[i][1])
-            x2, y2 = transform(points[i + 1][0], points[i + 1][1])
-            line_item = scene.addLine(x1, y1, x2, y2, pen)
-            lines_added += 1
-            if i == 0:
-                logger.debug("First topo line: (%f, %f) -> (%f, %f)", x1, y1, x2, y2)
-        
-        logger.debug("Added %d topography lines to scene", lines_added)
-    
-    def _draw_geol_layer(self, scene, geol_data, transform):
-        """Draw geological profile with different colors per unit."""
-        # Group by geology name
-        geol_groups = {}
-        for dist, elev, name in geol_data:
-            if name not in geol_groups:
-                geol_groups[name] = []
-            geol_groups[name].append((dist, elev))
-        
-        for name, points in geol_groups.items():
-            color = self._get_color_for_unit(name)
-            pen = QPen(color)
-            pen.setWidth(3)
-            
-            for i in range(len(points) - 1):
-                x1, y1 = transform(points[i][0], points[i][1])
-                x2, y2 = transform(points[i + 1][0], points[i + 1][1])
-                scene.addLine(x1, y1, x2, y2, pen)
-    
-    def _draw_struct_layer(self, scene, struct_data, topo_data, transform, bounds):
-        """Draw structural dip lines."""
-        pen = QPen(QColor(204, 0, 0))  # Red
-        pen.setWidth(2)
-        
-        # Calculate line length based on view scale
-        e_range = bounds['max_e'] - bounds['min_e']
-        line_length = e_range * 0.1  # 10% of elevation range
-        
-        for dist, app_dip in struct_data:
-            # Assume elevation at ground level (would need actual elevation)
-            # For now, use middle of elevation range
-            elev = scu.interpolate_elevation(topo_data, dist)
-            
-            rad_dip = math.radians(app_dip)
-            dx = line_length * math.cos(abs(rad_dip))
-            dy = -line_length * math.sin(abs(rad_dip))
-            
-            if app_dip < 0:
-                dx = -dx
-            
-            x1, y1 = transform(dist, elev)
-            x2, y2 = transform(dist + dx, elev + dy)
-            scene.addLine(x1, y1, x2, y2, pen)
-    
-    def _draw_legend(self, scene, geol_data, struct_data, bounds, transform):
-        """Draw legend for geological units and structures.
+    def export_to_image(self, layers, extent, width, height, output_path, dpi=300):
+        """Export preview to image file using QgsMapRendererCustomPainterJob.
         
         Args:
-            scene: QGraphicsScene to draw on
-            geol_data: Geological data
-            struct_data: Structural data
-            bounds: Data bounds
-            transform: Coordinate transform function
+            layers: List of QgsVectorLayer to render
+            extent: QgsRectangle defining the area to render
+            width: Output width in pixels
+            height: Output height in pixels
+            output_path: Path to save the image
+            dpi: DPI for output (default 300)
+            
+        Returns:
+            True if successful, False otherwise
         """
-        legend_x = self.view_w - 150
-        legend_y = 20
-        
-        # Background
-        scene.addRect(legend_x - 10, legend_y - 10, 140, 200, 
-                     QPen(Qt.black), QBrush(QColor(255, 255, 255, 200)))
-        
-        current_y = legend_y
-        
-        # Title
-        title = scene.addText("Legend")
-        title.setPos(legend_x, current_y)
-        title.setDefaultTextColor(Qt.black)
-        current_y += 25
-        
-        # Topography
-        scene.addLine(legend_x, current_y + 10, legend_x + 20, current_y + 10, 
-                     QPen(QColor(0, 102, 204), 2))
-        text = scene.addText("Topography")
-        text.setPos(legend_x + 25, current_y)
-        text.setScale(0.8)
-        current_y += 20
-        
-        # Geology
-        if geol_data:
-            geol_names = sorted(list(set(d[2] for d in geol_data)))
-            for name in geol_names:
-                color = self._get_color_for_unit(name)
-                scene.addLine(legend_x, current_y + 10, legend_x + 20, current_y + 10, 
-                             QPen(color, 3))
-                text = scene.addText(str(name))
-                text.setPos(legend_x + 25, current_y)
-                text.setScale(0.8)
-                current_y += 20
-                
-        # Structure
-        if struct_data:
-            scene.addLine(legend_x, current_y + 10, legend_x + 20, current_y + 10, 
-                         QPen(QColor(204, 0, 0), 2))
-            text = scene.addText("Structure")
-            text.setPos(legend_x + 25, current_y)
-            text.setScale(0.8)
-            current_y += 20
+        try:
+            # Create map settings
+            settings = QgsMapSettings()
+            settings.setLayers(layers)
+            settings.setExtent(extent)
+            settings.setOutputSize(QSize(width, height))
+            settings.setOutputDpi(dpi)
+            
+            # Create image
+            image = QImage(QSize(width, height), QImage.Format_ARGB32)
+            image.fill(QColor(255, 255, 255))  # White background
+            
+            # Render
+            painter = QPainter(image)
+            painter.setRenderHint(QPainter.Antialiasing)
+            
+            job = QgsMapRendererCustomPainterJob(settings, painter)
+            job.start()
+            job.waitForFinished()
+            
+            painter.end()
+            
+            # Save
+            success = image.save(output_path)
+            if success:
+                logger.info(f"Exported preview to {output_path}")
+            else:
+                logger.error(f"Failed to save image to {output_path}")
+            
+            return success
+            
+        except Exception as e:
+            logger.error(f"Error exporting preview: {e}")
+            return False

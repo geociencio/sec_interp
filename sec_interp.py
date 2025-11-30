@@ -28,7 +28,7 @@ import math
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QVariant, Qt, QLineF
 from qgis.PyQt.QtGui import QIcon, QPen, QColor, QBrush
-from qgis.PyQt.QtWidgets import QAction, QMessageBox, QDialogButtonBox, QGraphicsScene
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QDialogButtonBox
 
 from .logger_config import get_logger
 
@@ -93,7 +93,7 @@ class SecInterp:
         # Create the dialog (after translation) and keep reference
         self.dlg = SecInterpDialog(self.iface, self)
         
-        # Initialize preview renderer
+        # Initialize preview renderer (canvas will be set in run())
         self.preview_renderer = PreviewRenderer()
         # Declare instance attributes
         self.actions = []
@@ -210,6 +210,8 @@ class SecInterp:
         if self.first_start is True:
             self.first_start = False
             self.dlg = SecInterpDialog(self.iface, self)
+            # Update preview renderer with the new dialog's canvas
+            self.preview_renderer.canvas = self.dlg.preview
         # show the dialog
         self.dlg.show()
         
@@ -1142,7 +1144,7 @@ class SecInterp:
 
         
     def draw_preview(self, topo_data, geol_data=None, struct_data=None):
-        """Draw enhanced interactive preview using PreviewRenderer.
+        """Draw enhanced interactive preview using native PyQGIS renderer.
         
         Args:
             topo_data: List of (dist, elev) tuples for topographic profile
@@ -1181,12 +1183,13 @@ class SecInterp:
         vert_exag = vert_exag if vert_exag is not None else 1.0
         logger.debug("Vertical exaggeration: %.2f", vert_exag)
         
-        if self.dlg.current_scene:
-            self.dlg.current_scene.deleteLater()
-        scene = self.preview_renderer.render(filtered_topo, filtered_geol, filtered_struct, vert_exag)
-        self.dlg.current_scene = scene
-        self.dlg.preview.setScene(scene)
-        # Reset zoom level when new preview is drawn
-        self.dlg.current_zoom_level = 1.0
+        # Render using native PyQGIS
+        canvas, layers = self.preview_renderer.render(filtered_topo, filtered_geol, filtered_struct, vert_exag)
+        
+        # Store canvas and layers for export
+        self.dlg.current_canvas = canvas
+        self.dlg.current_layers = layers
+        
+        logger.debug("Preview rendered with %d layers", len(layers) if layers else 0)
 
 
