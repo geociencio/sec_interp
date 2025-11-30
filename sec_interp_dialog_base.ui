@@ -26,10 +26,10 @@
     <string/>
    </property>
    <property name="orientation">
-    <enum>Qt::Orientation::Horizontal</enum>
+    <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok|QDialogButtonBox::StandardButton::Save</set>
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Save</set>
    </property>
   </widget>
   <widget class="QgsMapLayerComboBox" name="crossline">
@@ -90,7 +90,7 @@
     <string>SecInterp</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="label_9">
@@ -174,7 +174,7 @@
     <string>(Data along a cross-section line)</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignCenter</set>
+    <set>Qt::AlignCenter</set>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -313,18 +313,39 @@
     <number>-1</number>
    </property>
   </widget>
-  <widget class="QTextEdit" name="results">
+  <widget class="QgsCollapsibleGroupBox" name="results_group">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>356</y>
+     <y>338</y>
      <width>370</width>
-     <height>101</height>
+     <height>120</height>
     </rect>
    </property>
-   <property name="toolTip">
-    <string>Processing messages and results</string>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>100</height>
+    </size>
    </property>
+   <property name="title">
+    <string>Results</string>
+   </property>
+   <property name="collapsed">
+    <bool>false</bool>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTextEdit" name="results">
+      <property name="toolTip">
+       <string>Processing messages and results</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QGraphicsView" name="preview">
    <property name="geometry">
@@ -394,19 +415,6 @@
    </property>
    <property name="checked">
     <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_10">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>338</y>
-     <width>58</width>
-     <height>18</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Results</string>
    </property>
   </widget>
   <widget class="QgsRasterBandComboBox" name="band">
@@ -629,6 +637,11 @@
   <customwidget>
    <class>QgsRasterBandComboBox</class>
    <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
