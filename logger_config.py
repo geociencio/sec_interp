@@ -6,7 +6,34 @@ Provides centralized logging configuration for the Sec Interp plugin.
 """
 
 import logging
-import sys
+from qgis.core import QgsMessageLog, Qgis
+
+
+class QgsLogHandler(logging.Handler):
+    """Custom logging handler that writes to QGIS message log."""
+    
+    def __init__(self, tag='SecInterp'):
+        super().__init__()
+        self.tag = tag
+    
+    def emit(self, record):
+        """Emit a log record to QGIS message log."""
+        try:
+            msg = self.format(record)
+            
+            # Map Python logging levels to QGIS levels
+            if record.levelno >= logging.ERROR:
+                level = Qgis.Critical
+            elif record.levelno >= logging.WARNING:
+                level = Qgis.Warning
+            elif record.levelno >= logging.INFO:
+                level = Qgis.Info
+            else:
+                level = Qgis.Info  # DEBUG messages as Info
+            
+            QgsMessageLog.logMessage(msg, self.tag, level)
+        except Exception:
+            self.handleError(record)
 
 
 def get_logger(name):
@@ -23,16 +50,15 @@ def get_logger(name):
     # Only configure if not already configured
     if not logger.handlers:
         # Set level - change to INFO for production, DEBUG for development
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
         
-        # Create console handler
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.DEBUG)
+        # Create QGIS message log handler
+        handler = QgsLogHandler(tag='SecInterp')
+        handler.setLevel(logging.INFO)
         
-        # Create formatter
+        # Create formatter (simpler for QGIS message panel)
         formatter = logging.Formatter(
-            '[%(asctime)s] %(name)s - %(levelname)s - %(message)s',
-            datefmt='%H:%M:%S'
+            '%(levelname)s - %(message)s'
         )
         handler.setFormatter(formatter)
         
