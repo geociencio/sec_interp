@@ -25,7 +25,7 @@ hasProcessingProvider=no
 # Tags are comma separated with spaces allowed
 tags=csv, dem, point, polyline
 
-homepage=http://homepage
+homepage=https://github.com/geociencio/sec_interp
 
 icon=icon.png
 # experimental flag
