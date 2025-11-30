@@ -4,6 +4,7 @@ Core Utilities Module
 """
 
 import math
+import re
 from qgis.core import (
     QgsDistanceArea,
     QgsProject,
@@ -348,3 +349,131 @@ def interpolate_elevation(topo_data, distance):
     
     # Return last elevation if distance is beyond last point
     return topo_data[-1][1] if topo_data else 0
+
+"""
+Utilities for parsing geological structural measurements.
+
+Supports:
+- Numeric strike/dip (e.g. strike=345, dip=22)
+- Field notation (e.g. "N 15° W", "22° SW")
+"""
+
+# ------------------------------------
+#  STRIKE PARSER
+# ------------------------------------
+def parse_strike(value):
+    """
+    Accepts:
+        - Numeric azimuth (string or int)
+        - Quadrant notation ("N 30° E", "S 15° W")
+    Returns:
+        strike in azimuth degrees (0–360)
+    """
+
+    if value is None:
+        return None
+
+    # If already numeric, return directly
+    try:
+        return float(value)
+    except Exception:
+        pass
+
+    # Normalize value
+    text = (
+        str(value)
+        .replace("°", "")
+        .replace("º", "")
+        .replace("ø", "")  # Support for alternative degree symbol
+        .strip()
+        .upper()
+    )
+
+    # Regex for quadrant notation: N/S + angle + E/W
+    # Supports integers and decimals for the angle
+    match = re.match(r"([NS])\s*(\d+\.?\d*)\s*([EW])", text)
+    if not match:
+        return None  # invalid notation
+
+    d1, ang, d2 = match.groups()
+    ang = float(ang)
+
+    # Quadrant rules
+    strike = 0  # Initialize to prevent NameError
+    if d1 == "N" and d2 == "E":
+        strike = ang
+    elif d1 == "N" and d2 == "W":
+        strike = 360 - ang
+    elif d1 == "S" and d2 == "E":
+        strike = 180 - ang
+    elif d1 == "S" and d2 == "W":
+        strike = 180 + ang
+
+    return strike % 360
+
+
+# ------------------------------------
+#  DIP PARSER
+# ------------------------------------
+def parse_dip(value):
+    """
+    Accepts:
+        - Numeric dip: "22", "45.5", "30.0"
+        - Field notation: "22° SW", "45 NE", "10 S"
+    Returns:
+        (dip_angle, dip_direction_azimuth)
+    """
+
+    if value is None:
+        return None, None
+
+    text = (
+        str(value)
+        .replace("°", "")
+        .replace("º", "")
+        .replace("ø", "")  # Support for alternative degree symbol
+        .strip()
+        .upper()
+    )
+
+    # Case 1: numeric only (integer or decimal)
+    numeric_only = re.match(r"^(\d+\.?\d*)$", text)
+    if numeric_only:
+        return float(text), None
+
+    # Case 2: full dip + direction
+    match = re.match(r"(\d+\.?\d*)\s*([NSEW]{1,2})", text)
+    if not match:
+        return None, None
+
+    dip, cardinal = match.groups()
+    dip = float(dip)
+
+    dip_dir = cardinal_to_azimuth(cardinal)
+
+    return dip, dip_dir
+
+
+# ------------------------------------
+#  Helper for converting cardinal directions to azimuth
+# ------------------------------------
+def cardinal_to_azimuth(text):
+    """
+    Converts:
+        N, NE, E, SE, S, SW, W, NW
+    Returns:
+        0–360 azimuth
+    """
+
+    table = {
+        "N": 0,
+        "NE": 45,
+        "E": 90,
+        "SE": 135,
+        "S": 180,
+        "SW": 225,
+        "W": 270,
+        "NW": 315,
+    }
+
+    return table.get(text, None)
