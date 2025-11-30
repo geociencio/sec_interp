@@ -35,8 +35,9 @@ from qgis.core import (
     QgsProject,
     QgsUnitTypes,
     QgsWkbTypes,
+    QgsMapLayerProxyModel,
 )
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsMessageBar, QgsFileWidget
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QDialogButtonBox
 from qgis.PyQt.QtSvg import QSvgGenerator
@@ -100,24 +101,50 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         self.current_geol_data = None
         self.current_struct_data = None
 
-        self.populate_raster_layers()
-        self.populate_outcrop_layers()
-        self.populate_structural_layers()
-        self.populate_crossline_layers()
-        self.populate_band_combobox()
+        # Configure outcrop layer combo box
+        self.outcrop.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+        self.outcrop.setAllowEmptyLayer(True,"Do no use Outcrop layer")
+        self.outcrop.layerChanged.connect(self.ocropname.setLayer)
+        
+        # Initialize field combo box with current layer
+        self.ocropname.setLayer(self.outcrop.currentLayer())
+        
+        # Configure structural layer combo box
+        self.structural.setFilters(QgsMapLayerProxyModel.PointLayer)
+        self.structural.setAllowEmptyLayer(True, "Do not use Structural layer")
+        self.structural.layerChanged.connect(self.dip.setLayer)
+        self.structural.layerChanged.connect(self.strike.setLayer)
+        
+        # Initialize field combo boxes with current layer
+        self.dip.setLayer(self.structural.currentLayer())
+        self.strike.setLayer(self.structural.currentLayer())
+        
+        # Configure crossline layer combo box
+        self.crossline.setFilters(QgsMapLayerProxyModel.LineLayer)
+        self.crossline.layerChanged.connect(self.update_button_state)
+        
+        # Configure output folder widget
+        self.dest_fold.setStorageMode(QgsFileWidget.GetDirectory)
+        self.dest_fold.setDialogTitle("Select Output Folder")
+        
+        # Configure raster layer combo box
+        self.rasterdem.setFilters(QgsMapLayerProxyModel.RasterLayer)
+        
+        # Connect raster layer change to band combo box
+        self.rasterdem.layerChanged.connect(self.band.setLayer)
+        
+        # Initialize band combo box with current raster if any
+        if self.rasterdem.currentLayer():
+            self.band.setLayer(self.rasterdem.currentLayer())
+
         # Update resolution only if iface or canvas isn't required (guarded in method)
         self.update_resolution_field()
-        self.rasterdem.currentIndexChanged.connect(self.populate_band_combobox)
-        self.rasterdem.currentIndexChanged.connect(self.update_resolution_field)
-        self.rasterdem.currentIndexChanged.connect(self.update_button_state)
-        self.crossline.currentIndexChanged.connect(self.update_button_state)
-        self.outcrop.currentIndexChanged.connect(self.populate_outcrop_name_field)
-        self.structural.currentIndexChanged.connect(self.populate_dip_name_field)
-        self.structural.currentIndexChanged.connect(self.populate_strike_name_field)
+        self.rasterdem.layerChanged.connect(self.update_resolution_field)
+        self.rasterdem.layerChanged.connect(self.update_button_state)
         self.button_box.accepted.connect(self.accept_handler)
         self.button_box.rejected.connect(self.reject_handler)
         self.button_box.helpRequested.connect(self.open_help)
-        self.dest_fold.textChanged.connect(self.update_button_state)
+        self.dest_fold.fileChanged.connect(self.update_button_state)
         self.preview_button.clicked.connect(self.preview_profile_handler)
         self.update_button_state()
         self.setup_preview_interactivity()
@@ -188,9 +215,9 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         - Preview and Ok buttons require: DEM + Cross-section line
         - Save button requires: DEM + Cross-section line + Output path
         """
-        has_output_path = bool(self.dest_fold.text())
-        has_raster = bool(self.rasterdem.currentData())
-        has_line = bool(self.crossline.currentData())
+        has_output_path = bool(self.dest_fold.filePath())
+        has_raster = bool(self.rasterdem.currentLayer())
+        has_line = bool(self.crossline.currentLayer())
         
         # Preview and Ok require at least DEM and line
         can_preview = has_raster and has_line
@@ -232,24 +259,24 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             field_name="Dip scale factor",
             allow_empty=True,
         )
-        _, _, band_num = vu.validate_integer_input(
-            self.band.currentText(), field_name="Band number", allow_empty=True
-        )
+        # Band number is now handled by QgsRasterBandComboBox which returns int band number directly via currentBand()
+        # But for consistency with existing code structure we can get it here
+        band_num = self.band.currentBand()
 
         return {
-            "raster_layer": self.rasterdem.currentData(),
-            "outcrop_layer": self.outcrop.currentData(),
-            "structural_layer": self.structural.currentData(),
-            "crossline_layer": self.crossline.currentData(),
-            "dip_field": self.dip.currentData(),
-            "strike_field": self.strike.currentData(),
-            "outcrop_name_field": self.ocropname.currentData(),
+            "raster_layer": self.rasterdem.currentLayer(),
+            "outcrop_layer": self.outcrop.currentLayer(),
+            "structural_layer": self.structural.currentLayer(),
+            "crossline_layer": self.crossline.currentLayer(),
+            "dip_field": self.dip.currentField(),
+            "strike_field": self.strike.currentField(),
+            "outcrop_name_field": self.ocropname.currentField(),
             "scale": scale if scale is not None else 50000,
             "vertexag": vertexag if vertexag is not None else 1.0,
             "selected_band": band_num if band_num is not None else 1,
             "buffer_distance": buffer_dist if buffer_dist is not None else 100.0,
             "dip_scale_factor": dip_scale if dip_scale is not None else 4.0,
-            "output_path": self.dest_fold.text(),
+            "output_path": self.dest_fold.filePath(),
         }
 
     def get_preview_options(self):
@@ -297,41 +324,22 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             return
         
         # Validate raster layer
-        if not self.rasterdem.currentText():
+        raster_layer = self.rasterdem.currentLayer()
+        if not raster_layer:
             self.results.setPlainText("⚠ Please select a raster layer for preview.")
             return
         
-        is_valid, error, raster_layer = vu.validate_layer_exists(
-            self.rasterdem.currentData()
-        )
-        if not is_valid:
-            self.results.setPlainText(f"⚠ Raster layer error: {error}")
-            return
-        
         # Validate crossline layer
-        if not self.crossline.currentText():
+        line_layer = self.crossline.currentLayer()
+        if not line_layer:
             self.results.setPlainText("⚠ Please select a cross-section line for preview.")
             return
         
-        is_valid, error, line_layer = vu.validate_layer_exists(
-            self.crossline.currentData()
-        )
-        if not is_valid:
-            self.results.setPlainText(f"⚠ Cross-section line error: {error}")
-            return
-        
         # Validate band number
-        band_text = self.band.currentText()
-        if not band_text:
-            self.results.setPlainText("⚠ Please select a band number.")
-            return
-        
-        is_valid, error, band_num = vu.validate_integer_input(
-            band_text, min_val=1, field_name="Band number"
-        )
-        if not is_valid:
-            self.results.setPlainText(f"⚠ Band number error: {error}")
-            return
+        band_num = self.band.currentBand()
+        if not band_num:
+             self.results.setPlainText("⚠ Please select a band number.")
+             return
         
         # Validate band exists in raster
         is_valid, error = vu.validate_raster_band(raster_layer, band_num)
@@ -364,12 +372,11 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             
             # Process geological data if outcrop layer is selected
             geol_data = None
-            outcrop_layer_name = self.outcrop.currentData()
-            if outcrop_layer_name:
-                outcrop_layer = QgsProject.instance().mapLayersByName(outcrop_layer_name)[0]
-                outcrop_name_field = self.ocropname.currentData()
+            outcrop_layer = self.outcrop.currentLayer()
+            if outcrop_layer:
+                outcrop_name_field = self.ocropname.currentField()
                 
-                if outcrop_layer and outcrop_name_field:
+                if outcrop_name_field:
                     with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as tmp:
                         tmp_path = Path(tmp.name)
                     
@@ -386,13 +393,12 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             
             # Process structural data if structural layer is selected
             struct_data = None
-            structural_layer_name = self.structural.currentData()
-            if structural_layer_name:
-                structural_layer = QgsProject.instance().mapLayersByName(structural_layer_name)[0]
-                dip_field = self.dip.currentData()
-                strike_field = self.strike.currentData()
+            structural_layer = self.structural.currentLayer()
+            if structural_layer:
+                dip_field = self.dip.currentField()
+                strike_field = self.strike.currentField()
                 
-                if structural_layer and dip_field and strike_field:
+                if dip_field and strike_field:
                     # Get buffer distance
                     _, _, buffer_dist = vu.validate_numeric_input(
                         self.buffer_distance.text(), 
@@ -448,7 +454,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         settings = QgsSettings()
         
         # Use dest_fold if available, otherwise fall back to last used directory
-        dest_folder = self.dest_fold.text().strip()
+        dest_folder = self.dest_fold.filePath().strip()
         if dest_folder:
             # Suggest a default filename in the destination folder
             default_path = str(Path(dest_folder) / "preview.svg")
@@ -600,57 +606,43 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         errors = []
 
         # Validate raster layer selection
-        if not self.rasterdem.currentText():
+        raster_layer = self.rasterdem.currentLayer()
+        if not raster_layer:
             errors.append("No raster layer selected.")
         else:
-            is_valid, error, raster_layer = vu.validate_layer_exists(
-                self.rasterdem.currentData()
-            )
-            if not is_valid:
-                errors.append(error)
-            else:
-                # Validate band number
-                band_text = self.band.currentText()
-                if band_text:
-                    is_valid, error, band_num = vu.validate_integer_input(
-                        band_text, min_val=1, field_name="Band number"
-                    )
-                    if is_valid:
-                        is_valid, error = vu.validate_raster_band(
-                            raster_layer, band_num
-                        )
-                        if not is_valid:
-                            errors.append(error)
-                    else:
-                        errors.append(error)
-
-        # Validate crossline layer selection
-        if not self.crossline.currentText():
-            errors.append("No crossline layer selected")
-        else:
-            is_valid, error, line_layer = vu.validate_layer_exists(
-                self.crossline.currentData()
-            )
-            if not is_valid:
-                errors.append(error)
-            else:
-                # Validate geometry type
-                is_valid, error = vu.validate_layer_geometry(
-                    line_layer, QgsWkbTypes.LineGeometry
+            # Validate band number
+            band_num = self.band.currentBand()
+            if band_num:
+                is_valid, error = vu.validate_raster_band(
+                    raster_layer, band_num
                 )
                 if not is_valid:
                     errors.append(error)
-                else:
-                    # Validate has features
-                    is_valid, error = vu.validate_layer_has_features(line_layer)
-                    if not is_valid:
-                        errors.append(error)
+            else:
+                errors.append("No band selected.")
+
+        # Validate crossline layer selection
+        line_layer = self.crossline.currentLayer()
+        if not line_layer:
+            errors.append("No crossline layer selected")
+        else:
+            # Validate geometry type (QgsMapLayerComboBox with LineLayer filter should handle this, but good to double check)
+            is_valid, error = vu.validate_layer_geometry(
+                line_layer, QgsWkbTypes.LineGeometry
+            )
+            if not is_valid:
+                errors.append(error)
+            else:
+                # Validate has features
+                is_valid, error = vu.validate_layer_has_features(line_layer)
+                if not is_valid:
+                    errors.append(error)
 
         # Validate output folder
-        if not self.dest_fold.text():
+        if not self.dest_fold.filePath():
             errors.append("Output folder is required")
         else:
-            is_valid, error, _ = vu.validate_output_path(self.dest_fold.text())
+            is_valid, error, _ = vu.validate_output_path(self.dest_fold.filePath())
             if not is_valid:
                 errors.append(error)
 
@@ -684,13 +676,8 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             errors.append(error)
 
         # Validate outcrop layer if selected
-        if self.outcrop.currentData():
-            is_valid, error, outcrop_layer = vu.validate_layer_exists(
-                self.outcrop.currentData()
-            )
-            if not is_valid:
-                errors.append(error)
-            else:
+        outcrop_layer = self.outcrop.currentLayer()
+        if outcrop_layer:
                 # Validate geometry type
                 is_valid, error = vu.validate_layer_geometry(
                     outcrop_layer, QgsWkbTypes.PolygonGeometry
@@ -717,13 +704,8 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                             errors.append(error)
 
         # Validate structural layer if selected
-        if self.structural.currentData():
-            is_valid, error, struct_layer = vu.validate_layer_exists(
-                self.structural.currentData()
-            )
-            if not is_valid:
-                errors.append(error)
-            else:
+        struct_layer = self.structural.currentLayer()
+        if struct_layer:
                 # Validate geometry type
                 is_valid, error = vu.validate_layer_geometry(
                     struct_layer, QgsWkbTypes.PointGeometry
@@ -804,17 +786,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         except Exception as e:
             self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
 
-    def populate_outcrop_name_field(self):
-        """Populate the outcrop name combobox with the field names of the selected outcrop layer."""
-        self._populate_field_combobox(self.outcrop, self.ocropname)
 
-    def populate_dip_name_field(self):
-        """Populate the dip name combobox with the field names the selected structural layer."""
-        self._populate_field_combobox(self.structural, self.dip)
-
-    def populate_strike_name_field(self):
-        """Populate the strike name combobox with the field names the selected structural layer."""
-        self._populate_field_combobox(self.structural, self.strike)
 
     def get_layer_names_by_type(self, layer_type) -> List[str]:
         """Get a list of layer names filtered by the specified layer type.
@@ -851,57 +823,15 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             and QgsWkbTypes.geometryType(layer.wkbType()) == geometry_type
         ]
 
-    def populate_raster_layers(self) -> None:
-        """Populate the raster layer combobox with raster layers from the current project."""
-        try:
-            raster_names = self.get_layer_names_by_type(QgsMapLayer.RasterLayer)
-            self.rasterdem.clear()
-            self.rasterdem.addItem("Select a raster layer", None)
-            if raster_names:
-                for name in raster_names:
-                    self.rasterdem.addItem(name, name)
-            else:
-                self.rasterdem.addItem("No raster layers available", None)
-        except Exception as e:
-            self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
-
-    def populate_band_combobox(self):
-        """Populate the band combobox with the band count of the selected raster layer."""
-        try:
-            selected_layer_name = self.rasterdem.currentText()
-            if not selected_layer_name:
-                self.band.clear()
-                return
-
-            layers = QgsProject.instance().mapLayersByName(selected_layer_name)
-            if not layers:
-                self.band.clear()
-                return
-
-            raster_layer = layers[0]
-            band_count = raster_layer.bandCount()
-
-            self.band.clear()
-            self.band.addItems([str(i) for i in range(1, band_count + 1)])
-        except Exception as e:
-            self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
 
     def update_resolution_field(self):
         """Calculate and update the resolution field for the selected raster layer."""
         try:
-            selected_layer_name = self.rasterdem.currentData()
-            if not selected_layer_name:
+            raster_layer = self.rasterdem.currentLayer()
+            if not raster_layer:
                 self.resln.clear()
                 self.unts.clear()
                 return
-
-            layers = QgsProject.instance().mapLayersByName(selected_layer_name)
-            if not layers:
-                self.resln.clear()
-                self.unts.clear()
-                return
-
-            raster_layer = layers[0]
             raster_crs = raster_layer.crs()
             # Determine map CRS safely: if iface or canvas isn't available
             # (e.g., during unit tests), fall back to using raster CRS.
@@ -986,59 +916,6 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         except Exception as e:
             self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
 
-    def populate_outcrop_layers(self) -> None:
-        """Populate the outcrop layer combobox with polygon geometry vector layers
-        from the current project.
-        """
-        try:
-            polygon_names = self.get_layer_names_by_geometry(
-                QgsWkbTypes.PolygonGeometry
-            )
-            self.outcrop.clear()
-            self.outcrop.addItem("Do not use Outcrops Layer", None)
-            for name in polygon_names:
-                self.outcrop.addItem(name, name)
-        except Exception as e:
-            self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
 
-    def populate_structural_layers(self) -> None:
-        """Populate the structural layer combobox with point geometry vector layers
-        from the current project.
-        """
-        try:
-            point_names = self.get_layer_names_by_geometry(QgsWkbTypes.PointGeometry)
-            self.structural.clear()
-            self.structural.addItem("Do not use Structural Layer", None)
-            for name in point_names:
-                self.structural.addItem(name, name)
-        except Exception as e:
-            self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
 
-    def populate_crossline_layers(self) -> None:
-        """Populate the crossline layer combobox with line geometry vector layers
-        from the current project.
-        """
-        try:
-            line_names = self.get_layer_names_by_geometry(QgsWkbTypes.LineGeometry)
-            self.crossline.clear()
-            self.crossline.addItem("Select a crossline layer", None)
-            if line_names:
-                for name in line_names:
-                    self.crossline.addItem(name, name)
-            else:
-                self.crossline.addItem("No line layers available", None)
-        except Exception as e:
-            self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
 
-    @QtCore.pyqtSlot(name="on_search_dest_clicked")
-    def on_search_dest_clicked(self):
-        """Open a directory dialog to select the destination folder."""
-        folder = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Output Folder"),
-            "",
-            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks,
-        )
-        if not folder:
-            return
-        self.dest_fold.setText(folder)
