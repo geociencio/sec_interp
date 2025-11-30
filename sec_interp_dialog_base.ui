@@ -32,7 +32,7 @@
     <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok|QDialogButtonBox::StandardButton::Save</set>
    </property>
   </widget>
-  <widget class="QComboBox" name="crossline">
+  <widget class="QgsMapLayerComboBox" name="crossline">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -93,22 +93,6 @@
     <set>Qt::AlignmentFlag::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QPushButton" name="search_dest">
-   <property name="geometry">
-    <rect>
-     <x>301</x>
-     <y>287</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Browse for output folder</string>
-   </property>
-   <property name="text">
-    <string>Search</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_9">
    <property name="geometry">
     <rect>
@@ -125,7 +109,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QComboBox" name="structural">
+  <widget class="QgsMapLayerComboBox" name="structural">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -138,7 +122,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the point layer with structural measurements (optional)&lt;/p&gt;&lt;p&gt;Leave as 'Do not use' to skip structural data projection&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="outcrop">
+  <widget class="QgsMapLayerComboBox" name="outcrop">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -151,13 +135,13 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the polygon layer with geological outcrops (optional)&lt;/p&gt;&lt;p&gt;Leave as 'Do not use' to skip geological profile extraction&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="dest_fold">
+  <widget class="QgsFileWidget" name="dest_fold">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>314</y>
-     <width>370</width>
-     <height>21</height>
+     <width>372</width>
+     <height>27</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -313,7 +297,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Value that determines how long the dip lines are in the structural profile.&lt;/p&gt;&lt;p&gt;A higher value produces longer lines.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="rasterdem">
+  <widget class="QgsMapLayerComboBox" name="rasterdem">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -425,7 +409,7 @@
     <string>Results</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="band">
+  <widget class="QgsRasterBandComboBox" name="band">
    <property name="geometry">
     <rect>
      <x>177</x>
@@ -493,7 +477,7 @@
     <string>Name</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="ocropname">
+  <widget class="QgsFieldComboBox" name="ocropname">
    <property name="geometry">
     <rect>
      <x>269</x>
@@ -532,7 +516,7 @@
     <string>Strike</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="dip">
+  <widget class="QgsFieldComboBox" name="dip">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -545,7 +529,7 @@
     <string>Select the field containing dip values in degrees (0-90)</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="strike">
+  <widget class="QgsFieldComboBox" name="strike">
    <property name="geometry">
     <rect>
      <x>295</x>
@@ -636,4 +620,16 @@
    </hints>
   </connection>
  </connections>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
 </ui>
