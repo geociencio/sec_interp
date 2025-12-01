@@ -22,43 +22,44 @@
  ***************************************************************************/
 """
 
-from pathlib import Path
 import csv
 import math
+import tempfile
+import traceback
+from pathlib import Path
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QVariant, Qt, QLineF
-from qgis.PyQt.QtGui import QIcon, QPen, QColor, QBrush
-from qgis.PyQt.QtWidgets import QAction, QMessageBox, QDialogButtonBox
-
-from .logger_config import get_logger
-
-logger = get_logger(__name__)
+from qgis.PyQt.QtCore import QCoreApplication, QLineF, QSettings, Qt, QTranslator, QVariant
+from qgis.PyQt.QtGui import QBrush, QColor, QIcon, QPen
+from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox, QMessageBox
 
 from qgis.core import (
-    QgsVectorLayer,
-    QgsRasterLayer,
-
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsDistanceArea,
+    QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsLineString,
+    QgsPoint,
+    QgsPointXY,
     QgsProject,
     QgsRaster,
+    QgsRasterLayer,
+    QgsUnitTypes,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
     QgsWkbTypes,
-    QgsGeometry,
-    QgsPointXY,
-
-    QgsField,
-    QgsFeature,
-    QgsFields,
 )
 
-import math
-import csv
-
-# Import the code for the dialog
-from .sec_interp_dialog import SecInterpDialog
-from .preview_renderer import PreviewRenderer
 from . import si_core_utils as scu
-
-# Initialize Qt resources from file resources.py
+from . import validation_utils as vu
+from .logger_config import get_logger
+from .preview_renderer import PreviewRenderer
 from .resources import *
+from .sec_interp_dialog import SecInterpDialog
+
+logger = get_logger(__name__)
 
 
 class SecInterp:

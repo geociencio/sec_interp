@@ -12,7 +12,7 @@
         email                : juanbernales@gmail.com
  ***************************************************************************/
 
-/***************************************************************************
+ /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,30 +22,37 @@
  ***************************************************************************/
 """
 
-from typing import List
-from pathlib import Path
+import tempfile
+import traceback
 import webbrowser
+from pathlib import Path
+from typing import List
 
 from qgis.core import (
     Qgis,
     QgsCoordinateTransform,
     QgsLayerTreeLayer,
     QgsMapLayer,
+    QgsMapLayerProxyModel,
+    QgsMapRendererCustomPainterJob,
+    QgsMapSettings,
     QgsPointXY,
     QgsProject,
+    QgsSettings,
     QgsUnitTypes,
     QgsWkbTypes,
-    QgsMapLayerProxyModel,
+    QVariant,
 )
-from qgis.gui import QgsMessageBar, QgsFileWidget, QgsMapCanvas
+from qgis.gui import QgsFileWidget, QgsMapCanvas, QgsMessageBar
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QDialogButtonBox, QWidget
-from qgis.PyQt.QtSvg import QSvgGenerator
+from qgis.PyQt.QtCore import QMarginsF, QRectF, QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPageSize
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtGui import QPainter, QImage, QColor, QPageSize
-from qgis.PyQt.QtCore import QSize, QRectF, QSizeF, QMarginsF, Qt
+from qgis.PyQt.QtSvg import QSvgGenerator
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QMessageBox, QWidget
 
-
+from . import si_core_utils as scu
+from . import validation_utils as vu
 from .ui_sec_interp_dialog_base import Ui_SecInterpDialogBase
 
 

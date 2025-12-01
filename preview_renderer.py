@@ -8,6 +8,8 @@ Handles rendering of interactive previews using native QGIS resources:
 - Native QGIS symbology
 """
 
+import math
+
 from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
@@ -26,6 +28,10 @@ from qgis.core import (
     QgsMapSettings,
     QgsMapRendererCustomPainterJob,
     QgsTextAnnotation,
+    QgsPalLayerSettings,
+    QgsTextFormat,
+    QgsVectorLayerSimpleLabeling,
+    QgsLabeling,
 )
 from qgis.PyQt.QtCore import QSize, QSizeF, Qt, QRectF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont, QPen
@@ -225,7 +231,6 @@ class PreviewRenderer:
                 elev = 0
             
             # Calculate dip line endpoints
-            import math
             rad_dip = math.radians(abs(app_dip))
             dx = line_length * math.cos(rad_dip)
             dy = -line_length * math.sin(rad_dip)
@@ -330,7 +335,6 @@ class PreviewRenderer:
         y_interval = self._get_nice_interval((height / vert_exag) / 5)
         
         # Adjust start points to be multiples of interval
-        import math
         x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
         
         y_min_orig = extent.yMinimum() / vert_exag
@@ -396,7 +400,6 @@ class PreviewRenderer:
         x_interval = self._get_nice_interval(width / 5)
         y_interval = self._get_nice_interval((height / vert_exag) / 5)
         
-        import math
         x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
         
         y_min_orig = extent.yMinimum() / vert_exag
@@ -431,13 +434,6 @@ class PreviewRenderer:
         provider.addFeatures(features)
         
         # Configure labeling
-        from qgis.core import (
-            QgsPalLayerSettings, 
-            QgsTextFormat, 
-            QgsVectorLayerSimpleLabeling,
-            QgsLabeling
-        )
-        
         settings = QgsPalLayerSettings()
         settings.fieldName = 'label'
         settings.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
