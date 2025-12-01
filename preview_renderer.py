@@ -592,11 +592,11 @@ class PreviewRenderer:
         if not self.active_units:
             return
             
-        # Legend configuration
-        padding = 10
-        item_height = 20
-        symbol_size = 12
-        font_size = 10
+        # Legend configuration - compact size
+        padding = 6
+        item_height = 16
+        symbol_size = 10
+        font_size = 8
         
         # Setup painter
         painter.save()

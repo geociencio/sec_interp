@@ -554,6 +554,10 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                 job.start()
                 job.waitForFinished()
                 
+                # Draw legend
+                if hasattr(self.plugin_instance, 'preview_renderer'):
+                    self.plugin_instance.preview_renderer.draw_legend(painter, QRectF(0, 0, width, height))
+                
                 painter.end()
                 
                 quality = 95 if ext in ['.jpg', '.jpeg'] else -1
@@ -576,6 +580,10 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                     job = QgsMapRendererCustomPainterJob(settings, painter)
                     job.start()
                     job.waitForFinished()
+                    
+                    # Draw legend
+                    if hasattr(self.plugin_instance, 'preview_renderer'):
+                        self.plugin_instance.preview_renderer.draw_legend(painter, QRectF(0, 0, width, height))
                     
                     painter.end()
                 else:
@@ -603,6 +611,10 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                     job = QgsMapRendererCustomPainterJob(settings, painter)
                     job.start()
                     job.waitForFinished()
+                    
+                    # Draw legend
+                    if hasattr(self.plugin_instance, 'preview_renderer'):
+                        self.plugin_instance.preview_renderer.draw_legend(painter, QRectF(0, 0, dev.width(), dev.height()))
                     
                     painter.end()
                 else:
