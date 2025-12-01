@@ -28,7 +28,7 @@ from qgis.core import (
     QgsTextAnnotation,
 )
 from qgis.PyQt.QtCore import QSize, QSizeF, Qt, QRectF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont, QPen
 
 from .logger_config import get_logger
 
@@ -67,6 +67,8 @@ class PreviewRenderer:
         self.canvas = canvas
         self.layers = []  # Track created layers for cleanup
         self.active_units = {} # Track active geological units for legend {name: color}
+        self.has_topography = False  # Track if topography layer exists
+        self.has_structures = False  # Track if structures layer exists
     
     def _get_color_for_unit(self, name):
         """Get a consistent color for a geological unit based on its name."""
@@ -477,9 +479,14 @@ class PreviewRenderer:
                 QgsProject.instance().removeMapLayer(layer.id())
         self.layers = []
         self.active_units = {} # Reset active units
+        self.has_topography = False
+        self.has_structures = False
         
         # Create layers
         topo_layer = self._create_topo_layer(topo_data, vert_exag) if topo_data else None
+        if topo_layer:
+            self.has_topography = True
+            
         geol_layer = self._create_geol_layer(geol_data, vert_exag) if geol_data else None
         
         # For structural layer, use topo or geol as reference
@@ -487,6 +494,8 @@ class PreviewRenderer:
             [(d, e) for d, e, _ in geol_data] if geol_data else None
         )
         struct_layer = self._create_struct_layer(struct_data, reference_data, vert_exag) if struct_data else None
+        if struct_layer:
+            self.has_structures = True
         
         # Collect valid layers
         data_layers = [l for l in [struct_layer, geol_layer, topo_layer] if l is not None]
@@ -589,13 +598,15 @@ class PreviewRenderer:
             painter: QPainter instance
             rect: QRectF defining the drawing area
         """
-        if not self.active_units:
+        # Check if we have anything to show
+        if not self.active_units and not self.has_topography and not self.has_structures:
             return
             
         # Legend configuration - compact size
         padding = 6
         item_height = 16
         symbol_size = 10
+        line_width = 2
         font_size = 8
         
         # Setup painter
@@ -606,12 +617,25 @@ class PreviewRenderer:
         # Calculate legend size
         fm = painter.fontMetrics()
         max_width = 0
+        
+        # Check all items for width
+        if self.has_topography:
+            max_width = max(max_width, fm.width("Topography"))
+        if self.has_structures:
+            max_width = max(max_width, fm.width("Structures"))
         for name in self.active_units.keys():
             width = fm.width(name)
             max_width = max(max_width, width)
             
+        # Count total items
+        total_items = len(self.active_units)
+        if self.has_topography:
+            total_items += 1
+        if self.has_structures:
+            total_items += 1
+            
         legend_width = max_width + symbol_size + padding * 3
-        legend_height = len(self.active_units) * item_height + padding * 2
+        legend_height = total_items * item_height + padding * 2
         
         # Position: Top Right with margin
         margin = 20
@@ -631,8 +655,38 @@ class PreviewRenderer:
         
         # Draw items
         current_y = y + padding
+        
+        # Draw topography if present
+        if self.has_topography:
+            painter.setPen(QPen(QColor(0, 102, 204), line_width))  # Blue
+            painter.drawLine(
+                int(x + padding), 
+                int(current_y + item_height / 2),
+                int(x + padding + symbol_size), 
+                int(current_y + item_height / 2)
+            )
+            painter.setPen(QColor(0, 0, 0))
+            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
+            painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, "Topography")
+            current_y += item_height
+        
+        # Draw structures if present
+        if self.has_structures:
+            painter.setPen(QPen(QColor(204, 0, 0), line_width))  # Red
+            painter.drawLine(
+                int(x + padding), 
+                int(current_y + item_height / 2),
+                int(x + padding + symbol_size), 
+                int(current_y + item_height / 2)
+            )
+            painter.setPen(QColor(0, 0, 0))
+            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
+            painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, "Structures")
+            current_y += item_height
+        
+        # Draw geological units
         for name, color in self.active_units.items():
-            # Draw symbol
+            # Draw symbol (rectangle)
             painter.setBrush(color)
             painter.setPen(Qt.NoPen)
             symbol_rect = QRectF(x + padding, current_y + (item_height - symbol_size)/2, symbol_size, symbol_size)
