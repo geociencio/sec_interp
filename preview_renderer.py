@@ -27,7 +27,7 @@ from qgis.core import (
     QgsMapRendererCustomPainterJob,
     QgsTextAnnotation,
 )
-from qgis.PyQt.QtCore import QSize, QSizeF, Qt
+from qgis.PyQt.QtCore import QSize, QSizeF, Qt, QRectF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont
 
 from .logger_config import get_logger
@@ -66,6 +66,7 @@ class PreviewRenderer:
         """
         self.canvas = canvas
         self.layers = []  # Track created layers for cleanup
+        self.active_units = {} # Track active geological units for legend {name: color}
     
     def _get_color_for_unit(self, name):
         """Get a consistent color for a geological unit based on its name."""
@@ -174,6 +175,9 @@ class PreviewRenderer:
             })
             category = QgsRendererCategory(str(unit_name), symbol, str(unit_name))
             categories.append(category)
+            
+            # Track for legend
+            self.active_units[str(unit_name)] = color
         
         renderer = QgsCategorizedSymbolRenderer('unit', categories)
         layer.setRenderer(renderer)
@@ -472,6 +476,7 @@ class PreviewRenderer:
             if layer:
                 QgsProject.instance().removeMapLayer(layer.id())
         self.layers = []
+        self.active_units = {} # Reset active units
         
         # Create layers
         topo_layer = self._create_topo_layer(topo_data, vert_exag) if topo_data else None
@@ -559,6 +564,9 @@ class PreviewRenderer:
             job.start()
             job.waitForFinished()
             
+            # Draw legend
+            self.draw_legend(painter, QRectF(0, 0, width, height))
+            
             painter.end()
             
             # Save
@@ -573,3 +581,68 @@ class PreviewRenderer:
         except Exception as e:
             logger.error(f"Error exporting preview: {e}")
             return False
+
+    def draw_legend(self, painter, rect):
+        """Draw legend on the given painter within the rect.
+        
+        Args:
+            painter: QPainter instance
+            rect: QRectF defining the drawing area
+        """
+        if not self.active_units:
+            return
+            
+        # Legend configuration
+        padding = 10
+        item_height = 20
+        symbol_size = 12
+        font_size = 10
+        
+        # Setup painter
+        painter.save()
+        font = QFont("Arial", font_size)
+        painter.setFont(font)
+        
+        # Calculate legend size
+        fm = painter.fontMetrics()
+        max_width = 0
+        for name in self.active_units.keys():
+            width = fm.width(name)
+            max_width = max(max_width, width)
+            
+        legend_width = max_width + symbol_size + padding * 3
+        legend_height = len(self.active_units) * item_height + padding * 2
+        
+        # Position: Top Right with margin
+        margin = 20
+        x = rect.width() - legend_width - margin
+        y = margin
+        
+        # Draw background
+        bg_color = QColor(255, 255, 255, 200) # Semi-transparent white
+        painter.setBrush(bg_color)
+        painter.setPen(Qt.NoPen)
+        painter.drawRect(QRectF(x, y, legend_width, legend_height))
+        
+        # Draw border
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QColor(100, 100, 100))
+        painter.drawRect(QRectF(x, y, legend_width, legend_height))
+        
+        # Draw items
+        current_y = y + padding
+        for name, color in self.active_units.items():
+            # Draw symbol
+            painter.setBrush(color)
+            painter.setPen(Qt.NoPen)
+            symbol_rect = QRectF(x + padding, current_y + (item_height - symbol_size)/2, symbol_size, symbol_size)
+            painter.drawRect(symbol_rect)
+            
+            # Draw text
+            painter.setPen(QColor(0, 0, 0))
+            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
+            painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, name)
+            
+            current_y += item_height
+            
+        painter.restore()

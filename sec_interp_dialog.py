@@ -39,14 +39,42 @@ from qgis.core import (
 )
 from qgis.gui import QgsMessageBar, QgsFileWidget, QgsMapCanvas
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QDialogButtonBox
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QDialogButtonBox, QWidget
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtGui import QPainter, QImage, QColor, QPageSize
-from qgis.PyQt.QtCore import QSize, QRectF, QSizeF, QMarginsF
+from qgis.PyQt.QtCore import QSize, QRectF, QSizeF, QMarginsF, Qt
 
 
 from .ui_sec_interp_dialog_base import Ui_SecInterpDialogBase
+
+
+class LegendWidget(QWidget):
+    """Widget to display the geological legend over the map canvas."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.renderer = None
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents) # Let clicks pass through
+        self.setAutoFillBackground(False)  # Don't fill background
+        self.hide()
+        
+    def update_legend(self, renderer):
+        """Update legend with data from renderer."""
+        self.renderer = renderer
+        self.update()
+        self.show()
+        
+    def paintEvent(self, event):
+        if not self.renderer or not self.renderer.active_units:
+            return
+            
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        
+        # Draw legend using the shared method
+        self.renderer.draw_legend(painter, QRectF(self.rect()))
 
 
 class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
@@ -103,6 +131,10 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         self.preview = QgsMapCanvas(preview_parent)
         self.preview.setGeometry(preview_geometry)
         self.preview.setCanvasColor(QColor(255, 255, 255))  # White background
+        
+        # Create legend widget
+        self.legend_widget = LegendWidget(self.preview)
+        self.legend_widget.resize(self.preview.size())
         
         # Store current preview data for re-rendering when checkboxes change
         self.current_topo_data = None

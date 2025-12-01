@@ -1190,6 +1190,10 @@ class SecInterp:
         self.dlg.current_canvas = canvas
         self.dlg.current_layers = layers
         
+        # Update legend
+        if hasattr(self.dlg, 'legend_widget'):
+            self.dlg.legend_widget.update_legend(self.preview_renderer)
+        
         logger.debug("Preview rendered with %d layers", len(layers) if layers else 0)
 
 
