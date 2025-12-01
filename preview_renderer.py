@@ -77,11 +77,12 @@ class PreviewRenderer:
         index = hash_val % len(self.GEOLOGY_COLORS)
         return self.GEOLOGY_COLORS[index]
     
-    def _create_topo_layer(self, topo_data):
+    def _create_topo_layer(self, topo_data, vert_exag=1.0):
         """Create temporary layer for topographic profile.
         
         Args:
             topo_data: List of (distance, elevation) tuples
+            vert_exag: Vertical exaggeration factor
             
         Returns:
             QgsVectorLayer with topographic profile
@@ -94,7 +95,7 @@ class PreviewRenderer:
         provider = layer.dataProvider()
         
         # Create line geometry from points
-        points = [QgsPointXY(dist, elev) for dist, elev in topo_data]
+        points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in topo_data]
         line = QgsLineString(points)
         
         # Add feature
@@ -115,11 +116,12 @@ class PreviewRenderer:
         logger.debug(f"Created topography layer with {len(topo_data)} points")
         return layer
     
-    def _create_geol_layer(self, geol_data):
+    def _create_geol_layer(self, geol_data, vert_exag=1.0):
         """Create temporary layer for geological profile.
         
         Args:
             geol_data: List of (distance, elevation, unit_name) tuples
+            vert_exag: Vertical exaggeration factor
             
         Returns:
             QgsVectorLayer with geological profile
@@ -149,7 +151,7 @@ class PreviewRenderer:
                 continue
             
             # Create line geometry
-            line_points = [QgsPointXY(dist, elev) for dist, elev in points]
+            line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in points]
             line = QgsLineString(line_points)
             
             # Create feature with attributes
@@ -180,12 +182,13 @@ class PreviewRenderer:
         logger.debug(f"Created geology layer with {len(geol_groups)} units")
         return layer
     
-    def _create_struct_layer(self, struct_data, reference_data):
+    def _create_struct_layer(self, struct_data, reference_data, vert_exag=1.0):
         """Create temporary layer for structural dips.
         
         Args:
             struct_data: List of (distance, apparent_dip) tuples
             reference_data: List of (distance, elevation) tuples for elevation lookup
+            vert_exag: Vertical exaggeration factor
             
         Returns:
             QgsVectorLayer with structural dip lines
@@ -225,8 +228,8 @@ class PreviewRenderer:
                 dx = -dx
             
             # Create line geometry
-            p1 = QgsPointXY(dist, elev)
-            p2 = QgsPointXY(dist + dx, elev + dy)
+            p1 = QgsPointXY(dist, elev * vert_exag)
+            p2 = QgsPointXY(dist + dx, (elev + dy) * vert_exag)
             line = QgsLineString([p1, p2])
             
             feat = QgsFeature()
@@ -269,6 +272,33 @@ class PreviewRenderer:
             return reference_data[0][1]
         return reference_data[-1][1]
 
+    def _get_nice_interval(self, target_step):
+        """Calculate a nice interval for grid lines (1-2-5 sequence).
+        
+        Args:
+            target_step: The desired step size (e.g. range / 5)
+            
+        Returns:
+            A 'nice' number close to target_step
+        """
+        import math
+        if target_step <= 0:
+            return 100.0
+            
+        exponent = math.floor(math.log10(target_step))
+        fraction = target_step / (10 ** exponent)
+        
+        if fraction < 1.5:
+            nice_fraction = 1.0
+        elif fraction < 3.5:
+            nice_fraction = 2.0
+        elif fraction < 7.5:
+            nice_fraction = 5.0
+        else:
+            nice_fraction = 10.0
+            
+        return nice_fraction * (10 ** exponent)
+
     def _create_axes_layer(self, extent, vert_exag=1.0):
         """Create temporary layer for axes and grid.
         
@@ -290,24 +320,16 @@ class PreviewRenderer:
         width = extent.width()
         height = extent.height()
         
-        # Helper to find nice interval
-        def get_interval(range_val):
-            import math
-            if range_val == 0: return 100
-            exponent = math.floor(math.log10(range_val))
-            fraction = range_val / (10 ** exponent)
-            if fraction < 2: interval = 0.2
-            elif fraction < 5: interval = 0.5
-            else: interval = 1.0
-            return interval * (10 ** exponent)
-
-        x_interval = get_interval(width / 5)  # Aim for ~5 ticks
-        y_interval = get_interval(height / 5)
+        x_interval = self._get_nice_interval(width / 5)  # Aim for ~5 ticks
+        y_interval = self._get_nice_interval((height / vert_exag) / 5)
         
         # Adjust start points to be multiples of interval
         import math
         x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
-        y_start = math.floor(extent.yMinimum() / y_interval) * y_interval
+        
+        y_min_orig = extent.yMinimum() / vert_exag
+        y_max_orig = extent.yMaximum() / vert_exag
+        y_start = math.floor(y_min_orig / y_interval) * y_interval
         
         features = []
         
@@ -325,10 +347,11 @@ class PreviewRenderer:
             
         # Create horizontal grid lines
         y = y_start
-        while y <= extent.yMaximum():
-            if y >= extent.yMinimum():
-                p1 = QgsPointXY(extent.xMinimum(), y)
-                p2 = QgsPointXY(extent.xMaximum(), y)
+        while y <= y_max_orig:
+            y_draw = y * vert_exag
+            if y_draw >= extent.yMinimum():
+                p1 = QgsPointXY(extent.xMinimum(), y_draw)
+                p2 = QgsPointXY(extent.xMaximum(), y_draw)
                 line = QgsLineString([p1, p2])
                 feat = QgsFeature()
                 feat.setGeometry(QgsGeometry(line))
@@ -352,7 +375,7 @@ class PreviewRenderer:
             
         return layer
 
-    def _create_axes_labels_layer(self, extent):
+    def _create_axes_labels_layer(self, extent, vert_exag=1.0):
         """Create a point layer for axes labels."""
         if not extent:
             return None
@@ -360,26 +383,19 @@ class PreviewRenderer:
         layer = QgsVectorLayer("Point?crs=EPSG:4326&field=label:string&field=align:string", "Axes Labels", "memory")
         provider = layer.dataProvider()
         
+        # Calculate grid intervals
         width = extent.width()
         height = extent.height()
         
-        # Helper to find nice interval (duplicated for now, could be method)
-        def get_interval(range_val):
-            import math
-            if range_val == 0: return 100
-            exponent = math.floor(math.log10(range_val))
-            fraction = range_val / (10 ** exponent)
-            if fraction < 2: interval = 0.2
-            elif fraction < 5: interval = 0.5
-            else: interval = 1.0
-            return interval * (10 ** exponent)
-
-        x_interval = get_interval(width / 5)
-        y_interval = get_interval(height / 5)
+        x_interval = self._get_nice_interval(width / 5)
+        y_interval = self._get_nice_interval((height / vert_exag) / 5)
         
         import math
         x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
-        y_start = math.floor(extent.yMinimum() / y_interval) * y_interval
+        
+        y_min_orig = extent.yMinimum() / vert_exag
+        y_max_orig = extent.yMaximum() / vert_exag
+        y_start = math.floor(y_min_orig / y_interval) * y_interval
         
         features = []
         
@@ -396,10 +412,11 @@ class PreviewRenderer:
             
         # Y Axis Labels (left)
         y = y_start
-        while y <= extent.yMaximum():
-            if y >= extent.yMinimum():
+        while y <= y_max_orig:
+            y_draw = y * vert_exag
+            if y_draw >= extent.yMinimum():
                 feat = QgsFeature(layer.fields())
-                feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(extent.xMinimum(), y)))
+                feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(extent.xMinimum(), y_draw)))
                 feat.setAttribute('label', f"{y:.0f}")
                 feat.setAttribute('align', 'left')
                 features.append(feat)
@@ -457,14 +474,14 @@ class PreviewRenderer:
         self.layers = []
         
         # Create layers
-        topo_layer = self._create_topo_layer(topo_data) if topo_data else None
-        geol_layer = self._create_geol_layer(geol_data) if geol_data else None
+        topo_layer = self._create_topo_layer(topo_data, vert_exag) if topo_data else None
+        geol_layer = self._create_geol_layer(geol_data, vert_exag) if geol_data else None
         
         # For structural layer, use topo or geol as reference
         reference_data = topo_data if topo_data else (
             [(d, e) for d, e, _ in geol_data] if geol_data else None
         )
-        struct_layer = self._create_struct_layer(struct_data, reference_data) if struct_data else None
+        struct_layer = self._create_struct_layer(struct_data, reference_data, vert_exag) if struct_data else None
         
         # Collect valid layers
         data_layers = [l for l in [struct_layer, geol_layer, topo_layer] if l is not None]
@@ -484,7 +501,7 @@ class PreviewRenderer:
                 
         # Create axes layers based on data extent
         axes_layer = self._create_axes_layer(extent, vert_exag)
-        labels_layer = self._create_axes_labels_layer(extent)
+        labels_layer = self._create_axes_labels_layer(extent, vert_exag)
         
         # Combine all layers (labels on top, then data, then grid)
         layers = [labels_layer] + data_layers + [axes_layer]
@@ -492,13 +509,8 @@ class PreviewRenderer:
         
         self.layers = layers
         
-        # Apply vertical exaggeration to extent
-        if extent and vert_exag != 1.0:
-            center_y = (extent.yMinimum() + extent.yMaximum()) / 2
-            height = extent.height()
-            new_height = height * vert_exag
-            extent.setYMinimum(center_y - new_height / 2)
-            extent.setYMaximum(center_y + new_height / 2)
+        # Vertical exaggeration is now applied to geometries, so we don't need to modify extent
+        # except for padding
         
         # Add 10% padding
         if extent:
