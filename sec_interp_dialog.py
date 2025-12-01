@@ -113,24 +113,28 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
         # Configure outcrop layer combo box
         self.outcrop.setFilters(QgsMapLayerProxyModel.PolygonLayer)
-        self.outcrop.setAllowEmptyLayer(True,"Do no use Outcrop layer")
+        self.outcrop.setAllowEmptyLayer(True, "Do not use Outcrop layer")
+        self.outcrop.setLayer(None) # Default to empty
         self.outcrop.layerChanged.connect(self.ocropname.setLayer)
         
-        # Initialize field combo box with current layer
+        # Initialize field combo box with current layer (will be None)
         self.ocropname.setLayer(self.outcrop.currentLayer())
         
         # Configure structural layer combo box
         self.structural.setFilters(QgsMapLayerProxyModel.PointLayer)
         self.structural.setAllowEmptyLayer(True, "Do not use Structural layer")
+        self.structural.setLayer(None) # Default to empty
         self.structural.layerChanged.connect(self.dip.setLayer)
         self.structural.layerChanged.connect(self.strike.setLayer)
         
-        # Initialize field combo boxes with current layer
+        # Initialize field combo boxes with current layer (will be None)
         self.dip.setLayer(self.structural.currentLayer())
         self.strike.setLayer(self.structural.currentLayer())
         
         # Configure crossline layer combo box
         self.crossline.setFilters(QgsMapLayerProxyModel.LineLayer)
+        self.crossline.setAllowEmptyLayer(True, "Select Crossline Layer")
+        self.crossline.setLayer(None) # Default to empty
         self.crossline.layerChanged.connect(self.update_button_state)
         
         # Configure output folder widget
@@ -139,6 +143,8 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         
         # Configure raster layer combo box
         self.rasterdem.setFilters(QgsMapLayerProxyModel.RasterLayer)
+        self.rasterdem.setAllowEmptyLayer(True, "Select DEM Layer")
+        self.rasterdem.setLayer(None) # Default to empty
         
         # Connect raster layer change to band combo box
         self.rasterdem.layerChanged.connect(self.band.setLayer)
