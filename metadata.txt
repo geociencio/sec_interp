@@ -6,7 +6,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=0.2
+version=0.3
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -20,6 +20,30 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    0.3 (2025-12-03)
+    * Major Refactoring - Modular Project Structure:
+      - Reorganized codebase into core/, gui/, resources/ packages
+      - Improved code maintainability and scalability
+      - Better separation of concerns (business logic, UI, resources)
+    * Quality Improvements:
+      - Achieved Pylint score 10/10
+      - Specific exception handling throughout codebase
+      - Comprehensive code documentation
+      - Configured .pylintrc for consistent code quality
+    * Testing & CI/CD:
+      - Added pytest infrastructure with QGIS support
+      - Created initial unit tests (3 tests passing)
+      - Configured GitHub Actions for automated testing
+      - Test configuration in tests/conftest.py
+    * Build System:
+      - Updated Makefile for new structure
+      - Refactored deploy.sh for modular deployment
+      - Organized build scripts in scripts/ directory
+    * Documentation:
+      - Added REFACTORING_PR.md with detailed changes
+      - Improved project documentation structure
+      - Added implementation plans for future features
+    
     0.2 (2025-11-30)
     * Major UI Overhaul - Native QGIS Widget Integration:
       - Replaced standard Qt ComboBoxes with QgsMapLayerComboBox for automatic layer population
