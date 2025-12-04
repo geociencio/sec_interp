@@ -277,7 +277,6 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
     def get_selected_values(self):
         """Get the selected values from the dialog with safe type conversion."""
-        from . import validation_utils as vu
 
         # Safely convert numeric inputs with defaults
         _, _, scale = vu.validate_numeric_input(
@@ -351,8 +350,6 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         This method validates inputs and generates a preview with all available data layers
         without saving files to disk.
         """
-        from . import validation_utils as vu
-        from . import si_core_utils as scu
 
         # Skip if no plugin instance (e.g., in tests)
         if self.plugin_instance is None:
@@ -512,7 +509,6 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             return
 
         # Determine default directory
-        from qgis.core import QgsSettings
 
         settings = QgsSettings()
 
@@ -708,8 +704,6 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
     def validate_inputs(self):
         """Validate the inputs from the dialog."""
-        from . import validation_utils as vu
-        from qgis.core import QgsWkbTypes, QVariant
 
         errors = []
 

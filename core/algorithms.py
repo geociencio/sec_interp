@@ -60,6 +60,7 @@ from qgis.core import (
 )
 
 from ..gui.main_dialog import SecInterpDialog
+from ..gui.preview_renderer import PreviewRenderer
 from ..resources import resources
 from . import utils as scu
 from . import validation as vu
@@ -255,8 +256,6 @@ class SecInterp:
         """
         # Get values from the dialog using the helper method
         values = self.dlg.get_selected_values()
-
-        from . import validation_utils as vu
 
         is_valid, error_msg, validated_values = vu.validate_and_get_layers(values)
 
@@ -680,7 +679,6 @@ class SecInterp:
         Raises:
             ValueError: If line layer has no features or invalid geometry.
         """
-        from . import validation_utils as vu
 
         # Logging: Initial setup
         logger.info("=" * 60)
@@ -858,7 +856,6 @@ class SecInterp:
         - Structural profile (CSV + Shapefile) if available
         - Profile axes (Shapefile)
         """
-        from . import validation_utils as vu
 
         try:
             # Get and validate inputs
@@ -1356,7 +1353,6 @@ class SecInterp:
         )
 
         # Get vertical exaggeration from dialog
-        from . import validation_utils as vu
 
         _, _, vert_exag = vu.validate_numeric_input(
             self.dlg.vertexag.text(),
