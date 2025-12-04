@@ -41,11 +41,10 @@ from qgis.core import (
     QgsSettings,
     QgsUnitTypes,
     QgsWkbTypes,
-    QVariant,
 )
 from qgis.gui import QgsFileWidget, QgsMapCanvas, QgsMessageBar
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import QMarginsF, QRectF, QSize, QSizeF, Qt
+from qgis.PyQt.QtCore import QMarginsF, QRectF, QSize, QSizeF, Qt, QVariant
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPageSize
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgGenerator

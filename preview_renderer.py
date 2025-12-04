@@ -17,23 +17,18 @@ from qgis.core import (
     QgsPointXY,
     QgsLineString,
     QgsProject,
-    QgsSymbol,
     QgsSingleSymbolRenderer,
     QgsCategorizedSymbolRenderer,
     QgsRendererCategory,
     QgsMarkerSymbol,
     QgsLineSymbol,
-    QgsRectangle,
-    QgsCoordinateReferenceSystem,
     QgsMapSettings,
     QgsMapRendererCustomPainterJob,
-    QgsTextAnnotation,
     QgsPalLayerSettings,
     QgsTextFormat,
     QgsVectorLayerSimpleLabeling,
-    QgsLabeling,
 )
-from qgis.PyQt.QtCore import QSize, QSizeF, Qt, QRectF
+from qgis.PyQt.QtCore import QSize, Qt, QRectF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont, QPen
 
 from .logger_config import get_logger
@@ -122,7 +117,7 @@ class PreviewRenderer:
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         
         layer.updateExtents()
-        logger.debug(f"Created topography layer with {len(topo_data)} points")
+        logger.debug("Created topography layer with %d points", len(topo_data))
         return layer
     
     def _create_geol_layer(self, geol_data, vert_exag=1.0):
@@ -191,7 +186,7 @@ class PreviewRenderer:
         layer.setRenderer(renderer)
         
         layer.updateExtents()
-        logger.debug(f"Created geology layer with {len(geol_groups)} units")
+        logger.debug("Created geology layer with %d units", len(geol_groups))
         return layer
     
     def _create_struct_layer(self, struct_data, reference_data, vert_exag=1.0):
@@ -258,7 +253,7 @@ class PreviewRenderer:
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         
         layer.updateExtents()
-        logger.debug(f"Created structures layer with {len(struct_data)} dips")
+        logger.debug("Created structures layer with %d dips", len(struct_data))
         return layer
     
     def _interpolate_elevation(self, reference_data, target_dist):
@@ -292,7 +287,7 @@ class PreviewRenderer:
         Returns:
             A 'nice' number close to target_step
         """
-        import math
+
         if target_step <= 0:
             return 100.0
             
@@ -531,7 +526,7 @@ class PreviewRenderer:
             self.canvas.setLayers(layers)
             self.canvas.setExtent(extent)
             self.canvas.refresh()
-            logger.debug(f"Canvas configured with {len(layers)} layers")
+            logger.debug("Canvas configured with %d layers", len(layers))
         
         return self.canvas, layers
     
@@ -577,14 +572,14 @@ class PreviewRenderer:
             # Save
             success = image.save(output_path)
             if success:
-                logger.info(f"Exported preview to {output_path}")
+                logger.info("Exported preview to %s", output_path)
             else:
-                logger.error(f"Failed to save image to {output_path}")
+                logger.error("Failed to save image to %s", output_path)
             
             return success
             
         except Exception as e:
-            logger.error(f"Error exporting preview: {e}")
+            logger.error("Error exporting preview: %s", e)
             return False
 
     def draw_legend(self, painter, rect):
