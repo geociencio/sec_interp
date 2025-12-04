@@ -38,22 +38,24 @@ LRELEASE = lrelease
 # translation
 SOURCES = \
 	__init__.py \
-	sec_interp.py sec_interp_dialog.py si_core_utils.py
+	core/algorithms.py core/utils.py core/validation.py \
+	gui/main_dialog.py gui/preview_renderer.py
 
 PLUGINNAME = sec_interp
 
 PY_FILES = \
 	__init__.py \
-	sec_interp.py sec_interp_dialog.py si_core_utils.py
+	core/algorithms.py core/utils.py core/validation.py \
+	gui/main_dialog.py gui/preview_renderer.py
 
-UI_FILES = sec_interp_dialog_base.ui
+UI_FILES = gui/ui/main_dialog_base.ui
 
 EXTRAS = metadata.txt icon.png
 
 EXTRA_DIRS =
 
-COMPILED_RESOURCE_FILES = resources.py
-COMPILED_UI_FILES = ui_sec_interp_dialog_base.py
+COMPILED_RESOURCE_FILES = resources/resources.py
+COMPILED_UI_FILES = gui/ui/main_dialog_base.py
 
 PEP8EXCLUDE=pydev,resources.py,conf.py,third_party,ui,.venv
 
@@ -80,7 +82,7 @@ HELP = help/build/html
 
 PLUGIN_UPLOAD = $(c)/plugin_upload.py
 
-RESOURCE_SRC=$(shell grep '^ *<file' resources.qrc | sed 's@</file>@@g;s/.*>//g' | tr '\n' ' ')
+RESOURCE_SRC=$(shell grep '^ *<file' resources/resources.qrc | sed 's@</file>@@g;s/.*>//g' | tr '\n' ' ')
 
 .PHONY: default
 default:
@@ -93,10 +95,10 @@ default:
 
 compile: $(COMPILED_RESOURCE_FILES) $(COMPILED_UI_FILES)
 
-resources.py : resources.qrc $(RESOURCES_SRC)
+resources/resources.py : resources/resources.qrc $(RESOURCES_SRC)
 	pyrcc5 -o $@ $<
 
-ui_sec_interp_dialog_base.py : sec_interp_dialog_base.ui
+gui/ui/main_dialog_base.py : gui/ui/main_dialog_base.ui
 	pyuic5 -o $@ $<
 	./scripts/fix-ui-syntax.sh
 
@@ -122,7 +124,7 @@ test: compile transcompile
 	@echo "----------------------"
 
 deploy: compile doc transcompile
-	./deploy.sh
+	./scripts/deploy.sh
 
 
 # The dclean target removes compiled python files from plugin directory

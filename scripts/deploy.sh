@@ -9,7 +9,8 @@ set -euo pipefail
 
 # --- Configuration ---
 # Source directory (where this script is located)
-SOURCE_DIR=$(dirname "$(readlink -f "$0")")
+# Source directory (parent of this script)
+SOURCE_DIR=$(dirname "$(dirname "$(readlink -f "$0")")")
 
 # Destination directory for QGIS plugins
 # Default can be overridden with the environment variable QGIS_PLUGINS_DIR
@@ -51,21 +52,30 @@ fi
 
 echo "Copying core files..."
 cp -v "$SOURCE_DIR/__init__.py" \
-            "$SOURCE_DIR/sec_interp.py" \
-            "$SOURCE_DIR/sec_interp_dialog.py" \
-            "$SOURCE_DIR/sec_interp_dialog_base.ui" \
-            "$SOURCE_DIR/ui_sec_interp_dialog_base.py" \
-            "$SOURCE_DIR/resources.py" \
-            "$SOURCE_DIR/preview_renderer.py" \
-            "$SOURCE_DIR/si_core_utils.py" \
-            "$SOURCE_DIR/validation_utils.py" \
-            "$SOURCE_DIR/logger_config.py" \
-            "$DEST_DIR/"
+      "$SOURCE_DIR/logger_config.py" \
+      "$SOURCE_DIR/metadata.txt" \
+      "$SOURCE_DIR/icon.png" \
+      "$DEST_DIR/"
 
-echo "Copying metadata and icon..."
-cp -v "$SOURCE_DIR/metadata.txt" \
-            "$SOURCE_DIR/icon.png" \
-            "$DEST_DIR/"
+echo "Copying modules..."
+# Create subdirectories
+mkdir -p "$DEST_DIR/core"
+mkdir -p "$DEST_DIR/gui/ui"
+mkdir -p "$DEST_DIR/resources"
+
+# Copy core module
+cp -v "$SOURCE_DIR/core/"*.py "$DEST_DIR/core/"
+
+# Copy gui module
+cp -v "$SOURCE_DIR/gui/"*.py "$DEST_DIR/gui/"
+cp -v "$SOURCE_DIR/gui/ui/"*.py "$DEST_DIR/gui/ui/"
+cp -v "$SOURCE_DIR/gui/ui/"*.ui "$DEST_DIR/gui/ui/"
+
+# Copy resources module
+cp -v "$SOURCE_DIR/resources/"*.py "$DEST_DIR/resources/"
+cp -v "$SOURCE_DIR/resources/"*.qrc "$DEST_DIR/resources/"
+
+
 
 if [ -d "$SOURCE_DIR/i18n" ]; then
         echo "Copying translations..."

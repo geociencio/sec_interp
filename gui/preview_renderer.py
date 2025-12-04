@@ -30,192 +30,194 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QSize, Qt, QRectF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont, QPen
-
-from .logger_config import get_logger
+from ..core import utils as scu
+from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
 
 class PreviewRenderer:
     """Renders interactive preview using native PyQGIS resources."""
-    
+
     # Color palette for geological units
     GEOLOGY_COLORS = [
-        QColor(231, 76, 60),    # Red
-        QColor(52, 152, 219),   # Blue
-        QColor(46, 204, 113),   # Green
-        QColor(155, 89, 182),   # Purple
-        QColor(241, 196, 15),   # Yellow
-        QColor(230, 126, 34),   # Orange
-        QColor(26, 188, 156),   # Turquoise
-        QColor(52, 73, 94),     # Dark Blue/Grey
+        QColor(231, 76, 60),  # Red
+        QColor(52, 152, 219),  # Blue
+        QColor(46, 204, 113),  # Green
+        QColor(155, 89, 182),  # Purple
+        QColor(241, 196, 15),  # Yellow
+        QColor(230, 126, 34),  # Orange
+        QColor(26, 188, 156),  # Turquoise
+        QColor(52, 73, 94),  # Dark Blue/Grey
         QColor(149, 165, 166),  # Grey
-        QColor(211, 84, 0),     # Pumpkin
-        QColor(192, 57, 43),    # Dark Red
+        QColor(211, 84, 0),  # Pumpkin
+        QColor(192, 57, 43),  # Dark Red
         QColor(127, 140, 141),  # Dark Grey
-        QColor(142, 68, 173),   # Wisteria
-        QColor(41, 128, 185),   # Belize Hole
-        QColor(39, 174, 96),    # Nephritis
-        QColor(22, 160, 133),   # Green Sea
+        QColor(142, 68, 173),  # Wisteria
+        QColor(41, 128, 185),  # Belize Hole
+        QColor(39, 174, 96),  # Nephritis
+        QColor(22, 160, 133),  # Green Sea
     ]
-    
+
     def __init__(self, canvas=None):
         """Initialize preview renderer.
-        
+
         Args:
             canvas: QgsMapCanvas instance (optional, will be created if not provided)
         """
         self.canvas = canvas
         self.layers = []  # Track created layers for cleanup
-        self.active_units = {} # Track active geological units for legend {name: color}
+        self.active_units = {}  # Track active geological units for legend {name: color}
         self.has_topography = False  # Track if topography layer exists
         self.has_structures = False  # Track if structures layer exists
-    
+
     def _get_color_for_unit(self, name):
         """Get a consistent color for a geological unit based on its name."""
         if not name:
             return QColor(100, 100, 100)  # Default grey
-        
+
         # Simple hash to map name to index
         hash_val = sum(ord(c) for c in str(name))
         index = hash_val % len(self.GEOLOGY_COLORS)
         return self.GEOLOGY_COLORS[index]
-    
+
     def _create_topo_layer(self, topo_data, vert_exag=1.0):
         """Create temporary layer for topographic profile.
-        
+
         Args:
             topo_data: List of (distance, elevation) tuples
             vert_exag: Vertical exaggeration factor
-            
+
         Returns:
             QgsVectorLayer with topographic profile
         """
         if not topo_data or len(topo_data) < 2:
             return None
-        
+
         # Create memory layer
         layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Topography", "memory")
         provider = layer.dataProvider()
-        
+
         # Create line geometry from points
         points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in topo_data]
         line = QgsLineString(points)
-        
+
         # Add feature
         feat = QgsFeature()
         feat.setGeometry(QgsGeometry(line))
         provider.addFeatures([feat])
-        
+
         # Apply symbology - blue line, 2px width
-        symbol = QgsLineSymbol.createSimple({
-            'color': '0,102,204',
-            'width': '0.5',
-            'capstyle': 'round',
-            'joinstyle': 'round'
-        })
+        symbol = QgsLineSymbol.createSimple(
+            {
+                "color": "0,102,204",
+                "width": "0.5",
+                "capstyle": "round",
+                "joinstyle": "round",
+            }
+        )
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        
+
         layer.updateExtents()
         logger.debug("Created topography layer with %d points", len(topo_data))
         return layer
-    
+
     def _create_geol_layer(self, geol_data, vert_exag=1.0):
         """Create temporary layer for geological profile.
-        
+
         Args:
             geol_data: List of (distance, elevation, unit_name) tuples
             vert_exag: Vertical exaggeration factor
-            
+
         Returns:
             QgsVectorLayer with geological profile
         """
         if not geol_data or len(geol_data) < 2:
             return None
-        
+
         # Create memory layer with attributes
         layer = QgsVectorLayer(
-            "LineString?crs=EPSG:4326&field=unit:string",
-            "Geology",
-            "memory"
+            "LineString?crs=EPSG:4326&field=unit:string", "Geology", "memory"
         )
         provider = layer.dataProvider()
-        
+
         # Group by geological unit
         geol_groups = {}
         for dist, elev, name in geol_data:
             if name not in geol_groups:
                 geol_groups[name] = []
             geol_groups[name].append((dist, elev))
-        
+
         # Create features for each unit
         features = []
         for unit_name, points in geol_groups.items():
             if len(points) < 2:
                 continue
-            
+
             # Create line geometry
             line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in points]
             line = QgsLineString(line_points)
-            
+
             # Create feature with attributes
             feat = QgsFeature(layer.fields())
             feat.setGeometry(QgsGeometry(line))
-            feat.setAttribute('unit', str(unit_name))
+            feat.setAttribute("unit", str(unit_name))
             features.append(feat)
-        
+
         provider.addFeatures(features)
-        
+
         # Apply categorized symbology
         categories = []
         for unit_name in geol_groups.keys():
             color = self._get_color_for_unit(unit_name)
-            symbol = QgsLineSymbol.createSimple({
-                'color': f'{color.red()},{color.green()},{color.blue()}',
-                'width': '0.7',
-                'capstyle': 'round',
-                'joinstyle': 'round'
-            })
+            symbol = QgsLineSymbol.createSimple(
+                {
+                    "color": f"{color.red()},{color.green()},{color.blue()}",
+                    "width": "0.7",
+                    "capstyle": "round",
+                    "joinstyle": "round",
+                }
+            )
             category = QgsRendererCategory(str(unit_name), symbol, str(unit_name))
             categories.append(category)
-            
+
             # Track for legend
             self.active_units[str(unit_name)] = color
-        
-        renderer = QgsCategorizedSymbolRenderer('unit', categories)
+
+        renderer = QgsCategorizedSymbolRenderer("unit", categories)
         layer.setRenderer(renderer)
-        
+
         layer.updateExtents()
         logger.debug("Created geology layer with %d units", len(geol_groups))
         return layer
-    
+
     def _create_struct_layer(self, struct_data, reference_data, vert_exag=1.0):
         """Create temporary layer for structural dips.
-        
+
         Args:
             struct_data: List of (distance, apparent_dip) tuples
             reference_data: List of (distance, elevation) tuples for elevation lookup
             vert_exag: Vertical exaggeration factor
-            
+
         Returns:
             QgsVectorLayer with structural dip lines
         """
         if not struct_data or len(struct_data) < 1:
             return None
-        
+
         # Create memory layer
         layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Structures", "memory")
         provider = layer.dataProvider()
-        
+
         # Calculate extent for line length
         if reference_data:
             elevs = [e for _, e in reference_data]
             e_range = max(elevs) - min(elevs)
         else:
             e_range = 100  # Default range
-        
+
         line_length = e_range * 0.1  # 10% of elevation range
-        
+
         # Create dip lines
         features = []
         for dist, app_dip in struct_data:
@@ -224,55 +226,53 @@ class PreviewRenderer:
                 elev = self._interpolate_elevation(reference_data, dist)
             else:
                 elev = 0
-            
+
             # Calculate dip line endpoints
             rad_dip = math.radians(abs(app_dip))
             dx = line_length * math.cos(rad_dip)
             dy = -line_length * math.sin(rad_dip)
-            
+
             if app_dip < 0:
                 dx = -dx
-            
+
             # Create line geometry
             p1 = QgsPointXY(dist, elev * vert_exag)
             p2 = QgsPointXY(dist + dx, (elev + dy) * vert_exag)
             line = QgsLineString([p1, p2])
-            
+
             feat = QgsFeature()
             feat.setGeometry(QgsGeometry(line))
             features.append(feat)
-        
+
         provider.addFeatures(features)
-        
+
         # Apply symbology - red line, 2px width
-        symbol = QgsLineSymbol.createSimple({
-            'color': '204,0,0',
-            'width': '0.5',
-            'capstyle': 'round'
-        })
+        symbol = QgsLineSymbol.createSimple(
+            {"color": "204,0,0", "width": "0.5", "capstyle": "round"}
+        )
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        
+
         layer.updateExtents()
         logger.debug("Created structures layer with %d dips", len(struct_data))
         return layer
-    
+
     def _interpolate_elevation(self, reference_data, target_dist):
         """Interpolate elevation at a given distance."""
         if not reference_data:
             return 0
-        
+
         # Find bracketing points
         for i in range(len(reference_data) - 1):
             d1, e1 = reference_data[i]
             d2, e2 = reference_data[i + 1]
-            
+
             if d1 <= target_dist <= d2:
                 # Linear interpolation
                 if d2 == d1:
                     return e1
                 t = (target_dist - d1) / (d2 - d1)
                 return e1 + t * (e2 - e1)
-        
+
         # If outside range, use nearest
         if target_dist < reference_data[0][0]:
             return reference_data[0][1]
@@ -280,20 +280,20 @@ class PreviewRenderer:
 
     def _get_nice_interval(self, target_step):
         """Calculate a nice interval for grid lines (1-2-5 sequence).
-        
+
         Args:
             target_step: The desired step size (e.g. range / 5)
-            
+
         Returns:
             A 'nice' number close to target_step
         """
 
         if target_step <= 0:
             return 100.0
-            
+
         exponent = math.floor(math.log10(target_step))
-        fraction = target_step / (10 ** exponent)
-        
+        fraction = target_step / (10**exponent)
+
         if fraction < 1.5:
             nice_fraction = 1.0
         elif fraction < 3.5:
@@ -302,42 +302,42 @@ class PreviewRenderer:
             nice_fraction = 5.0
         else:
             nice_fraction = 10.0
-            
-        return nice_fraction * (10 ** exponent)
+
+        return nice_fraction * (10**exponent)
 
     def _create_axes_layer(self, extent, vert_exag=1.0):
         """Create temporary layer for axes and grid.
-        
+
         Args:
             extent: QgsRectangle defining the data extent
             vert_exag: Vertical exaggeration factor
-            
+
         Returns:
             QgsVectorLayer with grid lines and annotations
         """
         if not extent:
             return None
-            
+
         # Create memory layer
         layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Axes", "memory")
         provider = layer.dataProvider()
-        
+
         # Calculate grid intervals
         width = extent.width()
         height = extent.height()
-        
+
         x_interval = self._get_nice_interval(width / 5)  # Aim for ~5 ticks
         y_interval = self._get_nice_interval((height / vert_exag) / 5)
-        
+
         # Adjust start points to be multiples of interval
         x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
-        
+
         y_min_orig = extent.yMinimum() / vert_exag
         y_max_orig = extent.yMaximum() / vert_exag
         y_start = math.floor(y_min_orig / y_interval) * y_interval
-        
+
         features = []
-        
+
         # Create vertical grid lines
         x = x_start
         while x <= extent.xMaximum():
@@ -349,7 +349,7 @@ class PreviewRenderer:
                 feat.setGeometry(QgsGeometry(line))
                 features.append(feat)
             x += x_interval
-            
+
         # Create horizontal grid lines
         y = y_start
         while y <= y_max_orig:
@@ -362,105 +362,111 @@ class PreviewRenderer:
                 feat.setGeometry(QgsGeometry(line))
                 features.append(feat)
             y += y_interval
-            
+
         provider.addFeatures(features)
-        
+
         # Apply symbology - light grey dashed line
-        symbol = QgsLineSymbol.createSimple({
-            'color': '200,200,200',
-            'width': '0.3',
-            'line_style': 'dash'
-        })
+        symbol = QgsLineSymbol.createSimple(
+            {"color": "200,200,200", "width": "0.3", "line_style": "dash"}
+        )
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        
+
         # Add annotations for labels if canvas is available
         # Note: We are using a separate vector layer for labels (_create_axes_labels_layer)
         # which is more robust than QgsTextAnnotation across QGIS versions.
         # The QgsTextAnnotation code has been removed to avoid compatibility issues.
-            
+
         return layer
 
     def _create_axes_labels_layer(self, extent, vert_exag=1.0):
         """Create a point layer for axes labels."""
         if not extent:
             return None
-            
-        layer = QgsVectorLayer("Point?crs=EPSG:4326&field=label:string&field=align:string", "Axes Labels", "memory")
+
+        layer = QgsVectorLayer(
+            "Point?crs=EPSG:4326&field=label:string&field=align:string",
+            "Axes Labels",
+            "memory",
+        )
         provider = layer.dataProvider()
-        
+
         # Calculate grid intervals
         width = extent.width()
         height = extent.height()
-        
+
         x_interval = self._get_nice_interval(width / 5)
         y_interval = self._get_nice_interval((height / vert_exag) / 5)
-        
+
         x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
-        
+
         y_min_orig = extent.yMinimum() / vert_exag
         y_max_orig = extent.yMaximum() / vert_exag
         y_start = math.floor(y_min_orig / y_interval) * y_interval
-        
+
         features = []
-        
+
         # X Axis Labels (bottom)
         x = x_start
         while x <= extent.xMaximum():
             if x >= extent.xMinimum():
                 feat = QgsFeature(layer.fields())
-                feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(x, extent.yMinimum())))
-                feat.setAttribute('label', f"{x:.0f}")
-                feat.setAttribute('align', 'bottom')
+                feat.setGeometry(
+                    QgsGeometry.fromPointXY(QgsPointXY(x, extent.yMinimum()))
+                )
+                feat.setAttribute("label", f"{x:.0f}")
+                feat.setAttribute("align", "bottom")
                 features.append(feat)
             x += x_interval
-            
+
         # Y Axis Labels (left)
         y = y_start
         while y <= y_max_orig:
             y_draw = y * vert_exag
             if y_draw >= extent.yMinimum():
                 feat = QgsFeature(layer.fields())
-                feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(extent.xMinimum(), y_draw)))
-                feat.setAttribute('label', f"{y:.0f}")
-                feat.setAttribute('align', 'left')
+                feat.setGeometry(
+                    QgsGeometry.fromPointXY(QgsPointXY(extent.xMinimum(), y_draw))
+                )
+                feat.setAttribute("label", f"{y:.0f}")
+                feat.setAttribute("align", "left")
                 features.append(feat)
             y += y_interval
-            
+
         provider.addFeatures(features)
-        
+
         # Configure labeling
         settings = QgsPalLayerSettings()
-        settings.fieldName = 'label'
+        settings.fieldName = "label"
         settings.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
-        
+
         format = QgsTextFormat()
         format.setColor(QColor(0, 0, 0))
         format.setSize(8)
         settings.setFormat(format)
-        
+
         # Data defined properties for alignment
         # This is complex to set up programmatically for simple preview
         # Instead, we'll use a fixed offset
-        settings.yOffset = 2.0 # Below point
-        
+        settings.yOffset = 2.0  # Below point
+
         layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
         layer.setLabelsEnabled(True)
-        
+
         # Invisible symbol for points
-        symbol = QgsMarkerSymbol.createSimple({'size': '0', 'color': '0,0,0,0'})
+        symbol = QgsMarkerSymbol.createSimple({"size": "0", "color": "0,0,0,0"})
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        
+
         return layer
-    
+
     def render(self, topo_data, geol_data=None, struct_data=None, vert_exag=1.0):
         """Render preview with all data layers.
-        
+
         Args:
             topo_data: List of (dist, elev) tuples for topographic profile
             geol_data: Optional list of (dist, elev, geology_name) tuples
             struct_data: Optional list of (dist, app_dip) tuples
             vert_exag: Vertical exaggeration factor (default 1.0)
-            
+
         Returns:
             Tuple of (QgsMapCanvas, list of layers) or (None, None) if no data
         """
@@ -469,32 +475,44 @@ class PreviewRenderer:
             if layer:
                 QgsProject.instance().removeMapLayer(layer.id())
         self.layers = []
-        self.active_units = {} # Reset active units
+        self.active_units = {}  # Reset active units
         self.has_topography = False
         self.has_structures = False
-        
+
         # Create layers
-        topo_layer = self._create_topo_layer(topo_data, vert_exag) if topo_data else None
+        topo_layer = (
+            self._create_topo_layer(topo_data, vert_exag) if topo_data else None
+        )
         if topo_layer:
             self.has_topography = True
-            
-        geol_layer = self._create_geol_layer(geol_data, vert_exag) if geol_data else None
-        
-        # For structural layer, use topo or geol as reference
-        reference_data = topo_data if topo_data else (
-            [(d, e) for d, e, _ in geol_data] if geol_data else None
+
+        geol_layer = (
+            self._create_geol_layer(geol_data, vert_exag) if geol_data else None
         )
-        struct_layer = self._create_struct_layer(struct_data, reference_data, vert_exag) if struct_data else None
+
+        # For structural layer, use topo or geol as reference
+        reference_data = (
+            topo_data
+            if topo_data
+            else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
+        )
+        struct_layer = (
+            self._create_struct_layer(struct_data, reference_data, vert_exag)
+            if struct_data
+            else None
+        )
         if struct_layer:
             self.has_structures = True
-        
+
         # Collect valid layers
-        data_layers = [l for l in [struct_layer, geol_layer, topo_layer] if l is not None]
-        
+        data_layers = [
+            l for l in [struct_layer, geol_layer, topo_layer] if l is not None
+        ]
+
         if not data_layers:
             logger.warning("No valid layers to render")
             return None, None
-            
+
         # Calculate extent from data layers
         extent = None
         for layer in data_layers:
@@ -503,36 +521,36 @@ class PreviewRenderer:
                 extent = layer_extent
             else:
                 extent.combineExtentWith(layer_extent)
-                
+
         # Create axes layers based on data extent
         axes_layer = self._create_axes_layer(extent, vert_exag)
         labels_layer = self._create_axes_labels_layer(extent, vert_exag)
-        
+
         # Combine all layers (labels on top, then data, then grid)
         layers = [labels_layer] + data_layers + [axes_layer]
         layers = [l for l in layers if l is not None]
-        
+
         self.layers = layers
-        
+
         # Vertical exaggeration is now applied to geometries, so we don't need to modify extent
         # except for padding
-        
+
         # Add 10% padding
         if extent:
             extent.scale(1.1)
-        
+
         # Configure canvas if provided
         if self.canvas:
             self.canvas.setLayers(layers)
             self.canvas.setExtent(extent)
             self.canvas.refresh()
             logger.debug("Canvas configured with %d layers", len(layers))
-        
+
         return self.canvas, layers
-    
+
     def export_to_image(self, layers, extent, width, height, output_path, dpi=300):
         """Export preview to image file using QgsMapRendererCustomPainterJob.
-        
+
         Args:
             layers: List of QgsVectorLayer to render
             extent: QgsRectangle defining the area to render
@@ -540,7 +558,7 @@ class PreviewRenderer:
             height: Output height in pixels
             output_path: Path to save the image
             dpi: DPI for output (default 300)
-            
+
         Returns:
             True if successful, False otherwise
         """
@@ -551,64 +569,68 @@ class PreviewRenderer:
             settings.setExtent(extent)
             settings.setOutputSize(QSize(width, height))
             settings.setOutputDpi(dpi)
-            
+
             # Create image
             image = QImage(QSize(width, height), QImage.Format_ARGB32)
             image.fill(QColor(255, 255, 255))  # White background
-            
+
             # Render
             painter = QPainter(image)
             painter.setRenderHint(QPainter.Antialiasing)
-            
+
             job = QgsMapRendererCustomPainterJob(settings, painter)
             job.start()
             job.waitForFinished()
-            
+
             # Draw legend
             self.draw_legend(painter, QRectF(0, 0, width, height))
-            
+
             painter.end()
-            
+
             # Save
             success = image.save(output_path)
             if success:
                 logger.info("Exported preview to %s", output_path)
             else:
                 logger.error("Failed to save image to %s", output_path)
-            
+
             return success
-            
+
         except Exception as e:
             logger.error("Error exporting preview: %s", e)
             return False
 
     def draw_legend(self, painter, rect):
         """Draw legend on the given painter within the rect.
-        
+
         Args:
             painter: QPainter instance
             rect: QRectF defining the drawing area
         """
         # Check if we have anything to show
-        if not self.active_units and not self.has_topography and not self.has_structures:
+        if (
+            not self.active_units
+            and not self.has_topography
+            and not self.has_structures
+        ):
             return
-            
+
         # Legend configuration - compact size
         padding = 6
         item_height = 16
         symbol_size = 10
         line_width = 2
         font_size = 8
-        
+
         # Setup painter
         painter.save()
         font = QFont("Arial", font_size)
         painter.setFont(font)
-        
+
         # Calculate legend size
         fm = painter.fontMetrics()
         max_width = 0
-        
+
         # Check all items for width
         if self.has_topography:
             max_width = max(max_width, fm.width("Topography"))
@@ -617,77 +639,88 @@ class PreviewRenderer:
         for name in self.active_units.keys():
             width = fm.width(name)
             max_width = max(max_width, width)
-            
+
         # Count total items
         total_items = len(self.active_units)
         if self.has_topography:
             total_items += 1
         if self.has_structures:
             total_items += 1
-            
+
         legend_width = max_width + symbol_size + padding * 3
         legend_height = total_items * item_height + padding * 2
-        
+
         # Position: Top Right with margin
         margin = 20
         x = rect.width() - legend_width - margin
         y = margin
-        
+
         # Draw background
-        bg_color = QColor(255, 255, 255, 200) # Semi-transparent white
+        bg_color = QColor(255, 255, 255, 200)  # Semi-transparent white
         painter.setBrush(bg_color)
         painter.setPen(Qt.NoPen)
         painter.drawRect(QRectF(x, y, legend_width, legend_height))
-        
+
         # Draw border
         painter.setBrush(Qt.NoBrush)
         painter.setPen(QColor(100, 100, 100))
         painter.drawRect(QRectF(x, y, legend_width, legend_height))
-        
+
         # Draw items
         current_y = y + padding
-        
+
         # Draw topography if present
         if self.has_topography:
             painter.setPen(QPen(QColor(0, 102, 204), line_width))  # Blue
             painter.drawLine(
-                int(x + padding), 
+                int(x + padding),
                 int(current_y + item_height / 2),
-                int(x + padding + symbol_size), 
-                int(current_y + item_height / 2)
+                int(x + padding + symbol_size),
+                int(current_y + item_height / 2),
             )
             painter.setPen(QColor(0, 0, 0))
-            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
+            text_rect = QRectF(
+                x + padding * 2 + symbol_size, current_y, max_width, item_height
+            )
             painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, "Topography")
             current_y += item_height
-        
+
         # Draw structures if present
         if self.has_structures:
             painter.setPen(QPen(QColor(204, 0, 0), line_width))  # Red
             painter.drawLine(
-                int(x + padding), 
+                int(x + padding),
                 int(current_y + item_height / 2),
-                int(x + padding + symbol_size), 
-                int(current_y + item_height / 2)
+                int(x + padding + symbol_size),
+                int(current_y + item_height / 2),
             )
             painter.setPen(QColor(0, 0, 0))
-            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
+            text_rect = QRectF(
+                x + padding * 2 + symbol_size, current_y, max_width, item_height
+            )
             painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, "Structures")
             current_y += item_height
-        
+
         # Draw geological units
         for name, color in self.active_units.items():
             # Draw symbol (rectangle)
             painter.setBrush(color)
             painter.setPen(Qt.NoPen)
-            symbol_rect = QRectF(x + padding, current_y + (item_height - symbol_size)/2, symbol_size, symbol_size)
+            symbol_rect = QRectF(
+                x + padding,
+                current_y + (item_height - symbol_size) / 2,
+                symbol_size,
+                symbol_size,
+            )
             painter.drawRect(symbol_rect)
-            
+
             # Draw text
             painter.setPen(QColor(0, 0, 0))
-            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
+            text_rect = QRectF(
+                x + padding * 2 + symbol_size, current_y, max_width, item_height
+            )
             painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, name)
-            
+
             current_y += item_height
-            
+
         painter.restore()

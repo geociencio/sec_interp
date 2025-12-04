@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/sec_interp" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
