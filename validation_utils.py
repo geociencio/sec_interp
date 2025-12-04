@@ -299,7 +299,7 @@ def validate_output_path(path: str) -> Tuple[bool, str, Optional[Path]]:
     
     try:
         path_obj = Path(path)
-    except Exception as e:
+    except (TypeError, ValueError) as e:
         return False, f"Invalid path: {str(e)}", None
     
     # Check if path exists
@@ -315,7 +315,7 @@ def validate_output_path(path: str) -> Tuple[bool, str, Optional[Path]]:
         test_file = path_obj / ".write_test"
         test_file.touch()
         test_file.unlink()
-    except Exception:
+    except OSError:
         return False, f"Output folder is not writable: {path}", None
     
     return True, "", path_obj

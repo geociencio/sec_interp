@@ -898,7 +898,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                     map_crs = raster_crs
                 else:
                     map_crs = self.iface.mapCanvas().mapSettings().destinationCrs()
-            except Exception:
+            except AttributeError:
                 # Defensive: if anything goes wrong accessing iface/canvas, use raster CRS.
                 map_crs = raster_crs
             native_res = raster_layer.rasterUnitsPerPixelX()

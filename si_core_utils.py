@@ -73,7 +73,7 @@ def calculate_step_size(geom, raster_lyr):
             dy = abs(p2.y() - p1.y())
             if max(dx, dy) > 0:
                 dist_step = geom.length() * res / max(dx, dy)
-    except Exception:
+    except (ValueError, TypeError):
         # Fallback to simple resolution if geometry parsing fails
         pass
     return dist_step
@@ -376,7 +376,7 @@ def parse_strike(value):
     # If already numeric, return directly
     try:
         return float(value)
-    except Exception:
+    except (ValueError, TypeError):
         pass
 
     # Normalize value
