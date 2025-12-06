@@ -39,6 +39,7 @@ LRELEASE = lrelease
 SOURCES = \
 	__init__.py \
 	core/algorithms.py core/utils.py core/validation.py \
+	exporters/base_exporter.py exporters/image_exporter.py exporters/svg_exporter.py exporters/pdf_exporter.py exporters/csv_exporter.py exporters/shp_exporter.py \
 	gui/main_dialog.py gui/preview_renderer.py
 
 PLUGINNAME = sec_interp
@@ -46,6 +47,7 @@ PLUGINNAME = sec_interp
 PY_FILES = \
 	__init__.py \
 	core/algorithms.py core/utils.py core/validation.py \
+	exporters/base_exporter.py exporters/image_exporter.py exporters/svg_exporter.py exporters/pdf_exporter.py exporters/csv_exporter.py exporters/shp_exporter.py \
 	gui/main_dialog.py gui/preview_renderer.py
 
 UI_FILES = gui/ui/main_dialog_base.ui
