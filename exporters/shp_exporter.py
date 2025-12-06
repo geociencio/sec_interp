@@ -13,8 +13,9 @@ from qgis.core import (
     QgsFeature,
     QgsWkbTypes,
     QgsCoordinateReferenceSystem,
+    QgsProject,
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from .base_exporter import BaseExporter
 
@@ -52,24 +53,28 @@ class ShapefileExporter(BaseExporter):
                 first_attrs = features_data[0]['attributes']
                 for key, value in first_attrs.items():
                     if isinstance(value, int):
-                        fields.append(QgsField(key, QVariant.Int))
+                        fields.append(QgsField(key, QMetaType.Type.Int))
                     elif isinstance(value, float):
-                        fields.append(QgsField(key, QVariant.Double))
+                        fields.append(QgsField(key, QMetaType.Type.Double))
                     else:
-                        fields.append(QgsField(key, QVariant.String))
+                        fields.append(QgsField(key, QMetaType.Type.QString))
 
             # Determine driver
             ext = output_path.suffix.lower()
             driver = "GPKG" if ext == '.gpkg' else "ESRI Shapefile"
 
-            # Create writer
-            writer = QgsVectorFileWriter(
+            # Create writer using new static method for QGIS 3.38+
+            options = QgsVectorFileWriter.SaveVectorOptions()
+            options.driverName = driver
+            options.fileEncoding = "UTF-8"
+            
+            writer = QgsVectorFileWriter.create(
                 str(output_path),
-                "UTF-8",
                 fields,
                 geometry_type,
                 crs,
-                driver
+                QgsProject.instance().transformContext(),
+                options
             )
 
             if writer.hasError() != QgsVectorFileWriter.NoError:

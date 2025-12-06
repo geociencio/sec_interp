@@ -31,6 +31,7 @@ from pathlib import Path
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QLineF,
+    QMetaType,
     QSettings,
     Qt,
     QTranslator,
@@ -927,7 +928,7 @@ class SecInterp:
 
             # Create fields
             fields = QgsFields()
-            fields.append(QgsField("id", QVariant.Int))
+            fields.append(QgsField("id", QMetaType.Type.Int))
 
             # Create vector writer
             writer = scu.create_shapefile_writer(
@@ -1294,7 +1295,7 @@ class SecInterp:
 
         # Create fields
         fields = QgsFields()
-        fields.append(QgsField("axis", QVariant.String))
+        fields.append(QgsField("axis", QMetaType.Type.QString))
 
         # Create vector writer
         writer = scu.create_shapefile_writer(shp_output_path, line_lyr.crs(), fields)

@@ -50,10 +50,12 @@ from qgis.PyQt.QtGui import QColor, QIcon, QImage, QPainter, QPageSize
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtWidgets import (
+    QApplication,
     QDialog,
     QDialogButtonBox,
     QFileDialog,
     QMessageBox,
+    QStyle,
     QWidget,
 )
 
@@ -212,6 +214,20 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
         # Connect export button
         self.export_pre.clicked.connect(self.export_preview)
+
+        # Setup required field indicators
+        self._setup_required_field_indicators()
+
+        # Set column stretch for grid layouts to minimize icon/label spacing
+        # DEM section: columns 0,1 (icon, label) should not stretch, rest can expand
+        self.gridLayout_dem.setColumnStretch(0, 0)  # icon
+        self.gridLayout_dem.setColumnStretch(1, 0)  # label
+        self.gridLayout_dem.setColumnStretch(2, 1)  # combo (expand)
+        
+        # Section line: columns 0,1 (icon, label) should not stretch, combo expands
+        self.gridLayout_section.setColumnStretch(0, 0)  # icon
+        self.gridLayout_section.setColumnStretch(1, 0)  # label
+        self.gridLayout_section.setColumnStretch(2, 1)  # combo (expand)
 
     def wheelEvent(self, event):
         """Handle mouse wheel for zooming in preview."""
@@ -967,4 +983,41 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         settings.setOutputDpi(dpi)
         settings.setBackgroundColor(QColor(255, 255, 255))
         return settings
+
+    def _setup_required_field_indicators(self):
+        """Setup required field indicators with warning icons.
+        
+        Initializes status icons for required fields (Raster Layer and Section Line)
+        and connects signals to update icons when fields are filled/cleared.
+        """
+        # Get standard Qt icons which are more reliable
+        style = QApplication.style()
+        self.warning_icon = style.standardIcon(QStyle.SP_MessageBoxWarning)
+        self.success_icon = style.standardIcon(QStyle.SP_DialogApplyButton)
+        
+        # Set initial warning icons
+        self.raster_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
+        self.section_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
+        
+        # Connect signals to update status
+        self.rasterdem.layerChanged.connect(self._update_raster_status)
+        self.crossline.layerChanged.connect(self._update_section_status)
+        
+        # Initial update
+        self._update_raster_status()
+        self._update_section_status()
+    
+    def _update_raster_status(self):
+        """Update raster layer status icon based on selection."""
+        if self.rasterdem.currentLayer():
+            self.raster_status_icon.setPixmap(self.success_icon.pixmap(16, 16))
+        else:
+            self.raster_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
+    
+    def _update_section_status(self):
+        """Update section line status icon based on selection."""
+        if self.crossline.currentLayer():
+            self.section_status_icon.setPixmap(self.success_icon.pixmap(16, 16))
+        else:
+            self.section_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
 

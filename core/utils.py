@@ -167,8 +167,18 @@ def create_shapefile_writer(
     Raises:
         IOError: If writer creation fails.
     """
-    writer = QgsVectorFileWriter(
-        str(output_path), "UTF-8", fields, geometry_type, crs, "ESRI Shapefile"
+    # Use new static create method for QGIS 3.38+
+    options = QgsVectorFileWriter.SaveVectorOptions()
+    options.driverName = "ESRI Shapefile"
+    options.fileEncoding = "UTF-8"
+    
+    writer = QgsVectorFileWriter.create(
+        str(output_path),
+        fields,
+        geometry_type,
+        crs,
+        QgsProject.instance().transformContext(),
+        options
     )
 
     if writer.hasError() != QgsVectorFileWriter.NoError:
