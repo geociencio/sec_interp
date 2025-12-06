@@ -61,45 +61,10 @@ from .ui.main_dialog_base import Ui_SecInterpDialogBase
 from ..core import utils as scu
 from ..core import validation as vu
 from .preview_renderer import PreviewRenderer
+from .legend_widget import LegendWidget
 from sec_interp.logger_config import get_logger
 
 
-class LegendWidget(QWidget):
-    """Widget to display the geological legend over the map canvas."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.renderer = None
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setAttribute(Qt.WA_TransparentForMouseEvents)  # Let clicks pass through
-        self.setAutoFillBackground(False)  # Don't fill background
-        self.hide()
-
-        # Install event filter on parent to track resize
-        if parent:
-            parent.installEventFilter(self)
-
-    def eventFilter(self, obj, event):
-        """Handle parent resize events."""
-        if obj == self.parent() and event.type() == QtCore.QEvent.Resize:
-            self.resize(event.size())
-        return super().eventFilter(obj, event)
-
-    def update_legend(self, renderer):
-        """Update legend with data from renderer."""
-        self.renderer = renderer
-        self.update()
-        self.show()
-
-    def paintEvent(self, event):
-        if not self.renderer or not self.renderer.active_units:
-            return
-
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-
-        # Draw legend using the shared method
-        self.renderer.draw_legend(painter, QRectF(self.rect()))
 
 
 class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
@@ -380,140 +345,70 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         This method validates inputs and generates a preview with all available data layers
         without saving files to disk.
         """
-
-        # Skip if no plugin instance (e.g., in tests)
-        if self.plugin_instance is None:
-            return
-
-        # Validate raster layer
-        raster_layer = self.rasterdem.currentLayer()
-        if not raster_layer:
-            self.results.setPlainText("⚠ Please select a raster layer for preview.")
-            return
-
-        # Validate crossline layer
-        line_layer = self.crossline.currentLayer()
-        if not line_layer:
-            self.results.setPlainText(
-                "⚠ Please select a cross-section line for preview."
-            )
-            return
-
-        # Validate band number
-        band_num = self.band.currentBand()
-        if not band_num:
-            self.results.setPlainText("⚠ Please select a band number.")
-            return
-
-        # Validate band exists in raster
-        is_valid, error = vu.validate_raster_band(raster_layer, band_num)
-        if not is_valid:
-            self.results.setPlainText(f"⚠ {error}")
-            return
-
         try:
-            from pathlib import Path
-            import tempfile
-            from qgis.core import QgsProject
+            # 1. Validation
+            try:
+                raster_layer, line_layer, band_num = self._validate_preview_requirements()
+            except ValueError as e:
+                self.results.setPlainText(f"⚠ {str(e)}")
+                return
 
             self.results.setPlainText("Generating preview...")
 
-            # Generate topographic profile
-            with tempfile.NamedTemporaryFile(
-                mode="w", suffix=".csv", delete=False
-            ) as tmp:
+            # 2. Data Generation
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as tmp:
                 tmp_path = Path(tmp.name)
 
-            profile_data = self.plugin_instance.topographic_profile(
-                line_layer, raster_layer, tmp_path, band_num
-            )
-            tmp_path.unlink()
-
-            if not profile_data or len(profile_data) < 2:
-                self.results.setPlainText(
-                    "⚠ No profile data generated. Check that the line intersects the raster."
+            try:
+                # Topography
+                profile_data = self._generate_topography(
+                    line_layer, raster_layer, band_num, tmp_path
                 )
-                return
 
-            # Initialize result message
-            result_msg = (
-                f"✓ Preview generated!\n\nTopography: {len(profile_data)} points\n"
-            )
-
-            # Process geological data if outcrop layer is selected
-            geol_data = None
-            outcrop_layer = self.outcrop.currentLayer()
-            if outcrop_layer:
-                outcrop_name_field = self.ocropname.currentField()
-
-                if outcrop_name_field:
-                    with tempfile.NamedTemporaryFile(
-                        mode="w", suffix=".csv", delete=False
-                    ) as tmp:
-                        tmp_path = Path(tmp.name)
-
-                    geol_data = self.plugin_instance.geol_profile(
-                        line_layer,
-                        raster_layer,
-                        outcrop_layer,
-                        outcrop_name_field,
-                        tmp_path,
-                        band_num,
+                if not profile_data or len(profile_data) < 2:
+                    self.results.setPlainText(
+                        "⚠ No profile data generated. Check that the line intersects the raster."
                     )
+                    return
+
+                # Geology
+                geol_data = self._generate_geology(
+                    line_layer, raster_layer, band_num, tmp_path
+                )
+
+                # Structures
+                # Get buffer distance
+                _, _, buffer_dist = vu.validate_numeric_input(
+                    self.buffer_distance.text(),
+                    field_name="Buffer distance",
+                    allow_empty=True,
+                )
+                buffer_dist = buffer_dist if buffer_dist is not None else 100.0
+                
+                struct_data = self._generate_structures(
+                    line_layer, buffer_dist, tmp_path
+                )
+
+            finally:
+                if tmp_path.exists():
                     tmp_path.unlink()
 
-                    if geol_data:
-                        result_msg += f"Geology: {len(geol_data)} points\n"
-                    else:
-                        result_msg += "Geology: No intersections\n"
-
-            # Process structural data if structural layer is selected
-            struct_data = None
-            structural_layer = self.structural.currentLayer()
-            if structural_layer:
-                dip_field = self.dip.currentField()
-                strike_field = self.strike.currentField()
-
-                if dip_field and strike_field:
-                    # Get buffer distance
-                    _, _, buffer_dist = vu.validate_numeric_input(
-                        self.buffer_distance.text(),
-                        field_name="Buffer distance",
-                        allow_empty=True,
-                    )
-                    buffer_dist = buffer_dist if buffer_dist is not None else 100.0
-
-                    # Get line azimuth
-                    line_feat = next(line_layer.getFeatures(), None)
-                    if line_feat:
-                        line_geom = line_feat.geometry()
-                        line_azimuth = scu.calculate_line_azimuth(line_geom)
-
-                        with tempfile.NamedTemporaryFile(
-                            mode="w", suffix=".csv", delete=False
-                        ) as tmp:
-                            tmp_path = Path(tmp.name)
-
-                        struct_data = self.plugin_instance.project_structures(
-                            line_layer,
-                            structural_layer,
-                            buffer_dist,
-                            line_azimuth,
-                            dip_field,
-                            strike_field,
-                            tmp_path,
-                        )
-                        tmp_path.unlink()
-
-                        if struct_data:
-                            result_msg += f"Structures: {len(struct_data)} points\n"
-                        else:
-                            result_msg += f"Structures: None in {buffer_dist}m buffer\n"
-
-            # Draw preview with all available data
+            # 3. Visualization
             self.plugin_instance.draw_preview(profile_data, geol_data, struct_data)
 
-            # Add distance and elevation ranges
+            # 4. Results Reporting
+            result_msg = f"✓ Preview generated!\n\nTopography: {len(profile_data)} points\n"
+            
+            if geol_data:
+                result_msg += f"Geology: {len(geol_data)} points\n"
+            else:
+                result_msg += "Geology: No intersections or layer not selected\n"
+
+            if struct_data:
+                result_msg += f"Structures: {len(struct_data)} points\n"
+            else:
+                result_msg += f"Structures: None in {buffer_dist}m buffer or layer not selected\n"
+
             result_msg += (
                 f"\nDistance: {profile_data[0][0]:.1f} - {profile_data[-1][0]:.1f} m\n"
             )
@@ -524,14 +419,13 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
         except Exception as e:
             import traceback
-
             error_details = traceback.format_exc()
             self.results.setPlainText(
                 f"⚠ Error generating preview: {str(e)}\n\nDetails:\n{error_details}"
             )
 
     def export_preview(self):
-        """Export the current preview to a file (SVG, PDF, PNG, JPG) using PyQGIS native rendering."""
+        """Export the current preview to a file (SVG, PDF, PNG, JPG)."""
         if not self.current_layers or not self.current_canvas:
             self.results.setPlainText(
                 "⚠ No preview to export. Please generate a preview first."
@@ -539,10 +433,9 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             return
 
         # Determine default directory
-
         settings = QgsSettings()
-
         dest_folder = self.dest_fold.filePath().strip()
+        
         if dest_folder:
             default_path = str(Path(dest_folder) / "preview.png")
         else:
@@ -572,13 +465,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         current_ext = Path(filename).suffix.lower()
         expected_ext = filter_ext_map.get(selected_filter, "")
 
-        if not current_ext or current_ext not in [
-            ".png",
-            ".jpg",
-            ".jpeg",
-            ".svg",
-            ".pdf",
-        ]:
+        if not current_ext or current_ext not in [".png", ".jpg", ".jpeg", ".svg", ".pdf"]:
             if expected_ext:
                 filename = str(Path(filename).with_suffix(expected_ext))
 
@@ -594,113 +481,22 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             # Export dimensions (use canvas size as reference)
             width = self.preview.width()
             height = self.preview.height()
+            dpi = 96
 
             # For raster formats, use higher resolution
             if ext in [".png", ".jpg", ".jpeg"]:
                 width = width * 3  # 3x resolution for better quality
                 height = height * 3
                 dpi = 300
-            else:
-                dpi = 96
 
-            # Use PyQGIS native export
-            from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
-
-            settings = QgsMapSettings()
-            settings.setLayers(self.current_layers)
-            settings.setExtent(extent)
-            settings.setOutputSize(QSize(width, height))
-            settings.setOutputDpi(dpi)
-            settings.setBackgroundColor(QColor(255, 255, 255))
+            export_settings = self._get_export_settings(width, height, dpi, extent)
 
             if ext in [".png", ".jpg", ".jpeg"]:
-                # Raster export
-                image = QImage(QSize(width, height), QImage.Format_ARGB32)
-
-                if ext in [".jpg", ".jpeg"]:
-                    image.fill(QColor(255, 255, 255))  # White background
-                else:
-                    image.fill(QColor(255, 255, 255))  # White background for PNG too
-
-                painter = QPainter(image)
-                painter.setRenderHint(QPainter.Antialiasing)
-                painter.setRenderHint(QPainter.SmoothPixmapTransform)
-
-                job = QgsMapRendererCustomPainterJob(settings, painter)
-                job.start()
-                job.waitForFinished()
-
-                # Draw legend
-                if hasattr(self.plugin_instance, "preview_renderer"):
-                    self.plugin_instance.preview_renderer.draw_legend(
-                        painter, QRectF(0, 0, width, height)
-                    )
-
-                painter.end()
-
-                quality = 95 if ext in [".jpg", ".jpeg"] else -1
-                if not image.save(filename, None, quality):
-                    raise Exception(f"Failed to save image to {filename}")
-
+                self._export_to_raster(filename, export_settings, width, height, ext)
             elif ext == ".svg":
-                # SVG export
-                generator = QSvgGenerator()
-                generator.setFileName(filename)
-                generator.setSize(QSize(width, height))
-                generator.setViewBox(QRectF(0, 0, width, height))
-                generator.setTitle("Section Interpretation Preview")
-                generator.setDescription("Generated by SecInterp QGIS Plugin")
-
-                painter = QPainter()
-                if painter.begin(generator):
-                    painter.setRenderHint(QPainter.Antialiasing)
-
-                    job = QgsMapRendererCustomPainterJob(settings, painter)
-                    job.start()
-                    job.waitForFinished()
-
-                    # Draw legend
-                    if hasattr(self.plugin_instance, "preview_renderer"):
-                        self.plugin_instance.preview_renderer.draw_legend(
-                            painter, QRectF(0, 0, width, height)
-                        )
-
-                    painter.end()
-                else:
-                    raise Exception("Failed to initialize SVG painter")
-
+                self._export_to_svg(filename, export_settings, width, height)
             elif ext == ".pdf":
-                # PDF export
-                printer = QPrinter(QPrinter.HighResolution)
-                printer.setOutputFormat(QPrinter.PdfFormat)
-                printer.setOutputFileName(filename)
-                printer.setPageSize(QPageSize(QSizeF(width, height), QPageSize.Point))
-                printer.setPageMargins(0.0, 0.0, 0.0, 0.0, QPrinter.Point)
-                printer.setFullPage(True)
-
-                painter = QPainter()
-                if painter.begin(printer):
-                    painter.setRenderHint(QPainter.Antialiasing)
-
-                    # Update settings with actual printer device dimensions and DPI
-                    # This ensures the map fills the page regardless of HighResolution setting
-                    dev = painter.device()
-                    settings.setOutputSize(QSize(dev.width(), dev.height()))
-                    settings.setOutputDpi(printer.resolution())
-
-                    job = QgsMapRendererCustomPainterJob(settings, painter)
-                    job.start()
-                    job.waitForFinished()
-
-                    # Draw legend
-                    if hasattr(self.plugin_instance, "preview_renderer"):
-                        self.plugin_instance.preview_renderer.draw_legend(
-                            painter, QRectF(0, 0, dev.width(), dev.height())
-                        )
-
-                    painter.end()
-                else:
-                    raise Exception("Failed to initialize PDF printer")
+                self._export_to_pdf(filename, export_settings, width, height)
             else:
                 raise Exception(f"Unsupported file extension: {ext}")
 
@@ -710,7 +506,6 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
         except Exception as e:
             import traceback
-
             error_details = traceback.format_exc()
             self.results.setPlainText(
                 f"⚠ Error exporting preview: {str(e)}\n\nDetails:\n{error_details}"
@@ -1049,3 +844,191 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         :return: QIcon
         """
         return QgsApplication.getThemeIcon(name)
+
+    def _validate_preview_requirements(self):
+        """Validate inputs required for preview generation.
+
+        Returns:
+            tuple: (raster_layer, line_layer, band_num) if valid.
+
+        Raises:
+            ValueError: If validation fails, with a user-friendly message.
+        """
+        if self.plugin_instance is None:
+            raise ValueError("Plugin instance not initialized.")
+
+        raster_layer = self.rasterdem.currentLayer()
+        if not raster_layer:
+            raise ValueError("Please select a raster layer for preview.")
+
+        line_layer = self.crossline.currentLayer()
+        if not line_layer:
+            raise ValueError("Please select a cross-section line for preview.")
+
+        band_num = self.band.currentBand()
+        if not band_num:
+            raise ValueError("Please select a band number.")
+
+        is_valid, error = vu.validate_raster_band(raster_layer, band_num)
+        if not is_valid:
+            raise ValueError(error)
+
+        return raster_layer, line_layer, band_num
+
+    def _generate_topography(self, line_layer, raster_layer, band_num, tmp_path):
+        """Generate topographic profile data."""
+        return self.plugin_instance.topographic_profile(
+            line_layer, raster_layer, tmp_path, band_num
+        )
+
+    def _generate_geology(self, line_layer, raster_layer, band_num, tmp_path):
+        """Generate geological profile data if outcrop layer is selected."""
+        outcrop_layer = self.outcrop.currentLayer()
+        if not outcrop_layer:
+            return None
+
+        outcrop_name_field = self.ocropname.currentField()
+        if not outcrop_name_field:
+            return None
+
+        return self.plugin_instance.geol_profile(
+            line_layer,
+            raster_layer,
+            outcrop_layer,
+            outcrop_name_field,
+            tmp_path,
+            band_num,
+        )
+
+    def _generate_structures(self, line_layer, buffer_dist, tmp_path):
+        """Generate structural data if structural layer is selected."""
+        structural_layer = self.structural.currentLayer()
+        if not structural_layer:
+            return None
+
+        dip_field = self.dip.currentField()
+        strike_field = self.strike.currentField()
+
+        if not (dip_field and strike_field):
+            return None
+
+        # Get line azimuth
+        line_feat = next(line_layer.getFeatures(), None)
+        if not line_feat:
+            return None
+            
+        line_geom = line_feat.geometry()
+        line_azimuth = scu.calculate_line_azimuth(line_geom)
+
+        return self.plugin_instance.project_structures(
+            line_layer,
+            structural_layer,
+            buffer_dist,
+            line_azimuth,
+            dip_field,
+            strike_field,
+            tmp_path,
+        )
+
+    def _get_export_settings(self, width, height, dpi, extent):
+        """Create QgsMapSettings for export."""
+        from qgis.core import QgsMapSettings
+        
+        settings = QgsMapSettings()
+        settings.setLayers(self.current_layers)
+        settings.setExtent(extent)
+        settings.setOutputSize(QSize(width, height))
+        settings.setOutputDpi(dpi)
+        settings.setBackgroundColor(QColor(255, 255, 255))
+        return settings
+
+    def _export_to_raster(self, filename, settings, width, height, ext):
+        """Export preview to raster format (PNG, JPG)."""
+        from qgis.core import QgsMapRendererCustomPainterJob
+        
+        image = QImage(QSize(width, height), QImage.Format_ARGB32)
+        image.fill(QColor(255, 255, 255))
+
+        painter = QPainter(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+
+        job = QgsMapRendererCustomPainterJob(settings, painter)
+        job.start()
+        job.waitForFinished()
+
+        # Draw legend
+        if hasattr(self.plugin_instance, "preview_renderer"):
+            self.plugin_instance.preview_renderer.draw_legend(
+                painter, QRectF(0, 0, width, height)
+            )
+
+        painter.end()
+
+        quality = 95 if ext in [".jpg", ".jpeg"] else -1
+        if not image.save(filename, None, quality):
+            raise Exception(f"Failed to save image to {filename}")
+
+    def _export_to_svg(self, filename, settings, width, height):
+        """Export preview to SVG format."""
+        from qgis.core import QgsMapRendererCustomPainterJob
+        
+        generator = QSvgGenerator()
+        generator.setFileName(filename)
+        generator.setSize(QSize(width, height))
+        generator.setViewBox(QRectF(0, 0, width, height))
+        generator.setTitle("Section Interpretation Preview")
+        generator.setDescription("Generated by SecInterp QGIS Plugin")
+
+        painter = QPainter()
+        if not painter.begin(generator):
+            raise Exception("Failed to initialize SVG painter")
+
+        try:
+            painter.setRenderHint(QPainter.Antialiasing)
+            job = QgsMapRendererCustomPainterJob(settings, painter)
+            job.start()
+            job.waitForFinished()
+
+            # Draw legend
+            if hasattr(self.plugin_instance, "preview_renderer"):
+                self.plugin_instance.preview_renderer.draw_legend(
+                    painter, QRectF(0, 0, width, height)
+                )
+        finally:
+            painter.end()
+
+    def _export_to_pdf(self, filename, settings, width, height):
+        """Export preview to PDF format."""
+        from qgis.core import QgsMapRendererCustomPainterJob
+        
+        printer = QPrinter(QPrinter.HighResolution)
+        printer.setOutputFormat(QPrinter.PdfFormat)
+        printer.setOutputFileName(filename)
+        printer.setPageSize(QPageSize(QSizeF(width, height), QPageSize.Point))
+        printer.setPageMargins(0.0, 0.0, 0.0, 0.0, QPrinter.Point)
+        printer.setFullPage(True)
+
+        painter = QPainter()
+        if not painter.begin(printer):
+            raise Exception("Failed to initialize PDF printer")
+
+        try:
+            painter.setRenderHint(QPainter.Antialiasing)
+
+            # Update settings with actual printer device dimensions and DPI
+            dev = painter.device()
+            settings.setOutputSize(QSize(dev.width(), dev.height()))
+            settings.setOutputDpi(printer.resolution())
+
+            job = QgsMapRendererCustomPainterJob(settings, painter)
+            job.start()
+            job.waitForFinished()
+
+            # Draw legend
+            if hasattr(self.plugin_instance, "preview_renderer"):
+                self.plugin_instance.preview_renderer.draw_legend(
+                    painter, QRectF(0, 0, dev.width(), dev.height())
+                )
+        finally:
+            painter.end()
