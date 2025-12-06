@@ -6,7 +6,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=0.3
+version=1.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -20,6 +20,23 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    1.0 (2025-12-06)
+    * Major UI Refactoring - Plugin Manager Style:
+      - Redesigned main dialog with sidebar navigation (QListWidget + QStackedWidget)
+      - Replaced absolute positioning with responsive layouts (QVBoxLayout, QHBoxLayout, QSplitter)
+      - Integrated native QGIS theme icons for sidebar items
+      - Improved preview/results area proportions with better vertical space management
+      - Fixed legend rendering and resizing issues
+    * Code Quality Improvements:
+      - Extracted LegendWidget to separate module (gui/legend_widget.py)
+      - Refactored preview_profile_handler with helper methods and early returns
+      - Refactored export_preview with dedicated methods per format (PNG, JPG, SVG, PDF)
+      - Applied SOLID principles throughout main dialog class
+    * Documentation:
+      - Added COMMIT_GUIDELINES.md for standardized commit messages
+      - Added RELEASE_PROCESS.md with version release workflow
+      - Added drilllogs_research.md with future integration requirements
+    
     0.3 (2025-12-03)
     * Major Refactoring - Modular Project Structure:
       - Reorganized codebase into core/, gui/, resources/ packages
