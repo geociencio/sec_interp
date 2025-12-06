@@ -633,11 +633,11 @@ class PreviewRenderer:
 
         # Check all items for width
         if self.has_topography:
-            max_width = max(max_width, fm.width("Topography"))
+            max_width = max(max_width, fm.boundingRect("Topography").width())
         if self.has_structures:
-            max_width = max(max_width, fm.width("Structures"))
+            max_width = max(max_width, fm.boundingRect("Structures").width())
         for name in self.active_units.keys():
-            width = fm.width(name)
+            width = fm.boundingRect(name).width()
             max_width = max(max_width, width)
 
         # Count total items

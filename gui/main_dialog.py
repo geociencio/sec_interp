@@ -29,6 +29,7 @@ from pathlib import Path
 from typing import List
 
 from qgis.core import (
+    QgsApplication,
     Qgis,
     QgsCoordinateTransform,
     QgsLayerTreeLayer,
@@ -45,7 +46,7 @@ from qgis.core import (
 from qgis.gui import QgsFileWidget, QgsMapCanvas, QgsMessageBar
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QMarginsF, QRectF, QSize, QSizeF, Qt, QVariant
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPageSize
+from qgis.PyQt.QtGui import QColor, QIcon, QImage, QPainter, QPageSize
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtWidgets import (
@@ -73,6 +74,16 @@ class LegendWidget(QWidget):
         self.setAttribute(Qt.WA_TransparentForMouseEvents)  # Let clicks pass through
         self.setAutoFillBackground(False)  # Don't fill background
         self.hide()
+
+        # Install event filter on parent to track resize
+        if parent:
+            parent.installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        """Handle parent resize events."""
+        if obj == self.parent() and event.type() == QtCore.QEvent.Resize:
+            self.resize(event.size())
+        return super().eventFilter(obj, event)
 
     def update_legend(self, renderer):
         """Update legend with data from renderer."""
@@ -133,18 +144,37 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         self.buffer_distance.setText("100")
         self.dip_scale_factor.setText("4")
 
+        # Connect sidebar navigation
+        self.listWidget.currentRowChanged.connect(self.stackedWidget.setCurrentIndex)
+
+        # Set icons for sidebar items
+        # DEM / Raster
+        self.listWidget.item(0).setIcon(self.getThemeIcon("mIconRaster.svg"))
+        # Section Line
+        self.listWidget.item(1).setIcon(self.getThemeIcon("mIconLineLayer.svg"))
+        # Geology
+        self.listWidget.item(2).setIcon(self.getThemeIcon("mIconPolygonLayer.svg"))
+        # Structural
+        self.listWidget.item(3).setIcon(self.getThemeIcon("mIconPointLayer.svg"))
+
         # Replace QGraphicsView with QgsMapCanvas for preview
         # Remove the old QGraphicsView widget
         old_preview = self.preview
         preview_geometry = old_preview.geometry()
         preview_parent = old_preview.parent()
+        # Replace QGraphicsView with QgsMapCanvas for preview
+        # Remove the old QGraphicsView widget
+        old_preview = self.preview
+        
+        # Create new QgsMapCanvas
+        self.preview = QgsMapCanvas(old_preview.parent())
+        self.preview.setCanvasColor(QColor(255, 255, 255))  # White background
+        
+        # Replace in layout
+        self.verticalLayout_preview.replaceWidget(old_preview, self.preview)
+        
         old_preview.setParent(None)
         old_preview.deleteLater()
-
-        # Create new QgsMapCanvas
-        self.preview = QgsMapCanvas(preview_parent)
-        self.preview.setGeometry(preview_geometry)
-        self.preview.setCanvasColor(QColor(255, 255, 255))  # White background
 
         # Create legend widget
         self.legend_widget = LegendWidget(self.preview)
@@ -1010,3 +1040,12 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
         except Exception as e:
             self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
+
+    def getThemeIcon(self, name):
+        """
+        Get a theme icon from QGIS.
+
+        :param name: The name of the icon (e.g. 'mActionFileOpen.svg')
+        :return: QIcon
+        """
+        return QgsApplication.getThemeIcon(name)
