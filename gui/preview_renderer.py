@@ -164,19 +164,27 @@ class PreviewRenderer:
             return None
 
         # Group by geological unit
-        geol_groups = {}
-        for dist, elev, name in geol_data:
-            if name not in geol_groups:
-                geol_groups[name] = []
-            geol_groups[name].append((dist, elev))
+        # Create memory layer using factory
+        layer, provider = self._create_memory_layer("LineString", "Geology", "field=unit:string")
+        if not layer:
+            return None
 
-        # Create features for each unit
+        # Group data by geological unit
+        from collections import defaultdict
+        geol_groups = defaultdict(list)
+        for dist, elev, unit in geol_data:
+            geol_groups[unit].append((dist, elev))
+
+        # Create line features for each unit
         features = []
         for unit_name, points in geol_groups.items():
             if len(points) < 2:
                 continue
 
-            # Create line geometry
+            # Sort points by distance
+            points.sort(key=lambda p: p[0])
+
+            # Create line from points
             line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in points]
             line = QgsLineString(line_points)
 
@@ -205,31 +213,10 @@ class PreviewRenderer:
 
             # Track for legend
             self.active_units[str(unit_name)] = color
-            # Sort points by distance
-            points.sort(key=lambda p: p[0])
 
-            # Create polygon by adding bottom points
-            polygon_points = []
-            # Top boundary
-            for dist, elev in points:
-                polygon_points.append(QgsPointXY(dist, elev))
-            
-            # Bottom boundary (reverse order)
-            min_elev = min(e for _, e in points) - 100  # Extend below
-            for dist, _ in reversed(points):
-                polygon_points.append(QgsPointXY(dist, min_elev))
-            
-            # Close polygon
-            if polygon_points:
-                polygon_points.append(polygon_points[0])
-                
-                polygon = QgsGeometry.fromPolygonXY([polygon_points])
-                feat = QgsFeature()
-                feat.setGeometry(polygon)
-                feat.setAttributes([unit_name])
-                features.append(feat)
-
-        provider.addFeatures(features)
+        renderer = QgsCategorizedSymbolRenderer("unit", categories)
+        layer.setRenderer(renderer)
+        layer.updateExtents()
         logger.debug("Created geology layer with %d units", len(geol_groups))
         return layer
 
