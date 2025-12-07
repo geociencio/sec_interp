@@ -348,11 +348,8 @@ class SecInterp:
             })
             logger.info("✓ Data cached for future use")
 
-        # Get visualization parameters (not cached)
-        vert_exag = float(validated_values.get("vert_exag", 1.0))
-
         # Draw preview with current visualization parameters
-        self.draw_preview(profile_data, geol_data, struct_data, vert_exag)
+        self.draw_preview(profile_data, geol_data, struct_data)
 
         return profile_data, geol_data, struct_data
 

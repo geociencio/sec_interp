@@ -92,10 +92,22 @@ class PerformanceTimer:
         self.duration: float = 0.0
         
     def __enter__(self):
+        """Start the timer.
+        
+        Returns:
+            self: The timer instance
+        """
         self.start_time = time.perf_counter()
         return self
         
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Stop the timer and record/log validity.
+        
+        Args:
+            exc_type: Exception type if raised
+            exc_val: Exception value if raised
+            exc_tb: Exception traceback if raised
+        """
         self.duration = time.perf_counter() - self.start_time
         
         if self.collector:
@@ -103,6 +115,7 @@ class PerformanceTimer:
             
         if self.logger_func:
             self.logger_func(f"{self.operation_name}: {self.duration:.3f}s")
+
 
 def format_duration(seconds: float) -> str:
     """Format duration in human readable format.
@@ -115,7 +128,8 @@ def format_duration(seconds: float) -> str:
     """
     if seconds < 0.001:
         return f"{seconds*1000000:.0f}µs"
-    elif seconds < 1.0:
+    
+    if seconds < 1.0:
         return f"{seconds*1000:.0f}ms"
-    else:
-        return f"{seconds:.1f}s"
+        
+    return f"{seconds:.1f}s"
