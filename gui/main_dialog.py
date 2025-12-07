@@ -374,7 +374,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             try:
                 # Topography
                 profile_data = self._generate_topography(
-                    line_layer, raster_layer, band_num, tmp_path
+                    line_layer, raster_layer, band_num
                 )
 
                 if not profile_data or len(profile_data) < 2:
@@ -385,7 +385,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
                 # Geology
                 geol_data = self._generate_geology(
-                    line_layer, raster_layer, band_num, tmp_path
+                    line_layer, raster_layer, band_num
                 )
 
                 # Structures
@@ -398,7 +398,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                 buffer_dist = buffer_dist if buffer_dist is not None else 100.0
 
                 struct_data = self._generate_structures(
-                    line_layer, buffer_dist, tmp_path
+                    line_layer, buffer_dist
                 )
 
             finally:
@@ -919,13 +919,13 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
         return raster_layer, line_layer, band_num
 
-    def _generate_topography(self, line_layer, raster_layer, band_num, tmp_path):
+    def _generate_topography(self, line_layer, raster_layer, band_num):
         """Generate topographic profile data."""
         return self.plugin_instance.topographic_profile(
             line_layer, raster_layer, band_num
         )
 
-    def _generate_geology(self, line_layer, raster_layer, band_num, tmp_path):
+    def _generate_geology(self, line_layer, raster_layer, band_num):
         """Generate geological profile data if outcrop layer is selected."""
         outcrop_layer = self.outcrop.currentLayer()
         if not outcrop_layer:
@@ -943,7 +943,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             band_num,
         )
 
-    def _generate_structures(self, line_layer, buffer_dist, tmp_path):
+    def _generate_structures(self, line_layer, buffer_dist):
         """Generate structural data if structural layer is selected."""
         structural_layer = self.structural.currentLayer()
         if not structural_layer:
@@ -952,7 +952,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         dip_field = self.dip.currentField()
         strike_field = self.strike.currentField()
 
-        if not (dip_field and strike_field):
+        if not dip_field or not strike_field:
             return None
 
         # Get line azimuth

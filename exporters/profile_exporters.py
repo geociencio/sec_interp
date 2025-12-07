@@ -18,7 +18,10 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QMetaType
 
 from .base_exporter import BaseExporter
-from ..core import utils as scu
+from sec_interp.core import utils as scu
+from sec_interp.logger_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class ProfileLineShpExporter(BaseExporter):
@@ -54,7 +57,8 @@ class ProfileLineShpExporter(BaseExporter):
             writer.addFeature(feat)
             del writer
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f"Failed to export profile line to {output_path}: {e}")
             return False
 
 
@@ -122,7 +126,8 @@ class GeologyShpExporter(BaseExporter):
 
             del writer
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f"Failed to export geology profile to {output_path}: {e}")
             return False
 
 
@@ -209,7 +214,8 @@ class StructureShpExporter(BaseExporter):
 
             del writer
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f"Failed to export structural profile to {output_path}: {e}")
             return False
 
 
@@ -266,5 +272,6 @@ class AxesShpExporter(BaseExporter):
 
             del writer
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f"Failed to export axes to {output_path}: {e}")
             return False
