@@ -14,6 +14,8 @@ This folder contains sample data files for testing the SecInterp plugin.
 | `secc1.shp` | Shapefile | Cross-section line for profile generation |
 | `geologia.shp` | Shapefile | Geological unit polygons (fictitious) |
 | `pts.shp` | Shapefile | Structural measurement points with dip/strike (fictitious) |
+| `basedatosestruct.csv` | CSV | Raw structural measurements with cardinal notation text |
+| `basedatosestruct_clean.csv` | CSV | Processed structural measurements with numeric Strike/Dip columns |
 | `area.shp` | Shapefile | Study area boundary polygon |
 
 ## Data Sources
@@ -33,10 +35,20 @@ This folder contains sample data files for testing the SecInterp plugin.
 
 Sample geological unit polygons to test the geological profile functionality.
 
-### Structural Points (pts.shp)
+### Structural Measurements
+
+#### Points Shapefile (pts.shp)
 > ⚠️ **FICTITIOUS DATA** - For demonstration purposes only
 
-Sample structural measurement points (dip/strike) to test the structural projection functionality.
+Sample structural measurement points (dip/strike) ready for use in QGIS.
+
+#### Raw CSV Database (basedatosestruct.csv)
+Raw structural database containing measurements in cardinal notation (e.g., "N 15° W"). Useful for testing CSV imports and text parsing.
+- Columns: `PUNTO`, `X`, `Y`, `DATO`, `RUMBO` (text), `ECHADO` (text), `UNIDAD`
+
+#### Processed CSV Database (basedatosestruct_clean.csv)
+Cleaned version of the structural database with added numeric columns for easy processing.
+- Extra Columns: `STRIKE` (0-360), `DIP` (0-90)
 
 ### Area Boundary (area.shp)
 Polygon defining the study area extent.
