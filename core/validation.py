@@ -354,6 +354,124 @@ def validate_angle_range(
     return True, ""
 
 
+def validate_crs_compatibility(layers: List[QgsMapLayer]) -> Tuple[bool, str]:
+    """Validate that all layers have compatible CRS.
+    
+    Checks if all provided layers use the same Coordinate Reference System.
+    Returns a warning if CRS mismatch is detected (QGIS will reproject on-the-fly).
+    
+    Args:
+        layers: List of QgsMapLayer to check
+        
+    Returns:
+        Tuple of (is_compatible, warning_message)
+        - is_compatible: False if CRS mismatch detected
+        - warning_message: Details about incompatible layers
+    """
+    if not layers:
+        return True, ""
+    
+    # Get first non-None layer CRS as reference
+    reference_crs = None
+    reference_layer = None
+    for layer in layers:
+        if layer and layer.isValid():
+            reference_crs = layer.crs()
+            reference_layer = layer
+            break
+    
+    if not reference_crs:
+        return True, ""
+    
+    # Check all other layers against reference
+    incompatible = []
+    for layer in layers:
+        if layer and layer.isValid():
+            if layer.crs() != reference_crs:
+                incompatible.append(
+                    f"  - {layer.name()}: {layer.crs().authid()}"
+                )
+    
+    if incompatible:
+        warning = (
+            f"⚠ CRS mismatch detected!\n\n"
+            f"Reference CRS: {reference_crs.authid()} ({reference_layer.name()})\n"
+            f"Incompatible layers:\n" + "\n".join(incompatible) + "\n\n"
+            f"QGIS will reproject on-the-fly, but this may affect accuracy.\n"
+            f"Consider reprojecting all layers to the same CRS for best results."
+        )
+        return False, warning
+    
+    return True, ""
+
+
+def validate_reasonable_ranges(values: dict) -> List[str]:
+    """Check for unreasonable parameter values.
+    
+    Validates that numeric parameters are within reasonable ranges
+    and warns about extreme values that may cause issues.
+    
+    Args:
+        values: Dictionary of parameter values from dialog
+        
+    Returns:
+        List of warning messages (empty if all values are reasonable)
+    """
+    warnings = []
+    
+    # Vertical exaggeration
+    try:
+        vert_exag = float(values.get("vert_exag", 1.0))
+        if vert_exag > 10:
+            warnings.append(
+                f"⚠ Vertical exaggeration ({vert_exag}) is very high. "
+                f"Values > 10 may distort the profile significantly."
+            )
+        elif vert_exag < 0.1:
+            warnings.append(
+                f"⚠ Vertical exaggeration ({vert_exag}) is very low. "
+                f"Profile may appear flattened."
+            )
+        elif vert_exag <= 0:
+            warnings.append(
+                f"❌ Vertical exaggeration ({vert_exag}) must be positive."
+            )
+    except (ValueError, TypeError):
+        pass  # Will be caught by numeric validation
+    
+    # Buffer distance
+    try:
+        buffer = float(values.get("buffer", 0))
+        if buffer > 5000:
+            warnings.append(
+                f"⚠ Buffer distance ({buffer}m) is very large. "
+                f"This may include distant structures not relevant to the section."
+            )
+        elif buffer < 0:
+            warnings.append(
+                f"❌ Buffer distance ({buffer}m) cannot be negative."
+            )
+    except (ValueError, TypeError):
+        pass
+    
+    # Dip scale
+    try:
+        dip_scale = float(values.get("dip_scale", 1.0))
+        if dip_scale > 5:
+            warnings.append(
+                f"⚠ Dip scale ({dip_scale}) is very high. "
+                f"Dip symbols may overlap and obscure the profile."
+            )
+        elif dip_scale <= 0:
+            warnings.append(
+                f"❌ Dip scale ({dip_scale}) must be positive."
+            )
+    except (ValueError, TypeError):
+        pass
+    
+    return warnings
+
+
 def validate_and_get_layers(values: dict) -> Tuple[bool, str, Optional[dict]]:
     """Retrieve and validate layers from project based on input values.
 

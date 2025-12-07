@@ -351,6 +351,20 @@ class SecInterp:
             scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error_msg))
             return None
 
+        # Check for reasonable parameter ranges
+        warnings = vu.validate_reasonable_ranges(validated_values)
+        if warnings:
+            logger.warning("Parameter range warnings: %s", warnings)
+            self.dlg.results.append("\n⚠️ Validation Warnings:")
+            for warning in warnings:
+                self.dlg.results.append(f"  {warning}")
+            self.dlg.results.append("")  # Empty line
+        
+        # Show CRS warning if present
+        if "_crs_warning" in validated_values:
+            self.dlg.results.append("\n" + validated_values["_crs_warning"])
+            self.dlg.results.append("")  # Empty line
+
         # Check if we can use cached data
         cache_key = self.data_cache.get_cache_key(validated_values)
         cached_data = self.data_cache.get(cache_key)
