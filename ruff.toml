@@ -1,0 +1,76 @@
+# ruff.toml
+
+# Global settings
+line-length = 88
+target-version = "py310"
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "help",
+    "resources/resources.py",
+    "gui/ui/main_dialog_base.py",
+    "gui/ui/__init__.py",
+]
+
+[lint]
+# Enable Pyflakes (F), pycodestyle (E, W), and isort (I)
+# Plus, some useful plugins
+select = [
+    "F",   # Pyflakes
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "N",   # pep8-naming
+    "D",   # pydocstyle
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "T20", # flake8-print
+    "SIM", # flake8-simplify
+    "PTH", # flake8-use-pathlib
+    "ISC", # flake8-implicit-str-concat
+    "Q",   # flake8-quotes
+    "TID", # flakee-tidy-imports
+    "PL",  # Pylint
+    "TRY", # tryceratops
+    "RUF", # Ruff-specific rules
+]
+
+ignore = [
+    # Ignore undefined names, which often occur with QGIS modules
+    # that are not available in standard Python environments.
+    # This replaces pylint's E0401 (import-error) and E0611 (no-name-in-module).
+    "F821",
+]
+
+# Match .pylintrc dummy variable regex
+dummy-variable-rgx = "^(_+|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_)$"
+
+
+[lint.per-file-ignores]
+# Allow unused variables in `__init__.py` files
+"__init__.py" = ["F401"]
+
+[format]
+# Compatible with black.
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.pylint]
+# Set max arguments, etc, from .pylintrc
+max-args = 5
+max-branches = 12
+max-locals = 15
+max-returns = 6
+max-statements = 50
+
+[lint.isort]
+# Match .pylintrc ignored modules
+known-third-party = ["enchant", "qgis", "PyQt5"]

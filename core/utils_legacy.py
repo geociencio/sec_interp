@@ -263,7 +263,8 @@ def calculate_line_azimuth(line_geom):
     """
     if line_geom.wkbType() == QgsWkbTypes.Point:
         return 0  # Points have no azimuth
-    elif line_geom.wkbType() == QgsWkbTypes.LineString:
+    
+    if line_geom.wkbType() == QgsWkbTypes.LineString:
         line = line_geom.asPolyline()
         if len(line) < 2:
             return 0
@@ -275,9 +276,9 @@ def calculate_line_azimuth(line_geom):
         if azimuth < 0:
             azimuth += 360
         return azimuth
-    else:
-        # For other geometry types, return a default value
-        return 0
+    
+    # For other geometry types, return a default value
+    return 0
 
 
 def calculate_step_size(geom, raster_lyr):
@@ -333,8 +334,8 @@ def get_line_start_point(geometry):
     """
     if geometry.isMultipart():
         return geometry.asMultiPolyline()[0][0]
-    else:
-        return geometry.asPolyline()[0]
+    
+    return geometry.asPolyline()[0]
 
 
 def create_distance_area(crs):
@@ -632,10 +633,11 @@ def calculate_interval(data_range):
 
     if normalized < 2:
         return magnitude * 0.5
-    elif normalized < 5:
+    
+    if normalized < 5:
         return magnitude
-    else:
-        return magnitude * 2
+        
+    return magnitude * 2
 
 
 def interpolate_elevation(topo_data, distance):
