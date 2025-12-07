@@ -728,7 +728,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                             errors.append(error)
 
         if errors:
-            QMessageBox.warning(self, "Validation Error", "\n".join(errors))
+            scu.show_user_message(self, "Validation Error", "\n".join(errors))
             return False
 
         return True

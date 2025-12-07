@@ -257,7 +257,7 @@ class SecInterp:
         is_valid, error_msg, validated_values = vu.validate_and_get_layers(values)
 
         if not is_valid:
-            QMessageBox.warning(self.dlg, self.tr("Error"), self.tr(error_msg))
+            scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error_msg))
             return None
 
         return validated_values
@@ -298,7 +298,7 @@ class SecInterp:
 
             # Validate profile data was generated
             if not profile_data:
-                QMessageBox.warning(
+                scu.show_user_message(
                     self.dlg,
                     self.tr("Error"),
                     self.tr(
@@ -348,7 +348,7 @@ class SecInterp:
                     # Get the azimuth of the cross-section line
                     line_feat = next(line_layer.getFeatures(), None)
                     if not line_feat:
-                        QMessageBox.warning(
+                        scu.show_user_message(
                             self.dlg,
                             self.tr("Error"),
                             self.tr("Line layer has no features."),
@@ -357,7 +357,7 @@ class SecInterp:
 
                     line_geom = line_feat.geometry()
                     if not line_geom or line_geom.isNull():
-                        QMessageBox.warning(
+                        scu.show_user_message(
                             self.dlg,
                             self.tr("Error"),
                             self.tr("Line geometry is not valid."),
@@ -403,20 +403,21 @@ class SecInterp:
 
         except (IOError, OSError) as e:
             # File system errors (temp file creation, permissions, etc.)
-            QMessageBox.warning(
+            scu.show_user_message(
                 self.dlg,
                 self.tr("File System Error"),
                 self.tr(
                     f"Failed to access temporary files: {str(e)}\n\n"
                     f"Please check disk space and permissions."
                 ),
+                "error",
             )
             self.dlg.results.append(f"File system error: {str(e)}")
             logger.error("File system error in process_data: %s", str(e), exc_info=True)
 
         except ValueError as e:
             # Data validation errors (invalid geometry, empty data, etc.)
-            QMessageBox.warning(
+            scu.show_user_message(
                 self.dlg,
                 self.tr("Data Validation Error"),
                 self.tr(
@@ -429,7 +430,7 @@ class SecInterp:
 
         except RuntimeError as e:
             # Runtime errors (geometry operations, CRS transformations, etc.)
-            QMessageBox.warning(
+            scu.show_user_message(
                 self.dlg,
                 self.tr("Processing Error"),
                 self.tr(
@@ -442,7 +443,7 @@ class SecInterp:
 
         except KeyError as e:
             # Missing field or attribute errors
-            QMessageBox.warning(
+            scu.show_user_message(
                 self.dlg,
                 self.tr("Field Error"),
                 self.tr(
@@ -458,12 +459,13 @@ class SecInterp:
             import traceback
 
             error_details = traceback.format_exc()
-            QMessageBox.warning(
+            scu.show_user_message(
                 self.dlg,
                 self.tr("Unexpected Error"),
                 self.tr(
                     f"An unexpected error occurred: {str(e)}\n\nDetails:\n{error_details}"
                 ),
+                "error",
             )
             self.dlg.results.append(f"Unexpected error: {str(e)}")
             logger.error("Unexpected error in process_data: %s", error_details)
@@ -810,7 +812,7 @@ class SecInterp:
             output_folder = Path(values["output_path"])
             is_valid, error, _ = vu.validate_output_path(str(output_folder))
             if not is_valid:
-                QMessageBox.warning(self.dlg, self.tr("Error"), self.tr(error))
+                scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error))
                 return
 
             self.dlg.results.setPlainText("✓ Generating data for export...")
@@ -822,7 +824,7 @@ class SecInterp:
                 values["selected_band"],
             )
             if not profile_data:
-                QMessageBox.warning(
+                scu.show_user_message(
                     self.dlg,
                     self.tr("Error"),
                     self.tr("No profile data generated, cannot save."),
@@ -931,14 +933,13 @@ class SecInterp:
             )
 
         except Exception as e:
-            error_details = traceback.format_exc()
-            logger.error("Unexpected error in save_profile_line: %s", error_details)
-            QMessageBox.warning(
+            scu.show_user_message(
                 self.dlg,
-                self.tr("Saving Error"),
-                self.tr(f"An unexpected error occurred while saving: {str(e)}"),
+                self.tr("Export Error"),
+                self.tr(f"Failed to export data: {str(e)}"),
+                "error",
             )
-            self.dlg.results.append(f"Error saving files: {str(e)}")
+            logger.error("Export error in save_profile_line: %s", str(e), exc_info=True)
 
     def draw_preview(self, topo_data, geol_data=None, struct_data=None):
         """Draw enhanced interactive preview using native PyQGIS renderer.
