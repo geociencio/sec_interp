@@ -4,11 +4,12 @@ Image exporter module for raster formats (PNG, JPG).
 """
 
 from pathlib import Path
-from typing import List
+from typing import List, Dict, Any, Optional
 
 from qgis.PyQt.QtGui import QImage, QPainter, QColor
 from qgis.PyQt.QtCore import QSize, QRectF
 from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
+
 
 from .base_exporter import BaseExporter
 from sec_interp.logger_config import get_logger

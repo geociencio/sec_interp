@@ -4,7 +4,7 @@ Specific exporters for profile data (Shapefiles).
 """
 import math
 from pathlib import Path
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Tuple
 
 from qgis.core import (
     QgsPointXY,
