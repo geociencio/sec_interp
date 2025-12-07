@@ -171,14 +171,14 @@ def create_shapefile_writer(
     options = QgsVectorFileWriter.SaveVectorOptions()
     options.driverName = "ESRI Shapefile"
     options.fileEncoding = "UTF-8"
-    
+
     writer = QgsVectorFileWriter.create(
         str(output_path),
         fields,
         geometry_type,
         crs,
         QgsProject.instance().transformContext(),
-        options
+        options,
     )
 
     if writer.hasError() != QgsVectorFileWriter.NoError:
