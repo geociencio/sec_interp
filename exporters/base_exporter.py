@@ -31,17 +31,48 @@ class BaseExporter(ABC):
 
     @abstractmethod
     def export(self, output_path: Path, data: Any) -> bool:
-        """Export data to the specified file.
+        """Export data to file.
 
         This method must be implemented by all concrete exporters.
 
         Args:
             output_path: Destination file path
-            data: Data to export (type varies by exporter)
+            data: Data to export (format depends on exporter type)
 
         Returns:
-            True if export was successful, False otherwise
+            bool: True if export successful, False otherwise
         """
+        pass
+
+    def validate_export_path(self, output_path: Path, base_dir: Path = None) -> tuple[bool, str]:
+        """Validate export path for security.
+
+        Uses secure path validation to prevent path traversal attacks.
+
+        Args:
+            output_path: Path to validate
+            base_dir: Optional base directory to restrict exports to
+
+        Returns:
+            tuple: (is_valid, error_message)
+        """
+        from sec_interp.core.validation import validate_safe_output_path
+
+        # Get parent directory of the file
+        parent_dir = output_path.parent
+
+        # Validate parent directory is safe
+        is_valid, error, _ = validate_safe_output_path(
+            str(parent_dir),
+            base_dir=base_dir,
+            must_exist=False,
+            create_if_missing=True
+        )
+
+        if not is_valid:
+            return False, f"Invalid export path: {error}"
+
+        return True, ""
 
     @abstractmethod
     def get_supported_extensions(self) -> List[str]:

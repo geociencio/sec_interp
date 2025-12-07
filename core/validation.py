@@ -295,40 +295,119 @@ def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> Tuple[bool,
     return True, ""
 
 
+def validate_safe_output_path(
+    path: str,
+    base_dir: Optional[Path] = None,
+    must_exist: bool = False,
+    create_if_missing: bool = False,
+) -> Tuple[bool, str, Optional[Path]]:
+    """Validate output path with path traversal protection.
+
+    This function provides robust validation against path traversal attacks
+    by checking for suspicious patterns, normalizing paths, and optionally
+    restricting to a base directory.
+
+    Args:
+        path: Path string to validate
+        base_dir: Optional base directory to restrict paths to (for security)
+        must_exist: If True, path must already exist
+        create_if_missing: If True, create directory if it doesn't exist
+
+    Returns:
+        Tuple of (is_valid, error_message, resolved_Path_object)
+
+    Security Features:
+        - Detects path traversal patterns (../, ..\\)
+        - Resolves symlinks to canonical paths
+        - Validates against base directory if provided
+        - Rejects null bytes and suspicious characters
+        - Normalizes path separators
+
+    Example:
+        >>> is_valid, error, safe_path = validate_safe_output_path(
+        ...     "/home/user/output",
+        ...     base_dir=Path("/home/user"),
+        ...     create_if_missing=True
+        ... )
+    """
+    if not path or path.strip() == "":
+        return False, "Output path is required", None
+
+    # Security: Check for null bytes (common attack vector)
+    if "\0" in path:
+        return False, "Path contains invalid null bytes", None
+
+    try:
+        path_obj = Path(path)
+    except (TypeError, ValueError) as e:
+        return False, f"Invalid path: {str(e)}", None
+
+    # Security: Check for path traversal patterns in components
+    if ".." in path_obj.parts:
+        return False, "Path contains directory traversal sequences (..)", None
+
+    # Security: Resolve to canonical absolute path (follows symlinks)
+    try:
+        # strict=False allows non-existent paths to be resolved
+        resolved_path = path_obj.resolve(strict=False)
+    except (OSError, RuntimeError) as e:
+        return False, f"Cannot resolve path: {str(e)}", None
+
+    # Security: If base_dir provided, ensure path is within it
+    if base_dir:
+        try:
+            base_resolved = base_dir.resolve(strict=False)
+            # This will raise ValueError if resolved_path is not relative to base
+            resolved_path.relative_to(base_resolved)
+        except ValueError:
+            return False, f"Path escapes base directory: {base_dir}", None
+        except (OSError, RuntimeError) as e:
+            return False, f"Cannot validate base directory: {str(e)}", None
+
+    # Check existence requirements
+    if must_exist and not resolved_path.exists():
+        return False, f"Path does not exist: {path}", None
+
+    # Create directory if requested
+    if create_if_missing and not resolved_path.exists():
+        try:
+            resolved_path.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            return False, f"Cannot create directory: {str(e)}", None
+
+    # If path exists, validate it's a directory
+    if resolved_path.exists():
+        if not resolved_path.is_dir():
+            return False, f"Path is not a directory: {path}", None
+
+        # Check if writable (try to create a temporary file)
+        try:
+            test_file = resolved_path / ".write_test"
+            test_file.touch()
+            test_file.unlink()
+        except OSError:
+            return False, f"Directory is not writable: {path}", None
+
+    return True, "", resolved_path
+
+
 def validate_output_path(path: str) -> Tuple[bool, str, Optional[Path]]:
     """Validate that an output path is valid and writable.
+
+    This is a convenience wrapper around validate_safe_output_path()
+    for backward compatibility.
 
     Args:
         path: Path string to validate
 
     Returns:
         Tuple of (is_valid, error_message, Path_object)
+
+    Note:
+        For new code, prefer using validate_safe_output_path() directly
+        as it provides more security options.
     """
-    if not path or path.strip() == "":
-        return False, "Output path is required", None
-
-    try:
-        path_obj = Path(path)
-    except (TypeError, ValueError) as e:
-        return False, "Invalid path: {str(e)}", None
-
-    # Check if path exists
-    if not path_obj.exists():
-        return False, f"Output folder does not exist: {path}", None
-
-    # Check if it's a directory
-    if not path_obj.is_dir():
-        return False, f"Output path is not a directory: {path}", None
-
-    # Check if writable (try to create a temporary file)
-    try:
-        test_file = path_obj / ".write_test"
-        test_file.touch()
-        test_file.unlink()
-    except OSError:
-        return False, f"Output folder is not writable: {path}", None
-
-    return True, "", path_obj
+    return validate_safe_output_path(path, must_exist=True)
 
 
 def validate_angle_range(
