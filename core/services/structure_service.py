@@ -24,6 +24,7 @@ from qgis.core import QgsVectorLayer
 
 from .. import utils as scu
 from .. import validation as vu
+from ..types import StructureData
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -44,7 +45,7 @@ class StructureService:
         line_az: float,
         dip_field: str,
         strike_field: str,
-    ):
+    ) -> StructureData:
         """Project structural measurements onto the cross-section plane.
 
         This function returns the profile data as a list of tuples.
@@ -53,15 +54,15 @@ class StructureService:
         their apparent dip in the direction of the section.
 
         Args:
-            line_lyr (QgsVectorLayer): The cross-section line layer.
-            struct_lyr (QgsVectorLayer): The structural measurements layer (points).
-            buffer_m (int): Buffer distance in meters to include structures.
-            line_az (float): Azimuth of the section line in degrees.
-            dip_field (str): Field name for dip angle.
-            strike_field (str): Field name for strike angle.
+            line_lyr: The cross-section line layer.
+            struct_lyr: The structural measurements layer (points).
+            buffer_m: Buffer distance in meters to include structures.
+            line_az: Azimuth of the section line in degrees.
+            dip_field: Field name for dip angle.
+            strike_field: Field name for strike angle.
 
         Returns:
-            list: List of (distance, apparent_dip) tuples.
+            List of (distance, apparent_dip) tuples.
 
         Raises:
             ValueError: If line layer has no features or invalid geometry.

@@ -22,75 +22,139 @@
 """
 
 from sec_interp.logger_config import get_logger
+from typing import Optional, Dict, Any
+from .types import ProfileData, GeologyData, StructureData
+
 
 logger = get_logger(__name__)
 
 
 class DataCache:
-    """Cache for processed profile data to improve performance.
+    """Cache for storing processed profile data.
     
-    Caches processed data to avoid re-computation when only
-    visualization parameters (vert_exag, dip_scale) change.
+    This cache stores topographic, geological, and structural profile data
+    to avoid redundant processing when parameters haven't changed.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize empty cache."""
-        self._cache = {}
-        self._cache_key = None
+        self._topo_cache: Dict[str, ProfileData] = {}
+        self._geol_cache: Dict[str, GeologyData] = {}
+        self._struct_cache: Dict[str, StructureData] = {}
+        self._metadata: Dict[str, Dict[str, Any]] = {}
 
-    def get_cache_key(self, values):
-        """Generate cache key from data-affecting input values.
-        
-        Only includes parameters that affect data processing,
-        not visualization parameters like vert_exag or dip_scale.
+    def get_topographic_profile(self, key: str) -> Optional[ProfileData]:
+        """Get cached topographic profile data.
         
         Args:
-            values: Dictionary of input values from dialog
+            key: Cache key (typically hash of input parameters)
             
         Returns:
-            Hash key for cache lookup
+            Cached profile data or None if not found
         """
-        # Only include data-affecting parameters
-        key_params = {
-            'raster_layer': id(values.get('raster_layer_obj')),
-            'line_layer': id(values.get('line_layer_obj')),
-            'outcrop_layer': id(values.get('outcrop_layer_obj')),
-            'structural_layer': id(values.get('structural_layer_obj')),
-            'buffer': values.get('buffer'),
-            'selected_band': values.get('selected_band'),
-            'outcrop_field': values.get('outcrop_name_field'),
-            'dip_field': values.get('dip_field'),
-            'strike_field': values.get('strike_field'),
-        }
-        # Create hash from string representation
-        key_str = '|'.join(f"{k}:{v}" for k, v in sorted(key_params.items()))
-        return hash(key_str)
+        return self._topo_cache.get(key)
 
-    def get(self, key):
-        """Get cached data for given key.
+    def set_topographic_profile(self, key: str, data: ProfileData) -> None:
+        """Store topographic profile data in cache.
+        
+        Args:
+            key: Cache key
+            data: Profile data to cache
+        """
+        self._topo_cache[key] = data
+
+    def get_geological_profile(self, key: str) -> Optional[GeologyData]:
+        """Get cached geological profile data.
         
         Args:
             key: Cache key
             
         Returns:
-            Cached data dict or None if not found
+            Cached geology data or None if not found
         """
-        return self._cache.get(key)
+        return self._geol_cache.get(key)
 
-    def set(self, key, data):
-        """Set cached data for given key.
+    def set_geological_profile(self, key: str, data: GeologyData) -> None:
+        """Store geological profile data in cache.
         
         Args:
             key: Cache key
-            data: Data to cache
+            data: Geology data to cache
         """
-        # Only keep one cache entry to limit memory
-        self._cache.clear()
-        self._cache[key] = data
-        self._cache_key = key
+        self._geol_cache[key] = data
 
-    def clear(self):
+    def get_structural_data(self, key: str) -> Optional[StructureData]:
+        """Get cached structural data.
+        
+        Args:
+            key: Cache key
+            
+        Returns:
+            Cached structure data or None if not found
+        """
+        return self._struct_cache.get(key)
+
+    def set_structural_data(self, key: str, data: StructureData) -> None:
+        """Store structural data in cache.
+        
+        Args:
+            key: Cache key
+            data: Structure data to cache
+        """
+        self._struct_cache[key] = data
+
+    def get_metadata(self, key: str) -> Optional[Dict[str, Any]]:
+        """Get cached metadata for a profile.
+        
+        Args:
+            key: Cache key
+            
+        Returns:
+            Cached metadata or None if not found
+        """
+        return self._metadata.get(key)
+
+    def set_metadata(self, key: str, metadata: Dict[str, Any]) -> None:
+        """Store metadata for a profile.
+        
+        Args:
+            key: Cache key
+            metadata: Metadata dictionary to cache
+        """
+        self._metadata[key] = metadata
+
+    def invalidate(self, pattern: Optional[str] = None) -> None:
+        """Invalidate cache entries.
+        
+        Args:
+            pattern: Optional pattern to match keys. If None, clears all cache.
+        """
+        if pattern is None:
+            # Clear all caches
+            self._topo_cache.clear()
+            self._geol_cache.clear()
+            self._struct_cache.clear()
+            self._metadata.clear()
+        else:
+            # Clear entries matching pattern
+            self._topo_cache = {k: v for k, v in self._topo_cache.items() if pattern not in k}
+            self._geol_cache = {k: v for k, v in self._geol_cache.items() if pattern not in k}
+            self._struct_cache = {k: v for k, v in self._struct_cache.items() if pattern not in k}
+            self._metadata = {k: v for k, v in self._metadata.items() if pattern not in k}
+
+    def clear(self) -> None:
         """Clear all cached data."""
-        self._cache.clear()
-        self._cache_key = None
-        logger.info("Cache cleared")
+        self.invalidate()
+
+    def get_cache_size(self) -> Dict[str, int]:
+        """Get the size of each cache.
+        
+        Returns:
+            Dictionary with cache names and their sizes
+        """
+        return {
+            'topographic': len(self._topo_cache),
+            'geological': len(self._geol_cache),
+            'structural': len(self._struct_cache),
+            'metadata': len(self._metadata),
+        }

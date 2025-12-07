@@ -23,6 +23,7 @@
 from qgis.core import QgsVectorLayer, QgsRasterLayer
 
 from .. import utils as scu
+from ..types import ProfileData
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -40,18 +41,18 @@ class ProfileService:
         line_lyr: QgsVectorLayer,
         raster_lyr: QgsRasterLayer,
         band_number: int = 1,
-    ):
+    ) -> ProfileData:
         """Generate topographic profile data by sampling elevation along the section line.
 
         This function returns the profile data as a list of tuples.
 
         Args:
-            line_lyr (QgsVectorLayer): The cross-section line layer.
-            raster_lyr (QgsRasterLayer): The DEM/raster layer for elevation.
-            band_number (int): Raster band to sample (default: 1).
+            line_lyr: The cross-section line layer.
+            raster_lyr: The DEM/raster layer for elevation.
+            band_number: Raster band to sample (default: 1).
 
         Returns:
-            list: List of (distance, elevation) tuples.
+            List of (distance, elevation) tuples.
 
         Raises:
             ValueError: If line layer has no features or invalid geometry.

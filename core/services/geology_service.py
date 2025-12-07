@@ -31,6 +31,7 @@ from qgis.core import (
 )
 
 from .. import utils as scu
+from ..types import GeologyData
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -39,8 +40,8 @@ logger = get_logger(__name__)
 class GeologyService:
     """Service for generating geological profiles.
     
-    This service handles the intersection of cross-section lines with geological
-    outcrop polygons to generate geological profiles.
+    This service handles the extraction of geological unit intersections
+    along a cross-section line.
     """
 
     def generate_geological_profile(
@@ -48,9 +49,9 @@ class GeologyService:
         line_lyr: QgsVectorLayer,
         raster_lyr: QgsRasterLayer,
         outcrop_lyr: QgsVectorLayer,
-        glg_field: str,
+        outcrop_name_field: str,
         band_number: int = 1,
-    ):
+    ) -> GeologyData:
         """Generate geological profile data by intersecting the section line with outcrop polygons.
 
         This function returns the profile data as a list of tuples.
