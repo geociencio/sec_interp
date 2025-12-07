@@ -94,8 +94,10 @@ class SecInterp:
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr("&Sec Interp")
+        # Create custom toolbar and make it visible
         self.toolbar = self.iface.addToolBar("Sec Interp")
         self.toolbar.setObjectName("SecInterp")
+        self.toolbar.setVisible(True)  # Ensure toolbar is visible
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -163,7 +165,9 @@ class SecInterp:
             action.setWhatsThis(whats_this)
 
         if add_to_toolbar:
-            # Adds plugin icon to Plugins toolbar
+            # Add to custom toolbar
+            self.toolbar.addAction(action)
+            # Also add to Plugins toolbar for visibility
             self.iface.addToolBarIcon(action)
 
         if add_to_menu:
@@ -176,7 +180,8 @@ class SecInterp:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ":/plugins/sec_interp/icon.png"
+        # Use absolute path to icon file to ensure it loads in toolbar
+        icon_path = str(self.plugin_dir.parent / "icon.png")
         self.add_action(
             icon_path,
             text=self.tr("Geological data extraction"),
@@ -192,6 +197,11 @@ class SecInterp:
         for action in self.actions:
             self.iface.removePluginMenu(self.tr("&Sec Interp"), action)
             self.iface.removeToolBarIcon(action)
+        
+        # Remove custom toolbar
+        if self.toolbar:
+            del self.toolbar
+            self.toolbar = None
 
     def run(self):
         """Run method that performs all the real work.
