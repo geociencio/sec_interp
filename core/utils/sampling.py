@@ -45,11 +45,9 @@ def sample_elevation_along_line(
         # Fallback to original geometry if densification fails
         densified_geom = geometry
 
-    # Get vertices from densified geometry
-    if densified_geom.isMultipart():
-        vertices = densified_geom.asMultiPolyline()[0]
-    else:
-        vertices = densified_geom.asPolyline()
+    # Get vertices from densified geometry using helper
+    from .geometry import get_line_vertices
+    vertices = get_line_vertices(densified_geom)
 
     points = []
     start_pt = reference_point if reference_point else vertices[0]

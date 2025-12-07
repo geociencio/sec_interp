@@ -13,10 +13,149 @@ from qgis.core import (
     QgsWkbTypes,
     QgsSpatialIndex,
     QgsFeatureRequest,
+    QgsFields,
+    QgsPointXY,
 )
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
+
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
+
+def create_memory_layer(
+    geometry: QgsGeometry,
+    crs: QgsCoordinateReferenceSystem,
+    name: str = "temp",
+    fields: QgsFields = None,
+) -> QgsVectorLayer:
+    """Create a temporary memory layer with a single geometry feature.
+    
+    This is a reusable helper to avoid duplicating memory layer creation code.
+    
+    Args:
+        geometry: Geometry to add to the layer
+        crs: Coordinate reference system
+        name: Layer name (default: "temp")
+        fields: Optional fields definition
+        
+    Returns:
+        QgsVectorLayer: Memory layer with the geometry
+        
+    Raises:
+        ValueError: If geometry is invalid
+        
+    Example:
+        >>> layer = create_memory_layer(line_geom, line_crs, "my_line")
+    """
+    if not geometry or geometry.isNull():
+        raise ValueError("Geometry is null or invalid")
+    
+    # Determine geometry type
+    geom_type_map = {
+        QgsWkbTypes.PointGeometry: "Point",
+        QgsWkbTypes.LineGeometry: "LineString",
+        QgsWkbTypes.PolygonGeometry: "Polygon",
+    }
+    geom_type = geom_type_map.get(geometry.type(), "LineString")
+    
+    # Create memory layer
+    layer = QgsVectorLayer(geom_type, name, "memory")
+    layer.setCrs(crs)
+    
+    # Add fields if provided
+    if fields:
+        layer.dataProvider().addAttributes(fields.toList())
+        layer.updateFields()
+    
+    # Add geometry feature
+    feat = QgsFeature()
+    feat.setGeometry(geometry)
+    layer.dataProvider().addFeatures([feat])
+    
+    return layer
+
+
+def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
+    """Extract vertices from a line geometry (handles multipart).
+    
+    This is a reusable helper to avoid duplicating multipart/singlepart logic.
+    
+    Args:
+        geometry: Line geometry (LineString or MultiLineString)
+        
+    Returns:
+        list[QgsPointXY]: List of vertices from the first part
+        
+    Raises:
+        ValueError: If geometry is not a line or is invalid
+        
+    Example:
+        >>> vertices = get_line_vertices(line_geom)
+        >>> for pt in vertices:
+        ...     print(pt.x(), pt.y())
+    """
+    if not geometry or geometry.isNull():
+        raise ValueError("Geometry is null or invalid")
+    
+    if geometry.type() != QgsWkbTypes.LineGeometry:
+        raise ValueError("Geometry must be a LineString or MultiLineString")
+    
+    # Handle multipart vs singlepart
+    if geometry.isMultipart():
+        parts = geometry.asMultiPolyline()
+        if not parts:
+            raise ValueError("MultiLineString has no parts")
+        return parts[0]  # Return first part
+    else:
+        return geometry.asPolyline()
+
+
+def run_processing_algorithm(
+    algorithm: str,
+    parameters: dict,
+    silent: bool = True,
+) -> dict:
+    """Run a QGIS processing algorithm with consistent error handling.
+    
+    This is a reusable helper to avoid duplicating processing.run() boilerplate.
+    
+    Args:
+        algorithm: Algorithm name (e.g., "native:buffer")
+        parameters: Algorithm parameters dictionary
+        silent: If True, suppress feedback output (default: True)
+        
+    Returns:
+        dict: Algorithm result dictionary
+        
+    Raises:
+        RuntimeError: If algorithm fails
+        
+    Example:
+        >>> result = run_processing_algorithm(
+        ...     "native:buffer",
+        ...     {"INPUT": layer, "DISTANCE": 100, "OUTPUT": "memory:"}
+        ... )
+        >>> buffer_layer = result["OUTPUT"]
+    """
+    from qgis import processing
+    from qgis.core import QgsProcessingFeedback
+    
+    try:
+        feedback = QgsProcessingFeedback() if silent else None
+        result = processing.run(algorithm, parameters, feedback=feedback)
+        return result
+    except Exception as e:
+        error_msg = f"Processing algorithm '{algorithm}' failed: {str(e)}"
+        logger.error(error_msg)
+        raise RuntimeError(error_msg) from e
+
+
+# ============================================================================
+# Main Functions
+# ============================================================================
 
 
 def create_buffer_geometry(
@@ -53,32 +192,16 @@ def create_buffer_geometry(
     if not geometry or geometry.isNull():
         raise ValueError("Input geometry is null or invalid")
 
-    # Determine geometry type for temporary layer
-    geom_type_map = {
-        QgsWkbTypes.PointGeometry: "Point",
-        QgsWkbTypes.LineGeometry: "LineString",
-        QgsWkbTypes.PolygonGeometry: "Polygon",
-    }
-    geom_type = geom_type_map.get(geometry.type(), "LineString")
-
     try:
-        # Create temporary memory layer with the geometry
-        temp_layer = QgsVectorLayer(geom_type, "temp_buffer", "memory")
-        temp_layer.setCrs(crs)
+        # Create temporary memory layer using helper
+        temp_layer = create_memory_layer(geometry, crs, "temp_buffer")
 
-        temp_feat = QgsFeature()
-        temp_feat.setGeometry(geometry)
-        temp_layer.dataProvider().addFeatures([temp_feat])
-
-        # Create feedback for logging (silent mode)
-        feedback = QgsProcessingFeedback()
-
-        # Run native buffer algorithm
+        # Run native buffer algorithm using helper
         logger.debug(
             f"Creating buffer: distance={distance} {crs.mapUnits()}, segments={segments}"
         )
 
-        result = processing.run(
+        result = run_processing_algorithm(
             "native:buffer",
             {
                 "INPUT": temp_layer,
@@ -90,7 +213,6 @@ def create_buffer_geometry(
                 "DISSOLVE": False,
                 "OUTPUT": "memory:",
             },
-            feedback=feedback,
         )
 
         # Extract buffer geometry from result
@@ -199,26 +321,19 @@ def densify_line_by_interval(
         raise ValueError("Geometry must be a LineString")
 
     try:
-        # Create temporary layer with geometry
-        temp_layer = QgsVectorLayer("LineString", "temp_densify", "memory")
-        temp_feat = QgsFeature()
-        temp_feat.setGeometry(geometry)
-        temp_layer.dataProvider().addFeatures([temp_feat])
-
-        # Create feedback for logging
-        feedback = QgsProcessingFeedback()
+        # Create temporary layer using helper
+        temp_layer = create_memory_layer(geometry, QgsCoordinateReferenceSystem(), "temp_densify")
 
         logger.debug(f"Densifying line with interval={interval:.2f}")
 
-        # Run densification algorithm
-        result = processing.run(
+        # Run densification algorithm using helper
+        result = run_processing_algorithm(
             "native:densifygeometriesgivenaninterval",
             {
                 "INPUT": temp_layer,
                 "INTERVAL": interval,
                 "OUTPUT": "memory:",
             },
-            feedback=feedback,
         )
 
         # Extract densified geometry

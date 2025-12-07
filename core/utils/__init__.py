@@ -17,6 +17,10 @@ from .geometry import (
     create_buffer_geometry,
     filter_features_by_buffer,
     densify_line_by_interval,
+    # Helper functions
+    create_memory_layer,
+    get_line_vertices,
+    run_processing_algorithm,
 )
 
 # Spatial calculations
@@ -64,6 +68,10 @@ __all__ = [
     'create_buffer_geometry',
     'filter_features_by_buffer',
     'densify_line_by_interval',
+    # Geometry helpers
+    'create_memory_layer',
+    'get_line_vertices',
+    'run_processing_algorithm',
     # Spatial
     'calculate_line_azimuth',
     'calculate_step_size',
