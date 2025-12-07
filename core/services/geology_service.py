@@ -198,7 +198,7 @@ class GeologyService:
                     elev = res.get(band_number, 0.0)
 
                     # Get geology (attribute preserved automatically by intersection)
-                    glg_val = feature[glg_field]
+                    glg_val = feature[outcrop_name_field]
 
                     values.append((round(dist_from_start, 1), round(elev, 1), glg_val))
                     total_points += 1
