@@ -69,11 +69,10 @@ class PDFExporter(BaseExporter):
                         painter, QRectF(0, 0, dev.width(), dev.height())
                     )
 
-                return True
-
             finally:
                 painter.end()
-                return True
+
+            return True
 
         except Exception as e:
             logger.error(f"PDF export failed for {output_path}: {e}")
