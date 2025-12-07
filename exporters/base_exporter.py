@@ -6,6 +6,7 @@ Base exporter module for Sec Interp plugin.
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 from pathlib import Path
+from sec_interp.core.validation import validate_safe_output_path
 
 
 class BaseExporter(ABC):
@@ -56,8 +57,6 @@ class BaseExporter(ABC):
         Returns:
             tuple: (is_valid, error_message)
         """
-        from sec_interp.core.validation import validate_safe_output_path
-
         # Get parent directory of the file
         parent_dir = output_path.parent
 

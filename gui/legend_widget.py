@@ -38,6 +38,7 @@ class LegendWidget(QWidget):
         self.show()
 
     def paintEvent(self, event: QEvent) -> None:
+        """Handle paint event to draw the legend."""
         if not self.renderer or not self.renderer.active_units:
             return
 

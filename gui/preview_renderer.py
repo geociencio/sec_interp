@@ -10,6 +10,7 @@ Handles rendering of interactive previews using native QGIS resources:
 
 import math
 from typing import Optional, List, Tuple
+from collections import defaultdict
 
 from qgis.core import (
     QgsVectorLayer,
@@ -167,7 +168,6 @@ class PreviewRenderer:
             return None
 
         # Group data by geological unit
-        from collections import defaultdict
         geol_groups = defaultdict(list)
         for dist, elev, unit in geol_data:
             geol_groups[unit].append((dist, elev))

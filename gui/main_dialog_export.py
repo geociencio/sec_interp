@@ -231,17 +231,16 @@ class ExportManager:
                 exporter = ImageExporter(settings)
                 return exporter.export(output_path, map_settings)
             
-            elif ext == '.pdf':
+            if ext == '.pdf':
                 exporter = PDFExporter(settings)
                 return exporter.export(output_path, map_settings)
             
-            elif ext == '.svg':
+            if ext == '.svg':
                 exporter = SVGExporter(settings)
                 return exporter.export(output_path, map_settings)
             
-            else:
-                logger.error(f"Unsupported export format: {ext}")
-                return False
+            logger.error(f"Unsupported export format: {ext}")
+            return False
                 
         except Exception as e:
             logger.error(f"Export to {ext} failed: {e}", exc_info=True)

@@ -9,6 +9,7 @@ separating preview logic from the main dialog class.
 from typing import Optional, Tuple, Dict, Any, TYPE_CHECKING
 from pathlib import Path
 import tempfile
+import traceback
 
 from qgis.core import QgsVectorLayer, QgsRasterLayer
 from ..core.types import ProfileData, GeologyData, StructureData
@@ -129,7 +130,6 @@ class PreviewManager:
             self.dialog.results.setPlainText(error_msg)
             return False, str(e)
         except Exception as e:
-            import traceback
             error_details = traceback.format_exc()
             error_msg = f"⚠ Error generating preview: {str(e)}\\n\\nDetails:\\n{error_details}"
             self.dialog.results.setPlainText(error_msg)

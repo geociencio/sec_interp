@@ -109,8 +109,8 @@ def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
         if not parts:
             raise ValueError("MultiLineString has no parts")
         return parts[0]  # Return first part
-    else:
-        return geometry.asPolyline()
+    
+    return geometry.asPolyline()
 
 
 def run_processing_algorithm(

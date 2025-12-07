@@ -51,13 +51,13 @@ def get_exporter(extension: str, settings: dict):
 
     if extension in [".png", ".jpg", ".jpeg"]:
         return ImageExporter(settings)
-    elif extension == ".svg":
+    if extension == ".svg":
         return SVGExporter(settings)
-    elif extension == ".pdf":
+    if extension == ".pdf":
         return PDFExporter(settings)
-    elif extension == ".csv":
+    if extension == ".csv":
         return CSVExporter(settings)
-    elif extension in [".shp", ".gpkg"]:
+    if extension in [".shp", ".gpkg"]:
         return ShapefileExporter(settings)
-    else:
-        raise ValueError(f"Unsupported file extension: {extension}")
+    
+    raise ValueError(f"Unsupported file extension: {extension}")

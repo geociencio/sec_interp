@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,attribute-defined-outside-init
 
 # Form implementation generated from reading ui file 'gui/ui/main_dialog_base.ui'
 #
