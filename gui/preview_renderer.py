@@ -267,44 +267,60 @@ class PreviewRenderer:
         logger.debug("Created geology layer with %d units", len(geol_groups))
         return layer
 
-    def _create_struct_layer(self, struct_data, vert_exag=1.0, dip_scale=1.0):
-        """Create temporary layer for structural measurements.
+    def _create_struct_layer(self, struct_data, reference_data, vert_exag=1.0):
+        """Create temporary layer for structural dips.
 
         Args:
             struct_data: List of (distance, apparent_dip) tuples
+            reference_data: List of (distance, elevation) tuples for elevation lookup
             vert_exag: Vertical exaggeration factor
-            dip_scale: Scale factor for dip symbols
 
         Returns:
-            QgsVectorLayer with structural measurements
+            QgsVectorLayer with structural dip lines
         """
-        if not struct_data:
+        if not struct_data or len(struct_data) < 1:
             return None
 
-        # Create memory layer with attributes using factory
-        layer, provider = self._create_memory_layer(
-            "Point", "Structures", "field=dip:double"
-        )
+        # Create memory layer using factory
+        layer, provider = self._create_memory_layer("LineString", "Structures")
         if not layer:
             return None
 
-        # Create features
+        # Calculate extent for line length
+        if reference_data:
+            elevs = [e for _, e in reference_data]
+            e_range = max(elevs) - min(elevs)
+        else:
+            e_range = 100  # Default range
+
+        line_length = e_range * 0.1  # 10% of elevation range
+
+        # Create dip lines
         features = []
         for dist, app_dip in struct_data:
+            # Interpolate elevation from reference data
+            if reference_data:
+                elev = self._interpolate_elevation(reference_data, dist)
+            else:
+                elev = 0
 
             # Calculate dip line endpoints
             rad_dip = math.radians(abs(app_dip))
             dx = line_length * math.cos(rad_dip)
-            dy = -line_length * math.sin(rad_dip)
+            dy = line_length * math.sin(rad_dip)
 
+            # Apply vertical exaggeration to dy
+            dy_exag = dy * vert_exag
+
+            # Determine direction based on sign of dip
             if app_dip < 0:
                 dx = -dx
 
-            # Create line geometry
+            # Create line from point downward
             p1 = QgsPointXY(dist, elev * vert_exag)
-            p2 = QgsPointXY(dist + dx, (elev + dy) * vert_exag)
-            line = QgsLineString([p1, p2])
+            p2 = QgsPointXY(dist + dx, (elev - dy) * vert_exag)
 
+            line = QgsLineString([p1, p2])
             feat = QgsFeature()
             feat.setGeometry(QgsGeometry(line))
             features.append(feat)
