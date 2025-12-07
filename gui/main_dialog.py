@@ -48,6 +48,8 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QFileDialog,
+    QPushButton,
+    QLabel,
     QStyle,
 )
 
@@ -188,6 +190,26 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         self.update_resolution_field()
         self.rasterdem.layerChanged.connect(self.update_resolution_field)
         self.rasterdem.layerChanged.connect(self.update_button_state)
+
+        # Add Clear Cache button
+        self.clear_cache_btn = QPushButton("Clear Cache")
+        self.clear_cache_btn.setToolTip(
+            "Clear cached data to force re-processing.\n"
+            "Use this if you've changed data outside the plugin."
+        )
+        self.clear_cache_btn.clicked.connect(self.clear_cache_handler)
+        
+        # Add button to button box
+        self.button_box.addButton(
+            self.clear_cache_btn, 
+            QDialogButtonBox.ActionRole
+        )
+        
+        # Add cache status label
+        self.cache_status_label = QLabel("")
+        self.cache_status_label.setStyleSheet("color: #666; font-size: 10px;")
+        
+        # Connect signals
         self.button_box.accepted.connect(self.accept_handler)
         self.button_box.rejected.connect(self.reject_handler)
         self.button_box.helpRequested.connect(self.open_help)
@@ -731,6 +753,17 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             return False
 
         return True
+
+    def clear_cache_handler(self):
+        """Clear cached data and notify user."""
+        if hasattr(self, 'plugin_instance') and self.plugin_instance:
+            self.plugin_instance.data_cache.clear()
+            self.results.append("✓ Cache cleared - next preview will re-process data")
+            from sec_interp.logger_config import get_logger
+            logger = get_logger(__name__)
+            logger.info("Cache cleared by user")
+        else:
+            self.results.append("⚠ Cache not available")
 
     def _populate_field_combobox(self, source_combobox, target_combobox):
         """Helper function to populate a combobox with field names from a selected vector layer."""

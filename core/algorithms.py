@@ -56,6 +56,76 @@ from ..exporters import (
 logger = get_logger(__name__)
 
 
+class DataCache:
+    """Cache for processed profile data to improve performance.
+    
+    Caches processed data to avoid re-computation when only
+    visualization parameters (vert_exag, dip_scale) change.
+    """
+
+    def __init__(self):
+        """Initialize empty cache."""
+        self._cache = {}
+        self._cache_key = None
+
+    def get_cache_key(self, values):
+        """Generate cache key from data-affecting input values.
+        
+        Only includes parameters that affect data processing,
+        not visualization parameters like vert_exag or dip_scale.
+        
+        Args:
+            values: Dictionary of input values from dialog
+            
+        Returns:
+            Hash key for cache lookup
+        """
+        # Only include data-affecting parameters
+        key_params = {
+            'raster_layer': id(values.get('raster_layer_obj')),
+            'line_layer': id(values.get('line_layer_obj')),
+            'outcrop_layer': id(values.get('outcrop_layer_obj')),
+            'structural_layer': id(values.get('structural_layer_obj')),
+            'buffer': values.get('buffer'),
+            'selected_band': values.get('selected_band'),
+            'outcrop_field': values.get('outcrop_name_field'),
+            'dip_field': values.get('dip_field'),
+            'strike_field': values.get('strike_field'),
+        }
+        # Create hash from string representation
+        key_str = '|'.join(f"{k}:{v}" for k, v in sorted(key_params.items()))
+        return hash(key_str)
+
+    def get(self, key):
+        """Get cached data for given key.
+        
+        Args:
+            key: Cache key
+            
+        Returns:
+            Cached data dict or None if not found
+        """
+        return self._cache.get(key)
+
+    def set(self, key, data):
+        """Set cached data for given key.
+        
+        Args:
+            key: Cache key
+            data: Data to cache
+        """
+        # Only keep one cache entry to limit memory
+        self._cache.clear()
+        self._cache[key] = data
+        self._cache_key = key
+
+    def clear(self):
+        """Clear all cached data."""
+        self._cache.clear()
+        self._cache_key = None
+        logger.info("Cache cleared")
+
+
 class SecInterp:
     """QGIS Plugin Implementation for Geological Data Extraction.
 
@@ -87,9 +157,15 @@ class SecInterp:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = SecInterpDialog(self.iface, self)
+        self.dlg.plugin_instance = self
 
-        # Initialize preview renderer (canvas will be set in run())
+        # Create preview renderer
         self.preview_renderer = PreviewRenderer()
+
+        # Initialize data cache for performance
+        self.data_cache = DataCache()
+        logger.debug("Data cache initialized")
+
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr("&Sec Interp")
@@ -262,6 +338,70 @@ class SecInterp:
         return validated_values
 
     def process_data(self):
+        """Process profile data from selected layers with caching.
+
+        Uses cache to avoid re-processing when only visualization
+        parameters change.
+        """
+        values = self.dlg.get_selected_values()
+
+        is_valid, error_msg, validated_values = vu.validate_and_get_layers(values)
+
+        if not is_valid:
+            scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error_msg))
+            return None
+
+        # Check if we can use cached data
+        cache_key = self.data_cache.get_cache_key(validated_values)
+        cached_data = self.data_cache.get(cache_key)
+
+        profile_data = None
+        geol_data = None
+        struct_data = None
+
+        if cached_data:
+            logger.info("⚡ Using cached profile data")
+            self.dlg.results.append("⚡ Using cached data (fast!)")
+            profile_data = cached_data['profile_data']
+            geol_data = cached_data.get('geol_data')
+            struct_data = cached_data.get('struct_data')
+        else:
+            logger.info("🔄 Processing new profile data...")
+            self.dlg.results.append("🔄 Processing data...")
+
+            # Process data (existing code)
+            profile_data, geol_data, struct_data = self._process_profile_data(
+                validated_values
+            )
+
+            if not profile_data:
+                scu.show_user_message(
+                    self.dlg,
+                    self.tr("Error"),
+                    self.tr(
+                        "No profile data was generated. "
+                        "Check that the line intersects the raster."
+                    ),
+                )
+                return
+
+            # Cache the processed data
+            self.data_cache.set(cache_key, {
+                'profile_data': profile_data,
+                'geol_data': geol_data,
+                'struct_data': struct_data,
+            })
+            logger.info("✓ Data cached for future use")
+
+        # Get visualization parameters (not cached)
+        vert_exag = float(validated_values.get("vert_exag", 1.0))
+
+        # Draw preview with current visualization parameters
+        self.draw_preview(profile_data, geol_data, struct_data, vert_exag)
+
+        return profile_data, geol_data, struct_data
+
+    def _process_profile_data(self, values):
         """Main data processing method triggered by the OK button.
 
         This method orchestrates the entire data extraction workflow:
@@ -305,10 +445,7 @@ class SecInterp:
                     ),
                 )
                 return
-
-            # Initialize data containers
-            geol_data = None
-            struct_data = None
+                return [], [], [] # Return empty lists if no profile data
 
             # Initialize result text
             result_text = f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points"
@@ -399,6 +536,9 @@ class SecInterp:
                 "\n\n💡 Use 'Save' button to export data to CSV and Shapefile."
             )
             self.dlg.results.setPlainText(result_text)
+            
+            # Return processed data for caching
+            return profile_data, geol_data if geol_data else [], struct_data if struct_data else []
 
         except (IOError, OSError) as e:
             # File system errors (temp file creation, permissions, etc.)
