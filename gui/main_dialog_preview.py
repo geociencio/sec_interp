@@ -85,7 +85,13 @@ class PreviewManager:
                     tmp_path.unlink()
             
             # 3. Visualization
-            self.dialog.plugin_instance.draw_preview(profile_data, geol_data, struct_data)
+            try:
+                if not self.dialog.plugin_instance or not hasattr(self.dialog.plugin_instance, 'draw_preview'):
+                    raise AttributeError("Plugin instance or draw_preview method not available")
+                self.dialog.plugin_instance.draw_preview(profile_data, geol_data, struct_data)
+            except Exception as e:
+                logger.error(f"Error drawing preview: {e}", exc_info=True)
+                raise ValueError(f"Failed to render preview: {str(e)}")
             
             # 4. Results Reporting
             result_msg = self._format_results_message(profile_data, geol_data, struct_data, buffer_dist)
@@ -125,7 +131,13 @@ class PreviewManager:
         struct_data = self.cached_data['struct'] if show_struct else None
         
         # Re-render
-        self.dialog.plugin_instance.draw_preview(topo_data, geol_data, struct_data)
+        try:
+            if not self.dialog.plugin_instance or not hasattr(self.dialog.plugin_instance, 'draw_preview'):
+                logger.warning("Plugin instance not available for preview update")
+                return
+            self.dialog.plugin_instance.draw_preview(topo_data, geol_data, struct_data)
+        except Exception as e:
+            logger.error(f"Error updating preview from checkboxes: {e}", exc_info=True)
     
     def generate_topography(
         self,
@@ -218,11 +230,20 @@ class PreviewManager:
         
         try:
             # Get line azimuth
+            if not line_layer or not line_layer.isValid():
+                logger.warning("Invalid line layer for structure generation")
+                return None
+            
             line_feat = next(line_layer.getFeatures(), None)
             if not line_feat:
+                logger.warning("No features found in line layer")
                 return None
             
             line_geom = line_feat.geometry()
+            if not line_geom or line_geom.isNull():
+                logger.warning("Invalid geometry in line feature")
+                return None
+            
             line_azimuth = scu.calculate_line_azimuth(line_geom)
             
             return self.dialog.plugin_instance.structure_service.project_structures(

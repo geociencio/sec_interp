@@ -48,7 +48,15 @@ class ExportManager:
         """
         try:
             # Get current canvas and layers
-            canvas = self.dialog.plugin_instance.preview_canvas
+            if not self.dialog.plugin_instance:
+                self.dialog.messagebar.pushMessage(
+                    "Export Error",
+                    "Plugin instance not available.",
+                    level=1  # Critical
+                )
+                return False
+            
+            canvas = getattr(self.dialog.plugin_instance, 'preview_canvas', None)
             if not canvas:
                 self.dialog.messagebar.pushMessage(
                     "Export Error",
@@ -57,7 +65,17 @@ class ExportManager:
                 )
                 return False
             
-            layers = canvas.layers()
+            try:
+                layers = canvas.layers()
+            except Exception as e:
+                logger.error(f"Error accessing canvas layers: {e}", exc_info=True)
+                self.dialog.messagebar.pushMessage(
+                    "Export Error",
+                    "Failed to access preview layers.",
+                    level=1
+                )
+                return False
+            
             if not layers:
                 self.dialog.messagebar.pushMessage(
                     "Export Error",
@@ -87,7 +105,19 @@ class ExportManager:
             output_path = Path(output_path)
             
             # Get export settings
-            extent = canvas.extent()
+            try:
+                extent = canvas.extent()
+                if not extent or extent.isNull():
+                    raise ValueError("Invalid canvas extent")
+            except Exception as e:
+                logger.error(f"Error getting canvas extent: {e}", exc_info=True)
+                self.dialog.messagebar.pushMessage(
+                    "Export Error",
+                    "Failed to get preview extent.",
+                    level=1
+                )
+                return False
+            
             width = DialogDefaults.PREVIEW_WIDTH
             height = DialogDefaults.PREVIEW_HEIGHT
             dpi = DialogDefaults.DPI
@@ -167,11 +197,15 @@ class ExportManager:
         ext = output_path.suffix.lower()
         
         # Create map settings from canvas
-        map_settings = QgsMapSettings()
-        map_settings.setLayers(canvas.layers())
-        map_settings.setExtent(settings['extent'])
-        map_settings.setOutputSize(canvas.size())
-        map_settings.setBackgroundColor(settings['background_color'])
+        try:
+            map_settings = QgsMapSettings()
+            map_settings.setLayers(canvas.layers())
+            map_settings.setExtent(settings['extent'])
+            map_settings.setOutputSize(canvas.size())
+            map_settings.setBackgroundColor(settings['background_color'])
+        except Exception as e:
+            logger.error(f"Error creating map settings: {e}", exc_info=True)
+            return False
         
         try:
             if ext in ['.png', '.jpg', '.jpeg']:
