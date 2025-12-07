@@ -30,7 +30,6 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QSize, Qt, QRectF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont, QPen
-from ..core import utils as scu
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -506,7 +505,9 @@ class PreviewRenderer:
 
         # Collect valid layers
         data_layers = [
-            l for l in [struct_layer, geol_layer, topo_layer] if l is not None
+            layer
+            for layer in [struct_layer, geol_layer, topo_layer]
+            if layer is not None
         ]
 
         if not data_layers:
@@ -528,7 +529,7 @@ class PreviewRenderer:
 
         # Combine all layers (labels on top, then data, then grid)
         layers = [labels_layer] + data_layers + [axes_layer]
-        layers = [l for l in layers if l is not None]
+        layers = [layer for layer in layers if layer is not None]
 
         self.layers = layers
 

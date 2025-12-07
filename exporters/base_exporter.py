@@ -42,7 +42,6 @@ class BaseExporter(ABC):
         Returns:
             True if export was successful, False otherwise
         """
-        pass
 
     @abstractmethod
     def get_supported_extensions(self) -> List[str]:
@@ -51,7 +50,6 @@ class BaseExporter(ABC):
         Returns:
             List of supported extensions (e.g., ['.png', '.jpg'])
         """
-        pass
 
     def validate_path(self, path: Path) -> bool:
         """Validate that the output path has a supported extension.

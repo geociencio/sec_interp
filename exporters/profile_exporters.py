@@ -12,7 +12,6 @@ from qgis.core import (
     QgsFields,
     QgsField,
     QgsFeature,
-    QgsVectorFileWriter,
     QgsWkbTypes,
     QgsRaster,
 )

@@ -22,47 +22,26 @@
  ***************************************************************************/
 """
 
-import csv
-import math
-import tempfile
 import traceback
 from pathlib import Path
 
 from qgis.PyQt.QtCore import (
     QCoreApplication,
-    QLineF,
-    QMetaType,
     QSettings,
-    Qt,
     QTranslator,
-    QVariant,
 )
-from qgis.PyQt.QtGui import QBrush, QColor, QIcon, QPen
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox, QMessageBox
 
 from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsCoordinateTransform,
-    QgsDistanceArea,
-    QgsFeature,
-    QgsField,
-    QgsFields,
-    QgsGeometry,
-    QgsLineString,
-    QgsPoint,
-    QgsPointXY,
-    QgsProject,
     QgsRaster,
     QgsRasterLayer,
-    QgsUnitTypes,
-    QgsVectorFileWriter,
     QgsVectorLayer,
     QgsWkbTypes,
 )
 
 from ..gui.main_dialog import SecInterpDialog
 from ..gui.preview_renderer import PreviewRenderer
-from ..resources import resources
 from . import utils as scu
 from . import validation as vu
 from sec_interp.logger_config import get_logger

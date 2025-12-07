@@ -508,4 +508,3 @@ class Ui_SecInterpDialogBase(object):
 
 
 from qgis import gui
-from sec_interp.resources import resources

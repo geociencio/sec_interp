@@ -7,7 +7,7 @@ layer selections, and data integrity checks.
 """
 
 from pathlib import Path
-from typing import Tuple, List, Optional, Union
+from typing import Tuple, List, Optional
 
 from qgis.core import (
     QgsMapLayer,
@@ -260,7 +260,7 @@ def validate_field_type(
         actual_name = type_names.get(field.type(), f"Type ID {field.type()}")
 
         return False, (
-            f"Invalid data type for field '{field_name}' in layer '{layer.name()}'. "
+            "Invalid data type for field '{field_name}' in layer '{layer.name()}'. "
             f"Found: {actual_name}. Expected one of: {', '.join(expected_names)}. "
             f"Please check your attribute table."
         )
@@ -310,7 +310,7 @@ def validate_output_path(path: str) -> Tuple[bool, str, Optional[Path]]:
     try:
         path_obj = Path(path)
     except (TypeError, ValueError) as e:
-        return False, f"Invalid path: {str(e)}", None
+        return False, "Invalid path: {str(e)}", None
 
     # Check if path exists
     if not path_obj.exists():
