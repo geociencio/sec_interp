@@ -42,7 +42,68 @@ class DataCache:
         self._geol_cache: Dict[str, GeologyData] = {}
         self._struct_cache: Dict[str, StructureData] = {}
         self._metadata: Dict[str, Dict[str, Any]] = {}
+    def get_cache_key(self, params: Dict[str, Any]) -> str:
+        """Generate a unique cache key from parameters.
+        
+        Args:
+            params: Dictionary of input parameters
+            
+        Returns:
+            String representation of the parameters hash
+        """
+        # Create a stable string representation
+        # Exclude QGIS objects that change memory address but represent same data
+        # For now, we use a simple string representation of the params dict
+        # In a production environment, we might want to hash the actual data IDs
+        
+        # Filter out objects that shouldn't be part of the key or convert them
+        key_parts = []
+        for k, v in sorted(params.items()):
+            if k.endswith('_obj') or k in ['raster_layer', 'outcrop_layer', 'structural_layer', 'crossline_layer']:
+                # Skip raw QGIS objects or use their ID/source if available
+                if hasattr(v, 'id'):
+                    key_parts.append(f"{k}:{v.id()}")
+                elif hasattr(v, 'source'):
+                    key_parts.append(f"{k}:{v.source()}")
+                else:
+                    key_parts.append(f"{k}:{str(v)}")
+            else:
+                key_parts.append(f"{k}:{str(v)}")
+                
+        import hashlib
+        return hashlib.md5("".join(key_parts).encode('utf-8')).hexdigest()
 
+    def get(self, key: str) -> Optional[Dict[str, Any]]:
+        """Get all cached data for a key.
+        
+        Args:
+            key: Cache key
+            
+        Returns:
+            Dictionary with profile_data, geol_data, struct_data or None if not found
+        """
+        if key not in self._topo_cache:
+            return None
+            
+        return {
+            'profile_data': self._topo_cache.get(key),
+            'geol_data': self._geol_cache.get(key),
+            'struct_data': self._struct_cache.get(key)
+        }
+
+    def set(self, key: str, data: Dict[str, Any]) -> None:
+        """Set all cache data for a key.
+        
+        Args:
+            key: Cache key
+            data: Dictionary containing profile_data, geol_data, etc.
+        """
+        if 'profile_data' in data:
+            self._topo_cache[key] = data['profile_data']
+        if 'geol_data' in data:
+            self._geol_cache[key] = data['geol_data']
+        if 'struct_data' in data:
+            self._struct_cache[key] = data['struct_data']
     def get_topographic_profile(self, key: str) -> Optional[ProfileData]:
         """Get cached topographic profile data.
         
