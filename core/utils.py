@@ -7,6 +7,8 @@ import math
 import re
 from qgis.core import (
     QgsDistanceArea,
+    QgsSpatialIndex,
+    QgsFeatureRequest,
     QgsProject,
     QgsPointXY,
     QgsWkbTypes,
@@ -120,7 +122,7 @@ def filter_features_by_buffer(
     features_layer: QgsVectorLayer,
     buffer_geometry: QgsGeometry,
     buffer_crs: QgsCoordinateReferenceSystem,
-) -> QgsVectorLayer:
+) -> list[QgsFeature]:
     """Filter features that intersect with buffer using native algorithm.
 
     Uses native:extractbylocation with spatial indexing for efficient filtering.
@@ -133,67 +135,36 @@ def filter_features_by_buffer(
         buffer_crs: CRS of the buffer geometry
 
     Returns:
-        QgsVectorLayer: Memory layer containing only filtered features
-
+        list[QgsFeature]: List of features that intersect the buffer
+        
     Raises:
         ValueError: If inputs are invalid
-        RuntimeError: If processing algorithm fails
-
-    Example:
-        >>> buffer_geom = create_buffer_geometry(line_geom, crs, 100.0)
-        >>> filtered = filter_features_by_buffer(struct_layer, buffer_geom, crs)
-        >>> print(f"Filtered {filtered.featureCount()} features")
     """
-    from qgis import processing
-    from qgis.core import QgsProcessingFeedback
-
     if not features_layer or not features_layer.isValid():
-        raise ValueError("Features layer is invalid")
-
+        raise ValueError("Invalid features layer")
+        
     if not buffer_geometry or buffer_geometry.isNull():
-        raise ValueError("Buffer geometry is invalid")
+        raise ValueError("Invalid buffer geometry")
 
-    try:
-        # Create temporary layer with buffer geometry
-        buffer_layer = QgsVectorLayer("Polygon", "buffer_temp", "memory")
-        buffer_layer.setCrs(buffer_crs)
-
-        buffer_feat = QgsFeature()
-        buffer_feat.setGeometry(buffer_geometry)
-        buffer_layer.dataProvider().addFeatures([buffer_feat])
-
-        # Create feedback for logging
-        feedback = QgsProcessingFeedback()
-
-        # Run spatial filter with R-tree index
-        total_features = features_layer.featureCount()
-        logger.debug(
-            f"Filtering {total_features} features by buffer location (using spatial index)"
-        )
-
-        result = processing.run(
-            "native:extractbylocation",
-            {
-                "INPUT": features_layer,
-                "PREDICATE": [0],  # 0 = intersects
-                "INTERSECT": buffer_layer,
-                "OUTPUT": "memory:",
-            },
-            feedback=feedback,
-        )
-
-        filtered_layer = result["OUTPUT"]
-        filtered_count = filtered_layer.featureCount()
-        logger.debug(
-            f"✓ Spatial filter complete: {filtered_count}/{total_features} features in buffer"
-        )
-
-        return filtered_layer
-
-    except Exception as e:
-        error_msg = f"Failed to filter features by location: {str(e)}"
-        logger.error(error_msg)
-        raise RuntimeError(error_msg) from e
+    # 1. Build Spatial Index 
+    index = QgsSpatialIndex(features_layer.getFeatures())
+    
+    # 2. Get candidates using Bounding Box (Fast R-tree lookup)
+    # intersects() returns list of feature IDs
+    candidate_ids = index.intersects(buffer_geometry.boundingBox())
+    
+    # 3. Precise filtering
+    filtered_features = []
+    # Using QgsFeatureRequest with specific IDs is faster than iterating all
+    if candidate_ids:
+        request = QgsFeatureRequest().setFilterFids(candidate_ids)
+        for feature in features_layer.getFeatures(request):
+            if feature.geometry().intersects(buffer_geometry):
+                filtered_features.append(feature)
+            
+    logger.debug(f"Spatial Index filtering: {len(candidate_ids)} candidates -> {len(filtered_features)} confirmed")
+    
+    return filtered_features
 
 
 def densify_line_by_interval(

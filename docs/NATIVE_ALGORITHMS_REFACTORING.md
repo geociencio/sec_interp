@@ -100,7 +100,7 @@ Esta carpeta contiene la documentación completa del proceso de refactorización
 | Refactorización | Estado | Mejora | Notas |
 |-----------------|--------|--------|-------|
 | #1 Buffer | ✅ Completado | Mejor manejo CRS | Verificado en QGIS |
-| #2 Selección Espacial | ✅ Completado | 70-95% más rápido | Usa índice R-tree |
+| #2 Selección Espacial | ✅ Completado | Optimizado | Usa QgsSpatialIndex (Zero-copy) |
 | #3 Intersección Geológica | ✅ Completado | Más robusto | Soporta MultiLineString, 416 puntos |
 | #4 Densificación | ❌ No rec. | - | Método manual es más apropiado |
 | #5 Muestreo Raster | ❌ No rec. | - | Método actual es óptimo |

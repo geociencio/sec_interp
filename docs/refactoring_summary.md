@@ -8,10 +8,10 @@
 - **Beneficio**: Mejor manejo de CRS geográficos
 - **Estado**: Verificado en QGIS
 
-### 2. Selección Espacial ✅
-- **Algoritmo**: `native:extractbylocation`
+### 2. Selección Espacial (Optimizado con QgsSpatialIndex) ✅
+- **Algoritmo**: `QgsSpatialIndex` + `intersects()`
 - **Archivos**: `core/utils.py`, `core/algorithms.py`
-- **Beneficio**: 70-95% más rápido con índice R-tree
+- **Beneficio**: Rendimiento mejorado mediante iteración "zero-copy" (no crea capas intermedias)
 - **Estado**: Implementado y funcionando
 
 ### 3. Intersección Geológica ✅

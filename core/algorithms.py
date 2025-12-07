@@ -929,13 +929,13 @@ class SecInterp:
         dip_range_fail_count = 0
         success_count = 0
 
-        # Filter features spatially using native algorithm (with R-tree spatial index)
-        # This is much faster than manual iteration for large datasets
+        # Filter features spatially using optimized index-based method
+        # Returns a list of features, not a layer
         try:
-            filtered_layer = scu.filter_features_by_buffer(
+            filtered_features = scu.filter_features_by_buffer(
                 struct_lyr, buffer_geom, line_lyr.crs()
             )
-            filtered_count = filtered_layer.featureCount()
+            filtered_count = len(filtered_features)
             outside_buffer_count = total_features - filtered_count
 
             logger.info(
@@ -947,7 +947,7 @@ class SecInterp:
             raise ValueError(f"Cannot filter structures by buffer: {e}") from e
 
         # Process only filtered features (no need for intersects() check)
-        for idx, f in enumerate(filtered_layer.getFeatures()):
+        for idx, f in enumerate(filtered_features):
             struct_geom = f.geometry()
             if not struct_geom or struct_geom.isNull():
                 null_geom_count += 1
