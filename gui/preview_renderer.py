@@ -80,6 +80,28 @@ class PreviewRenderer:
         index = hash_val % len(self.GEOLOGY_COLORS)
         return self.GEOLOGY_COLORS[index]
 
+    def _create_memory_layer(self, geometry_type, name, fields=None, crs="EPSG:4326"):
+        """Create a memory layer with standard configuration.
+
+        Args:
+            geometry_type: "Point", "LineString", "Polygon"
+            name: Layer display name
+            fields: Optional field definition string (e.g., "field=id:integer")
+            crs: CRS identifier (default: EPSG:4326)
+
+        Returns:
+            Tuple of (QgsVectorLayer, QgsDataProvider) or (None, None) if failed
+        """
+        field_def = f"&{fields}" if fields else ""
+        uri = f"{geometry_type}?crs={crs}{field_def}"
+        layer = QgsVectorLayer(uri, name, "memory")
+
+        if not layer.isValid():
+            logger.error(f"Failed to create memory layer: {name}")
+            return None, None
+
+        return layer, layer.dataProvider()
+
     def _create_topo_layer(self, topo_data, vert_exag=1.0):
         """Create temporary layer for topographic profile.
 
@@ -93,9 +115,10 @@ class PreviewRenderer:
         if not topo_data or len(topo_data) < 2:
             return None
 
-        # Create memory layer
-        layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Topography", "memory")
-        provider = layer.dataProvider()
+        # Create memory layer using factory
+        layer, provider = self._create_memory_layer("LineString", "Topography")
+        if not layer:
+            return None
 
         # Create line geometry from points
         points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in topo_data]
@@ -106,7 +129,7 @@ class PreviewRenderer:
         feat.setGeometry(QgsGeometry(line))
         provider.addFeatures([feat])
 
-        # Apply symbology - blue line, 2px width
+        # Apply symbology - blue line, 0.5px width
         symbol = QgsLineSymbol.createSimple(
             {
                 "color": "0,102,204",
@@ -121,6 +144,59 @@ class PreviewRenderer:
         logger.debug("Created topography layer with %d points", len(topo_data))
         return layer
 
+    def _create_axes_labels_layer(self, topo_data, vert_exag=1.0):
+        """Create labels for axes.
+
+        Args:
+            topo_data: List of (distance, elevation) tuples
+            vert_exag: Vertical exaggeration factor
+
+        Returns:
+            QgsVectorLayer with axis labels
+        """
+        if not topo_data or len(topo_data) < 2:
+            return None
+
+        # Create memory layer with attributes using factory
+        layer, provider = self._create_memory_layer(
+            "Point", "Axes Labels", "field=label:string&field=align:string"
+        )
+        if not layer:
+            return None
+
+        # Calculate extent
+        distances = [d for d, _ in topo_data]
+        elevations = [e * vert_exag for _, e in topo_data]
+
+        min_dist = min(distances)
+        max_dist = max(distances)
+        min_elev = min(elevations)
+        max_elev = max(elevations)
+
+        # Create label features
+        features = []
+
+        # X-axis label (Distance)
+        x_label_point = QgsPointXY((min_dist + max_dist) / 2, min_elev)
+        x_feat = QgsFeature(layer.fields())
+        x_feat.setGeometry(QgsGeometry.fromPointXY(x_label_point))
+        x_feat.setAttribute("label", "Distance (m)")
+        x_feat.setAttribute("align", "center")
+        features.append(x_feat)
+
+        # Y-axis label (Elevation)
+        y_label_point = QgsPointXY(min_dist, (min_elev + max_elev) / 2)
+        y_feat = QgsFeature(layer.fields())
+        y_feat.setGeometry(QgsGeometry.fromPointXY(y_label_point))
+        y_feat.setAttribute("label", "Elevation (m)")
+        y_feat.setAttribute("align", "left")
+        features.append(y_feat)
+
+        provider.addFeatures(features)
+
+        # Apply categorized symbology
+        categories = []
+
     def _create_geol_layer(self, geol_data, vert_exag=1.0):
         """Create temporary layer for geological profile.
 
@@ -134,11 +210,12 @@ class PreviewRenderer:
         if not geol_data or len(geol_data) < 2:
             return None
 
-        # Create memory layer with attributes
-        layer = QgsVectorLayer(
-            "LineString?crs=EPSG:4326&field=unit:string", "Geology", "memory"
+        # Create memory layer with attributes using factory
+        layer, provider = self._create_memory_layer(
+            "LineString", "Geology", "field=unit:string"
         )
-        provider = layer.dataProvider()
+        if not layer:
+            return None
 
         # Group by geological unit
         geol_groups = {}
@@ -190,41 +267,30 @@ class PreviewRenderer:
         logger.debug("Created geology layer with %d units", len(geol_groups))
         return layer
 
-    def _create_struct_layer(self, struct_data, reference_data, vert_exag=1.0):
-        """Create temporary layer for structural dips.
+    def _create_struct_layer(self, struct_data, vert_exag=1.0, dip_scale=1.0):
+        """Create temporary layer for structural measurements.
 
         Args:
             struct_data: List of (distance, apparent_dip) tuples
-            reference_data: List of (distance, elevation) tuples for elevation lookup
             vert_exag: Vertical exaggeration factor
+            dip_scale: Scale factor for dip symbols
 
         Returns:
-            QgsVectorLayer with structural dip lines
+            QgsVectorLayer with structural measurements
         """
-        if not struct_data or len(struct_data) < 1:
+        if not struct_data:
             return None
 
-        # Create memory layer
-        layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Structures", "memory")
-        provider = layer.dataProvider()
+        # Create memory layer with attributes using factory
+        layer, provider = self._create_memory_layer(
+            "Point", "Structures", "field=dip:double"
+        )
+        if not layer:
+            return None
 
-        # Calculate extent for line length
-        if reference_data:
-            elevs = [e for _, e in reference_data]
-            e_range = max(elevs) - min(elevs)
-        else:
-            e_range = 100  # Default range
-
-        line_length = e_range * 0.1  # 10% of elevation range
-
-        # Create dip lines
+        # Create features
         features = []
         for dist, app_dip in struct_data:
-            # Interpolate elevation from reference data
-            if reference_data:
-                elev = self._interpolate_elevation(reference_data, dist)
-            else:
-                elev = 0
 
             # Calculate dip line endpoints
             rad_dip = math.radians(abs(app_dip))
