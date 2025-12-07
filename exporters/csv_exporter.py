@@ -15,15 +15,16 @@ class CSVExporter(BaseExporter):
 
     def get_supported_extensions(self) -> List[str]:
         """Get supported CSV extension."""
-        return ['.csv']
+        return [".csv"]
 
-    def export(self, output_path: Path, data: List[Dict[str, Any]]) -> bool:
+    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
         """Export tabular data to CSV.
-        
+
         Args:
-            output_path: Output file path
-            data: List of dictionaries representing rows
-            
+            output_path: Output file path.
+            data: A dictionary containing 'headers' (list of strings)
+                  and 'rows' (list of tuples or lists).
+
         Returns:
             True if export successful, False otherwise
         """
@@ -31,14 +32,16 @@ class CSVExporter(BaseExporter):
             return False
 
         try:
-            with open(output_path, 'w', newline='', encoding='utf-8') as f:
-                # Get fieldnames from first row
-                fieldnames = list(data[0].keys())
-                
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writeheader()
-                writer.writerows(data)
-                
+            headers = data.get("headers")
+            rows = data.get("rows")
+            if not headers or not rows:
+                return False
+
+            with open(output_path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow(headers)
+                writer.writerows(rows)
+
             return True
 
         except Exception:

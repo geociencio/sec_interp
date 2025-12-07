@@ -19,21 +19,21 @@ class PDFExporter(BaseExporter):
 
     def get_supported_extensions(self) -> List[str]:
         """Get supported PDF extension."""
-        return ['.pdf']
+        return [".pdf"]
 
     def export(self, output_path: Path, map_settings) -> bool:
         """Export map to PDF.
-        
+
         Args:
             output_path: Output file path
             map_settings: QgsMapSettings instance configured for rendering
-            
+
         Returns:
             True if export successful, False otherwise
         """
         try:
-            width = self.get_setting('width', 800)
-            height = self.get_setting('height', 600)
+            width = self.get_setting("width", 800)
+            height = self.get_setting("height", 600)
 
             # Setup printer
             printer = QPrinter(QPrinter.HighResolution)
@@ -62,7 +62,7 @@ class PDFExporter(BaseExporter):
                 job.waitForFinished()
 
                 # Draw legend if available
-                legend_renderer = self.get_setting('legend_renderer')
+                legend_renderer = self.get_setting("legend_renderer")
                 if legend_renderer:
                     legend_renderer.draw_legend(
                         painter, QRectF(0, 0, dev.width(), dev.height())

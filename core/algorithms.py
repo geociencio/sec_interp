@@ -66,6 +66,13 @@ from ..resources import resources
 from . import utils as scu
 from . import validation as vu
 from sec_interp.logger_config import get_logger
+from ..exporters import (
+    CSVExporter,
+    ProfileLineShpExporter,
+    GeologyShpExporter,
+    StructureShpExporter,
+    AxesShpExporter,
+)
 
 
 logger = get_logger(__name__)
@@ -280,8 +287,6 @@ class SecInterp:
         Handles various exceptions and displays appropriate error messages to the user.
         """
         try:
-            import tempfile
-
             # Get and validate inputs
             inputs = self._get_and_validate_inputs()
             if not inputs:
@@ -297,16 +302,10 @@ class SecInterp:
             selected_band = values["selected_band"]
             buffer_dist = values["buffer_distance"]
 
-            # Process topographic profile (in memory, using temp file)
-            with tempfile.NamedTemporaryFile(
-                mode="w", suffix=".csv", delete=False
-            ) as tmp:
-                tmp_path = Path(tmp.name)
-
+            # Process topographic profile
             profile_data = self.topographic_profile(
-                line_layer, raster_layer, tmp_path, selected_band
+                line_layer, raster_layer, selected_band
             )
-            tmp_path.unlink()  # Clean up temp file
 
             # Validate profile data was generated
             if not profile_data:
@@ -327,24 +326,17 @@ class SecInterp:
             result_text = f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points"
             self.dlg.results.setPlainText(result_text)
 
-            # Process outcrop data (in memory)
+            # Process outcrop data
             if outcrop_layer:
                 outcrop_name_field = values["outcrop_name_field"]
                 if outcrop_name_field:
-                    with tempfile.NamedTemporaryFile(
-                        mode="w", suffix=".csv", delete=False
-                    ) as tmp:
-                        tmp_path = Path(tmp.name)
-
                     geol_data = self.geol_profile(
                         line_layer,
                         raster_layer,
                         outcrop_layer,
                         outcrop_name_field,
-                        tmp_path,
                         selected_band,
                     )
-                    tmp_path.unlink()  # Clean up temp file
 
                     if geol_data:
                         result_text += f"\nGeology: {len(geol_data)} points"
@@ -358,7 +350,7 @@ class SecInterp:
                     )
                     self.dlg.results.setPlainText(result_text)
 
-            # Process structural data (in memory)
+            # Process structural data
             if structural_layer:
                 dip_field = values["dip_field"]
                 strike_field = values["strike_field"]
@@ -385,11 +377,6 @@ class SecInterp:
 
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
 
-                    with tempfile.NamedTemporaryFile(
-                        mode="w", suffix=".csv", delete=False
-                    ) as tmp:
-                        tmp_path = Path(tmp.name)
-
                     struct_data = self.project_structures(
                         line_layer,
                         structural_layer,
@@ -397,9 +384,7 @@ class SecInterp:
                         line_azimuth,
                         dip_field,
                         strike_field,
-                        tmp_path,
                     )
-                    tmp_path.unlink()  # Clean up temp file
 
                     if struct_data:
                         result_text += f"\nStructures: {len(struct_data)} points"
@@ -498,18 +483,15 @@ class SecInterp:
         self,
         line_lyr: QgsVectorLayer,
         raster_lyr: QgsRasterLayer,
-        out_csv: Path,
         band_number: int = 1,
     ):
         """Generate topographic profile data by sampling elevation along the section line.
 
-        This function both returns the profile data as a list of tuples and writes
-        the same data to a CSV file specified by `out_csv`.
+        This function returns the profile data as a list of tuples.
 
         Args:
             line_lyr (QgsVectorLayer): The cross-section line layer.
             raster_lyr (QgsRasterLayer): The DEM/raster layer for elevation.
-            out_csv (Path): Path to save the output CSV.
             band_number (int): Raster band to sample (default: 1).
 
         Returns:
@@ -532,13 +514,9 @@ class SecInterp:
         # For topographic profile, we measure from the start of the line
         points = scu.sample_elevation_along_line(geom, raster_lyr, band_number, da)
 
-        # Convert QgsPointXY to tuples for CSV writing
+        # Convert QgsPointXY to tuples
         values = [(round(p.x(), 1), round(p.y(), 1)) for p in points]
 
-        with out_csv.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(["dist", "elev"])
-            writer.writerows(values)
         return values
 
     def geol_profile(
@@ -547,20 +525,17 @@ class SecInterp:
         raster_lyr: QgsRasterLayer,
         outcrop_lyr: QgsVectorLayer,
         glg_field: str,
-        out_csv: Path,
         band_number: int = 1,
     ):
         """Generate geological profile data by intersecting the section line with outcrop polygons.
 
-        This function both returns the profile data as a list of tuples and writes
-        the same data to a CSV file specified by `out_csv`.
+        This function returns the profile data as a list of tuples.
 
         Args:
             line_lyr (QgsVectorLayer): The cross-section line layer.
             raster_lyr (QgsRasterLayer): The DEM/raster layer for elevation.
             outcrop_lyr (QgsVectorLayer): The geological outcrop layer (polygons).
             glg_field (str): The field name in outcrop_lyr containing unit names.
-            out_csv (Path): Path to save the output CSV.
             band_number (int): Raster band to sample (default: 1).
 
         Returns:
@@ -640,11 +615,6 @@ class SecInterp:
         # Sort values by distance
         values.sort(key=lambda x: x[0])
 
-        with out_csv.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(["dist", "elev", "geology"])
-            writer.writerows(values)
-
         return values
 
     def project_structures(
@@ -655,12 +625,10 @@ class SecInterp:
         line_az: float,
         dip_field: str,
         strike_field: str,
-        out_csv: Path,
     ):
         """Project structural measurements onto the cross-section plane.
 
-        This function both returns the profile data as a list of tuples and writes
-        the same data to a CSV file specified by `out_csv`.
+        This function returns the profile data as a list of tuples.
 
         Filters structures within a buffer distance of the section line and calculates
         their apparent dip in the direction of the section.
@@ -672,7 +640,6 @@ class SecInterp:
             line_az (float): Azimuth of the section line in degrees.
             dip_field (str): Field name for dip angle.
             strike_field (str): Field name for strike angle.
-            out_csv (Path): Path to save the output CSV.
 
         Returns:
             list: List of (distance, apparent_dip) tuples.
@@ -806,11 +773,6 @@ class SecInterp:
         # Sort by distance
         projected_structs.sort(key=lambda x: x[0])
 
-        with out_csv.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(["dist", "apparent_dip"])
-            writer.writerows(projected_structs)
-
         # Logging: Summary
         logger.info("-" * 60)
         logger.info("FILTERING SUMMARY:")
@@ -849,468 +811,145 @@ class SecInterp:
         return projected_structs
 
     def save_profile_line(self):
-        """Save all profile data to CSV and Shapefile formats.
-
-        This method saves:
-        - Topographic profile (CSV + Shapefile)
-        - Geological profile (CSV + Shapefile) if available
-        - Structural profile (CSV + Shapefile) if available
-        - Profile axes (Shapefile)
-        """
-
+        """Save all profile data to CSV and Shapefile formats by delegating to exporters."""
         try:
-            # Get and validate inputs
             inputs = self._get_and_validate_inputs()
             if not inputs:
                 return
 
-            # Extract values for easier access
             values = inputs
-            raster_layer = inputs["raster_layer_obj"]
-            line_layer = inputs["line_layer_obj"]
-            outcrop_layer = inputs["outcrop_layer_obj"]
-            structural_layer = inputs["structural_layer_obj"]
-
-            output_folder = values["output_path"]
-
-            # Validate output folder
-            if not output_folder:
-                QMessageBox.warning(
-                    self.dlg,
-                    self.tr("Error"),
-                    self.tr("Please select an output folder."),
-                )
-                return
-
-            is_valid, error, output_path_obj = vu.validate_output_path(output_folder)
+            output_folder = Path(values["output_path"])
+            is_valid, error, _ = vu.validate_output_path(str(output_folder))
             if not is_valid:
                 QMessageBox.warning(self.dlg, self.tr("Error"), self.tr(error))
                 return
 
-            # Get parameters
-            selected_band = values["selected_band"]
-            buffer_dist = values["buffer_distance"]
-            dip_scale_factor = values["dip_scale_factor"]
+            self.dlg.results.setPlainText("✓ Generating data for export...")
 
-            # Initialize result message
-            result_msg = "✓ Saving data...\n\n"
-            self.dlg.results.setPlainText(result_msg)
-
-            # Save topographic profile (CSV + Shapefile)
-            topo_csv_path = Path(output_folder) / "topo_profile.csv"
-            topo_shp_path = Path(output_folder) / "profile_line.shp"
-
+            # 1. Generate all data in memory first
             profile_data = self.topographic_profile(
-                line_layer, raster_layer, topo_csv_path, selected_band
+                values["line_layer_obj"],
+                values["raster_layer_obj"],
+                values["selected_band"],
             )
-
             if not profile_data:
                 QMessageBox.warning(
                     self.dlg,
                     self.tr("Error"),
-                    self.tr("No profile data was generated. Cannot save files."),
+                    self.tr("No profile data generated, cannot save."),
                 )
                 return
 
-            result_msg += f"Topography CSV: {topo_csv_path}\n"
-
-            # Create geometry from points for shapefile
-            points = [QgsPointXY(d, e) for d, e in profile_data]
-            geom = QgsGeometry.fromPolylineXY(points)
-
-            if not geom or geom.isNull():
-                QMessageBox.warning(
-                    self.dlg,
-                    self.tr("Error"),
-                    self.tr("Created profile geometry is not valid."),
+            geol_data = None
+            if values["outcrop_layer_obj"] and values["outcrop_name_field"]:
+                geol_data = self.geol_profile(
+                    values["line_layer_obj"],
+                    values["raster_layer_obj"],
+                    values["outcrop_layer_obj"],
+                    values["outcrop_name_field"],
+                    values["selected_band"],
                 )
-                return
 
-            # Create fields
-            fields = QgsFields()
-            fields.append(QgsField("id", QMetaType.Type.Int))
-
-            # Create vector writer
-            writer = scu.create_shapefile_writer(
-                topo_shp_path, line_layer.crs(), fields
-            )
-
-            # Add feature
-            feat = QgsFeature()
-            feat.setGeometry(geom)
-            feat.setAttributes([1])
-            writer.addFeature(feat)
-            del writer
-
-            result_msg += f"Topography SHP: {topo_shp_path}\n"
-            self.dlg.results.setPlainText(result_msg)
-
-            # Save geological profile if outcrop layer is selected
-            if outcrop_layer:
-                outcrop_name_field = values["outcrop_name_field"]
-                if outcrop_name_field:
-                    geol_csv_path = Path(output_folder) / "geol_profile.csv"
-                    geol_data = self.geol_profile(
-                        line_layer,
-                        raster_layer,
-                        outcrop_layer,
-                        outcrop_name_field,
-                        geol_csv_path,
-                        selected_band,
+            struct_data = None
+            if (
+                values["structural_layer_obj"]
+                and values["dip_field"]
+                and values["strike_field"]
+            ):
+                line_feat = next(values["line_layer_obj"].getFeatures(), None)
+                if line_feat:
+                    line_geom = line_feat.geometry()
+                    line_azimuth = scu.calculate_line_azimuth(line_geom)
+                    struct_data = self.project_structures(
+                        values["line_layer_obj"],
+                        values["structural_layer_obj"],
+                        values["buffer_distance"],
+                        line_azimuth,
+                        values["dip_field"],
+                        values["strike_field"],
                     )
-                    if geol_data:
-                        result_msg += f"\nGeology CSV: {geol_csv_path}\n"
-                        self.dlg.results.setPlainText(result_msg)
 
-                        # Save geological shapefile
-                        self.save_geol_profile_shapefile(
-                            line_layer,
-                            raster_layer,
-                            outcrop_layer,
-                            output_folder,
-                            selected_band,
-                        )
-                        result_msg += (
-                            f"Geology SHP: {Path(output_folder) / 'geol_profile.shp'}\n"
-                        )
-                        self.dlg.results.setPlainText(result_msg)
+            # 2. Orchestrate saving using exporters
+            result_msg = ["✓ Saving files..."]
+            csv_exporter = CSVExporter({})
+            line_crs = values["line_layer_obj"].crs()
 
-            # Save structural profile if structural layer is selected
-            if structural_layer:
-                dip_field = values["dip_field"]
-                strike_field = values["strike_field"]
-                if dip_field and strike_field:
-                    # Get line azimuth
-                    line_feat = next(line_layer.getFeatures(), None)
-                    if line_feat:
-                        line_geom = line_feat.geometry()
-                        line_azimuth = scu.calculate_line_azimuth(line_geom)
+            # Export Topography
+            csv_exporter.export(
+                output_folder / "topo_profile.csv",
+                {"headers": ["dist", "elev"], "rows": profile_data},
+            )
+            result_msg.append(f"  - topo_profile.csv")
+            ProfileLineShpExporter({}).export(
+                output_folder / "profile_line.shp",
+                {"profile_data": profile_data, "crs": line_crs},
+            )
+            result_msg.append(f"  - profile_line.shp")
 
-                        struct_csv_path = Path(output_folder) / "structural_profile.csv"
-                        struct_data = self.project_structures(
-                            line_layer,
-                            structural_layer,
-                            buffer_dist,
-                            line_azimuth,
-                            dip_field,
-                            strike_field,
-                            struct_csv_path,
-                        )
+            # Export Geology
+            if geol_data:
+                csv_exporter.export(
+                    output_folder / "geol_profile.csv",
+                    {"headers": ["dist", "elev", "geology"], "rows": geol_data},
+                )
+                result_msg.append(f"  - geol_profile.csv")
+                GeologyShpExporter({}).export(
+                    output_folder / "geol_profile.shp",
+                    {
+                        "line_lyr": values["line_layer_obj"],
+                        "raster_lyr": values["raster_layer_obj"],
+                        "outcrop_lyr": values["outcrop_layer_obj"],
+                        "band_number": values["selected_band"],
+                    },
+                )
+                result_msg.append(f"  - geol_profile.shp")
 
-                        if struct_data:
-                            result_msg += f"\nStructures CSV: {struct_csv_path}\n"
-                            self.dlg.results.setPlainText(result_msg)
+            # Export Structures
+            if struct_data:
+                csv_exporter.export(
+                    output_folder / "structural_profile.csv",
+                    {"headers": ["dist", "apparent_dip"], "rows": struct_data},
+                )
+                result_msg.append(f"  - structural_profile.csv")
+                StructureShpExporter({}).export(
+                    output_folder / "structural_profile.shp",
+                    {
+                        "line_lyr": values["line_layer_obj"],
+                        "raster_lyr": values["raster_layer_obj"],
+                        "struct_lyr": values["structural_layer_obj"],
+                        "dip_field": values["dip_field"],
+                        "strike_field": values["strike_field"],
+                        "band_number": values["selected_band"],
+                        "buffer_distance": values["buffer_distance"],
+                        "dip_scale_factor": values["dip_scale_factor"],
+                    },
+                )
+                result_msg.append(f"  - structural_profile.shp")
 
-                            # Save structural shapefile
-                            self.save_structural_profile_shapefile(
-                                line_layer,
-                                raster_layer,
-                                structural_layer,
-                                output_folder,
-                                dip_field,
-                                strike_field,
-                                selected_band,
-                                buffer_dist,
-                                dip_scale_factor,
-                            )
-                            result_msg += f"Structures SHP: {Path(output_folder) / 'structural_profile.shp'}\n"
-                            self.dlg.results.setPlainText(result_msg)
+            # Export Axes
+            AxesShpExporter({}).export(
+                output_folder / "profile_axes.shp",
+                {"profile_data": profile_data, "crs": line_crs},
+            )
+            result_msg.append(f"  - profile_axes.shp")
 
-            # Save axes shapefile
-            self.save_axes_shapefile(line_layer, profile_data, output_folder)
-            result_msg += f"\nAxes SHP: {Path(output_folder) / 'profile_axes.shp'}\n"
-            self.dlg.results.setPlainText(result_msg)
-
-            result_msg += f"\n✓ All files saved successfully to:\n{output_folder}"
-            self.dlg.results.setPlainText(result_msg)
-
+            result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
+            self.dlg.results.setPlainText("\n".join(result_msg))
             QMessageBox.information(
                 self.dlg,
                 self.tr("Success"),
-                self.tr(f"All profile data saved to:\n{output_folder}"),
+                self.tr(f"All data saved to:\n{output_folder}"),
             )
-
-        except PermissionError as e:
-            # Permission errors when writing files
-            QMessageBox.warning(
-                self.dlg,
-                self.tr("Permission Error"),
-                self.tr(
-                    f"Permission denied when saving files: {str(e)}\n\n"
-                    f"Please check folder permissions and try again."
-                ),
-            )
-            self.dlg.results.append(f"Permission error: {str(e)}")
-            logger.error(
-                "Permission error in save_profile_line: %s", str(e), exc_info=True
-            )
-
-        except (IOError, OSError) as e:
-            # File system errors (disk full, invalid path, etc.)
-            QMessageBox.warning(
-                self.dlg,
-                self.tr("File System Error"),
-                self.tr(
-                    f"Failed to save files: {str(e)}\n\n"
-                    f"Please check disk space and output path."
-                ),
-            )
-            self.dlg.results.append(f"File system error: {str(e)}")
-            logger.error(
-                "File system error in save_profile_line: %s", str(e), exc_info=True
-            )
-
-        except ValueError as e:
-            # Data validation errors (invalid geometry, empty data, etc.)
-            QMessageBox.warning(
-                self.dlg,
-                self.tr("Data Validation Error"),
-                self.tr(
-                    f"Invalid data encountered: {str(e)}\n\n"
-                    f"Cannot save profile with invalid data."
-                ),
-            )
-            self.dlg.results.append(f"Validation error: {str(e)}")
-            logger.error(
-                "Validation error in save_profile_line: %s", str(e), exc_info=True
-            )
-
-        except RuntimeError as e:
-            # Runtime errors (shapefile writer errors, CRS issues, etc.)
-            QMessageBox.warning(
-                self.dlg,
-                self.tr("Shapefile Writing Error"),
-                self.tr(
-                    f"Error writing shapefile: {str(e)}\n\n"
-                    f"This may be due to invalid geometries or CRS issues."
-                ),
-            )
-            self.dlg.results.append(f"Shapefile error: {str(e)}")
-            logger.error(
-                "Runtime error in save_profile_line: %s", str(e), exc_info=True
-            )
-
-        except KeyError as e:
-            # Missing field or attribute errors
-            QMessageBox.warning(
-                self.dlg,
-                self.tr("Field Error"),
-                self.tr(
-                    f"Required field not found: {str(e)}\n\n"
-                    f"Please verify that all required fields exist in your layers."
-                ),
-            )
-            self.dlg.results.append(f"Field error: {str(e)}")
-            logger.error("Field error in save_profile_line: %s", str(e), exc_info=True)
 
         except Exception as e:
-            # Catch-all for unexpected errors
-            import traceback
-
             error_details = traceback.format_exc()
+            logger.error("Unexpected error in save_profile_line: %s", error_details)
             QMessageBox.warning(
                 self.dlg,
-                self.tr("Unexpected Error"),
-                self.tr(
-                    f"An unexpected error occurred while saving: {str(e)}\n\nDetails:\n{error_details}"
-                ),
+                self.tr("Saving Error"),
+                self.tr(f"An unexpected error occurred while saving: {str(e)}"),
             )
-            self.dlg.results.append(f"Unexpected error: {str(e)}")
-            logger.error("Unexpected error in save_profile_line: %s", error_details)
-
-    def save_geol_profile_shapefile(
-        self, line_lyr, raster_lyr, outcrop_lyr, output_folder, band_number=1
-    ):
-        """Save the geological profile to a Shapefile."""
-        shp_output_path = Path(output_folder) / "geol_profile.shp"
-
-        line_geom, line_start, da = scu.prepare_profile_context(line_lyr)
-
-        # Create vector writer
-        writer = scu.create_shapefile_writer(
-            shp_output_path, outcrop_lyr.crs(), outcrop_lyr.fields()
-        )
-
-        for feature in outcrop_lyr.getFeatures():
-            outcrop_geom = feature.geometry()
-            if not outcrop_geom or outcrop_geom.isNull():
-                continue
-
-            if not outcrop_geom.intersects(line_geom):
-                continue
-
-            intersection = outcrop_geom.intersection(line_geom)
-            if not intersection or intersection.isNull():
-                continue
-
-            if intersection.isMultipart():
-                geoms = intersection.asGeometryCollection()
-            else:
-                geoms = [intersection]
-
-            for geom in geoms:
-                if geom.wkbType() not in [
-                    QgsWkbTypes.LineString,
-                    QgsWkbTypes.LineString25D,
-                ]:
-                    continue
-
-                # Use helper to sample points
-                # We pass line_start as reference point to measure distance from start of section line
-                points = scu.sample_elevation_along_line(
-                    geom, raster_lyr, band_number, da, line_start
-                )
-
-                if len(points) > 1:
-                    profile_geom = QgsGeometry.fromPolylineXY(points)
-                    new_feat = QgsFeature(outcrop_lyr.fields())
-                    new_feat.setAttributes(feature.attributes())
-                    new_feat.setGeometry(profile_geom)
-                    writer.addFeature(new_feat)
-
-        del writer
-        self.dlg.results.append(f"\nGeological profile saved to: {shp_output_path}")
-
-    def save_structural_profile_shapefile(
-        self,
-        line_lyr,
-        raster_lyr,
-        struct_lyr,
-        output_folder,
-        dip_field,
-        strike_field,
-        band_number=1,
-        buffer_distance=100,
-        dip_scale_factor=4,
-    ):
-        """Save the structural profile to a Shapefile."""
-        shp_output_path = Path(output_folder) / "structural_profile.shp"
-
-        line_geom, line_start, da = scu.prepare_profile_context(line_lyr)
-
-        line_az = scu.calculate_line_azimuth(line_geom)
-
-        # Calculate scale for dip lines using user-defined scale factor
-        res = raster_lyr.rasterUnitsPerPixelX()
-        L = res * dip_scale_factor
-        buffer_geom = line_geom.buffer(buffer_distance, 25)
-
-        # Create vector writer
-        writer = scu.create_shapefile_writer(
-            shp_output_path, line_lyr.crs(), struct_lyr.fields()
-        )
-
-        for f in struct_lyr.getFeatures():
-            struct_geom = f.geometry()
-            if not struct_geom or struct_geom.isNull():
-                continue
-
-            if struct_geom.intersects(buffer_geom):
-                # Get elevation at the projected point on the line
-                proj_dist = line_geom.lineLocatePoint(struct_geom)
-                if proj_dist < 0:
-                    continue
-
-                proj_pt = line_geom.interpolate(proj_dist).asPoint()
-
-                # Measure distance from start for X coordinate
-                dist = da.measureLine(line_start, proj_pt)
-
-                res_val = (
-                    raster_lyr.dataProvider()
-                    .identify(proj_pt, QgsRaster.IdentifyFormatValue)
-                    .results()
-                )
-                elev = res_val.get(band_number, 0.0)
-
-                strike = f[strike_field]
-                dip = f[dip_field]
-
-                if strike is not None and dip is not None:
-                    app_dip = scu.calculate_apparent_dip(strike, dip, line_az)
-                    rad_dip = math.radians(app_dip)
-
-                    # dy is always negative because dip is downwards
-                    dy = -L * math.sin(abs(rad_dip))
-
-                    # dx direction depends on the sign of app_dip
-                    dx = L * math.cos(abs(rad_dip))
-                    if app_dip < 0:
-                        dx = -dx
-
-                    # Create line geometry
-                    p1 = QgsPointXY(dist, elev)
-                    p2 = QgsPointXY(dist + dx, elev + dy)
-                    dip_line = QgsGeometry.fromPolylineXY([p1, p2])
-
-                    new_feat = QgsFeature(struct_lyr.fields())
-                    new_feat.setAttributes(f.attributes())
-                    new_feat.setGeometry(dip_line)
-                    writer.addFeature(new_feat)
-
-        del writer
-        self.dlg.results.append(f"\nStructural profile saved to: {shp_output_path}")
-
-    def save_axes_shapefile(self, line_lyr, profile_data, output_folder):
-        """Save coordinate axes (Left, Right, Bottom) to a Shapefile.
-
-        Args:
-            line_lyr: The line layer (used for CRS).
-            profile_data: List of (dist, elev) tuples.
-            output_folder: Path to output folder.
-        """
-        shp_output_path = Path(output_folder) / "profile_axes.shp"
-
-        if not profile_data:
-            return
-
-        # Calculate bounds with padding (same as preview)
-        dists = [p[0] for p in profile_data]
-        elevs = [p[1] for p in profile_data]
-
-        min_d, max_d = min(dists), max(dists)
-        min_e, max_e = min(elevs), max(elevs)
-
-        # Avoid division by zero
-        if max_d == min_d:
-            max_d = min_d + 100
-        if max_e == min_e:
-            max_e = min_e + 10
-
-        e_range = max_e - min_e
-        min_e_padded = min_e - e_range * 0.05
-        max_e_padded = max_e + e_range * 0.05
-
-        # Create geometries
-        lines = []
-
-        # Left Axis
-        lines.append([QgsPointXY(min_d, min_e_padded), QgsPointXY(min_d, max_e_padded)])
-
-        # Right Axis
-        lines.append([QgsPointXY(max_d, min_e_padded), QgsPointXY(max_d, max_e_padded)])
-
-        # Bottom Axis
-        lines.append([QgsPointXY(min_d, min_e_padded), QgsPointXY(max_d, min_e_padded)])
-
-        # Create fields
-        fields = QgsFields()
-        fields.append(QgsField("axis", QMetaType.Type.QString))
-
-        # Create vector writer
-        writer = scu.create_shapefile_writer(shp_output_path, line_lyr.crs(), fields)
-
-        axis_names = ["Left", "Right", "Bottom"]
-
-        for i, points in enumerate(lines):
-            feat = QgsFeature()
-            geom = QgsGeometry.fromPolylineXY(points)
-            feat.setGeometry(geom)
-            feat.setAttributes([axis_names[i]])
-            writer.addFeature(feat)
-
-        del writer
-        self.dlg.results.append(f"\nProfile axes saved to: {shp_output_path}")
+            self.dlg.results.append(f"Error saving files: {str(e)}")
 
     def draw_preview(self, topo_data, geol_data=None, struct_data=None):
         """Draw enhanced interactive preview using native PyQGIS renderer.

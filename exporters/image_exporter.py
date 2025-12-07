@@ -18,22 +18,24 @@ class ImageExporter(BaseExporter):
 
     def get_supported_extensions(self) -> List[str]:
         """Get supported image extensions."""
-        return ['.png', '.jpg', '.jpeg']
+        return [".png", ".jpg", ".jpeg"]
 
     def export(self, output_path: Path, map_settings) -> bool:
         """Export map to raster image.
-        
+
         Args:
             output_path: Output file path
             map_settings: QgsMapSettings instance configured for rendering
-            
+
         Returns:
             True if export successful, False otherwise
         """
         try:
-            width = self.get_setting('width', 800)
-            height = self.get_setting('height', 600)
-            background_color = self.get_setting('background_color', QColor(255, 255, 255))
+            width = self.get_setting("width", 800)
+            height = self.get_setting("height", 600)
+            background_color = self.get_setting(
+                "background_color", QColor(255, 255, 255)
+            )
 
             # Create image
             image = QImage(QSize(width, height), QImage.Format_ARGB32)
@@ -50,7 +52,7 @@ class ImageExporter(BaseExporter):
             job.waitForFinished()
 
             # Draw legend if available
-            legend_renderer = self.get_setting('legend_renderer')
+            legend_renderer = self.get_setting("legend_renderer")
             if legend_renderer:
                 legend_renderer.draw_legend(painter, QRectF(0, 0, width, height))
 
@@ -58,8 +60,8 @@ class ImageExporter(BaseExporter):
 
             # Save image
             ext = output_path.suffix.lower()
-            quality = 95 if ext in ['.jpg', '.jpeg'] else -1
-            
+            quality = 95 if ext in [".jpg", ".jpeg"] else -1
+
             return image.save(str(output_path), None, quality)
 
         except Exception:
