@@ -953,7 +953,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
     def _generate_topography(self, line_layer, raster_layer, band_num):
         """Generate topographic profile data."""
-        return self.plugin_instance.topographic_profile(
+        return self.plugin_instance.profile_service.generate_topographic_profile(
             line_layer, raster_layer, band_num
         )
 
@@ -974,7 +974,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
         try:
             logger.info(f"Generating geological profile with field: {outcrop_name_field}")
-            result = self.plugin_instance.geol_profile(
+            result = self.plugin_instance.geology_service.generate_geological_profile(
                 line_layer,
                 raster_layer,
                 outcrop_layer,
@@ -1007,7 +1007,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         line_geom = line_feat.geometry()
         line_azimuth = scu.calculate_line_azimuth(line_geom)
 
-        return self.plugin_instance.project_structures(
+        return self.plugin_instance.structure_service.project_structures(
             line_layer,
             structural_layer,
             buffer_dist,

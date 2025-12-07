@@ -52,79 +52,14 @@ from ..exporters import (
     StructureShpExporter,
     AxesShpExporter,
 )
+from .data_cache import DataCache
+from .services import ProfileService, GeologyService, StructureService
 
 
 logger = get_logger(__name__)
 
 
-class DataCache:
-    """Cache for processed profile data to improve performance.
-    
-    Caches processed data to avoid re-computation when only
-    visualization parameters (vert_exag, dip_scale) change.
-    """
-
-    def __init__(self):
-        """Initialize empty cache."""
-        self._cache = {}
-        self._cache_key = None
-
-    def get_cache_key(self, values):
-        """Generate cache key from data-affecting input values.
-        
-        Only includes parameters that affect data processing,
-        not visualization parameters like vert_exag or dip_scale.
-        
-        Args:
-            values: Dictionary of input values from dialog
-            
-        Returns:
-            Hash key for cache lookup
-        """
-        # Only include data-affecting parameters
-        key_params = {
-            'raster_layer': id(values.get('raster_layer_obj')),
-            'line_layer': id(values.get('line_layer_obj')),
-            'outcrop_layer': id(values.get('outcrop_layer_obj')),
-            'structural_layer': id(values.get('structural_layer_obj')),
-            'buffer': values.get('buffer'),
-            'selected_band': values.get('selected_band'),
-            'outcrop_field': values.get('outcrop_name_field'),
-            'dip_field': values.get('dip_field'),
-            'strike_field': values.get('strike_field'),
-        }
-        # Create hash from string representation
-        key_str = '|'.join(f"{k}:{v}" for k, v in sorted(key_params.items()))
-        return hash(key_str)
-
-    def get(self, key):
-        """Get cached data for given key.
-        
-        Args:
-            key: Cache key
-            
-        Returns:
-            Cached data dict or None if not found
-        """
-        return self._cache.get(key)
-
-    def set(self, key, data):
-        """Set cached data for given key.
-        
-        Args:
-            key: Cache key
-            data: Data to cache
-        """
-        # Only keep one cache entry to limit memory
-        self._cache.clear()
-        self._cache[key] = data
-        self._cache_key = key
-
-    def clear(self):
-        """Clear all cached data."""
-        self._cache.clear()
-        self._cache_key = None
-        logger.info("Cache cleared")
+# DataCache has been moved to core/data_cache.py
 
 
 class SecInterp:
@@ -162,6 +97,11 @@ class SecInterp:
 
         # Create preview renderer
         self.preview_renderer = PreviewRenderer()
+
+        # Initialize services
+        self.profile_service = ProfileService()
+        self.geology_service = GeologyService()
+        self.structure_service = StructureService()
 
         # Initialize data cache for performance
         self.data_cache = DataCache()
@@ -446,7 +386,7 @@ class SecInterp:
             buffer_dist = values["buffer_distance"]
 
             # Process topographic profile
-            profile_data = self.topographic_profile(
+            profile_data = self.profile_service.generate_topographic_profile(
                 line_layer, raster_layer, selected_band
             )
 
@@ -470,7 +410,7 @@ class SecInterp:
             if outcrop_layer:
                 outcrop_name_field = values["outcrop_name_field"]
                 if outcrop_name_field:
-                    geol_data = self.geol_profile(
+                    geol_data = self.geology_service.generate_geological_profile(
                         line_layer,
                         raster_layer,
                         outcrop_layer,
@@ -517,7 +457,7 @@ class SecInterp:
 
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
 
-                    struct_data = self.project_structures(
+                    struct_data = self.structure_service.project_structures(
                         line_layer,
                         structural_layer,
                         buffer_dist,
@@ -624,432 +564,8 @@ class SecInterp:
             self.dlg.results.append(f"Unexpected error: {str(e)}")
             logger.error("Unexpected error in process_data: %s", error_details)
 
-    def topographic_profile(
-        self,
-        line_lyr: QgsVectorLayer,
-        raster_lyr: QgsRasterLayer,
-        band_number: int = 1,
-    ):
-        """Generate topographic profile data by sampling elevation along the section line.
-
-        This function returns the profile data as a list of tuples.
-
-        Args:
-            line_lyr (QgsVectorLayer): The cross-section line layer.
-            raster_lyr (QgsRasterLayer): The DEM/raster layer for elevation.
-            band_number (int): Raster band to sample (default: 1).
-
-        Returns:
-            list: List of (distance, elevation) tuples.
-
-        Raises:
-            ValueError: If line layer has no features or invalid geometry.
-        """
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
-            raise ValueError("Line layer has no features")
-
-        geom = line_feat.geometry()
-        if not geom or geom.isNull():
-            raise ValueError("Line geometry is not valid")
-
-        da = scu.create_distance_area(line_lyr.crs())
-
-        # Sample points using helper
-        # For topographic profile, we measure from the start of the line
-        points = scu.sample_elevation_along_line(geom, raster_lyr, band_number, da)
-
-        # Convert QgsPointXY to tuples
-        values = [(round(p.x(), 1), round(p.y(), 1)) for p in points]
-
-        return values
-
-    def geol_profile(
-        self,
-        line_lyr: QgsVectorLayer,
-        raster_lyr: QgsRasterLayer,
-        outcrop_lyr: QgsVectorLayer,
-        glg_field: str,
-        band_number: int = 1,
-    ):
-        """Generate geological profile data by intersecting the section line with outcrop polygons.
-
-        This function returns the profile data as a list of tuples.
-
-        Args:
-            line_lyr (QgsVectorLayer): The cross-section line layer.
-            raster_lyr (QgsRasterLayer): The DEM/raster layer for elevation.
-            outcrop_lyr (QgsVectorLayer): The geological outcrop layer (polygons).
-            glg_field (str): The field name in outcrop_lyr containing unit names.
-            band_number (int): Raster band to sample (default: 1).
-
-        Returns:
-            list: List of (distance, elevation, unit_name) tuples.
-
-        Raises:
-            ValueError: If line layer has no features or invalid geometry.
-            RuntimeError: If intersection algorithm fails.
-        """
-        from qgis import processing
-        from qgis.core import QgsProcessingFeedback
-
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
-            raise ValueError("Line layer has no features")
-
-        line_geom = line_feat.geometry()
-        if not line_geom or line_geom.isNull():
-            raise ValueError("Line geometry is not valid")
-
-        if line_geom.isMultipart():
-            line_start = line_geom.asMultiPolyline()[0][0]
-        else:
-            line_start = line_geom.asPolyline()[0]
-
-        crs = line_lyr.crs()
-        da = scu.create_distance_area(crs)
-
-        values = []
-
-        # Use native intersection algorithm for better geometry handling
-        try:
-            feedback = QgsProcessingFeedback()
-
-            # Log input information for debugging
-            logger.info(
-                f"Computing intersection: line CRS={line_lyr.crs().authid()}, "
-                f"outcrop CRS={outcrop_lyr.crs().authid()}"
-            )
-            logger.debug(
-                f"Line features: {line_lyr.featureCount()}, "
-                f"Outcrop features: {outcrop_lyr.featureCount()}"
-            )
-
-            result = processing.run(
-                "native:intersection",
-                {
-                    "INPUT": line_lyr,
-                    "OVERLAY": outcrop_lyr,
-                    "INPUT_FIELDS": [],  # Don't need line fields
-                    "OVERLAY_FIELDS": [],  # Empty list = keep ALL geology fields
-                    "OVERLAY_FIELDS_PREFIX": "",
-                    "OUTPUT": "memory:",
-                },
-                feedback=feedback,
-            )
-
-            intersection_layer = result["OUTPUT"]
-            intersection_count = intersection_layer.featureCount()
-            
-            logger.info(
-                f"✓ Intersection complete: {intersection_count} segments found"
-            )
-            
-            if intersection_count == 0:
-                logger.warning(
-                    "No intersections found. Check that line and outcrops overlap "
-                    "and have compatible CRS."
-                )
-
-        except Exception as e:
-            logger.error(f"Geological intersection failed: {e}")
-            raise RuntimeError(f"Cannot compute geological intersection: {e}") from e
-
-        # Process intersection results
-        # TODO: Investigate why densify_line_by_interval() doesn't work here
-        # Temporarily using manual interpolation as fallback
-        processed_segments = 0
-        total_points = 0
-        
-        for feature in intersection_layer.getFeatures():
-            geom = feature.geometry()
-            if not geom or geom.isNull():
-                logger.debug("Skipping null geometry")
-                continue
-
-            # Log geometry type for debugging
-            geom_type = geom.wkbType()
-            geom_type_name = QgsWkbTypes.displayString(geom_type)
-            logger.debug(f"Intersection segment geometry type: {geom_type_name} ({geom_type})")
-
-            # Handle both LineString and MultiLineString geometries
-            geometries_to_process = []
-            
-            if geom.wkbType() in [
-                QgsWkbTypes.LineString,
-                QgsWkbTypes.LineString25D,
-            ]:
-                # Single LineString
-                geometries_to_process.append(geom)
-            elif geom.wkbType() in [
-                QgsWkbTypes.MultiLineString,
-                QgsWkbTypes.MultiLineString25D,
-            ]:
-                # MultiLineString - extract individual parts
-                multi_geom = geom.asMultiPolyline()
-                for part in multi_geom:
-                    # Create a new LineString geometry from each part
-                    line_geom = QgsGeometry.fromPolylineXY(part)
-                    geometries_to_process.append(line_geom)
-                logger.debug(f"Extracted {len(multi_geom)} parts from MultiLineString")
-            else:
-                logger.warning(f"Skipping unsupported geometry type: {geom_type_name}")
-                continue
-
-            # Process each geometry (LineString or part of MultiLineString)
-            for process_geom in geometries_to_process:
-                # Use manual interpolation (original method) as temporary fallback
-                dist_step = scu.calculate_step_size(process_geom, raster_lyr)
-                length = process_geom.length()
-                current_dist = 0.0
-                
-                logger.debug(f"Processing segment: length={length:.2f}, step={dist_step:.2f}")
-                processed_segments += 1
-
-                while current_dist <= length:
-                    pt = process_geom.interpolate(current_dist).asPoint()
-
-                    # Calculate distance from the start of the original section line
-                    dist_from_start = da.measureLine(line_start, pt)
-
-                    # Get elevation
-                    res = (
-                        raster_lyr.dataProvider()
-                        .identify(pt, QgsRaster.IdentifyFormatValue)
-                        .results()
-                    )
-                    elev = res.get(band_number, 0.0)
-
-                    # Get geology (attribute preserved automatically by intersection)
-                    glg_val = feature[glg_field]
-
-                    values.append((round(dist_from_start, 1), round(elev, 1), glg_val))
-                    total_points += 1
-
-                    current_dist += dist_step
-        
-        logger.info(f"Processed {processed_segments} segments, generated {total_points} points")
-
-        # Sort values by distance
-        values.sort(key=lambda x: x[0])
-
-        return values
-
-    def project_structures(
-        self,
-        line_lyr: QgsVectorLayer,
-        struct_lyr: QgsVectorLayer,
-        buffer_m: int,
-        line_az: float,
-        dip_field: str,
-        strike_field: str,
-    ):
-        """Project structural measurements onto the cross-section plane.
-
-        This function returns the profile data as a list of tuples.
-
-        Filters structures within a buffer distance of the section line and calculates
-        their apparent dip in the direction of the section.
-
-        Args:
-            line_lyr (QgsVectorLayer): The cross-section line layer.
-            struct_lyr (QgsVectorLayer): The structural measurements layer (points).
-            buffer_m (int): Buffer distance in meters to include structures.
-            line_az (float): Azimuth of the section line in degrees.
-            dip_field (str): Field name for dip angle.
-            strike_field (str): Field name for strike angle.
-
-        Returns:
-            list: List of (distance, apparent_dip) tuples.
-
-        Raises:
-            ValueError: If line layer has no features or invalid geometry.
-        """
-
-        # Logging: Initial setup
-        logger.info("=" * 60)
-        logger.info("PROJECT_STRUCTURES - Starting analysis")
-        logger.info("=" * 60)
-        logger.info(f"Buffer distance: {buffer_m} (units depend on CRS)")
-        logger.info(f"Line azimuth: {line_az:.2f}°")
-        logger.info(f"Dip field: '{dip_field}'")
-        logger.info(f"Strike field: '{strike_field}'")
-
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
-            raise ValueError("Line layer has no features")
-
-        line_geom = line_feat.geometry()
-        if not line_geom or line_geom.isNull():
-            raise ValueError("Line geometry is not valid")
-
-        if line_geom.isMultipart():
-            line_start = line_geom.asMultiPolyline()[0][0]
-        else:
-            line_start = line_geom.asPolyline()[0]
-
-        # Create buffer using native algorithm for better CRS handling
-        try:
-            buffer_geom = scu.create_buffer_geometry(
-                line_geom, line_lyr.crs(), buffer_m, segments=25
-            )
-        except (ValueError, RuntimeError) as e:
-            logger.error(f"Buffer creation failed: {e}")
-            raise ValueError(f"Cannot create buffer zone: {e}") from e
-
-        crs = struct_lyr.crs()
-
-        # Logging: CRS information
-        logger.info(f"Structural layer CRS: {crs.authid()} - {crs.description()}")
-        logger.info(f"CRS units: {crs.mapUnits()}")
-        if crs.isGeographic():
-            logger.warning(
-                "⚠️  CRS is GEOGRAPHIC (lat/lon) - buffer is in DEGREES, not meters!"
-            )
-            logger.warning(
-                f"   A buffer of {buffer_m} degrees ≈ {buffer_m * 111} km at equator"
-            )
-        else:
-            logger.info("✓ CRS is PROJECTED - buffer is in map units")
-
-        da = scu.create_distance_area(crs)
-
-        # Logging: Count total features
-        total_features = struct_lyr.featureCount()
-        logger.info(f"Total features in structural layer: {total_features}")
-
-        projected_structs = []
-
-        # Detailed counters for logging
-        null_geom_count = 0
-        missing_field_count = 0
-        strike_parse_fail_count = 0
-        dip_parse_fail_count = 0
-        strike_range_fail_count = 0
-        dip_range_fail_count = 0
-        success_count = 0
-
-        # Filter features spatially using optimized index-based method
-        # Returns a list of features, not a layer
-        try:
-            filtered_features = scu.filter_features_by_buffer(
-                struct_lyr, buffer_geom, line_lyr.crs()
-            )
-            filtered_count = len(filtered_features)
-            outside_buffer_count = total_features - filtered_count
-
-            logger.info(
-                f"Spatial filter: {filtered_count} features in buffer, "
-                f"{outside_buffer_count} outside"
-            )
-        except (ValueError, RuntimeError) as e:
-            logger.error(f"Spatial filtering failed: {e}")
-            raise ValueError(f"Cannot filter structures by buffer: {e}") from e
-
-        # Process only filtered features (no need for intersects() check)
-        for idx, f in enumerate(filtered_features):
-            struct_geom = f.geometry()
-            if not struct_geom or struct_geom.isNull():
-                null_geom_count += 1
-                continue
-
-            # Feature is already inside buffer - no intersects() check needed
-            p = struct_geom.asPoint()
-            dist = da.measureLine(line_start, p)
-
-            try:
-                strike_raw = f[strike_field]
-                dip_raw = f[dip_field]
-            except KeyError as e:
-                missing_field_count += 1
-                logger.debug(f"Feature {idx}: Missing field {e}")
-                continue
-
-            # Parse strike (supports field notation like "N 15° W" or numeric)
-            strike = scu.parse_strike(strike_raw)
-            if strike is None:
-                strike_parse_fail_count += 1
-                logger.debug(
-                    f"Feature {idx}: Failed to parse strike '{strike_raw}'"
-                )
-                continue
-
-            # Parse dip (supports field notation like "22° SW" or numeric)
-            dip_angle, dip_direction = scu.parse_dip(dip_raw)
-            if dip_angle is None:
-                dip_parse_fail_count += 1
-                logger.debug(f"Feature {idx}: Failed to parse dip '{dip_raw}'")
-                continue
-
-            # Use dip_angle for calculations
-            dip = dip_angle
-            # Note: dip_direction could be used for additional validation if needed
-
-            # Validate ranges
-            is_valid, error_msg = vu.validate_angle_range(
-                strike, "Strike", 0.0, 360.0
-            )
-            if not is_valid:
-                strike_range_fail_count += 1
-                logger.debug(
-                    f"Feature {idx}: Strike validation failed - {error_msg} (value: {strike})"
-                )
-                continue
-
-            is_valid, error_msg = vu.validate_angle_range(dip, "Dip", 0.0, 90.0)
-            if not is_valid:
-                dip_range_fail_count += 1
-                logger.debug(
-                    f"Feature {idx}: Dip validation failed - {error_msg} (value: {dip})"
-                )
-                continue
-
-            app_dip = scu.calculate_apparent_dip(strike, dip, line_az)
-            projected_structs.append((round(dist, 1), round(app_dip, 1)))
-            success_count += 1
-            logger.debug(
-                f"Feature {idx}: ✓ Success - dist={dist:.1f}, strike={strike:.1f}°, dip={dip:.1f}°, app_dip={app_dip:.1f}°"
-            )
-
-        # Sort by distance
-        projected_structs.sort(key=lambda x: x[0])
-
-        # Logging: Summary
-        logger.info("-" * 60)
-        logger.info("FILTERING SUMMARY:")
-        logger.info(f"  Total features processed: {total_features}")
-        logger.info(f"  ✓ Successfully projected: {success_count}")
-        logger.info(f"  ✗ Null/invalid geometry: {null_geom_count}")
-        logger.info(f"  ✗ Outside buffer ({buffer_m} units): {outside_buffer_count}")
-        logger.info(f"  ✗ Missing dip/strike fields: {missing_field_count}")
-        logger.info(f"  ✗ Strike parsing failed: {strike_parse_fail_count}")
-        logger.info(f"  ✗ Dip parsing failed: {dip_parse_fail_count}")
-        logger.info(f"  ✗ Strike out of range: {strike_range_fail_count}")
-        logger.info(f"  ✗ Dip out of range: {dip_range_fail_count}")
-        logger.info("-" * 60)
-
-        total_skipped = (
-            null_geom_count
-            + outside_buffer_count
-            + missing_field_count
-            + strike_parse_fail_count
-            + dip_parse_fail_count
-            + strike_range_fail_count
-            + dip_range_fail_count
-        )
-
-        if total_skipped > 0:
-            logger.warning(f"⚠️  Skipped {total_skipped} structural measurements")
-            if outside_buffer_count == total_features - null_geom_count:
-                logger.warning("⚠️  ALL valid features are outside the buffer!")
-                logger.warning("   → Try increasing the buffer distance")
-                logger.warning(
-                    "   → Check that line and structural layers use the same CRS"
-                )
-
-        logger.info("=" * 60)
-
-        return projected_structs
+    # Methods topographic_profile, geol_profile, and project_structures
+    # have been moved to ProfileService, GeologyService, and StructureService respectively
 
     def save_profile_line(self):
         """Save all profile data to CSV and Shapefile formats by delegating to exporters."""
@@ -1068,7 +584,7 @@ class SecInterp:
             self.dlg.results.setPlainText("✓ Generating data for export...")
 
             # 1. Generate all data in memory first
-            profile_data = self.topographic_profile(
+            profile_data = self.profile_service.generate_topographic_profile(
                 values["line_layer_obj"],
                 values["raster_layer_obj"],
                 values["selected_band"],
@@ -1083,7 +599,7 @@ class SecInterp:
 
             geol_data = None
             if values["outcrop_layer_obj"] and values["outcrop_name_field"]:
-                geol_data = self.geol_profile(
+                geol_data = self.geology_service.generate_geological_profile(
                     values["line_layer_obj"],
                     values["raster_layer_obj"],
                     values["outcrop_layer_obj"],
@@ -1101,7 +617,7 @@ class SecInterp:
                 if line_feat:
                     line_geom = line_feat.geometry()
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
-                    struct_data = self.project_structures(
+                    struct_data = self.structure_service.project_structures(
                         values["line_layer_obj"],
                         values["structural_layer_obj"],
                         values["buffer_distance"],

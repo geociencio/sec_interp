@@ -60,12 +60,20 @@ cp -v "$SOURCE_DIR/__init__.py" \
 echo "Copying modules..."
 # Create subdirectories
 mkdir -p "$DEST_DIR/core"
+mkdir -p "$DEST_DIR/core/services"
+mkdir -p "$DEST_DIR/core/utils"
 mkdir -p "$DEST_DIR/exporters"
 mkdir -p "$DEST_DIR/gui/ui"
 mkdir -p "$DEST_DIR/resources"
 
 # Copy core module
 cp -v "$SOURCE_DIR/core/"*.py "$DEST_DIR/core/"
+
+# Copy core/services module
+cp -v "$SOURCE_DIR/core/services/"*.py "$DEST_DIR/core/services/"
+
+# Copy core/utils module
+cp -v "$SOURCE_DIR/core/utils/"*.py "$DEST_DIR/core/utils/"
 
 # Copy exporters module
 cp -v "$SOURCE_DIR/exporters/"*.py "$DEST_DIR/exporters/"
