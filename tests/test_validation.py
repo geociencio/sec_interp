@@ -3,9 +3,6 @@
 Tests for core/validation.py
 """
 
-import pytest
-from pathlib import Path
-from unittest.mock import Mock
 
 from core import validation as vu
 

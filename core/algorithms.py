@@ -22,7 +22,6 @@
  ***************************************************************************/
 """
 
-import traceback
 from pathlib import Path
 
 from qgis.PyQt.QtCore import (
@@ -197,7 +196,7 @@ class SecInterp:
         for action in self.actions:
             self.iface.removePluginMenu(self.tr("&Sec Interp"), action)
             self.iface.removeToolBarIcon(action)
-        
+
         # Remove custom toolbar
         if self.toolbar:
             del self.toolbar
@@ -675,7 +674,7 @@ class SecInterp:
                 f"   A buffer of {buffer_m} degrees ≈ {buffer_m * 111} km at equator"
             )
         else:
-            logger.info(f"✓ CRS is PROJECTED - buffer is in map units")
+            logger.info("✓ CRS is PROJECTED - buffer is in map units")
 
         da = scu.create_distance_area(crs)
 
@@ -866,6 +865,7 @@ class SecInterp:
             line_crs = values["line_layer_obj"].crs()
 
             # Export Topography
+            logger.info("✓ Saving topographic profile...")
             csv_exporter.export(
                 output_folder / "topo_profile.csv",
                 {"headers": ["dist", "elev"], "rows": profile_data},
@@ -879,6 +879,7 @@ class SecInterp:
 
             # Export Geology
             if geol_data:
+                logger.info("✓ Saving geological profile...")
                 csv_exporter.export(
                     output_folder / "geol_profile.csv",
                     {"headers": ["dist", "elev", "geology"], "rows": geol_data},
@@ -897,6 +898,7 @@ class SecInterp:
 
             # Export Structures
             if struct_data:
+                logger.info("✓ Saving structural profile...")
                 csv_exporter.export(
                     output_folder / "structural_profile.csv",
                     {"headers": ["dist", "apparent_dip"], "rows": struct_data},
@@ -918,6 +920,7 @@ class SecInterp:
                 result_msg.append(f"  - structural_profile.shp")
 
             # Export Axes
+            logger.info("✓ Saving profile axes...")
             AxesShpExporter({}).export(
                 output_folder / "profile_axes.shp",
                 {"profile_data": profile_data, "crs": line_crs},

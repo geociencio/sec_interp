@@ -4,7 +4,7 @@ PDF exporter module for PDF documents.
 """
 
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List
 
 from qgis.PyQt.QtCore import QSize, QRectF, QSizeF, QMarginsF
 from qgis.PyQt.QtGui import QPainter, QPdfWriter, QPageSize

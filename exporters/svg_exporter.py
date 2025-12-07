@@ -4,12 +4,12 @@ SVG exporter module for vector graphics.
 """
 
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List
 
 from qgis.PyQt.QtCore import QSize, QRectF
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtGui import QPainter
-from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
+from qgis.core import QgsMapRendererCustomPainterJob
 
 from .base_exporter import BaseExporter
 from sec_interp.logger_config import get_logger

@@ -144,60 +144,6 @@ class PreviewRenderer:
         logger.debug("Created topography layer with %d points", len(topo_data))
         return layer
 
-    def _create_axes_labels_layer(self, topo_data, vert_exag=1.0):
-        """Create labels for axes.
-
-        Args:
-            topo_data: List of (distance, elevation) tuples
-            vert_exag: Vertical exaggeration factor
-
-        Returns:
-            QgsVectorLayer with axis labels
-        """
-        if not topo_data or len(topo_data) < 2:
-            return None
-
-        # Create memory layer with attributes using factory
-        layer, provider = self._create_memory_layer(
-            "Point", "Axes Labels", "field=label:string&field=align:string"
-        )
-        if not layer:
-            return None
-
-        # Calculate extent
-        distances = [d for d, _ in topo_data]
-        elevations = [e * vert_exag for _, e in topo_data]
-
-        min_dist = min(distances)
-        max_dist = max(distances)
-        min_elev = min(elevations)
-        max_elev = max(elevations)
-
-        # Create label features
-        features = []
-
-        # X-axis label (Distance)
-        x_label_point = QgsPointXY((min_dist + max_dist) / 2, min_elev)
-        x_feat = QgsFeature(layer.fields())
-        x_feat.setGeometry(QgsGeometry.fromPointXY(x_label_point))
-        x_feat.setAttribute("label", "Distance (m)")
-        x_feat.setAttribute("align", "center")
-        features.append(x_feat)
-
-        # Y-axis label (Elevation)
-        y_label_point = QgsPointXY(min_dist, (min_elev + max_elev) / 2)
-        y_feat = QgsFeature(layer.fields())
-        y_feat.setGeometry(QgsGeometry.fromPointXY(y_label_point))
-        y_feat.setAttribute("label", "Elevation (m)")
-        y_feat.setAttribute("align", "left")
-        features.append(y_feat)
-
-        provider.addFeatures(features)
-
-        # Apply categorized symbology
-        categories = []
-
-    def _create_geol_layer(self, geol_data, vert_exag=1.0):
         """Create temporary layer for geological profile.
 
         Args:

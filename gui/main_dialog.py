@@ -48,7 +48,6 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QFileDialog,
-    QMessageBox,
     QStyle,
 )
 

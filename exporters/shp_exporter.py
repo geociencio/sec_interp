@@ -13,10 +13,8 @@ from qgis.core import (
     QgsFields,
     QgsField,
     QgsFeature,
-    QgsGeometry,
-    QgsPointXY,
 )
-from qgis.PyQt.QtCore import QMetaType, QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from .base_exporter import BaseExporter
 from sec_interp.logger_config import get_logger
