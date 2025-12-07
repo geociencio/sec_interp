@@ -9,6 +9,7 @@ Handles rendering of interactive previews using native QGIS resources:
 """
 
 import math
+from typing import Optional, List, Tuple
 
 from qgis.core import (
     QgsVectorLayer,
@@ -30,6 +31,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QSize, Qt, QRectF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont, QPen
+from sec_interp.core.types import ProfileData, GeologyData, StructureData
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -58,7 +60,7 @@ class PreviewRenderer:
         QColor(22, 160, 133),  # Green Sea
     ]
 
-    def __init__(self, canvas=None):
+    def __init__(self, canvas=None) -> None:
         """Initialize preview renderer.
 
         Args:
@@ -70,7 +72,7 @@ class PreviewRenderer:
         self.has_topography = False  # Track if topography layer exists
         self.has_structures = False  # Track if structures layer exists
 
-    def _get_color_for_unit(self, name):
+    def _get_color_for_unit(self, name: str) -> QColor:
         """Get a consistent color for a geological unit based on its name."""
         if not name:
             return QColor(100, 100, 100)  # Default grey
@@ -80,7 +82,9 @@ class PreviewRenderer:
         index = hash_val % len(self.GEOLOGY_COLORS)
         return self.GEOLOGY_COLORS[index]
 
-    def _create_memory_layer(self, geometry_type, name, fields=None, crs="EPSG:4326"):
+    def _create_memory_layer(
+        self, geometry_type: str, name: str, fields: Optional[str] = None, crs: str = "EPSG:4326"
+    ) -> Tuple[Optional[QgsVectorLayer], Optional[object]]:
         """Create a memory layer with standard configuration.
 
         Args:
@@ -102,7 +106,7 @@ class PreviewRenderer:
 
         return layer, layer.dataProvider()
 
-    def _create_topo_layer(self, topo_data, vert_exag=1.0):
+    def _create_topo_layer(self, topo_data: ProfileData, vert_exag: float = 1.0) -> Optional[QgsVectorLayer]:
         """Create temporary layer for topographic profile.
 
         Args:
@@ -144,7 +148,7 @@ class PreviewRenderer:
         logger.debug("Created topography layer with %d points", len(topo_data))
         return layer
 
-    def _create_geol_layer(self, geol_data, vert_exag=1.0):
+    def _create_geol_layer(self, geol_data: GeologyData, vert_exag: float = 1.0) -> Optional[QgsVectorLayer]:
         """Create temporary layer for geological profile.
 
         Args:
@@ -213,7 +217,9 @@ class PreviewRenderer:
         logger.debug("Created geology layer with %d units", len(geol_groups))
         return layer
 
-    def _create_struct_layer(self, struct_data, reference_data, vert_exag=1.0):
+    def _create_struct_layer(
+        self, struct_data: StructureData, reference_data: ProfileData, vert_exag: float = 1.0
+    ) -> Optional[QgsVectorLayer]:
         """Create temporary layer for structural dips.
 
         Args:
@@ -283,7 +289,7 @@ class PreviewRenderer:
         logger.debug("Created structures layer with %d dips", len(struct_data))
         return layer
 
-    def _interpolate_elevation(self, reference_data, target_dist):
+    def _interpolate_elevation(self, reference_data: ProfileData, target_dist: float) -> float:
         """Interpolate elevation at a given distance."""
         if not reference_data:
             return 0
@@ -485,7 +491,13 @@ class PreviewRenderer:
 
         return layer
 
-    def render(self, topo_data, geol_data=None, struct_data=None, vert_exag=1.0):
+    def render(
+        self,
+        topo_data: ProfileData,
+        geol_data: Optional[GeologyData] = None,
+        struct_data: Optional[StructureData] = None,
+        vert_exag: float = 1.0,
+    ) -> Tuple[Optional[object], List[QgsVectorLayer]]:
         """Render preview with all data layers.
 
         Args:
@@ -577,7 +589,15 @@ class PreviewRenderer:
 
         return self.canvas, layers
 
-    def export_to_image(self, layers, extent, width, height, output_path, dpi=300):
+    def export_to_image(
+        self,
+        layers: List[QgsVectorLayer],
+        extent,
+        width: int,
+        height: int,
+        output_path,
+        dpi: int = 300,
+    ) -> bool:
         """Export preview to image file using QgsMapRendererCustomPainterJob.
 
         Args:
