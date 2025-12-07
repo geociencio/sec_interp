@@ -6,7 +6,7 @@ PDF exporter module for PDF documents.
 from pathlib import Path
 from typing import List, Dict, Any
 
-from qgis.PyQt.QtCore import QSize, QRectF, QSizeF
+from qgis.PyQt.QtCore import QSize, QRectF, QSizeF, QMarginsF
 from qgis.PyQt.QtGui import QPainter, QPdfWriter, QPageSize
 from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
 
@@ -39,9 +39,9 @@ class PDFExporter(BaseExporter):
 
             # Setup PDF writer
             writer = QPdfWriter(str(output_path))
-            writer.setResolution(300)  # Set a default resolution, e.g., 300 DPI
-            writer.setPageSize(QPageSize(QSizeF(width, height), QPageSize.Point))
-            writer.setPageMargins(0.0, 0.0, 0.0, 0.0, QPdfWriter.Point)
+            writer.setResolution(300)  # Set DPI
+            writer.setPageSize(QPageSize(QSizeF(width, height), QPageSize.Unit.Point))
+            writer.setPageMargins(QMarginsF(0, 0, 0, 0))
 
             # Setup painter
             painter = QPainter()
