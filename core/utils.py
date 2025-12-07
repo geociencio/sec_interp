@@ -250,6 +250,47 @@ def calculate_apparent_dip(true_strike, true_dip, line_azimuth):
     return app_dip
 
 
+def show_user_message(parent, title, message, level="warning"):
+    """Show message box with consistent styling and automatic logging.
+
+    Args:
+        parent: Parent widget (usually dialog or main window)
+        title: Message box title
+        message: Message content
+        level: Message level - "warning", "info", "error", "critical"
+
+    Returns:
+        QMessageBox.StandardButton for "question" level, None otherwise
+
+    Example:
+        show_user_message(self.dlg, "Error", "Invalid input", "warning")
+    """
+    from qgis.PyQt.QtWidgets import QMessageBox
+    from sec_interp.logger_config import get_logger
+
+    logger = get_logger(__name__)
+
+    # Log the message
+    if level == "error" or level == "critical":
+        logger.error(f"{title}: {message}")
+    elif level == "warning":
+        logger.warning(f"{title}: {message}")
+    else:
+        logger.info(f"{title}: {message}")
+
+    # Show message box
+    if level == "warning":
+        QMessageBox.warning(parent, title, message)
+    elif level == "info":
+        QMessageBox.information(parent, title, message)
+    elif level == "error" or level == "critical":
+        QMessageBox.critical(parent, title, message)
+    elif level == "question":
+        return QMessageBox.question(
+            parent, title, message, QMessageBox.Yes | QMessageBox.No
+        )
+
+
 # Preview rendering utilities
 
 
