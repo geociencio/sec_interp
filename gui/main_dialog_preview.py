@@ -14,6 +14,8 @@ from qgis.core import QgsVectorLayer, QgsRasterLayer
 from ..core.types import ProfileData, GeologyData, StructureData
 from ..core import utils as scu
 from ..core import validation as vu
+from ..core.performance_metrics import MetricsCollector, PerformanceTimer, format_duration
+from .main_dialog_config import DialogConfig
 from ..logger_config import get_logger
 
 if TYPE_CHECKING:
@@ -41,6 +43,7 @@ class PreviewManager:
             'geol': None,
             'struct': None
         }
+        self.metrics = MetricsCollector()
     
     def generate_preview(self) -> Tuple[bool, str]:
         """Generate complete preview with all available data layers.
@@ -51,51 +54,73 @@ class PreviewManager:
         Returns:
             Tuple of (success, message)
         """
+        self.metrics.clear()
+        
         try:
-            # 1. Validation
-            raster_layer, line_layer, band_num = self._validate_requirements()
-            
-            self.dialog.results.setPlainText("Generating preview...")
-            
-            # 2. Data Generation
-            with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as tmp:
-                tmp_path = Path(tmp.name)
-            
-            try:
-                # Generate topography
-                profile_data = self.generate_topography(line_layer, raster_layer, band_num)
+            with PerformanceTimer("Total Preview Generation", self.metrics):
+                # 1. Validation
+                raster_layer, line_layer, band_num = self._validate_requirements()
                 
-                if not profile_data or len(profile_data) < 2:
-                    return False, "No profile data generated. Check that the line intersects the raster."
+                self.dialog.results.setPlainText("Generating preview...")
                 
-                # Generate geology (optional)
-                geol_data = self.generate_geology(line_layer, raster_layer, band_num)
+                # 2. Data Generation
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as tmp:
+                    tmp_path = Path(tmp.name)
                 
-                # Generate structures (optional)
-                buffer_dist = self._get_buffer_distance()
-                struct_data = self.generate_structures(line_layer, buffer_dist)
+                try:
+                    # Generate topography
+                    with PerformanceTimer("Topography Generation", self.metrics):
+                        profile_data = self.generate_topography(line_layer, raster_layer, band_num)
+                    
+                    if not profile_data or len(profile_data) < 2:
+                        return False, "No profile data generated. Check that the line intersects the raster."
+                    
+                    self.metrics.record_count("Topography Points", len(profile_data))
+                    
+                    # Generate geology (optional)
+                    geol_data = None
+                    with PerformanceTimer("Geology Generation", self.metrics):
+                        geol_data = self.generate_geology(line_layer, raster_layer, band_num)
+                    
+                    if geol_data:
+                        self.metrics.record_count("Geology Points", len(geol_data))
+                    
+                    # Generate structures (optional)
+                    struct_data = None
+                    buffer_dist = 100.0
+                    with PerformanceTimer("Structure Generation", self.metrics):
+                        buffer_dist = self._get_buffer_distance()
+                        struct_data = self.generate_structures(line_layer, buffer_dist)
+                    
+                    if struct_data:
+                        self.metrics.record_count("Structure Points", len(struct_data))
+                    
+                    # Cache the data
+                    self.cached_data['topo'] = profile_data
+                    self.cached_data['geol'] = geol_data
+                    self.cached_data['struct'] = struct_data
+                    
+                finally:
+                    if tmp_path.exists():
+                        tmp_path.unlink()
                 
-                # Cache the data
-                self.cached_data['topo'] = profile_data
-                self.cached_data['geol'] = geol_data
-                self.cached_data['struct'] = struct_data
+                # 3. Visualization
+                try:
+                    if not self.dialog.plugin_instance or not hasattr(self.dialog.plugin_instance, 'draw_preview'):
+                        raise AttributeError("Plugin instance or draw_preview method not available")
+                        
+                    with PerformanceTimer("Rendering", self.metrics):
+                        self.dialog.plugin_instance.draw_preview(profile_data, geol_data, struct_data)
+                except Exception as e:
+                    logger.error(f"Error drawing preview: {e}", exc_info=True)
+                    raise ValueError(f"Failed to render preview: {str(e)}")
                 
-            finally:
-                if tmp_path.exists():
-                    tmp_path.unlink()
-            
-            # 3. Visualization
-            try:
-                if not self.dialog.plugin_instance or not hasattr(self.dialog.plugin_instance, 'draw_preview'):
-                    raise AttributeError("Plugin instance or draw_preview method not available")
-                self.dialog.plugin_instance.draw_preview(profile_data, geol_data, struct_data)
-            except Exception as e:
-                logger.error(f"Error drawing preview: {e}", exc_info=True)
-                raise ValueError(f"Failed to render preview: {str(e)}")
-            
-            # 4. Results Reporting
-            result_msg = self._format_results_message(profile_data, geol_data, struct_data, buffer_dist)
-            self.dialog.results.setPlainText(result_msg)
+                # 4. Results Reporting
+                result_msg = self._format_results_message(profile_data, geol_data, struct_data, buffer_dist)
+                self.dialog.results.setPlainText(result_msg)
+                
+                if DialogConfig.LOG_DETAILED_METRICS:
+                    logger.info(f"Preview Performance: {self.metrics.get_summary()}")
             
             return True, "Preview generated successfully"
             
@@ -332,6 +357,26 @@ class PreviewManager:
             "",
             f"Distance: {profile_data[0][0]:.1f} - {profile_data[-1][0]:.1f} m",
             f"Elevation: {min(p[1] for p in profile_data):.1f} - {max(p[1] for p in profile_data):.1f} m",
+        ])
+        
+        # Add performance metrics if enabled
+        if DialogConfig.ENABLE_PERFORMANCE_METRICS and DialogConfig.SHOW_METRICS_IN_RESULTS:
+            timings = self.metrics.timings
+            if timings:
+                lines.append("")
+                lines.append("Performance:")
+                if "Topography Generation" in timings:
+                   lines.append(f"  Topo: {format_duration(timings['Topography Generation'])}")
+                if "Geology Generation" in timings and geol_data:
+                   lines.append(f"  Geol: {format_duration(timings['Geology Generation'])}")
+                if "Structure Generation" in timings and struct_data:
+                   lines.append(f"  Struct: {format_duration(timings['Structure Generation'])}")
+                if "Rendering" in timings:
+                   lines.append(f"  Render: {format_duration(timings['Rendering'])}")
+                if "Total Preview Generation" in timings:
+                   lines.append(f"  Total: {format_duration(timings['Total Preview Generation'])}")
+        
+        lines.extend([
             "",
             "Adjust 'Vert. Exag.' and click Preview to update."
         ])

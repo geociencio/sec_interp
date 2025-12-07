@@ -48,6 +48,11 @@ class DialogConfig:
     ENABLE_CACHE = True
     CACHE_EXPIRY_SECONDS = 3600  # 1 hour
     
+    # Performance metrics
+    ENABLE_PERFORMANCE_METRICS: bool = True
+    SHOW_METRICS_IN_RESULTS: bool = True
+    LOG_DETAILED_METRICS: bool = False
+    
     # UI behavior
     AUTO_SAVE_SETTINGS = True
     SHOW_HELP_ON_START = False

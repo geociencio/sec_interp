@@ -16,7 +16,9 @@ from qgis.PyQt.QtGui import QColor
 from ..exporters.image_exporter import ImageExporter
 from ..exporters.pdf_exporter import PDFExporter
 from ..exporters.svg_exporter import SVGExporter
-from .main_dialog_config import DialogDefaults
+from ..exporters.svg_exporter import SVGExporter
+from .main_dialog_config import DialogConfig, DialogDefaults
+from ..core.performance_metrics import MetricsCollector, PerformanceTimer
 from ..logger_config import get_logger
 
 if TYPE_CHECKING:
@@ -39,6 +41,7 @@ class ExportManager:
             dialog: The SecInterpDialog instance
         """
         self.dialog = dialog
+        self.metrics = MetricsCollector()
     
     def export_preview(self) -> bool:
         """Export the current preview to a file using dedicated exporters.
@@ -46,102 +49,118 @@ class ExportManager:
         Returns:
             True if export successful, False otherwise
         """
+        self.metrics.clear()
+        
         try:
-            # Get current canvas and layers
-            if not self.dialog.plugin_instance:
-                self.dialog.messagebar.pushMessage(
-                    "Export Error",
-                    "Plugin instance not available.",
-                    level=1  # Critical
+            with PerformanceTimer("Total Export Time", self.metrics):
+                # Get current canvas and layers
+                if not self.dialog.plugin_instance:
+                    self.dialog.messagebar.pushMessage(
+                        "Export Error",
+                        "Plugin instance not available.",
+                        level=1  # Critical
+                    )
+                    return False
+                
+                canvas = getattr(self.dialog.plugin_instance, 'preview_canvas', None)
+                if not canvas:
+                    self.dialog.messagebar.pushMessage(
+                        "Export Error",
+                        "No preview available to export. Generate a preview first.",
+                        level=2  # Warning
+                    )
+                    return False
+                
+                try:
+                    layers = canvas.layers()
+                except Exception as e:
+                    logger.error(f"Error accessing canvas layers: {e}", exc_info=True)
+                    self.dialog.messagebar.pushMessage(
+                        "Export Error",
+                        "Failed to access preview layers.",
+                        level=1
+                    )
+                    return False
+                
+                if not layers:
+                    self.dialog.messagebar.pushMessage(
+                        "Export Error",
+                        "No layers to export. Generate a preview first.",
+                        level=2
+                    )
+                    return False
+                
+                # Get export format from user
+                file_filter = (
+                    "PNG Image (*.png);;"
+                    "JPEG Image (*.jpg *.jpeg);;"
+                    "PDF Document (*.pdf);;"
+                    "SVG Vector (*.svg)"
                 )
-                return False
-            
-            canvas = getattr(self.dialog.plugin_instance, 'preview_canvas', None)
-            if not canvas:
-                self.dialog.messagebar.pushMessage(
-                    "Export Error",
-                    "No preview available to export. Generate a preview first.",
-                    level=2  # Warning
+                
+                output_path, selected_filter = QFileDialog.getSaveFileName(
+                    self.dialog,
+                    "Export Preview",
+                    "",
+                    file_filter
                 )
-                return False
-            
-            try:
-                layers = canvas.layers()
-            except Exception as e:
-                logger.error(f"Error accessing canvas layers: {e}", exc_info=True)
-                self.dialog.messagebar.pushMessage(
-                    "Export Error",
-                    "Failed to access preview layers.",
-                    level=1
-                )
-                return False
-            
-            if not layers:
-                self.dialog.messagebar.pushMessage(
-                    "Export Error",
-                    "No layers to export. Generate a preview first.",
-                    level=2
-                )
-                return False
-            
-            # Get export format from user
-            file_filter = (
-                "PNG Image (*.png);;"
-                "JPEG Image (*.jpg *.jpeg);;"
-                "PDF Document (*.pdf);;"
-                "SVG Vector (*.svg)"
-            )
-            
-            output_path, selected_filter = QFileDialog.getSaveFileName(
-                self.dialog,
-                "Export Preview",
-                "",
-                file_filter
-            )
-            
-            if not output_path:
-                return False  # User cancelled
-            
-            output_path = Path(output_path)
-            
-            # Get export settings
-            try:
-                extent = canvas.extent()
-                if not extent or extent.isNull():
-                    raise ValueError("Invalid canvas extent")
-            except Exception as e:
-                logger.error(f"Error getting canvas extent: {e}", exc_info=True)
-                self.dialog.messagebar.pushMessage(
-                    "Export Error",
-                    "Failed to get preview extent.",
-                    level=1
-                )
-                return False
-            
-            width = DialogDefaults.PREVIEW_WIDTH
-            height = DialogDefaults.PREVIEW_HEIGHT
-            dpi = DialogDefaults.DPI
-            
-            settings = self.get_export_settings(width, height, dpi, extent)
-            
-            # Export based on format
-            success = self._export_to_format(output_path, settings, canvas)
-            
-            if success:
-                self.dialog.messagebar.pushMessage(
-                    "Export Successful",
-                    f"Preview exported to {output_path.name}",
-                    level=3  # Success
-                )
-            else:
-                self.dialog.messagebar.pushMessage(
-                    "Export Failed",
-                    f"Failed to export preview to {output_path}",
-                    level=1  # Critical
-                )
-            
-            return success
-            
+                
+                if not output_path:
+                    return False  # User cancelled
+                
+                output_path = Path(output_path)
+                
+                # Get export settings
+                try:
+                    extent = canvas.extent()
+                    if not extent or extent.isNull():
+                        raise ValueError("Invalid canvas extent")
+                except Exception as e:
+                    logger.error(f"Error getting canvas extent: {e}", exc_info=True)
+                    self.dialog.messagebar.pushMessage(
+                        "Export Error",
+                        "Failed to get preview extent.",
+                        level=1
+                    )
+                    return False
+                
+                width = DialogDefaults.PREVIEW_WIDTH
+                height = DialogDefaults.PREVIEW_HEIGHT
+                dpi = DialogDefaults.DPI
+                
+                settings = self.get_export_settings(width, height, dpi, extent)
+                
+                # Export based on format
+                success = False
+                with PerformanceTimer(f"Export to {output_path.suffix}", self.metrics):
+                    success = self._export_to_format(output_path, settings, canvas)
+                
+                if success:
+                    # Record file size
+                    try:
+                        file_size = output_path.stat().st_size
+                        self.metrics.record_count("File Size (bytes)", file_size)
+                    except Exception:
+                        pass
+                        
+                    self.dialog.messagebar.pushMessage(
+                        "Export Successful",
+                        f"Preview exported to {output_path.name}",
+                        level=3  # Success
+                    )
+                    
+                    if DialogConfig.LOG_DETAILED_METRICS:
+                        logger.info(f"Export Performance: {self.metrics.get_summary()}")
+                        
+                else:
+                    self.dialog.messagebar.pushMessage(
+                        "Export Failed",
+                        f"Failed to export preview to {output_path}",
+                        level=1  # Critical
+                    )
+                
+                return success
+                
         except Exception as e:
             logger.error(f"Export failed: {e}", exc_info=True)
             self.dialog.messagebar.pushMessage(
