@@ -67,8 +67,6 @@ from .legend_widget import LegendWidget
 from sec_interp.logger_config import get_logger
 
 
-
-
 class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
     """Dialog for the SecInterp QGIS plugin.
 
@@ -132,14 +130,14 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         # Replace QGraphicsView with QgsMapCanvas for preview
         # Remove the old QGraphicsView widget
         old_preview = self.preview
-        
+
         # Create new QgsMapCanvas
         self.preview = QgsMapCanvas(old_preview.parent())
         self.preview.setCanvasColor(QColor(255, 255, 255))  # White background
-        
+
         # Replace in layout
         self.verticalLayout_preview.replaceWidget(old_preview, self.preview)
-        
+
         old_preview.setParent(None)
         old_preview.deleteLater()
 
@@ -223,11 +221,14 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         self.gridLayout_dem.setColumnStretch(0, 0)  # icon
         self.gridLayout_dem.setColumnStretch(1, 0)  # label
         self.gridLayout_dem.setColumnStretch(2, 1)  # combo (expand)
-        
+
         # Section line: columns 0,1 (icon, label) should not stretch, combo expands
         self.gridLayout_section.setColumnStretch(0, 0)  # icon
         self.gridLayout_section.setColumnStretch(1, 0)  # label
         self.gridLayout_section.setColumnStretch(2, 1)  # combo (expand)
+
+        # Load user settings from previous session
+        self._load_user_settings()
 
     def wheelEvent(self, event):
         """Handle mouse wheel for zooming in preview."""
@@ -364,7 +365,9 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         try:
             # 1. Validation
             try:
-                raster_layer, line_layer, band_num = self._validate_preview_requirements()
+                raster_layer, line_layer, band_num = (
+                    self._validate_preview_requirements()
+                )
             except ValueError as e:
                 self.results.setPlainText(f"⚠ {str(e)}")
                 return
@@ -372,7 +375,9 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             self.results.setPlainText("Generating preview...")
 
             # 2. Data Generation
-            with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as tmp:
+            with tempfile.NamedTemporaryFile(
+                mode="w", suffix=".csv", delete=False
+            ) as tmp:
                 tmp_path = Path(tmp.name)
 
             try:
@@ -400,7 +405,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                     allow_empty=True,
                 )
                 buffer_dist = buffer_dist if buffer_dist is not None else 100.0
-                
+
                 struct_data = self._generate_structures(
                     line_layer, buffer_dist, tmp_path
                 )
@@ -413,8 +418,10 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             self.plugin_instance.draw_preview(profile_data, geol_data, struct_data)
 
             # 4. Results Reporting
-            result_msg = f"✓ Preview generated!\n\nTopography: {len(profile_data)} points\n"
-            
+            result_msg = (
+                f"✓ Preview generated!\n\nTopography: {len(profile_data)} points\n"
+            )
+
             if geol_data:
                 result_msg += f"Geology: {len(geol_data)} points\n"
             else:
@@ -423,7 +430,9 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             if struct_data:
                 result_msg += f"Structures: {len(struct_data)} points\n"
             else:
-                result_msg += f"Structures: None in {buffer_dist}m buffer or layer not selected\n"
+                result_msg += (
+                    f"Structures: None in {buffer_dist}m buffer or layer not selected\n"
+                )
 
             result_msg += (
                 f"\nDistance: {profile_data[0][0]:.1f} - {profile_data[-1][0]:.1f} m\n"
@@ -435,6 +444,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
         except Exception as e:
             import traceback
+
             error_details = traceback.format_exc()
             self.results.setPlainText(
                 f"⚠ Error generating preview: {str(e)}\n\nDetails:\n{error_details}"
@@ -451,7 +461,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         # Determine default directory
         settings = QgsSettings()
         dest_folder = self.dest_fold.filePath().strip()
-        
+
         if dest_folder:
             default_path = str(Path(dest_folder) / "preview.png")
         else:
@@ -481,7 +491,13 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         current_ext = Path(filename).suffix.lower()
         expected_ext = filter_ext_map.get(selected_filter, "")
 
-        if not current_ext or current_ext not in [".png", ".jpg", ".jpeg", ".svg", ".pdf"]:
+        if not current_ext or current_ext not in [
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".svg",
+            ".pdf",
+        ]:
             if expected_ext:
                 filename = str(Path(filename).with_suffix(expected_ext))
 
@@ -507,13 +523,17 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
             # Prepare export settings
             export_settings = {
-                'width': width,
-                'height': height,
-                'dpi': dpi,
-                'background_color': QColor(255, 255, 255),
-                'legend_renderer': self.plugin_instance.preview_renderer if hasattr(self.plugin_instance, 'preview_renderer') else None,
-                'title': 'Section Interpretation Preview',
-                'description': 'Generated by SecInterp QGIS Plugin',
+                "width": width,
+                "height": height,
+                "dpi": dpi,
+                "background_color": QColor(255, 255, 255),
+                "legend_renderer": (
+                    self.plugin_instance.preview_renderer
+                    if hasattr(self.plugin_instance, "preview_renderer")
+                    else None
+                ),
+                "title": "Section Interpretation Preview",
+                "description": "Generated by SecInterp QGIS Plugin",
             }
 
             # Get map settings
@@ -521,7 +541,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
             # Use exporter factory
             from ..exporters import get_exporter
-            
+
             exporter = get_exporter(ext, export_settings)
             success = exporter.export(Path(filename), map_settings)
 
@@ -530,14 +550,13 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                     f"✓ Preview exported successfully to:\n{filename}"
                 )
             else:
-                self.results.setPlainText(
-                    f"⚠ Error exporting preview to {filename}"
-                )
+                self.results.setPlainText(f"⚠ Error exporting preview to {filename}")
 
         except ValueError as e:
             self.results.setPlainText(f"⚠ {str(e)}")
         except Exception as e:
             import traceback
+
             error_details = traceback.format_exc()
             self.results.setPlainText(
                 f"⚠ Error exporting preview: {str(e)}\n\nDetails:\n{error_details}"
@@ -553,6 +572,8 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         if not self.validate_inputs():
             return
 
+        # Save user settings before closing
+        self._save_user_settings()
         self.accept()
 
     def reject_handler(self):
@@ -910,7 +931,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
     def _generate_topography(self, line_layer, raster_layer, band_num, tmp_path):
         """Generate topographic profile data."""
         return self.plugin_instance.topographic_profile(
-            line_layer, raster_layer, tmp_path, band_num
+            line_layer, raster_layer, band_num
         )
 
     def _generate_geology(self, line_layer, raster_layer, band_num, tmp_path):
@@ -928,7 +949,6 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             raster_layer,
             outcrop_layer,
             outcrop_name_field,
-            tmp_path,
             band_num,
         )
 
@@ -948,7 +968,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         line_feat = next(line_layer.getFeatures(), None)
         if not line_feat:
             return None
-            
+
         line_geom = line_feat.geometry()
         line_azimuth = scu.calculate_line_azimuth(line_geom)
 
@@ -959,23 +979,22 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             line_azimuth,
             dip_field,
             strike_field,
-            tmp_path,
         )
 
     def _get_export_settings(self, width, height, dpi, extent):
         """Create QgsMapSettings for export.
-        
+
         Args:
             width: Output width in pixels
             height: Output height in pixels
             dpi: Dots per inch
             extent: Map extent (QgsRectangle)
-            
+
         Returns:
             Configured QgsMapSettings instance
         """
         from qgis.core import QgsMapSettings
-        
+
         settings = QgsMapSettings()
         settings.setLayers(self.current_layers)
         settings.setExtent(extent)
@@ -986,7 +1005,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
     def _setup_required_field_indicators(self):
         """Setup required field indicators with warning icons.
-        
+
         Initializes status icons for required fields (Raster Layer and Section Line)
         and connects signals to update icons when fields are filled/cleared.
         """
@@ -994,30 +1013,129 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         style = QApplication.style()
         self.warning_icon = style.standardIcon(QStyle.SP_MessageBoxWarning)
         self.success_icon = style.standardIcon(QStyle.SP_DialogApplyButton)
-        
+
         # Set initial warning icons
         self.raster_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
         self.section_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
-        
+
         # Connect signals to update status
         self.rasterdem.layerChanged.connect(self._update_raster_status)
         self.crossline.layerChanged.connect(self._update_section_status)
-        
+
         # Initial update
         self._update_raster_status()
         self._update_section_status()
-    
+
     def _update_raster_status(self):
         """Update raster layer status icon based on selection."""
         if self.rasterdem.currentLayer():
             self.raster_status_icon.setPixmap(self.success_icon.pixmap(16, 16))
         else:
             self.raster_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
-    
+
     def _update_section_status(self):
         """Update section line status icon based on selection."""
         if self.crossline.currentLayer():
             self.section_status_icon.setPixmap(self.success_icon.pixmap(16, 16))
         else:
             self.section_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
+
+    def _load_user_settings(self):
+        """Load user settings from previous session.
+
+        Restores numeric values (scale, vertical exaggeration, buffer distance,
+        dip scale factor) and output folder path from QgsSettings.
+        """
+        settings = QgsSettings()
+
+        # Load numeric values with validation
+        try:
+            scale = settings.value("SecInterp/scale", 50000, type=int)
+            # Validate reasonable range (1:1,000 to 1:1,000,000)
+            if 1000 <= scale <= 1000000:
+                self.scale.setText(str(scale))
+            else:
+                self.scale.setText("50000")
+        except (ValueError, TypeError):
+            self.scale.setText("50000")
+
+        try:
+            vertexag = settings.value("SecInterp/vertexag", 1.0, type=float)
+            # Validate reasonable range (0.1 to 100)
+            if 0.1 <= vertexag <= 100.0:
+                self.vertexag.setText(str(vertexag))
+            else:
+                self.vertexag.setText("1.0")
+        except (ValueError, TypeError):
+            self.vertexag.setText("1.0")
+
+        try:
+            buffer_dist = settings.value("SecInterp/bufferDistance", 100.0, type=float)
+            # Validate reasonable range (0 to 10,000)
+            if 0.0 <= buffer_dist <= 10000.0:
+                self.buffer_distance.setText(str(buffer_dist))
+            else:
+                self.buffer_distance.setText("100.0")
+        except (ValueError, TypeError):
+            self.buffer_distance.setText("100.0")
+
+        try:
+            dip_scale = settings.value("SecInterp/dipScaleFactor", 4.0, type=float)
+            # Validate reasonable range (0.1 to 20)
+            if 0.1 <= dip_scale <= 20.0:
+                self.dip_scale_factor.setText(str(dip_scale))
+            else:
+                self.dip_scale_factor.setText("4.0")
+        except (ValueError, TypeError):
+            self.dip_scale_factor.setText("4.0")
+
+        # Load output folder
+        last_output = settings.value("SecInterp/lastOutputFolder", "", type=str)
+        if last_output:
+            self.dest_fold.setFilePath(last_output)
+
+    def _save_user_settings(self):
+        """Save user settings for next session.
+
+        Persists numeric values (scale, vertical exaggeration, buffer distance,
+        dip scale factor) and output folder path to QgsSettings.
+        """
+        settings = QgsSettings()
+
+        # Save numeric values (only if valid)
+        try:
+            if self.scale.text():
+                scale_val = int(self.scale.text())
+                if 1000 <= scale_val <= 1000000:
+                    settings.setValue("SecInterp/scale", scale_val)
+        except ValueError:
+            pass  # Don't save invalid values
+
+        try:
+            if self.vertexag.text():
+                vertexag_val = float(self.vertexag.text())
+                if 0.1 <= vertexag_val <= 100.0:
+                    settings.setValue("SecInterp/vertexag", vertexag_val)
+        except ValueError:
+            pass
+
+        try:
+            if self.buffer_distance.text():
+                buffer_val = float(self.buffer_distance.text())
+                if 0.0 <= buffer_val <= 10000.0:
+                    settings.setValue("SecInterp/bufferDistance", buffer_val)
+        except ValueError:
+            pass
+
+        try:
+            if self.dip_scale_factor.text():
+                dip_scale_val = float(self.dip_scale_factor.text())
+                if 0.1 <= dip_scale_val <= 20.0:
+                    settings.setValue("SecInterp/dipScaleFactor", dip_scale_val)
+        except ValueError:
+            pass
+
+        # Save output folder
+        if self.dest_fold.filePath():
+            settings.setValue("SecInterp/lastOutputFolder", self.dest_fold.filePath())
 
