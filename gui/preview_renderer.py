@@ -144,26 +144,19 @@ class PreviewRenderer:
         logger.debug("Created topography layer with %d points", len(topo_data))
         return layer
 
+    def _create_geol_layer(self, geol_data, vert_exag=1.0):
         """Create temporary layer for geological profile.
 
         Args:
             geol_data: List of (distance, elevation, unit_name) tuples
             vert_exag: Vertical exaggeration factor
-
+            
         Returns:
-            QgsVectorLayer with geological profile
+            QgsVectorLayer with geological lines
         """
         if not geol_data or len(geol_data) < 2:
             return None
 
-        # Create memory layer with attributes using factory
-        layer, provider = self._create_memory_layer(
-            "LineString", "Geology", "field=unit:string"
-        )
-        if not layer:
-            return None
-
-        # Group by geological unit
         # Create memory layer using factory
         layer, provider = self._create_memory_layer("LineString", "Geology", "field=unit:string")
         if not layer:
