@@ -291,20 +291,28 @@ class PreviewManager:
         Returns:
             Formatted message string
         """
-        result_msg = f"✓ Preview generated!\\n\\nTopography: {len(profile_data)} points\\n"
+        lines = [
+            "✓ Preview generated!",
+            "",
+            f"Topography: {len(profile_data)} points",
+        ]
         
         if geol_data:
-            result_msg += f"Geology: {len(geol_data)} points\\n"
+            lines.append(f"Geology: {len(geol_data)} points")
         else:
-            result_msg += "Geology: No intersections or layer not selected\\n"
+            lines.append("Geology: No intersections or layer not selected")
         
         if struct_data:
-            result_msg += f"Structures: {len(struct_data)} points\\n"
+            lines.append(f"Structures: {len(struct_data)} points")
         else:
-            result_msg += f"Structures: None in {buffer_dist}m buffer or layer not selected\\n"
+            lines.append(f"Structures: None in {buffer_dist}m buffer or layer not selected")
         
-        result_msg += f"\\nDistance: {profile_data[0][0]:.1f} - {profile_data[-1][0]:.1f} m\\n"
-        result_msg += f"Elevation: {min(p[1] for p in profile_data):.1f} - {max(p[1] for p in profile_data):.1f} m\\n\\n"
-        result_msg += "Adjust 'Vert. Exag.' and click Preview to update."
+        lines.extend([
+            "",
+            f"Distance: {profile_data[0][0]:.1f} - {profile_data[-1][0]:.1f} m",
+            f"Elevation: {min(p[1] for p in profile_data):.1f} - {max(p[1] for p in profile_data):.1f} m",
+            "",
+            "Adjust 'Vert. Exag.' and click Preview to update."
+        ])
         
-        return result_msg
+        return "\n".join(lines)
