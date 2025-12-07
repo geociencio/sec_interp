@@ -133,8 +133,6 @@ class GeologyService:
             raise RuntimeError(f"Cannot compute geological intersection: {e}") from e
 
         # Process intersection results
-        # TODO: Investigate why densify_line_by_interval() doesn't work here
-        # Temporarily using manual interpolation as fallback
         processed_segments = 0
         total_points = 0
         
@@ -175,17 +173,24 @@ class GeologyService:
 
             # Process each geometry (LineString or part of MultiLineString)
             for process_geom in geometries_to_process:
-                # Use manual interpolation (original method) as temporary fallback
-                dist_step = scu.calculate_step_size(process_geom, raster_lyr)
-                length = process_geom.length()
-                current_dist = 0.0
+                # Calculate interval based on raster resolution
+                interval = scu.calculate_step_size(process_geom, raster_lyr)
                 
-                logger.debug(f"Processing segment: length={length:.2f}, step={dist_step:.2f}")
-                processed_segments += 1
+                logger.debug(f"Densifying segment with interval={interval:.2f}")
 
-                while current_dist <= length:
-                    pt = process_geom.interpolate(current_dist).asPoint()
+                try:
+                    # Use native densification algorithm
+                    densified_geom = scu.densify_line_by_interval(process_geom, interval)
+                    
+                    # Get vertices
+                    vertices = scu.get_line_vertices(densified_geom)
+                    logger.debug(f" - Segment densified: {len(vertices)} points")
+                    processed_segments += 1
+                except (ValueError, RuntimeError) as e:
+                    logger.warning(f"Densification failed, skipping segment: {e}")
+                    continue
 
+                for pt in vertices:
                     # Calculate distance from the start of the original section line
                     dist_from_start = da.measureLine(line_start, pt)
 
@@ -202,8 +207,6 @@ class GeologyService:
 
                     values.append((round(dist_from_start, 1), round(elev, 1), glg_val))
                     total_points += 1
-
-                    current_dist += dist_step
         
         logger.info(f"Processed {processed_segments} segments, generated {total_points} points")
 
