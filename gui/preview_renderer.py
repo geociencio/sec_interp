@@ -205,11 +205,31 @@ class PreviewRenderer:
 
             # Track for legend
             self.active_units[str(unit_name)] = color
+            # Sort points by distance
+            points.sort(key=lambda p: p[0])
 
-        renderer = QgsCategorizedSymbolRenderer("unit", categories)
-        layer.setRenderer(renderer)
+            # Create polygon by adding bottom points
+            polygon_points = []
+            # Top boundary
+            for dist, elev in points:
+                polygon_points.append(QgsPointXY(dist, elev))
+            
+            # Bottom boundary (reverse order)
+            min_elev = min(e for _, e in points) - 100  # Extend below
+            for dist, _ in reversed(points):
+                polygon_points.append(QgsPointXY(dist, min_elev))
+            
+            # Close polygon
+            if polygon_points:
+                polygon_points.append(polygon_points[0])
+                
+                polygon = QgsGeometry.fromPolygonXY([polygon_points])
+                feat = QgsFeature()
+                feat.setGeometry(polygon)
+                feat.setAttributes([unit_name])
+                features.append(feat)
 
-        layer.updateExtents()
+        provider.addFeatures(features)
         logger.debug("Created geology layer with %d units", len(geol_groups))
         return layer
 
