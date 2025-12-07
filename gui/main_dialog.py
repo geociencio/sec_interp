@@ -57,6 +57,11 @@ from .ui.main_dialog_base import Ui_SecInterpDialogBase
 from ..core import utils as scu
 from ..core import validation as vu
 from .legend_widget import LegendWidget
+from .main_dialog_config import DialogDefaults
+from .main_dialog_validation import DialogValidator
+from .main_dialog_preview import PreviewManager
+from .main_dialog_export import ExportManager
+from .main_dialog_cache_handler import CacheHandler
 
 
 class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
@@ -96,8 +101,16 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             self.messagebar = _NoOpMessageBar()
         else:
             self.messagebar = self.iface.messageBar()
-        self.scale.setText("50000")
-        self.vertexag.setText("1")
+        
+        # Initialize manager instances (composition pattern)
+        self.validator = DialogValidator(self)
+        self.preview_manager = PreviewManager(self)
+        self.export_manager = ExportManager(self)
+        self.cache_handler = CacheHandler(self)
+        
+        # Set default values from config
+        self.scale.setText(DialogDefaults.SCALE)
+        self.vertexag.setText(DialogDefaults.VERTICAL_EXAGGERATION)
         self.buffer_distance.setText("100")
         self.dip_scale_factor.setText("4")
 
@@ -352,115 +365,19 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
     def update_preview_from_checkboxes(self):
         """Update preview when checkboxes change.
 
-        This method is called when any of the preview checkboxes are toggled.
-        It re-renders the preview using the stored data and current checkbox states.
+        This method delegates to PreviewManager for preview updates.
         """
-        # Only update if we have data to display and a plugin instance capable
-        # of drawing the preview (tests may construct the dialog without one).
-        if (
-            self.current_topo_data is not None
-            and self.plugin_instance is not None
-            and hasattr(self.plugin_instance, "draw_preview")
-            and callable(getattr(self.plugin_instance, "draw_preview"))
-        ):
-            # Call the plugin's draw_preview method with stored data
-            self.plugin_instance.draw_preview(
-                self.current_topo_data, self.current_geol_data, self.current_struct_data
-            )
+        self.preview_manager.update_from_checkboxes()
 
     def preview_profile_handler(self):
         """Generate a quick preview with topographic, geological, and structural data.
 
-        This method validates inputs and generates a preview with all available data layers
-        without saving files to disk.
+        This method delegates to PreviewManager for preview generation.
         """
-        try:
-            # 1. Validation
-            try:
-                raster_layer, line_layer, band_num = (
-                    self._validate_preview_requirements()
-                )
-            except ValueError as e:
-                self.results.setPlainText(f"⚠ {str(e)}")
-                return
+        success, message = self.preview_manager.generate_preview()
+        if not success and message:
+            self.messagebar.pushMessage("Preview Error", message, level=2)
 
-            self.results.setPlainText("Generating preview...")
-
-            # 2. Data Generation
-            with tempfile.NamedTemporaryFile(
-                mode="w", suffix=".csv", delete=False
-            ) as tmp:
-                tmp_path = Path(tmp.name)
-
-            try:
-                # Topography
-                profile_data = self._generate_topography(
-                    line_layer, raster_layer, band_num
-                )
-
-                if not profile_data or len(profile_data) < 2:
-                    self.results.setPlainText(
-                        "⚠ No profile data generated. Check that the line intersects the raster."
-                    )
-                    return
-
-                # Geology
-                geol_data = self._generate_geology(
-                    line_layer, raster_layer, band_num
-                )
-
-                # Structures
-                # Get buffer distance
-                _, _, buffer_dist = vu.validate_numeric_input(
-                    self.buffer_distance.text(),
-                    field_name="Buffer distance",
-                    allow_empty=True,
-                )
-                buffer_dist = buffer_dist if buffer_dist is not None else 100.0
-
-                struct_data = self._generate_structures(
-                    line_layer, buffer_dist
-                )
-
-            finally:
-                if tmp_path.exists():
-                    tmp_path.unlink()
-
-            # 3. Visualization
-            self.plugin_instance.draw_preview(profile_data, geol_data, struct_data)
-
-            # 4. Results Reporting
-            result_msg = (
-                f"✓ Preview generated!\n\nTopography: {len(profile_data)} points\n"
-            )
-
-            if geol_data:
-                result_msg += f"Geology: {len(geol_data)} points\n"
-            else:
-                result_msg += "Geology: No intersections or layer not selected\n"
-
-            if struct_data:
-                result_msg += f"Structures: {len(struct_data)} points\n"
-            else:
-                result_msg += (
-                    f"Structures: None in {buffer_dist}m buffer or layer not selected\n"
-                )
-
-            result_msg += (
-                f"\nDistance: {profile_data[0][0]:.1f} - {profile_data[-1][0]:.1f} m\n"
-            )
-            result_msg += f"Elevation: {min(p[1] for p in profile_data):.1f} - {max(p[1] for p in profile_data):.1f} m\n\n"
-            result_msg += "Adjust 'Vert. Exag.' and click Preview to update."
-
-            self.results.setPlainText(result_msg)
-
-        except Exception as e:
-            import traceback
-
-            error_details = traceback.format_exc()
-            self.results.setPlainText(
-                f"⚠ Error generating preview: {str(e)}\n\nDetails:\n{error_details}"
-            )
 
     def export_preview(self):
         """Export the current preview to a file using dedicated exporters."""
@@ -593,166 +510,14 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         self.close()
 
     def validate_inputs(self):
-        """Validate the inputs from the dialog."""
-
-        errors = []
-
-        # Validate raster layer selection
-        raster_layer = self.rasterdem.currentLayer()
-        if not raster_layer:
-            errors.append("No raster layer selected.")
-        else:
-            # Validate band number
-            band_num = self.band.currentBand()
-            if band_num:
-                is_valid, error = vu.validate_raster_band(raster_layer, band_num)
-                if not is_valid:
-                    errors.append(error)
-            else:
-                errors.append("No band selected.")
-
-        # Validate crossline layer selection
-        line_layer = self.crossline.currentLayer()
-        if not line_layer:
-            errors.append("No crossline layer selected")
-        else:
-            # Validate geometry type (QgsMapLayerComboBox with LineLayer filter should handle this, but good to double check)
-            is_valid, error = vu.validate_layer_geometry(
-                line_layer, QgsWkbTypes.LineGeometry
-            )
-            if not is_valid:
-                errors.append(error)
-            else:
-                # Validate has features
-                is_valid, error = vu.validate_layer_has_features(line_layer)
-                if not is_valid:
-                    errors.append(error)
-
-        # Validate output folder
-        if not self.dest_fold.filePath():
-            errors.append("Output folder is required")
-        else:
-            is_valid, error, _ = vu.validate_output_path(self.dest_fold.filePath())
-            if not is_valid:
-                errors.append(error)
-
-        # Validate numeric inputs
-        # Scale
-        is_valid, error, _ = vu.validate_numeric_input(
-            self.scale.text(), min_val=1, field_name="Scale"
-        )
+        """Validate the inputs from the dialog.
+        
+        This method delegates to DialogValidator for input validation.
+        """
+        is_valid, error_message = self.validator.validate_inputs()
         if not is_valid:
-            errors.append(error)
-
-        # Vertical exaggeration
-        is_valid, error, _ = vu.validate_numeric_input(
-            self.vertexag.text(), min_val=0.1, field_name="Vertical exaggeration"
-        )
-        if not is_valid:
-            errors.append(error)
-
-        # Buffer distance
-        is_valid, error, _ = vu.validate_numeric_input(
-            self.buffer_distance.text(), min_val=0, field_name="Buffer distance"
-        )
-        if not is_valid:
-            errors.append(error)
-
-        # Dip scale factor
-        is_valid, error, _ = vu.validate_numeric_input(
-            self.dip_scale_factor.text(), min_val=0.1, field_name="Dip scale factor"
-        )
-        if not is_valid:
-            errors.append(error)
-
-        # Validate outcrop layer if selected
-        outcrop_layer = self.outcrop.currentLayer()
-        if outcrop_layer:
-            # Validate geometry type
-            is_valid, error = vu.validate_layer_geometry(
-                outcrop_layer, QgsWkbTypes.PolygonGeometry
-            )
-            if not is_valid:
-                errors.append(error)
-            else:
-                # Validate has features
-                is_valid, error = vu.validate_layer_has_features(outcrop_layer)
-                if not is_valid:
-                    errors.append(error)
-
-                # Validate outcrop name field
-                if not self.ocropname.currentText():
-                    errors.append(
-                        "Outcrop name field is required when outcrop layer is selected"
-                    )
-                else:
-                    field_name = self.ocropname.currentData()
-                    is_valid, error = vu.validate_field_exists(
-                        outcrop_layer, field_name
-                    )
-                    if not is_valid:
-                        errors.append(error)
-
-        # Validate structural layer if selected
-        struct_layer = self.structural.currentLayer()
-        if struct_layer:
-            # Validate geometry type
-            is_valid, error = vu.validate_layer_geometry(
-                struct_layer, QgsWkbTypes.PointGeometry
-            )
-            if not is_valid:
-                errors.append(error)
-            else:
-                # Validate has features
-                is_valid, error = vu.validate_layer_has_features(struct_layer)
-                if not is_valid:
-                    errors.append(error)
-
-                # Validate dip field
-                if not self.dip.currentText():
-                    errors.append(
-                        "Dip field is required when structural layer is selected"
-                    )
-                else:
-                    dip_field = self.dip.currentData()
-                    is_valid, error = vu.validate_field_exists(struct_layer, dip_field)
-                    if not is_valid:
-                        errors.append(error)
-                    else:
-                        # Validate field type (should be numeric)
-                        is_valid, error = vu.validate_field_type(
-                            struct_layer, dip_field, [QVariant.Int, QVariant.Double]
-                        )
-                        if not is_valid:
-                            errors.append(error)
-
-                # Validate strike field
-                if not self.strike.currentText():
-                    errors.append(
-                        "Strike field is required when structural layer is selected"
-                    )
-                else:
-                    strike_field = self.strike.currentData()
-                    is_valid, error = vu.validate_field_exists(
-                        struct_layer, strike_field
-                    )
-                    if not is_valid:
-                        errors.append(error)
-                    else:
-                        # Validate field type (should be numeric)
-                        is_valid, error = vu.validate_field_type(
-                            struct_layer,
-                            strike_field,
-                            [QVariant.Int, QVariant.Double],
-                        )
-                        if not is_valid:
-                            errors.append(error)
-
-        if errors:
-            scu.show_user_message(self, "Validation Error", "\n".join(errors))
-            return False
-
-        return True
+            scu.show_user_message(self, "Validation Error", error_message)
+        return is_valid
 
     def clear_cache_handler(self):
         """Clear cached data and notify user."""
