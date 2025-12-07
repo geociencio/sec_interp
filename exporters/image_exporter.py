@@ -4,13 +4,16 @@ Image exporter module for raster formats (PNG, JPG).
 """
 
 from pathlib import Path
-from typing import List
+from typing import List, Dict, Any
 
 from qgis.PyQt.QtGui import QImage, QPainter, QColor
 from qgis.PyQt.QtCore import QSize, QRectF
-from qgis.core import QgsMapRendererCustomPainterJob
+from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
 
 from .base_exporter import BaseExporter
+from sec_interp.logger_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class ImageExporter(BaseExporter):
@@ -20,7 +23,7 @@ class ImageExporter(BaseExporter):
         """Get supported image extensions."""
         return [".png", ".jpg", ".jpeg"]
 
-    def export(self, output_path: Path, map_settings) -> bool:
+    def export(self, output_path: Path, map_settings: QgsMapSettings) -> bool:
         """Export map to raster image.
 
         Args:
@@ -62,7 +65,8 @@ class ImageExporter(BaseExporter):
             ext = output_path.suffix.lower()
             quality = 95 if ext in [".jpg", ".jpeg"] else -1
 
-            return image.save(str(output_path), None, quality)
+            return image.save(str(output_path))
 
-        except Exception:
+        except Exception as e:
+            logger.error(f"Image export failed for {output_path}: {e}")
             return False

@@ -8,16 +8,20 @@ from typing import List, Dict, Any
 
 from qgis.core import (
     QgsVectorFileWriter,
-    QgsField,
-    QgsFields,
-    QgsFeature,
-    QgsWkbTypes,
     QgsCoordinateReferenceSystem,
-    QgsProject,
+    QgsWkbTypes,
+    QgsFields,
+    QgsField,
+    QgsFeature,
+    QgsGeometry,
+    QgsPointXY,
 )
-from qgis.PyQt.QtCore import QMetaType
+from qgis.PyQt.QtCore import QMetaType, QVariant
 
 from .base_exporter import BaseExporter
+from sec_interp.logger_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class ShapefileExporter(BaseExporter):
@@ -97,5 +101,6 @@ class ShapefileExporter(BaseExporter):
             del writer
             return True
 
-        except Exception:
+        except Exception as e:
+            logger.error(f"Shapefile export failed for {output_path}: {e}")
             return False

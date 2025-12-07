@@ -4,14 +4,16 @@ PDF exporter module for PDF documents.
 """
 
 from pathlib import Path
-from typing import List
+from typing import List, Dict, Any
 
-from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtGui import QPainter, QPageSize
-from qgis.PyQt.QtCore import QSize, QSizeF, QRectF
-from qgis.core import QgsMapRendererCustomPainterJob
+from qgis.PyQt.QtCore import QSize, QRectF, QSizeF
+from qgis.PyQt.QtGui import QPainter, QPdfWriter, QPageSize
+from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
 
 from .base_exporter import BaseExporter
+from sec_interp.logger_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class PDFExporter(BaseExporter):
@@ -21,7 +23,7 @@ class PDFExporter(BaseExporter):
         """Get supported PDF extension."""
         return [".pdf"]
 
-    def export(self, output_path: Path, map_settings) -> bool:
+    def export(self, output_path: Path, map_settings: QgsMapSettings) -> bool:
         """Export map to PDF.
 
         Args:
@@ -35,26 +37,25 @@ class PDFExporter(BaseExporter):
             width = self.get_setting("width", 800)
             height = self.get_setting("height", 600)
 
-            # Setup printer
-            printer = QPrinter(QPrinter.HighResolution)
-            printer.setOutputFormat(QPrinter.PdfFormat)
-            printer.setOutputFileName(str(output_path))
-            printer.setPageSize(QPageSize(QSizeF(width, height), QPageSize.Point))
-            printer.setPageMargins(0.0, 0.0, 0.0, 0.0, QPrinter.Point)
-            printer.setFullPage(True)
+            # Setup PDF writer
+            writer = QPdfWriter(str(output_path))
+            writer.setResolution(300)  # Set a default resolution, e.g., 300 DPI
+            writer.setPageSize(QPageSize(QSizeF(width, height), QPageSize.Point))
+            writer.setPageMargins(0.0, 0.0, 0.0, 0.0, QPdfWriter.Point)
 
             # Setup painter
             painter = QPainter()
-            if not painter.begin(printer):
+            if not painter.begin(writer):
+                logger.error(f"Failed to begin painting for PDF export to {output_path}")
                 return False
 
             try:
                 painter.setRenderHint(QPainter.Antialiasing)
 
-                # Update map settings with actual printer device dimensions and DPI
+                # Update map settings with actual writer device dimensions and DPI
                 dev = painter.device()
                 map_settings.setOutputSize(QSize(dev.width(), dev.height()))
-                map_settings.setOutputDpi(printer.resolution())
+                map_settings.setOutputDpi(writer.resolution())
 
                 # Render map
                 job = QgsMapRendererCustomPainterJob(map_settings, painter)
@@ -72,6 +73,8 @@ class PDFExporter(BaseExporter):
 
             finally:
                 painter.end()
+                return True
 
-        except Exception:
+        except Exception as e:
+            logger.error(f"PDF export failed for {output_path}: {e}")
             return False

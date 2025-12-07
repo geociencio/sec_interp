@@ -8,6 +8,9 @@ from pathlib import Path
 from typing import List, Dict, Any
 
 from .base_exporter import BaseExporter
+from sec_interp.logger_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class CSVExporter(BaseExporter):
@@ -44,5 +47,6 @@ class CSVExporter(BaseExporter):
 
             return True
 
-        except Exception:
+        except Exception as e:
+            logger.error(f"CSV export failed for {output_path}: {e}")
             return False
