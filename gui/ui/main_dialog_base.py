@@ -23,14 +23,12 @@ class Ui_SecInterpDialogBase(object):
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setHandleWidth(7)
         self.splitter.setChildrenCollapsible(True)
-        self.splitter.setStyleSheet(
-            "QSplitter::handle {\n"
-            "    background-color: #d0d0d0;\n"
-            "}\n"
-            "QSplitter::handle:hover {\n"
-            "    background-color: #a0a0a0;\n"
-            "}"
-        )
+        self.splitter.setStyleSheet("QSplitter::handle {\n"
+"    background-color: #d0d0d0;\n"
+"}\n"
+"QSplitter::handle:hover {\n"
+"    background-color: #a0a0a0;\n"
+"}")
         self.splitter.setObjectName("splitter")
         self.listWidget = QtWidgets.QListWidget(self.splitter)
         self.listWidget.setMinimumSize(QtCore.QSize(100, 0))
@@ -38,11 +36,7 @@ class Ui_SecInterpDialogBase(object):
         self.listWidget.setObjectName("listWidget")
         item = QtWidgets.QListWidgetItem()
         icon = QtGui.QIcon()
-        icon.addPixmap(
-            QtGui.QPixmap(":/plugins/sec_interp/icon.png"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon.addPixmap(QtGui.QPixmap(":/plugins/sec_interp/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         item.setIcon(icon)
         self.listWidget.addItem(item)
         item = QtWidgets.QListWidgetItem()
@@ -70,9 +64,7 @@ class Ui_SecInterpDialogBase(object):
         self.raster_status_icon.setMaximumSize(QtCore.QSize(16, 16))
         self.raster_status_icon.setText("")
         self.raster_status_icon.setScaledContents(False)
-        self.raster_status_icon.setAlignment(
-            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
-        )
+        self.raster_status_icon.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.raster_status_icon.setObjectName("raster_status_icon")
         self.gridLayout_dem.addWidget(self.raster_status_icon, 0, 0, 1, 1)
         self.label_3 = QtWidgets.QLabel(self.groupBox_dem)
@@ -80,18 +72,16 @@ class Ui_SecInterpDialogBase(object):
         font.setBold(True)
         font.setWeight(75)
         self.label_3.setFont(font)
-        self.label_3.setAlignment(
-            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
-        )
+        self.label_3.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_3.setObjectName("label_3")
         self.gridLayout_dem.addWidget(self.label_3, 0, 1, 1, 1)
-        self.rasterdem = gui.QgsMapLayerComboBox(self.groupBox_dem)
+        self.rasterdem = QgsMapLayerComboBox(self.groupBox_dem)
         self.rasterdem.setObjectName("rasterdem")
         self.gridLayout_dem.addWidget(self.rasterdem, 0, 2, 1, 3)
         self.label_12 = QtWidgets.QLabel(self.groupBox_dem)
         self.label_12.setObjectName("label_12")
         self.gridLayout_dem.addWidget(self.label_12, 1, 1, 1, 1)
-        self.band = gui.QgsRasterBandComboBox(self.groupBox_dem)
+        self.band = QgsRasterBandComboBox(self.groupBox_dem)
         self.band.setMinimumSize(QtCore.QSize(107, 0))
         self.band.setObjectName("band")
         self.gridLayout_dem.addWidget(self.band, 1, 2, 1, 1)
@@ -125,9 +115,7 @@ class Ui_SecInterpDialogBase(object):
         self.vertexag.setObjectName("vertexag")
         self.gridLayout_scale.addWidget(self.vertexag, 1, 1, 1, 1)
         self.verticalLayout_dem.addWidget(self.groupBox_scale)
-        spacerItem = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_dem.addItem(spacerItem)
         self.stackedWidget.addWidget(self.page_dem)
         self.page_section = QtWidgets.QWidget()
@@ -144,9 +132,7 @@ class Ui_SecInterpDialogBase(object):
         self.section_status_icon.setMaximumSize(QtCore.QSize(16, 16))
         self.section_status_icon.setText("")
         self.section_status_icon.setScaledContents(False)
-        self.section_status_icon.setAlignment(
-            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
-        )
+        self.section_status_icon.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.section_status_icon.setObjectName("section_status_icon")
         self.gridLayout_section.addWidget(self.section_status_icon, 0, 0, 1, 1)
         self.label_9 = QtWidgets.QLabel(self.groupBox_section)
@@ -154,12 +140,10 @@ class Ui_SecInterpDialogBase(object):
         font.setBold(True)
         font.setWeight(75)
         self.label_9.setFont(font)
-        self.label_9.setAlignment(
-            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
-        )
+        self.label_9.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_9.setObjectName("label_9")
         self.gridLayout_section.addWidget(self.label_9, 0, 1, 1, 1)
-        self.crossline = gui.QgsMapLayerComboBox(self.groupBox_section)
+        self.crossline = QgsMapLayerComboBox(self.groupBox_section)
         self.crossline.setObjectName("crossline")
         self.gridLayout_section.addWidget(self.crossline, 0, 2, 1, 1)
         self.separator_required = QtWidgets.QFrame(self.groupBox_section)
@@ -181,9 +165,7 @@ class Ui_SecInterpDialogBase(object):
         self.buffer_distance.setObjectName("buffer_distance")
         self.gridLayout_section.addWidget(self.buffer_distance, 3, 2, 1, 1)
         self.verticalLayout_section.addWidget(self.groupBox_section)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_section.addItem(spacerItem1)
         self.stackedWidget.addWidget(self.page_section)
         self.page_geology = QtWidgets.QWidget()
@@ -197,19 +179,17 @@ class Ui_SecInterpDialogBase(object):
         self.label_4 = QtWidgets.QLabel(self.groupBox_geology)
         self.label_4.setObjectName("label_4")
         self.gridLayout_geology.addWidget(self.label_4, 0, 0, 1, 1)
-        self.outcrop = gui.QgsMapLayerComboBox(self.groupBox_geology)
+        self.outcrop = QgsMapLayerComboBox(self.groupBox_geology)
         self.outcrop.setObjectName("outcrop")
         self.gridLayout_geology.addWidget(self.outcrop, 0, 1, 1, 1)
         self.label_14 = QtWidgets.QLabel(self.groupBox_geology)
         self.label_14.setObjectName("label_14")
         self.gridLayout_geology.addWidget(self.label_14, 1, 0, 1, 1)
-        self.ocropname = gui.QgsFieldComboBox(self.groupBox_geology)
+        self.ocropname = QgsFieldComboBox(self.groupBox_geology)
         self.ocropname.setObjectName("ocropname")
         self.gridLayout_geology.addWidget(self.ocropname, 1, 1, 1, 1)
         self.verticalLayout_geology.addWidget(self.groupBox_geology)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_geology.addItem(spacerItem2)
         self.stackedWidget.addWidget(self.page_geology)
         self.page_structural = QtWidgets.QWidget()
@@ -223,19 +203,19 @@ class Ui_SecInterpDialogBase(object):
         self.label_5 = QtWidgets.QLabel(self.groupBox_structural)
         self.label_5.setObjectName("label_5")
         self.gridLayout_structural.addWidget(self.label_5, 0, 0, 1, 1)
-        self.structural = gui.QgsMapLayerComboBox(self.groupBox_structural)
+        self.structural = QgsMapLayerComboBox(self.groupBox_structural)
         self.structural.setObjectName("structural")
         self.gridLayout_structural.addWidget(self.structural, 0, 1, 1, 1)
         self.label_15 = QtWidgets.QLabel(self.groupBox_structural)
         self.label_15.setObjectName("label_15")
         self.gridLayout_structural.addWidget(self.label_15, 1, 0, 1, 1)
-        self.dip = gui.QgsFieldComboBox(self.groupBox_structural)
+        self.dip = QgsFieldComboBox(self.groupBox_structural)
         self.dip.setObjectName("dip")
         self.gridLayout_structural.addWidget(self.dip, 1, 1, 1, 1)
         self.label_16 = QtWidgets.QLabel(self.groupBox_structural)
         self.label_16.setObjectName("label_16")
         self.gridLayout_structural.addWidget(self.label_16, 2, 0, 1, 1)
-        self.strike = gui.QgsFieldComboBox(self.groupBox_structural)
+        self.strike = QgsFieldComboBox(self.groupBox_structural)
         self.strike.setObjectName("strike")
         self.gridLayout_structural.addWidget(self.strike, 2, 1, 1, 1)
         self.label_18 = QtWidgets.QLabel(self.groupBox_structural)
@@ -245,9 +225,7 @@ class Ui_SecInterpDialogBase(object):
         self.dip_scale_factor.setObjectName("dip_scale_factor")
         self.gridLayout_structural.addWidget(self.dip_scale_factor, 3, 1, 1, 1)
         self.verticalLayout_structural.addWidget(self.groupBox_structural)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_structural.addItem(spacerItem3)
         self.stackedWidget.addWidget(self.page_structural)
         self.frame_preview = QtWidgets.QFrame(self.splitter)
@@ -257,9 +235,7 @@ class Ui_SecInterpDialogBase(object):
         self.verticalLayout_preview = QtWidgets.QVBoxLayout(self.frame_preview)
         self.verticalLayout_preview.setObjectName("verticalLayout_preview")
         self.preview = QtWidgets.QGraphicsView(self.frame_preview)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(10)
         sizePolicy.setHeightForWidth(self.preview.sizePolicy().hasHeightForWidth())
@@ -267,9 +243,7 @@ class Ui_SecInterpDialogBase(object):
         self.preview.setObjectName("preview")
         self.verticalLayout_preview.addWidget(self.preview)
         self.horizontalLayout_preview_controls = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_preview_controls.setObjectName(
-            "horizontalLayout_preview_controls"
-        )
+        self.horizontalLayout_preview_controls.setObjectName("horizontalLayout_preview_controls")
         self.preview_button = QtWidgets.QPushButton(self.frame_preview)
         self.preview_button.setObjectName("preview_button")
         self.horizontalLayout_preview_controls.addWidget(self.preview_button)
@@ -292,15 +266,11 @@ class Ui_SecInterpDialogBase(object):
         self.show_struct_cb.setObjectName("show_struct_cb")
         self.horizontalLayout_checkboxes.addWidget(self.show_struct_cb)
         self.verticalLayout_preview.addLayout(self.horizontalLayout_checkboxes)
-        self.results_group = gui.QgsCollapsibleGroupBox(self.frame_preview)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
-        )
+        self.results_group = QgsCollapsibleGroupBox(self.frame_preview)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.results_group.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.results_group.sizePolicy().hasHeightForWidth())
         self.results_group.setSizePolicy(sizePolicy)
         self.results_group.setCollapsed(False)
         self.results_group.setObjectName("results_group")
@@ -319,33 +289,26 @@ class Ui_SecInterpDialogBase(object):
         self.label_8 = QtWidgets.QLabel(SecInterpDialogBase)
         self.label_8.setObjectName("label_8")
         self.horizontalLayout_output.addWidget(self.label_8)
-        self.dest_fold = gui.QgsFileWidget(SecInterpDialogBase)
+        self.dest_fold = QgsFileWidget(SecInterpDialogBase)
         self.dest_fold.setMaximumSize(QtCore.QSize(16777215, 28))
         self.dest_fold.setObjectName("dest_fold")
         self.horizontalLayout_output.addWidget(self.dest_fold)
         self.verticalLayout_main.addLayout(self.horizontalLayout_output)
         self.button_box = QtWidgets.QDialogButtonBox(SecInterpDialogBase)
         self.button_box.setOrientation(QtCore.Qt.Horizontal)
-        self.button_box.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel
-            | QtWidgets.QDialogButtonBox.Help
-            | QtWidgets.QDialogButtonBox.Ok
-            | QtWidgets.QDialogButtonBox.Save
-        )
+        self.button_box.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Help|QtWidgets.QDialogButtonBox.Ok|QtWidgets.QDialogButtonBox.Save)
         self.button_box.setObjectName("button_box")
         self.verticalLayout_main.addWidget(self.button_box)
 
         self.retranslateUi(SecInterpDialogBase)
         self.stackedWidget.setCurrentIndex(0)
-        self.button_box.accepted.connect(SecInterpDialogBase.accept)  # type: ignore
-        self.button_box.rejected.connect(SecInterpDialogBase.reject)  # type: ignore
+        self.button_box.accepted.connect(SecInterpDialogBase.accept) # type: ignore
+        self.button_box.rejected.connect(SecInterpDialogBase.reject) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(SecInterpDialogBase)
 
     def retranslateUi(self, SecInterpDialogBase):
         _translate = QtCore.QCoreApplication.translate
-        SecInterpDialogBase.setWindowTitle(
-            _translate("SecInterpDialogBase", "Sec Interp")
-        )
+        SecInterpDialogBase.setWindowTitle(_translate("SecInterpDialogBase", "Sec Interp"))
         __sortingEnabled = self.listWidget.isSortingEnabled()
         self.listWidget.setSortingEnabled(False)
         item = self.listWidget.item(0)
@@ -357,154 +320,52 @@ class Ui_SecInterpDialogBase(object):
         item = self.listWidget.item(3)
         item.setText(_translate("SecInterpDialogBase", "Structural"))
         self.listWidget.setSortingEnabled(__sortingEnabled)
-        self.groupBox_dem.setTitle(
-            _translate("SecInterpDialogBase", "Digital Elevation Model")
-        )
+        self.groupBox_dem.setTitle(_translate("SecInterpDialogBase", "Digital Elevation Model"))
         self.label_3.setText(_translate("SecInterpDialogBase", "Raster Layer *"))
-        self.rasterdem.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "Select the raster DEM (Digital Elevation Model) layer to extract yhe topographic profile",
-            )
-        )
+        self.rasterdem.setToolTip(_translate("SecInterpDialogBase", "Select the raster DEM (Digital Elevation Model) layer to extract yhe topographic profile"))
         self.label_12.setText(_translate("SecInterpDialogBase", "Band"))
-        self.band.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "Select the raster band to use (typically band 1 for DEMs)",
-            )
-        )
+        self.band.setToolTip(_translate("SecInterpDialogBase", "Select the raster band to use (typically band 1 for DEMs)"))
         self.label_13.setText(_translate("SecInterpDialogBase", "Resolution"))
-        self.resln.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "Raster resolution in coordinate system units (calculated automatically)",
-            )
-        )
-        self.unts.setToolTip(
-            _translate("SecInterpDialogBase", "Units of the raster resolution")
-        )
-        self.groupBox_scale.setTitle(
-            _translate("SecInterpDialogBase", "Profile Settings")
-        )
+        self.resln.setToolTip(_translate("SecInterpDialogBase", "Raster resolution in coordinate system units (calculated automatically)"))
+        self.unts.setToolTip(_translate("SecInterpDialogBase", "Units of the raster resolution"))
+        self.groupBox_scale.setTitle(_translate("SecInterpDialogBase", "Profile Settings"))
         self.label_6.setText(_translate("SecInterpDialogBase", "Scale 1:"))
-        self.scale.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "<html><head/><body><p>Horizontal scale of the profile (calculated automatically based on raster resolution).</p><p>You can modify this value if needed</p></body></html>",
-            )
-        )
+        self.scale.setToolTip(_translate("SecInterpDialogBase", "<html><head/><body><p>Horizontal scale of the profile (calculated automatically based on raster resolution).</p><p>You can modify this value if needed</p></body></html>"))
         self.label_7.setText(_translate("SecInterpDialogBase", "Vert. Exag."))
-        self.vertexag.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "<html><head/><body><p>Vertical exaggeration factor for the profile</p><p> (1 = no exaggeration, higher values exaggerate relief)</p></body></html>",
-            )
-        )
-        self.groupBox_section.setTitle(
-            _translate("SecInterpDialogBase", "Cross Section Line")
-        )
+        self.vertexag.setToolTip(_translate("SecInterpDialogBase", "<html><head/><body><p>Vertical exaggeration factor for the profile</p><p> (1 = no exaggeration, higher values exaggerate relief)</p></body></html>"))
+        self.groupBox_section.setTitle(_translate("SecInterpDialogBase", "Cross Section Line"))
         self.label_9.setText(_translate("SecInterpDialogBase", "Section Line *"))
-        self.crossline.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "Select the line layer that defines the cross-section profile path",
-            )
-        )
+        self.crossline.setToolTip(_translate("SecInterpDialogBase", "Select the line layer that defines the cross-section profile path"))
         self.label_required.setText(_translate("SecInterpDialogBase", "* Required"))
         self.label_17.setText(_translate("SecInterpDialogBase", "Buffer Dist. (m)"))
-        self.buffer_distance.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "<html><head/><body><p>Buffer distance in meters around the cross-section line</p><p>to include structural measurements. Default: 100m</p></body></html>",
-            )
-        )
-        self.groupBox_geology.setTitle(
-            _translate("SecInterpDialogBase", "Geological Outcrops")
-        )
+        self.buffer_distance.setToolTip(_translate("SecInterpDialogBase", "<html><head/><body><p>Buffer distance in meters around the cross-section line</p><p>to include structural measurements. Default: 100m</p></body></html>"))
+        self.groupBox_geology.setTitle(_translate("SecInterpDialogBase", "Geological Outcrops"))
         self.label_4.setText(_translate("SecInterpDialogBase", "Outcrops Layer"))
-        self.outcrop.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "<html><head/><body><p>Select the polygon layer with geological outcrops (optional)</p><p>Leave as 'Do not use' to skip geological profile extraction</p></body></html>",
-            )
-        )
+        self.outcrop.setToolTip(_translate("SecInterpDialogBase", "<html><head/><body><p>Select the polygon layer with geological outcrops (optional)</p><p>Leave as \'Do not use\' to skip geological profile extraction</p></body></html>"))
         self.label_14.setText(_translate("SecInterpDialogBase", "Name Field"))
-        self.ocropname.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "Select the field containing geological unit names or codes",
-            )
-        )
-        self.groupBox_structural.setTitle(
-            _translate("SecInterpDialogBase", "Structural Measurements")
-        )
+        self.ocropname.setToolTip(_translate("SecInterpDialogBase", "Select the field containing geological unit names or codes"))
+        self.groupBox_structural.setTitle(_translate("SecInterpDialogBase", "Structural Measurements"))
         self.label_5.setText(_translate("SecInterpDialogBase", "Structural layer"))
-        self.structural.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "<html><head/><body><p>Select the point layer with structural measurements (optional)</p><p>Leave as 'Do not use' to skip structural data projection</p></body></html>",
-            )
-        )
+        self.structural.setToolTip(_translate("SecInterpDialogBase", "<html><head/><body><p>Select the point layer with structural measurements (optional)</p><p>Leave as \'Do not use\' to skip structural data projection</p></body></html>"))
         self.label_15.setText(_translate("SecInterpDialogBase", "Dip Field"))
-        self.dip.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "Select the field containing dip values in degrees (0-90)",
-            )
-        )
+        self.dip.setToolTip(_translate("SecInterpDialogBase", "Select the field containing dip values in degrees (0-90)"))
         self.label_16.setText(_translate("SecInterpDialogBase", "Strike Field"))
-        self.strike.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "elect the field containing strike values in azimuthal degrees (0-360)",
-            )
-        )
+        self.strike.setToolTip(_translate("SecInterpDialogBase", "elect the field containing strike values in azimuthal degrees (0-360)"))
         self.label_18.setText(_translate("SecInterpDialogBase", "Dip Line Scale"))
-        self.dip_scale_factor.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "<html><head/><body><p>Value that determines how long the dip lines are in the structural profile.</p><p>A higher value produces longer lines.</p></body></html>",
-            )
-        )
-        self.preview.setToolTip(
-            _translate(
-                "SecInterpDialogBase", "Preview of the extracted topographic profile"
-            )
-        )
+        self.dip_scale_factor.setToolTip(_translate("SecInterpDialogBase", "<html><head/><body><p>Value that determines how long the dip lines are in the structural profile.</p><p>A higher value produces longer lines.</p></body></html>"))
+        self.preview.setToolTip(_translate("SecInterpDialogBase", "Preview of the extracted topographic profile"))
         self.preview_button.setText(_translate("SecInterpDialogBase", "Preview"))
-        self.export_pre.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "<html><head/><body><p>Export preview</p><p>(T<span style=\" font-family:'Arial','sans-serif'; font-size:11pt; color:#000000; background-color:transparent;\">o complete the  process press save)</span></p></body></html>",
-            )
-        )
+        self.export_pre.setToolTip(_translate("SecInterpDialogBase", "<html><head/><body><p>Export preview</p><p>(T<span style=\" font-family:\'Arial\',\'sans-serif\'; font-size:11pt; color:#000000; background-color:transparent;\">o complete the  process press save)</span></p></body></html>"))
         self.export_pre.setText(_translate("SecInterpDialogBase", "Export"))
-        self.show_topo_cb.setToolTip(
-            _translate("SecInterpDialogBase", "Check to show topography")
-        )
+        self.show_topo_cb.setToolTip(_translate("SecInterpDialogBase", "Check to show topography"))
         self.show_topo_cb.setText(_translate("SecInterpDialogBase", "Show Topography"))
-        self.show_geol_cb.setToolTip(
-            _translate("SecInterpDialogBase", "Check to show geology")
-        )
+        self.show_geol_cb.setToolTip(_translate("SecInterpDialogBase", "Check to show geology"))
         self.show_geol_cb.setText(_translate("SecInterpDialogBase", "Show Geology"))
-        self.show_struct_cb.setToolTip(
-            _translate("SecInterpDialogBase", "Check to show structural data")
-        )
-        self.show_struct_cb.setText(
-            _translate("SecInterpDialogBase", "Show Structures")
-        )
+        self.show_struct_cb.setToolTip(_translate("SecInterpDialogBase", "Check to show structural data"))
+        self.show_struct_cb.setText(_translate("SecInterpDialogBase", "Show Structures"))
         self.results_group.setTitle(_translate("SecInterpDialogBase", "Results"))
-        self.results.setToolTip(
-            _translate("SecInterpDialogBase", "Processing messages and results")
-        )
+        self.results.setToolTip(_translate("SecInterpDialogBase", "Processing messages and results"))
         self.label_8.setText(_translate("SecInterpDialogBase", "Output Folder"))
-        self.dest_fold.setToolTip(
-            _translate(
-                "SecInterpDialogBase",
-                "Folder where output CSV and Shapefile files will be saved",
-            )
-        )
-
-
-from qgis import gui
+        self.dest_fold.setToolTip(_translate("SecInterpDialogBase", "Folder where output CSV and Shapefile files will be saved"))
+from qgis.gui import QgsCollapsibleGroupBox, QgsFieldComboBox, QgsFileWidget, QgsMapLayerComboBox, QgsRasterBandComboBox
+from sec_interp.resources import resources

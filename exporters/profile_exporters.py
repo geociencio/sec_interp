@@ -162,7 +162,15 @@ class StructureShpExporter(BaseExporter):
 
             res = raster_lyr.rasterUnitsPerPixelX()
             L = res * dip_scale_factor
-            buffer_geom = line_geom.buffer(buffer_distance, 25)
+
+            # Create buffer using native algorithm for consistency with core algorithms
+            try:
+                buffer_geom = scu.create_buffer_geometry(
+                    line_geom, line_lyr.crs(), buffer_distance, segments=25
+                )
+            except (ValueError, RuntimeError) as e:
+                logger.error(f"Buffer creation failed in exporter: {e}")
+                return False
 
             writer = scu.create_shapefile_writer(
                 str(output_path), line_lyr.crs(), struct_lyr.fields()

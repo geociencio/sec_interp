@@ -199,3 +199,176 @@ class TestShowUserMessage:
         mock_qmessagebox.critical.assert_called_once_with(
             mock_parent, "Test Title", "Test Message"
         )
+
+
+class TestBufferGeometry:
+    """Tests for create_buffer_geometry using native algorithm."""
+
+    @patch("core.utils.processing")
+    def test_create_buffer_geometry_basic(self, mock_processing):
+        """Test basic buffer creation."""
+        from qgis.core import QgsGeometry, QgsCoordinateReferenceSystem, QgsPointXY
+
+        # Create mock geometry
+        mock_geom = Mock(spec=QgsGeometry)
+        mock_geom.isNull.return_value = False
+        mock_geom.type.return_value = 1  # LineGeometry
+
+        # Create mock CRS
+        mock_crs = Mock(spec=QgsCoordinateReferenceSystem)
+        mock_crs.mapUnits.return_value = "meters"
+
+        # Mock the processing result
+        mock_buffer_geom = Mock(spec=QgsGeometry)
+        mock_buffer_geom.isNull.return_value = False
+        mock_buffer_feat = Mock()
+        mock_buffer_feat.geometry.return_value = mock_buffer_geom
+
+        mock_buffer_layer = Mock()
+        mock_buffer_layer.featureCount.return_value = 1
+        mock_buffer_layer.getFeatures.return_value = [mock_buffer_feat]
+
+        mock_processing.run.return_value = {"OUTPUT": mock_buffer_layer}
+
+        # Call function
+        result = scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
+
+        # Verify processing.run was called
+        mock_processing.run.assert_called_once()
+        assert result == mock_buffer_geom
+
+    def test_create_buffer_geometry_invalid_input(self):
+        """Test buffer creation with invalid geometry."""
+        from qgis.core import QgsGeometry, QgsCoordinateReferenceSystem
+
+        mock_geom = Mock(spec=QgsGeometry)
+        mock_geom.isNull.return_value = True
+
+        mock_crs = Mock(spec=QgsCoordinateReferenceSystem)
+
+        # Should raise ValueError
+        with pytest.raises(ValueError, match="Input geometry is null or invalid"):
+            scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
+
+    @patch("core.utils.processing")
+    def test_create_buffer_geometry_no_features(self, mock_processing):
+        """Test buffer creation when algorithm produces no features."""
+        from qgis.core import QgsGeometry, QgsCoordinateReferenceSystem
+
+        mock_geom = Mock(spec=QgsGeometry)
+        mock_geom.isNull.return_value = False
+        mock_geom.type.return_value = 1  # LineGeometry
+
+        mock_crs = Mock(spec=QgsCoordinateReferenceSystem)
+
+        # Mock empty result
+        mock_buffer_layer = Mock()
+        mock_buffer_layer.featureCount.return_value = 0
+
+        mock_processing.run.return_value = {"OUTPUT": mock_buffer_layer}
+
+        # Should raise ValueError
+        with pytest.raises(ValueError, match="Buffer algorithm produced no features"):
+            scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
+
+    @patch("core.utils.processing")
+    def test_create_buffer_geometry_processing_error(self, mock_processing):
+        """Test buffer creation when processing algorithm fails."""
+        from qgis.core import QgsGeometry, QgsCoordinateReferenceSystem
+
+        mock_geom = Mock(spec=QgsGeometry)
+        mock_geom.isNull.return_value = False
+        mock_geom.type.return_value = 1  # LineGeometry
+
+        mock_crs = Mock(spec=QgsCoordinateReferenceSystem)
+
+        # Mock processing failure
+        mock_processing.run.side_effect = Exception("Processing failed")
+
+        # Should raise RuntimeError
+        with pytest.raises(RuntimeError, match="Failed to create buffer"):
+            scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
+
+
+class TestSpatialFiltering:
+    """Tests for filter_features_by_buffer using native algorithm."""
+
+    @patch("core.utils.processing")
+    def test_filter_features_by_buffer_basic(self, mock_processing):
+        """Test basic spatial filtering."""
+        from qgis.core import QgsVectorLayer, QgsGeometry, QgsCoordinateReferenceSystem
+
+        # Mock inputs
+        mock_layer = Mock(spec=QgsVectorLayer)
+        mock_layer.isValid.return_value = True
+        mock_layer.featureCount.return_value = 100
+
+        mock_buffer_geom = Mock(spec=QgsGeometry)
+        mock_buffer_geom.isNull.return_value = False
+
+        mock_crs = Mock(spec=QgsCoordinateReferenceSystem)
+
+        # Mock filtered result
+        mock_filtered = Mock(spec=QgsVectorLayer)
+        mock_filtered.featureCount.return_value = 25
+        mock_processing.run.return_value = {"OUTPUT": mock_filtered}
+
+        # Call function
+        result = scu.filter_features_by_buffer(
+            mock_layer, mock_buffer_geom, mock_crs
+        )
+
+        # Verify
+        assert result.featureCount() == 25
+        mock_processing.run.assert_called_once()
+        
+        # Verify correct algorithm was called
+        call_args = mock_processing.run.call_args
+        assert call_args[0][0] == "native:extractbylocation"
+
+    def test_filter_features_invalid_layer(self):
+        """Test with invalid layer."""
+        from qgis.core import QgsVectorLayer, QgsGeometry, QgsCoordinateReferenceSystem
+
+        mock_layer = Mock(spec=QgsVectorLayer)
+        mock_layer.isValid.return_value = False
+
+        mock_geom = Mock(spec=QgsGeometry)
+        mock_crs = Mock(spec=QgsCoordinateReferenceSystem)
+
+        with pytest.raises(ValueError, match="Features layer is invalid"):
+            scu.filter_features_by_buffer(mock_layer, mock_geom, mock_crs)
+
+    def test_filter_features_invalid_buffer(self):
+        """Test with invalid buffer geometry."""
+        from qgis.core import QgsVectorLayer, QgsGeometry, QgsCoordinateReferenceSystem
+
+        mock_layer = Mock(spec=QgsVectorLayer)
+        mock_layer.isValid.return_value = True
+
+        mock_geom = Mock(spec=QgsGeometry)
+        mock_geom.isNull.return_value = True
+
+        mock_crs = Mock(spec=QgsCoordinateReferenceSystem)
+
+        with pytest.raises(ValueError, match="Buffer geometry is invalid"):
+            scu.filter_features_by_buffer(mock_layer, mock_geom, mock_crs)
+
+    @patch("core.utils.processing")
+    def test_filter_features_processing_error(self, mock_processing):
+        """Test when processing algorithm fails."""
+        from qgis.core import QgsVectorLayer, QgsGeometry, QgsCoordinateReferenceSystem
+
+        mock_layer = Mock(spec=QgsVectorLayer)
+        mock_layer.isValid.return_value = True
+
+        mock_geom = Mock(spec=QgsGeometry)
+        mock_geom.isNull.return_value = False
+
+        mock_crs = Mock(spec=QgsCoordinateReferenceSystem)
+
+        # Mock processing failure
+        mock_processing.run.side_effect = Exception("Spatial index failed")
+
+        with pytest.raises(RuntimeError, match="Failed to filter features"):
+            scu.filter_features_by_buffer(mock_layer, mock_geom, mock_crs)

@@ -33,6 +33,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox, QMessageBox
 
 from qgis.core import (
+    QgsGeometry,
     QgsRaster,
     QgsRasterLayer,
     QgsVectorLayer,
@@ -687,7 +688,11 @@ class SecInterp:
 
         Raises:
             ValueError: If line layer has no features or invalid geometry.
+            RuntimeError: If intersection algorithm fails.
         """
+        from qgis import processing
+        from qgis.core import QgsProcessingFeedback
+
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
             raise ValueError("Line layer has no features")
@@ -706,37 +711,103 @@ class SecInterp:
 
         values = []
 
-        for feature in outcrop_lyr.getFeatures():
-            outcrop_geom = feature.geometry()
-            if not outcrop_geom or outcrop_geom.isNull():
+        # Use native intersection algorithm for better geometry handling
+        try:
+            feedback = QgsProcessingFeedback()
+
+            # Log input information for debugging
+            logger.info(
+                f"Computing intersection: line CRS={line_lyr.crs().authid()}, "
+                f"outcrop CRS={outcrop_lyr.crs().authid()}"
+            )
+            logger.debug(
+                f"Line features: {line_lyr.featureCount()}, "
+                f"Outcrop features: {outcrop_lyr.featureCount()}"
+            )
+
+            result = processing.run(
+                "native:intersection",
+                {
+                    "INPUT": line_lyr,
+                    "OVERLAY": outcrop_lyr,
+                    "INPUT_FIELDS": [],  # Don't need line fields
+                    "OVERLAY_FIELDS": [],  # Empty list = keep ALL geology fields
+                    "OVERLAY_FIELDS_PREFIX": "",
+                    "OUTPUT": "memory:",
+                },
+                feedback=feedback,
+            )
+
+            intersection_layer = result["OUTPUT"]
+            intersection_count = intersection_layer.featureCount()
+            
+            logger.info(
+                f"✓ Intersection complete: {intersection_count} segments found"
+            )
+            
+            if intersection_count == 0:
+                logger.warning(
+                    "No intersections found. Check that line and outcrops overlap "
+                    "and have compatible CRS."
+                )
+
+        except Exception as e:
+            logger.error(f"Geological intersection failed: {e}")
+            raise RuntimeError(f"Cannot compute geological intersection: {e}") from e
+
+        # Process intersection results
+        # TODO: Investigate why densify_line_by_interval() doesn't work here
+        # Temporarily using manual interpolation as fallback
+        processed_segments = 0
+        total_points = 0
+        
+        for feature in intersection_layer.getFeatures():
+            geom = feature.geometry()
+            if not geom or geom.isNull():
+                logger.debug("Skipping null geometry")
                 continue
 
-            if not outcrop_geom.intersects(line_geom):
-                continue
+            # Log geometry type for debugging
+            geom_type = geom.wkbType()
+            geom_type_name = QgsWkbTypes.displayString(geom_type)
+            logger.debug(f"Intersection segment geometry type: {geom_type_name} ({geom_type})")
 
-            intersection = outcrop_geom.intersection(line_geom)
-            if not intersection or intersection.isNull():
-                continue
-
-            # Handle multi-part geometries if necessary (though intersection usually returns simpler geoms)
-            if intersection.isMultipart():
-                geoms = intersection.asGeometryCollection()
+            # Handle both LineString and MultiLineString geometries
+            geometries_to_process = []
+            
+            if geom.wkbType() in [
+                QgsWkbTypes.LineString,
+                QgsWkbTypes.LineString25D,
+            ]:
+                # Single LineString
+                geometries_to_process.append(geom)
+            elif geom.wkbType() in [
+                QgsWkbTypes.MultiLineString,
+                QgsWkbTypes.MultiLineString25D,
+            ]:
+                # MultiLineString - extract individual parts
+                multi_geom = geom.asMultiPolyline()
+                for part in multi_geom:
+                    # Create a new LineString geometry from each part
+                    line_geom = QgsGeometry.fromPolylineXY(part)
+                    geometries_to_process.append(line_geom)
+                logger.debug(f"Extracted {len(multi_geom)} parts from MultiLineString")
             else:
-                geoms = [intersection]
+                logger.warning(f"Skipping unsupported geometry type: {geom_type_name}")
+                continue
 
-            for geom in geoms:
-                if geom.wkbType() not in [
-                    QgsWkbTypes.LineString,
-                    QgsWkbTypes.LineString25D,
-                ]:
-                    continue
-
-                dist_step = scu.calculate_step_size(geom, raster_lyr)
-                length = geom.length()
+            # Process each geometry (LineString or part of MultiLineString)
+            for process_geom in geometries_to_process:
+                # Use manual interpolation (original method) as temporary fallback
+                dist_step = scu.calculate_step_size(process_geom, raster_lyr)
+                length = process_geom.length()
                 current_dist = 0.0
+                
+                logger.debug(f"Processing segment: length={length:.2f}, step={dist_step:.2f}")
+                processed_segments += 1
 
                 while current_dist <= length:
-                    pt = geom.interpolate(current_dist).asPoint()
+                    pt = process_geom.interpolate(current_dist).asPoint()
 
                     # Calculate distance from the start of the original section line
                     dist_from_start = da.measureLine(line_start, pt)
@@ -747,14 +818,17 @@ class SecInterp:
                         .identify(pt, QgsRaster.IdentifyFormatValue)
                         .results()
                     )
-                    elev = res.get(band_number, 0.0)  # Use .get() to avoid KeyError
+                    elev = res.get(band_number, 0.0)
 
-                    # Get geology
+                    # Get geology (attribute preserved automatically by intersection)
                     glg_val = feature[glg_field]
 
                     values.append((round(dist_from_start, 1), round(elev, 1), glg_val))
+                    total_points += 1
 
                     current_dist += dist_step
+        
+        logger.info(f"Processed {processed_segments} segments, generated {total_points} points")
 
         # Sort values by distance
         values.sort(key=lambda x: x[0])
@@ -814,7 +888,15 @@ class SecInterp:
         else:
             line_start = line_geom.asPolyline()[0]
 
-        buffer_geom = line_geom.buffer(buffer_m, 25)
+        # Create buffer using native algorithm for better CRS handling
+        try:
+            buffer_geom = scu.create_buffer_geometry(
+                line_geom, line_lyr.crs(), buffer_m, segments=25
+            )
+        except (ValueError, RuntimeError) as e:
+            logger.error(f"Buffer creation failed: {e}")
+            raise ValueError(f"Cannot create buffer zone: {e}") from e
+
         crs = struct_lyr.crs()
 
         # Logging: CRS information
@@ -840,7 +922,6 @@ class SecInterp:
 
         # Detailed counters for logging
         null_geom_count = 0
-        outside_buffer_count = 0
         missing_field_count = 0
         strike_parse_fail_count = 0
         dip_parse_fail_count = 0
@@ -848,71 +929,87 @@ class SecInterp:
         dip_range_fail_count = 0
         success_count = 0
 
-        for idx, f in enumerate(struct_lyr.getFeatures()):
+        # Filter features spatially using native algorithm (with R-tree spatial index)
+        # This is much faster than manual iteration for large datasets
+        try:
+            filtered_layer = scu.filter_features_by_buffer(
+                struct_lyr, buffer_geom, line_lyr.crs()
+            )
+            filtered_count = filtered_layer.featureCount()
+            outside_buffer_count = total_features - filtered_count
+
+            logger.info(
+                f"Spatial filter: {filtered_count} features in buffer, "
+                f"{outside_buffer_count} outside"
+            )
+        except (ValueError, RuntimeError) as e:
+            logger.error(f"Spatial filtering failed: {e}")
+            raise ValueError(f"Cannot filter structures by buffer: {e}") from e
+
+        # Process only filtered features (no need for intersects() check)
+        for idx, f in enumerate(filtered_layer.getFeatures()):
             struct_geom = f.geometry()
             if not struct_geom or struct_geom.isNull():
                 null_geom_count += 1
                 continue
 
-            if struct_geom.intersects(buffer_geom):
-                p = struct_geom.asPoint()
-                dist = da.measureLine(line_start, p)
+            # Feature is already inside buffer - no intersects() check needed
+            p = struct_geom.asPoint()
+            dist = da.measureLine(line_start, p)
 
-                try:
-                    strike_raw = f[strike_field]
-                    dip_raw = f[dip_field]
-                except KeyError as e:
-                    missing_field_count += 1
-                    logger.debug(f"Feature {idx}: Missing field {e}")
-                    continue
+            try:
+                strike_raw = f[strike_field]
+                dip_raw = f[dip_field]
+            except KeyError as e:
+                missing_field_count += 1
+                logger.debug(f"Feature {idx}: Missing field {e}")
+                continue
 
-                # Parse strike (supports field notation like "N 15° W" or numeric)
-                strike = scu.parse_strike(strike_raw)
-                if strike is None:
-                    strike_parse_fail_count += 1
-                    logger.debug(
-                        f"Feature {idx}: Failed to parse strike '{strike_raw}'"
-                    )
-                    continue
-
-                # Parse dip (supports field notation like "22° SW" or numeric)
-                dip_angle, dip_direction = scu.parse_dip(dip_raw)
-                if dip_angle is None:
-                    dip_parse_fail_count += 1
-                    logger.debug(f"Feature {idx}: Failed to parse dip '{dip_raw}'")
-                    continue
-
-                # Use dip_angle for calculations
-                dip = dip_angle
-                # Note: dip_direction could be used for additional validation if needed
-
-                # Validate ranges
-                is_valid, error_msg = vu.validate_angle_range(
-                    strike, "Strike", 0.0, 360.0
-                )
-                if not is_valid:
-                    strike_range_fail_count += 1
-                    logger.debug(
-                        f"Feature {idx}: Strike validation failed - {error_msg} (value: {strike})"
-                    )
-                    continue
-
-                is_valid, error_msg = vu.validate_angle_range(dip, "Dip", 0.0, 90.0)
-                if not is_valid:
-                    dip_range_fail_count += 1
-                    logger.debug(
-                        f"Feature {idx}: Dip validation failed - {error_msg} (value: {dip})"
-                    )
-                    continue
-
-                app_dip = scu.calculate_apparent_dip(strike, dip, line_az)
-                projected_structs.append((round(dist, 1), round(app_dip, 1)))
-                success_count += 1
+            # Parse strike (supports field notation like "N 15° W" or numeric)
+            strike = scu.parse_strike(strike_raw)
+            if strike is None:
+                strike_parse_fail_count += 1
                 logger.debug(
-                    f"Feature {idx}: ✓ Success - dist={dist:.1f}, strike={strike:.1f}°, dip={dip:.1f}°, app_dip={app_dip:.1f}°"
+                    f"Feature {idx}: Failed to parse strike '{strike_raw}'"
                 )
-            else:
-                outside_buffer_count += 1
+                continue
+
+            # Parse dip (supports field notation like "22° SW" or numeric)
+            dip_angle, dip_direction = scu.parse_dip(dip_raw)
+            if dip_angle is None:
+                dip_parse_fail_count += 1
+                logger.debug(f"Feature {idx}: Failed to parse dip '{dip_raw}'")
+                continue
+
+            # Use dip_angle for calculations
+            dip = dip_angle
+            # Note: dip_direction could be used for additional validation if needed
+
+            # Validate ranges
+            is_valid, error_msg = vu.validate_angle_range(
+                strike, "Strike", 0.0, 360.0
+            )
+            if not is_valid:
+                strike_range_fail_count += 1
+                logger.debug(
+                    f"Feature {idx}: Strike validation failed - {error_msg} (value: {strike})"
+                )
+                continue
+
+            is_valid, error_msg = vu.validate_angle_range(dip, "Dip", 0.0, 90.0)
+            if not is_valid:
+                dip_range_fail_count += 1
+                logger.debug(
+                    f"Feature {idx}: Dip validation failed - {error_msg} (value: {dip})"
+                )
+                continue
+
+            app_dip = scu.calculate_apparent_dip(strike, dip, line_az)
+            projected_structs.append((round(dist, 1), round(app_dip, 1)))
+            success_count += 1
+            logger.debug(
+                f"Feature {idx}: ✓ Success - dist={dist:.1f}, strike={strike:.1f}°, dip={dip:.1f}°, app_dip={app_dip:.1f}°"
+            )
 
         # Sort by distance
         projected_structs.sort(key=lambda x: x[0])

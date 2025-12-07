@@ -959,21 +959,33 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
     def _generate_geology(self, line_layer, raster_layer, band_num):
         """Generate geological profile data if outcrop layer is selected."""
+        from sec_interp.logger_config import get_logger
+        logger = get_logger(__name__)
+        
         outcrop_layer = self.outcrop.currentLayer()
         if not outcrop_layer:
+            logger.debug("No outcrop layer selected")
             return None
 
         outcrop_name_field = self.ocropname.currentField()
         if not outcrop_name_field:
+            logger.debug("No outcrop name field selected")
             return None
 
-        return self.plugin_instance.geol_profile(
-            line_layer,
-            raster_layer,
-            outcrop_layer,
-            outcrop_name_field,
-            band_num,
-        )
+        try:
+            logger.info(f"Generating geological profile with field: {outcrop_name_field}")
+            result = self.plugin_instance.geol_profile(
+                line_layer,
+                raster_layer,
+                outcrop_layer,
+                outcrop_name_field,
+                band_num,
+            )
+            logger.info(f"Geological profile result: {len(result) if result else 0} points")
+            return result
+        except Exception as e:
+            logger.error(f"Error generating geological profile: {e}", exc_info=True)
+            return None
 
     def _generate_structures(self, line_layer, buffer_dist):
         """Generate structural data if structural layer is selected."""
