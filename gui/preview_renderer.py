@@ -232,6 +232,7 @@ class PreviewRenderer:
         struct_data: StructureData,
         reference_data: ProfileData,
         vert_exag: float = 1.0,
+        dip_line_length: float | None = None,
     ) -> QgsVectorLayer | None:
         """Create temporary layer for structural dips.
 
@@ -239,6 +240,7 @@ class PreviewRenderer:
             struct_data: List of (distance, apparent_dip) tuples
             reference_data: List of (distance, elevation) tuples for elevation lookup
             vert_exag: Vertical exaggeration factor
+            dip_line_length: Length of dip line in map units (if None, calculates default)
 
         Returns:
             QgsVectorLayer with structural dip lines
@@ -258,7 +260,16 @@ class PreviewRenderer:
         else:
             e_range = 100  # Default range
 
-        line_length = e_range * 0.1  # 10% of elevation range
+        if dip_line_length is not None and dip_line_length > 0:
+            line_length = dip_line_length
+        else:
+            if reference_data:
+                elevs = [e for _, e in reference_data]
+                e_range = max(elevs) - min(elevs)
+            else:
+                e_range = 100  # Default range
+
+            line_length = e_range * 0.1  # 10% of elevation range
 
         # Create dip lines
         features = []
@@ -511,6 +522,7 @@ class PreviewRenderer:
         geol_data: GeologyData | None = None,
         struct_data: StructureData | None = None,
         vert_exag: float = 1.0,
+        dip_line_length: float | None = None,
     ) -> tuple[object | None, list[QgsVectorLayer]]:
         """Render preview with all data layers.
 
@@ -519,6 +531,7 @@ class PreviewRenderer:
             geol_data: Optional list of (dist, elev, geology_name) tuples
             struct_data: Optional list of (dist, app_dip) tuples
             vert_exag: Vertical exaggeration factor (default 1.0)
+            dip_line_length: Optional explicit length for dip lines
 
         Returns:
             Tuple of (QgsMapCanvas, list of layers) or (None, None) if no data
@@ -550,7 +563,9 @@ class PreviewRenderer:
             else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
         )
         struct_layer = (
-            self._create_struct_layer(struct_data, reference_data, vert_exag)
+            self._create_struct_layer(
+                struct_data, reference_data, vert_exag, dip_line_length
+            )
             if struct_data
             else None
         )

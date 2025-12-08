@@ -760,9 +760,27 @@ class SecInterp:
         vert_exag = vert_exag if vert_exag is not None else 1.0
         logger.debug("Vertical exaggeration: %.2f", vert_exag)
 
+        # Calculate dip line length based on scale factor and raster resolution
+        dip_line_length = None
+        if filtered_struct:
+            _, _, dip_scale = vu.validate_numeric_input(
+                self.dlg.dip_scale_factor.text(),
+                field_name="Dip scale factor",
+                allow_empty=True,
+            )
+            dip_scale = dip_scale if dip_scale is not None else 4.0
+
+            if dip_scale > 0:
+                raster_layer = self.dlg.rasterdem.currentLayer()
+                if raster_layer and raster_layer.isValid():
+                    res = raster_layer.rasterUnitsPerPixelX()
+                    if res > 0:
+                        dip_line_length = res * dip_scale
+            logger.debug("Dip line length: %s (scale: %.2f)", dip_line_length, dip_scale)
+
         # Render using native PyQGIS
         canvas, layers = self.preview_renderer.render(
-            filtered_topo, filtered_geol, filtered_struct, vert_exag
+            filtered_topo, filtered_geol, filtered_struct, vert_exag, dip_line_length
         )
 
         # Store canvas and layers for export
