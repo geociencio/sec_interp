@@ -1,0 +1,13 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203, W503
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    help,
+    resources/resources.py,
+    gui/ui/main_dialog_base.py,
+    gui/ui/__init__.py
+per-file-ignores =
+    __init__.py:F401

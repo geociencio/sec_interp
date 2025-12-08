@@ -2,7 +2,6 @@
 Unit tests for core algorithms.
 """
 
-import pytest
 from qgis.core import QgsGeometry, QgsPointXY
 from sec_interp.core.utils import calculate_line_azimuth
 

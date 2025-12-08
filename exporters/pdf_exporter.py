@@ -1,0 +1,79 @@
+"""PDF exporter module for PDF documents."""
+
+from pathlib import Path
+
+from qgis.core import QgsMapRendererCustomPainterJob, QgsMapSettings
+from qgis.PyQt.QtCore import QMarginsF, QRectF, QSize, QSizeF
+from qgis.PyQt.QtGui import QPageSize, QPainter, QPdfWriter
+
+from sec_interp.logger_config import get_logger
+
+from .base_exporter import BaseExporter
+
+
+logger = get_logger(__name__)
+
+
+class PDFExporter(BaseExporter):
+    """Exporter for PDF format."""
+
+    def get_supported_extensions(self) -> list[str]:
+        """Get supported PDF extension."""
+        return [".pdf"]
+
+    def export(self, output_path: Path, map_settings: QgsMapSettings) -> bool:
+        """Export map to PDF.
+
+        Args:
+            output_path: Output file path
+            map_settings: QgsMapSettings instance configured for rendering
+
+        Returns:
+            True if export successful, False otherwise
+        """
+        try:
+            width = self.get_setting("width", 800)
+            height = self.get_setting("height", 600)
+
+            # Setup PDF writer
+            writer = QPdfWriter(str(output_path))
+            writer.setResolution(300)  # Set DPI
+            writer.setPageSize(QPageSize(QSizeF(width, height), QPageSize.Unit.Point))
+            writer.setPageMargins(QMarginsF(0, 0, 0, 0))
+
+            # Setup painter
+            painter = QPainter()
+            if not painter.begin(writer):
+                logger.error(
+                    f"Failed to begin painting for PDF export to {output_path}"
+                )
+                return False
+
+            try:
+                painter.setRenderHint(QPainter.Antialiasing)
+
+                # Update map settings with actual writer device dimensions and DPI
+                dev = painter.device()
+                map_settings.setOutputSize(QSize(dev.width(), dev.height()))
+                map_settings.setOutputDpi(writer.resolution())
+
+                # Render map
+                job = QgsMapRendererCustomPainterJob(map_settings, painter)
+                job.start()
+                job.waitForFinished()
+
+                # Draw legend if available
+                legend_renderer = self.get_setting("legend_renderer")
+                if legend_renderer:
+                    legend_renderer.draw_legend(
+                        painter, QRectF(0, 0, dev.width(), dev.height())
+                    )
+
+            finally:
+                painter.end()
+
+            return True
+
+        except Exception:
+            logger.exception(f"PDF export failed for {output_path}")
+            return False

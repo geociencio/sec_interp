@@ -1,0 +1,184 @@
+# ruff.toml - Ruff configuration for SecInterp QGIS Plugin
+# https://docs.astral.sh/ruff/
+
+# ============================================================================
+# Global Settings
+# ============================================================================
+line-length = 88  # Compatible with Black
+target-version = "py310"  # Python 3.10+
+
+# Exclude directories and files from linting
+exclude = [
+    ".git",
+    "__pycache__",
+    "*.pyc",
+    ".venv",
+    "scripts",
+    "venv",
+    "env",
+    ".env",
+    "dist",
+    "build",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".pytest_cache",
+    "*.egg-info",
+    # Project-specific exclusions
+    "help",                          # Generated help files
+    "resources/resources.py",        # Qt resources (auto-generated)
+    "gui/ui/main_dialog_base.py",   # Qt Designer output (auto-generated)
+    "gui/ui/__init__.py",
+    "**/migrations/**",
+    # Tests (optional - remove if you want to lint tests)
+    "**/test*.py",
+    "**/*test.py",
+    "tests/",
+]
+
+# ============================================================================
+# Linting Rules
+# ============================================================================
+[lint]
+# Select rule categories to enable
+select = [
+    "F",   # Pyflakes - basic errors
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort - import sorting
+    "N",   # pep8-naming
+    "D",   # pydocstyle - docstring conventions
+    "UP",  # pyupgrade - modern Python syntax
+    "B",   # flake8-bugbear - common bugs
+    "C4",  # flake8-comprehensions - better comprehensions
+    "T20", # flake8-print - avoid print statements
+    "SIM", # flake8-simplify - simplification suggestions
+    "PTH", # flake8-use-pathlib - prefer pathlib
+    "ISC", # flake8-implicit-str-concat
+    "Q",   # flake8-quotes - quote consistency
+    "TID", # flake8-tidy-imports
+    "PL",  # Pylint
+    "TRY", # tryceratops - better exception handling
+    "RUF", # Ruff-specific rules
+    "C90", # mccabe - complexity checking
+]
+
+# Rules to ignore (QGIS/PyQt5 specific)
+ignore = [
+    # === QGIS/PyQt5 Compatibility ===
+    "F821",   # undefined-name (QGIS modules not in standard env)
+    "N802",   # invalid-function-name (PyQt/QGIS uses camelCase)
+    "N803",   # invalid-argument-name (PyQt signals use camelCase)
+    "N806",   # non-lowercase-variable-in-function (Qt constants)
+    
+    # === Import Management ===
+    "F401",   # unused-import (common in __init__.py for re-exports)
+    
+    # === Docstring Flexibility ===
+    "D100",   # undocumented-public-module (not all modules need docstrings)
+    "D104",   # undocumented-public-package (not all __init__.py need docstrings)
+    "D203",   # one-blank-line-before-class (conflicts with D211)
+    "D213",   # multi-line-summary-second-line (conflicts with D212)
+    "D205",   # missing blank line after summary
+    
+    # === Exception Handling ===
+    "TRY003", # raise-vanilla-args (allow descriptive exception messages)
+    
+    # === Pylint Overrides ===
+    "PLR0913", # too-many-arguments (QGIS methods often have many params)
+    "PLR2004", # magic-value-comparison (common in QGIS coordinate checks)
+    
+    # === Print Statements ===
+    "T201",   # print-found (allow print for debugging, use logger instead)
+]
+
+# Dummy variable pattern (matches .pylintrc)
+dummy-variable-rgx = "^(_+|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_)$"
+
+# Rules that should never be auto-fixed
+unfixable = [
+    "F401",  # Don't auto-remove unused imports (might be intentional re-exports)
+]
+
+# ============================================================================
+# Per-File Ignores
+# ============================================================================
+[lint.per-file-ignores]
+# __init__.py files often have unused imports for re-export
+"__init__.py" = ["F401", "D104"]
+
+# Test files can have more relaxed rules
+"tests/**/*.py" = [
+    "D100", "D101", "D102", "D103",  # Don't require docstrings in tests
+    "PLR2004",  # Allow magic values in tests
+    "S101",     # Allow assert statements
+]
+
+# Logger config can use print
+"logger_config.py" = ["T201"]
+
+# ============================================================================
+# Code Formatting
+# ============================================================================
+[format]
+# Black-compatible formatting
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true  # Format code in docstrings
+docstring-code-line-length = 72  # Shorter lines in docstring examples
+
+# ============================================================================
+# Plugin-Specific Configurations
+# ============================================================================
+
+[lint.pydocstyle]
+# Use Google-style docstrings
+convention = "google"
+# Ignore missing docstrings in magic methods
+ignore-decorators = ["typing.overload"]
+
+[lint.pylint]
+# Complexity limits (from .pylintrc)
+max-args = 5          # Maximum function arguments
+max-branches = 12     # Maximum branches in function
+max-locals = 15       # Maximum local variables
+max-returns = 6       # Maximum return statements
+max-statements = 50   # Maximum statements in function
+
+[lint.isort]
+# Import sorting configuration
+known-first-party = ["sec_interp"]  # Your package name
+known-third-party = ["enchant", "qgis", "PyQt5"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder"
+]
+# Group imports by type
+force-sort-within-sections = true
+lines-after-imports = 2
+
+[lint.mccabe]
+# Maximum cyclomatic complexity
+max-complexity = 10
+
+[lint.flake8-bugbear]
+# Allow default mutable arguments in dataclasses
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]
+
+[lint.flake8-quotes]
+# Enforce double quotes (consistent with Black)
+inline-quotes = "double"
+multiline-quotes = "double"
+docstring-quotes = "double"
+
+[lint.flake8-tidy-imports]
+# Ban certain imports
+ban-relative-imports = "parents"  # Allow same-level relative imports, ban parent imports
+
+[lint.pyupgrade]
+# Keep runtime-required type checking imports
+keep-runtime-typing = true

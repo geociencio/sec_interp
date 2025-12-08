@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Preview Renderer Module (PyQGIS Native)
+"""Preview Renderer Module (PyQGIS Native).
 
 Handles rendering of interactive previews using native QGIS resources:
 - QgsMapCanvas for rendering
@@ -8,30 +6,34 @@ Handles rendering of interactive previews using native QGIS resources:
 - Native QGIS symbology
 """
 
+from collections import defaultdict
 import math
+from typing import Optional
 
 from qgis.core import (
-    QgsVectorLayer,
+    QgsCategorizedSymbolRenderer,
     QgsFeature,
     QgsGeometry,
-    QgsPointXY,
     QgsLineString,
-    QgsProject,
-    QgsSingleSymbolRenderer,
-    QgsCategorizedSymbolRenderer,
-    QgsRendererCategory,
-    QgsMarkerSymbol,
     QgsLineSymbol,
-    QgsMapSettings,
     QgsMapRendererCustomPainterJob,
+    QgsMapSettings,
+    QgsMarkerSymbol,
     QgsPalLayerSettings,
+    QgsPointXY,
+    QgsProject,
+    QgsRendererCategory,
+    QgsSingleSymbolRenderer,
     QgsTextFormat,
+    QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-from qgis.PyQt.QtCore import QSize, Qt, QRectF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QFont, QPen
-from ..core import utils as scu
+from qgis.PyQt.QtCore import QRectF, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QFont, QImage, QPainter, QPen
+
+from sec_interp.core.types import GeologyData, ProfileData, StructureData
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -59,7 +61,7 @@ class PreviewRenderer:
         QColor(22, 160, 133),  # Green Sea
     ]
 
-    def __init__(self, canvas=None):
+    def __init__(self, canvas=None) -> None:
         """Initialize preview renderer.
 
         Args:
@@ -71,7 +73,7 @@ class PreviewRenderer:
         self.has_topography = False  # Track if topography layer exists
         self.has_structures = False  # Track if structures layer exists
 
-    def _get_color_for_unit(self, name):
+    def _get_color_for_unit(self, name: str) -> QColor:
         """Get a consistent color for a geological unit based on its name."""
         if not name:
             return QColor(100, 100, 100)  # Default grey
@@ -81,7 +83,37 @@ class PreviewRenderer:
         index = hash_val % len(self.GEOLOGY_COLORS)
         return self.GEOLOGY_COLORS[index]
 
-    def _create_topo_layer(self, topo_data, vert_exag=1.0):
+    def _create_memory_layer(
+        self,
+        geometry_type: str,
+        name: str,
+        fields: str | None = None,
+        crs: str = "EPSG:4326",
+    ) -> tuple[QgsVectorLayer | None, object | None]:
+        """Create a memory layer with standard configuration.
+
+        Args:
+            geometry_type: "Point", "LineString", "Polygon"
+            name: Layer display name
+            fields: Optional field definition string (e.g., "field=id:integer")
+            crs: CRS identifier (default: EPSG:4326)
+
+        Returns:
+            Tuple of (QgsVectorLayer, QgsDataProvider) or (None, None) if failed
+        """
+        field_def = f"&{fields}" if fields else ""
+        uri = f"{geometry_type}?crs={crs}{field_def}"
+        layer = QgsVectorLayer(uri, name, "memory")
+
+        if not layer.isValid():
+            logger.error(f"Failed to create memory layer: {name}")
+            return None, None
+
+        return layer, layer.dataProvider()
+
+    def _create_topo_layer(
+        self, topo_data: ProfileData, vert_exag: float = 1.0
+    ) -> QgsVectorLayer | None:
         """Create temporary layer for topographic profile.
 
         Args:
@@ -94,9 +126,10 @@ class PreviewRenderer:
         if not topo_data or len(topo_data) < 2:
             return None
 
-        # Create memory layer
-        layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Topography", "memory")
-        provider = layer.dataProvider()
+        # Create memory layer using factory
+        layer, provider = self._create_memory_layer("LineString", "Topography")
+        if not layer:
+            return None
 
         # Create line geometry from points
         points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in topo_data]
@@ -107,7 +140,7 @@ class PreviewRenderer:
         feat.setGeometry(QgsGeometry(line))
         provider.addFeatures([feat])
 
-        # Apply symbology - blue line, 2px width
+        # Apply symbology - blue line, 0.5px width
         symbol = QgsLineSymbol.createSimple(
             {
                 "color": "0,102,204",
@@ -122,7 +155,9 @@ class PreviewRenderer:
         logger.debug("Created topography layer with %d points", len(topo_data))
         return layer
 
-    def _create_geol_layer(self, geol_data, vert_exag=1.0):
+    def _create_geol_layer(
+        self, geol_data: GeologyData, vert_exag: float = 1.0
+    ) -> QgsVectorLayer | None:
         """Create temporary layer for geological profile.
 
         Args:
@@ -130,31 +165,33 @@ class PreviewRenderer:
             vert_exag: Vertical exaggeration factor
 
         Returns:
-            QgsVectorLayer with geological profile
+            QgsVectorLayer with geological lines
         """
         if not geol_data or len(geol_data) < 2:
             return None
 
-        # Create memory layer with attributes
-        layer = QgsVectorLayer(
-            "LineString?crs=EPSG:4326&field=unit:string", "Geology", "memory"
+        # Create memory layer using factory
+        layer, provider = self._create_memory_layer(
+            "LineString", "Geology", "field=unit:string"
         )
-        provider = layer.dataProvider()
+        if not layer:
+            return None
 
-        # Group by geological unit
-        geol_groups = {}
-        for dist, elev, name in geol_data:
-            if name not in geol_groups:
-                geol_groups[name] = []
-            geol_groups[name].append((dist, elev))
+        # Group data by geological unit
+        geol_groups = defaultdict(list)
+        for dist, elev, unit in geol_data:
+            geol_groups[unit].append((dist, elev))
 
-        # Create features for each unit
+        # Create line features for each unit
         features = []
         for unit_name, points in geol_groups.items():
             if len(points) < 2:
                 continue
 
-            # Create line geometry
+            # Sort points by distance
+            points.sort(key=lambda p: p[0])
+
+            # Create line from points
             line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in points]
             line = QgsLineString(line_points)
 
@@ -168,7 +205,7 @@ class PreviewRenderer:
 
         # Apply categorized symbology
         categories = []
-        for unit_name in geol_groups.keys():
+        for unit_name in geol_groups:
             color = self._get_color_for_unit(unit_name)
             symbol = QgsLineSymbol.createSimple(
                 {
@@ -186,18 +223,24 @@ class PreviewRenderer:
 
         renderer = QgsCategorizedSymbolRenderer("unit", categories)
         layer.setRenderer(renderer)
-
         layer.updateExtents()
         logger.debug("Created geology layer with %d units", len(geol_groups))
         return layer
 
-    def _create_struct_layer(self, struct_data, reference_data, vert_exag=1.0):
+    def _create_struct_layer(
+        self,
+        struct_data: StructureData,
+        reference_data: ProfileData,
+        vert_exag: float = 1.0,
+        dip_line_length: float | None = None,
+    ) -> QgsVectorLayer | None:
         """Create temporary layer for structural dips.
 
         Args:
             struct_data: List of (distance, apparent_dip) tuples
             reference_data: List of (distance, elevation) tuples for elevation lookup
             vert_exag: Vertical exaggeration factor
+            dip_line_length: Length of dip line in map units (if None, calculates default)
 
         Returns:
             QgsVectorLayer with structural dip lines
@@ -205,9 +248,10 @@ class PreviewRenderer:
         if not struct_data or len(struct_data) < 1:
             return None
 
-        # Create memory layer
-        layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Structures", "memory")
-        provider = layer.dataProvider()
+        # Create memory layer using factory
+        layer, provider = self._create_memory_layer("LineString", "Structures")
+        if not layer:
+            return None
 
         # Calculate extent for line length
         if reference_data:
@@ -216,7 +260,16 @@ class PreviewRenderer:
         else:
             e_range = 100  # Default range
 
-        line_length = e_range * 0.1  # 10% of elevation range
+        if dip_line_length is not None and dip_line_length > 0:
+            line_length = dip_line_length
+        else:
+            if reference_data:
+                elevs = [e for _, e in reference_data]
+                e_range = max(elevs) - min(elevs)
+            else:
+                e_range = 100  # Default range
+
+            line_length = e_range * 0.1  # 10% of elevation range
 
         # Create dip lines
         features = []
@@ -230,16 +283,20 @@ class PreviewRenderer:
             # Calculate dip line endpoints
             rad_dip = math.radians(abs(app_dip))
             dx = line_length * math.cos(rad_dip)
-            dy = -line_length * math.sin(rad_dip)
+            dy = line_length * math.sin(rad_dip)
 
+            # Apply vertical exaggeration to dy
+            dy * vert_exag
+
+            # Determine direction based on sign of dip
             if app_dip < 0:
                 dx = -dx
 
-            # Create line geometry
+            # Create line from point downward
             p1 = QgsPointXY(dist, elev * vert_exag)
-            p2 = QgsPointXY(dist + dx, (elev + dy) * vert_exag)
-            line = QgsLineString([p1, p2])
+            p2 = QgsPointXY(dist + dx, (elev - dy) * vert_exag)
 
+            line = QgsLineString([p1, p2])
             feat = QgsFeature()
             feat.setGeometry(QgsGeometry(line))
             features.append(feat)
@@ -256,7 +313,9 @@ class PreviewRenderer:
         logger.debug("Created structures layer with %d dips", len(struct_data))
         return layer
 
-    def _interpolate_elevation(self, reference_data, target_dist):
+    def _interpolate_elevation(
+        self, reference_data: ProfileData, target_dist: float
+    ) -> float:
         """Interpolate elevation at a given distance."""
         if not reference_data:
             return 0
@@ -287,7 +346,6 @@ class PreviewRenderer:
         Returns:
             A 'nice' number close to target_step
         """
-
         if target_step <= 0:
             return 100.0
 
@@ -458,7 +516,14 @@ class PreviewRenderer:
 
         return layer
 
-    def render(self, topo_data, geol_data=None, struct_data=None, vert_exag=1.0):
+    def render(
+        self,
+        topo_data: ProfileData,
+        geol_data: GeologyData | None = None,
+        struct_data: StructureData | None = None,
+        vert_exag: float = 1.0,
+        dip_line_length: float | None = None,
+    ) -> tuple[object | None, list[QgsVectorLayer]]:
         """Render preview with all data layers.
 
         Args:
@@ -466,6 +531,7 @@ class PreviewRenderer:
             geol_data: Optional list of (dist, elev, geology_name) tuples
             struct_data: Optional list of (dist, app_dip) tuples
             vert_exag: Vertical exaggeration factor (default 1.0)
+            dip_line_length: Optional explicit length for dip lines
 
         Returns:
             Tuple of (QgsMapCanvas, list of layers) or (None, None) if no data
@@ -497,7 +563,9 @@ class PreviewRenderer:
             else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
         )
         struct_layer = (
-            self._create_struct_layer(struct_data, reference_data, vert_exag)
+            self._create_struct_layer(
+                struct_data, reference_data, vert_exag, dip_line_length
+            )
             if struct_data
             else None
         )
@@ -506,7 +574,9 @@ class PreviewRenderer:
 
         # Collect valid layers
         data_layers = [
-            l for l in [struct_layer, geol_layer, topo_layer] if l is not None
+            layer
+            for layer in [struct_layer, geol_layer, topo_layer]
+            if layer is not None
         ]
 
         if not data_layers:
@@ -527,8 +597,8 @@ class PreviewRenderer:
         labels_layer = self._create_axes_labels_layer(extent, vert_exag)
 
         # Combine all layers (labels on top, then data, then grid)
-        layers = [labels_layer] + data_layers + [axes_layer]
-        layers = [l for l in layers if l is not None]
+        layers = [labels_layer, *data_layers, axes_layer]
+        layers = [layer for layer in layers if layer is not None]
 
         self.layers = layers
 
@@ -548,7 +618,15 @@ class PreviewRenderer:
 
         return self.canvas, layers
 
-    def export_to_image(self, layers, extent, width, height, output_path, dpi=300):
+    def export_to_image(
+        self,
+        layers: list[QgsVectorLayer],
+        extent,
+        width: int,
+        height: int,
+        output_path,
+        dpi: int = 300,
+    ) -> bool:
         """Export preview to image file using QgsMapRendererCustomPainterJob.
 
         Args:
@@ -597,7 +675,7 @@ class PreviewRenderer:
             return success
 
         except Exception as e:
-            logger.error("Error exporting preview: %s", e)
+            logger.exception("Error exporting preview: %s", e)
             return False
 
     def draw_legend(self, painter, rect):
@@ -636,7 +714,7 @@ class PreviewRenderer:
             max_width = max(max_width, fm.boundingRect("Topography").width())
         if self.has_structures:
             max_width = max(max_width, fm.boundingRect("Structures").width())
-        for name in self.active_units.keys():
+        for name in self.active_units:
             width = fm.boundingRect(name).width()
             max_width = max(max_width, width)
 

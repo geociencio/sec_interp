@@ -53,17 +53,9 @@ ignored-modules=qgis,qgis.PyQt,PyQt5
 jobs=0
 max-line-length=100
 disable=
-    C0114, # missing-module-docstring
-    C0115, # missing-class-docstring
-    C0116, # missing-function-docstring
-    W0511, # fixme
     E0401, # import-error (often with QGIS modules not in standard env)
     E0611, # no-name-in-module (often with QGIS modules)
-    C0321, # multiple-statements (often acceptable for small QGIS plugin methods)
     E0402, # relative-beyond-top-level (common in package imports)
-    W0201, # attribute-defined-outside-init (common for QGIS plugin UI actions)
-    C0415, # import-outside-toplevel (common in QGIS plugin classFactory)
-    R1705  # no-else-return (improves readability with explicit if/elif/else)
 
 # Control the amount of potential inferred values when inferring a single
 # object. This can help the performance when dealing with large functions or
