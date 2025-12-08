@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Parsing Utilities Module
+"""Parsing Utilities Module.
 
 Parsing of geological structural measurements (strike/dip).
 Supports numeric and field notation formats.
@@ -11,11 +9,11 @@ import re
 
 def parse_strike(value):
     """Parse strike value from various formats.
-    
+
     Accepts:
         - Numeric azimuth (string or int)
         - Quadrant notation ("N 30° E", "S 15° W")
-    
+
     Returns:
         strike in azimuth degrees (0–360) or None if invalid
     """
@@ -63,11 +61,11 @@ def parse_strike(value):
 
 def parse_dip(value):
     """Parse dip value from various formats.
-    
+
     Accepts:
         - Numeric dip: "22", "45.5", "30.0"
         - Field notation: "22° SW", "45 NE", "10 S"
-    
+
     Returns:
         tuple: (dip_angle, dip_direction_azimuth) or (None, None) if invalid
     """
@@ -103,9 +101,9 @@ def parse_dip(value):
 
 def cardinal_to_azimuth(text: str):
     """Convert cardinal direction to azimuth.
-    
+
     Converts: N, NE, E, SE, S, SW, W, NW
-    
+
     Returns:
         0–360 azimuth or None if invalid
     """
@@ -120,4 +118,4 @@ def cardinal_to_azimuth(text: str):
         "NW": 315,
     }
 
-    return table.get(text, None)
+    return table.get(text)

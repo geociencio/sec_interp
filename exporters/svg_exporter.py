@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-SVG exporter module for vector graphics.
-"""
+"""SVG exporter module for vector graphics."""
 
 from pathlib import Path
-from typing import List
 
-from qgis.PyQt.QtCore import QSize, QRectF
-from qgis.PyQt.QtSvg import QSvgGenerator
-from qgis.PyQt.QtGui import QPainter
 from qgis.core import QgsMapRendererCustomPainterJob
+from qgis.PyQt.QtCore import QRectF, QSize
+from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtSvg import QSvgGenerator
+
+from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
-from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -20,7 +18,7 @@ logger = get_logger(__name__)
 class SVGExporter(BaseExporter):
     """Exporter for SVG vector format."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """Get supported SVG extension."""
         return [".svg"]
 
@@ -73,6 +71,6 @@ class SVGExporter(BaseExporter):
             finally:
                 painter.end()
 
-        except Exception as e:
-            logger.error(f"SVG export failed for {output_path}: {e}")
+        except Exception:
+            logger.exception(f"SVG export failed for {output_path}")
             return False

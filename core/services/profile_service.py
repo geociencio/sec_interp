@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
+"""/***************************************************************************
  SecInterp - ProfileService
                                  A QGIS plugin
- Service for generating topographic profiles
+ Service for generating topographic profiles.
                               -------------------
         begin                : 2025-12-07
         copyright            : (C) 2025 by Juan M Bernales
@@ -20,18 +18,19 @@
  ***************************************************************************/
 """
 
-from qgis.core import QgsVectorLayer, QgsRasterLayer
+from qgis.core import QgsRasterLayer, QgsVectorLayer
 
-from .. import utils as scu
-from ..types import ProfileData
+from sec_interp.core import utils as scu
+from sec_interp.core.types import ProfileData
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
 
 class ProfileService:
     """Service for generating topographic profiles.
-    
+
     This service handles the extraction of elevation data along a cross-section
     line by sampling a raster DEM.
     """

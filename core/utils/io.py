@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-I/O Utilities Module
+"""I/O Utilities Module.
 
 File I/O operations and user messaging.
 """
 
 from pathlib import Path
+
 from qgis.core import (
-    QgsVectorFileWriter,
-    QgsProject,
-    QgsWkbTypes,
-    QgsFields,
     QgsCoordinateReferenceSystem,
+    QgsFields,
+    QgsProject,
+    QgsVectorFileWriter,
+    QgsWkbTypes,
 )
 
 
@@ -50,7 +49,7 @@ def create_shapefile_writer(
     )
 
     if writer.hasError() != QgsVectorFileWriter.NoError:
-        raise IOError(
+        raise OSError(
             f"Error creating shapefile {output_path}: {writer.errorMessage()}"
         )
 
@@ -73,12 +72,13 @@ def show_user_message(parent, title: str, message: str, level: str = "warning"):
         show_user_message(self.dlg, "Error", "Invalid input", "warning")
     """
     from qgis.PyQt.QtWidgets import QMessageBox
+
     from sec_interp.logger_config import get_logger
 
     logger = get_logger(__name__)
 
     # Log the message
-    if level == "error" or level == "critical":
+    if level in {"error", "critical"}:
         logger.error(f"{title}: {message}")
     elif level == "warning":
         logger.warning(f"{title}: {message}")
@@ -90,7 +90,7 @@ def show_user_message(parent, title: str, message: str, level: str = "warning"):
         QMessageBox.warning(parent, title, message)
     elif level == "info":
         QMessageBox.information(parent, title, message)
-    elif level == "error" or level == "critical":
+    elif level in {"error", "critical"}:
         QMessageBox.critical(parent, title, message)
     elif level == "question":
         return QMessageBox.question(

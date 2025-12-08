@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-Logger Configuration Module
+"""Logger Configuration Module.
 
 Provides centralized logging configuration for the Sec Interp plugin.
 """
 
 import logging
-from qgis.core import QgsMessageLog, Qgis
+
+from qgis.core import Qgis, QgsMessageLog
 
 
 class QgsLogHandler(logging.Handler):

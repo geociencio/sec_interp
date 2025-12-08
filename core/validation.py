@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-Validation utilities for the SecInterp QGIS plugin.
+"""Validation utilities for the SecInterp QGIS plugin.
 
 This module provides reusable validation functions for user inputs,
 layer selections, and data integrity checks.
 """
 
 from pathlib import Path
-from typing import Tuple, List, Optional
+from typing import Optional
 
 from qgis.core import (
     QgsMapLayer,
-    QgsVectorLayer,
     QgsRasterLayer,
+    QgsVectorLayer,
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QVariant
@@ -20,11 +18,11 @@ from qgis.PyQt.QtCore import QVariant
 
 def validate_numeric_input(
     value: str,
-    min_val: Optional[float] = None,
-    max_val: Optional[float] = None,
+    min_val: float | None = None,
+    max_val: float | None = None,
     field_name: str = "Value",
     allow_empty: bool = False,
-) -> Tuple[bool, str, Optional[float]]:
+) -> tuple[bool, str, float | None]:
     """Validate numeric input from text field.
 
     Args:
@@ -58,11 +56,11 @@ def validate_numeric_input(
 
 def validate_integer_input(
     value: str,
-    min_val: Optional[int] = None,
-    max_val: Optional[int] = None,
+    min_val: int | None = None,
+    max_val: int | None = None,
     field_name: str = "Value",
     allow_empty: bool = False,
-) -> Tuple[bool, str, Optional[int]]:
+) -> tuple[bool, str, int | None]:
     """Validate integer input from text field.
 
     Args:
@@ -95,8 +93,8 @@ def validate_integer_input(
 
 
 def validate_layer_exists(
-    layer_name: Optional[str],
-) -> Tuple[bool, str, Optional[QgsMapLayer]]:
+    layer_name: str | None,
+) -> tuple[bool, str, QgsMapLayer | None]:
     """Validate that a layer exists in the project.
 
     Args:
@@ -123,7 +121,7 @@ def validate_layer_exists(
     return True, "", layer
 
 
-def validate_layer_has_features(layer: QgsVectorLayer) -> Tuple[bool, str]:
+def validate_layer_has_features(layer: QgsVectorLayer) -> tuple[bool, str]:
     """Validate that a vector layer has at least one feature.
 
     Args:
@@ -146,7 +144,7 @@ def validate_layer_has_features(layer: QgsVectorLayer) -> Tuple[bool, str]:
 
 def validate_layer_geometry(
     layer: QgsVectorLayer, expected_type: QgsWkbTypes.GeometryType
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Validate that a vector layer has the expected geometry type.
 
     Args:
@@ -185,8 +183,8 @@ def validate_layer_geometry(
 
 
 def validate_field_exists(
-    layer: QgsVectorLayer, field_name: Optional[str]
-) -> Tuple[bool, str]:
+    layer: QgsVectorLayer, field_name: str | None
+) -> tuple[bool, str]:
     """Validate that a field exists in a vector layer.
 
     Args:
@@ -221,8 +219,8 @@ def validate_field_exists(
 
 
 def validate_field_type(
-    layer: QgsVectorLayer, field_name: str, expected_types: List[QVariant.Type]
-) -> Tuple[bool, str]:
+    layer: QgsVectorLayer, field_name: str, expected_types: list[QVariant.Type]
+) -> tuple[bool, str]:
     """Validate that a field has one of the expected data types.
 
     Args:
@@ -268,7 +266,7 @@ def validate_field_type(
     return True, ""
 
 
-def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> Tuple[bool, str]:
+def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> tuple[bool, str]:
     """Validate that a raster band number is valid for the layer.
 
     Args:
@@ -297,11 +295,11 @@ def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> Tuple[bool,
 
 def validate_safe_output_path(
     path: str,
-    base_dir: Optional[Path] = None,
+    base_dir: Path | None = None,
     must_exist: bool = False,
     create_if_missing: bool = False,
-) -> Tuple[bool, str, Optional[Path]]:
-    """Validate output path with path traversal protection.
+) -> tuple[bool, str, Path | None]:
+    r"""Validate output path with path traversal protection.
 
     This function provides robust validation against path traversal attacks
     by checking for suspicious patterns, normalizing paths, and optionally
@@ -327,7 +325,7 @@ def validate_safe_output_path(
         >>> is_valid, error, safe_path = validate_safe_output_path(
         ...     "/home/user/output",
         ...     base_dir=Path("/home/user"),
-        ...     create_if_missing=True
+        ...     create_if_missing=True,
         ... )
     """
     if not path or path.strip() == "":
@@ -340,7 +338,7 @@ def validate_safe_output_path(
     try:
         path_obj = Path(path)
     except (TypeError, ValueError) as e:
-        return False, f"Invalid path: {str(e)}", None
+        return False, f"Invalid path: {e!s}", None
 
     # Security: Check for path traversal patterns in components
     if ".." in path_obj.parts:
@@ -351,7 +349,7 @@ def validate_safe_output_path(
         # strict=False allows non-existent paths to be resolved
         resolved_path = path_obj.resolve(strict=False)
     except (OSError, RuntimeError) as e:
-        return False, f"Cannot resolve path: {str(e)}", None
+        return False, f"Cannot resolve path: {e!s}", None
 
     # Security: If base_dir provided, ensure path is within it
     if base_dir:
@@ -362,7 +360,7 @@ def validate_safe_output_path(
         except ValueError:
             return False, f"Path escapes base directory: {base_dir}", None
         except (OSError, RuntimeError) as e:
-            return False, f"Cannot validate base directory: {str(e)}", None
+            return False, f"Cannot validate base directory: {e!s}", None
 
     # Check existence requirements
     if must_exist and not resolved_path.exists():
@@ -373,7 +371,7 @@ def validate_safe_output_path(
         try:
             resolved_path.mkdir(parents=True, exist_ok=True)
         except OSError as e:
-            return False, f"Cannot create directory: {str(e)}", None
+            return False, f"Cannot create directory: {e!s}", None
 
     # If path exists, validate it's a directory
     if resolved_path.exists():
@@ -391,7 +389,7 @@ def validate_safe_output_path(
     return True, "", resolved_path
 
 
-def validate_output_path(path: str) -> Tuple[bool, str, Optional[Path]]:
+def validate_output_path(path: str) -> tuple[bool, str, Path | None]:
     """Validate that an output path is valid and writable.
 
     This is a convenience wrapper around validate_safe_output_path()
@@ -412,7 +410,7 @@ def validate_output_path(path: str) -> Tuple[bool, str, Optional[Path]]:
 
 def validate_angle_range(
     value: float, field_name: str, min_angle: float = 0.0, max_angle: float = 360.0
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Validate that an angle value is within the expected range.
 
     Args:
@@ -433,15 +431,15 @@ def validate_angle_range(
     return True, ""
 
 
-def validate_crs_compatibility(layers: List[QgsMapLayer]) -> Tuple[bool, str]:
+def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
     """Validate that all layers have compatible CRS.
-    
+
     Checks if all provided layers use the same Coordinate Reference System.
     Returns a warning if CRS mismatch is detected (QGIS will reproject on-the-fly).
-    
+
     Args:
         layers: List of QgsMapLayer to check
-        
+
     Returns:
         Tuple of (is_compatible, warning_message)
         - is_compatible: False if CRS mismatch detected
@@ -449,7 +447,7 @@ def validate_crs_compatibility(layers: List[QgsMapLayer]) -> Tuple[bool, str]:
     """
     if not layers:
         return True, ""
-    
+
     # Get first non-None layer CRS as reference
     reference_crs = None
     reference_layer = None
@@ -458,46 +456,43 @@ def validate_crs_compatibility(layers: List[QgsMapLayer]) -> Tuple[bool, str]:
             reference_crs = layer.crs()
             reference_layer = layer
             break
-    
+
     if not reference_crs:
         return True, ""
-    
+
     # Check all other layers against reference
     incompatible = []
     for layer in layers:
-        if layer and layer.isValid():
-            if layer.crs() != reference_crs:
-                incompatible.append(
-                    f"  - {layer.name()}: {layer.crs().authid()}"
-                )
-    
+        if layer and layer.isValid() and layer.crs() != reference_crs:
+            incompatible.append(f"  - {layer.name()}: {layer.crs().authid()}")
+
     if incompatible:
         warning = (
             f"⚠ CRS mismatch detected!\n\n"
             f"Reference CRS: {reference_crs.authid()} ({reference_layer.name()})\n"
             f"Incompatible layers:\n" + "\n".join(incompatible) + "\n\n"
-            f"QGIS will reproject on-the-fly, but this may affect accuracy.\n"
-            f"Consider reprojecting all layers to the same CRS for best results."
+            "QGIS will reproject on-the-fly, but this may affect accuracy.\n"
+            "Consider reprojecting all layers to the same CRS for best results."
         )
         return False, warning
-    
+
     return True, ""
 
 
-def validate_reasonable_ranges(values: dict) -> List[str]:
+def validate_reasonable_ranges(values: dict) -> list[str]:
     """Check for unreasonable parameter values.
-    
+
     Validates that numeric parameters are within reasonable ranges
     and warns about extreme values that may cause issues.
-    
+
     Args:
         values: Dictionary of parameter values from dialog
-        
+
     Returns:
         List of warning messages (empty if all values are reasonable)
     """
     warnings = []
-    
+
     # Vertical exaggeration
     try:
         vert_exag = float(values.get("vert_exag", 1.0))
@@ -512,12 +507,10 @@ def validate_reasonable_ranges(values: dict) -> List[str]:
                 f"Profile may appear flattened."
             )
         elif vert_exag <= 0:
-            warnings.append(
-                f"❌ Vertical exaggeration ({vert_exag}) must be positive."
-            )
+            warnings.append(f"❌ Vertical exaggeration ({vert_exag}) must be positive.")
     except (ValueError, TypeError):
         pass  # Will be caught by numeric validation
-    
+
     # Buffer distance
     try:
         buffer = float(values.get("buffer", 0))
@@ -527,12 +520,10 @@ def validate_reasonable_ranges(values: dict) -> List[str]:
                 f"This may include distant structures not relevant to the section."
             )
         elif buffer < 0:
-            warnings.append(
-                f"❌ Buffer distance ({buffer}m) cannot be negative."
-            )
+            warnings.append(f"❌ Buffer distance ({buffer}m) cannot be negative.")
     except (ValueError, TypeError):
         pass
-    
+
     # Dip scale
     try:
         dip_scale = float(values.get("dip_scale", 1.0))
@@ -542,16 +533,14 @@ def validate_reasonable_ranges(values: dict) -> List[str]:
                 f"Dip symbols may overlap and obscure the profile."
             )
         elif dip_scale <= 0:
-            warnings.append(
-                f"❌ Dip scale ({dip_scale}) must be positive."
-            )
+            warnings.append(f"❌ Dip scale ({dip_scale}) must be positive.")
     except (ValueError, TypeError):
         pass
-    
+
     return warnings
 
 
-def validate_and_get_layers(values: dict) -> Tuple[bool, str, Optional[dict]]:
+def validate_and_get_layers(values: dict) -> tuple[bool, str, dict | None]:
     """Retrieve and validate layers from project based on input values.
 
     Args:
@@ -632,7 +621,7 @@ def validate_and_get_layers(values: dict) -> Tuple[bool, str, Optional[dict]]:
     is_valid, msg = validate_layer_geometry(line_layer, QgsWkbTypes.LineGeometry)
     if not is_valid:
         # Also accept MultiLineString
-        is_valid_multi, msg_multi = validate_layer_geometry(
+        is_valid_multi, _msg_multi = validate_layer_geometry(
             line_layer, QgsWkbTypes.MultiLineString
         )
         if not is_valid_multi:
@@ -668,7 +657,7 @@ def validate_and_get_layers(values: dict) -> Tuple[bool, str, Optional[dict]]:
             QgsWkbTypes.geometryType(structural_layer.wkbType())
             != QgsWkbTypes.PointGeometry
         ):
-            return False, f"Structural layer must be a point layer.", None
+            return False, "Structural layer must be a point layer.", None
 
         # Validate structural fields
         dip_field = values.get("dip_field")

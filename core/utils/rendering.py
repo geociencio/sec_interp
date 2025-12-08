@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Rendering Utilities Module
+"""Rendering Utilities Module.
 
 Visualization and coordinate transformation utilities for profile rendering.
 """
@@ -8,7 +6,7 @@ Visualization and coordinate transformation utilities for profile rendering.
 import math
 
 
-def calculate_bounds(topo_data: list, geol_data: list = None) -> dict:
+def calculate_bounds(topo_data: list, geol_data: list | None = None) -> dict:
     """Calculate min/max bounds for all data.
 
     Args:
@@ -46,7 +44,9 @@ def calculate_bounds(topo_data: list, geol_data: list = None) -> dict:
     }
 
 
-def create_coordinate_transform(bounds: dict, view_w: int, view_h: int, margin: int, vert_exag: float = 1.0):
+def create_coordinate_transform(
+    bounds: dict, view_w: int, view_h: int, margin: int, vert_exag: float = 1.0
+):
     """Create coordinate transformation function.
 
     Args:
@@ -96,8 +96,8 @@ def calculate_interval(data_range: float) -> float:
 
     if normalized < 2:
         return magnitude * 0.5
-    
+
     if normalized < 5:
         return magnitude
-        
+
     return magnitude * 2

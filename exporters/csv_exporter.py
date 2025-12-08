@@ -1,14 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-CSV exporter module for tabular data.
-"""
+"""CSV exporter module for tabular data."""
 
 import csv
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any
+
+from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
-from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -16,11 +15,11 @@ logger = get_logger(__name__)
 class CSVExporter(BaseExporter):
     """Exporter for CSV tabular format."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """Get supported CSV extension."""
         return [".csv"]
 
-    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
+    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
         """Export tabular data to CSV.
 
         Args:
@@ -47,6 +46,6 @@ class CSVExporter(BaseExporter):
 
             return True
 
-        except Exception as e:
-            logger.error(f"CSV export failed for {output_path}: {e}")
+        except Exception:
+            logger.exception(f"CSV export failed for {output_path}")
             return False

@@ -1,23 +1,22 @@
-# -*- coding: utf-8 -*-
-"""
-Shapefile exporter module for vector data.
-"""
+"""Shapefile exporter module for vector data."""
 
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any
 
 from qgis.core import (
-    QgsVectorFileWriter,
     QgsCoordinateReferenceSystem,
-    QgsWkbTypes,
-    QgsFields,
-    QgsField,
     QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsVectorFileWriter,
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
 
-from .base_exporter import BaseExporter
 from sec_interp.logger_config import get_logger
+
+from .base_exporter import BaseExporter
+
 
 logger = get_logger(__name__)
 
@@ -25,11 +24,11 @@ logger = get_logger(__name__)
 class ShapefileExporter(BaseExporter):
     """Exporter for Shapefile and GeoPackage formats."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """Get supported vector format extensions."""
         return [".shp", ".gpkg"]
 
-    def export(self, output_path: Path, features_data: List[Dict[str, Any]]) -> bool:
+    def export(self, output_path: Path, features_data: list[dict[str, Any]]) -> bool:
         """Export features to shapefile or geopackage.
 
         Args:
@@ -99,6 +98,6 @@ class ShapefileExporter(BaseExporter):
             del writer
             return True
 
-        except Exception as e:
-            logger.error(f"Shapefile export failed for {output_path}: {e}")
+        except Exception:
+            logger.exception(f"Shapefile export failed for {output_path}")
             return False

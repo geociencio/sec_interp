@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-"""
-PDF exporter module for PDF documents.
-"""
+"""PDF exporter module for PDF documents."""
 
 from pathlib import Path
-from typing import List
 
-from qgis.PyQt.QtCore import QSize, QRectF, QSizeF, QMarginsF
-from qgis.PyQt.QtGui import QPainter, QPdfWriter, QPageSize
-from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
+from qgis.core import QgsMapRendererCustomPainterJob, QgsMapSettings
+from qgis.PyQt.QtCore import QMarginsF, QRectF, QSize, QSizeF
+from qgis.PyQt.QtGui import QPageSize, QPainter, QPdfWriter
+
+from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
-from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -19,7 +17,7 @@ logger = get_logger(__name__)
 class PDFExporter(BaseExporter):
     """Exporter for PDF format."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """Get supported PDF extension."""
         return [".pdf"]
 
@@ -46,7 +44,9 @@ class PDFExporter(BaseExporter):
             # Setup painter
             painter = QPainter()
             if not painter.begin(writer):
-                logger.error(f"Failed to begin painting for PDF export to {output_path}")
+                logger.error(
+                    f"Failed to begin painting for PDF export to {output_path}"
+                )
                 return False
 
             try:
@@ -74,6 +74,6 @@ class PDFExporter(BaseExporter):
 
             return True
 
-        except Exception as e:
-            logger.error(f"PDF export failed for {output_path}: {e}")
+        except Exception:
+            logger.exception(f"PDF export failed for {output_path}")
             return False

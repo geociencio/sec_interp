@@ -1,24 +1,24 @@
-# -*- coding: utf-8 -*-
-"""
-Core Utilities Module
-"""
+"""Core Utilities Module."""
 
 import math
 import re
+
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsDistanceArea,
-    QgsSpatialIndex,
+    QgsFeature,
     QgsFeatureRequest,
-    QgsProject,
+    QgsGeometry,
     QgsPointXY,
-    QgsWkbTypes,
+    QgsProject,
+    QgsSpatialIndex,
     QgsVectorFileWriter,
     QgsVectorLayer,
-    QgsFeature,
-    QgsGeometry,
-    QgsCoordinateReferenceSystem,
+    QgsWkbTypes,
 )
+
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -113,8 +113,8 @@ def create_buffer_geometry(
         return buffer_geom
 
     except Exception as e:
-        error_msg = f"Failed to create buffer using native algorithm: {str(e)}"
-        logger.error(error_msg)
+        error_msg = f"Failed to create buffer using native algorithm: {e!s}"
+        logger.exception(error_msg)
         raise RuntimeError(error_msg) from e
 
 
@@ -136,23 +136,23 @@ def filter_features_by_buffer(
 
     Returns:
         list[QgsFeature]: List of features that intersect the buffer
-        
+
     Raises:
         ValueError: If inputs are invalid
     """
     if not features_layer or not features_layer.isValid():
         raise ValueError("Invalid features layer")
-        
+
     if not buffer_geometry or buffer_geometry.isNull():
         raise ValueError("Invalid buffer geometry")
 
-    # 1. Build Spatial Index 
+    # 1. Build Spatial Index
     index = QgsSpatialIndex(features_layer.getFeatures())
-    
+
     # 2. Get candidates using Bounding Box (Fast R-tree lookup)
     # intersects() returns list of feature IDs
     candidate_ids = index.intersects(buffer_geometry.boundingBox())
-    
+
     # 3. Precise filtering
     filtered_features = []
     # Using QgsFeatureRequest with specific IDs is faster than iterating all
@@ -161,9 +161,11 @@ def filter_features_by_buffer(
         for feature in features_layer.getFeatures(request):
             if feature.geometry().intersects(buffer_geometry):
                 filtered_features.append(feature)
-            
-    logger.debug(f"Spatial Index filtering: {len(candidate_ids)} candidates -> {len(filtered_features)} confirmed")
-    
+
+    logger.debug(
+        f"Spatial Index filtering: {len(candidate_ids)} candidates -> {len(filtered_features)} confirmed"
+    )
+
     return filtered_features
 
 
@@ -246,10 +248,9 @@ def densify_line_by_interval(
         return densified_geom
 
     except Exception as e:
-        error_msg = f"Failed to densify line: {str(e)}"
-        logger.error(error_msg)
+        error_msg = f"Failed to densify line: {e!s}"
+        logger.exception(error_msg)
         raise RuntimeError(error_msg) from e
-
 
 
 def calculate_line_azimuth(line_geom):
@@ -263,7 +264,7 @@ def calculate_line_azimuth(line_geom):
     """
     if line_geom.wkbType() == QgsWkbTypes.Point:
         return 0  # Points have no azimuth
-    
+
     if line_geom.wkbType() == QgsWkbTypes.LineString:
         line = line_geom.asPolyline()
         if len(line) < 2:
@@ -276,7 +277,7 @@ def calculate_line_azimuth(line_geom):
         if azimuth < 0:
             azimuth += 360
         return azimuth
-    
+
     # For other geometry types, return a default value
     return 0
 
@@ -334,7 +335,7 @@ def get_line_start_point(geometry):
     """
     if geometry.isMultipart():
         return geometry.asMultiPolyline()[0][0]
-    
+
     return geometry.asPolyline()[0]
 
 
@@ -433,7 +434,7 @@ def create_shapefile_writer(
     )
 
     if writer.hasError() != QgsVectorFileWriter.NoError:
-        raise IOError(
+        raise OSError(
             f"Error creating shapefile {output_path}: {writer.errorMessage()}"
         )
 
@@ -517,12 +518,13 @@ def show_user_message(parent, title, message, level="warning"):
         show_user_message(self.dlg, "Error", "Invalid input", "warning")
     """
     from qgis.PyQt.QtWidgets import QMessageBox
+
     from sec_interp.logger_config import get_logger
 
     logger = get_logger(__name__)
 
     # Log the message
-    if level == "error" or level == "critical":
+    if level in {"error", "critical"}:
         logger.error(f"{title}: {message}")
     elif level == "warning":
         logger.warning(f"{title}: {message}")
@@ -534,7 +536,7 @@ def show_user_message(parent, title, message, level="warning"):
         QMessageBox.warning(parent, title, message)
     elif level == "info":
         QMessageBox.information(parent, title, message)
-    elif level == "error" or level == "critical":
+    elif level in {"error", "critical"}:
         QMessageBox.critical(parent, title, message)
     elif level == "question":
         return QMessageBox.question(
@@ -633,10 +635,10 @@ def calculate_interval(data_range):
 
     if normalized < 2:
         return magnitude * 0.5
-    
+
     if normalized < 5:
         return magnitude
-        
+
     return magnitude * 2
 
 
@@ -676,14 +678,13 @@ def interpolate_elevation(topo_data, distance):
 #  STRIKE PARSER
 # ------------------------------------
 def parse_strike(value):
-    """
-    Accepts:
+    """Accepts:
         - Numeric azimuth (string or int)
-        - Quadrant notation ("N 30° E", "S 15° W")
+        - Quadrant notation ("N 30° E", "S 15° W").
+
     Returns:
         strike in azimuth degrees (0–360)
     """
-
     if value is None:
         return None
 
@@ -730,14 +731,12 @@ def parse_strike(value):
 #  DIP PARSER
 # ------------------------------------
 def parse_dip(value):
-    """
-    Accepts:
+    """Accepts:
         - Numeric dip: "22", "45.5", "30.0"
         - Field notation: "22° SW", "45 NE", "10 S"
     Returns:
-        (dip_angle, dip_direction_azimuth)
+        (dip_angle, dip_direction_azimuth).
     """
-
     if value is None:
         return None, None
 
@@ -772,13 +771,11 @@ def parse_dip(value):
 #  Helper for converting cardinal directions to azimuth
 # ------------------------------------
 def cardinal_to_azimuth(text):
-    """
-    Converts:
+    """Converts:
         N, NE, E, SE, S, SW, W, NW
     Returns:
-        0–360 azimuth
+        0–360 azimuth.
     """
-
     table = {
         "N": 0,
         "NE": 45,
@@ -790,4 +787,4 @@ def cardinal_to_azimuth(text):
         "NW": 315,
     }
 
-    return table.get(text, None)
+    return table.get(text)

@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-"""
-Spatial Utilities Module
+"""Spatial Utilities Module.
 
 Distance calculations, azimuth, and basic spatial operations.
 """
 
 import math
+
 from qgis.core import (
     QgsDistanceArea,
-    QgsProject,
-    QgsPointXY,
     QgsGeometry,
+    QgsPointXY,
+    QgsProject,
     QgsWkbTypes,
 )
 
@@ -26,7 +25,7 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
     """
     if line_geom.wkbType() == QgsWkbTypes.Point:
         return 0  # Points have no azimuth
-    
+
     if line_geom.wkbType() == QgsWkbTypes.LineString:
         line = line_geom.asPolyline()
         if len(line) < 2:
@@ -39,7 +38,7 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
         if azimuth < 0:
             azimuth += 360
         return azimuth
-    
+
     # For other geometry types, return a default value
     return 0
 
@@ -97,7 +96,7 @@ def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
     """
     if geometry.isMultipart():
         return geometry.asMultiPolyline()[0][0]
-    
+
     return geometry.asPolyline()[0]
 
 

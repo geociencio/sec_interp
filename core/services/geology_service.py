@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
+"""/***************************************************************************
  SecInterp - GeologyService
                                  A QGIS plugin
- Service for generating geological profiles
+ Service for generating geological profiles.
                               -------------------
         begin                : 2025-12-07
         copyright            : (C) 2025 by Juan M Bernales
@@ -22,24 +20,25 @@
 
 from qgis import processing
 from qgis.core import (
-    QgsVectorLayer,
-    QgsRasterLayer,
-    QgsProcessingFeedback,
-    QgsWkbTypes,
     QgsGeometry,
+    QgsProcessingFeedback,
     QgsRaster,
+    QgsRasterLayer,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
 
-from .. import utils as scu
-from ..types import GeologyData
+from sec_interp.core import utils as scu
+from sec_interp.core.types import GeologyData
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
 
 class GeologyService:
     """Service for generating geological profiles.
-    
+
     This service handles the extraction of geological unit intersections
     along a cross-section line.
     """
@@ -117,11 +116,9 @@ class GeologyService:
 
             intersection_layer = result["OUTPUT"]
             intersection_count = intersection_layer.featureCount()
-            
-            logger.info(
-                f"✓ Intersection complete: {intersection_count} segments found"
-            )
-            
+
+            logger.info(f"✓ Intersection complete: {intersection_count} segments found")
+
             if intersection_count == 0:
                 logger.warning(
                     "No intersections found. Check that line and outcrops overlap "
@@ -129,13 +126,13 @@ class GeologyService:
                 )
 
         except Exception as e:
-            logger.error(f"Geological intersection failed: {e}")
-            raise RuntimeError(f"Cannot compute geological intersection: {e}") from e
+            logger.exception("Geological intersection failed")
+            raise RuntimeError("Cannot compute geological intersection") from e
 
         # Process intersection results
         processed_segments = 0
         total_points = 0
-        
+
         for feature in intersection_layer.getFeatures():
             geom = feature.geometry()
             if not geom or geom.isNull():
@@ -145,11 +142,13 @@ class GeologyService:
             # Log geometry type for debugging
             geom_type = geom.wkbType()
             geom_type_name = QgsWkbTypes.displayString(geom_type)
-            logger.debug(f"Intersection segment geometry type: {geom_type_name} ({geom_type})")
+            logger.debug(
+                f"Intersection segment geometry type: {geom_type_name} ({geom_type})"
+            )
 
             # Handle both LineString and MultiLineString geometries
             geometries_to_process = []
-            
+
             if geom.wkbType() in [
                 QgsWkbTypes.LineString,
                 QgsWkbTypes.LineString25D,
@@ -175,19 +174,21 @@ class GeologyService:
             for process_geom in geometries_to_process:
                 # Calculate interval based on raster resolution
                 interval = scu.calculate_step_size(process_geom, raster_lyr)
-                
+
                 logger.debug(f"Densifying segment with interval={interval:.2f}")
 
                 try:
                     # Use native densification algorithm
-                    densified_geom = scu.densify_line_by_interval(process_geom, interval)
-                    
+                    densified_geom = scu.densify_line_by_interval(
+                        process_geom, interval
+                    )
+
                     # Get vertices
                     vertices = scu.get_line_vertices(densified_geom)
                     logger.debug(f" - Segment densified: {len(vertices)} points")
                     processed_segments += 1
-                except (ValueError, RuntimeError) as e:
-                    logger.warning(f"Densification failed, skipping segment: {e}")
+                except (ValueError, RuntimeError):
+                    logger.warning("Densification failed, skipping segment")
                     continue
 
                 for pt in vertices:
@@ -207,8 +208,10 @@ class GeologyService:
 
                     values.append((round(dist_from_start, 1), round(elev, 1), glg_val))
                     total_points += 1
-        
-        logger.info(f"Processed {processed_segments} segments, generated {total_points} points")
+
+        logger.info(
+            f"Processed {processed_segments} segments, generated {total_points} points"
+        )
 
         # Sort values by distance
         values.sort(key=lambda x: x[0])

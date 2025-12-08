@@ -1,41 +1,39 @@
-# -*- coding: utf-8 -*-
-"""
-Exporters package for Sec Interp plugin.
+"""Exporters package for Sec Interp plugin.
 
 Provides specialized exporters for different file formats.
 """
 
 from .base_exporter import BaseExporter
-from .image_exporter import ImageExporter
-from .svg_exporter import SVGExporter
-from .pdf_exporter import PDFExporter
 from .csv_exporter import CSVExporter
-from .shp_exporter import ShapefileExporter
+from .image_exporter import ImageExporter
+from .pdf_exporter import PDFExporter
 from .profile_exporters import (
-    ProfileLineShpExporter,
-    GeologyShpExporter,
-    StructureShpExporter,
     AxesShpExporter,
+    GeologyShpExporter,
+    ProfileLineShpExporter,
+    StructureShpExporter,
 )
+from .shp_exporter import ShapefileExporter
+from .svg_exporter import SVGExporter
+
 
 __all__ = [
-    "BaseExporter",
-    "ImageExporter",
-    "SVGExporter",
-    "PDFExporter",
-    "CSVExporter",
-    "ShapefileExporter",
-    "ProfileLineShpExporter",
-    "GeologyShpExporter",
-    "StructureShpExporter",
     "AxesShpExporter",
+    "BaseExporter",
+    "CSVExporter",
+    "GeologyShpExporter",
+    "ImageExporter",
+    "PDFExporter",
+    "ProfileLineShpExporter",
+    "SVGExporter",
+    "ShapefileExporter",
+    "StructureShpExporter",
     "get_exporter",
 ]
 
 
 def get_exporter(extension: str, settings: dict):
-    """
-    Factory function to get appropriate exporter for file extension.
+    """Factory function to get appropriate exporter for file extension.
 
     Args:
         extension: File extension (e.g., '.png', '.svg')
@@ -59,5 +57,5 @@ def get_exporter(extension: str, settings: dict):
         return CSVExporter(settings)
     if extension in [".shp", ".gpkg"]:
         return ShapefileExporter(settings)
-    
+
     raise ValueError(f"Unsupported file extension: {extension}")

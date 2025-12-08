@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Geology Utilities Module
+"""Geology Utilities Module.
 
 Geological calculations and structural geology operations.
 """
@@ -8,7 +6,9 @@ Geological calculations and structural geology operations.
 import math
 
 
-def calculate_apparent_dip(true_strike: float, true_dip: float, line_azimuth: float) -> float:
+def calculate_apparent_dip(
+    true_strike: float, true_dip: float, line_azimuth: float
+) -> float:
     """Convert true dip to apparent dip in section plane.
 
     The apparent dip is the inclination of a plane measured in a direction

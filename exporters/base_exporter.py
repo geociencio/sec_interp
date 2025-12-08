@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Base exporter module for Sec Interp plugin.
-"""
+"""Base exporter module for Sec Interp plugin."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
 from pathlib import Path
+from typing import Any
+
 from sec_interp.core.validation import validate_safe_output_path
 
 
@@ -17,7 +15,7 @@ class BaseExporter(ABC):
     and validation logic while delegating format-specific export to subclasses.
     """
 
-    def __init__(self, settings: Dict[str, Any]):
+    def __init__(self, settings: dict[str, Any]):
         """Initialize the exporter with settings.
 
         Args:
@@ -45,7 +43,9 @@ class BaseExporter(ABC):
         """
         pass
 
-    def validate_export_path(self, output_path: Path, base_dir: Path = None) -> tuple[bool, str]:
+    def validate_export_path(
+        self, output_path: Path, base_dir: Path | None = None
+    ) -> tuple[bool, str]:
         """Validate export path for security.
 
         Uses secure path validation to prevent path traversal attacks.
@@ -62,10 +62,7 @@ class BaseExporter(ABC):
 
         # Validate parent directory is safe
         is_valid, error, _ = validate_safe_output_path(
-            str(parent_dir),
-            base_dir=base_dir,
-            must_exist=False,
-            create_if_missing=True
+            str(parent_dir), base_dir=base_dir, must_exist=False, create_if_missing=True
         )
 
         if not is_valid:
@@ -74,7 +71,7 @@ class BaseExporter(ABC):
         return True, ""
 
     @abstractmethod
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """Get list of supported file extensions.
 
         Returns:

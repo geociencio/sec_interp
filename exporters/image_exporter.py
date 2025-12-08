@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-Image exporter module for raster formats (PNG, JPG).
-"""
+"""Image exporter module for raster formats (PNG, JPG)."""
 
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any, Optional
 
-from qgis.PyQt.QtGui import QImage, QPainter, QColor
-from qgis.PyQt.QtCore import QSize, QRectF
-from qgis.core import QgsMapSettings, QgsMapRendererCustomPainterJob
+from qgis.core import QgsMapRendererCustomPainterJob, QgsMapSettings
+from qgis.PyQt.QtCore import QRectF, QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
+from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
-from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -20,7 +18,7 @@ logger = get_logger(__name__)
 class ImageExporter(BaseExporter):
     """Exporter for raster image formats (PNG, JPG, JPEG)."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """Get supported image extensions."""
         return [".png", ".jpg", ".jpeg"]
 
@@ -63,11 +61,10 @@ class ImageExporter(BaseExporter):
             painter.end()
 
             # Save image
-            ext = output_path.suffix.lower()
-            quality = 95 if ext in [".jpg", ".jpeg"] else -1
+            output_path.suffix.lower()
 
             return image.save(str(output_path))
 
-        except Exception as e:
-            logger.error(f"Image export failed for {output_path}: {e}")
+        except Exception:
+            logger.exception(f"Image export failed for {output_path}")
             return False

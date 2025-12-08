@@ -1,16 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-Sampling Utilities Module
+"""Sampling Utilities Module.
 
 Elevation sampling and profile context preparation.
 """
 
 from qgis.core import (
+    QgsDistanceArea,
     QgsGeometry,
     QgsPointXY,
-    QgsDistanceArea,
 )
+
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -36,7 +36,7 @@ def sample_elevation_along_line(
         List of QgsPointXY(distance, elevation).
     """
     from .geometry import densify_line_by_interval
-    
+
     # Densify line at raster resolution
     interval = raster_layer.rasterUnitsPerPixelX()
     try:
@@ -47,6 +47,7 @@ def sample_elevation_along_line(
 
     # Get vertices from densified geometry using helper
     from .geometry import get_line_vertices
+
     vertices = get_line_vertices(densified_geom)
 
     points = []
@@ -82,8 +83,8 @@ def prepare_profile_context(line_lyr):
     Raises:
         ValueError: If layer has no features or invalid geometry.
     """
-    from .spatial import get_line_start_point, create_distance_area
-    
+    from .spatial import create_distance_area, get_line_start_point
+
     line_feat = next(line_lyr.getFeatures(), None)
     if not line_feat:
         raise ValueError("Line layer has no features")

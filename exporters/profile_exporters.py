@@ -1,25 +1,25 @@
-# -*- coding: utf-8 -*-
-"""
-Specific exporters for profile data (Shapefiles).
-"""
+"""Specific exporters for profile data (Shapefiles)."""
+
 import math
 from pathlib import Path
-from typing import List, Any, Dict, Tuple
+from typing import Any
 
 from qgis.core import (
-    QgsPointXY,
-    QgsGeometry,
-    QgsFields,
-    QgsField,
     QgsFeature,
-    QgsWkbTypes,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsPointXY,
     QgsRaster,
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
 
-from .base_exporter import BaseExporter
 from sec_interp.core import utils as scu
 from sec_interp.logger_config import get_logger
+
+from .base_exporter import BaseExporter
+
 
 logger = get_logger(__name__)
 
@@ -27,13 +27,12 @@ logger = get_logger(__name__)
 class ProfileLineShpExporter(BaseExporter):
     """Exports the topographic profile line to a Shapefile."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return [".shp"]
 
-    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
-        """
-        Args:
-            data (dict): Must contain 'profile_data' (list of tuples) and 'crs'.
+    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+        """Args:
+        data (dict): Must contain 'profile_data' (list of tuples) and 'crs'.
         """
         profile_data = data.get("profile_data")
         crs = data.get("crs")
@@ -57,22 +56,21 @@ class ProfileLineShpExporter(BaseExporter):
             writer.addFeature(feat)
             del writer
             return True
-        except Exception as e:
-            logger.error(f"Failed to export profile line to {output_path}: {e}")
+        except Exception:
+            logger.exception(f"Failed to export profile line to {output_path}")
             return False
 
 
 class GeologyShpExporter(BaseExporter):
     """Exports the geological profile to a Shapefile."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return [".shp"]
 
-    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
-        """
-        Args:
-            data (dict): Must contain 'line_lyr', 'raster_lyr', 'outcrop_lyr',
-                         'band_number'.
+    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+        """Args:
+        data (dict): Must contain 'line_lyr', 'raster_lyr', 'outcrop_lyr',
+                     'band_number'.
         """
         line_lyr = data.get("line_lyr")
         raster_lyr = data.get("raster_lyr")
@@ -126,23 +124,22 @@ class GeologyShpExporter(BaseExporter):
 
             del writer
             return True
-        except Exception as e:
-            logger.error(f"Failed to export geology profile to {output_path}: {e}")
+        except Exception:
+            logger.exception(f"Failed to export geology profile to {output_path}")
             return False
 
 
 class StructureShpExporter(BaseExporter):
     """Exports the structural profile to a Shapefile."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return [".shp"]
 
-    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
-        """
-        Args:
-            data (dict): Must contain 'line_lyr', 'raster_lyr', 'struct_lyr',
-                         'dip_field', 'strike_field', 'band_number',
-                         'buffer_distance', 'dip_scale_factor'.
+    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+        """Args:
+        data (dict): Must contain 'line_lyr', 'raster_lyr', 'struct_lyr',
+                     'dip_field', 'strike_field', 'band_number',
+                     'buffer_distance', 'dip_scale_factor'.
         """
         line_lyr = data.get("line_lyr")
         raster_lyr = data.get("raster_lyr")
@@ -168,8 +165,8 @@ class StructureShpExporter(BaseExporter):
                 buffer_geom = scu.create_buffer_geometry(
                     line_geom, line_lyr.crs(), buffer_distance, segments=25
                 )
-            except (ValueError, RuntimeError) as e:
-                logger.error(f"Buffer creation failed in exporter: {e}")
+            except (ValueError, RuntimeError):
+                logger.exception("Buffer creation failed in exporter")
                 return False
 
             writer = scu.create_shapefile_writer(
@@ -222,21 +219,20 @@ class StructureShpExporter(BaseExporter):
 
             del writer
             return True
-        except Exception as e:
-            logger.error(f"Failed to export structural profile to {output_path}: {e}")
+        except Exception:
+            logger.exception(f"Failed to export structural profile to {output_path}")
             return False
 
 
 class AxesShpExporter(BaseExporter):
     """Exports the profile axes to a Shapefile."""
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return [".shp"]
 
-    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
-        """
-        Args:
-            data (dict): Must contain 'profile_data' and 'crs'.
+    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+        """Args:
+        data (dict): Must contain 'profile_data' and 'crs'.
         """
         profile_data = data.get("profile_data")
         crs = data.get("crs")
@@ -280,6 +276,6 @@ class AxesShpExporter(BaseExporter):
 
             del writer
             return True
-        except Exception as e:
-            logger.error(f"Failed to export axes to {output_path}: {e}")
+        except Exception:
+            logger.exception(f"Failed to export axes to {output_path}")
             return False

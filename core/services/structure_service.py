@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
+"""/***************************************************************************
  SecInterp - StructureService
                                  A QGIS plugin
- Service for projecting structural measurements
+ Service for projecting structural measurements.
                               -------------------
         begin                : 2025-12-07
         copyright            : (C) 2025 by Juan M Bernales
@@ -22,17 +20,18 @@
 
 from qgis.core import QgsVectorLayer
 
-from .. import utils as scu
-from .. import validation as vu
-from ..types import StructureData
+from sec_interp.core import utils as scu
+from sec_interp.core import validation as vu
+from sec_interp.core.types import StructureData
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
 
 class StructureService:
     """Service for projecting structural measurements onto cross-sections.
-    
+
     This service handles the filtering and projection of structural measurements
     (dip/strike) onto a cross-section plane to calculate apparent dip.
     """
@@ -67,7 +66,6 @@ class StructureService:
         Raises:
             ValueError: If line layer has no features or invalid geometry.
         """
-
         # Logging: Initial setup
         logger.info("=" * 60)
         logger.info("PROJECT_STRUCTURES - Starting analysis")
@@ -96,8 +94,8 @@ class StructureService:
                 line_geom, line_lyr.crs(), buffer_m, segments=25
             )
         except (ValueError, RuntimeError) as e:
-            logger.error(f"Buffer creation failed: {e}")
-            raise ValueError(f"Cannot create buffer zone: {e}") from e
+            logger.exception("Buffer creation failed")
+            raise ValueError("Cannot create buffer zone") from e
 
         crs = struct_lyr.crs()
 
@@ -145,8 +143,8 @@ class StructureService:
                 f"{outside_buffer_count} outside"
             )
         except (ValueError, RuntimeError) as e:
-            logger.error(f"Spatial filtering failed: {e}")
-            raise ValueError(f"Cannot filter structures by buffer: {e}") from e
+            logger.exception("Spatial filtering failed")
+            raise ValueError("Cannot filter structures by buffer") from e
 
         # Process only filtered features (no need for intersects() check)
         for idx, f in enumerate(filtered_features):
@@ -171,13 +169,11 @@ class StructureService:
             strike = scu.parse_strike(strike_raw)
             if strike is None:
                 strike_parse_fail_count += 1
-                logger.debug(
-                    f"Feature {idx}: Failed to parse strike '{strike_raw}'"
-                )
+                logger.debug(f"Feature {idx}: Failed to parse strike '{strike_raw}'")
                 continue
 
             # Parse dip (supports field notation like "22° SW" or numeric)
-            dip_angle, dip_direction = scu.parse_dip(dip_raw)
+            dip_angle, _dip_direction = scu.parse_dip(dip_raw)
             if dip_angle is None:
                 dip_parse_fail_count += 1
                 logger.debug(f"Feature {idx}: Failed to parse dip '{dip_raw}'")
@@ -188,9 +184,7 @@ class StructureService:
             # Note: dip_direction could be used for additional validation if needed
 
             # Validate ranges
-            is_valid, error_msg = vu.validate_angle_range(
-                strike, "Strike", 0.0, 360.0
-            )
+            is_valid, error_msg = vu.validate_angle_range(strike, "Strike", 0.0, 360.0)
             if not is_valid:
                 strike_range_fail_count += 1
                 logger.debug(

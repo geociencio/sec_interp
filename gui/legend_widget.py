@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Legend Widget Module
-"""
+"""Legend Widget Module."""
+
 from typing import Optional
+
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import Qt, QRectF, QObject, QEvent
+from qgis.PyQt.QtCore import QEvent, QObject, QRectF, Qt
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtWidgets import QWidget
 
@@ -12,8 +11,7 @@ from qgis.PyQt.QtWidgets import QWidget
 class LegendWidget(QWidget):
     """Widget to display the geological legend over the map canvas."""
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
-
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.renderer = None
         self.setAttribute(Qt.WA_TranslucentBackground)
