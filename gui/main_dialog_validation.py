@@ -78,17 +78,17 @@ class DialogValidator:
         errors: list[str] = []
 
         # Check raster layer
-        raster_layer = self.dialog.rasterdem.currentLayer()
+        raster_layer = self.dialog.page_dem.raster_combo.currentLayer()
         if not raster_layer:
             errors.append(ValidationMessages.MISSING_RASTER)
 
         # Check section line
-        line_layer = self.dialog.crossline.currentLayer()
+        line_layer = self.dialog.page_section.line_combo.currentLayer()
         if not line_layer:
             errors.append(ValidationMessages.MISSING_SECTION_LINE)
 
         if errors:
-            return False, "\\n".join(errors)
+            return False, "\n".join(errors)
 
         return True, ""
 
@@ -98,12 +98,12 @@ class DialogValidator:
         Returns:
             Error message if invalid, None if valid
         """
-        raster_layer = self.dialog.rasterdem.currentLayer()
+        raster_layer = self.dialog.page_dem.raster_combo.currentLayer()
         if not raster_layer:
             return ValidationMessages.MISSING_RASTER
 
         # Validate band number
-        band_num = self.dialog.band.currentBand()
+        band_num = self.dialog.page_dem.band_combo.currentBand()
         if not band_num:
             return "No band selected"
 
@@ -119,7 +119,7 @@ class DialogValidator:
         Returns:
             Error message if invalid, None if valid
         """
-        line_layer = self.dialog.crossline.currentLayer()
+        line_layer = self.dialog.page_section.line_combo.currentLayer()
         if not line_layer:
             return ValidationMessages.MISSING_SECTION_LINE
 
@@ -143,7 +143,7 @@ class DialogValidator:
         Returns:
             Error message if invalid, None if valid
         """
-        output_path = self.dialog.dest_fold.filePath()
+        output_path = self.dialog.output_widget.filePath()
         if not output_path:
             return ValidationMessages.MISSING_OUTPUT_PATH
 
@@ -162,37 +162,30 @@ class DialogValidator:
         errors: list[str] = []
 
         # Scale
-        is_valid, error, _ = vu.validate_numeric_input(
-            self.dialog.scale.text(), min_val=1, field_name="Scale"
-        )
-        if not is_valid:
-            errors.append(error)
+        # Using spinbox values directly which are safe floats, but converting to str for consistency with validator if needed
+        # Or implicitly trusted since they are QDoubleSpinBoxes.
+        # But vu.validate_numeric_input handles string parsing.
+        val = self.dialog.page_dem.scale_spin.value()
+        if val < 1:
+             errors.append("Scale must be >= 1")
 
         # Vertical exaggeration
-        is_valid, error, _ = vu.validate_numeric_input(
-            self.dialog.vertexag.text(), min_val=0.1, field_name="Vertical exaggeration"
-        )
-        if not is_valid:
-            errors.append(error)
+        val = self.dialog.page_dem.vertexag_spin.value()
+        if val < 0.1:
+            errors.append("Vertical exaggeration must be >= 0.1")
 
         # Buffer distance
-        is_valid, error, _ = vu.validate_numeric_input(
-            self.dialog.buffer_distance.text(), min_val=0, field_name="Buffer distance"
-        )
-        if not is_valid:
-            errors.append(error)
+        val = self.dialog.page_section.buffer_spin.value()
+        if val < 0:
+            errors.append("Buffer distance must be >= 0")
 
         # Dip scale factor
-        is_valid, error, _ = vu.validate_numeric_input(
-            self.dialog.dip_scale_factor.text(),
-            min_val=0.1,
-            field_name="Dip scale factor",
-        )
-        if not is_valid:
-            errors.append(error)
+        val = self.dialog.page_struct.scale_spin.value()
+        if val < 0.1:
+            errors.append("Dip scale factor must be >= 0.1")
 
         if errors:
-            return "\\n".join(errors)
+            return "\n".join(errors)
 
         return None
 
@@ -202,7 +195,7 @@ class DialogValidator:
         Returns:
             Error message if invalid, None if valid or not selected
         """
-        outcrop_layer = self.dialog.outcrop.currentLayer()
+        outcrop_layer = self.dialog.page_geology.layer_combo.currentLayer()
         if not outcrop_layer:
             return None  # Optional layer, skip if not selected
 
@@ -214,7 +207,7 @@ class DialogValidator:
         )
         if not is_valid:
             errors.append(error)
-            return "\\n".join(errors)  # Don't continue if geometry is wrong
+            return "\n".join(errors)  # Don't continue if geometry is wrong
 
         # Validate has features
         is_valid, error = vu.validate_layer_has_features(outcrop_layer)
@@ -222,16 +215,16 @@ class DialogValidator:
             errors.append(error)
 
         # Validate outcrop name field
-        if not self.dialog.ocropname.currentText():
+        if not self.dialog.page_geology.field_combo.currentText():
             errors.append(ValidationMessages.MISSING_OUTCROP_FIELD)
         else:
-            field_name = self.dialog.ocropname.currentData()
+            field_name = self.dialog.page_geology.field_combo.currentData()
             is_valid, error = vu.validate_field_exists(outcrop_layer, field_name)
             if not is_valid:
                 errors.append(error)
 
         if errors:
-            return "\\n".join(errors)
+            return "\n".join(errors)
 
         return None
 
@@ -241,7 +234,7 @@ class DialogValidator:
         Returns:
             Error message if invalid, None if valid or not selected
         """
-        struct_layer = self.dialog.structural.currentLayer()
+        struct_layer = self.dialog.page_struct.layer_combo.currentLayer()
         if not struct_layer:
             return None  # Optional layer, skip if not selected
 
@@ -253,7 +246,7 @@ class DialogValidator:
         )
         if not is_valid:
             errors.append(error)
-            return "\\n".join(errors)  # Don't continue if geometry is wrong
+            return "\n".join(errors)  # Don't continue if geometry is wrong
 
         # Validate has features
         is_valid, error = vu.validate_layer_has_features(struct_layer)
@@ -261,10 +254,10 @@ class DialogValidator:
             errors.append(error)
 
         # Validate dip field
-        if not self.dialog.dip.currentText():
+        if not self.dialog.page_struct.dip_combo.currentText():
             errors.append(ValidationMessages.MISSING_DIP_FIELD)
         else:
-            dip_field = self.dialog.dip.currentData()
+            dip_field = self.dialog.page_struct.dip_combo.currentData()
             is_valid, error = vu.validate_field_exists(struct_layer, dip_field)
             if not is_valid:
                 errors.append(error)
@@ -277,10 +270,10 @@ class DialogValidator:
                     errors.append(error)
 
         # Validate strike field
-        if not self.dialog.strike.currentText():
+        if not self.dialog.page_struct.strike_combo.currentText():
             errors.append(ValidationMessages.MISSING_STRIKE_FIELD)
         else:
-            strike_field = self.dialog.strike.currentData()
+            strike_field = self.dialog.page_struct.strike_combo.currentData()
             is_valid, error = vu.validate_field_exists(struct_layer, strike_field)
             if not is_valid:
                 errors.append(error)
@@ -293,6 +286,6 @@ class DialogValidator:
                     errors.append(error)
 
         if errors:
-            return "\\n".join(errors)
+            return "\n".join(errors)
 
         return None

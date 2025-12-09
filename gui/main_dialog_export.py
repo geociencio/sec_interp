@@ -61,7 +61,7 @@ class ExportManager:
                     )
                     return False
 
-                canvas = getattr(self.dialog.plugin_instance, "preview_canvas", None)
+                canvas = self.dialog.current_canvas
                 if not canvas:
                     self.dialog.messagebar.pushMessage(
                         "Export Error",

@@ -50,14 +50,13 @@ PY_FILES = \
 	exporters/base_exporter.py exporters/image_exporter.py exporters/svg_exporter.py exporters/pdf_exporter.py exporters/csv_exporter.py exporters/shp_exporter.py \
 	gui/main_dialog.py gui/preview_renderer.py
 
-UI_FILES = gui/ui/main_dialog_base.ui
-
+UI_FILES = 
 EXTRAS = metadata.txt icon.png
 
 EXTRA_DIRS =
 
 COMPILED_RESOURCE_FILES = resources/resources.py
-COMPILED_UI_FILES = gui/ui/main_dialog_base.py
+COMPILED_UI_FILES = 
 
 PEP8EXCLUDE=pydev,resources.py,conf.py,third_party,ui,.venv
 
@@ -95,14 +94,11 @@ default:
 	@echo You can install pb_tool using: pip install pb_tool
 	@echo See https://g-sherman.github.io/plugin_build_tool/ for info. 
 
-compile: $(COMPILED_RESOURCE_FILES) $(COMPILED_UI_FILES)
+compile: $(COMPILED_RESOURCE_FILES)
 
 resources/resources.py : resources/resources.qrc $(RESOURCES_SRC)
 	pyrcc5 -o $@ $<
 
-gui/ui/main_dialog_base.py : gui/ui/main_dialog_base.ui
-	pyuic5 -o $@ $<
-	./scripts/fix-ui-syntax.sh
 
 %.qm : %.ts
 	$(LRELEASE) $<
@@ -155,7 +151,7 @@ zip: deploy dclean
 	# The zip target deploys the plugin and creates a zip file with the deployed
 	# content. You can then upload the zip file on http://plugins.qgis.org
 	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME)
+	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME) -x "*__pycache__*" -x "*.pyc"
 
 package: compile
 	# Create a zip package of the plugin named $(PLUGINNAME).zip.

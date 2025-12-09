@@ -16,6 +16,7 @@ class DialogDefaults:
     SCALE = "50000"
     VERTICAL_EXAGGERATION = "1.0"
     DIP_SCALE = "4"
+    DIP_SCALE_FACTOR = "4"
 
     # Buffer and sampling
     BUFFER_DISTANCE = 100  # meters

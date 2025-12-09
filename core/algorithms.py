@@ -229,7 +229,7 @@ class SecInterp:
             self.first_start = False
             self.dlg = SecInterpDialog(self.iface, self)
             # Update preview renderer with the new dialog's canvas
-            self.preview_renderer.canvas = self.dlg.preview
+            self.preview_renderer.canvas = self.dlg.preview_widget.canvas
         # show the dialog
         self.dlg.show()
 
@@ -290,15 +290,15 @@ class SecInterp:
         warnings = vu.validate_reasonable_ranges(validated_values)
         if warnings:
             logger.warning("Parameter range warnings: %s", warnings)
-            self.dlg.results.append("\n⚠️ Validation Warnings:")
+            self.dlg.preview_widget.results_text.append("\n⚠️ Validation Warnings:")
             for warning in warnings:
-                self.dlg.results.append(f"  {warning}")
-            self.dlg.results.append("")  # Empty line
+                self.dlg.preview_widget.results_text.append(f"  {warning}")
+            self.dlg.preview_widget.results_text.append("")  # Empty line
 
         # Show CRS warning if present
         if "_crs_warning" in validated_values:
-            self.dlg.results.append("\n" + validated_values["_crs_warning"])
-            self.dlg.results.append("")  # Empty line
+            self.dlg.preview_widget.results_text.append("\n" + validated_values["_crs_warning"])
+            self.dlg.preview_widget.results_text.append("")  # Empty line
 
         # Check if we can use cached data
         cache_key = self.data_cache.get_cache_key(validated_values)
@@ -310,13 +310,13 @@ class SecInterp:
 
         if cached_data:
             logger.info("⚡ Using cached profile data")
-            self.dlg.results.append("⚡ Using cached data (fast!)")
+            self.dlg.preview_widget.results_text.append("⚡ Using cached data (fast!)")
             profile_data = cached_data["profile_data"]
             geol_data = cached_data.get("geol_data")
             struct_data = cached_data.get("struct_data")
         else:
             logger.info("🔄 Processing new profile data...")
-            self.dlg.results.append("🔄 Processing data...")
+            self.dlg.preview_widget.results_text.append("🔄 Processing data...")
 
             # Process data (existing code)
             profile_data, geol_data, struct_data = self._process_profile_data(
@@ -398,7 +398,7 @@ class SecInterp:
 
             # Initialize result text
             result_text = f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points"
-            self.dlg.results.setPlainText(result_text)
+            self.dlg.preview_widget.results_text.setPlainText(result_text)
 
             # Process outcrop data
             if outcrop_layer:
@@ -414,15 +414,15 @@ class SecInterp:
 
                     if geol_data:
                         result_text += f"\nGeology: {len(geol_data)} points"
-                        self.dlg.results.setPlainText(result_text)
+                        self.dlg.preview_widget.results_text.setPlainText(result_text)
                     else:
                         result_text += "\nGeology: No intersections"
-                        self.dlg.results.setPlainText(result_text)
+                        self.dlg.preview_widget.results_text.setPlainText(result_text)
                 else:
                     result_text += (
                         "\n⚠ Outcrop layer selected but no geology field specified."
                     )
-                    self.dlg.results.setPlainText(result_text)
+                    self.dlg.preview_widget.results_text.setPlainText(result_text)
 
             # Process structural data
             if structural_layer:
@@ -462,13 +462,13 @@ class SecInterp:
 
                     if struct_data:
                         result_text += f"\nStructures: {len(struct_data)} points"
-                        self.dlg.results.setPlainText(result_text)
+                        self.dlg.preview_widget.results_text.setPlainText(result_text)
                     else:
                         result_text += f"\nStructures: None in {buffer_dist}m buffer"
-                        self.dlg.results.setPlainText(result_text)
+                        self.dlg.preview_widget.results_text.setPlainText(result_text)
                 else:
                     result_text += "\n⚠ Structural layer selected but dip/strike fields not specified."
-                    self.dlg.results.setPlainText(result_text)
+                    self.dlg.preview_widget.results_text.setPlainText(result_text)
 
             # Draw preview with all data
             logger.debug("About to draw preview:")
@@ -484,7 +484,7 @@ class SecInterp:
             result_text += (
                 "\n\n💡 Use 'Save' button to export data to CSV and Shapefile."
             )
-            self.dlg.results.setPlainText(result_text)
+            self.dlg.preview_widget.results_text.setPlainText(result_text)
 
             # Return processed data for caching
             return (
@@ -504,7 +504,7 @@ class SecInterp:
                 ),
                 "error",
             )
-            self.dlg.results.append(f"File system error: {e!s}")
+            self.dlg.preview_widget.results_text.append(f"File system error: {e!s}")
             logger.error("File system error in process_data: %s", str(e), exc_info=True)
 
         except ValueError as e:
@@ -517,7 +517,7 @@ class SecInterp:
                     f"Please verify your input layers and try again."
                 ),
             )
-            self.dlg.results.append(f"Validation error: {e!s}")
+            self.dlg.preview_widget.results_text.append(f"Validation error: {e!s}")
             logger.error("Validation error in process_data: %s", str(e), exc_info=True)
 
         except RuntimeError as e:
@@ -530,7 +530,7 @@ class SecInterp:
                     f"This may be due to invalid geometries or CRS issues."
                 ),
             )
-            self.dlg.results.append(f"Processing error: {e!s}")
+            self.dlg.preview_widget.results_text.append(f"Processing error: {e!s}")
             logger.error("Runtime error in process_data: %s", str(e), exc_info=True)
 
         except KeyError as e:
@@ -543,7 +543,7 @@ class SecInterp:
                     f"Please verify that all required fields exist in your layers."
                 ),
             )
-            self.dlg.results.append(f"Field error: {e!s}")
+            self.dlg.preview_widget.results_text.append(f"Field error: {e!s}")
             logger.error("Field error in process_data: %s", str(e), exc_info=True)
 
         except Exception as e:
@@ -559,7 +559,7 @@ class SecInterp:
                 ),
                 "error",
             )
-            self.dlg.results.append(f"Unexpected error: {e!s}")
+            self.dlg.preview_widget.results_text.append(f"Unexpected error: {e!s}")
             logger.exception("Unexpected error in process_data: %s", error_details)
 
     # Methods topographic_profile, geol_profile, and project_structures
@@ -579,7 +579,7 @@ class SecInterp:
                 scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error))
                 return
 
-            self.dlg.results.setPlainText("✓ Generating data for export...")
+            self.dlg.preview_widget.results_text.setPlainText("✓ Generating data for export...")
 
             # 1. Generate all data in memory first
             profile_data = self.profile_service.generate_topographic_profile(
@@ -693,7 +693,7 @@ class SecInterp:
             result_msg.append("  - profile_axes.shp")
 
             result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
-            self.dlg.results.setPlainText("\n".join(result_msg))
+            self.dlg.preview_widget.results_text.setPlainText("\n".join(result_msg))
             QMessageBox.information(
                 self.dlg,
                 self.tr("Success"),
@@ -751,27 +751,19 @@ class SecInterp:
         )
 
         # Get vertical exaggeration from dialog
-
-        _, _, vert_exag = vu.validate_numeric_input(
-            self.dlg.vertexag.text(),
-            field_name="Vertical exaggeration",
-            allow_empty=True,
-        )
-        vert_exag = vert_exag if vert_exag is not None else 1.0
+        
+        # Use new numeric method or direct accessor from Page
+        vert_exag = self.dlg.page_dem.vertexag_spin.value()
+        
         logger.debug("Vertical exaggeration: %.2f", vert_exag)
 
         # Calculate dip line length based on scale factor and raster resolution
         dip_line_length = None
         if filtered_struct:
-            _, _, dip_scale = vu.validate_numeric_input(
-                self.dlg.dip_scale_factor.text(),
-                field_name="Dip scale factor",
-                allow_empty=True,
-            )
-            dip_scale = dip_scale if dip_scale is not None else 4.0
+            dip_scale = self.dlg.page_struct.scale_spin.value()
 
             if dip_scale > 0:
-                raster_layer = self.dlg.rasterdem.currentLayer()
+                raster_layer = self.dlg.page_dem.raster_combo.currentLayer()
                 if raster_layer and raster_layer.isValid():
                     res = raster_layer.rasterUnitsPerPixelX()
                     if res > 0:

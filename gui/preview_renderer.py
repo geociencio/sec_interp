@@ -441,8 +441,9 @@ class PreviewRenderer:
         if not extent:
             return None
 
+        # Add quadrant field for data-defined placement
         layer = QgsVectorLayer(
-            "Point?crs=EPSG:4326&field=label:string&field=align:string",
+            "Point?crs=EPSG:4326&field=label:string&field=quadrant:integer",
             "Axes Labels",
             "memory",
         )
@@ -472,7 +473,7 @@ class PreviewRenderer:
                     QgsGeometry.fromPointXY(QgsPointXY(x, extent.yMinimum()))
                 )
                 feat.setAttribute("label", f"{x:.0f}")
-                feat.setAttribute("align", "bottom")
+                feat.setAttribute("quadrant", 7)  # Below
                 features.append(feat)
             x += x_interval
 
@@ -486,7 +487,7 @@ class PreviewRenderer:
                     QgsGeometry.fromPointXY(QgsPointXY(extent.xMinimum(), y_draw))
                 )
                 feat.setAttribute("label", f"{y:.0f}")
-                feat.setAttribute("align", "left")
+                feat.setAttribute("quadrant", 3)  # Left
                 features.append(feat)
             y += y_interval
 
@@ -495,17 +496,24 @@ class PreviewRenderer:
         # Configure labeling
         settings = QgsPalLayerSettings()
         settings.fieldName = "label"
-        settings.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
-
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint  # Allows quadrant usage
+        
         format = QgsTextFormat()
         format.setColor(QColor(0, 0, 0))
         format.setSize(8)
         settings.setFormat(format)
 
-        # Data defined properties for alignment
-        # This is complex to set up programmatically for simple preview
-        # Instead, we'll use a fixed offset
-        settings.yOffset = 2.0  # Below point
+        # Data defined properties for quadrant
+        from qgis.core import QgsProperty, QgsPropertyCollection
+        
+        props = QgsPropertyCollection()
+        props.setProperty(
+            QgsPalLayerSettings.Property.OffsetQuad, QgsProperty.fromField("quadrant")
+        )
+        settings.setDataDefinedProperties(props)
+        
+        # Add a small distance offset so they aren't right on top of the line
+        settings.dist = 1.0  # mm
 
         layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
         layer.setLabelsEnabled(True)

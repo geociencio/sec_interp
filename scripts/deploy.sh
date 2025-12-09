@@ -55,6 +55,9 @@ cp -v "$SOURCE_DIR/__init__.py" \
       "$SOURCE_DIR/logger_config.py" \
       "$SOURCE_DIR/metadata.txt" \
       "$SOURCE_DIR/icon.png" \
+      "$SOURCE_DIR/LICENSE" \
+      "$SOURCE_DIR/LICENSE-GPL-2.0.txt" \
+      "$SOURCE_DIR/LICENSE-GPL-3.0.txt" \
       "$DEST_DIR/"
 
 echo "Copying modules..."
@@ -81,7 +84,8 @@ cp -v "$SOURCE_DIR/exporters/"*.py "$DEST_DIR/exporters/"
 # Copy gui module
 cp -v "$SOURCE_DIR/gui/"*.py "$DEST_DIR/gui/"
 cp -v "$SOURCE_DIR/gui/ui/"*.py "$DEST_DIR/gui/ui/"
-cp -v "$SOURCE_DIR/gui/ui/"*.ui "$DEST_DIR/gui/ui/"
+mkdir -p "$DEST_DIR/gui/ui/pages"
+cp -v "$SOURCE_DIR/gui/ui/pages/"*.py "$DEST_DIR/gui/ui/pages/"
 
 # Copy resources module
 cp -v "$SOURCE_DIR/resources/"*.py "$DEST_DIR/resources/"

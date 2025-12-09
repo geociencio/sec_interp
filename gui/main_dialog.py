@@ -40,7 +40,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsWkbTypes,
 )
-from qgis.gui import QgsFileWidget, QgsMapCanvas
+from qgis.gui import QgsFileWidget, QgsMapCanvas, QgsMapToolPan
 from qgis.PyQt.QtCore import QSize, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
@@ -67,7 +67,10 @@ from .main_dialog_validation import DialogValidator
 from .ui.main_dialog_base import Ui_SecInterpDialogBase
 
 
-class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
+
+from .ui.main_window import SecInterpMainWindow
+
+class SecInterpDialog(SecInterpMainWindow):
     """Dialog for the SecInterp QGIS plugin.
 
     This dialog provides the user interface and helper methods to populate
@@ -87,188 +90,93 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
     def __init__(self, iface=None, plugin_instance=None, parent=None):
         """Constructor."""
-        super().__init__(parent)
-        # iface and plugin_instance are optional to make the dialog testable
-        # in environments where a QGIS iface is not available.
+        # Initialize the base class which sets up the programmatic UI
+        super().__init__(iface, parent)
+        
         self.iface = iface
         self.plugin_instance = plugin_instance
-        # Set up the user interface from Designer through the base class.
-        self.setupUi(self)
+
         # Provide a safe, no-op messagebar when iface is not available (tests)
         if self.iface is None:
-
             class _NoOpMessageBar:
                 def pushMessage(self, *_args, **_kwargs):
                     """No-op implementation of pushMessage."""
                     return None
-
             self.messagebar = _NoOpMessageBar()
         else:
             self.messagebar = self.iface.messageBar()
 
-        # Initialize attributes
-        self.action = None
-
-        # Initialize manager instances (composition pattern)
+        # Initialize manager instances
         self.validator = DialogValidator(self)
         self.preview_manager = PreviewManager(self)
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
 
-        # Set default values from config
-        self.scale.setText(DialogDefaults.SCALE)
-        self.vertexag.setText(DialogDefaults.VERTICAL_EXAGGERATION)
-        self.buffer_distance.setText("100")
-        self.dip_scale_factor.setText("4")
-
-        # Connect sidebar navigation
-        self.listWidget.currentRowChanged.connect(self.stackedWidget.setCurrentIndex)
-
-        # Set icons for sidebar items
-        # DEM / Raster
-        self.listWidget.item(0).setIcon(self.getThemeIcon("mIconRaster.svg"))
-        # Section Line
-        self.listWidget.item(1).setIcon(self.getThemeIcon("mIconLineLayer.svg"))
-        # Geology
-        self.listWidget.item(2).setIcon(self.getThemeIcon("mIconPolygonLayer.svg"))
-        # Structural
-        self.listWidget.item(3).setIcon(self.getThemeIcon("mIconPointLayer.svg"))
-
-        # Replace QGraphicsView with QgsMapCanvas for preview
-        # Remove the old QGraphicsView widget
-        old_preview = self.preview
-        old_preview.geometry()
-        old_preview.parent()
-        # Replace QGraphicsView with QgsMapCanvas for preview
-        # Remove the old QGraphicsView widget
-        old_preview = self.preview
-
-        # Create new QgsMapCanvas
-        self.preview = QgsMapCanvas(old_preview.parent())
-        self.preview.setCanvasColor(QColor(255, 255, 255))  # White background
-
-        # Replace in layout
-        self.verticalLayout_preview.replaceWidget(old_preview, self.preview)
-
-        old_preview.setParent(None)
-        old_preview.deleteLater()
+        # Set default values are handled in Page classes now
 
         # Create legend widget
-        self.legend_widget = LegendWidget(self.preview)
-        self.legend_widget.resize(self.preview.size())
+        # Note: self.preview is now self.preview_widget.canvas
+        self.legend_widget = LegendWidget(self.preview_widget.canvas)
+        # We need to resize it whenever canvas resizes, or initially
+        # For now, just set initial size is okay
+        # self.legend_widget.resize(self.preview_widget.canvas.size())
 
-        # Store current preview data for re-rendering when checkboxes change
+        # Store current preview data
         self.current_topo_data = None
         self.current_geol_data = None
         self.current_struct_data = None
         self.current_canvas = None
         self.current_layers = []
 
-        # Configure outcrop layer combo box
-        self.outcrop.setFilters(QgsMapLayerProxyModel.PolygonLayer)
-        self.outcrop.setAllowEmptyLayer(True, "Do not use Outcrop layer")
-        self.outcrop.setLayer(None)  # Default to empty
-        self.outcrop.layerChanged.connect(self.ocropname.setLayer)
-
-        # Initialize field combo box with current layer (will be None)
-        self.ocropname.setLayer(self.outcrop.currentLayer())
-
-        # Configure structural layer combo box
-        self.structural.setFilters(QgsMapLayerProxyModel.PointLayer)
-        self.structural.setAllowEmptyLayer(True, "Do not use Structural layer")
-        self.structural.setLayer(None)  # Default to empty
-        self.structural.layerChanged.connect(self.dip.setLayer)
-        self.structural.layerChanged.connect(self.strike.setLayer)
-
-        # Initialize field combo boxes with current layer (will be None)
-        self.dip.setLayer(self.structural.currentLayer())
-        self.strike.setLayer(self.structural.currentLayer())
-
-        # Configure crossline layer combo box
-        self.crossline.setFilters(QgsMapLayerProxyModel.LineLayer)
-        self.crossline.setAllowEmptyLayer(True, "Select Crossline Layer")
-        self.crossline.setLayer(None)  # Default to empty
-        self.crossline.layerChanged.connect(self.update_button_state)
-
-        # Configure output folder widget
-        self.dest_fold.setStorageMode(QgsFileWidget.GetDirectory)
-        self.dest_fold.setDialogTitle("Select Output Folder")
-
-        # Configure raster layer combo box
-        self.rasterdem.setFilters(QgsMapLayerProxyModel.RasterLayer)
-        self.rasterdem.setAllowEmptyLayer(True, "Select DEM Layer")
-        self.rasterdem.setLayer(None)  # Default to empty
-
-        # Connect raster layer change to band combo box
-        self.rasterdem.layerChanged.connect(self.band.setLayer)
-
-        # Initialize band combo box with current raster if any
-        if self.rasterdem.currentLayer():
-            self.band.setLayer(self.rasterdem.currentLayer())
-
-        # Update resolution only if iface or canvas isn't required (guarded in method)
-        self.update_resolution_field()
-        self.rasterdem.layerChanged.connect(self.update_resolution_field)
-        self.rasterdem.layerChanged.connect(self.update_button_state)
-
-        # Add Clear Cache button
+        # Connect Signal overrides and Business Logic
+        # Button connections are already set up in main_window signals? No, we need to bind actions
+        
+        # Clear Cache Button
         self.clear_cache_btn = QPushButton("Clear Cache")
-        self.clear_cache_btn.setToolTip(
-            "Clear cached data to force re-processing.\n"
-            "Use this if you've changed data outside the plugin."
-        )
+        self.clear_cache_btn.setToolTip("Clear cached data to force re-processing.")
         self.clear_cache_btn.clicked.connect(self.clear_cache_handler)
-
-        # Add button to button box
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
-
-        # Add cache status label
-        self.cache_status_label = QLabel("")
-        self.cache_status_label.setStyleSheet("color: #666; font-size: 10px;")
-
-        # Connect signals
+        
+        # Dialog Buttons
         self.button_box.accepted.connect(self.accept_handler)
         self.button_box.rejected.connect(self.reject_handler)
         self.button_box.helpRequested.connect(self.open_help)
-        self.dest_fold.fileChanged.connect(self.update_button_state)
-        self.preview_button.clicked.connect(self.preview_profile_handler)
+        
+        # Preview Buttons
+        self.preview_widget.btn_preview.clicked.connect(self.preview_profile_handler)
+        self.preview_widget.btn_export.clicked.connect(self.export_preview)
+        
+        # Output changes
+        self.output_widget.fileChanged.connect(self.update_button_state)
+        
+        # Page specific connections allowing global state updates
+        self.page_dem.raster_combo.layerChanged.connect(self.update_button_state)
+        self.page_section.line_combo.layerChanged.connect(self.update_button_state)
+        
+        # Preview checkbox connections
+        self.preview_widget.chk_topo.stateChanged.connect(self.update_preview_from_checkboxes)
+        self.preview_widget.chk_geol.stateChanged.connect(self.update_preview_from_checkboxes)
+        self.preview_widget.chk_struct.stateChanged.connect(self.update_preview_from_checkboxes)
+        
+        # Initial state update
         self.update_button_state()
 
-        # Connect preview checkboxes to update preview when toggled
-        self.show_topo_cb.stateChanged.connect(self.update_preview_from_checkboxes)
-        self.show_geol_cb.stateChanged.connect(self.update_preview_from_checkboxes)
-        self.show_struct_cb.stateChanged.connect(self.update_preview_from_checkboxes)
-
-        # Connect export button
-        self.export_pre.clicked.connect(self.export_preview)
-
-        # Setup required field indicators
-        self._setup_required_field_indicators()
-
-        # Set column stretch for grid layouts to minimize icon/label spacing
-        # DEM section: columns 0,1 (icon, label) should not stretch, rest can expand
-        self.gridLayout_dem.setColumnStretch(0, 0)  # icon
-        self.gridLayout_dem.setColumnStretch(1, 0)  # label
-        self.gridLayout_dem.setColumnStretch(2, 1)  # combo (expand)
-
-        # Section line: columns 0,1 (icon, label) should not stretch, combo expands
-        self.gridLayout_section.setColumnStretch(0, 0)  # icon
-        self.gridLayout_section.setColumnStretch(1, 0)  # label
-        self.gridLayout_section.setColumnStretch(2, 1)  # combo (expand)
-
-        # Load user settings from previous session
         self._load_user_settings()
+
+        # Enable Pan Tool by default
+        self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
+        self.preview_widget.canvas.setMapTool(self.pan_tool)
 
     def wheelEvent(self, event):
         """Handle mouse wheel for zooming in preview."""
         # Check if mouse is over preview widget
-        if self.preview.underMouse():
+        if self.preview_widget.canvas.underMouse():
             # QgsMapCanvas has built-in zoom with wheel
             # We can customize the zoom factor if needed
             if event.angleDelta().y() > 0:
-                self.preview.zoomIn()
+                self.preview_widget.canvas.zoomIn()
             else:
-                self.preview.zoomOut()
+                self.preview_widget.canvas.zoomOut()
             event.accept()
         else:
             super().wheelEvent(event)
@@ -291,9 +199,9 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         - Preview and Ok buttons require: DEM + Cross-section line
         - Save button requires: DEM + Cross-section line + Output path
         """
-        has_output_path = bool(self.dest_fold.filePath())
-        has_raster = bool(self.rasterdem.currentLayer())
-        has_line = bool(self.crossline.currentLayer())
+        has_output_path = bool(self.output_widget.filePath())
+        has_raster = bool(self.page_dem.raster_combo.currentLayer())
+        has_line = bool(self.page_section.line_combo.currentLayer())
 
         # Preview and Ok require at least DEM and line
         can_preview = has_raster and has_line
@@ -302,7 +210,8 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         can_save = can_preview and has_output_path
 
         # Update Preview button
-        preview_btn = self.preview_button
+        # Note: In new UI preview_button is inside preview_widget
+        preview_btn = self.preview_widget.btn_preview
         if preview_btn:
             preview_btn.setEnabled(can_preview)
 
@@ -318,39 +227,31 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
     def get_selected_values(self):
         """Get the selected values from the dialog with safe type conversion."""
-        # Safely convert numeric inputs with defaults
-        _, _, scale = vu.validate_numeric_input(
-            self.scale.text(), field_name="Scale", allow_empty=True
-        )
-        _, _, vertexag = vu.validate_numeric_input(
-            self.vertexag.text(), field_name="Vertical exaggeration", allow_empty=True
-        )
-        _, _, buffer_dist = vu.validate_numeric_input(
-            self.buffer_distance.text(), field_name="Buffer distance", allow_empty=True
-        )
-        _, _, dip_scale = vu.validate_numeric_input(
-            self.dip_scale_factor.text(),
-            field_name="Dip scale factor",
-            allow_empty=True,
-        )
-        # Band number is now handled by QgsRasterBandComboBox which returns int band number directly via currentBand()
-        # But for consistency with existing code structure we can get it here
-        band_num = self.band.currentBand()
-
+        # Aggregate data from all pages
+        dem_data = self.page_dem.get_data()
+        section_data = self.page_section.get_data()
+        geology_data = self.page_geology.get_data()
+        structure_data = self.page_struct.get_data()
+        
+        # Combine into flat dictionary expected by the rest of the app (legacy support)
         return {
-            "raster_layer": self.rasterdem.currentLayer(),
-            "outcrop_layer": self.outcrop.currentLayer(),
-            "structural_layer": self.structural.currentLayer(),
-            "crossline_layer": self.crossline.currentLayer(),
-            "dip_field": self.dip.currentField(),
-            "strike_field": self.strike.currentField(),
-            "outcrop_name_field": self.ocropname.currentField(),
-            "scale": scale if scale is not None else 50000,
-            "vertexag": vertexag if vertexag is not None else 1.0,
-            "selected_band": band_num if band_num is not None else 1,
-            "buffer_distance": buffer_dist if buffer_dist is not None else 100.0,
-            "dip_scale_factor": dip_scale if dip_scale is not None else 4.0,
-            "output_path": self.dest_fold.filePath(),
+            "raster_layer": dem_data["raster_layer"],
+            "selected_band": dem_data["selected_band"],
+            "scale": dem_data["scale"],
+            "vertexag": dem_data["vertexag"],
+            
+            "crossline_layer": section_data["crossline_layer"],
+            "buffer_distance": section_data["buffer_distance"],
+            
+            "outcrop_layer": geology_data["outcrop_layer"],
+            "outcrop_name_field": geology_data["outcrop_name_field"],
+            
+            "structural_layer": structure_data["structural_layer"],
+            "dip_field": structure_data["dip_field"],
+            "strike_field": structure_data["strike_field"],
+            "dip_scale_factor": structure_data["dip_scale_factor"],
+            
+            "output_path": self.output_widget.filePath(),
         }
 
     def get_preview_options(self):
@@ -360,9 +261,9 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             dict: Keys 'show_topo', 'show_geol', 'show_struct' with boolean values.
         """
         return {
-            "show_topo": bool(self.show_topo_cb.isChecked()),
-            "show_geol": bool(self.show_geol_cb.isChecked()),
-            "show_struct": bool(self.show_struct_cb.isChecked()),
+            "show_topo": bool(self.preview_widget.chk_topo.isChecked()),
+            "show_geol": bool(self.preview_widget.chk_geol.isChecked()),
+            "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
         }
 
     def update_preview_from_checkboxes(self):
@@ -380,18 +281,28 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         success, message = self.preview_manager.generate_preview()
         if not success and message:
             self.messagebar.pushMessage("Preview Error", message, level=2)
+        
+        # Update CRS label in status bar
+        try:
+            # Use line layer CRS as the primary reference for the preview
+            line_layer = self.page_section.line_combo.currentLayer()
+            if line_layer:
+                auth_id = line_layer.crs().authid()
+                self.preview_widget.lbl_crs.setText(f"CRS: {auth_id}")
+        except Exception:
+            self.preview_widget.lbl_crs.setText("CRS: Unknown")
 
     def export_preview(self):
         """Export the current preview to a file using dedicated exporters."""
         if not self.current_layers or not self.current_canvas:
-            self.results.setPlainText(
+            self.preview_widget.results_text.setPlainText(
                 "⚠ No preview to export. Please generate a preview first."
             )
             return
 
         # Determine default directory
         settings = QgsSettings()
-        dest_folder = self.dest_fold.filePath().strip()
+        dest_folder = self.output_widget.filePath().strip()
 
         if dest_folder:
             default_path = str(Path(dest_folder) / "preview.png")
@@ -439,14 +350,14 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         settings.setValue("SecInterp/lastExportDir", str(Path(filename).parent))
 
         try:
-            self.results.setPlainText(f"Exporting preview to {filename}...")
+            self.preview_widget.results_text.setPlainText(f"Exporting preview to {filename}...")
 
             # Get extent from canvas
             extent = self.current_canvas.extent()
 
             # Export dimensions (use canvas size as reference)
-            width = self.preview.width()
-            height = self.preview.height()
+            width = self.preview_widget.canvas.width()
+            height = self.preview_widget.canvas.height()
             dpi = 96
 
             # For raster formats, use higher resolution
@@ -478,17 +389,17 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             success = exporter.export(Path(filename), map_settings)
 
             if success:
-                self.results.setPlainText(
+                self.preview_widget.results_text.setPlainText(
                     f"✓ Preview exported successfully to:\n{filename}"
                 )
             else:
-                self.results.setPlainText(f"⚠ Error exporting preview to {filename}")
+                self.preview_widget.results_text.setPlainText(f"⚠ Error exporting preview to {filename}")
 
         except ValueError as e:
-            self.results.setPlainText(f"⚠ {e!s}")
+            self.preview_widget.results_text.setPlainText(f"⚠ {e!s}")
         except Exception as e:
             error_details = traceback.format_exc()
-            self.results.setPlainText(
+            self.preview_widget.results_text.setPlainText(
                 f"⚠ Error exporting preview: {e!s}\n\nDetails:\n{error_details}"
             )
 
@@ -524,12 +435,12 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         """Clear cached data and notify user."""
         if hasattr(self, "plugin_instance") and self.plugin_instance:
             self.plugin_instance.data_cache.clear()
-            self.results.append("✓ Cache cleared - next preview will re-process data")
+            self.preview_widget.results_text.append("✓ Cache cleared - next preview will re-process data")
             # context specific usage
             logger = get_logger(__name__)
             logger.info("Cache cleared by user")
         else:
-            self.results.append("⚠ Cache not available")
+            self.preview_widget.results_text.append("⚠ Cache not available")
 
     def _populate_field_combobox(self, source_combobox, target_combobox):
         """Helper function to populate a combobox with field names from a selected vector layer."""
@@ -587,12 +498,17 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         ]
 
     def update_resolution_field(self):
-        """Calculate and update the resolution field for the selected raster layer."""
+        """Calculate and update the resolution field for the selected raster layer.
+        
+        NOTE: This logic is partially duplicated in DemPage._update_resolution.
+        Ideally we should move all this logic to DemPage or a common helper.
+        For now, we update the widgets in DemPage from here to minimize logic breakage.
+        """
         try:
-            raster_layer = self.rasterdem.currentLayer()
+            raster_layer = self.page_dem.raster_combo.currentLayer()
             if not raster_layer:
-                self.resln.clear()
-                self.unts.clear()
+                self.page_dem.res_edit.clear()
+                self.page_dem.units_edit.clear()
                 return
             raster_crs = raster_layer.crs()
             # Determine map CRS safely: if iface or canvas isn't available
@@ -613,8 +529,8 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
             # Validate native resolution
             if native_res <= 0:
-                self.resln.setText("Invalid")
-                self.unts.setText("")
+                self.page_dem.res_edit.setText("Invalid")
+                self.page_dem.units_edit.setText("")
                 self.messagebar.pushMessage(
                     "Warning",
                     "Raster resolution is invalid or zero",
@@ -626,14 +542,14 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
 
             if raster_crs == map_crs:
                 if raster_crs.isGeographic():
-                    self.resln.setText(f"{native_res:.6f}")
-                    self.unts.setText("°")
+                    self.page_dem.res_edit.setText(f"{native_res:.6f}")
+                    self.page_dem.units_edit.setText("°")
                     # For scale calculation, we need resolution in meters.
                     # This is an approximation at the equator.
                     resolution_in_meters = native_res * 111320
                 else:
-                    self.resln.setText(f"{native_res:.2f}")
-                    self.unts.setText(QgsUnitTypes.toString(raster_crs.mapUnits()))
+                    self.page_dem.res_edit.setText(f"{native_res:.2f}")
+                    self.page_dem.units_edit.setText(QgsUnitTypes.toString(raster_crs.mapUnits()))
                     if raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Meters:
                         resolution_in_meters = native_res
                     elif raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Feet:
@@ -652,8 +568,8 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                 if map_crs.isGeographic():
                     # Raster is projected, map is geographic
                     resolution = abs(p2_transformed.x() - p1_transformed.x())
-                    self.resln.setText(f"{resolution:.6f}")
-                    self.unts.setText("°")
+                    self.page_dem.res_edit.setText(f"{resolution:.6f}")
+                    self.page_dem.units_edit.setText("°")
                     # We need to transform back to the raster's projected CRS to get meters
                     # This is a bit complex, let's use the native resolution for scale for now
                     if raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Meters:
@@ -663,8 +579,8 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
                 else:
                     # Raster is geographic, map is projected
                     resolution = p1_transformed.distance(p2_transformed)
-                    self.resln.setText(f"{resolution:.2f}")
-                    self.unts.setText(QgsUnitTypes.toString(map_crs.mapUnits()))
+                    self.page_dem.res_edit.setText(f"{resolution:.2f}")
+                    self.page_dem.units_edit.setText(QgsUnitTypes.toString(map_crs.mapUnits()))
                     if map_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Meters:
                         resolution_in_meters = resolution
                     elif map_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Feet:
@@ -673,7 +589,7 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             # Calculate suggested scale only if resolution is valid
             if resolution_in_meters > 0:
                 suggested_scale = round((resolution_in_meters * 2000) / 1000) * 1000
-                self.scale.setText(str(suggested_scale))
+                self.page_dem.scale_spin.setValue(float(suggested_scale))
 
         except Exception as e:
             self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
@@ -854,46 +770,46 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
             scale = settings.value("SecInterp/scale", 50000, type=int)
             # Validate reasonable range (1:1,000 to 1:1,000,000)
             if 1000 <= scale <= 1000000:
-                self.scale.setText(str(scale))
+                self.page_dem.scale_spin.setValue(scale)
             else:
-                self.scale.setText("50000")
+                self.page_dem.scale_spin.setValue(50000)
         except (ValueError, TypeError):
-            self.scale.setText("50000")
+            self.page_dem.scale_spin.setValue(50000)
 
         try:
             vertexag = settings.value("SecInterp/vertexag", 1.0, type=float)
             # Validate reasonable range (0.1 to 100)
             if 0.1 <= vertexag <= 100.0:
-                self.vertexag.setText(str(vertexag))
+                self.page_dem.vertexag_spin.setValue(vertexag)
             else:
-                self.vertexag.setText("1.0")
+                self.page_dem.vertexag_spin.setValue(1.0)
         except (ValueError, TypeError):
-            self.vertexag.setText("1.0")
+            self.page_dem.vertexag_spin.setValue(1.0)
 
         try:
             buffer_dist = settings.value("SecInterp/bufferDistance", 100.0, type=float)
             # Validate reasonable range (0 to 10,000)
             if 0.0 <= buffer_dist <= 10000.0:
-                self.buffer_distance.setText(str(buffer_dist))
+                self.page_section.buffer_spin.setValue(buffer_dist)
             else:
-                self.buffer_distance.setText("100.0")
+                self.page_section.buffer_spin.setValue(100.0)
         except (ValueError, TypeError):
-            self.buffer_distance.setText("100.0")
+            self.page_section.buffer_spin.setValue(100.0)
 
         try:
             dip_scale = settings.value("SecInterp/dipScaleFactor", 4.0, type=float)
             # Validate reasonable range (0.1 to 20)
             if 0.1 <= dip_scale <= 20.0:
-                self.dip_scale_factor.setText(str(dip_scale))
+                self.page_struct.scale_spin.setValue(dip_scale)
             else:
-                self.dip_scale_factor.setText("4.0")
+                self.page_struct.scale_spin.setValue(4.0)
         except (ValueError, TypeError):
-            self.dip_scale_factor.setText("4.0")
+            self.page_struct.scale_spin.setValue(4.0)
 
         # Load output folder
         last_output = settings.value("SecInterp/lastOutputFolder", "", type=str)
         if last_output:
-            self.dest_fold.setFilePath(last_output)
+            self.output_widget.setFilePath(last_output)
 
     def _save_user_settings(self):
         """Save user settings for next session.

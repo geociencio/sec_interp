@@ -63,7 +63,7 @@ class PreviewManager:
                 # 1. Validation
                 raster_layer, line_layer, band_num = self._validate_requirements()
 
-                self.dialog.results.setPlainText("Generating preview...")
+                self.dialog.preview_widget.results_text.setPlainText("Generating preview...")
 
                 # 2. Data Generation
                 with tempfile.NamedTemporaryFile(
@@ -136,7 +136,7 @@ class PreviewManager:
                 result_msg = self._format_results_message(
                     profile_data, geol_data, struct_data, buffer_dist
                 )
-                self.dialog.results.setPlainText(result_msg)
+                self.dialog.preview_widget.results_text.setPlainText(result_msg)
 
                 if DialogConfig.LOG_DETAILED_METRICS:
                     logger.info(f"Preview Performance: {self.metrics.get_summary()}")
@@ -145,14 +145,14 @@ class PreviewManager:
 
         except ValueError as e:
             error_msg = f"⚠ {e!s}"
-            self.dialog.results.setPlainText(error_msg)
+            self.dialog.preview_widget.results_text.setPlainText(error_msg)
             return False, str(e)
         except Exception as e:
             error_details = traceback.format_exc()
             error_msg = (
                 f"⚠ Error generating preview: {e!s}\\n\\nDetails:\\n{error_details}"
             )
-            self.dialog.results.setPlainText(error_msg)
+            self.dialog.preview_widget.results_text.setPlainText(error_msg)
             logger.error(f"Preview generation failed: {e}", exc_info=True)
             return False, str(e)
 
@@ -166,9 +166,9 @@ class PreviewManager:
             return  # No data to display
 
         # Get checkbox states
-        show_topo = self.dialog.show_topography.isChecked()
-        show_geol = self.dialog.show_geology.isChecked()
-        show_struct = self.dialog.show_structures.isChecked()
+        show_topo = self.dialog.preview_widget.chk_topo.isChecked()
+        show_geol = self.dialog.preview_widget.chk_geol.isChecked()
+        show_struct = self.dialog.preview_widget.chk_struct.isChecked()
 
         # Prepare data based on checkboxes
         topo_data = self.cached_data["topo"] if show_topo else None
@@ -220,12 +220,12 @@ class PreviewManager:
         Returns:
             List of (distance, elevation, geology_name) tuples or None
         """
-        outcrop_layer = self.dialog.outcrop.currentLayer()
+        outcrop_layer = self.dialog.page_geology.layer_combo.currentLayer()
         if not outcrop_layer:
             logger.debug("No outcrop layer selected")
             return None
 
-        outcrop_name_field = self.dialog.ocropname.currentField()
+        outcrop_name_field = self.dialog.page_geology.field_combo.currentField()
         if not outcrop_name_field:
             logger.debug("No outcrop name field selected")
             return None
@@ -263,12 +263,12 @@ class PreviewManager:
         Returns:
             List of (distance, apparent_dip) tuples or None
         """
-        structural_layer = self.dialog.structural.currentLayer()
+        structural_layer = self.dialog.page_struct.layer_combo.currentLayer()
         if not structural_layer:
             return None
 
-        dip_field = self.dialog.dip.currentField()
-        strike_field = self.dialog.strike.currentField()
+        dip_field = self.dialog.page_struct.dip_combo.currentField()
+        strike_field = self.dialog.page_struct.strike_combo.currentField()
 
         if not dip_field or not strike_field:
             return None
@@ -312,15 +312,15 @@ class PreviewManager:
         Raises:
             ValueError: If validation fails
         """
-        raster_layer = self.dialog.rasterdem.currentLayer()
+        raster_layer = self.dialog.page_dem.raster_combo.currentLayer()
         if not raster_layer:
             raise ValueError("No raster layer selected")
 
-        line_layer = self.dialog.crossline.currentLayer()
+        line_layer = self.dialog.page_section.line_combo.currentLayer()
         if not line_layer:
             raise ValueError("No crossline layer selected")
 
-        band_num = self.dialog.band.currentBand()
+        band_num = self.dialog.page_dem.band_combo.currentBand()
         if not band_num:
             raise ValueError("No band selected")
 
@@ -332,12 +332,7 @@ class PreviewManager:
         Returns:
             Buffer distance in meters
         """
-        _, _, buffer_dist = vu.validate_numeric_input(
-            self.dialog.buffer_distance.text(),
-            field_name="Buffer distance",
-            allow_empty=True,
-        )
-        return buffer_dist if buffer_dist is not None else 100.0
+        return self.dialog.page_section.buffer_spin.value()
 
     def _format_results_message(
         self,
