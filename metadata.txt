@@ -20,7 +20,15 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
-    1.0 (2025-12-06)
+    1.0 (2025-12-08)
+    * Refactoring & Architecture:
+      - Split monolithic modules (algorithms.py, main_dialog.py) into focused components
+      - Modularized exporters ecosystem
+      - Implemented spatial indexing and native QGIS algorithms for performance
+    * Quality Assurance:
+      - Added comprehensive type hinting across modules
+      - Enhanced test infrastructure with pytest and QGIS support
+      - Implemented security fixes (path traversal protection)
     * Major UI Refactoring - Plugin Manager Style:
       - Redesigned main dialog with sidebar navigation (QListWidget + QStackedWidget)
       - Replaced absolute positioning with responsive layouts (QVBoxLayout, QHBoxLayout, QSplitter)
