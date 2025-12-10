@@ -85,135 +85,112 @@ class GeologyService:
         crs = line_lyr.crs()
         da = scu.create_distance_area(crs)
 
+        # 1. Generate Master Profile Data (Grid Points + Elevations)
+        # This acts as the "Ground Truth Surface" for alignment
+        interval = raster_lyr.rasterUnitsPerPixelX()
+        logger.debug(f"Generating master profile with interval={interval:.2f}")
+
+        try:
+            # Densify original line
+            master_densified = scu.densify_line_by_interval(line_geom, interval)
+            master_grid_points = scu.get_line_vertices(master_densified)
+        except Exception as e:
+            logger.warning(f"Failed to generate master grid: {e}")
+            master_grid_points = scu.get_line_vertices(line_geom)
+
+        # Calculate distances & sample elevations for master profile
+        master_profile_data = [] # List of (dist, elev)
+        master_grid_dists = []   # List of (dist, point, elev) for fast lookup
+        
+        for pt in master_grid_points:
+            d = da.measureLine(line_start, pt)
+            res = raster_lyr.dataProvider().identify(pt, QgsRaster.IdentifyFormatValue).results()
+            elev = res.get(band_number, 0.0)
+            
+            master_profile_data.append((d, elev))
+            master_grid_dists.append((d, pt, elev))
+
         values = []
 
-        # Use native intersection algorithm for better geometry handling
+        # 2. Run Intersection on Original Line
         try:
             feedback = QgsProcessingFeedback()
-
-            # Log input information for debugging
-            logger.info(
-                f"Computing intersection: line CRS={line_lyr.crs().authid()}, "
-                f"outcrop CRS={outcrop_lyr.crs().authid()}"
-            )
-            logger.debug(
-                f"Line features: {line_lyr.featureCount()}, "
-                f"Outcrop features: {outcrop_lyr.featureCount()}"
-            )
-
             result = processing.run(
                 "native:intersection",
                 {
                     "INPUT": line_lyr,
                     "OVERLAY": outcrop_lyr,
-                    "INPUT_FIELDS": [],  # Don't need line fields
-                    "OVERLAY_FIELDS": [],  # Empty list = keep ALL geology fields
+                    "INPUT_FIELDS": [], 
+                    "OVERLAY_FIELDS": [], 
                     "OVERLAY_FIELDS_PREFIX": "",
                     "OUTPUT": "memory:",
                 },
                 feedback=feedback,
             )
-
             intersection_layer = result["OUTPUT"]
             intersection_count = intersection_layer.featureCount()
-
-            logger.info(f"✓ Intersection complete: {intersection_count} segments found")
-
-            if intersection_count == 0:
-                logger.warning(
-                    "No intersections found. Check that line and outcrops overlap "
-                    "and have compatible CRS."
-                )
-
+            logger.info(f"✓ Intersection: {intersection_count} segments")
+        
         except Exception as e:
             logger.exception("Geological intersection failed")
             raise RuntimeError("Cannot compute geological intersection") from e
 
+        # Import interpolation helper
+        from sec_interp.core.utils.sampling import interpolate_elevation
+
         # Process intersection results
         processed_segments = 0
         total_points = 0
+        tolerance = 0.001
 
         for feature in intersection_layer.getFeatures():
             geom = feature.geometry()
             if not geom or geom.isNull():
-                logger.debug("Skipping null geometry")
                 continue
 
-            # Log geometry type for debugging
-            geom_type = geom.wkbType()
-            geom_type_name = QgsWkbTypes.displayString(geom_type)
-            logger.debug(
-                f"Intersection segment geometry type: {geom_type_name} ({geom_type})"
-            )
-
-            # Handle both LineString and MultiLineString geometries
-            geometries_to_process = []
-
-            if geom.wkbType() in [
-                QgsWkbTypes.LineString,
-                QgsWkbTypes.LineString25D,
-            ]:
-                # Single LineString
-                geometries_to_process.append(geom)
-            elif geom.wkbType() in [
-                QgsWkbTypes.MultiLineString,
-                QgsWkbTypes.MultiLineString25D,
-            ]:
-                # MultiLineString - extract individual parts
-                multi_geom = geom.asMultiPolyline()
-                for part in multi_geom:
-                    # Create a new LineString geometry from each part
-                    line_geom = QgsGeometry.fromPolylineXY(part)
-                    geometries_to_process.append(line_geom)
-                logger.debug(f"Extracted {len(multi_geom)} parts from MultiLineString")
+            # Handle geometries
+            geometries = []
+            if geom.wkbType() in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
+                geometries.append(geom)
+            elif geom.wkbType() in [QgsWkbTypes.MultiLineString, QgsWkbTypes.MultiLineString25D]:
+                for part in geom.asMultiPolyline():
+                    geometries.append(QgsGeometry.fromPolylineXY(part))
             else:
-                logger.warning(f"Skipping unsupported geometry type: {geom_type_name}")
                 continue
 
-            # Process each geometry (LineString or part of MultiLineString)
-            for process_geom in geometries_to_process:
-                # Calculate interval based on raster resolution
-                interval = scu.calculate_step_size(process_geom, raster_lyr)
+            glg_val = feature[outcrop_name_field]
 
-                logger.debug(f"Densifying segment with interval={interval:.2f}")
+            for seg_geom in geometries:
+                verts = scu.get_line_vertices(seg_geom)
+                if not verts: continue
+                
+                # Get start/end distances
+                start_pt, end_pt = verts[0], verts[-1]
+                dist_start = da.measureLine(line_start, start_pt)
+                dist_end = da.measureLine(line_start, end_pt)
+                
+                if dist_start > dist_end:
+                    dist_start, dist_end = dist_end, dist_start
 
-                try:
-                    # Use native densification algorithm
-                    densified_geom = scu.densify_line_by_interval(
-                        process_geom, interval
-                    )
+                # 3. Get Inner Grid Points (Pre-calculated elevations)
+                inner_points = [
+                    (d, e) for d, _, e in master_grid_dists 
+                    if dist_start + tolerance < d < dist_end - tolerance
+                ]
 
-                    # Get vertices
-                    vertices = scu.get_line_vertices(densified_geom)
-                    logger.debug(f" - Segment densified: {len(vertices)} points")
-                    processed_segments += 1
-                except (ValueError, RuntimeError):
-                    logger.warning("Densification failed, skipping segment")
-                    continue
+                # 4. Interpolate Boundary Elevations
+                # Snap start/end to the topographic surface logic
+                elev_start = interpolate_elevation(master_profile_data, dist_start)
+                elev_end = interpolate_elevation(master_profile_data, dist_end)
 
-                for pt in vertices:
-                    # Calculate distance from the start of the original section line
-                    dist_from_start = da.measureLine(line_start, pt)
+                # Combine: [Start] + [Inner] + [End]
+                segment_points = [(dist_start, elev_start)] + inner_points + [(dist_end, elev_end)]
 
-                    # Get elevation
-                    res = (
-                        raster_lyr.dataProvider()
-                        .identify(pt, QgsRaster.IdentifyFormatValue)
-                        .results()
-                    )
-                    elev = res.get(band_number, 0.0)
-
-                    # Get geology (attribute preserved automatically by intersection)
-                    glg_val = feature[outcrop_name_field]
-
-                    values.append((round(dist_from_start, 1), round(elev, 1), glg_val))
+                processed_segments += 1
+                for d, e in segment_points:
+                    values.append((round(d, 1), round(e, 1), glg_val))
                     total_points += 1
 
-        logger.info(
-            f"Processed {processed_segments} segments, generated {total_points} points"
-        )
-
-        # Sort values by distance
+        logger.info(f"Processed {processed_segments} segments, generated {total_points} points (snapped)")
         values.sort(key=lambda x: x[0])
-
         return values
