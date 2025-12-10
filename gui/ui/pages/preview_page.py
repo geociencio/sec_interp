@@ -1,7 +1,7 @@
 """Preview area widget."""
 from qgis.PyQt.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
-    QCheckBox, QTextEdit, QFrame, QLabel
+    QCheckBox, QTextEdit, QFrame, QLabel, QSpinBox
 )
 from qgis.gui import QgsMapCanvas, QgsCollapsibleGroupBox
 from qgis.PyQt.QtGui import QColor
@@ -59,7 +59,21 @@ class PreviewWidget(QWidget):
         btn_layout.addWidget(self.btn_export)
         frame_layout.addLayout(btn_layout)
 
-        # 3. Checkboxes
+        # 3. Settings (LOD)
+        lod_layout = QHBoxLayout()
+        lod_layout.addWidget(QLabel("Max Points:"))
+        
+        self.spin_max_points = QSpinBox()
+        self.spin_max_points.setRange(100, 10000)
+        self.spin_max_points.setValue(1000)
+        self.spin_max_points.setSingleStep(100)
+        self.spin_max_points.setToolTip("Maximum points to render in preview (LOD Optimization)")
+        lod_layout.addWidget(self.spin_max_points)
+        
+        lod_layout.addStretch() # Push to left
+        frame_layout.addLayout(lod_layout)
+
+        # 4. Checkboxes
         chk_layout = QHBoxLayout()
         self.chk_topo = QCheckBox("Show Topography")
         self.chk_topo.setChecked(True)

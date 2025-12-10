@@ -157,6 +157,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_widget.chk_topo.stateChanged.connect(self.update_preview_from_checkboxes)
         self.preview_widget.chk_geol.stateChanged.connect(self.update_preview_from_checkboxes)
         self.preview_widget.chk_struct.stateChanged.connect(self.update_preview_from_checkboxes)
+        self.preview_widget.spin_max_points.valueChanged.connect(self.update_preview_from_checkboxes)
         
         # Initial state update
         self.update_button_state()
@@ -806,6 +807,16 @@ class SecInterpDialog(SecInterpMainWindow):
         except (ValueError, TypeError):
             self.page_struct.scale_spin.setValue(4.0)
 
+        try:
+            max_points = settings.value("SecInterp/maxPreviewPoints", 1000, type=int)
+            # Validate reasonable range (100 to 10000)
+            if 100 <= max_points <= 10000:
+                self.preview_widget.spin_max_points.setValue(max_points)
+            else:
+                self.preview_widget.spin_max_points.setValue(1000)
+        except (ValueError, TypeError):
+            self.preview_widget.spin_max_points.setValue(1000)
+
         # Load output folder
         last_output = settings.value("SecInterp/lastOutputFolder", "", type=str)
         if last_output:
@@ -849,6 +860,13 @@ class SecInterpDialog(SecInterpMainWindow):
                 dip_scale_val = float(self.dip_scale_factor.text())
                 if 0.1 <= dip_scale_val <= 20.0:
                     settings.setValue("SecInterp/dipScaleFactor", dip_scale_val)
+        except ValueError:
+            pass
+
+        try:
+            max_points = self.preview_widget.spin_max_points.value()
+            if 100 <= max_points <= 10000:
+                settings.setValue("SecInterp/maxPreviewPoints", max_points)
         except ValueError:
             pass
 

@@ -73,6 +73,55 @@ class PreviewRenderer:
         self.has_topography = False  # Track if topography layer exists
         self.has_structures = False  # Track if structures layer exists
 
+    def _decimate_line_data(
+        self, data: list[tuple[float, float]], max_points: int = 1000
+    ) -> list[tuple[float, float]]:
+        """Decimate line data using Douglas-Peucker algorithm.
+
+        Args:
+            data: List of (x, y) tuples
+            max_points: Maximum points to keep (approximate target)
+
+        Returns:
+            Decimated list of (x, y) tuples
+        """
+        if not data or len(data) <= max_points:
+            return data
+
+        try:
+            # Create QgsGeometry from points
+            points = [QgsPointXY(x, y) for x, y in data]
+            line = QgsGeometry.fromPolylineXY(points)
+
+            # Auto-calculate tolerance
+            # We start with a small tolerance and estimate
+            extent = line.boundingBox()
+            diag = math.sqrt(extent.width() ** 2 + extent.height() ** 2)
+            
+            # Heuristic: tolerance = diagonal / target_points
+            # This is a rough approximation, D-P isn't exact on point count
+            tolerance = diag / max_points
+
+            # Simplify
+            simplified = line.simplify(tolerance)
+
+            # Extract points
+            if simplified.isMultipart():
+                result_points = simplified.asMultiPolyline()[0]
+            else:
+                result_points = simplified.asPolyline()
+
+            result = [(p.x(), p.y()) for p in result_points]
+            
+            logger.debug(
+                f"LOD Decimation: {len(data)} -> {len(result)} points (tol={tolerance:.2f})"
+            )
+            return result
+        
+        except Exception as e:
+            logger.warning(f"LOD decimation failed: {e}")
+            return data
+
     def _get_color_for_unit(self, name: str) -> QColor:
         """Get a consistent color for a geological unit based on its name."""
         if not name:
@@ -112,13 +161,14 @@ class PreviewRenderer:
         return layer, layer.dataProvider()
 
     def _create_topo_layer(
-        self, topo_data: ProfileData, vert_exag: float = 1.0
+        self, topo_data: ProfileData, vert_exag: float = 1.0, max_points: int = 1000
     ) -> QgsVectorLayer | None:
         """Create temporary layer for topographic profile.
 
         Args:
             topo_data: List of (distance, elevation) tuples
             vert_exag: Vertical exaggeration factor
+            max_points: Max points for LOD optimization (default: 1000)
 
         Returns:
             QgsVectorLayer with topographic profile
@@ -126,13 +176,16 @@ class PreviewRenderer:
         if not topo_data or len(topo_data) < 2:
             return None
 
+        # Apply LOD decimation
+        render_data = self._decimate_line_data(topo_data, max_points)
+
         # Create memory layer using factory
         layer, provider = self._create_memory_layer("LineString", "Topography")
         if not layer:
             return None
 
         # Create line geometry from points
-        points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in topo_data]
+        points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_data]
         line = QgsLineString(points)
 
         # Add feature
@@ -152,17 +205,18 @@ class PreviewRenderer:
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
 
         layer.updateExtents()
-        logger.debug("Created topography layer with %d points", len(topo_data))
+        logger.debug("Created topography layer with %d points", len(render_data))
         return layer
 
     def _create_geol_layer(
-        self, geol_data: GeologyData, vert_exag: float = 1.0
+        self, geol_data: GeologyData, vert_exag: float = 1.0, max_points: int = 1000
     ) -> QgsVectorLayer | None:
         """Create temporary layer for geological profile.
 
         Args:
             geol_data: List of (distance, elevation, unit_name) tuples
             vert_exag: Vertical exaggeration factor
+            max_points: Max points for LOD optimization (default: 1000)
 
         Returns:
             QgsVectorLayer with geological lines
@@ -191,8 +245,15 @@ class PreviewRenderer:
             # Sort points by distance
             points.sort(key=lambda p: p[0])
 
+            # Apply LOD decimation per unit
+            # We allocate proportional points based on unit length relative to total?
+            # Or just apply the same logic? Applying same logic is safer for visual alignment.
+            # Ideally we want the shared boundary points to remain.
+            # D-P preserves endpoints, so shared boundaries *should* be preserved if they are ends.
+            render_points = self._decimate_line_data(points, max_points)
+
             # Create line from points
-            line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in points]
+            line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points]
             line = QgsLineString(line_points)
 
             # Create feature with attributes
@@ -531,6 +592,7 @@ class PreviewRenderer:
         struct_data: StructureData | None = None,
         vert_exag: float = 1.0,
         dip_line_length: float | None = None,
+        max_points: int = 1000,
     ) -> tuple[object | None, list[QgsVectorLayer]]:
         """Render preview with all data layers.
 
@@ -540,6 +602,7 @@ class PreviewRenderer:
             struct_data: Optional list of (dist, app_dip) tuples
             vert_exag: Vertical exaggeration factor (default 1.0)
             dip_line_length: Optional explicit length for dip lines
+            max_points: Max points for LOD optimization (default: 1000)
 
         Returns:
             Tuple of (QgsMapCanvas, list of layers) or (None, None) if no data
@@ -555,13 +618,13 @@ class PreviewRenderer:
 
         # Create layers
         topo_layer = (
-            self._create_topo_layer(topo_data, vert_exag) if topo_data else None
+            self._create_topo_layer(topo_data, vert_exag, max_points) if topo_data else None
         )
         if topo_layer:
             self.has_topography = True
 
         geol_layer = (
-            self._create_geol_layer(geol_data, vert_exag) if geol_data else None
+            self._create_geol_layer(geol_data, vert_exag, max_points) if geol_data else None
         )
 
         # For structural layer, use topo or geol as reference

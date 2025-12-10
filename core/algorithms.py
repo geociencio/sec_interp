@@ -709,13 +709,14 @@ class SecInterp:
             )
             logger.error("Export error in save_profile_line: %s", str(e), exc_info=True)
 
-    def draw_preview(self, topo_data, geol_data=None, struct_data=None):
+    def draw_preview(self, topo_data, geol_data=None, struct_data=None, max_points=1000):
         """Draw enhanced interactive preview using native PyQGIS renderer.
 
         Args:
             topo_data: List of (dist, elev) tuples for topographic profile
             geol_data: Optional list of (dist, elev, geology_name) tuples
             struct_data: Optional list of (dist, app_dip) tuples
+            max_points (int): Maximum number of points for simplified preview (LOD)
         """
         logger.debug("draw_preview called with:")
         logger.debug("  - topo_data: %d points", len(topo_data) if topo_data else 0)
@@ -723,6 +724,7 @@ class SecInterp:
         logger.debug(
             "  - struct_data: %d points", len(struct_data) if struct_data else 0
         )
+        logger.debug("  - max_points: %d", max_points)
 
         # Store data in dialog for re-rendering when checkboxes change
         self.dlg.current_topo_data = topo_data
@@ -772,7 +774,12 @@ class SecInterp:
 
         # Render using native PyQGIS
         canvas, layers = self.preview_renderer.render(
-            filtered_topo, filtered_geol, filtered_struct, vert_exag, dip_line_length
+            filtered_topo, 
+            filtered_geol, 
+            filtered_struct, 
+            vert_exag, 
+            dip_line_length,
+            max_points=max_points
         )
 
         # Store canvas and layers for export

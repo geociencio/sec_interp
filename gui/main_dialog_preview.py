@@ -125,8 +125,10 @@ class PreviewManager:
                         )
 
                     with PerformanceTimer("Rendering", self.metrics):
+                        # Get max points from UI
+                        max_points = self.dialog.preview_widget.spin_max_points.value()
                         self.dialog.plugin_instance.draw_preview(
-                            profile_data, geol_data, struct_data
+                            profile_data, geol_data, struct_data, max_points=max_points
                         )
                 except Exception as e:
                     logger.error(f"Error drawing preview: {e}", exc_info=True)
@@ -182,7 +184,11 @@ class PreviewManager:
             ):
                 logger.warning("Plugin instance not available for preview update")
                 return
-            self.dialog.plugin_instance.draw_preview(topo_data, geol_data, struct_data)
+            # Get max points from UI
+            max_points = self.dialog.preview_widget.spin_max_points.value()
+            self.dialog.plugin_instance.draw_preview(
+                topo_data, geol_data, struct_data, max_points=max_points
+            )
         except Exception as e:
             logger.error(f"Error updating preview from checkboxes: {e}", exc_info=True)
 
