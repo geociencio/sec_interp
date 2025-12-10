@@ -155,7 +155,13 @@ class SecInterpDialog(SecInterpMainWindow):
         
         # Page specific connections allowing global state updates
         self.page_dem.raster_combo.layerChanged.connect(self.update_button_state)
+        self.page_dem.raster_combo.layerChanged.connect(self.update_preview_checkbox_states)
+        
         self.page_section.line_combo.layerChanged.connect(self.update_button_state)
+        self.page_section.line_combo.layerChanged.connect(self.update_preview_checkbox_states)
+
+        self.page_geology.dataChanged.connect(self.update_preview_checkbox_states)
+        self.page_struct.dataChanged.connect(self.update_preview_checkbox_states)
         
         # Preview checkbox connections
         self.preview_widget.chk_topo.stateChanged.connect(self.update_preview_from_checkboxes)
@@ -167,6 +173,7 @@ class SecInterpDialog(SecInterpMainWindow):
         
         # Initial state update
         self.update_button_state()
+        self.update_preview_checkbox_states()
 
         self._load_user_settings()
 
@@ -227,6 +234,35 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_widget.results_text.setHtml(msg)
         # Ensure results group is expanded
         self.preview_widget.results_group.setCollapsed(False)
+
+
+    def update_preview_checkbox_states(self):
+        """Enable or disable preview checkboxes based on input validity.
+        
+        Logic:
+        - Show Topography: Requires DEM + Section Line
+        - Show Geology: Requires Geology Data + Section Line
+        - Show Structure: Requires Structure Data + Section Line
+        """
+        has_line = self.page_section.is_complete()
+        
+        # Topography
+        can_show_topo = self.page_dem.is_complete() and has_line
+        self.preview_widget.chk_topo.setEnabled(can_show_topo)
+        if not can_show_topo:
+            self.preview_widget.chk_topo.setChecked(False)
+            
+        # Geology
+        can_show_geol = self.page_geology.is_complete() and has_line
+        self.preview_widget.chk_geol.setEnabled(can_show_geol)
+        if not can_show_geol:
+            self.preview_widget.chk_geol.setChecked(False)
+            
+        # Structure
+        can_show_struct = self.page_struct.is_complete() and has_line
+        self.preview_widget.chk_struct.setEnabled(can_show_struct)
+        if not can_show_struct:
+            self.preview_widget.chk_struct.setChecked(False)
 
 
     def update_button_state(self):

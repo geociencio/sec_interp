@@ -49,3 +49,7 @@ class SectionPage(BasePage):
         if not self.line_combo.currentLayer():
             return False, "Section line layer is required"
         return True, ""
+
+    def is_complete(self) -> bool:
+        """Check if required fields are filled."""
+        return bool(self.line_combo.currentLayer())

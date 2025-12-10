@@ -132,3 +132,7 @@ class DemPage(BasePage):
         if not self.raster_combo.currentLayer():
             return False, "Raster layer is required"
         return True, ""
+
+    def is_complete(self) -> bool:
+        """Check if required fields are filled."""
+        return bool(self.raster_combo.currentLayer())

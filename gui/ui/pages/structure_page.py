@@ -7,8 +7,13 @@ from .base_page import BasePage
 from ...main_dialog_config import DialogDefaults
 
 
+
+from qgis.PyQt.QtCore import pyqtSignal
+
 class StructurePage(BasePage):
     """Configuration page for Structural Measurements."""
+
+    dataChanged = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__("Structural Measurements", parent)
@@ -56,6 +61,11 @@ class StructurePage(BasePage):
         # Connections: update fields when layer changes
         self.layer_combo.layerChanged.connect(self._on_layer_changed)
 
+        # Emit dataChanged when selections change
+        self.layer_combo.layerChanged.connect(self.dataChanged.emit)
+        self.dip_combo.fieldChanged.connect(self.dataChanged.emit)
+        self.strike_combo.fieldChanged.connect(self.dataChanged.emit)
+
     def _on_layer_changed(self, layer):
         """Update both field combos when layer changes."""
         self.dip_combo.setLayer(layer)
@@ -69,3 +79,11 @@ class StructurePage(BasePage):
             "strike_field": self.strike_combo.currentField(),
             "dip_scale_factor": self.scale_spin.value(),
         }
+
+    def is_complete(self) -> bool:
+        """Check if required fields are filled."""
+        return bool(
+            self.layer_combo.currentLayer()
+            and self.dip_combo.currentField()
+            and self.strike_combo.currentField()
+        )
