@@ -593,6 +593,7 @@ class PreviewRenderer:
         vert_exag: float = 1.0,
         dip_line_length: float | None = None,
         max_points: int = 1000,
+        preserve_extent: bool = False,
     ) -> tuple[object | None, list[QgsVectorLayer]]:
         """Render preview with all data layers.
 
@@ -603,6 +604,7 @@ class PreviewRenderer:
             vert_exag: Vertical exaggeration factor (default 1.0)
             dip_line_length: Optional explicit length for dip lines
             max_points: Max points for LOD optimization (default: 1000)
+            preserve_extent: If True, do not reset canvas extent (default: False)
 
         Returns:
             Tuple of (QgsMapCanvas, list of layers) or (None, None) if no data
@@ -683,7 +685,8 @@ class PreviewRenderer:
         # Configure canvas if provided
         if self.canvas:
             self.canvas.setLayers(layers)
-            self.canvas.setExtent(extent)
+            if not preserve_extent:
+                self.canvas.setExtent(extent)
             self.canvas.refresh()
             logger.debug("Canvas configured with %d layers", len(layers))
 

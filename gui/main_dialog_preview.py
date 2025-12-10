@@ -10,6 +10,7 @@ import traceback
 from typing import TYPE_CHECKING, Any, Optional
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.PyQt.QtCore import QTimer
 
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
@@ -46,6 +47,16 @@ class PreviewManager:
         self.dialog = dialog
         self.cached_data: dict[str, Any] = {"topo": None, "geol": None, "struct": None}
         self.metrics = MetricsCollector()
+
+        # Initialize zoom debounce timer
+        self.debounce_timer = QTimer()
+        self.debounce_timer.setSingleShot(True)
+        self.debounce_timer.timeout.connect(self._update_lod_for_zoom)
+
+        # Connect extents changed signal
+        # We need to do this carefully to avoid signal loops
+        # Initial connection is safe
+        self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
 
     def generate_preview(self) -> tuple[bool, str]:
         """Generate complete preview with all available data layers.
@@ -434,3 +445,66 @@ class PreviewManager:
         lines.extend(["", "Adjust 'Vert. Exag.' and click Preview to update."])
 
         return "\n".join(lines)
+
+    def _on_extents_changed(self):
+        """Handle map canvas extent changes (zoom/pan)."""
+        # Only handle if Auto LOD is enabled
+        if not self.dialog.preview_widget.chk_auto_lod.isChecked():
+            return
+            
+        # Restart debounce timer
+        self.debounce_timer.start(200)
+
+    def _update_lod_for_zoom(self):
+        """Update LOD based on current zoom level."""
+        try:
+            canvas = self.dialog.preview_widget.canvas
+            if not self.cached_data["topo"]:
+                return
+
+            full_extent = canvas.fullExtent()
+            current_extent = canvas.extent()
+            
+            if current_extent.width() <= 0 or full_extent.width() <= 0:
+                return
+
+            # Calculate zoom ratio
+            ratio = full_extent.width() / current_extent.width()
+            
+            # If ratio is close to 1, we are at full extent, use standard calculation
+            if ratio < 1.1:
+                # Let the standard update logic handle it or just do nothing if consistent?
+                # Actually standard logic just uses canvas width.
+                # If we return here, we might miss resetting to low detail when zooming out.
+                pass
+            
+            # Base points (pixels * 1.5)
+            base_points = canvas.width() * 1.5
+            
+            # Target points for the whole dataset to ensure current view has 'base_points' density
+            new_max_points = int(base_points * ratio)
+            
+            # Clamp to safe limits (e.g. 50k points max)
+            new_max_points = min(50000, new_max_points)
+            new_max_points = max(100, new_max_points)
+
+            # Check if we actually need to update (hysteresis)
+            # This requires knowing the last used max_points...
+            # We can just re-render, it handles caching of data, but re-decimation takes time.
+            
+            logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
+
+            if not self.dialog.plugin_instance:
+                return
+
+            # Re-render with preserve_extent=True
+            self.dialog.plugin_instance.draw_preview(
+                self.cached_data["topo"],
+                self.cached_data["geol"],
+                self.cached_data["struct"],
+                max_points=new_max_points,
+                preserve_extent=True
+            )
+
+        except Exception as e:
+            logger.error(f"Error in zoom LOD update: {e}", exc_info=True)
