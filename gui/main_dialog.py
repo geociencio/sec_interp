@@ -58,6 +58,7 @@ from sec_interp.core import validation as vu
 from sec_interp.exporters import get_exporter
 from sec_interp.logger_config import get_logger
 
+from .tools.measure_tool import ProfileMeasureTool
 from .legend_widget import LegendWidget
 from .main_dialog_cache_handler import CacheHandler
 from .main_dialog_config import DialogDefaults
@@ -146,6 +147,9 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_widget.btn_preview.clicked.connect(self.preview_profile_handler)
         self.preview_widget.btn_export.clicked.connect(self.export_preview)
         
+        # Measure Tool
+        self.preview_widget.btn_measure.toggled.connect(self.toggle_measure_tool)
+        
         # Output changes
         self.output_widget.fileChanged.connect(self.update_button_state)
         
@@ -168,6 +172,10 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Enable Pan Tool by default
         self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
+        self.measure_tool = ProfileMeasureTool(self.preview_widget.canvas)
+        self.measure_tool.measurementChanged.connect(self.update_measurement_display)
+        self.measure_tool.measurementCleared.connect(lambda: self.preview_widget.results_text.clear())
+        
         self.preview_widget.canvas.setMapTool(self.pan_tool)
 
     def wheelEvent(self, event):
@@ -195,6 +203,31 @@ class SecInterpDialog(SecInterpMainWindow):
                 "Help file not found. Please run 'make doc' to generate it.",
                 level=Qgis.Warning,
             )
+
+    def toggle_measure_tool(self, checked):
+        """Toggle measurement tool."""
+        if checked:
+            self.preview_widget.canvas.setMapTool(self.measure_tool)
+            self.measure_tool.activate()
+        else:
+            self.preview_widget.canvas.setMapTool(self.pan_tool)
+            self.pan_tool.activate()
+            # Clear results when turning off? Maybe optional
+            # self.preview_widget.results_text.clear()
+
+    def update_measurement_display(self, dx, dy, dist, slope):
+        """Display measurement results."""
+        msg = (
+            f"<b>Measurement Result:</b><br>"
+            f"Distance: {dist:.2f} m<br>"
+            f"Horizontal (dx): {dx:.2f} m<br>"
+            f"Vertical (dy): {dy:.2f} m<br>"
+            f"Slope: {slope:.1f}°"
+        )
+        self.preview_widget.results_text.setHtml(msg)
+        # Ensure results group is expanded
+        self.preview_widget.results_group.setCollapsed(False)
+
 
     def update_button_state(self):
         """Enable or disable buttons based on input validity.

@@ -1,10 +1,10 @@
 """Preview area widget."""
 from qgis.PyQt.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
-    QCheckBox, QTextEdit, QFrame, QLabel, QSpinBox
+    QCheckBox, QTextEdit, QFrame, QLabel, QSpinBox, QToolButton
 )
 from qgis.gui import QgsMapCanvas, QgsCollapsibleGroupBox
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QIcon
 
 
 class PreviewWidget(QWidget):
@@ -55,7 +55,13 @@ class PreviewWidget(QWidget):
         self.btn_export = QPushButton("Export")
         self.btn_export.setToolTip("Export preview to file")
         
+        # Measure Button
+        self.btn_measure = QPushButton("Measure")
+        self.btn_measure.setCheckable(True)
+        self.btn_measure.setToolTip("Measure distance and slope")
+        
         btn_layout.addWidget(self.btn_preview)
+        btn_layout.addWidget(self.btn_measure)
         btn_layout.addWidget(self.btn_export)
         frame_layout.addLayout(btn_layout)
 
