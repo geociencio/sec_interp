@@ -64,7 +64,7 @@ from .main_dialog_config import DialogDefaults
 from .main_dialog_export import ExportManager
 from .main_dialog_preview import PreviewManager
 from .main_dialog_validation import DialogValidator
-from .ui.main_dialog_base import Ui_SecInterpDialogBase
+
 
 
 
