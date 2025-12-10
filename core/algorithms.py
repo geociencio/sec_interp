@@ -399,6 +399,10 @@ class SecInterp:
             # Initialize result text
             result_text = f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points"
             self.dlg.preview_widget.results_text.setPlainText(result_text)
+            
+            # Initialize optional data containers
+            geol_data = None
+            struct_data = None
 
             # Process outcrop data
             if outcrop_layer:
