@@ -7,7 +7,7 @@ in the profile preview window.
 import math
 from typing import Optional
 
-from qgis.core import QgsPointXY
+from qgis.core import QgsPointXY, QgsWkbTypes
 from qgis.gui import QgsMapToolEmitPoint, QgsRubberBand
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtGui import QColor
@@ -99,7 +99,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
             # Update rubber band geometry
             if self.rubber_band:
                 # Reset to start point only
-                self.rubber_band.reset(True) # True = LineGeometry
+                self.rubber_band.reset(QgsWkbTypes.LineGeometry)
                 self.rubber_band.addPoint(self.start_point, False)
                 self.rubber_band.addPoint(point, True)
             
@@ -111,7 +111,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         if self.rubber_band:
             self.canvas.scene().removeItem(self.rubber_band)
         
-        self.rubber_band = QgsRubberBand(self.canvas, True)  # True = Line
+        self.rubber_band = QgsRubberBand(self.canvas, QgsWkbTypes.LineGeometry)
         self.rubber_band.setColor(QColor(255, 0, 0))
         self.rubber_band.setWidth(2)
 

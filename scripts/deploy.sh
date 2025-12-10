@@ -87,6 +87,9 @@ cp -v "$SOURCE_DIR/gui/ui/"*.py "$DEST_DIR/gui/ui/"
 mkdir -p "$DEST_DIR/gui/ui/pages"
 cp -v "$SOURCE_DIR/gui/ui/pages/"*.py "$DEST_DIR/gui/ui/pages/"
 
+mkdir -p "$DEST_DIR/gui/tools"
+cp -v "$SOURCE_DIR/gui/tools/"*.py "$DEST_DIR/gui/tools/"
+
 # Copy resources module
 cp -v "$SOURCE_DIR/resources/"*.py "$DEST_DIR/resources/"
 cp -v "$SOURCE_DIR/resources/"*.qrc "$DEST_DIR/resources/"
