@@ -70,6 +70,11 @@ class PreviewWidget(QWidget):
         self.spin_max_points.setToolTip("Maximum points to render in preview (LOD Optimization)")
         lod_layout.addWidget(self.spin_max_points)
         
+        self.chk_auto_lod = QCheckBox("Auto")
+        self.chk_auto_lod.setToolTip("Automatically adjust details based on preview size")
+        self.chk_auto_lod.toggled.connect(self._toggle_lod_spin)
+        lod_layout.addWidget(self.chk_auto_lod)
+        
         lod_layout.addStretch() # Push to left
         frame_layout.addLayout(lod_layout)
 
@@ -110,7 +115,12 @@ class PreviewWidget(QWidget):
         """Update coordinate label."""
         self.lbl_coords.setText(f"{point.x():.2f}, {point.y():.2f}")
 
+
     def _update_scale(self, scale):
         """Update scale label."""
         self.lbl_scale.setText(f"Scale 1:{int(scale)}")
+
+    def _toggle_lod_spin(self, checked):
+        """Enable/disable max points spinbox based on auto checkbox."""
+        self.spin_max_points.setEnabled(not checked)
 

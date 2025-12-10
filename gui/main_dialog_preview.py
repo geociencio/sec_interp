@@ -125,8 +125,18 @@ class PreviewManager:
                         )
 
                     with PerformanceTimer("Rendering", self.metrics):
+
                         # Get max points from UI
-                        max_points = self.dialog.preview_widget.spin_max_points.value()
+                        if self.dialog.preview_widget.chk_auto_lod.isChecked():
+                            # Auto mode: Use canvas width
+                            canvas_width = self.dialog.preview_widget.canvas.width()
+                            max_points = int(canvas_width * 1.5)
+                            # Ensure reasonable bounds
+                            max_points = max(100, min(10000, max_points))
+                        else:
+                            # Manual mode
+                            max_points = self.dialog.preview_widget.spin_max_points.value()
+                        
                         self.dialog.plugin_instance.draw_preview(
                             profile_data, geol_data, struct_data, max_points=max_points
                         )
@@ -185,7 +195,16 @@ class PreviewManager:
                 logger.warning("Plugin instance not available for preview update")
                 return
             # Get max points from UI
-            max_points = self.dialog.preview_widget.spin_max_points.value()
+            if self.dialog.preview_widget.chk_auto_lod.isChecked():
+                # Auto mode: Use canvas width
+                canvas_width = self.dialog.preview_widget.canvas.width()
+                max_points = int(canvas_width * 1.5)
+                # Ensure reasonable bounds
+                max_points = max(100, min(10000, max_points))
+            else:
+                # Manual mode
+                max_points = self.dialog.preview_widget.spin_max_points.value()
+
             self.dialog.plugin_instance.draw_preview(
                 topo_data, geol_data, struct_data, max_points=max_points
             )

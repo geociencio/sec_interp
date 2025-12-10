@@ -157,7 +157,9 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_widget.chk_topo.stateChanged.connect(self.update_preview_from_checkboxes)
         self.preview_widget.chk_geol.stateChanged.connect(self.update_preview_from_checkboxes)
         self.preview_widget.chk_struct.stateChanged.connect(self.update_preview_from_checkboxes)
+
         self.preview_widget.spin_max_points.valueChanged.connect(self.update_preview_from_checkboxes)
+        self.preview_widget.chk_auto_lod.toggled.connect(self.update_preview_from_checkboxes)
         
         # Initial state update
         self.update_button_state()
@@ -817,6 +819,14 @@ class SecInterpDialog(SecInterpMainWindow):
         except (ValueError, TypeError):
             self.preview_widget.spin_max_points.setValue(1000)
 
+        try:
+            auto_lod = settings.value("SecInterp/autoLOD", True, type=bool)
+            self.preview_widget.chk_auto_lod.setChecked(auto_lod)
+            # Ensure spinbox state matches
+            self.preview_widget.spin_max_points.setEnabled(not auto_lod)
+        except (ValueError, TypeError):
+            self.preview_widget.chk_auto_lod.setChecked(True)
+
         # Load output folder
         last_output = settings.value("SecInterp/lastOutputFolder", "", type=str)
         if last_output:
@@ -867,6 +877,12 @@ class SecInterpDialog(SecInterpMainWindow):
             max_points = self.preview_widget.spin_max_points.value()
             if 100 <= max_points <= 10000:
                 settings.setValue("SecInterp/maxPreviewPoints", max_points)
+        except ValueError:
+            pass
+
+        try:
+            auto_lod = self.preview_widget.chk_auto_lod.isChecked()
+            settings.setValue("SecInterp/autoLOD", auto_lod)
         except ValueError:
             pass
 
