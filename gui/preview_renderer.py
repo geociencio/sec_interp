@@ -728,11 +728,7 @@ class PreviewRenderer:
         # Configure canvas if provided
         if self.canvas:
             self.canvas.setLayers(layers)
-            # Configure canvas map settings with correct CRS
-            if layers:
-                settings = self.canvas.mapSettings()
-                settings.setLayers(layers)
-                settings.setCrs(layers[0].crs())
+            # Canvas will automatically use CRS from the layers
             if not preserve_extent:
                 self.canvas.setExtent(extent)
             self.canvas.refresh()
@@ -766,9 +762,7 @@ class PreviewRenderer:
             # Create map settings
             settings = QgsMapSettings()
             settings.setLayers(layers)
-            # Set CRS to match layer CRS
-            if layers:
-                settings.setCrs(layers[0].crs())
+            # CRS is automatically derived from the layers
             settings.setExtent(extent)
             settings.setOutputSize(QSize(width, height))
             settings.setOutputDpi(dpi)
