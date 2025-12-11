@@ -395,17 +395,22 @@ tests/
 ### Implemented Optimizations
 
 #### 1. Data Caching
-- Topographic profile caching
-- Geological data caching
-- Intelligent invalidation
+- Caches the results of expensive data generation (topography, geology, structures).
+- Avoids re-processing data when only visualization parameters (e.g., colors, vertical exaggeration) change.
+- The cache is invalidated when core input parameters (e.g., layers, buffer distance) are modified.
 
 #### 2. Spatial Indexing
-- Use of `QgsSpatialIndex` for spatial filtering
-- R-tree for efficient searches
+- Uses `QgsSpatialIndex` for efficient spatial filtering of structural data points within the user-defined buffer.
+- This avoids a linear scan of all points and significantly speeds up processing for large structural datasets.
 
 #### 3. Native Algorithms
-- Use of QGIS native algorithms
-- Better performance than manual implementations
+- Leverages optimized, C++ based QGIS native processing algorithms (e.g., `native:intersection`, `native:buffer`) where possible for better performance and stability compared to manual Python implementations.
+
+#### 4. Level-of-Detail (LOD) System
+A multi-phase LOD system is implemented in the `PreviewRenderer` to ensure the UI remains responsive, even with very large datasets.
+- **Phase 1: Basic Decimation**: Reduces the number of vertices for preview rendering using the Douglas-Peucker algorithm (`QgsGeometry.simplify()`). The level of detail is controlled by a "Max Points" setting in the UI.
+- **Phase 2: Adaptive Sampling**: A more intelligent simplification that uses the line's curvature to adjust the simplification tolerance. This preserves more detail in complex (high-curvature) areas of the profile. This is enabled via the "Adaptive" checkbox.
+- **Phase 3: Zoom-Based LOD**: When "Auto" mode is enabled, the system automatically adjusts the level of detail based on the current zoom level of the preview canvas. Zooming in increases detail, while zooming out reduces it, ensuring optimal performance at any scale.
 
 ---
 
