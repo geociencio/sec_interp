@@ -28,19 +28,28 @@
 ```
 sec_interp/
 ├── 📁 core/                    # Core business logic
-│   ├── algorithms.py          ⭐ Main processing algorithms
-│   ├── utils.py               ⭐ Utility functions (projections, calculations)
+│   ├── algorithms.py          ⭐ Main orchestrator class
+│   ├── data_cache.py          # Caching mechanism for performance
 │   ├── validation.py          ⭐ Input validation logic
-│   └── __init__.py
+│   ├── services/              # Business logic encapsulated in services
+│   │   ├── profile_service.py
+│   │   ├── geology_service.py
+│   │   └── structure_service.py
+│   └── utils/                 # Package of utility modules
+│       ├── geometry.py
+│       ├── spatial.py
+│       └── ...
 │
 ├── 📁 gui/                     # User interface components
-│   ├── main_dialog.py         ⭐ Main dialog class (Plugin Manager style)
-│   ├── legend_widget.py       ⭐ Legend overlay widget
+│   ├── main_dialog.py         ⭐ Main dialog class with business logic
 │   ├── preview_renderer.py    ⭐ Profile rendering engine
-│   ├── ui/                    # Qt Designer files
-│   │   ├── main_dialog_base.ui    ⭐ UI definition (XML)
-│   │   └── main_dialog_base.py    # Generated Python UI
-│   └── __init__.py
+│   ├── legend_widget.py       # Legend overlay widget
+│   └── ui/                    # Programmatic UI modules
+│       ├── main_window.py     ⭐ Main UI layout assembly
+│       ├── sidebar.py         # Navigation sidebar
+│       └── pages/             # Individual settings pages
+│           ├── dem_page.py
+│           └── ...
 │
 ├── 📁 resources/               # Plugin resources
 │   ├── resources.qrc          # Qt resource file
@@ -86,48 +95,34 @@ sec_interp/
 ### Core Module (`core/`)
 
 #### `algorithms.py` ⭐
-Main processing engine containing:
-- `topographic_profile()`: Extracts elevation data from DEM along a line.
-- `geol_profile()`: Projects geological polygons onto the section.
-- `project_structures()`: Projects structural point data (dip/strike).
+The main orchestrator class (`SecInterp`) that connects the UI to the backend services. It initializes all components, handles UI events, and coordinates the data processing and exporting workflows.
 
-#### `utils.py` ⭐
-Utility functions for:
-- Geometric calculations (azimuth, distance, projections).
-- Coordinate transformations.
-- Data parsing (dip/strike formats).
+#### `services/` (Package) ⭐
+Contains specialized services that encapsulate the core business logic for specific domains:
+- `ProfileService`: Generates the topographic profile.
+- `GeologyService`: Handles geological outcrop processing.
+- `StructureService`: Manages structural data projection and apparent dip calculation.
+
+#### `utils/` (Package) ⭐
+A package of utility modules providing reusable functions for:
+- Geometry operations, data parsing, spatial calculations, and more.
 
 #### `validation.py` ⭐
-Input validation for:
-- Layer geometry types.
-- Field existence and types.
-- Numeric input ranges.
-- Output path validation.
+Handles all input validation, ensuring that layers, fields, and parameters are correct before processing.
 
 ### GUI Module (`gui/`)
 
 #### `main_dialog.py` ⭐
-Main dialog class implementing:
-- Plugin Manager style UI (sidebar + stacked widget).
-- Preview generation and export.
-- Input validation and user feedback.
-- Integration with QGIS native widgets.
+The main dialog class that contains the application's business logic. It inherits the UI layout from `main_window.py` and connects UI signals to backend functionality. It uses a set of manager/handler classes to delegate tasks like validation, previewing, and exporting.
 
-#### `legend_widget.py` ⭐
-Transparent overlay widget for displaying geological legend on the map canvas.
+#### `ui/main_window.py` ⭐
+Assembles the main programmatic UI using a `QSplitter` to create a three-panel layout (Sidebar, Settings, Preview).
+
+#### `ui/pages/` (Package) ⭐
+A package containing self-contained page widgets for each settings group (e.g., `DemPage`, `SectionPage`). Each page manages its own inputs and validation.
 
 #### `preview_renderer.py` ⭐
-Rendering engine for:
-- Drawing topographic profiles.
-- Rendering geological units with colors.
-- Plotting structural symbols (dip/strike).
-- Generating legends.
-
-#### `ui/main_dialog_base.ui` ⭐
-Qt Designer XML file defining the UI layout with:
-- Responsive layouts (QVBoxLayout, QHBoxLayout, QSplitter).
-- QGIS native widgets (QgsMapLayerComboBox, QgsFileWidget).
-- Preview canvas and results panel.
+A powerful rendering engine that draws the interactive profile preview on a `QgsMapCanvas`, handling topography, geology, structures, and vertical exaggeration.
 
 ### Configuration Files
 
@@ -139,7 +134,6 @@ QGIS plugin metadata including:
 
 #### `Makefile` ⭐
 Build automation for:
-- Compiling UI files (`pyuic5`).
 - Compiling resources (`pyrcc5`).
 - Compiling translations (`lrelease`).
 - Creating distribution ZIP.
@@ -155,7 +149,7 @@ Pylint configuration achieving 10/10 score with:
 
 ### Development Workflow
 ```bash
-# Compile UI and resources
+# Compile resources and translations
 make
 
 # Deploy to local QGIS
@@ -169,7 +163,7 @@ make zip
 ```
 
 ### Key Make Targets
-- `make`: Compile all resources and UI files.
+- `make`: Compile all resources and translations.
 - `make deploy`: Deploy to local QGIS plugins directory.
 - `make zip`: Create distribution ZIP file.
 - `make clean`: Remove compiled files.
@@ -178,16 +172,18 @@ make zip
 ## Plugin Architecture
 
 ### Design Patterns
-- **MVC Pattern**: Separation of UI (`gui/`), business logic (`core/`), and data.
-- **SOLID Principles**: Applied throughout, especially in `main_dialog.py`.
-- **Plugin Manager Style**: Modern sidebar navigation with stacked pages.
+- **Service Layer**: Core logic is encapsulated in specialized services in `core/services/`.
+- **Orchestrator/Controller**: The `SecInterp` class in `algorithms.py` acts as a central controller that coordinates between the UI and the backend services.
+- **Component-Based UI**: The UI is programmatically built from modular, reusable components (Pages, Sidebar, etc.).
+- **Factory/Strategy**: Used in the `exporters` module to provide a flexible and extensible way to export data.
 
 ### Data Flow
-1. User selects layers and parameters in GUI.
-2. `main_dialog.py` validates inputs using `validation.py`.
-3. `algorithms.py` processes data (profile extraction, projection).
-4. `preview_renderer.py` renders results on canvas.
-5. User can export to various formats (PNG, SVG, PDF, CSV).
+1. User selects layers and parameters in the `gui`.
+2. The `main_dialog` validates inputs via the `DialogValidator`.
+3. The `SecInterp` class in `algorithms.py` orchestrates the process, calling the necessary services from `core/services/`.
+4. `ProfileService`, `GeologyService`, and `StructureService` process the data and return the results.
+5. `preview_renderer.py` renders the results on the map canvas.
+6. The user can export the data, which uses the `exporters` module.
 
 ## Future Enhancements
 
