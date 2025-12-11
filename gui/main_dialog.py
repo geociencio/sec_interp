@@ -249,19 +249,28 @@ class SecInterpDialog(SecInterpMainWindow):
         # Topography
         can_show_topo = self.page_dem.is_complete() and has_line
         self.preview_widget.chk_topo.setEnabled(can_show_topo)
-        if not can_show_topo:
+        if can_show_topo and not self.preview_widget.chk_topo.isChecked():
+            # Re-enable checkbox if it was disabled before
+            self.preview_widget.chk_topo.setChecked(True)
+        elif not can_show_topo:
             self.preview_widget.chk_topo.setChecked(False)
             
         # Geology
         can_show_geol = self.page_geology.is_complete() and has_line
         self.preview_widget.chk_geol.setEnabled(can_show_geol)
-        if not can_show_geol:
+        if can_show_geol and not self.preview_widget.chk_geol.isChecked():
+            # Re-enable checkbox if it was disabled before
+            self.preview_widget.chk_geol.setChecked(True)
+        elif not can_show_geol:
             self.preview_widget.chk_geol.setChecked(False)
             
         # Structure
         can_show_struct = self.page_struct.is_complete() and has_line
         self.preview_widget.chk_struct.setEnabled(can_show_struct)
-        if not can_show_struct:
+        if can_show_struct and not self.preview_widget.chk_struct.isChecked():
+            # Re-enable checkbox if it was disabled before
+            self.preview_widget.chk_struct.setChecked(True)
+        elif not can_show_struct:
             self.preview_widget.chk_struct.setChecked(False)
 
 

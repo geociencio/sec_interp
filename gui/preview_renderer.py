@@ -97,7 +97,7 @@ class PreviewRenderer:
             # We start with a small tolerance and estimate
             extent = line.boundingBox()
             diag = math.sqrt(extent.width() ** 2 + extent.height() ** 2)
-            
+
             # Heuristic: tolerance = diagonal / target_points
             # This is a rough approximation, D-P isn't exact on point count
             tolerance = diag / max_points
@@ -112,12 +112,12 @@ class PreviewRenderer:
                 result_points = simplified.asPolyline()
 
             result = [(p.x(), p.y()) for p in result_points]
-            
+
             logger.debug(
                 f"LOD Decimation: {len(data)} -> {len(result)} points (tol={tolerance:.2f})"
             )
             return result
-        
+
         except Exception as e:
             logger.warning(f"LOD decimation failed: {e}")
             return data
@@ -173,17 +173,29 @@ class PreviewRenderer:
         Returns:
             QgsVectorLayer with topographic profile
         """
+        logger.debug(f"_create_topo_layer called")
+        logger.debug(f"  topo_data type: {type(topo_data)}, value: {topo_data}")
+        logger.debug(
+            f"  bool(topo_data): {bool(topo_data)}, len check: {len(topo_data) if topo_data else 'N/A'}"
+        )
+
         if not topo_data or len(topo_data) < 2:
+            logger.debug(f"  Returning None: topo_data is None or has < 2 points")
             return None
 
         # Apply LOD decimation
+        logger.debug(f"  Creating render data from {len(topo_data)} points")
         render_data = self._decimate_line_data(topo_data, max_points)
+        logger.debug(f"  After decimation: {len(render_data)} points")
 
         # Create memory layer using factory
+        logger.debug(f"  Creating memory layer...")
         layer, provider = self._create_memory_layer("LineString", "Topography")
         if not layer:
+            logger.error("Failed to create memory layer 'Topography'")
             return None
 
+        logger.debug(f"  Memory layer created successfully, adding features...")
         # Create line geometry from points
         points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_data]
         line = QgsLineString(points)
@@ -229,6 +241,7 @@ class PreviewRenderer:
             "LineString", "Geology", "field=unit:string"
         )
         if not layer:
+            logger.error("Failed to create memory layer 'Geology'")
             return None
 
         # Group data by geological unit
@@ -253,7 +266,9 @@ class PreviewRenderer:
             render_points = self._decimate_line_data(points, max_points)
 
             # Create line from points
-            line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points]
+            line_points = [
+                QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points
+            ]
             line = QgsLineString(line_points)
 
             # Create feature with attributes
@@ -312,6 +327,7 @@ class PreviewRenderer:
         # Create memory layer using factory
         layer, provider = self._create_memory_layer("LineString", "Structures")
         if not layer:
+            logger.error("Failed to create memory layer 'Structures'")
             return None
 
         # Calculate extent for line length
@@ -557,8 +573,10 @@ class PreviewRenderer:
         # Configure labeling
         settings = QgsPalLayerSettings()
         settings.fieldName = "label"
-        settings.placement = QgsPalLayerSettings.Placement.OverPoint  # Allows quadrant usage
-        
+        settings.placement = (
+            QgsPalLayerSettings.Placement.OverPoint
+        )  # Allows quadrant usage
+
         format = QgsTextFormat()
         format.setColor(QColor(0, 0, 0))
         format.setSize(8)
@@ -566,13 +584,13 @@ class PreviewRenderer:
 
         # Data defined properties for quadrant
         from qgis.core import QgsProperty, QgsPropertyCollection
-        
+
         props = QgsPropertyCollection()
         props.setProperty(
             QgsPalLayerSettings.Property.OffsetQuad, QgsProperty.fromField("quadrant")
         )
         settings.setDataDefinedProperties(props)
-        
+
         # Add a small distance offset so they aren't right on top of the line
         settings.dist = 1.0  # mm
 
@@ -609,24 +627,44 @@ class PreviewRenderer:
         Returns:
             Tuple of (QgsMapCanvas, list of layers) or (None, None) if no data
         """
+        # Debug: log input data
+        logger.debug(f"render() called with:")
+        logger.debug(f"  topo_data: {len(topo_data) if topo_data else 0} points")
+        logger.debug(f"  geol_data: {len(geol_data) if geol_data else 0} points")
+        logger.debug(f"  struct_data: {len(struct_data) if struct_data else 0} points")
+        logger.debug(
+            f"  topo_data is None: {topo_data is None}, bool(topo_data): {bool(topo_data)}"
+        )
+
         # Clean up previous layers
         for layer in self.layers:
             if layer:
-                QgsProject.instance().removeMapLayer(layer.id())
+                try:
+                    QgsProject.instance().removeMapLayer(layer.id())
+                except Exception as e:
+                    logger.debug(f"Could not remove layer {layer.name()}: {e}")
         self.layers = []
         self.active_units = {}  # Reset active units
         self.has_topography = False
         self.has_structures = False
 
         # Create layers
-        topo_layer = (
-            self._create_topo_layer(topo_data, vert_exag, max_points) if topo_data else None
+        logger.debug(
+            f"About to create topo_layer, topo_data is None={topo_data is None}"
         )
+        topo_layer = (
+            self._create_topo_layer(topo_data, vert_exag, max_points)
+            if topo_data
+            else None
+        )
+        logger.debug(f"topo_layer created: {topo_layer is not None}")
         if topo_layer:
             self.has_topography = True
 
         geol_layer = (
-            self._create_geol_layer(geol_data, vert_exag, max_points) if geol_data else None
+            self._create_geol_layer(geol_data, vert_exag, max_points)
+            if geol_data
+            else None
         )
 
         # For structural layer, use topo or geol as reference
@@ -651,6 +689,11 @@ class PreviewRenderer:
             for layer in [struct_layer, geol_layer, topo_layer]
             if layer is not None
         ]
+
+        logger.debug(
+            f"Layers created: topo={topo_layer is not None}, geol={geol_layer is not None}, struct={struct_layer is not None}"
+        )
+        logger.debug(f"Valid data_layers count: {len(data_layers)}")
 
         if not data_layers:
             logger.warning("No valid layers to render")
@@ -685,6 +728,9 @@ class PreviewRenderer:
         # Configure canvas if provided
         if self.canvas:
             self.canvas.setLayers(layers)
+            # Set canvas CRS to match layer CRS
+            if layers:
+                self.canvas.setCrs(layers[0].crs())
             if not preserve_extent:
                 self.canvas.setExtent(extent)
             self.canvas.refresh()
@@ -718,6 +764,9 @@ class PreviewRenderer:
             # Create map settings
             settings = QgsMapSettings()
             settings.setLayers(layers)
+            # Set CRS to match layer CRS
+            if layers:
+                settings.setCrs(layers[0].crs())
             settings.setExtent(extent)
             settings.setOutputSize(QSize(width, height))
             settings.setOutputDpi(dpi)
