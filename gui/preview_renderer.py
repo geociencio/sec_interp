@@ -222,6 +222,8 @@ class PreviewRenderer:
 
         # Now use the calculated tolerance for decimation
         return self._decimate_line_data(data, tolerance=tolerance, max_points=max_points)
+
+    def _get_color_for_unit(self, name: str) -> QColor:
         """Get a consistent color for a geological unit based on its name."""
         if not name:
             return QColor(100, 100, 100)  # Default grey
