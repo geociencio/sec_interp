@@ -74,18 +74,22 @@ class PreviewRenderer:
         self.has_structures = False  # Track if structures layer exists
 
     def _decimate_line_data(
-        self, data: list[tuple[float, float]], max_points: int = 1000
+        self,
+        data: list[tuple[float, float]],
+        tolerance: float | None = None,
+        max_points: int = 1000,
     ) -> list[tuple[float, float]]:
         """Decimate line data using Douglas-Peucker algorithm.
 
         Args:
             data: List of (x, y) tuples
-            max_points: Maximum points to keep (approximate target)
+            tolerance: Simplification tolerance (if provided, overrides max_points heuristic)
+            max_points: Maximum points to keep (approximate target if tolerance is None)
 
         Returns:
             Decimated list of (x, y) tuples
         """
-        if not data or len(data) <= max_points:
+        if not data or len(data) <= max_points: # Check for max_points even if tolerance is given
             return data
 
         try:
@@ -93,17 +97,17 @@ class PreviewRenderer:
             points = [QgsPointXY(x, y) for x, y in data]
             line = QgsGeometry.fromPolylineXY(points)
 
-            # Auto-calculate tolerance
-            # We start with a small tolerance and estimate
-            extent = line.boundingBox()
-            diag = math.sqrt(extent.width() ** 2 + extent.height() ** 2)
-
-            # Heuristic: tolerance = diagonal / target_points
-            # This is a rough approximation, D-P isn't exact on point count
-            tolerance = diag / max_points
+            # Determine tolerance
+            if tolerance is None:
+                # Auto-calculate tolerance based on max_points heuristic
+                extent = line.boundingBox()
+                diag = math.sqrt(extent.width() ** 2 + extent.height() ** 2)
+                calculated_tolerance = diag / max_points
+            else:
+                calculated_tolerance = tolerance
 
             # Simplify
-            simplified = line.simplify(tolerance)
+            simplified = line.simplify(calculated_tolerance)
 
             # Extract points
             if simplified.isMultipart():
@@ -114,7 +118,7 @@ class PreviewRenderer:
             result = [(p.x(), p.y()) for p in result_points]
 
             logger.debug(
-                f"LOD Decimation: {len(data)} -> {len(result)} points (tol={tolerance:.2f})"
+                f"LOD Decimation: {len(data)} -> {len(result)} points (tol={calculated_tolerance:.2f})"
             )
             return result
 
@@ -122,7 +126,102 @@ class PreviewRenderer:
             logger.warning(f"LOD decimation failed: {e}")
             return data
 
-    def _get_color_for_unit(self, name: str) -> QColor:
+    def _calculate_curvature(self, data: list[tuple[float, float]]) -> list[float]:
+        """Calculate a simple curvature metric for each point in a line.
+
+        This approximates curvature by the angle deviation between successive segments.
+        High values indicate sharper turns.
+
+        Args:
+            data: List of (x, y) tuples.
+
+        Returns:
+            List of curvature values (angles in degrees), same length as data.
+        """
+        if len(data) < 3:
+            return [0.0] * len(data)
+
+        curvatures = [0.0]  # First point has no preceding segment
+        for i in range(1, len(data) - 1):
+            p_prev = data[i - 1]
+            p_curr = data[i]
+            p_next = data[i + 1]
+
+            # Vectors for segments
+            v1_x = p_curr[0] - p_prev[0]
+            v1_y = p_curr[1] - p_prev[1]
+            v2_x = p_next[0] - p_curr[0]
+            v2_y = p_next[1] - p_curr[1]
+
+            # Dot product and magnitudes
+            dot_product = v1_x * v2_x + v1_y * v2_y
+            mag_v1 = math.sqrt(v1_x**2 + v1_y**2)
+            mag_v2 = math.sqrt(v2_x**2 + v2_y**2)
+
+            if mag_v1 == 0 or mag_v2 == 0:
+                angle = 0.0
+            else:
+                # Angle between vectors
+                cosine_angle = dot_product / (mag_v1 * mag_v2)
+                # Clamp to avoid NaN from floating point inaccuracies
+                cosine_angle = max(-1.0, min(1.0, cosine_angle))
+                angle = math.degrees(math.acos(cosine_angle))
+
+            # Angle deviation from 180 (straight line)
+            curvatures.append(abs(180 - angle))
+
+        curvatures.append(0.0)  # Last point has no succeeding segment
+        return curvatures
+
+    def _adaptive_sample(
+        self,
+        data: list[tuple[float, float]],
+        min_tolerance: float = 0.1,
+        max_tolerance: float = 10.0,
+        max_points: int = 1000,
+    ) -> list[tuple[float, float]]:
+        """Adaptively sample data based on local curvature.
+
+        Args:
+            data: List of (x, y) tuples
+            min_tolerance: Minimum tolerance for high-detail areas
+            max_tolerance: Maximum tolerance for low-detail areas
+            max_points: Maximum points to keep (approximate target)
+
+        Returns:
+            Adaptively sampled data
+        """
+        if len(data) <= max_points:
+            return data
+
+        # Calculate local curvature
+        curvatures = self._calculate_curvature(data)
+
+        # Use average curvature to set a general tolerance for the entire line
+        # This is a simplification; a true adaptive algorithm would vary tolerance per segment
+        avg_curvature = sum(curvatures) / len(curvatures)
+
+        # Scale tolerance based on average curvature:
+        # High curvature -> lower tolerance (more detail)
+        # Low curvature -> higher tolerance (less detail)
+        # Interpolate between min_tolerance and max_tolerance
+        # Normalize avg_curvature (assuming max possible is 180, though usually much less)
+        normalized_curvature = avg_curvature / 180.0
+        # Invert for tolerance: higher curvature means lower tolerance
+        tolerance_factor = 1.0 - normalized_curvature
+
+        # Linearly interpolate tolerance
+        tolerance = min_tolerance + (max_tolerance - min_tolerance) * tolerance_factor
+        tolerance = max(
+            min_tolerance, min(max_tolerance, tolerance)
+        )  # Clamp to ensure range
+
+        logger.debug(
+            f"Adaptive sampling: Avg curvature={avg_curvature:.2f}, calculated tolerance={tolerance:.2f}"
+        )
+
+        # Now use the calculated tolerance for decimation
+        return self._decimate_line_data(data, tolerance=tolerance, max_points=max_points)
         """Get a consistent color for a geological unit based on its name."""
         if not name:
             return QColor(100, 100, 100)  # Default grey
@@ -161,7 +260,11 @@ class PreviewRenderer:
         return layer, layer.dataProvider()
 
     def _create_topo_layer(
-        self, topo_data: ProfileData, vert_exag: float = 1.0, max_points: int = 1000
+        self,
+        topo_data: ProfileData,
+        vert_exag: float = 1.0,
+        max_points: int = 1000,
+        use_adaptive_sampling: bool = False,
     ) -> QgsVectorLayer | None:
         """Create temporary layer for topographic profile.
 
@@ -169,6 +272,7 @@ class PreviewRenderer:
             topo_data: List of (distance, elevation) tuples
             vert_exag: Vertical exaggeration factor
             max_points: Max points for LOD optimization (default: 1000)
+            use_adaptive_sampling: Whether to use adaptive sampling for decimation.
 
         Returns:
             QgsVectorLayer with topographic profile
@@ -185,7 +289,10 @@ class PreviewRenderer:
 
         # Apply LOD decimation
         logger.debug(f"  Creating render data from {len(topo_data)} points")
-        render_data = self._decimate_line_data(topo_data, max_points)
+        if use_adaptive_sampling:
+            render_data = self._adaptive_sample(topo_data, max_points=max_points)
+        else:
+            render_data = self._decimate_line_data(topo_data, max_points=max_points)
         logger.debug(f"  After decimation: {len(render_data)} points")
 
         # Create memory layer using factory
@@ -612,6 +719,7 @@ class PreviewRenderer:
         dip_line_length: float | None = None,
         max_points: int = 1000,
         preserve_extent: bool = False,
+        use_adaptive_sampling: bool = False,
     ) -> tuple[object | None, list[QgsVectorLayer]]:
         """Render preview with all data layers.
 
@@ -653,7 +761,7 @@ class PreviewRenderer:
             f"About to create topo_layer, topo_data is None={topo_data is None}"
         )
         topo_layer = (
-            self._create_topo_layer(topo_data, vert_exag, max_points)
+            self._create_topo_layer(topo_data, vert_exag, max_points, use_adaptive_sampling)
             if topo_data
             else None
         )

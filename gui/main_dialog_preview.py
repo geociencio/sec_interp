@@ -136,20 +136,25 @@ class PreviewManager:
                         )
 
                     with PerformanceTimer("Rendering", self.metrics):
+                        preview_options = self.dialog.get_preview_options()
+                        max_points_setting = preview_options["max_points"]
+                        auto_lod_enabled = preview_options["auto_lod"]
+                        use_adaptive_sampling = preview_options["use_adaptive_sampling"]
 
-                        # Get max points from UI
-                        if self.dialog.preview_widget.chk_auto_lod.isChecked():
-                            # Auto mode: Use canvas width
+                        # Calculate max_points dynamically if auto_lod is enabled
+                        if auto_lod_enabled:
                             canvas_width = self.dialog.preview_widget.canvas.width()
-                            max_points = int(canvas_width * 1.5)
-                            # Ensure reasonable bounds
-                            max_points = max(100, min(10000, max_points))
+                            max_points_for_render = int(canvas_width * 1.5)
+                            max_points_for_render = max(100, min(10000, max_points_for_render))
                         else:
-                            # Manual mode
-                            max_points = self.dialog.preview_widget.spin_max_points.value()
-                        
+                            max_points_for_render = max_points_setting
+
                         self.dialog.plugin_instance.draw_preview(
-                            profile_data, geol_data, struct_data, max_points=max_points
+                            profile_data,
+                            geol_data,
+                            struct_data,
+                            max_points=max_points_for_render,
+                            use_adaptive_sampling=use_adaptive_sampling,
                         )
                 except Exception as e:
                     logger.error(f"Error drawing preview: {e}", exc_info=True)
@@ -205,19 +210,26 @@ class PreviewManager:
             ):
                 logger.warning("Plugin instance not available for preview update")
                 return
-            # Get max points from UI
-            if self.dialog.preview_widget.chk_auto_lod.isChecked():
-                # Auto mode: Use canvas width
+            
+            preview_options = self.dialog.get_preview_options()
+            max_points_setting = preview_options["max_points"]
+            auto_lod_enabled = preview_options["auto_lod"]
+            use_adaptive_sampling = preview_options["use_adaptive_sampling"]
+
+            # Calculate max_points dynamically if auto_lod is enabled
+            if auto_lod_enabled:
                 canvas_width = self.dialog.preview_widget.canvas.width()
-                max_points = int(canvas_width * 1.5)
-                # Ensure reasonable bounds
-                max_points = max(100, min(10000, max_points))
+                max_points_for_render = int(canvas_width * 1.5)
+                max_points_for_render = max(100, min(10000, max_points_for_render))
             else:
-                # Manual mode
-                max_points = self.dialog.preview_widget.spin_max_points.value()
+                max_points_for_render = max_points_setting
 
             self.dialog.plugin_instance.draw_preview(
-                topo_data, geol_data, struct_data, max_points=max_points
+                topo_data,
+                geol_data,
+                struct_data,
+                max_points=max_points_for_render,
+                use_adaptive_sampling=use_adaptive_sampling,
             )
         except Exception as e:
             logger.error(f"Error updating preview from checkboxes: {e}", exc_info=True)

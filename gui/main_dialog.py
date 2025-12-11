@@ -185,6 +185,9 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_widget.chk_auto_lod.toggled.connect(
             self.update_preview_from_checkboxes
         )
+        self.preview_widget.chk_adaptive_sampling.toggled.connect(
+            self.update_preview_from_checkboxes
+        )
 
         # Initial state update
         self.update_button_state()
@@ -356,6 +359,9 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_topo": bool(self.preview_widget.chk_topo.isChecked()),
             "show_geol": bool(self.preview_widget.chk_geol.isChecked()),
             "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
+            "max_points": self.preview_widget.spin_max_points.value(),
+            "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
+            "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
         }
 
     def update_preview_from_checkboxes(self):
@@ -926,6 +932,12 @@ class SecInterpDialog(SecInterpMainWindow):
         except (ValueError, TypeError):
             self.preview_widget.chk_auto_lod.setChecked(True)
 
+        try:
+            adaptive_sampling = settings.value("SecInterp/adaptiveSampling", False, type=bool)
+            self.preview_widget.chk_adaptive_sampling.setChecked(adaptive_sampling)
+        except (ValueError, TypeError):
+            self.preview_widget.chk_adaptive_sampling.setChecked(False)
+
         # Load output folder
         last_output = settings.value("SecInterp/lastOutputFolder", "", type=str)
         if last_output:
@@ -982,6 +994,12 @@ class SecInterpDialog(SecInterpMainWindow):
         try:
             auto_lod = self.preview_widget.chk_auto_lod.isChecked()
             settings.setValue("SecInterp/autoLOD", auto_lod)
+        except ValueError:
+            pass
+
+        try:
+            adaptive_sampling = self.preview_widget.chk_adaptive_sampling.isChecked()
+            settings.setValue("SecInterp/adaptiveSampling", adaptive_sampling)
         except ValueError:
             pass
 

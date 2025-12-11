@@ -80,6 +80,11 @@ class PreviewWidget(QWidget):
         self.chk_auto_lod.setToolTip("Automatically adjust details based on preview size")
         self.chk_auto_lod.toggled.connect(self._toggle_lod_spin)
         lod_layout.addWidget(self.chk_auto_lod)
+
+        self.chk_adaptive_sampling = QCheckBox("Adaptive")
+        self.chk_adaptive_sampling.setToolTip("Use adaptive sampling based on curvature (Phase 2)")
+        self.chk_adaptive_sampling.setChecked(True) # Default to true for now
+        lod_layout.addWidget(self.chk_adaptive_sampling)
         
         lod_layout.addStretch() # Push to left
         frame_layout.addLayout(lod_layout)
