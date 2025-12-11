@@ -728,9 +728,11 @@ class PreviewRenderer:
         # Configure canvas if provided
         if self.canvas:
             self.canvas.setLayers(layers)
-            # Set canvas CRS to match layer CRS
+            # Configure canvas map settings with correct CRS
             if layers:
-                self.canvas.setCrs(layers[0].crs())
+                settings = self.canvas.mapSettings()
+                settings.setLayers(layers)
+                settings.setCrs(layers[0].crs())
             if not preserve_extent:
                 self.canvas.setExtent(extent)
             self.canvas.refresh()

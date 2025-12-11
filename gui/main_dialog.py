@@ -67,9 +67,8 @@ from .main_dialog_preview import PreviewManager
 from .main_dialog_validation import DialogValidator
 
 
-
-
 from .ui.main_window import SecInterpMainWindow
+
 
 class SecInterpDialog(SecInterpMainWindow):
     """Dialog for the SecInterp QGIS plugin.
@@ -93,16 +92,18 @@ class SecInterpDialog(SecInterpMainWindow):
         """Constructor."""
         # Initialize the base class which sets up the programmatic UI
         super().__init__(iface, parent)
-        
+
         self.iface = iface
         self.plugin_instance = plugin_instance
 
         # Provide a safe, no-op messagebar when iface is not available (tests)
         if self.iface is None:
+
             class _NoOpMessageBar:
                 def pushMessage(self, *_args, **_kwargs):
                     """No-op implementation of pushMessage."""
                     return None
+
             self.messagebar = _NoOpMessageBar()
         else:
             self.messagebar = self.iface.messageBar()
@@ -131,46 +132,60 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Connect Signal overrides and Business Logic
         # Button connections are already set up in main_window signals? No, we need to bind actions
-        
+
         # Clear Cache Button
         self.clear_cache_btn = QPushButton("Clear Cache")
         self.clear_cache_btn.setToolTip("Clear cached data to force re-processing.")
         self.clear_cache_btn.clicked.connect(self.clear_cache_handler)
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
-        
+
         # Dialog Buttons
         self.button_box.accepted.connect(self.accept_handler)
         self.button_box.rejected.connect(self.reject_handler)
         self.button_box.helpRequested.connect(self.open_help)
-        
+
         # Preview Buttons
         self.preview_widget.btn_preview.clicked.connect(self.preview_profile_handler)
         self.preview_widget.btn_export.clicked.connect(self.export_preview)
-        
+
         # Measure Tool
         self.preview_widget.btn_measure.toggled.connect(self.toggle_measure_tool)
-        
+
         # Output changes
         self.output_widget.fileChanged.connect(self.update_button_state)
-        
+
         # Page specific connections allowing global state updates
         self.page_dem.raster_combo.layerChanged.connect(self.update_button_state)
-        self.page_dem.raster_combo.layerChanged.connect(self.update_preview_checkbox_states)
-        
+        self.page_dem.raster_combo.layerChanged.connect(
+            self.update_preview_checkbox_states
+        )
+
         self.page_section.line_combo.layerChanged.connect(self.update_button_state)
-        self.page_section.line_combo.layerChanged.connect(self.update_preview_checkbox_states)
+        self.page_section.line_combo.layerChanged.connect(
+            self.update_preview_checkbox_states
+        )
 
         self.page_geology.dataChanged.connect(self.update_preview_checkbox_states)
         self.page_struct.dataChanged.connect(self.update_preview_checkbox_states)
-        
-        # Preview checkbox connections
-        self.preview_widget.chk_topo.stateChanged.connect(self.update_preview_from_checkboxes)
-        self.preview_widget.chk_geol.stateChanged.connect(self.update_preview_from_checkboxes)
-        self.preview_widget.chk_struct.stateChanged.connect(self.update_preview_from_checkboxes)
 
-        self.preview_widget.spin_max_points.valueChanged.connect(self.update_preview_from_checkboxes)
-        self.preview_widget.chk_auto_lod.toggled.connect(self.update_preview_from_checkboxes)
-        
+        # Preview checkbox connections
+        self.preview_widget.chk_topo.stateChanged.connect(
+            self.update_preview_from_checkboxes
+        )
+        self.preview_widget.chk_geol.stateChanged.connect(
+            self.update_preview_from_checkboxes
+        )
+        self.preview_widget.chk_struct.stateChanged.connect(
+            self.update_preview_from_checkboxes
+        )
+
+        self.preview_widget.spin_max_points.valueChanged.connect(
+            self.update_preview_from_checkboxes
+        )
+        self.preview_widget.chk_auto_lod.toggled.connect(
+            self.update_preview_from_checkboxes
+        )
+
         # Initial state update
         self.update_button_state()
         self.update_preview_checkbox_states()
@@ -181,8 +196,10 @@ class SecInterpDialog(SecInterpMainWindow):
         self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
         self.measure_tool = ProfileMeasureTool(self.preview_widget.canvas)
         self.measure_tool.measurementChanged.connect(self.update_measurement_display)
-        self.measure_tool.measurementCleared.connect(lambda: self.preview_widget.results_text.clear())
-        
+        self.measure_tool.measurementCleared.connect(
+            lambda: self.preview_widget.results_text.clear()
+        )
+
         self.preview_widget.canvas.setMapTool(self.pan_tool)
 
     def wheelEvent(self, event):
@@ -235,17 +252,16 @@ class SecInterpDialog(SecInterpMainWindow):
         # Ensure results group is expanded
         self.preview_widget.results_group.setCollapsed(False)
 
-
     def update_preview_checkbox_states(self):
         """Enable or disable preview checkboxes based on input validity.
-        
+
         Logic:
         - Show Topography: Requires DEM + Section Line
         - Show Geology: Requires Geology Data + Section Line
         - Show Structure: Requires Structure Data + Section Line
         """
         has_line = self.page_section.is_complete()
-        
+
         # Topography
         can_show_topo = self.page_dem.is_complete() and has_line
         self.preview_widget.chk_topo.setEnabled(can_show_topo)
@@ -254,7 +270,7 @@ class SecInterpDialog(SecInterpMainWindow):
             self.preview_widget.chk_topo.setChecked(True)
         elif not can_show_topo:
             self.preview_widget.chk_topo.setChecked(False)
-            
+
         # Geology
         can_show_geol = self.page_geology.is_complete() and has_line
         self.preview_widget.chk_geol.setEnabled(can_show_geol)
@@ -263,7 +279,7 @@ class SecInterpDialog(SecInterpMainWindow):
             self.preview_widget.chk_geol.setChecked(True)
         elif not can_show_geol:
             self.preview_widget.chk_geol.setChecked(False)
-            
+
         # Structure
         can_show_struct = self.page_struct.is_complete() and has_line
         self.preview_widget.chk_struct.setEnabled(can_show_struct)
@@ -272,7 +288,6 @@ class SecInterpDialog(SecInterpMainWindow):
             self.preview_widget.chk_struct.setChecked(True)
         elif not can_show_struct:
             self.preview_widget.chk_struct.setChecked(False)
-
 
     def update_button_state(self):
         """Enable or disable buttons based on input validity.
@@ -313,25 +328,21 @@ class SecInterpDialog(SecInterpMainWindow):
         section_data = self.page_section.get_data()
         geology_data = self.page_geology.get_data()
         structure_data = self.page_struct.get_data()
-        
+
         # Combine into flat dictionary expected by the rest of the app (legacy support)
         return {
             "raster_layer": dem_data["raster_layer"],
             "selected_band": dem_data["selected_band"],
             "scale": dem_data["scale"],
             "vertexag": dem_data["vertexag"],
-            
             "crossline_layer": section_data["crossline_layer"],
             "buffer_distance": section_data["buffer_distance"],
-            
             "outcrop_layer": geology_data["outcrop_layer"],
             "outcrop_name_field": geology_data["outcrop_name_field"],
-            
             "structural_layer": structure_data["structural_layer"],
             "dip_field": structure_data["dip_field"],
             "strike_field": structure_data["strike_field"],
             "dip_scale_factor": structure_data["dip_scale_factor"],
-            
             "output_path": self.output_widget.filePath(),
         }
 
@@ -362,7 +373,7 @@ class SecInterpDialog(SecInterpMainWindow):
         success, message = self.preview_manager.generate_preview()
         if not success and message:
             self.messagebar.pushMessage("Preview Error", message, level=2)
-        
+
         # Update CRS label in status bar
         try:
             # Use line layer CRS as the primary reference for the preview
@@ -431,7 +442,9 @@ class SecInterpDialog(SecInterpMainWindow):
         settings.setValue("SecInterp/lastExportDir", str(Path(filename).parent))
 
         try:
-            self.preview_widget.results_text.setPlainText(f"Exporting preview to {filename}...")
+            self.preview_widget.results_text.setPlainText(
+                f"Exporting preview to {filename}..."
+            )
 
             # Get extent from canvas
             extent = self.current_canvas.extent()
@@ -474,7 +487,9 @@ class SecInterpDialog(SecInterpMainWindow):
                     f"✓ Preview exported successfully to:\n{filename}"
                 )
             else:
-                self.preview_widget.results_text.setPlainText(f"⚠ Error exporting preview to {filename}")
+                self.preview_widget.results_text.setPlainText(
+                    f"⚠ Error exporting preview to {filename}"
+                )
 
         except ValueError as e:
             self.preview_widget.results_text.setPlainText(f"⚠ {e!s}")
@@ -516,7 +531,9 @@ class SecInterpDialog(SecInterpMainWindow):
         """Clear cached data and notify user."""
         if hasattr(self, "plugin_instance") and self.plugin_instance:
             self.plugin_instance.data_cache.clear()
-            self.preview_widget.results_text.append("✓ Cache cleared - next preview will re-process data")
+            self.preview_widget.results_text.append(
+                "✓ Cache cleared - next preview will re-process data"
+            )
             # context specific usage
             logger = get_logger(__name__)
             logger.info("Cache cleared by user")
@@ -580,7 +597,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def update_resolution_field(self):
         """Calculate and update the resolution field for the selected raster layer.
-        
+
         NOTE: This logic is partially duplicated in DemPage._update_resolution.
         Ideally we should move all this logic to DemPage or a common helper.
         For now, we update the widgets in DemPage from here to minimize logic breakage.
@@ -630,7 +647,9 @@ class SecInterpDialog(SecInterpMainWindow):
                     resolution_in_meters = native_res * 111320
                 else:
                     self.page_dem.res_edit.setText(f"{native_res:.2f}")
-                    self.page_dem.units_edit.setText(QgsUnitTypes.toString(raster_crs.mapUnits()))
+                    self.page_dem.units_edit.setText(
+                        QgsUnitTypes.toString(raster_crs.mapUnits())
+                    )
                     if raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Meters:
                         resolution_in_meters = native_res
                     elif raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Feet:
@@ -661,7 +680,9 @@ class SecInterpDialog(SecInterpMainWindow):
                     # Raster is geographic, map is projected
                     resolution = p1_transformed.distance(p2_transformed)
                     self.page_dem.res_edit.setText(f"{resolution:.2f}")
-                    self.page_dem.units_edit.setText(QgsUnitTypes.toString(map_crs.mapUnits()))
+                    self.page_dem.units_edit.setText(
+                        QgsUnitTypes.toString(map_crs.mapUnits())
+                    )
                     if map_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Meters:
                         resolution_in_meters = resolution
                     elif map_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Feet:
