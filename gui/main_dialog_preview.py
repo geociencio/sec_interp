@@ -509,13 +509,17 @@ class PreviewManager:
             if not self.dialog.plugin_instance:
                 return
 
+            preview_options = self.dialog.get_preview_options()
+            use_adaptive_sampling = preview_options["use_adaptive_sampling"]
+
             # Re-render with preserve_extent=True
             self.dialog.plugin_instance.draw_preview(
                 self.cached_data["topo"],
                 self.cached_data["geol"],
                 self.cached_data["struct"],
                 max_points=new_max_points,
-                preserve_extent=True
+                preserve_extent=True,
+                use_adaptive_sampling=use_adaptive_sampling,
             )
 
         except Exception as e:
