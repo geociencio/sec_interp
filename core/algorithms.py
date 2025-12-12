@@ -278,13 +278,12 @@ class SecInterp:
         Uses cache to avoid re-processing when only visualization
         parameters change.
         """
-        values = self.dlg.get_selected_values()
-
-        is_valid, error_msg, validated_values = vu.validate_and_get_layers(values)
-
-        if not is_valid:
-            scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error_msg))
+        # Get and validate inputs once
+        inputs = self._get_and_validate_inputs()
+        if not inputs:
             return None
+
+        validated_values = inputs
 
         # Check for reasonable parameter ranges
         warnings = vu.validate_reasonable_ranges(validated_values)
@@ -307,6 +306,7 @@ class SecInterp:
         profile_data = None
         geol_data = None
         struct_data = None
+        msgs = []
 
         if cached_data:
             logger.info("⚡ Using cached profile data")
@@ -314,260 +314,180 @@ class SecInterp:
             profile_data = cached_data["profile_data"]
             geol_data = cached_data.get("geol_data")
             struct_data = cached_data.get("struct_data")
+            msgs = cached_data.get("msgs", [])
         else:
             logger.info("🔄 Processing new profile data...")
             self.dlg.preview_widget.results_text.append("🔄 Processing data...")
 
-            # Process data (existing code)
-            profile_data, geol_data, struct_data = self._process_profile_data(
-                validated_values
-            )
-
-            if not profile_data:
-                scu.show_user_message(
-                    self.dlg,
-                    self.tr("Error"),
-                    self.tr(
-                        "No profile data was generated. "
-                        "Check that the line intersects the raster."
-                    ),
+            try:
+                # Generate data using unified method
+                profile_data, geol_data, struct_data, msgs = self._generate_profile_data(
+                    validated_values
                 )
-                return
 
-            # Cache the processed data
-            self.data_cache.set(
-                cache_key,
-                {
-                    "profile_data": profile_data,
-                    "geol_data": geol_data,
-                    "struct_data": struct_data,
-                },
-            )
-            logger.info("✓ Data cached for future use")
+                if not profile_data:
+                    # Specific error message handled in generate or here
+                    # If generate returns None/empty without raising, assumes it handled user notification?
+                    # No, let's assume generate returns what it found.
+                    if not msgs: # If no messages, likely complete failure
+                         scu.show_user_message(
+                            self.dlg,
+                            self.tr("Error"),
+                            self.tr(
+                                "No profile data was generated. "
+                                "Check that the line intersects the raster."
+                            ),
+                        )
+                         return None
+                
+                # Cache the processed data
+                self.data_cache.set(
+                    cache_key,
+                    {
+                        "profile_data": profile_data,
+                        "geol_data": geol_data,
+                        "struct_data": struct_data,
+                        "msgs": msgs,
+                    },
+                )
+                logger.info("✓ Data cached for future use")
 
-        # Draw preview with current visualization parameters
+            except Exception as e:
+                # Error handling now delegated to _generate_profile_data or caught here
+                # We catch here to show message if _generate_profile_data raised
+                self._handle_processing_error(e)
+                return None
+
+        # Update results text with messages from generation
+        if msgs:
+            self.dlg.preview_widget.results_text.setPlainText("\n".join(msgs))
+        
+        # Always append tip
+        self.dlg.preview_widget.results_text.append(
+            "\n\n💡 Use 'Save' button to export data to CSV and Shapefile."
+        )
+
+        # Draw preview with all data
+        logger.debug("About to draw preview:")
+        logger.debug(
+            "  - profile_data: %d points", len(profile_data) if profile_data else 0
+        )
         self.draw_preview(profile_data, geol_data, struct_data)
 
         return profile_data, geol_data, struct_data
 
-    def _process_profile_data(self, values):
-        """Main data processing method triggered by the OK button.
+    def _generate_profile_data(self, values):
+        """Unified method to generate all profile data components.
+        
+        Args:
+            values (dict): Validated input values.
 
-        This method orchestrates the entire data extraction workflow:
-        1. Validates user inputs (layers, fields, parameters).
-        2. Generates the topographic profile.
-        3. Generates the geological profile (if selected).
-        4. Projects structural data onto the section (if selected).
-        5. Updates the results text area.
-        6. Draws the interactive preview.
-
-        Handles various exceptions and displays appropriate error messages to the user.
+        Returns:
+            tuple: (profile_data, geol_data, struct_data, messages)
         """
-        try:
-            # Get and validate inputs
-            inputs = self._get_and_validate_inputs()
-            if not inputs:
-                return
+        profile_data = []
+        geol_data = None
+        struct_data = None
+        messages = []
 
-            # Extract values for easier access
-            values = inputs
-            raster_layer = inputs["raster_layer_obj"]
-            line_layer = inputs["line_layer_obj"]
-            outcrop_layer = inputs["outcrop_layer_obj"]
-            structural_layer = inputs["structural_layer_obj"]
+        raster_layer = values["raster_layer_obj"]
+        line_layer = values["line_layer_obj"]
+        outcrop_layer = values["outcrop_layer_obj"]
+        structural_layer = values["structural_layer_obj"]
+        selected_band = values["selected_band"]
+        buffer_dist = values["buffer_distance"]
 
-            selected_band = values["selected_band"]
-            buffer_dist = values["buffer_distance"]
+        # 1. Topography
+        profile_data = self.profile_service.generate_topographic_profile(
+            line_layer, raster_layer, selected_band
+        )
 
-            # Process topographic profile
-            profile_data = self.profile_service.generate_topographic_profile(
-                line_layer, raster_layer, selected_band
-            )
+        if not profile_data:
+            return None, None, None, ["Error: No profile data generated."]
 
-            # Validate profile data was generated
-            if not profile_data:
-                scu.show_user_message(
-                    self.dlg,
-                    self.tr("Error"),
-                    self.tr(
-                        "No profile data was generated. Check that the line intersects the raster."
-                    ),
+        messages.append(f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points")
+
+        # 2. Geology
+        if outcrop_layer:
+            outcrop_name_field = values["outcrop_name_field"]
+            if outcrop_name_field:
+                geol_data = self.geology_service.generate_geological_profile(
+                    line_layer,
+                    raster_layer,
+                    outcrop_layer,
+                    outcrop_name_field,
+                    selected_band,
                 )
-                return
-                return [], [], []  # Return empty lists if no profile data
-
-            # Initialize result text
-            result_text = f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points"
-            self.dlg.preview_widget.results_text.setPlainText(result_text)
-            
-            # Initialize optional data containers
-            geol_data = None
-            struct_data = None
-
-            # Process outcrop data
-            if outcrop_layer:
-                outcrop_name_field = values["outcrop_name_field"]
-                if outcrop_name_field:
-                    geol_data = self.geology_service.generate_geological_profile(
-                        line_layer,
-                        raster_layer,
-                        outcrop_layer,
-                        outcrop_name_field,
-                        selected_band,
-                    )
-
-                    if geol_data:
-                        result_text += f"\nGeology: {len(geol_data)} points"
-                        self.dlg.preview_widget.results_text.setPlainText(result_text)
-                    else:
-                        result_text += "\nGeology: No intersections"
-                        self.dlg.preview_widget.results_text.setPlainText(result_text)
+                if geol_data:
+                    messages.append(f"Geology: {len(geol_data)} points")
                 else:
-                    result_text += (
-                        "\n⚠ Outcrop layer selected but no geology field specified."
-                    )
-                    self.dlg.preview_widget.results_text.setPlainText(result_text)
+                    messages.append("Geology: No intersections")
+            else:
+                 messages.append("\n⚠ Outcrop layer selected but no geology field specified.")
 
-            # Process structural data
-            if structural_layer:
-                dip_field = values["dip_field"]
-                strike_field = values["strike_field"]
+        # 3. Structure
+        if structural_layer:
+            dip_field = values["dip_field"]
+            strike_field = values["strike_field"]
 
-                if dip_field and strike_field:
-                    # Get the azimuth of the cross-section line
-                    line_feat = next(line_layer.getFeatures(), None)
-                    if not line_feat:
-                        scu.show_user_message(
-                            self.dlg,
-                            self.tr("Error"),
-                            self.tr("Line layer has no features."),
-                        )
-                        return
-
+            if dip_field and strike_field:
+                line_feat = next(line_layer.getFeatures(), None)
+                if line_feat:
                     line_geom = line_feat.geometry()
-                    if not line_geom or line_geom.isNull():
-                        scu.show_user_message(
-                            self.dlg,
-                            self.tr("Error"),
-                            self.tr("Line geometry is not valid."),
+                    if line_geom and not line_geom.isNull():
+                        line_azimuth = scu.calculate_line_azimuth(line_geom)
+                        struct_data = self.structure_service.project_structures(
+                            line_layer,
+                            structural_layer,
+                            buffer_dist,
+                            line_azimuth,
+                            dip_field,
+                            strike_field,
                         )
-                        return
+                        
+                        if struct_data:
+                            messages.append(f"Structures: {len(struct_data)} points")
+                        else:
+                            messages.append(f"Structures: None in {buffer_dist}m buffer")
+            else:
+                 messages.append("\n⚠ Structural layer selected but dip/strike fields not specified.")
 
-                    line_azimuth = scu.calculate_line_azimuth(line_geom)
+        return profile_data, geol_data, struct_data, messages
 
-                    struct_data = self.structure_service.project_structures(
-                        line_layer,
-                        structural_layer,
-                        buffer_dist,
-                        line_azimuth,
-                        dip_field,
-                        strike_field,
-                    )
+    def _handle_processing_error(self, e):
+        """Unified error handler."""
+        import traceback
+        error_details = traceback.format_exc()
 
-                    if struct_data:
-                        result_text += f"\nStructures: {len(struct_data)} points"
-                        self.dlg.preview_widget.results_text.setPlainText(result_text)
-                    else:
-                        result_text += f"\nStructures: None in {buffer_dist}m buffer"
-                        self.dlg.preview_widget.results_text.setPlainText(result_text)
-                else:
-                    result_text += "\n⚠ Structural layer selected but dip/strike fields not specified."
-                    self.dlg.preview_widget.results_text.setPlainText(result_text)
-
-            # Draw preview with all data
-            logger.debug("About to draw preview:")
-            logger.debug(
-                "  - profile_data: %d points", len(profile_data) if profile_data else 0
-            )
-            logger.debug("  - geol_data: %d points", len(geol_data) if geol_data else 0)
-            logger.debug(
-                "  - struct_data: %d points", len(struct_data) if struct_data else 0
-            )
-            self.draw_preview(profile_data, geol_data, struct_data)
-
-            result_text += (
-                "\n\n💡 Use 'Save' button to export data to CSV and Shapefile."
-            )
-            self.dlg.preview_widget.results_text.setPlainText(result_text)
-
-            # Return processed data for caching
-            return (
-                profile_data,
-                geol_data if geol_data else [],
-                struct_data if struct_data else [],
-            )
-
-        except OSError as e:
-            # File system errors (temp file creation, permissions, etc.)
-            scu.show_user_message(
+        if isinstance(e, OSError):
+             scu.show_user_message(
                 self.dlg,
                 self.tr("File System Error"),
-                self.tr(
-                    f"Failed to access temporary files: {e!s}\n\n"
-                    f"Please check disk space and permissions."
-                ),
+                self.tr(f"Failed to access temporary files: {e!s}"),
                 "error",
             )
-            self.dlg.preview_widget.results_text.append(f"File system error: {e!s}")
-            logger.error("File system error in process_data: %s", str(e), exc_info=True)
-
-        except ValueError as e:
-            # Data validation errors (invalid geometry, empty data, etc.)
-            scu.show_user_message(
+        elif isinstance(e, ValueError):
+             scu.show_user_message(
                 self.dlg,
                 self.tr("Data Validation Error"),
-                self.tr(
-                    f"Invalid data encountered: {e!s}\n\n"
-                    f"Please verify your input layers and try again."
-                ),
+                self.tr(f"Invalid data encountered: {e!s}"),
             )
-            self.dlg.preview_widget.results_text.append(f"Validation error: {e!s}")
-            logger.error("Validation error in process_data: %s", str(e), exc_info=True)
-
-        except RuntimeError as e:
-            # Runtime errors (geometry operations, CRS transformations, etc.)
-            scu.show_user_message(
-                self.dlg,
-                self.tr("Processing Error"),
-                self.tr(
-                    f"Error during data processing: {e!s}\n\n"
-                    f"This may be due to invalid geometries or CRS issues."
-                ),
-            )
-            self.dlg.preview_widget.results_text.append(f"Processing error: {e!s}")
-            logger.error("Runtime error in process_data: %s", str(e), exc_info=True)
-
-        except KeyError as e:
-            # Missing field or attribute errors
+        elif isinstance(e, KeyError):
             scu.show_user_message(
                 self.dlg,
                 self.tr("Field Error"),
-                self.tr(
-                    f"Required field not found: {e!s}\n\n"
-                    f"Please verify that all required fields exist in your layers."
-                ),
+                self.tr(f"Required field not found: {e!s}"),
             )
-            self.dlg.preview_widget.results_text.append(f"Field error: {e!s}")
-            logger.error("Field error in process_data: %s", str(e), exc_info=True)
-
-        except Exception as e:
-            # Catch-all for unexpected errors
-            import traceback
-
-            error_details = traceback.format_exc()
-            scu.show_user_message(
+        else:
+             scu.show_user_message(
                 self.dlg,
                 self.tr("Unexpected Error"),
-                self.tr(
-                    f"An unexpected error occurred: {e!s}\n\nDetails:\n{error_details}"
-                ),
+                self.tr(f"An unexpected error occurred: {e!s}"),
                 "error",
             )
-            self.dlg.preview_widget.results_text.append(f"Unexpected error: {e!s}")
-            logger.exception("Unexpected error in process_data: %s", error_details)
-
-    # Methods topographic_profile, geol_profile, and project_structures
-    # have been moved to ProfileService, GeologyService, and StructureService respectively
+             logger.exception("Unexpected error in process_data: %s", error_details)
+        
+        self.dlg.preview_widget.results_text.append(f"Error: {e!s}")
 
     def save_profile_line(self):
         """Save all profile data to CSV and Shapefile formats by delegating to exporters."""
@@ -585,12 +505,13 @@ class SecInterp:
 
             self.dlg.preview_widget.results_text.setPlainText("✓ Generating data for export...")
 
-            # 1. Generate all data in memory first
-            profile_data = self.profile_service.generate_topographic_profile(
-                values["line_layer_obj"],
-                values["raster_layer_obj"],
-                values["selected_band"],
-            )
+            # 1. Generate all data using unified method
+            try:
+                profile_data, geol_data, struct_data, _ = self._generate_profile_data(values)
+            except Exception as e:
+                 self._handle_processing_error(e)
+                 return
+
             if not profile_data:
                 scu.show_user_message(
                     self.dlg,
@@ -598,35 +519,6 @@ class SecInterp:
                     self.tr("No profile data generated, cannot save."),
                 )
                 return
-
-            geol_data = None
-            if values["outcrop_layer_obj"] and values["outcrop_name_field"]:
-                geol_data = self.geology_service.generate_geological_profile(
-                    values["line_layer_obj"],
-                    values["raster_layer_obj"],
-                    values["outcrop_layer_obj"],
-                    values["outcrop_name_field"],
-                    values["selected_band"],
-                )
-
-            struct_data = None
-            if (
-                values["structural_layer_obj"]
-                and values["dip_field"]
-                and values["strike_field"]
-            ):
-                line_feat = next(values["line_layer_obj"].getFeatures(), None)
-                if line_feat:
-                    line_geom = line_feat.geometry()
-                    line_azimuth = scu.calculate_line_azimuth(line_geom)
-                    struct_data = self.structure_service.project_structures(
-                        values["line_layer_obj"],
-                        values["structural_layer_obj"],
-                        values["buffer_distance"],
-                        line_azimuth,
-                        values["dip_field"],
-                        values["strike_field"],
-                    )
 
             # 2. Orchestrate saving using exporters
             result_msg = ["✓ Saving files..."]
