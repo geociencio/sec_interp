@@ -26,7 +26,6 @@ exclude = [
     # Project-specific exclusions
     "help",                          # Generated help files
     "resources/resources.py",        # Qt resources (auto-generated)
-    "gui/ui/main_dialog_base.py",   # Qt Designer output (auto-generated)
     "gui/ui/__init__.py",
     "**/migrations/**",
     # Tests (optional - remove if you want to lint tests)
@@ -66,10 +65,7 @@ select = [
 ignore = [
     # === QGIS/PyQt5 Compatibility ===
     "F821",   # undefined-name (QGIS modules not in standard env)
-    "N802",   # invalid-function-name (PyQt/QGIS uses camelCase)
-    "N803",   # invalid-argument-name (PyQt signals use camelCase)
-    "N806",   # non-lowercase-variable-in-function (Qt constants)
-    
+
     # === Import Management ===
     "F401",   # unused-import (common in __init__.py for re-exports)
     
@@ -105,6 +101,14 @@ unfixable = [
 [lint.per-file-ignores]
 # __init__.py files often have unused imports for re-export
 "__init__.py" = ["F401", "D104"]
+
+# GUI files often need camelCase for Qt overrides
+"gui/**/*.py" = [
+    "N802",   # invalid-function-name (camelCase for Qt)
+    "N803",   # invalid-argument-name (camelCase for Qt)
+    "N806",   # non-lowercase-variable-in-function (Qt constants)
+    "N815",   # mixedCase variable in class scope (Qt signals)
+]
 
 # Test files can have more relaxed rules
 "tests/**/*.py" = [

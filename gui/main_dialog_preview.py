@@ -112,7 +112,9 @@ class PreviewManager:
                     buffer_dist = 100.0
                     with PerformanceTimer("Structure Generation", self.metrics):
                         buffer_dist = self._get_buffer_distance()
-                        struct_data = self.generate_structures(line_layer, buffer_dist)
+                        struct_data = self.generate_structures(
+                            line_layer, raster_layer, band_num, buffer_dist
+                        )
 
                     if struct_data:
                         self.metrics.record_count("Structure Points", len(struct_data))
@@ -292,7 +294,7 @@ class PreviewManager:
                 )
             )
             logger.info(
-                f"Geological profile result: {len(result) if result else 0} points"
+                f"Geological profile result: {len(result) if result else 0} segments"
             )
             return result
         except Exception as e:
@@ -300,7 +302,11 @@ class PreviewManager:
             return None
 
     def generate_structures(
-        self, line_layer: QgsVectorLayer, buffer_dist: float
+        self,
+        line_layer: QgsVectorLayer,
+        raster_layer: QgsRasterLayer,
+        band_num: int,
+        buffer_dist: float,
     ) -> StructureData | None:
         """Generate structural data if structural layer is selected.
 
@@ -340,12 +346,14 @@ class PreviewManager:
             line_azimuth = scu.calculate_line_azimuth(line_geom)
 
             return self.dialog.plugin_instance.structure_service.project_structures(
-                line_layer,
-                structural_layer,
-                buffer_dist,
-                line_azimuth,
-                dip_field,
-                strike_field,
+                line_lyr=line_layer,
+                raster_lyr=raster_layer,
+                struct_lyr=structural_layer,
+                buffer_m=buffer_dist,
+                line_az=line_azimuth,
+                dip_field=dip_field,
+                strike_field=strike_field,
+                band_number=band_num,
             )
         except Exception as e:
             logger.error(f"Error generating structures: {e}", exc_info=True)
@@ -407,12 +415,12 @@ class PreviewManager:
         ]
 
         if geol_data:
-            lines.append(f"Geology: {len(geol_data)} points")
+            lines.append(f"Geology: {len(geol_data)} segments")
         else:
             lines.append("Geology: No intersections or layer not selected")
 
         if struct_data:
-            lines.append(f"Structures: {len(struct_data)} points")
+            lines.append(f"Structures: {len(struct_data)} measurements")
         else:
             lines.append(
                 f"Structures: None in {buffer_dist}m buffer or layer not selected"

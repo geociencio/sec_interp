@@ -39,16 +39,15 @@ LRELEASE = lrelease
 SOURCES = \
 	__init__.py \
 	core/algorithms.py core/utils.py core/validation.py \
+	core/services/geology_service.py core/services/profile_service.py core/services/structure_service.py \
 	exporters/base_exporter.py exporters/image_exporter.py exporters/svg_exporter.py exporters/pdf_exporter.py exporters/csv_exporter.py exporters/shp_exporter.py \
-	gui/main_dialog.py gui/preview_renderer.py
+	gui/main_window.py gui/preview_renderer.py gui/sidebar.py \
+	gui/ui/pages/base_page.py gui/ui/pages/dem_page.py gui/ui/pages/section_page.py gui/ui/pages/geology_page.py gui/ui/pages/structure_page.py gui/ui/pages/preview_page.py \
+	gui/tools/measure_tool.py
 
 PLUGINNAME = sec_interp
 
-PY_FILES = \
-	__init__.py \
-	core/algorithms.py core/utils.py core/validation.py \
-	exporters/base_exporter.py exporters/image_exporter.py exporters/svg_exporter.py exporters/pdf_exporter.py exporters/csv_exporter.py exporters/shp_exporter.py \
-	gui/main_dialog.py gui/preview_renderer.py
+PY_FILES = $(SOURCES)
 
 UI_FILES = 
 EXTRAS = metadata.txt icon.png
@@ -113,7 +112,7 @@ test: compile transcompile
 	@-export PYTHONPATH=`pwd`:$(PYTHONPATH); \
 		export QGIS_DEBUG=0; \
 		export QGIS_LOG_FILE=/dev/null; \
-		nosetests -v --with-id --with-coverage --cover-package=. \
+		pytest -v \
 		3>&1 1>&2 2>&3 3>&- || true
 	@echo "----------------------"
 	@echo "If you get a 'no module named qgis.core error, try sourcing"
@@ -150,8 +149,9 @@ zip: deploy dclean
 	@echo "---------------------------"
 	# The zip target deploys the plugin and creates a zip file with the deployed
 	# content. You can then upload the zip file on http://plugins.qgis.org
+	# Excludes user/dev specific files
 	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME) -x "*__pycache__*" -x "*.pyc"
+	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME) -x "*__pycache__*" -x "*.pyc" -x "*.git*" -x "*.idea*" -x "*.vscode*"
 
 package: compile
 	# Create a zip package of the plugin named $(PLUGINNAME).zip.
@@ -230,9 +230,7 @@ pylint:
 pep8:
 	@echo
 	@echo "-----------"
-	@echo "PEP8 issues"
+	@echo "PEP8 issues (using ruff)"
 	@echo "-----------"
-	@pycodestyle --ignore=E501,W503 --exclude=$(PEP8EXCLUDE) . || true
+	@uv run ruff check . || true
 	@echo "-----------"
-	@echo "Ignored in PEP8 check:"
-	@echo $(PEP8EXCLUDE)

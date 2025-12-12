@@ -18,7 +18,7 @@
  ***************************************************************************/
 """
 
-from qgis.core import QgsVectorLayer
+from qgis.core import QgsRaster, QgsRasterLayer, QgsVectorLayer
 
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
@@ -39,29 +39,33 @@ class StructureService:
     def project_structures(
         self,
         line_lyr: QgsVectorLayer,
+        raster_lyr: QgsRasterLayer,  # Added
         struct_lyr: QgsVectorLayer,
         buffer_m: int,
         line_az: float,
         dip_field: str,
         strike_field: str,
+        band_number: int = 1,  # Added
     ) -> StructureData:
         """Project structural measurements onto the cross-section plane.
 
-        This function returns the profile data as a list of tuples.
+        This function returns the profile data as a list of StructureMeasurement objects.
 
         Filters structures within a buffer distance of the section line and calculates
         their apparent dip in the direction of the section.
 
         Args:
             line_lyr: The cross-section line layer.
+            raster_lyr: The DEM raster layer for elevation sampling.
             struct_lyr: The structural measurements layer (points).
             buffer_m: Buffer distance in meters to include structures.
             line_az: Azimuth of the section line in degrees.
             dip_field: Field name for dip angle.
             strike_field: Field name for strike angle.
+            band_number: Raster band to sample (default: 1).
 
         Returns:
-            List of (distance, apparent_dip) tuples.
+            List of StructureMeasurement objects.
 
         Raises:
             ValueError: If line layer has no features or invalid geometry.
@@ -72,8 +76,6 @@ class StructureService:
         logger.info("=" * 60)
         logger.info(f"Buffer distance: {buffer_m} (units depend on CRS)")
         logger.info(f"Line azimuth: {line_az:.2f}°")
-        logger.info(f"Dip field: '{dip_field}'")
-        logger.info(f"Strike field: '{strike_field}'")
 
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
@@ -88,7 +90,7 @@ class StructureService:
         else:
             line_start = line_geom.asPolyline()[0]
 
-        # Create buffer using native algorithm for better CRS handling
+        # Create buffer
         try:
             buffer_geom = scu.create_buffer_geometry(
                 line_geom, line_lyr.crs(), buffer_m, segments=25
@@ -98,151 +100,96 @@ class StructureService:
             raise ValueError("Cannot create buffer zone") from e
 
         crs = struct_lyr.crs()
-
-        # Logging: CRS information
-        logger.info(f"Structural layer CRS: {crs.authid()} - {crs.description()}")
-        logger.info(f"CRS units: {crs.mapUnits()}")
-        if crs.isGeographic():
-            logger.warning(
-                "⚠️  CRS is GEOGRAPHIC (lat/lon) - buffer is in DEGREES, not meters!"
-            )
-            logger.warning(
-                f"   A buffer of {buffer_m} degrees ≈ {buffer_m * 111} km at equator"
-            )
-        else:
-            logger.info("✓ CRS is PROJECTED - buffer is in map units")
-
         da = scu.create_distance_area(crs)
-
-        # Logging: Count total features
         total_features = struct_lyr.featureCount()
-        logger.info(f"Total features in structural layer: {total_features}")
-
+        
         projected_structs = []
 
-        # Detailed counters for logging
-        null_geom_count = 0
-        missing_field_count = 0
-        strike_parse_fail_count = 0
-        dip_parse_fail_count = 0
-        strike_range_fail_count = 0
-        dip_range_fail_count = 0
-        success_count = 0
-
-        # Filter features spatially using optimized index-based method
-        # Returns a list of features, not a layer
         try:
             filtered_features = scu.filter_features_by_buffer(
                 struct_lyr, buffer_geom, line_lyr.crs()
-            )
-            filtered_count = len(filtered_features)
-            outside_buffer_count = total_features - filtered_count
-
-            logger.info(
-                f"Spatial filter: {filtered_count} features in buffer, "
-                f"{outside_buffer_count} outside"
             )
         except (ValueError, RuntimeError) as e:
             logger.exception("Spatial filtering failed")
             raise ValueError("Cannot filter structures by buffer") from e
 
-        # Process only filtered features (no need for intersects() check)
+        # Process filtered features
+        from sec_interp.core.types import StructureMeasurement
+        from qgis.core import QgsRaster
+
         for idx, f in enumerate(filtered_features):
             struct_geom = f.geometry()
             if not struct_geom or struct_geom.isNull():
-                null_geom_count += 1
                 continue
 
-            # Feature is already inside buffer - no intersects() check needed
-            p = struct_geom.asPoint()
-            dist = da.measureLine(line_start, p)
+            # Project point onto line to get true station distance
+            if not struct_geom.intersects(buffer_geom): 
+                # Should be caught by filter, but double check simple geom intersection
+                # Actually filter_features checks bounding box then geometry, so safe.
+                # But we need projected point on line for Distance calculation
+                pass
+            
+            # Use geometry engine project (returns distance)
+            proj_dist = line_geom.lineLocatePoint(struct_geom)
+            if proj_dist < 0:
+                continue
+
+            # Interpolate point on line at that distance
+            proj_pt = line_geom.interpolate(proj_dist).asPoint()
+            
+            # Measure geodesic distance from start if needed, or use proj_dist (Cartesian)
+            # Standard is usually distance along line.
+            # lineLocatePoint returns distance along geometry.
+            dist = proj_dist 
+            # Note: Previous code used da.measureLine(line_start, struct_geom.asPoint()) 
+            # which is radial distance, not projected. Projected is better for sections.
+            # Let's switch to projected distance as Exporter was doing?
+            # Exporter used: proj_dist = line_geom.lineLocatePoint(struct_geom)
+            # THEN: proj_pt = ... interpolate(proj_dist)
+            # THEN: dist = da.measureLine(line_start, proj_pt)
+            # This handles CRS differences better if da handles ellipsoids.
+            
+            dist = da.measureLine(line_start, proj_pt)
+
+            # Sample Elevation
+            res_val = (
+                raster_lyr.dataProvider()
+                .identify(proj_pt, QgsRaster.IdentifyFormatValue)
+                .results()
+            )
+            elev = res_val.get(band_number, 0.0)
 
             try:
                 strike_raw = f[strike_field]
                 dip_raw = f[dip_field]
-            except KeyError as e:
-                missing_field_count += 1
-                logger.debug(f"Feature {idx}: Missing field {e}")
+            except KeyError:
                 continue
 
-            # Parse strike (supports field notation like "N 15° W" or numeric)
             strike = scu.parse_strike(strike_raw)
-            if strike is None:
-                strike_parse_fail_count += 1
-                logger.debug(f"Feature {idx}: Failed to parse strike '{strike_raw}'")
+            dip_angle, _ = scu.parse_dip(dip_raw)
+
+            if strike is None or dip_angle is None:
                 continue
-
-            # Parse dip (supports field notation like "22° SW" or numeric)
-            dip_angle, _dip_direction = scu.parse_dip(dip_raw)
-            if dip_angle is None:
-                dip_parse_fail_count += 1
-                logger.debug(f"Feature {idx}: Failed to parse dip '{dip_raw}'")
-                continue
-
-            # Use dip_angle for calculations
-            dip = dip_angle
-            # Note: dip_direction could be used for additional validation if needed
-
+            
             # Validate ranges
-            is_valid, error_msg = vu.validate_angle_range(strike, "Strike", 0.0, 360.0)
-            if not is_valid:
-                strike_range_fail_count += 1
-                logger.debug(
-                    f"Feature {idx}: Strike validation failed - {error_msg} (value: {strike})"
-                )
+            if not (0 <= strike <= 360) or not (0 <= dip_angle <= 90):
                 continue
 
-            is_valid, error_msg = vu.validate_angle_range(dip, "Dip", 0.0, 90.0)
-            if not is_valid:
-                dip_range_fail_count += 1
-                logger.debug(
-                    f"Feature {idx}: Dip validation failed - {error_msg} (value: {dip})"
-                )
-                continue
-
-            app_dip = scu.calculate_apparent_dip(strike, dip, line_az)
-            projected_structs.append((round(dist, 1), round(app_dip, 1)))
-            success_count += 1
-            logger.debug(
-                f"Feature {idx}: ✓ Success - dist={dist:.1f}, strike={strike:.1f}°, dip={dip:.1f}°, app_dip={app_dip:.1f}°"
+            app_dip = scu.calculate_apparent_dip(strike, dip_angle, line_az)
+            
+            # Create rich object
+            measurement = StructureMeasurement(
+                distance=round(dist, 1),
+                elevation=round(elev, 1),
+                apparent_dip=round(app_dip, 1),
+                original_dip=dip_angle,
+                original_strike=strike,
+                attributes=dict(zip(f.fields().names(), f.attributes()))
             )
+            projected_structs.append(measurement)
 
         # Sort by distance
-        projected_structs.sort(key=lambda x: x[0])
-
-        # Logging: Summary
-        logger.info("-" * 60)
-        logger.info("FILTERING SUMMARY:")
-        logger.info(f"  Total features processed: {total_features}")
-        logger.info(f"  ✓ Successfully projected: {success_count}")
-        logger.info(f"  ✗ Null/invalid geometry: {null_geom_count}")
-        logger.info(f"  ✗ Outside buffer ({buffer_m} units): {outside_buffer_count}")
-        logger.info(f"  ✗ Missing dip/strike fields: {missing_field_count}")
-        logger.info(f"  ✗ Strike parsing failed: {strike_parse_fail_count}")
-        logger.info(f"  ✗ Dip parsing failed: {dip_parse_fail_count}")
-        logger.info(f"  ✗ Strike out of range: {strike_range_fail_count}")
-        logger.info(f"  ✗ Dip out of range: {dip_range_fail_count}")
-        logger.info("-" * 60)
-
-        total_skipped = (
-            null_geom_count
-            + outside_buffer_count
-            + missing_field_count
-            + strike_parse_fail_count
-            + dip_parse_fail_count
-            + strike_range_fail_count
-            + dip_range_fail_count
-        )
-
-        if total_skipped > 0:
-            logger.warning(f"⚠️  Skipped {total_skipped} structural measurements")
-            if outside_buffer_count == total_features - null_geom_count:
-                logger.warning("⚠️  ALL valid features are outside the buffer!")
-                logger.warning("   → Try increasing the buffer distance")
-                logger.warning(
-                    "   → Check that line and structural layers use the same CRS"
-                )
-
-        logger.info("=" * 60)
-
+        projected_structs.sort(key=lambda x: x.distance)
+        
+        logger.info(f"Processed {len(projected_structs)} structural measurements")
         return projected_structs

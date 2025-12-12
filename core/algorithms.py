@@ -326,9 +326,6 @@ class SecInterp:
                 )
 
                 if not profile_data:
-                    # Specific error message handled in generate or here
-                    # If generate returns None/empty without raising, assumes it handled user notification?
-                    # No, let's assume generate returns what it found.
                     if not msgs: # If no messages, likely complete failure
                          scu.show_user_message(
                             self.dlg,
@@ -353,8 +350,6 @@ class SecInterp:
                 logger.info("✓ Data cached for future use")
 
             except Exception as e:
-                # Error handling now delegated to _generate_profile_data or caught here
-                # We catch here to show message if _generate_profile_data raised
                 self._handle_processing_error(e)
                 return None
 
@@ -368,10 +363,6 @@ class SecInterp:
         )
 
         # Draw preview with all data
-        logger.debug("About to draw preview:")
-        logger.debug(
-            "  - profile_data: %d points", len(profile_data) if profile_data else 0
-        )
         self.draw_preview(profile_data, geol_data, struct_data)
 
         return profile_data, geol_data, struct_data
@@ -419,7 +410,7 @@ class SecInterp:
                     selected_band,
                 )
                 if geol_data:
-                    messages.append(f"Geology: {len(geol_data)} points")
+                    messages.append(f"Geology: {len(geol_data)} segments")
                 else:
                     messages.append("Geology: No intersections")
             else:
@@ -438,11 +429,13 @@ class SecInterp:
                         line_azimuth = scu.calculate_line_azimuth(line_geom)
                         struct_data = self.structure_service.project_structures(
                             line_layer,
+                            raster_layer,  # Added argument
                             structural_layer,
                             buffer_dist,
                             line_azimuth,
                             dip_field,
                             strike_field,
+                            selected_band, # Added argument
                         )
                         
                         if struct_data:
@@ -541,18 +534,24 @@ class SecInterp:
             # Export Geology
             if geol_data:
                 logger.info("✓ Saving geological profile...")
+                # CSV needs flattening? data structure is now segments
+                # We can flatten it manually for CSV
+                geol_rows = []
+                for s in geol_data:
+                    for p in s.points:
+                        geol_rows.append((p[0], p[1], s.unit_name))
+                
                 csv_exporter.export(
                     output_folder / "geol_profile.csv",
-                    {"headers": ["dist", "elev", "geology"], "rows": geol_data},
+                    {"headers": ["dist", "elev", "geology"], "rows": geol_rows},
                 )
                 result_msg.append("  - geol_profile.csv")
+                
                 GeologyShpExporter({}).export(
                     output_folder / "geol_profile.shp",
                     {
-                        "line_lyr": values["line_layer_obj"],
-                        "raster_lyr": values["raster_layer_obj"],
-                        "outcrop_lyr": values["outcrop_layer_obj"],
-                        "band_number": values["selected_band"],
+                        "geology_data": geol_data,
+                        "crs": line_crs,
                     },
                 )
                 result_msg.append("  - geol_profile.shp")
@@ -560,22 +559,22 @@ class SecInterp:
             # Export Structures
             if struct_data:
                 logger.info("✓ Saving structural profile...")
+                # CSV needs simple rows
+                struct_rows = [(s.distance, s.apparent_dip) for s in struct_data]
+                
                 csv_exporter.export(
                     output_folder / "structural_profile.csv",
-                    {"headers": ["dist", "apparent_dip"], "rows": struct_data},
+                    {"headers": ["dist", "apparent_dip"], "rows": struct_rows},
                 )
                 result_msg.append("  - structural_profile.csv")
+                
                 StructureShpExporter({}).export(
                     output_folder / "structural_profile.shp",
                     {
-                        "line_lyr": values["line_layer_obj"],
-                        "raster_lyr": values["raster_layer_obj"],
-                        "struct_lyr": values["structural_layer_obj"],
-                        "dip_field": values["dip_field"],
-                        "strike_field": values["strike_field"],
-                        "band_number": values["selected_band"],
-                        "buffer_distance": values["buffer_distance"],
+                        "structural_data": struct_data,
+                        "crs": line_crs,
                         "dip_scale_factor": values["dip_scale_factor"],
+                        "raster_res": values["raster_layer_obj"].rasterUnitsPerPixelX(),
                     },
                 )
                 result_msg.append("  - structural_profile.shp")

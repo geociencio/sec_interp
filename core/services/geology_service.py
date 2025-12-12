@@ -53,21 +53,7 @@ class GeologyService:
     ) -> GeologyData:
         """Generate geological profile data by intersecting the section line with outcrop polygons.
 
-        This function returns the profile data as a list of tuples.
-
-        Args:
-            line_lyr (QgsVectorLayer): The cross-section line layer.
-            raster_lyr (QgsRasterLayer): The DEM/raster layer for elevation.
-            outcrop_lyr (QgsVectorLayer): The geological outcrop layer (polygons).
-            glg_field (str): The field name in outcrop_lyr containing unit names.
-            band_number (int): Raster band to sample (default: 1).
-
-        Returns:
-            list: List of (distance, elevation, unit_name) tuples.
-
-        Raises:
-            ValueError: If line layer has no features or invalid geometry.
-            RuntimeError: If intersection algorithm fails.
+        Returns a list of GeologySegment objects.
         """
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
@@ -86,21 +72,18 @@ class GeologyService:
         da = scu.create_distance_area(crs)
 
         # 1. Generate Master Profile Data (Grid Points + Elevations)
-        # This acts as the "Ground Truth Surface" for alignment
         interval = raster_lyr.rasterUnitsPerPixelX()
         logger.debug(f"Generating master profile with interval={interval:.2f}")
 
         try:
-            # Densify original line
             master_densified = scu.densify_line_by_interval(line_geom, interval)
             master_grid_points = scu.get_line_vertices(master_densified)
         except Exception as e:
             logger.warning(f"Failed to generate master grid: {e}")
             master_grid_points = scu.get_line_vertices(line_geom)
 
-        # Calculate distances & sample elevations for master profile
-        master_profile_data = [] # List of (dist, elev)
-        master_grid_dists = []   # List of (dist, point, elev) for fast lookup
+        master_profile_data = [] 
+        master_grid_dists = []   
         
         for pt in master_grid_points:
             d = da.measureLine(line_start, pt)
@@ -110,9 +93,9 @@ class GeologyService:
             master_profile_data.append((d, elev))
             master_grid_dists.append((d, pt, elev))
 
-        values = []
+        segments = []
 
-        # 2. Run Intersection on Original Line
+        # 2. Run Intersection
         try:
             feedback = QgsProcessingFeedback()
             result = processing.run(
@@ -120,27 +103,18 @@ class GeologyService:
                 {
                     "INPUT": line_lyr,
                     "OVERLAY": outcrop_lyr,
-                    "INPUT_FIELDS": [], 
-                    "OVERLAY_FIELDS": [], 
-                    "OVERLAY_FIELDS_PREFIX": "",
                     "OUTPUT": "memory:",
                 },
                 feedback=feedback,
             )
             intersection_layer = result["OUTPUT"]
-            intersection_count = intersection_layer.featureCount()
-            logger.info(f"✓ Intersection: {intersection_count} segments")
-        
         except Exception as e:
             logger.exception("Geological intersection failed")
             raise RuntimeError("Cannot compute geological intersection") from e
 
-        # Import interpolation helper
         from sec_interp.core.utils.sampling import interpolate_elevation
+        from sec_interp.core.types import GeologySegment
 
-        # Process intersection results
-        processed_segments = 0
-        total_points = 0
         tolerance = 0.001
 
         for feature in intersection_layer.getFeatures():
@@ -148,7 +122,6 @@ class GeologyService:
             if not geom or geom.isNull():
                 continue
 
-            # Handle geometries
             geometries = []
             if geom.wkbType() in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
                 geometries.append(geom)
@@ -158,7 +131,10 @@ class GeologyService:
             else:
                 continue
 
-            glg_val = feature[outcrop_name_field]
+            try:
+                glg_val = feature[outcrop_name_field]
+            except KeyError:
+                glg_val = "Unknown"
 
             for seg_geom in geometries:
                 verts = scu.get_line_vertices(seg_geom)
@@ -172,25 +148,33 @@ class GeologyService:
                 if dist_start > dist_end:
                     dist_start, dist_end = dist_end, dist_start
 
-                # 3. Get Inner Grid Points (Pre-calculated elevations)
+                # 3. Get Inner Grid Points
                 inner_points = [
                     (d, e) for d, _, e in master_grid_dists 
                     if dist_start + tolerance < d < dist_end - tolerance
                 ]
 
                 # 4. Interpolate Boundary Elevations
-                # Snap start/end to the topographic surface logic
                 elev_start = interpolate_elevation(master_profile_data, dist_start)
                 elev_end = interpolate_elevation(master_profile_data, dist_end)
 
-                # Combine: [Start] + [Inner] + [End]
+                # Combine
                 segment_points = [(dist_start, elev_start)] + inner_points + [(dist_end, elev_end)]
+                
+                # Create GeometrySegment
+                # Note: We store the intersection geometry but the points are what really matters for profile
+                # Attributes from original feature
+                attrs = dict(zip(feature.fields().names(), feature.attributes()))
+                
+                segment = GeologySegment(
+                    unit_name=str(glg_val),
+                    geometry=seg_geom, 
+                    attributes=attrs,
+                    points=[(round(d, 1), round(e, 1)) for d, e in segment_points]
+                )
+                segments.append(segment)
 
-                processed_segments += 1
-                for d, e in segment_points:
-                    values.append((round(d, 1), round(e, 1), glg_val))
-                    total_points += 1
-
-        logger.info(f"Processed {processed_segments} segments, generated {total_points} points (snapped)")
-        values.sort(key=lambda x: x[0])
-        return values
+        logger.info(f"Generated {len(segments)} geological segments")
+        # Sort by start distance
+        segments.sort(key=lambda x: x.points[0][0] if x.points else 0)
+        return segments

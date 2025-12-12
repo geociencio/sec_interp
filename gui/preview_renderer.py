@@ -335,14 +335,14 @@ class PreviewRenderer:
         """Create temporary layer for geological profile.
 
         Args:
-            geol_data: List of (distance, elevation, unit_name) tuples
+            geol_data: List of GeologySegment objects
             vert_exag: Vertical exaggeration factor
             max_points: Max points for LOD optimization (default: 1000)
 
         Returns:
             QgsVectorLayer with geological lines
         """
-        if not geol_data or len(geol_data) < 2:
+        if not geol_data:
             return None
 
         # Create memory layer using factory
@@ -353,44 +353,43 @@ class PreviewRenderer:
             logger.error("Failed to create memory layer 'Geology'")
             return None
 
-        # Group data by geological unit
-        geol_groups = defaultdict(list)
-        for dist, elev, unit in geol_data:
-            geol_groups[unit].append((dist, elev))
-
-        # Create line features for each unit
+        # Collect features from segments
+        # Note: Segments are already logically grouped pieces of geometry.
+        # However, for coloring/symbology, we might still want to group by unit to assign colors?
+        # The existing logic grouped POINTS then made lines.
+        # Now we have SEGMENTS which are inherently lines.
+        # We can just iterate segments and add them.
+        
+        # We still need to group to assign colors per unit name though.
+        # Let's collect unit names first
+        unique_units = set(s.unit_name for s in geol_data)
+        
         features = []
-        for unit_name, points in geol_groups.items():
-            if len(points) < 2:
+        for segment in geol_data:
+            if not segment.points or len(segment.points) < 2:
                 continue
 
-            # Sort points by distance
-            points.sort(key=lambda p: p[0])
-
-            # Apply LOD decimation per unit
-            # We allocate proportional points based on unit length relative to total?
-            # Or just apply the same logic? Applying same logic is safer for visual alignment.
-            # Ideally we want the shared boundary points to remain.
-            # D-P preserves endpoints, so shared boundaries *should* be preserved if they are ends.
-            render_points = self._decimate_line_data(points, max_points)
-
-            # Create line from points
+            # Apply LOD decimation per segment?
+            # Or just use the points directly since they are likely already sampled correctly?
+            # Existing logic decimated points.
+            render_points = self._decimate_line_data(segment.points, max_points=max_points)
+            
+            # Create geometry
             line_points = [
                 QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points
             ]
             line = QgsLineString(line_points)
-
-            # Create feature with attributes
+            
             feat = QgsFeature(layer.fields())
             feat.setGeometry(QgsGeometry(line))
-            feat.setAttribute("unit", str(unit_name))
+            feat.setAttribute("unit", segment.unit_name)
             features.append(feat)
 
         provider.addFeatures(features)
 
         # Apply categorized symbology
         categories = []
-        for unit_name in geol_groups:
+        for unit_name in unique_units:
             color = self._get_color_for_unit(unit_name)
             symbol = QgsLineSymbol.createSimple(
                 {
@@ -400,16 +399,16 @@ class PreviewRenderer:
                     "joinstyle": "round",
                 }
             )
-            category = QgsRendererCategory(str(unit_name), symbol, str(unit_name))
+            category = QgsRendererCategory(unit_name, symbol, unit_name)
             categories.append(category)
 
             # Track for legend
-            self.active_units[str(unit_name)] = color
+            self.active_units[unit_name] = color
 
         renderer = QgsCategorizedSymbolRenderer("unit", categories)
         layer.setRenderer(renderer)
         layer.updateExtents()
-        logger.debug("Created geology layer with %d units", len(geol_groups))
+        logger.debug("Created geology layer with %d segments", len(geol_data))
         return layer
 
     def _create_struct_layer(
@@ -422,7 +421,7 @@ class PreviewRenderer:
         """Create temporary layer for structural dips.
 
         Args:
-            struct_data: List of (distance, apparent_dip) tuples
+            struct_data: List of StructureMeasurement objects
             reference_data: List of (distance, elevation) tuples for elevation lookup
             vert_exag: Vertical exaggeration factor
             dip_line_length: Length of dip line in map units (if None, calculates default)
@@ -430,7 +429,7 @@ class PreviewRenderer:
         Returns:
             QgsVectorLayer with structural dip lines
         """
-        if not struct_data or len(struct_data) < 1:
+        if not struct_data:
             return None
 
         # Create memory layer using factory
@@ -439,13 +438,7 @@ class PreviewRenderer:
             logger.error("Failed to create memory layer 'Structures'")
             return None
 
-        # Calculate extent for line length
-        if reference_data:
-            elevs = [e for _, e in reference_data]
-            e_range = max(elevs) - min(elevs)
-        else:
-            e_range = 100  # Default range
-
+        # Calculate line length default if needed
         if dip_line_length is not None and dip_line_length > 0:
             line_length = dip_line_length
         else:
@@ -454,17 +447,20 @@ class PreviewRenderer:
                 e_range = max(elevs) - min(elevs)
             else:
                 e_range = 100  # Default range
-
-            line_length = e_range * 0.1  # 10% of elevation range
+            line_length = e_range * 0.1
 
         # Create dip lines
         features = []
-        for dist, app_dip in struct_data:
-            # Interpolate elevation from reference data
-            if reference_data:
-                elev = self._interpolate_elevation(reference_data, dist)
-            else:
-                elev = 0
+        for m in struct_data:
+            # m is StructureMeasurement(distance, elevation, apparent_dip, ...)
+            
+            # Use pre-calculated elevation if available (which it acts like it is now)
+            # But the logic previously interpolated from reference data (topo).
+            # StructureService now extracts elevation itself from raster.
+            # We should prefer the measurement's elevation if it exists (which it does).
+            elev = m.elevation
+            dist = m.distance
+            app_dip = m.apparent_dip
 
             # Calculate dip line endpoints
             rad_dip = math.radians(abs(app_dip))
@@ -472,9 +468,9 @@ class PreviewRenderer:
             dy = line_length * math.sin(rad_dip)
 
             # Apply vertical exaggeration to dy
-            dy * vert_exag
-
-            # Determine direction based on sign of dip
+            # dy is vertical component
+            
+            # Direction
             if app_dip < 0:
                 dx = -dx
 

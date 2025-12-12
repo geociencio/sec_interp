@@ -37,3 +37,29 @@ ValidationResult = tuple[bool, str]
 # Point data
 PointList = list[QgsPointXY]
 """List of QgsPointXY objects."""
+
+from dataclasses import dataclass
+
+@dataclass
+class StructureMeasurement:
+    """Represents a projected structural measurement."""
+    distance: float
+    elevation: float
+    apparent_dip: float
+    original_dip: float
+    original_strike: float
+    attributes: dict[str, Any]
+
+@dataclass
+class GeologySegment:
+    """Represents a geological unit segment along the profile."""
+    unit_name: str
+    geometry: "QgsGeometry"  # Forward reference
+    attributes: dict[str, Any]
+    # Sampled points for rendering (distance, elevation)
+    points: list[tuple[float, float]] 
+
+# Updated type aliases
+StructureData = list[StructureMeasurement]
+GeologyData = list[GeologySegment]
+

@@ -69,58 +69,46 @@ class GeologyShpExporter(BaseExporter):
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
         """Args:
-        data (dict): Must contain 'line_lyr', 'raster_lyr', 'outcrop_lyr',
-                     'band_number'.
+        data (dict): Must contain 'geology_data' (List[GeologySegment]) and 'crs'.
         """
-        line_lyr = data.get("line_lyr")
-        raster_lyr = data.get("raster_lyr")
-        outcrop_lyr = data.get("outcrop_lyr")
-        band_number = data.get("band_number", 1)
-
-        if not all([line_lyr, raster_lyr, outcrop_lyr]):
+        geology_data = data.get("geology_data")
+        crs = data.get("crs")
+        
+        if not geology_data or not crs:
             return False
 
         try:
-            line_geom, line_start, da = scu.prepare_profile_context(line_lyr)
+             # Create fields from the first segment's attributes + extra fields if needed
+            fields = QgsFields()
+            if geology_data:
+                # Use attributes from first segment as template
+                # But realistically we should probably use the original layer fields if we had access,
+                # or just infer from the dictionary.
+                # Let's infer from the first segment's attributes
+                first_attrs = geology_data[0].attributes
+                for key, val in first_attrs.items():
+                    # Simplified field creation - might need more robust typing
+                    fields.append(QgsField(key, QMetaType.Type.QString))
 
-            writer = scu.create_shapefile_writer(
-                str(output_path), outcrop_lyr.crs(), outcrop_lyr.fields()
-            )
+            writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
-            for feature in outcrop_lyr.getFeatures():
-                outcrop_geom = feature.geometry()
-                if not outcrop_geom or outcrop_geom.isNull():
+            for segment in geology_data:
+                if len(segment.points) < 2:
                     continue
-                if not outcrop_geom.intersects(line_geom):
-                    continue
-
-                intersection = outcrop_geom.intersection(line_geom)
-                if not intersection or intersection.isNull():
-                    continue
-
-                geoms = (
-                    intersection.asGeometryCollection()
-                    if intersection.isMultipart()
-                    else [intersection]
-                )
-
-                for geom in geoms:
-                    if geom.wkbType() not in [
-                        QgsWkbTypes.LineString,
-                        QgsWkbTypes.LineString25D,
-                    ]:
-                        continue
-
-                    points = scu.sample_elevation_along_line(
-                        geom, raster_lyr, band_number, da, line_start
-                    )
-
-                    if len(points) > 1:
-                        profile_geom = QgsGeometry.fromPolylineXY(points)
-                        new_feat = QgsFeature(outcrop_lyr.fields())
-                        new_feat.setAttributes(feature.attributes())
-                        new_feat.setGeometry(profile_geom)
-                        writer.addFeature(new_feat)
+                
+                points = [QgsPointXY(d, e) for d, e in segment.points]
+                geom = QgsGeometry.fromPolylineXY(points)
+                
+                feat = QgsFeature(fields)
+                feat.setGeometry(geom)
+                
+                # Set attributes
+                for key, val in segment.attributes.items():
+                    idx = fields.indexOf(key)
+                    if idx >= 0:
+                        feat.setAttribute(idx, val)
+                
+                writer.addFeature(feat)
 
             del writer
             return True
@@ -137,85 +125,61 @@ class StructureShpExporter(BaseExporter):
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
         """Args:
-        data (dict): Must contain 'line_lyr', 'raster_lyr', 'struct_lyr',
-                     'dip_field', 'strike_field', 'band_number',
-                     'buffer_distance', 'dip_scale_factor'.
+        data (dict): Must contain 'structural_data' (List[StructureMeasurement]),
+                     'crs', 'dip_scale_factor', 'raster_res'.
         """
-        line_lyr = data.get("line_lyr")
-        raster_lyr = data.get("raster_lyr")
-        struct_lyr = data.get("struct_lyr")
-        dip_field = data.get("dip_field")
-        strike_field = data.get("strike_field")
-        band_number = data.get("band_number", 1)
-        buffer_distance = data.get("buffer_distance", 100)
+        structural_data = data.get("structural_data")
+        crs = data.get("crs")
         dip_scale_factor = data.get("dip_scale_factor", 4)
+        raster_res = data.get("raster_res", 1.0) # Need resolution for scale
 
-        if not all([line_lyr, raster_lyr, struct_lyr, dip_field, strike_field]):
+        if not structural_data or not crs:
             return False
 
         try:
-            line_geom, line_start, da = scu.prepare_profile_context(line_lyr)
-            line_az = scu.calculate_line_azimuth(line_geom)
+            L = raster_res * dip_scale_factor
+            
+            # Create fields
+            fields = QgsFields()
+            # Add fields from source + calculated fields
+            if structural_data:
+                first_attrs = structural_data[0].attributes
+                for key in first_attrs.keys():
+                    fields.append(QgsField(key, QMetaType.Type.QString))
+            
+            fields.append(QgsField("app_dip", QMetaType.Type.Double))
+            fields.append(QgsField("dist", QMetaType.Type.Double))
+            fields.append(QgsField("elev", QMetaType.Type.Double))
 
-            res = raster_lyr.rasterUnitsPerPixelX()
-            L = res * dip_scale_factor
+            writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
-            # Create buffer using native algorithm for consistency with core algorithms
-            try:
-                buffer_geom = scu.create_buffer_geometry(
-                    line_geom, line_lyr.crs(), buffer_distance, segments=25
-                )
-            except (ValueError, RuntimeError):
-                logger.exception("Buffer creation failed in exporter")
-                return False
+            for m in structural_data:
+                # Calculate dip line geometry
+                # Conversion to radians
+                rad_dip = math.radians(m.apparent_dip)
+                dy = -L * math.sin(abs(rad_dip))
+                dx = L * math.cos(abs(rad_dip))
+                if m.apparent_dip < 0:
+                    dx = -dx
 
-            writer = scu.create_shapefile_writer(
-                str(output_path), line_lyr.crs(), struct_lyr.fields()
-            )
+                p1 = QgsPointXY(m.distance, m.elevation)
+                p2 = QgsPointXY(m.distance + dx, m.elevation + dy)
+                geom = QgsGeometry.fromPolylineXY([p1, p2])
 
-            for f in struct_lyr.getFeatures():
-                struct_geom = f.geometry()
-                if not struct_geom or struct_geom.isNull():
-                    continue
-
-                if struct_geom.intersects(buffer_geom):
-                    proj_dist = line_geom.lineLocatePoint(struct_geom)
-                    if proj_dist < 0:
-                        continue
-
-                    proj_pt = line_geom.interpolate(proj_dist).asPoint()
-                    dist = da.measureLine(line_start, proj_pt)
-
-                    res_val = (
-                        raster_lyr.dataProvider()
-                        .identify(proj_pt, QgsRaster.IdentifyFormatValue)
-                        .results()
-                    )
-                    elev = res_val.get(band_number, 0.0)
-
-                    strike_raw = f[strike_field]
-                    dip_raw = f[dip_field]
-
-                    strike = scu.parse_strike(strike_raw)
-                    dip, _ = scu.parse_dip(dip_raw)
-
-                    if strike is not None and dip is not None:
-                        app_dip = scu.calculate_apparent_dip(strike, dip, line_az)
-                        rad_dip = math.radians(app_dip)
-
-                        dy = -L * math.sin(abs(rad_dip))
-                        dx = L * math.cos(abs(rad_dip))
-                        if app_dip < 0:
-                            dx = -dx
-
-                        p1 = QgsPointXY(dist, elev)
-                        p2 = QgsPointXY(dist + dx, elev + dy)
-                        dip_line = QgsGeometry.fromPolylineXY([p1, p2])
-
-                        new_feat = QgsFeature(struct_lyr.fields())
-                        new_feat.setAttributes(f.attributes())
-                        new_feat.setGeometry(dip_line)
-                        writer.addFeature(new_feat)
+                feat = QgsFeature(fields)
+                feat.setGeometry(geom)
+                
+                # Set attributes
+                for key, val in m.attributes.items():
+                    idx = fields.indexOf(key)
+                    if idx >= 0:
+                        feat.setAttribute(idx, val)
+                
+                feat["app_dip"] = m.apparent_dip
+                feat["dist"] = m.distance
+                feat["elev"] = m.elevation
+                
+                writer.addFeature(feat)
 
             del writer
             return True
