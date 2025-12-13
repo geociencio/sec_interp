@@ -29,6 +29,7 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
+from sec_interp.core.performance_metrics import performance_monitor
 from sec_interp.core.types import GeologyData
 from sec_interp.logger_config import get_logger
 
@@ -43,6 +44,7 @@ class GeologyService:
     along a cross-section line.
     """
 
+    @performance_monitor
     def generate_geological_profile(
         self,
         line_lyr: QgsVectorLayer,
