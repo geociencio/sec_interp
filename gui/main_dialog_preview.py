@@ -567,11 +567,13 @@ class PreviewManager:
 
     def _on_geology_finished(self, results):
         """Handle completion of parallel geology generation."""
-        # Flatten results (list of lists)
+        # Flatten results (results -> chunks -> items -> segments)
         final_geol_data = []
         for chunk in results:
             if chunk:
-                final_geol_data.extend(chunk)
+                for item_result in chunk:
+                    if item_result:
+                        final_geol_data.extend(item_result)
                 
         self.cached_data["geol"] = final_geol_data if final_geol_data else None
         
