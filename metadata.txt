@@ -6,7 +6,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=1.0
+version=1.1
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -20,6 +20,23 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    1.1 (2025-12-12)
+    * Performance & Optimization:
+      - Implemented asynchronous parallel processing for geological generation
+      - Integrated Performance Monitor (RAM & Execution Time tracking)
+      - Added non-blocking UI during heavy calculations
+    * Preview System Enhancements:
+      - Implemented Adaptive Level of Detail (LOD) for high-performance rendering
+      - Added Dynamic Zoom-based LOD (details increase as you zoom in)
+      - Added Measurement Tool (Distance and Slope/Gradient)
+      - Improved CRS handling and fixed blank rendering issues
+    * Architecture & Fixes:
+      - Refactored services to use Command Pattern for parallel execution
+      - Fixed structure projection consistency
+      - Resolved "No valid layers to render" warnings
+      - Fixed Dip Scale Factor application
+
+
     1.0 (2025-12-08)
     * Refactoring & Architecture:
       - Split monolithic modules (algorithms.py, main_dialog.py) into focused components
