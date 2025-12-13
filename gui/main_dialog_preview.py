@@ -22,6 +22,7 @@ from sec_interp.core.performance_metrics import (
 from sec_interp.core.types import GeologyData, ProfileData, StructureData
 from sec_interp.logger_config import get_logger
 
+from sec_interp.core.services.parallel_geology import ParallelGeologyService
 from .main_dialog_config import DialogConfig
 
 
@@ -47,6 +48,12 @@ class PreviewManager:
         self.dialog = dialog
         self.cached_data: dict[str, Any] = {"topo": None, "geol": None, "struct": None}
         self.metrics = MetricsCollector()
+
+        # Initialize parallel service
+        self.async_service = ParallelGeologyService()
+        self.async_service.all_finished.connect(self._on_geology_finished)
+        self.async_service.batch_progress.connect(self._on_geology_progress)
+        self.async_service.error_occurred.connect(self._on_geology_error)
 
         # Initialize zoom debounce timer
         self.debounce_timer = QTimer()
@@ -96,16 +103,12 @@ class PreviewManager:
                         )
 
                     self.metrics.record_count("Topography Points", len(profile_data))
-
+ 
                     # Generate geology (optional)
                     geol_data = None
-                    with PerformanceTimer("Geology Generation", self.metrics):
-                        geol_data = self.generate_geology(
-                            line_layer, raster_layer, band_num
-                        )
-
-                    if geol_data:
-                        self.metrics.record_count("Geology Points", len(geol_data))
+                    if self.dialog.page_geology.is_complete():
+                         self._start_async_geology(line_layer, raster_layer, band_num)
+                         # geol_data remains None for now, will receive via signal
 
                     # Generate structures (optional)
                     struct_data = None
@@ -532,3 +535,78 @@ class PreviewManager:
 
         except Exception as e:
             logger.error(f"Error in zoom LOD update: {e}", exc_info=True)
+
+    def _start_async_geology(self, line_layer, raster_layer, band_num):
+        """Start asynchronous geology generation."""
+        outcrop_layer = self.dialog.page_geology.layer_combo.currentLayer()
+        outcrop_name_field = self.dialog.page_geology.field_combo.currentField()
+        
+        if not outcrop_layer or not outcrop_name_field:
+            return
+
+        # Prepare arguments package
+        # We need to pass the service instance because the worker function needs it
+        # Note: Passing QGIS layers to threads is risky.
+        # Ideally we should serialize data here, but complying with requested integration structure.
+        args = (
+            self.dialog.plugin_instance.geology_service,
+            line_layer,
+            raster_layer,
+            outcrop_layer,
+            outcrop_name_field,
+            band_num
+        )
+        
+        # Define worker function
+        def worker(args_tuple):
+            service, ll, rl, ol, field, band = args_tuple
+            return service.generate_geological_profile(ll, rl, ol, field, band)
+
+        self.dialog.preview_widget.results_text.setPlainText("Generating Geology in background...")
+        self.async_service.process_profiles_parallel([args], worker)
+
+    def _on_geology_finished(self, results):
+        """Handle completion of parallel geology generation."""
+        # Flatten results (list of lists)
+        final_geol_data = []
+        for chunk in results:
+            if chunk:
+                final_geol_data.extend(chunk)
+                
+        self.cached_data["geol"] = final_geol_data if final_geol_data else None
+        
+        # Log success
+        logger.info(f"Async geology finished: {len(final_geol_data)} segments")
+        
+        # Trigger update of preview
+        try:
+             # We reuse the update logic but need to ensure it uses the new cached data
+             # Since checkbox logic handles 'if show_geol -> use cached', we just need to force redraw
+             # But first we might want to update the result text to say "Done"
+             
+             # Re-render
+             self.update_from_checkboxes()
+             
+             # Update results text (we need to regenerate the whole message)
+             # Note: This requires current state of other layers
+             topo = self.cached_data["topo"]
+             struct = self.cached_data["struct"]
+             buffer_dist = self._get_buffer_distance()
+             
+             if topo: # Only valid if we have topo
+                 msg = self._format_results_message(topo, final_geol_data, struct, buffer_dist)
+                 self.dialog.preview_widget.results_text.setPlainText(msg)
+                 
+        except Exception as e:
+            logger.error(f"Error updating UI after async geology: {e}", exc_info=True)
+
+    def _on_geology_progress(self, progress):
+        """Handle progress updates from parallel service."""
+        # Optional: Update a progress bar if available
+        # self.dialog.preview_widget.progressBar.setValue(progress)
+        self.dialog.preview_widget.results_text.setPlainText(f"Generating Geology: {progress}%...")
+
+    def _on_geology_error(self, error_msg):
+        """Handle errors from parallel service."""
+        logger.error(f"Async geology error: {error_msg}")
+        self.dialog.preview_widget.results_text.append(f"\n⚠ Geology Error: {error_msg}")
