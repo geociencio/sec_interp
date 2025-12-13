@@ -40,15 +40,20 @@ class GeologyProcessingThread(QThread):
         try:
             total = len(self.data)
             processed = 0
+            results_list = []
 
             for item in self.data:
                 # Process each item
-                self.processing_func(item)
+                res = self.processing_func(item)
+                if res is not None:
+                     results_list.append(res)
+                
                 processed += 1
                 if total > 0:
                     progress = int((processed / total) * 100)
                     self.progress_updated.emit(progress)
 
+            self.result = results_list
             self.processing_finished.emit(self.result)
         except Exception as e:
             logger.error(f"Error in processing thread: {e}", exc_info=True)
@@ -75,11 +80,12 @@ class ParallelGeologyService(QObject):
         import os
         return min(os.cpu_count() or 1, 8)  # Limit to 8 for QGIS stability
 
-    def process_profiles_parallel(self, profiles: List[Any]):
+    def process_profiles_parallel(self, profiles: List[Any], processing_func: Callable[[Any], Any] = None):
         """Process multiple profiles in parallel using threads asynchronously.
         
         Args:
             profiles: List of profiles to process
+            processing_func: Optional custom processing function. If None, uses internal _process_profile_chunk.
         """
         if not profiles:
             self.all_finished.emit([])
@@ -89,6 +95,9 @@ class ParallelGeologyService(QObject):
         self.active_threads = []
         self._total_items = len(profiles)
         self._processed_items = 0
+        
+        # Use provided function or default
+        worker_func = processing_func if processing_func else self._process_profile_chunk
 
         # Split work into chunks
         chunk_size = max(1, len(profiles) // self.max_threads)
@@ -97,7 +106,7 @@ class ParallelGeologyService(QObject):
         for chunk in chunks:
             thread = GeologyProcessingThread(
                 chunk,
-                self._process_profile_chunk
+                worker_func
             )
             
             # Connect signals
