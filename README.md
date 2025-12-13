@@ -47,14 +47,14 @@
 
 1. **Prepare Data**: Load your DEM (Raster), Geology (Polygons), and Structure (Points) layers in QGIS.
 2. **Launch Plugin**: Click the **SecInterp** icon in the toolbar.
-3. **Select Line**: Use the "Select Line" tool to pick a section line from a layer, or draw one interactively.
-4. **Configure Layers**:
+3. **Configure Layers**:
+    *   **Cross-section**: Select the line layer that defines your profile.
     *   **DEM**: Select your elevation raster and band.
     *   **Geology**: Select the outcrop layer and the lithology attribute field.
     *   **Structure**: Select the point layer and dip/strike fields.
-5. **Preview**: Click **Preview Profile**. The view will update asynchronously.
+4. **Preview**: Click **Preview Profile**. The view will update asynchronously.
     *   *Tip: Use the scroll wheel to zoom in/out. The detail level will adapt automatically.*
-6. **Export**: Go to the "Export" tab to save your profile to your preferred format.
+5. **Export**: Go to the "Export" tab to save your profile to your preferred format.
 
 ---
 

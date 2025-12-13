@@ -5,22 +5,110 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2025-12-12
 ### Added
-- **Preview Status Bar**: Added a status bar to the preview area displaying real-time cursor coordinates, map scale, and Coordinate Reference System (CRS).
-- **Preview Panning**: Enabled the Pan tool (`QgsMapToolPan`) by default in the preview canvas for better interaction.
-- **Programmatic UI**: Complete migration from `.ui` files to a pure Python user interface using `layouts` and `widgets`, improving maintainability and flexibility.
-- **3-Column Layout**: Redesigned the main dialog into a responsive 3-column layout (Sidebar, Settings, Preview) with a collapsible Settings panel.
-- **Drillhole Placeholder**: Added basic structure for future Drillhole integration.
-
+- **Performance & Optimization**:
+  - Implemented asynchronous parallel processing for geological generation.
+  - Integrated Performance Monitor (RAM & Execution Time tracking).
+  - Added non-blocking UI during heavy calculations.
+- **Preview System Enhancements**:
+  - Implemented Adaptive Level of Detail (LOD) for high-performance rendering.
+  - Added Dynamic Zoom-based LOD (details increase as you zoom in).
+  - Added Measurement Tool (Distance and Slope/Gradient).
+  
 ### Changed
-- **Layer Selection**: All layer comboboxes (DEM, Cross-section, Geology, Structures) now default to an empty selection ("Choose layer...") to preventing accidental usage of incorrect layers.
-- **Preview Axis Labeling**: Improved `PreviewRenderer` to correctly align axis labels (Y-axis labels to the left, X-axis labels below) using data-defined properties, fixing misalignment issues.
-- **Band Selection Width**: Increased the minimum width of the band selection combobox in the DEM page to ensure band numbers are fully visible.
-- **Preview Rendering**: Updated `PreviewRenderer` to use `QgsPalLayerSettings.Property.OffsetQuad` for label placement compatibility with QGIS 3.x API.
+- **Architecture & Fixes**:
+  - Refactored services to use Command Pattern for parallel execution.
+  - Improved CRS handling.
 
 ### Fixed
-- **AttributeError Fixes**: Resolved multiple `AttributeError` exceptions caused by legacy widget references in validation and preview logic after the UI refactor.
-- **Type Errors**: Fixed `TypeError` in `PreviewRenderer` by using explicit `QgsPalLayerSettings.Placement` enums.
-- **Legacy Code Removal**: Removed obsolete references to `resources.qrc` and `.ui` file loading.
+- Fixed structure projection consistency.
+- Resolved "No valid layers to render" warnings.
+- Fixed Dip Scale Factor application.
+- Fixed blank rendering issues.
 
+## [1.0.0] - 2025-12-08
+### Added
+- **Refactoring & Architecture**:
+  - Split monolithic modules (algorithms.py, main_dialog.py) into focused components.
+  - Modularized exporters ecosystem.
+  - Implemented spatial indexing and native QGIS algorithms for performance.
+- **Quality Assurance**:
+  - Added comprehensive type hinting across modules.
+  - Enhanced test infrastructure with pytest and QGIS support.
+  - Implemented security fixes (path traversal protection).
+- **Documentation**:
+  - Added COMMIT_GUIDELINES.md for standardized commit messages.
+  - Added RELEASE_PROCESS.md with version release workflow.
+  - Added drilllogs_research.md with future integration requirements.
+
+### Changed
+- **Major UI Refactoring - Plugin Manager Style**:
+  - Redesigned main dialog with sidebar navigation (QListWidget + QStackedWidget).
+  - Replaced absolute positioning with responsive layouts (QVBoxLayout, QHBoxLayout, QSplitter).
+  - Integrated native QGIS theme icons for sidebar items.
+  - Improved preview/results area proportions with better vertical space management.
+- **Code Quality Improvements**:
+  - Extracted LegendWidget to separate module (gui/legend_widget.py).
+  - Refactored preview_profile_handler with helper methods and early returns.
+  - Refactored export_preview with dedicated methods per format (PNG, JPG, SVG, PDF).
+  - Applied SOLID principles throughout main dialog class.
+
+### Fixed
+- Fixed legend rendering and resizing issues.
+
+## [0.3.0] - 2025-12-03
+### Changed
+- **Major Refactoring - Modular Project Structure**:
+  - Reorganized codebase into core/, gui/, resources/ packages.
+  - Improved code maintainability and scalability.
+  - Better separation of concerns (business logic, UI, resources).
+- **Build System**:
+  - Updated Makefile for new structure.
+  - Refactored deploy.sh for modular deployment.
+  - Organized build scripts in scripts/ directory.
+
+### Added
+- **Quality Improvements**:
+  - Achieved Pylint score 10/10.
+  - Specific exception handling throughout codebase.
+  - Comprehensive code documentation.
+  - Configured .pylintrc for consistent code quality.
+- **Testing & CI/CD**:
+  - Added pytest infrastructure with QGIS support.
+  - Created initial unit tests.
+  - Configured GitHub Actions for automated testing.
+  - Test configuration in tests/conftest.py.
+- **Documentation**:
+  - Added REFACTORING_PR.md with detailed changes.
+  - Improved project documentation structure.
+  - Added implementation plans for future features.
+
+## [0.2.0] - 2025-11-30
+### Changed
+- **Major UI Overhaul - Native QGIS Widget Integration**:
+  - Replaced standard Qt ComboBoxes with QgsMapLayerComboBox for automatic layer population.
+  - Integrated QgsRasterBandComboBox for intelligent raster band selection.
+  - Added QgsFileWidget for native file/directory browsing with QGIS integration.
+  - Eliminated manual layer population code - widgets auto-sync with QGIS project.
+  - Improved user experience with native QGIS look and feel.
+  - Fixed Qt enum syntax for better cross-version compatibility.
+- **Code Quality**:
+  - Removed 200+ lines of manual widget population code.
+  - Cleaner architecture leveraging QGIS native capabilities.
+
+### Added
+- **UI Enhancements**:
+  - Collapsible results panel (QgsCollapsibleGroupBox) for better space management.
+  - Read-only results field to prevent accidental edits.
+- **New Features**:
+  - Flexible parsers for geological structural measurements (dip/strike formats).
+  - Comprehensive logging system integrated with QGIS Message Panel.
+  - Enhanced validation logic for QgsMapLayer objects.
+
+## [0.1.0] - Initial Release
+### Added
+- DEM topographic profile extraction.
+- Geological outcrop data extraction.
+- Structural point data extraction.
+- Interactive preview visualization.
