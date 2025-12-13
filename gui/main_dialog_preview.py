@@ -545,11 +545,10 @@ class PreviewManager:
             return
 
         # Prepare arguments package
-        # We need to pass the service instance because the worker function needs it
-        # Note: Passing QGIS layers to threads is risky.
-        # Ideally we should serialize data here, but complying with requested integration structure.
+        # We pass the bound method and its arguments. The ParallelGeologyService 
+        # will execute it automatically.
         args = (
-            self.dialog.plugin_instance.geology_service,
+            self.dialog.plugin_instance.geology_service.generate_geological_profile,
             line_layer,
             raster_layer,
             outcrop_layer,
@@ -557,13 +556,9 @@ class PreviewManager:
             band_num
         )
         
-        # Define worker function
-        def worker(args_tuple):
-            service, ll, rl, ol, field, band = args_tuple
-            return service.generate_geological_profile(ll, rl, ol, field, band)
-
         self.dialog.preview_widget.results_text.setPlainText("Generating Geology in background...")
-        self.async_service.process_profiles_parallel([args], worker)
+        # No need for a custom worker function anymore
+        self.async_service.process_profiles_parallel([args])
 
     def _on_geology_finished(self, results):
         """Handle completion of parallel geology generation."""

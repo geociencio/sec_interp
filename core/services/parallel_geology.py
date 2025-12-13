@@ -154,5 +154,13 @@ class ParallelGeologyService(QObject):
         Args:
             profile_chunk: A single profile item (despite the name)
         """
-        # Your existing processing logic here
-        pass
+        # Default behavior: Command Pattern
+        # If the item is a tuple/list where the first element is callable, execute it
+        if isinstance(profile_chunk, (list, tuple)) and len(profile_chunk) > 0:
+            func = profile_chunk[0]
+            args = profile_chunk[1:]
+            if callable(func):
+                return func(*args)
+        
+        # Fallback or other logic could go here
+        return None
