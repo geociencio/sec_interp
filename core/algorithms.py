@@ -22,6 +22,7 @@
 
 import contextlib
 from pathlib import Path
+from typing import Optional
 
 from qgis.core import (
     QgsGeometry,
@@ -40,20 +41,11 @@ from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox, QMessageBox
 
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
-from sec_interp.exporters import (
-    AxesShpExporter,
-    CSVExporter,
-    GeologyShpExporter,
-    ProfileLineShpExporter,
-    StructureShpExporter,
-)
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
 from sec_interp.logger_config import get_logger
 
-from .data_cache import DataCache
-from .services import GeologyService, ProfileService, StructureService
-
+from .controller import ProfileController
 
 logger = get_logger(__name__)
 
@@ -97,14 +89,8 @@ class SecInterp:
         # Create preview renderer
         self.preview_renderer = PreviewRenderer()
 
-        # Initialize services
-        self.profile_service = ProfileService()
-        self.geology_service = GeologyService()
-        self.structure_service = StructureService()
-
-        # Initialize data cache for performance
-        self.data_cache = DataCache()
-        logger.debug("Data cache initialized")
+        # Initialize controller
+        self.controller = ProfileController()
 
         # Declare instance attributes
         self.actions = []
@@ -119,7 +105,7 @@ class SecInterp:
         self.first_start = None
 
     # noinspection PyMethodMayBeStatic
-    def tr(self, message):
+    def tr(self, message: str) -> str:
         """Get the translation for a string using Qt translation API.
 
         We implement this ourselves since we do not inherit QObject.
@@ -255,7 +241,7 @@ class SecInterp:
             # substitute with your code.
             pass
 
-    def _get_and_validate_inputs(self):
+    def _get_and_validate_inputs(self) -> Optional[dict]:
         """Retrieve and validate inputs from the dialog.
 
         Returns:
@@ -272,14 +258,19 @@ class SecInterp:
 
         return validated_values
 
-    def process_data(self):
+    def process_data(self, inputs: Optional[dict] = None) -> Optional[tuple]:
         """Process profile data from selected layers with caching.
+
+        Args:
+            inputs (dict, optional): Pre-validated inputs. If None, retrieves from UI.
 
         Uses cache to avoid re-processing when only visualization
         parameters change.
         """
         # Get and validate inputs once
-        inputs = self._get_and_validate_inputs()
+        if inputs is None:
+            inputs = self._get_and_validate_inputs()
+            
         if not inputs:
             return None
 
@@ -300,8 +291,7 @@ class SecInterp:
             self.dlg.preview_widget.results_text.append("")  # Empty line
 
         # Check if we can use cached data
-        cache_key = self.data_cache.get_cache_key(validated_values)
-        cached_data = self.data_cache.get(cache_key)
+        cached_data = self.controller.get_cached_data(validated_values)
 
         profile_data = None
         geol_data = None
@@ -320,8 +310,8 @@ class SecInterp:
             self.dlg.preview_widget.results_text.append("🔄 Processing data...")
 
             try:
-                # Generate data using unified method
-                profile_data, geol_data, struct_data, msgs = self._generate_profile_data(
+                # Generate data using controller
+                profile_data, geol_data, struct_data, msgs = self.controller.generate_profile_data(
                     validated_values
                 )
 
@@ -338,8 +328,8 @@ class SecInterp:
                          return None
                 
                 # Cache the processed data
-                self.data_cache.set(
-                    cache_key,
+                self.controller.cache_data(
+                    validated_values,
                     {
                         "profile_data": profile_data,
                         "geol_data": geol_data,
@@ -367,85 +357,7 @@ class SecInterp:
 
         return profile_data, geol_data, struct_data
 
-    def _generate_profile_data(self, values):
-        """Unified method to generate all profile data components.
-        
-        Args:
-            values (dict): Validated input values.
 
-        Returns:
-            tuple: (profile_data, geol_data, struct_data, messages)
-        """
-        profile_data = []
-        geol_data = None
-        struct_data = None
-        messages = []
-
-        raster_layer = values["raster_layer_obj"]
-        line_layer = values["line_layer_obj"]
-        outcrop_layer = values["outcrop_layer_obj"]
-        structural_layer = values["structural_layer_obj"]
-        selected_band = values["selected_band"]
-        buffer_dist = values["buffer_distance"]
-
-        # 1. Topography
-        profile_data = self.profile_service.generate_topographic_profile(
-            line_layer, raster_layer, selected_band
-        )
-
-        if not profile_data:
-            return None, None, None, ["Error: No profile data generated."]
-
-        messages.append(f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points")
-
-        # 2. Geology
-        if outcrop_layer:
-            outcrop_name_field = values["outcrop_name_field"]
-            if outcrop_name_field:
-                geol_data = self.geology_service.generate_geological_profile(
-                    line_layer,
-                    raster_layer,
-                    outcrop_layer,
-                    outcrop_name_field,
-                    selected_band,
-                )
-                if geol_data:
-                    messages.append(f"Geology: {len(geol_data)} segments")
-                else:
-                    messages.append("Geology: No intersections")
-            else:
-                 messages.append("\n⚠ Outcrop layer selected but no geology field specified.")
-
-        # 3. Structure
-        if structural_layer:
-            dip_field = values["dip_field"]
-            strike_field = values["strike_field"]
-
-            if dip_field and strike_field:
-                line_feat = next(line_layer.getFeatures(), None)
-                if line_feat:
-                    line_geom = line_feat.geometry()
-                    if line_geom and not line_geom.isNull():
-                        line_azimuth = scu.calculate_line_azimuth(line_geom)
-                        struct_data = self.structure_service.project_structures(
-                            line_layer,
-                            raster_layer,  # Added argument
-                            structural_layer,
-                            buffer_dist,
-                            line_azimuth,
-                            dip_field,
-                            strike_field,
-                            selected_band, # Added argument
-                        )
-                        
-                        if struct_data:
-                            messages.append(f"Structures: {len(struct_data)} points")
-                        else:
-                            messages.append(f"Structures: None in {buffer_dist}m buffer")
-            else:
-                 messages.append("\n⚠ Structural layer selected but dip/strike fields not specified.")
-
-        return profile_data, geol_data, struct_data, messages
 
     def _handle_processing_error(self, e):
         """Unified error handler."""
@@ -498,9 +410,9 @@ class SecInterp:
 
             self.dlg.preview_widget.results_text.setPlainText("✓ Generating data for export...")
 
-            # 1. Generate all data using unified method
+            # 1. Generate all data using controller
             try:
-                profile_data, geol_data, struct_data, _ = self._generate_profile_data(values)
+                profile_data, geol_data, struct_data, _ = self.controller.generate_profile_data(values)
             except Exception as e:
                  self._handle_processing_error(e)
                  return
@@ -513,81 +425,15 @@ class SecInterp:
                 )
                 return
 
-            # 2. Orchestrate saving using exporters
-            result_msg = ["✓ Saving files..."]
-            csv_exporter = CSVExporter({})
-            line_crs = values["line_layer_obj"].crs()
-
-            # Export Topography
-            logger.info("✓ Saving topographic profile...")
-            csv_exporter.export(
-                output_folder / "topo_profile.csv",
-                {"headers": ["dist", "elev"], "rows": profile_data},
+            # 2. Orchestrate saving using controller
+            result_msg = self.controller.export_data(
+                output_folder,
+                values,
+                profile_data,
+                geol_data,
+                struct_data
             )
-            result_msg.append("  - topo_profile.csv")
-            ProfileLineShpExporter({}).export(
-                output_folder / "profile_line.shp",
-                {"profile_data": profile_data, "crs": line_crs},
-            )
-            result_msg.append("  - profile_line.shp")
-
-            # Export Geology
-            if geol_data:
-                logger.info("✓ Saving geological profile...")
-                # CSV needs flattening? data structure is now segments
-                # We can flatten it manually for CSV
-                geol_rows = []
-                for s in geol_data:
-                    for p in s.points:
-                        geol_rows.append((p[0], p[1], s.unit_name))
-                
-                csv_exporter.export(
-                    output_folder / "geol_profile.csv",
-                    {"headers": ["dist", "elev", "geology"], "rows": geol_rows},
-                )
-                result_msg.append("  - geol_profile.csv")
-                
-                GeologyShpExporter({}).export(
-                    output_folder / "geol_profile.shp",
-                    {
-                        "geology_data": geol_data,
-                        "crs": line_crs,
-                    },
-                )
-                result_msg.append("  - geol_profile.shp")
-
-            # Export Structures
-            if struct_data:
-                logger.info("✓ Saving structural profile...")
-                # CSV needs simple rows
-                struct_rows = [(s.distance, s.apparent_dip) for s in struct_data]
-                
-                csv_exporter.export(
-                    output_folder / "structural_profile.csv",
-                    {"headers": ["dist", "apparent_dip"], "rows": struct_rows},
-                )
-                result_msg.append("  - structural_profile.csv")
-                
-                StructureShpExporter({}).export(
-                    output_folder / "structural_profile.shp",
-                    {
-                        "structural_data": struct_data,
-                        "crs": line_crs,
-                        "dip_scale_factor": values["dip_scale_factor"],
-                        "raster_res": values["raster_layer_obj"].rasterUnitsPerPixelX(),
-                    },
-                )
-                result_msg.append("  - structural_profile.shp")
-
-            # Export Axes
-            logger.info("✓ Saving profile axes...")
-            AxesShpExporter({}).export(
-                output_folder / "profile_axes.shp",
-                {"profile_data": profile_data, "crs": line_crs},
-            )
-            result_msg.append("  - profile_axes.shp")
-
-            result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
+            
             self.dlg.preview_widget.results_text.setPlainText("\n".join(result_msg))
             QMessageBox.information(
                 self.dlg,
@@ -604,7 +450,7 @@ class SecInterp:
             )
             logger.error("Export error in save_profile_line: %s", str(e), exc_info=True)
 
-    def draw_preview(self, topo_data, geol_data=None, struct_data=None, max_points=1000, **kwargs):
+    def draw_preview(self, topo_data: list, geol_data: list = None, struct_data: list = None, max_points: int = 1000, **kwargs) -> None:
         """Draw enhanced interactive preview using native PyQGIS renderer.
 
         Args:
