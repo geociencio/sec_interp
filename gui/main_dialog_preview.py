@@ -253,7 +253,7 @@ class PreviewManager:
             List of (distance, elevation) tuples or None if failed
         """
         try:
-            return self.dialog.plugin_instance.profile_service.generate_topographic_profile(
+            return self.dialog.plugin_instance.controller.profile_service.generate_topographic_profile(
                 line_layer, raster_layer, band_num
             )
         except Exception as e:
@@ -288,7 +288,7 @@ class PreviewManager:
                 f"Generating geological profile with field: {outcrop_name_field}"
             )
             result = (
-                self.dialog.plugin_instance.geology_service.generate_geological_profile(
+                self.dialog.plugin_instance.controller.geology_service.generate_geological_profile(
                     line_layer,
                     raster_layer,
                     outcrop_layer,
@@ -348,7 +348,7 @@ class PreviewManager:
 
             line_azimuth = scu.calculate_line_azimuth(line_geom)
 
-            return self.dialog.plugin_instance.structure_service.project_structures(
+            return self.dialog.plugin_instance.controller.structure_service.project_structures(
                 line_lyr=line_layer,
                 raster_lyr=raster_layer,
                 struct_lyr=structural_layer,
@@ -548,7 +548,7 @@ class PreviewManager:
         # We pass the bound method and its arguments. The ParallelGeologyService 
         # will execute it automatically.
         args = (
-            self.dialog.plugin_instance.geology_service.generate_geological_profile,
+            self.dialog.plugin_instance.controller.geology_service.generate_geological_profile,
             line_layer,
             raster_layer,
             outcrop_layer,
