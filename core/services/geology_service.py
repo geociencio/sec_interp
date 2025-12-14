@@ -27,10 +27,13 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from typing import List, Tuple, Optional
 
 from sec_interp.core import utils as scu
 from sec_interp.core.performance_metrics import performance_monitor
-from sec_interp.core.types import GeologyData
+from sec_interp.core.performance_metrics import performance_monitor
+from sec_interp.core.types import GeologyData, GeologySegment
+from sec_interp.core.utils.sampling import interpolate_elevation
 from sec_interp.logger_config import get_logger
 
 
@@ -73,7 +76,40 @@ class GeologyService:
         crs = line_lyr.crs()
         da = scu.create_distance_area(crs)
 
-        # 1. Generate Master Profile Data (Grid Points + Elevations)
+        # 1. Generate Master Profile Data
+        master_profile_data, master_grid_dists = self._generate_master_profile_data(
+            line_geom, raster_lyr, band_number, da, line_start
+        )
+
+        # 2. Run Intersection
+        intersection_layer = self._perform_intersection(line_lyr, outcrop_lyr)
+
+        # 3. Process Intersections
+        segments = []
+        tolerance = 0.001
+        
+        for feature in intersection_layer.getFeatures():
+            new_segments = self._process_intersection_feature(
+                feature, outcrop_name_field, line_start, da, 
+                master_grid_dists, master_profile_data, tolerance
+            )
+            segments.extend(new_segments)
+
+        logger.info(f"Generated {len(segments)} geological segments")
+        # Sort by start distance
+        segments.sort(key=lambda x: x.points[0][0] if x.points else 0)
+        
+        return segments
+
+    def _generate_master_profile_data(
+        self, 
+        line_geom: QgsGeometry, 
+        raster_lyr: QgsRasterLayer, 
+        band_number: int, 
+        da: "QgsDistanceArea", 
+        line_start: "QgsPointXY"
+    ) -> Tuple[List[Tuple[float, float]], List[Tuple[float, "QgsPointXY", float]]]:
+        """Generates the master profile data (grid points and elevations)."""
         interval = raster_lyr.rasterUnitsPerPixelX()
         logger.debug(f"Generating master profile with interval={interval:.2f}")
 
@@ -94,10 +130,15 @@ class GeologyService:
             
             master_profile_data.append((d, elev))
             master_grid_dists.append((d, pt, elev))
+            
+        return master_profile_data, master_grid_dists
 
-        segments = []
-
-        # 2. Run Intersection
+    def _perform_intersection(
+        self, 
+        line_lyr: QgsVectorLayer, 
+        outcrop_lyr: QgsVectorLayer
+    ) -> QgsVectorLayer:
+        """Executes the QGIS native intersection algorithm."""
         try:
             feedback = QgsProcessingFeedback()
             result = processing.run(
@@ -109,74 +150,94 @@ class GeologyService:
                 },
                 feedback=feedback,
             )
-            intersection_layer = result["OUTPUT"]
+            return result["OUTPUT"]
         except Exception as e:
             logger.exception("Geological intersection failed")
             raise RuntimeError("Cannot compute geological intersection") from e
 
-        from sec_interp.core.utils.sampling import interpolate_elevation
-        from sec_interp.core.types import GeologySegment
+    def _process_intersection_feature(
+        self,
+        feature: "QgsFeature",
+        outcrop_name_field: str,
+        line_start: "QgsPointXY",
+        da: "QgsDistanceArea",
+        master_grid_dists: List,
+        master_profile_data: List,
+        tolerance: float
+    ) -> List[GeologySegment]:
+        """Processes a single intersection feature to extract geology segments."""
+        geom = feature.geometry()
+        if not geom or geom.isNull():
+            return []
 
-        tolerance = 0.001
+        geometries = []
+        if geom.wkbType() in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
+            geometries.append(geom)
+        elif geom.wkbType() in [QgsWkbTypes.MultiLineString, QgsWkbTypes.MultiLineString25D]:
+            for part in geom.asMultiPolyline():
+                geometries.append(QgsGeometry.fromPolylineXY(part))
+        else:
+            return []
 
-        for feature in intersection_layer.getFeatures():
-            geom = feature.geometry()
-            if not geom or geom.isNull():
-                continue
+        try:
+            glg_val = feature[outcrop_name_field]
+        except KeyError:
+            glg_val = "Unknown"
 
-            geometries = []
-            if geom.wkbType() in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
-                geometries.append(geom)
-            elif geom.wkbType() in [QgsWkbTypes.MultiLineString, QgsWkbTypes.MultiLineString25D]:
-                for part in geom.asMultiPolyline():
-                    geometries.append(QgsGeometry.fromPolylineXY(part))
-            else:
-                continue
-
-            try:
-                glg_val = feature[outcrop_name_field]
-            except KeyError:
-                glg_val = "Unknown"
-
-            for seg_geom in geometries:
-                verts = scu.get_line_vertices(seg_geom)
-                if not verts: continue
-                
-                # Get start/end distances
-                start_pt, end_pt = verts[0], verts[-1]
-                dist_start = da.measureLine(line_start, start_pt)
-                dist_end = da.measureLine(line_start, end_pt)
-                
-                if dist_start > dist_end:
-                    dist_start, dist_end = dist_end, dist_start
-
-                # 3. Get Inner Grid Points
-                inner_points = [
-                    (d, e) for d, _, e in master_grid_dists 
-                    if dist_start + tolerance < d < dist_end - tolerance
-                ]
-
-                # 4. Interpolate Boundary Elevations
-                elev_start = interpolate_elevation(master_profile_data, dist_start)
-                elev_end = interpolate_elevation(master_profile_data, dist_end)
-
-                # Combine
-                segment_points = [(dist_start, elev_start)] + inner_points + [(dist_end, elev_end)]
-                
-                # Create GeometrySegment
-                # Note: We store the intersection geometry but the points are what really matters for profile
-                # Attributes from original feature
-                attrs = dict(zip(feature.fields().names(), feature.attributes()))
-                
-                segment = GeologySegment(
-                    unit_name=str(glg_val),
-                    geometry=seg_geom, 
-                    attributes=attrs,
-                    points=[(round(d, 1), round(e, 1)) for d, e in segment_points]
-                )
+        segments = []
+        for seg_geom in geometries:
+            segment = self._create_segment_from_geometry(
+                seg_geom, feature, str(glg_val), line_start, da, 
+                master_grid_dists, master_profile_data, tolerance
+            )
+            if segment:
                 segments.append(segment)
-
-        logger.info(f"Generated {len(segments)} geological segments")
-        # Sort by start distance
-        segments.sort(key=lambda x: x.points[0][0] if x.points else 0)
+        
         return segments
+
+    def _create_segment_from_geometry(
+        self,
+        seg_geom: QgsGeometry,
+        feature: "QgsFeature",
+        glg_val: str,
+        line_start: "QgsPointXY",
+        da: "QgsDistanceArea",
+        master_grid_dists: List,
+        master_profile_data: List,
+        tolerance: float
+    ) -> Optional[GeologySegment]:
+        """Creates a GeologySegment from a geometry part."""
+        verts = scu.get_line_vertices(seg_geom)
+        if not verts: 
+            return None
+        
+        # Get start/end distances
+        start_pt, end_pt = verts[0], verts[-1]
+        dist_start = da.measureLine(line_start, start_pt)
+        dist_end = da.measureLine(line_start, end_pt)
+        
+        if dist_start > dist_end:
+            dist_start, dist_end = dist_end, dist_start
+
+        # Get Inner Grid Points
+        inner_points = [
+            (d, e) for d, _, e in master_grid_dists 
+            if dist_start + tolerance < d < dist_end - tolerance
+        ]
+
+        # Interpolate Boundary Elevations
+        elev_start = interpolate_elevation(master_profile_data, dist_start)
+        elev_end = interpolate_elevation(master_profile_data, dist_end)
+
+        # Combine
+        segment_points = [(dist_start, elev_start)] + inner_points + [(dist_end, elev_end)]
+        
+        # Attributes from original feature
+        attrs = dict(zip(feature.fields().names(), feature.attributes()))
+        
+        return GeologySegment(
+            unit_name=glg_val,
+            geometry=seg_geom, 
+            attributes=attrs,
+            points=[(round(d, 1), round(e, 1)) for d, e in segment_points]
+        )

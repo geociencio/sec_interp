@@ -20,9 +20,10 @@
 
 from qgis.core import QgsRaster, QgsRasterLayer, QgsVectorLayer
 
+from typing import List, Optional, Iterator
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
-from sec_interp.core.types import StructureData
+from sec_interp.core.types import StructureData, StructureMeasurement
 from sec_interp.logger_config import get_logger
 
 
@@ -90,106 +91,125 @@ class StructureService:
         else:
             line_start = line_geom.asPolyline()[0]
 
-        # Create buffer
-        try:
-            buffer_geom = scu.create_buffer_geometry(
-                line_geom, line_lyr.crs(), buffer_m, segments=25
-            )
-        except (ValueError, RuntimeError) as e:
-            logger.exception("Buffer creation failed")
-            raise ValueError("Cannot create buffer zone") from e
+        # 1. Create Buffer
+        buffer_geom = self._create_buffer_zone(line_geom, line_lyr.crs(), buffer_m)
 
+        # 2. Filter Measures
+        filtered_features = self._filter_structures(
+            struct_lyr, buffer_geom, line_lyr.crs()
+        )
+
+        # 3. Process Features
+        projected_structs = []
         crs = struct_lyr.crs()
         da = scu.create_distance_area(crs)
-        total_features = struct_lyr.featureCount()
-        
-        projected_structs = []
 
-        try:
-            filtered_features = scu.filter_features_by_buffer(
-                struct_lyr, buffer_geom, line_lyr.crs()
+        for f in filtered_features:
+            measurement = self._process_single_structure(
+                f, line_geom, line_start, da, raster_lyr, band_number, 
+                line_az, dip_field, strike_field
             )
-        except (ValueError, RuntimeError) as e:
-            logger.exception("Spatial filtering failed")
-            raise ValueError("Cannot filter structures by buffer") from e
-
-        # Process filtered features
-        from sec_interp.core.types import StructureMeasurement
-        from qgis.core import QgsRaster
-
-        for idx, f in enumerate(filtered_features):
-            struct_geom = f.geometry()
-            if not struct_geom or struct_geom.isNull():
-                continue
-
-            # Project point onto line to get true station distance
-            if not struct_geom.intersects(buffer_geom): 
-                # Should be caught by filter, but double check simple geom intersection
-                # Actually filter_features checks bounding box then geometry, so safe.
-                # But we need projected point on line for Distance calculation
-                pass
-            
-            # Use geometry engine project (returns distance)
-            proj_dist = line_geom.lineLocatePoint(struct_geom)
-            if proj_dist < 0:
-                continue
-
-            # Interpolate point on line at that distance
-            proj_pt = line_geom.interpolate(proj_dist).asPoint()
-            
-            # Measure geodesic distance from start if needed, or use proj_dist (Cartesian)
-            # Standard is usually distance along line.
-            # lineLocatePoint returns distance along geometry.
-            dist = proj_dist 
-            # Note: Previous code used da.measureLine(line_start, struct_geom.asPoint()) 
-            # which is radial distance, not projected. Projected is better for sections.
-            # Let's switch to projected distance as Exporter was doing?
-            # Exporter used: proj_dist = line_geom.lineLocatePoint(struct_geom)
-            # THEN: proj_pt = ... interpolate(proj_dist)
-            # THEN: dist = da.measureLine(line_start, proj_pt)
-            # This handles CRS differences better if da handles ellipsoids.
-            
-            dist = da.measureLine(line_start, proj_pt)
-
-            # Sample Elevation
-            res_val = (
-                raster_lyr.dataProvider()
-                .identify(proj_pt, QgsRaster.IdentifyFormatValue)
-                .results()
-            )
-            elev = res_val.get(band_number, 0.0)
-
-            try:
-                strike_raw = f[strike_field]
-                dip_raw = f[dip_field]
-            except KeyError:
-                continue
-
-            strike = scu.parse_strike(strike_raw)
-            dip_angle, _ = scu.parse_dip(dip_raw)
-
-            if strike is None or dip_angle is None:
-                continue
-            
-            # Validate ranges
-            if not (0 <= strike <= 360) or not (0 <= dip_angle <= 90):
-                continue
-
-            app_dip = scu.calculate_apparent_dip(strike, dip_angle, line_az)
-            
-            # Create rich object
-            measurement = StructureMeasurement(
-                distance=round(dist, 1),
-                elevation=round(elev, 1),
-                apparent_dip=round(app_dip, 1),
-                original_dip=dip_angle,
-                original_strike=strike,
-                attributes=dict(zip(f.fields().names(), f.attributes()))
-            )
-            projected_structs.append(measurement)
+            if measurement:
+                projected_structs.append(measurement)
 
         # Sort by distance
         projected_structs.sort(key=lambda x: x.distance)
         
         logger.info(f"Processed {len(projected_structs)} structural measurements")
         return projected_structs
+
+    def _create_buffer_zone(
+        self, 
+        line_geom: "QgsGeometry", 
+        crs: "QgsCoordinateReferenceSystem", 
+        buffer_m: float
+    ) -> "QgsGeometry":
+        """Creates the buffer geometry around the section line."""
+        try:
+            return scu.create_buffer_geometry(
+                line_geom, crs, buffer_m, segments=25
+            )
+        except (ValueError, RuntimeError) as e:
+            logger.exception("Buffer creation failed")
+            raise ValueError("Cannot create buffer zone") from e
+
+    def _filter_structures(
+        self, 
+        struct_lyr: QgsVectorLayer, 
+        buffer_geom: "QgsGeometry", 
+        target_crs: "QgsCoordinateReferenceSystem"
+    ) -> Iterator["QgsFeature"]:
+        """Selects structure features within the buffer."""
+        try:
+            return scu.filter_features_by_buffer(
+                struct_lyr, buffer_geom, target_crs
+            )
+        except (ValueError, RuntimeError) as e:
+            logger.exception("Spatial filtering failed")
+            raise ValueError("Cannot filter structures by buffer") from e
+
+    def _process_single_structure(
+        self,
+        feature: "QgsFeature",
+        line_geom: "QgsGeometry",
+        line_start: "QgsPointXY",
+        da: "QgsDistanceArea",
+        raster_lyr: QgsRasterLayer,
+        band_number: int,
+        line_az: float,
+        dip_field: str,
+        strike_field: str
+    ) -> Optional[StructureMeasurement]:
+        """Processes a single structure feature."""
+        struct_geom = feature.geometry()
+        if not struct_geom or struct_geom.isNull():
+            return None
+
+        # Project point onto line to get true station distance
+        proj_dist = line_geom.lineLocatePoint(struct_geom)
+        if proj_dist < 0:
+            return None
+
+        # Interpolate point on line at that distance
+        proj_pt = line_geom.interpolate(proj_dist).asPoint()
+        
+        # Measure geodesic distance from start
+        # Using measureLine ensures correct units (meters) even if CRS is geographic
+        dist = da.measureLine(line_start, proj_pt)
+
+        # Sample Elevation
+        res_val = (
+            raster_lyr.dataProvider()
+            .identify(proj_pt, QgsRaster.IdentifyFormatValue)
+            .results()
+        )
+        elev = res_val.get(band_number, 0.0)
+
+        # Parse Attributes
+        try:
+            strike_raw = feature[strike_field]
+            dip_raw = feature[dip_field]
+        except KeyError:
+            return None
+
+        strike = scu.parse_strike(strike_raw)
+        dip_angle, _ = scu.parse_dip(dip_raw)
+
+        if strike is None or dip_angle is None:
+            return None
+        
+        # Validate ranges
+        if not (0 <= strike <= 360) or not (0 <= dip_angle <= 90):
+            return None
+
+        app_dip = scu.calculate_apparent_dip(strike, dip_angle, line_az)
+        
+        # Create object
+        return StructureMeasurement(
+            distance=round(dist, 1),
+            elevation=round(elev, 1),
+            apparent_dip=round(app_dip, 1),
+            original_dip=dip_angle,
+            original_strike=strike,
+            attributes=dict(zip(feature.fields().names(), feature.attributes()))
+        )
