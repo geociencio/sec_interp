@@ -1,0 +1,38 @@
+# Exclusiones de análisis de proyecto (SecInterp)
+# Directorios de sistema y entorno
+__pycache__
+.git
+.venv
+venv
+env
+.tox
+.pytest_cache
+.mypy_cache
+.coverage
+htmlcov
+.idea
+.vscode
+
+# Directorios de build y distribución
+build
+dist
+*.egg-info
+pkg
+*__pycache__*
+
+# Archivos compilados y logs
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dll
+*.log
+*.sqlite
+*.db
+
+# Archivos específicos del proyecto que no requieren análisis
+test_data
+resources
+*.ui
+*.qrc
+analyze_project_optfixed.py
