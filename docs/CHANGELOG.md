@@ -5,17 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.0] - 2025-12-14
+## [2.0.0] - 2025-12-14
+### Added
+- **Major Feature: Drillhole Data Handling**:
+  - 3D Projection of drillhole traces onto 2D profile sections.
+  - Auto-calculation of total depths and handling of vertical holes without survey.
+  - Visualization of geological intervals along drillhole traces.
+- **Drillhole Data Export**:
+  - Export drillhole traces to Shapefile (`drillhole_traces.shp`).
+  - Export interval data with attributes to Shapefile (`drillhole_intervals.shp`).
+
 ### Changed
-- **Core Optimization & Refactoring**:
-  - **Services Overhaul**: Decomposed monolithic functions in `GeologyService` and `StructureService` into modular helper methods, significantly reducing cyclomatic complexity.
-  - **Validation Logic**: Refactored `validate_and_get_layers` in `core/validation.py` into separate resolution and verification components.
-  - **Architecture**: Decoupled UI logic from business logic in `core/algorithms.py` and introduced `ProfileController`.
-- **Project Analyzer 2.0**:
-  - Replaced `analyze_project.py` with a zero-dependency optimized version (removed `networkx`).
-  - Added support for external configuration (`analyzer_config.json`) for custom quality scoring.
-  - Added support for exclusions file (`.analyzerignore`).
-  - Implemented granular logging and persistent analysis state caching.
+- **Major UI Refactoring & Enhancements**:
+  - New specialized Drillhole Input Page.
+  - Enhanced Preview System with dedicated persistent rendering for all data types.
+  - Fixed critical rendering bugs (zoom persistence, async updates).
+- **Architecture**:
+  - Implemented `DrillholeService` for encapsulated logic.
+  - Refactored `ProfileController` to orchestrate multiple data services.
+  - Unified export logic with extensible Exporter pattern.
 
 ## [1.1.0] - 2025-12-12
 ### Added
