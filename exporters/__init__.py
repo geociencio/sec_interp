@@ -13,6 +13,10 @@ from .profile_exporters import (
     ProfileLineShpExporter,
     StructureShpExporter,
 )
+from .drillhole_exporters import (
+    DrillholeTraceShpExporter,
+    DrillholeIntervalShpExporter,
+)
 from .shp_exporter import ShapefileExporter
 from .svg_exporter import SVGExporter
 
@@ -21,6 +25,8 @@ __all__ = [
     "AxesShpExporter",
     "BaseExporter",
     "CSVExporter",
+    "DrillholeIntervalShpExporter",
+    "DrillholeTraceShpExporter",
     "GeologyShpExporter",
     "ImageExporter",
     "PDFExporter",

@@ -304,6 +304,7 @@ class SecInterp:
             profile_data = cached_data["profile_data"]
             geol_data = cached_data.get("geol_data")
             struct_data = cached_data.get("struct_data")
+            drillhole_data = cached_data.get("drillhole_data")
             msgs = cached_data.get("msgs", [])
         else:
             logger.info("🔄 Processing new profile data...")
@@ -311,7 +312,7 @@ class SecInterp:
 
             try:
                 # Generate data using controller
-                profile_data, geol_data, struct_data, msgs = self.controller.generate_profile_data(
+                profile_data, geol_data, struct_data, drillhole_data, msgs = self.controller.generate_profile_data(
                     validated_values
                 )
 
@@ -334,6 +335,7 @@ class SecInterp:
                         "profile_data": profile_data,
                         "geol_data": geol_data,
                         "struct_data": struct_data,
+                        "drillhole_data": drillhole_data,
                         "msgs": msgs,
                     },
                 )
@@ -353,7 +355,7 @@ class SecInterp:
         )
 
         # Draw preview with all data
-        self.draw_preview(profile_data, geol_data, struct_data)
+        self.draw_preview(profile_data, geol_data, struct_data, drillhole_data)
 
         return profile_data, geol_data, struct_data
 
@@ -412,7 +414,7 @@ class SecInterp:
 
             # 1. Generate all data using controller
             try:
-                profile_data, geol_data, struct_data, _ = self.controller.generate_profile_data(values)
+                profile_data, geol_data, struct_data, drillhole_data, _ = self.controller.generate_profile_data(values)
             except Exception as e:
                  self._handle_processing_error(e)
                  return
@@ -431,7 +433,8 @@ class SecInterp:
                 values,
                 profile_data,
                 geol_data,
-                struct_data
+                struct_data,
+                drillhole_data
             )
             
             self.dlg.preview_widget.results_text.setPlainText("\n".join(result_msg))

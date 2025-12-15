@@ -195,7 +195,8 @@ class ProfileController:
         values: Dict[str, Any], 
         profile_data: List[Tuple],
         geol_data: Optional[List[Any]], 
-        struct_data: Optional[List[Any]]
+        struct_data: Optional[List[Any]],
+        drillhole_data: Optional[List[Any]] = None
     ) -> List[str]:
         """Export generated data to CSV and Shapefile formats using lazy imports.
         
@@ -216,6 +217,8 @@ class ProfileController:
             GeologyShpExporter,
             ProfileLineShpExporter,
             StructureShpExporter,
+            DrillholeTraceShpExporter,
+            DrillholeIntervalShpExporter,
         )
 
         result_msg = ["✓ Saving files..."]
@@ -281,6 +284,22 @@ class ProfileController:
                 },
             )
             result_msg.append("  - structural_profile.shp")
+
+        # Export Drillholes
+        if values.get("collar_layer_obj") and drillhole_data: # Check if drillholes were processed
+            logger.info("✓ Saving drillhole data...")
+            
+            DrillholeTraceShpExporter({}).export(
+                output_folder / "drillhole_traces.shp",
+                {"drillhole_data": drillhole_data, "crs": line_crs}
+            )
+            result_msg.append("  - drillhole_traces.shp")
+            
+            DrillholeIntervalShpExporter({}).export(
+                output_folder / "drillhole_intervals.shp",
+                {"drillhole_data": drillhole_data, "crs": line_crs}
+            )
+            result_msg.append("  - drillhole_intervals.shp")
 
         # Export Axes
         logger.info("✓ Saving profile axes...")

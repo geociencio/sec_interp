@@ -280,19 +280,29 @@ class DrillholeService:
             # Interpolate Intervals on Trajectory
             hole_geol_tuples = []
             if intervals:
+                # Pack attributes into a dictionary to preserve metadata through interpolation
+                rich_intervals = []
+                for fd, td, lith in intervals:
+                    attrs = {"unit": lith, "from": fd, "to": td}
+                    rich_intervals.append((fd, td, attrs))
+                
                 hole_geol_tuples = scu.interpolate_intervals_on_trajectory(
-                    projected_traj, intervals, buffer_width
+                    projected_traj, rich_intervals, buffer_width
                 )
             else:
                  logger.warning(f"  - No intervals for hole {hole_id}")
 
             hole_geol_data = []
-            for unit_name, points in hole_geol_tuples:
+            for attr_data, points in hole_geol_tuples:
+                # Unpack attributes
+                # attr_data is the dictionary we packed above
+                unit_name = str(attr_data.get("unit", "Unknown"))
+                
                 # Create domain object
                 seg = GeologySegment(
-                    unit_name=str(unit_name),
+                    unit_name=unit_name,
                     geometry=None,
-                    attributes={},
+                    attributes=attr_data,
                     points=points
                 )
                 hole_geol_data.append(seg)
