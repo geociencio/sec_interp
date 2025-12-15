@@ -167,6 +167,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         self.page_geology.dataChanged.connect(self.update_preview_checkbox_states)
         self.page_struct.dataChanged.connect(self.update_preview_checkbox_states)
+        self.page_drillhole.dataChanged.connect(self.update_preview_checkbox_states)
 
         # Preview checkbox connections
         self.preview_widget.chk_topo.stateChanged.connect(
@@ -176,6 +177,9 @@ class SecInterpDialog(SecInterpMainWindow):
             self.update_preview_from_checkboxes
         )
         self.preview_widget.chk_struct.stateChanged.connect(
+            self.update_preview_from_checkboxes
+        )
+        self.preview_widget.chk_drillholes.stateChanged.connect(
             self.update_preview_from_checkboxes
         )
 
@@ -289,8 +293,15 @@ class SecInterpDialog(SecInterpMainWindow):
         if can_show_struct and not self.preview_widget.chk_struct.isChecked():
             # Re-enable checkbox if it was disabled before
             self.preview_widget.chk_struct.setChecked(True)
-        elif not can_show_struct:
             self.preview_widget.chk_struct.setChecked(False)
+
+        # Drillholes
+        can_show_drill = self.page_drillhole.is_complete() and has_line
+        self.preview_widget.chk_drillholes.setEnabled(can_show_drill)
+        if can_show_drill and not self.preview_widget.chk_drillholes.isChecked():
+            self.preview_widget.chk_drillholes.setChecked(True)
+        elif not can_show_drill:
+            self.preview_widget.chk_drillholes.setChecked(False)
 
     def update_button_state(self):
         """Enable or disable buttons based on input validity.
@@ -333,7 +344,7 @@ class SecInterpDialog(SecInterpMainWindow):
         structure_data = self.page_struct.get_data()
 
         # Combine into flat dictionary expected by the rest of the app (legacy support)
-        return {
+        flat_dict = {
             "raster_layer": dem_data["raster_layer"],
             "selected_band": dem_data["selected_band"],
             "scale": dem_data["scale"],
@@ -346,8 +357,42 @@ class SecInterpDialog(SecInterpMainWindow):
             "dip_field": structure_data["dip_field"],
             "strike_field": structure_data["strike_field"],
             "dip_scale_factor": structure_data["dip_scale_factor"],
+            "strike_field": structure_data["strike_field"],
+            "dip_scale_factor": structure_data["dip_scale_factor"],
             "output_path": self.output_widget.filePath(),
         }
+        
+        # Merge drillhole data
+        drillhole_data = self.page_drillhole.get_data()
+        
+        # Map DrillholePage keys to Controller keys (see drillsec.py logic)
+        # Controller expects:
+        # collar_layer_obj, collar_id_field, collar_x_field...
+        # survey_layer_obj...
+        
+        flat_dict.update({
+            "collar_layer_obj": drillhole_data["collar_layer"],
+            "collar_id_field": drillhole_data["collar_id"],
+            "collar_use_geometry": drillhole_data["use_geometry"],
+            "collar_x_field": drillhole_data["collar_x"],
+            "collar_y_field": drillhole_data["collar_y"],
+            "collar_z_field": drillhole_data["collar_z"],
+            "collar_depth_field": drillhole_data["collar_depth"],
+            
+            "survey_layer_obj": drillhole_data["survey_layer"],
+            "survey_id_field": drillhole_data["survey_id"],
+            "survey_depth_field": drillhole_data["survey_depth"],
+            "survey_azim_field": drillhole_data["survey_azim"],
+            "survey_incl_field": drillhole_data["survey_incl"],
+            
+            "interval_layer_obj": drillhole_data["interval_layer"],
+            "interval_id_field": drillhole_data["interval_id"],
+            "interval_from_field": drillhole_data["interval_from"],
+            "interval_to_field": drillhole_data["interval_to"],
+            "interval_lith_field": drillhole_data["interval_lith"],
+        })
+        
+        return flat_dict
 
     def get_preview_options(self):
         """Return the state of preview layer checkboxes.
@@ -359,6 +404,8 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_topo": bool(self.preview_widget.chk_topo.isChecked()),
             "show_geol": bool(self.preview_widget.chk_geol.isChecked()),
             "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
+            "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
+            "max_points": self.preview_widget.spin_max_points.value(),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
             "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),

@@ -24,6 +24,11 @@ from .geometry import (
     get_line_vertices,
     run_processing_algorithm,
 )
+from .drillhole import (
+    calculate_drillhole_trajectory,
+    project_trajectory_to_section,
+    interpolate_intervals_on_trajectory,
+)
 
 # I/O utilities
 from .io import (
@@ -64,6 +69,10 @@ from .spatial import (
 __all__ = [
     # Geology
     "calculate_apparent_dip",
+    # Drillhole
+    "calculate_drillhole_trajectory",
+    "project_trajectory_to_section",
+    "interpolate_intervals_on_trajectory",
     # Rendering
     "calculate_bounds",
     "calculate_interval",

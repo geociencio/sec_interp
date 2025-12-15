@@ -450,13 +450,14 @@ class SecInterp:
             )
             logger.error("Export error in save_profile_line: %s", str(e), exc_info=True)
 
-    def draw_preview(self, topo_data: list, geol_data: list = None, struct_data: list = None, max_points: int = 1000, **kwargs) -> None:
+    def draw_preview(self, topo_data: list, geol_data: list = None, struct_data: list = None, drillhole_data: list = None, max_points: int = 1000, **kwargs) -> None:
         """Draw enhanced interactive preview using native PyQGIS renderer.
 
         Args:
             topo_data: List of (dist, elev) tuples for topographic profile
             geol_data: Optional list of (dist, elev, geology_name) tuples
             struct_data: Optional list of (dist, app_dip) tuples
+            drillhole_data: Optional list of (hole_id, traces, segments) tuples
             max_points (int): Maximum number of points for simplified preview (LOD)
             **kwargs: Additional arguments passed to renderer (e.g. preserve_extent)
         """
@@ -466,12 +467,16 @@ class SecInterp:
         logger.debug(
             "  - struct_data: %d points", len(struct_data) if struct_data else 0
         )
+        logger.debug(
+            "  - drillhole_data: %d holes", len(drillhole_data) if drillhole_data else 0
+        )
         logger.debug("  - max_points: %d", max_points)
 
         # Store data in dialog for re-rendering when checkboxes change
         self.dlg.current_topo_data = topo_data
         self.dlg.current_geol_data = geol_data
         self.dlg.current_struct_data = struct_data
+        self.dlg.current_drillhole_data = drillhole_data
 
         # Get preview options from dialog checkboxes
         options = self.dlg.get_preview_options()
@@ -481,6 +486,7 @@ class SecInterp:
         filtered_topo = topo_data if options.get("show_topo", True) else None
         filtered_geol = geol_data if options.get("show_geol", True) else None
         filtered_struct = struct_data if options.get("show_struct", True) else None
+        filtered_drill = drillhole_data if options.get("show_drillholes", True) else None # Requires main_dialog to provide this option key
 
         logger.debug("Filtered data:")
         logger.debug(
@@ -516,13 +522,14 @@ class SecInterp:
 
         # Render using native PyQGIS
         canvas, layers = self.preview_renderer.render(
-            filtered_topo, 
-            filtered_geol, 
-            filtered_struct, 
-            vert_exag, 
-            dip_line_length,
+            topo_data=filtered_topo, 
+            geol_data=filtered_geol, 
+            struct_data=filtered_struct, 
+            vert_exag=vert_exag, 
+            dip_line_length=dip_line_length,
             max_points=max_points,
-            preserve_extent=kwargs.get('preserve_extent', False)
+            preserve_extent=kwargs.get('preserve_extent', False),
+            drillhole_data=filtered_drill 
         )
 
         # Store canvas and layers for export

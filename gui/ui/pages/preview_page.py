@@ -99,10 +99,14 @@ class PreviewWidget(QWidget):
         
         self.chk_struct = QCheckBox("Show Structures")
         self.chk_struct.setChecked(True)
+
+        self.chk_drillholes = QCheckBox("Show Drillholes")
+        self.chk_drillholes.setChecked(True)
         
         chk_layout.addWidget(self.chk_topo)
         chk_layout.addWidget(self.chk_geol)
         chk_layout.addWidget(self.chk_struct)
+        chk_layout.addWidget(self.chk_drillholes)
         frame_layout.addLayout(chk_layout)
 
         # 4. Results / Logs

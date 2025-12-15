@@ -708,6 +708,148 @@ class PreviewRenderer:
 
         return layer
 
+    def _create_drillhole_trace_layer(
+        self, drillhole_data: list, vert_exag: float = 1.0
+    ) -> QgsVectorLayer | None:
+        """Create temporary layer for drillhole traces.
+        
+        Args:
+            drillhole_data: List of (hole_id, traces, segments)
+            vert_exag: Vertical exaggeration factor
+            
+        Returns:
+            QgsVectorLayer
+        """
+        if not drillhole_data:
+            return None
+            
+        layer, provider = self._create_memory_layer("LineString", "Drillhole Traces", "field=hole_id:string")
+        if not layer:
+            return None
+            
+        features = []
+        for hole_id, trace_points, _ in drillhole_data:
+            if not trace_points or len(trace_points) < 2:
+                continue
+                
+            # Create line geometry
+            # Apply vertical exaggeration
+            render_points = [QgsPointXY(x, y * vert_exag) for x, y in trace_points]
+            line = QgsLineString(render_points)
+            
+            feat = QgsFeature(layer.fields())
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttribute("hole_id", hole_id)
+            features.append(feat)
+            
+        provider.addFeatures(features)
+        
+        # Symbology: Thin grey/black line
+        symbol = QgsLineSymbol.createSimple(
+            {
+                "color": "50,50,50",
+                "width": "0.3",
+                "capstyle": "round"
+            }
+        )
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+        
+        # Labelling for Hole IDs (at the top/start of the trace)
+        settings = QgsPalLayerSettings()
+        settings.fieldName = "hole_id"
+        settings.placement = QgsPalLayerSettings.Line
+        
+        format = QgsTextFormat()
+        format.setColor(QColor(0, 0, 0))
+        format.setSize(8)
+        settings.setFormat(format)
+        
+        # Offset slightly above/left
+        # settings.dist = 1.0
+        
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        layer.setLabelsEnabled(True)
+        
+        layer.updateExtents()
+        return layer
+
+    def _create_drillhole_interval_layer(
+        self, drillhole_data: list, vert_exag: float = 1.0
+    ) -> QgsVectorLayer | None:
+        """Create temporary layer for drillhole intervals.
+        
+        Args:
+            drillhole_data: List of (hole_id, traces, segments)
+            vert_exag: Vertical exaggeration factor
+            
+        Returns:
+            QgsVectorLayer
+        """
+        if not drillhole_data:
+            return None
+            
+        # Collect all segments from all holes
+        all_segments = []
+        for _, _, segments in drillhole_data:
+             if segments:
+                 all_segments.extend(segments)
+                 
+        if not all_segments:
+            return None
+            
+        # Create memory layer
+        layer, provider = self._create_memory_layer("LineString", "Drillhole Intervals", "field=unit:string")
+        if not layer:
+            return None
+            
+        features = []
+        unique_units = set()
+        
+        for segment in all_segments:
+            if not segment.points or len(segment.points) < 2:
+                continue
+                
+            unique_units.add(segment.unit_name)
+            
+            # Create geometry
+            render_points = [QgsPointXY(x, y * vert_exag) for x, y in segment.points]
+            line = QgsLineString(render_points)
+            
+            feat = QgsFeature(layer.fields())
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttribute("unit", segment.unit_name)
+            features.append(feat)
+            
+        provider.addFeatures(features)
+        
+        # Categorized symbology - reuse colors from geology if available
+        categories = []
+        for unit_name in unique_units:
+            # Check if we already assigned a color for this unit in geology service
+            # If so, reuse it. If not, generate one.
+            if unit_name in self.active_units:
+                color = self.active_units[unit_name]
+            else:
+                color = self._get_color_for_unit(unit_name)
+                self.active_units[unit_name] = color # cache it
+            
+            # Thicker line for intervals
+            symbol = QgsLineSymbol.createSimple(
+                {
+                    "color": f"{color.red()},{color.green()},{color.blue()}",
+                    "width": "2.0", # Thicker than traces
+                    "capstyle": "flat", # Flat caps for intervals to look like bars
+                    "joinstyle": "bevel"
+                }
+            )
+            category = QgsRendererCategory(unit_name, symbol, unit_name)
+            categories.append(category)
+            
+        renderer = QgsCategorizedSymbolRenderer("unit", categories)
+        layer.setRenderer(renderer)
+        layer.updateExtents()
+        return layer
+
     def render(
         self,
         topo_data: ProfileData,
@@ -718,6 +860,8 @@ class PreviewRenderer:
         max_points: int = 1000,
         preserve_extent: bool = False,
         use_adaptive_sampling: bool = False,
+        drillhole_data: list | None = None,
+        **kwargs
     ) -> tuple[object | None, list[QgsVectorLayer]]:
         """Render preview with all data layers.
 
@@ -729,6 +873,7 @@ class PreviewRenderer:
             dip_line_length: Optional explicit length for dip lines
             max_points: Max points for LOD optimization (default: 1000)
             preserve_extent: If True, do not reset canvas extent (default: False)
+            drillhole_data: Optional list of (hole_id, traces, segments) tuples
 
         Returns:
             Tuple of (QgsMapCanvas, list of layers) or (None, None) if no data
@@ -789,15 +934,29 @@ class PreviewRenderer:
         if struct_layer:
             self.has_structures = True
 
+        # Render Drillholes
+        # drillhole_data is passed as argument now
+        drillhole_layers = []
+        if drillhole_data:
+            # 1. Traces
+            trace_layer = self._create_drillhole_trace_layer(drillhole_data, vert_exag)
+            if trace_layer:
+                drillhole_layers.append(trace_layer)
+            
+            # 2. Intervals
+            interval_layer = self._create_drillhole_interval_layer(drillhole_data, vert_exag)
+            if interval_layer:
+                drillhole_layers.append(interval_layer)
+        
         # Collect valid layers
         data_layers = [
             layer
-            for layer in [struct_layer, geol_layer, topo_layer]
+            for layer in [struct_layer, geol_layer, topo_layer] + drillhole_layers
             if layer is not None
         ]
 
         logger.debug(
-            f"Layers created: topo={topo_layer is not None}, geol={geol_layer is not None}, struct={struct_layer is not None}"
+            f"Layers created: topo={topo_layer is not None}, geol={geol_layer is not None}, struct={struct_layer is not None}, dh={len(drillhole_layers)}"
         )
         logger.debug(f"Valid data_layers count: {len(data_layers)}")
 

@@ -12,6 +12,7 @@ from .pages.section_page import SectionPage
 from .pages.geology_page import GeologyPage
 from .pages.structure_page import StructurePage
 from .pages.preview_page import PreviewWidget
+from .pages.drillhole_page import DrillholePage
 
 
 class SecInterpMainWindow(QDialog):
@@ -36,7 +37,9 @@ class SecInterpMainWindow(QDialog):
         self.page_dem = DemPage(iface)
         self.page_section = SectionPage()
         self.page_geology = GeologyPage()
+        self.page_geology = GeologyPage()
         self.page_struct = StructurePage()
+        self.page_drillhole = DrillholePage()
         
         self._setup_ui()
         self._connect_signals()
@@ -78,6 +81,7 @@ class SecInterpMainWindow(QDialog):
         self.stacked_widget.addWidget(self.page_section)
         self.stacked_widget.addWidget(self.page_geology)
         self.stacked_widget.addWidget(self.page_struct)
+        self.stacked_widget.addWidget(self.page_drillhole)
         
         splitter.addWidget(self.stacked_widget)
         
@@ -112,6 +116,7 @@ class SecInterpMainWindow(QDialog):
         self.sidebar.add_item("Section Line", "mIconLineLayer.svg")
         self.sidebar.add_item("Geology", "mIconPolygonLayer.svg")
         self.sidebar.add_item("Structural", "mIconPointLayer.svg")
+        self.sidebar.add_item("Drillholes", "mActionDataSourceManager.svg")
         
         self.sidebar.setCurrentRow(0)
 

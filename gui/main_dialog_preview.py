@@ -46,7 +46,7 @@ class PreviewManager:
             dialog: The SecInterpDialog instance
         """
         self.dialog = dialog
-        self.cached_data: dict[str, Any] = {"topo": None, "geol": None, "struct": None}
+        self.cached_data: dict[str, Any] = {"topo": None, "geol": None, "struct": None, "drillhole": None}
         self.metrics = MetricsCollector()
 
         # Initialize parallel service
@@ -122,10 +122,22 @@ class PreviewManager:
                     if struct_data:
                         self.metrics.record_count("Structure Points", len(struct_data))
 
+                    # Generate drillholes (Phase 2/3)
+                    drillhole_data = None
+                    if self.dialog.page_drillhole.is_complete():
+                         drillhole_data = self.generate_drillholes(raster_layer)
+                    
+                    if drillhole_data:
+                        # drillhole_data is a dictionary or list of traces? 
+                        # Controller returns (hole_id, traces, segments)
+                        # We should store it.
+                        self.metrics.record_count("Drillholes", len(drillhole_data))
+
                     # Cache the data
                     self.cached_data["topo"] = profile_data
                     self.cached_data["geol"] = geol_data
                     self.cached_data["struct"] = struct_data
+                    self.cached_data["drillhole"] = drillhole_data
 
                 finally:
                     if tmp_path.exists():
@@ -158,6 +170,7 @@ class PreviewManager:
                             profile_data,
                             geol_data,
                             struct_data,
+                            drillhole_data=drillhole_data,
                             max_points=max_points_for_render,
                             use_adaptive_sampling=use_adaptive_sampling,
                         )
@@ -202,11 +215,13 @@ class PreviewManager:
         show_topo = self.dialog.preview_widget.chk_topo.isChecked()
         show_geol = self.dialog.preview_widget.chk_geol.isChecked()
         show_struct = self.dialog.preview_widget.chk_struct.isChecked()
+        show_drill = self.dialog.preview_widget.chk_drillholes.isChecked()
 
         # Prepare data based on checkboxes
         topo_data = self.cached_data["topo"] if show_topo else None
         geol_data = self.cached_data["geol"] if show_geol else None
         struct_data = self.cached_data["struct"] if show_struct else None
+        drillhole_data = self.cached_data["drillhole"] if show_drill else None
 
         # Re-render
         try:
@@ -233,6 +248,7 @@ class PreviewManager:
                 topo_data,
                 geol_data,
                 struct_data,
+                drillhole_data=drillhole_data,
                 max_points=max_points_for_render,
                 use_adaptive_sampling=use_adaptive_sampling,
             )
@@ -362,6 +378,130 @@ class PreviewManager:
             logger.error(f"Error generating structures: {e}", exc_info=True)
             return None
 
+    def generate_drillholes(self, raster_layer: QgsRasterLayer):
+        """Generate drillhole data for preview."""
+        try:
+            # We need to construct the 'values' dict expected by DrillholeService
+            # or call controller.drillhole_service methods directly?
+            # Controller.generate_profile_data builds 'values' from dialog.
+            # Here we can reuse dialog.get_selected_values() which we updated!
+            
+            values = self.dialog.get_selected_values()
+            
+            # Additional required values that might not be in get_selected_values if they come from other pages
+            # But get_selected_values aggregates everything.
+            
+            # However, DrillholeService.process_intervals needs projected traces first.
+            # Controller logic:
+            # 1. Project Collars
+            # 2. Process Intervals
+            
+            dh_service = self.dialog.plugin_instance.controller.drillhole_service
+            
+            # Prepare arguments for project_collars
+            # values dict has keys like 'collar_layer_obj'
+           
+            # Prepare geometry arguments
+            line_layer = self.dialog.page_section.line_combo.currentLayer()
+            if not line_layer:
+                return []
+                
+            line_feat = next(line_layer.getFeatures(), None)
+            if not line_feat:
+                return []
+                
+            line_geom = line_feat.geometry()
+            
+            # Handle MultiLineString vs LineString
+            if line_geom.isMultipart():
+                lines = line_geom.asMultiPolyline()
+                if not lines:
+                    logger.warning("generate_drillholes: Empty MultiLineString")
+                    return []
+                # Use the first line segment of the multiline
+                # Ideally sections are single lines, but sometimes they come as MultiLine
+                points = lines[0]
+            else:
+                points = line_geom.asPolyline()
+                
+            if not points:
+                logger.warning("generate_drillholes: Empty geometry points")
+                return []
+                
+            line_start = points[0]
+            
+            # Create distance area
+            from qgis.core import QgsDistanceArea
+            distance_area = QgsDistanceArea()
+            distance_area.setSourceCrs(line_layer.crs(), self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext())
+            
+            logger.info("generate_drillholes: Starting drillhole generation...")
+            
+            projected_collars = dh_service.project_collars(
+                collar_layer=values.get("collar_layer_obj"),
+                line_geom=line_geom,
+                line_start=line_start,
+                distance_area=distance_area,
+                buffer_width=self.dialog.page_section.buffer_spin.value(),
+                collar_id_field=values.get("collar_id_field"),
+                use_geometry=values.get("collar_use_geometry", True),
+                collar_x_field=values.get("collar_x_field"),
+                collar_y_field=values.get("collar_y_field"),
+                collar_z_field=values.get("collar_z_field"),
+                collar_depth_field=values.get("collar_depth_field"),
+                dem_layer=raster_layer
+            )
+            
+            logger.info(f"generate_drillholes: Projected {len(projected_collars) if projected_collars else 0} collars.")
+            
+            if not projected_collars:
+                return []
+                
+            # Prepare survey and interval fields dicts
+            survey_fields = {
+                "id": values.get("survey_id_field"),
+                "depth": values.get("survey_depth_field"),
+                "azim": values.get("survey_azim_field"),
+                "incl": values.get("survey_incl_field")
+            }
+            
+            interval_fields = {
+                "id": values.get("interval_id_field"),
+                "from": values.get("interval_from_field"),
+                "to": values.get("interval_to_field"),
+                "lith": values.get("interval_lith_field")
+            }
+
+            logger.info("generate_drillholes: Processing intervals...")
+            # Process intervals
+            # Note: process_intervals returns (geol_data, drillhole_data)
+            # We are interested in drillhole_data (traces + segments) for visualization
+            _, drillhole_data = dh_service.process_intervals(
+                collar_points=projected_collars,
+                collar_layer=values.get("collar_layer_obj"),
+                survey_layer=values.get("survey_layer_obj"),
+                interval_layer=values.get("interval_layer_obj"),
+                collar_id_field=values.get("collar_id_field"),
+                use_geometry=values.get("collar_use_geometry", True),
+                collar_x_field=values.get("collar_x_field"),
+                collar_y_field=values.get("collar_y_field"),
+                line_geom=line_geom,
+                line_start=line_start,
+                distance_area=distance_area,
+                buffer_width=self.dialog.page_section.buffer_spin.value(),
+                section_azimuth=scu.calculate_line_azimuth(line_geom),
+                survey_fields=survey_fields,
+                interval_fields=interval_fields
+            )
+            
+            logger.info(f"generate_drillholes: Processed {len(drillhole_data) if drillhole_data else 0} drillholes.")
+            
+            return drillhole_data
+            
+        except Exception as e:
+            logger.error(f"Error generating drillholes: {e}", exc_info=True)
+            return None
+
     def _validate_requirements(self) -> tuple[QgsRasterLayer, QgsVectorLayer, int]:
         """Validate minimum requirements for preview generation.
 
@@ -428,6 +568,12 @@ class PreviewManager:
             lines.append(
                 f"Structures: None in {buffer_dist}m buffer or layer not selected"
             )
+            
+        drillhole_data = self.cached_data.get("drillhole")
+        if drillhole_data:
+            lines.append(f"Drillholes: {len(drillhole_data)} holes/traces")
+        else:
+            lines.append("Drillholes: None or not configured")
 
         lines.extend(
             [
