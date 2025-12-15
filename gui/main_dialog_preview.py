@@ -674,6 +674,7 @@ class PreviewManager:
                 self.cached_data["topo"],
                 self.cached_data["geol"],
                 self.cached_data["struct"],
+                drillhole_data=self.cached_data["drillhole"],
                 max_points=new_max_points,
                 preserve_extent=True,
                 use_adaptive_sampling=use_adaptive_sampling,

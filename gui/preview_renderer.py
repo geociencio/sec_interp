@@ -757,7 +757,7 @@ class PreviewRenderer:
         # Labelling for Hole IDs (at the top/start of the trace)
         settings = QgsPalLayerSettings()
         settings.fieldName = "hole_id"
-        settings.placement = QgsPalLayerSettings.Line
+        settings.placement = QgsPalLayerSettings.Placement.Line
         
         format = QgsTextFormat()
         format.setColor(QColor(0, 0, 0))
