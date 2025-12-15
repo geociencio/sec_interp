@@ -6,7 +6,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=1.1
+version=2.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -20,6 +20,23 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    2.0 (2025-12-14)
+    * Major Feature: Drillhole Data Handling
+      - 3D Projection of drillhole traces onto 2D profile sections
+      - Auto-calculation of total depths and handling of vertical holes without survey
+      - Visualization of geological intervals along drillhole traces
+    * Drillhole Data Export:
+      - Export drillhole traces to Shapefile (drillhole_traces.shp)
+      - Export interval data with attributes to Shapefile (drillhole_intervals.shp)
+    * Major UI Refactoring & Enhancements:
+      - New specialized Drillhole Input Page
+      - Enhanced Preview System with dedicated persistent rendering for all data types
+      - Fixed critical rendering bugs (zoom persistence, async updates)
+    * Architecture:
+      - Implemented DrillholeService for encapsulated logic
+      - Refactored ProfileController to orchestrate multiple data services
+      - Unified export logic with extensible Exporter pattern
+
     1.1 (2025-12-12)
     * Performance & Optimization:
       - Implemented asynchronous parallel processing for geological generation
