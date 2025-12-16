@@ -90,9 +90,6 @@ cp -v "$SOURCE_DIR/gui/ui/pages/"*.py "$DEST_DIR/gui/ui/pages/"
 mkdir -p "$DEST_DIR/gui/tools"
 cp -v "$SOURCE_DIR/gui/tools/"*.py "$DEST_DIR/gui/tools/"
 
-# Copy drillsec module (legacy UI support)
-mkdir -p "$DEST_DIR/drillsec"
-cp -v "$SOURCE_DIR/drillsec/"*.py "$DEST_DIR/drillsec/"
 
 # Copy resources module
 cp -v "$SOURCE_DIR/resources/"*.py "$DEST_DIR/resources/"
