@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-12-17
+### Added
+- **Major Feature: Snap-Enabled Measurement Tool**:
+  - Implementation of iterative vertex snapping logic using `QgsPointLocator`.
+  - Manual snapping approach that avoids project pollution (no temporary layers added to `QgsProject`).
+  - Performance optimization with locator caching.
+- **AI Workflow Enhancements**:
+  - Improved `ai_workflow.py` with Unicode normalization (NFD) for robust keyword extraction (supports accents/special characters).
+  - Robust context loading with mandatory project-level files (`AI_CONTEXT.md`, `project_brain.md`).
+
+### Fixed
+- Fixed critical `AttributeError` in `QgsSnappingConfig` by correctly using `QgsTolerance.Pixels`.
+- Eliminated "temporary scratch layers" warning by using manual snapping logic.
+
 ## [2.0.0] - 2025-12-14
 ### Added
 - **Major Feature: Drillhole Data Handling**:

@@ -6,7 +6,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=2.0
+version=2.1
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -20,6 +20,17 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    2.1 (2025-12-17)
+    * Major Feature: Snap-Enabled Measurement Tool
+      - Iterative vertex snapping using QgsPointLocator (Avoids project pollution)
+      - Performance optimized with locator caching
+    * AI Workflow & Reliability:
+      - Unicode normalization (NFD) for robust keyword matching (accents support)
+      - Direct integration of AI_CONTEXT and Project Brain in prompts
+    * Fixes:
+      - Resolved QgsSnappingConfig AttributeError (QgsTolerance.Pixels)
+      - Eliminated scratch layer warnings
+
     2.0 (2025-12-14)
     * Major Feature: Drillhole Data Handling
       - 3D Projection of drillhole traces onto 2D profile sections
