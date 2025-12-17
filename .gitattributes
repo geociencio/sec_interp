@@ -17,3 +17,6 @@ PROJECT_SUMMARY.md export-ignore
 AI_CONTEXT.md export-ignore
 sec_interp_2_0.zip export-ignore
 sec_interp_v2.1.0.zip export-ignore
+.flake8 export-ignore
+.pylintrc export-ignore
+.analyzerignore export-ignore
