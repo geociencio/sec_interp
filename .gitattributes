@@ -1,0 +1,19 @@
+# Exclude development and meta files from the release ZIP (git archive)
+.ai-context/ export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+Makefile export-ignore
+pytest.ini export-ignore
+requirements-dev.txt export-ignore
+ruff.toml export-ignore
+scripts/ export-ignore
+tests/ export-ignore
+analyze_project_optfixed.py export-ignore
+analyzer_config.json export-ignore
+project_context.json export-ignore
+analysis_errors.json export-ignore
+analysis.log export-ignore
+PROJECT_SUMMARY.md export-ignore
+AI_CONTEXT.md export-ignore
+sec_interp_2_0.zip export-ignore
+sec_interp_v2.1.0.zip export-ignore
