@@ -1,0 +1,196 @@
+DHID,De_m,A_m,RockCode1,Lith1,RockCode2_sw,Lith2_sw
+MURALLA-01,0,7,relleno,Relleno-Planilla,Qac,Alluvium-colluvium
+MURALLA-01,7,196.75,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,196.75,203,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,203,207.4,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,207.4,212.64,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,212.64,231.5,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,231.5,257.3,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,257.3,272.9,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,272.9,275.8,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,275.8,284.8,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,284.8,285.7,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,285.7,289.3,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,289.3,290.35,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,290.35,293.45,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,293.45,299.5,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,299.5,303.2,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,303.2,307.3,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,307.3,371.5,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,371.5,374.8,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,374.8,383.5,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,383.5,391.4,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,391.4,405.2,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,405.2,416.66,PG,plag-felds porphyry mx-qtz; alteration,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-01,416.66,457.81,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,0,4,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,4,6,PGH,hornbl-qtz-plag-felds-biot porphyry,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,6,8.3,En,endoskarn-flooding de pirox-magnet-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,8.3,20,Ho,horfels-Fm Indidura?,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,20,21.2,Ho,horfels-Fm Indidura?,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,21.2,26.25,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,26.25,29.1,En,endoskarn-flooding de pirox-magnet-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,29.1,29.9,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,29.9,32,En,endoskarn-flooding de pirox-magnet-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,32,34.4,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,34.4,36.75,En,endoskarn-flooding de pirox-magnet-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,36.75,39.8,En,endoskarn-flooding de pirox-magnet-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,39.8,47.8,Ho,horfels-Fm Indidura?,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,47.8,54.3,En,endoskarn-flooding de pirox-magnet-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,54.3,56.5,Ho,horfels-Fm Indidura?,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,56.5,63.75,En,endoskarn-flooding de pirox-magnet-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,63.75,67,En,endoskarn-flooding de pirox-magnet-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,67,67.9,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,67.9,68.8,En,endoskarn-flooding de pirox-magnet-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,68.8,70.6,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,70.6,72,En,endoskarn-flooding de pirox-magnet-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,72,74.75,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,74.75,78,En,endoskarn-flooding de pirox-magnet-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,78,80.1,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,80.1,84.6,En,endoskarn-flooding de pirox-magnet-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,84.6,85.4,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,85.4,86,PG,hornbl-qtz-plag-felds-biot porphyry,vnbxa,matrix-supported hydrothermal breccia and vein zone
+MURALLA-02,86,89.7,En,endoskarn-flooding de pirox-magnet-,vnbxa,matrix-supported hydrothermal breccia and vein zone
+MURALLA-02,89.7,92.5,Ho,horfels-Fm Indidura?,vnbxa,matrix-supported hydrothermal breccia and vein zone
+MURALLA-02,92.5,113.9,Ho,horfels-Fm Indidura?,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,113.9,121.2,Bx,brecha con frag-hornfels y mx-sedimentaria ,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,121.2,332.3,Ho,horfels-Fm Indidura?,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,332.3,332.45,Ho,horfels-Fm Indidura?,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,332.45,342.2,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,342.2,343,Ho,horfels-Fm Indidura?,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-02,343,346.4,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,346.4,352.25,Ho,horfels-intercalado-PGH- py-cpy-escapolite,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-02,352.25,364.3,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,0,2,Sk,skarn; Fm Indidura; gran-escap,Qac,Alluvium-colluvium
+MURALLA-03,2,73.4,Sk,skarn; Fm Indidura; gran-escap,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,73.4,76.5,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,76.5,79.1,Sk,skarn; Fm Indidura; gran-escap,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,79.1,87.27,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,87.27,91.38,Sk,skarn; Fm Indidura; gran-escap,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,91.38,102,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,102,156.6,Sk,skarn; Fm Indidura; gran-escap,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,156.6,168.5,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,168.5,172.2,Sk,skarn; Fm Indidura; gran-escap,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,172.2,175,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,175,178.6,Sk,skarn; Fm Indidura; gran-escap,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,178.6,186.35,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,186.35,186.5,PGH,hornbl-qtz-plag-felds-biot porphyry,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,186.5,199.9,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-03,199.9,200,Sk,skarn; Fm Indidura; gran-escap,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-03,200,207.8,Sk,skarn; Fm Indidura; gran-escap,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,207.8,212,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,212,214.5,Sk,skarn; Fm Indidura; gran-escap,skarnoid,
+MURALLA-03,214.5,214.85,Sk,skarn; Fm Indidura; gran-escap,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-03,214.85,220,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-03,220,220.1,PGH,hornbl-qtz-plag-felds-biot porphyry,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,220.1,238.8,Sk,skarn; Fm Indidura; gran-escap,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,238.8,242.1,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap
+MURALLA-03,242.1,242.2,Ho,hornfels-Fm Kui; grant-serc-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-03,242.2,257,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-03,257,257.4,PGH,hornbl-qtz-plag-felds-biot porphyry,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,257.4,277.2,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,277.2,286,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,286,291.7,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,291.7,296.2,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,296.2,300.85,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,300.85,319.15,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,319.15,321,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,321,330.4,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,330.4,345.6,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,345.6,390,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,390,408.3,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,408.3,420,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,420,427,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,427,428.4,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,428.4,429,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,429,430.35,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,430.35,434,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,434,438,Sk / Kuc,layers de Skarn en la Fm Caracol,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,438,441.5,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,441.5,454,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,454,456,Sk / Kuc,layers de Skarn en la Fm Caracol,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,456,460,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,460,511.6,Kuc,Fm. Caracol; capas de limon-areni-caliz,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-03,511.6,526.39,Sk,skarn; Fm Caracol; iterestratificaci¢n,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,0,8.5,PGH,,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,8.5,9.5,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,9.5,11.4,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,11.4,11.5,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,11.5,13.5,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,13.5,29.75,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,29.75,29.85,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,29.85,33.55,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,33.55,33.8,PGH,hornbl-qtz-plag-felds-biot porphyry,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,33.8,48.2,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,48.2,57,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,57,60.1,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,60.1,63,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,63,71.8,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,71.8,82,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,82,93.3,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,93.3,95.2,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,95.2,98.45,Ho,hornfels-Fm Kui; grant-serc-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,98.45,111,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,111,111.4,PGH,hornbl-qtz-plag-felds-biot porphyry,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,111.4,191.5,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,191.5,193,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,193,203,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,203,204,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,vnbxa,matrix-supported hydrothermal breccia and vein zone
+MURALLA-04,204,227.5,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,227.5,228,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,228,229.8,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,229.8,230,Ho,hornfels-Fm Kui; grant-serc-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,230,241.4,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,241.4,243.7,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,243.7,261,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,261,261.2,Ho,hornfels-Fm Kui; grant-serc-,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,261.2,279,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,279,282,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,282,291.7,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,291.7,301,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,301,304,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,304,313,Ho,hornfels-Fm Kui; grant-serc-,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,313,314,PGH,hornbl-qtz-plag-felds-biot porphyry,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,314,315,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-04,315,317,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,vnbxa,matrix-supported hydrothermal breccia and vein zone
+MURALLA-04,317,318,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,318,320,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,320,348.95,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,348.95,366.2,Qzm,porfid-horbl-qzt-felds-plag-ser,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,366.2,433,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,433,437.3,En,Endoskarn-micro vn-Ca-qzt-chl-Ep,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,437.3,458.1,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,458.1,473.5,Qzm,porfid-horbl-qzt-felds-plag-ser,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,473.5,481.3,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,481.3,502.1,Qzm,porfid-horbl-qzt-felds-plag-ser,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-04,502.1,519.68,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,0,10,Ho,ox-fe-mg- malaquita,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-08,10,11.3,En,endoskarn-contac ho-PG,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-08,11.3,25.5,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,25.5,27.1,PG,hornbl-qtz-plag-felds-biot porphyry,vnbxa,matrix-supported hydrothermal breccia and vein zone
+MURALLA-08,27.1,28.1,PG,hornbl-qtz-plag-felds-biot porphyry,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-08,28.1,32.5,PG,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,32.5,57.7,Qzm,de garno fina con vetilleo,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,57.7,58,En,endoskarn / Horfels,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,58,112,En,endoskarn / Horfels,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-08,112,113,En,endoskarn / Horfels,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,113,114,Qzm,de garno fina con vetilleo,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,114,114.35,Qzm,de garno fina con vetilleo,skarnoid,fng calcsilicate rock w/micro- to macroscopic pyrox+/-garnet +/-scap; decr intensity downward- preserved layers black siliceous calcareous silst.
+MURALLA-08,114.35,118.55,En,py diss; escasas vetillas de ca/py,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,118.55,191.2,PGH,hornbl-qtz-plag-felds-biot porphyry,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,191.2,231.5,En,intensidad variable sobre PGH,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,231.5,233,Qzm,porfidico-hipidiomorfo alt-incipiente,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,233,261,En,fenoc lixiviados- devil vetilleo,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,261,264,Qzm,contac en falla c/ py-ca-qtz- vn-mod,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,264,284.5,Qzm,dike?,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,284.5,287.75,PGH,porfido mod- lixiviado hacia contactos,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,287.75,302.2,Qzm,vn-qtz con alo de alt,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,302.2,314.6,PGH,py diss 2+,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,314.6,317.6,Qzm,magn--; py- malaquita diss,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,317.6,336.5,PGH,asimilados por Qzm?,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,336.5,351.2,PGH / Qzm,intercalaci¢n,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,351.2,410.7,Qzm,c/ float of PGH- cont off in fault-magn,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,410.7,419.55,PGH / Qzm,intercalaci¢n litologias mod alt.,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,419.55,429.45,PGH,vn mod-py/ca,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,429.45,459.9,PGH,zonas de Fx2+; vn-qtz1+,Tdp,hornbl diorite to qtz-diorite porphyry
+MURALLA-08,459.9,473.63,PGH,roca sana y magn‚tica,Tdp,hornbl diorite to qtz-diorite porphyry
