@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-1.1-orange.svg)
+![Version](https://img.shields.io/badge/Version-2.1-orange.svg)
 
 **SecInterp** (Section Interpreter) is a QGIS plugin designed to streamline the extraction and visualization of geological data for cross-section interpretation. It allows geologists to quickly generate topographic profiles, project geological outcrops, and analyze structural data in a unified 2D view.
 
@@ -14,7 +14,8 @@
 *   **Real-time Visualization**: Instantly view topography, geology, and structures along any drawn section line.
 *   **Performance**: Uses **Parallel Processing** to handle complex geological intersections without freezing QGIS.
 *   **Adaptive Level of Detail (LOD)**: Automatically adjusts data density based on zoom level for smooth navigation.
-*   **Measurement Tools**: Measure distances and calculate slopes/gradients directly on the profile view.
+*   **Measurement Tools**: Measure distances and calculate slopes/gradients directly on the profile view with automatic **Snapping** to vertices.
+*   **Drillhole Support**: Project 3D drillhole traces and geological intervals (sondajes) onto the 2D cross-section plane.
 
 ### 2. Data Extraction
 *   **Topography**: Extracts elevation profiles from any DEM raster.
@@ -36,7 +37,7 @@
 4. Click **Install Plugin**.
 
 ### From ZIP File
-1. Download the latest `sec_interp_v1.1.zip` from releases.
+1. Download the latest `sec_interp_v2.1.0.zip` from releases.
 2. Open QGIS.
 3. Go to **Plugins > Manage and Install Plugins > Install from ZIP**.
 4. Select the file and click **Install**.
@@ -44,6 +45,8 @@
 ---
 
 ## 📖 Quick Start Guide
+
+For detailed instructions, please see the [**User Guide**](docs/USER_GUIDE.md).
 
 1. **Prepare Data**: Load your DEM (Raster), Geology (Polygons), and Structure (Points) layers in QGIS.
 2. **Launch Plugin**: Click the **SecInterp** icon in the toolbar.
@@ -63,7 +66,7 @@
 This plugin is open-source and welcomes contributions.
 
 - **Source Code**: [GitHub Repository](https://github.com/geociencio/sec_interp)
-- **Technical Docs**: See the [Wiki](https://github.com/geociencio/sec_interp/wiki) or `docs/` folder.
+- **Technical Docs**: See the [Wiki](https://github.com/geociencio/sec_interp/wiki), the [User Guide](docs/USER_GUIDE.md), or the `docs/` folder.
 - **Development Setup**: See `README_DEV.md` for virtualenv and testing instructions.
 
 ---
