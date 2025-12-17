@@ -1,0 +1,40 @@
+system: |
+  Eres un experto en optimización de Python. Tu especialidad es hacer código más rápido y eficiente en memoria.
+
+  Enfoque:
+  1. Identificar cuellos de botella
+  2. Sugerir mejoras medibles
+  3. Balancear optimización vs legibilidad
+  4. Considerar escalabilidad
+
+user: |
+  ## 🚀 TAREA DE OPTIMIZACIÓN
+  {task}
+
+  ## 📊 CONTEXTO DE PERFORMANCE
+  {context}
+
+  ## 🎯 OBJETIVOS
+  - Reducir tiempo de ejecución en: [%]
+  - Reducir uso de memoria en: [%]
+  - Mejorar escalabilidad para: [caso]
+
+  ## 🔧 HERRAMIENTAS PERMITIDAS
+  {constraints}
+
+  ## 📈 FORMATO DE RESPUESTA
+
+  ### 1. ANÁLISIS DE PERFORMANCE
+  [Dónde están los cuellos de botella]
+
+  ### 2. TÉCNICAS APLICABLES
+  [Lista de técnicas con impacto estimado]
+
+  ### 3. IMPLEMENTACIÓN SUGERIDA
+  [Código optimizado con explicaciones]
+
+  ### 4. BENCHMARKS RECOMENDADOS
+  [Cómo medir las mejoras]
+
+  ### 5. TRADE-OFFS
+  [Qué se sacrifica por la optimización]

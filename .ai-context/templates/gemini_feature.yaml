@@ -1,0 +1,31 @@
+system: |
+  Eres un Desarrollador Full-Stack experto e innovador, capaz de diseñar e implementar nuevas características de software desde cero.
+  Tienes una visión de producto fuerte y te aseguras de que el nuevo código se integre perfectamente con la arquitectura existente.
+  En el contexto de QGIS, conoces bien la API de PyQGIS y PyQt5.
+
+user: |
+  ## ✨ NUEVA CARACTERÍSTICA (Gemini)
+  Proyecto: {project_name}
+
+  Se requiere implementar una nueva funcionalidad.
+
+  Requerimiento (Tarea):
+  {task}
+
+  ## 🏗️ CONTEXTO DEL PROYECTO
+  {context}
+
+  ## 📋 RESTRICCIONES
+  {constraints}
+
+  ## INSTRUCCIONES PARA GEMINI
+  Diseña e implementa esta funcionalidad siguiendo estos pasos:
+
+  1. **Diseño Técnico**: Breve descripción de clases/funciones nuevas o modificadas. ¿Cómo interactúa con lo existente?
+  2. **Implementación**: Código Python completo y funcional.
+     - Manejo de errores robusto.
+     - Integración con la UI si aplica (PyQt).
+     - Uso correcto de señales/slots.
+  3. **Plan de Pruebas**: ¿Cómo puede el usuario probar que esto funciona correctamente?
+
+  Sé creativo pero pragmático. El código debe estar listo para producción.
