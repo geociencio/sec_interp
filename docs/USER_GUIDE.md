@@ -7,9 +7,11 @@ Welcome to the SecInterp plugin! This guide will help you get started with creat
 SecInterp allows you to:
 - Create a topographic profile from a Digital Elevation Model (DEM).
 - Project geological units from a polygon layer onto the profile.
-- Project structural measurements (e.g., dip and strike from a point layer) onto the profile.
-- View an interactive preview of your cross-section.
-- Export your generated data to CSV and Shapefile formats, and export the preview to image formats (PNG, PDF, etc.).
+- Project structural measurements (e.g., dip and strike) onto the profile.
+- **New**: Project drillhole traces and geological intervals (sondajes) onto the section.
+- View an interactive preview with level-of-detail (LOD) optimization.
+- **New**: Measure distances and gradients with automatic snapping to vertices.
+- Export data to CSV and Shapefile formats, and export the preview to image/vector formats.
 
 ## 2. The Main Window
 
@@ -50,6 +52,14 @@ This tutorial will guide you through creating a simple topographic profile.
 4.  Adjust the **"Buffer"** distance. Only points within this distance from your section line will be considered.
 5.  Click **"Preview"** again. The structural measurements will be projected onto your profile as small lines.
 
+### Step 5: Add Drillhole Data (Optional)
+
+1.  Go to the **"Drillholes"** section.
+2.  Select your **"Collar layer"** (points) and **"Survey layer"** (or use auto-calculation for vertical holes).
+3.  Choose the **"Interval layer"** for geological logging.
+4.  Configure the depth and geology fields.
+5.  Click **"Preview"**. The drillhole traces and intervals will appear in the section, projected into the 2D plane.
+
 ## 4. Understanding the Settings
 
 ### DEM / Raster
@@ -62,6 +72,12 @@ This tutorial will guide you through creating a simple topographic profile.
 - **Cross-section line layer**: The vector line layer defining your profile path.
 - **Buffer**: The distance (in layer units) from the line to search for structural data points.
 
+### Drillholes
+- **Collar Layer**: Point layer with hole locations.
+- **Survey Layer**: Data for hole orientation (Dip/Azimuth).
+- **Interval Layer**: Geological or assay data with depth intervals.
+- **Max Projection Dist.**: Only holes within this distance from the section line will be shown.
+
 ### Preview Controls
 - **Max Points**: (Only active if "Auto" is unchecked). Manually sets the level of detail. Lower values are faster but less detailed.
 - **Auto**: (Recommended). Automatically adjusts the level of detail as you zoom and pan.
@@ -70,7 +86,8 @@ This tutorial will guide you through creating a simple topographic profile.
 
 ### The Measure Tool
 - Click the **"Measure"** button in the preview panel to enable it.
-- Click and drag on the preview canvas to measure distance and slope on your generated profile. The results will be displayed in the "Results" box.
+- **Snapping**: The tool automatically "snaps" to the nearest vertex or contact of the generated topography and geology, ensuring precise measurements.
+- Click and drag on the preview canvas to measure distance and slope. The results are displayed in the results panel.
 - Toggle the "Measure" button off to return to the pan tool.
 
 ## 5. Exporting Your Work
