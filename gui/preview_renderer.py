@@ -993,6 +993,7 @@ class PreviewRenderer:
         # Configure canvas if provided
         if self.canvas:
             self.canvas.setLayers(layers)
+            
             # Canvas will automatically use CRS from the layers
             if not preserve_extent:
                 self.canvas.setExtent(extent)

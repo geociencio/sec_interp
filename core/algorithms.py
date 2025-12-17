@@ -45,6 +45,7 @@ from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
 from sec_interp.logger_config import get_logger
 
+from sec_interp.exporters.orchestrator import DataExportOrchestrator
 from .controller import ProfileController
 
 logger = get_logger(__name__)
@@ -91,6 +92,8 @@ class SecInterp:
 
         # Initialize controller
         self.controller = ProfileController()
+        # Initialize export orchestrator
+        self.data_exporter = DataExportOrchestrator()
 
         # Declare instance attributes
         self.actions = []
@@ -427,8 +430,8 @@ class SecInterp:
                 )
                 return
 
-            # 2. Orchestrate saving using controller
-            result_msg = self.controller.export_data(
+            # 2. Orchestrate saving using dedicated orchestrator
+            result_msg = self.data_exporter.export_data(
                 output_folder,
                 values,
                 profile_data,

@@ -1,0 +1,27 @@
+# Stack Tecnológico: sec_interp
+
+python:
+  version: "3.13"
+  testing_framework: "pytest"
+  type_checking: null
+  formatter: "black"
+  linter: "ruff / flake8 / pylint"
+
+gis_frameworks:
+  - "QGIS API (PyQGIS)"
+  - "Qt5 (PyQt5)"
+  - "GDAL/OGR"
+
+architecture:
+  pattern: "MVC"
+  data_access: "Repository"
+  ui_design: "Programmatic (PyQt5)"
+
+dependencies:
+  - "qgis"
+  - "geometry"
+  - "pages"
+  - "spatial"
+  - "drillhole"
+  - "parsing"
+  - "rendering"

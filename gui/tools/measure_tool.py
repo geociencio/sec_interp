@@ -7,7 +7,13 @@ in the profile preview window.
 import math
 from typing import Optional
 
-from qgis.core import QgsPointXY, QgsWkbTypes
+from qgis.core import (
+    QgsPointXY, 
+    QgsWkbTypes, 
+    QgsPointLocator, 
+    QgsProject,
+    QgsCoordinateTransformContext
+)
 from qgis.gui import QgsMapToolEmitPoint, QgsRubberBand
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtGui import QColor
@@ -40,6 +46,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         self.rubber_band: Optional[QgsRubberBand] = None
         
         self.cursor = Qt.CrossCursor
+        self._locators = {} # Cache for locators: {layer_id: locator}
 
     def activate(self):
         """Called when tool is activated."""
@@ -64,8 +71,8 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
 
     def canvasReleaseEvent(self, event):
         """Handle mouse click release."""
-        # Get point in map coordinates
-        point = self.toMapCoordinates(event.pos())
+        # Get point in map coordinates (with snapping)
+        point = self._snap_point(event.pos())
         
         if event.button() == Qt.RightButton:
             # Right click resets
@@ -94,7 +101,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
     def canvasMoveEvent(self, event):
         """Handle mouse move for rubber band update."""
         if self.start_point and self.end_point is None:
-            point = self.toMapCoordinates(event.pos())
+            point = self._snap_point(event.pos())
             
             # Update rubber band geometry
             if self.rubber_band:
@@ -105,6 +112,45 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
             
             # Update provisional measurement
             self._calculate_measurement(temp_end=point)
+
+    def _snap_point(self, pos):
+        """Snap mouse position to layers using direct point locators."""
+        point = self.toMapCoordinates(pos)
+        
+        # Search tolerance in map units (approx 12 pixels)
+        tolerance = self.canvas.mapUnitsPerPixel() * 12
+        
+        best_dist = float('inf')
+        snapped_point = point
+        
+        layers = self.canvas.layers()
+        crs = self.canvas.mapSettings().destinationCrs()
+        context = QgsProject.instance().transformContext()
+        
+        # Clean obsolete locators
+        current_layer_ids = {l.id() for l in layers}
+        self._locators = {l_id: loc for l_id, loc in self._locators.items() if l_id in current_layer_ids}
+
+        for layer in layers:
+            if not layer or layer.type() != layer.VectorLayer:
+                continue
+                
+            # Get or create locator for this layer
+            if layer.id() not in self._locators:
+                locator = QgsPointLocator(layer, crs, context)
+                self._locators[layer.id()] = locator
+            else:
+                locator = self._locators[layer.id()]
+                
+            # Find nearest vertex
+            match = locator.nearestVertex(point, tolerance)
+            if match.isValid():
+                dist = match.distance()
+                if dist < best_dist:
+                    best_dist = dist
+                    snapped_point = match.point()
+                    
+        return snapped_point
 
     def _create_rubber_band(self):
         """Initialize rubber band for visualization."""
