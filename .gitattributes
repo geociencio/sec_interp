@@ -20,3 +20,6 @@ sec_interp_v2.1.0.zip export-ignore
 .flake8 export-ignore
 .pylintrc export-ignore
 .analyzerignore export-ignore
+.github/ export-ignore
+.idea/ export-ignore
+README_DEV.md export-ignore
