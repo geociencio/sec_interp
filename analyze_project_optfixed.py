@@ -1051,7 +1051,7 @@ class ProjectAnalyzer:
             
         content = self._read_file_fast(metadata_path)
         for field in required:
-            if f"{field}=" in content.lower():
+            if f"{field.lower()}=" in content.lower():
                 results["fields_found"].append(field)
             else:
                 results["missing_fields"].append(field)
@@ -1787,6 +1787,14 @@ class ProjectAnalyzer:
                 with open(error_file, 'w', encoding='utf-8') as f:
                     json.dump(self.error_log, f, indent=2, ensure_ascii=False)
 
+            # 6. Actualizar Cerebro AI (si existe)
+            try:
+                metrics = analyses.get("metrics", {})
+                final_score = metrics.get("quality_score", 0.0)
+                self._update_ai_brain(analyses, final_score)
+            except Exception as e:
+                print(f"⚠️ Error actualizando cerebro AI: {e}")
+
             print(f"\n💾 Resultados guardados:")
             print(f"   📄 {context_file}")
             print(f"   📋 {summary_file}")
@@ -1794,6 +1802,63 @@ class ProjectAnalyzer:
 
         except Exception as e:
             print(f"⚠️ Error guardando resultados: {e}")
+
+    def _update_ai_brain(self, analyses: Dict, quality_score: float) -> None:
+        """Actualiza automáticamente .ai-context/project_brain.md con métricas frescas"""
+        brain_path = self.project_path / ".ai-context" / "project_brain.md"
+        if not brain_path.exists():
+            return
+
+        try:
+            content = brain_path.read_text(encoding="utf-8")
+            
+            # Datos frescos
+            import datetime
+            import re
+            
+            today = datetime.datetime.now().strftime("%Y-%m-%d")
+            qgis_data = analyses.get("qgis_compliance", {})
+            qgis_score = qgis_data.get("compliance_score", 0)
+            
+            # Calcular módulos complejos
+            complex_modules = sorted(
+                analyses.get("complexity", {}).get("most_complex_modules", []),
+                key=lambda x: x[1], 
+                reverse=True
+            )[:3]
+            # m es una tupla (path, complexity) o dict?
+            # En _analyze_complexity devuelve lista de tuplas (path, complexity) en "most_complex_modules"
+            complex_str = ", ".join([f"`{m[0]}`" for m in complex_modules])
+            
+            metrics = analyses.get("metrics", {})
+            lines = metrics.get("total_lines_code", 0)
+            
+            structure = analyses.get("structure", {})
+            files = structure.get("modules_count", 0)
+            
+            avg_complexity = metrics.get("avg_complexity", 0)
+
+            # Bloque de reemplazo
+            new_metrics = (
+                f"## 📊 Métricas de Salud (Actualizado: {today})\n"
+                f"- **Score de Calidad**: {quality_score:.1f}/100\n"
+                f"- **Score Cumplimiento QGIS**: {qgis_score:.1f}/100\n"
+                f"- **Líneas de Código**: {lines:,} en {files} módulos.\n"
+                f"- **Complejidad Promedio**: {avg_complexity:.1f}. "
+                f"(Módulos más complejos: {complex_str}).\n"
+            )
+
+            # Reemplazo usando Regex
+            pattern = r"## 📊 Métricas de Salud.*?(?=\n## |\Z)"
+            if re.search(pattern, content, flags=re.DOTALL):
+                new_content = re.sub(pattern, new_metrics.strip(), content, flags=re.DOTALL)
+                brain_path.write_text(new_content, encoding="utf-8")
+                print(f"   🧠 Cerebro actualizado: {brain_path}")
+            else:
+                print(f"   ⚠️ No se encontró la sección de métricas en {brain_path.name}")
+                
+        except Exception as e:
+            print(f"   ⚠️ Falló la actualización del cerebro: {e}")
 
     def _generate_project_summary(self, analyses: Dict, output_path: pathlib.Path) -> None:
         """Genera resumen ejecutivo del proyecto"""
