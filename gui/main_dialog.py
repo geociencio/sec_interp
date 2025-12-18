@@ -225,7 +225,8 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def open_help(self):
         """Open the help file in the default browser."""
-        help_file = Path(__file__).parent / "help" / "html" / "index.html"
+        # Fix: help is at project root, main_dialog is in gui/
+        help_file = Path(__file__).parent.parent / "help" / "html" / "index.html"
         if help_file.exists():
             webbrowser.open(help_file.as_uri())
         else:
