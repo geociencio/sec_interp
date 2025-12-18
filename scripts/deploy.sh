@@ -104,12 +104,14 @@ else
         echo "No 'i18n' directory found, skipping."
 fi
 
-# Copy pre-built help (if present)
-if [ -d "$SOURCE_DIR/help/build/html" ]; then
-        echo "Copying help files..."
-        cp -a "$SOURCE_DIR/help/build/html" "$DEST_DIR/help"
+# Copy Native Hybrid help
+if [ -d "$SOURCE_DIR/help/html" ]; then
+        echo "Copying help files from help/html..."
+        mkdir -p "$DEST_DIR/help"
+        rm -rf "$DEST_DIR/help/html"
+        cp -a "$SOURCE_DIR/help/html" "$DEST_DIR/help/"
 else
-        echo "No 'help/build/html' directory found. Run 'make doc' first or ignore if not needed."
+        echo "Warning: No 'help/html' directory found. Help button in plugin may not work."
 fi
 
 echo "Deployment complete."

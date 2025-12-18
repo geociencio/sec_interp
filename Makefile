@@ -78,7 +78,7 @@ QGISDIR=.local/share/QGIS/QGIS3/profiles/default
 # Normally you would not need to edit below here
 #################################################
 
-HELP = help/build/html
+HELP = help/html
 
 PLUGIN_UPLOAD = $(c)/plugin_upload.py
 
@@ -207,9 +207,14 @@ clean:
 doc:
 	@echo
 	@echo "------------------------------------"
-	@echo "Building documentation using sphinx."
+	@echo "Checking Native Hybrid documentation."
 	@echo "------------------------------------"
-	cd help; make html
+	@if [ -f "help/html/index.html" ]; then \
+		echo "Documentation found at help/html/index.html"; \
+	else \
+		echo "Error: help/html/index.html not found!"; \
+		exit 1; \
+	fi
 
 pylint:
 	@echo
