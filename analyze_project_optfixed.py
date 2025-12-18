@@ -199,6 +199,13 @@ class ProjectAnalyzer:
             "has_main": 1,
             "no_syntax_error": 1
         },
+        "qgis_weights": {
+            "mandatory_files": 5,        # Crítico para publicación
+            "ui_logic_separation": 4,    # Calidad de arquitectura
+            "qgis_widget_usage": 2,      # UX/Integración
+            "spatial_index_usage": 3,    # Rendimiento
+            "metadata_valid": 4          # Validación Repo
+        },
         "thresholds": {
             "complexity_low": 5,
             "complexity_medium": 10,
@@ -378,6 +385,7 @@ class ProjectAnalyzer:
                 "structure": executor.submit(self._analyze_structure, modules_data),
                 "entry_points": executor.submit(self._find_entry_points),
                 "dependencies": executor.submit(self._analyze_dependencies_optimized, modules_data),
+                "qgis_compliance": executor.submit(self._analyze_qgis_compliance, modules_data),
                 "complexity": executor.submit(self._analyze_complexity, modules_data),
                 "patterns": executor.submit(self._detect_patterns_advanced, modules_data),
                 "debt": executor.submit(self._find_technical_debt, modules_data),
@@ -979,6 +987,169 @@ class ProjectAnalyzer:
         }
         return structure
 
+    def _analyze_qgis_compliance(self, modules_data: List[Dict]) -> Dict:
+        """Maestro de análisis de cumplimiento de estándares QGIS"""
+        compliance = {
+            "mandatory_files": self._check_mandatory_plugin_files(),
+            "metadata": self._check_metadata_validity(),
+            "architecture": self._check_ui_logic_separation(modules_data),
+            "widgets": self._check_qgis_widget_usage(modules_data),
+            "performance": self._check_performance_patterns(modules_data)
+        }
+        
+        # Calcular score específico de QGIS
+        weights = self.config["qgis_weights"]
+        score = 0.0
+        max_score = float(sum(weights.values()))
+        
+        if compliance["mandatory_files"]["all_present"]: 
+            score += weights["mandatory_files"]
+        if compliance["metadata"]["is_valid"]: 
+            score += weights["metadata_valid"]
+        if compliance["architecture"]["separation_clean"]: 
+            score += weights["ui_logic_separation"]
+        
+        # Widgets and Performance use partial scores
+        score += weights["qgis_widget_usage"] * compliance["widgets"]["score"]
+        score += weights["spatial_index_usage"] * compliance["performance"]["score"]
+        
+        compliance["compliance_score"] = round((score / max_score) * 100, 2) if max_score > 0 else 0
+        return compliance
+
+    def _check_mandatory_plugin_files(self) -> Dict:
+        """Verifica la existencia de archivos obligatorios para un plugin de QGIS"""
+        mandatory = ["LICENSE", "metadata.txt", "__init__.py"]
+        results = {"files": {}, "all_present": True}
+        
+        for f in mandatory:
+            exists = (self.project_path / f).exists()
+            results["files"][f] = exists
+            if not exists:
+                results["all_present"] = False
+                
+        # Verificar classFactory en __init__.py
+        init_path = self.project_path / "__init__.py"
+        results["has_class_factory"] = False
+        if init_path.exists():
+            content = self._read_file_fast(init_path)
+            if "def classFactory" in content:
+                results["has_class_factory"] = True
+            else:
+                results["all_present"] = False
+                
+        return results
+
+    def _check_metadata_validity(self) -> Dict:
+        """Valida que metadata.txt tenga los campos mínimos requeridos"""
+        metadata_path = self.project_path / "metadata.txt"
+        required = ["name", "description", "version", "qgisMinimumVersion", "author", "email"]
+        results = {"fields_found": [], "missing_fields": [], "is_valid": False}
+        
+        if not metadata_path.exists():
+            results["missing_fields"] = required
+            return results
+            
+        content = self._read_file_fast(metadata_path)
+        for field in required:
+            if f"{field}=" in content.lower():
+                results["fields_found"].append(field)
+            else:
+                results["missing_fields"].append(field)
+                
+        results["is_valid"] = len(results["missing_fields"]) == 0
+        return results
+
+    def _check_ui_logic_separation(self, modules_data: List[Dict]) -> Dict:
+        """Analiza la separación entre lógica de negocio (core) e interfaz (gui)"""
+        separation = {
+            "violations": [],
+            "separation_clean": True
+        }
+        
+        for module in modules_data:
+            path = module["path"]
+            # Si el archivo está en core/, no debe importar PyQt o qgis.gui
+            if "core/" in str(path):
+                ui_imports = [imp for imp in module.get("imports", []) 
+                             if any(x in imp for x in ["PyQt", "qgis.gui", "qgis.utils"])]
+                if ui_imports:
+                    separation["violations"].append({
+                        "file": str(path),
+                        "type": "UI_IMPORT_IN_CORE",
+                        "imports": ui_imports
+                    })
+                    separation["separation_clean"] = False
+                    
+            # Si el archivo está en gui/, no debe tener lógica excesivamente compleja
+            if "gui/" in str(path):
+                if module.get("complexity", 0) > self.config["thresholds"]["complexity_medium"]:
+                    separation["violations"].append({
+                        "file": str(path),
+                        "type": "HEAVY_LOGIC_IN_GUI",
+                        "complexity": module["complexity"]
+                    })
+                    # No marcamos separation_clean como False solo por esto, es un warning
+                    
+        return separation
+
+    def _check_qgis_widget_usage(self, modules_data: List[Dict]) -> Dict:
+        """Recomienda el uso de widgets nativos de QGIS"""
+        recommendations = []
+        counts = {"generic": 0, "qgis": 0}
+        
+        generic_to_qgis = {
+            "QComboBox": "QgsMapLayerComboBox",
+            "QLineEdit": "QgsFilterLineEdit",
+            "QPushButton": "QgsColorButton (if for color)",
+            "QFileDialog": "QgsFileWidget"
+        }
+        
+        for module in modules_data:
+            if "gui/" not in str(module["path"]): continue
+            
+            content = self._read_file_fast(module["path"])
+            for generic, qgis_alt in generic_to_qgis.items():
+                if generic in content:
+                    counts["generic"] += content.count(generic)
+                    # Solo añadir recomendación una vez por archivo
+                    recommendations.append(f"{module['path'].name}: Consider using {qgis_alt} instead of {generic}")
+                    
+            if "Qgs" in content:
+                counts["qgis"] += 1 # Heurística simple
+                
+        total = counts["generic"] + counts["qgis"]
+        score = counts["qgis"] / total if total > 0 else 1.0
+        
+        return {
+            "score": round(score, 2),
+            "recommendations": list(set(recommendations))[:10] # Top 10
+        }
+
+    def _check_performance_patterns(self, modules_data: List[Dict]) -> Dict:
+        """Busca patrones de rendimiento específicos de PyQGIS"""
+        issues = []
+        score_deduction = 0.0
+        
+        for module in modules_data:
+            content = self._read_file_fast(module["path"])
+            
+            # .getFeatures() sin argumentos (generalmente ineficiente)
+            if ".getFeatures()" in content:
+                issues.append(f"{module['path'].name}: .getFeatures() without QgsFeatureRequest")
+                score_deduction += 0.1
+                
+            # Operaciones espaciales sin índice
+            if any(x in content for x in [".intersects(", ".contains(", ".distance("]):
+                if "QgsSpatialIndex" not in content:
+                    issues.append(f"{module['path'].name}: Spatial operation without QgsSpatialIndex")
+                    score_deduction += 0.1
+                    
+        score = max(0.0, 1.0 - score_deduction)
+        return {
+            "score": round(score, 2),
+            "issues": list(set(issues))[:10]
+        }
+
     def _generate_tree_optimized(self) -> str:
         """Genera árbol de directorios optimizado"""
         try:
@@ -1480,8 +1651,17 @@ class ProjectAnalyzer:
             total_score += module_score
 
         # Normalizar a porcentaje
-        quality_percentage = (total_score / max_possible_total) * 100 if max_possible_total > 0 else 0
-        return round(quality_percentage, 1)
+        final_score = (total_score / max_possible_total) * 100 if max_possible_total > 0 else 0
+        
+        # Factorizar el score de cumplimiento de QGIS (si existe)
+        qgis_data = self.context.patterns.get("qgis_compliance", {})
+        qgis_score = qgis_data.get("compliance_score")
+        
+        if qgis_score is not None:
+            # El Score final es un promedio ponderado: 70% Calidad Código, 30% Estándares QGIS
+            final_score = (final_score * 0.7) + (qgis_score * 0.3)
+
+        return round(final_score, 1)
 
     def _count_test_files(self) -> int:
         """Cuenta archivos de test optimizado"""
@@ -1665,6 +1845,36 @@ Versión del analizador: 2.0 (Optimizado)
             summary_content += "\n### 🔄 Dependencias Circulares:\n"
             for cycle in circular[:3]:
                 summary_content += f"- {cycle}\n"
+
+        # Agregar cumplimiento QGIS
+        qgis = analyses.get("qgis_compliance", {})
+        if qgis:
+            summary_content += f"\n## 📦 ESTÁNDARES DE PLUGIN QGIS\n"
+            summary_content += f"- **Score de Cumplimiento**: {qgis.get('compliance_score', 0):.1f}/100\n"
+            
+            # Archivos faltantes
+            mandatory = qgis.get("mandatory_files", {})
+            missing = [f for f, exists in mandatory.get("files", {}).items() if not exists]
+            if missing:
+                summary_content += f"- ❌ **Archivos faltantes**: {', '.join(missing)}\n"
+            
+            # Violaciones de arquitectura
+            arch = qgis.get("architecture", {})
+            if arch.get("violations"):
+                violations = arch["violations"]
+                summary_content += f"- ⚠️ **Arquitectura**: {len(violations)} violaciones detectadas (mezcla UI/Core)\n"
+                for v in violations[:2]:
+                    summary_content += f"  - {v['file']}: {v['type']}\n"
+            
+            # Recomendaciones de widgets
+            widgets = qgis.get("widgets", {})
+            if widgets.get("recommendations"):
+                summary_content += f"- 💡 **Mejora UI**: {len(widgets['recommendations'])} componentes genéricos podrían ser widgets de QGIS\n"
+
+            # Performance
+            perf = qgis.get("performance", {})
+            if perf.get("issues"):
+                 summary_content += f"- ⚡ **Optimización**: {len(perf['issues'])} patrones de rendimiento PyQGIS detectados\n"
 
         # Agregar recomendaciones
         optimizations = analyses.get("optimizations", [])
