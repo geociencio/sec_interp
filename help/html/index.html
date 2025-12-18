@@ -1,213 +1,353 @@
 <!DOCTYPE html>
+<html lang="en">
 
-<html lang="en" data-content_root="./">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecInterp Help</title>
+    <style>
+        :root {
+            --qgis-green: #589632;
+            --secinterp-orange: #e67e22;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --border-color: #ddd;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    <title>SecInterp Plugin Documentation &#8212; SecInterp 0.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
-    
-    <script src="_static/documentation_options.js?v=2709fde1"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="Related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="#">SecInterp 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">SecInterp Plugin Documentation</a></li> 
-      </ul>
-    </div>  
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <section id="secinterp-plugin-documentation">
-<h1>SecInterp Plugin Documentation<a class="headerlink" href="#secinterp-plugin-documentation" title="Link to this heading">¶</a></h1>
-<p><strong>SecInterp</strong> is a QGIS plugin designed to assist in geological interpretation by extracting data along a cross-section line. It integrates topographic data from DEMs, geological units from outcrop polygons, and structural measurements from point layers.</p>
-<div class="toctree-wrapper compound">
-</div>
-<section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
-<p>To use SecInterp, you need the following layers in your QGIS project:</p>
-<ol class="arabic simple">
-<li><p><strong>Raster Layer (DEM)</strong>: A Digital Elevation Model to extract the topographic profile.</p></li>
-<li><p><strong>Crossline Layer</strong>: A line vector layer defining the location of the cross-section.</p></li>
-<li><p><strong>Outcrop Layer (Optional)</strong>: A polygon vector layer representing geological units (outcrops).</p></li>
-<li><p><strong>Structural Layer (Optional)</strong>: A point vector layer containing structural measurements (strike and dip).</p></li>
-</ol>
-</section>
-<section id="layer-data-requirements">
-<h2>Layer Data Requirements<a class="headerlink" href="#layer-data-requirements" title="Link to this heading">¶</a></h2>
-<section id="raster-layer-dem">
-<h3>Raster Layer (DEM)<a class="headerlink" href="#raster-layer-dem" title="Link to this heading">¶</a></h3>
-<p>The Digital Elevation Model must meet the following requirements:</p>
-<ul class="simple">
-<li><p><strong>Data Type</strong>: Single-band or multi-band raster layer</p></li>
-<li><p><strong>Band Selection</strong>: You can select which band to use for elevation (default is band 1)</p></li>
-<li><p><strong>Data Format</strong>: Any GDAL-supported raster format (GeoTIFF, IMG, ASCII Grid, etc.)</p></li>
-<li><p><strong>Cell Values</strong>: Numeric elevation values (typically in meters or feet)</p></li>
-<li><p><strong>NoData Handling</strong>: NoData values should be properly defined in the raster metadata</p></li>
-<li><p><strong>Coordinate System</strong>: Must use a projected CRS (not geographic) for accurate distance calculations</p></li>
-<li><p><strong>Resolution</strong>: The plugin automatically adapts sampling to the raster resolution for optimal profile extraction</p></li>
-<li><p><strong>Coverage</strong>: Should cover the entire extent of the crossline</p></li>
-</ul>
-</section>
-<section id="crossline-layer">
-<h3>Crossline Layer<a class="headerlink" href="#crossline-layer" title="Link to this heading">¶</a></h3>
-<p>The cross-section line layer must meet the following requirements:</p>
-<ul class="simple">
-<li><p><strong>Geometry Type</strong>: LineString or MultiLineString</p></li>
-<li><p><strong>Features</strong>: Typically contains a single line feature defining the section location</p></li>
-<li><p><strong>Line Orientation</strong>: The line direction determines the profile orientation (start to end point)</p></li>
-<li><p><strong>Coordinate System</strong>: Must use the same CRS as the raster layer (projected CRS recommended)</p></li>
-<li><p><strong>Data Quality</strong>: Line should be continuous without gaps</p></li>
-<li><p><strong>Length</strong>: No specific length restrictions, but very long sections may result in large output files</p></li>
-</ul>
-</section>
-<section id="outcrop-layer-geology">
-<h3>Outcrop Layer (Geology)<a class="headerlink" href="#outcrop-layer-geology" title="Link to this heading">¶</a></h3>
-<p>The outcrop layer must meet the following requirements:</p>
-<ul class="simple">
-<li><p><strong>Geometry Type</strong>: Polygon or MultiPolygon</p></li>
-<li><p><strong>Required Fields</strong>: At least one text or numeric field containing the geological unit identifier (e.g., unit name, code, or formation name)</p></li>
-<li><p><strong>Field Format</strong>:
-*   Field can be of type String, Integer, or any other attribute type
-*   Examples: “Qal” (Quaternary alluvium), “Kg” (Cretaceous granite), “Unit_1”, etc.</p></li>
-<li><p><strong>Coordinate System</strong>: Must use the same CRS as the crossline layer, or a compatible projected CRS</p></li>
-<li><p><strong>Data Quality</strong>: Polygons should be topologically correct (no gaps, no overlaps if representing continuous geology)</p></li>
-</ul>
-</section>
-<section id="structural-layer">
-<h3>Structural Layer<a class="headerlink" href="#structural-layer" title="Link to this heading">¶</a></h3>
-<p>The structural layer must meet the following requirements:</p>
-<ul class="simple">
-<li><p><strong>Geometry Type</strong>: Point</p></li>
-<li><p><strong>Required Fields</strong>: Two numeric fields containing:
-*   <strong>Strike</strong>: Azimuth direction of the strike line (0-360 degrees)
-*   <strong>Dip</strong>: Dip angle from horizontal (0-90 degrees)</p></li>
-<li><p><strong>Field Format</strong>:
-*   Both fields must be numeric (Integer or Real/Double)
-*   Strike: 0-360° (geographic azimuth, where 0° = North, 90° = East)
-*   Dip: 0-90° (angle from horizontal plane)</p></li>
-<li><p><strong>Coordinate System</strong>: Must use the same CRS as the crossline layer</p></li>
-<li><p><strong>Spatial Distribution</strong>: Points within approximately 100m of the crossline will be projected onto the section</p></li>
-</ul>
-</section>
-</section>
-<section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p><strong>Select Layers</strong>:
-*   Choose the <strong>Raster Layer</strong> for elevation.
-*   Choose the <strong>Crossline Layer</strong> for the section line.
-*   (Optional) Select the <strong>Outcrop Layer</strong> and the field containing the unit name/code.
-*   (Optional) Select the <strong>Structural Layer</strong> and the fields for <strong>Dip</strong> and <strong>Strike</strong>.</p></li>
-<li><p><strong>Configuration</strong>:
-*   <strong>Band</strong>: Select the raster band to use for elevation (default is 1).
-*   <strong>Output Folder</strong>: Choose a directory where the results will be saved.</p></li>
-<li><p><strong>Process Data</strong>:</p>
-<p>The plugin provides four buttons with different actions:</p>
-<ul class="simple">
-<li><p><strong>OK</strong>: Processes the data (generates CSV files and preview) and closes the dialog window.</p></li>
-<li><p><strong>Apply</strong>: Processes the data (generates CSV files and preview) but keeps the dialog window open. Use this to process data and review results without closing the plugin.</p></li>
-<li><p><strong>Save</strong>: Saves the profile data as Shapefiles (topo_profile.shp, geol_profile.shp, structural_profile.shp) without generating CSV files. The dialog remains open after saving. Use this to export geometric representations of the profiles.</p></li>
-<li><p><strong>Cancel</strong>: Closes the dialog window without processing or saving any data.</p></li>
-</ul>
-</li>
-</ol>
-</section>
-<section id="outputs">
-<h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading">¶</a></h2>
-<p>The plugin generates the following files in the selected output folder:</p>
-<ul class="simple">
-<li><p><strong>topo_profile.csv</strong>: CSV file containing distance and elevation points along the section.</p></li>
-<li><p><strong>geol_profile.csv</strong> (if Outcrop Layer selected): CSV file with distance, elevation, and geology code.</p></li>
-<li><p><strong>geol_profile.shp</strong> (if Outcrop Layer selected): Shapefile (LineString) representing the geological units draped over the topography.</p></li>
-<li><p><strong>structural_profile.csv</strong> (if Structural Layer selected): CSV file with projected structural data.</p></li>
-<li><p><strong>structural_profile.shp</strong> (if Structural Layer selected): Shapefile (LineString) representing apparent dip lines projected onto the section.</p></li>
-</ul>
-</section>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
-</section>
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
+        header {
+            background-color: white;
+            padding: 20px;
+            border-bottom: 4px solid var(--qgis-green);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
 
-            <div class="clearer"></div>
-          </div>
+        header img {
+            width: 48px;
+            height: 48px;
+        }
+
+        header h1 {
+            margin: 0;
+            color: var(--qgis-green);
+            font-size: 1.8rem;
+        }
+
+        .version {
+            font-size: 0.9rem;
+            color: #777;
+            background: #eee;
+            padding: 2px 8px;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--secinterp-orange);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+        }
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-item {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+
+        .grid-item h3 {
+            margin-top: 0;
+            color: var(--qgis-green);
+            font-size: 1.1rem;
+        }
+
+        details {
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            background: white;
+        }
+
+        summary {
+            padding: 12px 20px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            font-weight: bold;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        summary::after {
+            content: '▶';
+            font-size: 0.8rem;
+            transition: transform 0.2s;
+        }
+
+        details[open] summary::after {
+            transform: rotate(90deg);
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid var(--border-color);
+            background-color: #e9ecef;
+        }
+
+        .details-content {
+            padding: 15px 20px;
+        }
+
+        img.screenshot {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin: 10px 0;
+            display: block;
+        }
+
+        .tip {
+            background-color: #fff4e5;
+            border-left: 4px solid var(--secinterp-orange);
+            padding: 10px 15px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.85rem;
+            color: #777;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        a {
+            color: var(--qgis-green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <img src="../../icon.png" alt="SecInterp Icon">
+            <div>
+                <h1>SecInterp <span class="version">v2.1</span></h1>
+                <p style="margin: 5px 0 0 0; color: #666;">Section Interpreter for Geoscience in QGIS</p>
+            </div>
+        </header>
+
+        <section>
+            <p><strong>SecInterp</strong> is a powerful QGIS plugin designed to streamline the extraction and
+                visualization of geological data for cross-section interpretation. It allows geologists to quickly
+                generate topographic profiles, project geological outcrops, and analyze structural data in a unified 2D
+                view.</p>
+        </section>
+
+        <h2>Key Features</h2>
+        <section>
+            <div class="requirements-grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <h3>Interactive Preview System</h3>
+                    <ul>
+                        <li><strong>Real-time Visualization</strong>: Instantly view topography, geology, and
+                            structures.</li>
+                        <li><strong>Performance</strong>: Uses <strong>Parallel Processing</strong> to handle complex
+                            intersections without freezing QGIS.</li>
+                        <li><strong>Adaptive LOD</strong>: Automatically adjusts data density based on zoom level.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Advanced Tools</h3>
+                    <ul>
+                        <li><strong>Measurement Tools</strong>: Calculate distances and slopes directly on the profile
+                            with <strong>Snapping</strong>.</li>
+                        <li><strong>Drillhole Support</strong>: Project 3D drillhole traces and geological intervals
+                            onto the 2D plane.</li>
+                    </ul>
+                </div>
+            </div>
+            <img src="../../docs/images/ui_main_dialog.png" alt="Main Interface" class="screenshot"
+                style="margin-top: 20px;">
+        </section>
+
+        <h2>Layer Data Requirements</h2>
+        <div class="requirements-grid">
+            <div class="grid-item">
+                <h3>Raster Layer (DEM)</h3>
+                <ul>
+                    <li><strong>Data Type</strong>: Single-band or multi-band raster.</li>
+                    <li><strong>Format</strong>: Any GDAL-supported format (GeoTIFF, IMG, ASCII Grid, etc.).</li>
+                    <li><strong>Coordinate System</strong>: Must use a <strong>projected CRS</strong> (not geographic).
+                    </li>
+                    <li><strong>NoData</strong>: Should be properly defined in the raster metadata.</li>
+                </ul>
+            </div>
+            <div class="grid-item">
+                <h3>Crossline Layer</h3>
+                <ul>
+                    <li><strong>Geometry</strong>: LineString or MultiLineString.</li>
+                    <li><strong>Features</strong>: Typically contains a single line feature defining the section
+                        location.</li>
+                    <li><strong>Orientation</strong>: The line direction determines the profile orientation (start to
+                        end point).</li>
+                </ul>
+            </div>
+            <div class="grid-item">
+                <h3>Outcrop Layer (Geology)</h3>
+                <ul>
+                    <li><strong>Geometry</strong>: Polygon or MultiPolygon.</li>
+                    <li><strong>Fields</strong>: Requires at least one field containing the geological unit identifier.
+                    </li>
+                    <li><strong>Quality</strong>: Polygons should be topologically correct (no gaps or overlaps).</li>
+                </ul>
+            </div>
+            <div class="grid-item">
+                <h3>Structural Layer</h3>
+                <ul>
+                    <li><strong>Geometry</strong>: Point.</li>
+                    <li><strong>Fields</strong>: Requires <strong>Strike</strong> (0-360°) and <strong>Dip</strong>
+                        (0-90°) numeric fields.</li>
+                    <li><strong>Buffering</strong>: Points within the configured buffer distance of the crossline will
+                        be projected.</li>
+                </ul>
+            </div>
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="#">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">SecInterp Plugin Documentation</a><ul>
-<li><a class="reference internal" href="#requirements">Requirements</a></li>
-<li><a class="reference internal" href="#layer-data-requirements">Layer Data Requirements</a><ul>
-<li><a class="reference internal" href="#raster-layer-dem">Raster Layer (DEM)</a></li>
-<li><a class="reference internal" href="#crossline-layer">Crossline Layer</a></li>
-<li><a class="reference internal" href="#outcrop-layer-geology">Outcrop Layer (Geology)</a></li>
-<li><a class="reference internal" href="#structural-layer">Structural Layer</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#outputs">Outputs</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
 
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
+        <h2 style="margin-top: 40px;">Quick Start Guide</h2>
+
+        <details>
+            <summary>1. Prepare and Configure DEM</summary>
+            <div class="details-content">
+                <p>Select your elevation raster and the appropriate band from the DEM tab. The plugin automatically
+                    calculates a suggested scale based on resolution.</p>
+                <img src="../../docs/images/workflow_01_select_dem.png" alt="DEM Selection" class="screenshot">
+            </div>
+        </details>
+
+        <details>
+            <summary>2. Set Section Line</summary>
+            <div class="details-content">
+                <p>Choose the line layer that defines the location and orientation of your cross-section. Ensure it uses
+                    the same projected CRS as your DEM.</p>
+                <img src="../../docs/images/workflow_03_select_section_line.png" alt="Section Line Selection"
+                    class="screenshot">
+            </div>
+        </details>
+
+        <details>
+            <summary>3. Geology & Structures</summary>
+            <div class="details-content">
+                <p>Configure geological outcrops and structural measurements to project them onto the section. Select
+                    the lithology attribute and the dip/strike fields.</p>
+                <img src="../../docs/images/workflow_05_geology_setup.png" alt="Geology Setup" class="screenshot">
+                <img src="../../docs/images/workflow_06_structural_setup.png" alt="Structural Setup" class="screenshot">
+            </div>
+        </details>
+
+        <details>
+            <summary>4. Drillholes (Optional)</summary>
+            <div class="details-content">
+                <p>Configure Collar, Survey, and Interval layers to project drillhole data. Supports geometry-based
+                    locations or manual coordinates.</p>
+                <img src="../../docs/images/workflow_07_drillhole_collar_setup.png" alt="Collar Setup"
+                    class="screenshot">
+                <img src="../../docs/images/workflow_08_drillhole_survey_setup.png" alt="Survey Setup"
+                    class="screenshot">
+                <img src="../../docs/images/workflow_09_drillhole_interval_setup.png" alt="Interval Setup"
+                    class="screenshot">
+            </div>
+        </details>
+
+        <details>
+            <summary>5. Preview and Analyze</summary>
+            <div class="details-content">
+                <p>Click <strong>Preview Profile</strong>. Use the measurement tools to calculate slopes and distances
+                    directly on the view with snapping support.</p>
+                <img src="../../docs/images/workflow_04_preview_generated.png" alt="Preview Generated"
+                    class="screenshot">
+                <div class="tip"><strong>Tip:</strong> Use the scroll wheel to zoom. The Adaptive Level of Detail (LOD)
+                    system optimizes data density automatically as you navigate.</div>
+            </div>
+        </details>
+
+        <section>
+            <h2>Outputs</h2>
+            <p>The plugin generates standard output files in your selected output folder:</p>
+            <ul>
+                <li><strong>topo_profile.csv</strong>: Distance and elevation points along the section.</li>
+                <li><strong>geol_profile.csv / .shp</strong>: Geological units draped over the topography.</li>
+                <li><strong>structural_profile.csv / .shp</strong>: Projected apparent dip lines.</li>
+                <li><strong>drillhole_traces.shp</strong>: 3D projection of drillhole traces onto the 2D profile
+                    section.</li>
+                <li><strong>drillhole_intervals.shp</strong>: Visualization of geological intervals along drillhole
+                    traces with attributes.</li>
+                <li><strong>Image Exports</strong>: PNG, SVG, PDF formats available directly from the Export tab.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Juan M Bernales | <a href="../../docs/USER_GUIDE.md">Full User Guide</a> | <a
+                    href="https://github.com/geociencio/sec_interp">GitHub Repository</a></p>
+        </footer>
     </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="Related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="nav-item nav-item-0"><a href="#">SecInterp 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">SecInterp Plugin Documentation</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-    &#169; Copyright 2013, Juan M Bernales.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
-    </div>
-  </body>
+</body>
+
 </html>

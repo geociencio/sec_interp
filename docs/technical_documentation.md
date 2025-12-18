@@ -685,38 +685,47 @@ def project_structures(self, line_lyr, struct_lyr, buffer_m, line_az,
 
 ### 6.1 Geometry Utils (`core/utils/geometry.py`)
 
-Operaciones geométricas usando algoritmos nativos de QGIS.
+Operaciones geométricas optimizadas con manejo robusto de errores y tipos.
+
+**Abstracción Principal**:
+
+```python
+def run_geometry_operation(algorithm, geometry, crs, parameters):
+    """Ejecuta algoritmos de procesamiento de QGIS sobre una geometría.
+    
+    Encapsula el ciclo de vida completo:
+    1. Crea capa de memoria temporal
+    2. Ejecuta algoritmo (ej. 'native:buffer')
+    3. Extrae y valida geometría resultante
+    4. Limpia recursos
+    """
+```
 
 **Funciones principales**:
 
 ```python
 def create_buffer_geometry(geometry, crs, distance, segments=25):
-    """Crea buffer usando native:buffer.
-    
-    Ventajas sobre QgsGeometry.buffer():
-    - Mejor manejo de CRS
-    - Más robusto con geometrías complejas
-    - Usa algoritmo optimizado de GEOS
-    """
+    """Crea buffer usando run_geometry_operation('native:buffer')."""
 
-def filter_features_by_buffer(features_layer, buffer_geometry, buffer_crs):
+def filter_features_by_buffer(features_layer, buffer_geometry, buffer_crs=None):
     """Filtra features usando índice espacial R-tree.
     
-    Algoritmo:
-    1. Construye índice espacial (R-tree) de features
-    2. Busca candidatos usando bounding box (rápido)
-    3. Filtra precisamente con intersects() (lento, pero solo candidatos)
-    
-    Complejidad:
-    - Sin índice: O(n) donde n = total features
-    - Con índice: O(log n + k) donde k = features en buffer
+    Optiminzación:
+    1. Construye índice espacial de features
+    2. Filtrado rápido por Bounding Box
+    3. Filtrado preciso por geometría exacta
     """
 
 def densify_line_by_interval(geometry, interval):
-    """Densifica línea usando native:densifygeometriesgivenaninterval.
+    """Densifica línea insertando vértices a intervalos fijos."""
+
+def extract_all_vertices(geometry):
+    """Extrae todos los vértices manejando geometrías Multipart.
     
-    Agrega vértices a intervalos regulares.
-    Más preciso que interpolación manual.
+    Soporta:
+    - Point / MultiPoint
+    - LineString / MultiLineString
+    - Polygon / MultiPolygon
     """
 ```
 
