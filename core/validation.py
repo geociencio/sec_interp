@@ -5,14 +5,12 @@ layer selections, and data integrity checks.
 """
 
 from pathlib import Path
-from typing import Optional
 
 from qgis.core import (
     QgsMapLayer,
     QgsRasterLayer,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsProject,
 )
 from qgis.PyQt.QtCore import QVariant
 
@@ -541,27 +539,11 @@ def validate_reasonable_ranges(values: dict) -> list[str]:
     return warnings
 
 
-def _resolve_layer_from_input(
-    value: QgsMapLayer | str | None, placeholder_text: str = ""
-) -> tuple[QgsMapLayer | None, str]:
-    """Resolve a layer object from input value (object or string name)."""
-    if isinstance(value, QgsMapLayer):
-        return value, value.name()
-    
-    if isinstance(value, str) and value:
-        # Ignore placeholder texts from UI
-        if placeholder_text and value == placeholder_text:
-            return None, "None"
-            
-        layers = QgsProject.instance().mapLayersByName(value)
-        if layers:
-            return layers[0], value
-            
-    return None, "None"
-
-
-def _validate_structural_requirements(
-    layer: QgsVectorLayer, values: dict, layer_name: str
+def validate_structural_requirements(
+    layer: QgsVectorLayer,
+    layer_name: str,
+    dip_field: str | None,
+    strike_field: str | None
 ) -> tuple[bool, str]:
     """Validate specific requirements for the structural layer."""
     if not layer.isValid():
@@ -571,15 +553,11 @@ def _validate_structural_requirements(
     if QgsWkbTypes.geometryType(layer.wkbType()) != QgsWkbTypes.PointGeometry:
         return False, "Structural layer must be a point layer."
 
-    # Validate fields
-    dip_field = values.get("dip_field")
-    strike_field = values.get("strike_field")
-
     if dip_field:
         is_valid, msg = validate_field_exists(layer, dip_field)
         if not is_valid:
             return False, msg
-        
+
         is_valid, msg = validate_field_type(
             layer, dip_field, [QVariant.Int, QVariant.Double, QVariant.LongLong]
         )
@@ -590,7 +568,7 @@ def _validate_structural_requirements(
         is_valid, msg = validate_field_exists(layer, strike_field)
         if not is_valid:
             return False, msg
-            
+
         is_valid, msg = validate_field_type(
             layer, strike_field, [QVariant.Int, QVariant.Double, QVariant.LongLong]
         )
@@ -600,41 +578,40 @@ def _validate_structural_requirements(
     return True, ""
 
 
-def validate_and_get_layers(values: dict) -> tuple[bool, str, dict | None]:
-    """Retrieve and validate layers from project based on input values.
+def validate_layer_configuration(
+    raster_layer: QgsMapLayer | None,
+    line_layer: QgsVectorLayer | None,
+    outcrop_layer: QgsVectorLayer | None = None,
+    structural_layer: QgsVectorLayer | None = None,
+    outcrop_field: str | None = None,
+    struct_dip_field: str | None = None,
+    struct_strike_field: str | None = None,
+) -> tuple[bool, str]:
+    """Validate the combination of selected layers.
 
     Args:
-        values: Dictionary containing layer names from dialog
+        raster_layer: The main raster layer.
+        line_layer: The cross-section line layer.
+        outcrop_layer: Optional outcrop layer.
+        structural_layer: Optional structural layer.
+        outcrop_field: Field name for outcrop layer.
+        struct_dip_field: Dip field name.
+        struct_strike_field: Strike field name.
 
     Returns:
-        Tuple of (is_valid, error_message, updated_values)
-        updated_values contains the original values plus layer objects.
+        Tuple of (is_valid, error_message).
     """
-    # 1. Resolve Layers
-    raster_layer, raster_name = _resolve_layer_from_input(
-        values.get("raster_layer"), "Select a raster layer"
-    )
-    line_layer, line_name = _resolve_layer_from_input(
-        values.get("crossline_layer"), "Select a crossline layer"
-    )
-    outcrop_layer, outcrop_name = _resolve_layer_from_input(
-        values.get("outcrop_layer")
-    )
-    structural_layer, structural_name = _resolve_layer_from_input(
-        values.get("structural_layer")
-    )
-
-    # 2. Validate Required Layers
+    # 1. Validate Required Layers
     if not raster_layer or not line_layer:
-        return False, "Please select a raster and a line layer.", None
+        return False, "Please select a raster and a line layer."
 
     if not raster_layer.isValid():
-        return False, f"Raster layer '{raster_name}' is not valid.", None
+        return False, f"Raster layer '{raster_layer.name()}' is not valid."
 
     if not line_layer.isValid():
-        return False, f"Line layer '{line_name}' is not valid.", None
+        return False, f"Line layer '{line_layer.name()}' is not valid."
 
-    # 3. Validate Line Geometry
+    # 2. Validate Line Geometry
     is_valid, msg = validate_layer_geometry(line_layer, QgsWkbTypes.LineGeometry)
     if not is_valid:
         # Also accept MultiLineString
@@ -644,35 +621,31 @@ def validate_and_get_layers(values: dict) -> tuple[bool, str, dict | None]:
         if not is_valid_multi:
             # Check if generic line type
             if QgsWkbTypes.geometryType(line_layer.wkbType()) != QgsWkbTypes.LineGeometry:
-                return False, f"Cross-section layer must be a line layer. {msg}", None
+                return False, f"Cross-section layer must be a line layer. {msg}"
 
-    # 4. Validate Optional Layers
+    # 3. Validate Optional Layers
     if outcrop_layer:
         if not outcrop_layer.isValid():
-            return False, f"Outcrop layer '{outcrop_name}' is not valid.", None
-            
-        outcrop_field = values.get("outcrop_name_field")
+            return False, f"Outcrop layer '{outcrop_layer.name()}' is not valid."
+
         if outcrop_field:
             is_valid, msg = validate_field_exists(outcrop_layer, outcrop_field)
             if not is_valid:
-                return False, msg, None
+                return False, msg
 
     if structural_layer:
-        is_valid, msg = _validate_structural_requirements(
-            structural_layer, values, structural_name
+        is_valid, msg = validate_structural_requirements(
+            structural_layer,
+            structural_layer.name(),
+            struct_dip_field,
+            struct_strike_field
         )
         if not is_valid:
-            return False, msg, None
+            return False, msg
 
-    # 5. Check CRS compatibility (warning only)
-    if line_layer.crs() != raster_layer.crs():
-        pass
+    # 4. Check CRS compatibility (warning only return is implicitly handled by return True)
+    # The caller is responsible for checking CRS warnings if needed via utility
+    # We could return a warning here, but changing signature might be too much.
+    # We stick to bool, str for Error.
 
-    # 6. Update Values
-    updated_values = values.copy()
-    updated_values["raster_layer_obj"] = raster_layer
-    updated_values["line_layer_obj"] = line_layer
-    updated_values["outcrop_layer_obj"] = outcrop_layer
-    updated_values["structural_layer_obj"] = structural_layer
-
-    return True, "", updated_values
+    return True, ""

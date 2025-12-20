@@ -30,6 +30,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
     QgsWkbTypes,
+    QgsProject,
+    QgsMapLayer,
 )
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -244,20 +246,60 @@ class SecInterp:
             # substitute with your code.
             pass
 
+    def _resolve_layer_obj(self, value, placeholder_text=""):
+        """Helper to resolve layer object from UI value."""
+        if isinstance(value, QgsMapLayer):
+            return value
+        if isinstance(value, str) and value:
+            if placeholder_text and value == placeholder_text:
+                return None
+            layers = QgsProject.instance().mapLayersByName(value)
+            return layers[0] if layers else None
+        return None
+
     def _get_and_validate_inputs(self) -> Optional[dict]:
         """Retrieve and validate inputs from the dialog.
 
         Returns:
             dict: Validated inputs including layer objects, or None if validation fails.
         """
-        # Get values from the dialog using the helper method
+        # Get values from the dialog
         values = self.dlg.get_selected_values()
 
-        is_valid, error_msg, validated_values = vu.validate_and_get_layers(values)
+        # 1. Resolve Layer Objects
+        raster_layer = self._resolve_layer_obj(
+            values.get("raster_layer"), "Select a raster layer"
+        )
+        line_layer = self._resolve_layer_obj(
+            values.get("crossline_layer"), "Select a crossline layer"
+        )
+        outcrop_layer = self._resolve_layer_obj(values.get("outcrop_layer"))
+        structural_layer = self._resolve_layer_obj(values.get("structural_layer"))
+
+        # 2. Call Validation Logic
+        is_valid, error_msg = vu.validate_layer_configuration(
+            raster_layer=raster_layer,
+            line_layer=line_layer,
+            outcrop_layer=outcrop_layer,
+            structural_layer=structural_layer,
+            outcrop_field=values.get("outcrop_name_field"),
+            struct_dip_field=values.get("dip_field"),
+            struct_strike_field=values.get("strike_field")
+        )
 
         if not is_valid:
             scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error_msg))
             return None
+
+        # 3. Prepare Validated Values Dict
+        validated_values = values.copy()
+        validated_values["raster_layer_obj"] = raster_layer
+        validated_values["line_layer_obj"] = line_layer
+        validated_values["outcrop_layer_obj"] = outcrop_layer
+        validated_values["structural_layer_obj"] = structural_layer
+
+        # CRS Check (Moved from validation.py side-effect to explicit check here)
+        # Assuming minimal impact, we trust validate_layer_configuration for errors.
 
         return validated_values
 
