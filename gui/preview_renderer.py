@@ -240,19 +240,22 @@ class PreviewRenderer:
         fields: str | None = None,
         crs: str = "EPSG:4326",
     ) -> tuple[QgsVectorLayer | None, object | None]:
-        """Create a memory layer with standard configuration.
+        """Create a memory layer with an unknown CRS, suitable for non-geographic plots.
 
         Args:
             geometry_type: "Point", "LineString", "Polygon"
             name: Layer display name
             fields: Optional field definition string (e.g., "field=id:integer")
-            crs: CRS identifier (default: EPSG:4326)
+            crs: This parameter is ignored. All preview layers use an unknown CRS.
 
         Returns:
             Tuple of (QgsVectorLayer, QgsDataProvider) or (None, None) if failed
         """
-        field_def = f"&{fields}" if fields else ""
-        uri = f"{geometry_type}?crs={crs}{field_def}"
+        # The URI should not contain a `crs` parameter for 2D profile plots
+        uri = geometry_type
+        if fields:
+            uri += f"?{fields}"
+
         layer = QgsVectorLayer(uri, name, "memory")
 
         if not layer.isValid():
@@ -559,7 +562,7 @@ class PreviewRenderer:
             return None
 
         # Create memory layer
-        layer = QgsVectorLayer("LineString?crs=EPSG:4326", "Axes", "memory")
+        layer = QgsVectorLayer("LineString", "Axes", "memory")
         provider = layer.dataProvider()
 
         # Calculate grid intervals
@@ -625,7 +628,7 @@ class PreviewRenderer:
 
         # Add quadrant field for data-defined placement
         layer = QgsVectorLayer(
-            "Point?crs=EPSG:4326&field=label:string&field=quadrant:integer",
+            "Point?field=label:string&field=quadrant:integer",
             "Axes Labels",
             "memory",
         )
