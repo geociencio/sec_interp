@@ -1795,6 +1795,12 @@ class ProjectAnalyzer:
             except Exception as e:
                 print(f"⚠️ Error actualizando cerebro AI: {e}")
 
+            # 7. Actualizar tech_stack.yaml (si existe)
+            try:
+                self._update_tech_stack_yaml(analyses)
+            except Exception as e:
+                print(f"⚠️ Error actualizando tech_stack.yaml: {e}")
+
             print(f"\n💾 Resultados guardados:")
             print(f"   📄 {context_file}")
             print(f"   📋 {summary_file}")
@@ -1859,6 +1865,83 @@ class ProjectAnalyzer:
                 
         except Exception as e:
             print(f"   ⚠️ Falló la actualización del cerebro: {e}")
+
+    def _update_tech_stack_yaml(self, analyses: Dict) -> None:
+        """Actualiza automáticamente .ai-context/tech_stack.yaml con información detectada"""
+        tech_stack_path = self.project_path / ".ai-context" / "tech_stack.yaml"
+        
+        # Detectar información del tech stack
+        dependencies = analyses.get("dependencies", {})
+        third_party = dependencies.get("third_party", [])
+        
+        # Detectar Python version
+        python_version = "3.13"  # Default, could be detected from pyproject.toml or similar
+        
+        # Detectar frameworks GIS
+        gis_frameworks = []
+        if any("qgis" in imp.lower() for imp in third_party):
+            gis_frameworks.append("QGIS API (PyQGIS)")
+        if any("pyqt" in imp.lower() or "qt" in imp.lower() for imp in third_party):
+            gis_frameworks.append("Qt5 (PyQt5)")
+        if any("gdal" in imp.lower() or "ogr" in imp.lower() for imp in third_party):
+            gis_frameworks.append("GDAL/OGR")
+        
+        # Detectar herramientas de desarrollo
+        testing_framework = None
+        formatter = None
+        linter = None
+        
+        if (self.project_path / "pytest.ini").exists() or any("pytest" in imp for imp in third_party):
+            testing_framework = "pytest"
+        
+        if (self.project_path / "pyproject.toml").exists():
+            try:
+                content = (self.project_path / "pyproject.toml").read_text()
+                if "black" in content.lower():
+                    formatter = "black"
+                if "ruff" in content.lower():
+                    linter = "ruff"
+            except:
+                pass
+        
+        if (self.project_path / "ruff.toml").exists():
+            linter = "ruff / flake8 / pylint"
+        
+        # Detectar arquitectura
+        structure = analyses.get("structure", {})
+        has_gui = any("gui" in str(p) for p in self.project_path.rglob("*.py"))
+        has_core = any("core" in str(p) for p in self.project_path.rglob("*.py"))
+        
+        architecture_pattern = "MVC" if has_gui and has_core else "Modular"
+        
+        # Generar YAML
+        yaml_content = f"""# Stack Tecnológico: {self.context.project_name}
+
+python:
+  version: "{python_version}"
+  testing_framework: {f'"{testing_framework}"' if testing_framework else 'null'}
+  type_checking: null
+  formatter: {f'"{formatter}"' if formatter else 'null'}
+  linter: {f'"{linter}"' if linter else 'null'}
+
+gis_frameworks:
+{chr(10).join(f'  - "{fw}"' for fw in gis_frameworks) if gis_frameworks else '  []'}
+
+architecture:
+  pattern: "{architecture_pattern}"
+  data_access: "Repository"
+  ui_design: "Programmatic (PyQt5)"
+
+dependencies:
+{chr(10).join(f'  - "{dep.split(".")[0]}"' for dep in sorted(set(imp.split(".")[0] for imp in third_party[:10])))}
+"""
+        
+        try:
+            tech_stack_path.parent.mkdir(parents=True, exist_ok=True)
+            tech_stack_path.write_text(yaml_content, encoding="utf-8")
+            print(f"   📦 Tech stack actualizado: {tech_stack_path}")
+        except Exception as e:
+            print(f"   ⚠️ Error escribiendo tech_stack.yaml: {e}")
 
     def _generate_project_summary(self, analyses: Dict, output_path: pathlib.Path) -> None:
         """Genera resumen ejecutivo del proyecto"""
