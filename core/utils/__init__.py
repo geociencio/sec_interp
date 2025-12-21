@@ -33,7 +33,6 @@ from .drillhole import (
 # I/O utilities
 from .io import (
     create_shapefile_writer,
-    show_user_message,
 )
 
 # Structural data parsing
@@ -100,5 +99,4 @@ __all__ = [
     "run_processing_algorithm",
     # Sampling
     "sample_elevation_along_line",
-    "show_user_message",
 ]

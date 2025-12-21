@@ -1,0 +1,11 @@
+{
+  "system": "Eres un experto ingeniero de software de Google, especializado en Python y QGIS.",
+  "user": "Analiza la siguiente tarea para el proyecto 'sec_interp'.\n\nTarea: Implementar herramienta de medición con snap\n\nContexto Técnico:\nSin contexto específico\n\nRestricciones:\n- Python 3.8+ compatible\n- Mantener retrocompatibilidad donde sea posible\n- Seguir PEP 8\n- Añadir type hints\n- Incluir docstrings\n- Manejar errores apropiadamente\n\nInstrucciones para Gemini:\n1. Utiliza tu capacidad de razonamiento multimodal y lógico para ofrecer la mejor solución.\n2. Si se requiere código, que sea limpio, moderno y bien documentado.\n3. Explica tus decisiones de diseño.\n4. Identifica posibles problemas de seguridad o rendimiento.",
+  "meta": {
+    "model": "gemini",
+    "session_id": "session_1766009950",
+    "task_type": "general",
+    "estimated_tokens": 179,
+    "timestamp": "2025-12-17T17:19:10.582285"
+  }
+}

@@ -45,6 +45,7 @@ from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
+from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
 from .controller import ProfileController
@@ -288,7 +289,7 @@ class SecInterp:
         )
 
         if not is_valid:
-            scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error_msg))
+            show_user_message(self.dlg, self.tr("Error"), self.tr(error_msg))
             return None
 
         # 3. Prepare Validated Values Dict
@@ -363,7 +364,7 @@ class SecInterp:
 
                 if not profile_data:
                     if not msgs: # If no messages, likely complete failure
-                         scu.show_user_message(
+                         show_user_message(
                             self.dlg,
                             self.tr("Error"),
                             self.tr(
@@ -412,26 +413,26 @@ class SecInterp:
         error_details = traceback.format_exc()
 
         if isinstance(e, OSError):
-             scu.show_user_message(
+             show_user_message(
                 self.dlg,
                 self.tr("File System Error"),
                 self.tr(f"Failed to access temporary files: {e!s}"),
                 "error",
             )
         elif isinstance(e, ValueError):
-             scu.show_user_message(
+             show_user_message(
                 self.dlg,
                 self.tr("Data Validation Error"),
                 self.tr(f"Invalid data encountered: {e!s}"),
             )
         elif isinstance(e, KeyError):
-            scu.show_user_message(
+            show_user_message(
                 self.dlg,
                 self.tr("Field Error"),
                 self.tr(f"Required field not found: {e!s}"),
             )
         else:
-             scu.show_user_message(
+             show_user_message(
                 self.dlg,
                 self.tr("Unexpected Error"),
                 self.tr(f"An unexpected error occurred: {e!s}"),
@@ -452,7 +453,7 @@ class SecInterp:
             output_folder = Path(values["output_path"])
             is_valid, error, _ = vu.validate_output_path(str(output_folder))
             if not is_valid:
-                scu.show_user_message(self.dlg, self.tr("Error"), self.tr(error))
+                show_user_message(self.dlg, self.tr("Error"), self.tr(error))
                 return
 
             self.dlg.preview_widget.results_text.setPlainText("✓ Generating data for export...")
@@ -465,7 +466,7 @@ class SecInterp:
                  return
 
             if not profile_data:
-                scu.show_user_message(
+                show_user_message(
                     self.dlg,
                     self.tr("Error"),
                     self.tr("No profile data generated, cannot save."),
@@ -490,7 +491,7 @@ class SecInterp:
             )
 
         except Exception as e:
-            scu.show_user_message(
+            show_user_message(
                 self.dlg,
                 self.tr("Export Error"),
                 self.tr(f"Failed to export data: {e!s}"),

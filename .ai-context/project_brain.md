@@ -4,10 +4,10 @@
 Plugin de QGIS para interpretación de secciones geológicas, manejo de sondajes (drillholes) y perfiles estructurales.
 
 ## 📊 Métricas de Salud (Actualizado: 2025-12-21)
-- **Score de Calidad**: 84.1/100
+- **Score de Calidad**: 84.7/100
 - **Score Cumplimiento QGIS**: 77.8/100
-- **Líneas de Código**: 12,120 en 62 módulos.
-- **Complejidad Promedio**: 20.7. (Módulos más complejos: `core/validation.py`, `gui/main_dialog.py`, `gui/preview_renderer.py`).
+- **Líneas de Código**: 11,987 en 67 módulos.
+- **Complejidad Promedio**: 19.0. (Módulos más complejos: `core/validation.py`, `gui/main_dialog.py`, `.ai-context/ai_workflow.py`).
 ## 🏗️ Arquitectura Principal (Patrones Detectados)
 - **MVC (Model-View-Controller)**: Separación clara entre la lógica de QGIS (Model), los diálogos de PyQt (View) y el coordinador (`core/controller.py`).
 - **Repository**: Manejo de persistencia y acceso a datos a través de servicios.
@@ -21,6 +21,6 @@ Plugin de QGIS para interpretación de secciones geológicas, manejo de sondajes
 
 ## 🚨 Deuda Técnica y Prioridades
 - **Violaciones de Arquitectura**: 10 casos detectados (mezcla UI en Core). 
-- **Alta Complejidad**: `gui/preview_renderer.py` (Complexity 130) y `gui/main_dialog.py` requieren fragmentación masiva.
+- **Alta Complejidad**: `gui/main_dialog.py` (Complexity 95) y `core/validation.py` requieren fragmentación.
 - **Refactorización de Workflow**: `ai_workflow.py` ha sido mejorado con normalización, pero necesita mayor modularidad.
 - **Snapping**: Expandir `QgsPointLocator` a otros tipos de entidades si es necesario.

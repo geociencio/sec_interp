@@ -323,11 +323,34 @@ class PreviewManager:
         else:
             lines.append("Drillholes: None or not configured")
 
+        # Calculate global range
+        min_dist = profile_data[0][0]
+        max_dist = profile_data[-1][0]
+        
+        # Calculate global elevation range accurately
+        elevations = [p[1] for p in profile_data]
+        if geol_data:
+            for s in geol_data:
+                elevations.extend(p[1] for p in s.points)
+        if struct_data:
+            elevations.extend(m.elevation for m in struct_data)
+        
+        if drillhole_data:
+            for dh_id, trace, segments in drillhole_data:
+                if trace:
+                    elevations.extend(p[1] for p in trace)
+                if segments:
+                    for seg in segments:
+                        elevations.extend(p[1] for p in seg.points)
+                        
+        min_elev = min(elevations) if elevations else 0
+        max_elev = max(elevations) if elevations else 0
+
         lines.extend(
             [
                 "",
-                f"Distance: {profile_data[0][0]:.1f} - {profile_data[-1][0]:.1f} m",
-                f"Elevation: {min(p[1] for p in profile_data):.1f} - {max(p[1] for p in profile_data):.1f} m",
+                f"Distance: {min_dist:.1f} - {max_dist:.1f} m",
+                f"Elevation: {min_elev:.1f} - {max_elev:.1f} m",
             ]
         )
 

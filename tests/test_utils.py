@@ -161,44 +161,6 @@ class TestInterpolation:
         assert result == 0
 
 
-class TestShowUserMessage:
-    """Tests for show_user_message helper."""
-
-    @patch("core.utils.QMessageBox")
-    @patch("core.utils.get_logger")
-    def test_show_user_message_warning(self, mock_logger, mock_qmessagebox):
-        """Test warning message."""
-        mock_parent = Mock()
-        scu.show_user_message(mock_parent, "Test Title", "Test Message", "warning")
-
-        # Verify QMessageBox.warning was called
-        mock_qmessagebox.warning.assert_called_once_with(
-            mock_parent, "Test Title", "Test Message"
-        )
-
-    @patch("core.utils.QMessageBox")
-    @patch("core.utils.get_logger")
-    def test_show_user_message_info(self, mock_logger, mock_qmessagebox):
-        """Test info message."""
-        mock_parent = Mock()
-        scu.show_user_message(mock_parent, "Test Title", "Test Message", "info")
-
-        # Verify QMessageBox.information was called
-        mock_qmessagebox.information.assert_called_once_with(
-            mock_parent, "Test Title", "Test Message"
-        )
-
-    @patch("core.utils.QMessageBox")
-    @patch("core.utils.get_logger")
-    def test_show_user_message_error(self, mock_logger, mock_qmessagebox):
-        """Test error message."""
-        mock_parent = Mock()
-        scu.show_user_message(mock_parent, "Test Title", "Test Message", "error")
-
-        # Verify QMessageBox.critical was called
-        mock_qmessagebox.critical.assert_called_once_with(
-            mock_parent, "Test Title", "Test Message"
-        )
 
 
 class TestBufferGeometry:

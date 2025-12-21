@@ -56,6 +56,7 @@ from qgis.PyQt.QtWidgets import (
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
 from sec_interp.exporters import get_exporter
+from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
 from .tools.measure_tool import ProfileMeasureTool
