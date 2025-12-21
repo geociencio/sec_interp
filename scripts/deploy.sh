@@ -95,7 +95,12 @@ cp -v "$SOURCE_DIR/gui/tools/"*.py "$DEST_DIR/gui/tools/"
 cp -v "$SOURCE_DIR/resources/"*.py "$DEST_DIR/resources/"
 cp -v "$SOURCE_DIR/resources/"*.qrc "$DEST_DIR/resources/"
 
-
+# Copy documentation images (required for help files)
+if [ -d "$SOURCE_DIR/docs/images" ]; then
+    echo "Copying documentation images..."
+    mkdir -p "$DEST_DIR/docs/images"
+    cp -v "$SOURCE_DIR/docs/images/"* "$DEST_DIR/docs/images/"
+fi
 
 if [ -d "$SOURCE_DIR/i18n" ]; then
         echo "Copying translations..."
@@ -107,8 +112,8 @@ fi
 # Copy Native Hybrid help
 if [ -d "$SOURCE_DIR/help/html" ]; then
         echo "Copying help files from help/html..."
+        rm -rf "$DEST_DIR/help"  # Clean old help files (Sphinx artifacts, etc.)
         mkdir -p "$DEST_DIR/help"
-        rm -rf "$DEST_DIR/help/html"
         cp -a "$SOURCE_DIR/help/html" "$DEST_DIR/help/"
 else
         echo "Warning: No 'help/html' directory found. Help button in plugin may not work."
