@@ -46,6 +46,7 @@ The `SecInterpDialog` class has been fragmented to reduce its complexity (from 9
     - **Project Quality Score**: Increased to 85.0/100.
 
 - **Bug Fix (Startup Crash)**: Resolved `AttributeError: 'SecInterpDialog' object has no attribute 'buttonBox'` by correcting a typo and missing import in `main_dialog_status.py`.
+- **Bug Fix (Missing Indicators)**: Resolved `AttributeError: 'DemPage' object has no attribute 'lbl_raster_status'` by adding missing status labels to `DemPage` and `SectionPage` and ensuring their early initialization.
 - **Code Cleanup**: Removed multiple duplicate lines in `main_dialog.py` and `main_window.py` discovered during refactoring.
 
 ---
