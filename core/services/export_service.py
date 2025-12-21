@@ -169,7 +169,7 @@ class ExportService:
         self, 
         layers: List[Any], 
         extent: QgsRectangle, 
-        size: Any, 
+        size: Optional[Any], 
         background_color: Any
     ) -> QgsMapSettings:
         """Create and configure QgsMapSettings for export.
@@ -177,7 +177,7 @@ class ExportService:
         Args:
             layers: List of layers to include.
             extent: Map extent to export.
-            size: Output size (QSize).
+            size: Optional output size (QSize).
             background_color: Background color (QColor).
             
         Returns:
@@ -186,6 +186,7 @@ class ExportService:
         map_settings = QgsMapSettings()
         map_settings.setLayers(layers)
         map_settings.setExtent(extent)
-        map_settings.setOutputSize(size)
+        if size is not None:
+            map_settings.setOutputSize(size)
         map_settings.setBackgroundColor(background_color)
         return map_settings

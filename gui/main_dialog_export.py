@@ -110,7 +110,7 @@ class ExportManager:
                 map_settings = self.export_service.get_map_settings(
                     layers, 
                     export_params["extent"], 
-                    self.dialog.preview_widget.canvas.size() if ext not in [".png", ".jpg", ".jpeg"] else None, # Output size handled by exporter
+                    self.dialog.preview_widget.canvas.size(),
                     export_params["background_color"]
                 )
                 
