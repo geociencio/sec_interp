@@ -254,13 +254,21 @@ class AIWorkflowManager:
         
         # 1. Intentar cargar template personalizado desde archivo
         templates_dir = self.context_dir / "templates"
-        specific_template = templates_dir / f"{model}_{task_type}.yaml"
+        model_clean = model.lower().replace("/", "_").replace("-", "_")
+        task_clean = task_type.lower().replace(" ", "_")
+        specific_template = templates_dir / f"{model_clean}_{task_clean}.yaml"
         if specific_template.exists():
             with open(specific_template) as f:
                 return yaml.safe_load(f)
+        if "gemini-3-pro" in model_lower or "gemini 3 pro" in model_lower:
+            return self._gemini_3_pro_template()
+        elif "claude-sonnet-4.5" in model_lower or "sonnet 4.5" in model_lower:
+            return self._claude_sonnet_45_template()
+        elif "gpt-oss-120b" in model_lower or "oss-120b" in model_lower or "llama-3-120b" in model_lower:
+            return self._gpt_oss_120b_template()
 
         # 2. Si no hay archivo, usar templates integrados
-        if "deepseek" in model.lower():
+        elif "deepseek" in model.lower():
             return self._deepseek_template()
         elif "gpt" in model.lower() or "openai" in model.lower():
             return self._chatgpt_template()
@@ -272,67 +280,157 @@ class AIWorkflowManager:
         # 3. Fallback genérico
         return self._default_template(model)
 
+    def _qwen_cli_template(self) -> Dict:
+        """Prompt template ajustado al estilo de Qwen (usado con qwen-cli)"""
+        return {
+            "system": (
+                "You are Qwen, an expert Python developer. "
+                "Respond with working code, type hints, and minimal explanation. "
+                "Assume the user will copy your output directly into their project."
+            ),
+            "user": (
+                "[Project: {project_name}]\n"
+                "[Task: {task}]\n\n"
+                "[Relevant Context]\n{context}\n\n"
+                "[Constraints]\n{constraints}\n\n"
+                "Instructions:\n"
+                "- Provide only the solution: code or concise steps.\n"
+                "- Use modern Python (3.10+), TypedDict, pathlib, etc.\n"
+                "- Include Google-style docstrings if writing functions.\n"
+                "- Never wrap code in ```markdown fences.\n"
+                "- Do not add introductions like 'Sure!' or 'Here is...'\n"
+                "- If uncertain, make one clear assumption and state it in a comment."
+            )
+        }
+
     def _deepseek_template(self) -> Dict:
         """Template optimizado para DeepSeek"""
         return {
             "system": """Eres un experto en Python analizando el proyecto: {project_name}.
-Objetivos:
-1. Código práctico y eficiente
-2. Optimizaciones de performance
-3. Compatibilidad con Python 3.8+
-4. Ejemplos específicos""",
-            "user": """## TAREA
-{task}
+            Objetivos:
+            1. Código práctico y eficiente
+            2. Optimizaciones de performance
+            3. Compatibilidad con Python 3.8+
+            4. Ejemplos específicos""",
+                        "user": """## TAREA
+            {task}
 
-## CONTEXTO
-{context}
+            ## CONTEXTO
+            {context}
 
-## RESTRICCIONES
-{constraints}
+            ## RESTRICCIONES
+            {constraints}
 
-## INSTRUCCIONES DEEPSEEK:
-Por favor responde con este formato JSON/Markdown:
-```analysis
-[Análisis breve]
-suggestions
-[Lista de sugerencias]
-code_examples
-[Código si aplica]
-next_steps
-[Pasos a seguir]
-```"""
-        }
+            ## INSTRUCCIONES DEEPSEEK:
+            Por favor responde con este formato JSON/Markdown:
+            ```analysis
+            [Análisis breve]
+            suggestions
+            [Lista de sugerencias]
+            code_examples
+            [Código si aplica]
+            next_steps
+            [Pasos a seguir]
+            ```"""
+                    }
 
     def _chatgpt_template(self) -> Dict:
         """Template optimizado para ChatGPT"""
         return {
             "system": "Actúa como un Ingeniero de Software Senior especializado en Python y arquitecturas escalables.",
             "user": """Estás trabajando en el proyecto '{project_name}'.
-Tarea: {task}
+            Tarea: {task}
 
-Contexto relevante:
-{context}
+            Contexto relevante:
+            {context}
 
-Restricciones:
-{constraints}
+            Restricciones:
+            {constraints}
 
-Por favor, provee una solución detallada, explicando el 'por qué' de tus decisiones. Si sugieres código, asegúrate de que sea robusto y maneje excepciones."""
-        }
+            Por favor, provee una solución detallada, explicando el 'por qué' de tus decisiones. Si sugieres código, asegúrate de que sea robusto y maneje excepciones."""
+                    }
 
     def _claude_template(self) -> Dict:
         """Template optimizado para Claude"""
         return {
             "system": "Eres Claude, un asistente de IA experto en desarrollo de software, análisis de código y redacción técnica.",
             "user": """Por favor ayuda con la siguiente tarea en el proyecto '{project_name}'.
-Tarea: {task}
+            Tarea: {task}
 
-Aquí está el contexto del proyecto:
-{context}
+            Aquí está el contexto del proyecto:
+            {context}
 
-Y las restricciones técnicas:
-{constraints}
+            Y las restricciones técnicas:
+            {constraints}
 
-Analiza la situación paso a paso. Si encuentras ambigüedades, haz preguntas aclaratorias antes de sugerir código."""
+            Analiza la situación paso a paso. Si encuentras ambigüedades, haz preguntas aclaratorias antes de sugerir código."""
+                    }
+
+    def _gemini_3_pro_template(self) -> Dict:
+        """Template optimizado para Google Gemini 3 Pro"""
+        return {
+            "system": (
+                "Eres un ingeniero senior de Google con 10+ años en Python, arquitectura de software y sistemas geoespaciales (QGIS). "
+                "Tu rol es asistir a desarrolladores con soluciones técnicamente sólidas, seguras y mantenibles. "
+                "Prioriza claridad, eficiencia y principios SOLID. No asumas; razona explícitamente."
+            ),
+            "user": (
+                "## 🧠 Tarea para '{project_name}'\n{task}\n\n"
+                "## 📚 Contexto técnico relevante (extraído de análisis estático y cerebro del proyecto)\n"
+                "{context}\n\n"
+                "## ⚠️ Restricciones del proyecto\n{constraints}\n\n"
+                "## 📌 Instrucciones específicas para GEMINI 3 Pro:\n"
+                "- Utiliza tu ventana de contexto extendida (1M+ tokens) para integrar todo el contexto disponible.\n"
+                "- Proporciona una explicación técnica breve **antes** de cualquier bloque de código.\n"
+                "- El código debe incluir: type hints, docstrings (Google style), y manejo de errores.\n"
+                "- Si identificas riesgo de seguridad o de rendimiento, menciónalo explícitamente.\n"
+                "- Si la tarea involucra refactorización, muestra **código antes / después** y explica el 'por qué'.\n"
+                "- Sé conciso, pero no omitas justificaciones técnicas importantes."
+            )
+        }
+
+    def _claude_sonnet_45_template(self) -> Dict:
+        """Template optimizado para Claude Sonnet 4.5"""
+        return {
+            "system": (
+                "Eres Claude Sonnet 4.5, un asistente de desarrollo altamente confiable, especializado en Python, patrones de diseño y código legado. "
+                "Tu prioridad es ayudar a los desarrolladores a tomar decisiones sostenibles, seguras y bien fundamentadas. "
+                "Razona paso a paso. Si algo no está claro, pide clarificación antes de proponer soluciones."
+            ),
+            "user": (
+                "<project>{project_name}</project>\n"
+                "<task>{task}</task>\n"
+                "<context>\n{context}\n</context>\n"
+                "<constraints>\n{constraints}\n</constraints>\n\n"
+                "Responde **estrictamente** en el siguiente formato XML-like:\n"
+                "<analysis>\n[Análisis técnico breve, incluyendo suposiciones si las hay]\n</analysis>\n"
+                "<recommendations>\n- ...\n</recommendations>\n"
+                "<code_examples>\n<![CDATA[\n# Código listo para usar\n]]>\n</code_examples>\n"
+                "<risks>\n- ...\n</risks>\n"
+                "<clarification_questions>\n- ¿...?</clarification_questions>"
+            )
+        }
+
+    def _gpt_oss_120b_template(self) -> Dict:
+        """Template optimizado para GPT OSS 120B (Llama-3-120B, CodeLlama-120B, etc.)"""
+        return {
+            "system": (
+                "You are a pragmatic Python expert. Respond with minimal explanation and maximum utility. "
+                "Assume the user will copy your code directly. Avoid markdown unless necessary. "
+                "Be concise, precise, and focused on working solutions."
+            ),
+            "user": (
+                "Project: {project_name}\n"
+                "Task: {task}\n"
+                "Relevant context (keep short):\n{context}\n"
+                "Constraints:\n{constraints}\n\n"
+                "Instructions for GPT OSS 120B:\n"
+                "- Return only code if the task is implementation.\n"
+                "- If explanation is needed, keep it under 3 sentences.\n"
+                "- Never ask questions—make best-effort assumptions.\n"
+                "- Use modern Python (3.8+), type hints, and error handling.\n"
+                "- Do not use XML, JSON, or extra formatting unless explicitly requested."
+            )
         }
 
     def _gemini_template(self) -> Dict:
@@ -341,20 +439,20 @@ Analiza la situación paso a paso. Si encuentras ambigüedades, haz preguntas ac
             "system": "Eres un experto ingeniero de software de Google, especializado en Python y QGIS.",
             "user": """Analiza la siguiente tarea para el proyecto '{project_name}'.
 
-Tarea: {task}
+            Tarea: {task}
 
-Contexto Técnico:
-{context}
+            Contexto Técnico:
+            {context}
 
-Restricciones:
-{constraints}
+            Restricciones:
+            {constraints}
 
-Instrucciones para Gemini:
-1. Utiliza tu capacidad de razonamiento multimodal y lógico para ofrecer la mejor solución.
-2. Si se requiere código, que sea limpio, moderno y bien documentado.
-3. Explica tus decisiones de diseño.
-4. Identifica posibles problemas de seguridad o rendimiento."""
-        }
+            Instrucciones para Gemini:
+            1. Utiliza tu capacidad de razonamiento multimodal y lógico para ofrecer la mejor solución.
+            2. Si se requiere código, que sea limpio, moderno y bien documentado.
+            3. Explica tus decisiones de diseño.
+            4. Identifica posibles problemas de seguridad o rendimiento."""
+                    }
 
     def _default_template(self, model: str) -> Dict:
         """Template genérico para otras IAs"""
