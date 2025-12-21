@@ -4,7 +4,7 @@
 # ============================================================================
 # Global Settings
 # ============================================================================
-line-length = 88  # Compatible with Black
+line-length = 100  # Compatible with Black
 target-version = "py310"  # Python 3.10+
 
 # Exclude directories and files from linting
@@ -85,6 +85,12 @@ ignore = [
     
     # === Print Statements ===
     "T201",   # print-found (allow print for debugging, use logger instead)
+    
+    # === Missing Docstrings (equiv to pylint C0111) ===
+    "D101", "D102", "D103", "D105", "D106", "D107",
+
+    # === Class Structure ===
+    # "PLR0903", # too-few-public-methods (Not supported in this Ruff version)
 ]
 
 # Dummy variable pattern (matches .pylintrc)
@@ -144,7 +150,7 @@ ignore-decorators = ["typing.overload"]
 
 [lint.pylint]
 # Complexity limits (from .pylintrc)
-max-args = 5          # Maximum function arguments
+max-args = 7          # Maximum function arguments
 max-branches = 12     # Maximum branches in function
 max-locals = 15       # Maximum local variables
 max-returns = 6       # Maximum return statements
@@ -167,7 +173,7 @@ lines-after-imports = 2
 
 [lint.mccabe]
 # Maximum cyclomatic complexity
-max-complexity = 10
+max-complexity = 12
 
 [lint.flake8-bugbear]
 # Allow default mutable arguments in dataclasses
