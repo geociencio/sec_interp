@@ -78,43 +78,47 @@ class GeologyShpExporter(BaseExporter):
             return False
 
         try:
-             # Create fields from the first segment's attributes + extra fields if needed
-            fields = QgsFields()
-            if geology_data:
-                # Use attributes from first segment as template
-                # But realistically we should probably use the original layer fields if we had access,
-                # or just infer from the dictionary.
-                # Let's infer from the first segment's attributes
-                first_attrs = geology_data[0].attributes
-                for key, val in first_attrs.items():
-                    # Simplified field creation - might need more robust typing
-                    fields.append(QgsField(key, QMetaType.Type.QString))
-
+            fields = self._create_geology_fields(geology_data)
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
             for segment in geology_data:
-                if len(segment.points) < 2:
-                    continue
-                
-                points = [QgsPointXY(d, e) for d, e in segment.points]
-                geom = QgsGeometry.fromPolylineXY(points)
-                
-                feat = QgsFeature(fields)
-                feat.setGeometry(geom)
-                
-                # Set attributes
-                for key, val in segment.attributes.items():
-                    idx = fields.indexOf(key)
-                    if idx >= 0:
-                        feat.setAttribute(idx, val)
-                
-                writer.addFeature(feat)
+                feat = self._create_geology_feature(segment, fields)
+                if feat:
+                    writer.addFeature(feat)
 
             del writer
             return True
         except Exception:
             logger.exception(f"Failed to export geology profile to {output_path}")
             return False
+
+    def _create_geology_fields(self, geology_data: list) -> QgsFields:
+        """Create fields from the first segment's attributes."""
+        fields = QgsFields()
+        if geology_data:
+            # Use attributes from first segment as template
+            first_attrs = geology_data[0].attributes
+            for key in first_attrs.keys():
+                fields.append(QgsField(key, QMetaType.Type.QString))
+        return fields
+
+    def _create_geology_feature(self, segment: Any, fields: QgsFields) -> QgsFeature | None:
+        """Create a feature for a geology segment."""
+        if len(segment.points) < 2:
+            return None
+        
+        points = [QgsPointXY(d, e) for d, e in segment.points]
+        geom = QgsGeometry.fromPolylineXY(points)
+        
+        feat = QgsFeature(fields)
+        feat.setGeometry(geom)
+        
+        # Set attributes
+        for key, val in segment.attributes.items():
+            idx = fields.indexOf(key)
+            if idx >= 0:
+                feat.setAttribute(idx, val)
+        return feat
 
 
 class StructureShpExporter(BaseExporter):
@@ -131,61 +135,69 @@ class StructureShpExporter(BaseExporter):
         structural_data = data.get("structural_data")
         crs = data.get("crs")
         dip_scale_factor = data.get("dip_scale_factor", 4)
-        raster_res = data.get("raster_res", 1.0) # Need resolution for scale
+        raster_res = data.get("raster_res", 1.0)
 
         if not structural_data or not crs:
             return False
 
         try:
-            L = raster_res * dip_scale_factor
-            
-            # Create fields
-            fields = QgsFields()
-            # Add fields from source + calculated fields
-            if structural_data:
-                first_attrs = structural_data[0].attributes
-                for key in first_attrs.keys():
-                    fields.append(QgsField(key, QMetaType.Type.QString))
-            
-            fields.append(QgsField("app_dip", QMetaType.Type.Double))
-            fields.append(QgsField("dist", QMetaType.Type.Double))
-            fields.append(QgsField("elev", QMetaType.Type.Double))
-
+            line_length = raster_res * dip_scale_factor
+            fields = self._create_structure_fields(structural_data)
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
             for m in structural_data:
-                # Calculate dip line geometry
-                # Conversion to radians
-                rad_dip = math.radians(m.apparent_dip)
-                dy = -L * math.sin(abs(rad_dip))
-                dx = L * math.cos(abs(rad_dip))
-                if m.apparent_dip < 0:
-                    dx = -dx
-
-                p1 = QgsPointXY(m.distance, m.elevation)
-                p2 = QgsPointXY(m.distance + dx, m.elevation + dy)
-                geom = QgsGeometry.fromPolylineXY([p1, p2])
-
-                feat = QgsFeature(fields)
-                feat.setGeometry(geom)
-                
-                # Set attributes
-                for key, val in m.attributes.items():
-                    idx = fields.indexOf(key)
-                    if idx >= 0:
-                        feat.setAttribute(idx, val)
-                
-                feat["app_dip"] = m.apparent_dip
-                feat["dist"] = m.distance
-                feat["elev"] = m.elevation
-                
-                writer.addFeature(feat)
+                feat = self._create_structure_feature(m, fields, line_length)
+                if feat:
+                    writer.addFeature(feat)
 
             del writer
             return True
         except Exception:
             logger.exception(f"Failed to export structural profile to {output_path}")
             return False
+
+    def _create_structure_fields(self, structural_data: list) -> QgsFields:
+        """Create fields for structural data."""
+        fields = QgsFields()
+        if structural_data:
+            first_attrs = structural_data[0].attributes
+            for key in first_attrs.keys():
+                fields.append(QgsField(key, QMetaType.Type.QString))
+        
+        fields.append(QgsField("app_dip", QMetaType.Type.Double))
+        fields.append(QgsField("dist", QMetaType.Type.Double))
+        fields.append(QgsField("elev", QMetaType.Type.Double))
+        return fields
+
+    def _create_structure_feature(self, m: Any, fields: QgsFields, line_length: float) -> QgsFeature:
+        """Create a feature for a structural measurement."""
+        geom = self._calculate_dip_geometry(m, line_length)
+        
+        feat = QgsFeature(fields)
+        feat.setGeometry(geom)
+        
+        # Set attributes
+        for key, val in m.attributes.items():
+            idx = fields.indexOf(key)
+            if idx >= 0:
+                feat.setAttribute(idx, val)
+        
+        feat["app_dip"] = m.apparent_dip
+        feat["dist"] = m.distance
+        feat["elev"] = m.elevation
+        return feat
+
+    def _calculate_dip_geometry(self, m: Any, line_length: float) -> QgsGeometry:
+        """Calculate the line geometry for a structural dip."""
+        rad_dip = math.radians(m.apparent_dip)
+        dy = -line_length * math.sin(abs(rad_dip))
+        dx = line_length * math.cos(abs(rad_dip))
+        if m.apparent_dip < 0:
+            dx = -dx
+
+        p1 = QgsPointXY(m.distance, m.elevation)
+        p2 = QgsPointXY(m.distance + dx, m.elevation + dy)
+        return QgsGeometry.fromPolylineXY([p1, p2])
 
 
 class AxesShpExporter(BaseExporter):
