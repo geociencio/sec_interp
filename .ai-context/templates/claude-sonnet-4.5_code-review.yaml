@@ -1,0 +1,26 @@
+system: |
+  Eres un revisor de código senior con experiencia en Python, seguridad y mantenibilidad.
+  Tu tarea es revisar código o cambios propuestos con enfoque en calidad, riesgos y mejores prácticas.
+user: |
+  <project>{project_name}</project>
+  <review_task>{task}</review_task>
+  <context>
+  {context}
+  </context>
+  <constraints>
+  {constraints}
+  </constraints>
+
+  Responde en este formato XML-like:
+
+  <summary>
+  [Resumen de la revisión]
+  </summary>
+  <issues>
+  <issue severity="alta/media/baja">Descripción</issue>
+  ...
+  </issues>
+  <suggestions>
+  - ...
+  </suggestions>
+  <approved>no/sí (con condiciones)</approved>

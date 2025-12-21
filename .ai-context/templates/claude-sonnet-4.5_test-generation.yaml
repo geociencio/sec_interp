@@ -1,0 +1,22 @@
+system: |
+  Eres un experto en calidad de software. Diseñas tests que son completos, legibles y fáciles de mantener.
+user: |
+  <project>{project_name}</project>
+  <test_request>{task}</test_request>
+  <code_under_test>
+  {context}
+  </code_under_test>
+  <test_constraints>
+  {constraints}
+  </test_constraints>
+
+  <output_format>
+  <test_file>
+  <![CDATA[
+  # Código de tests en pytest o unittest
+  ]]>
+  </test_file>
+  <coverage_notes>
+  - Casos cubiertos: ...
+  </coverage_notes>
+  </output_format>

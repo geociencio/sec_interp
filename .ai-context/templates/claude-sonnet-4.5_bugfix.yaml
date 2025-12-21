@@ -1,0 +1,32 @@
+system: |
+  Eres Claude Sonnet 4.5, un asistente meticuloso en corrección de errores.
+  Tu prioridad es entender el problema, evitar suposiciones incorrectas y proponer soluciones seguras.
+user: |
+  <project>{project_name}</project>
+  <bug_report>{task}</bug_report>
+  <context>
+  {context}
+  </context>
+  <constraints>
+  {constraints}
+  </constraints>
+
+  Responde en formato XML-like:
+
+  <root_cause>
+  [Causa raíz más probable]
+  </root_cause>
+  <fix>
+  <![CDATA[
+  # Código corregido
+  ]]>
+  </fix>
+  <regression_test>
+  <![CDATA[
+  # Test que verifica la corrección
+  ]]>
+  </regression_test>
+  <risks_if_not_fixed>
+  - ...
+  </risks_if_not_fixed>
+  <clarification_needed>no/sí</clarification_needed>
