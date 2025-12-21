@@ -6,7 +6,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=2.1.1
+version=2.2.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -20,6 +20,15 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    2.2.0 (2025-12-21)
+    * Architecture & Fragmentation:
+      - Fragmented PreviewRenderer (Complexity 130 -> 21.8).
+      - Fragmented SecInterpDialog (Complexity 95 -> 18).
+      - Decoupled ExportService and PreviewService from UI.
+    * Refinements & Fixes:
+      - Improved Axis/Grid alignment for negative elevations.
+      - Fixed startup AttributeError and preview field collection bugs.
+
     2.1.1 (2025-12-18)
     * Documentation & UX:
       - Refactored Help System to "Native Hybrid" (Single-file HTML/CSS).

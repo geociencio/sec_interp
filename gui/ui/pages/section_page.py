@@ -23,10 +23,10 @@ class SectionPage(BasePage):
         
         self.line_combo = QgsMapLayerComboBox()
         
-        # Use modern flags if available (QGIS 3.34+)
+        # Use modern flags if available (QGIS 3.32+)
         try:
             from qgis.core import Qgis
-            self.line_combo.setFilters(Qgis.LayerFilter.LineLayer)
+            self.line_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.LineLayer))
         except (ImportError, AttributeError, TypeError):
             self.line_combo.setFilters(QgsMapLayerProxyModel.LineLayer)
             
@@ -34,6 +34,10 @@ class SectionPage(BasePage):
         self.line_combo.setToolTip("Select the line layer defining the cross-section")
         self.line_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.line_combo, 0, 1)
+
+        self.lbl_section_status = QLabel()
+        self.lbl_section_status.setFixedSize(16, 16)
+        self.group_layout.addWidget(self.lbl_section_status, 0, 2)
 
         # Row 1: Buffer Distance
         self.group_layout.addWidget(QLabel("Buffer Dist. (m)"), 1, 0)

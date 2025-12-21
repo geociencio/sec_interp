@@ -1,58 +1,45 @@
-# Implementation Plan - PreviewRenderer Fragmentation
+# Implementation Plan - Main Dialog Fragmentation
 
-Refactor the `PreviewRenderer` class (Complexity: 130) by decomposing it into specialized components.
+Fragment the `SecInterpDialog` class (Complexity: 95) by decomposing it into specialized managers and utility modules.
 
 ## Proposed Changes
 
 ### GUI Components
 
-#### [NEW] [preview_layer_factory.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/preview_layer_factory.py)
-Move all layer creation and symbology logic here.
-- `create_topo_layer()`
-- `create_geol_layer()`
-- `create_struct_layer()`
-- `create_drillhole_trace_layer()`
-- `create_drillhole_interval_layer()`
-- Symbology helper methods.
+#### [NEW] [main_dialog_settings.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_settings.py)
+Encapsulate user settings persistence logic.
+- `DialogSettingsManager` class.
+- `load_settings()`: Moved from `_load_user_settings`.
+- `save_settings()`: Moved from `_save_user_settings`.
 
-#### [NEW] [preview_axes_manager.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/preview_axes_manager.py)
-Handle grid lines, axis labels, and axis styling.
-- `create_axes_layer()`
-- `create_axes_labels_layer()`
-- `_get_nice_interval()`
+#### [NEW] [main_dialog_status.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_status.py)
+Manage UI state updates and status indicators.
+- `DialogStatusManager` class.
+- `update_ui_state()`: Orchestrate button and preview checkbox updates.
+- `setup_indicators()`: Handle required field warning icons.
+- `update_raster_status()`, `update_section_status()`.
 
-#### [NEW] [preview_optimizer.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/preview_optimizer.py)
-Geometric optimization logic.
-- `decimate()`
-- `adaptive_sample()`
-- `calculate_curvature()`
+#### [NEW] [main_dialog_utils.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_utils.py)
+Common UI utility functions.
+- `populate_field_combobox()`: Helper for field selection.
+- `get_layers_by_type()`, `get_layers_by_geometry()`.
+- `get_theme_icon()`: Moved from `getThemeIcon`.
 
-#### [NEW] [preview_legend_renderer.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/preview_legend_renderer.py)
-Legend drawing logic.
-- `draw_legend()`
-
-#### [MODIFY] [preview_renderer.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/preview_renderer.py)
-Refactor as an orchestrator.
-- Initialize sub-components.
-- Update `render()` to delegate work.
-- Maintain existing API for backward compatibility.
+#### [MODIFY] [main_dialog.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog.py)
+Refactor to use the new managers.
+- Initialize `DialogSettingsManager`, `DialogStatusManager`, and `PreviewManager`.
+- Delegate `open_help`, `wheelEvent`, and other UI event handlers to appropriate specialized components where possible.
+- Remove legacy and redundant `_generate_*` methods that are now handled by `PreviewManager`.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `analyze_project_optfixed.py` to verify the reduction in complexity.
-- Verify that standard preview generation still works (manual testing).
-- Verify Y-axis labels cover the full depth of drillholes (e.g., -100m).
-
-#### [NEW] [Y-Axis Label Fix]
-Refine `PreviewAxesManager` to ensure grid lines and labels encompass the full extent.
-- Update `y_start` and `y_end` logic to bound the data.
-- Remove strict clipping `if y_draw >= extent.yMinimum()` to allow labels on the bounding intervals.
-- Apply similar improvements to the X-axis.
+- Run `analyze_project_optfixed.py` to verify the reduction in `main_dialog.py` complexity.
+- Verify that `QgsSettings` are still preserved between sessions.
 
 ### Manual Verification
 1. Open the plugin.
-2. Generate a preview with all layers enabled (Topography, Geology, Structures, Drillholes).
-3. Verify axes and labels are correctly rendered.
-4. Verify the legend is correctly drawn.
-5. Export to PNG/PDF to verify legend rendering on external devices.
+2. Verify that input indicators (warning icons) update correctly when selecting layers.
+3. Verify that the "Preview" and "Ok" buttons enable/disable correctly based on inputs.
+4. Verify that settings (Scale, Vert Exag, etc.) are remembered after closing and reopening the dialog.
+5. Verify that help opens correctly.

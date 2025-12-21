@@ -37,7 +37,6 @@ class SecInterpMainWindow(QDialog):
         self.page_dem = DemPage(iface)
         self.page_section = SectionPage()
         self.page_geology = GeologyPage()
-        self.page_geology = GeologyPage()
         self.page_struct = StructurePage()
         self.page_drillhole = DrillholePage()
         

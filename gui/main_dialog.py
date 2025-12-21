@@ -66,6 +66,9 @@ from .main_dialog_config import DialogDefaults
 from .main_dialog_export import ExportManager
 from .main_dialog_preview import PreviewManager
 from .main_dialog_validation import DialogValidator
+from .main_dialog_settings import DialogSettingsManager
+from .main_dialog_status import DialogStatusManager
+from .main_dialog_utils import DialogEntityManager
 
 
 from .ui.main_window import SecInterpMainWindow
@@ -114,6 +117,9 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_manager = PreviewManager(self)
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
+        self.settings_manager = DialogSettingsManager(self)
+        self.status_manager = DialogStatusManager(self)
+        self.status_manager.setup_indicators()
 
         # Set default values are handled in Page classes now
 
@@ -195,10 +201,8 @@ class SecInterpDialog(SecInterpMainWindow):
         )
 
         # Initial state update
-        self.update_button_state()
-        self.update_preview_checkbox_states()
-
-        self._load_user_settings()
+        self.status_manager.update_all()
+        self.settings_manager.load_settings()
 
         # Enable Pan Tool by default
         self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
@@ -262,80 +266,12 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_widget.results_group.setCollapsed(False)
 
     def update_preview_checkbox_states(self):
-        """Enable or disable preview checkboxes based on input validity.
-
-        Logic:
-        - Show Topography: Requires DEM + Section Line
-        - Show Geology: Requires Geology Data + Section Line
-        - Show Structure: Requires Structure Data + Section Line
-        """
-        has_line = self.page_section.is_complete()
-
-        # Topography
-        can_show_topo = self.page_dem.is_complete() and has_line
-        self.preview_widget.chk_topo.setEnabled(can_show_topo)
-        if can_show_topo and not self.preview_widget.chk_topo.isChecked():
-            # Re-enable checkbox if it was disabled before
-            self.preview_widget.chk_topo.setChecked(True)
-        elif not can_show_topo:
-            self.preview_widget.chk_topo.setChecked(False)
-
-        # Geology
-        can_show_geol = self.page_geology.is_complete() and has_line
-        self.preview_widget.chk_geol.setEnabled(can_show_geol)
-        if can_show_geol and not self.preview_widget.chk_geol.isChecked():
-            # Re-enable checkbox if it was disabled before
-            self.preview_widget.chk_geol.setChecked(True)
-        elif not can_show_geol:
-            self.preview_widget.chk_geol.setChecked(False)
-
-        # Structure
-        can_show_struct = self.page_struct.is_complete() and has_line
-        self.preview_widget.chk_struct.setEnabled(can_show_struct)
-        if can_show_struct and not self.preview_widget.chk_struct.isChecked():
-            # Re-enable checkbox if it was disabled before
-            self.preview_widget.chk_struct.setChecked(True)
-            self.preview_widget.chk_struct.setChecked(False)
-
-        # Drillholes
-        can_show_drill = self.page_drillhole.is_complete() and has_line
-        self.preview_widget.chk_drillholes.setEnabled(can_show_drill)
-        if can_show_drill and not self.preview_widget.chk_drillholes.isChecked():
-            self.preview_widget.chk_drillholes.setChecked(True)
-        elif not can_show_drill:
-            self.preview_widget.chk_drillholes.setChecked(False)
+        """Enable or disable preview checkboxes via status_manager."""
+        self.status_manager.update_preview_checkbox_states()
 
     def update_button_state(self):
-        """Enable or disable buttons based on input validity.
-
-        - Preview and Ok buttons require: DEM + Cross-section line
-        - Save button requires: DEM + Cross-section line + Output path
-        """
-        has_output_path = bool(self.output_widget.filePath())
-        has_raster = bool(self.page_dem.raster_combo.currentLayer())
-        has_line = bool(self.page_section.line_combo.currentLayer())
-
-        # Preview and Ok require at least DEM and line
-        can_preview = has_raster and has_line
-
-        # Save requires DEM, line, and output path
-        can_save = can_preview and has_output_path
-
-        # Update Preview button
-        # Note: In new UI preview_button is inside preview_widget
-        preview_btn = self.preview_widget.btn_preview
-        if preview_btn:
-            preview_btn.setEnabled(can_preview)
-
-        # Update Ok button
-        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
-        if ok_btn:
-            ok_btn.setEnabled(can_preview)
-
-        # Update Save button
-        save_btn = self.button_box.button(QDialogButtonBox.Save)
-        if save_btn:
-            save_btn.setEnabled(can_save)
+        """Enable or disable buttons via status_manager."""
+        self.status_manager.update_button_state()
 
     def get_selected_values(self):
         """Get the selected values from the dialog with safe type conversion."""
@@ -357,8 +293,6 @@ class SecInterpDialog(SecInterpMainWindow):
             "outcrop_name_field": geology_data["outcrop_name_field"],
             "structural_layer": structure_data["structural_layer"],
             "dip_field": structure_data["dip_field"],
-            "strike_field": structure_data["strike_field"],
-            "dip_scale_factor": structure_data["dip_scale_factor"],
             "strike_field": structure_data["strike_field"],
             "dip_scale_factor": structure_data["dip_scale_factor"],
             "output_path": self.output_widget.filePath(),
@@ -408,7 +342,6 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
-            "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
             "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
         }
@@ -453,8 +386,8 @@ class SecInterpDialog(SecInterpMainWindow):
         if not self.validate_inputs():
             return
 
-        # Save user settings before closing
-        self._save_user_settings()
+        # Save user settings before closing via settings_manager
+        self.settings_manager.save_settings()
         self.accept()
 
     def reject_handler(self):
@@ -485,462 +418,25 @@ class SecInterpDialog(SecInterpMainWindow):
             self.preview_widget.results_text.append("⚠ Cache not available")
 
     def _populate_field_combobox(self, source_combobox, target_combobox):
-        """Helper function to populate a combobox with field names from a selected vector layer."""
-        try:
-            selected_layer_name = source_combobox.currentData()
-            target_combobox.clear()
-
-            if not selected_layer_name:
-                return
-
-            layers = QgsProject.instance().mapLayersByName(selected_layer_name)
-            if not layers:
-                return
-
-            vector_layer = layers[0]
-            # Use addItem with data parameter so currentData() returns the field name
-            for field in vector_layer.fields():
-                target_combobox.addItem(field.name(), field.name())
-        except Exception as e:
-            self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
+        """Helper function to populate a combobox with field names."""
+        DialogEntityManager.populate_field_combobox(source_combobox, target_combobox)
 
     def get_layer_names_by_type(self, layer_type) -> list[str]:
-        """Get a list of layer names filtered by the specified layer type.
-
-        This method scans all layers in the current project.
-
-        Args:
-              layer_type: The QgsMapLayer type to filter by (e.g.,
-        QgsMapLayer.RasterLayer)
-
-        Returns:
-              A list of layer names matching the specified type
-        """
-        layers = QgsProject.instance().mapLayers().values()
-        return [layer.name() for layer in layers if layer.type() == layer_type]
+        """Get layer names by type."""
+        return DialogEntityManager.get_layer_names_by_type(layer_type)
 
     def get_layer_names_by_geometry(self, geometry_type) -> list[str]:
-        """Get a list of layer names filtered by the specified geometry type.
-
-        This method scans all layers in the current project.
-
-        Args:
-              geometry_type: The QgsWkbTypes geometry type to filter by
-        (e.g., QgsWkbTypes.LineGeometry)
-
-        Returns:
-              A list of layer names matching the specified geometry type
-        """
-        layers = QgsProject.instance().mapLayers().values()
-        return [
-            layer.name()
-            for layer in layers
-            if layer.type() == QgsMapLayer.VectorLayer
-            and QgsWkbTypes.geometryType(layer.wkbType()) == geometry_type
-        ]
-
-    def update_resolution_field(self):
-        """Calculate and update the resolution field for the selected raster layer.
-
-        NOTE: This logic is partially duplicated in DemPage._update_resolution.
-        Ideally we should move all this logic to DemPage or a common helper.
-        For now, we update the widgets in DemPage from here to minimize logic breakage.
-        """
-        try:
-            raster_layer = self.page_dem.raster_combo.currentLayer()
-            if not raster_layer:
-                self.page_dem.res_edit.clear()
-                self.page_dem.units_edit.clear()
-                return
-            raster_crs = raster_layer.crs()
-            # Determine map CRS safely: if iface or canvas isn't available
-            # (e.g., during unit tests), fall back to using raster CRS.
-            try:
-                if (
-                    self.iface is None
-                    or not hasattr(self.iface, "mapCanvas")
-                    or self.iface.mapCanvas() is None
-                ):
-                    map_crs = raster_crs
-                else:
-                    map_crs = self.iface.mapCanvas().mapSettings().destinationCrs()
-            except AttributeError:
-                # Defensive: if anything goes wrong accessing iface/canvas, use raster CRS.
-                map_crs = raster_crs
-            native_res = raster_layer.rasterUnitsPerPixelX()
-
-            # Validate native resolution
-            if native_res <= 0:
-                self.page_dem.res_edit.setText("Invalid")
-                self.page_dem.units_edit.setText("")
-                self.messagebar.pushMessage(
-                    "Warning",
-                    "Raster resolution is invalid or zero",
-                    level=Qgis.Warning,
-                )
-                return
-
-            resolution_in_meters = 0
-
-            if raster_crs == map_crs:
-                if raster_crs.isGeographic():
-                    self.page_dem.res_edit.setText(f"{native_res:.6f}")
-                    self.page_dem.units_edit.setText("°")
-                    # For scale calculation, we need resolution in meters.
-                    # This is an approximation at the equator.
-                    resolution_in_meters = native_res * 111320
-                else:
-                    self.page_dem.res_edit.setText(f"{native_res:.2f}")
-                    self.page_dem.units_edit.setText(
-                        QgsUnitTypes.toString(raster_crs.mapUnits())
-                    )
-                    if raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Meters:
-                        resolution_in_meters = native_res
-                    elif raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Feet:
-                        resolution_in_meters = native_res * 0.3048
-
-            else:
-                transform = QgsCoordinateTransform(
-                    raster_crs, map_crs, QgsProject.instance()
-                )
-                center = raster_layer.extent().center()
-                p1 = center
-                p2 = QgsPointXY(center.x() + native_res, center.y())
-                p1_transformed = transform.transform(p1)
-                p2_transformed = transform.transform(p2)
-
-                if map_crs.isGeographic():
-                    # Raster is projected, map is geographic
-                    resolution = abs(p2_transformed.x() - p1_transformed.x())
-                    self.page_dem.res_edit.setText(f"{resolution:.6f}")
-                    self.page_dem.units_edit.setText("°")
-                    # We need to transform back to the raster's projected CRS to get meters
-                    # This is a bit complex, let's use the native resolution for scale for now
-                    if raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Meters:
-                        resolution_in_meters = native_res
-                    elif raster_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Feet:
-                        resolution_in_meters = native_res * 0.3048
-                else:
-                    # Raster is geographic, map is projected
-                    resolution = p1_transformed.distance(p2_transformed)
-                    self.page_dem.res_edit.setText(f"{resolution:.2f}")
-                    self.page_dem.units_edit.setText(
-                        QgsUnitTypes.toString(map_crs.mapUnits())
-                    )
-                    if map_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Meters:
-                        resolution_in_meters = resolution
-                    elif map_crs.mapUnits() == QgsUnitTypes.DistanceUnit.Feet:
-                        resolution_in_meters = resolution * 0.3048
-
-            # Calculate suggested scale only if resolution is valid
-            if resolution_in_meters > 0:
-                suggested_scale = round((resolution_in_meters * 2000) / 1000) * 1000
-                self.page_dem.scale_spin.setValue(float(suggested_scale))
-
-        except Exception as e:
-            self.messagebar.pushMessage("Error", str(e), level=Qgis.Critical)
+        """Get layer names by geometry."""
+        return DialogEntityManager.get_layer_names_by_geometry(geometry_type)
 
     def getThemeIcon(self, name):
-        """Get a theme icon from QGIS.
-
-        :param name: The name of the icon (e.g. 'mActionFileOpen.svg')
-        :return: QIcon
-        """
-        return QgsApplication.getThemeIcon(name)
-
-    def _validate_preview_requirements(self):
-        """Validate inputs required for preview generation.
-
-        Returns:
-            tuple: (raster_layer, line_layer, band_num) if valid.
-
-        Raises:
-            ValueError: If validation fails, with a user-friendly message.
-        """
-        if self.plugin_instance is None:
-            raise ValueError("Plugin instance not initialized.")
-
-        raster_layer = self.rasterdem.currentLayer()
-        if not raster_layer:
-            raise ValueError("Please select a raster layer for preview.")
-
-        line_layer = self.crossline.currentLayer()
-        if not line_layer:
-            raise ValueError("Please select a cross-section line for preview.")
-
-        band_num = self.band.currentBand()
-        if not band_num:
-            raise ValueError("Please select a band number.")
-
-        is_valid, error = vu.validate_raster_band(raster_layer, band_num)
-        if not is_valid:
-            raise ValueError(error)
-
-        return raster_layer, line_layer, band_num
-
-    def _generate_topography(self, line_layer, raster_layer, band_num):
-        """Generate topographic profile data."""
-        return self.plugin_instance.profile_service.generate_topographic_profile(
-            line_layer, raster_layer, band_num
-        )
-
-    def _generate_geology(self, line_layer, raster_layer, band_num):
-        """Generate geological profile data if outcrop layer is selected."""
-        logger = get_logger(__name__)
-
-        outcrop_layer = self.outcrop.currentLayer()
-        if not outcrop_layer:
-            logger.debug("No outcrop layer selected")
-            return None
-
-        outcrop_name_field = self.ocropname.currentField()
-        if not outcrop_name_field:
-            logger.debug("No outcrop name field selected")
-            return None
-
-        try:
-            logger.info(
-                f"Generating geological profile with field: {outcrop_name_field}"
-            )
-            result = self.plugin_instance.geology_service.generate_geological_profile(
-                line_layer,
-                raster_layer,
-                outcrop_layer,
-                outcrop_name_field,
-                band_num,
-            )
-            logger.info(
-                f"Geological profile result: {len(result) if result else 0} points"
-            )
-            return result
-        except Exception as e:
-            logger.error(f"Error generating geological profile: {e}", exc_info=True)
-            return None
-
-    def _generate_structures(self, line_layer, buffer_dist):
-        """Generate structural data if structural layer is selected."""
-        structural_layer = self.structural.currentLayer()
-        if not structural_layer:
-            return None
-
-        dip_field = self.dip.currentField()
-        strike_field = self.strike.currentField()
-
-        if not dip_field or not strike_field:
-            return None
-
-        # Get line azimuth
-        line_feat = next(line_layer.getFeatures(), None)
-        if not line_feat:
-            return None
-
-        line_geom = line_feat.geometry()
-        line_azimuth = scu.calculate_line_azimuth(line_geom)
-
-        return self.plugin_instance.structure_service.project_structures(
-            line_layer,
-            structural_layer,
-            buffer_dist,
-            line_azimuth,
-            dip_field,
-            strike_field,
-        )
-
-    def _get_export_settings(self, width, height, dpi, extent):
-        """Create QgsMapSettings for export.
-
-        Args:
-            width: Output width in pixels
-            height: Output height in pixels
-            dpi: Dots per inch
-            extent: Map extent (QgsRectangle)
-
-        Returns:
-            Configured QgsMapSettings instance
-        """
-        settings = QgsMapSettings()
-        settings.setLayers(self.current_layers)
-        settings.setExtent(extent)
-        settings.setOutputSize(QSize(width, height))
-        settings.setOutputDpi(dpi)
-        settings.setBackgroundColor(QColor(255, 255, 255))
-        return settings
-
-    def _setup_required_field_indicators(self):
-        """Setup required field indicators with warning icons.
-
-        Initializes status icons for required fields (Raster Layer and Section Line)
-        and connects signals to update icons when fields are filled/cleared.
-        """
-        # Get standard Qt icons which are more reliable
-        style = QApplication.style()
-        self.warning_icon = style.standardIcon(QStyle.SP_MessageBoxWarning)
-        self.success_icon = style.standardIcon(QStyle.SP_DialogApplyButton)
-
-        # Set initial warning icons
-        self.raster_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
-        self.section_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
-
-        # Connect signals to update status
-        self.rasterdem.layerChanged.connect(self._update_raster_status)
-        self.crossline.layerChanged.connect(self._update_section_status)
-
-        # Initial update
-        self._update_raster_status()
-        self._update_section_status()
-
-    def _update_raster_status(self):
-        """Update raster layer status icon based on selection."""
-        if self.rasterdem.currentLayer():
-            self.raster_status_icon.setPixmap(self.success_icon.pixmap(16, 16))
-        else:
-            self.raster_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
-
-    def _update_section_status(self):
-        """Update section line status icon based on selection."""
-        if self.crossline.currentLayer():
-            self.section_status_icon.setPixmap(self.success_icon.pixmap(16, 16))
-        else:
-            self.section_status_icon.setPixmap(self.warning_icon.pixmap(16, 16))
+        """Get a theme icon via DialogEntityManager."""
+        return DialogEntityManager.get_theme_icon(name)
 
     def _load_user_settings(self):
-        """Load user settings from previous session.
-
-        Restores numeric values (scale, vertical exaggeration, buffer distance,
-        dip scale factor) and output folder path from QgsSettings.
-        """
-        settings = QgsSettings()
-
-        # Load numeric values with validation
-        try:
-            scale = settings.value("SecInterp/scale", 50000, type=int)
-            # Validate reasonable range (1:1,000 to 1:1,000,000)
-            if 1000 <= scale <= 1000000:
-                self.page_dem.scale_spin.setValue(scale)
-            else:
-                self.page_dem.scale_spin.setValue(50000)
-        except (ValueError, TypeError):
-            self.page_dem.scale_spin.setValue(50000)
-
-        try:
-            vertexag = settings.value("SecInterp/vertexag", 1.0, type=float)
-            # Validate reasonable range (0.1 to 100)
-            if 0.1 <= vertexag <= 100.0:
-                self.page_dem.vertexag_spin.setValue(vertexag)
-            else:
-                self.page_dem.vertexag_spin.setValue(1.0)
-        except (ValueError, TypeError):
-            self.page_dem.vertexag_spin.setValue(1.0)
-
-        try:
-            buffer_dist = settings.value("SecInterp/bufferDistance", 100.0, type=float)
-            # Validate reasonable range (0 to 10,000)
-            if 0.0 <= buffer_dist <= 10000.0:
-                self.page_section.buffer_spin.setValue(buffer_dist)
-            else:
-                self.page_section.buffer_spin.setValue(100.0)
-        except (ValueError, TypeError):
-            self.page_section.buffer_spin.setValue(100.0)
-
-        try:
-            dip_scale = settings.value("SecInterp/dipScaleFactor", 4.0, type=float)
-            # Validate reasonable range (0.1 to 20)
-            if 0.1 <= dip_scale <= 20.0:
-                self.page_struct.scale_spin.setValue(dip_scale)
-            else:
-                self.page_struct.scale_spin.setValue(4.0)
-        except (ValueError, TypeError):
-            self.page_struct.scale_spin.setValue(4.0)
-
-        try:
-            max_points = settings.value("SecInterp/maxPreviewPoints", 1000, type=int)
-            # Validate reasonable range (100 to 10000)
-            if 100 <= max_points <= 10000:
-                self.preview_widget.spin_max_points.setValue(max_points)
-            else:
-                self.preview_widget.spin_max_points.setValue(1000)
-        except (ValueError, TypeError):
-            self.preview_widget.spin_max_points.setValue(1000)
-
-        try:
-            auto_lod = settings.value("SecInterp/autoLOD", True, type=bool)
-            self.preview_widget.chk_auto_lod.setChecked(auto_lod)
-            # Ensure spinbox state matches
-            self.preview_widget.spin_max_points.setEnabled(not auto_lod)
-        except (ValueError, TypeError):
-            self.preview_widget.chk_auto_lod.setChecked(True)
-
-        try:
-            adaptive_sampling = settings.value("SecInterp/adaptiveSampling", False, type=bool)
-            self.preview_widget.chk_adaptive_sampling.setChecked(adaptive_sampling)
-        except (ValueError, TypeError):
-            self.preview_widget.chk_adaptive_sampling.setChecked(False)
-
-        # Load output folder
-        last_output = settings.value("SecInterp/lastOutputFolder", "", type=str)
-        if last_output:
-            self.output_widget.setFilePath(last_output)
+        """Load user settings via settings_manager."""
+        self.settings_manager.load_settings()
 
     def _save_user_settings(self):
-        """Save user settings for next session.
-
-        Persists numeric values (scale, vertical exaggeration, buffer distance,
-        dip scale factor) and output folder path to QgsSettings.
-        """
-        settings = QgsSettings()
-
-        # Save numeric values (only if valid)
-        try:
-            if self.scale.text():
-                scale_val = int(self.scale.text())
-                if 1000 <= scale_val <= 1000000:
-                    settings.setValue("SecInterp/scale", scale_val)
-        except ValueError:
-            pass  # Don't save invalid values
-
-        try:
-            if self.vertexag.text():
-                vertexag_val = float(self.vertexag.text())
-                if 0.1 <= vertexag_val <= 100.0:
-                    settings.setValue("SecInterp/vertexag", vertexag_val)
-        except ValueError:
-            pass
-
-        try:
-            if self.buffer_distance.text():
-                buffer_val = float(self.buffer_distance.text())
-                if 0.0 <= buffer_val <= 10000.0:
-                    settings.setValue("SecInterp/bufferDistance", buffer_val)
-        except ValueError:
-            pass
-
-        try:
-            if self.dip_scale_factor.text():
-                dip_scale_val = float(self.dip_scale_factor.text())
-                if 0.1 <= dip_scale_val <= 20.0:
-                    settings.setValue("SecInterp/dipScaleFactor", dip_scale_val)
-        except ValueError:
-            pass
-
-        try:
-            max_points = self.preview_widget.spin_max_points.value()
-            if 100 <= max_points <= 10000:
-                settings.setValue("SecInterp/maxPreviewPoints", max_points)
-        except ValueError:
-            pass
-
-        try:
-            auto_lod = self.preview_widget.chk_auto_lod.isChecked()
-            settings.setValue("SecInterp/autoLOD", auto_lod)
-        except ValueError:
-            pass
-
-        try:
-            adaptive_sampling = self.preview_widget.chk_adaptive_sampling.isChecked()
-            settings.setValue("SecInterp/adaptiveSampling", adaptive_sampling)
-        except ValueError:
-            pass
-
-        # Save output folder
-        if self.dest_fold.filePath():
-            settings.setValue("SecInterp/lastOutputFolder", self.dest_fold.filePath())
+        """Save user settings via settings_manager."""
+        self.settings_manager.save_settings()

@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-12-21
+### Added
+- **Architectural Evolution: Service-Oriented Core**:
+  - Implementation of `ExportService` to decouple business logic from the GUI.
+  - Creation of `PreviewService` for centralized data generation (Topography, Structures, Drillholes).
+  - Modularized `DialogValidator` with specialized `ValidationParams`.
+- **GUI Fragmentation & Complexity Reduction**:
+  - **`PreviewRenderer` Evolution**: Fragmented into 4 specialized components (`PreviewLayerFactory`, `PreviewAxesManager`, `PreviewOptimizer`, `PreviewLegendRenderer`). Complexity reduced from 130 to 21.8.
+  - **`MainDialog` Evolution**: Fragmented `SecInterpDialog` into specialized managers (`DialogSettingsManager`, `DialogStatusManager`, `DialogEntityManager`). Complexity reduced from 95 to 18.
+- **Preview Improvements**:
+  - Fixed Y-axis labels and grid alignment for negative elevations.
+  - Anchored X-labels and vertical grid lines to the grid's floor (y_start).
+  - Improved axis label spacing and label QUADRANT handling.
+
+### Fixed
+- Resolved `UI_IMPORT_IN_CORE` architectural violations by moving UI-dependent utilities to `gui/`.
+- Fixed `TypeError` in `PreviewParams` initialization (missing `dip_scale_factor`).
+- Fixed `AttributeError` in startup sequence by reordering core service initialization.
+- Fixed field collection bug in `PreviewManager` using `currentField()` instead of `currentData()`.
+- Improved stability of Preview Export with better size handling.
+
 ## [2.1.0] - 2025-12-17
 ### Added
 - **Major Feature: Snap-Enabled Measurement Tool**:

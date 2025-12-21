@@ -10,6 +10,11 @@
 - [x] Fragment `PreviewRenderer`
 - [x] Refactor Export Logic
 - [x] Fix Y-Axis labels and Grid Alignment
+- [x] Fragment Main Dialog (gui/main_dialog.py)
+    - [x] Create `gui/main_dialog_settings.py`
+    - [x] Create `gui/main_dialog_status.py`
+    - [x] Create `gui/main_dialog_utils.py`
+    - [x] Refactor `gui/main_dialog.py` to use managers
 - [x] Architectural Cleanup (UI out of Core Utils)
     - [x] Create `core/services/export_service.py`
     - [x] Integrate `ExportService` in `ExportManager` (`gui/main_dialog_export.py`)
@@ -24,8 +29,7 @@
     - [x] Move `generate_drillholes` and other process logic to `PreviewService`
     - [x] Update `PreviewManager` to use the new service
 - [x] Fix `DeprecationWarning` in `QgsMapLayerComboBox.setFilters()`
-    - [x] Apply `Qgis.LayerFilter` flags in `drillhole_page.py`
-    - [x] Apply modern filters in `dem_page.py`, `geology_page.py`, `section_page.py`, and `structure_page.py`
+    - [x] Apply `Qgis.LayerFilters` to all GUI pages (`dem`, `geology`, `section`, `structure`, `drillhole`)
 - [x] Fix `AttributeError: 'SecInterp' object has no attribute 'controller'`
     - [x] Reorder initializations in `core/algorithms.py`
     - [x] Verify plugin startup logic
@@ -33,3 +37,6 @@
     - [x] Add missing `dip_scale_factor` to `PreviewParams` dataclass
 - [x] Fix missing structural data in preview
     - [x] Update `PreviewManager` to use `currentField()` for UI field collection
+- [x] Fix startup crash: `AttributeError: 'SecInterpDialog' object has no attribute 'buttonBox'`
+    - [x] Correct typo in `main_dialog_status.py`
+    - [x] Fix missing `QDialogButtonBox` import

@@ -32,6 +32,22 @@ Resolved architectural violations by separating UI components from the core logi
 - **Pure Core**: `core/utils/io.py` is now free of any PyQt/UI dependencies, satisfying the project's strict layer separation requirements.
 - **Improved Testing**: Created `tests/test_gui_utils.py` to specifically test UI alerts and messages.
 
+## Main Dialog Fragmentation (Latest)
+
+The `SecInterpDialog` class has been fragmented to reduce its complexity (from 95 to 18) and improve maintainability.
+
+- **Specialized Managers**: Extracted responsibilities into new modules:
+    - **[`main_dialog_settings.py`](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_settings.py)**: Handles `QgsSettings` persistence.
+    - **[`main_dialog_status.py`](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_status.py)**: Manages button states and status icons.
+    - **[`main_dialog_utils.py`](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_utils.py)**: Centralizes common QGIS entity helpers.
+- **Code Reduction**: Removed over 500 lines of redundant and low-level code from `gui/main_dialog.py`.
+- **Quality Metrics**: 
+    - **Complexity Reduction**: -77 points (from 95 to 18).
+    - **Project Quality Score**: Increased to 85.0/100.
+
+- **Bug Fix (Startup Crash)**: Resolved `AttributeError: 'SecInterpDialog' object has no attribute 'buttonBox'` by correcting a typo and missing import in `main_dialog_status.py`.
+- **Code Cleanup**: Removed multiple duplicate lines in `main_dialog.py` and `main_window.py` discovered during refactoring.
+
 ---
 *Walkthrough updated on 2025-12-21*
 
@@ -50,7 +66,7 @@ I have successfully refactored the `PreviewManager` in `gui/main_dialog_preview.
     - Simplified `PreviewManager` to act as a thin coordinator.
     - Replaced ~200 lines of complex data generation logic with a single call to `PreviewService`.
     - Improved parameter collection using a structured `PreviewParams` object.
-- **[FIXED] Deprecation Warnings**: Resolved `DeprecationWarning: QgsMapLayerComboBox.setFilters() is deprecated` in several GUI pages by using a backward-compatible approach with `Qgis.LayerFilter`.
+- **[FIXED] Deprecation Warnings**: Resolved `DeprecationWarning: QgsMapLayerComboBox.setFilters() is deprecated` in several GUI pages by using a backward-compatible approach with `Qgis.LayerFilters`.
 - **[FIXED] Startup Crash**: Resolved `AttributeError: 'SecInterp' object has no attribute 'controller'` by reordering initializations in `core/algorithms.py`, ensuring core services are ready before the UI dialog loads.
 
 ### Verification Results
@@ -81,5 +97,6 @@ All layers are now correctly generated and rendered in the preview:
 - **Total**: 91ms (Extremely responsive)
 
 ## Next Steps
-- Address the `UI_IMPORT_IN_CORE` in `core/utils/io.py`.
-- Further fragmentation of `gui/preview_renderer.py`.
+- Modularization of `core/validation.py` (Complexity 70).
+- Refactor `exporters/profile_exporters.py` to follow the service pattern.
+- Expand `QgsPointLocator` usage for more precise interaction.

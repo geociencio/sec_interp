@@ -149,9 +149,9 @@ class DrillholePage(BasePage):
         layout.addWidget(QLabel("Survey Layer:"), row, 0)
         self.s_layer = QgsMapLayerComboBox()
         
-        # Use modern flags if available (QGIS 3.34+)
+        # Use modern flags if available (QGIS 3.32+)
         try:
-            self.s_layer.setFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
+            self.s_layer.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry))
         except (AttributeError, TypeError):
             self.s_layer.setFilters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.NoGeometry)
             
@@ -197,9 +197,9 @@ class DrillholePage(BasePage):
         layout.addWidget(QLabel("Interval Layer:"), row, 0)
         self.i_layer = QgsMapLayerComboBox()
         # Intervals can be tables or vector layers
-        # Use modern flags if available (QGIS 3.34+)
+        # Use modern flags if available (QGIS 3.32+)
         try:
-            self.i_layer.setFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
+            self.i_layer.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry))
         except (AttributeError, TypeError):
             self.i_layer.setFilters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.NoGeometry)
             

@@ -29,10 +29,10 @@ class StructurePage(BasePage):
         
         self.layer_combo = QgsMapLayerComboBox()
         
-        # Use modern flags if available (QGIS 3.34+)
+        # Use modern flags if available (QGIS 3.32+)
         try:
             from qgis.core import Qgis
-            self.layer_combo.setFilters(Qgis.LayerFilter.PointLayer)
+            self.layer_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.PointLayer))
         except (ImportError, AttributeError, TypeError):
             self.layer_combo.setFilters(QgsMapLayerProxyModel.PointLayer)
             
