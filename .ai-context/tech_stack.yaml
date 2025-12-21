@@ -4,13 +4,12 @@ python:
   version: "3.13"
   testing_framework: "pytest"
   type_checking: null
-  formatter: "black"
+  formatter: null
   linter: "ruff / flake8 / pylint"
 
 gis_frameworks:
   - "QGIS API (PyQGIS)"
   - "Qt5 (PyQt5)"
-  - "GDAL/OGR"
 
 architecture:
   pattern: "MVC"
@@ -18,10 +17,11 @@ architecture:
   ui_design: "Programmatic (PyQt5)"
 
 dependencies:
-  - "qgis"
-  - "geometry"
-  - "pages"
-  - "spatial"
-  - "drillhole"
-  - "parsing"
-  - "rendering"
+  - "abc"
+  - "argparse"
+  - "base_exporter"
+  - "base_page"
+  - "concurrent"
+  - "contextlib"
+  - "controller"
+  - "core"
