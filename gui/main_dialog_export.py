@@ -1,21 +1,14 @@
-"""Export management module for SecInterp main dialog.
-
-This module handles all export operations for preview data,
-supporting multiple formats (PNG, JPG, PDF, SVG).
-"""
-
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
-from qgis.core import QgsMapSettings, QgsRectangle, QgsVectorLayer
+from qgis.core import QgsMapSettings, QgsRectangle, QgsProject, QgsSettings
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QFileDialog
 
 from sec_interp.core.performance_metrics import MetricsCollector, PerformanceTimer
-from sec_interp.exporters.image_exporter import ImageExporter
-from sec_interp.exporters.pdf_exporter import PDFExporter
-from sec_interp.exporters.svg_exporter import SVGExporter
+from sec_interp.exporters import get_exporter
 from sec_interp.logger_config import get_logger
+from sec_interp.core.services.export_service import ExportService
 
 from .main_dialog_config import DialogConfig, DialogDefaults
 
@@ -27,10 +20,10 @@ logger = get_logger(__name__)
 
 
 class ExportManager:
-    """Manages export operations for the dialog.
+    """Manages all export operations for the dialog.
 
-    This class handles exporting preview data to various file formats,
-    managing export settings and file dialogs.
+    This class handles exporting preview data to various file formats
+    (PNG, PDF, SVG) and orchestrating data exports (SHP, CSV) via ExportService.
     """
 
     def __init__(self, dialog: "SecInterpDialog"):
@@ -41,9 +34,10 @@ class ExportManager:
         """
         self.dialog = dialog
         self.metrics = MetricsCollector()
+        self.export_service = ExportService(self.dialog.plugin_instance.controller)
 
     def export_preview(self) -> bool:
-        """Export the current preview to a file using dedicated exporters.
+        """Export the current preview to a file.
 
         Returns:
             True if export successful, False otherwise
@@ -51,43 +45,28 @@ class ExportManager:
         self.metrics.clear()
 
         try:
-            with PerformanceTimer("Total Export Time", self.metrics):
-                # Get current canvas and layers
-                if not self.dialog.plugin_instance:
-                    self.dialog.messagebar.pushMessage(
-                        "Export Error",
-                        "Plugin instance not available.",
-                        level=1,  # Critical
-                    )
-                    return False
-
-                canvas = self.dialog.current_canvas
-                if not canvas:
+            with PerformanceTimer("Total Preview Export Time", self.metrics):
+                if not self.dialog.current_canvas:
                     self.dialog.messagebar.pushMessage(
                         "Export Error",
                         "No preview available to export. Generate a preview first.",
-                        level=2,  # Warning
-                    )
-                    return False
-
-                try:
-                    layers = canvas.layers()
-                except Exception as e:
-                    logger.error(f"Error accessing canvas layers: {e}", exc_info=True)
-                    self.dialog.messagebar.pushMessage(
-                        "Export Error", "Failed to access preview layers.", level=1
-                    )
-                    return False
-
-                if not layers:
-                    self.dialog.messagebar.pushMessage(
-                        "Export Error",
-                        "No layers to export. Generate a preview first.",
                         level=2,
                     )
                     return False
 
-                # Get export format from user
+                canvas = self.dialog.current_canvas
+                layers = canvas.layers()
+                if not layers:
+                    self.dialog.messagebar.pushMessage(
+                        "Export Error", "No layers to export.", level=2
+                    )
+                    return False
+
+                # Format selection
+                settings = QgsSettings()
+                last_dir = settings.value("SecInterp/lastExportDir", "", type=str)
+                default_path = str(Path(last_dir) / "preview.png") if last_dir else "preview.png"
+
                 file_filter = (
                     "PNG Image (*.png);;"
                     "JPEG Image (*.jpg *.jpeg);;"
@@ -95,138 +74,109 @@ class ExportManager:
                     "SVG Vector (*.svg)"
                 )
 
-                output_path, _selected_filter = QFileDialog.getSaveFileName(
-                    self.dialog, "Export Preview", "", file_filter
+                output_path, selected_filter = QFileDialog.getSaveFileName(
+                    self.dialog, "Export Preview", default_path, file_filter
                 )
 
                 if not output_path:
-                    return False  # User cancelled
-
-                output_path = Path(output_path)
-
-                # Get export settings
-                try:
-                    extent = canvas.extent()
-                    if not extent or extent.isNull():
-                        raise ValueError("Invalid canvas extent")
-                except Exception as e:
-                    logger.error(f"Error getting canvas extent: {e}", exc_info=True)
-                    self.dialog.messagebar.pushMessage(
-                        "Export Error", "Failed to get preview extent.", level=1
-                    )
                     return False
 
-                width = DialogDefaults.PREVIEW_WIDTH
-                height = DialogDefaults.PREVIEW_HEIGHT
-                dpi = DialogDefaults.DPI
+                output_path = Path(output_path)
+                settings.setValue("SecInterp/lastExportDir", str(output_path.parent))
 
-                settings = self.get_export_settings(width, height, dpi, extent)
+                # Determine dimensions and DPI
+                ext = output_path.suffix.lower()
+                width = self.dialog.preview_widget.canvas.width()
+                height = self.dialog.preview_widget.canvas.height()
+                dpi = 96
 
-                # Export based on format
-                success = False
-                with PerformanceTimer(f"Export to {output_path.suffix}", self.metrics):
-                    success = self._export_to_format(output_path, settings, canvas)
+                if ext in [".png", ".jpg", ".jpeg"]:
+                    width *= 3
+                    height *= 3
+                    dpi = 300
+
+                # Prepare settings
+                export_params = {
+                    "width": width,
+                    "height": height,
+                    "dpi": dpi,
+                    "background_color": QColor(255, 255, 255),
+                    "legend_renderer": getattr(self.dialog.plugin_instance, "preview_renderer", None),
+                    "title": "Section Interpretation Preview",
+                    "description": "Generated by SecInterp QGIS Plugin",
+                    "extent": canvas.extent()
+                }
+
+                map_settings = self.export_service.get_map_settings(
+                    layers, 
+                    export_params["extent"], 
+                    self.dialog.preview_widget.canvas.size() if ext not in [".png", ".jpg", ".jpeg"] else None, # Output size handled by exporter
+                    export_params["background_color"]
+                )
+                
+                # Special size override for rasters
+                if ext in [".png", ".jpg", ".jpeg"]:
+                    from qgis.PyQt.QtCore import QSize
+                    map_settings.setOutputSize(QSize(width, height))
+
+                # Execute export
+                exporter = get_exporter(ext, export_params)
+                success = exporter.export(output_path, map_settings)
 
                 if success:
-                    # Record file size
-                    try:
-                        file_size = output_path.stat().st_size
-                        self.metrics.record_count("File Size (bytes)", file_size)
-                    except Exception:
-                        pass
-
                     self.dialog.messagebar.pushMessage(
-                        "Export Successful",
-                        f"Preview exported to {output_path.name}",
-                        level=3,  # Success
+                        "Success", f"Preview exported to {output_path.name}", level=3
                     )
-
-                    if DialogConfig.LOG_DETAILED_METRICS:
-                        logger.info(f"Export Performance: {self.metrics.get_summary()}")
-
                 else:
                     self.dialog.messagebar.pushMessage(
-                        "Export Failed",
-                        f"Failed to export preview to {output_path}",
-                        level=1,  # Critical
+                        "Error", f"Failed to export preview to {output_path.name}", level=1
                     )
 
                 return success
 
         except Exception as e:
-            logger.error(f"Export failed: {e}", exc_info=True)
-            self.dialog.messagebar.pushMessage(
-                "Export Error", f"An error occurred during export: {e!s}", level=1
-            )
+            logger.error(f"Preview export failed: {e}", exc_info=True)
+            self.dialog.messagebar.pushMessage("Error", str(e), level=1)
             return False
 
-    def get_export_settings(
-        self, width: int, height: int, dpi: int, extent: QgsRectangle
-    ) -> dict[str, Any]:
-        """Get export settings dictionary.
-
-        Args:
-            width: Output width in pixels
-            height: Output height in pixels
-            dpi: Dots per inch
-            extent: Map extent to export
-
-        Returns:
-            Dictionary of export settings
-        """
-        return {
-            "width": width,
-            "height": height,
-            "dpi": dpi,
-            "extent": extent,
-            "background_color": DialogDefaults.BACKGROUND_COLOR,
-            "legend_renderer": getattr(
-                self.dialog.plugin_instance, "preview_renderer", None
-            ),
-        }
-
-    def _export_to_format(
-        self, output_path: Path, settings: dict[str, Any], canvas
-    ) -> bool:
-        """Export to specific format using appropriate exporter.
-
-        Args:
-            output_path: Output file path
-            settings: Export settings dictionary
-            canvas: QgsMapCanvas instance
+    def export_data(self) -> bool:
+        """Orchestrate full data export (SHP/CSV) to the selected folder.
 
         Returns:
             True if successful, False otherwise
         """
-        ext = output_path.suffix.lower()
-
-        # Create map settings from canvas
         try:
-            map_settings = QgsMapSettings()
-            map_settings.setLayers(canvas.layers())
-            map_settings.setExtent(settings["extent"])
-            map_settings.setOutputSize(canvas.size())
-            map_settings.setBackgroundColor(settings["background_color"])
+            # 1. Validate inputs via dialog
+            inputs = self.dialog.plugin_instance._get_and_validate_inputs()
+            if not inputs:
+                return False
+
+            output_folder = Path(inputs["output_path"])
+            
+            # 2. Generate data via controller
+            self.dialog.preview_widget.results_text.setPlainText("✓ Generating data for export...")
+            profile_data, geol_data, struct_data, drillhole_data, _ = (
+                self.dialog.plugin_instance.controller.generate_profile_data(inputs)
+            )
+
+            if not profile_data:
+                self.dialog.messagebar.pushMessage("Error", "No profile data generated.", level=1)
+                return False
+
+            # 3. Export via service
+            result_msg = self.export_service.export_data(
+                output_folder,
+                inputs,
+                profile_data,
+                geol_data,
+                struct_data,
+                drillhole_data
+            )
+            
+            self.dialog.preview_widget.results_text.setPlainText("\n".join(result_msg))
+            return True
+
         except Exception as e:
-            logger.error(f"Error creating map settings: {e}", exc_info=True)
-            return False
-
-        try:
-            if ext in [".png", ".jpg", ".jpeg"]:
-                exporter = ImageExporter(settings)
-                return exporter.export(output_path, map_settings)
-
-            if ext == ".pdf":
-                exporter = PDFExporter(settings)
-                return exporter.export(output_path, map_settings)
-
-            if ext == ".svg":
-                exporter = SVGExporter(settings)
-                return exporter.export(output_path, map_settings)
-
-            logger.error(f"Unsupported export format: {ext}")
-            return False
-
-        except Exception as e:
-            logger.error(f"Export to {ext} failed: {e}", exc_info=True)
+            logger.error(f"Data export failed: {e}", exc_info=True)
+            self.dialog.messagebar.pushMessage("Export Error", str(e), level=1)
             return False

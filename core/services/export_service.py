@@ -1,39 +1,47 @@
+"""Export service for SecInterp.
+
+Orchestrates all export operations, including data (SHP, CSV) and 
+preview (PNG, PDF, SVG) exports.
 """
-Data export orchestrator for SecInterp.
-Handles coordination of various exporters to save profile data.
-"""
-from typing import Dict, List, Tuple, Optional, Any
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+from qgis.core import QgsMapSettings, QgsRectangle, QgsProject
 
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
-class DataExportOrchestrator:
-    """Orchestrates data export to various formats."""
 
-    def __init__(self):
-        """Initialize the orchestrator."""
-        pass
+class ExportService:
+    """Service to orchestrate all export operations."""
 
-    def export_data(
-        self, 
-        output_folder: Path, 
-        values: Dict[str, Any], 
-        profile_data: List[Tuple],
-        geol_data: Optional[List[Any]], 
-        struct_data: Optional[List[Any]],
-        drillhole_data: Optional[List[Any]] = None
-    ) -> List[str]:
-        """Export generated data to CSV and Shapefile formats using lazy imports.
+    def __init__(self, controller: Optional[Any] = None):
+        """Initialize the export service.
         
         Args:
-            output_folder (Path): Destination folder.
-            values (Dict): Input values containing layers and params.
-            profile_data (List): Topographic profile data.
-            geol_data (List): Geological data.
-            struct_data (List): Structural data.
-            drillhole_data (List): Drillhole data.
+            controller: Optional reference to ProfileController for data access.
+        """
+        self.controller = controller
+
+    def export_data(
+        self,
+        output_folder: Path,
+        values: Dict[str, Any],
+        profile_data: List[Tuple],
+        geol_data: Optional[List[Any]],
+        struct_data: Optional[List[Any]],
+        drillhole_data: Optional[List[Any]] = None,
+    ) -> List[str]:
+        """Export generated data to CSV and Shapefile formats.
+        
+        Args:
+            output_folder: Destination folder.
+            values: Input values containing layers and params.
+            profile_data: Topographic profile data.
+            geol_data: Geological data.
+            struct_data: Structural data.
+            drillhole_data: Drillhole data.
             
         Returns:
             List[str]: Log messages of saved files.
@@ -57,7 +65,12 @@ class DataExportOrchestrator:
              logger.warning("No profile data to export")
              return ["⚠ No profile data to export"]
 
-        line_crs = values["line_layer_obj"].crs()
+        line_layer = values.get("line_layer_obj")
+        if not line_layer:
+            logger.error("Line layer not found in values")
+            return ["⚠ Error: Line layer not found"]
+            
+        line_crs = line_layer.crs()
 
         # Export Topography
         logger.info("✓ Saving topographic profile...")
@@ -108,19 +121,25 @@ class DataExportOrchestrator:
             )
             result_msg.append("  - structural_profile.csv")
             
+            # Get raster resolution from values or layer
+            raster_res = 1.0
+            raster_layer = values.get("raster_layer_obj")
+            if raster_layer:
+                raster_res = raster_layer.rasterUnitsPerPixelX()
+            
             StructureShpExporter({}).export(
                 output_folder / "structural_profile.shp",
                 {
                     "structural_data": struct_data,
                     "crs": line_crs,
                     "dip_scale_factor": values.get("dip_scale_factor", 1.0),
-                    "raster_res": values["raster_layer_obj"].rasterUnitsPerPixelX(),
+                    "raster_res": raster_res,
                 },
             )
             result_msg.append("  - structural_profile.shp")
 
         # Export Drillholes
-        if values.get("collar_layer_obj") and drillhole_data: # Check if drillholes were processed
+        if drillhole_data: 
             logger.info("✓ Saving drillhole data...")
             
             DrillholeTraceShpExporter({}).export(
@@ -145,3 +164,28 @@ class DataExportOrchestrator:
 
         result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
         return result_msg
+
+    def get_map_settings(
+        self, 
+        layers: List[Any], 
+        extent: QgsRectangle, 
+        size: Any, 
+        background_color: Any
+    ) -> QgsMapSettings:
+        """Create and configure QgsMapSettings for export.
+        
+        Args:
+            layers: List of layers to include.
+            extent: Map extent to export.
+            size: Output size (QSize).
+            background_color: Background color (QColor).
+            
+        Returns:
+            Configured QgsMapSettings instance.
+        """
+        map_settings = QgsMapSettings()
+        map_settings.setLayers(layers)
+        map_settings.setExtent(extent)
+        map_settings.setOutputSize(size)
+        map_settings.setBackgroundColor(background_color)
+        return map_settings

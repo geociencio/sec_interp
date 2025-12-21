@@ -47,8 +47,8 @@ from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
 from sec_interp.logger_config import get_logger
 
-from sec_interp.exporters.orchestrator import DataExportOrchestrator
 from .controller import ProfileController
+from .services.export_service import ExportService
 
 logger = get_logger(__name__)
 
@@ -90,8 +90,8 @@ class SecInterp:
         self.preview_renderer = PreviewRenderer()
         # Initialize controller
         self.controller = ProfileController()
-        # Initialize export orchestrator
-        self.data_exporter = DataExportOrchestrator()
+        # Initialize export service
+        self.export_service = ExportService(self.controller)
 
         # Create the dialog (after services and translation) and keep reference
         self.dlg = SecInterpDialog(self.iface, self)
@@ -472,8 +472,8 @@ class SecInterp:
                 )
                 return
 
-            # 2. Orchestrate saving using dedicated orchestrator
-            result_msg = self.data_exporter.export_data(
+            # 2. Orchestrate saving using dedicated service
+            result_msg = self.export_service.export_data(
                 output_folder,
                 values,
                 profile_data,
