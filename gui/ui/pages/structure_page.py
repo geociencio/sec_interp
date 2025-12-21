@@ -28,7 +28,14 @@ class StructurePage(BasePage):
         self.group_layout.addWidget(QLabel("Structural Layer"), 0, 0)
         
         self.layer_combo = QgsMapLayerComboBox()
-        self.layer_combo.setFilters(QgsMapLayerProxyModel.PointLayer)
+        
+        # Use modern flags if available (QGIS 3.34+)
+        try:
+            from qgis.core import Qgis
+            self.layer_combo.setFilters(Qgis.LayerFilter.PointLayer)
+        except (ImportError, AttributeError, TypeError):
+            self.layer_combo.setFilters(QgsMapLayerProxyModel.PointLayer)
+            
         self.layer_combo.setAllowEmptyLayer(True)
         self.layer_combo.setToolTip("Select the point layer with structural measurements")
         self.layer_combo.setCurrentIndex(0)

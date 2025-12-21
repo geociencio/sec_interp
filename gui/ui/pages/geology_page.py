@@ -26,7 +26,14 @@ class GeologyPage(BasePage):
         self.group_layout.addWidget(QLabel("Outcrops Layer"), 0, 0)
         
         self.layer_combo = QgsMapLayerComboBox()
-        self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+        
+        # Use modern flags if available (QGIS 3.34+)
+        try:
+            from qgis.core import Qgis
+            self.layer_combo.setFilters(Qgis.LayerFilter.PolygonLayer)
+        except (ImportError, AttributeError, TypeError):
+            self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+            
         self.layer_combo.setAllowEmptyLayer(True)
         self.layer_combo.setToolTip("Select the polygon layer with geological outcrops")
         self.layer_combo.setCurrentIndex(0)

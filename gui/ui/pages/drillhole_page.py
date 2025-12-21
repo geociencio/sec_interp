@@ -1,5 +1,4 @@
-"""Drillhole configuration page."""
-from qgis.core import QgsMapLayerProxyModel
+from qgis.core import QgsMapLayerProxyModel, Qgis
 from qgis.gui import QgsMapLayerComboBox, QgsFieldComboBox
 from qgis.PyQt.QtWidgets import (
     QGridLayout, 
@@ -71,7 +70,13 @@ class DrillholePage(BasePage):
         # Layer
         layout.addWidget(QLabel("Collar Layer:"), row, 0)
         self.c_layer = QgsMapLayerComboBox()
-        self.c_layer.setFilters(QgsMapLayerProxyModel.PointLayer)
+        
+        # Use modern flags if available (QGIS 3.34+)
+        try:
+            self.c_layer.setFilters(Qgis.LayerFilter.PointLayer)
+        except (AttributeError, TypeError):
+            self.c_layer.setFilters(QgsMapLayerProxyModel.PointLayer)
+            
         self.c_layer.setAllowEmptyLayer(True)
         layout.addWidget(self.c_layer, row, 1)
         row += 1
@@ -144,10 +149,12 @@ class DrillholePage(BasePage):
         layout.addWidget(QLabel("Survey Layer:"), row, 0)
         self.s_layer = QgsMapLayerComboBox()
         
-        # Use QgsMapLayerProxyModel.Filters to avoid DeprecationWarning where possible
-        # setFilters(int) is deprecated in favor of setFilters(dataset)
-        filters = QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.NoGeometry
-        self.s_layer.setFilters(filters)
+        # Use modern flags if available (QGIS 3.34+)
+        try:
+            self.s_layer.setFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
+        except (AttributeError, TypeError):
+            self.s_layer.setFilters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.NoGeometry)
+            
         self.s_layer.setAllowEmptyLayer(True)
         layout.addWidget(self.s_layer, row, 1)
         row += 1
@@ -190,8 +197,12 @@ class DrillholePage(BasePage):
         layout.addWidget(QLabel("Interval Layer:"), row, 0)
         self.i_layer = QgsMapLayerComboBox()
         # Intervals can be tables or vector layers
-        filters = QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.NoGeometry
-        self.i_layer.setFilters(filters)
+        # Use modern flags if available (QGIS 3.34+)
+        try:
+            self.i_layer.setFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
+        except (AttributeError, TypeError):
+            self.i_layer.setFilters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.NoGeometry)
+            
         self.i_layer.setAllowEmptyLayer(True)
         layout.addWidget(self.i_layer, row, 1)
         row += 1

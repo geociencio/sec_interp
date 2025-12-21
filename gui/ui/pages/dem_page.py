@@ -30,7 +30,14 @@ class DemPage(BasePage):
         self.group_layout.addWidget(QLabel("Raster Layer *"), 0, 0)
         
         self.raster_combo = QgsMapLayerComboBox()
-        self.raster_combo.setFilters(QgsMapLayerProxyModel.RasterLayer)
+        
+        # Use modern flags if available (QGIS 3.34+)
+        try:
+            from qgis.core import Qgis
+            self.raster_combo.setFilters(Qgis.LayerFilter.RasterLayer)
+        except (ImportError, AttributeError, TypeError):
+            self.raster_combo.setFilters(QgsMapLayerProxyModel.RasterLayer)
+            
         self.raster_combo.setAllowEmptyLayer(True)
         self.raster_combo.setToolTip("Select the raster DEM layer")
         self.raster_combo.setCurrentIndex(0)

@@ -22,7 +22,14 @@ class SectionPage(BasePage):
         self.group_layout.addWidget(QLabel("Section Line *"), 0, 0)
         
         self.line_combo = QgsMapLayerComboBox()
-        self.line_combo.setFilters(QgsMapLayerProxyModel.LineLayer)
+        
+        # Use modern flags if available (QGIS 3.34+)
+        try:
+            from qgis.core import Qgis
+            self.line_combo.setFilters(Qgis.LayerFilter.LineLayer)
+        except (ImportError, AttributeError, TypeError):
+            self.line_combo.setFilters(QgsMapLayerProxyModel.LineLayer)
+            
         self.line_combo.setAllowEmptyLayer(True)
         self.line_combo.setToolTip("Select the line layer defining the cross-section")
         self.line_combo.setCurrentIndex(0)
