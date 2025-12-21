@@ -85,17 +85,17 @@ class SecInterp:
             self.translator.load(str(locale_path))
             QCoreApplication.installTranslator(self.translator)
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = SecInterpDialog(self.iface, self)
-        self.dlg.plugin_instance = self
-
+        # Prepare core services BEFORE the dialog (required by PreviewManager)
         # Create preview renderer
         self.preview_renderer = PreviewRenderer()
-
         # Initialize controller
         self.controller = ProfileController()
         # Initialize export orchestrator
         self.data_exporter = DataExportOrchestrator()
+
+        # Create the dialog (after services and translation) and keep reference
+        self.dlg = SecInterpDialog(self.iface, self)
+        self.dlg.plugin_instance = self
 
         # Declare instance attributes
         self.actions = []
