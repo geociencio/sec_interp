@@ -120,11 +120,11 @@ class PreviewLayerFactory:
         if not layer:
             return None
 
-        points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_data]
-        line = QgsLineString(points)
+        line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_data]
+        line_geom = QgsGeometry.fromPolylineXY(line_points)
 
         feat = QgsFeature()
-        feat.setGeometry(QgsGeometry(line))
+        feat.setGeometry(line_geom)
         provider.addFeatures([feat])
 
         symbol = QgsLineSymbol.createSimple(
@@ -162,10 +162,10 @@ class PreviewLayerFactory:
             line_points = [
                 QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points
             ]
-            line = QgsLineString(line_points)
+            line_geom = QgsGeometry.fromPolylineXY(line_points)
             
             feat = QgsFeature(layer.fields())
-            feat.setGeometry(QgsGeometry(line))
+            feat.setGeometry(line_geom)
             feat.setAttribute("unit", segment.unit_name)
             features.append(feat)
 
@@ -231,9 +231,9 @@ class PreviewLayerFactory:
             p1 = QgsPointXY(dist, elev * vert_exag)
             p2 = QgsPointXY(dist + dx, (elev - dy) * vert_exag)
 
-            line = QgsLineString([p1, p2])
+            line_geom = QgsGeometry.fromPolylineXY([p1, p2])
             feat = QgsFeature()
-            feat.setGeometry(QgsGeometry(line))
+            feat.setGeometry(line_geom)
             features.append(feat)
 
         provider.addFeatures(features)
@@ -262,10 +262,10 @@ class PreviewLayerFactory:
                 continue
                 
             render_points = [QgsPointXY(x, y * vert_exag) for x, y in trace_points]
-            line = QgsLineString(render_points)
+            line_geom = QgsGeometry.fromPolylineXY(render_points)
             
             feat = QgsFeature(layer.fields())
-            feat.setGeometry(QgsGeometry(line))
+            feat.setGeometry(line_geom)
             feat.setAttribute("hole_id", hole_id)
             features.append(feat)
             
@@ -317,10 +317,10 @@ class PreviewLayerFactory:
                 
             unique_units.add(segment.unit_name)
             render_points = [QgsPointXY(x, y * vert_exag) for x, y in segment.points]
-            line = QgsLineString(render_points)
+            line_geom = QgsGeometry.fromPolylineXY(render_points)
             
             feat = QgsFeature(layer.fields())
-            feat.setGeometry(QgsGeometry(line))
+            feat.setGeometry(line_geom)
             feat.setAttribute("unit", segment.unit_name)
             features.append(feat)
             
