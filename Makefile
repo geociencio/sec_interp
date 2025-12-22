@@ -120,7 +120,7 @@ test: compile transcompile
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
 	@echo "----------------------"
 
-deploy: compile doc transcompile
+deploy: compile help-integrate transcompile
 	./scripts/deploy.sh
 
 
@@ -142,6 +142,14 @@ derase:
 	@echo "-------------------------"
 	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
+help-integrate: apidocs-html
+	@echo "Integrating documentation into help/ folder..."
+	rm -rf help/html
+	mkdir -p help/html
+	cp -r docs/build/html/* help/html/
+	rm -rf help/html/_sources
+	rm -f help/index.html
+
 zip: deploy dclean
 	@echo
 	@echo "---------------------------"
@@ -151,7 +159,35 @@ zip: deploy dclean
 	# content. You can then upload the zip file on http://plugins.qgis.org
 	# Excludes user/dev specific files
 	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME) -x "*__pycache__*" -x "*.pyc" -x "*.git*" -x "*.idea*" -x "*.vscode*"
+	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME) \
+		-x "*__pycache__*" \
+		-x "*.pyc" \
+		-x "*.git*" \
+		-x "*.idea*" \
+		-x "*.vscode*" \
+		-x "$(PLUGINNAME)/docs/*" \
+		-x "$(PLUGINNAME)/tests/*" \
+		-x "$(PLUGINNAME)/examples/*" \
+		-x "$(PLUGINNAME)/.agent/*" \
+		-x "$(PLUGINNAME)/.ai-context/*" \
+		-x "$(PLUGINNAME)/scripts/*" \
+		-x "$(PLUGINNAME)/Makefile" \
+		-x "$(PLUGINNAME)/ruff.toml" \
+		-x "$(PLUGINNAME)/.pylintrc" \
+		-x "$(PLUGINNAME)/pytest.ini" \
+		-x "$(PLUGINNAME)/requirements-dev.txt" \
+		-x "$(PLUGINNAME)/.analyzerignore" \
+		-x "$(PLUGINNAME)/.analyzer_state.json" \
+		-x "$(PLUGINNAME)/.ai_workflow.txt" \
+		-x "$(PLUGINNAME)/analysis.log" \
+		-x "$(PLUGINNAME)/analysis_errors.json" \
+		-x "$(PLUGINNAME)/analyze_project_optfixed.py" \
+		-x "$(PLUGINNAME)/analyzer_config.json" \
+		-x "$(PLUGINNAME)/generate_ai_templates.py" \
+		-x "$(PLUGINNAME)/project_context.json" \
+		-x "$(PLUGINNAME)/AI_CONTEXT.md" \
+		-x "$(PLUGINNAME)/PROJECT_SUMMARY.md" \
+		-x "$(PLUGINNAME)/README_DEV.md"
 
 package: compile
 	# Create a zip package of the plugin named $(PLUGINNAME).zip.
@@ -223,7 +259,7 @@ apidocs:
 
 apidocs-html: apidocs
 	@echo "Building API documentation HTML..."
-	sphinx-build -M html docs/source docs/build
+	uv run sphinx-build -M html docs/source docs/build
 
 pylint:
 	@echo
