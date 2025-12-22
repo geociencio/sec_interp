@@ -27,7 +27,6 @@ Contains the SecInterpDialog class which is the primary UI for the plugin.
 from pathlib import Path
 import tempfile
 import traceback
-import webbrowser
 
 from qgis.core import (
     Qgis,
@@ -43,8 +42,8 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsFileWidget, QgsMapCanvas, QgsMapToolPan
-from qgis.PyQt.QtCore import QSize, QVariant
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QSize, QVariant, QUrl
+from qgis.PyQt.QtGui import QColor, QDesktopServices
 from qgis.PyQt.QtWidgets import (
     QApplication,
     QDialog,
@@ -177,7 +176,7 @@ class SecInterpDialog(SecInterpMainWindow):
         # Fix: help is at project root, main_dialog is in gui/
         help_file = Path(__file__).parent.parent / "help" / "html" / "index.html"
         if help_file.exists():
-            webbrowser.open(help_file.as_uri())
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(help_file)))
         else:
             self.messagebar.pushMessage(
                 "Error",
