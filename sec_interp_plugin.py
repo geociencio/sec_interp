@@ -309,199 +309,31 @@ class SecInterp:
         return validated_values
 
     def process_data(self, inputs: Optional[dict] = None) -> Optional[tuple]:
-        """Process profile data from selected layers with caching.
+        """Process profile data by delegating to the dialog's preview manager.
 
         Args:
-            inputs (dict, optional): Pre-validated inputs. If None, retrieves from UI.
+            inputs: Pre-validated inputs (optional)
 
-        Uses cache to avoid re-processing when only visualization
-        parameters change.
+        Returns:
+            Tuple of (profile_data, geol_data, struct_data) or None
         """
-        # Get and validate inputs once
-        if inputs is None:
-            inputs = self._get_and_validate_inputs()
-            
-        if not inputs:
-            return None
-
-        validated_values = inputs
-
-        # Check for reasonable parameter ranges
-        warnings = vu.validate_reasonable_ranges(validated_values)
-        if warnings:
-            logger.warning("Parameter range warnings: %s", warnings)
-            self.dlg.preview_widget.results_text.append("\n⚠️ Validation Warnings:")
-            for warning in warnings:
-                self.dlg.preview_widget.results_text.append(f"  {warning}")
-            self.dlg.preview_widget.results_text.append("")  # Empty line
-
-        # Show CRS warning if present
-        if "_crs_warning" in validated_values:
-            self.dlg.preview_widget.results_text.append("\n" + validated_values["_crs_warning"])
-            self.dlg.preview_widget.results_text.append("")  # Empty line
-
-        # Check if we can use cached data
-        cached_data = self.controller.get_cached_data(validated_values)
-
-        profile_data = None
-        geol_data = None
-        struct_data = None
-        msgs = []
-
-        if cached_data:
-            logger.info("⚡ Using cached profile data")
-            self.dlg.preview_widget.results_text.append("⚡ Using cached data (fast!)")
-            profile_data = cached_data["profile_data"]
-            geol_data = cached_data.get("geol_data")
-            struct_data = cached_data.get("struct_data")
-            drillhole_data = cached_data.get("drillhole_data")
-            msgs = cached_data.get("msgs", [])
-        else:
-            logger.info("🔄 Processing new profile data...")
-            self.dlg.preview_widget.results_text.append("🔄 Processing data...")
-
-            try:
-                # Generate data using controller
-                profile_data, geol_data, struct_data, drillhole_data, msgs = self.controller.generate_profile_data(
-                    validated_values
-                )
-
-                if not profile_data:
-                    if not msgs: # If no messages, likely complete failure
-                         show_user_message(
-                            self.dlg,
-                            self.tr("Error"),
-                            self.tr(
-                                "No profile data was generated. "
-                                "Check that the line intersects the raster."
-                            ),
-                        )
-                         return None
-                
-                # Cache the processed data
-                self.controller.cache_data(
-                    validated_values,
-                    {
-                        "profile_data": profile_data,
-                        "geol_data": geol_data,
-                        "struct_data": struct_data,
-                        "drillhole_data": drillhole_data,
-                        "msgs": msgs,
-                    },
-                )
-                logger.info("✓ Data cached for future use")
-
-            except Exception as e:
-                self._handle_processing_error(e)
+        # Simply delegate to the dialog's preview manager if it exists
+        if hasattr(self, "dlg") and self.dlg:
+            success, message = self.dlg.preview_manager.generate_preview()
+            if not success:
+                logger.warning(f"Data processing failed: {message}")
                 return None
-
-        # Update results text with messages from generation
-        if msgs:
-            self.dlg.preview_widget.results_text.setPlainText("\n".join(msgs))
+            
+            # Return cached data from manager for backward compatibility if needed
+            cache = self.dlg.preview_manager.cached_data
+            return cache["topo"], cache["geol"], cache["struct"]
         
-        # Always append tip
-        self.dlg.preview_widget.results_text.append(
-            "\n\n💡 Use 'Save' button to export data to CSV and Shapefile."
-        )
-
-        # Draw preview with all data
-        self.draw_preview(profile_data, geol_data, struct_data, drillhole_data)
-
-        return profile_data, geol_data, struct_data
-
-
-
-    def _handle_processing_error(self, e):
-        """Unified error handler."""
-        import traceback
-        error_details = traceback.format_exc()
-
-        if isinstance(e, OSError):
-             show_user_message(
-                self.dlg,
-                self.tr("File System Error"),
-                self.tr(f"Failed to access temporary files: {e!s}"),
-                "error",
-            )
-        elif isinstance(e, ValueError):
-             show_user_message(
-                self.dlg,
-                self.tr("Data Validation Error"),
-                self.tr(f"Invalid data encountered: {e!s}"),
-            )
-        elif isinstance(e, KeyError):
-            show_user_message(
-                self.dlg,
-                self.tr("Field Error"),
-                self.tr(f"Required field not found: {e!s}"),
-            )
-        else:
-             show_user_message(
-                self.dlg,
-                self.tr("Unexpected Error"),
-                self.tr(f"An unexpected error occurred: {e!s}"),
-                "error",
-            )
-             logger.exception("Unexpected error in process_data: %s", error_details)
-        
-        self.dlg.preview_widget.results_text.append(f"Error: {e!s}")
+        return None
 
     def save_profile_line(self):
-        """Save all profile data to CSV and Shapefile formats by delegating to exporters."""
-        try:
-            inputs = self._get_and_validate_inputs()
-            if not inputs:
-                return
-
-            values = inputs
-            output_folder = Path(values["output_path"])
-            is_valid, error, _ = vu.validate_output_path(str(output_folder))
-            if not is_valid:
-                show_user_message(self.dlg, self.tr("Error"), self.tr(error))
-                return
-
-            self.dlg.preview_widget.results_text.setPlainText("✓ Generating data for export...")
-
-            # 1. Generate all data using controller
-            try:
-                profile_data, geol_data, struct_data, drillhole_data, _ = self.controller.generate_profile_data(values)
-            except Exception as e:
-                 self._handle_processing_error(e)
-                 return
-
-            if not profile_data:
-                show_user_message(
-                    self.dlg,
-                    self.tr("Error"),
-                    self.tr("No profile data generated, cannot save."),
-                )
-                return
-
-            # 2. Orchestrate saving using dedicated service
-            result_msg = self.export_service.export_data(
-                output_folder,
-                values,
-                profile_data,
-                geol_data,
-                struct_data,
-                drillhole_data
-            )
-            
-            self.dlg.preview_widget.results_text.setPlainText("\n".join(result_msg))
-            QMessageBox.information(
-                self.dlg,
-                self.tr("Success"),
-                self.tr(f"All data saved to:\n{output_folder}"),
-            )
-
-        except Exception as e:
-            show_user_message(
-                self.dlg,
-                self.tr("Export Error"),
-                self.tr(f"Failed to export data: {e!s}"),
-                "error",
-            )
-            logger.error("Export error in save_profile_line: %s", str(e), exc_info=True)
+        """Save profile data by delegating to the dialog's export manager."""
+        if hasattr(self, "dlg") and self.dlg:
+            self.dlg.export_manager.export_data()
 
     def draw_preview(self, topo_data: list, geol_data: list = None, struct_data: list = None, drillhole_data: list = None, max_points: int = 1000, **kwargs) -> None:
         """Draw enhanced interactive preview using native PyQGIS renderer.

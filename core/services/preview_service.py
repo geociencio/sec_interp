@@ -61,6 +61,42 @@ class PreviewResult:
     metrics: MetricsCollector = field(default_factory=MetricsCollector)
     buffer_dist: float = 0.0
 
+    def get_elevation_range(self) -> Tuple[float, float]:
+        """Calculate the global elevation range across all data layers.
+
+        Returns:
+            Tuple[float, float]: (min_elevation, max_elevation)
+        """
+        elevations = []
+        if self.topo:
+            elevations.extend(p[1] for p in self.topo)
+        if self.geol:
+            for segment in self.geol:
+                elevations.extend(p[1] for p in segment.points)
+        if self.struct:
+            elevations.extend(m.elevation for m in self.struct)
+        if self.drillhole:
+            for _, trace, segments in self.drillhole:
+                if trace:
+                    elevations.extend(p[1] for p in trace)
+                if segments:
+                    for seg in segments:
+                        elevations.extend(p[1] for p in seg.points)
+
+        if not elevations:
+            return 0.0, 0.0
+        return min(elevations), max(elevations)
+
+    def get_distance_range(self) -> Tuple[float, float]:
+        """Calculate the global distance range from topographic data.
+
+        Returns:
+            Tuple[float, float]: (min_distance, max_distance)
+        """
+        if not self.topo:
+            return 0.0, 0.0
+        return self.topo[0][0], self.topo[-1][0]
+
 class PreviewService:
     """Orchestrates preview data generation."""
     

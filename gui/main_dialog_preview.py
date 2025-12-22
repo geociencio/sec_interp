@@ -120,13 +120,12 @@ class PreviewManager:
                         auto_lod_enabled = preview_options["auto_lod"]
                         use_adaptive_sampling = preview_options["use_adaptive_sampling"]
 
-                        # Calculate max_points dynamically if auto_lod is enabled
-                        if auto_lod_enabled:
-                            canvas_width = self.dialog.preview_widget.canvas.width()
-                            max_points_for_render = int(canvas_width * 1.5)
-                            max_points_for_render = max(100, min(10000, max_points_for_render))
-                        else:
-                            max_points_for_render = max_points_setting
+                        # Calculate max_points via PreviewService
+                        max_points_for_render = PreviewService.calculate_max_points(
+                            canvas_width=self.dialog.preview_widget.canvas.width(),
+                            manual_max=preview_options["max_points"],
+                            auto_lod=auto_lod_enabled
+                        )
 
                         self.dialog.plugin_instance.draw_preview(
                             self.cached_data["topo"],
@@ -141,9 +140,7 @@ class PreviewManager:
                     raise ValueError(f"Failed to render preview: {e!s}")
 
                 # 5. Results Reporting
-                result_msg = self._format_results_message(
-                    self.cached_data["topo"], None, self.cached_data["struct"], params.buffer_dist
-                )
+                result_msg = self._format_results_message(result)
                 self.dialog.preview_widget.results_text.setPlainText(result_msg)
 
                 if DialogConfig.LOG_DETAILED_METRICS:
@@ -198,13 +195,12 @@ class PreviewManager:
             auto_lod_enabled = preview_options["auto_lod"]
             use_adaptive_sampling = preview_options["use_adaptive_sampling"]
 
-            # Calculate max_points dynamically if auto_lod is enabled
-            if auto_lod_enabled:
-                canvas_width = self.dialog.preview_widget.canvas.width()
-                max_points_for_render = int(canvas_width * 1.5)
-                max_points_for_render = max(100, min(10000, max_points_for_render))
-            else:
-                max_points_for_render = max_points_setting
+            # Calculate max_points via PreviewService
+            max_points_for_render = PreviewService.calculate_max_points(
+                canvas_width=self.dialog.preview_widget.canvas.width(),
+                manual_max=preview_options["max_points"],
+                auto_lod=auto_lod_enabled
+            )
 
             self.dialog.plugin_instance.draw_preview(
                 topo_data,
@@ -283,11 +279,13 @@ class PreviewManager:
 
     def _format_results_message(
         self,
-        profile_data: ProfileData,
-        geol_data: GeologyData | None,
-        struct_data: StructureData | None,
-        buffer_dist: float,
+        result: Any,
     ) -> str:
+        """Format results message for display using core result objects."""
+        profile_data = result.topo
+        geol_data = result.geol
+        struct_data = result.struct
+        buffer_dist = result.buffer_dist
         """Format results message for display.
 
         Args:
@@ -323,29 +321,10 @@ class PreviewManager:
         else:
             lines.append("Drillholes: None or not configured")
 
-        # Calculate global range
-        min_dist = profile_data[0][0]
-        max_dist = profile_data[-1][0]
+        # Calculate ranges via core result object
+        min_dist, max_dist = result.get_distance_range()
+        min_elev, max_elev = result.get_elevation_range()
         
-        # Calculate global elevation range accurately
-        elevations = [p[1] for p in profile_data]
-        if geol_data:
-            for s in geol_data:
-                elevations.extend(p[1] for p in s.points)
-        if struct_data:
-            elevations.extend(m.elevation for m in struct_data)
-        
-        if drillhole_data:
-            for dh_id, trace, segments in drillhole_data:
-                if trace:
-                    elevations.extend(p[1] for p in trace)
-                if segments:
-                    for seg in segments:
-                        elevations.extend(p[1] for p in seg.points)
-                        
-        min_elev = min(elevations) if elevations else 0
-        max_elev = max(elevations) if elevations else 0
-
         lines.extend(
             [
                 "",
@@ -418,15 +397,12 @@ class PreviewManager:
                 # If we return here, we might miss resetting to low detail when zooming out.
                 pass
             
-            # Base points (pixels * 1.5)
-            base_points = canvas.width() * 1.5
-            
-            # Target points for the whole dataset to ensure current view has 'base_points' density
-            new_max_points = int(base_points * ratio)
-            
-            # Clamp to safe limits (e.g. 50k points max)
-            new_max_points = min(50000, new_max_points)
-            new_max_points = max(100, new_max_points)
+            # Calculate max_points via PreviewService
+            new_max_points = PreviewService.calculate_max_points(
+                canvas_width=canvas.width(),
+                ratio=ratio,
+                auto_lod=True
+            )
 
             # Check if we actually need to update (hysteresis)
             # This requires knowing the last used max_points...
@@ -509,7 +485,15 @@ class PreviewManager:
              buffer_dist = self._get_buffer_distance()
              
              if topo: # Only valid if we have topo
-                 msg = self._format_results_message(topo, final_geol_data, struct, buffer_dist)
+                 # Reconstruct a partial result for formatting
+                 result = PreviewResult(
+                     topo=topo,
+                     geol=final_geol_data,
+                     struct=struct,
+                     drillhole=self.cached_data.get("drillhole"),
+                     buffer_dist=buffer_dist
+                 )
+                 msg = self._format_results_message(result)
                  self.dialog.preview_widget.results_text.setPlainText(msg)
                  
         except Exception as e:
