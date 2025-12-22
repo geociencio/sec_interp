@@ -26,9 +26,9 @@ changelog=
       - Modularized validation into core/validation/ package.
       - Fragmented SecInterpDialog into specialized managers.
     * Documentation & Optimization:
-      - Translated 100% of documentation (ARCHITECTURE.md) to English.
+      - Translated 100%% of documentation (ARCHITECTURE.md) to English.
       - Optimized Help System (removed source code views/redundant raw sources).
-      - Slimmed ZIP package by 70% uncompressed through advanced exclusions.
+      - Slimmed ZIP package by 70%% uncompressed through advanced exclusions.
     * Features & UX:
       - Restored visual workflow images to User Guide.
       - Fixed toolbar icon loading and Axis/Grid alignment.
