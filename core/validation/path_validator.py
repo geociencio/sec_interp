@@ -1,22 +1,25 @@
-"""Path validation utilities."""
+from typing import Tuple, Optional, Union
 from pathlib import Path
 
 def validate_safe_output_path(
     path: str,
-    base_dir: Path | None = None,
+    base_dir: Optional[Path] = None,
     must_exist: bool = False,
     create_if_missing: bool = False,
-) -> tuple[bool, str, Path | None]:
-    r"""Validate output path with path traversal protection.
+) -> Tuple[bool, str, Optional[Path]]:
+    r"""Validate an output path string with security and path traversal protection.
 
     Args:
-        path: Path string to validate
-        base_dir: Optional base directory to restrict paths to (for security)
-        must_exist: If True, path must already exist
-        create_if_missing: If True, create directory if it doesn't exist
+        path: Original path string to validate.
+        base_dir: Optional base directory to restrict the path to (security sandbox).
+        must_exist: If True, validation fails if the path is not currently found on disk.
+        create_if_missing: If True, attempts to create the directory if it does not exist.
 
     Returns:
-        Tuple of (is_valid, error_message, resolved_Path_object)
+        tuple: (is_valid, error_message, resolved_path)
+            - is_valid (bool): True if the path is safe and meets requirements.
+            - error_message (str): Reason for validation failure.
+            - resolved_path (Path | None): Cleaned, absolute Path object if valid.
     """
     if not path or path.strip() == "":
         return False, "Output path is required", None
@@ -79,10 +82,19 @@ def validate_safe_output_path(
     return True, "", resolved_path
 
 
-def validate_output_path(path: str) -> tuple[bool, str, Path | None]:
-    """Validate that an output path is valid and writable.
+def validate_output_path(path: str) -> Tuple[bool, str, Optional[Path]]:
+    """Validate that an output path is a valid directory and currently writable.
 
-    This is a convenience wrapper around validate_safe_output_path()
-    for backward compatibility.
+    This is a convenience wrapper around `validate_safe_output_path()`
+    for general directory validation.
+
+    Args:
+        path: The path string to validate.
+
+    Returns:
+        tuple: (is_valid, error_message, resolved_path)
+            - is_valid (bool): True if the directory is valid and writable.
+            - error_message (str): Error details if validation fails.
+            - resolved_path (Path | None): Absolute Path object if valid.
     """
     return validate_safe_output_path(path, must_exist=True)

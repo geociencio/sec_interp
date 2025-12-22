@@ -3,10 +3,13 @@
 Elevation sampling and profile context preparation.
 """
 
+from typing import List, Tuple, Optional, Any
 from qgis.core import (
     QgsDistanceArea,
     QgsGeometry,
     QgsPointXY,
+    QgsRasterLayer,
+    QgsVectorLayer,
 )
 
 from sec_interp.logger_config import get_logger
@@ -17,23 +20,24 @@ logger = get_logger(__name__)
 
 def sample_elevation_along_line(
     geometry: QgsGeometry,
-    raster_layer,
+    raster_layer: QgsRasterLayer,
     band_number: int,
     distance_area: QgsDistanceArea,
-    reference_point: QgsPointXY = None,
-) -> list[QgsPointXY]:
-    """Helper to sample elevation values along a line geometry.
+    reference_point: Optional[QgsPointXY] = None,
+) -> List[QgsPointXY]:
+    """Sample elevation values along a line geometry from a raster layer.
+
+    Densifies the line at raster resolution and samples the elevation at each vertex.
 
     Args:
-        geometry: QgsGeometry (LineString) to sample along.
-        raster_layer: QgsRasterLayer to sample from.
-        band_number: Raster band number.
-        distance_area: QgsDistanceArea for distance calculations.
-        reference_point: Optional QgsPointXY to measure distance from.
-                         If None, distance is measured from the start of the geometry.
+        geometry: The line geometry to sample along.
+        raster_layer: The source DEM raster layer.
+        band_number: The raster band index to sample.
+        distance_area: Object for geodesic distance calculations.
+        reference_point: Optional start point for distance measurements.
 
     Returns:
-        List of QgsPointXY(distance, elevation).
+        List[QgsPointXY]: A list where x is distance along section and y is elevation.
     """
     from .geometry import densify_line_by_interval
 
@@ -68,20 +72,20 @@ def sample_elevation_along_line(
     return points
 
 
-def prepare_profile_context(line_lyr):
-    """Prepare common context for profile operations.
+def prepare_profile_context(line_lyr: QgsVectorLayer) -> Tuple[QgsGeometry, QgsPointXY, QgsDistanceArea]:
+    """Prepare a common context for profile calculation operations.
 
     Args:
-        line_lyr: The cross-section line layer.
+        line_lyr: The cross-section line vector layer.
 
     Returns:
-        tuple: (line_geom, line_start, distance_area)
-            - line_geom: The geometry of the section line.
-            - line_start: The starting point of the line.
-            - distance_area: Configured distance area object.
+        Tuple: (line_geom, line_start, distance_area)
+            - line_geom (QgsGeometry): The geometry of the section line.
+            - line_start (QgsPointXY): The starting point of the line.
+            - distance_area (QgsDistanceArea): Fully configured distance object.
 
     Raises:
-        ValueError: If layer has no features or invalid geometry.
+        ValueError: If the input layer is empty or has invalid geometry.
     """
     from .spatial import create_distance_area, get_line_start_point
 
@@ -97,6 +101,7 @@ def prepare_profile_context(line_lyr):
     da = create_distance_area(line_lyr.crs())
 
     return line_geom, line_start, da
+
 
 
 def interpolate_elevation(topo_data: list, distance: float) -> float:

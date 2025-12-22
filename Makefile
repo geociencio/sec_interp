@@ -216,6 +216,15 @@ doc:
 		exit 1; \
 	fi
 
+.PHONY: apidocs apidocs-html
+apidocs:
+	@echo "Generating API documentation sources..."
+	sphinx-apidoc -o docs/source . docs test scripts help build tests --force --separate
+
+apidocs-html: apidocs
+	@echo "Building API documentation HTML..."
+	sphinx-build -M html docs/source docs/build
+
 pylint:
 	@echo
 	@echo "-----------------"

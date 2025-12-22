@@ -58,7 +58,22 @@ class GeologyService:
     ) -> GeologyData:
         """Generate geological profile data by intersecting the section line with outcrop polygons.
 
-        Returns a list of GeologySegment objects.
+        Extracts geological unit intersections along the cross-section line,
+        calculates elevations from the DEM, and returns a list of segments.
+
+        Args:
+            line_lyr: The QGIS vector layer representing the cross-section line.
+            raster_lyr: The Digital Elevation Model (DEM) raster layer.
+            outcrop_lyr: The QGIS vector layer containing geological outcrop polygons.
+            outcrop_name_field: The attribute field name for geological unit names.
+            band_number: The raster band to use for elevation sampling (default 1).
+
+        Returns:
+            GeologyData: A list of `GeologySegment` objects, sorted by distance along the section.
+
+        Raises:
+            ValueError: If the line layer has no features or invalid geometry.
+            RuntimeError: If the intersection processing fails.
         """
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
@@ -109,7 +124,20 @@ class GeologyService:
         da: "QgsDistanceArea", 
         line_start: "QgsPointXY"
     ) -> Tuple[List[Tuple[float, float]], List[Tuple[float, "QgsPointXY", float]]]:
-        """Generates the master profile data (grid points and elevations)."""
+        """Generate the master profile data (grid points and elevations).
+
+        Args:
+            line_geom: The geometry of the cross-section line.
+            raster_lyr: The DEM raster layer.
+            band_number: The raster band to sample.
+            da: The distance calculation object.
+            line_start: The start point of the section line.
+
+        Returns:
+            A tuple (master_profile_data, master_grid_dists):
+                - master_profile_data: List of (distance, elevation) tuples.
+                - master_grid_dists: List of (distance, point, elevation) tuples.
+        """
         interval = raster_lyr.rasterUnitsPerPixelX()
         logger.debug(f"Generating master profile with interval={interval:.2f}")
 
@@ -138,7 +166,18 @@ class GeologyService:
         line_lyr: QgsVectorLayer, 
         outcrop_lyr: QgsVectorLayer
     ) -> QgsVectorLayer:
-        """Executes the QGIS native intersection algorithm."""
+        """Execute the QGIS native intersection algorithm.
+
+        Args:
+            line_lyr: The section line layer.
+            outcrop_lyr: The outcrop polygons layer.
+
+        Returns:
+            QgsVectorLayer: A memory layer containing the intersection results.
+
+        Raises:
+            RuntimeError: If the processing algorithm execution fails.
+        """
         try:
             feedback = QgsProcessingFeedback()
             result = processing.run(
@@ -165,7 +204,20 @@ class GeologyService:
         master_profile_data: List,
         tolerance: float
     ) -> List[GeologySegment]:
-        """Processes a single intersection feature to extract geology segments."""
+        """Process a single intersection feature to extract geology segments.
+
+        Args:
+            feature: The intersection result feature.
+            outcrop_name_field: The field for unit names.
+            line_start: Section start point.
+            da: Distance calculation object.
+            master_grid_dists: Master grid data for sampling.
+            master_profile_data: Master profile data for interpolation.
+            tolerance: Geometrical tolerance.
+
+        Returns:
+            List[GeologySegment]: Extracted segments from the feature.
+        """
         geom = feature.geometry()
         if not geom or geom.isNull():
             return []
@@ -206,7 +258,21 @@ class GeologyService:
         master_profile_data: List,
         tolerance: float
     ) -> Optional[GeologySegment]:
-        """Creates a GeologySegment from a geometry part."""
+        """Create a GeologySegment from a geometry part.
+
+        Args:
+            seg_geom: The part geometry.
+            feature: The source QGIS feature.
+            glg_val: The geology unit name.
+            line_start: Section start point.
+            da: Distance calculation object.
+            master_grid_dists: Master grid data.
+            master_profile_data: Master profile data.
+            tolerance: Geometrical tolerance.
+
+        Returns:
+            Optional[GeologySegment]: The created segment, or None if invalid.
+        """
         verts = scu.get_line_vertices(seg_geom)
         if not verts: 
             return None

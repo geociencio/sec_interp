@@ -1,7 +1,7 @@
 # SecInterp - Arquitectura Detallada del Proyecto
 
 > **Documentación Técnica Completa del Plugin QGIS SecInterp**  
-> Versión 2.1 | Última actualización: 2025-12-20
+> Versión 2.2 | Última actualización: 2025-12-21
 
 ---
 
@@ -43,20 +43,22 @@
 graph TB
     %% ========== ENTRY POINT ==========
     QGIS[QGIS Application]
-    PLUGIN[__init__.py<br/>Plugin Entry Point]
+    INIT[__init__.py<br/>Entry Point]
+    PLUGIN[sec_interp_plugin.py<br/>SecInterp Class<br/>Raíz del Plugin]
     
     %% ========== GUI LAYER ==========
     subgraph GUI["🖥️ GUI Layer - Interfaz de Usuario"]
         direction TB
         
-        MAIN[main_dialog.py<br/>SecInterpDialog<br/>1057 líneas]
+        MAIN[main_dialog.py<br/>SecInterpDialog<br/>~340 líneas]
         
         subgraph MANAGERS["Managers"]
-            PREVIEW_MGR[main_dialog_preview.py<br/>PreviewManager<br/>31k líneas]
-            EXPORT_MGR[main_dialog_export.py<br/>ExportManager<br/>8k líneas]
-            VALIDATION_MGR[main_dialog_validation.py<br/>DialogValidator<br/>9k líneas]
-            CONFIG_MGR[main_dialog_config.py<br/>DialogDefaults<br/>4k líneas]
-            CACHE_HANDLER[main_dialog_cache_handler.py<br/>CacheHandler<br/>342 bytes]
+            SIGNALS_MGR[main_dialog_signals.py<br/>SignalManager]
+            DATA_MGR[main_dialog_data.py<br/>DataAggregator]
+            PREVIEW_MGR[main_dialog_preview.py<br/>PreviewManager]
+            EXPORT_MGR[main_dialog_export.py<br/>ExportManager]
+            VALIDATION_MGR[main_dialog_validation.py<br/>DialogValidator]
+            CONFIG_MGR[main_dialog_config.py<br/>DialogDefaults]
         end
         
         RENDERER[preview_renderer.py<br/>PreviewRenderer<br/>1190 líneas<br/>20 métodos]
@@ -88,8 +90,15 @@ graph TB
             PARALLEL_GEO[parallel_geology.py<br/>ParallelGeologyService<br/>QThread Worker]
         end
         
-        ALGORITHMS[algorithms.py<br/>Algoritmos Geométricos<br/>592 líneas]
-        VALIDATION[validation.py<br/>Validación de Datos<br/>20k líneas]
+        ALGORITHMS[core/algorithms.py<br/>Lógica Pura de Negocio<br/>~20 líneas]
+        
+        subgraph VALIDATION_PKG["🛡️ Validation Package"]
+            VALIDATION_INIT[core/validation/__init__.py<br/>Fachada]
+            FIELD_VAL[core/validation/field_validator.py<br/>Campos e Inputs]
+            LAYER_VAL[core/validation/layer_validator.py<br/>Capas QGIS]
+            PATH_VAL[core/validation/path_validator.py<br/>Rutas de Archivo]
+            PROJ_VAL[core/validation/project_validator.py<br/>Orquestador]
+        end
         CACHE[data_cache.py<br/>DataCache<br/>7.8k líneas]
         METRICS[performance_metrics.py<br/>PerformanceMetrics<br/>7.8k líneas]
         TYPES[types.py<br/>Definiciones de Tipos<br/>1.8k líneas]
@@ -132,9 +141,12 @@ graph TB
     end
     
     %% ========== CONNECTIONS ==========
-    QGIS -->|loads| PLUGIN
+    QGIS -->|loads| INIT
+    INIT -->|delegates| PLUGIN
     PLUGIN -->|initializes| MAIN
     
+    MAIN -->|delegates signals| SIGNALS_MGR
+    MAIN -->|uses data from| DATA_MGR
     MAIN -->|manages| PREVIEW_MGR
     MAIN -->|manages| EXPORT_MGR
     MAIN -->|manages| VALIDATION_MGR
@@ -148,7 +160,7 @@ graph TB
     PREVIEW_MGR -->|requests data| CONTROLLER
     
     EXPORT_MGR -->|delegates to| ORCHESTRATOR
-    VALIDATION_MGR -->|validates with| VALIDATION
+    VALIDATION_MGR -->|validates with| PROJ_VAL
     
     CONTROLLER -->|orchestrates| PROFILE_SVC
     CONTROLLER -->|orchestrates| GEOLOGY_SVC
@@ -183,7 +195,7 @@ graph TB
     
     class QGIS,PLUGIN entryPoint
     class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,LEGEND,MEASURE guiLayer
-    class CONTROLLER,ALGORITHMS,VALIDATION,CACHE,METRICS,TYPES coreLayer
+    class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,TYPES coreLayer
     class PROFILE_SVC,GEOLOGY_SVC,STRUCTURE_SVC,DRILLHOLE_SVC,PARALLEL_GEO coreLayer
     class ORCHESTRATOR,BASE_EXP,SHP_EXP,CSV_EXP,PDF_EXP,SVG_EXP,IMG_EXP,PROFILE_EXP,DRILL_EXP exportLayer
     class QGIS_CORE,QGIS_GUI,PYQT5 externalLayer
@@ -216,8 +228,8 @@ graph LR
 
 **Clase Principal**: `SecInterpDialog`  
 **Hereda de**: `SecInterpMainWindow`  
-**Líneas de código**: 1,057  
-**Responsabilidad**: Diálogo principal que coordina toda la interfaz de usuario
+**Líneas de código**: ~340 (Reducido de 1,057)  
+**Responsabilidad**: Diálogo principal simplificado que coordina componentes mediante Managers
 
 #### Componentes Clave
 
@@ -226,11 +238,16 @@ class SecInterpDialog(SecInterpMainWindow):
     """Dialog for the SecInterp QGIS plugin."""
     
     def __init__(self, iface=None, plugin_instance=None, parent=None):
-        # Managers
+        # Managers de Lógica
+        self.signal_manager = DialogSignalManager(self)
+        self.data_aggregator = DialogDataAggregator(self)
+        
+        # Managers de Operaciones
         self.validator = DialogValidator(self)
         self.preview_manager = PreviewManager(self)
         self.export_manager = ExportManager(self)
-        self.cache_handler = CacheHandler(self)
+        self.status_manager = DialogStatusManager(self)
+        self.settings_manager = DialogSettingsManager(self)
         
         # Widgets
         self.legend_widget = LegendWidget(self.preview_widget.canvas)
@@ -240,17 +257,15 @@ class SecInterpDialog(SecInterpMainWindow):
 
 #### Métodos Principales
 
-| Método | Descripción | Líneas |
-|--------|-------------|--------|
-| `get_selected_values()` | Agrega datos de todas las páginas en un diccionario plano | 339-396 |
-| `get_preview_options()` | Retorna estado de checkboxes de preview | 398-413 |
-| `update_preview_from_checkboxes()` | Actualiza preview cuando cambian checkboxes | 415-420 |
-| `preview_profile_handler()` | Genera preview rápido con datos | 422-439 |
-| `export_preview()` | Exporta preview actual a archivo | 441-554 |
-| `toggle_measure_tool()` | Activa/desactiva herramienta de medición | 239-248 |
-| `update_measurement_display()` | Muestra resultados de medición | 250-261 |
-| `update_preview_checkbox_states()` | Habilita/deshabilita checkboxes según validez | 263-305 |
-| `update_button_state()` | Habilita/deshabilita botones según inputs | 307-337 |
+| Método | Descripción | Ubicación |
+|--------|-------------|-----------|
+| `_init_managers()` | Inicializa managers dedicados | `main_dialog.py` |
+| `get_selected_values()` | Facade para el DataAggregator | `main_dialog.py` |
+| `get_all_values()` | Agregación real de datos de páginas | `main_dialog_data.py` |
+| `connect_all()` | Conexión masiva de señales | `main_dialog_signals.py` |
+| `preview_profile_handler()` | Delegado a PreviewManager | `main_dialog.py` |
+| `export_preview()` | Delegado a ExportManager | `main_dialog.py` |
+| `update_button_state()` | Delegado a StatusManager | `main_dialog.py` |
 
 #### Señales y Slots
 
@@ -1190,9 +1205,13 @@ pie title Distribución de Código por Capa
 
 | Módulo | Líneas | Clases | Métodos | Complejidad |
 |--------|--------|--------|---------|-------------|
-| `main_dialog.py` | 1,057 | 1 | 30+ | Alta |
+| `sec_interp_plugin.py`| ~600 | 1 | 15 | Media |
+| `main_dialog.py` | ~340 | 1 | 12 | Baja/Media |
+| `main_dialog_signals.py`| ~200 | 1 | 10 | Media |
+| `main_dialog_data.py` | ~150 | 1 | 8 | Media |
 | `preview_renderer.py` | 1,190 | 1 | 20 | Alta |
 | `controller.py` | 192 | 1 | 4 | Baja |
+| `core/validation/` | ~800 | 0 | 25 | Media |
 | `geology_service.py` | 244 | 1 | 8 | Media |
 | `structure_service.py` | 216 | 1 | 7 | Media |
 | `drillhole_service.py` | 319 | 1 | 4 | Media |
@@ -1254,6 +1273,6 @@ graph LR
 
 Este documento proporciona una visión detallada de la arquitectura del plugin SecInterp. Para información sobre desarrollo, consulta [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Última actualización**: 2025-12-20  
-**Versión del Plugin**: 2.1  
+**Última actualización**: 2025-12-21  
+**Versión del Plugin**: 2.2  
 **Autor**: Juan M. Bernales

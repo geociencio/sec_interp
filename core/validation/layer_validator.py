@@ -1,4 +1,4 @@
-"""Layer validation utilities."""
+from typing import List, Tuple, Optional, Union
 from qgis.core import (
     QgsMapLayer,
     QgsRasterLayer,
@@ -12,9 +12,19 @@ from qgis.PyQt.QtCore import QVariant  # type: ignore[import]
 from .field_validator import validate_field_exists, validate_field_type
 
 def validate_layer_exists(
-    layer_name: str | None,
-) -> tuple[bool, str, QgsMapLayer | None]:
-    """Validate that a layer exists in the project."""
+    layer_name: Optional[str],
+) -> Tuple[bool, str, Optional[QgsMapLayer]]:
+    """Validate that a layer with the given name exists in the current QGIS project.
+
+    Args:
+        layer_name: The name of the layer to search for.
+
+    Returns:
+        tuple: (is_valid, error_message, layer)
+            - is_valid (bool): True if at least one matching layer was found.
+            - error_message (str): Error details if no layer was found.
+            - layer (QgsMapLayer | None): The first matching layer instance if valid.
+    """
     if not layer_name:
         return False, "Layer name is required", None
 
@@ -32,7 +42,16 @@ def validate_layer_exists(
 
 
 def validate_layer_has_features(layer: QgsVectorLayer) -> tuple[bool, str]:
-    """Validate that a vector layer has at least one feature."""
+    """Validate that a vector layer contains at least one feature.
+
+    Args:
+        layer: The QGIS vector layer to check.
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if the layer has features.
+            - error_message (str): Error details if the layer is empty.
+    """
     if not layer:
         return False, "Layer is None"
 
@@ -48,7 +67,17 @@ def validate_layer_has_features(layer: QgsVectorLayer) -> tuple[bool, str]:
 def validate_layer_geometry(
     layer: QgsVectorLayer, expected_type: QgsWkbTypes.GeometryType
 ) -> tuple[bool, str]:
-    """Validate that a vector layer has the expected geometry type."""
+    """Validate that a vector layer matches the expected QGIS geometry type.
+
+    Args:
+        layer: The QGIS vector layer to check.
+        expected_type: The required QgsWkbTypes.GeometryType.
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if the geometry type matches.
+            - error_message (str): Detailed error if types mismatch.
+    """
     if not layer:
         return False, "Layer is None"
 
@@ -78,7 +107,17 @@ def validate_layer_geometry(
 
 
 def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> tuple[bool, str]:
-    """Validate that a raster band number is valid for the layer."""
+    """Validate that a specified band number exists in the given raster layer.
+
+    Args:
+        layer: The QGIS raster layer to check.
+        band_number: The 1-based index of the raster band.
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if the band exists.
+            - error_message (str): Error message if the band is out of range.
+    """
     if not layer:
         return False, "Layer is None"
 
@@ -99,10 +138,22 @@ def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> tuple[bool,
 def validate_structural_requirements(
     layer: QgsVectorLayer,
     layer_name: str,
-    dip_field: str | None,
-    strike_field: str | None
-) -> tuple[bool, str]:
-    """Validate specific requirements for the structural layer."""
+    dip_field: Optional[str],
+    strike_field: Optional[str]
+) -> Tuple[bool, str]:
+    """Validate structural layer requirements (geometry and attribute fields).
+
+    Args:
+        layer: The QGIS point layer containing structural data.
+        layer_name: Human-readable name of the layer.
+        dip_field: Name of the attribute field containing dip values.
+        strike_field: Name of the attribute field containing strike values.
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if both geometry and fields are valid.
+            - error_message (str): Detailed error if validation fails.
+    """
     if not layer.isValid():
         return False, f"Structural layer '{layer_name}' is not valid."
 
@@ -136,15 +187,30 @@ def validate_structural_requirements(
 
 
 def validate_layer_configuration(
-    raster_layer: QgsMapLayer | None,
-    line_layer: QgsVectorLayer | None,
-    outcrop_layer: QgsVectorLayer | None = None,
-    structural_layer: QgsVectorLayer | None = None,
-    outcrop_field: str | None = None,
-    struct_dip_field: str | None = None,
-    struct_strike_field: str | None = None,
-) -> tuple[bool, str]:
-    """Validate the combination of selected layers."""
+    raster_layer: Optional[QgsMapLayer],
+    line_layer: Optional[QgsVectorLayer],
+    outcrop_layer: Optional[QgsVectorLayer] = None,
+    structural_layer: Optional[QgsVectorLayer] = None,
+    outcrop_field: Optional[str] = None,
+    struct_dip_field: Optional[str] = None,
+    struct_strike_field: Optional[str] = None,
+) -> Tuple[bool, str]:
+    """Validate a complete set of layer inputs for the plugin.
+
+    Args:
+        raster_layer: The primary DEM layer.
+        line_layer: The section line layer.
+        outcrop_layer: Optional geological outcrop layer.
+        structural_layer: Optional structural measurement layer.
+        outcrop_field: Attribute field for geology units.
+        struct_dip_field: Attribute field for dip values.
+        struct_strike_field: Attribute field for strike values.
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if the entire configuration is valid.
+            - error_message (str): First encountered configuration error.
+    """
     # 1. Validate Required Layers
     if not raster_layer or not line_layer:
         return False, "Please select a raster and a line layer."
@@ -190,8 +256,20 @@ def validate_layer_configuration(
     return True, ""
 
 
-def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
-    """Validate that all layers have compatible CRS."""
+def validate_crs_compatibility(layers: List[QgsMapLayer]) -> Tuple[bool, str]:
+    """Validate that a list of layers have compatible Coordinate Reference Systems.
+
+    If layers have different CRSs, it returns a warning message instead of an error,
+    as QGIS can reproject on-the-fly, but accuracy might be impaired.
+
+    Args:
+        layers: List of QgsMapLayer objects to compare.
+
+    Returns:
+        tuple: (is_compatible, message)
+            - is_compatible (bool): True if all layers share the same CRS.
+            - message (str): Warning listing incompatible layers if any.
+    """
     if not layers:
         return True, ""
 

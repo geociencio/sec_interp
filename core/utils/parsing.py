@@ -1,21 +1,17 @@
-"""Parsing Utilities Module.
-
-Parsing of geological structural measurements (strike/dip).
-Supports numeric and field notation formats.
-"""
-
 import re
+from typing import Any, Optional, Tuple
 
 
-def parse_strike(value):
-    """Parse strike value from various formats.
+def parse_strike(value: Any) -> Optional[float]:
+    """Parse a strike value from various formats into an azimuth (0-360).
 
-    Accepts:
-        - Numeric azimuth (string or int)
-        - Quadrant notation ("N 30° E", "S 15° W")
+    Supports numeric values, strings, and quadrant notation (e.g., "N 30 E", "S 45 W").
+
+    Args:
+        value: The raw strike value (string, int, float, or None).
 
     Returns:
-        strike in azimuth degrees (0–360) or None if invalid
+        Optional[float]: Strike in azimuth degrees (0-360) or None if invalid.
     """
     if value is None:
         return None
@@ -59,15 +55,17 @@ def parse_strike(value):
     return strike % 360
 
 
-def parse_dip(value):
-    """Parse dip value from various formats.
+def parse_dip(value: Any) -> Tuple[Optional[float], Optional[float]]:
+    """Parse a dip value from various formats.
 
-    Accepts:
-        - Numeric dip: "22", "45.5", "30.0"
-        - Field notation: "22° SW", "45 NE", "10 S"
+    Supports numeric dip ("45") and field notation with direction ("45 NE", "22 SW").
+
+    Args:
+        value: The raw dip value.
 
     Returns:
-        tuple: (dip_angle, dip_direction_azimuth) or (None, None) if invalid
+        Tuple[Optional[float], Optional[float]]: A tuple (dip_angle, dip_direction_azimuth).
+            Values are None if parsing fails.
     """
     if value is None:
         return None, None
@@ -99,13 +97,16 @@ def parse_dip(value):
     return dip, dip_dir
 
 
-def cardinal_to_azimuth(text: str):
-    """Convert cardinal direction to azimuth.
+def cardinal_to_azimuth(text: str) -> Optional[float]:
+    """Convert a cardinal direction string to its equivalent azimuth.
 
-    Converts: N, NE, E, SE, S, SW, W, NW
+    Supports: N, NE, E, SE, S, SW, W, NW.
+
+    Args:
+        text: The cardinal direction string.
 
     Returns:
-        0–360 azimuth or None if invalid
+        Optional[float]: The azimuth in degrees (0-360), or None if invalid.
     """
     table = {
         "N": 0,

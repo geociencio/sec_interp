@@ -4,6 +4,7 @@ File I/O operations and user messaging.
 """
 
 from pathlib import Path
+from typing import Union
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -15,24 +16,26 @@ from qgis.core import (
 
 
 def create_shapefile_writer(
-    output_path,
+    output_path: Union[str, Path],
     crs: QgsCoordinateReferenceSystem,
     fields: QgsFields,
-    geometry_type=QgsWkbTypes.LineString,
-):
-    """Helper to create a QgsVectorFileWriter.
+    geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.LineString,
+) -> QgsVectorFileWriter:
+    """Helper to create and initialize a QgsVectorFileWriter for Shapefiles.
+
+    Uses the modern `create` static method for QGIS 3.38+ compatibility.
 
     Args:
-        output_path: Path where shapefile will be created.
-        crs: CRS for the shapefile.
-        fields: Fields definition for the shapefile.
-        geometry_type: Geometry type (default: LineString).
+        output_path: File system path where the shapefile will be created.
+        crs: The Coordinate Reference System for the new file.
+        fields: The attribute fields definition.
+        geometry_type: The mapping geometry type (default: LineString).
 
     Returns:
-        QgsVectorFileWriter: Initialized writer object.
+        QgsVectorFileWriter: An initialized writer object.
 
     Raises:
-        IOError: If writer creation fails.
+        OSError: If the writer cannot be created or has an initialization error.
     """
     # Use new static create method for QGIS 3.38+
     options = QgsVectorFileWriter.SaveVectorOptions()

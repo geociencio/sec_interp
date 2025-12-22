@@ -2,7 +2,7 @@
 
 import math
 from pathlib import Path
-from typing import Any
+from typing import Any, List, Dict, Optional, Union
 
 from qgis.core import (
     QgsFeature,
@@ -27,10 +27,10 @@ logger = get_logger(__name__)
 class ProfileLineShpExporter(BaseExporter):
     """Exports the topographic profile line to a Shapefile."""
 
-    def get_supported_extensions(self) -> list[str]:
+    def get_supported_extensions(self) -> List[str]:
         return [".shp"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
         """Args:
         data (dict): Must contain 'profile_data' (list of tuples) and 'crs'.
         """
@@ -64,10 +64,10 @@ class ProfileLineShpExporter(BaseExporter):
 class GeologyShpExporter(BaseExporter):
     """Exports the geological profile to a Shapefile."""
 
-    def get_supported_extensions(self) -> list[str]:
+    def get_supported_extensions(self) -> List[str]:
         return [".shp"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
         """Args:
         data (dict): Must contain 'geology_data' (List[GeologySegment]) and 'crs'.
         """
@@ -102,7 +102,7 @@ class GeologyShpExporter(BaseExporter):
                 fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
 
-    def _create_geology_feature(self, segment: Any, fields: QgsFields) -> QgsFeature | None:
+    def _create_geology_feature(self, segment: Any, fields: QgsFields) -> Optional[QgsFeature]:
         """Create a feature for a geology segment."""
         if len(segment.points) < 2:
             return None
@@ -124,10 +124,10 @@ class GeologyShpExporter(BaseExporter):
 class StructureShpExporter(BaseExporter):
     """Exports the structural profile to a Shapefile."""
 
-    def get_supported_extensions(self) -> list[str]:
+    def get_supported_extensions(self) -> List[str]:
         return [".shp"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
         """Args:
         data (dict): Must contain 'structural_data' (List[StructureMeasurement]),
                      'crs', 'dip_scale_factor', 'raster_res'.
@@ -203,10 +203,10 @@ class StructureShpExporter(BaseExporter):
 class AxesShpExporter(BaseExporter):
     """Exports the profile axes to a Shapefile."""
 
-    def get_supported_extensions(self) -> list[str]:
+    def get_supported_extensions(self) -> List[str]:
         return [".shp"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
         """Args:
         data (dict): Must contain 'profile_data' and 'crs'.
         """

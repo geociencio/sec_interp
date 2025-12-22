@@ -124,7 +124,19 @@ class StructureService:
         crs: "QgsCoordinateReferenceSystem", 
         buffer_m: float
     ) -> "QgsGeometry":
-        """Creates the buffer geometry around the section line."""
+        """Create the buffer geometry around the section line.
+
+        Args:
+            line_geom: The geometry of the cross-section line.
+            crs: The Coordinate Reference System of the line.
+            buffer_m: The buffer distance in meters.
+
+        Returns:
+            QgsGeometry: The resulting buffer polygon geometry.
+
+        Raises:
+            ValueError: If the buffer zone cannot be created.
+        """
         try:
             return scu.create_buffer_geometry(
                 line_geom, crs, buffer_m, segments=25
@@ -139,7 +151,19 @@ class StructureService:
         buffer_geom: "QgsGeometry", 
         target_crs: "QgsCoordinateReferenceSystem"
     ) -> Iterator["QgsFeature"]:
-        """Selects structure features within the buffer."""
+        """Select structure features within the buffer.
+
+        Args:
+            struct_lyr: The point layer containing structural measurements.
+            buffer_geom: The buffer geometry used for selection.
+            target_crs: The CRS to use for spatial comparison.
+
+        Returns:
+            Iterator[QgsFeature]: An iterator over the features within the buffer.
+
+        Raises:
+            ValueError: If the filtering operation fails.
+        """
         try:
             return scu.filter_features_by_buffer(
                 struct_lyr, buffer_geom, target_crs
@@ -160,7 +184,24 @@ class StructureService:
         dip_field: str,
         strike_field: str
     ) -> Optional[StructureMeasurement]:
-        """Processes a single structure feature."""
+        """Process a single structure feature.
+
+        Calculates the apparent dip and projection distance for a structural measurement.
+
+        Args:
+            feature: The source structural point feature.
+            line_geom: The section line geometry.
+            line_start: The start point of the section line.
+            da: The distance calculation object.
+            raster_lyr: The DEM layer for elevation sampling.
+            band_number: The raster band index.
+            line_az: The azimuth of the section line.
+            dip_field: Field name for original dip.
+            strike_field: Field name for original strike.
+
+        Returns:
+            Optional[StructureMeasurement]: The projected measurement object, or None if invalid.
+        """
         struct_geom = feature.geometry()
         if not struct_geom or struct_geom.isNull():
             return None

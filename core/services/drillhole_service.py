@@ -41,22 +41,30 @@ class DrillholeService:
     ) -> List[Tuple[Any, float, float, float, float]]:
         """Project collar points onto section line.
 
+        Projects drillhole collars within a specified buffer from the section line
+        onto that line, calculating their distance along the section and elevation.
+
         Args:
-            collar_layer: Collar vector layer
-            line_geom: Section line geometry
-            line_start: Section line start point
-            distance_area: Distance area object
-            buffer_width: Buffer width in map units
-            collar_id_field: Field name for hole ID
-            use_geometry: Whether to use layer geometry
-            collar_x_field: Field name for X coord
-            collar_y_field: Field name for Y coord
-            collar_z_field: Field name for Z coord
-            collar_depth_field: Field name for total depth
-            dem_layer: DEM layer for Z fallback
+            collar_layer: The QGIS vector layer containing drillhole collars.
+            line_geom: The geometry of the cross-section line.
+            line_start: The starting point of the cross-section line.
+            distance_area: The QGS distance calculation object.
+            buffer_width: Maximum perpendicular distance from the line to include collars.
+            collar_id_field: The attribute field name for the drillhole ID.
+            use_geometry: If True, use layer geometry; otherwise use coordinate fields.
+            collar_x_field: The attribute field name for X coordinates.
+            collar_y_field: The attribute field name for Y coordinates.
+            collar_z_field: The attribute field name for elevation (Z).
+            collar_depth_field: The attribute field name for total depth.
+            dem_layer: Digital Elevation Model layer for elevation fallback if Z is missing.
 
         Returns:
-            List of tuples (hole_id, dist_along, elevation, offset, depth)
+            A list of tuples: (hole_id, dist_along, elevation, offset, depth)
+                - hole_id (Any): The unique identifier for the drillhole.
+                - dist_along (float): Distance from the start of the section line.
+                - elevation (float): Elevation (Z) of the collar.
+                - offset (float): Perpendicular distance from the section line.
+                - depth (float): Total depth of the drillhole.
         """
         projected_collars = []
 
@@ -162,28 +170,35 @@ class DrillholeService:
         section_azimuth: float,
         survey_fields: Dict[str, str],
         interval_fields: Dict[str, str],
-    ) -> Tuple[List[Any], List[Any]]:
-        """Process interval data and project onto section.
+    ) -> Tuple[List[GeologySegment], List[Tuple[Any, List[Tuple[float, float]], List[GeologySegment]]]]:
+        """Process drillhole interval data and project onto the section.
+
+        Calculates trajectories for all collars within the buffer and interpolates
+        geological intervals along those trajectories.
 
         Args:
-            collar_points: List from project_collars
-            collar_layer: Layer to fetch original coordinates
-            survey_layer: Survey data layer
-            interval_layer: Interval data layer
-            collar_id_field: ID field
-            use_geometry: Whether to use geometry
-            collar_x_field: X field
-            collar_y_field: Y field
-            line_geom: Section line geometry
-            line_start: Section start point
-            distance_area: Distance area object
-            buffer_width: Buffer width
-            section_azimuth: Section azimuth
-            survey_fields: Dict with 'id', 'depth', 'azim', 'incl'
-            interval_fields: Dict with 'id', 'from', 'to', 'lith'
+            collar_points: List of projected collars from `project_collars`.
+            collar_layer: Original collar vector layer.
+            survey_layer: Survey data vector layer (depth, azimuth, inclination).
+            interval_layer: Geological interval data vector layer.
+            collar_id_field: Attribute field name for drillhole ID.
+            use_geometry: If True, use layer geometry for coordinates.
+            collar_x_field: Attribute field name for X coordinates.
+            collar_y_field: Attribute field name for Y coordinates.
+            line_geom: Geometry of the cross-section line.
+            line_start: Starting point of the cross-section line.
+            distance_area: QGS distance calculation object.
+            buffer_width: Maximum perpendicular distance to include intervals.
+            section_azimuth: The azimuth of the cross-section line.
+            survey_fields: Dictionary mapping standard survey fields to layer fields.
+                Required keys: 'id', 'depth', 'azim', 'incl'.
+            interval_fields: Dictionary mapping standard interval fields to layer fields.
+                Required keys: 'id', 'from', 'to', 'lith'.
 
         Returns:
-            Tuple (geol_data, drillhole_data)
+            A tuple containing (geology_segments, drillhole_traces):
+                - geology_segments (List[GeologySegment]): Flat list of all projected intervals.
+                - drillhole_traces (List): List of trajectories (hole_id, trace_points, hole_segments).
         """
         geol_data = []
         drillhole_data = []

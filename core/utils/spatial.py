@@ -6,6 +6,7 @@ Distance calculations, azimuth, and basic spatial operations.
 import math
 
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsDistanceArea,
     QgsGeometry,
     QgsPointXY,
@@ -15,13 +16,16 @@ from qgis.core import (
 
 
 def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
-    """Calculate the azimuth of a line.
+    """Calculate the azimuth (compass bearing) of a line geometry.
+
+    Calculates the azimuth based on the first two vertices of the line.
+    Returns 0 for points or single-vertex lines.
 
     Args:
-        line_geom: The line geometry to calculate azimuth for.
+        line_geom: The QGIS line geometry.
 
     Returns:
-        float: Azimuth in degrees (0-360). Returns 0 for points or invalid lines.
+        float: Azimuth in degrees (0-360).
     """
     if line_geom.wkbType() == QgsWkbTypes.Point:
         return 0  # Points have no azimuth
@@ -88,11 +92,13 @@ def calculate_step_size(geom: QgsGeometry, raster_lyr) -> float:
 def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
     """Helper to get the start point of a line geometry.
 
+    Handles both singlepart and multipart line geometries.
+
     Args:
-        geometry: The geometry to get start point from.
+        geometry: The line geometry.
 
     Returns:
-        QgsPointXY: The starting point of the line.
+        QgsPointXY: The first vertex of the first part.
     """
     if geometry.isMultipart():
         return geometry.asMultiPolyline()[0][0]
@@ -100,14 +106,17 @@ def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
     return geometry.asPolyline()[0]
 
 
-def create_distance_area(crs):
-    """Helper to create and configure QgsDistanceArea.
+def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
+    """Helper to create and configure a QgsDistanceArea object.
+
+    Configures the distance area with the provided CRS, project transform context,
+    and associated ellipsoid for geodesic calculations.
 
     Args:
-        crs: The CRS to use for calculations.
+        crs: The Coordinate Reference System to use.
 
     Returns:
-        QgsDistanceArea: Configured distance area object.
+        QgsDistanceArea: The configured distance calculation object.
     """
     da = QgsDistanceArea()
     da.setSourceCrs(crs, QgsProject.instance().transformContext())

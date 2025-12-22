@@ -19,7 +19,7 @@
  ***************************************************************************/
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List, Union
 
 from sec_interp.logger_config import get_logger
 
@@ -38,12 +38,12 @@ class DataCache:
 
     def __init__(self) -> None:
         """Initialize empty cache."""
-        self._topo_cache: dict[str, ProfileData] = {}
-        self._geol_cache: dict[str, GeologyData] = {}
-        self._struct_cache: dict[str, StructureData] = {}
-        self._metadata: dict[str, dict[str, Any]] = {}
+        self._topo_cache: Dict[str, ProfileData] = {}
+        self._geol_cache: Dict[str, GeologyData] = {}
+        self._struct_cache: Dict[str, StructureData] = {}
+        self._metadata: Dict[str, Dict[str, Any]] = {}
 
-    def get_cache_key(self, params: dict[str, Any]) -> str:
+    def get_cache_key(self, params: Dict[str, Any]) -> str:
         """Generate a unique cache key from parameters.
 
         Args:
@@ -80,7 +80,7 @@ class DataCache:
 
         return hashlib.md5("".join(key_parts).encode("utf-8")).hexdigest()
 
-    def get(self, key: str) -> dict[str, Any] | None:
+    def get(self, key: str) -> Optional[Dict[str, Any]]:
         """Get all cached data for a key.
 
         Args:
@@ -98,7 +98,7 @@ class DataCache:
             "struct_data": self._struct_cache.get(key),
         }
 
-    def set(self, key: str, data: dict[str, Any]) -> None:
+    def set(self, key: str, data: Dict[str, Any]) -> None:
         """Set all cache data for a key.
 
         Args:
@@ -112,7 +112,7 @@ class DataCache:
         if "struct_data" in data:
             self._struct_cache[key] = data["struct_data"]
 
-    def get_topographic_profile(self, key: str) -> ProfileData | None:
+    def get_topographic_profile(self, key: str) -> Optional[ProfileData]:
         """Get cached topographic profile data.
 
         Args:
@@ -132,7 +132,7 @@ class DataCache:
         """
         self._topo_cache[key] = data
 
-    def get_geological_profile(self, key: str) -> GeologyData | None:
+    def get_geological_profile(self, key: str) -> Optional[GeologyData]:
         """Get cached geological profile data.
 
         Args:
@@ -152,7 +152,7 @@ class DataCache:
         """
         self._geol_cache[key] = data
 
-    def get_structural_data(self, key: str) -> StructureData | None:
+    def get_structural_data(self, key: str) -> Optional[StructureData]:
         """Get cached structural data.
 
         Args:
@@ -172,7 +172,7 @@ class DataCache:
         """
         self._struct_cache[key] = data
 
-    def get_metadata(self, key: str) -> dict[str, Any] | None:
+    def get_metadata(self, key: str) -> Optional[Dict[str, Any]]:
         """Get cached metadata for a profile.
 
         Args:
@@ -183,7 +183,7 @@ class DataCache:
         """
         return self._metadata.get(key)
 
-    def set_metadata(self, key: str, metadata: dict[str, Any]) -> None:
+    def set_metadata(self, key: str, metadata: Dict[str, Any]) -> None:
         """Store metadata for a profile.
 
         Args:
@@ -192,7 +192,7 @@ class DataCache:
         """
         self._metadata[key] = metadata
 
-    def invalidate(self, pattern: str | None = None) -> None:
+    def invalidate(self, pattern: Optional[str] = None) -> None:
         """Invalidate cache entries.
 
         Args:
@@ -223,7 +223,7 @@ class DataCache:
         """Clear all cached data."""
         self.invalidate()
 
-    def get_cache_size(self) -> dict[str, int]:
+    def get_cache_size(self) -> Dict[str, int]:
         """Get the size of each cache.
 
         Returns:

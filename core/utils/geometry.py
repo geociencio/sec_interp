@@ -35,19 +35,20 @@ def create_memory_layer(
     name: str = "temp",
     fields: Optional[QgsFields] = None,
 ) -> QgsVectorLayer:
-    """Create a temporary memory layer with a single geometry feature.
+    """Create a temporary QGIS memory layer with a single geometry feature.
 
     Args:
-        geometry: Geometry to add to the layer.
-        crs: Coordinate reference system.
-        name: Layer name (default: "temp").
-        fields: Optional fields definition.
+        geometry: The QGIS geometry to add to the layer.
+        crs: The Coordinate Reference System for the new layer.
+        name: Internal name for the layer (default: "temp").
+        fields: Optional field definitions for attributes.
 
     Returns:
-        QgsVectorLayer: Memory layer with the geometry.
+        QgsVectorLayer: A valid (but potentially empty on failure) QGIS memory layer.
 
     Raises:
-        ValueError: If geometry is null or invalid.
+        ValueError: If the input geometry is null or invalid.
+        RuntimeError: If the memory layer cannot be initialized.
     """
     if not geometry or geometry.isNull():
         raise ValueError("Geometry is null or invalid")
@@ -81,16 +82,15 @@ def create_memory_layer(
 
 
 def extract_all_vertices(geometry: QgsGeometry) -> List[QgsPointXY]:
-    """Extract all vertices from any geometry (handles multipart).
+    """Extract all vertices from any QGIS geometry type.
+
+    Handles points, lines, and polygons, including multipart geometries.
 
     Args:
-        geometry: Input geometry.
+        geometry: The input QGIS geometry.
 
     Returns:
-        List[QgsPointXY]: All vertices in the geometry.
-
-    Raises:
-        ValueError: If geometry is null.
+        List[QgsPointXY]: A flat list of all vertices found in the geometry.
     """
     if not geometry or geometry.isNull():
         return []
@@ -126,16 +126,16 @@ def extract_all_vertices(geometry: QgsGeometry) -> List[QgsPointXY]:
 
 
 def get_line_vertices(geometry: QgsGeometry) -> List[QgsPointXY]:
-    """Extract vertices from a line geometry (handles multipart by returning all).
+    """Extract vertices specifically from a line or multiline geometry.
 
     Args:
-        geometry: Line geometry (LineString or MultiLineString).
+        geometry: A QGIS geometry of type `LineGeometry`.
 
     Returns:
-        List[QgsPointXY]: All vertices from all parts.
+        List[QgsPointXY]: A flat list of vertices.
 
     Raises:
-        ValueError: If geometry is not a line or is invalid.
+        ValueError: If the geometry is null, not a line, or contains no vertices.
     """
     if not geometry or geometry.isNull():
         raise ValueError("Geometry is null or invalid")
@@ -155,18 +155,18 @@ def run_processing_algorithm(
     parameters: dict,
     silent: bool = True,
 ) -> dict:
-    """Run a QGIS processing algorithm with consistent error handling.
+    """Execute a QGIS processing algorithm with consistent error handling.
 
     Args:
-        algorithm: Algorithm name (e.g., "native:buffer").
-        parameters: Algorithm parameters dictionary.
-        silent: If True, suppress feedback output (default: True).
+        algorithm: The provider:algorithm ID (e.g., "native:buffer").
+        parameters: A dictionary of algorithm parameters.
+        silent: If True, uses a silent feedback object (default: True).
 
     Returns:
-        dict: Algorithm result dictionary.
+        dict: The result dictionary returned by `processing.run`.
 
     Raises:
-        RuntimeError: If algorithm fails.
+        RuntimeError: If the algorithm fails to execute or returns an error.
     """
     from qgis import processing
 
@@ -186,22 +186,20 @@ def run_geometry_operation(
     crs: QgsCoordinateReferenceSystem,
     parameters: dict,
 ) -> QgsGeometry:
-    """Higher-level helper to run a processing algorithm on a single geometry.
-
-    Abstracts the memory layer creation and result extraction process.
+    """Run a processing algorithm on a single geometry by wrapping it in a memory layer.
 
     Args:
-        algorithm: Algorithm name.
-        geometry: Input geometry.
-        crs: CRS of the geometry.
-        parameters: Additional parameters for the algorithm (INPUT and OUTPUT are managed).
+        algorithm: The algorithm ID to run.
+        geometry: The input geometry.
+        crs: The CRS of the input geometry.
+        parameters: Additional parameters (INPUT and OUTPUT are automatically handled).
 
     Returns:
-        QgsGeometry: The resulting geometry from the algorithm.
+        QgsGeometry: The resulting geometry from the operation's output layer.
 
     Raises:
-        ValueError: If results are empty or invalid.
-        RuntimeError: If algorithm execution fails.
+        ValueError: If the operation yields no features or an invalid geometry.
+        RuntimeError: If the underlying processing algorithm fails.
     """
     # 1. Create temporary input
     temp_layer = create_memory_layer(geometry, crs, f"input_{algorithm.split(':')[-1]}")

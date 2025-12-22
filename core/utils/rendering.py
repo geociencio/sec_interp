@@ -6,15 +6,21 @@ Visualization and coordinate transformation utilities for profile rendering.
 import math
 
 
-def calculate_bounds(topo_data: list, geol_data: list | None = None) -> dict:
-    """Calculate min/max bounds for all data.
+from typing import List, Tuple, Dict, Any, Optional, Callable
+from sec_interp.core.types import GeologySegment
+
+def calculate_bounds(topo_data: List[Tuple[float, float]], geol_data: Optional[List[GeologySegment]] = None) -> Dict[str, float]:
+    """Calculate the bounding box for all profile data with padding.
+
+    Calculates the minimum and maximum distance and elevation across topography
+    and optional geological segments.
 
     Args:
         topo_data: List of (distance, elevation) tuples for topography.
-        geol_data: List of (distance, elevation, name) tuples for geology.
+        geol_data: Optional list of geological segments.
 
     Returns:
-        dict: Dictionary containing 'min_d', 'max_d', 'min_e', 'max_e' with 5% padding.
+        Dict[str, float]: Bounds containing 'min_d', 'max_d', 'min_e', 'max_e' with 5% padding.
     """
     dists = [p[0] for p in topo_data]
     elevs = [p[1] for p in topo_data]
@@ -45,19 +51,22 @@ def calculate_bounds(topo_data: list, geol_data: list | None = None) -> dict:
 
 
 def create_coordinate_transform(
-    bounds: dict, view_w: int, view_h: int, margin: int, vert_exag: float = 1.0
-):
-    """Create coordinate transformation function.
+    bounds: Dict[str, float], view_w: int, view_h: int, margin: int, vert_exag: float = 1.0
+) -> Callable[[float, float], Tuple[float, float]]:
+    """Create a coordinate transformation function for screen projection.
+
+    Returns a function that transforms data coordinates (distance, elevation)
+    to pixel coordinates (x, y) based on the provided view dimensions.
 
     Args:
-        bounds: Dictionary with min_d, max_d, min_e, max_e
-        view_w: View width in pixels
-        view_h: View height in pixels
-        margin: Margin in pixels
-        vert_exag: Vertical exaggeration factor (default 1.0 = no exaggeration, i.e., 1:1 scale)
+        bounds: Dictionary with 'min_d', 'max_d', 'min_e', 'max_e'.
+        view_w: Screen/view width in pixels.
+        view_h: Screen/view height in pixels.
+        margin: Plot margin in pixels.
+        vert_exag: Vertical exaggeration multiplier (default 1.0).
 
     Returns:
-        Function that transforms (distance, elevation) to (x, y) screen coordinates
+        Callable[[float, float], Tuple[float, float]]: A function `transform(dist, elev) -> (x, y)`.
     """
     data_w = bounds["max_d"] - bounds["min_d"]
     data_h = bounds["max_e"] - bounds["min_e"]
@@ -83,13 +92,13 @@ def create_coordinate_transform(
 
 
 def calculate_interval(data_range: float) -> float:
-    """Calculate nice interval for axis labels.
+    """Calculate a 'nice' interval for axis labels based on the data range.
 
     Args:
-        data_range: The total range of data values.
+        data_range: The total range of data values (e.g., max_d - min_d).
 
     Returns:
-        float: A 'nice' interval (e.g., 1, 2, 5, 10, etc.) for grid lines.
+        float: A human-readable interval (e.g., 1, 2, 5, 10, etc.) for grid lines.
     """
     magnitude = 10 ** math.floor(math.log10(data_range))
     normalized = data_range / magnitude

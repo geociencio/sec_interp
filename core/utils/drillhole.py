@@ -19,22 +19,24 @@ def calculate_drillhole_trajectory(
 ) -> List[Tuple[float, float, float, float, float, float]]:
     """Calculate 3D trajectory of a drillhole using survey data.
 
-    Uses tangential method for trajectory calculation with densification
+    Uses the tangential method for trajectory calculation with densification
     to generate intermediate points for continuous interval projection.
 
     Args:
-        collar_point: QgsPointXY of collar location (X, Y)
-        collar_z: Elevation of collar (Z)
-        survey_data: List of tuples (depth, azimuth, inclination) sorted by depth
-        section_azimuth: Azimuth of the section line in degrees
-        densify_step: Distance in meters between interpolated points (default 1.0m)
+        collar_point: QgsPointXY of collar location (X, Y).
+        collar_z: Elevation of collar (Z).
+        survey_data: List of tuples (depth, azimuth, inclination) sorted by depth.
+        section_azimuth: Azimuth of the section line in degrees.
+        densify_step: Distance in meters between interpolated points (default 1.0m).
         total_depth: Optional total depth. If greater than last survey depth,
                      trajectory will be extrapolated using last orientation.
 
     Returns:
-        List of tuples (depth, x, y, z, dist_along_section, offset_from_section)
-        Note: The last two values (dist, offset) are initialized to 0.0 and
-        should be calculated by project_trajectory_to_section.
+        List of tuples (depth, x, y, z, dist_along_section, offset_from_section):
+            - depth: Depth along the hole.
+            - x, y, z: 3D coordinates.
+            - dist_along_section: Distance along the section line (initialized to 0.0).
+            - offset_from_section: Perpendicular distance from section line (initialized to 0.0).
     """
     if not survey_data:
         if total_depth > 0:
@@ -148,13 +150,17 @@ def project_trajectory_to_section(
     """Project drillhole trajectory points onto section line.
 
     Args:
-        trajectory: List of (depth, x, y, z, _, _) from calculate_drillhole_trajectory
-        line_geom: QgsGeometry of section line
-        line_start: QgsPointXY of section line start
-        distance_area: QgsDistanceArea for measurements
+        trajectory: List of (depth, x, y, z, _, _) from `calculate_drillhole_trajectory`.
+        line_geom: QgsGeometry of the section line.
+        line_start: QgsPointXY of the section line start.
+        distance_area: QgsDistanceArea for geodesic measurements.
 
     Returns:
-        List of tuples (depth, x, y, z, dist_along, offset)
+        List of tuples (depth, x, y, z, dist_along, offset):
+            - depth: Original depth.
+            - x, y, z: Original 3D coordinates.
+            - dist_along: Projected distance along the section line.
+            - offset: Perpendicular offset from the section line.
     """
     projected = []
 
@@ -184,13 +190,18 @@ def interpolate_intervals_on_trajectory(
 ) -> List[Tuple[Any, List[Tuple[float, float]]]]:
     """Interpolate interval attributes along drillhole trajectory.
 
+    Filters and maps geological intervals onto the 3D trajectory points
+    that fall within the specified section buffer.
+
     Args:
-        trajectory: List of (depth, x, y, z, dist_along, offset) tuples
-        intervals: List of (from_depth, to_depth, attribute) tuples
-        buffer_width: Maximum offset to include
+        trajectory: List of (depth, x, y, z, dist_along, offset) tuples.
+        intervals: List of (from_depth, to_depth, attribute) tuples.
+        buffer_width: Maximum perpendicular offset to include a point.
 
     Returns:
-        List of (attribute, list of (dist_along, elevation)) tuples
+        List of (attribute, list of (dist_along, elevation)) tuples:
+            - attribute: The metadata/geology associated with the interval.
+            - points: List of (distance, Z) coordinates for rendering.
     """
     geol_segments = []
 

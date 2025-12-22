@@ -7,23 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.2.0] - 2025-12-21
 ### Added
-- **Architectural Evolution: Service-Oriented Core**:
-  - Implementation of `ExportService` to decouple business logic from the GUI.
-  - Creation of `PreviewService` for centralized data generation (Topography, Structures, Drillholes).
-  - Modularized `DialogValidator` with specialized `ValidationParams`.
-- **GUI Fragmentation & Complexity Reduction**:
-  - **`PreviewRenderer` Evolution**: Fragmented into 4 specialized components (`PreviewLayerFactory`, `PreviewAxesManager`, `PreviewOptimizer`, `PreviewLegendRenderer`). Complexity reduced from 130 to 21.8.
-  - **`MainDialog` Evolution**: Fragmented `SecInterpDialog` into specialized managers (`DialogSettingsManager`, `DialogStatusManager`, `DialogEntityManager`). Complexity reduced from 95 to 18.
-- **Preview Improvements**:
+- **Architectural Evolution: Modular Core & Clean Entry Point**:
+  - Moved main `SecInterp` class to plugin root (`sec_interp_plugin.py`) to strictly separate QGIS integration from business logic.
+  - Modularized `validation.py` into a specialized `core/validation/` package (Field, Layer, Path, and Project validators).
+  - Fragmented `SecInterpDialog` into specialized managers (`DialogSignalManager`, `DialogDataAggregator`) reducing complexity and file size.
+  - Refactored Help System to "Native Hybrid" (Single-file HTML/CSS) for improved performance and UX.
+- **Preview & UI Improvements**:
   - Fixed Y-axis labels and grid alignment for negative elevations.
-  - Anchored X-labels and vertical grid lines to the grid's floor (y_start).
   - Improved axis label spacing and label QUADRANT handling.
+  - Fixed toolbar icon loading path after architectural move.
+- **Documentation**:
+  - Updated "Outputs" documentation with Drillhole trace/interval details.
+  - Created comprehensive technical architecture documentation.
 
 ### Fixed
-- Resolved `UI_IMPORT_IN_CORE` architectural violations by moving UI-dependent utilities to `gui/`.
-- Fixed `TypeError` in `PreviewParams` initialization (missing `dip_scale_factor`).
-- Fixed `AttributeError` in startup sequence by reordering core service initialization.
-- Fixed field collection bug in `PreviewManager` using `currentField()` instead of `currentData()`.
+- Resolved `UI_IMPORT_IN_CORE` architectural violations by moving UI-dependent components out of the core layer.
+- Fixed `TypeError` in `PreviewParams` and startup `AttributeError` by reordering service initialization.
+- Fixed field collection bug in `PreviewManager` using `currentField()`.
 - Improved stability of Preview Export with better size handling.
 
 ## [2.1.0] - 2025-12-17

@@ -1,5 +1,5 @@
-"""Project validation utilities (Orchestrator)."""
 from dataclasses import dataclass
+from typing import List, Tuple, Dict, Optional, Union, Any
 from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsWkbTypes
 
 from .layer_validator import (
@@ -12,8 +12,18 @@ from .layer_validator import (
 from .path_validator import validate_output_path
 
 
-def validate_reasonable_ranges(values: dict) -> list[str]:
-    """Check for unreasonable parameter values."""
+def validate_reasonable_ranges(values: Dict[str, Any]) -> List[str]:
+    """Check for unreasonable or potentially erroneous parameter values.
+
+    This function does not return hard errors, but a list of warning strings
+    to inform the user about extreme values (e.g., vertical exaggeration > 10).
+
+    Args:
+        values: Dictionary containing parameter names and their current values.
+
+    Returns:
+        list[str]: A list of warning messages. If empty, all values are reasonable.
+    """
     warnings = []
 
     # Vertical exaggeration
@@ -65,19 +75,35 @@ def validate_reasonable_ranges(values: dict) -> list[str]:
 
 @dataclass
 class ValidationParams:
-    """Data container for all parameters that need validation."""
-    raster_layer: QgsRasterLayer | None = None
-    band_number: int | None = None
-    line_layer: QgsVectorLayer | None = None
+    """Data container for all parameters that need cross-layer validation.
+
+    Attributes:
+        raster_layer: The primary Digital Elevation Model.
+        band_number: Selected band for sampling.
+        line_layer: The cross-section vector line.
+        output_path: Target directory for results.
+        scale: Horizontal scale factor.
+        vert_exag: Vertical exaggeration multiplier.
+        buffer_dist: Search radius for structures/drillholes.
+        outcrop_layer: Geological map polygons.
+        outcrop_field: Field name for rock units.
+        struct_layer: Structural measurements points.
+        struct_dip_field: Field for dip angle.
+        struct_strike_field: Field for strike/azimuth.
+        dip_scale_factor: Multiplier for structural symbology size.
+    """
+    raster_layer: Optional[QgsRasterLayer] = None
+    band_number: Optional[int] = None
+    line_layer: Optional[QgsVectorLayer] = None
     output_path: str = ""
     scale: float = 1.0
     vert_exag: float = 1.0
     buffer_dist: float = 0.0
-    outcrop_layer: QgsVectorLayer | None = None
-    outcrop_field: str | None = None
-    struct_layer: QgsVectorLayer | None = None
-    struct_dip_field: str | None = None
-    struct_strike_field: str | None = None
+    outcrop_layer: Optional[QgsVectorLayer] = None
+    outcrop_field: Optional[str] = None
+    struct_layer: Optional[QgsVectorLayer] = None
+    struct_dip_field: Optional[str] = None
+    struct_strike_field: Optional[str] = None
     dip_scale_factor: float = 1.0
 
 
@@ -85,8 +111,20 @@ class ProjectValidator:
     """Orchestrates validation of project parameters independent of the GUI."""
 
     @staticmethod
-    def validate_all(params: ValidationParams) -> tuple[bool, str]:
-        """Validate all parameters."""
+    def validate_all(params: ValidationParams) -> Tuple[bool, str]:
+        """Perform a comprehensive validation of all project parameters.
+
+        This includes checking for required files, geometry types, field existence,
+        and numeric range constraints.
+
+        Args:
+            params: The parameters to validate.
+
+        Returns:
+            tuple: (is_valid, error_message)
+                - is_valid (bool): True if all checks passed.
+                - error_message (str): Newline-separated list of all found errors.
+        """
         errors = []
 
         # 1. Raster Layer
@@ -160,8 +198,17 @@ class ProjectValidator:
         return True, ""
 
     @staticmethod
-    def validate_preview_requirements(params: ValidationParams) -> tuple[bool, str]:
-        """Validate minimum requirements for preview."""
+    def validate_preview_requirements(params: ValidationParams) -> Tuple[bool, str]:
+        """Validate only the minimum requirements needed to generate a preview.
+
+        Args:
+            params: The parameters containing at least raster and line layers.
+
+        Returns:
+            tuple: (is_valid, error_message)
+                - is_valid (bool): True if the core preview can be generated.
+                - error_message (str): Description of missing core components.
+        """
         errors = []
         if not params.raster_layer:
             errors.append("Raster DEM layer is required")

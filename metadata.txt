@@ -21,19 +21,18 @@ repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
     2.2.0 (2025-12-21)
-    * Architecture & Fragmentation:
-      - Fragmented PreviewRenderer (Complexity 130 -> 21.8).
-      - Fragmented SecInterpDialog (Complexity 95 -> 18).
-      - Decoupled ExportService and PreviewService from UI.
-    * Refinements & Fixes:
-      - Improved Axis/Grid alignment for negative elevations.
-      - Fixed startup AttributeError and preview field collection bugs.
-
-    2.1.1 (2025-12-18)
-    * Documentation & UX:
+    * Major Refactoring & Architecture:
+      - Moved main SecInterp class to plugin root (sec_interp_plugin.py).
+      - Modularized validation into core/validation/ package.
+      - Fragmented SecInterpDialog into specialized managers (Signals, Data).
+      - Fragmented PreviewRenderer components (Optimizers, Axes, Legend).
+    * Features & UX:
       - Refactored Help System to "Native Hybrid" (Single-file HTML/CSS).
-      - Improved performance and visual integration with QGIS.
-      - Updated "Outputs" documentation with Drillhole trace/interval details.
+      - Improved Axis/Grid alignment for negative elevations.
+      - Fixed toolbar icon loading after architectural move.
+    * Fixes:
+      - Resolved UI_IMPORT_IN_CORE architectural violations.
+      - Fixed startup sequence and preview field collection bugs.
     
     2.1.0 (2025-12-17)
     * Major Feature: Snap-Enabled Measurement Tool

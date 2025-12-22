@@ -1,6 +1,6 @@
 # SecInterp API Reference
 
-This document provides a reference for the core services, utility functions, and main classes in the SecInterp plugin.
+This document provides a technical reference for the core services, utility functions, and main classes in the SecInterp plugin (v2.2.0).
 
 ## Core Services (`core/services/`)
 
@@ -10,7 +10,7 @@ The core logic of the plugin is encapsulated in a set of services, each responsi
 
 ### `ProfileService`
 
-Handles the generation of the topographic profile.
+Handles the generation of the topographic profile and fundamental sampling.
 
 **`generate_topographic_profile(line_lyr, raster_lyr, band_number)`**
 - **Description**: Samples elevation data from a raster layer along a line feature.
@@ -24,17 +24,11 @@ Handles the generation of the topographic profile.
 
 ### `GeologyService`
 
-Handles the processing of geological outcrop data.
+Handles the processing of geological outcrop intersection data.
 
-**`generate_geological_profile(line_lyr, raster_lyr, outcrop_lyr, outcrop_name_field, band_number)`**
-- **Description**: Intersects the section line with geological outcrop polygons and samples the elevation, creating a geological profile. Uses an internal "master profile" for accurate elevation snapping.
-- **Parameters**:
-    - `line_lyr` (QgsVectorLayer): The cross-section line.
-    - `raster_lyr` (QgsRasterLayer): The DEM for elevation data.
-    - `outcrop_lyr` (QgsVectorLayer): The geology polygon layer.
-    - `outcrop_name_field` (str): The attribute field in `outcrop_lyr` containing the geology unit names.
-    - `band_number` (int): The raster band to sample.
-- **Returns**: `list[tuple[float, float, str]]` - A list of `(distance, elevation, unit_name)` tuples.
+**`generate_geological_profile(...)`**
+- **Description**: Intersects the section line with geological unit polygons. Returns rich `GeologySegment` objects.
+- **Returns**: `List[GeologySegment]` - A list of segments containing unit names, coordinates, and attributes.
 
 ---
 
@@ -42,53 +36,75 @@ Handles the processing of geological outcrop data.
 
 Handles the projection of structural measurement points.
 
-**`project_structures(line_lyr, struct_lyr, buffer_m, line_az, dip_field, strike_field)`**
-- **Description**: Filters structural data points within a buffer of the section line and calculates the apparent dip for projection onto the 2D section.
-- **Parameters**:
-    - `line_lyr` (QgsVectorLayer): The cross-section line.
-    - `struct_lyr` (QgsVectorLayer): The point layer with structural data.
-    - `buffer_m` (float): The buffer distance to search for points.
-    - `line_az` (float): The azimuth of the cross-section line.
-    - `dip_field` (str): The attribute field for dip values.
-    - `strike_field` (str): The attribute field for strike values.
-- **Returns**: `list[tuple[float, float]]` - A list of `(distance, apparent_dip)` tuples.
+**`project_structures(...)`**
+- **Description**: Projects structural measurements into the 2D section plane, calculating apparent dip.
+- **Returns**: `List[StructureMeasurement]` - Dataclass containing projected coordinates and calculated dip.
+
+---
+
+### `DrillholeService`
+
+Handles 3D to 2D projection and processing of drillhole data.
+
+**`project_collars(...)`**
+- **Description**: Projects collar points onto the section line within a specified buffer.
+- **Returns**: `List[Tuple]` - (hole_id, dist_along, elevation, offset, depth).
+
+**`process_intervals(...)`**
+- **Description**: Orchestrates desurvey, projection, and interval interpolation.
+- **Returns**: `Tuple[List[GeologySegment], List[Dict]]` - Geological segments and trace geometries.
 
 ## Main Classes
 
 ---
 
-### `SecInterp` (`core/algorithms.py`)
+### `SecInterp` (`sec_interp_plugin.py`)
 
-The main orchestrator class for the plugin.
+The main entry point class for the QGIS plugin.
 
-- **`__init__(iface)`**: Initializes the plugin, services, UI, and data cache.
-- **`run()`**: Shows the main dialog and connects UI signals to handlers.
-- **`process_data()`**: The main data processing workflow. Handles caching, calls the appropriate services, and triggers the preview rendering.
-- **`save_profile_line()`**: Orchestrates the saving of generated data using the exporter classes.
-- **`draw_preview(...)`**: Calls the `PreviewRenderer` to draw the data on the canvas.
+- **`initGui()`**: Initializes the plugin's UI components and toolbar icons.
+- **`run()`**: Main entry point for the plugin's interactive dialog.
+
+---
+
+### `SecInterpDialog` (`gui/main_dialog.py`)
+
+The primary user interface manager.
+
+- **`__init__()`**: Orchestrates specialized managers (`DialogSignalManager`, `DialogDataAggregator`).
+- **`preview_profile_handler()`**: Triggers the generation and rendering of the profile preview.
+- **`export_preview()`**: Handles the export of the current session data to multiple formats.
 
 ---
 
 ### `PreviewRenderer` (`gui/preview_renderer.py`)
 
-Responsible for rendering the interactive preview.
+Responsible for rendering the interactive preview using PyQGIS.
 
-- **`render(...)`**: The main rendering method. It takes the data for topography, geology, and structures and creates the necessary memory layers to display on the canvas. It also handles the creation of axes and labels.
-- **`_decimate_line_data(...)`**: Implements LOD Phase 1 using Douglas-Peucker simplification.
-- **`_adaptive_sample(...)`**: Implements LOD Phase 2 by calculating an adaptive tolerance based on line curvature.
+- **`render(...)`**: The main rendering method. Coordinates the fragmented render components:
+    - `PreviewLayerFactory`: Logic for creating memory layers.
+    - `PreviewAxesManager`: Grid and axis rendering.
+    - `PreviewOptimizer`: Douglas-Peucker and Adaptive sampling (LOD).
+    - `PreviewLegendRenderer`: Legend generation.
+
+## Validation Framework (`core/validation/`)
+
+The plugin uses a modular validation system organized into specialized modules:
+
+- **`field_validator`**: Checks for numeric types, integer ranges, and field existence.
+- **`layer_validator`**: Validates QGIS layers, feature counts, and geometry types.
+- **`path_validator`**: Ensures safe path handling and write permissions.
+- **`project_validator`**: High-level orchestration through the `ProjectValidator` class and `ValidationParams`.
 
 ## Key Utility Functions (`core/utils/`)
 
 ---
 
 ### `core.utils.geology.calculate_apparent_dip(strike, dip, line_azimuth)`
-- **Description**: Calculates the apparent dip of a plane as seen on a vertical cross-section.
-- **Returns**: `float` - The apparent dip angle in degrees.
+- **Returns**: `float` - The apparent dip angle as projected on the section.
 
-### `core.utils.parsing.parse_strike(value)` and `parse_dip(value)`
-- **Description**: Parses strike and dip values that can be either numeric or in string format (e.g., "N 30 E", "45 SW").
-- **Returns**: `float` or `(float, float)` - The parsed angle(s) in degrees.
+### `core.utils.drillhole.calculate_drillhole_trajectory(...)`
+- **Description**: Performs the desurveying calculation for 3D drillhole traces.
 
-### `core.utils.sampling.interpolate_elevation(profile_data, distance)`
-- **Description**: Linearly interpolates an elevation value at a specific distance along a profile.
-- **Returns**: `float` - The interpolated elevation.
+### `core.utils.sampling.sample_raster_along_line(...)`
+- **Description**: Core routine for DEM sampling used by the `ProfileService`.

@@ -11,7 +11,7 @@ from qgis.PyQt.QtWidgets import QWidget
 class LegendWidget(QWidget):
     """Widget to display the geological legend over the map canvas."""
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.renderer = None
         self.setAttribute(Qt.WA_TranslucentBackground)

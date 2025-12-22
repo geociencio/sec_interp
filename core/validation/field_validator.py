@@ -1,4 +1,4 @@
-"""Field and input validation utilities."""
+from typing import List, Tuple, Optional, Union
 from qgis.core import QgsVectorLayer
 # QVariant is a Qt data type required for QGIS field type validation
 # It's not a UI component - it's used to represent generic field values
@@ -6,12 +6,26 @@ from qgis.PyQt.QtCore import QVariant  # type: ignore[import]
 
 def validate_numeric_input(
     value: str,
-    min_val: float | None = None,
-    max_val: float | None = None,
+    min_val: Optional[float] = None,
+    max_val: Optional[float] = None,
     field_name: str = "Value",
     allow_empty: bool = False,
-) -> tuple[bool, str, float | None]:
-    """Validate numeric input from text field."""
+) -> Tuple[bool, str, Optional[float]]:
+    """Validate a numeric input string from a text field.
+
+    Args:
+        value: The string value to validate.
+        min_val: Optional minimum value allowed.
+        max_val: Optional maximum value allowed.
+        field_name: Name of the field for error messages.
+        allow_empty: Whether to allow an empty string.
+
+    Returns:
+        tuple: (is_valid, error_message, float_value)
+            - is_valid (bool): True if validation passed.
+            - error_message (str): Error details if validation failed.
+            - float_value (float | None): The parsed numeric value if valid.
+    """
     if not value or value.strip() == "":
         if allow_empty:
             return True, "", None
@@ -33,12 +47,26 @@ def validate_numeric_input(
 
 def validate_integer_input(
     value: str,
-    min_val: int | None = None,
-    max_val: int | None = None,
+    min_val: Optional[int] = None,
+    max_val: Optional[int] = None,
     field_name: str = "Value",
     allow_empty: bool = False,
-) -> tuple[bool, str, int | None]:
-    """Validate integer input from text field."""
+) -> Tuple[bool, str, Optional[int]]:
+    """Validate an integer input string from a text field.
+
+    Args:
+        value: The string value to validate.
+        min_val: Optional minimum value allowed.
+        max_val: Optional maximum value allowed.
+        field_name: Name of the field for error messages.
+        allow_empty: Whether to allow an empty string.
+
+    Returns:
+        tuple: (is_valid, error_message, int_value)
+            - is_valid (bool): True if validation passed.
+            - error_message (str): Error details if validation failed.
+            - int_value (int | None): The parsed integer value if valid.
+    """
     if not value or value.strip() == "":
         if allow_empty:
             return True, "", None
@@ -60,8 +88,20 @@ def validate_integer_input(
 
 def validate_angle_range(
     value: float, field_name: str, min_angle: float = 0.0, max_angle: float = 360.0
-) -> tuple[bool, str]:
-    """Validate that an angle value is within the expected range."""
+) -> Tuple[bool, str]:
+    """Validate that an angle value is within the expected range.
+
+    Args:
+        value: The angle value to validate.
+        field_name: Name of the field for error messages.
+        min_angle: Minimum allowed angle (default 0.0).
+        max_angle: Maximum allowed angle (default 360.0).
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if validation passed.
+            - error_message (str): Error details if validation failed.
+    """
     if value < min_angle or value > max_angle:
         return (
             False,
@@ -72,9 +112,19 @@ def validate_angle_range(
 
 
 def validate_field_exists(
-    layer: QgsVectorLayer, field_name: str | None
-) -> tuple[bool, str]:
-    """Validate that a field exists in a vector layer."""
+    layer: QgsVectorLayer, field_name: Optional[str]
+) -> Tuple[bool, str]:
+    """Validate that a specific field exists in a vector layer.
+
+    Args:
+        layer: The QGIS vector layer to check.
+        field_name: The name of the field to search for.
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if validation passed.
+            - error_message (str): Error details if validation failed.
+    """
     if not layer:
         return False, "Layer is None"
 
@@ -100,9 +150,20 @@ def validate_field_exists(
 
 
 def validate_field_type(
-    layer: QgsVectorLayer, field_name: str, expected_types: list[QVariant.Type]
-) -> tuple[bool, str]:
-    """Validate that a field has one of the expected data types."""
+    layer: QgsVectorLayer, field_name: str, expected_types: List[QVariant.Type]
+) -> Tuple[bool, str]:
+    """Validate that a field in a layer has one of the expected data types.
+
+    Args:
+        layer: The QGIS vector layer containing the field.
+        field_name: The name of the field to check.
+        expected_types: List of allowed QVariant.Type values.
+
+    Returns:
+        tuple: (is_valid, error_message)
+            - is_valid (bool): True if validation passed.
+            - error_message (str): Error details if validation failed.
+    """
     if not layer:
         return False, "Layer is None"
 
