@@ -63,8 +63,10 @@ from .tools.measure_tool import ProfileMeasureTool
 from .legend_widget import LegendWidget
 from .main_dialog_cache_handler import CacheHandler
 from .main_dialog_config import DialogDefaults
+from .main_dialog_data import DialogDataAggregator
 from .main_dialog_export import ExportManager
 from .main_dialog_preview import PreviewManager
+from .main_dialog_signals import DialogSignalManager
 from .main_dialog_validation import DialogValidator
 from .main_dialog_settings import DialogSettingsManager
 from .main_dialog_status import DialogStatusManager
@@ -113,22 +115,10 @@ class SecInterpDialog(SecInterpMainWindow):
             self.messagebar = self.iface.messageBar()
 
         # Initialize manager instances
-        self.validator = DialogValidator(self)
-        self.preview_manager = PreviewManager(self)
-        self.export_manager = ExportManager(self)
-        self.cache_handler = CacheHandler(self)
-        self.settings_manager = DialogSettingsManager(self)
-        self.status_manager = DialogStatusManager(self)
-        self.status_manager.setup_indicators()
-
-        # Set default values are handled in Page classes now
+        self._init_managers()
 
         # Create legend widget
-        # Note: self.preview is now self.preview_widget.canvas
         self.legend_widget = LegendWidget(self.preview_widget.canvas)
-        # We need to resize it whenever canvas resizes, or initially
-        # For now, just set initial size is okay
-        # self.legend_widget.resize(self.preview_widget.canvas.size())
 
         # Store current preview data
         self.current_topo_data = None
@@ -137,81 +127,37 @@ class SecInterpDialog(SecInterpMainWindow):
         self.current_canvas = None
         self.current_layers = []
 
-        # Connect Signal overrides and Business Logic
-        # Button connections are already set up in main_window signals? No, we need to bind actions
-
-        # Clear Cache Button
+        # Add clear cache button
         self.clear_cache_btn = QPushButton("Clear Cache")
         self.clear_cache_btn.setToolTip("Clear cached data to force re-processing.")
-        self.clear_cache_btn.clicked.connect(self.clear_cache_handler)
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
 
-        # Dialog Buttons
-        self.button_box.accepted.connect(self.accept_handler)
-        self.button_box.rejected.connect(self.reject_handler)
-        self.button_box.helpRequested.connect(self.open_help)
+        # Initialize map tools
+        self._init_tools()
 
-        # Preview Buttons
-        self.preview_widget.btn_preview.clicked.connect(self.preview_profile_handler)
-        self.preview_widget.btn_export.clicked.connect(self.export_preview)
-
-        # Measure Tool
-        self.preview_widget.btn_measure.toggled.connect(self.toggle_measure_tool)
-
-        # Output changes
-        self.output_widget.fileChanged.connect(self.update_button_state)
-
-        # Page specific connections allowing global state updates
-        self.page_dem.raster_combo.layerChanged.connect(self.update_button_state)
-        self.page_dem.raster_combo.layerChanged.connect(
-            self.update_preview_checkbox_states
-        )
-
-        self.page_section.line_combo.layerChanged.connect(self.update_button_state)
-        self.page_section.line_combo.layerChanged.connect(
-            self.update_preview_checkbox_states
-        )
-
-        self.page_geology.dataChanged.connect(self.update_preview_checkbox_states)
-        self.page_struct.dataChanged.connect(self.update_preview_checkbox_states)
-        self.page_drillhole.dataChanged.connect(self.update_preview_checkbox_states)
-
-        # Preview checkbox connections
-        self.preview_widget.chk_topo.stateChanged.connect(
-            self.update_preview_from_checkboxes
-        )
-        self.preview_widget.chk_geol.stateChanged.connect(
-            self.update_preview_from_checkboxes
-        )
-        self.preview_widget.chk_struct.stateChanged.connect(
-            self.update_preview_from_checkboxes
-        )
-        self.preview_widget.chk_drillholes.stateChanged.connect(
-            self.update_preview_from_checkboxes
-        )
-
-        self.preview_widget.spin_max_points.valueChanged.connect(
-            self.update_preview_from_checkboxes
-        )
-        self.preview_widget.chk_auto_lod.toggled.connect(
-            self.update_preview_from_checkboxes
-        )
-        self.preview_widget.chk_adaptive_sampling.toggled.connect(
-            self.update_preview_from_checkboxes
-        )
+        # Connect all signals
+        self.signal_manager = DialogSignalManager(self)
+        self.signal_manager.connect_all()
 
         # Initial state update
         self.status_manager.update_all()
         self.settings_manager.load_settings()
 
-        # Enable Pan Tool by default
+    def _init_managers(self):
+        """Initialize all manager instances."""
+        self.validator = DialogValidator(self)
+        self.preview_manager = PreviewManager(self)
+        self.export_manager = ExportManager(self)
+        self.cache_handler = CacheHandler(self)
+        self.data_aggregator = DialogDataAggregator(self)
+        self.settings_manager = DialogSettingsManager(self)
+        self.status_manager = DialogStatusManager(self)
+        self.status_manager.setup_indicators()
+
+    def _init_tools(self):
+        """Initialize map tools."""
         self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
         self.measure_tool = ProfileMeasureTool(self.preview_widget.canvas)
-        self.measure_tool.measurementChanged.connect(self.update_measurement_display)
-        self.measure_tool.measurementCleared.connect(
-            lambda: self.preview_widget.results_text.clear()
-        )
-
         self.preview_widget.canvas.setMapTool(self.pan_tool)
 
     def wheelEvent(self, event):
@@ -274,61 +220,12 @@ class SecInterpDialog(SecInterpMainWindow):
         self.status_manager.update_button_state()
 
     def get_selected_values(self):
-        """Get the selected values from the dialog with safe type conversion."""
-        # Aggregate data from all pages
-        dem_data = self.page_dem.get_data()
-        section_data = self.page_section.get_data()
-        geology_data = self.page_geology.get_data()
-        structure_data = self.page_struct.get_data()
-
-        # Combine into flat dictionary expected by the rest of the app (legacy support)
-        flat_dict = {
-            "raster_layer": dem_data["raster_layer"],
-            "selected_band": dem_data["selected_band"],
-            "scale": dem_data["scale"],
-            "vertexag": dem_data["vertexag"],
-            "crossline_layer": section_data["crossline_layer"],
-            "buffer_distance": section_data["buffer_distance"],
-            "outcrop_layer": geology_data["outcrop_layer"],
-            "outcrop_name_field": geology_data["outcrop_name_field"],
-            "structural_layer": structure_data["structural_layer"],
-            "dip_field": structure_data["dip_field"],
-            "strike_field": structure_data["strike_field"],
-            "dip_scale_factor": structure_data["dip_scale_factor"],
-            "output_path": self.output_widget.filePath(),
-        }
+        """Get the selected values from the dialog.
         
-        # Merge drillhole data
-        drillhole_data = self.page_drillhole.get_data()
-        
-        # Map DrillholePage keys to Controller keys (see drillsec.py logic)
-        # Controller expects:
-        # collar_layer_obj, collar_id_field, collar_x_field...
-        # survey_layer_obj...
-        
-        flat_dict.update({
-            "collar_layer_obj": drillhole_data["collar_layer"],
-            "collar_id_field": drillhole_data["collar_id"],
-            "collar_use_geometry": drillhole_data["use_geometry"],
-            "collar_x_field": drillhole_data["collar_x"],
-            "collar_y_field": drillhole_data["collar_y"],
-            "collar_z_field": drillhole_data["collar_z"],
-            "collar_depth_field": drillhole_data["collar_depth"],
-            
-            "survey_layer_obj": drillhole_data["survey_layer"],
-            "survey_id_field": drillhole_data["survey_id"],
-            "survey_depth_field": drillhole_data["survey_depth"],
-            "survey_azim_field": drillhole_data["survey_azim"],
-            "survey_incl_field": drillhole_data["survey_incl"],
-            
-            "interval_layer_obj": drillhole_data["interval_layer"],
-            "interval_id_field": drillhole_data["interval_id"],
-            "interval_from_field": drillhole_data["interval_from"],
-            "interval_to_field": drillhole_data["interval_to"],
-            "interval_lith_field": drillhole_data["interval_lith"],
-        })
-        
-        return flat_dict
+        Returns:
+            Dictionary with all dialog values in legacy flat format
+        """
+        return self.data_aggregator.get_all_values()
 
     def get_preview_options(self):
         """Return the state of preview layer checkboxes.

@@ -23,5 +23,5 @@ dependencies:
   - "base_page"
   - "concurrent"
   - "contextlib"
-  - "controller"
-  - "core"
+  - "csv_exporter"
+  - "dataclasses"

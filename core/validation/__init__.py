@@ -1,18 +1,13 @@
-"""Validation utilities for the SecInterp QGIS plugin.
+"""Validation package for SecInterp plugin."""
 
-This module provides reusable validation functions for user inputs,
-layer selections, and data integrity checks.
-
-NOTE: This module is now a facade for the `core.validation` package.
-Please import from `core.validation` directly in new code.
-"""
-
-from .validation import (
+from .field_validator import (
     validate_numeric_input,
     validate_integer_input,
     validate_angle_range,
     validate_field_exists,
     validate_field_type,
+)
+from .layer_validator import (
     validate_layer_exists,
     validate_layer_has_features,
     validate_layer_geometry,
@@ -20,8 +15,12 @@ from .validation import (
     validate_structural_requirements,
     validate_layer_configuration,
     validate_crs_compatibility,
+)
+from .path_validator import (
     validate_safe_output_path,
     validate_output_path,
+)
+from .project_validator import (
     validate_reasonable_ranges,
     ValidationParams,
     ProjectValidator,

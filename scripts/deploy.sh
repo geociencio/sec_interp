@@ -52,6 +52,7 @@ fi
 
 echo "Copying core files..."
 cp -v "$SOURCE_DIR/__init__.py" \
+      "$SOURCE_DIR/sec_interp_plugin.py" \
       "$SOURCE_DIR/logger_config.py" \
       "$SOURCE_DIR/metadata.txt" \
       "$SOURCE_DIR/icon.png" \
@@ -70,6 +71,12 @@ mkdir -p "$DEST_DIR/gui/ui"
 mkdir -p "$DEST_DIR/resources"
 
 # Copy core module
+# Copy core/validation module (directory)
+if [ -d "$SOURCE_DIR/core/validation" ]; then
+    echo "Copying core/validation module..."
+    mkdir -p "$DEST_DIR/core/validation"
+    cp -v "$SOURCE_DIR/core/validation/"*.py "$DEST_DIR/core/validation/"
+fi
 cp -v "$SOURCE_DIR/core/"*.py "$DEST_DIR/core/"
 
 # Copy core/services module

@@ -29,6 +29,6 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
-    from .core.algorithms import SecInterp
+    from .sec_interp_plugin import SecInterp
 
     return SecInterp(iface)
