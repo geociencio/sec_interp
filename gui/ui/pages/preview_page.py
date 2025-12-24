@@ -70,8 +70,8 @@ class PreviewWidget(QWidget):
         self.btn_measure.setToolTip("Measure distance and slope")
 
         # Finalize measurement button (only visible during measurement)
-        self.btn_finalize = QPushButton("Finalizar")
-        self.btn_finalize.setToolTip("Finalizar medición multi-punto")
+        self.btn_finalize = QPushButton("Finalize")
+        self.btn_finalize.setToolTip("Finalize multi-point measurement")
         self.btn_finalize.setVisible(False)  # Hidden by default
 
         btn_layout.addWidget(self.btn_preview)
