@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2025-12-23
+### Added
+- **Multi-Point Measurement Tool**:
+  - Enhanced measurement capabilities to support polyline traces with unlimited points.
+  - Added dedicated "**Finalize**" button to explicitly complete measurements and freeze results.
+  - Visual improvements: Green markers at vertices, persistent results after finalization, and auto-reset on new measurement.
+  - Comprehensive metrics: Total 3D distance, Horizontal distance, Elevation change, and Average slope.
+
+### Fixed
+- **Async Geology Stability**:
+  - Resolved `NameError: PreviewResult` preventing successful completion of background geology processing.
+- **Documentation Build**:
+  - Fixed Sphinx `autodoc` import errors caused by Python 3.10+ union type syntax (`| None` -> `Optional`).
+- **Visual Glitches**:
+  - Fixed "trailing red line" artifact after finalizing measurements by correctly redrawing the rubber band.
+
 ## [2.2.0] - 2025-12-21
 ### Added
 - **Architectural Evolution: Modular Core & Clean Entry Point**:
