@@ -31,8 +31,11 @@ class ProfileLineShpExporter(BaseExporter):
         return [".shp"]
 
     def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
-        """Args:
-        data (dict): Must contain 'profile_data' (list of tuples) and 'crs'.
+        """Export the topographic profile line to a Shapefile.
+        
+        Args:
+            output_path: Path to the output Shapefile.
+            data: Dictionary containing 'profile_data' and 'crs'.
         """
         profile_data = data.get("profile_data")
         crs = data.get("crs")
@@ -68,8 +71,11 @@ class GeologyShpExporter(BaseExporter):
         return [".shp"]
 
     def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
-        """Args:
-        data (dict): Must contain 'geology_data' (List[GeologySegment]) and 'crs'.
+        """Export the geological profile to a Shapefile.
+        
+        Args:
+            output_path: Path to the output Shapefile.
+            data: Dictionary containing 'geology_data' and 'crs'.
         """
         geology_data = data.get("geology_data")
         crs = data.get("crs")
@@ -128,9 +134,11 @@ class StructureShpExporter(BaseExporter):
         return [".shp"]
 
     def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
-        """Args:
-        data (dict): Must contain 'structural_data' (List[StructureMeasurement]),
-                     'crs', 'dip_scale_factor', 'raster_res'.
+        """Export the structural profile to a Shapefile.
+        
+        Args:
+            output_path: Path to the output Shapefile.
+            data: Dictionary containing 'structural_data', 'crs', 'dip_scale_factor', and 'raster_res'.
         """
         structural_data = data.get("structural_data")
         crs = data.get("crs")
@@ -207,8 +215,11 @@ class AxesShpExporter(BaseExporter):
         return [".shp"]
 
     def export(self, output_path: Path, data: Dict[str, Any]) -> bool:
-        """Args:
-        data (dict): Must contain 'profile_data' and 'crs'.
+        """Export the profile axes to a Shapefile.
+        
+        Args:
+            output_path: Path to the output Shapefile.
+            data: Dictionary containing 'profile_data' and 'crs'.
         """
         profile_data = data.get("profile_data")
         crs = data.get("crs")

@@ -108,6 +108,33 @@ class PreviewService:
         """
         self.controller = controller
 
+    @staticmethod
+    def calculate_max_points(canvas_width: int, manual_max: int = 1000, auto_lod: bool = True, ratio: float = 1.0) -> int:
+        """Calculate the optimal number of points for rendering.
+
+        Args:
+            canvas_width: Current width of the preview canvas
+            manual_max: User-specified maximum points
+            auto_lod: Whether to use automatic level of detail
+            ratio: Current zoom ratio (full_extent / current_extent)
+
+        Returns:
+            int: Number of points to use for rendering
+        """
+        if auto_lod:
+            # Optimal points is roughly 2x the pixel width for high quality rendering
+            base_points = max(200, int(canvas_width * 2))
+            
+            # Apply zoom boost if ratio is significant
+            if ratio > 1.1:
+                # Slight detail boost as we zoom in
+                import math
+                detail_boost = 1.0 + (math.log10(ratio) * 0.5)
+                return int(base_points * detail_boost)
+            
+            return base_points
+        return manual_max
+
     def generate_all(self, params: PreviewParams, transform_context: Any) -> PreviewResult:
         """Generate all preview components.
         

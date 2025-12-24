@@ -42,7 +42,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsFileWidget, QgsMapCanvas, QgsMapToolPan
-from qgis.PyQt.QtCore import QSize, QVariant, QUrl
+from qgis.PyQt.QtCore import QSize, QUrl, QVariant
 from qgis.PyQt.QtGui import QColor, QDesktopServices
 from qgis.PyQt.QtWidgets import (
     QApplication,
@@ -60,20 +60,18 @@ from sec_interp.exporters import get_exporter
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
-from .tools.measure_tool import ProfileMeasureTool
 from .legend_widget import LegendWidget
 from .main_dialog_cache_handler import CacheHandler
 from .main_dialog_config import DialogDefaults
 from .main_dialog_data import DialogDataAggregator
 from .main_dialog_export import ExportManager
 from .main_dialog_preview import PreviewManager
-from .main_dialog_signals import DialogSignalManager
-from .main_dialog_validation import DialogValidator
 from .main_dialog_settings import DialogSettingsManager
+from .main_dialog_signals import DialogSignalManager
 from .main_dialog_status import DialogStatusManager
 from .main_dialog_utils import DialogEntityManager
-
-
+from .main_dialog_validation import DialogValidator
+from .tools.measure_tool import ProfileMeasureTool
 from .ui.main_window import SecInterpMainWindow
 
 
@@ -187,22 +185,50 @@ class SecInterpDialog(SecInterpMainWindow):
     def toggle_measure_tool(self, checked):
         """Toggle measurement tool."""
         if checked:
+            # Reset any previous measurement when starting new one
+            self.measure_tool.reset()
             self.preview_widget.canvas.setMapTool(self.measure_tool)
             self.measure_tool.activate()
+            # Show finalize button when measurement tool is active
+            self.preview_widget.btn_finalize.setVisible(True)
         else:
             self.preview_widget.canvas.setMapTool(self.pan_tool)
             self.pan_tool.activate()
+            # Hide finalize button when measurement tool is inactive
+            self.preview_widget.btn_finalize.setVisible(False)
             # Clear results when turning off? Maybe optional
             # self.preview_widget.results_text.clear()
 
-    def update_measurement_display(self, dx, dy, dist, slope):
-        """Display measurement results."""
+    def update_measurement_display(self, metrics):
+        """Display measurement results from multi-point tool.
+
+        Args:
+            metrics: Dictionary containing measurement data:
+                - total_distance: Total accumulated distance
+                - horizontal_distance: Total horizontal distance
+                - elevation_change: Total elevation change
+                - avg_slope: Average slope in degrees
+                - segment_count: Number of segments
+                - point_count: Number of points
+        """
+        if not metrics or metrics.get("point_count", 0) < 2:
+            return
+
+        total_dist = metrics.get("total_distance", 0)
+        horiz_dist = metrics.get("horizontal_distance", 0)
+        elev_change = metrics.get("elevation_change", 0)
+        avg_slope = metrics.get("avg_slope", 0)
+        seg_count = metrics.get("segment_count", 0)
+        point_count = metrics.get("point_count", 0)
+
+        # Format result text with HTML for better presentation
         msg = (
-            f"<b>Measurement Result:</b><br>"
-            f"Distance: {dist:.2f} m<br>"
-            f"Horizontal (dx): {dx:.2f} m<br>"
-            f"Vertical (dy): {dy:.2f} m<br>"
-            f"Slope: {slope:.1f}°"
+            f"<b>Medición Multi-Punto</b><br>"
+            f"<b>Puntos:</b> {point_count} | <b>Segmentos:</b> {seg_count}<br>"
+            f"<b>Distancia Total:</b> {total_dist:.2f} m<br>"
+            f"<b>Distancia Horizontal:</b> {horiz_dist:.2f} m<br>"
+            f"<b>Cambio Elevación:</b> {elev_change:+.2f} m<br>"
+            f"<b>Pendiente Promedio:</b> {avg_slope:.1f}°"
         )
         self.preview_widget.results_text.setHtml(msg)
         # Ensure results group is expanded
@@ -218,7 +244,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def get_selected_values(self):
         """Get the selected values from the dialog.
-        
+
         Returns:
             Dictionary with all dialog values in legacy flat format
         """
@@ -237,7 +263,9 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
-            "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
+            "use_adaptive_sampling": bool(
+                self.preview_widget.chk_adaptive_sampling.isChecked()
+            ),
         }
 
     def update_preview_from_checkboxes(self):

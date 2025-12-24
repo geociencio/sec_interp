@@ -1,0 +1,2812 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; SecInterp 2.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=b21de401"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#K"><strong>K</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceTimer.__enter__">__enter__() (sec_interp.core.performance_metrics.PerformanceTimer method)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceTimer.__exit__">__exit__() (sec_interp.core.performance_metrics.PerformanceTimer method)</a>
+</li>
+      <li><a href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.__init__">__init__() (sec_interp.core.controller.ProfileController method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.__init__">(sec_interp.core.data_cache.DataCache method)</a>
+</li>
+        <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceTimer.__init__">(sec_interp.core.performance_metrics.PerformanceTimer method)</a>
+</li>
+        <li><a href="sec_interp.core.services.export_service.html#sec_interp.core.services.export_service.ExportService.__init__">(sec_interp.core.services.export_service.ExportService method)</a>
+</li>
+        <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewService.__init__">(sec_interp.core.services.preview_service.PreviewService method)</a>
+</li>
+        <li><a href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter.__init__">(sec_interp.exporters.base_exporter.BaseExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.BaseExporter.__init__">(sec_interp.exporters.BaseExporter method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.__init__">(sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_cache_handler.html#sec_interp.gui.main_dialog_cache_handler.CacheHandler.__init__">(sec_interp.gui.main_dialog_cache_handler.CacheHandler method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_data.html#sec_interp.gui.main_dialog_data.DialogDataAggregator.__init__">(sec_interp.gui.main_dialog_data.DialogDataAggregator method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_export.html#sec_interp.gui.main_dialog_export.ExportManager.__init__">(sec_interp.gui.main_dialog_export.ExportManager method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.__init__">(sec_interp.gui.main_dialog_preview.PreviewManager method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_settings.html#sec_interp.gui.main_dialog_settings.DialogSettingsManager.__init__">(sec_interp.gui.main_dialog_settings.DialogSettingsManager method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_signals.html#sec_interp.gui.main_dialog_signals.DialogSignalManager.__init__">(sec_interp.gui.main_dialog_signals.DialogSignalManager method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.__init__">(sec_interp.gui.main_dialog_status.DialogStatusManager method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_validation.html#sec_interp.gui.main_dialog_validation.DialogValidator.__init__">(sec_interp.gui.main_dialog_validation.DialogValidator method)</a>
+</li>
+        <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.__init__">(sec_interp.gui.parallel_geology.GeologyProcessingThread method)</a>
+</li>
+        <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.__init__">(sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+        <li><a href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.__init__">(sec_interp.gui.preview_renderer.PreviewRenderer method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.PreviewRenderer.__init__">(sec_interp.gui.PreviewRenderer method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.__init__">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.base_page.html#sec_interp.gui.ui.pages.base_page.BasePage.__init__">(sec_interp.gui.ui.pages.base_page.BasePage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.html#sec_interp.gui.ui.pages.BasePage.__init__">(sec_interp.gui.ui.pages.BasePage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.dem_page.html#sec_interp.gui.ui.pages.dem_page.DemPage.__init__">(sec_interp.gui.ui.pages.dem_page.DemPage method)</a>
+</li>
+        <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.__init__">(sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.accept_handler">accept_handler() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.accept_handler">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.activate">activate() (sec_interp.gui.tools.measure_tool.ProfileMeasureTool method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.active_units">active_units (sec_interp.gui.preview_renderer.PreviewRenderer property)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.PreviewRenderer.active_units">(sec_interp.gui.PreviewRenderer property)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.preview_optimizer.html#sec_interp.gui.preview_optimizer.PreviewOptimizer.adaptive_sample">adaptive_sample() (sec_interp.gui.preview_optimizer.PreviewOptimizer class method)</a>
+</li>
+      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.add_action">add_action() (sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.sidebar.html#sec_interp.gui.ui.sidebar.Sidebar.add_item">add_item() (sec_interp.gui.ui.sidebar.Sidebar method)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.add_metadata">add_metadata() (sec_interp.core.performance_metrics.MetricsCollector method)</a>
+</li>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.all_finished">all_finished (sec_interp.gui.parallel_geology.ParallelGeologyService attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ALLOW_EMPTY_GEOLOGY">ALLOW_EMPTY_GEOLOGY (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ALLOW_EMPTY_STRUCTURES">ALLOW_EMPTY_STRUCTURES (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.AnalysisError">AnalysisError</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectAnalyzer.analyze">analyze() (sec_interp.analyze_project_optfixed.ProjectAnalyzer method)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.apparent_dip">apparent_dip (sec_interp.core.types.StructureMeasurement attribute)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment.attributes">attributes (sec_interp.core.types.GeologySegment attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.attributes">(sec_interp.core.types.StructureMeasurement attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.AUTO_REFRESH_PREVIEW">AUTO_REFRESH_PREVIEW (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.AUTO_SAVE_SETTINGS">AUTO_SAVE_SETTINGS (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.AxesShpExporter">AxesShpExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.AxesShpExporter">(class in sec_interp.exporters.profile_exporters)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.BACKGROUND_COLOR">BACKGROUND_COLOR (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.band_num">band_num (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.band_number">band_number (sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.band_number">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.BaseExporter">BaseExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter">(class in sec_interp.exporters.base_exporter)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.ui.pages.html#sec_interp.gui.ui.pages.BasePage">BasePage (class in sec_interp.gui.ui.pages)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.base_page.html#sec_interp.gui.ui.pages.base_page.BasePage">(class in sec_interp.gui.ui.pages.base_page)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.batch_progress">batch_progress (sec_interp.gui.parallel_geology.ParallelGeologyService attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.buffer_dist">buffer_dist (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult.buffer_dist">(sec_interp.core.services.preview_service.PreviewResult attribute)</a>
+</li>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.buffer_dist">(sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+</li>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.buffer_dist">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.BUFFER_DISTANCE">BUFFER_DISTANCE (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.cache_data">cache_data() (sec_interp.core.controller.ProfileController method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.CACHE_EXPIRY_SECONDS">CACHE_EXPIRY_SECONDS (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_cache_handler.html#sec_interp.gui.main_dialog_cache_handler.CacheHandler">CacheHandler (class in sec_interp.gui.main_dialog_cache_handler)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.calculate_apparent_dip">calculate_apparent_dip() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geology.html#sec_interp.core.utils.geology.calculate_apparent_dip">(in module sec_interp.core.utils.geology)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.calculate_bounds">calculate_bounds() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.rendering.html#sec_interp.core.utils.rendering.calculate_bounds">(in module sec_interp.core.utils.rendering)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.preview_optimizer.html#sec_interp.gui.preview_optimizer.PreviewOptimizer.calculate_curvature">calculate_curvature() (sec_interp.gui.preview_optimizer.PreviewOptimizer static method)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.calculate_drillhole_trajectory">calculate_drillhole_trajectory() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.drillhole.html#sec_interp.core.utils.drillhole.calculate_drillhole_trajectory">(in module sec_interp.core.utils.drillhole)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.calculate_interval">calculate_interval() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.rendering.html#sec_interp.core.utils.rendering.calculate_interval">(in module sec_interp.core.utils.rendering)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.calculate_line_azimuth">calculate_line_azimuth() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.spatial.html#sec_interp.core.utils.spatial.calculate_line_azimuth">(in module sec_interp.core.utils.spatial)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewService.calculate_max_points">calculate_max_points() (sec_interp.core.services.preview_service.PreviewService static method)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.calculate_step_size">calculate_step_size() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.spatial.html#sec_interp.core.utils.spatial.calculate_step_size">(in module sec_interp.core.utils.spatial)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasMoveEvent">canvasMoveEvent() (sec_interp.gui.tools.measure_tool.ProfileMeasureTool method)</a>
+</li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasReleaseEvent">canvasReleaseEvent() (sec_interp.gui.tools.measure_tool.ProfileMeasureTool method)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.cardinal_to_azimuth">cardinal_to_azimuth() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.parsing.html#sec_interp.core.utils.parsing.cardinal_to_azimuth">(in module sec_interp.core.utils.parsing)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis.classes">classes (sec_interp.analyze_project_optfixed.ModuleAnalysis attribute)</a>
+</li>
+      <li><a href="sec_interp.html#sec_interp.classFactory">classFactory() (in module sec_interp)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.LRUCache.clear">clear() (sec_interp.analyze_project_optfixed.LRUCache method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.clear">(sec_interp.core.data_cache.DataCache method)</a>
+</li>
+        <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.clear">(sec_interp.core.performance_metrics.MetricsCollector method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.clear_cache_handler">clear_cache_handler() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.clear_cache_handler">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.collar_depth_field">collar_depth_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.collar_id_field">collar_id_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.collar_layer">collar_layer (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.collar_use_geometry">collar_use_geometry (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.collar_x_field">collar_x_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.collar_y_field">collar_y_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.collar_z_field">collar_z_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProgressTracker.complete">complete() (sec_interp.analyze_project_optfixed.ProgressTracker method)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis.complexity_score">complexity_score (sec_interp.analyze_project_optfixed.ModuleAnalysis attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_signals.html#sec_interp.gui.main_dialog_signals.DialogSignalManager.connect_all">connect_all() (sec_interp.gui.main_dialog_signals.DialogSignalManager method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_axes_manager.html#sec_interp.gui.preview_axes_manager.PreviewAxesManager.create_axes_labels_layer">create_axes_labels_layer() (sec_interp.gui.preview_axes_manager.PreviewAxesManager class method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_axes_manager.html#sec_interp.gui.preview_axes_manager.PreviewAxesManager.create_axes_layer">create_axes_layer() (sec_interp.gui.preview_axes_manager.PreviewAxesManager class method)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.create_buffer_geometry">create_buffer_geometry() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.create_buffer_geometry">(in module sec_interp.core.utils.geometry)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.create_coordinate_transform">create_coordinate_transform() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.rendering.html#sec_interp.core.utils.rendering.create_coordinate_transform">(in module sec_interp.core.utils.rendering)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.create_distance_area">create_distance_area() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.spatial.html#sec_interp.core.utils.spatial.create_distance_area">(in module sec_interp.core.utils.spatial)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_drillhole_interval_layer">create_drillhole_interval_layer() (sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_drillhole_trace_layer">create_drillhole_trace_layer() (sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_geol_layer">create_geol_layer() (sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.create_memory_layer">create_memory_layer() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.create_memory_layer">(in module sec_interp.core.utils.geometry)</a>
+</li>
+        <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_memory_layer">(sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.create_shapefile_writer">create_shapefile_writer() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.io.html#sec_interp.core.utils.io.create_shapefile_writer">(in module sec_interp.core.utils.io)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_struct_layer">create_struct_layer() (sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_topo_layer">create_topo_layer() (sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.CSVExporter">CSVExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.csv_exporter.html#sec_interp.exporters.csv_exporter.CSVExporter">(class in sec_interp.exporters.csv_exporter)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache">DataCache (class in sec_interp.core.data_cache)</a>
+</li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.deactivate">deactivate() (sec_interp.gui.tools.measure_tool.ProfileMeasureTool method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_optimizer.html#sec_interp.gui.preview_optimizer.PreviewOptimizer.decimate">decimate() (sec_interp.gui.preview_optimizer.PreviewOptimizer static method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.DEFAULT_BAND">DEFAULT_BAND (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectAnalyzer.DEFAULT_CONFIG">DEFAULT_CONFIG (sec_interp.analyze_project_optfixed.ProjectAnalyzer attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.pages.dem_page.html#sec_interp.gui.ui.pages.dem_page.DemPage">DemPage (class in sec_interp.gui.ui.pages.dem_page)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.densify_line_by_interval">densify_line_by_interval() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.densify_line_by_interval">(in module sec_interp.core.utils.geometry)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis.dependencies">dependencies (sec_interp.analyze_project_optfixed.ModuleAnalysis attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig">DialogConfig (class in sec_interp.gui.main_dialog_config)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_data.html#sec_interp.gui.main_dialog_data.DialogDataAggregator">DialogDataAggregator (class in sec_interp.gui.main_dialog_data)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults">DialogDefaults (class in sec_interp.gui.main_dialog_config)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager">DialogEntityManager (class in sec_interp.gui.main_dialog_utils)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_settings.html#sec_interp.gui.main_dialog_settings.DialogSettingsManager">DialogSettingsManager (class in sec_interp.gui.main_dialog_settings)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_signals.html#sec_interp.gui.main_dialog_signals.DialogSignalManager">DialogSignalManager (class in sec_interp.gui.main_dialog_signals)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager">DialogStatusManager (class in sec_interp.gui.main_dialog_status)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_validation.html#sec_interp.gui.main_dialog_validation.DialogValidator">DialogValidator (class in sec_interp.gui.main_dialog_validation)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.dip_field">dip_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.DIP_SCALE">DIP_SCALE (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.dip_scale_factor">dip_scale_factor (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.dip_scale_factor">(sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+</li>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.dip_scale_factor">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.DIP_SCALE_FACTOR">DIP_SCALE_FACTOR (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.distance">distance (sec_interp.core.types.StructureMeasurement attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.DPI">DPI (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_legend_renderer.html#sec_interp.gui.preview_legend_renderer.PreviewLegendRenderer.draw_legend">draw_legend() (sec_interp.gui.preview_legend_renderer.PreviewLegendRenderer static method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.draw_legend">(sec_interp.gui.preview_renderer.PreviewRenderer method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.PreviewRenderer.draw_legend">(sec_interp.gui.PreviewRenderer method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.draw_preview">draw_preview() (sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult.drillhole">drillhole (sec_interp.core.services.preview_service.PreviewResult attribute)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.DrillholeIntervalShpExporter">DrillholeIntervalShpExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.drillhole_exporters.html#sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter">(class in sec_interp.exporters.drillhole_exporters)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.ui.pages.drillhole_page.html#sec_interp.gui.ui.pages.drillhole_page.DrillholePage">DrillholePage (class in sec_interp.gui.ui.pages.drillhole_page)</a>
+</li>
+      <li><a href="sec_interp.core.services.html#sec_interp.core.services.DrillholeService">DrillholeService (class in sec_interp.core.services)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.drillhole_service.html#sec_interp.core.services.drillhole_service.DrillholeService">(class in sec_interp.core.services.drillhole_service)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.DrillholeTraceShpExporter">DrillholeTraceShpExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.drillhole_exporters.html#sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter">(class in sec_interp.exporters.drillhole_exporters)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.elevation">elevation (sec_interp.core.types.StructureMeasurement attribute)</a>
+</li>
+      <li><a href="sec_interp.logger_config.html#sec_interp.logger_config.QgsLogHandler.emit">emit() (sec_interp.logger_config.QgsLogHandler method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.EMPTY_LAYER">EMPTY_LAYER (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_CACHE">ENABLE_CACHE (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_LOD">ENABLE_LOD (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_PERFORMANCE_METRICS">ENABLE_PERFORMANCE_METRICS (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_TOOLTIPS">ENABLE_TOOLTIPS (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_ZOOM">ENABLE_ZOOM (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.entry_points">entry_points (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.error_occurred">error_occurred (sec_interp.gui.parallel_geology.GeologyProcessingThread attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.error_occurred">(sec_interp.gui.parallel_geology.ParallelGeologyService attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget.eventFilter">eventFilter() (sec_interp.gui.legend_widget.LegendWidget method)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.AxesShpExporter.export">export() (sec_interp.exporters.AxesShpExporter method)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter.export">(sec_interp.exporters.base_exporter.BaseExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.BaseExporter.export">(sec_interp.exporters.BaseExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.csv_exporter.html#sec_interp.exporters.csv_exporter.CSVExporter.export">(sec_interp.exporters.csv_exporter.CSVExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.CSVExporter.export">(sec_interp.exporters.CSVExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.drillhole_exporters.html#sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export">(sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.drillhole_exporters.html#sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export">(sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.DrillholeIntervalShpExporter.export">(sec_interp.exporters.DrillholeIntervalShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.DrillholeTraceShpExporter.export">(sec_interp.exporters.DrillholeTraceShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.GeologyShpExporter.export">(sec_interp.exporters.GeologyShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.image_exporter.html#sec_interp.exporters.image_exporter.ImageExporter.export">(sec_interp.exporters.image_exporter.ImageExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.ImageExporter.export">(sec_interp.exporters.ImageExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.pdf_exporter.html#sec_interp.exporters.pdf_exporter.PDFExporter.export">(sec_interp.exporters.pdf_exporter.PDFExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.PDFExporter.export">(sec_interp.exporters.PDFExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.AxesShpExporter.export">(sec_interp.exporters.profile_exporters.AxesShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.GeologyShpExporter.export">(sec_interp.exporters.profile_exporters.GeologyShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.ProfileLineShpExporter.export">(sec_interp.exporters.profile_exporters.ProfileLineShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.StructureShpExporter.export">(sec_interp.exporters.profile_exporters.StructureShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.ProfileLineShpExporter.export">(sec_interp.exporters.ProfileLineShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.ShapefileExporter.export">(sec_interp.exporters.ShapefileExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.shp_exporter.html#sec_interp.exporters.shp_exporter.ShapefileExporter.export">(sec_interp.exporters.shp_exporter.ShapefileExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.StructureShpExporter.export">(sec_interp.exporters.StructureShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.svg_exporter.html#sec_interp.exporters.svg_exporter.SVGExporter.export">(sec_interp.exporters.svg_exporter.SVGExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.SVGExporter.export">(sec_interp.exporters.SVGExporter method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.services.export_service.html#sec_interp.core.services.export_service.ExportService.export_data">export_data() (sec_interp.core.services.export_service.ExportService method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_export.html#sec_interp.gui.main_dialog_export.ExportManager.export_data">(sec_interp.gui.main_dialog_export.ExportManager method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.export_preview">export_preview() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_export.html#sec_interp.gui.main_dialog_export.ExportManager.export_preview">(sec_interp.gui.main_dialog_export.ExportManager method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.export_preview">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.EXPORT_QUALITY">EXPORT_QUALITY (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.export_to_image">export_to_image() (sec_interp.gui.preview_renderer.PreviewRenderer method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.PreviewRenderer.export_to_image">(sec_interp.gui.PreviewRenderer method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_export.html#sec_interp.gui.main_dialog_export.ExportManager">ExportManager (class in sec_interp.gui.main_dialog_export)</a>
+</li>
+      <li><a href="sec_interp.core.services.export_service.html#sec_interp.core.services.export_service.ExportService">ExportService (class in sec_interp.core.services.export_service)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.ExportSettings">ExportSettings (in module sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.extract_all_vertices">extract_all_vertices() (in module sec_interp.core.utils.geometry)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.filter_features_by_buffer">filter_features_by_buffer() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.filter_features_by_buffer">(in module sec_interp.core.utils.geometry)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.finalize_measurement">finalize_measurement() (sec_interp.gui.tools.measure_tool.ProfileMeasureTool method)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.format_duration">format_duration() (in module sec_interp.core.performance_metrics)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis.functions">functions (sec_interp.analyze_project_optfixed.ModuleAnalysis attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewService.generate_all">generate_all() (sec_interp.core.services.preview_service.PreviewService method)</a>
+</li>
+      <li><a href="sec_interp.core.services.geology_service.html#sec_interp.core.services.geology_service.GeologyService.generate_geological_profile">generate_geological_profile() (sec_interp.core.services.geology_service.GeologyService method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.html#sec_interp.core.services.GeologyService.generate_geological_profile">(sec_interp.core.services.GeologyService method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.generate_preview">generate_preview() (sec_interp.gui.main_dialog_preview.PreviewManager method)</a>
+</li>
+      <li><a href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.generate_profile_data">generate_profile_data() (sec_interp.core.controller.ProfileController method)</a>
+</li>
+      <li><a href="sec_interp.core.services.profile_service.html#sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile">generate_topographic_profile() (sec_interp.core.services.profile_service.ProfileService method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.html#sec_interp.core.services.ProfileService.generate_topographic_profile">(sec_interp.core.services.ProfileService method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult.geol">geol (sec_interp.core.services.preview_service.PreviewResult attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.GEOLOGY_COLORS">GEOLOGY_COLORS (sec_interp.gui.preview_layer_factory.PreviewLayerFactory attribute)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.GeologyData">GeologyData (in module sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.pages.geology_page.html#sec_interp.gui.ui.pages.geology_page.GeologyPage">GeologyPage (class in sec_interp.gui.ui.pages.geology_page)</a>
+</li>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread">GeologyProcessingThread (class in sec_interp.gui.parallel_geology)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment">GeologySegment (class in sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.core.services.html#sec_interp.core.services.GeologyService">GeologyService (class in sec_interp.core.services)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.geology_service.html#sec_interp.core.services.geology_service.GeologyService">(class in sec_interp.core.services.geology_service)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.GeologyShpExporter">GeologyShpExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.GeologyShpExporter">(class in sec_interp.exporters.profile_exporters)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment.geometry">geometry (sec_interp.core.types.GeologySegment attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.LRUCache.get">get() (sec_interp.analyze_project_optfixed.LRUCache method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get">(sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_data.html#sec_interp.gui.main_dialog_data.DialogDataAggregator.get_all_values">get_all_values() (sec_interp.gui.main_dialog_data.DialogDataAggregator method)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_cache_key">get_cache_key() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_cache_size">get_cache_size() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.get_cached_data">get_cached_data() (sec_interp.core.controller.ProfileController method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.get_color_for_unit">get_color_for_unit() (sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.pages.base_page.html#sec_interp.gui.ui.pages.base_page.BasePage.get_data">get_data() (sec_interp.gui.ui.pages.base_page.BasePage method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.html#sec_interp.gui.ui.pages.BasePage.get_data">(sec_interp.gui.ui.pages.BasePage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.dem_page.html#sec_interp.gui.ui.pages.dem_page.DemPage.get_data">(sec_interp.gui.ui.pages.dem_page.DemPage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.drillhole_page.html#sec_interp.gui.ui.pages.drillhole_page.DrillholePage.get_data">(sec_interp.gui.ui.pages.drillhole_page.DrillholePage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.geology_page.html#sec_interp.gui.ui.pages.geology_page.GeologyPage.get_data">(sec_interp.gui.ui.pages.geology_page.GeologyPage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.section_page.html#sec_interp.gui.ui.pages.section_page.SectionPage.get_data">(sec_interp.gui.ui.pages.section_page.SectionPage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.structure_page.html#sec_interp.gui.ui.pages.structure_page.StructurePage.get_data">(sec_interp.gui.ui.pages.structure_page.StructurePage method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult.get_distance_range">get_distance_range() (sec_interp.core.services.preview_service.PreviewResult method)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult.get_elevation_range">get_elevation_range() (sec_interp.core.services.preview_service.PreviewResult method)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.get_exporter">get_exporter() (in module sec_interp.exporters)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_geological_profile">get_geological_profile() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_geometry">get_layer_names_by_geometry() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.get_layer_names_by_geometry">(sec_interp.gui.main_dialog_utils.DialogEntityManager static method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.get_layer_names_by_geometry">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_type">get_layer_names_by_type() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.get_layer_names_by_type">(sec_interp.gui.main_dialog_utils.DialogEntityManager static method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.get_layer_names_by_type">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.get_line_start_point">get_line_start_point() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.spatial.html#sec_interp.core.utils.spatial.get_line_start_point">(in module sec_interp.core.utils.spatial)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.get_line_vertices">get_line_vertices() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.get_line_vertices">(in module sec_interp.core.utils.geometry)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.logger_config.html#sec_interp.logger_config.get_logger">get_logger() (in module sec_interp.logger_config)</a>
+</li>
+      <li><a href="sec_interp.core.services.export_service.html#sec_interp.core.services.export_service.ExportService.get_map_settings">get_map_settings() (sec_interp.core.services.export_service.ExportService method)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_metadata">get_metadata() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_axes_manager.html#sec_interp.gui.preview_axes_manager.PreviewAxesManager.get_nice_interval">get_nice_interval() (sec_interp.gui.preview_axes_manager.PreviewAxesManager static method)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceMonitor.get_operation_stats">get_operation_stats() (sec_interp.core.performance_metrics.PerformanceMonitor method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.get_preview_options">get_preview_options() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.get_preview_options">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.get_selected_values">get_selected_values() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.get_selected_values">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter.get_setting">get_setting() (sec_interp.exporters.base_exporter.BaseExporter method)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.BaseExporter.get_setting">(sec_interp.exporters.BaseExporter method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_structural_data">get_structural_data() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.get_summary">get_summary() (sec_interp.core.performance_metrics.MetricsCollector method)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.AxesShpExporter.get_supported_extensions">get_supported_extensions() (sec_interp.exporters.AxesShpExporter method)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter.get_supported_extensions">(sec_interp.exporters.base_exporter.BaseExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.BaseExporter.get_supported_extensions">(sec_interp.exporters.BaseExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.csv_exporter.html#sec_interp.exporters.csv_exporter.CSVExporter.get_supported_extensions">(sec_interp.exporters.csv_exporter.CSVExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.CSVExporter.get_supported_extensions">(sec_interp.exporters.CSVExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.drillhole_exporters.html#sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.get_supported_extensions">(sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.drillhole_exporters.html#sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.get_supported_extensions">(sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.DrillholeIntervalShpExporter.get_supported_extensions">(sec_interp.exporters.DrillholeIntervalShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.DrillholeTraceShpExporter.get_supported_extensions">(sec_interp.exporters.DrillholeTraceShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.GeologyShpExporter.get_supported_extensions">(sec_interp.exporters.GeologyShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.image_exporter.html#sec_interp.exporters.image_exporter.ImageExporter.get_supported_extensions">(sec_interp.exporters.image_exporter.ImageExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.ImageExporter.get_supported_extensions">(sec_interp.exporters.ImageExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.pdf_exporter.html#sec_interp.exporters.pdf_exporter.PDFExporter.get_supported_extensions">(sec_interp.exporters.pdf_exporter.PDFExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.PDFExporter.get_supported_extensions">(sec_interp.exporters.PDFExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.AxesShpExporter.get_supported_extensions">(sec_interp.exporters.profile_exporters.AxesShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.GeologyShpExporter.get_supported_extensions">(sec_interp.exporters.profile_exporters.GeologyShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.ProfileLineShpExporter.get_supported_extensions">(sec_interp.exporters.profile_exporters.ProfileLineShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.StructureShpExporter.get_supported_extensions">(sec_interp.exporters.profile_exporters.StructureShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.ProfileLineShpExporter.get_supported_extensions">(sec_interp.exporters.ProfileLineShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.ShapefileExporter.get_supported_extensions">(sec_interp.exporters.ShapefileExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.shp_exporter.html#sec_interp.exporters.shp_exporter.ShapefileExporter.get_supported_extensions">(sec_interp.exporters.shp_exporter.ShapefileExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.StructureShpExporter.get_supported_extensions">(sec_interp.exporters.StructureShpExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.svg_exporter.html#sec_interp.exporters.svg_exporter.SVGExporter.get_supported_extensions">(sec_interp.exporters.svg_exporter.SVGExporter method)</a>
+</li>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.SVGExporter.get_supported_extensions">(sec_interp.exporters.SVGExporter method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.get_theme_icon">get_theme_icon() (sec_interp.gui.main_dialog_utils.DialogEntityManager static method)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_topographic_profile">get_topographic_profile() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.getThemeIcon">getThemeIcon() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.getThemeIcon">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.GRID_COLOR">GRID_COLOR (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.ICON_CLEAR">ICON_CLEAR (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.ICON_EXPORT">ICON_EXPORT (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.ICON_HELP">ICON_HELP (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.ICON_REFRESH">ICON_REFRESH (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.iface">iface (sec_interp.gui.main_dialog.SecInterpDialog attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.iface">(sec_interp.gui.SecInterpDialog attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.ImageExporter">ImageExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.image_exporter.html#sec_interp.exporters.image_exporter.ImageExporter">(class in sec_interp.exporters.image_exporter)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis.imports">imports (sec_interp.analyze_project_optfixed.ModuleAnalysis attribute)</a>
+</li>
+      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.initGui">initGui() (sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.interpolate_elevation">interpolate_elevation() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.sampling.html#sec_interp.core.utils.sampling.interpolate_elevation">(in module sec_interp.core.utils.sampling)</a>
+</li>
+        <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.interpolate_elevation">(sec_interp.gui.preview_layer_factory.PreviewLayerFactory method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.interpolate_intervals_on_trajectory">interpolate_intervals_on_trajectory() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.drillhole.html#sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory">(in module sec_interp.core.utils.drillhole)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.interval_from_field">interval_from_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.interval_id_field">interval_id_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.interval_layer">interval_layer (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.interval_lith_field">interval_lith_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.interval_to_field">interval_to_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_FIELD_TYPE">INVALID_FIELD_TYPE (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_GEOMETRY">INVALID_GEOMETRY (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_OUTPUT_PATH">INVALID_OUTPUT_PATH (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_RASTER">INVALID_RASTER (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_SECTION_LINE">INVALID_SECTION_LINE (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.invalidate">invalidate() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.pages.dem_page.html#sec_interp.gui.ui.pages.dem_page.DemPage.is_complete">is_complete() (sec_interp.gui.ui.pages.dem_page.DemPage method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.drillhole_page.html#sec_interp.gui.ui.pages.drillhole_page.DrillholePage.is_complete">(sec_interp.gui.ui.pages.drillhole_page.DrillholePage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.geology_page.html#sec_interp.gui.ui.pages.geology_page.GeologyPage.is_complete">(sec_interp.gui.ui.pages.geology_page.GeologyPage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.section_page.html#sec_interp.gui.ui.pages.section_page.SectionPage.is_complete">(sec_interp.gui.ui.pages.section_page.SectionPage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.structure_page.html#sec_interp.gui.ui.pages.structure_page.StructurePage.is_complete">(sec_interp.gui.ui.pages.structure_page.StructurePage method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.keyPressEvent">keyPressEvent() (sec_interp.gui.tools.measure_tool.ProfileMeasureTool method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.LayerDict">LayerDict (in module sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget">LegendWidget (class in sec_interp.gui.legend_widget)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.line_layer">line_layer (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.line_layer">(sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+</li>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.line_layer">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis.lines">lines (sec_interp.analyze_project_optfixed.ModuleAnalysis attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_settings.html#sec_interp.gui.main_dialog_settings.DialogSettingsManager.load_settings">load_settings() (sec_interp.gui.main_dialog_settings.DialogSettingsManager method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.LOG_DETAILED_METRICS">LOG_DETAILED_METRICS (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.LOG_PERFORMANCE">LOG_PERFORMANCE (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.LRUCache">LRUCache (class in sec_interp.analyze_project_optfixed)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.main">main() (in module sec_interp.analyze_project_optfixed)</a>
+
+      <ul>
+        <li><a href="sec_interp.generate_ai_templates.html#sec_interp.generate_ai_templates.main">(in module sec_interp.generate_ai_templates)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.MAX_PREVIEW_HEIGHT">MAX_PREVIEW_HEIGHT (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.MAX_PREVIEW_POINTS">MAX_PREVIEW_POINTS (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.MAX_PREVIEW_WIDTH">MAX_PREVIEW_WIDTH (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceMonitor.measure_operation">measure_operation() (sec_interp.core.performance_metrics.PerformanceMonitor method)</a>
+</li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.measurementChanged">measurementChanged (sec_interp.gui.tools.measure_tool.ProfileMeasureTool attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.messagebar">messagebar (sec_interp.gui.main_dialog.SecInterpDialog attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.messagebar">(sec_interp.gui.SecInterpDialog attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult.metrics">metrics (sec_interp.core.services.preview_service.PreviewResult attribute)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector">MetricsCollector (class in sec_interp.core.performance_metrics)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.MIN_PREVIEW_HEIGHT">MIN_PREVIEW_HEIGHT (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.MIN_PREVIEW_WIDTH">MIN_PREVIEW_WIDTH (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_DIP_FIELD">MISSING_DIP_FIELD (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_FIELD">MISSING_FIELD (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_OUTCROP_FIELD">MISSING_OUTCROP_FIELD (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_OUTCROP_LAYER">MISSING_OUTCROP_LAYER (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_OUTPUT_PATH">MISSING_OUTPUT_PATH (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_RASTER">MISSING_RASTER (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_SECTION_LINE">MISSING_SECTION_LINE (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_STRIKE_FIELD">MISSING_STRIKE_FIELD (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_STRUCTURAL_LAYER">MISSING_STRUCTURAL_LAYER (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="sec_interp.html#module-sec_interp">sec_interp</a>
+</li>
+        <li><a href="sec_interp.analyze_project_optfixed.html#module-sec_interp.analyze_project_optfixed">sec_interp.analyze_project_optfixed</a>
+</li>
+        <li><a href="sec_interp.core.html#module-sec_interp.core">sec_interp.core</a>
+</li>
+        <li><a href="sec_interp.core.algorithms.html#module-sec_interp.core.algorithms">sec_interp.core.algorithms</a>
+</li>
+        <li><a href="sec_interp.core.controller.html#module-sec_interp.core.controller">sec_interp.core.controller</a>
+</li>
+        <li><a href="sec_interp.core.data_cache.html#module-sec_interp.core.data_cache">sec_interp.core.data_cache</a>
+</li>
+        <li><a href="sec_interp.core.performance_metrics.html#module-sec_interp.core.performance_metrics">sec_interp.core.performance_metrics</a>
+</li>
+        <li><a href="sec_interp.core.services.html#module-sec_interp.core.services">sec_interp.core.services</a>
+</li>
+        <li><a href="sec_interp.core.services.drillhole_service.html#module-sec_interp.core.services.drillhole_service">sec_interp.core.services.drillhole_service</a>
+</li>
+        <li><a href="sec_interp.core.services.export_service.html#module-sec_interp.core.services.export_service">sec_interp.core.services.export_service</a>
+</li>
+        <li><a href="sec_interp.core.services.geology_service.html#module-sec_interp.core.services.geology_service">sec_interp.core.services.geology_service</a>
+</li>
+        <li><a href="sec_interp.core.services.preview_service.html#module-sec_interp.core.services.preview_service">sec_interp.core.services.preview_service</a>
+</li>
+        <li><a href="sec_interp.core.services.profile_service.html#module-sec_interp.core.services.profile_service">sec_interp.core.services.profile_service</a>
+</li>
+        <li><a href="sec_interp.core.services.structure_service.html#module-sec_interp.core.services.structure_service">sec_interp.core.services.structure_service</a>
+</li>
+        <li><a href="sec_interp.core.types.html#module-sec_interp.core.types">sec_interp.core.types</a>
+</li>
+        <li><a href="sec_interp.core.utils.html#module-sec_interp.core.utils">sec_interp.core.utils</a>
+</li>
+        <li><a href="sec_interp.core.utils.drillhole.html#module-sec_interp.core.utils.drillhole">sec_interp.core.utils.drillhole</a>
+</li>
+        <li><a href="sec_interp.core.utils.geology.html#module-sec_interp.core.utils.geology">sec_interp.core.utils.geology</a>
+</li>
+        <li><a href="sec_interp.core.utils.geometry.html#module-sec_interp.core.utils.geometry">sec_interp.core.utils.geometry</a>
+</li>
+        <li><a href="sec_interp.core.utils.io.html#module-sec_interp.core.utils.io">sec_interp.core.utils.io</a>
+</li>
+        <li><a href="sec_interp.core.utils.parsing.html#module-sec_interp.core.utils.parsing">sec_interp.core.utils.parsing</a>
+</li>
+        <li><a href="sec_interp.core.utils.rendering.html#module-sec_interp.core.utils.rendering">sec_interp.core.utils.rendering</a>
+</li>
+        <li><a href="sec_interp.core.utils.sampling.html#module-sec_interp.core.utils.sampling">sec_interp.core.utils.sampling</a>
+</li>
+        <li><a href="sec_interp.core.utils.spatial.html#module-sec_interp.core.utils.spatial">sec_interp.core.utils.spatial</a>
+</li>
+        <li><a href="sec_interp.core.validation.html#module-sec_interp.core.validation">sec_interp.core.validation</a>
+</li>
+        <li><a href="sec_interp.core.validation.field_validator.html#module-sec_interp.core.validation.field_validator">sec_interp.core.validation.field_validator</a>
+</li>
+        <li><a href="sec_interp.core.validation.layer_validator.html#module-sec_interp.core.validation.layer_validator">sec_interp.core.validation.layer_validator</a>
+</li>
+        <li><a href="sec_interp.core.validation.path_validator.html#module-sec_interp.core.validation.path_validator">sec_interp.core.validation.path_validator</a>
+</li>
+        <li><a href="sec_interp.core.validation.project_validator.html#module-sec_interp.core.validation.project_validator">sec_interp.core.validation.project_validator</a>
+</li>
+        <li><a href="sec_interp.exporters.html#module-sec_interp.exporters">sec_interp.exporters</a>
+</li>
+        <li><a href="sec_interp.exporters.base_exporter.html#module-sec_interp.exporters.base_exporter">sec_interp.exporters.base_exporter</a>
+</li>
+        <li><a href="sec_interp.exporters.csv_exporter.html#module-sec_interp.exporters.csv_exporter">sec_interp.exporters.csv_exporter</a>
+</li>
+        <li><a href="sec_interp.exporters.drillhole_exporters.html#module-sec_interp.exporters.drillhole_exporters">sec_interp.exporters.drillhole_exporters</a>
+</li>
+        <li><a href="sec_interp.exporters.image_exporter.html#module-sec_interp.exporters.image_exporter">sec_interp.exporters.image_exporter</a>
+</li>
+        <li><a href="sec_interp.exporters.pdf_exporter.html#module-sec_interp.exporters.pdf_exporter">sec_interp.exporters.pdf_exporter</a>
+</li>
+        <li><a href="sec_interp.exporters.profile_exporters.html#module-sec_interp.exporters.profile_exporters">sec_interp.exporters.profile_exporters</a>
+</li>
+        <li><a href="sec_interp.exporters.shp_exporter.html#module-sec_interp.exporters.shp_exporter">sec_interp.exporters.shp_exporter</a>
+</li>
+        <li><a href="sec_interp.exporters.svg_exporter.html#module-sec_interp.exporters.svg_exporter">sec_interp.exporters.svg_exporter</a>
+</li>
+        <li><a href="sec_interp.generate_ai_templates.html#module-sec_interp.generate_ai_templates">sec_interp.generate_ai_templates</a>
+</li>
+        <li><a href="sec_interp.gui.html#module-sec_interp.gui">sec_interp.gui</a>
+</li>
+        <li><a href="sec_interp.gui.legend_widget.html#module-sec_interp.gui.legend_widget">sec_interp.gui.legend_widget</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog.html#module-sec_interp.gui.main_dialog">sec_interp.gui.main_dialog</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_cache_handler.html#module-sec_interp.gui.main_dialog_cache_handler">sec_interp.gui.main_dialog_cache_handler</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_config.html#module-sec_interp.gui.main_dialog_config">sec_interp.gui.main_dialog_config</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_data.html#module-sec_interp.gui.main_dialog_data">sec_interp.gui.main_dialog_data</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_export.html#module-sec_interp.gui.main_dialog_export">sec_interp.gui.main_dialog_export</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_preview.html#module-sec_interp.gui.main_dialog_preview">sec_interp.gui.main_dialog_preview</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_settings.html#module-sec_interp.gui.main_dialog_settings">sec_interp.gui.main_dialog_settings</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_signals.html#module-sec_interp.gui.main_dialog_signals">sec_interp.gui.main_dialog_signals</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_status.html#module-sec_interp.gui.main_dialog_status">sec_interp.gui.main_dialog_status</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_utils.html#module-sec_interp.gui.main_dialog_utils">sec_interp.gui.main_dialog_utils</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_validation.html#module-sec_interp.gui.main_dialog_validation">sec_interp.gui.main_dialog_validation</a>
+</li>
+        <li><a href="sec_interp.gui.parallel_geology.html#module-sec_interp.gui.parallel_geology">sec_interp.gui.parallel_geology</a>
+</li>
+        <li><a href="sec_interp.gui.preview_axes_manager.html#module-sec_interp.gui.preview_axes_manager">sec_interp.gui.preview_axes_manager</a>
+</li>
+        <li><a href="sec_interp.gui.preview_layer_factory.html#module-sec_interp.gui.preview_layer_factory">sec_interp.gui.preview_layer_factory</a>
+</li>
+        <li><a href="sec_interp.gui.preview_legend_renderer.html#module-sec_interp.gui.preview_legend_renderer">sec_interp.gui.preview_legend_renderer</a>
+</li>
+        <li><a href="sec_interp.gui.preview_optimizer.html#module-sec_interp.gui.preview_optimizer">sec_interp.gui.preview_optimizer</a>
+</li>
+        <li><a href="sec_interp.gui.preview_renderer.html#module-sec_interp.gui.preview_renderer">sec_interp.gui.preview_renderer</a>
+</li>
+        <li><a href="sec_interp.gui.tools.html#module-sec_interp.gui.tools">sec_interp.gui.tools</a>
+</li>
+        <li><a href="sec_interp.gui.tools.measure_tool.html#module-sec_interp.gui.tools.measure_tool">sec_interp.gui.tools.measure_tool</a>
+</li>
+        <li><a href="sec_interp.gui.ui.html#module-sec_interp.gui.ui">sec_interp.gui.ui</a>
+</li>
+        <li><a href="sec_interp.gui.ui.main_window.html#module-sec_interp.gui.ui.main_window">sec_interp.gui.ui.main_window</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.html#module-sec_interp.gui.ui.pages">sec_interp.gui.ui.pages</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.base_page.html#module-sec_interp.gui.ui.pages.base_page">sec_interp.gui.ui.pages.base_page</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.dem_page.html#module-sec_interp.gui.ui.pages.dem_page">sec_interp.gui.ui.pages.dem_page</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.drillhole_page.html#module-sec_interp.gui.ui.pages.drillhole_page">sec_interp.gui.ui.pages.drillhole_page</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.geology_page.html#module-sec_interp.gui.ui.pages.geology_page">sec_interp.gui.ui.pages.geology_page</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.preview_page.html#module-sec_interp.gui.ui.pages.preview_page">sec_interp.gui.ui.pages.preview_page</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.section_page.html#module-sec_interp.gui.ui.pages.section_page">sec_interp.gui.ui.pages.section_page</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.structure_page.html#module-sec_interp.gui.ui.pages.structure_page">sec_interp.gui.ui.pages.structure_page</a>
+</li>
+        <li><a href="sec_interp.gui.ui.sidebar.html#module-sec_interp.gui.ui.sidebar">sec_interp.gui.ui.sidebar</a>
+</li>
+        <li><a href="sec_interp.gui.utils.html#module-sec_interp.gui.utils">sec_interp.gui.utils</a>
+</li>
+        <li><a href="sec_interp.logger_config.html#module-sec_interp.logger_config">sec_interp.logger_config</a>
+</li>
+        <li><a href="sec_interp.resources.html#module-sec_interp.resources">sec_interp.resources</a>
+</li>
+        <li><a href="sec_interp.resources.resources.html#module-sec_interp.resources.resources">sec_interp.resources.resources</a>
+</li>
+        <li><a href="sec_interp.sec_interp_plugin.html#module-sec_interp.sec_interp_plugin">sec_interp.sec_interp_plugin</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis">ModuleAnalysis (class in sec_interp.analyze_project_optfixed)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis.name">name (sec_interp.analyze_project_optfixed.ModuleAnalysis attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.open_help">open_help() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.open_help">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.optimization_opportunities">optimization_opportunities (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.original_dip">original_dip (sec_interp.core.types.StructureMeasurement attribute)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.original_strike">original_strike (sec_interp.core.types.StructureMeasurement attribute)</a>
+</li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.outcrop_field">outcrop_field (sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.outcrop_field">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.outcrop_layer">outcrop_layer (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.outcrop_layer">(sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+</li>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.outcrop_layer">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.outcrop_name_field">outcrop_name_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.output_path">output_path (sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.output_path">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget.paintEvent">paintEvent() (sec_interp.gui.legend_widget.LegendWidget method)</a>
+</li>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService">ParallelGeologyService (class in sec_interp.gui.parallel_geology)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.parse_dip">parse_dip() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.parsing.html#sec_interp.core.utils.parsing.parse_dip">(in module sec_interp.core.utils.parsing)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.parse_strike">parse_strike() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.parsing.html#sec_interp.core.utils.parsing.parse_strike">(in module sec_interp.core.utils.parsing)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.patterns">patterns (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.PDFExporter">PDFExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.pdf_exporter.html#sec_interp.exporters.pdf_exporter.PDFExporter">(class in sec_interp.exporters.pdf_exporter)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.performance_monitor">performance_monitor() (in module sec_interp.core.performance_metrics)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceMonitor">PerformanceMonitor (class in sec_interp.core.performance_metrics)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceTimer">PerformanceTimer (class in sec_interp.core.performance_metrics)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.plugin_instance">plugin_instance (sec_interp.gui.main_dialog.SecInterpDialog attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.plugin_instance">(sec_interp.gui.SecInterpDialog attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.PointList">PointList (in module sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment.points">points (sec_interp.core.types.GeologySegment attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.populate_field_combobox">populate_field_combobox() (sec_interp.gui.main_dialog_utils.DialogEntityManager static method)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.prepare_profile_context">prepare_profile_context() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.sampling.html#sec_interp.core.utils.sampling.prepare_profile_context">(in module sec_interp.core.utils.sampling)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.PREVIEW_HEIGHT">PREVIEW_HEIGHT (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.preview_profile_handler">preview_profile_handler() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.preview_profile_handler">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.PREVIEW_WIDTH">PREVIEW_WIDTH (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_axes_manager.html#sec_interp.gui.preview_axes_manager.PreviewAxesManager">PreviewAxesManager (class in sec_interp.gui.preview_axes_manager)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory">PreviewLayerFactory (class in sec_interp.gui.preview_layer_factory)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_legend_renderer.html#sec_interp.gui.preview_legend_renderer.PreviewLegendRenderer">PreviewLegendRenderer (class in sec_interp.gui.preview_legend_renderer)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager">PreviewManager (class in sec_interp.gui.main_dialog_preview)</a>
+</li>
+      <li><a href="sec_interp.gui.preview_optimizer.html#sec_interp.gui.preview_optimizer.PreviewOptimizer">PreviewOptimizer (class in sec_interp.gui.preview_optimizer)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams">PreviewParams (class in sec_interp.core.services.preview_service)</a>
+</li>
+      <li><a href="sec_interp.gui.html#sec_interp.gui.PreviewRenderer">PreviewRenderer (class in sec_interp.gui)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer">(class in sec_interp.gui.preview_renderer)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult">PreviewResult (class in sec_interp.core.services.preview_service)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewService">PreviewService (class in sec_interp.core.services.preview_service)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.pages.preview_page.html#sec_interp.gui.ui.pages.preview_page.PreviewWidget">PreviewWidget (class in sec_interp.gui.ui.pages.preview_page)</a>
+</li>
+      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.process_data">process_data() (sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+      <li><a href="sec_interp.core.services.drillhole_service.html#sec_interp.core.services.drillhole_service.DrillholeService.process_intervals">process_intervals() (sec_interp.core.services.drillhole_service.DrillholeService method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.html#sec_interp.core.services.DrillholeService.process_intervals">(sec_interp.core.services.DrillholeService method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.process_profiles_parallel">process_profiles_parallel() (sec_interp.gui.parallel_geology.ParallelGeologyService method)</a>
+</li>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.processing_finished">processing_finished (sec_interp.gui.parallel_geology.GeologyProcessingThread attribute)</a>
+</li>
+      <li><a href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController">ProfileController (class in sec_interp.core.controller)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.ProfileData">ProfileData (in module sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.ProfileLineShpExporter">ProfileLineShpExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.ProfileLineShpExporter">(class in sec_interp.exporters.profile_exporters)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool">ProfileMeasureTool (class in sec_interp.gui.tools.measure_tool)</a>
+</li>
+      <li><a href="sec_interp.core.services.html#sec_interp.core.services.ProfileService">ProfileService (class in sec_interp.core.services)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.profile_service.html#sec_interp.core.services.profile_service.ProfileService">(class in sec_interp.core.services.profile_service)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileSnapper">ProfileSnapper (class in sec_interp.gui.tools.measure_tool)</a>
+</li>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.progress_updated">progress_updated (sec_interp.gui.parallel_geology.GeologyProcessingThread attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProgressTracker">ProgressTracker (class in sec_interp.analyze_project_optfixed)</a>
+</li>
+      <li><a href="sec_interp.core.services.drillhole_service.html#sec_interp.core.services.drillhole_service.DrillholeService.project_collars">project_collars() (sec_interp.core.services.drillhole_service.DrillholeService method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.html#sec_interp.core.services.DrillholeService.project_collars">(sec_interp.core.services.DrillholeService method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.project_name">project_name (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.structure_service.html#sec_interp.core.services.structure_service.StructureService.project_structures">project_structures() (sec_interp.core.services.structure_service.StructureService method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.html#sec_interp.core.services.StructureService.project_structures">(sec_interp.core.services.StructureService method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.project_trajectory_to_section">project_trajectory_to_section() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.drillhole.html#sec_interp.core.utils.drillhole.project_trajectory_to_section">(in module sec_interp.core.utils.drillhole)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectAnalyzer">ProjectAnalyzer (class in sec_interp.analyze_project_optfixed)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext">ProjectContext (class in sec_interp.analyze_project_optfixed)</a>
+</li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ProjectValidator">ProjectValidator (class in sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ProjectValidator">(class in sec_interp.core.validation.project_validator)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.resources.resources.html#sec_interp.resources.resources.qCleanupResources">qCleanupResources() (in module sec_interp.resources.resources)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.logger_config.html#sec_interp.logger_config.QgsLogHandler">QgsLogHandler (class in sec_interp.logger_config)</a>
+</li>
+      <li><a href="sec_interp.resources.resources.html#sec_interp.resources.resources.qInitResources">qInitResources() (in module sec_interp.resources.resources)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.raster_layer">raster_layer (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.raster_layer">(sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+</li>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.raster_layer">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.record_count">record_count() (sec_interp.core.performance_metrics.MetricsCollector method)</a>
+</li>
+      <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.record_timing">record_timing() (sec_interp.core.performance_metrics.MetricsCollector method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.reject_handler">reject_handler() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.reject_handler">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.render">render() (sec_interp.gui.preview_renderer.PreviewRenderer method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.PreviewRenderer.render">(sec_interp.gui.PreviewRenderer method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.REQUIRED_COLOR">REQUIRED_COLOR (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.REQUIRED_INDICATOR">REQUIRED_INDICATOR (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.reset">reset() (sec_interp.gui.tools.measure_tool.ProfileMeasureTool method)</a>
+</li>
+      <li><a href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.run">run() (sec_interp.gui.parallel_geology.GeologyProcessingThread method)</a>
+
+      <ul>
+        <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.run">(sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.run_geometry_operation">run_geometry_operation() (in module sec_interp.core.utils.geometry)</a>
+</li>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.run_processing_algorithm">run_processing_algorithm() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.run_processing_algorithm">(in module sec_interp.core.utils.geometry)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.sample_elevation_along_line">sample_elevation_along_line() (in module sec_interp.core.utils)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.utils.sampling.html#sec_interp.core.utils.sampling.sample_elevation_along_line">(in module sec_interp.core.utils.sampling)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SAMPLING_INTERVAL">SAMPLING_INTERVAL (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.save_profile_line">save_profile_line() (sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_settings.html#sec_interp.gui.main_dialog_settings.DialogSettingsManager.save_settings">save_settings() (sec_interp.gui.main_dialog_settings.DialogSettingsManager method)</a>
+</li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.scale">scale (sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.scale">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SCALE">SCALE (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li>
+    sec_interp
+
+      <ul>
+        <li><a href="sec_interp.html#module-sec_interp">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.analyze_project_optfixed
+
+      <ul>
+        <li><a href="sec_interp.analyze_project_optfixed.html#module-sec_interp.analyze_project_optfixed">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core
+
+      <ul>
+        <li><a href="sec_interp.core.html#module-sec_interp.core">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.algorithms
+
+      <ul>
+        <li><a href="sec_interp.core.algorithms.html#module-sec_interp.core.algorithms">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.controller
+
+      <ul>
+        <li><a href="sec_interp.core.controller.html#module-sec_interp.core.controller">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.data_cache
+
+      <ul>
+        <li><a href="sec_interp.core.data_cache.html#module-sec_interp.core.data_cache">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.performance_metrics
+
+      <ul>
+        <li><a href="sec_interp.core.performance_metrics.html#module-sec_interp.core.performance_metrics">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.services
+
+      <ul>
+        <li><a href="sec_interp.core.services.html#module-sec_interp.core.services">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.services.drillhole_service
+
+      <ul>
+        <li><a href="sec_interp.core.services.drillhole_service.html#module-sec_interp.core.services.drillhole_service">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.services.export_service
+
+      <ul>
+        <li><a href="sec_interp.core.services.export_service.html#module-sec_interp.core.services.export_service">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.services.geology_service
+
+      <ul>
+        <li><a href="sec_interp.core.services.geology_service.html#module-sec_interp.core.services.geology_service">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.services.preview_service
+
+      <ul>
+        <li><a href="sec_interp.core.services.preview_service.html#module-sec_interp.core.services.preview_service">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.services.profile_service
+
+      <ul>
+        <li><a href="sec_interp.core.services.profile_service.html#module-sec_interp.core.services.profile_service">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.services.structure_service
+
+      <ul>
+        <li><a href="sec_interp.core.services.structure_service.html#module-sec_interp.core.services.structure_service">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.types
+
+      <ul>
+        <li><a href="sec_interp.core.types.html#module-sec_interp.core.types">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils
+
+      <ul>
+        <li><a href="sec_interp.core.utils.html#module-sec_interp.core.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils.drillhole
+
+      <ul>
+        <li><a href="sec_interp.core.utils.drillhole.html#module-sec_interp.core.utils.drillhole">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils.geology
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geology.html#module-sec_interp.core.utils.geology">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils.geometry
+
+      <ul>
+        <li><a href="sec_interp.core.utils.geometry.html#module-sec_interp.core.utils.geometry">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils.io
+
+      <ul>
+        <li><a href="sec_interp.core.utils.io.html#module-sec_interp.core.utils.io">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils.parsing
+
+      <ul>
+        <li><a href="sec_interp.core.utils.parsing.html#module-sec_interp.core.utils.parsing">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils.rendering
+
+      <ul>
+        <li><a href="sec_interp.core.utils.rendering.html#module-sec_interp.core.utils.rendering">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils.sampling
+
+      <ul>
+        <li><a href="sec_interp.core.utils.sampling.html#module-sec_interp.core.utils.sampling">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.utils.spatial
+
+      <ul>
+        <li><a href="sec_interp.core.utils.spatial.html#module-sec_interp.core.utils.spatial">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.validation
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#module-sec_interp.core.validation">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.validation.field_validator
+
+      <ul>
+        <li><a href="sec_interp.core.validation.field_validator.html#module-sec_interp.core.validation.field_validator">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.validation.layer_validator
+
+      <ul>
+        <li><a href="sec_interp.core.validation.layer_validator.html#module-sec_interp.core.validation.layer_validator">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.validation.path_validator
+
+      <ul>
+        <li><a href="sec_interp.core.validation.path_validator.html#module-sec_interp.core.validation.path_validator">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.core.validation.project_validator
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#module-sec_interp.core.validation.project_validator">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters
+
+      <ul>
+        <li><a href="sec_interp.exporters.html#module-sec_interp.exporters">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters.base_exporter
+
+      <ul>
+        <li><a href="sec_interp.exporters.base_exporter.html#module-sec_interp.exporters.base_exporter">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters.csv_exporter
+
+      <ul>
+        <li><a href="sec_interp.exporters.csv_exporter.html#module-sec_interp.exporters.csv_exporter">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters.drillhole_exporters
+
+      <ul>
+        <li><a href="sec_interp.exporters.drillhole_exporters.html#module-sec_interp.exporters.drillhole_exporters">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters.image_exporter
+
+      <ul>
+        <li><a href="sec_interp.exporters.image_exporter.html#module-sec_interp.exporters.image_exporter">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters.pdf_exporter
+
+      <ul>
+        <li><a href="sec_interp.exporters.pdf_exporter.html#module-sec_interp.exporters.pdf_exporter">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters.profile_exporters
+
+      <ul>
+        <li><a href="sec_interp.exporters.profile_exporters.html#module-sec_interp.exporters.profile_exporters">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters.shp_exporter
+
+      <ul>
+        <li><a href="sec_interp.exporters.shp_exporter.html#module-sec_interp.exporters.shp_exporter">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.exporters.svg_exporter
+
+      <ul>
+        <li><a href="sec_interp.exporters.svg_exporter.html#module-sec_interp.exporters.svg_exporter">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.generate_ai_templates
+
+      <ul>
+        <li><a href="sec_interp.generate_ai_templates.html#module-sec_interp.generate_ai_templates">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui
+
+      <ul>
+        <li><a href="sec_interp.gui.html#module-sec_interp.gui">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.legend_widget
+
+      <ul>
+        <li><a href="sec_interp.gui.legend_widget.html#module-sec_interp.gui.legend_widget">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog.html#module-sec_interp.gui.main_dialog">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_cache_handler
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_cache_handler.html#module-sec_interp.gui.main_dialog_cache_handler">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_config
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_config.html#module-sec_interp.gui.main_dialog_config">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_data
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_data.html#module-sec_interp.gui.main_dialog_data">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_export
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_export.html#module-sec_interp.gui.main_dialog_export">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_preview
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_preview.html#module-sec_interp.gui.main_dialog_preview">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_settings
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_settings.html#module-sec_interp.gui.main_dialog_settings">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_signals
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_signals.html#module-sec_interp.gui.main_dialog_signals">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_status
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_status.html#module-sec_interp.gui.main_dialog_status">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    sec_interp.gui.main_dialog_utils
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_utils.html#module-sec_interp.gui.main_dialog_utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.main_dialog_validation
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_validation.html#module-sec_interp.gui.main_dialog_validation">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.parallel_geology
+
+      <ul>
+        <li><a href="sec_interp.gui.parallel_geology.html#module-sec_interp.gui.parallel_geology">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.preview_axes_manager
+
+      <ul>
+        <li><a href="sec_interp.gui.preview_axes_manager.html#module-sec_interp.gui.preview_axes_manager">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.preview_layer_factory
+
+      <ul>
+        <li><a href="sec_interp.gui.preview_layer_factory.html#module-sec_interp.gui.preview_layer_factory">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.preview_legend_renderer
+
+      <ul>
+        <li><a href="sec_interp.gui.preview_legend_renderer.html#module-sec_interp.gui.preview_legend_renderer">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.preview_optimizer
+
+      <ul>
+        <li><a href="sec_interp.gui.preview_optimizer.html#module-sec_interp.gui.preview_optimizer">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.preview_renderer
+
+      <ul>
+        <li><a href="sec_interp.gui.preview_renderer.html#module-sec_interp.gui.preview_renderer">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.tools
+
+      <ul>
+        <li><a href="sec_interp.gui.tools.html#module-sec_interp.gui.tools">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.tools.measure_tool
+
+      <ul>
+        <li><a href="sec_interp.gui.tools.measure_tool.html#module-sec_interp.gui.tools.measure_tool">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.html#module-sec_interp.gui.ui">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.main_window
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.main_window.html#module-sec_interp.gui.ui.main_window">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.pages
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.html#module-sec_interp.gui.ui.pages">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.pages.base_page
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.base_page.html#module-sec_interp.gui.ui.pages.base_page">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.pages.dem_page
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.dem_page.html#module-sec_interp.gui.ui.pages.dem_page">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.pages.drillhole_page
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.drillhole_page.html#module-sec_interp.gui.ui.pages.drillhole_page">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.pages.geology_page
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.geology_page.html#module-sec_interp.gui.ui.pages.geology_page">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.pages.preview_page
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.preview_page.html#module-sec_interp.gui.ui.pages.preview_page">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.pages.section_page
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.section_page.html#module-sec_interp.gui.ui.pages.section_page">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.pages.structure_page
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.structure_page.html#module-sec_interp.gui.ui.pages.structure_page">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.ui.sidebar
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.sidebar.html#module-sec_interp.gui.ui.sidebar">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.utils
+
+      <ul>
+        <li><a href="sec_interp.gui.utils.html#module-sec_interp.gui.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.logger_config
+
+      <ul>
+        <li><a href="sec_interp.logger_config.html#module-sec_interp.logger_config">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.resources
+
+      <ul>
+        <li><a href="sec_interp.resources.html#module-sec_interp.resources">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.resources.resources
+
+      <ul>
+        <li><a href="sec_interp.resources.resources.html#module-sec_interp.resources.resources">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.sec_interp_plugin
+
+      <ul>
+        <li><a href="sec_interp.sec_interp_plugin.html#module-sec_interp.sec_interp_plugin">module</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp">SecInterp (class in sec_interp.sec_interp_plugin)</a>
+</li>
+      <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog">SecInterpDialog (class in sec_interp.gui)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog">(class in sec_interp.gui.main_dialog)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.ui.main_window.html#sec_interp.gui.ui.main_window.SecInterpMainWindow">SecInterpMainWindow (class in sec_interp.gui.ui.main_window)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.pages.section_page.html#sec_interp.gui.ui.pages.section_page.SectionPage">SectionPage (class in sec_interp.gui.ui.pages.section_page)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.security_issues">security_issues (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.LRUCache.set">set() (sec_interp.analyze_project_optfixed.LRUCache method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set">(sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set_geological_profile">set_geological_profile() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set_metadata">set_metadata() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set_structural_data">set_structural_data() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set_topographic_profile">set_topographic_profile() (sec_interp.core.data_cache.DataCache method)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.SettingsDict">SettingsDict (in module sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.setup_indicators">setup_indicators() (sec_interp.gui.main_dialog_status.DialogStatusManager method)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.setup_logging">setup_logging() (in module sec_interp.analyze_project_optfixed)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.ShapefileExporter">ShapefileExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.shp_exporter.html#sec_interp.exporters.shp_exporter.ShapefileExporter">(class in sec_interp.exporters.shp_exporter)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.SHOW_HELP_ON_START">SHOW_HELP_ON_START (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.SHOW_LEGEND">SHOW_LEGEND (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.SHOW_METRICS_IN_RESULTS">SHOW_METRICS_IN_RESULTS (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.utils.html#sec_interp.gui.utils.show_user_message">show_user_message() (in module sec_interp.gui.utils)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.sidebar.html#sec_interp.gui.ui.sidebar.Sidebar">Sidebar (class in sec_interp.gui.ui.sidebar)</a>
+</li>
+      <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileSnapper.snap">snap() (sec_interp.gui.tools.measure_tool.ProfileSnapper method)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.LRUCache.stats">stats() (sec_interp.analyze_project_optfixed.LRUCache method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.STATUS_ERROR">STATUS_ERROR (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.STATUS_OK">STATUS_OK (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.STATUS_WARNING">STATUS_WARNING (sec_interp.gui.main_dialog_config.UIConstants attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.STRICT_VALIDATION">STRICT_VALIDATION (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.strike_field">strike_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult.struct">struct (sec_interp.core.services.preview_service.PreviewResult attribute)</a>
+</li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.struct_dip_field">struct_dip_field (sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.struct_dip_field">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.struct_layer">struct_layer (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.struct_layer">(sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+</li>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.struct_layer">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.struct_strike_field">struct_strike_field (sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.struct_strike_field">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.structure">structure (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.StructureData">StructureData (in module sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement">StructureMeasurement (class in sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.gui.ui.pages.structure_page.html#sec_interp.gui.ui.pages.structure_page.StructurePage">StructurePage (class in sec_interp.gui.ui.pages.structure_page)</a>
+</li>
+      <li><a href="sec_interp.core.services.html#sec_interp.core.services.StructureService">StructureService (class in sec_interp.core.services)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.services.structure_service.html#sec_interp.core.services.structure_service.StructureService">(class in sec_interp.core.services.structure_service)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.StructureShpExporter">StructureShpExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.profile_exporters.html#sec_interp.exporters.profile_exporters.StructureShpExporter">(class in sec_interp.exporters.profile_exporters)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SUPPORTED_DOCUMENT_FORMATS">SUPPORTED_DOCUMENT_FORMATS (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SUPPORTED_IMAGE_FORMATS">SUPPORTED_IMAGE_FORMATS (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SUPPORTED_VECTOR_FORMATS">SUPPORTED_VECTOR_FORMATS (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.survey_azim_field">survey_azim_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.survey_depth_field">survey_depth_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.survey_id_field">survey_id_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.survey_incl_field">survey_incl_field (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams.survey_layer">survey_layer (sec_interp.core.services.preview_service.PreviewParams attribute)</a>
+</li>
+      <li><a href="sec_interp.exporters.html#sec_interp.exporters.SVGExporter">SVGExporter (class in sec_interp.exporters)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.svg_exporter.html#sec_interp.exporters.svg_exporter.SVGExporter">(class in sec_interp.exporters.svg_exporter)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.tech_stack">tech_stack (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.technical_debt">technical_debt (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.timeout">timeout() (in module sec_interp.analyze_project_optfixed)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.TimeoutException">TimeoutException</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ModuleAnalysis.todo_comments">todo_comments (sec_interp.analyze_project_optfixed.ModuleAnalysis attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.toggle_measure_tool">toggle_measure_tool() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.toggle_measure_tool">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult.topo">topo (sec_interp.core.services.preview_service.PreviewResult attribute)</a>
+</li>
+      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.tr">tr() (sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants">UIConstants (class in sec_interp.gui.main_dialog_config)</a>
+</li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment.unit_name">unit_name (sec_interp.core.types.GeologySegment attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.UNKNOWN_ERROR">UNKNOWN_ERROR (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.unload">unload() (sec_interp.sec_interp_plugin.SecInterp method)</a>
+</li>
+      <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProgressTracker.update">update() (sec_interp.analyze_project_optfixed.ProgressTracker method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_all">update_all() (sec_interp.gui.main_dialog_status.DialogStatusManager method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_button_state">update_button_state() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_button_state">(sec_interp.gui.main_dialog_status.DialogStatusManager method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.update_button_state">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.update_from_checkboxes">update_from_checkboxes() (sec_interp.gui.main_dialog_preview.PreviewManager method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget.update_legend">update_legend() (sec_interp.gui.legend_widget.LegendWidget method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_measurement_display">update_measurement_display() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.update_measurement_display">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_preview_checkbox_states">update_preview_checkbox_states() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_preview_checkbox_states">(sec_interp.gui.main_dialog_status.DialogStatusManager method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.update_preview_checkbox_states">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_preview_from_checkboxes">update_preview_from_checkboxes() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.update_preview_from_checkboxes">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_raster_status">update_raster_status() (sec_interp.gui.main_dialog_status.DialogStatusManager method)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_section_status">update_section_status() (sec_interp.gui.main_dialog_status.DialogStatusManager method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.ui.pages.base_page.html#sec_interp.gui.ui.pages.base_page.BasePage.validate">validate() (sec_interp.gui.ui.pages.base_page.BasePage method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.ui.pages.html#sec_interp.gui.ui.pages.BasePage.validate">(sec_interp.gui.ui.pages.BasePage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.dem_page.html#sec_interp.gui.ui.pages.dem_page.DemPage.validate">(sec_interp.gui.ui.pages.dem_page.DemPage method)</a>
+</li>
+        <li><a href="sec_interp.gui.ui.pages.section_page.html#sec_interp.gui.ui.pages.section_page.SectionPage.validate">(sec_interp.gui.ui.pages.section_page.SectionPage method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ProjectValidator.validate_all">validate_all() (sec_interp.core.validation.project_validator.ProjectValidator static method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ProjectValidator.validate_all">(sec_interp.core.validation.ProjectValidator static method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_angle_range">validate_angle_range() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.field_validator.html#sec_interp.core.validation.field_validator.validate_angle_range">(in module sec_interp.core.validation.field_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_crs_compatibility">validate_crs_compatibility() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.layer_validator.html#sec_interp.core.validation.layer_validator.validate_crs_compatibility">(in module sec_interp.core.validation.layer_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter.validate_export_path">validate_export_path() (sec_interp.exporters.base_exporter.BaseExporter method)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.BaseExporter.validate_export_path">(sec_interp.exporters.BaseExporter method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_field_exists">validate_field_exists() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.field_validator.html#sec_interp.core.validation.field_validator.validate_field_exists">(in module sec_interp.core.validation.field_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_field_type">validate_field_type() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.field_validator.html#sec_interp.core.validation.field_validator.validate_field_type">(in module sec_interp.core.validation.field_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.validate_inputs">validate_inputs() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.main_dialog_validation.html#sec_interp.gui.main_dialog_validation.DialogValidator.validate_inputs">(sec_interp.gui.main_dialog_validation.DialogValidator method)</a>
+</li>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.validate_inputs">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_integer_input">validate_integer_input() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.field_validator.html#sec_interp.core.validation.field_validator.validate_integer_input">(in module sec_interp.core.validation.field_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_layer_configuration">validate_layer_configuration() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.layer_validator.html#sec_interp.core.validation.layer_validator.validate_layer_configuration">(in module sec_interp.core.validation.layer_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_layer_exists">validate_layer_exists() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.layer_validator.html#sec_interp.core.validation.layer_validator.validate_layer_exists">(in module sec_interp.core.validation.layer_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_layer_geometry">validate_layer_geometry() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.layer_validator.html#sec_interp.core.validation.layer_validator.validate_layer_geometry">(in module sec_interp.core.validation.layer_validator)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_layer_has_features">validate_layer_has_features() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.layer_validator.html#sec_interp.core.validation.layer_validator.validate_layer_has_features">(in module sec_interp.core.validation.layer_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_numeric_input">validate_numeric_input() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.field_validator.html#sec_interp.core.validation.field_validator.validate_numeric_input">(in module sec_interp.core.validation.field_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_output_path">validate_output_path() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.path_validator.html#sec_interp.core.validation.path_validator.validate_output_path">(in module sec_interp.core.validation.path_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter.validate_path">validate_path() (sec_interp.exporters.base_exporter.BaseExporter method)</a>
+
+      <ul>
+        <li><a href="sec_interp.exporters.html#sec_interp.exporters.BaseExporter.validate_path">(sec_interp.exporters.BaseExporter method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ProjectValidator.validate_preview_requirements">validate_preview_requirements() (sec_interp.core.validation.project_validator.ProjectValidator static method)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ProjectValidator.validate_preview_requirements">(sec_interp.core.validation.ProjectValidator static method)</a>
+</li>
+        <li><a href="sec_interp.gui.main_dialog_validation.html#sec_interp.gui.main_dialog_validation.DialogValidator.validate_preview_requirements">(sec_interp.gui.main_dialog_validation.DialogValidator method)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_raster_band">validate_raster_band() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.layer_validator.html#sec_interp.core.validation.layer_validator.validate_raster_band">(in module sec_interp.core.validation.layer_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_reasonable_ranges">validate_reasonable_ranges() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.validate_reasonable_ranges">(in module sec_interp.core.validation.project_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_safe_output_path">validate_safe_output_path() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.path_validator.html#sec_interp.core.validation.path_validator.validate_safe_output_path">(in module sec_interp.core.validation.path_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.validate_structural_requirements">validate_structural_requirements() (in module sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.layer_validator.html#sec_interp.core.validation.layer_validator.validate_structural_requirements">(in module sec_interp.core.validation.layer_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.VALIDATION_FAILED">VALIDATION_FAILED (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages">ValidationMessages (class in sec_interp.gui.main_dialog_config)</a>
+</li>
+      <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams">ValidationParams (class in sec_interp.core.validation)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams">(class in sec_interp.core.validation.project_validator)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.core.types.html#sec_interp.core.types.ValidationResult">ValidationResult (in module sec_interp.core.types)</a>
+</li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.VERBOSE_LOGGING">VERBOSE_LOGGING (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
+      <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.vert_exag">vert_exag (sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.vert_exag">(sec_interp.core.validation.ValidationParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.VERTICAL_EXAGGERATION">VERTICAL_EXAGGERATION (sec_interp.gui.main_dialog_config.DialogDefaults attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.wheelEvent">wheelEvent() (sec_interp.gui.main_dialog.SecInterpDialog method)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.wheelEvent">(sec_interp.gui.SecInterpDialog method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.WRONG_GEOMETRY_TYPE">WRONG_GEOMETRY_TYPE (sec_interp.gui.main_dialog_config.ValidationMessages attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SecInterp</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="USER_GUIDE.html">SecInterp User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_GUIDE.html">SecInterp - Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html">SecInterp - Technical Compendium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MAINTENANCE_LOG.html">SecInterp - Maintenance &amp; Release Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sec_interp</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Juan M Bernales.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

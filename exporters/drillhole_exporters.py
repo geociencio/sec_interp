@@ -27,9 +27,11 @@ class DrillholeTraceShpExporter(BaseExporter):
         return [".shp"]
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
-        """Args:
-        data (dict): Must contain 'drillhole_data' and 'crs'.
-                     drillhole_data is List[Tuple[hole_id, traces, segments]]
+        """Export drillhole traces to a Shapefile.
+        
+        Args:
+            output_path: Path to the output Shapefile.
+            data: Dictionary containing 'drillhole_data' and 'crs'.
         """
         drillhole_data = data.get("drillhole_data")
         crs = data.get("crs")
@@ -72,8 +74,11 @@ class DrillholeIntervalShpExporter(BaseExporter):
         return [".shp"]
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
-        """Args:
-        data (dict): Must contain 'drillhole_data' and 'crs'.
+        """Export drillhole intervals to a Shapefile.
+        
+        Args:
+            output_path: Path to the output Shapefile.
+            data: Dictionary containing 'drillhole_data' and 'crs'.
         """
         drillhole_data = data.get("drillhole_data")
         crs = data.get("crs")

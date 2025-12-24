@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>sec_interp.gui package &#8212; SecInterp 2.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=b21de401"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="sec_interp.gui.tools package" href="sec_interp.gui.tools.html" />
+    <link rel="prev" title="sec_interp.exporters.svg_exporter module" href="sec_interp.exporters.svg_exporter.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="sec-interp-gui-package">
+<h1>sec_interp.gui package<a class="headerlink" href="#sec-interp-gui-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.tools.html">sec_interp.gui.tools package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.tools.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.tools.measure_tool.html">sec_interp.gui.tools.measure_tool module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileSnapper"><code class="docutils literal notranslate"><span class="pre">ProfileSnapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool"><code class="docutils literal notranslate"><span class="pre">ProfileMeasureTool</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.tools.html#module-sec_interp.gui.tools">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.ui.html">sec_interp.gui.ui package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.ui.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.ui.pages.html">sec_interp.gui.ui.pages package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.gui.ui.pages.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.gui.ui.pages.html#module-sec_interp.gui.ui.pages">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.ui.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.ui.main_window.html">sec_interp.gui.ui.main_window module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.gui.ui.main_window.html#sec_interp.gui.ui.main_window.SecInterpMainWindow"><code class="docutils literal notranslate"><span class="pre">SecInterpMainWindow</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.ui.sidebar.html">sec_interp.gui.ui.sidebar module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.gui.ui.sidebar.html#sec_interp.gui.ui.sidebar.Sidebar"><code class="docutils literal notranslate"><span class="pre">Sidebar</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.ui.html#module-sec_interp.gui.ui">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.legend_widget.html">sec_interp.gui.legend_widget module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget"><code class="docutils literal notranslate"><span class="pre">LegendWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget.eventFilter"><code class="docutils literal notranslate"><span class="pre">LegendWidget.eventFilter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget.update_legend"><code class="docutils literal notranslate"><span class="pre">LegendWidget.update_legend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget.paintEvent"><code class="docutils literal notranslate"><span class="pre">LegendWidget.paintEvent()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog.html">sec_interp.gui.main_dialog module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.iface"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.iface</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.plugin_instance"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.plugin_instance</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.messagebar"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.messagebar</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.__init__"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.wheelEvent"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.wheelEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.open_help"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.open_help()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.toggle_measure_tool"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.toggle_measure_tool()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_measurement_display"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.update_measurement_display()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_preview_checkbox_states"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.update_preview_checkbox_states()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_button_state"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.update_button_state()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.get_selected_values"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.get_selected_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.get_preview_options"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.get_preview_options()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_preview_from_checkboxes"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.update_preview_from_checkboxes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.preview_profile_handler"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.preview_profile_handler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.export_preview"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.export_preview()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.accept_handler"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.accept_handler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.reject_handler"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.reject_handler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.validate_inputs"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.validate_inputs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.clear_cache_handler"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.clear_cache_handler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_type"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.get_layer_names_by_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_geometry"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.get_layer_names_by_geometry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.getThemeIcon"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.getThemeIcon()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_cache_handler.html">sec_interp.gui.main_dialog_cache_handler module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_cache_handler.html#sec_interp.gui.main_dialog_cache_handler.CacheHandler"><code class="docutils literal notranslate"><span class="pre">CacheHandler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_cache_handler.html#sec_interp.gui.main_dialog_cache_handler.CacheHandler.__init__"><code class="docutils literal notranslate"><span class="pre">CacheHandler.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html">sec_interp.gui.main_dialog_config module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults"><code class="docutils literal notranslate"><span class="pre">DialogDefaults</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SCALE"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.SCALE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.VERTICAL_EXAGGERATION"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.VERTICAL_EXAGGERATION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.DIP_SCALE"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.DIP_SCALE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.DIP_SCALE_FACTOR"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.DIP_SCALE_FACTOR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.BUFFER_DISTANCE"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.BUFFER_DISTANCE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SAMPLING_INTERVAL"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.SAMPLING_INTERVAL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.DPI"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.DPI</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.PREVIEW_WIDTH"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.PREVIEW_WIDTH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.PREVIEW_HEIGHT"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.PREVIEW_HEIGHT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.EXPORT_QUALITY"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.EXPORT_QUALITY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.BACKGROUND_COLOR"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.BACKGROUND_COLOR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.GRID_COLOR"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.GRID_COLOR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.DEFAULT_BAND"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.DEFAULT_BAND</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SUPPORTED_IMAGE_FORMATS"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.SUPPORTED_IMAGE_FORMATS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SUPPORTED_VECTOR_FORMATS"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.SUPPORTED_VECTOR_FORMATS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogDefaults.SUPPORTED_DOCUMENT_FORMATS"><code class="docutils literal notranslate"><span class="pre">DialogDefaults.SUPPORTED_DOCUMENT_FORMATS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig"><code class="docutils literal notranslate"><span class="pre">DialogConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_CACHE"><code class="docutils literal notranslate"><span class="pre">DialogConfig.ENABLE_CACHE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.CACHE_EXPIRY_SECONDS"><code class="docutils literal notranslate"><span class="pre">DialogConfig.CACHE_EXPIRY_SECONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_PERFORMANCE_METRICS"><code class="docutils literal notranslate"><span class="pre">DialogConfig.ENABLE_PERFORMANCE_METRICS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.SHOW_METRICS_IN_RESULTS"><code class="docutils literal notranslate"><span class="pre">DialogConfig.SHOW_METRICS_IN_RESULTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.LOG_DETAILED_METRICS"><code class="docutils literal notranslate"><span class="pre">DialogConfig.LOG_DETAILED_METRICS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.AUTO_SAVE_SETTINGS"><code class="docutils literal notranslate"><span class="pre">DialogConfig.AUTO_SAVE_SETTINGS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.SHOW_HELP_ON_START"><code class="docutils literal notranslate"><span class="pre">DialogConfig.SHOW_HELP_ON_START</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_TOOLTIPS"><code class="docutils literal notranslate"><span class="pre">DialogConfig.ENABLE_TOOLTIPS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.STRICT_VALIDATION"><code class="docutils literal notranslate"><span class="pre">DialogConfig.STRICT_VALIDATION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ALLOW_EMPTY_GEOLOGY"><code class="docutils literal notranslate"><span class="pre">DialogConfig.ALLOW_EMPTY_GEOLOGY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ALLOW_EMPTY_STRUCTURES"><code class="docutils literal notranslate"><span class="pre">DialogConfig.ALLOW_EMPTY_STRUCTURES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.AUTO_REFRESH_PREVIEW"><code class="docutils literal notranslate"><span class="pre">DialogConfig.AUTO_REFRESH_PREVIEW</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.SHOW_LEGEND"><code class="docutils literal notranslate"><span class="pre">DialogConfig.SHOW_LEGEND</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_ZOOM"><code class="docutils literal notranslate"><span class="pre">DialogConfig.ENABLE_ZOOM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.MAX_PREVIEW_POINTS"><code class="docutils literal notranslate"><span class="pre">DialogConfig.MAX_PREVIEW_POINTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ENABLE_LOD"><code class="docutils literal notranslate"><span class="pre">DialogConfig.ENABLE_LOD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.VERBOSE_LOGGING"><code class="docutils literal notranslate"><span class="pre">DialogConfig.VERBOSE_LOGGING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.LOG_PERFORMANCE"><code class="docutils literal notranslate"><span class="pre">DialogConfig.LOG_PERFORMANCE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages"><code class="docutils literal notranslate"><span class="pre">ValidationMessages</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_RASTER"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_RASTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_SECTION_LINE"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_SECTION_LINE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_OUTPUT_PATH"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_OUTPUT_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_RASTER"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.INVALID_RASTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_SECTION_LINE"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.INVALID_SECTION_LINE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_OUTPUT_PATH"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.INVALID_OUTPUT_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.WRONG_GEOMETRY_TYPE"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.WRONG_GEOMETRY_TYPE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.EMPTY_LAYER"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.EMPTY_LAYER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_GEOMETRY"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.INVALID_GEOMETRY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_FIELD"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_FIELD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.INVALID_FIELD_TYPE"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.INVALID_FIELD_TYPE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_OUTCROP_LAYER"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_OUTCROP_LAYER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_OUTCROP_FIELD"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_OUTCROP_FIELD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_STRUCTURAL_LAYER"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_STRUCTURAL_LAYER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_DIP_FIELD"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_DIP_FIELD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.MISSING_STRIKE_FIELD"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.MISSING_STRIKE_FIELD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.VALIDATION_FAILED"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.VALIDATION_FAILED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.ValidationMessages.UNKNOWN_ERROR"><code class="docutils literal notranslate"><span class="pre">ValidationMessages.UNKNOWN_ERROR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants"><code class="docutils literal notranslate"><span class="pre">UIConstants</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.MIN_PREVIEW_WIDTH"><code class="docutils literal notranslate"><span class="pre">UIConstants.MIN_PREVIEW_WIDTH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.MIN_PREVIEW_HEIGHT"><code class="docutils literal notranslate"><span class="pre">UIConstants.MIN_PREVIEW_HEIGHT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.MAX_PREVIEW_WIDTH"><code class="docutils literal notranslate"><span class="pre">UIConstants.MAX_PREVIEW_WIDTH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.MAX_PREVIEW_HEIGHT"><code class="docutils literal notranslate"><span class="pre">UIConstants.MAX_PREVIEW_HEIGHT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.ICON_HELP"><code class="docutils literal notranslate"><span class="pre">UIConstants.ICON_HELP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.ICON_REFRESH"><code class="docutils literal notranslate"><span class="pre">UIConstants.ICON_REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.ICON_EXPORT"><code class="docutils literal notranslate"><span class="pre">UIConstants.ICON_EXPORT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.ICON_CLEAR"><code class="docutils literal notranslate"><span class="pre">UIConstants.ICON_CLEAR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.STATUS_OK"><code class="docutils literal notranslate"><span class="pre">UIConstants.STATUS_OK</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.STATUS_ERROR"><code class="docutils literal notranslate"><span class="pre">UIConstants.STATUS_ERROR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.STATUS_WARNING"><code class="docutils literal notranslate"><span class="pre">UIConstants.STATUS_WARNING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.REQUIRED_INDICATOR"><code class="docutils literal notranslate"><span class="pre">UIConstants.REQUIRED_INDICATOR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.UIConstants.REQUIRED_COLOR"><code class="docutils literal notranslate"><span class="pre">UIConstants.REQUIRED_COLOR</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_data.html">sec_interp.gui.main_dialog_data module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_data.html#sec_interp.gui.main_dialog_data.DialogDataAggregator"><code class="docutils literal notranslate"><span class="pre">DialogDataAggregator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_data.html#sec_interp.gui.main_dialog_data.DialogDataAggregator.__init__"><code class="docutils literal notranslate"><span class="pre">DialogDataAggregator.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_data.html#sec_interp.gui.main_dialog_data.DialogDataAggregator.get_all_values"><code class="docutils literal notranslate"><span class="pre">DialogDataAggregator.get_all_values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_export.html">sec_interp.gui.main_dialog_export module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_export.html#sec_interp.gui.main_dialog_export.ExportManager"><code class="docutils literal notranslate"><span class="pre">ExportManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_export.html#sec_interp.gui.main_dialog_export.ExportManager.__init__"><code class="docutils literal notranslate"><span class="pre">ExportManager.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_export.html#sec_interp.gui.main_dialog_export.ExportManager.export_preview"><code class="docutils literal notranslate"><span class="pre">ExportManager.export_preview()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_export.html#sec_interp.gui.main_dialog_export.ExportManager.export_data"><code class="docutils literal notranslate"><span class="pre">ExportManager.export_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html">sec_interp.gui.main_dialog_preview module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager"><code class="docutils literal notranslate"><span class="pre">PreviewManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.__init__"><code class="docutils literal notranslate"><span class="pre">PreviewManager.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.generate_preview"><code class="docutils literal notranslate"><span class="pre">PreviewManager.generate_preview()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.update_from_checkboxes"><code class="docutils literal notranslate"><span class="pre">PreviewManager.update_from_checkboxes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_settings.html">sec_interp.gui.main_dialog_settings module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_settings.html#sec_interp.gui.main_dialog_settings.DialogSettingsManager"><code class="docutils literal notranslate"><span class="pre">DialogSettingsManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_settings.html#sec_interp.gui.main_dialog_settings.DialogSettingsManager.__init__"><code class="docutils literal notranslate"><span class="pre">DialogSettingsManager.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_settings.html#sec_interp.gui.main_dialog_settings.DialogSettingsManager.load_settings"><code class="docutils literal notranslate"><span class="pre">DialogSettingsManager.load_settings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_settings.html#sec_interp.gui.main_dialog_settings.DialogSettingsManager.save_settings"><code class="docutils literal notranslate"><span class="pre">DialogSettingsManager.save_settings()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_signals.html">sec_interp.gui.main_dialog_signals module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_signals.html#sec_interp.gui.main_dialog_signals.DialogSignalManager"><code class="docutils literal notranslate"><span class="pre">DialogSignalManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_signals.html#sec_interp.gui.main_dialog_signals.DialogSignalManager.__init__"><code class="docutils literal notranslate"><span class="pre">DialogSignalManager.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_signals.html#sec_interp.gui.main_dialog_signals.DialogSignalManager.connect_all"><code class="docutils literal notranslate"><span class="pre">DialogSignalManager.connect_all()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html">sec_interp.gui.main_dialog_status module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager"><code class="docutils literal notranslate"><span class="pre">DialogStatusManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.__init__"><code class="docutils literal notranslate"><span class="pre">DialogStatusManager.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_all"><code class="docutils literal notranslate"><span class="pre">DialogStatusManager.update_all()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_preview_checkbox_states"><code class="docutils literal notranslate"><span class="pre">DialogStatusManager.update_preview_checkbox_states()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_button_state"><code class="docutils literal notranslate"><span class="pre">DialogStatusManager.update_button_state()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.setup_indicators"><code class="docutils literal notranslate"><span class="pre">DialogStatusManager.setup_indicators()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_raster_status"><code class="docutils literal notranslate"><span class="pre">DialogStatusManager.update_raster_status()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_status.html#sec_interp.gui.main_dialog_status.DialogStatusManager.update_section_status"><code class="docutils literal notranslate"><span class="pre">DialogStatusManager.update_section_status()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html">sec_interp.gui.main_dialog_utils module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager"><code class="docutils literal notranslate"><span class="pre">DialogEntityManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.populate_field_combobox"><code class="docutils literal notranslate"><span class="pre">DialogEntityManager.populate_field_combobox()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.get_layer_names_by_type"><code class="docutils literal notranslate"><span class="pre">DialogEntityManager.get_layer_names_by_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.get_layer_names_by_geometry"><code class="docutils literal notranslate"><span class="pre">DialogEntityManager.get_layer_names_by_geometry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.get_theme_icon"><code class="docutils literal notranslate"><span class="pre">DialogEntityManager.get_theme_icon()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_validation.html">sec_interp.gui.main_dialog_validation module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_validation.html#sec_interp.gui.main_dialog_validation.DialogValidator"><code class="docutils literal notranslate"><span class="pre">DialogValidator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_validation.html#sec_interp.gui.main_dialog_validation.DialogValidator.__init__"><code class="docutils literal notranslate"><span class="pre">DialogValidator.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_validation.html#sec_interp.gui.main_dialog_validation.DialogValidator.validate_inputs"><code class="docutils literal notranslate"><span class="pre">DialogValidator.validate_inputs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_validation.html#sec_interp.gui.main_dialog_validation.DialogValidator.validate_preview_requirements"><code class="docutils literal notranslate"><span class="pre">DialogValidator.validate_preview_requirements()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.parallel_geology.html">sec_interp.gui.parallel_geology module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.progress_updated"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.progress_updated</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.processing_finished"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.processing_finished</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.error_occurred"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.error_occurred</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.__init__"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.run"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.all_finished"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService.all_finished</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.batch_progress"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService.batch_progress</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.error_occurred"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService.error_occurred</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.process_profiles_parallel"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService.process_profiles_parallel()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.preview_axes_manager.html">sec_interp.gui.preview_axes_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.preview_axes_manager.html#sec_interp.gui.preview_axes_manager.PreviewAxesManager"><code class="docutils literal notranslate"><span class="pre">PreviewAxesManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_axes_manager.html#sec_interp.gui.preview_axes_manager.PreviewAxesManager.get_nice_interval"><code class="docutils literal notranslate"><span class="pre">PreviewAxesManager.get_nice_interval()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_axes_manager.html#sec_interp.gui.preview_axes_manager.PreviewAxesManager.create_axes_layer"><code class="docutils literal notranslate"><span class="pre">PreviewAxesManager.create_axes_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_axes_manager.html#sec_interp.gui.preview_axes_manager.PreviewAxesManager.create_axes_labels_layer"><code class="docutils literal notranslate"><span class="pre">PreviewAxesManager.create_axes_labels_layer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html">sec_interp.gui.preview_layer_factory module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.GEOLOGY_COLORS"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.GEOLOGY_COLORS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.__init__"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.get_color_for_unit"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.get_color_for_unit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_memory_layer"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.create_memory_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_topo_layer"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.create_topo_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_geol_layer"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.create_geol_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_struct_layer"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.create_struct_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_drillhole_trace_layer"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.create_drillhole_trace_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_drillhole_interval_layer"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.create_drillhole_interval_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.interpolate_elevation"><code class="docutils literal notranslate"><span class="pre">PreviewLayerFactory.interpolate_elevation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.preview_legend_renderer.html">sec_interp.gui.preview_legend_renderer module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.preview_legend_renderer.html#sec_interp.gui.preview_legend_renderer.PreviewLegendRenderer"><code class="docutils literal notranslate"><span class="pre">PreviewLegendRenderer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_legend_renderer.html#sec_interp.gui.preview_legend_renderer.PreviewLegendRenderer.draw_legend"><code class="docutils literal notranslate"><span class="pre">PreviewLegendRenderer.draw_legend()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.preview_optimizer.html">sec_interp.gui.preview_optimizer module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.preview_optimizer.html#sec_interp.gui.preview_optimizer.PreviewOptimizer"><code class="docutils literal notranslate"><span class="pre">PreviewOptimizer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_optimizer.html#sec_interp.gui.preview_optimizer.PreviewOptimizer.decimate"><code class="docutils literal notranslate"><span class="pre">PreviewOptimizer.decimate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_optimizer.html#sec_interp.gui.preview_optimizer.PreviewOptimizer.calculate_curvature"><code class="docutils literal notranslate"><span class="pre">PreviewOptimizer.calculate_curvature()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_optimizer.html#sec_interp.gui.preview_optimizer.PreviewOptimizer.adaptive_sample"><code class="docutils literal notranslate"><span class="pre">PreviewOptimizer.adaptive_sample()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.preview_renderer.html">sec_interp.gui.preview_renderer module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer"><code class="docutils literal notranslate"><span class="pre">PreviewRenderer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.__init__"><code class="docutils literal notranslate"><span class="pre">PreviewRenderer.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.active_units"><code class="docutils literal notranslate"><span class="pre">PreviewRenderer.active_units</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.render"><code class="docutils literal notranslate"><span class="pre">PreviewRenderer.render()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.draw_legend"><code class="docutils literal notranslate"><span class="pre">PreviewRenderer.draw_legend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.preview_renderer.html#sec_interp.gui.preview_renderer.PreviewRenderer.export_to_image"><code class="docutils literal notranslate"><span class="pre">PreviewRenderer.export_to_image()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.utils.html">sec_interp.gui.utils module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.utils.html#sec_interp.gui.utils.show_user_message"><code class="docutils literal notranslate"><span class="pre">show_user_message()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-sec_interp.gui">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sec_interp.gui" title="Link to this heading">¶</a></h2>
+<p>GUI module for SecInterp plugin.</p>
+<p>Contains dialogs, widgets, and rendering components.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="sec_interp.gui.PreviewRenderer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.</span></span><span class="sig-name descname"><span class="pre">PreviewRenderer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.gui.QgsMapCanvas</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.PreviewRenderer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Renders interactive preview using native PyQGIS resources.</p>
+<p>Acts as an orchestrator for several specialized modules:
+- PreviewLayerFactory: Handles layer creation and symbology.
+- PreviewAxesManager: Handles grid lines and axes labels.
+- PreviewOptimizer: Handles geometric simplification (LOD).
+- PreviewLegendRenderer: Handles legend drawing.</p>
+<p>Initialize preview renderer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>canvas</strong> – QgsMapCanvas instance (optional)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.PreviewRenderer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.gui.QgsMapCanvas</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.PreviewRenderer.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize preview renderer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>canvas</strong> – QgsMapCanvas instance (optional)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sec_interp.gui.PreviewRenderer.active_units">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">active_units</span></span><a class="headerlink" href="#sec_interp.gui.PreviewRenderer.active_units" title="Link to this definition">¶</a></dt>
+<dd><p>Expose active units from factory for legend compatibility.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.PreviewRenderer.draw_legend">
+<span class="sig-name descname"><span class="pre">draw_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.PyQt.QtGui.QPainter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.PyQt.QtCore.QRectF</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.PreviewRenderer.draw_legend" title="Link to this definition">¶</a></dt>
+<dd><p>Draw legend on the given painter. Delegates to PreviewLegendRenderer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.PreviewRenderer.export_to_image">
+<span class="sig-name descname"><span class="pre">export_to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.gui.PreviewRenderer.export_to_image" title="Link to this definition">¶</a></dt>
+<dd><p>Export preview to image file. Maintains same logic but orchestrated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.PreviewRenderer.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topo_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geol_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment" title="sec_interp.core.types.GeologySegment"><span class="pre">GeologySegment</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement" title="sec_interp.core.types.StructureMeasurement"><span class="pre">StructureMeasurement</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vert_exag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dip_line_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_adaptive_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drillhole_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">qgis.gui.QgsMapCanvas</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.PreviewRenderer.render" title="Link to this definition">¶</a></dt>
+<dd><p>Render preview with all data layers.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.</span></span><span class="sig-name descname"><span class="pre">SecInterpDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="sec_interp.gui.ui.main_window.html#sec_interp.gui.ui.main_window.SecInterpMainWindow" title="sec_interp.gui.ui.main_window.SecInterpMainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">SecInterpMainWindow</span></code></a></p>
+<p>Dialog for the SecInterp QGIS plugin.</p>
+<p>This dialog provides the user interface and helper methods to populate
+combo boxes with layers from the current QGIS project (raster and vector
+layers filtered by geometry type). It also exposes the interface and
+plugin instance for interaction with the host application.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.iface">
+<span class="sig-name descname"><span class="pre">iface</span></span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.iface" title="Link to this definition">¶</a></dt>
+<dd><p>The QGIS interface instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsInterface</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.plugin_instance">
+<span class="sig-name descname"><span class="pre">plugin_instance</span></span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.plugin_instance" title="Link to this definition">¶</a></dt>
+<dd><p>The plugin instance that created this dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp" title="sec_interp.sec_interp_plugin.SecInterp">SecInterp</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.messagebar">
+<span class="sig-name descname"><span class="pre">messagebar</span></span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.messagebar" title="Link to this definition">¶</a></dt>
+<dd><p>The message bar widget for notifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsMessageBar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Constructor.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugin_instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructor.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.accept_handler">
+<span class="sig-name descname"><span class="pre">accept_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.accept_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handle the accept button click event.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.clear_cache_handler">
+<span class="sig-name descname"><span class="pre">clear_cache_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.clear_cache_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Clear cached data and notify user.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.export_preview">
+<span class="sig-name descname"><span class="pre">export_preview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.export_preview" title="Link to this definition">¶</a></dt>
+<dd><p>Export the current preview to a file using ExportManager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.getThemeIcon">
+<span class="sig-name descname"><span class="pre">getThemeIcon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.getThemeIcon" title="Link to this definition">¶</a></dt>
+<dd><p>Get a theme icon via DialogEntityManager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.get_layer_names_by_geometry">
+<span class="sig-name descname"><span class="pre">get_layer_names_by_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.get_layer_names_by_geometry" title="Link to this definition">¶</a></dt>
+<dd><p>Get layer names by geometry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.get_layer_names_by_type">
+<span class="sig-name descname"><span class="pre">get_layer_names_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.get_layer_names_by_type" title="Link to this definition">¶</a></dt>
+<dd><p>Get layer names by type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.get_preview_options">
+<span class="sig-name descname"><span class="pre">get_preview_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.get_preview_options" title="Link to this definition">¶</a></dt>
+<dd><p>Return the state of preview layer checkboxes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Keys ‘show_topo’, ‘show_geol’, ‘show_struct’ with boolean values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.get_selected_values">
+<span class="sig-name descname"><span class="pre">get_selected_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.get_selected_values" title="Link to this definition">¶</a></dt>
+<dd><p>Get the selected values from the dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary with all dialog values in legacy flat format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.open_help">
+<span class="sig-name descname"><span class="pre">open_help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.open_help" title="Link to this definition">¶</a></dt>
+<dd><p>Open the help file in the default browser.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.preview_profile_handler">
+<span class="sig-name descname"><span class="pre">preview_profile_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.preview_profile_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a quick preview with topographic, geological, and structural data.</p>
+<p>This method delegates to PreviewManager for preview generation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.reject_handler">
+<span class="sig-name descname"><span class="pre">reject_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.reject_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handle the reject button click event.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.toggle_measure_tool">
+<span class="sig-name descname"><span class="pre">toggle_measure_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.toggle_measure_tool" title="Link to this definition">¶</a></dt>
+<dd><p>Toggle measurement tool.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.update_button_state">
+<span class="sig-name descname"><span class="pre">update_button_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.update_button_state" title="Link to this definition">¶</a></dt>
+<dd><p>Enable or disable buttons via status_manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.update_measurement_display">
+<span class="sig-name descname"><span class="pre">update_measurement_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.update_measurement_display" title="Link to this definition">¶</a></dt>
+<dd><p>Display measurement results from multi-point tool.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metrics</strong> – Dictionary containing measurement data:
+- total_distance: Total accumulated distance
+- horizontal_distance: Total horizontal distance
+- elevation_change: Total elevation change
+- avg_slope: Average slope in degrees
+- segment_count: Number of segments
+- point_count: Number of points</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.update_preview_checkbox_states">
+<span class="sig-name descname"><span class="pre">update_preview_checkbox_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.update_preview_checkbox_states" title="Link to this definition">¶</a></dt>
+<dd><p>Enable or disable preview checkboxes via status_manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.update_preview_from_checkboxes">
+<span class="sig-name descname"><span class="pre">update_preview_from_checkboxes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.update_preview_from_checkboxes" title="Link to this definition">¶</a></dt>
+<dd><p>Update preview when checkboxes change.</p>
+<p>This method delegates to PreviewManager for preview updates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.validate_inputs">
+<span class="sig-name descname"><span class="pre">validate_inputs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.validate_inputs" title="Link to this definition">¶</a></dt>
+<dd><p>Validate the inputs from the dialog.</p>
+<p>This method delegates to DialogValidator for input validation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.wheelEvent">
+<span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.wheelEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Handle mouse wheel for zooming in preview.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SecInterp</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="USER_GUIDE.html">SecInterp User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_GUIDE.html">SecInterp - Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html">SecInterp - Technical Compendium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MAINTENANCE_LOG.html">SecInterp - Maintenance &amp; Release Log</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">sec_interp</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="sec_interp.html">sec_interp package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">sec_interp</a><ul>
+  <li><a href="sec_interp.html">sec_interp package</a><ul>
+      <li>Previous: <a href="sec_interp.exporters.svg_exporter.html" title="previous chapter">sec_interp.exporters.svg_exporter module</a></li>
+      <li>Next: <a href="sec_interp.gui.tools.html" title="next chapter">sec_interp.gui.tools package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Juan M Bernales.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/sec_interp.gui.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

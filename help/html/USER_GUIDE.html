@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SecInterp User Guide &#8212; SecInterp 2.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=b21de401"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SecInterp - Detailed Project Architecture" href="ARCHITECTURE.html" />
+    <link rel="prev" title="SecInterp Documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="secinterp-user-guide">
+<h1>SecInterp User Guide<a class="headerlink" href="#secinterp-user-guide" title="Link to this heading">¶</a></h1>
+<section id="introduction">
+<h2>1. Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>Welcome to the SecInterp plugin! This guide will help you get started with creating geological cross-sections from your QGIS layers.</p>
+<p>SecInterp allows you to:</p>
+<ul class="simple">
+<li><p>Create a topographic profile from a Digital Elevation Model (DEM).</p></li>
+<li><p>Project geological units from a polygon layer onto the profile.</p></li>
+<li><p>Project structural measurements (e.g., dip and strike) onto the profile.</p></li>
+<li><p><strong>New</strong>: Project drillhole traces and geological intervals (sondajes) onto the section.</p></li>
+<li><p>View an interactive preview with level-of-detail (LOD) optimization.</p></li>
+<li><p><strong>New</strong>: Measure distances and gradients with automatic snapping to vertices.</p></li>
+<li><p>Export data to CSV and Shapefile formats, and export the preview to image/vector formats.</p></li>
+</ul>
+</section>
+<section id="the-main-window">
+<h2>2. The Main Window<a class="headerlink" href="#the-main-window" title="Link to this heading">¶</a></h2>
+<p>The SecInterp dialog is divided into three main areas:</p>
+<ol class="arabic simple">
+<li><p><strong>Settings Panel (Left)</strong>: Where you select your layers and adjust parameters.</p></li>
+<li><p><strong>Preview Panel (Right)</strong>: Where you see the interactive preview of your cross-section.</p></li>
+<li><p><strong>Output &amp; Actions (Bottom)</strong>: Where you specify the output folder and execute actions like “Preview”, “Save”, and “OK”.</p></li>
+</ol>
+<p><img alt="Main Window" src="_images/ui_main_dialog.png" /></p>
+</section>
+<section id="step-by-step-tutorial-creating-a-basic-profile">
+<h2>3. Step-by-Step Tutorial: Creating a Basic Profile<a class="headerlink" href="#step-by-step-tutorial-creating-a-basic-profile" title="Link to this heading">¶</a></h2>
+<p>This tutorial will guide you through creating a simple topographic profile.</p>
+<section id="step-1-select-input-layers">
+<h3>Step 1: Select Input Layers<a class="headerlink" href="#step-1-select-input-layers" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p><strong>DEM / Raster</strong>: In the “Digital Elevation Model” section, click the “Raster Layer” dropdown and select your DEM layer.
+<img alt="Select DEM" src="_images/workflow_01_select_dem.png" /></p></li>
+<li><p><strong>Section Line</strong>: In the “Section Line” section, click the “Cross-section line layer” dropdown and select the line layer that represents your cross-section path.
+<img alt="Select Section Line" src="_images/workflow_03_select_section_line.png" /></p></li>
+</ol>
+</section>
+<section id="step-2-generate-a-preview">
+<h3>Step 2: Generate a Preview<a class="headerlink" href="#step-2-generate-a-preview" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Once you have selected both a raster and a line layer, the <strong>“Preview”</strong> button in the bottom right will become enabled.</p></li>
+<li><p>Click <strong>“Preview”</strong>.</p></li>
+<li><p>The topographic profile will be generated and displayed in the preview panel. You can pan by clicking and dragging and zoom using the mouse wheel.
+<img alt="Preview Generated" src="_images/workflow_04_preview_generated.png" /></p></li>
+</ol>
+</section>
+<section id="step-3-add-geological-data-optional">
+<h3>Step 3: Add Geological Data (Optional)<a class="headerlink" href="#step-3-add-geological-data-optional" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Go to the <strong>“Geology”</strong> section in the settings panel.</p></li>
+<li><p>Select your geological polygon layer in the <strong>“Outcrop layer”</strong> dropdown.</p></li>
+<li><p>Select the field that contains the geological unit names in the <strong>“Geology field”</strong> dropdown.</p></li>
+<li><p>Click <strong>“Preview”</strong> again. The geological units will now be drawn on top of your topographic profile.
+<img alt="Geology Setup" src="_images/workflow_05_geology_setup.png" /></p></li>
+</ol>
+</section>
+<section id="step-4-add-structural-data-optional">
+<h3>Step 4: Add Structural Data (Optional)<a class="headerlink" href="#step-4-add-structural-data-optional" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Go to the <strong>“Structural”</strong> section.</p></li>
+<li><p>Select your structural point layer in the <strong>“Structural layer”</strong> dropdown.</p></li>
+<li><p>Select the fields corresponding to <strong>“Dip”</strong> and <strong>“Strike”</strong>.</p></li>
+<li><p>Adjust the <strong>“Buffer”</strong> distance. Only points within this distance from your section line will be considered.</p></li>
+<li><p>Click <strong>“Preview”</strong> again. The structural measurements will be projected onto your profile as small lines.
+<img alt="Structural Setup" src="_images/workflow_06_structural_setup.png" /></p></li>
+</ol>
+</section>
+<section id="step-5-add-drillhole-data-optional">
+<h3>Step 5: Add Drillhole Data (Optional)<a class="headerlink" href="#step-5-add-drillhole-data-optional" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Go to the <strong>“Drillholes”</strong> section.</p></li>
+<li><p>Select your <strong>“Collar layer”</strong> (points) and <strong>“Survey layer”</strong> (or use auto-calculation for vertical holes).</p></li>
+<li><p>Choose the <strong>“Interval layer”</strong> for geological logging.</p></li>
+<li><p>Configure the depth and geology fields.</p></li>
+<li><p>Click <strong>“Preview”</strong>. The drillhole traces and intervals will appear in the section, projected into the 2D plane.
+<img alt="Drillhole Collar Setup" src="_images/workflow_07_drillhole_collar_setup.png" />
+<img alt="Drillhole Survey Setup" src="_images/workflow_08_drillhole_survey_setup.png" />
+<img alt="Drillhole Interval Setup" src="_images/workflow_09_drillhole_interval_setup.png" /></p></li>
+</ol>
+</section>
+</section>
+<section id="understanding-the-settings">
+<h2>4. Understanding the Settings<a class="headerlink" href="#understanding-the-settings" title="Link to this heading">¶</a></h2>
+<section id="dem-raster">
+<h3>DEM / Raster<a class="headerlink" href="#dem-raster" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Raster Layer</strong>: Your source DEM.</p></li>
+<li><p><strong>Band</strong>: The raster band to get elevation data from (usually Band 1).</p></li>
+<li><p><strong>Scale</strong>: The map scale you intend for your final output. This helps with some calculations.</p></li>
+<li><p><strong>Vert. Exag.</strong>: Vertical Exaggeration. A value of <code class="docutils literal notranslate"><span class="pre">2.0</span></code> will make the vertical scale twice as large as the horizontal scale, exaggerating topographic features.</p></li>
+</ul>
+</section>
+<section id="section-line">
+<h3>Section Line<a class="headerlink" href="#section-line" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Cross-section line layer</strong>: The vector line layer defining your profile path.</p></li>
+<li><p><strong>Buffer</strong>: The distance (in layer units) from the line to search for structural data points.</p></li>
+</ul>
+</section>
+<section id="drillholes">
+<h3>Drillholes<a class="headerlink" href="#drillholes" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Collar Layer</strong>: Point layer with hole locations.</p></li>
+<li><p><strong>Survey Layer</strong>: Data for hole orientation (Dip/Azimuth).</p></li>
+<li><p><strong>Interval Layer</strong>: Geological or assay data with depth intervals.</p></li>
+<li><p><strong>Max Projection Dist.</strong>: Only holes within this distance from the section line will be shown.</p></li>
+</ul>
+</section>
+<section id="preview-controls">
+<h3>Preview Controls<a class="headerlink" href="#preview-controls" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Max Points</strong>: (Only active if “Auto” is unchecked). Manually sets the level of detail. Lower values are faster but less detailed.</p></li>
+<li><p><strong>Auto</strong>: (Recommended). Automatically adjusts the level of detail as you zoom and pan.</p></li>
+<li><p><strong>Adaptive</strong>: (Recommended). Uses a smarter algorithm to simplify the line, preserving more detail in complex areas.</p></li>
+<li><p><strong>Show Topography/Geology/Structures</strong>: Use these checkboxes to toggle the visibility of different layers in the preview.</p></li>
+</ul>
+</section>
+<section id="the-measure-tool">
+<h3>The Measure Tool<a class="headerlink" href="#the-measure-tool" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Click the <strong>“Measure”</strong> button in the preview panel to enable it.</p></li>
+<li><p><strong>Snapping</strong>: The tool automatically “snaps” to the nearest vertex or contact of the generated topography and geology, ensuring precise measurements.</p></li>
+<li><p>Click and drag on the preview canvas to measure distance and slope. The results are displayed in the results panel.</p></li>
+<li><p>Toggle the “Measure” button off to return to the pan tool.</p></li>
+</ul>
+</section>
+</section>
+<section id="exporting-your-work">
+<h2>5. Exporting Your Work<a class="headerlink" href="#exporting-your-work" title="Link to this heading">¶</a></h2>
+<p>There are two ways to export:</p>
+<ol class="arabic simple">
+<li><p><strong>Save Profile Data (<code class="docutils literal notranslate"><span class="pre">Save</span></code> button)</strong>:</p>
+<ul class="simple">
+<li><p>First, select an <strong>“Output Folder”</strong> at the bottom of the window.</p></li>
+<li><p>Click the <strong>“Save”</strong> button.</p></li>
+<li><p>This generates a set of <strong>CSV and Shapefile</strong> files in your output folder containing the raw data for the topography, geology, and structures. This is ideal for use in other software or for further analysis.</p></li>
+</ul>
+</li>
+<li><p><strong>Export Preview Image (<code class="docutils literal notranslate"><span class="pre">Export</span></code> button)</strong>:</p>
+<ul class="simple">
+<li><p>After generating a preview, click the <strong>“Export”</strong> button located under the preview canvas.</p></li>
+<li><p>This allows you to save the current preview as an image (PNG, JPG) or vector graphic (SVG, PDF). This is ideal for including in reports and presentations.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="closing-the-plugin">
+<h2>6. Closing the Plugin<a class="headerlink" href="#closing-the-plugin" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>OK</strong>: Saves all your data (like the <code class="docutils literal notranslate"><span class="pre">Save</span></code> button) and then closes the dialog.</p></li>
+<li><p><strong>Cancel</strong>: Closes the dialog without saving any data.</p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SecInterp</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SecInterp User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-main-window">2. The Main Window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-by-step-tutorial-creating-a-basic-profile">3. Step-by-Step Tutorial: Creating a Basic Profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-settings">4. Understanding the Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exporting-your-work">5. Exporting Your Work</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#closing-the-plugin">6. Closing the Plugin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_GUIDE.html">SecInterp - Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html">SecInterp - Technical Compendium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MAINTENANCE_LOG.html">SecInterp - Maintenance &amp; Release Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sec_interp</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">SecInterp Documentation</a></li>
+      <li>Next: <a href="ARCHITECTURE.html" title="next chapter">SecInterp - Detailed Project Architecture</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Juan M Bernales.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/USER_GUIDE.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

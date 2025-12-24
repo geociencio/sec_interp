@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>sec_interp.gui.main_dialog module &#8212; SecInterp 2.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=b21de401"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="sec_interp.gui.main_dialog_cache_handler module" href="sec_interp.gui.main_dialog_cache_handler.html" />
+    <link rel="prev" title="sec_interp.gui.legend_widget module" href="sec_interp.gui.legend_widget.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-sec_interp.gui.main_dialog">
+<span id="sec-interp-gui-main-dialog-module"></span><h1>sec_interp.gui.main_dialog module<a class="headerlink" href="#module-sec_interp.gui.main_dialog" title="Link to this heading">¶</a></h1>
+<p>Main Dialog Module.</p>
+<p>Contains the SecInterpDialog class which is the primary UI for the plugin.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.main_dialog.</span></span><span class="sig-name descname"><span class="pre">SecInterpDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="sec_interp.gui.ui.main_window.html#sec_interp.gui.ui.main_window.SecInterpMainWindow" title="sec_interp.gui.ui.main_window.SecInterpMainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">SecInterpMainWindow</span></code></a></p>
+<p>Dialog for the SecInterp QGIS plugin.</p>
+<p>This dialog provides the user interface and helper methods to populate
+combo boxes with layers from the current QGIS project (raster and vector
+layers filtered by geometry type). It also exposes the interface and
+plugin instance for interaction with the host application.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.iface">
+<span class="sig-name descname"><span class="pre">iface</span></span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.iface" title="Link to this definition">¶</a></dt>
+<dd><p>The QGIS interface instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsInterface</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.plugin_instance">
+<span class="sig-name descname"><span class="pre">plugin_instance</span></span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.plugin_instance" title="Link to this definition">¶</a></dt>
+<dd><p>The plugin instance that created this dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp" title="sec_interp.sec_interp_plugin.SecInterp">SecInterp</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.messagebar">
+<span class="sig-name descname"><span class="pre">messagebar</span></span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.messagebar" title="Link to this definition">¶</a></dt>
+<dd><p>The message bar widget for notifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsMessageBar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Constructor.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugin_instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructor.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.wheelEvent">
+<span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.wheelEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Handle mouse wheel for zooming in preview.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.open_help">
+<span class="sig-name descname"><span class="pre">open_help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.open_help" title="Link to this definition">¶</a></dt>
+<dd><p>Open the help file in the default browser.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.toggle_measure_tool">
+<span class="sig-name descname"><span class="pre">toggle_measure_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.toggle_measure_tool" title="Link to this definition">¶</a></dt>
+<dd><p>Toggle measurement tool.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.update_measurement_display">
+<span class="sig-name descname"><span class="pre">update_measurement_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.update_measurement_display" title="Link to this definition">¶</a></dt>
+<dd><p>Display measurement results from multi-point tool.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metrics</strong> – Dictionary containing measurement data:
+- total_distance: Total accumulated distance
+- horizontal_distance: Total horizontal distance
+- elevation_change: Total elevation change
+- avg_slope: Average slope in degrees
+- segment_count: Number of segments
+- point_count: Number of points</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.update_preview_checkbox_states">
+<span class="sig-name descname"><span class="pre">update_preview_checkbox_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.update_preview_checkbox_states" title="Link to this definition">¶</a></dt>
+<dd><p>Enable or disable preview checkboxes via status_manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.update_button_state">
+<span class="sig-name descname"><span class="pre">update_button_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.update_button_state" title="Link to this definition">¶</a></dt>
+<dd><p>Enable or disable buttons via status_manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.get_selected_values">
+<span class="sig-name descname"><span class="pre">get_selected_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.get_selected_values" title="Link to this definition">¶</a></dt>
+<dd><p>Get the selected values from the dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary with all dialog values in legacy flat format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.get_preview_options">
+<span class="sig-name descname"><span class="pre">get_preview_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.get_preview_options" title="Link to this definition">¶</a></dt>
+<dd><p>Return the state of preview layer checkboxes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Keys ‘show_topo’, ‘show_geol’, ‘show_struct’ with boolean values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.update_preview_from_checkboxes">
+<span class="sig-name descname"><span class="pre">update_preview_from_checkboxes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.update_preview_from_checkboxes" title="Link to this definition">¶</a></dt>
+<dd><p>Update preview when checkboxes change.</p>
+<p>This method delegates to PreviewManager for preview updates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.preview_profile_handler">
+<span class="sig-name descname"><span class="pre">preview_profile_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.preview_profile_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a quick preview with topographic, geological, and structural data.</p>
+<p>This method delegates to PreviewManager for preview generation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.export_preview">
+<span class="sig-name descname"><span class="pre">export_preview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.export_preview" title="Link to this definition">¶</a></dt>
+<dd><p>Export the current preview to a file using ExportManager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.accept_handler">
+<span class="sig-name descname"><span class="pre">accept_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.accept_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handle the accept button click event.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.reject_handler">
+<span class="sig-name descname"><span class="pre">reject_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.reject_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handle the reject button click event.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.validate_inputs">
+<span class="sig-name descname"><span class="pre">validate_inputs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.validate_inputs" title="Link to this definition">¶</a></dt>
+<dd><p>Validate the inputs from the dialog.</p>
+<p>This method delegates to DialogValidator for input validation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.clear_cache_handler">
+<span class="sig-name descname"><span class="pre">clear_cache_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.clear_cache_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Clear cached data and notify user.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_type">
+<span class="sig-name descname"><span class="pre">get_layer_names_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_type" title="Link to this definition">¶</a></dt>
+<dd><p>Get layer names by type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_geometry">
+<span class="sig-name descname"><span class="pre">get_layer_names_by_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_geometry" title="Link to this definition">¶</a></dt>
+<dd><p>Get layer names by geometry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.getThemeIcon">
+<span class="sig-name descname"><span class="pre">getThemeIcon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.getThemeIcon" title="Link to this definition">¶</a></dt>
+<dd><p>Get a theme icon via DialogEntityManager.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SecInterp</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="USER_GUIDE.html">SecInterp User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_GUIDE.html">SecInterp - Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html">SecInterp - Technical Compendium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MAINTENANCE_LOG.html">SecInterp - Maintenance &amp; Release Log</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">sec_interp</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="sec_interp.html">sec_interp package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">sec_interp</a><ul>
+  <li><a href="sec_interp.html">sec_interp package</a><ul>
+  <li><a href="sec_interp.gui.html">sec_interp.gui package</a><ul>
+      <li>Previous: <a href="sec_interp.gui.legend_widget.html" title="previous chapter">sec_interp.gui.legend_widget module</a></li>
+      <li>Next: <a href="sec_interp.gui.main_dialog_cache_handler.html" title="next chapter">sec_interp.gui.main_dialog_cache_handler module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Juan M Bernales.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/sec_interp.gui.main_dialog.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

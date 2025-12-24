@@ -1,0 +1,42 @@
+# Task: Project Maintenance and Synchronization
+
+- [x] Fix false positive in `analyze_project_optfixed.py` (metadata check)
+- [x] Update `metadata.txt` changelog for v2.1.1 (Native Hybrid Help)
+- [x] Final project consistency check (analyzer run)
+- [x] Complete commits following Conventional Commits guidelines
+- [x] Port CRS fix from `refactor/optimization-core`
+- [x] Cleanup merged branches (local and remote)
+- [x] Refactor `exporters/profile_exporters.py` (postponed for next session)
+- [x] Fragment `PreviewRenderer`
+- [x] Refactor Export Logic
+- [x] Fix Y-Axis labels and Grid Alignment
+- [x] Fragment Main Dialog (gui/main_dialog.py)
+    - [x] Create `gui/main_dialog_settings.py`
+    - [x] Create `gui/main_dialog_status.py`
+    - [x] Create `gui/main_dialog_utils.py`
+    - [x] Refactor `gui/main_dialog.py` to use managers
+- [x] Architectural Cleanup (UI out of Core Utils)
+    - [x] Create `core/services/export_service.py`
+    - [x] Integrate `ExportService` in `ExportManager` (`gui/main_dialog_export.py`)
+    - [x] Clean up redundant export logic in `gui/main_dialog.py` and `core/algorithms.py`
+    - [x] Consolidate legacy `exporters/orchestrator.py`
+- [x] Refactor `gui/main_dialog_validation.py`: Move heavy logic to `core/validation.py`
+    - [x] Define `ValidationParams` dataclass in `core/validation.py`
+    - [x] Move orchestration logic to `core/validation.py`
+    - [x] Update `DialogValidator` to collect data and call core validation
+- [x] Refactor `gui/main_dialog_preview.py`: Move heavy logic to `core/services/preview_service.py`
+    - [x] Create `PreviewService` in `core/services/preview_service.py`
+    - [x] Move `generate_drillholes` and other process logic to `PreviewService`
+    - [x] Update `PreviewManager` to use the new service
+- [x] Fix `DeprecationWarning` in `QgsMapLayerComboBox.setFilters()`
+    - [x] Apply `Qgis.LayerFilters` to all GUI pages (`dem`, `geology`, `section`, `structure`, `drillhole`)
+- [x] Fix `AttributeError: 'SecInterp' object has no attribute 'controller'`
+    - [x] Reorder initializations in `core/algorithms.py`
+    - [x] Verify plugin startup logic
+- [x] Fix `TypeError` in `PreviewParams` initialization
+    - [x] Add missing `dip_scale_factor` to `PreviewParams` dataclass
+- [x] Fix missing structural data in preview
+    - [x] Update `PreviewManager` to use `currentField()` for UI field collection
+- [x] Fix startup crash: `AttributeError: 'SecInterpDialog' object has no attribute 'buttonBox'`
+    - [x] Correct typo in `main_dialog_status.py`
+    - [x] Fix missing `QDialogButtonBox` import

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SecInterp - Maintenance &amp; Release Log &#8212; SecInterp 2.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=b21de401"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="sec_interp" href="modules.html" />
+    <link rel="prev" title="SecInterp - Technical Compendium" href="TECHNICAL_COMPENDIUM.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="secinterp-maintenance-release-log">
+<h1>SecInterp - Maintenance &amp; Release Log<a class="headerlink" href="#secinterp-maintenance-release-log" title="Link to this heading">¶</a></h1>
+<p>This document serves as the central record for project history, release procedures, and past refactoring analysis.</p>
+<hr class="docutils" />
+<section id="release-process">
+<h2>🚀 Release Process<a class="headerlink" href="#release-process" title="Link to this heading">¶</a></h2>
+<p>Follow these steps to prepare and release a new version of <strong>SecInterp</strong>.</p>
+<section id="preparation">
+<h3>1. Preparation<a class="headerlink" href="#preparation" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Update Metadata</strong>: Increment <code class="docutils literal notranslate"><span class="pre">version</span></code> in <code class="docutils literal notranslate"><span class="pre">metadata.txt</span></code>.</p></li>
+<li><p><strong>Sync Project Brain</strong>: Update <code class="docutils literal notranslate"><span class="pre">.ai-context/project_brain.md</span></code>.</p></li>
+<li><p><strong>Update Changelog</strong>: Add the new version to the top of the <a class="reference internal" href="#project-history">Project History</a> section below.</p></li>
+<li><p><strong>Update User Guide</strong>: Ensure screenshots and feature descriptions in <code class="docutils literal notranslate"><span class="pre">docs/USER_GUIDE.md</span></code> are current.</p></li>
+</ul>
+</section>
+<section id="packaging-clean-build">
+<h3>2. Packaging (Clean Build)<a class="headerlink" href="#packaging-clean-build" title="Link to this heading">¶</a></h3>
+<p>To ensure no development files (like tests or .git) are included in the distribution zip, use the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">archive</span></code> method:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check exports-ignore in .gitattributes first</span>
+<span class="c1"># Then run the package command</span>
+make<span class="w"> </span>package<span class="w"> </span><span class="nv">VERSION</span><span class="o">=</span>main
+mv<span class="w"> </span>sec_interp.zip<span class="w"> </span>sec_interp_vX.Y.Z.zip
+</pre></div>
+</div>
+</section>
+<section id="distribution-qgis-repository">
+<h3>3. Distribution &amp; QGIS Repository<a class="headerlink" href="#distribution-qgis-repository" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Tagging</strong>: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">tag</span> <span class="pre">vX.Y.Z</span> <span class="pre">-m</span> <span class="pre">&quot;Release</span> <span class="pre">description&quot;</span></code></p></li>
+<li><p><strong>GitHub</strong>: Create a new Release and attach the ZIP.</p></li>
+<li><p><strong>QGIS Repo</strong>: Upload the ZIP to <a class="reference external" href="https://plugins.qgis.org/">plugins.qgis.org</a>.</p>
+<ul>
+<li><p>⚠️ <strong>CRITICAL</strong>: The ZIP MUST contain a <code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> file and NO <code class="docutils literal notranslate"><span class="pre">__pycache__</span></code> folders.</p></li>
+<li><p>The repository will reject any package with <code class="docutils literal notranslate"><span class="pre">.pyc</span></code> files for security reasons.</p></li>
+<li><p>Verified ZIP structure with <code class="docutils literal notranslate"><span class="pre">unzip</span> <span class="pre">-t</span> <span class="pre">sec_interp.zip</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="project-history">
+<h2>📜 Project History<a class="headerlink" href="#project-history" title="Link to this heading">¶</a></h2>
+<section id="id1">
+<h3>[2.2.0] - 2025-12-22<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Documentation Globalization</strong>: 100% of documentation (including Architecture) translated to English.</p></li>
+<li><p><strong>Build Optimization</strong>: Slimmed final ZIP package and removed redundant source code views from help.</p></li>
+<li><p><strong>Architectural Evolution</strong>: Moved main <code class="docutils literal notranslate"><span class="pre">SecInterp</span></code> class to <code class="docutils literal notranslate"><span class="pre">sec_interp_plugin.py</span></code>.</p></li>
+<li><p><strong>Validation Refactor</strong>: Modularized <code class="docutils literal notranslate"><span class="pre">core/validation/</span></code> package.</p></li>
+<li><p><strong>GUI Decoupling</strong>: Fragmented <code class="docutils literal notranslate"><span class="pre">SecInterpDialog</span></code> into specialized managers.</p></li>
+<li><p><strong>LOD Optimization</strong>: Implemented adaptive Level of Detail for previews.</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>[2.1.0] - 2025-12-17<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Feature</strong>: Snap-Enabled Measurement Tool.</p></li>
+<li><p><strong>Fix</strong>: Resolved Snapping configuration attribute errors.</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>[2.0.0] - 2025-12-14<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Feature</strong>: Full Drillhole Integration (Projection &amp; Intervals).</p></li>
+<li><p><strong>Export</strong>: Added drillhole trace and interval Shapefile exporters.</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>[1.1.0] - 2025-12-12<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Performance</strong>: Asynchronous parallel processing for geology.</p></li>
+<li><p><strong>Feature</strong>: Adaptive Sampling and Measurement Tool.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="historical-refactoring-notes">
+<h2>📁 Historical Refactoring Notes<a class="headerlink" href="#historical-refactoring-notes" title="Link to this heading">¶</a></h2>
+<p>For detailed information on past major refactoring sessions, refer to the following summaries:</p>
+<blockquote>
+<div><p>[!NOTE]
+<strong>Refactoring 2025-12-21</strong>: Significant reduction of <code class="docutils literal notranslate"><span class="pre">main_dialog.py</span></code> size (from 1k to ~300 lines) by moving logic to managers and core services.
+See <code class="docutils literal notranslate"><span class="pre">docs/docsec/archive/</span></code> for original walkthroughs if deep historical context is needed.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SecInterp</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="USER_GUIDE.html">SecInterp User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_GUIDE.html">SecInterp - Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html">SecInterp - Technical Compendium</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SecInterp - Maintenance &amp; Release Log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#release-process">🚀 Release Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-history">📜 Project History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#historical-refactoring-notes">📁 Historical Refactoring Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sec_interp</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="TECHNICAL_COMPENDIUM.html" title="previous chapter">SecInterp - Technical Compendium</a></li>
+      <li>Next: <a href="modules.html" title="next chapter">sec_interp</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Juan M Bernales.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/MAINTENANCE_LOG.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

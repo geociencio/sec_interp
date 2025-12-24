@@ -75,23 +75,8 @@ def validate_reasonable_ranges(values: Dict[str, Any]) -> List[str]:
 
 @dataclass
 class ValidationParams:
-    """Data container for all parameters that need cross-layer validation.
+    """Data container for all parameters that need cross-layer validation."""
 
-    Attributes:
-        raster_layer: The primary Digital Elevation Model.
-        band_number: Selected band for sampling.
-        line_layer: The cross-section vector line.
-        output_path: Target directory for results.
-        scale: Horizontal scale factor.
-        vert_exag: Vertical exaggeration multiplier.
-        buffer_dist: Search radius for structures/drillholes.
-        outcrop_layer: Geological map polygons.
-        outcrop_field: Field name for rock units.
-        struct_layer: Structural measurements points.
-        struct_dip_field: Field for dip angle.
-        struct_strike_field: Field for strike/azimuth.
-        dip_scale_factor: Multiplier for structural symbology size.
-    """
     raster_layer: Optional[QgsRasterLayer] = None
     band_number: Optional[int] = None
     line_layer: Optional[QgsVectorLayer] = None

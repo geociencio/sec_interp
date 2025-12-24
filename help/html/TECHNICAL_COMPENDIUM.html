@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SecInterp - Technical Compendium &#8212; SecInterp 2.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=b21de401"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SecInterp - Maintenance &amp; Release Log" href="MAINTENANCE_LOG.html" />
+    <link rel="prev" title="SecInterp - Development Guide" href="DEVELOPMENT_GUIDE.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="secinterp-technical-compendium">
+<h1>SecInterp - Technical Compendium<a class="headerlink" href="#secinterp-technical-compendium" title="Link to this heading">¶</a></h1>
+<p>This document consolidates technical research, geophysical algorithms, and API references for the <strong>SecInterp</strong> plugin.</p>
+<hr class="docutils" />
+<section id="scientific-geophysical-research">
+<h2>🔬 Scientific &amp; Geophysical Research<a class="headerlink" href="#scientific-geophysical-research" title="Link to this heading">¶</a></h2>
+<section id="integration-of-geophysics">
+<h3>1. Integration of Geophysics<a class="headerlink" href="#integration-of-geophysics" title="Link to this heading">¶</a></h3>
+<p>The plugin is prepared for future integration of deep geophysical data:</p>
+<ul class="simple">
+<li><p><strong>Potential (SP)</strong>: Projections use normalized dot product for section alignment and absolute elevation calculation (<span class="math notranslate nohighlight">\(Z_{collar} - Depth\)</span>).</p></li>
+<li><p><strong>VES (SEV)</strong>: Resistivity models are visualized as blocks on a logarithmic scale (<span class="math notranslate nohighlight">\(\log_{10}(Rho)\)</span>) using thickness-to-elevation conversion.</p></li>
+</ul>
+</section>
+<section id="drillhole-modeling">
+<h3>2. Drillhole Modeling<a class="headerlink" href="#drillhole-modeling" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Desurveying</strong>: Trayectories are calculated using the <strong>Average Angle Method</strong> (Tangential tracking).</p></li>
+<li><p><strong>Projection</strong>: 3D trajectories are mapped to the 2D plane by calculating distance along the section line while preserving absolute Z.</p></li>
+</ul>
+</section>
+<section id="core-algorithms">
+<h3>3. Core Algorithms<a class="headerlink" href="#core-algorithms" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Distance &amp; Sampling</strong>: We use <code class="docutils literal notranslate"><span class="pre">QgsDistanceArea.measureLine()</span></code> and direct <code class="docutils literal notranslate"><span class="pre">dataProvider()</span></code> access for DEM sampling, yielding a ~30% performance boost over high-level processing algorithms.</p></li>
+<li><p><strong>Adaptive LOD</strong>: Uses the <strong>Douglas-Peucker (RDP)</strong> algorithm for line simplification and a curvature-based hysteresis logic to adjust sampling density dynamically during zoom.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="api-reference">
+<h2>🔧 API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h2>
+<section id="core-services-core-services">
+<h3>Core Services (<code class="docutils literal notranslate"><span class="pre">core/services/</span></code>)<a class="headerlink" href="#core-services-core-services" title="Link to this heading">¶</a></h3>
+<section id="profileservice">
+<h4><code class="docutils literal notranslate"><span class="pre">ProfileService</span></code><a class="headerlink" href="#profileservice" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">generate_topographic_profile(line_lyr,</span> <span class="pre">raster_lyr,</span> <span class="pre">band)</span></code></strong>: Samples raster data along a line.</p></li>
+<li><p><strong>Returns</strong>: <code class="docutils literal notranslate"><span class="pre">List[Tuple[float,</span> <span class="pre">float]]</span></code> (distance, elevation).</p></li>
+</ul>
+</section>
+<section id="geologyservice">
+<h4><code class="docutils literal notranslate"><span class="pre">GeologyService</span></code><a class="headerlink" href="#geologyservice" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">generate_geological_profile(...)</span></code></strong>: Intersects section lines with geological geometry.</p></li>
+<li><p><strong>Returns</strong>: <code class="docutils literal notranslate"><span class="pre">List[GeologySegment]</span></code>.</p></li>
+</ul>
+</section>
+<section id="structureservice">
+<h4><code class="docutils literal notranslate"><span class="pre">StructureService</span></code><a class="headerlink" href="#structureservice" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">project_structures(...)</span></code></strong>: Projects 3D structural data and calculates apparent dip.</p></li>
+<li><p><strong>Formula</strong>: <code class="docutils literal notranslate"><span class="pre">tan(beta)</span> <span class="pre">=</span> <span class="pre">tan(alpha)</span> <span class="pre">*</span> <span class="pre">|cos(strike</span> <span class="pre">-</span> <span class="pre">azimuth)|</span></code>.</p></li>
+</ul>
+</section>
+<section id="drillholeservice">
+<h4><code class="docutils literal notranslate"><span class="pre">DrillholeService</span></code><a class="headerlink" href="#drillholeservice" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">project_collars()</span></code></strong> &amp; <strong><code class="docutils literal notranslate"><span class="pre">process_intervals()</span></code></strong>: Handle full 3D→2D pipeline for drillholes.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="validation-framework">
+<h2>🛡️ Validation Framework<a class="headerlink" href="#validation-framework" title="Link to this heading">¶</a></h2>
+<p>Modularized in <code class="docutils literal notranslate"><span class="pre">core/validation/</span></code>:</p>
+<ul class="simple">
+<li><p><strong>FieldValidator</strong>: Numeric and existence checks.</p></li>
+<li><p><strong>LayerValidator</strong>: CS, geometry, and feature count validation.</p></li>
+<li><p><strong>PathValidator</strong>: Security and permission handling.</p></li>
+<li><p><strong>ProjectValidator</strong>: High-level orchestration.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="key-data-structures">
+<h2>🧬 Key Data Structures<a class="headerlink" href="#key-data-structures" title="Link to this heading">¶</a></h2>
+<section id="geologysegment">
+<h3><code class="docutils literal notranslate"><span class="pre">GeologySegment</span></code><a class="headerlink" href="#geologysegment" title="Link to this heading">¶</a></h3>
+<p>Used to represent both surface outcrops and drillhole intervals.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GeologySegment</span><span class="p">:</span>
+    <span class="n">unit_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">QgsGeometry</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="structuremeasurement">
+<h3><code class="docutils literal notranslate"><span class="pre">StructureMeasurement</span></code><a class="headerlink" href="#structuremeasurement" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StructureMeasurement</span><span class="p">:</span>
+    <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">elevation</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">apparent_dip</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">original_dip</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">original_strike</span><span class="p">:</span> <span class="nb">float</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">SecInterp</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="USER_GUIDE.html">SecInterp User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_GUIDE.html">SecInterp - Development Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SecInterp - Technical Compendium</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scientific-geophysical-research">🔬 Scientific &amp; Geophysical Research</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">🔧 API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validation-framework">🛡️ Validation Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-data-structures">🧬 Key Data Structures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MAINTENANCE_LOG.html">SecInterp - Maintenance &amp; Release Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sec_interp</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="DEVELOPMENT_GUIDE.html" title="previous chapter">SecInterp - Development Guide</a></li>
+      <li>Next: <a href="MAINTENANCE_LOG.html" title="next chapter">SecInterp - Maintenance &amp; Release Log</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Juan M Bernales.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/TECHNICAL_COMPENDIUM.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

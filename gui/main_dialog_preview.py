@@ -19,12 +19,16 @@ from sec_interp.core.performance_metrics import (
     PerformanceTimer,
     format_duration,
 )
+from sec_interp.core.services.preview_service import (
+    PreviewParams,
+    PreviewResult,
+    PreviewService,
+)
 from sec_interp.core.types import GeologyData, ProfileData, StructureData
 from sec_interp.logger_config import get_logger
 
-from .parallel_geology import ParallelGeologyService
-from sec_interp.core.services.preview_service import PreviewService, PreviewParams
 from .main_dialog_config import DialogConfig
+from .parallel_geology import ParallelGeologyService
 
 
 if TYPE_CHECKING:
@@ -47,7 +51,12 @@ class PreviewManager:
             dialog: The SecInterpDialog instance
         """
         self.dialog = dialog
-        self.cached_data: dict[str, Any] = {"topo": None, "geol": None, "struct": None, "drillhole": None}
+        self.cached_data: dict[str, Any] = {
+            "topo": None,
+            "geol": None,
+            "struct": None,
+            "drillhole": None,
+        }
         self.metrics = MetricsCollector()
 
         # Initialize services
@@ -66,7 +75,9 @@ class PreviewManager:
         # Connect extents changed signal
         # We need to do this carefully to avoid signal loops
         # Initial connection is safe
-        self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
+        self.dialog.preview_widget.canvas.extentsChanged.connect(
+            self._on_extents_changed
+        )
 
     def generate_preview(self) -> tuple[bool, str]:
         """Generate complete preview with all available data layers.
@@ -84,15 +95,23 @@ class PreviewManager:
                 # 1. Validation
                 raster_layer, line_layer, band_num = self._validate_requirements()
 
-                self.dialog.preview_widget.results_text.setPlainText("Generating preview...")
+                self.dialog.preview_widget.results_text.setPlainText(
+                    "Generating preview..."
+                )
 
                 # 2. Collect Parameters
-                params = self._collect_preview_params(raster_layer, line_layer, band_num)
+                params = self._collect_preview_params(
+                    raster_layer, line_layer, band_num
+                )
 
                 # 3. Data Generation (Synchronous parts)
-                transform_context = self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
+                transform_context = (
+                    self.dialog.plugin_instance.iface.mapCanvas()
+                    .mapSettings()
+                    .transformContext()
+                )
                 result = self.preview_service.generate_all(params, transform_context)
-                
+
                 # Merge results and metrics
                 self.cached_data["topo"] = result.topo
                 self.cached_data["struct"] = result.struct
@@ -103,7 +122,7 @@ class PreviewManager:
                 # Start Async Geology if needed
                 if self.dialog.page_geology.is_complete():
                     self._start_async_geology(line_layer, raster_layer, band_num)
-                    self.cached_data["geol"] = None # Reset until async finished
+                    self.cached_data["geol"] = None  # Reset until async finished
 
                 # 4. Visualization
                 try:
@@ -116,7 +135,6 @@ class PreviewManager:
 
                     with PerformanceTimer("Rendering", self.metrics):
                         preview_options = self.dialog.get_preview_options()
-                        max_points_setting = preview_options["max_points"]
                         auto_lod_enabled = preview_options["auto_lod"]
                         use_adaptive_sampling = preview_options["use_adaptive_sampling"]
 
@@ -124,12 +142,12 @@ class PreviewManager:
                         max_points_for_render = PreviewService.calculate_max_points(
                             canvas_width=self.dialog.preview_widget.canvas.width(),
                             manual_max=preview_options["max_points"],
-                            auto_lod=auto_lod_enabled
+                            auto_lod=auto_lod_enabled,
                         )
 
                         self.dialog.plugin_instance.draw_preview(
                             self.cached_data["topo"],
-                            None, # Geology handled by async finish Redraw
+                            None,  # Geology handled by async finish Redraw
                             self.cached_data["struct"],
                             drillhole_data=self.cached_data["drillhole"],
                             max_points=max_points_for_render,
@@ -137,7 +155,7 @@ class PreviewManager:
                         )
                 except Exception as e:
                     logger.error(f"Error drawing preview: {e}", exc_info=True)
-                    raise ValueError(f"Failed to render preview: {e!s}")
+                    raise ValueError(f"Failed to render preview: {e!s}") from e
 
                 # 5. Results Reporting
                 result_msg = self._format_results_message(result)
@@ -189,9 +207,8 @@ class PreviewManager:
             ):
                 logger.warning("Plugin instance not available for preview update")
                 return
-            
+
             preview_options = self.dialog.get_preview_options()
-            max_points_setting = preview_options["max_points"]
             auto_lod_enabled = preview_options["auto_lod"]
             use_adaptive_sampling = preview_options["use_adaptive_sampling"]
 
@@ -199,7 +216,7 @@ class PreviewManager:
             max_points_for_render = PreviewService.calculate_max_points(
                 canvas_width=self.dialog.preview_widget.canvas.width(),
                 manual_max=preview_options["max_points"],
-                auto_lod=auto_lod_enabled
+                auto_lod=auto_lod_enabled,
             )
 
             self.dialog.plugin_instance.draw_preview(
@@ -213,7 +230,9 @@ class PreviewManager:
         except Exception as e:
             logger.error(f"Error updating preview from checkboxes: {e}", exc_info=True)
 
-    def _collect_preview_params(self, raster_layer, line_layer, band_num) -> PreviewParams:
+    def _collect_preview_params(
+        self, raster_layer, line_layer, band_num
+    ) -> PreviewParams:
         """Collect all parameters for preview generation."""
         values = self.dialog.get_selected_values()
         return PreviewParams(
@@ -243,7 +262,7 @@ class PreviewManager:
             interval_from_field=values.get("interval_from_field"),
             interval_to_field=values.get("interval_to_field"),
             interval_lith_field=values.get("interval_lith_field"),
-            dip_scale_factor=self.dialog.page_struct.scale_spin.value()
+            dip_scale_factor=self.dialog.page_struct.scale_spin.value(),
         )
 
     def _validate_requirements(self) -> tuple[QgsRasterLayer, QgsVectorLayer, int]:
@@ -314,7 +333,7 @@ class PreviewManager:
             lines.append(
                 f"Structures: None in {buffer_dist}m buffer or layer not selected"
             )
-            
+
         drillhole_data = self.cached_data.get("drillhole")
         if drillhole_data:
             lines.append(f"Drillholes: {len(drillhole_data)} holes/traces")
@@ -324,7 +343,7 @@ class PreviewManager:
         # Calculate ranges via core result object
         min_dist, max_dist = result.get_distance_range()
         min_elev, max_elev = result.get_elevation_range()
-        
+
         lines.extend(
             [
                 "",
@@ -370,7 +389,7 @@ class PreviewManager:
         # Only handle if Auto LOD is enabled
         if not self.dialog.preview_widget.chk_auto_lod.isChecked():
             return
-            
+
         # Restart debounce timer
         self.debounce_timer.start(200)
 
@@ -383,32 +402,32 @@ class PreviewManager:
 
             full_extent = canvas.fullExtent()
             current_extent = canvas.extent()
-            
+
             if current_extent.width() <= 0 or full_extent.width() <= 0:
                 return
 
             # Calculate zoom ratio
             ratio = full_extent.width() / current_extent.width()
-            
+
             # If ratio is close to 1, we are at full extent, use standard calculation
             if ratio < 1.1:
                 # Let the standard update logic handle it or just do nothing if consistent?
                 # Actually standard logic just uses canvas width.
                 # If we return here, we might miss resetting to low detail when zooming out.
                 pass
-            
+
             # Calculate max_points via PreviewService
             new_max_points = PreviewService.calculate_max_points(
-                canvas_width=canvas.width(),
-                ratio=ratio,
-                auto_lod=True
+                canvas_width=canvas.width(), ratio=ratio, auto_lod=True
             )
 
             # Check if we actually need to update (hysteresis)
             # This requires knowing the last used max_points...
             # We can just re-render, it handles caching of data, but re-decimation takes time.
-            
-            logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
+
+            logger.debug(
+                f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}"
+            )
 
             if not self.dialog.plugin_instance:
                 return
@@ -434,12 +453,12 @@ class PreviewManager:
         """Start asynchronous geology generation."""
         outcrop_layer = self.dialog.page_geology.layer_combo.currentLayer()
         outcrop_name_field = self.dialog.page_geology.field_combo.currentField()
-        
+
         if not outcrop_layer or not outcrop_name_field:
             return
 
         # Prepare arguments package
-        # We pass the bound method and its arguments. The ParallelGeologyService 
+        # We pass the bound method and its arguments. The ParallelGeologyService
         # will execute it automatically.
         args = (
             self.dialog.plugin_instance.controller.geology_service.generate_geological_profile,
@@ -447,10 +466,12 @@ class PreviewManager:
             raster_layer,
             outcrop_layer,
             outcrop_name_field,
-            band_num
+            band_num,
         )
-        
-        self.dialog.preview_widget.results_text.setPlainText("Generating Geology in background...")
+
+        self.dialog.preview_widget.results_text.setPlainText(
+            "Generating Geology in background..."
+        )
         # No need for a custom worker function anymore
         self.async_service.process_profiles_parallel([args])
 
@@ -463,39 +484,40 @@ class PreviewManager:
                 for item_result in chunk:
                     if item_result:
                         final_geol_data.extend(item_result)
-                
+
         self.cached_data["geol"] = final_geol_data if final_geol_data else None
-        
+
         # Log success
         logger.info(f"Async geology finished: {len(final_geol_data)} segments")
-        
+
         # Trigger update of preview
         try:
-             # We reuse the update logic but need to ensure it uses the new cached data
-             # Since checkbox logic handles 'if show_geol -> use cached', we just need to force redraw
-             # But first we might want to update the result text to say "Done"
-             
-             # Re-render
-             self.update_from_checkboxes()
-             
-             # Update results text (we need to regenerate the whole message)
-             # Note: This requires current state of other layers
-             topo = self.cached_data["topo"]
-             struct = self.cached_data["struct"]
-             buffer_dist = self._get_buffer_distance()
-             
-             if topo: # Only valid if we have topo
-                 # Reconstruct a partial result for formatting
-                 result = PreviewResult(
-                     topo=topo,
-                     geol=final_geol_data,
-                     struct=struct,
-                     drillhole=self.cached_data.get("drillhole"),
-                     buffer_dist=buffer_dist
-                 )
-                 msg = self._format_results_message(result)
-                 self.dialog.preview_widget.results_text.setPlainText(msg)
-                 
+            # We reuse the update logic but need to ensure it uses the new cached data
+            # Since checkbox logic handles 'if show_geol -> use cached', we just need
+            # to force redraw
+            # But first we might want to update the result text to say "Done"
+
+            # Re-render
+            self.update_from_checkboxes()
+
+            # Update results text (we need to regenerate the whole message)
+            # Note: This requires current state of other layers
+            topo = self.cached_data["topo"]
+            struct = self.cached_data["struct"]
+            buffer_dist = self._get_buffer_distance()
+
+            if topo:  # Only valid if we have topo
+                # Reconstruct a partial result for formatting
+                result = PreviewResult(
+                    topo=topo,
+                    geol=final_geol_data,
+                    struct=struct,
+                    drillhole=self.cached_data.get("drillhole"),
+                    buffer_dist=buffer_dist,
+                )
+                msg = self._format_results_message(result)
+                self.dialog.preview_widget.results_text.setPlainText(msg)
+
         except Exception as e:
             logger.error(f"Error updating UI after async geology: {e}", exc_info=True)
 
@@ -503,9 +525,13 @@ class PreviewManager:
         """Handle progress updates from parallel service."""
         # Optional: Update a progress bar if available
         # self.dialog.preview_widget.progressBar.setValue(progress)
-        self.dialog.preview_widget.results_text.setPlainText(f"Generating Geology: {progress}%...")
+        self.dialog.preview_widget.results_text.setPlainText(
+            f"Generating Geology: {progress}%..."
+        )
 
     def _on_geology_error(self, error_msg):
         """Handle errors from parallel service."""
         logger.error(f"Async geology error: {error_msg}")
-        self.dialog.preview_widget.results_text.append(f"\n⚠ Geology Error: {error_msg}")
+        self.dialog.preview_widget.results_text.append(
+            f"\n⚠ Geology Error: {error_msg}"
+        )

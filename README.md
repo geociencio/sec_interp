@@ -96,8 +96,13 @@ For detailed instructions, please see the [**User Guide**](docs/USER_GUIDE.md).
 This plugin is open-source and welcomes contributions.
 
 - **Source Code**: [GitHub Repository](https://github.com/geociencio/sec_interp)
-- **Technical Docs**: See the [Wiki](https://github.com/geociencio/sec_interp/wiki), the [User Guide](docs/USER_GUIDE.md), or the `docs/` folder.
-- **Development Setup**: See `README_DEV.md` for virtualenv and testing instructions.
+- **Documentation**:
+    - [**User Guide**](docs/USER_GUIDE.md): How to use the plugin.
+    - [**Architecture**](docs/ARCHITECTURE.md): Technical design and patterns.
+    - [**Development Guide**](docs/DEVELOPMENT_GUIDE.md): Code standards and setup.
+    - [**Maintenance Log**](docs/MAINTENANCE_LOG.md): Changelog and release procedures.
+    - [**Technical Compendium**](docs/TECHNICAL_COMPENDIUM.md): Geophysical research and details.
+- **Development Setup**: Use the `Makefile` and `DEVELOPMENT_GUIDE.md`.
 
 ---
 

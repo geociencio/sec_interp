@@ -1,22 +1,21 @@
-"""/***************************************************************************
- SecInterp - ProfileService
-                                 A QGIS plugin
- Service for generating topographic profiles.
-                              -------------------
-        begin                : 2025-12-07
-        copyright            : (C) 2025 by Juan M Bernales
-        email                : juanbernales@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
+# /***************************************************************************
+#  SecInterp - ProfileService
+#                                  A QGIS plugin
+#  Service for generating topographic profiles.
+#                               -------------------
+#         begin                : 2025-12-07
+#         copyright            : (C) 2025 by Juan M Bernales
+#         email                : juanbernales@gmail.com
+#  ***************************************************************************/
+# 
+# /***************************************************************************
+#  *                                                                         *
+#  *   This program is free software; you can redistribute it and/or modify  *
+#  *   it under the terms of the GNU General Public License as published by  *
+#  *   the Free Software Foundation; either version 2 of the License, or     *
+#  *   (at your option) any later version.                                   *
+#  *                                                                         *
+#  ***************************************************************************/
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 

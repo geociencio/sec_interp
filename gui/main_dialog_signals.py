@@ -12,14 +12,14 @@ if TYPE_CHECKING:
 
 class DialogSignalManager:
     """Manages all signal connections for SecInterpDialog.
-    
+
     This class organizes signal connections into logical groups,
     making the dialog initialization cleaner and more maintainable.
     """
 
     def __init__(self, dialog: "SecInterpDialog"):
         """Initialize signal manager.
-        
+
         Args:
             dialog: The SecInterpDialog instance
         """
@@ -38,7 +38,7 @@ class DialogSignalManager:
         self.dialog.button_box.accepted.connect(self.dialog.accept_handler)
         self.dialog.button_box.rejected.connect(self.dialog.reject_handler)
         self.dialog.button_box.helpRequested.connect(self.dialog.open_help)
-        
+
         # Clear cache button
         self.dialog.clear_cache_btn.clicked.connect(self.dialog.clear_cache_handler)
 
@@ -51,7 +51,7 @@ class DialogSignalManager:
         self.dialog.preview_widget.btn_export.clicked.connect(
             self.dialog.export_preview
         )
-        
+
         # Preview layer checkboxes
         self.dialog.preview_widget.chk_topo.stateChanged.connect(
             self.dialog.update_preview_from_checkboxes
@@ -65,7 +65,7 @@ class DialogSignalManager:
         self.dialog.preview_widget.chk_drillholes.stateChanged.connect(
             self.dialog.update_preview_from_checkboxes
         )
-        
+
         # Preview settings
         self.dialog.preview_widget.spin_max_points.valueChanged.connect(
             self.dialog.update_preview_from_checkboxes
@@ -80,10 +80,8 @@ class DialogSignalManager:
     def _connect_page_signals(self):
         """Connect page-specific signals for state updates."""
         # Output path changes
-        self.dialog.output_widget.fileChanged.connect(
-            self.dialog.update_button_state
-        )
-        
+        self.dialog.output_widget.fileChanged.connect(self.dialog.update_button_state)
+
         # DEM page
         self.dialog.page_dem.raster_combo.layerChanged.connect(
             self.dialog.update_button_state
@@ -91,7 +89,7 @@ class DialogSignalManager:
         self.dialog.page_dem.raster_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
-        
+
         # Section page
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.dialog.update_button_state
@@ -99,7 +97,7 @@ class DialogSignalManager:
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
-        
+
         # Data pages
         self.dialog.page_geology.dataChanged.connect(
             self.dialog.update_preview_checkbox_states
@@ -117,6 +115,17 @@ class DialogSignalManager:
         self.dialog.preview_widget.btn_measure.toggled.connect(
             self.dialog.toggle_measure_tool
         )
+
+        # Finalize button with debug wrapper
+        def finalize_with_log():
+            from sec_interp.logger_config import get_logger
+
+            logger = get_logger(__name__)
+            logger.info("Finalize button clicked!")
+            self.dialog.measure_tool.finalize_measurement()
+
+        self.dialog.preview_widget.btn_finalize.clicked.connect(finalize_with_log)
+
         self.dialog.measure_tool.measurementChanged.connect(
             self.dialog.update_measurement_display
         )

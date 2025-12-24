@@ -1,5 +1,5 @@
 SecInterp Documentation
-=====================
+=======================
 
 Welcome to the SecInterp plugin technical documentation.
 
@@ -7,6 +7,11 @@ Welcome to the SecInterp plugin technical documentation.
    :maxdepth: 2
    :caption: Contents:
 
+   USER_GUIDE
+   ARCHITECTURE
+   DEVELOPMENT_GUIDE
+   TECHNICAL_COMPENDIUM
+   MAINTENANCE_LOG
    modules
 
 Indices and tables

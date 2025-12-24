@@ -1,356 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecInterp Help</title>
-    <style>
-        :root {
-            --qgis-green: #589632;
-            --secinterp-orange: #e67e22;
-            --bg-color: #f8f9fa;
-            --text-color: #333;
-            --border-color: #ddd;
-            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-        }
+    <title>SecInterp Documentation &#8212; SecInterp 2.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=b21de401"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SecInterp User Guide" href="USER_GUIDE.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+  
+  
 
-        header {
-            background-color: white;
-            padding: 20px;
-            border-bottom: 4px solid var(--qgis-green);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
+  </head><body>
+  
 
-        header img {
-            width: 48px;
-            height: 48px;
-        }
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
 
-        header h1 {
-            margin: 0;
-            color: var(--qgis-green);
-            font-size: 1.8rem;
-        }
+          <div class="body" role="main">
+            
+  <section id="secinterp-documentation">
+<h1>SecInterp Documentation<a class="headerlink" href="#secinterp-documentation" title="Link to this heading">¶</a></h1>
+<p>Welcome to the SecInterp plugin technical documentation.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="USER_GUIDE.html">SecInterp User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="USER_GUIDE.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="USER_GUIDE.html#the-main-window">2. The Main Window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="USER_GUIDE.html#step-by-step-tutorial-creating-a-basic-profile">3. Step-by-Step Tutorial: Creating a Basic Profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="USER_GUIDE.html#understanding-the-settings">4. Understanding the Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="USER_GUIDE.html#exporting-your-work">5. Exporting Your Work</a></li>
+<li class="toctree-l2"><a class="reference internal" href="USER_GUIDE.html#closing-the-plugin">6. Closing the Plugin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#table-of-contents">📑 Table of Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#overview">🎯 Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#directory-structure">📂 Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#system-architecture">🏗️ System Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#visualizing-mermaid-diagrams-in-vs-code">🧩 Visualizing Mermaid Diagrams in VS Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#gui-layer-user-interface">🖥️ GUI Layer - User Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#core-layer-business-logic">⚙️ Core Layer - Business Logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#exporters-layer-data-export">📤 Exporters Layer - Data Export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#main-data-flows">🔄 Main Data Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#design-patterns">🎨 Design Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#external-dependencies">🌐 External Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#performance-optimizations">⚡ Performance Optimizations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#project-metrics">📊 Project Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#references">🔗 References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#design-principles">🎨 Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#extensibility">🚀 Extensibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#deployment">📦 Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ARCHITECTURE.html#final-notes">📝 Final Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_GUIDE.html">SecInterp - Development Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_GUIDE.html#technical-stack">🏗️ Technical Stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_GUIDE.html#coding-standards">🎨 Coding Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_GUIDE.html#git-workflow">⚡ Git Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_GUIDE.html#tooling-ruff">🛠️ Tooling (Ruff)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_GUIDE.html#testing">🧪 Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_GUIDE.html#documentation-standards">📝 Documentation Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DEVELOPMENT_GUIDE.html#deployment-makefile">📦 Deployment &amp; Makefile</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html">SecInterp - Technical Compendium</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html#scientific-geophysical-research">🔬 Scientific &amp; Geophysical Research</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html#api-reference">🔧 API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html#validation-framework">🛡️ Validation Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html#key-data-structures">🧬 Key Data Structures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="MAINTENANCE_LOG.html">SecInterp - Maintenance &amp; Release Log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="MAINTENANCE_LOG.html#release-process">🚀 Release Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MAINTENANCE_LOG.html#project-history">📜 Project History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MAINTENANCE_LOG.html#historical-refactoring-notes">📁 Historical Refactoring Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sec_interp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.html">sec_interp package</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
 
-        .version {
-            font-size: 0.9rem;
-            color: #777;
-            background: #eee;
-            padding: 2px 8px;
-            border-radius: 4px;
-            vertical-align: middle;
-            margin-left: 10px;
-        }
 
-        section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            color: var(--secinterp-orange);
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            margin-top: 40px;
-        }
-
-        h2:first-of-type {
-            margin-top: 0;
-        }
-
-        .requirements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 20px;
-        }
-
-        .grid-item {
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 6px;
-            background-color: #fff;
-        }
-
-        .grid-item h3 {
-            margin-top: 0;
-            color: var(--qgis-green);
-            font-size: 1.1rem;
-        }
-
-        details {
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            overflow: hidden;
-            background: white;
-        }
-
-        summary {
-            padding: 12px 20px;
-            background-color: #f1f1f1;
-            cursor: pointer;
-            font-weight: bold;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        summary::after {
-            content: '▶';
-            font-size: 0.8rem;
-            transition: transform 0.2s;
-        }
-
-        details[open] summary::after {
-            transform: rotate(90deg);
-        }
-
-        details[open] summary {
-            border-bottom: 1px solid var(--border-color);
-            background-color: #e9ecef;
-        }
-
-        .details-content {
-            padding: 15px 20px;
-        }
-
-        img.screenshot {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            margin: 10px 0;
-            display: block;
-        }
-
-        .tip {
-            background-color: #fff4e5;
-            border-left: 4px solid var(--secinterp-orange);
-            padding: 10px 15px;
-            margin: 15px 0;
-            font-size: 0.9rem;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 0.85rem;
-            color: #777;
-            border-top: 1px solid var(--border-color);
-            margin-top: 40px;
-        }
-
-        a {
-            color: var(--qgis-green);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 5px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <header>
-            <img src="../../icon.png" alt="SecInterp Icon">
-            <div>
-                <h1>SecInterp <span class="version">v2.1</span></h1>
-                <p style="margin: 5px 0 0 0; color: #666;">Section Interpreter for Geoscience in QGIS</p>
-            </div>
-        </header>
-
-        <section>
-            <p><strong>SecInterp</strong> is a powerful QGIS plugin designed to streamline the extraction and
-                visualization of geological data for cross-section interpretation. It allows geologists to quickly
-                generate topographic profiles, project geological outcrops, and analyze structural data in a unified 2D
-                view.</p>
-        </section>
-
-        <h2>Key Features</h2>
-        <section>
-            <div class="requirements-grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
-                <div>
-                    <h3>Interactive Preview System</h3>
-                    <ul>
-                        <li><strong>Real-time Visualization</strong>: Instantly view topography, geology, and
-                            structures.</li>
-                        <li><strong>Performance</strong>: Uses <strong>Parallel Processing</strong> to handle complex
-                            intersections without freezing QGIS.</li>
-                        <li><strong>Adaptive LOD</strong>: Automatically adjusts data density based on zoom level.</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3>Advanced Tools</h3>
-                    <ul>
-                        <li><strong>Measurement Tools</strong>: Calculate distances and slopes directly on the profile
-                            with <strong>Snapping</strong>.</li>
-                        <li><strong>Drillhole Support</strong>: Project 3D drillhole traces and geological intervals
-                            onto the 2D plane.</li>
-                    </ul>
-                </div>
-            </div>
-            <img src="../../docs/images/ui_main_dialog.png" alt="Main Interface" class="screenshot"
-                style="margin-top: 20px;">
-        </section>
-
-        <h2>Layer Data Requirements</h2>
-        <div class="requirements-grid">
-            <div class="grid-item">
-                <h3>Raster Layer (DEM)</h3>
-                <ul>
-                    <li><strong>Data Type</strong>: Single-band or multi-band raster.</li>
-                    <li><strong>Format</strong>: Any GDAL-supported format (GeoTIFF, IMG, ASCII Grid, etc.).</li>
-                    <li><strong>Coordinate System</strong>: Must use a <strong>projected CRS</strong> (not geographic).
-                    </li>
-                    <li><strong>NoData</strong>: Should be properly defined in the raster metadata.</li>
-                </ul>
-            </div>
-            <div class="grid-item">
-                <h3>Crossline Layer</h3>
-                <ul>
-                    <li><strong>Geometry</strong>: LineString or MultiLineString.</li>
-                    <li><strong>Features</strong>: Typically contains a single line feature defining the section
-                        location.</li>
-                    <li><strong>Orientation</strong>: The line direction determines the profile orientation (start to
-                        end point).</li>
-                </ul>
-            </div>
-            <div class="grid-item">
-                <h3>Outcrop Layer (Geology)</h3>
-                <ul>
-                    <li><strong>Geometry</strong>: Polygon or MultiPolygon.</li>
-                    <li><strong>Fields</strong>: Requires at least one field containing the geological unit identifier.
-                    </li>
-                    <li><strong>Quality</strong>: Polygons should be topologically correct (no gaps or overlaps).</li>
-                </ul>
-            </div>
-            <div class="grid-item">
-                <h3>Structural Layer</h3>
-                <ul>
-                    <li><strong>Geometry</strong>: Point.</li>
-                    <li><strong>Fields</strong>: Requires <strong>Strike</strong> (0-360°) and <strong>Dip</strong>
-                        (0-90°) numeric fields.</li>
-                    <li><strong>Buffering</strong>: Points within the configured buffer distance of the crossline will
-                        be projected.</li>
-                </ul>
-            </div>
+          </div>
+          
         </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">SecInterp</a></h1>
 
-        <h2 style="margin-top: 40px;">Quick Start Guide</h2>
 
-        <details>
-            <summary>1. Prepare and Configure DEM</summary>
-            <div class="details-content">
-                <p>Select your elevation raster and the appropriate band from the DEM tab. The plugin automatically
-                    calculates a suggested scale based on resolution.</p>
-                <img src="../../docs/images/workflow_01_select_dem.png" alt="DEM Selection" class="screenshot">
-            </div>
-        </details>
 
-        <details>
-            <summary>2. Set Section Line</summary>
-            <div class="details-content">
-                <p>Choose the line layer that defines the location and orientation of your cross-section. Ensure it uses
-                    the same projected CRS as your DEM.</p>
-                <img src="../../docs/images/workflow_03_select_section_line.png" alt="Section Line Selection"
-                    class="screenshot">
-            </div>
-        </details>
 
-        <details>
-            <summary>3. Geology & Structures</summary>
-            <div class="details-content">
-                <p>Configure geological outcrops and structural measurements to project them onto the section. Select
-                    the lithology attribute and the dip/strike fields.</p>
-                <img src="../../docs/images/workflow_05_geology_setup.png" alt="Geology Setup" class="screenshot">
-                <img src="../../docs/images/workflow_06_structural_setup.png" alt="Structural Setup" class="screenshot">
-            </div>
-        </details>
 
-        <details>
-            <summary>4. Drillholes (Optional)</summary>
-            <div class="details-content">
-                <p>Configure Collar, Survey, and Interval layers to project drillhole data. Supports geometry-based
-                    locations or manual coordinates.</p>
-                <img src="../../docs/images/workflow_07_drillhole_collar_setup.png" alt="Collar Setup"
-                    class="screenshot">
-                <img src="../../docs/images/workflow_08_drillhole_survey_setup.png" alt="Survey Setup"
-                    class="screenshot">
-                <img src="../../docs/images/workflow_09_drillhole_interval_setup.png" alt="Interval Setup"
-                    class="screenshot">
-            </div>
-        </details>
 
-        <details>
-            <summary>5. Preview and Analyze</summary>
-            <div class="details-content">
-                <p>Click <strong>Preview Profile</strong>. Use the measurement tools to calculate slopes and distances
-                    directly on the view with snapping support.</p>
-                <img src="../../docs/images/workflow_04_preview_generated.png" alt="Preview Generated"
-                    class="screenshot">
-                <div class="tip"><strong>Tip:</strong> Use the scroll wheel to zoom. The Adaptive Level of Detail (LOD)
-                    system optimizes data density automatically as you navigate.</div>
-                <img src="../../docs/images/workflow_04_preview_panels_colapsed.png" alt="Preview Generated"
-                    class="screenshot">
-                <div class="tip"><strong>Tip:</strong> Collapse the panels to see the profile in full.</div>
-            </div>
-        </details>
 
-        <section>
-            <h2>Outputs</h2>
-            <p>The plugin generates standard output files in your selected output folder:</p>
-            <ul>
-                <li><strong>topo_profile.csv</strong>: Distance and elevation points along the section.</li>
-                <li><strong>geol_profile.csv / .shp</strong>: Geological units draped over the topography.</li>
-                <li><strong>structural_profile.csv / .shp</strong>: Projected apparent dip lines.</li>
-                <li><strong>drillhole_traces.shp</strong>: 3D projection of drillhole traces onto the 2D profile
-                    section.</li>
-                <li><strong>drillhole_intervals.shp</strong>: Visualization of geological intervals along drillhole
-                    traces with attributes.</li>
-                <li><strong>Image Exports</strong>: PNG, SVG, PDF formats available directly from the Export tab.</li>
-            </ul>
-        </section>
 
-        <footer>
-            <p>&copy; 2025 Juan M Bernales | <a href="../../docs/USER_GUIDE.md">Full User Guide</a> | <a
-                    href="https://github.com/geociencio/sec_interp">GitHub Repository</a></p>
-        </footer>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
     </div>
-</body>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="USER_GUIDE.html">SecInterp User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEVELOPMENT_GUIDE.html">SecInterp - Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TECHNICAL_COMPENDIUM.html">SecInterp - Technical Compendium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MAINTENANCE_LOG.html">SecInterp - Maintenance &amp; Release Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sec_interp</a></li>
+</ul>
 
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="USER_GUIDE.html" title="next chapter">SecInterp User Guide</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Juan M Bernales.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
 </html>
