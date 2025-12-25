@@ -298,12 +298,12 @@ class PreviewManager:
         """
         return self.dialog.page_section.buffer_spin.value()
 
-    def _format_results_message(self, result: Any) -> str:
+    def _format_results_message(self, result: PreviewResult) -> str:
         """Format results message for display using core result objects."""
         lines = [
             "✓ Preview generated!",
             "",
-            f"Topography: {len(result.topo)} points",
+            f"Topography: {len(result.topo) if result.topo else 0} points",
         ]
 
         # Add components
@@ -328,11 +328,11 @@ class PreviewManager:
                     lines.append(
                         f"  Topo: {format_duration(timings['Topography Generation'])}"
                     )
-                if "Geology Generation" in timings and geol_data:
+                if "Geology Generation" in timings and result.geol:
                     lines.append(
                         f"  Geol: {format_duration(timings['Geology Generation'])}"
                     )
-                if "Structure Generation" in timings and struct_data:
+                if "Structure Generation" in timings and result.struct:
                     lines.append(
                         f"  Struct: {format_duration(timings['Structure Generation'])}"
                     )
@@ -346,6 +346,39 @@ class PreviewManager:
         lines.extend(["", "Adjust 'Vert. Exag.' and click Preview to update."])
 
         return "\n".join(lines)
+
+    def _format_geology_summary(self, geol_data: Optional[GeologyData]) -> str:
+        """Format a summary line for geology data."""
+        if not geol_data:
+            return "Geology: No data"
+        return f"Geology: {len(geol_data)} segments"
+
+    def _format_structure_summary(
+        self, struct_data: Optional[StructureData], buffer_dist: float
+    ) -> str:
+        """Format a summary line for structural data."""
+        if not struct_data:
+            return "Structures: No data"
+        return f"Structures: {len(struct_data)} measurements (buffer: {buffer_dist}m)"
+
+    def _format_drillhole_summary(self) -> str:
+        """Format a summary line for drillhole data."""
+        drillhole_data = self.cached_data.get("drillhole")
+        if not drillhole_data:
+            return "Drillholes: No data"
+        return f"Drillholes: {len(drillhole_data)} holes found"
+
+    def _format_result_metrics(self, result: PreviewResult) -> list[str]:
+        """Format elevation metrics for the results message."""
+        min_elev, max_elev = result.get_elevation_range()
+        min_dist, max_dist = result.get_distance_range()
+
+        return [
+            "",
+            "Geometry Range:",
+            f"  Elevation: {min_elev:.1f} to {max_elev:.1f} m",
+            f"  Distance: {min_dist:.1f} to {max_dist:.1f} m",
+        ]
 
     def _on_extents_changed(self):
         """Handle map canvas extent changes (zoom/pan)."""
@@ -486,12 +519,13 @@ class PreviewManager:
 
     def _on_geology_progress(self, progress):
         """Handle progress updates from parallel service."""
-        # Optional: Update a progress bar if available
-        # self.dialog.preview_widget.progressBar.setValue(progress)
         self.dialog.preview_widget.results_text.setPlainText(
             f"Generating Geology: {progress}%..."
         )
 
+    def _on_geology_error(self, error_msg):
+        """Handle error during parallel geology generation."""
+        logger.error(f"Async geology error: {error_msg}")
         self.dialog.preview_widget.results_text.append(
             f"\n⚠ Geology Error: {error_msg}"
         )

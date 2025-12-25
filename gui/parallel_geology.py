@@ -42,6 +42,7 @@ class GeologyProcessingThread(QThread):
     def run(self):
         """Execute processing in separate thread."""
         try:
+            results_list = []
             total = len(self.data)
             for i, item in enumerate(self.data, 1):
                 # Process each item

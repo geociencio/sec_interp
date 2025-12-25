@@ -6,7 +6,7 @@ from __future__ import annotations
 Elevation sampling and profile context preparation.
 """
 
-from typing import Any, List, Optional, Tuple
+from typing import Any, Optional
 
 from qgis.core import (
     QgsDistanceArea,

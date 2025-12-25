@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QEvent, QObject, QRectF, Qt
@@ -13,7 +13,7 @@ from qgis.PyQt.QtWidgets import QWidget
 if TYPE_CHECKING:
     from sec_interp.gui.main_dialog import SecInterpDialog
 
-    from .renderer import Renderer
+    from .preview_legend_renderer import PreviewLegendRenderer as Renderer
 
 
 class LegendWidget(QWidget):

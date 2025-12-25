@@ -8,7 +8,7 @@ Visualization and coordinate transformation utilities for profile rendering.
 
 from collections.abc import Callable
 import math
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from sec_interp.core.types import GeologySegment
 

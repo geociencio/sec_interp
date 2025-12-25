@@ -71,9 +71,8 @@ class PDFExporter(BaseExporter):
 
             finally:
                 painter.end()
-
-            return True
-
         except Exception:
             logger.exception(f"PDF export failed for {output_path}")
             return False
+        else:
+            return True

@@ -39,13 +39,13 @@ class CSVExporter(BaseExporter):
             if not headers or not rows:
                 return False
 
-            with open(output_path, "w", newline="", encoding="utf-8") as f:
+            with output_path.open("w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
                 writer.writerow(headers)
                 writer.writerows(rows)
 
-            return True
-
         except Exception:
             logger.exception(f"CSV export failed for {output_path}")
             return False
+        else:
+            return True

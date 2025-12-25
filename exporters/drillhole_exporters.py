@@ -60,11 +60,11 @@ class DrillholeTraceShpExporter(BaseExporter):
                 feat.setAttribute("hole_id", hole_id)
                 writer.addFeature(feat)
 
-            del writer
-            return True
         except Exception:
             logger.exception(f"Failed to export drillhole traces to {output_path}")
             return False
+        else:
+            return True
 
 
 class DrillholeIntervalShpExporter(BaseExporter):
@@ -122,8 +122,8 @@ class DrillholeIntervalShpExporter(BaseExporter):
 
                     writer.addFeature(feat)
 
-            del writer
-            return True
         except Exception:
             logger.exception(f"Failed to export drillhole intervals to {output_path}")
             return False
+        else:
+            return True

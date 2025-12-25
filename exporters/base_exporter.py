@@ -1,11 +1,10 @@
-from __future__ import annotations
-
-
 """Base exporter module for Sec Interp plugin."""
+
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from sec_interp.core.validation import validate_safe_output_path
 
