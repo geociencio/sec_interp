@@ -47,6 +47,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added CRS transformation support in `filter_features_by_buffer` utility.
   - Implemented field validation for drillhole processing to prevent `KeyError`.
   - Fixed missing `logger` definition in `preview_service.py`.
+- **Preview Rendering Fixes**:
+  - Fixed geology disappearing on subsequent preview clicks with unchanged parameters.
+  - Fixed drillholes not rendering despite being detected (missing return statement in `_generate_drillholes()`).
+  - Added comprehensive diagnostic logging for drillhole trace generation.
+  - Improved cache persistence for async geology data.
 
 ## [2.2.0] - 2025-12-21
 ### Added

@@ -57,6 +57,9 @@ changelog=
       - Fixed UnboundLocalError in PreviewManager cache handling
       - Added CRS transformation support in spatial filtering
       - Implemented field validation for drillhole processing
+      - Fixed geology disappearing on subsequent preview clicks (cache persistence)
+      - Fixed drillholes not rendering (missing return statement in _generate_drillholes)
+      - Added diagnostic logging for drillhole trace generation
     
     2.2.0 (2025-12-22)
     * Major Refactoring & Architecture:
