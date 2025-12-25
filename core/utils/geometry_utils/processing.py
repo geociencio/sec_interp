@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from qgis import processing
 from qgis.core import (
@@ -116,6 +116,6 @@ def run_processing_algorithm(algorithm_id: str, parameters: dict[str, Any]) -> d
     """
     try:
         return processing.run(algorithm_id, parameters)
-    except Exception as e:
-        logger.error(f"Error running processing algorithm {algorithm_id}: {e}")
+    except Exception:
+        logger.exception(f"Error running processing algorithm {algorithm_id}")
         return {}

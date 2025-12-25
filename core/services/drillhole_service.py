@@ -1,19 +1,17 @@
-from __future__ import annotations
-
-
 """Drillhole Data Processing Service.
 
 Service for processing and projecting drillhole data (collars, surveys, intervals).
 """
 
+from __future__ import annotations
+
 import contextlib
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
     QgsFeature,
-    QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
     QgsRaster,
@@ -62,7 +60,7 @@ class DrillholeService:
         candidate_features = scu.filter_features_by_buffer(
             collar_layer, line_buffer, line_crs
         )
-        
+
         if not candidate_features:
             logger.info("DrillholeService.project_collars: No collars found in buffer.")
             return []
@@ -280,7 +278,10 @@ class DrillholeService:
         if not intervals:
             return []
 
-        rich_intervals = [(fd, td, {"unit": lith, "from": fd, "to": td}) for fd, td, lith in intervals]
+        rich_intervals = [
+            (fd, td, {"unit": lith, "from": fd, "to": td})
+            for fd, td, lith in intervals
+        ]
         tuples = scu.interpolate_intervals_on_trajectory(traj, rich_intervals, buffer_width)
 
         segments = []

@@ -17,8 +17,9 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
-from qgis.core import QgsRasterLayer, QgsVectorLayer
 from typing import Optional
+
+from qgis.core import QgsRasterLayer, QgsVectorLayer
 
 from sec_interp.core import utils as scu
 from sec_interp.core.types import ProfileData
@@ -69,7 +70,9 @@ class ProfileService:
 
         # Sample points using helper
         # For topographic profile, we measure from the start of the line
-        points = scu.sample_elevation_along_line(geom, raster_lyr, band_number, da, interval=interval)
+        points = scu.sample_elevation_along_line(
+            geom, raster_lyr, band_number, da, interval=interval
+        )
 
         # Convert QgsPointXY to tuples
         values = [(round(p.x(), 1), round(p.y(), 1)) for p in points]

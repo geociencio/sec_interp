@@ -1,15 +1,14 @@
-from __future__ import annotations
-
-
 """Preview service for SecInterp.
 
 This module provides a service to orchestrate the generation of all
 preview components, decoupled from the GUI layer.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+import math
+from typing import Any, Optional
 
 from qgis.core import (
     QgsDistanceArea,
@@ -156,8 +155,6 @@ class PreviewService:
             # Apply zoom boost if ratio is significant
             if ratio > 1.1:
                 # Slight detail boost as we zoom in
-                import math
-
                 detail_boost = 1.0 + (math.log10(ratio) * 0.5)
                 return int(base_points * detail_boost)
 
@@ -188,7 +185,9 @@ class PreviewService:
                 line_feat = next(params.line_layer.getFeatures(), None)
                 if line_feat:
                     line_len = line_feat.geometry().length()
-                    max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
+                    max_pts = self.calculate_max_points(
+                        params.canvas_width, params.max_points, True
+                    )
                     interval = line_len / max_pts if max_pts > 0 else None
 
             result.topo = self.controller.profile_service.generate_topographic_profile(
@@ -310,8 +309,6 @@ class PreviewService:
                 interval_fields=interval_fields,
             )
 
-            return drillhole_data
-
         except Exception as e:
             logger.error(f"Error in PreviewService._generate_drillholes: {e}", exc_info=True)
-            return None
+            return drillhole_data

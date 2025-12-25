@@ -6,8 +6,8 @@ separating preview logic from the main dialog class.
 
 from __future__ import annotations
 
-from pathlib import Path
 import hashlib
+from pathlib import Path
 import tempfile
 import traceback
 from typing import TYPE_CHECKING, Any, Optional
@@ -290,26 +290,29 @@ class PreviewManager:
 
     def _calculate_params_hash(self, params: PreviewParams) -> str:
         """Calculate a unique hash for preview parameters to check for changes."""
+
+        def get_layer_id(layer: Optional[QgsVectorLayer]) -> str:
+            return layer.id() if layer else "None"
+
         # Use layer IDs, field names, and critical values
         # Exclude canvas_width and auto_lod from hash to allow re-renders without re-processing
         # but including them in a "render hash" if needed.
         # For now, we only care about data-changing parameters.
-        lyr_id = lambda l: l.id() if l else "None"
 
         data_parts = [
-            lyr_id(params.raster_layer),
-            lyr_id(params.line_layer),
+            get_layer_id(params.raster_layer),
+            get_layer_id(params.line_layer),
             str(params.band_num),
             str(params.buffer_dist),
-            lyr_id(params.outcrop_layer),
+            get_layer_id(params.outcrop_layer),
             str(params.outcrop_name_field),
-            lyr_id(params.struct_layer),
+            get_layer_id(params.struct_layer),
             str(params.dip_field),
             str(params.strike_field),
-            lyr_id(params.collar_layer),
+            get_layer_id(params.collar_layer),
             str(params.collar_id_field),
-            lyr_id(params.survey_layer),
-            lyr_id(params.interval_layer),
+            get_layer_id(params.survey_layer),
+            get_layer_id(params.interval_layer),
         ]
 
         # Add geometry WKT if available to detect line changes
