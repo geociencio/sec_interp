@@ -4,10 +4,10 @@
 Plugin de QGIS para interpretación de secciones geológicas, manejo de sondajes (drillholes) y perfiles estructurales.
 
 ## 📊 Métricas de Salud (Actualizado: 2025-12-25)
-- **Score de Calidad**: 72.4/100
+- **Score de Calidad**: 74.4/100
 - **Score Cumplimiento QGIS**: 100.0/100
-- **Líneas de Código**: 12,723 en 82 módulos.
-- **Complejidad Promedio**: 14.0. (Módulos más complejos: `.ai-context/ai_workflow.py`, `gui/main_dialog_preview.py`, `gui/preview_layer_factory.py`).
+- **Líneas de Código**: 12,901 en 83 módulos.
+- **Complejidad Promedio**: 14.1. (Módulos más complejos: `.ai-context/ai_workflow.py`, `gui/main_dialog_preview.py`, `core/services/drillhole_service.py`).
 ## 🏗️ Arquitectura Principal (Patrones Detectados)
 - **MVC (Model-View-Controller)**: Separación clara entre la lógica de QGIS (Model), los diálogos de PyQt (View) y el coordinador (`core/controller.py`).
 - **Repository**: Manejo de persistencia y acceso a datos a través de servicios.
