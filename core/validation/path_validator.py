@@ -1,12 +1,15 @@
-from typing import Tuple, Optional, Union
+from __future__ import annotations
+
 from pathlib import Path
+from typing import Optional, Tuple, Union
+
 
 def validate_safe_output_path(
     path: str,
     base_dir: Optional[Path] = None,
     must_exist: bool = False,
     create_if_missing: bool = False,
-) -> Tuple[bool, str, Optional[Path]]:
+) -> tuple[bool, str, Optional[Path]]:
     r"""Validate an output path string with security and path traversal protection.
 
     Args:
@@ -82,7 +85,7 @@ def validate_safe_output_path(
     return True, "", resolved_path
 
 
-def validate_output_path(path: str) -> Tuple[bool, str, Optional[Path]]:
+def validate_output_path(path: str) -> tuple[bool, str, Optional[Path]]:
     """Validate that an output path is a valid directory and currently writable.
 
     This is a convenience wrapper around `validate_safe_output_path()`

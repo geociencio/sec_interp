@@ -4,6 +4,8 @@ This module handles preview generation, rendering, and updates,
 separating preview logic from the main dialog class.
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 import tempfile
 import traceback
@@ -44,11 +46,11 @@ class PreviewManager:
     generation, rendering, and updates based on user interactions.
     """
 
-    def __init__(self, dialog: "SecInterpDialog"):
+    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
         """Initialize preview manager with reference to parent dialog.
 
         Args:
-            dialog: The SecInterpDialog instance
+            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
         """
         self.dialog = dialog
         self.cached_data: dict[str, Any] = {
@@ -129,14 +131,14 @@ class PreviewManager:
                     if not self.dialog.plugin_instance or not hasattr(
                         self.dialog.plugin_instance, "draw_preview"
                     ):
-                        raise AttributeError(
-                            "Plugin instance or draw_preview method not available"
-                        )
+                        self._handle_invalid_plugin_instance()
 
                     with PerformanceTimer("Rendering", self.metrics):
                         preview_options = self.dialog.get_preview_options()
                         auto_lod_enabled = preview_options["auto_lod"]
-                        use_adaptive_sampling = preview_options["use_adaptive_sampling"]
+                        use_adaptive_sampling = (
+                            preview_options["use_adaptive_sampling"]
+                        )
 
                         # Calculate max_points via PreviewService
                         max_points_for_render = PreviewService.calculate_max_points(
@@ -164,8 +166,6 @@ class PreviewManager:
                 if DialogConfig.LOG_DETAILED_METRICS:
                     logger.info(f"Preview Performance: {self.metrics.get_summary()}")
 
-            return True, "Preview generated successfully"
-
         except ValueError as e:
             error_msg = f"⚠ {e!s}"
             self.dialog.preview_widget.results_text.setPlainText(error_msg)
@@ -173,11 +173,13 @@ class PreviewManager:
         except Exception as e:
             error_details = traceback.format_exc()
             error_msg = (
-                f"⚠ Error generating preview: {e!s}\\n\\nDetails:\\n{error_details}"
+                f"⚠ Error generating preview: {e!s}\n\nDetails:\n{error_details}"
             )
             self.dialog.preview_widget.results_text.setPlainText(error_msg)
             logger.error(f"Preview generation failed: {e}", exc_info=True)
             return False, str(e)
+        else:
+            return True, "Preview generated successfully"
 
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.
@@ -296,61 +298,22 @@ class PreviewManager:
         """
         return self.dialog.page_section.buffer_spin.value()
 
-    def _format_results_message(
-        self,
-        result: Any,
-    ) -> str:
+    def _format_results_message(self, result: Any) -> str:
         """Format results message for display using core result objects."""
-        profile_data = result.topo
-        geol_data = result.geol
-        struct_data = result.struct
-        buffer_dist = result.buffer_dist
-        """Format results message for display.
-
-        Args:
-            profile_data: Topographic profile data
-            geol_data: Geological profile data (optional)
-            struct_data: Structural data (optional)
-            buffer_dist: Buffer distance used
-
-        Returns:
-            Formatted message string
-        """
         lines = [
             "✓ Preview generated!",
             "",
-            f"Topography: {len(profile_data)} points",
+            f"Topography: {len(result.topo)} points",
         ]
 
-        if geol_data:
-            lines.append(f"Geology: {len(geol_data)} segments")
-        else:
-            lines.append("Geology: No intersections or layer not selected")
+        # Add components
+        lines.append(self._format_geology_summary(result.geol))
+        lines.append(self._format_structure_summary(result.struct, result.buffer_dist))
+        lines.append(self._format_drillhole_summary())
 
-        if struct_data:
-            lines.append(f"Structures: {len(struct_data)} measurements")
-        else:
-            lines.append(
-                f"Structures: None in {buffer_dist}m buffer or layer not selected"
-            )
-
-        drillhole_data = self.cached_data.get("drillhole")
-        if drillhole_data:
-            lines.append(f"Drillholes: {len(drillhole_data)} holes/traces")
-        else:
-            lines.append("Drillholes: None or not configured")
-
-        # Calculate ranges via core result object
-        min_dist, max_dist = result.get_distance_range()
-        min_elev, max_elev = result.get_elevation_range()
-
-        lines.extend(
-            [
-                "",
-                f"Distance: {min_dist:.1f} - {max_dist:.1f} m",
-                f"Elevation: {min_elev:.1f} - {max_elev:.1f} m",
-            ]
-        )
+        # Add ranges
+        metrics = self._format_result_metrics(result)
+        lines.extend(metrics)
 
         # Add performance metrics if enabled
         if (
@@ -529,9 +492,10 @@ class PreviewManager:
             f"Generating Geology: {progress}%..."
         )
 
-    def _on_geology_error(self, error_msg):
-        """Handle errors from parallel service."""
-        logger.error(f"Async geology error: {error_msg}")
         self.dialog.preview_widget.results_text.append(
             f"\n⚠ Geology Error: {error_msg}"
         )
+
+    def _handle_invalid_plugin_instance(self):
+        """Handle case where plugin instance is not available for rendering."""
+        raise AttributeError("Plugin instance or draw_preview method not available")

@@ -1,5 +1,6 @@
 """Base class for configuration pages."""
-from qgis.PyQt.QtWidgets import QWidget, QVBoxLayout, QGroupBox
+
+from qgis.PyQt.QtWidgets import QGroupBox, QVBoxLayout, QWidget
 
 
 class BasePage(QWidget):
@@ -23,13 +24,13 @@ class BasePage(QWidget):
         """Setup the user interface."""
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        
+
         # Main group box
         self.group_box = QGroupBox(self.title)
         self.group_layout = None  # To be set by subclasses
-        
+
         self.main_layout.addWidget(self.group_box)
-        
+
         # Add stretch at the bottom to keep widgets at the top
         self.main_layout.addStretch()
 

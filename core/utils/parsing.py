@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from typing import Any, Optional, Tuple
 
@@ -55,7 +57,7 @@ def parse_strike(value: Any) -> Optional[float]:
     return strike % 360
 
 
-def parse_dip(value: Any) -> Tuple[Optional[float], Optional[float]]:
+def parse_dip(value: Any) -> tuple[Optional[float], Optional[float]]:
     """Parse a dip value from various formats.
 
     Supports numeric dip ("45") and field notation with direction ("45 NE", "22 SW").

@@ -1,18 +1,21 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import List, Tuple, Dict, Optional, Union, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsWkbTypes
 
 from .layer_validator import (
-    validate_raster_band,
+    validate_field_exists,
     validate_layer_geometry,
     validate_layer_has_features,
+    validate_raster_band,
     validate_structural_requirements,
-    validate_field_exists,
 )
 from .path_validator import validate_output_path
 
 
-def validate_reasonable_ranges(values: Dict[str, Any]) -> List[str]:
+def validate_reasonable_ranges(values: dict[str, Any]) -> list[str]:
     """Check for unreasonable or potentially erroneous parameter values.
 
     This function does not return hard errors, but a list of warning strings
@@ -96,7 +99,7 @@ class ProjectValidator:
     """Orchestrates validation of project parameters independent of the GUI."""
 
     @staticmethod
-    def validate_all(params: ValidationParams) -> Tuple[bool, str]:
+    def validate_all(params: ValidationParams) -> tuple[bool, str]:
         """Perform a comprehensive validation of all project parameters.
 
         This includes checking for required files, geometry types, field existence,
@@ -116,7 +119,9 @@ class ProjectValidator:
         if not params.raster_layer:
             errors.append("Raster DEM layer is required")
         elif params.band_number is not None:
-            is_valid, error = validate_raster_band(params.raster_layer, params.band_number)
+            is_valid, error = validate_raster_band(
+                params.raster_layer, params.band_number
+            )
             if not is_valid:
                 errors.append(error)
 
@@ -124,10 +129,12 @@ class ProjectValidator:
         if not params.line_layer:
             errors.append("Cross-section line layer is required")
         else:
-            is_valid, error = validate_layer_geometry(params.line_layer, QgsWkbTypes.LineGeometry)
+            is_valid, error = validate_layer_geometry(
+                params.line_layer, QgsWkbTypes.LineGeometry
+            )
             if not is_valid:
                 errors.append(error)
-            
+
             is_valid, error = validate_layer_has_features(params.line_layer)
             if not is_valid:
                 errors.append(error)
@@ -152,18 +159,22 @@ class ProjectValidator:
 
         # 5. Geology Inputs
         if params.outcrop_layer:
-            is_valid, error = validate_layer_geometry(params.outcrop_layer, QgsWkbTypes.PolygonGeometry)
+            is_valid, error = validate_layer_geometry(
+                params.outcrop_layer, QgsWkbTypes.PolygonGeometry
+            )
             if not is_valid:
                 errors.append(error)
             else:
                 is_valid, error = validate_layer_has_features(params.outcrop_layer)
                 if not is_valid:
                     errors.append(error)
-                
+
                 if not params.outcrop_field:
                     errors.append("Geology unit field is required")
                 else:
-                    is_valid, error = validate_field_exists(params.outcrop_layer, params.outcrop_field)
+                    is_valid, error = validate_field_exists(
+                        params.outcrop_layer, params.outcrop_field
+                    )
                     if not is_valid:
                         errors.append(error)
 
@@ -173,7 +184,7 @@ class ProjectValidator:
                 params.struct_layer,
                 params.struct_layer.name(),
                 params.struct_dip_field,
-                params.struct_strike_field
+                params.struct_strike_field,
             )
             if not is_valid:
                 errors.append(error)
@@ -183,7 +194,7 @@ class ProjectValidator:
         return True, ""
 
     @staticmethod
-    def validate_preview_requirements(params: ValidationParams) -> Tuple[bool, str]:
+    def validate_preview_requirements(params: ValidationParams) -> tuple[bool, str]:
         """Validate only the minimum requirements needed to generate a preview.
 
         Args:
@@ -199,7 +210,7 @@ class ProjectValidator:
             errors.append("Raster DEM layer is required")
         if not params.line_layer:
             errors.append("Cross-section line layer is required")
-        
+
         if errors:
             return False, "\n".join(errors)
         return True, ""

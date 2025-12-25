@@ -1,47 +1,55 @@
-#!/usr/bin/env python3
-"""
-analyze_project_opt2.py - Analiza estructura del proyecto para IA
-Versión optimizada con mejoras de rendimiento y funcionalidad
+"""analyze_project_opt2.py - Analiza estructura del proyecto para IA
+Versión optimizada con mejoras de rendimiento y funcionalidad.
 """
 
-import os
-import sys
+from __future__ import annotations
+
 import ast
-import json
-import pathlib
-import subprocess
-import mmap
-import gc
-import time
-import signal
-import traceback
-import threading
-from typing import Dict, List, Any, Optional, Iterator
-from dataclasses import dataclass, asdict
-from functools import lru_cache
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import OrderedDict
+from collections.abc import Iterator
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import contextmanager
+from dataclasses import asdict, dataclass
 import fnmatch
+from functools import lru_cache
+import gc
+import json
 import logging
+import mmap
+import os
+import pathlib
+import signal
+import subprocess
+import sys
+import threading
+import time
+import traceback
+from typing import Any, Dict, List, Optional
+
 
 # Configuración básica de logging (se ajustará en main)
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
+
 
 # ==================== EXCEPCIONES PERSONALIZADAS ====================
 class TimeoutException(Exception):
-    """Excepción para timeouts"""
+    """Excepción para timeouts."""
+
     pass
 
+
 class AnalysisError(Exception):
-    """Excepción base para errores de análisis"""
+    """Excepción base para errores de análisis."""
+
     pass
+
 
 # ==================== CONTEXT MANAGER PARA TIMEOUT ====================
 @contextmanager
 def timeout(seconds: int):
-    """Context manager para timeout de operaciones"""
+    """Context manager para timeout de operaciones."""
+
     def signal_handler(signum, frame):
         raise TimeoutException(f"Timeout después de {seconds} segundos")
 
@@ -53,9 +61,11 @@ def timeout(seconds: int):
     finally:
         signal.alarm(0)
 
+
 # ==================== CACHE LRU MEJORADO ====================
 class LRUCache:
-    """Cache LRU más eficiente que lru_cache para grandes volúmenes"""
+    """Cache LRU más eficiente que lru_cache para grandes volúmenes."""
+
     def __init__(self, maxsize: int = 256):
         self.cache = OrderedDict()
         self._lock = threading.Lock()
@@ -64,7 +74,7 @@ class LRUCache:
         self.misses = 0
 
     def get(self, key: str) -> Any:
-        """Obtener valor del cache"""
+        """Obtener valor del cache."""
         with self._lock:
             if key in self.cache:
                 self.cache.move_to_end(key)
@@ -74,7 +84,7 @@ class LRUCache:
             return None
 
     def set(self, key: str, value: Any) -> None:
-        """Establecer valor en cache"""
+        """Establecer valor en cache."""
         with self._lock:
             if key in self.cache:
                 self.cache.move_to_end(key)
@@ -83,14 +93,14 @@ class LRUCache:
                 self.cache.popitem(last=False)
 
     def clear(self) -> None:
-        """Limpiar cache"""
+        """Limpiar cache."""
         with self._lock:
             self.cache.clear()
             self.hits = 0
             self.misses = 0
 
-    def stats(self) -> Dict[str, Any]:
-        """Obtener estadísticas del cache"""
+    def stats(self) -> dict[str, Any]:
+        """Obtener estadísticas del cache."""
         with self._lock:
             total = self.hits + self.misses
             return {
@@ -98,12 +108,14 @@ class LRUCache:
                 "hits": self.hits,
                 "misses": self.misses,
                 "hit_rate": self.hits / total if total > 0 else 0,
-                "maxsize": self.maxsize
+                "maxsize": self.maxsize,
             }
+
 
 # ==================== TRACKER DE PROGRESO ====================
 class ProgressTracker:
-    """Tracker de progreso con estadísticas en tiempo real"""
+    """Tracker de progreso con estadísticas en tiempo real."""
+
     def __init__(self, total_files: int):
         self.total = total_files
         self.processed = 0
@@ -112,19 +124,18 @@ class ProgressTracker:
         self.last_update = 0
 
     def update(self, file_path: pathlib.Path, processing_time: float) -> None:
-        """Actualizar progreso"""
+        """Actualizar progreso."""
         self.processed += 1
         self.file_times.append(processing_time)
 
         # Actualizar cada 10 archivos o cada 2 segundos
         current_time = time.time()
-        if (self.processed % 10 == 0 or
-            current_time - self.last_update > 2):
+        if self.processed % 10 == 0 or current_time - self.last_update > 2:
             self._display_progress()
             self.last_update = current_time
 
     def _display_progress(self) -> None:
-        """Mostrar progreso en consola"""
+        """Mostrar progreso en consola."""
         elapsed = time.time() - self.start_time
         percent = (self.processed / self.total) * 100 if self.total > 0 else 0
 
@@ -143,12 +154,14 @@ class ProgressTracker:
         #       f"Tiempo: {elapsed:.0f}s | ETA: {eta_str}", end="", flush=True)
         # Use simple log for progress to avoid spamming log file, or keep print for CLI interactive feel
         # Keeping print for interactive CLI feel but respecting cleaner output guidelines
-        sys.stdout.write(f"\r\033[K📊 Progreso: {self.processed}/{self.total} ({percent:.1f}%) | "
-                         f"Tiempo: {elapsed:.0f}s | ETA: {eta_str}")
+        sys.stdout.write(
+            f"\r\033[K📊 Progreso: {self.processed}/{self.total} ({percent:.1f}%) | "
+            f"Tiempo: {elapsed:.0f}s | ETA: {eta_str}"
+        )
         sys.stdout.flush()
 
-    def complete(self) -> Dict[str, Any]:
-        """Completar tracker y retornar estadísticas"""
+    def complete(self) -> dict[str, Any]:
+        """Completar tracker y retornar estadísticas."""
         elapsed = time.time() - self.start_time
         print()  # Nueva línea
 
@@ -156,34 +169,41 @@ class ProgressTracker:
             "total_files": self.total,
             "processed": self.processed,
             "elapsed_time": elapsed,
-            "avg_time_per_file": sum(self.file_times) / len(self.file_times) if self.file_times else 0,
-            "files_per_second": self.processed / elapsed if elapsed > 0 else 0
+            "avg_time_per_file": (
+                sum(self.file_times) / len(self.file_times) if self.file_times else 0
+            ),
+            "files_per_second": self.processed / elapsed if elapsed > 0 else 0,
         }
+
 
 # ==================== DATA CLASSES ====================
 @dataclass
 class ModuleAnalysis:
-    """Análisis de un módulo Python"""
+    """Análisis de un módulo Python."""
+
     name: str
     lines: int
-    functions: List[str]
-    classes: List[str]
-    imports: List[str]
+    functions: list[str]
+    classes: list[str]
+    imports: list[str]
     complexity_score: float
-    dependencies: List[str]
-    todo_comments: List[str]
+    dependencies: list[str]
+    todo_comments: list[str]
+
 
 @dataclass
 class ProjectContext:
-    """Contexto completo del proyecto"""
+    """Contexto completo del proyecto."""
+
     project_name: str
-    structure: Dict[str, Any]
-    entry_points: List[str]
-    tech_stack: Dict[str, List[str]]
-    patterns: Dict[str, Any]
-    technical_debt: List[str]
-    optimization_opportunities: List[str]
-    security_issues: List[str]
+    structure: dict[str, Any]
+    entry_points: list[str]
+    tech_stack: dict[str, list[str]]
+    patterns: dict[str, Any]
+    technical_debt: list[str]
+    optimization_opportunities: list[str]
+    security_issues: list[str]
+
 
 # ==================== ANALIZADOR PRINCIPAL ====================
 # ==================== ANALIZADOR PRINCIPAL ====================
@@ -191,31 +211,36 @@ class ProjectAnalyzer:
     DEFAULT_CONFIG = {
         "quality_weights": {
             "docstrings": 3,
-            "complexity_low": 3,     # <= thresholds.complexity_low
+            "complexity_low": 3,  # <= thresholds.complexity_low
             "complexity_medium": 2,  # <= thresholds.complexity_medium
-            "complexity_high": 1,    # <= thresholds.complexity_high
-            "size_small": 2,         # <= thresholds.size_small
-            "size_medium": 1,        # <= thresholds.size_medium
+            "complexity_high": 1,  # <= thresholds.complexity_high
+            "size_small": 2,  # <= thresholds.size_small
+            "size_medium": 1,  # <= thresholds.size_medium
             "has_main": 1,
-            "no_syntax_error": 1
+            "no_syntax_error": 1,
         },
         "qgis_weights": {
-            "mandatory_files": 5,        # Crítico para publicación
-            "ui_logic_separation": 4,    # Calidad de arquitectura
-            "qgis_widget_usage": 2,      # UX/Integración
-            "spatial_index_usage": 3,    # Rendimiento
-            "metadata_valid": 4          # Validación Repo
+            "mandatory_files": 5,  # Crítico para publicación
+            "ui_logic_separation": 4,  # Calidad de arquitectura
+            "qgis_widget_usage": 2,  # UX/Integración
+            "spatial_index_usage": 3,  # Rendimiento
+            "metadata_valid": 4,  # Validación Repo
         },
         "thresholds": {
             "complexity_low": 5,
             "complexity_medium": 10,
             "complexity_high": 15,
             "size_small": 200,
-            "size_medium": 400
-        }
+            "size_medium": 400,
+        },
     }
 
-    def __init__(self, project_path: str, max_workers: int = None, exclude_patterns: List[str] = None):
+    def __init__(
+        self,
+        project_path: str,
+        max_workers: Optional[int] = None,
+        exclude_patterns: Optional[list[str]] = None,
+    ):
         self.project_path = pathlib.Path(project_path).resolve()
         self.max_workers = max_workers or min(32, (os.cpu_count() or 1) + 4)
         self.exclude_patterns_args = exclude_patterns or []
@@ -243,7 +268,7 @@ class ProjectAnalyzer:
             patterns={},
             technical_debt=[],
             optimization_opportunities=[],
-            security_issues=[]
+            security_issues=[],
         )
 
         # Cargar estado si existe
@@ -253,14 +278,14 @@ class ProjectAnalyzer:
         # Cargar estado si existe
         self._load_state()
 
-    def _load_config(self) -> Dict[str, Any]:
-        """Carga configuración desde analyzer_config.json o usa defaults"""
+    def _load_config(self) -> dict[str, Any]:
+        """Carga configuración desde analyzer_config.json o usa defaults."""
         config = self.DEFAULT_CONFIG.copy()
         config_path = self.project_path / "analyzer_config.json"
-        
+
         if config_path.exists():
             try:
-                with open(config_path, 'r', encoding='utf-8') as f:
+                with open(config_path, encoding="utf-8") as f:
                     user_config = json.load(f)
                     # Merge recursivo simple (solo 1 nivel)
                     for key, value in user_config.items():
@@ -271,13 +296,13 @@ class ProjectAnalyzer:
                 logger.info(f"⚙️ Configuración cargada desde {config_path.name}")
             except Exception as e:
                 logger.warning(f"⚠️ Error cargando config, usando defaults: {e}")
-        
+
         return config
 
     # ==================== MÉTODOS PRINCIPALES ====================
 
-    def analyze(self) -> Dict[str, Any]:
-        """Ejecuta análisis completo optimizado"""
+    def analyze(self) -> dict[str, Any]:
+        """Ejecuta análisis completo optimizado."""
         logger.info(f"🔍 Analizando proyecto: {self.context.project_name}")
         logger.info(f"📁 Ruta: {self.project_path}")
         logger.info(f"⚡ Workers: {self.max_workers}")
@@ -302,12 +327,14 @@ class ProjectAnalyzer:
                 # Procesar en batches para control de memoria
                 batch_size = 50
                 for i in range(0, len(python_files), batch_size):
-                    batch = python_files[i:i + batch_size]
+                    batch = python_files[i : i + batch_size]
 
                     # Enviar batch al executor
                     futures = {}
                     for py_file in batch:
-                        future = executor.submit(self._analyze_single_module_optimized, py_file)
+                        future = executor.submit(
+                            self._analyze_single_module_optimized, py_file
+                        )
                         futures[future] = py_file
                         logger.debug(f"lanzados {len(futures)} trabajos en este batch")
                     # Procesar resultados del batch
@@ -323,9 +350,13 @@ class ProjectAnalyzer:
 
                             if module_data:
                                 modules_data.append(module_data)
-                                logger.debug(f"añadido a modules_data -> {module_data['path']}")
+                                logger.debug(
+                                    f"añadido a modules_data -> {module_data['path']}"
+                                )
                             else:
-                                logger.debug(f"module_data es None / vacío para {file_path}")
+                                logger.debug(
+                                    f"module_data es None / vacío para {file_path}"
+                                )
                                 # Actualizar tracker
                                 processing_time = time.time() - start_file_time
                                 tracker.update(file_path, processing_time)
@@ -334,8 +365,10 @@ class ProjectAnalyzer:
                             logger.warning(f"⏰ Timeout procesando {file_path}")
                             self._log_error(file_path, "Timeout (45s)")
                         except Exception as e:
-                            logger.debug(f"future ERROR para {file_path}: {type(e).__name__} - {e}")
-                            logger.error(f"⚠️ Error en {file_path}: {str(e)[:100]}")
+                            logger.debug(
+                                f"future ERROR para {file_path}: {type(e).__name__} - {e}"
+                            )
+                            logger.exception(f"⚠️ Error en {file_path}: {str(e)[:100]}")
                             self._log_error(file_path, str(e))
 
                     # Liberar memoria entre batches
@@ -345,9 +378,11 @@ class ProjectAnalyzer:
             # Mostrar estadísticas del progreso
             tracker_stats = tracker.complete()
 
-            logger.info(f"\n✅ Análisis de módulos completado")
+            logger.info("\n✅ Análisis de módulos completado")
             logger.info(f"   ⏱️  Tiempo total: {tracker_stats['elapsed_time']:.1f}s")
-            logger.info(f"   📈 Velocidad: {tracker_stats['files_per_second']:.1f} archivos/segundo")
+            logger.info(
+                f"   📈 Velocidad: {tracker_stats['files_per_second']:.1f} archivos/segundo"
+            )
 
             # 4. Análisis posterior optimizado
             logger.info("\n📊 Procesando análisis posteriores...")
@@ -376,22 +411,32 @@ class ProjectAnalyzer:
             traceback.print_exc()
             return {}
 
-    def _run_post_analysis(self, modules_data: List[Dict]) -> Dict[str, Any]:
-        """Ejecutar análisis posteriores optimizados"""
+    def _run_post_analysis(self, modules_data: list[dict]) -> dict[str, Any]:
+        """Ejecutar análisis posteriores optimizados."""
         # Ejecutar análisis en paralelo cuando sea posible
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # Preparar tareas
             tasks = {
                 "structure": executor.submit(self._analyze_structure, modules_data),
                 "entry_points": executor.submit(self._find_entry_points),
-                "dependencies": executor.submit(self._analyze_dependencies_optimized, modules_data),
-                "qgis_compliance": executor.submit(self._analyze_qgis_compliance, modules_data),
+                "dependencies": executor.submit(
+                    self._analyze_dependencies_optimized, modules_data
+                ),
+                "qgis_compliance": executor.submit(
+                    self._analyze_qgis_compliance, modules_data
+                ),
                 "complexity": executor.submit(self._analyze_complexity, modules_data),
-                "patterns": executor.submit(self._detect_patterns_advanced, modules_data),
+                "patterns": executor.submit(
+                    self._detect_patterns_advanced, modules_data
+                ),
                 "debt": executor.submit(self._find_technical_debt, modules_data),
-                "optimizations": executor.submit(self._find_optimizations, modules_data),
+                "optimizations": executor.submit(
+                    self._find_optimizations, modules_data
+                ),
                 "security": executor.submit(self._find_security_issues, modules_data),
-                "metrics": executor.submit(self._calculate_project_metrics, modules_data)
+                "metrics": executor.submit(
+                    self._calculate_project_metrics, modules_data
+                ),
             }
 
             # Recoger resultados
@@ -403,23 +448,27 @@ class ProjectAnalyzer:
                     logger.warning(f"⏰ Timeout en análisis {name}")
                     analyses[name] = {}
                 except Exception as e:
-                    logger.error(f"⚠️ Error en análisis {name}: {e}")
+                    logger.exception(f"⚠️ Error en análisis {name}: {e}")
                     analyses[name] = {}
 
         return analyses
 
     # ==================== MÉTODOS OPTIMIZADOS DE ANÁLISIS ====================
 
-    def _load_exclusion_patterns(self) -> List[str]:
-        """Carga patrones de exclusión de .analyzerignore o .gitignore"""
+    def _load_exclusion_patterns(self) -> list[str]:
+        """Carga patrones de exclusión de .analyzerignore o .gitignore."""
         patterns = []
-        
+
         # 1. Prioridad: .analyzerignore
         ignore_file = self.project_path / ".analyzerignore"
         if ignore_file.exists():
             try:
-                with open(ignore_file, 'r', encoding='utf-8') as f:
-                    patterns = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+                with open(ignore_file, encoding="utf-8") as f:
+                    patterns = [
+                        line.strip()
+                        for line in f
+                        if line.strip() and not line.startswith("#")
+                    ]
                 logger.info(f"📄 Cargados {len(patterns)} patrones de .analyzerignore")
             except Exception as e:
                 logger.warning(f"⚠️ Error leyendo .analyzerignore: {e}")
@@ -429,8 +478,12 @@ class ProjectAnalyzer:
             gitignore = self.project_path / ".gitignore"
             if gitignore.exists():
                 try:
-                    with open(gitignore, 'r', encoding='utf-8') as f:
-                        patterns = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+                    with open(gitignore, encoding="utf-8") as f:
+                        patterns = [
+                            line.strip()
+                            for line in f
+                            if line.strip() and not line.startswith("#")
+                        ]
                     logger.info(f"📄 Cargados {len(patterns)} patrones de .gitignore")
                 except:
                     pass
@@ -438,45 +491,61 @@ class ProjectAnalyzer:
         # 3. Defaults si no hay configuración
         if not patterns:
             patterns = [
-                "__pycache__", ".git", ".venv", "venv", "env",
-                ".tox", ".pytest_cache", ".mypy_cache", ".coverage",
-                "build", "dist", "*.egg-info"
+                "__pycache__",
+                ".git",
+                ".venv",
+                "venv",
+                "env",
+                ".tox",
+                ".pytest_cache",
+                ".mypy_cache",
+                ".coverage",
+                "build",
+                "dist",
+                "*.egg-info",
             ]
             logger.info("ℹ️ Usando patrones de exclusión por defecto")
 
         # 4. Merge CLI args
         if self.exclude_patterns_args:
-            logger.info(f"➕ Añadiendo {len(self.exclude_patterns_args)} patrones de CLI")
+            logger.info(
+                f"➕ Añadiendo {len(self.exclude_patterns_args)} patrones de CLI"
+            )
             patterns.extend(self.exclude_patterns_args)
 
         return patterns
 
-    def _get_python_files_filtered(self) -> List[pathlib.Path]:
-        """Obtener archivos Python con filtrado inteligente"""
+    def _get_python_files_filtered(self) -> list[pathlib.Path]:
+        """Obtener archivos Python con filtrado inteligente."""
         logger.debug("entra _get_python_files_filtered")
         python_files = []
-        
+
         exclusion_patterns = self._load_exclusion_patterns()
-        
+
         logger.debug(f"rglob iniciado en {self.project_path}")
         for py_file in self.project_path.rglob("*.py"):
             rel_path = str(py_file.relative_to(self.project_path))
-            
+
             # Filtrar por patrones de exclusión usando fnmatch
             # Probamos tanto el path relativo completo como el nombre del archivo/directorio
             should_exclude = False
             for pattern in exclusion_patterns:
                 # Normalizar patrón para directorios
-                if pattern.endswith('/'):
+                if pattern.endswith("/"):
                     pattern = pattern[:-1]
-                
+
                 # Coincidencia exacta o glob
-                if fnmatch.fnmatch(rel_path, pattern) or \
-                   fnmatch.fnmatch(py_file.name, pattern) or \
-                   any(fnmatch.fnmatch(part, pattern) for part in py_file.relative_to(self.project_path).parts):
+                if (
+                    fnmatch.fnmatch(rel_path, pattern)
+                    or fnmatch.fnmatch(py_file.name, pattern)
+                    or any(
+                        fnmatch.fnmatch(part, pattern)
+                        for part in py_file.relative_to(self.project_path).parts
+                    )
+                ):
                     should_exclude = True
                     break
-            
+
             if should_exclude:
                 # logger.debug(f"descartado por exclusiones {py_file}")
                 continue
@@ -493,8 +562,8 @@ class ProjectAnalyzer:
         logger.debug(f"va a retornar {len(python_files)} archivos")
         return sorted(python_files)
 
-    def _analyze_single_module_optimized(self, py_file: pathlib.Path) -> Optional[Dict]:
-        """Analiza un solo módulo de forma optimizada"""
+    def _analyze_single_module_optimized(self, py_file: pathlib.Path) -> dict | None:
+        """Analiza un solo módulo de forma optimizada."""
         logger.debug(f"analizando {py_file.name}")
         rel_path = str(py_file.relative_to(self.project_path))
         logger.debug(f"rel_path = {rel_path}")
@@ -505,8 +574,10 @@ class ProjectAnalyzer:
             cached_state = self._state["modules"].get(rel_path)
             logger.debug(f"cached_state {'HIT' if cached_state else 'MISS'}")
 
-            if (cached_state and
-                self._state["timestamps"].get(rel_path, 0) >= file_mtime):
+            if (
+                cached_state
+                and self._state["timestamps"].get(rel_path, 0) >= file_mtime
+            ):
                 logger.debug(f"usa cache para {rel_path}")
                 return cached_state
 
@@ -523,7 +594,7 @@ class ProjectAnalyzer:
                 # Archivo con sintaxis inválida: análisis básico
                 return {
                     "path": rel_path,
-                    "lines": content.count('\n') + 1,
+                    "lines": content.count("\n") + 1,
                     "functions": [],
                     "classes": [],
                     "imports": [],
@@ -531,7 +602,7 @@ class ProjectAnalyzer:
                     "docstrings": {"module": False, "classes": {}, "functions": {}},
                     "has_main": False,
                     "file_size_kb": py_file.stat().st_size / 1024,
-                    "syntax_error": True
+                    "syntax_error": True,
                 }
 
             # Cachear AST para uso futuro
@@ -540,7 +611,7 @@ class ProjectAnalyzer:
             # Extraer información del módulo
             module_data = {
                 "path": rel_path,
-                "lines": content.count('\n') + 1,
+                "lines": content.count("\n") + 1,
                 "functions": self._extract_functions(tree),
                 "classes": self._extract_classes(tree),
                 "imports": self._extract_imports_optimized(tree),
@@ -548,49 +619,52 @@ class ProjectAnalyzer:
                 "docstrings": self._check_docstrings(tree),
                 "has_main": self._has_main_guard(tree),
                 "file_size_kb": py_file.stat().st_size / 1024,
-                "syntax_error": False
+                "syntax_error": False,
             }
 
             # Actualizar estado incremental
             self._state["modules"][rel_path] = module_data
             self._state["timestamps"][rel_path] = file_mtime
-            logger.debug(f"va a retornar module_data para {rel_path} -> {module_data is not None}")
+            logger.debug(
+                f"va a retornar module_data para {rel_path} -> {module_data is not None}"
+            )
             return module_data
 
         # ❌ Eliminamos el bloque de TimeoutException
         except Exception as e:
-            self._log_error(py_file, f"Error en análisis: {str(e)}")
+            self._log_error(py_file, f"Error en análisis: {e!s}")
             logger.debug(f"EXCEPCIÓN en {rel_path}: {type(e).__name__} - {e}")
             return None
+
     def _read_file_fast(self, path: pathlib.Path) -> str:
-        """Lectura ultra rápida con memory mapping y cache"""
+        """Lectura ultra rápida con memory mapping y cache."""
         cache_key = str(path)
         cached = self.file_cache.get(cache_key)
         if cached:
             return cached
 
         try:
-            with open(path, 'rb') as f:
+            with open(path, "rb") as f:
                 file_size = path.stat().st_size
 
                 # Usar memory mapping para archivos grandes (> 1MB)
                 if file_size > 1024 * 1024:
                     with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
-                        content = mm.read().decode('utf-8-sig', errors='replace')
+                        content = mm.read().decode("utf-8-sig", errors="replace")
                 else:
                     # Para archivos pequeños, lectura directa
-                    content = f.read().decode('utf-8-sig', errors='replace')
+                    content = f.read().decode("utf-8-sig", errors="replace")
 
                 # Cachear resultado
                 self.file_cache.set(cache_key, content)
                 return content
 
         except Exception as e:
-            self._log_error(path, f"Error lectura: {str(e)}")
+            self._log_error(path, f"Error lectura: {e!s}")
             return ""
 
-    def _extract_imports_optimized(self, tree: ast.AST) -> List[str]:
-        """Extrae imports de forma optimizada"""
+    def _extract_imports_optimized(self, tree: ast.AST) -> list[str]:
+        """Extrae imports de forma optimizada."""
         imports = []
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
@@ -615,17 +689,26 @@ class ProjectAnalyzer:
         return unique_imports
 
     def _calculate_complexity_optimized(self, tree: ast.AST) -> int:
-        """Calcula complejidad ciclomática optimizada"""
+        """Calcula complejidad ciclomática optimizada."""
         complexity = 0
         decision_lines = set()
 
         for node in ast.walk(tree):
             # Decisiones básicas
-            if isinstance(node, (ast.If, ast.While, ast.For,
-                               ast.Try, ast.ExceptHandler,
-                               ast.AsyncFor, ast.AsyncWith)):
+            if isinstance(
+                node,
+                (
+                    ast.If,
+                    ast.While,
+                    ast.For,
+                    ast.Try,
+                    ast.ExceptHandler,
+                    ast.AsyncFor,
+                    ast.AsyncWith,
+                ),
+            ):
                 complexity += 1
-                if hasattr(node, 'lineno'):
+                if hasattr(node, "lineno"):
                     decision_lines.add(node.lineno)
 
             # Operadores booleanos
@@ -633,8 +716,9 @@ class ProjectAnalyzer:
                 complexity += len(node.values) - 1
 
             # Comprehensions
-            elif isinstance(node, (ast.ListComp, ast.SetComp,
-                                  ast.DictComp, ast.GeneratorExp)):
+            elif isinstance(
+                node, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
+            ):
                 complexity += len(node.generators)
 
         # Penalizar módulos con muchas decisiones en pocas líneas
@@ -642,16 +726,15 @@ class ProjectAnalyzer:
             density_penalty = len(decision_lines) * 0.3
             complexity += int(density_penalty)
 
-
         return complexity
 
     # ==================== UTILIDADES DE GRAFO (SIN NETWORKX) ====================
     def _count_edges(self) -> int:
-        """Cuenta total de aristas en el grafo"""
+        """Cuenta total de aristas en el grafo."""
         return sum(len(neighbors) for neighbors in self.import_graph.values())
 
-    def _find_simple_cycles(self, limit: int = 5) -> List[List[str]]:
-        """Detecta ciclos simples usando DFS"""
+    def _find_simple_cycles(self, limit: int = 5) -> list[list[str]]:
+        """Detecta ciclos simples usando DFS."""
         cycles = []
         visited = set()
         path = []
@@ -673,30 +756,32 @@ class ProjectAnalyzer:
                         cycles.append(path[cycle_start:])
                     elif v not in visited:
                         dfs(v)
-            
+
             path_set.remove(u)
             path.pop()
 
         for node in list(self.import_graph.keys()):
-             if node not in visited:
-                 dfs(node)
-        
+            if node not in visited:
+                dfs(node)
+
         return cycles
 
     def _count_connected_components(self) -> int:
-        """Cuenta componentes débilmente conectados"""
+        """Cuenta componentes débilmente conectados."""
         # Convertir a no dirigido
         undirected = {}
         for u, neighbors in self.import_graph.items():
-            if u not in undirected: undirected[u] = set()
+            if u not in undirected:
+                undirected[u] = set()
             for v in neighbors:
                 undirected[u].add(v)
-                if v not in undirected: undirected[v] = set()
+                if v not in undirected:
+                    undirected[v] = set()
                 undirected[v].add(u)
-        
+
         visited = set()
         count = 0
-        
+
         for node in undirected:
             if node not in visited:
                 count += 1
@@ -711,8 +796,8 @@ class ProjectAnalyzer:
                             queue.append(neighbor)
         return count
 
-    def _analyze_dependencies_optimized(self, modules_data: List[Dict]) -> Dict:
-        """Analiza dependencias del proyecto de forma optimizada"""
+    def _analyze_dependencies_optimized(self, modules_data: list[dict]) -> dict:
+        """Analiza dependencias del proyecto de forma optimizada."""
         dependencies = {
             "internal": [],
             "external": [],
@@ -720,12 +805,18 @@ class ProjectAnalyzer:
             "files": {},
             "import_graph": {},
             "circular_dependencies": [],
-            "graph_metrics": {}
+            "graph_metrics": {},
         }
 
         # Analizar archivos de dependencias comunes
-        req_files = ["requirements.txt", "setup.py", "pyproject.toml",
-                    "Pipfile", "setup.cfg", "environment.yml"]
+        req_files = [
+            "requirements.txt",
+            "setup.py",
+            "pyproject.toml",
+            "Pipfile",
+            "setup.cfg",
+            "environment.yml",
+        ]
 
         for req_file in req_files:
             path = self.project_path / req_file
@@ -733,7 +824,9 @@ class ProjectAnalyzer:
                 try:
                     content = self._read_file_fast(path)
                     if content:
-                        dependencies["files"][req_file] = content[:2000]  # Limitar tamaño
+                        dependencies["files"][req_file] = content[
+                            :2000
+                        ]  # Limitar tamaño
                 except:
                     pass
 
@@ -749,7 +842,7 @@ class ProjectAnalyzer:
                 # Añadir nodo
                 if module_path not in self.import_graph:
                     self.import_graph[module_path] = set()
-                
+
                 import_graph[module_path] = imports
                 all_imports.update(imports)
 
@@ -758,7 +851,10 @@ class ProjectAnalyzer:
                     # Buscar si la importación corresponde a un módulo del proyecto
                     for other_module in modules_data:
                         other_path = other_module.get("path", "")
-                        if other_path and other_path.replace('.py', '').replace('/', '.') in imp:
+                        if (
+                            other_path
+                            and other_path.replace(".py", "").replace("/", ".") in imp
+                        ):
                             # Añadir edge: module_path -> other_path
                             self.import_graph[module_path].add(other_path)
                             # Asegurar que el destino también existe como nodo
@@ -783,38 +879,53 @@ class ProjectAnalyzer:
                 # Density for directed graph: E / (V * (V - 1))
                 max_edges = num_nodes * (num_nodes - 1)
                 density = num_edges / max_edges if max_edges > 0 else 0
-                
+
                 dependencies["graph_metrics"] = {
                     "nodes": num_nodes,
                     "edges": num_edges,
                     "density": density,
                     "is_dag": len(self._find_simple_cycles(limit=1)) == 0,
-                    "weakly_connected_components": self._count_connected_components()
+                    "weakly_connected_components": self._count_connected_components(),
                 }
             except Exception as e:
-                logger.error(f"Error calculando métricas de grafo: {e}")
+                logger.exception(f"Error calculando métricas de grafo: {e}")
 
         # Clasificar imports
         stdlib_modules = {
-            'os', 'sys', 'json', 'pathlib', 'typing', 'datetime', 're',
-            'collections', 'itertools', 'math', 'random', 'statistics',
-            'functools', 'hashlib', 'base64', 'csv', 'pickle', 'sqlite3'
+            "os",
+            "sys",
+            "json",
+            "pathlib",
+            "typing",
+            "datetime",
+            "re",
+            "collections",
+            "itertools",
+            "math",
+            "random",
+            "statistics",
+            "functools",
+            "hashlib",
+            "base64",
+            "csv",
+            "pickle",
+            "sqlite3",
         }
 
         for imp in sorted(all_imports):
             # Determinar si es import interno (relativo)
-            if imp.startswith('.') or any(seg in imp for seg in ['..', './']):
+            if imp.startswith(".") or any(seg in imp for seg in ["..", "./"]):
                 dependencies["internal"].append(imp)
             # Determinar si es stdlib
-            elif imp.split('.')[0] in stdlib_modules:
+            elif imp.split(".")[0] in stdlib_modules:
                 dependencies["external"].append(imp)
             else:
                 dependencies["third_party"].append(imp)
 
         return dependencies
 
-    def _detect_patterns_advanced(self, modules_data: List[Dict]) -> Dict:
-        """Detección mejorada de patrones usando análisis AST e Herencia"""
+    def _detect_patterns_advanced(self, modules_data: list[dict]) -> dict:
+        """Detección mejorada de patrones usando análisis AST e Herencia."""
         patterns = {
             "mvc": {"detected": False, "confidence": 0.0, "evidence": []},
             "repository": {"detected": False, "confidence": 0.0, "evidence": []},
@@ -825,32 +936,41 @@ class ProjectAnalyzer:
             "strategy": {"detected": False, "confidence": 0.0, "evidence": []},
             "adapter": {"detected": False, "confidence": 0.0, "evidence": []},
             "command": {"detected": False, "confidence": 0.0, "evidence": []},
-            "template_method": {"detected": False, "confidence": 0.0, "evidence": []}
+            "template_method": {"detected": False, "confidence": 0.0, "evidence": []},
         }
 
         # Mapeo de herencia a patrones (QGIS/PyQt específico)
         inheritance_map = {
             # Views (MVC)
-            'QDialog': 'mvc',
-            'QMainWindow': 'mvc',
-            'QWidget': 'mvc',
-            'QgsDockWidget': 'mvc',
+            "QDialog": "mvc",
+            "QMainWindow": "mvc",
+            "QWidget": "mvc",
+            "QgsDockWidget": "mvc",
             # Models (MVC)
-            'QAbstractItemModel': 'mvc',
-            'QAbstractTableModel': 'mvc',
-            'QAbstractListModel': 'mvc',
-            'QStandardItemModel': 'mvc',
+            "QAbstractItemModel": "mvc",
+            "QAbstractTableModel": "mvc",
+            "QAbstractListModel": "mvc",
+            "QStandardItemModel": "mvc",
             # Command / Strategy
-            'QgsProcessingAlgorithm': 'command', 
-            'QgsTask': 'command',
-            'QUndoCommand': 'command',
-            'QgsMapTool': 'strategy',
-            'QgsMapToolEmitPoint': 'strategy',
+            "QgsProcessingAlgorithm": "command",
+            "QgsTask": "command",
+            "QUndoCommand": "command",
+            "QgsMapTool": "strategy",
+            "QgsMapToolEmitPoint": "strategy",
         }
 
         # Detectar MVC por estructura de carpetas (baja confianza)
-        mvc_folders = ['controller', 'model', 'view', 'templates', 'static', 'gui', 'ui', 'core']
-        for root, dirs, _ in os.walk(self.project_path):
+        mvc_folders = [
+            "controller",
+            "model",
+            "view",
+            "templates",
+            "static",
+            "gui",
+            "ui",
+            "core",
+        ]
+        for _root, dirs, _ in os.walk(self.project_path):
             for dir_name in dirs:
                 if any(folder in dir_name.lower() for folder in mvc_folders):
                     patterns["mvc"]["confidence"] += 0.1
@@ -859,7 +979,7 @@ class ProjectAnalyzer:
         # Análisis de módulos para patrones
         for module in modules_data:
             path = module.get("path", "")
-            
+
             # Obtener AST del cache
             tree = self.ast_cache.get(path)
             if not tree:
@@ -869,50 +989,89 @@ class ProjectAnalyzer:
             for node in ast.walk(tree):
                 if isinstance(node, ast.ClassDef):
                     class_name = node.name
-                    
+
                     # 1. Análisis de Herencia
                     for base in node.bases:
                         base_name = self._get_base_name(base)
                         if base_name in inheritance_map:
                             pattern_key = inheritance_map[base_name]
                             patterns[pattern_key]["confidence"] += 0.3
-                            patterns[pattern_key]["evidence"].append(f"{path}:{class_name}({base_name})")
+                            patterns[pattern_key]["evidence"].append(
+                                f"{path}:{class_name}({base_name})"
+                            )
 
                     # 2. Análisis de métodos y estructura (Existente pero refinado)
-                    
+
                     # Singleton pattern detection
-                    has_new = any(isinstance(item, ast.FunctionDef) and
-                                 item.name == '__new__' for item in node.body)
-                    has_instance_attr = any(isinstance(item, ast.Assign) and
-                                          any(hasattr(t, 'attr') and t.attr == '_instance'
-                                              for t in item.targets if isinstance(t, ast.Attribute))
-                                          for item in node.body)
+                    has_new = any(
+                        isinstance(item, ast.FunctionDef) and item.name == "__new__"
+                        for item in node.body
+                    )
+                    has_instance_attr = any(
+                        isinstance(item, ast.Assign)
+                        and any(
+                            hasattr(t, "attr") and t.attr == "_instance"
+                            for t in item.targets
+                            if isinstance(t, ast.Attribute)
+                        )
+                        for item in node.body
+                    )
 
                     if has_new or has_instance_attr:
                         patterns["singleton"]["confidence"] += 0.5
                         patterns["singleton"]["evidence"].append(f"{path}:{class_name}")
 
-                    method_names = [item.name for item in node.body
-                                   if isinstance(item, ast.FunctionDef)]
-                    
+                    method_names = [
+                        item.name
+                        for item in node.body
+                        if isinstance(item, ast.FunctionDef)
+                    ]
+
                     # Factory pattern detection
-                    factory_keywords = ['create', 'make', 'build', 'factory', 'get_instance']
-                    if 'Factory' in class_name or \
-                       any(keyword in name.lower() for name in method_names for keyword in factory_keywords):
+                    factory_keywords = [
+                        "create",
+                        "make",
+                        "build",
+                        "factory",
+                        "get_instance",
+                    ]
+                    if "Factory" in class_name or any(
+                        keyword in name.lower()
+                        for name in method_names
+                        for keyword in factory_keywords
+                    ):
                         patterns["factory"]["confidence"] += 0.2
                         patterns["factory"]["evidence"].append(f"{path}:{class_name}")
 
                     # Repository pattern detection
-                    crud_methods = ['save', 'find', 'get', 'delete', 'update', 'create', 'insert']
-                    if 'Repository' in class_name or \
-                       (len(crud_methods) >= 3 and any(m in name.lower() for name in method_names for m in crud_methods)):
-                         patterns["repository"]["confidence"] += 0.3
-                         patterns["repository"]["evidence"].append(f"{path}:{class_name}")
+                    crud_methods = [
+                        "save",
+                        "find",
+                        "get",
+                        "delete",
+                        "update",
+                        "create",
+                        "insert",
+                    ]
+                    if "Repository" in class_name or (
+                        len(crud_methods) >= 3
+                        and any(
+                            m in name.lower()
+                            for name in method_names
+                            for m in crud_methods
+                        )
+                    ):
+                        patterns["repository"]["confidence"] += 0.3
+                        patterns["repository"]["evidence"].append(
+                            f"{path}:{class_name}"
+                        )
 
         # Normalizar confidencias y marcar como detectados
         for pattern_name in patterns:
             # Cap confidence at 1.0
-            patterns[pattern_name]["confidence"] = min(1.0, patterns[pattern_name]["confidence"])
+            patterns[pattern_name]["confidence"] = min(
+                1.0, patterns[pattern_name]["confidence"]
+            )
             if patterns[pattern_name]["confidence"] > 0.4:
                 patterns[pattern_name]["detected"] = True
 
@@ -921,22 +1080,24 @@ class ProjectAnalyzer:
     # ==================== MÉTODOS DE ESTADO Y CACHE ====================
 
     def _load_state(self) -> None:
-        """Cargar análisis previo para procesamiento incremental"""
+        """Cargar análisis previo para procesamiento incremental."""
         try:
             if self.state_file.exists():
-                with open(self.state_file, 'r', encoding='utf-8') as f:
+                with open(self.state_file, encoding="utf-8") as f:
                     saved_state = json.load(f)
 
                     # Validar versión y estructura
                     if isinstance(saved_state, dict):
                         self._state = saved_state
-                        print(f"📂 Estado cargado: {len(self._state.get('modules', {}))} módulos cacheados")
+                        print(
+                            f"📂 Estado cargado: {len(self._state.get('modules', {}))} módulos cacheados"
+                        )
         except Exception as e:
             print(f"⚠️ No se pudo cargar estado previo: {e}")
             self._state = {"modules": {}, "timestamps": {}, "metadata": {}}
 
     def _save_state(self) -> None:
-        """Guardar estado para análisis incrementales"""
+        """Guardar estado para análisis incrementales."""
         try:
             state_data = {
                 "modules": self._state["modules"],
@@ -945,88 +1106,94 @@ class ProjectAnalyzer:
                     "project_name": self.context.project_name,
                     "save_time": time.time(),
                     "version": "2.0",
-                    "total_modules": len(self._state["modules"])
-                }
+                    "total_modules": len(self._state["modules"]),
+                },
             }
 
-            with open(self.state_file, 'w', encoding='utf-8') as f:
+            with open(self.state_file, "w", encoding="utf-8") as f:
                 json.dump(state_data, f, indent=2, ensure_ascii=False)
 
         except Exception as e:
             print(f"⚠️ No se pudo guardar estado: {e}")
 
     def _print_cache_stats(self) -> None:
-        """Mostrar estadísticas de los caches"""
+        """Mostrar estadísticas de los caches."""
         ast_stats = self.ast_cache.stats()
         file_stats = self.file_cache.stats()
 
         print("\n📊 Estadísticas de Cache:")
-        print(f"   AST Cache: {ast_stats['hit_rate']:.1%} hit rate "
-              f"({ast_stats['hits']} hits, {ast_stats['misses']} misses)")
-        print(f"   File Cache: {file_stats['hit_rate']:.1%} hit rate "
-              f"({file_stats['hits']} hits, {file_stats['misses']} misses)")
+        print(
+            f"   AST Cache: {ast_stats['hit_rate']:.1%} hit rate "
+            f"({ast_stats['hits']} hits, {ast_stats['misses']} misses)"
+        )
+        print(
+            f"   File Cache: {file_stats['hit_rate']:.1%} hit rate "
+            f"({file_stats['hits']} hits, {file_stats['misses']} misses)"
+        )
 
     def _log_error(self, file_path: pathlib.Path, error_msg: str) -> None:
-        """Log estructurado de errores"""
+        """Log estructurado de errores."""
         log_entry = {
             "timestamp": time.time(),
             "file": str(file_path),
-            "error_message": error_msg[:500]  # Limitar tamaño
+            "error_message": error_msg[:500],  # Limitar tamaño
         }
         self.error_log.append(log_entry)
 
     # ==================== MÉTODOS ORIGINALES (OPTIMIZADOS) ====================
 
-    def _analyze_structure(self, modules_data: List[Dict]) -> Dict:
-        """Analiza estructura de archivos y directorios"""
+    def _analyze_structure(self, modules_data: list[dict]) -> dict:
+        """Analiza estructura de archivos y directorios."""
         structure = {
             "tree": self._generate_tree_optimized(),
             "modules_count": len(modules_data),
             "file_types": self._count_file_types_optimized(),
-            "size_stats": self._calculate_size_stats_optimized()
+            "size_stats": self._calculate_size_stats_optimized(),
         }
         return structure
 
-    def _analyze_qgis_compliance(self, modules_data: List[Dict]) -> Dict:
-        """Maestro de análisis de cumplimiento de estándares QGIS"""
+    def _analyze_qgis_compliance(self, modules_data: list[dict]) -> dict:
+        """Maestro de análisis de cumplimiento de estándares QGIS."""
         compliance = {
             "mandatory_files": self._check_mandatory_plugin_files(),
             "metadata": self._check_metadata_validity(),
             "architecture": self._check_ui_logic_separation(modules_data),
             "widgets": self._check_qgis_widget_usage(modules_data),
-            "performance": self._check_performance_patterns(modules_data)
+            "performance": self._check_performance_patterns(modules_data),
         }
-        
+
         # Calcular score específico de QGIS
         weights = self.config["qgis_weights"]
         score = 0.0
         max_score = float(sum(weights.values()))
-        
-        if compliance["mandatory_files"]["all_present"]: 
+
+        if compliance["mandatory_files"]["all_present"]:
             score += weights["mandatory_files"]
-        if compliance["metadata"]["is_valid"]: 
+        if compliance["metadata"]["is_valid"]:
             score += weights["metadata_valid"]
-        if compliance["architecture"]["separation_clean"]: 
+        if compliance["architecture"]["separation_clean"]:
             score += weights["ui_logic_separation"]
-        
+
         # Widgets and Performance use partial scores
         score += weights["qgis_widget_usage"] * compliance["widgets"]["score"]
         score += weights["spatial_index_usage"] * compliance["performance"]["score"]
-        
-        compliance["compliance_score"] = round((score / max_score) * 100, 2) if max_score > 0 else 0
+
+        compliance["compliance_score"] = (
+            round((score / max_score) * 100, 2) if max_score > 0 else 0
+        )
         return compliance
 
-    def _check_mandatory_plugin_files(self) -> Dict:
-        """Verifica la existencia de archivos obligatorios para un plugin de QGIS"""
+    def _check_mandatory_plugin_files(self) -> dict:
+        """Verifica la existencia de archivos obligatorios para un plugin de QGIS."""
         mandatory = ["LICENSE", "metadata.txt", "__init__.py"]
         results = {"files": {}, "all_present": True}
-        
+
         for f in mandatory:
             exists = (self.project_path / f).exists()
             results["files"][f] = exists
             if not exists:
                 results["all_present"] = False
-                
+
         # Verificar classFactory en __init__.py
         init_path = self.project_path / "__init__.py"
         results["has_class_factory"] = False
@@ -1036,131 +1203,156 @@ class ProjectAnalyzer:
                 results["has_class_factory"] = True
             else:
                 results["all_present"] = False
-                
+
         return results
 
-    def _check_metadata_validity(self) -> Dict:
-        """Valida que metadata.txt tenga los campos mínimos requeridos"""
+    def _check_metadata_validity(self) -> dict:
+        """Valida que metadata.txt tenga los campos mínimos requeridos."""
         metadata_path = self.project_path / "metadata.txt"
-        required = ["name", "description", "version", "qgisMinimumVersion", "author", "email"]
+        required = [
+            "name",
+            "description",
+            "version",
+            "qgisMinimumVersion",
+            "author",
+            "email",
+        ]
         results = {"fields_found": [], "missing_fields": [], "is_valid": False}
-        
+
         if not metadata_path.exists():
             results["missing_fields"] = required
             return results
-            
+
         content = self._read_file_fast(metadata_path)
         for field in required:
             if f"{field.lower()}=" in content.lower():
                 results["fields_found"].append(field)
             else:
                 results["missing_fields"].append(field)
-                
+
         results["is_valid"] = len(results["missing_fields"]) == 0
         return results
 
-    def _check_ui_logic_separation(self, modules_data: List[Dict]) -> Dict:
-        """Analiza la separación entre lógica de negocio (core) e interfaz (gui)"""
-        separation = {
-            "violations": [],
-            "separation_clean": True
-        }
-        
+    def _check_ui_logic_separation(self, modules_data: list[dict]) -> dict:
+        """Analiza la separación entre lógica de negocio (core) e interfaz (gui)."""
+        separation = {"violations": [], "separation_clean": True}
+
         for module in modules_data:
             path = module["path"]
             # Si el archivo está en core/, no debe importar PyQt o qgis.gui
             if "core/" in str(path):
-                ui_imports = [imp for imp in module.get("imports", []) 
-                             if any(x in imp for x in ["PyQt", "qgis.gui", "qgis.utils"])]
+                ui_imports = [
+                    imp
+                    for imp in module.get("imports", [])
+                    if any(x in imp for x in ["PyQt", "qgis.gui", "qgis.utils"])
+                ]
                 if ui_imports:
-                    separation["violations"].append({
-                        "file": str(path),
-                        "type": "UI_IMPORT_IN_CORE",
-                        "imports": ui_imports
-                    })
+                    separation["violations"].append(
+                        {
+                            "file": str(path),
+                            "type": "UI_IMPORT_IN_CORE",
+                            "imports": ui_imports,
+                        }
+                    )
                     separation["separation_clean"] = False
-                    
+
             # Si el archivo está en gui/, no debe tener lógica excesivamente compleja
-            if "gui/" in str(path):
-                if module.get("complexity", 0) > self.config["thresholds"]["complexity_medium"]:
-                    separation["violations"].append({
+            if "gui/" in str(path) and (
+                module.get("complexity", 0)
+                > self.config["thresholds"]["complexity_medium"]
+            ):
+                separation["violations"].append(
+                    {
                         "file": str(path),
                         "type": "HEAVY_LOGIC_IN_GUI",
-                        "complexity": module["complexity"]
-                    })
+                        "complexity": module["complexity"],
+                    }
+                )
                     # No marcamos separation_clean como False solo por esto, es un warning
-                    
+
         return separation
 
-    def _check_qgis_widget_usage(self, modules_data: List[Dict]) -> Dict:
-        """Recomienda el uso de widgets nativos de QGIS"""
+    def _check_qgis_widget_usage(self, modules_data: list[dict]) -> dict:
+        """Recomienda el uso de widgets nativos de QGIS."""
         recommendations = []
         counts = {"generic": 0, "qgis": 0}
-        
+
         generic_to_qgis = {
             "QComboBox": "QgsMapLayerComboBox",
             "QLineEdit": "QgsFilterLineEdit",
             "QPushButton": "QgsColorButton (if for color)",
-            "QFileDialog": "QgsFileWidget"
+            "QFileDialog": "QgsFileWidget",
         }
-        
+
         for module in modules_data:
-            if "gui/" not in str(module["path"]): continue
-            
+            if "gui/" not in str(module["path"]):
+                continue
+
             content = self._read_file_fast(module["path"])
             for generic, qgis_alt in generic_to_qgis.items():
                 if generic in content:
                     counts["generic"] += content.count(generic)
                     # Solo añadir recomendación una vez por archivo
-                    recommendations.append(f"{module['path'].name}: Consider using {qgis_alt} instead of {generic}")
-                    
+                    recommendations.append(
+                        f"{module['path'].name}: Consider using {qgis_alt} instead of {generic}"
+                    )
+
             if "Qgs" in content:
-                counts["qgis"] += 1 # Heurística simple
-                
+                counts["qgis"] += 1  # Heurística simple
+
         total = counts["generic"] + counts["qgis"]
         score = counts["qgis"] / total if total > 0 else 1.0
-        
+
         return {
             "score": round(score, 2),
-            "recommendations": list(set(recommendations))[:10] # Top 10
+            "recommendations": list(set(recommendations))[:10],  # Top 10
         }
 
-    def _check_performance_patterns(self, modules_data: List[Dict]) -> Dict:
-        """Busca patrones de rendimiento específicos de PyQGIS"""
+    def _check_performance_patterns(self, modules_data: list[dict]) -> dict:
+        """Busca patrones de rendimiento específicos de PyQGIS."""
         issues = []
         score_deduction = 0.0
-        
+
         for module in modules_data:
             content = self._read_file_fast(module["path"])
-            
+
             # .getFeatures() sin argumentos (generalmente ineficiente)
             if ".getFeatures()" in content:
-                issues.append(f"{module['path'].name}: .getFeatures() without QgsFeatureRequest")
+                issues.append(
+                    f"{module['path'].name}: .getFeatures() without QgsFeatureRequest"
+                )
                 score_deduction += 0.1
-                
+
             # Operaciones espaciales sin índice
             if any(x in content for x in [".intersects(", ".contains(", ".distance("]):
                 if "QgsSpatialIndex" not in content:
-                    issues.append(f"{module['path'].name}: Spatial operation without QgsSpatialIndex")
+                    issues.append(
+                        f"{module['path'].name}: Spatial operation without QgsSpatialIndex"
+                    )
                     score_deduction += 0.1
-                    
+
         score = max(0.0, 1.0 - score_deduction)
-        return {
-            "score": round(score, 2),
-            "issues": list(set(issues))[:10]
-        }
+        return {"score": round(score, 2), "issues": list(set(issues))[:10]}
 
     def _generate_tree_optimized(self) -> str:
-        """Genera árbol de directorios optimizado"""
+        """Genera árbol de directorios optimizado."""
         try:
             # Intentar usar tree si está disponible
             result = subprocess.run(
-                ["tree", "-I", "__pycache__|*.pyc|*.pyo|*.pycache|.git|.venv|venv|env",
-                 "-a", "--noreport", "-L", "4"],  # Limitar profundidad
+                [
+                    "tree",
+                    "-I",
+                    "__pycache__|*.pyc|*.pyo|*.pycache|.git|.venv|venv|env",
+                    "-a",
+                    "--noreport",
+                    "-L",
+                    "4",
+                ],  # Limitar profundidad
+                check=False,
                 cwd=self.project_path,
                 capture_output=True,
                 text=True,
-                timeout=3
+                timeout=3,
             )
             if result.returncode == 0:
                 return result.stdout[:1500]  # Limitar tamaño
@@ -1174,12 +1366,12 @@ class ProjectAnalyzer:
 
         for root, dirs, files in os.walk(self.project_path):
             # Calcular profundidad
-            depth = root[len(str(self.project_path)):].count(os.sep)
+            depth = root[len(str(self.project_path)) :].count(os.sep)
             if depth > max_depth:
                 continue
 
             # Filtrar directorios ocultos y de sistema
-            dirs[:] = [d for d in dirs if not d.startswith(('.', '_'))]
+            dirs[:] = [d for d in dirs if not d.startswith((".", "_"))]
 
             # Añadir directorio al árbol
             indent = "    " * depth
@@ -1191,32 +1383,44 @@ class ProjectAnalyzer:
             file_indent = "    " * (depth + 1)
             for i, file in enumerate(sorted(files)[:max_files_per_dir]):
                 if i == max_files_per_dir - 1 and len(files) > max_files_per_dir:
-                    tree_lines.append(f"{file_indent}... (+{len(files) - max_files_per_dir} más)")
+                    tree_lines.append(
+                        f"{file_indent}... (+{len(files) - max_files_per_dir} más)"
+                    )
                     break
                 tree_lines.append(f"{file_indent}{file}")
 
         return "\n".join(tree_lines)
 
-    def _count_file_types_optimized(self) -> Dict[str, int]:
-        """Cuenta tipos de archivos optimizado"""
+    def _count_file_types_optimized(self) -> dict[str, int]:
+        """Cuenta tipos de archivos optimizado."""
         extensions = {}
-        common_exts = {'.py', '.txt', '.md', '.json', '.yml', '.yaml',
-                      '.html', '.css', '.js', '.xml', '.csv', '.sql'}
+        common_exts = {
+            ".py",
+            ".txt",
+            ".md",
+            ".json",
+            ".yml",
+            ".yaml",
+            ".html",
+            ".css",
+            ".js",
+            ".xml",
+            ".csv",
+            ".sql",
+        }
 
         for file in self.project_path.rglob("*"):
             if file.is_file():
                 ext = file.suffix.lower()
-                if ext in common_exts:
-                    extensions[ext] = extensions.get(ext, 0) + 1
-                elif ext:  # Otras extensiones
+                if ext in common_exts or ext:
                     extensions[ext] = extensions.get(ext, 0) + 1
 
         # Ordenar y limitar
         sorted_exts = sorted(extensions.items(), key=lambda x: x[1], reverse=True)
         return dict(sorted_exts[:20])
 
-    def _calculate_size_stats_optimized(self) -> Dict[str, Any]:
-        """Calcula estadísticas de tamaño optimizado"""
+    def _calculate_size_stats_optimized(self) -> dict[str, Any]:
+        """Calcula estadísticas de tamaño optimizado."""
         total_files = 0
         total_size = 0
         python_files = 0
@@ -1227,19 +1431,19 @@ class ProjectAnalyzer:
             if entry.is_file():
                 total_files += 1
                 total_size += entry.stat().st_size
-                if entry.name.endswith('.py'):
+                if entry.name.endswith(".py"):
                     python_files += 1
                     python_size += entry.stat().st_size
-            elif entry.is_dir() and not entry.name.startswith('.'):
+            elif entry.is_dir() and not entry.name.startswith("."):
                 # Recursión limitada para subdirectorios
-                for root, dirs, files in os.walk(entry.path):
+                for root, _dirs, files in os.walk(entry.path):
                     for file in files:
                         total_files += 1
                         file_path = os.path.join(root, file)
                         try:
                             file_size = os.path.getsize(file_path)
                             total_size += file_size
-                            if file.endswith('.py'):
+                            if file.endswith(".py"):
                                 python_files += 1
                                 python_size += file_size
                         except:
@@ -1250,19 +1454,35 @@ class ProjectAnalyzer:
             "total_size_mb": round(total_size / (1024 * 1024), 2),
             "python_files": python_files,
             "python_size_mb": round(python_size / (1024 * 1024), 2),
-            "avg_file_size_kb": round(total_size / total_files / 1024, 2) if total_files > 0 else 0,
-            "python_percentage": round(python_size / total_size * 100, 2) if total_size > 0 else 0
+            "avg_file_size_kb": (
+                round(total_size / total_files / 1024, 2) if total_files > 0 else 0
+            ),
+            "python_percentage": (
+                round(python_size / total_size * 100, 2) if total_size > 0 else 0
+            ),
         }
 
-    def _find_entry_points(self) -> List[str]:
-        """Detección mejorada de puntos de entrada"""
+    def _find_entry_points(self) -> list[str]:
+        """Detección mejorada de puntos de entrada."""
         entry_points = set()
 
         # 1. Archivos con nombres comunes
-        common_patterns = ["main.py", "app.py", "run.py", "manage.py",
-                          "__main__.py", "setup.py", "cli.py", "wsgi.py",
-                          "asgi.py", "start.py", "server.py", "index.py",
-                          "django.wsgi", "flask.app"]
+        common_patterns = [
+            "main.py",
+            "app.py",
+            "run.py",
+            "manage.py",
+            "__main__.py",
+            "setup.py",
+            "cli.py",
+            "wsgi.py",
+            "asgi.py",
+            "start.py",
+            "server.py",
+            "index.py",
+            "django.wsgi",
+            "flask.app",
+        ]
 
         for pattern in common_patterns:
             for file in self.project_path.rglob(pattern):
@@ -1275,17 +1495,17 @@ class ProjectAnalyzer:
                 continue
 
             try:
-                with open(py_file, 'r', encoding='utf-8-sig') as f:
+                with open(py_file, encoding="utf-8-sig") as f:
                     first_line = f.readline()
-                    if first_line.startswith('#!') and 'python' in first_line:
+                    if first_line.startswith("#!") and "python" in first_line:
                         entry_points.add(str(py_file.relative_to(self.project_path)))
             except:
                 continue
 
         return sorted(entry_points)
 
-    def _analyze_complexity(self, modules_data: List[Dict]) -> Dict:
-        """Analiza complejidad general con más métricas"""
+    def _analyze_complexity(self, modules_data: list[dict]) -> dict:
+        """Analiza complejidad general con más métricas."""
         if not modules_data:
             return {}
 
@@ -1300,7 +1520,7 @@ class ProjectAnalyzer:
         complex_modules = sorted(
             [(m.get("path", ""), m.get("complexity", 0)) for m in modules_data],
             key=lambda x: x[1],
-            reverse=True
+            reverse=True,
         )[:10]
 
         return {
@@ -1308,24 +1528,45 @@ class ProjectAnalyzer:
             "total_lines": total_lines,
             "total_functions": sum(function_counts),
             "total_classes": sum(class_counts),
-            "average_complexity": round(total_complexity / len(modules_data), 2) if modules_data else 0,
-            "max_complexity": max((m.get("complexity", 0) for m in modules_data), default=0),
-            "modules_without_docstrings": sum(1 for m in modules_data
-                                            if not m.get("docstrings", {}).get("module", False)),
-            "avg_functions_per_module": round(sum(function_counts) / len(modules_data), 2) if modules_data else 0,
-            "avg_classes_per_module": round(sum(class_counts) / len(modules_data), 2) if modules_data else 0,
-            "lines_per_function": round(total_lines / sum(function_counts), 2) if sum(function_counts) > 0 else 0,
+            "average_complexity": (
+                round(total_complexity / len(modules_data), 2) if modules_data else 0
+            ),
+            "max_complexity": max(
+                (m.get("complexity", 0) for m in modules_data), default=0
+            ),
+            "modules_without_docstrings": sum(
+                1
+                for m in modules_data
+                if not m.get("docstrings", {}).get("module", False)
+            ),
+            "avg_functions_per_module": (
+                round(sum(function_counts) / len(modules_data), 2)
+                if modules_data
+                else 0
+            ),
+            "avg_classes_per_module": (
+                round(sum(class_counts) / len(modules_data), 2) if modules_data else 0
+            ),
+            "lines_per_function": (
+                round(total_lines / sum(function_counts), 2)
+                if sum(function_counts) > 0
+                else 0
+            ),
             "most_complex_modules": complex_modules,
-            "complexity_distribution": self._calculate_complexity_distribution(modules_data)
+            "complexity_distribution": self._calculate_complexity_distribution(
+                modules_data
+            ),
         }
 
-    def _calculate_complexity_distribution(self, modules_data: List[Dict]) -> Dict[str, int]:
-        """Calcula distribución de complejidad"""
+    def _calculate_complexity_distribution(
+        self, modules_data: list[dict]
+    ) -> dict[str, int]:
+        """Calcula distribución de complejidad."""
         distribution = {
             "low (0-5)": 0,
             "medium (6-15)": 0,
             "high (16-30)": 0,
-            "very_high (31+)": 0
+            "very_high (31+)": 0,
         }
 
         for module in modules_data:
@@ -1341,8 +1582,8 @@ class ProjectAnalyzer:
 
         return distribution
 
-    def _find_technical_debt(self, modules_data: List[Dict]) -> List[Dict]:
-        """Identifica deuda técnica con severidad"""
+    def _find_technical_debt(self, modules_data: list[dict]) -> list[dict]:
+        """Identifica deuda técnica con severidad."""
         debt_items = []
 
         for module in modules_data:
@@ -1355,76 +1596,101 @@ class ProjectAnalyzer:
 
             # Clasificar por severidad
             if complexity > 20:
-                issues.append({
-                    "type": "alta_complejidad",
-                    "severity": "alta",
-                    "message": f"Complejidad ciclomática muy alta ({complexity})",
-                    "value": complexity
-                })
+                issues.append(
+                    {
+                        "type": "alta_complejidad",
+                        "severity": "alta",
+                        "message": f"Complejidad ciclomática muy alta ({complexity})",
+                        "value": complexity,
+                    }
+                )
             elif complexity > 10:
-                issues.append({
-                    "type": "complejidad_moderada",
-                    "severity": "media",
-                    "message": f"Complejidad ciclomática alta ({complexity})",
-                    "value": complexity
-                })
+                issues.append(
+                    {
+                        "type": "complejidad_moderada",
+                        "severity": "media",
+                        "message": f"Complejidad ciclomática alta ({complexity})",
+                        "value": complexity,
+                    }
+                )
 
             if lines > 800:
-                issues.append({
-                    "type": "archivo_muy_largo",
-                    "severity": "alta",
-                    "message": f"Archivo muy largo ({lines} líneas)",
-                    "value": lines
-                })
+                issues.append(
+                    {
+                        "type": "archivo_muy_largo",
+                        "severity": "alta",
+                        "message": f"Archivo muy largo ({lines} líneas)",
+                        "value": lines,
+                    }
+                )
             elif lines > 500:
-                issues.append({
-                    "type": "archivo_largo",
-                    "severity": "media",
-                    "message": f"Archivo largo ({lines} líneas)",
-                    "value": lines
-                })
+                issues.append(
+                    {
+                        "type": "archivo_largo",
+                        "severity": "media",
+                        "message": f"Archivo largo ({lines} líneas)",
+                        "value": lines,
+                    }
+                )
 
             if not docstrings.get("module", False):
-                issues.append({
-                    "type": "sin_docstring_modulo",
-                    "severity": "baja",
-                    "message": "Falta docstring a nivel de módulo"
-                })
+                issues.append(
+                    {
+                        "type": "sin_docstring_modulo",
+                        "severity": "baja",
+                        "message": "Falta docstring a nivel de módulo",
+                    }
+                )
 
             # Verificar docstrings en clases y funciones
-            classes_without_doc = sum(1 for has_doc in docstrings.get("classes", {}).values() if not has_doc)
-            funcs_without_doc = sum(1 for has_doc in docstrings.get("functions", {}).values() if not has_doc)
+            classes_without_doc = sum(
+                1 for has_doc in docstrings.get("classes", {}).values() if not has_doc
+            )
+            funcs_without_doc = sum(
+                1 for has_doc in docstrings.get("functions", {}).values() if not has_doc
+            )
 
             if classes_without_doc > 0:
-                issues.append({
-                    "type": "clases_sin_docstring",
-                    "severity": "baja",
-                    "message": f"{classes_without_doc} clases sin docstring"
-                })
+                issues.append(
+                    {
+                        "type": "clases_sin_docstring",
+                        "severity": "baja",
+                        "message": f"{classes_without_doc} clases sin docstring",
+                    }
+                )
 
             if funcs_without_doc > 0:
-                issues.append({
-                    "type": "funciones_sin_docstring",
-                    "severity": "baja",
-                    "message": f"{funcs_without_doc} funciones sin docstring"
-                })
+                issues.append(
+                    {
+                        "type": "funciones_sin_docstring",
+                        "severity": "baja",
+                        "message": f"{funcs_without_doc} funciones sin docstring",
+                    }
+                )
 
             if issues:
-                debt_items.append({
-                    "module": path,
-                    "issues": issues,
-                    "total_issues": len(issues),
-                    "severity_score": sum(3 if i["severity"] == "alta" else
-                                         2 if i["severity"] == "media" else 1
-                                         for i in issues)
-                })
+                debt_items.append(
+                    {
+                        "module": path,
+                        "issues": issues,
+                        "total_issues": len(issues),
+                        "severity_score": sum(
+                            (
+                                3
+                                if i["severity"] == "alta"
+                                else 2 if i["severity"] == "media" else 1
+                            )
+                            for i in issues
+                        ),
+                    }
+                )
 
         # Ordenar por severidad
         debt_items.sort(key=lambda x: x["severity_score"], reverse=True)
         return debt_items[:50]  # Limitar resultados
 
-    def _find_optimizations(self, modules_data: List[Dict]) -> List[Dict]:
-        """Identifica oportunidades de optimización específicas"""
+    def _find_optimizations(self, modules_data: list[dict]) -> list[dict]:
+        """Identifica oportunidades de optimización específicas."""
         optimizations = []
 
         for module in modules_data:
@@ -1438,74 +1704,88 @@ class ProjectAnalyzer:
 
             # Optimizaciones basadas en imports
             if len(imports) > 25:
-                suggestions.append({
-                    "type": "imports_excesivos",
-                    "priority": "media",
-                    "message": f"Muchos imports ({len(imports)})",
-                    "suggestions": [
-                        "Agrupar imports relacionados",
-                        "Usar imports locales dentro de funciones",
-                        "Eliminar imports no utilizados con herramientas como autoflake"
-                    ]
-                })
+                suggestions.append(
+                    {
+                        "type": "imports_excesivos",
+                        "priority": "media",
+                        "message": f"Muchos imports ({len(imports)})",
+                        "suggestions": [
+                            "Agrupar imports relacionados",
+                            "Usar imports locales dentro de funciones",
+                            "Eliminar imports no utilizados con herramientas como autoflake",
+                        ],
+                    }
+                )
 
             # Optimizaciones de complejidad
             if complexity > 15 and len(functions) > 5:
-                suggestions.append({
-                    "type": "refactorizacion_complejidad",
-                    "priority": "alta",
-                    "message": f"Alta complejidad ({complexity}) con {len(functions)} funciones",
-                    "suggestions": [
-                        "Extraer métodos de funciones largas",
-                        "Usar polimorfismo en lugar de if/else largos",
-                        "Aplicar principios SOLID",
-                        "Considerar usar patrones de diseño"
-                    ]
-                })
+                suggestions.append(
+                    {
+                        "type": "refactorizacion_complejidad",
+                        "priority": "alta",
+                        "message": f"Alta complejidad ({complexity}) con {len(functions)} funciones",
+                        "suggestions": [
+                            "Extraer métodos de funciones largas",
+                            "Usar polimorfismo en lugar de if/else largos",
+                            "Aplicar principios SOLID",
+                            "Considerar usar patrones de diseño",
+                        ],
+                    }
+                )
 
             # Optimizaciones de tamaño
             if lines > 300:
-                suggestions.append({
-                    "type": "modulo_demasiado_grande",
-                    "priority": "media",
-                    "message": f"Módulo muy grande ({lines} líneas)",
-                    "suggestions": [
-                        "Dividir en múltiples módulos",
-                        "Agrupar funcionalidad relacionada en paquetes",
-                        "Extraer clases a módulos separados"
-                    ]
-                })
+                suggestions.append(
+                    {
+                        "type": "modulo_demasiado_grande",
+                        "priority": "media",
+                        "message": f"Módulo muy grande ({lines} líneas)",
+                        "suggestions": [
+                            "Dividir en múltiples módulos",
+                            "Agrupar funcionalidad relacionada en paquetes",
+                            "Extraer clases a módulos separados",
+                        ],
+                    }
+                )
 
             # Detectar funciones demasiado largas
             if functions and lines / len(functions) > 50:
-                suggestions.append({
-                    "type": "funciones_demasiado_largas",
-                    "priority": "media",
-                    "message": f"Funciones muy largas (promedio {lines/len(functions):.1f} líneas/función)",
-                    "suggestions": [
-                        "Refactorizar funciones > 50 líneas",
-                        "Extraer lógica común a funciones helper",
-                        "Usar comprehensions y generadores"
-                    ]
-                })
+                suggestions.append(
+                    {
+                        "type": "funciones_demasiado_largas",
+                        "priority": "media",
+                        "message": f"Funciones muy largas (promedio {lines/len(functions):.1f} líneas/función)",
+                        "suggestions": [
+                            "Refactorizar funciones > 50 líneas",
+                            "Extraer lógica común a funciones helper",
+                            "Usar comprehensions y generadores",
+                        ],
+                    }
+                )
 
             if suggestions:
-                optimizations.append({
-                    "module": path,
-                    "suggestions": suggestions,
-                    "priority": "alta" if complexity > 20 else "media"
-                })
+                optimizations.append(
+                    {
+                        "module": path,
+                        "suggestions": suggestions,
+                        "priority": "alta" if complexity > 20 else "media",
+                    }
+                )
 
         return optimizations[:30]  # Limitar resultados
 
-    def _find_security_issues(self, modules_data: List[Dict]) -> List[Dict]:
-        """Identifica posibles problemas de seguridad"""
+    def _find_security_issues(self, modules_data: list[dict]) -> list[dict]:
+        """Identifica posibles problemas de seguridad."""
         security_issues = []
 
         dangerous_patterns = [
             ("exec(", "Uso de exec() - Vulnerable a inyección de código", "alta"),
             ("eval(", "Uso de eval() - Vulnerable a inyección de código", "alta"),
-            ("pickle.loads", "Deserialización insegura - Puede ejecutar código arbitrario", "alta"),
+            (
+                "pickle.loads",
+                "Deserialización insegura - Puede ejecutar código arbitrario",
+                "alta",
+            ),
             ("subprocess.call(", "Ejecución de shell sin sanitizar", "alta"),
             ("subprocess.Popen(", "Ejecución de shell sin sanitizar", "alta"),
             ("os.system(", "Ejecución de comandos del sistema", "alta"),
@@ -1517,7 +1797,7 @@ class ProjectAnalyzer:
             ("flask.request.args.get", "Parámetros GET sin validar", "media"),
             ("django.forms.CharField", "Validación insuficiente", "media"),
             ("md5(", "Uso de hash MD5 inseguro", "media"),
-            ("sha1(", "Uso de hash SHA1 inseguro", "media")
+            ("sha1(", "Uso de hash SHA1 inseguro", "media"),
         ]
 
         for module in modules_data:
@@ -1534,34 +1814,42 @@ class ProjectAnalyzer:
             for pattern, description, severity in dangerous_patterns:
                 if pattern in content:
                     # Encontrar línea específica
-                    lines = content.split('\n')
+                    lines = content.split("\n")
                     for i, line in enumerate(lines, 1):
-                        if pattern in line and not line.strip().startswith('#'):
-                            issues_found.append({
-                                "pattern": pattern,
-                                "description": description,
-                                "severity": severity,
-                                "line": i,
-                                "code": line.strip()[:120]
-                            })
+                        if pattern in line and not line.strip().startswith("#"):
+                            issues_found.append(
+                                {
+                                    "pattern": pattern,
+                                    "description": description,
+                                    "severity": severity,
+                                    "line": i,
+                                    "code": line.strip()[:120],
+                                }
+                            )
                             break  # Solo primera ocurrencia por patrón
 
             if issues_found:
-                security_issues.append({
-                    "module": path,
-                    "issues": issues_found,
-                    "total_issues": len(issues_found),
-                    "max_severity": max((i["severity"] for i in issues_found),
-                                       key=lambda x: {"alta": 3, "media": 2, "baja": 1}[x])
-                })
+                security_issues.append(
+                    {
+                        "module": path,
+                        "issues": issues_found,
+                        "total_issues": len(issues_found),
+                        "max_severity": max(
+                            (i["severity"] for i in issues_found),
+                            key=lambda x: {"alta": 3, "media": 2, "baja": 1}[x],
+                        ),
+                    }
+                )
 
         # Ordenar por severidad
-        security_issues.sort(key=lambda x: {"alta": 3, "media": 2, "baja": 1}[x["max_severity"]],
-                           reverse=True)
+        security_issues.sort(
+            key=lambda x: {"alta": 3, "media": 2, "baja": 1}[x["max_severity"]],
+            reverse=True,
+        )
         return security_issues[:20]  # Limitar resultados
 
-    def _calculate_project_metrics(self, modules_data: List[Dict]) -> Dict:
-        """Calcula métricas generales del proyecto"""
+    def _calculate_project_metrics(self, modules_data: list[dict]) -> dict:
+        """Calcula métricas generales del proyecto."""
         if not modules_data:
             return {}
 
@@ -1570,12 +1858,13 @@ class ProjectAnalyzer:
 
         # Calcular métricas de calidad
         modules_with_docstrings = sum(
-            1 for m in modules_data
-            if m.get("docstrings", {}).get("module", False)
+            1 for m in modules_data if m.get("docstrings", {}).get("module", False)
         )
 
         modules_with_main = sum(1 for m in modules_data if m.get("has_main", False))
-        modules_with_syntax_error = sum(1 for m in modules_data if m.get("syntax_error", False))
+        modules_with_syntax_error = sum(
+            1 for m in modules_data if m.get("syntax_error", False)
+        )
 
         # Calcular estadísticas de complejidad
         complexities = [m.get("complexity", 0) for m in modules_data]
@@ -1589,16 +1878,18 @@ class ProjectAnalyzer:
             "modules_with_docstrings": modules_with_docstrings,
             "modules_with_main_guard": modules_with_main,
             "modules_with_syntax_errors": modules_with_syntax_error,
-            "docstring_coverage": round(modules_with_docstrings / len(modules_data) * 100, 2),
+            "docstring_coverage": round(
+                modules_with_docstrings / len(modules_data) * 100, 2
+            ),
             "entry_points_count": len(self.context.entry_points),
             "test_files_count": self._count_test_files(),
             "avg_complexity": round(avg_complexity, 2),
             "max_complexity": max(complexities) if complexities else 0,
-            "quality_score": self._calculate_quality_score(modules_data)
+            "quality_score": self._calculate_quality_score(modules_data),
         }
 
-    def _calculate_quality_score(self, modules_data: List[Dict]) -> float:
-        """Calcula un score de calidad general (Configurable)"""
+    def _calculate_quality_score(self, modules_data: list[dict]) -> float:
+        """Calcula un score de calidad general (Configurable)."""
         if not modules_data:
             return 0.0
 
@@ -1607,13 +1898,13 @@ class ProjectAnalyzer:
 
         # Calcular puntuación máxima posible por módulo
         max_module_score = (
-            weights["docstrings"] +
-            weights["complexity_low"] + # Asumimos el mejor caso
-            weights["size_small"] +     # Asumimos el mejor caso
-            weights["has_main"] +
-            weights["no_syntax_error"]
+            weights["docstrings"]
+            + weights["complexity_low"]
+            + weights["size_small"]  # Asumimos el mejor caso
+            + weights["has_main"]  # Asumimos el mejor caso
+            + weights["no_syntax_error"]
         )
-        
+
         total_score = 0.0
         max_possible_total = len(modules_data) * max_module_score
 
@@ -1651,12 +1942,14 @@ class ProjectAnalyzer:
             total_score += module_score
 
         # Normalizar a porcentaje
-        final_score = (total_score / max_possible_total) * 100 if max_possible_total > 0 else 0
-        
+        final_score = (
+            (total_score / max_possible_total) * 100 if max_possible_total > 0 else 0
+        )
+
         # Factorizar el score de cumplimiento de QGIS (si existe)
         qgis_data = self.context.patterns.get("qgis_compliance", {})
         qgis_score = qgis_data.get("compliance_score")
-        
+
         if qgis_score is not None:
             # El Score final es un promedio ponderado: 70% Calidad Código, 30% Estándares QGIS
             final_score = (final_score * 0.7) + (qgis_score * 0.3)
@@ -1664,32 +1957,35 @@ class ProjectAnalyzer:
         return round(final_score, 1)
 
     def _count_test_files(self) -> int:
-        """Cuenta archivos de test optimizado"""
+        """Cuenta archivos de test optimizado."""
         count = 0
         test_patterns = ["test_", "_test", "spec_", "_spec", "conftest"]
 
         for file in self.project_path.rglob("*.py"):
             filename = file.name.lower()
-            if any(pattern in filename for pattern in test_patterns):
-                count += 1
-            elif "tests" in str(file.parent).lower():
+            if (
+                any(pattern in filename for pattern in test_patterns)
+                or "tests" in str(file.parent).lower()
+            ):
                 count += 1
 
         return count
 
     def _is_test_file(self, path: pathlib.Path) -> bool:
-        """Determina si es archivo de tests (optimizado)"""
+        """Determina si es archivo de tests (optimizado)."""
         filename = path.name.lower()
         test_patterns = ["test_", "_test", "spec_", "_spec", "conftest"]
 
-        return (any(pattern in filename for pattern in test_patterns) or
-                "tests" in str(path).lower() or
-                "test" in path.parent.name.lower())
+        return (
+            any(pattern in filename for pattern in test_patterns)
+            or "tests" in str(path).lower()
+            or "test" in path.parent.name.lower()
+        )
 
     # ==================== MÉTODOS DE EXTRACCIÓN ====================
 
-    def _extract_functions(self, tree: ast.AST) -> List[str]:
-        """Extrae nombres de funciones"""
+    def _extract_functions(self, tree: ast.AST) -> list[str]:
+        """Extrae nombres de funciones."""
         functions = []
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
@@ -1701,8 +1997,8 @@ class ProjectAnalyzer:
                 functions.append(func_info)
         return functions
 
-    def _extract_classes(self, tree: ast.AST) -> List[str]:
-        """Extrae nombres de clases con herencia"""
+    def _extract_classes(self, tree: ast.AST) -> list[str]:
+        """Extrae nombres de clases con herencia."""
         classes = []
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
@@ -1713,7 +2009,7 @@ class ProjectAnalyzer:
         return classes
 
     def _get_base_name(self, node: ast.AST) -> str:
-        """Obtiene nombre de clase base"""
+        """Obtiene nombre de clase base."""
         if isinstance(node, ast.Name):
             return node.id
         elif isinstance(node, ast.Attribute):
@@ -1721,13 +2017,9 @@ class ProjectAnalyzer:
         else:
             return "Unknown"
 
-    def _check_docstrings(self, tree: ast.AST) -> Dict[str, Any]:
-        """Verifica docstrings por elemento"""
-        docstrings = {
-            "module": False,
-            "classes": {},
-            "functions": {}
-        }
+    def _check_docstrings(self, tree: ast.AST) -> dict[str, Any]:
+        """Verifica docstrings por elemento."""
+        docstrings = {"module": False, "classes": {}, "functions": {}}
 
         # Docstring del módulo
         if isinstance(tree, ast.Module):
@@ -1743,18 +2035,22 @@ class ProjectAnalyzer:
         return docstrings
 
     def _has_main_guard(self, tree: ast.AST) -> bool:
-        """Verifica si el módulo tiene if __name__ == '__main__'"""
+        """Verifica si el módulo tiene if __name__ == '__main__'."""
         for node in ast.walk(tree):
             if isinstance(node, ast.If):
                 try:
                     # Verificar condición __name__ == '__main__'
-                    if (isinstance(node.test, ast.Compare) and
-                        isinstance(node.test.left, ast.Name) and
-                        node.test.left.id == '__name__'):
+                    if (
+                        isinstance(node.test, ast.Compare)
+                        and isinstance(node.test.left, ast.Name)
+                        and node.test.left.id == "__name__"
+                    ):
 
                         for comparator in node.test.comparators:
-                            if (isinstance(comparator, ast.Constant) and
-                                comparator.value == '__main__'):
+                            if (
+                                isinstance(comparator, ast.Constant)
+                                and comparator.value == "__main__"
+                            ):
                                 return True
                 except:
                     continue
@@ -1762,12 +2058,12 @@ class ProjectAnalyzer:
 
     # ==================== MÉTODOS DE GUARDADO ====================
 
-    def _save_context_optimized(self, analyses: Dict) -> None:
-        """Guarda el contexto optimizado"""
+    def _save_context_optimized(self, analyses: dict) -> None:
+        """Guarda el contexto optimizado."""
         try:
             # 1. Guardar JSON completo
             context_file = self.project_path / "project_context.json"
-            with open(context_file, 'w', encoding='utf-8') as f:
+            with open(context_file, "w", encoding="utf-8") as f:
                 json.dump(analyses, f, indent=2, ensure_ascii=False, default=str)
 
             # 2. Guardar resumen ejecutivo
@@ -1784,7 +2080,7 @@ class ProjectAnalyzer:
             # 5. Guardar log de errores si hay
             if self.error_log:
                 error_file = self.project_path / "analysis_errors.json"
-                with open(error_file, 'w', encoding='utf-8') as f:
+                with open(error_file, "w", encoding="utf-8") as f:
                     json.dump(self.error_log, f, indent=2, ensure_ascii=False)
 
             # 6. Actualizar Cerebro AI (si existe)
@@ -1801,7 +2097,7 @@ class ProjectAnalyzer:
             except Exception as e:
                 print(f"⚠️ Error actualizando tech_stack.yaml: {e}")
 
-            print(f"\n💾 Resultados guardados:")
+            print("\n💾 Resultados guardados:")
             print(f"   📄 {context_file}")
             print(f"   📋 {summary_file}")
             print(f"   🤖 {ai_context_file}")
@@ -1809,39 +2105,39 @@ class ProjectAnalyzer:
         except Exception as e:
             print(f"⚠️ Error guardando resultados: {e}")
 
-    def _update_ai_brain(self, analyses: Dict, quality_score: float) -> None:
-        """Actualiza automáticamente .ai-context/project_brain.md con métricas frescas"""
+    def _update_ai_brain(self, analyses: dict, quality_score: float) -> None:
+        """Actualiza automáticamente .ai-context/project_brain.md con métricas frescas."""
         brain_path = self.project_path / ".ai-context" / "project_brain.md"
         if not brain_path.exists():
             return
 
         try:
             content = brain_path.read_text(encoding="utf-8")
-            
+
             # Datos frescos
             import datetime
             import re
-            
+
             today = datetime.datetime.now().strftime("%Y-%m-%d")
             qgis_data = analyses.get("qgis_compliance", {})
             qgis_score = qgis_data.get("compliance_score", 0)
-            
+
             # Calcular módulos complejos
             complex_modules = sorted(
                 analyses.get("complexity", {}).get("most_complex_modules", []),
-                key=lambda x: x[1], 
-                reverse=True
+                key=lambda x: x[1],
+                reverse=True,
             )[:3]
             # m es una tupla (path, complexity) o dict?
             # En _analyze_complexity devuelve lista de tuplas (path, complexity) en "most_complex_modules"
             complex_str = ", ".join([f"`{m[0]}`" for m in complex_modules])
-            
+
             metrics = analyses.get("metrics", {})
             lines = metrics.get("total_lines_code", 0)
-            
+
             structure = analyses.get("structure", {})
             files = structure.get("modules_count", 0)
-            
+
             avg_complexity = metrics.get("avg_complexity", 0)
 
             # Bloque de reemplazo
@@ -1857,26 +2153,32 @@ class ProjectAnalyzer:
             # Reemplazo usando Regex
             pattern = r"## 📊 Métricas de Salud.*?(?=\n## |\Z)"
             if re.search(pattern, content, flags=re.DOTALL):
-                new_content = re.sub(pattern, new_metrics.strip(), content, flags=re.DOTALL)
+                new_content = re.sub(
+                    pattern, new_metrics.strip(), content, flags=re.DOTALL
+                )
                 brain_path.write_text(new_content, encoding="utf-8")
                 print(f"   🧠 Cerebro actualizado: {brain_path}")
             else:
-                print(f"   ⚠️ No se encontró la sección de métricas en {brain_path.name}")
-                
+                print(
+                    f"   ⚠️ No se encontró la sección de métricas en {brain_path.name}"
+                )
+
         except Exception as e:
             print(f"   ⚠️ Falló la actualización del cerebro: {e}")
 
-    def _update_tech_stack_yaml(self, analyses: Dict) -> None:
-        """Actualiza automáticamente .ai-context/tech_stack.yaml con información detectada"""
+    def _update_tech_stack_yaml(self, analyses: dict) -> None:
+        """Actualiza automáticamente .ai-context/tech_stack.yaml con información detectada."""
         tech_stack_path = self.project_path / ".ai-context" / "tech_stack.yaml"
-        
+
         # Detectar información del tech stack
         dependencies = analyses.get("dependencies", {})
         third_party = dependencies.get("third_party", [])
-        
+
         # Detectar Python version
-        python_version = "3.13"  # Default, could be detected from pyproject.toml or similar
-        
+        python_version = (
+            "3.13"  # Default, could be detected from pyproject.toml or similar
+        )
+
         # Detectar frameworks GIS
         gis_frameworks = []
         if any("qgis" in imp.lower() for imp in third_party):
@@ -1885,15 +2187,17 @@ class ProjectAnalyzer:
             gis_frameworks.append("Qt5 (PyQt5)")
         if any("gdal" in imp.lower() or "ogr" in imp.lower() for imp in third_party):
             gis_frameworks.append("GDAL/OGR")
-        
+
         # Detectar herramientas de desarrollo
         testing_framework = None
         formatter = None
         linter = None
-        
-        if (self.project_path / "pytest.ini").exists() or any("pytest" in imp for imp in third_party):
+
+        if (self.project_path / "pytest.ini").exists() or any(
+            "pytest" in imp for imp in third_party
+        ):
             testing_framework = "pytest"
-        
+
         if (self.project_path / "pyproject.toml").exists():
             try:
                 content = (self.project_path / "pyproject.toml").read_text()
@@ -1903,17 +2207,17 @@ class ProjectAnalyzer:
                     linter = "ruff"
             except:
                 pass
-        
+
         if (self.project_path / "ruff.toml").exists():
             linter = "ruff / flake8 / pylint"
-        
+
         # Detectar arquitectura
-        structure = analyses.get("structure", {})
+        analyses.get("structure", {})
         has_gui = any("gui" in str(p) for p in self.project_path.rglob("*.py"))
         has_core = any("core" in str(p) for p in self.project_path.rglob("*.py"))
-        
+
         architecture_pattern = "MVC" if has_gui and has_core else "Modular"
-        
+
         # Generar YAML
         yaml_content = f"""# Stack Tecnológico: {self.context.project_name}
 
@@ -1933,9 +2237,9 @@ architecture:
   ui_design: "Programmatic (PyQt5)"
 
 dependencies:
-{chr(10).join(f'  - "{dep.split(".")[0]}"' for dep in sorted(set(imp.split(".")[0] for imp in third_party[:10])))}
+{chr(10).join(f'  - "{dep.split(".")[0]}"' for dep in sorted({imp.split(".")[0] for imp in third_party[:10]}))}
 """
-        
+
         try:
             tech_stack_path.parent.mkdir(parents=True, exist_ok=True)
             tech_stack_path.write_text(yaml_content, encoding="utf-8")
@@ -1943,8 +2247,10 @@ dependencies:
         except Exception as e:
             print(f"   ⚠️ Error escribiendo tech_stack.yaml: {e}")
 
-    def _generate_project_summary(self, analyses: Dict, output_path: pathlib.Path) -> None:
-        """Genera resumen ejecutivo del proyecto"""
+    def _generate_project_summary(
+        self, analyses: dict, output_path: pathlib.Path
+    ) -> None:
+        """Genera resumen ejecutivo del proyecto."""
         structure = analyses.get("structure", {})
         complexity = analyses.get("complexity", {})
         metrics = analyses.get("metrics", {})
@@ -1997,15 +2303,19 @@ Versión del analizador: 2.0 (Optimizado)
         # Agregar cumplimiento QGIS
         qgis = analyses.get("qgis_compliance", {})
         if qgis:
-            summary_content += f"\n## 📦 ESTÁNDARES DE PLUGIN QGIS\n"
+            summary_content += "\n## 📦 ESTÁNDARES DE PLUGIN QGIS\n"
             summary_content += f"- **Score de Cumplimiento**: {qgis.get('compliance_score', 0):.1f}/100\n"
-            
+
             # Archivos faltantes
             mandatory = qgis.get("mandatory_files", {})
-            missing = [f for f, exists in mandatory.get("files", {}).items() if not exists]
+            missing = [
+                f for f, exists in mandatory.get("files", {}).items() if not exists
+            ]
             if missing:
-                summary_content += f"- ❌ **Archivos faltantes**: {', '.join(missing)}\n"
-            
+                summary_content += (
+                    f"- ❌ **Archivos faltantes**: {', '.join(missing)}\n"
+                )
+
             # Violaciones de arquitectura
             arch = qgis.get("architecture", {})
             if arch.get("violations"):
@@ -2013,7 +2323,7 @@ Versión del analizador: 2.0 (Optimizado)
                 summary_content += f"- ⚠️ **Arquitectura**: {len(violations)} violaciones detectadas (mezcla UI/Core)\n"
                 for v in violations[:2]:
                     summary_content += f"  - {v['file']}: {v['type']}\n"
-            
+
             # Recomendaciones de widgets
             widgets = qgis.get("widgets", {})
             if widgets.get("recommendations"):
@@ -2022,7 +2332,7 @@ Versión del analizador: 2.0 (Optimizado)
             # Performance
             perf = qgis.get("performance", {})
             if perf.get("issues"):
-                 summary_content += f"- ⚡ **Optimización**: {len(perf['issues'])} patrones de rendimiento PyQGIS detectados\n"
+                summary_content += f"- ⚡ **Optimización**: {len(perf['issues'])} patrones de rendimiento PyQGIS detectados\n"
 
         # Agregar recomendaciones
         optimizations = analyses.get("optimizations", [])
@@ -2031,20 +2341,20 @@ Versión del analizador: 2.0 (Optimizado)
             high_priority = [o for o in optimizations if o.get("priority") == "alta"]
             for opt in high_priority[:3]:
                 summary_content += f"\n### {opt['module']}\n"
-                for suggestion in opt['suggestions'][:2]:
+                for suggestion in opt["suggestions"][:2]:
                     summary_content += f"- {suggestion['message']}\n"
 
-        summary_content += f"\n## 📈 DISTRIBUCIÓN DE COMPLEJIDAD\n"
+        summary_content += "\n## 📈 DISTRIBUCIÓN DE COMPLEJIDAD\n"
         dist = complexity.get("complexity_distribution", {})
         for key, value in dist.items():
-            percentage = (value / complexity.get('total_modules', 1)) * 100
+            percentage = (value / complexity.get("total_modules", 1)) * 100
             summary_content += f"- {key}: {value} módulos ({percentage:.1f}%)\n"
 
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(summary_content)
 
-    def _generate_ai_context(self, analyses: Dict, output_path: pathlib.Path) -> None:
-        """Genera contexto optimizado para IA"""
+    def _generate_ai_context(self, analyses: dict, output_path: pathlib.Path) -> None:
+        """Genera contexto optimizado para IA."""
         structure = analyses.get("structure", {})
         entry_points = analyses.get("entry_points", [])
         patterns = analyses.get("patterns", {})
@@ -2071,7 +2381,9 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
         for pattern_name, pattern_data in patterns.items():
             if isinstance(pattern_data, dict) and pattern_data.get("detected"):
                 confidence = pattern_data.get("confidence", 0)
-                detected_patterns.append(f"- **{pattern_name.upper()}**: Detectado (confianza: {confidence:.0%})")
+                detected_patterns.append(
+                    f"- **{pattern_name.upper()}**: Detectado (confianza: {confidence:.0%})"
+                )
 
         if detected_patterns:
             context_content += "\n".join(detected_patterns)
@@ -2096,11 +2408,13 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
             # Agrupar por paquete base
             base_packages = {}
             for dep in third_party:
-                base = dep.split('.')[0]
+                base = dep.split(".")[0]
                 base_packages[base] = base_packages.get(base, 0) + 1
 
             context_content += "\n### Third Party (más frecuentes):\n"
-            for package, count in sorted(base_packages.items(), key=lambda x: x[1], reverse=True)[:15]:
+            for package, count in sorted(
+                base_packages.items(), key=lambda x: x[1], reverse=True
+            )[:15]:
                 context_content += f"- `{package}` ({count} imports)\n"
 
         # Agregar recomendaciones principales
@@ -2108,9 +2422,13 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
         if optimizations:
             context_content += "\n## 💡 RECOMENDACIONES DE OPTIMIZACIÓN\n"
             for opt in optimizations[:5]:
-                context_content += f"\n### {opt['module']} (Prioridad: {opt['priority'].upper()})\n"
-                for suggestion in opt['suggestions'][:2]:
-                    context_content += f"- **{suggestion['type']}**: {suggestion['message']}\n"
+                context_content += (
+                    f"\n### {opt['module']} (Prioridad: {opt['priority'].upper()})\n"
+                )
+                for suggestion in opt["suggestions"][:2]:
+                    context_content += (
+                        f"- **{suggestion['type']}**: {suggestion['message']}\n"
+                    )
 
         # Agregar estructura de dependencias
         graph_metrics = dependencies.get("graph_metrics", {})
@@ -2124,25 +2442,26 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
 - **Componentes conectados**: {graph_metrics.get('weakly_connected_components', 0)}
 """
 
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(context_content)
+
 
 # ==================== FUNCIÓN PRINCIPAL ====================
 def setup_logging(verbose: bool = False):
-    """Configura el sistema de logging"""
+    """Configura el sistema de logging."""
     log_level = logging.DEBUG if verbose else logging.INFO
     logger.setLevel(logging.DEBUG)  # Capture all at logger level, filter at handlers
 
     # Console Handler
     ch = logging.StreamHandler()
     ch.setLevel(log_level)
-    ch_formatter = logging.Formatter('%(message)s')
+    ch_formatter = logging.Formatter("%(message)s")
     ch.setFormatter(ch_formatter)
 
     # File Handler
-    fh = logging.FileHandler('analysis.log', mode='w', encoding='utf-8')
+    fh = logging.FileHandler("analysis.log", mode="w", encoding="utf-8")
     fh.setLevel(logging.DEBUG)
-    fh_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    fh_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     fh.setFormatter(fh_formatter)
 
     # Reset handlers
@@ -2151,14 +2470,15 @@ def setup_logging(verbose: bool = False):
     logger.addHandler(fh)
     logger.propagate = False
 
+
 def main():
-    """Función principal optimizada"""
-    import sys
+    """Función principal optimizada."""
     import argparse
-    import signal
-    import time
     import logging
     import os
+    import signal
+    import sys
+    import time
     import traceback
 
     # Configurar logger global
@@ -2166,7 +2486,7 @@ def main():
     logger = logging.getLogger(__name__)
 
     parser = argparse.ArgumentParser(
-        description='Analizador de Proyectos Python (Optimizado)',
+        description="Analizador de Proyectos Python (Optimizado)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Ejemplos:
@@ -2174,20 +2494,37 @@ Ejemplos:
   %(prog)s ./mi-proyecto --workers 8
   %(prog)s ./mi-proyecto --no-cache
   %(prog)s ./mi-proyecto --timeout 300
-        """
+        """,
     )
 
-    parser.add_argument('project_path', nargs='?', default='.',
-                       help='Ruta al proyecto a analizar')
-    parser.add_argument('--workers', '-w', type=int,
-                       help='Número de workers paralelos (default: CPU count + 4)')
-    parser.add_argument('--no-cache', action='store_true',
-                       help='Deshabilitar cache de análisis incremental')
-    parser.add_argument('--timeout', '-t', type=int, default=300,
-                       help='Timeout total en segundos (default: 300)')
-    parser.add_argument('--verbose', '-v', action='store_true',
-                       help='Mostrar información detallada (DEBUG)')
-    parser.add_argument('--exclude', nargs="+", help="Patrones adicionales a excluir")
+    parser.add_argument(
+        "project_path", nargs="?", default=".", help="Ruta al proyecto a analizar"
+    )
+    parser.add_argument(
+        "--workers",
+        "-w",
+        type=int,
+        help="Número de workers paralelos (default: CPU count + 4)",
+    )
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Deshabilitar cache de análisis incremental",
+    )
+    parser.add_argument(
+        "--timeout",
+        "-t",
+        type=int,
+        default=300,
+        help="Timeout total en segundos (default: 300)",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Mostrar información detallada (DEBUG)",
+    )
+    parser.add_argument("--exclude", nargs="+", help="Patrones adicionales a excluir")
 
     args = parser.parse_args()
 
@@ -2202,12 +2539,14 @@ Ejemplos:
         logger.error(f"❌ Error: '{args.project_path}' no es un directorio")
         sys.exit(1)
 
-    logger.info(f"🚀 Iniciando análisis optimizado...")
+    logger.info("🚀 Iniciando análisis optimizado...")
     logger.info(f"📁 Proyecto: {os.path.basename(os.path.abspath(args.project_path))}")
 
     # Configurar timeout global
-    signal.signal(signal.SIGALRM, lambda signum, frame:
-                  print("\n⏰ Timeout global alcanzado") or sys.exit(1))
+    signal.signal(
+        signal.SIGALRM,
+        lambda signum, frame: print("\n⏰ Timeout global alcanzado") or sys.exit(1),
+    )
     signal.alarm(args.timeout)
 
     try:
@@ -2215,7 +2554,7 @@ Ejemplos:
         analyzer = ProjectAnalyzer(
             project_path=args.project_path,
             max_workers=args.workers,
-            exclude_patterns=args.exclude
+            exclude_patterns=args.exclude,
         )
 
         # Deshabilitar cache si se solicita
@@ -2228,7 +2567,7 @@ Ejemplos:
         start_time = time.time()
         results = analyzer.analyze()
         total_time = time.time() - start_time
-        
+
         # Desactivar timeout
         signal.alarm(0)
 
@@ -2238,21 +2577,28 @@ Ejemplos:
             logger.info(f"🎉 ANÁLISIS COMPLETADO EN {total_time:.1f} SEGUNDOS")
             logger.info(f"{'='*60}")
 
-            metrics = results.get('metrics', {})
-            complexity = results.get('complexity', {})
+            metrics = results.get("metrics", {})
+            results.get("complexity", {})
 
-            print(f"   💡 Optimizaciones: {len(results.get('optimizations', []))} sugerencias")
+            print(
+                f"   💡 Optimizaciones: {len(results.get('optimizations', []))} sugerencias"
+            )
             print(f"   🏆 Calidad: {metrics.get('quality_score', 0):.1f}/100")
 
             # Mostrar problemas críticos si existen
-            high_security = [s for s in results.get('security', [])
-                           if s.get('max_severity') == 'alta']
+            high_security = [
+                s
+                for s in results.get("security", [])
+                if s.get("max_severity") == "alta"
+            ]
             if high_security:
-                print(f"\n🚨 PROBLEMAS CRÍTICOS DETECTADOS:")
+                print("\n🚨 PROBLEMAS CRÍTICOS DETECTADOS:")
                 for issue in high_security[:3]:
                     print(f"   - {issue['module']}: {issue['total_issues']} problemas")
 
-            print(f"\n💾 Los resultados han sido guardados en el directorio del proyecto.")
+            print(
+                "\n💾 Los resultados han sido guardados en el directorio del proyecto."
+            )
 
         else:
             print("\n❌ No se pudieron obtener resultados del análisis")
@@ -2266,6 +2612,7 @@ Ejemplos:
         if args.verbose:
             traceback.print_exc()
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

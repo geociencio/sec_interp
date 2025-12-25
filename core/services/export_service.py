@@ -1,14 +1,19 @@
+from __future__ import annotations
+
+
 """Export service for SecInterp.
 
-Orchestrates all export operations, including data (SHP, CSV) and 
+Orchestrates all export operations, including data (SHP, CSV) and
 preview (PNG, PDF, SVG) exports.
 """
+
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from qgis.core import QgsMapSettings, QgsRectangle, QgsProject
+from qgis.core import QgsMapSettings, QgsProject, QgsRectangle
 
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -18,7 +23,7 @@ class ExportService:
 
     def __init__(self, controller: Optional[Any] = None):
         """Initialize the export service.
-        
+
         Args:
             controller: Optional reference to ProfileController for data access.
         """
@@ -27,14 +32,14 @@ class ExportService:
     def export_data(
         self,
         output_folder: Path,
-        values: Dict[str, Any],
-        profile_data: List[Tuple],
-        geol_data: Optional[List[Any]],
-        struct_data: Optional[List[Any]],
-        drillhole_data: Optional[List[Any]] = None,
-    ) -> List[str]:
+        values: dict[str, Any],
+        profile_data: list[tuple],
+        geol_data: Optional[list[Any]],
+        struct_data: Optional[list[Any]],
+        drillhole_data: Optional[list[Any]] = None,
+    ) -> list[str]:
         """Export generated data to CSV and Shapefile formats.
-        
+
         Args:
             output_folder: Destination folder.
             values: Input values containing layers and params.
@@ -42,7 +47,7 @@ class ExportService:
             geol_data: Geological data.
             struct_data: Structural data.
             drillhole_data: Drillhole data.
-            
+
         Returns:
             List[str]: Log messages of saved files.
         """
@@ -50,26 +55,26 @@ class ExportService:
         from sec_interp.exporters import (
             AxesShpExporter,
             CSVExporter,
+            DrillholeIntervalShpExporter,
+            DrillholeTraceShpExporter,
             GeologyShpExporter,
             ProfileLineShpExporter,
             StructureShpExporter,
-            DrillholeTraceShpExporter,
-            DrillholeIntervalShpExporter,
         )
 
         result_msg = ["✓ Saving files..."]
         csv_exporter = CSVExporter({})
-        
+
         # Ensure we have data to work with
         if not profile_data:
-             logger.warning("No profile data to export")
-             return ["⚠ No profile data to export"]
+            logger.warning("No profile data to export")
+            return ["⚠ No profile data to export"]
 
         line_layer = values.get("line_layer_obj")
         if not line_layer:
             logger.error("Line layer not found in values")
             return ["⚠ Error: Line layer not found"]
-            
+
         line_crs = line_layer.crs()
 
         # Export Topography
@@ -93,13 +98,13 @@ class ExportService:
             for s in geol_data:
                 for p in s.points:
                     geol_rows.append((p[0], p[1], s.unit_name))
-            
+
             csv_exporter.export(
                 output_folder / "geol_profile.csv",
                 {"headers": ["dist", "elev", "geology"], "rows": geol_rows},
             )
             result_msg.append("  - geol_profile.csv")
-            
+
             GeologyShpExporter({}).export(
                 output_folder / "geol_profile.shp",
                 {
@@ -114,19 +119,19 @@ class ExportService:
             logger.info("✓ Saving structural profile...")
             # CSV needs simple rows
             struct_rows = [(s.distance, s.apparent_dip) for s in struct_data]
-            
+
             csv_exporter.export(
                 output_folder / "structural_profile.csv",
                 {"headers": ["dist", "apparent_dip"], "rows": struct_rows},
             )
             result_msg.append("  - structural_profile.csv")
-            
+
             # Get raster resolution from values or layer
             raster_res = 1.0
             raster_layer = values.get("raster_layer_obj")
             if raster_layer:
                 raster_res = raster_layer.rasterUnitsPerPixelX()
-            
+
             StructureShpExporter({}).export(
                 output_folder / "structural_profile.shp",
                 {
@@ -139,18 +144,18 @@ class ExportService:
             result_msg.append("  - structural_profile.shp")
 
         # Export Drillholes
-        if drillhole_data: 
+        if drillhole_data:
             logger.info("✓ Saving drillhole data...")
-            
+
             DrillholeTraceShpExporter({}).export(
                 output_folder / "drillhole_traces.shp",
-                {"drillhole_data": drillhole_data, "crs": line_crs}
+                {"drillhole_data": drillhole_data, "crs": line_crs},
             )
             result_msg.append("  - drillhole_traces.shp")
-            
+
             DrillholeIntervalShpExporter({}).export(
                 output_folder / "drillhole_intervals.shp",
-                {"drillhole_data": drillhole_data, "crs": line_crs}
+                {"drillhole_data": drillhole_data, "crs": line_crs},
             )
             result_msg.append("  - drillhole_intervals.shp")
 
@@ -166,20 +171,20 @@ class ExportService:
         return result_msg
 
     def get_map_settings(
-        self, 
-        layers: List[Any], 
-        extent: QgsRectangle, 
-        size: Optional[Any], 
-        background_color: Any
+        self,
+        layers: list[Any],
+        extent: QgsRectangle,
+        size: Any | None,
+        background_color: Any,
     ) -> QgsMapSettings:
         """Create and configure QgsMapSettings for export.
-        
+
         Args:
             layers: List of layers to include.
             extent: Map extent to export.
             size: Optional output size (QSize).
             background_color: Background color (QColor).
-            
+
         Returns:
             Configured QgsMapSettings instance.
         """

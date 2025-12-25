@@ -5,6 +5,8 @@ elevation differences, and slopes in the profile preview window.
 It separates UI event handling from spatial snapping logic.
 """
 
+from __future__ import annotations
+
 import math
 import time
 from typing import Optional
@@ -96,7 +98,7 @@ class ProfileSnapper:
 
     def _get_locator(
         self, layer: QgsVectorLayer, crs, context
-    ) -> Optional[QgsPointLocator]:  # noqa: UP045
+    ) -> Optional[QgsPointLocator]:
         """Retrieves or creates a locator for a layer."""
         if layer.id() not in self._locators:
             try:

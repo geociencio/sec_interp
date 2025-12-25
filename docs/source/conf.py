@@ -1,24 +1,25 @@
+from datetime import datetime
 import os
 import sys
-from datetime import datetime
+
 
 # Path setup: add parent of project root to sys.path
 # This allows Sphinx to find the 'sec_interp' package correctly
-sys.path.insert(0, os.path.abspath('../../..'))
+sys.path.insert(0, os.path.abspath("../../.."))
 
 # Project information
-project = 'SecInterp'
-copyright = f'{datetime.now().year}, Juan M Bernales'
-author = 'Juan M Bernales'
-release = '2.2.0'
+project = "SecInterp"
+copyright = f"{datetime.now().year}, Juan M Bernales"
+author = "Juan M Bernales"
+release = "2.2.0"
 
 # General configuration
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.githubpages',
-    'myst_parser',
-    'sphinxcontrib.mermaid',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.githubpages",
+    "myst_parser",
+    "sphinxcontrib.mermaid",
 ]
 
 # MyST Parser configuration
@@ -53,13 +54,13 @@ napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
 
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # HTML output options
-html_theme = 'alabaster'
-html_static_path = ['_static']
+html_theme = "alabaster"
+html_static_path = ["_static"]
 
 # Autodoc options
-autodoc_member_order = 'bysource'
-autoclass_content = 'both'
+autodoc_member_order = "bysource"
+autoclass_content = "both"

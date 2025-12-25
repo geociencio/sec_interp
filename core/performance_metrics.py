@@ -4,6 +4,8 @@ This module provides tools for tracking performance and resource usage
 across the plugin's operations.
 """
 
+from __future__ import annotations
+
 from contextlib import contextmanager
 import time
 from typing import Any, Optional
@@ -77,8 +79,8 @@ class PerformanceTimer:
     def __init__(
         self,
         operation_name: str,
-        collector: MetricsCollector | None = None,
-        logger_func: Any | None = None,
+        collector: Optional[MetricsCollector] = None,
+        logger_func: Optional[Any] = None,
     ):
         """Initialize timer.
 
@@ -139,35 +141,35 @@ def format_duration(seconds: float) -> str:
 
 # --- New Implementation ---
 
-import tracemalloc
-import logging
 from functools import wraps
+import logging
+import tracemalloc
 
 
 class PerformanceMonitor:
     """Performance monitoring using only Python standard library."""
-    
-    def __init__(self, log_file='performance.log'):
+
+    def __init__(self, log_file="performance.log"):
         self.logger = self._setup_logger(log_file)
         self.metrics = {}
-    
+
     def _setup_logger(self, log_file):
         """Setup performance logger."""
-        logger = logging.getLogger('performance')
+        logger = logging.getLogger("performance")
         logger.setLevel(logging.INFO)
-        
+
         # Check if handler already exists to avoid duplicates
         if not logger.handlers:
             # Create file handler
             handler = logging.FileHandler(log_file)
             formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
             )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
-        
+
         return logger
-    
+
     @contextmanager
     def measure_operation(self, operation_name, **metadata):
         """Context manager to measure operation performance."""
@@ -175,86 +177,86 @@ class PerformanceMonitor:
         start_time = time.perf_counter()
         start_memory = self._get_memory_usage()
         tracemalloc.start()
-        
+
         try:
             yield
         finally:
             # Stop measuring
             end_time = time.perf_counter()
             end_memory = self._get_memory_usage()
-            
+
             try:
                 current, peak = tracemalloc.get_traced_memory()
             except RuntimeError:
                 # Tracemalloc might not be started if nested calls improperly handle it
-                current, peak = 0, 0
-                
+                _current, peak = 0, 0
+
             tracemalloc.stop()
-            
+
             # Calculate metrics
             duration = end_time - start_time
             memory_diff = end_memory - start_memory
-            
+
             # Log metrics
             log_data = {
-                'operation': operation_name,
-                'duration_seconds': round(duration, 4),
-                'memory_mb': round(memory_diff, 2),
-                'memory_peak_mb': round(peak / 1024 / 1024, 2),
-                'timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
-                **metadata
+                "operation": operation_name,
+                "duration_seconds": round(duration, 4),
+                "memory_mb": round(memory_diff, 2),
+                "memory_peak_mb": round(peak / 1024 / 1024, 2),
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                **metadata,
             }
-            
+
             self.logger.info(f"Performance: {log_data}")
-            
+
             # Store for analysis
             if operation_name not in self.metrics:
                 self.metrics[operation_name] = []
             self.metrics[operation_name].append(log_data)
-    
+
     def _get_memory_usage(self):
         """Get current memory usage in MB."""
         try:
             import psutil
+
             process = psutil.Process()
             return process.memory_info().rss / 1024 / 1024
         except ImportError:
             # Fallback without psutil
             return 0.0
-    
+
     def get_operation_stats(self, operation_name):
         """Get statistics for an operation."""
         if operation_name not in self.metrics:
             return None
-        
+
         operation_metrics = self.metrics[operation_name]
-        
-        durations = [m['duration_seconds'] for m in operation_metrics]
-        memory_usages = [m['memory_mb'] for m in operation_metrics]
-        
+
+        durations = [m["duration_seconds"] for m in operation_metrics]
+        memory_usages = [m["memory_mb"] for m in operation_metrics]
+
         return {
-            'count': len(operation_metrics),
-            'avg_duration': sum(durations) / len(durations),
-            'min_duration': min(durations),
-            'max_duration': max(durations),
-            'avg_memory': sum(memory_usages) / len(memory_usages),
-            'min_memory': min(memory_usages),
-            'max_memory': max(memory_usages)
+            "count": len(operation_metrics),
+            "avg_duration": sum(durations) / len(durations),
+            "min_duration": min(durations),
+            "max_duration": max(durations),
+            "avg_memory": sum(memory_usages) / len(memory_usages),
+            "min_memory": min(memory_usages),
+            "max_memory": max(memory_usages),
         }
+
 
 def performance_monitor(func):
     """Decorator to automatically monitor function performance."""
     monitor = PerformanceMonitor()
-    
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         operation_name = f"{func.__module__}.{func.__name__}"
-        
+
         with monitor.measure_operation(
-            operation_name,
-            args_count=len(args),
-            kwargs_keys=list(kwargs.keys())
+            operation_name, args_count=len(args), kwargs_keys=list(kwargs.keys())
         ):
             return func(*args, **kwargs)
-    
+
     return wrapper

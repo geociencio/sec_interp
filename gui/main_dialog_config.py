@@ -1,10 +1,6 @@
-"""Configuration and constants for SecInterp main dialog.
+from __future__ import annotations
 
-This module centralizes all configuration values, default settings,
-and magic numbers used throughout the dialog.
-"""
-
-from typing import Any
+from typing import Any, ClassVar, Optional
 
 from qgis.PyQt.QtGui import QColor
 
@@ -36,9 +32,9 @@ class DialogDefaults:
     DEFAULT_BAND = 1
 
     # File extensions
-    SUPPORTED_IMAGE_FORMATS = [".png", ".jpg", ".jpeg"]
-    SUPPORTED_VECTOR_FORMATS = [".shp"]
-    SUPPORTED_DOCUMENT_FORMATS = [".pdf", ".svg"]
+    SUPPORTED_IMAGE_FORMATS: ClassVar[list[str]] = [".png", ".jpg", ".jpeg"]
+    SUPPORTED_VECTOR_FORMATS: ClassVar[list[str]] = [".shp"]
+    SUPPORTED_DOCUMENT_FORMATS: ClassVar[list[str]] = [".pdf", ".svg"]
 
 
 class DialogConfig:

@@ -5,6 +5,10 @@ Provides specialized exporters for different file formats.
 
 from .base_exporter import BaseExporter
 from .csv_exporter import CSVExporter
+from .drillhole_exporters import (
+    DrillholeIntervalShpExporter,
+    DrillholeTraceShpExporter,
+)
 from .image_exporter import ImageExporter
 from .pdf_exporter import PDFExporter
 from .profile_exporters import (
@@ -12,10 +16,6 @@ from .profile_exporters import (
     GeologyShpExporter,
     ProfileLineShpExporter,
     StructureShpExporter,
-)
-from .drillhole_exporters import (
-    DrillholeTraceShpExporter,
-    DrillholeIntervalShpExporter,
 )
 from .shp_exporter import ShapefileExporter
 from .svg_exporter import SVGExporter

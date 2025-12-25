@@ -4,7 +4,9 @@ General purpose UI helpers and user messaging.
 """
 
 from qgis.PyQt.QtWidgets import QMessageBox
+
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 

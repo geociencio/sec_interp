@@ -1,15 +1,18 @@
 """Legend rendering logic for SecInterp preview.
 
-Handles the drawing of the legend on a QPainter, including topography, 
+Handles the drawing of the legend on a QPainter, including topography,
 structures, and geological units.
 """
 
-from typing import Dict, Optional
+from __future__ import annotations
+
+from typing import Optional
 
 from qgis.PyQt.QtCore import QRectF, Qt
 from qgis.PyQt.QtGui import QColor, QFont, QPainter, QPen
 
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -21,117 +24,121 @@ class PreviewLegendRenderer:
     def draw_legend(
         painter: QPainter,
         rect: QRectF,
-        active_units: Dict[str, QColor],
+        active_units: dict[str, QColor],
         has_topography: bool = False,
         has_structures: bool = False,
     ):
-        """Draw legend on the given painter within the rect.
-
-        Args:
-            painter: QPainter instance
-            rect: QRectF defining the drawing area
-            active_units: Dictionary of unit names and their colors
-            has_topography: Whether topography is present in the preview
-            has_structures: Whether structures are present in the preview
-        """
-        # Check if we have anything to show
+        """Draw legend on the given painter within the rect."""
         if not active_units and not has_topography and not has_structures:
             return
 
-        # Legend configuration
-        padding = 6
-        item_height = 16
-        symbol_size = 10
-        line_width = 2
-        font_size = 8
+        # Configuration
+        config = {
+            "padding": 6,
+            "item_height": 16,
+            "symbol_size": 10,
+            "line_width": 2,
+            "margin": 20,
+        }
 
         painter.save()
-        font = QFont("Arial", font_size)
-        painter.setFont(font)
+        painter.setFont(QFont("Arial", 8))
 
-        # Calculate legend size
-        fm = painter.fontMetrics()
-        max_width = 0
+        legend_size, max_text_width = PreviewLegendRenderer._calculate_legend_size(
+            painter, active_units, has_topography, has_structures, config
+        )
 
-        if has_topography:
-            max_width = max(max_width, fm.boundingRect("Topography").width())
-        if has_structures:
-            max_width = max(max_width, fm.boundingRect("Structures").width())
-        for name in active_units:
-            width = fm.boundingRect(name).width()
-            max_width = max(max_width, width)
+        # Position: Top Right
+        x = rect.width() - legend_size.width() - config["margin"]
+        y = config["margin"]
 
-        total_items = len(active_units)
-        if has_topography:
-            total_items += 1
-        if has_structures:
-            total_items += 1
-
-        legend_width = max_width + symbol_size + padding * 3
-        legend_height = total_items * item_height + padding * 2
-
-        # Position: Top Right with margin
-        margin = 20
-        x = rect.width() - legend_width - margin
-        y = margin
-
-        # Draw background
-        bg_color = QColor(255, 255, 255, 200)
-        painter.setBrush(bg_color)
-        painter.setPen(Qt.NoPen)
-        painter.drawRect(QRectF(x, y, legend_width, legend_height))
-
-        # Draw border
-        painter.setBrush(Qt.NoBrush)
-        painter.setPen(QColor(100, 100, 100))
-        painter.drawRect(QRectF(x, y, legend_width, legend_height))
+        PreviewLegendRenderer._draw_legend_background(
+            painter, x, y, legend_size.width(), legend_size.height()
+        )
 
         # Draw items
-        current_y = y + padding
-
-        # Draw topography
+        current_y = y + config["padding"]
         if has_topography:
-            painter.setPen(QPen(QColor(0, 102, 204), line_width))
-            painter.drawLine(
-                int(x + padding),
-                int(current_y + item_height / 2),
-                int(x + padding + symbol_size),
-                int(current_y + item_height / 2),
+            PreviewLegendRenderer._draw_line_item(
+                painter, x, current_y, "Topography", QColor(0, 102, 204),
+                max_text_width, config
             )
-            painter.setPen(QColor(0, 0, 0))
-            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
-            painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, "Topography")
-            current_y += item_height
+            current_y += config["item_height"]
 
-        # Draw structures
         if has_structures:
-            painter.setPen(QPen(QColor(204, 0, 0), line_width))
-            painter.drawLine(
-                int(x + padding),
-                int(current_y + item_height / 2),
-                int(x + padding + symbol_size),
-                int(current_y + item_height / 2),
+            PreviewLegendRenderer._draw_line_item(
+                painter, x, current_y, "Structures", QColor(204, 0, 0),
+                max_text_width, config
             )
-            painter.setPen(QColor(0, 0, 0))
-            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
-            painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, "Structures")
-            current_y += item_height
+            current_y += config["item_height"]
 
-        # Draw geological units
-        for name, color in active_units.items():
+        PreviewLegendRenderer._draw_geology_items(
+            painter, x, current_y, active_units, max_text_width, config
+        )
+
+        painter.restore()
+
+    @staticmethod
+    def _calculate_legend_size(painter, active_units, has_topo, has_struct, config):
+        """Calculate dimensions of the legend box."""
+        fm = painter.fontMetrics()
+        max_text_width = 0
+
+        items = []
+        if has_topo:
+            items.append("Topography")
+        if has_struct:
+            items.append("Structures")
+        items.extend(active_units.keys())
+
+        for item in items:
+            max_text_width = max(max_text_width, fm.boundingRect(item).width())
+
+        width = max_text_width + config["symbol_size"] + config["padding"] * 3
+        height = len(items) * config["item_height"] + config["padding"] * 2
+        return QRectF(0, 0, width, height), max_text_width
+
+    @staticmethod
+    def _draw_legend_background(painter, x, y, width, height):
+        """Draw the legend box background and border."""
+        rect = QRectF(x, y, width, height)
+        painter.setBrush(QColor(255, 255, 255, 200))
+        painter.setPen(Qt.NoPen)
+        painter.drawRect(rect)
+
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QColor(100, 100, 100))
+        painter.drawRect(rect)
+
+    @staticmethod
+    def _draw_line_item(painter, x, y, label, color, max_width, config):
+        """Draw a legend item with a line symbol."""
+        p = config["padding"]
+        ih = config["item_height"]
+        ss = config["symbol_size"]
+
+        painter.setPen(QPen(color, config["line_width"]))
+        painter.drawLine(int(x + p), int(y + ih / 2), int(x + p + ss), int(y + ih / 2))
+
+        painter.setPen(QColor(0, 0, 0))
+        text_rect = QRectF(x + p * 2 + ss, y, max_width, ih)
+        painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, label)
+
+    @staticmethod
+    def _draw_geology_items(painter, x, y, units, max_width, config):
+        """Draw geological unit legend items."""
+        p = config["padding"]
+        ih = config["item_height"]
+        ss = config["symbol_size"]
+
+        for name, color in units.items():
             painter.setBrush(color)
             painter.setPen(Qt.NoPen)
-            symbol_rect = QRectF(
-                x + padding,
-                current_y + (item_height - symbol_size) / 2,
-                symbol_size,
-                symbol_size,
-            )
-            painter.drawRect(symbol_rect)
+            painter.drawRect(QRectF(x + p, y + (ih - ss) / 2, ss, ss))
 
             painter.setPen(QColor(0, 0, 0))
-            text_rect = QRectF(x + padding * 2 + symbol_size, current_y, max_width, item_height)
+            text_rect = QRectF(x + p * 2 + ss, y, max_width, ih)
             painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, name)
-            current_y += item_height
+            y += ih
 
         painter.restore()

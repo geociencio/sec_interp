@@ -4,6 +4,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from sec_interp.core.config import ConfigService
 
+
 class TestConfigService:
     """Tests for ConfigService."""
 
@@ -20,7 +21,7 @@ class TestConfigService:
         service, mock_settings = config_service
         # Side effect: return the second argument of value() if key not found
         mock_settings.value.side_effect = lambda k, d: d
-        
+
         result = service.get("scale")
         assert result == 500.0
         mock_settings.value.assert_called_with("/SecInterp/scale", 500.0)
@@ -29,7 +30,7 @@ class TestConfigService:
         """Test getting a value with an explicit default."""
         service, mock_settings = config_service
         mock_settings.value.side_effect = lambda k, d: d
-        
+
         result = service.get("nonexistent", default="foo")
         assert result == "foo"
         mock_settings.value.assert_called_with("/SecInterp/nonexistent", "foo")
@@ -37,14 +38,14 @@ class TestConfigService:
     def test_set_value(self, config_service):
         """Test setting a configuration value."""
         service, mock_settings = config_service
-        
+
         service.set("scale", 200.0)
         mock_settings.setValue.assert_called_with("/SecInterp/scale", 200.0)
 
     def test_reset_defaults(self, config_service):
         """Test resetting to defaults."""
         service, mock_settings = config_service
-        
+
         service.reset_defaults()
         # Verify at least some defaults are set
         mock_settings.setValue.assert_any_call("/SecInterp/scale", 500.0)

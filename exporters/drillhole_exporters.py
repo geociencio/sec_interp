@@ -28,7 +28,7 @@ class DrillholeTraceShpExporter(BaseExporter):
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
         """Export drillhole traces to a Shapefile.
-        
+
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
@@ -51,7 +51,7 @@ class DrillholeTraceShpExporter(BaseExporter):
                 # traces is list of (dist, elev)
                 points = [QgsPointXY(d, e) for d, e in traces]
                 geom = QgsGeometry.fromPolylineXY(points)
-                
+
                 if not geom or geom.isNull():
                     continue
 
@@ -75,7 +75,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
         """Export drillhole intervals to a Shapefile.
-        
+
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
@@ -97,29 +97,29 @@ class DrillholeIntervalShpExporter(BaseExporter):
             for hole_id, _, segments in drillhole_data:
                 if not segments:
                     continue
-                
+
                 for segment in segments:
                     # segment is GeologySegment
                     if not segment.points or len(segment.points) < 2:
                         continue
-                        
+
                     points = [QgsPointXY(d, e) for d, e in segment.points]
                     geom = QgsGeometry.fromPolylineXY(points)
-                    
+
                     if not geom or geom.isNull():
                         continue
 
                     feat = QgsFeature(fields)
                     feat.setGeometry(geom)
                     feat.setAttribute("hole_id", hole_id)
-                    
+
                     # Get attributes from segment
                     # We packed them as {"unit": lith, "from": fd, "to": td}
                     attrs = segment.attributes
                     feat.setAttribute("from_depth", attrs.get("from", 0.0))
                     feat.setAttribute("to_depth", attrs.get("to", 0.0))
                     feat.setAttribute("unit", segment.unit_name)
-                    
+
                     writer.addFeature(feat)
 
             del writer

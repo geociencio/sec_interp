@@ -3,12 +3,15 @@
 Handles simplification and sampling of geometric data to improve rendering performance.
 """
 
+from __future__ import annotations
+
 import math
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from qgis.core import QgsGeometry, QgsPointXY
 
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -18,10 +21,10 @@ class PreviewOptimizer:
 
     @staticmethod
     def decimate(
-        data: List[Tuple[float, float]],
+        data: list[tuple[float, float]],
         tolerance: Optional[float] = None,
         max_points: int = 1000,
-    ) -> List[Tuple[float, float]]:
+    ) -> list[tuple[float, float]]:
         """Decimate line data using Douglas-Peucker algorithm.
 
         Args:
@@ -61,16 +64,17 @@ class PreviewOptimizer:
             result = [(p.x(), p.y()) for p in result_points]
 
             logger.debug(
-                f"LOD Decimation: {len(data)} -> {len(result)} points (tol={calculated_tolerance:.2f})"
+                f"LOD Decimation: {len(data)} -> {len(result)} points "
+                f"(tol={calculated_tolerance:.2f})"
             )
-            return result
-
         except Exception as e:
             logger.warning(f"LOD decimation failed: {e}")
             return data
+        else:
+            return result
 
     @staticmethod
-    def calculate_curvature(data: List[Tuple[float, float]]) -> List[float]:
+    def calculate_curvature(data: list[tuple[float, float]]) -> list[float]:
         """Calculate a simple curvature metric for each point in a line.
 
         This approximates curvature by the angle deviation between successive segments.
@@ -120,11 +124,11 @@ class PreviewOptimizer:
     @classmethod
     def adaptive_sample(
         cls,
-        data: List[Tuple[float, float]],
+        data: list[tuple[float, float]],
         min_tolerance: float = 0.1,
         max_tolerance: float = 10.0,
         max_points: int = 1000,
-    ) -> List[Tuple[float, float]]:
+    ) -> list[tuple[float, float]]:
         """Adaptively sample data based on local curvature.
 
         Args:
@@ -156,7 +160,8 @@ class PreviewOptimizer:
         tolerance = max(min_tolerance, min(max_tolerance, tolerance))
 
         logger.debug(
-            f"Adaptive sampling: Avg curvature={avg_curvature:.2f}, calculated tolerance={tolerance:.2f}"
+            f"Adaptive sampling: Avg curvature={avg_curvature:.2f}, "
+            f"calculated tolerance={tolerance:.2f}"
         )
 
         # Now use the calculated tolerance for decimation

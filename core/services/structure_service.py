@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # /***************************************************************************
 #  SecInterp - StructureService
 #                                  A QGIS plugin
@@ -7,7 +9,7 @@
 #         copyright            : (C) 2025 by Juan M Bernales
 #         email                : juanbernales@gmail.com
 #  ***************************************************************************/
-# 
+#
 # /***************************************************************************
 #  *                                                                         *
 #  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,10 +18,11 @@
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
+from collections.abc import Iterator
+from typing import List, Optional
 
 from qgis.core import QgsRaster, QgsRasterLayer, QgsVectorLayer
 
-from typing import List, Optional, Iterator
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
 from sec_interp.core.types import StructureData, StructureMeasurement
@@ -105,24 +108,31 @@ class StructureService:
 
         for f in filtered_features:
             measurement = self._process_single_structure(
-                f, line_geom, line_start, da, raster_lyr, band_number, 
-                line_az, dip_field, strike_field
+                f,
+                line_geom,
+                line_start,
+                da,
+                raster_lyr,
+                band_number,
+                line_az,
+                dip_field,
+                strike_field,
             )
             if measurement:
                 projected_structs.append(measurement)
 
         # Sort by distance
         projected_structs.sort(key=lambda x: x.distance)
-        
+
         logger.info(f"Processed {len(projected_structs)} structural measurements")
         return projected_structs
 
     def _create_buffer_zone(
-        self, 
-        line_geom: "QgsGeometry", 
-        crs: "QgsCoordinateReferenceSystem", 
-        buffer_m: float
-    ) -> "QgsGeometry":
+        self,
+        line_geom: QgsGeometry,
+        crs: QgsCoordinateReferenceSystem,
+        buffer_m: float,
+    ) -> QgsGeometry:
         """Create the buffer geometry around the section line.
 
         Args:
@@ -137,19 +147,17 @@ class StructureService:
             ValueError: If the buffer zone cannot be created.
         """
         try:
-            return scu.create_buffer_geometry(
-                line_geom, crs, buffer_m, segments=25
-            )
+            return scu.create_buffer_geometry(line_geom, crs, buffer_m, segments=25)
         except (ValueError, RuntimeError) as e:
             logger.exception("Buffer creation failed")
             raise ValueError("Cannot create buffer zone") from e
 
     def _filter_structures(
-        self, 
-        struct_lyr: QgsVectorLayer, 
-        buffer_geom: "QgsGeometry", 
-        target_crs: "QgsCoordinateReferenceSystem"
-    ) -> Iterator["QgsFeature"]:
+        self,
+        struct_lyr: QgsVectorLayer,
+        buffer_geom: QgsGeometry,
+        target_crs: QgsCoordinateReferenceSystem,
+    ) -> Iterator[QgsFeature]:
         """Select structure features within the buffer.
 
         Args:
@@ -164,24 +172,22 @@ class StructureService:
             ValueError: If the filtering operation fails.
         """
         try:
-            return scu.filter_features_by_buffer(
-                struct_lyr, buffer_geom, target_crs
-            )
+            return scu.filter_features_by_buffer(struct_lyr, buffer_geom, target_crs)
         except (ValueError, RuntimeError) as e:
             logger.exception("Spatial filtering failed")
             raise ValueError("Cannot filter structures by buffer") from e
 
     def _process_single_structure(
         self,
-        feature: "QgsFeature",
-        line_geom: "QgsGeometry",
-        line_start: "QgsPointXY",
-        da: "QgsDistanceArea",
+        feature: QgsFeature,
+        line_geom: QgsGeometry,
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
         raster_lyr: QgsRasterLayer,
         band_number: int,
         line_az: float,
         dip_field: str,
-        strike_field: str
+        strike_field: str,
     ) -> Optional[StructureMeasurement]:
         """Process a single structure feature.
 
@@ -212,7 +218,7 @@ class StructureService:
 
         # Interpolate point on line at that distance
         proj_pt = line_geom.interpolate(proj_dist).asPoint()
-        
+
         # Measure geodesic distance from start
         # Using measureLine ensures correct units (meters) even if CRS is geographic
         dist = da.measureLine(line_start, proj_pt)
@@ -237,13 +243,13 @@ class StructureService:
 
         if strike is None or dip_angle is None:
             return None
-        
+
         # Validate ranges
         if not (0 <= strike <= 360) or not (0 <= dip_angle <= 90):
             return None
 
         app_dip = scu.calculate_apparent_dip(strike, dip_angle, line_az)
-        
+
         # Create object
         return StructureMeasurement(
             distance=round(dist, 1),
@@ -251,5 +257,7 @@ class StructureService:
             apparent_dip=round(app_dip, 1),
             original_dip=dip_angle,
             original_strike=strike,
-            attributes=dict(zip(feature.fields().names(), feature.attributes()))
+            attributes=dict(
+                zip(feature.fields().names(), feature.attributes(), strict=False)
+            ),
         )

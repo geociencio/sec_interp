@@ -65,8 +65,6 @@ class TestCSVExporter:
 class TestBaseExporter:
     """Tests for base exporter functionality."""
 
-
-
     def test_get_setting_with_default(self):
         """Test getting setting with default value."""
         exporter = CSVExporter({"dpi": 300})

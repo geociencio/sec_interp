@@ -1,4 +1,5 @@
 from qgis.core import QgsPalLayerSettings
+
 print("Attributes containing 'Quad':")
 found = False
 for x in dir(QgsPalLayerSettings):

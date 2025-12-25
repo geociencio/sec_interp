@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""
-generate_ai_templates.py - Genera automáticamente todos los templates personalizados
+"""generate_ai_templates.py - Genera automáticamente todos los templates personalizados
 para ai_workflow.py, compatibles con:
 - Gemini 3 Pro
 - Claude Sonnet 4.5
 - Qwen CLI
-- GPT OSS 120B
+- GPT OSS 120B.
 """
 
 import os
 from pathlib import Path
+
 
 # Directorio de salida
 TEMPLATES_DIR = Path(".ai-context/templates")
@@ -18,7 +18,7 @@ TEMPLATES_DIR.mkdir(parents=True, exist_ok=True)
 # Definición de templates
 TEMPLATES = {
     # ─── GEMINI 3 PRO ───────────────────────────────────────────────
-    "gemini-3-pro_refactor.yaml": '''
+    "gemini-3-pro_refactor.yaml": """
 system: |
   Eres un ingeniero senior de Google con 10+ años en Python, arquitectura limpia y sistemas geoespaciales (QGIS).
   Tu rol es asistir a desarrolladores con soluciones técnicamente sólidas, seguras, mantenibles y eficientes.
@@ -40,9 +40,8 @@ user: |
   - Si identificas riesgo de seguridad o de rendimiento, menciónalo explícitamente.
   - Si la tarea involucra refactorización, muestra **código antes / después** y explica el 'por qué'.
   - Sé conciso, pero no omitas justificaciones técnicas importantes.
-'''.strip(),
-
-    "gemini-3-pro_feature.yaml": '''
+""".strip(),
+    "gemini-3-pro_feature.yaml": """
 system: |
   Eres un arquitecto de software de Google especializado en extensibilidad, compatibilidad y calidad de código en proyectos Python.
   Diseñas nuevas funcionalidades que encajan armónicamente en el código existente.
@@ -63,9 +62,8 @@ user: |
   - Sugiere tests unitarios mínimos si aplica.
   - Usa typing estricto y docstrings.
   - Si hay ambigüedad, haz 1–2 preguntas clarificadoras antes de proponer código.
-'''.strip(),
-
-    "gemini-3-pro_bugfix.yaml": '''
+""".strip(),
+    "gemini-3-pro_bugfix.yaml": """
 system: |
   Eres un ingeniero de confiabilidad (SRE) de Google con experiencia en depuración de sistemas Python complejos.
   Tu enfoque es identificar la raíz del problema, proponer una solución segura y prevenir regresiones.
@@ -86,9 +84,8 @@ user: |
   - Si el bug implica seguridad o pérdida de datos, señálalo con 🚨.
   - Usa type hints, manejo de excepciones y logging adecuado.
   - Sé claro, técnico y ejecutable.
-'''.strip(),
-
-    "gemini-3-pro_test-generation.yaml": '''
+""".strip(),
+    "gemini-3-pro_test-generation.yaml": """
 system: |
   Eres un experto en testing en Python (pytest, unittest) y TDD. Generas tests robustos, legibles y mantenibles.
   Tus tests cubren casos normales, límite y errores, y siguen buenas prácticas de aislamiento.
@@ -109,9 +106,8 @@ user: |
   - Asegura que los tests sean idempotentes y rápidos.
   - Añade docstring explicando qué prueba cada test.
   - Proporciona solo el código de los tests, sin explicación adicional.
-'''.strip(),
-
-    "gemini-3-pro_docs-update.yaml": '''
+""".strip(),
+    "gemini-3-pro_docs-update.yaml": """
 system: |
   Eres un technical writer especializado en documentación de código Python (Google Style, Sphinx).
   Creas documentación clara, precisa y útil para desarrolladores y usuarios finales.
@@ -132,10 +128,9 @@ user: |
   - Incluye ejemplos de uso reales.
   - Si hay parámetros, tipos, excepciones o retornos, documenta todos.
   - No añadas intros ni despedidas — solo el contenido útil.
-'''.strip(),
-
+""".strip(),
     # ─── CLAUDE SONNET 4.5 ──────────────────────────────────────────
-    "claude-sonnet-4.5_refactor.yaml": '''
+    "claude-sonnet-4.5_refactor.yaml": """
 system: |
   Eres Claude Sonnet 4.5, un asistente de desarrollo altamente confiable, especializado en Python, patrones de diseño y código legado.
   Tu prioridad es ayudar a los desarrolladores a tomar decisiones sostenibles, seguras y bien fundamentadas.
@@ -169,9 +164,8 @@ user: |
   <clarification_questions>
   - ¿...?
   </clarification_questions>
-'''.strip(),
-
-    "claude-sonnet-4.5_code-review.yaml": '''
+""".strip(),
+    "claude-sonnet-4.5_code-review.yaml": """
 system: |
   Eres un revisor de código senior con experiencia en Python, seguridad y mantenibilidad.
   Tu tarea es revisar código o cambios propuestos con enfoque en calidad, riesgos y mejores prácticas.
@@ -198,9 +192,8 @@ user: |
   - ...
   </suggestions>
   <approved>no/sí (con condiciones)</approved>
-'''.strip(),
-
-    "claude-sonnet-4.5_bugfix.yaml": '''
+""".strip(),
+    "claude-sonnet-4.5_bugfix.yaml": """
 system: |
   Eres Claude Sonnet 4.5, un asistente meticuloso en corrección de errores.
   Tu prioridad es entender el problema, evitar suposiciones incorrectas y proponer soluciones seguras.
@@ -233,9 +226,8 @@ user: |
   - ...
   </risks_if_not_fixed>
   <clarification_needed>no/sí</clarification_needed>
-'''.strip(),
-
-    "claude-sonnet-4.5_test-generation.yaml": '''
+""".strip(),
+    "claude-sonnet-4.5_test-generation.yaml": """
 system: |
   Eres un experto en calidad de software. Diseñas tests que son completos, legibles y fáciles de mantener.
 user: |
@@ -258,10 +250,9 @@ user: |
   - Casos cubiertos: ...
   </coverage_notes>
   </output_format>
-'''.strip(),
-
+""".strip(),
     # ─── QWEN CLI ───────────────────────────────────────────────────
-    "qwen-cli_general.yaml": '''
+    "qwen-cli_general.yaml": """
 system: |
   You are Qwen, an expert Python developer. Respond with extreme precision, minimal fluff, and maximum utility.
   Always include type hints and error handling. Assume the user will copy your output directly.
@@ -283,9 +274,8 @@ user: |
   - If the task is ambiguous, make one reasonable assumption and state it briefly in a comment.
   - Prioritize performance, readability, and maintainability.
   - Output only the solution—no introductions or conclusions.
-'''.strip(),
-
-    "qwen-cli_docs-update.yaml": '''
+""".strip(),
+    "qwen-cli_docs-update.yaml": """
 system: |
   You are Qwen, a precise technical writer for Python projects. Output only valid, ready-to-use documentation.
 user: |
@@ -302,10 +292,9 @@ user: |
   - Never add fluff like "Here is the documentation...".
   - Output only the documentation content.
   - Keep language technical but clear.
-'''.strip(),
-
+""".strip(),
     # ─── GPT OSS 120B ───────────────────────────────────────────────
-    "gpt-oss-120b_refactor.yaml": '''
+    "gpt-oss-120b_refactor.yaml": """
 system: |
   You are a pragmatic Python expert. Respond with minimal explanation and maximum utility.
   Assume the user will copy your code directly. Avoid markdown unless necessary.
@@ -324,8 +313,9 @@ user: |
   - Never ask questions—make best-effort assumptions.
   - Use modern Python (3.8+), type hints, and error handling.
   - Do not use XML, JSON, or extra formatting unless explicitly requested.
-'''.strip(),
+""".strip(),
 }
+
 
 def main():
     print("🤖 Generando templates personalizados para IA...")
@@ -340,6 +330,7 @@ def main():
             print(f"⚠️ Ya existe: {filename} (no sobrescrito)")
     print(f"\n🎉 {created} templates generados en {TEMPLATES_DIR}")
     print("💡 Usa `ai_workflow.py prompt --model <nombre>` para aprovecharlos.")
+
 
 if __name__ == "__main__":
     main()

@@ -6,29 +6,30 @@ separating data collection logic from the main dialog class.
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
 
 
 class DialogDataAggregator:
     """Aggregates data from all dialog pages.
-    
+
     This class centralizes the logic for collecting and combining
     data from different pages into the flat dictionary format
     expected by the rest of the application.
     """
 
-    def __init__(self, dialog: "SecInterpDialog"):
+    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
         """Initialize data aggregator.
-        
+
         Args:
-            dialog: The SecInterpDialog instance
+            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
         """
         self.dialog = dialog
 
     def get_all_values(self) -> dict:
         """Get all values from pages as flat dictionary.
-        
+
         Returns:
             Dictionary with all dialog values in legacy flat format
         """
@@ -43,7 +44,7 @@ class DialogDataAggregator:
 
     def _get_dem_values(self) -> dict:
         """Get DEM page values.
-        
+
         Returns:
             Dictionary with raster layer, band, scale, and vertical exaggeration
         """
@@ -57,7 +58,7 @@ class DialogDataAggregator:
 
     def _get_section_values(self) -> dict:
         """Get section page values.
-        
+
         Returns:
             Dictionary with cross-line layer and buffer distance
         """
@@ -69,7 +70,7 @@ class DialogDataAggregator:
 
     def _get_geology_values(self) -> dict:
         """Get geology page values.
-        
+
         Returns:
             Dictionary with outcrop layer and name field
         """
@@ -81,7 +82,7 @@ class DialogDataAggregator:
 
     def _get_structure_values(self) -> dict:
         """Get structure page values.
-        
+
         Returns:
             Dictionary with structural layer, dip/strike fields, and scale factor
         """
@@ -95,12 +96,12 @@ class DialogDataAggregator:
 
     def _get_drillhole_values(self) -> dict:
         """Get drillhole page values.
-        
+
         Returns:
             Dictionary with collar, survey, and interval layer data
         """
         drillhole_data = self.dialog.page_drillhole.get_data()
-        
+
         # Map DrillholePage keys to Controller keys
         return {
             "collar_layer_obj": drillhole_data["collar_layer"],
@@ -110,13 +111,11 @@ class DialogDataAggregator:
             "collar_y_field": drillhole_data["collar_y"],
             "collar_z_field": drillhole_data["collar_z"],
             "collar_depth_field": drillhole_data["collar_depth"],
-            
             "survey_layer_obj": drillhole_data["survey_layer"],
             "survey_id_field": drillhole_data["survey_id"],
             "survey_depth_field": drillhole_data["survey_depth"],
             "survey_azim_field": drillhole_data["survey_azim"],
             "survey_incl_field": drillhole_data["survey_incl"],
-            
             "interval_layer_obj": drillhole_data["interval_layer"],
             "interval_id_field": drillhole_data["interval_id"],
             "interval_from_field": drillhole_data["interval_from"],

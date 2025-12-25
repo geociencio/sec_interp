@@ -6,6 +6,12 @@ separating signal setup from the main dialog class.
 
 from typing import TYPE_CHECKING
 
+from sec_interp.logger_config import get_logger
+
+
+logger = get_logger(__name__)
+
+
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
 
@@ -17,11 +23,11 @@ class DialogSignalManager:
     making the dialog initialization cleaner and more maintainable.
     """
 
-    def __init__(self, dialog: "SecInterpDialog"):
+    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
         """Initialize signal manager.
 
         Args:
-            dialog: The SecInterpDialog instance
+            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
         """
         self.dialog = dialog
 
@@ -118,9 +124,6 @@ class DialogSignalManager:
 
         # Finalize button with debug wrapper
         def finalize_with_log():
-            from sec_interp.logger_config import get_logger
-
-            logger = get_logger(__name__)
             logger.info("Finalize button clicked!")
             self.dialog.measure_tool.finalize_measurement()
 

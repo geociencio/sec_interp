@@ -1,22 +1,29 @@
 """UI status management module for SecInterp main dialog.
 
-This module handles updating button states, preview checkboxes, and 
+This module handles updating button states, preview checkboxes, and
 required field indicators.
 """
 
 from typing import TYPE_CHECKING
+
 from qgis.core import Qgis
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 
+
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
+
 
 class DialogStatusManager:
     """Manages UI state and status indicators."""
 
-    def __init__(self, dialog: "SecInterpDialog"):
-        """Initialize status manager with reference to parent dialog."""
+    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
+        """Initialize status manager with reference to parent dialog.
+
+        Args:
+            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+        """
         self.dialog = dialog
 
     def update_all(self) -> None:
@@ -30,18 +37,18 @@ class DialogStatusManager:
         """Enable or disable preview checkboxes based on input validity."""
         has_section = bool(self.dialog.page_section.line_combo.currentLayer())
         has_dem = bool(self.dialog.page_dem.raster_combo.currentLayer())
-        
+
         # Topography requires DEM + Section Line
         self.dialog.preview_widget.chk_topo.setEnabled(has_dem and has_section)
-        
+
         # Geology requires Geology Data + Section Line
         has_geol = self.dialog.page_geology.is_complete()
         self.dialog.preview_widget.chk_geol.setEnabled(has_geol and has_section)
-        
+
         # Structure requires Structure Data + Section Line
         has_struct = self.dialog.page_struct.is_complete()
         self.dialog.preview_widget.chk_struct.setEnabled(has_struct and has_section)
-        
+
         # Drillhole requires Drillhole Data + Section Line
         has_drill = self.dialog.page_drillhole.is_complete()
         self.dialog.preview_widget.chk_drillholes.setEnabled(has_drill and has_section)
@@ -60,17 +67,17 @@ class DialogStatusManager:
         self.dialog.button_box.button(QDialogButtonBox.Ok).setEnabled(can_preview)
 
         # Export (Save) button requires: DEM + Cross-section line + Output path
-        # Note: Save button might be part of buttonBox or separate. 
+        # Note: Save button might be part of buttonBox or separate.
         # In this plugin it usually uses the standard Ok button or a "Process" button.
         # If there's an explicit Save button in some versions:
-        if hasattr(self.dialog, 'btn_save'):
+        if hasattr(self.dialog, "btn_save"):
             self.dialog.btn_save.setEnabled(can_preview and has_output)
 
     def setup_indicators(self) -> None:
         """Setup required field indicators with warning icons."""
         warning_icon = self.dialog.getThemeIcon("mMessageLogCritical.svg")
         success_icon = self.dialog.getThemeIcon("mIconSuccess.svg")
-        
+
         # Store icons for later use
         self._warning_icon = warning_icon
         self._success_icon = success_icon

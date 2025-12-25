@@ -1,8 +1,13 @@
-from typing import List, Tuple, Optional, Union
+from __future__ import annotations
+
+from typing import List, Optional, Tuple, Union
+
 from qgis.core import QgsVectorLayer
+
 # QVariant is a Qt data type required for QGIS field type validation
 # It's not a UI component - it's used to represent generic field values
 from qgis.PyQt.QtCore import QVariant  # type: ignore[import]
+
 
 def validate_numeric_input(
     value: str,
@@ -10,7 +15,7 @@ def validate_numeric_input(
     max_val: Optional[float] = None,
     field_name: str = "Value",
     allow_empty: bool = False,
-) -> Tuple[bool, str, Optional[float]]:
+) -> tuple[bool, str, Optional[float]]:
     """Validate a numeric input string from a text field.
 
     Args:
@@ -51,7 +56,7 @@ def validate_integer_input(
     max_val: Optional[int] = None,
     field_name: str = "Value",
     allow_empty: bool = False,
-) -> Tuple[bool, str, Optional[int]]:
+) -> tuple[bool, str, Optional[int]]:
     """Validate an integer input string from a text field.
 
     Args:
@@ -88,7 +93,7 @@ def validate_integer_input(
 
 def validate_angle_range(
     value: float, field_name: str, min_angle: float = 0.0, max_angle: float = 360.0
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Validate that an angle value is within the expected range.
 
     Args:
@@ -113,7 +118,7 @@ def validate_angle_range(
 
 def validate_field_exists(
     layer: QgsVectorLayer, field_name: Optional[str]
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Validate that a specific field exists in a vector layer.
 
     Args:
@@ -150,8 +155,8 @@ def validate_field_exists(
 
 
 def validate_field_type(
-    layer: QgsVectorLayer, field_name: str, expected_types: List[QVariant.Type]
-) -> Tuple[bool, str]:
+    layer: QgsVectorLayer, field_name: str, expected_types: list[QVariant.Type]
+) -> tuple[bool, str]:
     """Validate that a field in a layer has one of the expected data types.
 
     Args:

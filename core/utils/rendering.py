@@ -1,15 +1,22 @@
+from __future__ import annotations
+
+
 """Rendering Utilities Module.
 
 Visualization and coordinate transformation utilities for profile rendering.
 """
 
+from collections.abc import Callable
 import math
+from typing import Any, Dict, List, Optional, Tuple
 
-
-from typing import List, Tuple, Dict, Any, Optional, Callable
 from sec_interp.core.types import GeologySegment
 
-def calculate_bounds(topo_data: List[Tuple[float, float]], geol_data: Optional[List[GeologySegment]] = None) -> Dict[str, float]:
+
+def calculate_bounds(
+    topo_data: list[tuple[float, float]],
+    geol_data: Optional[list[GeologySegment]] = None,
+) -> dict[str, float]:
     """Calculate the bounding box for all profile data with padding.
 
     Calculates the minimum and maximum distance and elevation across topography
@@ -51,8 +58,12 @@ def calculate_bounds(topo_data: List[Tuple[float, float]], geol_data: Optional[L
 
 
 def create_coordinate_transform(
-    bounds: Dict[str, float], view_w: int, view_h: int, margin: int, vert_exag: float = 1.0
-) -> Callable[[float, float], Tuple[float, float]]:
+    bounds: dict[str, float],
+    view_w: int,
+    view_h: int,
+    margin: int,
+    vert_exag: float = 1.0,
+) -> Callable[[float, float], tuple[float, float]]:
     """Create a coordinate transformation function for screen projection.
 
     Returns a function that transforms data coordinates (distance, elevation)

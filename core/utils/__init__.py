@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 """Core Utilities Package.
 
 Organized by functionality:
@@ -12,6 +15,11 @@ Organized by functionality:
 
 # Geometry operations
 # Geological calculations
+from .drillhole import (
+    calculate_drillhole_trajectory,
+    interpolate_intervals_on_trajectory,
+    project_trajectory_to_section,
+)
 from .geology import (
     calculate_apparent_dip,
 )
@@ -23,11 +31,6 @@ from .geometry import (
     filter_features_by_buffer,
     get_line_vertices,
     run_processing_algorithm,
-)
-from .drillhole import (
-    calculate_drillhole_trajectory,
-    project_trajectory_to_section,
-    interpolate_intervals_on_trajectory,
 )
 
 # I/O utilities
@@ -68,12 +71,10 @@ from .spatial import (
 __all__ = [
     # Geology
     "calculate_apparent_dip",
-    # Drillhole
-    "calculate_drillhole_trajectory",
-    "project_trajectory_to_section",
-    "interpolate_intervals_on_trajectory",
     # Rendering
     "calculate_bounds",
+    # Drillhole
+    "calculate_drillhole_trajectory",
     "calculate_interval",
     # Spatial
     "calculate_line_azimuth",
@@ -92,10 +93,12 @@ __all__ = [
     "get_line_start_point",
     "get_line_vertices",
     "interpolate_elevation",
+    "interpolate_intervals_on_trajectory",
     "parse_dip",
     # Parsing
     "parse_strike",
     "prepare_profile_context",
+    "project_trajectory_to_section",
     "run_processing_algorithm",
     # Sampling
     "sample_elevation_along_line",

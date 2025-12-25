@@ -23,11 +23,11 @@ class DialogValidator:
     and delegating to the core ProjectValidator.
     """
 
-    def __init__(self, dialog: "SecInterpDialog"):
+    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
         """Initialize validator with reference to parent dialog.
 
         Args:
-            dialog: The SecInterpDialog instance to validate
+            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance to validate
         """
         self.dialog = dialog
 
@@ -46,7 +46,7 @@ class DialogValidator:
             struct_layer=self.dialog.page_struct.layer_combo.currentLayer(),
             struct_dip_field=self.dialog.page_struct.dip_combo.currentData(),
             struct_strike_field=self.dialog.page_struct.strike_combo.currentData(),
-            dip_scale_factor=self.dialog.page_struct.scale_spin.value()
+            dip_scale_factor=self.dialog.page_struct.scale_spin.value(),
         )
 
     def validate_inputs(self) -> tuple[bool, str]:

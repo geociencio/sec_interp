@@ -161,8 +161,6 @@ class TestInterpolation:
         assert result == 0
 
 
-
-
 class TestBufferGeometry:
     """Tests for create_buffer_geometry using native algorithm."""
 
@@ -233,7 +231,9 @@ class TestBufferGeometry:
             mock_run.return_value = {"OUTPUT": mock_buffer_layer}
 
             # Should raise ValueError
-            with pytest.raises(ValueError, match="Resulting geometry from native:buffer is null"):
+            with pytest.raises(
+                ValueError, match="Resulting geometry from native:buffer is null"
+            ):
                 scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
 
     @pytest.mark.skip(reason="Requires fixing mocks for processing.run")
@@ -269,13 +269,13 @@ class TestSpatialFiltering:
         # Mock inputs
         mock_layer = Mock()
         mock_layer.isValid.return_value = True
-        
+
         # Mock features
         feat1 = Mock()
         feat1.geometry().intersects.return_value = True
         feat2 = Mock()
         feat2.geometry().intersects.return_value = False
-        
+
         mock_layer.getFeatures.side_effect = lambda *args: iter([feat1, feat2])
 
         mock_buffer_geom = Mock()
@@ -287,7 +287,7 @@ class TestSpatialFiltering:
         # Mock Spatial Index
         with patch("qgis.core.QgsSpatialIndex") as mock_index_cls:
             mock_index = mock_index_cls.return_value
-            mock_index.intersects.return_value = [1, 2] # Candidate IDs
+            mock_index.intersects.return_value = [1, 2]  # Candidate IDs
 
             # Call function
             result = scu.filter_features_by_buffer(
@@ -298,7 +298,7 @@ class TestSpatialFiltering:
             assert isinstance(result, list)
             assert len(result) == 1
             assert result[0] == feat1
-            
+
             # Verify spatial index usage
             mock_index_cls.assert_called()
             mock_index.intersects.assert_called()

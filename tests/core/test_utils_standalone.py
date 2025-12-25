@@ -11,7 +11,8 @@ import math
 # Import only the parsing functions (no QGIS dependencies)
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 
 class TestStrikeParsing:

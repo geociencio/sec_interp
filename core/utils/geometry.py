@@ -3,6 +3,8 @@
 Spatial geometry operations using QGIS native algorithms.
 """
 
+from __future__ import annotations
+
 from typing import Any, List, Optional, Union
 
 from qgis.core import (
@@ -12,10 +14,10 @@ from qgis.core import (
     QgsFields,
     QgsGeometry,
     QgsPointXY,
+    QgsProcessingFeedback,
     QgsSpatialIndex,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsProcessingFeedback,
 )
 
 from sec_interp.logger_config import get_logger
@@ -81,7 +83,7 @@ def create_memory_layer(
     return layer
 
 
-def extract_all_vertices(geometry: QgsGeometry) -> List[QgsPointXY]:
+def extract_all_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
     """Extract all vertices from any QGIS geometry type.
 
     Handles points, lines, and polygons, including multipart geometries.
@@ -125,7 +127,7 @@ def extract_all_vertices(geometry: QgsGeometry) -> List[QgsPointXY]:
     return []
 
 
-def get_line_vertices(geometry: QgsGeometry) -> List[QgsPointXY]:
+def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
     """Extract vertices specifically from a line or multiline geometry.
 
     Args:
@@ -268,8 +270,8 @@ def create_buffer_geometry(
 def filter_features_by_buffer(
     features_layer: QgsVectorLayer,
     buffer_geometry: QgsGeometry,
-    buffer_crs: Optional[QgsCoordinateReferenceSystem] = None,
-) -> List[QgsFeature]:
+    buffer_crs: QgsCoordinateReferenceSystem | None = None,
+) -> list[QgsFeature]:
     """Filter features that intersect with buffer using spatial index.
 
     Args:

@@ -4,12 +4,15 @@ Handles rendering of interactive previews using native QGIS resources.
 This module has been refactored to delegate specialized tasks to modular components.
 """
 
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from __future__ import annotations
+
+import contextlib
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
-    QgsProject,
-    QgsMapSettings,
     QgsMapRendererCustomPainterJob,
+    QgsMapSettings,
+    QgsProject,
 )
 from qgis.gui import QgsMapCanvas
 from qgis.PyQt.QtCore import QRectF, QSize, Qt
@@ -18,17 +21,18 @@ from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from sec_interp.core.types import GeologyData, ProfileData, StructureData
 from sec_interp.logger_config import get_logger
 
-from .preview_optimizer import PreviewOptimizer
-from .preview_layer_factory import PreviewLayerFactory
 from .preview_axes_manager import PreviewAxesManager
+from .preview_layer_factory import PreviewLayerFactory
 from .preview_legend_renderer import PreviewLegendRenderer
+from .preview_optimizer import PreviewOptimizer
+
 
 logger = get_logger(__name__)
 
 
 class PreviewRenderer:
     """Renders interactive preview using native PyQGIS resources.
-    
+
     Acts as an orchestrator for several specialized modules:
     - PreviewLayerFactory: Handles layer creation and symbology.
     - PreviewAxesManager: Handles grid lines and axes labels.
@@ -44,12 +48,12 @@ class PreviewRenderer:
         """
         self.canvas = canvas
         self.layers = []
-        
+
         # Specialized components
         self.layer_factory = PreviewLayerFactory()
         self.axes_manager = PreviewAxesManager()
         self.legend_renderer = PreviewLegendRenderer()
-        
+
         # State for legend rendering (maintained for backward compatibility)
         self.has_topography = False
         self.has_structures = False
@@ -69,9 +73,9 @@ class PreviewRenderer:
         max_points: int = 1000,
         preserve_extent: bool = False,
         use_adaptive_sampling: bool = False,
-        drillhole_data: Optional[List] = None,
-        **kwargs
-    ) -> Tuple[Optional[QgsMapCanvas], List]:
+        drillhole_data: Optional[list] = None,
+        **kwargs,
+    ) -> tuple[Optional[QgsMapCanvas], list]:
         """Render preview with all data layers."""
         logger.debug("render() called")
 
@@ -92,8 +96,10 @@ class PreviewRenderer:
         )
 
         # For structural layer, use topo or geol as reference
-        reference_data = topo_data if topo_data else (
-            [(d, e) for d, e, _ in geol_data] if geol_data else None
+        reference_data = (
+            topo_data
+            if topo_data
+            else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
         )
         struct_layer = self.layer_factory.create_struct_layer(
             struct_data, reference_data, vert_exag, dip_line_length
@@ -104,16 +110,21 @@ class PreviewRenderer:
         # Drillhole layers
         drillhole_layers = []
         if drillhole_data:
-            trace_layer = self.layer_factory.create_drillhole_trace_layer(drillhole_data, vert_exag)
+            trace_layer = self.layer_factory.create_drillhole_trace_layer(
+                drillhole_data, vert_exag
+            )
             if trace_layer:
                 drillhole_layers.append(trace_layer)
-            interval_layer = self.layer_factory.create_drillhole_interval_layer(drillhole_data, vert_exag)
+            interval_layer = self.layer_factory.create_drillhole_interval_layer(
+                drillhole_data, vert_exag
+            )
             if interval_layer:
                 drillhole_layers.append(interval_layer)
-        
+
         # 3. Collect valid data layers
         data_layers = [
-            layer for layer in [struct_layer, geol_layer, topo_layer] + drillhole_layers
+            layer
+            for layer in [struct_layer, geol_layer, topo_layer, *drillhole_layers]
             if layer is not None
         ]
 
@@ -127,7 +138,7 @@ class PreviewRenderer:
         labels_layer = self.axes_manager.create_axes_labels_layer(extent, vert_exag)
 
         # 5. Finalize layers list
-        layers = [labels_layer] + data_layers + [axes_layer]
+        layers = [labels_layer, *data_layers, axes_layer]
         layers = [layer for layer in layers if layer is not None]
         self.layers = layers
 
@@ -146,16 +157,12 @@ class PreviewRenderer:
     def draw_legend(self, painter: QPainter, rect: QRectF):
         """Draw legend on the given painter. Delegates to PreviewLegendRenderer."""
         self.legend_renderer.draw_legend(
-            painter, 
-            rect, 
-            self.active_units, 
-            self.has_topography, 
-            self.has_structures
+            painter, rect, self.active_units, self.has_topography, self.has_structures
         )
 
     def export_to_image(
         self,
-        layers: List,
+        layers: list,
         extent,
         width: int,
         height: int,
@@ -186,22 +193,20 @@ class PreviewRenderer:
 
             return image.save(output_path)
 
-        except Exception as e:
-            logger.exception("Error exporting preview: %s", e)
+        except Exception:
+            logger.exception("Error exporting preview")
             return False
 
     def _cleanup_layers(self):
         """Remove previous layers from QgsProject."""
         for layer in self.layers:
             if layer:
-                try:
+                with contextlib.suppress(Exception):
                     QgsProject.instance().removeMapLayer(layer.id())
-                except Exception:
-                    pass
         self.layers = []
         self.layer_factory.active_units = {}
 
-    def _calculate_extent(self, layers: List):
+    def _calculate_extent(self, layers: list):
         """Combine extents of all given layers."""
         extent = None
         for layer in layers:

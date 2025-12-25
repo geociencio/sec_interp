@@ -1,19 +1,25 @@
-from typing import List, Tuple, Optional, Union
+from __future__ import annotations
+
+from typing import List, Optional, Tuple, Union
+
 from qgis.core import (
     QgsMapLayer,
+    QgsProject,
     QgsRasterLayer,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsProject,
 )
+
 # QVariant is a Qt data type required for QGIS field type validation
 # It's not a UI component - it's used to represent generic field values
 from qgis.PyQt.QtCore import QVariant  # type: ignore[import]
+
 from .field_validator import validate_field_exists, validate_field_type
+
 
 def validate_layer_exists(
     layer_name: Optional[str],
-) -> Tuple[bool, str, Optional[QgsMapLayer]]:
+) -> tuple[bool, str, Optional[QgsMapLayer]]:
     """Validate that a layer with the given name exists in the current QGIS project.
 
     Args:
@@ -139,8 +145,8 @@ def validate_structural_requirements(
     layer: QgsVectorLayer,
     layer_name: str,
     dip_field: Optional[str],
-    strike_field: Optional[str]
-) -> Tuple[bool, str]:
+    strike_field: Optional[str],
+) -> tuple[bool, str]:
     """Validate structural layer requirements (geometry and attribute fields).
 
     Args:
@@ -194,7 +200,7 @@ def validate_layer_configuration(
     outcrop_field: Optional[str] = None,
     struct_dip_field: Optional[str] = None,
     struct_strike_field: Optional[str] = None,
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Validate a complete set of layer inputs for the plugin.
 
     Args:
@@ -230,7 +236,10 @@ def validate_layer_configuration(
         )
         if not is_valid_multi:
             # Check if generic line type
-            if QgsWkbTypes.geometryType(line_layer.wkbType()) != QgsWkbTypes.LineGeometry:
+            if (
+                QgsWkbTypes.geometryType(line_layer.wkbType())
+                != QgsWkbTypes.LineGeometry
+            ):
                 return False, f"Cross-section layer must be a line layer. {msg}"
 
     # 3. Validate Optional Layers
@@ -248,7 +257,7 @@ def validate_layer_configuration(
             structural_layer,
             structural_layer.name(),
             struct_dip_field,
-            struct_strike_field
+            struct_strike_field,
         )
         if not is_valid:
             return False, msg
@@ -256,7 +265,7 @@ def validate_layer_configuration(
     return True, ""
 
 
-def validate_crs_compatibility(layers: List[QgsMapLayer]) -> Tuple[bool, str]:
+def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
     """Validate that a list of layers have compatible Coordinate Reference Systems.
 
     If layers have different CRSs, it returns a warning message instead of an error,

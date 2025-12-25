@@ -1,19 +1,19 @@
 """Preview area widget."""
 
-from qgis.PyQt.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QPushButton,
-    QCheckBox,
-    QTextEdit,
-    QFrame,
-    QLabel,
-    QSpinBox,
-    QToolButton,
-)
-from qgis.gui import QgsMapCanvas, QgsCollapsibleGroupBox
+from qgis.gui import QgsCollapsibleGroupBox, QgsMapCanvas
 from qgis.PyQt.QtGui import QColor, QIcon
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSpinBox,
+    QTextEdit,
+    QToolButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class PreviewWidget(QWidget):
@@ -30,13 +30,26 @@ class PreviewWidget(QWidget):
         # Frame for preview (optional visual container)
         self.frame = QFrame()
         self.frame.setFrameShape(QFrame.StyledPanel)
-        frame_layout = QVBoxLayout(self.frame)
+        self.frame_layout = QVBoxLayout(self.frame)
 
-        # 1. Map Canvas
+        self._setup_canvas_area()
+        self._setup_action_buttons()
+        self._setup_lod_controls()
+        self._setup_layer_checkboxes()
+        self._setup_results_area()
+
+        layout.addWidget(self.frame)
+
+        # Setup connections
+        self.canvas.xyCoordinates.connect(self._update_coords)
+        self.canvas.scaleChanged.connect(self._update_scale)
+
+    def _setup_canvas_area(self):
+        """Setup map canvas and status bar."""
         self.canvas = QgsMapCanvas()
         self.canvas.setCanvasColor(QColor(255, 255, 255))
         self.canvas.setMinimumHeight(300)
-        frame_layout.addWidget(self.canvas, stretch=10)
+        self.frame_layout.addWidget(self.canvas, stretch=10)
 
         # -- Status Bar --
         status_layout = QHBoxLayout()
@@ -46,7 +59,6 @@ class PreviewWidget(QWidget):
         self.lbl_scale = QLabel("Scale 1: -")
         self.lbl_crs = QLabel("CRS: -")
 
-        # Style labels for a status bar look
         for lbl in [self.lbl_coords, self.lbl_scale, self.lbl_crs]:
             lbl.setStyleSheet("color: #666; font-size: 9pt;")
 
@@ -55,32 +67,31 @@ class PreviewWidget(QWidget):
         status_layout.addWidget(self.lbl_scale)
         status_layout.addStretch()
         status_layout.addWidget(self.lbl_crs)
+        self.frame_layout.addLayout(status_layout)
 
-        frame_layout.addLayout(status_layout)
-
-        # 2. Controls (Preview | Export)
+    def _setup_action_buttons(self):
+        """Setup preview, measure, and export buttons."""
         btn_layout = QHBoxLayout()
         self.btn_preview = QPushButton("Preview")
         self.btn_export = QPushButton("Export")
         self.btn_export.setToolTip("Export preview to file")
 
-        # Measure Button
         self.btn_measure = QPushButton("Measure")
         self.btn_measure.setCheckable(True)
         self.btn_measure.setToolTip("Measure distance and slope")
 
-        # Finalize measurement button (only visible during measurement)
         self.btn_finalize = QPushButton("Finalize")
         self.btn_finalize.setToolTip("Finalize multi-point measurement")
-        self.btn_finalize.setVisible(False)  # Hidden by default
+        self.btn_finalize.setVisible(False)
 
         btn_layout.addWidget(self.btn_preview)
         btn_layout.addWidget(self.btn_measure)
         btn_layout.addWidget(self.btn_finalize)
         btn_layout.addWidget(self.btn_export)
-        frame_layout.addLayout(btn_layout)
+        self.frame_layout.addLayout(btn_layout)
 
-        # 3. Settings (LOD)
+    def _setup_lod_controls(self):
+        """Setup level of detail controls."""
         lod_layout = QHBoxLayout()
         lod_layout.addWidget(QLabel("Max Points:"))
 
@@ -104,23 +115,21 @@ class PreviewWidget(QWidget):
         self.chk_adaptive_sampling.setToolTip(
             "Use adaptive sampling based on curvature (Phase 2)"
         )
-        self.chk_adaptive_sampling.setChecked(True)  # Default to true for now
+        self.chk_adaptive_sampling.setChecked(True)
         lod_layout.addWidget(self.chk_adaptive_sampling)
 
-        lod_layout.addStretch()  # Push to left
-        frame_layout.addLayout(lod_layout)
+        lod_layout.addStretch()
+        self.frame_layout.addLayout(lod_layout)
 
-        # 4. Checkboxes
+    def _setup_layer_checkboxes(self):
+        """Setup checkboxes for layer visibility."""
         chk_layout = QHBoxLayout()
         self.chk_topo = QCheckBox("Show Topography")
         self.chk_topo.setChecked(True)
-
         self.chk_geol = QCheckBox("Show Geology")
         self.chk_geol.setChecked(True)
-
         self.chk_struct = QCheckBox("Show Structures")
         self.chk_struct.setChecked(True)
-
         self.chk_drillholes = QCheckBox("Show Drillholes")
         self.chk_drillholes.setChecked(True)
 
@@ -128,24 +137,17 @@ class PreviewWidget(QWidget):
         chk_layout.addWidget(self.chk_geol)
         chk_layout.addWidget(self.chk_struct)
         chk_layout.addWidget(self.chk_drillholes)
-        frame_layout.addLayout(chk_layout)
+        self.frame_layout.addLayout(chk_layout)
 
-        # 4. Results / Logs
+    def _setup_results_area(self):
+        """Setup results group and text display."""
         self.results_group = QgsCollapsibleGroupBox("Results")
         results_layout = QVBoxLayout(self.results_group)
-
         self.results_text = QTextEdit()
         self.results_text.setReadOnly(True)
         self.results_text.setMaximumHeight(100)
-
         results_layout.addWidget(self.results_text)
-        frame_layout.addWidget(self.results_group)
-
-        layout.addWidget(self.frame)
-
-        # Setup connections
-        self.canvas.xyCoordinates.connect(self._update_coords)
-        self.canvas.scaleChanged.connect(self._update_scale)
+        self.frame_layout.addWidget(self.results_group)
 
     def _update_coords(self, point):
         """Update coordinate label."""

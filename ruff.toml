@@ -88,9 +88,10 @@ ignore = [
     
     # === Missing Docstrings (equiv to pylint C0111) ===
     "D101", "D102", "D103", "D105", "D106", "D107",
-
-    # === Class Structure ===
-    # "PLR0903", # too-few-public-methods (Not supported in this Ruff version)
+    
+    # === Typing ===
+    "UP007",  # type-union (X | Y) - Breaks PyQGIS class evaluation in some environments
+    "UP045",  # Use `X | None` for type annotations - Similar to UP007
 ]
 
 # Dummy variable pattern (matches .pylintrc)

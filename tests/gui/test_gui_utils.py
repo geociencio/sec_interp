@@ -3,6 +3,7 @@
 from unittest.mock import Mock, patch
 from sec_interp.gui.utils import show_user_message
 
+
 class TestShowUserMessage:
     """Tests for show_user_message helper."""
 

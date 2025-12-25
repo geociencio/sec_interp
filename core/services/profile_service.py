@@ -7,7 +7,7 @@
 #         copyright            : (C) 2025 by Juan M Bernales
 #         email                : juanbernales@gmail.com
 #  ***************************************************************************/
-# 
+#
 # /***************************************************************************
 #  *                                                                         *
 #  *   This program is free software; you can redistribute it and/or modify  *

@@ -1,15 +1,21 @@
+from __future__ import annotations
+
+
 """Drillhole Data Processing Service.
 
 Service for processing and projecting drillhole data (collars, surveys, intervals).
 """
-from typing import List, Tuple, Dict, Any, Optional
+
+import contextlib
+from typing import Any, Dict, List, Optional, Tuple
+
 from qgis.core import (
-    QgsVectorLayer,
+    QgsDistanceArea,
     QgsGeometry,
     QgsPointXY,
-    QgsDistanceArea,
+    QgsRaster,
     QgsRasterLayer,
-    QgsRaster
+    QgsVectorLayer,
 )
 
 from sec_interp.core import utils as scu
@@ -18,7 +24,6 @@ from sec_interp.logger_config import get_logger
 
 
 logger = get_logger(__name__)
-
 
 
 class DrillholeService:
@@ -38,7 +43,7 @@ class DrillholeService:
         collar_z_field: str,
         collar_depth_field: str,
         dem_layer: Optional[QgsRasterLayer],
-    ) -> List[Tuple[Any, float, float, float, float]]:
+    ) -> list[tuple[Any, float, float, float, float]]:
         """Project collar points onto section line.
 
         Projects drillhole collars within a specified buffer from the section line
@@ -68,7 +73,7 @@ class DrillholeService:
         """
         projected_collars = []
 
-        logger.info(f"DrillholeService.project_collars START")
+        logger.info("DrillholeService.project_collars START")
         logger.info(f"  - Buffer: {buffer_width}")
         logger.info(f"  - Use Geometry: {use_geometry}")
         logger.info(f"  - ID Field: {collar_id_field}")
@@ -102,10 +107,8 @@ class DrillholeService:
             # Get Elevation (Z)
             z = 0.0
             if collar_z_field:
-                try:
+                with contextlib.suppress(ValueError, TypeError):
                     z = float(collar_feat[collar_z_field])
-                except (ValueError, TypeError):
-                    pass
 
             # If Z is missing/zero, sample from DEM
             if z == 0.0 and dem_layer:
@@ -120,10 +123,8 @@ class DrillholeService:
             # Get Total Depth
             depth = 0.0
             if collar_depth_field:
-                try:
+                with contextlib.suppress(ValueError, TypeError):
                     depth = float(collar_feat[collar_depth_field])
-                except (ValueError, TypeError):
-                    pass
 
             # Project to section line
             collar_point = QgsPointXY(x, y)
@@ -146,16 +147,18 @@ class DrillholeService:
                 )
                 projected_collars.append((hole_id, dist_along, z, offset, depth))
             else:
-                 logger.debug(
+                logger.debug(
                     f"Collar {hole_id}: dist={dist_along:.2f}, offset={offset:.2f} [OUT]"
                 )
 
-        logger.info(f"DrillholeService.project_collars END: Found {len(projected_collars)} collars within buffer.")
+        logger.info(
+            f"DrillholeService.project_collars END: Found {len(projected_collars)} collars within buffer."
+        )
         return projected_collars
 
     def process_intervals(
         self,
-        collar_points: List[Tuple],
+        collar_points: list[tuple],
         collar_layer: QgsVectorLayer,
         survey_layer: QgsVectorLayer,
         interval_layer: QgsVectorLayer,
@@ -168,9 +171,12 @@ class DrillholeService:
         distance_area: QgsDistanceArea,
         buffer_width: float,
         section_azimuth: float,
-        survey_fields: Dict[str, str],
-        interval_fields: Dict[str, str],
-    ) -> Tuple[List[GeologySegment], List[Tuple[Any, List[Tuple[float, float]], List[GeologySegment]]]]:
+        survey_fields: dict[str, str],
+        interval_fields: dict[str, str],
+    ) -> tuple[
+        list[GeologySegment],
+        list[tuple[Any, list[tuple[float, float]], list[GeologySegment]]],
+    ]:
         """Process drillhole interval data and project onto the section.
 
         Calculates trajectories for all collars within the buffer and interpolates
@@ -203,7 +209,7 @@ class DrillholeService:
         geol_data = []
         drillhole_data = []
 
-        logger.info(f"DrillholeService.process_intervals START")
+        logger.info("DrillholeService.process_intervals START")
         logger.info(f"  - Input Collars: {len(collar_points)}")
 
         # Build collar coordinate map
@@ -225,7 +231,7 @@ class DrillholeService:
                 except (ValueError, TypeError):
                     continue
 
-        for hole_id, collar_dist, collar_z, collar_offset, _ in collar_points:
+        for hole_id, _collar_dist, collar_z, _collar_offset, _ in collar_points:
             if hole_id not in collar_coords:
                 logger.warning(f"Coords not found for collar {hole_id}")
                 continue
@@ -250,7 +256,9 @@ class DrillholeService:
                         continue
 
             if not survey_data:
-                logger.info(f"  - No survey data for hole {hole_id}. Attempting vertical projection.")
+                logger.info(
+                    f"  - No survey data for hole {hole_id}. Attempting vertical projection."
+                )
             else:
                 survey_data.sort(key=lambda x: x[0])
 
@@ -278,13 +286,20 @@ class DrillholeService:
 
             final_depth = given_depth
             if final_depth <= 0:
-                max_survey_depth = max([s[0] for s in survey_data]) if survey_data else 0.0
+                max_survey_depth = (
+                    max([s[0] for s in survey_data]) if survey_data else 0.0
+                )
                 final_depth = max(max_survey_depth, max_interval_depth)
 
             # Calculate Trajectory
             # Now passing total_depth=final_depth for extrapolation support
             trajectory = scu.calculate_drillhole_trajectory(
-                collar_point, collar_z, survey_data, section_azimuth, densify_step=1.0, total_depth=final_depth
+                collar_point,
+                collar_z,
+                survey_data,
+                section_azimuth,
+                densify_step=1.0,
+                total_depth=final_depth,
             )
 
             # Project Trajectory to Section
@@ -300,25 +315,25 @@ class DrillholeService:
                 for fd, td, lith in intervals:
                     attrs = {"unit": lith, "from": fd, "to": td}
                     rich_intervals.append((fd, td, attrs))
-                
+
                 hole_geol_tuples = scu.interpolate_intervals_on_trajectory(
                     projected_traj, rich_intervals, buffer_width
                 )
             else:
-                 logger.warning(f"  - No intervals for hole {hole_id}")
+                logger.warning(f"  - No intervals for hole {hole_id}")
 
             hole_geol_data = []
             for attr_data, points in hole_geol_tuples:
                 # Unpack attributes
                 # attr_data is the dictionary we packed above
                 unit_name = str(attr_data.get("unit", "Unknown"))
-                
+
                 # Create domain object
                 seg = GeologySegment(
                     unit_name=unit_name,
                     geometry=None,
                     attributes=attr_data,
-                    points=points
+                    points=points,
                 )
                 hole_geol_data.append(seg)
 
@@ -329,5 +344,7 @@ class DrillholeService:
             traj_points = [(p[4], p[3]) for p in projected_traj]
             drillhole_data.append((hole_id, traj_points, hole_geol_data))
 
-        logger.info(f"DrillholeService.process_intervals END: Generated {len(drillhole_data)} drillhole traces.")
+        logger.info(
+            f"DrillholeService.process_intervals END: Generated {len(drillhole_data)} drillhole traces."
+        )
         return geol_data, drillhole_data

@@ -4,19 +4,19 @@ Calculations for drillhole geometry and projection.
 """
 
 import math
-from typing import List, Tuple, Any
+from typing import Any, List, Tuple
 
-from qgis.core import QgsPointXY, QgsGeometry, QgsDistanceArea
+from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 
 
 def calculate_drillhole_trajectory(
-    collar_point: QgsPointXY, 
-    collar_z: float, 
-    survey_data: List[Tuple[float, float, float]], 
-    section_azimuth: float, 
+    collar_point: QgsPointXY,
+    collar_z: float,
+    survey_data: list[tuple[float, float, float]],
+    section_azimuth: float,
     densify_step: float = 1.0,
-    total_depth: float = 0.0
-) -> List[Tuple[float, float, float, float, float, float]]:
+    total_depth: float = 0.0,
+) -> list[tuple[float, float, float, float, float, float]]:
     """Calculate 3D trajectory of a drillhole using survey data.
 
     Uses the tangential method for trajectory calculation with densification
@@ -73,7 +73,7 @@ def calculate_drillhole_trajectory(
 
         # Convert angles to radians
         azim_rad = math.radians(azimuth)
-        
+
         # Inclination convention: -90° = vertical down, 0° = horizontal
         # We need to convert to standard convention where 0° = vertical down
         # Standard: 0° down, 90° horizontal
@@ -115,7 +115,7 @@ def calculate_drillhole_trajectory(
     if total_depth > last_survey_depth:
         # Calculate interval
         interval = total_depth - last_survey_depth
-        
+
         # Use last known orientation
         azim_rad = math.radians(last_azimuth)
         standard_incl_rad = math.radians(90 + last_inclination)
@@ -142,11 +142,11 @@ def calculate_drillhole_trajectory(
 
 
 def project_trajectory_to_section(
-    trajectory: List[Tuple], 
-    line_geom: QgsGeometry, 
-    line_start: QgsPointXY, 
-    distance_area: QgsDistanceArea
-) -> List[Tuple[float, float, float, float, float, float]]:
+    trajectory: list[tuple],
+    line_geom: QgsGeometry,
+    line_start: QgsPointXY,
+    distance_area: QgsDistanceArea,
+) -> list[tuple[float, float, float, float, float, float]]:
     """Project drillhole trajectory points onto section line.
 
     Args:
@@ -184,10 +184,10 @@ def project_trajectory_to_section(
 
 
 def interpolate_intervals_on_trajectory(
-    trajectory: List[Tuple], 
-    intervals: List[Tuple[float, float, Any]], 
-    buffer_width: float
-) -> List[Tuple[Any, List[Tuple[float, float]]]]:
+    trajectory: list[tuple],
+    intervals: list[tuple[float, float, Any]],
+    buffer_width: float,
+) -> list[tuple[Any, list[tuple[float, float]]]]:
     """Interpolate interval attributes along drillhole trajectory.
 
     Filters and maps geological intervals onto the 3D trajectory points
@@ -209,7 +209,7 @@ def interpolate_intervals_on_trajectory(
         # Find trajectory points within this interval
         interval_points = []
 
-        for depth, x, y, z, dist_along, offset in trajectory:
+        for depth, _x, _y, z, dist_along, offset in trajectory:
             # Check if point is within interval and buffer
             if from_depth <= depth <= to_depth and offset <= buffer_width:
                 interval_points.append((dist_along, z))

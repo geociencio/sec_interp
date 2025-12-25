@@ -1,5 +1,7 @@
 """Legend Widget Module."""
 
+from __future__ import annotations
+
 from typing import Optional
 
 from qgis.PyQt import QtCore
@@ -8,28 +10,34 @@ from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtWidgets import QWidget
 
 
+if TYPE_CHECKING:
+    from sec_interp.gui.main_dialog import SecInterpDialog
+
+    from .renderer import Renderer
+
+
 class LegendWidget(QWidget):
     """Widget to display the geological legend over the map canvas."""
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent)
-        self.renderer = None
+    def __init__(self, dialog: SecInterpDialog) -> None:
+        super().__init__(dialog)  # Use dialog as the parent
+        self.dialog = dialog  # Store reference to the dialog
+        self.renderer: Renderer | None = None  # Apply UP037
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setAttribute(Qt.WA_TransparentForMouseEvents)  # Let clicks pass through
         self.setAutoFillBackground(False)  # Don't fill background
         self.hide()
 
         # Install event filter on parent to track resize
-        if parent:
-            parent.installEventFilter(self)
+        self.dialog.installEventFilter(self)
 
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         """Handle parent resize events."""
-        if obj == self.parent() and event.type() == QtCore.QEvent.Resize:
+        if obj == self.dialog and event.type() == QtCore.QEvent.Resize:
             self.resize(event.size())
         return super().eventFilter(obj, event)
 
-    def update_legend(self, renderer: "Renderer") -> None:
+    def update_legend(self, renderer: Renderer) -> None:
         """Update legend with data from renderer."""
         self.renderer = renderer
         self.update()

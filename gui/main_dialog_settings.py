@@ -4,16 +4,23 @@ This module handles persistence of user settings between sessions.
 """
 
 from typing import TYPE_CHECKING
+
 from qgis.core import QgsSettings
+
 
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
 
+
 class DialogSettingsManager:
     """Manages persistence of dialog settings."""
 
-    def __init__(self, dialog: "SecInterpDialog"):
-        """Initialize settings manager with reference to parent dialog."""
+    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
+        """Initialize settings manager with reference to parent dialog.
+
+        Args:
+            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+        """
         self.dialog = dialog
         # Access config service through the plugin instance controller
         # Safety check for tests where plugin_instance might be mock or None
@@ -27,18 +34,10 @@ class DialogSettingsManager:
             return
 
         # Section parameters
-        self.dialog.page_dem.scale_spin.setValue(
-            self.config.get("scale")
-        )
-        self.dialog.page_dem.vertexag_spin.setValue(
-            self.config.get("vert_exag")
-        )
-        self.dialog.page_section.buffer_spin.setValue(
-            self.config.get("buffer_dist")
-        )
-        self.dialog.page_struct.scale_spin.setValue(
-            self.config.get("dip_scale_factor")
-        )
+        self.dialog.page_dem.scale_spin.setValue(self.config.get("scale"))
+        self.dialog.page_dem.vertexag_spin.setValue(self.config.get("vert_exag"))
+        self.dialog.page_section.buffer_spin.setValue(self.config.get("buffer_dist"))
+        self.dialog.page_struct.scale_spin.setValue(self.config.get("dip_scale_factor"))
 
         # Output folder
         last_dir = self.config.get("last_output_dir")

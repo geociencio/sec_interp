@@ -3,8 +3,10 @@
 Handles creation of temporary memory layers and configuration of native QGIS symbology.
 """
 
+from __future__ import annotations
+
 import math
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, ClassVar, Optional
 
 from qgis.core import (
     QgsCategorizedSymbolRenderer,
@@ -24,7 +26,9 @@ from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.types import GeologyData, ProfileData, StructureData
 from sec_interp.logger_config import get_logger
+
 from .preview_optimizer import PreviewOptimizer
+
 
 logger = get_logger(__name__)
 
@@ -33,7 +37,7 @@ class PreviewLayerFactory:
     """Factory for creating and styling QGIS memory layers for the preview."""
 
     # Color palette for geological units
-    GEOLOGY_COLORS = [
+    GEOLOGY_COLORS: ClassVar[list[QColor]] = [
         QColor(231, 76, 60),  # Red
         QColor(52, 152, 219),  # Blue
         QColor(46, 204, 113),  # Green
@@ -54,7 +58,7 @@ class PreviewLayerFactory:
 
     def __init__(self):
         """Initialize the layer factory."""
-        self.active_units: Dict[str, QColor] = {}
+        self.active_units: dict[str, QColor] = {}
 
     def get_color_for_unit(self, name: str) -> QColor:
         """Get a consistent color for a geological unit based on its name."""
@@ -76,7 +80,7 @@ class PreviewLayerFactory:
         geometry_type: str,
         name: str,
         fields: Optional[str] = None,
-    ) -> Tuple[Optional[QgsVectorLayer], Any]:
+    ) -> tuple[Optional[QgsVectorLayer], Any]:
         """Create a memory layer with an unknown CRS.
 
         Args:
@@ -112,7 +116,9 @@ class PreviewLayerFactory:
 
         # Apply LOD decimation
         if use_adaptive_sampling:
-            render_data = PreviewOptimizer.adaptive_sample(topo_data, max_points=max_points)
+            render_data = PreviewOptimizer.adaptive_sample(
+                topo_data, max_points=max_points
+            )
         else:
             render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
 
@@ -152,18 +158,20 @@ class PreviewLayerFactory:
         if not layer:
             return None
 
-        unique_units = set(s.unit_name for s in geol_data)
+        unique_units = {s.unit_name for s in geol_data}
         features = []
         for segment in geol_data:
             if not segment.points or len(segment.points) < 2:
                 continue
 
-            render_points = PreviewOptimizer.decimate(segment.points, max_points=max_points)
+            render_points = PreviewOptimizer.decimate(
+                segment.points, max_points=max_points
+            )
             line_points = [
                 QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points
             ]
             line_geom = QgsGeometry.fromPolylineXY(line_points)
-            
+
             feat = QgsFeature(layer.fields())
             feat.setGeometry(line_geom)
             feat.setAttribute("unit", segment.unit_name)
@@ -246,86 +254,90 @@ class PreviewLayerFactory:
         return layer
 
     def create_drillhole_trace_layer(
-        self, drillhole_data: List, vert_exag: float = 1.0
+        self, drillhole_data: list, vert_exag: float = 1.0
     ) -> Optional[QgsVectorLayer]:
         """Create temporary layer for drillhole traces."""
         if not drillhole_data:
             return None
-            
-        layer, provider = self.create_memory_layer("LineString", "Drillhole Traces", "field=hole_id:string")
+
+        layer, provider = self.create_memory_layer(
+            "LineString", "Drillhole Traces", "field=hole_id:string"
+        )
         if not layer:
             return None
-            
+
         features = []
         for hole_id, trace_points, _ in drillhole_data:
             if not trace_points or len(trace_points) < 2:
                 continue
-                
+
             render_points = [QgsPointXY(x, y * vert_exag) for x, y in trace_points]
             line_geom = QgsGeometry.fromPolylineXY(render_points)
-            
+
             feat = QgsFeature(layer.fields())
             feat.setGeometry(line_geom)
             feat.setAttribute("hole_id", hole_id)
             features.append(feat)
-            
+
         provider.addFeatures(features)
-        
+
         symbol = QgsLineSymbol.createSimple(
             {"color": "50,50,50", "width": "0.3", "capstyle": "round"}
         )
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        
+
         settings = QgsPalLayerSettings()
         settings.fieldName = "hole_id"
         settings.placement = QgsPalLayerSettings.Placement.Line
-        
+
         txt_format = QgsTextFormat()
         txt_format.setColor(QColor(0, 0, 0))
         txt_format.setSize(8)
         settings.setFormat(txt_format)
-        
+
         layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
         layer.setLabelsEnabled(True)
         layer.updateExtents()
         return layer
 
     def create_drillhole_interval_layer(
-        self, drillhole_data: List, vert_exag: float = 1.0
+        self, drillhole_data: list, vert_exag: float = 1.0
     ) -> Optional[QgsVectorLayer]:
         """Create temporary layer for drillhole intervals."""
         if not drillhole_data:
             return None
-            
+
         all_segments = []
         for _, _, segments in drillhole_data:
-             if segments:
-                 all_segments.extend(segments)
-                 
+            if segments:
+                all_segments.extend(segments)
+
         if not all_segments:
             return None
-            
-        layer, provider = self.create_memory_layer("LineString", "Drillhole Intervals", "field=unit:string")
+
+        layer, provider = self.create_memory_layer(
+            "LineString", "Drillhole Intervals", "field=unit:string"
+        )
         if not layer:
             return None
-            
+
         features = []
         unique_units = set()
         for segment in all_segments:
             if not segment.points or len(segment.points) < 2:
                 continue
-                
+
             unique_units.add(segment.unit_name)
             render_points = [QgsPointXY(x, y * vert_exag) for x, y in segment.points]
             line_geom = QgsGeometry.fromPolylineXY(render_points)
-            
+
             feat = QgsFeature(layer.fields())
             feat.setGeometry(line_geom)
             feat.setAttribute("unit", segment.unit_name)
             features.append(feat)
-            
+
         provider.addFeatures(features)
-        
+
         categories = []
         for unit_name in unique_units:
             color = self.get_color_for_unit(unit_name)
@@ -334,12 +346,12 @@ class PreviewLayerFactory:
                     "color": f"{color.red()},{color.green()},{color.blue()}",
                     "width": "2.0",
                     "capstyle": "flat",
-                    "joinstyle": "bevel"
+                    "joinstyle": "bevel",
                 }
             )
             category = QgsRendererCategory(unit_name, symbol, unit_name)
             categories.append(category)
-            
+
         renderer = QgsCategorizedSymbolRenderer("unit", categories)
         layer.setRenderer(renderer)
         layer.updateExtents()

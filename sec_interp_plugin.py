@@ -24,13 +24,15 @@
 Orchestrates the lifecycle of the SecInterp QGIS plugin.
 """
 
+from __future__ import annotations
+
 import contextlib
 from pathlib import Path
 from typing import Optional
 
 from qgis.core import (
-    QgsProject,
     QgsMapLayer,
+    QgsProject,
 )
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -40,15 +42,14 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox
 
-
 from sec_interp.core import validation as vu
+from sec_interp.core.controller import ProfileController
+from sec_interp.core.services.export_service import ExportService
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
-from sec_interp.core.controller import ProfileController
-from sec_interp.core.services.export_service import ExportService
 
 logger = get_logger(__name__)
 
@@ -182,7 +183,7 @@ class SecInterp:
 
         return action
 
-    def initGui(self):
+    def initGui(self):  # noqa: N802
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         # Use absolute path to icon file to ensure it loads in toolbar
         icon_path = str(self.plugin_dir / "icon.png")
@@ -284,7 +285,7 @@ class SecInterp:
             structural_layer=structural_layer,
             outcrop_field=values.get("outcrop_name_field"),
             struct_dip_field=values.get("dip_field"),
-            struct_strike_field=values.get("strike_field")
+            struct_strike_field=values.get("strike_field"),
         )
 
         if not is_valid:
@@ -318,11 +319,11 @@ class SecInterp:
             if not success:
                 logger.warning(f"Data processing failed: {message}")
                 return None
-            
+
             # Return cached data from manager for backward compatibility if needed
             cache = self.dlg.preview_manager.cached_data
             return cache["topo"], cache["geol"], cache["struct"]
-        
+
         return None
 
     def save_profile_line(self):
@@ -330,7 +331,15 @@ class SecInterp:
         if hasattr(self, "dlg") and self.dlg:
             self.dlg.export_manager.export_data()
 
-    def draw_preview(self, topo_data: list, geol_data: list = None, struct_data: list = None, drillhole_data: list = None, max_points: int = 1000, **kwargs) -> None:
+    def draw_preview(
+        self,
+        topo_data: list,
+        geol_data: Optional[list] = None,
+        struct_data: Optional[list] = None,
+        drillhole_data: Optional[list] = None,
+        max_points: int = 1000,
+        **kwargs,
+    ) -> None:
         """Draw enhanced interactive preview using native PyQGIS renderer.
 
         Args:
@@ -366,7 +375,9 @@ class SecInterp:
         filtered_topo = topo_data if options.get("show_topo", True) else None
         filtered_geol = geol_data if options.get("show_geol", True) else None
         filtered_struct = struct_data if options.get("show_struct", True) else None
-        filtered_drill = drillhole_data if options.get("show_drillholes", True) else None # Requires main_dialog to provide this option key
+        filtered_drill = (
+            drillhole_data if options.get("show_drillholes", True) else None
+        )  # Requires main_dialog to provide this option key
 
         logger.debug("Filtered data:")
         logger.debug(
@@ -381,10 +392,10 @@ class SecInterp:
         )
 
         # Get vertical exaggeration from dialog
-        
+
         # Use new numeric method or direct accessor from Page
         vert_exag = self.dlg.page_dem.vertexag_spin.value()
-        
+
         logger.debug("Vertical exaggeration: %.2f", vert_exag)
 
         # Calculate dip line length based on scale factor and raster resolution
@@ -398,18 +409,20 @@ class SecInterp:
                     res = raster_layer.rasterUnitsPerPixelX()
                     if res > 0:
                         dip_line_length = res * dip_scale
-            logger.debug("Dip line length: %s (scale: %.2f)", dip_line_length, dip_scale)
+            logger.debug(
+                "Dip line length: %s (scale: %.2f)", dip_line_length, dip_scale
+            )
 
         # Render using native PyQGIS
         canvas, layers = self.preview_renderer.render(
-            topo_data=filtered_topo, 
-            geol_data=filtered_geol, 
-            struct_data=filtered_struct, 
-            vert_exag=vert_exag, 
+            topo_data=filtered_topo,
+            geol_data=filtered_geol,
+            struct_data=filtered_struct,
+            vert_exag=vert_exag,
             dip_line_length=dip_line_length,
             max_points=max_points,
-            preserve_extent=kwargs.get('preserve_extent', False),
-            drillhole_data=filtered_drill 
+            preserve_extent=kwargs.get("preserve_extent", False),
+            drillhole_data=filtered_drill,
         )
 
         # Store canvas and layers for export

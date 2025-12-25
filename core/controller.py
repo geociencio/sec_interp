@@ -1,25 +1,31 @@
-"""
-Controller for SecInterp profile data generation.
+from __future__ import annotations
+
+
+"""Controller for SecInterp profile data generation.
 Handles orchestration of services and caching.
 """
-from typing import Dict, List, Tuple, Optional, Any
+
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
 from sec_interp.core import utils as scu
+from sec_interp.core.config import ConfigService
+from sec_interp.core.data_cache import DataCache
 from sec_interp.core.services import (
+    DrillholeService,
     GeologyService,
     ProfileService,
     StructureService,
-    DrillholeService,
 )
-from sec_interp.core.config import ConfigService
-from sec_interp.core.data_cache import DataCache
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
+
 class ProfileController:
     """Orchestrates data generation services for SecInterp."""
-    
+
     def __init__(self):
         """Initialize services and cache."""
         self.config_service = ConfigService()
@@ -30,19 +36,21 @@ class ProfileController:
         self.data_cache = DataCache()
         logger.debug("ProfileController initialized")
 
-    def get_cached_data(self, inputs: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def get_cached_data(self, inputs: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Retrieve data from cache if available."""
         cache_key = self.data_cache.get_cache_key(inputs)
         return self.data_cache.get(cache_key)
 
-    def cache_data(self, inputs: Dict[str, Any], data: Dict[str, Any]) -> None:
+    def cache_data(self, inputs: dict[str, Any], data: dict[str, Any]) -> None:
         """Cache the generated data."""
         cache_key = self.data_cache.get_cache_key(inputs)
         self.data_cache.set(cache_key, data)
 
-    def generate_profile_data(self, values: Dict[str, Any]) -> Tuple[List, Any, Any, Any, List[str]]:
+    def generate_profile_data(
+        self, values: dict[str, Any]
+    ) -> tuple[list, Any, Any, Any, list[str]]:
         """Unified method to generate all profile data components.
-        
+
         Args:
             values (dict): Validated input values.
 
@@ -70,7 +78,9 @@ class ProfileController:
         if not profile_data:
             return None, None, None, ["Error: No profile data generated."]
 
-        messages.append(f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points")
+        messages.append(
+            f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points"
+        )
 
         # 2. Geology
         if outcrop_layer:
@@ -88,7 +98,9 @@ class ProfileController:
                 else:
                     messages.append("Geology: No intersections")
             else:
-                 messages.append("\n⚠ Outcrop layer selected but no geology field specified.")
+                messages.append(
+                    "\n⚠ Outcrop layer selected but no geology field specified."
+                )
 
         # 3. Structure
         if structural_layer:
@@ -109,15 +121,19 @@ class ProfileController:
                             line_azimuth,
                             dip_field,
                             strike_field,
-                            selected_band, # Added argument
+                            selected_band,  # Added argument
                         )
-                        
+
                         if struct_data:
                             messages.append(f"Structures: {len(struct_data)} points")
                         else:
-                            messages.append(f"Structures: None in {buffer_dist}m buffer")
+                            messages.append(
+                                f"Structures: None in {buffer_dist}m buffer"
+                            )
                 else:
-                     messages.append("\n⚠ Structural layer selected but dip/strike fields not specified.")
+                    messages.append(
+                        "\n⚠ Structural layer selected but dip/strike fields not specified."
+                    )
 
         # 4. Drillholes
         collar_layer = values.get("collar_layer_obj")
@@ -126,7 +142,7 @@ class ProfileController:
             section_geom = values.get("section_geom")
             section_start = values.get("section_start")
             distance_area = values.get("distance_area")
-            
+
             if section_geom and section_start and distance_area:
                 # Project Collars
                 collars = self.drillhole_service.project_collars(
@@ -143,18 +159,18 @@ class ProfileController:
                     collar_depth_field=values.get("collar_depth_field"),
                     dem_layer=raster_layer,
                 )
-                
+
                 if collars:
                     messages.append(f"Drillholes: {len(collars)} collars projected")
-                    
+
                     # Process Intervals if survey/interval layers exist
                     survey_layer = values.get("survey_layer_obj")
                     interval_layer = values.get("interval_layer_obj")
-                    
+
                     if survey_layer and interval_layer:
                         section_azimuth = scu.calculate_line_azimuth(section_geom)
-                        
-                        dh_geol, dh_struct = self.drillhole_service.process_intervals(
+
+                        _dh_geol, dh_struct = self.drillhole_service.process_intervals(
                             collar_points=collars,
                             collar_layer=collar_layer,
                             survey_layer=survey_layer,
@@ -179,15 +195,18 @@ class ProfileController:
                                 "from": values.get("interval_from_field"),
                                 "to": values.get("interval_to_field"),
                                 "lith": values.get("interval_lith_field"),
-                            }
+                            },
                         )
-                        drillhole_data = dh_struct # Should call it drillhole_traces or similar
+                        drillhole_data = (
+                            dh_struct  # Should call it drillhole_traces or similar
+                        )
                         # dh_geol contains flattened segments
                         # If we want to return both, we might need to adjust return signature again.
                         # For now, let's assume 'drillhole_data' contains the structured data (id, traces, segments)
-                        # And potentially merge dh_geol into geol_data if needed? 
+                        # And potentially merge dh_geol into geol_data if needed?
                         # Ideally UI separates them.
-                        messages.append(f"Drillholes: {len(drillhole_data)} traces processed")
+                        messages.append(
+                            f"Drillholes: {len(drillhole_data)} traces processed"
+                        )
 
         return profile_data, geol_data, struct_data, drillhole_data, messages
-

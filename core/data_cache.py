@@ -8,7 +8,7 @@
 #         copyright            : (C) 2025 by Juan M Bernales
 #         email                : juanbernales@gmail.com
 #  ***************************************************************************/
-# 
+#
 # /***************************************************************************
 #  *                                                                         *
 #  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,9 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
-from typing import Any, Dict, Optional, List, Union
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional, Union
 
 from sec_interp.logger_config import get_logger
 
@@ -37,12 +39,12 @@ class DataCache:
 
     def __init__(self) -> None:
         """Initialize empty cache."""
-        self._topo_cache: Dict[str, ProfileData] = {}
-        self._geol_cache: Dict[str, GeologyData] = {}
-        self._struct_cache: Dict[str, StructureData] = {}
-        self._metadata: Dict[str, Dict[str, Any]] = {}
+        self._topo_cache: dict[str, ProfileData] = {}
+        self._geol_cache: dict[str, GeologyData] = {}
+        self._struct_cache: dict[str, StructureData] = {}
+        self._metadata: dict[str, dict[str, Any]] = {}
 
-    def get_cache_key(self, params: Dict[str, Any]) -> str:
+    def get_cache_key(self, params: dict[str, Any]) -> str:
         """Generate a unique cache key from parameters.
 
         Args:
@@ -79,7 +81,7 @@ class DataCache:
 
         return hashlib.md5("".join(key_parts).encode("utf-8")).hexdigest()
 
-    def get(self, key: str) -> Optional[Dict[str, Any]]:
+    def get(self, key: str) -> Optional[dict[str, Any]]:
         """Get all cached data for a key.
 
         Args:
@@ -97,7 +99,7 @@ class DataCache:
             "struct_data": self._struct_cache.get(key),
         }
 
-    def set(self, key: str, data: Dict[str, Any]) -> None:
+    def set(self, key: str, data: dict[str, Any]) -> None:
         """Set all cache data for a key.
 
         Args:
@@ -171,7 +173,7 @@ class DataCache:
         """
         self._struct_cache[key] = data
 
-    def get_metadata(self, key: str) -> Optional[Dict[str, Any]]:
+    def get_metadata(self, key: str) -> Optional[dict[str, Any]]:
         """Get cached metadata for a profile.
 
         Args:
@@ -182,7 +184,7 @@ class DataCache:
         """
         return self._metadata.get(key)
 
-    def set_metadata(self, key: str, metadata: Dict[str, Any]) -> None:
+    def set_metadata(self, key: str, metadata: dict[str, Any]) -> None:
         """Store metadata for a profile.
 
         Args:
@@ -222,7 +224,7 @@ class DataCache:
         """Clear all cached data."""
         self.invalidate()
 
-    def get_cache_size(self) -> Dict[str, int]:
+    def get_cache_size(self) -> dict[str, int]:
         """Get the size of each cache.
 
         Returns:

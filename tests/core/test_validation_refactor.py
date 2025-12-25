@@ -16,9 +16,10 @@ from pathlib import Path
 from core.validation.field_validator import (
     validate_numeric_input,
     validate_integer_input,
-    validate_angle_range
+    validate_angle_range,
 )
 from core.validation.path_validator import validate_output_path
+
 
 class TestRefactoredFieldValidation:
     """Tests for field_validator module."""
@@ -36,6 +37,7 @@ class TestRefactoredFieldValidation:
         assert validate_angle_range(45, "Dip") == (True, "")
         assert validate_angle_range(400, "Dip")[0] is False
 
+
 class TestRefactoredPathValidation:
     """Tests for path_validator module."""
 
@@ -43,4 +45,3 @@ class TestRefactoredPathValidation:
         is_valid, _, path = validate_output_path(str(tmp_path))
         assert is_valid
         assert path == tmp_path
-

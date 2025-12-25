@@ -93,86 +93,26 @@
 <section id="module-sec_interp.core.validation">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sec_interp.core.validation" title="Link to this heading">¶</a></h2>
 <p>Validation package for SecInterp plugin.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_numeric_input">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_numeric_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_numeric_input" title="Link to this definition">¶</a></dt>
-<dd><p>Validate a numeric input string from a text field.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="sec_interp.core.validation.ProjectValidator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">ProjectValidator</span></span><a class="headerlink" href="#sec_interp.core.validation.ProjectValidator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Orchestrates validation of project parameters independent of the GUI.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.core.validation.ProjectValidator.validate_all">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams" title="sec_interp.core.validation.project_validator.ValidationParams"><span class="pre">ValidationParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.ProjectValidator.validate_all" title="Link to this definition">¶</a></dt>
+<dd><p>Perform a comprehensive validation of all project parameters.</p>
+<p>This includes checking for required files, geometry types, field existence,
+and numeric range constraints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> – The string value to validate.</p></li>
-<li><p><strong>min_val</strong> – Optional minimum value allowed.</p></li>
-<li><p><strong>max_val</strong> – Optional maximum value allowed.</p></li>
-<li><p><strong>field_name</strong> – Name of the field for error messages.</p></li>
-<li><p><strong>allow_empty</strong> – Whether to allow an empty string.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message, float_value)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
-<li><p>float_value (float | None): The parsed numeric value if valid.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_integer_input">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_integer_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_integer_input" title="Link to this definition">¶</a></dt>
-<dd><p>Validate an integer input string from a text field.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> – The string value to validate.</p></li>
-<li><p><strong>min_val</strong> – Optional minimum value allowed.</p></li>
-<li><p><strong>max_val</strong> – Optional maximum value allowed.</p></li>
-<li><p><strong>field_name</strong> – Name of the field for error messages.</p></li>
-<li><p><strong>allow_empty</strong> – Whether to allow an empty string.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message, int_value)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
-<li><p>int_value (int | None): The parsed integer value if valid.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_angle_range">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_angle_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">360.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_angle_range" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that an angle value is within the expected range.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> – The angle value to validate.</p></li>
-<li><p><strong>field_name</strong> – Name of the field for error messages.</p></li>
-<li><p><strong>min_angle</strong> – Minimum allowed angle (default 0.0).</p></li>
-<li><p><strong>max_angle</strong> – Maximum allowed angle (default 360.0).</p></li>
-</ul>
+<dd class="field-odd"><p><strong>params</strong> – The parameters to validate.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
+<li><p>is_valid (bool): True if all checks passed.</p></li>
+<li><p>error_message (str): Newline-separated list of all found errors.</p></li>
 </ul>
 </dd>
 </dl>
@@ -184,22 +124,19 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_field_exists">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_field_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_field_exists" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that a specific field exists in a vector layer.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.core.validation.ProjectValidator.validate_preview_requirements">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_preview_requirements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams" title="sec_interp.core.validation.project_validator.ValidationParams"><span class="pre">ValidationParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.ProjectValidator.validate_preview_requirements" title="Link to this definition">¶</a></dt>
+<dd><p>Validate only the minimum requirements needed to generate a preview.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – The QGIS vector layer to check.</p></li>
-<li><p><strong>field_name</strong> – The name of the field to search for.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>params</strong> – The parameters containing at least raster and line layers.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
+<li><p>is_valid (bool): True if the core preview can be generated.</p></li>
+<li><p>error_message (str): Description of missing core components.</p></li>
 </ul>
 </dd>
 </dl>
@@ -211,298 +148,6 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_field_type">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_field_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">qgis.PyQt.QtCore.QVariant.Type</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_field_type" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that a field in a layer has one of the expected data types.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – The QGIS vector layer containing the field.</p></li>
-<li><p><strong>field_name</strong> – The name of the field to check.</p></li>
-<li><p><strong>expected_types</strong> – List of allowed QVariant.Type values.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_layer_exists">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_layer_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">qgis.core.QgsMapLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_layer_exists" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that a layer with the given name exists in the current QGIS project.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>layer_name</strong> – The name of the layer to search for.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message, layer)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if at least one matching layer was found.</p></li>
-<li><p>error_message (str): Error details if no layer was found.</p></li>
-<li><p>layer (QgsMapLayer | None): The first matching layer instance if valid.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_layer_has_features">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_layer_has_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_layer_has_features" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that a vector layer contains at least one feature.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>layer</strong> – The QGIS vector layer to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the layer has features.</p></li>
-<li><p>error_message (str): Error details if the layer is empty.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_layer_geometry">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_layer_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsWkbTypes.GeometryType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_layer_geometry" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that a vector layer matches the expected QGIS geometry type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – The QGIS vector layer to check.</p></li>
-<li><p><strong>expected_type</strong> – The required QgsWkbTypes.GeometryType.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the geometry type matches.</p></li>
-<li><p>error_message (str): Detailed error if types mismatch.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_raster_band">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_raster_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsRasterLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_raster_band" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that a specified band number exists in the given raster layer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – The QGIS raster layer to check.</p></li>
-<li><p><strong>band_number</strong> – The 1-based index of the raster band.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the band exists.</p></li>
-<li><p>error_message (str): Error message if the band is out of range.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_structural_requirements">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_structural_requirements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dip_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strike_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_structural_requirements" title="Link to this definition">¶</a></dt>
-<dd><p>Validate structural layer requirements (geometry and attribute fields).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layer</strong> – The QGIS point layer containing structural data.</p></li>
-<li><p><strong>layer_name</strong> – Human-readable name of the layer.</p></li>
-<li><p><strong>dip_field</strong> – Name of the attribute field containing dip values.</p></li>
-<li><p><strong>strike_field</strong> – Name of the attribute field containing strike values.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if both geometry and fields are valid.</p></li>
-<li><p>error_message (str): Detailed error if validation fails.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_layer_configuration">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_layer_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsMapLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcrop_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">structural_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcrop_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_dip_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_strike_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_layer_configuration" title="Link to this definition">¶</a></dt>
-<dd><p>Validate a complete set of layer inputs for the plugin.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>raster_layer</strong> – The primary DEM layer.</p></li>
-<li><p><strong>line_layer</strong> – The section line layer.</p></li>
-<li><p><strong>outcrop_layer</strong> – Optional geological outcrop layer.</p></li>
-<li><p><strong>structural_layer</strong> – Optional structural measurement layer.</p></li>
-<li><p><strong>outcrop_field</strong> – Attribute field for geology units.</p></li>
-<li><p><strong>struct_dip_field</strong> – Attribute field for dip values.</p></li>
-<li><p><strong>struct_strike_field</strong> – Attribute field for strike values.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the entire configuration is valid.</p></li>
-<li><p>error_message (str): First encountered configuration error.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_crs_compatibility">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_crs_compatibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">qgis.core.QgsMapLayer</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_crs_compatibility" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that a list of layers have compatible Coordinate Reference Systems.</p>
-<p>If layers have different CRSs, it returns a warning message instead of an error,
-as QGIS can reproject on-the-fly, but accuracy might be impaired.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>layers</strong> – List of QgsMapLayer objects to compare.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_compatible, message)</dt><dd><ul class="simple">
-<li><p>is_compatible (bool): True if all layers share the same CRS.</p></li>
-<li><p>message (str): Warning listing incompatible layers if any.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_safe_output_path">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_safe_output_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_exist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_if_missing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_safe_output_path" title="Link to this definition">¶</a></dt>
-<dd><p>Validate an output path string with security and path traversal protection.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – Original path string to validate.</p></li>
-<li><p><strong>base_dir</strong> – Optional base directory to restrict the path to (security sandbox).</p></li>
-<li><p><strong>must_exist</strong> – If True, validation fails if the path is not currently found on disk.</p></li>
-<li><p><strong>create_if_missing</strong> – If True, attempts to create the directory if it does not exist.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message, resolved_path)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the path is safe and meets requirements.</p></li>
-<li><p>error_message (str): Reason for validation failure.</p></li>
-<li><p>resolved_path (Path | None): Cleaned, absolute Path object if valid.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_output_path">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_output_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_output_path" title="Link to this definition">¶</a></dt>
-<dd><p>Validate that an output path is a valid directory and currently writable.</p>
-<p>This is a convenience wrapper around <cite>validate_safe_output_path()</cite>
-for general directory validation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> – The path string to validate.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message, resolved_path)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the directory is valid and writable.</p></li>
-<li><p>error_message (str): Error details if validation fails.</p></li>
-<li><p>resolved_path (Path | None): Absolute Path object if valid.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sec_interp.core.validation.validate_reasonable_ranges">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_reasonable_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_reasonable_ranges" title="Link to this definition">¶</a></dt>
-<dd><p>Check for unreasonable or potentially erroneous parameter values.</p>
-<p>This function does not return hard errors, but a list of warning strings
-to inform the user about extreme values (e.g., vertical exaggeration &gt; 10).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>values</strong> – Dictionary containing parameter names and their current values.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of warning messages. If empty, all values are reasonable.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[str]</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -577,26 +222,24 @@ to inform the user about extreme values (e.g., vertical exaggeration &gt; 10).</
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="sec_interp.core.validation.ProjectValidator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">ProjectValidator</span></span><a class="headerlink" href="#sec_interp.core.validation.ProjectValidator" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Orchestrates validation of project parameters independent of the GUI.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.validation.ProjectValidator.validate_all">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams" title="sec_interp.core.validation.project_validator.ValidationParams"><span class="pre">ValidationParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.ProjectValidator.validate_all" title="Link to this definition">¶</a></dt>
-<dd><p>Perform a comprehensive validation of all project parameters.</p>
-<p>This includes checking for required files, geometry types, field existence,
-and numeric range constraints.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_angle_range">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_angle_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">360.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_angle_range" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that an angle value is within the expected range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>params</strong> – The parameters to validate.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – The angle value to validate.</p></li>
+<li><p><strong>field_name</strong> – Name of the field for error messages.</p></li>
+<li><p><strong>min_angle</strong> – Minimum allowed angle (default 0.0).</p></li>
+<li><p><strong>max_angle</strong> – Maximum allowed angle (default 360.0).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if all checks passed.</p></li>
-<li><p>error_message (str): Newline-separated list of all found errors.</p></li>
+<li><p>is_valid (bool): True if validation passed.</p></li>
+<li><p>error_message (str): Error details if validation failed.</p></li>
 </ul>
 </dd>
 </dl>
@@ -608,19 +251,21 @@ and numeric range constraints.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.validation.ProjectValidator.validate_preview_requirements">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_preview_requirements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams" title="sec_interp.core.validation.project_validator.ValidationParams"><span class="pre">ValidationParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.ProjectValidator.validate_preview_requirements" title="Link to this definition">¶</a></dt>
-<dd><p>Validate only the minimum requirements needed to generate a preview.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_crs_compatibility">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_crs_compatibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">qgis.core.QgsMapLayer</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_crs_compatibility" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that a list of layers have compatible Coordinate Reference Systems.</p>
+<p>If layers have different CRSs, it returns a warning message instead of an error,
+as QGIS can reproject on-the-fly, but accuracy might be impaired.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>params</strong> – The parameters containing at least raster and line layers.</p>
+<dd class="field-odd"><p><strong>layers</strong> – List of QgsMapLayer objects to compare.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the core preview can be generated.</p></li>
-<li><p>error_message (str): Description of missing core components.</p></li>
+<dt>(is_compatible, message)</dt><dd><ul class="simple">
+<li><p>is_compatible (bool): True if all layers share the same CRS.</p></li>
+<li><p>message (str): Warning listing incompatible layers if any.</p></li>
 </ul>
 </dd>
 </dl>
@@ -632,6 +277,361 @@ and numeric range constraints.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_field_exists">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_field_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_field_exists" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that a specific field exists in a vector layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – The QGIS vector layer to check.</p></li>
+<li><p><strong>field_name</strong> – The name of the field to search for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if validation passed.</p></li>
+<li><p>error_message (str): Error details if validation failed.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_field_type">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_field_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">qgis.PyQt.QtCore.QVariant.Type</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_field_type" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that a field in a layer has one of the expected data types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – The QGIS vector layer containing the field.</p></li>
+<li><p><strong>field_name</strong> – The name of the field to check.</p></li>
+<li><p><strong>expected_types</strong> – List of allowed QVariant.Type values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if validation passed.</p></li>
+<li><p>error_message (str): Error details if validation failed.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_integer_input">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_integer_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_integer_input" title="Link to this definition">¶</a></dt>
+<dd><p>Validate an integer input string from a text field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – The string value to validate.</p></li>
+<li><p><strong>min_val</strong> – Optional minimum value allowed.</p></li>
+<li><p><strong>max_val</strong> – Optional maximum value allowed.</p></li>
+<li><p><strong>field_name</strong> – Name of the field for error messages.</p></li>
+<li><p><strong>allow_empty</strong> – Whether to allow an empty string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message, int_value)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if validation passed.</p></li>
+<li><p>error_message (str): Error details if validation failed.</p></li>
+<li><p>int_value (int | None): The parsed integer value if valid.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_layer_configuration">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_layer_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsMapLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcrop_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">structural_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcrop_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_dip_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_strike_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_layer_configuration" title="Link to this definition">¶</a></dt>
+<dd><p>Validate a complete set of layer inputs for the plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster_layer</strong> – The primary DEM layer.</p></li>
+<li><p><strong>line_layer</strong> – The section line layer.</p></li>
+<li><p><strong>outcrop_layer</strong> – Optional geological outcrop layer.</p></li>
+<li><p><strong>structural_layer</strong> – Optional structural measurement layer.</p></li>
+<li><p><strong>outcrop_field</strong> – Attribute field for geology units.</p></li>
+<li><p><strong>struct_dip_field</strong> – Attribute field for dip values.</p></li>
+<li><p><strong>struct_strike_field</strong> – Attribute field for strike values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if the entire configuration is valid.</p></li>
+<li><p>error_message (str): First encountered configuration error.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_layer_exists">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_layer_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">qgis.core.QgsMapLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_layer_exists" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that a layer with the given name exists in the current QGIS project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layer_name</strong> – The name of the layer to search for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message, layer)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if at least one matching layer was found.</p></li>
+<li><p>error_message (str): Error details if no layer was found.</p></li>
+<li><p>layer (QgsMapLayer | None): The first matching layer instance if valid.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_layer_geometry">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_layer_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsWkbTypes.GeometryType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_layer_geometry" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that a vector layer matches the expected QGIS geometry type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – The QGIS vector layer to check.</p></li>
+<li><p><strong>expected_type</strong> – The required QgsWkbTypes.GeometryType.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if the geometry type matches.</p></li>
+<li><p>error_message (str): Detailed error if types mismatch.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_layer_has_features">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_layer_has_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_layer_has_features" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that a vector layer contains at least one feature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layer</strong> – The QGIS vector layer to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if the layer has features.</p></li>
+<li><p>error_message (str): Error details if the layer is empty.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_numeric_input">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_numeric_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_numeric_input" title="Link to this definition">¶</a></dt>
+<dd><p>Validate a numeric input string from a text field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – The string value to validate.</p></li>
+<li><p><strong>min_val</strong> – Optional minimum value allowed.</p></li>
+<li><p><strong>max_val</strong> – Optional maximum value allowed.</p></li>
+<li><p><strong>field_name</strong> – Name of the field for error messages.</p></li>
+<li><p><strong>allow_empty</strong> – Whether to allow an empty string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message, float_value)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if validation passed.</p></li>
+<li><p>error_message (str): Error details if validation failed.</p></li>
+<li><p>float_value (float | None): The parsed numeric value if valid.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_output_path">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_output_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_output_path" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that an output path is a valid directory and currently writable.</p>
+<p>This is a convenience wrapper around <cite>validate_safe_output_path()</cite>
+for general directory validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – The path string to validate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message, resolved_path)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if the directory is valid and writable.</p></li>
+<li><p>error_message (str): Error details if validation fails.</p></li>
+<li><p>resolved_path (Path | None): Absolute Path object if valid.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_raster_band">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_raster_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsRasterLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_raster_band" title="Link to this definition">¶</a></dt>
+<dd><p>Validate that a specified band number exists in the given raster layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – The QGIS raster layer to check.</p></li>
+<li><p><strong>band_number</strong> – The 1-based index of the raster band.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if the band exists.</p></li>
+<li><p>error_message (str): Error message if the band is out of range.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_reasonable_ranges">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_reasonable_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_reasonable_ranges" title="Link to this definition">¶</a></dt>
+<dd><p>Check for unreasonable or potentially erroneous parameter values.</p>
+<p>This function does not return hard errors, but a list of warning strings
+to inform the user about extreme values (e.g., vertical exaggeration &gt; 10).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> – Dictionary containing parameter names and their current values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of warning messages. If empty, all values are reasonable.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_safe_output_path">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_safe_output_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_exist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_if_missing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_safe_output_path" title="Link to this definition">¶</a></dt>
+<dd><p>Validate an output path string with security and path traversal protection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Original path string to validate.</p></li>
+<li><p><strong>base_dir</strong> – Optional base directory to restrict the path to (security sandbox).</p></li>
+<li><p><strong>must_exist</strong> – If True, validation fails if the path is not currently found on disk.</p></li>
+<li><p><strong>create_if_missing</strong> – If True, attempts to create the directory if it does not exist.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message, resolved_path)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if the path is safe and meets requirements.</p></li>
+<li><p>error_message (str): Reason for validation failure.</p></li>
+<li><p>resolved_path (Path | None): Cleaned, absolute Path object if valid.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sec_interp.core.validation.validate_structural_requirements">
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.</span></span><span class="sig-name descname"><span class="pre">validate_structural_requirements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dip_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strike_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.validate_structural_requirements" title="Link to this definition">¶</a></dt>
+<dd><p>Validate structural layer requirements (geometry and attribute fields).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – The QGIS point layer containing structural data.</p></li>
+<li><p><strong>layer_name</strong> – Human-readable name of the layer.</p></li>
+<li><p><strong>dip_field</strong> – Name of the attribute field containing dip values.</p></li>
+<li><p><strong>strike_field</strong> – Name of the attribute field containing strike values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(is_valid, error_message)</dt><dd><ul class="simple">
+<li><p>is_valid (bool): True if both geometry and fields are valid.</p></li>
+<li><p>error_message (str): Detailed error if validation fails.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

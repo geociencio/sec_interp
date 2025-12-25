@@ -1,9 +1,13 @@
+from __future__ import annotations
+
+
 """Sampling Utilities Module.
 
 Elevation sampling and profile context preparation.
 """
 
-from typing import List, Tuple, Optional, Any
+from typing import Any, List, Optional, Tuple
+
 from qgis.core import (
     QgsDistanceArea,
     QgsGeometry,
@@ -24,7 +28,7 @@ def sample_elevation_along_line(
     band_number: int,
     distance_area: QgsDistanceArea,
     reference_point: Optional[QgsPointXY] = None,
-) -> List[QgsPointXY]:
+) -> list[QgsPointXY]:
     """Sample elevation values along a line geometry from a raster layer.
 
     Densifies the line at raster resolution and samples the elevation at each vertex.
@@ -72,7 +76,9 @@ def sample_elevation_along_line(
     return points
 
 
-def prepare_profile_context(line_lyr: QgsVectorLayer) -> Tuple[QgsGeometry, QgsPointXY, QgsDistanceArea]:
+def prepare_profile_context(
+    line_lyr: QgsVectorLayer,
+) -> tuple[QgsGeometry, QgsPointXY, QgsDistanceArea]:
     """Prepare a common context for profile calculation operations.
 
     Args:
@@ -101,7 +107,6 @@ def prepare_profile_context(line_lyr: QgsVectorLayer) -> Tuple[QgsGeometry, QgsP
     da = create_distance_area(line_lyr.crs())
 
     return line_geom, line_start, da
-
 
 
 def interpolate_elevation(topo_data: list, distance: float) -> float:

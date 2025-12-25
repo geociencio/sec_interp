@@ -3,6 +3,8 @@
 Handles the creation of grid lines and axes labels with nice intervals.
 """
 
+from __future__ import annotations
+
 import math
 from typing import Optional
 
@@ -24,6 +26,7 @@ from qgis.core import (
 from qgis.PyQt.QtGui import QColor
 
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -52,7 +55,9 @@ class PreviewAxesManager:
         return nice_fraction * (10**exponent)
 
     @classmethod
-    def create_axes_layer(cls, extent, vert_exag: float = 1.0) -> Optional[QgsVectorLayer]:
+    def create_axes_layer(
+        cls, extent, vert_exag: float = 1.0
+    ) -> Optional[QgsVectorLayer]:
         """Create temporary layer for axes and grid."""
         if not extent:
             return None
@@ -76,10 +81,10 @@ class PreviewAxesManager:
         # Vertical grid lines
         y_floor = y_start * vert_exag
         y_ceil = (math.ceil(y_max_orig / y_interval) * y_interval) * vert_exag
-        
+
         x = x_start
         last_x = x_start
-        while x <= extent.xMaximum() + 0.1: # Small epsilon
+        while x <= extent.xMaximum() + 0.1:  # Small epsilon
             p1 = QgsPointXY(x, y_floor)
             p2 = QgsPointXY(x, y_ceil)
             feat = QgsFeature()
@@ -90,7 +95,7 @@ class PreviewAxesManager:
 
         # Horizontal grid lines
         y = y_start
-        while y <= y_max_orig + 0.1: # Small epsilon
+        while y <= y_max_orig + 0.1:  # Small epsilon
             y_draw = y * vert_exag
             p1 = QgsPointXY(x_start, y_draw)
             p2 = QgsPointXY(last_x, y_draw)
@@ -108,7 +113,9 @@ class PreviewAxesManager:
         return layer
 
     @classmethod
-    def create_axes_labels_layer(cls, extent, vert_exag: float = 1.0) -> Optional[QgsVectorLayer]:
+    def create_axes_labels_layer(
+        cls, extent, vert_exag: float = 1.0
+    ) -> Optional[QgsVectorLayer]:
         """Create a point layer for axes labels."""
         if not extent:
             return None
@@ -167,9 +174,14 @@ class PreviewAxesManager:
         settings.setFormat(txt_format)
 
         props = QgsPropertyCollection()
-        props.setProperty(QgsPalLayerSettings.Property.OffsetQuad, QgsProperty.fromField("quadrant"))
+        props.setProperty(
+            QgsPalLayerSettings.Property.OffsetQuad, QgsProperty.fromField("quadrant")
+        )
         # Significant distance for Y (quadrant 3) vs X (quadrant 7)
-        props.setProperty(QgsPalLayerSettings.Property.LabelDistance, QgsProperty.fromExpression("IF(quadrant=3, 15, 8)"))
+        props.setProperty(
+            QgsPalLayerSettings.Property.LabelDistance,
+            QgsProperty.fromExpression("IF(quadrant=3, 15, 8)"),
+        )
         settings.setDataDefinedProperties(props)
         settings.dist = 8.0  # Fallback
 

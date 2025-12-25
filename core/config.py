@@ -4,9 +4,11 @@ Provides a centralized way to manage plugin settings using QgsSettings.
 """
 
 from typing import Any, Dict, Optional
+
 from qgis.core import QgsSettings
 
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -52,13 +54,13 @@ class ConfigService:
             The configuration value.
         """
         full_key = self.PREFIX + key
-        
+
         # Determine internal default
         if default is None:
             default = self.DEFAULTS.get(key)
-            
+
         value = self.settings.value(full_key, default)
-        
+
         # Handle type conversion if necessary (QgsSettings can return QVariant)
         return value
 

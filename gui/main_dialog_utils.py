@@ -3,9 +3,11 @@
 This module provides helper methods for layer filtering and field population.
 """
 
-from typing import List, Optional
-from qgis.core import QgsMapLayer, QgsWkbTypes, QgsProject, QgsApplication
+from typing import Optional
+
+from qgis.core import QgsApplication, QgsMapLayer, QgsProject, QgsWkbTypes
 from qgis.PyQt.QtGui import QIcon
+
 
 class DialogEntityManager:
     """Provides utility methods for interacting with QGIS entities."""
@@ -20,7 +22,7 @@ class DialogEntityManager:
             target_combobox.addItems(fields)
 
     @staticmethod
-    def get_layer_names_by_type(layer_type: QgsMapLayer.LayerType) -> List[str]:
+    def get_layer_names_by_type(layer_type: QgsMapLayer.LayerType) -> list[str]:
         """Get a list of layer names filtered by the specified layer type."""
         return [
             layer.name()
@@ -29,7 +31,9 @@ class DialogEntityManager:
         ]
 
     @staticmethod
-    def get_layer_names_by_geometry(geometry_type: QgsWkbTypes.GeometryType) -> List[str]:
+    def get_layer_names_by_geometry(
+        geometry_type: QgsWkbTypes.GeometryType,
+    ) -> list[str]:
         """Get a list of layer names filtered by the specified geometry type."""
         return [
             layer.name()

@@ -95,9 +95,8 @@ class ShapefileExporter(BaseExporter):
                 writer.addFeature(feature)
 
             # Clean up
-            del writer
-            return True
-
         except Exception:
             logger.exception(f"Shapefile export failed for {output_path}")
             return False
+        else:
+            return True

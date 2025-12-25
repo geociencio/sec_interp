@@ -16,7 +16,7 @@ from qgis.core import (
 
 
 def create_shapefile_writer(
-    output_path: Union[str, Path],
+    output_path: str | Path,
     crs: QgsCoordinateReferenceSystem,
     fields: QgsFields,
     geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.LineString,
@@ -57,5 +57,3 @@ def create_shapefile_writer(
         )
 
     return writer
-
-

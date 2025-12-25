@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 """Base exporter module for Sec Interp plugin."""
 
 from abc import ABC, abstractmethod
@@ -44,7 +47,7 @@ class BaseExporter(ABC):
         pass
 
     def validate_export_path(
-        self, output_path: Path, base_dir: Path | None = None
+        self, output_path: Path, base_dir: Optional[Path] = None
     ) -> tuple[bool, str]:
         """Validate export path for security.
 
