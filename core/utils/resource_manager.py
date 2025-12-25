@@ -1,19 +1,22 @@
 from __future__ import annotations
 
+
 """Resource management utilities for SecInterp.
 
 This module provides context managers for handling temporary QGIS resources
 and system files to ensure proper cleanup and prevent resource leaks.
 """
 
-import os
+from collections.abc import Generator
 import contextlib
+import os
 import tempfile
-from typing import Generator, Optional
+from typing import Optional
 
-from qgis.core import QgsProject, QgsVectorLayer, QgsMapLayer
+from qgis.core import QgsMapLayer, QgsProject, QgsVectorLayer
 
 from sec_interp.logger_config import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -84,7 +87,7 @@ def temporary_file(
 
 class ResourceManager:
     """Consolidated resource manager for plugin-wide cleanup."""
-    
+
     @staticmethod
     def cleanup_layer(layer: QgsMapLayer):
         """Standard way to safely remove a layer from the project.

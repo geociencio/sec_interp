@@ -19,10 +19,16 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
-from sec_interp.core.exceptions import ProcessingError, GeometryError, DataMissingError
 from sec_interp.core import utils as scu
+from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
 from sec_interp.core.performance_metrics import MetricsCollector, PerformanceTimer
-from sec_interp.core.types import GeologyData, ProfileData, StructureData, PreviewParams, PreviewResult
+from sec_interp.core.types import (
+    GeologyData,
+    PreviewParams,
+    PreviewResult,
+    ProfileData,
+    StructureData,
+)
 from sec_interp.logger_config import get_logger
 
 
@@ -102,7 +108,7 @@ class PreviewService:
                 line_feat = next(params.line_layer.getFeatures(), None)
                 if not line_feat:
                     raise GeometryError("Section line layer has no features", {"layer": params.line_layer.name()})
-                
+
                 line_len = line_feat.geometry().length()
                 max_pts = self.calculate_max_points(
                     params.canvas_width, params.max_points, True

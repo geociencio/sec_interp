@@ -63,13 +63,12 @@ class PreviewAxesManager:
             return None
 
         layer = QgsVectorLayer("LineString", "Axes", "memory")
-        
+
         # Ensure layer has a valid CRS (Project CRS)
-        from qgis.core import QgsProject
         project_crs = QgsProject.instance().crs()
         if project_crs.isValid():
              layer.setCrs(project_crs)
-             
+
         provider = layer.dataProvider()
 
         width = extent.width()
@@ -132,9 +131,8 @@ class PreviewAxesManager:
             "Axes Labels",
             "memory",
         )
-        
+
         # Ensure layer has a valid CRS (Project CRS)
-        from qgis.core import QgsProject
         project_crs = QgsProject.instance().crs()
         if project_crs.isValid():
              layer.setCrs(project_crs)

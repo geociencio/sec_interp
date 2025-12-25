@@ -17,9 +17,9 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
+from collections.abc import Generator
 import contextlib
 from typing import List, Optional, Tuple
-from collections.abc import Generator
 
 from qgis import processing
 from qgis.core import (
@@ -36,11 +36,11 @@ from qgis.core import (
 
 from sec_interp.core import utils as scu
 from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
-from sec_interp.core.performance_metrics import performance_monitor
 from sec_interp.core.interfaces.geology_interface import IGeologyService
+from sec_interp.core.performance_metrics import performance_monitor
 from sec_interp.core.types import GeologyData, GeologySegment
-from sec_interp.core.utils.sampling import interpolate_elevation
 from sec_interp.core.utils.resource_manager import temporary_memory_layer
+from sec_interp.core.utils.sampling import interpolate_elevation
 from sec_interp.logger_config import get_logger
 
 
@@ -172,7 +172,7 @@ class GeologyService(IGeologyService):
             if i > 0:
                 segment_len = da.measureLine(master_grid_points[i - 1], pt)
                 current_dist += segment_len
-            
+
             # Use sample() for faster single band access
             val, ok = raster_lyr.dataProvider().sample(pt, band_number)
             elev = val if ok else 0.0
@@ -210,18 +210,18 @@ class GeologyService(IGeologyService):
                 feedback=feedback,
             )
             layer = result["OUTPUT"]
-            
+
             # Use our resource manager to ensure cleanup
             with temporary_memory_layer(layer.source(), layer.name()) as managed_layer:
-                # We need to manually copy features if it's a new instance, 
+                # We need to manually copy features if it's a new instance,
                 # but 'memory:' layers from processing are already in memory.
                 # Just yielding the result layer is enough if we wrap it.
                 yield layer
-                
+
         except Exception as e:
             logger.exception("Geological intersection failed")
             raise ProcessingError(
-                "Cannot compute geological intersection", 
+                "Cannot compute geological intersection",
                 {"line_layer": line_lyr.name(), "outcrop_layer": outcrop_lyr.name()}
             ) from e
 

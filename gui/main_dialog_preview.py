@@ -13,19 +13,25 @@ import traceback
 from typing import TYPE_CHECKING, Any, Optional
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
-from qgis.PyQt.QtCore import QTimer, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QTimer
 
-from sec_interp.core.interfaces.preview_interface import IPreviewService
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
+from sec_interp.core.exceptions import SecInterpError
+from sec_interp.core.interfaces.preview_interface import IPreviewService
 from sec_interp.core.performance_metrics import (
     MetricsCollector,
     PerformanceTimer,
     format_duration,
 )
-from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.services.preview_service import PreviewService
-from sec_interp.core.types import GeologyData, ProfileData, StructureData, PreviewParams, PreviewResult
+from sec_interp.core.types import (
+    GeologyData,
+    PreviewParams,
+    PreviewResult,
+    ProfileData,
+    StructureData,
+)
 from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig
@@ -178,7 +184,7 @@ class PreviewManager:
                         # Use cached geology if available (from async completion)
                         # Otherwise None (will be filled by async process)
                         geol_for_render = self.cached_data.get("geol")
-                        
+
                         self.dialog.plugin_instance.draw_preview(
                             self.cached_data["topo"],
                             geol_for_render,
@@ -552,7 +558,7 @@ class PreviewManager:
                 )
                 msg = self._format_results_message(result)
                 self.dialog.preview_widget.results_text.setPlainText(msg)
-                
+
                 # CRITICAL: Update last_result so cached renders include geology
                 self.last_result = result
 

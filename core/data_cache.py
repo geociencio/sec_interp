@@ -5,6 +5,7 @@ from typing import Any, Dict, Optional
 from sec_interp.core.interfaces.cache_interface import ICacheService
 from sec_interp.logger_config import get_logger
 
+
 logger = get_logger(__name__)
 
 

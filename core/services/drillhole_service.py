@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 """Drillhole Data Processing Service.
 
 This module provides services for processing and projecting drillhole data,
@@ -21,9 +22,9 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
+from sec_interp.core import utils as scu
 from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
 from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
-from sec_interp.core import utils as scu
 from sec_interp.core.types import GeologySegment
 from sec_interp.logger_config import get_logger
 

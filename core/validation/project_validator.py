@@ -5,6 +5,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsWkbTypes
 
+from sec_interp.core.exceptions import ValidationError
+
 from .layer_validator import (
     validate_field_exists,
     validate_layer_geometry,
@@ -13,9 +15,6 @@ from .layer_validator import (
     validate_structural_requirements,
 )
 from .path_validator import validate_output_path
-
-
-from sec_interp.core.exceptions import ValidationError
 
 
 def validate_reasonable_ranges(values: dict[str, Any]) -> list[str]:

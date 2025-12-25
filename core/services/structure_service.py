@@ -33,8 +33,8 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
 from sec_interp.core import validation as vu
+from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
 from sec_interp.core.interfaces.structure_interface import IStructureService
 from sec_interp.core.types import StructureData, StructureMeasurement
 from sec_interp.logger_config import get_logger

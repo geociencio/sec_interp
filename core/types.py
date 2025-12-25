@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import IntEnum
-from typing import Any, Dict, List, Optional, Tuple, Protocol, runtime_checkable
+from typing import Any, Dict, List, Optional, Protocol, Tuple, runtime_checkable
 
 from qgis.core import QgsGeometry, QgsPointXY, QgsRasterLayer, QgsVectorLayer
 
-from sec_interp.core.exceptions import ValidationError, ConfigurationError
+from sec_interp.core.exceptions import ConfigurationError, ValidationError
 from sec_interp.core.performance_metrics import MetricsCollector
 
 
@@ -51,7 +51,6 @@ ValidationResult = tuple[bool, str]
 PointList = list[QgsPointXY]
 """List of QgsPointXY objects."""
 
-from dataclasses import dataclass
 
 
 @dataclass
@@ -87,7 +86,7 @@ class GeologySegment:
     """
 
     unit_name: str
-    geometry: "QgsGeometry"  # Forward reference
+    geometry: QgsGeometry  # Forward reference
     attributes: dict[str, Any]
     points: list[tuple[float, float]]
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 """Controller for SecInterp profile data generation.
 
 This module handles the orchestration of various data generation services
@@ -7,21 +8,21 @@ This module handles the orchestration of various data generation services
 """
 
 import math
-import time
 from pathlib import Path
+import time
 from typing import Any, Dict, List, Optional, Tuple
 
-from sec_interp.core.exceptions import ProcessingError, DataMissingError
 from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
-from sec_interp.core.types import PreviewParams
+from sec_interp.core.exceptions import DataMissingError, ProcessingError
 from sec_interp.core.services import (
     DrillholeService,
     GeologyService,
     ProfileService,
     StructureService,
 )
+from sec_interp.core.types import PreviewParams
 from sec_interp.logger_config import get_logger
 
 
@@ -100,9 +101,9 @@ class ProfileController:
         """
         # Phase 5: Native validation
         params.validate()
-        
+
         messages = []
-        
+
         # Metadata for cache (LOD / max_points info)
         cache_meta = {
             "max_points": params.max_points,
@@ -118,9 +119,9 @@ class ProfileController:
             for val in param_values:
                 from qgis.core import QgsMapLayer
                 if isinstance(val, QgsMapLayer):
-                    hasher.update(val.id().encode('utf-8'))
+                    hasher.update(val.id().encode("utf-8"))
                 else:
-                    hasher.update(str(val).encode('utf-8'))
+                    hasher.update(str(val).encode("utf-8"))
             return hasher.hexdigest()
 
         raster_layer = params.raster_layer
@@ -176,7 +177,7 @@ class ProfileController:
         struct_data = None
         if structural_layer:
             struct_key = get_sub_key([
-                params.struct_layer, params.buffer_dist, params.dip_field, 
+                params.struct_layer, params.buffer_dist, params.dip_field,
                 params.strike_field, params.band_num
             ])
             struct_data = self.data_cache.get("struct", struct_key)

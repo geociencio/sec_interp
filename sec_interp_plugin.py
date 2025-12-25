@@ -42,12 +42,12 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox
 
-from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.controller import ProfileController
+from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.services.export_service import ExportService
+from sec_interp.core.types import PreviewParams
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
-from sec_interp.core.types import PreviewParams
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
@@ -80,10 +80,10 @@ class SecInterp:
         self.plugin_dir = Path(__file__).resolve().parent
         # initialize locale
         user_locale = QSettings().value("locale/userLocale", "en")
-        
+
         # Try full locale first (e.g., pt_BR)
         locale_path = self.plugin_dir / f"i18n/SecInterp_{user_locale}.qm"
-        
+
         if not locale_path.exists() and user_locale and len(user_locale) > 2:
             # Fallback to language code (e.g., pt)
             locale_short = user_locale[0:2]
@@ -336,7 +336,7 @@ class SecInterp:
         # 3. Connect Layer Notifications for Cache Invalidation
         active_layers = [
             l for l in [
-                params.raster_layer, params.line_layer, 
+                params.raster_layer, params.line_layer,
                 params.outcrop_layer, params.struct_layer,
                 params.collar_layer, params.survey_layer, params.interval_layer
             ] if l

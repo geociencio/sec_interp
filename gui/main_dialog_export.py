@@ -14,7 +14,7 @@ from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QFileDialog
 
-from sec_interp.core.exceptions import SecInterpError, ExportError
+from sec_interp.core.exceptions import ExportError, SecInterpError
 from sec_interp.core.performance_metrics import MetricsCollector, PerformanceTimer
 from sec_interp.core.services.export_service import ExportService
 from sec_interp.exporters import get_exporter

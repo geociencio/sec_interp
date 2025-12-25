@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 """Sampling Utilities Module.
 
 This module provides elevation sampling and profile context preparation tools.
@@ -59,10 +60,10 @@ def sample_elevation_along_line(
     from .geometry import get_line_vertices
 
     vertices = get_line_vertices(densified_geom)
-    
+
     points = []
     current_dist = 0.0
-    
+
     # Optional: If we have a reference point, calculate its distance to the first vertex
     if reference_point:
         current_dist = distance_area.measureLine(reference_point, vertices[0])
@@ -127,24 +128,24 @@ def interpolate_elevation(topo_data: list, distance: float) -> float:
         The interpolated elevation value.
     """
     import bisect
-    
+
     # Extract distances for bisect
     distances = [pt[0] for pt in topo_data]
-    
+
     # Find the insertion point
     idx = bisect.bisect_left(distances, distance)
-    
+
     if idx == 0:
         return topo_data[0][1]
     if idx >= len(topo_data):
         return topo_data[-1][1]
-        
+
     # Interpolate
     dist1, elev1 = topo_data[idx - 1]
     dist2, elev2 = topo_data[idx]
-    
+
     if dist2 == dist1:
         return elev1
-        
+
     ratio = (distance - dist1) / (dist2 - dist1)
     return elev1 + (elev2 - elev1) * ratio

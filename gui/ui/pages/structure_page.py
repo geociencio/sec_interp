@@ -2,7 +2,7 @@
 
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsDoubleSpinBox, QgsFieldComboBox, QgsMapLayerComboBox
-from qgis.PyQt.QtCore import (QCoreApplication, pyqtSignal)
+from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import QGridLayout, QLabel
 
 from sec_interp.gui.main_dialog_config import DialogDefaults

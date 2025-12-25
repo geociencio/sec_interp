@@ -12,9 +12,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from qgis.core import QgsMapSettings, QgsProject, QgsRectangle
 
-from sec_interp.core.exceptions import ExportError, DataMissingError
+from sec_interp.core.exceptions import DataMissingError, ExportError
 from sec_interp.core.types import PreviewParams
-
 from sec_interp.logger_config import get_logger
 
 
@@ -95,7 +94,7 @@ class ExportService:
             )
         except Exception as e:
             raise ExportError(f"Topography export failed: {e!s}") from e
-        
+
         result_msg.extend(["  - topo_profile.csv", "  - profile_line.shp"])
 
         # Export Geology
@@ -121,7 +120,7 @@ class ExportService:
                 )
             except Exception as e:
                 raise ExportError(f"Geology export failed: {e!s}") from e
-            
+
             result_msg.extend(["  - geol_profile.csv", "  - geol_profile.shp"])
 
         # Export Structures
@@ -135,7 +134,7 @@ class ExportService:
                     output_folder / "structural_profile.csv",
                     {"headers": ["dist", "apparent_dip"], "rows": struct_rows},
                 )
-                
+
                 # Get raster resolution from values or layer
                 raster_res = 1.0
                 raster_layer = params.raster_layer
@@ -153,7 +152,7 @@ class ExportService:
                 )
             except Exception as e:
                 raise ExportError(f"Structure export failed: {e!s}") from e
-            
+
             result_msg.extend(["  - structural_profile.csv", "  - structural_profile.shp"])
 
         # Export Drillholes
@@ -170,7 +169,7 @@ class ExportService:
                 )
             except Exception as e:
                 raise ExportError(f"Drillhole export failed: {e!s}") from e
-                
+
             result_msg.extend(["  - drillhole_traces.shp", "  - drillhole_intervals.shp"])
 
         # Export Axes

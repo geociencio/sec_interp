@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 """Rendering Utilities Module.
 
 This module provides visualization and coordinate transformation utilities for profile rendering.
