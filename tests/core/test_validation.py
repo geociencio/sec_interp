@@ -20,7 +20,7 @@ class TestNumericValidation:
         """Test invalid numeric inputs."""
         is_valid, error, _ = vu.validate_numeric_input("abc")
         assert not is_valid
-        assert "numeric" in error.lower()
+        assert "valid number" in error.lower()
 
         is_valid, error, _ = vu.validate_numeric_input("")
         assert not is_valid
@@ -33,7 +33,7 @@ class TestNumericValidation:
 
         is_valid, error, _ = vu.validate_numeric_input("150", min_val=0, max_val=100)
         assert not is_valid
-        assert "range" in error.lower()
+        assert "at most" in error.lower()
 
 
 class TestIntegerValidation:
@@ -58,16 +58,16 @@ class TestAngleValidation:
 
     def test_validate_angle_range_valid(self):
         """Test valid angle values."""
-        assert vu.validate_angle_range("0") == (True, "", 0.0)
-        assert vu.validate_angle_range("180") == (True, "", 180.0)
-        assert vu.validate_angle_range("360") == (True, "", 360.0)
+        assert vu.validate_angle_range(0.0, "Dip") == (True, "")
+        assert vu.validate_angle_range(180.0, "Dip") == (True, "")
+        assert vu.validate_angle_range(360.0, "Dip") == (True, "")
 
     def test_validate_angle_range_invalid(self):
         """Test invalid angle values."""
-        is_valid, error, _ = vu.validate_angle_range("-10")
+        is_valid, error = vu.validate_angle_range(-10.0, "Dip")
         assert not is_valid
 
-        is_valid, error, _ = vu.validate_angle_range("400")
+        is_valid, error = vu.validate_angle_range(400.0, "Dip")
         assert not is_valid
 
 

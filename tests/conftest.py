@@ -14,7 +14,9 @@ class MockQgsMapLayer(MockQgsBase):
     def updateFields(self): pass
     def getFeatures(self, request=None): return iter([])
 
-class MockQgsVectorLayer(MockQgsMapLayer): pass
+class MockQgsVectorLayer(MockQgsMapLayer):
+    def __init__(self, *args, **kwargs):
+        pass
 class MockQgsRasterLayer(MockQgsMapLayer): pass
 
 class MockQgsGeometry(MockQgsBase):
@@ -98,6 +100,7 @@ if "qgis" not in sys.modules:
     sys.modules["qgis.PyQt.QtCore"] = MagicMock()
     sys.modules["qgis.PyQt.QtWidgets"] = MagicMock()
     sys.modules["qgis.PyQt.QtGui"] = MagicMock()
+    sys.modules["qgis.PyQt.QtSvg"] = MagicMock()
     
     mock_processing = MagicMock()
     sys.modules["qgis.processing"] = mock_processing
