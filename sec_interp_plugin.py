@@ -29,11 +29,6 @@ from pathlib import Path
 from typing import Optional
 
 from qgis.core import (
-    QgsGeometry,
-    QgsRaster,
-    QgsRasterLayer,
-    QgsVectorLayer,
-    QgsWkbTypes,
     QgsProject,
     QgsMapLayer,
 )
@@ -43,9 +38,9 @@ from qgis.PyQt.QtCore import (
     QTranslator,
 )
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox, QMessageBox
+from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox
 
-from sec_interp.core import utils as scu
+
 from sec_interp.core import validation as vu
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
