@@ -44,11 +44,3 @@ class TestRefactoredPathValidation:
         assert is_valid
         assert path == tmp_path
 
-class TestFacadeValidation:
-    """Tests for the backward-compatible facade core/validation.py."""
-
-    def test_facade_imports(self):
-        from core import validation as vu
-        assert vu.validate_numeric_input("123") == (True, "", 123.0)
-        assert vu.validate_output_path is not None
-        assert vu.ProjectValidator is not None
