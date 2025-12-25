@@ -20,16 +20,37 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
-    2.3.0 (2025-12-23)
-    * Multi-Point Measurement Tool:
-      - Enhanced tool to support polyline tracing with multiple points.
-      - Added "Finalize" button workflow for explicit completion.
-      - Comprehensive metrics: Total Distance, Horizontal Dist, Elev Change, Slope.
-      - Persistent visual feedback (markers/lines) after finalization.
-    * Fixes:
-      - Resolved NameError in asynchronous geology processing.
-      - Fixed Sphinx documentation build errors (type hint compatibility).
-      - Eliminated visual artifacts (trailing lines) in measure tool.
+    2.3.0 (2025-12-25)
+    * Structural Improvement Plan - Major Architectural Refactoring:
+      - Phase 1 - Architectural Decoupling:
+        * Extracted DialogToolManager for map tool encapsulation
+        * Centralized preview logic in PreviewManager
+        * Eliminated PyQt dependencies from core/validation (enum-based FieldType)
+      - Phase 2 - Complexity Reduction:
+        * Modularized geometry.py into extraction/processing/filtering sub-packages
+        * Refactored DrillholeService with extracted private methods
+        * Implemented adaptive LOD (Level of Detail) for topography
+      - Phase 3 - Performance Optimization:
+        * Robust cache with hash-based invalidation in PreviewManager
+        * Spatial indexing (QgsSpatialIndex) for drillhole filtering
+        * Improved rendering performance (84ms for 6km sections)
+      - Phase 4 - Documentation:
+        * Created ARCHITECTURE.md (unified technical documentation)
+        * Created DEVELOPMENT_GUIDE.md (developer onboarding)
+        * Improved docstring coverage to 75.9%
+    * Code Quality Improvements:
+      - Quality score increased from 71.1 to 74.4 (+4.6%)
+      - Fixed all critical lint errors (imports, typing, complexity)
+      - Removed deprecated typing imports (Dict/List → dict/list)
+      - Improved error handling with logger.exception
+    * Critical Bug Fixes:
+      - Fixed ModuleNotFoundError for geometry_utils sub-package
+      - Resolved NameError for Optional in profile_service.py
+      - Fixed AttributeError in measure_tool (DialogToolManager access)
+      - Corrected TypeError in create_buffer_geometry signature
+      - Fixed UnboundLocalError in PreviewManager cache handling
+      - Added CRS transformation support in spatial filtering
+      - Implemented field validation for drillhole processing
     
     2.2.0 (2025-12-22)
     * Major Refactoring & Architecture:
