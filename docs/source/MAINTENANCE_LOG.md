@@ -27,7 +27,7 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 ### 3. Distribution & QGIS Repository
 - **Tagging**: `git tag vX.Y.Z -m "Release description"`
 - **GitHub**: Create a new Release and attach the ZIP.
-- **QGIS Repo**: Upload the ZIP to [plugins.qgis.org](https://plugins.qgis.org/). 
+- **QGIS Repo**: Upload the ZIP to [plugins.qgis.org](https://plugins.qgis.org/).
     - ⚠️ **CRITICAL**: The ZIP MUST contain a `LICENSE` file and NO `__pycache__` folders.
     - The repository will reject any package with `.pyc` files for security reasons.
     - Verified ZIP structure with `unzip -t sec_interp.zip`.
@@ -63,5 +63,5 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 For detailed information on past major refactoring sessions, refer to the following summaries:
 
 > [!NOTE]
-> **Refactoring 2025-12-21**: Significant reduction of `main_dialog.py` size (from 1k to ~300 lines) by moving logic to managers and core services. 
+> **Refactoring 2025-12-21**: Significant reduction of `main_dialog.py` size (from 1k to ~300 lines) by moving logic to managers and core services.
 > See `docs/docsec/archive/` for original walkthroughs if deep historical context is needed.

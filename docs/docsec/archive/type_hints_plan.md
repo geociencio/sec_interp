@@ -78,9 +78,9 @@ StructureData = List[Tuple[float, float]]  # [(distance, dip), ...]
 ```python
 class SecInterp:
     def __init__(self, iface: QgisInterface) -> None: ...
-    
+
     def run(self) -> None: ...
-    
+
     def _process_profile_data(
         self,
         line_layer: QgsVectorLayer,
@@ -98,11 +98,11 @@ class SecInterp:
 ```python
 class DataCache:
     def __init__(self) -> None: ...
-    
+
     def get_profile(self, key: str) -> Optional[ProfileData]: ...
-    
+
     def set_profile(self, key: str, data: ProfileData) -> None: ...
-    
+
     def invalidate(self, pattern: Optional[str] = None) -> None: ...
 ```
 
@@ -159,13 +159,13 @@ class StructureService:
 ```python
 class MainDialog(QDialog):
     def __init__(self, iface: QgisInterface) -> None: ...
-    
+
     def _get_dialog_values(self) -> Dict[str, Any]: ...
-    
+
     def _validate_inputs(self) -> Tuple[bool, str]: ...
-    
+
     def _generate_preview(self) -> None: ...
-    
+
     def _export_results(self, format: str) -> bool: ...
 ```
 
@@ -179,7 +179,7 @@ class PreviewRenderer:
         struct_data: Optional[StructureData] = None,
         vert_exag: float = 1.0
     ) -> Tuple[Optional[QgsMapCanvas], List[QgsVectorLayer]]: ...
-    
+
     def export_to_image(
         self,
         layers: List[QgsVectorLayer],
@@ -465,11 +465,11 @@ def process(data: Union[ProfileData, GeologyData]) -> ProfileData:
 
 ## Expected Outcomes
 
-✅ **Better IDE Support**: Full autocomplete and type checking  
-✅ **Early Error Detection**: Catch type errors before runtime  
-✅ **Improved Documentation**: Types serve as inline documentation  
-✅ **Easier Refactoring**: IDE can safely rename and refactor  
-✅ **Better Onboarding**: New developers understand code faster  
+✅ **Better IDE Support**: Full autocomplete and type checking
+✅ **Early Error Detection**: Catch type errors before runtime
+✅ **Improved Documentation**: Types serve as inline documentation
+✅ **Easier Refactoring**: IDE can safely rename and refactor
+✅ **Better Onboarding**: New developers understand code faster
 
 ---
 
@@ -486,6 +486,6 @@ def process(data: Union[ProfileData, GeologyData]) -> ProfileData:
 
 ---
 
-**Priority:** High (Code Quality Improvement)  
-**Complexity:** Medium (Gradual, incremental work)  
+**Priority:** High (Code Quality Improvement)
+**Complexity:** Medium (Gradual, incremental work)
 **Impact:** High (Significantly improves maintainability)

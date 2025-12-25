@@ -22,6 +22,6 @@ dependencies:
   - "argparse"
   - "base_exporter"
   - "base_page"
+  - "bisect"
   - "concurrent"
   - "contextlib"
-  - "csv_exporter"

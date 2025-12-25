@@ -2097,6 +2097,12 @@ class ProjectAnalyzer:
             except Exception as e:
                 print(f"⚠️ Error actualizando tech_stack.yaml: {e}")
 
+            # 8. Guardar historial de métricas
+            try:
+                self._save_metrics_history(analyses)
+            except Exception as e:
+                print(f"⚠️ Error guardando historial de métricas: {e}")
+
             print("\n💾 Resultados guardados:")
             print(f"   📄 {context_file}")
             print(f"   📋 {summary_file}")
@@ -2246,6 +2252,59 @@ dependencies:
             print(f"   📦 Tech stack actualizado: {tech_stack_path}")
         except Exception as e:
             print(f"   ⚠️ Error escribiendo tech_stack.yaml: {e}")
+
+    def _save_metrics_history(self, analyses: dict) -> None:
+        """Guarda historial de métricas para análisis de tendencias."""
+        import datetime
+
+        history_file = self.project_path / ".ai-context" / "metrics_history.json"
+
+        # Extraer métricas clave
+        metrics = analyses.get("metrics", {})
+        complexity = analyses.get("complexity", {})
+        qgis_data = analyses.get("qgis_compliance", {})
+        structure = analyses.get("structure", {})
+
+        current_entry = {
+            "timestamp": datetime.datetime.now().isoformat(),
+            "date": datetime.datetime.now().strftime("%Y-%m-%d"),
+            "metrics": {
+                "quality_score": round(metrics.get("quality_score", 0), 1),
+                "qgis_compliance_score": round(qgis_data.get("compliance_score", 0), 1),
+                "total_lines": complexity.get("total_lines", 0),
+                "total_modules": complexity.get("total_modules", 0),
+                "avg_complexity": round(complexity.get("average_complexity", 0), 1),
+                "docstring_coverage": round(metrics.get("docstring_coverage", 0), 1),
+                "test_files": metrics.get("test_files_count", 0),
+                "total_files": structure.get("size_stats", {}).get("total_files", 0),
+            }
+        }
+
+        # Cargar historial existente
+        history = []
+        if history_file.exists():
+            try:
+                with open(history_file, "r", encoding="utf-8") as f:
+                    history = json.load(f)
+            except Exception as e:
+                print(f"   ⚠️ No se pudo cargar historial previo: {e}")
+
+        # Agregar nueva entrada
+        history.append(current_entry)
+
+        # Limitar a últimas 100 entradas
+        if len(history) > 100:
+            history = history[-100:]
+
+        # Guardar historial actualizado
+        try:
+            history_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(history_file, "w", encoding="utf-8") as f:
+                json.dump(history, f, indent=2, ensure_ascii=False)
+            print(f"   📈 Historial de métricas actualizado: {history_file}")
+            print(f"      Total de registros: {len(history)}")
+        except Exception as e:
+            print(f"   ⚠️ Error guardando historial: {e}")
 
     def _generate_project_summary(
         self, analyses: dict, output_path: pathlib.Path

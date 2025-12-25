@@ -59,11 +59,11 @@ class GeoSciMLConfig:
 
 class GeoSciMLExporter:
     """Export geological data to GeoSciML format."""
-    
+
     def __init__(self, config: GeoSciMLConfig = None):
         self.config = config or GeoSciMLConfig()
         self._setup_namespaces()
-    
+
     def _setup_namespaces(self):
         """Define XML namespaces."""
         self.nsmap = {
@@ -71,77 +71,77 @@ class GeoSciMLExporter:
             'gml': 'http://www.opengis.net/gml/3.2',
             'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
         }
-    
+
     def export_geologic_units(
-        self, 
+        self,
         geology_segments: List[GeologySegment],
         output_path: str
     ) -> bool:
         """Export geology segments as GeologicUnit features."""
         root = self._create_root_collection()
-        
+
         for segment in geology_segments:
             unit = self._create_geologic_unit(segment)
             root.append(unit)
-        
+
         return self._write_xml(root, output_path)
-    
+
     def _create_geologic_unit(self, segment: GeologySegment):
         """Convert a GeologySegment to a gsml:GeologicUnit element."""
         unit = etree.Element(
             f"{{{self.nsmap['gsml']}}}GeologicUnit",
             attrib={f"{{{self.nsmap['gml']}}}id": f"unit_{segment.id}"}
         )
-        
+
         # Add name
         name = etree.SubElement(unit, f"{{{self.nsmap['gml']}}}name")
         name.text = segment.lithology or "Unknown"
-        
+
         # Add composition
         composition = self._create_composition(segment.lithology)
         unit.append(composition)
-        
+
         # Add geometry (2D section trace)
         shape = self._create_geometry(segment.geometry)
         unit.append(shape)
-        
+
         return unit
-    
+
     def _create_composition(self, lithology: str):
         """Create composition element with lithology."""
         comp = etree.Element(f"{{{self.nsmap['gsml']}}}composition")
         part = etree.SubElement(comp, f"{{{self.nsmap['gsml']}}}CompositionPart")
-        
+
         # Link to CGI Simple Lithology vocabulary
         litho = etree.SubElement(part, f"{{{self.nsmap['gsml']}}}lithology")
-        litho.set(f"{{{self.nsmap['xsi']}}}href", 
+        litho.set(f"{{{self.nsmap['xsi']}}}href",
                   f"http://resource.geosciml.org/classifier/cgi/lithology/{lithology.lower()}")
-        
+
         return comp
-    
+
     def _create_geometry(self, qgs_geometry):
         """Convert QGIS geometry to GML."""
         shape = etree.Element(f"{{{self.nsmap['gsml']}}}shape")
-        
+
         # Convert to GML LineString or Polygon
         gml_geom = self._qgs_to_gml(qgs_geometry)
         shape.append(gml_geom)
-        
+
         return shape
-    
+
     def _qgs_to_gml(self, qgs_geometry):
         """Convert QgsGeometry to GML representation."""
         # Simplified - full implementation would handle all geometry types
         coords = qgs_geometry.asPolyline()
-        
+
         linestring = etree.Element(f"{{{self.nsmap['gml']}}}LineString")
         pos_list = etree.SubElement(linestring, f"{{{self.nsmap['gml']}}}posList")
-        
+
         # Format: x1 y1 x2 y2 ...
         pos_list.text = " ".join(f"{pt.x()} {pt.y()}" for pt in coords)
-        
+
         return linestring
-    
+
     def _create_root_collection(self):
         """Create root FeatureCollection element."""
         root = etree.Element(
@@ -154,7 +154,7 @@ class GeoSciMLExporter:
             "http://schemas.opengis.net/gsml/4.1/geosciml.xsd"
         )
         return root
-    
+
     def _write_xml(self, root, output_path: str) -> bool:
         """Write XML tree to file with pretty formatting."""
         try:
@@ -251,10 +251,10 @@ def test_export_simple_unit():
         lithology="granite",
         geometry=create_test_linestring()
     )
-    
+
     exporter = GeoSciMLExporter()
     success = exporter.export_geologic_units([segment], "/tmp/test.xml")
-    
+
     assert success
     assert validate_geosciml("/tmp/test.xml")
 ```
@@ -297,5 +297,5 @@ def test_export_simple_unit():
 
 ---
 
-*Created: 2025-12-22*  
+*Created: 2025-12-22*
 *Target Version: 2.3.0 (Phase 1)*

@@ -55,7 +55,7 @@ processing.run("native:pointsalonglines", {
 })
 ```
 
-**Problema**: 
+**Problema**:
 - ❌ Crea puntos nuevos, no calcula distancias de puntos existentes
 - ❌ No es apropiado para nuestro caso de uso
 

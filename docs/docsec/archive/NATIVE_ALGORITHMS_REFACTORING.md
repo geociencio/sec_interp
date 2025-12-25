@@ -30,7 +30,7 @@ Esta carpeta contiene la documentación completa del proceso de refactorización
 
 ### 1. Buffer de Geometrías ✅
 
-**Algoritmo**: `native:buffer`  
+**Algoritmo**: `native:buffer`
 **Archivos modificados**:
 - `core/utils.py` - Nueva función `create_buffer_geometry()`
 - `core/algorithms.py` - Refactorizado `project_structures()`
@@ -47,7 +47,7 @@ Esta carpeta contiene la documentación completa del proceso de refactorización
 
 ### 2. Selección Espacial ✅
 
-**Algoritmo**: `native:extractbylocation`  
+**Algoritmo**: `native:extractbylocation`
 **Archivos modificados**:
 - `core/utils.py` - Nueva función `filter_features_by_buffer()`
 - `core/algorithms.py` - Refactorizado `project_structures()`
@@ -61,7 +61,7 @@ Esta carpeta contiene la documentación completa del proceso de refactorización
 
 ### 3. Intersección Geológica ✅
 
-**Algoritmo**: `native:intersection`  
+**Algoritmo**: `native:intersection`
 **Archivos modificados**:
 - `core/algorithms.py` - Refactorizado `geol_profile()`
 
@@ -77,20 +77,20 @@ Esta carpeta contiene la documentación completa del proceso de refactorización
 
 ### 4. Muestreo de Raster (Prioridad Media)
 
-**Algoritmo**: `native:rastersampling`  
-**Ubicación**: `topographic_profile()`, `geol_profile()`  
+**Algoritmo**: `native:rastersampling`
+**Ubicación**: `topographic_profile()`, `geol_profile()`
 **Beneficio esperado**: Código más simple, opciones de interpolación
 
 ### 5. Densificación de Líneas (Prioridad Media)
 
-**Algoritmo**: `native:densifygeometriesgivenaninterval`  
-**Ubicación**: Múltiples funciones  
+**Algoritmo**: `native:densifygeometriesgivenaninterval`
+**Ubicación**: Múltiples funciones
 **Beneficio esperado**: Reemplazar cálculo manual de step_size
 
 ### 6. Reproyección de Capas (Prioridad Baja)
 
-**Algoritmo**: `native:reprojectlayer`  
-**Ubicación**: Validación de CRS  
+**Algoritmo**: `native:reprojectlayer`
+**Ubicación**: Validación de CRS
 **Beneficio esperado**: Mejor manejo de advertencias de CRS
 
 ---
@@ -139,5 +139,5 @@ Para continuar con las siguientes refactorizaciones:
 
 ---
 
-**Última actualización**: 2025-12-07  
+**Última actualización**: 2025-12-07
 **Autor**: Refactorización de algoritmos nativos QGIS

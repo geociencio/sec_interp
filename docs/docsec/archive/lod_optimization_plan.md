@@ -26,36 +26,36 @@ Reduce number of points while preserving visual fidelity.
 ```python
 def _decimate_line_data(self, data, tolerance=None, max_points=1000):
     """Decimate line data using Douglas-Peucker algorithm.
-    
+
     Args:
         data: List of (x, y) tuples
         tolerance: Simplification tolerance (auto-calculated if None)
         max_points: Maximum points to keep
-        
+
     Returns:
         Decimated list of (x, y) tuples
     """
     if len(data) <= max_points:
         return data
-    
+
     # Create QgsGeometry from points
     points = [QgsPointXY(x, y) for x, y in data]
     line = QgsGeometry.fromPolylineXY(points)
-    
+
     # Auto-calculate tolerance if not provided
     if tolerance is None:
         extent = line.boundingBox()
         tolerance = max(extent.width(), extent.height()) / 500
-    
+
     # Simplify
     simplified = line.simplify(tolerance)
-    
+
     # Extract points
     if simplified.isMultipart():
         result_points = simplified.asMultiPolyline()[0]
     else:
         result_points = simplified.asPolyline()
-    
+
     return [(p.x(), p.y()) for p in result_points]
 ```
 
@@ -74,31 +74,31 @@ Sample more densely in areas of high curvature, less in flat areas.
 ```python
 def _adaptive_sample(self, data, min_tolerance=0.1, max_tolerance=10.0):
     """Adaptively sample data based on local curvature.
-    
+
     Args:
         data: List of (x, y) tuples
         min_tolerance: Minimum tolerance for high-detail areas
         max_tolerance: Maximum tolerance for low-detail areas
-        
+
     Returns:
         Adaptively sampled data
     """
     if len(data) < 100:
         return data
-    
+
     # Calculate local curvature
     curvatures = self._calculate_curvature(data)
-    
+
     # Determine tolerance based on average curvature
     avg_curvature = sum(curvatures) / len(curvatures)
-    
+
     if avg_curvature > 0.5:  # High curvature
         tolerance = min_tolerance
     elif avg_curvature < 0.1:  # Low curvature
         tolerance = max_tolerance
     else:  # Medium curvature
         tolerance = (min_tolerance + max_tolerance) / 2
-    
+
     return self._decimate_line_data(data, tolerance)
 ```
 
@@ -117,25 +117,25 @@ Render low-detail first, then progressively add detail.
 ```python
 def _progressive_render(self, data, levels=3):
     """Create multiple LOD levels for progressive rendering.
-    
+
     Args:
         data: Full resolution data
         levels: Number of LOD levels
-        
+
     Returns:
         List of LOD levels, from coarsest to finest
     """
     lod_levels = []
-    
+
     for i in range(levels):
         # Exponentially increasing detail
         max_points = 100 * (2 ** i)
         decimated = self._decimate_line_data(data, max_points=max_points)
         lod_levels.append(decimated)
-    
+
     # Add full resolution as final level
     lod_levels.append(data)
-    
+
     return lod_levels
 ```
 
@@ -154,27 +154,27 @@ Adjust detail level based on zoom/extent.
 ```python
 def _get_lod_for_extent(self, data, extent, canvas_size):
     """Determine appropriate LOD based on view extent.
-    
+
     Args:
         data: Full resolution data
         extent: QgsRectangle of current view
         canvas_size: QSize of canvas
-        
+
     Returns:
         Appropriately decimated data
     """
     # Calculate pixels per data point
     data_extent = self._calculate_data_extent(data)
     pixels_per_unit = canvas_size.width() / extent.width()
-    
+
     # If we have more than 2 points per pixel, decimate
     points_per_pixel = len(data) * pixels_per_unit / data_extent.width()
-    
+
     if points_per_pixel > 2:
         # Target 1-2 points per pixel
         target_points = int(canvas_size.width() * 2)
         return self._decimate_line_data(data, max_points=target_points)
-    
+
     return data
 ```
 
@@ -283,7 +283,7 @@ def test_decimation_preserves_shape():
     # Create test data with known shape
     data = generate_sine_wave(1000)
     decimated = renderer._decimate_line_data(data, max_points=100)
-    
+
     # Verify shape is preserved
     assert len(decimated) <= 100
     assert shape_similarity(data, decimated) > 0.95
@@ -291,16 +291,16 @@ def test_decimation_preserves_shape():
 def test_decimation_performance():
     """Test that decimation improves performance."""
     large_data = generate_random_profile(10000)
-    
+
     start = time.time()
     renderer._create_topo_layer(large_data)
     time_full = time.time() - start
-    
+
     decimated = renderer._decimate_line_data(large_data, max_points=1000)
     start = time.time()
     renderer._create_topo_layer(decimated)
     time_decimated = time.time() - start
-    
+
     assert time_decimated < time_full * 0.5  # At least 50% faster
 ```
 
@@ -313,18 +313,18 @@ def test_decimation_performance():
 
 ## Benefits
 
-✅ **Performance**: 70-98% faster rendering for large datasets  
-✅ **Scalability**: Handles datasets of any size  
-✅ **User Experience**: Responsive UI, instant previews  
-✅ **Flexibility**: Configurable quality/performance tradeoff  
-✅ **Backward Compatible**: Works with existing code  
+✅ **Performance**: 70-98% faster rendering for large datasets
+✅ **Scalability**: Handles datasets of any size
+✅ **User Experience**: Responsive UI, instant previews
+✅ **Flexibility**: Configurable quality/performance tradeoff
+✅ **Backward Compatible**: Works with existing code
 
 ---
 
 ## Risks & Mitigation
 
 ### Risk: Loss of Detail
-**Mitigation:** 
+**Mitigation:**
 - Make LOD optional
 - Provide quality presets
 - Show full detail on export
@@ -351,6 +351,6 @@ def test_decimation_performance():
 
 ---
 
-**Priority:** Medium-High (Performance Improvement)  
-**Effort:** Medium (Phase 1: 2-3 hours, Full: 6-8 hours)  
+**Priority:** Medium-High (Performance Improvement)
+**Effort:** Medium (Phase 1: 2-3 hours, Full: 6-8 hours)
 **Impact:** High (Significantly improves UX with large datasets)

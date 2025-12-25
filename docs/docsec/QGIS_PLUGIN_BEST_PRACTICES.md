@@ -1,7 +1,7 @@
 # Mejores Prácticas para el Desarrollo de Plugins de QGIS
 
-**Última actualización:** Diciembre 2024  
-**Versión de QGIS:** 3.0+  
+**Última actualización:** Diciembre 2024
+**Versión de QGIS:** 3.0+
 **Lenguaje:** Python 3.6+
 
 ---
@@ -88,10 +88,10 @@ mi_plugin/
 def classFactory(iface):
     """
     Función obligatoria llamada por QGIS para crear la instancia del plugin.
-    
+
     Args:
         iface: Interfaz de QGIS (QgisInterface)
-    
+
     Returns:
         Instancia del plugin
     """
@@ -158,7 +158,7 @@ class MyDialog(QDialog):
     def __init__(self):
         super().__init__()
         self.algorithm = MyAlgorithm()
-    
+
     def run(self):
         result = self.algorithm.process_data(self.layer, self.params)
         self.display_result(result)
@@ -198,7 +198,7 @@ class MyProcessingAlgorithm(QgsProcessingAlgorithm):
     INPUT = 'INPUT'
     BUFFER_DISTANCE = 'BUFFER_DISTANCE'
     OUTPUT = 'OUTPUT'
-    
+
     def initAlgorithm(self, config=None):
         """Define inputs y outputs"""
         self.addParameter(
@@ -208,7 +208,7 @@ class MyProcessingAlgorithm(QgsProcessingAlgorithm):
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
         )
-        
+
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.BUFFER_DISTANCE,
@@ -217,55 +217,55 @@ class MyProcessingAlgorithm(QgsProcessingAlgorithm):
                 defaultValue=10.0
             )
         )
-        
+
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
                 'Output layer'
             )
         )
-    
+
     def processAlgorithm(self, parameters, context, feedback):
         """Ejecuta el algoritmo"""
         # Obtener parámetros
         source = self.parameterAsSource(parameters, self.INPUT, context)
         distance = self.parameterAsDouble(parameters, self.BUFFER_DISTANCE, context)
-        
+
         # Crear sink para output
         (sink, dest_id) = self.parameterAsSink(
             parameters, self.OUTPUT, context,
             source.fields(), source.wkbType(), source.sourceCrs()
         )
-        
+
         # Procesar features
         total = source.featureCount()
         for current, feature in enumerate(source.getFeatures()):
             # Verificar cancelación
             if feedback.isCanceled():
                 break
-            
+
             # Procesar feature
             buffered = feature.geometry().buffer(distance, 5)
             feature.setGeometry(buffered)
             sink.addFeature(feature)
-            
+
             # Actualizar progreso
             feedback.setProgress(int(current * 100 / total))
-        
+
         return {self.OUTPUT: dest_id}
-    
+
     def name(self):
         return 'mybuffer'
-    
+
     def displayName(self):
         return 'My Buffer Algorithm'
-    
+
     def group(self):
         return 'Vector tools'
-    
+
     def groupId(self):
         return 'vectortools'
-    
+
     def createInstance(self):
         return MyProcessingAlgorithm()
 ```
@@ -378,18 +378,18 @@ def process_lines(layer):
 def filter_features_by_geometry_and_value(layer, geom_type, min_value):
     """
     Filtra features por tipo de geometría y valor mínimo.
-    
+
     Args:
         layer: QgsVectorLayer a filtrar
         geom_type: Tipo de geometría (QgsWkbTypes)
         min_value: Valor mínimo del campo 'value'
-    
+
     Returns:
         Lista de features que cumplen los criterios
     """
     return [
         feature for feature in layer.getFeatures()
-        if feature.geometry().type() == geom_type 
+        if feature.geometry().type() == geom_type
         and feature['value'] > min_value
     ]
 
@@ -481,24 +481,24 @@ MAJOR.MINOR.PATCH
        def __init__(self, parent=None):
            super().__init__(parent)
            self.setup_ui()
-       
+
        def setup_ui(self):
            layout = QVBoxLayout()
-           
+
            # Widgets
            self.layer_combo = QgsMapLayerComboBox()
            self.layer_combo.setFilters(QgsMapLayerProxyModel.VectorLayer)
-           
+
            self.buffer_spin = QDoubleSpinBox()
            self.buffer_spin.setRange(0.0, 1000.0)
            self.buffer_spin.setValue(10.0)
-           
+
            # Agregar a layout
            layout.addWidget(QLabel("Select Layer:"))
            layout.addWidget(self.layer_combo)
            layout.addWidget(QLabel("Buffer Distance:"))
            layout.addWidget(self.buffer_spin)
-           
+
            self.setLayout(layout)
    ```
 
@@ -586,41 +586,41 @@ from my_plugin.core.algorithms import calculate_buffer
 
 class TestBufferAlgorithm:
     """Tests para el algoritmo de buffer"""
-    
+
     @pytest.fixture
     def point_layer(self):
         """Crea una capa de puntos para testing"""
         layer = QgsVectorLayer("Point?crs=EPSG:4326", "test", "memory")
         provider = layer.dataProvider()
-        
+
         # Agregar features
         feature = QgsFeature()
         feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(0, 0)))
         provider.addFeatures([feature])
-        
+
         return layer
-    
+
     def test_buffer_distance(self, point_layer):
         """Verifica que el buffer tenga la distancia correcta"""
         result = calculate_buffer(point_layer, distance=10.0)
-        
+
         assert result is not None
         assert result.featureCount() == 1
-        
+
         # Verificar área del buffer (aproximadamente π * r²)
         feature = next(result.getFeatures())
         area = feature.geometry().area()
         expected_area = 3.14159 * (10.0 ** 2)
-        
+
         assert abs(area - expected_area) < 1.0  # Tolerancia
-    
+
     def test_buffer_empty_layer(self):
         """Verifica manejo de capa vacía"""
         empty_layer = QgsVectorLayer("Point?crs=EPSG:4326", "empty", "memory")
         result = calculate_buffer(empty_layer, distance=10.0)
-        
+
         assert result.featureCount() == 0
-    
+
     def test_buffer_invalid_distance(self, point_layer):
         """Verifica validación de distancia negativa"""
         with pytest.raises(ValueError):
@@ -645,14 +645,14 @@ def qgis_app():
 def test_plugin_loads(qgis_app):
     """Verifica que el plugin se carga correctamente"""
     from my_plugin import classFactory
-    
+
     plugin = classFactory(qgis_app.iface)
     assert plugin is not None
-    
+
     plugin.initGui()
     # Verificar que se agregaron acciones
     assert len(plugin.actions) > 0
-    
+
     plugin.unload()
 ```
 
@@ -682,7 +682,7 @@ testpaths = tests
 python_files = test_*.py
 python_classes = Test*
 python_functions = test_*
-addopts = 
+addopts =
     -v
     --cov=my_plugin
     --cov-report=html
@@ -700,29 +700,29 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-    
+
     - name: Install QGIS
       run: |
         sudo apt-get update
         sudo apt-get install -y qgis python3-qgis
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements-dev.txt
-    
+
     - name: Run tests
       run: |
         pytest tests/
-    
+
     - name: Run linting
       run: |
         pylint my_plugin/
@@ -811,7 +811,7 @@ layer.commitChanges()
 
 ```python
 class MyAlgorithm(QgsProcessingAlgorithm):
-    
+
     def flags(self):
         """
         Deshabilitar threading si hay problemas de thread-safety
@@ -857,36 +857,36 @@ temp_layer.updateExtents()
 def calculate_azimuth(point1, point2):
     """
     Calcula el azimut entre dos puntos.
-    
+
     El azimut se calcula como el ángulo desde el norte (0°) en sentido
     horario hasta la línea que conecta los dos puntos.
-    
+
     Args:
         point1 (QgsPointXY): Punto de inicio
         point2 (QgsPointXY): Punto final
-    
+
     Returns:
         float: Azimut en grados (0-360)
-    
+
     Raises:
         ValueError: Si los puntos son idénticos
-    
+
     Example:
         >>> p1 = QgsPointXY(0, 0)
         >>> p2 = QgsPointXY(1, 1)
         >>> azimuth = calculate_azimuth(p1, p2)
         >>> print(f"Azimuth: {azimuth:.2f}°")
         Azimuth: 45.00°
-    
+
     Note:
         Los puntos deben estar en el mismo sistema de coordenadas.
     """
     if point1 == point2:
         raise ValueError("Points must be different")
-    
+
     dx = point2.x() - point1.x()
     dy = point2.y() - point1.y()
-    
+
     azimuth = math.degrees(math.atan2(dx, dy))
     return (azimuth + 360) % 360
 ```
@@ -1177,7 +1177,7 @@ from qgis.core import QgsMessageLog, Qgis
 def log_message(message, level=Qgis.Info):
     """
     Registra mensaje en QGIS Message Log.
-    
+
     Args:
         message (str): Mensaje a registrar
         level (Qgis.MessageLevel): Nivel del mensaje
@@ -1249,5 +1249,5 @@ Este documento está bajo licencia Creative Commons Attribution 4.0 Internationa
 
 ---
 
-**Última actualización:** Diciembre 2024  
+**Última actualización:** Diciembre 2024
 **Mantenido por:** Comunidad QGIS

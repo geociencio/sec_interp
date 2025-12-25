@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import IntEnum
-from typing import Any, Dict, List, Optional, Protocol, Tuple, runtime_checkable
+from typing import Any, Optional, Protocol, runtime_checkable
 
 from qgis.core import QgsGeometry, QgsPointXY, QgsRasterLayer, QgsVectorLayer
 
@@ -100,7 +100,7 @@ ProfileData = list[tuple[float, float]]
 @dataclass
 class PreviewParams:
     """Consolidated parameters for profile generation and preview.
-    
+
     Attributes:
         raster_layer: QGIS raster layer for DEM sampling.
         line_layer: QGIS vector layer for the section orientation.

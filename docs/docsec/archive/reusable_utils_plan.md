@@ -70,13 +70,13 @@ def create_memory_layer(
     fields: QgsFields = None
 ) -> QgsVectorLayer:
     """Create a temporary memory layer with a single geometry feature.
-    
+
     Args:
         geometry: Geometry to add to the layer
         crs: Coordinate reference system
         name: Layer name (default: "temp")
         fields: Optional fields definition
-        
+
     Returns:
         QgsVectorLayer: Memory layer with the geometry
     """
@@ -85,13 +85,13 @@ def create_memory_layer(
 ```python
 def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
     """Extract vertices from a line geometry (handles multipart).
-    
+
     Args:
         geometry: Line geometry (LineString or MultiLineString)
-        
+
     Returns:
         list[QgsPointXY]: List of vertices from the first part
-        
+
     Raises:
         ValueError: If geometry is not a line
     """
@@ -104,15 +104,15 @@ def run_processing_algorithm(
     silent: bool = True
 ) -> dict:
     """Run a QGIS processing algorithm with consistent error handling.
-    
+
     Args:
         algorithm: Algorithm name (e.g., "native:buffer")
         parameters: Algorithm parameters
         silent: If True, suppress feedback output
-        
+
     Returns:
         dict: Algorithm result
-        
+
     Raises:
         RuntimeError: If algorithm fails
     """
@@ -145,11 +145,11 @@ def run_processing_algorithm(
 
 ## Beneficios
 
-✅ **Menos código duplicado**: Reducir ~100 líneas de código repetitivo  
-✅ **Más consistencia**: Mismo comportamiento en todos los lugares  
-✅ **Mejor testabilidad**: Funciones helper pueden testearse independientemente  
-✅ **Más mantenible**: Cambios en un solo lugar  
-✅ **Mejor documentación**: Funciones con docstrings claros  
+✅ **Menos código duplicado**: Reducir ~100 líneas de código repetitivo
+✅ **Más consistencia**: Mismo comportamiento en todos los lugares
+✅ **Mejor testabilidad**: Funciones helper pueden testearse independientemente
+✅ **Más mantenible**: Cambios en un solo lugar
+✅ **Mejor documentación**: Funciones con docstrings claros
 
 ---
 

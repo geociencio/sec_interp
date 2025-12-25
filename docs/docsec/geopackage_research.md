@@ -199,7 +199,7 @@ GeoPackage usa **R-tree** (Rectangle tree) para consultas espaciales eficientes:
 
 ```python
 # Consulta espacial optimizada
-SELECT fid, lithology 
+SELECT fid, lithology
 FROM geology_units
 WHERE fid IN (
   SELECT id FROM rtree_geology_units_geom
@@ -349,7 +349,7 @@ md_id = cursor.lastrowid
 
 # Asociar metadatos a tabla
 cursor.execute("""
-INSERT INTO gpkg_metadata_reference 
+INSERT INTO gpkg_metadata_reference
 (reference_scope, table_name, md_file_id, timestamp)
 VALUES ('table', 'geology_units', ?, ?)
 """, (md_id, datetime.now().isoformat()))
@@ -433,15 +433,15 @@ class GeoPackageExporter:
     def __init__(self, output_path: Path):
         self.output_path = output_path
         self.ds = None
-    
+
     def create_geopackage(self, srs_epsg: int = 32719):
         """Crear GeoPackage vacío con CRS."""
         driver = ogr.GetDriverByName('GPKG')
         self.ds = driver.CreateDataSource(str(self.output_path))
-        
+
         self.srs = osr.SpatialReference()
         self.srs.ImportFromEPSG(srs_epsg)
-    
+
     def add_geology_layer(self, segments: List[GeologySegment]):
         """Añadir capa de geología."""
         layer = self.ds.CreateLayer(
@@ -450,28 +450,28 @@ class GeoPackageExporter:
             geom_type=ogr.wkbPolygon,
             options=['SPATIAL_INDEX=YES']
         )
-        
+
         # Campos
         layer.CreateField(ogr.FieldDefn('lithology', ogr.OFTString))
         layer.CreateField(ogr.FieldDefn('age_ma', ogr.OFTReal))
         layer.CreateField(ogr.FieldDefn('confidence', ogr.OFTInteger))
-        
+
         # Features
         for seg in segments:
             feat = ogr.Feature(layer.GetLayerDefn())
             feat.SetField('lithology', seg.lithology)
             feat.SetField('age_ma', seg.age_ma)
             feat.SetField('confidence', seg.confidence)
-            
+
             geom = ogr.CreateGeometryFromWkb(seg.geometry.asWkb())
             feat.SetGeometry(geom)
             layer.CreateFeature(feat)
-    
+
     def add_metadata(self, project_info: dict):
         """Añadir metadatos del proyecto."""
         import sqlite3
         conn = sqlite3.connect(str(self.output_path))
-        
+
         # Tabla custom de metadatos
         conn.execute("""
         CREATE TABLE IF NOT EXISTS project_settings (
@@ -479,16 +479,16 @@ class GeoPackageExporter:
           value TEXT
         )
         """)
-        
+
         for key, value in project_info.items():
             conn.execute(
                 "INSERT OR REPLACE INTO project_settings VALUES (?, ?)",
                 (key, str(value))
             )
-        
+
         conn.commit()
         conn.close()
-    
+
     def close(self):
         """Cerrar GeoPackage."""
         self.ds = None
@@ -501,16 +501,16 @@ def load_project_from_geopackage(gpkg_path: Path):
     """Cargar proyecto SecInterp desde GeoPackage."""
     import geopandas as gpd
     import sqlite3
-    
+
     # Cargar capas
     geology = gpd.read_file(gpkg_path, layer='geology_segments')
     structures = gpd.read_file(gpkg_path, layer='structure_measurements')
-    
+
     # Cargar metadatos
     conn = sqlite3.connect(gpkg_path)
     settings = dict(conn.execute("SELECT key, value FROM project_settings"))
     conn.close()
-    
+
     return {
         'geology': geology,
         'structures': structures,
@@ -572,23 +572,23 @@ from osgeo import ogr
 def validate_geopackage(gpkg_path):
     """Validar estructura de GeoPackage."""
     ds = ogr.Open(gpkg_path)
-    
+
     # Verificar tablas obligatorias
     required_tables = [
         'gpkg_contents',
         'gpkg_spatial_ref_sys',
         'gpkg_geometry_columns'
     ]
-    
+
     sql_layer = ds.ExecuteSQL("SELECT name FROM sqlite_master WHERE type='table'")
     tables = [feat.GetField(0) for feat in sql_layer]
     ds.ReleaseResultSet(sql_layer)
-    
+
     for table in required_tables:
         if table not in tables:
             print(f"❌ Tabla obligatoria faltante: {table}")
             return False
-    
+
     print("✅ GeoPackage válido")
     return True
 ```
@@ -688,12 +688,12 @@ ogrinfo data.gpkg -sql "SELECT CreateSpatialIndex('geology_units', 'geom')"
 
 ### 12.1 Ventajas Clave para SecInterp
 
-✅ **Un solo archivo**: Simplifica distribución de proyectos  
-✅ **Rendimiento**: Más rápido que Shapefiles en QGIS  
-✅ **Sin límites**: Nombres largos, Unicode, tamaño ilimitado  
-✅ **Estándar abierto**: OGC, amplio soporte  
-✅ **Extensible**: Metadatos, estilos, raster  
-✅ **Transaccional**: Integridad garantizada  
+✅ **Un solo archivo**: Simplifica distribución de proyectos
+✅ **Rendimiento**: Más rápido que Shapefiles en QGIS
+✅ **Sin límites**: Nombres largos, Unicode, tamaño ilimitado
+✅ **Estándar abierto**: OGC, amplio soporte
+✅ **Extensible**: Metadatos, estilos, raster
+✅ **Transaccional**: Integridad garantizada
 
 ### 12.2 Casos de Uso Ideales
 
@@ -704,6 +704,6 @@ ogrinfo data.gpkg -sql "SELECT CreateSpatialIndex('geology_units', 'geom')"
 
 ---
 
-*Documento creado: 2025-12-22*  
-*Autor: Investigación técnica para proyecto SecInterp*  
+*Documento creado: 2025-12-22*
+*Autor: Investigación técnica para proyecto SecInterp*
 *Versión: 1.0*

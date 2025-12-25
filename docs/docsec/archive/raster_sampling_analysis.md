@@ -13,7 +13,7 @@ res = (
 elev = res.get(band_number, 0.0)
 ```
 
-### Caso 2: Perfil Topográfico  
+### Caso 2: Perfil Topográfico
 ```python
 # En sample_elevation_along_line() - línea 425-426
 val, ok = raster_layer.dataProvider().sample(pt, band_number)
@@ -32,7 +32,7 @@ processing.run("native:rastersampling", {
 })
 ```
 
-**Entrada**: Capa de puntos  
+**Entrada**: Capa de puntos
 **Salida**: Capa de puntos con valores del raster como atributos
 
 ## Análisis de Viabilidad
@@ -42,13 +42,13 @@ processing.run("native:rastersampling", {
 1. **Requiere Capa de Puntos**
    - Necesitamos crear una capa temporal con todos los puntos
    - Overhead de crear/poblar la capa
-   
+
 2. **Workflow Más Complejo**
    ```python
    # Método actual (simple)
    for pt in points:
        elev = raster.sample(pt)
-   
+
    # Con native:rastersampling (complejo)
    # 1. Crear capa temporal de puntos
    temp_layer = QgsVectorLayer("Point", "temp", "memory")
@@ -56,10 +56,10 @@ processing.run("native:rastersampling", {
        feat = QgsFeature()
        feat.setGeometry(QgsGeometry.fromPointXY(pt))
        temp_layer.dataProvider().addFeatures([feat])
-   
+
    # 2. Ejecutar algoritmo
    result = processing.run("native:rastersampling", {...})
-   
+
    # 3. Extraer valores de atributos
    for feat in result['OUTPUT'].getFeatures():
        elev = feat['rvalue_1']

@@ -4,9 +4,9 @@
 
 Refactor `main_dialog.py` (1174 lines) into modular, maintainable components using composition pattern, type hints, and separation of concerns.
 
-**Current State:** Single 1174-line file with 33 methods  
-**Target State:** 5 focused modules, each <400 lines  
-**Estimated Time:** 5-6 hours  
+**Current State:** Single 1174-line file with 33 methods
+**Target State:** 5 focused modules, each <400 lines
+**Estimated Time:** 5-6 hours
 **Complexity:** High (major architectural change)
 
 ---
@@ -107,10 +107,10 @@ from ..core import validation as vu
 
 class DialogValidator:
     """Handles all validation logic for SecInterpDialog."""
-    
+
     def __init__(self, dialog: 'SecInterpDialog'):
         self.dialog = dialog
-    
+
     def validate_inputs(self) -> Tuple[bool, str]:
         """Main validation orchestrator."""
         validators = [
@@ -120,34 +120,34 @@ class DialogValidator:
             self._validate_geology_inputs,
             self._validate_structure_inputs,
         ]
-        
+
         for validator in validators:
             is_valid, error = validator()
             if not is_valid:
                 return False, error
-        
+
         return True, ""
-    
+
     def _validate_raster_layer(self) -> Tuple[bool, str]:
         """Validate raster DEM layer."""
         ...
-    
+
     def _validate_section_line(self) -> Tuple[bool, str]:
         """Validate cross-section line layer."""
         ...
-    
+
     def _validate_output_path(self) -> Tuple[bool, str]:
         """Validate output directory path."""
         ...
-    
+
     def _validate_geology_inputs(self) -> Tuple[bool, str]:
         """Validate geological layer inputs."""
         ...
-    
+
     def _validate_structure_inputs(self) -> Tuple[bool, str]:
         """Validate structural layer inputs."""
         ...
-    
+
     def validate_preview_requirements(self) -> Tuple[bool, str]:
         """Validate minimum requirements for preview."""
         ...
@@ -171,7 +171,7 @@ from ..core.types import ProfileData, GeologyData, StructureData
 
 class PreviewManager:
     """Manages preview generation and rendering."""
-    
+
     def __init__(self, dialog: 'SecInterpDialog'):
         self.dialog = dialog
         self.renderer = None
@@ -180,7 +180,7 @@ class PreviewManager:
             'geol': None,
             'struct': None
         }
-    
+
     def generate_preview(
         self,
         line_layer: QgsVectorLayer,
@@ -189,11 +189,11 @@ class PreviewManager:
     ) -> Tuple[bool, str]:
         """Generate complete preview with all layers."""
         ...
-    
+
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change."""
         ...
-    
+
     def generate_topography(
         self,
         line_layer: QgsVectorLayer,
@@ -202,7 +202,7 @@ class PreviewManager:
     ) -> Optional[ProfileData]:
         """Generate topographic profile data."""
         ...
-    
+
     def generate_geology(
         self,
         line_layer: QgsVectorLayer,
@@ -211,7 +211,7 @@ class PreviewManager:
     ) -> Optional[GeologyData]:
         """Generate geological profile data."""
         ...
-    
+
     def generate_structures(
         self,
         line_layer: QgsVectorLayer,
@@ -241,10 +241,10 @@ from qgis.core import QgsVectorLayer, QgsMapSettings
 
 class ExportManager:
     """Handles all export operations."""
-    
+
     def __init__(self, dialog: 'SecInterpDialog'):
         self.dialog = dialog
-    
+
     def export_preview(
         self,
         layers: list,
@@ -254,7 +254,7 @@ class ExportManager:
     ) -> bool:
         """Export current preview to file."""
         ...
-    
+
     def get_export_settings(
         self,
         width: int,
@@ -264,7 +264,7 @@ class ExportManager:
     ) -> Dict[str, Any]:
         """Get export settings dictionary."""
         ...
-    
+
     def export_to_format(
         self,
         format: str,
@@ -297,11 +297,11 @@ from .main_dialog_cache_handler import CacheHandler
 
 class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
     """Main dialog for SecInterp plugin.
-    
+
     This class orchestrates UI interactions and delegates specialized
     tasks to focused manager classes.
     """
-    
+
     def __init__(
         self,
         iface: Optional['QgisInterface'] = None,
@@ -311,21 +311,21 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         """Initialize dialog with composition pattern."""
         super().__init__(parent)
         self.setupUi(self)
-        
+
         self.iface = iface
         self.plugin_instance = plugin_instance
-        
+
         # Initialize specialized managers
         self.validator = DialogValidator(self)
         self.preview_manager = PreviewManager(self)
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
-        
+
         # Setup UI
         self._setup_ui()
         self._connect_signals()
         self._load_user_settings()
-    
+
     def preview_profile_handler(self) -> None:
         """Handle preview button click."""
         # Validate
@@ -333,19 +333,19 @@ class SecInterpDialog(QDialog, Ui_SecInterpDialogBase):
         if not is_valid:
             self.messagebar.pushMessage("Error", error, Qgis.Critical)
             return
-        
+
         # Generate preview
         success, error = self.preview_manager.generate_preview(
             self.get_selected_values()
         )
         if not success:
             self.messagebar.pushMessage("Error", error, Qgis.Critical)
-    
+
     def export_preview(self) -> None:
         """Handle export button click."""
         # Delegate to export manager
         self.export_manager.export_preview(...)
-    
+
     def validate_inputs(self) -> Tuple[bool, str]:
         """Validate all inputs."""
         return self.validator.validate_inputs()
@@ -549,13 +549,13 @@ def test_generate_topography():
 
 ## Success Criteria
 
-✅ All files < 400 lines  
-✅ Complete type hint coverage  
-✅ All tests passing  
-✅ No breaking changes  
-✅ Plugin works in QGIS  
-✅ Better IDE autocomplete  
-✅ Easier to maintain  
+✅ All files < 400 lines
+✅ Complete type hint coverage
+✅ All tests passing
+✅ No breaking changes
+✅ Plugin works in QGIS
+✅ Better IDE autocomplete
+✅ Easier to maintain
 
 ---
 

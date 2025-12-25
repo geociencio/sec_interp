@@ -507,7 +507,7 @@
     <message>
         <location filename="../gui/main_dialog.py" line="179"/>
         <source>{}
-510: 
+510:
 511: Please check the logs for details.</source>
         <translation>{}\n\nПожалуйста, проверьте логи для деталей.</translation>
     </message>

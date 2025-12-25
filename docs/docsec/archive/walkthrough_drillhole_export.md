@@ -39,11 +39,11 @@ Se ha completado la extracción de la lógica de procesamiento de sondajes desde
 
 ### Fase 4: Auto-cálculo de Profundidad
 Se implementó la funcionalidad para calcular automáticamente la profundidad total del sondaje si no se proporciona:
-1.  **Lógica de Negocio ([DrillholeService](file:///home/jmbernales/qgispluginsdev/sec_interp/core/services/drillhole_service.py#24-319))**: 
+1.  **Lógica de Negocio ([DrillholeService](file:///home/jmbernales/qgispluginsdev/sec_interp/core/services/drillhole_service.py#24-319))**:
     - Se modificó [process_intervals](file:///home/jmbernales/qgispluginsdev/sec_interp/core/services/drillhole_service.py#148-319) para determinar `final_depth` como el máximo entre la profundidad dada, la última encuesta y el último intervalo.
     - Se recuperan los intervalos *antes* de calcular la trayectoria para usar su profundidad en el cálculo.
     - **Mejora**: Si no hay datos de encuesta (survey), se asume un sondaje vertical hasta la `final_depth` calculada.
-2.  **Extrapolación ([calculate_drillhole_trajectory](file:///home/jmbernales/qgispluginsdev/sec_interp/core/utils/drillhole.py#12-140))**: 
+2.  **Extrapolación ([calculate_drillhole_trajectory](file:///home/jmbernales/qgispluginsdev/sec_interp/core/utils/drillhole.py#12-140))**:
     - Se añadió soporte para `total_depth`. Si este excede la última encuesta, la trayectoria se extrapola linealmente usando la última orientación conocida.
     - Si no hay encuesta, se genera una trayectoria vertical sintética.
 3.  **UI ([DrillholePage](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/ui/pages/drillhole_page.py#20-300))**:

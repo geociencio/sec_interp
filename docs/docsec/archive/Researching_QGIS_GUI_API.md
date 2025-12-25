@@ -47,4 +47,3 @@ QgsMapCanvas: La joya de la corona. En lugar de usar un simple QGraphicsView, us
 Conclusión: Recomiendo migrar tu UI basándonos casi exclusivamente en estos widgets. Reducirá el código de validación manual en un 50% y la UI se sentirá "como en casa" para cualquier usuario de QGIS.
 
 ¿Procedemos a crear el implementation_plan.md para la migración de UI usando estos componentes?
-

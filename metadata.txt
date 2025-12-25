@@ -60,7 +60,7 @@ changelog=
       - Fixed geology disappearing on subsequent preview clicks (cache persistence)
       - Fixed drillholes not rendering (missing return statement in _generate_drillholes)
       - Added diagnostic logging for drillhole trace generation
-    
+
     2.2.0 (2025-12-22)
     * Major Refactoring & Architecture:
       - Moved main SecInterp class to plugin root (sec_interp_plugin.py).
@@ -73,7 +73,7 @@ changelog=
     * Features & UX:
       - Restored visual workflow images to User Guide.
       - Fixed toolbar icon loading and Axis/Grid alignment.
-    
+
     2.1.0 (2025-12-17)
     * Major Feature: Snap-Enabled Measurement Tool
       - Iterative vertex snapping using QgsPointLocator (Avoids project pollution)
@@ -143,7 +143,7 @@ changelog=
       - Added COMMIT_GUIDELINES.md for standardized commit messages
       - Added RELEASE_PROCESS.md with version release workflow
       - Added drilllogs_research.md with future integration requirements
-    
+
     0.3 (2025-12-03)
     * Major Refactoring - Modular Project Structure:
       - Reorganized codebase into core/, gui/, resources/ packages
@@ -167,7 +167,7 @@ changelog=
       - Added REFACTORING_PR.md with detailed changes
       - Improved project documentation structure
       - Added implementation plans for future features
-    
+
     0.2 (2025-11-30)
     * Major UI Overhaul - Native QGIS Widget Integration:
       - Replaced standard Qt ComboBoxes with QgsMapLayerComboBox for automatic layer population
@@ -186,7 +186,7 @@ changelog=
     * Code Quality:
       - Removed 200+ lines of manual widget population code
       - Cleaner architecture leveraging QGIS native capabilities
-    
+
     0.1 (Initial Release)
     - DEM topographic profile extraction
     - Geological outcrop data extraction
@@ -215,4 +215,3 @@ category=Vector
 
 # If the plugin can run on QGIS Server.
 server=False
-

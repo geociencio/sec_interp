@@ -1,0 +1,16 @@
+[
+  {
+    "timestamp": "2025-12-25T18:56:42.577662",
+    "date": "2025-12-25",
+    "metrics": {
+      "quality_score": 69.1,
+      "qgis_compliance_score": 100.0,
+      "total_lines": 13842,
+      "total_modules": 91,
+      "avg_complexity": 14.0,
+      "docstring_coverage": 68.1,
+      "test_files": 352,
+      "total_files": 999
+    }
+  }
+]

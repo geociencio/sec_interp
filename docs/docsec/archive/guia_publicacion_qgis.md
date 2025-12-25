@@ -178,7 +178,7 @@ changelog=
       - Cambio 2
     * Categoría 2:
       - Cambio 3
-    
+
     X.Y-1 (Versión anterior)
     - Cambio anterior 1
     - Cambio anterior 2

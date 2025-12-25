@@ -27,17 +27,17 @@ Add performance metrics tracking to monitor plugin performance with various data
 ```python
 class PerformanceTimer:
     """Context manager for timing operations."""
-    
+
     def __init__(self, operation_name: str, collector: Optional[MetricsCollector] = None):
         self.operation_name = operation_name
         self.collector = collector
         self.start_time = None
         self.duration = None
-    
+
     def __enter__(self):
         self.start_time = time.perf_counter()
         return self
-    
+
     def __exit__(self, *args):
         self.duration = time.perf_counter() - self.start_time
         if self.collector:

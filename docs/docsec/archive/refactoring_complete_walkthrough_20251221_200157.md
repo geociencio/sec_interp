@@ -271,9 +271,9 @@ from qgis.PyQt.QtCore import QVariant  # type: ignore[import]
 
 ## 8. Lecciones Aprendidas
 
-✅ **Extracción de managers**: Patrón efectivo para reducir complejidad  
-✅ **Mocks globales**: Permiten testing sin dependencias pesadas  
-✅ **Refactorización incremental**: Mantener API pública intacta evita breaking changes  
-✅ **Organización por responsabilidad**: Señales, datos, validación en módulos separados  
-✅ **Separación arquitectónica**: UI/QGIS integration vs. business logic debe ser clara  
+✅ **Extracción de managers**: Patrón efectivo para reducir complejidad
+✅ **Mocks globales**: Permiten testing sin dependencias pesadas
+✅ **Refactorización incremental**: Mantener API pública intacta evita breaking changes
+✅ **Organización por responsabilidad**: Señales, datos, validación en módulos separados
+✅ **Separación arquitectónica**: UI/QGIS integration vs. business logic debe ser clara
 ✅ **Documentación de excepciones**: Imports justificados (como `QVariant`) deben explicarse

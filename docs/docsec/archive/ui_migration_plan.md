@@ -90,4 +90,3 @@ Each page will inherit from `QWidget` and implement `get_data()` and `validate()
     - Check if FieldComboBoxes update when layers change.
     - Check if SpinBoxes work and have correct default values.
 4.  **Workflow**: Run a full interpretation workflow (Preview -> Export) to ensure all data is correctly passed from the new UI to the core logic.
-

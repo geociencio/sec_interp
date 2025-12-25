@@ -8,7 +8,7 @@ He analizado el plugin `sec_interp` e identificado **múltiples oportunidades** 
 
 ## 🎯 Operaciones Actuales que Pueden Usar Algoritmos Nativos
 
-### 1. **Buffer de Geometrías** 
+### 1. **Buffer de Geometrías**
 **Ubicación**: [`core/algorithms.py:817`](file:///home/jmbernales/qgispluginsdev/sec_interp/core/algorithms.py#L817)
 
 **Código Actual**:
@@ -276,7 +276,7 @@ class SecInterp:
     def __init__(self, iface):
         self.iface = iface
         self.feedback = QgsProcessingFeedback()  # Para logging y progreso
-    
+
     def _run_processing_algorithm(self, algorithm_id, parameters):
         """Helper para ejecutar algoritmos con manejo de errores."""
         try:

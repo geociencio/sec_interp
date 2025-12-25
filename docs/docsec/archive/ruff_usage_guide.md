@@ -1,6 +1,6 @@
 # Guía de Uso de Ruff - SecInterp
 
-**Fecha**: 2025-12-07  
+**Fecha**: 2025-12-07
 **Configuración**: `ruff.toml`
 
 ---
@@ -22,10 +22,10 @@
 
 ### Ventajas
 
-✅ **10-100x más rápido** que Flake8, Pylint, Black combinados  
-✅ **Todo en uno**: Reemplaza múltiples herramientas  
-✅ **Compatible** con Black, isort, Flake8, Pylint  
-✅ **Auto-fix**: Corrige automáticamente muchos problemas  
+✅ **10-100x más rápido** que Flake8, Pylint, Black combinados
+✅ **Todo en uno**: Reemplaza múltiples herramientas
+✅ **Compatible** con Black, isort, Flake8, Pylint
+✅ **Auto-fix**: Corrige automáticamente muchos problemas
 
 ### Reemplaza
 
@@ -163,16 +163,16 @@ ruff check . && ruff format . --check
       "source.organizeImports.ruff": "explicit"
     }
   },
-  
+
   // Configuración de Ruff
   "ruff.enable": true,
   "ruff.lint.enable": true,
   "ruff.format.enable": true,
   "ruff.organizeImports": true,
-  
+
   // Ruta al ejecutable (si está en .venv)
   "ruff.path": ["${workspaceFolder}/.venv/bin/ruff"],
-  
+
   // Deshabilitar otras herramientas (opcional)
   "python.linting.enabled": false,
   "python.linting.pylintEnabled": false,
@@ -323,15 +323,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Install Ruff
         run: pip install ruff
-      
+
       - name: Run Ruff
         run: |
           ruff check .

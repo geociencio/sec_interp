@@ -19,7 +19,7 @@ from __future__ import annotations
 #  *                                                                         *
 #  ***************************************************************************/
 from collections.abc import Iterator
-from typing import List, Optional
+from typing import Optional
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,

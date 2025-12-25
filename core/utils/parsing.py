@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
 
 
 def parse_strike(value: Any) -> Optional[float]:

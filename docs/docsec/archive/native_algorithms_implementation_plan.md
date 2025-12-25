@@ -13,12 +13,12 @@ current_dist = 0.0
 # Loop manual con interpolación
 while current_dist <= length:
     pt = geom.interpolate(current_dist).asPoint()  # ❌ Interpolación manual
-    
+
     # Muestrear elevación
     dist_from_start = da.measureLine(line_start, pt)
     res = raster_lyr.dataProvider().identify(pt, ...).results()
     elev = res.get(band_number, 0.0)
-    
+
     values.append((dist_from_start, elev, ...))
     current_dist += dist_step  # ❌ Incremento manual
 ```
@@ -55,20 +55,20 @@ def densify_line_by_interval(
     interval: float,
 ) -> QgsGeometry:
     """Densify line geometry by adding vertices at regular intervals.
-    
+
     Uses native:densifygeometriesgivenaninterval for precise vertex placement.
-    
+
     Args:
         geometry: Line geometry to densify
         interval: Distance between vertices in geometry units
-        
+
     Returns:
         QgsGeometry: Densified line geometry with vertices at regular intervals
-        
+
     Raises:
         ValueError: If geometry is invalid or not a line
         RuntimeError: If densification algorithm fails
-        
+
     Example:
         >>> line_geom = line_layer.geometry()
         >>> interval = raster_layer.rasterUnitsPerPixelX()
@@ -77,25 +77,25 @@ def densify_line_by_interval(
     """
     from qgis import processing
     from qgis.core import QgsProcessingFeedback, QgsVectorLayer, QgsFeature
-    
+
     if not geometry or geometry.isNull():
         raise ValueError("Input geometry is null or invalid")
-    
+
     if geometry.type() != QgsWkbTypes.LineGeometry:
         raise ValueError("Geometry must be a LineString")
-    
+
     try:
         # Create temporary layer with geometry
         temp_layer = QgsVectorLayer("LineString", "temp_densify", "memory")
         temp_feat = QgsFeature()
         temp_feat.setGeometry(geometry)
         temp_layer.dataProvider().addFeatures([temp_feat])
-        
+
         # Create feedback for logging
         feedback = QgsProcessingFeedback()
-        
+
         logger.debug(f"Densifying line with interval={interval:.2f}")
-        
+
         # Run densification algorithm
         result = processing.run(
             "native:densifygeometriesgivenaninterval",
@@ -106,27 +106,27 @@ def densify_line_by_interval(
             },
             feedback=feedback,
         )
-        
+
         # Extract densified geometry
         densified_layer = result["OUTPUT"]
         if densified_layer.featureCount() == 0:
             raise ValueError("Densification produced no features")
-        
+
         densified_feat = next(densified_layer.getFeatures())
         densified_geom = densified_feat.geometry()
-        
+
         if not densified_geom or densified_geom.isNull():
             raise ValueError("Densified geometry is invalid")
-        
+
         # Get vertex count for logging
         if densified_geom.isMultipart():
             vertex_count = sum(len(part) for part in densified_geom.asMultiPolyline())
         else:
             vertex_count = len(densified_geom.asPolyline())
-        
+
         logger.debug(f"✓ Densification complete: {vertex_count} vertices")
         return densified_geom
-        
+
     except Exception as e:
         error_msg = f"Failed to densify line: {str(e)}"
         logger.error(error_msg)
@@ -148,16 +148,16 @@ current_dist = 0.0
 
 while current_dist <= length:
     pt = geom.interpolate(current_dist).asPoint()
-    
+
     dist_from_start = da.measureLine(line_start, pt)
-    
+
     # Get elevation
     res = raster_lyr.dataProvider().identify(pt, ...).results()
     elev = res.get(band_number, 0.0)
-    
+
     glg_val = feature[glg_field]
     values.append((round(dist_from_start, 1), round(elev, 1), glg_val))
-    
+
     current_dist += dist_step
 ```
 
@@ -179,11 +179,11 @@ else:
 
 for pt in points:
     dist_from_start = da.measureLine(line_start, pt)
-    
+
     # Get elevation
     res = raster_lyr.dataProvider().identify(pt, ...).results()
     elev = res.get(band_number, 0.0)
-    
+
     glg_val = feature[glg_field]
     values.append((round(dist_from_start, 1), round(elev, 1), glg_val))
 ```
@@ -208,14 +208,14 @@ def sample_elevation_along_line(geometry, raster_layer, band_number, distance_ar
     length = geometry.length()
     current_dist = 0.0
     points = []
-    
+
     start_pt = reference_point if reference_point else geometry.interpolate(0).asPoint()
-    
+
     while current_dist <= length:
         pt = geometry.interpolate(current_dist).asPoint()
         # ...
         current_dist += dist_step
-    
+
     return points
 ```
 
@@ -228,22 +228,22 @@ def sample_elevation_along_line(geometry, raster_layer, band_number, distance_ar
         densified_geom = densify_line_by_interval(geometry, interval)
     except (ValueError, RuntimeError):
         densified_geom = geometry
-    
+
     # Get vertices
     if densified_geom.isMultipart():
         vertices = densified_geom.asMultiPolyline()[0]
     else:
         vertices = densified_geom.asPolyline()
-    
+
     points = []
     start_pt = reference_point if reference_point else vertices[0]
-    
+
     for pt in vertices:
         dist_from_start = distance_area.measureLine(start_pt, pt)
         val, ok = raster_layer.dataProvider().sample(pt, band_number)
         elev = val if ok else 0.0
         points.append(QgsPointXY(dist_from_start, elev))
-    
+
     return points
 ```
 
@@ -253,7 +253,7 @@ def sample_elevation_along_line(geometry, raster_layer, band_number, distance_ar
 
 ### 1. Intervalo de Densificación
 
-**Antes**: Calculado con fórmula compleja basada en slope  
+**Antes**: Calculado con fórmula compleja basada en slope
 **Después**: Usar resolución del raster directamente
 
 ```python
@@ -315,7 +315,7 @@ Añadir en `tests/test_utils.py`:
 ```python
 class TestLineDensification:
     """Tests for densify_line_by_interval."""
-    
+
     @patch("core.utils.processing")
     def test_densify_line_basic(self, mock_processing):
         """Test basic line densification."""
@@ -323,7 +323,7 @@ class TestLineDensification:
         mock_geom = Mock(spec=QgsGeometry)
         mock_geom.isNull.return_value = False
         mock_geom.type.return_value = QgsWkbTypes.LineGeometry
-        
+
         # Mock densified result
         mock_densified_geom = Mock(spec=QgsGeometry)
         mock_densified_geom.isNull.return_value = False
@@ -333,19 +333,19 @@ class TestLineDensification:
             QgsPointXY(10, 0),
             QgsPointXY(20, 0),
         ]
-        
+
         mock_feat = Mock()
         mock_feat.geometry.return_value = mock_densified_geom
-        
+
         mock_layer = Mock()
         mock_layer.featureCount.return_value = 1
         mock_layer.getFeatures.return_value = [mock_feat]
-        
+
         mock_processing.run.return_value = {"OUTPUT": mock_layer}
-        
+
         # Call function
         result = scu.densify_line_by_interval(mock_geom, 10.0)
-        
+
         # Verify
         assert result == mock_densified_geom
         mock_processing.run.assert_called_once()
@@ -386,8 +386,8 @@ class TestLineDensification:
 
 ## Decisión sobre `calculate_step_size()`
 
-**Opción 1**: Deprecar pero mantener para compatibilidad  
-**Opción 2**: Eliminar completamente  
+**Opción 1**: Deprecar pero mantener para compatibilidad
+**Opción 2**: Eliminar completamente
 
 **Recomendación**: **Mantener pero marcar como deprecated** porque:
 - Podría usarse en código externo
@@ -397,10 +397,10 @@ class TestLineDensification:
 ```python
 def calculate_step_size(geom, raster_lyr):
     """Calculate step size based on slope and raster resolution.
-    
-    .. deprecated:: 
+
+    .. deprecated::
         Use densify_line_by_interval() instead for better precision.
-    
+
     This function is kept for backward compatibility but may be removed
     in future versions.
     """

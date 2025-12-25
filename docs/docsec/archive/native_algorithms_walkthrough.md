@@ -10,8 +10,8 @@ Se han completado exitosamente **3 refactorizaciones** para usar algoritmos de p
 
 ### ✅ #1: Buffer de Geometrías
 
-**Algoritmo**: `native:buffer`  
-**Archivos modificados**: 3  
+**Algoritmo**: `native:buffer`
+**Archivos modificados**: 3
 **Estado**: ✅ Implementado y verificado en QGIS
 
 **Cambios**:
@@ -28,8 +28,8 @@ Se han completado exitosamente **3 refactorizaciones** para usar algoritmos de p
 
 ### ✅ #2: Selección Espacial
 
-**Algoritmo**: `native:extractbylocation`  
-**Archivos modificados**: 2  
+**Algoritmo**: `native:extractbylocation`
+**Archivos modificados**: 2
 **Estado**: ✅ Implementado, pendiente verificación en QGIS
 
 **Cambios**:
@@ -46,8 +46,8 @@ Se han completado exitosamente **3 refactorizaciones** para usar algoritmos de p
 
 ### ✅ #3: Intersección Geológica
 
-**Algoritmo**: `native:intersection`  
-**Archivos modificados**: 1  
+**Algoritmo**: `native:intersection`
+**Archivos modificados**: 1
 **Estado**: ✅ Implementado, pendiente verificación en QGIS
 
 **Cambios**:
@@ -79,20 +79,20 @@ for feature in outcrop_lyr.getFeatures():  # ❌ Loop sobre todos los afloramien
     outcrop_geom = feature.geometry()
     if not outcrop_geom or outcrop_geom.isNull():
         continue
-    
+
     if not outcrop_geom.intersects(line_geom):  # ❌ Verificación manual
         continue
-    
+
     intersection = outcrop_geom.intersection(line_geom)  # ❌ Cálculo manual
     if not intersection or intersection.isNull():
         continue
-    
+
     # ❌ Manejo manual de multi-part geometries
     if intersection.isMultipart():
         geoms = intersection.asGeometryCollection()
     else:
         geoms = [intersection]
-    
+
     for geom in geoms:
         # procesar cada geometría...
 ```
@@ -114,7 +114,7 @@ try:
         },
         feedback=feedback,
     )
-    
+
     intersection_layer = result["OUTPUT"]
     logger.debug(f"✓ Intersection complete: {intersection_layer.featureCount()} segments")
 

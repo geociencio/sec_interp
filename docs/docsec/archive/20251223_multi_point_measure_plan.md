@@ -19,20 +19,20 @@ Esta funcionalidad es limitada para medir afloramientos que siguen trazas comple
 
 > [!IMPORTANT]
 > **Cambio de Comportamiento de Usuario**
-> 
+>
 > Este cambio modificará la interacción con la herramienta de medición:
 > - **Antes**: Dos clics para medir (inicio → fin)
 > - **Después**: Múltiples clics para seguir la traza + doble clic para finalizar
-> 
+>
 > El comportamiento de dos puntos seguirá siendo posible (clic → doble clic), pero el flujo de interacción cambia ligeramente.
 
 > [!NOTE]
 > **Compatibilidad con Mediciones Simples**
-> 
+>
 > Las mediciones simples de dos puntos seguirán siendo posibles:
 > 1. Primer clic en punto inicial
 > 2. Doble clic en punto final
-> 
+>
 > Esto mantiene la funcionalidad existente mientras añade capacidades avanzadas.
 
 ## Proposed Changes
@@ -94,90 +94,90 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
     # Nueva señal con más información
     measurementChanged = pyqtSignal(dict)  # dict con todas las métricas
     measurementCleared = pyqtSignal()
-    
+
     DOUBLE_CLICK_THRESHOLD_MS = 300
     DOUBLE_CLICK_DISTANCE_TOLERANCE = 5  # pixels
-    
+
     def __init__(self, canvas: QgsMapCanvas):
         super().__init__(canvas)
         self.canvas = canvas
         self.points: List[QgsPointXY] = []
         self.last_click_time: Optional[float] = None
         self.last_click_pos: Optional[QPoint] = None
-        
+
         self.rubber_band: Optional[QgsRubberBand] = None
         self.vertex_markers: List[QgsVertexMarker] = []
         self.snapper = ProfileSnapper(canvas)
-    
+
     def canvasReleaseEvent(self, event):
         if event.button() == Qt.RightButton:
             self.reset()
             return
-        
+
         snapped_point = self.snapper.snap(event.pos())
-        
+
         # Detectar doble clic
         if self._is_double_click(event.pos()):
             self._finalize_measurement()
             return
-        
+
         # Añadir punto
         self._add_point(snapped_point)
         self.last_click_time = time.time() * 1000
         self.last_click_pos = event.pos()
-    
+
     def _is_double_click(self, pos: QPoint) -> bool:
         if not self.last_click_time or not self.last_click_pos:
             return False
-        
+
         current_time = time.time() * 1000
         time_diff = current_time - self.last_click_time
-        
+
         if time_diff > self.DOUBLE_CLICK_THRESHOLD_MS:
             return False
-        
+
         # Verificar distancia en pixels
         dx = pos.x() - self.last_click_pos.x()
         dy = pos.y() - self.last_click_pos.y()
         pixel_dist = math.sqrt(dx*dx + dy*dy)
-        
+
         return pixel_dist < self.DOUBLE_CLICK_DISTANCE_TOLERANCE
-    
+
     def _add_point(self, point: QgsPointXY):
         self.points.append(point)
         self._ensure_rubber_band()
         self.rubber_band.addPoint(point, True)
         self._add_vertex_marker(point)
-        
+
         if len(self.points) > 1:
             self._calculate_and_emit()
-    
+
     def _finalize_measurement(self):
         if len(self.points) < 2:
             return
-        
+
         # Calcular métricas finales
         metrics = self._calculate_metrics()
         self.measurementChanged.emit(metrics)
         logger.info(f"Measurement finalized: {len(self.points)} points, "
                    f"{metrics['total_distance']:.2f}m total")
-    
+
     def _calculate_metrics(self) -> dict:
         if len(self.points) < 2:
             return {}
-        
+
         total_dist = 0.0
         total_dx = 0.0
         segments = []
-        
+
         for i in range(len(self.points) - 1):
             p1 = self.points[i]
             p2 = self.points[i + 1]
-            
+
             dx = abs(p2.x() - p1.x())
             dy = p2.y() - p1.y()
             seg_dist = math.sqrt(dx*dx + dy*dy)
-            
+
             total_dist += seg_dist
             total_dx += dx
             segments.append({
@@ -185,15 +185,15 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
                 'dx': dx,
                 'dy': dy
             })
-        
+
         # Cambio de elevación total
         elevation_change = self.points[-1].y() - self.points[0].y()
-        
+
         # Pendiente promedio
         avg_slope = 0.0
         if total_dx > 0:
             avg_slope = math.degrees(math.atan(abs(elevation_change) / total_dx))
-        
+
         return {
             'total_distance': total_dist,
             'horizontal_distance': total_dx,
@@ -230,13 +230,13 @@ def _on_measurement_changed(self, metrics: dict):
     """Handle measurement updates from the tool."""
     if not metrics:
         return
-    
+
     total_dist = metrics.get('total_distance', 0)
     horiz_dist = metrics.get('horizontal_distance', 0)
     elev_change = metrics.get('elevation_change', 0)
     avg_slope = metrics.get('avg_slope', 0)
     seg_count = metrics.get('segment_count', 0)
-    
+
     result_text = (
         f"<b>Medición Multi-Punto</b><br>"
         f"Segmentos: {seg_count}<br>"
@@ -245,7 +245,7 @@ def _on_measurement_changed(self, metrics: dict):
         f"Cambio Elevación: {elev_change:+.2f} m<br>"
         f"Pendiente Promedio: {avg_slope:.1f}°"
     )
-    
+
     self.measure_results_label.setText(result_text)
 ```
 
@@ -261,7 +261,7 @@ def _on_measurement_changed(self, metrics: dict):
 def test_multipoint_measurement():
     """Test multi-point polyline measurement."""
     tool = ProfileMeasureTool(mock_canvas)
-    
+
     # Simular 4 puntos
     points = [
         QgsPointXY(0, 0),
@@ -269,12 +269,12 @@ def test_multipoint_measurement():
         QgsPointXY(200, 30),
         QgsPointXY(300, 100)
     ]
-    
+
     for pt in points:
         tool._add_point(pt)
-    
+
     metrics = tool._calculate_metrics()
-    
+
     assert metrics['point_count'] == 4
     assert metrics['segment_count'] == 3
     assert metrics['total_distance'] > 0
@@ -283,15 +283,15 @@ def test_multipoint_measurement():
 def test_double_click_detection():
     """Test double-click finalization."""
     tool = ProfileMeasureTool(mock_canvas)
-    
+
     # Simular primer clic
     tool.last_click_time = time.time() * 1000
     tool.last_click_pos = QPoint(100, 100)
-    
+
     # Simular segundo clic cercano y rápido
     time.sleep(0.1)  # 100ms
     is_double = tool._is_double_click(QPoint(102, 101))
-    
+
     assert is_double is True
 ```
 
@@ -379,5 +379,5 @@ def test_double_click_detection():
 
 ---
 
-*Plan creado: 2025-12-23*  
+*Plan creado: 2025-12-23*
 *Versión objetivo: 2.3.0 o 2.4.0*

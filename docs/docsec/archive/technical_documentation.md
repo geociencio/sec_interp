@@ -1,8 +1,8 @@
 # SecInterp - Documentación Técnica Completa
 
-**Plugin QGIS para Extracción de Datos Geológicos**  
-**Versión**: 0.3  
-**Autor**: Juan M. Bernales  
+**Plugin QGIS para Extracción de Datos Geológicos**
+**Versión**: 0.3
+**Autor**: Juan M. Bernales
 **Fecha**: 2025-12-07
 
 ---
@@ -52,7 +52,7 @@ SecInterp es un plugin de QGIS diseñado para extraer y visualizar datos geológ
 graph TD
     Root[sec_interp/]
     Root --> Init[__init__.py]
-    
+
     Root --> Core[core/]
     Core --> Algo[algorithms.py]
     Core --> Services[services/]
@@ -64,15 +64,15 @@ graph TD
     Utils --> U2[spatial.py]
     Core --> DataCache[data_cache.py]
     Core --> PerfMetrics[performance_metrics.py]
-    
+
     Root --> Gui[gui/]
     Gui --> MainDlg[main_dialog.py]
     Gui --> Preview[preview_renderer.py]
-    
+
     Root --> Exp[exporters/]
     Exp --> CsvExp[csv_exporter.py]
     Exp --> ShpExp[shp_exporter.py]
-    
+
     Root --> Res[resources/]
 ```
 
@@ -87,25 +87,25 @@ classDiagram
         +run()
         +process_data()
     }
-    
+
     class SecInterpDialog {
         +get_selected_values()
         +update_preview()
     }
-    
+
     class PreviewManager {
         +generate_preview()
         +update_from_checkboxes()
     }
-    
+
     class ProfileService {
         +generate_topographic_profile()
     }
-    
+
     class GeologyService {
         +generate_geological_profile()
     }
-    
+
     class StructureService {
         +project_structures()
     }
@@ -135,10 +135,10 @@ classDiagram
 ```python
 def classFactory(iface):
     """Función llamada por QGIS para cargar el plugin.
-    
+
     Args:
         iface (QgsInterface): Interfaz de QGIS
-        
+
     Returns:
         SecInterp: Instancia del plugin
     """
@@ -160,7 +160,7 @@ def classFactory(iface):
 ```python
 class SecInterp:
     """Implementación principal del plugin SecInterp.
-    
+
     Responsabilidades:
     - Integración con QGIS (menú, toolbar, acciones)
     - Gestión del diálogo principal
@@ -175,7 +175,7 @@ class SecInterp:
 ```python
 def __init__(self, iface):
     """Inicializa el plugin.
-    
+
     Pasos:
     1. Guarda referencia a iface
     2. Inicializa traductor i18n
@@ -185,12 +185,12 @@ def __init__(self, iface):
     """
     self.iface = iface
     self.plugin_dir = Path(__file__).parent.parent
-    
+
     # Servicios de procesamiento
     self.profile_service = ProfileService()
     self.geology_service = GeologyService()
     self.structure_service = StructureService()
-    
+
     # Caché y renderizador
     self.data_cache = DataCache()
     self.preview_renderer = PreviewRenderer()
@@ -204,7 +204,7 @@ def __init__(self, iface):
 def initGui(self):
     """Crea menú y toolbar en QGIS."""
     icon_path = str(self.plugin_dir / "icon.png")
-    
+
     self.add_action(
         icon_path,
         text=self.tr("Section Interpretation"),
@@ -220,10 +220,10 @@ def run(self):
     """Ejecuta el plugin mostrando el diálogo."""
     if not hasattr(self, 'dlg') or self.dlg is None:
         self.dlg = SecInterpDialog(self.iface, self)
-    
+
     self.dlg.show()
     result = self.dlg.exec_()
-    
+
     if result == QDialog.Accepted:
         self.process_data()
 ```
@@ -233,7 +233,7 @@ def run(self):
 ```python
 def process_data(self):
     """Orquesta el procesamiento de datos con caché.
-    
+
     Flujo:
     1. Obtiene y valida inputs del diálogo
     2. Genera clave de caché
@@ -255,14 +255,14 @@ Sistema de caché para evitar reprocesamiento innecesario.
 ```python
 class DataCache:
     """Caché en memoria para datos de perfil.
-    
+
     Almacena:
     - Perfiles topográficos
     - Datos geológicos
     - Datos estructurales
     - Metadatos de procesamiento
     """
-    
+
     def __init__(self):
         self._topo_cache: Dict[str, ProfileData] = {}
         self._geol_cache: Dict[str, GeologyData] = {}
@@ -275,13 +275,13 @@ class DataCache:
 ```python
 def get_cache_key(self, params: Dict[str, Any]) -> str:
     """Genera clave única desde parámetros.
-    
+
     Algoritmo:
     1. Filtra objetos QGIS (usa ID/source en lugar de dirección de memoria)
     2. Ordena parámetros alfabéticamente
     3. Concatena en string
     4. Genera hash MD5
-    
+
     Returns:
         Hash MD5 hexadecimal de 32 caracteres
     """
@@ -294,7 +294,7 @@ def get_cache_key(self, params: Dict[str, Any]) -> str:
                 key_parts.append(f"{k}:{v.source()}")
         else:
             key_parts.append(f"{k}:{str(v)}")
-    
+
     import hashlib
     return hashlib.md5("".join(key_parts).encode('utf-8')).hexdigest()
 ```
@@ -306,21 +306,21 @@ Sistema de métricas de rendimiento.
 ```python
 class PerformanceTimer:
     """Context manager para medir tiempos de operación.
-    
+
     Uso:
         with PerformanceTimer("operation_name", collector) as timer:
             # código a medir
             pass
         # timer.duration contiene el tiempo en segundos
     """
-    
+
     def __enter__(self):
         self.start_time = time.perf_counter()
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.duration = time.perf_counter() - self.start_time
-        
+
         if self.collector:
             self.collector.record_metric(self.operation_name, self.duration)
 ```
@@ -330,7 +330,7 @@ class PerformanceTimer:
 ```python
 def format_duration(seconds: float) -> str:
     """Formatea duración en formato legible.
-    
+
     Ejemplos:
         0.0001 s -> "100µs"
         0.5 s -> "500ms"
@@ -375,7 +375,7 @@ Los servicios encapsulan la lógica de procesamiento de datos geológicos.
 ```python
 class ProfileService:
     """Servicio para generación de perfiles topográficos."""
-    
+
     def generate_topographic_profile(
         self,
         line_lyr: QgsVectorLayer,
@@ -383,22 +383,22 @@ class ProfileService:
         band_number: int = 1,
     ) -> ProfileData:
         """Genera perfil topográfico muestreando elevación a lo largo de la línea.
-        
+
         Algoritmo:
         1. Obtiene geometría de la línea de sección
         2. Densifica la línea según resolución del raster
         3. Muestrea elevación en cada vértice
         4. Calcula distancia desde el inicio
         5. Retorna lista de (distancia, elevación)
-        
+
         Args:
             line_lyr: Capa vectorial con línea de sección
             raster_lyr: Capa raster (DEM) para elevación
             band_number: Banda del raster a muestrear
-            
+
         Returns:
             Lista de tuplas (distancia_m, elevación_m)
-            
+
         Raises:
             ValueError: Si la capa no tiene features o geometría inválida
         """
@@ -412,24 +412,24 @@ def generate_topographic_profile(self, line_lyr, raster_lyr, band_number=1):
     line_feat = next(line_lyr.getFeatures(), None)
     if not line_feat:
         raise ValueError("Line layer has no features")
-    
+
     # 2. Validar geometría
     geom = line_feat.geometry()
     if not geom or geom.isNull():
         raise ValueError("Line geometry is not valid")
-    
+
     # 3. Crear objeto de medición de distancias
     da = scu.create_distance_area(line_lyr.crs())
-    
+
     # 4. Muestrear elevación a lo largo de la línea
     # Usa algoritmo nativo de densificación + muestreo de raster
     points = scu.sample_elevation_along_line(
         geom, raster_lyr, band_number, da
     )
-    
+
     # 5. Convertir a tuplas (distancia, elevación)
     values = [(round(p.x(), 1), round(p.y(), 1)) for p in points]
-    
+
     return values
 ```
 
@@ -440,20 +440,20 @@ graph LR
     subgraph "1. Línea Original"
     A((A)) --- B((B))
     end
-    
+
     subgraph "2. Densificación"
     A2((A)) -.- x1(x) -.- x2(x) -.- B2((B))
     end
-    
+
     subgraph "3. Muestreo Raster"
     x1 --> |Sample| R1[e1]
     x2 --> |Sample| R2[e2]
     end
-    
+
     subgraph "4. Resultado"
     Res[[(d, e)]]
     end
-    
+
     R1 --> Res
     R2 --> Res
 ```
@@ -467,7 +467,7 @@ graph LR
 ```python
 class GeologyService:
     """Servicio para generación de perfiles geológicos."""
-    
+
     def generate_geological_profile(
         self,
         line_lyr: QgsVectorLayer,
@@ -477,7 +477,7 @@ class GeologyService:
         band_number: int = 1,
     ) -> GeologyData:
         """Genera perfil geológico intersectando línea con afloramientos.
-        
+
         Algoritmo:
         1. Intersecta línea de sección con polígonos de afloramientos
         2. Para cada segmento de intersección:
@@ -487,7 +487,7 @@ class GeologyService:
            d. Calcula distancia desde inicio
         3. Ordena por distancia
         4. Retorna lista de (distancia, elevación, unidad)
-        
+
         Returns:
             Lista de tuplas (distancia_m, elevación_m, nombre_unidad)
         """
@@ -496,16 +496,16 @@ class GeologyService:
 **Implementación detallada**:
 
 ```python
-def generate_geological_profile(self, line_lyr, raster_lyr, outcrop_lyr, 
+def generate_geological_profile(self, line_lyr, raster_lyr, outcrop_lyr,
                                 outcrop_name_field, band_number=1):
     # 1. Validar inputs
     line_feat = next(line_lyr.getFeatures(), None)
     if not line_feat:
         raise ValueError("Line layer has no features")
-    
+
     line_geom = line_feat.geometry()
     line_start = scu.get_line_start_point(line_geom)
-    
+
     # 2. Intersectar usando algoritmo nativo de QGIS
     result = processing.run(
         "native:intersection",
@@ -517,14 +517,14 @@ def generate_geological_profile(self, line_lyr, raster_lyr, outcrop_lyr,
             "OUTPUT": "memory:",
         }
     )
-    
+
     intersection_layer = result["OUTPUT"]
-    
+
     # 3. Procesar cada segmento de intersección
     values = []
     for feature in intersection_layer.getFeatures():
         geom = feature.geometry()
-        
+
         # Manejar MultiLineString y LineString
         geometries_to_process = []
         if geom.wkbType() in [QgsWkbTypes.LineString, ...]:
@@ -533,35 +533,35 @@ def generate_geological_profile(self, line_lyr, raster_lyr, outcrop_lyr,
             for part in geom.asMultiPolyline():
                 line_geom = QgsGeometry.fromPolylineXY(part)
                 geometries_to_process.append(line_geom)
-        
+
         # 4. Densificar y muestrear cada geometría
         for process_geom in geometries_to_process:
             # Calcular intervalo basado en resolución del raster
             interval = scu.calculate_step_size(process_geom, raster_lyr)
-            
+
             # Densificar usando algoritmo nativo
             densified_geom = scu.densify_line_by_interval(process_geom, interval)
             vertices = scu.get_line_vertices(densified_geom)
-            
+
             # 5. Muestrear cada vértice
             for pt in vertices:
                 # Distancia desde inicio de línea
                 dist = da.measureLine(line_start, pt)
-                
+
                 # Elevación desde raster
                 res = raster_lyr.dataProvider().identify(
                     pt, QgsRaster.IdentifyFormatValue
                 ).results()
                 elev = res.get(band_number, 0.0)
-                
+
                 # Nombre de unidad geológica
                 unit_name = feature[outcrop_name_field]
-                
+
                 values.append((round(dist, 1), round(elev, 1), unit_name))
-    
+
     # 6. Ordenar por distancia
     values.sort(key=lambda x: x[0])
-    
+
     return values
 ```
 
@@ -571,18 +571,18 @@ def generate_geological_profile(self, line_lyr, raster_lyr, outcrop_lyr,
 graph TD
     Line(Línea Sección A-B)
     Poly(Polígonos U1, U2, U3)
-    
+
     Line --> Inter[Intersección]
     Poly --> Inter
-    
+
     Inter --> Seg1(Segmento S1: U1)
     Inter --> Seg2(Segmento S2: U2)
     Inter --> Seg3(Segmento S3: U3)
-    
+
     Seg1 --> Dens(Densificación & Muestreo)
     Seg2 --> Dens
     Seg3 --> Dens
-    
+
     Dens --> Res[Lista de Puntos: d, e, Unidad]
 ```
 
@@ -595,7 +595,7 @@ graph TD
 ```python
 class StructureService:
     """Servicio para proyección de mediciones estructurales."""
-    
+
     def project_structures(
         self,
         line_lyr: QgsVectorLayer,
@@ -606,7 +606,7 @@ class StructureService:
         strike_field: str,
     ) -> StructureData:
         """Proyecta mediciones estructurales al plano de sección.
-        
+
         Algoritmo:
         1. Crea buffer alrededor de la línea de sección
         2. Filtra estructuras dentro del buffer
@@ -617,7 +617,7 @@ class StructureService:
            d. Calcula distancia a lo largo de la sección
         4. Ordena por distancia
         5. Retorna lista de (distancia, buzamiento_aparente)
-        
+
         Returns:
             Lista de tuplas (distancia_m, buzamiento_aparente_grados)
         """
@@ -626,56 +626,56 @@ class StructureService:
 **Implementación detallada**:
 
 ```python
-def project_structures(self, line_lyr, struct_lyr, buffer_m, line_az, 
+def project_structures(self, line_lyr, struct_lyr, buffer_m, line_az,
                       dip_field, strike_field):
     # 1. Validar línea
     line_feat = next(line_lyr.getFeatures(), None)
     line_geom = line_feat.geometry()
     line_start = scu.get_line_start_point(line_geom)
-    
+
     # 2. Crear buffer usando algoritmo nativo
     buffer_geom = scu.create_buffer_geometry(
         line_geom, line_lyr.crs(), buffer_m, segments=25
     )
-    
+
     # 3. Filtrar features espacialmente (usa índice espacial R-tree)
     filtered_features = scu.filter_features_by_buffer(
         struct_lyr, buffer_geom, line_lyr.crs()
     )
-    
+
     # 4. Procesar cada estructura
     projected_structs = []
     for f in filtered_features:
         struct_geom = f.geometry()
         p = struct_geom.asPoint()
-        
+
         # Distancia a lo largo de la línea
         dist = da.measureLine(line_start, p)
-        
+
         # Parsear rumbo y buzamiento
         strike_raw = f[strike_field]
         dip_raw = f[dip_field]
-        
+
         strike = scu.parse_strike(strike_raw)  # Soporta "N 15° E" o "15"
         dip_angle, _ = scu.parse_dip(dip_raw)  # Soporta "22° SW" o "22"
-        
+
         # Validar rangos
         is_valid, _ = vu.validate_angle_range(strike, "Strike", 0.0, 360.0)
         if not is_valid:
             continue
-        
+
         is_valid, _ = vu.validate_angle_range(dip_angle, "Dip", 0.0, 90.0)
         if not is_valid:
             continue
-        
+
         # Calcular buzamiento aparente
         app_dip = scu.calculate_apparent_dip(strike, dip_angle, line_az)
-        
+
         projected_structs.append((round(dist, 1), round(app_dip, 1)))
-    
+
     # 5. Ordenar por distancia
     projected_structs.sort(key=lambda x: x[0])
-    
+
     return projected_structs
 ```
 
@@ -692,7 +692,7 @@ Operaciones geométricas optimizadas con manejo robusto de errores y tipos.
 ```python
 def run_geometry_operation(algorithm, geometry, crs, parameters):
     """Ejecuta algoritmos de procesamiento de QGIS sobre una geometría.
-    
+
     Encapsula el ciclo de vida completo:
     1. Crea capa de memoria temporal
     2. Ejecuta algoritmo (ej. 'native:buffer')
@@ -709,7 +709,7 @@ def create_buffer_geometry(geometry, crs, distance, segments=25):
 
 def filter_features_by_buffer(features_layer, buffer_geometry, buffer_crs=None):
     """Filtra features usando índice espacial R-tree.
-    
+
     Optiminzación:
     1. Construye índice espacial de features
     2. Filtrado rápido por Bounding Box
@@ -721,7 +721,7 @@ def densify_line_by_interval(geometry, interval):
 
 def extract_all_vertices(geometry):
     """Extrae todos los vértices manejando geometrías Multipart.
-    
+
     Soporta:
     - Point / MultiPoint
     - LineString / MultiLineString
@@ -736,29 +736,29 @@ Cálculos espaciales básicos.
 ```python
 def calculate_line_azimuth(line_geom):
     """Calcula azimuth de una línea.
-    
+
     Fórmula:
         azimuth = atan2(Δx, Δy) * 180/π
-        
+
     Donde:
         Δx = x2 - x1
         Δy = y2 - y1
-        
+
     Resultado normalizado a 0-360°
     """
     line = line_geom.asPolyline()
     p1, p2 = line[0], line[1]
-    
+
     azimuth = math.degrees(math.atan2(p2.x() - p1.x(), p2.y() - p1.y()))
-    
+
     if azimuth < 0:
         azimuth += 360
-    
+
     return azimuth
 
 def create_distance_area(crs):
     """Crea objeto QgsDistanceArea configurado.
-    
+
     Configura:
     - CRS de origen
     - Elipsoide para cálculos geodésicos
@@ -793,22 +793,22 @@ Donde:
 ```python
 def calculate_apparent_dip(true_strike, true_dip, line_azimuth):
     """Calcula buzamiento aparente en el plano de sección.
-    
+
     El buzamiento aparente es la inclinación de un plano medida
     en una dirección que NO es perpendicular al rumbo.
-    
+
     Args:
         true_strike: Rumbo verdadero (0-360°)
         true_dip: Buzamiento verdadero (0-90°)
         line_azimuth: Azimuth de la línea de sección (0-360°)
-        
+
     Returns:
         Buzamiento aparente en grados
-        
+
     Ejemplo:
         Plano: rumbo=45°, buzamiento=60°
         Sección: azimuth=90°
-        
+
         α = 45° - 90° = -45°
         tan(app_dip) = tan(60°) × sin(-45°)
         tan(app_dip) = 1.732 × (-0.707)
@@ -818,11 +818,11 @@ def calculate_apparent_dip(true_strike, true_dip, line_azimuth):
     alpha = math.radians(true_strike)
     beta = math.radians(true_dip)
     theta = math.radians(line_azimuth)
-    
+
     app_dip = math.degrees(
         math.atan(math.tan(beta) * math.sin(alpha - theta))
     )
-    
+
     return app_dip
 ```
 
@@ -840,7 +840,7 @@ Vista en planta:
             /   |
            /α   |
           /     |
-         
+
 Vista de sección:
          |
          | Buzamiento real (60°)
@@ -879,17 +879,17 @@ def parse_strike(value):
         return float(value)
     except (ValueError, TypeError):
         pass
-    
+
     # Parsear notación de cuadrante
     text = str(value).replace("°", "").strip().upper()
     match = re.match(r"([NS])\s*(\d+\.?\d*)\s*([EW])", text)
-    
+
     if not match:
         return None
-    
+
     d1, ang, d2 = match.groups()
     ang = float(ang)
-    
+
     # Aplicar reglas de cuadrante
     if d1 == "N" and d2 == "E":
         strike = ang
@@ -899,7 +899,7 @@ def parse_strike(value):
         strike = 180 - ang
     elif d1 == "S" and d2 == "W":
         strike = 180 + ang
-    
+
     return strike % 360
 ```
 
@@ -917,23 +917,23 @@ Soporta:
 ```python
 def parse_dip(value):
     text = str(value).replace("°", "").strip().upper()
-    
+
     # Caso 1: Solo número
     numeric_only = re.match(r"^(\d+\.?\d*)$", text)
     if numeric_only:
         return float(text), None
-    
+
     # Caso 2: Número + dirección cardinal
     match = re.match(r"(\d+\.?\d*)\s*([NSEW]{1,2})", text)
     if not match:
         return None, None
-    
+
     dip, cardinal = match.groups()
     dip = float(dip)
-    
+
     # Convertir dirección cardinal a azimuth
     dip_dir = cardinal_to_azimuth(cardinal)
-    
+
     return dip, dip_dir
 ```
 
@@ -971,44 +971,44 @@ sequenceDiagram
     User->>Dialog: Click "Preview"
     Dialog->>Manager: generate_preview()
     activate Manager
-    
+
     Note over Manager: 1. Data Generation
-    
+
     Manager->>Services: generate_topographic_profile()
     Services-->>Manager: profile_data
-    
+
     opt Show Geology
         Manager->>Services: generate_geological_profile()
         Services-->>Manager: geol_data
     end
-    
+
     opt Show Structures
         Manager->>Services: project_structures()
         Services-->>Manager: struct_data
     end
-    
+
     Note over Manager: 2. Visualization Handover
-    
+
     Manager->>Core: draw_preview(profile, geol, struct)
     activate Core
-    
+
     Core->>Renderer: render(data, vert_exag)
     activate Renderer
-    
+
     Renderer->>Renderer: _create_topo_layer()
     Renderer->>Renderer: _create_geol_layer()
     Renderer->>Renderer: _create_struct_layer()
     Renderer->>Renderer: _create_axes_layer()
-    
+
     Renderer->>Canvas: setLayers([all_layers])
     Renderer->>Canvas: refresh()
-    
+
     Renderer-->>Core: canvas, layers
     deactivate Renderer
-    
+
     Core-->>Manager: (return)
     deactivate Core
-    
+
     Manager->>Dialog: Update Results Text
     deactivate Manager
     Dialog-->>User: Show "Preview generated!"
@@ -1038,15 +1038,15 @@ classDiagram
     class CSVExporter {
         +export(path, data)
     }
-    
+
     class ShapefileExporter {
         +export(path, data)
     }
-    
+
     class ImageExporter {
         +export(path, data)
     }
-    
+
     class SVGExporter {
         +export(path, data)
     }
@@ -1111,14 +1111,14 @@ Para evitar una clase "God Object", la lógica compleja se delega a managers esp
 ```mermaid
 graph TD
     User((Usuario)) --> |Interactúa| Dialog[SecInterpDialog]
-    
+
     Dialog --> |Delega Vista Previa| Preview[PreviewManager]
     Dialog --> |Delega Exportación| Export[ExportManager]
     Dialog --> |Delega Validación| Valid[DialogValidator]
-    
+
     Preview --> |Usa| Metrics[PerformanceMetrics]
     Preview --> |Dibuja en| Renderer[PreviewRenderer]
-    
+
     Export --> |Crea| Exporter[BaseExporter]
 ```
 
@@ -1156,4 +1156,3 @@ Responsable de dibujar en el canvas de QGIS (`QgsMapCanvas`). No contiene lógic
 *   Crea capas temporales en memoria (`memory:`).
 *   Configura simbología y etiquetado.
 *   Dibuja ejes y leyendas.
-

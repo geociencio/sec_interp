@@ -92,7 +92,7 @@ class LayerRepository:
     def get_raster_layer(self, name: str) -> QgsRasterLayer:
         # Logic to get raster layer
         pass
-    
+
     def get_vector_layer(self, name: str) -> QgsVectorLayer:
         # Logic to get vector layer
         pass
@@ -118,22 +118,22 @@ class ProfileController:
     def generate_profile_data(self, values: dict) -> ProfileResult:
         """Main method that orchestrates all data generation"""
         result = ProfileResult()
-        
+
         # Topography
         result.topography = self.topographic_service.generate(values)
-        
+
         # Geology
         if self._requires_geology_processing(values):
             result.geology = self.geological_service.generate(values)
-        
+
         # Structural
         if self._requires_structural_processing(values):
             result.structural = self.structural_service.generate(values)
-        
+
         # Drillholes
         if self._requires_drillhole_processing(values):
             result.drillholes = self.drillhole_service.generate(values)
-        
+
         return result
 
 @dataclass
@@ -155,7 +155,7 @@ class ProfileProcessor:
     """Handles the core profile processing logic"""
     def __init__(self, controller: ProfileController):
         self.controller = controller
-    
+
     def process(self, inputs: dict) -> Optional[tuple]:
         # Processing logic only
         pass
@@ -164,7 +164,7 @@ class ProfileExporter:
     """Handles export operations"""
     def __init__(self, controller: ProfileController):
         self.controller = controller
-    
+
     def save_profile_line(self, inputs: dict) -> bool:
         # Export logic only
         pass
@@ -174,12 +174,12 @@ class SecInterp:  # This becomes lighter
     def __init__(self, iface):
         self.iface = iface
         self.plugin_dir = Path(__file__).resolve().parent
-        
+
         # Initialize controller
         self.controller = ProfileController()
         self.processor = ProfileProcessor(self.controller)
         self.exporter = ProfileExporter(self.controller)
-        
+
         # Create the dialog (after translation) and keep reference
         self.dlg = SecInterpDialog(self.iface, self)
         self.dlg.plugin_instance = self
@@ -218,16 +218,16 @@ class ProfilePresenter:
         inputs = self.view.get_selected_values()
         if not inputs:
             return
-        
+
         result = self.controller.generate_profile_data(inputs)
         self.model.profile_data = result.topography
         self.model.geology_data = result.geology
         self.model.structural_data = result.structural
         self.model.drillhole_data = result.drillholes
-        
+
         # Update view
         self._update_preview(result)
-    
+
     def _update_preview(self, result):
         self.view.draw_preview(
             result.topography,
@@ -266,15 +266,15 @@ class ProcessingError(SecInterpError):
 def validate_layer_exists(layer_name: str) -> QgsMapLayer:
     if not layer_name:
         raise ValidationError("layer_name", "Layer name is required")
-    
+
     layers = QgsProject.instance().mapLayersByName(layer_name)
     if not layers:
         raise ValidationError("layer_name", f"Layer '{layer_name}' not found")
-    
+
     layer = layers[0]
     if not layer.isValid():
         raise ValidationError("layer_name", f"Layer '{layer_name}' is not valid")
-    
+
     return layer
 ```
 
@@ -287,7 +287,7 @@ from abc import ABC, abstractmethod
 
 class ProfileService(ABC):
     """Base class for all profile services"""
-    
+
     @abstractmethod
     def generate(self, context: ProcessingContext) -> Any:
         pass
@@ -298,9 +298,9 @@ class TopographicService(ProfileService):
         line_layer = context.get_layer('line')
         raster_layer = context.get_layer('raster')
         band_number = context.get_param('band_number', 1)
-        
+
         return self._generate_profile(line_layer, raster_layer, band_number)
-    
+
     def _generate_profile(self, line_lyr, raster_lyr, band_number):
         # Actual implementation
         pass

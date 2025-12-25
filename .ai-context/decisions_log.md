@@ -29,7 +29,7 @@
 ## 2025-12-17: Analizador de Cumplimiento QGIS
 - **Decisión**: Integrar verificaciones de mejores prácticas de QGIS en `analyze_project_optfixed.py`.
 - **Razón**: Asegurar que el plugin no solo sea "buen código Python", sino un "buen plugin de QGIS", facilitando la aprobación en el repositorio oficial.
-- **Resultados**: 
+- **Resultados**:
     - Detección automática de archivos obligatorios (`LICENSE`, `metadata.txt`).
     - Auditoría de arquitectura (separación UI/Core).
     - Sugerencias de uso de widgets nativos de QGIS.

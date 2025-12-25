@@ -68,27 +68,27 @@ ignore = [
 
     # === Import Management ===
     "F401",   # unused-import (common in __init__.py for re-exports)
-    
+
     # === Docstring Flexibility ===
     "D100",   # undocumented-public-module (not all modules need docstrings)
     "D104",   # undocumented-public-package (not all __init__.py need docstrings)
     "D203",   # one-blank-line-before-class (conflicts with D211)
     "D213",   # multi-line-summary-second-line (conflicts with D212)
     "D205",   # missing blank line after summary
-    
+
     # === Exception Handling ===
     "TRY003", # raise-vanilla-args (allow descriptive exception messages)
-    
+
     # === Pylint Overrides ===
     "PLR0913", # too-many-arguments (QGIS methods often have many params)
     "PLR2004", # magic-value-comparison (common in QGIS coordinate checks)
-    
+
     # === Print Statements ===
     "T201",   # print-found (allow print for debugging, use logger instead)
-    
+
     # === Missing Docstrings (equiv to pylint C0111) ===
     "D101", "D102", "D103", "D105", "D106", "D107",
-    
+
     # === Typing ===
     "UP007",  # type-union (X | Y) - Breaks PyQGIS class evaluation in some environments
     "UP045",  # Use `X | None` for type annotations - Similar to UP007

@@ -41,7 +41,7 @@ The `SecInterpDialog` class has been fragmented to reduce its complexity (from 9
     - **[`main_dialog_status.py`](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_status.py)**: Manages button states and status icons.
     - **[`main_dialog_utils.py`](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_utils.py)**: Centralizes common QGIS entity helpers.
 - **Code Reduction**: Removed over 500 lines of redundant and low-level code from `gui/main_dialog.py`.
-- **Quality Metrics**: 
+- **Quality Metrics**:
     - **Complexity Reduction**: -77 points (from 95 to 18).
     - **Project Quality Score**: Increased to 85.0/100.
 

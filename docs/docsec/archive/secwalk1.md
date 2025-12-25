@@ -1,7 +1,7 @@
 ¡Perfecto! ✅ He creado y guardado exitosamente el documento super detallado de arquitectura del proyecto SecInterp.
 
 📄 Documento Creado
-Ubicación: 
+Ubicación:
 docs/sec_interp_detailed_architecture.md
 
 📚 Contenido del Documento
@@ -113,12 +113,12 @@ dx = interval * sin(standard_incl) * sin(azim)
 dy = interval * sin(standard_incl) * cos(azim)
 Ejemplo numérico con cálculos paso a paso
 3. Proyección 3D→2D 🗺️
-Función 
+Función
 project_trajectory_to_section()
 Cálculo de distancia a lo largo de sección
 Cálculo de offset perpendicular
 4. Interpolación de Intervalos 🎨
-Función 
+Función
 interpolate_intervals_on_trajectory()
 Filtrado por profundidad y buffer
 Ejemplo con litología "Granito"

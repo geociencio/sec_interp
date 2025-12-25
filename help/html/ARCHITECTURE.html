@@ -16,27 +16,27 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="SecInterp - Development Guide" href="DEVELOPMENT_GUIDE.html" />
     <link rel="prev" title="SecInterp User Guide" href="USER_GUIDE.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
+
   <section class="tex2jax_ignore mathjax_ignore" id="secinterp-detailed-project-architecture">
 <h1>SecInterp - Detailed Project Architecture<a class="headerlink" href="#secinterp-detailed-project-architecture" title="Link to this heading">¶</a></h1>
 <blockquote>
-<div><p><strong>Complete Technical Documentation for the SecInterp QGIS Plugin</strong><br />
+<div><p><strong>Complete Technical Documentation for the SecInterp QGIS Plugin</strong>
 Version 2.2 | Last update: 2025-12-21</p>
 </div></blockquote>
 <hr class="docutils" />
@@ -123,13 +123,13 @@ Version 2.2 | Last update: 2025-12-21</p>
     QGIS[QGIS Application]
     INIT[__init__.py&lt;br/&gt;Entry Point]
     PLUGIN[sec_interp_plugin.py&lt;br/&gt;SecInterp Class&lt;br/&gt;Plugin Root]
-    
+
     %% ========== GUI LAYER ==========
     subgraph GUI[&quot;🖥️ GUI Layer - User Interface&quot;]
         direction TB
-        
+
         MAIN[main_dialog.py&lt;br/&gt;SecInterpDialog&lt;br/&gt;~340 lines]
-        
+
         subgraph MANAGERS[&quot;Managers&quot;]
             SIGNALS_MGR[main_dialog_signals.py&lt;br/&gt;SignalManager]
             DATA_MGR[main_dialog_data.py&lt;br/&gt;DataAggregator]
@@ -138,14 +138,14 @@ Version 2.2 | Last update: 2025-12-21</p>
             VALIDATION_MGR[main_dialog_validation.py&lt;br/&gt;DialogValidator]
             CONFIG_MGR[main_dialog_config.py&lt;br/&gt;DialogDefaults]
         end
-        
+
         RENDERER[preview_renderer.py&lt;br/&gt;PreviewRenderer&lt;br/&gt;1190 lines&lt;br/&gt;20 methods]
         LEGEND[legend_widget.py&lt;br/&gt;LegendWidget&lt;br/&gt;1.6k lines]
-        
+
         subgraph TOOLS[&quot;🛠️ Tools&quot;]
             MEASURE[measure_tool.py&lt;br/&gt;ProfileMeasureTool&lt;br/&gt;Snapping + Measurement]
         end
-        
+
         subgraph UI_WIDGETS[&quot;📦 UI Components&quot;]
             UI_MAIN[main_window.py&lt;br/&gt;SecInterpMainWindow]
             UI_PAGES[Page Classes:&lt;br/&gt;DemPage, SectionPage,&lt;br/&gt;GeologyPage, StructPage,&lt;br/&gt;DrillholePage]
@@ -153,13 +153,13 @@ Version 2.2 | Last update: 2025-12-21</p>
             UI_OUTPUT[OutputWidget]
         end
     end
-    
+
     %% ========== CORE LAYER ==========
     subgraph CORE[&quot;⚙️ Core Layer - Business Logic&quot;]
         direction TB
-        
+
         CONTROLLER[controller.py&lt;br/&gt;ProfileController&lt;br/&gt;192 lines]
-        
+
         subgraph SERVICES[&quot;🔧 Services&quot;]
             PROFILE_SVC[profile_service.py&lt;br/&gt;ProfileService&lt;br/&gt;2.8k lines]
             GEOLOGY_SVC[geology_service.py&lt;br/&gt;GeologyService&lt;br/&gt;244 lines&lt;br/&gt;8 methods]
@@ -167,9 +167,9 @@ Version 2.2 | Last update: 2025-12-21</p>
             DRILLHOLE_SVC[drillhole_service.py&lt;br/&gt;DrillholeService&lt;br/&gt;319 lines&lt;br/&gt;4 methods]
             PARALLEL_GEO[parallel_geology.py&lt;br/&gt;ParallelGeologyService&lt;br/&gt;QThread Worker]
         end
-        
+
         ALGORITHMS[core/algorithms.py&lt;br/&gt;Pure Business Logic&lt;br/&gt;~20 lines]
-        
+
         subgraph VALIDATION_PKG[&quot;🛡️ Validation Package&quot;]
             VALIDATION_INIT[core/validation/__init__.py&lt;br/&gt;Facade]
             FIELD_VAL[core/validation/field_validator.py&lt;br/&gt;Fields and Inputs]
@@ -180,7 +180,7 @@ Version 2.2 | Last update: 2025-12-21</p>
         CACHE[data_cache.py&lt;br/&gt;DataCache&lt;br/&gt;7.8k lines]
         METRICS[performance_metrics.py&lt;br/&gt;PerformanceMetrics&lt;br/&gt;7.8k lines]
         TYPES[types.py&lt;br/&gt;Type Definitions&lt;br/&gt;1.8k lines]
-        
+
         subgraph UTILS[&quot;🔨 Utilities&quot;]
             GEOM_UTILS[geometry.py&lt;br/&gt;345 lines&lt;br/&gt;Geometric operations]
             DRILL_UTILS[drillhole.py&lt;br/&gt;7.2k lines&lt;br/&gt;Desurvey + Projection]
@@ -192,14 +192,14 @@ Version 2.2 | Last update: 2025-12-21</p>
             IO_UTILS[io.py&lt;br/&gt;2.6k lines]
         end
     end
-    
+
     %% ========== EXPORTERS LAYER ==========
     subgraph EXPORTERS[&quot;📤 Exporters Layer - Export&quot;]
         direction TB
-        
+
         ORCHESTRATOR[orchestrator.py&lt;br/&gt;DataExportOrchestrator&lt;br/&gt;148 lines]
         BASE_EXP[base_exporter.py&lt;br/&gt;BaseExporter&lt;br/&gt;Abstract Class]
-        
+
         subgraph EXPORT_FORMATS[&quot;Export Formats&quot;]
             SHP_EXP[shp_exporter.py&lt;br/&gt;ShapefileExporter&lt;br/&gt;3.3k lines]
             CSV_EXP[csv_exporter.py&lt;br/&gt;CSVExporter&lt;br/&gt;1.3k lines]
@@ -210,19 +210,19 @@ Version 2.2 | Last update: 2025-12-21</p>
             DRILL_EXP[drillhole_exporters.py&lt;br/&gt;DrillholeTraceShpExporter&lt;br/&gt;DrillholeIntervalShpExporter&lt;br/&gt;4.2k lines]
         end
     end
-    
+
     %% ========== EXTERNAL DEPENDENCIES ==========
     subgraph EXTERNAL[&quot;🌐 External Dependencies&quot;]
         QGIS_CORE[qgis.core&lt;br/&gt;QgsVectorLayer&lt;br/&gt;QgsRasterLayer&lt;br/&gt;QgsGeometry&lt;br/&gt;QgsProcessing&lt;br/&gt;QgsSpatialIndex]
         QGIS_GUI[qgis.gui&lt;br/&gt;QgsMapCanvas&lt;br/&gt;QgsMapTool&lt;br/&gt;QgsMapLayer]
         PYQT5[PyQt5&lt;br/&gt;QtWidgets&lt;br/&gt;QtCore&lt;br/&gt;QtGui&lt;br/&gt;Signals/Slots]
     end
-    
+
     %% ========== CONNECTIONS ==========
     QGIS --&gt;|loads| INIT
     INIT --&gt;|delegates| PLUGIN
     PLUGIN --&gt;|initializes| MAIN
-    
+
     MAIN --&gt;|delegates signals| SIGNALS_MGR
     MAIN --&gt;|uses data from| DATA_MGR
     MAIN --&gt;|manages| PREVIEW_MGR
@@ -231,46 +231,46 @@ Version 2.2 | Last update: 2025-12-21</p>
     MAIN --&gt;|manages| CONFIG_MGR
     MAIN --&gt;|manages| CACHE_HANDLER
     MAIN --&gt;|uses| UI_MAIN
-    
+
     PREVIEW_MGR --&gt;|renders with| RENDERER
     PREVIEW_MGR --&gt;|updates| LEGEND
     PREVIEW_MGR --&gt;|activates| MEASURE
     PREVIEW_MGR --&gt;|requests data| CONTROLLER
-    
+
     EXPORT_MGR --&gt;|delegates to| ORCHESTRATOR
     VALIDATION_MGR --&gt;|validates with| PROJ_VAL
-    
+
     CONTROLLER --&gt;|orchestrates| PROFILE_SVC
     CONTROLLER --&gt;|orchestrates| GEOLOGY_SVC
     CONTROLLER --&gt;|orchestrates| STRUCTURE_SVC
     CONTROLLER --&gt;|orchestrates| DRILLHOLE_SVC
     CONTROLLER --&gt;|uses| CACHE
     CONTROLLER --&gt;|tracks with| METRICS
-    
+
     GEOLOGY_SVC --&gt;|offloads to| PARALLEL_GEO
     GEOLOGY_SVC --&gt;|uses| ALGORITHMS
     STRUCTURE_SVC --&gt;|uses| ALGORITHMS
     DRILLHOLE_SVC --&gt;|uses| DRILL_UTILS
     PROFILE_SVC --&gt;|uses| SAMPLING_UTILS
-    
+
     ALGORITHMS --&gt;|uses| GEOM_UTILS
     ALGORITHMS --&gt;|uses| SPATIAL_UTILS
-    
+
     ORCHESTRATOR --&gt;|delegates to| SHP_EXP
     ORCHESTRATOR --&gt;|delegates to| CSV_EXP
     ORCHESTRATOR --&gt;|delegates to| PROFILE_EXP
     ORCHESTRATOR --&gt;|delegates to| DRILL_EXP
-    
+
     RENDERER --&gt;|uses| QGIS_GUI
     CONTROLLER --&gt;|uses| QGIS_CORE
     MAIN --&gt;|uses| PYQT5
-    
+
     classDef entryPoint fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
     classDef guiLayer fill:#4ecdc4,stroke:#0a9396,stroke-width:2px,color:#000
     classDef coreLayer fill:#95e1d3,stroke:#38a169,stroke-width:2px,color:#000
     classDef exportLayer fill:#ffd93d,stroke:#f59e0b,stroke-width:2px,color:#000
     classDef externalLayer fill:#a8dadc,stroke:#457b9d,stroke-width:2px,color:#000
-    
+
     class QGIS,PLUGIN entryPoint
     class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,LEGEND,MEASURE guiLayer
     class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,TYPES coreLayer
@@ -303,27 +303,27 @@ Version 2.2 | Last update: 2025-12-21</p>
 <span id="id3"></span><h2>🖥️ GUI Layer - User Interface<a class="headerlink" href="#gui-layer-user-interface" title="Link to this heading">¶</a></h2>
 <section id="secinterpdialog-main-dialog-py">
 <h3>1. SecInterpDialog (main_dialog.py)<a class="headerlink" href="#secinterpdialog-main-dialog-py" title="Link to this heading">¶</a></h3>
-<p><strong>Main Class</strong>: <code class="docutils literal notranslate"><span class="pre">SecInterpDialog</span></code><br />
-<strong>Inherits from</strong>: <code class="docutils literal notranslate"><span class="pre">SecInterpMainWindow</span></code><br />
-<strong>Lines of code</strong>: ~340 (Reduced from 1,057)<br />
+<p><strong>Main Class</strong>: <code class="docutils literal notranslate"><span class="pre">SecInterpDialog</span></code>
+<strong>Inherits from</strong>: <code class="docutils literal notranslate"><span class="pre">SecInterpMainWindow</span></code>
+<strong>Lines of code</strong>: ~340 (Reduced from 1,057)
 <strong>Responsibility</strong>: Simplified main dialog that coordinates components via Managers</p>
 <section id="key-components">
 <h4>Key Components<a class="headerlink" href="#key-components" title="Link to this heading">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SecInterpDialog</span><span class="p">(</span><span class="n">SecInterpMainWindow</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Dialog for the SecInterp QGIS plugin.&quot;&quot;&quot;</span>
-    
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plugin_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Logic Managers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signal_manager</span> <span class="o">=</span> <span class="n">DialogSignalManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_aggregator</span> <span class="o">=</span> <span class="n">DialogDataAggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        
+
         <span class="c1"># Operation Managers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">DialogValidator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">preview_manager</span> <span class="o">=</span> <span class="n">PreviewManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export_manager</span> <span class="o">=</span> <span class="n">ExportManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status_manager</span> <span class="o">=</span> <span class="n">DialogStatusManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings_manager</span> <span class="o">=</span> <span class="n">DialogSettingsManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        
+
         <span class="c1"># Widgets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">legend_widget</span> <span class="o">=</span> <span class="n">LegendWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_widget</span><span class="o">.</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pan_tool</span> <span class="o">=</span> <span class="n">QgsMapToolPan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_widget</span><span class="o">.</span><span class="n">canvas</span><span class="p">)</span>
@@ -395,21 +395,21 @@ Version 2.2 | Last update: 2025-12-21</p>
 <hr class="docutils" />
 <section id="previewmanager-main-dialog-preview-py">
 <h3>2. PreviewManager (main_dialog_preview.py)<a class="headerlink" href="#previewmanager-main-dialog-preview-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">PreviewManager</span></code><br />
-<strong>Lines of code</strong>: ~31,000<br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">PreviewManager</span></code>
+<strong>Lines of code</strong>: ~31,000
 <strong>Responsibility</strong>: Manages preview generation and updates</p>
 <section id="id4">
 <h4>Main Methods<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PreviewManager</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates preview with validation and error handling.&quot;&quot;&quot;</span>
-        
+
     <span class="k">def</span><span class="w"> </span><span class="nf">update_from_checkboxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates preview when visualization options change.&quot;&quot;&quot;</span>
-        
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_validated_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtains and validates inputs from the dialog.&quot;&quot;&quot;</span>
-        
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes data using the controller.&quot;&quot;&quot;</span>
 </pre></div>
@@ -419,9 +419,9 @@ Version 2.2 | Last update: 2025-12-21</p>
 <hr class="docutils" />
 <section id="previewrenderer-preview-renderer-py">
 <h3>3. PreviewRenderer (preview_renderer.py)<a class="headerlink" href="#previewrenderer-preview-renderer-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">PreviewRenderer</span></code><br />
-<strong>Lines of code</strong>: 1,190<br />
-<strong>Methods</strong>: 20<br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">PreviewRenderer</span></code>
+<strong>Lines of code</strong>: 1,190
+<strong>Methods</strong>: 20
 <strong>Responsibility</strong>: Renders the preview canvas using native PyQGIS</p>
 <section id="renderer-architecture">
 <h4>Renderer Architecture<a class="headerlink" href="#renderer-architecture" title="Link to this heading">¶</a></h4>
@@ -432,12 +432,12 @@ Version 2.2 | Last update: 2025-12-21</p>
     A --&gt; E[_create_drillhole_layers]
     A --&gt; F[_create_axes_layer]
     A --&gt; G[_create_axes_labels_layer]
-    
+
     B --&gt; H[_decimate_line_data]
     B --&gt; I[_adaptive_sample]
     C --&gt; H
     D --&gt; J[_interpolate_elevation]
-    
+
     H --&gt; K[QgsVectorLayer]
     I --&gt; K
     J --&gt; K
@@ -489,8 +489,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 <hr class="docutils" />
 <section id="profilemeasuretool-measure-tool-py">
 <h3>4. ProfileMeasureTool (measure_tool.py)<a class="headerlink" href="#profilemeasuretool-measure-tool-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">ProfileMeasureTool</span></code><br />
-<strong>Inherits from</strong>: <code class="docutils literal notranslate"><span class="pre">QgsMapTool</span></code><br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">ProfileMeasureTool</span></code>
+<strong>Inherits from</strong>: <code class="docutils literal notranslate"><span class="pre">QgsMapTool</span></code>
 <strong>Responsibility</strong>: Measurement tool with snapping</p>
 <section id="features">
 <h4>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h4>
@@ -515,8 +515,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 <span id="id5"></span><h2>⚙️ Core Layer - Business Logic<a class="headerlink" href="#core-layer-business-logic" title="Link to this heading">¶</a></h2>
 <section id="profilecontroller-controller-py">
 <h3>1. ProfileController (<a class="reference external" href="http://controller.py">controller.py</a>)<a class="headerlink" href="#profilecontroller-controller-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">ProfileController</span></code><br />
-<strong>Lines of code</strong>: 192<br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">ProfileController</span></code>
+<strong>Lines of code</strong>: 192
 <strong>Responsibility</strong>: Orchestrates the data generation services</p>
 <section id="architecture">
 <h4>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h4>
@@ -534,26 +534,26 @@ Version 2.2 | Last update: 2025-12-21</p>
 <h4>Main Method<a class="headerlink" href="#main-method" title="Link to this heading">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate_profile_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Unified method to generate all profile components.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        tuple: (profile_data, geol_data, struct_data, drillhole_data, messages)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># 1. Topography</span>
     <span class="n">profile_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_service</span><span class="o">.</span><span class="n">generate_topographic_profile</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    
+
     <span class="c1"># 2. Geology (if layer exists)</span>
     <span class="k">if</span> <span class="n">outcrop_layer</span><span class="p">:</span>
         <span class="n">geol_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geology_service</span><span class="o">.</span><span class="n">generate_geological_profile</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    
+
     <span class="c1"># 3. Structures (if layer exists)</span>
     <span class="k">if</span> <span class="n">structural_layer</span><span class="p">:</span>
         <span class="n">struct_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure_service</span><span class="o">.</span><span class="n">project_structures</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    
+
     <span class="c1"># 4. Drillholes (if layer exists)</span>
     <span class="k">if</span> <span class="n">collar_layer</span><span class="p">:</span>
         <span class="n">collars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drillhole_service</span><span class="o">.</span><span class="n">project_collars</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
         <span class="n">drillhole_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drillhole_service</span><span class="o">.</span><span class="n">process_intervals</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">profile_data</span><span class="p">,</span> <span class="n">geol_data</span><span class="p">,</span> <span class="n">struct_data</span><span class="p">,</span> <span class="n">drillhole_data</span><span class="p">,</span> <span class="n">messages</span>
 </pre></div>
 </div>
@@ -562,9 +562,9 @@ Version 2.2 | Last update: 2025-12-21</p>
 <hr class="docutils" />
 <section id="geologyservice-geology-service-py">
 <h3>2. GeologyService (geology_service.py)<a class="headerlink" href="#geologyservice-geology-service-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">GeologyService</span></code><br />
-<strong>Lines of code</strong>: 244<br />
-<strong>Methods</strong>: 8<br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">GeologyService</span></code>
+<strong>Lines of code</strong>: 244
+<strong>Methods</strong>: 8
 <strong>Responsibility</strong>: Generates geological profiles by intersecting polygons</p>
 <section id="processing-flow">
 <h4>Processing Flow<a class="headerlink" href="#processing-flow" title="Link to this heading">¶</a></h4>
@@ -573,19 +573,19 @@ Version 2.2 | Last update: 2025-12-21</p>
     participant GeoService as GeologyService
     participant QGIS as QGIS Processing
     participant Utils as Utils
-    
+
     Client-&gt;&gt;GeoService: generate_geological_profile()
     GeoService-&gt;&gt;GeoService: _generate_master_profile_data()
     GeoService-&gt;&gt;QGIS: _perform_intersection()
     QGIS--&gt;&gt;GeoService: intersection_layer
-    
+
     loop For each feature
         GeoService-&gt;&gt;GeoService: _process_intersection_feature()
         GeoService-&gt;&gt;GeoService: _create_segment_from_geometry()
         GeoService-&gt;&gt;Utils: interpolate_elevation()
         Utils--&gt;&gt;GeoService: elevation_points
     end
-    
+
     GeoService--&gt;&gt;Client: List[GeologySegment]
 </pre></div>
 </div>
@@ -632,9 +632,9 @@ Version 2.2 | Last update: 2025-12-21</p>
 <hr class="docutils" />
 <section id="structureservice-structure-service-py">
 <h3>3. StructureService (structure_service.py)<a class="headerlink" href="#structureservice-structure-service-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">StructureService</span></code><br />
-<strong>Lines of code</strong>: 216<br />
-<strong>Methods</strong>: 7<br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">StructureService</span></code>
+<strong>Lines of code</strong>: 216
+<strong>Methods</strong>: 7
 <strong>Responsibility</strong>: Projects structural measurements (dip/strike)</p>
 <section id="projection-algorithm">
 <h4>Projection Algorithm<a class="headerlink" href="#projection-algorithm" title="Link to this heading">¶</a></h4>
@@ -674,9 +674,9 @@ Version 2.2 | Last update: 2025-12-21</p>
 <hr class="docutils" />
 <section id="drillholeservice-drillhole-service-py">
 <h3>4. DrillholeService (drillhole_service.py)<a class="headerlink" href="#drillholeservice-drillhole-service-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">DrillholeService</span></code><br />
-<strong>Lines of code</strong>: 319<br />
-<strong>Methods</strong>: 4<br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">DrillholeService</span></code>
+<strong>Lines of code</strong>: 319
+<strong>Methods</strong>: 4
 <strong>Responsibility</strong>: Processes and projects drillhole data</p>
 <section id="id7">
 <h4>Processing Flow<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
@@ -684,10 +684,10 @@ Version 2.2 | Last update: 2025-12-21</p>
     A[Collar Layer] --&gt; B[project_collars]
     C[Survey Layer] --&gt; D[process_intervals]
     E[Interval Layer] --&gt; D
-    
+
     B --&gt; F[Collar Points]
     F --&gt; D
-    
+
     D --&gt; G[Desurvey Drillhole]
     G --&gt; H[Project to Section]
     H --&gt; I[Create Segments]
@@ -814,8 +814,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 <hr class="docutils" />
 <section id="datacache-data-cache-py">
 <h3>6. DataCache (data_cache.py)<a class="headerlink" href="#datacache-data-cache-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">DataCache</span></code><br />
-<strong>Lines of code</strong>: 7,883<br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">DataCache</span></code>
+<strong>Lines of code</strong>: 7,883
 <strong>Responsibility</strong>: Cache of processed data</p>
 <section id="cache-strategy">
 <h4>Cache Strategy<a class="headerlink" href="#cache-strategy" title="Link to this heading">¶</a></h4>
@@ -823,13 +823,13 @@ Version 2.2 | Last update: 2025-12-21</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_cache_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates a unique key based on relevant inputs.&quot;&quot;&quot;</span>
         <span class="c1"># Considers: layers, bands, buffer, vertical exaggeration</span>
-        
+
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves data from cache.&quot;&quot;&quot;</span>
-        
+
     <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores data in cache.&quot;&quot;&quot;</span>
-        
+
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the entire cache.&quot;&quot;&quot;</span>
 </pre></div>
@@ -842,22 +842,22 @@ Version 2.2 | Last update: 2025-12-21</p>
 <span id="id9"></span><h2>📤 Exporters Layer - Data Export<a class="headerlink" href="#exporters-layer-data-export" title="Link to this heading">¶</a></h2>
 <section id="dataexportorchestrator-orchestrator-py">
 <h3>1. DataExportOrchestrator (<a class="reference external" href="http://orchestrator.py">orchestrator.py</a>)<a class="headerlink" href="#dataexportorchestrator-orchestrator-py" title="Link to this heading">¶</a></h3>
-<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">DataExportOrchestrator</span></code><br />
-<strong>Lines of code</strong>: 148<br />
+<p><strong>Class</strong>: <code class="docutils literal notranslate"><span class="pre">DataExportOrchestrator</span></code>
+<strong>Lines of code</strong>: 148
 <strong>Responsibility</strong>: Coordinates exports to multiple formats</p>
 <section id="id10">
 <h4>Main Method<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">export_data</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> 
-    <span class="n">output_folder</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> 
-    <span class="n">values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> 
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">output_folder</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">profile_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">],</span>
-    <span class="n">geol_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> 
+    <span class="n">geol_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
     <span class="n">struct_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
     <span class="n">drillhole_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports generated data to CSV and Shapefile using lazy imports.&quot;&quot;&quot;</span>
-    
+
     <span class="c1"># Lazy import of exporters</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">sec_interp.exporters</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
         <span class="n">AxesShpExporter</span><span class="p">,</span>
@@ -868,26 +868,26 @@ Version 2.2 | Last update: 2025-12-21</p>
         <span class="n">DrillholeTraceShpExporter</span><span class="p">,</span>
         <span class="n">DrillholeIntervalShpExporter</span><span class="p">,</span>
     <span class="p">)</span>
-    
+
     <span class="c1"># Export topography</span>
     <span class="n">csv_exporter</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s2">&quot;topo_profile.csv&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
     <span class="n">ProfileLineShpExporter</span><span class="p">({})</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s2">&quot;profile_line.shp&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-    
+
     <span class="c1"># Export geology</span>
     <span class="k">if</span> <span class="n">geol_data</span><span class="p">:</span>
         <span class="n">csv_exporter</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s2">&quot;geol_profile.csv&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
         <span class="n">GeologyShpExporter</span><span class="p">({})</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s2">&quot;geol_profile.shp&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-    
+
     <span class="c1"># Export structures</span>
     <span class="k">if</span> <span class="n">struct_data</span><span class="p">:</span>
         <span class="n">csv_exporter</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s2">&quot;structural_profile.csv&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
         <span class="n">StructureShpExporter</span><span class="p">({})</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s2">&quot;structural_profile.shp&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-    
+
     <span class="c1"># Export drillholes</span>
     <span class="k">if</span> <span class="n">drillhole_data</span><span class="p">:</span>
         <span class="n">DrillholeTraceShpExporter</span><span class="p">({})</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s2">&quot;drillhole_traces.shp&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
         <span class="n">DrillholeIntervalShpExporter</span><span class="p">({})</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s2">&quot;drillhole_intervals.shp&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">result_msg</span>
 </pre></div>
 </div>
@@ -901,33 +901,33 @@ Version 2.2 | Last update: 2025-12-21</p>
         &lt;&lt;abstract&gt;&gt;
         +export(path, data)
     }
-    
+
     class CSVExporter {
         +export(path, data)
     }
-    
+
     class ShapefileExporter {
         +export(path, data)
     }
-    
+
     class ImageExporter {
         +export(path, map_settings)
     }
-    
+
     class PDFExporter {
         +export(path, map_settings)
     }
-    
+
     class SVGExporter {
         +export(path, map_settings)
     }
-    
+
     BaseExporter &lt;|-- CSVExporter
     BaseExporter &lt;|-- ShapefileExporter
     BaseExporter &lt;|-- ImageExporter
     BaseExporter &lt;|-- PDFExporter
     BaseExporter &lt;|-- SVGExporter
-    
+
     ShapefileExporter &lt;|-- ProfileLineShpExporter
     ShapefileExporter &lt;|-- GeologyShpExporter
     ShapefileExporter &lt;|-- StructureShpExporter
@@ -951,41 +951,41 @@ Version 2.2 | Last update: 2025-12-21</p>
     participant Services
     participant Renderer
     participant Canvas
-    
+
     User-&gt;&gt;Dialog: Click &quot;Preview Profile&quot;
     Dialog-&gt;&gt;PreviewMgr: generate_preview()
-    
+
     PreviewMgr-&gt;&gt;PreviewMgr: _get_validated_inputs()
     PreviewMgr-&gt;&gt;Controller: generate_profile_data(inputs)
-    
+
     par Parallel Processing
         Controller-&gt;&gt;Services: ProfileService.generate_topographic_profile()
         Services--&gt;&gt;Controller: profile_data
-        
+
         Controller-&gt;&gt;Services: GeologyService.generate_geological_profile()
         Services--&gt;&gt;Controller: geol_data
-        
+
         Controller-&gt;&gt;Services: StructureService.project_structures()
         Services--&gt;&gt;Controller: struct_data
-        
+
         Controller-&gt;&gt;Services: DrillholeService.project_collars()
         Services-&gt;&gt;Services: DrillholeService.process_intervals()
         Services--&gt;&gt;Controller: drillhole_data
     end
-    
+
     Controller--&gt;&gt;PreviewMgr: (profile, geol, struct, drill, msgs)
-    
+
     PreviewMgr-&gt;&gt;Renderer: render(profile, geol, struct, drill, vert_exag, ...)
     Renderer-&gt;&gt;Renderer: _create_topo_layer()
     Renderer-&gt;&gt;Renderer: _create_geol_layer()
     Renderer-&gt;&gt;Renderer: _create_struct_layer()
     Renderer-&gt;&gt;Renderer: _create_drillhole_layers()
     Renderer-&gt;&gt;Renderer: _create_axes_layer()
-    
+
     Renderer-&gt;&gt;Canvas: setLayers(layers)
     Renderer-&gt;&gt;Canvas: zoomToFullExtent()
     Renderer--&gt;&gt;PreviewMgr: (canvas, layers)
-    
+
     PreviewMgr--&gt;&gt;Dialog: success
     Dialog--&gt;&gt;User: Display Preview
 </pre></div>
@@ -1001,30 +1001,30 @@ Version 2.2 | Last update: 2025-12-21</p>
     participant Controller
     participant Orchestrator
     participant Exporters
-    
+
     User-&gt;&gt;Dialog: Click &quot;Save&quot;
     Dialog-&gt;&gt;ExportMgr: export_data()
-    
+
     ExportMgr-&gt;&gt;Controller: generate_profile_data(inputs)
     Controller--&gt;&gt;ExportMgr: (profile, geol, struct, drill, msgs)
-    
+
     ExportMgr-&gt;&gt;Orchestrator: export_data(folder, values, data...)
-    
+
     Orchestrator-&gt;&gt;Exporters: CSVExporter.export(&quot;topo_profile.csv&quot;)
     Exporters--&gt;&gt;Orchestrator: success
-    
+
     Orchestrator-&gt;&gt;Exporters: ProfileLineShpExporter.export(&quot;profile_line.shp&quot;)
     Exporters--&gt;&gt;Orchestrator: success
-    
+
     Orchestrator-&gt;&gt;Exporters: GeologyShpExporter.export(&quot;geol_profile.shp&quot;)
     Exporters--&gt;&gt;Orchestrator: success
-    
+
     Orchestrator-&gt;&gt;Exporters: StructureShpExporter.export(&quot;structural_profile.shp&quot;)
     Exporters--&gt;&gt;Orchestrator: success
-    
+
     Orchestrator-&gt;&gt;Exporters: DrillholeTraceShpExporter.export(&quot;drillhole_traces.shp&quot;)
     Exporters--&gt;&gt;Orchestrator: success
-    
+
     Orchestrator--&gt;&gt;ExportMgr: result_messages
     ExportMgr--&gt;&gt;Dialog: success
     Dialog--&gt;&gt;User: &quot;All files saved to: {folder}&quot;
@@ -1039,21 +1039,21 @@ Version 2.2 | Last update: 2025-12-21</p>
     participant GeoService as GeologyService
     participant ParallelGeo as ParallelGeologyService
     participant Worker as GeologyProcessingThread
-    
+
     Main-&gt;&gt;GeoService: generate_geological_profile()
     GeoService-&gt;&gt;ParallelGeo: process_async(line, raster, outcrop, field, band)
-    
+
     ParallelGeo-&gt;&gt;Worker: start()
     Note over Worker: QThread Worker
-    
+
     Worker-&gt;&gt;Worker: run()
     Worker-&gt;&gt;Worker: _generate_master_profile_data()
     Worker-&gt;&gt;Worker: _perform_intersection()
-    
+
     loop For each feature
         Worker-&gt;&gt;Worker: _process_intersection_feature()
     end
-    
+
     Worker-&gt;&gt;ParallelGeo: finished.emit(results)
     ParallelGeo-&gt;&gt;GeoService: return results
     GeoService--&gt;&gt;Main: List[GeologySegment]
@@ -1083,7 +1083,7 @@ Version 2.2 | Last update: 2025-12-21</p>
 <span class="k">class</span><span class="w"> </span><span class="nc">CSVExporter</span><span class="p">(</span><span class="n">BaseExporter</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="c1"># CSV Specific implementation</span>
-        
+
 <span class="k">class</span><span class="w"> </span><span class="nc">ShapefileExporter</span><span class="p">(</span><span class="n">BaseExporter</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="c1"># Shapefile Specific implementation</span>
@@ -1148,7 +1148,7 @@ Version 2.2 | Last update: 2025-12-21</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_finalize</span><span class="p">()</span>
-    
+
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">pass</span>
@@ -1234,12 +1234,12 @@ Version 2.2 | Last update: 2025-12-21</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simplifies lines using Douglas-Peucker.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_points</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">data</span>
-    
+
     <span class="c1"># Calculate automatic tolerance</span>
     <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">x_range</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
         <span class="n">tolerance</span> <span class="o">=</span> <span class="n">x_range</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_points</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-    
+
     <span class="c1"># Apply Douglas-Peucker</span>
     <span class="n">simplified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_douglas_peucker</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">simplified</span>
@@ -1252,17 +1252,17 @@ Version 2.2 | Last update: 2025-12-21</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_adaptive_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">min_tolerance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_tolerance</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">max_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Samples more densely in high-curvature areas.&quot;&quot;&quot;</span>
     <span class="n">curvatures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_curvature</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    
+
     <span class="c1"># Normalize curvatures</span>
     <span class="n">max_curv</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">curvatures</span><span class="p">)</span>
     <span class="n">normalized</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="o">/</span> <span class="n">max_curv</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">curvatures</span><span class="p">]</span>
-    
+
     <span class="c1"># Tolerance inversely proportional to curvature</span>
     <span class="n">tolerances</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">max_tolerance</span> <span class="o">-</span> <span class="p">(</span><span class="n">max_tolerance</span> <span class="o">-</span> <span class="n">min_tolerance</span><span class="p">)</span> <span class="o">*</span> <span class="n">n</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">normalized</span>
     <span class="p">]</span>
-    
+
     <span class="c1"># Apply Douglas-Peucker with variable tolerance</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_douglas_peucker_adaptive</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tolerances</span><span class="p">)</span>
 </pre></div>
@@ -1276,7 +1276,7 @@ Version 2.2 | Last update: 2025-12-21</p>
     <span class="n">finished</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">progress</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-    
+
     <span class="k">def</span><span class="w"> </span><span class="nf">process_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_lyr</span><span class="p">,</span> <span class="n">raster_lyr</span><span class="p">,</span> <span class="n">outcrop_lyr</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes geology in a separate thread.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">worker</span> <span class="o">=</span> <span class="n">GeologyProcessingThread</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -1310,17 +1310,17 @@ Version 2.2 | Last update: 2025-12-21</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filters features using a spatial index.&quot;&quot;&quot;</span>
     <span class="c1"># 1. Build spatial index</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">QgsSpatialIndex</span><span class="p">(</span><span class="n">features_layer</span><span class="o">.</span><span class="n">getFeatures</span><span class="p">())</span>
-    
+
     <span class="c1"># 2. Fast search by bounding box</span>
     <span class="n">candidate_ids</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">intersects</span><span class="p">(</span><span class="n">buffer_geometry</span><span class="o">.</span><span class="n">boundingBox</span><span class="p">())</span>
-    
+
     <span class="c1"># 3. Precise filtering of candidates only</span>
     <span class="n">filtered</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">fid</span> <span class="ow">in</span> <span class="n">candidate_ids</span><span class="p">:</span>
         <span class="n">feature</span> <span class="o">=</span> <span class="n">features_layer</span><span class="o">.</span><span class="n">getFeature</span><span class="p">(</span><span class="n">fid</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span><span class="o">.</span><span class="n">intersects</span><span class="p">(</span><span class="n">buffer_geometry</span><span class="p">):</span>
             <span class="n">filtered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">filtered</span>
 </pre></div>
 </div>
@@ -1465,11 +1465,11 @@ Version 2.2 | Last update: 2025-12-21</p>
     A[SecInterp Plugin] --&gt; B[QGIS Core API]
     A --&gt; C[QGIS GUI API]
     A --&gt; D[PyQt5]
-    
+
     B --&gt; E[Python 3.x]
     C --&gt; E
     D --&gt; E
-    
+
     style A fill:#ff6b6b
     style B fill:#4ecdc4
     style C fill:#4ecdc4
@@ -1623,15 +1623,15 @@ Version 2.2 | Last update: 2025-12-21</p>
 <section id="final-notes">
 <h2>📝 Final Notes<a class="headerlink" href="#final-notes" title="Link to this heading">¶</a></h2>
 <p>This document provides a detailed view of the SecInterp plugin architecture. For development information, see [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).</p>
-<p><strong>Last update</strong>: 2025-12-21<br />
-<strong>Plugin Version</strong>: 2.2<br />
+<p><strong>Last update</strong>: 2025-12-21
+<strong>Plugin Version</strong>: 2.2
 <strong>Author</strong>: Juan M. Bernales</p>
 </section>
 </section>
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -1708,18 +1708,18 @@ Version 2.2 | Last update: 2025-12-21</p>
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/ARCHITECTURE.md.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>

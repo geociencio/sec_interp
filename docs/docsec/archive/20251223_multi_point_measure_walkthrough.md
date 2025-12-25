@@ -6,7 +6,7 @@ The `ProfileMeasureTool` has been enhanced to support multi-point polyline measu
 
 ### 1. Multi-Point Measurement
 - **Sequential Clicks:** Users can click multiple times to define a polyline trace. Each click adds a new vertex.
-- **Visual Feedback:** 
+- **Visual Feedback:**
     - **Green Markers:** Added at each clicked point to clearly visualize the path.
     - **Red Rubber Band:** Connects the points dynamically.
     - **Live Preview:** A temporary line follows the mouse cursor to show where the next segment will be placed.
@@ -50,7 +50,7 @@ The tool calculates and aggregates metrics for the entire polyline trace:
 ### `ProfileMeasureTool` (`gui/tools/measure_tool.py`)
 - **`points` & `finalized_points`**: Stores the list of measurement points. `finalized_points` preserves the data after finalization for display.
 - **`finalized` flag**: Tracks whether the current measurement is complete to block further input.
-- **`finalize_measurement()`**: 
+- **`finalize_measurement()`**:
     - Marks tool as finalized.
     - Saves points to `finalized_points`.
     - Updates metrics one last time.

@@ -79,7 +79,7 @@ tests/
 def test_my_function():
     \"\"\"Test description.\"\"\"
     from core.utils import my_function
-    
+
     result = my_function(input_data)
     assert result == expected_value
 ```

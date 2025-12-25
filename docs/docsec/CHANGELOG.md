@@ -118,7 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented Adaptive Level of Detail (LOD) for high-performance rendering.
   - Added Dynamic Zoom-based LOD (details increase as you zoom in).
   - Added Measurement Tool (Distance and Slope/Gradient).
-  
+
 ### Changed
 - **Architecture & Fixes**:
   - Refactored services to use Command Pattern for parallel execution.

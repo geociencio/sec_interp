@@ -26,18 +26,18 @@ La nueva arquitectura sigue un patrón de **Inyección de Dependencias** y **Sep
 graph TD
     UI[GUI / Main Dialog] -->|Inputs| Alg[Orchestrator (algorithms.py)]
     Alg -->|Calls| QS[QgsRaster/Vector Layers]
-    
+
     subgraph "Core Services"
         Alg --> StructServ[StructureService]
         Alg --> GeolServ[GeologyService]
         Alg --> ProfServ[ProfileService]
     end
-    
+
     subgraph "Domain Objects (core/types.py)"
         StructServ -->|Returns| SM[List[StructureMeasurement]]
         GeolServ -->|Returns| GS[List[GeologySegment]]
     end
-    
+
     subgraph "Consumers"
         SM & GS --> Prev[PreviewRenderer]
         SM & GS --> Exp[Exporters (CSV, SHP, DXF)]

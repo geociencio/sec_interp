@@ -1,6 +1,6 @@
 # SecInterp - Detailed Project Architecture
 
-> **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**  
+> **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
 > Version 2.2 | Last Updated: 2025-12-21
 
 ---
@@ -90,13 +90,13 @@ graph TB
     QGIS[QGIS Application]
     INIT[__init__.py<br/>Entry Point]
     PLUGIN[sec_interp_plugin.py<br/>SecInterp Class<br/>Plugin Root]
-    
+
     %% ========== GUI LAYER ==========
     subgraph GUI["🖥️ GUI Layer - User Interface"]
         direction TB
-        
+
         MAIN[main_dialog.py<br/>SecInterpDialog]
-        
+
         subgraph MANAGERS["Managers"]
             SIGNALS_MGR[main_dialog_signals.py<br/>SignalManager]
             DATA_MGR[main_dialog_data.py<br/>DataAggregator]
@@ -105,14 +105,14 @@ graph TB
             VALIDATION_MGR[main_dialog_validation.py<br/>DialogValidator]
             CONFIG_MGR[main_dialog_config.py<br/>DialogDefaults]
         end
-        
+
         RENDERER[preview_renderer.py<br/>PreviewRenderer]
         LEGEND[legend_widget.py<br/>LegendWidget]
-        
+
         subgraph TOOLS["🛠️ Tools"]
             MEASURE[measure_tool.py<br/>ProfileMeasureTool]
         end
-        
+
         subgraph UI_WIDGETS["📦 UI Components"]
             UI_MAIN[main_window.py<br/>SecInterpMainWindow]
             UI_PAGES[Page Classes:<br/>DemPage, SectionPage,<br/>GeologyPage, StructPage,<br/>DrillholePage]
@@ -120,13 +120,13 @@ graph TB
             UI_OUTPUT[OutputWidget]
         end
     end
-    
+
     %% ========== CORE LAYER ==========
     subgraph CORE["⚙️ Core Layer - Business Logic"]
         direction TB
-        
+
         CONTROLLER[controller.py<br/>ProfileController]
-        
+
         subgraph SERVICES["🔧 Services"]
             PROFILE_SVC[profile_service.py<br/>ProfileService]
             GEOLOGY_SVC[geology_service.py<br/>GeologyService]
@@ -134,9 +134,9 @@ graph TB
             DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService]
             PARALLEL_GEO[parallel_geology.py<br/>ParallelGeologyService]
         end
-        
+
         ALGORITHMS[core/algorithms.py<br/>Pure Pure Logic]
-        
+
         subgraph VALIDATION_PKG["🛡️ Validation Package"]
             VALIDATION_INIT[core/validation/__init__.py<br/>Facade]
             FIELD_VAL[core/validation/field_validator.py]
@@ -147,7 +147,7 @@ graph TB
         CACHE[data_cache.py<br/>DataCache]
         METRICS[performance_metrics.py<br/>PerformanceMetrics]
         TYPES[types.py<br/>Type Definitions]
-        
+
         subgraph UTILS["🔨 Utilities"]
             GEOM_UTILS[geometry.py]
             DRILL_UTILS[drillhole.py]
@@ -159,14 +159,14 @@ graph TB
             IO_UTILS[io.py]
         end
     end
-    
+
     %% ========== EXPORTERS LAYER ==========
     subgraph EXPORTERS["📤 Exporters Layer - Export"]
         direction TB
-        
+
         ORCHESTRATOR[orchestrator.py<br/>DataExportOrchestrator]
         BASE_EXP[base_exporter.py<br/>BaseExporter]
-        
+
         subgraph EXPORT_FORMATS["Export Formats"]
             SHP_EXP[shp_exporter.py]
             CSV_EXP[csv_exporter.py]
@@ -177,19 +177,19 @@ graph TB
             DRILL_EXP[drillhole_exporters.py]
         end
     end
-    
+
     %% ========== EXTERNAL DEPENDENCIES ==========
     subgraph EXTERNAL["🌐 External Dependencies"]
         QGIS_CORE[qgis.core]
         QGIS_GUI[qgis.gui]
         PYQT5[PyQt5]
     end
-    
+
     %% ========== CONNECTIONS ==========
     QGIS -->|loads| INIT
     INIT -->|delegates| PLUGIN
     PLUGIN -->|initializes| MAIN
-    
+
     MAIN -->|delegates signals| SIGNALS_MGR
     MAIN -->|uses data from| DATA_MGR
     MAIN -->|manages| PREVIEW_MGR
@@ -197,34 +197,34 @@ graph TB
     MAIN -->|manages| VALIDATION_MGR
     MAIN -->|manages| CONFIG_MGR
     MAIN -->|uses| UI_MAIN
-    
+
     PREVIEW_MGR -->|renders with| RENDERER
     PREVIEW_MGR -->|updates| LEGEND
     PREVIEW_MGR -->|activates| MEASURE
     PREVIEW_MGR -->|requests data| CONTROLLER
-    
+
     EXPORT_MGR -->|delegates to| ORCHESTRATOR
     VALIDATION_MGR -->|validates with| PROJ_VAL
-    
+
     CONTROLLER -->|orchestrates| PROFILE_SVC
     CONTROLLER -->|orchestrates| GEOLOGY_SVC
     CONTROLLER -->|orchestrates| STRUCTURE_SVC
     CONTROLLER -->|orchestrates| DRILLHOLE_SVC
     CONTROLLER -->|uses| CACHE
     CONTROLLER -->|tracks with| METRICS
-    
+
     GEOLOGY_SVC -->|offloads to| PARALLEL_GEO
     DRILLHOLE_SVC -->|uses| DRILL_UTILS
     PROFILE_SVC -->|uses| SAMPLING_UTILS
-    
+
     ORCHESTRATOR -->|delegates to| EXPORT_FORMATS
-    
+
     classDef entryPoint fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
     classDef guiLayer fill:#4ecdc4,stroke:#0a9396,stroke-width:2px,color:#000
     classDef coreLayer fill:#95e1d3,stroke:#38a169,stroke-width:2px,color:#000
     classDef exportLayer fill:#ffd93d,stroke:#f59e0b,stroke-width:2px,color:#000
     classDef externalLayer fill:#a8dadc,stroke:#457b9d,stroke-width:2px,color:#000
-    
+
     class QGIS,PLUGIN entryPoint
     class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,LEGEND,MEASURE guiLayer
     class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,TYPES coreLayer
@@ -239,8 +239,8 @@ graph TB
 
 ### 1. SecInterpDialog (main_dialog.py)
 
-**Main Class**: `SecInterpDialog`  
-**Inherits from**: `SecInterpMainWindow`  
+**Main Class**: `SecInterpDialog`
+**Inherits from**: `SecInterpMainWindow`
 **Responsibility**: Simplified main dialog that coordinates components via specialized Managers.
 
 #### Key Components
@@ -248,19 +248,19 @@ graph TB
 ```python
 class SecInterpDialog(SecInterpMainWindow):
     """Dialog for the SecInterp QGIS plugin."""
-    
+
     def __init__(self, iface=None, plugin_instance=None, parent=None):
         # Logic Managers
         self.signal_manager = DialogSignalManager(self)
         self.data_aggregator = DialogDataAggregator(self)
-        
+
         # Operation Managers
         self.validator = DialogValidator(self)
         self.preview_manager = PreviewManager(self)
         self.export_manager = ExportManager(self)
         self.status_manager = DialogStatusManager(self)
         self.settings_manager = DialogSettingsManager(self)
-        
+
         # Widgets
         self.legend_widget = LegendWidget(self.preview_widget.canvas)
         self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
@@ -364,6 +364,6 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last Updated**: 2025-12-21  
-**Plugin Version**: 2.2  
+**Last Updated**: 2025-12-21
+**Plugin Version**: 2.2
 **Author**: Juan M. Bernales

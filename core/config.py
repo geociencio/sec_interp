@@ -3,7 +3,7 @@
 Provides a centralized way to manage plugin settings using QgsSettings.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from qgis.core import QgsSettings
 

@@ -1,6 +1,6 @@
 # SecInterp - Detailed Project Architecture
 
-> **Complete Technical Documentation for the SecInterp QGIS Plugin**  
+> **Complete Technical Documentation for the SecInterp QGIS Plugin**
 > Version 2.2 | Last update: 2025-12-21
 
 ---
@@ -91,13 +91,13 @@ graph TB
     QGIS[QGIS Application]
     INIT[__init__.py<br/>Entry Point]
     PLUGIN[sec_interp_plugin.py<br/>SecInterp Class<br/>Plugin Root]
-    
+
     %% ========== GUI LAYER ==========
     subgraph GUI["🖥️ GUI Layer - User Interface"]
         direction TB
-        
+
         MAIN[main_dialog.py<br/>SecInterpDialog<br/>~340 lines]
-        
+
         subgraph MANAGERS["Managers"]
             SIGNALS_MGR[main_dialog_signals.py<br/>SignalManager]
             DATA_MGR[main_dialog_data.py<br/>DataAggregator]
@@ -106,14 +106,14 @@ graph TB
             VALIDATION_MGR[main_dialog_validation.py<br/>DialogValidator]
             CONFIG_MGR[main_dialog_config.py<br/>DialogDefaults]
         end
-        
+
         RENDERER[preview_renderer.py<br/>PreviewRenderer<br/>1190 lines<br/>20 methods]
         LEGEND[legend_widget.py<br/>LegendWidget<br/>1.6k lines]
-        
+
         subgraph TOOLS["🛠️ Tools"]
             MEASURE[measure_tool.py<br/>ProfileMeasureTool<br/>Snapping + Measurement]
         end
-        
+
         subgraph UI_WIDGETS["📦 UI Components"]
             UI_MAIN[main_window.py<br/>SecInterpMainWindow]
             UI_PAGES[Page Classes:<br/>DemPage, SectionPage,<br/>GeologyPage, StructPage,<br/>DrillholePage]
@@ -121,13 +121,13 @@ graph TB
             UI_OUTPUT[OutputWidget]
         end
     end
-    
+
     %% ========== CORE LAYER ==========
     subgraph CORE["⚙️ Core Layer - Business Logic"]
         direction TB
-        
+
         CONTROLLER[controller.py<br/>ProfileController<br/>192 lines]
-        
+
         subgraph SERVICES["🔧 Services"]
             PROFILE_SVC[profile_service.py<br/>ProfileService<br/>2.8k lines]
             GEOLOGY_SVC[geology_service.py<br/>GeologyService<br/>244 lines<br/>8 methods]
@@ -135,9 +135,9 @@ graph TB
             DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService<br/>319 lines<br/>4 methods]
             PARALLEL_GEO[parallel_geology.py<br/>ParallelGeologyService<br/>QThread Worker]
         end
-        
+
         ALGORITHMS[core/algorithms.py<br/>Pure Business Logic<br/>~20 lines]
-        
+
         subgraph VALIDATION_PKG["🛡️ Validation Package"]
             VALIDATION_INIT[core/validation/__init__.py<br/>Facade]
             FIELD_VAL[core/validation/field_validator.py<br/>Fields and Inputs]
@@ -148,7 +148,7 @@ graph TB
         CACHE[data_cache.py<br/>DataCache<br/>7.8k lines]
         METRICS[performance_metrics.py<br/>PerformanceMetrics<br/>7.8k lines]
         TYPES[types.py<br/>Type Definitions<br/>1.8k lines]
-        
+
         subgraph UTILS["🔨 Utilities"]
             GEOM_UTILS[geometry.py<br/>345 lines<br/>Geometric operations]
             DRILL_UTILS[drillhole.py<br/>7.2k lines<br/>Desurvey + Projection]
@@ -160,14 +160,14 @@ graph TB
             IO_UTILS[io.py<br/>2.6k lines]
         end
     end
-    
+
     %% ========== EXPORTERS LAYER ==========
     subgraph EXPORTERS["📤 Exporters Layer - Export"]
         direction TB
-        
+
         ORCHESTRATOR[orchestrator.py<br/>DataExportOrchestrator<br/>148 lines]
         BASE_EXP[base_exporter.py<br/>BaseExporter<br/>Abstract Class]
-        
+
         subgraph EXPORT_FORMATS["Export Formats"]
             SHP_EXP[shp_exporter.py<br/>ShapefileExporter<br/>3.3k lines]
             CSV_EXP[csv_exporter.py<br/>CSVExporter<br/>1.3k lines]
@@ -178,19 +178,19 @@ graph TB
             DRILL_EXP[drillhole_exporters.py<br/>DrillholeTraceShpExporter<br/>DrillholeIntervalShpExporter<br/>4.2k lines]
         end
     end
-    
+
     %% ========== EXTERNAL DEPENDENCIES ==========
     subgraph EXTERNAL["🌐 External Dependencies"]
         QGIS_CORE[qgis.core<br/>QgsVectorLayer<br/>QgsRasterLayer<br/>QgsGeometry<br/>QgsProcessing<br/>QgsSpatialIndex]
         QGIS_GUI[qgis.gui<br/>QgsMapCanvas<br/>QgsMapTool<br/>QgsMapLayer]
         PYQT5[PyQt5<br/>QtWidgets<br/>QtCore<br/>QtGui<br/>Signals/Slots]
     end
-    
+
     %% ========== CONNECTIONS ==========
     QGIS -->|loads| INIT
     INIT -->|delegates| PLUGIN
     PLUGIN -->|initializes| MAIN
-    
+
     MAIN -->|delegates signals| SIGNALS_MGR
     MAIN -->|uses data from| DATA_MGR
     MAIN -->|manages| PREVIEW_MGR
@@ -199,46 +199,46 @@ graph TB
     MAIN -->|manages| CONFIG_MGR
     MAIN -->|manages| CACHE_HANDLER
     MAIN -->|uses| UI_MAIN
-    
+
     PREVIEW_MGR -->|renders with| RENDERER
     PREVIEW_MGR -->|updates| LEGEND
     PREVIEW_MGR -->|activates| MEASURE
     PREVIEW_MGR -->|requests data| CONTROLLER
-    
+
     EXPORT_MGR -->|delegates to| ORCHESTRATOR
     VALIDATION_MGR -->|validates with| PROJ_VAL
-    
+
     CONTROLLER -->|orchestrates| PROFILE_SVC
     CONTROLLER -->|orchestrates| GEOLOGY_SVC
     CONTROLLER -->|orchestrates| STRUCTURE_SVC
     CONTROLLER -->|orchestrates| DRILLHOLE_SVC
     CONTROLLER -->|uses| CACHE
     CONTROLLER -->|tracks with| METRICS
-    
+
     GEOLOGY_SVC -->|offloads to| PARALLEL_GEO
     GEOLOGY_SVC -->|uses| ALGORITHMS
     STRUCTURE_SVC -->|uses| ALGORITHMS
     DRILLHOLE_SVC -->|uses| DRILL_UTILS
     PROFILE_SVC -->|uses| SAMPLING_UTILS
-    
+
     ALGORITHMS -->|uses| GEOM_UTILS
     ALGORITHMS -->|uses| SPATIAL_UTILS
-    
+
     ORCHESTRATOR -->|delegates to| SHP_EXP
     ORCHESTRATOR -->|delegates to| CSV_EXP
     ORCHESTRATOR -->|delegates to| PROFILE_EXP
     ORCHESTRATOR -->|delegates to| DRILL_EXP
-    
+
     RENDERER -->|uses| QGIS_GUI
     CONTROLLER -->|uses| QGIS_CORE
     MAIN -->|uses| PYQT5
-    
+
     classDef entryPoint fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
     classDef guiLayer fill:#4ecdc4,stroke:#0a9396,stroke-width:2px,color:#000
     classDef coreLayer fill:#95e1d3,stroke:#38a169,stroke-width:2px,color:#000
     classDef exportLayer fill:#ffd93d,stroke:#f59e0b,stroke-width:2px,color:#000
     classDef externalLayer fill:#a8dadc,stroke:#457b9d,stroke-width:2px,color:#000
-    
+
     class QGIS,PLUGIN entryPoint
     class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,LEGEND,MEASURE guiLayer
     class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,TYPES coreLayer
@@ -273,9 +273,9 @@ graph LR
 
 ### 1. SecInterpDialog (main_dialog.py)
 
-**Main Class**: `SecInterpDialog`  
-**Inherits from**: `SecInterpMainWindow`  
-**Lines of code**: ~340 (Reduced from 1,057)  
+**Main Class**: `SecInterpDialog`
+**Inherits from**: `SecInterpMainWindow`
+**Lines of code**: ~340 (Reduced from 1,057)
 **Responsibility**: Simplified main dialog that coordinates components via Managers
 
 #### Key Components
@@ -283,19 +283,19 @@ graph LR
 ```python
 class SecInterpDialog(SecInterpMainWindow):
     """Dialog for the SecInterp QGIS plugin."""
-    
+
     def __init__(self, iface=None, plugin_instance=None, parent=None):
         # Logic Managers
         self.signal_manager = DialogSignalManager(self)
         self.data_aggregator = DialogDataAggregator(self)
-        
+
         # Operation Managers
         self.validator = DialogValidator(self)
         self.preview_manager = PreviewManager(self)
         self.export_manager = ExportManager(self)
         self.status_manager = DialogStatusManager(self)
         self.settings_manager = DialogSettingsManager(self)
-        
+
         # Widgets
         self.legend_widget = LegendWidget(self.preview_widget.canvas)
         self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
@@ -337,8 +337,8 @@ self.page_section.line_combo.layerChanged.connect(self.update_button_state)
 
 ### 2. PreviewManager (main_dialog_preview.py)
 
-**Class**: `PreviewManager`  
-**Lines of code**: ~31,000  
+**Class**: `PreviewManager`
+**Lines of code**: ~31,000
 **Responsibility**: Manages preview generation and updates
 
 #### Main Methods
@@ -347,13 +347,13 @@ self.page_section.line_combo.layerChanged.connect(self.update_button_state)
 class PreviewManager:
     def generate_preview(self) -> Tuple[bool, str]:
         """Generates preview with validation and error handling."""
-        
+
     def update_from_checkboxes(self):
         """Updates preview when visualization options change."""
-        
+
     def _get_validated_inputs(self) -> Optional[Dict]:
         """Obtains and validates inputs from the dialog."""
-        
+
     def _process_data(self, inputs: Dict) -> Tuple:
         """Processes data using the controller."""
 ```
@@ -362,9 +362,9 @@ class PreviewManager:
 
 ### 3. PreviewRenderer (preview_renderer.py)
 
-**Class**: `PreviewRenderer`  
-**Lines of code**: 1,190  
-**Methods**: 20  
+**Class**: `PreviewRenderer`
+**Lines of code**: 1,190
+**Methods**: 20
 **Responsibility**: Renders the preview canvas using native PyQGIS
 
 #### Renderer Architecture
@@ -377,12 +377,12 @@ graph LR
     A --> E[_create_drillhole_layers]
     A --> F[_create_axes_layer]
     A --> G[_create_axes_labels_layer]
-    
+
     B --> H[_decimate_line_data]
     B --> I[_adaptive_sample]
     C --> H
     D --> J[_interpolate_elevation]
-    
+
     H --> K[QgsVectorLayer]
     I --> K
     J --> K
@@ -416,8 +416,8 @@ canvas, layers = renderer.render(
 
 ### 4. ProfileMeasureTool (measure_tool.py)
 
-**Class**: `ProfileMeasureTool`  
-**Inherits from**: `QgsMapTool`  
+**Class**: `ProfileMeasureTool`
+**Inherits from**: `QgsMapTool`
 **Responsibility**: Measurement tool with snapping
 
 #### Features
@@ -441,8 +441,8 @@ measurementCleared = pyqtSignal()
 
 ### 1. ProfileController (controller.py)
 
-**Class**: `ProfileController`  
-**Lines of code**: 192  
+**Class**: `ProfileController`
+**Lines of code**: 192
 **Responsibility**: Orchestrates the data generation services
 
 #### Architecture
@@ -462,26 +462,26 @@ class ProfileController:
 ```python
 def generate_profile_data(self, values: Dict[str, Any]) -> Tuple[List, Any, Any, Any, List[str]]:
     """Unified method to generate all profile components.
-    
+
     Returns:
         tuple: (profile_data, geol_data, struct_data, drillhole_data, messages)
     """
     # 1. Topography
     profile_data = self.profile_service.generate_topographic_profile(...)
-    
+
     # 2. Geology (if layer exists)
     if outcrop_layer:
         geol_data = self.geology_service.generate_geological_profile(...)
-    
+
     # 3. Structures (if layer exists)
     if structural_layer:
         struct_data = self.structure_service.project_structures(...)
-    
+
     # 4. Drillholes (if layer exists)
     if collar_layer:
         collars = self.drillhole_service.project_collars(...)
         drillhole_data = self.drillhole_service.process_intervals(...)
-    
+
     return profile_data, geol_data, struct_data, drillhole_data, messages
 ```
 
@@ -489,9 +489,9 @@ def generate_profile_data(self, values: Dict[str, Any]) -> Tuple[List, Any, Any,
 
 ### 2. GeologyService (geology_service.py)
 
-**Class**: `GeologyService`  
-**Lines of code**: 244  
-**Methods**: 8  
+**Class**: `GeologyService`
+**Lines of code**: 244
+**Methods**: 8
 **Responsibility**: Generates geological profiles by intersecting polygons
 
 #### Processing Flow
@@ -502,19 +502,19 @@ sequenceDiagram
     participant GeoService as GeologyService
     participant QGIS as QGIS Processing
     participant Utils as Utils
-    
+
     Client->>GeoService: generate_geological_profile()
     GeoService->>GeoService: _generate_master_profile_data()
     GeoService->>QGIS: _perform_intersection()
     QGIS-->>GeoService: intersection_layer
-    
+
     loop For each feature
         GeoService->>GeoService: _process_intersection_feature()
         GeoService->>GeoService: _create_segment_from_geometry()
         GeoService->>Utils: interpolate_elevation()
         Utils-->>GeoService: elevation_points
     end
-    
+
     GeoService-->>Client: List[GeologySegment]
 ```
 
@@ -543,9 +543,9 @@ class GeologySegment:
 
 ### 3. StructureService (structure_service.py)
 
-**Class**: `StructureService`  
-**Lines of code**: 216  
-**Methods**: 7  
+**Class**: `StructureService`
+**Lines of code**: 216
+**Methods**: 7
 **Responsibility**: Projects structural measurements (dip/strike)
 
 #### Projection Algorithm
@@ -588,9 +588,9 @@ class StructureMeasurement:
 
 ### 4. DrillholeService (drillhole_service.py)
 
-**Class**: `DrillholeService`  
-**Lines of code**: 319  
-**Methods**: 4  
+**Class**: `DrillholeService`
+**Lines of code**: 319
+**Methods**: 4
 **Responsibility**: Processes and projects drillhole data
 
 #### Processing Flow
@@ -600,10 +600,10 @@ graph TB
     A[Collar Layer] --> B[project_collars]
     C[Survey Layer] --> D[process_intervals]
     E[Interval Layer] --> D
-    
+
     B --> F[Collar Points]
     F --> D
-    
+
     D --> G[Desurvey Drillhole]
     G --> H[Project to Section]
     H --> I[Create Segments]
@@ -692,8 +692,8 @@ def process_intervals(
 
 ### 6. DataCache (data_cache.py)
 
-**Class**: `DataCache`  
-**Lines of code**: 7,883  
+**Class**: `DataCache`
+**Lines of code**: 7,883
 **Responsibility**: Cache of processed data
 
 #### Cache Strategy
@@ -703,13 +703,13 @@ class DataCache:
     def get_cache_key(self, inputs: Dict) -> str:
         """Generates a unique key based on relevant inputs."""
         # Considers: layers, bands, buffer, vertical exaggeration
-        
+
     def get(self, key: str) -> Optional[Dict]:
         """Retrieves data from cache."""
-        
+
     def set(self, key: str, data: Dict) -> None:
         """Stores data in cache."""
-        
+
     def clear(self) -> None:
         """Clears the entire cache."""
 ```
@@ -721,24 +721,24 @@ class DataCache:
 
 ### 1. DataExportOrchestrator (orchestrator.py)
 
-**Class**: `DataExportOrchestrator`  
-**Lines of code**: 148  
+**Class**: `DataExportOrchestrator`
+**Lines of code**: 148
 **Responsibility**: Coordinates exports to multiple formats
 
 #### Main Method
 
 ```python
 def export_data(
-    self, 
-    output_folder: Path, 
-    values: Dict[str, Any], 
+    self,
+    output_folder: Path,
+    values: Dict[str, Any],
     profile_data: List[Tuple],
-    geol_data: Optional[List[Any]], 
+    geol_data: Optional[List[Any]],
     struct_data: Optional[List[Any]],
     drillhole_data: Optional[List[Any]] = None
 ) -> List[str]:
     """Exports generated data to CSV and Shapefile using lazy imports."""
-    
+
     # Lazy import of exporters
     from sec_interp.exporters import (
         AxesShpExporter,
@@ -749,26 +749,26 @@ def export_data(
         DrillholeTraceShpExporter,
         DrillholeIntervalShpExporter,
     )
-    
+
     # Export topography
     csv_exporter.export(output_folder / "topo_profile.csv", ...)
     ProfileLineShpExporter({}).export(output_folder / "profile_line.shp", ...)
-    
+
     # Export geology
     if geol_data:
         csv_exporter.export(output_folder / "geol_profile.csv", ...)
         GeologyShpExporter({}).export(output_folder / "geol_profile.shp", ...)
-    
+
     # Export structures
     if struct_data:
         csv_exporter.export(output_folder / "structural_profile.csv", ...)
         StructureShpExporter({}).export(output_folder / "structural_profile.shp", ...)
-    
+
     # Export drillholes
     if drillhole_data:
         DrillholeTraceShpExporter({}).export(output_folder / "drillhole_traces.shp", ...)
         DrillholeIntervalShpExporter({}).export(output_folder / "drillhole_intervals.shp", ...)
-    
+
     return result_msg
 ```
 
@@ -782,33 +782,33 @@ classDiagram
         <<abstract>>
         +export(path, data)
     }
-    
+
     class CSVExporter {
         +export(path, data)
     }
-    
+
     class ShapefileExporter {
         +export(path, data)
     }
-    
+
     class ImageExporter {
         +export(path, map_settings)
     }
-    
+
     class PDFExporter {
         +export(path, map_settings)
     }
-    
+
     class SVGExporter {
         +export(path, map_settings)
     }
-    
+
     BaseExporter <|-- CSVExporter
     BaseExporter <|-- ShapefileExporter
     BaseExporter <|-- ImageExporter
     BaseExporter <|-- PDFExporter
     BaseExporter <|-- SVGExporter
-    
+
     ShapefileExporter <|-- ProfileLineShpExporter
     ShapefileExporter <|-- GeologyShpExporter
     ShapefileExporter <|-- StructureShpExporter
@@ -833,41 +833,41 @@ sequenceDiagram
     participant Services
     participant Renderer
     participant Canvas
-    
+
     User->>Dialog: Click "Preview Profile"
     Dialog->>PreviewMgr: generate_preview()
-    
+
     PreviewMgr->>PreviewMgr: _get_validated_inputs()
     PreviewMgr->>Controller: generate_profile_data(inputs)
-    
+
     par Parallel Processing
         Controller->>Services: ProfileService.generate_topographic_profile()
         Services-->>Controller: profile_data
-        
+
         Controller->>Services: GeologyService.generate_geological_profile()
         Services-->>Controller: geol_data
-        
+
         Controller->>Services: StructureService.project_structures()
         Services-->>Controller: struct_data
-        
+
         Controller->>Services: DrillholeService.project_collars()
         Services->>Services: DrillholeService.process_intervals()
         Services-->>Controller: drillhole_data
     end
-    
+
     Controller-->>PreviewMgr: (profile, geol, struct, drill, msgs)
-    
+
     PreviewMgr->>Renderer: render(profile, geol, struct, drill, vert_exag, ...)
     Renderer->>Renderer: _create_topo_layer()
     Renderer->>Renderer: _create_geol_layer()
     Renderer->>Renderer: _create_struct_layer()
     Renderer->>Renderer: _create_drillhole_layers()
     Renderer->>Renderer: _create_axes_layer()
-    
+
     Renderer->>Canvas: setLayers(layers)
     Renderer->>Canvas: zoomToFullExtent()
     Renderer-->>PreviewMgr: (canvas, layers)
-    
+
     PreviewMgr-->>Dialog: success
     Dialog-->>User: Display Preview
 ```
@@ -884,30 +884,30 @@ sequenceDiagram
     participant Controller
     participant Orchestrator
     participant Exporters
-    
+
     User->>Dialog: Click "Save"
     Dialog->>ExportMgr: export_data()
-    
+
     ExportMgr->>Controller: generate_profile_data(inputs)
     Controller-->>ExportMgr: (profile, geol, struct, drill, msgs)
-    
+
     ExportMgr->>Orchestrator: export_data(folder, values, data...)
-    
+
     Orchestrator->>Exporters: CSVExporter.export("topo_profile.csv")
     Exporters-->>Orchestrator: success
-    
+
     Orchestrator->>Exporters: ProfileLineShpExporter.export("profile_line.shp")
     Exporters-->>Orchestrator: success
-    
+
     Orchestrator->>Exporters: GeologyShpExporter.export("geol_profile.shp")
     Exporters-->>Orchestrator: success
-    
+
     Orchestrator->>Exporters: StructureShpExporter.export("structural_profile.shp")
     Exporters-->>Orchestrator: success
-    
+
     Orchestrator->>Exporters: DrillholeTraceShpExporter.export("drillhole_traces.shp")
     Exporters-->>Orchestrator: success
-    
+
     Orchestrator-->>ExportMgr: result_messages
     ExportMgr-->>Dialog: success
     Dialog-->>User: "All files saved to: {folder}"
@@ -923,21 +923,21 @@ sequenceDiagram
     participant GeoService as GeologyService
     participant ParallelGeo as ParallelGeologyService
     participant Worker as GeologyProcessingThread
-    
+
     Main->>GeoService: generate_geological_profile()
     GeoService->>ParallelGeo: process_async(line, raster, outcrop, field, band)
-    
+
     ParallelGeo->>Worker: start()
     Note over Worker: QThread Worker
-    
+
     Worker->>Worker: run()
     Worker->>Worker: _generate_master_profile_data()
     Worker->>Worker: _perform_intersection()
-    
+
     loop For each feature
         Worker->>Worker: _process_intersection_feature()
     end
-    
+
     Worker->>ParallelGeo: finished.emit(results)
     ParallelGeo->>GeoService: return results
     GeoService-->>Main: List[GeologySegment]
@@ -969,7 +969,7 @@ class BaseExporter(ABC):
 class CSVExporter(BaseExporter):
     def export(self, path: Path, data: Dict) -> bool:
         # CSV Specific implementation
-        
+
 class ShapefileExporter(BaseExporter):
     def export(self, path: Path, data: Dict) -> bool:
         # Shapefile Specific implementation
@@ -1038,7 +1038,7 @@ class BaseExporter(ABC):
         self._prepare(data)
         self._write(path, data)
         self._finalize()
-    
+
     @abstractmethod
     def _write(self, path, data):
         pass
@@ -1130,12 +1130,12 @@ def _decimate_line_data(self, data, tolerance=None, max_points=1000):
     """Simplifies lines using Douglas-Peucker."""
     if len(data) <= max_points:
         return data
-    
+
     # Calculate automatic tolerance
     if tolerance is None:
         x_range = max(p[0] for p in data) - min(p[0] for p in data)
         tolerance = x_range / (max_points * 2)
-    
+
     # Apply Douglas-Peucker
     simplified = self._douglas_peucker(data, tolerance)
     return simplified
@@ -1149,17 +1149,17 @@ def _decimate_line_data(self, data, tolerance=None, max_points=1000):
 def _adaptive_sample(self, data, min_tolerance=0.1, max_tolerance=10.0, max_points=1000):
     """Samples more densely in high-curvature areas."""
     curvatures = self._calculate_curvature(data)
-    
+
     # Normalize curvatures
     max_curv = max(curvatures)
     normalized = [c / max_curv for c in curvatures]
-    
+
     # Tolerance inversely proportional to curvature
     tolerances = [
         max_tolerance - (max_tolerance - min_tolerance) * n
         for n in normalized
     ]
-    
+
     # Apply Douglas-Peucker with variable tolerance
     return self._douglas_peucker_adaptive(data, tolerances)
 ```
@@ -1175,7 +1175,7 @@ class ParallelGeologyService(QObject):
     finished = pyqtSignal(list)
     progress = pyqtSignal(int)
     error = pyqtSignal(str)
-    
+
     def process_async(self, line_lyr, raster_lyr, outcrop_lyr, field, band):
         """Processes geology in a separate thread."""
         self.worker = GeologyProcessingThread(...)
@@ -1213,17 +1213,17 @@ def filter_features_by_buffer(features_layer, buffer_geometry):
     """Filters features using a spatial index."""
     # 1. Build spatial index
     index = QgsSpatialIndex(features_layer.getFeatures())
-    
+
     # 2. Fast search by bounding box
     candidate_ids = index.intersects(buffer_geometry.boundingBox())
-    
+
     # 3. Precise filtering of candidates only
     filtered = []
     for fid in candidate_ids:
         feature = features_layer.getFeature(fid)
         if feature.geometry().intersects(buffer_geometry):
             filtered.append(feature)
-    
+
     return filtered
 ```
 
@@ -1279,11 +1279,11 @@ graph LR
     A[SecInterp Plugin] --> B[QGIS Core API]
     A --> C[QGIS GUI API]
     A --> D[PyQt5]
-    
+
     B --> E[Python 3.x]
     C --> E
     D --> E
-    
+
     style A fill:#ff6b6b
     style B fill:#4ecdc4
     style C fill:#4ecdc4
@@ -1374,6 +1374,6 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 
 This document provides a detailed view of the SecInterp plugin architecture. For development information, see [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last update**: 2025-12-21  
-**Plugin Version**: 2.2  
+**Last update**: 2025-12-21
+**Plugin Version**: 2.2
 **Author**: Juan M. Bernales

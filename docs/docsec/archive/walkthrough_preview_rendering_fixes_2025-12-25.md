@@ -1,7 +1,7 @@
 # Walkthrough: Preview Rendering Bug Fixes (v2.3.0)
 
-**Date**: 2025-12-25  
-**Version**: 2.3.0  
+**Date**: 2025-12-25
+**Version**: 2.3.0
 **Focus**: Critical bug fixes for geology persistence and drillhole rendering
 
 ---
@@ -28,7 +28,7 @@ Resolve critical bugs preventing proper rendering of geology and drillholes in t
 1. **Missing cache update** ([main_dialog_preview.py:574](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_preview.py#L574)):
    - `self.last_result` was saved BEFORE async geology completed
    - When using cached data, referenced old result without geology
-   
+
 2. **Always passing None** ([main_dialog_preview.py:170](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_preview.py#L170)):
    - `draw_preview()` always received `None` for geology
    - Even when cached geology data existed
@@ -117,7 +117,7 @@ logger.info(f"Adding {len(features)} drillhole trace features to layer")
 2. Wait for async geology to complete
 3. Click "Preview" again (same parameters)
 
-**Expected**: Geology remains visible  
+**Expected**: Geology remains visible
 **Result**: ✅ **PASS** - Geology persists correctly
 
 **Evidence**:
@@ -134,7 +134,7 @@ logger.info(f"Adding {len(features)} drillhole trace features to layer")
 2. Select Collar ID field
 3. Generate preview
 
-**Expected**: Drillholes render with colored intervals  
+**Expected**: Drillholes render with colored intervals
 **Result**: ✅ **PASS** - 10 drillholes rendered
 
 **Evidence**:
@@ -224,5 +224,5 @@ fix(preview): resolve geology persistence and drillhole rendering issues
 
 ---
 
-*Walkthrough completed: 2025-12-25*  
+*Walkthrough completed: 2025-12-25*
 *All critical rendering bugs resolved for v2.3.0*

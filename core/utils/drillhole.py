@@ -4,7 +4,7 @@ Calculations for drillhole geometry and projection.
 """
 
 import math
-from typing import Any, List, Tuple
+from typing import Any
 
 from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 

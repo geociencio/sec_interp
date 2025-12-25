@@ -8,7 +8,7 @@ including data (Shapefile, CSV) and preview (PNG, PDF, SVG) exports.
 """
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from qgis.core import QgsMapSettings, QgsProject, QgsRectangle
 

@@ -55,7 +55,7 @@ Implementar reproyección automática sería una mejora valiosa, pero cae fuera 
 
 **POSPONER** para una fase de "Nuevas Características".
 
-**Razón**: 
+**Razón**:
 - No estamos reemplazando código ineficiente con nativo.
 - Estamos añadiendo lógica nueva compleja.
 - El plugin funciona correctamente tal como está (con advertencias).

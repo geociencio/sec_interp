@@ -18,6 +18,7 @@ from qgis.core import (
     QgsPointXY,
     QgsProperty,
     QgsPropertyCollection,
+    QgsProject,
     QgsSingleSymbolRenderer,
     QgsTextFormat,
     QgsVectorLayer,

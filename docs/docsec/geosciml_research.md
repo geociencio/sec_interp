@@ -299,13 +299,13 @@ units = root.xpath('//gsml:GeologicUnit', namespaces=ns)
 for unit in units:
     unit_id = unit.get(f"{{{ns['gml']}}}id")
     name = unit.xpath('.//gml:name/text()', namespaces=ns)[0]
-    
+
     # Extraer litología (URI del vocabulario)
     litho_href = unit.xpath(
         './/gsml:lithology/@xlink:href',
         namespaces={**ns, 'xlink': 'http://www.w3.org/1999/xlink'}
     )
-    
+
     print(f"Unit: {name} ({unit_id})")
     print(f"  Lithology: {litho_href[0] if litho_href else 'N/A'}")
 ```
@@ -448,11 +448,11 @@ lithology_uri = local_to_cgi.get(user_lithology, None)
 
 ### 10.1 Ventajas de Adoptar GeoSciML
 
-✅ **Interoperabilidad global**: Datos compatibles con 120+ países  
-✅ **Semántica rica**: Vocabularios controlados evitan ambigüedad  
-✅ **Estándar OGC**: Garantía de soporte a largo plazo  
-✅ **Integración INSPIRE**: Acceso a infraestructura europea  
-✅ **Visibilidad**: Publicación en OneGeology portal  
+✅ **Interoperabilidad global**: Datos compatibles con 120+ países
+✅ **Semántica rica**: Vocabularios controlados evitan ambigüedad
+✅ **Estándar OGC**: Garantía de soporte a largo plazo
+✅ **Integración INSPIRE**: Acceso a infraestructura europea
+✅ **Visibilidad**: Publicación en OneGeology portal
 
 ### 10.2 Recomendación para SecInterp
 
@@ -471,6 +471,6 @@ lithology_uri = local_to_cgi.get(user_lithology, None)
 
 ---
 
-*Documento creado: 2025-12-22*  
-*Autor: Investigación técnica para proyecto SecInterp*  
+*Documento creado: 2025-12-22*
+*Autor: Investigación técnica para proyecto SecInterp*
 *Versión: 1.0*

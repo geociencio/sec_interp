@@ -9,7 +9,7 @@ jobs:
   release:
     name: Build & Release
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -24,7 +24,7 @@ jobs:
       - name: Install documentation dependencies
         run: |
           uv pip install sphinx myst-parser sphinxcontrib-mermaid
-          
+
       - name: Build optimized ZIP
         run: make zip
 

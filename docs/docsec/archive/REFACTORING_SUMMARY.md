@@ -1,7 +1,7 @@
 # Resumen de Refactorizaciones - SecInterp Plugin
 
-**Fecha**: 2025-12-21  
-**Score de Calidad**: 85.8/100 (+0.1)  
+**Fecha**: 2025-12-21
+**Score de Calidad**: 85.8/100 (+0.1)
 **Tests Pasando**: 32/36 sin QGIS (89%)
 
 ## Cambios Realizados

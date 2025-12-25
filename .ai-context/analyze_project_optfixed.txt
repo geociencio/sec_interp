@@ -257,7 +257,7 @@ class ProjectAnalyzer:
         """Carga configuración desde analyzer_config.json o usa defaults"""
         config = self.DEFAULT_CONFIG.copy()
         config_path = self.project_path / "analyzer_config.json"
-        
+
         if config_path.exists():
             try:
                 with open(config_path, 'r', encoding='utf-8') as f:
@@ -271,7 +271,7 @@ class ProjectAnalyzer:
                 logger.info(f"⚙️ Configuración cargada desde {config_path.name}")
             except Exception as e:
                 logger.warning(f"⚠️ Error cargando config, usando defaults: {e}")
-        
+
         return config
 
     # ==================== MÉTODOS PRINCIPALES ====================
@@ -413,7 +413,7 @@ class ProjectAnalyzer:
     def _load_exclusion_patterns(self) -> List[str]:
         """Carga patrones de exclusión de .analyzerignore o .gitignore"""
         patterns = []
-        
+
         # 1. Prioridad: .analyzerignore
         ignore_file = self.project_path / ".analyzerignore"
         if ignore_file.exists():
@@ -455,13 +455,13 @@ class ProjectAnalyzer:
         """Obtener archivos Python con filtrado inteligente"""
         logger.debug("entra _get_python_files_filtered")
         python_files = []
-        
+
         exclusion_patterns = self._load_exclusion_patterns()
-        
+
         logger.debug(f"rglob iniciado en {self.project_path}")
         for py_file in self.project_path.rglob("*.py"):
             rel_path = str(py_file.relative_to(self.project_path))
-            
+
             # Filtrar por patrones de exclusión usando fnmatch
             # Probamos tanto el path relativo completo como el nombre del archivo/directorio
             should_exclude = False
@@ -469,14 +469,14 @@ class ProjectAnalyzer:
                 # Normalizar patrón para directorios
                 if pattern.endswith('/'):
                     pattern = pattern[:-1]
-                
+
                 # Coincidencia exacta o glob
                 if fnmatch.fnmatch(rel_path, pattern) or \
                    fnmatch.fnmatch(py_file.name, pattern) or \
                    any(fnmatch.fnmatch(part, pattern) for part in py_file.relative_to(self.project_path).parts):
                     should_exclude = True
                     break
-            
+
             if should_exclude:
                 # logger.debug(f"descartado por exclusiones {py_file}")
                 continue
@@ -673,14 +673,14 @@ class ProjectAnalyzer:
                         cycles.append(path[cycle_start:])
                     elif v not in visited:
                         dfs(v)
-            
+
             path_set.remove(u)
             path.pop()
 
         for node in list(self.import_graph.keys()):
              if node not in visited:
                  dfs(node)
-        
+
         return cycles
 
     def _count_connected_components(self) -> int:
@@ -693,10 +693,10 @@ class ProjectAnalyzer:
                 undirected[u].add(v)
                 if v not in undirected: undirected[v] = set()
                 undirected[v].add(u)
-        
+
         visited = set()
         count = 0
-        
+
         for node in undirected:
             if node not in visited:
                 count += 1
@@ -749,7 +749,7 @@ class ProjectAnalyzer:
                 # Añadir nodo
                 if module_path not in self.import_graph:
                     self.import_graph[module_path] = set()
-                
+
                 import_graph[module_path] = imports
                 all_imports.update(imports)
 
@@ -783,7 +783,7 @@ class ProjectAnalyzer:
                 # Density for directed graph: E / (V * (V - 1))
                 max_edges = num_nodes * (num_nodes - 1)
                 density = num_edges / max_edges if max_edges > 0 else 0
-                
+
                 dependencies["graph_metrics"] = {
                     "nodes": num_nodes,
                     "edges": num_edges,
@@ -841,7 +841,7 @@ class ProjectAnalyzer:
             'QAbstractListModel': 'mvc',
             'QStandardItemModel': 'mvc',
             # Command / Strategy
-            'QgsProcessingAlgorithm': 'command', 
+            'QgsProcessingAlgorithm': 'command',
             'QgsTask': 'command',
             'QUndoCommand': 'command',
             'QgsMapTool': 'strategy',
@@ -859,7 +859,7 @@ class ProjectAnalyzer:
         # Análisis de módulos para patrones
         for module in modules_data:
             path = module.get("path", "")
-            
+
             # Obtener AST del cache
             tree = self.ast_cache.get(path)
             if not tree:
@@ -869,7 +869,7 @@ class ProjectAnalyzer:
             for node in ast.walk(tree):
                 if isinstance(node, ast.ClassDef):
                     class_name = node.name
-                    
+
                     # 1. Análisis de Herencia
                     for base in node.bases:
                         base_name = self._get_base_name(base)
@@ -879,7 +879,7 @@ class ProjectAnalyzer:
                             patterns[pattern_key]["evidence"].append(f"{path}:{class_name}({base_name})")
 
                     # 2. Análisis de métodos y estructura (Existente pero refinado)
-                    
+
                     # Singleton pattern detection
                     has_new = any(isinstance(item, ast.FunctionDef) and
                                  item.name == '__new__' for item in node.body)
@@ -894,7 +894,7 @@ class ProjectAnalyzer:
 
                     method_names = [item.name for item in node.body
                                    if isinstance(item, ast.FunctionDef)]
-                    
+
                     # Factory pattern detection
                     factory_keywords = ['create', 'make', 'build', 'factory', 'get_instance']
                     if 'Factory' in class_name or \
@@ -996,23 +996,23 @@ class ProjectAnalyzer:
             "widgets": self._check_qgis_widget_usage(modules_data),
             "performance": self._check_performance_patterns(modules_data)
         }
-        
+
         # Calcular score específico de QGIS
         weights = self.config["qgis_weights"]
         score = 0.0
         max_score = float(sum(weights.values()))
-        
-        if compliance["mandatory_files"]["all_present"]: 
+
+        if compliance["mandatory_files"]["all_present"]:
             score += weights["mandatory_files"]
-        if compliance["metadata"]["is_valid"]: 
+        if compliance["metadata"]["is_valid"]:
             score += weights["metadata_valid"]
-        if compliance["architecture"]["separation_clean"]: 
+        if compliance["architecture"]["separation_clean"]:
             score += weights["ui_logic_separation"]
-        
+
         # Widgets and Performance use partial scores
         score += weights["qgis_widget_usage"] * compliance["widgets"]["score"]
         score += weights["spatial_index_usage"] * compliance["performance"]["score"]
-        
+
         compliance["compliance_score"] = round((score / max_score) * 100, 2) if max_score > 0 else 0
         return compliance
 
@@ -1020,13 +1020,13 @@ class ProjectAnalyzer:
         """Verifica la existencia de archivos obligatorios para un plugin de QGIS"""
         mandatory = ["LICENSE", "metadata.txt", "__init__.py"]
         results = {"files": {}, "all_present": True}
-        
+
         for f in mandatory:
             exists = (self.project_path / f).exists()
             results["files"][f] = exists
             if not exists:
                 results["all_present"] = False
-                
+
         # Verificar classFactory en __init__.py
         init_path = self.project_path / "__init__.py"
         results["has_class_factory"] = False
@@ -1036,7 +1036,7 @@ class ProjectAnalyzer:
                 results["has_class_factory"] = True
             else:
                 results["all_present"] = False
-                
+
         return results
 
     def _check_metadata_validity(self) -> Dict:
@@ -1044,18 +1044,18 @@ class ProjectAnalyzer:
         metadata_path = self.project_path / "metadata.txt"
         required = ["name", "description", "version", "qgisMinimumVersion", "author", "email"]
         results = {"fields_found": [], "missing_fields": [], "is_valid": False}
-        
+
         if not metadata_path.exists():
             results["missing_fields"] = required
             return results
-            
+
         content = self._read_file_fast(metadata_path)
         for field in required:
             if f"{field.lower()}=" in content.lower():
                 results["fields_found"].append(field)
             else:
                 results["missing_fields"].append(field)
-                
+
         results["is_valid"] = len(results["missing_fields"]) == 0
         return results
 
@@ -1065,12 +1065,12 @@ class ProjectAnalyzer:
             "violations": [],
             "separation_clean": True
         }
-        
+
         for module in modules_data:
             path = module["path"]
             # Si el archivo está en core/, no debe importar PyQt o qgis.gui
             if "core/" in str(path):
-                ui_imports = [imp for imp in module.get("imports", []) 
+                ui_imports = [imp for imp in module.get("imports", [])
                              if any(x in imp for x in ["PyQt", "qgis.gui", "qgis.utils"])]
                 if ui_imports:
                     separation["violations"].append({
@@ -1079,7 +1079,7 @@ class ProjectAnalyzer:
                         "imports": ui_imports
                     })
                     separation["separation_clean"] = False
-                    
+
             # Si el archivo está en gui/, no debe tener lógica excesivamente compleja
             if "gui/" in str(path):
                 if module.get("complexity", 0) > self.config["thresholds"]["complexity_medium"]:
@@ -1089,37 +1089,37 @@ class ProjectAnalyzer:
                         "complexity": module["complexity"]
                     })
                     # No marcamos separation_clean como False solo por esto, es un warning
-                    
+
         return separation
 
     def _check_qgis_widget_usage(self, modules_data: List[Dict]) -> Dict:
         """Recomienda el uso de widgets nativos de QGIS"""
         recommendations = []
         counts = {"generic": 0, "qgis": 0}
-        
+
         generic_to_qgis = {
             "QComboBox": "QgsMapLayerComboBox",
             "QLineEdit": "QgsFilterLineEdit",
             "QPushButton": "QgsColorButton (if for color)",
             "QFileDialog": "QgsFileWidget"
         }
-        
+
         for module in modules_data:
             if "gui/" not in str(module["path"]): continue
-            
+
             content = self._read_file_fast(module["path"])
             for generic, qgis_alt in generic_to_qgis.items():
                 if generic in content:
                     counts["generic"] += content.count(generic)
                     # Solo añadir recomendación una vez por archivo
                     recommendations.append(f"{module['path'].name}: Consider using {qgis_alt} instead of {generic}")
-                    
+
             if "Qgs" in content:
                 counts["qgis"] += 1 # Heurística simple
-                
+
         total = counts["generic"] + counts["qgis"]
         score = counts["qgis"] / total if total > 0 else 1.0
-        
+
         return {
             "score": round(score, 2),
             "recommendations": list(set(recommendations))[:10] # Top 10
@@ -1129,21 +1129,21 @@ class ProjectAnalyzer:
         """Busca patrones de rendimiento específicos de PyQGIS"""
         issues = []
         score_deduction = 0.0
-        
+
         for module in modules_data:
             content = self._read_file_fast(module["path"])
-            
+
             # .getFeatures() sin argumentos (generalmente ineficiente)
             if ".getFeatures()" in content:
                 issues.append(f"{module['path'].name}: .getFeatures() without QgsFeatureRequest")
                 score_deduction += 0.1
-                
+
             # Operaciones espaciales sin índice
             if any(x in content for x in [".intersects(", ".contains(", ".distance("]):
                 if "QgsSpatialIndex" not in content:
                     issues.append(f"{module['path'].name}: Spatial operation without QgsSpatialIndex")
                     score_deduction += 0.1
-                    
+
         score = max(0.0, 1.0 - score_deduction)
         return {
             "score": round(score, 2),
@@ -1613,7 +1613,7 @@ class ProjectAnalyzer:
             weights["has_main"] +
             weights["no_syntax_error"]
         )
-        
+
         total_score = 0.0
         max_possible_total = len(modules_data) * max_module_score
 
@@ -1652,11 +1652,11 @@ class ProjectAnalyzer:
 
         # Normalizar a porcentaje
         final_score = (total_score / max_possible_total) * 100 if max_possible_total > 0 else 0
-        
+
         # Factorizar el score de cumplimiento de QGIS (si existe)
         qgis_data = self.context.patterns.get("qgis_compliance", {})
         qgis_score = qgis_data.get("compliance_score")
-        
+
         if qgis_score is not None:
             # El Score final es un promedio ponderado: 70% Calidad Código, 30% Estándares QGIS
             final_score = (final_score * 0.7) + (qgis_score * 0.3)
@@ -1811,31 +1811,31 @@ class ProjectAnalyzer:
 
         try:
             content = brain_path.read_text(encoding="utf-8")
-            
+
             # Datos frescos
             import datetime
             import re
-            
+
             today = datetime.datetime.now().strftime("%Y-%m-%d")
             qgis_data = analyses.get("qgis_compliance", {})
             qgis_score = qgis_data.get("compliance_score", 0)
-            
+
             # Calcular módulos complejos
             complex_modules = sorted(
                 analyses.get("complexity", {}).get("most_complex_modules", []),
-                key=lambda x: x[1], 
+                key=lambda x: x[1],
                 reverse=True
             )[:3]
             # m es una tupla (path, complexity) o dict?
             # En _analyze_complexity devuelve lista de tuplas (path, complexity) en "most_complex_modules"
             complex_str = ", ".join([f"`{m[0]}`" for m in complex_modules])
-            
+
             metrics = analyses.get("metrics", {})
             lines = metrics.get("total_lines_code", 0)
-            
+
             structure = analyses.get("structure", {})
             files = structure.get("modules_count", 0)
-            
+
             avg_complexity = metrics.get("avg_complexity", 0)
 
             # Bloque de reemplazo
@@ -1856,7 +1856,7 @@ class ProjectAnalyzer:
                 print(f"   🧠 Cerebro actualizado: {brain_path}")
             else:
                 print(f"   ⚠️ No se encontró la sección de métricas en {brain_path.name}")
-                
+
         except Exception as e:
             print(f"   ⚠️ Falló la actualización del cerebro: {e}")
 
@@ -1916,13 +1916,13 @@ Versión del analizador: 2.0 (Optimizado)
         if qgis:
             summary_content += f"\n## 📦 ESTÁNDARES DE PLUGIN QGIS\n"
             summary_content += f"- **Score de Cumplimiento**: {qgis.get('compliance_score', 0):.1f}/100\n"
-            
+
             # Archivos faltantes
             mandatory = qgis.get("mandatory_files", {})
             missing = [f for f, exists in mandatory.get("files", {}).items() if not exists]
             if missing:
                 summary_content += f"- ❌ **Archivos faltantes**: {', '.join(missing)}\n"
-            
+
             # Violaciones de arquitectura
             arch = qgis.get("architecture", {})
             if arch.get("violations"):
@@ -1930,7 +1930,7 @@ Versión del analizador: 2.0 (Optimizado)
                 summary_content += f"- ⚠️ **Arquitectura**: {len(violations)} violaciones detectadas (mezcla UI/Core)\n"
                 for v in violations[:2]:
                     summary_content += f"  - {v['file']}: {v['type']}\n"
-            
+
             # Recomendaciones de widgets
             widgets = qgis.get("widgets", {})
             if widgets.get("recommendations"):
@@ -2145,7 +2145,7 @@ Ejemplos:
         start_time = time.time()
         results = analyzer.analyze()
         total_time = time.time() - start_time
-        
+
         # Desactivar timeout
         signal.alarm(0)
 

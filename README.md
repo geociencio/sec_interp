@@ -73,36 +73,36 @@ For detailed instructions, please see the [**User Guide**](docs/USER_GUIDE.md).
 2. **Launch Plugin**: Click the **SecInterp** icon in the toolbar.
 3. **Configure Layers**:
     *   **DEM**: Select your elevation raster and band.
-    
+
         ![Layer Setup](docs/images/workflow_01_select_dem.png)
 
     *   **Cross-section**: Select the line layer that defines your profile.
-    
+
         ![Layer Setup](docs/images/workflow_03_select_section_line.png)
 
     *   **Geology**: Select the outcrop layer and the lithology attribute field.
-    
+
         ![Layer Setup](docs/images/workflow_05_geology_setup.png)
 
     *   **Structure**: Select the point layer and dip/strike fields.
-    
+
         ![Layer Setup](docs/images/workflow_06_structural_setup.png)
 
     *   **Drillholes (Optional)**: Configure Collars, Survey, and Intervals in the "Drillholes" tab to project 2D drillhole traces.
-    
+
         ![Collar Setup](docs/images/workflow_07_drillhole_collar_setup.png)
-        
+
         ![Survey Setup](docs/images/workflow_08_drillhole_survey_setup.png)
-        
+
         ![Interval Setup](docs/images/workflow_09_drillhole_interval_setup.png)
 
 4. **Preview**: Click **Preview Profile**. The view will update asynchronously.
-    
+
     ![Preview Generated](docs/images/workflow_04_preview_generated.png)
-    
+
     *   *Tip: Use the scroll wheel to zoom in/out. The detail level will adapt automatically.*
     *   *Tip: Colapse panels to the left, and Results colapse down to save space.*
-    
+
     ![Preview Collapsed](docs/images/workflow_04_preview_panels_colapsed.png)
 
 5. **Export**: Go to the "Export" tab to save your profile to your preferred format.

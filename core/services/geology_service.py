@@ -19,7 +19,7 @@
 
 from collections.abc import Generator
 import contextlib
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from qgis import processing
 from qgis.core import (

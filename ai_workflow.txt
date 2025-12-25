@@ -123,7 +123,7 @@ class AIWorkflowManager:
 
         # Guardar prompt
         prompt_file = self.context_dir / "sessions" / f"{self.session_id}_{self.current_task}" / f"prompt_{int(time.time())}.json"
-        
+
         # Asegurar que el directorio existe
         prompt_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -176,7 +176,7 @@ class AIWorkflowManager:
         }
 
         relevant_parts = []
-        
+
         # 1. Archivos en .ai-context
         for file, category in context_files.items():
             filepath = self.context_dir / file
@@ -185,7 +185,7 @@ class AIWorkflowManager:
                 # Forzar inclusión parcial de cerebro y stack técnico
                 force_include = category in ["general", "technical"]
                 self._add_if_relevant(content, category, keywords, relevant_parts, force=force_include)
-                
+
                 if category == "technical":
                     context["project_info"] = yaml.safe_load(content) or {}
 
@@ -218,14 +218,14 @@ class AIWorkflowManager:
     def _add_if_relevant(self, content: str, category: str, keywords: List[str], parts: List[str], force: bool = False):
         """Añade contenido a las partes relevantes si coincide con keywords"""
         norm_content = self._normalize(content)
-        
+
         is_relevant = force
         if not is_relevant and keywords:
             for kw in keywords:
                 if self._normalize(kw) in norm_content:
                     is_relevant = True
                     break
-        
+
         if is_relevant or not keywords:
             parts.append(f"## {category.upper()}\n{content[:2000]}") # Aumentado a 2000 para capturar más contexto
 
@@ -251,7 +251,7 @@ class AIWorkflowManager:
 
     def _select_template(self, model: str, task_type: str) -> Dict:
         """Selecciona template según modelo y tipo de tarea"""
-        
+
         # 1. Intentar cargar template personalizado desde archivo
         templates_dir = self.context_dir / "templates"
         specific_template = templates_dir / f"{model}_{task_type}.yaml"
@@ -268,7 +268,7 @@ class AIWorkflowManager:
             return self._claude_template()
         elif "gemini" in model.lower() or "google" in model.lower():
             return self._gemini_template()
-        
+
         # 3. Fallback genérico
         return self._default_template(model)
 
@@ -374,11 +374,11 @@ Instrucciones para Gemini:
         truncated = text[:max_chars]
         last_period = truncated.rfind('.')
         last_newline = truncated.rfind('\n')
-        
+
         cutoff = max(last_period, last_newline)
         if cutoff > max_chars * 0.8:
             return truncated[:cutoff+1] + "\n\n[...Contexto truncado...]"
-        
+
         return truncated + "\n\n[...Contexto truncado...]"
 
     def process_ai_response(self,
@@ -678,7 +678,7 @@ import_order: "standard"
         # Limpiar puntuación básica
         for char in ".,;:()[]{}?!\"'":
             text = text.replace(char, " ")
-            
+
         words = text.lower().split()
         stopwords = {"el", "la", "los", "las", "de", "en", "y", "o", "a", "para", "con", "que", "es", "un", "una", "del", "al"}
         return [w for w in words if w not in stopwords and len(w) > 3]
@@ -795,7 +795,7 @@ if __name__ == "__main__":
     example_parser = subparsers.add_parser("example", help="Ejecutar workflow de ejemplo")
 
     args = parser.parse_args()
-    
+
     current_dir = os.getcwd()
     manager = AIWorkflowManager(current_dir)
 
@@ -823,7 +823,7 @@ if __name__ == "__main__":
                  if p.is_dir():
                      manager.current_task = p.name.split("_", 2)[2] # session_timestamp_tasktype
                      break
-        
+
         if not manager.current_task:
             manager.current_task = "general"
 
