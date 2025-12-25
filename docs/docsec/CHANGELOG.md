@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.0] - 2025-12-25
 ### Added
+- **Enhanced Multi-Point Measurement Tool**:
+  - Support for polyline tracing with unlimited measurement points.
+  - Dedicated "**Finalize**" button for explicit measurement completion.
+  - Comprehensive metrics: Total 3D distance, Horizontal distance, Elevation change, and Average slope.
+  - Persistent visual feedback with green vertex markers and measurement lines after finalization.
+  - Auto-reset on new measurement for improved workflow.
 - **Structural Improvement Plan - Phase 1 (Architectural Decoupling)**:
   - Extracted `DialogToolManager` to encapsulate map tool handling and mouse wheel events.
   - Centralized preview generation logic in `PreviewManager`.

@@ -14,6 +14,7 @@
 
 **Major Structural Improvement Plan** — This release focuses on architectural excellence and code quality:
 
+- **📏 Enhanced Multi-Point Measurement Tool**: Polyline tracing with unlimited points, comprehensive metrics (3D distance, horizontal, elevation, slope), and persistent visual feedback
 - **🏗️ Architectural Decoupling**: Separated UI from business logic with dedicated manager classes
 - **📦 Modular Geometry Utilities**: Split into `extraction`, `processing`, and `filtering` sub-packages
 - **⚡ Performance Optimizations**: Smart caching, spatial indexing, and 84ms rendering for 6km sections

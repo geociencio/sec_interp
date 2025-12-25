@@ -21,6 +21,12 @@ repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
     2.3.0 (2025-12-25)
+    * Enhanced Multi-Point Measurement Tool:
+      - Support for polyline tracing with unlimited measurement points
+      - Dedicated "Finalize" button for explicit measurement completion
+      - Comprehensive metrics: Total 3D distance, Horizontal distance, Elevation change, Average slope
+      - Persistent visual feedback with green vertex markers and measurement lines
+      - Auto-reset on new measurement for improved workflow
     * Structural Improvement Plan - Major Architectural Refactoring:
       - Phase 1 - Architectural Decoupling:
         * Extracted DialogToolManager for map tool encapsulation
