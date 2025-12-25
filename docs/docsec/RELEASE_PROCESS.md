@@ -10,6 +10,8 @@ Este documento describe los pasos detallados para preparar y liberar una nueva v
 
 2.  **Actualizar Versión**:
     *   **metadata.txt**: Incrementar `version=X.Y.Z` y actualizar la sección `changelog=`.
+        *   > [!IMPORTANT]
+        *   > El repositorio de QGIS usa `configparser`. Debes **escapar todos los signos de porcentaje (`%`) como `%%`** en las secciones `changelog` y `about` para evitar errores de interpretación.
     *   **docs/CHANGELOG.md**: Agregar la nueva versión al principio siguiendo el estándar [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
     *   **README.md**: Actualizar badges de versión y enlaces de descarga si aplica.
 
