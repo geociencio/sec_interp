@@ -25,7 +25,7 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
         line_geom: The QGIS line geometry.
 
     Returns:
-        float: Azimuth in degrees (0-360).
+        Azimuth in degrees (0-360).
     """
     if line_geom.wkbType() == QgsWkbTypes.Point:
         return 0  # Points have no azimuth
@@ -62,7 +62,7 @@ def calculate_step_size(geom: QgsGeometry, raster_lyr) -> float:
         raster_lyr: The raster layer being sampled.
 
     Returns:
-        float: Calculated step size in map units.
+        Calculated step size in map units.
     """
     # Get raster resolution
     res = raster_lyr.rasterUnitsPerPixelX()
@@ -98,7 +98,7 @@ def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
         geometry: The line geometry.
 
     Returns:
-        QgsPointXY: The first vertex of the first part.
+        The first vertex of the first part of the geometry.
     """
     if geometry.isMultipart():
         return geometry.asMultiPolyline()[0][0]
@@ -116,7 +116,7 @@ def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
         crs: The Coordinate Reference System to use.
 
     Returns:
-        QgsDistanceArea: The configured distance calculation object.
+        The configured distance calculation object.
     """
     da = QgsDistanceArea()
     da.setSourceCrs(crs, QgsProject.instance().transformContext())

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtCore import QRectF, Qt, QCoreApplication
 from qgis.PyQt.QtGui import QColor, QFont, QPainter, QPen
 
 from sec_interp.logger_config import get_logger
@@ -60,14 +60,14 @@ class PreviewLegendRenderer:
         current_y = y + config["padding"]
         if has_topography:
             PreviewLegendRenderer._draw_line_item(
-                painter, x, current_y, "Topography", QColor(0, 102, 204),
+                painter, x, current_y, QCoreApplication.translate("PreviewLegendRenderer", "Topography"), QColor(0, 102, 204),
                 max_text_width, config
             )
             current_y += config["item_height"]
 
         if has_structures:
             PreviewLegendRenderer._draw_line_item(
-                painter, x, current_y, "Structures", QColor(204, 0, 0),
+                painter, x, current_y, QCoreApplication.translate("PreviewLegendRenderer", "Structures"), QColor(204, 0, 0),
                 max_text_width, config
             )
             current_y += config["item_height"]
@@ -86,9 +86,9 @@ class PreviewLegendRenderer:
 
         items = []
         if has_topo:
-            items.append("Topography")
+            items.append(QCoreApplication.translate("PreviewLegendRenderer", "Topography"))
         if has_struct:
-            items.append("Structures")
+            items.append(QCoreApplication.translate("PreviewLegendRenderer", "Structures"))
         items.extend(active_units.keys())
 
         for item in items:

@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   sec_interp.core.interfaces
    sec_interp.core.services
    sec_interp.core.utils
    sec_interp.core.validation
@@ -21,6 +22,7 @@ Submodules
    sec_interp.core.config
    sec_interp.core.controller
    sec_interp.core.data_cache
+   sec_interp.core.exceptions
    sec_interp.core.performance_metrics
    sec_interp.core.types
 

@@ -32,11 +32,11 @@ def calculate_drillhole_trajectory(
                      trajectory will be extrapolated using last orientation.
 
     Returns:
-        List of tuples (depth, x, y, z, dist_along_section, offset_from_section):
+        A list of tuples (depth, x, y, z, dist_along_section, offset_from_section):
             - depth: Depth along the hole.
             - x, y, z: 3D coordinates.
-            - dist_along_section: Distance along the section line (initialized to 0.0).
-            - offset_from_section: Perpendicular distance from section line (initialized to 0.0).
+            - dist_along_section: Distance along the section line (initially 0.0).
+            - offset_from_section: Perpendicular distance from section line (initially 0.0).
     """
     if not survey_data:
         if total_depth > 0:
@@ -199,9 +199,9 @@ def interpolate_intervals_on_trajectory(
         buffer_width: Maximum perpendicular offset to include a point.
 
     Returns:
-        List of (attribute, list of (dist_along, elevation)) tuples:
+        List of tuples containing:
             - attribute: The metadata/geology associated with the interval.
-            - points: List of (distance, Z) coordinates for rendering.
+            - points: List of (distance, elevation) coordinates for rendering.
     """
     geol_segments = []
 

@@ -12,7 +12,7 @@ def extract_all_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
         geometry: The input QGIS geometry.
 
     Returns:
-        list[QgsPointXY]: A flat list of all vertices found in the geometry.
+        A flat list of all vertices found in the geometry.
     """
     if not geometry or geometry.isNull():
         return []
@@ -27,7 +27,7 @@ def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
         geometry: A QGIS geometry of type `LineGeometry`.
 
     Returns:
-        list[QgsPointXY]: A flat list of vertices.
+        A flat list of vertices.
 
     Raises:
         ValueError: If the geometry is null, not a line, or contains no vertices.

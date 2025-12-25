@@ -107,6 +107,15 @@
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.utils.rendering.html#sec_interp.core.utils.rendering.calculate_interval"><code class="docutils literal notranslate"><span class="pre">calculate_interval()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html">sec_interp.core.utils.resource_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html#sec_interp.core.utils.resource_manager.temporary_memory_layer"><code class="docutils literal notranslate"><span class="pre">temporary_memory_layer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html#sec_interp.core.utils.resource_manager.temporary_file"><code class="docutils literal notranslate"><span class="pre">temporary_file()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html#sec_interp.core.utils.resource_manager.ResourceManager"><code class="docutils literal notranslate"><span class="pre">ResourceManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html#sec_interp.core.utils.resource_manager.ResourceManager.cleanup_layer"><code class="docutils literal notranslate"><span class="pre">ResourceManager.cleanup_layer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="sec_interp.core.utils.sampling.html">sec_interp.core.utils.sampling module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.utils.sampling.html#sec_interp.core.utils.sampling.sample_elevation_along_line"><code class="docutils literal notranslate"><span class="pre">sample_elevation_along_line()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.utils.sampling.html#sec_interp.core.utils.sampling.prepare_profile_context"><code class="docutils literal notranslate"><span class="pre">prepare_profile_context()</span></code></a></li>
@@ -149,15 +158,8 @@ alpha = strike - section_azimuth</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>Apparent dip in degrees. Positive values indicate dip,</dt><dd><p>negative values might occur depending on quadrant but are
-typically normalized.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-even"><p>Apparent dip in degrees. Positive values indicate dip, negative values
+might occur depending on quadrant but are typically normalized.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -177,9 +179,6 @@ and optional geological segments.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Bounds containing ‘min_d’, ‘max_d’, ‘min_e’, ‘max_e’ with 5% padding.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -206,13 +205,13 @@ trajectory will be extrapolated using last orientation.</p></li>
 <dd class="field-even"><p><ul class="simple">
 <li><p>depth: Depth along the hole.</p></li>
 <li><p>x, y, z: 3D coordinates.</p></li>
-<li><p>dist_along_section: Distance along the section line (initialized to 0.0).</p></li>
-<li><p>offset_from_section: Perpendicular distance from section line (initialized to 0.0).</p></li>
+<li><p>dist_along_section: Distance along the section line (initially 0.0).</p></li>
+<li><p>offset_from_section: Perpendicular distance from section line (initially 0.0).</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of tuples (depth, x, y, z, dist_along_section, offset_from_section)</p>
+<dd class="field-odd"><p>A list of tuples (depth, x, y, z, dist_along_section, offset_from_section)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -227,9 +226,6 @@ trajectory will be extrapolated using last orientation.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A human-readable interval (e.g., 1, 2, 5, 10, etc.) for grid lines.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -246,9 +242,6 @@ Returns 0 for points or single-vertex lines.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Azimuth in degrees (0-360).</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -273,9 +266,6 @@ accounting for the slope of the line relative to the raster grid.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Calculated step size in map units.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -290,9 +280,6 @@ accounting for the slope of the line relative to the raster grid.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The azimuth in degrees (0-360), or None if invalid.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -312,9 +299,6 @@ accounting for the slope of the line relative to the raster grid.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The buffered geometry.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsGeometry</p>
 </dd>
 </dl>
 </dd></dl>
@@ -336,10 +320,7 @@ to pixel coordinates (x, y) based on the provided view dimensions.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A function <cite>transform(dist, elev) -&gt; (x, y)</cite>.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Callable[[float, float], Tuple[float, float]]</p>
+<dd class="field-even"><p>A function <cite>transform(dist, elev) -&gt; (x, y)</cite> converting data to pixels.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -356,9 +337,6 @@ and associated ellipsoid for geodesic calculations.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The configured distance calculation object.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsDistanceArea</p>
 </dd>
 </dl>
 </dd></dl>
@@ -379,9 +357,6 @@ and associated ellipsoid for geodesic calculations.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The created memory layer.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsVectorLayer</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -400,13 +375,10 @@ and associated ellipsoid for geodesic calculations.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An initialized writer object.</p>
+<dd class="field-even"><p>An initialized writer object for creating a Shapefile.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsVectorFileWriter</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>OSError</strong> – If the writer cannot be created or has an initialization error.</p>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>OSError</strong> – If the writer cannot be created or has an initialization error.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -425,9 +397,6 @@ and associated ellipsoid for geodesic calculations.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The densified geometry.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsGeometry</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -444,10 +413,7 @@ and associated ellipsoid for geodesic calculations.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Features that intersect the buffer.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[QgsFeature]</p>
+<dd class="field-even"><p>List of QgsFeature objects that intersect the query buffer.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -462,10 +428,7 @@ and associated ellipsoid for geodesic calculations.</p>
 <dd class="field-odd"><p><strong>geometry</strong> – The line geometry.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The first vertex of the first part.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsPointXY</p>
+<dd class="field-even"><p>The first vertex of the first part of the geometry.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -481,11 +444,8 @@ and associated ellipsoid for geodesic calculations.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A flat list of vertices.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[QgsPointXY]</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If the geometry is null, not a line, or contains no vertices.</p>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the geometry is null, not a line, or contains no vertices.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -502,10 +462,7 @@ and associated ellipsoid for geodesic calculations.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Interpolated elevation value.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-even"><p>The interpolated elevation value.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -527,12 +484,12 @@ that fall within the specified section buffer.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>attribute: The metadata/geology associated with the interval.</p></li>
-<li><p>points: List of (distance, Z) coordinates for rendering.</p></li>
+<li><p>points: List of (distance, elevation) coordinates for rendering.</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of (attribute, list of (dist_along, elevation)) tuples</p>
+<dd class="field-odd"><p>List of tuples containing</p>
 </dd>
 </dl>
 </dd></dl>
@@ -547,14 +504,8 @@ that fall within the specified section buffer.</p>
 <dd class="field-odd"><p><strong>value</strong> – The raw dip value.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>A tuple (dip_angle, dip_direction_azimuth).</dt><dd><p>Values are None if parsing fails.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[Optional[float], Optional[float]]</p>
+<dd class="field-even"><p>A tuple of (dip_angle, dip_direction_azimuth). Values are None if
+parsing fails.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -569,10 +520,7 @@ that fall within the specified section buffer.</p>
 <dd class="field-odd"><p><strong>value</strong> – The raw strike value (string, int, float, or None).</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Strike in azimuth degrees (0-360) or None if invalid.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[float]</p>
+<dd class="field-even"><p>Strike in azimuth degrees (0-360) or None if parsing fails.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -586,18 +534,15 @@ that fall within the specified section buffer.</p>
 <dd class="field-odd"><p><strong>line_lyr</strong> – The cross-section line vector layer.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(line_geom, line_start, distance_area)</dt><dd><ul class="simple">
-<li><p>line_geom (QgsGeometry): The geometry of the section line.</p></li>
-<li><p>line_start (QgsPointXY): The starting point of the line.</p></li>
-<li><p>distance_area (QgsDistanceArea): Fully configured distance object.</p></li>
+<dd class="field-even"><p><ul class="simple">
+<li><p>line_geom: The geometry of the section line.</p></li>
+<li><p>line_start: The starting point of the line.</p></li>
+<li><p>distance_area: Fully configured geodesic distance object.</p></li>
 </ul>
-</dd>
-</dl>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple</p>
+<dd class="field-odd"><p>A tuple containing</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If the input layer is empty or has invalid geometry.</p>
@@ -645,10 +590,7 @@ that fall within the specified section buffer.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The algorithm results.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict[str, Any]</p>
+<dd class="field-even"><p>The algorithm results as a dictionary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -670,10 +612,7 @@ that fall within the specified section buffer.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list where x is distance along section and y is elevation.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[QgsPointXY]</p>
+<dd class="field-even"><p>A list of QgsPointXY objects where x is horizontal distance and y is elevation.</p>
 </dd>
 </dl>
 </dd></dl>

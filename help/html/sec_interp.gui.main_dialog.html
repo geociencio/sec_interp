@@ -87,9 +87,29 @@ plugin instance for interaction with the host application.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.handle_error">
+<span class="sig-name descname"><span class="pre">handle_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Exception</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Error'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.handle_error" title="Link to this definition">¶</a></dt>
+<dd><p>Centralized error handling for the dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>error</strong> – The exception to handle.</p></li>
+<li><p><strong>title</strong> – Title for the error message box.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.wheelEvent">
 <span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.wheelEvent" title="Link to this definition">¶</a></dt>
-<dd><p>Handle mouse wheel for zooming in preview.</p>
+<dd><p>Handle mouse wheel for zooming in preview via navigation_manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.closeEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Handle dialog close event to clean up resources.</p>
 </dd></dl>
 
 <dl class="py method">

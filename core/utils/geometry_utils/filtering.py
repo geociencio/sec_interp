@@ -32,7 +32,7 @@ def filter_features_by_buffer(
         buffer_crs: CRS of the buffer geometry (optional).
 
     Returns:
-        list[QgsFeature]: Features that intersect the buffer.
+        List of QgsFeature objects that intersect the query buffer.
     """
     if not features_layer or not features_layer.isValid():
         raise ValueError("Invalid features layer")

@@ -52,9 +52,17 @@ class DialogValidator:
     def validate_inputs(self) -> tuple[bool, str]:
         """Validate all dialog inputs by delegating to core."""
         params = self._collect_params()
-        return vu.ProjectValidator.validate_all(params)
+        try:
+            vu.ProjectValidator.validate_all(params)
+            return True, ""
+        except vu.ValidationError as e:
+            return False, str(e)
 
     def validate_preview_requirements(self) -> tuple[bool, str]:
         """Validate minimum requirements for preview by delegating to core."""
         params = self._collect_params()
-        return vu.ProjectValidator.validate_preview_requirements(params)
+        try:
+            vu.ProjectValidator.validate_preview_requirements(params)
+            return True, ""
+        except vu.ValidationError as e:
+            return False, str(e)

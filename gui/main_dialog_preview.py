@@ -13,8 +13,9 @@ import traceback
 from typing import TYPE_CHECKING, Any, Optional
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
-from qgis.PyQt.QtCore import QTimer
+from qgis.PyQt.QtCore import QTimer, QCoreApplication
 
+from sec_interp.core.interfaces.preview_interface import IPreviewService
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
 from sec_interp.core.performance_metrics import (
@@ -22,12 +23,9 @@ from sec_interp.core.performance_metrics import (
     PerformanceTimer,
     format_duration,
 )
-from sec_interp.core.services.preview_service import (
-    PreviewParams,
-    PreviewResult,
-    PreviewService,
-)
-from sec_interp.core.types import GeologyData, ProfileData, StructureData
+from sec_interp.core.exceptions import SecInterpError
+from sec_interp.core.services.preview_service import PreviewService
+from sec_interp.core.types import GeologyData, ProfileData, StructureData, PreviewParams, PreviewResult
 from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig
@@ -47,11 +45,16 @@ class PreviewManager:
     generation, rendering, and updates based on user interactions.
     """
 
-    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
+    def __init__(
+        self,
+        dialog: sec_interp.gui.main_dialog.SecInterpDialog,
+        preview_service: Optional[IPreviewService] = None,
+    ):
         """Initialize preview manager with reference to parent dialog.
 
         Args:
             dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+            preview_service: Optional preview service for dependency injection
         """
         self.dialog = dialog
         self.cached_data: dict[str, Any] = {
@@ -70,7 +73,9 @@ class PreviewManager:
         self.async_service.batch_progress.connect(self._on_geology_progress)
         self.async_service.error_occurred.connect(self._on_geology_error)
 
-        self.preview_service = PreviewService(self.dialog.plugin_instance.controller)
+        self.preview_service = preview_service or PreviewService(
+            self.dialog.plugin_instance.controller
+        )
 
         # Initialize zoom debounce timer
         self.debounce_timer = QTimer()
@@ -83,6 +88,11 @@ class PreviewManager:
         self.dialog.preview_widget.canvas.extentsChanged.connect(
             self._on_extents_changed
         )
+
+    def cleanup(self):
+        """Clean up resources and stop background tasks."""
+        self.async_service.cancel_processing()
+        self.debounce_timer.stop()
 
     def generate_preview(self) -> tuple[bool, str]:
         """Generate complete preview with all available data layers.
@@ -97,17 +107,14 @@ class PreviewManager:
 
         try:
             with PerformanceTimer("Total Preview Generation", self.metrics):
-                # 1. Validation
-                raster_layer, line_layer, band_num = self._validate_requirements()
+                # 1. Validation & Parameter Collection
+                params = self.dialog.plugin_instance._get_and_validate_inputs()
+                if not params:
+                    return False, QCoreApplication.translate("PreviewManager", "Invalid configuration")
 
-                self.dialog.preview_widget.results_text.setPlainText(
-                    "Generating preview..."
-                )
-
-                # 2. Collect Parameters
-                params = self._collect_preview_params(
-                    raster_layer, line_layer, band_num
-                )
+                raster_layer = params.raster_layer
+                line_layer = params.line_layer
+                band_num = params.band_num
 
                 # 3. Cache Check
                 current_hash = self._calculate_params_hash(params)
@@ -131,9 +138,12 @@ class PreviewManager:
                     self.metrics.timings.update(result.metrics.timings)
                     self.metrics.counts.update(result.metrics.counts)
 
+                    # Cancel any existing async work before starting new one
+                    self.async_service.cancel_processing()
+
                     # Start Async Geology if needed
                     if self.dialog.page_geology.is_complete():
-                        self._start_async_geology(line_layer, raster_layer, band_num)
+                        self._start_async_geology(params)
                         self.cached_data["geol"] = None  # Reset until async finished
 
                     self.last_result = result
@@ -188,20 +198,14 @@ class PreviewManager:
                 if DialogConfig.LOG_DETAILED_METRICS:
                     logger.info(f"Preview Performance: {self.metrics.get_summary()}")
 
-        except ValueError as e:
-            error_msg = f"⚠ {e!s}"
-            self.dialog.preview_widget.results_text.setPlainText(error_msg)
+        except SecInterpError as e:
+            self.dialog.handle_error(e, "Preview Error")
             return False, str(e)
         except Exception as e:
-            error_details = traceback.format_exc()
-            error_msg = (
-                f"⚠ Error generating preview: {e!s}\n\nDetails:\n{error_details}"
-            )
-            self.dialog.preview_widget.results_text.setPlainText(error_msg)
-            logger.error(f"Preview generation failed: {e}", exc_info=True)
+            self.dialog.handle_error(e, "Unexpected Preview Error")
             return False, str(e)
         else:
-            return True, "Preview generated successfully"
+            return True, QCoreApplication.translate("PreviewManager", "Preview generated successfully")
 
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.
@@ -254,43 +258,6 @@ class PreviewManager:
         except Exception as e:
             logger.error(f"Error updating preview from checkboxes: {e}", exc_info=True)
 
-    def _collect_preview_params(
-        self, raster_layer, line_layer, band_num
-    ) -> PreviewParams:
-        """Collect all parameters for preview generation."""
-        values = self.dialog.get_selected_values()
-        return PreviewParams(
-            raster_layer=raster_layer,
-            line_layer=line_layer,
-            band_num=band_num,
-            buffer_dist=self.dialog.page_section.buffer_spin.value(),
-            outcrop_layer=self.dialog.page_geology.layer_combo.currentLayer(),
-            outcrop_name_field=self.dialog.page_geology.field_combo.currentField(),
-            struct_layer=self.dialog.page_struct.layer_combo.currentLayer(),
-            dip_field=self.dialog.page_struct.dip_combo.currentField(),
-            strike_field=self.dialog.page_struct.strike_combo.currentField(),
-            collar_layer=values.get("collar_layer_obj"),
-            collar_id_field=values.get("collar_id_field"),
-            collar_use_geometry=values.get("collar_use_geometry", True),
-            collar_x_field=values.get("collar_x_field"),
-            collar_y_field=values.get("collar_y_field"),
-            collar_z_field=values.get("collar_z_field"),
-            collar_depth_field=values.get("collar_depth_field"),
-            survey_layer=values.get("survey_layer_obj"),
-            survey_id_field=values.get("survey_id_field"),
-            survey_depth_field=values.get("survey_depth_field"),
-            survey_azim_field=values.get("survey_azim_field"),
-            survey_incl_field=values.get("survey_incl_field"),
-            interval_layer=values.get("interval_layer_obj"),
-            interval_id_field=values.get("interval_id_field"),
-            interval_from_field=values.get("interval_from_field"),
-            interval_to_field=values.get("interval_to_field"),
-            interval_lith_field=values.get("interval_lith_field"),
-            dip_scale_factor=self.dialog.page_struct.scale_spin.value(),
-            auto_lod=self.dialog.get_preview_options()["auto_lod"],
-            max_points=self.dialog.get_preview_options()["max_points"],
-            canvas_width=self.dialog.preview_widget.canvas.width(),
-        )
 
     def _calculate_params_hash(self, params: PreviewParams) -> str:
         """Calculate a unique hash for preview parameters to check for changes."""
@@ -330,28 +297,6 @@ class PreviewManager:
 
         return hasher.hexdigest()
 
-    def _validate_requirements(self) -> tuple[QgsRasterLayer, QgsVectorLayer, int]:
-        """Validate minimum requirements for preview generation.
-
-        Returns:
-            Tuple of (raster_layer, line_layer, band_num)
-
-        Raises:
-            ValueError: If validation fails
-        """
-        raster_layer = self.dialog.page_dem.raster_combo.currentLayer()
-        if not raster_layer:
-            raise ValueError("No raster layer selected")
-
-        line_layer = self.dialog.page_section.line_combo.currentLayer()
-        if not line_layer:
-            raise ValueError("No crossline layer selected")
-
-        band_num = self.dialog.page_dem.band_combo.currentBand()
-        if not band_num:
-            raise ValueError("No band selected")
-
-        return raster_layer, line_layer, band_num
 
     def _get_buffer_distance(self) -> float:
         """Get buffer distance from dialog, with fallback to default.
@@ -364,9 +309,11 @@ class PreviewManager:
     def _format_results_message(self, result: PreviewResult) -> str:
         """Format results message for display using core result objects."""
         lines = [
-            "✓ Preview generated!",
+            QCoreApplication.translate("PreviewManager", "✓ Preview generated!"),
             "",
-            f"Topography: {len(result.topo) if result.topo else 0} points",
+            QCoreApplication.translate("PreviewManager", "Topography: {} points").format(
+                len(result.topo) if result.topo else 0
+            ),
         ]
 
         # Add components
@@ -386,50 +333,75 @@ class PreviewManager:
             timings = self.metrics.timings
             if timings:
                 lines.append("")
-                lines.append("Performance:")
+                lines.append(QCoreApplication.translate("PreviewManager", "Performance:"))
                 if "Topography Generation" in timings:
                     lines.append(
-                        f"  Topo: {format_duration(timings['Topography Generation'])}"
+                        QCoreApplication.translate("PreviewManager", "  Topo: {}").format(
+                            format_duration(timings["Topography Generation"])
+                        )
                     )
                 if "Geology Generation" in timings and result.geol:
                     lines.append(
-                        f"  Geol: {format_duration(timings['Geology Generation'])}"
+                        QCoreApplication.translate("PreviewManager", "  Geol: {}").format(
+                            format_duration(timings["Geology Generation"])
+                        )
                     )
                 if "Structure Generation" in timings and result.struct:
                     lines.append(
-                        f"  Struct: {format_duration(timings['Structure Generation'])}"
+                        QCoreApplication.translate("PreviewManager", "  Struct: {}").format(
+                            format_duration(timings["Structure Generation"])
+                        )
                     )
                 if "Rendering" in timings:
-                    lines.append(f"  Render: {format_duration(timings['Rendering'])}")
+                    lines.append(
+                        QCoreApplication.translate("PreviewManager", "  Render: {}").format(
+                            format_duration(timings["Rendering"])
+                        )
+                    )
                 if "Total Preview Generation" in timings:
                     lines.append(
-                        f"  Total: {format_duration(timings['Total Preview Generation'])}"
+                        QCoreApplication.translate("PreviewManager", "  Total: {}").format(
+                            format_duration(timings["Total Preview Generation"])
+                        )
                     )
 
-        lines.extend(["", "Adjust 'Vert. Exag.' and click Preview to update."])
+        lines.extend(
+            [
+                "",
+                QCoreApplication.translate(
+                    "PreviewManager", "Adjust 'Vert. Exag.' and click Preview to update."
+                ),
+            ]
+        )
 
         return "\n".join(lines)
 
     def _format_geology_summary(self, geol_data: Optional[GeologyData]) -> str:
         """Format a summary line for geology data."""
         if not geol_data:
-            return "Geology: No data"
-        return f"Geology: {len(geol_data)} segments"
+            return QCoreApplication.translate("PreviewManager", "Geology: No data")
+        return QCoreApplication.translate("PreviewManager", "Geology: {} segments").format(
+            len(geol_data)
+        )
 
     def _format_structure_summary(
         self, struct_data: Optional[StructureData], buffer_dist: float
     ) -> str:
         """Format a summary line for structural data."""
         if not struct_data:
-            return "Structures: No data"
-        return f"Structures: {len(struct_data)} measurements (buffer: {buffer_dist}m)"
+            return QCoreApplication.translate("PreviewManager", "Structures: No data")
+        return QCoreApplication.translate(
+            "PreviewManager", "Structures: {} measurements (buffer: {}m)"
+        ).format(len(struct_data), buffer_dist)
 
     def _format_drillhole_summary(self) -> str:
         """Format a summary line for drillhole data."""
         drillhole_data = self.cached_data.get("drillhole")
         if not drillhole_data:
-            return "Drillholes: No data"
-        return f"Drillholes: {len(drillhole_data)} holes found"
+            return QCoreApplication.translate("PreviewManager", "Drillholes: No data")
+        return QCoreApplication.translate(
+            "PreviewManager", "Drillholes: {} holes found"
+        ).format(len(drillhole_data))
 
     def _format_result_metrics(self, result: PreviewResult) -> list[str]:
         """Format elevation metrics for the results message."""
@@ -438,9 +410,13 @@ class PreviewManager:
 
         return [
             "",
-            "Geometry Range:",
-            f"  Elevation: {min_elev:.1f} to {max_elev:.1f} m",
-            f"  Distance: {min_dist:.1f} to {max_dist:.1f} m",
+            QCoreApplication.translate("PreviewManager", "Geometry Range:"),
+            QCoreApplication.translate("PreviewManager", "  Elevation: {} to {} m").format(
+                min_elev, max_elev
+            ),
+            QCoreApplication.translate("PreviewManager", "  Distance: {} to {} m").format(
+                min_dist, max_dist
+            ),
         ]
 
     def _on_extents_changed(self):
@@ -508,28 +484,28 @@ class PreviewManager:
         except Exception as e:
             logger.error(f"Error in zoom LOD update: {e}", exc_info=True)
 
-    def _start_async_geology(self, line_layer, raster_layer, band_num):
+    def _start_async_geology(self, params: PreviewParams):
         """Start asynchronous geology generation."""
-        outcrop_layer = self.dialog.page_geology.layer_combo.currentLayer()
-        outcrop_name_field = self.dialog.page_geology.field_combo.currentField()
+        outcrop_layer = params.outcrop_layer
+        outcrop_name_field = params.outcrop_name_field
 
         if not outcrop_layer or not outcrop_name_field:
             return
 
         # Prepare arguments package
-        # We pass the bound method and its arguments. The ParallelGeologyService
-        # will execute it automatically.
         args = (
             self.dialog.plugin_instance.controller.geology_service.generate_geological_profile,
-            line_layer,
-            raster_layer,
+            params.line_layer,
+            params.raster_layer,
             outcrop_layer,
             outcrop_name_field,
-            band_num,
+            params.band_num,
         )
 
         self.dialog.preview_widget.results_text.setPlainText(
-            "Generating Geology in background..."
+            QCoreApplication.translate(
+                "PreviewManager", "Generating Geology in background..."
+            )
         )
         # No need for a custom worker function anymore
         self.async_service.process_profiles_parallel([args])
@@ -586,15 +562,21 @@ class PreviewManager:
     def _on_geology_progress(self, progress):
         """Handle progress updates from parallel service."""
         self.dialog.preview_widget.results_text.setPlainText(
-            f"Generating Geology: {progress}%..."
+            QCoreApplication.translate("PreviewManager", "Generating Geology: {}%...").format(
+                progress
+            )
         )
 
-    def _on_geology_error(self, error_msg):
+    def _on_geology_error(self, error_msg: str):
         """Handle error during parallel geology generation."""
         logger.error(f"Async geology error: {error_msg}")
-        self.dialog.preview_widget.results_text.append(
-            f"\n⚠ Geology Error: {error_msg}"
+        # Map string error to ProcessingError for centralized handling
+        error = ProcessingError(
+            QCoreApplication.translate(
+                "PreviewManager", "Geology processing failed: {}"
+            ).format(error_msg)
         )
+        self.dialog.handle_error(error, "Geology Error")
 
     def _handle_invalid_plugin_instance(self):
         """Handle case where plugin instance is not available for rendering."""
@@ -609,8 +591,14 @@ class PreviewManager:
         try:
             if layer:
                 auth_id = layer.crs().authid()
-                self.dialog.preview_widget.lbl_crs.setText(f"CRS: {auth_id}")
+                self.dialog.preview_widget.lbl_crs.setText(
+                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(auth_id)
+                )
             else:
-                self.dialog.preview_widget.lbl_crs.setText("CRS: None")
+                self.dialog.preview_widget.lbl_crs.setText(
+                    QCoreApplication.translate("PreviewManager", "CRS: None")
+                )
         except Exception:
-            self.dialog.preview_widget.lbl_crs.setText("CRS: Unknown")
+            self.dialog.preview_widget.lbl_crs.setText(
+                QCoreApplication.translate("PreviewManager", "CRS: Unknown")
+            )

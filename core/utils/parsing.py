@@ -13,7 +13,7 @@ def parse_strike(value: Any) -> Optional[float]:
         value: The raw strike value (string, int, float, or None).
 
     Returns:
-        Optional[float]: Strike in azimuth degrees (0-360) or None if invalid.
+        Strike in azimuth degrees (0-360) or None if parsing fails.
     """
     if value is None:
         return None
@@ -66,8 +66,8 @@ def parse_dip(value: Any) -> tuple[Optional[float], Optional[float]]:
         value: The raw dip value.
 
     Returns:
-        Tuple[Optional[float], Optional[float]]: A tuple (dip_angle, dip_direction_azimuth).
-            Values are None if parsing fails.
+        A tuple of (dip_angle, dip_direction_azimuth). Values are None if
+        parsing fails.
     """
     if value is None:
         return None, None
@@ -108,7 +108,7 @@ def cardinal_to_azimuth(text: str) -> Optional[float]:
         text: The cardinal direction string.
 
     Returns:
-        Optional[float]: The azimuth in degrees (0-360), or None if invalid.
+        The azimuth in degrees (0-360), or None if invalid.
     """
     table = {
         "N": 0,

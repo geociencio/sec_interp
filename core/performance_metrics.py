@@ -17,9 +17,16 @@ logger = get_logger(__name__)
 
 
 class MetricsCollector:
-    """Collects and aggregates performance metrics."""
+    """Collects and aggregates performance metrics.
+
+    Attributes:
+        timings: Dictionary mapping operation names to durations.
+        counts: Dictionary mapping metric names to integer counts.
+        metadata: Dictionary of additional context and metadata.
+    """
 
     def __init__(self):
+        """Initialize empty metrics collection."""
         self.timings: dict[str, float] = {}
         self.counts: dict[str, int] = {}
         self.metadata: dict[str, Any] = {}
@@ -56,7 +63,7 @@ class MetricsCollector:
         """Get summary of collected metrics.
 
         Returns:
-            Dictionary with all collected metrics
+            A dictionary with all collected metrics including total duration.
         """
         return {
             "timings": self.timings,
@@ -74,7 +81,7 @@ class MetricsCollector:
 
 
 class PerformanceTimer:
-    """Context manager for timing operations."""
+    """Context manager for timing specific operations."""
 
     def __init__(
         self,
@@ -125,10 +132,10 @@ def format_duration(seconds: float) -> str:
     """Format duration in human readable format.
 
     Args:
-        seconds: Duration in seconds
+        seconds: Duration in seconds.
 
     Returns:
-        Formatted string (e.g. "1.2s", "150ms")
+        Formatted string (e.g. "1.2s", "150ms", "100µs").
     """
     if seconds < 0.001:
         return f"{seconds * 1000000:.0f}µs"
@@ -147,9 +154,17 @@ import tracemalloc
 
 
 class PerformanceMonitor:
-    """Performance monitoring using only Python standard library."""
+    """Performance monitoring using only Python standard library.
+
+    Tracks duration and memory usage of specific operations.
+    """
 
     def __init__(self, log_file="performance.log"):
+        """Initialize monitor and setup logging.
+
+        Args:
+            log_file: Path to the performance log file.
+        """
         self.logger = self._setup_logger(log_file)
         self.metrics = {}
 
@@ -172,7 +187,12 @@ class PerformanceMonitor:
 
     @contextmanager
     def measure_operation(self, operation_name, **metadata):
-        """Context manager to measure operation performance."""
+        """Context manager to measure operation performance (time and memory).
+
+        Args:
+            operation_name: Human-readable name of the operation.
+            **metadata: Additional context for logging.
+        """
         # Start measuring
         start_time = time.perf_counter()
         start_memory = self._get_memory_usage()
@@ -226,7 +246,14 @@ class PerformanceMonitor:
             return 0.0
 
     def get_operation_stats(self, operation_name):
-        """Get statistics for an operation."""
+        """Calculate statistics for multiple runs of an operation.
+
+        Args:
+            operation_name: Name of the operation to analyze.
+
+        Returns:
+            Dictionary with mean/min/max duration and memory usage.
+        """
         if operation_name not in self.metrics:
             return None
 
@@ -247,7 +274,10 @@ class PerformanceMonitor:
 
 
 def performance_monitor(func):
-    """Decorator to automatically monitor function performance."""
+    """Decorator to automatically monitor function performance.
+
+    Wraps the function call with a PerformanceMonitor measurement.
+    """
     monitor = PerformanceMonitor()
 
     @wraps(func)

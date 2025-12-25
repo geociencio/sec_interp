@@ -45,10 +45,7 @@
 <dd class="field-odd"><p><strong>value</strong> – The raw strike value (string, int, float, or None).</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Strike in azimuth degrees (0-360) or None if invalid.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[float]</p>
+<dd class="field-even"><p>Strike in azimuth degrees (0-360) or None if parsing fails.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -63,14 +60,8 @@
 <dd class="field-odd"><p><strong>value</strong> – The raw dip value.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>A tuple (dip_angle, dip_direction_azimuth).</dt><dd><p>Values are None if parsing fails.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[Optional[float], Optional[float]]</p>
+<dd class="field-even"><p>A tuple of (dip_angle, dip_direction_azimuth). Values are None if
+parsing fails.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -86,9 +77,6 @@
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The azimuth in degrees (0-360), or None if invalid.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[float]</p>
 </dd>
 </dl>
 </dd></dl>

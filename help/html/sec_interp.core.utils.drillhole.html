@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.core.utils.geology module" href="sec_interp.core.utils.geology.html" />
-    <link rel="prev" title="sec_interp.core.utils package" href="sec_interp.core.utils.html" />
+    <link rel="prev" title="sec_interp.core.utils.geometry_utils.processing module" href="sec_interp.core.utils.geometry_utils.processing.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -59,13 +59,13 @@ trajectory will be extrapolated using last orientation.</p></li>
 <dd class="field-even"><p><ul class="simple">
 <li><p>depth: Depth along the hole.</p></li>
 <li><p>x, y, z: 3D coordinates.</p></li>
-<li><p>dist_along_section: Distance along the section line (initialized to 0.0).</p></li>
-<li><p>offset_from_section: Perpendicular distance from section line (initialized to 0.0).</p></li>
+<li><p>dist_along_section: Distance along the section line (initially 0.0).</p></li>
+<li><p>offset_from_section: Perpendicular distance from section line (initially 0.0).</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of tuples (depth, x, y, z, dist_along_section, offset_from_section)</p>
+<dd class="field-odd"><p>A list of tuples (depth, x, y, z, dist_along_section, offset_from_section)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -115,12 +115,12 @@ that fall within the specified section buffer.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>attribute: The metadata/geology associated with the interval.</p></li>
-<li><p>points: List of (distance, Z) coordinates for rendering.</p></li>
+<li><p>points: List of (distance, elevation) coordinates for rendering.</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of (attribute, list of (dist_along, elevation)) tuples</p>
+<dd class="field-odd"><p>List of tuples containing</p>
 </dd>
 </dl>
 </dd></dl>
@@ -174,7 +174,7 @@ that fall within the specified section buffer.</p>
   <li><a href="sec_interp.html">sec_interp package</a><ul>
   <li><a href="sec_interp.core.html">sec_interp.core package</a><ul>
   <li><a href="sec_interp.core.utils.html">sec_interp.core.utils package</a><ul>
-      <li>Previous: <a href="sec_interp.core.utils.html" title="previous chapter">sec_interp.core.utils package</a></li>
+      <li>Previous: <a href="sec_interp.core.utils.geometry_utils.processing.html" title="previous chapter">sec_interp.core.utils.geometry_utils.processing module</a></li>
       <li>Next: <a href="sec_interp.core.utils.geology.html" title="next chapter">sec_interp.core.utils.geology module</a></li>
   </ul></li>
   </ul></li>

@@ -39,39 +39,81 @@
 <dt class="sig sig-object py" id="sec_interp.core.controller.ProfileController">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.controller.</span></span><span class="sig-name descname"><span class="pre">ProfileController</span></span><a class="headerlink" href="#sec_interp.core.controller.ProfileController" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Orchestrates data generation services for SecInterp.</p>
-<p>Initialize services and cache.</p>
+<p>Orchestrates data generation services for SecInterp profile creation.</p>
+<p>Initialize services and the data cache.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.controller.ProfileController.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.controller.ProfileController.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Initialize services and cache.</p>
+<dd><p>Initialize services and the data cache.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.core.controller.ProfileController.connect_layer_notifications">
+<span class="sig-name descname"><span class="pre">connect_layer_notifications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.core.controller.ProfileController.connect_layer_notifications" title="Link to this definition">¶</a></dt>
+<dd><p>Connect to layer signals for automatic cache invalidation on data changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>layers</strong> – List of QgsMapLayer objects to monitor.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.controller.ProfileController.get_cached_data">
 <span class="sig-name descname"><span class="pre">get_cached_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.core.controller.ProfileController.get_cached_data" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieve data from cache if available.</p>
+<dd><p>Retrieve data from cache if available for the given inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> – Dictionary of input parameters to generate cache key.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cached data dictionary if found, else None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.controller.ProfileController.cache_data">
 <span class="sig-name descname"><span class="pre">cache_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.core.controller.ProfileController.cache_data" title="Link to this definition">¶</a></dt>
-<dd><p>Cache the generated data.</p>
+<dd><p>Cache the generated data resulting from the given inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – Dictionary of input parameters to generate cache key.</p></li>
+<li><p><strong>data</strong> – Data dictionary to cache.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.controller.ProfileController.generate_profile_data">
-<span class="sig-name descname"><span class="pre">generate_profile_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.controller.ProfileController.generate_profile_data" title="Link to this definition">¶</a></dt>
-<dd><p>Unified method to generate all profile data components.</p>
+<span class="sig-name descname"><span class="pre">generate_profile_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams" title="sec_interp.core.types.PreviewParams"><span class="pre">PreviewParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.controller.ProfileController.generate_profile_data" title="Link to this definition">¶</a></dt>
+<dd><p>Unified method to generate all profile data components with granular caching.</p>
+<p>Orchestrates topography sampling, geology intersection, structural projection,
+and drillhole desurveying.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>values</strong> (<em>dict</em>) – Validated input values.</p>
+<dd class="field-odd"><p><strong>params</strong> – Validated input parameters for preview generation.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>(profile_data, geol_data, struct_data, drillhole_data, messages)</p>
+<dd class="field-even"><p><dl class="simple">
+<dt>A five-element tuple containing:</dt><dd><ul class="simple">
+<li><p>profile_data: List of topographic points (x, z).</p></li>
+<li><p>geol_data: List of GeologySegment objects.</p></li>
+<li><p>struct_data: List of StructureMeasurement objects.</p></li>
+<li><p>drillhole_data: Drillhole projection result object.</p></li>
+<li><p>messages: List of status or warning messages for the user.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ProcessingError" title="sec_interp.core.exceptions.ProcessingError"><strong>ProcessingError</strong></a> – If critical data (like topography) cannot be generated.</p>
 </dd>
 </dl>
 </dd></dl>

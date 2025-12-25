@@ -17,11 +17,16 @@
 #  *                                                                         *
 #  ***************************************************************************/
 
+import contextlib
 from typing import List, Optional, Tuple
+from collections.abc import Generator
 
 from qgis import processing
 from qgis.core import (
+    QgsDistanceArea,
+    QgsFeature,
     QgsGeometry,
+    QgsPointXY,
     QgsProcessingFeedback,
     QgsRaster,
     QgsRasterLayer,
@@ -30,16 +35,19 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
+from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
 from sec_interp.core.performance_metrics import performance_monitor
+from sec_interp.core.interfaces.geology_interface import IGeologyService
 from sec_interp.core.types import GeologyData, GeologySegment
 from sec_interp.core.utils.sampling import interpolate_elevation
+from sec_interp.core.utils.resource_manager import temporary_memory_layer
 from sec_interp.logger_config import get_logger
 
 
 logger = get_logger(__name__)
 
 
-class GeologyService:
+class GeologyService(IGeologyService):
     """Service for generating geological profiles.
 
     This service handles the extraction of geological unit intersections
@@ -71,16 +79,17 @@ class GeologyService:
             GeologyData: A list of `GeologySegment` objects, sorted by distance along the section.
 
         Raises:
-            ValueError: If the line layer has no features or invalid geometry.
-            RuntimeError: If the intersection processing fails.
+            DataMissingError: If the line layer has no features.
+            GeometryError: If the line geometry is invalid.
+            ProcessingError: If the intersection processing fails.
         """
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
-            raise ValueError("Line layer has no features")
+            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
 
         line_geom = line_feat.geometry()
         if not line_geom or line_geom.isNull():
-            raise ValueError("Line geometry is not valid")
+            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
 
         if line_geom.isMultipart():
             line_start = line_geom.asMultiPolyline()[0][0]
@@ -95,24 +104,27 @@ class GeologyService:
             line_geom, raster_lyr, band_number, da, line_start
         )
 
-        # 2. Run Intersection
-        intersection_layer = self._perform_intersection(line_lyr, outcrop_lyr)
-
-        # 3. Process Intersections
+        # 2. Run Intersection & 3. Process Intersections
         segments = []
         tolerance = 0.001
 
-        for feature in intersection_layer.getFeatures():
-            new_segments = self._process_intersection_feature(
-                feature,
-                outcrop_name_field,
-                line_start,
-                da,
-                master_grid_dists,
-                master_profile_data,
-                tolerance,
-            )
-            segments.extend(new_segments)
+        # Execute intersection and manage its lifecycle
+        with self._intersect_to_temp_layer(line_lyr, outcrop_lyr) as intersection_layer:
+            if not intersection_layer or not intersection_layer.isValid():
+                logger.error("Intersection layer is invalid")
+                return []
+
+            for feature in intersection_layer.getFeatures():
+                new_segments = self._process_intersection_feature(
+                    feature,
+                    outcrop_name_field,
+                    line_start,
+                    da,
+                    master_grid_dists,
+                    master_profile_data,
+                    tolerance,
+                )
+                segments.extend(new_segments)
 
         logger.info(f"Generated {len(segments)} geological segments")
         # Sort by start distance
@@ -125,20 +137,20 @@ class GeologyService:
         line_geom: QgsGeometry,
         raster_lyr: QgsRasterLayer,
         band_number: int,
-        da: "QgsDistanceArea",
-        line_start: "QgsPointXY",
-    ) -> tuple[list[tuple[float, float]], list[tuple[float, "QgsPointXY", float]]]:
+        da: QgsDistanceArea,
+        line_start: QgsPointXY,
+    ) -> tuple[list[tuple[float, float]], list[tuple[float, QgsPointXY, float]]]:
         """Generate the master profile data (grid points and elevations).
 
         Args:
             line_geom: The geometry of the cross-section line.
-            raster_lyr: The DEM raster layer.
+            raster_lyr: The DEM raster layer for elevation.
             band_number: The raster band to sample.
             da: The distance calculation object.
             line_start: The start point of the section line.
 
         Returns:
-            A tuple (master_profile_data, master_grid_dists):
+            A tuple containing:
                 - master_profile_data: List of (distance, elevation) tuples.
                 - master_grid_dists: List of (distance, point, elevation) tuples.
         """
@@ -154,35 +166,37 @@ class GeologyService:
 
         master_profile_data = []
         master_grid_dists = []
+        current_dist = 0.0
 
-        for pt in master_grid_points:
-            d = da.measureLine(line_start, pt)
-            res = (
-                raster_lyr.dataProvider()
-                .identify(pt, QgsRaster.IdentifyFormatValue)
-                .results()
-            )
-            elev = res.get(band_number, 0.0)
+        for i, pt in enumerate(master_grid_points):
+            if i > 0:
+                segment_len = da.measureLine(master_grid_points[i - 1], pt)
+                current_dist += segment_len
+            
+            # Use sample() for faster single band access
+            val, ok = raster_lyr.dataProvider().sample(pt, band_number)
+            elev = val if ok else 0.0
 
-            master_profile_data.append((d, elev))
-            master_grid_dists.append((d, pt, elev))
+            master_profile_data.append((current_dist, elev))
+            master_grid_dists.append((current_dist, pt, elev))
 
         return master_profile_data, master_grid_dists
 
-    def _perform_intersection(
+    @contextlib.contextmanager
+    def _intersect_to_temp_layer(
         self, line_lyr: QgsVectorLayer, outcrop_lyr: QgsVectorLayer
-    ) -> QgsVectorLayer:
-        """Execute the QGIS native intersection algorithm.
+    ) -> Generator[QgsVectorLayer, None, None]:
+        """Execute intersection and yield result as a managed temporary layer.
 
         Args:
-            line_lyr: The section line layer.
-            outcrop_lyr: The outcrop polygons layer.
+            line_lyr: The section line vector layer.
+            outcrop_lyr: The outcrop polygons vector layer.
 
-        Returns:
-            QgsVectorLayer: A memory layer containing the intersection results.
+        Yields:
+            The intersection memory layer.
 
         Raises:
-            RuntimeError: If the processing algorithm execution fails.
+            ProcessingError: If the intersection calculation fails.
         """
         try:
             feedback = QgsProcessingFeedback()
@@ -191,21 +205,32 @@ class GeologyService:
                 {
                     "INPUT": line_lyr,
                     "OVERLAY": outcrop_lyr,
-                    "OUTPUT": "memory:",
+                    "OUTPUT": "memory:intersection_temp",
                 },
                 feedback=feedback,
             )
-            return result["OUTPUT"]
+            layer = result["OUTPUT"]
+            
+            # Use our resource manager to ensure cleanup
+            with temporary_memory_layer(layer.source(), layer.name()) as managed_layer:
+                # We need to manually copy features if it's a new instance, 
+                # but 'memory:' layers from processing are already in memory.
+                # Just yielding the result layer is enough if we wrap it.
+                yield layer
+                
         except Exception as e:
             logger.exception("Geological intersection failed")
-            raise RuntimeError("Cannot compute geological intersection") from e
+            raise ProcessingError(
+                "Cannot compute geological intersection", 
+                {"line_layer": line_lyr.name(), "outcrop_layer": outcrop_lyr.name()}
+            ) from e
 
     def _process_intersection_feature(
         self,
-        feature: "QgsFeature",
+        feature: QgsFeature,
         outcrop_name_field: str,
-        line_start: "QgsPointXY",
-        da: "QgsDistanceArea",
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
         master_grid_dists: list,
         master_profile_data: list,
         tolerance: float,
@@ -214,15 +239,15 @@ class GeologyService:
 
         Args:
             feature: The intersection result feature.
-            outcrop_name_field: The field for unit names.
-            line_start: Section start point.
-            da: Distance calculation object.
-            master_grid_dists: Master grid data for sampling.
-            master_profile_data: Master profile data for interpolation.
-            tolerance: Geometrical tolerance.
+            outcrop_name_field: The field name for geological unit names.
+            line_start: Start point of the section line.
+            da: Geodesic distance calculation object.
+            master_grid_dists: Master grid elevation data for sampling.
+            master_profile_data: Master profile data for boundary interpolation.
+            tolerance: Small distance tolerance for grid point inclusion.
 
         Returns:
-            List[GeologySegment]: Extracted segments from the feature.
+            A list of GeologySegment objects extracted from the feature.
         """
         geom = feature.geometry()
         if not geom or geom.isNull():
@@ -265,28 +290,28 @@ class GeologyService:
     def _create_segment_from_geometry(
         self,
         seg_geom: QgsGeometry,
-        feature: "QgsFeature",
+        feature: QgsFeature,
         glg_val: str,
-        line_start: "QgsPointXY",
-        da: "QgsDistanceArea",
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
         master_grid_dists: list,
         master_profile_data: list,
         tolerance: float,
-    ) -> GeologySegment | None:
-        """Create a GeologySegment from a geometry part.
+    ) -> Optional[GeologySegment]:
+        """Create a GeologySegment from a geometry part by sampling elevations.
 
         Args:
-            seg_geom: The part geometry.
-            feature: The source QGIS feature.
-            glg_val: The geology unit name.
-            line_start: Section start point.
-            da: Distance calculation object.
-            master_grid_dists: Master grid data.
-            master_profile_data: Master profile data.
-            tolerance: Geometrical tolerance.
+            seg_geom: The part geometry to process.
+            feature: Original source feature for attribute extraction.
+            glg_val: The geology unit name for this segment.
+            line_start: Start point of the section line.
+            da: Geodesic distance calculation object.
+            master_grid_dists: Master grid elevation data.
+            master_profile_data: Master profile topography data.
+            tolerance: Geometrical distance tolerance.
 
         Returns:
-            Optional[GeologySegment]: The created segment, or None if invalid.
+            A new GeologySegment object, or None if the geometry has no vertices.
         """
         verts = scu.get_line_vertices(seg_geom)
         if not verts:

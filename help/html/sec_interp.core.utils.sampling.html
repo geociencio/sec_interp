@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.core.utils.spatial module" href="sec_interp.core.utils.spatial.html" />
-    <link rel="prev" title="sec_interp.core.utils.rendering module" href="sec_interp.core.utils.rendering.html" />
+    <link rel="prev" title="sec_interp.core.utils.resource_manager module" href="sec_interp.core.utils.resource_manager.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -52,10 +52,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list where x is distance along section and y is elevation.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[QgsPointXY]</p>
+<dd class="field-even"><p>A list of QgsPointXY objects where x is horizontal distance and y is elevation.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -69,18 +66,15 @@
 <dd class="field-odd"><p><strong>line_lyr</strong> – The cross-section line vector layer.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(line_geom, line_start, distance_area)</dt><dd><ul class="simple">
-<li><p>line_geom (QgsGeometry): The geometry of the section line.</p></li>
-<li><p>line_start (QgsPointXY): The starting point of the line.</p></li>
-<li><p>distance_area (QgsDistanceArea): Fully configured distance object.</p></li>
+<dd class="field-even"><p><ul class="simple">
+<li><p>line_geom: The geometry of the section line.</p></li>
+<li><p>line_start: The starting point of the line.</p></li>
+<li><p>distance_area: Fully configured geodesic distance object.</p></li>
 </ul>
-</dd>
-</dl>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple</p>
+<dd class="field-odd"><p>A tuple containing</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If the input layer is empty or has invalid geometry.</p>
@@ -100,10 +94,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Interpolated elevation value.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-even"><p>The interpolated elevation value.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -157,7 +148,7 @@
   <li><a href="sec_interp.html">sec_interp package</a><ul>
   <li><a href="sec_interp.core.html">sec_interp.core package</a><ul>
   <li><a href="sec_interp.core.utils.html">sec_interp.core.utils package</a><ul>
-      <li>Previous: <a href="sec_interp.core.utils.rendering.html" title="previous chapter">sec_interp.core.utils.rendering module</a></li>
+      <li>Previous: <a href="sec_interp.core.utils.resource_manager.html" title="previous chapter">sec_interp.core.utils.resource_manager module</a></li>
       <li>Next: <a href="sec_interp.core.utils.spatial.html" title="next chapter">sec_interp.core.utils.spatial module</a></li>
   </ul></li>
   </ul></li>

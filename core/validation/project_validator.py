@@ -15,6 +15,9 @@ from .layer_validator import (
 from .path_validator import validate_output_path
 
 
+from sec_interp.core.exceptions import ValidationError
+
+
 def validate_reasonable_ranges(values: dict[str, Any]) -> list[str]:
     """Check for unreasonable or potentially erroneous parameter values.
 
@@ -25,7 +28,7 @@ def validate_reasonable_ranges(values: dict[str, Any]) -> list[str]:
         values: Dictionary containing parameter names and their current values.
 
     Returns:
-        list[str]: A list of warning messages. If empty, all values are reasonable.
+        A list of warning messages. If empty, all values are reasonable.
     """
     warnings = []
 
@@ -99,7 +102,7 @@ class ProjectValidator:
     """Orchestrates validation of project parameters independent of the GUI."""
 
     @staticmethod
-    def validate_all(params: ValidationParams) -> tuple[bool, str]:
+    def validate_all(params: ValidationParams) -> bool:
         """Perform a comprehensive validation of all project parameters.
 
         This includes checking for required files, geometry types, field existence,
@@ -109,9 +112,10 @@ class ProjectValidator:
             params: The parameters to validate.
 
         Returns:
-            tuple: (is_valid, error_message)
-                - is_valid (bool): True if all checks passed.
-                - error_message (str): Newline-separated list of all found errors.
+            True if all checks passed.
+
+        Raises:
+            ValidationError: If any validation check fails.
         """
         errors = []
 
@@ -190,20 +194,21 @@ class ProjectValidator:
                 errors.append(error)
 
         if errors:
-            return False, "\n".join(errors)
-        return True, ""
+            raise ValidationError("\n".join(errors))
+        return True
 
     @staticmethod
-    def validate_preview_requirements(params: ValidationParams) -> tuple[bool, str]:
+    def validate_preview_requirements(params: ValidationParams) -> bool:
         """Validate only the minimum requirements needed to generate a preview.
 
         Args:
             params: The parameters containing at least raster and line layers.
 
         Returns:
-            tuple: (is_valid, error_message)
-                - is_valid (bool): True if the core preview can be generated.
-                - error_message (str): Description of missing core components.
+            True if the core preview can be generated.
+
+        Raises:
+            ValidationError: Description of missing core components.
         """
         errors = []
         if not params.raster_layer:
@@ -212,5 +217,5 @@ class ProjectValidator:
             errors.append("Cross-section line layer is required")
 
         if errors:
-            return False, "\n".join(errors)
-        return True, ""
+            raise ValidationError("\n".join(errors))
+        return True

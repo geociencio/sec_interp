@@ -36,7 +36,7 @@ def create_buffer_geometry(
         segments: Number of segments for the buffer approximation.
 
     Returns:
-        QgsGeometry: The buffered geometry.
+        The buffered geometry.
     """
     if not geometry or geometry.isNull():
         raise ValueError("Geometry is null or invalid")
@@ -58,7 +58,7 @@ def create_memory_layer(
         fields: List of fields for the layer.
 
     Returns:
-        QgsVectorLayer: The created memory layer.
+        The created memory layer.
     """
     uri = f"{layer_type}?crs={crs.authid()}"
     layer = QgsVectorLayer(uri, layer_name, "memory")
@@ -80,7 +80,7 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
         interval: Maximum distance between vertices.
 
     Returns:
-        QgsGeometry: The densified geometry.
+        The densified geometry.
     """
     if not geometry or geometry.isNull():
         return QgsGeometry()
@@ -96,7 +96,7 @@ def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
         **kwargs: Keyword arguments for the operation.
 
     Returns:
-        Any: Result of the operation.
+        Result of the operation.
     """
     # This is a placeholder for more complex logic if needed
     # For now it just logs and performs the op if possible
@@ -112,7 +112,7 @@ def run_processing_algorithm(algorithm_id: str, parameters: dict[str, Any]) -> d
         parameters: A dictionary of parameters for the algorithm.
 
     Returns:
-        dict[str, Any]: The algorithm results.
+        The algorithm results as a dictionary.
     """
     try:
         return processing.run(algorithm_id, parameters)

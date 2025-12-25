@@ -21,6 +21,7 @@ from qgis.core import (
     QgsTextFormat,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
+    QgsProject,
 )
 from qgis.PyQt.QtGui import QColor
 
@@ -100,6 +101,12 @@ class PreviewLayerFactory:
         if not layer.isValid():
             logger.error(f"Failed to create memory layer: {name}")
             return None, None
+            
+        # Ensure layer has a valid CRS (Project CRS) to allow rendering
+        # independent of On-The-Fly transformation settings
+        project_crs = QgsProject.instance().crs()
+        if project_crs.isValid():
+             layer.setCrs(project_crs)
 
         return layer, layer.dataProvider()
 

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-
 """Rendering Utilities Module.
 
-Visualization and coordinate transformation utilities for profile rendering.
+This module provides visualization and coordinate transformation utilities for profile rendering.
 """
 
 from collections.abc import Callable
@@ -27,7 +26,7 @@ def calculate_bounds(
         geol_data: Optional list of geological segments.
 
     Returns:
-        Dict[str, float]: Bounds containing 'min_d', 'max_d', 'min_e', 'max_e' with 5% padding.
+        Bounds containing 'min_d', 'max_d', 'min_e', 'max_e' with 5% padding.
     """
     dists = [p[0] for p in topo_data]
     elevs = [p[1] for p in topo_data]
@@ -77,7 +76,7 @@ def create_coordinate_transform(
         vert_exag: Vertical exaggeration multiplier (default 1.0).
 
     Returns:
-        Callable[[float, float], Tuple[float, float]]: A function `transform(dist, elev) -> (x, y)`.
+        A function `transform(dist, elev) -> (x, y)` converting data to pixels.
     """
     data_w = bounds["max_d"] - bounds["min_d"]
     data_h = bounds["max_e"] - bounds["min_e"]
@@ -109,7 +108,7 @@ def calculate_interval(data_range: float) -> float:
         data_range: The total range of data values (e.g., max_d - min_d).
 
     Returns:
-        float: A human-readable interval (e.g., 1, 2, 5, 10, etc.) for grid lines.
+        A human-readable interval (e.g., 1, 2, 5, 10, etc.) for grid lines.
     """
     magnitude = 10 ** math.floor(math.log10(data_range))
     normalized = data_range / magnitude

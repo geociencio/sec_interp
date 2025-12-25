@@ -42,11 +42,12 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox
 
-from sec_interp.core import validation as vu
+from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.controller import ProfileController
 from sec_interp.core.services.export_service import ExportService
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
+from sec_interp.core.types import PreviewParams
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
@@ -78,8 +79,15 @@ class SecInterp:
         # initialize plugin directory
         self.plugin_dir = Path(__file__).resolve().parent
         # initialize locale
-        locale = QSettings().value("locale/userLocale")[0:2]
-        locale_path = self.plugin_dir / f"i18n/SecInterp_{locale}.qm"
+        user_locale = QSettings().value("locale/userLocale", "en")
+        
+        # Try full locale first (e.g., pt_BR)
+        locale_path = self.plugin_dir / f"i18n/SecInterp_{user_locale}.qm"
+        
+        if not locale_path.exists() and user_locale and len(user_locale) > 2:
+            # Fallback to language code (e.g., pt)
+            locale_short = user_locale[0:2]
+            locale_path = self.plugin_dir / f"i18n/SecInterp_{locale_short}.qm"
 
         if locale_path.exists():
             self.translator = QTranslator()
@@ -102,7 +110,7 @@ class SecInterp:
         self.actions = []
         self.menu = self.tr("&Sec Interp")
         # Create custom toolbar and make it visible
-        self.toolbar = self.iface.addToolBar("Sec Interp")
+        self.toolbar = self.iface.addToolBar(self.tr("Sec Interp"))
         self.toolbar.setObjectName("SecInterp")
         self.toolbar.setVisible(True)  # Ensure toolbar is visible
 
@@ -222,23 +230,26 @@ class SecInterp:
             self.dlg = SecInterpDialog(self.iface, self)
             # Update preview renderer with the new dialog's canvas
             self.preview_renderer.canvas = self.dlg.preview_widget.canvas
+
+            # Disconnect default accepted signal once
+            with contextlib.suppress(TypeError):
+                self.dlg.button_box.accepted.disconnect()
+
+            # Connect OK button to process and close
+            self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(
+                self.process_data
+            )
+            self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(
+                self.dlg.accept
+            )
+
+            # Connect Save button to save only
+            self.dlg.button_box.button(QDialogButtonBox.Save).clicked.connect(
+                self.save_profile_line
+            )
+
         # show the dialog
         self.dlg.show()
-
-        # Disconnect default accepted signal to prevent closing on Save
-        with contextlib.suppress(TypeError):
-            self.dlg.button_box.accepted.disconnect()
-
-        # Connect OK button to process and close
-        self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(
-            self.process_data
-        )
-        self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.dlg.accept)
-
-        # Connect Save button to save only
-        self.dlg.button_box.button(QDialogButtonBox.Save).clicked.connect(
-            self.save_profile_line
-        )
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
@@ -258,51 +269,83 @@ class SecInterp:
             return layers[0] if layers else None
         return None
 
-    def _get_and_validate_inputs(self) -> Optional[dict]:
+    def _get_and_validate_inputs(self) -> Optional[PreviewParams]:
         """Retrieve and validate inputs from the dialog.
 
         Returns:
-            dict: Validated inputs including layer objects, or None if validation fails.
+            PreviewParams: Validated parameters, or None if validation fails.
         """
-        # Get values from the dialog
+        # Get values from the dialog pages
         values = self.dlg.get_selected_values()
+        # Get preview/LOD options from the preview widget
+        preview_options = self.dlg.get_preview_options()
 
         # 1. Resolve Layer Objects
         raster_layer = self._resolve_layer_obj(
-            values.get("raster_layer"), "Select a raster layer"
+            values.get("raster_layer"), self.tr("Select a raster layer")
         )
         line_layer = self._resolve_layer_obj(
-            values.get("crossline_layer"), "Select a crossline layer"
+            values.get("crossline_layer"), self.tr("Select a crossline layer")
         )
         outcrop_layer = self._resolve_layer_obj(values.get("outcrop_layer"))
         structural_layer = self._resolve_layer_obj(values.get("structural_layer"))
 
-        # 2. Call Validation Logic
-        is_valid, error_msg = vu.validate_layer_configuration(
-            raster_layer=raster_layer,
-            line_layer=line_layer,
-            outcrop_layer=outcrop_layer,
-            structural_layer=structural_layer,
-            outcrop_field=values.get("outcrop_name_field"),
-            struct_dip_field=values.get("dip_field"),
-            struct_strike_field=values.get("strike_field"),
-        )
-
-        if not is_valid:
-            show_user_message(self.dlg, self.tr("Error"), self.tr(error_msg))
+        # 2. Build PreviewParams
+        try:
+            params = PreviewParams(
+                raster_layer=raster_layer,
+                line_layer=line_layer,
+                band_num=values.get("selected_band", 1),
+                buffer_dist=values.get("buffer_distance", 100.0),
+                outcrop_layer=outcrop_layer,
+                outcrop_name_field=values.get("outcrop_name_field"),
+                struct_layer=structural_layer,
+                dip_field=values.get("dip_field"),
+                strike_field=values.get("strike_field"),
+                dip_scale_factor=values.get("dip_scale_factor", 1.0),
+                collar_layer=self._resolve_layer_obj(values.get("collar_layer_obj")),
+                collar_id_field=values.get("collar_id_field"),
+                collar_use_geometry=values.get("collar_use_geometry", True),
+                collar_x_field=values.get("collar_x_field"),
+                collar_y_field=values.get("collar_y_field"),
+                collar_z_field=values.get("collar_z_field"),
+                collar_depth_field=values.get("collar_depth_field"),
+                survey_layer=self._resolve_layer_obj(values.get("survey_layer_obj")),
+                survey_id_field=values.get("survey_id_field"),
+                survey_depth_field=values.get("survey_depth_field"),
+                survey_azim_field=values.get("survey_azim_field"),
+                survey_incl_field=values.get("survey_incl_field"),
+                interval_layer=self._resolve_layer_obj(values.get("interval_layer_obj")),
+                interval_id_field=values.get("interval_id_field"),
+                interval_from_field=values.get("interval_from_field"),
+                interval_to_field=values.get("interval_to_field"),
+                interval_lith_field=values.get("interval_lith_field"),
+                max_points=preview_options.get("max_points", 1000),
+                auto_lod=preview_options.get("auto_lod", True),
+                canvas_width=self.dlg.preview_widget.canvas.width(),
+            )
+            # Internal Native Validation
+            params.validate()
+        except SecInterpError as e:
+            self.dlg.handle_error(e, self.tr("Configuration Error"))
+            return None
+        except Exception as e:
+            self.dlg.handle_error(e, self.tr("Unexpected Error"))
             return None
 
-        # 3. Prepare Validated Values Dict
-        validated_values = values.copy()
-        validated_values["raster_layer_obj"] = raster_layer
-        validated_values["line_layer_obj"] = line_layer
-        validated_values["outcrop_layer_obj"] = outcrop_layer
-        validated_values["structural_layer_obj"] = structural_layer
+        # 3. Connect Layer Notifications for Cache Invalidation
+        active_layers = [
+            l for l in [
+                params.raster_layer, params.line_layer, 
+                params.outcrop_layer, params.struct_layer,
+                params.collar_layer, params.survey_layer, params.interval_layer
+            ] if l
+        ]
+        self.controller.connect_layer_notifications(active_layers)
 
-        # CRS Check (Moved from validation.py side-effect to explicit check here)
-        # Assuming minimal impact, we trust validate_layer_configuration for errors.
-
-        return validated_values
+        # Store output path temporarily or return as tuple if needed
+        # but for now we only return params. Callers need the path separately.
+        return params
 
     def process_data(self, inputs: Optional[dict] = None) -> Optional[tuple]:
         """Process profile data by delegating to the dialog's preview manager.

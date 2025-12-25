@@ -26,6 +26,7 @@ class GeologyProcessingThread(QThread):
     progress_updated = pyqtSignal(int)
     processing_finished = pyqtSignal(object)
     error_occurred = pyqtSignal(str)
+    canceled = pyqtSignal()
 
     def __init__(self, data: list[Any], processing_func: Callable[[Any], Any]):
         """Initialize processing thread.
@@ -38,6 +39,18 @@ class GeologyProcessingThread(QThread):
         self.data = data
         self.processing_func = processing_func
         self.result = None
+        self._is_canceled = False
+        self._lock = threading.Lock()
+
+    def cancel(self):
+        """Request thread cancellation."""
+        with self._lock:
+            self._is_canceled = True
+
+    def is_canceled(self) -> bool:
+        """Check if cancellation was requested."""
+        with self._lock:
+            return self._is_canceled
 
     def run(self):
         """Execute processing in separate thread."""
@@ -45,6 +58,11 @@ class GeologyProcessingThread(QThread):
             results_list = []
             total = len(self.data)
             for i, item in enumerate(self.data, 1):
+                if self.is_canceled():
+                    logger.info("Thread processing canceled.")
+                    self.canceled.emit()
+                    return
+
                 # Process each item
                 res = self.processing_func(item)
                 if res is not None:
@@ -67,13 +85,15 @@ class ParallelGeologyService(QObject):
     all_finished = pyqtSignal(list)
     batch_progress = pyqtSignal(int)
     error_occurred = pyqtSignal(str)
+    processing_canceled = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-        self.active_threads = []
+        self.active_threads: list[GeologyProcessingThread] = []
         self._results = []
         self._total_items = 0
         self._processed_items = 0
+        self._thread_progress = {}  # thread_id: progress
         self.max_threads = self._get_optimal_thread_count()
 
     def _get_optimal_thread_count(self):
@@ -100,6 +120,7 @@ class ParallelGeologyService(QObject):
         self.active_threads = []
         self._total_items = len(profiles)
         self._processed_items = 0
+        self._thread_progress = {}
 
         # Use provided function or default
         worker_func = (
@@ -117,8 +138,11 @@ class ParallelGeologyService(QObject):
 
             # Connect signals
             thread.processing_finished.connect(self._on_chunk_finished)
-            thread.progress_updated.connect(self._on_chunk_progress)
+            thread.progress_updated.connect(
+                lambda p, t=thread: self._on_chunk_progress(t, p)
+            )
             thread.error_occurred.connect(self._on_chunk_error)
+            thread.canceled.connect(self._on_chunk_canceled)
 
             # Ensure thread cleanup
             thread.finished.connect(lambda t=thread: self._cleanup_thread(t))
@@ -143,16 +167,43 @@ class ParallelGeologyService(QObject):
         if not self.active_threads:
             self.all_finished.emit(self._results)
 
-    def _on_chunk_progress(self, progress):
-        """Aggregate progress from threads (simplified)."""
-        # A proper implementation would need to weigh progress by chunk size
-        # giving a rough estimate for now
-        pass
+    def cancel_processing(self):
+        """Cancel all active processing threads."""
+        logger.info(f"Canceling {len(self.active_threads)} active threads...")
+        for thread in self.active_threads:
+            thread.cancel()
+
+    def _on_chunk_canceled(self):
+        """Handle individual thread cancellation."""
+        # If all threads are done (or canceled), emit overall canceled
+        if not self.active_threads:
+            self.processing_canceled.emit()
+
+    def _on_chunk_progress(self, thread, progress):
+        """Aggregate progress from threads with proper weighting."""
+        thread_id = id(thread)
+        self._thread_progress[thread_id] = progress
+
+        if self._total_items == 0:
+            return
+
+        # Calculate weighted progress
+        total_units_processed = 0
+        for t in self.active_threads:
+            tid = id(t)
+            prog = self._thread_progress.get(tid, 0)
+            chunk_weight = len(t.data)
+            total_units_processed += (prog / 100.0) * chunk_weight
+
+        overall_progress = int((total_units_processed / self._total_items) * 100)
+        self.batch_progress.emit(min(overall_progress, 100))
 
     def _on_chunk_error(self, error_msg):
         """Handle error from a thread."""
         logger.error(f"Parallel processing error: {error_msg}")
         self.error_occurred.emit(error_msg)
+        # Optionally cancel other threads on fatal error
+        self.cancel_processing()
 
     def _process_profile_chunk(self, profile_chunk):
         """Process a chunk of profiles (single item from chunk list).

@@ -46,9 +46,9 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message, layer)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if at least one matching layer was found.</p></li>
-<li><p>error_message (str): Error details if no layer was found.</p></li>
-<li><p>layer (QgsMapLayer | None): The first matching layer instance if valid.</p></li>
+<li><p>is_valid: True if at least one matching layer was found.</p></li>
+<li><p>error_message: Error details if no layer was found.</p></li>
+<li><p>layer: The first matching layer instance if valid, else None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -71,8 +71,8 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the layer has features.</p></li>
-<li><p>error_message (str): Error details if the layer is empty.</p></li>
+<li><p>is_valid: True if the layer has features.</p></li>
+<li><p>error_message: Error details if the layer is empty.</p></li>
 </ul>
 </dd>
 </dl>
@@ -98,8 +98,8 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the geometry type matches.</p></li>
-<li><p>error_message (str): Detailed error if types mismatch.</p></li>
+<li><p>is_valid: True if the geometry type matches.</p></li>
+<li><p>error_message: Detailed error if types mismatch.</p></li>
 </ul>
 </dd>
 </dl>
@@ -125,8 +125,8 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the band exists.</p></li>
-<li><p>error_message (str): Error message if the band is out of range.</p></li>
+<li><p>is_valid: True if the band exists.</p></li>
+<li><p>error_message: Error message if the band is out of range.</p></li>
 </ul>
 </dd>
 </dl>
@@ -154,8 +154,8 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if both geometry and fields are valid.</p></li>
-<li><p>error_message (str): Detailed error if validation fails.</p></li>
+<li><p>is_valid: True if both geometry and fields are valid.</p></li>
+<li><p>error_message: Detailed error if validation fails.</p></li>
 </ul>
 </dd>
 </dl>
@@ -169,7 +169,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sec_interp.core.validation.layer_validator.validate_layer_configuration">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.layer_validator.</span></span><span class="sig-name descname"><span class="pre">validate_layer_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsMapLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcrop_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">structural_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcrop_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_dip_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_strike_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.layer_validator.validate_layer_configuration" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sec_interp.core.validation.layer_validator.</span></span><span class="sig-name descname"><span class="pre">validate_layer_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsMapLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcrop_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">structural_layer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcrop_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_dip_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_strike_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.core.validation.layer_validator.validate_layer_configuration" title="Link to this definition">¶</a></dt>
 <dd><p>Validate a complete set of layer inputs for the plugin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -184,17 +184,13 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the entire configuration is valid.</p></li>
-<li><p>error_message (str): First encountered configuration error.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
+<dd class="field-even"><p>True if the entire configuration is valid.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ValidationError" title="sec_interp.core.exceptions.ValidationError"><strong>ValidationError</strong></a> – If any configuration check fails.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -212,8 +208,8 @@ as QGIS can reproject on-the-fly, but accuracy might be impaired.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_compatible, message)</dt><dd><ul class="simple">
-<li><p>is_compatible (bool): True if all layers share the same CRS.</p></li>
-<li><p>message (str): Warning listing incompatible layers if any.</p></li>
+<li><p>is_compatible: True if all layers share the same CRS.</p></li>
+<li><p>message: Warning listing incompatible layers if any.</p></li>
 </ul>
 </dd>
 </dl>

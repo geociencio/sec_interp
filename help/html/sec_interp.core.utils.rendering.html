@@ -14,7 +14,7 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="sec_interp.core.utils.sampling module" href="sec_interp.core.utils.sampling.html" />
+    <link rel="next" title="sec_interp.core.utils.resource_manager module" href="sec_interp.core.utils.resource_manager.html" />
     <link rel="prev" title="sec_interp.core.utils.parsing module" href="sec_interp.core.utils.parsing.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -51,9 +51,6 @@ and optional geological segments.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Bounds containing ‘min_d’, ‘max_d’, ‘min_e’, ‘max_e’ with 5% padding.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, float]</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -74,10 +71,7 @@ to pixel coordinates (x, y) based on the provided view dimensions.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A function <cite>transform(dist, elev) -&gt; (x, y)</cite>.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Callable[[float, float], Tuple[float, float]]</p>
+<dd class="field-even"><p>A function <cite>transform(dist, elev) -&gt; (x, y)</cite> converting data to pixels.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -92,9 +86,6 @@ to pixel coordinates (x, y) based on the provided view dimensions.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A human-readable interval (e.g., 1, 2, 5, 10, etc.) for grid lines.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -149,7 +140,7 @@ to pixel coordinates (x, y) based on the provided view dimensions.</p>
   <li><a href="sec_interp.core.html">sec_interp.core package</a><ul>
   <li><a href="sec_interp.core.utils.html">sec_interp.core.utils package</a><ul>
       <li>Previous: <a href="sec_interp.core.utils.parsing.html" title="previous chapter">sec_interp.core.utils.parsing module</a></li>
-      <li>Next: <a href="sec_interp.core.utils.sampling.html" title="next chapter">sec_interp.core.utils.sampling module</a></li>
+      <li>Next: <a href="sec_interp.core.utils.resource_manager.html" title="next chapter">sec_interp.core.utils.resource_manager module</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

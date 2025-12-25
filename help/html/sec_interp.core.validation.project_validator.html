@@ -48,9 +48,6 @@ to inform the user about extreme values (e.g., vertical exaggeration &gt; 10).</
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of warning messages. If empty, all values are reasonable.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[str]</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -133,7 +130,7 @@ to inform the user about extreme values (e.g., vertical exaggeration &gt; 10).</
 <p>Orchestrates validation of project parameters independent of the GUI.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.validation.project_validator.ProjectValidator.validate_all">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#sec_interp.core.validation.project_validator.ValidationParams" title="sec_interp.core.validation.project_validator.ValidationParams"><span class="pre">ValidationParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.project_validator.ProjectValidator.validate_all" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#sec_interp.core.validation.project_validator.ValidationParams" title="sec_interp.core.validation.project_validator.ValidationParams"><span class="pre">ValidationParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.core.validation.project_validator.ProjectValidator.validate_all" title="Link to this definition">¶</a></dt>
 <dd><p>Perform a comprehensive validation of all project parameters.</p>
 <p>This includes checking for required files, geometry types, field existence,
 and numeric range constraints.</p>
@@ -142,41 +139,27 @@ and numeric range constraints.</p>
 <dd class="field-odd"><p><strong>params</strong> – The parameters to validate.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if all checks passed.</p></li>
-<li><p>error_message (str): Newline-separated list of all found errors.</p></li>
-</ul>
+<dd class="field-even"><p>True if all checks passed.</p>
 </dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ValidationError" title="sec_interp.core.exceptions.ValidationError"><strong>ValidationError</strong></a> – If any validation check fails.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.validation.project_validator.ProjectValidator.validate_preview_requirements">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_preview_requirements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#sec_interp.core.validation.project_validator.ValidationParams" title="sec_interp.core.validation.project_validator.ValidationParams"><span class="pre">ValidationParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.validation.project_validator.ProjectValidator.validate_preview_requirements" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_preview_requirements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#sec_interp.core.validation.project_validator.ValidationParams" title="sec_interp.core.validation.project_validator.ValidationParams"><span class="pre">ValidationParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.core.validation.project_validator.ProjectValidator.validate_preview_requirements" title="Link to this definition">¶</a></dt>
 <dd><p>Validate only the minimum requirements needed to generate a preview.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>params</strong> – The parameters containing at least raster and line layers.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the core preview can be generated.</p></li>
-<li><p>error_message (str): Description of missing core components.</p></li>
-</ul>
+<dd class="field-even"><p>True if the core preview can be generated.</p>
 </dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ValidationError" title="sec_interp.core.exceptions.ValidationError"><strong>ValidationError</strong></a> – Description of missing core components.</p>
 </dd>
 </dl>
 </dd></dl>

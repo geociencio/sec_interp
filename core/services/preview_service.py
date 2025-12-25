@@ -1,13 +1,14 @@
 """Preview service for SecInterp.
 
 This module provides a service to orchestrate the generation of all
-preview components, decoupled from the GUI layer.
+preview components, including topography, structures, and drillholes.
+It remains decoupled from the GUI layer.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import math
+import time
 from typing import Any, Optional
 
 from qgis.core import (
@@ -18,105 +19,18 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
+from sec_interp.core.exceptions import ProcessingError, GeometryError, DataMissingError
 from sec_interp.core import utils as scu
 from sec_interp.core.performance_metrics import MetricsCollector, PerformanceTimer
-from sec_interp.core.types import GeologyData, ProfileData, StructureData
+from sec_interp.core.types import GeologyData, ProfileData, StructureData, PreviewParams, PreviewResult
 from sec_interp.logger_config import get_logger
 
 
 logger = get_logger(__name__)
 
 
-@dataclass
-class PreviewParams:
-    """Parameters for preview generation."""
-
-    raster_layer: QgsRasterLayer
-    line_layer: QgsVectorLayer
-    band_num: int
-    buffer_dist: float = 100.0
-
-    # Geology params
-    outcrop_layer: Optional[QgsVectorLayer] = None
-    outcrop_name_field: Optional[str] = None
-
-    # Structure params
-    struct_layer: Optional[QgsVectorLayer] = None
-    dip_field: Optional[str] = None
-    strike_field: Optional[str] = None
-    dip_scale_factor: float = 1.0
-
-    # Drillhole params
-    collar_layer: Optional[QgsVectorLayer] = None
-    collar_id_field: Optional[str] = None
-    collar_use_geometry: bool = True
-    collar_x_field: Optional[str] = None
-    collar_y_field: Optional[str] = None
-    collar_z_field: Optional[str] = None
-    collar_depth_field: Optional[str] = None
-    survey_layer: Optional[QgsVectorLayer] = None
-    survey_id_field: Optional[str] = None
-    survey_depth_field: Optional[str] = None
-    survey_azim_field: Optional[str] = None
-    survey_incl_field: Optional[str] = None
-    interval_layer: Optional[QgsVectorLayer] = None
-    interval_id_field: Optional[str] = None
-    interval_from_field: Optional[str] = None
-    interval_to_field: Optional[str] = None
-    interval_lith_field: Optional[str] = None
-
-    # LOD Params
-    max_points: int = 1000
-    canvas_width: int = 800
-    auto_lod: bool = True
 
 
-@dataclass
-class PreviewResult:
-    """Consolidated results of preview generation."""
-
-    topo: Optional[ProfileData] = None
-    geol: Optional[GeologyData] = None
-    struct: Optional[StructureData] = None
-    drillhole: Optional[Any] = None
-    metrics: MetricsCollector = field(default_factory=MetricsCollector)
-    buffer_dist: float = 0.0
-
-    def get_elevation_range(self) -> tuple[float, float]:
-        """Calculate the global elevation range across all data layers.
-
-        Returns:
-            Tuple[float, float]: (min_elevation, max_elevation)
-        """
-        elevations = []
-        if self.topo:
-            elevations.extend(p[1] for p in self.topo)
-        if self.geol:
-            for segment in self.geol:
-                elevations.extend(p[1] for p in segment.points)
-        if self.struct:
-            elevations.extend(m.elevation for m in self.struct)
-        if self.drillhole:
-            for _, trace, segments in self.drillhole:
-                if trace:
-                    elevations.extend(p[1] for p in trace)
-                if segments:
-                    for seg in segments:
-                        elevations.extend(p[1] for p in seg.points)
-
-        if not elevations:
-            return 0.0, 0.0
-        return min(elevations), max(elevations)
-
-    def get_distance_range(self) -> tuple[float, float]:
-        """Calculate the global distance range from topographic data.
-
-        Returns:
-            Tuple[float, float]: (min_distance, max_distance)
-        """
-        if not self.topo:
-            return 0.0, 0.0
-        return self.topo[0][0], self.topo[-1][0]
 
 
 class PreviewService:
@@ -126,7 +40,7 @@ class PreviewService:
         """Initialize with plugin controller to access other services.
 
         Args:
-            controller: The SecInterpController instance
+            controller: The SecInterpController instance.
         """
         self.controller = controller
 
@@ -140,13 +54,13 @@ class PreviewService:
         """Calculate the optimal number of points for rendering.
 
         Args:
-            canvas_width: Current width of the preview canvas
-            manual_max: User-specified maximum points
-            auto_lod: Whether to use automatic level of detail
-            ratio: Current zoom ratio (full_extent / current_extent)
+            canvas_width: Current width of the preview canvas in pixels.
+            manual_max: User-specified maximum points for plotting.
+            auto_lod: Whether to use automatic level of detail (LOD).
+            ratio: Current zoom ratio (full_extent / current_extent).
 
         Returns:
-            int: Number of points to use for rendering
+            The optimal number of points to use for 2D rendering.
         """
         if auto_lod:
             # Optimal points is roughly 2x the pixel width for high quality rendering
@@ -164,15 +78,18 @@ class PreviewService:
     def generate_all(
         self, params: PreviewParams, transform_context: Any
     ) -> PreviewResult:
-        """Generate all preview components.
+        """Generate all preview components in a consolidated result.
 
         Args:
-            params: Parameters for generation
-            transform_context: QgsCoordinateTransformContext from map settings
+            params: Validated parameters for preview generation.
+            transform_context: QgsCoordinateTransformContext for CRS operations.
 
         Returns:
-            Consolidated preview results
+            A consolidated object containing all generated preview data.
         """
+        # Phase 5: Native validation
+        params.validate()
+
         result = PreviewResult(buffer_dist=params.buffer_dist)
         self.transform_context = transform_context
 
@@ -183,12 +100,14 @@ class PreviewService:
             if params.auto_lod:
                 # Get line length
                 line_feat = next(params.line_layer.getFeatures(), None)
-                if line_feat:
-                    line_len = line_feat.geometry().length()
-                    max_pts = self.calculate_max_points(
-                        params.canvas_width, params.max_points, True
-                    )
-                    interval = line_len / max_pts if max_pts > 0 else None
+                if not line_feat:
+                    raise GeometryError("Section line layer has no features", {"layer": params.line_layer.name()})
+                
+                line_len = line_feat.geometry().length()
+                max_pts = self.calculate_max_points(
+                    params.canvas_width, params.max_points, True
+                )
+                interval = line_len / max_pts if max_pts > 0 else None
 
             result.topo = self.controller.profile_service.generate_topographic_profile(
                 params.line_layer, params.raster_layer, params.band_num, interval=interval
@@ -231,33 +150,40 @@ class PreviewService:
         return result
 
     def _generate_drillholes(self, params: PreviewParams) -> Optional[Any]:
-        """Internal helper for drillhole generation."""
+        """Internal helper for drillhole trace and interval generation.
+
+        Args:
+            params: Preview parameters containing drillhole layer and fields.
+
+        Returns:
+            A list of drillhole data tuples, or None if no collars found or skipped.
+        """
+        line_feat = next(params.line_layer.getFeatures(), None)
+        if not line_feat:
+            raise GeometryError("Section line layer has no features", {"layer": params.line_layer.name()})
+
+        # Validation: Ensure critical drillhole fields are selected
+        if not params.collar_id_field:
+            logger.info("Drillhole preview skipped: No Collar ID field selected.")
+            return None
+
+        line_geom = line_feat.geometry()
+        if line_geom.isMultipart():
+            lines = line_geom.asMultiPolyline()
+            points = lines[0] if lines else []
+        else:
+            points = line_geom.asPolyline()
+
+        if not points:
+            raise GeometryError("Section line has no vertices", {"layer": params.line_layer.name()})
+
+        line_start = points[0]
+
+        # Setup distance area
+        distance_area = QgsDistanceArea()
+        distance_area.setSourceCrs(params.line_layer.crs(), self.transform_context)
+
         try:
-            line_feat = next(params.line_layer.getFeatures(), None)
-            if not line_feat:
-                return None
-
-            # Validation: Ensure critical drillhole fields are selected
-            if not params.collar_id_field:
-                logger.info("Drillhole preview skipped: No Collar ID field selected.")
-                return None
-
-            line_geom = line_feat.geometry()
-            if line_geom.isMultipart():
-                lines = line_geom.asMultiPolyline()
-                points = lines[0] if lines else []
-            else:
-                points = line_geom.asPolyline()
-
-            if not points:
-                return None
-
-            line_start = points[0]
-
-            # Setup distance area
-            distance_area = QgsDistanceArea()
-            distance_area.setSourceCrs(params.line_layer.crs(), self.transform_context)
-
             projected_collars = self.controller.drillhole_service.project_collars(
                 collar_layer=params.collar_layer,
                 line_geom=line_geom,
@@ -273,24 +199,27 @@ class PreviewService:
                 dem_layer=params.raster_layer,
                 line_crs=params.line_layer.crs(),
             )
+        except Exception as e:
+            raise ProcessingError("Failed to project drillhole collars", {"hole_id_field": params.collar_id_field}) from e
 
-            if not projected_collars:
-                return None
+        if not projected_collars:
+            return None
 
-            survey_fields = {
-                "id": params.survey_id_field,
-                "depth": params.survey_depth_field,
-                "azim": params.survey_azim_field,
-                "incl": params.survey_incl_field,
-            }
+        survey_fields = {
+            "id": params.survey_id_field,
+            "depth": params.survey_depth_field,
+            "azim": params.survey_azim_field,
+            "incl": params.survey_incl_field,
+        }
 
-            interval_fields = {
-                "id": params.interval_id_field,
-                "from": params.interval_from_field,
-                "to": params.interval_to_field,
-                "lith": params.interval_lith_field,
-            }
+        interval_fields = {
+            "id": params.interval_id_field,
+            "from": params.interval_from_field,
+            "to": params.interval_to_field,
+            "lith": params.interval_lith_field,
+        }
 
+        try:
             _, drillhole_data = self.controller.drillhole_service.process_intervals(
                 collar_points=projected_collars,
                 collar_layer=params.collar_layer,
@@ -308,10 +237,8 @@ class PreviewService:
                 survey_fields=survey_fields,
                 interval_fields=interval_fields,
             )
-
-            logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
-            return drillhole_data
-
         except Exception as e:
-            logger.exception(f"Error in PreviewService._generate_drillholes: {e}")
-            return None
+            raise ProcessingError("Failed to process drillhole intervals") from e
+
+        logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
+        return drillhole_data

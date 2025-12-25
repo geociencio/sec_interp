@@ -2,7 +2,7 @@
 
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsDoubleSpinBox, QgsFieldComboBox, QgsMapLayerComboBox
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import (QCoreApplication, pyqtSignal)
 from qgis.PyQt.QtWidgets import QGridLayout, QLabel
 
 from sec_interp.gui.main_dialog_config import DialogDefaults
@@ -16,7 +16,7 @@ class StructurePage(BasePage):
     dataChanged = pyqtSignal()
 
     def __init__(self, parent=None):
-        super().__init__("Structural Measurements", parent)
+        super().__init__(QCoreApplication.translate("StructurePage", "Structural Measurements"), parent)
 
     def _setup_ui(self):
         super()._setup_ui()
@@ -25,7 +25,7 @@ class StructurePage(BasePage):
         self.group_layout.setSpacing(6)
 
         # Row 0: Structural Layer
-        self.group_layout.addWidget(QLabel("Structural Layer"), 0, 0)
+        self.group_layout.addWidget(QLabel(self.tr("Structural Layer")), 0, 0)
 
         self.layer_combo = QgsMapLayerComboBox()
 
@@ -39,33 +39,33 @@ class StructurePage(BasePage):
 
         self.layer_combo.setAllowEmptyLayer(True)
         self.layer_combo.setToolTip(
-            "Select the point layer with structural measurements"
+            self.tr("Select the point layer with structural measurements")
         )
         self.layer_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.layer_combo, 0, 1)
 
         # Row 1: Dip Field
-        self.group_layout.addWidget(QLabel("Dip Field"), 1, 0)
+        self.group_layout.addWidget(QLabel(self.tr("Dip Field")), 1, 0)
 
         self.dip_combo = QgsFieldComboBox()
-        self.dip_combo.setToolTip("Select field with dip values (0-90)")
+        self.dip_combo.setToolTip(self.tr("Select field with dip values (0-90)"))
         self.group_layout.addWidget(self.dip_combo, 1, 1)
 
         # Row 2: Strike Field
-        self.group_layout.addWidget(QLabel("Strike Field"), 2, 0)
+        self.group_layout.addWidget(QLabel(self.tr("Strike Field")), 2, 0)
 
         self.strike_combo = QgsFieldComboBox()
-        self.strike_combo.setToolTip("Select field with strike values (0-360)")
+        self.strike_combo.setToolTip(self.tr("Select field with strike values (0-360)"))
         self.group_layout.addWidget(self.strike_combo, 2, 1)
 
         # Row 3: Dip Line Scale
-        self.group_layout.addWidget(QLabel("Dip Line Scale"), 3, 0)
+        self.group_layout.addWidget(QLabel(self.tr("Dip Line Scale")), 3, 0)
 
         self.scale_spin = QgsDoubleSpinBox()
         self.scale_spin.setRange(0.1, 100.0)
         self.scale_spin.setValue(float(DialogDefaults.DIP_SCALE_FACTOR))
         self.scale_spin.setSingleStep(0.5)
-        self.scale_spin.setToolTip("Length factor for drawing dip lines")
+        self.scale_spin.setToolTip(self.tr("Length factor for drawing dip lines"))
         self.group_layout.addWidget(self.scale_spin, 3, 1)
 
         # Connections: update fields when layer changes

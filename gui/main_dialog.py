@@ -57,10 +57,21 @@ from qgis.PyQt.QtWidgets import (
 from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
 from sec_interp.exporters import get_exporter
+from sec_interp.core.exceptions import SecInterpError
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
+
+class _NoOpMessageBar:
+    """Safe no-op messagebar when iface is not available."""
+
+    def pushMessage(self, *_args, **_kwargs):
+        """No-op implementation of pushMessage."""
+        return None
+
 from .legend_widget import LegendWidget
+
+logger = get_logger(__name__)
 from .main_dialog_cache_handler import CacheHandler
 from .main_dialog_config import DialogDefaults
 from .main_dialog_data import DialogDataAggregator
@@ -69,7 +80,7 @@ from .main_dialog_preview import PreviewManager
 from .main_dialog_settings import DialogSettingsManager
 from .main_dialog_signals import DialogSignalManager
 from .main_dialog_status import DialogStatusManager
-from .main_dialog_tools import DialogToolManager
+from .main_dialog_tools import DialogToolManager, NavigationManager
 from .main_dialog_utils import DialogEntityManager
 from .main_dialog_validation import DialogValidator
 from .ui.main_window import SecInterpMainWindow
@@ -99,12 +110,6 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Provide a safe, no-op messagebar when iface is not available (tests)
         if self.iface is None:
-
-            class _NoOpMessageBar:
-                def pushMessage(self, *_args, **_kwargs):
-                    """No-op implementation of pushMessage."""
-                    return None
-
             self.messagebar = _NoOpMessageBar()
         else:
             self.messagebar = self.iface.messageBar()
@@ -123,8 +128,8 @@ class SecInterpDialog(SecInterpMainWindow):
         self.current_layers = []
 
         # Add clear cache button
-        self.clear_cache_btn = QPushButton("Clear Cache")
-        self.clear_cache_btn.setToolTip("Clear cached data to force re-processing.")
+        self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
+        self.clear_cache_btn.setToolTip(self.tr("Clear cached data to force re-processing."))
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
 
         # Initialize map tools via tool_manager
@@ -140,8 +145,12 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def _init_managers(self):
         """Initialize all manager instances."""
+        from sec_interp.core.services.preview_service import PreviewService
+
         self.validator = DialogValidator(self)
-        self.preview_manager = PreviewManager(self)
+        self.preview_manager = PreviewManager(
+            self, PreviewService(self.plugin_instance.controller)
+        )
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
         self.data_aggregator = DialogDataAggregator(self)
@@ -149,12 +158,42 @@ class SecInterpDialog(SecInterpMainWindow):
         self.status_manager = DialogStatusManager(self)
         self.status_manager.setup_indicators()
         self.tool_manager = DialogToolManager(self)
+        self.navigation_manager = NavigationManager(self)
 
+
+    def handle_error(self, error: Exception, title: str = "Error"):
+        """Centralized error handling for the dialog.
+
+        Args:
+            error: The exception to handle.
+            title: Title for the error message box.
+        """
+        if isinstance(error, SecInterpError):
+            msg = str(error)
+            logger.warning(f"{title}: {msg} - Details: {error.details}")
+            show_user_message(self, title, msg, level="warning")
+        else:
+            msg = self.tr("An unexpected error occurred: {}").format(error)
+            details = traceback.format_exc()
+            logger.error(f"{title}: {msg}\n{details}")
+            show_user_message(
+                self,
+                title,
+                self.tr("{}\n\nPlease check the logs for details.").format(msg),
+                level="critical",
+            )
 
     def wheelEvent(self, event):
-        """Handle mouse wheel for zooming in preview."""
-        if not self.tool_manager.handle_wheel_event(event):
-            super().wheelEvent(event)
+        """Handle mouse wheel for zooming in preview via navigation_manager."""
+        if self.navigation_manager.handle_wheel_event(event):
+            return
+        super().wheelEvent(event)
+
+    def closeEvent(self, event):
+        """Handle dialog close event to clean up resources."""
+        logger.info("Closing dialog, cleaning up resources...")
+        self.preview_manager.cleanup()
+        super().closeEvent(event)
 
     def open_help(self):
         """Open the help file in the default browser."""
@@ -164,8 +203,8 @@ class SecInterpDialog(SecInterpMainWindow):
             QDesktopServices.openUrl(QUrl.fromLocalFile(str(help_file)))
         else:
             self.messagebar.pushMessage(
-                "Error",
-                "Help file not found. Please run 'make doc' to generate it.",
+                self.tr("Error"),
+                self.tr("Help file not found. Please run 'make doc' to generate it."),
                 level=Qgis.Warning,
             )
 
@@ -264,13 +303,13 @@ class SecInterpDialog(SecInterpMainWindow):
         if hasattr(self, "plugin_instance") and self.plugin_instance:
             self.plugin_instance.data_cache.clear()
             self.preview_widget.results_text.append(
-                "✓ Cache cleared - next preview will re-process data"
+                self.tr("✓ Cache cleared - next preview will re-process data")
             )
             # context specific usage
             logger = get_logger(__name__)
             logger.info("Cache cleared by user")
         else:
-            self.preview_widget.results_text.append("⚠ Cache not available")
+            self.preview_widget.results_text.append(self.tr("⚠ Cache not available"))
 
     def _populate_field_combobox(self, source_combobox, target_combobox):
         """Helper function to populate a combobox with field names."""

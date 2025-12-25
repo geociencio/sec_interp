@@ -85,6 +85,18 @@ using QThread.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.parallel_geology.GeologyProcessingThread.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.parallel_geology.GeologyProcessingThread.cancel" title="Link to this definition">¶</a></dt>
+<dd><p>Request thread cancellation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.parallel_geology.GeologyProcessingThread.is_canceled">
+<span class="sig-name descname"><span class="pre">is_canceled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.gui.parallel_geology.GeologyProcessingThread.is_canceled" title="Link to this definition">¶</a></dt>
+<dd><p>Check if cancellation was requested.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.parallel_geology.GeologyProcessingThread.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.parallel_geology.GeologyProcessingThread.run" title="Link to this definition">¶</a></dt>
 <dd><p>Execute processing in separate thread.</p>
@@ -128,6 +140,12 @@ If None, uses internal _process_profile_chunk.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.parallel_geology.ParallelGeologyService.cancel_processing">
+<span class="sig-name descname"><span class="pre">cancel_processing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.parallel_geology.ParallelGeologyService.cancel_processing" title="Link to this definition">¶</a></dt>
+<dd><p>Cancel all active processing threads.</p>
 </dd></dl>
 
 </dd></dl>

@@ -29,9 +29,8 @@ def calculate_apparent_dip(
         line_azimuth: Azimuth of the cross-section line (0-360 degrees).
 
     Returns:
-        float: Apparent dip in degrees. Positive values indicate dip,
-               negative values might occur depending on quadrant but are
-               typically normalized.
+        Apparent dip in degrees. Positive values indicate dip, negative values
+        might occur depending on quadrant but are typically normalized.
     """
     alpha = math.radians(true_strike)
     beta = math.radians(true_dip)

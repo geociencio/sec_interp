@@ -32,7 +32,7 @@ def create_shapefile_writer(
         geometry_type: The mapping geometry type (default: LineString).
 
     Returns:
-        QgsVectorFileWriter: An initialized writer object.
+        An initialized writer object for creating a Shapefile.
 
     Raises:
         OSError: If the writer cannot be created or has an initialization error.

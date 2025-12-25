@@ -8,6 +8,7 @@ from qgis.core import (
     QgsUnitTypes,
 )
 from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox, QgsRasterBandComboBox
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit
 
 from sec_interp.gui.main_dialog_config import DialogDefaults
@@ -26,7 +27,8 @@ class DemPage(BasePage):
             parent: Parent widget
         """
         self.iface = iface
-        super().__init__("Digital Elevation Model", parent)
+        super().__init__(QCoreApplication.translate("DemPage", "Digital Elevation Model"), parent)
+        self.iface = iface
 
     def _setup_ui(self):
         super()._setup_ui()
@@ -45,12 +47,12 @@ class DemPage(BasePage):
     def _setup_raster_selection(self):
         """Setup raster layer selection widgets."""
         # Row 0: Raster Layer
-        self.group_layout.addWidget(QLabel("Raster Layer *"), 0, 0)
+        self.group_layout.addWidget(QLabel(self.tr("Raster Layer *")), 0, 0)
 
         self.raster_combo = QgsMapLayerComboBox()
         self.raster_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.RasterLayer))
         self.raster_combo.setAllowEmptyLayer(True)
-        self.raster_combo.setToolTip("Select the raster DEM layer")
+        self.raster_combo.setToolTip(self.tr("Select the raster DEM layer"))
         self.raster_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.raster_combo, 0, 1)
 
@@ -61,19 +63,19 @@ class DemPage(BasePage):
     def _setup_band_and_resolution(self):
         """Setup band and resolution display widgets."""
         # Row 1: Band, Resolution
-        self.group_layout.addWidget(QLabel("Band"), 1, 0)
+        self.group_layout.addWidget(QLabel(self.tr("Band")), 1, 0)
 
         self.band_combo = QgsRasterBandComboBox()
         self.band_combo.setMinimumWidth(150)
-        self.band_combo.setToolTip("Select the raster band")
+        self.band_combo.setToolTip(self.tr("Select the raster band"))
         self.group_layout.addWidget(self.band_combo, 1, 1)
 
-        self.group_layout.addWidget(QLabel("Resolution"), 1, 2)
+        self.group_layout.addWidget(QLabel(self.tr("Resolution")), 1, 2)
 
         res_layout = QHBoxLayout()
         self.res_edit = QLineEdit()
         self.res_edit.setReadOnly(True)
-        self.res_edit.setToolTip("Raster resolution (auto-calculated)")
+        self.res_edit.setToolTip(self.tr("Raster resolution (auto-calculated)"))
 
         self.units_edit = QLineEdit()
         self.units_edit.setReadOnly(True)
@@ -85,11 +87,11 @@ class DemPage(BasePage):
 
     def _setup_profile_settings(self):
         """Setup scale and exaggeration settings."""
-        self.settings_group = QGroupBox("Profile Settings")
+        self.settings_group = QGroupBox(self.tr("Profile Settings"))
         settings_layout = QGridLayout(self.settings_group)
 
         # Scale
-        settings_layout.addWidget(QLabel("Scale 1:"), 0, 0)
+        settings_layout.addWidget(QLabel(self.tr("Scale 1:")), 0, 0)
         self.scale_spin = QgsDoubleSpinBox()
         self.scale_spin.setRange(1, 1000000)
         self.scale_spin.setValue(float(DialogDefaults.SCALE))
@@ -97,7 +99,7 @@ class DemPage(BasePage):
         settings_layout.addWidget(self.scale_spin, 0, 1)
 
         # Vertical Exaggeration
-        settings_layout.addWidget(QLabel("Vert. Exag."), 1, 0)
+        settings_layout.addWidget(QLabel(self.tr("Vert. Exag.")), 1, 0)
         self.vertexag_spin = QgsDoubleSpinBox()
         self.vertexag_spin.setRange(0.1, 100.0)
         self.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
@@ -142,7 +144,7 @@ class DemPage(BasePage):
 
     def validate(self) -> tuple[bool, str]:
         if not self.raster_combo.currentLayer():
-            return False, "Raster layer is required"
+            return False, self.tr("Raster layer is required")
         return True, ""
 
     def is_complete(self) -> bool:

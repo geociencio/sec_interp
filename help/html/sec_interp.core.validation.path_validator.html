@@ -51,9 +51,9 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message, resolved_path)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the path is safe and meets requirements.</p></li>
-<li><p>error_message (str): Reason for validation failure.</p></li>
-<li><p>resolved_path (Path | None): Cleaned, absolute Path object if valid.</p></li>
+<li><p>is_valid: True if the path is safe and meets requirements.</p></li>
+<li><p>error_message: Reason for validation failure.</p></li>
+<li><p>resolved_path: Cleaned, absolute Path object if valid, else None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -78,9 +78,9 @@ for general directory validation.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message, resolved_path)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if the directory is valid and writable.</p></li>
-<li><p>error_message (str): Error details if validation fails.</p></li>
-<li><p>resolved_path (Path | None): Absolute Path object if valid.</p></li>
+<li><p>is_valid: True if the directory is valid and writable.</p></li>
+<li><p>error_message: Error details if validation fails.</p></li>
+<li><p>resolved_path: Absolute Path object if valid, else None.</p></li>
 </ul>
 </dd>
 </dl>

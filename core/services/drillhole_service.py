@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 """Drillhole Data Processing Service.
 
-Service for processing and projecting drillhole data (collars, surveys, intervals).
+This module provides services for processing and projecting drillhole data,
+including collar projection, trajectory calculation, and interval interpolation.
 """
-
-from __future__ import annotations
 
 import contextlib
 from typing import Any, Optional
@@ -20,6 +21,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
+from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
+from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
 from sec_interp.core import utils as scu
 from sec_interp.core.types import GeologySegment
 from sec_interp.logger_config import get_logger
@@ -28,7 +31,7 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 
-class DrillholeService:
+class DrillholeService(IDrillholeService):
     """Service for processing drillhole data."""
 
     def project_collars(
@@ -47,14 +50,38 @@ class DrillholeService:
         dem_layer: Optional[QgsRasterLayer],
         line_crs: Optional[QgsCoordinateReferenceSystem] = None,
     ) -> list[tuple[Any, float, float, float, float]]:
-        """Project collar points onto section line using spatial optimization."""
-        projected_collars = []
+        """Project collar points onto section line using spatial optimization.
 
-        logger.info("DrillholeService.project_collars START")
+        Args:
+            collar_layer: Vector layer containing drillhole collars.
+            line_geom: Geometry of the cross-section line.
+            line_start: Start point of the section line.
+            distance_area: Distance calculation object.
+            buffer_width: Search buffer distance in meters.
+            collar_id_field: Field name for unique drillhole ID.
+            use_geometry: Whether to use feature geometry for X/Y coordinates.
+            collar_x_field: Field name for X coordinate (if not using geometry).
+            collar_y_field: Field name for Y coordinate (if not using geometry).
+            collar_z_field: Field name for collar elevation.
+            collar_depth_field: Field name for total drillhole depth.
+            dem_layer: Optional DEM layer for elevation if Z field is missing/zero.
+            line_crs: CRS of the section line for spatial filtering.
+
+        Returns:
+            A list of tuples (hole_id, dist_along, z, offset, total_depth).
+        """
+        if not collar_layer:
+            raise DataMissingError("Collar layer is not provided")
+
+        projected_collars = []
+        logger.info(f"Projecting collars from {collar_layer.name()} with buffer {buffer_width}m")
 
         # 1. Spatial Filtering
         # Create buffer zone around section line
-        line_buffer = line_geom.buffer(buffer_width, 8)
+        try:
+            line_buffer = line_geom.buffer(buffer_width, 8)
+        except Exception as e:
+            raise GeometryError("Failed to create section line buffer", {"buffer_width": buffer_width}) from e
 
         # Use centralized filtering utility which handles CRS transformation
         candidate_features = scu.filter_features_by_buffer(
@@ -62,7 +89,7 @@ class DrillholeService:
         )
 
         if not candidate_features:
-            logger.info("DrillholeService.project_collars: No collars found in buffer.")
+            logger.info("No collars found within buffer area.")
             return []
 
         for collar_feat in candidate_features:
@@ -110,7 +137,21 @@ class DrillholeService:
         depth_field: str,
         dem_layer: Optional[QgsRasterLayer] = None,
     ) -> Optional[tuple[Any, QgsPointXY, float, float]]:
-        """Extract collar ID, coordinate, Z and depth from a feature."""
+        """Extract collar ID, coordinate, Z and depth from a feature.
+
+        Args:
+            feat: The collar feature to parse.
+            id_field: Field name for hole ID.
+            use_geom: Whether to use geometry for coordinates.
+            x_field: Field name for X coordinate.
+            y_field: Field name for Y coordinate.
+            z_field: Field name for Z coordinate.
+            depth_field: Field name for total depth.
+            dem_layer: Optional DEM layer for fallback elevation.
+
+        Returns:
+            A tuple of (hole_id, point, elevation, total_depth) or None if invalid.
+        """
         if not id_field:
             return None
         hole_id = feat[id_field]
@@ -174,7 +215,28 @@ class DrillholeService:
         list[GeologySegment],
         list[tuple[Any, list[tuple[float, float]], list[GeologySegment]]],
     ]:
-        """Process drillhole interval data and project onto the section."""
+        """Process drillhole interval data and project onto the section.
+
+        Args:
+            collar_points: List of projected collar tuples from `project_collars`.
+            collar_layer: The collar vector layer.
+            survey_layer: The survey vector layer.
+            interval_layer: The interval/geology vector layer.
+            collar_id_field: Field name for hole ID in collar layer.
+            use_geometry: Use geometry for collar coordinates.
+            collar_x_field: Field name for X in collar layer.
+            collar_y_field: Field name for Y in collar layer.
+            line_geom: Section line geometry.
+            line_start: Section line start point.
+            distance_area: Distance calculation object.
+            buffer_width: Section buffer width in meters.
+            section_azimuth: Azimuth of the section line.
+            survey_fields: Mapping of survey field roles to field names.
+            interval_fields: Mapping of interval field roles to field names.
+
+        Returns:
+            A tuple of (geol_data, drillhole_data).
+        """
         geol_data, drillhole_data = [], []
 
         # 1. Build collar coordinate map
@@ -219,7 +281,18 @@ class DrillholeService:
         return geol_data, drillhole_data
 
     def _build_collar_coord_map(self, layer, id_field, use_geom, x_field, y_field):
-        """Build a lookup map for collar coordinates."""
+        """Build a lookup map for collar coordinates.
+
+        Args:
+            layer: The collar vector layer.
+            id_field: Field name for hole ID.
+            use_geom: Whether to use feature geometry.
+            x_field: Field name for X.
+            y_field: Field name for Y.
+
+        Returns:
+            A dictionary mapping hole_id to QgsPointXY.
+        """
         if not layer or not id_field:
             return {}
         coords = {}
@@ -241,7 +314,16 @@ class DrillholeService:
         return coords
 
     def _get_survey_data(self, layer, hole_id, fields):
-        """Fetch survey data for a specific hole."""
+        """Fetch survey data for a specific hole from a survey layer.
+
+        Args:
+            layer: The survey vector layer.
+            hole_id: The ID of the drillhole.
+            fields: Mapping of field roles (id, depth, azim, incl).
+
+        Returns:
+            A list of (depth, azimuth, inclination) tuples sorted by depth.
+        """
         if not layer or not fields.get("id"):
             return []
         data = []
@@ -258,7 +340,16 @@ class DrillholeService:
         return data
 
     def _get_interval_data(self, layer, hole_id, fields):
-        """Fetch interval data for a specific hole."""
+        """Fetch interval data for a specific hole from an interval layer.
+
+        Args:
+            layer: The interval vector layer.
+            hole_id: The ID of the drillhole.
+            fields: Mapping of field roles (id, from, to, lith).
+
+        Returns:
+            A list of (from_depth, to_depth, lithology) tuples.
+        """
         if not layer or not fields.get("id"):
             return []
         data = []
@@ -274,7 +365,16 @@ class DrillholeService:
         return data
 
     def _interpolate_hole_intervals(self, traj, intervals, buffer_width):
-        """Interpolate intervals along a trajectory and return GeologySegments."""
+        """Interpolate intervals along a trajectory and return GeologySegments.
+
+        Args:
+            traj: The projected trajectory tuples.
+            intervals: List of (from, to, lith) tuples.
+            buffer_width: Section buffer width.
+
+        Returns:
+            A list of GeologySegment objects.
+        """
         if not intervals:
             return []
 

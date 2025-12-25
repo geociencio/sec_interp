@@ -96,7 +96,9 @@
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.plugin_instance"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.plugin_instance</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.messagebar"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.messagebar</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.__init__"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.handle_error"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.handle_error()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.wheelEvent"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.wheelEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.closeEvent"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.closeEvent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.open_help"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.open_help()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.toggle_measure_tool"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.toggle_measure_tool()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog.html#sec_interp.gui.main_dialog.SecInterpDialog.update_measurement_display"><code class="docutils literal notranslate"><span class="pre">SecInterpDialog.update_measurement_display()</span></code></a></li>
@@ -225,6 +227,7 @@
 <li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html">sec_interp.gui.main_dialog_preview module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager"><code class="docutils literal notranslate"><span class="pre">PreviewManager</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.__init__"><code class="docutils literal notranslate"><span class="pre">PreviewManager.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.cleanup"><code class="docutils literal notranslate"><span class="pre">PreviewManager.cleanup()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.generate_preview"><code class="docutils literal notranslate"><span class="pre">PreviewManager.generate_preview()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_preview.html#sec_interp.gui.main_dialog_preview.PreviewManager.update_from_checkboxes"><code class="docutils literal notranslate"><span class="pre">PreviewManager.update_from_checkboxes()</span></code></a></li>
 </ul>
@@ -266,8 +269,13 @@
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.__init__"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.__init__()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.initialize_tools"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.initialize_tools()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.toggle_measure_tool"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.toggle_measure_tool()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.handle_wheel_event"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.handle_wheel_event()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.activate_default_tool"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.activate_default_tool()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.update_measurement_display"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.update_measurement_display()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.NavigationManager"><code class="docutils literal notranslate"><span class="pre">NavigationManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.NavigationManager.__init__"><code class="docutils literal notranslate"><span class="pre">NavigationManager.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.NavigationManager.handle_wheel_event"><code class="docutils literal notranslate"><span class="pre">NavigationManager.handle_wheel_event()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -297,6 +305,8 @@
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.processing_finished"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.processing_finished</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.error_occurred"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.error_occurred</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.__init__"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.cancel"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.cancel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.is_canceled"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.is_canceled()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.GeologyProcessingThread.run"><code class="docutils literal notranslate"><span class="pre">GeologyProcessingThread.run()</span></code></a></li>
 </ul>
 </li>
@@ -305,6 +315,7 @@
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.batch_progress"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService.batch_progress</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.error_occurred"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService.error_occurred</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.process_profiles_parallel"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService.process_profiles_parallel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.parallel_geology.html#sec_interp.gui.parallel_geology.ParallelGeologyService.cancel_processing"><code class="docutils literal notranslate"><span class="pre">ParallelGeologyService.cancel_processing()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -487,6 +498,12 @@ plugin instance for interaction with the host application.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.closeEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Handle dialog close event to clean up resources.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.export_preview">
 <span class="sig-name descname"><span class="pre">export_preview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.export_preview" title="Link to this definition">¶</a></dt>
 <dd><p>Export the current preview to a file using ExportManager.</p>
@@ -531,6 +548,20 @@ plugin instance for interaction with the host application.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dictionary with all dialog values in legacy flat format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.handle_error">
+<span class="sig-name descname"><span class="pre">handle_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Exception</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Error'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.handle_error" title="Link to this definition">¶</a></dt>
+<dd><p>Centralized error handling for the dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>error</strong> – The exception to handle.</p></li>
+<li><p><strong>title</strong> – Title for the error message box.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -595,7 +626,7 @@ plugin instance for interaction with the host application.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.wheelEvent">
 <span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.wheelEvent" title="Link to this definition">¶</a></dt>
-<dd><p>Handle mouse wheel for zooming in preview.</p>
+<dd><p>Handle mouse wheel for zooming in preview via navigation_manager.</p>
 </dd></dl>
 
 </dd></dl>

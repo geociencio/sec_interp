@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.core.types module" href="sec_interp.core.types.html" />
-    <link rel="prev" title="sec_interp.core.data_cache module" href="sec_interp.core.data_cache.html" />
+    <link rel="prev" title="sec_interp.core.exceptions module" href="sec_interp.core.exceptions.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -43,6 +43,31 @@ across the plugin’s operations.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.performance_metrics.</span></span><span class="sig-name descname"><span class="pre">MetricsCollector</span></span><a class="headerlink" href="#sec_interp.core.performance_metrics.MetricsCollector" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Collects and aggregates performance metrics.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.core.performance_metrics.MetricsCollector.timings">
+<span class="sig-name descname"><span class="pre">timings</span></span><a class="headerlink" href="#sec_interp.core.performance_metrics.MetricsCollector.timings" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary mapping operation names to durations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.core.performance_metrics.MetricsCollector.counts">
+<span class="sig-name descname"><span class="pre">counts</span></span><a class="headerlink" href="#sec_interp.core.performance_metrics.MetricsCollector.counts" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary mapping metric names to integer counts.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.core.performance_metrics.MetricsCollector.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#sec_interp.core.performance_metrics.MetricsCollector.metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary of additional context and metadata.</p>
+</dd></dl>
+
+<p>Initialize empty metrics collection.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.core.performance_metrics.MetricsCollector.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.performance_metrics.MetricsCollector.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize empty metrics collection.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.performance_metrics.MetricsCollector.record_timing">
 <span class="sig-name descname"><span class="pre">record_timing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.core.performance_metrics.MetricsCollector.record_timing" title="Link to this definition">¶</a></dt>
@@ -91,7 +116,7 @@ across the plugin’s operations.</p>
 <dd><p>Get summary of collected metrics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dictionary with all collected metrics</p>
+<dd class="field-odd"><p>A dictionary with all collected metrics including total duration.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -108,7 +133,7 @@ across the plugin’s operations.</p>
 <dt class="sig sig-object py" id="sec_interp.core.performance_metrics.PerformanceTimer">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.performance_metrics.</span></span><span class="sig-name descname"><span class="pre">PerformanceTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#sec_interp.core.performance_metrics.MetricsCollector" title="sec_interp.core.performance_metrics.MetricsCollector"><span class="pre">MetricsCollector</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.performance_metrics.PerformanceTimer" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Context manager for timing operations.</p>
+<p>Context manager for timing specific operations.</p>
 <p>Initialize timer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -171,10 +196,10 @@ across the plugin’s operations.</p>
 <dd><p>Format duration in human readable format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>seconds</strong> – Duration in seconds</p>
+<dd class="field-odd"><p><strong>seconds</strong> – Duration in seconds.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Formatted string (e.g. “1.2s”, “150ms”)</p>
+<dd class="field-even"><p>Formatted string (e.g. “1.2s”, “150ms”, “100µs”).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -184,16 +209,50 @@ across the plugin’s operations.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.performance_metrics.</span></span><span class="sig-name descname"><span class="pre">PerformanceMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'performance.log'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.performance_metrics.PerformanceMonitor" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Performance monitoring using only Python standard library.</p>
+<p>Tracks duration and memory usage of specific operations.</p>
+<p>Initialize monitor and setup logging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>log_file</strong> – Path to the performance log file.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.core.performance_metrics.PerformanceMonitor.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'performance.log'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.performance_metrics.PerformanceMonitor.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize monitor and setup logging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>log_file</strong> – Path to the performance log file.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.performance_metrics.PerformanceMonitor.measure_operation">
 <span class="sig-name descname"><span class="pre">measure_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.performance_metrics.PerformanceMonitor.measure_operation" title="Link to this definition">¶</a></dt>
-<dd><p>Context manager to measure operation performance.</p>
+<dd><p>Context manager to measure operation performance (time and memory).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operation_name</strong> – Human-readable name of the operation.</p></li>
+<li><p><strong>**metadata</strong> – Additional context for logging.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.core.performance_metrics.PerformanceMonitor.get_operation_stats">
 <span class="sig-name descname"><span class="pre">get_operation_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.performance_metrics.PerformanceMonitor.get_operation_stats" title="Link to this definition">¶</a></dt>
-<dd><p>Get statistics for an operation.</p>
+<dd><p>Calculate statistics for multiple runs of an operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>operation_name</strong> – Name of the operation to analyze.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary with mean/min/max duration and memory usage.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -202,6 +261,7 @@ across the plugin’s operations.</p>
 <dt class="sig sig-object py" id="sec_interp.core.performance_metrics.performance_monitor">
 <span class="sig-prename descclassname"><span class="pre">sec_interp.core.performance_metrics.</span></span><span class="sig-name descname"><span class="pre">performance_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.performance_metrics.performance_monitor" title="Link to this definition">¶</a></dt>
 <dd><p>Decorator to automatically monitor function performance.</p>
+<p>Wraps the function call with a PerformanceMonitor measurement.</p>
 </dd></dl>
 
 </section>
@@ -252,7 +312,7 @@ across the plugin’s operations.</p>
   <li><a href="modules.html">sec_interp</a><ul>
   <li><a href="sec_interp.html">sec_interp package</a><ul>
   <li><a href="sec_interp.core.html">sec_interp.core package</a><ul>
-      <li>Previous: <a href="sec_interp.core.data_cache.html" title="previous chapter">sec_interp.core.data_cache module</a></li>
+      <li>Previous: <a href="sec_interp.core.exceptions.html" title="previous chapter">sec_interp.core.exceptions module</a></li>
       <li>Next: <a href="sec_interp.core.types.html" title="next chapter">sec_interp.core.types module</a></li>
   </ul></li>
   </ul></li>

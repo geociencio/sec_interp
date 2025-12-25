@@ -14,6 +14,7 @@ from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QFileDialog
 
+from sec_interp.core.exceptions import SecInterpError, ExportError
 from sec_interp.core.performance_metrics import MetricsCollector, PerformanceTimer
 from sec_interp.core.services.export_service import ExportService
 from sec_interp.exporters import get_exporter
@@ -140,20 +141,18 @@ class ExportManager:
                         "Success", f"Preview exported to {output_path.name}", level=3
                     )
                 else:
-                    self.dialog.messagebar.pushMessage(
-                        "Error",
-                        f"Failed to export preview to {output_path.name}",
-                        level=1,
-                    )
+                    raise ExportError(f"Failed to export preview to {output_path.name}")
 
                 if DialogConfig.LOG_DETAILED_METRICS:
                     logger.info(f"Preview Performance: {self.metrics.get_summary()}")
 
                 return success
 
+        except SecInterpError as e:
+            self.dialog.handle_error(e, "Export Error")
+            return False
         except Exception as e:
-            logger.error(f"Preview export failed: {e}", exc_info=True)
-            self.dialog.messagebar.pushMessage("Error", str(e), level=1)
+            self.dialog.handle_error(e, "Unexpected Export Error")
             return False
 
     def export_data(self) -> bool:
@@ -164,18 +163,20 @@ class ExportManager:
         """
         try:
             # 1. Validate inputs via dialog
-            inputs = self.dialog.plugin_instance._get_and_validate_inputs()
-            if not inputs:
+            params = self.dialog.plugin_instance._get_and_validate_inputs()
+            if not params:
                 return False
 
-            output_folder = Path(inputs["output_path"])
+            # Get values for output path (still needed from dialog/values)
+            values = self.dialog.get_selected_values()
+            output_folder = Path(values["output_path"])
 
             # 2. Generate data via controller
             self.dialog.preview_widget.results_text.setPlainText(
                 "✓ Generating data for export..."
             )
             profile_data, geol_data, struct_data, drillhole_data, _ = (
-                self.dialog.plugin_instance.controller.generate_profile_data(inputs)
+                self.dialog.plugin_instance.controller.generate_profile_data(params)
             )
 
             if not profile_data:
@@ -184,10 +185,9 @@ class ExportManager:
                 )
                 return False
 
-            # 3. Export via service
             result_msg = self.export_service.export_data(
                 output_folder,
-                inputs,
+                params,
                 profile_data,
                 geol_data,
                 struct_data,
@@ -195,9 +195,11 @@ class ExportManager:
             )
 
             self.dialog.preview_widget.results_text.setPlainText("\n".join(result_msg))
+        except SecInterpError as e:
+            self.dialog.handle_error(e, "Data Export Error")
+            return False
         except Exception as e:
-            logger.error(f"Data export failed: {e}", exc_info=True)
-            self.dialog.messagebar.pushMessage("Export Error", str(e), level=1)
+            self.dialog.handle_error(e, "Unexpected Data Export Error")
             return False
         else:
             return True

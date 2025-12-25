@@ -14,7 +14,7 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="sec_interp.core.services package" href="sec_interp.core.services.html" />
+    <link rel="next" title="sec_interp.core.interfaces package" href="sec_interp.core.interfaces.html" />
     <link rel="prev" title="sec_interp package" href="sec_interp.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -39,6 +39,37 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.core.interfaces.html">sec_interp.core.interfaces package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.interfaces.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.interfaces.cache_interface.html">sec_interp.core.interfaces.cache_interface module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.interfaces.cache_interface.html#sec_interp.core.interfaces.cache_interface.ICacheService"><code class="docutils literal notranslate"><span class="pre">ICacheService</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.interfaces.drillhole_interface.html">sec_interp.core.interfaces.drillhole_interface module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.interfaces.drillhole_interface.html#sec_interp.core.interfaces.drillhole_interface.IDrillholeService"><code class="docutils literal notranslate"><span class="pre">IDrillholeService</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.interfaces.geology_interface.html">sec_interp.core.interfaces.geology_interface module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.interfaces.geology_interface.html#sec_interp.core.interfaces.geology_interface.IGeologyService"><code class="docutils literal notranslate"><span class="pre">IGeologyService</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.interfaces.preview_interface.html">sec_interp.core.interfaces.preview_interface module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.interfaces.preview_interface.html#sec_interp.core.interfaces.preview_interface.IPreviewService"><code class="docutils literal notranslate"><span class="pre">IPreviewService</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.interfaces.profile_interface.html">sec_interp.core.interfaces.profile_interface module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.interfaces.profile_interface.html#sec_interp.core.interfaces.profile_interface.IProfileService"><code class="docutils literal notranslate"><span class="pre">IProfileService</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.interfaces.structure_interface.html">sec_interp.core.interfaces.structure_interface module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.interfaces.structure_interface.html#sec_interp.core.interfaces.structure_interface.IStructureService"><code class="docutils literal notranslate"><span class="pre">IStructureService</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.interfaces.html#module-sec_interp.core.interfaces">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="sec_interp.core.services.html">sec_interp.core.services package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.services.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.services.drillhole_service.html">sec_interp.core.services.drillhole_service module</a><ul>
@@ -54,8 +85,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.services.preview_service.html">sec_interp.core.services.preview_service module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewParams"><code class="docutils literal notranslate"><span class="pre">PreviewParams</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewResult"><code class="docutils literal notranslate"><span class="pre">PreviewResult</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewService"><code class="docutils literal notranslate"><span class="pre">PreviewService</span></code></a></li>
 </ul>
 </li>
@@ -136,6 +165,12 @@
 <li class="toctree-l4"><a class="reference internal" href="sec_interp.core.utils.rendering.html#sec_interp.core.utils.rendering.calculate_bounds"><code class="docutils literal notranslate"><span class="pre">calculate_bounds()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="sec_interp.core.utils.rendering.html#sec_interp.core.utils.rendering.create_coordinate_transform"><code class="docutils literal notranslate"><span class="pre">create_coordinate_transform()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="sec_interp.core.utils.rendering.html#sec_interp.core.utils.rendering.calculate_interval"><code class="docutils literal notranslate"><span class="pre">calculate_interval()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html">sec_interp.core.utils.resource_manager module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html#sec_interp.core.utils.resource_manager.temporary_memory_layer"><code class="docutils literal notranslate"><span class="pre">temporary_memory_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html#sec_interp.core.utils.resource_manager.temporary_file"><code class="docutils literal notranslate"><span class="pre">temporary_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="sec_interp.core.utils.resource_manager.html#sec_interp.core.utils.resource_manager.ResourceManager"><code class="docutils literal notranslate"><span class="pre">ResourceManager</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.utils.sampling.html">sec_interp.core.utils.sampling module</a><ul>
@@ -282,6 +317,7 @@
 <li class="toctree-l1"><a class="reference internal" href="sec_interp.core.controller.html">sec_interp.core.controller module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController"><code class="docutils literal notranslate"><span class="pre">ProfileController</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.__init__"><code class="docutils literal notranslate"><span class="pre">ProfileController.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.connect_layer_notifications"><code class="docutils literal notranslate"><span class="pre">ProfileController.connect_layer_notifications()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.get_cached_data"><code class="docutils literal notranslate"><span class="pre">ProfileController.get_cached_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.cache_data"><code class="docutils literal notranslate"><span class="pre">ProfileController.cache_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController.generate_profile_data"><code class="docutils literal notranslate"><span class="pre">ProfileController.generate_profile_data()</span></code></a></li>
@@ -295,23 +331,39 @@
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_cache_key"><code class="docutils literal notranslate"><span class="pre">DataCache.get_cache_key()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get"><code class="docutils literal notranslate"><span class="pre">DataCache.get()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set"><code class="docutils literal notranslate"><span class="pre">DataCache.set()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.invalidate"><code class="docutils literal notranslate"><span class="pre">DataCache.invalidate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.clear"><code class="docutils literal notranslate"><span class="pre">DataCache.clear()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_metadata"><code class="docutils literal notranslate"><span class="pre">DataCache.get_metadata()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_topographic_profile"><code class="docutils literal notranslate"><span class="pre">DataCache.get_topographic_profile()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set_topographic_profile"><code class="docutils literal notranslate"><span class="pre">DataCache.set_topographic_profile()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_geological_profile"><code class="docutils literal notranslate"><span class="pre">DataCache.get_geological_profile()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set_geological_profile"><code class="docutils literal notranslate"><span class="pre">DataCache.set_geological_profile()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_structural_data"><code class="docutils literal notranslate"><span class="pre">DataCache.get_structural_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set_structural_data"><code class="docutils literal notranslate"><span class="pre">DataCache.set_structural_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_metadata"><code class="docutils literal notranslate"><span class="pre">DataCache.get_metadata()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.set_metadata"><code class="docutils literal notranslate"><span class="pre">DataCache.set_metadata()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.invalidate"><code class="docutils literal notranslate"><span class="pre">DataCache.invalidate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.clear"><code class="docutils literal notranslate"><span class="pre">DataCache.clear()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.data_cache.html#sec_interp.core.data_cache.DataCache.get_cache_size"><code class="docutils literal notranslate"><span class="pre">DataCache.get_cache_size()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.core.exceptions.html">sec_interp.core.exceptions module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.SecInterpError"><code class="docutils literal notranslate"><span class="pre">SecInterpError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.SecInterpError.__init__"><code class="docutils literal notranslate"><span class="pre">SecInterpError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ValidationError"><code class="docutils literal notranslate"><span class="pre">ValidationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ProcessingError"><code class="docutils literal notranslate"><span class="pre">ProcessingError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.GeometryError"><code class="docutils literal notranslate"><span class="pre">GeometryError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.DataMissingError"><code class="docutils literal notranslate"><span class="pre">DataMissingError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ExportError"><code class="docutils literal notranslate"><span class="pre">ExportError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ConfigurationError"><code class="docutils literal notranslate"><span class="pre">ConfigurationError</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="sec_interp.core.performance_metrics.html">sec_interp.core.performance_metrics module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector"><code class="docutils literal notranslate"><span class="pre">MetricsCollector</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.timings"><code class="docutils literal notranslate"><span class="pre">MetricsCollector.timings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.counts"><code class="docutils literal notranslate"><span class="pre">MetricsCollector.counts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.metadata"><code class="docutils literal notranslate"><span class="pre">MetricsCollector.metadata</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.__init__"><code class="docutils literal notranslate"><span class="pre">MetricsCollector.__init__()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.record_timing"><code class="docutils literal notranslate"><span class="pre">MetricsCollector.record_timing()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.record_count"><code class="docutils literal notranslate"><span class="pre">MetricsCollector.record_count()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.add_metadata"><code class="docutils literal notranslate"><span class="pre">MetricsCollector.add_metadata()</span></code></a></li>
@@ -327,6 +379,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.format_duration"><code class="docutils literal notranslate"><span class="pre">format_duration()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceMonitor"><code class="docutils literal notranslate"><span class="pre">PerformanceMonitor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceMonitor.__init__"><code class="docutils literal notranslate"><span class="pre">PerformanceMonitor.__init__()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceMonitor.measure_operation"><code class="docutils literal notranslate"><span class="pre">PerformanceMonitor.measure_operation()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.PerformanceMonitor.get_operation_stats"><code class="docutils literal notranslate"><span class="pre">PerformanceMonitor.get_operation_stats()</span></code></a></li>
 </ul>
@@ -346,7 +399,6 @@
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.FieldType.DATE_TIME"><code class="docutils literal notranslate"><span class="pre">FieldType.DATE_TIME</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.ProfileData"><code class="docutils literal notranslate"><span class="pre">ProfileData</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.LayerDict"><code class="docutils literal notranslate"><span class="pre">LayerDict</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.SettingsDict"><code class="docutils literal notranslate"><span class="pre">SettingsDict</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.ExportSettings"><code class="docutils literal notranslate"><span class="pre">ExportSettings</span></code></a></li>
@@ -359,6 +411,12 @@
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.original_dip"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.original_dip</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.original_strike"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.original_strike</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement.attributes"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.attributes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id0"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.distance</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id1"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.elevation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id2"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.apparent_dip</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id3"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.original_dip</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id4"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.original_strike</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id5"><code class="docutils literal notranslate"><span class="pre">StructureMeasurement.attributes</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment"><code class="docutils literal notranslate"><span class="pre">GeologySegment</span></code></a><ul>
@@ -366,10 +424,93 @@
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment.geometry"><code class="docutils literal notranslate"><span class="pre">GeologySegment.geometry</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment.attributes"><code class="docutils literal notranslate"><span class="pre">GeologySegment.attributes</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment.points"><code class="docutils literal notranslate"><span class="pre">GeologySegment.points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id6"><code class="docutils literal notranslate"><span class="pre">GeologySegment.unit_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id7"><code class="docutils literal notranslate"><span class="pre">GeologySegment.geometry</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id8"><code class="docutils literal notranslate"><span class="pre">GeologySegment.attributes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id9"><code class="docutils literal notranslate"><span class="pre">GeologySegment.points</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.StructureData"><code class="docutils literal notranslate"><span class="pre">StructureData</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.GeologyData"><code class="docutils literal notranslate"><span class="pre">GeologyData</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams"><code class="docutils literal notranslate"><span class="pre">PreviewParams</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.raster_layer"><code class="docutils literal notranslate"><span class="pre">PreviewParams.raster_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.line_layer"><code class="docutils literal notranslate"><span class="pre">PreviewParams.line_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.band_num"><code class="docutils literal notranslate"><span class="pre">PreviewParams.band_num</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.buffer_dist"><code class="docutils literal notranslate"><span class="pre">PreviewParams.buffer_dist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.outcrop_layer"><code class="docutils literal notranslate"><span class="pre">PreviewParams.outcrop_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.outcrop_name_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.outcrop_name_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.struct_layer"><code class="docutils literal notranslate"><span class="pre">PreviewParams.struct_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.dip_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.dip_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.strike_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.strike_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.dip_scale_factor"><code class="docutils literal notranslate"><span class="pre">PreviewParams.dip_scale_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_layer"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_id_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_id_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_use_geometry"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_use_geometry</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_x_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_x_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_y_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_y_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_z_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_z_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_depth_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_depth_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.survey_layer"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.survey_id_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_id_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.survey_depth_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_depth_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.survey_azim_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_azim_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.survey_incl_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_incl_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.interval_layer"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.interval_id_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_id_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.interval_from_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_from_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.interval_to_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_to_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.interval_lith_field"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_lith_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.max_points"><code class="docutils literal notranslate"><span class="pre">PreviewParams.max_points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.canvas_width"><code class="docutils literal notranslate"><span class="pre">PreviewParams.canvas_width</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.auto_lod"><code class="docutils literal notranslate"><span class="pre">PreviewParams.auto_lod</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id10"><code class="docutils literal notranslate"><span class="pre">PreviewParams.raster_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id11"><code class="docutils literal notranslate"><span class="pre">PreviewParams.line_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id12"><code class="docutils literal notranslate"><span class="pre">PreviewParams.band_num</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id13"><code class="docutils literal notranslate"><span class="pre">PreviewParams.buffer_dist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id14"><code class="docutils literal notranslate"><span class="pre">PreviewParams.outcrop_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id15"><code class="docutils literal notranslate"><span class="pre">PreviewParams.outcrop_name_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id16"><code class="docutils literal notranslate"><span class="pre">PreviewParams.struct_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id17"><code class="docutils literal notranslate"><span class="pre">PreviewParams.dip_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id18"><code class="docutils literal notranslate"><span class="pre">PreviewParams.strike_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id19"><code class="docutils literal notranslate"><span class="pre">PreviewParams.dip_scale_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id20"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id21"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_id_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id22"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_use_geometry</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id23"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_x_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id24"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_y_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id25"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_z_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id26"><code class="docutils literal notranslate"><span class="pre">PreviewParams.collar_depth_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id27"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id28"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_id_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id29"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_depth_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id30"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_azim_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id31"><code class="docutils literal notranslate"><span class="pre">PreviewParams.survey_incl_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id32"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_layer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id33"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_id_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id34"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_from_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id35"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_to_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id36"><code class="docutils literal notranslate"><span class="pre">PreviewParams.interval_lith_field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id37"><code class="docutils literal notranslate"><span class="pre">PreviewParams.max_points</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id38"><code class="docutils literal notranslate"><span class="pre">PreviewParams.canvas_width</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id39"><code class="docutils literal notranslate"><span class="pre">PreviewParams.auto_lod</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.validate"><code class="docutils literal notranslate"><span class="pre">PreviewParams.validate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult"><code class="docutils literal notranslate"><span class="pre">PreviewResult</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult.topo"><code class="docutils literal notranslate"><span class="pre">PreviewResult.topo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult.geol"><code class="docutils literal notranslate"><span class="pre">PreviewResult.geol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult.struct"><code class="docutils literal notranslate"><span class="pre">PreviewResult.struct</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult.drillhole"><code class="docutils literal notranslate"><span class="pre">PreviewResult.drillhole</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult.metrics"><code class="docutils literal notranslate"><span class="pre">PreviewResult.metrics</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult.buffer_dist"><code class="docutils literal notranslate"><span class="pre">PreviewResult.buffer_dist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id40"><code class="docutils literal notranslate"><span class="pre">PreviewResult.topo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id41"><code class="docutils literal notranslate"><span class="pre">PreviewResult.geol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id42"><code class="docutils literal notranslate"><span class="pre">PreviewResult.struct</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id43"><code class="docutils literal notranslate"><span class="pre">PreviewResult.drillhole</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id44"><code class="docutils literal notranslate"><span class="pre">PreviewResult.metrics</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#id45"><code class="docutils literal notranslate"><span class="pre">PreviewResult.buffer_dist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult.get_elevation_range"><code class="docutils literal notranslate"><span class="pre">PreviewResult.get_elevation_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult.get_distance_range"><code class="docutils literal notranslate"><span class="pre">PreviewResult.get_distance_range()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -428,7 +569,7 @@
   <li><a href="modules.html">sec_interp</a><ul>
   <li><a href="sec_interp.html">sec_interp package</a><ul>
       <li>Previous: <a href="sec_interp.html" title="previous chapter">sec_interp package</a></li>
-      <li>Next: <a href="sec_interp.core.services.html" title="next chapter">sec_interp.core.services package</a></li>
+      <li>Next: <a href="sec_interp.core.interfaces.html" title="next chapter">sec_interp.core.interfaces package</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

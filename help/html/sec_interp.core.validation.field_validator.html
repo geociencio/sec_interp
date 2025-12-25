@@ -52,9 +52,9 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message, float_value)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
-<li><p>float_value (float | None): The parsed numeric value if valid.</p></li>
+<li><p>is_valid: True if validation passed.</p></li>
+<li><p>error_message: Error details if validation failed.</p></li>
+<li><p>float_value: The parsed numeric value if valid, else None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -83,9 +83,9 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message, int_value)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
-<li><p>int_value (int | None): The parsed integer value if valid.</p></li>
+<li><p>is_valid: True if validation passed.</p></li>
+<li><p>error_message: Error details if validation failed.</p></li>
+<li><p>int_value: The parsed integer value if valid, else None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -113,8 +113,8 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
+<li><p>is_valid: True if validation passed.</p></li>
+<li><p>error_message: Error details if validation failed.</p></li>
 </ul>
 </dd>
 </dl>
@@ -140,8 +140,8 @@
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
+<li><p>is_valid: True if validation passed.</p></li>
+<li><p>error_message: Error details if validation failed.</p></li>
 </ul>
 </dd>
 </dl>
@@ -162,14 +162,14 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>layer</strong> – The QGIS vector layer containing the field.</p></li>
 <li><p><strong>field_name</strong> – The name of the field to check.</p></li>
-<li><p><strong>expected_types</strong> – List of allowed QVariant.Type values.</p></li>
+<li><p><strong>expected_types</strong> – List of allowed FieldType values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>(is_valid, error_message)</dt><dd><ul class="simple">
-<li><p>is_valid (bool): True if validation passed.</p></li>
-<li><p>error_message (str): Error details if validation failed.</p></li>
+<li><p>is_valid: True if validation passed.</p></li>
+<li><p>error_message: Error details if validation failed.</p></li>
 </ul>
 </dd>
 </dl>

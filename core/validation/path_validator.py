@@ -10,7 +10,7 @@ def validate_safe_output_path(
     must_exist: bool = False,
     create_if_missing: bool = False,
 ) -> tuple[bool, str, Optional[Path]]:
-    r"""Validate an output path string with security and path traversal protection.
+    """Validate an output path string with security and path traversal protection.
 
     Args:
         path: Original path string to validate.
@@ -20,9 +20,9 @@ def validate_safe_output_path(
 
     Returns:
         tuple: (is_valid, error_message, resolved_path)
-            - is_valid (bool): True if the path is safe and meets requirements.
-            - error_message (str): Reason for validation failure.
-            - resolved_path (Path | None): Cleaned, absolute Path object if valid.
+            - is_valid: True if the path is safe and meets requirements.
+            - error_message: Reason for validation failure.
+            - resolved_path: Cleaned, absolute Path object if valid, else None.
     """
     if not path or path.strip() == "":
         return False, "Output path is required", None
@@ -96,8 +96,8 @@ def validate_output_path(path: str) -> tuple[bool, str, Optional[Path]]:
 
     Returns:
         tuple: (is_valid, error_message, resolved_path)
-            - is_valid (bool): True if the directory is valid and writable.
-            - error_message (str): Error details if validation fails.
-            - resolved_path (Path | None): Absolute Path object if valid.
+            - is_valid: True if the directory is valid and writable.
+            - error_message: Error details if validation fails.
+            - resolved_path: Absolute Path object if valid, else None.
     """
     return validate_safe_output_path(path, must_exist=True)

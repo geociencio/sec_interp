@@ -77,6 +77,14 @@ if [ -d "$SOURCE_DIR/core/validation" ]; then
     mkdir -p "$DEST_DIR/core/validation"
     cp -v "$SOURCE_DIR/core/validation/"*.py "$DEST_DIR/core/validation/"
 fi
+
+# Copy core/interfaces module (directory)
+if [ -d "$SOURCE_DIR/core/interfaces" ]; then
+    echo "Copying core/interfaces module..."
+    mkdir -p "$DEST_DIR/core/interfaces"
+    cp -v "$SOURCE_DIR/core/interfaces/"*.py "$DEST_DIR/core/interfaces/"
+fi
+
 cp -v "$SOURCE_DIR/core/"*.py "$DEST_DIR/core/"
 
 # Copy core/services module

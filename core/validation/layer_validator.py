@@ -10,6 +10,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
+from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.types import FieldType
 
 from .field_validator import validate_field_exists, validate_field_type
@@ -25,9 +26,9 @@ def validate_layer_exists(
 
     Returns:
         tuple: (is_valid, error_message, layer)
-            - is_valid (bool): True if at least one matching layer was found.
-            - error_message (str): Error details if no layer was found.
-            - layer (QgsMapLayer | None): The first matching layer instance if valid.
+            - is_valid: True if at least one matching layer was found.
+            - error_message: Error details if no layer was found.
+            - layer: The first matching layer instance if valid, else None.
     """
     if not layer_name:
         return False, "Layer name is required", None
@@ -53,8 +54,8 @@ def validate_layer_has_features(layer: QgsVectorLayer) -> tuple[bool, str]:
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid (bool): True if the layer has features.
-            - error_message (str): Error details if the layer is empty.
+            - is_valid: True if the layer has features.
+            - error_message: Error details if the layer is empty.
     """
     if not layer:
         return False, "Layer is None"
@@ -79,8 +80,8 @@ def validate_layer_geometry(
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid (bool): True if the geometry type matches.
-            - error_message (str): Detailed error if types mismatch.
+            - is_valid: True if the geometry type matches.
+            - error_message: Detailed error if types mismatch.
     """
     if not layer:
         return False, "Layer is None"
@@ -119,8 +120,8 @@ def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> tuple[bool,
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid (bool): True if the band exists.
-            - error_message (str): Error message if the band is out of range.
+            - is_valid: True if the band exists.
+            - error_message: Error message if the band is out of range.
     """
     if not layer:
         return False, "Layer is None"
@@ -155,8 +156,8 @@ def validate_structural_requirements(
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid (bool): True if both geometry and fields are valid.
-            - error_message (str): Detailed error if validation fails.
+            - is_valid: True if both geometry and fields are valid.
+            - error_message: Detailed error if validation fails.
     """
     if not layer.isValid():
         return False, f"Structural layer '{layer_name}' is not valid."
@@ -198,7 +199,7 @@ def validate_layer_configuration(
     outcrop_field: Optional[str] = None,
     struct_dip_field: Optional[str] = None,
     struct_strike_field: Optional[str] = None,
-) -> tuple[bool, str]:
+) -> bool:
     """Validate a complete set of layer inputs for the plugin.
 
     Args:
@@ -211,19 +212,20 @@ def validate_layer_configuration(
         struct_strike_field: Attribute field for strike values.
 
     Returns:
-        tuple: (is_valid, error_message)
-            - is_valid (bool): True if the entire configuration is valid.
-            - error_message (str): First encountered configuration error.
+        bool: True if the entire configuration is valid.
+
+    Raises:
+        ValidationError: If any configuration check fails.
     """
     # 1. Validate Required Layers
     if not raster_layer or not line_layer:
-        return False, "Please select a raster and a line layer."
+        raise ValidationError("Please select a raster and a line layer.")
 
     if not raster_layer.isValid():
-        return False, f"Raster layer '{raster_layer.name()}' is not valid."
+        raise ValidationError(f"Raster layer '{raster_layer.name()}' is not valid.")
 
     if not line_layer.isValid():
-        return False, f"Line layer '{line_layer.name()}' is not valid."
+        raise ValidationError(f"Line layer '{line_layer.name()}' is not valid.")
 
     # 2. Validate Line Geometry
     is_valid, msg = validate_layer_geometry(line_layer, QgsWkbTypes.LineGeometry)
@@ -238,17 +240,17 @@ def validate_layer_configuration(
                 QgsWkbTypes.geometryType(line_layer.wkbType())
                 != QgsWkbTypes.LineGeometry
             ):
-                return False, f"Cross-section layer must be a line layer. {msg}"
+                raise ValidationError(f"Cross-section layer must be a line layer. {msg}")
 
     # 3. Validate Optional Layers
     if outcrop_layer:
         if not outcrop_layer.isValid():
-            return False, f"Outcrop layer '{outcrop_layer.name()}' is not valid."
+            raise ValidationError(f"Outcrop layer '{outcrop_layer.name()}' is not valid.")
 
         if outcrop_field:
             is_valid, msg = validate_field_exists(outcrop_layer, outcrop_field)
             if not is_valid:
-                return False, msg
+                raise ValidationError(msg)
 
     if structural_layer:
         is_valid, msg = validate_structural_requirements(
@@ -258,9 +260,9 @@ def validate_layer_configuration(
             struct_strike_field,
         )
         if not is_valid:
-            return False, msg
+            raise ValidationError(msg)
 
-    return True, ""
+    return True
 
 
 def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
@@ -274,8 +276,8 @@ def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
 
     Returns:
         tuple: (is_compatible, message)
-            - is_compatible (bool): True if all layers share the same CRS.
-            - message (str): Warning listing incompatible layers if any.
+            - is_compatible: True if all layers share the same CRS.
+            - message: Warning listing incompatible layers if any.
     """
     if not layers:
         return True, ""

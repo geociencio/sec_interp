@@ -1,6 +1,6 @@
 from qgis.core import Qgis, QgsMapLayerProxyModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QGridLayout,
@@ -27,7 +27,7 @@ class DrillholePage(BasePage):
     dataChanged = pyqtSignal()
 
     def __init__(self, parent=None):
-        super().__init__("Drillhole Data", parent)
+        super().__init__(QCoreApplication.translate("DrillholePage", "Drillhole Data"), parent)
 
     def _setup_ui(self):
         # Override BasePage layout slightly to allow for Tabs or multiple Groups
@@ -56,17 +56,17 @@ class DrillholePage(BasePage):
         # -- Tab 1: Collars --
         self.collar_tab = QWidget()
         self._setup_collar_tab(self.collar_tab)
-        self.tab_widget.addTab(self.collar_tab, "Collars")
+        self.tab_widget.addTab(self.collar_tab, self.tr("Collars"))
 
         # -- Tab 2: Survey --
         self.survey_tab = QWidget()
         self._setup_survey_tab(self.survey_tab)
-        self.tab_widget.addTab(self.survey_tab, "Survey")
+        self.tab_widget.addTab(self.survey_tab, self.tr("Survey"))
 
         # -- Tab 3: Intervals --
         self.interval_tab = QWidget()
         self._setup_interval_tab(self.interval_tab)
-        self.tab_widget.addTab(self.interval_tab, "Intervals")
+        self.tab_widget.addTab(self.interval_tab, self.tr("Intervals"))
 
         # Add spacer to bottom of page
         layout.addStretch()
@@ -83,48 +83,49 @@ class DrillholePage(BasePage):
     def _add_collar_layer_widgets(self, layout):
         """Add layer and ID selection widgets to collar tab."""
         # Layer
-        layout.addWidget(QLabel("Collar Layer:"), 0, 0)
+        layout.addWidget(QLabel(self.tr("Collar Layer:")), 0, 0)
         self.c_layer = QgsMapLayerComboBox()
         self.c_layer.setFilters(Qgis.LayerFilter.PointLayer)
         self.c_layer.setAllowEmptyLayer(True)
+        self.c_layer.setCurrentIndex(0)
         layout.addWidget(self.c_layer, 0, 1)
 
         # ID Field
-        layout.addWidget(QLabel("Hole ID:"), 2, 0)
+        layout.addWidget(QLabel(self.tr("Hole ID:")), 2, 0)
         self.c_id = QgsFieldComboBox()
         layout.addWidget(self.c_id, 2, 1)
 
     def _add_collar_coordinate_widgets(self, layout):
         """Add coordinate selection widgets to collar tab."""
         # Use Geometry Checkbox
-        self.chk_use_geom = QCheckBox("Use Layer Geometry for Coordinates")
+        self.chk_use_geom = QCheckBox(self.tr("Use Layer Geometry for Coordinates"))
         self.chk_use_geom.setChecked(True)
         layout.addWidget(self.chk_use_geom, 1, 0, 1, 2)
 
         # X / Y Fields (Hidden if geometry used)
-        self.lbl_x = QLabel("East (X):")
+        self.lbl_x = QLabel(self.tr("East (X):"))
         layout.addWidget(self.lbl_x, 3, 0)
         self.c_x = QgsFieldComboBox()
         self.c_x.setAllowEmptyFieldName(True)
         layout.addWidget(self.c_x, 3, 1)
 
-        self.lbl_y = QLabel("North (Y):")
+        self.lbl_y = QLabel(self.tr("North (Y):"))
         layout.addWidget(self.lbl_y, 4, 0)
         self.c_y = QgsFieldComboBox()
         self.c_y.setAllowEmptyFieldName(True)
         layout.addWidget(self.c_y, 4, 1)
 
         # Z Field (Optional)
-        layout.addWidget(QLabel("Elevation (Z):"), 5, 0)
+        layout.addWidget(QLabel(self.tr("Elevation (Z):")), 5, 0)
         self.c_z = QgsFieldComboBox()
         self.c_z.setAllowEmptyFieldName(True)
-        self.c_z.setToolTip("Leave empty to use DEM elevation")
+        self.c_z.setToolTip(self.tr("Leave empty to use DEM elevation"))
         layout.addWidget(self.c_z, 5, 1)
 
     def _add_collar_depth_widgets(self, layout):
         """Add depth widget to collar tab."""
         # Depth Field (Optional but recommended)
-        layout.addWidget(QLabel("Total Depth:"), 6, 0)
+        layout.addWidget(QLabel(self.tr("Total Depth:")), 6, 0)
         self.c_depth = QgsFieldComboBox()
         self.c_depth.setAllowEmptyFieldName(True)
         layout.addWidget(self.c_depth, 6, 1)
@@ -160,7 +161,7 @@ class DrillholePage(BasePage):
         layout = QGridLayout(parent_widget)
         row = 0
 
-        layout.addWidget(QLabel("Survey Layer:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Survey Layer:")), row, 0)
         self.s_layer = QgsMapLayerComboBox()
 
         # Use modern flags if available (QGIS 3.32+)
@@ -176,25 +177,26 @@ class DrillholePage(BasePage):
             )
 
         self.s_layer.setAllowEmptyLayer(True)
+        self.s_layer.setCurrentIndex(0)
         layout.addWidget(self.s_layer, row, 1)
         row += 1
 
-        layout.addWidget(QLabel("Hole ID:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Hole ID:")), row, 0)
         self.s_id = QgsFieldComboBox()
         layout.addWidget(self.s_id, row, 1)
         row += 1
 
-        layout.addWidget(QLabel("Depth:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Depth:")), row, 0)
         self.s_depth = QgsFieldComboBox()
         layout.addWidget(self.s_depth, row, 1)
         row += 1
 
-        layout.addWidget(QLabel("Azimuth:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Azimuth:")), row, 0)
         self.s_azim = QgsFieldComboBox()
         layout.addWidget(self.s_azim, row, 1)
         row += 1
 
-        layout.addWidget(QLabel("Inclination:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Inclination:")), row, 0)
         self.s_incl = QgsFieldComboBox()
         layout.addWidget(self.s_incl, row, 1)
         row += 1
@@ -214,7 +216,7 @@ class DrillholePage(BasePage):
         layout = QGridLayout(parent_widget)
         row = 0
 
-        layout.addWidget(QLabel("Interval Layer:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Interval Layer:")), row, 0)
         self.i_layer = QgsMapLayerComboBox()
         # Intervals can be tables or vector layers
         # Use modern flags if available (QGIS 3.32+)
@@ -230,25 +232,26 @@ class DrillholePage(BasePage):
             )
 
         self.i_layer.setAllowEmptyLayer(True)
+        self.i_layer.setCurrentIndex(0)
         layout.addWidget(self.i_layer, row, 1)
         row += 1
 
-        layout.addWidget(QLabel("Hole ID:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Hole ID:")), row, 0)
         self.i_id = QgsFieldComboBox()
         layout.addWidget(self.i_id, row, 1)
         row += 1
 
-        layout.addWidget(QLabel("From Depth:"), row, 0)
+        layout.addWidget(QLabel(self.tr("From Depth:")), row, 0)
         self.i_from = QgsFieldComboBox()
         layout.addWidget(self.i_from, row, 1)
         row += 1
 
-        layout.addWidget(QLabel("To Depth:"), row, 0)
+        layout.addWidget(QLabel(self.tr("To Depth:")), row, 0)
         self.i_to = QgsFieldComboBox()
         layout.addWidget(self.i_to, row, 1)
         row += 1
 
-        layout.addWidget(QLabel("Lithology/Attribute:"), row, 0)
+        layout.addWidget(QLabel(self.tr("Lithology/Attribute:")), row, 0)
         self.i_lith = QgsFieldComboBox()
         layout.addWidget(self.i_lith, row, 1)
         row += 1

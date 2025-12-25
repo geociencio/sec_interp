@@ -2,7 +2,7 @@
 
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import QGridLayout, QLabel
 
 from .base_page import BasePage
@@ -14,7 +14,7 @@ class GeologyPage(BasePage):
     dataChanged = pyqtSignal()
 
     def __init__(self, parent=None):
-        super().__init__("Geological Outcrops", parent)
+        super().__init__(QCoreApplication.translate("GeologyPage", "Geological Outcrops"), parent)
 
     def _setup_ui(self):
         super()._setup_ui()
@@ -23,7 +23,7 @@ class GeologyPage(BasePage):
         self.group_layout.setSpacing(6)
 
         # Row 0: Outcrop Layer
-        self.group_layout.addWidget(QLabel("Outcrops Layer"), 0, 0)
+        self.group_layout.addWidget(QLabel(self.tr("Outcrops Layer")), 0, 0)
 
         self.layer_combo = QgsMapLayerComboBox()
 
@@ -38,15 +38,15 @@ class GeologyPage(BasePage):
             self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
         self.layer_combo.setAllowEmptyLayer(True)
-        self.layer_combo.setToolTip("Select the polygon layer with geological outcrops")
+        self.layer_combo.setToolTip(self.tr("Select the polygon layer with geological outcrops"))
         self.layer_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.layer_combo, 0, 1)
 
         # Row 1: Name Field
-        self.group_layout.addWidget(QLabel("Name Field"), 1, 0)
+        self.group_layout.addWidget(QLabel(self.tr("Name Field")), 1, 0)
 
         self.field_combo = QgsFieldComboBox()
-        self.field_combo.setToolTip("Select the field containing unit names")
+        self.field_combo.setToolTip(self.tr("Select the field containing unit names"))
         self.group_layout.addWidget(self.field_combo, 1, 1)
 
         # Connection: update fields when layer changes

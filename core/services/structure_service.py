@@ -21,10 +21,21 @@ from __future__ import annotations
 from collections.abc import Iterator
 from typing import List, Optional
 
-from qgis.core import QgsRaster, QgsRasterLayer, QgsVectorLayer
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsDistanceArea,
+    QgsFeature,
+    QgsGeometry,
+    QgsPointXY,
+    QgsRaster,
+    QgsRasterLayer,
+    QgsVectorLayer,
+)
 
 from sec_interp.core import utils as scu
+from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
 from sec_interp.core import validation as vu
+from sec_interp.core.interfaces.structure_interface import IStructureService
 from sec_interp.core.types import StructureData, StructureMeasurement
 from sec_interp.logger_config import get_logger
 
@@ -32,7 +43,7 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 
-class StructureService:
+class StructureService(IStructureService):
     """Service for projecting structural measurements onto cross-sections.
 
     This service handles the filtering and projection of structural measurements
@@ -42,51 +53,46 @@ class StructureService:
     def project_structures(
         self,
         line_lyr: QgsVectorLayer,
-        raster_lyr: QgsRasterLayer,  # Added
+        raster_lyr: QgsRasterLayer,
         struct_lyr: QgsVectorLayer,
         buffer_m: int,
         line_az: float,
         dip_field: str,
         strike_field: str,
-        band_number: int = 1,  # Added
+        band_number: int = 1,
     ) -> StructureData:
         """Project structural measurements onto the cross-section plane.
 
-        This function returns the profile data as a list of StructureMeasurement objects.
-
-        Filters structures within a buffer distance of the section line and calculates
-        their apparent dip in the direction of the section.
+        Filters structures within a buffer, samples elevation, and calculates
+        apparent dip for each measurement.
 
         Args:
-            line_lyr: The cross-section line layer.
+            line_lyr: The cross-section line vector layer.
             raster_lyr: The DEM raster layer for elevation sampling.
-            struct_lyr: The structural measurements layer (points).
-            buffer_m: Buffer distance in meters to include structures.
+            struct_lyr: Vector layer containing structural measurements.
+            buffer_m: Search buffer distance in meters.
             line_az: Azimuth of the section line in degrees.
-            dip_field: Field name for dip angle.
-            strike_field: Field name for strike angle.
-            band_number: Raster band to sample (default: 1).
+            dip_field: Name of the field containing dip values.
+            strike_field: Name of the field containing strike values.
+            band_number: Raster band to use for elevation (default: 1).
 
         Returns:
-            List of StructureMeasurement objects.
+            A list of StructureMeasurement objects sorted by distance along section.
 
         Raises:
-            ValueError: If line layer has no features or invalid geometry.
+            DataMissingError: If line layer has no features.
+            GeometryError: If line geometry is invalid.
         """
         # Logging: Initial setup
-        logger.info("=" * 60)
-        logger.info("PROJECT_STRUCTURES - Starting analysis")
-        logger.info("=" * 60)
-        logger.info(f"Buffer distance: {buffer_m} (units depend on CRS)")
-        logger.info(f"Line azimuth: {line_az:.2f}°")
+        logger.info(f"Analyzing structures in {struct_lyr.name()} with buffer {buffer_m}m")
 
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
-            raise ValueError("Line layer has no features")
+            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
 
         line_geom = line_feat.geometry()
         if not line_geom or line_geom.isNull():
-            raise ValueError("Line geometry is not valid")
+            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
 
         if line_geom.isMultipart():
             line_start = line_geom.asMultiPolyline()[0][0]
@@ -124,7 +130,7 @@ class StructureService:
         # Sort by distance
         projected_structs.sort(key=lambda x: x.distance)
 
-        logger.info(f"Processed {len(projected_structs)} structural measurements")
+        logger.info(f"Processed {len(projected_structs)} structural measurements from {struct_lyr.name()}")
         return projected_structs
 
     def _create_buffer_zone(
@@ -133,24 +139,24 @@ class StructureService:
         crs: QgsCoordinateReferenceSystem,
         buffer_m: float,
     ) -> QgsGeometry:
-        """Create the buffer geometry around the section line.
+        """Create a buffer geometry around the section line.
 
         Args:
-            line_geom: The geometry of the cross-section line.
-            crs: The Coordinate Reference System of the line.
-            buffer_m: The buffer distance in meters.
+            line_geom: The section line geometry.
+            crs: CRS of the line layer.
+            buffer_m: Buffer distance in meters.
 
         Returns:
-            QgsGeometry: The resulting buffer polygon geometry.
+            The buffered area as a QgsGeometry.
 
         Raises:
-            ValueError: If the buffer zone cannot be created.
+            ProcessingError: If buffer creation fails.
         """
         try:
             return scu.create_buffer_geometry(line_geom, crs, buffer_m, segments=25)
         except (ValueError, RuntimeError) as e:
             logger.exception("Buffer creation failed")
-            raise ValueError("Cannot create buffer zone") from e
+            raise ProcessingError("Cannot create buffer zone", {"buffer_m": buffer_m, "crs": crs.authid()}) from e
 
     def _filter_structures(
         self,
@@ -158,24 +164,24 @@ class StructureService:
         buffer_geom: QgsGeometry,
         target_crs: QgsCoordinateReferenceSystem,
     ) -> Iterator[QgsFeature]:
-        """Select structure features within the buffer.
+        """Select structure features within the buffer using spatial indexing.
 
         Args:
-            struct_lyr: The point layer containing structural measurements.
-            buffer_geom: The buffer geometry used for selection.
-            target_crs: The CRS to use for spatial comparison.
+            struct_lyr: The layer containing structural measurements.
+            buffer_geom: The buffer area geometry.
+            target_crs: CRS of the project/section line.
 
         Returns:
-            Iterator[QgsFeature]: An iterator over the features within the buffer.
+            An iterator over the filtered QgsFeature objects.
 
         Raises:
-            ValueError: If the filtering operation fails.
+            ProcessingError: If spatial filtering fails.
         """
         try:
             return scu.filter_features_by_buffer(struct_lyr, buffer_geom, target_crs)
         except (ValueError, RuntimeError) as e:
             logger.exception("Spatial filtering failed")
-            raise ValueError("Cannot filter structures by buffer") from e
+            raise ProcessingError("Cannot filter structures by buffer", {"layer": struct_lyr.name()}) from e
 
     def _process_single_structure(
         self,
@@ -189,9 +195,7 @@ class StructureService:
         dip_field: str,
         strike_field: str,
     ) -> Optional[StructureMeasurement]:
-        """Process a single structure feature.
-
-        Calculates the apparent dip and projection distance for a structural measurement.
+        """Process a single structure feature to calculate its 2D coordinates and apparent dip.
 
         Args:
             feature: The source structural point feature.
@@ -205,7 +209,7 @@ class StructureService:
             strike_field: Field name for original strike.
 
         Returns:
-            Optional[StructureMeasurement]: The projected measurement object, or None if invalid.
+            The projected measurement object, or None if invalid or cannot be projected.
         """
         struct_geom = feature.geometry()
         if not struct_geom or struct_geom.isNull():

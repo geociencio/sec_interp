@@ -25,9 +25,9 @@ def validate_numeric_input(
 
     Returns:
         tuple: (is_valid, error_message, float_value)
-            - is_valid (bool): True if validation passed.
-            - error_message (str): Error details if validation failed.
-            - float_value (float | None): The parsed numeric value if valid.
+            - is_valid: True if validation passed.
+            - error_message: Error details if validation failed.
+            - float_value: The parsed numeric value if valid, else None.
     """
     if not value or value.strip() == "":
         if allow_empty:
@@ -66,9 +66,9 @@ def validate_integer_input(
 
     Returns:
         tuple: (is_valid, error_message, int_value)
-            - is_valid (bool): True if validation passed.
-            - error_message (str): Error details if validation failed.
-            - int_value (int | None): The parsed integer value if valid.
+            - is_valid: True if validation passed.
+            - error_message: Error details if validation failed.
+            - int_value: The parsed integer value if valid, else None.
     """
     if not value or value.strip() == "":
         if allow_empty:
@@ -102,8 +102,8 @@ def validate_angle_range(
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid (bool): True if validation passed.
-            - error_message (str): Error details if validation failed.
+            - is_valid: True if validation passed.
+            - error_message: Error details if validation failed.
     """
     if value < min_angle or value > max_angle:
         return (
@@ -125,8 +125,8 @@ def validate_field_exists(
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid (bool): True if validation passed.
-            - error_message (str): Error details if validation failed.
+            - is_valid: True if validation passed.
+            - error_message: Error details if validation failed.
     """
     if not layer:
         return False, "Layer is None"
@@ -160,12 +160,12 @@ def validate_field_type(
     Args:
         layer: The QGIS vector layer containing the field.
         field_name: The name of the field to check.
-        expected_types: List of allowed QVariant.Type values.
+        expected_types: List of allowed FieldType values.
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid (bool): True if validation passed.
-            - error_message (str): Error details if validation failed.
+            - is_valid: True if validation passed.
+            - error_message: Error details if validation failed.
     """
     if not layer:
         return False, "Layer is None"

@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 
 class ConfigService:
-    """Service to handle plugin configuration and persistence."""
+    """Service to handle plugin configuration and persistent settings."""
 
     PREFIX = "/SecInterp/"
 
@@ -40,18 +40,18 @@ class ConfigService:
     SUPPORTED_DOCUMENT_FORMATS = [".pdf", ".svg"]
 
     def __init__(self):
-        """Initialize the configuration service."""
+        """Initialize the Configuration Service with QgsSettings."""
         self.settings = QgsSettings()
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Get a configuration value.
+        """Retrieve a configuration value by key.
 
         Args:
             key: The configuration key (without prefix).
-            default: Optional default value if not found.
+            default: Optional default value if not found in settings or defaults.
 
         Returns:
-            The configuration value.
+            The configuration value from settings or its default value.
         """
         full_key = self.PREFIX + key
 
@@ -65,18 +65,18 @@ class ConfigService:
         return value
 
     def set(self, key: str, value: Any) -> None:
-        """Set a configuration value.
+        """Store a configuration value.
 
         Args:
             key: The configuration key (without prefix).
-            value: The value to set.
+            value: The value to persist in settings.
         """
         full_key = self.PREFIX + key
         self.settings.setValue(full_key, value)
         logger.debug(f"Config set: {full_key} = {value}")
 
     def reset_defaults(self) -> None:
-        """Reset all known settings to their default values."""
+        """Reset all known persistent settings to their default values."""
         for key, value in self.DEFAULTS.items():
             self.set(key, value)
         logger.info("Configuration reset to defaults")

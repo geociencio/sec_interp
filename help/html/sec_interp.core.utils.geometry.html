@@ -54,9 +54,6 @@ This module now serves as a facade for modularized sub-submodules.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The buffered geometry.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsGeometry</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -76,9 +73,6 @@ This module now serves as a facade for modularized sub-submodules.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The created memory layer.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsVectorLayer</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -96,9 +90,6 @@ This module now serves as a facade for modularized sub-submodules.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The densified geometry.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QgsGeometry</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -112,9 +103,6 @@ This module now serves as a facade for modularized sub-submodules.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A flat list of all vertices found in the geometry.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[QgsPointXY]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -132,10 +120,7 @@ This module now serves as a facade for modularized sub-submodules.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Features that intersect the buffer.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[QgsFeature]</p>
+<dd class="field-even"><p>List of QgsFeature objects that intersect the query buffer.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -151,11 +136,8 @@ This module now serves as a facade for modularized sub-submodules.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A flat list of vertices.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[QgsPointXY]</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If the geometry is null, not a line, or contains no vertices.</p>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the geometry is null, not a line, or contains no vertices.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -175,9 +157,6 @@ This module now serves as a facade for modularized sub-submodules.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Result of the operation.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Any</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -193,10 +172,7 @@ This module now serves as a facade for modularized sub-submodules.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The algorithm results.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict[str, Any]</p>
+<dd class="field-even"><p>The algorithm results as a dictionary.</p>
 </dd>
 </dl>
 </dd></dl>

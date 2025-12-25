@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-
 """Sampling Utilities Module.
 
-Elevation sampling and profile context preparation.
+This module provides elevation sampling and profile context preparation tools.
 """
 
 from typing import Any, Optional
@@ -43,7 +42,7 @@ def sample_elevation_along_line(
         interval: Optional sampling interval. If None, uses raster resolution.
 
     Returns:
-        List[QgsPointXY]: A list where x is distance along section and y is elevation.
+        A list of QgsPointXY objects where x is horizontal distance and y is elevation.
     """
     from .geometry import densify_line_by_interval
 
@@ -60,21 +59,26 @@ def sample_elevation_along_line(
     from .geometry import get_line_vertices
 
     vertices = get_line_vertices(densified_geom)
-
+    
     points = []
-    start_pt = reference_point if reference_point else vertices[0]
+    current_dist = 0.0
+    
+    # Optional: If we have a reference point, calculate its distance to the first vertex
+    if reference_point:
+        current_dist = distance_area.measureLine(reference_point, vertices[0])
 
     # Sample elevation at each vertex
-    for pt in vertices:
-        # Calculate distance for X axis
-        if reference_point:
-            dist_from_start = distance_area.measureLine(reference_point, pt)
-        else:
-            dist_from_start = distance_area.measureLine(start_pt, pt)
+    for i, pt in enumerate(vertices):
+        # Calculate incremental distance
+        if i > 0:
+            # For densified points, Euclidean distance is sufficient and MUCH faster
+            # than geodesic measureLine calls, especially since they are very close.
+            segment_len = distance_area.measureLine(vertices[i-1], pt)
+            current_dist += segment_len
 
         val, ok = raster_layer.dataProvider().sample(pt, band_number)
         elev = val if ok else 0.0
-        points.append(QgsPointXY(dist_from_start, elev))
+        points.append(QgsPointXY(current_dist, elev))
 
     return points
 
@@ -88,10 +92,10 @@ def prepare_profile_context(
         line_lyr: The cross-section line vector layer.
 
     Returns:
-        Tuple: (line_geom, line_start, distance_area)
-            - line_geom (QgsGeometry): The geometry of the section line.
-            - line_start (QgsPointXY): The starting point of the line.
-            - distance_area (QgsDistanceArea): Fully configured distance object.
+        A tuple containing:
+            - line_geom: The geometry of the section line.
+            - line_start: The starting point of the line.
+            - distance_area: Fully configured geodesic distance object.
 
     Raises:
         ValueError: If the input layer is empty or has invalid geometry.
@@ -120,18 +124,27 @@ def interpolate_elevation(topo_data: list, distance: float) -> float:
         distance: Distance at which to interpolate elevation.
 
     Returns:
-        float: Interpolated elevation value.
+        The interpolated elevation value.
     """
-    if not topo_data:
-        return 0
-
-    # Find nearest points
-    for i in range(len(topo_data) - 1):
-        dist1, elev1 = topo_data[i]
-        dist2, elev2 = topo_data[i + 1]
-        # Interpolate elevation
-        if dist1 <= distance <= dist2:
-            ratio = (distance - dist1) / (dist2 - dist1)
-            return elev1 + (elev2 - elev1) * ratio
-    # Return last elevation if distance is beyond last point
-    return topo_data[-1][1] if topo_data else 0
+    import bisect
+    
+    # Extract distances for bisect
+    distances = [pt[0] for pt in topo_data]
+    
+    # Find the insertion point
+    idx = bisect.bisect_left(distances, distance)
+    
+    if idx == 0:
+        return topo_data[0][1]
+    if idx >= len(topo_data):
+        return topo_data[-1][1]
+        
+    # Interpolate
+    dist1, elev1 = topo_data[idx - 1]
+    dist2, elev2 = topo_data[idx]
+    
+    if dist2 == dist1:
+        return elev1
+        
+    ratio = (distance - dist1) / (dist2 - dist1)
+    return elev1 + (elev2 - elev1) * ratio
