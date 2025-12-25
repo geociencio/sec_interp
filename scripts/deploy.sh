@@ -83,7 +83,9 @@ cp -v "$SOURCE_DIR/core/"*.py "$DEST_DIR/core/"
 cp -v "$SOURCE_DIR/core/services/"*.py "$DEST_DIR/core/services/"
 
 # Copy core/utils module
+mkdir -p "$DEST_DIR/core/utils/geometry_utils"
 cp -v "$SOURCE_DIR/core/utils/"*.py "$DEST_DIR/core/utils/"
+cp -v "$SOURCE_DIR/core/utils/geometry_utils/"*.py "$DEST_DIR/core/utils/geometry_utils/"
 
 # Copy exporters module
 cp -v "$SOURCE_DIR/exporters/"*.py "$DEST_DIR/exporters/"

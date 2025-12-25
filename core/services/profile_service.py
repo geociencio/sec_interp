@@ -18,6 +18,7 @@
 #  ***************************************************************************/
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
+from typing import Optional
 
 from sec_interp.core import utils as scu
 from sec_interp.core.types import ProfileData
@@ -39,6 +40,7 @@ class ProfileService:
         line_lyr: QgsVectorLayer,
         raster_lyr: QgsRasterLayer,
         band_number: int = 1,
+        interval: Optional[float] = None,
     ) -> ProfileData:
         """Generate topographic profile data by sampling elevation along the section line.
 
@@ -67,7 +69,7 @@ class ProfileService:
 
         # Sample points using helper
         # For topographic profile, we measure from the start of the line
-        points = scu.sample_elevation_along_line(geom, raster_lyr, band_number, da)
+        points = scu.sample_elevation_along_line(geom, raster_lyr, band_number, da, interval=interval)
 
         # Convert QgsPointXY to tuples
         values = [(round(p.x(), 1), round(p.y(), 1)) for p in points]

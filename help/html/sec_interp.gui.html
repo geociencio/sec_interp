@@ -261,6 +261,17 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html">sec_interp.gui.main_dialog_tools module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager"><code class="docutils literal notranslate"><span class="pre">DialogToolManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.__init__"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.initialize_tools"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.initialize_tools()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.toggle_measure_tool"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.toggle_measure_tool()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.handle_wheel_event"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.handle_wheel_event()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_tools.html#sec_interp.gui.main_dialog_tools.DialogToolManager.update_measurement_display"><code class="docutils literal notranslate"><span class="pre">DialogToolManager.update_measurement_display()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html">sec_interp.gui.main_dialog_utils module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager"><code class="docutils literal notranslate"><span class="pre">DialogEntityManager</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.gui.main_dialog_utils.html#sec_interp.gui.main_dialog_utils.DialogEntityManager.populate_field_combobox"><code class="docutils literal notranslate"><span class="pre">DialogEntityManager.populate_field_combobox()</span></code></a></li>
@@ -546,7 +557,7 @@ plugin instance for interaction with the host application.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.toggle_measure_tool">
 <span class="sig-name descname"><span class="pre">toggle_measure_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.toggle_measure_tool" title="Link to this definition">¶</a></dt>
-<dd><p>Toggle measurement tool.</p>
+<dd><p>Toggle measurement tool via tool_manager.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -558,18 +569,7 @@ plugin instance for interaction with the host application.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.SecInterpDialog.update_measurement_display">
 <span class="sig-name descname"><span class="pre">update_measurement_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.SecInterpDialog.update_measurement_display" title="Link to this definition">¶</a></dt>
-<dd><p>Display measurement results from multi-point tool.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>metrics</strong> – Dictionary containing measurement data:
-- total_distance: Total accumulated distance
-- horizontal_distance: Total horizontal distance
-- elevation_change: Total elevation change
-- avg_slope: Average slope in degrees
-- segment_count: Number of segments
-- point_count: Number of points</p>
-</dd>
-</dl>
+<dd><p>Display measurement results from multi-point tool via tool_manager.</p>
 </dd></dl>
 
 <dl class="py method">

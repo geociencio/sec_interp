@@ -4,9 +4,7 @@ from typing import List, Optional, Tuple, Union
 
 from qgis.core import QgsVectorLayer
 
-# QVariant is a Qt data type required for QGIS field type validation
-# It's not a UI component - it's used to represent generic field values
-from qgis.PyQt.QtCore import QVariant  # type: ignore[import]
+from sec_interp.core.types import FieldType
 
 
 def validate_numeric_input(
@@ -155,7 +153,7 @@ def validate_field_exists(
 
 
 def validate_field_type(
-    layer: QgsVectorLayer, field_name: str, expected_types: list[QVariant.Type]
+    layer: QgsVectorLayer, field_name: str, expected_types: list[FieldType]
 ) -> tuple[bool, str]:
     """Validate that a field in a layer has one of the expected data types.
 
@@ -185,12 +183,12 @@ def validate_field_type(
 
     if field.type() not in expected_types:
         type_names = {
-            QVariant.Int: "Integer",
-            QVariant.Double: "Double",
-            QVariant.String: "String",
-            QVariant.LongLong: "Long Integer",
-            QVariant.Date: "Date",
-            QVariant.DateTime: "DateTime",
+            FieldType.INT: "Integer",
+            FieldType.DOUBLE: "Double",
+            FieldType.STRING: "String",
+            FieldType.LONG_LONG: "Long Integer",
+            FieldType.DATE: "Date",
+            FieldType.DATE_TIME: "DateTime",
         }
         expected_names = [type_names.get(t, str(t)) for t in expected_types]
         actual_name = type_names.get(field.type(), f"Type ID {field.type()}")

@@ -10,9 +10,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
-# QVariant is a Qt data type required for QGIS field type validation
-# It's not a UI component - it's used to represent generic field values
-from qgis.PyQt.QtCore import QVariant  # type: ignore[import]
+from sec_interp.core.types import FieldType
 
 from .field_validator import validate_field_exists, validate_field_type
 
@@ -173,7 +171,7 @@ def validate_structural_requirements(
             return False, msg
 
         is_valid, msg = validate_field_type(
-            layer, dip_field, [QVariant.Int, QVariant.Double, QVariant.LongLong]
+            layer, dip_field, [FieldType.INT, FieldType.DOUBLE, FieldType.LONG_LONG]
         )
         if not is_valid:
             return False, f"Dip field error: {msg}"
@@ -184,7 +182,7 @@ def validate_structural_requirements(
             return False, msg
 
         is_valid, msg = validate_field_type(
-            layer, strike_field, [QVariant.Int, QVariant.Double, QVariant.LongLong]
+            layer, strike_field, [FieldType.INT, FieldType.DOUBLE, FieldType.LONG_LONG]
         )
         if not is_valid:
             return False, f"Strike field error: {msg}"

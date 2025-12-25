@@ -41,7 +41,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsWkbTypes,
 )
-from qgis.gui import QgsFileWidget, QgsMapCanvas, QgsMapToolPan
+from qgis.gui import QgsFileWidget, QgsMapCanvas
 from qgis.PyQt.QtCore import QSize, QUrl, QVariant
 from qgis.PyQt.QtGui import QColor, QDesktopServices
 from qgis.PyQt.QtWidgets import (
@@ -69,9 +69,9 @@ from .main_dialog_preview import PreviewManager
 from .main_dialog_settings import DialogSettingsManager
 from .main_dialog_signals import DialogSignalManager
 from .main_dialog_status import DialogStatusManager
+from .main_dialog_tools import DialogToolManager
 from .main_dialog_utils import DialogEntityManager
 from .main_dialog_validation import DialogValidator
-from .tools.measure_tool import ProfileMeasureTool
 from .ui.main_window import SecInterpMainWindow
 
 
@@ -127,8 +127,8 @@ class SecInterpDialog(SecInterpMainWindow):
         self.clear_cache_btn.setToolTip("Clear cached data to force re-processing.")
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
 
-        # Initialize map tools
-        self._init_tools()
+        # Initialize map tools via tool_manager
+        self.tool_manager.initialize_tools()
 
         # Connect all signals
         self.signal_manager = DialogSignalManager(self)
@@ -148,25 +148,12 @@ class SecInterpDialog(SecInterpMainWindow):
         self.settings_manager = DialogSettingsManager(self)
         self.status_manager = DialogStatusManager(self)
         self.status_manager.setup_indicators()
+        self.tool_manager = DialogToolManager(self)
 
-    def _init_tools(self):
-        """Initialize map tools."""
-        self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
-        self.measure_tool = ProfileMeasureTool(self.preview_widget.canvas)
-        self.preview_widget.canvas.setMapTool(self.pan_tool)
 
     def wheelEvent(self, event):
         """Handle mouse wheel for zooming in preview."""
-        # Check if mouse is over preview widget
-        if self.preview_widget.canvas.underMouse():
-            # QgsMapCanvas has built-in zoom with wheel
-            # We can customize the zoom factor if needed
-            if event.angleDelta().y() > 0:
-                self.preview_widget.canvas.zoomIn()
-            else:
-                self.preview_widget.canvas.zoomOut()
-            event.accept()
-        else:
+        if not self.tool_manager.handle_wheel_event(event):
             super().wheelEvent(event)
 
     def open_help(self):
@@ -183,56 +170,12 @@ class SecInterpDialog(SecInterpMainWindow):
             )
 
     def toggle_measure_tool(self, checked):
-        """Toggle measurement tool."""
-        if checked:
-            # Reset any previous measurement when starting new one
-            self.measure_tool.reset()
-            self.preview_widget.canvas.setMapTool(self.measure_tool)
-            self.measure_tool.activate()
-            # Show finalize button when measurement tool is active
-            self.preview_widget.btn_finalize.setVisible(True)
-        else:
-            self.preview_widget.canvas.setMapTool(self.pan_tool)
-            self.pan_tool.activate()
-            # Hide finalize button when measurement tool is inactive
-            self.preview_widget.btn_finalize.setVisible(False)
-            # Clear results when turning off? Maybe optional
-            # self.preview_widget.results_text.clear()
+        """Toggle measurement tool via tool_manager."""
+        self.tool_manager.toggle_measure_tool(checked)
 
     def update_measurement_display(self, metrics):
-        """Display measurement results from multi-point tool.
-
-        Args:
-            metrics: Dictionary containing measurement data:
-                - total_distance: Total accumulated distance
-                - horizontal_distance: Total horizontal distance
-                - elevation_change: Total elevation change
-                - avg_slope: Average slope in degrees
-                - segment_count: Number of segments
-                - point_count: Number of points
-        """
-        if not metrics or metrics.get("point_count", 0) < 2:
-            return
-
-        total_dist = metrics.get("total_distance", 0)
-        horiz_dist = metrics.get("horizontal_distance", 0)
-        elev_change = metrics.get("elevation_change", 0)
-        avg_slope = metrics.get("avg_slope", 0)
-        seg_count = metrics.get("segment_count", 0)
-        point_count = metrics.get("point_count", 0)
-
-        # Format result text with HTML for better presentation
-        msg = (
-            f"<b>Medición Multi-Punto</b><br>"
-            f"<b>Puntos:</b> {point_count} | <b>Segmentos:</b> {seg_count}<br>"
-            f"<b>Distancia Total:</b> {total_dist:.2f} m<br>"
-            f"<b>Distancia Horizontal:</b> {horiz_dist:.2f} m<br>"
-            f"<b>Cambio Elevación:</b> {elev_change:+.2f} m<br>"
-            f"<b>Pendiente Promedio:</b> {avg_slope:.1f}°"
-        )
-        self.preview_widget.results_text.setHtml(msg)
-        # Ensure results group is expanded
-        self.preview_widget.results_group.setCollapsed(False)
+        """Display measurement results from multi-point tool via tool_manager."""
+        self.tool_manager.update_measurement_display(metrics)
 
     def update_preview_checkbox_states(self):
         """Enable or disable preview checkboxes via status_manager."""
@@ -283,16 +226,6 @@ class SecInterpDialog(SecInterpMainWindow):
         success, message = self.preview_manager.generate_preview()
         if not success and message:
             self.messagebar.pushMessage("Preview Error", message, level=2)
-
-        # Update CRS label in status bar
-        try:
-            # Use line layer CRS as the primary reference for the preview
-            line_layer = self.page_section.line_combo.currentLayer()
-            if line_layer:
-                auth_id = line_layer.crs().authid()
-                self.preview_widget.lbl_crs.setText(f"CRS: {auth_id}")
-        except Exception:
-            self.preview_widget.lbl_crs.setText("CRS: Unknown")
 
     def export_preview(self):
         """Export the current preview to a file using ExportManager."""

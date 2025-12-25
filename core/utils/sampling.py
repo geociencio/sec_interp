@@ -28,6 +28,7 @@ def sample_elevation_along_line(
     band_number: int,
     distance_area: QgsDistanceArea,
     reference_point: Optional[QgsPointXY] = None,
+    interval: Optional[float] = None,
 ) -> list[QgsPointXY]:
     """Sample elevation values along a line geometry from a raster layer.
 
@@ -39,14 +40,16 @@ def sample_elevation_along_line(
         band_number: The raster band index to sample.
         distance_area: Object for geodesic distance calculations.
         reference_point: Optional start point for distance measurements.
+        interval: Optional sampling interval. If None, uses raster resolution.
 
     Returns:
         List[QgsPointXY]: A list where x is distance along section and y is elevation.
     """
     from .geometry import densify_line_by_interval
 
-    # Densify line at raster resolution
-    interval = raster_layer.rasterUnitsPerPixelX()
+    # Use raster resolution if no interval provided
+    if interval is None:
+        interval = raster_layer.rasterUnitsPerPixelX()
     try:
         densified_geom = densify_line_by_interval(geometry, interval)
     except (ValueError, RuntimeError):

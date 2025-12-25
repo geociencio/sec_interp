@@ -22,6 +22,10 @@ from qgis.core import (
 from sec_interp.core import utils as scu
 from sec_interp.core.performance_metrics import MetricsCollector, PerformanceTimer
 from sec_interp.core.types import GeologyData, ProfileData, StructureData
+from sec_interp.logger_config import get_logger
+
+
+logger = get_logger(__name__)
 
 
 @dataclass
@@ -61,6 +65,11 @@ class PreviewParams:
     interval_from_field: Optional[str] = None
     interval_to_field: Optional[str] = None
     interval_lith_field: Optional[str] = None
+
+    # LOD Params
+    max_points: int = 1000
+    canvas_width: int = 800
+    auto_lod: bool = True
 
 
 @dataclass
@@ -172,8 +181,18 @@ class PreviewService:
 
         # 1. Topography
         with PerformanceTimer("Topography Generation", result.metrics):
+            # Calculate LOD interval
+            interval = None
+            if params.auto_lod:
+                # Get line length
+                line_feat = next(params.line_layer.getFeatures(), None)
+                if line_feat:
+                    line_len = line_feat.geometry().length()
+                    max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
+                    interval = line_len / max_pts if max_pts > 0 else None
+
             result.topo = self.controller.profile_service.generate_topographic_profile(
-                params.line_layer, params.raster_layer, params.band_num
+                params.line_layer, params.raster_layer, params.band_num, interval=interval
             )
             if result.topo:
                 result.metrics.record_count("Topography Points", len(result.topo))
@@ -219,6 +238,11 @@ class PreviewService:
             if not line_feat:
                 return None
 
+            # Validation: Ensure critical drillhole fields are selected
+            if not params.collar_id_field:
+                logger.info("Drillhole preview skipped: No Collar ID field selected.")
+                return None
+
             line_geom = line_feat.geometry()
             if line_geom.isMultipart():
                 lines = line_geom.asMultiPolyline()
@@ -248,6 +272,7 @@ class PreviewService:
                 collar_z_field=params.collar_z_field,
                 collar_depth_field=params.collar_depth_field,
                 dem_layer=params.raster_layer,
+                line_crs=params.line_layer.crs(),
             )
 
             if not projected_collars:
@@ -287,6 +312,6 @@ class PreviewService:
 
             return drillhole_data
 
-        except Exception:
-            # logger.error(f"Error in PreviewService._generate_drillholes: {e}", exc_info=True)
+        except Exception as e:
+            logger.error(f"Error in PreviewService._generate_drillholes: {e}", exc_info=True)
             return None

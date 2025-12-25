@@ -17,6 +17,7 @@ architecture:
   ui_design: "Programmatic (PyQt5)"
 
 dependencies:
+  - "__future__"
   - "abc"
   - "argparse"
   - "base_exporter"
@@ -24,4 +25,3 @@ dependencies:
   - "concurrent"
   - "contextlib"
   - "csv_exporter"
-  - "dataclasses"

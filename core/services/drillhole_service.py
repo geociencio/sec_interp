@@ -10,11 +10,15 @@ import contextlib
 from typing import Any, Dict, List, Optional, Tuple
 
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsDistanceArea,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
     QgsRaster,
     QgsRasterLayer,
+    QgsSpatialIndex,
     QgsVectorLayer,
 )
 
@@ -43,118 +47,113 @@ class DrillholeService:
         collar_z_field: str,
         collar_depth_field: str,
         dem_layer: Optional[QgsRasterLayer],
+        line_crs: Optional[QgsCoordinateReferenceSystem] = None,
     ) -> list[tuple[Any, float, float, float, float]]:
-        """Project collar points onto section line.
-
-        Projects drillhole collars within a specified buffer from the section line
-        onto that line, calculating their distance along the section and elevation.
-
-        Args:
-            collar_layer: The QGIS vector layer containing drillhole collars.
-            line_geom: The geometry of the cross-section line.
-            line_start: The starting point of the cross-section line.
-            distance_area: The QGS distance calculation object.
-            buffer_width: Maximum perpendicular distance from the line to include collars.
-            collar_id_field: The attribute field name for the drillhole ID.
-            use_geometry: If True, use layer geometry; otherwise use coordinate fields.
-            collar_x_field: The attribute field name for X coordinates.
-            collar_y_field: The attribute field name for Y coordinates.
-            collar_z_field: The attribute field name for elevation (Z).
-            collar_depth_field: The attribute field name for total depth.
-            dem_layer: Digital Elevation Model layer for elevation fallback if Z is missing.
-
-        Returns:
-            A list of tuples: (hole_id, dist_along, elevation, offset, depth)
-                - hole_id (Any): The unique identifier for the drillhole.
-                - dist_along (float): Distance from the start of the section line.
-                - elevation (float): Elevation (Z) of the collar.
-                - offset (float): Perpendicular distance from the section line.
-                - depth (float): Total depth of the drillhole.
-        """
+        """Project collar points onto section line using spatial optimization."""
         projected_collars = []
 
         logger.info("DrillholeService.project_collars START")
-        logger.info(f"  - Buffer: {buffer_width}")
-        logger.info(f"  - Use Geometry: {use_geometry}")
-        logger.info(f"  - ID Field: {collar_id_field}")
 
-        feature_count = collar_layer.featureCount()
-        logger.info(f"  - Processing {feature_count} collar features...")
+        # 1. Spatial Filtering
+        # Create buffer zone around section line
+        line_buffer = line_geom.buffer(buffer_width, 8)
 
-        for collar_feat in collar_layer.getFeatures():
-            # Get Coordinates
-            x, y = 0.0, 0.0
-            hole_id = collar_feat[collar_id_field]
+        # Use centralized filtering utility which handles CRS transformation
+        candidate_features = scu.filter_features_by_buffer(
+            collar_layer, line_buffer, line_crs
+        )
+        
+        if not candidate_features:
+            logger.info("DrillholeService.project_collars: No collars found in buffer.")
+            return []
 
-            if use_geometry:
-                collar_geom = collar_feat.geometry()
-                if not collar_geom:
-                    continue
-                point = collar_geom.asPoint()
-                x, y = point.x(), point.y()
-            else:
-                try:
-                    x = float(collar_feat[collar_x_field])
-                    y = float(collar_feat[collar_y_field])
-                except (ValueError, TypeError):
-                    logger.warning(f"Invalid X/Y for collar {hole_id}")
-                    continue
-
-            if x == 0.0 and y == 0.0:
-                logger.warning(f"Collar {hole_id} has null coordinates (0,0)")
+        for collar_feat in candidate_features:
+            # 1. Get Collar Info
+            collar_info = self._get_collar_info(
+                collar_feat,
+                collar_id_field,
+                use_geometry,
+                collar_x_field,
+                collar_y_field,
+                collar_z_field,
+                collar_depth_field,
+                dem_layer,
+            )
+            if not collar_info:
                 continue
 
-            # Get Elevation (Z)
-            z = 0.0
-            if collar_z_field:
-                with contextlib.suppress(ValueError, TypeError):
-                    z = float(collar_feat[collar_z_field])
+            hole_id, collar_point, z, depth = collar_info
 
-            # If Z is missing/zero, sample from DEM
-            if z == 0.0 and dem_layer:
-                ident = dem_layer.dataProvider().identify(
-                    QgsPointXY(x, y), QgsRaster.IdentifyFormatValue
-                )
-                if ident.isValid():
-                    val = ident.results().get(1)  # Band 1
-                    if val is not None:
-                        z = val
-
-            # Get Total Depth
-            depth = 0.0
-            if collar_depth_field:
-                with contextlib.suppress(ValueError, TypeError):
-                    depth = float(collar_feat[collar_depth_field])
-
-            # Project to section line
-            collar_point = QgsPointXY(x, y)
+            # 2. Project to section line
             collar_geom_pt = QgsGeometry.fromPointXY(collar_point)
+            nearest_point = line_geom.nearestPoint(collar_geom_pt).asPoint()
 
-            # Find nearest point on section line
-            nearest_point = line_geom.nearestPoint(collar_geom_pt)
-            nearest_pt_xy = nearest_point.asPoint()
-
-            # Calculate distance along section
-            dist_along = distance_area.measureLine(line_start, nearest_pt_xy)
-
-            # Calculate offset (perpendicular distance)
-            offset = distance_area.measureLine(collar_point, nearest_pt_xy)
+            # Calculate distances
+            dist_along = distance_area.measureLine(line_start, nearest_point)
+            offset = distance_area.measureLine(collar_point, nearest_point)
 
             # Check if within buffer
             if offset <= buffer_width:
-                logger.debug(
-                    f"Collar {hole_id}: dist={dist_along:.2f}, offset={offset:.2f} [IN]"
-                )
                 projected_collars.append((hole_id, dist_along, z, offset, depth))
-            else:
-                logger.debug(
-                    f"Collar {hole_id}: dist={dist_along:.2f}, offset={offset:.2f} [OUT]"
-                )
 
         logger.info(
-            f"DrillholeService.project_collars END: Found {len(projected_collars)} collars within buffer."
+            f"DrillholeService.project_collars END: Found {len(projected_collars)} collars."
         )
         return projected_collars
+
+    def _get_collar_info(
+        self,
+        feat: QgsFeature,
+        id_field: str,
+        use_geom: bool,
+        x_field: str,
+        y_field: str,
+        z_field: str,
+        depth_field: str,
+        dem_layer: Optional[QgsRasterLayer] = None,
+    ) -> Optional[tuple[Any, QgsPointXY, float, float]]:
+        """Extract collar ID, coordinate, Z and depth from a feature."""
+        if not id_field:
+            return None
+        hole_id = feat[id_field]
+        x, y, z, depth = 0.0, 0.0, 0.0, 0.0
+
+        if use_geom:
+            geom = feat.geometry()
+            if not geom:
+                return None
+            pt = geom.asPoint()
+            x, y = pt.x(), pt.y()
+        else:
+            try:
+                x = float(feat[x_field])
+                y = float(feat[y_field])
+            except (ValueError, TypeError):
+                return None
+
+        if x == 0.0 and y == 0.0:
+            return None
+
+        # Z
+        if z_field:
+            with contextlib.suppress(ValueError, TypeError):
+                z = float(feat[z_field])
+
+        if z == 0.0 and dem_layer:
+            ident = dem_layer.dataProvider().identify(
+                QgsPointXY(x, y), QgsRaster.IdentifyFormatValue
+            )
+            if ident.isValid():
+                val = ident.results().get(1)
+                if val is not None:
+                    z = val
+
+        # Depth
+        if depth_field:
+            with contextlib.suppress(ValueError, TypeError):
+                depth = float(feat[depth_field])
+
+        return hole_id, QgsPointXY(x, y), z, depth
 
     def process_intervals(
         self,
@@ -177,174 +176,119 @@ class DrillholeService:
         list[GeologySegment],
         list[tuple[Any, list[tuple[float, float]], list[GeologySegment]]],
     ]:
-        """Process drillhole interval data and project onto the section.
+        """Process drillhole interval data and project onto the section."""
+        geol_data, drillhole_data = [], []
 
-        Calculates trajectories for all collars within the buffer and interpolates
-        geological intervals along those trajectories.
+        # 1. Build collar coordinate map
+        collar_coords = self._build_collar_coord_map(
+            collar_layer, collar_id_field, use_geometry, collar_x_field, collar_y_field
+        )
 
-        Args:
-            collar_points: List of projected collars from `project_collars`.
-            collar_layer: Original collar vector layer.
-            survey_layer: Survey data vector layer (depth, azimuth, inclination).
-            interval_layer: Geological interval data vector layer.
-            collar_id_field: Attribute field name for drillhole ID.
-            use_geometry: If True, use layer geometry for coordinates.
-            collar_x_field: Attribute field name for X coordinates.
-            collar_y_field: Attribute field name for Y coordinates.
-            line_geom: Geometry of the cross-section line.
-            line_start: Starting point of the cross-section line.
-            distance_area: QGS distance calculation object.
-            buffer_width: Maximum perpendicular distance to include intervals.
-            section_azimuth: The azimuth of the cross-section line.
-            survey_fields: Dictionary mapping standard survey fields to layer fields.
-                Required keys: 'id', 'depth', 'azim', 'incl'.
-            interval_fields: Dictionary mapping standard interval fields to layer fields.
-                Required keys: 'id', 'from', 'to', 'lith'.
-
-        Returns:
-            A tuple containing (geology_segments, drillhole_traces):
-                - geology_segments (List[GeologySegment]): Flat list of all projected intervals.
-                - drillhole_traces (List): List of trajectories (hole_id, trace_points, hole_segments).
-        """
-        geol_data = []
-        drillhole_data = []
-
-        logger.info("DrillholeService.process_intervals START")
-        logger.info(f"  - Input Collars: {len(collar_points)}")
-
-        # Build collar coordinate map
-        collar_coords = {}
-        for collar_feat in collar_layer.getFeatures():
-            hole_id = collar_feat[collar_id_field]
-            if use_geometry:
-                geom = collar_feat.geometry()
-                if geom:
-                    pt = geom.asPoint()
-                    if pt.x() != 0 and pt.y() != 0:
-                        collar_coords[hole_id] = pt
-            else:
-                try:
-                    x = float(collar_feat[collar_x_field])
-                    y = float(collar_feat[collar_y_field])
-                    if x != 0 and y != 0:
-                        collar_coords[hole_id] = QgsPointXY(x, y)
-                except (ValueError, TypeError):
-                    continue
-
-        for hole_id, _collar_dist, collar_z, _collar_offset, _ in collar_points:
-            if hole_id not in collar_coords:
-                logger.warning(f"Coords not found for collar {hole_id}")
+        for hole_id, _dist, collar_z, _off, given_depth in collar_points:
+            collar_point = collar_coords.get(hole_id)
+            if not collar_point:
                 continue
 
-            collar_point = collar_coords[hole_id]
+            # 2. Get Data
+            survey_data = self._get_survey_data(survey_layer, hole_id, survey_fields)
+            intervals = self._get_interval_data(interval_layer, hole_id, interval_fields)
 
-            # Get survey data
-            survey_data = []
-            s_id = survey_fields["id"]
-            s_depth = survey_fields["depth"]
-            s_azim = survey_fields["azim"]
-            s_incl = survey_fields["incl"]
-
-            for feat in survey_layer.getFeatures():
-                if feat[s_id] == hole_id:
-                    try:
-                        d = float(feat[s_depth])
-                        a = float(feat[s_azim])
-                        i = float(feat[s_incl])
-                        survey_data.append((d, a, i))
-                    except (ValueError, TypeError):
-                        continue
-
-            if not survey_data:
-                logger.info(
-                    f"  - No survey data for hole {hole_id}. Attempting vertical projection."
-                )
-            else:
-                survey_data.sort(key=lambda x: x[0])
-
-            # Get Intervals (Fetched early for depth calc)
-            intervals = []
-            i_id = interval_fields["id"]
-            i_from = interval_fields["from"]
-            i_to = interval_fields["to"]
-            i_lith = interval_fields["lith"]
-
-            for feat in interval_layer.getFeatures():
-                if feat[i_id] == hole_id:
-                    try:
-                        fd = float(feat[i_from])
-                        td = float(feat[i_to])
-                        lith = str(feat[i_lith])
-                        intervals.append((fd, td, lith))
-                    except (ValueError, TypeError):
-                        continue
-
+            # 3. Determine Final Depth
+            max_survey_depth = max([s[0] for s in survey_data]) if survey_data else 0.0
             max_interval_depth = max([i[1] for i in intervals]) if intervals else 0.0
+            final_depth = max(given_depth, max_survey_depth, max_interval_depth)
 
-            # Determine Final Depth
-            given_depth = next((cp[4] for cp in collar_points if cp[0] == hole_id), 0.0)
-
-            final_depth = given_depth
-            if final_depth <= 0:
-                max_survey_depth = (
-                    max([s[0] for s in survey_data]) if survey_data else 0.0
-                )
-                final_depth = max(max_survey_depth, max_interval_depth)
-
-            # Calculate Trajectory
-            # Now passing total_depth=final_depth for extrapolation support
+            # 4. Trajectory and Projection
             trajectory = scu.calculate_drillhole_trajectory(
-                collar_point,
-                collar_z,
-                survey_data,
-                section_azimuth,
-                densify_step=1.0,
-                total_depth=final_depth,
+                collar_point, collar_z, survey_data, section_azimuth, total_depth=final_depth
             )
-
-            # Project Trajectory to Section
             projected_traj = scu.project_trajectory_to_section(
                 trajectory, line_geom, line_start, distance_area
             )
 
-            # Interpolate Intervals on Trajectory
-            hole_geol_tuples = []
-            if intervals:
-                # Pack attributes into a dictionary to preserve metadata through interpolation
-                rich_intervals = []
-                for fd, td, lith in intervals:
-                    attrs = {"unit": lith, "from": fd, "to": td}
-                    rich_intervals.append((fd, td, attrs))
-
-                hole_geol_tuples = scu.interpolate_intervals_on_trajectory(
-                    projected_traj, rich_intervals, buffer_width
-                )
-            else:
-                logger.warning(f"  - No intervals for hole {hole_id}")
-
-            hole_geol_data = []
-            for attr_data, points in hole_geol_tuples:
-                # Unpack attributes
-                # attr_data is the dictionary we packed above
-                unit_name = str(attr_data.get("unit", "Unknown"))
-
-                # Create domain object
-                seg = GeologySegment(
-                    unit_name=unit_name,
-                    geometry=None,
-                    attributes=attr_data,
-                    points=points,
-                )
-                hole_geol_data.append(seg)
+            # 5. Interpolate Intervals
+            hole_geol_data = self._interpolate_hole_intervals(
+                projected_traj, intervals, buffer_width
+            )
 
             if hole_geol_data:
                 geol_data.extend(hole_geol_data)
 
-            # Store for export/rendering
+            # 6. Store trace
             traj_points = [(p[4], p[3]) for p in projected_traj]
             drillhole_data.append((hole_id, traj_points, hole_geol_data))
 
-        logger.info(
-            f"DrillholeService.process_intervals END: Generated {len(drillhole_data)} drillhole traces."
-        )
         return geol_data, drillhole_data
+
+    def _build_collar_coord_map(self, layer, id_field, use_geom, x_field, y_field):
+        """Build a lookup map for collar coordinates."""
+        if not layer or not id_field:
+            return {}
+        coords = {}
+        for feat in layer.getFeatures():
+            hole_id = feat[id_field]
+            if use_geom:
+                geom = feat.geometry()
+                if geom:
+                    pt = geom.asPoint()
+                    if pt.x() != 0 and pt.y() != 0:
+                        coords[hole_id] = pt
+            else:
+                try:
+                    x, y = float(feat[x_field]), float(feat[y_field])
+                    if x != 0 and y != 0:
+                        coords[hole_id] = QgsPointXY(x, y)
+                except (ValueError, TypeError):
+                    continue
+        return coords
+
+    def _get_survey_data(self, layer, hole_id, fields):
+        """Fetch survey data for a specific hole."""
+        if not layer or not fields.get("id"):
+            return []
+        data = []
+        for feat in layer.getFeatures():
+            if feat[fields["id"]] == hole_id:
+                try:
+                    d = float(feat[fields["depth"]])
+                    a = float(feat[fields["azim"]])
+                    i = float(feat[fields["incl"]])
+                    data.append((d, a, i))
+                except (ValueError, TypeError):
+                    continue
+        data.sort(key=lambda x: x[0])
+        return data
+
+    def _get_interval_data(self, layer, hole_id, fields):
+        """Fetch interval data for a specific hole."""
+        if not layer or not fields.get("id"):
+            return []
+        data = []
+        for feat in layer.getFeatures():
+            if feat[fields["id"]] == hole_id:
+                try:
+                    fd = float(feat[fields["from"]])
+                    td = float(feat[fields["to"]])
+                    lith = str(feat[fields["lith"]])
+                    data.append((fd, td, lith))
+                except (ValueError, TypeError):
+                    continue
+        return data
+
+    def _interpolate_hole_intervals(self, traj, intervals, buffer_width):
+        """Interpolate intervals along a trajectory and return GeologySegments."""
+        if not intervals:
+            return []
+
+        rich_intervals = [(fd, td, {"unit": lith, "from": fd, "to": td}) for fd, td, lith in intervals]
+        tuples = scu.interpolate_intervals_on_trajectory(traj, rich_intervals, buffer_width)
+
+        segments = []
+        for attr, points in tuples:
+            segments.append(GeologySegment(
+                unit_name=str(attr.get("unit", "Unknown")),
+                geometry=None,
+                attributes=attr,
+                points=points,
+            ))
+        return segments

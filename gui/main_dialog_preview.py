@@ -7,6 +7,7 @@ separating preview logic from the main dialog class.
 from __future__ import annotations
 
 from pathlib import Path
+import hashlib
 import tempfile
 import traceback
 from typing import TYPE_CHECKING, Any, Optional
@@ -59,6 +60,8 @@ class PreviewManager:
             "struct": None,
             "drillhole": None,
         }
+        self.last_params_hash = None
+        self.last_result: Optional[PreviewResult] = None
         self.metrics = MetricsCollector()
 
         # Initialize services
@@ -106,27 +109,42 @@ class PreviewManager:
                     raster_layer, line_layer, band_num
                 )
 
-                # 3. Data Generation (Synchronous parts)
-                transform_context = (
-                    self.dialog.plugin_instance.iface.mapCanvas()
-                    .mapSettings()
-                    .transformContext()
-                )
-                result = self.preview_service.generate_all(params, transform_context)
+                # 3. Cache Check
+                current_hash = self._calculate_params_hash(params)
+                data_unchanged = (current_hash == self.last_params_hash)
+                self.last_params_hash = current_hash
 
-                # Merge results and metrics
-                self.cached_data["topo"] = result.topo
-                self.cached_data["struct"] = result.struct
-                self.cached_data["drillhole"] = result.drillhole
-                self.metrics.timings.update(result.metrics.timings)
-                self.metrics.counts.update(result.metrics.counts)
+                # 4. Data Generation
+                if not data_unchanged:
+                    # Collect parameters and generate data as before
+                    transform_context = (
+                        self.dialog.plugin_instance.iface.mapCanvas()
+                        .mapSettings()
+                        .transformContext()
+                    )
+                    result = self.preview_service.generate_all(params, transform_context)
 
-                # Start Async Geology if needed
-                if self.dialog.page_geology.is_complete():
-                    self._start_async_geology(line_layer, raster_layer, band_num)
-                    self.cached_data["geol"] = None  # Reset until async finished
+                    # Merge results and metrics
+                    self.cached_data["topo"] = result.topo
+                    self.cached_data["struct"] = result.struct
+                    self.cached_data["drillhole"] = result.drillhole
+                    self.metrics.timings.update(result.metrics.timings)
+                    self.metrics.counts.update(result.metrics.counts)
 
-                # 4. Visualization
+                    # Start Async Geology if needed
+                    if self.dialog.page_geology.is_complete():
+                        self._start_async_geology(line_layer, raster_layer, band_num)
+                        self.cached_data["geol"] = None  # Reset until async finished
+
+                    self.last_result = result
+                else:
+                    logger.info("Using cached data (params unchanged)")
+                    result = self.last_result
+
+                # 5. Update UI labels
+                self._update_crs_label(line_layer)
+
+                # 6. Visualization
                 try:
                     if not self.dialog.plugin_instance or not hasattr(
                         self.dialog.plugin_instance, "draw_preview"
@@ -265,7 +283,45 @@ class PreviewManager:
             interval_to_field=values.get("interval_to_field"),
             interval_lith_field=values.get("interval_lith_field"),
             dip_scale_factor=self.dialog.page_struct.scale_spin.value(),
+            auto_lod=self.dialog.get_preview_options()["auto_lod"],
+            max_points=self.dialog.get_preview_options()["max_points"],
+            canvas_width=self.dialog.preview_widget.canvas.width(),
         )
+
+    def _calculate_params_hash(self, params: PreviewParams) -> str:
+        """Calculate a unique hash for preview parameters to check for changes."""
+        # Use layer IDs, field names, and critical values
+        # Exclude canvas_width and auto_lod from hash to allow re-renders without re-processing
+        # but including them in a "render hash" if needed.
+        # For now, we only care about data-changing parameters.
+        lyr_id = lambda l: l.id() if l else "None"
+
+        data_parts = [
+            lyr_id(params.raster_layer),
+            lyr_id(params.line_layer),
+            str(params.band_num),
+            str(params.buffer_dist),
+            lyr_id(params.outcrop_layer),
+            str(params.outcrop_name_field),
+            lyr_id(params.struct_layer),
+            str(params.dip_field),
+            str(params.strike_field),
+            lyr_id(params.collar_layer),
+            str(params.collar_id_field),
+            lyr_id(params.survey_layer),
+            lyr_id(params.interval_layer),
+        ]
+
+        # Add geometry WKT if available to detect line changes
+        line_feat = next(params.line_layer.getFeatures(), None)
+        if line_feat:
+            data_parts.append(line_feat.geometry().asWkt())
+
+        hasher = hashlib.md5()
+        for part in data_parts:
+            hasher.update(str(part).encode("utf-8"))
+
+        return hasher.hexdigest()
 
     def _validate_requirements(self) -> tuple[QgsRasterLayer, QgsVectorLayer, int]:
         """Validate minimum requirements for preview generation.
@@ -533,3 +589,18 @@ class PreviewManager:
     def _handle_invalid_plugin_instance(self):
         """Handle case where plugin instance is not available for rendering."""
         raise AttributeError("Plugin instance or draw_preview method not available")
+
+    def _update_crs_label(self, layer: Optional[QgsVectorLayer]) -> None:
+        """Update the CRS label in the dialog status bar.
+
+        Args:
+            layer: The reference layer to get CRS from.
+        """
+        try:
+            if layer:
+                auth_id = layer.crs().authid()
+                self.dialog.preview_widget.lbl_crs.setText(f"CRS: {auth_id}")
+            else:
+                self.dialog.preview_widget.lbl_crs.setText("CRS: None")
+        except Exception:
+            self.dialog.preview_widget.lbl_crs.setText("CRS: Unknown")

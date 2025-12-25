@@ -1,6 +1,14 @@
 sec\_interp.core.utils package
 ==============================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   sec_interp.core.utils.geometry_utils
+
 Submodules
 ----------
 

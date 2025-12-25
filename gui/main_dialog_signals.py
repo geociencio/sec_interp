@@ -125,13 +125,13 @@ class DialogSignalManager:
         # Finalize button with debug wrapper
         def finalize_with_log():
             logger.info("Finalize button clicked!")
-            self.dialog.measure_tool.finalize_measurement()
+            self.dialog.tool_manager.measure_tool.finalize_measurement()
 
         self.dialog.preview_widget.btn_finalize.clicked.connect(finalize_with_log)
 
-        self.dialog.measure_tool.measurementChanged.connect(
+        self.dialog.tool_manager.measure_tool.measurementChanged.connect(
             self.dialog.update_measurement_display
         )
-        self.dialog.measure_tool.measurementCleared.connect(
+        self.dialog.tool_manager.measure_tool.measurementCleared.connect(
             lambda: self.dialog.preview_widget.results_text.clear()
         )

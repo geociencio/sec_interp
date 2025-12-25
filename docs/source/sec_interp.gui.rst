@@ -26,6 +26,7 @@ Submodules
    sec_interp.gui.main_dialog_settings
    sec_interp.gui.main_dialog_signals
    sec_interp.gui.main_dialog_status
+   sec_interp.gui.main_dialog_tools
    sec_interp.gui.main_dialog_utils
    sec_interp.gui.main_dialog_validation
    sec_interp.gui.parallel_geology
