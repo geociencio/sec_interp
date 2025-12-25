@@ -310,5 +310,7 @@ Para sugerencias o priorización de características:
 ---
 
 *Documento creado: 2025-12-22*  
-*Última actualización: 2025-12-22*  
-*Versión actual del plugin: 2.2.0*
+*Última actualización: 2025-12-25*  
+*Versión actual del plugin: 2.3.0*
+
+> **Nota**: La versión 2.3.0 se enfocó en mejoras arquitectónicas y de calidad de código en lugar de nuevas características funcionales. Las características planificadas para 2.3.0 (GeoSciML, Caché Persistente) se posponen para versiones futuras.

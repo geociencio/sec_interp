@@ -4,11 +4,13 @@
 
 **Sec Interp** is a QGIS plugin for extracting and visualizing geological data along cross-section profiles. It enables geologists to create topographic profiles from DEMs, project geological outcrops, and visualize structural measurements (dip/strike) in a 2D section view.
 
-**Version**: 1.0  
+**Version**: 2.3.0  
 **Author**: Juan M Bernales  
 **License**: GPL-2.0 / GPL-3.0  
 **Repository**: https://github.com/geociencio/sec_interp  
 **QGIS Minimum Version**: 3.0
+
+> **Note**: Version 2.3.0 includes major architectural improvements including modular geometry utilities, manager-based UI delegation, and enhanced performance optimizations. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## Technology Stack
 
@@ -36,12 +38,21 @@ sec_interp/
 │   │   ├── geology_service.py
 │   │   └── structure_service.py
 │   └── utils/                 # Package of utility modules
-│       ├── geometry.py
+│       ├── geometry.py        # Facade for geometry operations
+│       ├── geometry_utils/    ⭐ Modular geometry sub-package (v2.3.0)
+│       │   ├── extraction.py  # Vertex and line extraction
+│       │   ├── processing.py  # Buffer, densify, memory layers
+│       │   └── filtering.py   # Spatial filtering with CRS support
 │       ├── spatial.py
+│       ├── sampling.py
+│       ├── drillhole.py
 │       └── ...
 │
 ├── 📁 gui/                     # User interface components
-│   ├── main_dialog.py         ⭐ Main dialog class with business logic
+│   ├── main_dialog.py         ⭐ Main dialog orchestrator (refactored v2.3.0)
+│   ├── main_dialog_tools.py   ⭐ DialogToolManager (map tools, v2.3.0)
+│   ├── main_dialog_preview.py ⭐ PreviewManager (centralized preview logic)
+│   ├── main_dialog_signals.py # DialogSignalManager (signal connections)
 │   ├── preview_renderer.py    ⭐ Profile rendering engine
 │   ├── legend_widget.py       # Legend overlay widget
 │   └── ui/                    # Programmatic UI modules
@@ -49,6 +60,7 @@ sec_interp/
 │       ├── sidebar.py         # Navigation sidebar
 │       └── pages/             # Individual settings pages
 │           ├── dem_page.py
+│           ├── drillhole_page.py
 │           └── ...
 │
 ├── 📁 resources/               # Plugin resources
