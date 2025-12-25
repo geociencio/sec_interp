@@ -11,6 +11,7 @@ from sec_interp.core.services import (
     StructureService,
     DrillholeService,
 )
+from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
 from sec_interp.logger_config import get_logger
 
@@ -21,6 +22,7 @@ class ProfileController:
     
     def __init__(self):
         """Initialize services and cache."""
+        self.config_service = ConfigService()
         self.profile_service = ProfileService()
         self.geology_service = GeologyService()
         self.structure_service = StructureService()
