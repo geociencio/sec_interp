@@ -165,9 +165,13 @@ class PreviewManager:
                             auto_lod=auto_lod_enabled,
                         )
 
+                        # Use cached geology if available (from async completion)
+                        # Otherwise None (will be filled by async process)
+                        geol_for_render = self.cached_data.get("geol")
+                        
                         self.dialog.plugin_instance.draw_preview(
                             self.cached_data["topo"],
-                            None,  # Geology handled by async finish Redraw
+                            geol_for_render,
                             self.cached_data["struct"],
                             drillhole_data=self.cached_data["drillhole"],
                             max_points=max_points_for_render,
@@ -572,6 +576,9 @@ class PreviewManager:
                 )
                 msg = self._format_results_message(result)
                 self.dialog.preview_widget.results_text.setPlainText(msg)
+                
+                # CRITICAL: Update last_result so cached renders include geology
+                self.last_result = result
 
         except Exception as e:
             logger.error(f"Error updating UI after async geology: {e}", exc_info=True)

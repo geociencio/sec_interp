@@ -257,7 +257,9 @@ class PreviewLayerFactory:
         self, drillhole_data: list, vert_exag: float = 1.0
     ) -> Optional[QgsVectorLayer]:
         """Create temporary layer for drillhole traces."""
+        logger.debug(f"create_drillhole_trace_layer called with {len(drillhole_data) if drillhole_data else 0} holes")
         if not drillhole_data:
+            logger.warning("No drillhole data provided for trace layer")
             return None
 
         layer, provider = self.create_memory_layer(
@@ -269,6 +271,7 @@ class PreviewLayerFactory:
         features = []
         for hole_id, trace_points, _ in drillhole_data:
             if not trace_points or len(trace_points) < 2:
+                logger.debug(f"Skipping hole {hole_id}: insufficient trace points ({len(trace_points) if trace_points else 0})")
                 continue
 
             render_points = [QgsPointXY(x, y * vert_exag) for x, y in trace_points]
@@ -278,6 +281,8 @@ class PreviewLayerFactory:
             feat.setGeometry(line_geom)
             feat.setAttribute("hole_id", hole_id)
             features.append(feat)
+
+        logger.info(f"Adding {len(features)} drillhole trace features to layer")
 
         provider.addFeatures(features)
 

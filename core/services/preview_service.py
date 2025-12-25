@@ -309,6 +309,9 @@ class PreviewService:
                 interval_fields=interval_fields,
             )
 
-        except Exception as e:
-            logger.error(f"Error in PreviewService._generate_drillholes: {e}", exc_info=True)
+            logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
             return drillhole_data
+
+        except Exception as e:
+            logger.exception(f"Error in PreviewService._generate_drillholes: {e}")
+            return None
