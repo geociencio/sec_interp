@@ -2,24 +2,36 @@
 
 Este documento describe los pasos detallados para preparar y liberar una nueva versión del plugin **Sec Interp**, optimizado para generar paquetes limpios y profesionales.
 
-## 1. Preparación del Entorno y Versión
+> [!WARNING]
+> **Manual Trigger Required**: Este proceso (especialmente las actualizaciones documentales y el tagging) **solo debe ejecutarse cuando el usuario lo indique explícitamente**. No se deben realizar releases automáticas o preventivas.
+
+## 1. Preparación del Entorno y Métricas
 
 1.  **Sincronizar Contexto**:
-    *   Ejecutar `python analyze_project_optfixed.py` para obtener métricas actualizadas.
-    *   Actualizar `.ai-context/project_brain.md` con los nuevos resultados.
+    *   Ejecutar `uv run python analyze_project_optfixed.py` para obtener métricas actualizadas.
+    *   Este comando genera `PROJECT_SUMMARY.md` y registra el historial en `.ai-context/metrics_history.json`.
+    *   Actualizar `.ai-context/project_brain.md` con los nuevos resultados si es necesario.
 
-2.  **Actualizar Versión**:
+2.  **Actualizar Versión y Changelog (Crucial)**:
     *   **metadata.txt**: Incrementar `version=X.Y.Z` y actualizar la sección `changelog=`.
         *   > [!IMPORTANT]
         *   > El repositorio de QGIS usa `configparser`. Debes **escapar todos los signos de porcentaje (`%`) como `%%`** en las secciones `changelog` y `about` para evitar errores de interpretación.
-    *   **docs/CHANGELOG.md**: Agregar la nueva versión al principio siguiendo el estándar [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-    *   **README.md**: Actualizar badges de versión y enlaces de descarga si aplica.
+    *   **docs/docsec/CHANGELOG.md**: Agregar la nueva versión al principio siguiendo el estándar [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-3.  **Documentación**:
-    *   Actualizar `docs/USER_GUIDE.md` con capturas y descripciones de nuevas funciones.
-    *   Asegurar que `LICENSE` esté presente y actualizado.
+3.  **Actualización de Documentación Técnica**:
+    Debe sincronizarse la versión en los siguientes archivos:
+    *   **README.md**: Actualizar badges de versión y sección "What's New".
+    *   **README_DEV.md**: Actualizar versión y estándares de desarrollo si han cambiado.
+    *   **docs/docsec/PROJECT_STRUCTURE.md**: Actualizar versión y mapa de archivos si hubo cambios estructurales.
+    *   **docs/docsec/ARCHITECTURE_EN.md**: Actualizar versión y diagramas/descripciones de arquitectura.
+    *   **ARCHITECTURE.md**: Sincronizar con el estado actual del sistema (ES).
+    *   **DEVELOPMENT_GUIDE.md**: Revisar si los estándares de calidad han evolucionado.
 
-## 2. Empaquetado Limpio (Crucial)
+4.  **Licencia y Ayuda**:
+    *   Asegurar que `LICENSE` esté presente.
+    *   (Opcional) Regenerar documentación de ayuda: `make doc`.
+
+## 2. Empaquetado Limpio
 
 Para evitar que archivos de desarrollo como `.git`, `tests/`, o configuraciones de herramientas (`.pylintrc`, etc.) terminen en el ZIP oficial, utilizamos el método de **`git archive`**.
 
@@ -36,7 +48,7 @@ Para evitar que archivos de desarrollo como `.git`, `tests/`, o configuraciones 
         ```
 
 2.  **Generar el Paquete**:
-    *   Asegurarse de haber hecho commit de todos los cambios.
+    *   Asegurarse de haber hecho commit de todos los cambios documentales precedentes.
     *   Ejecutar el comando de empaquetado (definido en el `Makefile`):
         ```bash
         make package VERSION=main
