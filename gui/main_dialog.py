@@ -225,6 +225,8 @@ class SecInterpDialog(SecInterpMainWindow):
             self.preview_widget.btn_measure.setChecked(False)
         self.tool_manager.toggle_interpretation_tool(checked)
 
+    def on_interpretation_finished(self, interpretation):
+        """Handle finalized interpretation polygon."""
         # Store interpretation in local list
         self.interpretations.append(interpretation)
 

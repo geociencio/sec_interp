@@ -58,10 +58,8 @@ class Interpretation25DExporter(ShapefileExporter):
             )
 
         # Configure base exporter settings
-        # Use PolygonM if the first geometry supports it, otherwise fallback to generic
-        # (Assuming all interpretations in the list are consistent)
-        self.set_setting("geometry_type", QgsWkbTypes.PolygonM)
-        self.set_setting("crs", crs)
+        self.settings["geometry_type"] = QgsWkbTypes.PolygonM
+        self.settings["crs"] = crs
 
         logger.info(
             f"Exporting {len(interpretations)} interpretations to {output_path}"
