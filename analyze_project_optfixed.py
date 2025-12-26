@@ -2284,7 +2284,7 @@ dependencies:
         history = []
         if history_file.exists():
             try:
-                with open(history_file, "r", encoding="utf-8") as f:
+                with open(history_file, encoding="utf-8") as f:
                     history = json.load(f)
             except Exception as e:
                 print(f"   ⚠️ No se pudo cargar historial previo: {e}")
@@ -2430,7 +2430,7 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
 
 ## 🎯 PUNTOS DE ENTRADA
 {chr(10).join(f'- `{ep}`' for ep in entry_points[:10])}
-{'' if len(entry_points) <= 10 else f'\n... y {len(entry_points) - 10} más'}
+{'' if len(entry_points) <= 10 else chr(10) + '... y ' + str(len(entry_points) - 10) + ' más'}
 
 ## 🏗️ PATRONES DETECTADOS
 """

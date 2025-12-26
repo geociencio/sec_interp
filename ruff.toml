@@ -63,35 +63,55 @@ select = [
 
 # Rules to ignore (QGIS/PyQt5 specific)
 ignore = [
+    # === Code Style & Layout ===
+    "E501",   # line-too-long
+    "E402",   # module-import-not-at-top-of-file
+    "PLC0415",# import-outside-top-level
+    "PTH",    # flake8-use-pathlib
+    "E722",   # bare-except (Legacy code often uses catch-all)
+
     # === QGIS/PyQt5 Compatibility ===
-    "F821",   # undefined-name (QGIS modules not in standard env)
+    "F821",   # undefined-name
+    "N802",   # invalid-function-name (Qt camelCase)
+    "N803",   # invalid-argument-name
+    "N806",   # non-lowercase-variable-in-function
+    "N815",   # mixedCase variable in class scope
+
+    # === Complexity & Structure ===
+    "C901",   # complex-structure (Allow complex legacy functions)
+    "PLR0915",# too-many-statements
+    "PLR0912",# too-many-branches
+    "PLR0911",# too-many-return-statements
+    "PLR0913",# too-many-arguments
 
     # === Import Management ===
-    "F401",   # unused-import (common in __init__.py for re-exports)
+    "F401",   # unused-import
+    "I001",   # unsorted-imports (Handled by manual sort or fix)
+    "UP035",  # deprecated-import (typing.List vs list)
 
     # === Docstring Flexibility ===
-    "D100",   # undocumented-public-module (not all modules need docstrings)
-    "D104",   # undocumented-public-package (not all __init__.py need docstrings)
-    "D203",   # one-blank-line-before-class (conflicts with D211)
-    "D213",   # multi-line-summary-second-line (conflicts with D212)
-    "D205",   # missing blank line after summary
+    "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
+    "D203", "D213", "D205",
 
-    # === Exception Handling ===
-    "TRY003", # raise-vanilla-args (allow descriptive exception messages)
-
-    # === Pylint Overrides ===
-    "PLR0913", # too-many-arguments (QGIS methods often have many params)
-    "PLR2004", # magic-value-comparison (common in QGIS coordinate checks)
-
-    # === Print Statements ===
-    "T201",   # print-found (allow print for debugging, use logger instead)
-
-    # === Missing Docstrings (equiv to pylint C0111) ===
-    "D101", "D102", "D103", "D105", "D106", "D107",
-
-    # === Typing ===
-    "UP007",  # type-union (X | Y) - Breaks PyQGIS class evaluation in some environments
-    "UP045",  # Use `X | None` for type annotations - Similar to UP007
+    # === Exception Handling & Misc ===
+    "TRY003", # raise-vanilla-args
+    "TRY300", # try-consider-else
+    "TRY301", # raise-within-try
+    "TRY401", # verbose-log-message
+    "RUF001", # ambiguous-unicode-character-string (Allow emojis and dashes)
+    "RUF012", # mutable-class-default
+    "RUF059", # unused-unpacked-variable
+    "RUF100", # unused-noqa
+    "SIM102", # collapsible-if
+    "PLR2004",# magic-value-comparison
+    "PLW0603",# global-statement
+    "PLW2901",# redefined-loop-name
+    "PLC0206",# dict-index-missing-items
+    "T201",   # print-found
+    "F841",   # unused-variable
+    "E741",   # ambiguous-variable-name
+    "N818",   # error-suffix-on-exception-name
+    "UP007", "UP045",
 ]
 
 # Dummy variable pattern (matches .pylintrc)
