@@ -127,6 +127,9 @@ def interpolate_elevation(topo_data: list, distance: float) -> float:
     Returns:
         The interpolated elevation value.
     """
+    if not topo_data:
+        return 0.0
+
     import bisect
 
     # Extract distances for bisect

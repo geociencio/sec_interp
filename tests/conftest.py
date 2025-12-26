@@ -12,6 +12,15 @@ class MockQgsBase:
 
 
 class MockQgsMapLayer(MockQgsBase):
+    class LayerType:
+        VectorLayer = 0
+        RasterLayer = 1
+        PluginLayer = 2
+        MeshLayer = 3
+        VectorTileLayer = 4
+        PointCloudLayer = 5
+        AnnotationLayer = 6
+
     def isValid(self):
         return True
 

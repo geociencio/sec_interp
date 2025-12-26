@@ -36,22 +36,26 @@ class TestDataCache(unittest.TestCase):
             "struct_data": [(2, 45)],
         }
 
-        self.cache.set(key, data)
+        self.cache.set("topo", key, data)
 
         # Test unified get
-        retrieved = self.cache.get(key)
+        retrieved = self.cache.get("topo", key)
         self.assertIsNotNone(retrieved)
         self.assertEqual(retrieved["profile_data"], data["profile_data"])
         self.assertEqual(retrieved["geol_data"], data["geol_data"])
         self.assertEqual(retrieved["struct_data"], data["struct_data"])
 
         # Test individual gets (checking compatibility)
-        self.assertEqual(self.cache.get_topographic_profile(key), data["profile_data"])
+        # In the new API, these now return the full object stored in the respective bucket.
+        self.assertEqual(self.cache.get_topographic_profile(key), data)
+        self.assertEqual(self.cache.get_geological_profile(key), None) # Different bucket
+        self.cache.set("geol", key, data["geol_data"])
         self.assertEqual(self.cache.get_geological_profile(key), data["geol_data"])
+        self.cache.set("struct", key, data["struct_data"])
         self.assertEqual(self.cache.get_structural_data(key), data["struct_data"])
 
     def test_get_missing(self):
-        self.assertIsNone(self.cache.get("nonexistent_key"))
+        self.assertIsNone(self.cache.get("topo", "nonexistent_key"))
 
 
 if __name__ == "__main__":
