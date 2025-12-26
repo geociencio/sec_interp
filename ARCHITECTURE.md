@@ -37,13 +37,23 @@ Contiene la lógica pura de procesamiento geológico y geométrico.
 Funciones atómicas y puras.
 - **`geometry_utils/`**: Modularizado en `extraction`, `processing` y `filtering`.
 - **`sampling.py`**: Muestreo de elevación sobre DEMs.
+- **`parsing.py`**: Parsers para datos estructurales y geológicos.
+
+### 🌍 Internacionalización (i18n/)
+- Soporte multilingüe (ES, FR, DE, RU, PT_BR).
+- Uso de `QCoreApplication.translate` para evitar errores de inicialización en Qt.
+- Compilación automatizada de archivos `.ts` a `.qm` vía Makefile.
 
 ## 🚀 Optimizaciones de Rendimiento
 1. **Hash-Based Caching**: En `PreviewManager`, los datos pesados solo se regeneran si los parámetros de entrada (capas, campos, distancias) cambian.
 2. **Topography LOD**: El muestreo de elevación se adapta dinámicamente según el ancho del canvas para mantener la fluidez en el zoom.
-3. **Spatial Indexing**: Uso de `QgsSpatialIndex` en el filtrado de sondajes y estructuras para evitar búsquedas lineales costosas.
-4. **Parallel Processing**: Procesamiento de geología realizado en hilos secundarios para mantener la interfaz receptiva.
+3. **Spatial Indexing**: Uso de `QgsSpatialIndex` en el filtrado de sondajes y estructuras.
+4. **Parallel Processing**: Procesamiento de geología realizado en hilos secundarios (`ParallelGeologyService`).
 
 ## 🛡️ Estándares y Calidad
-- **Core Decoupling**: El núcleo no tiene dependencias de `PyQt` o `qgis.gui`, utilizando `IntEnum` y tipos nativos para la validación.
-- **Static Analysis**: Cumplimiento con Ruff y Pylint bajo los estándares de mejores prácticas de QGIS.
+- **Core Decoupling**: El núcleo no tiene dependencias de `PyQt` o `qgis.gui` (SOLID).
+- **Static Analysis**: Cumplimiento con Ruff (vía pre-commit) y Pylint.
+- **Métricas**: Seguimiento automático de calidad (`quality_score`) en cada análisis.
+
+---
+**Version**: 2.4.0 | **Updated**: 2025-12-25
