@@ -19,6 +19,7 @@ from sec_interp.core.exceptions import DataMissingError, ProcessingError
 from sec_interp.core.services import (
     DrillholeService,
     GeologyService,
+    InterpretationService,
     ProfileService,
     StructureService,
 )
@@ -40,6 +41,7 @@ class ProfileController:
         self.geology_service = GeologyService()
         self.structure_service = StructureService()
         self.drillhole_service = DrillholeService()
+        self.interpretation_service = InterpretationService()
         logger.debug("ProfileController initialized")
 
     def connect_layer_notifications(self, layers: list[Any]) -> None:
@@ -283,3 +285,32 @@ class ProfileController:
                                 },
                             )
         return profile_data, geol_data, struct_data, drillhole_data, messages
+
+    def project_interpretations(
+        self,
+        interpretations: list[Any],
+        section_line: Any,
+        crs: Any,
+        vertical_exag: float = 1.0,
+    ) -> list[Any]:
+        """Project a list of 2D interpretations to 2.5D georeferenced geometries.
+
+        Args:
+            interpretations: List of InterpretationPolygon (2D) objects.
+            section_line: QgsGeometry of the section line.
+            crs: QgsCoordinateReferenceSystem of the section.
+            vertical_exag: Vertical exaggeration factor to reverse.
+
+        Returns:
+            List of InterpretationPolygon25D objects.
+        """
+        results = []
+        for interp in interpretations:
+            try:
+                projected = self.interpretation_service.project_2d_to_25d(
+                    interp, section_line, crs, vertical_exag
+                )
+                results.append(projected)
+            except Exception as e:
+                logger.error(f"Failed to project interpretation '{interp.name}': {e}")
+        return results

@@ -83,7 +83,11 @@ class MockQgsGeometry(MockQgsBase):
         return self._wkb_type
 
     def length(self):
-        return 10.0
+        return 100.0
+
+    def interpolate(self, distance):
+        # Mock interpolation: assume line is on X axis for simplicity
+        return MockQgsGeometry.fromPointXY(MockQgsPointXY(distance, 0.0))
 
 
 class MockQgsCoordinateReferenceSystem(MockQgsBase):
@@ -127,8 +131,16 @@ class MockQgsDistanceArea(MockQgsBase):
         pass
 
 
-# Mock QGIS and PyQt before importing any project modules during test collection
-if "qgis" not in sys.modules:
+# Mock QGIS and PyQt ONLY if real library is missing
+try:
+    import qgis.core
+    import qgis.gui
+    import qgis.processing
+    CORE_AVAILABLE = True
+except ImportError:
+    CORE_AVAILABLE = False
+
+if not CORE_AVAILABLE and "qgis" not in sys.modules:
     mock_qgis = MagicMock()
     sys.modules["qgis"] = mock_qgis
 

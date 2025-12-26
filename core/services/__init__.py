@@ -8,6 +8,7 @@ This package contains service classes that handle specific data processing tasks
 
 from .drillhole_service import DrillholeService
 from .geology_service import GeologyService
+from .interpretation_service import InterpretationService
 from .profile_service import ProfileService
 from .structure_service import StructureService
 
@@ -15,6 +16,7 @@ from .structure_service import StructureService
 __all__ = [
     "DrillholeService",
     "GeologyService",
+    "InterpretationService",
     "ProfileService",
     "StructureService",
 ]
