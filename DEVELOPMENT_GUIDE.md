@@ -25,6 +25,11 @@ Si deseas añadir un nuevo tipo de previsualización:
 - **Indexación Espacial**: Usa siempre `QgsSpatialIndex` cuando necesites filtrar capas vectoriales por proximidad.
 
 ## 🧹 Calidad de Código
-- Ejecuta `ruff check .` antes de realizar un commit.
+- **Pre-commit**: Instala con `uv run pre-commit install`. Los checks se ejecutan en cada commit.
+- **Linting**: Ejecuta `uv run ruff check .` para validar estándares.
+- **Análisis**: Usa `analyze_project_optfixed.py` para obtener un informe de calidad y evolucion de métricas.
 - Sigue las convenciones de `COMMIT_GUIDELINES.md` (Conventional Commits).
 - Mantén una complejidad ciclomática por función inferior a 15 siempre que sea posible.
+
+---
+**Version**: 2.4.0 | **Ref**: [README_DEV.md](README_DEV.md)

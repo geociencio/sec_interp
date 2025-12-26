@@ -1,49 +1,63 @@
-# Entorno de desarrollo para el plugin SecInterp (QGIS)
+# Entorno de Desarrollo para el plugin SecInterp (QGIS)
 
-## Resumen rápido
-- Este repositorio es un plugin de QGIS que depende de las librerías internas que QGIS instala (qgis.core, qgis.gui). Esas no se instalan por pip.
-- El entorno virtual aquí descrito sirve para tareas de desarrollo y pruebas que no requieren las bindings de QGIS (linting, tests unitarios que no importen qgis, etc.).
+## Resumen Rápido
+- Este repositorio es un plugin de QGIS que depende de las librerías internas que QGIS instala (`qgis.core`, `qgis.gui`). Estas no se instalan vía `pip`.
+- El entorno virtual sirve para tareas de desarrollo (linting, tests, análisis estático) y se recomienda el uso de `uv` para máxima velocidad y reproducibilidad.
 
-## Requisitos del sistema
-- Tener instalada una versión de Python 3 (recomendado 3.10 o 3.11). Esto depende de tu distribución y de la versión de QGIS en tu máquina — QGIS 3.x usa Python 3.x (PyQt5).
-- Para probar el plugin dentro de QGIS debes ejecutar QGIS (que incluye su propio intérprete con los bindings).
+## Requisitos del Sistema
+- **Python**: 3.10 o superior (QGIS 3.34+ usa Python 3.12+ en algunas distros).
+- **QGIS**: 3.28 LTR o superior instalado en el sistema.
+- **uv**: Instalado en el sistema (`curl -LsSf https://astral.sh/uv/install.sh | sh`).
 
-## Crear y activar entorno virtual (Linux / zsh)
+## Configuración del Entorno Virtual (Recomendado)
+Para configurar el entorno de desarrollo usando `uv`:
+
 ```bash
-python3 -m venv .venv
+# Crear entorno y sincronizar dependencias
+uv sync
+
+# Activar entorno
 source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
 ```
 
-## Licencia
-El proyecto está licenciado bajo GNU GPL v2 o GPL v3 (a elección del usuario). Los textos de licencia completos se incluyen como `LICENSE-GPL-2.0.txt` y `LICENSE-GPL-3.0.txt` y el archivo `LICENSE` contiene la nota de doble-licencia.
+### Framework de Calidad: Pre-commit
+Hemos implementado pre-commit hooks para asegurar la calidad del código antes de cada commit.
 
-## Notas sobre QGIS
-- No intentes instalar el paquete `qgis` por pip — las bindings QGIS provienen del instalador de QGIS o del paquete del sistema.
-- Para ejecutar y depurar el plugin, carga el plugin desde la carpeta del proyecto en QGIS o instala el plugin en el entorno QGIS apropiado.
+```bash
+# Instalar hooks en tu repositorio local
+uv run pre-commit install
+```
 
-## Comandos útiles
-- Activar: `source .venv/bin/activate`
-- Linting (Ruff): `uv run ruff check .`
-- Formateo (Black): `uv run black .`
-- Tests: `pytest` (puede requerir adaptación si los tests dependen de QGIS)
-- Análisis de calidad: `python analyze_project_optfixed.py`
+Los hooks ejecutarán automáticamente:
+- **Ruff**: Linting y formateo ultrarrápido.
+- **Trailing whitespace**: Limpieza de espacios al final de línea.
+- **End of file fixer**: Asegura nueva línea al final de los archivos.
+- **YAML/TOML Check**: Validación de sintaxis en archivos de configuración.
 
-## Despliegue / `deploy.sh`
-El script `deploy.sh` ahora soporta variables de entorno para mayor flexibilidad y seguridad:
+## Comandos de Desarrollo
+- **Análisis de Calidad**: `uv run python analyze_project_optfixed.py`
+  - Genera `PROJECT_SUMMARY.md` y actualiza el historial en `.ai-context/metrics_history.json`.
+- **Linting Manual**: `uv run ruff check .`
+- **Formateo Manual**: `uv run ruff format .`
+- **Tests**: `uv run pytest`
 
-- Puedes sobreescribir el destino con `QGIS_PLUGINS_DIR` antes de ejecutar el script, por ejemplo:
-  ```bash
-  QGIS_PLUGINS_DIR=/ruta/mi/qgis/plugins ./deploy.sh
-  ```
-- `deploy.sh` crea un backup timestamped del directorio destino si detecta contenido previo (ej.: `/home/usuario/.../sec_interp.bak.20251127123000`).
+## Despliegue Local (`deploy.sh`)
+Usa el script de despliegue para ver los cambios en QGIS:
+```bash
+./scripts/deploy.sh
+```
+*Tip: El script detectará automáticamente tu carpeta de plugins de QGIS en Linux y creará backups automáticos.*
 
-El script fallará de forma segura si faltan comandos requeridos o si ocurre un error durante la copia.
+## Estándares de Código
+1. **Conventional Commits**: Sigue el estándar definido en `docs/docsec/COMMIT_GUIDELINES.md`.
+2. **Arquitectura Desacoplada**: No importes GUI en módulos de `core/`.
+3. **Documentación**: Usa docstrings estilo Google (Sphinx compatible).
 
-## Documentación para desarrolladores
-Para información detallada sobre arquitectura y guías de desarrollo, consulta:
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Arquitectura técnica del plugin
-- [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) - Guía de desarrollo y estándares
-- [docs/docsec/CHANGELOG.md](docs/docsec/CHANGELOG.md) - Historial de cambios detallado
+## Documentación de Referencia
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Arquitectura técnica unificada.
+- [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) - Guía detallada para desarrolladores.
+- [CHANGELOG.md](docs/docsec/CHANGELOG.md) - Historial de versiones y cambios críticos.
+- [FEATURE_INTERPRETATION_25D.md](FEATURE_INTERPRETATION_25D.md) - Plan para v2.5.0.
+
+---
+**Plugin Version**: 2.4.0 | **Last Update**: 2025-12-25
