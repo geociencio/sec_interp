@@ -71,6 +71,9 @@ class DialogSignalManager:
         self.dialog.preview_widget.chk_drillholes.stateChanged.connect(
             self.dialog.update_preview_from_checkboxes
         )
+        self.dialog.preview_widget.chk_interpretations.stateChanged.connect(
+            self.dialog.update_preview_from_checkboxes
+        )
 
         # Preview settings
         self.dialog.preview_widget.spin_max_points.valueChanged.connect(

@@ -16,8 +16,10 @@ class QgsLogHandler(logging.Handler):
         self.tag = tag
 
     def emit(self, record):
-        """Emit a log record to QGIS message log."""
+        """Emit a log record to QGIS message log safely."""
         try:
+            from qgis.PyQt.QtCore import QThread, QCoreApplication
+            
             msg = self.format(record)
 
             # Map Python logging levels to QGIS levels
@@ -28,9 +30,15 @@ class QgsLogHandler(logging.Handler):
             elif record.levelno >= logging.INFO:
                 level = Qgis.Info
             else:
-                level = Qgis.Info  # DEBUG messages as Info
+                level = Qgis.Info
 
-            QgsMessageLog.logMessage(msg, self.tag, level)
+            # Critical: UI updates from background threads cause segfaults in QGIS
+            if QThread.currentThread() == QCoreApplication.instance().thread():
+                QgsMessageLog.logMessage(msg, self.tag, level)
+            else:
+                # Fallback to standard output for background threads
+                # This prevents the most common cause of QGIS segfaults in plugins
+                print(f"[{self.tag}] (BG) {msg}")
         except Exception:
             self.handleError(record)
 

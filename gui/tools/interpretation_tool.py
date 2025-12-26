@@ -65,21 +65,25 @@ class ProfileSnapper:
             if not self._is_snappable(layer):
                 continue
 
-            locator = self._get_locator(layer, crs, context)
-            if not locator:
+            try:
+                locator = self._get_locator(layer, crs, context)
+                if not locator:
+                    continue
+
+                # Try vertex snap
+                v_match = locator.nearestVertex(point, tolerance)
+                if v_match.isValid() and v_match.distance() < best_dist:
+                    best_match = v_match
+                    best_dist = v_match.distance()
+
+                # Try edge snap
+                e_match = locator.nearestEdge(point, tolerance)
+                if e_match.isValid() and e_match.distance() < best_dist:
+                    best_match = e_match
+                    best_dist = e_match.distance()
+            except Exception:
+                # If layer was deleted or something went wrong with locator
                 continue
-
-            # Try vertex snap
-            v_match = locator.nearestVertex(point, tolerance)
-            if v_match.isValid() and v_match.distance() < best_dist:
-                best_match = v_match
-                best_dist = v_match.distance()
-
-            # Try edge snap
-            e_match = locator.nearestEdge(point, tolerance)
-            if e_match.isValid() and e_match.distance() < best_dist:
-                best_match = e_match
-                best_dist = e_match.distance()
 
         if best_match:
             return best_match.point()
@@ -138,19 +142,35 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         logger.debug("ProfileInterpretationTool activated")
 
     def deactivate(self):
+        """Cleanup when tool is deactivated."""
         self.reset()
         super().deactivate()
         logger.debug("ProfileInterpretationTool deactivated")
 
     def reset(self):
-        """Resets the tool state."""
+        """Resets the tool state safely."""
         self.points = []
+        
+        # Rubber band cleanup
         if self.rubber_band:
-            self.canvas.scene().removeItem(self.rubber_band)
+            try:
+                self.rubber_band.reset(QgsWkbTypes.PolygonGeometry)
+                self.canvas.scene().removeItem(self.rubber_band)
+            except Exception:
+                pass
             self.rubber_band = None
+            
+        # Markers cleanup
         for marker in self.vertex_markers:
-            self.canvas.scene().removeItem(marker)
+            try:
+                self.canvas.scene().removeItem(marker)
+            except Exception:
+                pass
         self.vertex_markers = []
+        
+        self.is_drawing = False
+        if self.canvas:
+            self.canvas.refresh()
 
     def canvasReleaseEvent(self, event):
         """Handle mouse click release."""
@@ -260,7 +280,8 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         )
 
         self.polygonFinished.emit(interp)
-        self.reset()
+        # Note: Do NOT call reset() here. 
+        # The dialog handler should deactivate the tool, which calls reset() cleanly.
         logger.info(
             f"Interpretation polygon finalized with {len(vertices_2d)} vertices"
         )

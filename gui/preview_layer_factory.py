@@ -22,10 +22,11 @@ from qgis.core import (
     QgsTextFormat,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtGui import QColor
 
-from sec_interp.core.types import GeologyData, ProfileData, StructureData
+from sec_interp.core.types import GeologyData, InterpretationPolygon, ProfileData, StructureData
 from sec_interp.logger_config import get_logger
 
 from .preview_optimizer import PreviewOptimizer
@@ -365,6 +366,64 @@ class PreviewLayerFactory:
             categories.append(category)
 
         renderer = QgsCategorizedSymbolRenderer("unit", categories)
+        layer.setRenderer(renderer)
+        layer.updateExtents()
+        return layer
+
+    def create_interpretation_layer(
+        self, interpretations: list[InterpretationPolygon], vert_exag: float = 1.0
+    ) -> Optional[QgsVectorLayer]:
+        """Create temporary layer for digitized interpretations."""
+        if not interpretations:
+            return None
+        logger.debug(f"create_interpretation_layer: {len(interpretations)} objects, vert_exag={vert_exag}")
+
+        layer, provider = self.create_memory_layer(
+            "Polygon",
+            "Interpretations",
+            "field=id:string&field=name:string&field=color:string",
+        )
+        if not layer:
+            return None
+
+        features = []
+        for interp in interpretations:
+            if not interp.vertices_2d or len(interp.vertices_2d) < 3:
+                continue
+
+            # Create closed polygon points
+            points = [QgsPointXY(x, y * vert_exag) for x, y in interp.vertices_2d]
+            logger.debug(f"Interp '{interp.name}' vertices: {interp.vertices_2d[:2]}... -> {points[:2]}...")
+            # Ensure closed
+            if points[0] != points[-1]:
+                points.append(points[0])
+
+            geom = QgsGeometry.fromPolygonXY([points])
+            feat = QgsFeature(layer.fields())
+            feat.setGeometry(geom)
+            feat.setAttribute("id", interp.id)
+            feat.setAttribute("name", interp.name)
+            feat.setAttribute("color", interp.color)
+            features.append(feat)
+
+        provider.addFeatures(features)
+
+        # Simple categorized renderer to allow different colors
+        categories = []
+        for interp in interpretations:
+            col = QColor(interp.color)
+            col.setAlpha(120)
+            sym = (
+                QgsSingleSymbolRenderer.defaultRenderer(QgsWkbTypes.PolygonGeometry)
+                .symbol()
+                .clone()
+            )
+            sym.setColor(col)
+            sym.setStrokeColor(col.darker(150))
+            sym.setStrokeWidth(0.5)
+            categories.append(QgsRendererCategory(interp.id, sym, interp.name))
+
+        renderer = QgsCategorizedSymbolRenderer("id", categories)
         layer.setRenderer(renderer)
         layer.updateExtents()
         return layer

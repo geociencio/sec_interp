@@ -29,7 +29,7 @@ class GeologyPage(BasePage):
 
         # Use modern flags if available (QGIS 3.32+)
         try:
-            from qgis.core import Qgis  # noqa: PLC0415
+            from qgis.core import Qgis
 
             self.layer_combo.setFilters(
                 Qgis.LayerFilters(Qgis.LayerFilter.PolygonLayer)

@@ -68,6 +68,7 @@ class PreviewManager:
             "geol": None,
             "struct": None,
             "drillhole": None,
+            "interpretations": None,
         }
         self.last_params_hash = None
         self.last_result: Optional[PreviewResult] = None
@@ -185,11 +186,13 @@ class PreviewManager:
                         # Otherwise None (will be filled by async process)
                         geol_for_render = self.cached_data.get("geol")
 
+                        logger.debug(f"Calling draw_preview with {len(self.dialog.interpretations)} interpretations")
                         self.dialog.plugin_instance.draw_preview(
                             self.cached_data["topo"],
                             geol_for_render,
                             self.cached_data["struct"],
                             drillhole_data=self.cached_data["drillhole"],
+                            interpretations=self.dialog.interpretations,
                             max_points=max_points_for_render,
                             use_adaptive_sampling=use_adaptive_sampling,
                         )
@@ -214,11 +217,10 @@ class PreviewManager:
             return True, QCoreApplication.translate("PreviewManager", "Preview generated successfully")
 
     def update_from_checkboxes(self) -> None:
-        """Update preview when checkboxes change.
+        """Update preview when checkboxes change."""
+        if not self.dialog.isVisible():
+            return
 
-        This method re-renders the preview using cached data and
-        current checkbox states without regenerating data.
-        """
         if not self.cached_data["topo"]:
             return  # No data to display
 
@@ -233,6 +235,9 @@ class PreviewManager:
         geol_data = self.cached_data["geol"] if show_geol else None
         struct_data = self.cached_data["struct"] if show_struct else None
         drillhole_data = self.cached_data["drillhole"] if show_drill else None
+        
+        show_interp = self.dialog.preview_widget.chk_interpretations.isChecked()
+        interp_data = self.dialog.interpretations if show_interp else None
 
         # Re-render
         try:
@@ -253,11 +258,13 @@ class PreviewManager:
                 auto_lod=auto_lod_enabled,
             )
 
+            logger.debug(f"Calling draw_preview from checkboxes with {len(interp_data) if interp_data else 0} interpretations")
             self.dialog.plugin_instance.draw_preview(
                 topo_data,
                 geol_data,
                 struct_data,
                 drillhole_data=drillhole_data,
+                interpretations=interp_data,
                 max_points=max_points_for_render,
                 use_adaptive_sampling=use_adaptive_sampling,
             )
@@ -482,6 +489,7 @@ class PreviewManager:
                 self.cached_data["geol"],
                 self.cached_data["struct"],
                 drillhole_data=self.cached_data["drillhole"],
+                interpretations=self.dialog.interpretations,
                 max_points=new_max_points,
                 preserve_extent=True,
                 use_adaptive_sampling=use_adaptive_sampling,

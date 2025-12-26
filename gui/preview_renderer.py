@@ -74,9 +74,13 @@ class PreviewRenderer:
         preserve_extent: bool = False,
         use_adaptive_sampling: bool = False,
         drillhole_data: Optional[list] = None,
+        interp_data: Optional[list] = None,
         **kwargs,
     ) -> tuple[Optional[QgsMapCanvas], list]:
         """Render preview with all data layers."""
+        if not self.canvas:
+            return None, []
+            
         logger.debug("render() called")
 
         # 1. Clean up previous layers
@@ -93,6 +97,12 @@ class PreviewRenderer:
 
         geol_layer = self.layer_factory.create_geol_layer(
             geol_data, vert_exag, max_points
+        )
+
+        # Interpretation layer
+        logger.debug(f"Creating interpretation layer with {len(interp_data) if interp_data else 0} objects")
+        interp_layer = self.layer_factory.create_interpretation_layer(
+            interp_data, vert_exag
         )
 
         # For structural layer, use topo or geol as reference
@@ -124,7 +134,13 @@ class PreviewRenderer:
         # 3. Collect valid data layers
         data_layers = [
             layer
-            for layer in [struct_layer, geol_layer, topo_layer, *drillhole_layers]
+            for layer in [
+                struct_layer,
+                interp_layer,
+                geol_layer,
+                topo_layer,
+                *drillhole_layers,
+            ]
             if layer is not None
         ]
 
@@ -198,11 +214,19 @@ class PreviewRenderer:
             return False
 
     def _cleanup_layers(self):
-        """Remove previous layers from QgsProject."""
-        for layer in self.layers:
-            if layer:
-                with contextlib.suppress(Exception):
-                    QgsProject.instance().removeMapLayer(layer.id())
+        """Reset internal layers list and clear canvas.
+        
+        Memory layers NOT added to the project are automatically cleaned up 
+        when their reference count drops to zero.
+        """
+        if self.canvas:
+            try:
+                self.canvas.setLayers([])
+            except Exception:
+                logger.debug("Failed to clear canvas layers during cleanup")
+
+        # Just clear the list to let Python's garbage collector handle the C++ objects
+        # if they are no longer used by the canvas.
         self.layers = []
         self.layer_factory.active_units = {}
 

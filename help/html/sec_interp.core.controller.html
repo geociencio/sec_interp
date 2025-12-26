@@ -118,6 +118,25 @@ and drillhole desurveying.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.core.controller.ProfileController.project_interpretations">
+<span class="sig-name descname"><span class="pre">project_interpretations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interpretations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_exag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.controller.ProfileController.project_interpretations" title="Link to this definition">¶</a></dt>
+<dd><p>Project a list of 2D interpretations to 2.5D georeferenced geometries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interpretations</strong> – List of InterpretationPolygon (2D) objects.</p></li>
+<li><p><strong>section_line</strong> – QgsGeometry of the section line.</p></li>
+<li><p><strong>crs</strong> – QgsCoordinateReferenceSystem of the section.</p></li>
+<li><p><strong>vertical_exag</strong> – Vertical exaggeration factor to reverse.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of InterpretationPolygon25D objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>

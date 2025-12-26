@@ -39,11 +39,11 @@ LRELEASE = lrelease
 SOURCES = \
 	__init__.py sec_interp_plugin.py \
 	core/algorithms.py core/utils.py core/utils/drillhole.py core/validation.py core/validation/field_validator.py core/validation/layer_validator.py core/validation/path_validator.py core/validation/project_validator.py \
-	core/services/geology_service.py core/services/profile_service.py core/services/structure_service.py core/services/drillhole_service.py \
-	exporters/base_exporter.py exporters/image_exporter.py exporters/svg_exporter.py exporters/pdf_exporter.py exporters/csv_exporter.py exporters/shp_exporter.py \
-	gui/main_window.py gui/main_dialog.py gui/main_dialog_signals.py gui/main_dialog_data.py gui/preview_renderer.py gui/sidebar.py \
+	core/services/geology_service.py core/services/profile_service.py core/services/structure_service.py core/services/drillhole_service.py core/services/interpretation_service.py core/services/export_service.py \
+	exporters/base_exporter.py exporters/image_exporter.py exporters/svg_exporter.py exporters/pdf_exporter.py exporters/csv_exporter.py exporters/shp_exporter.py exporters/interpretation_exporters.py \
+	gui/main_window.py gui/main_dialog.py gui/main_dialog_signals.py gui/main_dialog_data.py gui/main_dialog_cache_handler.py gui/main_dialog_export.py gui/preview_renderer.py gui/sidebar.py \
 	gui/ui/pages/base_page.py gui/ui/pages/dem_page.py gui/ui/pages/section_page.py gui/ui/pages/geology_page.py gui/ui/pages/structure_page.py gui/ui/pages/preview_page.py \
-	gui/tools/measure_tool.py
+	gui/tools/measure_tool.py gui/tools/interpretation_tool.py
 
 PLUGINNAME = sec_interp
 

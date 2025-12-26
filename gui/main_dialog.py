@@ -42,7 +42,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsFileWidget, QgsMapCanvas
-from qgis.PyQt.QtCore import QSize, QUrl, QVariant
+from qgis.PyQt.QtCore import QSize, QTimer, QUrl, QVariant
 from qgis.PyQt.QtGui import QColor, QDesktopServices
 from qgis.PyQt.QtWidgets import (
     QApplication,
@@ -227,6 +227,13 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def on_interpretation_finished(self, interpretation):
         """Handle finalized interpretation polygon."""
+        # Un-exaggerate coordinates if needed before storing
+        vert_exag = self.page_dem.vertexag_spin.value()
+        if vert_exag != 0 and vert_exag != 1.0:
+            interpretation.vertices_2d = [
+                (x, y / vert_exag) for x, y in interpretation.vertices_2d
+            ]
+
         # Store interpretation in local list
         self.interpretations.append(interpretation)
 
@@ -243,6 +250,10 @@ class SecInterpDialog(SecInterpMainWindow):
         # Re-check tool state (DialogToolManager.toggle_interpretation_tool already switches back to pan)
         self.preview_widget.btn_interpret.setChecked(False)
         logger.info(f"Interpretation polygon received: {interpretation.id}")
+
+        # Update preview to show the new polygon
+        # Use singleShot with a longer timeout (100ms) to ensure MapTool cleanup is complete
+        QTimer.singleShot(100, self.update_preview_from_checkboxes)
 
     def update_measurement_display(self, metrics):
         """Display measurement results from multi-point tool via tool_manager."""
@@ -275,6 +286,7 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_geol": bool(self.preview_widget.chk_geol.isChecked()),
             "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
+            "show_interpretations": bool(self.preview_widget.chk_interpretations.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
             "use_adaptive_sampling": bool(

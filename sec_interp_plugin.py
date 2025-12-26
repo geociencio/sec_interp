@@ -380,6 +380,7 @@ class SecInterp:
         geol_data: Optional[list] = None,
         struct_data: Optional[list] = None,
         drillhole_data: Optional[list] = None,
+        interpretations: Optional[list] = None,
         max_points: int = 1000,
         **kwargs,
     ) -> None:
@@ -390,6 +391,7 @@ class SecInterp:
             geol_data: Optional list of (dist, elev, geology_name) tuples
             struct_data: Optional list of (dist, app_dip) tuples
             drillhole_data: Optional list of (hole_id, traces, segments) tuples
+            interpretations: Optional list of InterpretationPolygon objects
             max_points (int): Maximum number of points for simplified preview (LOD)
             **kwargs: Additional arguments passed to renderer (e.g. preserve_extent)
         """
@@ -402,6 +404,9 @@ class SecInterp:
         logger.debug(
             "  - drillhole_data: %d holes", len(drillhole_data) if drillhole_data else 0
         )
+        logger.debug(
+            "  - interpretations: %d objects", len(interpretations) if interpretations else 0
+        )
         logger.debug("  - max_points: %d", max_points)
 
         # Store data in dialog for re-rendering when checkboxes change
@@ -409,6 +414,7 @@ class SecInterp:
         self.dlg.current_geol_data = geol_data
         self.dlg.current_struct_data = struct_data
         self.dlg.current_drillhole_data = drillhole_data
+        self.dlg.current_interpretations = interpretations
 
         # Get preview options from dialog checkboxes
         options = self.dlg.get_preview_options()
@@ -421,6 +427,9 @@ class SecInterp:
         filtered_drill = (
             drillhole_data if options.get("show_drillholes", True) else None
         )  # Requires main_dialog to provide this option key
+        filtered_interp = (
+            interpretations if options.get("show_interpretations", True) else None
+        )
 
         logger.debug("Filtered data:")
         logger.debug(
@@ -466,6 +475,7 @@ class SecInterp:
             max_points=max_points,
             preserve_extent=kwargs.get("preserve_extent", False),
             drillhole_data=filtered_drill,
+            interp_data=filtered_interp,
         )
 
         # Store canvas and layers for export

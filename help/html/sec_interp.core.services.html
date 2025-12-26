@@ -63,6 +63,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.core.services.interpretation_service.html">sec_interp.core.services.interpretation_service module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.core.services.interpretation_service.html#sec_interp.core.services.interpretation_service.InterpretationService"><code class="docutils literal notranslate"><span class="pre">InterpretationService</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.services.interpretation_service.html#sec_interp.core.services.interpretation_service.InterpretationService.project_2d_to_25d"><code class="docutils literal notranslate"><span class="pre">InterpretationService.project_2d_to_25d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.core.services.interpretation_service.html#sec_interp.core.services.interpretation_service.InterpretationService.interpolate_point_on_line"><code class="docutils literal notranslate"><span class="pre">InterpretationService.interpolate_point_on_line()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="sec_interp.core.services.preview_service.html">sec_interp.core.services.preview_service module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewService"><code class="docutils literal notranslate"><span class="pre">PreviewService</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.core.services.preview_service.html#sec_interp.core.services.preview_service.PreviewService.__init__"><code class="docutils literal notranslate"><span class="pre">PreviewService.__init__()</span></code></a></li>
@@ -196,6 +204,52 @@ calculates elevations from the DEM, and returns a list of segments.</p>
 <li><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.GeometryError" title="sec_interp.core.exceptions.GeometryError"><strong>GeometryError</strong></a> – If the line geometry is invalid.</p></li>
 <li><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ProcessingError" title="sec_interp.core.exceptions.ProcessingError"><strong>ProcessingError</strong></a> – If the intersection processing fails.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sec_interp.core.services.InterpretationService">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.services.</span></span><span class="sig-name descname"><span class="pre">InterpretationService</span></span><a class="headerlink" href="#sec_interp.core.services.InterpretationService" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles spatial projection of section interpretations to real-world coordinates.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.core.services.InterpretationService.interpolate_point_on_line">
+<span class="sig-name descname"><span class="pre">interpolate_point_on_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsGeometry</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qgis.core.QgsPointXY</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.core.services.InterpretationService.interpolate_point_on_line" title="Link to this definition">¶</a></dt>
+<dd><p>Utility to get X,Y coordinates for a profile distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distance</strong> – Horizontal distance from start.</p></li>
+<li><p><strong>section_line</strong> – Section line geometry.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>QgsPointXY or None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.core.services.InterpretationService.project_2d_to_25d">
+<span class="sig-name descname"><span class="pre">project_2d_to_25d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interpretation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.InterpretationPolygon" title="sec_interp.core.types.InterpretationPolygon"><span class="pre">InterpretationPolygon</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QgsGeometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QgsCoordinateReferenceSystem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical_exag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.InterpretationPolygon25D" title="sec_interp.core.types.InterpretationPolygon25D"><span class="pre">InterpretationPolygon25D</span></a></span></span><a class="headerlink" href="#sec_interp.core.services.InterpretationService.project_2d_to_25d" title="Link to this definition">¶</a></dt>
+<dd><p>Project a 2D profile interpretation to a georeferenced 2.5D geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interpretation</strong> – The 2D interpretation data (dist, elev).</p></li>
+<li><p><strong>section_line</strong> – The original 3D section line geometry in the map.</p></li>
+<li><p><strong>crs</strong> – The CRS of the section line.</p></li>
+<li><p><strong>vertical_exag</strong> – Vertical exaggeration factor used in the profile.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An InterpretationPolygon25D object containing the projected geometry.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ValidationError" title="sec_interp.core.exceptions.ValidationError"><strong>ValidationError</strong></a> – If geometries are invalid or cannot be projected.</p>
 </dd>
 </dl>
 </dd></dl>

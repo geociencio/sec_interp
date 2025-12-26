@@ -139,11 +139,15 @@ class PreviewWidget(QWidget):
         self.chk_struct.setChecked(True)
         self.chk_drillholes = QCheckBox(self.tr("Show Drillholes"))
         self.chk_drillholes.setChecked(True)
+        self.chk_interpretations = QCheckBox(self.tr("Show Interpretations"))
+        self.chk_interpretations.setChecked(True)
 
         chk_layout.addWidget(self.chk_topo)
         chk_layout.addWidget(self.chk_geol)
         chk_layout.addWidget(self.chk_struct)
         chk_layout.addWidget(self.chk_drillholes)
+        chk_layout.addWidget(self.chk_interpretations)
+        chk_layout.addStretch()
         self.frame_layout.addLayout(chk_layout)
 
     def _setup_results_area(self):
