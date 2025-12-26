@@ -45,13 +45,16 @@ jobs:
     - name: Set up Python
       run: uv python install 3.10
 
+    - name: Create virtual environment
+      run: uv venv --system-site-packages
+
     - name: Install Python dependencies
       run: |
-        uv pip install --system pytest pytest-cov
-        if [ -f requirements.txt ]; then uv pip install --system -r requirements.txt; fi
+        uv pip install pytest pytest-cov
+        if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
     - name: Run tests
       env:
         PYTHONPATH: /usr/lib/python3/dist-packages
       run: |
-        pytest -v --cov=sec_interp tests/
+        uv run pytest -v --cov=sec_interp tests/
