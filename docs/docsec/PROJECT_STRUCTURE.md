@@ -4,13 +4,13 @@
 
 **Sec Interp** is a QGIS plugin for extracting and visualizing geological data along cross-section profiles. It enables geologists to create topographic profiles from DEMs, project geological outcrops, and visualize structural measurements (dip/strike) in a 2D section view.
 
-**Version**: 2.3.0
+**Version**: 2.4.0
 **Author**: Juan M Bernales
 **License**: GPL-2.0 / GPL-3.0
 **Repository**: https://github.com/geociencio/sec_interp
 **QGIS Minimum Version**: 3.0
 
-> **Note**: Version 2.3.0 includes major architectural improvements including modular geometry utilities, manager-based UI delegation, and enhanced performance optimizations. See [CHANGELOG.md](CHANGELOG.md) for details.
+> **Note**: Version 2.4.0 includes major architectural refactoring (Phases 1-6), internationalization support (5 languages), code quality infrastructure with pre-commit hooks, and critical bug fixes. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## Technology Stack
 
@@ -84,9 +84,13 @@ sec_interp/
 │   ├── conftest.py            # pytest configuration
 │   └── test_*.py              # Test modules
 │
-├── 📁 i18n/                    # Internationalization
-│   ├── SecInterp_es.ts        # Spanish translation source
-│   └── SecInterp_es.qm        # Compiled Spanish translation
+├── 📁 i18n/                    # Internationalization (v2.4.0)
+│   ├── SecInterp_es.ts        # Spanish translation
+│   ├── SecInterp_fr.ts        # French translation
+│   ├── SecInterp_de.ts        # German translation
+│   ├── SecInterp_ru.ts        # Russian translation
+│   ├── SecInterp_pt_BR.ts     # Portuguese (Brazil) translation
+│   └── *.qm                   # Compiled translations
 │
 ├── 📁 help/                    # Plugin help documentation
 │   └── build/html/            # Sphinx-generated HTML docs

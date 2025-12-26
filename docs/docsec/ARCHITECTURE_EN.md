@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 2.2 | Last Updated: 2025-12-21
+> Version 2.4 | Last Updated: 2025-12-25
 
 ---
 
@@ -364,6 +364,6 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last Updated**: 2025-12-21
-**Plugin Version**: 2.2
+**Last Updated**: 2025-12-25
+**Plugin Version**: 2.4
 **Author**: Juan M. Bernales
