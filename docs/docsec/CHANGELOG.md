@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2025-12-25
+### Added
+- **Internationalization (I18n) Support**:
+  - Multi-language support for 5 languages: Spanish (ES), French (FR), German (DE), Russian (RU), Portuguese Brazil (PT_BR).
+  - Complete translation of UI strings using Qt's translation system.
+  - Automatic language detection based on QGIS locale.
+  - Translation files (`.ts`) and compiled binaries (`.qm`) for all supported languages.
+  - Scripts for translation management (`update-strings.sh`, `compile-strings.sh`).
+- **Code Quality Infrastructure**:
+  - Pre-commit hooks configured with ruff, trailing-whitespace, end-of-file-fixer, and YAML/TOML validators.
+  - Automated code quality checks on every commit.
+  - Project analyzer with metrics history tracking (`.ai-context/metrics_history.json`).
+- **Development Tools**:
+  - Metrics history logging for tracking code quality evolution over time.
+  - Enhanced project analysis script with performance optimizations.
+
+### Changed
+- **Major Architectural Refactoring (Phases 1-6)**:
+  - **Phase 1 - Architecture & Decoupling**: Defined service interfaces using `abc.ABC` and `typing.Protocol`, implemented dependency injection in Manager classes.
+  - **Phase 2 - Error Handling & Logging**: Created domain-specific exception hierarchy, implemented centralized error handling, migrated to structured logging.
+  - **Phase 3 - Performance & Optimization**: Advanced CacheManager with TTL and LOD awareness, optimized spatial operations, vectorized geometry calculations.
+  - **Phase 4 - Async & Resource Management**: Refined `AsyncGeologyProcessor` with cancellation tokens, implemented robust resource cleanup with Context Managers.
+  - **Phase 5 - Validation & Modernization**: Used `dataclasses` for parameter handling, refined type hinting with Protocols, modernized to Python 3.10+ features.
+  - **Phase 6 - Documentation & DevExp**: Standardized docstrings to Google format across all `core/` modules, comprehensive I18n implementation.
+- **Code Quality Improvements**:
+  - Replaced deprecated `typing.Dict/List/Tuple` with modern `dict/list/tuple` syntax.
+  - Reduced Ruff linting errors from 287 to 261 (9% improvement).
+  - Fixed syntax errors from automated refactoring.
+  - Normalized whitespace in 158 files.
+  - Quality score: 69.1/100, QGIS compliance: 100.0/100.
+
+### Fixed
+- **Critical Bug Fixes**:
+  - Fixed missing `QgsProject` import in `preview_axes_manager.py` causing preview rendering crashes.
+  - Fixed preview rendering by explicitly assigning Project CRS to memory layers.
+  - Fixed `RuntimeError` in Page classes by calling `super().__init__()` before `self.tr()`.
+  - Fixed empty translations by removing `type="unfinished"` attributes from `.ts` files.
+  - Fixed Russian translation file XML corruption.
+  - Fixed false positive `ValidationError` for drillhole layers.
+- **Translation System Fixes**:
+  - Fixed `lrelease` compilation by properly handling multiple locales in Makefile.
+  - Created translation injection scripts for efficient population of `.ts` files.
+  - Verified translation loading with unit tests.
+
+### Documentation
+- Updated all `core/` modules with Google-style docstrings.
+- Created comprehensive walkthrough documenting all architectural improvements.
+- Added session artifacts tracking development progress.
+
 ## [2.3.0] - 2025-12-25
 ### Added
 - **Enhanced Multi-Point Measurement Tool**:
