@@ -22,7 +22,7 @@ jobs:
         run: uv python install 3.10
 
       - name: Run Ruff
-        run: uv run ruff check .
+        run: uvx ruff check .
 
   test:
     name: Unit Tests (QGIS)
