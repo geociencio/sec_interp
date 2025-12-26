@@ -10,11 +10,16 @@ import contextlib
 from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
     QgsMapRendererCustomPainterJob,
     QgsMapSettings,
+    QgsPointXY,
     QgsProject,
+    QgsRectangle,
+    QgsWkbTypes,
 )
-from qgis.gui import QgsMapCanvas
+from qgis.gui import QgsMapCanvas, QgsRubberBand
 from qgis.PyQt.QtCore import QRectF, QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
@@ -48,6 +53,7 @@ class PreviewRenderer:
         """
         self.canvas = canvas
         self.layers = []
+        self.interpretation_rubbers = []  # Store active rubber bands
 
         # Specialized components
         self.layer_factory = PreviewLayerFactory()
@@ -78,13 +84,17 @@ class PreviewRenderer:
         **kwargs,
     ) -> tuple[Optional[QgsMapCanvas], list]:
         """Render preview with all data layers."""
+        logger.debug("PreviewRenderer.render() called")
         if not self.canvas:
+            logger.warning("PreviewRenderer.render() - no canvas available")
             return None, []
-            
-        logger.debug("render() called")
+
+        logger.debug(f"PreviewRenderer.render() - starting with {len(self.layers)} existing layers")
 
         # 1. Clean up previous layers
+        logger.debug("PreviewRenderer.render() - calling _cleanup_layers()")
         self._cleanup_layers()
+        logger.debug("PreviewRenderer.render() - cleanup completed")
         self.has_topography = False
         self.has_structures = False
 
@@ -95,21 +105,19 @@ class PreviewRenderer:
         if topo_layer:
             self.has_topography = True
 
-        geol_layer = self.layer_factory.create_geol_layer(
-            geol_data, vert_exag, max_points
-        )
+        geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
 
-        # Interpretation layer
-        logger.debug(f"Creating interpretation layer with {len(interp_data) if interp_data else 0} objects")
-        interp_layer = self.layer_factory.create_interpretation_layer(
-            interp_data, vert_exag
-        )
+        # Interpretation Drawing (using QgsRubberBand)
+        # We use RubberBands instead of memory layers to prevent QPainter crashes
+        # that were occurring with the vector layer renderer
+        self._clear_interpretation_rubbers()
+        if interp_data:
+            logger.debug(f"Rendering {len(interp_data)} interpretations using QgsRubberBand")
+            self._render_interpretations(interp_data, vert_exag)
 
         # For structural layer, use topo or geol as reference
         reference_data = (
-            topo_data
-            if topo_data
-            else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
+            topo_data if topo_data else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
         )
         struct_layer = self.layer_factory.create_struct_layer(
             struct_data, reference_data, vert_exag, dip_line_length
@@ -120,9 +128,7 @@ class PreviewRenderer:
         # Drillhole layers
         drillhole_layers = []
         if drillhole_data:
-            trace_layer = self.layer_factory.create_drillhole_trace_layer(
-                drillhole_data, vert_exag
-            )
+            trace_layer = self.layer_factory.create_drillhole_trace_layer(drillhole_data, vert_exag)
             if trace_layer:
                 drillhole_layers.append(trace_layer)
             interval_layer = self.layer_factory.create_drillhole_interval_layer(
@@ -136,7 +142,7 @@ class PreviewRenderer:
             layer
             for layer in [
                 struct_layer,
-                interp_layer,
+                # interpreted polygons are now handled via rubber bands
                 geol_layer,
                 topo_layer,
                 *drillhole_layers,
@@ -147,6 +153,11 @@ class PreviewRenderer:
         if not data_layers:
             logger.warning("No valid layers to render")
             return None, []
+
+        # 3. Set layers on canvas
+        logger.debug(f"PreviewRenderer.render() - setting {len(data_layers)} layers on canvas")
+        self.canvas.setLayers(data_layers)
+        logger.debug("PreviewRenderer.render() - layers set on canvas")
 
         # 4. Axes and Labels
         extent = self._calculate_extent(data_layers)
@@ -214,21 +225,69 @@ class PreviewRenderer:
             return False
 
     def _cleanup_layers(self):
-        """Reset internal layers list and clear canvas.
-        
-        Memory layers NOT added to the project are automatically cleaned up 
+        """Reset internal layers list, clear canvas, and remove rubber bands.
+
+        Memory layers NOT added to the project are automatically cleaned up
         when their reference count drops to zero.
         """
+        logger.debug(f"_cleanup_layers() called - {len(self.layers)} layers to clean")
+        self._clear_interpretation_rubbers()  # Clean up rubber bands
         if self.canvas:
             try:
+                logger.debug("_cleanup_layers() - clearing canvas layers")
                 self.canvas.setLayers([])
-            except Exception:
-                logger.debug("Failed to clear canvas layers during cleanup")
+                logger.debug("_cleanup_layers() - canvas layers cleared")
+                self.canvas.refresh()
+            except Exception as e:
+                logger.error(f"Failed to clear canvas layers during cleanup: {e}", exc_info=True)
 
         # Just clear the list to let Python's garbage collector handle the C++ objects
         # if they are no longer used by the canvas.
+        logger.debug(f"_cleanup_layers() - clearing {len(self.layers)} layer references")
         self.layers = []
         self.layer_factory.active_units = {}
+        logger.debug("_cleanup_layers() completed")
+
+    def _clear_interpretation_rubbers(self):
+        """Remove all interpretation rubber bands from canvas."""
+        if not self.canvas:
+            return
+
+        for rb in self.interpretation_rubbers:
+            with contextlib.suppress(RuntimeError, AttributeError):
+                self.canvas.scene().removeItem(rb)
+        self.interpretation_rubbers.clear()
+
+    def _render_interpretations(self, interp_data, vert_exag):
+        """Render interpretations as QgsRubberBand objects."""
+        if not self.canvas:
+            return
+
+        for interp in interp_data:
+            if not interp.vertices_2d or len(interp.vertices_2d) < 3:
+                continue
+
+            # Create rubber band
+            rb = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
+
+            # Set style (semi-transparent red)
+            color = QColor("#FF0000")
+            color.setAlpha(120)
+            rb.setColor(color)
+            rb.setWidth(1)
+            rb.setStrokeColor(color.darker(150))
+
+            # Add geometry
+            points = [QgsPointXY(x, y * vert_exag) for x, y in interp.vertices_2d]
+            # Ensure closed
+            if points[0] != points[-1]:
+                points.append(points[0])
+
+            geom = QgsGeometry.fromPolygonXY([points])
+            rb.setToGeometry(geom, None)
+            rb.show()
+
+            self.interpretation_rubbers.append(rb)
 
     def _calculate_extent(self, layers: list):
         """Combine extents of all given layers."""

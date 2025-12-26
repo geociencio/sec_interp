@@ -19,3 +19,4 @@ PROJECT_SUMMARY.md
 analysis.log
 analysis_errors.json
 project_context.json
+logs/*.log*

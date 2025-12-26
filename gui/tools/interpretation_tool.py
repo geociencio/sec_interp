@@ -1,14 +1,15 @@
 """Interpretation tool for Profile View.
 
-This module provides the ProfileInterpretationTool for drawing 
+This module provides the ProfileInterpretationTool for drawing
 interpretation polygons in the profile preview window.
 """
 
 from __future__ import annotations
 
+import contextlib
 import datetime
-import uuid
 from typing import Optional
+import uuid
 
 from qgis.core import (
     QgsMapLayer,
@@ -100,17 +101,13 @@ class ProfileSnapper:
         """Checks if a layer is valid for snapping."""
         return bool(layer and layer.type() == QgsMapLayer.VectorLayer)
 
-    def _get_locator(
-        self, layer: QgsVectorLayer, crs, context
-    ) -> Optional[QgsPointLocator]:
+    def _get_locator(self, layer: QgsVectorLayer, crs, context) -> Optional[QgsPointLocator]:
         """Retrieves or creates a locator for a layer."""
         if layer.id() not in self._locators:
             try:
                 self._locators[layer.id()] = QgsPointLocator(layer, crs, context)
             except Exception as e:
-                logger.warning(
-                    f"Failed to create locator for layer {layer.name()}: {e}"
-                )
+                logger.warning(f"Failed to create locator for layer {layer.name()}: {e}")
                 return None
         return self._locators[layer.id()]
 
@@ -137,40 +134,43 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         self.cursor = Qt.CrossCursor
 
     def activate(self):
+        logger.debug("ProfileInterpretationTool.activate() called")
         super().activate()
         self.canvas.setCursor(self.cursor)
-        logger.debug("ProfileInterpretationTool activated")
+        logger.debug("ProfileInterpretationTool activated successfully")
 
     def deactivate(self):
         """Cleanup when tool is deactivated."""
+        logger.debug("ProfileInterpretationTool.deactivate() called")
         self.reset()
         super().deactivate()
-        logger.debug("ProfileInterpretationTool deactivated")
+        logger.debug("ProfileInterpretationTool deactivated successfully")
 
     def reset(self):
         """Resets the tool state safely."""
+        logger.debug(
+            f"ProfileInterpretationTool.reset() called - {len(self.points)} points, {len(self.vertex_markers)} markers"
+        )
         self.points = []
-        
+
         # Rubber band cleanup
         if self.rubber_band:
-            try:
+            with contextlib.suppress(Exception):
                 self.rubber_band.reset(QgsWkbTypes.PolygonGeometry)
                 self.canvas.scene().removeItem(self.rubber_band)
-            except Exception:
-                pass
             self.rubber_band = None
-            
+
         # Markers cleanup
         for marker in self.vertex_markers:
-            try:
+            with contextlib.suppress(Exception):
                 self.canvas.scene().removeItem(marker)
-            except Exception:
-                pass
         self.vertex_markers = []
-        
+
         self.is_drawing = False
         if self.canvas:
+            logger.debug("ProfileInterpretationTool.reset() - refreshing canvas")
             self.canvas.refresh()
+        logger.debug("ProfileInterpretationTool.reset() completed")
 
     def canvasReleaseEvent(self, event):
         """Handle mouse click release."""
@@ -263,7 +263,11 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
     def finalize_polygon(self):
         """Finalize the polygon and emit signal."""
+        logger.debug(
+            f"ProfileInterpretationTool.finalize_polygon() called with {len(self.points)} points"
+        )
         if len(self.points) < 3:
+            logger.warning("finalize_polygon() aborted - less than 3 points")
             return
 
         # Capture the points as (dist, elev) which are (x, y) in profile units
@@ -279,9 +283,11 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             created_at=datetime.datetime.now().isoformat(),
         )
 
+        logger.debug(f"finalize_polygon() - emitting polygonFinished signal for {interp.id}")
         self.polygonFinished.emit(interp)
-        # Note: Do NOT call reset() here. 
+        # Note: Do NOT call reset() here.
         # The dialog handler should deactivate the tool, which calls reset() cleanly.
         logger.info(
-            f"Interpretation polygon finalized with {len(vertices_2d)} vertices"
+            f"Interpretation polygon finalized with {len(vertices_2d)} vertices, ID: {interp.id}"
         )
+        logger.debug("finalize_polygon() completed")

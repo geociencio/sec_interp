@@ -16,27 +16,58 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.sec_interp_plugin module" href="sec_interp.sec_interp_plugin.html" />
     <link rel="prev" title="sec_interp.generate_ai_templates module" href="sec_interp.generate_ai_templates.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
+
   <section id="module-sec_interp.logger_config">
 <span id="sec-interp-logger-config-module"></span><h1>sec_interp.logger_config module<a class="headerlink" href="#module-sec_interp.logger_config" title="Link to this heading">¶</a></h1>
 <p>Logger Configuration Module.</p>
 <p>Provides centralized logging configuration for the Sec Interp plugin.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="sec_interp.logger_config.ImmediateFlushFileHandler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.logger_config.</span></span><span class="sig-name descname"><span class="pre">ImmediateFlushFileHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'a'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxBytes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backupCount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.ImmediateFlushFileHandler" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RotatingFileHandler</span></code></p>
+<p>File handler that flushes immediately after each write.</p>
+<p>This ensures logs are written to disk before a crash occurs.</p>
+<p>Open the specified file and use it as the stream for logging.</p>
+<p>By default, the file grows indefinitely. You can specify particular
+values of maxBytes and backupCount to allow the file to rollover at
+a predetermined size.</p>
+<p>Rollover occurs whenever the current log file is nearly maxBytes in
+length. If backupCount is &gt;= 1, the system will successively create
+new files with the same pathname as the base file, but with extensions
+“.1”, “.2” etc. appended to it. For example, with a backupCount of 5
+and a base file name of “app.log”, you would get “app.log”,
+“app.log.1”, “app.log.2”, … through to “app.log.5”. The file being
+written to is always “app.log” - when it gets filled up, it is closed
+and renamed to “app.log.1”, and if files “app.log.1”, “app.log.2” etc.
+exist, then they are renamed to “app.log.2”, “app.log.3” etc.
+respectively.</p>
+<p>If maxBytes is zero, rollover never occurs.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.logger_config.ImmediateFlushFileHandler.emit">
+<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.ImmediateFlushFileHandler.emit" title="Link to this definition">¶</a></dt>
+<dd><p>Emit a record.</p>
+<p>Output the record to the file, catering for rollover as described
+in doRollover().</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="sec_interp.logger_config.QgsLogHandler">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.logger_config.</span></span><span class="sig-name descname"><span class="pre">QgsLogHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SecInterp'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.QgsLogHandler" title="Link to this definition">¶</a></dt>
@@ -73,7 +104,7 @@ and the filter list to empty.</p>
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -137,18 +168,18 @@ and the filter list to empty.</p>
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/sec_interp.logger_config.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>

@@ -132,9 +132,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Add clear cache button
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
-        self.clear_cache_btn.setToolTip(
-            self.tr("Clear cached data to force re-processing.")
-        )
+        self.clear_cache_btn.setToolTip(self.tr("Clear cached data to force re-processing."))
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
 
         # Initialize map tools via tool_manager
@@ -153,9 +151,7 @@ class SecInterpDialog(SecInterpMainWindow):
         from sec_interp.core.services.preview_service import PreviewService
 
         self.validator = DialogValidator(self)
-        self.preview_manager = PreviewManager(
-            self, PreviewService(self.plugin_instance.controller)
-        )
+        self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
         self.data_aggregator = DialogDataAggregator(self)
@@ -230,9 +226,7 @@ class SecInterpDialog(SecInterpMainWindow):
         # Un-exaggerate coordinates if needed before storing
         vert_exag = self.page_dem.vertexag_spin.value()
         if vert_exag != 0 and vert_exag != 1.0:
-            interpretation.vertices_2d = [
-                (x, y / vert_exag) for x, y in interpretation.vertices_2d
-            ]
+            interpretation.vertices_2d = [(x, y / vert_exag) for x, y in interpretation.vertices_2d]
 
         # Store interpretation in local list
         self.interpretations.append(interpretation)
@@ -247,13 +241,22 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_widget.results_text.setHtml(msg)
         self.preview_widget.results_group.setCollapsed(False)
 
-        # Re-check tool state (DialogToolManager.toggle_interpretation_tool already switches back to pan)
+        # CRITICAL: Deactivate the interpretation tool BEFORE updating preview
+        # This prevents QPainter crashes from rubber band/marker conflicts
+        logger.debug("Deactivating interpretation tool before preview update")
         self.preview_widget.btn_interpret.setChecked(False)
+
+        # Force tool cleanup by switching to pan tool
+        self.tool_manager.activate_default_tool()
+
+        # Force canvas refresh to clear any remaining graphics
+        self.preview_widget.canvas.refresh()
+
         logger.info(f"Interpretation polygon received: {interpretation.id}")
 
         # Update preview to show the new polygon
-        # Use singleShot with a longer timeout (100ms) to ensure MapTool cleanup is complete
-        QTimer.singleShot(100, self.update_preview_from_checkboxes)
+        logger.debug("Calling update_preview_from_checkboxes after interpretation finished")
+        self.update_preview_from_checkboxes()
 
     def update_measurement_display(self, metrics):
         """Display measurement results from multi-point tool via tool_manager."""
@@ -289,9 +292,7 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_interpretations": bool(self.preview_widget.chk_interpretations.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
-            "use_adaptive_sampling": bool(
-                self.preview_widget.chk_adaptive_sampling.isChecked()
-            ),
+            "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
         }
 
     def update_preview_from_checkboxes(self):

@@ -91,7 +91,7 @@ ignore = [
 
     # === Typing ===
     "UP007",  # type-union (X | Y) - Breaks PyQGIS class evaluation in some environments
-    "UP045",  # Use `X | None` for type annotations - Similar to UP007
+    "ISC001", # implicit-str-concat - conflicts with ruff format
 ]
 
 # Dummy variable pattern (matches .pylintrc)
