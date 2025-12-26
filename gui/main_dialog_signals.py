@@ -122,16 +122,29 @@ class DialogSignalManager:
             self.dialog.toggle_measure_tool
         )
 
-        # Finalize button with debug wrapper
+        # Interpretation tool
+        self.dialog.preview_widget.btn_interpret.toggled.connect(
+            self.dialog.toggle_interpretation_tool
+        )
+
+        # Finalize button with logic to detect active tool
         def finalize_with_log():
             logger.info("Finalize button clicked!")
-            self.dialog.tool_manager.measure_tool.finalize_measurement()
+            if self.dialog.preview_widget.btn_measure.isChecked():
+                self.dialog.tool_manager.measure_tool.finalize_measurement()
+            elif self.dialog.preview_widget.btn_interpret.isChecked():
+                self.dialog.tool_manager.interpretation_tool.finalize_polygon()
 
         self.dialog.preview_widget.btn_finalize.clicked.connect(finalize_with_log)
 
+        # Tool-specific signals
         self.dialog.tool_manager.measure_tool.measurementChanged.connect(
             self.dialog.update_measurement_display
         )
         self.dialog.tool_manager.measure_tool.measurementCleared.connect(
             lambda: self.dialog.preview_widget.results_text.clear()
+        )
+
+        self.dialog.tool_manager.interpretation_tool.polygonFinished.connect(
+            self.dialog.on_interpretation_finished
         )

@@ -69,6 +69,7 @@ class _NoOpMessageBar:
         """No-op implementation of pushMessage."""
         return None
 
+
 from .legend_widget import LegendWidget
 
 
@@ -127,10 +128,13 @@ class SecInterpDialog(SecInterpMainWindow):
         self.current_struct_data = None
         self.current_canvas = None
         self.current_layers = []
+        self.interpretations = []
 
         # Add clear cache button
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
-        self.clear_cache_btn.setToolTip(self.tr("Clear cached data to force re-processing."))
+        self.clear_cache_btn.setToolTip(
+            self.tr("Clear cached data to force re-processing.")
+        )
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
 
         # Initialize map tools via tool_manager
@@ -142,7 +146,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Initial state update
         self.status_manager.update_all()
-        self.settings_manager.load_settings()
+        self._load_user_settings()
 
     def _init_managers(self):
         """Initialize all manager instances."""
@@ -160,7 +164,6 @@ class SecInterpDialog(SecInterpMainWindow):
         self.status_manager.setup_indicators()
         self.tool_manager = DialogToolManager(self)
         self.navigation_manager = NavigationManager(self)
-
 
     def handle_error(self, error: Exception, title: str = "Error"):
         """Centralized error handling for the dialog.
@@ -193,6 +196,7 @@ class SecInterpDialog(SecInterpMainWindow):
     def closeEvent(self, event):
         """Handle dialog close event to clean up resources."""
         logger.info("Closing dialog, cleaning up resources...")
+        self.cache_handler.save_session()
         self.preview_manager.cleanup()
         super().closeEvent(event)
 
@@ -211,7 +215,32 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def toggle_measure_tool(self, checked):
         """Toggle measurement tool via tool_manager."""
+        if checked:
+            self.preview_widget.btn_interpret.setChecked(False)
         self.tool_manager.toggle_measure_tool(checked)
+
+    def toggle_interpretation_tool(self, checked):
+        """Toggle interpretation tool via tool_manager."""
+        if checked:
+            self.preview_widget.btn_measure.setChecked(False)
+        self.tool_manager.toggle_interpretation_tool(checked)
+
+        # Store interpretation in local list
+        self.interpretations.append(interpretation)
+
+        # Display feedback in results area
+        msg = (
+            f"<b>Interpretación Finalizada</b><br>"
+            f"<b>Vértices:</b> {len(interpretation.vertices_2d)}<br>"
+            f"<b>Nombre Temporal:</b> {interpretation.name}<br>"
+            f"<b>ID:</b> {interpretation.id[:8]}..."
+        )
+        self.preview_widget.results_text.setHtml(msg)
+        self.preview_widget.results_group.setCollapsed(False)
+
+        # Re-check tool state (DialogToolManager.toggle_interpretation_tool already switches back to pan)
+        self.preview_widget.btn_interpret.setChecked(False)
+        logger.info(f"Interpretation polygon received: {interpretation.id}")
 
     def update_measurement_display(self, metrics):
         """Display measurement results from multi-point tool via tool_manager."""
@@ -331,6 +360,7 @@ class SecInterpDialog(SecInterpMainWindow):
     def _load_user_settings(self):
         """Load user settings via settings_manager."""
         self.settings_manager.load_settings()
+        self.cache_handler.load_session()
 
     def _save_user_settings(self):
         """Save user settings via settings_manager."""

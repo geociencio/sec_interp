@@ -192,6 +192,7 @@ class ExportManager:
                 geol_data,
                 struct_data,
                 drillhole_data,
+                self.dialog.interpretations,
             )
 
             self.dialog.preview_widget.results_text.setPlainText("\n".join(result_msg))

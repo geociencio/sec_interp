@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 from qgis.gui import QgsMapTool, QgsMapToolPan
 
+from .tools.interpretation_tool import ProfileInterpretationTool
 from .tools.measure_tool import ProfileMeasureTool
 
 
@@ -25,6 +26,7 @@ class DialogToolManager:
         dialog: SecInterpDialog,
         pan_tool: Optional[QgsMapTool] = None,
         measure_tool: Optional[ProfileMeasureTool] = None,
+        interpretation_tool: Optional[ProfileInterpretationTool] = None,
     ):
         """Initialize tool manager with reference to parent dialog.
 
@@ -36,6 +38,7 @@ class DialogToolManager:
         self.dialog = dialog
         self.pan_tool = pan_tool
         self.measure_tool = measure_tool
+        self.interpretation_tool = interpretation_tool
 
     def initialize_tools(self) -> None:
         """Create and configure map tools if not already provided."""
@@ -43,6 +46,10 @@ class DialogToolManager:
             self.pan_tool = QgsMapToolPan(self.dialog.preview_widget.canvas)
         if not self.measure_tool:
             self.measure_tool = ProfileMeasureTool(self.dialog.preview_widget.canvas)
+        if not self.interpretation_tool:
+            self.interpretation_tool = ProfileInterpretationTool(
+                self.dialog.preview_widget.canvas
+            )
 
         self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
 
@@ -63,6 +70,23 @@ class DialogToolManager:
             self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
             self.pan_tool.activate()
             # Hide finalize button when measurement tool is inactive
+            self.dialog.preview_widget.btn_finalize.setVisible(False)
+
+    def toggle_interpretation_tool(self, checked: bool) -> None:
+        """Toggle between interpretation and pan tools.
+
+        Args:
+            checked: True to activate interpretation tool, False for pan tool.
+        """
+        if checked:
+            # Reuses same finalize button logic as measure tool
+            self.interpretation_tool.reset()
+            self.dialog.preview_widget.canvas.setMapTool(self.interpretation_tool)
+            self.interpretation_tool.activate()
+            self.dialog.preview_widget.btn_finalize.setVisible(True)
+        else:
+            self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
+            self.pan_tool.activate()
             self.dialog.preview_widget.btn_finalize.setVisible(False)
 
     def activate_default_tool(self) -> None:

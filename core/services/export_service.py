@@ -39,6 +39,7 @@ class ExportService:
         geol_data: Optional[list[Any]],
         struct_data: Optional[list[Any]],
         drillhole_data: Optional[list[Any]] = None,
+        interpretations: Optional[list[Any]] = None,
     ) -> list[str]:
         """Export generated data to CSV and Shapefile formats.
 
@@ -64,6 +65,7 @@ class ExportService:
             DrillholeIntervalShpExporter,
             DrillholeTraceShpExporter,
             GeologyShpExporter,
+            Interpretation25DExporter,
             ProfileLineShpExporter,
             StructureShpExporter,
         )
@@ -153,7 +155,9 @@ class ExportService:
             except Exception as e:
                 raise ExportError(f"Structure export failed: {e!s}") from e
 
-            result_msg.extend(["  - structural_profile.csv", "  - structural_profile.shp"])
+            result_msg.extend(
+                ["  - structural_profile.csv", "  - structural_profile.shp"]
+            )
 
         # Export Drillholes
         if drillhole_data:
@@ -170,7 +174,43 @@ class ExportService:
             except Exception as e:
                 raise ExportError(f"Drillhole export failed: {e!s}") from e
 
-            result_msg.extend(["  - drillhole_traces.shp", "  - drillhole_intervals.shp"])
+            result_msg.extend(
+                ["  - drillhole_traces.shp", "  - drillhole_intervals.shp"]
+            )
+
+        # Export Interpretations
+        if interpretations and self.controller:
+            logger.info("✓ Saving 2.5D interpretations...")
+            try:
+                # 1. Project 2D interpretations to 2.5D using controller
+                # We use the first feature of line_layer as the section line
+                section_line = None
+                features = list(line_layer.getFeatures())
+                if features:
+                    section_line = features[0].geometry()
+
+                if section_line:
+                    projected = self.controller.project_interpretations(
+                        interpretations,
+                        section_line,
+                        line_crs,
+                        params.vertical_exag,
+                    )
+
+                    # 2. Export projected data
+                    Interpretation25DExporter({}).export_interpretations(
+                        output_folder / "interpretations_25d.shp",
+                        projected,
+                        line_crs,
+                    )
+                    result_msg.append("  - interpretations_25d.shp")
+                else:
+                    logger.warning(
+                        "Could not get geometry for interpretation projection."
+                    )
+            except Exception as e:
+                logger.error(f"Interpretation export failed: {e}")
+                result_msg.append(f"  ⚠ Interpretation export failed: {e}")
 
         # Export Axes
         logger.info("✓ Saving profile axes...")
