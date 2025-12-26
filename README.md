@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-2.3-orange.svg)
+![Version](https://img.shields.io/badge/Version-2.4-orange.svg)
 
 **SecInterp** (Section Interpreter) is a QGIS plugin designed to streamline the extraction and visualization of geological data for cross-section interpretation. It allows geologists to quickly generate topographic profiles, project geological outcrops, and analyze structural data in a unified 2D view.
 
@@ -10,17 +10,16 @@
 
 ---
 
-## 🆕 What's New in v2.3.0
+## 🆕 What's New in v2.4.0
 
-**Major Structural Improvement Plan** — This release focuses on architectural excellence and code quality:
+**Major Architectural Refactoring & Internationalization** — This release brings enterprise-grade improvements:
 
-- **📏 Enhanced Multi-Point Measurement Tool**: Polyline tracing with unlimited points, comprehensive metrics (3D distance, horizontal, elevation, slope), and persistent visual feedback
-- **🏗️ Architectural Decoupling**: Separated UI from business logic with dedicated manager classes
-- **📦 Modular Geometry Utilities**: Split into `extraction`, `processing`, and `filtering` sub-packages
-- **⚡ Performance Optimizations**: Smart caching, spatial indexing, and 84ms rendering for 6km sections
-- **📚 Enhanced Documentation**: New `ARCHITECTURE.md` and `DEVELOPMENT_GUIDE.md` for developers
-- **🐛 Critical Fixes**: Resolved 8+ bugs including CRS handling, field validation, and import errors
-- **📊 Quality Score**: Improved from 71.1 to 74.4 (+4.6%)
+- **🌍 Internationalization (I18n)**: Full multi-language support for Spanish, French, German, Russian, and Portuguese (Brazil)
+- **🏗️ Architectural Excellence**: Complete refactoring across 6 phases (Service interfaces, Error handling, Performance, Async, Validation, Documentation)
+- **🔧 Code Quality Infrastructure**: Pre-commit hooks, automated quality checks, metrics history tracking
+- **✨ Quality Improvements**: 9% reduction in linting errors (287 → 261), Quality score 69.1/100, QGIS compliance 100/100
+- **🐛 Critical Fixes**: Preview rendering CRS, Page initialization, Translation system, Russian XML corruption
+- **📊 Developer Experience**: Google-style docstrings, enhanced project analyzer, comprehensive documentation
 
 See [CHANGELOG.md](docs/docsec/CHANGELOG.md) for complete details.
 
@@ -58,7 +57,7 @@ See [CHANGELOG.md](docs/docsec/CHANGELOG.md) for complete details.
 4. Click **Install Plugin**.
 
 ### From ZIP File
-1. Download the latest `sec_interp_v2.3.0.zip` from releases.
+1. Download the latest `sec_interp_v2.4.0.zip` from releases.
 2. Open QGIS.
 3. Go to **Plugins > Manage and Install Plugins > Install from ZIP**.
 4. Select the file and click **Install**.
