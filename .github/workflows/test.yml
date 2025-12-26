@@ -47,11 +47,11 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        uv pip install pytest pytest-cov
-        if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
+        uv pip install --system pytest pytest-cov
+        if [ -f requirements.txt ]; then uv pip install --system -r requirements.txt; fi
 
     - name: Run tests
       env:
         PYTHONPATH: /usr/lib/python3/dist-packages
       run: |
-        uv run pytest -v --cov=sec_interp tests/
+        pytest -v --cov=sec_interp tests/
