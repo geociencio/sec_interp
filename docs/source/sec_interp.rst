@@ -22,6 +22,7 @@ Submodules
    sec_interp.generate_ai_templates
    sec_interp.logger_config
    sec_interp.sec_interp_plugin
+   sec_interp.shp2da3d
 
 Module contents
 ---------------
