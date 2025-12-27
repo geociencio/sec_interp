@@ -13,6 +13,7 @@ from qgis.core import (
     QgsGeometry,
     QgsPointXY,
     QgsRaster,
+    QgsVectorFileWriter,
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
@@ -274,3 +275,90 @@ class AxesShpExporter(BaseExporter):
             return False
         else:
             return True
+
+class Interpretation25DExporter(BaseExporter):
+    """Exports 2.5D interpretation polygons to a Shapefile."""
+
+    def get_supported_extensions(self) -> list[str]:
+        return [".shp"]
+
+    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+        """Export interpretation polygons to a Shapefile.
+
+        Args:
+            output_path: Path to the output Shapefile.
+            data: Dictionary containing 'interpretations' and 'crs'.
+        """
+        interpretations = data.get("interpretations")
+        crs = data.get("crs")
+        if not interpretations or not crs:
+            logger.warning(f"Aborting export to {output_path}: missing interpretations or CRS")
+            return False
+
+        try:
+            fields = QgsFields()
+            fields.append(QgsField("id", QMetaType.Type.QString))
+            fields.append(QgsField("name", QMetaType.Type.QString))
+            fields.append(QgsField("type", QMetaType.Type.QString))
+
+            writer = scu.create_shapefile_writer(str(output_path), crs, fields, QgsWkbTypes.Polygon)
+            if not writer:
+                 logger.error(f"Failed to create shapefile writer for {output_path}")
+                 return False
+
+            count = 0
+            for interp in interpretations:
+                 # InterpretationPolygon25D has a geometry attribute
+                 if not hasattr(interp, 'geometry') or not interp.geometry:
+                     continue
+                     
+                 geom = interp.geometry
+                 
+                 # Validate geometry
+                 if not geom.isGeosValid():
+                     logger.warning(f"Invalid geometry for interpretation {interp.id}, attempting to fix")
+                     geom = geom.makeValid()
+                     
+                 if not geom.isGeosValid() or geom.isEmpty():
+                     logger.warning(f"Skipping interpretation {interp.id} due to invalid geometry")
+                     continue
+                 
+                 # Check if geometry is still a polygon after makeValid
+                 # Accept all polygon variants (2D, Z, M, ZM)
+                 geom_type = geom.wkbType()
+                 is_polygon = geom_type in [
+                     QgsWkbTypes.Polygon, 
+                     QgsWkbTypes.PolygonZ,
+                     QgsWkbTypes.PolygonM,
+                     QgsWkbTypes.PolygonZM,
+                     QgsWkbTypes.MultiPolygon, 
+                     QgsWkbTypes.MultiPolygonZ,
+                     QgsWkbTypes.MultiPolygonM,
+                     QgsWkbTypes.MultiPolygonZM
+                 ]
+                 
+                 if not is_polygon:
+                     logger.warning(f"Skipping interpretation {interp.id}: geometry became {QgsWkbTypes.displayString(geom_type)} after validation")
+                     continue
+
+                 feat = QgsFeature(fields)
+                 feat.setGeometry(geom)
+                 feat.setAttribute("id", interp.id)
+                 feat.setAttribute("name", interp.name)
+                 feat.setAttribute("type", interp.type)
+                 
+                 if writer.addFeature(feat):
+                     count += 1
+            
+            error = writer.hasError()
+            if error != QgsVectorFileWriter.NoError:
+                 logger.error(f"Error writing to shapefile: {writer.errorMessage()}")
+                 return False
+                 
+            logger.info(f"Successfully exported {count} interpretations to {output_path}")
+            del writer
+            return True
+
+        except Exception:
+            logger.exception(f"Failed to export interpretations to {output_path}")
+            return False

@@ -198,10 +198,13 @@ class ExportService:
                     )
 
                     # 2. Export projected data
-                    Interpretation25DExporter({}).export_interpretations(
+                    exporter = Interpretation25DExporter({})
+                    exporter.export(
                         output_folder / "interpretations_25d.shp",
-                        projected,
-                        line_crs,
+                        {
+                            "interpretations": projected,
+                            "crs": line_crs,
+                        }
                     )
                     result_msg.append("  - interpretations_25d.shp")
                 else:

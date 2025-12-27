@@ -81,11 +81,16 @@ class InterpretationService:
 
         # Create the final geometry
         # Currently we assume interpretation is a Polygon
-        # We ensure it's closed for a polygon
-        if (points_25d[0].x() != points_25d[-1].x() or 
-            points_25d[0].y() != points_25d[-1].y() or 
-            points_25d[0].m() != points_25d[-1].m()):
-            points_25d.append(points_25d[0])
+        # We ensure it's closed for a polygon (only check X, Y)
+        if len(points_25d) < 3:
+            raise ValidationError(f"Not enough points to create polygon: {len(points_25d)}")
+            
+        # Check if polygon is closed (compare only X, Y coordinates)
+        first_pt = points_25d[0]
+        last_pt = points_25d[-1]
+        if not (first_pt.x() == last_pt.x() and first_pt.y() == last_pt.y()):
+            # Close the polygon by duplicating the first point with all coordinates
+            points_25d.append(QgsPoint(first_pt.x(), first_pt.y(), first_pt.z(), first_pt.m()))
 
         ring = QgsLineString(points_25d)
         polygon = QgsPolygon()
@@ -94,7 +99,13 @@ class InterpretationService:
         geometry = QgsGeometry(polygon)
         
         if not geometry.isGeosValid():
-            logger.warning(f"Projected geometry for '{interpretation.name}' is invalid.")
+            error_msg = geometry.lastError() if hasattr(geometry, 'lastError') else "Unknown error"
+            logger.warning(
+                f"Projected geometry for '{interpretation.name}' is invalid. "
+                f"Points: {len(points_25d)}, Error: {error_msg}"
+            )
+            # Try to get more details
+            logger.debug(f"First point: {points_25d[0].asWkt()}, Last point: {points_25d[-1].asWkt()}")
 
         return InterpretationPolygon25D(
             id=interpretation.id,

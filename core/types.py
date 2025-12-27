@@ -216,6 +216,9 @@ class PreviewParams:
     max_points: int = 1000
     canvas_width: int = 800
     auto_lod: bool = True
+    
+    # Vertical exaggeration
+    vertical_exag: float = 1.0
 
     def validate(self) -> None:
         """Perform native validation of parameters.

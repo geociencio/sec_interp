@@ -14,6 +14,7 @@ from .pdf_exporter import PDFExporter
 from .profile_exporters import (
     AxesShpExporter,
     GeologyShpExporter,
+    Interpretation25DExporter,
     ProfileLineShpExporter,
     StructureShpExporter,
 )
@@ -29,6 +30,7 @@ __all__ = [
     "DrillholeTraceShpExporter",
     "GeologyShpExporter",
     "ImageExporter",
+    "Interpretation25DExporter",
     "PDFExporter",
     "ProfileLineShpExporter",
     "SVGExporter",
