@@ -270,12 +270,19 @@ class PreviewRenderer:
             # Create rubber band
             rb = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
 
-            # Set style (semi-transparent red)
-            color = QColor("#FF0000")
-            color.setAlpha(120)
-            rb.setColor(color)
+            # Set style (use polygon color)
+            try:
+                # Handle both hex strings and color names
+                poly_color = QColor(interp.color)
+                if not poly_color.isValid():
+                    poly_color = QColor("#FF0000")  # Fallback
+            except (ValueError, TypeError):
+                poly_color = QColor("#FF0000")
+
+            poly_color.setAlpha(120)
+            rb.setColor(poly_color)
             rb.setWidth(1)
-            rb.setStrokeColor(color.darker(150))
+            rb.setStrokeColor(poly_color.darker(150))
 
             # Add geometry
             points = [QgsPointXY(x, y * vert_exag) for x, y in interp.vertices_2d]

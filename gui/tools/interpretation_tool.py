@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import contextlib
 import datetime
+import random
 from typing import Optional
 import uuid
 
@@ -273,13 +274,22 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         # Capture the points as (dist, elev) which are (x, y) in profile units
         vertices_2d = [(p.x(), p.y()) for p in self.points]
 
+        # Generate a random vivid color for the new interpretation
+        # Random hue (0-359), high saturation (200-255), medium-lightness (100-200)
+        hue = random.randint(0, 359)
+        sat = random.randint(200, 255)
+        val = random.randint(150, 255)
+        # Use simple hex format if QColor is not easily serializable, but QColor.name() works
+        rand_color = QColor.fromHsv(hue, sat, val)
+        color_hex = rand_color.name()  # e.g. #RRGGBB
+
         interp = InterpretationPolygon(
             id=str(uuid.uuid4()),
             name="New Interpretation",
             type="lithology",
             vertices_2d=vertices_2d,
             attributes={},
-            color="#FF0000",
+            color=color_hex,
             created_at=datetime.datetime.now().isoformat(),
         )
 
