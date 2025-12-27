@@ -111,9 +111,7 @@ class GeologyShpExporter(BaseExporter):
                 fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
 
-    def _create_geology_feature(
-        self, segment: Any, fields: QgsFields
-    ) -> Optional[QgsFeature]:
+    def _create_geology_feature(self, segment: Any, fields: QgsFields) -> Optional[QgsFeature]:
         """Create a feature for a geology segment."""
         if len(segment.points) < 2:
             return None
@@ -276,6 +274,7 @@ class AxesShpExporter(BaseExporter):
         else:
             return True
 
+
 class Interpretation25DExporter(BaseExporter):
     """Exports 2.5D interpretation polygons to a Shapefile."""
 
@@ -301,60 +300,91 @@ class Interpretation25DExporter(BaseExporter):
             fields.append(QgsField("name", QMetaType.Type.QString))
             fields.append(QgsField("type", QMetaType.Type.QString))
 
-            writer = scu.create_shapefile_writer(str(output_path), crs, fields, QgsWkbTypes.Polygon)
+            writer = scu.create_shapefile_writer(
+                str(output_path), crs, fields, QgsWkbTypes.PolygonZM
+            )
             if not writer:
-                 logger.error(f"Failed to create shapefile writer for {output_path}")
-                 return False
+                logger.error(f"Failed to create shapefile writer for {output_path}")
+                return False
 
             count = 0
             for interp in interpretations:
-                 # InterpretationPolygon25D has a geometry attribute
-                 if not hasattr(interp, 'geometry') or not interp.geometry:
-                     continue
-                     
-                 geom = interp.geometry
-                 
-                 # Validate geometry
-                 if not geom.isGeosValid():
-                     logger.warning(f"Invalid geometry for interpretation {interp.id}, attempting to fix")
-                     geom = geom.makeValid()
-                     
-                 if not geom.isGeosValid() or geom.isEmpty():
-                     logger.warning(f"Skipping interpretation {interp.id} due to invalid geometry")
-                     continue
-                 
-                 # Check if geometry is still a polygon after makeValid
-                 # Accept all polygon variants (2D, Z, M, ZM)
-                 geom_type = geom.wkbType()
-                 is_polygon = geom_type in [
-                     QgsWkbTypes.Polygon, 
-                     QgsWkbTypes.PolygonZ,
-                     QgsWkbTypes.PolygonM,
-                     QgsWkbTypes.PolygonZM,
-                     QgsWkbTypes.MultiPolygon, 
-                     QgsWkbTypes.MultiPolygonZ,
-                     QgsWkbTypes.MultiPolygonM,
-                     QgsWkbTypes.MultiPolygonZM
-                 ]
-                 
-                 if not is_polygon:
-                     logger.warning(f"Skipping interpretation {interp.id}: geometry became {QgsWkbTypes.displayString(geom_type)} after validation")
-                     continue
+                # InterpretationPolygon25D has a geometry attribute
+                if not hasattr(interp, "geometry") or not interp.geometry:
+                    continue
 
-                 feat = QgsFeature(fields)
-                 feat.setGeometry(geom)
-                 feat.setAttribute("id", interp.id)
-                 feat.setAttribute("name", interp.name)
-                 feat.setAttribute("type", interp.type)
-                 
-                 if writer.addFeature(feat):
-                     count += 1
-            
+                geom = interp.geometry
+
+                # Validate geometry
+                if not geom.isGeosValid():
+                    logger.warning(
+                        f"Invalid geometry for interpretation {interp.id}, attempting to fix"
+                    )
+                    geom = geom.makeValid()
+
+                if not geom.isGeosValid() or geom.isEmpty():
+                    logger.warning(f"Skipping interpretation {interp.id} due to invalid geometry")
+                    continue
+
+                # Check if geometry is still a polygon after makeValid
+                # Accept all polygon variants (2D, Z, M, ZM)
+                geom_type = geom.wkbType()
+
+                # If it's a GeometryCollection (common after repair), extract only polygon parts
+                if geom_type == QgsWkbTypes.GeometryCollection:
+                    polygons = []
+                    for part in geom.constGet():
+                        if part.wkbType() in [
+                            QgsWkbTypes.Polygon,
+                            QgsWkbTypes.PolygonZ,
+                            QgsWkbTypes.PolygonM,
+                            QgsWkbTypes.PolygonZM,
+                        ]:
+                            polygons.append(QgsGeometry(part))
+
+                    if polygons:
+                        geom = QgsGeometry.collectGeometry(polygons)
+                        geom_type = geom.wkbType()
+                        logger.info(
+                            f"Converted GeometryCollection to {QgsWkbTypes.displayString(geom_type)} for interpretation {interp.id}"
+                        )
+                    else:
+                        logger.warning(
+                            f"Skipping interpretation {interp.id}: GeometryCollection contains no polygons"
+                        )
+                        continue
+
+                is_polygon = geom_type in [
+                    QgsWkbTypes.Polygon,
+                    QgsWkbTypes.PolygonZ,
+                    QgsWkbTypes.PolygonM,
+                    QgsWkbTypes.PolygonZM,
+                    QgsWkbTypes.MultiPolygon,
+                    QgsWkbTypes.MultiPolygonZ,
+                    QgsWkbTypes.MultiPolygonM,
+                    QgsWkbTypes.MultiPolygonZM,
+                ]
+
+                if not is_polygon:
+                    logger.warning(
+                        f"Skipping interpretation {interp.id}: geometry became {QgsWkbTypes.displayString(geom_type)} after validation"
+                    )
+                    continue
+
+                feat = QgsFeature(fields)
+                feat.setGeometry(geom)
+                feat.setAttribute("id", interp.id)
+                feat.setAttribute("name", interp.name)
+                feat.setAttribute("type", interp.type)
+
+                if writer.addFeature(feat):
+                    count += 1
+
             error = writer.hasError()
             if error != QgsVectorFileWriter.NoError:
-                 logger.error(f"Error writing to shapefile: {writer.errorMessage()}")
-                 return False
-                 
+                logger.error(f"Error writing to shapefile: {writer.errorMessage()}")
+                return False
+
             logger.info(f"Successfully exported {count} interpretations to {output_path}")
             del writer
             return True
