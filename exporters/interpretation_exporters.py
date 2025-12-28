@@ -87,13 +87,15 @@ class Interpretation2DExporter(BaseExporter):
             # Create feature
             feature = QgsFeature()
             feature.setGeometry(geom)
-            feature.setAttributes([
-                interp.id,
-                interp.name,
-                interp.type,
-                interp.color,
-                interp.created_at,
-            ])
+            feature.setAttributes(
+                [
+                    interp.id,
+                    interp.name,
+                    interp.type,
+                    interp.color,
+                    interp.created_at,
+                ]
+            )
             features.append(feature)
 
         layer.dataProvider().addFeatures(features)
@@ -105,11 +107,13 @@ class Interpretation2DExporter(BaseExporter):
 
         # No CRS for 2D profile coordinates
 
-        result, error_msg, _new_layer_id, _new_layer_path = QgsVectorFileWriter.writeAsVectorFormatV3(
-            layer,
-            str(output_path),
-            QgsProject.instance().transformContext(),
-            options
+        result, error_msg, _new_layer_id, _new_layer_path = (
+            QgsVectorFileWriter.writeAsVectorFormatV3(
+                layer,
+                str(output_path),
+                QgsProject.instance().transformContext(),
+                options,
+            )
         )
 
         if result == QgsVectorFileWriter.NoError:

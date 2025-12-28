@@ -430,7 +430,9 @@ class SecInterp:
             drillhole_data if options.get("show_drillholes", True) else None
         )
         filtered_interp = (
-            self.dlg.interpretations if options.get("show_interpretations", True) else None
+            self.dlg.interpretations
+            if options.get("show_interpretations", True)
+            else None
         )
 
         logger.debug("Filtered data:")

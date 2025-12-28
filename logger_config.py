@@ -118,7 +118,9 @@ def get_logger(name):
 
             # 3. Add stderr handler as backup for crash scenarios
             stderr_handler = logging.StreamHandler(sys.stderr)
-            stderr_handler.setLevel(logging.WARNING)  # Only warnings and errors to stderr
+            stderr_handler.setLevel(
+                logging.WARNING
+            )  # Only warnings and errors to stderr
             stderr_handler.setFormatter(file_formatter)
             logger.addHandler(stderr_handler)
 
@@ -166,4 +168,3 @@ def log_critical_operation(logger, operation_name, **context):
             os.fsync(sys.stderr.fileno())
     except (OSError, AttributeError):
         pass
-

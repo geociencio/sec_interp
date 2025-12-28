@@ -310,5 +310,3 @@ class ProfileController:
                                 )
                             )
         return profile_data, geol_data, struct_data, drillhole_data, messages
-
-

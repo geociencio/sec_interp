@@ -145,6 +145,7 @@ try:
     import qgis.core
     import qgis.gui
     import qgis.processing
+
     CORE_AVAILABLE = True
 except ImportError:
     CORE_AVAILABLE = False
