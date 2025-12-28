@@ -110,10 +110,10 @@ class PreviewReporter:
             QCoreApplication.translate("PreviewReporter", "Geometry Range:"),
             QCoreApplication.translate(
                 "PreviewReporter", "  Elevation: {} to {} m"
-            ).format(min_elev, max_elev),
+            ).format(round(min_elev, 1), round(max_elev, 1)),
             QCoreApplication.translate(
                 "PreviewReporter", "  Distance: {} to {} m"
-            ).format(min_dist, max_dist),
+            ).format(round(min_dist, 1), round(max_dist, 1)),
         ]
 
     @staticmethod
