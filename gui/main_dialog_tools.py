@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any
 from qgis.gui import QgsMapTool, QgsMapToolPan
 
 from .tools.measure_tool import ProfileMeasureTool
+from .tools.interpretation_tool import ProfileInterpretationTool
 
 
 if TYPE_CHECKING:
@@ -25,6 +26,7 @@ class DialogToolManager:
         dialog: SecInterpDialog,
         pan_tool: Optional[QgsMapTool] = None,
         measure_tool: Optional[ProfileMeasureTool] = None,
+        interpretation_tool: Optional[ProfileInterpretationTool] = None,
     ):
         """Initialize tool manager with reference to parent dialog.
 
@@ -32,10 +34,12 @@ class DialogToolManager:
             dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
             pan_tool: Optional pan tool for injection
             measure_tool: Optional measure tool for injection
+            interpretation_tool: Optional interpretation tool for injection
         """
         self.dialog = dialog
         self.pan_tool = pan_tool
         self.measure_tool = measure_tool
+        self.interpretation_tool = interpretation_tool
 
     def initialize_tools(self) -> None:
         """Create and configure map tools if not already provided."""
@@ -43,6 +47,14 @@ class DialogToolManager:
             self.pan_tool = QgsMapToolPan(self.dialog.preview_widget.canvas)
         if not self.measure_tool:
             self.measure_tool = ProfileMeasureTool(self.dialog.preview_widget.canvas)
+        if not self.interpretation_tool:
+            self.interpretation_tool = ProfileInterpretationTool(
+                self.dialog.preview_widget.canvas
+            )
+            # Connect polygonFinished signal to dialog handler
+            self.interpretation_tool.polygonFinished.connect(
+                self.dialog.on_interpretation_finished
+            )
 
         self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
 
@@ -69,6 +81,23 @@ class DialogToolManager:
         """Set the default (pan) tool."""
         self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
         self.pan_tool.activate()
+
+    def toggle_interpretation_tool(self, checked: bool) -> None:
+        """Toggle between interpretation and pan tools.
+
+        Args:
+            checked: True to activate interpretation tool, False for pan tool.
+        """
+        if checked:
+            # Deactivate measure tool if active
+            self.dialog.preview_widget.btn_measure.setChecked(False)
+            # Reset and activate interpretation tool
+            self.interpretation_tool.reset()
+            self.dialog.preview_widget.canvas.setMapTool(self.interpretation_tool)
+            self.interpretation_tool.activate()
+        else:
+            self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
+            self.pan_tool.activate()
 
     def update_measurement_display(self, metrics: dict[str, Any]) -> None:
         """Display measurement results from multi-point tool.

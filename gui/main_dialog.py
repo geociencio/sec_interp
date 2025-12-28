@@ -129,6 +129,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self.current_struct_data = None
         self.current_canvas = None
         self.current_layers = []
+        self.interpretations = []  # Store InterpretationPolygon objects
 
         # Add clear cache button
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
@@ -226,6 +227,50 @@ class SecInterpDialog(SecInterpMainWindow):
     def update_measurement_display(self, metrics):
         """Display measurement results from multi-point tool via tool_manager."""
         self.tool_manager.update_measurement_display(metrics)
+
+    def toggle_interpretation_tool(self, checked):
+        """Toggle interpretation tool via tool_manager."""
+        if checked:
+            # Deactivate measure tool if active
+            self.preview_widget.btn_measure.setChecked(False)
+        self.tool_manager.toggle_interpretation_tool(checked)
+
+    def on_interpretation_finished(self, interpretation):
+        """Handle finalized interpretation polygon.
+        
+        Args:
+            interpretation: InterpretationPolygon object from the tool
+        """
+        from sec_interp.logger_config import log_critical_operation
+        
+        log_critical_operation(
+            logger, 
+            "on_interpretation_finished",
+            polygon_id=interpretation.id,
+            vertices=len(interpretation.vertices_2d)
+        )
+        
+        # Store interpretation
+        self.interpretations.append(interpretation)
+        logger.info(
+            f"Interpretation polygon added: {interpretation.id} "
+            f"({len(interpretation.vertices_2d)} vertices)"
+        )
+        
+        # Display feedback in results area
+        msg = (
+            f"<b>Interpretación Finalizada</b><br>"
+            f"<b>Vértices:</b> {len(interpretation.vertices_2d)}<br>"
+            f"<b>ID:</b> {interpretation.id[:8]}..."
+        )
+        self.preview_widget.results_text.setHtml(msg)
+        self.preview_widget.results_group.setCollapsed(False)
+        
+        # Deactivate interpretation tool
+        self.preview_widget.btn_interpret.setChecked(False)
+        
+        # Update preview to show the new polygon
+        self.update_preview_from_checkboxes()
 
     def update_preview_checkbox_states(self):
         """Enable or disable preview checkboxes via status_manager."""

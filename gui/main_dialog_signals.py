@@ -122,6 +122,11 @@ class DialogSignalManager:
             self.dialog.toggle_measure_tool
         )
 
+        # Interpretation tool
+        self.dialog.preview_widget.btn_interpret.toggled.connect(
+            self.dialog.toggle_interpretation_tool
+        )
+
         # Finalize button with debug wrapper
         def finalize_with_log():
             logger.info("Finalize button clicked!")
