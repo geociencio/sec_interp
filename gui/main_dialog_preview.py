@@ -7,9 +7,9 @@ separating preview logic from the main dialog class.
 from __future__ import annotations
 
 import hashlib
-from pathlib import Path
 import tempfile
 import traceback
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
@@ -36,7 +36,6 @@ from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig
 from .parallel_geology import ParallelGeologyService
-
 
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
@@ -118,84 +117,14 @@ class PreviewManager:
                         "PreviewManager", "Invalid configuration"
                     )
 
-                raster_layer = params.raster_layer
-                line_layer = params.line_layer
-                band_num = params.band_num
+                # 2. Data processing (with caching)
+                result = self._process_preview_data(params)
 
-                # 3. Cache Check
-                current_hash = self._calculate_params_hash(params)
-                data_unchanged = current_hash == self.last_params_hash
-                self.last_params_hash = current_hash
+                # 3. UI Update & Visualization
+                self._update_crs_label(params.line_layer)
+                self._run_render_pipeline(result)
 
-                # 4. Data Generation
-                if not data_unchanged:
-                    # Collect parameters and generate data as before
-                    transform_context = (
-                        self.dialog.plugin_instance.iface.mapCanvas()
-                        .mapSettings()
-                        .transformContext()
-                    )
-                    result = self.preview_service.generate_all(params, transform_context)
-
-                    # Merge results and metrics
-                    self.cached_data["topo"] = result.topo
-                    self.cached_data["struct"] = result.struct
-                    self.cached_data["drillhole"] = result.drillhole
-                    self.metrics.timings.update(result.metrics.timings)
-                    self.metrics.counts.update(result.metrics.counts)
-
-                    # Cancel any existing async work before starting new one
-                    self.async_service.cancel_processing()
-
-                    # Start Async Geology if needed
-                    if self.dialog.page_geology.is_complete():
-                        self._start_async_geology(params)
-                        self.cached_data["geol"] = None  # Reset until async finished
-
-                    self.last_result = result
-                else:
-                    logger.info("Using cached data (params unchanged)")
-                    result = self.last_result
-
-                # 5. Update UI labels
-                self._update_crs_label(line_layer)
-
-                # 6. Visualization
-                try:
-                    if not self.dialog.plugin_instance or not hasattr(
-                        self.dialog.plugin_instance, "draw_preview"
-                    ):
-                        self._handle_invalid_plugin_instance()
-
-                    with PerformanceTimer("Rendering", self.metrics):
-                        preview_options = self.dialog.get_preview_options()
-                        auto_lod_enabled = preview_options["auto_lod"]
-                        use_adaptive_sampling = preview_options["use_adaptive_sampling"]
-
-                        # Calculate max_points via PreviewService
-                        max_points_for_render = PreviewService.calculate_max_points(
-                            canvas_width=self.dialog.preview_widget.canvas.width(),
-                            manual_max=preview_options["max_points"],
-                            auto_lod=auto_lod_enabled,
-                        )
-
-                        # Use cached geology if available (from async completion)
-                        # Otherwise None (will be filled by async process)
-                        geol_for_render = self.cached_data.get("geol")
-
-                        self.dialog.plugin_instance.draw_preview(
-                            self.cached_data["topo"],
-                            geol_for_render,
-                            self.cached_data["struct"],
-                            drillhole_data=self.cached_data["drillhole"],
-                            max_points=max_points_for_render,
-                            use_adaptive_sampling=use_adaptive_sampling,
-                        )
-                except Exception as e:
-                    logger.error(f"Error drawing preview: {e}", exc_info=True)
-                    raise ValueError(f"Failed to render preview: {e!s}") from e
-
-                # 5. Results Reporting
+                # 4. Results Reporting
                 result_msg = self._format_results_message(result)
                 self.dialog.preview_widget.results_text.setPlainText(result_msg)
 
@@ -212,6 +141,70 @@ class PreviewManager:
             return True, QCoreApplication.translate(
                 "PreviewManager", "Preview generated successfully"
             )
+
+    def _process_preview_data(self, params: PreviewParams) -> PreviewResult:
+        """Process or retrieve cached preview data."""
+        current_hash = self._calculate_params_hash(params)
+        data_unchanged = current_hash == self.last_params_hash
+        self.last_params_hash = current_hash
+
+        if data_unchanged and self.last_result:
+            logger.info("Using cached data (params unchanged)")
+            return self.last_result
+
+        # Generate fresh data
+        transform_context = (
+            self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
+        )
+        result = self.preview_service.generate_all(params, transform_context)
+
+        # Merge results and metrics
+        self.cached_data.update(
+            {"topo": result.topo, "struct": result.struct, "drillhole": result.drillhole}
+        )
+        self.metrics.timings.update(result.metrics.timings)
+        self.metrics.counts.update(result.metrics.counts)
+
+        # Cancel any existing async work before starting new one
+        self.async_service.cancel_processing()
+
+        # Start Async Geology if needed
+        if self.dialog.page_geology.is_complete():
+            self._start_async_geology(params)
+            self.cached_data["geol"] = None  # Reset until async finished
+
+        self.last_result = result
+        return result
+
+    def _run_render_pipeline(self, result: PreviewResult) -> None:
+        """Orchestrate the rendering of generated data."""
+        try:
+            if not self.dialog.plugin_instance or not hasattr(
+                self.dialog.plugin_instance, "draw_preview"
+            ):
+                self._handle_invalid_plugin_instance()
+
+            with PerformanceTimer("Rendering", self.metrics):
+                opts = self.dialog.get_preview_options()
+
+                # Calculate max_points via PreviewService
+                max_points = PreviewService.calculate_max_points(
+                    canvas_width=self.dialog.preview_widget.canvas.width(),
+                    manual_max=opts["max_points"],
+                    auto_lod=opts["auto_lod"],
+                )
+
+                self.dialog.plugin_instance.draw_preview(
+                    self.cached_data["topo"],
+                    self.cached_data.get("geol"),
+                    self.cached_data["struct"],
+                    drillhole_data=self.cached_data["drillhole"],
+                    max_points=max_points,
+                    use_adaptive_sampling=opts["use_adaptive_sampling"],
+                )
+        except Exception as e:
+            logger.error(f"Error drawing preview: {e}", exc_info=True)
+            raise ValueError(f"Failed to render preview: {e!s}") from e
 
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.
@@ -267,28 +260,24 @@ class PreviewManager:
     def _calculate_params_hash(self, params: PreviewParams) -> str:
         """Calculate a unique hash for preview parameters to check for changes."""
 
-        def get_layer_id(layer: Optional[QgsVectorLayer]) -> str:
+        def get_id(layer: Optional[QgsVectorLayer]) -> str:
+            """Safe layer ID retrieval."""
             return layer.id() if layer else "None"
 
-        # Use layer IDs, field names, and critical values
-        # Exclude canvas_width and auto_lod from hash to allow re-renders without re-processing
-        # but including them in a "render hash" if needed.
-        # For now, we only care about data-changing parameters.
-
         data_parts = [
-            get_layer_id(params.raster_layer),
-            get_layer_id(params.line_layer),
+            get_id(params.raster_layer),
+            get_id(params.line_layer),
             str(params.band_num),
             str(params.buffer_dist),
-            get_layer_id(params.outcrop_layer),
+            get_id(params.outcrop_layer),
             str(params.outcrop_name_field),
-            get_layer_id(params.struct_layer),
+            get_id(params.struct_layer),
             str(params.dip_field),
             str(params.strike_field),
-            get_layer_id(params.collar_layer),
+            get_id(params.collar_layer),
             str(params.collar_id_field),
-            get_layer_id(params.survey_layer),
-            get_layer_id(params.interval_layer),
+            get_id(params.survey_layer),
+            get_id(params.interval_layer),
         ]
 
         # Add geometry WKT if available to detect line changes
@@ -296,7 +285,7 @@ class PreviewManager:
         if line_feat:
             data_parts.append(line_feat.geometry().asWkt())
 
-        hasher = hashlib.md5()
+        hasher = hashlib.sha256()
         for part in data_parts:
             hasher.update(str(part).encode("utf-8"))
 

@@ -28,7 +28,7 @@ from qgis.PyQt.QtGui import QColor
 from sec_interp.core.types import GeologyData, ProfileData, StructureData
 from sec_interp.logger_config import get_logger
 
-from .preview_optimizer import PreviewOptimizer
+from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
 
 
 logger = get_logger(__name__)

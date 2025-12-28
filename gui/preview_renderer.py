@@ -24,7 +24,7 @@ from sec_interp.logger_config import get_logger
 from .preview_axes_manager import PreviewAxesManager
 from .preview_layer_factory import PreviewLayerFactory
 from .preview_legend_renderer import PreviewLegendRenderer
-from .preview_optimizer import PreviewOptimizer
+from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
 
 
 logger = get_logger(__name__)
