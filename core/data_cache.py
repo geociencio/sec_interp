@@ -56,7 +56,7 @@ class DataCache(ICacheService):
             else:
                 key_parts.append(f"{k}:{v!s}")
 
-        return hashlib.md5("".join(key_parts).encode("utf-8")).hexdigest()
+        return hashlib.sha256("".join(key_parts).encode("utf-8")).hexdigest()
 
     def get(self, bucket: str, key: str) -> Optional[Any]:
         """Retrieve data from a specific cache bucket if not expired.
@@ -144,32 +144,6 @@ class DataCache(ICacheService):
         if bucket in self._buckets and key in self._buckets[bucket]:
             return self._buckets[bucket][key].get("metadata")
         return None
-
-    # --- Backward compatibility methods (will be removed in v3.0) ---
-
-    def get_topographic_profile(self, key: str) -> Optional[Any]:
-        """Obsolete: use get('topo', key)."""
-        return self.get("topo", key)
-
-    def set_topographic_profile(self, key: str, data: Any) -> None:
-        """Obsolete: use set('topo', key, data)."""
-        self.set("topo", key, data)
-
-    def get_geological_profile(self, key: str) -> Optional[Any]:
-        """Obsolete: use get('geol', key)."""
-        return self.get("geol", key)
-
-    def set_geological_profile(self, key: str, data: Any) -> None:
-        """Obsolete: use set('geol', key, data)."""
-        self.set("geol", key, data)
-
-    def get_structural_data(self, key: str) -> Optional[Any]:
-        """Obsolete: use get('struct', key)."""
-        return self.get("struct", key)
-
-    def set_structural_data(self, key: str, data: Any) -> None:
-        """Obsolete: use set('struct', key, data)."""
-        self.set("struct", key, data)
 
     def get_cache_size(self) -> dict[str, int]:
         """Get the number of entries in each bucket.
