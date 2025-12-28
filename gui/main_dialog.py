@@ -145,8 +145,12 @@ class SecInterpDialog(SecInterpMainWindow):
         self.signal_manager.connect_all()
 
         # Initial state update
+        # Initial state update
         self.status_manager.update_all()
         self.settings_manager.load_settings()
+
+        # Flag to control saving settings on close
+        self._save_on_close = True
 
     def _init_managers(self):
         """Initialize all manager instances."""
@@ -195,6 +199,9 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def closeEvent(self, event):
         """Handle dialog close event to clean up resources."""
+        if self._save_on_close:
+            self.settings_manager.save_settings()
+
         logger.info("Closing dialog, cleaning up resources...")
         self.preview_manager.cleanup()
         super().closeEvent(event)
@@ -284,12 +291,12 @@ class SecInterpDialog(SecInterpMainWindow):
         if not self.validate_inputs():
             return
 
-        # Save user settings before closing via settings_manager
-        self.settings_manager.save_settings()
+        # Settings saved in closeEvent
         self.accept()
 
     def reject_handler(self):
         """Handle the reject button click event."""
+        self._save_on_close = False
         self.close()
 
     def validate_inputs(self):
