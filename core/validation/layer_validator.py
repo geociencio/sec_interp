@@ -192,119 +192,30 @@ def validate_structural_requirements(
     return True, ""
 
 
-def validate_layer_configuration(
-    raster_layer: Optional[QgsMapLayer],
-    line_layer: Optional[QgsVectorLayer],
-    outcrop_layer: Optional[QgsVectorLayer] = None,
-    structural_layer: Optional[QgsVectorLayer] = None,
-    outcrop_field: Optional[str] = None,
-    struct_dip_field: Optional[str] = None,
-    struct_strike_field: Optional[str] = None,
-) -> bool:
-    """Validate a complete set of layer inputs for the plugin.
-
-    Args:
-        raster_layer: The primary DEM layer.
-        line_layer: The section line layer.
-        outcrop_layer: Optional geological outcrop layer.
-        structural_layer: Optional structural measurement layer.
-        outcrop_field: Attribute field for geology units.
-        struct_dip_field: Attribute field for dip values.
-        struct_strike_field: Attribute field for strike values.
-
-    Returns:
-        bool: True if the entire configuration is valid.
-
-    Raises:
-        ValidationError: If any configuration check fails.
-    """
-    # 1. Validate Required Layers
-    if not raster_layer or not line_layer:
-        raise ValidationError("Please select a raster and a line layer.")
-
-    if not raster_layer.isValid():
-        raise ValidationError(f"Raster layer '{raster_layer.name()}' is not valid.")
-
-    if not line_layer.isValid():
-        raise ValidationError(f"Line layer '{line_layer.name()}' is not valid.")
-
-    # 2. Validate Line Geometry
-    is_valid, msg = validate_layer_geometry(line_layer, QgsWkbTypes.LineGeometry)
-    if not is_valid:
-        # Also accept MultiLineString
-        is_valid_multi, _msg_multi = validate_layer_geometry(
-            line_layer, QgsWkbTypes.MultiLineString
-        )
-        if not is_valid_multi:
-            # Check if generic line type
-            if QgsWkbTypes.geometryType(line_layer.wkbType()) != QgsWkbTypes.LineGeometry:
-                raise ValidationError(f"Cross-section layer must be a line layer. {msg}")
-
-    # 3. Validate Optional Layers
-    if outcrop_layer:
-        if not outcrop_layer.isValid():
-            raise ValidationError(f"Outcrop layer '{outcrop_layer.name()}' is not valid.")
-
-        if outcrop_field:
-            is_valid, msg = validate_field_exists(outcrop_layer, outcrop_field)
-            if not is_valid:
-                raise ValidationError(msg)
-
-    if structural_layer:
-        is_valid, msg = validate_structural_requirements(
-            structural_layer,
-            structural_layer.name(),
-            struct_dip_field,
-            struct_strike_field,
-        )
-        if not is_valid:
-            raise ValidationError(msg)
-
-    return True
 
 
 def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
     """Validate that a list of layers have compatible Coordinate Reference Systems.
 
-    If layers have different CRSs, it returns a warning message instead of an error,
-    as QGIS can reproject on-the-fly, but accuracy might be impaired.
-
-    Args:
-        layers: List of QgsMapLayer objects to compare.
-
-    Returns:
-        tuple: (is_compatible, message)
-            - is_compatible: True if all layers share the same CRS.
-            - message: Warning listing incompatible layers if any.
+    If layers have different CRSs, it returns a warning message instead of an error.
     """
-    if not layers:
+    valid_layers = [L for L in layers if L and L.isValid()]
+    if not valid_layers:
         return True, ""
 
-    # Get first non-None layer CRS as reference
-    reference_crs = None
-    reference_layer = None
-    for layer in layers:
-        if layer and layer.isValid():
-            reference_crs = layer.crs()
-            reference_layer = layer
-            break
+    ref_layer = valid_layers[0]
+    ref_crs = ref_layer.crs()
 
-    if not reference_crs:
-        return True, ""
-
-    # Check all other layers against reference
-    incompatible = []
-    for layer in layers:
-        if layer and layer.isValid() and layer.crs() != reference_crs:
-            incompatible.append(f"  - {layer.name()}: {layer.crs().authid()}")
+    incompatible = [
+        f"  - {L.name()}: {L.crs().authid()}" for L in valid_layers if L.crs() != ref_crs
+    ]
 
     if incompatible:
         warning = (
             f"⚠ CRS mismatch detected!\n\n"
-            f"Reference CRS: {reference_crs.authid()} ({reference_layer.name()})\n"
+            f"Reference CRS: {ref_crs.authid()} ({ref_layer.name()})\n"
             f"Incompatible layers:\n" + "\n".join(incompatible) + "\n\n"
             "QGIS will reproject on-the-fly, but this may affect accuracy.\n"
-            "Consider reprojecting all layers to the same CRS for best results."
         )
         return False, warning
 
