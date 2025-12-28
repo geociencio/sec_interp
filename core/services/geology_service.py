@@ -89,22 +89,7 @@ class GeologyService(IGeologyService):
             GeometryError: If the line geometry is invalid.
             ProcessingError: If the intersection processing fails.
         """
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
-            raise DataMissingError(
-                "Line layer has no features", {"layer": line_lyr.name()}
-            )
-
-        line_geom = line_feat.geometry()
-        if not line_geom or line_geom.isNull():
-            raise GeometryError(
-                "Line geometry is not valid", {"layer": line_lyr.name()}
-            )
-
-        if line_geom.isMultipart():
-            line_start = line_geom.asMultiPolyline()[0][0]
-        else:
-            line_start = line_geom.asPolyline()[0]
+        line_geom, line_start = self._extract_line_info(line_lyr)
 
         crs = line_lyr.crs()
         da = scu.create_distance_area(crs)
@@ -335,6 +320,75 @@ class GeologyService(IGeologyService):
         if dist_start > dist_end:
             dist_start, dist_end = dist_end, dist_start
 
+        # Convert to points
+        segment_points = self._convert_to_segment_points(
+            dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
+        )
+
+        # Attributes from original feature
+        attrs = dict(zip(feature.fields().names(), feature.attributes(), strict=False))
+
+        return GeologySegment(
+            unit_name=glg_val,
+            geometry=seg_geom,
+            attributes=attrs,
+            points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
+        )
+
+    def _extract_line_info(
+        self, line_lyr: QgsVectorLayer
+    ) -> tuple[QgsGeometry, QgsPointXY]:
+        """Extract geometry and start point from the line layer.
+
+        Args:
+            line_lyr: The vector layer containing the section line.
+
+        Returns:
+            A tuple containing (line_geometry, start_point).
+
+        Raises:
+            DataMissingError: If layer has no features.
+            GeometryError: If geometry is invalid.
+        """
+        line_feat = next(line_lyr.getFeatures(), None)
+        if not line_feat:
+            raise DataMissingError(
+                "Line layer has no features", {"layer": line_lyr.name()}
+            )
+
+        line_geom = line_feat.geometry()
+        if not line_geom or line_geom.isNull():
+            raise GeometryError(
+                "Line geometry is not valid", {"layer": line_lyr.name()}
+            )
+
+        if line_geom.isMultipart():
+            line_start = line_geom.asMultiPolyline()[0][0]
+        else:
+            line_start = line_geom.asPolyline()[0]
+
+        return line_geom, line_start
+
+    def _convert_to_segment_points(
+        self,
+        dist_start: float,
+        dist_end: float,
+        master_grid_dists: list,
+        master_profile_data: list,
+        tolerance: float,
+    ) -> list[tuple[float, float]]:
+        """Convert start/end distances to a list of segment points with elevations.
+
+        Args:
+            dist_start: Start distance of the segment.
+            dist_end: End distance of the segment.
+            master_grid_dists: Master grid elevation data.
+            master_profile_data: Master profile topography data.
+            tolerance: Tolerance for grid point inclusion.
+
+        Returns:
+            List of (distance, elevation) tuples.
+        """
         # Get Inner Grid Points
         inner_points = [
             (d, e)
@@ -346,15 +400,4 @@ class GeologyService(IGeologyService):
         elev_start = interpolate_elevation(master_profile_data, dist_start)
         elev_end = interpolate_elevation(master_profile_data, dist_end)
 
-        # Combine
-        segment_points = [(dist_start, elev_start), *inner_points, (dist_end, elev_end)]
-
-        # Attributes from original feature
-        attrs = dict(zip(feature.fields().names(), feature.attributes(), strict=False))
-
-        return GeologySegment(
-            unit_name=glg_val,
-            geometry=seg_geom,
-            attributes=attrs,
-            points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
-        )
+        return [(dist_start, elev_start), *inner_points, (dist_end, elev_end)]

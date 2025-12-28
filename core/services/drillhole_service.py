@@ -97,9 +97,12 @@ class DrillholeService(IDrillholeService):
             return []
 
         for collar_feat in candidate_features:
-            # 1. Get Collar Info
-            collar_info = self._get_collar_info(
+            result = self._project_single_collar(
                 collar_feat,
+                line_geom,
+                line_start,
+                distance_area,
+                buffer_width,
                 collar_id_field,
                 use_geometry,
                 collar_x_field,
@@ -108,22 +111,8 @@ class DrillholeService(IDrillholeService):
                 collar_depth_field,
                 dem_layer,
             )
-            if not collar_info:
-                continue
-
-            hole_id, collar_point, z, depth = collar_info
-
-            # 2. Project to section line
-            collar_geom_pt = QgsGeometry.fromPointXY(collar_point)
-            nearest_point = line_geom.nearestPoint(collar_geom_pt).asPoint()
-
-            # Calculate distances
-            dist_along = distance_area.measureLine(line_start, nearest_point)
-            offset = distance_area.measureLine(collar_point, nearest_point)
-
-            # Check if within buffer
-            if offset <= buffer_width:
-                projected_collars.append((hole_id, dist_along, z, offset, depth))
+            if result:
+                projected_collars.append(result)
 
         logger.info(
             f"DrillholeService.project_collars END: Found {len(projected_collars)} collars."
@@ -406,3 +395,67 @@ class DrillholeService(IDrillholeService):
                 )
             )
         return segments
+
+    def _project_single_collar(
+        self,
+        collar_feat: QgsFeature,
+        line_geom: QgsGeometry,
+        line_start: QgsPointXY,
+        distance_area: QgsDistanceArea,
+        buffer_width: float,
+        collar_id_field: str,
+        use_geometry: bool,
+        collar_x_field: str,
+        collar_y_field: str,
+        collar_z_field: str,
+        collar_depth_field: str,
+        dem_layer: Optional[QgsRasterLayer],
+    ) -> Optional[tuple[Any, float, float, float, float]]:
+        """Process and project a single collar feature.
+
+        Args:
+            collar_feat: The collar feature to process.
+            line_geom: Section line geometry.
+            line_start: Start point of the section line.
+            distance_area: Distance calculation object.
+            buffer_width: Buffer width for filtering.
+            collar_id_field: Field for ID.
+            use_geometry: Whether to use geometry for coords.
+            collar_x_field: Field for X.
+            collar_y_field: Field for Y.
+            collar_z_field: Field for Z.
+            collar_depth_field: Field for depth.
+            dem_layer: Optional DEM layer.
+
+        Returns:
+            Tuple of (hole_id, dist_along, z, offset, total_depth) or None.
+        """
+        # 1. Get Collar Info
+        collar_info = self._get_collar_info(
+            collar_feat,
+            collar_id_field,
+            use_geometry,
+            collar_x_field,
+            collar_y_field,
+            collar_z_field,
+            collar_depth_field,
+            dem_layer,
+        )
+        if not collar_info:
+            return None
+
+        hole_id, collar_point, z, depth = collar_info
+
+        # 2. Project to section line
+        collar_geom_pt = QgsGeometry.fromPointXY(collar_point)
+        nearest_point = line_geom.nearestPoint(collar_geom_pt).asPoint()
+
+        # Calculate distances
+        dist_along = distance_area.measureLine(line_start, nearest_point)
+        offset = distance_area.measureLine(collar_point, nearest_point)
+
+        # Check if within buffer
+        if offset <= buffer_width:
+            return (hole_id, dist_along, z, offset, depth)
+
+        return None

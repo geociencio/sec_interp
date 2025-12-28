@@ -94,22 +94,7 @@ class StructureService(IStructureService):
             f"Analyzing structures in {struct_lyr.name()} with buffer {buffer_m}m"
         )
 
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
-            raise DataMissingError(
-                "Line layer has no features", {"layer": line_lyr.name()}
-            )
-
-        line_geom = line_feat.geometry()
-        if not line_geom or line_geom.isNull():
-            raise GeometryError(
-                "Line geometry is not valid", {"layer": line_lyr.name()}
-            )
-
-        if line_geom.isMultipart():
-            line_start = line_geom.asMultiPolyline()[0][0]
-        else:
-            line_start = line_geom.asPolyline()[0]
+        line_geom, line_start = self._extract_line_info(line_lyr)
 
         # 1. Create Buffer
         buffer_geom = self._create_buffer_zone(line_geom, line_lyr.crs(), buffer_m)
@@ -245,15 +230,100 @@ class StructureService(IStructureService):
         # Using measureLine ensures correct units (meters) even if CRS is geographic
         dist = da.measureLine(line_start, proj_pt)
 
-        # Sample Elevation
+        elev = self._sample_elevation(raster_lyr, proj_pt, band_number)
+
+        parsed_data = self._parse_structural_data(
+            feature, strike_field, dip_field, line_az
+        )
+        if not parsed_data:
+            return None
+
+        strike, dip_angle, app_dip = parsed_data
+
+        # Create object
+        return StructureMeasurement(
+            distance=round(dist, 1),
+            elevation=round(elev, 1),
+            apparent_dip=round(app_dip, 1),
+            original_dip=dip_angle,
+            original_strike=strike,
+            attributes=dict(
+                zip(feature.fields().names(), feature.attributes(), strict=False)
+            ),
+        )
+
+    def _extract_line_info(
+        self, line_lyr: QgsVectorLayer
+    ) -> tuple[QgsGeometry, QgsPointXY]:
+        """Extract geometry and start point from the line layer.
+
+        Args:
+            line_lyr: The vector layer containing the section line.
+
+        Returns:
+            A tuple containing (line_geometry, start_point).
+
+        Raises:
+            DataMissingError: If layer has no features.
+            GeometryError: If geometry is invalid.
+        """
+        line_feat = next(line_lyr.getFeatures(), None)
+        if not line_feat:
+            raise DataMissingError(
+                "Line layer has no features", {"layer": line_lyr.name()}
+            )
+
+        line_geom = line_feat.geometry()
+        if not line_geom or line_geom.isNull():
+            raise GeometryError(
+                "Line geometry is not valid", {"layer": line_lyr.name()}
+            )
+
+        if line_geom.isMultipart():
+            line_start = line_geom.asMultiPolyline()[0][0]
+        else:
+            line_start = line_geom.asPolyline()[0]
+
+        return line_geom, line_start
+
+    def _sample_elevation(
+        self, raster_lyr: QgsRasterLayer, point: QgsPointXY, band_number: int
+    ) -> float:
+        """Sample elevation from a raster at a given point.
+
+        Args:
+            raster_lyr: The DEM raster layer.
+            point: The point to sample.
+            band_number: The band index.
+
+        Returns:
+            The sampled elevation value or 0.0 if sampling fails.
+        """
         res_val = (
             raster_lyr.dataProvider()
-            .identify(proj_pt, QgsRaster.IdentifyFormatValue)
+            .identify(point, QgsRaster.IdentifyFormatValue)
             .results()
         )
-        elev = res_val.get(band_number, 0.0)
+        return res_val.get(band_number, 0.0)
 
-        # Parse Attributes
+    def _parse_structural_data(
+        self,
+        feature: QgsFeature,
+        strike_field: str,
+        dip_field: str,
+        line_az: float,
+    ) -> Optional[tuple[float, float, float]]:
+        """Parse strike and dip attributes and calculate apparent dip.
+
+        Args:
+            feature: The feature containing attributes.
+            strike_field: Field name for strike.
+            dip_field: Field name for dip.
+            line_az: Azimuth of the section line.
+
+        Returns:
+            A tuple of (strike, dip_angle, apparent_dip) or None if validation fails.
+        """
         try:
             strike_raw = feature[strike_field]
             dip_raw = feature[dip_field]
@@ -271,15 +341,4 @@ class StructureService(IStructureService):
             return None
 
         app_dip = scu.calculate_apparent_dip(strike, dip_angle, line_az)
-
-        # Create object
-        return StructureMeasurement(
-            distance=round(dist, 1),
-            elevation=round(elev, 1),
-            apparent_dip=round(app_dip, 1),
-            original_dip=dip_angle,
-            original_strike=strike,
-            attributes=dict(
-                zip(feature.fields().names(), feature.attributes(), strict=False)
-            ),
-        )
+        return strike, dip_angle, app_dip
