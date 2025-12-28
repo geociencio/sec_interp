@@ -15,6 +15,7 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
+from sec_interp.core.validation.project_validator import ProjectValidator, ValidationParams
 from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage
@@ -297,45 +298,25 @@ class DrillholePage(BasePage):
 
     def is_complete(self) -> bool:
         """Check if required fields are filled if layers are selected."""
-        # Require Collar layer at minimum to be considered 'active'
-        if not self.c_layer.currentLayer():
-            # logger.debug("is_complete: No collar layer selected")
-            return False
+        data = self.get_data()
+        params = ValidationParams(
+            collar_layer=data["collar_layer"],
+            collar_id=data["collar_id"],
+            collar_use_geom=data["use_geometry"],
+            collar_x=data["collar_x"],
+            collar_y=data["collar_y"],
+            survey_layer=data["survey_layer"],
+            survey_id=data["survey_id"],
+            survey_depth=data["survey_depth"],
+            survey_azim=data["survey_id"],  # Wait, was it survey_azim?
+            survey_incl=data["survey_incl"],
+            interval_layer=data["interval_layer"],
+            interval_id=data["interval_id"],
+            interval_from=data["interval_from"],
+            interval_to=data["interval_to"],
+            interval_lith=data["interval_lith"],
+        )
+        # Fix the survey_azim typo in my thought process
+        params.survey_azim = data["survey_azim"]
 
-        # Check Collar fields
-        if not self.c_id.currentField():
-            logger.debug("is_complete: Collar ID missing")
-            return False
-
-        if not self.chk_use_geom.isChecked() and not (
-            self.c_x.currentField() and self.c_y.currentField()
-        ):
-            logger.debug("is_complete: Collar X/Y missing")
-            return False
-
-        # If Survey Layer selected, check its fields
-        if self.s_layer.currentLayer() and not all(
-            [
-                self.s_id.currentField(),
-                self.s_depth.currentField(),
-                self.s_azim.currentField(),
-                self.s_incl.currentField(),
-            ]
-        ):
-            logger.debug("is_complete: Survey fields incomplete")
-            return False
-
-        # If Interval Layer selected, check its fields
-        if self.i_layer.currentLayer() and not all(
-            [
-                self.i_id.currentField(),
-                self.i_from.currentField(),
-                self.i_to.currentField(),
-                self.i_lith.currentField(),
-            ]
-        ):
-            logger.debug("is_complete: Interval fields incomplete")
-            return False
-
-        logger.debug("is_complete: True")
-        return True
+        return ProjectValidator.is_drillhole_complete(params)

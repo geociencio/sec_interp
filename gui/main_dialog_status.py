@@ -11,6 +11,8 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 
 
+from sec_interp.core.validation.project_validator import ProjectValidator, ValidationParams
+
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
 
@@ -35,22 +37,51 @@ class DialogStatusManager:
 
     def update_preview_checkbox_states(self) -> None:
         """Enable or disable preview checkboxes based on input validity."""
-        has_section = bool(self.dialog.page_section.line_combo.currentLayer())
-        has_dem = bool(self.dialog.page_dem.raster_combo.currentLayer())
+        # Collate current state into ValidationParams
+        params = ValidationParams(
+            raster_layer=self.dialog.page_dem.raster_combo.currentLayer(),
+            line_layer=self.dialog.page_section.line_combo.currentLayer(),
+            outcrop_layer=self.dialog.page_geology.layer_combo.currentLayer(),
+            outcrop_field=self.dialog.page_geology.field_combo.currentField(),
+            struct_layer=self.dialog.page_struct.layer_combo.currentLayer(),
+            struct_dip_field=self.dialog.page_struct.dip_combo.currentField(),
+            struct_strike_field=self.dialog.page_struct.strike_combo.currentField(),
+        )
+        
+        # Add drillhole params (helper to get from page_drillhole)
+        dh_data = self.dialog.page_drillhole.get_data()
+        params.collar_layer = dh_data["collar_layer"]
+        params.collar_id = dh_data["collar_id"]
+        params.collar_use_geom = dh_data["use_geometry"]
+        params.collar_x = dh_data["collar_x"]
+        params.collar_y = dh_data["collar_y"]
+        params.survey_layer = dh_data["survey_layer"]
+        params.survey_id = dh_data["survey_id"]
+        params.survey_depth = dh_data["survey_depth"]
+        params.survey_azim = dh_data["survey_azim"]
+        params.survey_incl = dh_data["survey_incl"]
+        params.interval_layer = dh_data["interval_layer"]
+        params.interval_id = dh_data["interval_id"]
+        params.interval_from = dh_data["interval_from"]
+        params.interval_to = dh_data["interval_to"]
+        params.interval_lith = dh_data["interval_lith"]
+
+        has_section = bool(params.line_layer)
+        has_dem = bool(params.raster_layer)
 
         # Topography requires DEM + Section Line
         self.dialog.preview_widget.chk_topo.setEnabled(has_dem and has_section)
 
         # Geology requires Geology Data + Section Line
-        has_geol = self.dialog.page_geology.is_complete()
+        has_geol = ProjectValidator.is_geology_complete(params)
         self.dialog.preview_widget.chk_geol.setEnabled(has_geol and has_section)
 
         # Structure requires Structure Data + Section Line
-        has_struct = self.dialog.page_struct.is_complete()
+        has_struct = ProjectValidator.is_structure_complete(params)
         self.dialog.preview_widget.chk_struct.setEnabled(has_struct and has_section)
 
         # Drillhole requires Drillhole Data + Section Line
-        has_drill = self.dialog.page_drillhole.is_complete()
+        has_drill = ProjectValidator.is_drillhole_complete(params)
         self.dialog.preview_widget.chk_drillholes.setEnabled(has_drill and has_section)
 
     def update_button_state(self) -> None:

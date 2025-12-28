@@ -97,6 +97,23 @@ class ValidationParams:
     struct_strike_field: Optional[str] = None
     dip_scale_factor: float = 1.0
 
+    # Drillhole params
+    collar_layer: Optional[QgsVectorLayer] = None
+    collar_id: Optional[str] = None
+    collar_use_geom: bool = True
+    collar_x: Optional[str] = None
+    collar_y: Optional[str] = None
+    survey_layer: Optional[QgsVectorLayer] = None
+    survey_id: Optional[str] = None
+    survey_depth: Optional[str] = None
+    survey_azim: Optional[str] = None
+    survey_incl: Optional[str] = None
+    interval_layer: Optional[QgsVectorLayer] = None
+    interval_id: Optional[str] = None
+    interval_from: Optional[str] = None
+    interval_to: Optional[str] = None
+    interval_lith: Optional[str] = None
+
 
 class ProjectValidator:
     """Orchestrates validation of project parameters independent of the GUI."""
@@ -215,3 +232,49 @@ class ProjectValidator:
         if errors:
             raise ValidationError("\n".join(errors))
         return True
+
+    @staticmethod
+    def is_drillhole_complete(params: ValidationParams) -> bool:
+        """Check if required fields are filled if drillhole layers are selected."""
+        if not params.collar_layer:
+            return False
+
+        if not params.collar_id:
+            return False
+
+        if not params.collar_use_geom and not (params.collar_x and params.collar_y):
+            return False
+
+        # If Survey Layer selected, check its fields
+        if params.survey_layer and not all(
+            [
+                params.survey_id,
+                params.survey_depth,
+                params.survey_azim,
+                params.survey_incl,
+            ]
+        ):
+            return False
+
+        # If Interval Layer selected, check its fields
+        if params.interval_layer and not all(
+            [
+                params.interval_id,
+                params.interval_from,
+                params.interval_to,
+                params.interval_lith,
+            ]
+        ):
+            return False
+
+        return True
+
+    @staticmethod
+    def is_geology_complete(params: ValidationParams) -> bool:
+        """Check if geology requirements are met."""
+        return bool(params.outcrop_layer and params.outcrop_field)
+
+    @staticmethod
+    def is_structure_complete(params: ValidationParams) -> bool:
+        """Check if structural requirements are met."""
+        return bool(params.struct_layer and params.struct_dip_field and params.struct_strike_field)
