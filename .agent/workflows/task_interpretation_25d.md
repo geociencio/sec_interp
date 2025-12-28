@@ -1,9 +1,9 @@
 # Task: Interpretación 2.5D - v2.5.0
 
 ## Session Overview
-**Date**: 2025-12-25  
-**Focus**: Implementación de Polígonos de Interpretación 2.5D  
-**Branch**: `feature/interpretation-25d`  
+**Date**: 2025-12-25
+**Focus**: Implementación de Polígonos de Interpretación 2.5D
+**Branch**: `feature/interpretation-25d`
 **Target Version**: v2.5.0
 
 ## Phase 1: Modelo de Datos y Tipos

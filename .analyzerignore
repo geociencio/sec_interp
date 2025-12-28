@@ -10,6 +10,7 @@ build/
 # Tools and Context
 .ai-context/
 scripts/
+research/
 analyze_project_optfixed.py
 
 # Documentation resources

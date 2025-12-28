@@ -16,25 +16,28 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.core.services.geology_service module" href="sec_interp.core.services.geology_service.html" />
     <link rel="prev" title="sec_interp.core.services.drillhole_service module" href="sec_interp.core.services.drillhole_service.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
+
   <section id="module-sec_interp.core.services.export_service">
 <span id="sec-interp-core-services-export-service-module"></span><h1>sec_interp.core.services.export_service module<a class="headerlink" href="#module-sec_interp.core.services.export_service" title="Link to this heading">¶</a></h1>
+<p>Export service for SecInterp.</p>
+<p>This module provides a service to orchestrate all export operations,
+including data (Shapefile, CSV) and preview (PNG, PDF, SVG) exports.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="sec_interp.core.services.export_service.ExportService">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.services.export_service.</span></span><span class="sig-name descname"><span class="pre">ExportService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.services.export_service.ExportService" title="Link to this definition">¶</a></dt>
@@ -69,17 +72,11 @@
 <li><p><strong>profile_data</strong> – Topographic profile points (dist, elevation).</p></li>
 <li><p><strong>geol_data</strong> – List of GeologySegment objects.</p></li>
 <li><p><strong>struct_data</strong> – List of StructureMeasurement objects.</p></li>
-<li><p><strong>drillhole_data</strong> – Optional list of drillhole trace and interval data.</p></li>
+<li><p><strong>drillhole_data</strong> – Optional list of drillhole data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of user-friendly log messages describing the exported files.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.DataMissingError" title="sec_interp.core.exceptions.DataMissingError"><strong>DataMissingError</strong></a> – If critical topographic data is missing.</p></li>
-<li><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ExportError" title="sec_interp.core.exceptions.ExportError"><strong>ExportError</strong></a> – If any sub-exporter fails during execution.</p></li>
-</ul>
+<dd class="field-even"><p>A list of user-friendly log messages.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -109,7 +106,7 @@
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -177,18 +174,18 @@
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/sec_interp.core.services.export_service.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>
