@@ -16,8 +16,9 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
     QgsWkbTypes,
+    QgsProject,
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType, QVariant
 
 from sec_interp.exporters.base_exporter import BaseExporter
 from sec_interp.core.types import InterpretationPolygon
@@ -62,11 +63,11 @@ class Interpretation2DExporter(BaseExporter):
 
         # Define fields
         fields = QgsFields()
-        fields.append(QgsField("id", QVariant.String))
-        fields.append(QgsField("name", QVariant.String))
-        fields.append(QgsField("type", QVariant.String))
-        fields.append(QgsField("color", QVariant.String))
-        fields.append(QgsField("created_at", QVariant.String))
+        fields.append(QgsField("id", QMetaType.Type.QString))
+        fields.append(QgsField("name", QMetaType.Type.QString))
+        fields.append(QgsField("type", QMetaType.Type.QString))
+        fields.append(QgsField("color", QMetaType.Type.QString))
+        fields.append(QgsField("created_at", QMetaType.Type.QString))
 
         layer.dataProvider().addAttributes(fields)
         layer.updateFields()
@@ -98,21 +99,26 @@ class Interpretation2DExporter(BaseExporter):
         layer.dataProvider().addFeatures(features)
 
         # Write to Shapefile
-        error = QgsVectorFileWriter.writeAsVectorFormat(
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = "ESRI Shapefile"
+        options.fileEncoding = "UTF-8"
+        
+        # No CRS for 2D profile coordinates
+        
+        result, error_msg, _new_layer_id, _new_layer_path = QgsVectorFileWriter.writeAsVectorFormatV3(
             layer,
             str(output_path),
-            "UTF-8",
-            QgsCoordinateReferenceSystem(),  # No CRS for 2D profile coordinates
-            "ESRI Shapefile",
+            QgsProject.instance().transformContext(),
+            options
         )
 
-        if error[0] == QgsVectorFileWriter.NoError:
+        if result == QgsVectorFileWriter.NoError:
             logger.info(
                 f"Successfully exported {len(interpretations)} interpretations to {output_path}"
             )
             return True
         else:
-            logger.error(f"Failed to export interpretations: {error}")
+            logger.error(f"Failed to export interpretations: {error_msg}")
             return False
 
     def get_supported_extensions(self) -> list[str]:
