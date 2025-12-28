@@ -220,7 +220,7 @@ changelog=
     - Interactive preview visualization
 
 # Tags are comma separated with spaces allowed
-tags=csv, dem, point, polyline
+tags=geology, mining, cross-section, borehole, drillhole, exploration, topography, profile, interpretation, dem, interpolation
 
 homepage=https://github.com/geociencio/sec_interp
 
