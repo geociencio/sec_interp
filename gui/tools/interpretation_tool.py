@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import QPoint, Qt, pyqtSignal
 from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.types import InterpretationPolygon
-from sec_interp.logger_config import get_logger
+from sec_interp.logger_config import get_logger, log_critical_operation
 
 
 logger = get_logger(__name__)
@@ -135,6 +135,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         self.cursor = Qt.CrossCursor
 
     def activate(self):
+        log_critical_operation(logger, "activate_interpretation_tool")
         logger.debug("ProfileInterpretationTool.activate() called")
         super().activate()
         self.canvas.setCursor(self.cursor)
@@ -142,6 +143,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
     def deactivate(self):
         """Cleanup when tool is deactivated."""
+        log_critical_operation(logger, "deactivate_interpretation_tool")
         logger.debug("ProfileInterpretationTool.deactivate() called")
         self.reset()
         super().deactivate()
@@ -149,6 +151,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
     def reset(self):
         """Resets the tool state safely."""
+        log_critical_operation(logger, "reset_interpretation_tool", points=len(self.points) if self.points else 0)
         logger.debug(
             f"ProfileInterpretationTool.reset() called - {len(self.points)} points, {len(self.vertex_markers)} markers"
         )
@@ -264,6 +267,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
     def finalize_polygon(self):
         """Finalize the polygon and emit signal."""
+        log_critical_operation(logger, "finalize_polygon", points=len(self.points))
         logger.debug(
             f"ProfileInterpretationTool.finalize_polygon() called with {len(self.points)} points"
         )
