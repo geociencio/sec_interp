@@ -9,6 +9,7 @@ from .drillhole_exporters import (
     DrillholeIntervalShpExporter,
     DrillholeTraceShpExporter,
 )
+from .interpretation_exporters import Interpretation2DExporter
 from .image_exporter import ImageExporter
 from .pdf_exporter import PDFExporter
 from .profile_exporters import (
@@ -29,6 +30,7 @@ __all__ = [
     "DrillholeTraceShpExporter",
     "GeologyShpExporter",
     "ImageExporter",
+    "Interpretation2DExporter",
     "PDFExporter",
     "ProfileLineShpExporter",
     "SVGExporter",

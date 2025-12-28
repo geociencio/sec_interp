@@ -18,7 +18,6 @@ from sec_interp.core.exceptions import DataMissingError, ProcessingError
 from sec_interp.core.services import (
     DrillholeService,
     GeologyService,
-    InterpretationService,
     ProfileService,
     StructureService,
 )
@@ -40,7 +39,6 @@ class ProfileController:
         self.geology_service = GeologyService()
         self.structure_service = StructureService()
         self.drillhole_service = DrillholeService()
-        self.interpretation_service = InterpretationService()
         logger.debug("ProfileController initialized")
 
     def connect_layer_notifications(self, layers: list[Any]) -> None:

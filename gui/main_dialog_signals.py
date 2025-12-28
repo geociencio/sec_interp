@@ -6,6 +6,7 @@ separating signal setup from the main dialog class.
 
 from typing import TYPE_CHECKING
 
+from qgis.PyQt.QtWidgets import QDialogButtonBox
 from sec_interp.logger_config import get_logger
 
 
@@ -45,6 +46,11 @@ class DialogSignalManager:
         self.dialog.button_box.rejected.connect(self.dialog.reject_handler)
         self.dialog.button_box.helpRequested.connect(self.dialog.open_help)
 
+        # Connect Save button to export_data
+        save_btn = self.dialog.button_box.button(QDialogButtonBox.Save)
+        if save_btn:
+            save_btn.clicked.connect(self.dialog.export_manager.export_data)
+
         # Clear cache button
         self.dialog.clear_cache_btn.clicked.connect(self.dialog.clear_cache_handler)
 
@@ -69,6 +75,9 @@ class DialogSignalManager:
             self.dialog.update_preview_from_checkboxes
         )
         self.dialog.preview_widget.chk_drillholes.stateChanged.connect(
+            self.dialog.update_preview_from_checkboxes
+        )
+        self.dialog.preview_widget.chk_interpretations.stateChanged.connect(
             self.dialog.update_preview_from_checkboxes
         )
 

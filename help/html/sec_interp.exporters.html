@@ -80,6 +80,15 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sec_interp.exporters.interpretation_exporters.html">sec_interp.exporters.interpretation_exporters module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sec_interp.exporters.interpretation_exporters.html#sec_interp.exporters.interpretation_exporters.Interpretation2DExporter"><code class="docutils literal notranslate"><span class="pre">Interpretation2DExporter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.exporters.interpretation_exporters.html#sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.__init__"><code class="docutils literal notranslate"><span class="pre">Interpretation2DExporter.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.exporters.interpretation_exporters.html#sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.export"><code class="docutils literal notranslate"><span class="pre">Interpretation2DExporter.export()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_interp.exporters.interpretation_exporters.html#sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.get_supported_extensions"><code class="docutils literal notranslate"><span class="pre">Interpretation2DExporter.get_supported_extensions()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="sec_interp.exporters.pdf_exporter.html">sec_interp.exporters.pdf_exporter module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sec_interp.exporters.pdf_exporter.html#sec_interp.exporters.pdf_exporter.PDFExporter"><code class="docutils literal notranslate"><span class="pre">PDFExporter</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="sec_interp.exporters.pdf_exporter.html#sec_interp.exporters.pdf_exporter.PDFExporter.get_supported_extensions"><code class="docutils literal notranslate"><span class="pre">PDFExporter.get_supported_extensions()</span></code></a></li>
@@ -487,7 +496,7 @@ and ‘rows’ (list of tuples or lists).</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.exporters.ImageExporter.export">
-<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QgsMapSettings</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.exporters.ImageExporter.export" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsMapSettings</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.exporters.ImageExporter.export" title="Link to this definition">¶</a></dt>
 <dd><p>Export map to raster image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -511,6 +520,62 @@ and ‘rows’ (list of tuples or lists).</p></li>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="sec_interp.exporters.Interpretation2DExporter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.exporters.</span></span><span class="sig-name descname"><span class="pre">Interpretation2DExporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.exporters.Interpretation2DExporter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter" title="sec_interp.exporters.base_exporter.BaseExporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExporter</span></code></a></p>
+<p>Exports interpretations in 2D profile coordinates.</p>
+<p>Initialize with settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>settings</strong> – Dictionary of configuration settings.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.exporters.Interpretation2DExporter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.exporters.Interpretation2DExporter.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize with settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>settings</strong> – Dictionary of configuration settings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.exporters.Interpretation2DExporter.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.exporters.Interpretation2DExporter.export" title="Link to this definition">¶</a></dt>
+<dd><p>Export interpretations to Shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_path</strong> – Path to the output Shapefile (.shp)</p></li>
+<li><p><strong>data</strong> – Dictionary containing:
+- interpretations: List of InterpretationPolygon objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if export was successful, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.exporters.Interpretation2DExporter.get_supported_extensions">
+<span class="sig-name descname"><span class="pre">get_supported_extensions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.exporters.Interpretation2DExporter.get_supported_extensions" title="Link to this definition">¶</a></dt>
+<dd><p>Get list of supported file extensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of supported extensions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="sec_interp.exporters.PDFExporter">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.exporters.</span></span><span class="sig-name descname"><span class="pre">PDFExporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.exporters.PDFExporter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter" title="sec_interp.exporters.base_exporter.BaseExporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExporter</span></code></a></p>
@@ -528,7 +593,7 @@ and ‘rows’ (list of tuples or lists).</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.exporters.PDFExporter.export">
-<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QgsMapSettings</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.exporters.PDFExporter.export" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsMapSettings</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.exporters.PDFExporter.export" title="Link to this definition">¶</a></dt>
 <dd><p>Export map to PDF.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
