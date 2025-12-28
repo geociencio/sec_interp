@@ -48,7 +48,9 @@ class TestDataCache(unittest.TestCase):
         # Test individual gets (checking compatibility)
         # In the new API, these now return the full object stored in the respective bucket.
         self.assertEqual(self.cache.get_topographic_profile(key), data)
-        self.assertEqual(self.cache.get_geological_profile(key), None) # Different bucket
+        self.assertEqual(
+            self.cache.get_geological_profile(key), None
+        )  # Different bucket
         self.cache.set("geol", key, data["geol_data"])
         self.assertEqual(self.cache.get_geological_profile(key), data["geol_data"])
         self.cache.set("struct", key, data["struct_data"])

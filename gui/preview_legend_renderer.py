@@ -96,9 +96,13 @@ class PreviewLegendRenderer:
 
         items = []
         if has_topo:
-            items.append(QCoreApplication.translate("PreviewLegendRenderer", "Topography"))
+            items.append(
+                QCoreApplication.translate("PreviewLegendRenderer", "Topography")
+            )
         if has_struct:
-            items.append(QCoreApplication.translate("PreviewLegendRenderer", "Structures"))
+            items.append(
+                QCoreApplication.translate("PreviewLegendRenderer", "Structures")
+            )
         items.extend(active_units.keys())
 
         for item in items:

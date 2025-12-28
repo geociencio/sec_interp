@@ -57,7 +57,9 @@ def temporary_memory_layer(
 
 @contextlib.contextmanager
 def temporary_file(
-    suffix: Optional[str] = None, prefix: Optional[str] = None, dir: Optional[str] = None
+    suffix: Optional[str] = None,
+    prefix: Optional[str] = None,
+    dir: Optional[str] = None,
 ) -> Generator[str, None, None]:
     """Context manager for a temporary file path.
 

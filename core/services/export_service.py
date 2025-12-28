@@ -68,8 +68,12 @@ class ExportService:
         csv_exporter = CSVExporter({})
 
         # Orchestrate sub-exports
-        self._export_topography(output_folder, profile_data, line_crs, csv_exporter, result_msg)
-        self._export_geology(output_folder, geol_data, line_crs, csv_exporter, result_msg)
+        self._export_topography(
+            output_folder, profile_data, line_crs, csv_exporter, result_msg
+        )
+        self._export_geology(
+            output_folder, geol_data, line_crs, csv_exporter, result_msg
+        )
         self._export_structures(
             output_folder, struct_data, params, line_crs, csv_exporter, result_msg
         )
@@ -105,7 +109,8 @@ class ExportService:
         try:
             rows = [(p[0], p[1], s.unit_name) for s in data for p in s.points]
             csv_exporter.export(
-                folder / "geol_profile.csv", {"headers": ["dist", "elev", "geology"], "rows": rows}
+                folder / "geol_profile.csv",
+                {"headers": ["dist", "elev", "geology"], "rows": rows},
             )
             GeologyShpExporter({}).export(
                 folder / "geol_profile.shp", {"geology_data": data, "crs": crs}
@@ -149,7 +154,10 @@ class ExportService:
         """Helper to export drillhole data."""
         if not data:
             return
-        from sec_interp.exporters import DrillholeIntervalShpExporter, DrillholeTraceShpExporter
+        from sec_interp.exporters import (
+            DrillholeIntervalShpExporter,
+            DrillholeTraceShpExporter,
+        )
 
         logger.info("✓ Saving drillhole data...")
         try:

@@ -76,7 +76,9 @@ class ProfileController:
         cache_key = self.data_cache.get_cache_key(inputs)
         self.data_cache.set(cache_key, data)
 
-    def generate_profile_data(self, params: PreviewParams) -> tuple[list, Any, Any, Any, list[str]]:
+    def generate_profile_data(
+        self, params: PreviewParams
+    ) -> tuple[list, Any, Any, Any, list[str]]:
         """Unified method to generate all profile data components with granular caching.
 
         Orchestrates topography sampling, geology intersection, structural projection,
@@ -143,7 +145,9 @@ class ProfileController:
                 raise ProcessingError("No topographic profile data was generated.")
             self.data_cache.set("topo", topo_key, profile_data, cache_meta)
 
-        messages.append(f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points")
+        messages.append(
+            f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points"
+        )
 
         # 2. Geology
         geol_data = None
@@ -170,7 +174,9 @@ class ProfileController:
                     else:
                         messages.append("Geology: No intersections")
                 else:
-                    messages.append("\n⚠ Outcrop layer selected but no geology field specified.")
+                    messages.append(
+                        "\n⚠ Outcrop layer selected but no geology field specified."
+                    )
 
         # 3. Structure
         struct_data = None
@@ -209,10 +215,16 @@ class ProfileController:
                             )
 
                             if struct_data:
-                                self.data_cache.set("struct", struct_key, struct_data, cache_meta)
-                                messages.append(f"Structures: {len(struct_data)} points")
+                                self.data_cache.set(
+                                    "struct", struct_key, struct_data, cache_meta
+                                )
+                                messages.append(
+                                    f"Structures: {len(struct_data)} points"
+                                )
                             else:
-                                messages.append(f"Structures: None in {buffer_dist}m buffer")
+                                messages.append(
+                                    f"Structures: None in {buffer_dist}m buffer"
+                                )
                     else:
                         messages.append(
                             "\n⚠ Structural layer selected but dip/strike fields not specified."
@@ -268,31 +280,33 @@ class ProfileController:
 
                         if survey_layer and interval_layer:
                             section_azimuth = scu.calculate_line_azimuth(section_geom)
-                            _, drillhole_data = self.drillhole_service.process_intervals(
-                                collar_points=collars,
-                                collar_layer=collar_layer,
-                                survey_layer=survey_layer,
-                                interval_layer=interval_layer,
-                                collar_id_field=params.collar_id_field,
-                                use_geometry=params.collar_use_geometry,
-                                collar_x_field=params.collar_x_field,
-                                collar_y_field=params.collar_y_field,
-                                line_geom=section_geom,
-                                line_start=section_start,
-                                distance_area=distance_area,
-                                buffer_width=buffer_dist,
-                                section_azimuth=section_azimuth,
-                                survey_fields={
-                                    "id": params.survey_id_field,
-                                    "depth": params.survey_depth_field,
-                                    "azim": params.survey_azim_field,
-                                    "incl": params.survey_incl_field,
-                                },
-                                interval_fields={
-                                    "id": params.interval_id_field,
-                                    "from": params.interval_from_field,
-                                    "to": params.interval_to_field,
-                                    "lith": params.interval_lith_field,
-                                },
+                            _, drillhole_data = (
+                                self.drillhole_service.process_intervals(
+                                    collar_points=collars,
+                                    collar_layer=collar_layer,
+                                    survey_layer=survey_layer,
+                                    interval_layer=interval_layer,
+                                    collar_id_field=params.collar_id_field,
+                                    use_geometry=params.collar_use_geometry,
+                                    collar_x_field=params.collar_x_field,
+                                    collar_y_field=params.collar_y_field,
+                                    line_geom=section_geom,
+                                    line_start=section_start,
+                                    distance_area=distance_area,
+                                    buffer_width=buffer_dist,
+                                    section_azimuth=section_azimuth,
+                                    survey_fields={
+                                        "id": params.survey_id_field,
+                                        "depth": params.survey_depth_field,
+                                        "azim": params.survey_azim_field,
+                                        "incl": params.survey_incl_field,
+                                    },
+                                    interval_fields={
+                                        "id": params.interval_id_field,
+                                        "from": params.interval_from_field,
+                                        "to": params.interval_to_field,
+                                        "lith": params.interval_lith_field,
+                                    },
+                                )
                             )
         return profile_data, geol_data, struct_data, drillhole_data, messages

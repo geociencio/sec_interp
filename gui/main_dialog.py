@@ -131,7 +131,9 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Add clear cache button
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
-        self.clear_cache_btn.setToolTip(self.tr("Clear cached data to force re-processing."))
+        self.clear_cache_btn.setToolTip(
+            self.tr("Clear cached data to force re-processing.")
+        )
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
 
         # Initialize map tools via tool_manager
@@ -150,7 +152,9 @@ class SecInterpDialog(SecInterpMainWindow):
         from sec_interp.core.services.preview_service import PreviewService
 
         self.validator = DialogValidator(self)
-        self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
+        self.preview_manager = PreviewManager(
+            self, PreviewService(self.plugin_instance.controller)
+        )
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
         self.data_aggregator = DialogDataAggregator(self)
@@ -244,7 +248,9 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
-            "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
+            "use_adaptive_sampling": bool(
+                self.preview_widget.chk_adaptive_sampling.isChecked()
+            ),
         }
 
     def update_preview_from_checkboxes(self):

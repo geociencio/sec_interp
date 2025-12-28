@@ -91,11 +91,15 @@ class PreviewRenderer:
         if topo_layer:
             self.has_topography = True
 
-        geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
+        geol_layer = self.layer_factory.create_geol_layer(
+            geol_data, vert_exag, max_points
+        )
 
         # For structural layer, use topo or geol as reference
         reference_data = (
-            topo_data if topo_data else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
+            topo_data
+            if topo_data
+            else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
         )
         struct_layer = self.layer_factory.create_struct_layer(
             struct_data, reference_data, vert_exag, dip_line_length
@@ -106,7 +110,9 @@ class PreviewRenderer:
         # Drillhole layers
         drillhole_layers = []
         if drillhole_data:
-            trace_layer = self.layer_factory.create_drillhole_trace_layer(drillhole_data, vert_exag)
+            trace_layer = self.layer_factory.create_drillhole_trace_layer(
+                drillhole_data, vert_exag
+            )
             if trace_layer:
                 drillhole_layers.append(trace_layer)
             interval_layer = self.layer_factory.create_drillhole_interval_layer(

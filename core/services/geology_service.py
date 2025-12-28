@@ -91,11 +91,15 @@ class GeologyService(IGeologyService):
         """
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
-            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
+            raise DataMissingError(
+                "Line layer has no features", {"layer": line_lyr.name()}
+            )
 
         line_geom = line_feat.geometry()
         if not line_geom or line_geom.isNull():
-            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
+            raise GeometryError(
+                "Line geometry is not valid", {"layer": line_lyr.name()}
+            )
 
         if line_geom.isMultipart():
             line_start = line_geom.asMultiPolyline()[0][0]

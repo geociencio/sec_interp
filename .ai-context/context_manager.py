@@ -97,7 +97,11 @@ next_steps
             if any(keyword.lower() in content_str.lower() for keyword in keywords):
                 relevant_parts.append(f"=== {context_name} ===\n{content_str[:1000]}")
 
-        return "\n\n".join(relevant_parts) if relevant_parts else "No hay contexto específico"
+        return (
+            "\n\n".join(relevant_parts)
+            if relevant_parts
+            else "No hay contexto específico"
+        )
 
     def _extract_keywords(self, text: str) -> list[str]:
         """Extrae palabras clave del texto."""
@@ -128,7 +132,11 @@ next_steps
         """Actualiza contexto con nueva información."""
         update_file = self.project_path / ".ai-context-updates.yaml"
 
-        current = yaml.safe_load(update_file.read_text()) or {} if update_file.exists() else {}
+        current = (
+            yaml.safe_load(update_file.read_text()) or {}
+            if update_file.exists()
+            else {}
+        )
 
         # Mergear nueva información
         for key, value in new_info.items():
@@ -155,7 +163,9 @@ if __name__ == "__main__":
 
     if len(sys.argv) < 3:
         print("Uso: python context_manager.py <proyecto> <tarea> [modelo]")
-        print("Ejemplo: python context_manager.py mi_proyecto 'optimizar función X' deepseek-coder")
+        print(
+            "Ejemplo: python context_manager.py mi_proyecto 'optimizar función X' deepseek-coder"
+        )
         sys.exit(1)
 
     manager = AIContextManager(sys.argv[1])

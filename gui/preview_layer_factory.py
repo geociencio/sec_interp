@@ -123,7 +123,9 @@ class PreviewLayerFactory:
 
         # Apply LOD decimation
         if use_adaptive_sampling:
-            render_data = PreviewOptimizer.adaptive_sample(topo_data, max_points=max_points)
+            render_data = PreviewOptimizer.adaptive_sample(
+                topo_data, max_points=max_points
+            )
         else:
             render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
 
@@ -157,7 +159,9 @@ class PreviewLayerFactory:
         if not geol_data:
             return None
 
-        layer, provider = self.create_memory_layer("LineString", "Geology", "field=unit:string")
+        layer, provider = self.create_memory_layer(
+            "LineString", "Geology", "field=unit:string"
+        )
         if not layer:
             return None
 
@@ -167,8 +171,12 @@ class PreviewLayerFactory:
             if not segment.points or len(segment.points) < 2:
                 continue
 
-            render_points = PreviewOptimizer.decimate(segment.points, max_points=max_points)
-            line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points]
+            render_points = PreviewOptimizer.decimate(
+                segment.points, max_points=max_points
+            )
+            line_points = [
+                QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points
+            ]
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -365,7 +373,9 @@ class PreviewLayerFactory:
         layer.updateExtents()
         return layer
 
-    def interpolate_elevation(self, reference_data: ProfileData, target_dist: float) -> float:
+    def interpolate_elevation(
+        self, reference_data: ProfileData, target_dist: float
+    ) -> float:
         """Interpolate elevation at a given distance."""
         if not reference_data:
             return 0

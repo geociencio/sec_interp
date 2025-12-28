@@ -11,7 +11,10 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 
 
-from sec_interp.core.validation.project_validator import ProjectValidator, ValidationParams
+from sec_interp.core.validation.project_validator import (
+    ProjectValidator,
+    ValidationParams,
+)
 
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog

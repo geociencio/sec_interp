@@ -90,15 +90,21 @@ class StructureService(IStructureService):
             GeometryError: If line geometry is invalid.
         """
         # Logging: Initial setup
-        logger.info(f"Analyzing structures in {struct_lyr.name()} with buffer {buffer_m}m")
+        logger.info(
+            f"Analyzing structures in {struct_lyr.name()} with buffer {buffer_m}m"
+        )
 
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
-            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
+            raise DataMissingError(
+                "Line layer has no features", {"layer": line_lyr.name()}
+            )
 
         line_geom = line_feat.geometry()
         if not line_geom or line_geom.isNull():
-            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
+            raise GeometryError(
+                "Line geometry is not valid", {"layer": line_lyr.name()}
+            )
 
         if line_geom.isMultipart():
             line_start = line_geom.asMultiPolyline()[0][0]
@@ -109,7 +115,9 @@ class StructureService(IStructureService):
         buffer_geom = self._create_buffer_zone(line_geom, line_lyr.crs(), buffer_m)
 
         # 2. Filter Measures
-        filtered_features = self._filter_structures(struct_lyr, buffer_geom, line_lyr.crs())
+        filtered_features = self._filter_structures(
+            struct_lyr, buffer_geom, line_lyr.crs()
+        )
 
         # 3. Process Features
         projected_structs = []
@@ -239,7 +247,9 @@ class StructureService(IStructureService):
 
         # Sample Elevation
         res_val = (
-            raster_lyr.dataProvider().identify(proj_pt, QgsRaster.IdentifyFormatValue).results()
+            raster_lyr.dataProvider()
+            .identify(proj_pt, QgsRaster.IdentifyFormatValue)
+            .results()
         )
         elev = res_val.get(band_number, 0.0)
 
@@ -269,5 +279,7 @@ class StructureService(IStructureService):
             apparent_dip=round(app_dip, 1),
             original_dip=dip_angle,
             original_strike=strike,
-            attributes=dict(zip(feature.fields().names(), feature.attributes(), strict=False)),
+            attributes=dict(
+                zip(feature.fields().names(), feature.attributes(), strict=False)
+            ),
         )

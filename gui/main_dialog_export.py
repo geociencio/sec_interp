@@ -75,7 +75,9 @@ class ExportManager:
                 # Format selection
                 settings = QgsSettings()
                 last_dir = settings.value("SecInterp/lastExportDir", "", type=str)
-                default_path = str(Path(last_dir) / "preview.png") if last_dir else "preview.png"
+                default_path = (
+                    str(Path(last_dir) / "preview.png") if last_dir else "preview.png"
+                )
 
                 file_filter = (
                     "PNG Image (*.png);;"
@@ -170,13 +172,17 @@ class ExportManager:
             output_folder = Path(values["output_path"])
 
             # 2. Generate data via controller
-            self.dialog.preview_widget.results_text.setPlainText("✓ Generating data for export...")
+            self.dialog.preview_widget.results_text.setPlainText(
+                "✓ Generating data for export..."
+            )
             profile_data, geol_data, struct_data, drillhole_data, _ = (
                 self.dialog.plugin_instance.controller.generate_profile_data(params)
             )
 
             if not profile_data:
-                self.dialog.messagebar.pushMessage("Error", "No profile data generated.", level=1)
+                self.dialog.messagebar.pushMessage(
+                    "Error", "No profile data generated.", level=1
+                )
                 return False
 
             result_msg = self.export_service.export_data(

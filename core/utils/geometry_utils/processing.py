@@ -104,7 +104,9 @@ def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
     return None
 
 
-def run_processing_algorithm(algorithm_id: str, parameters: dict[str, Any]) -> dict[str, Any]:
+def run_processing_algorithm(
+    algorithm_id: str, parameters: dict[str, Any]
+) -> dict[str, Any]:
     """Execute a QGIS processing algorithm.
 
     Args:

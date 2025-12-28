@@ -17,7 +17,8 @@ class StructurePage(BasePage):
 
     def __init__(self, parent=None):
         super().__init__(
-            QCoreApplication.translate("StructurePage", "Structural Measurements"), parent
+            QCoreApplication.translate("StructurePage", "Structural Measurements"),
+            parent,
         )
 
     def _setup_ui(self):
@@ -40,7 +41,9 @@ class StructurePage(BasePage):
             self.layer_combo.setFilters(QgsMapLayerProxyModel.PointLayer)
 
         self.layer_combo.setAllowEmptyLayer(True)
-        self.layer_combo.setToolTip(self.tr("Select the point layer with structural measurements"))
+        self.layer_combo.setToolTip(
+            self.tr("Select the point layer with structural measurements")
+        )
         self.layer_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.layer_combo, 0, 1)
 

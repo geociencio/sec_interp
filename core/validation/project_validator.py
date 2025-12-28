@@ -140,7 +140,9 @@ class ProjectValidator:
         if not params.raster_layer:
             errors.append("Raster DEM layer is required")
         elif params.band_number is not None:
-            is_valid, error = validate_raster_band(params.raster_layer, params.band_number)
+            is_valid, error = validate_raster_band(
+                params.raster_layer, params.band_number
+            )
             if not is_valid:
                 errors.append(error)
 
@@ -148,7 +150,9 @@ class ProjectValidator:
         if not params.line_layer:
             errors.append("Cross-section line layer is required")
         else:
-            is_valid, error = validate_layer_geometry(params.line_layer, QgsWkbTypes.LineGeometry)
+            is_valid, error = validate_layer_geometry(
+                params.line_layer, QgsWkbTypes.LineGeometry
+            )
             if not is_valid:
                 errors.append(error)
 
@@ -274,4 +278,8 @@ class ProjectValidator:
     @staticmethod
     def is_structure_complete(params: ValidationParams) -> bool:
         """Check if structural requirements are met."""
-        return bool(params.struct_layer and params.struct_dip_field and params.struct_strike_field)
+        return bool(
+            params.struct_layer
+            and params.struct_dip_field
+            and params.struct_strike_field
+        )

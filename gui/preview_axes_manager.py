@@ -56,7 +56,9 @@ class PreviewAxesManager:
         return nice_fraction * (10**exponent)
 
     @classmethod
-    def create_axes_layer(cls, extent, vert_exag: float = 1.0) -> Optional[QgsVectorLayer]:
+    def create_axes_layer(
+        cls, extent, vert_exag: float = 1.0
+    ) -> Optional[QgsVectorLayer]:
         """Create temporary layer for axes and grid."""
         if not extent:
             return None
@@ -118,7 +120,9 @@ class PreviewAxesManager:
         return layer
 
     @classmethod
-    def create_axes_labels_layer(cls, extent, vert_exag: float = 1.0) -> Optional[QgsVectorLayer]:
+    def create_axes_labels_layer(
+        cls, extent, vert_exag: float = 1.0
+    ) -> Optional[QgsVectorLayer]:
         """Create a point layer for axes labels."""
         if not extent:
             return None

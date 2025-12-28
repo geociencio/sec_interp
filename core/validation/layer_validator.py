@@ -192,8 +192,6 @@ def validate_structural_requirements(
     return True, ""
 
 
-
-
 def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
     """Validate that a list of layers have compatible Coordinate Reference Systems.
 
@@ -207,7 +205,9 @@ def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
     ref_crs = ref_layer.crs()
 
     incompatible = [
-        f"  - {L.name()}: {L.crs().authid()}" for L in valid_layers if L.crs() != ref_crs
+        f"  - {L.name()}: {L.crs().authid()}"
+        for L in valid_layers
+        if L.crs() != ref_crs
     ]
 
     if incompatible:

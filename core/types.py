@@ -187,10 +187,16 @@ class PreviewParams:
         if self.band_num < 1:
             raise ValidationError(f"Invalid band number: {self.band_num}")
         if self.buffer_dist < 0:
-            raise ValidationError(f"Buffer distance cannot be negative: {self.buffer_dist}")
+            raise ValidationError(
+                f"Buffer distance cannot be negative: {self.buffer_dist}"
+            )
 
         # Dependent validation
-        if self.outcrop_layer and self.outcrop_layer.isValid() and not self.outcrop_name_field:
+        if (
+            self.outcrop_layer
+            and self.outcrop_layer.isValid()
+            and not self.outcrop_name_field
+        ):
             raise ValidationError("Outcrop layer selected but no name field provided.")
 
         if (
@@ -198,9 +204,15 @@ class PreviewParams:
             and self.struct_layer.isValid()
             and (not self.dip_field or not self.strike_field)
         ):
-            raise ValidationError("Structural layer selected but dip/strike fields missing.")
+            raise ValidationError(
+                "Structural layer selected but dip/strike fields missing."
+            )
 
-        if self.collar_layer and self.collar_layer.isValid() and not self.collar_id_field:
+        if (
+            self.collar_layer
+            and self.collar_layer.isValid()
+            and not self.collar_id_field
+        ):
             raise ValidationError("Collar layer selected but no ID field provided.")
 
         if (
@@ -215,7 +227,9 @@ class PreviewParams:
                 ]
             )
         ):
-            raise ValidationError("Survey layer selected but some required fields are missing.")
+            raise ValidationError(
+                "Survey layer selected but some required fields are missing."
+            )
 
         if (
             self.interval_layer
@@ -229,7 +243,9 @@ class PreviewParams:
                 ]
             )
         ):
-            raise ValidationError("Interval layer selected but some required fields are missing.")
+            raise ValidationError(
+                "Interval layer selected but some required fields are missing."
+            )
 
 
 @dataclass

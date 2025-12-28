@@ -90,7 +90,9 @@ class PreviewManager:
         # Connect extents changed signal
         # We need to do this carefully to avoid signal loops
         # Initial connection is safe
-        self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
+        self.dialog.preview_widget.canvas.extentsChanged.connect(
+            self._on_extents_changed
+        )
 
     def cleanup(self):
         """Clean up resources and stop background tasks."""
@@ -154,13 +156,19 @@ class PreviewManager:
 
         # Generate fresh data
         transform_context = (
-            self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
+            self.dialog.plugin_instance.iface.mapCanvas()
+            .mapSettings()
+            .transformContext()
         )
         result = self.preview_service.generate_all(params, transform_context)
 
         # Merge results and metrics
         self.cached_data.update(
-            {"topo": result.topo, "struct": result.struct, "drillhole": result.drillhole}
+            {
+                "topo": result.topo,
+                "struct": result.struct,
+                "drillhole": result.drillhole,
+            }
         )
         self.metrics.timings.update(result.metrics.timings)
         self.metrics.counts.update(result.metrics.counts)
@@ -304,9 +312,9 @@ class PreviewManager:
         lines = [
             QCoreApplication.translate("PreviewManager", "✓ Preview generated!"),
             "",
-            QCoreApplication.translate("PreviewManager", "Topography: {} points").format(
-                len(result.topo) if result.topo else 0
-            ),
+            QCoreApplication.translate(
+                "PreviewManager", "Topography: {} points"
+            ).format(len(result.topo) if result.topo else 0),
         ]
 
         # Add components
@@ -319,47 +327,53 @@ class PreviewManager:
         lines.extend(metrics)
 
         # Add performance metrics if enabled
-        if DialogConfig.ENABLE_PERFORMANCE_METRICS and DialogConfig.SHOW_METRICS_IN_RESULTS:
+        if (
+            DialogConfig.ENABLE_PERFORMANCE_METRICS
+            and DialogConfig.SHOW_METRICS_IN_RESULTS
+        ):
             timings = self.metrics.timings
             if timings:
                 lines.append("")
-                lines.append(QCoreApplication.translate("PreviewManager", "Performance:"))
+                lines.append(
+                    QCoreApplication.translate("PreviewManager", "Performance:")
+                )
                 if "Topography Generation" in timings:
                     lines.append(
-                        QCoreApplication.translate("PreviewManager", "  Topo: {}").format(
-                            format_duration(timings["Topography Generation"])
-                        )
+                        QCoreApplication.translate(
+                            "PreviewManager", "  Topo: {}"
+                        ).format(format_duration(timings["Topography Generation"]))
                     )
                 if "Geology Generation" in timings and result.geol:
                     lines.append(
-                        QCoreApplication.translate("PreviewManager", "  Geol: {}").format(
-                            format_duration(timings["Geology Generation"])
-                        )
+                        QCoreApplication.translate(
+                            "PreviewManager", "  Geol: {}"
+                        ).format(format_duration(timings["Geology Generation"]))
                     )
                 if "Structure Generation" in timings and result.struct:
                     lines.append(
-                        QCoreApplication.translate("PreviewManager", "  Struct: {}").format(
-                            format_duration(timings["Structure Generation"])
-                        )
+                        QCoreApplication.translate(
+                            "PreviewManager", "  Struct: {}"
+                        ).format(format_duration(timings["Structure Generation"]))
                     )
                 if "Rendering" in timings:
                     lines.append(
-                        QCoreApplication.translate("PreviewManager", "  Render: {}").format(
-                            format_duration(timings["Rendering"])
-                        )
+                        QCoreApplication.translate(
+                            "PreviewManager", "  Render: {}"
+                        ).format(format_duration(timings["Rendering"]))
                     )
                 if "Total Preview Generation" in timings:
                     lines.append(
-                        QCoreApplication.translate("PreviewManager", "  Total: {}").format(
-                            format_duration(timings["Total Preview Generation"])
-                        )
+                        QCoreApplication.translate(
+                            "PreviewManager", "  Total: {}"
+                        ).format(format_duration(timings["Total Preview Generation"]))
                     )
 
         lines.extend(
             [
                 "",
                 QCoreApplication.translate(
-                    "PreviewManager", "Adjust 'Vert. Exag.' and click Preview to update."
+                    "PreviewManager",
+                    "Adjust 'Vert. Exag.' and click Preview to update.",
                 ),
             ]
         )
@@ -370,9 +384,9 @@ class PreviewManager:
         """Format a summary line for geology data."""
         if not geol_data:
             return QCoreApplication.translate("PreviewManager", "Geology: No data")
-        return QCoreApplication.translate("PreviewManager", "Geology: {} segments").format(
-            len(geol_data)
-        )
+        return QCoreApplication.translate(
+            "PreviewManager", "Geology: {} segments"
+        ).format(len(geol_data))
 
     def _format_structure_summary(
         self, struct_data: Optional[StructureData], buffer_dist: float
@@ -389,9 +403,9 @@ class PreviewManager:
         drillhole_data = self.cached_data.get("drillhole")
         if not drillhole_data:
             return QCoreApplication.translate("PreviewManager", "Drillholes: No data")
-        return QCoreApplication.translate("PreviewManager", "Drillholes: {} holes found").format(
-            len(drillhole_data)
-        )
+        return QCoreApplication.translate(
+            "PreviewManager", "Drillholes: {} holes found"
+        ).format(len(drillhole_data))
 
     def _format_result_metrics(self, result: PreviewResult) -> list[str]:
         """Format elevation metrics for the results message."""
@@ -401,12 +415,12 @@ class PreviewManager:
         return [
             "",
             QCoreApplication.translate("PreviewManager", "Geometry Range:"),
-            QCoreApplication.translate("PreviewManager", "  Elevation: {} to {} m").format(
-                min_elev, max_elev
-            ),
-            QCoreApplication.translate("PreviewManager", "  Distance: {} to {} m").format(
-                min_dist, max_dist
-            ),
+            QCoreApplication.translate(
+                "PreviewManager", "  Elevation: {} to {} m"
+            ).format(min_elev, max_elev),
+            QCoreApplication.translate(
+                "PreviewManager", "  Distance: {} to {} m"
+            ).format(min_dist, max_dist),
         ]
 
     def _on_extents_changed(self):
@@ -450,7 +464,9 @@ class PreviewManager:
             # This requires knowing the last used max_points...
             # We can just re-render, it handles caching of data, but re-decimation takes time.
 
-            logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
+            logger.debug(
+                f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}"
+            )
 
             if not self.dialog.plugin_instance:
                 return
@@ -491,7 +507,9 @@ class PreviewManager:
         )
 
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate("PreviewManager", "Generating Geology in background...")
+            QCoreApplication.translate(
+                "PreviewManager", "Generating Geology in background..."
+            )
         )
         # No need for a custom worker function anymore
         self.async_service.process_profiles_parallel([args])
@@ -548,9 +566,9 @@ class PreviewManager:
     def _on_geology_progress(self, progress):
         """Handle progress updates from parallel service."""
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate("PreviewManager", "Generating Geology: {}%...").format(
-                progress
-            )
+            QCoreApplication.translate(
+                "PreviewManager", "Generating Geology: {}%..."
+            ).format(progress)
         )
 
     def _on_geology_error(self, error_msg: str):
@@ -558,9 +576,9 @@ class PreviewManager:
         logger.error(f"Async geology error: {error_msg}")
         # Map string error to ProcessingError for centralized handling
         error = ProcessingError(
-            QCoreApplication.translate("PreviewManager", "Geology processing failed: {}").format(
-                error_msg
-            )
+            QCoreApplication.translate(
+                "PreviewManager", "Geology processing failed: {}"
+            ).format(error_msg)
         )
         self.dialog.handle_error(error, "Geology Error")
 
@@ -578,7 +596,9 @@ class PreviewManager:
             if layer:
                 auth_id = layer.crs().authid()
                 self.dialog.preview_widget.lbl_crs.setText(
-                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(auth_id)
+                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(
+                        auth_id
+                    )
                 )
             else:
                 self.dialog.preview_widget.lbl_crs.setText(

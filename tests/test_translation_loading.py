@@ -1,19 +1,22 @@
-
 """Test for verifying translation loading logic."""
+
 import unittest
 from unittest.mock import MagicMock, patch
 from pathlib import Path
 
 # Initialize QGIS Application
 from qgis.core import QgsApplication
+
 qgs = QgsApplication([], False)
 qgs.initQgis()
 
 from qgis.PyQt.QtCore import QCoreApplication, QTranslator
+
 # Import inside patches or setUp to avoid side effects if possible,
 # but here we need to patch classes used by SecInterp BEFORE we instantiate it.
 
 from sec_interp.sec_interp_plugin import SecInterp
+
 
 class TestTranslationLoading(unittest.TestCase):
 
@@ -27,8 +30,16 @@ class TestTranslationLoading(unittest.TestCase):
     @patch("sec_interp.sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp.sec_interp_plugin.QTranslator")
     @patch("sec_interp.sec_interp_plugin.QSettings")
-    def test_translation_loads_es(self, MockSettings, MockTranslatorClass, MockInstall,
-                                 MockExport, MockController, MockRenderer, MockDialog):
+    def test_translation_loads_es(
+        self,
+        MockSettings,
+        MockTranslatorClass,
+        MockInstall,
+        MockExport,
+        MockController,
+        MockRenderer,
+        MockDialog,
+    ):
         """Test that spanish translation loads correctly."""
         # Setup mock settings to return Spanish
         MockSettings.return_value.value.return_value = "es"
@@ -55,8 +66,16 @@ class TestTranslationLoading(unittest.TestCase):
     @patch("sec_interp.sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp.sec_interp_plugin.QTranslator")
     @patch("sec_interp.sec_interp_plugin.QSettings")
-    def test_translation_loads_fr(self, MockSettings, MockTranslatorClass, MockInstall,
-                                 MockExport, MockController, MockRenderer, MockDialog):
+    def test_translation_loads_fr(
+        self,
+        MockSettings,
+        MockTranslatorClass,
+        MockInstall,
+        MockExport,
+        MockController,
+        MockRenderer,
+        MockDialog,
+    ):
         """Test that french translation loads correctly."""
         # Setup mock settings to return French
         MockSettings.return_value.value.return_value = "fr"
@@ -83,8 +102,16 @@ class TestTranslationLoading(unittest.TestCase):
     @patch("sec_interp.sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp.sec_interp_plugin.QTranslator")
     @patch("sec_interp.sec_interp_plugin.QSettings")
-    def test_translation_loads_pt_br(self, MockSettings, MockTranslatorClass, MockInstall,
-                                 MockExport, MockController, MockRenderer, MockDialog):
+    def test_translation_loads_pt_br(
+        self,
+        MockSettings,
+        MockTranslatorClass,
+        MockInstall,
+        MockExport,
+        MockController,
+        MockRenderer,
+        MockDialog,
+    ):
         """Test that pt_BR translation loads correctly."""
         # Setup mock settings to return pt_BR
         MockSettings.return_value.value.return_value = "pt_BR"
@@ -111,8 +138,16 @@ class TestTranslationLoading(unittest.TestCase):
     @patch("sec_interp.sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp.sec_interp_plugin.QTranslator")
     @patch("sec_interp.sec_interp_plugin.QSettings")
-    def test_translation_loads_de(self, MockSettings, MockTranslatorClass, MockInstall,
-                                 MockExport, MockController, MockRenderer, MockDialog):
+    def test_translation_loads_de(
+        self,
+        MockSettings,
+        MockTranslatorClass,
+        MockInstall,
+        MockExport,
+        MockController,
+        MockRenderer,
+        MockDialog,
+    ):
         """Test that German translation loads correctly."""
         # Setup mock settings to return de
         MockSettings.return_value.value.return_value = "de"
@@ -138,8 +173,15 @@ class TestTranslationLoading(unittest.TestCase):
     @patch("sec_interp.sec_interp_plugin.ExportService")
     @patch("sec_interp.sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp.sec_interp_plugin.QSettings")
-    def test_translation_loads_default_on_fail(self, MockSettings, MockInstall,
-                                              MockExport, MockController, MockRenderer, MockDialog):
+    def test_translation_loads_default_on_fail(
+        self,
+        MockSettings,
+        MockInstall,
+        MockExport,
+        MockController,
+        MockRenderer,
+        MockDialog,
+    ):
         """Test that translation doesn't install if file missing."""
         MockSettings.return_value.value.return_value = "fr"
 
@@ -158,8 +200,16 @@ class TestTranslationLoading(unittest.TestCase):
     @patch("sec_interp.sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp.sec_interp_plugin.QTranslator")
     @patch("sec_interp.sec_interp_plugin.QSettings")
-    def test_translation_loads_ru(self, MockSettings, MockTranslatorClass, MockInstall,
-                                 MockExport, MockController, MockRenderer, MockDialog):
+    def test_translation_loads_ru(
+        self,
+        MockSettings,
+        MockTranslatorClass,
+        MockInstall,
+        MockExport,
+        MockController,
+        MockRenderer,
+        MockDialog,
+    ):
         """Test that Russian translation loads correctly."""
         # Setup mock settings to return ru
         MockSettings.return_value.value.return_value = "ru"
@@ -178,6 +228,7 @@ class TestTranslationLoading(unittest.TestCase):
 
             # Check if installed
             MockInstall.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()

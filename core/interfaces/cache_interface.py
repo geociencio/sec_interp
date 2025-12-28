@@ -21,7 +21,9 @@ class ICacheService(Protocol):
         """
         ...
 
-    def set(self, bucket: str, key: str, data: Any, metadata: Optional[dict] = None) -> None:
+    def set(
+        self, bucket: str, key: str, data: Any, metadata: Optional[dict] = None
+    ) -> None:
         """Store data in a specific cache bucket.
 
         Args:
@@ -32,7 +34,9 @@ class ICacheService(Protocol):
         """
         ...
 
-    def invalidate(self, bucket: Optional[str] = None, key: Optional[str] = None) -> None:
+    def invalidate(
+        self, bucket: Optional[str] = None, key: Optional[str] = None
+    ) -> None:
         """Invalidate cache entries.
 
         Args:

@@ -74,7 +74,9 @@ class DrillholeService(IDrillholeService):
             raise DataMissingError("Collar layer is not provided")
 
         projected_collars = []
-        logger.info(f"Projecting collars from {collar_layer.name()} with buffer {buffer_width}m")
+        logger.info(
+            f"Projecting collars from {collar_layer.name()} with buffer {buffer_width}m"
+        )
 
         # 1. Spatial Filtering
         # Create buffer zone around section line
@@ -86,7 +88,9 @@ class DrillholeService(IDrillholeService):
             ) from e
 
         # Use centralized filtering utility which handles CRS transformation
-        candidate_features = scu.filter_features_by_buffer(collar_layer, line_buffer, line_crs)
+        candidate_features = scu.filter_features_by_buffer(
+            collar_layer, line_buffer, line_crs
+        )
 
         if not candidate_features:
             logger.info("No collars found within buffer area.")
@@ -251,7 +255,9 @@ class DrillholeService(IDrillholeService):
 
             # 2. Get Data
             survey_data = self._get_survey_data(survey_layer, hole_id, survey_fields)
-            intervals = self._get_interval_data(interval_layer, hole_id, interval_fields)
+            intervals = self._get_interval_data(
+                interval_layer, hole_id, interval_fields
+            )
 
             # 3. Determine Final Depth
             max_survey_depth = max([s[0] for s in survey_data]) if survey_data else 0.0
@@ -260,7 +266,11 @@ class DrillholeService(IDrillholeService):
 
             # 4. Trajectory and Projection
             trajectory = scu.calculate_drillhole_trajectory(
-                collar_point, collar_z, survey_data, section_azimuth, total_depth=final_depth
+                collar_point,
+                collar_z,
+                survey_data,
+                section_azimuth,
+                total_depth=final_depth,
             )
             projected_traj = scu.project_trajectory_to_section(
                 trajectory, line_geom, line_start, distance_area
@@ -381,7 +391,9 @@ class DrillholeService(IDrillholeService):
         rich_intervals = [
             (fd, td, {"unit": lith, "from": fd, "to": td}) for fd, td, lith in intervals
         ]
-        tuples = scu.interpolate_intervals_on_trajectory(traj, rich_intervals, buffer_width)
+        tuples = scu.interpolate_intervals_on_trajectory(
+            traj, rich_intervals, buffer_width
+        )
 
         segments = []
         for attr, points in tuples:

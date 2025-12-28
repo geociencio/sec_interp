@@ -27,7 +27,9 @@ class DemPage(BasePage):
             parent: Parent widget
         """
         self.iface = iface
-        super().__init__(QCoreApplication.translate("DemPage", "Digital Elevation Model"), parent)
+        super().__init__(
+            QCoreApplication.translate("DemPage", "Digital Elevation Model"), parent
+        )
         self.iface = iface
 
     def _setup_ui(self):

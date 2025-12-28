@@ -51,8 +51,12 @@ class DialogSignalManager:
     def _connect_preview_signals(self):
         """Connect preview-related signals."""
         # Preview action buttons
-        self.dialog.preview_widget.btn_preview.clicked.connect(self.dialog.preview_profile_handler)
-        self.dialog.preview_widget.btn_export.clicked.connect(self.dialog.export_preview)
+        self.dialog.preview_widget.btn_preview.clicked.connect(
+            self.dialog.preview_profile_handler
+        )
+        self.dialog.preview_widget.btn_export.clicked.connect(
+            self.dialog.export_preview
+        )
 
         # Preview layer checkboxes
         self.dialog.preview_widget.chk_topo.stateChanged.connect(
@@ -85,26 +89,38 @@ class DialogSignalManager:
         self.dialog.output_widget.fileChanged.connect(self.dialog.update_button_state)
 
         # DEM page
-        self.dialog.page_dem.raster_combo.layerChanged.connect(self.dialog.update_button_state)
+        self.dialog.page_dem.raster_combo.layerChanged.connect(
+            self.dialog.update_button_state
+        )
         self.dialog.page_dem.raster_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
 
         # Section page
-        self.dialog.page_section.line_combo.layerChanged.connect(self.dialog.update_button_state)
+        self.dialog.page_section.line_combo.layerChanged.connect(
+            self.dialog.update_button_state
+        )
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
 
         # Data pages
-        self.dialog.page_geology.dataChanged.connect(self.dialog.update_preview_checkbox_states)
-        self.dialog.page_struct.dataChanged.connect(self.dialog.update_preview_checkbox_states)
-        self.dialog.page_drillhole.dataChanged.connect(self.dialog.update_preview_checkbox_states)
+        self.dialog.page_geology.dataChanged.connect(
+            self.dialog.update_preview_checkbox_states
+        )
+        self.dialog.page_struct.dataChanged.connect(
+            self.dialog.update_preview_checkbox_states
+        )
+        self.dialog.page_drillhole.dataChanged.connect(
+            self.dialog.update_preview_checkbox_states
+        )
 
     def _connect_tool_signals(self):
         """Connect map tool signals."""
         # Measure tool
-        self.dialog.preview_widget.btn_measure.toggled.connect(self.dialog.toggle_measure_tool)
+        self.dialog.preview_widget.btn_measure.toggled.connect(
+            self.dialog.toggle_measure_tool
+        )
 
         # Finalize button with debug wrapper
         def finalize_with_log():
