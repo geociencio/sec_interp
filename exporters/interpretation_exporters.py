@@ -19,29 +19,40 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant
 
+from sec_interp.exporters.base_exporter import BaseExporter
 from sec_interp.core.types import InterpretationPolygon
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
 
-class Interpretation2DExporter:
+class Interpretation2DExporter(BaseExporter):
     """Exports interpretations in 2D profile coordinates."""
 
-    def export_interpretations(
+    def __init__(self, settings: dict[str, Any]):
+        """Initialize with settings.
+
+        Args:
+            settings: Dictionary of configuration settings.
+        """
+        super().__init__(settings)
+
+    def export(
         self,
         output_path: Path,
-        interpretations: list[InterpretationPolygon],
+        data: dict[str, Any],
     ) -> bool:
-        """Export a list of InterpretationPolygon objects to Shapefile.
+        """Export interpretations to Shapefile.
 
         Args:
             output_path: Path to the output Shapefile (.shp)
-            interpretations: List of InterpretationPolygon objects
+            data: Dictionary containing:
+                - interpretations: List of InterpretationPolygon objects
 
         Returns:
             bool: True if export was successful, False otherwise
         """
+        interpretations = data.get("interpretations", [])
         if not interpretations:
             logger.warning("No interpretations to export.")
             return False
@@ -103,3 +114,11 @@ class Interpretation2DExporter:
         else:
             logger.error(f"Failed to export interpretations: {error}")
             return False
+
+    def get_supported_extensions(self) -> list[str]:
+        """Get list of supported file extensions.
+
+        Returns:
+            List of supported extensions.
+        """
+        return [".shp"]

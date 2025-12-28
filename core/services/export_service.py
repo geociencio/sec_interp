@@ -38,6 +38,7 @@ class ExportService:
         geol_data: Optional[list[Any]],
         struct_data: Optional[list[Any]],
         drillhole_data: Optional[list[Any]] = None,
+        interp_data: Optional[list[Any]] = None,
     ) -> list[str]:
         """Export generated data to CSV and Shapefile formats.
 
@@ -48,6 +49,7 @@ class ExportService:
             geol_data: List of GeologySegment objects.
             struct_data: List of StructureMeasurement objects.
             drillhole_data: Optional list of drillhole data.
+            interp_data: Optional list of InterpretationPolygon objects.
 
         Returns:
             A list of user-friendly log messages.
@@ -78,6 +80,7 @@ class ExportService:
             output_folder, struct_data, params, line_crs, csv_exporter, result_msg
         )
         self._export_drillholes(output_folder, drillhole_data, line_crs, result_msg)
+        self._export_interpretations(output_folder, interp_data, line_crs, result_msg)
         self._export_axes(output_folder, profile_data, line_crs, result_msg)
 
         result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
@@ -170,6 +173,21 @@ class ExportService:
             msg.extend(["  - drillhole_traces.shp", "  - drillhole_intervals.shp"])
         except Exception as e:
             raise ExportError(f"Drillhole export failed: {e!s}") from e
+
+    def _export_interpretations(self, folder, data, crs, msg):
+        """Helper to export interpretation data."""
+        if not data:
+            return
+        from sec_interp.exporters import Interpretation2DExporter
+
+        logger.info("✓ Saving interpretation data...")
+        try:
+            Interpretation2DExporter({}).export(
+                folder / "interpretations.shp", {"interpretations": data}
+            )
+            msg.append("  - interpretations.shp")
+        except Exception as e:
+            raise ExportError(f"Interpretation export failed: {e!s}") from e
 
     def _export_axes(self, folder, data, crs, msg):
         """Helper to export profile axes."""
