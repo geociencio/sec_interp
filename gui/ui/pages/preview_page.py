@@ -80,12 +80,17 @@ class PreviewWidget(QWidget):
         self.btn_measure.setCheckable(True)
         self.btn_measure.setToolTip(self.tr("Measure distance and slope"))
 
+        self.btn_interpret = QPushButton(self.tr("Interpret"))
+        self.btn_interpret.setCheckable(True)
+        self.btn_interpret.setToolTip(self.tr("Draw interpretation polygons"))
+
         self.btn_finalize = QPushButton(self.tr("Finalize"))
         self.btn_finalize.setToolTip(self.tr("Finalize multi-point measurement"))
         self.btn_finalize.setVisible(False)
 
         btn_layout.addWidget(self.btn_preview)
         btn_layout.addWidget(self.btn_measure)
+        btn_layout.addWidget(self.btn_interpret)
         btn_layout.addWidget(self.btn_finalize)
         btn_layout.addWidget(self.btn_export)
         self.frame_layout.addLayout(btn_layout)
@@ -132,11 +137,14 @@ class PreviewWidget(QWidget):
         self.chk_struct.setChecked(True)
         self.chk_drillholes = QCheckBox(self.tr("Show Drillholes"))
         self.chk_drillholes.setChecked(True)
+        self.chk_interpretations = QCheckBox(self.tr("Show Interpretations"))
+        self.chk_interpretations.setChecked(True)
 
         chk_layout.addWidget(self.chk_topo)
         chk_layout.addWidget(self.chk_geol)
         chk_layout.addWidget(self.chk_struct)
         chk_layout.addWidget(self.chk_drillholes)
+        chk_layout.addWidget(self.chk_interpretations)
         self.frame_layout.addLayout(chk_layout)
 
     def _setup_results_area(self):
