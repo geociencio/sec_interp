@@ -107,6 +107,9 @@ cp -v "$SOURCE_DIR/gui/ui/pages/"*.py "$DEST_DIR/gui/ui/pages/"
 mkdir -p "$DEST_DIR/gui/tools"
 cp -v "$SOURCE_DIR/gui/tools/"*.py "$DEST_DIR/gui/tools/"
 
+mkdir -p "$DEST_DIR/gui/services"
+cp -v "$SOURCE_DIR/gui/services/"*.py "$DEST_DIR/gui/services/"
+
 
 # Copy resources module
 cp -v "$SOURCE_DIR/resources/"*.py "$DEST_DIR/resources/"
