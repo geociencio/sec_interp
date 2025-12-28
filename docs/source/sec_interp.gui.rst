@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   sec_interp.gui.services
    sec_interp.gui.tools
    sec_interp.gui.ui
 

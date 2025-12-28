@@ -484,6 +484,8 @@ window.addEventListener("load", load);
 </li>
         <li><a href="sec_interp.gui.html#sec_interp.gui.SecInterpDialog.__init__">(sec_interp.gui.SecInterpDialog method)</a>
 </li>
+        <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread.__init__">(sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread method)</a>
+</li>
         <li><a href="sec_interp.gui.ui.pages.base_page.html#sec_interp.gui.ui.pages.base_page.BasePage.__init__">(sec_interp.gui.ui.pages.base_page.BasePage method)</a>
 </li>
         <li><a href="sec_interp.gui.ui.pages.html#sec_interp.gui.ui.pages.BasePage.__init__">(sec_interp.gui.ui.pages.BasePage method)</a>
@@ -523,10 +525,12 @@ window.addEventListener("load", load);
 </li>
       <li><a href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector.add_metadata">add_metadata() (sec_interp.core.performance_metrics.MetricsCollector method)</a>
 </li>
-      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ALLOW_EMPTY_GEOLOGY">ALLOW_EMPTY_GEOLOGY (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.ParallelGeologyService.all_finished">all_finished (sec_interp.gui.services.parallel_geology_service.ParallelGeologyService attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ALLOW_EMPTY_GEOLOGY">ALLOW_EMPTY_GEOLOGY (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
+</li>
       <li><a href="sec_interp.gui.main_dialog_config.html#sec_interp.gui.main_dialog_config.DialogConfig.ALLOW_EMPTY_STRUCTURES">ALLOW_EMPTY_STRUCTURES (sec_interp.gui.main_dialog_config.DialogConfig attribute)</a>
 </li>
       <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.AnalysisError">AnalysisError</a>
@@ -583,6 +587,8 @@ window.addEventListener("load", load);
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.ParallelGeologyService.batch_progress">batch_progress (sec_interp.gui.services.parallel_geology_service.ParallelGeologyService attribute)</a>
+</li>
       <li><a href="sec_interp.core.types.html#sec_interp.core.types.FieldType.BOOL">BOOL (sec_interp.core.types.FieldType attribute)</a>
 </li>
       <li><a href="sec_interp.core.types.html#id13">buffer_dist (sec_interp.core.types.PreviewParams attribute)</a>, <a href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.buffer_dist">[1]</a>
@@ -651,6 +657,10 @@ window.addEventListener("load", load);
         <li><a href="sec_interp.core.utils.spatial.html#sec_interp.core.utils.spatial.calculate_step_size">(in module sec_interp.core.utils.spatial)</a>
 </li>
       </ul></li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread.cancel">cancel() (sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread method)</a>
+</li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.ParallelGeologyService.cancel_processing">cancel_processing() (sec_interp.gui.services.parallel_geology_service.ParallelGeologyService method)</a>
+</li>
       <li><a href="sec_interp.core.types.html#id38">canvas_width (sec_interp.core.types.PreviewParams attribute)</a>, <a href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.canvas_width">[1]</a>
 </li>
       <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasMoveEvent">canvasMoveEvent() (sec_interp.gui.tools.measure_tool.ProfileMeasureTool method)</a>
@@ -703,6 +713,8 @@ window.addEventListener("load", load);
       </ul></li>
       <li><a href="sec_interp.core.types.html#id21">collar_id_field (sec_interp.core.types.PreviewParams attribute)</a>, <a href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_id_field">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sec_interp.core.types.html#id20">collar_layer (sec_interp.core.types.PreviewParams attribute)</a>, <a href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams.collar_layer">[1]</a>
 
       <ul>
@@ -711,8 +723,6 @@ window.addEventListener("load", load);
         <li><a href="sec_interp.core.validation.html#sec_interp.core.validation.ValidationParams.collar_layer">(sec_interp.core.validation.ValidationParams attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sec_interp.core.validation.project_validator.html#sec_interp.core.validation.project_validator.ValidationParams.collar_use_geom">collar_use_geom (sec_interp.core.validation.project_validator.ValidationParams attribute)</a>
 
       <ul>
@@ -949,6 +959,12 @@ window.addEventListener("load", load);
 </li>
       <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProjectContext.entry_points">entry_points (sec_interp.analyze_project_optfixed.ProjectContext attribute)</a>
 </li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread.error_occurred">error_occurred (sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread attribute)</a>
+
+      <ul>
+        <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.ParallelGeologyService.error_occurred">(sec_interp.gui.services.parallel_geology_service.ParallelGeologyService attribute)</a>
+</li>
+      </ul></li>
       <li><a href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget.eventFilter">eventFilter() (sec_interp.gui.legend_widget.LegendWidget method)</a>
 </li>
       <li><a href="sec_interp.exporters.html#sec_interp.exporters.AxesShpExporter.export">export() (sec_interp.exporters.AxesShpExporter method)</a>
@@ -1112,6 +1128,8 @@ window.addEventListener("load", load);
       <li><a href="sec_interp.gui.preview_layer_factory.html#sec_interp.gui.preview_layer_factory.PreviewLayerFactory.GEOLOGY_COLORS">GEOLOGY_COLORS (sec_interp.gui.preview_layer_factory.PreviewLayerFactory attribute)</a>
 </li>
       <li><a href="sec_interp.gui.ui.pages.geology_page.html#sec_interp.gui.ui.pages.geology_page.GeologyPage">GeologyPage (class in sec_interp.gui.ui.pages.geology_page)</a>
+</li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread">GeologyProcessingThread (class in sec_interp.gui.services.parallel_geology_service)</a>
 </li>
       <li><a href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment">GeologySegment (class in sec_interp.core.types)</a>
 </li>
@@ -1439,6 +1457,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="sec_interp.core.interfaces.profile_interface.html#sec_interp.core.interfaces.profile_interface.IProfileService">IProfileService (class in sec_interp.core.interfaces.profile_interface)</a>
 </li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread.is_canceled">is_canceled() (sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread method)</a>
+</li>
       <li><a href="sec_interp.gui.ui.pages.dem_page.html#sec_interp.gui.ui.pages.dem_page.DemPage.is_complete">is_complete() (sec_interp.gui.ui.pages.dem_page.DemPage method)</a>
 
       <ul>
@@ -1723,6 +1743,10 @@ window.addEventListener("load", load);
 </li>
         <li><a href="sec_interp.gui.preview_reporter.html#module-sec_interp.gui.preview_reporter">sec_interp.gui.preview_reporter</a>
 </li>
+        <li><a href="sec_interp.gui.services.html#module-sec_interp.gui.services">sec_interp.gui.services</a>
+</li>
+        <li><a href="sec_interp.gui.services.parallel_geology_service.html#module-sec_interp.gui.services.parallel_geology_service">sec_interp.gui.services.parallel_geology_service</a>
+</li>
         <li><a href="sec_interp.gui.tools.html#module-sec_interp.gui.tools">sec_interp.gui.tools</a>
 </li>
         <li><a href="sec_interp.gui.tools.measure_tool.html#module-sec_interp.gui.tools.measure_tool">sec_interp.gui.tools.measure_tool</a>
@@ -1828,6 +1852,8 @@ window.addEventListener("load", load);
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sec_interp.gui.legend_widget.html#sec_interp.gui.legend_widget.LegendWidget.paintEvent">paintEvent() (sec_interp.gui.legend_widget.LegendWidget method)</a>
 </li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.ParallelGeologyService">ParallelGeologyService (class in sec_interp.gui.services.parallel_geology_service)</a>
+</li>
       <li><a href="sec_interp.core.utils.html#sec_interp.core.utils.parse_dip">parse_dip() (in module sec_interp.core.utils)</a>
 
       <ul>
@@ -1922,6 +1948,10 @@ window.addEventListener("load", load);
         <li><a href="sec_interp.core.services.html#sec_interp.core.services.DrillholeService.process_intervals">(sec_interp.core.services.DrillholeService method)</a>
 </li>
       </ul></li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.ParallelGeologyService.process_profiles_parallel">process_profiles_parallel() (sec_interp.gui.services.parallel_geology_service.ParallelGeologyService method)</a>
+</li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread.processing_finished">processing_finished (sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread attribute)</a>
+</li>
       <li><a href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ProcessingError">ProcessingError</a>
 </li>
       <li><a href="sec_interp.core.controller.html#sec_interp.core.controller.ProfileController">ProfileController (class in sec_interp.core.controller)</a>
@@ -1941,6 +1971,8 @@ window.addEventListener("load", load);
 </li>
       </ul></li>
       <li><a href="sec_interp.gui.tools.measure_tool.html#sec_interp.gui.tools.measure_tool.ProfileSnapper">ProfileSnapper (class in sec_interp.gui.tools.measure_tool)</a>
+</li>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread.progress_updated">progress_updated (sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread attribute)</a>
 </li>
       <li><a href="sec_interp.analyze_project_optfixed.html#sec_interp.analyze_project_optfixed.ProgressTracker">ProgressTracker (class in sec_interp.analyze_project_optfixed)</a>
 </li>
@@ -2034,8 +2066,12 @@ window.addEventListener("load", load);
 </li>
       <li><a href="sec_interp.core.utils.resource_manager.html#sec_interp.core.utils.resource_manager.ResourceManager">ResourceManager (class in sec_interp.core.utils.resource_manager)</a>
 </li>
-      <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.run">run() (sec_interp.sec_interp_plugin.SecInterp method)</a>
+      <li><a href="sec_interp.gui.services.parallel_geology_service.html#sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread.run">run() (sec_interp.gui.services.parallel_geology_service.GeologyProcessingThread method)</a>
+
+      <ul>
+        <li><a href="sec_interp.sec_interp_plugin.html#sec_interp.sec_interp_plugin.SecInterp.run">(sec_interp.sec_interp_plugin.SecInterp method)</a>
 </li>
+      </ul></li>
       <li><a href="sec_interp.core.utils.geometry.html#sec_interp.core.utils.geometry.run_geometry_operation">run_geometry_operation() (in module sec_interp.core.utils.geometry)</a>
 
       <ul>
@@ -2510,8 +2546,6 @@ window.addEventListener("load", load);
         <li><a href="sec_interp.gui.main_dialog_export.html#module-sec_interp.gui.main_dialog_export">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sec_interp.gui.main_dialog_preview
 
@@ -2519,6 +2553,8 @@ window.addEventListener("load", load);
         <li><a href="sec_interp.gui.main_dialog_preview.html#module-sec_interp.gui.main_dialog_preview">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sec_interp.gui.main_dialog_settings
 
@@ -2594,6 +2630,20 @@ window.addEventListener("load", load);
 
       <ul>
         <li><a href="sec_interp.gui.preview_reporter.html#module-sec_interp.gui.preview_reporter">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.services
+
+      <ul>
+        <li><a href="sec_interp.gui.services.html#module-sec_interp.gui.services">module</a>
+</li>
+      </ul></li>
+      <li>
+    sec_interp.gui.services.parallel_geology_service
+
+      <ul>
+        <li><a href="sec_interp.gui.services.parallel_geology_service.html#module-sec_interp.gui.services.parallel_geology_service">module</a>
 </li>
       </ul></li>
       <li>
