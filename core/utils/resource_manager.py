@@ -1,11 +1,11 @@
-from __future__ import annotations
-
-
 """Resource management utilities for SecInterp.
 
 This module provides context managers for handling temporary QGIS resources
 and system files to ensure proper cleanup and prevent resource leaks.
 """
+
+from __future__ import annotations
+
 
 from collections.abc import Generator
 import contextlib

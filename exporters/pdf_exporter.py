@@ -44,9 +44,7 @@ class PDFExporter(BaseExporter):
             # Setup painter
             painter = QPainter()
             if not painter.begin(writer):
-                logger.error(
-                    f"Failed to begin painting for PDF export to {output_path}"
-                )
+                logger.error(f"Failed to begin painting for PDF export to {output_path}")
                 return False
 
             try:
@@ -65,9 +63,7 @@ class PDFExporter(BaseExporter):
                 # Draw legend if available
                 legend_renderer = self.get_setting("legend_renderer")
                 if legend_renderer:
-                    legend_renderer.draw_legend(
-                        painter, QRectF(0, 0, dev.width(), dev.height())
-                    )
+                    legend_renderer.draw_legend(painter, QRectF(0, 0, dev.width(), dev.height()))
 
             finally:
                 painter.end()

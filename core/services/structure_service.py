@@ -1,3 +1,9 @@
+"""Structure Data Processing Service.
+
+This module handles the calculation of apparent dips and projection
+of structural measurements (planes, lines) onto the section plane.
+"""
+
 from __future__ import annotations
 
 # /***************************************************************************
@@ -103,9 +109,7 @@ class StructureService(IStructureService):
         buffer_geom = self._create_buffer_zone(line_geom, line_lyr.crs(), buffer_m)
 
         # 2. Filter Measures
-        filtered_features = self._filter_structures(
-            struct_lyr, buffer_geom, line_lyr.crs()
-        )
+        filtered_features = self._filter_structures(struct_lyr, buffer_geom, line_lyr.crs())
 
         # 3. Process Features
         projected_structs = []
@@ -130,7 +134,9 @@ class StructureService(IStructureService):
         # Sort by distance
         projected_structs.sort(key=lambda x: x.distance)
 
-        logger.info(f"Processed {len(projected_structs)} structural measurements from {struct_lyr.name()}")
+        logger.info(
+            f"Processed {len(projected_structs)} structural measurements from {struct_lyr.name()}"
+        )
         return projected_structs
 
     def _create_buffer_zone(
@@ -156,7 +162,9 @@ class StructureService(IStructureService):
             return scu.create_buffer_geometry(line_geom, crs, buffer_m, segments=25)
         except (ValueError, RuntimeError) as e:
             logger.exception("Buffer creation failed")
-            raise ProcessingError("Cannot create buffer zone", {"buffer_m": buffer_m, "crs": crs.authid()}) from e
+            raise ProcessingError(
+                "Cannot create buffer zone", {"buffer_m": buffer_m, "crs": crs.authid()}
+            ) from e
 
     def _filter_structures(
         self,
@@ -181,7 +189,9 @@ class StructureService(IStructureService):
             return scu.filter_features_by_buffer(struct_lyr, buffer_geom, target_crs)
         except (ValueError, RuntimeError) as e:
             logger.exception("Spatial filtering failed")
-            raise ProcessingError("Cannot filter structures by buffer", {"layer": struct_lyr.name()}) from e
+            raise ProcessingError(
+                "Cannot filter structures by buffer", {"layer": struct_lyr.name()}
+            ) from e
 
     def _process_single_structure(
         self,
@@ -229,9 +239,7 @@ class StructureService(IStructureService):
 
         # Sample Elevation
         res_val = (
-            raster_lyr.dataProvider()
-            .identify(proj_pt, QgsRaster.IdentifyFormatValue)
-            .results()
+            raster_lyr.dataProvider().identify(proj_pt, QgsRaster.IdentifyFormatValue).results()
         )
         elev = res_val.get(band_number, 0.0)
 
@@ -261,7 +269,5 @@ class StructureService(IStructureService):
             apparent_dip=round(app_dip, 1),
             original_dip=dip_angle,
             original_strike=strike,
-            attributes=dict(
-                zip(feature.fields().names(), feature.attributes(), strict=False)
-            ),
+            attributes=dict(zip(feature.fields().names(), feature.attributes(), strict=False)),
         )

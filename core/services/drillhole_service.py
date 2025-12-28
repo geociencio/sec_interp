@@ -1,11 +1,10 @@
-from __future__ import annotations
-
-
 """Drillhole Data Processing Service.
 
 This module provides services for processing and projecting drillhole data,
 including collar projection, trajectory calculation, and interval interpolation.
 """
+
+from __future__ import annotations
 
 import contextlib
 from typing import Any, Optional
@@ -82,12 +81,12 @@ class DrillholeService(IDrillholeService):
         try:
             line_buffer = line_geom.buffer(buffer_width, 8)
         except Exception as e:
-            raise GeometryError("Failed to create section line buffer", {"buffer_width": buffer_width}) from e
+            raise GeometryError(
+                "Failed to create section line buffer", {"buffer_width": buffer_width}
+            ) from e
 
         # Use centralized filtering utility which handles CRS transformation
-        candidate_features = scu.filter_features_by_buffer(
-            collar_layer, line_buffer, line_crs
-        )
+        candidate_features = scu.filter_features_by_buffer(collar_layer, line_buffer, line_crs)
 
         if not candidate_features:
             logger.info("No collars found within buffer area.")
@@ -380,17 +379,18 @@ class DrillholeService(IDrillholeService):
             return []
 
         rich_intervals = [
-            (fd, td, {"unit": lith, "from": fd, "to": td})
-            for fd, td, lith in intervals
+            (fd, td, {"unit": lith, "from": fd, "to": td}) for fd, td, lith in intervals
         ]
         tuples = scu.interpolate_intervals_on_trajectory(traj, rich_intervals, buffer_width)
 
         segments = []
         for attr, points in tuples:
-            segments.append(GeologySegment(
-                unit_name=str(attr.get("unit", "Unknown")),
-                geometry=None,
-                attributes=attr,
-                points=points,
-            ))
+            segments.append(
+                GeologySegment(
+                    unit_name=str(attr.get("unit", "Unknown")),
+                    geometry=None,
+                    attributes=attr,
+                    points=points,
+                )
+            )
         return segments

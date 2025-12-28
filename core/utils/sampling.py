@@ -1,10 +1,10 @@
-from __future__ import annotations
-
-
 """Sampling Utilities Module.
 
 This module provides elevation sampling and profile context preparation tools.
 """
+
+from __future__ import annotations
+
 
 from typing import Any, Optional
 
@@ -74,7 +74,7 @@ def sample_elevation_along_line(
         if i > 0:
             # For densified points, Euclidean distance is sufficient and MUCH faster
             # than geodesic measureLine calls, especially since they are very close.
-            segment_len = distance_area.measureLine(vertices[i-1], pt)
+            segment_len = distance_area.measureLine(vertices[i - 1], pt)
             current_dist += segment_len
 
         val, ok = raster_layer.dataProvider().sample(pt, band_number)

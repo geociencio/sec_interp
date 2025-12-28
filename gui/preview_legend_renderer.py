@@ -60,15 +60,25 @@ class PreviewLegendRenderer:
         current_y = y + config["padding"]
         if has_topography:
             PreviewLegendRenderer._draw_line_item(
-                painter, x, current_y, QCoreApplication.translate("PreviewLegendRenderer", "Topography"), QColor(0, 102, 204),
-                max_text_width, config
+                painter,
+                x,
+                current_y,
+                QCoreApplication.translate("PreviewLegendRenderer", "Topography"),
+                QColor(0, 102, 204),
+                max_text_width,
+                config,
             )
             current_y += config["item_height"]
 
         if has_structures:
             PreviewLegendRenderer._draw_line_item(
-                painter, x, current_y, QCoreApplication.translate("PreviewLegendRenderer", "Structures"), QColor(204, 0, 0),
-                max_text_width, config
+                painter,
+                x,
+                current_y,
+                QCoreApplication.translate("PreviewLegendRenderer", "Structures"),
+                QColor(204, 0, 0),
+                max_text_width,
+                config,
             )
             current_y += config["item_height"]
 

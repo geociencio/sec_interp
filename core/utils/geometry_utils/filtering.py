@@ -43,9 +43,7 @@ def filter_features_by_buffer(
     # 1. Transform buffer geometry if needed
     query_geom = buffer_geometry
     if buffer_crs and features_layer.crs() != buffer_crs:
-        transform = QgsCoordinateTransform(
-            buffer_crs, features_layer.crs(), QgsProject.instance()
-        )
+        transform = QgsCoordinateTransform(buffer_crs, features_layer.crs(), QgsProject.instance())
         query_geom = QgsGeometry(buffer_geometry)
         query_geom.transform(transform)
 

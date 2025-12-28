@@ -1,11 +1,10 @@
-from __future__ import annotations
-
-
 """Export service for SecInterp.
 
 This module provides a service to orchestrate all export operations,
 including data (Shapefile, CSV) and preview (PNG, PDF, SVG) exports.
 """
+
+from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Optional
@@ -48,29 +47,11 @@ class ExportService:
             profile_data: Topographic profile points (dist, elevation).
             geol_data: List of GeologySegment objects.
             struct_data: List of StructureMeasurement objects.
-            drillhole_data: Optional list of drillhole trace and interval data.
+            drillhole_data: Optional list of drillhole data.
 
         Returns:
-            A list of user-friendly log messages describing the exported files.
-
-        Raises:
-            DataMissingError: If critical topographic data is missing.
-            ExportError: If any sub-exporter fails during execution.
+            A list of user-friendly log messages.
         """
-        # Lazy import exporters to improve plugin load time
-        from sec_interp.exporters import (
-            AxesShpExporter,
-            CSVExporter,
-            DrillholeIntervalShpExporter,
-            DrillholeTraceShpExporter,
-            GeologyShpExporter,
-            ProfileLineShpExporter,
-            StructureShpExporter,
-        )
-
-        result_msg = ["✓ Saving files..."]
-        csv_exporter = CSVExporter({})
-
         # Ensure we have data to work with
         if not profile_data:
             raise DataMissingError("No profile data available for export")
@@ -80,110 +61,119 @@ class ExportService:
             raise DataMissingError("Section line layer not found in parameters")
 
         line_crs = line_layer.crs()
+        result_msg = ["✓ Saving files..."]
 
-        # Export Topography
-        logger.info("✓ Saving topographic profile...")
-        try:
-            csv_exporter.export(
-                output_folder / "topo_profile.csv",
-                {"headers": ["dist", "elev"], "rows": profile_data},
-            )
-            ProfileLineShpExporter({}).export(
-                output_folder / "profile_line.shp",
-                {"profile_data": profile_data, "crs": line_crs},
-            )
-        except Exception as e:
-            raise ExportError(f"Topography export failed: {e!s}") from e
+        from sec_interp.exporters import CSVExporter
 
-        result_msg.extend(["  - topo_profile.csv", "  - profile_line.shp"])
+        csv_exporter = CSVExporter({})
 
-        # Export Geology
-        if geol_data:
-            logger.info("✓ Saving geological profile...")
-            try:
-                # Flatten segments for CSV
-                geol_rows = []
-                for s in geol_data:
-                    for p in s.points:
-                        geol_rows.append((p[0], p[1], s.unit_name))
-
-                csv_exporter.export(
-                    output_folder / "geol_profile.csv",
-                    {"headers": ["dist", "elev", "geology"], "rows": geol_rows},
-                )
-                GeologyShpExporter({}).export(
-                    output_folder / "geol_profile.shp",
-                    {
-                        "geology_data": geol_data,
-                        "crs": line_crs,
-                    },
-                )
-            except Exception as e:
-                raise ExportError(f"Geology export failed: {e!s}") from e
-
-            result_msg.extend(["  - geol_profile.csv", "  - geol_profile.shp"])
-
-        # Export Structures
-        if struct_data:
-            logger.info("✓ Saving structural profile...")
-            try:
-                # CSV needs simple rows
-                struct_rows = [(s.distance, s.apparent_dip) for s in struct_data]
-
-                csv_exporter.export(
-                    output_folder / "structural_profile.csv",
-                    {"headers": ["dist", "apparent_dip"], "rows": struct_rows},
-                )
-
-                # Get raster resolution from values or layer
-                raster_res = 1.0
-                raster_layer = params.raster_layer
-                if raster_layer:
-                    raster_res = raster_layer.rasterUnitsPerPixelX()
-
-                StructureShpExporter({}).export(
-                    output_folder / "structural_profile.shp",
-                    {
-                        "structural_data": struct_data,
-                        "crs": line_crs,
-                        "dip_scale_factor": params.dip_scale_factor,
-                        "raster_res": raster_res,
-                    },
-                )
-            except Exception as e:
-                raise ExportError(f"Structure export failed: {e!s}") from e
-
-            result_msg.extend(["  - structural_profile.csv", "  - structural_profile.shp"])
-
-        # Export Drillholes
-        if drillhole_data:
-            logger.info("✓ Saving drillhole data...")
-            try:
-                DrillholeTraceShpExporter({}).export(
-                    output_folder / "drillhole_traces.shp",
-                    {"drillhole_data": drillhole_data, "crs": line_crs},
-                )
-                DrillholeIntervalShpExporter({}).export(
-                    output_folder / "drillhole_intervals.shp",
-                    {"drillhole_data": drillhole_data, "crs": line_crs},
-                )
-            except Exception as e:
-                raise ExportError(f"Drillhole export failed: {e!s}") from e
-
-            result_msg.extend(["  - drillhole_traces.shp", "  - drillhole_intervals.shp"])
-
-        # Export Axes
-        logger.info("✓ Saving profile axes...")
-        try:
-            AxesShpExporter({}).export(
-                output_folder / "profile_axes.shp",
-                {"profile_data": profile_data, "crs": line_crs},
-            )
-        except Exception as e:
-            raise ExportError(f"Profile axes export failed: {e!s}") from e
+        # Orchestrate sub-exports
+        self._export_topography(output_folder, profile_data, line_crs, csv_exporter, result_msg)
+        self._export_geology(output_folder, geol_data, line_crs, csv_exporter, result_msg)
+        self._export_structures(
+            output_folder, struct_data, params, line_crs, csv_exporter, result_msg
+        )
+        self._export_drillholes(output_folder, drillhole_data, line_crs, result_msg)
+        self._export_axes(output_folder, profile_data, line_crs, result_msg)
 
         result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
         return result_msg
+
+    def _export_topography(self, folder, data, crs, csv_exporter, msg):
+        """Helper to export topographic data."""
+        from sec_interp.exporters import ProfileLineShpExporter
+
+        logger.info("✓ Saving topographic profile...")
+        try:
+            csv_exporter.export(
+                folder / "topo_profile.csv", {"headers": ["dist", "elev"], "rows": data}
+            )
+            ProfileLineShpExporter({}).export(
+                folder / "profile_line.shp", {"profile_data": data, "crs": crs}
+            )
+            msg.extend(["  - topo_profile.csv", "  - profile_line.shp"])
+        except Exception as e:
+            raise ExportError(f"Topography export failed: {e!s}") from e
+
+    def _export_geology(self, folder, data, crs, csv_exporter, msg):
+        """Helper to export geological data."""
+        if not data:
+            return
+        from sec_interp.exporters import GeologyShpExporter
+
+        logger.info("✓ Saving geological profile...")
+        try:
+            rows = [(p[0], p[1], s.unit_name) for s in data for p in s.points]
+            csv_exporter.export(
+                folder / "geol_profile.csv", {"headers": ["dist", "elev", "geology"], "rows": rows}
+            )
+            GeologyShpExporter({}).export(
+                folder / "geol_profile.shp", {"geology_data": data, "crs": crs}
+            )
+            msg.extend(["  - geol_profile.csv", "  - geol_profile.shp"])
+        except Exception as e:
+            raise ExportError(f"Geology export failed: {e!s}") from e
+
+    def _export_structures(self, folder, data, params, crs, csv_exporter, msg):
+        """Helper to export structural data."""
+        if not data:
+            return
+        from sec_interp.exporters import StructureShpExporter
+
+        logger.info("✓ Saving structural profile...")
+        try:
+            rows = [(s.distance, s.apparent_dip) for s in data]
+            csv_exporter.export(
+                folder / "structural_profile.csv",
+                {"headers": ["dist", "apparent_dip"], "rows": rows},
+            )
+
+            raster_res = 1.0
+            if params.raster_layer:
+                raster_res = params.raster_layer.rasterUnitsPerPixelX()
+
+            StructureShpExporter({}).export(
+                folder / "structural_profile.shp",
+                {
+                    "structural_data": data,
+                    "crs": crs,
+                    "dip_scale_factor": params.dip_scale_factor,
+                    "raster_res": raster_res,
+                },
+            )
+            msg.extend(["  - structural_profile.csv", "  - structural_profile.shp"])
+        except Exception as e:
+            raise ExportError(f"Structure export failed: {e!s}") from e
+
+    def _export_drillholes(self, folder, data, crs, msg):
+        """Helper to export drillhole data."""
+        if not data:
+            return
+        from sec_interp.exporters import DrillholeIntervalShpExporter, DrillholeTraceShpExporter
+
+        logger.info("✓ Saving drillhole data...")
+        try:
+            DrillholeTraceShpExporter({}).export(
+                folder / "drillhole_traces.shp", {"drillhole_data": data, "crs": crs}
+            )
+            DrillholeIntervalShpExporter({}).export(
+                folder / "drillhole_intervals.shp", {"drillhole_data": data, "crs": crs}
+            )
+            msg.extend(["  - drillhole_traces.shp", "  - drillhole_intervals.shp"])
+        except Exception as e:
+            raise ExportError(f"Drillhole export failed: {e!s}") from e
+
+    def _export_axes(self, folder, data, crs, msg):
+        """Helper to export profile axes."""
+        from sec_interp.exporters import AxesShpExporter
+
+        logger.info("✓ Saving profile axes...")
+        try:
+            AxesShpExporter({}).export(
+                folder / "profile_axes.shp", {"profile_data": data, "crs": crs}
+            )
+        except Exception as e:
+            raise ExportError(f"Profile axes export failed: {e!s}") from e
 
     def get_map_settings(
         self,

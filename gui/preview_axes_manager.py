@@ -56,9 +56,7 @@ class PreviewAxesManager:
         return nice_fraction * (10**exponent)
 
     @classmethod
-    def create_axes_layer(
-        cls, extent, vert_exag: float = 1.0
-    ) -> Optional[QgsVectorLayer]:
+    def create_axes_layer(cls, extent, vert_exag: float = 1.0) -> Optional[QgsVectorLayer]:
         """Create temporary layer for axes and grid."""
         if not extent:
             return None
@@ -68,7 +66,7 @@ class PreviewAxesManager:
         # Ensure layer has a valid CRS (Project CRS)
         project_crs = QgsProject.instance().crs()
         if project_crs.isValid():
-             layer.setCrs(project_crs)
+            layer.setCrs(project_crs)
 
         provider = layer.dataProvider()
 
@@ -120,9 +118,7 @@ class PreviewAxesManager:
         return layer
 
     @classmethod
-    def create_axes_labels_layer(
-        cls, extent, vert_exag: float = 1.0
-    ) -> Optional[QgsVectorLayer]:
+    def create_axes_labels_layer(cls, extent, vert_exag: float = 1.0) -> Optional[QgsVectorLayer]:
         """Create a point layer for axes labels."""
         if not extent:
             return None
@@ -136,7 +132,7 @@ class PreviewAxesManager:
         # Ensure layer has a valid CRS (Project CRS)
         project_crs = QgsProject.instance().crs()
         if project_crs.isValid():
-             layer.setCrs(project_crs)
+            layer.setCrs(project_crs)
 
         provider = layer.dataProvider()
 

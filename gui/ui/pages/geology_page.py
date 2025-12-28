@@ -31,9 +31,7 @@ class GeologyPage(BasePage):
         try:
             from qgis.core import Qgis  # noqa: PLC0415
 
-            self.layer_combo.setFilters(
-                Qgis.LayerFilters(Qgis.LayerFilter.PolygonLayer)
-            )
+            self.layer_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.PolygonLayer))
         except (ImportError, AttributeError, TypeError):
             self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 

@@ -1,3 +1,8 @@
+"""Cache system for SecInterp data.
+
+Provides a hash-based caching mechanism for geological and topographic data.
+"""
+
 import hashlib
 import time
 from typing import Any, Optional
@@ -79,9 +84,7 @@ class DataCache(ICacheService):
 
         return entry.get("data")
 
-    def set(
-        self, bucket: str, key: str, data: Any, metadata: Optional[dict] = None
-    ) -> None:
+    def set(self, bucket: str, key: str, data: Any, metadata: Optional[dict] = None) -> None:
         """Store data in a specific cache bucket with optional metadata.
 
         Args:

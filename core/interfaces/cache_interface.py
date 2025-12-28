@@ -1,3 +1,5 @@
+"""Interface for Cache services."""
+
 from __future__ import annotations
 
 from typing import Any, Optional, Protocol, runtime_checkable
@@ -19,9 +21,7 @@ class ICacheService(Protocol):
         """
         ...
 
-    def set(
-        self, bucket: str, key: str, data: Any, metadata: Optional[dict] = None
-    ) -> None:
+    def set(self, bucket: str, key: str, data: Any, metadata: Optional[dict] = None) -> None:
         """Store data in a specific cache bucket.
 
         Args:

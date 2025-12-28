@@ -1,3 +1,5 @@
+"""Core data types and enums for SecInterp."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -50,7 +52,6 @@ ValidationResult = tuple[bool, str]
 # Point data
 PointList = list[QgsPointXY]
 """List of QgsPointXY objects."""
-
 
 
 @dataclass
@@ -192,16 +193,42 @@ class PreviewParams:
         if self.outcrop_layer and self.outcrop_layer.isValid() and not self.outcrop_name_field:
             raise ValidationError("Outcrop layer selected but no name field provided.")
 
-        if self.struct_layer and self.struct_layer.isValid() and (not self.dip_field or not self.strike_field):
+        if (
+            self.struct_layer
+            and self.struct_layer.isValid()
+            and (not self.dip_field or not self.strike_field)
+        ):
             raise ValidationError("Structural layer selected but dip/strike fields missing.")
 
         if self.collar_layer and self.collar_layer.isValid() and not self.collar_id_field:
             raise ValidationError("Collar layer selected but no ID field provided.")
 
-        if self.survey_layer and self.survey_layer.isValid() and not all([self.survey_id_field, self.survey_depth_field, self.survey_azim_field, self.survey_incl_field]):
+        if (
+            self.survey_layer
+            and self.survey_layer.isValid()
+            and not all(
+                [
+                    self.survey_id_field,
+                    self.survey_depth_field,
+                    self.survey_azim_field,
+                    self.survey_incl_field,
+                ]
+            )
+        ):
             raise ValidationError("Survey layer selected but some required fields are missing.")
 
-        if self.interval_layer and self.interval_layer.isValid() and not all([self.interval_id_field, self.interval_from_field, self.interval_to_field, self.interval_lith_field]):
+        if (
+            self.interval_layer
+            and self.interval_layer.isValid()
+            and not all(
+                [
+                    self.interval_id_field,
+                    self.interval_from_field,
+                    self.interval_to_field,
+                    self.interval_lith_field,
+                ]
+            )
+        ):
             raise ValidationError("Interval layer selected but some required fields are missing.")
 
 

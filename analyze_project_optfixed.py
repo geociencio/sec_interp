@@ -332,9 +332,7 @@ class ProjectAnalyzer:
                     # Enviar batch al executor
                     futures = {}
                     for py_file in batch:
-                        future = executor.submit(
-                            self._analyze_single_module_optimized, py_file
-                        )
+                        future = executor.submit(self._analyze_single_module_optimized, py_file)
                         futures[future] = py_file
                         logger.debug(f"lanzados {len(futures)} trabajos en este batch")
                     # Procesar resultados del batch
@@ -350,13 +348,9 @@ class ProjectAnalyzer:
 
                             if module_data:
                                 modules_data.append(module_data)
-                                logger.debug(
-                                    f"añadido a modules_data -> {module_data['path']}"
-                                )
+                                logger.debug(f"añadido a modules_data -> {module_data['path']}")
                             else:
-                                logger.debug(
-                                    f"module_data es None / vacío para {file_path}"
-                                )
+                                logger.debug(f"module_data es None / vacío para {file_path}")
                                 # Actualizar tracker
                                 processing_time = time.time() - start_file_time
                                 tracker.update(file_path, processing_time)
@@ -365,9 +359,7 @@ class ProjectAnalyzer:
                             logger.warning(f"⏰ Timeout procesando {file_path}")
                             self._log_error(file_path, "Timeout (45s)")
                         except Exception as e:
-                            logger.debug(
-                                f"future ERROR para {file_path}: {type(e).__name__} - {e}"
-                            )
+                            logger.debug(f"future ERROR para {file_path}: {type(e).__name__} - {e}")
                             logger.exception(f"⚠️ Error en {file_path}: {str(e)[:100]}")
                             self._log_error(file_path, str(e))
 
@@ -397,9 +389,9 @@ class ProjectAnalyzer:
 
             # 7. Calcular tiempo total
             total_time = time.time() - start_time
-            logger.info(f"\n{'='*50}")
+            logger.info(f"\n{'=' * 50}")
             logger.info(f"🎉 ANÁLISIS COMPLETADO EN {total_time:.1f} SEGUNDOS")
-            logger.info(f"{'='*50}")
+            logger.info(f"{'=' * 50}")
 
             return analyses
 
@@ -419,24 +411,14 @@ class ProjectAnalyzer:
             tasks = {
                 "structure": executor.submit(self._analyze_structure, modules_data),
                 "entry_points": executor.submit(self._find_entry_points),
-                "dependencies": executor.submit(
-                    self._analyze_dependencies_optimized, modules_data
-                ),
-                "qgis_compliance": executor.submit(
-                    self._analyze_qgis_compliance, modules_data
-                ),
+                "dependencies": executor.submit(self._analyze_dependencies_optimized, modules_data),
+                "qgis_compliance": executor.submit(self._analyze_qgis_compliance, modules_data),
                 "complexity": executor.submit(self._analyze_complexity, modules_data),
-                "patterns": executor.submit(
-                    self._detect_patterns_advanced, modules_data
-                ),
+                "patterns": executor.submit(self._detect_patterns_advanced, modules_data),
                 "debt": executor.submit(self._find_technical_debt, modules_data),
-                "optimizations": executor.submit(
-                    self._find_optimizations, modules_data
-                ),
+                "optimizations": executor.submit(self._find_optimizations, modules_data),
                 "security": executor.submit(self._find_security_issues, modules_data),
-                "metrics": executor.submit(
-                    self._calculate_project_metrics, modules_data
-                ),
+                "metrics": executor.submit(self._calculate_project_metrics, modules_data),
             }
 
             # Recoger resultados
@@ -465,9 +447,7 @@ class ProjectAnalyzer:
             try:
                 with open(ignore_file, encoding="utf-8") as f:
                     patterns = [
-                        line.strip()
-                        for line in f
-                        if line.strip() and not line.startswith("#")
+                        line.strip() for line in f if line.strip() and not line.startswith("#")
                     ]
                 logger.info(f"📄 Cargados {len(patterns)} patrones de .analyzerignore")
             except Exception as e:
@@ -480,9 +460,7 @@ class ProjectAnalyzer:
                 try:
                     with open(gitignore, encoding="utf-8") as f:
                         patterns = [
-                            line.strip()
-                            for line in f
-                            if line.strip() and not line.startswith("#")
+                            line.strip() for line in f if line.strip() and not line.startswith("#")
                         ]
                     logger.info(f"📄 Cargados {len(patterns)} patrones de .gitignore")
                 except:
@@ -508,9 +486,7 @@ class ProjectAnalyzer:
 
         # 4. Merge CLI args
         if self.exclude_patterns_args:
-            logger.info(
-                f"➕ Añadiendo {len(self.exclude_patterns_args)} patrones de CLI"
-            )
+            logger.info(f"➕ Añadiendo {len(self.exclude_patterns_args)} patrones de CLI")
             patterns.extend(self.exclude_patterns_args)
 
         return patterns
@@ -574,10 +550,7 @@ class ProjectAnalyzer:
             cached_state = self._state["modules"].get(rel_path)
             logger.debug(f"cached_state {'HIT' if cached_state else 'MISS'}")
 
-            if (
-                cached_state
-                and self._state["timestamps"].get(rel_path, 0) >= file_mtime
-            ):
+            if cached_state and self._state["timestamps"].get(rel_path, 0) >= file_mtime:
                 logger.debug(f"usa cache para {rel_path}")
                 return cached_state
 
@@ -625,9 +598,7 @@ class ProjectAnalyzer:
             # Actualizar estado incremental
             self._state["modules"][rel_path] = module_data
             self._state["timestamps"][rel_path] = file_mtime
-            logger.debug(
-                f"va a retornar module_data para {rel_path} -> {module_data is not None}"
-            )
+            logger.debug(f"va a retornar module_data para {rel_path} -> {module_data is not None}")
             return module_data
 
         # ❌ Eliminamos el bloque de TimeoutException
@@ -716,9 +687,7 @@ class ProjectAnalyzer:
                 complexity += len(node.values) - 1
 
             # Comprehensions
-            elif isinstance(
-                node, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
-            ):
+            elif isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
                 complexity += len(node.generators)
 
         # Penalizar módulos con muchas decisiones en pocas líneas
@@ -824,9 +793,7 @@ class ProjectAnalyzer:
                 try:
                     content = self._read_file_fast(path)
                     if content:
-                        dependencies["files"][req_file] = content[
-                            :2000
-                        ]  # Limitar tamaño
+                        dependencies["files"][req_file] = content[:2000]  # Limitar tamaño
                 except:
                     pass
 
@@ -851,10 +818,7 @@ class ProjectAnalyzer:
                     # Buscar si la importación corresponde a un módulo del proyecto
                     for other_module in modules_data:
                         other_path = other_module.get("path", "")
-                        if (
-                            other_path
-                            and other_path.replace(".py", "").replace("/", ".") in imp
-                        ):
+                        if other_path and other_path.replace(".py", "").replace("/", ".") in imp:
                             # Añadir edge: module_path -> other_path
                             self.import_graph[module_path].add(other_path)
                             # Asegurar que el destino también existe como nodo
@@ -1022,9 +986,7 @@ class ProjectAnalyzer:
                         patterns["singleton"]["evidence"].append(f"{path}:{class_name}")
 
                     method_names = [
-                        item.name
-                        for item in node.body
-                        if isinstance(item, ast.FunctionDef)
+                        item.name for item in node.body if isinstance(item, ast.FunctionDef)
                     ]
 
                     # Factory pattern detection
@@ -1055,23 +1017,15 @@ class ProjectAnalyzer:
                     ]
                     if "Repository" in class_name or (
                         len(crud_methods) >= 3
-                        and any(
-                            m in name.lower()
-                            for name in method_names
-                            for m in crud_methods
-                        )
+                        and any(m in name.lower() for name in method_names for m in crud_methods)
                     ):
                         patterns["repository"]["confidence"] += 0.3
-                        patterns["repository"]["evidence"].append(
-                            f"{path}:{class_name}"
-                        )
+                        patterns["repository"]["evidence"].append(f"{path}:{class_name}")
 
         # Normalizar confidencias y marcar como detectados
         for pattern_name in patterns:
             # Cap confidence at 1.0
-            patterns[pattern_name]["confidence"] = min(
-                1.0, patterns[pattern_name]["confidence"]
-            )
+            patterns[pattern_name]["confidence"] = min(1.0, patterns[pattern_name]["confidence"])
             if patterns[pattern_name]["confidence"] > 0.4:
                 patterns[pattern_name]["detected"] = True
 
@@ -1178,9 +1132,7 @@ class ProjectAnalyzer:
         score += weights["qgis_widget_usage"] * compliance["widgets"]["score"]
         score += weights["spatial_index_usage"] * compliance["performance"]["score"]
 
-        compliance["compliance_score"] = (
-            round((score / max_score) * 100, 2) if max_score > 0 else 0
-        )
+        compliance["compliance_score"] = round((score / max_score) * 100, 2) if max_score > 0 else 0
         return compliance
 
     def _check_mandatory_plugin_files(self) -> dict:
@@ -1258,8 +1210,7 @@ class ProjectAnalyzer:
 
             # Si el archivo está en gui/, no debe tener lógica excesivamente compleja
             if "gui/" in str(path) and (
-                module.get("complexity", 0)
-                > self.config["thresholds"]["complexity_medium"]
+                module.get("complexity", 0) > self.config["thresholds"]["complexity_medium"]
             ):
                 separation["violations"].append(
                     {
@@ -1268,7 +1219,7 @@ class ProjectAnalyzer:
                         "complexity": module["complexity"],
                     }
                 )
-                    # No marcamos separation_clean como False solo por esto, es un warning
+                # No marcamos separation_clean como False solo por esto, es un warning
 
         return separation
 
@@ -1318,9 +1269,7 @@ class ProjectAnalyzer:
 
             # .getFeatures() sin argumentos (generalmente ineficiente)
             if ".getFeatures()" in content:
-                issues.append(
-                    f"{module['path'].name}: .getFeatures() without QgsFeatureRequest"
-                )
+                issues.append(f"{module['path'].name}: .getFeatures() without QgsFeatureRequest")
                 score_deduction += 0.1
 
             # Operaciones espaciales sin índice
@@ -1383,9 +1332,7 @@ class ProjectAnalyzer:
             file_indent = "    " * (depth + 1)
             for i, file in enumerate(sorted(files)[:max_files_per_dir]):
                 if i == max_files_per_dir - 1 and len(files) > max_files_per_dir:
-                    tree_lines.append(
-                        f"{file_indent}... (+{len(files) - max_files_per_dir} más)"
-                    )
+                    tree_lines.append(f"{file_indent}... (+{len(files) - max_files_per_dir} más)")
                     break
                 tree_lines.append(f"{file_indent}{file}")
 
@@ -1531,36 +1478,24 @@ class ProjectAnalyzer:
             "average_complexity": (
                 round(total_complexity / len(modules_data), 2) if modules_data else 0
             ),
-            "max_complexity": max(
-                (m.get("complexity", 0) for m in modules_data), default=0
-            ),
+            "max_complexity": max((m.get("complexity", 0) for m in modules_data), default=0),
             "modules_without_docstrings": sum(
-                1
-                for m in modules_data
-                if not m.get("docstrings", {}).get("module", False)
+                1 for m in modules_data if not m.get("docstrings", {}).get("module", False)
             ),
             "avg_functions_per_module": (
-                round(sum(function_counts) / len(modules_data), 2)
-                if modules_data
-                else 0
+                round(sum(function_counts) / len(modules_data), 2) if modules_data else 0
             ),
             "avg_classes_per_module": (
                 round(sum(class_counts) / len(modules_data), 2) if modules_data else 0
             ),
             "lines_per_function": (
-                round(total_lines / sum(function_counts), 2)
-                if sum(function_counts) > 0
-                else 0
+                round(total_lines / sum(function_counts), 2) if sum(function_counts) > 0 else 0
             ),
             "most_complex_modules": complex_modules,
-            "complexity_distribution": self._calculate_complexity_distribution(
-                modules_data
-            ),
+            "complexity_distribution": self._calculate_complexity_distribution(modules_data),
         }
 
-    def _calculate_complexity_distribution(
-        self, modules_data: list[dict]
-    ) -> dict[str, int]:
+    def _calculate_complexity_distribution(self, modules_data: list[dict]) -> dict[str, int]:
         """Calcula distribución de complejidad."""
         distribution = {
             "low (0-5)": 0,
@@ -1675,11 +1610,7 @@ class ProjectAnalyzer:
                         "issues": issues,
                         "total_issues": len(issues),
                         "severity_score": sum(
-                            (
-                                3
-                                if i["severity"] == "alta"
-                                else 2 if i["severity"] == "media" else 1
-                            )
+                            (3 if i["severity"] == "alta" else 2 if i["severity"] == "media" else 1)
                             for i in issues
                         ),
                     }
@@ -1754,7 +1685,7 @@ class ProjectAnalyzer:
                     {
                         "type": "funciones_demasiado_largas",
                         "priority": "media",
-                        "message": f"Funciones muy largas (promedio {lines/len(functions):.1f} líneas/función)",
+                        "message": f"Funciones muy largas (promedio {lines / len(functions):.1f} líneas/función)",
                         "suggestions": [
                             "Refactorizar funciones > 50 líneas",
                             "Extraer lógica común a funciones helper",
@@ -1862,9 +1793,7 @@ class ProjectAnalyzer:
         )
 
         modules_with_main = sum(1 for m in modules_data if m.get("has_main", False))
-        modules_with_syntax_error = sum(
-            1 for m in modules_data if m.get("syntax_error", False)
-        )
+        modules_with_syntax_error = sum(1 for m in modules_data if m.get("syntax_error", False))
 
         # Calcular estadísticas de complejidad
         complexities = [m.get("complexity", 0) for m in modules_data]
@@ -1878,9 +1807,7 @@ class ProjectAnalyzer:
             "modules_with_docstrings": modules_with_docstrings,
             "modules_with_main_guard": modules_with_main,
             "modules_with_syntax_errors": modules_with_syntax_error,
-            "docstring_coverage": round(
-                modules_with_docstrings / len(modules_data) * 100, 2
-            ),
+            "docstring_coverage": round(modules_with_docstrings / len(modules_data) * 100, 2),
             "entry_points_count": len(self.context.entry_points),
             "test_files_count": self._count_test_files(),
             "avg_complexity": round(avg_complexity, 2),
@@ -1942,9 +1869,7 @@ class ProjectAnalyzer:
             total_score += module_score
 
         # Normalizar a porcentaje
-        final_score = (
-            (total_score / max_possible_total) * 100 if max_possible_total > 0 else 0
-        )
+        final_score = (total_score / max_possible_total) * 100 if max_possible_total > 0 else 0
 
         # Factorizar el score de cumplimiento de QGIS (si existe)
         qgis_data = self.context.patterns.get("qgis_compliance", {})
@@ -2045,7 +1970,6 @@ class ProjectAnalyzer:
                         and isinstance(node.test.left, ast.Name)
                         and node.test.left.id == "__name__"
                     ):
-
                         for comparator in node.test.comparators:
                             if (
                                 isinstance(comparator, ast.Constant)
@@ -2159,15 +2083,11 @@ class ProjectAnalyzer:
             # Reemplazo usando Regex
             pattern = r"## 📊 Métricas de Salud.*?(?=\n## |\Z)"
             if re.search(pattern, content, flags=re.DOTALL):
-                new_content = re.sub(
-                    pattern, new_metrics.strip(), content, flags=re.DOTALL
-                )
+                new_content = re.sub(pattern, new_metrics.strip(), content, flags=re.DOTALL)
                 brain_path.write_text(new_content, encoding="utf-8")
                 print(f"   🧠 Cerebro actualizado: {brain_path}")
             else:
-                print(
-                    f"   ⚠️ No se encontró la sección de métricas en {brain_path.name}"
-                )
+                print(f"   ⚠️ No se encontró la sección de métricas en {brain_path.name}")
 
         except Exception as e:
             print(f"   ⚠️ Falló la actualización del cerebro: {e}")
@@ -2181,9 +2101,7 @@ class ProjectAnalyzer:
         third_party = dependencies.get("third_party", [])
 
         # Detectar Python version
-        python_version = (
-            "3.13"  # Default, could be detected from pyproject.toml or similar
-        )
+        python_version = "3.13"  # Default, could be detected from pyproject.toml or similar
 
         # Detectar frameworks GIS
         gis_frameworks = []
@@ -2229,13 +2147,13 @@ class ProjectAnalyzer:
 
 python:
   version: "{python_version}"
-  testing_framework: {f'"{testing_framework}"' if testing_framework else 'null'}
+  testing_framework: {f'"{testing_framework}"' if testing_framework else "null"}
   type_checking: null
-  formatter: {f'"{formatter}"' if formatter else 'null'}
-  linter: {f'"{linter}"' if linter else 'null'}
+  formatter: {f'"{formatter}"' if formatter else "null"}
+  linter: {f'"{linter}"' if linter else "null"}
 
 gis_frameworks:
-{chr(10).join(f'  - "{fw}"' for fw in gis_frameworks) if gis_frameworks else '  []'}
+{chr(10).join(f'  - "{fw}"' for fw in gis_frameworks) if gis_frameworks else "  []"}
 
 architecture:
   pattern: "{architecture_pattern}"
@@ -2277,7 +2195,7 @@ dependencies:
                 "docstring_coverage": round(metrics.get("docstring_coverage", 0), 1),
                 "test_files": metrics.get("test_files_count", 0),
                 "total_files": structure.get("size_stats", {}).get("total_files", 0),
-            }
+            },
         }
 
         # Cargar historial existente
@@ -2306,9 +2224,7 @@ dependencies:
         except Exception as e:
             print(f"   ⚠️ Error guardando historial: {e}")
 
-    def _generate_project_summary(
-        self, analyses: dict, output_path: pathlib.Path
-    ) -> None:
+    def _generate_project_summary(self, analyses: dict, output_path: pathlib.Path) -> None:
         """Genera resumen ejecutivo del proyecto."""
         structure = analyses.get("structure", {})
         complexity = analyses.get("complexity", {})
@@ -2316,22 +2232,22 @@ dependencies:
         dependencies = analyses.get("dependencies", {})
 
         summary_content = f"""# RESUMEN DEL PROYECTO - {self.context.project_name}
-Fecha de análisis: {time.strftime('%Y-%m-%d %H:%M:%S')}
+Fecha de análisis: {time.strftime("%Y-%m-%d %H:%M:%S")}
 Versión del analizador: 2.0 (Optimizado)
 
 ## 📊 MÉTRICAS CLAVE
-- **Total módulos**: {complexity.get('total_modules', 0):,}
-- **Líneas de código**: {complexity.get('total_lines', 0):,}
-- **Tamaño total**: {structure.get('size_stats', {}).get('total_size_mb', 0):.1f} MB
-- **Complejidad promedio**: {complexity.get('average_complexity', 0):.1f}
-- **Cobertura de docstrings**: {metrics.get('docstring_coverage', 0):.1f}%
-- **Score de calidad**: {metrics.get('quality_score', 0):.1f}/100
-- **Archivos de test**: {metrics.get('test_files_count', 0)}
+- **Total módulos**: {complexity.get("total_modules", 0):,}
+- **Líneas de código**: {complexity.get("total_lines", 0):,}
+- **Tamaño total**: {structure.get("size_stats", {}).get("total_size_mb", 0):.1f} MB
+- **Complejidad promedio**: {complexity.get("average_complexity", 0):.1f}
+- **Cobertura de docstrings**: {metrics.get("docstring_coverage", 0):.1f}%
+- **Score de calidad**: {metrics.get("quality_score", 0):.1f}/100
+- **Archivos de test**: {metrics.get("test_files_count", 0)}
 
 ## 📁 ESTRUCTURA
-- **Archivos Python**: {structure.get('size_stats', {}).get('python_files', 0)}
-- **Total archivos**: {structure.get('size_stats', {}).get('total_files', 0)}
-- **Tipo de archivos principales**: {', '.join(list(structure.get('file_types', {}).keys())[:5])}
+- **Archivos Python**: {structure.get("size_stats", {}).get("python_files", 0)}
+- **Total archivos**: {structure.get("size_stats", {}).get("total_files", 0)}
+- **Tipo de archivos principales**: {", ".join(list(structure.get("file_types", {}).keys())[:5])}
 
 ## 🚨 PROBLEMAS CRÍTICOS
 """
@@ -2342,7 +2258,9 @@ Versión del analizador: 2.0 (Optimizado)
             summary_content += "\n### 🔒 Problemas de Seguridad:\n"
             high_security = [s for s in security if s.get("max_severity") == "alta"]
             for item in high_security[:3]:
-                summary_content += f"- **{item['module']}**: {item['total_issues']} problemas críticos\n"
+                summary_content += (
+                    f"- **{item['module']}**: {item['total_issues']} problemas críticos\n"
+                )
 
         # Agregar deuda técnica
         debt = analyses.get("debt", [])
@@ -2363,17 +2281,15 @@ Versión del analizador: 2.0 (Optimizado)
         qgis = analyses.get("qgis_compliance", {})
         if qgis:
             summary_content += "\n## 📦 ESTÁNDARES DE PLUGIN QGIS\n"
-            summary_content += f"- **Score de Cumplimiento**: {qgis.get('compliance_score', 0):.1f}/100\n"
+            summary_content += (
+                f"- **Score de Cumplimiento**: {qgis.get('compliance_score', 0):.1f}/100\n"
+            )
 
             # Archivos faltantes
             mandatory = qgis.get("mandatory_files", {})
-            missing = [
-                f for f, exists in mandatory.get("files", {}).items() if not exists
-            ]
+            missing = [f for f, exists in mandatory.get("files", {}).items() if not exists]
             if missing:
-                summary_content += (
-                    f"- ❌ **Archivos faltantes**: {', '.join(missing)}\n"
-                )
+                summary_content += f"- ❌ **Archivos faltantes**: {', '.join(missing)}\n"
 
             # Violaciones de arquitectura
             arch = qgis.get("architecture", {})
@@ -2425,12 +2341,12 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
 
 ## 📁 ESTRUCTURA DEL PROYECTO
 
-{structure.get('tree', 'No disponible')[:1200]}
+{structure.get("tree", "No disponible")[:1200]}
 
 
 ## 🎯 PUNTOS DE ENTRADA
-{chr(10).join(f'- `{ep}`' for ep in entry_points[:10])}
-{'' if len(entry_points) <= 10 else chr(10) + '... y ' + str(len(entry_points) - 10) + ' más'}
+{chr(10).join(f"- `{ep}`" for ep in entry_points[:10])}
+{"" if len(entry_points) <= 10 else chr(10) + "... y " + str(len(entry_points) - 10) + " más"}
 
 ## 🏗️ PATRONES DETECTADOS
 """
@@ -2451,12 +2367,12 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
 
         context_content += f"""
 ## 📈 COMPLEJIDAD Y MÉTRICAS
-- **Módulos totales**: {complexity.get('total_modules', 0)}
-- **Líneas de código**: {complexity.get('total_lines', 0):,}
-- **Funciones**: {complexity.get('total_functions', 0)}
-- **Clases**: {complexity.get('total_classes', 0)}
-- **Complejidad promedio**: {complexity.get('average_complexity', 0):.1f}
-- **Módulos más complejos**: {', '.join([m[0] for m in complexity.get('most_complex_modules', [])[:3]])}
+- **Módulos totales**: {complexity.get("total_modules", 0)}
+- **Líneas de código**: {complexity.get("total_lines", 0):,}
+- **Funciones**: {complexity.get("total_functions", 0)}
+- **Clases**: {complexity.get("total_classes", 0)}
+- **Complejidad promedio**: {complexity.get("average_complexity", 0):.1f}
+- **Módulos más complejos**: {", ".join([m[0] for m in complexity.get("most_complex_modules", [])[:3]])}
 
 ## 🔗 DEPENDENCIAS PRINCIPALES
 """
@@ -2471,9 +2387,9 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
                 base_packages[base] = base_packages.get(base, 0) + 1
 
             context_content += "\n### Third Party (más frecuentes):\n"
-            for package, count in sorted(
-                base_packages.items(), key=lambda x: x[1], reverse=True
-            )[:15]:
+            for package, count in sorted(base_packages.items(), key=lambda x: x[1], reverse=True)[
+                :15
+            ]:
                 context_content += f"- `{package}` ({count} imports)\n"
 
         # Agregar recomendaciones principales
@@ -2481,24 +2397,20 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
         if optimizations:
             context_content += "\n## 💡 RECOMENDACIONES DE OPTIMIZACIÓN\n"
             for opt in optimizations[:5]:
-                context_content += (
-                    f"\n### {opt['module']} (Prioridad: {opt['priority'].upper()})\n"
-                )
+                context_content += f"\n### {opt['module']} (Prioridad: {opt['priority'].upper()})\n"
                 for suggestion in opt["suggestions"][:2]:
-                    context_content += (
-                        f"- **{suggestion['type']}**: {suggestion['message']}\n"
-                    )
+                    context_content += f"- **{suggestion['type']}**: {suggestion['message']}\n"
 
         # Agregar estructura de dependencias
         graph_metrics = dependencies.get("graph_metrics", {})
         if graph_metrics:
             context_content += f"""
 ## 🕸️  ESTRUCTURA DE DEPENDENCIAS
-- **Nodos**: {graph_metrics.get('nodes', 0)}
-- **Aristas**: {graph_metrics.get('edges', 0)}
-- **Densidad**: {graph_metrics.get('density', 0):.3f}
-- **Grafo acíclico**: {'Sí' if graph_metrics.get('is_dag', False) else 'No'}
-- **Componentes conectados**: {graph_metrics.get('weakly_connected_components', 0)}
+- **Nodos**: {graph_metrics.get("nodes", 0)}
+- **Aristas**: {graph_metrics.get("edges", 0)}
+- **Densidad**: {graph_metrics.get("density", 0):.3f}
+- **Grafo acíclico**: {"Sí" if graph_metrics.get("is_dag", False) else "No"}
+- **Componentes conectados**: {graph_metrics.get("weakly_connected_components", 0)}
 """
 
         with open(output_path, "w", encoding="utf-8") as f:
@@ -2556,9 +2468,7 @@ Ejemplos:
         """,
     )
 
-    parser.add_argument(
-        "project_path", nargs="?", default=".", help="Ruta al proyecto a analizar"
-    )
+    parser.add_argument("project_path", nargs="?", default=".", help="Ruta al proyecto a analizar")
     parser.add_argument(
         "--workers",
         "-w",
@@ -2632,32 +2542,26 @@ Ejemplos:
 
         # Mostrar resumen final
         if results:
-            logger.info(f"\n{'='*60}")
+            logger.info(f"\n{'=' * 60}")
             logger.info(f"🎉 ANÁLISIS COMPLETADO EN {total_time:.1f} SEGUNDOS")
-            logger.info(f"{'='*60}")
+            logger.info(f"{'=' * 60}")
 
             metrics = results.get("metrics", {})
             results.get("complexity", {})
 
-            print(
-                f"   💡 Optimizaciones: {len(results.get('optimizations', []))} sugerencias"
-            )
+            print(f"   💡 Optimizaciones: {len(results.get('optimizations', []))} sugerencias")
             print(f"   🏆 Calidad: {metrics.get('quality_score', 0):.1f}/100")
 
             # Mostrar problemas críticos si existen
             high_security = [
-                s
-                for s in results.get("security", [])
-                if s.get("max_severity") == "alta"
+                s for s in results.get("security", []) if s.get("max_severity") == "alta"
             ]
             if high_security:
                 print("\n🚨 PROBLEMAS CRÍTICOS DETECTADOS:")
                 for issue in high_security[:3]:
                     print(f"   - {issue['module']}: {issue['total_issues']} problemas")
 
-            print(
-                "\n💾 Los resultados han sido guardados en el directorio del proyecto."
-            )
+            print("\n💾 Los resultados han sido guardados en el directorio del proyecto.")
 
         else:
             print("\n❌ No se pudieron obtener resultados del análisis")

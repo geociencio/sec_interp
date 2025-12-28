@@ -236,12 +236,8 @@ class SecInterp:
                 self.dlg.button_box.accepted.disconnect()
 
             # Connect OK button to process and close
-            self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(
-                self.process_data
-            )
-            self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(
-                self.dlg.accept
-            )
+            self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.process_data)
+            self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.dlg.accept)
 
             # Connect Save button to save only
             self.dlg.button_box.button(QDialogButtonBox.Save).clicked.connect(
@@ -335,11 +331,17 @@ class SecInterp:
 
         # 3. Connect Layer Notifications for Cache Invalidation
         active_layers = [
-            l for l in [
-                params.raster_layer, params.line_layer,
-                params.outcrop_layer, params.struct_layer,
-                params.collar_layer, params.survey_layer, params.interval_layer
-            ] if l
+            l
+            for l in [
+                params.raster_layer,
+                params.line_layer,
+                params.outcrop_layer,
+                params.struct_layer,
+                params.collar_layer,
+                params.survey_layer,
+                params.interval_layer,
+            ]
+            if l
         ]
         self.controller.connect_layer_notifications(active_layers)
 
@@ -396,12 +398,8 @@ class SecInterp:
         logger.debug("draw_preview called with:")
         logger.debug("  - topo_data: %d points", len(topo_data) if topo_data else 0)
         logger.debug("  - geol_data: %d points", len(geol_data) if geol_data else 0)
-        logger.debug(
-            "  - struct_data: %d points", len(struct_data) if struct_data else 0
-        )
-        logger.debug(
-            "  - drillhole_data: %d holes", len(drillhole_data) if drillhole_data else 0
-        )
+        logger.debug("  - struct_data: %d points", len(struct_data) if struct_data else 0)
+        logger.debug("  - drillhole_data: %d holes", len(drillhole_data) if drillhole_data else 0)
         logger.debug("  - max_points: %d", max_points)
 
         # Store data in dialog for re-rendering when checkboxes change
@@ -423,12 +421,8 @@ class SecInterp:
         )  # Requires main_dialog to provide this option key
 
         logger.debug("Filtered data:")
-        logger.debug(
-            "  - filtered_topo: %d points", len(filtered_topo) if filtered_topo else 0
-        )
-        logger.debug(
-            "  - filtered_geol: %d points", len(filtered_geol) if filtered_geol else 0
-        )
+        logger.debug("  - filtered_topo: %d points", len(filtered_topo) if filtered_topo else 0)
+        logger.debug("  - filtered_geol: %d points", len(filtered_geol) if filtered_geol else 0)
         logger.debug(
             "  - filtered_struct: %d points",
             len(filtered_struct) if filtered_struct else 0,
@@ -452,9 +446,7 @@ class SecInterp:
                     res = raster_layer.rasterUnitsPerPixelX()
                     if res > 0:
                         dip_line_length = res * dip_scale
-            logger.debug(
-                "Dip line length: %s (scale: %.2f)", dip_line_length, dip_scale
-            )
+            logger.debug("Dip line length: %s (scale: %.2f)", dip_line_length, dip_scale)
 
         # Render using native PyQGIS
         canvas, layers = self.preview_renderer.render(

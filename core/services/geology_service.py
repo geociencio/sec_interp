@@ -1,3 +1,9 @@
+"""Geology Data Processing Service.
+
+This module handles the extraction and projection of geological boundaries
+and unit segments from map layers to the cross-section plane.
+"""
+
 # /***************************************************************************
 #  SecInterp - GeologyService
 #                                  A QGIS plugin
@@ -222,7 +228,7 @@ class GeologyService(IGeologyService):
             logger.exception("Geological intersection failed")
             raise ProcessingError(
                 "Cannot compute geological intersection",
-                {"line_layer": line_lyr.name(), "outcrop_layer": outcrop_lyr.name()}
+                {"line_layer": line_lyr.name(), "outcrop_layer": outcrop_lyr.name()},
             ) from e
 
     def _process_intersection_feature(

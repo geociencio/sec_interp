@@ -17,9 +17,9 @@ architecture:
   ui_design: "Programmatic (PyQt5)"
 
 dependencies:
+  - "PyQt5"
   - "__future__"
   - "abc"
-  - "argparse"
   - "base_exporter"
   - "base_page"
   - "bisect"

@@ -110,9 +110,7 @@ class GeologyShpExporter(BaseExporter):
                 fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
 
-    def _create_geology_feature(
-        self, segment: Any, fields: QgsFields
-    ) -> Optional[QgsFeature]:
+    def _create_geology_feature(self, segment: Any, fields: QgsFields) -> Optional[QgsFeature]:
         """Create a feature for a geology segment."""
         if len(segment.points) < 2:
             return None

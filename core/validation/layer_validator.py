@@ -1,3 +1,5 @@
+"""Spatial validation for QGIS layers (geometry types, CRS)."""
+
 from __future__ import annotations
 
 from typing import Optional, Union
@@ -133,8 +135,7 @@ def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> tuple[bool,
 
     if band_number < 1 or band_number > band_count:
         return False, (
-            f"Band number {band_number} is invalid. "
-            f"Layer '{layer.name()}' has {band_count} band(s)"
+            f"Band number {band_number} is invalid. Layer '{layer.name()}' has {band_count} band(s)"
         )
 
     return True, ""
@@ -236,10 +237,7 @@ def validate_layer_configuration(
         )
         if not is_valid_multi:
             # Check if generic line type
-            if (
-                QgsWkbTypes.geometryType(line_layer.wkbType())
-                != QgsWkbTypes.LineGeometry
-            ):
+            if QgsWkbTypes.geometryType(line_layer.wkbType()) != QgsWkbTypes.LineGeometry:
                 raise ValidationError(f"Cross-section layer must be a line layer. {msg}")
 
     # 3. Validate Optional Layers

@@ -69,6 +69,7 @@ class _NoOpMessageBar:
         """No-op implementation of pushMessage."""
         return None
 
+
 from .legend_widget import LegendWidget
 
 
@@ -149,9 +150,7 @@ class SecInterpDialog(SecInterpMainWindow):
         from sec_interp.core.services.preview_service import PreviewService
 
         self.validator = DialogValidator(self)
-        self.preview_manager = PreviewManager(
-            self, PreviewService(self.plugin_instance.controller)
-        )
+        self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
         self.data_aggregator = DialogDataAggregator(self)
@@ -160,7 +159,6 @@ class SecInterpDialog(SecInterpMainWindow):
         self.status_manager.setup_indicators()
         self.tool_manager = DialogToolManager(self)
         self.navigation_manager = NavigationManager(self)
-
 
     def handle_error(self, error: Exception, title: str = "Error"):
         """Centralized error handling for the dialog.
@@ -246,9 +244,7 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
-            "use_adaptive_sampling": bool(
-                self.preview_widget.chk_adaptive_sampling.isChecked()
-            ),
+            "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
         }
 
     def update_preview_from_checkboxes(self):

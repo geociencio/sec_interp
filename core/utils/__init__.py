@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-
 """Core Utilities Package.
 
 Organized by functionality:
@@ -12,6 +9,9 @@ Organized by functionality:
 - io: File I/O and user messages
 - geology: Geological calculations
 """
+
+from __future__ import annotations
+
 
 # Geometry operations
 # Geological calculations

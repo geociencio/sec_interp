@@ -1,11 +1,10 @@
-from __future__ import annotations
-
-
 """Controller for SecInterp profile data generation.
 
 This module handles the orchestration of various data generation services
 (topography, geology, structures, drillholes) and manages result caching.
 """
+
+from __future__ import annotations
 
 import math
 from pathlib import Path
@@ -77,9 +76,7 @@ class ProfileController:
         cache_key = self.data_cache.get_cache_key(inputs)
         self.data_cache.set(cache_key, data)
 
-    def generate_profile_data(
-        self, params: PreviewParams
-    ) -> tuple[list, Any, Any, Any, list[str]]:
+    def generate_profile_data(self, params: PreviewParams) -> tuple[list, Any, Any, Any, list[str]]:
         """Unified method to generate all profile data components with granular caching.
 
         Orchestrates topography sampling, geology intersection, structural projection,
@@ -115,9 +112,11 @@ class ProfileController:
         def get_sub_key(param_values: list[Any]) -> str:
             # Simple hash for a subset of parameters
             import hashlib
+
             hasher = hashlib.md5()
             for val in param_values:
                 from qgis.core import QgsMapLayer
+
                 if isinstance(val, QgsMapLayer):
                     hasher.update(val.id().encode("utf-8"))
                 else:
@@ -144,14 +143,14 @@ class ProfileController:
                 raise ProcessingError("No topographic profile data was generated.")
             self.data_cache.set("topo", topo_key, profile_data, cache_meta)
 
-        messages.append(
-            f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points"
-        )
+        messages.append(f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points")
 
         # 2. Geology
         geol_data = None
         if outcrop_layer:
-            geol_key = get_sub_key([params.outcrop_layer, params.outcrop_name_field, params.band_num])
+            geol_key = get_sub_key(
+                [params.outcrop_layer, params.outcrop_name_field, params.band_num]
+            )
             geol_data = self.data_cache.get("geol", geol_key)
             if geol_data:
                 logger.debug("Cache hit: Geology")
@@ -176,10 +175,15 @@ class ProfileController:
         # 3. Structure
         struct_data = None
         if structural_layer:
-            struct_key = get_sub_key([
-                params.struct_layer, params.buffer_dist, params.dip_field,
-                params.strike_field, params.band_num
-            ])
+            struct_key = get_sub_key(
+                [
+                    params.struct_layer,
+                    params.buffer_dist,
+                    params.dip_field,
+                    params.strike_field,
+                    params.band_num,
+                ]
+            )
             struct_data = self.data_cache.get("struct", struct_key)
             if struct_data:
                 logger.debug("Cache hit: Structure")
@@ -210,16 +214,25 @@ class ProfileController:
                             else:
                                 messages.append(f"Structures: None in {buffer_dist}m buffer")
                     else:
-                        messages.append("\n⚠ Structural layer selected but dip/strike fields not specified.")
+                        messages.append(
+                            "\n⚠ Structural layer selected but dip/strike fields not specified."
+                        )
 
         # 4. Drillholes
         drillhole_data = None
         collar_layer = params.collar_layer
         if collar_layer:
-            drill_key = get_sub_key([
-                params.collar_layer, params.survey_layer, params.interval_layer,
-                params.buffer_dist, params.collar_id_field, params.survey_id_field, params.interval_id_field
-            ])
+            drill_key = get_sub_key(
+                [
+                    params.collar_layer,
+                    params.survey_layer,
+                    params.interval_layer,
+                    params.buffer_dist,
+                    params.collar_id_field,
+                    params.survey_id_field,
+                    params.interval_id_field,
+                ]
+            )
             drillhole_data = self.data_cache.get("drill", drill_key)
             if drillhole_data:
                 logger.debug("Cache hit: Drillholes")

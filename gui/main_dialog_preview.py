@@ -91,9 +91,7 @@ class PreviewManager:
         # Connect extents changed signal
         # We need to do this carefully to avoid signal loops
         # Initial connection is safe
-        self.dialog.preview_widget.canvas.extentsChanged.connect(
-            self._on_extents_changed
-        )
+        self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
 
     def cleanup(self):
         """Clean up resources and stop background tasks."""
@@ -116,7 +114,9 @@ class PreviewManager:
                 # 1. Validation & Parameter Collection
                 params = self.dialog.plugin_instance._get_and_validate_inputs()
                 if not params:
-                    return False, QCoreApplication.translate("PreviewManager", "Invalid configuration")
+                    return False, QCoreApplication.translate(
+                        "PreviewManager", "Invalid configuration"
+                    )
 
                 raster_layer = params.raster_layer
                 line_layer = params.line_layer
@@ -124,7 +124,7 @@ class PreviewManager:
 
                 # 3. Cache Check
                 current_hash = self._calculate_params_hash(params)
-                data_unchanged = (current_hash == self.last_params_hash)
+                data_unchanged = current_hash == self.last_params_hash
                 self.last_params_hash = current_hash
 
                 # 4. Data Generation
@@ -170,9 +170,7 @@ class PreviewManager:
                     with PerformanceTimer("Rendering", self.metrics):
                         preview_options = self.dialog.get_preview_options()
                         auto_lod_enabled = preview_options["auto_lod"]
-                        use_adaptive_sampling = (
-                            preview_options["use_adaptive_sampling"]
-                        )
+                        use_adaptive_sampling = preview_options["use_adaptive_sampling"]
 
                         # Calculate max_points via PreviewService
                         max_points_for_render = PreviewService.calculate_max_points(
@@ -211,7 +209,9 @@ class PreviewManager:
             self.dialog.handle_error(e, "Unexpected Preview Error")
             return False, str(e)
         else:
-            return True, QCoreApplication.translate("PreviewManager", "Preview generated successfully")
+            return True, QCoreApplication.translate(
+                "PreviewManager", "Preview generated successfully"
+            )
 
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.
@@ -264,7 +264,6 @@ class PreviewManager:
         except Exception as e:
             logger.error(f"Error updating preview from checkboxes: {e}", exc_info=True)
 
-
     def _calculate_params_hash(self, params: PreviewParams) -> str:
         """Calculate a unique hash for preview parameters to check for changes."""
 
@@ -303,7 +302,6 @@ class PreviewManager:
 
         return hasher.hexdigest()
 
-
     def _get_buffer_distance(self) -> float:
         """Get buffer distance from dialog, with fallback to default.
 
@@ -332,10 +330,7 @@ class PreviewManager:
         lines.extend(metrics)
 
         # Add performance metrics if enabled
-        if (
-            DialogConfig.ENABLE_PERFORMANCE_METRICS
-            and DialogConfig.SHOW_METRICS_IN_RESULTS
-        ):
+        if DialogConfig.ENABLE_PERFORMANCE_METRICS and DialogConfig.SHOW_METRICS_IN_RESULTS:
             timings = self.metrics.timings
             if timings:
                 lines.append("")
@@ -405,9 +400,9 @@ class PreviewManager:
         drillhole_data = self.cached_data.get("drillhole")
         if not drillhole_data:
             return QCoreApplication.translate("PreviewManager", "Drillholes: No data")
-        return QCoreApplication.translate(
-            "PreviewManager", "Drillholes: {} holes found"
-        ).format(len(drillhole_data))
+        return QCoreApplication.translate("PreviewManager", "Drillholes: {} holes found").format(
+            len(drillhole_data)
+        )
 
     def _format_result_metrics(self, result: PreviewResult) -> list[str]:
         """Format elevation metrics for the results message."""
@@ -466,9 +461,7 @@ class PreviewManager:
             # This requires knowing the last used max_points...
             # We can just re-render, it handles caching of data, but re-decimation takes time.
 
-            logger.debug(
-                f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}"
-            )
+            logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
 
             if not self.dialog.plugin_instance:
                 return
@@ -509,9 +502,7 @@ class PreviewManager:
         )
 
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate(
-                "PreviewManager", "Generating Geology in background..."
-            )
+            QCoreApplication.translate("PreviewManager", "Generating Geology in background...")
         )
         # No need for a custom worker function anymore
         self.async_service.process_profiles_parallel([args])
@@ -578,9 +569,9 @@ class PreviewManager:
         logger.error(f"Async geology error: {error_msg}")
         # Map string error to ProcessingError for centralized handling
         error = ProcessingError(
-            QCoreApplication.translate(
-                "PreviewManager", "Geology processing failed: {}"
-            ).format(error_msg)
+            QCoreApplication.translate("PreviewManager", "Geology processing failed: {}").format(
+                error_msg
+            )
         )
         self.dialog.handle_error(error, "Geology Error")
 

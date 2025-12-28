@@ -1,3 +1,9 @@
+"""Profile Data Processing Service.
+
+This module handles the extraction and processing of topographic profile data
+from DEM layers along section lines.
+"""
+
 # /***************************************************************************
 #  SecInterp - ProfileService
 #                                  A QGIS plugin

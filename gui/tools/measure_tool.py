@@ -96,17 +96,13 @@ class ProfileSnapper:
         """Checks if a layer is valid for snapping."""
         return bool(layer and layer.type() == QgsMapLayer.VectorLayer)
 
-    def _get_locator(
-        self, layer: QgsVectorLayer, crs, context
-    ) -> Optional[QgsPointLocator]:
+    def _get_locator(self, layer: QgsVectorLayer, crs, context) -> Optional[QgsPointLocator]:
         """Retrieves or creates a locator for a layer."""
         if layer.id() not in self._locators:
             try:
                 self._locators[layer.id()] = QgsPointLocator(layer, crs, context)
             except Exception as e:
-                logger.warning(
-                    f"Failed to create locator for layer {layer.name()}: {e}"
-                )
+                logger.warning(f"Failed to create locator for layer {layer.name()}: {e}")
                 return None
         return self._locators[layer.id()]
 
@@ -243,9 +239,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         self.rubber_band.addPoint(point, True)
         self._add_vertex_marker(point)
 
-        logger.debug(
-            f"Point {len(self.points)} added: {point.x():.2f}, {point.y():.2f}"
-        )
+        logger.debug(f"Point {len(self.points)} added: {point.x():.2f}, {point.y():.2f}")
 
         # Emit measurement update if we have at least 2 points
         if len(self.points) >= 2:

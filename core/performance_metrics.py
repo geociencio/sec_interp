@@ -177,9 +177,7 @@ class PerformanceMonitor:
         if not logger.handlers:
             # Create file handler
             handler = logging.FileHandler(log_file)
-            formatter = logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
 

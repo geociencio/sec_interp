@@ -1,3 +1,5 @@
+"""Interface for Profile services."""
+
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 

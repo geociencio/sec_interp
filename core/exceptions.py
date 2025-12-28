@@ -24,29 +24,35 @@ class SecInterpError(Exception):
 
 class ValidationError(SecInterpError):
     """Raised when input validation fails."""
+
     pass
 
 
 class ProcessingError(SecInterpError):
     """Raised when data processing fails."""
+
     pass
 
 
 class GeometryError(ProcessingError):
     """Raised for geometry-related errors (invalid, null, etc.)."""
+
     pass
 
 
 class DataMissingError(ProcessingError):
     """Raised when required data (e.g. from a layer) is missing."""
+
     pass
 
 
 class ExportError(SecInterpError):
     """Raised when data export fails."""
+
     pass
 
 
 class ConfigurationError(SecInterpError):
     """Raised for configuration-related issues."""
+
     pass

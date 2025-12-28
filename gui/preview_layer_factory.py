@@ -106,7 +106,7 @@ class PreviewLayerFactory:
         # independent of On-The-Fly transformation settings
         project_crs = QgsProject.instance().crs()
         if project_crs.isValid():
-             layer.setCrs(project_crs)
+            layer.setCrs(project_crs)
 
         return layer, layer.dataProvider()
 
@@ -123,9 +123,7 @@ class PreviewLayerFactory:
 
         # Apply LOD decimation
         if use_adaptive_sampling:
-            render_data = PreviewOptimizer.adaptive_sample(
-                topo_data, max_points=max_points
-            )
+            render_data = PreviewOptimizer.adaptive_sample(topo_data, max_points=max_points)
         else:
             render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
 
@@ -159,9 +157,7 @@ class PreviewLayerFactory:
         if not geol_data:
             return None
 
-        layer, provider = self.create_memory_layer(
-            "LineString", "Geology", "field=unit:string"
-        )
+        layer, provider = self.create_memory_layer("LineString", "Geology", "field=unit:string")
         if not layer:
             return None
 
@@ -171,12 +167,8 @@ class PreviewLayerFactory:
             if not segment.points or len(segment.points) < 2:
                 continue
 
-            render_points = PreviewOptimizer.decimate(
-                segment.points, max_points=max_points
-            )
-            line_points = [
-                QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points
-            ]
+            render_points = PreviewOptimizer.decimate(segment.points, max_points=max_points)
+            line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points]
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -264,7 +256,9 @@ class PreviewLayerFactory:
         self, drillhole_data: list, vert_exag: float = 1.0
     ) -> Optional[QgsVectorLayer]:
         """Create temporary layer for drillhole traces."""
-        logger.debug(f"create_drillhole_trace_layer called with {len(drillhole_data) if drillhole_data else 0} holes")
+        logger.debug(
+            f"create_drillhole_trace_layer called with {len(drillhole_data) if drillhole_data else 0} holes"
+        )
         if not drillhole_data:
             logger.warning("No drillhole data provided for trace layer")
             return None
@@ -278,7 +272,9 @@ class PreviewLayerFactory:
         features = []
         for hole_id, trace_points, _ in drillhole_data:
             if not trace_points or len(trace_points) < 2:
-                logger.debug(f"Skipping hole {hole_id}: insufficient trace points ({len(trace_points) if trace_points else 0})")
+                logger.debug(
+                    f"Skipping hole {hole_id}: insufficient trace points ({len(trace_points) if trace_points else 0})"
+                )
                 continue
 
             render_points = [QgsPointXY(x, y * vert_exag) for x, y in trace_points]
@@ -369,9 +365,7 @@ class PreviewLayerFactory:
         layer.updateExtents()
         return layer
 
-    def interpolate_elevation(
-        self, reference_data: ProfileData, target_dist: float
-    ) -> float:
+    def interpolate_elevation(self, reference_data: ProfileData, target_dist: float) -> float:
         """Interpolate elevation at a given distance."""
         if not reference_data:
             return 0

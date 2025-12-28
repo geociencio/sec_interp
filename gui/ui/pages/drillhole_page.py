@@ -1,3 +1,5 @@
+"""UI page for drillhole data configuration."""
+
 from qgis.core import Qgis, QgsMapLayerProxyModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
@@ -42,9 +44,7 @@ class DrillholePage(BasePage):
         # Clear any default layout in group_box if BasePage added any (it creates an empty
         # QVBoxLayout usually)
         if self.group_box.layout():
-            QWidget().setLayout(
-                self.group_box.layout()
-            )  # Hack to delete layout? No, just use it.
+            QWidget().setLayout(self.group_box.layout())  # Hack to delete layout? No, just use it.
             layout = self.group_box.layout()
         else:
             layout = QVBoxLayout(self.group_box)
@@ -167,9 +167,7 @@ class DrillholePage(BasePage):
         # Use modern flags if available (QGIS 3.32+)
         try:
             self.s_layer.setFilters(
-                Qgis.LayerFilters(
-                    Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry
-                )
+                Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
             )
         except (AttributeError, TypeError):
             self.s_layer.setFilters(
@@ -222,9 +220,7 @@ class DrillholePage(BasePage):
         # Use modern flags if available (QGIS 3.32+)
         try:
             self.i_layer.setFilters(
-                Qgis.LayerFilters(
-                    Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry
-                )
+                Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
             )
         except (AttributeError, TypeError):
             self.i_layer.setFilters(

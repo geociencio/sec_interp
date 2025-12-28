@@ -35,10 +35,6 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 
-
-
-
-
 class PreviewService:
     """Orchestrates preview data generation."""
 
@@ -81,9 +77,7 @@ class PreviewService:
             return base_points
         return manual_max
 
-    def generate_all(
-        self, params: PreviewParams, transform_context: Any
-    ) -> PreviewResult:
+    def generate_all(self, params: PreviewParams, transform_context: Any) -> PreviewResult:
         """Generate all preview components in a consolidated result.
 
         Args:
@@ -107,12 +101,12 @@ class PreviewService:
                 # Get line length
                 line_feat = next(params.line_layer.getFeatures(), None)
                 if not line_feat:
-                    raise GeometryError("Section line layer has no features", {"layer": params.line_layer.name()})
+                    raise GeometryError(
+                        "Section line layer has no features", {"layer": params.line_layer.name()}
+                    )
 
                 line_len = line_feat.geometry().length()
-                max_pts = self.calculate_max_points(
-                    params.canvas_width, params.max_points, True
-                )
+                max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
                 interval = line_len / max_pts if max_pts > 0 else None
 
             result.topo = self.controller.profile_service.generate_topographic_profile(
@@ -129,22 +123,18 @@ class PreviewService:
                     line_geom = line_feat.geometry()
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
 
-                    result.struct = (
-                        self.controller.structure_service.project_structures(
-                            line_lyr=params.line_layer,
-                            raster_lyr=params.raster_layer,
-                            struct_lyr=params.struct_layer,
-                            buffer_m=params.buffer_dist,
-                            line_az=line_azimuth,
-                            dip_field=params.dip_field,
-                            strike_field=params.strike_field,
-                            band_number=params.band_num,
-                        )
+                    result.struct = self.controller.structure_service.project_structures(
+                        line_lyr=params.line_layer,
+                        raster_lyr=params.raster_layer,
+                        struct_lyr=params.struct_layer,
+                        buffer_m=params.buffer_dist,
+                        line_az=line_azimuth,
+                        dip_field=params.dip_field,
+                        strike_field=params.strike_field,
+                        band_number=params.band_num,
                     )
                     if result.struct:
-                        result.metrics.record_count(
-                            "Structure Points", len(result.struct)
-                        )
+                        result.metrics.record_count("Structure Points", len(result.struct))
 
         # 3. Drillholes
         if params.collar_layer:
@@ -166,7 +156,9 @@ class PreviewService:
         """
         line_feat = next(params.line_layer.getFeatures(), None)
         if not line_feat:
-            raise GeometryError("Section line layer has no features", {"layer": params.line_layer.name()})
+            raise GeometryError(
+                "Section line layer has no features", {"layer": params.line_layer.name()}
+            )
 
         # Validation: Ensure critical drillhole fields are selected
         if not params.collar_id_field:
@@ -206,7 +198,9 @@ class PreviewService:
                 line_crs=params.line_layer.crs(),
             )
         except Exception as e:
-            raise ProcessingError("Failed to project drillhole collars", {"hole_id_field": params.collar_id_field}) from e
+            raise ProcessingError(
+                "Failed to project drillhole collars", {"hole_id_field": params.collar_id_field}
+            ) from e
 
         if not projected_collars:
             return None

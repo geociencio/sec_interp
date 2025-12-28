@@ -1,3 +1,5 @@
+"""Validation for QGIS project state and layer presence."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -41,8 +43,7 @@ def validate_reasonable_ranges(values: dict[str, Any]) -> list[str]:
             )
         elif vert_exag < 0.1:
             warnings.append(
-                f"⚠ Vertical exaggeration ({vert_exag}) is very low. "
-                f"Profile may appear flattened."
+                f"⚠ Vertical exaggeration ({vert_exag}) is very low. Profile may appear flattened."
             )
         elif vert_exag <= 0:
             warnings.append(f"❌ Vertical exaggeration ({vert_exag}) must be positive.")
@@ -122,9 +123,7 @@ class ProjectValidator:
         if not params.raster_layer:
             errors.append("Raster DEM layer is required")
         elif params.band_number is not None:
-            is_valid, error = validate_raster_band(
-                params.raster_layer, params.band_number
-            )
+            is_valid, error = validate_raster_band(params.raster_layer, params.band_number)
             if not is_valid:
                 errors.append(error)
 
@@ -132,9 +131,7 @@ class ProjectValidator:
         if not params.line_layer:
             errors.append("Cross-section line layer is required")
         else:
-            is_valid, error = validate_layer_geometry(
-                params.line_layer, QgsWkbTypes.LineGeometry
-            )
+            is_valid, error = validate_layer_geometry(params.line_layer, QgsWkbTypes.LineGeometry)
             if not is_valid:
                 errors.append(error)
 
