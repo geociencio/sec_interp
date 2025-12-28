@@ -24,7 +24,7 @@ class ImmediateFlushFileHandler(RotatingFileHandler):
         self.flush()
         # Force OS-level write to disk (slower but safer for crash analysis)
         try:
-            if hasattr(self.stream, 'fileno'):
+            if hasattr(self.stream, "fileno"):
                 os.fsync(self.stream.fileno())
         except (OSError, AttributeError):
             # If fsync fails, continue anyway
@@ -136,33 +136,33 @@ def get_logger(name):
 
 def log_critical_operation(logger, operation_name, **context):
     """Log a critical operation with maximum persistence.
-    
+
     Use this before operations that might crash QGIS (e.g., canvas operations,
     rubber band manipulation, tool activation).
-    
+
     Args:
         logger: Logger instance
         operation_name: Name of the operation
         **context: Additional context to log
     """
     import datetime
-    
+
     msg = f"CRITICAL_OP: {operation_name}"
     if context:
         ctx_str = ", ".join(f"{k}={v}" for k, v in context.items())
         msg += f" | {ctx_str}"
-    
+
     # Log through normal channels
     logger.debug(msg)
-    
+
     # Also write directly to stderr with timestamp (bypasses all buffering)
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     sys.stderr.write(f"[{timestamp}] {msg}\n")
     sys.stderr.flush()
-    
+
     # Try to force OS sync on stderr too
     try:
-        if hasattr(sys.stderr, 'fileno'):
+        if hasattr(sys.stderr, "fileno"):
             os.fsync(sys.stderr.fileno())
     except (OSError, AttributeError):
         pass

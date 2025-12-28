@@ -237,26 +237,26 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def on_interpretation_finished(self, interpretation):
         """Handle finalized interpretation polygon.
-        
+
         Args:
             interpretation: InterpretationPolygon object from the tool
         """
         from sec_interp.logger_config import log_critical_operation
-        
+
         log_critical_operation(
-            logger, 
+            logger,
             "on_interpretation_finished",
             polygon_id=interpretation.id,
             vertices=len(interpretation.vertices_2d)
         )
-        
+
         # Store interpretation
         self.interpretations.append(interpretation)
         logger.info(
             f"Interpretation polygon added: {interpretation.id} "
             f"({len(interpretation.vertices_2d)} vertices)"
         )
-        
+
         # Display feedback in results area
         msg = (
             f"<b>Interpretación Finalizada</b><br>"
@@ -265,10 +265,10 @@ class SecInterpDialog(SecInterpMainWindow):
         )
         self.preview_widget.results_text.setHtml(msg)
         self.preview_widget.results_group.setCollapsed(False)
-        
+
         # Deactivate interpretation tool
         self.preview_widget.btn_interpret.setChecked(False)
-        
+
         # Update preview to show the new polygon
         self.update_preview_from_checkboxes()
 

@@ -77,11 +77,11 @@ class Interpretation2DExporter(BaseExporter):
         for interp in interpretations:
             # Create polygon geometry from 2D vertices
             points = [QgsPointXY(x, y) for x, y in interp.vertices_2d]
-            
+
             # Ensure polygon is closed
             if points and points[0] != points[-1]:
                 points.append(points[0])
-                
+
             geom = QgsGeometry.fromPolygonXY([points])
 
             # Create feature
@@ -102,9 +102,9 @@ class Interpretation2DExporter(BaseExporter):
         options = QgsVectorFileWriter.SaveVectorOptions()
         options.driverName = "ESRI Shapefile"
         options.fileEncoding = "UTF-8"
-        
+
         # No CRS for 2D profile coordinates
-        
+
         result, error_msg, _new_layer_id, _new_layer_path = QgsVectorFileWriter.writeAsVectorFormatV3(
             layer,
             str(output_path),
