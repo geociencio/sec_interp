@@ -157,7 +157,10 @@ class PreviewManager:
             logger.info("Using cached data (params unchanged)")
             return self.last_result
 
-        # Generate fresh data
+        # Generate fresh data - clear interpretations as the section has changed
+        if hasattr(self.dialog, "interpretations"):
+            logger.info("Clearing interpretations due to section change")
+            self.dialog.interpretations = []
         transform_context = (
             self.dialog.plugin_instance.iface.mapCanvas()
             .mapSettings()

@@ -10,15 +10,23 @@ import contextlib
 from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
+    QgsGeometry,
     QgsMapRendererCustomPainterJob,
     QgsMapSettings,
+    QgsPointXY,
     QgsProject,
+    QgsWkbTypes,
 )
-from qgis.gui import QgsMapCanvas
+from qgis.gui import QgsMapCanvas, QgsRubberBand
 from qgis.PyQt.QtCore import QRectF, QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
-from sec_interp.core.types import GeologyData, ProfileData, StructureData
+from sec_interp.core.types import (
+    GeologyData,
+    InterpretationPolygon,
+    ProfileData,
+    StructureData,
+)
 from sec_interp.logger_config import get_logger
 
 from .preview_axes_manager import PreviewAxesManager
@@ -48,6 +56,7 @@ class PreviewRenderer:
         """
         self.canvas = canvas
         self.layers = []
+        self.interpretation_rubbers = []
 
         # Specialized components
         self.layer_factory = PreviewLayerFactory()
@@ -74,6 +83,7 @@ class PreviewRenderer:
         preserve_extent: bool = False,
         use_adaptive_sampling: bool = False,
         drillhole_data: Optional[list] = None,
+        interp_data: Optional[list[InterpretationPolygon]] = None,
         **kwargs,
     ) -> tuple[Optional[QgsMapCanvas], list]:
         """Render preview with all data layers."""
@@ -120,6 +130,10 @@ class PreviewRenderer:
             )
             if interval_layer:
                 drillhole_layers.append(interval_layer)
+
+        # 2.5 Render interpretations (using rubber bands)
+        if interp_data:
+            self._render_interpretations(interp_data, vert_exag)
 
         # 3. Collect valid data layers
         data_layers = [
@@ -205,6 +219,56 @@ class PreviewRenderer:
                     QgsProject.instance().removeMapLayer(layer.id())
         self.layers = []
         self.layer_factory.active_units = {}
+
+        # Clear interpretation rubber bands
+        for rb in self.interpretation_rubbers:
+            if rb:
+                with contextlib.suppress(Exception):
+                    rb.hide()
+                    # Python garbage collection should clean up QgsRubberBand if canvas reference is lost
+                    # but explicit removal from canvas Scene is better
+                    self.canvas.scene().removeItem(rb)
+        self.interpretation_rubbers = []
+
+    def _render_interpretations(
+        self, interp_data: list[InterpretationPolygon], vert_exag: float
+    ):
+        """Render interpretations as QgsRubberBand objects."""
+        if not self.canvas:
+            return
+
+        for interp in interp_data:
+            if not interp.vertices_2d or len(interp.vertices_2d) < 3:
+                continue
+
+            # Create rubber band
+            rb = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
+
+            # Set style
+            try:
+                poly_color = QColor(interp.color)
+                if not poly_color.isValid():
+                    poly_color = QColor("#FF0000")
+            except (ValueError, TypeError):
+                poly_color = QColor("#FF0000")
+
+            poly_color.setAlpha(120)
+            rb.setColor(poly_color)
+            rb.setWidth(1)
+            rb.setStrokeColor(poly_color.darker(150))
+
+            # Add geometry
+            # Points are (dist, elev) -> (x, y * exag)
+            points = [QgsPointXY(x, y * vert_exag) for x, y in interp.vertices_2d]
+            # Ensure closed for polygon
+            if points[0] != points[-1]:
+                points.append(points[0])
+
+            geom = QgsGeometry.fromPolygonXY([points])
+            rb.setToGeometry(geom, None)
+            rb.show()
+
+            self.interpretation_rubbers.append(rb)
 
     def _calculate_extent(self, layers: list):
         """Combine extents of all given layers."""

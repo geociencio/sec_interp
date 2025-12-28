@@ -428,7 +428,10 @@ class SecInterp:
         filtered_struct = struct_data if options.get("show_struct", True) else None
         filtered_drill = (
             drillhole_data if options.get("show_drillholes", True) else None
-        )  # Requires main_dialog to provide this option key
+        )
+        filtered_interp = (
+            self.dlg.interpretations if options.get("show_interpretations", True) else None
+        )
 
         logger.debug("Filtered data:")
         logger.debug(
@@ -440,6 +443,10 @@ class SecInterp:
         logger.debug(
             "  - filtered_struct: %d points",
             len(filtered_struct) if filtered_struct else 0,
+        )
+        logger.debug(
+            "  - filtered_interp: %d polygons",
+            len(filtered_interp) if filtered_interp else 0,
         )
 
         # Get vertical exaggeration from dialog
@@ -474,6 +481,7 @@ class SecInterp:
             max_points=max_points,
             preserve_extent=kwargs.get("preserve_extent", False),
             drillhole_data=filtered_drill,
+            interp_data=filtered_interp,
         )
 
         # Store canvas and layers for export
