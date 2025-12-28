@@ -204,7 +204,7 @@ class PerformanceMonitor:
             end_memory = self._get_memory_usage()
 
             try:
-                current, peak = tracemalloc.get_traced_memory()
+                _, peak = tracemalloc.get_traced_memory()
             except RuntimeError:
                 # Tracemalloc might not be started if nested calls improperly handle it
                 _current, peak = 0, 0

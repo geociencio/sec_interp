@@ -236,10 +236,7 @@ class ProjectValidator:
     @staticmethod
     def is_drillhole_complete(params: ValidationParams) -> bool:
         """Check if required fields are filled if drillhole layers are selected."""
-        if not params.collar_layer:
-            return False
-
-        if not params.collar_id:
+        if not params.collar_layer or not params.collar_id:
             return False
 
         if not params.collar_use_geom and not (params.collar_x and params.collar_y):
@@ -257,15 +254,15 @@ class ProjectValidator:
             return False
 
         # If Interval Layer selected, check its fields
-        if params.interval_layer and not all(
-            [
-                params.interval_id,
-                params.interval_from,
-                params.interval_to,
-                params.interval_lith,
-            ]
-        ):
-            return False
+        if params.interval_layer:
+            return all(
+                [
+                    params.interval_id,
+                    params.interval_from,
+                    params.interval_to,
+                    params.interval_lith,
+                ]
+            )
 
         return True
 

@@ -100,7 +100,6 @@ ignore = [
     "TRY401", # verbose-log-message
     "RUF001", # ambiguous-unicode-character-string (Allow emojis and dashes)
     "RUF012", # mutable-class-default
-    "RUF059", # unused-unpacked-variable
     "RUF100", # unused-noqa
     "SIM102", # collapsible-if
     "PLR2004",# magic-value-comparison
