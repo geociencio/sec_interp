@@ -109,6 +109,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         self.iface = iface
         self.plugin_instance = plugin_instance
+        self.project = QgsProject.instance()
 
         # Provide a safe, no-op messagebar when iface is not available (tests)
         if self.iface is None:
