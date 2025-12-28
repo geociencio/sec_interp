@@ -35,7 +35,7 @@ from sec_interp.core.types import (
 from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig
-from .parallel_geology import ParallelGeologyService
+from sec_interp.core.services.parallel_geology_service import ParallelGeologyService
 
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog

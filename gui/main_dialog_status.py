@@ -37,34 +37,8 @@ class DialogStatusManager:
 
     def update_preview_checkbox_states(self) -> None:
         """Enable or disable preview checkboxes based on input validity."""
-        # Collate current state into ValidationParams
-        params = ValidationParams(
-            raster_layer=self.dialog.page_dem.raster_combo.currentLayer(),
-            line_layer=self.dialog.page_section.line_combo.currentLayer(),
-            outcrop_layer=self.dialog.page_geology.layer_combo.currentLayer(),
-            outcrop_field=self.dialog.page_geology.field_combo.currentField(),
-            struct_layer=self.dialog.page_struct.layer_combo.currentLayer(),
-            struct_dip_field=self.dialog.page_struct.dip_combo.currentField(),
-            struct_strike_field=self.dialog.page_struct.strike_combo.currentField(),
-        )
-        
-        # Add drillhole params (helper to get from page_drillhole)
-        dh_data = self.dialog.page_drillhole.get_data()
-        params.collar_layer = dh_data["collar_layer"]
-        params.collar_id = dh_data["collar_id"]
-        params.collar_use_geom = dh_data["use_geometry"]
-        params.collar_x = dh_data["collar_x"]
-        params.collar_y = dh_data["collar_y"]
-        params.survey_layer = dh_data["survey_layer"]
-        params.survey_id = dh_data["survey_id"]
-        params.survey_depth = dh_data["survey_depth"]
-        params.survey_azim = dh_data["survey_azim"]
-        params.survey_incl = dh_data["survey_incl"]
-        params.interval_layer = dh_data["interval_layer"]
-        params.interval_id = dh_data["interval_id"]
-        params.interval_from = dh_data["interval_from"]
-        params.interval_to = dh_data["interval_to"]
-        params.interval_lith = dh_data["interval_lith"]
+        # Collate current state into ValidationParams via aggregator
+        params = self.dialog.data_aggregator.get_validation_params()
 
         has_section = bool(params.line_layer)
         has_dem = bool(params.raster_layer)

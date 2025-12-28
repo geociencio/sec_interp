@@ -7,6 +7,8 @@ separating data collection logic from the main dialog class.
 from typing import TYPE_CHECKING
 
 
+from sec_interp.core.validation.project_validator import ValidationParams
+
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
 
@@ -122,3 +124,50 @@ class DialogDataAggregator:
             "interval_to_field": drillhole_data["interval_to"],
             "interval_lith_field": drillhole_data["interval_lith"],
         }
+
+    def get_validation_params(self) -> ValidationParams:
+        """Collect current dialog state into a ValidationParams object.
+
+        Returns:
+            ValidationParams populated with current UI selections.
+        """
+        dem = self.dialog.page_dem.get_data()
+        sect = self.dialog.page_section.get_data()
+        geol = self.dialog.page_geology.get_data()
+        stru = self.dialog.page_struct.get_data()
+        dh = self.dialog.page_drillhole.get_data()
+
+        return ValidationParams(
+            # Core
+            raster_layer=dem["raster_layer"],
+            band_number=dem["selected_band"],
+            line_layer=sect["crossline_layer"],
+            output_path=self.dialog.output_widget.filePath(),
+            scale=dem["scale"],
+            vert_exag=dem["vertexag"],
+            buffer_dist=sect["buffer_distance"],
+            # Geology
+            outcrop_layer=geol["outcrop_layer"],
+            outcrop_field=geol["outcrop_name_field"],
+            # Structure
+            struct_layer=stru["structural_layer"],
+            struct_dip_field=stru["dip_field"],
+            struct_strike_field=stru["strike_field"],
+            dip_scale_factor=stru["dip_scale_factor"],
+            # Drillhole
+            collar_layer=dh["collar_layer"],
+            collar_id=dh["collar_id"],
+            collar_use_geom=dh["use_geometry"],
+            collar_x=dh["collar_x"],
+            collar_y=dh["collar_y"],
+            survey_layer=dh["survey_layer"],
+            survey_id=dh["survey_id"],
+            survey_depth=dh["survey_depth"],
+            survey_azim=dh["survey_azim"],
+            survey_incl=dh["survey_incl"],
+            interval_layer=dh["interval_layer"],
+            interval_id=dh["interval_id"],
+            interval_from=dh["interval_from"],
+            interval_to=dh["interval_to"],
+            interval_lith=dh["interval_lith"],
+        )
