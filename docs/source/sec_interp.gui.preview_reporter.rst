@@ -1,7 +1,7 @@
-sec\_interp.gui.parallel\_geology module
+sec\_interp.gui.preview\_reporter module
 ========================================
 
-.. automodule:: sec_interp.gui.parallel_geology
+.. automodule:: sec_interp.gui.preview_reporter
    :members:
    :show-inheritance:
    :undoc-members:

@@ -154,5 +154,3 @@ class PreviewLegendRenderer:
             text_rect = QRectF(x + p * 2 + ss, y, max_width, ih)
             painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, name)
             y += ih
-
-        painter.restore()

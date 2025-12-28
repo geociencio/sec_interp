@@ -29,12 +29,11 @@ Submodules
    sec_interp.gui.main_dialog_tools
    sec_interp.gui.main_dialog_utils
    sec_interp.gui.main_dialog_validation
-   sec_interp.gui.parallel_geology
    sec_interp.gui.preview_axes_manager
    sec_interp.gui.preview_layer_factory
    sec_interp.gui.preview_legend_renderer
-   sec_interp.gui.preview_optimizer
    sec_interp.gui.preview_renderer
+   sec_interp.gui.preview_reporter
    sec_interp.gui.utils
 
 Module contents

@@ -9,6 +9,8 @@ Submodules
 
    sec_interp.core.utils.geometry_utils.extraction
    sec_interp.core.utils.geometry_utils.filtering
+   sec_interp.core.utils.geometry_utils.measurement
+   sec_interp.core.utils.geometry_utils.optimization
    sec_interp.core.utils.geometry_utils.processing
 
 Module contents
