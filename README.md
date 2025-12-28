@@ -2,7 +2,10 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-2.4-orange.svg)
+![Version](https://img.shields.io/badge/Version-2.4.0-orange.svg)
+![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
+![Code Quality](https://img.shields.io/badge/Code--Quality-86.3%2F100-green)
+![Managed with uv](https://img.shields.io/badge/managed%20with-uv-blueviolet)
 
 **SecInterp** (Section Interpreter) is a QGIS plugin designed to streamline the extraction and visualization of geological data for cross-section interpretation. It allows geologists to quickly generate topographic profiles, project geological outcrops, and analyze structural data in a unified 2D view.
 
