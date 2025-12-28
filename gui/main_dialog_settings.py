@@ -35,17 +35,24 @@ class DialogSettingsManager:
 
         # --- Section Page ---
         self._restore_layer(self.dialog.page_section.line_combo, "section_layer")
-        self.dialog.page_section.buffer_spin.setValue(self.config.get("buffer_dist"))
+        buffer_dist = self.config.get("buffer_dist")
+        if buffer_dist is not None:
+            self.dialog.page_section.buffer_spin.setValue(float(buffer_dist))
 
         # --- DEM Page ---
         self._restore_layer(self.dialog.page_dem.raster_combo, "dem_layer")
         # Band is trickier as it depends on layer load, try direct index for now
-        band_idx = self.config.get("dem_band", 1)
+        band_idx = int(self.config.get("dem_band", 1))
         # Note: band combo might need reset if layer changes asynchronously
         self.dialog.page_dem.band_combo.setBand(band_idx)
 
-        self.dialog.page_dem.scale_spin.setValue(self.config.get("scale"))
-        self.dialog.page_dem.vertexag_spin.setValue(self.config.get("vert_exag"))
+        scale = self.config.get("scale")
+        if scale is not None:
+            self.dialog.page_dem.scale_spin.setValue(float(scale))
+
+        vert_exag = self.config.get("vert_exag")
+        if vert_exag is not None:
+            self.dialog.page_dem.vertexag_spin.setValue(float(vert_exag))
 
         # --- Geology Page ---
         self._restore_layer(self.dialog.page_geology.layer_combo, "geol_layer")
@@ -55,7 +62,10 @@ class DialogSettingsManager:
         self._restore_layer(self.dialog.page_struct.layer_combo, "struct_layer")
         self._restore_field(self.dialog.page_struct.dip_combo, "struct_dip_field")
         self._restore_field(self.dialog.page_struct.strike_combo, "struct_strike_field")
-        self.dialog.page_struct.scale_spin.setValue(self.config.get("dip_scale_factor"))
+
+        dip_scale = self.config.get("dip_scale_factor")
+        if dip_scale is not None:
+            self.dialog.page_struct.scale_spin.setValue(float(dip_scale))
 
         # --- Drillhole Page ---
         dpage = self.dialog.page_drillhole
