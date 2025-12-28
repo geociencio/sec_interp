@@ -26,7 +26,7 @@ class SecInterpMainWindow(QDialog):
 
     def __init__(self, iface=None, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Sec Interp")
+        self.setWindowTitle(self.tr("Sec Interp"))
         self.resize(1200, 700)
 
         # Initialize UI components

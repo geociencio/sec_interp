@@ -100,10 +100,10 @@ class DialogStatusManager:
         label = self.dialog.page_dem.lbl_raster_status
         if layer:
             label.setPixmap(self._success_icon.pixmap(16, 16))
-            label.setToolTip("Raster layer selected")
+            label.setToolTip(self.tr("Raster layer selected"))
         else:
             label.setPixmap(self._warning_icon.pixmap(16, 16))
-            label.setToolTip("Raster layer is required")
+            label.setToolTip(self.tr("Raster layer is required"))
 
     def update_section_status(self) -> None:
         """Update section line status icon based on selection."""
@@ -111,7 +111,7 @@ class DialogStatusManager:
         label = self.dialog.page_section.lbl_section_status
         if layer:
             label.setPixmap(self._success_icon.pixmap(16, 16))
-            label.setToolTip("Section line selected")
+            label.setToolTip(self.tr("Section line selected"))
         else:
             label.setPixmap(self._warning_icon.pixmap(16, 16))
-            label.setToolTip("Section line is required")
+            label.setToolTip(self.tr("Section line is required"))

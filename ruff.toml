@@ -110,7 +110,6 @@ ignore = [
     "F841",   # unused-variable
     "E741",   # ambiguous-variable-name
     "N818",   # error-suffix-on-exception-name
-    "UP007", "UP045",
 ]
 
 # Dummy variable pattern (matches .pylintrc)

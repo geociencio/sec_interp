@@ -19,8 +19,8 @@ from .field_validator import validate_field_exists, validate_field_type
 
 
 def validate_layer_exists(
-    layer_name: Optional[str],
-) -> tuple[bool, str, Optional[QgsMapLayer]]:
+    layer_name: str | None,
+) -> tuple[bool, str, QgsMapLayer | None]:
     """Validate that a layer with the given name exists in the current QGIS project.
 
     Args:
@@ -40,6 +40,8 @@ def validate_layer_exists(
     if not layers:
         return False, f"Layer '{layer_name}' not found in project", None
 
+    # Nota: Si hay capas duplicadas, QGIS devuelve una lista.
+    # Tomamos la primera pero es una práctica recomendada usar IDs siempre que sea posible.
     layer = layers[0]
 
     if not layer.isValid():
@@ -144,8 +146,8 @@ def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> tuple[bool,
 def validate_structural_requirements(
     layer: QgsVectorLayer,
     layer_name: str,
-    dip_field: Optional[str],
-    strike_field: Optional[str],
+    dip_field: str | None,
+    strike_field: str | None,
 ) -> tuple[bool, str]:
     """Validate structural layer requirements (geometry and attribute fields).
 
@@ -205,9 +207,7 @@ def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
     ref_crs = ref_layer.crs()
 
     incompatible = [
-        f"  - {L.name()}: {L.crs().authid()}"
-        for L in valid_layers
-        if L.crs() != ref_crs
+        f"  - {L.name()}: {L.crs().authid()}" for L in valid_layers if L.crs() != ref_crs
     ]
 
     if incompatible:
