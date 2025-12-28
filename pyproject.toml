@@ -1,0 +1,154 @@
+[project]
+name = "sec-interp"
+version = "2.4.0"
+description = "QGIS Plugin for geological interpretation and data extraction"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPL-2.0-or-later" }
+authors = [
+    { name = "Juan M Bernales", email = "juanbernales@gmail.com" }
+]
+dependencies = [
+    "PyQt5>=5.15.0,<5.16.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4.0",
+    "black==24.1.0",
+    "flake8>=6.0",
+    "isort>=5.12",
+    "mypy>=1.10",
+    "networkx>=3.0",
+    "pylint>=3.0",
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0",
+    "qgis-plugin-analyzer @ git+https://github.com/geociencio/qgis-plugin-analyzer.git",
+    "qgis-plugin-ci",
+    "qgis-plugin-manager @ git+https://github.com/geociencio/qgis-plugin-manager",
+    "pre-commit>=4.5.1",
+]
+
+[tool.uv]
+managed = true
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+exclude = [
+    ".git",
+    "__pycache__",
+    "*.pyc",
+    ".venv",
+    "scripts",
+    "venv",
+    "env",
+    ".env",
+    "dist",
+    "build",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".pytest_cache",
+    "*.egg-info",
+    "help",
+    "resources/resources.py",
+    "gui/ui/__init__.py",
+    "**/migrations/**",
+    "**/test*.py",
+    "**/*test.py",
+    "tests/",
+]
+
+[tool.ruff.lint]
+select = [
+    "F",   # Pyflakes
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "N",   # pep8-naming
+    "D",   # pydocstyle
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "T20", # flake8-print
+    "SIM", # flake8-simplify
+    "PTH", # flake8-use-pathlib
+    "ISC", # flake8-implicit-str-concat
+    "Q",   # flake8-quotes
+    "TID", # flake8-tidy-imports
+    "PL",  # Pylint
+    "TRY", # tryceratops
+    "RUF", # Ruff-specific rules
+    "C90", # mccabe
+]
+ignore = [
+    "E501", "E402", "PLC0415", "PTH", "E722",
+    "F821", "N802", "N803", "N806", "N815",
+    "C901", "PLR0915", "PLR0912", "PLR0911", "PLR0913",
+    "F401", "I001", "UP035",
+    "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
+    "D203", "D213", "D205",
+    "TRY003", "TRY300", "TRY301", "TRY401", "RUF001", "RUF012", "RUF100", "SIM102", "PLR2004", "PLW0603", "PLW2901", "PLC0206", "T201", "F841", "E741", "N818",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "D104"]
+"gui/**/*.py" = ["N802", "N803", "N806", "N815"]
+"tests/**/*.py" = ["D100", "D101", "D102", "D103", "PLR2004", "S101"]
+"logger_config.py" = ["T201"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = 72
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow running tests",
+]
+
+[tool.pylint.main]
+fail-under = 10
+ignore = ["CVS", ".git", "__pycache__"]
+ignored-modules = ["qgis", "qgis.PyQt", "PyQt5"]
+jobs = 0
+py-version = "3.10"
+recursive = "no"
+
+[tool.pylint."messages control"]
+disable = [
+    "E0401", "E0611", "E0402", "C0111", "R0903", "R0913",
+    "raw-checker-failed", "bad-inline-option", "locally-disabled", "file-ignored",
+    "suppressed-message", "useless-suppression", "deprecated-pragma",
+    "use-implicit-booleaness-not-comparison-to-string",
+    "use-implicit-booleaness-not-comparison-to-zero",
+    "use-symbolic-message-instead",
+]
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint.design]
+max-args = 7
+max-attributes = 7
+max-bool-expr = 5
+max-branches = 12
+max-locals = 15
+max-parents = 7
+max-positional-arguments = 5
+max-public-methods = 20
+max-returns = 6
+max-statements = 50
+min-public-methods = 2

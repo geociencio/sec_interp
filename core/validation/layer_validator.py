@@ -31,18 +31,22 @@ def validate_layer_exists(
             - is_valid: True if at least one matching layer was found.
             - error_message: Error details if no layer was found.
             - layer: The first matching layer instance if valid, else None.
+
     """
     if not layer_name:
         return False, "Layer name is required", None
 
-    layers = QgsProject.instance().mapLayersByName(layer_name)
+    # Prefer lookup by ID if it's a valid ID, otherwise search by name
+    layer = QgsProject.instance().mapLayer(layer_name)
+    if not layer:
+        # Fallback to name search if not an ID
+        for lyr in QgsProject.instance().mapLayers().values():
+            if lyr.name() == layer_name:
+                layer = lyr
+                break
 
-    if not layers:
+    if not layer:
         return False, f"Layer '{layer_name}' not found in project", None
-
-    # Nota: Si hay capas duplicadas, QGIS devuelve una lista.
-    # Tomamos la primera pero es una práctica recomendada usar IDs siempre que sea posible.
-    layer = layers[0]
 
     if not layer.isValid():
         return False, f"Layer '{layer_name}' is not valid", None
@@ -60,6 +64,7 @@ def validate_layer_has_features(layer: QgsVectorLayer) -> tuple[bool, str]:
         tuple: (is_valid, error_message)
             - is_valid: True if the layer has features.
             - error_message: Error details if the layer is empty.
+
     """
     if not layer:
         return False, "Layer is None"
@@ -86,6 +91,7 @@ def validate_layer_geometry(
         tuple: (is_valid, error_message)
             - is_valid: True if the geometry type matches.
             - error_message: Detailed error if types mismatch.
+
     """
     if not layer:
         return False, "Layer is None"
@@ -126,6 +132,7 @@ def validate_raster_band(layer: QgsRasterLayer, band_number: int) -> tuple[bool,
         tuple: (is_valid, error_message)
             - is_valid: True if the band exists.
             - error_message: Error message if the band is out of range.
+
     """
     if not layer:
         return False, "Layer is None"
@@ -161,6 +168,7 @@ def validate_structural_requirements(
         tuple: (is_valid, error_message)
             - is_valid: True if both geometry and fields are valid.
             - error_message: Detailed error if validation fails.
+
     """
     if not layer.isValid():
         return False, f"Structural layer '{layer_name}' is not valid."

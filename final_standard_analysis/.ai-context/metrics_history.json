@@ -1,0 +1,44 @@
+[
+  {
+    "timestamp": "2025-12-28T09:42:48.866178",
+    "date": "2025-12-28",
+    "metrics": {
+      "quality_score": 90.0,
+      "qgis_compliance_score": 44.4,
+      "total_lines": 13706,
+      "total_modules": 95,
+      "avg_complexity": 10.2,
+      "docstring_coverage": 99.0,
+      "test_files": 351,
+      "total_files": 1072
+    }
+  },
+  {
+    "timestamp": "2025-12-28T09:43:56.733871",
+    "date": "2025-12-28",
+    "metrics": {
+      "quality_score": 90.0,
+      "qgis_compliance_score": 22.2,
+      "total_lines": 13706,
+      "total_modules": 95,
+      "avg_complexity": 10.2,
+      "docstring_coverage": 99.0,
+      "test_files": 351,
+      "total_files": 1079
+    }
+  },
+  {
+    "timestamp": "2025-12-28T09:50:12.587426",
+    "date": "2025-12-28",
+    "metrics": {
+      "quality_score": 90.0,
+      "qgis_compliance_score": 52.8,
+      "total_lines": 13712,
+      "total_modules": 95,
+      "avg_complexity": 10.2,
+      "docstring_coverage": 99.0,
+      "test_files": 351,
+      "total_files": 1079
+    }
+  }
+]

@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# /// script
+# dependencies = [
+#   "pathlib",
+# ]
+# ///
 """generate_ai_templates.py - Genera automáticamente todos los templates personalizados
 para ai_workflow.py, compatibles con:
 - Gemini 3 Pro

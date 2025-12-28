@@ -1,0 +1,29 @@
+# Stack Tecnológico: sec_interp
+
+python:
+  version: "3.13"
+  testing_framework: "pytest"
+  type_checking: null
+  formatter: null
+  linter: "ruff / flake8 / pylint"
+
+gis_frameworks:
+  - "QGIS API (PyQGIS)"
+  - "Qt5 (PyQt5)"
+
+architecture:
+  pattern: "MVC"
+  data_access: "Repository"
+  ui_design: "Programmatic (PyQt5)"
+
+dependencies:
+  - "PyQt5"
+  - "__future__"
+  - "abc"
+  - "base_exporter"
+  - "base_page"
+  - "bisect"
+  - "concurrent"
+  - "contextlib"
+  - "csv_exporter"
+  - "dataclasses"

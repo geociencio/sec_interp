@@ -67,12 +67,13 @@ class SecInterp:
     """
 
     def __init__(self, iface):
-        """Constructor.
+        """Initialize the plugin.
 
         Args:
             iface (QgsInterface): An interface instance that will be passed to this class
                 which provides the hook by which you can manipulate the QGIS
                 application at run time.
+
         """
         # Save reference to the QGIS interface
         self.iface = iface
@@ -129,6 +130,7 @@ class SecInterp:
 
         Returns:
             str: Translated string (or original if no translation found).
+
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate("SecInterp", message)
@@ -166,6 +168,7 @@ class SecInterp:
         Returns:
             QAction: The action that was created. Note that the action is also
                 added to self.actions list.
+
         """
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
@@ -206,7 +209,7 @@ class SecInterp:
         self.first_start = True
 
     def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
+        """Remove the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(self.tr("&Sec Interp"), action)
             self.iface.removeToolBarIcon(action)
@@ -255,18 +258,21 @@ class SecInterp:
             pass
 
     def _resolve_layer_obj(self, value, placeholder_text=""):
-        """Helper to resolve layer object from UI value."""
+        """Resolve layer object from UI value."""
         if isinstance(value, QgsMapLayer):
             return value
         if isinstance(value, str) and value:
             if placeholder_text and value == placeholder_text:
                 return None
-            layers = QgsProject.instance().mapLayersByName(value)
-            if not layers:
-                return None
-            # Si hay varias capas con el mismo nombre, preferir la que esté en el tree actual
-            # o simplemente avisar. Por ahora devolvemos la primera pero marcamos el punto de mejora.
-            return layers[0]
+            # Try resolving by ID first (most robust)
+            layer = QgsProject.instance().mapLayer(value)
+            if not layer:
+                # Fallback to name search
+                for lyr in QgsProject.instance().mapLayers().values():
+                    if lyr.name() == value:
+                        layer = lyr
+                        break
+            return layer
         return None
 
     def _get_and_validate_inputs(self) -> PreviewParams | None:
@@ -274,6 +280,7 @@ class SecInterp:
 
         Returns:
             PreviewParams: Validated parameters, or None if validation fails.
+
         """
         # Get values from the dialog pages
         values = self.dlg.get_selected_values()
@@ -361,6 +368,7 @@ class SecInterp:
 
         Returns:
             Tuple of (profile_data, geol_data, struct_data) or None
+
         """
         # Simply delegate to the dialog's preview manager if it exists
         if hasattr(self, "dlg") and self.dlg:
@@ -398,6 +406,7 @@ class SecInterp:
             drillhole_data: Optional list of (hole_id, traces, segments) tuples
             max_points (int): Maximum number of points for simplified preview (LOD)
             **kwargs: Additional arguments passed to renderer (e.g. preserve_extent)
+
         """
         logger.debug("draw_preview called with:")
         logger.debug("  - topo_data: %d points", len(topo_data) if topo_data else 0)

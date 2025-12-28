@@ -12,6 +12,7 @@ build/
 scripts/
 research/
 analyze_project_optfixed.py
+generate_ai_templates.py
 
 # Documentation resources
 docs/

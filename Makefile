@@ -93,14 +93,11 @@ default:
 	@echo You can install pb_tool using: pip install pb_tool
 	@echo See https://g-sherman.github.io/plugin_build_tool/ for info.
 
-compile: $(COMPILED_RESOURCE_FILES)
-
-resources/resources.py : resources/resources.qrc $(RESOURCES_SRC)
-	pyrcc5 -o $@ $<
-
+compile:
+	uv run qgis-manage compile
 
 %.qm : %.ts
-	$(LRELEASE) $<
+	uv run qgis-manage compile --type translations
 
 test: compile transcompile
 	@echo
@@ -112,7 +109,7 @@ test: compile transcompile
 	@-export PYTHONPATH=`pwd`:$(PYTHONPATH); \
 		export QGIS_DEBUG=0; \
 		export QGIS_LOG_FILE=/dev/null; \
-		pytest -v \
+		uv run pytest -v \
 		3>&1 1>&2 2>&3 3>&- || true
 	@echo "----------------------"
 	@echo "If you get a 'no module named qgis.core error, try sourcing"
@@ -120,8 +117,8 @@ test: compile transcompile
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
 	@echo "----------------------"
 
-deploy: compile help-integrate transcompile
-	./scripts/deploy.sh
+deploy: compile
+	uv run qgis-manage deploy
 
 
 # The dclean target removes compiled python files from plugin directory
@@ -136,11 +133,7 @@ dclean:
 
 
 derase:
-	@echo
-	@echo "-------------------------"
-	@echo "Removing deployed plugin."
-	@echo "-------------------------"
-	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
+	uv run qgis-manage clean
 
 help-integrate: apidocs-html
 	@echo "Integrating documentation into help/ folder..."
@@ -150,61 +143,10 @@ help-integrate: apidocs-html
 	rm -rf help/html/_sources
 	rm -f help/index.html
 
-zip: deploy dclean
-	@echo
-	@echo "---------------------------"
-	@echo "Creating plugin zip bundle."
-	@echo "---------------------------"
-	# The zip target deploys the plugin and creates a zip file with the deployed
-	# content. You can then upload the zip file on http://plugins.qgis.org
-	# Excludes user/dev specific files
-	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME) \
-		-x "*__pycache__*" \
-		-x "*.pyc" \
-		-x "*.git*" \
-		-x "*.idea*" \
-		-x "*.vscode*" \
-		-x "$(PLUGINNAME)/docs/plans/*" \
-		-x "$(PLUGINNAME)/docs/research/*" \
-		-x "$(PLUGINNAME)/docs/maintainer/*" \
-		-x "$(PLUGINNAME)/docs/walkthroughs/*" \
-		-x "$(PLUGINNAME)/tests/*" \
-		-x "$(PLUGINNAME)/examples/*" \
-		-x "$(PLUGINNAME)/.agent/*" \
-		-x "$(PLUGINNAME)/.ai-context/*" \
-		-x "$(PLUGINNAME)/scripts/*" \
-		-x "$(PLUGINNAME)/Makefile" \
-		-x "$(PLUGINNAME)/ruff.toml" \
-		-x "$(PLUGINNAME)/.pylintrc" \
-		-x "$(PLUGINNAME)/pytest.ini" \
-		-x "$(PLUGINNAME)/requirements-dev.txt" \
-		-x "$(PLUGINNAME)/.analyzerignore" \
-		-x "$(PLUGINNAME)/.analyzer_state.json" \
-		-x "$(PLUGINNAME)/.ai_workflow.txt" \
-		-x "$(PLUGINNAME)/analysis.log" \
-		-x "$(PLUGINNAME)/analysis_errors.json" \
-		-x "$(PLUGINNAME)/analyze_project_optfixed.py" \
-		-x "$(PLUGINNAME)/analyzer_config.json" \
-		-x "$(PLUGINNAME)/generate_ai_templates.py" \
-		-x "$(PLUGINNAME)/project_context.json" \
-		-x "$(PLUGINNAME)/AI_CONTEXT.md" \
-		-x "$(PLUGINNAME)/PROJECT_SUMMARY.md" \
-		-x "$(PLUGINNAME)/README_DEV.md"
+zip: compile
+	uv run qgis-plugin-ci package $(VERSION)
 
-package: compile
-	# Create a zip package of the plugin named $(PLUGINNAME).zip.
-	# This requires use of git (your plugin development directory must be a
-	# git repository).
-	# To use, pass a valid commit or tag as follows:
-	#   make package VERSION=Version_0.3.2
-	@echo
-	@echo "------------------------------------"
-	@echo "Exporting plugin to zip package.	"
-	@echo "------------------------------------"
-	rm -f $(PLUGINNAME).zip
-	git archive --prefix=$(PLUGINNAME)/ -o $(PLUGINNAME).zip $(VERSION)
-	echo "Created package: $(PLUGINNAME).zip"
+package: zip
 
 upload: zip
 	@echo
@@ -226,8 +168,7 @@ transcompile:
 	@echo "----------------------------------------"
 	@echo "Compiled translation files to .qm files."
 	@echo "----------------------------------------"
-	@chmod +x scripts/compile-strings.sh
-	@scripts/compile-strings.sh $(LRELEASE) "$(LOCALES)"
+	@uv run qgis-manage compile --type translations
 
 transclean:
 	@echo
@@ -237,11 +178,7 @@ transclean:
 	rm -f i18n/*.qm
 
 clean:
-	@echo
-	@echo "------------------------------------"
-	@echo "Removing uic and rcc generated files"
-	@echo "------------------------------------"
-	rm $(COMPILED_UI_FILES) $(COMPILED_RESOURCE_FILES)
+	uv run qgis-manage clean
 
 doc:
 	@echo
@@ -269,7 +206,7 @@ pylint:
 	@echo "-----------------"
 	@echo "Pylint violations"
 	@echo "-----------------"
-	@pylint --reports=n --rcfile=pylintrc . || true
+	@uv run pylint --reports=n . || true
 	@echo
 	@echo "----------------------"
 	@echo "If you get a 'no module named qgis.core' error, try sourcing"

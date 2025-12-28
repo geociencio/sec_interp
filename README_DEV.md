@@ -35,18 +35,19 @@ Los hooks ejecutarán automáticamente:
 - **YAML/TOML Check**: Validación de sintaxis en archivos de configuración.
 
 ## Comandos de Desarrollo
-- **Análisis de Calidad**: `uv run python analyze_project_optfixed.py`
-  - Genera `PROJECT_SUMMARY.md` y actualiza el historial en `.ai-context/metrics_history.json`.
+- **Análisis de Calidad**: `uv run qgis-analyzer . -o ./quality_report`
+  - Ejecuta la suite de auditoría específica para plugins de QGIS.
 - **Linting Manual**: `uv run ruff check .`
 - **Formateo Manual**: `uv run ruff format .`
 - **Tests**: `uv run pytest`
 
-## Despliegue Local (`deploy.sh`)
-Usa el script de despliegue para ver los cambios en QGIS:
+## Despliegue Local (`qgis-manage`)
+Usa la nueva herramienta CLI para desplegar tus cambios en QGIS:
 ```bash
-./scripts/deploy.sh
+# Despliegue rápido con backup automático
+uv run qgis-manage deploy
 ```
-*Tip: El script detectará automáticamente tu carpeta de plugins de QGIS en Linux y creará backups automáticos.*
+*Tip: El comando detecta automáticamente tu sistema operativo y realiza backups de seguridad.*
 
 ## Estándares de Código
 1. **Conventional Commits**: Sigue el estándar definido en `docs/docsec/COMMIT_GUIDELINES.md`.
@@ -58,6 +59,7 @@ Usa el script de despliegue para ver los cambios en QGIS:
 - [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) - Guía detallada para desarrolladores.
 - [CHANGELOG.md](docs/docsec/CHANGELOG.md) - Historial de versiones y cambios críticos.
 - [FEATURE_INTERPRETATION_25D.md](FEATURE_INTERPRETATION_25D.md) - Plan para v2.5.0.
+- [UV_MODERNIZATION_GUIDE.md](docs/maintainer/uv_modernization_guide.md) - Guía de modernización de plugins con `uv`.
 
 ---
 **Plugin Version**: 2.4.0 | **Last Update**: 2025-12-25

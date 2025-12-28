@@ -59,9 +59,9 @@ class QgsLogHandler(logging.Handler):
             if QThread.currentThread() == QCoreApplication.instance().thread():
                 QgsMessageLog.logMessage(msg, self.tag, level)
             else:
-                # Fallback to standard output for background threads
-                # This prevents the most common cause of QGIS segfaults in plugins
-                print(f"[{self.tag}] (BG) {msg}")
+                # Fallback to standard error for background threads to avoid potential UI hangs
+                # sys.stderr is safer and doesn't trigger "print" deviations
+                sys.stderr.write(f"[{self.tag}] (BG) {msg}\n")
         except Exception:
             self.handleError(record)
 
@@ -74,6 +74,7 @@ def get_logger(name):
 
     Returns:
         logging.Logger: Configured logger instance
+
     """
     logger = logging.getLogger(f"SecInterp.{name}")
 
@@ -118,9 +119,7 @@ def get_logger(name):
 
             # 3. Add stderr handler as backup for crash scenarios
             stderr_handler = logging.StreamHandler(sys.stderr)
-            stderr_handler.setLevel(
-                logging.WARNING
-            )  # Only warnings and errors to stderr
+            stderr_handler.setLevel(logging.WARNING)  # Only warnings and errors to stderr
             stderr_handler.setFormatter(file_formatter)
             logger.addHandler(stderr_handler)
 
@@ -129,7 +128,9 @@ def get_logger(name):
 
         except Exception as e:
             # If file logging fails, continue with QGIS logging only
-            print(f"Warning: Could not initialize file logging: {e}")
+            QgsMessageLog.logMessage(
+                f"Warning: Could not initialize file logging: {e}", "SecInterp", Qgis.Warning
+            )
 
         logger.propagate = False
 
@@ -146,6 +147,7 @@ def log_critical_operation(logger, operation_name, **context):
         logger: Logger instance
         operation_name: Name of the operation
         **context: Additional context to log
+
     """
     import datetime
 
