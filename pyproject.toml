@@ -6,8 +6,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "GPL-2.0-or-later"
 
-[tool.setuptools]
-packages = ["core", "gui", "resources", "exporters", "i18n"]
 
 authors = [
     { name = "Juan M Bernales", email = "juanbernales@gmail.com" }
@@ -15,6 +13,9 @@ authors = [
 dependencies = [
     "PyQt5>=5.15.0,<5.16.0",
 ]
+
+[tool.setuptools]
+packages = ["core", "gui", "resources", "exporters", "i18n"]
 
 [dependency-groups]
 dev = [
