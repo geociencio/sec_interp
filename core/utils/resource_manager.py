@@ -37,6 +37,7 @@ def temporary_memory_layer(
 
     Yields:
         The created temporary layer.
+
     """
     layer = QgsVectorLayer(uri, name, provider)
     if not layer.isValid():
@@ -57,9 +58,9 @@ def temporary_memory_layer(
 
 @contextlib.contextmanager
 def temporary_file(
-    suffix: Optional[str] = None,
-    prefix: Optional[str] = None,
-    dir: Optional[str] = None,
+    suffix: str | None = None,
+    prefix: str | None = None,
+    dir: str | None = None,
 ) -> Generator[str, None, None]:
     """Context manager for a temporary file path.
 
@@ -73,6 +74,7 @@ def temporary_file(
 
     Yields:
         Absolute path to the temporary file.
+
     """
     fd, path = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=dir)
     os.close(fd)
@@ -92,10 +94,11 @@ class ResourceManager:
 
     @staticmethod
     def cleanup_layer(layer: QgsMapLayer):
-        """Standard way to safely remove a layer from the project.
+        """Remove a layer safely from the project.
 
         Args:
             layer: The QGIS map layer to remove.
+
         """
         if not layer:
             return

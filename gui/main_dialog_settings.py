@@ -4,6 +4,7 @@ This module handles persistence of user settings between sessions.
 """
 
 from typing import TYPE_CHECKING
+from .main_dialog_config import DialogDefaults
 
 from qgis.core import QgsSettings
 
@@ -20,6 +21,7 @@ class DialogSettingsManager:
 
         Args:
             dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+
         """
         self.dialog = dialog
         # Access config service through the plugin instance controller
@@ -149,6 +151,53 @@ class DialogSettingsManager:
 
         # Output folder
         self.config.set("last_output_dir", self.dialog.output_widget.filePath())
+
+    def reset_to_defaults(self) -> None:
+        """Reset all dialog inputs to their default values."""
+        # --- Section Page ---
+        self.dialog.page_section.line_combo.setLayer(None)
+        self.dialog.page_section.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
+
+        # --- DEM Page ---
+        self.dialog.page_dem.raster_combo.setLayer(None)
+        self.dialog.page_dem.band_combo.setBand(DialogDefaults.DEFAULT_BAND)
+        self.dialog.page_dem.scale_spin.setValue(float(DialogDefaults.SCALE))
+        self.dialog.page_dem.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
+
+        # --- Geology Page ---
+        self.dialog.page_geology.layer_combo.setLayer(None)
+        self.dialog.page_geology.field_combo.setField("")
+
+        # --- Structure Page ---
+        self.dialog.page_struct.layer_combo.setLayer(None)
+        self.dialog.page_struct.dip_combo.setField("")
+        self.dialog.page_struct.strike_combo.setField("")
+        self.dialog.page_struct.scale_spin.setValue(float(DialogDefaults.DIP_SCALE_FACTOR))
+
+        # --- Drillhole Page ---
+        dpage = self.dialog.page_drillhole
+        dpage.c_layer.setLayer(None)
+        dpage.c_id.setField("")
+        dpage.chk_use_geom.setChecked(True)
+        dpage.c_x.setField("")
+        dpage.c_y.setField("")
+        dpage.c_z.setField("")
+        dpage.c_depth.setField("")
+
+        dpage.s_layer.setLayer(None)
+        dpage.s_id.setField("")
+        dpage.s_depth.setField("")
+        dpage.s_azim.setField("")
+        dpage.s_incl.setField("")
+
+        dpage.i_layer.setLayer(None)
+        dpage.i_id.setField("")
+        dpage.i_from.setField("")
+        dpage.i_to.setField("")
+        dpage.i_lith.setField("")
+
+        # Output folder
+        self.dialog.output_widget.setFilePath("")
 
     # --- Helper Methods ---
 

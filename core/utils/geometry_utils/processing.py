@@ -37,6 +37,7 @@ def create_buffer_geometry(
 
     Returns:
         The buffered geometry.
+
     """
     if not geometry or geometry.isNull():
         raise ValueError("Geometry is null or invalid")
@@ -59,6 +60,7 @@ def create_memory_layer(
 
     Returns:
         The created memory layer.
+
     """
     uri = f"{layer_type}?crs={crs.authid()}"
     layer = QgsVectorLayer(uri, layer_name, "memory")
@@ -81,6 +83,7 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
 
     Returns:
         The densified geometry.
+
     """
     if not geometry or geometry.isNull():
         return QgsGeometry()
@@ -88,7 +91,7 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
 
 
 def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
-    """Generic wrapper for geometry operations.
+    """Wrap generic geometry operations.
 
     Args:
         operation: Name of the operation to perform.
@@ -97,6 +100,7 @@ def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
 
     Returns:
         Result of the operation.
+
     """
     # This is a placeholder for more complex logic if needed
     # For now it just logs and performs the op if possible
@@ -104,9 +108,7 @@ def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
     return None
 
 
-def run_processing_algorithm(
-    algorithm_id: str, parameters: dict[str, Any]
-) -> dict[str, Any]:
+def run_processing_algorithm(algorithm_id: str, parameters: dict[str, Any]) -> dict[str, Any]:
     """Execute a QGIS processing algorithm.
 
     Args:
@@ -115,6 +117,7 @@ def run_processing_algorithm(
 
     Returns:
         The algorithm results as a dictionary.
+
     """
     try:
         return processing.run(algorithm_id, parameters)

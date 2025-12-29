@@ -21,7 +21,7 @@ def create_shapefile_writer(
     fields: QgsFields,
     geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.LineString,
 ) -> QgsVectorFileWriter:
-    """Helper to create and initialize a QgsVectorFileWriter for Shapefiles.
+    """Create and initialize a QgsVectorFileWriter for Shapefiles.
 
     Uses the modern `create` static method for QGIS 3.38+ compatibility.
 
@@ -36,6 +36,7 @@ def create_shapefile_writer(
 
     Raises:
         OSError: If the writer cannot be created or has an initialization error.
+
     """
     # Use new static create method for QGIS 3.38+
     options = QgsVectorFileWriter.SaveVectorOptions()
@@ -52,8 +53,6 @@ def create_shapefile_writer(
     )
 
     if writer.hasError() != QgsVectorFileWriter.NoError:
-        raise OSError(
-            f"Error creating shapefile {output_path}: {writer.errorMessage()}"
-        )
+        raise OSError(f"Error creating shapefile {output_path}: {writer.errorMessage()}")
 
     return writer

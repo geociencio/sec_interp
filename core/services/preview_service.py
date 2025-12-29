@@ -43,6 +43,7 @@ class PreviewService:
 
         Args:
             controller: The SecInterpController instance.
+
         """
         self.controller = controller
 
@@ -63,6 +64,7 @@ class PreviewService:
 
         Returns:
             The optimal number of points to use for 2D rendering.
+
         """
         if auto_lod:
             # Optimal points is roughly 2x the pixel width for high quality rendering
@@ -77,9 +79,7 @@ class PreviewService:
             return base_points
         return manual_max
 
-    def generate_all(
-        self, params: PreviewParams, transform_context: Any
-    ) -> PreviewResult:
+    def generate_all(self, params: PreviewParams, transform_context: Any) -> PreviewResult:
         """Generate all preview components in a consolidated result.
 
         Args:
@@ -88,6 +88,7 @@ class PreviewService:
 
         Returns:
             A consolidated object containing all generated preview data.
+
         """
         # Phase 5: Native validation
         params.validate()
@@ -109,9 +110,7 @@ class PreviewService:
                     )
 
                 line_len = line_feat.geometry().length()
-                max_pts = self.calculate_max_points(
-                    params.canvas_width, params.max_points, True
-                )
+                max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
                 interval = line_len / max_pts if max_pts > 0 else None
 
             result.topo = self.controller.profile_service.generate_topographic_profile(
@@ -131,22 +130,18 @@ class PreviewService:
                     line_geom = line_feat.geometry()
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
 
-                    result.struct = (
-                        self.controller.structure_service.project_structures(
-                            line_lyr=params.line_layer,
-                            raster_lyr=params.raster_layer,
-                            struct_lyr=params.struct_layer,
-                            buffer_m=params.buffer_dist,
-                            line_az=line_azimuth,
-                            dip_field=params.dip_field,
-                            strike_field=params.strike_field,
-                            band_number=params.band_num,
-                        )
+                    result.struct = self.controller.structure_service.project_structures(
+                        line_lyr=params.line_layer,
+                        raster_lyr=params.raster_layer,
+                        struct_lyr=params.struct_layer,
+                        buffer_m=params.buffer_dist,
+                        line_az=line_azimuth,
+                        dip_field=params.dip_field,
+                        strike_field=params.strike_field,
+                        band_number=params.band_num,
                     )
                     if result.struct:
-                        result.metrics.record_count(
-                            "Structure Points", len(result.struct)
-                        )
+                        result.metrics.record_count("Structure Points", len(result.struct))
 
         # 3. Drillholes
         if params.collar_layer:
@@ -157,14 +152,15 @@ class PreviewService:
 
         return result
 
-    def _generate_drillholes(self, params: PreviewParams) -> Optional[Any]:
-        """Internal helper for drillhole trace and interval generation.
+    def _generate_drillholes(self, params: PreviewParams) -> Any | None:
+        """Helper for drillhole trace and interval generation.
 
         Args:
             params: Preview parameters containing drillhole layer and fields.
 
         Returns:
             A list of drillhole data tuples, or None if no collars found or skipped.
+
         """
         line_feat = next(params.line_layer.getFeatures(), None)
         if not line_feat:
@@ -186,9 +182,7 @@ class PreviewService:
             points = line_geom.asPolyline()
 
         if not points:
-            raise GeometryError(
-                "Section line has no vertices", {"layer": params.line_layer.name()}
-            )
+            raise GeometryError("Section line has no vertices", {"layer": params.line_layer.name()})
 
         line_start = points[0]
 
@@ -256,7 +250,5 @@ class PreviewService:
         except Exception as e:
             raise ProcessingError("Failed to process drillhole intervals") from e
 
-        logger.info(
-            f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces"
-        )
+        logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
         return drillhole_data

@@ -26,6 +26,7 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
 
     Returns:
         Azimuth in degrees (0-360).
+
     """
     if line_geom.wkbType() == QgsWkbTypes.Point:
         return 0  # Points have no azimuth
@@ -63,6 +64,7 @@ def calculate_step_size(geom: QgsGeometry, raster_lyr) -> float:
 
     Returns:
         Calculated step size in map units.
+
     """
     # Get raster resolution
     res = raster_lyr.rasterUnitsPerPixelX()
@@ -90,7 +92,7 @@ def calculate_step_size(geom: QgsGeometry, raster_lyr) -> float:
 
 
 def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
-    """Helper to get the start point of a line geometry.
+    """Get the start point of a line geometry.
 
     Handles both singlepart and multipart line geometries.
 
@@ -99,6 +101,7 @@ def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
 
     Returns:
         The first vertex of the first part of the geometry.
+
     """
     if geometry.isMultipart():
         return geometry.asMultiPolyline()[0][0]
@@ -107,7 +110,7 @@ def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
 
 
 def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
-    """Helper to create and configure a QgsDistanceArea object.
+    """Create and configure a QgsDistanceArea object.
 
     Configures the distance area with the provided CRS, project transform context,
     and associated ellipsoid for geodesic calculations.
@@ -117,6 +120,7 @@ def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
 
     Returns:
         The configured distance calculation object.
+
     """
     da = QgsDistanceArea()
     da.setSourceCrs(crs, QgsProject.instance().transformContext())

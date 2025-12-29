@@ -100,10 +100,11 @@ class SecInterpDialog(SecInterpMainWindow):
         iface (QgsInterface): The QGIS interface instance.
         plugin_instance (SecInterp): The plugin instance that created this dialog.
         messagebar (QgsMessageBar): The message bar widget for notifications.
+
     """
 
     def __init__(self, iface=None, plugin_instance=None, parent=None):
-        """Constructor."""
+        """Initialize the dialog."""
         # Initialize the base class which sets up the programmatic UI
         super().__init__(iface, parent)
 
@@ -131,12 +132,14 @@ class SecInterpDialog(SecInterpMainWindow):
         self.current_layers = []
         self.interpretations = []  # Store InterpretationPolygon objects
 
-        # Add clear cache button
+        # Add cache and reset buttons
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
-        self.clear_cache_btn.setToolTip(
-            self.tr("Clear cached data to force re-processing.")
-        )
+        self.clear_cache_btn.setToolTip(self.tr("Clear cached data to force re-processing."))
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
+
+        self.reset_defaults_btn = QPushButton(self.tr("Reset Defaults"))
+        self.reset_defaults_btn.setToolTip(self.tr("Reset all inputs to their default values."))
+        self.button_box.addButton(self.reset_defaults_btn, QDialogButtonBox.ActionRole)
 
         # Initialize map tools via tool_manager
         self.tool_manager.initialize_tools()
@@ -144,6 +147,10 @@ class SecInterpDialog(SecInterpMainWindow):
         # Connect all signals
         self.signal_manager = DialogSignalManager(self)
         self.signal_manager.connect_all()
+
+        # Connect extra tool buttons
+        self.clear_cache_btn.clicked.connect(self.clear_cache_handler)
+        self.reset_defaults_btn.clicked.connect(self.reset_defaults_handler)
 
         # Initial state update
         # Initial state update
@@ -158,9 +165,7 @@ class SecInterpDialog(SecInterpMainWindow):
         from sec_interp.core.services.preview_service import PreviewService
 
         self.validator = DialogValidator(self)
-        self.preview_manager = PreviewManager(
-            self, PreviewService(self.plugin_instance.controller)
-        )
+        self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
         self.data_aggregator = DialogDataAggregator(self)
@@ -176,6 +181,7 @@ class SecInterpDialog(SecInterpMainWindow):
         Args:
             error: The exception to handle.
             title: Title for the error message box.
+
         """
         if isinstance(error, SecInterpError):
             msg = str(error)
@@ -240,6 +246,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         Args:
             interpretation: InterpretationPolygon object from the tool
+
         """
         from sec_interp.logger_config import log_critical_operation
 
@@ -285,6 +292,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         Returns:
             Dictionary with all dialog values in legacy flat format
+
         """
         return self.data_aggregator.get_all_values()
 
@@ -293,20 +301,17 @@ class SecInterpDialog(SecInterpMainWindow):
 
         Returns:
             dict: Keys 'show_topo', 'show_geol', 'show_struct' with boolean values.
+
         """
         return {
             "show_topo": bool(self.preview_widget.chk_topo.isChecked()),
             "show_geol": bool(self.preview_widget.chk_geol.isChecked()),
             "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
-            "show_interpretations": bool(
-                self.preview_widget.chk_interpretations.isChecked()
-            ),
+            "show_interpretations": bool(self.preview_widget.chk_interpretations.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
-            "use_adaptive_sampling": bool(
-                self.preview_widget.chk_adaptive_sampling.isChecked()
-            ),
+            "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
         }
 
     def update_preview_from_checkboxes(self):
@@ -360,7 +365,7 @@ class SecInterpDialog(SecInterpMainWindow):
     def clear_cache_handler(self):
         """Clear cached data and notify user."""
         if hasattr(self, "plugin_instance") and self.plugin_instance:
-            self.plugin_instance.data_cache.clear()
+            self.plugin_instance.controller.data_cache.clear()
             self.preview_widget.results_text.append(
                 self.tr("✓ Cache cleared - next preview will re-process data")
             )
@@ -370,8 +375,14 @@ class SecInterpDialog(SecInterpMainWindow):
         else:
             self.preview_widget.results_text.append(self.tr("⚠ Cache not available"))
 
+    def reset_defaults_handler(self):
+        """Reset all dialog inputs and notify user."""
+        self.settings_manager.reset_to_defaults()
+        self.preview_widget.results_text.append(self.tr("✓ Form reset to default values"))
+        logger.info("Dialog reset to defaults by user")
+
     def _populate_field_combobox(self, source_combobox, target_combobox):
-        """Helper function to populate a combobox with field names."""
+        """Populate a combobox with field names."""
         DialogEntityManager.populate_field_combobox(source_combobox, target_combobox)
 
     def get_layer_names_by_type(self, layer_type) -> list[str]:

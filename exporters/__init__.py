@@ -41,7 +41,7 @@ __all__ = [
 
 
 def get_exporter(extension: str, settings: dict):
-    """Factory function to get appropriate exporter for file extension.
+    """Get the appropriate exporter instance for the file extension.
 
     Args:
         extension: File extension (e.g., '.png', '.svg')
@@ -52,6 +52,7 @@ def get_exporter(extension: str, settings: dict):
 
     Raises:
         ValueError: If extension is not supported
+
     """
     extension = extension.lower()
 

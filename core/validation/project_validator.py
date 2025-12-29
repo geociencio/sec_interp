@@ -30,6 +30,7 @@ def validate_reasonable_ranges(values: dict[str, Any]) -> list[str]:
 
     Returns:
         A list of warning messages. If empty, all values are reasonable.
+
     """
     warnings = []
 
@@ -83,36 +84,36 @@ def validate_reasonable_ranges(values: dict[str, Any]) -> list[str]:
 class ValidationParams:
     """Data container for all parameters that need cross-layer validation."""
 
-    raster_layer: Optional[QgsRasterLayer] = None
-    band_number: Optional[int] = None
-    line_layer: Optional[QgsVectorLayer] = None
+    raster_layer: QgsRasterLayer | None = None
+    band_number: int | None = None
+    line_layer: QgsVectorLayer | None = None
     output_path: str = ""
     scale: float = 1.0
     vert_exag: float = 1.0
     buffer_dist: float = 0.0
-    outcrop_layer: Optional[QgsVectorLayer] = None
-    outcrop_field: Optional[str] = None
-    struct_layer: Optional[QgsVectorLayer] = None
-    struct_dip_field: Optional[str] = None
-    struct_strike_field: Optional[str] = None
+    outcrop_layer: QgsVectorLayer | None = None
+    outcrop_field: str | None = None
+    struct_layer: QgsVectorLayer | None = None
+    struct_dip_field: str | None = None
+    struct_strike_field: str | None = None
     dip_scale_factor: float = 1.0
 
     # Drillhole params
-    collar_layer: Optional[QgsVectorLayer] = None
-    collar_id: Optional[str] = None
+    collar_layer: QgsVectorLayer | None = None
+    collar_id: str | None = None
     collar_use_geom: bool = True
-    collar_x: Optional[str] = None
-    collar_y: Optional[str] = None
-    survey_layer: Optional[QgsVectorLayer] = None
-    survey_id: Optional[str] = None
-    survey_depth: Optional[str] = None
-    survey_azim: Optional[str] = None
-    survey_incl: Optional[str] = None
-    interval_layer: Optional[QgsVectorLayer] = None
-    interval_id: Optional[str] = None
-    interval_from: Optional[str] = None
-    interval_to: Optional[str] = None
-    interval_lith: Optional[str] = None
+    collar_x: str | None = None
+    collar_y: str | None = None
+    survey_layer: QgsVectorLayer | None = None
+    survey_id: str | None = None
+    survey_depth: str | None = None
+    survey_azim: str | None = None
+    survey_incl: str | None = None
+    interval_layer: QgsVectorLayer | None = None
+    interval_id: str | None = None
+    interval_from: str | None = None
+    interval_to: str | None = None
+    interval_lith: str | None = None
 
 
 class ProjectValidator:
@@ -122,9 +123,6 @@ class ProjectValidator:
     def validate_all(params: ValidationParams) -> bool:
         """Perform a comprehensive validation of all project parameters.
 
-        This includes checking for required files, geometry types, field existence,
-        and numeric range constraints.
-
         Args:
             params: The parameters to validate.
 
@@ -133,34 +131,50 @@ class ProjectValidator:
 
         Raises:
             ValidationError: If any validation check fails.
-        """
-        errors = []
 
-        # 1. Raster Layer
+        """
+        errors: list[str] = []
+
+        # Decomposed validation steps
+        ProjectValidator._validate_dem(params, errors)
+        ProjectValidator._validate_section(params, errors)
+        ProjectValidator._validate_output(params, errors)
+        ProjectValidator._validate_numeric_ranges(params, errors)
+        ProjectValidator._validate_geology(params, errors)
+        ProjectValidator._validate_structural(params, errors)
+
+        if errors:
+            raise ValidationError("\n".join(errors))
+        return True
+
+    @staticmethod
+    def _validate_dem(params: ValidationParams, errors: list[str]) -> None:
+        """Validate Raster DEM layer."""
         if not params.raster_layer:
             errors.append("Raster DEM layer is required")
         elif params.band_number is not None:
-            is_valid, error = validate_raster_band(
-                params.raster_layer, params.band_number
-            )
+            is_valid, error = validate_raster_band(params.raster_layer, params.band_number)
             if not is_valid:
                 errors.append(error)
 
-        # 2. Section Line
+    @staticmethod
+    def _validate_section(params: ValidationParams, errors: list[str]) -> None:
+        """Validate Cross-section line layer."""
         if not params.line_layer:
             errors.append("Cross-section line layer is required")
-        else:
-            is_valid, error = validate_layer_geometry(
-                params.line_layer, QgsWkbTypes.LineGeometry
-            )
-            if not is_valid:
-                errors.append(error)
+            return
 
-            is_valid, error = validate_layer_has_features(params.line_layer)
-            if not is_valid:
-                errors.append(error)
+        is_valid, error = validate_layer_geometry(params.line_layer, QgsWkbTypes.LineGeometry)
+        if not is_valid:
+            errors.append(error)
 
-        # 3. Output Path
+        is_valid, error = validate_layer_has_features(params.line_layer)
+        if not is_valid:
+            errors.append(error)
+
+    @staticmethod
+    def _validate_output(params: ValidationParams, errors: list[str]) -> None:
+        """Validate output path."""
         if not params.output_path:
             errors.append("Output directory path is required")
         else:
@@ -168,51 +182,55 @@ class ProjectValidator:
             if not is_valid:
                 errors.append(error)
 
-        # 4. Numeric Ranges
-        if params.scale < 1:
-            errors.append("Scale must be >= 1")
-        if params.vert_exag < 0.1:
-            errors.append("Vertical exaggeration must be >= 0.1")
-        if params.buffer_dist < 0:
-            errors.append("Buffer distance must be >= 0")
-        if params.dip_scale_factor < 0.1:
-            errors.append("Dip scale factor must be >= 0.1")
+    @staticmethod
+    def _validate_numeric_ranges(params: ValidationParams, errors: list[str]) -> None:
+        """Validate numeric parameter ranges."""
+        checks = [
+            (params.scale < 1, "Scale must be >= 1"),
+            (params.vert_exag < 0.1, "Vertical exaggeration must be >= 0.1"),
+            (params.buffer_dist < 0, "Buffer distance must be >= 0"),
+            (params.dip_scale_factor < 0.1, "Dip scale factor must be >= 0.1"),
+        ]
+        for condition, msg in checks:
+            if condition:
+                errors.append(msg)
 
-        # 5. Geology Inputs
-        if params.outcrop_layer:
-            is_valid, error = validate_layer_geometry(
-                params.outcrop_layer, QgsWkbTypes.PolygonGeometry
-            )
-            if not is_valid:
-                errors.append(error)
-            else:
-                is_valid, error = validate_layer_has_features(params.outcrop_layer)
-                if not is_valid:
-                    errors.append(error)
+    @staticmethod
+    def _validate_geology(params: ValidationParams, errors: list[str]) -> None:
+        """Validate Geology Inputs."""
+        if not params.outcrop_layer:
+            return
 
-                if not params.outcrop_field:
-                    errors.append("Geology unit field is required")
-                else:
-                    is_valid, error = validate_field_exists(
-                        params.outcrop_layer, params.outcrop_field
-                    )
-                    if not is_valid:
-                        errors.append(error)
+        is_valid, error = validate_layer_geometry(params.outcrop_layer, QgsWkbTypes.PolygonGeometry)
+        if not is_valid:
+            errors.append(error)
+            return
 
-        # 6. Structure Inputs
-        if params.struct_layer:
-            is_valid, error = validate_structural_requirements(
-                params.struct_layer,
-                params.struct_layer.name(),
-                params.struct_dip_field,
-                params.struct_strike_field,
-            )
+        is_valid, error = validate_layer_has_features(params.outcrop_layer)
+        if not is_valid:
+            errors.append(error)
+
+        if not params.outcrop_field:
+            errors.append("Geology unit field is required")
+        else:
+            is_valid, error = validate_field_exists(params.outcrop_layer, params.outcrop_field)
             if not is_valid:
                 errors.append(error)
 
-        if errors:
-            raise ValidationError("\n".join(errors))
-        return True
+    @staticmethod
+    def _validate_structural(params: ValidationParams, errors: list[str]) -> None:
+        """Validate Structural Inputs."""
+        if not params.struct_layer:
+            return
+
+        is_valid, error = validate_structural_requirements(
+            params.struct_layer,
+            params.struct_layer.name(),
+            params.struct_dip_field,
+            params.struct_strike_field,
+        )
+        if not is_valid:
+            errors.append(error)
 
     @staticmethod
     def validate_preview_requirements(params: ValidationParams) -> bool:
@@ -226,6 +244,7 @@ class ProjectValidator:
 
         Raises:
             ValidationError: Description of missing core components.
+
         """
         errors = []
         if not params.raster_layer:
@@ -278,8 +297,4 @@ class ProjectValidator:
     @staticmethod
     def is_structure_complete(params: ValidationParams) -> bool:
         """Check if structural requirements are met."""
-        return bool(
-            params.struct_layer
-            and params.struct_dip_field
-            and params.struct_strike_field
-        )
+        return bool(params.struct_layer and params.struct_dip_field and params.struct_strike_field)

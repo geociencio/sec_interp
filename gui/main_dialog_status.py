@@ -21,13 +21,14 @@ if TYPE_CHECKING:
 
 
 class DialogStatusManager:
-    """Manages UI state and status indicators."""
+    """Manage the status bar and indicators for the main dialog."""
 
     def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
         """Initialize status manager with reference to parent dialog.
 
         Args:
             dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+
         """
         self.dialog = dialog
 
@@ -82,7 +83,7 @@ class DialogStatusManager:
             self.dialog.btn_save.setEnabled(can_preview and has_output)
 
     def setup_indicators(self) -> None:
-        """Setup required field indicators with warning icons."""
+        """Set up required field indicators with warning icons."""
         warning_icon = self.dialog.getThemeIcon("mMessageLogCritical.svg")
         success_icon = self.dialog.getThemeIcon("mIconSuccess.svg")
 
@@ -100,10 +101,10 @@ class DialogStatusManager:
         label = self.dialog.page_dem.lbl_raster_status
         if layer:
             label.setPixmap(self._success_icon.pixmap(16, 16))
-            label.setToolTip(self.tr("Raster layer selected"))
+            label.setToolTip(self.dialog.tr("Raster layer selected"))
         else:
             label.setPixmap(self._warning_icon.pixmap(16, 16))
-            label.setToolTip(self.tr("Raster layer is required"))
+            label.setToolTip(self.dialog.tr("Raster layer is required"))
 
     def update_section_status(self) -> None:
         """Update section line status icon based on selection."""
@@ -111,7 +112,7 @@ class DialogStatusManager:
         label = self.dialog.page_section.lbl_section_status
         if layer:
             label.setPixmap(self._success_icon.pixmap(16, 16))
-            label.setToolTip(self.tr("Section line selected"))
+            label.setToolTip(self.dialog.tr("Section line selected"))
         else:
             label.setPixmap(self._warning_icon.pixmap(16, 16))
-            label.setToolTip(self.tr("Section line is required"))
+            label.setToolTip(self.dialog.tr("Section line is required"))

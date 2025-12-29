@@ -44,7 +44,7 @@ class ProfileSnapper:
         self._locators: dict[str, QgsPointLocator] = {}
 
     def snap(self, mouse_pos: QPoint) -> QgsPointXY:
-        """Finds the nearest vertex or edge to the mouse position."""
+        """Find the nearest vertex or edge to the mouse position."""
         point = self.canvas.getCoordinateTransform().toMapCoordinates(mouse_pos)
 
         # Search tolerance in map units (approx 12 pixels)
@@ -88,26 +88,22 @@ class ProfileSnapper:
         return point
 
     def _cleanup_locators(self, current_ids: set[str]):
-        """Removes locators for layers that are no longer active."""
+        """Remove locators for layers that are no longer active."""
         hits_to_remove = [lid for lid in self._locators if lid not in current_ids]
         for lid in hits_to_remove:
             del self._locators[lid]
 
     def _is_snappable(self, layer: QgsMapLayer) -> bool:
-        """Checks if a layer is valid for snapping."""
+        """Check if a layer is valid for snapping."""
         return bool(layer and layer.type() == QgsMapLayer.VectorLayer)
 
-    def _get_locator(
-        self, layer: QgsVectorLayer, crs, context
-    ) -> Optional[QgsPointLocator]:
-        """Retrieves or creates a locator for a layer."""
+    def _get_locator(self, layer: QgsVectorLayer, crs, context) -> QgsPointLocator | None:
+        """Retrieve or create a locator for a layer."""
         if layer.id() not in self._locators:
             try:
                 self._locators[layer.id()] = QgsPointLocator(layer, crs, context)
             except Exception as e:
-                logger.warning(
-                    f"Failed to create locator for layer {layer.name()}: {e}"
-                )
+                logger.warning(f"Failed to create locator for layer {layer.name()}: {e}")
                 return None
         return self._locators[layer.id()]
 
@@ -150,7 +146,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         logger.debug("ProfileMeasureTool deactivated")
 
     def reset(self):
-        """Resets the tool state.
+        """Reset the tool state.
 
         If measurement is finalized, only clears the points data but keeps
         the visual elements (rubber band and markers) visible.
@@ -244,9 +240,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         self.rubber_band.addPoint(point, True)
         self._add_vertex_marker(point)
 
-        logger.debug(
-            f"Point {len(self.points)} added: {point.x():.2f}, {point.y():.2f}"
-        )
+        logger.debug(f"Point {len(self.points)} added: {point.x():.2f}, {point.y():.2f}")
 
         # Emit measurement update if we have at least 2 points
         if len(self.points) >= 2:
@@ -305,7 +299,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         self.vertex_markers.append(marker)
 
     def _ensure_rubber_band(self):
-        """Creates rubber band if not exists."""
+        """Create rubber band if not exists."""
         if self.rubber_band:
             return
 
@@ -314,7 +308,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         self.rubber_band.setWidth(2)
 
     def _update_rubber_band(self, current_point: QgsPointXY):
-        """Updates the rubber band geometry dynamically."""
+        """Update the rubber band geometry dynamically."""
         if not self.rubber_band or len(self.points) == 0:
             return
 

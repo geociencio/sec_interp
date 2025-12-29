@@ -15,6 +15,7 @@ class BasePage(QWidget):
         Args:
             title (str): Title for the group box.
             parent (QWidget): Parent widget.
+
         """
         super().__init__(parent)
         self.title = title
@@ -39,6 +40,7 @@ class BasePage(QWidget):
 
         Returns:
             dict: Dictionary with parameter names and values.
+
         """
         raise NotImplementedError("Subclasses must implement get_data()")
 
@@ -47,5 +49,6 @@ class BasePage(QWidget):
 
         Returns:
             tuple[bool, str]: (is_valid, error_message)
+
         """
         return True, ""

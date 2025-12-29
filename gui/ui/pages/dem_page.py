@@ -25,11 +25,10 @@ class DemPage(BasePage):
         Args:
             iface: QGIS interface (optional, for resolution calculation)
             parent: Parent widget
+
         """
         self.iface = iface
-        super().__init__(
-            QCoreApplication.translate("DemPage", "Digital Elevation Model"), parent
-        )
+        super().__init__(QCoreApplication.translate("DemPage", "Digital Elevation Model"), parent)
         self.iface = iface
 
     def _setup_ui(self):
@@ -47,7 +46,7 @@ class DemPage(BasePage):
         self.raster_combo.layerChanged.connect(self._update_resolution)
 
     def _setup_raster_selection(self):
-        """Setup raster layer selection widgets."""
+        """Set up raster layer selection widgets."""
         # Row 0: Raster Layer
         self.group_layout.addWidget(QLabel(self.tr("Raster Layer *")), 0, 0)
 
@@ -63,7 +62,7 @@ class DemPage(BasePage):
         self.group_layout.addWidget(self.lbl_raster_status, 0, 2)
 
     def _setup_band_and_resolution(self):
-        """Setup band and resolution display widgets."""
+        """Set up band and resolution display widgets."""
         # Row 1: Band, Resolution
         self.group_layout.addWidget(QLabel(self.tr("Band")), 1, 0)
 
@@ -88,7 +87,7 @@ class DemPage(BasePage):
         self.group_layout.addLayout(res_layout, 1, 3)
 
     def _setup_profile_settings(self):
-        """Setup scale and exaggeration settings."""
+        """Set up scale and exaggeration settings."""
         self.settings_group = QGroupBox(self.tr("Profile Settings"))
         settings_layout = QGridLayout(self.settings_group)
 

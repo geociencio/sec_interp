@@ -45,7 +45,7 @@ class PreviewWidget(QWidget):
         self.canvas.scaleChanged.connect(self._update_scale)
 
     def _setup_canvas_area(self):
-        """Setup map canvas and status bar."""
+        """Set up map canvas and status bar."""
         self.canvas = QgsMapCanvas()
         self.canvas.setCanvasColor(QColor(255, 255, 255))
         self.canvas.setMinimumHeight(300)
@@ -70,7 +70,7 @@ class PreviewWidget(QWidget):
         self.frame_layout.addLayout(status_layout)
 
     def _setup_action_buttons(self):
-        """Setup preview, measure, and export buttons."""
+        """Set up preview, measure, and export buttons."""
         btn_layout = QHBoxLayout()
         self.btn_preview = QPushButton(self.tr("Preview"))
         self.btn_export = QPushButton(self.tr("Export"))
@@ -96,7 +96,7 @@ class PreviewWidget(QWidget):
         self.frame_layout.addLayout(btn_layout)
 
     def _setup_lod_controls(self):
-        """Setup level of detail controls."""
+        """Set up level of detail controls."""
         lod_layout = QHBoxLayout()
         lod_layout.addWidget(QLabel(self.tr("Max Points:")))
 
@@ -110,9 +110,7 @@ class PreviewWidget(QWidget):
         lod_layout.addWidget(self.spin_max_points)
 
         self.chk_auto_lod = QCheckBox(self.tr("Auto"))
-        self.chk_auto_lod.setToolTip(
-            self.tr("Automatically adjust details based on preview size")
-        )
+        self.chk_auto_lod.setToolTip(self.tr("Automatically adjust details based on preview size"))
         self.chk_auto_lod.toggled.connect(self._toggle_lod_spin)
         lod_layout.addWidget(self.chk_auto_lod)
 
@@ -127,7 +125,7 @@ class PreviewWidget(QWidget):
         self.frame_layout.addLayout(lod_layout)
 
     def _setup_layer_checkboxes(self):
-        """Setup checkboxes for layer visibility."""
+        """Set up checkboxes for layer visibility."""
         chk_layout = QHBoxLayout()
         self.chk_topo = QCheckBox(self.tr("Show Topography"))
         self.chk_topo.setChecked(True)
@@ -148,7 +146,7 @@ class PreviewWidget(QWidget):
         self.frame_layout.addLayout(chk_layout)
 
     def _setup_results_area(self):
-        """Setup results group and text display."""
+        """Set up results group and text display."""
         self.results_group = QgsCollapsibleGroupBox(self.tr("Results"))
         results_layout = QVBoxLayout(self.results_group)
         self.results_text = QTextEdit()
