@@ -31,6 +31,7 @@ dev = [
     "qgis-plugin-manager @ git+https://github.com/geociencio/qgis-plugin-manager",
     "pre-commit>=4.5.1",
     "dominate>=2.9.1",
+    "setuptools>=70.0.0",
 ]
 
 [tool.uv]
