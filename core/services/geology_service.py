@@ -24,20 +24,18 @@ and unit segments from map layers to the cross-section plane.
 #  ***************************************************************************/
 
 from collections.abc import Generator
-import contextlib
 from typing import Optional
 
-from qgis import processing
 from qgis.core import (
     QgsDistanceArea,
     QgsFeature,
     QgsGeometry,
     QgsPointXY,
-    QgsProcessingFeedback,
     QgsRaster,
     QgsRasterLayer,
     QgsVectorLayer,
     QgsWkbTypes,
+    QgsFeatureRequest,
 )
 
 from sec_interp.core import utils as scu
@@ -45,7 +43,6 @@ from sec_interp.core.exceptions import DataMissingError, GeometryError, Processi
 from sec_interp.core.interfaces.geology_interface import IGeologyService
 from sec_interp.core.performance_metrics import performance_monitor
 from sec_interp.core.types import GeologyData, GeologySegment
-from sec_interp.core.utils.resource_manager import temporary_memory_layer
 from sec_interp.core.utils.sampling import interpolate_elevation
 from sec_interp.logger_config import get_logger
 
@@ -100,27 +97,38 @@ class GeologyService(IGeologyService):
             line_geom, raster_lyr, band_number, da, line_start
         )
 
-        # 2. Run Intersection & 3. Process Intersections
+        # 2. Optimized Spatial Filter & Intersection
         segments = []
         tolerance = 0.001
 
-        # Execute intersection and manage its lifecycle
-        with self._intersect_to_temp_layer(line_lyr, outcrop_lyr) as intersection_layer:
-            if not intersection_layer or not intersection_layer.isValid():
-                logger.error("Intersection layer is invalid")
-                return []
+        # Spatial Filter: Use the line's bounding box to restrict the search
+        line_bbox = line_geom.boundingBox()
+        request = QgsFeatureRequest().setFilterRect(line_bbox)
 
-            for feature in intersection_layer.getFeatures():
-                new_segments = self._process_intersection_feature(
-                    feature,
-                    outcrop_name_field,
-                    line_start,
-                    da,
-                    master_grid_dists,
-                    master_profile_data,
-                    tolerance,
-                )
-                segments.extend(new_segments)
+        for feature in outcrop_lyr.getFeatures(request):
+            if not feature.hasGeometry():
+                continue
+
+            outcrop_geom = feature.geometry()
+
+            # Perform exact geometric intersection
+            intersection = line_geom.intersection(outcrop_geom)
+
+            if intersection.isEmpty():
+                continue
+
+            # Process the intersection geometry
+            new_segments = self._process_intersection_geometry(
+                intersection,
+                feature,
+                outcrop_name_field,
+                line_start,
+                da,
+                master_grid_dists,
+                master_profile_data,
+                tolerance,
+            )
+            segments.extend(new_segments)
 
         logger.info(f"Generated {len(segments)} geological segments")
         # Sort by start distance
@@ -179,52 +187,9 @@ class GeologyService(IGeologyService):
 
         return master_profile_data, master_grid_dists
 
-    @contextlib.contextmanager
-    def _intersect_to_temp_layer(
-        self, line_lyr: QgsVectorLayer, outcrop_lyr: QgsVectorLayer
-    ) -> Generator[QgsVectorLayer, None, None]:
-        """Execute intersection and yield result as a managed temporary layer.
-
-        Args:
-            line_lyr: The section line vector layer.
-            outcrop_lyr: The outcrop polygons vector layer.
-
-        Yields:
-            The intersection memory layer.
-
-        Raises:
-            ProcessingError: If the intersection calculation fails.
-
-        """
-        try:
-            feedback = QgsProcessingFeedback()
-            result = processing.run(
-                "native:intersection",
-                {
-                    "INPUT": line_lyr,
-                    "OVERLAY": outcrop_lyr,
-                    "OUTPUT": "memory:intersection_temp",
-                },
-                feedback=feedback,
-            )
-            layer = result["OUTPUT"]
-
-            # Use our resource manager to ensure cleanup
-            with temporary_memory_layer(layer.source(), layer.name()) as managed_layer:
-                # We need to manually copy features if it's a new instance,
-                # but 'memory:' layers from processing are already in memory.
-                # Just yielding the result layer is enough if we wrap it.
-                yield layer
-
-        except Exception as e:
-            logger.exception("Geological intersection failed")
-            raise ProcessingError(
-                "Cannot compute geological intersection",
-                {"line_layer": line_lyr.name(), "outcrop_layer": outcrop_lyr.name()},
-            ) from e
-
-    def _process_intersection_feature(
+    def _process_intersection_geometry(
         self,
+        geom: QgsGeometry,
         feature: QgsFeature,
         outcrop_name_field: str,
         line_start: QgsPointXY,
@@ -233,10 +198,11 @@ class GeologyService(IGeologyService):
         master_profile_data: list,
         tolerance: float,
     ) -> list[GeologySegment]:
-        """Process a single intersection feature to extract geology segments.
+        """Process an intersection geometry to extract geology segments.
 
         Args:
-            feature: The intersection result feature.
+            geom: The intersection geometry (LineString or MultiLineString).
+            feature: The original feature (for attributes).
             outcrop_name_field: The field name for geological unit names.
             line_start: Start point of the section line.
             da: Geodesic distance calculation object.
@@ -245,10 +211,9 @@ class GeologyService(IGeologyService):
             tolerance: Small distance tolerance for grid point inclusion.
 
         Returns:
-            A list of GeologySegment objects extracted from the feature.
+            A list of GeologySegment objects.
 
         """
-        geom = feature.geometry()
         if not geom or geom.isNull():
             return []
 
@@ -262,6 +227,7 @@ class GeologyService(IGeologyService):
             for part in geom.asMultiPolyline():
                 geometries.append(QgsGeometry.fromPolylineXY(part))
         else:
+            # Handle GeometryCollection if needed, or other types
             return []
 
         try:
