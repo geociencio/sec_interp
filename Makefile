@@ -117,31 +117,10 @@ test: compile transcompile
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
 	@echo "----------------------"
 
-deploy: compile help-integrate
+deploy:
 	uv run qgis-manage deploy
 
-
 # The dclean target removes compiled python files from plugin directory
-# also deletes any .git entry
-dclean:
-	@echo
-	@echo "-----------------------------------"
-	@echo "Removing any compiled python files."
-	@echo "-----------------------------------"
-	find $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME) -iname "*.pyc" -delete
-	find $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME) -iname ".git" -prune -exec rm -Rf {} \;
-
-
-derase:
-	uv run qgis-manage clean
-
-help-integrate: apidocs-html
-	@echo "Integrating documentation into help/ folder..."
-	rm -rf help/html
-	mkdir -p help/html
-	cp -r docs/build/html/* help/html/
-	rm -rf help/html/_sources
-	rm -f help/index.html
 
 zip: compile
 	uv run qgis-plugin-ci package $(VERSION)
@@ -180,26 +159,10 @@ transclean:
 clean:
 	uv run qgis-manage clean
 
-doc:
-	@echo
-	@echo "------------------------------------"
-	@echo "Checking Native Hybrid documentation."
-	@echo "------------------------------------"
-	@if [ -f "help/html/index.html" ]; then \
-		echo "Documentation found at help/html/index.html"; \
-	else \
-		echo "Error: help/html/index.html not found!"; \
-		exit 1; \
-	fi
-
-.PHONY: apidocs apidocs-html
-apidocs:
+.PHONY: apidoc
+apidoc:
 	@echo "Generating API documentation sources..."
 	sphinx-apidoc -o docs/source . docs test scripts help build tests --force --separate
-
-apidocs-html: apidocs
-	@echo "Building API documentation HTML..."
-	uv run sphinx-build -M html docs/source docs/build
 
 pylint:
 	@echo
