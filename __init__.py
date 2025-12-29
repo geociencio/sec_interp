@@ -18,7 +18,7 @@
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
-"""This script initializes the plugin, making it known to QGIS."""
+"""Initialize the plugin, making it known to QGIS."""
 
 
 # noinspection PyPep8Naming

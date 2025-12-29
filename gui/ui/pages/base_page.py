@@ -22,7 +22,7 @@ class BasePage(QWidget):
         self._setup_ui()
 
     def _setup_ui(self):
-        """Setup the user interface."""
+        """Set up the user interface."""
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 

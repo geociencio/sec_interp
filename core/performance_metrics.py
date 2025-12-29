@@ -179,7 +179,7 @@ class PerformanceMonitor:
         self.metrics = {}
 
     def _setup_logger(self, log_file):
-        """Setup performance logger."""
+        """Set up performance logger."""
         logger = logging.getLogger("performance")
         logger.setLevel(logging.INFO)
 
@@ -284,7 +284,7 @@ class PerformanceMonitor:
 
 
 def performance_monitor(func):
-    """Decorator to automatically monitor function performance.
+    """Automatically monitor function performance.
 
     Wraps the function call with a PerformanceMonitor measurement.
     """

@@ -85,7 +85,7 @@ class ExportService:
         return result_msg
 
     def _export_topography(self, folder, data, crs, csv_exporter, msg):
-        """Helper to export topographic data."""
+        """Export topographic data."""
         from sec_interp.exporters import ProfileLineShpExporter
 
         logger.info("✓ Saving topographic profile...")
@@ -101,7 +101,7 @@ class ExportService:
             raise ExportError(f"Topography export failed: {e!s}") from e
 
     def _export_geology(self, folder, data, crs, csv_exporter, msg):
-        """Helper to export geological data."""
+        """Export geological data."""
         if not data:
             return
         from sec_interp.exporters import GeologyShpExporter
@@ -121,7 +121,7 @@ class ExportService:
             raise ExportError(f"Geology export failed: {e!s}") from e
 
     def _export_structures(self, folder, data, params, crs, csv_exporter, msg):
-        """Helper to export structural data."""
+        """Export structural data."""
         if not data:
             return
         from sec_interp.exporters import StructureShpExporter
@@ -152,7 +152,7 @@ class ExportService:
             raise ExportError(f"Structure export failed: {e!s}") from e
 
     def _export_drillholes(self, folder, data, crs, msg):
-        """Helper to export drillhole data."""
+        """Export drillhole data."""
         if not data:
             return
         from sec_interp.exporters import (
@@ -173,7 +173,7 @@ class ExportService:
             raise ExportError(f"Drillhole export failed: {e!s}") from e
 
     def _export_interpretations(self, folder, data, crs, msg):
-        """Helper to export interpretation data."""
+        """Export interpretation data."""
         if not data:
             return
         from sec_interp.exporters import Interpretation2DExporter
@@ -188,7 +188,7 @@ class ExportService:
             raise ExportError(f"Interpretation export failed: {e!s}") from e
 
     def _export_axes(self, folder, data, crs, msg):
-        """Helper to export profile axes."""
+        """Export profile axes."""
         from sec_interp.exporters import AxesShpExporter
 
         logger.info("✓ Saving profile axes...")

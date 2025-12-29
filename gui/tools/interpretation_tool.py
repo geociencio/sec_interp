@@ -47,7 +47,7 @@ class ProfileSnapper:
         self._locators: dict[str, QgsPointLocator] = {}
 
     def snap(self, mouse_pos: QPoint) -> QgsPointXY:
-        """Finds the nearest vertex or edge to the mouse position."""
+        """Find the nearest vertex or edge to the mouse position."""
         point = self.canvas.getCoordinateTransform().toMapCoordinates(mouse_pos)
 
         # Search tolerance in map units (approx 12 pixels)
@@ -93,7 +93,7 @@ class ProfileSnapper:
         return point
 
     def _cleanup_locators(self, current_ids: set[str]):
-        """Removes locators for layers that are no longer active."""
+        """Remove locators for layers that are no longer active."""
         hits_to_remove = [lid for lid in self._locators if lid not in current_ids]
         for lid in hits_to_remove:
             del self._locators[lid]
