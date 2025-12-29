@@ -117,7 +117,7 @@ test: compile transcompile
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
 	@echo "----------------------"
 
-deploy: compile
+deploy: compile help-integrate
 	uv run qgis-manage deploy
 
 

@@ -500,17 +500,17 @@ def generate_profile_data(self, values: Dict[str, Any]) -> Tuple[List, Any, Any,
 sequenceDiagram
     participant Client
     participant GeoService as GeologyService
-    participant QGIS as QGIS Processing
     participant Utils as Utils
 
     Client->>GeoService: generate_geological_profile()
     GeoService->>GeoService: _generate_master_profile_data()
-    GeoService->>QGIS: _perform_intersection()
-    QGIS-->>GeoService: intersection_layer
 
-    loop For each feature
-        GeoService->>GeoService: _process_intersection_feature()
-        GeoService->>GeoService: _create_segment_from_geometry()
+    %% Optimized PyQGIS Intersection
+    GeoService->>GeoService: QgsFeatureRequest.setFilterRect()
+
+    loop For each candidate feature
+        GeoService->>GeoService: QgsGeometry.intersection()
+        GeoService->>GeoService: _process_intersection_geometry()
         GeoService->>Utils: interpolate_elevation()
         Utils-->>GeoService: elevation_points
     end

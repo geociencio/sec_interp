@@ -38,6 +38,7 @@ myst_enable_extensions = [
     "tasklist",
 ]
 myst_heading_anchors = 3
+myst_fence_as_directive = ["mermaid"]
 
 autodoc_mock_imports = ["qgis", "PyQt5", "qgis.core", "qgis.gui", "qgis.utils"]
 
