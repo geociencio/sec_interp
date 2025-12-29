@@ -29,6 +29,7 @@ class CSVExporter(BaseExporter):
 
         Returns:
             True if export successful, False otherwise
+
         """
         if not data:
             return False

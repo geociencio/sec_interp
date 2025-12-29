@@ -43,6 +43,7 @@ class Sidebar(QListWidget):
         Args:
             text (str): Item label.
             icon_name (str): QGIS theme icon name (e.g. 'mIconRaster.svg').
+
         """
         item = QListWidgetItem(text)
         if icon_name:

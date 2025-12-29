@@ -8,10 +8,10 @@ from typing import Optional, Union
 
 def validate_safe_output_path(
     path: str,
-    base_dir: Optional[Path] = None,
+    base_dir: Path | None = None,
     must_exist: bool = False,
     create_if_missing: bool = False,
-) -> tuple[bool, str, Optional[Path]]:
+) -> tuple[bool, str, Path | None]:
     """Validate an output path string with security and path traversal protection.
 
     Args:
@@ -25,6 +25,7 @@ def validate_safe_output_path(
             - is_valid: True if the path is safe and meets requirements.
             - error_message: Reason for validation failure.
             - resolved_path: Cleaned, absolute Path object if valid, else None.
+
     """
     if not path or path.strip() == "":
         return False, "Output path is required", None
@@ -87,7 +88,7 @@ def validate_safe_output_path(
     return True, "", resolved_path
 
 
-def validate_output_path(path: str) -> tuple[bool, str, Optional[Path]]:
+def validate_output_path(path: str) -> tuple[bool, str, Path | None]:
     """Validate that an output path is a valid directory and currently writable.
 
     This is a convenience wrapper around `validate_safe_output_path()`
@@ -101,5 +102,6 @@ def validate_output_path(path: str) -> tuple[bool, str, Optional[Path]]:
             - is_valid: True if the directory is valid and writable.
             - error_message: Error details if validation fails.
             - resolved_path: Absolute Path object if valid, else None.
+
     """
     return validate_safe_output_path(path, must_exist=True)

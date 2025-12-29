@@ -11,11 +11,11 @@ from sec_interp.core.types import FieldType
 
 def validate_numeric_input(
     value: str,
-    min_val: Optional[float] = None,
-    max_val: Optional[float] = None,
+    min_val: float | None = None,
+    max_val: float | None = None,
     field_name: str = "Value",
     allow_empty: bool = False,
-) -> tuple[bool, str, Optional[float]]:
+) -> tuple[bool, str, float | None]:
     """Validate a numeric input string from a text field.
 
     Args:
@@ -30,6 +30,7 @@ def validate_numeric_input(
             - is_valid: True if validation passed.
             - error_message: Error details if validation failed.
             - float_value: The parsed numeric value if valid, else None.
+
     """
     if not value or value.strip() == "":
         if allow_empty:
@@ -52,11 +53,11 @@ def validate_numeric_input(
 
 def validate_integer_input(
     value: str,
-    min_val: Optional[int] = None,
-    max_val: Optional[int] = None,
+    min_val: int | None = None,
+    max_val: int | None = None,
     field_name: str = "Value",
     allow_empty: bool = False,
-) -> tuple[bool, str, Optional[int]]:
+) -> tuple[bool, str, int | None]:
     """Validate an integer input string from a text field.
 
     Args:
@@ -71,6 +72,7 @@ def validate_integer_input(
             - is_valid: True if validation passed.
             - error_message: Error details if validation failed.
             - int_value: The parsed integer value if valid, else None.
+
     """
     if not value or value.strip() == "":
         if allow_empty:
@@ -106,6 +108,7 @@ def validate_angle_range(
         tuple: (is_valid, error_message)
             - is_valid: True if validation passed.
             - error_message: Error details if validation failed.
+
     """
     if value < min_angle or value > max_angle:
         return (
@@ -116,9 +119,7 @@ def validate_angle_range(
     return True, ""
 
 
-def validate_field_exists(
-    layer: QgsVectorLayer, field_name: Optional[str]
-) -> tuple[bool, str]:
+def validate_field_exists(layer: QgsVectorLayer, field_name: str | None) -> tuple[bool, str]:
     """Validate that a specific field exists in a vector layer.
 
     Args:
@@ -129,6 +130,7 @@ def validate_field_exists(
         tuple: (is_valid, error_message)
             - is_valid: True if validation passed.
             - error_message: Error details if validation failed.
+
     """
     if not layer:
         return False, "Layer is None"
@@ -168,6 +170,7 @@ def validate_field_type(
         tuple: (is_valid, error_message)
             - is_valid: True if validation passed.
             - error_message: Error details if validation failed.
+
     """
     if not layer:
         return False, "Layer is None"

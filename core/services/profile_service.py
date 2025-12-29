@@ -49,7 +49,7 @@ class ProfileService(IProfileService):
         line_lyr: QgsVectorLayer,
         raster_lyr: QgsRasterLayer,
         band_number: int = 1,
-        interval: Optional[float] = None,
+        interval: float | None = None,
     ) -> ProfileData:
         """Generate topographic profile data by sampling elevation along the section line.
 
@@ -65,18 +65,15 @@ class ProfileService(IProfileService):
         Raises:
             DataMissingError: If line layer has no features.
             GeometryError: If line geometry is invalid.
+
         """
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
-            raise DataMissingError(
-                "Line layer has no features", {"layer": line_lyr.name()}
-            )
+            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
 
         geom = line_feat.geometry()
         if not geom or geom.isNull():
-            raise GeometryError(
-                "Line geometry is not valid", {"layer": line_lyr.name()}
-            )
+            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
 
         da = scu.create_distance_area(line_lyr.crs())
 

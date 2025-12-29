@@ -33,6 +33,7 @@ def filter_features_by_buffer(
 
     Returns:
         List of QgsFeature objects that intersect the query buffer.
+
     """
     if not features_layer or not features_layer.isValid():
         raise ValueError("Invalid features layer")
@@ -43,9 +44,7 @@ def filter_features_by_buffer(
     # 1. Transform buffer geometry if needed
     query_geom = buffer_geometry
     if buffer_crs and features_layer.crs() != buffer_crs:
-        transform = QgsCoordinateTransform(
-            buffer_crs, features_layer.crs(), QgsProject.instance()
-        )
+        transform = QgsCoordinateTransform(buffer_crs, features_layer.crs(), QgsProject.instance())
         query_geom = QgsGeometry(buffer_geometry)
         query_geom.transform(transform)
 

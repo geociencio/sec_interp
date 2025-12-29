@@ -6,7 +6,7 @@ import re
 from typing import Any, Optional
 
 
-def parse_strike(value: Any) -> Optional[float]:
+def parse_strike(value: Any) -> float | None:
     """Parse a strike value from various formats into an azimuth (0-360).
 
     Supports numeric values, strings, and quadrant notation (e.g., "N 30 E", "S 45 W").
@@ -16,6 +16,7 @@ def parse_strike(value: Any) -> Optional[float]:
 
     Returns:
         Strike in azimuth degrees (0-360) or None if parsing fails.
+
     """
     if value is None:
         return None
@@ -59,7 +60,7 @@ def parse_strike(value: Any) -> Optional[float]:
     return strike % 360
 
 
-def parse_dip(value: Any) -> tuple[Optional[float], Optional[float]]:
+def parse_dip(value: Any) -> tuple[float | None, float | None]:
     """Parse a dip value from various formats.
 
     Supports numeric dip ("45") and field notation with direction ("45 NE", "22 SW").
@@ -70,6 +71,7 @@ def parse_dip(value: Any) -> tuple[Optional[float], Optional[float]]:
     Returns:
         A tuple of (dip_angle, dip_direction_azimuth). Values are None if
         parsing fails.
+
     """
     if value is None:
         return None, None
@@ -101,7 +103,7 @@ def parse_dip(value: Any) -> tuple[Optional[float], Optional[float]]:
     return dip, dip_dir
 
 
-def cardinal_to_azimuth(text: str) -> Optional[float]:
+def cardinal_to_azimuth(text: str) -> float | None:
     """Convert a cardinal direction string to its equivalent azimuth.
 
     Supports: N, NE, E, SE, S, SW, W, NW.
@@ -111,6 +113,7 @@ def cardinal_to_azimuth(text: str) -> Optional[float]:
 
     Returns:
         The azimuth in degrees (0-360), or None if invalid.
+
     """
     table = {
         "N": 0,

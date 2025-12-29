@@ -29,5 +29,6 @@ class IGeologyService(ABC):
 
         Returns:
             GeologyData: List of GeologySegment objects.
+
         """
         pass

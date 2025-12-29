@@ -34,6 +34,7 @@ class GeologyProcessingThread(QThread):
         Args:
             data: List of items to process
             processing_func: Function to process each item
+
         """
         super().__init__()
         self.data = data
@@ -111,6 +112,7 @@ class ParallelGeologyService(QObject):
             profiles: List of profiles to process
             processing_func: Optional custom processing function.
                 If None, uses internal _process_profile_chunk.
+
         """
         if not profiles:
             self.all_finished.emit([])
@@ -123,24 +125,18 @@ class ParallelGeologyService(QObject):
         self._thread_progress = {}
 
         # Use provided function or default
-        worker_func = (
-            processing_func if processing_func else self._process_profile_chunk
-        )
+        worker_func = processing_func if processing_func else self._process_profile_chunk
 
         # Split work into chunks
         chunk_size = max(1, len(profiles) // self.max_threads)
-        chunks = [
-            profiles[i : i + chunk_size] for i in range(0, len(profiles), chunk_size)
-        ]
+        chunks = [profiles[i : i + chunk_size] for i in range(0, len(profiles), chunk_size)]
 
         for chunk in chunks:
             thread = GeologyProcessingThread(chunk, worker_func)
 
             # Connect signals
             thread.processing_finished.connect(self._on_chunk_finished)
-            thread.progress_updated.connect(
-                lambda p, t=thread: self._on_chunk_progress(t, p)
-            )
+            thread.progress_updated.connect(lambda p, t=thread: self._on_chunk_progress(t, p))
             thread.error_occurred.connect(self._on_chunk_error)
             thread.canceled.connect(self._on_chunk_canceled)
 
@@ -210,6 +206,7 @@ class ParallelGeologyService(QObject):
 
         Args:
             profile_chunk: A single profile item (despite the name)
+
         """
         # Default behavior: Command Pattern
         # If the item is a tuple/list where the first element is callable, execute it

@@ -80,8 +80,8 @@ class PreviewLayerFactory:
         self,
         geometry_type: str,
         name: str,
-        fields: Optional[str] = None,
-    ) -> tuple[Optional[QgsVectorLayer], Any]:
+        fields: str | None = None,
+    ) -> tuple[QgsVectorLayer | None, Any]:
         """Create a memory layer with an unknown CRS.
 
         Args:
@@ -91,6 +91,7 @@ class PreviewLayerFactory:
 
         Returns:
             Tuple of (QgsVectorLayer, QgsDataProvider) or (None, None) if failed
+
         """
         uri = geometry_type
         if fields:
@@ -116,16 +117,14 @@ class PreviewLayerFactory:
         vert_exag: float = 1.0,
         max_points: int = 1000,
         use_adaptive_sampling: bool = False,
-    ) -> Optional[QgsVectorLayer]:
+    ) -> QgsVectorLayer | None:
         """Create temporary layer for topographic profile."""
         if not topo_data or len(topo_data) < 2:
             return None
 
         # Apply LOD decimation
         if use_adaptive_sampling:
-            render_data = PreviewOptimizer.adaptive_sample(
-                topo_data, max_points=max_points
-            )
+            render_data = PreviewOptimizer.adaptive_sample(topo_data, max_points=max_points)
         else:
             render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
 
@@ -154,14 +153,12 @@ class PreviewLayerFactory:
 
     def create_geol_layer(
         self, geol_data: GeologyData, vert_exag: float = 1.0, max_points: int = 1000
-    ) -> Optional[QgsVectorLayer]:
+    ) -> QgsVectorLayer | None:
         """Create temporary layer for geological profile."""
         if not geol_data:
             return None
 
-        layer, provider = self.create_memory_layer(
-            "LineString", "Geology", "field=unit:string"
-        )
+        layer, provider = self.create_memory_layer("LineString", "Geology", "field=unit:string")
         if not layer:
             return None
 
@@ -171,12 +168,8 @@ class PreviewLayerFactory:
             if not segment.points or len(segment.points) < 2:
                 continue
 
-            render_points = PreviewOptimizer.decimate(
-                segment.points, max_points=max_points
-            )
-            line_points = [
-                QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points
-            ]
+            render_points = PreviewOptimizer.decimate(segment.points, max_points=max_points)
+            line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points]
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -210,8 +203,8 @@ class PreviewLayerFactory:
         struct_data: StructureData,
         reference_data: ProfileData,
         vert_exag: float = 1.0,
-        dip_line_length: Optional[float] = None,
-    ) -> Optional[QgsVectorLayer]:
+        dip_line_length: float | None = None,
+    ) -> QgsVectorLayer | None:
         """Create temporary layer for structural dips."""
         if not struct_data:
             return None
@@ -262,7 +255,7 @@ class PreviewLayerFactory:
 
     def create_drillhole_trace_layer(
         self, drillhole_data: list, vert_exag: float = 1.0
-    ) -> Optional[QgsVectorLayer]:
+    ) -> QgsVectorLayer | None:
         """Create temporary layer for drillhole traces."""
         logger.debug(
             f"create_drillhole_trace_layer called with {len(drillhole_data) if drillhole_data else 0} holes"
@@ -318,7 +311,7 @@ class PreviewLayerFactory:
 
     def create_drillhole_interval_layer(
         self, drillhole_data: list, vert_exag: float = 1.0
-    ) -> Optional[QgsVectorLayer]:
+    ) -> QgsVectorLayer | None:
         """Create temporary layer for drillhole intervals."""
         if not drillhole_data:
             return None
@@ -373,9 +366,7 @@ class PreviewLayerFactory:
         layer.updateExtents()
         return layer
 
-    def interpolate_elevation(
-        self, reference_data: ProfileData, target_dist: float
-    ) -> float:
+    def interpolate_elevation(self, reference_data: ProfileData, target_dist: float) -> float:
         """Interpolate elevation at a given distance."""
         if not reference_data:
             return 0

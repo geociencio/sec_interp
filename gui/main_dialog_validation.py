@@ -28,6 +28,7 @@ class DialogValidator:
 
         Args:
             dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance to validate
+
         """
         self.dialog = dialog
 

@@ -48,11 +48,12 @@ class PreviewRenderer:
     - PreviewLegendRenderer: Handles legend drawing.
     """
 
-    def __init__(self, canvas: Optional[QgsMapCanvas] = None):
+    def __init__(self, canvas: QgsMapCanvas | None = None):
         """Initialize preview renderer.
 
         Args:
             canvas: QgsMapCanvas instance (optional)
+
         """
         self.canvas = canvas
         self.layers = []
@@ -75,17 +76,17 @@ class PreviewRenderer:
     def render(
         self,
         topo_data: ProfileData,
-        geol_data: Optional[GeologyData] = None,
-        struct_data: Optional[StructureData] = None,
+        geol_data: GeologyData | None = None,
+        struct_data: StructureData | None = None,
         vert_exag: float = 1.0,
-        dip_line_length: Optional[float] = None,
+        dip_line_length: float | None = None,
         max_points: int = 1000,
         preserve_extent: bool = False,
         use_adaptive_sampling: bool = False,
-        drillhole_data: Optional[list] = None,
-        interp_data: Optional[list[InterpretationPolygon]] = None,
+        drillhole_data: list | None = None,
+        interp_data: list[InterpretationPolygon] | None = None,
         **kwargs,
-    ) -> tuple[Optional[QgsMapCanvas], list]:
+    ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
         logger.debug("render() called")
 
@@ -101,15 +102,11 @@ class PreviewRenderer:
         if topo_layer:
             self.has_topography = True
 
-        geol_layer = self.layer_factory.create_geol_layer(
-            geol_data, vert_exag, max_points
-        )
+        geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
 
         # For structural layer, use topo or geol as reference
         reference_data = (
-            topo_data
-            if topo_data
-            else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
+            topo_data if topo_data else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
         )
         struct_layer = self.layer_factory.create_struct_layer(
             struct_data, reference_data, vert_exag, dip_line_length
@@ -120,9 +117,7 @@ class PreviewRenderer:
         # Drillhole layers
         drillhole_layers = []
         if drillhole_data:
-            trace_layer = self.layer_factory.create_drillhole_trace_layer(
-                drillhole_data, vert_exag
-            )
+            trace_layer = self.layer_factory.create_drillhole_trace_layer(drillhole_data, vert_exag)
             if trace_layer:
                 drillhole_layers.append(trace_layer)
             interval_layer = self.layer_factory.create_drillhole_interval_layer(
@@ -230,9 +225,7 @@ class PreviewRenderer:
                     self.canvas.scene().removeItem(rb)
         self.interpretation_rubbers = []
 
-    def _render_interpretations(
-        self, interp_data: list[InterpretationPolygon], vert_exag: float
-    ):
+    def _render_interpretations(self, interp_data: list[InterpretationPolygon], vert_exag: float):
         """Render interpretations as QgsRubberBand objects."""
         if not self.canvas:
             return

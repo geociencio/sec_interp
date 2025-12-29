@@ -65,6 +65,7 @@ class StructureMeasurement:
         original_dip: True dip measured in the field.
         original_strike: True strike (azimuth) measured in the field.
         attributes: Dictionary containing original feature attributes.
+
     """
 
     distance: float
@@ -84,6 +85,7 @@ class GeologySegment:
         geometry: QGIS geometry of the segment.
         attributes: Dictionary containing original feature attributes.
         points: Sampled points (distance, elevation) representing the segment boundary.
+
     """
 
     unit_name: str
@@ -104,6 +106,7 @@ class InterpretationPolygon:
         attributes: Metadata for the interpretation.
         color: Visual representation color (HEX).
         created_at: ISO timestamp of creation.
+
     """
 
     id: str
@@ -126,6 +129,7 @@ class InterpretationPolygon25D:
         geometry: QGIS Geometry (PolygonM or LineStringM).
         attributes: Inherited and calculated attributes.
         crs: Coordinate Reference System of the geometry.
+
     """
 
     id: str
@@ -177,6 +181,7 @@ class PreviewParams:
         max_points: Max number of points for simplified preview (LOD).
         canvas_width: Width of the preview canvas in pixels.
         auto_lod: Whether to automatically adjust LOD based on canvas width.
+
     """
 
     raster_layer: QgsRasterLayer
@@ -185,33 +190,33 @@ class PreviewParams:
     buffer_dist: float = 100.0
 
     # Geology params
-    outcrop_layer: Optional[QgsVectorLayer] = None
-    outcrop_name_field: Optional[str] = None
+    outcrop_layer: QgsVectorLayer | None = None
+    outcrop_name_field: str | None = None
 
     # Structure params
-    struct_layer: Optional[QgsVectorLayer] = None
-    dip_field: Optional[str] = None
-    strike_field: Optional[str] = None
+    struct_layer: QgsVectorLayer | None = None
+    dip_field: str | None = None
+    strike_field: str | None = None
     dip_scale_factor: float = 1.0
 
     # Drillhole params
-    collar_layer: Optional[QgsVectorLayer] = None
-    collar_id_field: Optional[str] = None
+    collar_layer: QgsVectorLayer | None = None
+    collar_id_field: str | None = None
     collar_use_geometry: bool = True
-    collar_x_field: Optional[str] = None
-    collar_y_field: Optional[str] = None
-    collar_z_field: Optional[str] = None
-    collar_depth_field: Optional[str] = None
-    survey_layer: Optional[QgsVectorLayer] = None
-    survey_id_field: Optional[str] = None
-    survey_depth_field: Optional[str] = None
-    survey_azim_field: Optional[str] = None
-    survey_incl_field: Optional[str] = None
-    interval_layer: Optional[QgsVectorLayer] = None
-    interval_id_field: Optional[str] = None
-    interval_from_field: Optional[str] = None
-    interval_to_field: Optional[str] = None
-    interval_lith_field: Optional[str] = None
+    collar_x_field: str | None = None
+    collar_y_field: str | None = None
+    collar_z_field: str | None = None
+    collar_depth_field: str | None = None
+    survey_layer: QgsVectorLayer | None = None
+    survey_id_field: str | None = None
+    survey_depth_field: str | None = None
+    survey_azim_field: str | None = None
+    survey_incl_field: str | None = None
+    interval_layer: QgsVectorLayer | None = None
+    interval_id_field: str | None = None
+    interval_from_field: str | None = None
+    interval_to_field: str | None = None
+    interval_lith_field: str | None = None
 
     # LOD Params
     max_points: int = 1000
@@ -223,6 +228,7 @@ class PreviewParams:
 
         Raises:
             ValidationError: If critical parameters are missing or invalid.
+
         """
         if not self.raster_layer or not self.raster_layer.isValid():
             raise ValidationError("Raster layer is missing or invalid.")
@@ -231,16 +237,10 @@ class PreviewParams:
         if self.band_num < 1:
             raise ValidationError(f"Invalid band number: {self.band_num}")
         if self.buffer_dist < 0:
-            raise ValidationError(
-                f"Buffer distance cannot be negative: {self.buffer_dist}"
-            )
+            raise ValidationError(f"Buffer distance cannot be negative: {self.buffer_dist}")
 
         # Dependent validation
-        if (
-            self.outcrop_layer
-            and self.outcrop_layer.isValid()
-            and not self.outcrop_name_field
-        ):
+        if self.outcrop_layer and self.outcrop_layer.isValid() and not self.outcrop_name_field:
             raise ValidationError("Outcrop layer selected but no name field provided.")
 
         if (
@@ -248,15 +248,9 @@ class PreviewParams:
             and self.struct_layer.isValid()
             and (not self.dip_field or not self.strike_field)
         ):
-            raise ValidationError(
-                "Structural layer selected but dip/strike fields missing."
-            )
+            raise ValidationError("Structural layer selected but dip/strike fields missing.")
 
-        if (
-            self.collar_layer
-            and self.collar_layer.isValid()
-            and not self.collar_id_field
-        ):
+        if self.collar_layer and self.collar_layer.isValid() and not self.collar_id_field:
             raise ValidationError("Collar layer selected but no ID field provided.")
 
         if (
@@ -271,9 +265,7 @@ class PreviewParams:
                 ]
             )
         ):
-            raise ValidationError(
-                "Survey layer selected but some required fields are missing."
-            )
+            raise ValidationError("Survey layer selected but some required fields are missing.")
 
         if (
             self.interval_layer
@@ -287,9 +279,7 @@ class PreviewParams:
                 ]
             )
         ):
-            raise ValidationError(
-                "Interval layer selected but some required fields are missing."
-            )
+            raise ValidationError("Interval layer selected but some required fields are missing.")
 
 
 @dataclass
@@ -303,12 +293,13 @@ class PreviewResult:
         drillhole: Processed drillhole projection data.
         metrics: Performance metrics collector for the generation cycle.
         buffer_dist: Buffer distance used for this result.
+
     """
 
-    topo: Optional[ProfileData] = None
-    geol: Optional[GeologyData] = None
-    struct: Optional[StructureData] = None
-    drillhole: Optional[Any] = None
+    topo: ProfileData | None = None
+    geol: GeologyData | None = None
+    struct: StructureData | None = None
+    drillhole: Any | None = None
     metrics: MetricsCollector = field(default_factory=MetricsCollector)
     buffer_dist: float = 0.0
 
@@ -317,6 +308,7 @@ class PreviewResult:
 
         Returns:
             A tuple containing (min_elevation, max_elevation).
+
         """
         elevations = []
         if self.topo:
@@ -343,6 +335,7 @@ class PreviewResult:
 
         Returns:
             A tuple containing (min_distance, max_distance).
+
         """
         if not self.topo:
             return 0.0, 0.0

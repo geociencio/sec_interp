@@ -54,13 +54,14 @@ class PreviewManager:
     def __init__(
         self,
         dialog: sec_interp.gui.main_dialog.SecInterpDialog,
-        preview_service: Optional[IPreviewService] = None,
+        preview_service: IPreviewService | None = None,
     ):
         """Initialize preview manager with reference to parent dialog.
 
         Args:
             dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
             preview_service: Optional preview service for dependency injection
+
         """
         self.dialog = dialog
         self.cached_data: dict[str, Any] = {
@@ -70,7 +71,7 @@ class PreviewManager:
             "drillhole": None,
         }
         self.last_params_hash = None
-        self.last_result: Optional[PreviewResult] = None
+        self.last_result: PreviewResult | None = None
         self.metrics = MetricsCollector()
 
         # Initialize services
@@ -91,9 +92,7 @@ class PreviewManager:
         # Connect extents changed signal
         # We need to do this carefully to avoid signal loops
         # Initial connection is safe
-        self.dialog.preview_widget.canvas.extentsChanged.connect(
-            self._on_extents_changed
-        )
+        self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
 
     def cleanup(self):
         """Clean up resources and stop background tasks."""
@@ -108,6 +107,7 @@ class PreviewManager:
 
         Returns:
             Tuple of (success, message)
+
         """
         self.metrics.clear()
 
@@ -128,9 +128,7 @@ class PreviewManager:
                 self._run_render_pipeline(result)
 
                 # 4. Results Reporting
-                result_msg = PreviewReporter.format_results_message(
-                    result, self.metrics
-                )
+                result_msg = PreviewReporter.format_results_message(result, self.metrics)
                 self.dialog.preview_widget.results_text.setPlainText(result_msg)
 
                 if DialogConfig.LOG_DETAILED_METRICS:
@@ -162,9 +160,7 @@ class PreviewManager:
             logger.info("Clearing interpretations due to section change")
             self.dialog.interpretations = []
         transform_context = (
-            self.dialog.plugin_instance.iface.mapCanvas()
-            .mapSettings()
-            .transformContext()
+            self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
         )
         result = self.preview_service.generate_all(params, transform_context)
 
@@ -274,7 +270,7 @@ class PreviewManager:
     def _calculate_params_hash(self, params: PreviewParams) -> str:
         """Calculate a unique hash for preview parameters to check for changes."""
 
-        def get_id(layer: Optional[QgsVectorLayer]) -> str:
+        def get_id(layer: QgsVectorLayer | None) -> str:
             """Safe layer ID retrieval."""
             return layer.id() if layer else "None"
 
@@ -310,6 +306,7 @@ class PreviewManager:
 
         Returns:
             Buffer distance in meters
+
         """
         return self.dialog.page_section.buffer_spin.value()
 
@@ -354,9 +351,7 @@ class PreviewManager:
             # This requires knowing the last used max_points...
             # We can just re-render, it handles caching of data, but re-decimation takes time.
 
-            logger.debug(
-                f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}"
-            )
+            logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
 
             if not self.dialog.plugin_instance:
                 return
@@ -397,9 +392,7 @@ class PreviewManager:
         )
 
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate(
-                "PreviewManager", "Generating Geology in background..."
-            )
+            QCoreApplication.translate("PreviewManager", "Generating Geology in background...")
         )
         # No need for a custom worker function anymore
         self.async_service.process_profiles_parallel([args])
@@ -456,9 +449,9 @@ class PreviewManager:
     def _on_geology_progress(self, progress):
         """Handle progress updates from parallel service."""
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate(
-                "PreviewManager", "Generating Geology: {}%..."
-            ).format(progress)
+            QCoreApplication.translate("PreviewManager", "Generating Geology: {}%...").format(
+                progress
+            )
         )
 
     def _on_geology_error(self, error_msg: str):
@@ -466,9 +459,9 @@ class PreviewManager:
         logger.error(f"Async geology error: {error_msg}")
         # Map string error to ProcessingError for centralized handling
         error = ProcessingError(
-            QCoreApplication.translate(
-                "PreviewManager", "Geology processing failed: {}"
-            ).format(error_msg)
+            QCoreApplication.translate("PreviewManager", "Geology processing failed: {}").format(
+                error_msg
+            )
         )
         self.dialog.handle_error(error, "Geology Error")
 
@@ -476,19 +469,18 @@ class PreviewManager:
         """Handle case where plugin instance is not available for rendering."""
         raise AttributeError("Plugin instance or draw_preview method not available")
 
-    def _update_crs_label(self, layer: Optional[QgsVectorLayer]) -> None:
+    def _update_crs_label(self, layer: QgsVectorLayer | None) -> None:
         """Update the CRS label in the dialog status bar.
 
         Args:
             layer: The reference layer to get CRS from.
+
         """
         try:
             if layer:
                 auth_id = layer.crs().authid()
                 self.dialog.preview_widget.lbl_crs.setText(
-                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(
-                        auth_id
-                    )
+                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(auth_id)
                 )
             else:
                 self.dialog.preview_widget.lbl_crs.setText(

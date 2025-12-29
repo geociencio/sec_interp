@@ -38,6 +38,7 @@ class ProfileLineShpExporter(BaseExporter):
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'profile_data' and 'crs'.
+
         """
         profile_data = data.get("profile_data")
         crs = data.get("crs")
@@ -78,6 +79,7 @@ class GeologyShpExporter(BaseExporter):
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'geology_data' and 'crs'.
+
         """
         geology_data = data.get("geology_data")
         crs = data.get("crs")
@@ -110,9 +112,7 @@ class GeologyShpExporter(BaseExporter):
                 fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
 
-    def _create_geology_feature(
-        self, segment: Any, fields: QgsFields
-    ) -> Optional[QgsFeature]:
+    def _create_geology_feature(self, segment: Any, fields: QgsFields) -> QgsFeature | None:
         """Create a feature for a geology segment."""
         if len(segment.points) < 2:
             return None
@@ -144,6 +144,7 @@ class StructureShpExporter(BaseExporter):
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'structural_data', 'crs', 'dip_scale_factor',
                 and 'raster_res'.
+
         """
         structural_data = data.get("structural_data")
         crs = data.get("crs")
@@ -228,6 +229,7 @@ class AxesShpExporter(BaseExporter):
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'profile_data' and 'crs'.
+
         """
         profile_data = data.get("profile_data")
         crs = data.get("crs")

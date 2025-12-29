@@ -22,7 +22,7 @@ class PreviewOptimizer:
     @staticmethod
     def decimate(
         data: list[tuple[float, float]],
-        tolerance: Optional[float] = None,
+        tolerance: float | None = None,
         max_points: int = 1000,
     ) -> list[tuple[float, float]]:
         """Decimate line data using Douglas-Peucker algorithm.
@@ -34,6 +34,7 @@ class PreviewOptimizer:
 
         Returns:
             Decimated list of (x, y) tuples
+
         """
         if not data or len(data) <= max_points:
             return data
@@ -85,6 +86,7 @@ class PreviewOptimizer:
 
         Returns:
             List of curvature values (angles in degrees), same length as data.
+
         """
         if len(data) < 3:
             return [0.0] * len(data)
@@ -139,6 +141,7 @@ class PreviewOptimizer:
 
         Returns:
             Adaptively sampled data
+
         """
         if len(data) <= max_points:
             return data

@@ -15,7 +15,7 @@ class IProfileService(ABC):
         line_lyr: QgsVectorLayer,
         raster_lyr: QgsRasterLayer,
         band_number: int = 1,
-        interval: Optional[float] = None,
+        interval: float | None = None,
     ) -> Any:
         """Generate topographic profile data by sampling elevation along a section line.
 
@@ -27,5 +27,6 @@ class IProfileService(ABC):
 
         Returns:
             ProfileData: List of (distance, elevation) tuples.
+
         """
         pass

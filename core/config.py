@@ -52,6 +52,7 @@ class ConfigService:
 
         Returns:
             The configuration value from settings or its default value.
+
         """
         full_key = self.PREFIX + key
 
@@ -70,6 +71,7 @@ class ConfigService:
         Args:
             key: The configuration key (without prefix).
             value: The value to persist in settings.
+
         """
         full_key = self.PREFIX + key
         self.settings.setValue(full_key, value)

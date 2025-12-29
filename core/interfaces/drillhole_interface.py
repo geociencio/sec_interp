@@ -30,8 +30,8 @@ class IDrillholeService(ABC):
         collar_y_field: str,
         collar_z_field: str,
         collar_depth_field: str,
-        dem_layer: Optional[QgsRasterLayer],
-        line_crs: Optional[QgsCoordinateReferenceSystem] = None,
+        dem_layer: QgsRasterLayer | None,
+        line_crs: QgsCoordinateReferenceSystem | None = None,
     ) -> list[tuple]:
         """Project collar points onto section line.
 
@@ -52,6 +52,7 @@ class IDrillholeService(ABC):
 
         Returns:
             A list of tuples (hole_id, dist_along, z, offset, total_depth).
+
         """
         pass
 
@@ -95,5 +96,6 @@ class IDrillholeService(ABC):
 
         Returns:
             A tuple containing (geol_data, drillhole_data).
+
         """
         pass

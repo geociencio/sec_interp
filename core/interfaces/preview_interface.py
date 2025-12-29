@@ -19,5 +19,6 @@ class IPreviewService(ABC):
 
         Returns:
             PreviewResult: Consolidated preview results object.
+
         """
         pass

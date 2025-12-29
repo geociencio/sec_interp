@@ -15,7 +15,7 @@ from sec_interp.core.types import GeologySegment
 
 def calculate_bounds(
     topo_data: list[tuple[float, float]],
-    geol_data: Optional[list[GeologySegment]] = None,
+    geol_data: list[GeologySegment] | None = None,
 ) -> dict[str, float]:
     """Calculate the bounding box for all profile data with padding.
 
@@ -28,6 +28,7 @@ def calculate_bounds(
 
     Returns:
         Bounds containing 'min_d', 'max_d', 'min_e', 'max_e' with 5% padding.
+
     """
     dists = [p[0] for p in topo_data]
     elevs = [p[1] for p in topo_data]
@@ -78,6 +79,7 @@ def create_coordinate_transform(
 
     Returns:
         A function `transform(dist, elev) -> (x, y)` converting data to pixels.
+
     """
     data_w = bounds["max_d"] - bounds["min_d"]
     data_h = bounds["max_e"] - bounds["min_e"]
@@ -110,6 +112,7 @@ def calculate_interval(data_range: float) -> float:
 
     Returns:
         A human-readable interval (e.g., 1, 2, 5, 10, etc.) for grid lines.
+
     """
     magnitude = 10 ** math.floor(math.log10(data_range))
     normalized = data_range / magnitude

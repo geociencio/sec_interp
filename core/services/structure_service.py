@@ -88,11 +88,10 @@ class StructureService(IStructureService):
         Raises:
             DataMissingError: If line layer has no features.
             GeometryError: If line geometry is invalid.
+
         """
         # Logging: Initial setup
-        logger.info(
-            f"Analyzing structures in {struct_lyr.name()} with buffer {buffer_m}m"
-        )
+        logger.info(f"Analyzing structures in {struct_lyr.name()} with buffer {buffer_m}m")
 
         line_geom, line_start = self._extract_line_info(line_lyr)
 
@@ -100,9 +99,7 @@ class StructureService(IStructureService):
         buffer_geom = self._create_buffer_zone(line_geom, line_lyr.crs(), buffer_m)
 
         # 2. Filter Measures
-        filtered_features = self._filter_structures(
-            struct_lyr, buffer_geom, line_lyr.crs()
-        )
+        filtered_features = self._filter_structures(struct_lyr, buffer_geom, line_lyr.crs())
 
         # 3. Process Features
         projected_structs = []
@@ -150,6 +147,7 @@ class StructureService(IStructureService):
 
         Raises:
             ProcessingError: If buffer creation fails.
+
         """
         try:
             return scu.create_buffer_geometry(line_geom, crs, buffer_m, segments=25)
@@ -177,6 +175,7 @@ class StructureService(IStructureService):
 
         Raises:
             ProcessingError: If spatial filtering fails.
+
         """
         try:
             return scu.filter_features_by_buffer(struct_lyr, buffer_geom, target_crs)
@@ -197,7 +196,7 @@ class StructureService(IStructureService):
         line_az: float,
         dip_field: str,
         strike_field: str,
-    ) -> Optional[StructureMeasurement]:
+    ) -> StructureMeasurement | None:
         """Process a single structure feature to calculate its 2D coordinates and apparent dip.
 
         Args:
@@ -213,6 +212,7 @@ class StructureService(IStructureService):
 
         Returns:
             The projected measurement object, or None if invalid or cannot be projected.
+
         """
         struct_geom = feature.geometry()
         if not struct_geom or struct_geom.isNull():
@@ -232,9 +232,7 @@ class StructureService(IStructureService):
 
         elev = self._sample_elevation(raster_lyr, proj_pt, band_number)
 
-        parsed_data = self._parse_structural_data(
-            feature, strike_field, dip_field, line_az
-        )
+        parsed_data = self._parse_structural_data(feature, strike_field, dip_field, line_az)
         if not parsed_data:
             return None
 
@@ -247,14 +245,10 @@ class StructureService(IStructureService):
             apparent_dip=round(app_dip, 1),
             original_dip=dip_angle,
             original_strike=strike,
-            attributes=dict(
-                zip(feature.fields().names(), feature.attributes(), strict=False)
-            ),
+            attributes=dict(zip(feature.fields().names(), feature.attributes(), strict=False)),
         )
 
-    def _extract_line_info(
-        self, line_lyr: QgsVectorLayer
-    ) -> tuple[QgsGeometry, QgsPointXY]:
+    def _extract_line_info(self, line_lyr: QgsVectorLayer) -> tuple[QgsGeometry, QgsPointXY]:
         """Extract geometry and start point from the line layer.
 
         Args:
@@ -266,18 +260,15 @@ class StructureService(IStructureService):
         Raises:
             DataMissingError: If layer has no features.
             GeometryError: If geometry is invalid.
+
         """
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
-            raise DataMissingError(
-                "Line layer has no features", {"layer": line_lyr.name()}
-            )
+            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
 
         line_geom = line_feat.geometry()
         if not line_geom or line_geom.isNull():
-            raise GeometryError(
-                "Line geometry is not valid", {"layer": line_lyr.name()}
-            )
+            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
 
         if line_geom.isMultipart():
             line_start = line_geom.asMultiPolyline()[0][0]
@@ -298,12 +289,9 @@ class StructureService(IStructureService):
 
         Returns:
             The sampled elevation value or 0.0 if sampling fails.
+
         """
-        res_val = (
-            raster_lyr.dataProvider()
-            .identify(point, QgsRaster.IdentifyFormatValue)
-            .results()
-        )
+        res_val = raster_lyr.dataProvider().identify(point, QgsRaster.IdentifyFormatValue).results()
         return res_val.get(band_number, 0.0)
 
     def _parse_structural_data(
@@ -312,7 +300,7 @@ class StructureService(IStructureService):
         strike_field: str,
         dip_field: str,
         line_az: float,
-    ) -> Optional[tuple[float, float, float]]:
+    ) -> tuple[float, float, float] | None:
         """Parse strike and dip attributes and calculate apparent dip.
 
         Args:
@@ -323,6 +311,7 @@ class StructureService(IStructureService):
 
         Returns:
             A tuple of (strike, dip_angle, apparent_dip) or None if validation fails.
+
         """
         try:
             strike_raw = feature[strike_field]

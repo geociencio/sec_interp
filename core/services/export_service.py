@@ -22,11 +22,12 @@ logger = get_logger(__name__)
 class ExportService:
     """Service to orchestrate all export operations."""
 
-    def __init__(self, controller: Optional[Any] = None):
+    def __init__(self, controller: Any | None = None):
         """Initialize the export service.
 
         Args:
             controller: Optional reference to ProfileController for data access.
+
         """
         self.controller = controller
 
@@ -35,10 +36,10 @@ class ExportService:
         output_folder: Path,
         params: PreviewParams,
         profile_data: list[tuple],
-        geol_data: Optional[list[Any]],
-        struct_data: Optional[list[Any]],
-        drillhole_data: Optional[list[Any]] = None,
-        interp_data: Optional[list[Any]] = None,
+        geol_data: list[Any] | None,
+        struct_data: list[Any] | None,
+        drillhole_data: list[Any] | None = None,
+        interp_data: list[Any] | None = None,
     ) -> list[str]:
         """Export generated data to CSV and Shapefile formats.
 
@@ -53,6 +54,7 @@ class ExportService:
 
         Returns:
             A list of user-friendly log messages.
+
         """
         # Ensure we have data to work with
         if not profile_data:
@@ -70,12 +72,8 @@ class ExportService:
         csv_exporter = CSVExporter({})
 
         # Orchestrate sub-exports
-        self._export_topography(
-            output_folder, profile_data, line_crs, csv_exporter, result_msg
-        )
-        self._export_geology(
-            output_folder, geol_data, line_crs, csv_exporter, result_msg
-        )
+        self._export_topography(output_folder, profile_data, line_crs, csv_exporter, result_msg)
+        self._export_geology(output_folder, geol_data, line_crs, csv_exporter, result_msg)
         self._export_structures(
             output_folder, struct_data, params, line_crs, csv_exporter, result_msg
         )
@@ -218,6 +216,7 @@ class ExportService:
 
         Returns:
             A configured QgsMapSettings instance ready for rendering.
+
         """
         map_settings = QgsMapSettings()
         map_settings.setLayers(layers)

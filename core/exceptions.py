@@ -16,6 +16,7 @@ class SecInterpError(Exception):
         Args:
             message: Human-readable error message explaining what happened.
             details: Optional dictionary containing technical error context or details.
+
         """
         super().__init__(message)
         self.message = message

@@ -6,9 +6,7 @@ Geological calculations and structural geology operations.
 import math
 
 
-def calculate_apparent_dip(
-    true_strike: float, true_dip: float, line_azimuth: float
-) -> float:
+def calculate_apparent_dip(true_strike: float, true_dip: float, line_azimuth: float) -> float:
     """Convert true dip to apparent dip in section plane.
 
     The apparent dip is the inclination of a plane measured in a direction
@@ -31,6 +29,7 @@ def calculate_apparent_dip(
     Returns:
         Apparent dip in degrees. Positive values indicate dip, negative values
         might occur depending on quadrant but are typically normalized.
+
     """
     alpha = math.radians(true_strike)
     beta = math.radians(true_dip)

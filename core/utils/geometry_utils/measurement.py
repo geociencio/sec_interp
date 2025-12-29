@@ -23,6 +23,7 @@ def calculate_polyline_metrics(points: list[QgsPointXY]) -> dict[str, Any]:
             - segment_count: Number of segments.
             - segments: List of segment details with distance, dx, and dy.
             - point_count: Number of points.
+
     """
     if len(points) < 2:
         return {

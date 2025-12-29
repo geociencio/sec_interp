@@ -26,6 +26,7 @@ class DialogDataAggregator:
 
         Args:
             dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+
         """
         self.dialog = dialog
 
@@ -34,6 +35,7 @@ class DialogDataAggregator:
 
         Returns:
             Dictionary with all dialog values in legacy flat format
+
         """
         return {
             **self._get_dem_values(),
@@ -49,6 +51,7 @@ class DialogDataAggregator:
 
         Returns:
             Dictionary with raster layer, band, scale, and vertical exaggeration
+
         """
         dem_data = self.dialog.page_dem.get_data()
         return {
@@ -63,6 +66,7 @@ class DialogDataAggregator:
 
         Returns:
             Dictionary with cross-line layer and buffer distance
+
         """
         section_data = self.dialog.page_section.get_data()
         return {
@@ -75,6 +79,7 @@ class DialogDataAggregator:
 
         Returns:
             Dictionary with outcrop layer and name field
+
         """
         geology_data = self.dialog.page_geology.get_data()
         return {
@@ -87,6 +92,7 @@ class DialogDataAggregator:
 
         Returns:
             Dictionary with structural layer, dip/strike fields, and scale factor
+
         """
         structure_data = self.dialog.page_struct.get_data()
         return {
@@ -101,6 +107,7 @@ class DialogDataAggregator:
 
         Returns:
             Dictionary with collar, survey, and interval layer data
+
         """
         drillhole_data = self.dialog.page_drillhole.get_data()
 
@@ -130,6 +137,7 @@ class DialogDataAggregator:
 
         Returns:
             ValidationParams populated with current UI selections.
+
         """
         dem = self.dialog.page_dem.get_data()
         sect = self.dialog.page_section.get_data()

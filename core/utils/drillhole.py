@@ -37,6 +37,7 @@ def calculate_drillhole_trajectory(
             - x, y, z: 3D coordinates.
             - dist_along_section: Distance along the section line (initially 0.0).
             - offset_from_section: Perpendicular distance from section line (initially 0.0).
+
     """
     if not survey_data:
         if total_depth > 0:
@@ -161,6 +162,7 @@ def project_trajectory_to_section(
             - x, y, z: Original 3D coordinates.
             - dist_along: Projected distance along the section line.
             - offset: Perpendicular offset from the section line.
+
     """
     projected = []
 
@@ -202,6 +204,7 @@ def interpolate_intervals_on_trajectory(
         List of tuples containing:
             - attribute: The metadata/geology associated with the interval.
             - points: List of (distance, elevation) coordinates for rendering.
+
     """
     geol_segments = []
 

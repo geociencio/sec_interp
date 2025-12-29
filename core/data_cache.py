@@ -26,6 +26,7 @@ class DataCache(ICacheService):
 
         Args:
             default_ttl: Default Time-To-Live in seconds for new entries.
+
         """
         # Buckets: 'topo', 'geol', 'struct', 'drill'
         self._buckets: dict[str, dict[str, dict[str, Any]]] = {
@@ -45,6 +46,7 @@ class DataCache(ICacheService):
 
         Returns:
             The generated MD5 hash string.
+
         """
         key_parts = []
         for k, v in sorted(params.items()):
@@ -58,7 +60,7 @@ class DataCache(ICacheService):
 
         return hashlib.sha256("".join(key_parts).encode("utf-8")).hexdigest()
 
-    def get(self, bucket: str, key: str) -> Optional[Any]:
+    def get(self, bucket: str, key: str) -> Any | None:
         """Retrieve data from a specific cache bucket if not expired.
 
         Args:
@@ -67,6 +69,7 @@ class DataCache(ICacheService):
 
         Returns:
             The cached data if valid and found, else None.
+
         """
         if bucket not in self._buckets:
             return None
@@ -84,9 +87,7 @@ class DataCache(ICacheService):
 
         return entry.get("data")
 
-    def set(
-        self, bucket: str, key: str, data: Any, metadata: Optional[dict] = None
-    ) -> None:
+    def set(self, bucket: str, key: str, data: Any, metadata: dict | None = None) -> None:
         """Store data in a specific cache bucket with optional metadata.
 
         Args:
@@ -94,6 +95,7 @@ class DataCache(ICacheService):
             key: Unique hash key for the entry.
             data: The data object to be cached.
             metadata: Optional dictionary for TTL or Level of Detail information.
+
         """
         if bucket not in self._buckets:
             self._buckets[bucket] = {}
@@ -108,14 +110,13 @@ class DataCache(ICacheService):
             "timestamp": time.time(),
         }
 
-    def invalidate(
-        self, bucket: Optional[str] = None, key: Optional[str] = None
-    ) -> None:
+    def invalidate(self, bucket: str | None = None, key: str | None = None) -> None:
         """Remove entries from the cache selectively or entirely.
 
         Args:
             bucket: Optional name of the bucket to invalidate.
             key: Optional specific entry key to remove within the bucket.
+
         """
         if bucket and bucket in self._buckets:
             if key:
@@ -131,7 +132,7 @@ class DataCache(ICacheService):
         """Clear all entries across all cache buckets."""
         self.invalidate()
 
-    def get_metadata(self, bucket: str, key: str) -> Optional[dict[str, Any]]:
+    def get_metadata(self, bucket: str, key: str) -> dict[str, Any] | None:
         """Retrieve the metadata associated with a cached entry.
 
         Args:
@@ -140,6 +141,7 @@ class DataCache(ICacheService):
 
         Returns:
             Metadata dictionary if found, else None.
+
         """
         if bucket in self._buckets and key in self._buckets[bucket]:
             return self._buckets[bucket][key].get("metadata")
@@ -150,5 +152,6 @@ class DataCache(ICacheService):
 
         Returns:
             Dictionary mapping bucket names to entry counts.
+
         """
         return {name: len(items) for name, items in self._buckets.items()}

@@ -35,6 +35,7 @@ class Interpretation2DExporter(BaseExporter):
 
         Args:
             settings: Dictionary of configuration settings.
+
         """
         super().__init__(settings)
 
@@ -52,6 +53,7 @@ class Interpretation2DExporter(BaseExporter):
 
         Returns:
             bool: True if export was successful, False otherwise
+
         """
         interpretations = data.get("interpretations", [])
         if not interpretations:
@@ -130,5 +132,6 @@ class Interpretation2DExporter(BaseExporter):
 
         Returns:
             List of supported extensions.
+
         """
         return [".shp"]

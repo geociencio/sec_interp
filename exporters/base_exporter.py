@@ -27,6 +27,7 @@ class BaseExporter(ABC):
                 - dpi: Dots per inch for resolution
                 - background_color: Background color (QColor)
                 - legend_renderer: Optional renderer for legend overlay
+
         """
         self.settings = settings
 
@@ -42,11 +43,12 @@ class BaseExporter(ABC):
 
         Returns:
             bool: True if export successful, False otherwise
+
         """
         pass
 
     def validate_export_path(
-        self, output_path: Path, base_dir: Optional[Path] = None
+        self, output_path: Path, base_dir: Path | None = None
     ) -> tuple[bool, str]:
         """Validate export path for security.
 
@@ -58,6 +60,7 @@ class BaseExporter(ABC):
 
         Returns:
             tuple: (is_valid, error_message)
+
         """
         # Get parent directory of the file
         parent_dir = output_path.parent
@@ -78,6 +81,7 @@ class BaseExporter(ABC):
 
         Returns:
             List of supported extensions (e.g., ['.png', '.jpg'])
+
         """
 
     def validate_path(self, path: Path) -> bool:
@@ -88,6 +92,7 @@ class BaseExporter(ABC):
 
         Returns:
             True if path has a supported extension, False otherwise
+
         """
         return path.suffix.lower() in self.get_supported_extensions()
 
@@ -100,5 +105,6 @@ class BaseExporter(ABC):
 
         Returns:
             Setting value or default
+
         """
         return self.settings.get(key, default)

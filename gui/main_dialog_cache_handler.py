@@ -12,5 +12,6 @@ class CacheHandler:
 
         Args:
             dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+
         """
         self.dialog = dialog

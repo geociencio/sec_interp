@@ -35,5 +35,6 @@ class IStructureService(ABC):
 
         Returns:
             StructureData: List of StructureMeasurement objects.
+
         """
         pass

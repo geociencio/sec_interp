@@ -32,6 +32,7 @@ class DrillholeTraceShpExporter(BaseExporter):
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
+
         """
         drillhole_data = data.get("drillhole_data")
         crs = data.get("crs")
@@ -79,6 +80,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
+
         """
         drillhole_data = data.get("drillhole_data")
         crs = data.get("crs")

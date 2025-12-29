@@ -35,6 +35,7 @@ class DialogToolManager:
             pan_tool: Optional pan tool for injection
             measure_tool: Optional measure tool for injection
             interpretation_tool: Optional interpretation tool for injection
+
         """
         self.dialog = dialog
         self.pan_tool = pan_tool
@@ -48,13 +49,9 @@ class DialogToolManager:
         if not self.measure_tool:
             self.measure_tool = ProfileMeasureTool(self.dialog.preview_widget.canvas)
         if not self.interpretation_tool:
-            self.interpretation_tool = ProfileInterpretationTool(
-                self.dialog.preview_widget.canvas
-            )
+            self.interpretation_tool = ProfileInterpretationTool(self.dialog.preview_widget.canvas)
             # Connect polygonFinished signal to dialog handler
-            self.interpretation_tool.polygonFinished.connect(
-                self.dialog.on_interpretation_finished
-            )
+            self.interpretation_tool.polygonFinished.connect(self.dialog.on_interpretation_finished)
 
         self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
 
@@ -63,6 +60,7 @@ class DialogToolManager:
 
         Args:
             checked: True to activate measure tool, False for pan tool.
+
         """
         if checked:
             # Reset any previous measurement when starting new one
@@ -87,6 +85,7 @@ class DialogToolManager:
 
         Args:
             checked: True to activate interpretation tool, False for pan tool.
+
         """
         if checked:
             # Deactivate measure tool if active
@@ -104,6 +103,7 @@ class DialogToolManager:
 
         Args:
             metrics: Dictionary containing measurement data.
+
         """
         if not metrics or metrics.get("point_count", 0) < 2:
             return
@@ -137,6 +137,7 @@ class NavigationManager:
 
         Args:
             dialog: The SecInterpDialog instance
+
         """
         self.dialog = dialog
 
@@ -148,6 +149,7 @@ class NavigationManager:
 
         Returns:
             bool: True if event was handled, False otherwise.
+
         """
         if self.dialog.preview_widget.canvas.underMouse():
             if event.angleDelta().y() > 0:

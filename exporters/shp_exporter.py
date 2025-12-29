@@ -37,6 +37,7 @@ class ShapefileExporter(BaseExporter):
 
         Returns:
             True if export successful, False otherwise
+
         """
         if not features_data:
             return False

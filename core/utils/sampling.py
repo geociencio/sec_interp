@@ -27,8 +27,8 @@ def sample_elevation_along_line(
     raster_layer: QgsRasterLayer,
     band_number: int,
     distance_area: QgsDistanceArea,
-    reference_point: Optional[QgsPointXY] = None,
-    interval: Optional[float] = None,
+    reference_point: QgsPointXY | None = None,
+    interval: float | None = None,
 ) -> list[QgsPointXY]:
     """Sample elevation values along a line geometry from a raster layer.
 
@@ -44,6 +44,7 @@ def sample_elevation_along_line(
 
     Returns:
         A list of QgsPointXY objects where x is horizontal distance and y is elevation.
+
     """
     from .geometry import densify_line_by_interval
 
@@ -100,6 +101,7 @@ def prepare_profile_context(
 
     Raises:
         ValueError: If the input layer is empty or has invalid geometry.
+
     """
     from .spatial import create_distance_area, get_line_start_point
 
@@ -126,6 +128,7 @@ def interpolate_elevation(topo_data: list, distance: float) -> float:
 
     Returns:
         The interpolated elevation value.
+
     """
     if not topo_data:
         return 0.0

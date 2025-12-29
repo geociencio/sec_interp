@@ -9,7 +9,7 @@ from typing import Any, Optional, Protocol, runtime_checkable
 class ICacheService(Protocol):
     """Abstract protocol for the Processing Data Cache Service."""
 
-    def get(self, bucket: str, key: str) -> Optional[Any]:
+    def get(self, bucket: str, key: str) -> Any | None:
         """Retrieve data from a specific cache bucket.
 
         Args:
@@ -18,12 +18,11 @@ class ICacheService(Protocol):
 
         Returns:
             The cached data or None if not found or expired.
+
         """
         ...
 
-    def set(
-        self, bucket: str, key: str, data: Any, metadata: Optional[dict] = None
-    ) -> None:
+    def set(self, bucket: str, key: str, data: Any, metadata: dict | None = None) -> None:
         """Store data in a specific cache bucket.
 
         Args:
@@ -31,17 +30,17 @@ class ICacheService(Protocol):
             key: Unique key for the parameter set.
             data: The data to cache.
             metadata: Optional metadata (e.g., TTL, LOD info).
+
         """
         ...
 
-    def invalidate(
-        self, bucket: Optional[str] = None, key: Optional[str] = None
-    ) -> None:
+    def invalidate(self, bucket: str | None = None, key: str | None = None) -> None:
         """Invalidate cache entries.
 
         Args:
             bucket: If provided, only invalidate this bucket.
             key: If provided, only invalidate this specific key.
+
         """
         ...
 
@@ -49,7 +48,7 @@ class ICacheService(Protocol):
         """Clear the entire cache."""
         ...
 
-    def get_metadata(self, bucket: str, key: str) -> Optional[dict[str, Any]]:
+    def get_metadata(self, bucket: str, key: str) -> dict[str, Any] | None:
         """Retrieve metadata for a cached entry.
 
         Args:
@@ -58,5 +57,6 @@ class ICacheService(Protocol):
 
         Returns:
             Dictionary containing entry metadata or None if not found.
+
         """
         ...

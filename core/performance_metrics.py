@@ -23,6 +23,7 @@ class MetricsCollector:
         timings: Dictionary mapping operation names to durations.
         counts: Dictionary mapping metric names to integer counts.
         metadata: Dictionary of additional context and metadata.
+
     """
 
     def __init__(self):
@@ -38,6 +39,7 @@ class MetricsCollector:
         Args:
             operation: Name of the operation
             duration: Duration in seconds
+
         """
         self.timings[operation] = duration
 
@@ -47,6 +49,7 @@ class MetricsCollector:
         Args:
             metric: Name of the metric
             count: Count value
+
         """
         self.counts[metric] = count
 
@@ -56,6 +59,7 @@ class MetricsCollector:
         Args:
             key: Metadata key
             value: Metadata value
+
         """
         self.metadata[key] = value
 
@@ -64,6 +68,7 @@ class MetricsCollector:
 
         Returns:
             A dictionary with all collected metrics including total duration.
+
         """
         return {
             "timings": self.timings,
@@ -86,8 +91,8 @@ class PerformanceTimer:
     def __init__(
         self,
         operation_name: str,
-        collector: Optional[MetricsCollector] = None,
-        logger_func: Optional[Any] = None,
+        collector: MetricsCollector | None = None,
+        logger_func: Any | None = None,
     ):
         """Initialize timer.
 
@@ -95,6 +100,7 @@ class PerformanceTimer:
             operation_name: Name of operation to measure
             collector: Optional metrics collector to record into
             logger_func: Optional logger function for immediate logging
+
         """
         self.operation_name = operation_name
         self.collector = collector
@@ -107,6 +113,7 @@ class PerformanceTimer:
 
         Returns:
             self: The timer instance
+
         """
         self.start_time = time.perf_counter()
         return self
@@ -118,6 +125,7 @@ class PerformanceTimer:
             exc_type: Exception type if raised
             exc_val: Exception value if raised
             exc_tb: Exception traceback if raised
+
         """
         self.duration = time.perf_counter() - self.start_time
 
@@ -136,6 +144,7 @@ def format_duration(seconds: float) -> str:
 
     Returns:
         Formatted string (e.g. "1.2s", "150ms", "100µs").
+
     """
     if seconds < 0.001:
         return f"{seconds * 1000000:.0f}µs"
@@ -164,6 +173,7 @@ class PerformanceMonitor:
 
         Args:
             log_file: Path to the performance log file.
+
         """
         self.logger = self._setup_logger(log_file)
         self.metrics = {}
@@ -177,9 +187,7 @@ class PerformanceMonitor:
         if not logger.handlers:
             # Create file handler
             handler = logging.FileHandler(log_file)
-            formatter = logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
 
@@ -192,6 +200,7 @@ class PerformanceMonitor:
         Args:
             operation_name: Human-readable name of the operation.
             **metadata: Additional context for logging.
+
         """
         # Start measuring
         start_time = time.perf_counter()
@@ -253,6 +262,7 @@ class PerformanceMonitor:
 
         Returns:
             Dictionary with mean/min/max duration and memory usage.
+
         """
         if operation_name not in self.metrics:
             return None

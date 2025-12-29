@@ -116,9 +116,7 @@ class AIWorkflowManager:
                 "model": ai_model,
                 "session_id": self.session_id,
                 "task_type": self.current_task,
-                "estimated_tokens": self._estimate_tokens(
-                    task_description + str(context)
-                ),
+                "estimated_tokens": self._estimate_tokens(task_description + str(context)),
                 "timestamp": datetime.now().isoformat(),
             },
         }
@@ -209,9 +207,7 @@ class AIWorkflowManager:
                 content = filepath.read_text(encoding="utf-8")
                 self._add_if_relevant(content, category, keywords, relevant_parts)
 
-        context["relevant_context"] = (
-            "\n\n".join(relevant_parts) or "Sin contexto específico"
-        )
+        context["relevant_context"] = "\n\n".join(relevant_parts) or "Sin contexto específico"
 
         # Añadir restricciones comunes
         context["constraints"] = self._get_constraints()
@@ -225,9 +221,7 @@ class AIWorkflowManager:
         text = text.lower()
         # Eliminar acentos
         text = "".join(
-            c
-            for c in unicodedata.normalize("NFD", text)
-            if unicodedata.category(c) != "Mn"
+            c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn"
         )
         return text
 
@@ -509,9 +503,7 @@ class AIWorkflowManager:
 
     def process_ai_response(self, response: str, prompt_meta: dict) -> dict:
         """Procesa y guarda respuesta de IA."""
-        session_dir = (
-            self.context_dir / "sessions" / f"{self.session_id}_{self.current_task}"
-        )
+        session_dir = self.context_dir / "sessions" / f"{self.session_id}_{self.current_task}"
 
         # Extraer secciones estructuradas
         parsed_response = self._parse_structured_response(response)
@@ -571,9 +563,7 @@ class AIWorkflowManager:
             if section in sections:
                 if isinstance(sections[section], list):
                     # Dividir en items si es lista
-                    items = [
-                        item.strip() for item in content.split("\n") if item.strip()
-                    ]
+                    items = [item.strip() for item in content.split("\n") if item.strip()]
                     sections[section] = items
                 else:
                     sections[section] = content.strip()
@@ -609,19 +599,14 @@ class AIWorkflowManager:
             suggestion_lower = suggestion.lower()
 
             # Clasificar sugerencias
-            if any(
-                word in suggestion_lower
-                for word in ["refactor", "rewrite", "reorganize"]
-            ):
+            if any(word in suggestion_lower for word in ["refactor", "rewrite", "reorganize"]):
                 actions["refactors"].append(suggestion)
             elif any(
-                word in suggestion_lower
-                for word in ["add test", "write test", "test coverage"]
+                word in suggestion_lower for word in ["add test", "write test", "test coverage"]
             ):
                 actions["tests_needed"].append(suggestion)
             elif any(
-                word in suggestion_lower
-                for word in ["change", "modify", "update", "implement"]
+                word in suggestion_lower for word in ["change", "modify", "update", "implement"]
             ):
                 actions["code_changes"].append(suggestion)
 
@@ -631,9 +616,7 @@ class AIWorkflowManager:
 
         # Identificar actualizaciones de contexto
         if "architecture" in parsed_response.get("analysis", "").lower():
-            actions["context_updates"]["architecture_notes"] = parsed_response[
-                "analysis"
-            ][:500]
+            actions["context_updates"]["architecture_notes"] = parsed_response["analysis"][:500]
 
         return actions
 
@@ -659,10 +642,7 @@ class AIWorkflowManager:
     def _log_action(self, action_type: str, data: dict):
         """Registra acción en el log."""
         log_file = (
-            self.context_dir
-            / "sessions"
-            / f"{self.session_id}_{self.current_task}"
-            / "work_log.md"
+            self.context_dir / "sessions" / f"{self.session_id}_{self.current_task}" / "work_log.md"
         )
 
         with open(log_file, "a", encoding="utf-8") as f:
@@ -672,9 +652,7 @@ class AIWorkflowManager:
 
     def end_session(self, success: bool = True, summary: str = ""):
         """Finaliza la sesión actual."""
-        session_dir = (
-            self.context_dir / "sessions" / f"{self.session_id}_{self.current_task}"
-        )
+        session_dir = self.context_dir / "sessions" / f"{self.session_id}_{self.current_task}"
 
         # Actualizar info de sesión
         info_file = session_dir / "session_info.yaml"
@@ -937,31 +915,21 @@ if __name__ == "__main__":
     subparsers = parser.add_subparsers(dest="command", help="Comandos disponibles")
 
     # Comando: init
-    init_parser = subparsers.add_parser(
-        "init", help="Inicializar estructura del proyecto"
-    )
+    init_parser = subparsers.add_parser("init", help="Inicializar estructura del proyecto")
     init_parser.add_argument("--root", default=".", help="Raíz del proyecto")
 
     # Comando: start
     start_parser = subparsers.add_parser("start", help="Iniciar nueva sesión")
-    start_parser.add_argument(
-        "type", help="Tipo de tarea (refactor, feature, bugfix, etc)"
-    )
+    start_parser.add_argument("type", help="Tipo de tarea (refactor, feature, bugfix, etc)")
     start_parser.add_argument("description", help="Descripción breve de la tarea")
 
     # Comando: prompt
-    prompt_parser = subparsers.add_parser(
-        "prompt", help="Generar prompt para la sesión actual"
-    )
+    prompt_parser = subparsers.add_parser("prompt", help="Generar prompt para la sesión actual")
     prompt_parser.add_argument("description", help="Descripción detallada de la tarea")
-    prompt_parser.add_argument(
-        "--model", default="deepseek-coder", help="Modelo de IA a usar"
-    )
+    prompt_parser.add_argument("--model", default="deepseek-coder", help="Modelo de IA a usar")
 
     # Comando: example
-    example_parser = subparsers.add_parser(
-        "example", help="Ejecutar workflow de ejemplo"
-    )
+    example_parser = subparsers.add_parser("example", help="Ejecutar workflow de ejemplo")
 
     args = parser.parse_args()
 
@@ -990,20 +958,14 @@ if __name__ == "__main__":
             sessions_dir = manager.context_dir / "sessions"
             for p in sessions_dir.glob(f"{manager.session_id}_*"):
                 if p.is_dir():
-                    manager.current_task = p.name.split("_", 2)[
-                        2
-                    ]  # session_timestamp_tasktype
+                    manager.current_task = p.name.split("_", 2)[2]  # session_timestamp_tasktype
                     break
 
         if not manager.current_task:
             manager.current_task = "general"
 
-        prompt = manager.generate_optimized_prompt(
-            args.description, ai_model=args.model
-        )
-        print(
-            f"✅ Prompt generado en: sessions/{manager.session_id}_{manager.current_task}/"
-        )
+        prompt = manager.generate_optimized_prompt(args.description, ai_model=args.model)
+        print(f"✅ Prompt generado en: sessions/{manager.session_id}_{manager.current_task}/")
         print("📋 Copia el contenido del archivo JSON generado para tu IA.")
 
     elif args.command == "example":
