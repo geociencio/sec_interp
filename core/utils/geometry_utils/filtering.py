@@ -9,7 +9,6 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsGeometry,
     QgsProject,
-    QgsSpatialIndex,
     QgsVectorLayer,
 )
 
@@ -48,22 +47,16 @@ def filter_features_by_buffer(
         query_geom = QgsGeometry(buffer_geometry)
         query_geom.transform(transform)
 
-    # 2. Build Spatial Index (Optimized for repeated queries)
-    index = QgsSpatialIndex(features_layer.getFeatures())
+    # 2. Get candidates using Bounding Box (Provider side filter)
+    # This uses the provider's spatial index directly, avoiding O(N) index build
+    request = QgsFeatureRequest().setFilterRect(query_geom.boundingBox())
 
-    # 3. Get candidates using Bounding Box (Fast R-tree lookup)
-    candidate_ids = index.intersects(query_geom.boundingBox())
-
-    # 4. Precise filtering
+    # 3. Precise filtering
     filtered_features = []
-    if candidate_ids:
-        request = QgsFeatureRequest().setFilterFids(candidate_ids)
-        for feature in features_layer.getFeatures(request):
-            if feature.geometry().intersects(query_geom):
-                filtered_features.append(feature)
+    for feature in features_layer.getFeatures(request):
+        if feature.hasGeometry() and feature.geometry().intersects(query_geom):
+            filtered_features.append(feature)
 
-    logger.debug(
-        f"Spatial Index: {len(candidate_ids)} candidates -> {len(filtered_features)} confirmed"
-    )
+    logger.debug(f"Spatial Filter: confirmed {len(filtered_features)} features intersecting buffer")
 
     return filtered_features
