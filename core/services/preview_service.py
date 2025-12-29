@@ -153,7 +153,7 @@ class PreviewService:
         return result
 
     def _generate_drillholes(self, params: PreviewParams) -> Any | None:
-        """Helper for drillhole trace and interval generation.
+        """Generate drillhole trace and interval data.
 
         Args:
             params: Preview parameters containing drillhole layer and fields.
@@ -248,6 +248,10 @@ class PreviewService:
                 interval_fields=interval_fields,
             )
         except Exception as e:
+            logger.exception(f"Failed to process drillhole intervals: {type(e).__name__}: {e}")
+            import traceback
+
+            logger.exception(traceback.format_exc())
             raise ProcessingError("Failed to process drillhole intervals") from e
 
         logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")

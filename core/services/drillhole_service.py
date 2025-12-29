@@ -13,6 +13,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
     QgsFeature,
+    QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
     QgsRaster,
@@ -206,7 +207,7 @@ class DrillholeService(IDrillholeService):
         list[GeologySegment],
         list[tuple[Any, list[tuple[float, float]], list[GeologySegment]]],
     ]:
-        """Process drillhole interval data and project onto the section.
+        """Generate drillhole trace and interval data and project onto the section.
 
         Args:
             collar_points: List of projected collar tuples from `project_collars`.
@@ -246,24 +247,31 @@ class DrillholeService(IDrillholeService):
             if not collar_point:
                 continue
 
-            # 3. Process individual hole
-            hole_geol, hole_drill = self._process_single_hole(
-                hole_id=hole_id,
-                collar_point=collar_point,
-                collar_z=collar_z,
-                given_depth=given_depth,
-                survey_data=surveys_map.get(hole_id, []),
-                intervals=intervals_map.get(hole_id, []),
-                line_geom=line_geom,
-                line_start=line_start,
-                distance_area=distance_area,
-                buffer_width=buffer_width,
-                section_azimuth=section_azimuth,
-            )
+            try:
+                # 3. Process individual hole
+                hole_geol, hole_drill = self._process_single_hole(
+                    hole_id=hole_id,
+                    collar_point=collar_point,
+                    collar_z=collar_z,
+                    given_depth=given_depth,
+                    survey_data=surveys_map.get(hole_id, []),
+                    intervals=intervals_map.get(hole_id, []),
+                    line_geom=line_geom,
+                    line_start=line_start,
+                    distance_area=distance_area,
+                    buffer_width=buffer_width,
+                    section_azimuth=section_azimuth,
+                )
 
-            if hole_geol:
-                geol_data.extend(hole_geol)
-            drillhole_data.append(hole_drill)
+                if hole_geol:
+                    geol_data.extend(hole_geol)
+                drillhole_data.append(hole_drill)
+            except Exception as e:
+                logger.exception(f"Failed to process hole {hole_id}: {type(e).__name__}: {e}")
+                import traceback
+
+                logger.exception(traceback.format_exc())
+                raise
 
         return geol_data, drillhole_data
 
@@ -281,18 +289,33 @@ class DrillholeService(IDrillholeService):
             A dictionary mapping hole_id to list of data tuples.
 
         """
-        if not layer or not fields.get("id"):
+        if not layer or not layer.isValid():
             return {}
 
-        id_f = fields["id"]
+        id_f = fields.get("id")
+        if not id_f:
+            return {}
+
         # Determine data tuple structure based on context (survey vs interval)
         is_survey = "depth" in fields
 
+        # Validate all required fields are present
+        required = ["depth", "azim", "incl"] if is_survey else ["from", "to", "lith"]
+
+        for field_key in required:
+            if not fields.get(field_key):
+                return {}
+
         result_map: dict[Any, list[tuple]] = {}
-        for feat in layer.getFeatures():
+        if not hole_ids:
+            return {}
+
+        # Use QgsFeatureRequest for efficient filtering
+        ids_str = ", ".join([f"'{hid!s}'" for hid in hole_ids])
+        request = QgsFeatureRequest().setFilterExpression(f'"{id_f}" IN ({ids_str})')
+
+        for feat in layer.getFeatures(request):
             hole_id = feat[id_f]
-            if hole_id not in hole_ids:
-                continue
 
             try:
                 if is_survey:
@@ -379,7 +402,19 @@ class DrillholeService(IDrillholeService):
         if not layer or not id_field:
             return {}
         coords = {}
-        for feat in layer.getFeatures():
+
+        # Fetch only necessary attributes and geometry
+        if use_geom:
+            # Need geometry and id_field only
+            request = QgsFeatureRequest().setSubsetOfAttributes([id_field], layer.fields())
+        else:
+            # Need id_field, x_field, y_field but no geometry
+            request = QgsFeatureRequest().setSubsetOfAttributes(
+                [id_field, x_field, y_field], layer.fields()
+            )
+            request.setFlags(QgsFeatureRequest.NoGeometry)
+
+        for feat in layer.getFeatures(request):
             hole_id = feat[id_field]
             pt = self._extract_point(feat, use_geom, x_field, y_field)
             if pt:
@@ -389,7 +424,7 @@ class DrillholeService(IDrillholeService):
     def _extract_point(
         self, feat: QgsFeature, use_geom: bool, x_f: str, y_f: str
     ) -> QgsPointXY | None:
-        """Helper to extract point from feature geometry or fields."""
+        """Extract point from feature geometry or fields."""
         if use_geom:
             geom = feat.geometry()
             if geom:
