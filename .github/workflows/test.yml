@@ -52,8 +52,8 @@ jobs:
       env:
         SETUPTOOLS_USE_DISTUTILS: stdlib
       run: |
-        uv pip install pytest pytest-cov
-        uv pip install -e ".[dev]"
+        uv pip install setuptools wheel
+        uv pip install --no-build-isolation -e ".[dev]"
 
     - name: Run tests
       env:
