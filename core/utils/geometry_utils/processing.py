@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from qgis import processing
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,
@@ -106,21 +105,3 @@ def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
     # For now it just logs and performs the op if possible
     logger.debug(f"Running geometry operation: {operation}")
     return None
-
-
-def run_processing_algorithm(algorithm_id: str, parameters: dict[str, Any]) -> dict[str, Any]:
-    """Execute a QGIS processing algorithm.
-
-    Args:
-        algorithm_id: The ID of the algorithm to run.
-        parameters: A dictionary of parameters for the algorithm.
-
-    Returns:
-        The algorithm results as a dictionary.
-
-    """
-    try:
-        return processing.run(algorithm_id, parameters)
-    except Exception:
-        logger.exception(f"Error running processing algorithm {algorithm_id}")
-        return {}

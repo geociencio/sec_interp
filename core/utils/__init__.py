@@ -30,7 +30,6 @@ from .geometry import (
     densify_line_by_interval,
     filter_features_by_buffer,
     get_line_vertices,
-    run_processing_algorithm,
 )
 
 # I/O utilities
@@ -99,7 +98,7 @@ __all__ = [
     "parse_strike",
     "prepare_profile_context",
     "project_trajectory_to_section",
-    "run_processing_algorithm",
+    "project_trajectory_to_section",
     # Sampling
     "sample_elevation_along_line",
 ]

@@ -16,7 +16,6 @@ from .geometry_utils.processing import (
     create_memory_layer,
     densify_line_by_interval,
     run_geometry_operation,
-    run_processing_algorithm,
 )
 
 
@@ -28,5 +27,5 @@ __all__ = [
     "filter_features_by_buffer",
     "get_line_vertices",
     "run_geometry_operation",
-    "run_processing_algorithm",
+    "run_geometry_operation",
 ]
