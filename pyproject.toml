@@ -4,7 +4,11 @@ version = "2.4.0"
 description = "QGIS Plugin for geological interpretation and data extraction"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "GPL-2.0-or-later" }
+license = "GPL-2.0-or-later"
+
+[tool.setuptools]
+packages = ["core", "gui", "resources", "exporters", "i18n"]
+
 authors = [
     { name = "Juan M Bernales", email = "juanbernales@gmail.com" }
 ]
