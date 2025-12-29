@@ -1168,8 +1168,8 @@ wheels = [
 
 [[package]]
 name = "qgis-plugin-manager"
-version = "0.3.0"
-source = { git = "https://github.com/geociencio/qgis-plugin-manager#81bd5169b70c8fa71ada9826007d454e8662b9de" }
+version = "0.3.3"
+source = { git = "https://github.com/geociencio/qgis-plugin-manager#abfba0f5b13536e6e3d618d598fe0451bb137327" }
 dependencies = [
     { name = "click" },
     { name = "pathlib" },
