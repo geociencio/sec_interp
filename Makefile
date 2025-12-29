@@ -123,7 +123,7 @@ deploy:
 # The dclean target removes compiled python files from plugin directory
 
 zip: compile
-	uv run qgis-plugin-ci package $(VERSION)
+	uv run qgis-manage package
 
 package: zip
 
