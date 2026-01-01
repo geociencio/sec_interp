@@ -1,6 +1,7 @@
 # This file contains metadata for your plugin.
 
-# This file should be included when you package your plugin.# Mandatory items:
+# This file should be included when you package your plugin.
+# Mandatory items:
 
 [general]
 name=Sec Interp
@@ -30,7 +31,7 @@ changelog=
     * Infrastructure:
       - Migrated to 'uv' for dependency management (uv.lock).
       - Centralized configuration in pyproject.toml.
-      - Pre-commit hooks and Strict Linting (100% QGIS Compliance).
+      - Pre-commit hooks and Strict Linting (100%% QGIS Compliance).
     * Critical Fixes:
       - Stability improvements in Preview rendering and I18n loading.
 
@@ -208,7 +209,7 @@ changelog=
     - Interactive preview visualization
 
 # Tags are comma separated with spaces allowed
-tags=geology, mining, cross-section, borehole, drillhole, exploration, topography, profile, interpretation, dem, interpolation
+tags=geology, mining, cross-section, borehole, drillhole, exploration, topography, profile, interpretation, dem, interpolation, digitizing, snapping, structural geology, subsurface, visualization
 
 homepage=https://github.com/geociencio/sec_interp
 

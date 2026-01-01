@@ -12,6 +12,7 @@ from typing import Any, Optional
 from qgis.core import QgsMapSettings, QgsProject, QgsRectangle
 
 from sec_interp.core.exceptions import DataMissingError, ExportError
+from sec_interp.core.services.access_control_service import AccessControlService
 from sec_interp.core.types import PreviewParams
 from sec_interp.logger_config import get_logger
 
@@ -30,6 +31,7 @@ class ExportService:
 
         """
         self.controller = controller
+        self.access_control = AccessControlService()
 
     def export_data(
         self,
@@ -78,7 +80,7 @@ class ExportService:
             output_folder, struct_data, params, line_crs, csv_exporter, result_msg
         )
         self._export_drillholes(output_folder, drillhole_data, line_crs, result_msg)
-        self._export_interpretations(output_folder, interp_data, line_crs, result_msg)
+        self._export_interpretations(output_folder, interp_data, line_layer, line_crs, result_msg)
         self._export_axes(output_folder, profile_data, line_crs, result_msg)
 
         result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
@@ -172,7 +174,7 @@ class ExportService:
         except Exception as e:
             raise ExportError(f"Drillhole export failed: {e!s}") from e
 
-    def _export_interpretations(self, folder, data, crs, msg):
+    def _export_interpretations(self, folder, data, line_layer, crs, msg):
         """Export interpretation data."""
         if not data:
             return
@@ -180,10 +182,37 @@ class ExportService:
 
         logger.info("✓ Saving interpretation data...")
         try:
+            # 2D Export (Standard)
             Interpretation2DExporter({}).export(
                 folder / "interpretations.shp", {"interpretations": data}
             )
             msg.append("  - interpretations.shp")
+
+            # 3D Export (Restricted Feature)
+            if self.access_control.can_export_3d():
+                from sec_interp.exporters.interpretation_3d_exporter import (
+                    Interpretation3DExporter,
+                )
+
+                logger.info("✓ Saving 3D interpretation data...")
+                # Get section line geometry
+                if line_layer and line_layer.isValid():
+                    line_geom = next(line_layer.getFeatures()).geometry()
+
+                    Interpretation3DExporter().export(
+                        folder / "interpretations_3d.shp",
+                        {
+                            "interpretations": data,
+                            "section_line": line_geom,
+                            "crs": crs,
+                        },
+                    )
+                    msg.append("  - interpretations_3d.shp (3D)")
+                else:
+                    logger.warning("Invalid section line layer, skipping 3D export.")
+            else:
+                logger.info("3D Export features are restricted for this user.")
+
         except Exception as e:
             raise ExportError(f"Interpretation export failed: {e!s}") from e
 
