@@ -198,6 +198,18 @@ class MockQgsGeometry(MockQgsBase):
     def asMultiPolyline(self):
         return [self._polyline]
 
+    def isGeosValid(self):
+        return True
+
+    def makeValid(self):
+        return self
+
+    def isNull(self):
+        return False
+
+    def wkbType(self):
+        return self._wkb_type
+
     def asPoint(self):
         return self._point
 
@@ -355,6 +367,9 @@ class MockQgsFeature:
     def setGeometry(self, geom):
         self._geometry = geom
 
+    def setFields(self, fields):
+        self._fields = fields
+
     def setAttributes(self, attributes):
         if isinstance(attributes, list):
             for i, val in enumerate(attributes):
@@ -426,7 +441,7 @@ class MockQgsPointXY:
         return True
 
 class MockQgsField(MockQgsBase):
-    def __init__(self, name, field_type=10):
+    def __init__(self, name=None, field_type=10, *args, **kwargs):
         super().__init__()
         self._name = name
         self._type = field_type
@@ -578,12 +593,21 @@ class MockQgsSingleSymbolRenderer(MockQObject):
 # Define custom mock widgets - MockQObject is defined earlier
 
 class MockQApplication(MockQObject):
+    _instance = None
+
     def __init__(self, args):
         super().__init__()
+        MockQApplication._instance = self
+        self._thread = MockQThread()
 
     @staticmethod
     def instance():
-        return MockQApplication([])
+        if MockQApplication._instance is None:
+            MockQApplication._instance = MockQApplication([])
+        return MockQApplication._instance
+
+    def thread(self):
+        return self._thread
 
 class MockQWidget(MockQObject):
     def __init__(self, parent=None):
@@ -600,6 +624,8 @@ class MockQWidget(MockQObject):
         return []
 
 class MockQThread(MockQObject):
+    _main_thread = None
+
     def __init__(self, parent=None):
         super().__init__()
         # Mock signal factory usage for finished
@@ -607,6 +633,12 @@ class MockQThread(MockQObject):
         m.emit = MagicMock()
         self.finished = m
         self.started = m # Reusing mock for simplicity
+
+    @classmethod
+    def currentThread(cls):
+        if cls._main_thread is None:
+            cls._main_thread = MockQThread()
+        return cls._main_thread
 
     def start(self):
         self.run()
@@ -871,6 +903,7 @@ if not CORE_AVAILABLE:
     mock_qtcore.pyqtSignal = mock_signal
     mock_qtcore.QObject = MagicMock
     mock_qtcore.QThread = MockQThread
+    mock_qtcore.QCoreApplication = MockQApplication
 
     # Mock QgsMapCanvas as a class to avoid spec issues in type hints
     class MockQgsMapCanvas(MagicMock):

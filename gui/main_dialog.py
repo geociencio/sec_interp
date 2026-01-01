@@ -24,6 +24,7 @@
 Contains the SecInterpDialog class which is the primary UI for the plugin.
 """
 
+import json
 from pathlib import Path
 import tempfile
 import traceback
@@ -58,6 +59,7 @@ from sec_interp.core import utils as scu
 from sec_interp.core import validation as vu
 from sec_interp.core.exceptions import SecInterpError
 from sec_interp.exporters import get_exporter
+from sec_interp.core.types import InterpretationPolygon
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
@@ -131,6 +133,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self.current_canvas = None
         self.current_layers = []
         self.interpretations = []  # Store InterpretationPolygon objects
+        self._load_interpretations()
 
         # Add cache and reset buttons
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
@@ -210,6 +213,7 @@ class SecInterpDialog(SecInterpMainWindow):
             self.settings_manager.save_settings()
 
         logger.info("Closing dialog, cleaning up resources...")
+        self._save_interpretations()
         self.preview_manager.cleanup()
         super().closeEvent(event)
 
@@ -259,6 +263,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Store interpretation
         self.interpretations.append(interpretation)
+        self._save_interpretations()
         logger.info(
             f"Interpretation polygon added: {interpretation.id} "
             f"({len(interpretation.vertices_2d)} vertices)"
@@ -345,6 +350,7 @@ class SecInterpDialog(SecInterpMainWindow):
             return
 
         # Settings saved in closeEvent
+        self._save_interpretations()
         self.accept()
 
     def reject_handler(self):
@@ -404,3 +410,53 @@ class SecInterpDialog(SecInterpMainWindow):
     def _save_user_settings(self):
         """Save user settings via settings_manager."""
         self.settings_manager.save_settings()
+
+    def _save_interpretations(self):
+        """Save interpretations to the QGIS project."""
+        if not self.project:
+            return
+
+        data = []
+        for interp in self.interpretations:
+            data.append(
+                {
+                    "id": interp.id,
+                    "name": interp.name,
+                    "type": interp.type,
+                    "vertices_2d": interp.vertices_2d,
+                    "attributes": interp.attributes,
+                    "color": interp.color,
+                    "created_at": interp.created_at,
+                }
+            )
+
+        json_data = json.dumps(data)
+        self.project.writeEntry("SecInterp", "interpretations", json_data)
+        logger.debug(f"Saved {len(data)} interpretations to project")
+
+    def _load_interpretations(self):
+        """Load interpretations from the QGIS project."""
+        if not self.project:
+            return
+
+        json_data, ok = self.project.readEntry("SecInterp", "interpretations", "[]")
+        if not ok or not json_data:
+            return
+
+        try:
+            data = json.loads(json_data)
+            self.interpretations = []
+            for item in data:
+                interp = InterpretationPolygon(
+                    id=item.get("id", ""),
+                    name=item.get("name", ""),
+                    type=item.get("type", "lithology"),
+                    vertices_2d=[tuple(v) for v in item.get("vertices_2d", [])],
+                    attributes=item.get("attributes", {}),
+                    color=item.get("color", "#FF0000"),
+                    created_at=item.get("created_at", ""),
+                )
+                self.interpretations.append(interp)
+            logger.info(f"Loaded {len(self.interpretations)} interpretations from project")
+        except Exception as e:
+            logger.exception("Failed to load interpretations")

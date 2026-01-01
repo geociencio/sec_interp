@@ -106,6 +106,7 @@ class SecInterp:
         # Create the dialog (after services and translation) and keep reference
         self.dlg = SecInterpDialog(self.iface, self)
         self.dlg.plugin_instance = self
+        self.first_start = True
 
         # Declare instance attributes
         self.actions = []
@@ -220,18 +221,11 @@ class SecInterp:
             self.toolbar = None
 
     def run(self):
-        """Run method that performs all the real work.
-
-        This method initializes the dialog, connects signals and slots,
-        and executes the main event loop for the plugin dialog.
-        """
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the
-        # plugin is started
-        if self.first_start is True:
+        """Run method that performs all the real work."""
+        if self.first_start:
             self.first_start = False
-            self.dlg = SecInterpDialog(self.iface, self)
-            # Update preview renderer with the new dialog's canvas
+            # Dialog is already initialized in __init__
+            # Update preview renderer with the dialog's canvas
             self.preview_renderer.canvas = self.dlg.preview_widget.canvas
 
             # Disconnect default accepted signal once
@@ -242,12 +236,10 @@ class SecInterp:
             self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.process_data)
             self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.dlg.accept)
 
-            # Connect Save button to save only
-            self.dlg.button_box.button(QDialogButtonBox.Save).clicked.connect(
-                self.save_profile_line
-            )
-
-        # show the dialog
+        # Reload interpretations and UI settings to reflect current project state
+        self.dlg._load_interpretations()
+        self.dlg.settings_manager.load_settings()
+        # Show the dialog
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
@@ -419,6 +411,8 @@ class SecInterp:
         self.dlg.current_topo_data = topo_data
         self.dlg.current_geol_data = geol_data
         self.dlg.current_struct_data = struct_data
+        self.dlg.current_drillhole_data = drillhole_data
+
         self.dlg.current_drillhole_data = drillhole_data
 
         # Get preview options from dialog checkboxes

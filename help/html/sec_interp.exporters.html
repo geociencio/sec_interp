@@ -576,6 +576,53 @@ and ‘rows’ (list of tuples or lists).</p></li>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="sec_interp.exporters.Interpretation3DExporter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.exporters.</span></span><span class="sig-name descname"><span class="pre">Interpretation3DExporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.exporters.Interpretation3DExporter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter" title="sec_interp.exporters.base_exporter.BaseExporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExporter</span></code></a></p>
+<p>Exporter for 3D Interpretation polygons (Shapefile 2.5D).</p>
+<p>Initialize the exporter with settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>settings</strong> – Dictionary containing export settings such as:
+- width: Output width in pixels
+- height: Output height in pixels
+- dpi: Dots per inch for resolution
+- background_color: Background color (QColor)
+- legend_renderer: Optional renderer for legend overlay</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.exporters.Interpretation3DExporter.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#sec_interp.exporters.Interpretation3DExporter.export" title="Link to this definition">¶</a></dt>
+<dd><p>Export interpretation data to a 3D Shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_path</strong> – Destination path for the shapefile.</p></li>
+<li><p><strong>data</strong> – Dictionary containing:
+- ‘interpretations’: List of InterpretationPolygon objects.
+- ‘section_line’: QgsGeometry of the section line (LineString).
+- ‘crs’: QgsCoordinateReferenceSystem for the output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if export successful.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.ExportError" title="sec_interp.core.exceptions.ExportError"><strong>ExportError</strong></a> – If data is invalid or export fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.exporters.Interpretation3DExporter.get_supported_extensions">
+<span class="sig-name descname"><span class="pre">get_supported_extensions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.exporters.Interpretation3DExporter.get_supported_extensions" title="Link to this definition">¶</a></dt>
+<dd><p>Get supported extensions.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="sec_interp.exporters.PDFExporter">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.exporters.</span></span><span class="sig-name descname"><span class="pre">PDFExporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.exporters.PDFExporter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="sec_interp.exporters.base_exporter.html#sec_interp.exporters.base_exporter.BaseExporter" title="sec_interp.exporters.base_exporter.BaseExporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExporter</span></code></a></p>
@@ -873,7 +920,7 @@ and ‘raster_res’.</p></li>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2025, Juan M Bernales.
+      &#169;2026, Juan M Bernales.
 
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>

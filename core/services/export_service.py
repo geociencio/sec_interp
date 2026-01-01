@@ -177,6 +177,7 @@ class ExportService:
     def _export_interpretations(self, folder, data, line_layer, crs, msg):
         """Export interpretation data."""
         if not data:
+            logger.info("No interpretations provided for export.")
             return
         from sec_interp.exporters import Interpretation2DExporter
 
@@ -190,16 +191,14 @@ class ExportService:
 
             # 3D Export (Restricted Feature)
             if self.access_control.can_export_3d():
-                from sec_interp.exporters.interpretation_3d_exporter import (
-                    Interpretation3DExporter,
-                )
+                from sec_interp.exporters import Interpretation3DExporter
 
                 logger.info("✓ Saving 3D interpretation data...")
                 # Get section line geometry
                 if line_layer and line_layer.isValid():
                     line_geom = next(line_layer.getFeatures()).geometry()
 
-                    Interpretation3DExporter().export(
+                    Interpretation3DExporter({}).export(
                         folder / "interpretations_3d.shp",
                         {
                             "interpretations": data,

@@ -155,10 +155,33 @@ class PreviewManager:
             logger.info("Using cached data (params unchanged)")
             return self.last_result
 
-        # Generate fresh data - clear interpretations as the section has changed
-        if hasattr(self.dialog, "interpretations"):
-            logger.info("Clearing interpretations due to section change")
-            self.dialog.interpretations = []
+        # Generate fresh data - clear interpretations ONLY if the section geometry has changed
+        # Changing buffer distance or fields shouldn't clear digitized polygons.
+        old_geo_params = getattr(self, "_last_geo_params", None)
+        line_geom = (
+            next(params.line_layer.getFeatures()).geometry().asWkt()
+            if params.line_layer
+            and params.line_layer.isValid()
+            and next(params.line_layer.getFeatures(), None)
+            else None
+        )
+        new_geo_params = (
+            params.line_layer.id() if params.line_layer else None,
+            params.raster_layer.id() if params.raster_layer else None,
+            line_geom,
+        )
+        self._last_geo_params = new_geo_params
+
+        if old_geo_params and old_geo_params != new_geo_params:
+            if hasattr(self.dialog, "interpretations"):
+                logger.info(
+                    "Clearing interpretations due to geometric change (Orientation or Raster changed)"
+                )
+                self.dialog.interpretations = []
+                self.dialog._save_interpretations()
+        elif not old_geo_params:
+            # First run, don't clear anything
+            pass
         transform_context = (
             self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
         )

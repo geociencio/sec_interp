@@ -13,12 +13,13 @@ from qgis.core import (
     QgsField,
     QgsGeometry,
     QgsPoint,
+    QgsPointXY,
     QgsWkbTypes,
     QgsCoordinateReferenceSystem,
     QgsPolygon,
     QgsLineString,
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType, QVariant
 
 from sec_interp.core.exceptions import ExportError
 from sec_interp.exporters.base_exporter import BaseExporter
@@ -64,10 +65,11 @@ class Interpretation3DExporter(BaseExporter):
 
         # Prepare fields
         fields = [
-            QgsField("id", QVariant.String, len=50),
-            QgsField("unit_name", QVariant.String, len=100),
-            QgsField("lithology", QVariant.String, len=50),
-            QgsField("desc", QVariant.String, len=254),
+            QgsField("id", QMetaType.Type.QString, len=50),
+            QgsField("name", QMetaType.Type.QString, len=100),
+            QgsField("type", QMetaType.Type.QString, len=50),
+            QgsField("color", QMetaType.Type.QString, len=10),
+            QgsField("created_at", QMetaType.Type.QString, len=30),
         ]
 
         # Calculate section azimuth and origin
@@ -81,7 +83,7 @@ class Interpretation3DExporter(BaseExporter):
                 line_points = section_line.asPolyline()
 
             p1 = line_points[0]
-            p2 = line_points[-1]  # Use start and end for overall azimuth usually
+            p2 = line_points[-1]
 
             # Calculate azimuth (radians)
             dx = p2.x() - p1.x()
@@ -108,48 +110,53 @@ class Interpretation3DExporter(BaseExporter):
 
             # Set attributes
             feat.setAttribute("id", polygon.id)
-            feat.setAttribute("unit_name", polygon.unit_name)
-            # feat.setAttribute("lithology", polygon.lithology) # Assuming these attrs exist
-            # feat.setAttribute("desc", polygon.description)
+            feat.setAttribute("name", polygon.name)
+            feat.setAttribute("type", polygon.type)
+            feat.setAttribute("color", polygon.color)
+            feat.setAttribute("created_at", polygon.created_at)
 
-            # Transform Geometry: Vertex-wise Affine Transformation
-            points_3d = []
+            # 1. Deduplicate vertices and ensure 2D validity
+            raw_vertices_2d = list(polygon.vertices_2d)
+            if not raw_vertices_2d:
+                continue
 
-            # Close the loop if not closed
-            vertices = polygon.vertices_2d
-            if vertices and vertices[0] != vertices[-1]:
-                vertices.append(vertices[0])
+            # Remove consecutive duplicates
+            dedup_vertices = []
+            for v in raw_vertices_2d:
+                if not dedup_vertices or v != dedup_vertices[-1]:
+                    dedup_vertices.append(v)
 
-            for point_2d in vertices:
-                # 2D Profile coordinates: X = Distance along section, Y = Elevation
-                dist = point_2d.x()
-                elev = point_2d.y()
+            # Close loop if needed
+            if len(dedup_vertices) > 2 and dedup_vertices[0] != dedup_vertices[-1]:
+                dedup_vertices.append(dedup_vertices[0])
 
-                # 3D Transformation
-                # E = E_origin + dist * cos(azimuth)
-                # N = N_origin + dist * sin(azimuth)
-                # Z = Elev
-                east = origin_x + (dist * math.cos(azimuth))
-                north = origin_y + (dist * math.sin(azimuth))
+            if len(dedup_vertices) < 4:  # At least 3 points + 1 closure
+                logger.warning(f"Polygon {polygon.id} has insufficient unique vertices. Skipping.")
+                continue
 
-                points_3d.append(QgsPoint(east, north, elev))
+            # Create 2D geometry first to validate/fix
+            qgs_points_2d = [QgsPointXY(x, y) for x, y in dedup_vertices]
+            geom_2d = QgsGeometry.fromPolygonXY([qgs_points_2d])
 
-            # Create 3D Polygon Geometry
-            # Construct using QgsPolygon and QgsLineString to preserve Z values
-            ring = QgsLineString(points_3d)
-            polygon_geom = QgsPolygon()
-            polygon_geom.setExteriorRing(ring)
-
-            geom = QgsGeometry(polygon_geom)
-
-            if not geom.isGeosValid():
-                logger.warning(
-                    f"Generated 3D geometry for polygon {polygon.id} is invalid. Attempting to fix."
+            if not geom_2d.isGeosValid():
+                logger.info(
+                    f"Correcting 2D geometry for polygon {polygon.id} (e.g. self-intersections)"
                 )
-                geom = geom.makeValid()
+                geom_2d = geom_2d.makeValid()
 
-            feat.setGeometry(geom)
-            features.append(feat)
+            # 2. Project validated 2D vertices to 3D
+            # Note: makeValid might have changed topology (MultiPolygon),
+            # so we iterate over all rings of the validated (potentially multi) geometry.
+
+            # Using asGeometryCollection to be safe across geometry types (Polygon/MultiPolygon)
+            features.extend(
+                self._project_to_3d_features(
+                    geom_2d, polygon, fields, origin_x, origin_y, azimuth, vert_exag=1.0
+                )
+            )  # vert_exag 1.0 because 2D coordinates are already exag in tool? No, tool uses raw canvas coords.
+            # Actually, the tool saves (dist, elev). Elev is NOT exag in the InterpretationPolygon.
+            # It's only exag during rendering.
+            # So vert_exag here should be 1.0 (true geometry).
 
         # Write to Shapefile using BaseExporter logic or QgsVectorFileWriter
         # BaseExporter usage:
@@ -160,6 +167,62 @@ class Interpretation3DExporter(BaseExporter):
         # Let's verify BaseExporter first. Assuming standard QgsVectorFileWriter usage for now.
 
         return self._write_shapefile(output_path, features, fields, QgsWkbTypes.PolygonZ, src_crs)
+
+    def _project_to_3d_features(
+        self,
+        geom_2d: QgsGeometry,
+        polygon: InterpretationPolygon,
+        fields: list[QgsField],
+        origin_x: float,
+        origin_y: float,
+        azimuth: float,
+        vert_exag: float = 1.0,
+    ) -> list[QgsFeature]:
+        """Project a 2D geometry (potentially MultiPolygon) to 3D features."""
+        projected_features = []
+
+        # Handle MultiPolygon by treating it as multiple polygons
+        polygons_2d = geom_2d.asMultiPolygon() if geom_2d.isMultipart() else [geom_2d.asPolygon()]
+
+        for poly_2d in polygons_2d:
+            # poly_2d is a list of rings (list of QgsPointXY)
+            rings_3d = []
+            for ring_2d in poly_2d:
+                points_3d = []
+                for p_2d in ring_2d:
+                    # Apply Affine Transformation
+                    east = origin_x + (p_2d.x() * math.cos(azimuth))
+                    north = origin_y + (p_2d.x() * math.sin(azimuth))
+                    elev = p_2d.y() / vert_exag
+
+                    points_3d.append(QgsPoint(east, north, elev))
+
+                rings_3d.append(QgsLineString(points_3d))
+
+            if not rings_3d:
+                continue
+
+            # Construct 3D Polygon
+            polygon_3d = QgsPolygon()
+            polygon_3d.setExteriorRing(rings_3d[0])
+            for i in range(1, len(rings_3d)):
+                polygon_3d.addInteriorRing(rings_3d[i])
+
+            geom_3d = QgsGeometry(polygon_3d)
+
+            # Create feature
+            feat = QgsFeature()
+            feat.setFields(self._make_fields(fields))
+            feat.setAttribute("id", polygon.id)
+            feat.setAttribute("name", polygon.name)
+            feat.setAttribute("type", polygon.type)
+            feat.setAttribute("color", polygon.color)
+            feat.setAttribute("created_at", polygon.created_at)
+            feat.setGeometry(geom_3d)
+
+            projected_features.append(feat)
+
+        return projected_features
 
     def _write_shapefile(
         self, path: str, features: list[QgsFeature], fields: list[QgsField], wkb_type, crs
@@ -175,8 +238,10 @@ class Interpretation3DExporter(BaseExporter):
         # Note: In QGIS API, we often pass QgsFields object.
         qgs_fields = self._make_fields_obj(fields)
 
+        from qgis.core import QgsProject
+
         writer = QgsVectorFileWriter.create(
-            path, qgs_fields, wkb_type, crs, QgsCoordinateReferenceSystem(), options
+            str(path), qgs_fields, wkb_type, crs, QgsProject.instance().transformContext(), options
         )
 
         if writer.hasError() != QgsVectorFileWriter.NoError:

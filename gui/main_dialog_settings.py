@@ -3,7 +3,7 @@
 This module handles persistence of user settings between sessions.
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from .main_dialog_config import DialogDefaults
 
 from qgis.core import QgsSettings
@@ -36,43 +36,71 @@ class DialogSettingsManager:
             return
 
         # --- Section Page ---
-        self._restore_layer(self.dialog.page_section.line_combo, "section_layer")
-        buffer_dist = self.config.get("buffer_dist")
+        p_sect = self.dialog.page_section
+        self._restore_layer(p_sect.line_combo, "section_layer")
+
+        buffer_dist = self._get_setting("buffer_dist")
         if buffer_dist is not None:
-            self.dialog.page_section.buffer_spin.setValue(float(buffer_dist))
+            p_sect.buffer_spin.setValue(float(buffer_dist))
 
         # --- DEM Page ---
-        self._restore_layer(self.dialog.page_dem.raster_combo, "dem_layer")
-        # Band is trickier as it depends on layer load, try direct index for now
-        band_idx = int(self.config.get("dem_band", 1))
-        # Note: band combo might need reset if layer changes asynchronously
-        self.dialog.page_dem.band_combo.setBand(band_idx)
+        p_dem = self.dialog.page_dem
+        self._restore_layer(p_dem.raster_combo, "dem_layer")
 
-        scale = self.config.get("scale")
+        # Manually sync dependent combos to avoid signal cascade overwrites
+        raster_layer = p_dem.raster_combo.currentLayer()
+        if raster_layer:
+            p_dem.band_combo.setLayer(raster_layer)
+
+        band_idx = self._get_setting("dem_band")
+        if band_idx is not None:
+            p_dem.band_combo.setBand(int(band_idx))
+
+        scale = self._get_setting("scale")
         if scale is not None:
-            self.dialog.page_dem.scale_spin.setValue(float(scale))
+            p_dem.scale_spin.setValue(float(scale))
 
-        vert_exag = self.config.get("vert_exag")
+        vert_exag = self._get_setting("vert_exag")
         if vert_exag is not None:
-            self.dialog.page_dem.vertexag_spin.setValue(float(vert_exag))
+            p_dem.vertexag_spin.setValue(float(vert_exag))
 
         # --- Geology Page ---
-        self._restore_layer(self.dialog.page_geology.layer_combo, "geol_layer")
-        self._restore_field(self.dialog.page_geology.field_combo, "geol_field")
+        p_geol = self.dialog.page_geology
+        self._restore_layer(p_geol.layer_combo, "geol_layer")
+
+        geol_layer = p_geol.layer_combo.currentLayer()
+        if geol_layer:
+            p_geol.field_combo.setLayer(geol_layer)
+        self._restore_field(p_geol.field_combo, "geol_field")
 
         # --- Structure Page ---
-        self._restore_layer(self.dialog.page_struct.layer_combo, "struct_layer")
-        self._restore_field(self.dialog.page_struct.dip_combo, "struct_dip_field")
-        self._restore_field(self.dialog.page_struct.strike_combo, "struct_strike_field")
+        p_struct = self.dialog.page_struct
+        self._restore_layer(p_struct.layer_combo, "struct_layer")
 
-        dip_scale = self.config.get("dip_scale_factor")
+        struct_layer = p_struct.layer_combo.currentLayer()
+        if struct_layer:
+            p_struct.dip_combo.setLayer(struct_layer)
+            p_struct.strike_combo.setLayer(struct_layer)
+
+        self._restore_field(p_struct.dip_combo, "struct_dip_field")
+        self._restore_field(p_struct.strike_combo, "struct_strike_field")
+
+        dip_scale = self._get_setting("dip_scale_factor")
         if dip_scale is not None:
-            self.dialog.page_struct.scale_spin.setValue(float(dip_scale))
+            p_struct.scale_spin.setValue(float(dip_scale))
 
         # --- Drillhole Page ---
         dpage = self.dialog.page_drillhole
         # Collar
         self._restore_layer(dpage.c_layer, "dh_collar_layer")
+        c_layer = dpage.c_layer.currentLayer()
+        if c_layer:
+            dpage.c_id.setLayer(c_layer)
+            dpage.c_x.setLayer(c_layer)
+            dpage.c_y.setLayer(c_layer)
+            dpage.c_z.setLayer(c_layer)
+            dpage.c_depth.setLayer(c_layer)
+
         self._restore_field(dpage.c_id, "dh_collar_id")
         self._restore_check(dpage.chk_use_geom, "dh_use_geom")
         self._restore_field(dpage.c_x, "dh_collar_x")
@@ -82,6 +110,13 @@ class DialogSettingsManager:
 
         # Survey
         self._restore_layer(dpage.s_layer, "dh_survey_layer")
+        s_layer = dpage.s_layer.currentLayer()
+        if s_layer:
+            dpage.s_id.setLayer(s_layer)
+            dpage.s_depth.setLayer(s_layer)
+            dpage.s_azim.setLayer(s_layer)
+            dpage.s_incl.setLayer(s_layer)
+
         self._restore_field(dpage.s_id, "dh_survey_id")
         self._restore_field(dpage.s_depth, "dh_survey_depth")
         self._restore_field(dpage.s_azim, "dh_survey_azim")
@@ -89,15 +124,39 @@ class DialogSettingsManager:
 
         # Interval
         self._restore_layer(dpage.i_layer, "dh_interval_layer")
+        i_layer = dpage.i_layer.currentLayer()
+        if i_layer:
+            dpage.i_id.setLayer(i_layer)
+            dpage.i_from.setLayer(i_layer)
+            dpage.i_to.setLayer(i_layer)
+            dpage.i_lith.setLayer(i_layer)
+
         self._restore_field(dpage.i_id, "dh_interval_id")
         self._restore_field(dpage.i_from, "dh_interval_from")
         self._restore_field(dpage.i_to, "dh_interval_to")
         self._restore_field(dpage.i_lith, "dh_interval_lith")
 
         # Output folder
-        last_dir = self.config.get("last_output_dir")
+        last_dir = self._get_setting("last_output_dir")
         if last_dir:
-            self.dialog.output_widget.setFilePath(last_dir)
+            self.dialog.output_widget.setFilePath(str(last_dir))
+
+        # --- Preview Widget ---
+        pw = self.dialog.preview_widget
+        self._restore_check(pw.chk_topo, "show_topo")
+        self._restore_check(pw.chk_geol, "show_geol")
+        self._restore_check(pw.chk_struct, "show_struct")
+        self._restore_check(pw.chk_drillholes, "show_drillholes")
+        self._restore_check(pw.chk_interpretations, "show_interpretations")
+        self._restore_check(pw.chk_auto_lod, "auto_lod")
+        self._restore_check(pw.chk_adaptive_sampling, "adaptive_sampling")
+
+        max_points = self._get_setting("max_points")
+        if max_points is not None:
+            pw.spin_max_points.setValue(int(max_points))
+
+        # Update all status indicators after bulk restoration
+        self.dialog.status_manager.update_all()
 
     def save_settings(self) -> None:
         """Save user settings for next session."""
@@ -106,13 +165,13 @@ class DialogSettingsManager:
 
         # --- Section Page ---
         self._save_layer(self.dialog.page_section.line_combo, "section_layer")
-        self.config.set("buffer_dist", self.dialog.page_section.buffer_spin.value())
+        self._set_setting("buffer_dist", self.dialog.page_section.buffer_spin.value())
 
         # --- DEM Page ---
         self._save_layer(self.dialog.page_dem.raster_combo, "dem_layer")
-        self.config.set("dem_band", self.dialog.page_dem.band_combo.currentBand())
-        self.config.set("scale", self.dialog.page_dem.scale_spin.value())
-        self.config.set("vert_exag", self.dialog.page_dem.vertexag_spin.value())
+        self._set_setting("dem_band", self.dialog.page_dem.band_combo.currentBand())
+        self._set_setting("scale", self.dialog.page_dem.scale_spin.value())
+        self._set_setting("vert_exag", self.dialog.page_dem.vertexag_spin.value())
 
         # --- Geology Page ---
         self._save_layer(self.dialog.page_geology.layer_combo, "geol_layer")
@@ -122,7 +181,7 @@ class DialogSettingsManager:
         self._save_layer(self.dialog.page_struct.layer_combo, "struct_layer")
         self._save_field(self.dialog.page_struct.dip_combo, "struct_dip_field")
         self._save_field(self.dialog.page_struct.strike_combo, "struct_strike_field")
-        self.config.set("dip_scale_factor", self.dialog.page_struct.scale_spin.value())
+        self._set_setting("dip_scale_factor", self.dialog.page_struct.scale_spin.value())
 
         # --- Drillhole Page ---
         dpage = self.dialog.page_drillhole
@@ -150,7 +209,18 @@ class DialogSettingsManager:
         self._save_field(dpage.i_lith, "dh_interval_lith")
 
         # Output folder
-        self.config.set("last_output_dir", self.dialog.output_widget.filePath())
+        self._set_setting("last_output_dir", self.dialog.output_widget.filePath())
+
+        # --- Preview Widget ---
+        pw = self.dialog.preview_widget
+        self._save_check(pw.chk_topo, "show_topo")
+        self._save_check(pw.chk_geol, "show_geol")
+        self._save_check(pw.chk_struct, "show_struct")
+        self._save_check(pw.chk_drillholes, "show_drillholes")
+        self._save_check(pw.chk_interpretations, "show_interpretations")
+        self._save_check(pw.chk_auto_lod, "auto_lod")
+        self._save_check(pw.chk_adaptive_sampling, "adaptive_sampling")
+        self._set_setting("max_points", pw.spin_max_points.value())
 
     def reset_to_defaults(self) -> None:
         """Reset all dialog inputs to their default values."""
@@ -199,38 +269,82 @@ class DialogSettingsManager:
         # Output folder
         self.dialog.output_widget.setFilePath("")
 
+        # --- Preview Widget ---
+        pw = self.dialog.preview_widget
+        pw.chk_topo.setChecked(True)
+        pw.chk_geol.setChecked(True)
+        pw.chk_struct.setChecked(True)
+        pw.chk_drillholes.setChecked(True)
+        pw.chk_interpretations.setChecked(True)
+        pw.chk_auto_lod.setChecked(False)
+        pw.chk_adaptive_sampling.setChecked(True)
+        pw.spin_max_points.setValue(1000)
+
     # --- Helper Methods ---
+    def _get_setting(self, key: str, default: Any = None) -> Any:
+        """Get setting from Project first, then Global config."""
+        # 1. Try Project
+        val, ok = self.dialog.project.readEntry("SecInterpUI", key, "")
+        if ok and val != "":
+            # Convert back from string if necessary (bools, ints)
+            if val.lower() == "true":
+                return True
+            if val.lower() == "false":
+                return False
+            try:
+                if "." in val:
+                    return float(val)
+                return int(val)
+            except ValueError:
+                return val
+
+        # 2. Try Global fallback
+        if self.config:
+            return self.config.get(key, default)
+        return default
+
+    def _set_setting(self, key: str, value: Any) -> None:
+        """Set setting in both Project and Global config."""
+        # 1. Save to Project
+        self.dialog.project.writeEntry("SecInterpUI", key, str(value))
+
+        # 2. Save to Global
+        if self.config:
+            self.config.set(key, value)
 
     def _save_layer(self, combo, key: str) -> None:
         """Save selected layer ID."""
         layer = combo.currentLayer()
-        if layer:
-            self.config.set(key, layer.id())
-        else:
-            self.config.set(key, "")
+        val = layer.id() if layer else ""
+        self._set_setting(key, val)
 
     def _restore_layer(self, combo, key: str) -> None:
         """Restore layer selection by ID."""
-        layer_id = self.config.get(key)
+        layer_id = self._get_setting(key)
         if layer_id:
-            combo.setLayer(self.dialog.project.mapLayer(layer_id))
+            layer = self.dialog.project.mapLayer(layer_id)
+            if layer:
+                # Block signals to prevent cascade overwrites (e.g. scale suggestion)
+                combo.blockSignals(True)
+                combo.setLayer(layer)
+                combo.blockSignals(False)
 
     def _save_field(self, combo, key: str) -> None:
         """Save selected field name."""
-        self.config.set(key, combo.currentField())
+        self._set_setting(key, combo.currentField())
 
     def _restore_field(self, combo, key: str) -> None:
         """Restore field selection."""
-        field = self.config.get(key)
+        field = self._get_setting(key)
         if field:
             combo.setField(field)
 
     def _save_check(self, checkbox, key: str) -> None:
         """Save checkbox state."""
-        self.config.set(key, checkbox.isChecked())
+        self._set_setting(key, checkbox.isChecked())
 
     def _restore_check(self, checkbox, key: str) -> None:
         """Restore checkbox state."""
-        checked = self.config.get(key)
-        if checked is not None:
+        checked = self._get_setting(key)
+        if checked is not None and checked != "":
             checkbox.setChecked(bool(checked))

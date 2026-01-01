@@ -217,6 +217,10 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
     def _add_point(self, point: QgsPointXY):
         """Add a vertex to the current polygon."""
+        # Prevent adding the exact same point twice in a row (e.g. slow click)
+        if self.points and self.points[-1].compare(point, 1e-6):
+            return
+
         self.points.append(point)
         self._ensure_rubber_band()
         self.rubber_band.addPoint(point, True)

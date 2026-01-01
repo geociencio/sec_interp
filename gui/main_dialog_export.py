@@ -182,6 +182,9 @@ class ExportManager:
                 self.dialog.messagebar.pushMessage("Error", "No profile data generated.", level=1)
                 return False
 
+            num_interps = len(self.dialog.interpretations)
+            logger.info(f"Exporting data: found {num_interps} interpretation(s) in dialog.")
+
             result_msg = self.export_service.export_data(
                 output_folder,
                 params,

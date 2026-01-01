@@ -55,8 +55,9 @@ class TestExportService(BaseTestCase):
     @patch("sec_interp.exporters.DrillholeTraceShpExporter")
     @patch("sec_interp.exporters.DrillholeIntervalShpExporter")
     @patch("sec_interp.exporters.Interpretation2DExporter")
+    @patch("sec_interp.exporters.Interpretation3DExporter")
     @patch("sec_interp.exporters.AxesShpExporter")
-    def test_export_data_all_types(self, mock_axes, mock_interp, mock_dh_int, mock_dh_trace,
+    def test_export_data_all_types(self, mock_axes, mock_interp3d, mock_interp2d, mock_dh_int, mock_dh_trace,
                                 mock_struct, mock_geol, mock_profile, mock_csv):
         """Test export with all data types."""
         from sec_interp.core.types import GeologySegment, StructureMeasurement
@@ -95,12 +96,13 @@ class TestExportService(BaseTestCase):
         mock_struct.return_value.export.assert_called()
         mock_dh_trace.return_value.export.assert_called()
         mock_dh_int.return_value.export.assert_called()
-        mock_interp.return_value.export.assert_called()
+        mock_interp2d.return_value.export.assert_called()
+        # Interpretation3DExporter depends on can_export_3d() settings
 
     @patch("sec_interp.exporters.CSVExporter")
     @patch("sec_interp.exporters.ProfileLineShpExporter")
     @patch("sec_interp.exporters.Interpretation2DExporter")
-    @patch("sec_interp.exporters.interpretation_3d_exporter.Interpretation3DExporter")
+    @patch("sec_interp.exporters.Interpretation3DExporter")
     @patch("sec_interp.exporters.AxesShpExporter")
     def test_export_data_3d_restricted(self, mock_axes, mock_interp3d, mock_interp2d,
                                      mock_profile, mock_csv):
@@ -207,7 +209,7 @@ class TestExportService(BaseTestCase):
             self.service._export_axes(self.output_folder, [(0,0)], MagicMock(), [])
 
     @patch("sec_interp.exporters.Interpretation2DExporter")
-    @patch("sec_interp.exporters.interpretation_3d_exporter.Interpretation3DExporter")
+    @patch("sec_interp.exporters.Interpretation3DExporter")
     def test_export_interpretation_3d_invalid_line(self, mock_3d, mock_2d):
         """Test 3D export with invalid line layer."""
         interp_data = [{"id": 1}]
