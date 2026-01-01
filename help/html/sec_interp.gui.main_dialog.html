@@ -16,30 +16,30 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.gui.main_dialog_cache_handler module" href="sec_interp.gui.main_dialog_cache_handler.html" />
     <link rel="prev" title="sec_interp.gui.legend_widget module" href="sec_interp.gui.legend_widget.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
+
   <section id="module-sec_interp.gui.main_dialog">
 <span id="sec-interp-gui-main-dialog-module"></span><h1>sec_interp.gui.main_dialog module<a class="headerlink" href="#module-sec_interp.gui.main_dialog" title="Link to this heading">¶</a></h1>
 <p>Main Dialog Module.</p>
 <p>Contains the SecInterpDialog class which is the primary UI for the plugin.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.main_dialog.</span></span><span class="sig-name descname"><span class="pre">SecInterpDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.main_dialog.</span></span><span class="sig-name descname"><span class="pre">SecInterpDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugin_instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="sec_interp.gui.ui.main_window.html#sec_interp.gui.ui.main_window.SecInterpMainWindow" title="sec_interp.gui.ui.main_window.SecInterpMainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">SecInterpMainWindow</span></code></a></p>
 <p>Dialog for the SecInterp QGIS plugin.</p>
 <p>This dialog provides the user interface and helper methods to populate
@@ -79,11 +79,11 @@ plugin instance for interaction with the host application.</p>
 </dl>
 </dd></dl>
 
-<p>Constructor.</p>
+<p>Initialize the dialog.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugin_instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Constructor.</p>
+<dd><p>Initialize the dialog.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -230,6 +230,12 @@ plugin instance for interaction with the host application.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.reset_defaults_handler">
+<span class="sig-name descname"><span class="pre">reset_defaults_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.reset_defaults_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Reset all dialog inputs and notify user.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_type">
 <span class="sig-name descname"><span class="pre">get_layer_names_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_type" title="Link to this definition">¶</a></dt>
 <dd><p>Get layer names by type.</p>
@@ -253,7 +259,7 @@ plugin instance for interaction with the host application.</p>
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -319,18 +325,18 @@ plugin instance for interaction with the host application.</p>
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/sec_interp.gui.main_dialog.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>

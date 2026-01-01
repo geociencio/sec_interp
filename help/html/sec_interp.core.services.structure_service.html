@@ -16,73 +16,30 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.core.utils package" href="sec_interp.core.utils.html" />
     <link rel="prev" title="sec_interp.core.services.profile_service module" href="sec_interp.core.services.profile_service.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
-  <section id="module-sec_interp.core.services.structure_service">
-<span id="sec-interp-core-services-structure-service-module"></span><h1>sec_interp.core.services.structure_service module<a class="headerlink" href="#module-sec_interp.core.services.structure_service" title="Link to this heading">¶</a></h1>
-<p>Structure Data Processing Service.</p>
-<p>This module handles the calculation of apparent dips and projection
-of structural measurements (planes, lines) onto the section plane.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="sec_interp.core.services.structure_service.StructureService">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.services.structure_service.</span></span><span class="sig-name descname"><span class="pre">StructureService</span></span><a class="headerlink" href="#sec_interp.core.services.structure_service.StructureService" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="sec_interp.core.interfaces.structure_interface.html#sec_interp.core.interfaces.structure_interface.IStructureService" title="sec_interp.core.interfaces.structure_interface.IStructureService"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStructureService</span></code></a></p>
-<p>Service for projecting structural measurements onto cross-sections.</p>
-<p>This service handles the filtering and projection of structural measurements
-(dip/strike) onto a cross-section plane to calculate apparent dip.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.services.structure_service.StructureService.project_structures">
-<span class="sig-name descname"><span class="pre">project_structures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_lyr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_lyr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsRasterLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_lyr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsVectorLayer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_az</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dip_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strike_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement" title="sec_interp.core.types.StructureMeasurement"><span class="pre">StructureMeasurement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.services.structure_service.StructureService.project_structures" title="Link to this definition">¶</a></dt>
-<dd><p>Project structural measurements onto the cross-section plane.</p>
-<p>Filters structures within a buffer, samples elevation, and calculates
-apparent dip for each measurement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>line_lyr</strong> – The cross-section line vector layer.</p></li>
-<li><p><strong>raster_lyr</strong> – The DEM raster layer for elevation sampling.</p></li>
-<li><p><strong>struct_lyr</strong> – Vector layer containing structural measurements.</p></li>
-<li><p><strong>buffer_m</strong> – Search buffer distance in meters.</p></li>
-<li><p><strong>line_az</strong> – Azimuth of the section line in degrees.</p></li>
-<li><p><strong>dip_field</strong> – Name of the field containing dip values.</p></li>
-<li><p><strong>strike_field</strong> – Name of the field containing strike values.</p></li>
-<li><p><strong>band_number</strong> – Raster band to use for elevation (default: 1).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of StructureMeasurement objects sorted by distance along section.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.DataMissingError" title="sec_interp.core.exceptions.DataMissingError"><strong>DataMissingError</strong></a> – If line layer has no features.</p></li>
-<li><p><a class="reference internal" href="sec_interp.core.exceptions.html#sec_interp.core.exceptions.GeometryError" title="sec_interp.core.exceptions.GeometryError"><strong>GeometryError</strong></a> – If line geometry is invalid.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
 
-</dd></dl>
-
+  <section id="sec-interp-core-services-structure-service-module">
+<h1>sec_interp.core.services.structure_service module<a class="headerlink" href="#sec-interp-core-services-structure-service-module" title="Link to this heading">¶</a></h1>
 </section>
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -150,18 +107,18 @@ apparent dip for each measurement.</p>
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/sec_interp.core.services.structure_service.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>

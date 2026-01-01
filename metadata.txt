@@ -20,31 +20,19 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
-    2.4.0 (2025-12-25)
-    * Internationalization (I18n) Support:
-      - Multi-language support: Spanish, French, German, Russian, Portuguese (Brazil)
-      - Complete UI translation with Qt translation system
-      - Automatic language detection based on QGIS locale
-    * Major Architectural Refactoring (Phases 1-6):
-      - Service interfaces with dependency injection
-      - Domain-specific exception hierarchy and centralized error handling
-      - Advanced CacheManager with TTL and LOD awareness
-      - AsyncGeologyProcessor with cancellation tokens
-      - Dataclasses for parameter handling, Python 3.10+ modernization
-      - Google-style docstrings across all core modules
-    * Code Quality Infrastructure:
-      - Pre-commit hooks (ruff, whitespace, YAML/TOML validators)
-      - Automated quality checks on every commit
-      - Metrics history tracking for code evolution analysis
-      - Reduced linting errors by 9%% (287 → 261)
-      - Quality score: 69.1/100, QGIS compliance: 100.0/100
-    * Critical Bug Fixes:
-      - Fixed missing QgsProject import causing preview crashes
-      - Fixed preview rendering by assigning Project CRS to memory layers
-      - Fixed RuntimeError in Page initialization (super().__init__ order)
-      - Fixed empty translations (removed type="unfinished" attributes)
-      - Fixed Russian translation XML corruption
-      - Fixed false positive ValidationError for drillhole layers
+    2.4.0 (2025-12-31)
+    * Major Features:
+      - Internationalization System: 5 languages (ES, FR, DE, RU, PT_BR) with auto-locale detection.
+      - Interpretation Tool: Interactive feature digitizing on profile with smart snapping and auto-styling.
+    * Architecture & Refactoring:
+      - Complete Core Refactoring (Phases 1-6): DI, Exceptions, CacheManager, Async, Validation.
+      - GUI Decomposition: Split main dialog into specialized managers.
+    * Infrastructure:
+      - Migrated to 'uv' for dependency management (uv.lock).
+      - Centralized configuration in pyproject.toml.
+      - Pre-commit hooks and Strict Linting (100% QGIS Compliance).
+    * Critical Fixes:
+      - Stability improvements in Preview rendering and I18n loading.
 
     2.3.0 (2025-12-25)
     * Enhanced Multi-Point Measurement Tool:

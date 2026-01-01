@@ -888,8 +888,8 @@ wheels = [
 
 [[package]]
 name = "qgis-plugin-analyzer"
-version = "0.4.0"
-source = { git = "https://github.com/geociencio/qgis-plugin-analyzer.git#345171b90effe050880aa79d92ac0752c2674227" }
+version = "0.6.1"
+source = { git = "https://github.com/geociencio/qgis-plugin-analyzer.git#3e89255f117f65fcce64c8b395548a6fa9977dd2" }
 
 [[package]]
 name = "qgis-plugin-manager"

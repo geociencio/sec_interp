@@ -23,6 +23,8 @@
 **Major Architectural Refactoring & Internationalization** — This release brings enterprise-grade improvements:
 
 - **🌍 Internationalization (I18n)**: Full multi-language support for Spanish, French, German, Russian, and Portuguese (Brazil)
+- **🖊️ Interpretation Tool**: Interactive drawing of geological polygons directly on the profile with smart snapping.
+- **📦 Modern Tooling**: Migrated to `uv` for package management and unified configuration in `pyproject.toml`.
 - **🏗️ Architectural Excellence**: Complete refactoring across 6 phases (Service interfaces, Error handling, Performance, Async, Validation, Documentation)
 - **🔧 Code Quality Infrastructure**: Pre-commit hooks, automated quality checks, metrics history tracking
 - **✨ Quality Improvements**: 9% reduction in linting errors (287 → 261), Quality score 69.1/100, QGIS compliance 100/100
@@ -50,7 +52,13 @@ See [CHANGELOG.md](docs/docsec/CHANGELOG.md) for complete details.
 *   **Geology**: Projects polygon outcrops onto the section line, respecting valid lithological boundaries.
 *   **Structure**: Projects dip/strike measurements with configurable buffer zones and apparent dip calculations.
 
-### 3. Professional Export
+### 3. Geological Interpretation
+*   **Interactive Drawing**: Draw interpretation polygons directly on the profile view.
+*   **Smart Snapping**: Accurately snap vertices to existing topographic or geological features.
+*   **Auto-Color**: Automatically assigns vivid colors to distinguish new interpretations.
+*   **Undo/Redo**: Flexible editing with right-click undo support during drawing.
+
+### 4. Professional Export
 *   **Formats**: Export directly to **SHP**, **CSV**, **DXF**, **PDF**, **SVG**, or **PNG**.
 *   **Layout**: Results are ready for CAD integration or reporting.
 

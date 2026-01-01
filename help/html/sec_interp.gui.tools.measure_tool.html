@@ -16,23 +16,23 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.gui.ui package" href="sec_interp.gui.ui.html" />
     <link rel="prev" title="sec_interp.gui.tools.interpretation_tool module" href="sec_interp.gui.tools.interpretation_tool.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
+
   <section id="module-sec_interp.gui.tools.measure_tool">
 <span id="sec-interp-gui-tools-measure-tool-module"></span><h1>sec_interp.gui.tools.measure_tool module<a class="headerlink" href="#module-sec_interp.gui.tools.measure_tool" title="Link to this heading">¶</a></h1>
 <p>Measurement tool for Profile View.</p>
@@ -41,20 +41,20 @@ elevation differences, and slopes in the profile preview window.
 It separates UI event handling from spatial snapping logic.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="sec_interp.gui.tools.measure_tool.ProfileSnapper">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.tools.measure_tool.</span></span><span class="sig-name descname"><span class="pre">ProfileSnapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.gui.QgsMapCanvas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileSnapper" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.tools.measure_tool.</span></span><span class="sig-name descname"><span class="pre">ProfileSnapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QgsMapCanvas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileSnapper" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Helper class to handle point snapping functionality.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.tools.measure_tool.ProfileSnapper.snap">
-<span class="sig-name descname"><span class="pre">snap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.PyQt.QtCore.QPoint</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qgis.core.QgsPointXY</span></span></span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileSnapper.snap" title="Link to this definition">¶</a></dt>
-<dd><p>Finds the nearest vertex or edge to the mouse position.</p>
+<span class="sig-name descname"><span class="pre">snap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPoint</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QgsPointXY</span></span></span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileSnapper.snap" title="Link to this definition">¶</a></dt>
+<dd><p>Find the nearest vertex or edge to the mouse position.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sec_interp.gui.tools.measure_tool.ProfileMeasureTool">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.tools.measure_tool.</span></span><span class="sig-name descname"><span class="pre">ProfileMeasureTool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.tools.measure_tool.</span></span><span class="sig-name descname"><span class="pre">ProfileMeasureTool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QgsMapCanvas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QgsMapToolEmitPoint</span></code></p>
 <p>Map tool for measuring distances in profile view.</p>
 <p>Supports multi-point polyline measurements:
@@ -64,23 +64,59 @@ It separates UI event handling from spatial snapping logic.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sec_interp.gui.tools.measure_tool.ProfileMeasureTool.measurementChanged">
 <span class="sig-name descname"><span class="pre">measurementChanged</span></span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.measurementChanged" title="Link to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<dd><p>str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sec_interp.gui.tools.measure_tool.ProfileMeasureTool.measurementCleared">
+<span class="sig-name descname"><span class="pre">measurementCleared</span></span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.measurementCleared" title="Link to this definition">¶</a></dt>
+<dd><p>str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.tools.measure_tool.ProfileMeasureTool.activate">
-<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.activate" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.activate" title="Link to this definition">¶</a></dt>
+<dd><p>called when set as currently active map tool</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.tools.measure_tool.ProfileMeasureTool.deactivate">
-<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.deactivate" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.deactivate" title="Link to this definition">¶</a></dt>
+<dd><p>called when map tool is being deactivated</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.gui.tools.measure_tool.ProfileMeasureTool.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.tools.measure_tool.ProfileMeasureTool.reset" title="Link to this definition">¶</a></dt>
-<dd><p>Resets the tool state.</p>
+<dd><p>Reset the tool state.</p>
 <p>If measurement is finalized, only clears the points data but keeps
 the visual elements (rubber band and markers) visible.</p>
 </dd></dl>
@@ -126,7 +162,7 @@ After finalizing, the tool is deactivated but results remain visible.</p>
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -194,18 +230,18 @@ After finalizing, the tool is deactivated but results remain visible.</p>
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/sec_interp.gui.tools.measure_tool.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>

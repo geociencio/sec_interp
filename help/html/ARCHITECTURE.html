@@ -12,27 +12,392 @@
     <script src="_static/documentation_options.js?v=b21de401"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="SecInterp - Development Guide" href="DEVELOPMENT_GUIDE.html" />
     <link rel="prev" title="SecInterp User Guide" href="USER_GUIDE.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
+
   <section class="tex2jax_ignore mathjax_ignore" id="secinterp-detailed-project-architecture">
 <h1>SecInterp - Detailed Project Architecture<a class="headerlink" href="#secinterp-detailed-project-architecture" title="Link to this heading">¶</a></h1>
 <blockquote>
@@ -118,7 +483,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 <span id="id2"></span><h2>🏗️ System Architecture<a class="headerlink" href="#system-architecture" title="Link to this heading">¶</a></h2>
 <section id="full-architecture-diagram">
 <h3>Full Architecture Diagram<a class="headerlink" href="#full-architecture-diagram" title="Link to this heading">¶</a></h3>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>graph TB
+<pre  class="mermaid">
+        graph TB
     %% ========== ENTRY POINT ==========
     QGIS[QGIS Application]
     INIT[__init__.py&lt;br/&gt;Entry Point]
@@ -277,9 +643,7 @@ Version 2.2 | Last update: 2025-12-21</p>
     class PROFILE_SVC,GEOLOGY_SVC,STRUCTURE_SVC,DRILLHOLE_SVC,PARALLEL_GEO coreLayer
     class ORCHESTRATOR,BASE_EXP,SHP_EXP,CSV_EXP,PDF_EXP,SVG_EXP,IMG_EXP,PROFILE_EXP,DRILL_EXP exportLayer
     class QGIS_CORE,QGIS_GUI,PYQT5 externalLayer
-</pre></div>
-</div>
-</section>
+    </pre></section>
 </section>
 <hr class="docutils" />
 <section id="visualizing-mermaid-diagrams-in-vs-code">
@@ -291,13 +655,12 @@ Version 2.2 | Last update: 2025-12-21</p>
 <li><p>Alternatively, use the Markdown preview (Ctrl+Shift+V) if you have <code class="docutils literal notranslate"><span class="pre">Markdown</span> <span class="pre">Preview</span> <span class="pre">Mermaid</span> <span class="pre">Support</span></code> (already installed).</p></li>
 </ol>
 <p>Quick Example (edit this block and save to see the preview):</p>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>graph LR
+<pre  class="mermaid">
+        graph LR
   A[User] --&gt; B[SecInterpPlugin]
   B --&gt; C[Generate Profile]
   C --&gt; D[Export SVG/PNG]
-</pre></div>
-</div>
-<hr class="docutils" />
+    </pre><hr class="docutils" />
 </section>
 <section id="gui-layer-user-interface">
 <span id="id3"></span><h2>🖥️ GUI Layer - User Interface<a class="headerlink" href="#gui-layer-user-interface" title="Link to this heading">¶</a></h2>
@@ -425,7 +788,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 <strong>Responsibility</strong>: Renders the preview canvas using native PyQGIS</p>
 <section id="renderer-architecture">
 <h4>Renderer Architecture<a class="headerlink" href="#renderer-architecture" title="Link to this heading">¶</a></h4>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>graph LR
+<pre  class="mermaid">
+        graph LR
     A[render] --&gt; B[_create_topo_layer]
     A --&gt; C[_create_geol_layer]
     A --&gt; D[_create_struct_layer]
@@ -441,9 +805,7 @@ Version 2.2 | Last update: 2025-12-21</p>
     H --&gt; K[QgsVectorLayer]
     I --&gt; K
     J --&gt; K
-</pre></div>
-</div>
-</section>
+    </pre></section>
 <section id="lod-optimization-methods">
 <h4>LOD Optimization Methods<a class="headerlink" href="#lod-optimization-methods" title="Link to this heading">¶</a></h4>
 <table class="docutils align-default">
@@ -568,28 +930,27 @@ Version 2.2 | Last update: 2025-12-21</p>
 <strong>Responsibility</strong>: Generates geological profiles by intersecting polygons</p>
 <section id="processing-flow">
 <h4>Processing Flow<a class="headerlink" href="#processing-flow" title="Link to this heading">¶</a></h4>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>sequenceDiagram
+<pre  class="mermaid">
+        sequenceDiagram
     participant Client
     participant GeoService as GeologyService
-    participant QGIS as QGIS Processing
     participant Utils as Utils
 
     Client-&gt;&gt;GeoService: generate_geological_profile()
     GeoService-&gt;&gt;GeoService: _generate_master_profile_data()
-    GeoService-&gt;&gt;QGIS: _perform_intersection()
-    QGIS--&gt;&gt;GeoService: intersection_layer
 
-    loop For each feature
-        GeoService-&gt;&gt;GeoService: _process_intersection_feature()
-        GeoService-&gt;&gt;GeoService: _create_segment_from_geometry()
+    %% Optimized PyQGIS Intersection
+    GeoService-&gt;&gt;GeoService: QgsFeatureRequest.setFilterRect()
+
+    loop For each candidate feature
+        GeoService-&gt;&gt;GeoService: QgsGeometry.intersection()
+        GeoService-&gt;&gt;GeoService: _process_intersection_geometry()
         GeoService-&gt;&gt;Utils: interpolate_elevation()
         Utils--&gt;&gt;GeoService: elevation_points
     end
 
     GeoService--&gt;&gt;Client: List[GeologySegment]
-</pre></div>
-</div>
-</section>
+    </pre></section>
 <section id="key-methods">
 <h4>Key Methods<a class="headerlink" href="#key-methods" title="Link to this heading">¶</a></h4>
 <table class="docutils align-default">
@@ -638,7 +999,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 <strong>Responsibility</strong>: Projects structural measurements (dip/strike)</p>
 <section id="projection-algorithm">
 <h4>Projection Algorithm<a class="headerlink" href="#projection-algorithm" title="Link to this heading">¶</a></h4>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>graph TD
+<pre  class="mermaid">
+        graph TD
     A[Structural Measurement] --&gt; B[Create Buffer]
     B --&gt; C[Filter Structures]
     C --&gt; D[For each structure]
@@ -646,9 +1008,7 @@ Version 2.2 | Last update: 2025-12-21</p>
     E --&gt; F[Interpolate elevation]
     F --&gt; G[Calculate apparent dip]
     G --&gt; H[StructureMeasurement]
-</pre></div>
-</div>
-</section>
+    </pre></section>
 <section id="apparent-dip-calculation">
 <h4>Apparent Dip Calculation<a class="headerlink" href="#apparent-dip-calculation" title="Link to this heading">¶</a></h4>
 <p>The formula used is:</p>
@@ -680,7 +1040,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 <strong>Responsibility</strong>: Processes and projects drillhole data</p>
 <section id="id7">
 <h4>Processing Flow<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>graph TB
+<pre  class="mermaid">
+        graph TB
     A[Collar Layer] --&gt; B[project_collars]
     C[Survey Layer] --&gt; D[process_intervals]
     E[Interval Layer] --&gt; D
@@ -692,9 +1053,7 @@ Version 2.2 | Last update: 2025-12-21</p>
     G --&gt; H[Project to Section]
     H --&gt; I[Create Segments]
     I --&gt; J[Drillhole Data]
-</pre></div>
-</div>
-</section>
+    </pre></section>
 <section id="id8">
 <h4>Main Methods<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
 <p><strong>1. project_collars()</strong></p>
@@ -896,7 +1255,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 <hr class="docutils" />
 <section id="exporter-hierarchy">
 <h3>2. Exporter Hierarchy<a class="headerlink" href="#exporter-hierarchy" title="Link to this heading">¶</a></h3>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>classDiagram
+<pre  class="mermaid">
+        classDiagram
     class BaseExporter {
         &lt;&lt;abstract&gt;&gt;
         +export(path, data)
@@ -934,16 +1294,15 @@ Version 2.2 | Last update: 2025-12-21</p>
     ShapefileExporter &lt;|-- AxesShpExporter
     ShapefileExporter &lt;|-- DrillholeTraceShpExporter
     ShapefileExporter &lt;|-- DrillholeIntervalShpExporter
-</pre></div>
-</div>
-<hr class="docutils" />
+    </pre><hr class="docutils" />
 </section>
 </section>
 <section id="main-data-flows">
 <span id="id11"></span><h2>🔄 Main Data Flows<a class="headerlink" href="#main-data-flows" title="Link to this heading">¶</a></h2>
 <section id="flow-1-preview-generation">
 <h3>Flow 1: Preview Generation<a class="headerlink" href="#flow-1-preview-generation" title="Link to this heading">¶</a></h3>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>sequenceDiagram
+<pre  class="mermaid">
+        sequenceDiagram
     participant User
     participant Dialog as SecInterpDialog
     participant PreviewMgr as PreviewManager
@@ -988,13 +1347,12 @@ Version 2.2 | Last update: 2025-12-21</p>
 
     PreviewMgr--&gt;&gt;Dialog: success
     Dialog--&gt;&gt;User: Display Preview
-</pre></div>
-</div>
-</section>
+    </pre></section>
 <hr class="docutils" />
 <section id="flow-2-data-export">
 <h3>Flow 2: Data Export<a class="headerlink" href="#flow-2-data-export" title="Link to this heading">¶</a></h3>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>sequenceDiagram
+<pre  class="mermaid">
+        sequenceDiagram
     participant User
     participant Dialog
     participant ExportMgr as ExportManager
@@ -1028,13 +1386,12 @@ Version 2.2 | Last update: 2025-12-21</p>
     Orchestrator--&gt;&gt;ExportMgr: result_messages
     ExportMgr--&gt;&gt;Dialog: success
     Dialog--&gt;&gt;User: &quot;All files saved to: {folder}&quot;
-</pre></div>
-</div>
-</section>
+    </pre></section>
 <hr class="docutils" />
 <section id="flow-3-parallel-geological-processing">
 <h3>Flow 3: Parallel Geological Processing<a class="headerlink" href="#flow-3-parallel-geological-processing" title="Link to this heading">¶</a></h3>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>sequenceDiagram
+<pre  class="mermaid">
+        sequenceDiagram
     participant Main as Main Thread
     participant GeoService as GeologyService
     participant ParallelGeo as ParallelGeologyService
@@ -1057,9 +1414,7 @@ Version 2.2 | Last update: 2025-12-21</p>
     Worker-&gt;&gt;ParallelGeo: finished.emit(results)
     ParallelGeo-&gt;&gt;GeoService: return results
     GeoService--&gt;&gt;Main: List[GeologySegment]
-</pre></div>
-</div>
-<hr class="docutils" />
+    </pre><hr class="docutils" />
 </section>
 </section>
 <section id="design-patterns">
@@ -1365,13 +1720,12 @@ Version 2.2 | Last update: 2025-12-21</p>
 </section>
 <section id="distribution-by-layer">
 <h3>Distribution by Layer<a class="headerlink" href="#distribution-by-layer" title="Link to this heading">¶</a></h3>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>pie title Code Distribution by Layer
+<pre  class="mermaid">
+        pie title Code Distribution by Layer
     &quot;Core (53%)&quot; : 8000
     &quot;GUI (33%)&quot; : 5000
     &quot;Exporters (13%)&quot; : 2000
-</pre></div>
-</div>
-</section>
+    </pre></section>
 <section id="complexity-by-module">
 <h3>Complexity by Module<a class="headerlink" href="#complexity-by-module" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default">
@@ -1461,7 +1815,8 @@ Version 2.2 | Last update: 2025-12-21</p>
 </section>
 <section id="dependencies">
 <h3>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h3>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>graph LR
+<pre  class="mermaid">
+        graph LR
     A[SecInterp Plugin] --&gt; B[QGIS Core API]
     A --&gt; C[QGIS GUI API]
     A --&gt; D[PyQt5]
@@ -1475,9 +1830,7 @@ Version 2.2 | Last update: 2025-12-21</p>
     style C fill:#4ecdc4
     style D fill:#95e1d3
     style E fill:#ffd93d
-</pre></div>
-</div>
-</section>
+    </pre></section>
 <section id="feature-coverage">
 <h3>Feature Coverage<a class="headerlink" href="#feature-coverage" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default">
@@ -1631,7 +1984,7 @@ Version 2.2 | Last update: 2025-12-21</p>
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -1708,18 +2061,18 @@ Version 2.2 | Last update: 2025-12-21</p>
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/ARCHITECTURE.md.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>

@@ -16,94 +16,30 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.core.services.profile_service module" href="sec_interp.core.services.profile_service.html" />
     <link rel="prev" title="sec_interp.core.services.geology_service module" href="sec_interp.core.services.geology_service.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
-  <section id="module-sec_interp.core.services.preview_service">
-<span id="sec-interp-core-services-preview-service-module"></span><h1>sec_interp.core.services.preview_service module<a class="headerlink" href="#module-sec_interp.core.services.preview_service" title="Link to this heading">¶</a></h1>
-<p>Preview service for SecInterp.</p>
-<p>This module provides a service to orchestrate the generation of all
-preview components, including topography, structures, and drillholes.
-It remains decoupled from the GUI layer.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="sec_interp.core.services.preview_service.PreviewService">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.services.preview_service.</span></span><span class="sig-name descname"><span class="pre">PreviewService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.services.preview_service.PreviewService" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Orchestrates preview data generation.</p>
-<p>Initialize with plugin controller to access other services.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>controller</strong> – The SecInterpController instance.</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.services.preview_service.PreviewService.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.services.preview_service.PreviewService.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Initialize with plugin controller to access other services.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>controller</strong> – The SecInterpController instance.</p>
-</dd>
-</dl>
-</dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.services.preview_service.PreviewService.calculate_max_points">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_max_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">manual_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_lod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#sec_interp.core.services.preview_service.PreviewService.calculate_max_points" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate the optimal number of points for rendering.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>canvas_width</strong> – Current width of the preview canvas in pixels.</p></li>
-<li><p><strong>manual_max</strong> – User-specified maximum points for plotting.</p></li>
-<li><p><strong>auto_lod</strong> – Whether to use automatic level of detail (LOD).</p></li>
-<li><p><strong>ratio</strong> – Current zoom ratio (full_extent / current_extent).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The optimal number of points to use for 2D rendering.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.services.preview_service.PreviewService.generate_all">
-<span class="sig-name descname"><span class="pre">generate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams" title="sec_interp.core.types.PreviewParams"><span class="pre">PreviewParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult" title="sec_interp.core.types.PreviewResult"><span class="pre">PreviewResult</span></a></span></span><a class="headerlink" href="#sec_interp.core.services.preview_service.PreviewService.generate_all" title="Link to this definition">¶</a></dt>
-<dd><p>Generate all preview components in a consolidated result.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> – Validated parameters for preview generation.</p></li>
-<li><p><strong>transform_context</strong> – QgsCoordinateTransformContext for CRS operations.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A consolidated object containing all generated preview data.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="sec-interp-core-services-preview-service-module">
+<h1>sec_interp.core.services.preview_service module<a class="headerlink" href="#sec-interp-core-services-preview-service-module" title="Link to this heading">¶</a></h1>
 </section>
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -171,18 +107,18 @@ It remains decoupled from the GUI layer.</p>
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/sec_interp.core.services.preview_service.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>

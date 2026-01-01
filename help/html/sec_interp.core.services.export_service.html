@@ -16,98 +16,30 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="sec_interp.core.services.geology_service module" href="sec_interp.core.services.geology_service.html" />
     <link rel="prev" title="sec_interp.core.services.drillhole_service module" href="sec_interp.core.services.drillhole_service.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
 
-  
-  
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+
+
 
   </head><body>
-  
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
-  <section id="module-sec_interp.core.services.export_service">
-<span id="sec-interp-core-services-export-service-module"></span><h1>sec_interp.core.services.export_service module<a class="headerlink" href="#module-sec_interp.core.services.export_service" title="Link to this heading">¶</a></h1>
-<p>Export service for SecInterp.</p>
-<p>This module provides a service to orchestrate all export operations,
-including data (Shapefile, CSV) and preview (PNG, PDF, SVG) exports.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="sec_interp.core.services.export_service.ExportService">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.core.services.export_service.</span></span><span class="sig-name descname"><span class="pre">ExportService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.services.export_service.ExportService" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Service to orchestrate all export operations.</p>
-<p>Initialize the export service.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>controller</strong> – Optional reference to ProfileController for data access.</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.services.export_service.ExportService.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.core.services.export_service.ExportService.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Initialize the export service.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>controller</strong> – Optional reference to ProfileController for data access.</p>
-</dd>
-</dl>
-</dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.services.export_service.ExportService.export_data">
-<span class="sig-name descname"><span class="pre">export_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewParams" title="sec_interp.core.types.PreviewParams"><span class="pre">PreviewParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geol_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drillhole_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interp_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.core.services.export_service.ExportService.export_data" title="Link to this definition">¶</a></dt>
-<dd><p>Export generated data to CSV and Shapefile formats.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>output_folder</strong> – Destination directory for all exported files.</p></li>
-<li><p><strong>params</strong> – Correctly validated parameters for the export run.</p></li>
-<li><p><strong>profile_data</strong> – Topographic profile points (dist, elevation).</p></li>
-<li><p><strong>geol_data</strong> – List of GeologySegment objects.</p></li>
-<li><p><strong>struct_data</strong> – List of StructureMeasurement objects.</p></li>
-<li><p><strong>drillhole_data</strong> – Optional list of drillhole data.</p></li>
-<li><p><strong>interp_data</strong> – Optional list of InterpretationPolygon objects.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of user-friendly log messages.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.core.services.export_service.ExportService.get_map_settings">
-<span class="sig-name descname"><span class="pre">get_map_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qgis.core.QgsRectangle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qgis.core.QgsMapSettings</span></span></span><a class="headerlink" href="#sec_interp.core.services.export_service.ExportService.get_map_settings" title="Link to this definition">¶</a></dt>
-<dd><p>Create and configure QgsMapSettings for canvas or image export.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layers</strong> – List of map layers to be rendered.</p></li>
-<li><p><strong>extent</strong> – The spatial extent (bounding box) of the view.</p></li>
-<li><p><strong>size</strong> – Optional output size in pixels (QSize).</p></li>
-<li><p><strong>background_color</strong> – The background color for the render (QColor).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A configured QgsMapSettings instance ready for rendering.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="sec-interp-core-services-export-service-module">
+<h1>sec_interp.core.services.export_service module<a class="headerlink" href="#sec-interp-core-services-export-service-module" title="Link to this heading">¶</a></h1>
 </section>
 
 
           </div>
-          
+
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
@@ -175,18 +107,18 @@ including data (Shapefile, CSV) and preview (PNG, PDF, SVG) exports.</p>
     </div>
     <div class="footer">
       &#169;2025, Juan M Bernales.
-      
+
       |
       Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
+
       |
       <a href="_sources/sec_interp.core.services.export_service.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
-    
 
-    
+
+
   </body>
 </html>

@@ -5,54 +5,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.4.0] - 2025-12-25
-### Added
-- **Internationalization (I18n) Support**:
-  - Multi-language support for 5 languages: Spanish (ES), French (FR), German (DE), Russian (RU), Portuguese Brazil (PT_BR).
-  - Complete translation of UI strings using Qt's translation system.
-  - Automatic language detection based on QGIS locale.
-  - Translation files (`.ts`) and compiled binaries (`.qm`) for all supported languages.
-  - Scripts for translation management (`update-strings.sh`, `compile-strings.sh`).
-- **Code Quality Infrastructure**:
-  - Pre-commit hooks configured with ruff, trailing-whitespace, end-of-file-fixer, and YAML/TOML validators.
-  - Automated code quality checks on every commit.
-  - Project analyzer with metrics history tracking (`.ai-context/metrics_history.json`).
-- **Development Tools**:
-  - Metrics history logging for tracking code quality evolution over time.
-  - Enhanced project analysis script with performance optimizations.
+## [2.4.0] - 2025-12-31
+### 🚀 Major Features
+- **Internationalization (I18n) System**:
+  - Full support for **5 languages**: Spanish (ES), French (FR), German (DE), Russian (RU), Portuguese Brazil (PT_BR).
+  - Native Qt translation pipeline (`.ts` → `.qm`) with automatic locale detection from QGIS settings.
+  - Dedicated translation management scripts (`update-strings.sh`, `compile-strings.sh`).
+- **New Interpretation Tool**:
+  - Interactive **Polygon Drawing**: digitize geological interpretations directly on the profile view.
+  - **Smart Snapping**: `ProfileSnapper` engine snaps to vertices/edges of projected layers (tolerance ~12px).
+  - **Auto-Styling**: Generates vivid, distinct colors (HSV) for each new interpretation polygon.
+  - **UX Enhancements**: "Undo" (Right-click), Rubber-band real-time preview, and intuitive finalize actions.
 
-### Changed
-- **Major Architectural Refactoring (Phases 1-6)**:
-  - **Phase 1 - Architecture & Decoupling**: Defined service interfaces using `abc.ABC` and `typing.Protocol`, implemented dependency injection in Manager classes.
-  - **Phase 2 - Error Handling & Logging**: Created domain-specific exception hierarchy, implemented centralized error handling, migrated to structured logging.
-  - **Phase 3 - Performance & Optimization**: Advanced CacheManager with TTL and LOD awareness, optimized spatial operations, vectorized geometry calculations.
-  - **Phase 4 - Async & Resource Management**: Refined `AsyncGeologyProcessor` with cancellation tokens, implemented robust resource cleanup with Context Managers.
-  - **Phase 5 - Validation & Modernization**: Used `dataclasses` for parameter handling, refined type hinting with Protocols, modernized to Python 3.10+ features.
-  - **Phase 6 - Documentation & DevExp**: Standardized docstrings to Google format across all `core/` modules, comprehensive I18n implementation.
-- **Code Quality Improvements**:
-  - Replaced deprecated `typing.Dict/List/Tuple` with modern `dict/list/tuple` syntax.
-  - Reduced Ruff linting errors from 287 to 261 (9% improvement).
-  - Fixed syntax errors from automated refactoring.
-  - Normalized whitespace in 158 files.
-  - Quality score: 69.1/100, QGIS compliance: 100.0/100.
+### 🏗️ Architecture & Core Refactoring
+- **Phase 1: Dependency Injection & Interfaces**:
+  - Introduced `core/interfaces/` defining strict contracts for all services (`DrillholeInterface`, `GeologyInterface`, etc.).
+  - Decoupled `Manager` classes using DI principles.
+- **Phase 2: Robust Error Handling**:
+  - Unified exception hierarchy in `core/exceptions.py`.
+  - Structured logging across the entire application with traceable error contexts.
+- **Phase 3: Performance & Caching**:
+  - Advanced `CacheManager` with Time-To-Live (TTL) and Level-of-Detail (LOD) awareness.
+  - Vectorized geometry calculations for massive speedups in spatial operations.
+- **Phase 4: Asynchronous Processing**:
+  - `AsyncGeologyProcessor` with cancellation tokens to prevent UI freezes.
+  - Proper resource cleanup using Python Context Managers.
+- **Phase 5: Modern Python & Validation**:
+  - Adopted `dataclasses` for all data transfer objects (DTOs).
+  - Strongly typed codebase with `typing.Protocol` and Python 3.10+ syntax.
+  - Centralized validation logic in `core/validation/` (Project, Layer, Field validators).
+- **Phase 6: GUI Decomposition**:
+  - Split monolithic `main_dialog.py` into specialized handlers:
+    - `gui/main_dialog_settings.py`
+    - `gui/main_dialog_preview.py`
+    - `gui/main_dialog_tools.py`
+    - `gui/main_dialog_data.py`
 
-### Fixed
-- **Critical Bug Fixes**:
-  - Fixed missing `QgsProject` import in `preview_axes_manager.py` causing preview rendering crashes.
-  - Fixed preview rendering by explicitly assigning Project CRS to memory layers.
-  - Fixed `RuntimeError` in Page classes by calling `super().__init__()` before `self.tr()`.
-  - Fixed empty translations by removing `type="unfinished"` attributes from `.ts` files.
-  - Fixed Russian translation file XML corruption.
-  - Fixed false positive `ValidationError` for drillhole layers.
-- **Translation System Fixes**:
-  - Fixed `lrelease` compilation by properly handling multiple locales in Makefile.
-  - Created translation injection scripts for efficient population of `.ts` files.
-  - Verified translation loading with unit tests.
+### 🔧 Infrastructure & Tooling
+- **Modern Package Management**:
+  - Migrated to **`uv`** for 10-100x faster dependency resolution.
+  - Added `uv.lock` for deterministic, reproducible builds.
+  - Centralized all tool configs (Ruff, Pytest, Pylint) into `pyproject.toml`.
+- **Code Quality Pipeline**:
+  - **Pre-commit Hooks**: strictly enforcing `ruff`, `trailing-whitespace`, and file validity.
+  - **Metrics History**: Tracking code quality evolution in `.ai-context/metrics_history.json`.
+  - **Strict Linting**: 9% reduction in issues, 100% QGIS Plugin compliance score.
 
-### Documentation
-- Updated all `core/` modules with Google-style docstrings.
-- Created comprehensive walkthrough documenting all architectural improvements.
-- Added session artifacts tracking development progress.
+### 🐛 Critical Bug Fixes
+- **Stability**: Fixed `QgsProject` import crash in preview axes manager.
+- **Rendering**: Fixed coordinate reference system (CRS) transformations for memory layers.
+- **I18n**: Fixed Russian XML corruption and empty translation attributes.
+- **Logic**: Resolved `super().__init__()` ordering issues in Page classes and validation false positives.
+
+### 📝 Documentation
+- **Google-Style Docstrings**: Standardized across all `core/` modules.
+- **Research Archive**: Moved internal technical notes to `research/` directory to clean up `docs/`.
+- **New Guides**: Added `research/project_docs/ARCHITECTURE_EN.md` and `DEVELOPMENT_GUIDE.md`.
 
 ## [2.3.0] - 2025-12-25
 ### Added
