@@ -1,16 +1,12 @@
 import sys
 import os
-import unittest
-from pathlib import Path
-
-# Add qgispluginsdev to sys.path to allow importing sec_interp as a package
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
+from tests.base_test import BaseTestCase
 from sec_interp.core.data_cache import DataCache
 
 
-class TestDataCache(unittest.TestCase):
+class TestDataCache(BaseTestCase):
     def setUp(self):
+        super().setUp()
         self.cache = DataCache()
 
     def test_get_cache_key(self):
@@ -46,15 +42,15 @@ class TestDataCache(unittest.TestCase):
         self.assertEqual(retrieved["struct_data"], data["struct_data"])
 
         # Test individual gets (checking compatibility)
-        # In the new API, these now return the full object stored in the respective bucket.
-        self.assertEqual(self.cache.get_topographic_profile(key), data)
+        # In the new API, we use the generic get method
+        self.assertEqual(self.cache.get("topo", key), data)
         self.assertEqual(
-            self.cache.get_geological_profile(key), None
+            self.cache.get("geol", key), None
         )  # Different bucket
         self.cache.set("geol", key, data["geol_data"])
-        self.assertEqual(self.cache.get_geological_profile(key), data["geol_data"])
+        self.assertEqual(self.cache.get("geol", key), data["geol_data"])
         self.cache.set("struct", key, data["struct_data"])
-        self.assertEqual(self.cache.get_structural_data(key), data["struct_data"])
+        self.assertEqual(self.cache.get("struct", key), data["struct_data"])
 
     def test_get_missing(self):
         self.assertIsNone(self.cache.get("topo", "nonexistent_key"))

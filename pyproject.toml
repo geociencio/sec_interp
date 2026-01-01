@@ -19,7 +19,6 @@ packages = ["core", "gui", "resources", "exporters", "i18n"]
 
 [dependency-groups]
 dev = [
-    "pytest>=7.0",
     "ruff>=0.4.0",
     "black==24.1.0",
     "flake8>=6.0",
@@ -59,7 +58,7 @@ exclude = [
     "build",
     ".mypy_cache",
     ".ruff_cache",
-    ".pytest_cache",
+    ".ruff_cache",
     "*.egg-info",
     "help",
     "resources/resources.py",
@@ -117,17 +116,7 @@ line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = 72
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = "-v --tb=short --strict-markers"
-markers = [
-    "unit: Unit tests",
-    "integration: Integration tests",
-    "slow: Slow running tests",
-]
+
 
 [tool.pylint.main]
 fail-under = 10

@@ -1,8 +1,8 @@
-import unittest
+from tests.base_test import BaseTestCase
 from unittest.mock import MagicMock
 from sec_interp.gui.main_dialog import SecInterpDialog
 
-class TestCacheRegression(unittest.TestCase):
+class TestCacheRegression(BaseTestCase):
     def test_clear_cache_handler_attribute_error(self):
         # Mock plugin instance with controller and data_cache
         mock_plugin = MagicMock()
@@ -10,11 +10,11 @@ class TestCacheRegression(unittest.TestCase):
         mock_plugin.controller.data_cache = MagicMock()
 
         # Initialize dialog with mocked plugin
-        # We don't need iface for this specific test as we're testing clear_cache_handler logic
         dialog = SecInterpDialog(iface=None, plugin_instance=mock_plugin)
 
-        # Verify initial state
-        self.assertTrue(hasattr(dialog, "plugin_instance"))
+        # Verify dialog state - just access it, if it raises AssertionError ok, but let's see why
+        # hasattr check was failing. Let's try direct access assertion which gives better error message
+        self.assertEqual(dialog.plugin_instance, mock_plugin)
 
         # This should NOT raise AttributeError anymore
         try:
@@ -24,6 +24,3 @@ class TestCacheRegression(unittest.TestCase):
 
         # Verify that clear() was called on the correct object
         mock_plugin.controller.data_cache.clear.assert_called_once()
-
-if __name__ == "__main__":
-    unittest.main()

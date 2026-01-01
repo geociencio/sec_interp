@@ -1,10 +1,11 @@
 """Tests for GUI utilities."""
 
 from unittest.mock import Mock, patch
+from tests.base_test import BaseTestCase
 from sec_interp.gui.utils import show_user_message
 
 
-class TestShowUserMessage:
+class TestShowUserMessage(BaseTestCase):
     """Tests for show_user_message helper."""
 
     @patch("sec_interp.gui.utils.QMessageBox")
