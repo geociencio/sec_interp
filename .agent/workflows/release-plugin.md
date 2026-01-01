@@ -8,7 +8,7 @@ Este flujo de trabajo guía la preparación, empaquetado y publicación de una n
 // turbo
 1. Actualizar `metadata.txt` con la nueva versión y el log de cambios.
 2. Actualizar `docs/CHANGELOG.md` con los detalles técnicos.
-3. Ejecutar `python analyze_project_optfixed.py` para sincronizar métricas.
+3. Ejecutar `uv run qgis-analyzer analyze .` para sincronizar métricas.
 
 ### 2. Configuración de Exclusiones
 1. Revisar `.gitattributes` para asegurar que los nuevos archivos de desarrollo tengan `export-ignore`.

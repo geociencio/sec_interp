@@ -893,8 +893,8 @@ source = { git = "https://github.com/geociencio/qgis-plugin-analyzer.git#3e89255
 
 [[package]]
 name = "qgis-plugin-manager"
-version = "0.4.0"
-source = { git = "https://github.com/geociencio/qgis-plugin-manager#3d89dcb532e9a9d1f243b5c61f385c914cc86015" }
+version = "0.4.1"
+source = { git = "https://github.com/geociencio/qgis-plugin-manager#da448e25650f2ae242068cbc91eaaf22197a984c" }
 dependencies = [
     { name = "click" },
     { name = "pathlib" },
@@ -964,7 +964,7 @@ wheels = [
 
 [[package]]
 name = "sec-interp"
-version = "2.4.0"
+version = "2.5.0"
 source = { virtual = "." }
 dependencies = [
     { name = "pyqt5" },

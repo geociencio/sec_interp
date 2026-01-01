@@ -8,7 +8,7 @@ This workflow guides the preparation, packaging, and publishing of a new version
 // turbo
 1. Update `metadata.txt` with the new version and changelog.
 2. Update `docs/CHANGELOG.md` with technical details.
-3. Run `python analyze_project_optfixed.py` to synchronize metrics.
+3. Run `uv run qgis-analyzer analyze .` to synchronize metrics.
 
 ### 2. Exclusion Configuration
 1. Review `.gitattributes` to ensure new development files have `export-ignore`.

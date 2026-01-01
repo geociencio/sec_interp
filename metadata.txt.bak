@@ -7,7 +7,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=2.5.0
+version=2.4.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -21,15 +21,6 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
-    2.5.0 (2026-01-01)
-    * Major Features:
-      - 3D Interpretation Export: Export 2D interpretations as real 3D Shapefiles (PolygonZ).
-      - Access Control Service: Infrastructure for managing restricted/Pro features.
-      - Settings Page: New sidebar page to manage plugin configurations and Pro features.
-    * Improvements:
-      - Robust affine transformation for geometric projection of complex folds.
-      - Persistence of plugin settings using QgsSettings.
-
     2.4.0 (2025-12-31)
     * Major Features:
       - Internationalization System: 5 languages (ES, FR, DE, RU, PT_BR) with auto-locale detection.
@@ -40,7 +31,7 @@ changelog=
     * Infrastructure:
       - Migrated to 'uv' for dependency management (uv.lock).
       - Centralized configuration in pyproject.toml.
-      - Pre-commit hooks and Strict Linting (100%% QGIS Compliance).
+      - Pre-commit hooks and Strict Linting (100% QGIS Compliance).
     * Critical Fixes:
       - Stability improvements in Preview rendering and I18n loading.
 
@@ -218,7 +209,7 @@ changelog=
     - Interactive preview visualization
 
 # Tags are comma separated with spaces allowed
-tags=geology, mining, cross-section, borehole, drillhole, exploration, topography, profile, interpretation, dem, interpolation, digitizing, snapping, structural geology, subsurface, visualization
+tags=geology, mining, cross-section, borehole, drillhole, exploration, topography, profile, interpretation, dem, interpolation
 
 homepage=https://github.com/geociencio/sec_interp
 

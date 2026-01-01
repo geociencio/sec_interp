@@ -1,6 +1,6 @@
 [project]
 name = "sec-interp"
-version = "2.4.0"
+version = "2.5.0"
 description = "QGIS Plugin for geological interpretation and data extraction"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -68,6 +68,7 @@ exclude = [
     "**/test*.py",
     "**/*test.py",
     "tests/",
+    "research/",
 ]
 
 [tool.ruff.lint]
