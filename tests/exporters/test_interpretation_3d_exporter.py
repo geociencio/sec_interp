@@ -12,6 +12,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFeature,
     QgsApplication,
+    QgsSettings,
 )
 
 from sec_interp.exporters.interpretation_3d_exporter import Interpretation3DExporter
@@ -24,6 +25,9 @@ class TestInterpretation3DExporter(unittest.TestCase):
         """Initialize QGIS Application."""
         cls.qgs = QgsApplication([], False)
         cls.qgs.initQgis()
+        # Enable 3D export in settings for tests
+        settings = QgsSettings()
+        settings.setValue("sec_interp/enable_3d", True)
 
     @classmethod
     def tearDownClass(cls):
@@ -86,8 +90,6 @@ class TestInterpretation3DExporter(unittest.TestCase):
 
         # Check integrity
         self.assertTrue(geom.isGeosValid())
-
-        # Basic check for presence of Z
         self.assertTrue(QgsWkbTypes.hasZ(geom.wkbType()))
 
     def test_overturned_fold_geometry(self):
