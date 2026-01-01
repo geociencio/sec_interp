@@ -10,6 +10,7 @@ from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsWkbTypes
 from qgis.PyQt.QtCore import QVariant
 
 from sec_interp.core import validation as vu
+from sec_interp.core.exceptions import ValidationError
 
 from .main_dialog_config import ValidationMessages
 
@@ -56,7 +57,7 @@ class DialogValidator:
         try:
             vu.ProjectValidator.validate_all(params)
             return True, ""
-        except vu.ValidationError as e:
+        except ValidationError as e:
             return False, str(e)
 
     def validate_preview_requirements(self) -> tuple[bool, str]:
@@ -65,5 +66,5 @@ class DialogValidator:
         try:
             vu.ProjectValidator.validate_preview_requirements(params)
             return True, ""
-        except vu.ValidationError as e:
+        except ValidationError as e:
             return False, str(e)

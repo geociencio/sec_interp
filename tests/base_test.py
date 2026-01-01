@@ -112,7 +112,7 @@ class MockQgsMapLayer(MockQObject):
     # getFeatures is now an instance attribute
 
     def crs(self):
-        return MagicMock()
+        return self._crs
 
     def rasterUnitsPerPixelX(self):
         return 1.0
@@ -123,8 +123,23 @@ class MockQgsMapLayer(MockQObject):
     def updateExtents(self):
         pass
 
+    def setLabeling(self, labeling):
+        pass
+
+    def setLabelsEnabled(self, enabled):
+        self._labels_enabled = enabled
+
+    def labelsEnabled(self):
+        return getattr(self, '_labels_enabled', False)
+
     def wkbType(self):
         return 3 # QgsWkbTypes.Point
+
+    def extent(self):
+        return MockQgsRectangle(0, 0, 100, 100)
+
+    def extent(self):
+        return MockQgsRectangle(0, 0, 100, 100)
 
 class MockQgsVectorLayer(MockQgsMapLayer):
     def __init__(self, path="path", name="layer", provider="memory", options=None):
@@ -160,6 +175,12 @@ class MockQgsGeometry(MockQgsBase):
         geom = MockQgsGeometry()
         geom._point = point
         geom._wkb_type = 1  # Point
+        return geom
+
+    @staticmethod
+    def fromPolygonXY(polygons):
+        geom = MockQgsGeometry()
+        geom._wkb_type = 3  # Polygon
         return geom
 
     def boundingBox(self):
@@ -270,6 +291,12 @@ class MockQgsGeometry(MockQgsBase):
     def vertices(self):
         return self._polyline
 
+class MockQgsLineString(MockQgsBase):
+    def __init__(self, points):
+        super().__init__()
+        self._points = points
+    def points(self): return self._points
+
 
 class MockQgsCoordinateReferenceSystem(MockQgsBase):
     def __init__(self, authid="EPSG:4326"):
@@ -281,6 +308,9 @@ class MockQgsCoordinateReferenceSystem(MockQgsBase):
 
     def ellipsoidAcronym(self):
         return "WGS84"
+
+    def isValid(self):
+        return True
 
 class MockQgsCoordinateTransform(MockQgsBase):
     def __init__(self, src_crs=None, dest_crs=None, project=None):
@@ -354,6 +384,24 @@ class MockQgsFeature:
 
     def __setitem__(self, key, value):
         self._attributes[key] = value
+
+class MockQgsRectangle(MockQgsBase):
+    def __init__(self, xmin=0, ymin=0, xmax=0, ymax=0):
+        super().__init__()
+        self._xmin, self._ymin, self._xmax, self._ymax = xmin, ymin, xmax, ymax
+    def xMinimum(self): return self._xmin
+    def xMaximum(self): return self._xmax
+    def yMinimum(self): return self._ymin
+    def yMaximum(self): return self._ymax
+    def width(self): return self._xmax - self._xmin
+    def height(self): return self._ymax - self._ymin
+    def isEmpty(self): return self._xmin == self._xmax and self._ymin == self._ymax
+    def __bool__(self): return not self.isEmpty()
+    def combineExtentWith(self, other):
+        self._xmin = min(self._xmin, other.xMinimum())
+        self._ymin = min(self._ymin, other.yMinimum())
+        self._xmax = max(self._xmax, other.xMaximum())
+        self._ymax = max(self._ymax, other.yMaximum())
 
 
 class MockQgsPointXY:
@@ -483,7 +531,49 @@ class MockQgsProject(MockQObject):
         return MagicMock()
 
     def crs(self):
-        return MagicMock()
+        return MockQgsCoordinateReferenceSystem()
+
+class MockQgsPalLayerSettings(MockQObject):
+    class Placement:
+        OverPoint = 0
+        Line = 1
+    class Property:
+        OffsetQuad = 0
+        LabelDistance = 1
+    def __init__(self):
+        super().__init__()
+        self.fieldName = ""
+        self.placement = 0
+        self.dist = 0
+    def setFormat(self, fmt): pass
+    def setDataDefinedProperties(self, props): pass
+
+class MockQgsTextFormat(MockQObject):
+    def __init__(self): super().__init__()
+    def setColor(self, color): pass
+    def setSize(self, size): pass
+
+class MockQgsPropertyCollection(MockQObject):
+    def __init__(self): super().__init__()
+    def setProperty(self, key, prop): pass
+
+class MockQgsProperty(MockQObject):
+    @staticmethod
+    def fromField(name): return MagicMock()
+    @staticmethod
+    def fromExpression(expr): return MagicMock()
+
+class MockQgsVectorLayerSimpleLabeling(MockQObject):
+    def __init__(self, settings): super().__init__()
+
+class MockQgsSymbol(MockQObject):
+    @classmethod
+    def createSimple(cls, props): return MagicMock()
+
+class MockQgsLineSymbol(MockQgsSymbol): pass
+class MockQgsMarkerSymbol(MockQgsSymbol): pass
+class MockQgsSingleSymbolRenderer(MockQObject):
+    def __init__(self, symbol): super().__init__()
 
 # Define custom mock widgets - MockQObject is defined earlier
 
@@ -508,6 +598,29 @@ class MockQWidget(MockQObject):
 
     def findChildren(self, type, name=""):
         return []
+
+class MockQThread(MockQObject):
+    def __init__(self, parent=None):
+        super().__init__()
+        # Mock signal factory usage for finished
+        m = MagicMock()
+        m.emit = MagicMock()
+        self.finished = m
+        self.started = m # Reusing mock for simplicity
+
+    def start(self):
+        self.run()
+
+    def run(self):
+        pass
+
+    def wait(self): pass
+    def quit(self): pass
+    def terminate(self): pass
+    def isFinished(self): return True
+    def isRunning(self): return False
+    def requestInterruption(self): pass
+    def isInterruptionRequested(self): return False
 
     def setStyleSheet(self, style):
         pass
@@ -663,6 +776,8 @@ if not CORE_AVAILABLE:
     mock_core.QgsWkbTypes.Point = 1
     mock_core.QgsWkbTypes.LineString = 2
     mock_core.QgsWkbTypes.Polygon = 3
+    mock_core.QgsWkbTypes.LineStringM = 2  # Simplified for mock
+    mock_core.QgsWkbTypes.PolygonM = 3     # Simplified for mock
 
     def mock_geometry_type(wkb):
         if wkb == 1: # Point
@@ -686,6 +801,19 @@ if not CORE_AVAILABLE:
     mock_core.QgsSpatialIndex = MockQgsSpatialIndex
     mock_core.QgsSettings = MockQgsSettings
     mock_core.QgsCoordinateTransform = MockQgsCoordinateTransform
+    mock_core.QgsRectangle = MockQgsRectangle
+    mock_core.QgsMapSettings = MagicMock()
+    mock_core.QgsMapRendererCustomPainterJob = MagicMock()
+
+    mock_core.QgsProperty = MockQgsProperty
+    mock_core.QgsPropertyCollection = MockQgsPropertyCollection
+    mock_core.QgsLineString = MockQgsLineString
+    mock_core.QgsPalLayerSettings = MockQgsPalLayerSettings
+    mock_core.QgsTextFormat = MockQgsTextFormat
+    mock_core.QgsVectorLayerSimpleLabeling = MockQgsVectorLayerSimpleLabeling
+    mock_core.QgsSingleSymbolRenderer = MockQgsSingleSymbolRenderer
+    mock_core.QgsLineSymbol = MockQgsLineSymbol
+    mock_core.QgsMarkerSymbol = MockQgsMarkerSymbol
 
     class MockQgsMapTool:
         def __init__(self, canvas): self.canvas = canvas
@@ -706,7 +834,10 @@ if not CORE_AVAILABLE:
         def show(self): pass
         def setColor(self, color): pass
         def setFillColor(self, color): pass
+        def setStrokeColor(self, color): pass
         def setWidth(self, width): pass
+        def setToGeometry(self, geom, context): pass
+        def hide(self): pass
 
     class MockQgsVertexMarker:
         ICON_CIRCLE = 0
@@ -739,6 +870,7 @@ if not CORE_AVAILABLE:
         return m
     mock_qtcore.pyqtSignal = mock_signal
     mock_qtcore.QObject = MagicMock
+    mock_qtcore.QThread = MockQThread
 
     # Mock QgsMapCanvas as a class to avoid spec issues in type hints
     class MockQgsMapCanvas(MagicMock):
@@ -760,7 +892,50 @@ if not CORE_AVAILABLE:
     sys.modules["qgis.PyQt.QtCore"] = mock_qtcore
     sys.modules["qgis.PyQt.QtCore"].QPoint = MockQPoint
     sys.modules["qgis.PyQt.QtWidgets"] = mock_qtwidgets
-    sys.modules["qgis.PyQt.QtGui"] = MagicMock()
+
+    mock_gui_lib = MagicMock()
+    # mock_gui_lib.QPainter = lambda *args: MagicMock()
+    # Need QPainter to be a class that can be instantiated
+    class MockQPainter(MagicMock):
+        Antialiasing = 1
+        def __init__(self, *args, **kwargs):
+            # Strip positional args to avoid spec interpretation
+            super().__init__(**kwargs)
+    mock_gui_lib.QPainter = MockQPainter
+
+    class MockQImage(MagicMock):
+        Format_ARGB32 = 0
+        def __init__(self, *args, **kwargs):
+            # Strip positional args to avoid spec interpretation, but safely pass kwargs
+            super().__init__(**kwargs)
+
+    mock_gui_lib.QImage = MockQImage
+    class MockQColor(MagicMock):
+        def isValid(self): return True
+        def darker(self, f=150): return self
+        def setAlpha(self, a): pass
+        def red(self): return 0
+        def green(self): return 0
+        def blue(self): return 0
+        @staticmethod
+        def fromHsv(h, s, v, a=255):
+            return MockQColor()
+    mock_gui_lib.QColor = MockQColor
+    mock_gui_lib.QPen = MagicMock
+    mock_gui_lib.QBrush = MagicMock
+    sys.modules["qgis.PyQt.QtGui"] = mock_gui_lib
+
+    class MockQRectF(MagicMock):
+        def __init__(self, x=0, y=0, w=0, h=0):
+            super().__init__()
+            self._x, self._y, self._w, self._h = x, y, w, h
+        def x(self): return self._x
+        def y(self): return self._y
+        def width(self): return self._w
+        def height(self): return self._h
+    mock_qtcore.QRectF = MockQRectF
+    mock_qtcore.QSize = MagicMock
+
     sys.modules["qgis.PyQt.QtSvg"] = MagicMock()
 
     mock_processing = MagicMock()
