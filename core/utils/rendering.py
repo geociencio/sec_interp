@@ -34,8 +34,9 @@ def calculate_bounds(
     elevs = [p[1] for p in topo_data]
 
     if geol_data:
-        dists.extend([p[0] for p in geol_data])
-        elevs.extend([p[1] for p in geol_data])
+        for segment in geol_data:
+            dists.extend([p[0] for p in segment.points])
+            elevs.extend([p[1] for p in segment.points])
 
     min_d, max_d = min(dists), max(dists)
     min_e, max_e = min(elevs), max(elevs)

@@ -34,6 +34,8 @@ class MockQObject:
         pass
 
 class MockQgsMapLayer(MockQObject):
+    VectorLayer = 0
+    RasterLayer = 1
     class LayerType:
         VectorLayer = 0
         RasterLayer = 1
@@ -46,14 +48,51 @@ class MockQgsMapLayer(MockQObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._dataProvider = MagicMock()
-        self.name = args[1] if len(args) > 1 else "MockLayer" if len(args) > 0 else ""
+        self.name = MagicMock(return_value=args[1] if len(args) > 1 else "MockLayer" if len(args) > 0 else "")
         self.id = MagicMock(return_value="mock_layer_id")
         self.renderer = MagicMock()
-        self.setRenderer = MagicMock()
         self.setRenderer = MagicMock()
         self.setSubsetString = MagicMock()
         self.triggerRepaint = MagicMock()
         self.getFeatures = MagicMock(return_value=iter([]))
+
+        # Data provider mock
+        self._provider = MagicMock()
+        self._dataProvider.return_value = self._provider
+        self.dataProvider = self._dataProvider
+
+        # Default sampling mock
+        self._provider.sample.return_value = (100.0, True)
+        self._provider.identify.return_value = MagicMock()
+        self._provider.identify().isValid.return_value = True
+        self._provider.identify().results.return_value = {1: 100.0}
+
+        self._crs = MockQgsCoordinateReferenceSystem()
+
+    def crs(self):
+        return self._crs
+
+    def fields(self):
+        fields = MagicMock()
+        # Mocking fields as a list of field-like objects
+        f1 = MagicMock()
+        f1.name.return_value = "id"
+        f1.type.return_value = 2 # FieldType.INT
+
+        f2 = MagicMock()
+        f2.name.return_value = "name"
+        f2.type.return_value = 10 # FieldType.STRING
+
+        fields.__iter__.return_value = [f1, f2]
+        fields.names.return_value = ["id", "name"]
+
+        def mock_field(name):
+            if name == "id": return f1
+            if name == "name": return f2
+            return None
+        fields.field.side_effect = mock_field
+
+        return fields
 
     def isValid(self):
         return True
@@ -84,6 +123,9 @@ class MockQgsMapLayer(MockQObject):
     def updateExtents(self):
         pass
 
+    def wkbType(self):
+        return 3 # QgsWkbTypes.Point
+
 class MockQgsVectorLayer(MockQgsMapLayer):
     def __init__(self, path="path", name="layer", provider="memory", options=None):
         # Handle various init signatures
@@ -95,24 +137,29 @@ class MockQgsRasterLayer(MockQgsMapLayer):
 
 
 class MockQgsGeometry(MockQgsBase):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super().__init__()
         self._polyline = []
-        self._point = MockQgsPointXY()
-        self._wkb_type = 1  # LineString
+        if args and isinstance(args[0], MockQgsGeometry):
+            self._polyline = args[0]._polyline
+            self._wkb_type = args[0]._wkb_type
+            self._point = args[0]._point
+        else:
+            self._point = MockQgsPointXY()
+            self._wkb_type = 2  # LineString
 
     @staticmethod
     def fromPolylineXY(points):
         geom = MockQgsGeometry()
         geom._polyline = points
-        geom._wkb_type = 1  # LineString
+        geom._wkb_type = 2  # LineString
         return geom
 
     @staticmethod
     def fromPointXY(point):
         geom = MockQgsGeometry()
         geom._point = point
-        geom._wkb_type = 0  # Point
+        geom._wkb_type = 1  # Point
         return geom
 
     def boundingBox(self):
@@ -133,26 +180,114 @@ class MockQgsGeometry(MockQgsBase):
     def asPoint(self):
         return self._point
 
+    def type(self):
+        if self._wkb_type == 1:
+            return 0  # PointGeometry
+        if self._wkb_type == 2:
+            return 1  # LineGeometry
+        if self._wkb_type == 3:
+            return 2  # PolygonGeometry
+        return 0
+
     def wkbType(self):
         return self._wkb_type
 
     def length(self):
-        return 100.0
+        if len(self._polyline) < 2:
+            return 0.0
+        total = 0.0
+        for i in range(len(self._polyline) - 1):
+            p1 = self._polyline[i]
+            p2 = self._polyline[i+1]
+            total += ((p1.x() - p2.x())**2 + (p1.y() - p2.y())**2)**0.5
+        return total
 
     def interpolate(self, distance):
         # Mock interpolation: assume line is on X axis for simplicity
         return MockQgsGeometry.fromPointXY(MockQgsPointXY(distance, 0.0))
 
+    def lineLocatePoint(self, point_geom):
+        # Mock locate: for horizontal line starting at 0,0, it's just the X coordinate
+        if isinstance(point_geom, MockQgsGeometry):
+            return point_geom.asPoint().x()
+        return 0.0
+
+    def nearestPoint(self, other):
+        # For mocking purposes, check if we're a horizontal line at y=0
+        # and project the point accordingly. This supports drillhole tests.
+        if self._wkb_type == 2 and self._polyline:
+            if all(getattr(pt, "_y", 1) == 0 for pt in self._polyline):
+                try:
+                    other_pt = other.asPoint()
+                    return MockQgsGeometry.fromPointXY(MockQgsPointXY(other_pt.x(), 0.0))
+                except AttributeError:
+                    pass
+        return other
+
+    def simplify(self, tolerance):
+        # For mock, just return self or a copy
+        return self
+
+    def buffer(self, distance, segments):
+        # Simple mock: return a polygon-ish geometry
+        geom = MockQgsGeometry()
+        geom._wkb_type = 2 # Polygon
+        return geom
+
+    def densifyByDistance(self, distance):
+        # Simple mock: just return self
+        return self
+
+    def boundingBox(self):
+        if not self._polyline:
+            return MagicMock()
+        min_x = min(p.x() for p in self._polyline)
+        max_x = max(p.x() for p in self._polyline)
+        min_y = min(p.y() for p in self._polyline)
+        max_y = max(p.y() for p in self._polyline)
+        box = MagicMock()
+        box.width.return_value = max_x - min_x
+        box.height.return_value = max_y - min_y
+        box.xMinimum.return_value = min_x
+        box.xMaximum.return_value = max_x
+        box.yMinimum.return_value = min_y
+        box.yMaximum.return_value = max_y
+        return box
+
+    def intersection(self, other):
+        # Mock intersection: for now just return self if it's not null
+        if self.isNull():
+            return self
+        return self
+
+    def isEmpty(self):
+        return not self._polyline and not self._point
+
+    def transform(self, transform):
+        # Mock transformation: does nothing for now
+        pass
+
+    def vertices(self):
+        return self._polyline
+
 
 class MockQgsCoordinateReferenceSystem(MockQgsBase):
+    def __init__(self, authid="EPSG:4326"):
+        super().__init__()
+        self._authid = authid
+
     def authid(self):
-        return "EPSG:4326"
+        return self._authid
 
     def ellipsoidAcronym(self):
         return "WGS84"
 
-    def mapUnits(self):
-        return 0 # DistanceUnit.Meters -> often 0 or derived from QgsUnitTypes
+class MockQgsCoordinateTransform(MockQgsBase):
+    def __init__(self, src_crs=None, dest_crs=None, project=None):
+        super().__init__()
+
+    def transform(self, geom):
+        pass
 
 
 class MockQgsSpatialIndex:
@@ -164,14 +299,71 @@ class MockQgsSpatialIndex:
 
 
 class MockQgsFeatureRequest:
+    NoGeometry = 1
+
     def setFilterFids(self, fids):
         return self
+
+    def setFilterRect(self, rect):
+        return self
+
+    def setFilterExpression(self, expression):
+        return self
+
+    def setSubsetOfAttributes(self, attributes, fields):
+        return self
+
+    def setFlags(self, flags):
+        return self
+
+
+class MockQgsFeature:
+    def __init__(self, fields=None):
+        self._geometry = MockQgsGeometry()
+        self._attributes = {}
+
+    def setGeometry(self, geom):
+        self._geometry = geom
+
+    def setAttributes(self, attributes):
+        if isinstance(attributes, list):
+            for i, val in enumerate(attributes):
+                self._attributes[i] = val
+        else:
+            self._attributes = attributes
+
+    def setAttribute(self, key, value):
+        self._attributes[key] = value
+
+    def geometry(self):
+        return self._geometry
+
+    def hasGeometry(self):
+        return not self._geometry.isNull()
+
+    def fields(self):
+        fields = MagicMock()
+        fields.names.return_value = list(self._attributes.keys())
+        return fields
+
+    def attributes(self):
+        return list(self._attributes.values())
+
+    def __getitem__(self, key):
+        return self._attributes.get(key)
+
+    def __setitem__(self, key, value):
+        self._attributes[key] = value
 
 
 class MockQgsPointXY:
     def __init__(self, x=0, y=0):
-        self._x = x
-        self._y = y
+        if isinstance(x, MockQgsPointXY):
+            self._x = x.x()
+            self._y = x.y()
+        else:
+            self._x = x
+            self._y = y
 
     def x(self):
         return self._x
@@ -179,6 +371,53 @@ class MockQgsPointXY:
     def y(self):
         return self._y
 
+    def distance(self, other):
+        return ((self._x - other.x())**2 + (self._y - other.y())**2)**0.5
+
+    def isValid(self):
+        return True
+
+class MockQgsField(MockQgsBase):
+    def __init__(self, name, field_type=10):
+        super().__init__()
+        self._name = name
+        self._type = field_type
+    def name(self): return self._name
+    def type(self): return self._type
+
+class MockQgsFields(MockQgsBase):
+    def __init__(self):
+        super().__init__()
+        self._fields = []
+
+    def append(self, field):
+        self._fields.append(field)
+
+    def indexOf(self, name):
+        for i, f in enumerate(self._fields):
+            if f.name() == name:
+                return i
+        return -1
+
+    def names(self):
+        return [f.name() for f in self._fields]
+
+    def count(self):
+        return len(self._fields)
+
+    def __iter__(self):
+        return iter(self._fields)
+
+    def __len__(self):
+        return len(self._fields)
+
+    def field(self, index_or_name):
+        if isinstance(index_or_name, int):
+            return self._fields[index_or_name]
+        for f in self._fields:
+            if f.name() == index_or_name:
+                return f
+        return None
 
 class MockQgsDistanceArea(MockQgsBase):
     def setSourceCrs(self, crs, context):
@@ -186,6 +425,15 @@ class MockQgsDistanceArea(MockQgsBase):
 
     def setEllipsoid(self, ellipsoid):
         pass
+
+    def measureLine(self, p1, p2):
+        # Calculate Euclidean distance for mock validation
+        try:
+            dx = p1.x() - p2.x()
+            dy = p1.y() - p2.y()
+            return (dx**2 + dy**2)**0.5
+        except (AttributeError, TypeError):
+            return 0.0
 
 
 class MockQgsSettings(MockQgsBase):
@@ -203,6 +451,39 @@ class MockQgsSettings(MockQgsBase):
     def remove(self, key):
         if key in self._shared_values:
             del self._shared_values[key]
+
+class MockQgsProject(MockQObject):
+    _instance = None
+
+    def __init__(self):
+        super().__init__()
+        self._layers = {}
+
+    @classmethod
+    def instance(cls):
+        if cls._instance is None:
+            cls._instance = MockQgsProject()
+        return cls._instance
+
+    def mapLayer(self, layer_id):
+        return self._layers.get(layer_id)
+
+    def mapLayers(self):
+        return self._layers
+
+    def addMapLayer(self, layer):
+        self._layers[layer.id()] = layer
+        return layer
+
+    def removeMapLayer(self, layer_id):
+        if layer_id in self._layers:
+            del self._layers[layer_id]
+
+    def transformContext(self):
+        return MagicMock()
+
+    def crs(self):
+        return MagicMock()
 
 # Define custom mock widgets - MockQObject is defined earlier
 
@@ -364,11 +645,8 @@ if not CORE_AVAILABLE:
 
     mock_core = MagicMock()
 
-    # Define MockQgsProject to handle mapLayer calls appropriately
-    mock_project_instance = MagicMock()
-    mock_core.QgsProject.instance.return_value = mock_project_instance
-    # Ensure mapLayer returns a mock
-    mock_project_instance.mapLayer.return_value = MagicMock()
+    # Use MockQgsProject
+    mock_core.QgsProject.instance.side_effect = MockQgsProject.instance
 
     mock_core.QgsMapLayer = MockQgsMapLayer
     mock_core.QgsVectorLayer = MockQgsVectorLayer
@@ -377,28 +655,110 @@ if not CORE_AVAILABLE:
     mock_core.QgsCoordinateReferenceSystem = MockQgsCoordinateReferenceSystem
     mock_core.QgsDistanceArea = MockQgsDistanceArea
     mock_core.QgsPointXY = MockQgsPointXY
-    mock_core.QgsProject.instance().transformContext.return_value = MagicMock()
 
-    # Constants
+    # QgsWkbTypes mapping
     mock_core.QgsWkbTypes.PointGeometry = 0
     mock_core.QgsWkbTypes.LineGeometry = 1
     mock_core.QgsWkbTypes.PolygonGeometry = 2
-    mock_core.QgsWkbTypes.Point = 0
-    mock_core.QgsWkbTypes.LineString = 1
+    mock_core.QgsWkbTypes.Point = 1
+    mock_core.QgsWkbTypes.LineString = 2
+    mock_core.QgsWkbTypes.Polygon = 3
+
+    def mock_geometry_type(wkb):
+        if wkb == 1: # Point
+            return 0 # PointGeometry
+        if wkb == 2: # LineString
+            return 1 # LineGeometry
+        if wkb == 3: # Polygon
+            return 2 # PolygonGeometry
+        return wkb
+
+    mock_core.QgsWkbTypes.geometryType.side_effect = mock_geometry_type
 
     # QgsUnitTypes constants
     mock_core.QgsUnitTypes.DistanceUnit.Meters = 0
     mock_core.QgsUnitTypes.toString = lambda x: "meters"
 
-    mock_core.QgsFeature = MagicMock
+    mock_core.QgsFeature = MockQgsFeature
+    mock_core.QgsField = MockQgsField
+    mock_core.QgsFields = MockQgsFields
     mock_core.QgsFeatureRequest = MockQgsFeatureRequest
     mock_core.QgsSpatialIndex = MockQgsSpatialIndex
     mock_core.QgsSettings = MockQgsSettings
+    mock_core.QgsCoordinateTransform = MockQgsCoordinateTransform
+
+    class MockQgsMapTool:
+        def __init__(self, canvas): self.canvas = canvas
+        def activate(self): pass
+        def deactivate(self): pass
+        def canvasReleaseEvent(self, e): pass
+        def canvasMoveEvent(self, e): pass
+        def keyPressEvent(self, e): pass
+
+    mock_gui = MagicMock()
+    mock_gui.QgsMapTool = MockQgsMapTool
+    mock_gui.QgsMapToolEmitPoint = MockQgsMapTool
+    mock_gui.QgsMapToolPan = MockQgsMapTool
+    class MockQgsRubberBand:
+        def __init__(self, canvas, geometry_type=0): pass
+        def addPoint(self, p, do_update=True): pass
+        def reset(self, geometry_type=0): pass
+        def show(self): pass
+        def setColor(self, color): pass
+        def setFillColor(self, color): pass
+        def setWidth(self, width): pass
+
+    class MockQgsVertexMarker:
+        ICON_CIRCLE = 0
+        ICON_CROSS = 1
+        ICON_X = 2
+
+        def __init__(self, canvas): pass
+        def setCenter(self, p): pass
+        def setColor(self, color): pass
+        def setIconSize(self, size): pass
+        def setIconType(self, type): pass
+        def setPenWidth(self, width): pass
+
+    mock_gui.QgsRubberBand = MockQgsRubberBand
+    mock_gui.QgsVertexMarker = MockQgsVertexMarker
 
     sys.modules["qgis.core"] = mock_core
-    sys.modules["qgis.gui"] = MagicMock()
+    sys.modules["qgis.gui"] = mock_gui
+
+    mock_qtcore = MagicMock()
+    mock_qtcore.Qt.LeftButton = 1
+    mock_qtcore.Qt.RightButton = 2
+    mock_qtcore.Qt.Key_Return = 16777220
+    mock_qtcore.Qt.Key_Enter = 16777221
+    mock_qtcore.Qt.Key_Escape = 16777216
+    mock_qtcore.Qt.CrossCursor = 2
+    def mock_signal(*args, **kwargs):
+        m = MagicMock()
+        m.emit = MagicMock()
+        return m
+    mock_qtcore.pyqtSignal = mock_signal
+    mock_qtcore.QObject = MagicMock
+
+    # Mock QgsMapCanvas as a class to avoid spec issues in type hints
+    class MockQgsMapCanvas(MagicMock):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.scene = MagicMock()
+            self.layers = MagicMock(return_value=[])
+
+    mock_gui.QgsMapCanvas = MockQgsMapCanvas
+
+    class MockQPoint:
+        def __init__(self, x, y):
+            self._x = x
+            self._y = y
+        def x(self): return self._x
+        def y(self): return self._y
+
     sys.modules["qgis.PyQt"] = MagicMock()
-    sys.modules["qgis.PyQt.QtCore"] = MagicMock()
+    sys.modules["qgis.PyQt.QtCore"] = mock_qtcore
+    sys.modules["qgis.PyQt.QtCore"].QPoint = MockQPoint
     sys.modules["qgis.PyQt.QtWidgets"] = mock_qtwidgets
     sys.modules["qgis.PyQt.QtGui"] = MagicMock()
     sys.modules["qgis.PyQt.QtSvg"] = MagicMock()

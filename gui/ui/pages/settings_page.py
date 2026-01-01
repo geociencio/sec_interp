@@ -1,6 +1,7 @@
 """Settings page for Sec Interp plugin."""
 
 from qgis.core import QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QCheckBox, QVBoxLayout, QLabel
 
 from .base_page import BasePage
@@ -11,8 +12,8 @@ class SettingsPage(BasePage):
 
     def __init__(self, parent=None):
         """Initialize the settings page."""
-        super().__init__(self.tr("Plugin Settings"), parent)
         self.settings = QgsSettings()
+        super().__init__(QCoreApplication.translate("SettingsPage", "Plugin Settings"), parent)
 
     def _setup_ui(self):
         """Set up the UI for settings."""

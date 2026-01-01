@@ -117,8 +117,8 @@ class PreviewOptimizer:
                 cosine_angle = max(-1.0, min(1.0, cosine_angle))
                 angle = math.degrees(math.acos(cosine_angle))
 
-            # Angle deviation from 180 (straight line)
-            curvatures.append(abs(180 - angle))
+            # Curvature is the angle deviation between segments
+            curvatures.append(angle)
 
         curvatures.append(0.0)  # Last point has no succeeding segment
         return curvatures
