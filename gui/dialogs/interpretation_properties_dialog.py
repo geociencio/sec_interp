@@ -97,3 +97,7 @@ class InterpretationPropertiesDialog(QDialog):
             self.interpretation.attributes[name] = widget.text()
 
         super().accept()
+
+    def reject(self):
+        """Close dialog without saving."""
+        super().reject()
