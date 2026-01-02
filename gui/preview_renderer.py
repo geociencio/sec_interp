@@ -102,8 +102,13 @@ class PreviewRenderer:
         if topo_layer:
             self.has_topography = True
 
+        topo_fill_layer = self.layer_factory.create_topo_fill_layer(
+            topo_data, vert_exag, max_points
+        )
+
         geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
 
+        # ... rest of data layers ...
         # For structural layer, use topo or geol as reference
         reference_data = (
             topo_data if topo_data else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
@@ -131,9 +136,10 @@ class PreviewRenderer:
             self._render_interpretations(interp_data, vert_exag)
 
         # 3. Collect valid data layers
+        # Order: Structures on top, then Geology, then Topography line, then Fill, then Drillholes
         data_layers = [
             layer
-            for layer in [struct_layer, geol_layer, topo_layer, *drillhole_layers]
+            for layer in [struct_layer, geol_layer, topo_layer, topo_fill_layer, *drillhole_layers]
             if layer is not None
         ]
 
@@ -245,10 +251,10 @@ class PreviewRenderer:
             except (ValueError, TypeError):
                 poly_color = QColor("#FF0000")
 
-            poly_color.setAlpha(120)
+            poly_color.setAlpha(180)  # More vibrant (approx 70%)
             rb.setColor(poly_color)
-            rb.setWidth(1)
-            rb.setStrokeColor(poly_color.darker(150))
+            rb.setWidth(2)  # Slightly thicker border
+            rb.setStrokeColor(poly_color.darker(160))  # More defined border
 
             # Add geometry
             # Points are (dist, elev) -> (x, y * exag)

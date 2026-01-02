@@ -63,13 +63,26 @@ class Interpretation2DExporter(BaseExporter):
         # Create memory layer
         layer = QgsVectorLayer("Polygon?crs=", "interpretations_2d", "memory")
 
+        # 1. Collect all unique attribute keys
+        all_attr_keys = set()
+        for interp in interpretations:
+            if interp.attributes:
+                all_attr_keys.update(interp.attributes.keys())
+
         # Define fields
         fields = QgsFields()
-        fields.append(QgsField("id", QMetaType.Type.QString))
-        fields.append(QgsField("name", QMetaType.Type.QString))
-        fields.append(QgsField("type", QMetaType.Type.QString))
-        fields.append(QgsField("color", QMetaType.Type.QString))
-        fields.append(QgsField("created_at", QMetaType.Type.QString))
+        fields.append(QgsField("id", QMetaType.Type.QString, len=50))
+        fields.append(QgsField("name", QMetaType.Type.QString, len=100))
+        fields.append(QgsField("type", QMetaType.Type.QString, len=50))
+        fields.append(QgsField("color", QMetaType.Type.QString, len=10))
+        fields.append(QgsField("created_at", QMetaType.Type.QString, len=30))
+
+        # Add custom fields
+        sorted_keys = sorted(all_attr_keys)
+        for key in sorted_keys:
+            # For simplicity, we assume String for all custom attributes for now
+            # as they come from QLineEdit in the properties dialog.
+            fields.append(QgsField(key, QMetaType.Type.QString, len=255))
 
         layer.dataProvider().addAttributes(fields)
         layer.updateFields()
@@ -87,17 +100,24 @@ class Interpretation2DExporter(BaseExporter):
             geom = QgsGeometry.fromPolygonXY([points])
 
             # Create feature
-            feature = QgsFeature()
+            feature = QgsFeature(fields)
             feature.setGeometry(geom)
-            feature.setAttributes(
-                [
-                    interp.id,
-                    interp.name,
-                    interp.type,
-                    interp.color,
-                    interp.created_at,
-                ]
-            )
+
+            # Set standard attributes
+            attrs = [
+                interp.id,
+                interp.name,
+                interp.type,
+                interp.color,
+                interp.created_at,
+            ]
+
+            # Set custom attributes
+            for key in sorted_keys:
+                val = interp.attributes.get(key, "")
+                attrs.append(str(val))
+
+            feature.setAttributes(attrs)
             features.append(feature)
 
         layer.dataProvider().addFeatures(features)

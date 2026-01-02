@@ -14,6 +14,7 @@ from qgis.PyQt.QtWidgets import (
 
 from .pages.dem_page import DemPage
 from .pages.drillhole_page import DrillholePage
+from .pages.interpretation_page import InterpretationPage
 from .pages.geology_page import GeologyPage
 from .pages.preview_page import PreviewWidget
 from .pages.section_page import SectionPage
@@ -48,6 +49,7 @@ class SecInterpMainWindow(QDialog):
         self.page_geology = GeologyPage()
         self.page_struct = StructurePage()
         self.page_drillhole = DrillholePage()
+        self.page_interpretation = InterpretationPage()
         self.page_settings = SettingsPage()
 
         self._setup_ui()
@@ -93,6 +95,7 @@ class SecInterpMainWindow(QDialog):
         self.stacked_widget.addWidget(self.page_geology)
         self.stacked_widget.addWidget(self.page_struct)
         self.stacked_widget.addWidget(self.page_drillhole)
+        self.stacked_widget.addWidget(self.page_interpretation)
         self.stacked_widget.addWidget(self.page_settings)
 
         splitter.addWidget(self.stacked_widget)
@@ -129,6 +132,7 @@ class SecInterpMainWindow(QDialog):
         self.sidebar.add_item("Geology", "mIconPolygonLayer.svg")
         self.sidebar.add_item("Structural", "mIconPointLayer.svg")
         self.sidebar.add_item("Drillholes", "mActionDataSourceManager.svg")
+        self.sidebar.add_item("Interpretation", "mActionEdit.svg")
         self.sidebar.add_item("Settings", "mActionOptions.svg")
 
         self.sidebar.setCurrentRow(0)

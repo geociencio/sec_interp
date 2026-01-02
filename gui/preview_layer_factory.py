@@ -22,6 +22,10 @@ from qgis.core import (
     QgsTextFormat,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
+    QgsGraduatedSymbolRenderer,
+    QgsClassificationFixedInterval,
+    QgsStyle,
+    QgsFillSymbol,
 )
 from qgis.PyQt.QtGui import QColor
 
@@ -118,7 +122,7 @@ class PreviewLayerFactory:
         max_points: int = 1000,
         use_adaptive_sampling: bool = False,
     ) -> QgsVectorLayer | None:
-        """Create temporary layer for topographic profile."""
+        """Create temporary layer for topographic profile with polychromatic elevation styling."""
         if not topo_data or len(topo_data) < 2:
             return None
 
@@ -128,25 +132,120 @@ class PreviewLayerFactory:
         else:
             render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
 
-        layer, provider = self.create_memory_layer("LineString", "Topography")
+        # Create layer with elevation field for polychromy
+        layer, provider = self.create_memory_layer("LineString", "Topography", "field=elev:double")
         if not layer:
             return None
 
-        line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_data]
-        line_geom = QgsGeometry.fromPolylineXY(line_points)
+        # Create segments for each pair of points to allow per-segment coloring
+        features = []
+        elevations = [p[1] for p in render_data]
+        min_elev, max_elev = min(elevations), max(elevations)
 
+        for i in range(len(render_data) - 1):
+            p1 = render_data[i]
+            p2 = render_data[i + 1]
+
+            line_points = [
+                QgsPointXY(p1[0], p1[1] * vert_exag),
+                QgsPointXY(p2[0], p2[1] * vert_exag),
+            ]
+            line_geom = QgsGeometry.fromPolylineXY(line_points)
+
+            feat = QgsFeature(layer.fields())
+            feat.setGeometry(line_geom)
+            # Use average elevation for the segment color
+            avg_elev = (p1[1] + p2[1]) / 2.0
+            feat.setAttribute("elev", avg_elev)
+            features.append(feat)
+
+        provider.addFeatures(features)
+
+        # Apply Graduated Renderer (Polychromy)
+
+        # Use a terrain-like color ramp (Greens -> Yellows -> Browns -> Whites)
+        # 'Terrain' or 'Spectral' (inverted) are good targets.
+        style = QgsStyle.defaultStyle()
+        color_ramp = style.colorRamp(
+            "Spectral"
+        )  # Spectral is usually Vales to Peaks if oriented right
+        if not color_ramp:
+            color_ramp = style.colorRamp("RdYlGn")  # Fallback
+
+        # Invert ramp if Spectral (usually Red is low in Spectral? No, Red is high usually)
+        # Let's use Spectral and assume standard. Red (Hot/High) -> Blue (Cold/Low)
+        # Actually in GIS: Green (Low) -> Brown (High)
+        # A simple robust way:
+        ramp = style.colorRamp("RdYlGn")  # Green (High) -> Red (Low) ?
+        # Actually 'BrBG' or 'Terrain'
+        terrain_ramp = style.colorRamp("Terrain")
+
+        renderer = QgsGraduatedSymbolRenderer("elev")
+        renderer.setSourceSymbol(QgsLineSymbol.createSimple({"width": "0.8", "capstyle": "round"}))
+
+        if terrain_ramp:
+            renderer.updateColorRamp(terrain_ramp)
+
+        # Classification
+        num_classes = 8
+        renderer.setClassificationMethod(QgsClassificationFixedInterval())
+        renderer.updateClasses(layer, num_classes)
+
+        layer.setRenderer(renderer)
+        layer.updateExtents()
+        return layer
+
+    def create_topo_fill_layer(
+        self,
+        topo_data: ProfileData,
+        vert_exag: float = 1.0,
+        max_points: int = 1000,
+        base_elevation: float | None = None,
+    ) -> QgsVectorLayer | None:
+        """Create a solid 'curtain' fill layer under the topography for depth."""
+        if not topo_data or len(topo_data) < 2:
+            return None
+
+        render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
+
+        layer, provider = self.create_memory_layer("Polygon", "Topography Fill")
+        if not layer:
+            return None
+
+        # Calculate base line (bottom of the section)
+        elevs = [p[1] for p in topo_data]
+        if base_elevation is None:
+            base_elevation = min(elevs) - (max(elevs) - min(elevs)) * 0.2
+
+        base_y = base_elevation * vert_exag
+
+        # Construct polygon points
+        poly_points = []
+        # Top edge (the profile)
+        for d, e in render_data:
+            poly_points.append(QgsPointXY(d, e * vert_exag))
+
+        # Bottom edge (closing the curtain)
+        poly_points.append(QgsPointXY(render_data[-1][0], base_y))
+        poly_points.append(QgsPointXY(render_data[0][0], base_y))
+        poly_points.append(QgsPointXY(render_data[0][0], render_data[0][1] * vert_exag))
+
+        geom = QgsGeometry.fromPolygonXY([poly_points])
         feat = QgsFeature()
-        feat.setGeometry(line_geom)
+        feat.setGeometry(geom)
         provider.addFeatures([feat])
 
-        symbol = QgsLineSymbol.createSimple(
+        # Style with a subtle earthy gradient or semi-transparent solid
+        symbol = QgsFillSymbol.createSimple(
             {
-                "color": "0,102,204",
-                "width": "0.5",
-                "capstyle": "round",
-                "joinstyle": "round",
+                "color": "130,130,130,40",  # Semi-transparent grey (to remove cenicienta shadows but give structure)
+                "outline_color": "0,0,0,0",  # No stroke
+                "outline_width": "0",
             }
         )
+        # Better: use a dark brown/earthy tone
+        symbol.setColor(QColor(101, 67, 33, 30))  # Earthy brown, very transparent
+
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         layer.updateExtents()
         return layer

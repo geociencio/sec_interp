@@ -20,8 +20,10 @@ from qgis.core import (
     QgsLineString,
 )
 from qgis.PyQt.QtCore import QMetaType, QVariant
+from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.exceptions import ExportError
+from sec_interp.core.types import InterpretationPolygon
 from sec_interp.exporters.base_exporter import BaseExporter
 from sec_interp.logger_config import get_logger
 
@@ -64,6 +66,12 @@ class Interpretation3DExporter(BaseExporter):
             raise ExportError("Section line geometry is required for 3D projection.")
 
         # Prepare fields
+        all_attr_keys = set()
+        for interp in interpretations:
+            if interp.attributes:
+                all_attr_keys.update(interp.attributes.keys())
+        sorted_keys = sorted(all_attr_keys)
+
         fields = [
             QgsField("id", QMetaType.Type.QString, len=50),
             QgsField("name", QMetaType.Type.QString, len=100),
@@ -71,6 +79,10 @@ class Interpretation3DExporter(BaseExporter):
             QgsField("color", QMetaType.Type.QString, len=10),
             QgsField("created_at", QMetaType.Type.QString, len=30),
         ]
+
+        # Add custom fields
+        for key in sorted_keys:
+            fields.append(QgsField(key, QMetaType.Type.QString, len=255))
 
         # Calculate section azimuth and origin
         try:
@@ -151,9 +163,17 @@ class Interpretation3DExporter(BaseExporter):
             # Using asGeometryCollection to be safe across geometry types (Polygon/MultiPolygon)
             features.extend(
                 self._project_to_3d_features(
-                    geom_2d, polygon, fields, origin_x, origin_y, azimuth, vert_exag=1.0
+                    geom_2d,
+                    polygon,
+                    fields,
+                    origin_x,
+                    origin_y,
+                    azimuth,
+                    sorted_keys,
+                    vert_exag=1.0,
                 )
-            )  # vert_exag 1.0 because 2D coordinates are already exag in tool? No, tool uses raw canvas coords.
+            )
+            # vert_exag 1.0 because 2D coordinates are already exag in tool? No, tool uses raw canvas coords.
             # Actually, the tool saves (dist, elev). Elev is NOT exag in the InterpretationPolygon.
             # It's only exag during rendering.
             # So vert_exag here should be 1.0 (true geometry).
@@ -166,7 +186,111 @@ class Interpretation3DExporter(BaseExporter):
         # If BaseExporter is abstract and expects us to bring our own writer, we use QgsVectorFileWriter.
         # Let's verify BaseExporter first. Assuming standard QgsVectorFileWriter usage for now.
 
-        return self._write_shapefile(output_path, features, fields, QgsWkbTypes.PolygonZ, src_crs)
+        success = self._write_shapefile(
+            output_path, features, fields, QgsWkbTypes.PolygonZ, src_crs
+        )
+
+        if success:
+            try:
+                self._generate_qml_style(output_path, interpretations, fields, src_crs)
+            except Exception as e:
+                logger.warning(f"Failed to generate QML style: {e}")
+                # Don't fail the whole export if only QML fails
+
+        return success
+
+    def _generate_qml_style(
+        self,
+        shp_path: Path | str,
+        interpretations: list[InterpretationPolygon],
+        fields: list[QgsField],
+        crs: QgsCoordinateReferenceSystem,
+    ) -> None:
+        """Generate a QML style file for the exported shapefile."""
+        from qgis.core import (
+            QgsVectorLayer,
+            QgsCategorizedSymbolRenderer,
+            QgsRendererCategory,
+            QgsFillSymbol,
+        )
+
+        # Import 3D components if available
+        try:
+            from qgis._3d import QgsPolygon3DSymbol, QgsVectorLayer3DRenderer
+
+            HAS_3D = True
+        except ImportError:
+            HAS_3D = False
+
+        shp_path = Path(shp_path)
+        qml_path = shp_path.with_suffix(".qml")
+
+        # Create a temporary layer to build the style
+        # We use a memory layer with the same schema
+        layer = QgsVectorLayer(f"PolygonZ?crs={crs.authid()}", "temp_style", "memory")
+        layer.dataProvider().addAttributes(fields)
+        layer.updateFields()
+
+        # 1. 2D Categorized Symbology
+        categories = []
+        unique_units = {}  # name -> color
+        for p in interpretations:
+            if p.name not in unique_units:
+                unique_units[p.name] = p.color
+
+        for name, color_hex in unique_units.items():
+            color = QColor(color_hex)
+            if not color.isValid():
+                color = QColor("#FF0000")
+
+            # 2D Symbol
+            symbol = QgsFillSymbol.createSimple(
+                {
+                    "color": f"{color.red()},{color.green()},{color.blue()},180",
+                    "outline_color": f"{color.darker(150).red()},{color.darker(150).green()},{color.darker(150).blue()}",
+                    "outline_width": "0.3",
+                }
+            )
+
+            category = QgsRendererCategory(name, symbol, name)
+            categories.append(category)
+
+        renderer = QgsCategorizedSymbolRenderer("name", categories)
+        layer.setRenderer(renderer)
+
+        # 2. 3D Symbology (Native QGIS 3D)
+        if HAS_3D:
+            symbol_3d = QgsPolygon3DSymbol()
+            # In QGIS 3D, we can set the material to follow the color attribute
+            # or set it based on the data. For simplicity in QML, we can set a
+            # single symbol that uses data defined properties for the material color.
+
+            # Setup data-defined color for 3D material
+            from qgis.core import QgsProperty
+
+            # Diffuse color is the main color of the 3D object
+            symbol_3d.dataDefinedProperties().setProperty(
+                QgsPolygon3DSymbol.Property.Diffuse, QgsProperty.fromField("color")
+            )
+            # Ambient color (usually same as diffuse but darker or same)
+            symbol_3d.dataDefinedProperties().setProperty(
+                QgsPolygon3DSymbol.Property.Ambient, QgsProperty.fromField("color")
+            )
+
+            # Altitude binding to absolute (our Z is absolute interpretation)
+            # symbol_3d.setAltitudeBinding(QgsPolygon3DSymbol.AltBindAbsolute)
+            # symbol_3d.setAltitudeClamping(QgsPolygon3DSymbol.AltClampAbsolute)
+
+            renderer_3d = QgsVectorLayer3DRenderer(symbol_3d)
+            layer.setRenderer3D(renderer_3d)
+            logger.debug("Configured native 3D renderer in QML")
+
+        # Save style to disk
+        msg, ok = layer.saveNamedStyle(str(qml_path))
+        if ok:
+            logger.info(f"Generated QML style: {qml_path}")
+        else:
+            logger.warning(f"Failed to save QML style: {msg}")
 
     def _project_to_3d_features(
         self,
@@ -176,6 +300,7 @@ class Interpretation3DExporter(BaseExporter):
         origin_x: float,
         origin_y: float,
         azimuth: float,
+        custom_keys: list[str],
         vert_exag: float = 1.0,
     ) -> list[QgsFeature]:
         """Project a 2D geometry (potentially MultiPolygon) to 3D features."""
@@ -218,6 +343,12 @@ class Interpretation3DExporter(BaseExporter):
             feat.setAttribute("type", polygon.type)
             feat.setAttribute("color", polygon.color)
             feat.setAttribute("created_at", polygon.created_at)
+
+            # Set custom attributes
+            for key in custom_keys:
+                val = polygon.attributes.get(key, "")
+                feat.setAttribute(key, str(val))
+
             feat.setGeometry(geom_3d)
 
             projected_features.append(feat)

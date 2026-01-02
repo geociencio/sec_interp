@@ -141,6 +141,27 @@ class DialogSettingsManager:
         if last_dir:
             self.dialog.output_widget.setFilePath(str(last_dir))
 
+        # --- Interpretation Page ---
+        p_interp = self.dialog.page_interpretation
+        self._restore_check(p_interp.chk_inherit_geol, "interp_inherit_geol")
+        self._restore_check(p_interp.chk_inherit_drill, "interp_inherit_drill")
+
+        custom_fields_json = self._get_setting("interp_custom_fields")
+        if custom_fields_json:
+            try:
+                import json
+
+                fields = json.loads(custom_fields_json)
+                p_interp.fields_table.setRowCount(0)
+                for f in fields:
+                    p_interp._add_field_row()
+                    row = p_interp.fields_table.rowCount() - 1
+                    p_interp.fields_table.item(row, 0).setText(f.get("name", ""))
+                    p_interp.fields_table.cellWidget(row, 1).setCurrentText(f.get("type", "String"))
+                    p_interp.fields_table.item(row, 2).setText(f.get("default", ""))
+            except Exception as e:
+                logger.warning(f"Failed to restore custom fields: {e}")
+
         # --- Preview Widget ---
         pw = self.dialog.preview_widget
         self._restore_check(pw.chk_topo, "show_topo")
@@ -211,6 +232,16 @@ class DialogSettingsManager:
         # Output folder
         self._set_setting("last_output_dir", self.dialog.output_widget.filePath())
 
+        # --- Interpretation Page ---
+        p_interp = self.dialog.page_interpretation
+        self._save_check(p_interp.chk_inherit_geol, "interp_inherit_geol")
+        self._save_check(p_interp.chk_inherit_drill, "interp_inherit_drill")
+
+        import json
+
+        custom_fields = p_interp.get_data()["custom_fields"]
+        self._set_setting("interp_custom_fields", json.dumps(custom_fields))
+
         # --- Preview Widget ---
         pw = self.dialog.preview_widget
         self._save_check(pw.chk_topo, "show_topo")
@@ -268,6 +299,11 @@ class DialogSettingsManager:
 
         # Output folder
         self.dialog.output_widget.setFilePath("")
+
+        # --- Interpretation Page ---
+        self.dialog.page_interpretation.fields_table.setRowCount(0)
+        self.dialog.page_interpretation.chk_inherit_geol.setChecked(True)
+        self.dialog.page_interpretation.chk_inherit_drill.setChecked(True)
 
         # --- Preview Widget ---
         pw = self.dialog.preview_widget

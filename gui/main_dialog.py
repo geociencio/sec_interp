@@ -253,6 +253,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         """
         from sec_interp.logger_config import log_critical_operation
+        from .dialogs.interpretation_properties_dialog import InterpretationPropertiesDialog
 
         log_critical_operation(
             logger,
@@ -260,6 +261,24 @@ class SecInterpDialog(SecInterpMainWindow):
             polygon_id=interpretation.id,
             vertices=len(interpretation.vertices_2d),
         )
+
+        # 1. Prepare for inheritance
+        interp_config = self.page_interpretation.get_data()
+
+        # Try to inherit attributes if enabled
+        if interp_config.get("inherit_geology") or interp_config.get("inherit_drillholes"):
+            self._apply_attribute_inheritance(interpretation, interp_config)
+
+        # 2. Show properties dialog
+        dlg = InterpretationPropertiesDialog(
+            interpretation, interp_config.get("custom_fields"), self
+        )
+
+        if dlg.exec_() != QDialog.Accepted:
+            logger.info(f"Interpretation canceled by user: {interpretation.id}")
+            # Deactivate interpretation tool anyway
+            self.preview_widget.btn_interpret.setChecked(False)
+            return
 
         # Store interpretation
         self.interpretations.append(interpretation)
@@ -272,6 +291,7 @@ class SecInterpDialog(SecInterpMainWindow):
         # Display feedback in results area
         msg = (
             f"<b>Interpretación Finalizada</b><br>"
+            f"<b>Nombre:</b> {interpretation.name}<br>"
             f"<b>Vértices:</b> {len(interpretation.vertices_2d)}<br>"
             f"<b>ID:</b> {interpretation.id[:8]}..."
         )
@@ -283,6 +303,65 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Update preview to show the new polygon
         self.update_preview_from_checkboxes()
+
+    def _apply_attribute_inheritance(self, interpretation, config):
+        """Inherit attributes from nearest geology or drillhole data."""
+        from qgis.core import QgsGeometry
+
+        # Use centroid or first vertex as reference point
+        poly_geom = QgsGeometry.fromPolygonXY(
+            [[QgsPointXY(x, y) for x, y in interpretation.vertices_2d]]
+        )
+        ref_point = poly_geom.centroid().asPoint()
+
+        best_match = None
+        min_dist = float("inf")
+
+        # 1. Check Geology Data
+        if config.get("inherit_geology") and self.preview_manager.cached_data.get("geol"):
+            for segment in self.preview_manager.cached_data["geol"]:
+                # segment is GeologicalSegment with 'points' (dist, elev) and 'unit_name'
+                # Check mid point distance to ref_point
+                if not segment.points:
+                    continue
+                mid_idx = len(segment.points) // 2
+                p_dist, p_elev = segment.points[mid_idx]
+                dist = ref_point.distance(QgsPointXY(p_dist, p_elev))
+                if dist < min_dist:
+                    min_dist = dist
+                    best_match = {
+                        "name": segment.unit_name,
+                        "type": "geology",
+                        "attrs": segment.attributes,
+                    }
+
+        # 2. Check Drillhole Data (Intervals)
+        if config.get("inherit_drillholes") and self.preview_manager.cached_data.get("drillhole"):
+            for dh in self.preview_manager.cached_data["drillhole"]:
+                for interval in dh.intervals:
+                    # interval has 'points' and 'rock_unit'
+                    if not interval.points:
+                        continue
+                    mid_idx = len(interval.points) // 2
+                    p_dist, p_elev = interval.points[mid_idx]
+                    dist = ref_point.distance(QgsPointXY(p_dist, p_elev))
+                    if dist < min_dist:
+                        min_dist = dist
+                        best_match = {
+                            "name": interval.rock_unit,
+                            "type": "drillhole",
+                            "attrs": interval.attributes,
+                        }
+
+        if best_match:
+            logger.info(f"Inherited attributes from {best_match['type']}: {best_match['name']}")
+            interpretation.name = best_match["name"]
+            interpretation.type = best_match["type"]
+            # Copy all attributes from source
+            if best_match["attrs"]:
+                interpretation.attributes.update(best_match["attrs"])
+            # Update color to match unit color if possible
+            interpretation.color = self.layer_factory.get_color_for_unit(best_match["name"]).name()
 
     def update_preview_checkbox_states(self):
         """Enable or disable preview checkboxes via status_manager."""
