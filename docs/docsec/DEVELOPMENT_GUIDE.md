@@ -24,12 +24,37 @@ Si deseas añadir un nuevo tipo de previsualización:
 - **Simplificación**: Implementa LOD si la funcionalidad implica procesar miles de geometrías.
 - **Indexación Espacial**: Usa siempre `QgsSpatialIndex` cuando necesites filtrar capas vectoriales por proximidad.
 
+## 🔄 Flujos de Trabajo (Recomendado)
+
+### 🧪 Ejecución de Tests
+El proyecto utiliza `unittest`. Para ejecutar los tests correctamente y resolver el paquete `sec_interp`, usa el siguiente comando desde la raíz:
+
+```bash
+PYTHONPATH=.. uv run python3 -m unittest discover sec_interp/tests
+```
+
+**Nota**: No uses `pytest`. Asegúrate de incluir `PYTHONPATH=..` para que las importaciones funcionen correctamente.
+
+### 💾 Commits Limpios
+Para evitar conflictos con los hooks de pre-commit (que pueden reformatear código y fallar el commit), se recomienda seguir este orden:
+
+1. **Formateo Previo**:
+   ```bash
+   uv run ruff check --fix .
+   uv run ruff format .
+   ```
+2. **Commit**:
+   ```bash
+   git add .
+   git commit -m "tipo: descripción"
+   ```
+
 ## 🧹 Calidad de Código
 - **Pre-commit**: Instala con `uv run pre-commit install`. Los checks se ejecutan en cada commit.
 - **Linting**: Ejecuta `uv run ruff check .` para validar estándares.
 - **Análisis**: Usa `uv run qgis-analyzer analyze .` para obtener un informe de calidad y evolucion de métricas.
 - Sigue las convenciones de [COMMIT_GUIDELINES.md](../standards/COMMIT_GUIDELINES.md) (Conventional Commits).
-- **Importante**: Realizar siempre los commits con el flag `--no-verify` para evitar errores de configuración en los pre-commit hooks locales.
+- **Importante**: Intenta corregir los errores de pre-commit en lugar de saltártelos. Usa `--no-verify` solo si es absolutamente necesario y temporal.
 - Mantén una complejidad ciclomática por función inferior a 15 siempre que sea posible.
 
 ---

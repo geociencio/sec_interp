@@ -24,12 +24,37 @@ If you want to add a new type of preview:
 - **Simplification**: Implement LOD if the feature involves processing thousands of geometries.
 - **Spatial Indexing**: Always use `QgsSpatialIndex` when you need to filter vector layers by proximity.
 
+## 🔄 Recommended Workflows
+
+### 🧪 Running Tests
+The project uses `unittest` strictly. To run tests correctly and resolve the `sec_interp` package, use the following command from the root directory:
+
+```bash
+PYTHONPATH=.. uv run python3 -m unittest discover sec_interp/tests
+```
+
+**Note**: Do not use `pytest`. Ensure `PYTHONPATH=..` is set for proper imports.
+
+### 💾 Clean Commits
+To avoid conflicts with pre-commit hooks (which might reformat code and fail the commit), it is recommended to follow this order:
+
+1. **Pre-Format**:
+   ```bash
+   uv run ruff check --fix .
+   uv run ruff format .
+   ```
+2. **Commit**:
+   ```bash
+   git add .
+   git commit -m "type: description"
+   ```
+
 ## 🧹 Code Quality
 - **Pre-commit**: Install with `uv run pre-commit install`. Checks run on every commit.
 - **Linting**: Run `uv run ruff check .` to validate standards.
 - **Analysis**: Use `uv run qgis-analyzer analyze .` to get a quality report and metrics evolution.
 - Follow the conventions in [COMMIT_GUIDELINES.md](../standards/COMMIT_GUIDELINES.md) (Conventional Commits).
-- **Important**: Always commit with the `--no-verify` flag to avoid configuration errors in local pre-commit hooks.
+- **Important**: Try to fix pre-commit errors instead of bypassing them. Use `--no-verify` only if absolutely necessary and temporary.
 - Keep cyclomatic complexity per function below 15 whenever possible.
 
 ---
