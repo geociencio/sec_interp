@@ -269,24 +269,53 @@ class Interpretation3DExporter(BaseExporter):
 
             # Setup default material
             material = QgsPhongMaterialSettings()
+            material.setDiffuse(QColor(200, 200, 200))  # Default gray
 
-            # Setup data-defined color for 3D material
-            from qgis.core import QgsProperty
+            # Try to setup data-defined color for 3D material
+            try:
+                from qgis.core import QgsProperty
 
-            # Diffuse color is the main color of the 3D object
-            material.dataDefinedProperties().setProperty(
-                QgsPhongMaterialSettings.Property.Diffuse, QgsProperty.fromField("color")
-            )
-            # Ambient color (usually same as diffuse but darker or same)
-            material.dataDefinedProperties().setProperty(
-                QgsPhongMaterialSettings.Property.Ambient, QgsProperty.fromField("color")
-            )
+                # Setup keys differently based on QGIS version/API
+                diffuse_key = None
+                ambient_key = None
+
+                # Check QgsPhongMaterialSettings.Property
+                if hasattr(QgsPhongMaterialSettings, "Property"):
+                    if hasattr(QgsPhongMaterialSettings.Property, "Diffuse"):
+                        diffuse_key = QgsPhongMaterialSettings.Property.Diffuse
+                        ambient_key = QgsPhongMaterialSettings.Property.Ambient
+
+                # Check QgsAbstractMaterialSettings.Property if not found
+                if diffuse_key is None:
+                    try:
+                        from qgis._3d import QgsAbstractMaterialSettings
+
+                        if hasattr(QgsAbstractMaterialSettings, "Property"):
+                            if hasattr(QgsAbstractMaterialSettings.Property, "Diffuse"):
+                                diffuse_key = QgsAbstractMaterialSettings.Property.Diffuse
+                                ambient_key = QgsAbstractMaterialSettings.Property.Ambient
+                    except ImportError:
+                        pass
+
+                if diffuse_key is not None and hasattr(material, "dataDefinedProperties"):
+                    material.dataDefinedProperties().setProperty(
+                        diffuse_key, QgsProperty.fromField("color")
+                    )
+                    material.dataDefinedProperties().setProperty(
+                        ambient_key, QgsProperty.fromField("color")
+                    )
+                else:
+                    logger.warning(
+                        "3D Material Data Defined Properties not available or accessible in this QGIS version."
+                    )
+
+            except Exception as e:
+                logger.warning(f"Failed to set 3D data defined properties: {e}")
 
             symbol_3d.setMaterialSettings(material)
 
             # Altitude binding to absolute (our Z is absolute interpretation)
             # symbol_3d.setAltitudeBinding(QgsPolygon3DSymbol.AltBindAbsolute)
-            # symbol_3d.setAltitudeClamping(QgsPolygon3DSymbol.AltClampAbsolute)
 
             renderer_3d = QgsVectorLayer3DRenderer(symbol_3d)
             layer.setRenderer3D(renderer_3d)
