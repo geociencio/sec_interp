@@ -11,8 +11,8 @@ Este flujo de trabajo guía la preparación, empaquetado y publicación de una n
 3. Ejecutar `uv run qgis-analyzer analyze .` para sincronizar métricas.
 
 ### 2. Configuración de Exclusiones
-1. Revisar `.gitattributes` para asegurar que los nuevos archivos de desarrollo tengan `export-ignore`.
-   - Se deben ignorar: `.ai-context/`, `.git/`, `tests/`, `Makefile`, `scripts/`, `.pylintrc`, `.flake8`, `.analyzerignore`.
+### 2. Configuración de Exclusiones
+1. **Automático**: El comando `make package` utiliza `qgis-manage` que ya incluye exclusiones inteligentes (filtros para `.git`, `tests`, `docs`, etc.). No se requiere configuración manual.
 
 ### 3. Generación del ZIP (Clean Build)
 // turbo

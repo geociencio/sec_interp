@@ -11,8 +11,8 @@ This workflow guides the preparation, packaging, and publishing of a new version
 3. Run `uv run qgis-analyzer analyze .` to synchronize metrics.
 
 ### 2. Exclusion Configuration
-1. Review `.gitattributes` to ensure new development files have `export-ignore`.
-   - Must ignore: `.ai-context/`, `.git/`, `tests/`, `Makefile`, `scripts/`, `.pylintrc`, `.flake8`, `.analyzerignore`.
+### 2. Exclusion Configuration
+1. **Automatic**: The `make package` command uses `qgis-manage` which already includes smart exclusions (filters for `.git`, `tests`, `docs`, etc.). No manual configuration required.
 
 ### 3. ZIP Generation (Clean Build)
 // turbo
