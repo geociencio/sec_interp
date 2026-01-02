@@ -8,7 +8,8 @@ This workflow guides the preparation, packaging, and publishing of a new version
 // turbo
 1. Update `metadata.txt` with the new version and changelog.
 2. Update `docs/CHANGELOG.md` with technical details.
-3. Run `uv run qgis-analyzer analyze .` to synchronize metrics.
+3. Update technical documentation (README, DEV Guide, etc) with the new version.
+4. Run `uv run qgis-analyzer analyze .` to synchronize metrics.
 
 ### 2. Exclusion Configuration
 ### 2. Exclusion Configuration
@@ -18,10 +19,10 @@ This workflow guides the preparation, packaging, and publishing of a new version
 // turbo
 1. Commit all preparation changes: `git commit -am "chore(release): prepare version X.Y.Z"`.
 2. Run the package command: `make package VERSION=main`.
-3. Rename the file: `mv sec_interp.zip sec_interp_vX.Y.Z.zip`.
+3. The file will be generated at `dist/sec_interp.X.Y.Z.zip`.
 
 ### 4. Verification and Tagging
-1. Verify ZIP contents: `unzip -l sec_interp_vX.Y.Z.zip`.
+1. Verify ZIP contents: `unzip -l dist/sec_interp.X.Y.Z.zip`.
 2. Create and push the tag:
    ```bash
    git tag vX.Y.Z -m "Release description"

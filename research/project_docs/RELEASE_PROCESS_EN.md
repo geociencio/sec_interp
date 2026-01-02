@@ -41,15 +41,12 @@ To prevent development files like `.git`, `tests/`, or tool configurations (`.py
         ```bash
         make package VERSION=main
         ```
-    *   Rename the file to be descriptive (optional, the script generates a versioned name but `make` might output generic):
-        ```bash
-        mv sec_interp.zip sec_interp_vX.Y.Z.zip
-        ```
+    *   The file will be automatically generated in `dist/sec_interp.X.Y.Z.zip` with the correct version.
 
 2.  **Content Verification**:
     *   List content to confirm no garbage files are present:
         ```bash
-        unzip -l sec_interp_vX.Y.Z.zip | head -n 20
+        unzip -l dist/sec_interp.X.Y.Z.zip | head -n 20
         ```
 
 ## 3. Versioning and Git

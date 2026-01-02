@@ -33,7 +33,7 @@ Este documento describe los pasos detallados para preparar y liberar una nueva v
 
 ## 2. Empaquetado Limpio
 
-Para evitar que archivos de desarrollo como `.git`, `tests/`, o configuraciones de herramientas (`.pylintrc`, etc.) terminen en el ZIP oficial, utilizamos el método de **`git archive`**.
+Para evitar que archivos de desarrollo como `.git`, `tests/`, o configuraciones de herramientas (`.pylintrc`, etc.) terminen en el ZIP oficial, utilizamos **`qgis-manage package`**. Esta herramienta filtra automáticamente archivos de desarrollo y sistema integrando listas de bloqueo predefinidas (no usa `git archive` pero logra el mismo objetivo de limpieza).
 
 1.  **Configurar Exclusiones**:
     *   Revisar `.gitattributes` y asegurarse de que todos los archivos internos tengan el flag `export-ignore`.
@@ -53,15 +53,12 @@ Para evitar que archivos de desarrollo como `.git`, `tests/`, o configuraciones 
         ```bash
         make package VERSION=main
         ```
-    *   Renombrar el archivo para que sea descriptivo:
-        ```bash
-        mv sec_interp.zip sec_interp_vX.Y.Z.zip
-        ```
+    *   El archivo se generará automáticamente en `dist/sec_interp.X.Y.Z.zip` con la versión correcta.
 
 3.  **Verificación del Contenido**:
     *   Listar el contenido para confirmar que no hay archivos basura:
         ```bash
-        unzip -l sec_interp_vX.Y.Z.zip | head -n 20
+        unzip -l dist/sec_interp.X.Y.Z.zip | head -n 20
         ```
 
 ## 3. Versionamiento y Git

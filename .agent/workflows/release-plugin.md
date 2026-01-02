@@ -8,7 +8,8 @@ Este flujo de trabajo guía la preparación, empaquetado y publicación de una n
 // turbo
 1. Actualizar `metadata.txt` con la nueva versión y el log de cambios.
 2. Actualizar `docs/CHANGELOG.md` con los detalles técnicos.
-3. Ejecutar `uv run qgis-analyzer analyze .` para sincronizar métricas.
+3. Actualizar documentación técnica (README, DEV Guide, etc) con la nueva versión.
+4. Ejecutar `uv run qgis-analyzer analyze .` para sincronizar métricas.
 
 ### 2. Configuración de Exclusiones
 ### 2. Configuración de Exclusiones
@@ -18,10 +19,10 @@ Este flujo de trabajo guía la preparación, empaquetado y publicación de una n
 // turbo
 1. Hacer commit de todos los cambios de preparación: `git commit -am "chore(release): prepare version X.Y.Z"`.
 2. Ejecutar el comando de paquete: `make package VERSION=main`.
-3. Renombrar el archivo: `mv sec_interp.zip sec_interp_vX.Y.Z.zip`.
+3. El archivo se generará en `dist/sec_interp.X.Y.Z.zip`.
 
 ### 4. Verificación y Tagging
-1. Verificar el contenido del ZIP: `unzip -l sec_interp_vX.Y.Z.zip`.
+1. Verificar el contenido del ZIP: `unzip -l dist/sec_interp.X.Y.Z.zip`.
 2. Crear y subir el tag:
    ```bash
    git tag vX.Y.Z -m "Release description"
