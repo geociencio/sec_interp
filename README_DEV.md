@@ -35,7 +35,7 @@ Los hooks ejecutarán automáticamente:
 - **YAML/TOML Check**: Validación de sintaxis en archivos de configuración.
 
 ## Comandos de Desarrollo
-- **Análisis de Calidad**: `uv run qgis-analyzer . -o ./quality_report`
+- **Análisis de Calidad**: `uv run qgis-analyzer analyze .`
   - Ejecuta la suite de auditoría específica para plugins de QGIS.
 - **Linting Manual**: `uv run ruff check .`
 - **Formateo Manual**: `uv run ruff format .`
@@ -62,4 +62,4 @@ uv run qgis-manage deploy
 - [UV_MODERNIZATION_GUIDE.md](docs/maintainer/uv_modernization_guide.md) - Guía de modernización de plugins con `uv`.
 
 ---
-**Plugin Version**: 2.4.0 | **Last Update**: 2025-12-25
+**Plugin Version**: 2.5.0 | **Last Update**: 2026-01-01

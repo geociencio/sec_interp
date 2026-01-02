@@ -8,7 +8,7 @@ Este documento describe los pasos detallados para preparar y liberar una nueva v
 ## 1. Preparación del Entorno y Métricas
 
 1.  **Sincronizar Contexto**:
-    *   Ejecutar `uv run python analyze_project_optfixed.py` para obtener métricas actualizadas.
+    *   Ejecutar `uv run qgis-analyzer analyze .` para obtener métricas actualizadas.
     *   Este comando genera `PROJECT_SUMMARY.md` y registra el historial en `.ai-context/metrics_history.json`.
     *   Actualizar `.ai-context/project_brain.md` con los nuevos resultados si es necesario.
 

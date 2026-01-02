@@ -4,13 +4,13 @@
 
 **Sec Interp** is a QGIS plugin for extracting and visualizing geological data along cross-section profiles. It enables geologists to create topographic profiles from DEMs, project geological outcrops, and visualize structural measurements (dip/strike) in a 2D section view.
 
-**Version**: 2.4.0
+**Version**: 2.5.0
 **Author**: Juan M Bernales
 **License**: GPL-2.0 / GPL-3.0
 **Repository**: https://github.com/geociencio/sec_interp
 **QGIS Minimum Version**: 3.0
 
-> **Note**: Version 2.4.0 includes major architectural refactoring (Phases 1-6), internationalization support (5 languages), code quality infrastructure with pre-commit hooks, and critical bug fixes. See [CHANGELOG.md](CHANGELOG.md) for details.
+> **Note**: Version 2.5.0 includes 3D export capabilities, advanced settings management, and access control infrastructure. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## Technology Stack
 
@@ -36,7 +36,9 @@ sec_interp/
 │   ├── services/              # Business logic encapsulated in services
 │   │   ├── profile_service.py
 │   │   ├── geology_service.py
-│   │   └── structure_service.py
+│   │   ├── structure_service.py
+│   │   ├── access_control_service.py # [NEW] Managing reserved/pro features
+│   │   └── drillhole_service.py
 │   └── utils/                 # Package of utility modules
 │       ├── geometry.py        # Facade for geometry operations
 │       ├── geometry_utils/    ⭐ Modular geometry sub-package (v2.3.0)
@@ -61,6 +63,7 @@ sec_interp/
 │       └── pages/             # Individual settings pages
 │           ├── dem_page.py
 │           ├── drillhole_page.py
+│           ├── settings_page.py   # [NEW] Application Settings
 │           └── ...
 │
 ├── 📁 resources/               # Plugin resources

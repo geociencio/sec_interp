@@ -16,3 +16,6 @@
 2026-01-01 11:36:47,526 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
 2026-01-01 11:36:47,634 - qgis_analyzer - INFO - Running repository compliance checks...
 2026-01-01 11:36:55,481 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-01 21:58:06,399 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-01 21:58:06,538 - qgis_analyzer - INFO - Running repository compliance checks...
+2026-01-01 21:58:09,246 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results

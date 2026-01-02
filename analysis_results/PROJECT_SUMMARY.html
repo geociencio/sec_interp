@@ -21,31 +21,15 @@ h2 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 </style></head><body>
 <div class='header'>
 <h1>📊 QGIS Plugin Analysis: sec_interp</h1>
-<p>Generated on: 2026-01-01 11:36:55</p>
+<p>Generated on: 2026-01-01 21:58:09</p>
 <div class='score-container'>
-<div class='score-box high'><span class='score-label'>Overall Score</span><span class='score-value'>81.5/100</span></div>
-<div class='score-box high'><span class='score-label'>QGIS Compliance</span><span class='score-value'>90/100</span></div>
+<div class='score-box high'><span class='score-label'>Overall Score</span><span class='score-value'>85.2/100</span></div>
+<div class='score-box high'><span class='score-label'>QGIS Compliance</span><span class='score-value'>96/100</span></div>
 </div></div>
 <div class='card'><h2>🛠️ QGIS Standard Findings</h2>
 <div class='issue medium'>
-<span class='severity'>medium</span> - Obsolete QVariant type constants detected. Use QMetaType or native types.<br>
-<span class='file-path'>exporters/interpretation_3d_exporter.py:67</span>
-<pre>QVariant.String, len=50),</pre>
-</div>
-<div class='issue medium'>
-<span class='severity'>medium</span> - Obsolete QVariant type constants detected. Use QMetaType or native types.<br>
-<span class='file-path'>exporters/interpretation_3d_exporter.py:68</span>
-<pre>QVariant.String, len=100),</pre>
-</div>
-<div class='issue medium'>
-<span class='severity'>medium</span> - Obsolete QVariant type constants detected. Use QMetaType or native types.<br>
-<span class='file-path'>exporters/interpretation_3d_exporter.py:69</span>
-<pre>QVariant.String, len=50),</pre>
-</div>
-<div class='issue medium'>
-<span class='severity'>medium</span> - Obsolete QVariant type constants detected. Use QMetaType or native types.<br>
-<span class='file-path'>exporters/interpretation_3d_exporter.py:70</span>
-<pre>QVariant.String, len=254),</pre>
+<span class='severity'>medium</span> - Connected slot 'self.reject' not found in class definitions. Verify it is defined or inherited.<br>
+<span class='file-path'>gui/dialogs/interpretation_properties_dialog.py:77</span>
 </div>
 <div class='issue medium'>
 <span class='severity'>medium</span> - Legacy import detected: 'from PyQt5 import ...'. Use 'qgis.PyQt' for compatibility.<br>
@@ -56,96 +40,97 @@ h2 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 <div class='card'><h2>🧠 Semantic Analysis</h2>
 <h3>Module Coupling</h3>
 <table style='width:100%; border-collapse: collapse;'><thead><tr style='background:#eee;'><th>Module</th><th>Fan-In (Incoming)</th><th>Fan-Out (Outgoing)</th></tr></thead><tbody>
-<tr><td style='border:1px solid #ddd; padding:8px;'>core/utils/geometry.py</td><td style='border:1px solid #ddd; padding:8px;'>1</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
-<tr><td style='border:1px solid #ddd; padding:8px;'>core/validation/path_validator.py</td><td style='border:1px solid #ddd; padding:8px;'>1</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
-<tr><td style='border:1px solid #ddd; padding:8px;'>core/validation/field_validator.py</td><td style='border:1px solid #ddd; padding:8px;'>1</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
-<tr><td style='border:1px solid #ddd; padding:8px;'>exporters/base_exporter.py</td><td style='border:1px solid #ddd; padding:8px;'>1</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
+<tr><td style='border:1px solid #ddd; padding:8px;'>tests/base_test.py</td><td style='border:1px solid #ddd; padding:8px;'>32</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
 <tr><td style='border:1px solid #ddd; padding:8px;'>exporters/csv_exporter.py</td><td style='border:1px solid #ddd; padding:8px;'>1</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
+<tr><td style='border:1px solid #ddd; padding:8px;'>exporters/base_exporter.py</td><td style='border:1px solid #ddd; padding:8px;'>1</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
 <tr><td style='border:1px solid #ddd; padding:8px;'>sec_interp_plugin.py</td><td style='border:1px solid #ddd; padding:8px;'>1</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
-<tr><td style='border:1px solid #ddd; padding:8px;'>__init__.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>1</td></tr>
-<tr><td style='border:1px solid #ddd; padding:8px;'>core/algorithms.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
-<tr><td style='border:1px solid #ddd; padding:8px;'>core/config.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
 <tr><td style='border:1px solid #ddd; padding:8px;'>core/__init__.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
+<tr><td style='border:1px solid #ddd; padding:8px;'>core/algorithms.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
+<tr><td style='border:1px solid #ddd; padding:8px;'>__init__.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>1</td></tr>
+<tr><td style='border:1px solid #ddd; padding:8px;'>core/config.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
+<tr><td style='border:1px solid #ddd; padding:8px;'>core/interfaces/__init__.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
+<tr><td style='border:1px solid #ddd; padding:8px;'>core/exceptions.py</td><td style='border:1px solid #ddd; padding:8px;'>0</td><td style='border:1px solid #ddd; padding:8px;'>0</td></tr>
 </tbody></table>
 </div>
 <div class='card'><h2>✅ Repository Compliance</h2>
 <div class='info'>✅ No prohibited binaries found</div>
-<div class='info'><b>Package Size:</b> 10.67 MB</div>
+<div class='info'><b>Package Size:</b> 13.68 MB</div>
 <div class='info'>✅ <b>URL Validation:</b> All 2 links working</div>
 </div>
 <div class='card'><h2>📈 General Metrics</h2><ul>
-<li><b>  Init  .Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
-<li><b>Core/Algorithms.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Config.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Exceptions.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Algorithms.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>  Init  .Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Core/Config.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Interfaces/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Exceptions.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Interfaces/Cache Interface.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Interfaces/Geology Interface.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Interfaces/Drillhole Interface.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Controller.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Interfaces/Geology Interface.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Interfaces/Preview Interface.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Interfaces/Profile Interface.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Data Cache.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Interfaces/Structure Interface.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Services/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Data Cache.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Services/Access Control Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Controller.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Performance Metrics.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Services/Geology Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Services/Export Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Services/Profile Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Services/Geology Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Services/Preview Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Utils/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Services/Drillhole Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Utils/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Services/Structure Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Utils/Geometry.Py</b>: {'fan_in': 1, 'fan_out': 0}</li>
 <li><b>Core/Utils/Geology.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Utils/Geometry.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Geometry Utils/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Geometry Utils/Extraction.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Geometry Utils/Filtering.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Types.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Drillhole.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Utils/Io.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Geometry Utils/Measurement.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Utils/Io.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Geometry Utils/Processing.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Parsing.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Utils/Rendering.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Geometry Utils/Optimization.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Resource Manager.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Validation/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Utils/Sampling.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Utils/Rendering.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Utils/Spatial.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Validation/Path Validator.Py</b>: {'fan_in': 1, 'fan_out': 0}</li>
-<li><b>Core/Validation/Field Validator.Py</b>: {'fan_in': 1, 'fan_out': 0}</li>
+<li><b>Core/Utils/Sampling.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Validation/Path Validator.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Validation/Field Validator.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Exporters/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Core/Validation/Layer Validator.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Exporters/Base Exporter.Py</b>: {'fan_in': 1, 'fan_out': 0}</li>
 <li><b>Exporters/Csv Exporter.Py</b>: {'fan_in': 1, 'fan_out': 0}</li>
-<li><b>Exporters/Drillhole Exporters.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Core/Validation/Project Validator.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Exporters/Base Exporter.Py</b>: {'fan_in': 1, 'fan_out': 0}</li>
 <li><b>Exporters/Image Exporter.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Exporters/Interpretation 3D Exporter.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Core/Validation/Project Validator.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Exporters/Drillhole Exporters.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Exporters/Pdf Exporter.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Exporters/Interpretation Exporters.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Exporters/Svg Exporter.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Exporters/Shp Exporter.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/Main Dialog Cache Handler.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Legend Widget.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/Main Dialog Config.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Exporters/Interpretation 3D Exporter.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Main Dialog Cache Handler.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Dialogs/Interpretation Properties Dialog.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Exporters/Profile Exporters.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Main Dialog Config.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Main Dialog Data.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Main Dialog Export.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/Main Dialog.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Main Dialog Signals.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Main Dialog.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Main Dialog Status.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Main Dialog Utils.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Main Dialog Tools.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/Main Dialog Settings.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Main Dialog Validation.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Main Dialog Preview.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/Preview Legend Renderer.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Main Dialog Settings.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Preview Axes Manager.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Preview Legend Renderer.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Services/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Preview Reporter.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Tools/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
@@ -153,36 +138,59 @@ h2 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 <li><b>Gui/Services/Parallel Geology Service.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Preview Layer Factory.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Ui/Main Window.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Pages/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Pages/Base Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/Ui/Main Window.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/Tools/Interpretation Tool.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Tools/Measure Tool.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Tools/Interpretation Tool.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Pages/Dem Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Pages/Geology Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Pages/Section Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Ui/Pages/Interpretation Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Pages/Settings Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Sidebar.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Pages/Preview Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Gui/Ui/Pages/Structure Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Utils.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Resources/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Resources/Resources.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
 <li><b>Gui/Ui/Pages/Drillhole Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Resources/  Init  .Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Gui/Ui/Pages/Structure Page.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Resources/Resources.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Tests/Core/Test Algorithms.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
 <li><b>Logger Config.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Tests/Core/Test Algorithms.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Tests/Core/Test Config.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Tests/Core/Test Data Cache Fix.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Tests/Conftest.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Tests/Core/Test Validation.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Tests/Core/Test Utils Standalone.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Tests/Core/Test Config.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Data Cache Fix.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
 <li><b>Sec Interp Plugin.Py</b>: {'fan_in': 1, 'fan_out': 0}</li>
-<li><b>Tests/Core/Test Validation Refactor.Py</b>: {'fan_in': 0, 'fan_out': 2}</li>
-<li><b>Tests/Gui/Test Cache Fix.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Tests/Exporters/Test Exporters.Py</b>: {'fan_in': 0, 'fan_out': 2}</li>
+<li><b>Tests/Core/Test Drillhole Service.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Field Validator.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Drillhole Utils.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Export Service.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Geology Service.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Path Validator.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Geometry Utils.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Layer Validator.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Project Validator.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Profile Exporters.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Preview Service.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Rendering Utils.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Base Test.Py</b>: {'fan_in': 32, 'fan_out': 0}</li>
+<li><b>Tests/Core/Test Spatial Utils.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Structure Service.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Validation.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Utils Standalone.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Core/Test Validation Refactor.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
 <li><b>Tests/Core/Test Utils.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
-<li><b>Tests/Gui/Test Gui Utils.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Tests/Exporters/Test Dynamic Attrs.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Tests/Exporters/Test Exporters.Py</b>: {'fan_in': 0, 'fan_out': 3}</li>
+<li><b>Tests/Gui/Test Cache Fix.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Gui/Test Gui Utils.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
 <li><b>Tests/Exporters/Test Interpretation 3D Exporter.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
-<li><b>Tests/Gui/Test Preview Renderer Custom.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Tests/Gui/Test Main Dialog Validation.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Gui/Test Main Dialog Tools.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Gui/Test Parallel Geology Service.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Gui/Test Interpretation Tool.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Gui/Test Preview Renderer Custom.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Gui/Test Settings Page.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
+<li><b>Tests/Gui/Test Measure Tool.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
 <li><b>Tests/Test Translation Loading.Py</b>: {'fan_in': 0, 'fan_out': 0}</li>
+<li><b>Tests/Gui/Test Preview Components.Py</b>: {'fan_in': 0, 'fan_out': 1}</li>
 </ul></div></body></html>

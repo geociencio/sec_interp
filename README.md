@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-2.4.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-2.5.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
@@ -18,20 +18,18 @@
 
 ---
 
-## 🆕 What's New in v2.4.0
+## 🆕 What's New in v2.5.0
+**Major Feature: 3D Export & Advanced Control**
 
-**Major Architectural Refactoring & Internationalization** — This release brings enterprise-grade improvements:
+- **🧊 3D Interpretation Export**: Export your 2D geological drawings as **true 3D Shapefiles (PolygonZ)**. The plugin now performs robust vertex-wise affine transformation to project complex geometries (including overturned folds) accurately into 3D space.
+- **⚙️ Settings Page**: A new dedicated configuration hub in the sidebar for managing plugin preferences.
+- **🛡️ Access Control**: Logic to manage Pro/Premium features (currently toggling 3D export).
+- **🏗️ Improvements**:
+  - Native QGIS API implementation for high-performance geometry creation.
+  - Persistent settings across QGIS sessions.
+  - Fixes for geometric topology in complex structural scenarios.
 
-- **🌍 Internationalization (I18n)**: Full multi-language support for Spanish, French, German, Russian, and Portuguese (Brazil)
-- **🖊️ Interpretation Tool**: Interactive drawing of geological polygons directly on the profile with smart snapping.
-- **📦 Modern Tooling**: Migrated to `uv` for package management and unified configuration in `pyproject.toml`.
-- **🏗️ Architectural Excellence**: Complete refactoring across 6 phases (Service interfaces, Error handling, Performance, Async, Validation, Documentation)
-- **🔧 Code Quality Infrastructure**: Pre-commit hooks, automated quality checks, metrics history tracking
-- **✨ Quality Improvements**: 9% reduction in linting errors (287 → 261), Quality score 69.1/100, QGIS compliance 100/100
-- **🐛 Critical Fixes**: Preview rendering CRS, Page initialization, Translation system, Russian XML corruption
-- **📊 Developer Experience**: Google-style docstrings, enhanced project analyzer, comprehensive documentation
-
-See [CHANGELOG.md](docs/docsec/CHANGELOG.md) for complete details.
+See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
 ---
 
@@ -73,7 +71,7 @@ See [CHANGELOG.md](docs/docsec/CHANGELOG.md) for complete details.
 4. Click **Install Plugin**.
 
 ### From ZIP File
-1. Download the latest `sec_interp_v2.4.0.zip` from releases.
+1. Download the latest `sec_interp_v2.5.0.zip` from releases.
 2. Open QGIS.
 3. Go to **Plugins > Manage and Install Plugins > Install from ZIP**.
 4. Select the file and click **Install**.
