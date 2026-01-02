@@ -1,7 +1,6 @@
 """Interpretation configuration page."""
 
-from qgis.core import QCoreApplication
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QHBoxLayout,
