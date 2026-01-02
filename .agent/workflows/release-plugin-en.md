@@ -7,6 +7,8 @@ This workflow guides the preparation, packaging, and publishing of a new version
 ### 1. Metadata Preparation
 // turbo
 1. Update `metadata.txt` with the new version and changelog.
+   > [!IMPORTANT]
+   > The QGIS repository uses `configparser`. You must **escape all percentage signs (`%`) as `%%`** in the `changelog` and `about` sections to avoid interpretation errors.
 2. Update `docs/CHANGELOG.md` with technical details.
 3. Update technical documentation (README, DEV Guide, etc) with the new version.
 4. Run `uv run qgis-analyzer analyze .` to synchronize metrics.

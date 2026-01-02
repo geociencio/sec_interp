@@ -16,14 +16,14 @@ Este documento describe los pasos detallados para preparar y liberar una nueva v
     *   **metadata.txt**: Incrementar `version=X.Y.Z` y actualizar la sección `changelog=`.
         *   > [!IMPORTANT]
         *   > El repositorio de QGIS usa `configparser`. Debes **escapar todos los signos de porcentaje (`%`) como `%%`** en las secciones `changelog` y `about` para evitar errores de interpretación.
-    *   **docs/docsec/CHANGELOG.md**: Agregar la nueva versión al principio siguiendo el estándar [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+    *   **CHANGELOG.md**: Agregar la nueva versión al principio siguiendo el estándar [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 3.  **Actualización de Documentación Técnica**:
     Debe sincronizarse la versión en los siguientes archivos:
     *   **README.md**: Actualizar badges de versión y sección "What's New".
     *   **README_DEV.md**: Actualizar versión y estándares de desarrollo si han cambiado.
-    *   **docs/docsec/PROJECT_STRUCTURE.md**: Actualizar versión y mapa de archivos si hubo cambios estructurales.
-    *   **docs/docsec/ARCHITECTURE_EN.md**: Actualizar versión y diagramas/descripciones de arquitectura.
+    *   **PROJECT_STRUCTURE.md**: Actualizar versión y mapa de archivos si hubo cambios estructurales.
+    *   **ARCHITECTURE_EN.md**: Actualizar versión y diagramas/descripciones de arquitectura.
     *   **ARCHITECTURE.md**: Sincronizar con el estado actual del sistema (ES).
     *   **DEVELOPMENT_GUIDE.md**: Revisar si los estándares de calidad han evolucionado.
 

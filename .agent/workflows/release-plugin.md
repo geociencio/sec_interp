@@ -7,6 +7,8 @@ Este flujo de trabajo guía la preparación, empaquetado y publicación de una n
 ### 1. Preparación de Metadatos
 // turbo
 1. Actualizar `metadata.txt` con la nueva versión y el log de cambios.
+   > [!IMPORTANT]
+   > El repositorio de QGIS usa `configparser`. Debes **escapar todos los signos de porcentaje (`%`) como `%%`** en las secciones `changelog` y `about` para evitar errores de interpretación.
 2. Actualizar `docs/CHANGELOG.md` con los detalles técnicos.
 3. Actualizar documentación técnica (README, DEV Guide, etc) con la nueva versión.
 4. Ejecutar `uv run qgis-analyzer analyze .` para sincronizar métricas.

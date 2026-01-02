@@ -1,5 +1,8 @@
 # Cerebro del Proyecto: sec_interp
 
+## 🚨 Reglas Críticas (Globales)
+- **ESCAPADO DE METADATOS**: Escapar % como %% en metadata.txt.
+
 ## Visión General
 Plugin de QGIS para interpretación de secciones geológicas, manejo de sondajes (drillholes) y perfiles estructurales.
 

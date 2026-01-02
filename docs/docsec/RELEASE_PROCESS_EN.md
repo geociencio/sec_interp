@@ -16,14 +16,14 @@ This document describes the detailed steps to prepare and release a new version 
     *   **metadata.txt**: Increment `version=X.Y.Z` and update the `changelog=` section.
         *   > [!IMPORTANT]
         *   > The QGIS repository uses `configparser`. You must **escape all percentage signs (`%`) as `%%`** in the `changelog` and `about` sections to avoid interpretation errors.
-    *   **docs/docsec/CHANGELOG.md**: Add the new version at the top following the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standard.
+    *   **CHANGELOG.md**: Add the new version at the top following the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standard.
 
 3.  **Technical Documentation Update**:
     The version must be synchronized in the following files:
     *   **README.md**: Update version badges and "What's New" section.
     *   **README_DEV.md**: Update version and development standards if changed.
-    *   **docs/docsec/PROJECT_STRUCTURE.md**: Update version and file map if there were structural changes.
-    *   **docs/docsec/ARCHITECTURE_EN.md**: Update version and architecture diagrams/descriptions.
+    *   **PROJECT_STRUCTURE.md**: Update version and file map if there were structural changes.
+    *   **ARCHITECTURE_EN.md**: Update version and architecture diagrams/descriptions.
     *   **ARCHITECTURE.md**: Synchronize with the current system state (ES).
     *   **DEVELOPMENT_GUIDE.md**: Review if quality standards have evolved.
 

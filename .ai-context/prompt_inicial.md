@@ -55,6 +55,7 @@ optimization_plan
 context_for_future
 [Contexto persistente de 10-15 líneas para futuras consultas]
 ## RESTRICCIONES:
+- **METADATOS QGIS**: Escapar % como %% en metadata.txt.
 Máximo 5000 tokens por respuesta
 
 Enfocarse en Python 3.8+
