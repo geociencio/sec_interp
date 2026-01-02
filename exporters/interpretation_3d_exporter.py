@@ -217,7 +217,11 @@ class Interpretation3DExporter(BaseExporter):
 
         # Import 3D components if available
         try:
-            from qgis._3d import QgsPolygon3DSymbol, QgsVectorLayer3DRenderer
+            from qgis._3d import (
+                QgsPolygon3DSymbol,
+                QgsVectorLayer3DRenderer,
+                QgsAbstractMaterialSettings,
+            )
 
             HAS_3D = True
         except ImportError:
@@ -271,11 +275,11 @@ class Interpretation3DExporter(BaseExporter):
 
             # Diffuse color is the main color of the 3D object
             symbol_3d.dataDefinedProperties().setProperty(
-                QgsPolygon3DSymbol.Property.Diffuse, QgsProperty.fromField("color")
+                QgsAbstractMaterialSettings.Property.Diffuse, QgsProperty.fromField("color")
             )
             # Ambient color (usually same as diffuse but darker or same)
             symbol_3d.dataDefinedProperties().setProperty(
-                QgsPolygon3DSymbol.Property.Ambient, QgsProperty.fromField("color")
+                QgsAbstractMaterialSettings.Property.Ambient, QgsProperty.fromField("color")
             )
 
             # Altitude binding to absolute (our Z is absolute interpretation)
