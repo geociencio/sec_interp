@@ -159,41 +159,28 @@ class PreviewLayerFactory:
             feat.setAttribute("elev", avg_elev)
             features.append(feat)
 
+        if not features:
+            return None
+
         provider.addFeatures(features)
+        self._style_topo_layer(layer)
+        layer.updateExtents()
+        return layer
 
-        # Apply Graduated Renderer (Polychromy)
-
-        # Use a terrain-like color ramp (Greens -> Yellows -> Browns -> Whites)
-        # 'Terrain' or 'Spectral' (inverted) are good targets.
-        style = QgsStyle.defaultStyle()
-        color_ramp = style.colorRamp(
-            "Spectral"
-        )  # Spectral is usually Vales to Peaks if oriented right
-        if not color_ramp:
-            color_ramp = style.colorRamp("RdYlGn")  # Fallback
-
-        # Invert ramp if Spectral (usually Red is low in Spectral? No, Red is high usually)
-        # Let's use Spectral and assume standard. Red (Hot/High) -> Blue (Cold/Low)
-        # Actually in GIS: Green (Low) -> Brown (High)
-        # A simple robust way:
-        ramp = style.colorRamp("RdYlGn")  # Green (High) -> Red (Low) ?
-        # Actually 'BrBG' or 'Terrain'
-        terrain_ramp = style.colorRamp("Terrain")
-
+    def _style_topo_layer(self, layer: QgsVectorLayer):
+        """Apply styles to the topography layer."""
         renderer = QgsGraduatedSymbolRenderer("elev")
         renderer.setSourceSymbol(QgsLineSymbol.createSimple({"width": "0.8", "capstyle": "round"}))
 
-        if terrain_ramp:
-            renderer.updateColorRamp(terrain_ramp)
+        style = QgsStyle.defaultStyle()
+        # Try a terrain-like default ramp
+        color_ramp = style.colorRamp("Spectral") or style.colorRamp("RdYlGn")
+        if color_ramp:
+            renderer.updateColorRamp(color_ramp)
 
-        # Classification
-        num_classes = 8
         renderer.setClassificationMethod(QgsClassificationFixedInterval())
-        renderer.updateClasses(layer, num_classes)
-
+        renderer.updateClasses(layer, 8)
         layer.setRenderer(renderer)
-        layer.updateExtents()
-        return layer
 
     def create_topo_fill_layer(
         self,
@@ -235,20 +222,20 @@ class PreviewLayerFactory:
         feat.setGeometry(geom)
         provider.addFeatures([feat])
 
-        # Style with a subtle earthy gradient or semi-transparent solid
+        self._style_topo_fill_layer(layer)
+        layer.updateExtents()
+        return layer
+
+    def _style_topo_fill_layer(self, layer: QgsVectorLayer):
+        """Apply styles to the topography fill layer."""
         symbol = QgsFillSymbol.createSimple(
             {
-                "color": "130,130,130,40",  # Semi-transparent grey (to remove cenicienta shadows but give structure)
-                "outline_color": "0,0,0,0",  # No stroke
+                "color": "101,67,33,30",  # Earthy brown, very transparent
+                "outline_color": "0,0,0,0",
                 "outline_width": "0",
             }
         )
-        # Better: use a dark brown/earthy tone
-        symbol.setColor(QColor(101, 67, 33, 30))  # Earthy brown, very transparent
-
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        layer.updateExtents()
-        return layer
 
     def create_geol_layer(
         self, geol_data: GeologyData, vert_exag: float = 1.0, max_points: int = 1000
@@ -277,7 +264,12 @@ class PreviewLayerFactory:
             features.append(feat)
 
         provider.addFeatures(features)
+        self._style_geol_layer(layer, unique_units)
+        layer.updateExtents()
+        return layer
 
+    def _style_geol_layer(self, layer: QgsVectorLayer, unique_units: set[str]):
+        """Apply styles to the geology layer."""
         categories = []
         for unit_name in unique_units:
             color = self.get_color_for_unit(unit_name)
@@ -289,13 +281,9 @@ class PreviewLayerFactory:
                     "joinstyle": "round",
                 }
             )
-            category = QgsRendererCategory(unit_name, symbol, unit_name)
-            categories.append(category)
+            categories.append(QgsRendererCategory(unit_name, symbol, unit_name))
 
-        renderer = QgsCategorizedSymbolRenderer("unit", categories)
-        layer.setRenderer(renderer)
-        layer.updateExtents()
-        return layer
+        layer.setRenderer(QgsCategorizedSymbolRenderer("unit", categories))
 
     def create_struct_layer(
         self,
@@ -345,12 +333,16 @@ class PreviewLayerFactory:
 
         provider.addFeatures(features)
 
+        self._style_struct_layer(layer)
+        layer.updateExtents()
+        return layer
+
+    def _style_struct_layer(self, layer: QgsVectorLayer):
+        """Apply styles to the structure layer."""
         symbol = QgsLineSymbol.createSimple(
             {"color": "204,0,0", "width": "0.5", "capstyle": "round"}
         )
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        layer.updateExtents()
-        return layer
 
     def create_drillhole_trace_layer(
         self, drillhole_data: list, vert_exag: float = 1.0
@@ -388,7 +380,12 @@ class PreviewLayerFactory:
         logger.info(f"Adding {len(features)} drillhole trace features to layer")
 
         provider.addFeatures(features)
+        self._style_drillhole_trace_layer(layer)
+        layer.updateExtents()
+        return layer
 
+    def _style_drillhole_trace_layer(self, layer: QgsVectorLayer):
+        """Apply styles to the drillhole trace layer."""
         symbol = QgsLineSymbol.createSimple(
             {"color": "50,50,50", "width": "0.3", "capstyle": "round"}
         )
@@ -405,8 +402,6 @@ class PreviewLayerFactory:
 
         layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
         layer.setLabelsEnabled(True)
-        layer.updateExtents()
-        return layer
 
     def create_drillhole_interval_layer(
         self, drillhole_data: list, vert_exag: float = 1.0
@@ -445,7 +440,12 @@ class PreviewLayerFactory:
             features.append(feat)
 
         provider.addFeatures(features)
+        self._style_drillhole_interval_layer(layer, unique_units)
+        layer.updateExtents()
+        return layer
 
+    def _style_drillhole_interval_layer(self, layer: QgsVectorLayer, unique_units: set[str]):
+        """Apply styles to the drillhole interval layer."""
         categories = []
         for unit_name in unique_units:
             color = self.get_color_for_unit(unit_name)
@@ -457,13 +457,9 @@ class PreviewLayerFactory:
                     "joinstyle": "bevel",
                 }
             )
-            category = QgsRendererCategory(unit_name, symbol, unit_name)
-            categories.append(category)
+            categories.append(QgsRendererCategory(unit_name, symbol, unit_name))
 
-        renderer = QgsCategorizedSymbolRenderer("unit", categories)
-        layer.setRenderer(renderer)
-        layer.updateExtents()
-        return layer
+        layer.setRenderer(QgsCategorizedSymbolRenderer("unit", categories))
 
     def interpolate_elevation(self, reference_data: ProfileData, target_dist: float) -> float:
         """Interpolate elevation at a given distance."""

@@ -67,117 +67,19 @@ class Interpretation3DExporter(BaseExporter):
             raise ExportError("Section line geometry is required for 3D projection.")
 
         # Prepare fields
-        all_attr_keys = set()
-        for interp in interpretations:
-            if interp.attributes:
-                all_attr_keys.update(interp.attributes.keys())
-        sorted_keys = sorted(all_attr_keys)
-
-        fields = [
-            QgsField("id", QMetaType.Type.QString, len=50),
-            QgsField("name", QMetaType.Type.QString, len=100),
-            QgsField("type", QMetaType.Type.QString, len=50),
-            QgsField("color", QMetaType.Type.QString, len=10),
-            QgsField("created_at", QMetaType.Type.QString, len=30),
-        ]
-
-        # Add custom fields
-        for key in sorted_keys:
-            fields.append(QgsField(key, QMetaType.Type.QString, len=255))
+        fields, sorted_keys = self._prepare_fields(interpretations)
 
         # Calculate section azimuth and origin
         try:
-            # Assume section line is a LineString. Get first segment for azimuth.
-            # Ideally the section line defines the projection plane.
-            if section_line.isMultipart():
-                # Handle MultiLineString if necessary, taking the first part
-                line_points = section_line.asMultiPolyline()[0]
-            else:
-                line_points = section_line.asPolyline()
-
-            p1 = line_points[0]
-            p2 = line_points[-1]
-
-            # Calculate azimuth (radians)
-            dx = p2.x() - p1.x()
-            dy = p2.y() - p1.y()
-            azimuth = math.atan2(dy, dx)
-
-            origin_x = p1.x()
-            origin_y = p1.y()
-
-            logger.info(
-                f"Section Plane: Origin({origin_x:.2f}, {origin_y:.2f}), Azimuth({math.degrees(azimuth):.2f} deg)"
-            )
-
+            origin_x, origin_y, azimuth = self._calculate_section_geometry(section_line)
         except Exception as e:
             raise ExportError(f"Failed to calculate section geometry: {e}") from e
 
         # Transform and create features
-        features = []
-        for polygon in interpretations:
-            feat = QgsFeature()
-            feat.setFields(
-                self._make_fields(fields)
-            )  # Helper from BaseExporter if exists, else construct
-
-            # Set attributes
-            feat.setAttribute("id", polygon.id)
-            feat.setAttribute("name", polygon.name)
-            feat.setAttribute("type", polygon.type)
-            feat.setAttribute("color", polygon.color)
-            feat.setAttribute("created_at", polygon.created_at)
-
-            # 1. Deduplicate vertices and ensure 2D validity
-            raw_vertices_2d = list(polygon.vertices_2d)
-            if not raw_vertices_2d:
-                continue
-
-            # Remove consecutive duplicates
-            dedup_vertices = []
-            for v in raw_vertices_2d:
-                if not dedup_vertices or v != dedup_vertices[-1]:
-                    dedup_vertices.append(v)
-
-            # Close loop if needed
-            if len(dedup_vertices) > 2 and dedup_vertices[0] != dedup_vertices[-1]:
-                dedup_vertices.append(dedup_vertices[0])
-
-            if len(dedup_vertices) < 4:  # At least 3 points + 1 closure
-                logger.warning(f"Polygon {polygon.id} has insufficient unique vertices. Skipping.")
-                continue
-
-            # Create 2D geometry first to validate/fix
-            qgs_points_2d = [QgsPointXY(x, y) for x, y in dedup_vertices]
-            geom_2d = QgsGeometry.fromPolygonXY([qgs_points_2d])
-
-            if not geom_2d.isGeosValid():
-                logger.info(
-                    f"Correcting 2D geometry for polygon {polygon.id} (e.g. self-intersections)"
-                )
-                geom_2d = geom_2d.makeValid()
-
-            # 2. Project validated 2D vertices to 3D
-            # Note: makeValid might have changed topology (MultiPolygon),
-            # so we iterate over all rings of the validated (potentially multi) geometry.
-
-            # Using asGeometryCollection to be safe across geometry types (Polygon/MultiPolygon)
-            features.extend(
-                self._project_to_3d_features(
-                    geom_2d,
-                    polygon,
-                    fields,
-                    origin_x,
-                    origin_y,
-                    azimuth,
-                    sorted_keys,
-                    vert_exag=1.0,
-                )
-            )
-            # vert_exag 1.0 because 2D coordinates are already exag in tool? No, tool uses raw canvas coords.
-            # Actually, the tool saves (dist, elev). Elev is NOT exag in the InterpretationPolygon.
-            # It's only exag during rendering.
-            # So vert_exag here should be 1.0 (true geometry).
+        # Transform and create features
+        features = self._collect_projected_features(
+            interpretations, fields, sorted_keys, origin_x, origin_y, azimuth
+        )
 
         # Write to Shapefile using BaseExporter logic or QgsVectorFileWriter
         # BaseExporter usage:
@@ -265,61 +167,10 @@ class Interpretation3DExporter(BaseExporter):
 
         # 2. 3D Symbology (Native QGIS 3D)
         if HAS_3D:
-            symbol_3d = QgsPolygon3DSymbol()
-
-            # Setup default material
-            material = QgsPhongMaterialSettings()
-            material.setDiffuse(QColor(200, 200, 200))  # Default gray
-
-            # Try to setup data-defined color for 3D material
             try:
-                from qgis.core import QgsProperty
-
-                # Setup keys differently based on QGIS version/API
-                diffuse_key = None
-                ambient_key = None
-
-                # Check QgsPhongMaterialSettings.Property
-                if hasattr(QgsPhongMaterialSettings, "Property"):
-                    if hasattr(QgsPhongMaterialSettings.Property, "Diffuse"):
-                        diffuse_key = QgsPhongMaterialSettings.Property.Diffuse
-                        ambient_key = QgsPhongMaterialSettings.Property.Ambient
-
-                # Check QgsAbstractMaterialSettings.Property if not found
-                if diffuse_key is None:
-                    try:
-                        from qgis._3d import QgsAbstractMaterialSettings
-
-                        if hasattr(QgsAbstractMaterialSettings, "Property"):
-                            if hasattr(QgsAbstractMaterialSettings.Property, "Diffuse"):
-                                diffuse_key = QgsAbstractMaterialSettings.Property.Diffuse
-                                ambient_key = QgsAbstractMaterialSettings.Property.Ambient
-                    except ImportError:
-                        pass
-
-                if diffuse_key is not None and hasattr(material, "dataDefinedProperties"):
-                    material.dataDefinedProperties().setProperty(
-                        diffuse_key, QgsProperty.fromField("color")
-                    )
-                    material.dataDefinedProperties().setProperty(
-                        ambient_key, QgsProperty.fromField("color")
-                    )
-                else:
-                    logger.warning(
-                        "3D Material Data Defined Properties not available or accessible in this QGIS version."
-                    )
-
+                self._configure_3d_renderer(layer)
             except Exception as e:
-                logger.warning(f"Failed to set 3D data defined properties: {e}")
-
-            symbol_3d.setMaterialSettings(material)
-
-            # Altitude binding to absolute (our Z is absolute interpretation)
-            # symbol_3d.setAltitudeBinding(QgsPolygon3DSymbol.AltBindAbsolute)
-
-            renderer_3d = QgsVectorLayer3DRenderer(symbol_3d)
-            layer.setRenderer3D(renderer_3d)
-            logger.debug("Configured native 3D renderer in QML")
+                logger.warning(f"Failed to configure 3D renderer: {e}")
 
         # Save style to disk
         msg, ok = layer.saveNamedStyle(str(qml_path))
@@ -431,3 +282,130 @@ class Interpretation3DExporter(BaseExporter):
     def _make_fields(self, fields_list):
         # Compatibility helper if needed
         return self._make_fields_obj(fields_list)
+
+    def _prepare_fields(self, interpretations):
+        all_attr_keys = set()
+        for interp in interpretations:
+            if interp.attributes:
+                all_attr_keys.update(interp.attributes.keys())
+        sorted_keys = sorted(all_attr_keys)
+
+        fields = [
+            QgsField("id", QMetaType.Type.QString, len=50),
+            QgsField("name", QMetaType.Type.QString, len=100),
+            QgsField("type", QMetaType.Type.QString, len=50),
+            QgsField("color", QMetaType.Type.QString, len=10),
+            QgsField("created_at", QMetaType.Type.QString, len=30),
+        ]
+
+        for key in sorted_keys:
+            fields.append(QgsField(key, QMetaType.Type.QString, len=255))
+        return fields, sorted_keys
+
+    def _calculate_section_geometry(self, section_line: QgsGeometry) -> tuple[float, float, float]:
+        """Calculate origin and azimuth from section line."""
+        if section_line.isMultipart():
+            line_points = section_line.asMultiPolyline()[0]
+        else:
+            line_points = section_line.asPolyline()
+
+        p1 = line_points[0]
+        p2 = line_points[-1]
+
+        # Calculate azimuth (radians)
+        dx = p2.x() - p1.x()
+        dy = p2.y() - p1.y()
+        azimuth = math.atan2(dy, dx)
+
+        logger.info(
+            f"Section Plane: Origin({p1.x():.2f}, {p1.y():.2f}), Azimuth({math.degrees(azimuth):.2f} deg)"
+        )
+        return p1.x(), p1.y(), azimuth
+
+    def _collect_projected_features(
+        self, interpretations, fields, sorted_keys, origin_x, origin_y, azimuth
+    ):
+        features = []
+        for polygon in interpretations:
+            # Deduplicate vertices and ensure 2D validity
+            raw_vertices_2d = list(polygon.vertices_2d)
+            if not raw_vertices_2d:
+                continue
+
+            dedup_vertices = []
+            for v in raw_vertices_2d:
+                if not dedup_vertices or v != dedup_vertices[-1]:
+                    dedup_vertices.append(v)
+
+            if len(dedup_vertices) > 2 and dedup_vertices[0] != dedup_vertices[-1]:
+                dedup_vertices.append(dedup_vertices[0])
+
+            if len(dedup_vertices) < 4:
+                logger.warning(f"Polygon {polygon.id} has insufficient unique vertices. Skipping.")
+                continue
+
+            qgs_points_2d = [QgsPointXY(x, y) for x, y in dedup_vertices]
+            geom_2d = QgsGeometry.fromPolygonXY([qgs_points_2d])
+
+            if not geom_2d.isGeosValid():
+                logger.info(f"Correcting 2D geometry for polygon {polygon.id}")
+                geom_2d = geom_2d.makeValid()
+
+            features.extend(
+                self._project_to_3d_features(
+                    geom_2d,
+                    polygon,
+                    fields,
+                    origin_x,
+                    origin_y,
+                    azimuth,
+                    sorted_keys,
+                    vert_exag=1.0,
+                )
+            )
+        return features
+
+    def _configure_3d_renderer(self, layer):
+        from qgis._3d import (
+            QgsPolygon3DSymbol,
+            QgsVectorLayer3DRenderer,
+            QgsPhongMaterialSettings,
+        )
+        from qgis.core import QgsProperty
+
+        symbol_3d = QgsPolygon3DSymbol()
+        material = QgsPhongMaterialSettings()
+        material.setDiffuse(QColor(200, 200, 200))
+
+        # Setup data defined properties
+        diffuse_key = None
+        ambient_key = None
+
+        if hasattr(QgsPhongMaterialSettings, "Property"):
+            if hasattr(QgsPhongMaterialSettings.Property, "Diffuse"):
+                diffuse_key = QgsPhongMaterialSettings.Property.Diffuse
+                ambient_key = QgsPhongMaterialSettings.Property.Ambient
+
+        if diffuse_key is None:
+            try:
+                from qgis._3d import QgsAbstractMaterialSettings
+
+                if hasattr(QgsAbstractMaterialSettings, "Property"):
+                    if hasattr(QgsAbstractMaterialSettings.Property, "Diffuse"):
+                        diffuse_key = QgsAbstractMaterialSettings.Property.Diffuse
+                        ambient_key = QgsAbstractMaterialSettings.Property.Ambient
+            except ImportError:
+                pass
+
+        if diffuse_key is not None and hasattr(material, "dataDefinedProperties"):
+            material.dataDefinedProperties().setProperty(
+                diffuse_key, QgsProperty.fromField("color")
+            )
+            material.dataDefinedProperties().setProperty(
+                ambient_key, QgsProperty.fromField("color")
+            )
+
+        symbol_3d.setMaterialSettings(material)
+        renderer_3d = QgsVectorLayer3DRenderer(symbol_3d)
+        layer.setRenderer3D(renderer_3d)
+        logger.debug("Configured native 3D renderer in QML")

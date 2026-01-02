@@ -178,48 +178,28 @@ class DrillholeService(IDrillholeService):
             if not collar_point:
                 continue
 
-            try:
-                # 3. Process individual hole
-                hole_geol, hole_drill = self._process_single_hole(
-                    hole_id=hole_id,
-                    collar_point=collar_point,
-                    collar_z=collar_z,
-                    given_depth=given_depth,
-                    survey_data=surveys_map.get(hole_id, []),
-                    intervals=intervals_map.get(hole_id, []),
-                    line_geom=line_geom,
-                    line_start=line_start,
-                    distance_area=distance_area,
-                    buffer_width=buffer_width,
-                    section_azimuth=section_azimuth,
-                )
-
-                if hole_geol:
-                    geol_data.extend(hole_geol)
-                drillhole_data.append(hole_drill)
-            except Exception as e:
-                logger.exception(f"Failed to process hole {hole_id}: {type(e).__name__}: {e}")
-                import traceback
-
-                logger.exception(traceback.format_exc())
-                raise
+            self._safe_process_single_hole(
+                hole_id,
+                collar_point,
+                collar_z,
+                given_depth,
+                surveys_map,
+                intervals_map,
+                line_geom,
+                line_start,
+                distance_area,
+                buffer_width,
+                section_azimuth,
+                geol_data,
+                drillhole_data,
+            )
 
         return geol_data, drillhole_data
 
     def _fetch_bulk_data(
         self, layer: QgsVectorLayer, hole_ids: set[Any], fields: dict[str, str]
     ) -> dict[Any, list[tuple]]:
-        """Fetch data for multiple holes in a single pass.
-
-        Args:
-            layer: Vector layer to fetch from.
-            hole_ids: Set of hole IDs to filter.
-            fields: Field mapping.
-
-        Returns:
-            A dictionary mapping hole_id to list of data tuples.
-
-        """
+        """Fetch data for multiple holes in a single pass."""
         if not layer or not layer.isValid():
             return {}
 
@@ -227,12 +207,10 @@ class DrillholeService(IDrillholeService):
         if not id_f:
             return {}
 
-        # Determine data tuple structure based on context (survey vs interval)
         is_survey = "depth" in fields
-
-        # Validate all required fields are present
         required = ["depth", "azim", "incl"] if is_survey else ["from", "to", "lith"]
 
+        # Validate fields
         for field_key in required:
             if not fields.get(field_key):
                 return {}
@@ -241,32 +219,16 @@ class DrillholeService(IDrillholeService):
         if not hole_ids:
             return {}
 
-        # Use QgsFeatureRequest for efficient filtering
         ids_str = ", ".join([f"'{hid!s}'" for hid in hole_ids])
         request = QgsFeatureRequest().setFilterExpression(f'"{id_f}" IN ({ids_str})')
 
         for feat in layer.getFeatures(request):
             hole_id = feat[id_f]
-
-            try:
-                if is_survey:
-                    data = (
-                        float(feat[fields["depth"]]),
-                        float(feat[fields["azim"]]),
-                        float(feat[fields["incl"]]),
-                    )
-                else:
-                    data = (
-                        float(feat[fields["from"]]),
-                        float(feat[fields["to"]]),
-                        str(feat[fields["lith"]]),
-                    )
-
+            data = self._extract_data_tuple(feat, fields, is_survey)
+            if data:
                 if hole_id not in result_map:
                     result_map[hole_id] = []
                 result_map[hole_id].append(data)
-            except (ValueError, TypeError, KeyError):
-                continue
 
         # Sort surveys by depth
         if is_survey:
@@ -539,3 +501,61 @@ class DrillholeService(IDrillholeService):
             if val is not None:
                 return float(val)
         return 0.0
+
+    def _safe_process_single_hole(
+        self,
+        hole_id,
+        collar_point,
+        collar_z,
+        given_depth,
+        surveys_map,
+        intervals_map,
+        line_geom,
+        line_start,
+        distance_area,
+        buffer_width,
+        section_azimuth,
+        geol_data,
+        drillhole_data,
+    ):
+        try:
+            hole_geol, hole_drill = self._process_single_hole(
+                hole_id=hole_id,
+                collar_point=collar_point,
+                collar_z=collar_z,
+                given_depth=given_depth,
+                survey_data=surveys_map.get(hole_id, []),
+                intervals=intervals_map.get(hole_id, []),
+                line_geom=line_geom,
+                line_start=line_start,
+                distance_area=distance_area,
+                buffer_width=buffer_width,
+                section_azimuth=section_azimuth,
+            )
+
+            if hole_geol:
+                geol_data.extend(hole_geol)
+            drillhole_data.append(hole_drill)
+        except Exception as e:
+            logger.exception(f"Failed to process hole {hole_id}: {type(e).__name__}: {e}")
+            import traceback
+
+            logger.exception(traceback.format_exc())
+            raise
+
+    def _extract_data_tuple(self, feat, fields, is_survey):
+        try:
+            if is_survey:
+                return (
+                    float(feat[fields["depth"]]),
+                    float(feat[fields["azim"]]),
+                    float(feat[fields["incl"]]),
+                )
+            else:
+                return (
+                    float(feat[fields["from"]]),
+                    float(feat[fields["to"]]),
+                    str(feat[fields["lith"]]),
+                )
+        except (ValueError, TypeError, KeyError):
+            return None

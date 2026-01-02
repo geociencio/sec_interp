@@ -1,277 +1,277 @@
-# Changelog
+# Registro de Cambios
 
-All notable changes to this project will be documented in this file.
+Todos los cambios notables en este proyecto serán documentados en este archivo.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+El formato se basa en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
+y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.5.0] - 2026-01-01
-### 🚀 Major Features
-- **3D Interpretation Export**:
-  - Export geological interpretations as real 3D Shapefiles (PolygonZ).
-  - Vertex-wise affine transformation ensuring geometric integrity of complex subsurface structures (e.g., overturned folds).
-  - Native QGIS API implementation using `QgsPolygon` and `QgsLineString`.
-- **Advanced Control & UI**:
-  - **Settings Page**: Dedicated sidebar navigation for advanced plugin configuration.
-  - **Access Control Service**: Ready-to-use infrastructure for managing restricted features and user tiers.
-  - **Persistent configuration** via `QgsSettings`.
+### 🚀 Características Principales
+- **Exportación de Interpretación 3D**:
+  - Exportar interpretaciones geológicas como Shapefiles 3D reales (PolygonZ).
+  - Transformación afín vértice a vértice asegurando la integridad geométrica de estructuras complejas del subsuelo (ej. pliegues volcados).
+  - Implementación nativa con API de QGIS usando `QgsPolygon` y `QgsLineString`.
+- **Control Avanzado e UI**:
+  - **Página de Configuración**: Navegación lateral dedicada para configuración avanzada del plugin.
+  - **Servicio de Control de Acceso**: Infraestructura lista para usar para gestionar características restringidas y niveles de usuario.
+  - **Configuración persistente** vía `QgsSettings`.
 
 ## [2.4.0] - 2025-12-31
-### Added
-- **Internationalization (I18n) Support**:
-  - Multi-language support for 5 languages: Spanish (ES), French (FR), German (DE), Russian (RU), Portuguese Brazil (PT_BR).
-  - Complete translation of UI strings using Qt's translation system.
-  - Automatic language detection based on QGIS locale.
-  - Translation files (`.ts`) and compiled binaries (`.qm`) for all supported languages.
-  - Scripts for translation management (`update-strings.sh`, `compile-strings.sh`).
-- **Code Quality Infrastructure**:
-  - Pre-commit hooks configured with ruff, trailing-whitespace, end-of-file-fixer, and YAML/TOML validators.
-  - Automated code quality checks on every commit.
-  - Project analyzer with metrics history tracking (`.ai-context/metrics_history.json`).
-- **Development Tools**:
-  - Metrics history logging for tracking code quality evolution over time.
-  - Enhanced project analysis script with performance optimizations.
+### Añadido
+- **Soporte de Internacionalización (I18n)**:
+  - Soporte multi-idioma para 5 lenguas: Español (ES), Francés (FR), Alemán (DE), Ruso (RU), Portugués Brasil (PT_BR).
+  - Traducción completa de cadenas de UI usando el sistema de traducción de Qt.
+  - Detección automática de idioma basada en la configuración regional de QGIS.
+  - Archivos de traducción (`.ts`) y binarios compilados (`.qm`) para todos los idiomas soportados.
+  - Scripts para gestión de traducciones (`update-strings.sh`, `compile-strings.sh`).
+- **Infraestructura de Calidad de Código**:
+  - Hooks de pre-commit configurados con ruff, trailing-whitespace, end-of-file-fixer y validadores YAML/TOML.
+  - Comprobaciones automáticas de calidad de código en cada commit.
+  - Analizador de proyecto con seguimiento de historial de métricas (`.ai-context/metrics_history.json`).
+- **Herramientas de Desarrollo**:
+  - Registro de historial de métricas para rastrear la evolución de la calidad del código a lo largo del tiempo.
+  - Script de análisis de proyecto mejorado con optimizaciones de rendimiento.
 
-### Changed
-- **Major Architectural Refactoring (Phases 1-6)**:
-  - **Phase 1 - Architecture & Decoupling**: Defined service interfaces using `abc.ABC` and `typing.Protocol`, implemented dependency injection in Manager classes.
-  - **Phase 2 - Error Handling & Logging**: Created domain-specific exception hierarchy, implemented centralized error handling, migrated to structured logging.
-  - **Phase 3 - Performance & Optimization**: Advanced CacheManager with TTL and LOD awareness, optimized spatial operations, vectorized geometry calculations.
-  - **Phase 4 - Async & Resource Management**: Refined `AsyncGeologyProcessor` with cancellation tokens, implemented robust resource cleanup with Context Managers.
-  - **Phase 5 - Validation & Modernization**: Used `dataclasses` for parameter handling, refined type hinting with Protocols, modernized to Python 3.10+ features.
-  - **Phase 6 - Documentation & DevExp**: Standardized docstrings to Google format across all `core/` modules, comprehensive I18n implementation.
-- **Code Quality Improvements**:
-  - Replaced deprecated `typing.Dict/List/Tuple` with modern `dict/list/tuple` syntax.
-  - Reduced Ruff linting errors from 287 to 261 (9% improvement).
-  - Fixed syntax errors from automated refactoring.
-  - Normalized whitespace in 158 files.
-  - Quality score: 69.1/100, QGIS compliance: 100.0/100.
+### Cambiado
+- **Refactorización Arquitectónica Mayor (Fases 1-6)**:
+  - **Fase 1 - Arquitectura y Desacoplamiento**: Definición de interfaces de servicio usando `abc.ABC` y `typing.Protocol`, implementación de inyección de dependencias en clases Manager.
+  - **Fase 2 - Manejo de Errores y Logging**: Creación de jerarquía de excepciones específica del dominio, implementación de manejo de errores centralizado, migración a logging estructurado.
+  - **Fase 3 - Rendimiento y Optimización**: CacheManager avanzado con conciencia de TTL y LOD, operaciones espaciales optimizadas, cálculos geométricos vectorizados.
+  - **Fase 4 - Async y Gestión de Recursos**: Refinamiento de `AsyncGeologyProcessor` con tokens de cancelación, implementación de limpieza robusta de recursos con Context Managers.
+  - **Fase 5 - Validación y Modernización**: Uso de `dataclasses` para manejo de parámetros, refinamiento de type hinting con Protocols, modernización a características de Python 3.10+.
+  - **Fase 6 - Documentación y ExpDev**: Estandarización de docstrings al formato Google en todos los módulos `core/`, implementación integral de I18n.
+- **Mejoras de Calidad de Código**:
+  - Reemplazo de `typing.Dict/List/Tuple` obsoletos con sintaxis moderna `dict/list/tuple`.
+  - Reducción de errores de linting Ruff de 287 a 261 (mejora del 9%).
+  - Corrección de errores de sintaxis de refactorización automatizada.
+  - Normalización de espacios en blanco en 158 archivos.
+  - Puntuación de calidad: 69.1/100, Cumplimiento QGIS: 100.0/100.
 
-### Fixed
-- **Critical Bug Fixes**:
-  - Fixed missing `QgsProject` import in `preview_axes_manager.py` causing preview rendering crashes.
-  - Fixed preview rendering by explicitly assigning Project CRS to memory layers.
-  - Fixed `RuntimeError` in Page classes by calling `super().__init__()` before `self.tr()`.
-  - Fixed empty translations by removing `type="unfinished"` attributes from `.ts` files.
-  - Fixed Russian translation file XML corruption.
-  - Fixed false positive `ValidationError` for drillhole layers.
-- **Translation System Fixes**:
-  - Fixed `lrelease` compilation by properly handling multiple locales in Makefile.
-  - Created translation injection scripts for efficient population of `.ts` files.
-  - Verified translation loading with unit tests.
+### Corregido
+- **Correcciones de Bugs Críticos**:
+  - Solucionada la falta de importación de `QgsProject` en `preview_axes_manager.py` que causaba cierres al renderizar la vista previa.
+  - Corregida la renderización de vista previa asignando explícitamente el CRS del proyecto a las capas en memoria.
+  - Corregido `RuntimeError` en clases Page llamando a `super().__init__()` antes de `self.tr()`.
+  - Corregidas traducciones vacías eliminando atributos `type="unfinished"` de archivos `.ts`.
+  - Corregida corrupción XML en archivo de traducción ruso.
+  - Corregido falso positivo `ValidationError` para capas de sondeos.
+- **Correcciones del Sistema de Traducción**:
+  - Corregida compilación `lrelease` manejando adecuadamente múltiples locales en Makefile.
+  - Creados scripts de inyección de traducciones para población eficiente de archivos `.ts`.
+  - Verificada la carga de traducciones con pruebas unitarias.
 
-### Documentation
-- Updated all `core/` modules with Google-style docstrings.
-- Created comprehensive walkthrough documenting all architectural improvements.
-- Added session artifacts tracking development progress.
+### Documentación
+- Actualizados todos los módulos `core/` con docstrings estilo Google.
+- Creado recorrido completo documentando todas las mejoras arquitectónicas.
+- Añadidos artefactos de sesión rastreando el progreso del desarrollo.
 
 ## [2.3.0] - 2025-12-25
-### Added
-- **Enhanced Multi-Point Measurement Tool**:
-  - Support for polyline tracing with unlimited measurement points.
-  - Dedicated "**Finalize**" button for explicit measurement completion.
-  - Comprehensive metrics: Total 3D distance, Horizontal distance, Elevation change, and Average slope.
-  - Persistent visual feedback with green vertex markers and measurement lines after finalization.
-  - Auto-reset on new measurement for improved workflow.
-- **Structural Improvement Plan - Phase 1 (Architectural Decoupling)**:
-  - Extracted `DialogToolManager` to encapsulate map tool handling and mouse wheel events.
-  - Centralized preview generation logic in `PreviewManager`.
-  - Eliminated PyQt dependencies from `core/validation` using enum-based `FieldType`.
-- **Structural Improvement Plan - Phase 2 (Complexity Reduction)**:
-  - Modularized `core/utils/geometry.py` into `extraction`, `processing`, and `filtering` sub-packages.
-  - Refactored `DrillholeService.process_intervals` with extracted private methods.
-  - Implemented adaptive Level of Detail (LOD) for topographic profiles.
-- **Structural Improvement Plan - Phase 3 (Performance Optimization)**:
-  - Robust cache system with hash-based invalidation in `PreviewManager`.
-  - Spatial indexing (`QgsSpatialIndex`) for efficient drillhole filtering.
-  - Achieved 84ms rendering time for 6km cross-sections.
-- **Structural Improvement Plan - Phase 4 (Documentation)**:
-  - Created `ARCHITECTURE.md` with unified technical documentation.
-  - Created `DEVELOPMENT_GUIDE.md` for developer onboarding.
-  - Improved docstring coverage to 75.9%.
+### Añadido
+- **Herramienta de Medición Multi-Punto Mejorada**:
+  - Soporte para trazado de polilíneas con puntos de medición ilimitados.
+  - Botón "**Finalizar**" dedicado para completar explícitamente la medición.
+  - Métricas completas: Distancia 3D total, distancia horizontal, cambio de elevación y pendiente promedio.
+  - Retroalimentación visual persistente con marcadores de vértices verdes y líneas de medición después de finalizar.
+  - Auto-reinicio en nueva medición para flujo de trabajo mejorado.
+- **Plan de Mejora Estructural - Fase 1 (Desacoplamiento Arquitectónico)**:
+  - Extraído `DialogToolManager` para encapsular manejo de herramientas de mapa y eventos de rueda del ratón.
+  - Centralizada lógica de generación de vista previa en `PreviewManager`.
+  - Eliminadas dependencias PyQt de `core/validation` usando `FieldType` basado en enum.
+- **Plan de Mejora Estructural - Fase 2 (Reducción de Complejidad)**:
+  - Modularizado `core/utils/geometry.py` en subpaquetes `extraction`, `processing`, y `filtering`.
+  - Refactorizado `DrillholeService.process_intervals` con métodos privados extraídos.
+  - Implementado Nivel de Detalle (LOD) adaptativo para perfiles topográficos.
+- **Plan de Mejora Estructural - Fase 3 (Optimización de Rendimiento)**:
+  - Sistema de caché robusto con invalidación basada en hash en `PreviewManager`.
+  - Indexación espacial (`QgsSpatialIndex`) para filtrado eficiente de sondeos.
+  - Logrado tiempo de renderizado de 84ms para secciones transversales de 6km.
+- **Plan de Mejora Estructural - Fase 4 (Documentación)**:
+  - Creado `ARCHITECTURE.md` con documentación técnica unificada.
+  - Creado `DEVELOPMENT_GUIDE.md` para incorporación de desarrolladores.
+  - Mejorada cobertura de docstrings al 75.9%.
 
-### Changed
-- **Code Quality Improvements**:
-  - Quality score increased from 71.1 to 74.4 (+4.6%).
-  - Removed deprecated typing imports (`Dict`/`List` → `dict`/`list`).
-  - Fixed import order and organization across all modules.
-  - Improved error handling with `logger.exception` instead of `logger.error`.
+### Cambiado
+- **Mejoras de Calidad de Código**:
+  - Puntuación de calidad aumentada de 71.1 a 74.4 (+4.6%).
+  - Eliminados imports de typing obsoletos (`Dict`/`List` → `dict`/`list`).
+  - Corregido orden y organización de imports en todos los módulos.
+  - Mejorado manejo de errores con `logger.exception` en lugar de `logger.error`.
 
-### Fixed
-- **Critical Bug Fixes**:
-  - Fixed `ModuleNotFoundError` for `geometry_utils` sub-package in deployment.
-  - Resolved `NameError` for `Optional` in `profile_service.py`.
-  - Fixed `AttributeError` in measure tool (access via `DialogToolManager`).
-  - Corrected `TypeError` in `create_buffer_geometry` signature (added `crs` and `segments` parameters).
-  - Fixed `UnboundLocalError` in `PreviewManager` cache handling.
-  - Added CRS transformation support in `filter_features_by_buffer` utility.
-  - Implemented field validation for drillhole processing to prevent `KeyError`.
-  - Fixed missing `logger` definition in `preview_service.py`.
-- **Preview Rendering Fixes**:
-  - Fixed geology disappearing on subsequent preview clicks with unchanged parameters.
-  - Fixed drillholes not rendering despite being detected (missing return statement in `_generate_drillholes()`).
-  - Added comprehensive diagnostic logging for drillhole trace generation.
-  - Improved cache persistence for async geology data.
+### Corregido
+- **Correcciones de Bugs Críticos**:
+  - Corregido `ModuleNotFoundError` para subpaquete `geometry_utils` en despliegue.
+  - Resuelto `NameError` para `Optional` en `profile_service.py`.
+  - Corregido `AttributeError` en herramienta de medición (acceso vía `DialogToolManager`).
+  - Corregido `TypeError` en firma de `create_buffer_geometry` (añadidos parámetros `crs` y `segments`).
+  - Corregido `UnboundLocalError` en manejo de caché de `PreviewManager`.
+  - Añadido soporte de transformación CRS en utilidad `filter_features_by_buffer`.
+  - Implementada validación de campos para procesamiento de sondeos para prevenir `KeyError`.
+  - Corregida falta de definición de `logger` en `preview_service.py`.
+- **Correcciones de Renderización de Vista Previa**:
+  - Corregida geología que desaparecía en clics subsiguientes de vista previa con parámetros sin cambios.
+  - Corregido sondeos no renderizados a pesar de ser detectados (faltaba return en `_generate_drillholes()`).
+  - Añadido logging diagnóstico completo para generación de trazas de sondeos.
+  - Mejorada persistencia de caché para datos geológicos asíncronos.
 
 ## [2.2.0] - 2025-12-21
-### Added
-- **Architectural Evolution: Modular Core & Clean Entry Point**:
-  - Moved main `SecInterp` class to plugin root (`sec_interp_plugin.py`) to strictly separate QGIS integration from business logic.
-  - Modularized `validation.py` into a specialized `core/validation/` package (Field, Layer, Path, and Project validators).
-  - Fragmented `SecInterpDialog` into specialized managers (`DialogSignalManager`, `DialogDataAggregator`) reducing complexity and file size.
-  - Refactored Help System to "Native Hybrid" (Single-file HTML/CSS) for improved performance and UX.
-- **Preview & UI Improvements**:
-  - Fixed Y-axis labels and grid alignment for negative elevations.
-  - Improved axis label spacing and label QUADRANT handling.
-  - Fixed toolbar icon loading path after architectural move.
-- **Documentation**:
-  - Updated "Outputs" documentation with Drillhole trace/interval details.
-  - Created comprehensive technical architecture documentation.
+### Añadido
+- **Evolución Arquitectónica: Core Modular y Punto de Entrada Limpio**:
+  - Mover clase principal `SecInterp` a raíz del plugin (`sec_interp_plugin.py`) para separar estrictamente integración QGIS de lógica de negocio.
+  - Modularizado `validation.py` en paquete especializado `core/validation/` (validadores de Campo, Capa, Ruta y Proyecto).
+  - Fragmentado `SecInterpDialog` en managers especializados (`DialogSignalManager`, `DialogDataAggregator`) reduciendo complejidad y tamaño de archivo.
+  - Refactorizado Sistema de Ayuda a "Híbrido Nativo" (HTML/CSS en un solo archivo) para mejor rendimiento y UX.
+- **Mejoras de Vista Previa e UI**:
+  - Corregidas etiquetas de eje Y y alineación de rejilla para elevaciones negativas.
+  - Mejorado espaciado de etiquetas de eje y manejo de CUADRANTES de etiquetas.
+  - Corregida ruta de carga de icono de barra de herramientas tras movimiento arquitectónico.
+- **Documentación**:
+  - Actualizada documentación de "Outputs" con detalles de traza/intervalos de sondeos.
+  - Creada documentación técnica de arquitectura completa.
 
-### Fixed
-- Resolved `UI_IMPORT_IN_CORE` architectural violations by moving UI-dependent components out of the core layer.
-- Fixed `TypeError` in `PreviewParams` and startup `AttributeError` by reordering service initialization.
-- Fixed field collection bug in `PreviewManager` using `currentField()`.
-- Improved stability of Preview Export with better size handling.
+### Corregido
+- Resueltas violaciones arquitectónicas `UI_IMPORT_IN_CORE` moviendo componentes dependientes de UI fuera de la capa core.
+- Corregido `TypeError` en `PreviewParams` y `AttributeError` al inicio reordenando inicialización de servicios.
+- Corregido bug de recolección de campos en `PreviewManager` usando `currentField()`.
+- Mejorada estabilidad de Exportación de Vista Previa con mejor manejo de tamaño.
 
 ## [2.1.0] - 2025-12-17
-### Added
-- **Major Feature: Snap-Enabled Measurement Tool**:
-  - Implementation of iterative vertex snapping logic using `QgsPointLocator`.
-  - Manual snapping approach that avoids project pollution (no temporary layers added to `QgsProject`).
-  - Performance optimization with locator caching.
-- **AI Workflow Enhancements**:
-  - Improved `ai_workflow.py` with Unicode normalization (NFD) for robust keyword extraction (supports accents/special characters).
-  - Robust context loading with mandatory project-level files (`AI_CONTEXT.md`, `project_brain.md`).
+### Añadido
+- **Característica Mayor: Herramienta de Medición con Snap**:
+  - Implementación de lógica de snap iterativo a vértices usando `QgsPointLocator`.
+  - Enfoque de snap manual que evita contaminación del proyecto (no añade capas temporales a `QgsProject`).
+  - Optimización de rendimiento con caché de localizador.
+- **Mejoras de Flujo de Trabajo AI**:
+  - Mejorado `ai_workflow.py` con normalización Unicode (NFD) para extracción robusta de palabras clave (soporta acentos/caracteres especiales).
+  - Carga de contexto robusta con archivos obligatorios a nivel de proyecto (`AI_CONTEXT.md`, `project_brain.md`).
 
-### Fixed
-- Fixed critical `AttributeError` in `QgsSnappingConfig` by correctly using `QgsTolerance.Pixels`.
-- Eliminated "temporary scratch layers" warning by using manual snapping logic.
+### Corregido
+- Corregido `AttributeError` crítico en `QgsSnappingConfig` usando correctamente `QgsTolerance.Pixels`.
+- Eliminada advertencia de "capas temporales" usando lógica de snap manual.
 
 ## [2.0.0] - 2025-12-14
-### Added
-- **Major Feature: Drillhole Data Handling**:
-  - 3D Projection of drillhole traces onto 2D profile sections.
-  - Auto-calculation of total depths and handling of vertical holes without survey.
-  - Visualization of geological intervals along drillhole traces.
-- **Drillhole Data Export**:
-  - Export drillhole traces to Shapefile (`drillhole_traces.shp`).
-  - Export interval data with attributes to Shapefile (`drillhole_intervals.shp`).
+### Añadido
+- **Característica Mayor: Manejo de Datos de Sondeos**:
+  - Proyección 3D de trazas de sondeos en secciones de perfil 2D.
+  - Auto-cálculo de profundidades totales y manejo de agujeros verticales sin survey.
+  - Visualización de intervalos geológicos a lo largo de trazas de sondeos.
+- **Exportación de Datos de Sondeos**:
+  - Exportar trazas de sondeos a Shapefile (`drillhole_traces.shp`).
+  - Exportar datos de intervalos con atributos a Shapefile (`drillhole_intervals.shp`).
 
-### Changed
-- **Major UI Refactoring & Enhancements**:
-  - New specialized Drillhole Input Page.
-  - Enhanced Preview System with dedicated persistent rendering for all data types.
-  - Fixed critical rendering bugs (zoom persistence, async updates).
-- **Architecture**:
-  - Implemented `DrillholeService` for encapsulated logic.
-  - Refactored `ProfileController` to orchestrate multiple data services.
-  - Unified export logic with extensible Exporter pattern.
+### Cambiado
+- **Refactorización Mayor de UI y Mejoras**:
+  - Nueva Página de Entrada de Sondeos especializada.
+  - Sistema de Vista Previa mejorado con renderizado persistente dedicado para todos los tipos de datos.
+  - Corregidos bugs críticos de renderizado (persistencia de zoom, actualizaciones asíncronas).
+- **Arquitectura**:
+  - Implementado `DrillholeService` para lógica encapsulada.
+  - Refactorizado `ProfileController` para orquestar múltiples servicios de datos.
+  - Unificada lógica de exportación con patrón Exporter extensible.
 
 ## [1.1.0] - 2025-12-12
-### Added
-- **Performance & Optimization**:
-  - Implemented asynchronous parallel processing for geological generation.
-  - Integrated Performance Monitor (RAM & Execution Time tracking).
-  - Added non-blocking UI during heavy calculations.
-- **Preview System Enhancements**:
-  - Implemented Adaptive Level of Detail (LOD) for high-performance rendering.
-  - Added Dynamic Zoom-based LOD (details increase as you zoom in).
-  - Added Measurement Tool (Distance and Slope/Gradient).
+### Añadido
+- **Rendimiento y Optimización**:
+  - Implementado procesamiento paralelo asíncrono para generación geológica.
+  - Integrado Monitor de Rendimiento (seguimiento de RAM y Tiempo de Ejecución).
+  - Añadida UI no bloqueante durante cálculos pesados.
+- **Mejoras del Sistema de Vista Previa**:
+  - Implementado Nivel de Detalle (LOD) adaptativo para renderizado de alto rendimiento.
+  - Añadido LOD Dinámico basado en Zoom (detalles aumentan al hacer zoom).
+  - Añadida Herramienta de Medición (Distancia y Pendiente/Gradiente).
 
-### Changed
-- **Architecture & Fixes**:
-  - Refactored services to use Command Pattern for parallel execution.
-  - Improved CRS handling.
+### Cambiado
+- **Arquitectura y Correcciones**:
+  - Refactorizados servicios para usar Patrón Comando para ejecución paralela.
+  - Mejorado manejo de CRS.
 
-### Fixed
-- Fixed structure projection consistency.
-- Resolved "No valid layers to render" warnings.
-- Fixed Dip Scale Factor application.
-- Fixed blank rendering issues.
+### Corregido
+- Corregida consistencia de proyección de estructuras.
+- Resueltas advertencias "No valid layers to render".
+- Corregida aplicación de Factor de Escala de Buzamiento.
+- Corregidos problemas de renderizado en blanco.
 
 ## [1.0.0] - 2025-12-08
-### Added
-- **Refactoring & Architecture**:
-  - Split monolithic modules (algorithms.py, main_dialog.py) into focused components.
-  - Modularized exporters ecosystem.
-  - Implemented spatial indexing and native QGIS algorithms for performance.
-- **Quality Assurance**:
-  - Added comprehensive type hinting across modules.
-  - Enhanced test infrastructure with pytest and QGIS support.
-  - Implemented security fixes (path traversal protection).
-- **Documentation**:
-  - Added COMMIT_GUIDELINES.md for standardized commit messages.
-  - Added RELEASE_PROCESS.md with version release workflow.
-  - Added drilllogs_research.md with future integration requirements.
+### Añadido
+- **Refactorización y Arquitectura**:
+  - Divididos módulos monolíticos (algorithms.py, main_dialog.py) en componentes enfocados.
+  - Modularizado ecosistema de exportadores.
+  - Implementada indexación espacial y algoritmos nativos de QGIS para rendimiento.
+- **Aseguramiento de Calidad**:
+  - Añadido type hinting completo en todos los módulos.
+  - Mejorada infraestructura de pruebas con pytest y soporte QGIS.
+  - Implementadas correcciones de seguridad (protección path traversal).
+- **Documentación**:
+  - Añadido COMMIT_GUIDELINES.md para mensajes de commit estandarizados.
+  - Añadido RELEASE_PROCESS.md con flujo de trabajo de liberación de versiones.
+  - Añadido drilllogs_research.md con requerimientos de integración futura.
 
-### Changed
-- **Major UI Refactoring - Plugin Manager Style**:
-  - Redesigned main dialog with sidebar navigation (QListWidget + QStackedWidget).
-  - Replaced absolute positioning with responsive layouts (QVBoxLayout, QHBoxLayout, QSplitter).
-  - Integrated native QGIS theme icons for sidebar items.
-  - Improved preview/results area proportions with better vertical space management.
-- **Code Quality Improvements**:
-  - Extracted LegendWidget to separate module (gui/legend_widget.py).
-  - Refactored preview_profile_handler with helper methods and early returns.
-  - Refactored export_preview with dedicated methods per format (PNG, JPG, SVG, PDF).
-  - Applied SOLID principles throughout main dialog class.
+### Cambiado
+- **Refactorización Mayor de UI - Estilo Plugin Manager**:
+  - Rediseñado diálogo principal con navegación lateral (QListWidget + QStackedWidget).
+  - Reemplazado posicionamiento absoluto con layouts responsivos (QVBoxLayout, QHBoxLayout, QSplitter).
+  - Integrados iconos de tema nativo QGIS para ítems de barra lateral.
+  - Mejoradas proporciones de área de vista previa/resultados con mejor gestión de espacio vertical.
+- **Mejoras de Calidad de Código**:
+  - Extraído LegendWidget a módulo separado (gui/legend_widget.py).
+  - Refactorizado preview_profile_handler con métodos auxiliares y retornos tempranos.
+  - Refactorizado export_preview con métodos dedicados por formato (PNG, JPG, SVG, PDF).
+  - Aplicados principios SOLID en toda la clase del diálogo principal.
 
-### Fixed
-- Fixed legend rendering and resizing issues.
+### Corregido
+- Corregidos problemas de renderizado y redimensionamiento de leyenda.
 
 ## [0.3.0] - 2025-12-03
-### Changed
-- **Major Refactoring - Modular Project Structure**:
-  - Reorganized codebase into core/, gui/, resources/ packages.
-  - Improved code maintainability and scalability.
-  - Better separation of concerns (business logic, UI, resources).
-- **Build System**:
-  - Updated Makefile for new structure.
-  - Refactored deploy.sh for modular deployment.
-  - Organized build scripts in scripts/ directory.
+### Cambiado
+- **Refactorización Mayor - Estructura de Proyecto Modular**:
+  - Reorganizada base de código en paquetes core/, gui/, resources/.
+  - Mejorada mantenibilidad y escalabilidad del código.
+  - Mejor separación de preocupaciones (lógica de negocio, UI, recursos).
+- **Sistema de Construcción**:
+  - Actualizado Makefile para nueva estructura.
+  - Refactorizado deploy.sh para despliegue modular.
+  - Organizados scripts de construcción en directorio scripts/.
 
-### Added
-- **Quality Improvements**:
-  - Achieved Pylint score 10/10.
-  - Specific exception handling throughout codebase.
-  - Comprehensive code documentation.
-  - Configured .pylintrc for consistent code quality.
-- **Testing & CI/CD**:
-  - Added pytest infrastructure with QGIS support.
-  - Created initial unit tests.
-  - Configured GitHub Actions for automated testing.
-  - Test configuration in tests/conftest.py.
-- **Documentation**:
-  - Added REFACTORING_PR.md with detailed changes.
-  - Improved project documentation structure.
-  - Added implementation plans for future features.
+### Añadido
+- **Mejoras de Calidad**:
+  - Lograda puntuación Pylint 10/10.
+  - Manejo específico de excepciones en toda la base de código.
+  - Documentación de código completa.
+  - Configurado .pylintrc para calidad de código consistente.
+- **Pruebas y CI/CD**:
+  - Añadida infraestructura pytest con soporte QGIS.
+  - Creadas pruebas unitarias iniciales.
+  - Configurado GitHub Actions para pruebas automatizadas.
+  - Configuración de pruebas en tests/conftest.py.
+- **Documentación**:
+  - Añadido REFACTORING_PR.md con cambios detallados.
+  - Mejorada estructura de documentación del proyecto.
+  - Añadidos planes de implementación para características futuras.
 
 ## [0.2.0] - 2025-11-30
-### Changed
-- **Major UI Overhaul - Native QGIS Widget Integration**:
-  - Replaced standard Qt ComboBoxes with QgsMapLayerComboBox for automatic layer population.
-  - Integrated QgsRasterBandComboBox for intelligent raster band selection.
-  - Added QgsFileWidget for native file/directory browsing with QGIS integration.
-  - Eliminated manual layer population code - widgets auto-sync with QGIS project.
-  - Improved user experience with native QGIS look and feel.
-  - Fixed Qt enum syntax for better cross-version compatibility.
-- **Code Quality**:
-  - Removed 200+ lines of manual widget population code.
-  - Cleaner architecture leveraging QGIS native capabilities.
+### Cambiado
+- **Revisión Mayor de UI - Integración de Widgets Nativos QGIS**:
+  - Reemplazados ComboBoxes Qt estándar con QgsMapLayerComboBox para población automática de capas.
+  - Integrado QgsRasterBandComboBox para selección inteligente de bandas ráster.
+  - Añadido QgsFileWidget para navegación nativa de archivos/directorios con integración QGIS.
+  - Eliminado código manual de población de capas - widgets auto-sincronizan con proyecto QGIS.
+  - Mejorada experiencia de usuario con apariencia nativa QGIS.
+  - Corregida sintaxis de enum Qt para mejor compatibilidad entre versiones.
+- **Calidad de Código**:
+  - Eliminadas 200+ líneas de código manual de población de widgets.
+  - Arquitectura más limpia aprovechando capacidades nativas QGIS.
 
-### Added
-- **UI Enhancements**:
-  - Collapsible results panel (QgsCollapsibleGroupBox) for better space management.
-  - Read-only results field to prevent accidental edits.
-- **New Features**:
-  - Flexible parsers for geological structural measurements (dip/strike formats).
-  - Comprehensive logging system integrated with QGIS Message Panel.
-  - Enhanced validation logic for QgsMapLayer objects.
+### Añadido
+- **Mejoras de UI**:
+  - Panel de resultados colapsable (QgsCollapsibleGroupBox) para mejor gestión de espacio.
+  - Campo de resultados de solo lectura para prevenir ediciones accidentales.
+- **Nuevas Características**:
+  - Parsers flexibles para mediciones estructurales geológicas (formatos dip/strike).
+  - Sistema de logging completo integrado con Panel de Mensajes QGIS.
+  - Lógica de validación mejorada para objetos QgsMapLayer.
 
-## [0.1.0] - Initial Release
-### Added
-- DEM topographic profile extraction.
-- Geological outcrop data extraction.
-- Structural point data extraction.
-- Interactive preview visualization.
+## [0.1.0] - Lanzamiento Inicial
+### Añadido
+- Extracción de perfil topográfico DEM.
+- Extracción de datos de afloramientos geológicos.
+- Extracción de datos de puntos estructurales.
+- Visualización interactiva de vista previa.
