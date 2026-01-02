@@ -220,7 +220,7 @@ class Interpretation3DExporter(BaseExporter):
             from qgis._3d import (
                 QgsPolygon3DSymbol,
                 QgsVectorLayer3DRenderer,
-                QgsAbstractMaterialSettings,
+                QgsPhongMaterialSettings,
             )
 
             HAS_3D = True
@@ -266,21 +266,23 @@ class Interpretation3DExporter(BaseExporter):
         # 2. 3D Symbology (Native QGIS 3D)
         if HAS_3D:
             symbol_3d = QgsPolygon3DSymbol()
-            # In QGIS 3D, we can set the material to follow the color attribute
-            # or set it based on the data. For simplicity in QML, we can set a
-            # single symbol that uses data defined properties for the material color.
+
+            # Setup default material
+            material = QgsPhongMaterialSettings()
 
             # Setup data-defined color for 3D material
             from qgis.core import QgsProperty
 
             # Diffuse color is the main color of the 3D object
-            symbol_3d.dataDefinedProperties().setProperty(
-                QgsAbstractMaterialSettings.Property.Diffuse, QgsProperty.fromField("color")
+            material.dataDefinedProperties().setProperty(
+                QgsPhongMaterialSettings.Property.Diffuse, QgsProperty.fromField("color")
             )
             # Ambient color (usually same as diffuse but darker or same)
-            symbol_3d.dataDefinedProperties().setProperty(
-                QgsAbstractMaterialSettings.Property.Ambient, QgsProperty.fromField("color")
+            material.dataDefinedProperties().setProperty(
+                QgsPhongMaterialSettings.Property.Ambient, QgsProperty.fromField("color")
             )
+
+            symbol_3d.setMaterialSettings(material)
 
             # Altitude binding to absolute (our Z is absolute interpretation)
             # symbol_3d.setAltitudeBinding(QgsPolygon3DSymbol.AltBindAbsolute)
