@@ -35,7 +35,7 @@ Before touching version numbers, validate the project state.
 
 4. **Generate Release Notes**:
    ```bash
-   VERSION=2.5.0
+   VERSION=X.Y.Z
    DATE=$(date +%F)
    sed -e "s/{version}/$VERSION/g" -e "s/{date}/$DATE/g" .github/release_template.md > /tmp/release_notes.md
    ```
