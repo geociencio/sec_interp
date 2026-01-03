@@ -55,3 +55,17 @@ Chronological record of development activities, significant fixes, and technical
 - Verified persistent restoration of layers and spinbox values after QGIS restart.
 
 ---
+
+## [2026-01-03] - Official Release Version 2.5.0 (12:35)
+
+### Activities
+- **Release Automation**: Executed `make package` to compile translations and help files, creating `sec_interp.2.5.0.zip`.
+- **Changelog Consolidation**: Merged multi-day improvements into a unified technical changelog in [`CHANGELOG.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/CHANGELOG.md).
+- **Metadata Update**: Synchronized `metadata.txt` and `MAINTENANCE_LOG.md` with version 2.5.0.
+- **Git Deployment**: Created and pushed tag `v2.5.0` to GitHub.
+
+### Verification
+- GitHub repository synchronized with `main` and `v2.5.0` tag.
+- Final test verification passed: **319 tests**.
+
+---
