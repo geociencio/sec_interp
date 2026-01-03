@@ -69,3 +69,17 @@ Chronological record of development activities, significant fixes, and technical
 - Final test verification passed: **319 tests**.
 
 ---
+
+## [2026-01-03] - Release Workflow Standardization (13:15)
+
+### Activities
+- **Workflow Adaptation**: Customized [`release_process_ai.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/release_process_ai.md) for SecInterp, including 5 distinct phases (Quality, Versioning, Verification, Git, and Distribution).
+- **Agent Integration**: Standardized internal agent workflows (`/release-plugin` and `/release-plugin-en`) to strictly follow the AI-guided 5-phase process.
+- **Documentation Cleanup**: Removed legacy/redundant release documentation (`docs/docsec/RELEASE_PROCESS.md`).
+- **Template Creation**: Implemented [`.github/release_template.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/.github/release_template.md) with QGIS-specific instructions.
+
+### Verification
+- Sync confirmed between guide, template, and agent internal workflows.
+- Phase 2 synchronization (metadata.txt vs pyproject.toml) verified as mandatory.
+
+---
