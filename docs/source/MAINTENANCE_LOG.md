@@ -36,16 +36,16 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
-### [2.5.1] - 2026-01-03 12:20
-- **Data Persistence**: Overhauled `DialogSettingsManager` to ensure robust persistence across QGIS sessions.
-- **Robust Restoration**: Added multi-scope support (`SecInterp`/`SecInterpUI`) and layer name fallback.
-- **Proactive Auto-save**: Implemented auto-save on successful previews and at the start of the OK button handler.
-- **Immediate Sync**: Forced configuration synchronization with disk (`sync()`).
-- **QA Fixes**: Resolved `AttributeError` in validation logic.
-
-### [2.5.0] - 2026-01-03 10:20
-- **Quality Assurance**: Enabled Ruff rules `F401` (unused imports), `F841` (unused variables), and `I001` (isort).
-- **Global Cleanup**: Project-wide refactoring of imports and variables (253 automated fixes, 102 reformatted files).
+### [2.5.0] - 2026-01-03
+- **Major Features**:
+    - **3D Export**: Interpretation export as real 3D Shapefiles (PolygonZ).
+    - **Settings Hub**: New sidebar page for plugin configuration management.
+- **Data Persistence**: Overhauled `DialogSettingsManager` for robust restoration with multi-scope support (`SecInterp`/`SecInterpUI`) and layer name fallback.
+- **Stability & QA**:
+    - Enabled project-wide Ruff rules (`F401`, `F841`, `I001`).
+    - Implemented proactive auto-save on Preview and Dialog Accept.
+    - Resolved critical `AttributeError` in validation logic and Geology Rendering.
+    - Forced disk synchronization for configs (`sync()`).
 - **Test Infrastructure**: Enhanced `MockQgsProject` and `MockQWidget` to support persistence and modern Qt patterns.
 
 ### [2.2.0] - 2025-12-22

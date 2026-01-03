@@ -21,14 +21,16 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
-    2.5.0 (2026-01-01)
+    2.5.0 (2026-01-03)
     * Major Features:
       - 3D Interpretation Export: Export 2D interpretations as real 3D Shapefiles (PolygonZ).
-      - Access Control Service: Infrastructure for managing restricted/Pro features.
-      - Settings Page: New sidebar page to manage plugin configurations and Pro features.
-    * Improvements:
-      - Robust affine transformation for geometric projection of complex folds.
-      - Persistence of plugin settings using QgsSettings.
+      - Settings Page: New sidebar page to manage plugin configurations.
+    * Improvements & Stability:
+      - Overhauled Data Persistence: Robust restoration with multi-scope support and layer name fallback.
+      - Proactive Auto-save: Parameters are remembered immediately on Preview or dialog Accept.
+      - Quality Assurance: Project-wide Ruff activation and legacy validation fix.
+      - Forced Disk Sync: Immediate configuration writing for increased reliability.
+      - Fixed Geology Preview Rendering error.
 
     2.4.0 (2025-12-31)
     * Major Features:
