@@ -6,16 +6,14 @@ using QThread.
 
 from __future__ import annotations
 
-from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor
 import os
 import threading
+from collections.abc import Callable
 from typing import Any
 
 from qgis.PyQt.QtCore import QObject, QThread, pyqtSignal
 
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 
@@ -210,7 +208,7 @@ class ParallelGeologyService(QObject):
         """
         # Default behavior: Command Pattern
         # If the item is a tuple/list where the first element is callable, execute it
-        if isinstance(profile_chunk, (list, tuple)) and len(profile_chunk) > 0:
+        if isinstance(profile_chunk, list | tuple) and profile_chunk:
             func = profile_chunk[0]
             args = profile_chunk[1:]
             if callable(func):

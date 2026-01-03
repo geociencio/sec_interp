@@ -12,9 +12,7 @@ para ai_workflow.py, compatibles con:
 - GPT OSS 120B.
 """
 
-import os
 from pathlib import Path
-
 
 # Directorio de salida
 TEMPLATES_DIR = Path(".ai-context/templates")

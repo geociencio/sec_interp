@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """ai_workflow.py - Workflow optimizado para desarrollo con IA."""
 
-from datetime import datetime
-import hashlib
 import json
 import os
-from pathlib import Path
-import sys
 import time
-from typing import Dict, List, Optional, Tuple
 import unicodedata
+from datetime import datetime
+from pathlib import Path
 
 import yaml
 

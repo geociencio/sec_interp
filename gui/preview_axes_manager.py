@@ -6,7 +6,6 @@ Handles the creation of grid lines and axes labels with nice intervals.
 from __future__ import annotations
 
 import math
-from typing import Optional
 
 from qgis.core import (
     QgsFeature,
@@ -16,9 +15,9 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsPalLayerSettings,
     QgsPointXY,
+    QgsProject,
     QgsProperty,
     QgsPropertyCollection,
-    QgsProject,
     QgsSingleSymbolRenderer,
     QgsTextFormat,
     QgsVectorLayer,
@@ -27,7 +26,6 @@ from qgis.core import (
 from qgis.PyQt.QtGui import QColor
 
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

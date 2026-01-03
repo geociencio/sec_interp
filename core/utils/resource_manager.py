@@ -6,17 +6,14 @@ and system files to ensure proper cleanup and prevent resource leaks.
 
 from __future__ import annotations
 
-
-from collections.abc import Generator
 import contextlib
 import os
 import tempfile
-from typing import Optional
+from collections.abc import Generator
 
 from qgis.core import QgsMapLayer, QgsProject, QgsVectorLayer
 
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

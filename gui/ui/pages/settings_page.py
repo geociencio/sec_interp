@@ -2,7 +2,7 @@
 
 from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QCheckBox, QVBoxLayout, QLabel
+from qgis.PyQt.QtWidgets import QCheckBox, QLabel, QVBoxLayout
 
 from .base_page import BasePage
 

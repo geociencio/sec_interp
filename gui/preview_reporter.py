@@ -6,8 +6,6 @@ preview generation results and performance metrics into human-readable messages.
 
 from __future__ import annotations
 
-from typing import Optional
-
 from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.performance_metrics import MetricsCollector, format_duration
@@ -16,6 +14,7 @@ from sec_interp.core.types import (
     PreviewResult,
     StructureData,
 )
+
 from .main_dialog_config import DialogConfig
 
 

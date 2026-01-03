@@ -23,29 +23,24 @@ and unit segments from map layers to the cross-section plane.
 #  *                                                                         *
 #  ***************************************************************************/
 
-from collections.abc import Generator
-from typing import Optional
-
 from qgis.core import (
     QgsDistanceArea,
     QgsFeature,
+    QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
-    QgsRaster,
     QgsRasterLayer,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsFeatureRequest,
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
+from sec_interp.core.exceptions import DataMissingError, GeometryError
 from sec_interp.core.interfaces.geology_interface import IGeologyService
 from sec_interp.core.performance_metrics import performance_monitor
 from sec_interp.core.types import GeologyData, GeologySegment
 from sec_interp.core.utils.sampling import interpolate_elevation
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

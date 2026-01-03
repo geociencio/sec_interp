@@ -4,19 +4,13 @@ This module handles all validation logic for dialog inputs,
 separating concerns and making the code more testable and maintainable.
 """
 
-from typing import TYPE_CHECKING, Optional
-
-from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsWkbTypes
-from qgis.PyQt.QtCore import QVariant
+from typing import TYPE_CHECKING
 
 from sec_interp.core import validation as vu
 from sec_interp.core.exceptions import ValidationError
 
-from .main_dialog_config import ValidationMessages
-
-
 if TYPE_CHECKING:
-    from .main_dialog import SecInterpDialog
+    pass
 
 
 class DialogValidator:

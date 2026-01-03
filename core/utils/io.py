@@ -4,7 +4,6 @@ File I/O operations and user messaging.
 """
 
 from pathlib import Path
-from typing import Union
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,

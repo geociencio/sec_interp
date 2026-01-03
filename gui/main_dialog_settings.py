@@ -4,13 +4,15 @@ This module handles persistence of user settings between sessions.
 """
 
 from typing import TYPE_CHECKING, Any
+
+from sec_interp.logger_config import get_logger
+
 from .main_dialog_config import DialogDefaults
 
-from qgis.core import QgsSettings
-
-
 if TYPE_CHECKING:
-    from .main_dialog import SecInterpDialog
+    pass
+
+logger = get_logger(__name__)
 
 
 class DialogSettingsManager:

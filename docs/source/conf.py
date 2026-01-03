@@ -1,7 +1,6 @@
-from datetime import datetime
 import os
 import sys
-
+from datetime import datetime
 
 # Path setup: add parent of project root to sys.path
 # This allows Sphinx to find the 'sec_interp' package correctly

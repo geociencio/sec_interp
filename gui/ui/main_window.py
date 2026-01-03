@@ -14,8 +14,8 @@ from qgis.PyQt.QtWidgets import (
 
 from .pages.dem_page import DemPage
 from .pages.drillhole_page import DrillholePage
-from .pages.interpretation_page import InterpretationPage
 from .pages.geology_page import GeologyPage
+from .pages.interpretation_page import InterpretationPage
 from .pages.preview_page import PreviewWidget
 from .pages.section_page import SectionPage
 from .pages.settings_page import SettingsPage

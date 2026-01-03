@@ -10,9 +10,8 @@ from typing import TYPE_CHECKING, Any
 
 from qgis.gui import QgsMapTool, QgsMapToolPan
 
-from .tools.measure_tool import ProfileMeasureTool
 from .tools.interpretation_tool import ProfileInterpretationTool
-
+from .tools.measure_tool import ProfileMeasureTool
 
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog

@@ -6,13 +6,10 @@ structures, and geological units.
 
 from __future__ import annotations
 
-from typing import Optional
-
 from qgis.PyQt.QtCore import QCoreApplication, QRectF, Qt
 from qgis.PyQt.QtGui import QColor, QFont, QPainter, QPen
 
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

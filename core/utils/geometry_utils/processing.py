@@ -2,20 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
-    QgsFeature,
     QgsField,
     QgsGeometry,
-    QgsProject,
     QgsVectorLayer,
-    QgsWkbTypes,
 )
 
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

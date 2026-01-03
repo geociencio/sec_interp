@@ -437,6 +437,9 @@ class MockQgsPointXY:
     def distance(self, other):
         return ((self._x - other.x())**2 + (self._y - other.y())**2)**0.5
 
+    def compare(self, other, epsilon):
+        return abs(self._x - other.x()) < epsilon and abs(self._y - other.y()) < epsilon
+
     def isValid(self):
         return True
 
@@ -521,6 +524,14 @@ class MockQgsProject(MockQObject):
     def __init__(self):
         super().__init__()
         self._layers = {}
+        self._entries = {}
+
+    def readEntry(self, scope, key, default=None):
+        return self._entries.get(f"{scope}/{key}", default), True
+
+    def writeEntry(self, scope, key, value):
+        self._entries[f"{scope}/{key}"] = value
+        return True
 
     @classmethod
     def instance(cls):
@@ -606,6 +617,10 @@ class MockQApplication(MockQObject):
             MockQApplication._instance = MockQApplication([])
         return MockQApplication._instance
 
+    @staticmethod
+    def installTranslator(translator):
+        pass
+
     def thread(self):
         return self._thread
 
@@ -622,6 +637,45 @@ class MockQWidget(MockQObject):
 
     def findChildren(self, type, name=""):
         return []
+
+    def setStyleSheet(self, style):
+        pass
+
+    def setWindowTitle(self, title):
+        pass
+
+    def resize(self, w, h):
+        pass
+
+    def show(self):
+        pass
+
+    def hide(self):
+        pass
+
+    def setVisible(self, visible):
+        pass
+
+    def setEnabled(self, enabled):
+        pass
+
+    def setFixedSize(self, w, h):
+        pass
+
+    def setFixedHeight(self, h):
+        pass
+
+    def setFixedWidth(self, w):
+        pass
+
+    def setAttribute(self, attr, on=True):
+        pass
+
+    def setAutoFillBackground(self, enabled):
+        pass
+
+    def exec(self): # commonly used for dialogs
+        return 1
 
 class MockQThread(MockQObject):
     _main_thread = None
@@ -653,45 +707,6 @@ class MockQThread(MockQObject):
     def isRunning(self): return False
     def requestInterruption(self): pass
     def isInterruptionRequested(self): return False
-
-    def setStyleSheet(self, style):
-        pass
-
-    def setWindowTitle(self, title):
-        pass
-
-    def resize(self, w, h):
-        pass
-
-    def show(self):
-        pass
-
-    def hide(self):
-        pass
-
-    def exec(self): # commonly used for dialogs
-        return 1
-
-    def setVisible(self, visible):
-        pass
-
-    def setEnabled(self, enabled):
-        pass
-
-    def setFixedSize(self, w, h):
-        pass
-
-    def setFixedHeight(self, h):
-        pass
-
-    def setFixedWidth(self, w):
-        pass
-
-    def setAttribute(self, attr, on=True):
-        pass
-
-    def setAutoFillBackground(self, enabled):
-        pass
 
 class MockQDialog(MockQWidget):
     def accept(self):
@@ -977,6 +992,7 @@ if not CORE_AVAILABLE:
 
     # Also mock basic PyQt classes if needed by tests that don't need full QApp
     sys.modules["qgis.PyQt.QtCore"].QCoreApplication.translate = lambda c, t: t
+    sys.modules["qgis.PyQt.QtCore"].QCoreApplication.installTranslator = lambda t: None
     sys.modules["qgis.PyQt.QtCore"].QObject = MagicMock
 
 

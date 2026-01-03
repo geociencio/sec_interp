@@ -6,11 +6,10 @@ separating data collection logic from the main dialog class.
 
 from typing import TYPE_CHECKING
 
-
 from sec_interp.core.validation.project_validator import ValidationParams
 
 if TYPE_CHECKING:
-    from .main_dialog import SecInterpDialog
+    pass
 
 
 class DialogDataAggregator:

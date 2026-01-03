@@ -11,7 +11,6 @@ from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
 
-
 logger = get_logger(__name__)
 
 

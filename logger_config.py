@@ -4,10 +4,10 @@ Provides centralized logging configuration for the Sec Interp plugin.
 """
 
 import logging
-from logging.handlers import RotatingFileHandler
 import os
-from pathlib import Path
 import sys
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 from qgis.core import Qgis, QgsMessageLog
 

@@ -8,29 +8,20 @@ It remains decoupled from the GUI layer.
 from __future__ import annotations
 
 import math
-import time
-from typing import Any, Optional
+from typing import Any
 
 from qgis.core import (
     QgsDistanceArea,
-    QgsGeometry,
-    QgsPointXY,
-    QgsRasterLayer,
-    QgsVectorLayer,
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
-from sec_interp.core.performance_metrics import MetricsCollector, PerformanceTimer
+from sec_interp.core.exceptions import GeometryError, ProcessingError
+from sec_interp.core.performance_metrics import PerformanceTimer
 from sec_interp.core.types import (
-    GeologyData,
     PreviewParams,
     PreviewResult,
-    ProfileData,
-    StructureData,
 )
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

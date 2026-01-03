@@ -5,10 +5,8 @@ This module provides visualization and coordinate transformation utilities for p
 
 from __future__ import annotations
 
-
-from collections.abc import Callable
 import math
-from typing import Any, Optional
+from collections.abc import Callable
 
 from sec_interp.core.types import GeologySegment
 

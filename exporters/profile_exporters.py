@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any
 
 from qgis.core import (
     QgsFeature,
@@ -12,8 +12,6 @@ from qgis.core import (
     QgsFields,
     QgsGeometry,
     QgsPointXY,
-    QgsRaster,
-    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
 
@@ -21,7 +19,6 @@ from sec_interp.core import utils as scu
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
-
 
 logger = get_logger(__name__)
 

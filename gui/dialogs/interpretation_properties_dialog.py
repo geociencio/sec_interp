@@ -1,8 +1,8 @@
 """Dialog for editing interpretation properties."""
 
-from qgis.core import QgsPointXY
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
+    QColorDialog,
     QDialog,
     QDialogButtonBox,
     QFormLayout,
@@ -11,9 +11,7 @@ from qgis.PyQt.QtWidgets import (
     QLineEdit,
     QPushButton,
     QVBoxLayout,
-    QColorDialog,
 )
-from qgis.PyQt.QtGui import QColor
 
 
 class InterpretationPropertiesDialog(QDialog):

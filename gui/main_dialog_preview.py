@@ -7,39 +7,30 @@ separating preview logic from the main dialog class.
 from __future__ import annotations
 
 import hashlib
-import tempfile
-import traceback
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
-from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtCore import QCoreApplication, QTimer
 
-from sec_interp.core import utils as scu
-from sec_interp.core import validation as vu
 from sec_interp.core.exceptions import ProcessingError, SecInterpError
 from sec_interp.core.interfaces.preview_interface import IPreviewService
 from sec_interp.core.performance_metrics import (
     MetricsCollector,
     PerformanceTimer,
-    format_duration,
 )
 from sec_interp.core.services.preview_service import PreviewService
 from sec_interp.core.types import (
-    GeologyData,
     PreviewParams,
     PreviewResult,
-    ProfileData,
-    StructureData,
 )
 from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig
-from .services.parallel_geology_service import ParallelGeologyService
 from .preview_reporter import PreviewReporter
+from .services.parallel_geology_service import ParallelGeologyService
 
 if TYPE_CHECKING:
-    from .main_dialog import SecInterpDialog
+    pass
 
 logger = get_logger(__name__)
 

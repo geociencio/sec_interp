@@ -7,21 +7,18 @@ from pathlib import Path
 from typing import Any
 
 from qgis.core import (
-    QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsField,
     QgsFields,
     QgsGeometry,
     QgsPointXY,
+    QgsProject,
     QgsVectorFileWriter,
     QgsVectorLayer,
-    QgsWkbTypes,
-    QgsProject,
 )
-from qgis.PyQt.QtCore import QMetaType, QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from sec_interp.exporters.base_exporter import BaseExporter
-from sec_interp.core.types import InterpretationPolygon
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)

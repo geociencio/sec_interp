@@ -49,7 +49,6 @@ from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
 from sec_interp.logger_config import get_logger
 
-
 logger = get_logger(__name__)
 
 

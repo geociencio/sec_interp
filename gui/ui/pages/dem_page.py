@@ -2,9 +2,6 @@
 
 from qgis.core import (
     Qgis,
-    QgsCoordinateTransform,
-    QgsMapLayerProxyModel,
-    QgsProject,
     QgsUnitTypes,
 )
 from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox, QgsRasterBandComboBox

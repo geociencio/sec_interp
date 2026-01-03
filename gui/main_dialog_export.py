@@ -7,9 +7,9 @@ This module handles exporting preview data to various file formats
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING
 
-from qgis.core import QgsMapSettings, QgsProject, QgsRectangle, QgsSettings
+from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QFileDialog
@@ -20,11 +20,10 @@ from sec_interp.core.services.export_service import ExportService
 from sec_interp.exporters import get_exporter
 from sec_interp.logger_config import get_logger
 
-from .main_dialog_config import DialogConfig, DialogDefaults
-
+from .main_dialog_config import DialogConfig
 
 if TYPE_CHECKING:
-    from .main_dialog import SecInterpDialog
+    pass
 
 logger = get_logger(__name__)
 

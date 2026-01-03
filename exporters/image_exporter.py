@@ -1,7 +1,6 @@
 """Image exporter module for raster formats (PNG, JPG)."""
 
 from pathlib import Path
-from typing import Any, Optional
 
 from qgis.core import QgsMapRendererCustomPainterJob, QgsMapSettings
 from qgis.PyQt.QtCore import QRectF, QSize
@@ -10,7 +9,6 @@ from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
-
 
 logger = get_logger(__name__)
 

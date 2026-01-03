@@ -25,7 +25,6 @@ from .project_validator import (
     validate_reasonable_ranges,
 )
 
-
 __all__ = [
     "ProjectValidator",
     "ValidationParams",

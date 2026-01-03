@@ -4,6 +4,7 @@ This module provides a service to manage access to restricted features.
 """
 
 from qgis.core import QgsSettings
+
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)

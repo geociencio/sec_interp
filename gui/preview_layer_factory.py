@@ -6,34 +6,31 @@ Handles creation of temporary memory layers and configuration of native QGIS sym
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Any, ClassVar, Optional
+from typing import Any, ClassVar
 
 from qgis.core import (
     QgsCategorizedSymbolRenderer,
+    QgsClassificationFixedInterval,
     QgsFeature,
+    QgsFillSymbol,
     QgsGeometry,
-    QgsLineString,
+    QgsGraduatedSymbolRenderer,
     QgsLineSymbol,
     QgsPalLayerSettings,
     QgsPointXY,
     QgsProject,
     QgsRendererCategory,
     QgsSingleSymbolRenderer,
+    QgsStyle,
     QgsTextFormat,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
-    QgsGraduatedSymbolRenderer,
-    QgsClassificationFixedInterval,
-    QgsStyle,
-    QgsFillSymbol,
 )
 from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.types import GeologyData, ProfileData, StructureData
-from sec_interp.logger_config import get_logger
-
 from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
-
+from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -139,8 +136,6 @@ class PreviewLayerFactory:
 
         # Create segments for each pair of points to allow per-segment coloring
         features = []
-        elevations = [p[1] for p in render_data]
-        min_elev, max_elev = min(elevations), max(elevations)
 
         for i in range(len(render_data) - 1):
             p1 = render_data[i]

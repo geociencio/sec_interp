@@ -12,7 +12,6 @@ Organized by functionality:
 
 from __future__ import annotations
 
-
 # Geometry operations
 # Geological calculations
 from .drillhole import (
@@ -65,7 +64,6 @@ from .spatial import (
     create_distance_area,
     get_line_start_point,
 )
-
 
 __all__ = [
     # Geology

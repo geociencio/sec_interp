@@ -6,15 +6,13 @@ This module handles the orchestration of various data generation services
 
 from __future__ import annotations
 
-import math
-from pathlib import Path
 import time
-from typing import Any, Optional
+from typing import Any
 
 from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
-from sec_interp.core.exceptions import DataMissingError, ProcessingError
+from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.services import (
     DrillholeService,
     GeologyService,
@@ -23,7 +21,6 @@ from sec_interp.core.services import (
 )
 from sec_interp.core.types import PreviewParams
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

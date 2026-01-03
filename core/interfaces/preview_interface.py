@@ -1,9 +1,7 @@
 """Interface for Preview services."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
-
-from qgis.core import QgsRasterLayer, QgsVectorLayer
+from typing import Any
 
 
 class IPreviewService(ABC):

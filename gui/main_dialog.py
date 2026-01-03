@@ -25,40 +25,24 @@ Contains the SecInterpDialog class which is the primary UI for the plugin.
 """
 
 import json
-from pathlib import Path
-import tempfile
 import traceback
+from pathlib import Path
 
 from qgis.core import (
     Qgis,
-    QgsApplication,
-    QgsCoordinateTransform,
-    QgsMapLayer,
-    QgsMapLayerProxyModel,
-    QgsMapSettings,
     QgsPointXY,
     QgsProject,
-    QgsSettings,
-    QgsUnitTypes,
-    QgsWkbTypes,
 )
-from qgis.gui import QgsFileWidget, QgsMapCanvas
-from qgis.PyQt.QtCore import QSize, QUrl, QVariant
-from qgis.PyQt.QtGui import QColor, QDesktopServices
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import (
-    QApplication,
     QDialog,
     QDialogButtonBox,
-    QFileDialog,
-    QLabel,
     QPushButton,
-    QStyle,
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core import validation as vu
 from sec_interp.core.exceptions import SecInterpError
-from sec_interp.exporters import get_exporter
 from sec_interp.core.types import InterpretationPolygon
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
@@ -74,10 +58,8 @@ class _NoOpMessageBar:
 
 from .legend_widget import LegendWidget
 
-
 logger = get_logger(__name__)
 from .main_dialog_cache_handler import CacheHandler
-from .main_dialog_config import DialogDefaults
 from .main_dialog_data import DialogDataAggregator
 from .main_dialog_export import ExportManager
 from .main_dialog_preview import PreviewManager
@@ -253,6 +235,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         """
         from sec_interp.logger_config import log_critical_operation
+
         from .dialogs.interpretation_properties_dialog import InterpretationPropertiesDialog
 
         log_critical_operation(
@@ -537,5 +520,5 @@ class SecInterpDialog(SecInterpMainWindow):
                 )
                 self.interpretations.append(interp)
             logger.info(f"Loaded {len(self.interpretations)} interpretations from project")
-        except Exception as e:
+        except Exception:
             logger.exception("Failed to load interpretations")

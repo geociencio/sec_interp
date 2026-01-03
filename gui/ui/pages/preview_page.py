@@ -1,7 +1,7 @@
 """Preview area widget."""
 
 from qgis.gui import QgsCollapsibleGroupBox, QgsMapCanvas
-from qgis.PyQt.QtGui import QColor, QIcon
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -10,7 +10,6 @@ from qgis.PyQt.QtWidgets import (
     QPushButton,
     QSpinBox,
     QTextEdit,
-    QToolButton,
     QVBoxLayout,
     QWidget,
 )

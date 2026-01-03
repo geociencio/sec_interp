@@ -7,15 +7,14 @@ including data (Shapefile, CSV) and preview (PNG, PDF, SVG) exports.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
-from qgis.core import QgsMapSettings, QgsProject, QgsRectangle
+from qgis.core import QgsMapSettings, QgsRectangle
 
 from sec_interp.core.exceptions import DataMissingError, ExportError
 from sec_interp.core.services.access_control_service import AccessControlService
 from sec_interp.core.types import PreviewParams
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

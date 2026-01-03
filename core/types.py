@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import IntEnum
-from typing import Any, Optional, Protocol, runtime_checkable
+from typing import Any
 
 from qgis.core import QgsGeometry, QgsPointXY, QgsRasterLayer, QgsVectorLayer
 
-from sec_interp.core.exceptions import ConfigurationError, ValidationError
+from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.performance_metrics import MetricsCollector
 
 

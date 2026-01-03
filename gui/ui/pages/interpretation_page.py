@@ -1,16 +1,16 @@
 """Interpretation configuration page."""
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
+    QComboBox,
     QHBoxLayout,
+    QHeaderView,
     QLabel,
     QPushButton,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
-    QComboBox,
-    QHeaderView,
 )
 
 from .base_page import BasePage

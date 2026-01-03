@@ -5,9 +5,6 @@ This module provides elevation sampling and profile context preparation tools.
 
 from __future__ import annotations
 
-
-from typing import Any, Optional
-
 from qgis.core import (
     QgsDistanceArea,
     QgsGeometry,
@@ -17,7 +14,6 @@ from qgis.core import (
 )
 
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

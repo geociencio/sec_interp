@@ -5,11 +5,10 @@ Provides a hash-based caching mechanism for geological and topographic data.
 
 import hashlib
 import time
-from typing import Any, Optional
+from typing import Any
 
 from sec_interp.core.interfaces.cache_interface import ICacheService
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

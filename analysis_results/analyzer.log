@@ -19,3 +19,43 @@
 2026-01-01 21:58:06,399 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
 2026-01-01 21:58:06,538 - qgis_analyzer - INFO - Running repository compliance checks...
 2026-01-01 21:58:09,246 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-01 22:32:07,995 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-01 22:32:08,122 - qgis_analyzer - INFO - Running repository compliance checks...
+2026-01-01 22:32:11,153 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-02 02:16:55,408 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/list-rules
+2026-01-02 02:16:55,413 - qgis_analyzer - INFO - Running repository compliance checks...
+2026-01-02 02:16:55,414 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-02 02:24:01,571 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-02 02:24:01,571 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-02 02:24:01,696 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-02 02:24:04,493 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-02 06:50:12,474 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-02 06:50:12,474 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-02 06:50:12,638 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-02 06:50:15,447 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-02 07:08:24,696 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-02 07:08:24,696 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-02 07:08:24,837 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-02 07:08:27,434 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-02 07:29:48,860 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-02 07:29:48,860 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-02 07:29:48,994 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-02 07:29:51,522 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-02 09:53:55,157 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-02 09:53:55,159 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-02 09:53:55,377 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-02 09:53:58,120 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-02 12:43:21,515 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-01-02 12:43:21,517 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/analize
+2026-01-02 12:43:21,523 - qgis_analyzer - ERROR - Error: not enough values to unpack (expected 3, got 2)
+2026-01-02 12:47:21,023 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-02 12:47:21,023 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-02 12:47:21,240 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-02 12:47:23,974 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-02 12:47:48,058 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-01-02 12:47:48,058 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/summary
+2026-01-02 12:47:48,062 - qgis_analyzer - ERROR - Error: not enough values to unpack (expected 3, got 2)
+2026-01-02 12:55:32,262 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-02 12:55:32,262 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-02 12:55:32,476 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-02 12:55:35,112 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results

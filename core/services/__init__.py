@@ -11,7 +11,6 @@ from .geology_service import GeologyService
 from .profile_service import ProfileService
 from .structure_service import StructureService
 
-
 __all__ = [
     "DrillholeService",
     "GeologyService",

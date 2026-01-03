@@ -9,7 +9,6 @@ from __future__ import annotations
 import contextlib
 import datetime
 import random
-from typing import Optional
 import uuid
 
 from qgis.core import (
@@ -31,7 +30,6 @@ from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.types import InterpretationPolygon
 from sec_interp.logger_config import get_logger, log_critical_operation
-
 
 logger = get_logger(__name__)
 

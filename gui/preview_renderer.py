@@ -7,7 +7,6 @@ This module has been refactored to delegate specialized tasks to modular compone
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
     QgsGeometry,
@@ -18,7 +17,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsMapCanvas, QgsRubberBand
-from qgis.PyQt.QtCore import QRectF, QSize, Qt
+from qgis.PyQt.QtCore import QRectF, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
 from sec_interp.core.types import (
@@ -32,8 +31,6 @@ from sec_interp.logger_config import get_logger
 from .preview_axes_manager import PreviewAxesManager
 from .preview_layer_factory import PreviewLayerFactory
 from .preview_legend_renderer import PreviewLegendRenderer
-from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
-
 
 logger = get_logger(__name__)
 

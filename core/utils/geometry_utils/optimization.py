@@ -6,12 +6,10 @@ Handles simplification and sampling of geometric data to improve rendering perfo
 from __future__ import annotations
 
 import math
-from typing import Optional
 
 from qgis.core import QgsGeometry, QgsPointXY
 
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

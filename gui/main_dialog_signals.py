@@ -7,14 +7,14 @@ separating signal setup from the main dialog class.
 from typing import TYPE_CHECKING
 
 from qgis.PyQt.QtWidgets import QDialogButtonBox
-from sec_interp.logger_config import get_logger
 
+from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
 
 if TYPE_CHECKING:
-    from .main_dialog import SecInterpDialog
+    pass
 
 
 class DialogSignalManager:

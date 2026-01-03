@@ -6,21 +6,21 @@ This module provides the exporter for 3D geological interpretations.
 from __future__ import annotations
 
 import math
-from typing import Any, List
 from pathlib import Path
+from typing import Any
 
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsField,
     QgsGeometry,
+    QgsLineString,
     QgsPoint,
     QgsPointXY,
-    QgsWkbTypes,
-    QgsCoordinateReferenceSystem,
     QgsPolygon,
-    QgsLineString,
+    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QMetaType, QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.exceptions import ExportError
@@ -111,19 +111,15 @@ class Interpretation3DExporter(BaseExporter):
     ) -> None:
         """Generate a QML style file for the exported shapefile."""
         from qgis.core import (
-            QgsVectorLayer,
             QgsCategorizedSymbolRenderer,
-            QgsRendererCategory,
             QgsFillSymbol,
+            QgsRendererCategory,
+            QgsVectorLayer,
         )
 
         # Import 3D components if available
         try:
-            from qgis._3d import (
-                QgsPolygon3DSymbol,
-                QgsVectorLayer3DRenderer,
-                QgsPhongMaterialSettings,
-            )
+            import qgis._3d  # noqa: F401
 
             HAS_3D = True
         except ImportError:
@@ -367,9 +363,9 @@ class Interpretation3DExporter(BaseExporter):
 
     def _configure_3d_renderer(self, layer):
         from qgis._3d import (
+            QgsPhongMaterialSettings,
             QgsPolygon3DSymbol,
             QgsVectorLayer3DRenderer,
-            QgsPhongMaterialSettings,
         )
         from qgis.core import QgsProperty
 

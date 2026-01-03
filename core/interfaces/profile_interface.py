@@ -1,7 +1,7 @@
 """Interface for Profile services."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 

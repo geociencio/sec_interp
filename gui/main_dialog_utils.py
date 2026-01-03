@@ -3,8 +3,6 @@
 This module provides helper methods for layer filtering and field population.
 """
 
-from typing import Optional
-
 from qgis.core import QgsApplication, QgsMapLayer, QgsProject, QgsWkbTypes
 from qgis.PyQt.QtGui import QIcon
 

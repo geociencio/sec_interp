@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional, Union
-
 from qgis.core import (
     QgsMapLayer,
     QgsProject,
@@ -12,7 +10,6 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
-from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.types import FieldType
 
 from .field_validator import validate_field_exists, validate_field_type

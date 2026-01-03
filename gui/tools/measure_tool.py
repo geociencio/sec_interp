@@ -7,10 +7,6 @@ It separates UI event handling from spatial snapping logic.
 
 from __future__ import annotations
 
-import math
-import time
-from typing import Optional
-
 from qgis.core import (
     QgsMapLayer,
     QgsPointLocator,
@@ -31,7 +27,6 @@ from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.utils.geometry_utils.measurement import calculate_polyline_metrics
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

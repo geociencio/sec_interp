@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional, Union
-
 from qgis.core import QgsVectorLayer
 
 from sec_interp.core.types import FieldType

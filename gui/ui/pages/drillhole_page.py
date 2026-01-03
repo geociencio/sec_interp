@@ -6,10 +6,7 @@ from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QGridLayout,
-    QGroupBox,
     QLabel,
-    QSizePolicy,
-    QSpacerItem,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -22,7 +19,6 @@ from sec_interp.core.validation.project_validator import (
 from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage
-
 
 logger = get_logger(__name__)
 

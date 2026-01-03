@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QEvent, QObject, QRectF, Qt
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtWidgets import QWidget
-
 
 if TYPE_CHECKING:
     from sec_interp.gui.main_dialog import SecInterpDialog

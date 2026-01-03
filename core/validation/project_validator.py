@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Optional, Union
+from typing import Any
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsWkbTypes
 

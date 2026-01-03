@@ -7,7 +7,7 @@ including collar projection, trajectory calculation, and interval interpolation.
 from __future__ import annotations
 
 import contextlib
-from typing import Any, Optional
+from typing import Any
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -18,16 +18,14 @@ from qgis.core import (
     QgsPointXY,
     QgsRaster,
     QgsRasterLayer,
-    QgsSpatialIndex,
     QgsVectorLayer,
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
+from sec_interp.core.exceptions import DataMissingError, GeometryError
 from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
 from sec_interp.core.types import GeologySegment
 from sec_interp.logger_config import get_logger
-
 
 logger = get_logger(__name__)
 

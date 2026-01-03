@@ -9,9 +9,9 @@ from .drillhole_exporters import (
     DrillholeIntervalShpExporter,
     DrillholeTraceShpExporter,
 )
-from .interpretation_exporters import Interpretation2DExporter
-from .interpretation_3d_exporter import Interpretation3DExporter
 from .image_exporter import ImageExporter
+from .interpretation_3d_exporter import Interpretation3DExporter
+from .interpretation_exporters import Interpretation2DExporter
 from .pdf_exporter import PDFExporter
 from .profile_exporters import (
     AxesShpExporter,
@@ -21,7 +21,6 @@ from .profile_exporters import (
 )
 from .shp_exporter import ShapefileExporter
 from .svg_exporter import SVGExporter
-
 
 __all__ = [
     "AxesShpExporter",
