@@ -1,4 +1,3 @@
-```
 ---
 description: Unified Release Workflow (QGIS Release Flow) based on IA Guide
 ---
@@ -38,4 +37,3 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    gh release create vX.Y.Z --title "vX.Y.Z" --notes-file /tmp/release_notes.md dist/*.zip dist/*.sha256 --draft
    ```
 3. **QGIS Portal**: Upload the ZIP to [plugins.qgis.org](https://plugins.qgis.org/).
-```
