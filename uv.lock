@@ -840,13 +840,13 @@ wheels = [
 
 [[package]]
 name = "qgis-plugin-analyzer"
-version = "0.6.1"
-source = { git = "https://github.com/geociencio/qgis-plugin-analyzer.git#3e89255f117f65fcce64c8b395548a6fa9977dd2" }
+version = "1.0.0"
+source = { git = "https://github.com/geociencio/qgis-plugin-analyzer.git#a083e7b16d78c5f8a395cc5e18ec297197acda31" }
 
 [[package]]
 name = "qgis-plugin-manager"
-version = "0.4.1"
-source = { git = "https://github.com/geociencio/qgis-plugin-manager#da448e25650f2ae242068cbc91eaaf22197a984c" }
+version = "0.6.0"
+source = { git = "https://github.com/geociencio/qgis-plugin-manager#349b18bc6bc836b63dad42f4aa998273033763bb" }
 dependencies = [
     { name = "click" },
     { name = "pathlib" },

@@ -28,7 +28,6 @@ from __future__ import annotations
 
 import contextlib
 from pathlib import Path
-from typing import Optional
 
 from qgis.core import (
     QgsMapLayer,
