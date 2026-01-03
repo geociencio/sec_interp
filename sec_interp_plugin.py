@@ -47,7 +47,6 @@ from sec_interp.core.services.export_service import ExportService
 from sec_interp.core.types import PreviewParams
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
-from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
 
