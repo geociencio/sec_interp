@@ -5,16 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.5.0] - 2026-01-01
+## [2.5.0] - 2026-01-03
 ### 🚀 Major Features
 - **3D Interpretation Export**:
   - Export geological interpretations as real 3D Shapefiles (PolygonZ).
-  - Vertex-wise affine transformation ensuring geometric integrity of complex subsurface structures (e.g., overturned folds).
-  - Native QGIS API implementation using `QgsPolygon` and `QgsLineString`.
-- **Advanced Control & UI**:
-  - **Settings Page**: Dedicated sidebar navigation for advanced plugin configuration.
-  - **Access Control Service**: Ready-to-use infrastructure for managing restricted features and user tiers.
-  - **Persistent configuration** via `QgsSettings`.
+  - Vertex-wise affine transformation ensuring geometric integrity of complex subsurface structures.
+  - Native QGIS API implementation for high-fidelity spatial data.
+- **Settings Page**: New sidebar navigation page for advanced plugin configuration and management.
+
+### 🔧 Stability & Improvements
+- **Proactive Data Persistence**:
+  - Overhauled `DialogSettingsManager` with multi-scope support (`SecInterp`/`SecInterpUI`).
+  - Parameters are remembered immediately on successful Preview or dialog Accept, preventing data loss.
+  - Robust layer restoration using Layer ID with fallback to Layer Name.
+- **Forced Sync**: Immediate configuration writing to disk (`sync()`) for increased reliability.
+- **Quality Assurance**:
+  - Project-wide Ruff activation (F401, F841, I001) with 250+ automated fixes.
+  - Resolved critical `AttributeError` in validation logic and preview rendering.
+  - Enhanced Mock infrastructure for 100% reliable test execution.
 
 ## [2.4.0] - 2025-12-31
 ### 🚀 Major Features
