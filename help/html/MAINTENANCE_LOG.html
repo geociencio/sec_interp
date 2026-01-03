@@ -78,10 +78,23 @@ mv<span class="w"> </span>sec_interp.zip<span class="w"> </span>sec_interp_vX.Y.
 <section id="project-history">
 <h2>📜 Project History<a class="headerlink" href="#project-history" title="Link to this heading">¶</a></h2>
 <section id="id1">
-<h3>[2.5.0] - 2026-01-03 10:20<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<h3>[2.5.0] - 2026-01-03<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p><strong>Quality Assurance</strong>: Enabled Ruff rules <code class="docutils literal notranslate"><span class="pre">F401</span></code> (unused imports), <code class="docutils literal notranslate"><span class="pre">F841</span></code> (unused variables), and <code class="docutils literal notranslate"><span class="pre">I001</span></code> (isort).</p></li>
-<li><p><strong>Global Cleanup</strong>: Project-wide refactoring of imports and variables (253 automated fixes, 102 reformatted files).</p></li>
+<li><p><strong>Major Features</strong>:</p>
+<ul>
+<li><p><strong>3D Export</strong>: Interpretation export as real 3D Shapefiles (PolygonZ).</p></li>
+<li><p><strong>Settings Hub</strong>: New sidebar page for plugin configuration management.</p></li>
+</ul>
+</li>
+<li><p><strong>Data Persistence</strong>: Overhauled <code class="docutils literal notranslate"><span class="pre">DialogSettingsManager</span></code> for robust restoration with multi-scope support (<code class="docutils literal notranslate"><span class="pre">SecInterp</span></code>/<code class="docutils literal notranslate"><span class="pre">SecInterpUI</span></code>) and layer name fallback.</p></li>
+<li><p><strong>Stability &amp; QA</strong>:</p>
+<ul>
+<li><p>Enabled project-wide Ruff rules (<code class="docutils literal notranslate"><span class="pre">F401</span></code>, <code class="docutils literal notranslate"><span class="pre">F841</span></code>, <code class="docutils literal notranslate"><span class="pre">I001</span></code>).</p></li>
+<li><p>Implemented proactive auto-save on Preview and Dialog Accept.</p></li>
+<li><p>Resolved critical <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> in validation logic and Geology Rendering.</p></li>
+<li><p>Forced disk synchronization for configs (<code class="docutils literal notranslate"><span class="pre">sync()</span></code>).</p></li>
+</ul>
+</li>
 <li><p><strong>Test Infrastructure</strong>: Enhanced <code class="docutils literal notranslate"><span class="pre">MockQgsProject</span></code> and <code class="docutils literal notranslate"><span class="pre">MockQWidget</span></code> to support persistence and modern Qt patterns.</p></li>
 </ul>
 </section>

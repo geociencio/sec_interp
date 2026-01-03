@@ -1,36 +1,39 @@
 ---
-description: Proceso para crear una liberación (release) limpia del plugin de QGIS
+description: Proceso unificado de liberación (QGIS Release Flow) basado en la guía de IA
 ---
 
-Este flujo de trabajo guía la preparación, empaquetado y publicación de una nueva versión.
+Sigue este flujo de 5 fases para realizar una liberación oficial del plugin SecInterp.
 
-### 1. Preparación de Metadatos
-// turbo
-1. Actualizar `metadata.txt` con la nueva versión y el log de cambios.
-   > [!IMPORTANT]
-   > El repositorio de QGIS usa `configparser`. Debes **escapar todos los signos de porcentaje (`%`) como `%%`** en las secciones `changelog` y `about` para evitar errores de interpretación.
-2. Actualizar `docs/CHANGELOG.md` con los detalles técnicos.
-3. Actualizar documentación técnica (README, DEV Guide, etc) con la nueva versión.
-4. Ejecutar `uv run qgis-analyzer analyze .` para sincronizar métricas.
+### Fase 1: Calidad y Preparación
+1. **Analizar Calidad**: Ejecutar `uv run qgis-analyzer . -o analysis_results`.
+2. **Actualizar Badges**: Actualizar `Code Quality` y `QGIS Compliance` en `README.md` según los resultados.
 
-### 2. Configuración de Exclusiones
-### 2. Configuración de Exclusiones
-1. **Automático**: El comando `make package` utiliza `qgis-manage` que ya incluye exclusiones inteligentes (filtros para `.git`, `tests`, `docs`, etc.). No se requiere configuración manual.
-
-### 3. Generación del ZIP (Clean Build)
-// turbo
-1. Hacer commit de todos los cambios de preparación: `git commit -am "chore(release): prepare version X.Y.Z"`.
-2. Ejecutar el comando de paquete: `make package VERSION=main`.
-3. El archivo se generará en `dist/sec_interp.X.Y.Z.zip`.
-
-### 4. Verificación y Tagging
-1. Verificar el contenido del ZIP: `unzip -l dist/sec_interp.X.Y.Z.zip`.
-2. Crear y subir el tag:
+### Fase 2: Versionamiento y Documentación
+1. **Sincronizar Versión**:
+   - Actualizar `version` y `changelog` en `metadata.txt`.
+   - Actualizar `version` en `pyproject.toml`.
+   - Actualizar el badge de versión en `README.md`.
+2. **Changelog Técnico**: Mover `[Unreleased]` a la nueva versión en `docs/CHANGELOG.md`.
+3. **Notas de Lanzamiento**:
    ```bash
-   git tag vX.Y.Z -m "Release description"
-   git push origin main && git push origin vX.Y.Z
+   sed -e "s/{version}/X.Y.Z/g" -e "s/{date}/$(date +%F)/g" .github/release_template.md > /tmp/release_notes.md
    ```
 
-### 5. Publicación en Repositorios
-1. Subir a GitHub Releases adjuntando el ZIP.
-2. Subir a [plugins.qgis.org](https://plugins.qgis.org/) para distribución general.
+### Fase 3: Verificación
+1. **Linting**: `uv run ruff check --fix . && uv run ruff format .`
+2. **Tests**: `PYTHONPATH=.. uv run python3 -m unittest discover tests` (319+ tests).
+
+### Fase 4: Git y Tagging
+1. **Commit de Preparación**:
+   `git add metadata.txt pyproject.toml docs/CHANGELOG.md README.md docs/source/MAINTENANCE_LOG.md`
+   `git commit -m "chore(release): prepare vX.Y.Z"`
+2. **Tag**: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+3. **Push**: `git push origin main && git push origin vX.Y.Z`
+
+### Fase 5: Empaquetado y Distribución
+1. **Build ZIP**: `make package VERSION=main` (Verificar en `dist/`).
+2. **GitHub Release**:
+   ```bash
+   gh release create vX.Y.Z --title "vX.Y.Z" --notes-file /tmp/release_notes.md dist/*.zip dist/*.sha256 --draft
+   ```
+3. **Portal QGIS**: Subir el ZIP a [plugins.qgis.org](https://plugins.qgis.org/).
