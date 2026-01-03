@@ -34,8 +34,7 @@ class DialogSettingsManager:
 
     def load_settings(self) -> None:
         """Load user settings from previous session."""
-        if not self.config:
-            return
+        # We don't return early if config is missing, as we still want project settings
 
         # --- Section Page ---
         p_sect = self.dialog.page_section
@@ -65,6 +64,18 @@ class DialogSettingsManager:
         vert_exag = self._get_setting("vert_exag")
         if vert_exag is not None:
             p_dem.vertexag_spin.setValue(float(vert_exag))
+
+        # Manually trigger resolution update labels without overwriting scale
+        if raster_layer:
+            # We call the internal update to set labels, but we must ensure it doesn't
+            # overwrite the scale we just loaded.
+            # We'll block signals on scale_spin during this manual call.
+            p_dem.scale_spin.blockSignals(True)
+            p_dem._update_resolution()
+            p_dem.scale_spin.blockSignals(False)
+            # Ensure the loaded scale is still there
+            if scale is not None:
+                p_dem.scale_spin.setValue(float(scale))
 
         # --- Geology Page ---
         p_geol = self.dialog.page_geology
@@ -180,6 +191,7 @@ class DialogSettingsManager:
 
         # Update all status indicators after bulk restoration
         self.dialog.status_manager.update_all()
+        logger.info("Settings loaded successfully from Project/Global config")
 
     def save_settings(self) -> None:
         """Save user settings for next session."""
@@ -319,53 +331,99 @@ class DialogSettingsManager:
         pw.spin_max_points.setValue(1000)
 
     # --- Helper Methods ---
+    def _parse_setting_value(self, val: Any) -> Any:
+        """Parse string values back to appropriate Python types."""
+        if val in (None, "", "None", "NULL"):
+            return None
+
+        val_str = str(val).lower()
+        if val_str == "true":
+            return True
+        if val_str == "false":
+            return False
+
+        try:
+            if "." in str(val):
+                return float(val)
+            return int(val)
+        except ValueError:
+            return val
+
     def _get_setting(self, key: str, default: Any = None) -> Any:
-        """Get setting from Project first, then Global config."""
-        # 1. Try Project
-        val, ok = self.dialog.project.readEntry("SecInterpUI", key, "")
-        if ok and val != "":
-            # Convert back from string if necessary (bools, ints)
-            if val.lower() == "true":
-                return True
-            if val.lower() == "false":
-                return False
-            try:
-                if "." in val:
-                    return float(val)
-                return int(val)
-            except ValueError:
-                return val
+        """Get setting from Project (multiple scopes) first, then Global config."""
+        # 1. Try Project (New Scope)
+        val, ok = self.dialog.project.readEntry("SecInterp", key, "")
+        if not ok or val in (None, "", "None", "NULL"):
+            # 1b. Try Project (Legacy Scope)
+            val, ok = self.dialog.project.readEntry("SecInterpUI", key, "")
+
+        if ok and val not in (None, "", "None", "NULL"):
+            parsed = self._parse_setting_value(val)
+            if parsed is not None:
+                logger.debug(f"Project setting hit: {key} = {parsed}")
+                return parsed
 
         # 2. Try Global fallback
         if self.config:
-            return self.config.get(key, default)
+            val = self.config.get(key, default)
+            parsed = self._parse_setting_value(val)
+            if parsed is not None:
+                logger.debug(f"Global setting fallback: {key} = {parsed}")
+                return parsed
+
         return default
 
     def _set_setting(self, key: str, value: Any) -> None:
         """Set setting in both Project and Global config."""
+        if value is None:
+            value = ""
+
         # 1. Save to Project
-        self.dialog.project.writeEntry("SecInterpUI", key, str(value))
+        self.dialog.project.writeEntry("SecInterp", key, str(value))
+        logger.debug(f"Setting saved to project: {key} = {value}")
 
         # 2. Save to Global
         if self.config:
             self.config.set(key, value)
 
     def _save_layer(self, combo, key: str) -> None:
-        """Save selected layer ID."""
+        """Save selected layer ID and Name."""
         layer = combo.currentLayer()
-        val = layer.id() if layer else ""
-        self._set_setting(key, val)
+        if layer:
+            self._set_setting(key, layer.id())
+            self._set_setting(f"{key}_name", layer.name())
+        else:
+            self._set_setting(key, "")
+            self._set_setting(f"{key}_name", "")
 
     def _restore_layer(self, combo, key: str) -> None:
-        """Restore layer selection by ID."""
+        """Restore layer selection by ID or Name fallback."""
         layer_id = self._get_setting(key)
+        layer_name = self._get_setting(f"{key}_name")
+
+        if not layer_id and not layer_name:
+            return
+
+        layer = None
+        # 1. Try by ID (most accurate for current project)
         if layer_id:
-            layer = self.dialog.project.mapLayer(layer_id)
-            if layer:
-                # Block signals to prevent cascade overwrites (e.g. scale suggestion)
-                combo.blockSignals(True)
-                combo.setLayer(layer)
-                combo.blockSignals(False)
+            layer = self.dialog.project.mapLayer(str(layer_id))
+
+        # 2. Try by Name (fallback for cross-project or reloads)
+        if not layer and layer_name:
+            for lyr in self.dialog.project.mapLayers().values():
+                if lyr.name() == layer_name:
+                    layer = lyr
+                    break
+
+        if layer:
+            logger.debug(f"Restoring layer: {key} -> {layer.name()}")
+            # Block signals to prevent cascade overwrites (e.g. scale suggestion)
+            combo.blockSignals(True)
+            combo.setLayer(layer)
+            combo.blockSignals(False)
+        else:
+            logger.debug(f"Failed to restore layer for {key}")
 
     def _save_field(self, combo, key: str) -> None:
         """Save selected field name."""

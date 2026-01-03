@@ -122,7 +122,11 @@ class DemPage(BasePage):
         res = layer.rasterUnitsPerPixelX()
         units = layer.crs().mapUnits()
 
-        self.res_edit.setText(f"{res:.2f}")
+        try:
+            res_val = float(res)
+            self.res_edit.setText(f"{res_val:.2f}")
+        except (ValueError, TypeError):
+            self.res_edit.setText(str(res))
         self.units_edit.setText(QgsUnitTypes.toString(units))
 
         # Auto-calculate scale estimate (simplified)

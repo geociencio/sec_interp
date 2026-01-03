@@ -167,6 +167,9 @@ class ExportManager:
             if not params:
                 return False
 
+            # Auto-save current valid settings
+            self.dialog.settings_manager.save_settings()
+
             # Get values for output path (still needed from dialog/values)
             values = self.dialog.get_selected_values()
             output_folder = Path(values["output_path"])

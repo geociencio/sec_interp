@@ -41,7 +41,6 @@ from qgis.PyQt.QtWidgets import (
     QPushButton,
 )
 
-from sec_interp.core import utils as scu
 from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.types import InterpretationPolygon
 from sec_interp.gui.utils import show_user_message
@@ -394,6 +393,10 @@ class SecInterpDialog(SecInterpMainWindow):
         This method delegates to PreviewManager for preview generation.
         """
         success, message = self.preview_manager.generate_preview()
+        if success:
+            # Auto-save settings on successful preview
+            self.settings_manager.save_settings()
+
         if not success and message:
             self.messagebar.pushMessage("Preview Error", message, level=2)
 
@@ -403,6 +406,9 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def accept_handler(self):
         """Handle the accept button click event."""
+        # Proactively save settings as UI state, even if validation fails
+        self.settings_manager.save_settings()
+
         # When running without a QGIS iface (tests), skip strict validation
         if self.iface is None:
             self.accept()
@@ -411,7 +417,6 @@ class SecInterpDialog(SecInterpMainWindow):
         if not self.validate_inputs():
             return
 
-        # Settings saved in closeEvent
         self._save_interpretations()
         self.accept()
 
@@ -427,7 +432,7 @@ class SecInterpDialog(SecInterpMainWindow):
         """
         is_valid, error_message = self.validator.validate_inputs()
         if not is_valid:
-            scu.show_user_message(self, "Validation Error", error_message)
+            show_user_message(self, "Validation Error", error_message)
         return is_valid
 
     def clear_cache_handler(self):

@@ -26,8 +26,9 @@ class TestConfigService(BaseTestCase):
         self.mock_settings.value.side_effect = lambda k, d: d
 
         result = self.service.get("scale")
-        self.assertEqual(result, 500.0)
-        self.mock_settings.value.assert_called_with("/SecInterp/scale", 500.0)
+        self.assertEqual(result, 50000.0)
+        # The last call should be the fallback to old prefix
+        self.mock_settings.value.assert_called_with("/SecInterp/scale", 50000.0)
 
     def test_get_explicit_default(self):
         """Test getting a value with an explicit default."""
@@ -35,16 +36,17 @@ class TestConfigService(BaseTestCase):
 
         result = self.service.get("nonexistent", default="foo")
         self.assertEqual(result, "foo")
+        # The last call should be the fallback to old prefix
         self.mock_settings.value.assert_called_with("/SecInterp/nonexistent", "foo")
 
     def test_set_value(self):
         """Test setting a configuration value."""
         self.service.set("scale", 200.0)
-        self.mock_settings.setValue.assert_called_with("/SecInterp/scale", 200.0)
+        self.mock_settings.setValue.assert_called_with("SecInterp/scale", 200.0)
 
     def test_reset_defaults(self):
         """Test resetting to defaults."""
         self.service.reset_defaults()
         # Verify at least some defaults are set
-        self.mock_settings.setValue.assert_any_call("/SecInterp/scale", 500.0)
-        self.mock_settings.setValue.assert_any_call("/SecInterp/vert_exag", 1.0)
+        self.mock_settings.setValue.assert_any_call("SecInterp/scale", 50000.0)
+        self.mock_settings.setValue.assert_any_call("SecInterp/vert_exag", 1.0)

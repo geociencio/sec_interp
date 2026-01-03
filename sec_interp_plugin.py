@@ -26,7 +26,6 @@ Orchestrates the lifecycle of the SecInterp QGIS plugin.
 
 from __future__ import annotations
 
-import contextlib
 from pathlib import Path
 
 from qgis.core import (
@@ -39,7 +38,7 @@ from qgis.PyQt.QtCore import (
     QTranslator,
 )
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox
+from qgis.PyQt.QtWidgets import QAction
 
 from sec_interp.core.controller import ProfileController
 from sec_interp.core.exceptions import SecInterpError
@@ -225,13 +224,8 @@ class SecInterp:
             # Update preview renderer with the dialog's canvas
             self.preview_renderer.canvas = self.dlg.preview_widget.canvas
 
-            # Disconnect default accepted signal once
-            with contextlib.suppress(TypeError):
-                self.dlg.button_box.accepted.disconnect()
-
-            # Connect OK button to process and close
-            self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.process_data)
-            self.dlg.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.dlg.accept)
+            # Connect dialog accepted signal to final processing
+            self.dlg.accepted.connect(self.process_data)
 
         # Reload interpretations and UI settings to reflect current project state
         self.dlg._load_interpretations()

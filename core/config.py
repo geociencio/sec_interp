@@ -15,11 +15,11 @@ logger = get_logger(__name__)
 class ConfigService:
     """Service to handle plugin configuration and persistent settings."""
 
-    PREFIX = "/SecInterp/"
+    PREFIX = "SecInterp/"
 
     # Default values for common settings
     DEFAULTS = {
-        "scale": 500.0,
+        "scale": 50000.0,
         "vert_exag": 1.0,
         "buffer_dist": 100.0,
         "dip_scale_factor": 1.0,
@@ -59,7 +59,9 @@ class ConfigService:
         if default is None:
             default = self.DEFAULTS.get(key)
 
-        value = self.settings.value(full_key, default)
+        value = self.settings.value(full_key, None)
+        if value is None:
+            value = self.settings.value("/SecInterp/" + key, default)
 
         # Handle type conversion if necessary (QgsSettings can return QVariant)
         return value
@@ -74,6 +76,7 @@ class ConfigService:
         """
         full_key = self.PREFIX + key
         self.settings.setValue(full_key, value)
+        self.settings.sync()
         logger.debug(f"Config set: {full_key} = {value}")
 
     def reset_defaults(self) -> None:

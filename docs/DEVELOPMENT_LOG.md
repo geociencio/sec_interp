@@ -36,3 +36,22 @@ Chronological record of development activities, significant fixes, and technical
 - Regression confirmed manually via test case.
 
 ---
+
+## [2026-01-03] - Data Persistence Fix & UI Robustness (12:20)
+
+### Activities
+- **Proactive Persistence**: Reorganized `accept_handler` and `preview_profile_handler` in `main_dialog.py` to save settings immediately upon success or dialog acceptance, even if secondary validation fails.
+- **Robust Settings Hub**:
+    - Enhanced `DialogSettingsManager` with multi-scope support (`SecInterp` and `SecInterpUI`).
+    - Implemented layer name fallback for restoration when IDs change.
+    - Added type-safe parsing for persistent string values ("True", "None", etc.).
+- **Forced Sync**: Added `self.settings.sync()` in `ConfigService` to ensure immediate disk writes.
+- **Validation Fix**: Resolved `AttributeError` in `validate_inputs` that caused crashes on validation failure.
+- **Workflow Automation**: Followed `/cierra-sesion` workflow to archive results.
+
+### Verification
+- Full test suite passed: **110 GUI tests** + all core tests.
+- User confirmed automatic loading of previous configurations.
+- Verified persistent restoration of layers and spinbox values after QGIS restart.
+
+---
