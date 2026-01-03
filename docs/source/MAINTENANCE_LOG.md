@@ -36,6 +36,11 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
+### [2.5.0] - 2026-01-03 10:20
+- **Quality Assurance**: Enabled Ruff rules `F401` (unused imports), `F841` (unused variables), and `I001` (isort).
+- **Global Cleanup**: Project-wide refactoring of imports and variables (253 automated fixes, 102 reformatted files).
+- **Test Infrastructure**: Enhanced `MockQgsProject` and `MockQWidget` to support persistence and modern Qt patterns.
+
 ### [2.2.0] - 2025-12-22
 - **Documentation Globalization**: 100% of documentation (including Architecture) translated to English.
 - **Build Optimization**: Slimmed final ZIP package and removed redundant source code views from help.

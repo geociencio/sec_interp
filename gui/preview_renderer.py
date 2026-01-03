@@ -108,7 +108,9 @@ class PreviewRenderer:
         # ... rest of data layers ...
         # For structural layer, use topo or geol as reference
         reference_data = (
-            topo_data if topo_data else ([(d, e) for d, e, _ in geol_data] if geol_data else None)
+            topo_data
+            if topo_data
+            else ([p for seg in geol_data for p in seg.points] if geol_data else None)
         )
         struct_layer = self.layer_factory.create_struct_layer(
             struct_data, reference_data, vert_exag, dip_line_length

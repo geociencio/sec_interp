@@ -460,6 +460,11 @@ class TestPreviewComponents(BaseTestCase):
         self.renderer._render_interpretations([MagicMock()], 1.0)
         # Should just return/log, not crash
 
+        # Regression: Render with geol but no topo (unpacking error)
+        geol_data = [GeologySegment("A", MagicMock(), {}, [(0, 0), (10, 10)])]
+        # Should NOT raise TypeError
+        self.renderer.render(topo_data=None, geol_data=geol_data)
+
         # Render interpretations with short polygon (coverage for continue)
         self.renderer.canvas = MagicMock()
         short_poly = InterpretationPolygon("s", "S", "lite", [(0, 0), (0, 10)])

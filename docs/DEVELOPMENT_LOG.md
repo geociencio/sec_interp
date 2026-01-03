@@ -20,3 +20,19 @@ Chronological record of development activities, significant fixes, and technical
 - Detailed report saved in: [ruff_cleanup_2026-01-03_10-20.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/ruff_cleanup_2026-01-03_10-20.md)
 
 ---
+
+## [2026-01-03] - Bug Fix: Preview Render TypeError (10:45)
+
+### Problem
+- **TypeError**: `cannot unpack non-iterable GeologySegment object` in `gui/preview_renderer.py`.
+- **Cause**: After refactoring `GeologyData` to use `GeologySegment` objects, a legacy list comprehension in `render()` was still trying to unpack them as 3-tuples.
+
+### Fix
+- Updated `gui/preview_renderer.py` to extract points from `GeologySegment.points` when calculating `reference_data`.
+- Added a regression test case in `tests/gui/test_preview_components.py`.
+
+### Verification
+- Full test suite passed: **316 tests**.
+- Regression confirmed manually via test case.
+
+---
