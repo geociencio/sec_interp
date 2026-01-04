@@ -36,6 +36,12 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
+### [2.6.0] - 2026-01-04
+- **Docker Integration**: 
+    - Full containerization of the test environment for CI/CD readiness.
+    - Automated dependency management via `uv` within Docker.
+    - Optimized build workflows with `.dockerignore` and permission handling.
+
 ### [2.5.0] - 2026-01-03
 - **Major Features**:
     - **3D Export**: Interpretation export as real 3D Shapefiles (PolygonZ).

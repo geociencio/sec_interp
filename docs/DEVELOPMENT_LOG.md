@@ -4,6 +4,24 @@ Chronological record of development activities, significant fixes, and technical
 
 ---
 
+## [2026-01-04] - Docker Learning Workshop (00:05)
+
+### Activities
+- **Fase 1: Interactive Exploration**: Launched containers, managed volumes (`-v`), and identified system dependencies inside `python:3.10-slim`.
+- **Fase 2: Dockerfile Automation**:
+    - Implemented a production-ready `Dockerfile` featuring `uv` for dependency management.
+    - Integrated `.dockerignore` to optimize build context and ignore `__pycache__`.
+    - Resolved critical permission issues caused by `root` user in isolated environments.
+- **Fase 3: Containerized Verification**:
+    - Automated unit tests execution within the container.
+    - Resolved `PYTHONPATH` package discovery issues relative to the `/app` mounting point.
+
+### Verification
+- Successfully executed **319 tests** inside the Docker container.
+- Proof of work archived in: [docker_workshop_2026-01-04.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/docker_workshop_2026-01-04.md)
+
+---
+
 ## [2026-01-03] - Global Ruff Activation & Cleanup (10:20)
 
 ### Activities
