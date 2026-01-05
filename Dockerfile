@@ -3,6 +3,12 @@ FROM python:3.10-slim
 # 1. Instalar dependencias de sistema
 RUN apt-get update && apt-get install -y \
     git \
+    procps \
+    wget \
+    curl \
+    ca-certificates \
+    libgl1 \
+    libqt5gui5 \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Instalar herramientas de Python

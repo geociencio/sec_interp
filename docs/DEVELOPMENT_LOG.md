@@ -4,6 +4,21 @@ Chronological record of development activities, significant fixes, and technical
 
 ---
 
+## [2026-01-04] - Dev Containers Architecture (21:30)
+
+### Activities
+- **Zero-Setup Environment**: Established a fully reproducible development environment using `.devcontainer`.
+- **Infrastructure Fixes**:
+    - **Caching Issues**: Bypassed Docker layer caching issues by manually building `sec_interp_dev` image.
+    - **Dependency Resolution**: Added mandatory `wget`, `curl`, and `ca-certificates` to `Dockerfile` to enable VS Code Server installation.
+    - **Process Management**: Configured `overrideCommand: true` to prevent container exit after test execution, allowing interactive sessions.
+- **Portability**: Verified that "Reopen in Container" now works seamlessly, installing all `uv` dependencies automatically.
+
+### Verification
+- Container successfully launched and sustained connection.
+- Verified `root` shell access within the container.
+- Confirmed environment isolation from host system.
+
 ## [2026-01-04] - Docker Learning Workshop (00:05)
 
 ### Activities
