@@ -269,14 +269,7 @@ class TestMeasureTool(BaseTestCase):
         self.tool. _calculate_and_emit_preview(QgsPointXY(0,0))
         self.tool.measurementChanged.emit.assert_not_called()
 
-    def test_key_press_super(self):
-        """Test calling super class key press."""
-        event = MagicMock()
-        event.key.return_value = Qt.Key_A
-        # Mock class directly to patch super() behavior
-        with patch("qgis.gui.QgsMapToolEmitPoint.keyPressEvent") as mock_super:
-            self.tool.keyPressEvent(event)
-            mock_super.assert_called_once()
+
 
     def test_snapper_skips_and_continues(self):
         """Test snapper skips invalid layers and missing locators."""

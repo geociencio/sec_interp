@@ -160,9 +160,14 @@ class TestProfileExporters(BaseTestCase):
     def test_profile_line_exporter_null_geom(self, mock_writer_func):
         """Test profile line exporter with null geometry."""
         exporter = ProfileLineShpExporter(self.settings)
-        with patch("qgis.core.QgsGeometry.fromPolylineXY", return_value=MagicMock(isNull=lambda: True)):
-            data = {"profile_data": [(0, 0)], "crs": self.crs}
-            self.assertFalse(exporter.export(self.output_path, data))
+        # Patch QgsGeometry via the module where it is imported/used
+        with patch("sec_interp.exporters.profile_exporters.QgsGeometry") as mock_geom_cls:
+             mock_geom = MagicMock()
+             mock_geom.isNull.return_value = True
+             mock_geom_cls.fromPolylineXY.return_value = mock_geom
+             
+             data = {"profile_data": [(0, 0)], "crs": self.crs}
+             self.assertFalse(exporter.export(self.output_path, data))
 
     def test_geology_exporter_missing_data(self):
         """Test geology exporter with missing data."""

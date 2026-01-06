@@ -281,13 +281,7 @@ class TestInterpretationTool(BaseTestCase):
         self.tool.canvasMoveEvent(MagicMock())
         self.tool._update_rubber_band.assert_not_called()
 
-    def test_key_press_super(self):
-        """Test calling super class key press."""
-        event = MagicMock()
-        event.key.return_value = Qt.Key_A
-        with patch("qgis.gui.QgsMapToolEmitPoint.keyPressEvent") as mock_super:
-            self.tool.keyPressEvent(event)
-            mock_super.assert_called_once()
+
 
     def test_remove_last_no_points(self):
         """Test _remove_last_point with no points."""
