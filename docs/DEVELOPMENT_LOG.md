@@ -3,6 +3,21 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
+## [2026-01-06] - Fix Infraestructura de Tests de Integración (18:40)
+
+### Actividades
+- **Fix Runner**: Se corrigió `scripts/run_tests_in_qgis.py` para manejar casos donde `__file__` no está definido (ejecucción vía `--code` o terminal QGIS).
+- **Aislamiento de Tests**: Se configuró el runner para priorizar tests de integración (`tests/integration`) al ejecutar dentro de QGIS, evitando interferencia de mocks de tests unitarios.
+- **Detección de QGIS**: Mejorada la detección de entorno real en `tests/base_test.py` para evitar sobrescribir `sys.modules["qgis"]` si la API ya está disponible.
+
+### Resultados
+- **10 tests de integración pasando** exitosamente dentro de QGIS 3.44.
+- Infraestructura estabilizada para validación de flujos de trabajo reales (Interpretación, Medición y Exportación 3D).
+
+### Documentación
+- Archivo de Walkthrough: [sesion_2026-01-06_fix_integracion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-06_fix_integracion.md)
+
+---
 ## [2026-01-05] - Implementación de Infraestructura de Tests de Integración Nativa (22:00)
 
 ### Actividades

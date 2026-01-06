@@ -6,10 +6,10 @@ Mejorar la calidad, robustez y mantenibilidad del proyecto abordando la deuda t�
 ## Tareas
 
 ### 1. Análisis y Priorización
-- [/] Revisar deuda técnica del cierre de fase
-- [/] Definir alcance de la fase v2.6.0
-- [ ] Estimar esfuerzo por tarea
-- [ ] Crear roadmap detallado
+- [x] Revisar deuda técnica del cierre de fase
+- [x] Definir alcance de la fase v2.6.0
+- [x] Estimar esfuerzo por tarea
+- [x] Crear roadmap detallado
 
 ### 2. Tests de Integración (Crítico - 2-3 días) 🔴
 - [x] **Setup Inicial**
@@ -23,7 +23,7 @@ Mejorar la calidad, robustez y mantenibilidad del proyecto abordando la deuda t�
   - [ ] Ajustar workflow de GitHub Actions para correr `unittest` en entorno QGIS
 
 ### 3. Reducción de Complejidad en Exportadores (Crítico - 1-2 días) 🔴
-- [ ] **Análisis Inicial**
+- [/] **Análisis Inicial**
   - [ ] Ejecutar `ruff check --select C901`
 - [ ] **Diseño de Refactorización**
   - [ ] Diseñar `Projection3DStrategy`

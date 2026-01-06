@@ -41,9 +41,19 @@ import logging
 import pathlib
 
 # --- CONFIGURATION ---
-# Auto-detect project root relative to this script
-SCRIPT_DIR = pathlib.Path(__file__).parent.absolute()
-PROJECT_ROOT = SCRIPT_DIR.parent
+# Auto-detect project root. Handle cases where __file__ is undefined (QGIS Console/--code)
+try:
+    SCRIPT_DIR = pathlib.Path(__file__).parent.absolute()
+    PROJECT_ROOT = SCRIPT_DIR.parent
+except NameError:
+    # Fallback to current working directory if run from project root
+    PROJECT_ROOT = pathlib.Path(os.getcwd()).absolute()
+    # Check if we are actually in the root by looking for metadata.txt
+    if not (PROJECT_ROOT / "metadata.txt").exists():
+        # Try one more: maybe we are in scripts/?
+        if PROJECT_ROOT.name == "scripts":
+            PROJECT_ROOT = PROJECT_ROOT.parent
+
 TESTS_DIR = PROJECT_ROOT / "tests"
 
 
@@ -85,7 +95,7 @@ def run_tests():
         print(f"❌ Error: Test directory not found at {TESTS_DIR}")
         return
 
-    suite = loader.discover(start_dir=str(TESTS_DIR), pattern="test_*.py")
+    suite = loader.discover(start_dir=str(TESTS_DIR / "integration"), pattern="test_*.py")
 
     # Run Tests
     runner = unittest.TextTestRunner(verbosity=2)

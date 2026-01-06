@@ -797,7 +797,12 @@ mock_qtwidgets.QMainWindow = MockQWidget
 
 
 # Force usage of mocks to ensure pure unittest execution
-CORE_AVAILABLE = False
+# Check if real QGIS is available
+try:
+    import qgis.core
+    CORE_AVAILABLE = True
+except ImportError:
+    CORE_AVAILABLE = False
 
 if not CORE_AVAILABLE:
     mock_qgis = MagicMock()
