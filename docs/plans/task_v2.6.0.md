@@ -12,13 +12,13 @@ Mejorar la calidad, robustez y mantenibilidad del proyecto abordando la deuda t�
 - [ ] Crear roadmap detallado
 
 ### 2. Tests de Integración (Crítico - 2-3 días) 🔴
-- [ ] **Setup Inicial**
-  - [ ] Implementar `BaseIntegrationTest` en `tests/integration/base_integration.py`
-  - [ ] Configurar inicialización de `QgsApplication` para tests
-- [ ] **Implementar Tests de Workflows (unittest)**
-  - [ ] `test_interpretation_workflow.py`
-  - [ ] `test_measurement_workflow.py`
-  - [ ] `test_export_workflows.py`
+- [x] **Setup Inicial**
+  - [x] Implementar `BaseIntegrationTest` en `tests/integration/base_integration.py`
+  - [x] Configurar inicialización de `QgsApplication` para tests
+- [x] **Implementar Tests de Workflows (unittest)**
+  - [x] `test_interpretation_workflow.py`
+  - [x] `test_measurement_workflow.py`
+  - [x] `test_export_workflow.py`
 - [ ] **Integración CI/CD**
   - [ ] Ajustar workflow de GitHub Actions para correr `unittest` en entorno QGIS
 
