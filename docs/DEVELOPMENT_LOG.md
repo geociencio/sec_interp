@@ -3,6 +3,27 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
+## [2026-01-05] - Implementación de Infraestructura de Tests de Integración Nativa (22:00)
+
+### Actividades
+- **Tests de Integración**: Se estableció la infraestructura para ejecutar tests de integración utilizando la API real de QGIS en modo headless.
+- **Clase Base**: Creación de `BaseIntegrationTest` en `tests/integration/base_integration.py` para gestión de `QgsApplication`.
+- **Nuevos Tests**:
+    - `test_qgis_smoke.py`: Verificación de instanciación de objetos QGIS y diálogos de la UI.
+    - `test_interpretation_workflow.py`: Validación de guardado/carga de interpretaciones en el proyecto.
+    - `test_measurement_workflow.py`: Verificación de cálculos de la herramienta de medición multi-punto.
+    - `test_export_workflow.py`: Validación de la lógica de proyección 3D.
+- **Resultados**: 10 tests de integración pasando exitosamente junto con los 319 tests unitarios existentes.
+
+### Decisiones Técnicas
+- **Mode Headless**: Uso de `QgsApplication([], False)` para evitar requerimientos de servidor X en entornos CI/CD sugeridos.
+- **Mocks Híbridos**: Uso de `DummyPlugin` para inyectar controladores reales en tests que requieren lógica de negocio sin conexión total a la interfaz iface de QGIS.
+
+### Documentación
+- Archivo de Walkthrough: [sesion_2026-01-05_integracion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-05_integracion.md)
+
+---
+
 
 ## [2026-01-05] - Cierre Formal de Fase v2.5.0 (20:30)
 

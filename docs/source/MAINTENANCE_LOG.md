@@ -36,8 +36,11 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
-### [2.6.0] - 2026-01-04
-- **Docker Integration**: 
+### [2.6.0] - 2026-01-05
+- **Quality Assurance**:
+    - **Native Integration Tests**: Implementation of `BaseIntegrationTest` for headless QGIS execution.
+    - **Workflow Validation**: New automated tests for Interpretation, Measurement, and 3D Export using real QGIS API.
+- **Docker Integration**:
     - Full containerization of the test environment for CI/CD readiness.
     - Automated dependency management via `uv` within Docker.
     - Optimized build workflows with `.dockerignore` and permission handling.
