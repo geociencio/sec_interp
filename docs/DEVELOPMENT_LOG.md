@@ -37,7 +37,8 @@ Chronological record of development activities, significant fixes, and technical
 4. Mejorar documentación de API con Sphinx
 
 ### Documentación
-- Documento completo de cierre de fase: [phase_closure.md](file:///home/jmbernales/.gemini/antigravity/brain/251badd3-dede-45d0-a960-9bb944b0a687/phase_closure.md)
+- Documento completo de cierre de fase: [phase_closure_2026-01-05.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/phase_closure_2026-01-05.md)
+- Walkthrough del proceso: [phase_closure_walkthrough_2026-01-05.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/phase_closure_walkthrough_2026-01-05.md)
 
 ---
 
