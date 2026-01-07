@@ -1,25 +1,17 @@
-"""Tests for dynamic attributes in interpretation exporters."""
-
 import unittest
-from unittest.mock import MagicMock
 from pathlib import Path
-from qgis.core import QgsApplication, QgsFields
-from qgis.PyQt.QtCore import QVariant
+from unittest.mock import MagicMock
+from tests.base_test import BaseTestCase
+from qgis.core import QgsFields
 from sec_interp.exporters.interpretation_exporters import Interpretation2DExporter
 from sec_interp.core.types import InterpretationPolygon
 
-class TestDynamicAttributes(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.qgs = QgsApplication([], False)
-        cls.qgs.initQgis()
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.qgs.exitQgis()
+class TestDynamicAttributes(BaseTestCase):
 
     def test_2d_exporter_dynamic_fields(self):
         """Verify that 2D exporter creates fields for custom attributes."""
+        super().setUp()
         exporter = Interpretation2DExporter({})
 
         # Create interpretation with custom attributes
@@ -30,16 +22,23 @@ class TestDynamicAttributes(unittest.TestCase):
             vertices_2d=[(0, 0), (10, 0), (10, 10), (0, 0)],
             attributes={"Confianza": "Alta", "Comentario": "Validado"},
             color="#FF0000",
-            created_at="2024-01-01"
+            created_at="2024-01-01",
         )
+
+        output_path = Path("/tmp/test_dynamic.shp")
 
         # Mock writeAsVectorFormatV3 to avoid file I/O errors in headless env
         import qgis.core
-        original_write = qgis.core.QgsVectorFileWriter.writeAsVectorFormatV3
-        qgis.core.QgsVectorFileWriter.writeAsVectorFormatV3 = MagicMock(return_value=(0, "", "", ""))
+
+        # Ensure the global mock has the correct return value
+        qgis.core.QgsVectorFileWriter.writeAsVectorFormatV3.return_value = (
+            0,
+            "Success",
+            "layer_id",
+            str(output_path),
+        )
 
         try:
-            output_path = Path("/tmp/test_dynamic.shp")
             exporter.export(output_path, {"interpretations": [interp]})
 
             # Check if fields were correctly generated in the internal layer
@@ -60,7 +59,9 @@ class TestDynamicAttributes(unittest.TestCase):
             self.assertEqual(feat["Comentario"], "Validado")
 
         finally:
-            qgis.core.QgsVectorFileWriter.writeAsVectorFormatV3 = original_write
+            # No need to restore since we are in a mock environment, but good practice if it existed
+            pass
+
 
 if __name__ == "__main__":
     unittest.main()

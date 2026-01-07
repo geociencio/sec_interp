@@ -5,9 +5,8 @@ Tests for exporters
 
 from pathlib import Path
 from tests.base_test import BaseTestCase
-
-from exporters.csv_exporter import CSVExporter
-from exporters.base_exporter import BaseExporter
+from sec_interp.exporters.csv_exporter import CSVExporter
+from sec_interp.exporters.base_exporter import BaseExporter
 
 
 class TestCSVExporter(BaseTestCase):

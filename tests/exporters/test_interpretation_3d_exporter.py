@@ -1,42 +1,24 @@
-"""Tests for Interpretation3DExporter."""
-
-import unittest
 from unittest.mock import MagicMock
-import math
-
+from tests.base_test import BaseTestCase
 from qgis.core import (
     QgsCoordinateReferenceSystem,
-    QgsPoint,
-    QgsGeometry,
     QgsPointXY,
+    QgsGeometry,
     QgsWkbTypes,
-    QgsFeature,
-    QgsApplication,
-    QgsSettings,
 )
 
 from sec_interp.exporters.interpretation_3d_exporter import Interpretation3DExporter
 
-class TestInterpretation3DExporter(unittest.TestCase):
+
+class TestInterpretation3DExporter(BaseTestCase):
     """Test suite for Interpretation3DExporter."""
-
-    @classmethod
-    def setUpClass(cls):
-        """Initialize QGIS Application."""
-        cls.qgs = QgsApplication([], False)
-        cls.qgs.initQgis()
-        # Enable 3D export in settings for tests
-        settings = QgsSettings()
-        settings.setValue("sec_interp/enable_3d", True)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Clean up QGIS Application."""
-        cls.qgs.exitQgis()
 
     def setUp(self):
         """Set up test fixtures."""
-        self.mock_section_line = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
+        super().setUp()
+        self.mock_section_line = QgsGeometry.fromPolylineXY(
+            [QgsPointXY(0, 0), QgsPointXY(100, 0)]
+        )
 
         self.mock_polygon = MagicMock()
         self.mock_polygon.id = "test_poly"
@@ -57,9 +39,18 @@ class TestInterpretation3DExporter(unittest.TestCase):
         exporter._write_shapefile = MagicMock(return_value=True)
 
         data = {
-            "interpretations": [MagicMock(vertices_2d=[(10, 10), (20, 10), (15, 20)], id="p1", name="u1", type="t1", color="c1", created_at="d1")],
+            "interpretations": [
+                MagicMock(
+                    vertices_2d=[(10, 10), (20, 10), (15, 20)],
+                    id="p1",
+                    name="u1",
+                    type="t1",
+                    color="c1",
+                    created_at="d1",
+                )
+            ],
             "section_line": self.mock_section_line,
-            "crs": QgsCoordinateReferenceSystem("EPSG:4326")
+            "crs": QgsCoordinateReferenceSystem("EPSG:4326"),
         }
 
         exporter.export("/tmp/test.shp", data)
@@ -75,7 +66,9 @@ class TestInterpretation3DExporter(unittest.TestCase):
 
     def test_geometric_transformation_north(self):
         """Test geometric transformation for North direction (Azimuth 90 deg)."""
-        section_line = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(0, 100)])
+        section_line = QgsGeometry.fromPolylineXY(
+            [QgsPointXY(0, 0), QgsPointXY(0, 100)]
+        )
 
         exporter = Interpretation3DExporter({})
         exporter._write_shapefile = MagicMock(return_value=True)
@@ -83,7 +76,7 @@ class TestInterpretation3DExporter(unittest.TestCase):
         data = {
             "interpretations": [self.mock_polygon],
             "section_line": section_line,
-            "crs": QgsCoordinateReferenceSystem()
+            "crs": QgsCoordinateReferenceSystem(),
         }
 
         exporter.export("dummy.shp", data)
@@ -108,19 +101,18 @@ class TestInterpretation3DExporter(unittest.TestCase):
         polygon.vertices_2d = [
             (0.0, 0.0),
             (10.0, 0.0),
-            (5.0, 10.0), # Backwards
-            (0.0, 10.0)
+            (5.0, 10.0),  # Backwards
+            (0.0, 10.0),
         ]
 
-        section_line = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
+        section_line = QgsGeometry.fromPolylineXY(
+            [QgsPointXY(0, 0), QgsPointXY(100, 0)]
+        )
 
         exporter = Interpretation3DExporter({})
         exporter._write_shapefile = MagicMock(return_value=True)
 
-        data = {
-            "interpretations": [polygon],
-            "section_line": section_line
-        }
+        data = {"interpretations": [polygon], "section_line": section_line}
 
         exporter.export("dummy.shp", data)
 
@@ -130,5 +122,6 @@ class TestInterpretation3DExporter(unittest.TestCase):
         self.assertTrue(QgsWkbTypes.hasZ(geom.wkbType()))
         self.assertEqual(geom.type(), QgsWkbTypes.PolygonGeometry)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
