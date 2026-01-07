@@ -27,6 +27,12 @@ class ProfileLineShpExporter(BaseExporter):
     """Exports the topographic profile line to a Shapefile."""
 
     def get_supported_extensions(self) -> list[str]:
+        """Get supported file extensions.
+
+        Returns:
+            List of supported extensions.
+
+        """
         return [".shp"]
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
@@ -68,6 +74,12 @@ class GeologyShpExporter(BaseExporter):
     """Exports the geological profile to a Shapefile."""
 
     def get_supported_extensions(self) -> list[str]:
+        """Get supported file extensions.
+
+        Returns:
+            List of supported extensions.
+
+        """
         return [".shp"]
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
@@ -132,6 +144,12 @@ class StructureShpExporter(BaseExporter):
     """Exports the structural profile to a Shapefile."""
 
     def get_supported_extensions(self) -> list[str]:
+        """Get supported file extensions.
+
+        Returns:
+            List of supported extensions.
+
+        """
         return [".shp"]
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
@@ -218,6 +236,12 @@ class AxesShpExporter(BaseExporter):
     """Exports the profile axes to a Shapefile."""
 
     def get_supported_extensions(self) -> list[str]:
+        """Get supported file extensions.
+
+        Returns:
+            List of supported extensions.
+
+        """
         return [".shp"]
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:

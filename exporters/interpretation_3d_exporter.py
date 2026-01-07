@@ -239,7 +239,12 @@ class Interpretation3DExporter(BaseExporter):
         return projected_features
 
     def _write_shapefile(
-        self, path: str, features: list[QgsFeature], fields: list[QgsField], wkb_type, crs
+        self,
+        path: str,
+        features: list[QgsFeature],
+        fields: list[QgsField],
+        wkb_type,
+        crs,
     ) -> bool:
         """Write shapefile (if not in BaseExporter)."""
         from qgis.core import QgsVectorFileWriter
@@ -255,7 +260,12 @@ class Interpretation3DExporter(BaseExporter):
         from qgis.core import QgsProject
 
         writer = QgsVectorFileWriter.create(
-            str(path), qgs_fields, wkb_type, crs, QgsProject.instance().transformContext(), options
+            str(path),
+            qgs_fields,
+            wkb_type,
+            crs,
+            QgsProject.instance().transformContext(),
+            options,
         )
 
         if writer.hasError() != QgsVectorFileWriter.NoError:
@@ -267,7 +277,7 @@ class Interpretation3DExporter(BaseExporter):
         del writer
         return True
 
-    def _make_fields_obj(self, fields_list):
+    def _make_fields_obj(self, fields_list: list[QgsField]) -> QgsFields:
         from qgis.core import QgsFields
 
         qfields = QgsFields()
@@ -275,11 +285,11 @@ class Interpretation3DExporter(BaseExporter):
             qfields.append(f)
         return qfields
 
-    def _make_fields(self, fields_list):
+    def _make_fields(self, fields_list: list[QgsField]) -> QgsFields:
         # Compatibility helper if needed
         return self._make_fields_obj(fields_list)
 
-    def _prepare_fields(self, interpretations):
+    def _prepare_fields(self, interpretations: list[Any]) -> tuple[list[QgsField], list[str]]:
         all_attr_keys = set()
         for interp in interpretations:
             if interp.attributes:
@@ -319,8 +329,14 @@ class Interpretation3DExporter(BaseExporter):
         return p1.x(), p1.y(), azimuth
 
     def _collect_projected_features(
-        self, interpretations, fields, sorted_keys, origin_x, origin_y, azimuth
-    ):
+        self,
+        interpretations: list[Any],
+        fields: list[QgsField],
+        sorted_keys: list[str],
+        origin_x: float,
+        origin_y: float,
+        azimuth: float,
+    ) -> list[QgsFeature]:
         features = []
         for polygon in interpretations:
             # Deduplicate vertices and ensure 2D validity
@@ -361,7 +377,7 @@ class Interpretation3DExporter(BaseExporter):
             )
         return features
 
-    def _configure_3d_renderer(self, layer):
+    def _configure_3d_renderer(self, layer: QgsVectorLayer) -> None:
         from qgis._3d import (
             QgsPhongMaterialSettings,
             QgsPolygon3DSymbol,

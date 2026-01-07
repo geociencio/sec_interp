@@ -49,7 +49,7 @@ class Interpretation2DExporter(BaseExporter):
                 - interpretations: List of InterpretationPolygon objects
 
         Returns:
-            bool: True if export was successful, False otherwise
+            bool: True if export successful, False otherwise
 
         """
         interpretations = data.get("interpretations", [])
@@ -57,16 +57,34 @@ class Interpretation2DExporter(BaseExporter):
             logger.warning("No interpretations to export.")
             return False
 
-        # Create memory layer
-        layer = QgsVectorLayer("Polygon?crs=", "interpretations_2d", "memory")
+        try:
+            fields, sorted_keys = self._prepare_fields(interpretations)
+            layer = QgsVectorLayer("Polygon?crs=", "interpretations_2d", "memory")
+            layer.dataProvider().addAttributes(fields)
+            layer.updateFields()
 
-        # 1. Collect all unique attribute keys
+            features = []
+            for interp in interpretations:
+                feat = self._create_feature(interp, fields, sorted_keys)
+                if feat:
+                    features.append(feat)
+
+            layer.dataProvider().addFeatures(features)
+
+            return self._write_to_file(layer, output_path)
+
+        except Exception:
+            logger.exception(f"Failed to export interpretations to {output_path}")
+            return False
+
+    def _prepare_fields(self, interpretations: list[Any]) -> tuple[QgsFields, list[str]]:
+        """Identify custom attributes and create fields."""
         all_attr_keys = set()
         for interp in interpretations:
             if interp.attributes:
                 all_attr_keys.update(interp.attributes.keys())
 
-        # Define fields
+        sorted_keys = sorted(all_attr_keys)
         fields = QgsFields()
         fields.append(QgsField("id", QMetaType.Type.QString, len=50))
         fields.append(QgsField("name", QMetaType.Type.QString, len=100))
@@ -74,57 +92,45 @@ class Interpretation2DExporter(BaseExporter):
         fields.append(QgsField("color", QMetaType.Type.QString, len=10))
         fields.append(QgsField("created_at", QMetaType.Type.QString, len=30))
 
-        # Add custom fields
-        sorted_keys = sorted(all_attr_keys)
         for key in sorted_keys:
-            # For simplicity, we assume String for all custom attributes for now
-            # as they come from QLineEdit in the properties dialog.
             fields.append(QgsField(key, QMetaType.Type.QString, len=255))
+        return fields, sorted_keys
 
-        layer.dataProvider().addAttributes(fields)
-        layer.updateFields()
+    def _create_feature(self, interp: Any, fields: QgsFields, sorted_keys: list[str]) -> QgsFeature:
+        """Create a QgsFeature with geometry and attributes."""
+        # Create polygon geometry from 2D vertices
+        points = [QgsPointXY(x, y) for x, y in interp.vertices_2d]
 
-        # Add features
-        features = []
-        for interp in interpretations:
-            # Create polygon geometry from 2D vertices
-            points = [QgsPointXY(x, y) for x, y in interp.vertices_2d]
+        # Ensure polygon is closed
+        if points and points[0] != points[-1]:
+            points.append(points[0])
 
-            # Ensure polygon is closed
-            if points and points[0] != points[-1]:
-                points.append(points[0])
+        geom = QgsGeometry.fromPolygonXY([points])
 
-            geom = QgsGeometry.fromPolygonXY([points])
+        feature = QgsFeature(fields)
+        feature.setGeometry(geom)
 
-            # Create feature
-            feature = QgsFeature(fields)
-            feature.setGeometry(geom)
+        # Set attributes
+        attrs = [
+            interp.id,
+            interp.name,
+            interp.type,
+            interp.color,
+            interp.created_at,
+        ]
 
-            # Set standard attributes
-            attrs = [
-                interp.id,
-                interp.name,
-                interp.type,
-                interp.color,
-                interp.created_at,
-            ]
+        for key in sorted_keys:
+            val = interp.attributes.get(key, "")
+            attrs.append(str(val))
 
-            # Set custom attributes
-            for key in sorted_keys:
-                val = interp.attributes.get(key, "")
-                attrs.append(str(val))
+        feature.setAttributes(attrs)
+        return feature
 
-            feature.setAttributes(attrs)
-            features.append(feature)
-
-        layer.dataProvider().addFeatures(features)
-
-        # Write to Shapefile
+    def _write_to_file(self, layer: QgsVectorLayer, output_path: Path) -> bool:
+        """Write the vector layer to a Shapefile on disk."""
         options = QgsVectorFileWriter.SaveVectorOptions()
         options.driverName = "ESRI Shapefile"
         options.fileEncoding = "UTF-8"
-
-        # No CRS for 2D profile coordinates
 
         result, error_msg, _new_layer_id, _new_layer_path = (
             QgsVectorFileWriter.writeAsVectorFormatV3(
@@ -136,9 +142,7 @@ class Interpretation2DExporter(BaseExporter):
         )
 
         if result == QgsVectorFileWriter.NoError:
-            logger.info(
-                f"Successfully exported {len(interpretations)} interpretations to {output_path}"
-            )
+            logger.info(f"Successfully exported to {output_path}")
             return True
         else:
             logger.error(f"Failed to export interpretations: {error_msg}")

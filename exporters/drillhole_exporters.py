@@ -23,6 +23,12 @@ class DrillholeTraceShpExporter(BaseExporter):
     """Exports drillhole traces to a Shapefile."""
 
     def get_supported_extensions(self) -> list[str]:
+        """Get supported file extensions.
+
+        Returns:
+            List of supported extensions.
+
+        """
         return [".shp"]
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
@@ -32,6 +38,9 @@ class DrillholeTraceShpExporter(BaseExporter):
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
 
+        Returns:
+            bool: True if export successful, False otherwise.
+
         """
         drillhole_data = data.get("drillhole_data")
         crs = data.get("crs")
@@ -39,38 +48,54 @@ class DrillholeTraceShpExporter(BaseExporter):
             return False
 
         try:
-            fields = QgsFields()
-            fields.append(QgsField("hole_id", QMetaType.Type.QString))
-
+            fields = self._prepare_fields()
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
             for hole_id, traces, _ in drillhole_data:
                 if not traces or len(traces) < 2:
                     continue
 
-                # traces is list of (dist, elev)
-                points = [QgsPointXY(d, e) for d, e in traces]
-                geom = QgsGeometry.fromPolylineXY(points)
+                feat = self._create_feature(hole_id, traces, fields)
+                if feat:
+                    writer.addFeature(feat)
 
-                if not geom or geom.isNull():
-                    continue
-
-                feat = QgsFeature(fields)
-                feat.setGeometry(geom)
-                feat.setAttribute("hole_id", hole_id)
-                writer.addFeature(feat)
-
+            del writer
         except Exception:
             logger.exception(f"Failed to export drillhole traces to {output_path}")
             return False
         else:
             return True
 
+    def _prepare_fields(self) -> QgsFields:
+        """Create standard fields for drillhole trace."""
+        fields = QgsFields()
+        fields.append(QgsField("hole_id", QMetaType.Type.QString))
+        return fields
+
+    def _create_feature(self, hole_id: str, traces: list, fields: QgsFields) -> QgsFeature | None:
+        """Create a trace feature from points."""
+        points = [QgsPointXY(d, e) for d, e in traces]
+        geom = QgsGeometry.fromPolylineXY(points)
+
+        if not geom or geom.isNull():
+            return None
+
+        feat = QgsFeature(fields)
+        feat.setGeometry(geom)
+        feat.setAttribute("hole_id", hole_id)
+        return feat
+
 
 class DrillholeIntervalShpExporter(BaseExporter):
     """Exports drillhole intervals to a Shapefile."""
 
     def get_supported_extensions(self) -> list[str]:
+        """Get supported file extensions.
+
+        Returns:
+            List of supported extensions.
+
+        """
         return [".shp"]
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
@@ -80,6 +105,9 @@ class DrillholeIntervalShpExporter(BaseExporter):
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
 
+        Returns:
+            bool: True if export successful, False otherwise.
+
         """
         drillhole_data = data.get("drillhole_data")
         crs = data.get("crs")
@@ -87,12 +115,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
             return False
 
         try:
-            fields = QgsFields()
-            fields.append(QgsField("hole_id", QMetaType.Type.QString))
-            fields.append(QgsField("from_depth", QMetaType.Type.Double))
-            fields.append(QgsField("to_depth", QMetaType.Type.Double))
-            fields.append(QgsField("unit", QMetaType.Type.QString))
-
+            fields = self._prepare_fields()
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
             for hole_id, _, segments in drillhole_data:
@@ -100,31 +123,44 @@ class DrillholeIntervalShpExporter(BaseExporter):
                     continue
 
                 for segment in segments:
-                    # segment is GeologySegment
-                    if not segment.points or len(segment.points) < 2:
-                        continue
+                    feat = self._create_feature(hole_id, segment, fields)
+                    if feat:
+                        writer.addFeature(feat)
 
-                    points = [QgsPointXY(d, e) for d, e in segment.points]
-                    geom = QgsGeometry.fromPolylineXY(points)
-
-                    if not geom or geom.isNull():
-                        continue
-
-                    feat = QgsFeature(fields)
-                    feat.setGeometry(geom)
-                    feat.setAttribute("hole_id", hole_id)
-
-                    # Get attributes from segment
-                    # We packed them as {"unit": lith, "from": fd, "to": td}
-                    attrs = segment.attributes
-                    feat.setAttribute("from_depth", attrs.get("from", 0.0))
-                    feat.setAttribute("to_depth", attrs.get("to", 0.0))
-                    feat.setAttribute("unit", segment.unit_name)
-
-                    writer.addFeature(feat)
-
+            del writer
         except Exception:
             logger.exception(f"Failed to export drillhole intervals to {output_path}")
             return False
         else:
             return True
+
+    def _prepare_fields(self) -> QgsFields:
+        """Create fields for drillhole intervals."""
+        fields = QgsFields()
+        fields.append(QgsField("hole_id", QMetaType.Type.QString))
+        fields.append(QgsField("from_depth", QMetaType.Type.Double))
+        fields.append(QgsField("to_depth", QMetaType.Type.Double))
+        fields.append(QgsField("unit", QMetaType.Type.QString))
+        return fields
+
+    def _create_feature(self, hole_id: str, segment: Any, fields: QgsFields) -> QgsFeature | None:
+        """Create an interval feature from segment data."""
+        if not segment.points or len(segment.points) < 2:
+            return None
+
+        points = [QgsPointXY(d, e) for d, e in segment.points]
+        geom = QgsGeometry.fromPolylineXY(points)
+
+        if not geom or geom.isNull():
+            return None
+
+        feat = QgsFeature(fields)
+        feat.setGeometry(geom)
+        feat.setAttribute("hole_id", hole_id)
+
+        attrs = segment.attributes
+        feat.setAttribute("from_depth", attrs.get("from", 0.0))
+        feat.setAttribute("to_depth", attrs.get("to", 0.0))
+        feat.setAttribute("unit", segment.unit_name)
+
+        return feat

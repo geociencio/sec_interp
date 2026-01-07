@@ -8,6 +8,7 @@ from qgis.core import (
     QgsFeature,
     QgsField,
     QgsFields,
+    QgsProject,
     QgsVectorFileWriter,
     QgsWkbTypes,
 )
@@ -42,61 +43,68 @@ class ShapefileExporter(BaseExporter):
             return False
 
         try:
-            # Get geometry type from settings or first feature
             geometry_type = self.get_setting("geometry_type", QgsWkbTypes.LineString)
-
-            # Get CRS from settings
             crs = self.get_setting("crs", QgsCoordinateReferenceSystem("EPSG:4326"))
 
-            # Define fields based on first feature's attributes
-            fields = QgsFields()
-            if features_data and "attributes" in features_data[0]:
-                first_attrs = features_data[0]["attributes"]
-                for key, value in first_attrs.items():
-                    if isinstance(value, int):
-                        fields.append(QgsField(key, QMetaType.Type.Int))
-                    elif isinstance(value, float):
-                        fields.append(QgsField(key, QMetaType.Type.Double))
-                    else:
-                        fields.append(QgsField(key, QMetaType.Type.QString))
-
-            # Determine driver
-            ext = output_path.suffix.lower()
-            driver = "GPKG" if ext == ".gpkg" else "ESRI Shapefile"
-
-            # Create writer using new static method for QGIS 3.38+
-            options = QgsVectorFileWriter.SaveVectorOptions()
-            options.driverName = driver
-            options.fileEncoding = "UTF-8"
-
-            writer = QgsVectorFileWriter.create(
-                str(output_path),
-                fields,
-                geometry_type,
-                crs,
-                QgsProject.instance().transformContext(),
-                options,
-            )
+            fields = self._prepare_fields(features_data)
+            writer = self._create_writer(output_path, fields, geometry_type, crs)
 
             if writer.hasError() != QgsVectorFileWriter.NoError:
+                logger.error(f"Failed to create writer: {writer.errorMessage()}")
                 return False
 
-            # Write features
             for data in features_data:
                 feature = QgsFeature(fields)
-
                 if "geometry" in data:
                     feature.setGeometry(data["geometry"])
-
                 if "attributes" in data:
                     attrs = data["attributes"]
                     feature.setAttributes([attrs.get(field.name()) for field in fields])
-
                 writer.addFeature(feature)
 
-            # Clean up
+            # Note: writer is closed when object is deleted or goes out of scope
+            del writer
+
         except Exception:
             logger.exception(f"Shapefile export failed for {output_path}")
             return False
         else:
             return True
+
+    def _prepare_fields(self, features_data: list[dict[str, Any]]) -> QgsFields:
+        """Create fields based on first feature's attributes."""
+        fields = QgsFields()
+        if features_data and "attributes" in features_data[0]:
+            first_attrs = features_data[0]["attributes"]
+            for key, value in first_attrs.items():
+                if isinstance(value, int):
+                    fields.append(QgsField(key, QMetaType.Type.Int))
+                elif isinstance(value, float):
+                    fields.append(QgsField(key, QMetaType.Type.Double))
+                else:
+                    fields.append(QgsField(key, QMetaType.Type.QString))
+        return fields
+
+    def _create_writer(
+        self,
+        output_path: Path,
+        fields: QgsFields,
+        geometry_type: QgsWkbTypes,
+        crs: QgsCoordinateReferenceSystem,
+    ) -> QgsVectorFileWriter:
+        """Create a QgsVectorFileWriter for the given path."""
+        ext = output_path.suffix.lower()
+        driver = "GPKG" if ext == ".gpkg" else "ESRI Shapefile"
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = driver
+        options.fileEncoding = "UTF-8"
+
+        return QgsVectorFileWriter.create(
+            str(output_path),
+            fields,
+            geometry_type,
+            crs,
+            QgsProject.instance().transformContext(),
+            options,
+        )
