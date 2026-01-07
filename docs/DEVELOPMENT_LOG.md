@@ -3,6 +3,24 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
+## [2026-01-06] - Implementación de Benchmarks de Performance (21:15)
+
+### Actividades
+- **Infraestructura**: Creación de `tests/benchmarks/benchmark_utils.py` con decoradores para medición de tiempos y aserciones de SLAs.
+- **Implementación de Tests**:
+    - `test_geometry_benchmarks.py`: Validación de performance en cálculos geométricos y proyecciones.
+    - `test_export_benchmarks.py`: Medición de tiempos de escritura de Shapefiles (1k y 10k registros).
+- **Runner Dedicado**: Creación de `scripts/run_benchmarks.py` para ejecución aislada dentro del entorno QGIS.
+- **Validación Manual**: Verificación visual de exportación 3D y carga de estilos QML.
+
+### Resultados
+- **Benchmarks**: Verificados y pasando con holgura (ej. escritura de 10k shapefiles en <0.1s).
+- **Roadmap v2.6.0**: Completada la fase de benchmarks y refactorización de exportadores.
+
+### Documentación
+- Archivo de Walkthrough: [sesion_2026-01-06_benchmarks.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-06_benchmarks.md)
+
+---
 ## [2026-01-06] - Fix Infraestructura de Tests de Integración (18:40)
 
 ### Actividades

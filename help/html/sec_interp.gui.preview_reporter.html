@@ -33,65 +33,8 @@
 
           <div class="body" role="main">
 
-  <section id="module-sec_interp.gui.preview_reporter">
-<span id="sec-interp-gui-preview-reporter-module"></span><h1>sec_interp.gui.preview_reporter module<a class="headerlink" href="#module-sec_interp.gui.preview_reporter" title="Link to this heading">¶</a></h1>
-<p>Preview reporting and message formatting for SecInterp.</p>
-<p>This module provides the PreviewReporter class to handle the formatting of
-preview generation results and performance metrics into human-readable messages.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="sec_interp.gui.preview_reporter.PreviewReporter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.preview_reporter.</span></span><span class="sig-name descname"><span class="pre">PreviewReporter</span></span><a class="headerlink" href="#sec_interp.gui.preview_reporter.PreviewReporter" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Formatter for preview generation results and status messages.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.preview_reporter.PreviewReporter.format_results_message">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_results_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult" title="sec_interp.core.types.PreviewResult"><span class="pre">PreviewResult</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector" title="sec_interp.core.performance_metrics.MetricsCollector"><span class="pre">MetricsCollector</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#sec_interp.gui.preview_reporter.PreviewReporter.format_results_message" title="Link to this definition">¶</a></dt>
-<dd><p>Format results message for display using core result objects.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>result</strong> – The preview result object containing data and metadata.</p></li>
-<li><p><strong>metrics</strong> – Performance metrics collector.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A formatted string ready for display in the UI.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.preview_reporter.PreviewReporter.format_geology_summary">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_geology_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geol_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.GeologySegment" title="sec_interp.core.types.GeologySegment"><span class="pre">GeologySegment</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#sec_interp.gui.preview_reporter.PreviewReporter.format_geology_summary" title="Link to this definition">¶</a></dt>
-<dd><p>Format a summary line for geology data.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.preview_reporter.PreviewReporter.format_structure_summary">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_structure_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">struct_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.StructureMeasurement" title="sec_interp.core.types.StructureMeasurement"><span class="pre">StructureMeasurement</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#sec_interp.gui.preview_reporter.PreviewReporter.format_structure_summary" title="Link to this definition">¶</a></dt>
-<dd><p>Format a summary line for structural data.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.preview_reporter.PreviewReporter.format_drillhole_summary">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_drillhole_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drillhole_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#sec_interp.gui.preview_reporter.PreviewReporter.format_drillhole_summary" title="Link to this definition">¶</a></dt>
-<dd><p>Format a summary line for drillhole data.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.preview_reporter.PreviewReporter.format_result_metrics">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_result_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult" title="sec_interp.core.types.PreviewResult"><span class="pre">PreviewResult</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.preview_reporter.PreviewReporter.format_result_metrics" title="Link to this definition">¶</a></dt>
-<dd><p>Format elevation metrics for the results message.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.preview_reporter.PreviewReporter.format_performance_metrics">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_performance_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.performance_metrics.html#sec_interp.core.performance_metrics.MetricsCollector" title="sec_interp.core.performance_metrics.MetricsCollector"><span class="pre">MetricsCollector</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sec_interp.core.types.html#sec_interp.core.types.PreviewResult" title="sec_interp.core.types.PreviewResult"><span class="pre">PreviewResult</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.preview_reporter.PreviewReporter.format_performance_metrics" title="Link to this definition">¶</a></dt>
-<dd><p>Format performance metrics into a list of strings.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="sec-interp-gui-preview-reporter-module">
+<h1>sec_interp.gui.preview_reporter module<a class="headerlink" href="#sec-interp-gui-preview-reporter-module" title="Link to this heading">¶</a></h1>
 </section>
 
 

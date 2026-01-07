@@ -72,7 +72,9 @@ class TestFieldValidator(BaseTestCase):
         """Test field existence validation."""
         layer = QgsVectorLayer()
         # Mocking fields is already done in base_test.py/MockQgsMapLayer
-        # Our improved mock has "id" and "name"
+        # But we need to ensure they exist for this test
+        layer.fields().append(QgsField("id", FieldType.INT))  # FieldType.INT = 2
+        layer.fields().append(QgsField("name", FieldType.STRING))  # FieldType.STRING = 10
 
         is_valid, msg = validate_field_exists(layer, "id")
         self.assertTrue(is_valid)
@@ -85,6 +87,8 @@ class TestFieldValidator(BaseTestCase):
         """Test field data type validation."""
         layer = QgsVectorLayer()
         # "id" is FieldType.INT (1) in our mock
+        # "id" is FieldType.INT (2) in our mock
+        layer.fields().append(QgsField("id", FieldType.INT))
 
         is_valid, msg = validate_field_type(layer, "id", [FieldType.INT])
         self.assertTrue(is_valid)

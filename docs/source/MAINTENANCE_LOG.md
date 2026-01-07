@@ -44,6 +44,9 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
     - Full containerization of the test environment for CI/CD readiness.
     - Automated dependency management via `uv` within Docker.
     - Optimized build workflows with `.dockerignore` and permission handling.
+- **Performance**:
+    - **Benchmarks Suite**: Implementation of performance tests for Geometry and Exports using `unittest`.
+    - **SLA Verification**: Established baseline metrics for critical operations (Shapefile Write < 5s, Projection < 0.1s).
 
 ### [2.5.0] - 2026-01-03
 - **Major Features**:

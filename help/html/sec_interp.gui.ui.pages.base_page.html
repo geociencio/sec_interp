@@ -33,68 +33,8 @@
 
           <div class="body" role="main">
 
-  <section id="module-sec_interp.gui.ui.pages.base_page">
-<span id="sec-interp-gui-ui-pages-base-page-module"></span><h1>sec_interp.gui.ui.pages.base_page module<a class="headerlink" href="#module-sec_interp.gui.ui.pages.base_page" title="Link to this heading">¶</a></h1>
-<p>Base class for configuration pages.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="sec_interp.gui.ui.pages.base_page.BasePage">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.gui.ui.pages.base_page.</span></span><span class="sig-name descname"><span class="pre">BasePage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.ui.pages.base_page.BasePage" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
-<p>Abstract base class for configuration pages.</p>
-<p>Each page manages a specific set of parameters (e.g., DEM, Section, Geology).</p>
-<p>Initialize the page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>title</strong> (<em>str</em>) – Title for the group box.</p></li>
-<li><p><strong>parent</strong> (<em>QWidget</em>) – Parent widget.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.ui.pages.base_page.BasePage.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.gui.ui.pages.base_page.BasePage.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Initialize the page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>title</strong> (<em>str</em>) – Title for the group box.</p></li>
-<li><p><strong>parent</strong> (<em>QWidget</em>) – Parent widget.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.ui.pages.base_page.BasePage.get_data">
-<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#sec_interp.gui.ui.pages.base_page.BasePage.get_data" title="Link to this definition">¶</a></dt>
-<dd><p>Get the current configuration data from the page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dictionary with parameter names and values.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sec_interp.gui.ui.pages.base_page.BasePage.validate">
-<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#sec_interp.gui.ui.pages.base_page.BasePage.validate" title="Link to this definition">¶</a></dt>
-<dd><p>Validate the current configuration.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>(is_valid, error_message)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple[bool, str]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="sec-interp-gui-ui-pages-base-page-module">
+<h1>sec_interp.gui.ui.pages.base_page module<a class="headerlink" href="#sec-interp-gui-ui-pages-base-page-module" title="Link to this heading">¶</a></h1>
 </section>
 
 
