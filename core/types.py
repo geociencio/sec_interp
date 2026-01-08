@@ -140,6 +140,24 @@ class InterpretationPolygon25D:
     crs: Any
 
 
+@dataclass
+class GeologyTaskInput:
+    """Data Transfer Object for GeologyGenerationTask.
+
+    Contains all necessary data to process geological profiles
+    without accessing QGIS layers directly.
+    """
+
+    line_geometry: QgsGeometry
+    line_start: QgsPointXY
+    crs_authid: str
+    master_profile_data: list[tuple[float, float]]
+    master_grid_dists: list[tuple[float, QgsPointXY, float]]
+    outcrop_data: list[dict[str, Any]]
+    outcrop_name_field: str
+    tolerance: float = 0.001
+
+
 # Final type aliases for processed data
 StructureData = list[StructureMeasurement]
 GeologyData = list[GeologySegment]

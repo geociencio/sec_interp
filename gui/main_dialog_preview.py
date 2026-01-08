@@ -9,7 +9,7 @@ from __future__ import annotations
 import hashlib
 from typing import TYPE_CHECKING, Any
 
-from qgis.core import QgsVectorLayer
+from qgis.core import QgsApplication, QgsVectorLayer
 from qgis.PyQt.QtCore import QCoreApplication, QTimer
 
 from sec_interp.core.exceptions import ProcessingError, SecInterpError
@@ -27,7 +27,7 @@ from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig
 from .preview_reporter import PreviewReporter
-from .services.parallel_geology_service import ParallelGeologyService
+from .tasks.geology_task import GeologyGenerationTask
 
 if TYPE_CHECKING:
     pass
@@ -66,10 +66,8 @@ class PreviewManager:
         self.metrics = MetricsCollector()
 
         # Initialize services
-        self.async_service = ParallelGeologyService()
-        self.async_service.all_finished.connect(self._on_geology_finished)
-        self.async_service.batch_progress.connect(self._on_geology_progress)
-        self.async_service.error_occurred.connect(self._on_geology_error)
+        # self.async_service removed in favor of QgsTask
+        self.active_task: GeologyGenerationTask | None = None
 
         self.preview_service = preview_service or PreviewService(
             self.dialog.plugin_instance.controller
@@ -87,7 +85,9 @@ class PreviewManager:
 
     def cleanup(self):
         """Clean up resources and stop background tasks."""
-        self.async_service.cancel_processing()
+        if self.active_task:
+            self.active_task.cancel()
+            self.active_task = None
         self.debounce_timer.stop()
 
     def generate_preview(self) -> tuple[bool, str]:
@@ -190,7 +190,9 @@ class PreviewManager:
         self.metrics.counts.update(result.metrics.counts)
 
         # Cancel any existing async work before starting new one
-        self.async_service.cancel_processing()
+        if self.active_task:
+            self.active_task.cancel()
+            self.active_task = None
 
         # Start Async Geology if needed
         if self.dialog.page_geology.is_complete():
@@ -395,36 +397,50 @@ class PreviewManager:
         if not outcrop_layer or not outcrop_name_field:
             return
 
-        # Prepare arguments package
-        args = (
-            self.dialog.plugin_instance.controller.geology_service.generate_geological_profile,
-            params.line_layer,
-            params.raster_layer,
-            outcrop_layer,
-            outcrop_name_field,
-            params.band_num,
-        )
-
         self.dialog.preview_widget.results_text.setPlainText(
             QCoreApplication.translate("PreviewManager", "Generating Geology in background...")
         )
-        # No need for a custom worker function anymore
-        self.async_service.process_profiles_parallel([args])
+
+        # 1. Prepare Data (Sync - Main Thread)
+        try:
+            task_input = self.dialog.plugin_instance.controller.geology_service.prepare_task_input(
+                params.line_layer,
+                params.raster_layer,
+                outcrop_layer,
+                outcrop_name_field,
+                params.band_num,
+            )
+        except Exception as e:
+            self._on_geology_error(str(e))
+            return
+
+        # 2. Launch Task (Async - Background Thread)
+        self.active_task = GeologyGenerationTask(
+            service=self.dialog.plugin_instance.controller.geology_service,
+            task_input=task_input,
+            on_finished=self._on_geology_finished,
+            on_error=self._on_geology_error,
+        )
+
+        # Connect progress signal from QgsTask
+        self.active_task.progressChanged.connect(self._on_geology_progress)
+
+        # Add to QGIS Task Manager
+        QgsApplication.taskManager().addTask(self.active_task)
 
     def _on_geology_finished(self, results):
-        """Handle completion of parallel geology generation."""
-        # Flatten results (results -> chunks -> items -> segments)
-        final_geol_data = []
-        for chunk in results:
-            if chunk:
-                for item_result in chunk:
-                    if item_result:
-                        final_geol_data.extend(item_result)
+        """Handle completion of geology generation task."""
+        self.active_task = None
+
+        # Results are now a flat list of segments (GeologyData)
+        final_geol_data = results
 
         self.cached_data["geol"] = final_geol_data if final_geol_data else None
 
         # Log success
-        logger.info(f"Async geology finished: {len(final_geol_data)} segments")
+        logger.info(
+            f"Async geology finished: {len(final_geol_data) if final_geol_data else 0} segments"
+        )
 
         # Trigger update of preview
         try:

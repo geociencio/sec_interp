@@ -220,3 +220,27 @@ Chronological record of development activities, significant fixes, and technical
 - Phase 2 synchronization (metadata.txt vs pyproject.toml) verified as mandatory.
 
 ---
+
+## [2026-01-07] - Refactorización de Threading y Fix de Crashes (21:10)
+
+### Problema
+- **Crashes Intermitentes**: Se identificaron segfaults aleatorios causados por el acceso a la API de QGIS (`QgsVectorLayer`, `QgsRasterLayer`, `QgsProject`) desde hilos secundarios en la generación de perfiles geológicos.
+
+### Solución Arquitectónica
+- **Native QgsTask**: Migración completa del custom `ParallelGeologyService` a `GeologyGenerationTask`, una implementación nativa de `QgsTask` gestionada por `QgsApplication.taskManager()`.
+- **Patrón "Extract-then-Compute" (DTO)**:
+    - **Fase 1 (Síncrona)**: Extracción segura de datos en el hilo principal mediante `GeologyService.prepare_task_input`. Se copian geometrías y atributos a estructuras en memoria (`GeologyTaskInput`), desconectándolas de QGIS.
+    - **Fase 2 (Asíncrona)**: Procesamiento geométrico puro en el hilo de trabajo (`GeologyService.process_task_data`), garantizando thread-safety al no acceder a punteros de C++ de QGIS.
+
+### Cambios Clave
+- **[NUEVO]** `core/types.py`: DTO `GeologyTaskInput` para transferencia segura de datos.
+- **[REFACTOR]** `core/services/geology_service.py`: Separación estricta de lógica de lectura y cálculo.
+- **[NUEVO]** `gui/tasks/geology_task.py`: Clase encapsulada para la tarea en background.
+- **[FIX]** `gui/main_dialog_preview.py`: Integración con `QgsTaskManager` y manejo de ciclo de vida.
+- **[ELIMINADO]** `gui/services/parallel_geology_service.py` (Deuda técnica).
+
+### Verificación
+- **Tests Unitarios**: Creado `tests/gui/test_geology_task.py` validando éxito, fallo y manejo de logs.
+- **Walkthrough**: [Native QgsTask Refactor](file:///home/jmbernales/.gemini/antigravity/brain/ea9a4214-70d6-4f52-95ce-7f891d75b04c/walkthrough.md)
+
+---
