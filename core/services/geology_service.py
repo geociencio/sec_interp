@@ -83,6 +83,9 @@ class GeologyService(IGeologyService):
             ProcessingError: If the intersection processing fails.
 
         """
+        task_input = self.prepare_task_input(
+            line_lyr, raster_lyr, outcrop_lyr, outcrop_name_field, band_number
+        )
         return self.process_task_data(task_input)
 
     def prepare_task_input(

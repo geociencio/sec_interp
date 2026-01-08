@@ -47,6 +47,10 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 - **Performance**:
     - **Benchmarks Suite**: Implementation of performance tests for Geometry and Exports using `unittest`.
     - **SLA Verification**: Established baseline metrics for critical operations (Shapefile Write < 5s, Projection < 0.1s).
+- **Architecture & Refactoring (2026-01-08)**:
+    - **Async Evolution**: Refactored threading model to use `QgsTask` for background geology generation, improving stability and preventing UI freezes.
+    - **Exporter Modularization**: Deep refactoring of all vector exporters (`shp`, `drillhole`, `profile`, `interpretation_3d`) to reduce complexity (mccabe < 7) and improve modularity.
+    - **Test Stability**: Enhanced mocking infrastructure for asychronous tasks and QGIS ecosystem components.
 
 ### [2.5.0] - 2026-01-03
 - **Major Features**:

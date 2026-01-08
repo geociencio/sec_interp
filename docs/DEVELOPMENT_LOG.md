@@ -221,6 +221,27 @@ Chronological record of development activities, significant fixes, and technical
 
 ---
 
+## [2026-01-08] Estabilización de Salud y Refactorización de Exporters
+
+### Resumen
+Sesión enfocada en la estabilización del plugin tras la refactorización de `QgsTask` y la reducción de deuda técnica en el módulo de exportadores.
+
+### Logros
+- **Estabilización de Tests**:
+    - Corregida regresión en `GeologyService` (`NameError: task_input`).
+    - Estabilizados mocks en `tests/base_test.py` agregando `MockQgsTask`, `Qgis` constants y ampliando soporte para UI (`LayerFilters`).
+    - Verificados 102 tests unitarios pasando.
+- **Refactorización de Exporters**:
+    - Todos los exportadores de Shapefile (`shp`, `drillhole`, `profile`, `interpretation_3d`) fueron refactorizados para reducir complejidad ciclomática mediante delegación de lógica a métodos privados.
+    - La complejidad de los métodos `export` se redujo de 8-9 a 6 en promedio, mejorando significativamente la legibilidad y mantenibilidad.
+
+### Estado Final
+- **Tests Unitarios**: OK (102/102).
+- **Deuda Técnica**: Significativamente reducida en el módulo `exporters`.
+- **Siguiente Paso**: Continuar con el roadmap v2.6.0 (Optimización de carga y benchmarks).
+
+---
+
 ## [2026-01-07] - Refactorización de Threading y Fix de Crashes (21:10)
 
 ### Problema

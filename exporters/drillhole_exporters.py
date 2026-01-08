@@ -51,20 +51,30 @@ class DrillholeTraceShpExporter(BaseExporter):
             fields = self._prepare_fields()
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
-            for hole_id, traces, _ in drillhole_data:
-                if not traces or len(traces) < 2:
-                    continue
-
-                feat = self._create_feature(hole_id, traces, fields)
-                if feat:
-                    writer.addFeature(feat)
-
+            self._write_traces(writer, drillhole_data, fields)
             del writer
         except Exception:
             logger.exception(f"Failed to export drillhole traces to {output_path}")
             return False
         else:
             return True
+
+    def _write_traces(self, writer: Any, drillhole_data: list, fields: QgsFields) -> None:
+        """Write drillhole traces to the writer.
+
+        Args:
+            writer: The vector file writer.
+            drillhole_data: List of drillhole data.
+            fields: The QGIS field collection.
+
+        """
+        for hole_id, traces, _ in drillhole_data:
+            if not traces or len(traces) < 2:
+                continue
+
+            feat = self._create_feature(hole_id, traces, fields)
+            if feat:
+                writer.addFeature(feat)
 
     def _prepare_fields(self) -> QgsFields:
         """Create standard fields for drillhole trace."""
@@ -118,21 +128,31 @@ class DrillholeIntervalShpExporter(BaseExporter):
             fields = self._prepare_fields()
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
-            for hole_id, _, segments in drillhole_data:
-                if not segments:
-                    continue
-
-                for segment in segments:
-                    feat = self._create_feature(hole_id, segment, fields)
-                    if feat:
-                        writer.addFeature(feat)
-
+            self._write_intervals(writer, drillhole_data, fields)
             del writer
         except Exception:
             logger.exception(f"Failed to export drillhole intervals to {output_path}")
             return False
         else:
             return True
+
+    def _write_intervals(self, writer: Any, drillhole_data: list, fields: QgsFields) -> None:
+        """Write drillhole intervals to the writer.
+
+        Args:
+            writer: The vector file writer.
+            drillhole_data: List of drillhole data.
+            fields: The QGIS field collection.
+
+        """
+        for hole_id, _, segments in drillhole_data:
+            if not segments:
+                continue
+
+            for segment in segments:
+                feat = self._create_feature(hole_id, segment, fields)
+                if feat:
+                    writer.addFeature(feat)
 
     def _prepare_fields(self) -> QgsFields:
         """Create fields for drillhole intervals."""

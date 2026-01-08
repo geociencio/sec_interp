@@ -111,9 +111,6 @@ class Interpretation3DExporter(BaseExporter):
     ) -> None:
         """Generate a QML style file for the exported shapefile."""
         from qgis.core import (
-            QgsCategorizedSymbolRenderer,
-            QgsFillSymbol,
-            QgsRendererCategory,
             QgsVectorLayer,
         )
 
@@ -129,37 +126,12 @@ class Interpretation3DExporter(BaseExporter):
         qml_path = shp_path.with_suffix(".qml")
 
         # Create a temporary layer to build the style
-        # We use a memory layer with the same schema
         layer = QgsVectorLayer(f"PolygonZ?crs={crs.authid()}", "temp_style", "memory")
         layer.dataProvider().addAttributes(fields)
         layer.updateFields()
 
         # 1. 2D Categorized Symbology
-        categories = []
-        unique_units = {}  # name -> color
-        for p in interpretations:
-            if p.name not in unique_units:
-                unique_units[p.name] = p.color
-
-        for name, color_hex in unique_units.items():
-            color = QColor(color_hex)
-            if not color.isValid():
-                color = QColor("#FF0000")
-
-            # 2D Symbol
-            symbol = QgsFillSymbol.createSimple(
-                {
-                    "color": f"{color.red()},{color.green()},{color.blue()},180",
-                    "outline_color": f"{color.darker(150).red()},{color.darker(150).green()},{color.darker(150).blue()}",
-                    "outline_width": "0.3",
-                }
-            )
-
-            category = QgsRendererCategory(name, symbol, name)
-            categories.append(category)
-
-        renderer = QgsCategorizedSymbolRenderer("name", categories)
-        layer.setRenderer(renderer)
+        self._setup_2d_renderer(layer, interpretations)
 
         # 2. 3D Symbology (Native QGIS 3D)
         if HAS_3D:
@@ -174,6 +146,37 @@ class Interpretation3DExporter(BaseExporter):
             logger.info(f"Generated QML style: {qml_path}")
         else:
             logger.warning(f"Failed to save QML style: {msg}")
+
+    def _setup_2d_renderer(
+        self, layer: QgsVectorLayer, interpretations: list[InterpretationPolygon]
+    ) -> None:
+        """Set up 2D categorized renderer for the layer."""
+        from qgis.core import (
+            QgsCategorizedSymbolRenderer,
+            QgsFillSymbol,
+            QgsRendererCategory,
+        )
+
+        categories = []
+        unique_units = {p.name: p.color for p in interpretations}
+
+        for name, color_hex in unique_units.items():
+            color = QColor(color_hex)
+            if not color.isValid():
+                color = QColor("#FF0000")
+
+            symbol = QgsFillSymbol.createSimple(
+                {
+                    "color": f"{color.red()},{color.green()},{color.blue()},180",
+                    "outline_color": f"{color.darker(150).red()},{color.darker(150).green()},{color.darker(150).blue()}",
+                    "outline_width": "0.3",
+                }
+            )
+
+            categories.append(QgsRendererCategory(name, symbol, name))
+
+        renderer = QgsCategorizedSymbolRenderer("name", categories)
+        layer.setRenderer(renderer)
 
     def _project_to_3d_features(
         self,
@@ -193,19 +196,7 @@ class Interpretation3DExporter(BaseExporter):
         polygons_2d = geom_2d.asMultiPolygon() if geom_2d.isMultipart() else [geom_2d.asPolygon()]
 
         for poly_2d in polygons_2d:
-            # poly_2d is a list of rings (list of QgsPointXY)
-            rings_3d = []
-            for ring_2d in poly_2d:
-                points_3d = []
-                for p_2d in ring_2d:
-                    # Apply Affine Transformation
-                    east = origin_x + (p_2d.x() * math.cos(azimuth))
-                    north = origin_y + (p_2d.x() * math.sin(azimuth))
-                    elev = p_2d.y() / vert_exag
-
-                    points_3d.append(QgsPoint(east, north, elev))
-
-                rings_3d.append(QgsLineString(points_3d))
+            rings_3d = self._create_3d_rings(poly_2d, origin_x, origin_y, azimuth, vert_exag)
 
             if not rings_3d:
                 continue
@@ -237,6 +228,42 @@ class Interpretation3DExporter(BaseExporter):
             projected_features.append(feat)
 
         return projected_features
+
+    def _create_3d_rings(
+        self,
+        poly_2d: list[list[QgsPointXY]],
+        origin_x: float,
+        origin_y: float,
+        azimuth: float,
+        vert_exag: float,
+    ) -> list[QgsLineString]:
+        """Transform 2D rings to 3D LineStrings.
+
+        Args:
+            poly_2d: List of rings, each a list of points.
+            origin_x: X coordinate of the section origin.
+            origin_y: Y coordinate of the section origin.
+            azimuth: Section azimuth.
+            vert_exag: Vertical exaggeration.
+
+        Returns:
+            List of 3D LineStrings.
+
+        """
+        rings_3d = []
+        cos_a = math.cos(azimuth)
+        sin_a = math.sin(azimuth)
+
+        for ring_2d in poly_2d:
+            points_3d = []
+            for p_2d in ring_2d:
+                east = origin_x + (p_2d.x() * cos_a)
+                north = origin_y + (p_2d.x() * sin_a)
+                elev = p_2d.y() / vert_exag
+                points_3d.append(QgsPoint(east, north, elev))
+
+            rings_3d.append(QgsLineString(points_3d))
+        return rings_3d
 
     def _write_shapefile(
         self,
@@ -339,29 +366,9 @@ class Interpretation3DExporter(BaseExporter):
     ) -> list[QgsFeature]:
         features = []
         for polygon in interpretations:
-            # Deduplicate vertices and ensure 2D validity
-            raw_vertices_2d = list(polygon.vertices_2d)
-            if not raw_vertices_2d:
+            geom_2d = self._prepare_2d_geometry(polygon)
+            if not geom_2d:
                 continue
-
-            dedup_vertices = []
-            for v in raw_vertices_2d:
-                if not dedup_vertices or v != dedup_vertices[-1]:
-                    dedup_vertices.append(v)
-
-            if len(dedup_vertices) > 2 and dedup_vertices[0] != dedup_vertices[-1]:
-                dedup_vertices.append(dedup_vertices[0])
-
-            if len(dedup_vertices) < 4:
-                logger.warning(f"Polygon {polygon.id} has insufficient unique vertices. Skipping.")
-                continue
-
-            qgs_points_2d = [QgsPointXY(x, y) for x, y in dedup_vertices]
-            geom_2d = QgsGeometry.fromPolygonXY([qgs_points_2d])
-
-            if not geom_2d.isGeosValid():
-                logger.info(f"Correcting 2D geometry for polygon {polygon.id}")
-                geom_2d = geom_2d.makeValid()
 
             features.extend(
                 self._project_to_3d_features(
@@ -377,6 +384,47 @@ class Interpretation3DExporter(BaseExporter):
             )
         return features
 
+    def _prepare_2d_geometry(self, polygon: Any) -> QgsGeometry | None:
+        """Prepare and validate 2D geometry from polygon vertices.
+
+        Args:
+            polygon: The interpretation polygon object.
+
+        Returns:
+            QgsGeometry or None if invalid.
+
+        """
+        # Deduplicate vertices and ensure 2D validity
+        raw_vertices_2d = list(polygon.vertices_2d)
+        if not raw_vertices_2d:
+            return None
+
+        dedup_vertices = []
+        for v in raw_vertices_2d:
+            if not dedup_vertices or v != dedup_vertices[-1]:
+                dedup_vertices.append(v)
+
+        dedup_vertices = self._ensure_closed_polygon(dedup_vertices)
+
+        if len(dedup_vertices) < 4:
+            logger.warning(f"Polygon {polygon.id} has insufficient unique vertices. Skipping.")
+            return None
+
+        qgs_points_2d = [QgsPointXY(x, y) for x, y in dedup_vertices]
+        geom_2d = QgsGeometry.fromPolygonXY([qgs_points_2d])
+
+        if not geom_2d.isGeosValid():
+            logger.info(f"Correcting 2D geometry for polygon {polygon.id}")
+            geom_2d = geom_2d.makeValid()
+
+        return geom_2d
+
+    def _ensure_closed_polygon(self, vertices: list) -> list:
+        """Ensure the polygon vertices are closed."""
+        if len(vertices) > 2 and vertices[0] != vertices[-1]:
+            return [*vertices, vertices[0]]
+        return vertices
+
     def _configure_3d_renderer(self, layer: QgsVectorLayer) -> None:
         from qgis._3d import (
             QgsPhongMaterialSettings,
@@ -390,24 +438,8 @@ class Interpretation3DExporter(BaseExporter):
         material.setDiffuse(QColor(200, 200, 200))
 
         # Setup data defined properties
-        diffuse_key = None
-        ambient_key = None
-
-        if hasattr(QgsPhongMaterialSettings, "Property"):
-            if hasattr(QgsPhongMaterialSettings.Property, "Diffuse"):
-                diffuse_key = QgsPhongMaterialSettings.Property.Diffuse
-                ambient_key = QgsPhongMaterialSettings.Property.Ambient
-
-        if diffuse_key is None:
-            try:
-                from qgis._3d import QgsAbstractMaterialSettings
-
-                if hasattr(QgsAbstractMaterialSettings, "Property"):
-                    if hasattr(QgsAbstractMaterialSettings.Property, "Diffuse"):
-                        diffuse_key = QgsAbstractMaterialSettings.Property.Diffuse
-                        ambient_key = QgsAbstractMaterialSettings.Property.Ambient
-            except ImportError:
-                pass
+        diffuse_key = self._get_material_property_key("Diffuse")
+        ambient_key = self._get_material_property_key("Ambient")
 
         if diffuse_key is not None and hasattr(material, "dataDefinedProperties"):
             material.dataDefinedProperties().setProperty(
@@ -421,3 +453,24 @@ class Interpretation3DExporter(BaseExporter):
         renderer_3d = QgsVectorLayer3DRenderer(symbol_3d)
         layer.setRenderer3D(renderer_3d)
         logger.debug("Configured native 3D renderer in QML")
+
+    def _get_material_property_key(self, prop_name: str) -> int | None:
+        """Help to find property keys across different QGIS versions."""
+        from qgis._3d import QgsPhongMaterialSettings
+
+        # Try Phong settings first (Native 3.x)
+        if hasattr(QgsPhongMaterialSettings, "Property"):
+            if hasattr(QgsPhongMaterialSettings.Property, prop_name):
+                return getattr(QgsPhongMaterialSettings.Property, prop_name)
+
+        # Fallback to Abstract settings (Some versions/refactors)
+        try:
+            from qgis._3d import QgsAbstractMaterialSettings
+
+            if hasattr(QgsAbstractMaterialSettings, "Property"):
+                if hasattr(QgsAbstractMaterialSettings.Property, prop_name):
+                    return getattr(QgsAbstractMaterialSettings.Property, prop_name)
+        except ImportError:
+            pass
+
+        return None

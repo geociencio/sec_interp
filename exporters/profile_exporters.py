@@ -100,16 +100,28 @@ class GeologyShpExporter(BaseExporter):
             fields = self._create_geology_fields(geology_data)
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
-            for segment in geology_data:
-                feat = self._create_geology_feature(segment, fields)
-                if feat:
-                    writer.addFeature(feat)
+            self._write_geology_features(writer, geology_data, fields)
+            del writer
 
         except Exception:
             logger.exception(f"Failed to export geology profile to {output_path}")
             return False
         else:
             return True
+
+    def _write_geology_features(self, writer: Any, geology_data: list, fields: QgsFields) -> None:
+        """Write geology segments to the writer.
+
+        Args:
+            writer: The vector file writer.
+            geology_data: List of geology segments.
+            fields: The QGIS field collection.
+
+        """
+        for segment in geology_data:
+            feat = self._create_geology_feature(segment, fields)
+            if feat:
+                writer.addFeature(feat)
 
     def _create_geology_fields(self, geology_data: list) -> QgsFields:
         """Create fields from the first segment's attributes."""
@@ -174,17 +186,30 @@ class StructureShpExporter(BaseExporter):
             fields = self._create_structure_fields(structural_data)
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
-            for m in structural_data:
-                feat = self._create_structure_feature(m, fields, line_length)
-                if feat:
-                    writer.addFeature(feat)
-
+            self._write_structure_features(writer, structural_data, fields, line_length)
             del writer
         except Exception:
             logger.exception(f"Failed to export structural profile to {output_path}")
             return False
         else:
             return True
+
+    def _write_structure_features(
+        self, writer: Any, structural_data: list, fields: QgsFields, line_length: float
+    ) -> None:
+        """Write structural measurements to the writer.
+
+        Args:
+            writer: The vector file writer.
+            structural_data: List of structural measurements.
+            fields: The QGIS field collection.
+            line_length: Length of the dip line in plot units.
+
+        """
+        for m in structural_data:
+            feat = self._create_structure_feature(m, fields, line_length)
+            if feat:
+                writer.addFeature(feat)
 
     def _create_structure_fields(self, structural_data: list) -> QgsFields:
         """Create fields for structural data."""
@@ -285,15 +310,27 @@ class AxesShpExporter(BaseExporter):
             writer = scu.create_shapefile_writer(str(output_path), crs, fields)
 
             axis_names = ["Left", "Right", "Bottom"]
-            for i, points in enumerate(lines):
-                feat = QgsFeature()
-                geom = QgsGeometry.fromPolylineXY(points)
-                feat.setGeometry(geom)
-                feat.setAttributes([axis_names[i]])
-                writer.addFeature(feat)
+            self._write_axes_features(writer, lines, axis_names)
+            del writer
 
         except Exception:
             logger.exception(f"Failed to export axes to {output_path}")
             return False
         else:
             return True
+
+    def _write_axes_features(self, writer: Any, lines: list, axis_names: list[str]) -> None:
+        """Write axes lines to the writer.
+
+        Args:
+            writer: The vector file writer.
+            lines: List of coordinate pairs for each axis.
+            axis_names: List of axis labels.
+
+        """
+        for i, points in enumerate(lines):
+            feat = QgsFeature()
+            geom = QgsGeometry.fromPolylineXY(points)
+            feat.setGeometry(geom)
+            feat.setAttributes([axis_names[i]])
+            writer.addFeature(feat)

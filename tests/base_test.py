@@ -1051,6 +1051,30 @@ if not CORE_AVAILABLE:
     mock_core.QgsLineSymbol = MockQgsLineSymbol
     mock_core.QgsMarkerSymbol = MockQgsMarkerSymbol
 
+    class MockQgis:
+        Critical = 2
+        Warning = 1
+        Info = 0
+        LayerFilters = lambda x: x
+        class LayerFilter:
+            RasterLayer = 1
+            PointLayer = 2
+            LineLayer = 4
+            PolygonLayer = 8
+            All = 15
+
+    mock_core.Qgis = MockQgis
+
+    class MockQgsTask(MagicMock):
+        CanCancel = 1
+        def __init__(self, description="", flags=0):
+            super().__init__()
+            self._description = description
+            self._flags = flags
+
+    mock_core.QgsTask = MockQgsTask
+    mock_core.QgsMessageLog = MagicMock()
+
     class MockQgsMapTool:
         def __init__(self, canvas):
             self.canvas = canvas

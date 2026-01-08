@@ -53,14 +53,7 @@ class ShapefileExporter(BaseExporter):
                 logger.error(f"Failed to create writer: {writer.errorMessage()}")
                 return False
 
-            for data in features_data:
-                feature = QgsFeature(fields)
-                if "geometry" in data:
-                    feature.setGeometry(data["geometry"])
-                if "attributes" in data:
-                    attrs = data["attributes"]
-                    feature.setAttributes([attrs.get(field.name()) for field in fields])
-                writer.addFeature(feature)
+            self._write_features(writer, features_data, fields)
 
             # Note: writer is closed when object is deleted or goes out of scope
             del writer
@@ -70,6 +63,29 @@ class ShapefileExporter(BaseExporter):
             return False
         else:
             return True
+
+    def _write_features(
+        self,
+        writer: QgsVectorFileWriter,
+        features_data: list[dict[str, Any]],
+        fields: QgsFields,
+    ) -> None:
+        """Process and write features to the vector writer.
+
+        Args:
+            writer: The QGIS vector file writer instance.
+            features_data: List of feature data dictionaries.
+            fields: The QGIS field collection for the layer.
+
+        """
+        for data in features_data:
+            feature = QgsFeature(fields)
+            if "geometry" in data:
+                feature.setGeometry(data["geometry"])
+            if "attributes" in data:
+                attrs = data["attributes"]
+                feature.setAttributes([attrs.get(field.name()) for field in fields])
+            writer.addFeature(feature)
 
     def _prepare_fields(self, features_data: list[dict[str, Any]]) -> QgsFields:
         """Create fields based on first feature's attributes."""
