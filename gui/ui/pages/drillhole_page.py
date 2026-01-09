@@ -1,5 +1,7 @@
 """UI page for drillhole data configuration."""
 
+from typing import Any
+
 from qgis.core import Qgis, QgsMapLayerProxyModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
@@ -28,10 +30,10 @@ class DrillholePage(BasePage):
 
     dataChanged = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(QCoreApplication.translate("DrillholePage", "Drillhole Data"), parent)
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         # Override BasePage layout slightly to allow for Tabs or multiple Groups
         # BasePage expects self.group_box in a main_layout.
         # We will hide the default group box and use our own layout in the main widget area if
@@ -71,7 +73,7 @@ class DrillholePage(BasePage):
         # Add spacer to bottom of page
         layout.addStretch()
 
-    def _setup_collar_tab(self, parent_widget):
+    def _setup_collar_tab(self, parent_widget: QWidget) -> None:
         layout = QGridLayout(parent_widget)
         layout.setSpacing(6)
 
@@ -80,7 +82,7 @@ class DrillholePage(BasePage):
         self._add_collar_depth_widgets(layout)
         self._connect_collar_signals()
 
-    def _add_collar_layer_widgets(self, layout):
+    def _add_collar_layer_widgets(self, layout: QGridLayout) -> None:
         """Add layer and ID selection widgets to collar tab."""
         # Layer
         layout.addWidget(QLabel(self.tr("Collar Layer:")), 0, 0)
@@ -95,7 +97,7 @@ class DrillholePage(BasePage):
         self.c_id = QgsFieldComboBox()
         layout.addWidget(self.c_id, 2, 1)
 
-    def _add_collar_coordinate_widgets(self, layout):
+    def _add_collar_coordinate_widgets(self, layout: QGridLayout) -> None:
         """Add coordinate selection widgets to collar tab."""
         # Use Geometry Checkbox
         self.chk_use_geom = QCheckBox(self.tr("Use Layer Geometry for Coordinates"))
@@ -122,7 +124,7 @@ class DrillholePage(BasePage):
         self.c_z.setToolTip(self.tr("Leave empty to use DEM elevation"))
         layout.addWidget(self.c_z, 5, 1)
 
-    def _add_collar_depth_widgets(self, layout):
+    def _add_collar_depth_widgets(self, layout: QGridLayout) -> None:
         """Add depth widget to collar tab."""
         # Depth Field (Optional but recommended)
         layout.addWidget(QLabel(self.tr("Total Depth:")), 6, 0)
@@ -132,7 +134,7 @@ class DrillholePage(BasePage):
 
         layout.setRowStretch(7, 1)
 
-    def _connect_collar_signals(self):
+    def _connect_collar_signals(self) -> None:
         """Connect collar tab signals."""
         self.c_layer.layerChanged.connect(self.c_id.setLayer)
         self.c_layer.layerChanged.connect(self.c_x.setLayer)
@@ -157,7 +159,7 @@ class DrillholePage(BasePage):
             elif hasattr(widget, "toggled"):
                 widget.toggled.connect(self.dataChanged.emit)
 
-    def _setup_survey_tab(self, parent_widget):
+    def _setup_survey_tab(self, parent_widget: QWidget) -> None:
         layout = QGridLayout(parent_widget)
         row = 0
 
@@ -210,7 +212,7 @@ class DrillholePage(BasePage):
         for w in [self.s_id, self.s_depth, self.s_azim, self.s_incl]:
             w.fieldChanged.connect(self.dataChanged.emit)
 
-    def _setup_interval_tab(self, parent_widget):
+    def _setup_interval_tab(self, parent_widget: QWidget) -> None:
         layout = QGridLayout(parent_widget)
         row = 0
 
@@ -263,14 +265,15 @@ class DrillholePage(BasePage):
         for w in [self.i_id, self.i_from, self.i_to, self.i_lith]:
             w.fieldChanged.connect(self.dataChanged.emit)
 
-    def _toggle_xy_fields(self, checked):
+    def _toggle_xy_fields(self, checked: bool) -> None:
+        """Enable/disable Easting/Northing fields based on geometry checkbox."""
         enabled = not checked
         self.lbl_x.setEnabled(enabled)
         self.c_x.setEnabled(enabled)
         self.lbl_y.setEnabled(enabled)
         self.c_y.setEnabled(enabled)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> dict[str, Any]:
         """Get drillhole configuration."""
         return {
             # Collars
@@ -307,7 +310,7 @@ class DrillholePage(BasePage):
             survey_layer=data["survey_layer"],
             survey_id=data["survey_id"],
             survey_depth=data["survey_depth"],
-            survey_azim=data["survey_id"],  # Wait, was it survey_azim?
+            survey_azim=data["survey_azim"],
             survey_incl=data["survey_incl"],
             interval_layer=data["interval_layer"],
             interval_id=data["interval_id"],
@@ -315,7 +318,5 @@ class DrillholePage(BasePage):
             interval_to=data["interval_to"],
             interval_lith=data["interval_lith"],
         )
-        # Fix the survey_azim typo in my thought process
-        params.survey_azim = data["survey_azim"]
 
         return ProjectValidator.is_drillhole_complete(params)

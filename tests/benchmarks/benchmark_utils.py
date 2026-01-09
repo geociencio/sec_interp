@@ -18,6 +18,7 @@ def benchmark(func: Callable) -> Callable:
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs) -> Any:
+        """Measure execution time of the decorated function."""
         start_time = time.perf_counter()
         try:
             return func(*args, **kwargs)
@@ -25,7 +26,6 @@ def benchmark(func: Callable) -> Callable:
             end_time = time.perf_counter()
             duration = end_time - start_time
             logger.info(f"BENCHMARK: {func.__name__} took {duration:.4f} seconds")
-            print(f"\n[BENCHMARK] {func.__name__}: {duration:.4f}s")
 
     return wrapper
 

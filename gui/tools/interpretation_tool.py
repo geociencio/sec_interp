@@ -132,15 +132,16 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         self.snapper = ProfileSnapper(canvas)
         self.cursor = Qt.CrossCursor
 
-    def activate(self):
+    def activate(self) -> None:
+        """Activate the interpretation tool."""
         log_critical_operation(logger, "activate_interpretation_tool")
         logger.debug("ProfileInterpretationTool.activate() called")
         super().activate()
         self.canvas.setCursor(self.cursor)
         logger.debug("ProfileInterpretationTool activated successfully")
 
-    def deactivate(self):
-        """Cleanup when tool is deactivated."""
+    def deactivate(self) -> None:
+        """Deactivate the interpretation tool."""
         log_critical_operation(logger, "deactivate_interpretation_tool")
         logger.debug("ProfileInterpretationTool.deactivate() called")
         self.reset()
@@ -178,8 +179,13 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             self.canvas.refresh()
         logger.debug("ProfileInterpretationTool.reset() completed")
 
-    def canvasReleaseEvent(self, event):
-        """Handle mouse click release."""
+    def canvasReleaseEvent(self, event: Any) -> None:
+        """Handle mouse click release.
+
+        Args:
+            event: Map tool event from QGIS
+
+        """
         if event.button() == Qt.RightButton:
             if self.points:
                 self._remove_last_point()
@@ -188,20 +194,35 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         snapped_point = self.snapper.snap(event.pos())
         self._add_point(snapped_point)
 
-    def canvasMoveEvent(self, event):
-        """Handle mouse move for rubber band update."""
+    def canvasMoveEvent(self, event: Any) -> None:
+        """Handle mouse move for rubber band update.
+
+        Args:
+            event: Map tool event from QGIS
+
+        """
         if not self.points:
             return
         current_point = self.snapper.snap(event.pos())
         self._update_rubber_band(current_point)
 
-    def canvasDoubleClickEvent(self, event):
-        """Finalize polygon on double click."""
+    def canvasDoubleClickEvent(self, event: Any) -> None:
+        """Finalize polygon on double click.
+
+        Args:
+            event: Map tool event from QGIS
+
+        """
         if len(self.points) >= 3:
             self.finalize_polygon()
 
-    def keyPressEvent(self, event):
-        """Handle keyboard events."""
+    def keyPressEvent(self, event: Any) -> None:
+        """Handle keyboard events.
+
+        Args:
+            event: Key event from QGIS
+
+        """
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
             if len(self.points) >= 3:
                 self.finalize_polygon()

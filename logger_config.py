@@ -19,7 +19,13 @@ class ImmediateFlushFileHandler(RotatingFileHandler):
     Uses os.fsync() to force OS-level write to disk.
     """
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
+        """Emit a log record and flush immediately.
+
+        Args:
+            record: The log record to emit.
+
+        """
         super().emit(record)
         self.flush()
         # Force OS-level write to disk (slower but safer for crash analysis)
@@ -34,11 +40,12 @@ class ImmediateFlushFileHandler(RotatingFileHandler):
 class QgsLogHandler(logging.Handler):
     """Custom logging handler that writes to QGIS message log."""
 
-    def __init__(self, tag="SecInterp"):
+    def __init__(self, tag: str = "SecInterp") -> None:
+        """Initialize handler with a specific tag for QGIS message log."""
         super().__init__()
         self.tag = tag
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
         """Emit a log record to QGIS message log safely."""
         try:
             from qgis.PyQt.QtCore import QCoreApplication, QThread
@@ -66,7 +73,7 @@ class QgsLogHandler(logging.Handler):
             self.handleError(record)
 
 
-def get_logger(name):
+def get_logger(name: str) -> logging.Logger:
     """Get a configured logger for the plugin.
 
     Args:
@@ -137,16 +144,16 @@ def get_logger(name):
     return logger
 
 
-def log_critical_operation(logger, operation_name, **context):
+def log_critical_operation(logger: logging.Logger, operation_name: str, **context: Any) -> None:
     """Log a critical operation with maximum persistence.
 
     Use this before operations that might crash QGIS (e.g., canvas operations,
     rubber band manipulation, tool activation).
 
     Args:
-        logger: Logger instance
-        operation_name: Name of the operation
-        **context: Additional context to log
+        logger: Logger instance.
+        operation_name: Name of the operation.
+        **context: Additional context to log.
 
     """
     import datetime

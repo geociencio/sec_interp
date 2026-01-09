@@ -1,5 +1,7 @@
 """Sidebar navigation widget."""
 
+from typing import Any
+
 from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtWidgets import QListWidget, QListWidgetItem
@@ -8,7 +10,7 @@ from qgis.PyQt.QtWidgets import QListWidget, QListWidgetItem
 class Sidebar(QListWidget):
     """Sidebar navigation widget."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Any = None) -> None:
         super().__init__(parent)
         self.setIconSize(QSize(32, 32))
         self.setFixedWidth(140)  # Slightly wider for better text fit
@@ -37,7 +39,7 @@ class Sidebar(QListWidget):
         """
         )
 
-    def add_item(self, text, icon_name=None):
+    def add_item(self, text: str, icon_name: str | None = None) -> None:
         """Add an item to the sidebar.
 
         Args:

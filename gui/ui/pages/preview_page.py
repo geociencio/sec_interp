@@ -1,5 +1,7 @@
 """Preview area widget."""
 
+from typing import Any
+
 from qgis.gui import QgsCollapsibleGroupBox, QgsMapCanvas
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
@@ -18,11 +20,11 @@ from qgis.PyQt.QtWidgets import (
 class PreviewWidget(QWidget):
     """Widget for profile preview and controls."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Any = None) -> None:
         super().__init__(parent)
         self._setup_ui()
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
 
@@ -154,14 +156,14 @@ class PreviewWidget(QWidget):
         results_layout.addWidget(self.results_text)
         self.frame_layout.addWidget(self.results_group)
 
-    def _update_coords(self, point):
+    def _update_coords(self, point: Any) -> None:
         """Update coordinate label."""
         self.lbl_coords.setText(f"{point.x():.2f}, {point.y():.2f}")
 
-    def _update_scale(self, scale):
+    def _update_scale(self, scale: float) -> None:
         """Update scale label."""
         self.lbl_scale.setText(self.tr("Scale 1:{}").format(int(scale)))
 
-    def _toggle_lod_spin(self, checked):
+    def _toggle_lod_spin(self, checked: bool) -> None:
         """Enable/disable max points spinbox based on auto checkbox."""
         self.spin_max_points.setEnabled(not checked)

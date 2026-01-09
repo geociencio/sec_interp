@@ -1,5 +1,7 @@
 """Structural configuration page."""
 
+from typing import Any
+
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsDoubleSpinBox, QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
@@ -15,13 +17,13 @@ class StructurePage(BasePage):
 
     dataChanged = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Any = None) -> None:
         super().__init__(
             QCoreApplication.translate("StructurePage", "Structural Measurements"),
             parent,
         )
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         super()._setup_ui()
 
         self.group_layout = QGridLayout(self.group_box)
@@ -77,12 +79,12 @@ class StructurePage(BasePage):
         self.dip_combo.fieldChanged.connect(self.dataChanged.emit)
         self.strike_combo.fieldChanged.connect(self.dataChanged.emit)
 
-    def _on_layer_changed(self, layer):
+    def _on_layer_changed(self, layer: Any) -> None:
         """Update both field combos when layer changes."""
         self.dip_combo.setLayer(layer)
         self.strike_combo.setLayer(layer)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> dict[str, Any]:
         """Get structural configuration."""
         return {
             "structural_layer": self.layer_combo.currentLayer(),

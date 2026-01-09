@@ -28,7 +28,7 @@ class DemPage(BasePage):
         super().__init__(QCoreApplication.translate("DemPage", "Digital Elevation Model"), parent)
         self.iface = iface
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         super()._setup_ui()
 
         self.group_layout = QGridLayout(self.group_box)
@@ -135,7 +135,7 @@ class DemPage(BasePage):
             if scale > 0:
                 self.scale_spin.setValue(scale)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> dict[str, Any]:
         """Get DEM configuration."""
         return {
             "raster_layer": self.raster_combo.currentLayer(),
@@ -145,6 +145,12 @@ class DemPage(BasePage):
         }
 
     def validate(self) -> tuple[bool, str]:
+        """Validate page settings.
+
+        Returns:
+            Tuple of (success, error message).
+
+        """
         if not self.raster_combo.currentLayer():
             return False, self.tr("Raster layer is required")
         return True, ""

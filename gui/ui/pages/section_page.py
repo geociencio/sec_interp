@@ -1,5 +1,7 @@
 """Cross-section configuration page."""
 
+from typing import Any
+
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication
@@ -11,10 +13,10 @@ from .base_page import BasePage
 class SectionPage(BasePage):
     """Configuration page for Cross Section settings."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Any = None) -> None:
         super().__init__(QCoreApplication.translate("SectionPage", "Cross Section Line"), parent)
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         super()._setup_ui()
 
         self.group_layout = QGridLayout(self.group_box)
@@ -54,7 +56,7 @@ class SectionPage(BasePage):
         )
         self.group_layout.addWidget(self.buffer_spin, 1, 1)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> dict[str, Any]:
         """Get section configuration."""
         return {
             "crossline_layer": self.line_combo.currentLayer(),
@@ -62,6 +64,12 @@ class SectionPage(BasePage):
         }
 
     def validate(self) -> tuple[bool, str]:
+        """Validate page settings.
+
+        Returns:
+            Tuple of (success, error message).
+
+        """
         if not self.line_combo.currentLayer():
             return False, self.tr("Section line layer is required")
         return True, ""

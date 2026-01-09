@@ -6,6 +6,8 @@ structures, and geological units.
 
 from __future__ import annotations
 
+from typing import Any
+
 from qgis.PyQt.QtCore import QCoreApplication, QRectF, Qt
 from qgis.PyQt.QtGui import QColor, QFont, QPainter, QPen
 
@@ -24,7 +26,7 @@ class PreviewLegendRenderer:
         active_units: dict[str, QColor],
         has_topography: bool = False,
         has_structures: bool = False,
-    ):
+    ) -> None:
         """Draw legend on the given painter within the rect."""
         if not active_units and not has_topography and not has_structures:
             return
@@ -86,7 +88,13 @@ class PreviewLegendRenderer:
         painter.restore()
 
     @staticmethod
-    def _calculate_legend_size(painter, active_units, has_topo, has_struct, config):
+    def _calculate_legend_size(
+        painter: QPainter,
+        active_units: dict[str, QColor],
+        has_topo: bool,
+        has_struct: bool,
+        config: dict[str, Any],
+    ) -> tuple[QRectF, float]:
         """Calculate dimensions of the legend box."""
         fm = painter.fontMetrics()
         max_text_width = 0
@@ -106,7 +114,9 @@ class PreviewLegendRenderer:
         return QRectF(0, 0, width, height), max_text_width
 
     @staticmethod
-    def _draw_legend_background(painter, x, y, width, height):
+    def _draw_legend_background(
+        painter: QPainter, x: float, y: float, width: float, height: float
+    ) -> None:
         """Draw the legend box background and border."""
         rect = QRectF(x, y, width, height)
         painter.setBrush(QColor(255, 255, 255, 200))
@@ -118,7 +128,15 @@ class PreviewLegendRenderer:
         painter.drawRect(rect)
 
     @staticmethod
-    def _draw_line_item(painter, x, y, label, color, max_width, config):
+    def _draw_line_item(
+        painter: QPainter,
+        x: float,
+        y: float,
+        label: str,
+        color: QColor,
+        max_width: float,
+        config: dict[str, Any],
+    ) -> None:
         """Draw a legend item with a line symbol."""
         p = config["padding"]
         ih = config["item_height"]
@@ -132,7 +150,14 @@ class PreviewLegendRenderer:
         painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, label)
 
     @staticmethod
-    def _draw_geology_items(painter, x, y, units, max_width, config):
+    def _draw_geology_items(
+        painter: QPainter,
+        x: float,
+        y: float,
+        units: dict[str, QColor],
+        max_width: float,
+        config: dict[str, Any],
+    ) -> None:
         """Draw geological unit legend items."""
         p = config["padding"]
         ih = config["item_height"]

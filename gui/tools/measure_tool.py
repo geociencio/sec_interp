@@ -130,12 +130,14 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         # Delegate snapping logic
         self.snapper = ProfileSnapper(canvas)
 
-    def activate(self):
+    def activate(self) -> None:
+        """Activate the measurement tool."""
         super().activate()
         self.canvas.setCursor(self.cursor)
         logger.debug("ProfileMeasureTool activated")
 
-    def deactivate(self):
+    def deactivate(self) -> None:
+        """Deactivate the measurement tool."""
         self.reset()
         super().deactivate()
         logger.debug("ProfileMeasureTool deactivated")
@@ -176,12 +178,16 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
 
         self.measurementCleared.emit()
 
-    def canvasReleaseEvent(self, event):
+    def canvasReleaseEvent(self, event: Any) -> None:
         """Handle mouse click release.
 
         - Left click: Add point to measurement
         - Right click: Cancel and reset
         - Press Enter to finalize (see keyPressEvent)
+
+        Args:
+            event: Map tool event from QGIS
+
         """
         if event.button() == Qt.RightButton:
             self.reset()
@@ -197,8 +203,13 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         # Simply add point to the polyline
         self._add_point(snapped_point)
 
-    def canvasMoveEvent(self, event):
-        """Handle mouse move for rubber band update."""
+    def canvasMoveEvent(self, event: Any) -> None:
+        """Handle mouse move for rubber band update.
+
+        Args:
+            event: Map tool event from QGIS
+
+        """
         # Don't update rubber band if measurement is finalized
         if self.finalized:
             return
@@ -208,11 +219,15 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
             self._update_rubber_band(current_point)
             self._calculate_and_emit_preview(current_point)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: Any) -> None:
         """Handle keyboard events.
 
         - Enter/Return: Finalize measurement
         - Escape: Cancel measurement
+
+        Args:
+            event: Key event from QGIS
+
         """
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
             if len(self.points) >= 2:

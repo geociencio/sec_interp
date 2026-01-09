@@ -27,6 +27,7 @@ Orchestrates the lifecycle of the SecInterp QGIS plugin.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from qgis.core import (
     QgsMapLayer,
@@ -62,7 +63,7 @@ class SecInterp:
     It connects the QGIS interface with the plugin's dialog and processing algorithms.
     """
 
-    def __init__(self, iface):
+    def __init__(self, iface: Any) -> None:
         """Initialize the plugin.
 
         Args:
@@ -134,16 +135,16 @@ class SecInterp:
 
     def add_action(
         self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None,
-    ):
+        icon_path: str,
+        text: str,
+        callback: Any,
+        enabled_flag: bool = True,
+        add_to_menu: bool = True,
+        add_to_toolbar: bool = True,
+        status_tip: str | None = None,
+        whats_this: str | None = None,
+        parent: Any = None,
+    ) -> QAction:
         """Add a toolbar icon to the toolbar.
 
         Args:
@@ -191,7 +192,7 @@ class SecInterp:
 
         return action
 
-    def initGui(self):  # noqa: N802
+    def initGui(self) -> None:  # noqa: N802
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         # Use absolute path to icon file to ensure it loads in toolbar
         icon_path = str(self.plugin_dir / "icon.png")
@@ -205,7 +206,7 @@ class SecInterp:
         # will be set False in run()
         self.first_start = True
 
-    def unload(self):
+    def unload(self) -> None:
         """Remove the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(self.tr("&Sec Interp"), action)
@@ -216,7 +217,7 @@ class SecInterp:
             del self.toolbar
             self.toolbar = None
 
-    def run(self):
+    def run(self) -> None:
         """Run method that performs all the real work."""
         if self.first_start:
             self.first_start = False
@@ -240,7 +241,7 @@ class SecInterp:
             # substitute with your code.
             pass
 
-    def _resolve_layer_obj(self, value, placeholder_text=""):
+    def _resolve_layer_obj(self, value: Any, placeholder_text: str = "") -> QgsMapLayer | None:
         """Resolve layer object from UI value."""
         if isinstance(value, QgsMapLayer):
             return value
@@ -343,7 +344,7 @@ class SecInterp:
         # but for now we only return params. Callers need the path separately.
         return params
 
-    def process_data(self, inputs: dict | None = None) -> tuple | None:
+    def process_data(self, inputs: dict[str, Any] | None = None) -> tuple[Any, Any, Any] | None:
         """Process profile data by delegating to the dialog's preview manager.
 
         Args:
@@ -366,7 +367,7 @@ class SecInterp:
 
         return None
 
-    def save_profile_line(self):
+    def save_profile_line(self) -> None:
         """Save profile data by delegating to the dialog's export manager."""
         if hasattr(self, "dlg") and self.dlg:
             self.dlg.export_manager.export_data()

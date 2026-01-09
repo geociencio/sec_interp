@@ -44,14 +44,14 @@ class PreviewManager:
 
     def __init__(
         self,
-        dialog: sec_interp.gui.main_dialog.SecInterpDialog,
+        dialog: Any,
         preview_service: IPreviewService | None = None,
-    ):
+    ) -> None:
         """Initialize preview manager with reference to parent dialog.
 
         Args:
-            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
-            preview_service: Optional preview service for dependency injection
+            dialog: The parent SecInterpDialog instance.
+            preview_service: Optional preview service for dependency injection.
 
         """
         self.dialog = dialog
@@ -428,8 +428,13 @@ class PreviewManager:
         # Add to QGIS Task Manager
         QgsApplication.taskManager().addTask(self.active_task)
 
-    def _on_geology_finished(self, results):
-        """Handle completion of geology generation task."""
+    def _on_geology_finished(self, results: list[Any]) -> None:
+        """Handle completion of geology generation task.
+
+        Args:
+            results: List of generated geology segments.
+
+        """
         self.active_task = None
 
         # Results are now a flat list of segments (GeologyData)
@@ -476,8 +481,13 @@ class PreviewManager:
         except Exception as e:
             logger.error(f"Error updating UI after async geology: {e}", exc_info=True)
 
-    def _on_geology_progress(self, progress):
-        """Handle progress updates from parallel service."""
+    def _on_geology_progress(self, progress: float) -> None:
+        """Handle progress updates from parallel service.
+
+        Args:
+            progress: Progress percentage (0-100).
+
+        """
         self.dialog.preview_widget.results_text.setPlainText(
             QCoreApplication.translate("PreviewManager", "Generating Geology: {}%...").format(
                 progress
