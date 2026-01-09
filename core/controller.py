@@ -111,6 +111,7 @@ class ProfileController:
 
         # Cache key helpers updated to use params attributes
         def get_sub_key(param_values: list[Any]) -> str:
+            """Generate a sub-key for caching specific components."""
             # Simple hash for a subset of parameters
             import hashlib
 

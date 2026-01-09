@@ -7,6 +7,7 @@ across the plugin's operations.
 from __future__ import annotations
 
 import time
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from typing import Any
 
@@ -117,7 +118,12 @@ class PerformanceTimer:
         self.start_time = time.perf_counter()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: Any | None,
+    ) -> None:
         """Stop the timer and record/log validity.
 
         Args:
@@ -177,8 +183,16 @@ class PerformanceMonitor:
         self.logger = self._setup_logger(log_file)
         self.metrics = {}
 
-    def _setup_logger(self, log_file):
-        """Set up performance logger."""
+    def _setup_logger(self, log_file: str) -> logging.Logger:
+        """Set up performance logger.
+
+        Args:
+            log_file: Path to the performance log file.
+
+        Returns:
+            logging.Logger: The configured logger instance.
+
+        """
         logger = logging.getLogger("performance")
         logger.setLevel(logging.INFO)
 
@@ -193,7 +207,9 @@ class PerformanceMonitor:
         return logger
 
     @contextmanager
-    def measure_operation(self, operation_name, **metadata):
+    def measure_operation(
+        self, operation_name: str, **metadata: Any
+    ) -> Generator[None, None, None]:
         """Context manager to measure operation performance (time and memory).
 
         Args:
@@ -253,7 +269,7 @@ class PerformanceMonitor:
             # Fallback without psutil
             return 0.0
 
-    def get_operation_stats(self, operation_name):
+    def get_operation_stats(self, operation_name: str) -> dict[str, Any] | None:
         """Calculate statistics for multiple runs of an operation.
 
         Args:
@@ -282,7 +298,7 @@ class PerformanceMonitor:
         }
 
 
-def performance_monitor(func):
+def performance_monitor(func: Callable) -> Callable:
     """Automatically monitor function performance.
 
     Wraps the function call with a PerformanceMonitor measurement.

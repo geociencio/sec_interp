@@ -18,15 +18,24 @@
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
-"""Initialize the plugin, making it known to QGIS."""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from qgis.gui import QgsInterface
 
 
 # noinspection PyPep8Naming
-def classFactory(iface):  # pylint: disable=invalid-name
+def classFactory(iface: QgsInterface):  # pylint: disable=invalid-name
     """Load SecInterp class from file SecInterp.
 
-    :param iface: A QGIS interface instance.
-    :type iface: QgsInterface
+    Args:
+        iface: A QGIS interface instance.
+
+    Returns:
+        SecInterp: An instance of the plugin.
+
     """
     from .sec_interp_plugin import SecInterp
 
