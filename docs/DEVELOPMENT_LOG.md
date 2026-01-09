@@ -11,12 +11,19 @@ Chronological record of development activities, significant fixes, and technical
     - Cobertura completa de Type Hints en `export_service.py`, `geology_service.py` y `drillhole_service.py`.
     - Refactorización de `ProfileController.generate_profile_data` para reducir su complejidad ciclomática de 23 a <15.
     - Modularización de `PreviewParams.validate` para mejorar mantenibilidad (reducción de CC de 18 a <15).
-- **Validación**: Análisis con `qgis-analyzer` y verificación con suite de pruebas unitarias (corrección de fallo de importación).
+- **Fase 3 (Gui & Validation)**:
+    - Refactorización de `DialogEntityManager` y `DialogValidator` para centralizar lógica de GUI y validaciones.
+    - Adición de Type Hints en `main_dialog.py` y gestores de señales.
+- **Fase 4 (Technical Debt & UI Cleanup)**:
+    - Tipado completo y corrección de bugs en `DrillholePage`.
+    - Documentación y tipado en `logger_config.py`, `measure_tool.py` e `interpretation_tool.py`.
+    - Limpieza de importaciones legacy (`PyQt5` -> `qgis.PyQt`) y remoción de `print` statements.
+- **Validación**: Análisis con `qgis-analyzer` y verificación con suite de pruebas unitarias.
 
 ### Resultados
-- **Type Hint Coverage (Params)**: Incremento de **62.1% → 69.2%**.
-- **Type Hint Coverage (Returns)**: Incremento de **28.5% → 30.9%**.
-- **Issue Statistics**: Reducción neta de **22 incidencias** (527 a 505).
+- **Type Hint Coverage (Params)**: Incremento de **62.1% → 76.4%**.
+- **Type Hint Coverage (Returns)**: Incremento de **28.5% → 38.3%**.
+- **Issue Statistics**: Reducción neta de **76 incidencias** (527 a 451).
 - **Mantenibilidad**: Se mantiene en **100/100**.
 
 ### Documentación
