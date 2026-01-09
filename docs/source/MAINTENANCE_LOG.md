@@ -50,7 +50,9 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 - **Architecture & Refactoring (2026-01-08)**:
     - **Async Evolution**: Refactored threading model to use `QgsTask` for background geology generation, improving stability and preventing UI freezes.
     - **Exporter Modularization**: Deep refactoring of all vector exporters (`shp`, `drillhole`, `profile`, `interpretation_3d`) to reduce complexity (mccabe < 7) and improve modularity.
-    - **Test Stability**: Enhanced mocking infrastructure for asychronous tasks and QGIS ecosystem components.
+    - **Quality & Debt Cleanup**: Significant improvement in type hint coverage (Params: 62.1% -> 76.4%) and documentation style across core services, tools, and UI pages.
+    - **Workflow Security**: Implemented `conventional-pre-commit` and restored `COMMIT_GUIDELINES.md` to guarantee high-quality, parsable commits.
+    - **Test Stability**: Enhanced mocking infrastructure for asynchronous tasks and QGIS ecosystem components.
 
 ### [2.5.0] - 2026-01-03
 - **Major Features**:

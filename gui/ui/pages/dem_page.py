@@ -1,5 +1,7 @@
 """DEM configuration page."""
 
+from typing import Any
+
 from qgis.core import (
     Qgis,
     QgsUnitTypes,
@@ -16,12 +18,12 @@ from .base_page import BasePage
 class DemPage(BasePage):
     """Configuration page for DEM/Raster settings."""
 
-    def __init__(self, iface=None, parent=None):
+    def __init__(self, iface: Any = None, parent: Any = None) -> None:
         """Initialize DEM page.
 
         Args:
-            iface: QGIS interface (optional, for resolution calculation)
-            parent: Parent widget
+            iface: QGIS interface (optional, for resolution calculation).
+            parent: Parent widget.
 
         """
         self.iface = iface

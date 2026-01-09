@@ -27,6 +27,7 @@ Contains the SecInterpDialog class which is the primary UI for the plugin.
 import json
 import traceback
 from pathlib import Path
+from typing import Any
 
 from qgis.core import (
     Qgis,
