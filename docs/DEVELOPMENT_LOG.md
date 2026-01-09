@@ -3,6 +3,45 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
+## [2026-01-08-3] - Integración de CI/CD Permanente (22:15)
+
+### Actividades
+- **Infraestructura Docker**:
+    - Refactorizado el `Dockerfile` para utilizar `qgis/qgis:latest` como imagen base, asegurando un entorno de pruebas idéntico al del usuario final.
+    - Configurado `uv` con soporte para `--system-site-packages` para integrar las librerías de QGIS del sistema con el entorno virtual del proyecto.
+- **Automatización CI/CD**:
+    - Actualizado `.github/workflows/test.yml` para utilizar contenedores oficiales de QGIS.
+    - Migración total de `pytest` a `unittest` en el pipeline de CI, manteniendo consistencia con el estándar del proyecto.
+    - Implementado soporte para ejecución *headless* nativa mediante `QT_QPA_PLATFORM: offscreen`.
+- **Roadmap v2.6.0**:
+    - Marcadas como completadas las tareas de Benchmarks, Reducción de Complejidad en Exportadores e Integración CI/CD.
+
+### Resultados
+- **Infraestructura**: Pipeline de GitHub Actions listo para validar tests de integración reales.
+- **Portabilidad**: El `Dockerfile` ahora sirve como entorno de desarrollo local reproducible y estable.
+
+---
+## [2026-01-08] - Armonización de Validación y Calidad en GUI (21:48)
+
+### Actividades
+- **Refactorización de Validación**:
+    - Centralización de la recolección de parámetros en `DialogDataAggregator` para asegurar consistencia con el core.
+    - Simplificación de `DialogValidator` eliminando recolección manual de widgets y delegando en `ProjectValidator`.
+- **Calidad de Código**:
+    - Aplicación de **Type Hints** completos y docstrings estilo Google en `main_dialog_validation.py` e `interpretation_properties_dialog.py`.
+- **Armonización de UI**:
+    - Estandarización del método `is_complete` en `DemPage`, `GeologyPage`, `StructurePage` y `DrillholePage` utilizando lógica centralizada del core.
+- **Estabilización de Tests**:
+    - Actualización de `tests/gui/test_main_dialog_validation.py` para reflejar la nueva arquitectura, corrigiendo fallos por patches obsoletos.
+
+### Resultados
+- **Tests**: Suite de GUI pasando exitosamente (**96 tests OK**).
+- **Mantenibilidad**: Reducción de redundancia en la capa de interfaz y mejor soporte para análisis estático.
+
+### Documentación
+- Walkthrough: [walkthrough.md](file:///home/jmbernales/.gemini/antigravity/brain/21a89546-b249-4109-a555-97ccf59480fb/walkthrough.md)
+
+---
 ## [2026-01-08] - Mejora Continua de Calidad (Docstrings, Type Hints y Complejidad) (20:10)
 
 ### Actividades

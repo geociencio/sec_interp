@@ -6,11 +6,11 @@ separating concerns and making the code more testable and maintainable.
 
 from typing import TYPE_CHECKING
 
-from sec_interp.core import validation as vu
 from sec_interp.core.exceptions import ValidationError
+from sec_interp.core.validation.project_validator import ProjectValidator
 
 if TYPE_CHECKING:
-    pass
+    from sec_interp.gui.main_dialog import SecInterpDialog
 
 
 class DialogValidator:
@@ -18,47 +18,39 @@ class DialogValidator:
     and delegating to the core ProjectValidator.
     """
 
-    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
+    def __init__(self, dialog: "SecInterpDialog") -> None:
         """Initialize validator with reference to parent dialog.
 
         Args:
-            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance to validate
+            dialog: The main dialog instance.
 
         """
         self.dialog = dialog
 
-    def _collect_params(self) -> vu.ValidationParams:
-        """Collect all parameters from the UI widgets."""
-        return vu.ValidationParams(
-            raster_layer=self.dialog.page_dem.raster_combo.currentLayer(),
-            band_number=self.dialog.page_dem.band_combo.currentBand(),
-            line_layer=self.dialog.page_section.line_combo.currentLayer(),
-            output_path=self.dialog.output_widget.filePath(),
-            scale=self.dialog.page_dem.scale_spin.value(),
-            vert_exag=self.dialog.page_dem.vertexag_spin.value(),
-            buffer_dist=self.dialog.page_section.buffer_spin.value(),
-            outcrop_layer=self.dialog.page_geology.layer_combo.currentLayer(),
-            outcrop_field=self.dialog.page_geology.field_combo.currentData(),
-            struct_layer=self.dialog.page_struct.layer_combo.currentLayer(),
-            struct_dip_field=self.dialog.page_struct.dip_combo.currentData(),
-            struct_strike_field=self.dialog.page_struct.strike_combo.currentData(),
-            dip_scale_factor=self.dialog.page_struct.scale_spin.value(),
-        )
-
     def validate_inputs(self) -> tuple[bool, str]:
-        """Validate all dialog inputs by delegating to core."""
-        params = self._collect_params()
+        """Validate all dialog inputs by delegating to core.
+
+        Returns:
+            A tuple containing (is_valid, error_message).
+
+        """
+        params = self.dialog.data_aggregator.get_validation_params()
         try:
-            vu.ProjectValidator.validate_all(params)
+            ProjectValidator.validate_all(params)
             return True, ""
         except ValidationError as e:
             return False, str(e)
 
     def validate_preview_requirements(self) -> tuple[bool, str]:
-        """Validate minimum requirements for preview by delegating to core."""
-        params = self._collect_params()
+        """Validate minimum requirements for preview by delegating to core.
+
+        Returns:
+            A tuple containing (is_valid, error_message).
+
+        """
+        params = self.dialog.data_aggregator.get_validation_params()
         try:
-            vu.ProjectValidator.validate_preview_requirements(params)
+            ProjectValidator.validate_preview_requirements(params)
             return True, ""
         except ValidationError as e:
             return False, str(e)

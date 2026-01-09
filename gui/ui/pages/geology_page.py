@@ -5,6 +5,11 @@ from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import QGridLayout, QLabel
 
+from sec_interp.core.validation.project_validator import (
+    ProjectValidator,
+    ValidationParams,
+)
+
 from .base_page import BasePage
 
 
@@ -62,5 +67,10 @@ class GeologyPage(BasePage):
         }
 
     def is_complete(self) -> bool:
-        """Check if required fields are filled."""
-        return bool(self.layer_combo.currentLayer() and self.field_combo.currentField())
+        """Check if required fields are filled if a layer is selected."""
+        data = self.get_data()
+        params = ValidationParams(
+            outcrop_layer=data["outcrop_layer"],
+            outcrop_field=data["outcrop_name_field"],
+        )
+        return ProjectValidator.is_geology_complete(params)

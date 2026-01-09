@@ -290,6 +290,11 @@ class ProjectValidator:
         return True
 
     @staticmethod
+    def is_dem_complete(params: ValidationParams) -> bool:
+        """Check if DEM requirements are met."""
+        return bool(params.raster_layer)
+
+    @staticmethod
     def is_geology_complete(params: ValidationParams) -> bool:
         """Check if geology requirements are met."""
         return bool(params.outcrop_layer and params.outcrop_field)

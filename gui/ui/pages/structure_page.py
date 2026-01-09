@@ -7,6 +7,10 @@ from qgis.gui import QgsDoubleSpinBox, QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import QGridLayout, QLabel
 
+from sec_interp.core.validation.project_validator import (
+    ProjectValidator,
+    ValidationParams,
+)
 from sec_interp.gui.main_dialog_config import DialogDefaults
 
 from .base_page import BasePage
@@ -94,9 +98,11 @@ class StructurePage(BasePage):
         }
 
     def is_complete(self) -> bool:
-        """Check if required fields are filled."""
-        return bool(
-            self.layer_combo.currentLayer()
-            and self.dip_combo.currentField()
-            and self.strike_combo.currentField()
+        """Check if required fields are filled if a layer is selected."""
+        data = self.get_data()
+        params = ValidationParams(
+            struct_layer=data["structural_layer"],
+            struct_dip_field=data["dip_field"],
+            struct_strike_field=data["strike_field"],
         )
+        return ProjectValidator.is_structure_complete(params)

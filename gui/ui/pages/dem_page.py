@@ -10,6 +10,10 @@ from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox, QgsRasterBandComboBo
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit
 
+from sec_interp.core.validation.project_validator import (
+    ProjectValidator,
+    ValidationParams,
+)
 from sec_interp.gui.main_dialog_config import DialogDefaults
 
 from .base_page import BasePage
@@ -158,5 +162,7 @@ class DemPage(BasePage):
         return True, ""
 
     def is_complete(self) -> bool:
-        """Check if required fields are filled."""
-        return bool(self.raster_combo.currentLayer())
+        """Check if required fields are filled if a layer is selected."""
+        data = self.get_data()
+        params = ValidationParams(raster_layer=data["raster_layer"])
+        return ProjectValidator.is_dem_complete(params)

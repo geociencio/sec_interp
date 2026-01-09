@@ -19,33 +19,33 @@ Mejorar la calidad, robustez y mantenibilidad del proyecto abordando la deuda t�
   - [x] `test_interpretation_workflow.py`
   - [x] `test_measurement_workflow.py`
   - [x] `test_export_workflow.py`
-- [ ] **Integración CI/CD**
-  - [ ] Ajustar workflow de GitHub Actions para correr `unittest` en entorno QGIS
+- [x] **Integración CI/CD**
+  - [x] Ajustar workflow de GitHub Actions para correr `unittest` en entorno QGIS (Docker)
 
-### 3. Reducción de Complejidad en Exportadores (Crítico - 1-2 días) 🔴
-- [/] **Análisis Inicial**
-  - [ ] Ejecutar `ruff check --select C901`
-- [ ] **Diseño de Refactorización**
-  - [ ] Diseñar `Projection3DStrategy`
-- [ ] **Implementación**
-  - [ ] Refactorizar `interpretation_3d_exporter.export()`
-- [ ] **Verificación**
-  - [ ] Ejecutar `python -m unittest`
+### 3. Reducción de Complejidad en Exportadores (Crítico - Completado) ✅
+- [x] **Análisis Inicial**
+  - [x] Ejecutar `ruff check --select C901`
+- [x] **Diseño de Refactorización**
+  - [x] Refactorizar mediante métodos privados (CC <= 5 alcanzado)
+- [x] **Implementación**
+  - [x] Refactorizar `interpretation_3d_exporter.export()`
+- [x] **Verificación**
+  - [x] Ejecutar `python -m unittest`
 
-### 4. Benchmarks de Performance (Crítico - 2 días) 🔴
-- [ ] **Utilidades de Benchmark**
-  - [ ] Crear `tests/benchmarks/benchmark_utils.py` con decoradores de tiempo
-- [ ] **Implementar Benchmarks (unittest)**
-  - [ ] `test_geometry_benchmarks.py`
-  - [ ] `test_export_benchmarks.py`
+### 4. Benchmarks de Performance (Crítico - Completado) ✅
+- [x] **Utilidades de Benchmark**
+  - [x] Crear `tests/benchmarks/benchmark_utils.py` con decoradores de tiempo
+- [x] **Implementar Benchmarks (unittest)**
+  - [x] `test_geometry_benchmarks.py`
+  - [x] `test_export_benchmarks.py`
 
-### 5. Consolidación Docker y CI/CD (Crítico - 2 días) 🔴
-- [ ] **Optimización de Imagen**
-  - [ ] Refinar `Dockerfile` para ejecución headless estable
-  - [ ] Verificar `PYTHONPATH` definitivo en el contenedor
-- [ ] **Automatización CI/CD**
-  - [ ] Configurar GitHub Action para ejecutar `unittest discover` dentro de Docker
-  - [ ] Implementar captura de resultados y logs técnicos
+### 5. Consolidación Docker y CI/CD (Crítico - Completado) ✅
+- [x] **Optimización de Imagen**
+  - [x] Refinar `Dockerfile` para ejecución headless estable
+  - [x] Verificar `PYTHONPATH` definitivo en el contenedor
+- [x] **Automatización CI/CD**
+  - [x] Configurar GitHub Action para ejecutar `unittest discover` dentro de Docker
+  - [x] Implementar captura de resultados y logs técnicos
 
 ### 5. Documentación de API (Moderado - POSPUESTO a v2.7.0) 🟡
 - [ ] Configurar Sphinx

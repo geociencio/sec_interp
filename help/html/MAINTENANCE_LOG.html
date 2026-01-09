@@ -99,6 +99,15 @@ mv<span class="w"> </span>sec_interp.zip<span class="w"> </span>sec_interp_vX.Y.
 <li><p><strong>SLA Verification</strong>: Established baseline metrics for critical operations (Shapefile Write &lt; 5s, Projection &lt; 0.1s).</p></li>
 </ul>
 </li>
+<li><p><strong>Architecture &amp; Refactoring (2026-01-08)</strong>:</p>
+<ul>
+<li><p><strong>Async Evolution</strong>: Refactored threading model to use <code class="docutils literal notranslate"><span class="pre">QgsTask</span></code> for background geology generation, improving stability and preventing UI freezes.</p></li>
+<li><p><strong>Exporter Modularization</strong>: Deep refactoring of all vector exporters (<code class="docutils literal notranslate"><span class="pre">shp</span></code>, <code class="docutils literal notranslate"><span class="pre">drillhole</span></code>, <code class="docutils literal notranslate"><span class="pre">profile</span></code>, <code class="docutils literal notranslate"><span class="pre">interpretation_3d</span></code>) to reduce complexity (mccabe &lt; 7) and improve modularity.</p></li>
+<li><p><strong>Quality &amp; Debt Cleanup</strong>: Significant improvement in type hint coverage (Params: 62.1% -&gt; 76.4%) and documentation style across core services, tools, and UI pages.</p></li>
+<li><p><strong>Workflow Security</strong>: Implemented <code class="docutils literal notranslate"><span class="pre">conventional-pre-commit</span></code> and restored <code class="docutils literal notranslate"><span class="pre">COMMIT_GUIDELINES.md</span></code> to guarantee high-quality, parsable commits.</p></li>
+<li><p><strong>Test Stability</strong>: Enhanced mocking infrastructure for asynchronous tasks and QGIS ecosystem components.</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="id2">

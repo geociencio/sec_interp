@@ -19,6 +19,7 @@ from qgis.PyQt.QtWidgets import (
     QLineEdit,
     QPushButton,
     QVBoxLayout,
+    QWidget,
 )
 
 if TYPE_CHECKING:
@@ -32,8 +33,16 @@ class InterpretationPropertiesDialog(QDialog):
         self,
         interpretation: InterpretationPolygon,
         custom_fields_config: list[dict[str, Any]],
-        parent: Any = None,
+        parent: QWidget | None = None,
     ) -> None:
+        """Initialize the property editor dialog.
+
+        Args:
+            interpretation: The interpretation object to edit.
+            custom_fields_config: Configuration for extra custom fields.
+            parent: Optional parent widget.
+
+        """
         super().__init__(parent)
         self.interpretation = interpretation
         self.custom_fields_config = custom_fields_config

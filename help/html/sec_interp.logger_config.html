@@ -61,24 +61,32 @@ respectively.</p>
 <p>If maxBytes is zero, rollover never occurs.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.logger_config.ImmediateFlushFileHandler.emit">
-<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.ImmediateFlushFileHandler.emit" title="Link to this definition">¶</a></dt>
-<dd><p>Emit a record.</p>
-<p>Output the record to the file, catering for rollover as described
-in doRollover().</p>
+<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.logger_config.ImmediateFlushFileHandler.emit" title="Link to this definition">¶</a></dt>
+<dd><p>Emit a log record and flush immediately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>record</strong> – The log record to emit.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sec_interp.logger_config.QgsLogHandler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.logger_config.</span></span><span class="sig-name descname"><span class="pre">QgsLogHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SecInterp'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.QgsLogHandler" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sec_interp.logger_config.</span></span><span class="sig-name descname"><span class="pre">QgsLogHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'SecInterp'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.QgsLogHandler" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Handler</span></code></p>
 <p>Custom logging handler that writes to QGIS message log.</p>
-<p>Initializes the instance - basically setting the formatter to None
-and the filter list to empty.</p>
+<p>Initialize handler with a specific tag for QGIS message log.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sec_interp.logger_config.QgsLogHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'SecInterp'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.logger_config.QgsLogHandler.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize handler with a specific tag for QGIS message log.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sec_interp.logger_config.QgsLogHandler.emit">
-<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.QgsLogHandler.emit" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.logger_config.QgsLogHandler.emit" title="Link to this definition">¶</a></dt>
 <dd><p>Emit a log record to QGIS message log safely.</p>
 </dd></dl>
 
@@ -86,7 +94,7 @@ and the filter list to empty.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sec_interp.logger_config.get_logger">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.logger_config.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.get_logger" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sec_interp.logger_config.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Logger</span></span></span><a class="headerlink" href="#sec_interp.logger_config.get_logger" title="Link to this definition">¶</a></dt>
 <dd><p>Get a configured logger for the plugin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -103,16 +111,16 @@ and the filter list to empty.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sec_interp.logger_config.log_critical_operation">
-<span class="sig-prename descclassname"><span class="pre">sec_interp.logger_config.</span></span><span class="sig-name descname"><span class="pre">log_critical_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sec_interp.logger_config.log_critical_operation" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sec_interp.logger_config.</span></span><span class="sig-name descname"><span class="pre">log_critical_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#sec_interp.logger_config.log_critical_operation" title="Link to this definition">¶</a></dt>
 <dd><p>Log a critical operation with maximum persistence.</p>
 <p>Use this before operations that might crash QGIS (e.g., canvas operations,
 rubber band manipulation, tool activation).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>logger</strong> – Logger instance</p></li>
-<li><p><strong>operation_name</strong> – Name of the operation</p></li>
-<li><p><strong>**context</strong> – Additional context to log</p></li>
+<li><p><strong>logger</strong> – Logger instance.</p></li>
+<li><p><strong>operation_name</strong> – Name of the operation.</p></li>
+<li><p><strong>**context</strong> – Additional context to log.</p></li>
 </ul>
 </dd>
 </dl>
