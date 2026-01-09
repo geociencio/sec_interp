@@ -18,6 +18,7 @@ Chronological record of development activities, significant fixes, and technical
     - Tipado completo y corrección de bugs en `DrillholePage`.
     - Documentación y tipado en `logger_config.py`, `measure_tool.py` e `interpretation_tool.py`.
     - Limpieza de importaciones legacy (`PyQt5` -> `qgis.PyQt`) y remoción de `print` statements.
+    - **Infraestructura**: Integración de `conventional-pre-commit` para asegurar el cumplimiento de `COMMIT_GUIDELINES.md` y actualización de workflows de agent.
 - **Validación**: Análisis con `qgis-analyzer` y verificación con suite de pruebas unitarias.
 
 ### Resultados
