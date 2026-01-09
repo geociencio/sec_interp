@@ -3,6 +3,26 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
+## [2026-01-08] - Mejora Continua de Calidad (Docstrings, Type Hints y Complejidad) (20:10)
+
+### Actividades
+- **Fase 1 (Core)**: Mejora de cobertura en `__init__.py`, `core/performance_metrics.py` y docstrings iniciales en `core/controller.py`.
+- **Fase 2 (Servicios y Refactorización)**:
+    - Cobertura completa de Type Hints en `export_service.py`, `geology_service.py` y `drillhole_service.py`.
+    - Refactorización de `ProfileController.generate_profile_data` para reducir su complejidad ciclomática de 23 a <15.
+    - Modularización de `PreviewParams.validate` para mejorar mantenibilidad (reducción de CC de 18 a <15).
+- **Validación**: Análisis con `qgis-analyzer` y verificación con suite de pruebas unitarias (corrección de fallo de importación).
+
+### Resultados
+- **Type Hint Coverage (Params)**: Incremento de **62.1% → 69.2%**.
+- **Type Hint Coverage (Returns)**: Incremento de **28.5% → 30.9%**.
+- **Issue Statistics**: Reducción neta de **22 incidencias** (527 a 505).
+- **Mantenibilidad**: Se mantiene en **100/100**.
+
+### Documentación
+- Walkthrough: [walkthrough.md](file:///home/jmbernales/.gemini/antigravity/brain/420250bf-835d-4495-944e-0528f9570fef/walkthrough.md)
+
+---
 ## [2026-01-08] - Refactorización de Exporters y Benchmarks v2.6.0 (19:42)
 
 ### Actividades
