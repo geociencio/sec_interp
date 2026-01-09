@@ -43,149 +43,172 @@
 <li><p>Create a topographic profile from a Digital Elevation Model (DEM).</p></li>
 <li><p>Project geological units from a polygon layer onto the profile.</p></li>
 <li><p>Project structural measurements (e.g., dip and strike) onto the profile.</p></li>
-<li><p><strong>New</strong>: Project drillhole traces and geological intervals (sondajes) onto the section.</p></li>
+<li><p>Project drillhole traces and geological intervals (sondajes) onto the section.</p></li>
+<li><p><strong>New (v2.6.0)</strong>: Digitize geological interpretations directly on the section with the <strong>Interpretation Tool</strong>.</p></li>
+<li><p><strong>New (v2.6.0)</strong>: Export your 2D interpretations as valid <strong>3D Shapefiles (PolygonZ)</strong>.</p></li>
+<li><p><strong>New (v2.6.0)</strong>: Configure the plugin interface in 5 different languages.</p></li>
 <li><p>View an interactive preview with level-of-detail (LOD) optimization.</p></li>
-<li><p><strong>New</strong>: Measure distances and gradients with automatic snapping to vertices.</p></li>
-<li><p>Export data to CSV and Shapefile formats, and export the preview to image/vector formats.</p></li>
+<li><p>Measure distances and gradients with automatic snapping to vertices.</p></li>
 </ul>
 </section>
 <section id="the-main-window">
 <h2>2. The Main Window<a class="headerlink" href="#the-main-window" title="Link to this heading">¶</a></h2>
 <p>The SecInterp dialog is divided into three main areas:</p>
 <ol class="arabic simple">
-<li><p><strong>Settings Panel (Left)</strong>: Where you select your layers and adjust parameters.</p></li>
-<li><p><strong>Preview Panel (Right)</strong>: Where you see the interactive preview of your cross-section.</p></li>
-<li><p><strong>Output &amp; Actions (Bottom)</strong>: Where you specify the output folder and execute actions like “Preview”, “Save”, and “OK”.</p></li>
+<li><p><strong>Sidebar Navigation (Left)</strong>: Navigate between different modules: DEM, Drillholes, Geology, Structure, Settings, and Help.</p></li>
+<li><p><strong>Configuration Page (Center)</strong>: Where you configure the parameters for the selected module.</p></li>
+<li><p><strong>Preview Panel (Right)</strong>: An interactive canvas showing your cross-section in real-time.</p></li>
 </ol>
-<p><img alt="Main Window" src="_images/ui_main_dialog.png" /></p>
+<p>&#64;[INSERT IMAGE HERE: images/ui_main_dialog_v26.png]
+<em>Figure 1: The redesigned v2.6.0 Main Window with Sidebar navigation.</em></p>
 </section>
-<section id="step-by-step-tutorial-creating-a-basic-profile">
-<h2>3. Step-by-Step Tutorial: Creating a Basic Profile<a class="headerlink" href="#step-by-step-tutorial-creating-a-basic-profile" title="Link to this heading">¶</a></h2>
-<p>This tutorial will guide you through creating a simple topographic profile.</p>
-<section id="step-1-select-input-layers">
-<h3>Step 1: Select Input Layers<a class="headerlink" href="#step-1-select-input-layers" title="Link to this heading">¶</a></h3>
+<section id="step-by-step-tutorial-creating-a-profile">
+<h2>3. Step-by-Step Tutorial: Creating a Profile<a class="headerlink" href="#step-by-step-tutorial-creating-a-profile" title="Link to this heading">¶</a></h2>
+<section id="step-1-digital-elevation-model-dem">
+<h3>Step 1: Digital Elevation Model (DEM)<a class="headerlink" href="#step-1-digital-elevation-model-dem" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p><strong>DEM / Raster</strong>: In the “Digital Elevation Model” section, click the “Raster Layer” dropdown and select your DEM layer.
-<img alt="Select DEM" src="_images/workflow_01_select_dem.png" /></p></li>
-<li><p><strong>Section Line</strong>: In the “Section Line” section, click the “Cross-section line layer” dropdown and select the line layer that represents your cross-section path.
-<img alt="Select Section Line" src="_images/workflow_03_select_section_line.png" /></p></li>
+<li><p>Navigate to the <strong>DEM</strong> tab in the sidebar.</p></li>
+<li><p><strong>Raster Layer</strong>: Select your Digital Elevation Model.</p></li>
+<li><p><strong>Vertical Exaggeration</strong>: Adjust if you want to emphasize topography (e.g., 2.0x).</p></li>
 </ol>
+<p>&#64;[INSERT IMAGE HERE: images/guide_dem_setup.png]
+<em>Figure 2: Digital Elevation Model configuration.</em></p>
 </section>
-<section id="step-2-generate-a-preview">
-<h3>Step 2: Generate a Preview<a class="headerlink" href="#step-2-generate-a-preview" title="Link to this heading">¶</a></h3>
+<section id="step-2-define-section-line">
+<h3>Step 2: Define Section Line<a class="headerlink" href="#step-2-define-section-line" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Once you have selected both a raster and a line layer, the <strong>“Preview”</strong> button in the bottom right will become enabled.</p></li>
-<li><p>Click <strong>“Preview”</strong>.</p></li>
-<li><p>The topographic profile will be generated and displayed in the preview panel. You can pan by clicking and dragging and zoom using the mouse wheel.
-<img alt="Preview Generated" src="_images/workflow_04_preview_generated.png" /></p></li>
+<li><p>Navigate to the <strong>Section Line</strong> tab.</p></li>
+<li><p><strong>Section Layer</strong>: Select the vector line layer representing your section traces.</p></li>
+<li><p><strong>Buffer</strong>: Set a buffer distance (e.g., 50m) to capture data around the line.</p></li>
+<li><p>Optionally, filter specific lines if your layer contains multiple traces.</p></li>
 </ol>
+<p>&#64;[INSERT IMAGE HERE: images/guide_section_setup.png]
+<em>Figure 3: Section Line selection and buffer configuration.</em></p>
 </section>
-<section id="step-3-add-geological-data-optional">
-<h3>Step 3: Add Geological Data (Optional)<a class="headerlink" href="#step-3-add-geological-data-optional" title="Link to this heading">¶</a></h3>
+<section id="step-3-adding-geological-data">
+<h3>Step 3: Adding Geological Data<a class="headerlink" href="#step-3-adding-geological-data" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Go to the <strong>“Geology”</strong> section in the settings panel.</p></li>
-<li><p>Select your geological polygon layer in the <strong>“Outcrop layer”</strong> dropdown.</p></li>
-<li><p>Select the field that contains the geological unit names in the <strong>“Geology field”</strong> dropdown.</p></li>
-<li><p>Click <strong>“Preview”</strong> again. The geological units will now be drawn on top of your topographic profile.
-<img alt="Geology Setup" src="_images/workflow_05_geology_setup.png" /></p></li>
-</ol>
-</section>
-<section id="step-4-add-structural-data-optional">
-<h3>Step 4: Add Structural Data (Optional)<a class="headerlink" href="#step-4-add-structural-data-optional" title="Link to this heading">¶</a></h3>
-<ol class="arabic simple">
-<li><p>Go to the <strong>“Structural”</strong> section.</p></li>
-<li><p>Select your structural point layer in the <strong>“Structural layer”</strong> dropdown.</p></li>
-<li><p>Select the fields corresponding to <strong>“Dip”</strong> and <strong>“Strike”</strong>.</p></li>
-<li><p>Adjust the <strong>“Buffer”</strong> distance. Only points within this distance from your section line will be considered.</p></li>
-<li><p>Click <strong>“Preview”</strong> again. The structural measurements will be projected onto your profile as small lines.
-<img alt="Structural Setup" src="_images/workflow_06_structural_setup.png" /></p></li>
+<li><p>Navigate to the <strong>Geology</strong> tab.</p></li>
+<li><p><strong>Outcrop Layer</strong>: Select the polygon layer containing your surface geology.</p></li>
+<li><p><strong>Geology Field</strong>: Choose the field containing the unit codes or names.</p></li>
 </ol>
 </section>
-<section id="step-5-add-drillhole-data-optional">
-<h3>Step 5: Add Drillhole Data (Optional)<a class="headerlink" href="#step-5-add-drillhole-data-optional" title="Link to this heading">¶</a></h3>
+<section id="step-4-adding-drillhole-data">
+<h3>Step 4: Adding Drillhole Data<a class="headerlink" href="#step-4-adding-drillhole-data" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Go to the <strong>“Drillholes”</strong> section.</p></li>
-<li><p>Select your <strong>“Collar layer”</strong> (points) and <strong>“Survey layer”</strong> (or use auto-calculation for vertical holes).</p></li>
-<li><p>Choose the <strong>“Interval layer”</strong> for geological logging.</p></li>
-<li><p>Configure the depth and geology fields.</p></li>
-<li><p>Click <strong>“Preview”</strong>. The drillhole traces and intervals will appear in the section, projected into the 2D plane.
-<img alt="Drillhole Collar Setup" src="_images/workflow_07_drillhole_collar_setup.png" />
-<img alt="Drillhole Survey Setup" src="_images/workflow_08_drillhole_survey_setup.png" />
-<img alt="Drillhole Interval Setup" src="_images/workflow_09_drillhole_interval_setup.png" /></p></li>
+<li><p>Navigate to the <strong>Drillholes</strong> tab.</p></li>
+<li><p><strong>Collar Layer</strong>: Point layer with hole locations (Collar).</p></li>
+<li><p><strong>Survey Layer</strong>: (Optional) Downhole survey data (Depth/Dip/Azimuth).</p></li>
+<li><p><strong>Interval Layer</strong>: Geological logging data (From/To/Lithology).</p></li>
+<li><p><strong>Max Projection Dist.</strong>: Limits which holes are projected based on distance from the section line.</p></li>
+</ol>
+<p>&#64;[INSERT IMAGE HERE: images/guide_drillhole_setup.png]
+<em>Figure 4: Drillhole configuration showing Collar and Interval settings.</em></p>
+</section>
+<section id="step-5-generate-preview">
+<h3>Step 5: Generate Preview<a class="headerlink" href="#step-5-generate-preview" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Click the <strong>Preview</strong> button (bottom right).</p></li>
+<li><p>The section will render in the right-hand panel. Use the mouse wheel to zoom and drag to pan.</p></li>
+<li><p>Use the <strong>Layer Legend</strong> (top right of preview) to toggle visibility of topography, drillholes, or geology.</p></li>
 </ol>
 </section>
 </section>
-<section id="understanding-the-settings">
-<h2>4. Understanding the Settings<a class="headerlink" href="#understanding-the-settings" title="Link to this heading">¶</a></h2>
-<section id="dem-raster">
-<h3>DEM / Raster<a class="headerlink" href="#dem-raster" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Raster Layer</strong>: Your source DEM.</p></li>
-<li><p><strong>Band</strong>: The raster band to get elevation data from (usually Band 1).</p></li>
-<li><p><strong>Scale</strong>: The map scale you intend for your final output. This helps with some calculations.</p></li>
-<li><p><strong>Vert. Exag.</strong>: Vertical Exaggeration. A value of <code class="docutils literal notranslate"><span class="pre">2.0</span></code> will make the vertical scale twice as large as the horizontal scale, exaggerating topographic features.</p></li>
-</ul>
-</section>
-<section id="section-line">
-<h3>Section Line<a class="headerlink" href="#section-line" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Cross-section line layer</strong>: The vector line layer defining your profile path.</p></li>
-<li><p><strong>Buffer</strong>: The distance (in layer units) from the line to search for structural data points.</p></li>
-</ul>
-</section>
-<section id="drillholes">
-<h3>Drillholes<a class="headerlink" href="#drillholes" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Collar Layer</strong>: Point layer with hole locations.</p></li>
-<li><p><strong>Survey Layer</strong>: Data for hole orientation (Dip/Azimuth).</p></li>
-<li><p><strong>Interval Layer</strong>: Geological or assay data with depth intervals.</p></li>
-<li><p><strong>Max Projection Dist.</strong>: Only holes within this distance from the section line will be shown.</p></li>
-</ul>
-</section>
-<section id="preview-controls">
-<h3>Preview Controls<a class="headerlink" href="#preview-controls" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>Max Points</strong>: (Only active if “Auto” is unchecked). Manually sets the level of detail. Lower values are faster but less detailed.</p></li>
-<li><p><strong>Auto</strong>: (Recommended). Automatically adjusts the level of detail as you zoom and pan.</p></li>
-<li><p><strong>Adaptive</strong>: (Recommended). Uses a smarter algorithm to simplify the line, preserving more detail in complex areas.</p></li>
-<li><p><strong>Show Topography/Geology/Structures</strong>: Use these checkboxes to toggle the visibility of different layers in the preview.</p></li>
-</ul>
-</section>
-<section id="the-measure-tool">
-<h3>The Measure Tool<a class="headerlink" href="#the-measure-tool" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Click the <strong>“Measure”</strong> button in the preview panel to enable it.</p></li>
-<li><p><strong>Snapping</strong>: The tool automatically “snaps” to the nearest vertex or contact of the generated topography and geology, ensuring precise measurements.</p></li>
-<li><p>Click and drag on the preview canvas to measure distance and slope. The results are displayed in the results panel.</p></li>
-<li><p>Toggle the “Measure” button off to return to the pan tool.</p></li>
-</ul>
-</section>
-</section>
-<section id="exporting-your-work">
-<h2>5. Exporting Your Work<a class="headerlink" href="#exporting-your-work" title="Link to this heading">¶</a></h2>
-<p>There are two ways to export:</p>
+<section id="new-features-in-v2-6-0">
+<h2>4. New Features in v2.6.0<a class="headerlink" href="#new-features-in-v2-6-0" title="Link to this heading">¶</a></h2>
+<section id="interpretation-tool-drawing">
+<h3>4.1 Interpretation Tool (Drawing)<a class="headerlink" href="#interpretation-tool-drawing" title="Link to this heading">¶</a></h3>
+<p>The new <strong>Interpretation Tool</strong> allows you to draw geological polygons directly on the profile section.</p>
 <ol class="arabic simple">
-<li><p><strong>Save Profile Data (<code class="docutils literal notranslate"><span class="pre">Save</span></code> button)</strong>:</p>
+<li><p>Enable the tool by clicking the <strong>Pencil Icon</strong> in the preview toolbar.</p></li>
+<li><p><strong>Drawing</strong>: Left-click to add vertices.</p></li>
+<li><p><strong>Snapping</strong>: The cursor will automatically snap to:</p>
 <ul class="simple">
-<li><p>First, select an <strong>“Output Folder”</strong> at the bottom of the window.</p></li>
-<li><p>Click the <strong>“Save”</strong> button.</p></li>
-<li><p>This generates a set of <strong>CSV and Shapefile</strong> files in your output folder containing the raw data for the topography, geology, and structures. This is ideal for use in other software or for further analysis.</p></li>
+<li><p>Topography surface.</p></li>
+<li><p>Drillhole contacts.</p></li>
+<li><p>Existing interpretation vertices.</p></li>
 </ul>
 </li>
-<li><p><strong>Export Preview Image (<code class="docutils literal notranslate"><span class="pre">Export</span></code> button)</strong>:</p>
-<ul class="simple">
-<li><p>After generating a preview, click the <strong>“Export”</strong> button located under the preview canvas.</p></li>
-<li><p>This allows you to save the current preview as an image (PNG, JPG) or vector graphic (SVG, PDF). This is ideal for including in reports and presentations.</p></li>
-</ul>
-</li>
+<li><p><strong>Undo</strong>: Right-click to remove the last vertex.</p></li>
+<li><p><strong>Finalize</strong>: Double-click (or press Enter) to close the polygon.</p></li>
+<li><p><strong>Properties</strong>: A dialog will appear to set the <strong>Lithology</strong>, <strong>Formation</strong>, and <strong>Color</strong> of the new polygon.</p></li>
+</ol>
+<p>&#64;[INSERT IMAGE HERE: images/guide_interpretation_tool.png]
+<em>Figure 5: Digitizing a new geological unit using the Interpretation Tool.</em></p>
+</section>
+<section id="exporting-to-3d-polygonz">
+<h3>4.2 Exporting to 3D (PolygonZ)<a class="headerlink" href="#exporting-to-3d-polygonz" title="Link to this heading">¶</a></h3>
+<p>SecInterp now bridges the gap between 2D sections and 3D modeling. This feature allows you to export your 2D interpretations as real 3D objects.</p>
+<p><strong>Workflow:</strong></p>
+<ol class="arabic simple">
+<li><p>Go to the <strong>Settings</strong> tab and check <strong>“Enable 3D Interpretation Export”</strong>.</p></li>
+<li><p>Use the <strong>Save</strong> button (not Export) to generate your data.</p></li>
+<li><p>The plugin will create a <strong>PolygonZ</strong> Shapefile in your output folder.</p></li>
+<li><p>Every vertex of your interpretation is projected into real-world 3D coordinates based on the section plane and surface elevation.</p></li>
 </ol>
 </section>
-<section id="closing-the-plugin">
-<h2>6. Closing the Plugin<a class="headerlink" href="#closing-the-plugin" title="Link to this heading">¶</a></h2>
+<section id="settings-page">
+<h3>4.3 Settings Page<a class="headerlink" href="#settings-page" title="Link to this heading">¶</a></h3>
+<p>The <strong>Settings</strong> tab manages advanced plugin features.</p>
 <ul class="simple">
-<li><p><strong>OK</strong>: Saves all your data (like the <code class="docutils literal notranslate"><span class="pre">Save</span></code> button) and then closes the dialog.</p></li>
-<li><p><strong>Cancel</strong>: Closes the dialog without saving any data.</p></li>
+<li><p><strong>Enable 3D Interpretation Export</strong>: Toggles the generation of 3D Shapefiles during the Save process.</p></li>
 </ul>
+<p>&#64;[INSERT IMAGE HERE: images/guide_settings_page.png]
+<em>Figure 6: The Settings page with 3D Export option.</em></p>
+</section>
+</section>
+<section id="measure-tool">
+<h2>5. Measure Tool<a class="headerlink" href="#measure-tool" title="Link to this heading">¶</a></h2>
+<p>The <strong>Measure Tool</strong> (Ruler Icon) allows precise measurements on the section.</p>
+<ul class="simple">
+<li><p><strong>Snap-to-Vertex</strong>: Measurements automatically anchor to real data points (DEM or Drillholes).</p></li>
+<li><p><strong>Multi-Segment</strong>: Click multiple times to measure a polyline path (e.g., along a drillhole trace).</p></li>
+<li><p><strong>Metrics</strong>: The result panel shows:</p>
+<ul>
+<li><p><strong>Total Distance</strong> (3D)</p></li>
+<li><p><strong>Horizontal Distance</strong></p></li>
+<li><p><strong>Vertical Distance</strong> (Delta Z)</p></li>
+</ul>
+</li>
+</ul>
+<p>&#64;[INSERT IMAGE HERE: images/guide_measure_tool.png]
+<em>Figure 7: Measuring distance along a drillhole trace.</em></p>
+</section>
+<section id="closing-saving">
+<h2>6. Closing &amp; Saving<a class="headerlink" href="#closing-saving" title="Link to this heading">¶</a></h2>
+<p>It is important to understand the difference between <strong>Save</strong> and <strong>OK</strong>:</p>
+<section id="save-button-export-to-disk">
+<h3><strong>“Save” Button (Export to Disk)</strong><a class="headerlink" href="#save-button-export-to-disk" title="Link to this heading">¶</a></h3>
+<p>Use this when you want to <strong>share</strong> your data or use it in other software.</p>
+<ul class="simple">
+<li><p>Generates physical files (Shapefiles, CSV) in your select <strong>Output Folder</strong>.</p></li>
+<li><p>Exports:</p>
+<ul>
+<li><p>Topographic Profile (LineString)</p></li>
+<li><p>Geological Contacts (Points)</p></li>
+<li><p>Structural Data (Points with Dip/Strike)</p></li>
+<li><p>Drillhole Traces and Intervals (3D Shapefiles)</p></li>
+<li><p><strong>3D Interpretations</strong> (PolygonZ, if enabled in Settings)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="ok-button-internal-persistence">
+<h3><strong>“OK” Button (Internal Persistence)</strong><a class="headerlink" href="#ok-button-internal-persistence" title="Link to this heading">¶</a></h3>
+<p>Use this when you want to <strong>save your progress</strong> and close the dialog, but continue working in QGIS.</p>
+<ul class="simple">
+<li><p>Saves the <strong>current state of the plugin</strong> (selected layers, parameters, window size) into the QGIS Project configuration.</p></li>
+<li><p>Saves your <strong>drawn interpretations</strong> internally in the <code class="docutils literal notranslate"><span class="pre">.qgs</span></code> project file so they reappear when you reopen the plugin.</p></li>
+<li><p>Closes the window.</p></li>
+</ul>
+</section>
+<section id="cancel-button">
+<h3><strong>“Cancel” Button</strong><a class="headerlink" href="#cancel-button" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Discards unsaved changes to parameters.</p></li>
+<li><p>Closes the window.</p></li>
+</ul>
+</section>
 </section>
 </section>
 
@@ -220,10 +243,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">SecInterp User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-main-window">2. The Main Window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-by-step-tutorial-creating-a-basic-profile">3. Step-by-Step Tutorial: Creating a Basic Profile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#understanding-the-settings">4. Understanding the Settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exporting-your-work">5. Exporting Your Work</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#closing-the-plugin">6. Closing the Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-by-step-tutorial-creating-a-profile">3. Step-by-Step Tutorial: Creating a Profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#new-features-in-v2-6-0">4. New Features in v2.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#measure-tool">5. Measure Tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#closing-saving">6. Closing &amp; Saving</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ARCHITECTURE.html">SecInterp - Detailed Project Architecture</a></li>

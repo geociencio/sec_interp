@@ -3,6 +3,22 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
+## [2026-01-08-4] - Despliegue v2.6.0 y Mejora de UX (23:00)
+
+### Actividades
+- **Fix Crítico**: Solucionado bug donde el diálogo se cerraba inesperadamente al presionar 'Save'.
+    - Desconectado `QDialogButtonBox.accepted` genérico.
+    - Implementada conexión manual de señales para OK, Cancel y Save.
+- **Refactorización de UI**:
+    - **SettingsPage**: Reestructurada con sistema de pestañas (Default, Advanced, Info).
+    - **Control de Exportación**: Añadidos controles selectivos en 'Settings > Default' para definir qué productos generar al guardar.
+- **Documentación**:
+    - Actualizado `USER_GUIDE.md` clarificando la diferencia entre 'Save' (salida a disco) y 'OK' (persistencia en proyecto).
+    - Corregida documentación sobre Exportación 3D.
+- **Despliegue**:
+    - Ejecutado despliegue local exitoso de la versión v2.6.0.
+
+---
 ## [2026-01-08-3] - Integración de CI/CD Permanente (22:15)
 
 ### Actividades

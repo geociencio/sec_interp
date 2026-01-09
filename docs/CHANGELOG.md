@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-01-08
+### 🚀 Infrastructure & DevOps
+- **Dockerized CI/CD**:
+  - Migrated GitHub Actions pipeline to use `qgis/qgis:latest` image.
+  - Enabled native headless testing with `QT_QPA_PLATFORM: offscreen`.
+  - Optimized `Dockerfile` for local development parity using `uv`.
+
+### 🏗️ Architecture & Refactoring
+- **3D Exporter Optimization**:
+  - Significant reduction in cyclomatic complexity for `Interpretation3DExporter`.
+  - Refactored monolithic methods into granular, testable private methods.
+- **GUI Validation Harmonization**:
+  - Decoupled `DialogValidator` from direct UI widget access.
+  - Centralized parameter collection via `DialogDataAggregator`.
+  - Unified validation rules across `DemPage`, `GeologyPage`, and `StructurePage`.
+
+### 🧪 Testing & Quality
+- **Performance Benchmarks**:
+  - Implemented benchmark suite for geometry processing and 3D export.
+  - Established baselines for future regression testing.
+- **Type Safety**:
+  - Achieved 100% type hint coverage for GUI validation modules.
+  - Added Google-style docstrings to critical UI components.
+
 ## [2.5.0] - 2026-01-03
 ### 🚀 Major Features
 - **3D Interpretation Export**:

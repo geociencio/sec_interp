@@ -187,6 +187,15 @@ class ExportManager:
             num_interps = len(self.dialog.interpretations)
             logger.info(f"Exporting data: found {num_interps} interpretation(s) in dialog.")
 
+            # Extract export settings
+            export_options = {
+                "exp_topo": values.get("exp_topo", True),
+                "exp_geol": values.get("exp_geol", True),
+                "exp_struct": values.get("exp_struct", True),
+                "exp_drill": values.get("exp_drill", True),
+                "exp_interp": values.get("exp_interp", True),
+            }
+
             result_msg = self.export_service.export_data(
                 output_folder,
                 params,
@@ -195,6 +204,7 @@ class ExportManager:
                 struct_data,
                 drillhole_data,
                 interp_data=self.dialog.interpretations,
+                export_options=export_options,
             )
 
             self.dialog.preview_widget.results_text.setPlainText("\n".join(result_msg))

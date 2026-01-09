@@ -41,6 +41,7 @@ class ExportService:
         struct_data: list[Any] | None,
         drillhole_data: list[Any] | None = None,
         interp_data: list[Any] | None = None,
+        export_options: dict[str, bool] | None = None,
     ) -> list[str]:
         """Export generated data to CSV and Shapefile formats.
 
@@ -52,11 +53,18 @@ class ExportService:
             struct_data: List of StructureMeasurement objects.
             drillhole_data: Optional list of drillhole data.
             interp_data: Optional list of InterpretationPolygon objects.
-
-        Returns:
-            A list of user-friendly log messages.
+            export_options: Dictionary of flags 'exp_topo', 'exp_geol', etc.
 
         """
+        if export_options is None:
+            # Default to all True if not provided
+            export_options = {
+                "exp_topo": True,
+                "exp_geol": True,
+                "exp_struct": True,
+                "exp_drill": True,
+                "exp_interp": True,
+            }
         # Ensure we have data to work with
         if not profile_data:
             raise DataMissingError("No profile data available for export")
@@ -73,14 +81,26 @@ class ExportService:
         csv_exporter = CSVExporter({})
 
         # Orchestrate sub-exports
-        self._export_topography(output_folder, profile_data, line_crs, csv_exporter, result_msg)
-        self._export_geology(output_folder, geol_data, line_crs, csv_exporter, result_msg)
-        self._export_structures(
-            output_folder, struct_data, params, line_crs, csv_exporter, result_msg
-        )
-        self._export_drillholes(output_folder, drillhole_data, line_crs, result_msg)
-        self._export_interpretations(output_folder, interp_data, line_layer, line_crs, result_msg)
-        self._export_axes(output_folder, profile_data, line_crs, result_msg)
+        # Orchestrate sub-exports
+        if export_options.get("exp_topo", True):
+            self._export_topography(output_folder, profile_data, line_crs, csv_exporter, result_msg)
+            self._export_axes(output_folder, profile_data, line_crs, result_msg)
+
+        if export_options.get("exp_geol", True):
+            self._export_geology(output_folder, geol_data, line_crs, csv_exporter, result_msg)
+
+        if export_options.get("exp_struct", True):
+            self._export_structures(
+                output_folder, struct_data, params, line_crs, csv_exporter, result_msg
+            )
+
+        if export_options.get("exp_drill", True):
+            self._export_drillholes(output_folder, drillhole_data, line_crs, result_msg)
+
+        if export_options.get("exp_interp", True):
+            self._export_interpretations(
+                output_folder, interp_data, line_layer, line_crs, result_msg
+            )
 
         result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
         return result_msg

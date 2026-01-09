@@ -42,6 +42,7 @@ class DialogDataAggregator:
             **self._get_geology_values(),
             **self._get_structure_values(),
             **self._get_drillhole_values(),
+            **self._get_settings_values(),
             "output_path": self.dialog.output_widget.filePath(),
         }
 
@@ -130,6 +131,18 @@ class DialogDataAggregator:
             "interval_to_field": drillhole_data["interval_to"],
             "interval_lith_field": drillhole_data["interval_lith"],
         }
+
+    def _get_settings_values(self) -> dict:
+        """Get settings page values.
+
+        Returns:
+            Dictionary with settings values
+
+        """
+        # Ensure we don't fail if page_settings is not fully initialized in tests
+        if hasattr(self.dialog, "page_settings"):
+            return self.dialog.page_settings.get_data()
+        return {}
 
     def get_validation_params(self) -> ValidationParams:
         """Collect current dialog state into a ValidationParams object.

@@ -7,7 +7,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=2.5.0
+version=2.6.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -21,6 +21,16 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    2.6.0 (2026-01-08)
+    * Infrastructure & DevOps:
+      - CI/CD: Fully dockerized pipeline using official QGIS image (headless).
+      - Optimization: Reduced 3D Exporter complexity (Cyclomatic Complexity <= 5).
+    * GUI & Validation:
+      - Refactoring: Centralized validation logic in DialogDataAggregator.
+      - Harmonization: Unified UI completion checks via ProjectValidator.
+    * Performance:
+      - Benchmarks: Added performance test suite for geometry and export operations.
+
     2.5.0 (2026-01-03)
     * Major Features:
       - 3D Interpretation Export: Export 2D interpretations as real 3D Shapefiles (PolygonZ).

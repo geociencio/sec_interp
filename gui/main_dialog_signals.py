@@ -43,14 +43,24 @@ class DialogSignalManager:
     def _connect_button_signals(self) -> None:
         """Connect dialog button signals."""
         # Main dialog buttons
-        self.dialog.button_box.accepted.connect(self.dialog.accept_handler)
-        self.dialog.button_box.rejected.connect(self.dialog.reject_handler)
-        self.dialog.button_box.helpRequested.connect(self.dialog.open_help)
+        # Connect standard buttons explicitly
+        # We avoid connecting accepting/rejected signals directly because 'Save' button
+        # might have AcceptRole by default in some Qt versions/styles, triggering accept().
 
-        # Connect Save button to export_data
+        ok_btn = self.dialog.button_box.button(QDialogButtonBox.Ok)
+        if ok_btn:
+            ok_btn.clicked.connect(self.dialog.accept_handler)
+
+        cancel_btn = self.dialog.button_box.button(QDialogButtonBox.Cancel)
+        if cancel_btn:
+            cancel_btn.clicked.connect(self.dialog.reject_handler)
+
         save_btn = self.dialog.button_box.button(QDialogButtonBox.Save)
         if save_btn:
+            # Save should ONLY trigger export, not close the dialog
             save_btn.clicked.connect(self.dialog.export_manager.export_data)
+
+        self.dialog.button_box.helpRequested.connect(self.dialog.open_help)
 
         # Clear cache button
         self.dialog.clear_cache_btn.clicked.connect(self.dialog.clear_cache_handler)
