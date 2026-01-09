@@ -334,6 +334,14 @@ class DialogSettingsManager:
         pw.chk_adaptive_sampling.setChecked(True)
         pw.spin_max_points.setValue(1000)
 
+        # Clear interpretations
+        if hasattr(self.dialog, "interpretations"):
+            self.dialog.interpretations = []
+            # Persist empty state to project
+            if hasattr(self.dialog, "_save_interpretations"):
+                self.dialog._save_interpretations()
+            logger.info("Persistent interpretations cleared by reset")
+
     # --- Helper Methods ---
     def _parse_setting_value(self, val: Any) -> Any:
         """Parse string values back to appropriate Python types."""

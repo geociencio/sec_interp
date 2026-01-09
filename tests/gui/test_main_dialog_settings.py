@@ -80,5 +80,19 @@ class TestMainDialogSettings(BaseTestCase):
         val = self.manager._get_setting("buffer_dist")
         self.assertEqual(val, 100.5)
 
+    def test_reset_to_defaults_clears_interpretations(self):
+        """Test that reset_to_defaults clears persistent interpretations."""
+        # Setup initial state
+        self.dialog.interpretations = ["interp1", "interp2"]
+        self.dialog._save_interpretations = MagicMock()
+
+        # Run reset
+        self.manager.reset_to_defaults()
+
+        # Assertions
+        self.assertEqual(self.dialog.interpretations, [], "Interpretations list should be cleared")
+        self.dialog._save_interpretations.assert_called_once()
+
+
 if __name__ == "__main__":
     unittest.main()

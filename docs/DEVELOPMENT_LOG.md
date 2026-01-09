@@ -9,6 +9,8 @@ Chronological record of development activities, significant fixes, and technical
 - **Fix Crítico**: Solucionado bug donde el diálogo se cerraba inesperadamente al presionar 'Save'.
     - Desconectado `QDialogButtonBox.accepted` genérico.
     - Implementada conexión manual de señales para OK, Cancel y Save.
+- **Fix Persistencia**: Solucionado bug donde configuraciones antiguas de interpretaciones (polígonos) persistían incluso tras usar "Reset Defaults".
+    - Ahora `reset_to_defaults` limpia explícitamente `self.interpretations` y fuerza el guardado inmediato al proyecto.
 - **Refactorización de UI**:
     - **SettingsPage**: Reestructurada con sistema de pestañas (Default, Advanced, Info).
     - **Control de Exportación**: Añadidos controles selectivos en 'Settings > Default' para definir qué productos generar al guardar.
