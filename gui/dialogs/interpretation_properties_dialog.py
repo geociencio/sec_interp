@@ -1,4 +1,12 @@
-"""Dialog for editing interpretation properties."""
+"""Dialog for editing interpretation properties.
+
+This module provides a dialog to edit the attributes and visual properties
+of geological interpretations drawn on the profile.
+"""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
@@ -13,21 +21,30 @@ from qgis.PyQt.QtWidgets import (
     QVBoxLayout,
 )
 
+if TYPE_CHECKING:
+    from sec_interp.core.types import InterpretationPolygon
+
 
 class InterpretationPropertiesDialog(QDialog):
     """Dialog to edit attributes and properties of a newly created interpretation."""
 
-    def __init__(self, interpretation, custom_fields_config, parent=None):
+    def __init__(
+        self,
+        interpretation: InterpretationPolygon,
+        custom_fields_config: list[dict[str, Any]],
+        parent: Any = None,
+    ) -> None:
         super().__init__(parent)
         self.interpretation = interpretation
         self.custom_fields_config = custom_fields_config
         self.setWindowTitle(self.tr("Interpretation Properties"))
         self.resize(400, 300)
 
-        self.field_widgets = {}
+        self.field_widgets: dict[str, QLineEdit] = {}
         self._setup_ui()
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
+        """Initialize the user interface components."""
         layout = QVBoxLayout(self)
 
         form_layout = QFormLayout()
@@ -75,17 +92,24 @@ class InterpretationPropertiesDialog(QDialog):
         self.button_box.rejected.connect(self.reject)
         layout.addWidget(self.button_box)
 
-    def _set_preview_color(self, hex_color):
+    def _set_preview_color(self, hex_color: str) -> None:
+        """Update the color preview label background.
+
+        Args:
+            hex_color: Color in hex format (e.g., '#RRGGBB').
+
+        """
         self.color_preview.setStyleSheet(f"background-color: {hex_color}; border: 1px solid black;")
 
-    def _pick_color(self):
+    def _pick_color(self) -> None:
+        """Open a color dialog to change the interpretation color."""
         color = QColor(self.interpretation.color)
         new_color = QColorDialog.getColor(color, self, self.tr("Select Color"))
         if new_color.isValid():
             self.interpretation.color = new_color.name()
             self._set_preview_color(self.interpretation.color)
 
-    def accept(self):
+    def accept(self) -> None:
         """Update interpretation object and close."""
         self.interpretation.name = self.name_edit.text()
         self.interpretation.type = self.type_edit.text()
@@ -96,6 +120,6 @@ class InterpretationPropertiesDialog(QDialog):
 
         super().accept()
 
-    def reject(self):
+    def reject(self) -> None:
         """Close dialog without saving."""
         super().reject()

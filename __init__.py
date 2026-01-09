@@ -1,3 +1,9 @@
+"""SecInterp QGIS Plugin.
+
+This plugin provides tools for cross-section generation and geological interpretation
+data extraction from QGIS layers.
+"""
+
 # /***************************************************************************
 #  SecInterp
 #                                  A QGIS plugin

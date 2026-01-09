@@ -33,14 +33,14 @@ class DialogSignalManager:
         """
         self.dialog = dialog
 
-    def connect_all(self):
+    def connect_all(self) -> None:
         """Connect all signals in organized groups."""
         self._connect_button_signals()
         self._connect_preview_signals()
         self._connect_page_signals()
         self._connect_tool_signals()
 
-    def _connect_button_signals(self):
+    def _connect_button_signals(self) -> None:
         """Connect dialog button signals."""
         # Main dialog buttons
         self.dialog.button_box.accepted.connect(self.dialog.accept_handler)
@@ -55,7 +55,7 @@ class DialogSignalManager:
         # Clear cache button
         self.dialog.clear_cache_btn.clicked.connect(self.dialog.clear_cache_handler)
 
-    def _connect_preview_signals(self):
+    def _connect_preview_signals(self) -> None:
         """Connect preview-related signals."""
         # Preview action buttons
         self.dialog.preview_widget.btn_preview.clicked.connect(self.dialog.preview_profile_handler)
@@ -89,7 +89,7 @@ class DialogSignalManager:
             self.dialog.update_preview_from_checkboxes
         )
 
-    def _connect_page_signals(self):
+    def _connect_page_signals(self) -> None:
         """Connect page-specific signals for state updates."""
         # Output path changes
         self.dialog.output_widget.fileChanged.connect(self.dialog.update_button_state)
@@ -111,7 +111,7 @@ class DialogSignalManager:
         self.dialog.page_struct.dataChanged.connect(self.dialog.update_preview_checkbox_states)
         self.dialog.page_drillhole.dataChanged.connect(self.dialog.update_preview_checkbox_states)
 
-    def _connect_tool_signals(self):
+    def _connect_tool_signals(self) -> None:
         """Connect map tool signals."""
         # Measure tool
         self.dialog.preview_widget.btn_measure.toggled.connect(self.dialog.toggle_measure_tool)
@@ -122,7 +122,8 @@ class DialogSignalManager:
         )
 
         # Finalize button with debug wrapper
-        def finalize_with_log():
+        def finalize_with_log() -> None:
+            """Log finalization action and trigger measurement finalization."""
             logger.info("Finalize button clicked!")
             self.dialog.tool_manager.measure_tool.finalize_measurement()
 

@@ -306,7 +306,17 @@ def performance_monitor(func: Callable) -> Callable:
     monitor = PerformanceMonitor()
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """Wrap function to log performance metrics.
+
+        Args:
+            *args: Positional arguments for the wrapped function.
+            **kwargs: Keyword arguments for the wrapped function.
+
+        Returns:
+            The original function's return value.
+
+        """
         operation_name = f"{func.__module__}.{func.__name__}"
 
         with monitor.measure_operation(

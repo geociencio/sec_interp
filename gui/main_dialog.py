@@ -182,13 +182,13 @@ class SecInterpDialog(SecInterpMainWindow):
                 level="critical",
             )
 
-    def wheelEvent(self, event):
+    def wheelEvent(self, event: Any) -> None:
         """Handle mouse wheel for zooming in preview via navigation_manager."""
         if self.navigation_manager.handle_wheel_event(event):
             return
         super().wheelEvent(event)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: Any) -> None:
         """Handle dialog close event to clean up resources."""
         if self._save_on_close:
             self.settings_manager.save_settings()
@@ -211,22 +211,22 @@ class SecInterpDialog(SecInterpMainWindow):
                 level=Qgis.Warning,
             )
 
-    def toggle_measure_tool(self, checked):
+    def toggle_measure_tool(self, checked: bool) -> None:
         """Toggle measurement tool via tool_manager."""
         self.tool_manager.toggle_measure_tool(checked)
 
-    def update_measurement_display(self, metrics):
+    def update_measurement_display(self, metrics: dict[str, Any]) -> None:
         """Display measurement results from multi-point tool via tool_manager."""
         self.tool_manager.update_measurement_display(metrics)
 
-    def toggle_interpretation_tool(self, checked):
+    def toggle_interpretation_tool(self, checked: bool) -> None:
         """Toggle interpretation tool via tool_manager."""
         if checked:
             # Deactivate measure tool if active
             self.preview_widget.btn_measure.setChecked(False)
         self.tool_manager.toggle_interpretation_tool(checked)
 
-    def on_interpretation_finished(self, interpretation):
+    def on_interpretation_finished(self, interpretation: InterpretationPolygon) -> None:
         """Handle finalized interpretation polygon.
 
         Args:
@@ -286,7 +286,9 @@ class SecInterpDialog(SecInterpMainWindow):
         # Update preview to show the new polygon
         self.update_preview_from_checkboxes()
 
-    def _apply_attribute_inheritance(self, interpretation, config):
+    def _apply_attribute_inheritance(
+        self, interpretation: InterpretationPolygon, config: dict[str, Any]
+    ) -> None:
         """Inherit attributes from nearest geology or drillhole data."""
         from qgis.core import QgsGeometry
 
@@ -454,7 +456,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self.preview_widget.results_text.append(self.tr("✓ Form reset to default values"))
         logger.info("Dialog reset to defaults by user")
 
-    def _populate_field_combobox(self, source_combobox, target_combobox):
+    def _populate_field_combobox(self, source_combobox: Any, target_combobox: Any) -> None:
         """Populate a combobox with field names."""
         DialogEntityManager.populate_field_combobox(source_combobox, target_combobox)
 
@@ -466,7 +468,7 @@ class SecInterpDialog(SecInterpMainWindow):
         """Get layer names by geometry."""
         return DialogEntityManager.get_layer_names_by_geometry(geometry_type)
 
-    def getThemeIcon(self, name):
+    def getThemeIcon(self, name: str) -> Any:
         """Get a theme icon via DialogEntityManager."""
         return DialogEntityManager.get_theme_icon(name)
 

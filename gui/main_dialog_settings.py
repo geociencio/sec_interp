@@ -34,21 +34,32 @@ class DialogSettingsManager:
 
     def load_settings(self) -> None:
         """Load user settings from previous session."""
-        # We don't return early if config is missing, as we still want project settings
+        self._load_section_settings()
+        self._load_dem_settings()
+        self._load_geology_settings()
+        self._load_structure_settings()
+        self._load_drillhole_settings()
+        self._load_output_settings()
+        self._load_interpretation_settings()
+        self._load_preview_settings()
 
-        # --- Section Page ---
+        # Update all status indicators after bulk restoration
+        self.dialog.status_manager.update_all()
+        logger.info("Settings loaded successfully from Project/Global config")
+
+    def _load_section_settings(self) -> None:
+        """Load settings for the Section page."""
         p_sect = self.dialog.page_section
         self._restore_layer(p_sect.line_combo, "section_layer")
-
         buffer_dist = self._get_setting("buffer_dist")
         if buffer_dist is not None:
             p_sect.buffer_spin.setValue(float(buffer_dist))
 
-        # --- DEM Page ---
+    def _load_dem_settings(self) -> None:
+        """Load settings for the DEM page."""
         p_dem = self.dialog.page_dem
         self._restore_layer(p_dem.raster_combo, "dem_layer")
 
-        # Manually sync dependent combos to avoid signal cascade overwrites
         raster_layer = p_dem.raster_combo.currentLayer()
         if raster_layer:
             p_dem.band_combo.setLayer(raster_layer)
@@ -65,54 +76,44 @@ class DialogSettingsManager:
         if vert_exag is not None:
             p_dem.vertexag_spin.setValue(float(vert_exag))
 
-        # Manually trigger resolution update labels without overwriting scale
         if raster_layer:
-            # We call the internal update to set labels, but we must ensure it doesn't
-            # overwrite the scale we just loaded.
-            # We'll block signals on scale_spin during this manual call.
             p_dem.scale_spin.blockSignals(True)
             p_dem._update_resolution()
             p_dem.scale_spin.blockSignals(False)
-            # Ensure the loaded scale is still there
             if scale is not None:
                 p_dem.scale_spin.setValue(float(scale))
 
-        # --- Geology Page ---
+    def _load_geology_settings(self) -> None:
+        """Load settings for the Geology page."""
         p_geol = self.dialog.page_geology
         self._restore_layer(p_geol.layer_combo, "geol_layer")
-
         geol_layer = p_geol.layer_combo.currentLayer()
         if geol_layer:
             p_geol.field_combo.setLayer(geol_layer)
         self._restore_field(p_geol.field_combo, "geol_field")
 
-        # --- Structure Page ---
+    def _load_structure_settings(self) -> None:
+        """Load settings for the Structure page."""
         p_struct = self.dialog.page_struct
         self._restore_layer(p_struct.layer_combo, "struct_layer")
-
         struct_layer = p_struct.layer_combo.currentLayer()
         if struct_layer:
             p_struct.dip_combo.setLayer(struct_layer)
             p_struct.strike_combo.setLayer(struct_layer)
-
         self._restore_field(p_struct.dip_combo, "struct_dip_field")
         self._restore_field(p_struct.strike_combo, "struct_strike_field")
-
         dip_scale = self._get_setting("dip_scale_factor")
         if dip_scale is not None:
             p_struct.scale_spin.setValue(float(dip_scale))
 
-        # --- Drillhole Page ---
+    def _load_drillhole_settings(self) -> None:
+        """Load settings for the Drillhole page."""
         dpage = self.dialog.page_drillhole
-        # Collar
         self._restore_layer(dpage.c_layer, "dh_collar_layer")
         c_layer = dpage.c_layer.currentLayer()
         if c_layer:
-            dpage.c_id.setLayer(c_layer)
-            dpage.c_x.setLayer(c_layer)
-            dpage.c_y.setLayer(c_layer)
-            dpage.c_z.setLayer(c_layer)
-            dpage.c_depth.setLayer(c_layer)
+            for w in [dpage.c_id, dpage.c_x, dpage.c_y, dpage.c_z, dpage.c_depth]:
+                w.setLayer(c_layer)
 
         self._restore_field(dpage.c_id, "dh_collar_id")
         self._restore_check(dpage.chk_use_geom, "dh_use_geom")
@@ -121,44 +122,37 @@ class DialogSettingsManager:
         self._restore_field(dpage.c_z, "dh_collar_z")
         self._restore_field(dpage.c_depth, "dh_collar_depth")
 
-        # Survey
         self._restore_layer(dpage.s_layer, "dh_survey_layer")
         s_layer = dpage.s_layer.currentLayer()
         if s_layer:
-            dpage.s_id.setLayer(s_layer)
-            dpage.s_depth.setLayer(s_layer)
-            dpage.s_azim.setLayer(s_layer)
-            dpage.s_incl.setLayer(s_layer)
-
+            for w in [dpage.s_id, dpage.s_depth, dpage.s_azim, dpage.s_incl]:
+                w.setLayer(s_layer)
         self._restore_field(dpage.s_id, "dh_survey_id")
         self._restore_field(dpage.s_depth, "dh_survey_depth")
         self._restore_field(dpage.s_azim, "dh_survey_azim")
         self._restore_field(dpage.s_incl, "dh_survey_incl")
 
-        # Interval
         self._restore_layer(dpage.i_layer, "dh_interval_layer")
         i_layer = dpage.i_layer.currentLayer()
         if i_layer:
-            dpage.i_id.setLayer(i_layer)
-            dpage.i_from.setLayer(i_layer)
-            dpage.i_to.setLayer(i_layer)
-            dpage.i_lith.setLayer(i_layer)
-
+            for w in [dpage.i_id, dpage.i_from, dpage.i_to, dpage.i_lith]:
+                w.setLayer(i_layer)
         self._restore_field(dpage.i_id, "dh_interval_id")
         self._restore_field(dpage.i_from, "dh_interval_from")
         self._restore_field(dpage.i_to, "dh_interval_to")
         self._restore_field(dpage.i_lith, "dh_interval_lith")
 
-        # Output folder
+    def _load_output_settings(self) -> None:
+        """Load settings for output path."""
         last_dir = self._get_setting("last_output_dir")
         if last_dir:
             self.dialog.output_widget.setFilePath(str(last_dir))
 
-        # --- Interpretation Page ---
+    def _load_interpretation_settings(self) -> None:
+        """Load settings for the Interpretation page."""
         p_interp = self.dialog.page_interpretation
         self._restore_check(p_interp.chk_inherit_geol, "interp_inherit_geol")
         self._restore_check(p_interp.chk_inherit_drill, "interp_inherit_drill")
-
         custom_fields_json = self._get_setting("interp_custom_fields")
         if custom_fields_json:
             try:
@@ -175,7 +169,8 @@ class DialogSettingsManager:
             except Exception as e:
                 logger.warning(f"Failed to restore custom fields: {e}")
 
-        # --- Preview Widget ---
+    def _load_preview_settings(self) -> None:
+        """Load settings for the preview widget."""
         pw = self.dialog.preview_widget
         self._restore_check(pw.chk_topo, "show_topo")
         self._restore_check(pw.chk_geol, "show_geol")
@@ -184,43 +179,51 @@ class DialogSettingsManager:
         self._restore_check(pw.chk_interpretations, "show_interpretations")
         self._restore_check(pw.chk_auto_lod, "auto_lod")
         self._restore_check(pw.chk_adaptive_sampling, "adaptive_sampling")
-
         max_points = self._get_setting("max_points")
         if max_points is not None:
             pw.spin_max_points.setValue(int(max_points))
-
-        # Update all status indicators after bulk restoration
-        self.dialog.status_manager.update_all()
-        logger.info("Settings loaded successfully from Project/Global config")
 
     def save_settings(self) -> None:
         """Save user settings for next session."""
         if not self.config:
             return
 
-        # --- Section Page ---
+        self._save_section_settings()
+        self._save_dem_settings()
+        self._save_geology_settings()
+        self._save_structure_settings()
+        self._save_drillhole_settings()
+        self._save_output_settings()
+        self._save_interpretation_settings()
+        self._save_preview_settings()
+
+    def _save_section_settings(self) -> None:
+        """Save settings for the Section page."""
         self._save_layer(self.dialog.page_section.line_combo, "section_layer")
         self._set_setting("buffer_dist", self.dialog.page_section.buffer_spin.value())
 
-        # --- DEM Page ---
+    def _save_dem_settings(self) -> None:
+        """Save settings for the DEM page."""
         self._save_layer(self.dialog.page_dem.raster_combo, "dem_layer")
         self._set_setting("dem_band", self.dialog.page_dem.band_combo.currentBand())
         self._set_setting("scale", self.dialog.page_dem.scale_spin.value())
         self._set_setting("vert_exag", self.dialog.page_dem.vertexag_spin.value())
 
-        # --- Geology Page ---
+    def _save_geology_settings(self) -> None:
+        """Save settings for the Geology page."""
         self._save_layer(self.dialog.page_geology.layer_combo, "geol_layer")
         self._save_field(self.dialog.page_geology.field_combo, "geol_field")
 
-        # --- Structure Page ---
+    def _save_structure_settings(self) -> None:
+        """Save settings for the Structure page."""
         self._save_layer(self.dialog.page_struct.layer_combo, "struct_layer")
         self._save_field(self.dialog.page_struct.dip_combo, "struct_dip_field")
         self._save_field(self.dialog.page_struct.strike_combo, "struct_strike_field")
         self._set_setting("dip_scale_factor", self.dialog.page_struct.scale_spin.value())
 
-        # --- Drillhole Page ---
+    def _save_drillhole_settings(self) -> None:
+        """Save settings for the Drillhole page."""
         dpage = self.dialog.page_drillhole
-        # Collar
         self._save_layer(dpage.c_layer, "dh_collar_layer")
         self._save_field(dpage.c_id, "dh_collar_id")
         self._save_check(dpage.chk_use_geom, "dh_use_geom")
@@ -229,24 +232,24 @@ class DialogSettingsManager:
         self._save_field(dpage.c_z, "dh_collar_z")
         self._save_field(dpage.c_depth, "dh_collar_depth")
 
-        # Survey
         self._save_layer(dpage.s_layer, "dh_survey_layer")
         self._save_field(dpage.s_id, "dh_survey_id")
         self._save_field(dpage.s_depth, "dh_survey_depth")
         self._save_field(dpage.s_azim, "dh_survey_azim")
         self._save_field(dpage.s_incl, "dh_survey_incl")
 
-        # Interval
         self._save_layer(dpage.i_layer, "dh_interval_layer")
         self._save_field(dpage.i_id, "dh_interval_id")
         self._save_field(dpage.i_from, "dh_interval_from")
         self._save_field(dpage.i_to, "dh_interval_to")
         self._save_field(dpage.i_lith, "dh_interval_lith")
 
-        # Output folder
+    def _save_output_settings(self) -> None:
+        """Save output path settings."""
         self._set_setting("last_output_dir", self.dialog.output_widget.filePath())
 
-        # --- Interpretation Page ---
+    def _save_interpretation_settings(self) -> None:
+        """Save settings for the Interpretation page."""
         p_interp = self.dialog.page_interpretation
         self._save_check(p_interp.chk_inherit_geol, "interp_inherit_geol")
         self._save_check(p_interp.chk_inherit_drill, "interp_inherit_drill")
@@ -256,7 +259,8 @@ class DialogSettingsManager:
         custom_fields = p_interp.get_data()["custom_fields"]
         self._set_setting("interp_custom_fields", json.dumps(custom_fields))
 
-        # --- Preview Widget ---
+    def _save_preview_settings(self) -> None:
+        """Save settings for the preview widget."""
         pw = self.dialog.preview_widget
         self._save_check(pw.chk_topo, "show_topo")
         self._save_check(pw.chk_geol, "show_geol")
