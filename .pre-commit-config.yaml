@@ -22,3 +22,10 @@ repos:
       - id: check-toml
       - id: mixed-line-ending
         args: ['--fix=lf']
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []

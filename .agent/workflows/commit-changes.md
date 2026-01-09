@@ -22,7 +22,14 @@ This workflow describes the process for committing changes, ensuring code qualit
     git status
     ```
 
-4. **Commit**: Commit the changes following Conventional Commits guidelines.
+4. **Commit**: Commit the changes strictly following the [Commit Guidelines](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/docsec/COMMIT_GUIDELINES.md).
+
+   **Mandatory Rules:**
+   - Use **English**.
+   - Use **Conventional Commits** (feat, fix, refactor, docs, style, test, perf, chore).
+   - Summary in **lowercase**, no ending period.
+   - Use **imperative mood** ("add" not "added").
+
    ```bash
    git commit -m "type: description" -m "detailed body"
    ```
