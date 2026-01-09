@@ -95,7 +95,8 @@ def create_coordinate_transform(
     scale_x = base_scale
     scale_y = base_scale * vert_exag  # Apply vertical exaggeration
 
-    def transform(dist, elev):
+    def transform(dist: float, elev: float) -> tuple[float, float]:
+        """Convert data coordinates to screen coordinates."""
         x = margin + (dist - bounds["min_d"]) * scale_x
         y = view_h - margin - (elev - bounds["min_e"]) * scale_y
         return x, y

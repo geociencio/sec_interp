@@ -85,7 +85,9 @@ class ExportService:
         result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
         return result_msg
 
-    def _export_topography(self, folder, data, crs, csv_exporter, msg):
+    def _export_topography(
+        self, folder: Path, data: list[tuple], crs: Any, csv_exporter: Any, msg: list[str]
+    ) -> None:
         """Export topographic data."""
         from sec_interp.exporters import ProfileLineShpExporter
 
@@ -101,7 +103,9 @@ class ExportService:
         except Exception as e:
             raise ExportError(f"Topography export failed: {e!s}") from e
 
-    def _export_geology(self, folder, data, crs, csv_exporter, msg):
+    def _export_geology(
+        self, folder: Path, data: list[Any] | None, crs: Any, csv_exporter: Any, msg: list[str]
+    ) -> None:
         """Export geological data."""
         if not data:
             return
@@ -121,7 +125,15 @@ class ExportService:
         except Exception as e:
             raise ExportError(f"Geology export failed: {e!s}") from e
 
-    def _export_structures(self, folder, data, params, crs, csv_exporter, msg):
+    def _export_structures(
+        self,
+        folder: Path,
+        data: list[Any] | None,
+        params: PreviewParams,
+        crs: Any,
+        csv_exporter: Any,
+        msg: list[str],
+    ) -> None:
         """Export structural data."""
         if not data:
             return
@@ -152,7 +164,9 @@ class ExportService:
         except Exception as e:
             raise ExportError(f"Structure export failed: {e!s}") from e
 
-    def _export_drillholes(self, folder, data, crs, msg):
+    def _export_drillholes(
+        self, folder: Path, data: list[Any] | None, crs: Any, msg: list[str]
+    ) -> None:
         """Export drillhole data."""
         if not data:
             return
@@ -173,7 +187,14 @@ class ExportService:
         except Exception as e:
             raise ExportError(f"Drillhole export failed: {e!s}") from e
 
-    def _export_interpretations(self, folder, data, line_layer, crs, msg):
+    def _export_interpretations(
+        self,
+        folder: Path,
+        data: list[Any] | None,
+        line_layer: Any,
+        crs: Any,
+        msg: list[str],
+    ) -> None:
         """Export interpretation data."""
         if not data:
             logger.info("No interpretations provided for export.")
@@ -214,7 +235,7 @@ class ExportService:
         except Exception as e:
             raise ExportError(f"Interpretation export failed: {e!s}") from e
 
-    def _export_axes(self, folder, data, crs, msg):
+    def _export_axes(self, folder: Path, data: list[tuple], crs: Any, msg: list[str]) -> None:
         """Export profile axes."""
         from sec_interp.exporters import AxesShpExporter
 

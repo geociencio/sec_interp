@@ -248,6 +248,13 @@ class PreviewParams:
             ValidationError: If critical parameters are missing or invalid.
 
         """
+        self._validate_core_params()
+        self._validate_geology_params()
+        self._validate_structure_params()
+        self._validate_drillhole_params()
+
+    def _validate_core_params(self) -> None:
+        """Validate core raster and line layer parameters."""
         if not self.raster_layer or not self.raster_layer.isValid():
             raise ValidationError("Raster layer is missing or invalid.")
         if not self.line_layer or not self.line_layer.isValid():
@@ -257,10 +264,13 @@ class PreviewParams:
         if self.buffer_dist < 0:
             raise ValidationError(f"Buffer distance cannot be negative: {self.buffer_dist}")
 
-        # Dependent validation
+    def _validate_geology_params(self) -> None:
+        """Validate geology specific parameters."""
         if self.outcrop_layer and self.outcrop_layer.isValid() and not self.outcrop_name_field:
             raise ValidationError("Outcrop layer selected but no name field provided.")
 
+    def _validate_structure_params(self) -> None:
+        """Validate structure specific parameters."""
         if (
             self.struct_layer
             and self.struct_layer.isValid()
@@ -268,36 +278,39 @@ class PreviewParams:
         ):
             raise ValidationError("Structural layer selected but dip/strike fields missing.")
 
-        if self.collar_layer and self.collar_layer.isValid() and not self.collar_id_field:
-            raise ValidationError("Collar layer selected but no ID field provided.")
+    def _validate_drillhole_params(self) -> None:
+        """Validate drillhole specific parameters."""
+        if self.collar_layer and self.collar_layer.isValid():
+            if not self.collar_id_field:
+                raise ValidationError("Collar layer selected but no ID field provided.")
+            self._validate_survey_params()
+            self._validate_interval_params()
 
-        if (
-            self.survey_layer
-            and self.survey_layer.isValid()
-            and not all(
-                [
-                    self.survey_id_field,
-                    self.survey_depth_field,
-                    self.survey_azim_field,
-                    self.survey_incl_field,
-                ]
-            )
-        ):
-            raise ValidationError("Survey layer selected but some required fields are missing.")
+    def _validate_survey_params(self) -> None:
+        """Validate drillhole survey parameters."""
+        if self.survey_layer and self.survey_layer.isValid():
+            required = [
+                self.survey_id_field,
+                self.survey_depth_field,
+                self.survey_azim_field,
+                self.survey_incl_field,
+            ]
+            if not all(required):
+                raise ValidationError("Survey layer selected but some required fields are missing.")
 
-        if (
-            self.interval_layer
-            and self.interval_layer.isValid()
-            and not all(
-                [
-                    self.interval_id_field,
-                    self.interval_from_field,
-                    self.interval_to_field,
-                    self.interval_lith_field,
-                ]
-            )
-        ):
-            raise ValidationError("Interval layer selected but some required fields are missing.")
+    def _validate_interval_params(self) -> None:
+        """Validate drillhole interval parameters."""
+        if self.interval_layer and self.interval_layer.isValid():
+            required = [
+                self.interval_id_field,
+                self.interval_from_field,
+                self.interval_to_field,
+                self.interval_lith_field,
+            ]
+            if not all(required):
+                raise ValidationError(
+                    "Interval layer selected but some required fields are missing."
+                )
 
 
 @dataclass

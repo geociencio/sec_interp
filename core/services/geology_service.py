@@ -23,6 +23,10 @@ and unit segments from map layers to the cross-section plane.
 #  *                                                                         *
 #  ***************************************************************************/
 
+from __future__ import annotations
+
+from typing import Any
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
@@ -141,7 +145,9 @@ class GeologyService(IGeologyService):
             outcrop_name_field=outcrop_name_field,
         )
 
-    def process_task_data(self, task_input: GeologyTaskInput, feedback=None) -> GeologyData:
+    def process_task_data(
+        self, task_input: GeologyTaskInput, feedback: Any | None = None
+    ) -> GeologyData:
         """Process geological data in a thread-safe way (Pure Computation)."""
         crs = QgsCoordinateReferenceSystem(task_input.crs_authid)
         da = scu.create_distance_area(crs)
@@ -193,12 +199,12 @@ class GeologyService(IGeologyService):
     def _process_detached_intersection(
         self,
         geom: QgsGeometry,
-        attributes: dict,
+        attributes: dict[str, Any],
         unit_name: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
-        master_grid_dists: list,
-        master_profile_data: list,
+        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[GeologySegment]:
         """Variant of _process_intersection_geometry for detached data."""
@@ -238,12 +244,12 @@ class GeologyService(IGeologyService):
     def _create_segment_from_detached(
         self,
         seg_geom: QgsGeometry,
-        attributes: dict,
+        attributes: dict[str, Any],
         glg_val: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
-        master_grid_dists: list,
-        master_profile_data: list,
+        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> GeologySegment | None:
         """Create segment from detached data."""
@@ -327,8 +333,8 @@ class GeologyService(IGeologyService):
         outcrop_name_field: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
-        master_grid_dists: list,
-        master_profile_data: list,
+        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[GeologySegment]:
         """Process an intersection geometry to extract geology segments.
@@ -392,8 +398,8 @@ class GeologyService(IGeologyService):
         glg_val: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
-        master_grid_dists: list,
-        master_profile_data: list,
+        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> GeologySegment | None:
         """Create a GeologySegment from a geometry part by sampling elevations.
@@ -472,8 +478,8 @@ class GeologyService(IGeologyService):
         self,
         dist_start: float,
         dist_end: float,
-        master_grid_dists: list,
-        master_profile_data: list,
+        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[tuple[float, float]]:
         """Convert start/end distances to a list of segment points with elevations.

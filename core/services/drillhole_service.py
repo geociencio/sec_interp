@@ -196,7 +196,7 @@ class DrillholeService(IDrillholeService):
 
     def _fetch_bulk_data(
         self, layer: QgsVectorLayer, hole_ids: set[Any], fields: dict[str, str]
-    ) -> dict[Any, list[tuple]]:
+    ) -> dict[Any, list[tuple[Any, ...]]]:
         """Fetch data for multiple holes in a single pass."""
         if not layer or not layer.isValid():
             return {}
@@ -241,14 +241,14 @@ class DrillholeService(IDrillholeService):
         collar_point: QgsPointXY,
         collar_z: float,
         given_depth: float,
-        survey_data: list[tuple],
-        intervals: list[tuple],
+        survey_data: list[tuple[float, float, float]],
+        intervals: list[tuple[float, float, str]],
         line_geom: QgsGeometry,
         line_start: QgsPointXY,
         distance_area: QgsDistanceArea,
         buffer_width: float,
         section_azimuth: float,
-    ) -> tuple[list[GeologySegment], tuple]:
+    ) -> tuple[list[GeologySegment], tuple[Any, list[tuple[float, float]], list[GeologySegment]]]:
         """Process a single drillhole's trajectory and intervals.
 
         Returns:
@@ -276,7 +276,14 @@ class DrillholeService(IDrillholeService):
 
         return hole_geol_data, (hole_id, traj_points, hole_geol_data)
 
-    def _build_collar_coord_map(self, layer, id_field, use_geom, x_field, y_field):
+    def _build_collar_coord_map(
+        self,
+        layer: QgsVectorLayer,
+        id_field: str,
+        use_geom: bool,
+        x_field: str,
+        y_field: str,
+    ) -> dict[Any, QgsPointXY]:
         """Build a lookup map for collar coordinates.
 
         Args:
@@ -331,17 +338,26 @@ class DrillholeService(IDrillholeService):
                 pass
         return None
 
-    def _get_survey_data(self, layer, hole_id, fields):
+    def _get_survey_data(
+        self, layer: QgsVectorLayer, hole_id: Any, fields: dict[str, str]
+    ) -> list[tuple[Any, ...]]:
         """Legacy support - redirected to bulk fetch if needed."""
         res = self._fetch_bulk_data(layer, {hole_id}, fields)
         return res.get(hole_id, [])
 
-    def _get_interval_data(self, layer, hole_id, fields):
+    def _get_interval_data(
+        self, layer: QgsVectorLayer, hole_id: Any, fields: dict[str, str]
+    ) -> list[tuple[Any, ...]]:
         """Legacy support - redirected to bulk fetch if needed."""
         res = self._fetch_bulk_data(layer, {hole_id}, fields)
         return res.get(hole_id, [])
 
-    def _interpolate_hole_intervals(self, traj, intervals, buffer_width):
+    def _interpolate_hole_intervals(
+        self,
+        traj: list[tuple[float, float, float, float, float]],
+        intervals: list[tuple[float, float, str]],
+        buffer_width: float,
+    ) -> list[GeologySegment]:
         """Interpolate intervals along a trajectory and return GeologySegments.
 
         Args:
@@ -502,20 +518,21 @@ class DrillholeService(IDrillholeService):
 
     def _safe_process_single_hole(
         self,
-        hole_id,
-        collar_point,
-        collar_z,
-        given_depth,
-        surveys_map,
-        intervals_map,
-        line_geom,
-        line_start,
-        distance_area,
-        buffer_width,
-        section_azimuth,
-        geol_data,
-        drillhole_data,
-    ):
+        hole_id: Any,
+        collar_point: QgsPointXY,
+        collar_z: float,
+        given_depth: float,
+        surveys_map: dict[Any, list[tuple[float, float, float]]],
+        intervals_map: dict[Any, list[tuple[float, float, str]]],
+        line_geom: QgsGeometry,
+        line_start: QgsPointXY,
+        distance_area: QgsDistanceArea,
+        buffer_width: float,
+        section_azimuth: float,
+        geol_data: list[GeologySegment],
+        drillhole_data: list[tuple[Any, list[tuple[float, float]], list[GeologySegment]]],
+    ) -> None:
+        """Safely process a single hole with error logging."""
         try:
             hole_geol, hole_drill = self._process_single_hole(
                 hole_id=hole_id,
@@ -541,7 +558,10 @@ class DrillholeService(IDrillholeService):
             logger.exception(traceback.format_exc())
             raise
 
-    def _extract_data_tuple(self, feat, fields, is_survey):
+    def _extract_data_tuple(
+        self, feat: QgsFeature, fields: dict[str, str], is_survey: bool
+    ) -> tuple[float, float, Any] | None:
+        """Extract a data tuple from a feature based on its role."""
         try:
             if is_survey:
                 return (
