@@ -327,6 +327,13 @@ class MockQgsGeometry(MockQgsBase):
     def vertices(self):
         return self._polyline
 
+    def vertexAt(self, index):
+        if self._wkb_type == 1: # Point
+            return self._point
+        if index < len(self._polyline):
+            return self._polyline[index]
+        return MockQgsPointXY(0,0)
+
 
 class MockQgsLineString(MockQgsBase):
     def __init__(self, points):
@@ -643,6 +650,10 @@ class MockQgsProject(MockQObject):
     def writeEntry(self, scope, key, value):
         self._entries[f"{scope}/{key}"] = value
         return True
+
+    def clear(self):
+        self._layers = {}
+        self._entries = {}
 
     @classmethod
     def instance(cls):

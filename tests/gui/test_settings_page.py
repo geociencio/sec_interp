@@ -75,4 +75,11 @@ class TestSettingsPage(BaseTestCase):
         page.chk_enable_3d.isChecked.return_value = True
 
         data = page.get_data()
-        self.assertEqual(data, {"enable_3d": True})
+        self.assertEqual(data, {
+            "enable_3d": True,
+            "exp_topo": True,
+            "exp_geol": True,
+            "exp_struct": True,
+            "exp_drill": True,
+            "exp_interp": True,
+        })
