@@ -39,32 +39,13 @@ class Interpretation3DExporter(BaseExporter):
         return [".shp"]
 
     def export(self, output_path: str, data: dict[str, Any]) -> bool:
-        """Export interpretation data to a 3D Shapefile.
-
-        Args:
-            output_path: Destination path for the shapefile.
-            data: Dictionary containing:
-                - 'interpretations': List of InterpretationPolygon objects.
-                - 'section_line': QgsGeometry of the section line (LineString).
-                - 'crs': QgsCoordinateReferenceSystem for the output.
-
-        Returns:
-            True if export successful.
-
-        Raises:
-            ExportError: If data is invalid or export fails.
-
-        """
+        """Export interpretation data to a 3D Shapefile."""
         interpretations = data.get("interpretations", [])
         section_line = data.get("section_line")
         src_crs = data.get("crs", QgsCoordinateReferenceSystem())
 
-        if not interpretations:
-            logger.warning("No interpretations to export to 3D.")
+        if not self._validate_export_input(interpretations, section_line):
             return False
-
-        if not section_line:
-            raise ExportError("Section line geometry is required for 3D projection.")
 
         # Prepare fields
         fields, sorted_keys = self._prepare_fields(interpretations)
@@ -76,31 +57,37 @@ class Interpretation3DExporter(BaseExporter):
             raise ExportError(f"Failed to calculate section geometry: {e}") from e
 
         # Transform and create features
-        # Transform and create features
         features = self._collect_projected_features(
             interpretations, fields, sorted_keys, origin_x, origin_y, azimuth
         )
-
-        # Write to Shapefile using BaseExporter logic or QgsVectorFileWriter
-        # BaseExporter usage:
-        # return self._write_vector_layer(output_path, features, fields, WkbType.PolygonZ, src_crs)
-
-        # Checking BaseExporter signature/capability. Assuming it has a _write_vector method or similar.
-        # If BaseExporter is abstract and expects us to bring our own writer, we use QgsVectorFileWriter.
-        # Let's verify BaseExporter first. Assuming standard QgsVectorFileWriter usage for now.
 
         success = self._write_shapefile(
             output_path, features, fields, QgsWkbTypes.PolygonZ, src_crs
         )
 
         if success:
-            try:
-                self._generate_qml_style(output_path, interpretations, fields, src_crs)
-            except Exception as e:
-                logger.warning(f"Failed to generate QML style: {e}")
-                # Don't fail the whole export if only QML fails
+            self._handle_post_export_styles(output_path, interpretations, fields, src_crs)
 
         return success
+
+    def _validate_export_input(self, interpretations: list, section_line: Any) -> bool:
+        """Validate input for 3D export."""
+        if not interpretations:
+            logger.warning("No interpretations to export to 3D.")
+            return False
+
+        if not section_line:
+            raise ExportError("Section line geometry is required for 3D projection.")
+        return True
+
+    def _handle_post_export_styles(
+        self, output_path: str, interpretations: list, fields: list, crs: Any
+    ) -> None:
+        """Handle style generation after successful export."""
+        try:
+            self._generate_qml_style(output_path, interpretations, fields, crs)
+        except Exception as e:
+            logger.warning(f"Failed to generate QML style: {e}")
 
     def _generate_qml_style(
         self,
@@ -385,32 +372,18 @@ class Interpretation3DExporter(BaseExporter):
         return features
 
     def _prepare_2d_geometry(self, polygon: Any) -> QgsGeometry | None:
-        """Prepare and validate 2D geometry from polygon vertices.
-
-        Args:
-            polygon: The interpretation polygon object.
-
-        Returns:
-            QgsGeometry or None if invalid.
-
-        """
-        # Deduplicate vertices and ensure 2D validity
-        raw_vertices_2d = list(polygon.vertices_2d)
-        if not raw_vertices_2d:
+        """Prepare and validate 2D geometry from polygon vertices."""
+        vertices = self._get_unique_vertices(polygon.vertices_2d)
+        if not vertices:
             return None
 
-        dedup_vertices = []
-        for v in raw_vertices_2d:
-            if not dedup_vertices or v != dedup_vertices[-1]:
-                dedup_vertices.append(v)
+        vertices = self._ensure_closed_polygon(vertices)
 
-        dedup_vertices = self._ensure_closed_polygon(dedup_vertices)
-
-        if len(dedup_vertices) < 4:
+        if len(vertices) < 4:
             logger.warning(f"Polygon {polygon.id} has insufficient unique vertices. Skipping.")
             return None
 
-        qgs_points_2d = [QgsPointXY(x, y) for x, y in dedup_vertices]
+        qgs_points_2d = [QgsPointXY(x, y) for x, y in vertices]
         geom_2d = QgsGeometry.fromPolygonXY([qgs_points_2d])
 
         if not geom_2d.isGeosValid():
@@ -418,6 +391,18 @@ class Interpretation3DExporter(BaseExporter):
             geom_2d = geom_2d.makeValid()
 
         return geom_2d
+
+    def _get_unique_vertices(self, vertices_2d: Any) -> list:
+        """Deduplicate consecutive vertices."""
+        raw_list = list(vertices_2d)
+        if not raw_list:
+            return []
+
+        dedup = []
+        for v in raw_list:
+            if not dedup or v != dedup[-1]:
+                dedup.append(v)
+        return dedup
 
     def _ensure_closed_polygon(self, vertices: list) -> list:
         """Ensure the polygon vertices are closed."""
@@ -458,19 +443,24 @@ class Interpretation3DExporter(BaseExporter):
         """Help to find property keys across different QGIS versions."""
         from qgis._3d import QgsPhongMaterialSettings
 
-        # Try Phong settings first (Native 3.x)
-        if hasattr(QgsPhongMaterialSettings, "Property"):
-            if hasattr(QgsPhongMaterialSettings.Property, prop_name):
-                return getattr(QgsPhongMaterialSettings.Property, prop_name)
-
-        # Fallback to Abstract settings (Some versions/refactors)
+        classes_to_check = [QgsPhongMaterialSettings]
         try:
             from qgis._3d import QgsAbstractMaterialSettings
 
-            if hasattr(QgsAbstractMaterialSettings, "Property"):
-                if hasattr(QgsAbstractMaterialSettings.Property, prop_name):
-                    return getattr(QgsAbstractMaterialSettings.Property, prop_name)
+            classes_to_check.append(QgsAbstractMaterialSettings)
         except ImportError:
             pass
 
+        for cls in classes_to_check:
+            prop_found = self._check_property_in_class(cls, prop_name)
+            if prop_found is not None:
+                return prop_found
+
+        return None
+
+    def _check_property_in_class(self, cls: Any, prop_name: str) -> int | None:
+        """Check if a property exists in a class's Property enum."""
+        if hasattr(cls, "Property"):
+            if hasattr(cls.Property, prop_name):
+                return getattr(cls.Property, prop_name)
         return None
