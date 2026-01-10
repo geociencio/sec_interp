@@ -25,7 +25,7 @@ from qgis.gui import (
     QgsRubberBand,
     QgsVertexMarker,
 )
-from qgis.PyQt.QtCore import QPoint, Qt, pyqtSignal
+from qgis.PyQt.QtCore import QCoreApplication, QPoint, Qt, pyqtSignal
 from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.types import InterpretationPolygon
@@ -316,7 +316,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
         interp = InterpretationPolygon(
             id=str(uuid.uuid4()),
-            name=self.tr("New Interpretation"),
+            name=QCoreApplication.translate("ProfileInterpretationTool", "New Interpretation"),
             type="lithology",
             vertices_2d=vertices_2d,
             attributes={},

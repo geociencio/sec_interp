@@ -3,6 +3,25 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
+## [2026-01-09] - Estabilización de Tests y Traducción de UI (21:35)
+
+### Actividades
+- **Estabilización de Tests**:
+    - **Fix Crítico (Mock Pollution)**: Resuelto el error `StopIteration` en tests de GUI mediante clases de mock explícitas (`MockQListWidget`) en `base_test.py`.
+    - **Reset de Estado**: Mejora en `BaseTestCase.tearDown` para resetear mocks globales y limpiar estado en `MockQgsProject` y `MockQgsSettings`.
+    - **Re-aplicación de Mocks**: Corregida la pérdida de `side_effect` en mocks de `QgsWkbTypes.geometryType` tras el reset.
+- **Internacionalización**:
+    - **Traducción de Measure Tool**: Resultados de medición traducidos al inglés y hechos localizables mediante `tr()`.
+    - **Default Naming**: Traducido "New Interpretation" para soporte multi-idioma en `interpretation_tool.py`.
+- **Estandarización**: Refactorizado `tests/gui/test_geology_task.py` para heredar de `BaseTestCase`.
+- **Verificación**: Ejecución exitosa de la suite completa (312 tests: 204 core, 98 gui, 10 integración).
+
+### Resultados
+- **Tests Unitarios**: 302 OK ✅
+- **Tests de Integración**: 10 OK ✅
+- **Estado**: Suite de pruebas 100% estable.
+
+---
 ## [2026-01-08-4] - Despliegue v2.6.0 y Mejora de UX (23:00)
 
 ### Actividades

@@ -36,6 +36,13 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
+### [2.6.1] - 2026-01-09
+- **Stabilization**:
+    - **Test Suite**: Resolved major mock pollution issues and finalized 312 stable tests.
+    - **Mock Infrastructure**: Implemented explicit `MockQListWidget` for stable GUI inheritance.
+- **Internationalization**:
+    - Translated Measure tool results and default interpretation naming.
+
 ### [2.6.0] - 2026-01-05
 - **Quality Assurance**:
     - **Native Integration Tests**: Implementation of `BaseIntegrationTest` for headless QGIS execution.
