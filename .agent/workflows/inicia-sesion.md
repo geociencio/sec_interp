@@ -1,29 +1,33 @@
 ---
-description: Procedimiento estándar para iniciar una nueva sesión de trabajo
+description: Procedimiento estándar y robusto para iniciar una sesión de desarrollo "Local First"
 ---
 
-Este workflow establece la secuencia de pasos para arrancar una sesión de desarrollo de manera organizada y con contexto.
+Este workflow optimiza el inicio del desarrollo asegurando un entorno sincronizado, **contextualizado** y validado.
 
-1.  **Limpieza y Preparación**:
-    *   Verificar si existen artefactos de la sesión anterior (`task.md`, `implementation_plan.md`).
-    *   Si existen y están concluidos, moverlos o resetearlos.
+1.  **Sintonización de Contexto (CRÍTICO)**:
+    Antes de tocar código, lee los siguientes archivos para entender "dónde nos quedamos":
+    *   `docs/DEVELOPMENT_LOG.md`: Ver fecha y resumen de la última sesión.
+    *   `docs/source/MAINTENANCE_LOG.md`: Ver si hubo cambios de infraestructura recientes.
+    *   `AI_CONTEXT.md`: Ver directrices de alto nivel y roadmap.
+    *   `task.md`: Ver tareas pendientes.
+    *   Comando útil: `tail -n 15 docs/DEVELOPMENT_LOG.md`
 
-2.  **Análisis de Contexto**:
-    *   Leer `docs/DEVELOPMENT_LOG.md` para entender el estado actual y la última actividad.
-    *   Ejecutar `git log -n 5 --oneline` para ver los últimos cambios técnicos.
-    *   Revisar archivos abiertos por el usuario para inferir el foco actual.
-
-3.  **Inicialización de Artefactos**:
-    *   Crear/Sobrescribir `task.md` con la fecha y una lista de tareas vacía o inferida.
-    *   Crear/Sobrescribir `implementation_plan.md` con la plantilla base.
-
-4.  **Confirmación de Objetivos**:
-    *   Proponer al usuario un objetivo basado en el análisis (ej. "Continuar refactorización", "Debuggear crash").
-    *   Esperar confirmación o ajuste del usuario.
-
-// turbo
-5.  **Verificación de Entorno (Opcional)**:
-    *   Verificar estado de tests rápido si se sospecha inestabilidad.
+2.  **Sincronización de Entorno (Local)**:
+    Asegura dependencias actualizadas.
     ```bash
-    uv run python3 scripts/quick_health_check.py # (Si existe)
+    uv sync
     ```
+
+3.  **Verificación de Estado (Sanity Check)**:
+    Confirma que el sistema está estable ("en verde").
+    ```bash
+    PYTHONPATH=.. uv run python3 -m unittest discover tests
+    ```
+
+4.  **Despliegue Local al QGIS (Hot-Reload)**:
+    Actualiza tu QGIS local.
+    ```bash
+    make deploy
+    ```
+
+**Objetivo**: Empezar a codificar sabiendo *exactamente* qué pasó ayer.

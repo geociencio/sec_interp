@@ -1,25 +1,32 @@
 ---
 description: Procedimiento para finalizar una sesión de trabajo, actualizar logs y archivar resultados
 ---
-Este workflow automatiza el cierre de una sesión de trabajo, asegurando que todos los progresos técnicos y registros de mantenimiento estén sincronizados y archivados correctamente antes del commit final.
 
-1.  **Resumen de la Sesión**: Identifica las tareas completadas y los cambios técnicos significativos realizados durante la sesión.
+Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en memoria histórica para la próxima sesión.
 
-2.  **Actualizar Registro de Desarrollo**: Añade una entrada al archivo `docs/DEVELOPMENT_LOG.md` con la fecha actual y un resumen de las actividades.
-    *   Formato: `## [YYYY-MM-DD] - Título de la Sesión (HH:MM)`
+1.  **Actualización de Memoria (Logs)**:
+    *   **`docs/DEVELOPMENT_LOG.md`**: Añade una entrada `## [YYYY-MM-DD] Resumen` con puntos clave (Features, Fixes, Docs).
+    *   **`docs/source/MAINTENANCE_LOG.md`**: Si tocaste infraestructura, pre-commit, versiones o CI/CD, regístralo aquí.
+    *   **`docs/CHANGELOG.md`**: Si completaste una feature visible para el usuario, añádela a `[Unreleased]`.
 
-3.  **Actualizar Registro de Mantenimiento**: Si la sesión incluyó cambios que afectan a la versión o hitos importantes, añade una entrada en `docs/source/MAINTENANCE_LOG.md`.
-
-4.  **Archivar Walkthrough**: Copia el contenido del `walkthrough.md` de la sesión actual a un nuevo archivo en `docs/maintenance/`.
-    *   Nombre recomendado: `sesion_YYYY-MM-DD_HH-MM.md` o un nombre descriptivo similar.
-
-5.  **Commit Final**: Realiza un commit que incluya la actualización de los logs y el archivo del walkthrough.
-    *   Mensaje recomendado: `docs: update development logs and archive session walkthrough`
-
-// turbo
-6.  **Verificación**: Ejecuta los tests unitarios un última vez para asegurar que los cambios en la documentación no afectaron accidentalmente nada.
+2.  **Verificación Final (Safety Net)**:
+    Ejecuta los tests una última vez para no dejar la casa en llamas.
     ```bash
     PYTHONPATH=.. uv run python3 -m unittest discover tests
     ```
 
----
+3.  **Commit Local**:
+    Guarda tu progreso.
+    ```bash
+    git add .
+    git commit -m "chore: cerrar sesion [TEMA]"
+    ```
+    *Nota: Si pre-commit falla, corrige y repite.*
+
+4.  **Resumen para el Usuario**:
+    Genera un mensaje final listando:
+    *   Archivos de log actualizados.
+    *   Estado de los tests.
+    *   Sugerencia para la próxima sesión.
+
+**Filosofía**: Una sesión no termina cuando el código funciona, sino cuando la historia está contada.

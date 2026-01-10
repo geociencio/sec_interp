@@ -58,6 +58,12 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 - **Major Features**:
     - **3D Export**: Interpretation export as real 3D Shapefiles (PolygonZ).
     - **Settings Hub**: New sidebar page for plugin configuration management.
+    - **Documentation**: User Guide fully integrated with screenshots.
+- **Critical Fixes (Hotfixes)**:
+    - **Attribute Inheritance**: Resolved regression in drillhole processing (tuple handling) and `GeologySegment` polymorphism.
+    - **Serialization**: Fixed `QVariant` JSON serialization error.
+- **Workflow Optimization**:
+    - **Context Awareness**: Enhanced `.agent/workflows/` (start/close) to mandate context analysis and logging, ensuring continuity.
 - **Data Persistence**: Overhauled `DialogSettingsManager` for robust restoration with multi-scope support (`SecInterp`/`SecInterpUI`) and layer name fallback.
 - **Stability & QA**:
     - Enabled project-wide Ruff rules (`F401`, `F841`, `I001`).
