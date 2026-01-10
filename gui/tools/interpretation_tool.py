@@ -316,7 +316,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
         interp = InterpretationPolygon(
             id=str(uuid.uuid4()),
-            name="New Interpretation",
+            name=self.tr("New Interpretation"),
             type="lithology",
             vertices_2d=vertices_2d,
             attributes={},

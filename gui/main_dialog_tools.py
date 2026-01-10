@@ -116,12 +116,12 @@ class DialogToolManager:
 
         # Format result text with HTML for better presentation
         msg = (
-            f"<b>Medición Multi-Punto</b><br>"
-            f"<b>Puntos:</b> {point_count} | <b>Segmentos:</b> {seg_count}<br>"
-            f"<b>Distancia Total:</b> {total_dist:.2f} m<br>"
-            f"<b>Distancia Horizontal:</b> {horiz_dist:.2f} m<br>"
-            f"<b>Cambio Elevación:</b> {elev_change:+.2f} m<br>"
-            f"<b>Pendiente Promedio:</b> {avg_slope:.1f}°"
+            f"<b>{self.dialog.tr('Multi-Point Measurement')}</b><br>"
+            f"<b>{self.dialog.tr('Points')}:</b> {point_count} | <b>{self.dialog.tr('Segments')}:</b> {seg_count}<br>"
+            f"<b>{self.dialog.tr('Total Distance')}:</b> {total_dist:.2f} m<br>"
+            f"<b>{self.dialog.tr('Horizontal Distance')}:</b> {horiz_dist:.2f} m<br>"
+            f"<b>{self.dialog.tr('Elevation Change')}:</b> {elev_change:+.2f} m<br>"
+            f"<b>{self.dialog.tr('Average Slope')}:</b> {avg_slope:.1f}°"
         )
         self.dialog.preview_widget.results_text.setHtml(msg)
         # Ensure results group is expanded
