@@ -21,15 +21,18 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
-    2.6.0 (2026-01-08)
+    2.6.0 (2026-01-09)
     * Infrastructure & DevOps:
-      - CI/CD: Fully dockerized pipeline using official QGIS image (headless).
-      - Optimization: Reduced 3D Exporter complexity (Cyclomatic Complexity <= 5).
+      - CI/CD: Fully dockerized pipeline using official QGIS image.
+      - Optimization: CC <= 5 in 3D Exporter.
+    * Stability & Quality:
+      - Resolved mock pollution in GUI tests.
+      - Project-wide code formatting (black).
+      - Added performance benchmarks.
+    * Internationalization:
+      - Translated Measure tool and default namings.
     * GUI & Validation:
-      - Refactoring: Centralized validation logic in DialogDataAggregator.
-      - Harmonization: Unified UI completion checks via ProjectValidator.
-    * Performance:
-      - Benchmarks: Added performance test suite for geometry and export operations.
+      - Unified validation logic and UI completion checks.
 
     2.5.0 (2026-01-03)
     * Major Features:

@@ -5,20 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.6.1] - 2026-01-09
-### 🧪 Testing & Quality
-- **Test Suite Stabilization**:
-  - Resolved `StopIteration` in GUI tests by fixing mock pollution.
-  - Stabilized `BaseTestCase` with aggressive mock resets and class-based `QListWidget` mocking.
-  - Final suite: 312 tests passing (Unit + Integration).
-- **Internationalization**:
-  - Translated Measure tool results and "New Interpretation" default name to English.
-  - Made measurement results fully localizable via `tr()`.
-- **Code Standards**:
-  - Applied Project-wide formatting with `black`.
-  - Formal closure of Phase v2.6.0.
-
-## [2.6.0] - 2026-01-08
+## [2.6.0] - 2026-01-09
 ### 🚀 Infrastructure & DevOps
 - **Dockerized CI/CD**:
   - Migrated GitHub Actions pipeline to use `qgis/qgis:latest` image.
@@ -35,12 +22,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Unified validation rules across `DemPage`, `GeologyPage`, and `StructurePage`.
 
 ### 🧪 Testing & Quality
+- **Test Suite Stabilization**:
+  - Resolved `StopIteration` in GUI tests by fixing mock pollution.
+  - Stabilized `BaseTestCase` with aggressive mock resets and class-based `QListWidget` mocking.
+  - Final suite: 312 tests passing (Unit + Integration).
 - **Performance Benchmarks**:
   - Implemented benchmark suite for geometry processing and 3D export.
   - Established baselines for future regression testing.
 - **Type Safety**:
   - Achieved 100% type hint coverage for GUI validation modules.
   - Added Google-style docstrings to critical UI components.
+- **Code Standards**:
+  - Applied Project-wide formatting with `black`.
+
+### 🌍 Internationalization
+- **Measure Tool**:
+  - Translated results and "New Interpretation" default name to English.
+  - Made measurement results fully localizable via `tr()`.
 
 ## [2.5.0] - 2026-01-03
 ### 🚀 Major Features
