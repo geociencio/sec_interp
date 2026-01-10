@@ -1,14 +1,12 @@
-"""Unit tests for GeologyGenerationTask."""
-
-import unittest
 from unittest.mock import MagicMock, patch
-
-from qgis.core import QgsTask
+from tests.base_test import BaseTestCase
 from sec_interp.gui.tasks.geology_task import GeologyGenerationTask
 from sec_interp.core.types import GeologyTaskInput
+from qgis.core import QgsTask
 
-class TestGeologyGenerationTask(unittest.TestCase):
+class TestGeologyGenerationTask(BaseTestCase):
     def setUp(self):
+        super().setUp()
         # Mock QCoreApplication for logger
         self.patcher = patch('qgis.PyQt.QtCore.QCoreApplication')
         self.mock_qapp_cls = self.patcher.start()
@@ -29,6 +27,7 @@ class TestGeologyGenerationTask(unittest.TestCase):
 
     def tearDown(self):
         self.patcher.stop()
+        super().tearDown()
 
     def test_run_success(self):
         """Test successful task execution."""

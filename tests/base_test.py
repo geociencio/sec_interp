@@ -976,6 +976,24 @@ class MockQPushButton(MockQWidget):
         self.isChecked.return_value = checked
 
 
+class MockQListWidget(MockQWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._dynamic_mocks = {}
+
+    def __getattr__(self, name):
+        if name not in self._dynamic_mocks:
+            self._dynamic_mocks[name] = MagicMock()
+        return self._dynamic_mocks[name]
+
+
+class MockQListWidgetItem:
+    def __init__(self, text="", parent=None):
+        self._text = text
+        self.setIcon = MagicMock()
+        self.setTextAlignment = MagicMock()
+
+
 # Setup module mock
 mock_qtwidgets = MagicMock()
 mock_qtwidgets.QApplication = MockQApplication
@@ -986,6 +1004,8 @@ mock_qtwidgets.QLabel = MockQLabel
 mock_qtwidgets.QPushButton = MockQPushButton
 mock_qtwidgets.QWidget = MockQWidget
 mock_qtwidgets.QDialog = MockQDialog
+mock_qtwidgets.QListWidget = MockQListWidget
+mock_qtwidgets.QListWidgetItem = MockQListWidgetItem
 mock_qtwidgets.QDialogButtonBox = MagicMock()
 mock_qtwidgets.QAction = MagicMock()
 mock_qtwidgets.QFileDialog = MagicMock()
@@ -1324,6 +1344,28 @@ class BaseTestCase(unittest.TestCase):
     def tearDown(self):
         """Clean up per-test resources."""
         shutil.rmtree(self.test_dir)
+        # Reset globally shared mocks to prevent state leakage (StopIteration, etc.)
+        from tests.base_test import mock_qtwidgets, mock_core, mock_gui
+
+        # Resetting these ensures that any test modifying them (e.g., adding side_effects)
+        # doesn't affect subsequent tests. We use return_value/side_effect = True to clear them.
+        mock_qtwidgets.reset_mock(side_effect=True, return_value=True)
+        mock_core.reset_mock(side_effect=True, return_value=True)
+        mock_gui.reset_mock(side_effect=True, return_value=True)
+
+        # Re-apply critical persistent mocks that were cleared by reset_mock
+        mock_core.QgsProject.instance.side_effect = MockQgsProject.instance
+        mock_core.QgsWkbTypes.geometryType.side_effect = mock_geometry_type
+        mock_core.QgsWkbTypes.hasZ = lambda wkb: wkb >= 1000
+
+        # Reset shared state in custom mock classes
+        MockQgsProject.instance().clear()
+        MockQgsSettings._shared_values.clear()
+
+        # Restore critical module-level functions
+        if "qgis.PyQt.QtCore" in sys.modules:
+             sys.modules["qgis.PyQt.QtCore"].QCoreApplication.translate = lambda c, t: t
+             sys.modules["qgis.PyQt.QtCore"].QCoreApplication.installTranslator = lambda t: None
 
     # Helper methods replicating pytest fixtures
 
