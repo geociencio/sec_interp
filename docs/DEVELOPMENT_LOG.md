@@ -3,7 +3,26 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
-## [2026-01-09-2] - Lanzamiento Oficial v2.6.0 (21:50)
+## [2026-01-09-3] - Planificación Detallada Fase v2.7.0 (23:10)
+
+### Resumen
+Finalización de la etapa de planificación para la versión 2.7.0, integrando requisitos avanzados de exportación 3D, validación nativa y mejora de la infraestructura de desarrollo.
+
+### Actividades Clave
+- **Planificación v2.7.0**:
+    - **Validación Nativa**: Decisión de usar `dataclasses` y validación manual para evitar la dependencia de `pydantic`.
+    - **Sphinx Externo**: Configuración de estrategia para generar documentación fuera del repo (`../sec_interp_docs`) y limpieza de archivos HTML rastreados.
+    - **Exportación 3D Avanzada**: Diseño de exportadores para trazas e intervalos de sondajes en modos **Original** y **Proyectado**.
+    - **Integración UI**: Diseño de la integración de opciones 3D en la pestaña `Settings > Advanced`.
+    - **Dockerización**: Plan para centralizar el testing mediante `make docker-test` y eliminar errores de entorno local.
+- **Documentación**:
+    - Creación del plan formal: [implementation_plan_v2.7.0.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/plans/implementation_plan_v2.7.0.md).
+
+### Estado Final
+- **Plan v2.7.0**: Aprobado conceptualmente y listo para ejecución.
+- **Seguimiento**: [task.md](file:///home/jmbernales/.gemini/antigravity/brain/a439de8b-240a-494d-a4cb-9405cc1d99f7/task.md).
+
+---
 
 ### Resumen
 Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infraestructura, estabilidad de tests y correcciones de internacionalización. Esta versión marca el estado final estable para el repositorio de QGIS.
