@@ -171,7 +171,7 @@ class TestBufferGeometry(BaseTestCase):
         # Internal imports are fine if mocked by BaseTestCase
         from qgis.core import QgsGeometry, QgsCoordinateReferenceSystem, QgsVectorLayer
         from unittest.mock import Mock, patch
-        import sec_interp.core.utils.geometry # Ensure import path is correct
+        import sec_interp.core.utils.geometry  # Ensure import path is correct
 
         # Create mock geometry - use Mock with proper setup instead of QgsGeometry instance
         mock_geom = Mock()

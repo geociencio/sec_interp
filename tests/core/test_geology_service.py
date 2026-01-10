@@ -8,7 +8,7 @@ from qgis.core import (
     QgsFeature,
     QgsVectorLayer,
     QgsRasterLayer,
-    QgsCoordinateReferenceSystem
+    QgsCoordinateReferenceSystem,
 )
 
 from sec_interp.core.services.geology_service import GeologyService
@@ -28,7 +28,9 @@ class TestGeologyService(BaseTestCase):
         self.mock_outcrop_lyr = MagicMock()
 
         # Setup line geometry
-        self.line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
+        self.line_geom = QgsGeometry.fromPolylineXY(
+            [QgsPointXY(0, 0), QgsPointXY(100, 0)]
+        )
         self.line_feat = QgsFeature()
         self.line_feat.setGeometry(self.line_geom)
 
@@ -66,7 +68,9 @@ class TestGeologyService(BaseTestCase):
         # Setup outcrop feature
         outcrop_feat = QgsFeature()
         outcrop_feat["unit"] = "Unit A"
-        outcrop_feat.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(20, -10), QgsPointXY(20, 10)]))
+        outcrop_feat.setGeometry(
+            QgsGeometry.fromPolylineXY([QgsPointXY(20, -10), QgsPointXY(20, 10)])
+        )
         self.mock_outcrop_lyr.getFeatures.return_value = [outcrop_feat]
 
         # Mock intersection
@@ -88,7 +92,9 @@ class TestGeologyService(BaseTestCase):
         line_start = QgsPointXY(0, 0)
 
         # Mock raster
-        self.mock_raster_lyr.rasterUnitsPerPixelX.return_value = 50.0 # 100/50 = 2 segments
+        self.mock_raster_lyr.rasterUnitsPerPixelX.return_value = (
+            50.0  # 100/50 = 2 segments
+        )
         provider = MagicMock()
         provider.sample.return_value = (100.0, True)
         self.mock_raster_lyr.dataProvider.return_value = provider
@@ -99,8 +105,8 @@ class TestGeologyService(BaseTestCase):
 
         self.assertEqual(len(profile), len(grid))
         self.assertGreater(len(profile), 1)
-        self.assertEqual(profile[0][0], 0.0) # Start distance
-        self.assertEqual(profile[0][1], 100.0) # Elevation
+        self.assertEqual(profile[0][0], 0.0)  # Start distance
+        self.assertEqual(profile[0][1], 100.0)  # Elevation
 
     def test_convert_to_segment_points(self):
         """Test distance to point conversion with interpolation."""
@@ -108,9 +114,11 @@ class TestGeologyService(BaseTestCase):
         profile = [(0.0, 100.0), (10.0, 110.0), (20.0, 120.0)]
 
         # Segment from 5 to 15
-        points = self.service._convert_to_segment_points(5.0, 15.0, grid, profile, 0.001)
+        points = self.service._convert_to_segment_points(
+            5.0, 15.0, grid, profile, 0.001
+        )
 
-        self.assertEqual(len(points), 3) # (5, 105), (10, 110), (15, 115)
+        self.assertEqual(len(points), 3)  # (5, 105), (10, 110), (15, 115)
         self.assertAlmostEqual(points[0][0], 5.0)
         self.assertAlmostEqual(points[0][1], 105.0)
         self.assertAlmostEqual(points[2][0], 15.0)

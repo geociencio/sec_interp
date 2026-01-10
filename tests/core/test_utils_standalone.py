@@ -5,8 +5,15 @@ These tests can run without QGIS installation.
 """
 
 from tests.base_test import BaseTestCase
+
 # Import only the parsing functions
-from sec_interp.core.utils import parse_strike, parse_dip, cardinal_to_azimuth, calculate_apparent_dip, interpolate_elevation
+from sec_interp.core.utils import (
+    parse_strike,
+    parse_dip,
+    cardinal_to_azimuth,
+    calculate_apparent_dip,
+    interpolate_elevation,
+)
 
 
 class TestStrikeParsingStandalone(BaseTestCase):

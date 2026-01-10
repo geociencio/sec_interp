@@ -4,13 +4,14 @@ from sec_interp.gui.tasks.geology_task import GeologyGenerationTask
 from sec_interp.core.types import GeologyTaskInput
 from qgis.core import QgsTask
 
+
 class TestGeologyGenerationTask(BaseTestCase):
     def setUp(self):
         super().setUp()
         # Mock QCoreApplication for logger
-        self.patcher = patch('qgis.PyQt.QtCore.QCoreApplication')
+        self.patcher = patch("qgis.PyQt.QtCore.QCoreApplication")
         self.mock_qapp_cls = self.patcher.start()
-        self.mock_qapp_cls.instance.return_value.thread.return_value = 'MainThread'
+        self.mock_qapp_cls.instance.return_value.thread.return_value = "MainThread"
 
         self.mock_service = MagicMock()
         self.mock_input = MagicMock(spec=GeologyTaskInput)
@@ -19,10 +20,7 @@ class TestGeologyGenerationTask(BaseTestCase):
         self.on_error = MagicMock()
 
         self.task = GeologyGenerationTask(
-            self.mock_service,
-            self.mock_input,
-            self.on_finished,
-            self.on_error
+            self.mock_service, self.mock_input, self.on_finished, self.on_error
         )
 
     def tearDown(self):
@@ -54,7 +52,7 @@ class TestGeologyGenerationTask(BaseTestCase):
         self.mock_service.process_task_data.side_effect = Exception("Processing Error")
 
         # Mock QgsMessageLog to avoid potential QGIS application errors during log
-        with patch('sec_interp.gui.tasks.geology_task.QgsMessageLog') as mock_log:
+        with patch("sec_interp.gui.tasks.geology_task.QgsMessageLog") as mock_log:
             success = self.task.run()
 
             self.assertFalse(success)

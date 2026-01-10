@@ -8,10 +8,13 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFeature,
     QgsCoordinateReferenceSystem,
-    QgsField
+    QgsField,
 )
 
-from sec_interp.core.utils.geometry_utils.extraction import extract_all_vertices, get_line_vertices
+from sec_interp.core.utils.geometry_utils.extraction import (
+    extract_all_vertices,
+    get_line_vertices,
+)
 from sec_interp.core.utils.geometry_utils.filtering import filter_features_by_buffer
 from sec_interp.core.utils.geometry_utils.measurement import calculate_polyline_metrics
 from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
@@ -19,7 +22,7 @@ from sec_interp.core.utils.geometry_utils.processing import (
     create_buffer_geometry,
     create_memory_layer,
     densify_line_by_interval,
-    run_geometry_operation
+    run_geometry_operation,
 )
 
 
@@ -118,11 +121,13 @@ class TestGeometryMeasurement(BaseTestCase):
     def test_calculate_polyline_metrics_empty(self):
         """Test metrics for empty or short list of points."""
         self.assertEqual(calculate_polyline_metrics([])["point_count"], 0)
-        self.assertEqual(calculate_polyline_metrics([QgsPointXY(0, 0)])["point_count"], 1)
+        self.assertEqual(
+            calculate_polyline_metrics([QgsPointXY(0, 0)])["point_count"], 1
+        )
 
     def test_calculate_polyline_metrics_valid(self):
         """Test metrics calculation for a valid polyline."""
-        points = [QgsPointXY(0, 0), QgsPointXY(3, 4)] # 3-4-5 triangle
+        points = [QgsPointXY(0, 0), QgsPointXY(3, 4)]  # 3-4-5 triangle
         metrics = calculate_polyline_metrics(points)
 
         self.assertAlmostEqual(metrics["total_distance"], 5.0)
@@ -157,10 +162,13 @@ class TestGeometryOptimization(BaseTestCase):
     def test_preview_optimizer_exception(self):
         """Test exception handling in decimate."""
         data = [(0, 0), (1, 1)]
-        from sec_interp.core.utils.geometry_utils.optimization import logger as opt_logger
+        from sec_interp.core.utils.geometry_utils.optimization import (
+            logger as opt_logger,
+        )
+
         with MagicMock() as mock_log:
-             # This is hard to trigger without patching.
-             pass
+            # This is hard to trigger without patching.
+            pass
 
     def test_calculate_curvature(self):
         """Test curvature calculation."""
@@ -194,7 +202,7 @@ class TestGeometryProcessing(BaseTestCase):
     def test_create_memory_layer(self):
         """Test memory layer creation."""
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        field1 = MagicMock() # QgsField is also mocked if needed
+        field1 = MagicMock()  # QgsField is also mocked if needed
         layer = create_memory_layer("test", "Point", crs, [field1])
         # QgsVectorLayer mock returns isValid=True by default in base_test
         self.assertIsNotNone(layer)

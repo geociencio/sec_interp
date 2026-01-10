@@ -3,7 +3,13 @@
 from unittest.mock import MagicMock, patch
 from pathlib import Path
 from tests.base_test import BaseTestCase
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsRectangle, QgsCoordinateReferenceSystem, QgsGeometry
+from qgis.core import (
+    QgsVectorLayer,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsCoordinateReferenceSystem,
+    QgsGeometry,
+)
 
 from sec_interp.core.services.export_service import ExportService
 from sec_interp.core.types import PreviewParams, GeologyData, StructureData
@@ -20,12 +26,12 @@ class TestExportService(BaseTestCase):
         # Setup common mock behavior
         self.mock_line_lyr = QgsVectorLayer()
         self.mock_line_lyr.isValid = MagicMock(return_value=True)
-        self.mock_line_lyr.crs = MagicMock(return_value=QgsCoordinateReferenceSystem("EPSG:4326"))
+        self.mock_line_lyr.crs = MagicMock(
+            return_value=QgsCoordinateReferenceSystem("EPSG:4326")
+        )
 
         self.params = PreviewParams(
-            raster_layer=QgsRasterLayer(),
-            line_layer=self.mock_line_lyr,
-            band_num=1
+            raster_layer=QgsRasterLayer(), line_layer=self.mock_line_lyr, band_num=1
         )
 
     @patch("sec_interp.exporters.CSVExporter")
@@ -40,7 +46,7 @@ class TestExportService(BaseTestCase):
             self.params,
             profile_data=profile_data,
             geol_data=None,
-            struct_data=None
+            struct_data=None,
         )
 
         self.assertIn("✓ Saving files...", result[0])
@@ -57,26 +63,40 @@ class TestExportService(BaseTestCase):
     @patch("sec_interp.exporters.Interpretation2DExporter")
     @patch("sec_interp.exporters.Interpretation3DExporter")
     @patch("sec_interp.exporters.AxesShpExporter")
-    def test_export_data_all_types(self, mock_axes, mock_interp3d, mock_interp2d, mock_dh_int, mock_dh_trace,
-                                mock_struct, mock_geol, mock_profile, mock_csv):
+    def test_export_data_all_types(
+        self,
+        mock_axes,
+        mock_interp3d,
+        mock_interp2d,
+        mock_dh_int,
+        mock_dh_trace,
+        mock_struct,
+        mock_geol,
+        mock_profile,
+        mock_csv,
+    ):
         """Test export with all data types."""
         from sec_interp.core.types import GeologySegment, StructureMeasurement
 
         profile_data = [(0, 10)]
-        geol_data = [GeologySegment(
-            unit_name="Unit A",
-            geometry=QgsGeometry(),
-            attributes={},
-            points=[(0, 10), (50, 10)]
-        )]
-        struct_data = [StructureMeasurement(
-            distance=10.0,
-            elevation=100.0,
-            apparent_dip=30.0,
-            original_dip=45.0,
-            original_strike=0.0,
-            attributes={}
-        )]
+        geol_data = [
+            GeologySegment(
+                unit_name="Unit A",
+                geometry=QgsGeometry(),
+                attributes={},
+                points=[(0, 10), (50, 10)],
+            )
+        ]
+        struct_data = [
+            StructureMeasurement(
+                distance=10.0,
+                elevation=100.0,
+                apparent_dip=30.0,
+                original_dip=45.0,
+                original_strike=0.0,
+                attributes={},
+            )
+        ]
         drillhole_data = [{"id": "BH1"}]
         interp_data = [{"id": 1}]
 
@@ -87,7 +107,7 @@ class TestExportService(BaseTestCase):
             geol_data=geol_data,
             struct_data=struct_data,
             drillhole_data=drillhole_data,
-            interp_data=interp_data
+            interp_data=interp_data,
         )
 
         # Verify all exporters were called
@@ -104,21 +124,24 @@ class TestExportService(BaseTestCase):
     @patch("sec_interp.exporters.Interpretation2DExporter")
     @patch("sec_interp.exporters.Interpretation3DExporter")
     @patch("sec_interp.exporters.AxesShpExporter")
-    def test_export_data_3d_restricted(self, mock_axes, mock_interp3d, mock_interp2d,
-                                     mock_profile, mock_csv):
+    def test_export_data_3d_restricted(
+        self, mock_axes, mock_interp3d, mock_interp2d, mock_profile, mock_csv
+    ):
         """Test 3D export restriction."""
         profile_data = [(0, 10)]
         interp_data = [{"id": 1}]
 
         # Case 1: Restricted
-        with patch.object(self.service.access_control, 'can_export_3d', return_value=False):
+        with patch.object(
+            self.service.access_control, "can_export_3d", return_value=False
+        ):
             self.service.export_data(
                 self.output_folder,
                 self.params,
                 profile_data=profile_data,
                 geol_data=None,
                 struct_data=None,
-                interp_data=interp_data
+                interp_data=interp_data,
             )
             mock_interp3d.return_value.export.assert_not_called()
             mock_interp2d.return_value.export.assert_called()
@@ -129,33 +152,37 @@ class TestExportService(BaseTestCase):
         line_feat = MagicMock()
         self.mock_line_lyr.getFeatures.return_value = iter([line_feat])
 
-        with patch.object(self.service.access_control, 'can_export_3d', return_value=True):
+        with patch.object(
+            self.service.access_control, "can_export_3d", return_value=True
+        ):
             self.service.export_data(
                 self.output_folder,
                 self.params,
                 profile_data=profile_data,
                 geol_data=None,
                 struct_data=None,
-                interp_data=interp_data
+                interp_data=interp_data,
             )
             mock_interp3d.return_value.export.assert_called()
 
     def test_export_data_missing_profile(self):
         """Test error when profile data is missing."""
         from sec_interp.core.exceptions import DataMissingError
+
         with self.assertRaises(DataMissingError):
             self.service.export_data(
                 self.output_folder,
                 self.params,
                 profile_data=[],
                 geol_data=None,
-                struct_data=None
+                struct_data=None,
             )
 
     @patch("sec_interp.exporters.CSVExporter")
     def test_export_data_no_line_layer(self, mock_csv):
         """Test error when line layer is missing (direct call)."""
         from sec_interp.core.exceptions import DataMissingError
+
         self.params.line_layer = None
         with self.assertRaises(DataMissingError):
             self.service.export_data(
@@ -163,7 +190,7 @@ class TestExportService(BaseTestCase):
                 self.params,
                 profile_data=[(0, 10)],
                 geol_data=None,
-                struct_data=None
+                struct_data=None,
             )
 
     @patch("sec_interp.exporters.GeologyShpExporter")
@@ -173,10 +200,12 @@ class TestExportService(BaseTestCase):
         from sec_interp.core.exceptions import ExportError
 
         mock_geol_shp.return_value.export.side_effect = Exception("error")
-        geol_data = [GeologySegment("A", QgsGeometry(), {}, [(0,0)])]
+        geol_data = [GeologySegment("A", QgsGeometry(), {}, [(0, 0)])]
 
         with self.assertRaises(ExportError):
-            self.service._export_geology(self.output_folder, geol_data, MagicMock(), MagicMock(), [])
+            self.service._export_geology(
+                self.output_folder, geol_data, MagicMock(), MagicMock(), []
+            )
 
     @patch("sec_interp.exporters.StructureShpExporter")
     def test_export_structures_error(self, mock_struct_shp):
@@ -185,28 +214,39 @@ class TestExportService(BaseTestCase):
         from sec_interp.core.exceptions import ExportError
 
         mock_struct_shp.return_value.export.side_effect = Exception("error")
-        struct_data = [StructureMeasurement(0,0,0,0,0,{})]
+        struct_data = [StructureMeasurement(0, 0, 0, 0, 0, {})]
 
         with self.assertRaises(ExportError):
-            self.service._export_structures(self.output_folder, struct_data, self.params, MagicMock(), MagicMock(), [])
+            self.service._export_structures(
+                self.output_folder,
+                struct_data,
+                self.params,
+                MagicMock(),
+                MagicMock(),
+                [],
+            )
 
     @patch("sec_interp.exporters.DrillholeTraceShpExporter")
     def test_export_drillholes_error(self, mock_dh):
         """Test error handling in drillhole export."""
         from sec_interp.core.exceptions import ExportError
+
         mock_dh.return_value.export.side_effect = Exception("error")
 
         with self.assertRaises(ExportError):
-            self.service._export_drillholes(self.output_folder, [{"id":1}], MagicMock(), [])
+            self.service._export_drillholes(
+                self.output_folder, [{"id": 1}], MagicMock(), []
+            )
 
     @patch("sec_interp.exporters.AxesShpExporter")
     def test_export_axes_error(self, mock_axes):
         """Test error handling in axes export."""
         from sec_interp.core.exceptions import ExportError
+
         mock_axes.return_value.export.side_effect = Exception("error")
 
         with self.assertRaises(ExportError):
-            self.service._export_axes(self.output_folder, [(0,0)], MagicMock(), [])
+            self.service._export_axes(self.output_folder, [(0, 0)], MagicMock(), [])
 
     @patch("sec_interp.exporters.Interpretation2DExporter")
     @patch("sec_interp.exporters.Interpretation3DExporter")
@@ -215,19 +255,26 @@ class TestExportService(BaseTestCase):
         interp_data = [{"id": 1}]
         self.mock_line_lyr.isValid.return_value = False
 
-        with patch.object(self.service.access_control, 'can_export_3d', return_value=True):
+        with patch.object(
+            self.service.access_control, "can_export_3d", return_value=True
+        ):
             # Should skip 3D but NOT raise error if line is invalid
-            self.service._export_interpretations(self.output_folder, interp_data, self.mock_line_lyr, MagicMock(), [])
+            self.service._export_interpretations(
+                self.output_folder, interp_data, self.mock_line_lyr, MagicMock(), []
+            )
             mock_3d.return_value.export.assert_not_called()
 
     @patch("sec_interp.exporters.Interpretation2DExporter")
     def test_export_interpretation_error(self, mock_2d):
         """Test error handling in interpretation export."""
         from sec_interp.core.exceptions import ExportError
+
         mock_2d.return_value.export.side_effect = Exception("error")
 
         with self.assertRaises(ExportError):
-            self.service._export_interpretations(self.output_folder, [{"id":1}], self.mock_line_lyr, MagicMock(), [])
+            self.service._export_interpretations(
+                self.output_folder, [{"id": 1}], self.mock_line_lyr, MagicMock(), []
+            )
 
     def test_get_map_settings(self):
         """Test QgsMapSettings configuration."""
@@ -254,7 +301,10 @@ class TestExportService(BaseTestCase):
     def test_export_topography_error(self, mock_profile_shp):
         """Test error handling in topography export."""
         from sec_interp.core.exceptions import ExportError
+
         mock_profile_shp.return_value.export.side_effect = Exception("error")
 
         with self.assertRaises(ExportError):
-            self.service._export_topography(self.output_folder, [(0,0)], MagicMock(), MagicMock(), [])
+            self.service._export_topography(
+                self.output_folder, [(0, 0)], MagicMock(), MagicMock(), []
+            )

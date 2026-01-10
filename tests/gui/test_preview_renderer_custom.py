@@ -1,5 +1,6 @@
 from tests.base_test import BaseTestCase
 from unittest.mock import MagicMock
+
 # qgis imports will be handled by BaseTestCase mock if needed
 from qgis.core import QgsVectorLayer, QgsGeometry
 from sec_interp.gui.preview_renderer import PreviewRenderer
@@ -50,7 +51,6 @@ class TestPreviewRendererCustom(BaseTestCase):
 
         length = geom.length()
         self.assertLess(abs(length - custom_length), 0.001)
-
 
     def test_create_struct_layer_default_length(self):
         """Test that _create_struct_layer uses default length when custom is None."""

@@ -87,7 +87,9 @@ class TestCoordinateTransform(BaseTestCase):
         view_w, view_h, margin = 1000, 1000, 100
 
         # vert_exag = 2.0
-        transform = create_coordinate_transform(bounds, view_w, view_h, margin, vert_exag=2.0)
+        transform = create_coordinate_transform(
+            bounds, view_w, view_h, margin, vert_exag=2.0
+        )
 
         # Margin is 100, view_h is 1000. Data max_e=100 transforms to margin=100.
         # Data min_e=0 transforms to view_h-margin = 900.

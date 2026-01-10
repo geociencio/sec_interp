@@ -6,6 +6,7 @@ from tests.base_test import BaseTestCase
 from qgis.core import QgsProject, QgsSettings
 from sec_interp.gui.main_dialog_settings import DialogSettingsManager
 
+
 class TestMainDialogSettings(BaseTestCase):
     """Tests for the DialogSettingsManager class."""
 
@@ -57,7 +58,9 @@ class TestMainDialogSettings(BaseTestCase):
 
         # Check that both ID and Name were stored (in project mock)
         self.assertEqual(self.dialog.project._entries["SecInterp/test_layer"], "id_123")
-        self.assertEqual(self.dialog.project._entries["SecInterp/test_layer_name"], "RealName")
+        self.assertEqual(
+            self.dialog.project._entries["SecInterp/test_layer_name"], "RealName"
+        )
 
         # Now clear the ID (simulate new project) but keep the name
         del self.dialog.project._entries["SecInterp/test_layer"]
@@ -90,7 +93,9 @@ class TestMainDialogSettings(BaseTestCase):
         self.manager.reset_to_defaults()
 
         # Assertions
-        self.assertEqual(self.dialog.interpretations, [], "Interpretations list should be cleared")
+        self.assertEqual(
+            self.dialog.interpretations, [], "Interpretations list should be cleared"
+        )
         self.dialog._save_interpretations.assert_called_once()
 
 

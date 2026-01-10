@@ -9,7 +9,7 @@ from sec_interp.core.validation.field_validator import (
     validate_integer_input,
     validate_angle_range,
     validate_field_exists,
-    validate_field_type
+    validate_field_type,
 )
 from sec_interp.core.types import FieldType
 
@@ -74,7 +74,9 @@ class TestFieldValidator(BaseTestCase):
         # Mocking fields is already done in base_test.py/MockQgsMapLayer
         # But we need to ensure they exist for this test
         layer.fields().append(QgsField("id", FieldType.INT))  # FieldType.INT = 2
-        layer.fields().append(QgsField("name", FieldType.STRING))  # FieldType.STRING = 10
+        layer.fields().append(
+            QgsField("name", FieldType.STRING)
+        )  # FieldType.STRING = 10
 
         is_valid, msg = validate_field_exists(layer, "id")
         self.assertTrue(is_valid)

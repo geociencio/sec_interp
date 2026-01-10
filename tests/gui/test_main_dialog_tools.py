@@ -26,9 +26,13 @@ class TestDialogToolManager(unittest.TestCase):
 
     def test_initialize_tools_creates_default_tools(self):
         """Test that initialize_tools creates tools if not provided."""
-        with patch('sec_interp.gui.main_dialog_tools.QgsMapToolPan') as MockPan, \
-             patch('sec_interp.gui.main_dialog_tools.ProfileMeasureTool') as MockMeasure, \
-             patch('sec_interp.gui.main_dialog_tools.ProfileInterpretationTool') as MockInterp:
+        with (
+            patch("sec_interp.gui.main_dialog_tools.QgsMapToolPan") as MockPan,
+            patch("sec_interp.gui.main_dialog_tools.ProfileMeasureTool") as MockMeasure,
+            patch(
+                "sec_interp.gui.main_dialog_tools.ProfileInterpretationTool"
+            ) as MockInterp,
+        ):
 
             self.manager.initialize_tools()
 
@@ -53,10 +57,10 @@ class TestDialogToolManager(unittest.TestCase):
             self.mock_dialog,
             pan_tool=mock_pan,
             measure_tool=mock_measure,
-            interpretation_tool=mock_interp
+            interpretation_tool=mock_interp,
         )
 
-        with patch('sec_interp.gui.main_dialog_tools.QgsMapToolPan') as MockPan:
+        with patch("sec_interp.gui.main_dialog_tools.QgsMapToolPan") as MockPan:
             manager.initialize_tools()
 
             # Verify no new tools were created
@@ -94,7 +98,9 @@ class TestDialogToolManager(unittest.TestCase):
         self.manager.pan_tool.activate.assert_called_once()
 
         # Verify finalize button hidden
-        self.mock_dialog.preview_widget.btn_finalize.setVisible.assert_called_with(False)
+        self.mock_dialog.preview_widget.btn_finalize.setVisible.assert_called_with(
+            False
+        )
 
     def test_activate_default_tool(self):
         """Test activating default (pan) tool."""
@@ -139,14 +145,16 @@ class TestDialogToolManager(unittest.TestCase):
             "total_distance": 150.5,
             "horizontal_distance": 140.2,
             "elevation_change": 25.3,
-            "avg_slope": 10.5
+            "avg_slope": 10.5,
         }
 
         self.manager.update_measurement_display(metrics)
 
         # Verify HTML was set
         self.mock_dialog.preview_widget.results_text.setHtml.assert_called_once()
-        html_content = self.mock_dialog.preview_widget.results_text.setHtml.call_args[0][0]
+        html_content = self.mock_dialog.preview_widget.results_text.setHtml.call_args[
+            0
+        ][0]
 
         # Verify content includes key metrics
         self.assertIn("150.50", html_content)
@@ -155,7 +163,9 @@ class TestDialogToolManager(unittest.TestCase):
         self.assertIn("10.5", html_content)
 
         # Verify results group expanded
-        self.mock_dialog.preview_widget.results_group.setCollapsed.assert_called_with(False)
+        self.mock_dialog.preview_widget.results_group.setCollapsed.assert_called_with(
+            False
+        )
 
     def test_update_measurement_display_insufficient_points(self):
         """Test that display is not updated with insufficient points."""

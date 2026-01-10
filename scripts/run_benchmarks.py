@@ -29,6 +29,7 @@ except NameError:
 
 TESTS_DIR = PROJECT_ROOT / "tests"
 
+
 def setup_environment():
     """Configures sys.path."""
     parent_path = str(PROJECT_ROOT.parent)
@@ -42,6 +43,7 @@ def setup_environment():
         format="%(message)s",
         force=True,
     )
+
 
 def run_benchmarks():
     """Discovers and runs benchmark tests."""
@@ -59,7 +61,9 @@ def run_benchmarks():
         return
 
     # Discover tests in tests/benchmarks
-    suite = loader.discover(start_dir=str(TESTS_DIR / "benchmarks"), pattern="test_*.py")
+    suite = loader.discover(
+        start_dir=str(TESTS_DIR / "benchmarks"), pattern="test_*.py"
+    )
 
     # Run Tests
     runner = unittest.TextTestRunner(verbosity=2)
@@ -73,10 +77,12 @@ def run_benchmarks():
         print("\n❌ FAILURE: Some benchmarks failed.")
         # sys.exit(1)
 
+
 if __name__ == "__console__":
     run_benchmarks()
 elif __name__ == "__main__":
     run_benchmarks()
     # Explicitly exit QGIS if running headless
     from qgis.core import QgsApplication
+
     QgsApplication.exitQgis()

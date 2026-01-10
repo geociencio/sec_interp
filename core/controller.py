@@ -79,7 +79,11 @@ class ProfileController:
     def generate_profile_data(
         self, params: PreviewParams
     ) -> tuple[
-        list[tuple[float, float]], list[Any] | None, list[Any] | None, Any | None, list[str]
+        list[tuple[float, float]],
+        list[Any] | None,
+        list[Any] | None,
+        Any | None,
+        list[str],
     ]:
         """Unified method to generate all profile data components with granular caching."""
         params.validate()
@@ -216,7 +220,12 @@ class ProfileController:
             return None
 
         drill_key = self._get_cache_sub_key(
-            [params.collar_layer, params.survey_layer, params.interval_layer, params.buffer_dist]
+            [
+                params.collar_layer,
+                params.survey_layer,
+                params.interval_layer,
+                params.buffer_dist,
+            ]
         )
         drillhole_data = self.data_cache.get("drill", drill_key)
         if drillhole_data:

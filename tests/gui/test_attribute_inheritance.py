@@ -4,6 +4,7 @@ from qgis.core import QgsPointXY, QgsApplication
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.core.types import InterpretationPolygon, GeologySegment
 
+
 class TestAttributeInheritance(BaseTestCase):
 
     @classmethod
@@ -17,7 +18,6 @@ class TestAttributeInheritance(BaseTestCase):
         cls.qgs.exitQgis()
         cls.qgs = None
         super().tearDownClass()
-
 
     def test_inheritance_midpoint_bias(self):
         """
@@ -38,12 +38,12 @@ class TestAttributeInheritance(BaseTestCase):
         # Dist to DH(30) = 18
         # -> Drillhole wins (WRONG, geol is actually 2 units away)
 
-        geol_points = [(x, 0) for x in range(10, 101, 10)] # 10, 20, ... 100
+        geol_points = [(x, 0) for x in range(10, 101, 10)]  # 10, 20, ... 100
         geol_seg = GeologySegment(
             unit_name="GeologyUnit",
             points=geol_points,
             attributes={},
-            geometry=MagicMock()
+            geometry=MagicMock(),
         )
 
         dh_points_tuple = [(30, 0), (31, 0)]
@@ -67,7 +67,7 @@ class TestAttributeInheritance(BaseTestCase):
 
         dialog.preview_manager.cached_data = {
             "geol": [geol_seg],
-            "drillhole": [dh_tuple, dh_obj]
+            "drillhole": [dh_tuple, dh_obj],
         }
 
         # 2. Setup Polygon at x=12, y=0
@@ -75,19 +75,19 @@ class TestAttributeInheritance(BaseTestCase):
             id="poly1",
             name="NewPoly",
             type="lithology",
-            vertices_2d=[(11, -1), (13, -1), (12, 1)], # Centroid ~ (12, 0)
-            attributes={}
+            vertices_2d=[(11, -1), (13, -1), (12, 1)],  # Centroid ~ (12, 0)
+            attributes={},
         )
 
         # 3. Configure to inherit from both
         config = {
             "inherit_geology": True,
             "inherit_drillholes": True,
-            "custom_fields": []
+            "custom_fields": [],
         }
 
         # 4. Run Inheritance
-        dialog.layer_factory = MagicMock() # Avoid AttributeError
+        dialog.layer_factory = MagicMock()  # Avoid AttributeError
         dialog._apply_attribute_inheritance(poly, config)
 
         # 5. Assertions
@@ -95,8 +95,12 @@ class TestAttributeInheritance(BaseTestCase):
         # But if the bug exists, DrillholeUnit (at x=30) will win because Geol Midpoint(55) is far.
 
         print(f"Inherited Name: {poly.name}")
-        self.assertEqual(poly.name, "GeologyUnit",
-                         "Should inherit from closest geometry (Geology), not closest midpoint (Drillhole)")
+        self.assertEqual(
+            poly.name,
+            "GeologyUnit",
+            "Should inherit from closest geometry (Geology), not closest midpoint (Drillhole)",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

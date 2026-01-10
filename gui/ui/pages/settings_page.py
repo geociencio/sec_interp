@@ -158,16 +158,18 @@ class SettingsPage(BasePage):
 
         """
         return {
-            "enable_3d": self.chk_enable_3d.isChecked() if self.chk_enable_3d else False,
-            "exp_topo": self.chk_exp_topo.isChecked() if hasattr(self, "chk_exp_topo") else True,
-            "exp_geol": self.chk_exp_geol.isChecked() if hasattr(self, "chk_exp_geol") else True,
-            "exp_struct": self.chk_exp_struct.isChecked()
-            if hasattr(self, "chk_exp_struct")
-            else True,
-            "exp_drill": self.chk_exp_drill.isChecked() if hasattr(self, "chk_exp_drill") else True,
-            "exp_interp": self.chk_exp_interp.isChecked()
-            if hasattr(self, "chk_exp_interp")
-            else True,
+            "enable_3d": (self.chk_enable_3d.isChecked() if self.chk_enable_3d else False),
+            "exp_topo": (self.chk_exp_topo.isChecked() if hasattr(self, "chk_exp_topo") else True),
+            "exp_geol": (self.chk_exp_geol.isChecked() if hasattr(self, "chk_exp_geol") else True),
+            "exp_struct": (
+                self.chk_exp_struct.isChecked() if hasattr(self, "chk_exp_struct") else True
+            ),
+            "exp_drill": (
+                self.chk_exp_drill.isChecked() if hasattr(self, "chk_exp_drill") else True
+            ),
+            "exp_interp": (
+                self.chk_exp_interp.isChecked() if hasattr(self, "chk_exp_interp") else True
+            ),
         }
 
     def validate(self) -> tuple[bool, str]:

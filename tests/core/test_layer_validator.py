@@ -7,7 +7,7 @@ from qgis.core import (
     QgsRasterLayer,
     QgsWkbTypes,
     QgsCoordinateReferenceSystem,
-    QgsMapLayer
+    QgsMapLayer,
 )
 
 from sec_interp.core.validation.layer_validator import (
@@ -16,7 +16,7 @@ from sec_interp.core.validation.layer_validator import (
     validate_layer_geometry,
     validate_raster_band,
     validate_structural_requirements,
-    validate_crs_compatibility
+    validate_crs_compatibility,
 )
 from sec_interp.core.types import FieldType
 
@@ -114,10 +114,20 @@ class TestLayerValidator(BaseTestCase):
         layer.wkbType = MagicMock(return_value=QgsWkbTypes.Point)
 
         # Mock field validation
-        with patch("sec_interp.core.validation.layer_validator.validate_field_exists", return_value=(True, "")), \
-             patch("sec_interp.core.validation.layer_validator.validate_field_type", return_value=(True, "")):
+        with (
+            patch(
+                "sec_interp.core.validation.layer_validator.validate_field_exists",
+                return_value=(True, ""),
+            ),
+            patch(
+                "sec_interp.core.validation.layer_validator.validate_field_type",
+                return_value=(True, ""),
+            ),
+        ):
 
-            is_valid, msg = validate_structural_requirements(layer, "Struct", "dip", "strike")
+            is_valid, msg = validate_structural_requirements(
+                layer, "Struct", "dip", "strike"
+            )
             self.assertTrue(is_valid)
 
     def test_validate_crs_compatibility(self):

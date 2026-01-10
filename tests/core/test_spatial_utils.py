@@ -85,7 +85,9 @@ class TestSpatialUtils(BaseTestCase):
 
         line = QgsGeometry()
         line.isMultipart = MagicMock(return_value=True)
-        line.asMultiPolyline = MagicMock(return_value=[[QgsPointXY(0, 0), QgsPointXY(10, 0)]])
+        line.asMultiPolyline = MagicMock(
+            return_value=[[QgsPointXY(0, 0), QgsPointXY(10, 0)]]
+        )
         line.length = MagicMock(return_value=10.0)
 
         self.assertAlmostEqual(calculate_step_size(line, raster_lyr), 2.0)
@@ -101,7 +103,9 @@ class TestSpatialUtils(BaseTestCase):
         # Multipart
         mline = QgsGeometry()
         mline.isMultipart = MagicMock(return_value=True)
-        mline.asMultiPolyline = MagicMock(return_value=[[QgsPointXY(1, 2), QgsPointXY(3, 4)]])
+        mline.asMultiPolyline = MagicMock(
+            return_value=[[QgsPointXY(1, 2), QgsPointXY(3, 4)]]
+        )
         start_m = get_line_start_point(mline)
         self.assertEqual(start_m.x(), 1)
         self.assertEqual(start_m.y(), 2)

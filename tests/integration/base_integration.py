@@ -3,6 +3,7 @@
 import unittest
 from qgis.core import QgsApplication
 
+
 class BaseIntegrationTest(unittest.TestCase):
     """Base class for integration tests needing a real QgsApplication.
 
@@ -25,8 +26,11 @@ class BaseIntegrationTest(unittest.TestCase):
         """
         pass
 
+
 class DummyPlugin:
     """Mock plugin instance for testing dialogs."""
+
     def __init__(self):
         from sec_interp.core.controller import ProfileController
+
         self.controller = ProfileController()

@@ -10,6 +10,7 @@ import sys
 
 from sec_interp.gui.ui.pages.settings_page import SettingsPage
 
+
 class TestSettingsPage(BaseTestCase):
     """Tests for the SettingsPage class."""
 
@@ -37,8 +38,8 @@ class TestSettingsPage(BaseTestCase):
         self.assertIsNotNone(page.settings)
 
         # Verify UI setup was called (attributes exist)
-        self.assertTrue(hasattr(page, 'chk_enable_3d'))
-        self.assertTrue(hasattr(page, 'group_box'))
+        self.assertTrue(hasattr(page, "chk_enable_3d"))
+        self.assertTrue(hasattr(page, "group_box"))
 
     def test_load_settings(self):
         """Test that settings are loaded into the UI."""
@@ -75,11 +76,14 @@ class TestSettingsPage(BaseTestCase):
         page.chk_enable_3d.isChecked.return_value = True
 
         data = page.get_data()
-        self.assertEqual(data, {
-            "enable_3d": True,
-            "exp_topo": True,
-            "exp_geol": True,
-            "exp_struct": True,
-            "exp_drill": True,
-            "exp_interp": True,
-        })
+        self.assertEqual(
+            data,
+            {
+                "enable_3d": True,
+                "exp_topo": True,
+                "exp_geol": True,
+                "exp_struct": True,
+                "exp_drill": True,
+                "exp_interp": True,
+            },
+        )

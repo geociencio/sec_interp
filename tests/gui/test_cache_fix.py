@@ -2,6 +2,7 @@ from tests.base_test import BaseTestCase
 from unittest.mock import MagicMock
 from sec_interp.gui.main_dialog import SecInterpDialog
 
+
 class TestCacheRegression(BaseTestCase):
     def test_clear_cache_handler_attribute_error(self):
         # Mock plugin instance with controller and data_cache

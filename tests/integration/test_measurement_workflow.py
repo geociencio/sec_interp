@@ -5,6 +5,7 @@ from qgis.gui import QgsMapCanvas
 from tests.integration.base_integration import BaseIntegrationTest
 from sec_interp.gui.tools.measure_tool import ProfileMeasureTool
 
+
 class TestMeasurementWorkflow(BaseIntegrationTest):
     """Integration test for multi-point measurement workflow."""
 

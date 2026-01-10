@@ -8,11 +8,12 @@ from qgis.core import (
     QgsPoint,
     QgsLineString,
     QgsPolygon,
-    QgsWkbTypes
+    QgsWkbTypes,
 )
 
 from tests.integration.base_integration import BaseIntegrationTest
 from tests.benchmarks.benchmark_utils import benchmark, BenchmarkMixin
+
 
 class TestGeometryBenchmarks(BaseIntegrationTest, BenchmarkMixin):
     """Benchmark tests for geometry operations."""
@@ -21,15 +22,14 @@ class TestGeometryBenchmarks(BaseIntegrationTest, BenchmarkMixin):
     def setUpClass(cls):
         super().setUpClass()
         # Pre-generate large datasets for benchmarking
-        cls.large_polygon_points = [
-            QgsPointXY(x, 0) for x in range(1000)
-        ] + [
+        cls.large_polygon_points = [QgsPointXY(x, 0) for x in range(1000)] + [
             QgsPointXY(x, 100) for x in range(999, -1, -1)
         ]
 
     @benchmark
     def test_polygon_creation_performance(self):
         """Benchmark creating complex polygons."""
+
         def create_polygon():
             return QgsGeometry.fromPolygonXY([self.large_polygon_points])
 
@@ -70,6 +70,7 @@ class TestGeometryBenchmarks(BaseIntegrationTest, BenchmarkMixin):
     @benchmark
     def test_qgis_3d_geometry_construction(self):
         """Benchmark constructing QgsPolygon with Z dimension."""
+
         def construct_3d():
             points_3d = []
             for i in range(1000):
@@ -83,5 +84,6 @@ class TestGeometryBenchmarks(BaseIntegrationTest, BenchmarkMixin):
 
         self.assertExecutionTime(construct_3d, 0.1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -7,7 +7,7 @@ from qgis.core import (
     QgsGeometry,
     QgsCoordinateReferenceSystem,
     QgsFeature,
-    QgsVectorLayer
+    QgsVectorLayer,
 )
 
 from sec_interp.core.services.drillhole_service import DrillholeService
@@ -22,7 +22,9 @@ class TestDrillholeService(BaseTestCase):
         self.service = DrillholeService()
 
         # Common mocks
-        self.mock_line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
+        self.mock_line_geom = QgsGeometry.fromPolylineXY(
+            [QgsPointXY(0, 0), QgsPointXY(100, 0)]
+        )
         self.mock_line_start = QgsPointXY(0, 0)
         self.mock_da = MagicMock()
         self.mock_da.measureLine.return_value = 10.0
@@ -35,8 +37,18 @@ class TestDrillholeService(BaseTestCase):
         """Test project_collars with missing layer."""
         with self.assertRaises(DataMissingError):
             self.service.project_collars(
-                None, self.mock_line_geom, self.mock_line_start,
-                self.mock_da, 50.0, "id", True, "", "", "", "", None
+                None,
+                self.mock_line_geom,
+                self.mock_line_start,
+                self.mock_da,
+                50.0,
+                "id",
+                True,
+                "",
+                "",
+                "",
+                "",
+                None,
             )
 
     @patch("sec_interp.core.services.drillhole_service.scu.filter_features_by_buffer")
@@ -54,8 +66,18 @@ class TestDrillholeService(BaseTestCase):
         # Let's test integrated. _project_single_collar calls _get_collar_info
 
         results = self.service.project_collars(
-            self.mock_layer, self.mock_line_geom, self.mock_line_start,
-            self.mock_da, 50.0, "id", True, "x", "y", "z", "depth", None
+            self.mock_layer,
+            self.mock_line_geom,
+            self.mock_line_start,
+            self.mock_da,
+            50.0,
+            "id",
+            True,
+            "x",
+            "y",
+            "z",
+            "depth",
+            None,
         )
 
         self.assertEqual(len(results), 1)
@@ -99,15 +121,25 @@ class TestDrillholeService(BaseTestCase):
         hole_id, pt, z, depth = info
         self.assertEqual(pt.x(), 15.0)
         self.assertEqual(pt.y(), 25.0)
-        self.assertEqual(z, 0.0) # No z field provided
+        self.assertEqual(z, 0.0)  # No z field provided
 
     @patch("sec_interp.core.services.drillhole_service.scu.filter_features_by_buffer")
     def test_project_collars_empty(self, mock_filter):
         """Test project_collars with no features found."""
         mock_filter.return_value = []
         results = self.service.project_collars(
-            self.mock_layer, self.mock_line_geom, self.mock_line_start,
-            self.mock_da, 50.0, "id", True, "", "", "", "", None
+            self.mock_layer,
+            self.mock_line_geom,
+            self.mock_line_start,
+            self.mock_da,
+            50.0,
+            "id",
+            True,
+            "",
+            "",
+            "",
+            "",
+            None,
         )
         self.assertEqual(len(results), 0)
 
@@ -115,7 +147,7 @@ class TestDrillholeService(BaseTestCase):
         """Test collar info with DEM elevation fallback."""
         feat = QgsFeature()
         feat["id"] = "DH01"
-        feat["z"] = 0.0 # Force DEM fallback
+        feat["z"] = 0.0  # Force DEM fallback
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 20)))
 
         dem_layer = MagicMock()
@@ -170,9 +202,15 @@ class TestDrillholeService(BaseTestCase):
         self.assertEqual(len(res["DH01"]), 1)
         self.assertEqual(res["DH01"][0], (10.0, 180.0, -45.0))
 
-    @patch("sec_interp.core.services.drillhole_service.scu.calculate_drillhole_trajectory")
-    @patch("sec_interp.core.services.drillhole_service.scu.project_trajectory_to_section")
-    @patch("sec_interp.core.services.drillhole_service.scu.interpolate_intervals_on_trajectory")
+    @patch(
+        "sec_interp.core.services.drillhole_service.scu.calculate_drillhole_trajectory"
+    )
+    @patch(
+        "sec_interp.core.services.drillhole_service.scu.project_trajectory_to_section"
+    )
+    @patch(
+        "sec_interp.core.services.drillhole_service.scu.interpolate_intervals_on_trajectory"
+    )
     def test_process_intervals(self, mock_interp, mock_proj, mock_calc):
         """Test processing intervals for multiple holes."""
         collar_points = [("DH01", 10.0, 50.0, 2.0, 100.0)]
@@ -183,13 +221,27 @@ class TestDrillholeService(BaseTestCase):
         mock_interp.return_value = []
 
         # Mock building collar map
-        self.service._build_collar_coord_map = MagicMock(return_value={"DH01": QgsPointXY(10, 10)})
+        self.service._build_collar_coord_map = MagicMock(
+            return_value={"DH01": QgsPointXY(10, 10)}
+        )
         self.service._fetch_bulk_data = MagicMock(return_value={})
 
         geol, dh = self.service.process_intervals(
-            collar_points, MagicMock(), MagicMock(), MagicMock(),
-            "id", True, "", "", self.mock_line_geom, self.mock_line_start,
-            self.mock_da, 50.0, 0.0, {}, {}
+            collar_points,
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            "id",
+            True,
+            "",
+            "",
+            self.mock_line_geom,
+            self.mock_line_start,
+            self.mock_da,
+            50.0,
+            0.0,
+            {},
+            {},
         )
 
         self.assertEqual(len(dh), 1)

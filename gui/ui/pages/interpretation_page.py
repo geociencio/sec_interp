@@ -22,7 +22,8 @@ class InterpretationPage(BasePage):
     def __init__(self, parent=None):
         """Initialize the interpretation page."""
         super().__init__(
-            QCoreApplication.translate("InterpretationPage", "Interpretation Settings"), parent
+            QCoreApplication.translate("InterpretationPage", "Interpretation Settings"),
+            parent,
         )
 
     def _setup_ui(self):

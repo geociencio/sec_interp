@@ -1,5 +1,6 @@
 from tests.base_test import BaseTestCase
 from unittest.mock import MagicMock
+
 # qgis imports handled by BaseTestCase
 
 from sec_interp.core.validation.field_validator import (

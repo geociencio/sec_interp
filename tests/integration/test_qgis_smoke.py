@@ -3,12 +3,15 @@
 from qgis.core import QgsVectorLayer, QgsProject
 from tests.integration.base_integration import BaseIntegrationTest
 
+
 class TestQGisSmoke(BaseIntegrationTest):
     """Verifies that the integration test base correctly initializes QGIS."""
 
     def test_qgis_layer_instantiation(self):
         """Verify that real QGS objects can be created."""
-        layer = QgsVectorLayer("Point?crs=EPSG:4326&field=id:integer", "test_layer", "memory")
+        layer = QgsVectorLayer(
+            "Point?crs=EPSG:4326&field=id:integer", "test_layer", "memory"
+        )
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.name(), "test_layer")
         self.assertEqual(layer.fields().count(), 1)
@@ -21,7 +24,7 @@ class TestQGisSmoke(BaseIntegrationTest):
         # or it might have a default from QGIS settings
         print(f"DEBUG: Project CRS: {project.crs().authid()}")
         # Just check it's accessible, exact value depend on env
-        self.assertTrue(hasattr(project, 'crs'))
+        self.assertTrue(hasattr(project, "crs"))
 
     def test_dialog_instantiation(self):
         """Verify that the main dialog can be instantiated in headless mode."""

@@ -6,7 +6,10 @@ from qgis.core import QgsPointXY, QgsVectorLayer, QgsProject, QgsWkbTypes
 from qgis.gui import QgsMapCanvas, QgsRubberBand, QgsVertexMarker
 from qgis.PyQt.QtCore import QPoint, Qt
 
-from sec_interp.gui.tools.interpretation_tool import ProfileInterpretationTool, ProfileSnapper
+from sec_interp.gui.tools.interpretation_tool import (
+    ProfileInterpretationTool,
+    ProfileSnapper,
+)
 
 
 class TestInterpretationTool(BaseTestCase):
@@ -34,16 +37,18 @@ class TestInterpretationTool(BaseTestCase):
     def test_snapper_skips_and_continues(self):
         """Test snapper skips invalid layers and missing locators."""
         l1 = MagicMock()
-        l1.type.return_value = 1 # Raster
+        l1.type.return_value = 1  # Raster
 
         l2 = MagicMock()
-        l2.type.return_value = 0 # Vector
+        l2.type.return_value = 0  # Vector
         l2.id.return_value = "l2"
         l2.name.return_value = "l2"
 
         self.canvas.layers.return_value = [l1, l2]
 
-        with patch("sec_interp.gui.tools.interpretation_tool.QgsPointLocator") as mock_locator_cls:
+        with patch(
+            "sec_interp.gui.tools.interpretation_tool.QgsPointLocator"
+        ) as mock_locator_cls:
             mock_locator = MagicMock()
             match = MagicMock()
             match.isValid.return_value = False
@@ -53,7 +58,7 @@ class TestInterpretationTool(BaseTestCase):
             mock_locator_cls.return_value = mock_locator
 
             snapper = ProfileSnapper(self.canvas)
-            snapper.snap(QPoint(0,0))
+            snapper.snap(QPoint(0, 0))
             # Hits _is_snappable check
 
     def test_tool_activate_deactivate(self):
@@ -92,7 +97,7 @@ class TestInterpretationTool(BaseTestCase):
 
     def test_canvas_release_right_click(self):
         """Test right click removing last point."""
-        self.tool.points = [QgsPointXY(0,0)]
+        self.tool.points = [QgsPointXY(0, 0)]
         self.tool._remove_last_point = MagicMock()
 
         event = MagicMock()
@@ -125,9 +130,9 @@ class TestInterpretationTool(BaseTestCase):
 
     def test_finalize_invalid(self):
         """Test finalize with less than 3 points."""
-        self.tool.points = [QgsPointXY(0,0), QgsPointXY(100,0)]
+        self.tool.points = [QgsPointXY(0, 0), QgsPointXY(100, 0)]
         self.tool.polygonFinished = MagicMock()
-        self.tool.finalize_measurement = MagicMock() # Oops, tool.finalize_polygon
+        self.tool.finalize_measurement = MagicMock()  # Oops, tool.finalize_polygon
 
         self.tool.finalize_polygon()
         self.tool.polygonFinished.emit.assert_not_called()
@@ -165,7 +170,10 @@ class TestInterpretationTool(BaseTestCase):
         layer.id.return_value = "id1"
         layer.name.return_value = "layer1"
 
-        with patch("sec_interp.gui.tools.interpretation_tool.QgsPointLocator", side_effect=Exception("mock error")):
+        with patch(
+            "sec_interp.gui.tools.interpretation_tool.QgsPointLocator",
+            side_effect=Exception("mock error"),
+        ):
             locator = snapper._get_locator(layer, MagicMock(), MagicMock())
             self.assertIsNone(locator)
 
@@ -188,7 +196,9 @@ class TestInterpretationTool(BaseTestCase):
         layer.type = MagicMock(return_value=0)
         self.canvas.layers.return_value = [layer]
 
-        with patch("sec_interp.gui.tools.interpretation_tool.QgsPointLocator") as mock_locator_cls:
+        with patch(
+            "sec_interp.gui.tools.interpretation_tool.QgsPointLocator"
+        ) as mock_locator_cls:
             mock_locator = mock_locator_cls.return_value
             # Vertex snap invalid
             v_match = MagicMock()
@@ -213,9 +223,11 @@ class TestInterpretationTool(BaseTestCase):
         layer.type = MagicMock(return_value=0)
         self.canvas.layers.return_value = [layer]
 
-        with patch.object(ProfileSnapper, "_get_locator", side_effect=Exception("loop fail")):
+        with patch.object(
+            ProfileSnapper, "_get_locator", side_effect=Exception("loop fail")
+        ):
             snapper = ProfileSnapper(self.canvas)
-            snapper.snap(QPoint(0,0)) # Should hit line 88
+            snapper.snap(QPoint(0, 0))  # Should hit line 88
 
     def test_snapper_none_locator(self):
         """Test snapper continues if locator is None."""
@@ -226,7 +238,7 @@ class TestInterpretationTool(BaseTestCase):
 
         with patch.object(ProfileSnapper, "_get_locator", return_value=None):
             snapper = ProfileSnapper(self.canvas)
-            snapper.snap(QPoint(0,0)) # Should hit line 73
+            snapper.snap(QPoint(0, 0))  # Should hit line 73
 
     def test_snapper_vertex_match(self):
         """Test snapper reaching vertex match lines."""
@@ -235,12 +247,14 @@ class TestInterpretationTool(BaseTestCase):
         layer.type = MagicMock(return_value=0)
         self.canvas.layers.return_value = [layer]
 
-        with patch("sec_interp.gui.tools.interpretation_tool.QgsPointLocator") as mock_locator_cls:
+        with patch(
+            "sec_interp.gui.tools.interpretation_tool.QgsPointLocator"
+        ) as mock_locator_cls:
             mock_locator = mock_locator_cls.return_value
             # Vertex snap valid
             v_match = MagicMock()
             v_match.isValid.return_value = True
-            v_match.distance.return_value = 1.0 # Very close
+            v_match.distance.return_value = 1.0  # Very close
             v_match.point.return_value = QgsPointXY(10, 10)
             mock_locator.nearestVertex.return_value = v_match
             mock_locator.nearestEdge.return_value = MagicMock(isValid=lambda: False)
@@ -261,7 +275,7 @@ class TestInterpretationTool(BaseTestCase):
         snapper = ProfileSnapper(self.canvas)
         snapper._locators = {"old": MagicMock()}
         self.canvas.layers.return_value = []
-        snapper.snap(QPoint(0,0))
+        snapper.snap(QPoint(0, 0))
         self.assertEqual(len(snapper._locators), 0)
 
     def test_canvas_release_left_click(self):
@@ -281,18 +295,16 @@ class TestInterpretationTool(BaseTestCase):
         self.tool.canvasMoveEvent(MagicMock())
         self.tool._update_rubber_band.assert_not_called()
 
-
-
     def test_remove_last_no_points(self):
         """Test _remove_last_point with no points."""
         self.tool.points = []
-        self.tool._remove_last_point() # Should not fail
+        self.tool._remove_last_point()  # Should not fail
 
     def test_update_rubber_band_missing(self):
         """Test _update_rubber_band handles missing band/points."""
         self.tool.rubber_band = None
-        self.tool._update_rubber_band(QgsPointXY(0,0)) # Should not fail
+        self.tool._update_rubber_band(QgsPointXY(0, 0))  # Should not fail
 
         self.tool._ensure_rubber_band()
         self.tool.points = []
-        self.tool._update_rubber_band(QgsPointXY(0,0)) # Should not fail
+        self.tool._update_rubber_band(QgsPointXY(0, 0))  # Should not fail

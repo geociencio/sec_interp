@@ -8,7 +8,7 @@ from qgis.core import (
     QgsFeature,
     QgsVectorLayer,
     QgsRasterLayer,
-    QgsCoordinateReferenceSystem
+    QgsCoordinateReferenceSystem,
 )
 
 from sec_interp.core.services.structure_service import StructureService
@@ -28,7 +28,9 @@ class TestStructureService(BaseTestCase):
         self.mock_struct_lyr = MagicMock()
 
         # Setup line geometry
-        self.line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
+        self.line_geom = QgsGeometry.fromPolylineXY(
+            [QgsPointXY(0, 0), QgsPointXY(100, 0)]
+        )
         self.line_feat = QgsFeature()
         self.line_feat.setGeometry(self.line_geom)
 
@@ -36,7 +38,9 @@ class TestStructureService(BaseTestCase):
         self.mock_line_lyr.crs.return_value = QgsCoordinateReferenceSystem("EPSG:32633")
         self.mock_line_lyr.name.return_value = "Line Layer"
 
-        self.mock_struct_lyr.crs.return_value = QgsCoordinateReferenceSystem("EPSG:32633")
+        self.mock_struct_lyr.crs.return_value = QgsCoordinateReferenceSystem(
+            "EPSG:32633"
+        )
         self.mock_struct_lyr.name.return_value = "Structure Layer"
 
     def test_project_structures_success(self):
@@ -54,7 +58,9 @@ class TestStructureService(BaseTestCase):
         feat.attributes = MagicMock(return_value=[45.0, 90.0])
 
         # Patch dependencies
-        with patch("sec_interp.core.services.structure_service.scu.filter_features_by_buffer") as mock_filter:
+        with patch(
+            "sec_interp.core.services.structure_service.scu.filter_features_by_buffer"
+        ) as mock_filter:
             mock_filter.return_value = [feat]
 
             # Mock raster sampling
@@ -65,8 +71,13 @@ class TestStructureService(BaseTestCase):
             self.mock_raster_lyr.dataProvider.return_value = provider
 
             results = self.service.project_structures(
-                self.mock_line_lyr, self.mock_raster_lyr, self.mock_struct_lyr,
-                buffer_m=10, line_az=0.0, dip_field="dip", strike_field="strike"
+                self.mock_line_lyr,
+                self.mock_raster_lyr,
+                self.mock_struct_lyr,
+                buffer_m=10,
+                line_az=0.0,
+                dip_field="dip",
+                strike_field="strike",
             )
 
             self.assertEqual(len(results), 1)
@@ -93,10 +104,14 @@ class TestStructureService(BaseTestCase):
 
     def test_create_buffer_zone_error(self):
         """Test error handling in buffer creation."""
-        with patch("sec_interp.core.services.structure_service.scu.create_buffer_geometry") as mock_buf:
+        with patch(
+            "sec_interp.core.services.structure_service.scu.create_buffer_geometry"
+        ) as mock_buf:
             mock_buf.side_effect = ValueError("Test Error")
             with self.assertRaises(ProcessingError):
-                self.service._create_buffer_zone(self.line_geom, QgsCoordinateReferenceSystem(), 10.0)
+                self.service._create_buffer_zone(
+                    self.line_geom, QgsCoordinateReferenceSystem(), 10.0
+                )
 
     def test_sample_elevation(self):
         """Test raster elevation sampling."""
@@ -106,5 +121,5 @@ class TestStructureService(BaseTestCase):
         provider.identify.return_value = ident_res
         self.mock_raster_lyr.dataProvider.return_value = provider
 
-        val = self.service._sample_elevation(self.mock_raster_lyr, QgsPointXY(0,0), 1)
+        val = self.service._sample_elevation(self.mock_raster_lyr, QgsPointXY(0, 0), 1)
         self.assertEqual(val, 250.0)

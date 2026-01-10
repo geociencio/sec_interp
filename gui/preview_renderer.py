@@ -138,7 +138,13 @@ class PreviewRenderer:
         # Order: Structures on top, then Geology, then Topography line, then Fill, then Drillholes
         data_layers = [
             layer
-            for layer in [struct_layer, geol_layer, topo_layer, topo_fill_layer, *drillhole_layers]
+            for layer in [
+                struct_layer,
+                geol_layer,
+                topo_layer,
+                topo_fill_layer,
+                *drillhole_layers,
+            ]
             if layer is not None
         ]
 

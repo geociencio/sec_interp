@@ -232,13 +232,13 @@ class MockQgsGeometry(MockQgsBase):
 
     def centroid(self):
         # Mock centroid
-        p = MockQgsPointXY(0,0)
+        p = MockQgsPointXY(0, 0)
         if hasattr(self, "_point") and self._point:
-             p = self._point
+            p = self._point
         elif hasattr(self, "_polyline") and self._polyline:
-             p = self._polyline[0]
+            p = self._polyline[0]
         elif hasattr(self, "_polygons") and self._polygons and self._polygons[0]:
-             p = self._polygons[0][0]
+            p = self._polygons[0][0]
         return MockQgsGeometry.fromPointXY(p)
 
     def makeValid(self):
@@ -339,11 +339,11 @@ class MockQgsGeometry(MockQgsBase):
         return self._polyline
 
     def vertexAt(self, index):
-        if self._wkb_type == 1: # Point
+        if self._wkb_type == 1:  # Point
             return self._point
         if index < len(self._polyline):
             return self._polyline[index]
-        return MockQgsPointXY(0,0)
+        return MockQgsPointXY(0, 0)
 
 
 class MockQgsLineString(MockQgsBase):
@@ -1098,6 +1098,7 @@ if not CORE_AVAILABLE:
         Warning = 1
         Info = 0
         LayerFilters = lambda x: x
+
         class LayerFilter:
             RasterLayer = 1
             PointLayer = 2
@@ -1109,6 +1110,7 @@ if not CORE_AVAILABLE:
 
     class MockQgsTask(MagicMock):
         CanCancel = 1
+
         def __init__(self, description="", flags=0):
             super().__init__()
             self._description = description
@@ -1364,8 +1366,10 @@ class BaseTestCase(unittest.TestCase):
 
         # Restore critical module-level functions
         if "qgis.PyQt.QtCore" in sys.modules:
-             sys.modules["qgis.PyQt.QtCore"].QCoreApplication.translate = lambda c, t: t
-             sys.modules["qgis.PyQt.QtCore"].QCoreApplication.installTranslator = lambda t: None
+            sys.modules["qgis.PyQt.QtCore"].QCoreApplication.translate = lambda c, t: t
+            sys.modules["qgis.PyQt.QtCore"].QCoreApplication.installTranslator = (
+                lambda t: None
+            )
 
     # Helper methods replicating pytest fixtures
 

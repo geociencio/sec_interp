@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Internationalization**:
   - Translated Measure tool results and "New Interpretation" default name to English.
   - Made measurement results fully localizable via `tr()`.
+- **Code Standards**:
+  - Applied Project-wide formatting with `black`.
+  - Formal closure of Phase v2.6.0.
 
 ## [2.6.0] - 2026-01-08
 ### 🚀 Infrastructure & DevOps

@@ -238,7 +238,9 @@ class SecInterpDialog(SecInterpMainWindow):
         """
         from sec_interp.logger_config import log_critical_operation
 
-        from .dialogs.interpretation_properties_dialog import InterpretationPropertiesDialog
+        from .dialogs.interpretation_properties_dialog import (
+            InterpretationPropertiesDialog,
+        )
 
         log_critical_operation(
             logger,
@@ -352,7 +354,9 @@ class SecInterpDialog(SecInterpMainWindow):
                         min_dist = int_min_dist
                         # Polymorphic access: DrillholeInterval uses 'rock_unit', GeologySegment uses 'unit_name'
                         unit_name = getattr(
-                            interval, "rock_unit", getattr(interval, "unit_name", "Unknown")
+                            interval,
+                            "rock_unit",
+                            getattr(interval, "unit_name", "Unknown"),
                         )
 
                         best_match = {

@@ -3,7 +3,14 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
-from qgis.core import QgsPointXY, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsCoordinateReferenceSystem
+from qgis.core import (
+    QgsPointXY,
+    QgsFields,
+    QgsField,
+    QgsFeature,
+    QgsGeometry,
+    QgsCoordinateReferenceSystem,
+)
 from qgis.PyQt.QtCore import QMetaType
 
 from sec_interp.exporters.profile_exporters import (
@@ -29,10 +36,7 @@ class TestProfileExporters(BaseTestCase):
         mock_writer = mock_writer_func.return_value
         exporter = ProfileLineShpExporter(self.settings)
 
-        data = {
-            "profile_data": [(0, 100), (100, 200)],
-            "crs": self.crs
-        }
+        data = {"profile_data": [(0, 100), (100, 200)], "crs": self.crs}
 
         result = exporter.export(self.output_path, data)
         self.assertTrue(result)
@@ -53,10 +57,7 @@ class TestProfileExporters(BaseTestCase):
         segment.points = [(0, 100), (100, 200)]
         segment.attributes = {"unit": "lith1"}
 
-        data = {
-            "geology_data": [segment],
-            "crs": self.crs
-        }
+        data = {"geology_data": [segment], "crs": self.crs}
 
         result = exporter.export(self.output_path, data)
         self.assertTrue(result)
@@ -89,7 +90,7 @@ class TestProfileExporters(BaseTestCase):
             "structural_data": [m],
             "crs": self.crs,
             "dip_scale_factor": 4,
-            "raster_res": 1.0
+            "raster_res": 1.0,
         }
 
         result = exporter.export(self.output_path, data)
@@ -107,10 +108,7 @@ class TestProfileExporters(BaseTestCase):
         mock_writer = mock_writer_func.return_value
         exporter = AxesShpExporter(self.settings)
 
-        data = {
-            "profile_data": [(0, 100), (100, 200)],
-            "crs": self.crs
-        }
+        data = {"profile_data": [(0, 100), (100, 200)], "crs": self.crs}
 
         result = exporter.export(self.output_path, data)
         self.assertTrue(result)
@@ -121,27 +119,35 @@ class TestProfileExporters(BaseTestCase):
     def test_axes_exporter_single_point(self, mock_writer_func):
         """Test axes exporter with single point or constant data."""
         exporter = AxesShpExporter(self.settings)
-        data = {
-            "profile_data": [(100, 100), (100, 100)],
-            "crs": self.crs
-        }
+        data = {"profile_data": [(100, 100), (100, 100)], "crs": self.crs}
         result = exporter.export(self.output_path, data)
         self.assertTrue(result)
 
     def test_exporter_errors(self):
         """Test error handling in exporters."""
-        with patch("sec_interp.core.utils.create_shapefile_writer", side_effect=Exception("mock fail")):
+        with patch(
+            "sec_interp.core.utils.create_shapefile_writer",
+            side_effect=Exception("mock fail"),
+        ):
             data = {"profile_data": [(0, 0)], "crs": self.crs}
-            self.assertFalse(ProfileLineShpExporter(self.settings).export(self.output_path, data))
+            self.assertFalse(
+                ProfileLineShpExporter(self.settings).export(self.output_path, data)
+            )
 
             data = {"geology_data": [MagicMock()], "crs": self.crs}
-            self.assertFalse(GeologyShpExporter(self.settings).export(self.output_path, data))
+            self.assertFalse(
+                GeologyShpExporter(self.settings).export(self.output_path, data)
+            )
 
             data = {"structural_data": [MagicMock()], "crs": self.crs}
-            self.assertFalse(StructureShpExporter(self.settings).export(self.output_path, data))
+            self.assertFalse(
+                StructureShpExporter(self.settings).export(self.output_path, data)
+            )
 
             data = {"profile_data": [(0, 0)], "crs": self.crs}
-            self.assertFalse(AxesShpExporter(self.settings).export(self.output_path, data))
+            self.assertFalse(
+                AxesShpExporter(self.settings).export(self.output_path, data)
+            )
 
     def test_geology_fields_empty(self):
         """Test _create_geology_fields with empty data."""
@@ -151,23 +157,33 @@ class TestProfileExporters(BaseTestCase):
 
     def test_supported_extensions(self):
         """Test supported extensions for all exporters."""
-        self.assertEqual(ProfileLineShpExporter(self.settings).get_supported_extensions(), [".shp"])
-        self.assertEqual(GeologyShpExporter(self.settings).get_supported_extensions(), [".shp"])
-        self.assertEqual(StructureShpExporter(self.settings).get_supported_extensions(), [".shp"])
-        self.assertEqual(AxesShpExporter(self.settings).get_supported_extensions(), [".shp"])
+        self.assertEqual(
+            ProfileLineShpExporter(self.settings).get_supported_extensions(), [".shp"]
+        )
+        self.assertEqual(
+            GeologyShpExporter(self.settings).get_supported_extensions(), [".shp"]
+        )
+        self.assertEqual(
+            StructureShpExporter(self.settings).get_supported_extensions(), [".shp"]
+        )
+        self.assertEqual(
+            AxesShpExporter(self.settings).get_supported_extensions(), [".shp"]
+        )
 
     @patch("sec_interp.core.utils.create_shapefile_writer")
     def test_profile_line_exporter_null_geom(self, mock_writer_func):
         """Test profile line exporter with null geometry."""
         exporter = ProfileLineShpExporter(self.settings)
         # Patch QgsGeometry via the module where it is imported/used
-        with patch("sec_interp.exporters.profile_exporters.QgsGeometry") as mock_geom_cls:
-             mock_geom = MagicMock()
-             mock_geom.isNull.return_value = True
-             mock_geom_cls.fromPolylineXY.return_value = mock_geom
-             
-             data = {"profile_data": [(0, 0)], "crs": self.crs}
-             self.assertFalse(exporter.export(self.output_path, data))
+        with patch(
+            "sec_interp.exporters.profile_exporters.QgsGeometry"
+        ) as mock_geom_cls:
+            mock_geom = MagicMock()
+            mock_geom.isNull.return_value = True
+            mock_geom_cls.fromPolylineXY.return_value = mock_geom
+
+            data = {"profile_data": [(0, 0)], "crs": self.crs}
+            self.assertFalse(exporter.export(self.output_path, data))
 
     def test_geology_exporter_missing_data(self):
         """Test geology exporter with missing data."""

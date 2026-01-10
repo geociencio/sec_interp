@@ -17,7 +17,6 @@ class TestAlgorithms(BaseTestCase):
         azimuth = calculate_line_azimuth(geom)
         self.assertEqual(azimuth, 90.0)
 
-
     def test_calculate_line_azimuth_vertical(self):
         """Test azimuth calculation for a vertical line (North)."""
         p1 = QgsPointXY(0, 0)
@@ -26,7 +25,6 @@ class TestAlgorithms(BaseTestCase):
 
         azimuth = calculate_line_azimuth(geom)
         self.assertEqual(azimuth, 0.0)
-
 
     def test_calculate_line_azimuth_point(self):
         """Test azimuth calculation for a point (should be 0)."""

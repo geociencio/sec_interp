@@ -7,6 +7,7 @@ from typing import Callable, Any
 
 logger = logging.getLogger(__name__)
 
+
 def benchmark(func: Callable) -> Callable:
     """Decorator to measure and log execution time of a test method.
 
@@ -16,6 +17,7 @@ def benchmark(func: Callable) -> Callable:
     Returns:
         The wrapped method.
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs) -> Any:
         """Measure execution time of the decorated function."""
@@ -29,10 +31,13 @@ def benchmark(func: Callable) -> Callable:
 
     return wrapper
 
+
 class BenchmarkMixin:
     """Mixin class to add benchmark assertion capabilities to TestCase."""
 
-    def assertExecutionTime(self, func: Callable, max_seconds: float, *args, **kwargs) -> float:
+    def assertExecutionTime(
+        self, func: Callable, max_seconds: float, *args, **kwargs
+    ) -> float:
         """Assert that a function executes within a specified time limit.
 
         Args:

@@ -137,7 +137,9 @@ def get_logger(name: str) -> logging.Logger:
         except Exception as e:
             # If file logging fails, continue with QGIS logging only
             QgsMessageLog.logMessage(
-                f"Warning: Could not initialize file logging: {e}", "SecInterp", Qgis.Warning
+                f"Warning: Could not initialize file logging: {e}",
+                "SecInterp",
+                Qgis.Warning,
             )
 
         logger.propagate = False

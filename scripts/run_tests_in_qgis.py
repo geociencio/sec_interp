@@ -95,7 +95,9 @@ def run_tests():
         print(f"❌ Error: Test directory not found at {TESTS_DIR}")
         return
 
-    suite = loader.discover(start_dir=str(TESTS_DIR / "integration"), pattern="test_*.py")
+    suite = loader.discover(
+        start_dir=str(TESTS_DIR / "integration"), pattern="test_*.py"
+    )
 
     # Run Tests
     runner = unittest.TextTestRunner(verbosity=2)

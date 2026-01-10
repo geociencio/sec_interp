@@ -5,7 +5,7 @@ from pathlib import Path
 from tests.base_test import BaseTestCase
 from sec_interp.core.validation.path_validator import (
     validate_safe_output_path,
-    validate_output_path
+    validate_output_path,
 )
 
 
@@ -61,7 +61,9 @@ class TestPathValidator(BaseTestCase):
         self.assertFalse(is_valid)
 
         # Create if missing
-        is_valid, msg, resolved = validate_safe_output_path(new_dir, create_if_missing=True)
+        is_valid, msg, resolved = validate_safe_output_path(
+            new_dir, create_if_missing=True
+        )
         self.assertTrue(is_valid)
         self.assertTrue(os.path.exists(new_dir))
         self.assertTrue(os.path.isdir(new_dir))

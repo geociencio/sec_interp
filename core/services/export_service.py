@@ -106,7 +106,12 @@ class ExportService:
         return result_msg
 
     def _export_topography(
-        self, folder: Path, data: list[tuple], crs: Any, csv_exporter: Any, msg: list[str]
+        self,
+        folder: Path,
+        data: list[tuple],
+        crs: Any,
+        csv_exporter: Any,
+        msg: list[str],
     ) -> None:
         """Export topographic data."""
         from sec_interp.exporters import ProfileLineShpExporter
@@ -124,7 +129,12 @@ class ExportService:
             raise ExportError(f"Topography export failed: {e!s}") from e
 
     def _export_geology(
-        self, folder: Path, data: list[Any] | None, crs: Any, csv_exporter: Any, msg: list[str]
+        self,
+        folder: Path,
+        data: list[Any] | None,
+        crs: Any,
+        csv_exporter: Any,
+        msg: list[str],
     ) -> None:
         """Export geological data."""
         if not data:

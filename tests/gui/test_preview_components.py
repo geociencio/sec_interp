@@ -92,7 +92,12 @@ class TestPreviewComponents(BaseTestCase):
         """Test structural points layer creation."""
         topo_data = [(0, 100), (100, 200)]
         struct_data = [
-            MagicMock(distance=50, elevation=150.0, apparent_dip=45, attributes={"type": "fold"})
+            MagicMock(
+                distance=50,
+                elevation=150.0,
+                apparent_dip=45,
+                attributes={"type": "fold"},
+            )
         ]
 
         layer = self.factory.create_struct_layer(struct_data, topo_data, vert_exag=1.0)
@@ -164,7 +169,12 @@ class TestPreviewComponents(BaseTestCase):
         # Struct layer edge cases
         # Negative dip
         struct_data = [
-            MagicMock(distance=50, elevation=150.0, apparent_dip=-45, attributes={"type": "fold"})
+            MagicMock(
+                distance=50,
+                elevation=150.0,
+                apparent_dip=-45,
+                attributes={"type": "fold"},
+            )
         ]
         l = self.factory.create_struct_layer(struct_data, [(0, 0), (100, 0)])
         self.assertIsNotNone(l)
@@ -196,17 +206,29 @@ class TestPreviewComponents(BaseTestCase):
         # Force create_memory_layer failure for all create methods
         # We need data that passes initial checks
         dh_data_full = [
-            ("H1", [(0, 0), (10, 10)], [GeologySegment("A", None, {}, [(0, 0), (10, 10)])])
+            (
+                "H1",
+                [(0, 0), (10, 10)],
+                [GeologySegment("A", None, {}, [(0, 0), (10, 10)])],
+            )
         ]
 
-        with patch.object(self.factory, "create_memory_layer", return_value=(None, None)):
+        with patch.object(
+            self.factory, "create_memory_layer", return_value=(None, None)
+        ):
             self.assertIsNone(self.factory.create_topo_layer([(0, 0), (10, 10)]))
             self.assertIsNone(
-                self.factory.create_geol_layer([GeologySegment("A", None, {}, [(0, 0), (10, 10)])])
+                self.factory.create_geol_layer(
+                    [GeologySegment("A", None, {}, [(0, 0), (10, 10)])]
+                )
             )
-            self.assertIsNone(self.factory.create_struct_layer(struct_data, [(0, 0), (100, 0)]))
+            self.assertIsNone(
+                self.factory.create_struct_layer(struct_data, [(0, 0), (100, 0)])
+            )
             self.assertIsNone(self.factory.create_drillhole_trace_layer(dh_data_full))
-            self.assertIsNone(self.factory.create_drillhole_interval_layer(dh_data_full))
+            self.assertIsNone(
+                self.factory.create_drillhole_interval_layer(dh_data_full)
+            )
 
         # Drillhole interval with empty segments
         dh_empty_segs = [("H1", [], [])]
@@ -249,7 +271,9 @@ class TestPreviewComponents(BaseTestCase):
         """Test the main render orchestrator."""
         topo_data = [(0, 100), (100, 200)]
 
-        with patch.object(self.renderer.layer_factory, "create_topo_layer") as mock_topo:
+        with patch.object(
+            self.renderer.layer_factory, "create_topo_layer"
+        ) as mock_topo:
             l = QgsVectorLayer("LineString", "topo", "memory")
             mock_topo.return_value = l
             self.renderer.render(topo_data)
@@ -262,16 +286,28 @@ class TestPreviewComponents(BaseTestCase):
         # Simulate factory returning None for some, real for others
 
         with (
-            patch.object(self.renderer.layer_factory, "create_topo_layer", return_value=None),
-            patch.object(self.renderer.layer_factory, "create_geol_layer", return_value=None),
-            patch.object(self.renderer.layer_factory, "create_struct_layer", return_value=None),
             patch.object(
-                self.renderer.layer_factory, "create_drillhole_trace_layer", return_value=None
+                self.renderer.layer_factory, "create_topo_layer", return_value=None
             ),
             patch.object(
-                self.renderer.layer_factory, "create_drillhole_interval_layer", return_value=None
+                self.renderer.layer_factory, "create_geol_layer", return_value=None
             ),
-            patch.object(self.renderer.layer_factory, "create_topo_fill_layer", return_value=None),
+            patch.object(
+                self.renderer.layer_factory, "create_struct_layer", return_value=None
+            ),
+            patch.object(
+                self.renderer.layer_factory,
+                "create_drillhole_trace_layer",
+                return_value=None,
+            ),
+            patch.object(
+                self.renderer.layer_factory,
+                "create_drillhole_interval_layer",
+                return_value=None,
+            ),
+            patch.object(
+                self.renderer.layer_factory, "create_topo_fill_layer", return_value=None
+            ),
         ):
             # Should run without error but return None (no valid layers)
             res, layers = self.renderer.render(
@@ -286,18 +322,30 @@ class TestPreviewComponents(BaseTestCase):
         mock_geol_layer.extent.return_value = QgsRectangle(0, 0, 10, 10)
 
         with (
-            patch.object(self.renderer.layer_factory, "create_topo_layer", return_value=None),
             patch.object(
-                self.renderer.layer_factory, "create_geol_layer", return_value=mock_geol_layer
-            ),
-            patch.object(self.renderer.layer_factory, "create_struct_layer", return_value=None),
-            patch.object(
-                self.renderer.layer_factory, "create_drillhole_trace_layer", return_value=None
+                self.renderer.layer_factory, "create_topo_layer", return_value=None
             ),
             patch.object(
-                self.renderer.layer_factory, "create_drillhole_interval_layer", return_value=None
+                self.renderer.layer_factory,
+                "create_geol_layer",
+                return_value=mock_geol_layer,
+            ),
+            patch.object(
+                self.renderer.layer_factory, "create_struct_layer", return_value=None
+            ),
+            patch.object(
+                self.renderer.layer_factory,
+                "create_drillhole_trace_layer",
+                return_value=None,
+            ),
+            patch.object(
+                self.renderer.layer_factory,
+                "create_drillhole_interval_layer",
+                return_value=None,
             ) as mock_create_interp,
-            patch.object(self.renderer.layer_factory, "create_topo_fill_layer", return_value=None),
+            patch.object(
+                self.renderer.layer_factory, "create_topo_fill_layer", return_value=None
+            ),
         ):
             res, layers = self.renderer.render(topo_data, geol_data=geol_data)
 
@@ -318,7 +366,9 @@ class TestPreviewComponents(BaseTestCase):
                 return_value=mock_dh_layer,
             ),
             patch.object(
-                self.renderer.layer_factory, "create_drillhole_interval_layer", return_value=None
+                self.renderer.layer_factory,
+                "create_drillhole_interval_layer",
+                return_value=None,
             ),
         ):
             res, layers = self.renderer.render(topo_data, drillhole_data=dh_data)
@@ -330,18 +380,32 @@ class TestPreviewComponents(BaseTestCase):
         self.renderer.canvas = MagicMock()
         topo_data = [(0, 100), (100, 200)]
         struct_data = [MagicMock(distance=50, elevation=150.0, apparent_dip=45)]
-        dh_data = [("H1", [(0, 0), (0, 10)], [GeologySegment("A", None, {}, [(0, 0), (0, 10)])])]
-        interp_data = [InterpretationPolygon("1", "A", "lith", [(0, 0), (10, 10), (10, 0)])]
+        dh_data = [
+            (
+                "H1",
+                [(0, 0), (0, 10)],
+                [GeologySegment("A", None, {}, [(0, 0), (0, 10)])],
+            )
+        ]
+        interp_data = [
+            InterpretationPolygon("1", "A", "lith", [(0, 0), (10, 10), (10, 0)])
+        ]
 
         with (
             patch.object(
-                self.renderer.layer_factory, "create_topo_layer", return_value=MagicMock()
+                self.renderer.layer_factory,
+                "create_topo_layer",
+                return_value=MagicMock(),
             ) as m_topo,
             patch.object(
-                self.renderer.layer_factory, "create_geol_layer", return_value=MagicMock()
+                self.renderer.layer_factory,
+                "create_geol_layer",
+                return_value=MagicMock(),
             ),
             patch.object(
-                self.renderer.layer_factory, "create_struct_layer", return_value=MagicMock()
+                self.renderer.layer_factory,
+                "create_struct_layer",
+                return_value=MagicMock(),
             ) as m_struct,
             patch.object(
                 self.renderer.layer_factory,
@@ -353,15 +417,24 @@ class TestPreviewComponents(BaseTestCase):
                 "create_drillhole_interval_layer",
                 return_value=MagicMock(),
             ) as m_dh_int,
-            patch.object(self.renderer.axes_manager, "create_axes_layer", return_value=MagicMock()),
             patch.object(
-                self.renderer.axes_manager, "create_axes_labels_layer", return_value=MagicMock()
+                self.renderer.axes_manager,
+                "create_axes_layer",
+                return_value=MagicMock(),
+            ),
+            patch.object(
+                self.renderer.axes_manager,
+                "create_axes_labels_layer",
+                return_value=MagicMock(),
             ),
         ):
             m_topo.return_value.extent.return_value = QgsRectangle(0, 0, 100, 200)
 
             res, _ = self.renderer.render(
-                topo_data, struct_data=struct_data, drillhole_data=dh_data, interp_data=interp_data
+                topo_data,
+                struct_data=struct_data,
+                drillhole_data=dh_data,
+                interp_data=interp_data,
             )
 
             self.assertIsNotNone(res)
@@ -474,7 +547,9 @@ class TestPreviewComponents(BaseTestCase):
         from sec_interp.gui import preview_renderer
 
         self.renderer.canvas = MagicMock()
-        poly = InterpretationPolygon("1", "A", "lith", [(0, 0), (10, 10), (10, 0)], color=None)
+        poly = InterpretationPolygon(
+            "1", "A", "lith", [(0, 0), (10, 10), (10, 0)], color=None
+        )
 
         # Checking color validity logic by mocking QColor(None) -> invalid
         with patch.object(preview_renderer, "QColor") as mock_color:
@@ -487,11 +562,16 @@ class TestPreviewComponents(BaseTestCase):
 
         # Interp color exception
         # First call raises ValueError, second call returns mock
-        with patch.object(preview_renderer, "QColor", side_effect=[ValueError, MagicMock()]):
+        with patch.object(
+            preview_renderer, "QColor", side_effect=[ValueError, MagicMock()]
+        ):
             self.renderer._render_interpretations([poly], 1.0)
 
         # Export exception
-        with patch("sec_interp.gui.preview_renderer.QgsMapSettings", side_effect=Exception("Boom")):
+        with patch(
+            "sec_interp.gui.preview_renderer.QgsMapSettings",
+            side_effect=Exception("Boom"),
+        ):
             self.assertFalse(self.renderer.export_to_image([], None, 100, 100, "path"))
 
 

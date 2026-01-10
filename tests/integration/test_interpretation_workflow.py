@@ -6,6 +6,7 @@ from tests.integration.base_integration import BaseIntegrationTest, DummyPlugin
 from sec_interp.core.types import InterpretationPolygon
 from sec_interp.gui.main_dialog import SecInterpDialog
 
+
 class TestInterpretationWorkflow(BaseIntegrationTest):
     """Integration test for interpretation management workflow."""
 
@@ -24,7 +25,7 @@ class TestInterpretationWorkflow(BaseIntegrationTest):
             id="test-id-1",
             name="Test Unit",
             type="Lithology",
-            vertices_2d=[(0, 0), (100, 0), (100, 50), (0, 50)]
+            vertices_2d=[(0, 0), (100, 0), (100, 50), (0, 50)],
         )
 
         # Manually add to dialog
@@ -44,15 +45,17 @@ class TestInterpretationWorkflow(BaseIntegrationTest):
     def test_load_interpretation_from_project(self):
         """Test loading interpretations from project entries."""
         # Pre-populate project
-        data = [{
-            "id": "load-id",
-            "name": "Stored Unit",
-            "type": "Fault",
-            "vertices_2d": [[10.0, 10.0], [20.0, 20.0]],
-            "attributes": {"source": "manual"},
-            "color": "#00FF00",
-            "created_at": "2026-01-01"
-        }]
+        data = [
+            {
+                "id": "load-id",
+                "name": "Stored Unit",
+                "type": "Fault",
+                "vertices_2d": [[10.0, 10.0], [20.0, 20.0]],
+                "attributes": {"source": "manual"},
+                "color": "#00FF00",
+                "created_at": "2026-01-01",
+            }
+        ]
         self.project.writeEntry("SecInterp", "interpretations", json.dumps(data))
 
         # Trigger load

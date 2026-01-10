@@ -13,12 +13,13 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsProject,
     QgsCoordinateReferenceSystem,
-    QgsWkbTypes
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
 
 from tests.integration.base_integration import BaseIntegrationTest
 from tests.benchmarks.benchmark_utils import benchmark, BenchmarkMixin
+
 
 class TestExportBenchmarks(BaseIntegrationTest, BenchmarkMixin):
     """Benchmark tests for export operations."""
@@ -62,7 +63,7 @@ class TestExportBenchmarks(BaseIntegrationTest, BenchmarkMixin):
                 QgsWkbTypes.Point,
                 self.crs,
                 QgsProject.instance().transformContext(),
-                options
+                options,
             )
 
             if writer.hasError() != QgsVectorFileWriter.NoError:
@@ -73,7 +74,7 @@ class TestExportBenchmarks(BaseIntegrationTest, BenchmarkMixin):
 
             del writer
 
-        self.assertExecutionTime(write_shp, 1.0) # Should be well under 1s
+        self.assertExecutionTime(write_shp, 1.0)  # Should be well under 1s
 
     @benchmark
     def test_shapefile_write_performance_10k(self):
@@ -91,7 +92,7 @@ class TestExportBenchmarks(BaseIntegrationTest, BenchmarkMixin):
                 QgsWkbTypes.Point,
                 self.crs,
                 QgsProject.instance().transformContext(),
-                options
+                options,
             )
 
             for feat in features:
@@ -101,5 +102,6 @@ class TestExportBenchmarks(BaseIntegrationTest, BenchmarkMixin):
 
         self.assertExecutionTime(write_shp, 5.0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

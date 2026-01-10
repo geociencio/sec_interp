@@ -14,7 +14,7 @@ class TestMeasureTool(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.canvas = MagicMock() # Removed spec=QgsMapCanvas
+        self.canvas = MagicMock()  # Removed spec=QgsMapCanvas
         self.canvas.scene.return_value = MagicMock()
         self.canvas.layers.return_value = []
         self.canvas.mapUnitsPerPixel.return_value = 1.0
@@ -45,7 +45,7 @@ class TestMeasureTool(BaseTestCase):
         """Test snapping with a vector layer."""
         layer = QgsVectorLayer()
         layer.id = MagicMock(return_value="layer1")
-        layer.type = MagicMock(return_value=0) # VectorLayer
+        layer.type = MagicMock(return_value=0)  # VectorLayer
         self.canvas.layers.return_value = [layer]
 
         # Mock locator match
@@ -108,7 +108,7 @@ class TestMeasureTool(BaseTestCase):
 
     def test_canvas_release_right_click(self):
         """Test right click resetting the tool."""
-        self.tool.points = [QgsPointXY(0,0)]
+        self.tool.points = [QgsPointXY(0, 0)]
 
         event = MagicMock()
         event.button.return_value = Qt.RightButton
@@ -169,7 +169,7 @@ class TestMeasureTool(BaseTestCase):
         self.tool.rubber_band = MagicMock()
         self.tool.reset()
         self.assertEqual(len(self.tool.points), 0)
-        self.assertIsNotNone(self.tool.rubber_band) # Kept visuals
+        self.assertIsNotNone(self.tool.rubber_band)  # Kept visuals
 
     def test_key_events(self):
         """Test Enter and Escape keys."""
@@ -194,7 +194,9 @@ class TestMeasureTool(BaseTestCase):
         layer.type = MagicMock(return_value=0)
         self.canvas.layers.return_value = [layer]
 
-        with patch("sec_interp.gui.tools.measure_tool.QgsPointLocator") as mock_locator_cls:
+        with patch(
+            "sec_interp.gui.tools.measure_tool.QgsPointLocator"
+        ) as mock_locator_cls:
             mock_locator = mock_locator_cls.return_value
             # Vertex snap invalid
             v_match = MagicMock()
@@ -217,16 +219,16 @@ class TestMeasureTool(BaseTestCase):
         """Test locator cleanup."""
         snapper = ProfileSnapper(self.canvas)
         snapper._locators = {"old_layer": MagicMock()}
-        self.canvas.layers.return_value = [] # No layers active
+        self.canvas.layers.return_value = []  # No layers active
 
-        snapper.snap(QPoint(0,0))
+        snapper.snap(QPoint(0, 0))
         self.assertEqual(len(snapper._locators), 0)
 
     def test_snapper_is_snappable_false(self):
         """Test _is_snappable for non-vector layers."""
         snapper = ProfileSnapper(self.canvas)
         layer = MagicMock()
-        layer.type.return_value = 1 # Raster
+        layer.type.return_value = 1  # Raster
         self.assertFalse(snapper._is_snappable(layer))
         self.assertFalse(snapper._is_snappable(None))
 
@@ -237,7 +239,10 @@ class TestMeasureTool(BaseTestCase):
         layer.id.return_value = "id1"
         layer.name.return_value = "layer1"
 
-        with patch("sec_interp.gui.tools.measure_tool.QgsPointLocator", side_effect=Exception("mock error")):
+        with patch(
+            "sec_interp.gui.tools.measure_tool.QgsPointLocator",
+            side_effect=Exception("mock error"),
+        ):
             locator = snapper._get_locator(layer, MagicMock(), MagicMock())
             self.assertIsNone(locator)
 
@@ -258,7 +263,7 @@ class TestMeasureTool(BaseTestCase):
 
     def test_finalize_invalid(self):
         """Test finalize with too few points."""
-        self.tool.points = [QgsPointXY(0,0)]
+        self.tool.points = [QgsPointXY(0, 0)]
         self.tool.finalize_measurement()
         self.assertFalse(self.tool.finalized)
 
@@ -266,32 +271,33 @@ class TestMeasureTool(BaseTestCase):
         """Test _calculate_and_emit_preview with no points."""
         self.tool.points = []
         self.tool.measurementChanged = MagicMock()
-        self.tool. _calculate_and_emit_preview(QgsPointXY(0,0))
+        self.tool._calculate_and_emit_preview(QgsPointXY(0, 0))
         self.tool.measurementChanged.emit.assert_not_called()
-
-
 
     def test_snapper_skips_and_continues(self):
         """Test snapper skips invalid layers and missing locators."""
         l1 = MagicMock()
-        l1.type.return_value = 1 # Raster (not snappable)
+        l1.type.return_value = 1  # Raster (not snappable)
 
         l2 = MagicMock()
-        l2.type.return_value = 0 # Vector
+        l2.type.return_value = 0  # Vector
         l2.id.return_value = "l2"
         l2.name.return_value = "l2"
 
         l3 = MagicMock()
-        l3.type.return_value = 0 # Vector
+        l3.type.return_value = 0  # Vector
         l3.id.return_value = "l3"
         l3.name.return_value = "l3"
 
         self.canvas.layers.return_value = [l1, l2, l3]
 
-        with patch("sec_interp.gui.tools.measure_tool.QgsPointLocator") as mock_locator_cls:
+        with patch(
+            "sec_interp.gui.tools.measure_tool.QgsPointLocator"
+        ) as mock_locator_cls:
             # l2 fails to get locator
             def get_locator_side_effect(layer, crs, context):
-                if layer.id() == "l2": raise Exception("fail")
+                if layer.id() == "l2":
+                    raise Exception("fail")
                 m = MagicMock()
                 match = MagicMock()
                 match.isValid.return_value = False
@@ -303,12 +309,12 @@ class TestMeasureTool(BaseTestCase):
             mock_locator_cls.side_effect = get_locator_side_effect
 
             snapper = ProfileSnapper(self.canvas)
-            snapper.snap(QPoint(0,0))
+            snapper.snap(QPoint(0, 0))
             # Should hit lines 67 and 71
 
     def test_rubber_band_updates(self):
         """Test rubber band is updated during move and finalize."""
-        self.tool.points = [QgsPointXY(0,0)]
+        self.tool.points = [QgsPointXY(0, 0)]
         self.tool._ensure_rubber_band()
         self.tool.rubber_band = MagicMock()
 
@@ -318,7 +324,7 @@ class TestMeasureTool(BaseTestCase):
         self.tool.rubber_band.addPoint.assert_called()
 
         # Test finalize redrawing rubber band
-        self.tool.points = [QgsPointXY(0,0), QgsPointXY(100, 0)]
+        self.tool.points = [QgsPointXY(0, 0), QgsPointXY(100, 0)]
         self.tool.rubber_band.reset.reset_mock()
         with patch("sec_interp.gui.tools.measure_tool.QgsMapToolPan"):
             self.tool.finalize_measurement()

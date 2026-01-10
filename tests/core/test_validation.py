@@ -88,7 +88,9 @@ class TestOutputPathValidation(BaseTestCase):
         nonexistent = self.output_dir / "nonexistent"
         is_valid, error, _ = vu.validate_output_path(str(nonexistent))
         self.assertFalse(is_valid)
-        self.assertTrue("not exist" in error.lower() or "does not exist" in error.lower())
+        self.assertTrue(
+            "not exist" in error.lower() or "does not exist" in error.lower()
+        )
 
     def test_validate_output_path_not_directory(self):
         """Test path that is a file, not directory."""

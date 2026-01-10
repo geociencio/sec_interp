@@ -7,7 +7,7 @@ from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsWkbTypes
 from sec_interp.core.validation.project_validator import (
     validate_reasonable_ranges,
     ValidationParams,
-    ProjectValidator
+    ProjectValidator,
 )
 from sec_interp.core.exceptions import ValidationError
 
@@ -58,7 +58,7 @@ class TestProjectValidator(BaseTestCase):
             line_layer=QgsVectorLayer(),
             output_path="/tmp/test",
             scale=1000,
-            vert_exag=1.0
+            vert_exag=1.0,
         )
 
         self.assertTrue(ProjectValidator.validate_all(params))
@@ -69,14 +69,25 @@ class TestProjectValidator(BaseTestCase):
             raster_layer=QgsRasterLayer(),
             line_layer=QgsVectorLayer(),
             output_path="/tmp/test",
-            scale=0.5, # < 1
-            vert_exag=0.05 # < 0.1
+            scale=0.5,  # < 1
+            vert_exag=0.05,  # < 0.1
         )
 
         # Mock other validators to not fail
-        with patch("sec_interp.core.validation.project_validator.validate_layer_geometry", return_value=(True, "")), \
-             patch("sec_interp.core.validation.project_validator.validate_layer_has_features", return_value=(True, "")), \
-             patch("sec_interp.core.validation.project_validator.validate_output_path", return_value=(True, "", None)):
+        with (
+            patch(
+                "sec_interp.core.validation.project_validator.validate_layer_geometry",
+                return_value=(True, ""),
+            ),
+            patch(
+                "sec_interp.core.validation.project_validator.validate_layer_has_features",
+                return_value=(True, ""),
+            ),
+            patch(
+                "sec_interp.core.validation.project_validator.validate_output_path",
+                return_value=(True, "", None),
+            ),
+        ):
 
             with self.assertRaises(ValidationError) as cm:
                 ProjectValidator.validate_all(params)

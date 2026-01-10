@@ -248,7 +248,10 @@ class DrillholeService(IDrillholeService):
         distance_area: QgsDistanceArea,
         buffer_width: float,
         section_azimuth: float,
-    ) -> tuple[list[GeologySegment], tuple[Any, list[tuple[float, float]], list[GeologySegment]]]:
+    ) -> tuple[
+        list[GeologySegment],
+        tuple[Any, list[tuple[float, float]], list[GeologySegment]],
+    ]:
         """Process a single drillhole's trajectory and intervals.
 
         Returns:
@@ -262,7 +265,11 @@ class DrillholeService(IDrillholeService):
 
         # 2. Trajectory and Projection
         trajectory = scu.calculate_drillhole_trajectory(
-            collar_point, collar_z, survey_data, section_azimuth, total_depth=final_depth
+            collar_point,
+            collar_z,
+            survey_data,
+            section_azimuth,
+            total_depth=final_depth,
         )
         projected_traj = scu.project_trajectory_to_section(
             trajectory, line_geom, line_start, distance_area

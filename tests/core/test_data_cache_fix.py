@@ -44,9 +44,7 @@ class TestDataCache(BaseTestCase):
         # Test individual gets (checking compatibility)
         # In the new API, we use the generic get method
         self.assertEqual(self.cache.get("topo", key), data)
-        self.assertEqual(
-            self.cache.get("geol", key), None
-        )  # Different bucket
+        self.assertEqual(self.cache.get("geol", key), None)  # Different bucket
         self.cache.set("geol", key, data["geol_data"])
         self.assertEqual(self.cache.get("geol", key), data["geol_data"])
         self.cache.set("struct", key, data["struct_data"])

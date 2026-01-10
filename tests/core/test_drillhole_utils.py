@@ -2,7 +2,12 @@
 
 import math
 from tests.base_test import BaseTestCase
-from qgis.core import QgsPointXY, QgsGeometry, QgsDistanceArea, QgsCoordinateReferenceSystem
+from qgis.core import (
+    QgsPointXY,
+    QgsGeometry,
+    QgsDistanceArea,
+    QgsCoordinateReferenceSystem,
+)
 
 from sec_interp.core.utils.drillhole import (
     calculate_drillhole_trajectory,

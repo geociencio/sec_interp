@@ -18,13 +18,17 @@ class TestDialogValidator(unittest.TestCase):
         self.mock_dialog = MagicMock()
 
         # Mock Data Aggregator
-        self.mock_dialog.data_aggregator.get_validation_params.return_value = MagicMock()
+        self.mock_dialog.data_aggregator.get_validation_params.return_value = (
+            MagicMock()
+        )
 
         self.validator = DialogValidator(self.mock_dialog)
 
     def test_validate_inputs_success(self):
         """Test successful validation."""
-        with patch('sec_interp.gui.main_dialog_validation.ProjectValidator.validate_all') as mock_validate:
+        with patch(
+            "sec_interp.gui.main_dialog_validation.ProjectValidator.validate_all"
+        ) as mock_validate:
             mock_validate.return_value = None  # No exception = success
 
             success, message = self.validator.validate_inputs()
@@ -35,7 +39,9 @@ class TestDialogValidator(unittest.TestCase):
 
     def test_validate_inputs_failure(self):
         """Test validation failure."""
-        with patch('sec_interp.gui.main_dialog_validation.ProjectValidator.validate_all') as mock_validate:
+        with patch(
+            "sec_interp.gui.main_dialog_validation.ProjectValidator.validate_all"
+        ) as mock_validate:
             mock_validate.side_effect = ValidationError("Invalid raster layer")
 
             success, message = self.validator.validate_inputs()
@@ -46,7 +52,9 @@ class TestDialogValidator(unittest.TestCase):
 
     def test_validate_preview_requirements_success(self):
         """Test successful preview validation."""
-        with patch('sec_interp.gui.main_dialog_validation.ProjectValidator.validate_preview_requirements') as mock_validate:
+        with patch(
+            "sec_interp.gui.main_dialog_validation.ProjectValidator.validate_preview_requirements"
+        ) as mock_validate:
             mock_validate.return_value = None
 
             success, message = self.validator.validate_preview_requirements()
@@ -57,7 +65,9 @@ class TestDialogValidator(unittest.TestCase):
 
     def test_validate_preview_requirements_failure(self):
         """Test preview validation failure."""
-        with patch('sec_interp.gui.main_dialog_validation.ProjectValidator.validate_preview_requirements') as mock_validate:
+        with patch(
+            "sec_interp.gui.main_dialog_validation.ProjectValidator.validate_preview_requirements"
+        ) as mock_validate:
             mock_validate.side_effect = ValidationError("Missing DEM layer")
 
             success, message = self.validator.validate_preview_requirements()
