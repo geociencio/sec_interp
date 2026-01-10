@@ -230,6 +230,17 @@ class MockQgsGeometry(MockQgsBase):
     def isGeosValid(self):
         return True
 
+    def centroid(self):
+        # Mock centroid
+        p = MockQgsPointXY(0,0)
+        if hasattr(self, "_point") and self._point:
+             p = self._point
+        elif hasattr(self, "_polyline") and self._polyline:
+             p = self._polyline[0]
+        elif hasattr(self, "_polygons") and self._polygons and self._polygons[0]:
+             p = self._polygons[0][0]
+        return MockQgsGeometry.fromPointXY(p)
+
     def makeValid(self):
         return self
 

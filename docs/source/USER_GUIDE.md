@@ -22,79 +22,112 @@ The SecInterp dialog is divided into three main areas:
 2.  **Configuration Page (Center)**: Where you configure the parameters for the selected module.
 3.  **Preview Panel (Right)**: An interactive canvas showing your cross-section in real-time.
 
-@[INSERT IMAGE HERE: images/ui_main_dialog_v26.png]
-*Figure 1: The redesigned v2.6.0 Main Window with Sidebar navigation.*
+![The redesigned v2.6.0 Main Window with Sidebar navigation](images/ui_main_dialog_v26.png)
+*The redesigned v2.6.0 Main Window with Sidebar navigation.*
 
 ## 3. Step-by-Step Tutorial: Creating a Profile
 
 ### Step 1: Digital Elevation Model (DEM)
 1.  Navigate to the **DEM** tab in the sidebar.
-2.  **Raster Layer**: Select your Digital Elevation Model.
-3.  **Vertical Exaggeration**: Adjust if you want to emphasize topography (e.g., 2.0x).
+2.  **Raster Layer**: Select your Digital Elevation Model (Mandatory).
+3.  **Band**: Select the band containing the elevation values (Mandatory).
+4.  **Resolution**: Calculated automatically based on the DEM resolution.
+5.  **Scale 1:1**: Calculated automatically based on the DEM resolution.
+6.  **Vert. Exag**: Adjust if you want to emphasize topography (e.g., 2.0x).
 
-@[INSERT IMAGE HERE: images/guide_dem_setup.png]
-*Figure 2: Digital Elevation Model configuration.*
+![Digital Elevation Model configuration](images/guide_dem_setup.png)
+*Digital Elevation Model configuration.*
 
 ### Step 2: Define Section Line
 1.  Navigate to the **Section Line** tab.
-2.  **Section Layer**: Select the vector line layer representing your section traces.
-3.  **Buffer**: Set a buffer distance (e.g., 50m) to capture data around the line.
-4.  Optionally, filter specific lines if your layer contains multiple traces.
+2.  **Section Layer**: Select the vector line layer representing your section traces (Mandatory).
+3.  **Buffer Dist. (m)**: Set a buffer distance (e.g., 50m) to capture data around the line (Mandatory).
+4.  **Important**: The line must be single line (not multipart, only P1 and P2) in order to calculate 3d section export.
 
-@[INSERT IMAGE HERE: images/guide_section_setup.png]
-*Figure 3: Section Line selection and buffer configuration.*
+![Section Line selection and buffer configuration](images/guide_section_setup.png)
+*Section Line selection and buffer configuration.*
+
+![Profile DEM Section Preview](images/dem_section_preview.png)
+*Profile DEM Section Preview.*
 
 ### Step 3: Adding Geological Data
 1.  Navigate to the **Geology** tab.
-2.  **Outcrop Layer**: Select the polygon layer containing your surface geology.
-3.  **Geology Field**: Choose the field containing the unit codes or names.
+2.  **Outcrop Layer**: Select the polygon layer containing your surface geology (optional).
+3.  **Name Field**: Choose the field containing the unit codes or names (Mandatory if Outcrop Layer is selected).
 
-### Step 4: Adding Drillhole Data
-The **Drillholes** page allows you to project borehole data onto the section. This page is divided into three sub-tabs:
+![Geology configuration](images/guide_geology_setup.png)
+*Geology configuration.*
+
+![Geology Section Preview](images/geology_section_preview.png)
+*Geology Section Preview.*
+
+### Step 4: Adding Structural Data
+1.  Navigate to the **Structural** tab.
+2.  **Structural Layer**: Select the polygon layer containing your dip measurements (optional).
+3.  **Dip Field**: Choose the field containing the dip values (Mandatory if Structural Layer is selected).
+4.  **Strike Field**: Choose the field containing the strike values (Mandatory if Structural Layer is selected).
+5.  **Dip Line Scale**: Adjust the scale of the dip lines (e.g., 1.0).
+
+![Structural configuration](images/guide_structure_setup.png)
+*Structural configuration.*
+
+![Structural Section Preview](images/structure_section_preview.png)
+*Structural Section Preview.*
+
+### Step 5: Adding Drillhole Data
+The **Drillholes** page allows you to project borehole data onto the section (optional). This page is divided into three sub-tabs:
 
 #### 1. Collars Tab
 Configures the location of drillhole collars (start points).
-- **Collar Layer**: Point layer with hole locations.
-- **Hole ID**: Unique identifier for each drillhole.
-- **Use Layer Geometry**: Keep checked to use the point layer's geometry for X/Y coordinates.
+- **Collar Layer**: Point layer with hole locations (optional).
+- **Use Layer Geometry For Coordinates**: Keep checked to use the point layer's geometry for X/Y coordinates (Optional if Collar Layer is selected).
+- **Hole ID**: Unique identifier for each drillhole (Mandatory if Collar Layer is selected).
+- **East (X)**: Optional field for collar X coordinate (if not using point layer geometry).
+- **North (Y)**: Optional field for collar Y coordinate (if not using point layer geometry).
 - **Elevation (Z)**: Optional field for collar elevation (if not using DEM).
 - **Total Depth**: Optional field for maximum depth.
 
-@[INSERT IMAGE HERE: images/guide_drillhole_collars.png]
-*Figure 4a: Drillhole Collars configuration.*
+![Drillhole Collars configuration](images/guide_drillhole_collars.png)
+*Drillhole Collars configuration.*
 
 #### 2. Survey Tab
 Configures downhole survey data (deviation).
-- **Survey Layer**: Table or layer with survey measurements.
-- **Hole ID**: Field linking to the Collar ID.
-- **Depth**: Distance down the hole.
-- **Azimuth**: Direction (0-360).
-- **Inclination**: Dip (-90 to 90).
+- **Survey Layer**: Table or layer with survey measurements (Mandatory if Collar Layer is selected).
+- **Hole ID**: Field linking to the Collar ID (Mandatory if Survey Layer is selected).
+- **Depth**: Distance down the hole (Mandatory if Survey Layer is selected).
+- **Azimuth**: Direction (0-360) (Mandatory if Survey Layer is selected).
+- **Inclination**: Dip (-90 to 90) (Mandatory if Survey Layer is selected).
 
-@[INSERT IMAGE HERE: images/guide_drillhole_survey.png]
-*Figure 4b: Drillhole Survey configuration.*
+![Drillhole Survey configuration](images/guide_drillhole_survey.png)
+*Drillhole Survey configuration.*
 
 #### 3. Intervals Tab
 Configures geological or attribute intervals.
-- **Interval Layer**: Table or layer with logging data.
-- **Hole ID**: Field linking to the Collar ID.
-- **From / To**: Depth ranges for each interval.
-- **Lithology**: Field containing the rock type or attribute to visualize.
+- **Interval Layer**: Table or layer with logging data (optional).
+- **Hole ID**: Field linking to the Collar ID (Mandatory if Interval Layer is selected).
+- **From / To**: Depth ranges for each interval (Mandatory if Interval Layer is selected).
+- **Lithology**: Field containing the rock type or attribute to visualize (Mandatory if Interval Layer is selected).
 
-@[INSERT IMAGE HERE: images/guide_drillhole_intervals.png]
-*Figure 4c: Drillhole Intervals configuration.*
+![Drillhole Intervals configuration](images/guide_drillhole_intervals.png)
+*Drillhole Intervals configuration.*
 
-### Step 5: Generate Preview
+### Step 6: Generate Preview
 1.  Click the **Preview** button (bottom right).
 2.  The section will render in the right-hand panel. Use the mouse wheel to zoom and drag to pan.
-3.  Use the **Layer Legend** (top right of preview) to toggle visibility of topography, drillholes, or geology.
+3.  Use the **Show Checkboxes** to toggle visibility of topography, geology, structures, drillholes and interpretation polygons.
+
+![Section Preview with all layers enabled](images/preview_all.png)
+*Section Preview with all layers enabled.*
+
+![Section Preview with all panels collapsed](images/preview_panels_collapsed.png)
+*Section Preview with all panels collapsed.*
 
 ## 4. New Features in v2.6.0
 
 ### 4.1 Interpretation Tool (Drawing)
 The new **Interpretation Tool** allows you to draw geological polygons directly on the profile section.
 
-1.  Enable the tool by clicking the **Pencil Icon** in the preview toolbar.
+1.  Enable the tool by clicking the **Interpret** button in the preview toolbar.
 2.  **Drawing**: Left-click to add vertices.
 3.  **Snapping**: The cursor will automatically snap to:
     - Topography surface.
@@ -104,14 +137,20 @@ The new **Interpretation Tool** allows you to draw geological polygons directly 
 5.  **Finalize**: Double-click (or press Enter) to close the polygon.
 6.  **Properties**: A dialog will appear to set the **Lithology**, **Formation**, and **Color** of the new polygon.
 
-@[INSERT IMAGE HERE: images/guide_interpretation_tool.png]
-*Figure 5: Digitizing a new geological unit using the Interpretation Tool.*
+![Digitizing a new geological unit using the Interpretation Tool - Step 1](images/guide_interpretation_tool_1.png)
+*Digitizing a new geological unit using the Interpretation Tool.*
+
+![Digitizing a new geological unit using the Interpretation Tool - Step 2](images/guide_interpretation_tool_2.png)
+*Digitizing a new geological unit using the Interpretation Tool.*
+
+![Digitizing a new geological unit using the Interpretation Tool - Step 3](images/guide_interpretation_tool_3.png)
+*Digitizing a new geological unit using the Interpretation Tool.*
 
 ### 4.2 Exporting to 3D (PolygonZ)
 SecInterp now bridges the gap between 2D sections and 3D modeling. This feature allows you to export your 2D interpretations as real 3D objects.
 
 **Workflow:**
-1.  Go to the **Settings** tab and check **"Enable 3D Interpretation Export"**.
+1.  Go to the **Advanced** tab in the **Settings** tab and check **"Enable 3D Interpretation Export"**.
 2.  Use the **Save** button (not Export) to generate your data.
 3.  The plugin will create a **PolygonZ** Shapefile in your output folder.
 4.  Every vertex of your interpretation is projected into real-world 3D coordinates based on the section plane and surface elevation.
@@ -127,20 +166,20 @@ Control exactly what gets generated when you click **Save**.
 - **Drillhole Data**: Exports traces and interval cylinders (SHP).
 - **Interpretations (2D)**: Exports your drawn polygons (SHP).
 
-@[INSERT IMAGE HERE: images/guide_settings_default.png]
-*Figure 6a: Default settings showing Export Selection.*
+![Default settings showing Export Selection](images/guide_settings_default.png)
+*Default settings showing Export Selection.*
 
 #### 2. Advanced Tab
 - **Enable 3D Interpretation Export**: Toggles the generation of **PolygonZ** Shapefiles for your interpretations. This creates true 3D geometries based on the section plane.
 
-@[INSERT IMAGE HERE: images/guide_settings_advanced.png]
-*Figure 6b: Advanced settings with 3D Export feature.*
+![Advanced settings with 3D Export feature](images/guide_settings_advanced.png)
+*Advanced settings with 3D Export feature.*
 
 #### 3. Plugin Information Tab
 Displays version information, credits, and contact details for SecInterp.
 
-@[INSERT IMAGE HERE: images/guide_settings_info.png]
-*Figure 6c: Plugin Information.*
+![Plugin Information](images/guide_settings_info.png)
+*Plugin Information.*
 
 ## 5. Preview Panel & Tools
 The right-hand panel acts as an interactive canvas for your cross-section. It includes a toolbar and specific controls to manage visualization and performance.
@@ -176,7 +215,7 @@ Use the `Show **` checkboxes to toggle specific data layers on or off without re
 - **Multi-Segment**: Click multiple times to measure a polyline path.
 - **Result Panel**: Displays Total Distance (3D), Horizontal Distance, and Vertical Delta.
 
-@[INSERT IMAGE HERE: images/guide_measure_tool.png]
+![Measuring distance along a drillhole trace](images/guide_measure_tool.png)
 *Figure 7: Measuring distance along a drillhole trace.*
 
 #### Interpretation Tool

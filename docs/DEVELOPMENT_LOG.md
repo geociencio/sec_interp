@@ -11,6 +11,14 @@ Chronological record of development activities, significant fixes, and technical
     - Implementada conexión manual de señales para OK, Cancel y Save.
 - **Fix Persistencia**: Solucionado bug donde configuraciones antiguas de interpretaciones (polígonos) persistían incluso tras usar "Reset Defaults".
     - Ahora `reset_to_defaults` limpia explícitamente `self.interpretations` y fuerza el guardado inmediato al proyecto.
+- **Fix Herencia de Atributos**:
+    - Corregida lógica de selección de unidad geológica/drillhole. Ahora busca la distancia mínima a *cualquier* punto del segmento geométrico, no solo al punto medio.
+    - Resuelto problema donde polígonos cercanos a geometrías largas pero lejos de su centro heredaban atributos incorrectos.
+    - **HOTFIX**: Solucionado `AttributeError` al iterar datos de sondajes; se manejaba incorrectamente una tupla como objeto.
+    - **HOTFIX**: Solucionado `TypeError` al guardar interpretaciones con atributos heredados (`QVariant` no es serializable). Se añadió un codificador JSON personalizado.
+    - **HOTFIX**: Solucionado `AttributeError: 'GeologySegment' object has no attribute 'rock_unit'`. Se añadió soporte polimórfico para leer `unit_name` si `rock_unit` no existe.
+- **Documentación**:
+    - **Guía de Usuario**: Integración de todas las imágenes generadas por el usuario, reemplazando marcadores de posición con enlaces Markdown válidos.
 - **Refactorización de UI**:
     - **SettingsPage**: Reestructurada con sistema de pestañas (Default, Advanced, Info).
     - **Control de Exportación**: Añadidos controles selectivos en 'Settings > Default' para definir qué productos generar al guardar.

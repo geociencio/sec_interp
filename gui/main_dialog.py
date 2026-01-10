@@ -69,6 +69,7 @@ from .main_dialog_status import DialogStatusManager
 from .main_dialog_tools import DialogToolManager, NavigationManager
 from .main_dialog_utils import DialogEntityManager
 from .main_dialog_validation import DialogValidator
+from .preview_layer_factory import PreviewLayerFactory
 from .ui.main_window import SecInterpMainWindow
 
 
@@ -159,6 +160,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self.status_manager.setup_indicators()
         self.tool_manager = DialogToolManager(self)
         self.navigation_manager = NavigationManager(self)
+        self.layer_factory = PreviewLayerFactory()
 
     def handle_error(self, error: Exception, title: str = "Error"):
         """Centralized error handling for the dialog.
@@ -305,15 +307,18 @@ class SecInterpDialog(SecInterpMainWindow):
         # 1. Check Geology Data
         if config.get("inherit_geology") and self.preview_manager.cached_data.get("geol"):
             for segment in self.preview_manager.cached_data["geol"]:
-                # segment is GeologicalSegment with 'points' (dist, elev) and 'unit_name'
-                # Check mid point distance to ref_point
+                # Check min distance to any point in the segment
                 if not segment.points:
                     continue
-                mid_idx = len(segment.points) // 2
-                p_dist, p_elev = segment.points[mid_idx]
-                dist = ref_point.distance(QgsPointXY(p_dist, p_elev))
-                if dist < min_dist:
-                    min_dist = dist
+
+                # Find closest point in this segment
+                seg_min_dist = float("inf")
+                for p_dist, p_elev in segment.points:
+                    d = ref_point.distance(QgsPointXY(p_dist, p_elev))
+                    seg_min_dist = min(d, seg_min_dist)
+
+                if seg_min_dist < min_dist:
+                    min_dist = seg_min_dist
                     best_match = {
                         "name": segment.unit_name,
                         "type": "geology",
@@ -323,17 +328,35 @@ class SecInterpDialog(SecInterpMainWindow):
         # 2. Check Drillhole Data (Intervals)
         if config.get("inherit_drillholes") and self.preview_manager.cached_data.get("drillhole"):
             for dh in self.preview_manager.cached_data["drillhole"]:
-                for interval in dh.intervals:
-                    # interval has 'points' and 'rock_unit'
+                # Handle both tuple (id, trace, intervals) and object (with .intervals)
+                extracted_intervals = []
+                if isinstance(dh, tuple) and len(dh) >= 3:
+                    extracted_intervals = dh[2]
+                elif hasattr(dh, "intervals"):
+                    extracted_intervals = dh.intervals
+
+                if not extracted_intervals:
+                    continue
+
+                for interval in extracted_intervals:
                     if not interval.points:
                         continue
-                    mid_idx = len(interval.points) // 2
-                    p_dist, p_elev = interval.points[mid_idx]
-                    dist = ref_point.distance(QgsPointXY(p_dist, p_elev))
-                    if dist < min_dist:
-                        min_dist = dist
+
+                    # Find closest point in this interval
+                    int_min_dist = float("inf")
+                    for p_dist, p_elev in interval.points:
+                        d = ref_point.distance(QgsPointXY(p_dist, p_elev))
+                        int_min_dist = min(d, int_min_dist)
+
+                    if int_min_dist < min_dist:
+                        min_dist = int_min_dist
+                        # Polymorphic access: DrillholeInterval uses 'rock_unit', GeologySegment uses 'unit_name'
+                        unit_name = getattr(
+                            interval, "rock_unit", getattr(interval, "unit_name", "Unknown")
+                        )
+
                         best_match = {
-                            "name": interval.rock_unit,
+                            "name": unit_name,
                             "type": "drillhole",
                             "attrs": interval.attributes,
                         }
@@ -500,7 +523,15 @@ class SecInterpDialog(SecInterpMainWindow):
                 }
             )
 
-        json_data = json.dumps(data)
+        def json_serial(obj):
+            """JSON serializer for objects not serializable by default json code."""
+            if hasattr(obj, "isNull"):  # Handle QVariant (PyQt5/PyQGIS)
+                if obj.isNull():
+                    return None
+                return obj.value()
+            return str(obj)
+
+        json_data = json.dumps(data, default=json_serial)
         self.project.writeEntry("SecInterp", "interpretations", json_data)
         logger.debug(f"Saved {len(data)} interpretations to project")
 
