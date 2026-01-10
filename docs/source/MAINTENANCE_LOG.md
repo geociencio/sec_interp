@@ -36,6 +36,15 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
+### [2.7.0] - (Planning) 2026-01-09
+- **Infrastructure Planning**:
+    - **Native Validation**: Transition to `dataclasses` based models (replacing Pydantic proposal).
+    - **External Sphinx**: Strategy for out-of-repo documentation build and repository HTML cleanup.
+    - **Docker Consolidation**: Planned `make docker-test` integration.
+- **Enhanced 3D Export**:
+    - Design for Original and Projected 3D exports for Drillhole Traces and Intervals.
+    - Planned UI integration in Settings/Advanced.
+
 ### [2.6.1] - 2026-01-09
 - **Stabilization**:
     - **Test Suite**: Resolved major mock pollution issues and finalized 312 stable tests.
