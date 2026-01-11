@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### 🏗️ Architecture & AI Integration
+- **Advanced Project Analyzer**:
+  - Integrated Halstead metrics and Type Hint coverage for deep technical analysis.
+  - Added Mermaid-based dependency graph generation for enhanced AI context.
+  - Implemented automated "Project Brain" updates using HTML markers for safer parsing.
+- **Workflow Automation**:
+  - Integrated analyzer into `inicia-sesion` and `cierra-sesion` workflows with `// turbo` support.
+  - Enhanced `commit-changes` workflow with AI-assisted message generation and quality guarding.
+
 ## [2.6.0] - 2026-01-09
 ### 🚀 Infrastructure & DevOps
 - **Dockerized CI/CD**:

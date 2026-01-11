@@ -36,6 +36,13 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
+### [Unreleased] - 2026-01-11
+- **AI Infrastructure & Workflows**:
+    - **Project Analyzer v2.1**: Major refactor adding Halstead metrics, Type Hint coverage, and i18n audit.
+    - **Mermaid Support**: Automated generation of dependency graphs for LLM context.
+    - **Workflow Integration**: Deep integration of the analyzer into `inicia-sesion`, `cierra-sesion`, and `commit-changes`.
+    - **Robust Brain Update**: Marker-based HTML injection in `project_brain.md`.
+
 ### [2.7.0] - (Planning) 2026-01-09
 - **Infrastructure Planning**:
     - **Native Validation**: Transition to `dataclasses` based models (replacing Pydantic proposal).

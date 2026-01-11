@@ -99,21 +99,21 @@ Generado automáticamente por ProjectAnalyzer v2.0 (Optimizado)
 
 ## 💡 RECOMENDACIONES DE OPTIMIZACIÓN
 
-### core/types.py (Prioridad: ALTA)
-- **refactorizacion_complejidad**: Alta complejidad (44) con 9 funciones
-- **modulo_demasiado_grande**: Módulo muy grande (374 líneas)
-
 ### core/services/profile_service.py (Prioridad: MEDIA)
 - **funciones_demasiado_largas**: Funciones muy largas (promedio 87.0 líneas/función)
 
-### core/services/preview_service.py (Prioridad: ALTA)
-- **funciones_demasiado_largas**: Funciones muy largas (promedio 62.5 líneas/función)
+### core/utils/drillhole.py (Prioridad: MEDIA)
+- **funciones_demasiado_largas**: Funciones muy largas (promedio 75.0 líneas/función)
 
 ### core/validation/layer_validator.py (Prioridad: ALTA)
 - **refactorizacion_complejidad**: Alta complejidad (36) con 6 funciones
 
-### core/utils/geometry_utils/filtering.py (Prioridad: MEDIA)
-- **funciones_demasiado_largas**: Funciones muy largas (promedio 62.0 líneas/función)
+### core/utils/io.py (Prioridad: MEDIA)
+- **funciones_demasiado_largas**: Funciones muy largas (promedio 58.0 líneas/función)
+
+### core/types.py (Prioridad: ALTA)
+- **refactorizacion_complejidad**: Alta complejidad (44) con 9 funciones
+- **modulo_demasiado_grande**: Módulo muy grande (374 líneas)
 
 ## 🕸️  ESTRUCTURA DE DEPENDENCIAS
 - **Nodos**: 100
