@@ -3,38 +3,40 @@ description: How to commit changes cleanly (handling hooks)
 ---
 This workflow describes the process for committing changes, ensuring code quality standards are met without getting blocked by pre-commit hook conflicts.
 
-1. **Pre-Format**: Manually run `ruff` to fix any linting or formatting issues *before* committing. This prevents the pre-commit hook from modifying files mid-commit, which can cause the commit to fail.
-
+1. **Preparación y Limpieza (Automático)**:
+   Asegura que el código cumple con el estándar de ruff para evitar fallos en los hooks.
+   // turbo
    ```bash
    uv run ruff check --fix .
    uv run ruff format .
    ```
-   // turbo-all
 
-2. **Stage Changes**: Add all modified files to the staging area.
+2. **Stage Changes**: Añade los archivos que deseas confirmar.
    ```bash
    git add .
    ```
-   *Note: Be specific with `git add <files>` if you don't want to stage everything.*
 
-3. **Verify Status**: Check what is going to be committed.
-    ```bash
-    git status
-    ```
+3. **Sincronización de Calidad (Guardián)**:
+   Registra el impacto de los cambios en el Cerebro del Proyecto antes de guardar.
+   // turbo
+   ```bash
+   python3 .ai-context/analyze_project_optfixed.py
+   ```
 
-4. **Commit**: Commit the changes strictly following the [Commit Guidelines](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/docsec/COMMIT_GUIDELINES.md).
+4. **Propuesta de Mensaje (Asistida por IA)**:
+   Si el usuario pide un commit, la IA debe:
+   - Analizar los cambios preparados (`git diff --cached`).
+   - Sugerir al menos 2 opciones de mensajes siguiendo las [Commit Guidelines](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/docsec/COMMIT_GUIDELINES.md) (Inglés, Convencional).
+   - Indicar si hay cambios críticos en las métricas (ej: aumento súbito de complejidad).
 
-   **Mandatory Rules:**
-   - Use **English**.
-   - Use **Conventional Commits** (feat, fix, refactor, docs, style, test, perf, chore).
-   - Summary in **lowercase**, no ending period.
-   - Use **imperative mood** ("add" not "added").
-
+5. **Commit**: Ejecuta el commit con el mensaje aprobado.
    ```bash
    git commit -m "type: description" -m "detailed body"
    ```
 
-   *If the pre-commit hook fails and modifies files:*
-   1. The hook has automatically fixed issues.
-   2. Run `git add <modified_files>` again.
-   3. Run the `git commit` command again.
+   *Si el pre-commit hook persiste en fallar:*
+   1. Revisa los mensajes de error detectados.
+   2. Ejecuta `git add` de nuevo si hubo cambios automáticos.
+   3. Repite el commit.
+
+**Filosofía**: Cada commit es una unidad de valor limpio, documentado y validado métricamente.

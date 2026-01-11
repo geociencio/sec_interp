@@ -120,3 +120,17 @@
 2026-01-08 20:17:30,000 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
 2026-01-08 20:17:30,284 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
 2026-01-08 20:17:32,732 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-10 20:17:48,723 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-01-10 20:17:48,725 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/analize
+2026-01-10 20:17:48,728 - qgis_analyzer - ERROR - Error running Ruff: [Errno 2] No such file or directory: 'ruff'
+2026-01-10 20:17:48,728 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-10 20:18:18,388 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-01-10 20:18:18,389 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/analize
+2026-01-10 20:18:18,419 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-10 20:19:19,818 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-01-10 20:19:19,818 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/analize
+2026-01-10 20:19:19,823 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-10 20:22:54,528 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-10 20:22:54,528 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-10 20:22:54,789 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-10 20:22:57,528 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results

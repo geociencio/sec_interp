@@ -17,7 +17,14 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     PYTHONPATH=.. uv run python3 -m unittest discover tests
     ```
 
-3.  **Commit Local**:
+3.  **Sincronización de Memoria Final (IA)**:
+    Asegura que el "Cerebro" de la IA esté al día con los cambios finales.
+    // turbo
+    ```bash
+    python3 .ai-context/analyze_project_optfixed.py
+    ```
+
+4.  **Commit Local**:
     Guarda tu progreso.
     ```bash
     git add .
@@ -25,7 +32,7 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     ```
     *Nota: Si pre-commit falla, corrige y repite.*
 
-4.  **Resumen para el Usuario**:
+5.  **Resumen para el Usuario**:
     Genera un mensaje final listando:
     *   Archivos de log actualizados.
     *   Estado de los tests.

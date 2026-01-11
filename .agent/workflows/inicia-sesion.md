@@ -5,12 +5,17 @@ description: Procedimiento estándar y robusto para iniciar una sesión de desar
 Este workflow optimiza el inicio del desarrollo asegurando un entorno sincronizado, **contextualizado** y validado.
 
 1.  **Sintonización de Contexto (CRÍTICO)**:
-    Antes de tocar código, lee los siguientes archivos para entender "dónde nos quedamos":
+    Actualiza y lee el contexto para entender "dónde nos quedamos".
+    // turbo
+    ```bash
+    python3 .ai-context/analyze_project_optfixed.py
+    ```
+    Revisa los siguientes archivos:
+    *   `.ai-context/project_brain.md`: Memoria de largo plazo y métricas.
     *   `docs/DEVELOPMENT_LOG.md`: Ver fecha y resumen de la última sesión.
     *   `docs/source/MAINTENANCE_LOG.md`: Ver si hubo cambios de infraestructura recientes.
     *   `AI_CONTEXT.md`: Ver directrices de alto nivel y roadmap.
     *   `task.md`: Ver tareas pendientes.
-    *   Comando útil: `tail -n 15 docs/DEVELOPMENT_LOG.md`
 
 2.  **Sincronización de Entorno (Local)**:
     Asegura dependencias actualizadas.

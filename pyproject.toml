@@ -12,6 +12,7 @@ authors = [
 ]
 dependencies = [
     "PyQt5>=5.15.0,<5.16.0",
+    "qgis-plugin-analyzer>=1.4.0",
 ]
 
 [tool.setuptools]
