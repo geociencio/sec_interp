@@ -5,6 +5,10 @@ Provides specialized exporters for different file formats.
 
 from .base_exporter import BaseExporter
 from .csv_exporter import CSVExporter
+from .drillhole_3d_exporter import (
+    DrillholeInterval3DExporter,
+    DrillholeTrace3DExporter,
+)
 from .drillhole_exporters import (
     DrillholeIntervalShpExporter,
     DrillholeTraceShpExporter,
@@ -26,7 +30,9 @@ __all__ = [
     "AxesShpExporter",
     "BaseExporter",
     "CSVExporter",
+    "DrillholeInterval3DExporter",
     "DrillholeIntervalShpExporter",
+    "DrillholeTrace3DExporter",
     "DrillholeTraceShpExporter",
     "GeologyShpExporter",
     "ImageExporter",

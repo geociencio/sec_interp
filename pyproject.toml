@@ -11,6 +11,7 @@ authors = [
     { name = "Juan M Bernales", email = "juanbernales@gmail.com" }
 ]
 dependencies = [
+    "ai-context-core>=1.0.0",
     "PyQt5>=5.15.0,<5.16.0",
     "qgis-plugin-analyzer>=1.4.0",
 ]

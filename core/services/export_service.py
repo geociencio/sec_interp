@@ -95,7 +95,9 @@ class ExportService:
             )
 
         if export_options.get("exp_drill", True):
-            self._export_drillholes(output_folder, drillhole_data, line_crs, result_msg)
+            self._export_drillholes(
+                output_folder, drillhole_data, line_crs, result_msg, export_options
+            )
 
         if export_options.get("exp_interp", True):
             self._export_interpretations(
@@ -195,18 +197,26 @@ class ExportService:
             raise ExportError(f"Structure export failed: {e!s}") from e
 
     def _export_drillholes(
-        self, folder: Path, data: list[Any] | None, crs: Any, msg: list[str]
+        self,
+        folder: Path,
+        data: list[Any] | None,
+        crs: Any,
+        msg: list[str],
+        options: dict[str, bool] | None = None,
     ) -> None:
-        """Export drillhole data."""
+        """Export drillhole data (2D and optional 3D)."""
         if not data:
             return
         from sec_interp.exporters import (
+            DrillholeInterval3DExporter,
             DrillholeIntervalShpExporter,
+            DrillholeTrace3DExporter,
             DrillholeTraceShpExporter,
         )
 
         logger.info("✓ Saving drillhole data...")
         try:
+            # 1. Standard 2D Export
             DrillholeTraceShpExporter({}).export(
                 folder / "drillhole_traces.shp", {"drillhole_data": data, "crs": crs}
             )
@@ -214,6 +224,41 @@ class ExportService:
                 folder / "drillhole_intervals.shp", {"drillhole_data": data, "crs": crs}
             )
             msg.extend(["  - drillhole_traces.shp", "  - drillhole_intervals.shp"])
+
+            # 2. Advanced 3D Export
+            if options:
+                # Traces 3D
+                if options.get("drill_3d_traces", False):
+                    if options.get("drill_3d_original", True):
+                        path = folder / "drillhole_traces_3d_real.shp"
+                        DrillholeTrace3DExporter({}).export(
+                            path, {"drillhole_data": data, "crs": crs, "use_projected": False}
+                        )
+                        msg.append(f"  - {path.name} (3D Real)")
+
+                    if options.get("drill_3d_projected", False):
+                        path = folder / "drillhole_traces_3d_projected.shp"
+                        DrillholeTrace3DExporter({}).export(
+                            path, {"drillhole_data": data, "crs": crs, "use_projected": True}
+                        )
+                        msg.append(f"  - {path.name} (3D Proj)")
+
+                # Intervals 3D
+                if options.get("drill_3d_intervals", False):
+                    if options.get("drill_3d_original", True):
+                        path = folder / "drillhole_intervals_3d_real.shp"
+                        DrillholeInterval3DExporter({}).export(
+                            path, {"drillhole_data": data, "crs": crs, "use_projected": False}
+                        )
+                        msg.append(f"  - {path.name} (3D Real)")
+
+                    if options.get("drill_3d_projected", False):
+                        path = folder / "drillhole_intervals_3d_projected.shp"
+                        DrillholeInterval3DExporter({}).export(
+                            path, {"drillhole_data": data, "crs": crs, "use_projected": True}
+                        )
+                        msg.append(f"  - {path.name} (3D Proj)")
+
         except Exception as e:
             raise ExportError(f"Drillhole export failed: {e!s}") from e
 

@@ -159,10 +159,16 @@ transclean:
 clean:
 	uv run qgis-manage clean
 
-.PHONY: apidoc
+.PHONY: apidoc docs docs-clean
 apidoc:
-	@echo "Generating API documentation sources..."
-	sphinx-apidoc -o docs/source . docs test scripts help build tests --force --separate
+	@chmod +x scripts/build_docs.sh
+	./scripts/build_docs.sh
+
+docs: apidoc
+
+docs-clean:
+	rm -rf docs/build
+	rm -rf help/html
 
 pylint:
 	@echo

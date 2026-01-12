@@ -1,6 +1,11 @@
 sec\_interp package
 ===================
 
+.. automodule:: sec_interp
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Subpackages
 -----------
 
@@ -21,11 +26,4 @@ Submodules
    sec_interp.generate_ai_templates
    sec_interp.logger_config
    sec_interp.sec_interp_plugin
-
-Module contents
----------------
-
-.. automodule:: sec_interp
-   :members:
-   :show-inheritance:
-   :undoc-members:
+   sec_interp.update_metadata_rule

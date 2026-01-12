@@ -1,6 +1,11 @@
 sec\_interp.core package
 ========================
 
+.. automodule:: sec_interp.core
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Subpackages
 -----------
 
@@ -25,11 +30,3 @@ Submodules
    sec_interp.core.exceptions
    sec_interp.core.performance_metrics
    sec_interp.core.types
-
-Module contents
----------------
-
-.. automodule:: sec_interp.core
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,6 +1,11 @@
 sec\_interp.core.utils.geometry\_utils package
 ==============================================
 
+.. automodule:: sec_interp.core.utils.geometry_utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Submodules
 ----------
 
@@ -12,11 +17,3 @@ Submodules
    sec_interp.core.utils.geometry_utils.measurement
    sec_interp.core.utils.geometry_utils.optimization
    sec_interp.core.utils.geometry_utils.processing
-
-Module contents
----------------
-
-.. automodule:: sec_interp.core.utils.geometry_utils
-   :members:
-   :show-inheritance:
-   :undoc-members:

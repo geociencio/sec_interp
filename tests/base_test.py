@@ -994,8 +994,11 @@ class MockQListWidgetItem:
         self.setTextAlignment = MagicMock()
 
 
-# Setup module mock
 mock_qtwidgets = MagicMock()
+mock_core = MagicMock()
+mock_gui = MagicMock()
+
+# Setup module mock
 mock_qtwidgets.QApplication = MockQApplication
 mock_qtwidgets.QCheckBox = MockQCheckBox
 mock_qtwidgets.QGroupBox = MockQGroupBox
@@ -1026,7 +1029,6 @@ if not CORE_AVAILABLE:
     mock_qgis = MagicMock()
     sys.modules["qgis"] = mock_qgis
 
-    mock_core = MagicMock()
     mock_qgis.core = mock_core
 
     # Use MockQgsProject
@@ -1043,28 +1045,17 @@ if not CORE_AVAILABLE:
     mock_core.QgsLineString = MockQgsLineString
     mock_core.QgsPolygon = MockQgsPolygon
 
-    # QgsWkbTypes mapping
-    mock_core.QgsWkbTypes.PointGeometry = 0
-    mock_core.QgsWkbTypes.LineGeometry = 1
-    mock_core.QgsWkbTypes.PolygonGeometry = 2
-    mock_core.QgsWkbTypes.Point = 1
-    mock_core.QgsWkbTypes.LineString = 2
-    mock_core.QgsWkbTypes.Polygon = 3
-    mock_core.QgsWkbTypes.LineStringM = 2  # Simplified for mock
-    mock_core.QgsWkbTypes.PolygonM = 3  # Simplified for mock
-    mock_core.QgsWkbTypes.PolygonZ = 1003
-    mock_core.QgsWkbTypes.hasZ = lambda wkb: wkb >= 1000
+def mock_geometry_type(wkb):
+    if wkb == 1:  # Point
+        return 0  # PointGeometry
+    if wkb == 2:  # LineString
+        return 1  # LineGeometry
+    if wkb in [3, 1003]:  # Polygon or PolygonZ
+        return 2  # PolygonGeometry
+    return wkb
 
-    def mock_geometry_type(wkb):
-        if wkb == 1:  # Point
-            return 0  # PointGeometry
-        if wkb == 2:  # LineString
-            return 1  # LineGeometry
-        if wkb in [3, 1003]:  # Polygon or PolygonZ
-            return 2  # PolygonGeometry
-        return wkb
 
-    mock_core.QgsWkbTypes.geometryType.side_effect = mock_geometry_type
+if not CORE_AVAILABLE:
 
     # QgsUnitTypes constants
     mock_core.QgsUnitTypes.DistanceUnit.Meters = 0
@@ -1138,7 +1129,6 @@ if not CORE_AVAILABLE:
         def keyPressEvent(self, e):
             pass
 
-    mock_gui = MagicMock()
     mock_qgis.gui = mock_gui
     mock_gui.QgsMapTool = MockQgsMapTool
     mock_gui.QgsMapToolEmitPoint = MockQgsMapTool

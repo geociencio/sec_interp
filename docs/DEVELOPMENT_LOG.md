@@ -3,6 +3,23 @@
 Chronological record of development activities, significant fixes, and technical decisions.
 
 ---
+## [2026-01-12] - Exportación 3D de Sondajes y Estabilización Core (01:10)
+
+### Resumen
+Sesión enfocada en la implementación de la exportación 3D de sondajes y la resolución de inestabilidades en la suite de pruebas core tras los cambios arquitectónicos de la fase v2.7.0.
+
+### Logros
+- **Exportación 3D**: Implementación de `DrillholeTrace3DExporter` y `DrillholeInterval3DExporter` para salida en `LineStringZ` (Original y Proyectado).
+- **QA & Estabilización**:
+    - Resolución de `NameError` y `Mock Pollution` en `base_test.py`.
+    - Estabilización de `test_drillhole_utils` y `test_drillhole_service` (Fetching 3D robusto).
+    - Creación de nueva suite de validación 3D dedicada.
+- **Integración UI**: Adición de controles de modo de coordenadas en la pestaña Export.
+
+### Documentación
+- Informe de sesión: [sesion_2026-01-12_exportacion_3d_sondajes.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-12_exportacion_3d_sondajes.md)
+
+---
 ## [2026-01-11] - Refactorización de Analyzer e Integración de Workflows (12:25)
 
 ### Resumen

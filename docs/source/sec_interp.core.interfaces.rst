@@ -1,6 +1,11 @@
 sec\_interp.core.interfaces package
 ===================================
 
+.. automodule:: sec_interp.core.interfaces
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Submodules
 ----------
 
@@ -13,11 +18,3 @@ Submodules
    sec_interp.core.interfaces.preview_interface
    sec_interp.core.interfaces.profile_interface
    sec_interp.core.interfaces.structure_interface
-
-Module contents
----------------
-
-.. automodule:: sec_interp.core.interfaces
-   :members:
-   :show-inheritance:
-   :undoc-members:

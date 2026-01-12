@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Workflow Automation**:
   - Integrated analyzer into `inicia-sesion` and `cierra-sesion` workflows with `// turbo` support.
   - Enhanced `commit-changes` workflow with AI-assisted message generation and quality guarding.
+- **Enhanced 3D Export**:
+  - **Drillhole Traces & Intervals**: New exporters for creating `LineStringZ` geometries from subsurface data.
+  - **Coordinate Flexibility**: User-selectable export modes for Original 3D coordinates or Cross-Section Projected coordinates.
+  - **Stability**: Robust extraction logic that handles vertical holes, surveys, and geological unit attributes.
 
 ## [2.6.0] - 2026-01-09
 ### 🚀 Infrastructure & DevOps

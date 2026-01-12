@@ -36,12 +36,21 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
-### [Unreleased] - 2026-01-11
-- **AI Infrastructure & Workflows**:
-    - **Project Analyzer v2.1**: Major refactor adding Halstead metrics, Type Hint coverage, and i18n audit.
-    - **Mermaid Support**: Automated generation of dependency graphs for LLM context.
-    - **Workflow Integration**: Deep integration of the analyzer into `inicia-sesion`, `cierra-sesion`, and `commit-changes`.
-    - **Robust Brain Update**: Marker-based HTML injection in `project_brain.md`.
+### [2.7.0] - (In-Progress) 2026-01-12
+- **Infrastructure Evolution**:
+    - **Automated Sphinx Docs**: Implementation of `conf.py` (autodoc/napoleon) and `build_docs.sh` to decouple documentation from the repository.
+    - **External Build Strategy**: Documentation now exports to `../sec_interp_docs` as default, keeping the core repository clean.
+    - **Repository Hygiene**: Removed 100+ tracked HTML files and updated `.gitignore` to prevent future pollution.
+    - **Makefile Integration**: New `apidoc`, `docs`, and `docs-clean` targets for simplified developer workflow.
+- **Data Integrity Core**:
+    - **Native Validation**: Implemented hierarchical models using `dataclasses` in `core/models/settings_model.py`.
+    - **Robust Config Service**: Refactored `ConfigService` to use mass-loading with validation (`get_all_settings`), replacing loose dictionaries.
+    - **Testing Suite**: Added `tests/core/test_settings_model.py` and `test_config_integration.py` ensuring type safety and range audits.
+- **Enhanced 3D Export**:
+    - **Drillhole traces & intervals**: Implemented `DrillholeTrace3DExporter` and `DrillholeInterval3DExporter` for high-fidelity 3D output (PolygonZ/LineStringZ).
+    - **Flexible Coordinate Modes**: Added support for both "Original 3D" and "Projected 3D" (cross-section space) coordinates.
+    - **UI Integration**: Integrated export controls in `Export` tab for intuitive user workflow.
+    - **Verification**: Established a robust 3D validation suite in `tests/exporters/test_drillhole_3d_exporter.py`.
 
 ### [2.7.0] - (Planning) 2026-01-09
 - **Infrastructure Planning**:

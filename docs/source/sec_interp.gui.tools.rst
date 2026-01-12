@@ -1,6 +1,11 @@
 sec\_interp.gui.tools package
 =============================
 
+.. automodule:: sec_interp.gui.tools
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Submodules
 ----------
 
@@ -9,11 +14,3 @@ Submodules
 
    sec_interp.gui.tools.interpretation_tool
    sec_interp.gui.tools.measure_tool
-
-Module contents
----------------
-
-.. automodule:: sec_interp.gui.tools
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -92,6 +92,8 @@ class GeologySegment:
     geometry: QgsGeometry  # Forward reference
     attributes: dict[str, Any]
     points: list[tuple[float, float]]
+    points_3d: list[tuple[float, float, float]] = field(default_factory=list)
+    points_3d_projected: list[tuple[float, float, float]] = field(default_factory=list)
 
 
 @dataclass

@@ -1,6 +1,11 @@
 sec\_interp.gui.ui package
 ==========================
 
+.. automodule:: sec_interp.gui.ui
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Subpackages
 -----------
 
@@ -17,11 +22,3 @@ Submodules
 
    sec_interp.gui.ui.main_window
    sec_interp.gui.ui.sidebar
-
-Module contents
----------------
-
-.. automodule:: sec_interp.gui.ui
-   :members:
-   :show-inheritance:
-   :undoc-members:

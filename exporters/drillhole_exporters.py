@@ -68,7 +68,7 @@ class DrillholeTraceShpExporter(BaseExporter):
             fields: The QGIS field collection.
 
         """
-        for hole_id, traces, _ in drillhole_data:
+        for hole_id, traces, _traces_3d, _traces_3d_proj, _ in drillhole_data:
             if not traces or len(traces) < 2:
                 continue
 
@@ -145,7 +145,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
             fields: The QGIS field collection.
 
         """
-        for hole_id, _, segments in drillhole_data:
+        for hole_id, _, _, _, segments in drillhole_data:
             if not segments:
                 continue
 

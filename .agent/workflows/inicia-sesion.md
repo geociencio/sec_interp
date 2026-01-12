@@ -8,7 +8,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     Actualiza y lee el contexto para entender "dónde nos quedamos".
     // turbo
     ```bash
-    python3 .ai-context/analyze_project_optfixed.py
+    uv run ai-ctx analyze --path .
     ```
     Revisa los siguientes archivos:
     *   `.ai-context/project_brain.md`: Memoria de largo plazo y métricas.

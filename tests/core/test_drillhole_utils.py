@@ -7,6 +7,7 @@ from qgis.core import (
     QgsGeometry,
     QgsDistanceArea,
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
 )
 
 from sec_interp.core.utils.drillhole import (
@@ -196,7 +197,7 @@ class TestProjectTrajectoryToSection(BaseTestCase):
         # Setup distance area
         self.distance_area = QgsDistanceArea()
         crs = QgsCoordinateReferenceSystem("EPSG:32633")  # UTM zone 33N
-        self.distance_area.setSourceCrs(crs, None)
+        self.distance_area.setSourceCrs(crs, QgsCoordinateTransformContext())
 
     def test_project_single_point_on_line(self):
         """Test projecting a single point that lies on the section line."""
@@ -212,7 +213,7 @@ class TestProjectTrajectoryToSection(BaseTestCase):
         )
 
         self.assertEqual(len(projected), 1)
-        depth, x, y, z, dist_along, offset = projected[0]
+        depth, x, y, z, dist_along, offset, nx, ny = projected[0]
 
         # Should be at distance 50 along line
         self.assertAlmostEqual(dist_along, 50.0, places=0)
@@ -233,7 +234,7 @@ class TestProjectTrajectoryToSection(BaseTestCase):
         )
 
         self.assertEqual(len(projected), 1)
-        depth, x, y, z, dist_along, offset = projected[0]
+        depth, x, y, z, dist_along, offset, nx, ny = projected[0]
 
         # Should project to distance ~50 along line
         self.assertAlmostEqual(dist_along, 50.0, places=0)
@@ -269,9 +270,9 @@ class TestInterpolateIntervalsOnTrajectory(BaseTestCase):
     def test_single_interval_all_points_in_buffer(self):
         """Test single interval with all points within buffer."""
         trajectory = [
-            (0.0, 0.0, 0.0, 100.0, 0.0, 0.0),
-            (10.0, 10.0, 0.0, 90.0, 10.0, 0.5),
-            (20.0, 20.0, 0.0, 80.0, 20.0, 1.0),
+            (0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 0.0),
+            (10.0, 10.0, 0.0, 90.0, 10.0, 0.5, 10.0, 0.0),
+            (20.0, 20.0, 0.0, 80.0, 20.0, 1.0, 20.0, 0.0),
         ]
 
         intervals = [
@@ -285,16 +286,18 @@ class TestInterpolateIntervalsOnTrajectory(BaseTestCase):
         )
 
         self.assertEqual(len(segments), 1)
-        attribute, points = segments[0]
+        attribute, points, points_3d, points_3d_proj = segments[0]
         self.assertEqual(attribute, "Unit A")
         self.assertEqual(len(points), 3)
+        self.assertEqual(len(points_3d), 3)
+        self.assertEqual(len(points_3d_proj), 3)
 
     def test_interval_partial_points_in_buffer(self):
         """Test interval with some points outside buffer."""
         trajectory = [
-            (0.0, 0.0, 0.0, 100.0, 0.0, 0.0),
-            (10.0, 10.0, 0.0, 90.0, 10.0, 2.0),
-            (20.0, 20.0, 0.0, 80.0, 20.0, 10.0),  # Outside buffer
+            (0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 0.0),
+            (10.0, 10.0, 0.0, 90.0, 10.0, 2.0, 10.0, 0.0),
+            (20.0, 20.0, 0.0, 80.0, 20.0, 10.0, 20.0, 0.0),  # Outside buffer
         ]
 
         intervals = [
@@ -308,17 +311,17 @@ class TestInterpolateIntervalsOnTrajectory(BaseTestCase):
         )
 
         self.assertEqual(len(segments), 1)
-        attribute, points = segments[0]
+        attribute, points, points_3d, points_3d_proj = segments[0]
         # Only 2 points should be included (last one outside buffer)
         self.assertEqual(len(points), 2)
 
     def test_multiple_intervals(self):
         """Test multiple geological intervals."""
         trajectory = [
-            (0.0, 0.0, 0.0, 100.0, 0.0, 0.0),
-            (10.0, 10.0, 0.0, 90.0, 10.0, 0.5),
-            (20.0, 20.0, 0.0, 80.0, 20.0, 0.5),
-            (30.0, 30.0, 0.0, 70.0, 30.0, 0.5),
+            (0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 0.0),
+            (10.0, 10.0, 0.0, 90.0, 10.0, 0.5, 10.0, 0.0),
+            (20.0, 20.0, 0.0, 80.0, 20.0, 0.5, 20.0, 0.0),
+            (30.0, 30.0, 0.0, 70.0, 30.0, 0.5, 30.0, 0.0),
         ]
 
         intervals = [
@@ -335,20 +338,20 @@ class TestInterpolateIntervalsOnTrajectory(BaseTestCase):
         self.assertEqual(len(segments), 2)
 
         # Check first interval
-        attr_a, points_a = segments[0]
+        attr_a, points_a, points_a_3d, points_a_3d_proj = segments[0]
         self.assertEqual(attr_a, "Unit A")
         self.assertGreater(len(points_a), 0)
 
         # Check second interval
-        attr_b, points_b = segments[1]
+        attr_b, points_b, points_b_3d, points_b_3d_proj = segments[1]
         self.assertEqual(attr_b, "Unit B")
         self.assertGreater(len(points_b), 0)
 
     def test_interval_no_points_in_range(self):
         """Test interval with no trajectory points in depth range."""
         trajectory = [
-            (0.0, 0.0, 0.0, 100.0, 0.0, 0.0),
-            (10.0, 10.0, 0.0, 90.0, 10.0, 0.5),
+            (0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 0.0),
+            (10.0, 10.0, 0.0, 90.0, 10.0, 0.5, 10.0, 0.0),
         ]
 
         intervals = [
@@ -367,8 +370,8 @@ class TestInterpolateIntervalsOnTrajectory(BaseTestCase):
     def test_points_format(self):
         """Test that returned points have correct format (distance, elevation)."""
         trajectory = [
-            (0.0, 0.0, 0.0, 100.0, 5.0, 0.0),
-            (10.0, 10.0, 0.0, 90.0, 15.0, 0.5),
+            (0.0, 0.0, 0.0, 100.0, 5.0, 0.0, 0.0, 0.0),
+            (10.0, 10.0, 0.0, 90.0, 15.0, 0.5, 10.0, 0.0),
         ]
 
         intervals = [
@@ -381,7 +384,7 @@ class TestInterpolateIntervalsOnTrajectory(BaseTestCase):
             buffer_width=5.0,
         )
 
-        attribute, points = segments[0]
+        attribute, points, points_3d, points_3d_proj = segments[0]
 
         # Check point format
         for point in points:

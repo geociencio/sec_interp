@@ -180,7 +180,7 @@ def project_trajectory_to_section(
         # Calculate offset from section
         offset = distance_area.measureLine(point, nearest_pt_xy)
 
-        projected.append((depth, x, y, z, dist_along, offset))
+        projected.append((depth, x, y, z, dist_along, offset, nearest_pt_xy.x(), nearest_pt_xy.y()))
 
     return projected
 
@@ -189,7 +189,7 @@ def interpolate_intervals_on_trajectory(
     trajectory: list[tuple],
     intervals: list[tuple[float, float, Any]],
     buffer_width: float,
-) -> list[tuple[Any, list[tuple[float, float]]]]:
+) -> list[tuple[Any, list[tuple[float, float]], list[tuple[float, float, float]]]]:
     """Interpolate interval attributes along drillhole trajectory.
 
     Filters and maps geological intervals onto the 3D trajectory points
@@ -203,22 +203,29 @@ def interpolate_intervals_on_trajectory(
     Returns:
         List of tuples containing:
             - attribute: The metadata/geology associated with the interval.
-            - points: List of (distance, elevation) coordinates for rendering.
+            - points_2d: List of (distance, elevation) coordinates for rendering.
+            - points_3d: List of (x, y, z) original coordinates for 3D export.
 
     """
     geol_segments = []
 
     for from_depth, to_depth, attribute in intervals:
         # Find trajectory points within this interval
-        interval_points = []
+        interval_points_2d = []
+        interval_points_3d = []
+        interval_points_3d_proj = []
 
-        for depth, _x, _y, z, dist_along, offset in trajectory:
+        for depth, x, y, z, dist_along, offset, nx, ny in trajectory:
             # Check if point is within interval and buffer
             if from_depth <= depth <= to_depth and offset <= buffer_width:
-                interval_points.append((dist_along, z))
+                interval_points_2d.append((dist_along, z))
+                interval_points_3d.append((x, y, z))
+                interval_points_3d_proj.append((nx, ny, z))
 
         # Add segment if we have points
-        if interval_points:
-            geol_segments.append((attribute, interval_points))
+        if interval_points_2d:
+            geol_segments.append(
+                (attribute, interval_points_2d, interval_points_3d, interval_points_3d_proj)
+            )
 
     return geol_segments

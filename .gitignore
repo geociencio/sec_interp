@@ -22,3 +22,7 @@ project_context.json
 # Logs
 logs/
 *.log
+
+# Documentation
+docs/build/
+help/html/

@@ -1,6 +1,11 @@
 sec\_interp.gui package
 =======================
 
+.. automodule:: sec_interp.gui
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Subpackages
 -----------
 
@@ -8,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    sec_interp.gui.services
+   sec_interp.gui.tasks
    sec_interp.gui.tools
    sec_interp.gui.ui
 
@@ -36,11 +42,3 @@ Submodules
    sec_interp.gui.preview_renderer
    sec_interp.gui.preview_reporter
    sec_interp.gui.utils
-
-Module contents
----------------
-
-.. automodule:: sec_interp.gui
-   :members:
-   :show-inheritance:
-   :undoc-members:

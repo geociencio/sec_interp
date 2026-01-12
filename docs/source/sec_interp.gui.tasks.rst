@@ -1,7 +1,7 @@
-sec\_interp.resources package
+sec\_interp.gui.tasks package
 =============================
 
-.. automodule:: sec_interp.resources
+.. automodule:: sec_interp.gui.tasks
    :members:
    :show-inheritance:
    :undoc-members:
@@ -12,4 +12,4 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   sec_interp.resources.resources
+   sec_interp.gui.tasks.geology_task

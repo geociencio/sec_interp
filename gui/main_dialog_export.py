@@ -194,6 +194,10 @@ class ExportManager:
                 "exp_struct": values.get("exp_struct", True),
                 "exp_drill": values.get("exp_drill", True),
                 "exp_interp": values.get("exp_interp", True),
+                "drill_3d_traces": values.get("drill_3d_traces", True),
+                "drill_3d_intervals": values.get("drill_3d_intervals", True),
+                "drill_3d_original": values.get("drill_3d_original", True),
+                "drill_3d_projected": values.get("drill_3d_projected", False),
             }
 
             result_msg = self.export_service.export_data(

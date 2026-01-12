@@ -98,6 +98,22 @@ class SettingsPage(BasePage):
         self.chk_enable_3d.stateChanged.connect(self._on_settings_changed)
         layout.addWidget(self.chk_enable_3d)
 
+        # -- Drillhole 3D Export --
+        layout.addWidget(QLabel("<br><b>Drillhole 3D Export Options</b>"))
+        self.chk_3d_traces = QCheckBox(self.tr("Export 3D Traces"))
+        self.chk_3d_intervals = QCheckBox(self.tr("Export 3D Intervals"))
+        self.chk_3d_original = QCheckBox(self.tr("Use Original Coordinates (Real 3D)"))
+        self.chk_3d_projected = QCheckBox(self.tr("Use Projected Coordinates (Section Plane)"))
+
+        for chk in [
+            self.chk_3d_traces,
+            self.chk_3d_intervals,
+            self.chk_3d_original,
+            self.chk_3d_projected,
+        ]:
+            chk.stateChanged.connect(self._on_settings_changed)
+            layout.addWidget(chk)
+
         layout.addStretch()
 
     def _setup_info_tab(self, parent_widget: QWidget) -> None:
@@ -136,6 +152,21 @@ class SettingsPage(BasePage):
                 self.settings.value("sec_interp/exp_interp", True, type=bool)
             )
 
+        # Drillhole 3D
+        if hasattr(self, "chk_3d_traces"):
+            self.chk_3d_traces.setChecked(
+                self.settings.value("sec_interp/drill_3d_traces", True, type=bool)
+            )
+            self.chk_3d_intervals.setChecked(
+                self.settings.value("sec_interp/drill_3d_intervals", True, type=bool)
+            )
+            self.chk_3d_original.setChecked(
+                self.settings.value("sec_interp/drill_3d_original", True, type=bool)
+            )
+            self.chk_3d_projected.setChecked(
+                self.settings.value("sec_interp/drill_3d_projected", False, type=bool)
+            )
+
     def _on_settings_changed(self):
         """Save settings when they are changed."""
         # Advanced
@@ -149,6 +180,17 @@ class SettingsPage(BasePage):
             self.settings.setValue("sec_interp/exp_struct", self.chk_exp_struct.isChecked())
             self.settings.setValue("sec_interp/exp_drill", self.chk_exp_drill.isChecked())
             self.settings.setValue("sec_interp/exp_interp", self.chk_exp_interp.isChecked())
+
+        # Drillhole 3D
+        if hasattr(self, "chk_3d_traces"):
+            self.settings.setValue("sec_interp/drill_3d_traces", self.chk_3d_traces.isChecked())
+            self.settings.setValue(
+                "sec_interp/drill_3d_intervals", self.chk_3d_intervals.isChecked()
+            )
+            self.settings.setValue("sec_interp/drill_3d_original", self.chk_3d_original.isChecked())
+            self.settings.setValue(
+                "sec_interp/drill_3d_projected", self.chk_3d_projected.isChecked()
+            )
 
     def get_data(self) -> dict:
         """Get the current settings.
@@ -169,6 +211,18 @@ class SettingsPage(BasePage):
             ),
             "exp_interp": (
                 self.chk_exp_interp.isChecked() if hasattr(self, "chk_exp_interp") else True
+            ),
+            "drill_3d_traces": (
+                self.chk_3d_traces.isChecked() if hasattr(self, "chk_3d_traces") else True
+            ),
+            "drill_3d_intervals": (
+                self.chk_3d_intervals.isChecked() if hasattr(self, "chk_3d_intervals") else True
+            ),
+            "drill_3d_original": (
+                self.chk_3d_original.isChecked() if hasattr(self, "chk_3d_original") else True
+            ),
+            "drill_3d_projected": (
+                self.chk_3d_projected.isChecked() if hasattr(self, "chk_3d_projected") else False
             ),
         }
 

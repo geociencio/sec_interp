@@ -64,7 +64,8 @@ class QgsLogHandler(logging.Handler):
                 level = Qgis.Info
 
             # Critical: UI updates from background threads cause segfaults in QGIS
-            if QThread.currentThread() == QCoreApplication.instance().thread():
+            instance = QCoreApplication.instance()
+            if instance and QThread.currentThread() == instance.thread():
                 QgsMessageLog.logMessage(msg, self.tag, level)
             else:
                 # Fallback to standard error for background threads to avoid potential UI hangs

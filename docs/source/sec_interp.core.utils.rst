@@ -1,6 +1,11 @@
 sec\_interp.core.utils package
 ==============================
 
+.. automodule:: sec_interp.core.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Subpackages
 -----------
 
@@ -24,11 +29,3 @@ Submodules
    sec_interp.core.utils.resource_manager
    sec_interp.core.utils.sampling
    sec_interp.core.utils.spatial
-
-Module contents
----------------
-
-.. automodule:: sec_interp.core.utils
-   :members:
-   :show-inheritance:
-   :undoc-members:

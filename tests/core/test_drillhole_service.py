@@ -55,9 +55,17 @@ class TestDrillholeService(BaseTestCase):
     def test_project_collars_success(self, mock_filter):
         """Test successful collar projection."""
         # Setup mock features
-        feat = QgsFeature()
+        from qgis.core import QgsFields, QgsField
+        from PyQt5.QtCore import QVariant
+        fields = QgsFields()
+        fields.append(QgsField("id", QVariant.String))
+        fields.append(QgsField("depth", QVariant.Double))
+        fields.append(QgsField("z", QVariant.Double))
+
+        feat = QgsFeature(fields)
         feat["id"] = "DH01"
         feat["depth"] = 100.0
+        feat["z"] = 50.0
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 5)))
 
         mock_filter.return_value = [feat]
@@ -87,7 +95,14 @@ class TestDrillholeService(BaseTestCase):
 
     def test_get_collar_info_geom(self):
         """Test extracting collar info from geometry."""
-        feat = QgsFeature()
+        from qgis.core import QgsFields, QgsField
+        from PyQt5.QtCore import QVariant
+        fields = QgsFields()
+        fields.append(QgsField("id", QVariant.String))
+        fields.append(QgsField("z", QVariant.Double))
+        fields.append(QgsField("depth", QVariant.Double))
+
+        feat = QgsFeature(fields)
         feat["id"] = "DH01"
         feat["z"] = 50.0
         feat["depth"] = 200.0
@@ -107,7 +122,15 @@ class TestDrillholeService(BaseTestCase):
 
     def test_get_collar_info_fields(self):
         """Test extracting collar info from fields."""
-        feat = QgsFeature()
+        from qgis.core import QgsFields, QgsField
+        from PyQt5.QtCore import QVariant
+        fields = QgsFields()
+        fields.append(QgsField("id", QVariant.String))
+        fields.append(QgsField("X", QVariant.Double))
+        fields.append(QgsField("Y", QVariant.Double))
+        fields.append(QgsField("depth", QVariant.Double))
+
+        feat = QgsFeature(fields)
         feat["id"] = "DH01"
         feat["X"] = 15.0
         feat["Y"] = 25.0
@@ -145,7 +168,13 @@ class TestDrillholeService(BaseTestCase):
 
     def test_get_collar_info_dem(self):
         """Test collar info with DEM elevation fallback."""
-        feat = QgsFeature()
+        from qgis.core import QgsFields, QgsField
+        from PyQt5.QtCore import QVariant
+        fields = QgsFields()
+        fields.append(QgsField("id", QVariant.String))
+        fields.append(QgsField("z", QVariant.Double))
+
+        feat = QgsFeature(fields)
         feat["id"] = "DH01"
         feat["z"] = 0.0  # Force DEM fallback
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 20)))
@@ -171,7 +200,15 @@ class TestDrillholeService(BaseTestCase):
         interval_layer = MagicMock()
         interval_layer.isValid.return_value = True
 
-        feat = QgsFeature()
+        from qgis.core import QgsFields, QgsField
+        from PyQt5.QtCore import QVariant
+        fields_cfg = QgsFields()
+        fields_cfg.append(QgsField("hole_id", QVariant.String))
+        fields_cfg.append(QgsField("from", QVariant.Double))
+        fields_cfg.append(QgsField("to", QVariant.Double))
+        fields_cfg.append(QgsField("lith", QVariant.String))
+
+        feat = QgsFeature(fields_cfg)
         feat["hole_id"] = "DH01"
         feat["from"] = 0.0
         feat["to"] = 20.0
@@ -187,7 +224,15 @@ class TestDrillholeService(BaseTestCase):
         survey_layer = MagicMock()
         survey_layer.isValid.return_value = True
 
-        feat = QgsFeature()
+        from qgis.core import QgsFields, QgsField
+        from PyQt5.QtCore import QVariant
+        fields_cfg = QgsFields()
+        fields_cfg.append(QgsField("hole_id", QVariant.String))
+        fields_cfg.append(QgsField("depth", QVariant.Double))
+        fields_cfg.append(QgsField("azim", QVariant.Double))
+        fields_cfg.append(QgsField("incl", QVariant.Double))
+
+        feat = QgsFeature(fields_cfg)
         feat["hole_id"] = "DH01"
         feat["depth"] = 10.0
         feat["azim"] = 180.0

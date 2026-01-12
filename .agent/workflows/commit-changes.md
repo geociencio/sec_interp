@@ -20,7 +20,7 @@ This workflow describes the process for committing changes, ensuring code qualit
    Registra el impacto de los cambios en el Cerebro del Proyecto antes de guardar.
    // turbo
    ```bash
-   python3 .ai-context/analyze_project_optfixed.py
+   uv run ai-ctx analyze --path .
    ```
 
 4. **Propuesta de Mensaje (Asistida por IA)**:

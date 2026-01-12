@@ -134,7 +134,15 @@ class DrillholeService(IDrillholeService):
         interval_fields: dict[str, str],
     ) -> tuple[
         list[GeologySegment],
-        list[tuple[Any, list[tuple[float, float]], list[GeologySegment]]],
+        list[
+            tuple[
+                Any,
+                list[tuple[float, float]],
+                list[tuple[float, float, float]],
+                list[tuple[float, float, float]],
+                list[GeologySegment],
+            ]
+        ],
     ]:
         """Generate drillhole trace and interval data and project onto the section.
 
@@ -250,7 +258,13 @@ class DrillholeService(IDrillholeService):
         section_azimuth: float,
     ) -> tuple[
         list[GeologySegment],
-        tuple[Any, list[tuple[float, float]], list[GeologySegment]],
+        tuple[
+            Any,
+            list[tuple[float, float]],
+            list[tuple[float, float, float]],
+            list[tuple[float, float, float]],
+            list[GeologySegment],
+        ],
     ]:
         """Process a single drillhole's trajectory and intervals.
 
@@ -278,10 +292,18 @@ class DrillholeService(IDrillholeService):
         # 3. Interpolate Intervals
         hole_geol_data = self._interpolate_hole_intervals(projected_traj, intervals, buffer_width)
 
-        # 4. Store trace
-        traj_points = [(p[4], p[3]) for p in projected_traj]
+        # 4. Store trace (2D and 3D)
+        traj_points_2d = [(p[4], p[3]) for p in projected_traj]
+        traj_points_3d = [(p[1], p[2], p[3]) for p in projected_traj]
+        traj_points_3d_proj = [(p[6], p[7], p[3]) for p in projected_traj]
 
-        return hole_geol_data, (hole_id, traj_points, hole_geol_data)
+        return hole_geol_data, (
+            hole_id,
+            traj_points_2d,
+            traj_points_3d,
+            traj_points_3d_proj,
+            hole_geol_data,
+        )
 
     def _build_collar_coord_map(
         self,
@@ -382,16 +404,19 @@ class DrillholeService(IDrillholeService):
         rich_intervals = [
             (fd, td, {"unit": lith, "from": fd, "to": td}) for fd, td, lith in intervals
         ]
+        # Scu returns (attr, points_2d, points_3d, points_3d_proj)
         tuples = scu.interpolate_intervals_on_trajectory(traj, rich_intervals, buffer_width)
 
         segments = []
-        for attr, points in tuples:
+        for attr, points_2d, points_3d, points_3d_proj in tuples:
             segments.append(
                 GeologySegment(
                     unit_name=str(attr.get("unit", "Unknown")),
                     geometry=None,
                     attributes=attr,
-                    points=points,
+                    points=points_2d,
+                    points_3d=points_3d,
+                    points_3d_projected=points_3d_proj,
                 )
             )
         return segments
