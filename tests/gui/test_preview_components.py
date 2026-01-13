@@ -105,11 +105,11 @@ class TestPreviewComponents(BaseTestCase):
         self.assertTrue("Struct" in layer.name())
 
     def test_create_drillhole_layers(self):
-        """Test drillhole trace and interval layers."""
-        # Factory expects list of tuples: (hole_id, trace_points, segments)
-        dh_data = [
+        """Test drillhole trace and interval layers with legacy and new structures."""
+        # Case 1: Legacy 3-element tuple
+        dh_data_legacy = [
             (
-                "DH1",
+                "DH_LEGACY",
                 [(0, 100), (0, 50)],
                 [
                     GeologySegment(
@@ -122,11 +122,37 @@ class TestPreviewComponents(BaseTestCase):
             )
         ]
 
-        trace_layer = self.factory.create_drillhole_trace_layer(dh_data)
-        self.assertIsNotNone(trace_layer)
+        # Case 2: New 5-element tuple (v2.7.0)
+        dh_data_v27 = [
+            (
+                "DH_V27",
+                [(0, 150), (0, 50)],  # 2D trace
+                [(10, 20, 150), (10, 20, 50)],  # 3D trace Original
+                [(5, 5, 150), (5, 5, 50)],  # 3D trace Projected
+                [
+                    GeologySegment(
+                        unit_name="B",
+                        geometry=MagicMock(),
+                        attributes={},
+                        points=[(0, 150), (0, 100)],
+                        points_3d=[(10, 20, 150), (10, 20, 100)],
+                    )
+                ],
+            )
+        ]
 
-        interval_layer = self.factory.create_drillhole_interval_layer(dh_data)
-        self.assertIsNotNone(interval_layer)
+        for dh_data in [dh_data_legacy, dh_data_v27]:
+            trace_layer = self.factory.create_drillhole_trace_layer(dh_data)
+            self.assertIsNotNone(trace_layer)
+            self.assertTrue(
+                len(trace_layer.dataProvider().addFeatures.call_args[0][0]) > 0
+            )
+
+            interval_layer = self.factory.create_drillhole_interval_layer(dh_data)
+            self.assertIsNotNone(interval_layer)
+            self.assertTrue(
+                len(interval_layer.dataProvider().addFeatures.call_args[0][0]) > 0
+            )
 
     def test_interpolate_elevation(self):
         """Test elevation interpolation."""

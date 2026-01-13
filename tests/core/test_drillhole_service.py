@@ -57,6 +57,7 @@ class TestDrillholeService(BaseTestCase):
         # Setup mock features
         from qgis.core import QgsFields, QgsField
         from PyQt5.QtCore import QVariant
+
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.String))
         fields.append(QgsField("depth", QVariant.Double))
@@ -97,6 +98,7 @@ class TestDrillholeService(BaseTestCase):
         """Test extracting collar info from geometry."""
         from qgis.core import QgsFields, QgsField
         from PyQt5.QtCore import QVariant
+
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.String))
         fields.append(QgsField("z", QVariant.Double))
@@ -124,6 +126,7 @@ class TestDrillholeService(BaseTestCase):
         """Test extracting collar info from fields."""
         from qgis.core import QgsFields, QgsField
         from PyQt5.QtCore import QVariant
+
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.String))
         fields.append(QgsField("X", QVariant.Double))
@@ -170,6 +173,7 @@ class TestDrillholeService(BaseTestCase):
         """Test collar info with DEM elevation fallback."""
         from qgis.core import QgsFields, QgsField
         from PyQt5.QtCore import QVariant
+
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.String))
         fields.append(QgsField("z", QVariant.Double))
@@ -202,6 +206,7 @@ class TestDrillholeService(BaseTestCase):
 
         from qgis.core import QgsFields, QgsField
         from PyQt5.QtCore import QVariant
+
         fields_cfg = QgsFields()
         fields_cfg.append(QgsField("hole_id", QVariant.String))
         fields_cfg.append(QgsField("from", QVariant.Double))
@@ -226,6 +231,7 @@ class TestDrillholeService(BaseTestCase):
 
         from qgis.core import QgsFields, QgsField
         from PyQt5.QtCore import QVariant
+
         fields_cfg = QgsFields()
         fields_cfg.append(QgsField("hole_id", QVariant.String))
         fields_cfg.append(QgsField("depth", QVariant.Double))

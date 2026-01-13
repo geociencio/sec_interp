@@ -1,8 +1,12 @@
 import unittest
 from sec_interp.core.models.settings_model import (
-    PluginSettings, SectionSettings, DemSettings,
-    StructureSettings, PreviewSettings
+    PluginSettings,
+    SectionSettings,
+    DemSettings,
+    StructureSettings,
+    PreviewSettings,
 )
+
 
 class TestSettingsModel(unittest.TestCase):
     """Test suite for settings models and validation logic."""
@@ -48,26 +52,27 @@ class TestSettingsModel(unittest.TestCase):
     def test_plugin_settings_from_dict(self):
         """Test creation of full settings from nested dictionary."""
         data = {
-            'section': {'buffer_dist': -50.0},
-            'dem': {'scale': '10000', 'vert_exag': 2.5},
-            'preview': {'max_points': 50000}
+            "section": {"buffer_dist": -50.0},
+            "dem": {"scale": "10000", "vert_exag": 2.5},
+            "preview": {"max_points": 50000},
         }
 
         settings = PluginSettings.from_dict(data)
 
-        self.assertEqual(settings.section.buffer_dist, 0.0) # Validated
-        self.assertEqual(settings.dem.scale, 10000.0) # Type converted
+        self.assertEqual(settings.section.buffer_dist, 0.0)  # Validated
+        self.assertEqual(settings.dem.scale, 10000.0)  # Type converted
         self.assertEqual(settings.preview.max_points, 50000)
-        self.assertEqual(settings.geology.layer_id, "") # Default
+        self.assertEqual(settings.geology.layer_id, "")  # Default
 
     def test_to_dict(self):
         """Test serialization to dictionary."""
         settings = PluginSettings()
         data = settings.to_dict()
 
-        self.assertIn('section', data)
-        self.assertIn('dem', data)
-        self.assertEqual(data['section']['buffer_dist'], 100.0)
+        self.assertIn("section", data)
+        self.assertIn("dem", data)
+        self.assertEqual(data["section"]["buffer_dist"], 100.0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

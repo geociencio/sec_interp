@@ -20,6 +20,7 @@ from sec_interp.exporters.drillhole_3d_exporter import (
     DrillholeInterval3DExporter,
 )
 
+
 class TestDrillhole3DExporters(BaseTestCase):
     """Tests for Drillhole 3D Exporters."""
 
@@ -31,21 +32,22 @@ class TestDrillhole3DExporters(BaseTestCase):
         # Sample trace data (hole_id, traces_2d, traces_3d, traces_3d_proj, segments)
         self.sample_drillhole = (
             "DH01",
-            [], # traces_2d
-            [(0.0, 0.0, 100.0), (0.0, 0.0, 50.0)], # traces_3d (real)
-            [(10.0, 0.0, 100.0), (10.0, 0.0, 50.0)], # traces_3d_proj
-            [] # segments
+            [],  # traces_2d
+            [(0.0, 0.0, 100.0), (0.0, 0.0, 50.0)],  # traces_3d (real)
+            [(10.0, 0.0, 100.0), (10.0, 0.0, 50.0)],  # traces_3d_proj
+            [],  # segments
         )
 
         # Sample interval data
         from sec_interp.core.types import GeologySegment
+
         seg1 = GeologySegment(
             unit_name="Unit A",
             geometry=QgsGeometry(),
             attributes={"from": 0.0, "to": 10.0},
             points=[],
             points_3d=[(0.0, 0.0, 100.0), (0.0, 0.0, 90.0)],
-            points_3d_projected=[(10.0, 0.0, 100.0), (10.0, 0.0, 90.0)]
+            points_3d_projected=[(10.0, 0.0, 100.0), (10.0, 0.0, 90.0)],
         )
         # Drillhole structure for intervals: (hole_id, traces_2d, traces_3d, traces_3d_proj, segments)
         self.sample_intervals = [("DH01", [], [], [], [seg1])]
@@ -59,7 +61,7 @@ class TestDrillhole3DExporters(BaseTestCase):
         data = {
             "drillhole_data": [self.sample_drillhole],
             "crs": self.crs,
-            "use_projected": False
+            "use_projected": False,
         }
         exporter.export(output_path, data)
 
@@ -85,7 +87,7 @@ class TestDrillhole3DExporters(BaseTestCase):
         data = {
             "drillhole_data": [self.sample_drillhole],
             "crs": self.crs,
-            "use_projected": True
+            "use_projected": True,
         }
         exporter.export(output_path, data)
 
@@ -106,7 +108,7 @@ class TestDrillhole3DExporters(BaseTestCase):
         data = {
             "drillhole_data": self.sample_intervals,
             "crs": self.crs,
-            "use_projected": False
+            "use_projected": False,
         }
         exporter.export(output_path, data)
 
@@ -127,7 +129,7 @@ class TestDrillhole3DExporters(BaseTestCase):
         data = {
             "drillhole_data": self.sample_intervals,
             "crs": self.crs,
-            "use_projected": True
+            "use_projected": True,
         }
         exporter.export(output_path, data)
 

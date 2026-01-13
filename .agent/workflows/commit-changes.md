@@ -4,11 +4,12 @@ description: How to commit changes cleanly (handling hooks)
 This workflow describes the process for committing changes, ensuring code quality standards are met without getting blocked by pre-commit hook conflicts.
 
 1. **Preparación y Limpieza (Automático)**:
-   Asegura que el código cumple con el estándar de ruff para evitar fallos en los hooks.
+   Asegura que el código cumple con el estándar de ruff y black para evitar fallos en los hooks.
    // turbo
    ```bash
    uv run ruff check --fix .
    uv run ruff format .
+   uv run black .
    ```
 
 2. **Stage Changes**: Añade los archivos que deseas confirmar.

@@ -1045,6 +1045,7 @@ if not CORE_AVAILABLE:
     mock_core.QgsLineString = MockQgsLineString
     mock_core.QgsPolygon = MockQgsPolygon
 
+
 def mock_geometry_type(wkb):
     if wkb == 1:  # Point
         return 0  # PointGeometry

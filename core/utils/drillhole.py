@@ -225,7 +225,12 @@ def interpolate_intervals_on_trajectory(
         # Add segment if we have points
         if interval_points_2d:
             geol_segments.append(
-                (attribute, interval_points_2d, interval_points_3d, interval_points_3d_proj)
+                (
+                    attribute,
+                    interval_points_2d,
+                    interval_points_3d,
+                    interval_points_3d_proj,
+                )
             )
 
     return geol_segments

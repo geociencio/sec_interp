@@ -232,14 +232,20 @@ class ExportService:
                     if options.get("drill_3d_original", True):
                         path = folder / "drillhole_traces_3d_real.shp"
                         DrillholeTrace3DExporter({}).export(
-                            path, {"drillhole_data": data, "crs": crs, "use_projected": False}
+                            path,
+                            {
+                                "drillhole_data": data,
+                                "crs": crs,
+                                "use_projected": False,
+                            },
                         )
                         msg.append(f"  - {path.name} (3D Real)")
 
                     if options.get("drill_3d_projected", False):
                         path = folder / "drillhole_traces_3d_projected.shp"
                         DrillholeTrace3DExporter({}).export(
-                            path, {"drillhole_data": data, "crs": crs, "use_projected": True}
+                            path,
+                            {"drillhole_data": data, "crs": crs, "use_projected": True},
                         )
                         msg.append(f"  - {path.name} (3D Proj)")
 
@@ -248,14 +254,20 @@ class ExportService:
                     if options.get("drill_3d_original", True):
                         path = folder / "drillhole_intervals_3d_real.shp"
                         DrillholeInterval3DExporter({}).export(
-                            path, {"drillhole_data": data, "crs": crs, "use_projected": False}
+                            path,
+                            {
+                                "drillhole_data": data,
+                                "crs": crs,
+                                "use_projected": False,
+                            },
                         )
                         msg.append(f"  - {path.name} (3D Real)")
 
                     if options.get("drill_3d_projected", False):
                         path = folder / "drillhole_intervals_3d_projected.shp"
                         DrillholeInterval3DExporter({}).export(
-                            path, {"drillhole_data": data, "crs": crs, "use_projected": True}
+                            path,
+                            {"drillhole_data": data, "crs": crs, "use_projected": True},
                         )
                         msg.append(f"  - {path.name} (3D Proj)")
 

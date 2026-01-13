@@ -7,13 +7,14 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
 1.  **Actualización de Memoria (Logs)**:
     *   **Identificación del Tema**: Define un nombre corto para la sesión (ej: `planning_v2.7.0`).
     *   **`docs/maintenance/sesion_YYYY-MM-DD_[TEMA].md`**: **[OBLIGATORIO]** Crea este archivo con el resumen técnico de la sesión, logros, cambios en archivos y estado de la fase.
-    *   **`docs/DEVELOPMENT_LOG.md`**: Añade una entrada `## [YYYY-MM-DD] Resumen` con puntos clave y link al informe de sesión.
+    *   **`docs/DEVELOPMENT_LOG.md`**: **[CRÍTICO]** Añade una entrada `## [YYYY-MM-DD] Resumen` en la **PARTE SUPERIOR** (Orden cronológico inverso). Sigue [LOGGING_GUIDELINES.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/LOGGING_GUIDELINES.md).
     *   **`docs/source/MAINTENANCE_LOG.md`**: Actualiza siempre que haya planificación de fases, cambios en CI/CD, pre-commit o infraestructura.
     *   **`docs/CHANGELOG.md`**: Si completaste una feature visible para el usuario, añádela a `[Unreleased]`.
 
 2.  **Verificación Final (Safety Net)**:
-    Ejecuta los tests una última vez para no dejar la casa en llamas.
+    Ejecuta el formateador y los tests para no dejar la casa en llamas.
     ```bash
+    uv run black .
     PYTHONPATH=.. uv run python3 -m unittest discover tests
     ```
 

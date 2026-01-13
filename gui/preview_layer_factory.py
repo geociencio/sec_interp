@@ -357,7 +357,13 @@ class PreviewLayerFactory:
             return None
 
         features = []
-        for hole_id, trace_points, _ in drillhole_data:
+        for hole_data in drillhole_data:
+            # hole_data is (hole_id, trace_2d, trace_3d, trace_3d_proj, segments)
+            if len(hole_data) >= 5:
+                hole_id, trace_points = hole_data[0], hole_data[1]
+            else:
+                hole_id, trace_points = hole_data[0], hole_data[1]
+
             if not trace_points or len(trace_points) < 2:
                 logger.debug(
                     f"Skipping hole {hole_id}: insufficient trace points ({len(trace_points) if trace_points else 0})"
@@ -406,7 +412,9 @@ class PreviewLayerFactory:
             return None
 
         all_segments = []
-        for _, _, segments in drillhole_data:
+        for hole_data in drillhole_data:
+            # segments are at index 2 (legacy) or 4 (v2.7.0)
+            segments = hole_data[4] if len(hole_data) >= 5 else hole_data[2]
             if segments:
                 all_segments.extend(segments)
 

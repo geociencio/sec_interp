@@ -20,7 +20,7 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
    ```
 
 ### Fase 3: Verificación
-1. **Linting**: `uv run ruff check --fix . && uv run ruff format .`
+1. **Linting & Formatting**: `uv run ruff check --fix . && uv run ruff format . && uv run black .`
 2. **Tests**: `PYTHONPATH=.. uv run python3 -m unittest discover tests` (319+ tests).
 
 ### Fase 4: Git y Tagging

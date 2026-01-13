@@ -352,7 +352,14 @@ class PreviewResult:
         if self.struct:
             elevations.extend(m.elevation for m in self.struct)
         if self.drillhole:
-            for _, trace, segments in self.drillhole:
+            for hole_data in self.drillhole:
+                # drillhole_data is (hole_id, trace_2d, trace_3d, trace_3d_proj, segments)
+                if len(hole_data) >= 5:
+                    _, trace, _, _, segments = hole_data
+                else:
+                    # Fallback for legacy 3-element tuples if any
+                    _, trace, segments = hole_data
+
                 if trace:
                     elevations.extend(p[1] for p in trace)
                 if segments:

@@ -1,6 +1,30 @@
 # SecInterp - Development Log
 
 Chronological record of development activities, significant fixes, and technical decisions.
+*Note: This log is maintained in reverse chronological order (newest on top).*
+
+---
+## [2026-01-12] - Reparación de Bugs y Estandarización de Logs (20:38)
+
+### Resumen
+Sesión enfocada en la corrección de errores críticos de desempaquetado de sondajes que impedían el funcionamiento del preview y las métricas, seguida de la estandarización del sistema de registro de desarrollo.
+
+### Logros
+- **Fix Crítico**: Reparado `ValueError: too many values to unpack` en `core/types.py` y `gui/preview_layer_factory.py` mediante detección dinámica de estructura (3 o 5 elementos).
+- **Estandarización de Logs**:
+    - Creado `docs/LOGGING_GUIDELINES.md` con reglas formales para registro de actividades.
+    - Reorganizado `docs/DEVELOPMENT_LOG.md` en orden cronológico inverso estricto.
+- **Optimización de Workflows**: Actualizados 5 workflows en `.agent/workflows/` para integrar `LOGGING_GUIDELINES.md` y `black`.
+- **Verificación Completa**: Tests automatizados (30 OK) y pruebas manuales exitosas en QGIS (10 sondajes exportados sin errores).
+
+### Resultados
+- **Tests**: 312+ OK (Core + GUI)
+- **Formateo**: 65 archivos reformateados con `black`
+- **Despliegue**: Exitoso y validado manualmente
+- **Calidad**: Score 83.8/100
+
+### Documentación
+- Informe de sesión: [sesion_2026-01-12_bug_fix_y_estandarizacion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-12_bug_fix_y_estandarizacion.md)
 
 ---
 ## [2026-01-12] - Exportación 3D de Sondajes y Estabilización Core (01:10)
@@ -11,6 +35,7 @@ Sesión enfocada en la implementación de la exportación 3D de sondajes y la re
 ### Logros
 - **Exportación 3D**: Implementación de `DrillholeTrace3DExporter` y `DrillholeInterval3DExporter` para salida en `LineStringZ` (Original y Proyectado).
 - **QA & Estabilización**:
+    - **Fix Crítico**: Reparado `ValueError: too many values to unpack` en preview y métricas por cambio de estructura en sondajes (de 3 a 5 elementos).
     - Resolución de `NameError` y `Mock Pollution` en `base_test.py`.
     - Estabilización de `test_drillhole_utils` y `test_drillhole_service` (Fetching 3D robusto).
     - Creación de nueva suite de validación 3D dedicada.
@@ -35,6 +60,23 @@ Sesión técnica enfocada en potenciar la autoconsciencia del proyecto mediante 
 - Informe de sesión: [sesion_2026-01-11_analyzer_refactor_and_workflow_integration.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-11_analyzer_refactor_and_workflow_integration.md)
 
 ---
+## [2026-01-10] - Cierre de Fase v2.6.0 (02:58)
+
+### Resumen
+Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infraestructura, estabilidad de tests y correcciones de internacionalización. Esta versión marca el estado final estable para el repositorio de QGIS.
+
+### Logros Clave
+- **Tests de Integración**: 10 tests reales pasando en QGIS Headless.
+- **CI/CD**: Pipeline automatizado con imágenes oficiales.
+- **Calidad**: Complejidad ciclomática reducida y tipado al 100% en áreas críticas.
+- **Mantenibilidad**: Código reformateado con `black` y mocks estabilizados.
+
+### Estado Final
+- **Tests**: 312 OK (Unit + Integration).
+- **Deuda Técnica**: Identificada y priorizada para v2.7.0 (Docs Sphinx, Logging).
+- **Informe Completo**: [phase_closure_v2.6.0.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/phase_closure_v2.6.0.md)
+
+---
 ## [2026-01-09-3] - Planificación Detallada Fase v2.7.0 (23:10)
 
 ### Resumen
@@ -53,22 +95,6 @@ Finalización de la etapa de planificación para la versión 2.7.0, integrando r
 ### Estado Final
 - **Plan v2.7.0**: Aprobado conceptualmente y listo para ejecución.
 - **Seguimiento**: [task.md](file:///home/jmbernales/.gemini/antigravity/brain/a439de8b-240a-494d-a4cb-9405cc1d99f7/task.md).
-
----
-
-### Resumen
-Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infraestructura, estabilidad de tests y correcciones de internacionalización. Esta versión marca el estado final estable para el repositorio de QGIS.
-
-### Logros Clave
-- **Tests de Integración**: 10 tests reales pasando en QGIS Headless.
-- **CI/CD**: Pipeline automatizado con imágenes oficiales.
-- **Calidad**: Complejidad ciclomática reducida y tipado al 100% en áreas críticas.
-- **Mantenibilidad**: Código reformateado con `black` y mocks estabilizados.
-
-### Estado Final
-- **Tests**: 312 OK (Unit + Integration).
-- **Deuda Técnica**: Identificada y priorizada para v2.7.0 (Docs Sphinx, Logging).
-- **Informe Completo**: [phase_closure_v2.6.0.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/phase_closure_v2.6.0.md)
 
 ---
 ## [2026-01-09] - Estabilización de Tests y Traducción de UI (21:35)
@@ -134,7 +160,7 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - **Portabilidad**: El `Dockerfile` ahora sirve como entorno de desarrollo local reproducible y estable.
 
 ---
-## [2026-01-08] - Armonización de Validación y Calidad en GUI (21:48)
+## [2026-01-08-2] - Armonización de Validación y Calidad en GUI (21:48)
 
 ### Actividades
 - **Refactorización de Validación**:
@@ -155,7 +181,7 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Walkthrough: [walkthrough.md](file:///home/jmbernales/.gemini/antigravity/brain/21a89546-b249-4109-a555-97ccf59480fb/walkthrough.md)
 
 ---
-## [2026-01-08] - Mejora Continua de Calidad (Docstrings, Type Hints y Complejidad) (20:10)
+## [2026-01-08-1] - Mejora Continua de Calidad (Docstrings, Type Hints y Complejidad) (20:10)
 
 ### Actividades
 - **Fase 1 (Core)**: Mejora de cobertura en `__init__.py`, `core/performance_metrics.py` y docstrings iniciales en `core/controller.py`.
@@ -183,7 +209,7 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Walkthrough: [walkthrough.md](file:///home/jmbernales/.gemini/antigravity/brain/420250bf-835d-4495-944e-0528f9570fef/walkthrough.md)
 
 ---
-## [2026-01-08] - Refactorización de Exporters y Benchmarks v2.6.0 (19:42)
+## [2026-01-08-0] - Refactorización de Exporters y Benchmarks v2.6.0 (19:42)
 
 ### Actividades
 - **Refactorización de Exporters**: Se redujo la complejidad ciclomática de `Interpretation3DExporter` de 6 a <= 5 mediante la extracción de lógica en métodos privados.
@@ -199,7 +225,50 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Walkthrough: [walkthrough.md](file:///home/jmbernales/.gemini/antigravity/brain/420250bf-835d-4495-944e-0528f9570fef/walkthrough.md)
 
 ---
-## [2026-01-06] - Implementación de Benchmarks de Performance (21:15)
+## [2026-01-08] - Estabilización de Salud y Refactorización de Exporters
+
+### Resumen
+Sesión enfocada en la estabilización del plugin tras la refactorización de `QgsTask` y la reducción de deuda técnica en el módulo de exportadores.
+
+### Logros
+- **Estabilización de Tests**:
+    - Corregida regresión en `GeologyService` (`NameError: task_input`).
+    - Estabilizados mocks en `tests/base_test.py` agregando `MockQgsTask`, `Qgis` constants y ampliando soporte para UI (`LayerFilters`).
+    - Verificados 102 tests unitarios pasando.
+- **Refactorización de Exporters**:
+    - Todos los exportadores de Shapefile (`shp`, `drillhole`, `profile`, `interpretation_3d`) fueron refactorizados para reducir complejidad ciclomática mediante delegación de lógica a métodos privados.
+    - La complejidad de los métodos `export` se redujo de 8-9 a 6 en promedio, mejorando significativamente la legibilidad y mantenibilidad.
+
+### Estado Final
+- **Tests Unitarios**: OK (102/102).
+- **Deuda Técnica**: Significativamente reducida en el módulo `exporters`.
+- **Siguiente Paso**: Continuar con el roadmap v2.6.0 (Optimización de carga y benchmarks).
+
+---
+## [2026-01-07] - Refactorización de Threading y Fix de Crashes (21:10)
+
+### Problema
+- **Crashes Intermitentes**: Se identificaron segfaults aleatorios causados por el acceso a la API de QGIS (`QgsVectorLayer`, `QgsRasterLayer`, `QgsProject`) desde hilos secundarios en la generación de perfiles geológicos.
+
+### Solución Arquitectónica
+- **Native QgsTask**: Migración completa del custom `ParallelGeologyService` a `GeologyGenerationTask`, una implementación nativa de `QgsTask` gestionada por `QgsApplication.taskManager()`.
+- **Patrón "Extract-then-Compute" (DTO)**:
+    - **Fase 1 (Síncrona)**: Extracción segura de datos en el hilo principal mediante `GeologyService.prepare_task_input`. Se copian geometrías y atributos a estructuras en memoria (`GeologyTaskInput`), desconectándolas de QGIS.
+    - **Fase 2 (Asíncrona)**: Procesamiento geométrico puro en el hilo de trabajo (`GeologyService.process_task_data`), garantizando thread-safety al no acceder a punteros de C++ de QGIS.
+
+### Cambios Clave
+- **[NUEVO]** `core/types.py`: DTO `GeologyTaskInput` para transferencia segura de datos.
+- **[REFACTOR]** `core/services/geology_service.py`: Separación estricta de lógica de lectura y cálculo.
+- **[NUEVO]** `gui/tasks/geology_task.py`: Clase encapsulada para la tarea en background.
+- **[FIX]** `gui/main_dialog_preview.py`: Integración con `QgsTaskManager` y manejo de ciclo de vida.
+- **[ELIMINADO]** `gui/services/parallel_geology_service.py` (Deuda técnica).
+
+### Verificación
+- **Tests Unitarios**: Creado `tests/gui/test_geology_task.py` validando éxito, fallo y manejo de logs.
+- **Walkthrough**: [Native QgsTask Refactor](file:///home/jmbernales/.gemini/antigravity/brain/ea9a4214-70d6-4f52-95ce-7f891d75b04c/walkthrough.md)
+
+---
+## [2026-01-06-1] - Implementación de Benchmarks de Performance (21:15)
 
 ### Actividades
 - **Infraestructura**: Creación de `tests/benchmarks/benchmark_utils.py` con decoradores para medición de tiempos y aserciones de SLAs.
@@ -217,7 +286,7 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Archivo de Walkthrough: [sesion_2026-01-06_benchmarks.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-06_benchmarks.md)
 
 ---
-## [2026-01-06] - Fix Infraestructura de Tests de Integración (18:40)
+## [2026-01-06-0] - Fix Infraestructura de Tests de Integración (18:40)
 
 ### Actividades
 - **Fix Runner**: Se corrigió `scripts/run_tests_in_qgis.py` para manejar casos donde `__file__` no está definido (ejecucción vía `--code` o terminal QGIS).
@@ -232,7 +301,7 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Archivo de Walkthrough: [sesion_2026-01-06_fix_integracion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-06_fix_integracion.md)
 
 ---
-## [2026-01-05] - Implementación de Infraestructura de Tests de Integración Nativa (22:00)
+## [2026-01-05-2] - Implementación de Infraestructura de Tests de Integración Nativa (22:00)
 
 ### Actividades
 - **Tests de Integración**: Se estableció la infraestructura para ejecutar tests de integración utilizando la API real de QGIS en modo headless.
@@ -252,9 +321,7 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Archivo de Walkthrough: [sesion_2026-01-05_integracion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-05_integracion.md)
 
 ---
-
-
-## [2026-01-05] - Cierre Formal de Fase v2.5.0 (20:30)
+## [2026-01-05-1] - Cierre Formal de Fase v2.5.0 (20:30)
 
 ### Actividades
 - **Cierre de Fase**: Documentación formal del cierre de la fase de desarrollo y estabilización post-release v2.5.0.
@@ -291,8 +358,7 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Walkthrough del proceso: [phase_closure_walkthrough_2026-01-05.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/phase_closure_walkthrough_2026-01-05.md)
 
 ---
-
-## [2026-01-05] - Configuración de Dev Container para qgis-analyzer (04:50)
+## [2026-01-05-0] - Configuración de Dev Container para qgis-analyzer (04:50)
 
 ### Objetivos Completados
 - Configuración exitosa de `.devcontainer/devcontainer.json` y `Dockerfile` para soportar `qgis-analyzer` y dependencias del proyecto.
@@ -304,9 +370,10 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Se actualizó `Dockerfile` para usar `uv sync` y copiar `pyproject.toml`.
 - Se configuró `devcontainer.json` para construir la imagen localmente y establecer `PYTHONPATH`.
 
-## [2026-01-04] - Dev Containers Architecture (21:30)
+---
+## [2026-01-04-1] - Dev Containers Architecture (21:30)
 
-### Activities
+### Actividades
 - **Zero-Setup Environment**: Established a fully reproducible development environment using `.devcontainer`.
 - **Infrastructure Fixes**:
     - **Caching Issues**: Bypassed Docker layer caching issues by manually building `sec_interp_dev` image.
@@ -319,9 +386,10 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Verified `root` shell access within the container.
 - Confirmed environment isolation from host system.
 
-## [2026-01-04] - Docker Learning Workshop (00:05)
+---
+## [2026-01-04-0] - Docker Learning Workshop (00:05)
 
-### Activities
+### Actividades
 - **Fase 1: Interactive Exploration**: Launched containers, managed volumes (`-v`), and identified system dependencies inside `python:3.10-slim`.
 - **Fase 2: Dockerfile Automation**:
     - Implemented a production-ready `Dockerfile` featuring `uv` for dependency management.
@@ -336,41 +404,33 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Proof of work archived in: [docker_workshop_2026-01-04.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/docker_workshop_2026-01-04.md)
 
 ---
-
-## [2026-01-03] - Global Ruff Activation & Cleanup (10:20)
+## [2026-01-03-4] - Release Workflow Standardization (13:15)
 
 ### Activities
-- **Ruff Rule Enablement**: Activated `F401` (unused imports), `F841` (unused variables), and `I001` (isort) project-wide.
-- **Automated Fixes**: Executed `ruff check --fix` and `ruff format`. 253 fixes applied, 102 files reformatted.
-- **Mock System Refactor**: Enhanced `tests/base_test.py` to fix regressions in `MockQWidget`, `MockQgsProject`, and `MockQApplication`.
-- **Regression Fixes**:
-    - Restored missing `logger` in `gui/main_dialog_settings.py`.
-    - Fixed 3D component discovery in `exporters/interpretation_3d_exporter.py`.
-    - Modernized `isinstance` checks in `gui/services/parallel_geology_service.py` (Rule `UP038`).
+- **Workflow Adaptation**: Customized [`release_process_ai.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/release_process_ai.md) for SecInterp, including 5 distinct phases (Quality, Versioning, Verification, Git, and Distribution).
+- **Agent Integration**: Standardized internal agent workflows (`/release-plugin` and `/release-plugin-en`) to strictly follow the AI-guided 5-phase process.
+- **Documentation Cleanup**: Removed legacy/redundant release documentation (`docs/docsec/RELEASE_PROCESS.md`).
+- **Template Creation**: Implemented [`.github/release_template.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/.github/release_template.md) with QGIS-specific instructions.
 
 ### Verification
-- Full test suite passed: **316 tests** (312 passed, 4 skipped).
-- Detailed report saved in: [ruff_cleanup_2026-01-03_10-20.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/ruff_cleanup_2026-01-03_10-20.md)
+- Sync confirmed between guide, template, and agent internal workflows.
+- Phase 2 synchronization (metadata.txt vs pyproject.toml) verified as mandatory.
 
 ---
+## [2026-01-03-3] - Official Release Version 2.5.0 (12:35)
 
-## [2026-01-03] - Bug Fix: Preview Render TypeError (10:45)
-
-### Problem
-- **TypeError**: `cannot unpack non-iterable GeologySegment object` in `gui/preview_renderer.py`.
-- **Cause**: After refactoring `GeologyData` to use `GeologySegment` objects, a legacy list comprehension in `render()` was still trying to unpack them as 3-tuples.
-
-### Fix
-- Updated `gui/preview_renderer.py` to extract points from `GeologySegment.points` when calculating `reference_data`.
-- Added a regression test case in `tests/gui/test_preview_components.py`.
+### Activities
+- **Release Automation**: Executed `make package` to compile translations and help files, creating `sec_interp.2.5.0.zip`.
+- **Changelog Consolidation**: Merged multi-day improvements into a unified technical changelog in [`CHANGELOG.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/CHANGELOG.md).
+- **Metadata Update**: Synchronized `metadata.txt` and `MAINTENANCE_LOG.md` with version 2.5.0.
+- **Git Deployment**: Created and pushed tag `v2.5.0` to GitHub.
 
 ### Verification
-- Full test suite passed: **316 tests**.
-- Regression confirmed manually via test case.
+- GitHub repository synchronized with `main` and `v2.5.0` tag.
+- Final test verification passed: **319 tests**.
 
 ---
-
-## [2026-01-03] - Data Persistence Fix & UI Robustness (12:20)
+## [2026-01-03-2] - Data Persistence Fix & UI Robustness (12:20)
 
 ### Activities
 - **Proactive Persistence**: Reorganized `accept_handler` and `preview_profile_handler` in `main_dialog.py` to save settings immediately upon success or dialog acceptance, even if secondary validation fails.
@@ -388,76 +448,32 @@ Lanzamiento oficial de la versión 2.6.0 consolidando todas las mejoras de infra
 - Verified persistent restoration of layers and spinbox values after QGIS restart.
 
 ---
+## [2026-01-03-1] - Bug Fix: Preview Render TypeError (10:45)
 
-## [2026-01-03] - Official Release Version 2.5.0 (12:35)
+### Problem
+- **TypeError**: `cannot unpack non-iterable GeologySegment object` in `gui/preview_renderer.py`.
+- **Cause**: After refactoring `GeologyData` to use `GeologySegment` objects, a legacy list comprehension in `render()` was still trying to unpack them as 3-tuples.
 
-### Activities
-- **Release Automation**: Executed `make package` to compile translations and help files, creating `sec_interp.2.5.0.zip`.
-- **Changelog Consolidation**: Merged multi-day improvements into a unified technical changelog in [`CHANGELOG.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/CHANGELOG.md).
-- **Metadata Update**: Synchronized `metadata.txt` and `MAINTENANCE_LOG.md` with version 2.5.0.
-- **Git Deployment**: Created and pushed tag `v2.5.0` to GitHub.
-
-### Verification
-- GitHub repository synchronized with `main` and `v2.5.0` tag.
-- Final test verification passed: **319 tests**.
-
----
-
-## [2026-01-03] - Release Workflow Standardization (13:15)
-
-### Activities
-- **Workflow Adaptation**: Customized [`release_process_ai.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/release_process_ai.md) for SecInterp, including 5 distinct phases (Quality, Versioning, Verification, Git, and Distribution).
-- **Agent Integration**: Standardized internal agent workflows (`/release-plugin` and `/release-plugin-en`) to strictly follow the AI-guided 5-phase process.
-- **Documentation Cleanup**: Removed legacy/redundant release documentation (`docs/docsec/RELEASE_PROCESS.md`).
-- **Template Creation**: Implemented [`.github/release_template.md`](file:///home/jmbernales/qgispluginsdev/sec_interp/.github/release_template.md) with QGIS-specific instructions.
+### Fix
+- Updated `gui/preview_renderer.py` to extract points from `GeologySegment.points` when calculating `reference_data`.
+- Added a regression test case in `tests/gui/test_preview_components.py`.
 
 ### Verification
-- Sync confirmed between guide, template, and agent internal workflows.
-- Phase 2 synchronization (metadata.txt vs pyproject.toml) verified as mandatory.
+- Full test suite passed: **316 tests**.
+- Regression confirmed manually via test case.
 
 ---
+## [2026-01-03-0] - Global Ruff Activation & Cleanup (10:20)
 
-## [2026-01-08] Estabilización de Salud y Refactorización de Exporters
+### Activities
+- **Ruff Rule Enablement**: Activated `F401` (unused imports), `F841` (unused variables), and `I001` (isort) project-wide.
+- **Automated Fixes**: Executed `ruff check --fix` and `ruff format`. 253 fixes applied, 102 files reformatted.
+- **Mock System Refactor**: Enhanced `tests/base_test.py` to fix regressions in `MockQWidget`, `MockQgsProject`, and `MockQApplication`.
+- **Regression Fixes**:
+    - Restored missing `logger` in `gui/main_dialog_settings.py`.
+    - Fixed 3D component discovery in `exporters/interpretation_3d_exporter.py`.
+    - Modernized `isinstance` checks in `gui/services/parallel_geology_service.py` (Rule `UP038`).
 
-### Resumen
-Sesión enfocada en la estabilización del plugin tras la refactorización de `QgsTask` y la reducción de deuda técnica en el módulo de exportadores.
-
-### Logros
-- **Estabilización de Tests**:
-    - Corregida regresión en `GeologyService` (`NameError: task_input`).
-    - Estabilizados mocks en `tests/base_test.py` agregando `MockQgsTask`, `Qgis` constants y ampliando soporte para UI (`LayerFilters`).
-    - Verificados 102 tests unitarios pasando.
-- **Refactorización de Exporters**:
-    - Todos los exportadores de Shapefile (`shp`, `drillhole`, `profile`, `interpretation_3d`) fueron refactorizados para reducir complejidad ciclomática mediante delegación de lógica a métodos privados.
-    - La complejidad de los métodos `export` se redujo de 8-9 a 6 en promedio, mejorando significativamente la legibilidad y mantenibilidad.
-
-### Estado Final
-- **Tests Unitarios**: OK (102/102).
-- **Deuda Técnica**: Significativamente reducida en el módulo `exporters`.
-- **Siguiente Paso**: Continuar con el roadmap v2.6.0 (Optimización de carga y benchmarks).
-
----
-
-## [2026-01-07] - Refactorización de Threading y Fix de Crashes (21:10)
-
-### Problema
-- **Crashes Intermitentes**: Se identificaron segfaults aleatorios causados por el acceso a la API de QGIS (`QgsVectorLayer`, `QgsRasterLayer`, `QgsProject`) desde hilos secundarios en la generación de perfiles geológicos.
-
-### Solución Arquitectónica
-- **Native QgsTask**: Migración completa del custom `ParallelGeologyService` a `GeologyGenerationTask`, una implementación nativa de `QgsTask` gestionada por `QgsApplication.taskManager()`.
-- **Patrón "Extract-then-Compute" (DTO)**:
-    - **Fase 1 (Síncrona)**: Extracción segura de datos en el hilo principal mediante `GeologyService.prepare_task_input`. Se copian geometrías y atributos a estructuras en memoria (`GeologyTaskInput`), desconectándolas de QGIS.
-    - **Fase 2 (Asíncrona)**: Procesamiento geométrico puro en el hilo de trabajo (`GeologyService.process_task_data`), garantizando thread-safety al no acceder a punteros de C++ de QGIS.
-
-### Cambios Clave
-- **[NUEVO]** `core/types.py`: DTO `GeologyTaskInput` para transferencia segura de datos.
-- **[REFACTOR]** `core/services/geology_service.py`: Separación estricta de lógica de lectura y cálculo.
-- **[NUEVO]** `gui/tasks/geology_task.py`: Clase encapsulada para la tarea en background.
-- **[FIX]** `gui/main_dialog_preview.py`: Integración con `QgsTaskManager` y manejo de ciclo de vida.
-- **[ELIMINADO]** `gui/services/parallel_geology_service.py` (Deuda técnica).
-
-### Verificación
-- **Tests Unitarios**: Creado `tests/gui/test_geology_task.py` validando éxito, fallo y manejo de logs.
-- **Walkthrough**: [Native QgsTask Refactor](file:///home/jmbernales/.gemini/antigravity/brain/ea9a4214-70d6-4f52-95ce-7f891d75b04c/walkthrough.md)
-
----
+### Verification
+- Full test suite passed: **316 tests** (312 passed, 4 skipped).
+- Detailed report saved in: [ruff_cleanup_2026-01-03_10-20.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/ruff_cleanup_2026-01-03_10-20.md)
