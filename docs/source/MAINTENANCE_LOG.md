@@ -36,8 +36,9 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
-### [2.7.0] - (In-Progress) 2026-01-12
+### [2.7.0] - (In-Progress) 2026-01-13
 - **Infrastructure Evolution**:
+    - **Centralized Logging**: Refactored `logger_config.py` to use a root logger with hierarchical propagation. Unified performance monitoring with the new system.
     - **Automated Sphinx Docs**: Implementation of `conf.py` (autodoc/napoleon) and `build_docs.sh` to decouple documentation from the repository.
     - **External Build Strategy**: Documentation now exports to `../sec_interp_docs` as default, keeping the core repository clean.
     - **Repository Hygiene**: Removed 100+ tracked HTML files and updated `.gitignore` to prevent future pollution.

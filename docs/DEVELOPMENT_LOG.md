@@ -4,6 +4,27 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-13] - Centralización de Logging y Modernización de Infraestructura (20:25)
+
+### Resumen
+Sesión dedicada a cumplir el Objetivo 2 de la fase v2.7.0, consolidando el sistema de registro (logging) para mejorar la estabilidad y diagnóstico de crashes, seguida de la unificación del monitoreo de rendimiento.
+
+### Logros
+- **Logging Centralizado**:
+    - Refactorizado `logger_config.py` para usar un logger raíz ("SecInterp") con propagación jerárquica.
+    - Implementada inicialización temprana en `sec_interp_plugin.py`.
+- **Performance Monitor**: Unificado el sistema de monitoreo de rendimiento con el logger centralizado.
+- **Calidad y Commits**:
+    - Adoptado el estándar de **Conventional Commits** en inglés para todos los commits futuros.
+    - Formateado preventivo con `black` y validación con `pre-commit`.
+- **Fase v2.7.0**: Marcado Objetivo 2 como completado en el plan de implementación.
+
+### Resultados
+- **Archivos Modificados**: `logger_config.py`, `sec_interp_plugin.py`, `core/performance_metrics.py`.
+- **Estado de Tests**: ⚠️ **45 fallas/51 errores** (Incidencia heredada, pendiente de investigación).
+- **Reporte Detallado**: [sesion_2026-01-13_logging_centralization.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-13_logging_centralization.md).
+
+---
 ## [2026-01-12] - Reparación de Bugs y Estandarización de Logs (20:38)
 
 ### Resumen

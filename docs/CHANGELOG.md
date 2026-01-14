@@ -6,7 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### 🏗️ Architecture & AI Integration
+### 🏗️ Architecture & Infrastructure
+- **Centralized Logging System**:
+  - Refactored `logger_config.py` using a Root Logger pattern with hierarchical propagation.
+  - Implemented `setup_logging()` for unified initialization at plugin startup.
+  - Unified `PerformanceMonitor` with the centralized loggger system.
+  - Enhanced `QgsLogHandler` with automatic fallback to `stderr` for background thread safety.
+- **Development Standards**:
+  - Adopted **Conventional Commits** in English as the project standard.
+  - Enforced `black` formatting and `ruff` linting via pre-commit hooks.
 - **Advanced Project Analyzer**:
   - Integrated Halstead metrics and Type Hint coverage for deep technical analysis.
   - Added Mermaid-based dependency graph generation for enhanced AI context.
