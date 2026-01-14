@@ -47,7 +47,7 @@ from sec_interp.core.services.export_service import ExportService
 from sec_interp.core.types import PreviewParams
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
-from sec_interp.logger_config import get_logger
+from sec_interp.logger_config import get_logger, setup_logging
 
 logger = get_logger(__name__)
 
@@ -72,6 +72,9 @@ class SecInterp:
                 application at run time.
 
         """
+        # Initialize logging first
+        setup_logging()
+
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory

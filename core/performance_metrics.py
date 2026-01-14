@@ -193,18 +193,8 @@ class PerformanceMonitor:
             logging.Logger: The configured logger instance.
 
         """
-        logger = logging.getLogger("performance")
-        logger.setLevel(logging.INFO)
-
-        # Check if handler already exists to avoid duplicates
-        if not logger.handlers:
-            # Create file handler
-            handler = logging.FileHandler(log_file)
-            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-            handler.setFormatter(formatter)
-            logger.addHandler(handler)
-
-        return logger
+        # Integration with centralized logging
+        return get_logger("performance")
 
     @contextmanager
     def measure_operation(

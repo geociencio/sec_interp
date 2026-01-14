@@ -75,35 +75,41 @@ class QgsLogHandler(logging.Handler):
             self.handleError(record)
 
 
-def get_logger(name: str) -> logging.Logger:
-    """Get a configured logger for the plugin.
+ROOT_LOGGER_NAME = "SecInterp"
+
+
+def setup_logging(level: int = logging.DEBUG) -> logging.Logger:
+    """Configure the root logger for the plugin.
+
+    This should be called once at plugin initialization. It sets up
+    handlers for QGIS message log, file logging with rotation, and stderr.
 
     Args:
-        name: Name of the logger (typically __name__ from calling module)
+        level: Logging level for the root logger. Defaults to DEBUG.
 
     Returns:
-        logging.Logger: Configured logger instance
+        logging.Logger: The configured root logger.
 
     """
-    logger = logging.getLogger(f"SecInterp.{name}")
+    root_logger = logging.getLogger(ROOT_LOGGER_NAME)
 
     # Only configure if not already configured
-    if not logger.handlers:
-        # Set level - DEBUG for crash analysis
-        logger.setLevel(logging.DEBUG)
+    if not root_logger.handlers:
+        root_logger.setLevel(level)
 
         # 1. Create QGIS message log handler (for UI)
-        qgis_handler = QgsLogHandler(tag="SecInterp")
+        qgis_handler = QgsLogHandler(tag=ROOT_LOGGER_NAME)
         qgis_handler.setLevel(logging.INFO)
         qgis_formatter = logging.Formatter("%(levelname)s - %(message)s")
         qgis_handler.setFormatter(qgis_formatter)
-        logger.addHandler(qgis_handler)
+        root_logger.addHandler(qgis_handler)
 
         # 2. Create file handler for detailed crash analysis
         try:
             # Determine log directory (in repository root)
-            plugin_dir = Path(__file__).parent
-            log_dir = plugin_dir / "logs"
+            # Find the root of the project (where logger_config.py is)
+            root_dir = Path(__file__).parent
+            log_dir = root_dir / "logs"
             log_dir.mkdir(exist_ok=True)
 
             log_file = log_dir / "sec_interp_debug.log"
@@ -124,26 +130,55 @@ def get_logger(name: str) -> logging.Logger:
                 datefmt="%Y-%m-%d %H:%M:%S",
             )
             file_handler.setFormatter(file_formatter)
-            logger.addHandler(file_handler)
+            root_logger.addHandler(file_handler)
 
             # 3. Add stderr handler as backup for crash scenarios
             stderr_handler = logging.StreamHandler(sys.stderr)
             stderr_handler.setLevel(logging.WARNING)  # Only warnings and errors to stderr
             stderr_handler.setFormatter(file_formatter)
-            logger.addHandler(stderr_handler)
+            root_logger.addHandler(stderr_handler)
 
             # Log the initialization
-            logger.debug(f"File logging initialized: {log_file}")
+            root_logger.debug(f"Logging system initialized. Root Level: {level}")
+            root_logger.debug(f"File logging path: {log_file}")
 
         except Exception as e:
             # If file logging fails, continue with QGIS logging only
             QgsMessageLog.logMessage(
                 f"Warning: Could not initialize file logging: {e}",
-                "SecInterp",
+                ROOT_LOGGER_NAME,
                 Qgis.Warning,
             )
 
-        logger.propagate = False
+        # Ensure propagation is enabled for children
+        root_logger.propagate = True
+
+    return root_logger
+
+
+def get_logger(name: str | None = None) -> logging.Logger:
+    """Get a configured logger for a plugin module.
+
+    Args:
+        name: Name of the logger (typically __name__ from calling module).
+            If None, returns the root plugin logger.
+
+    Returns:
+        logging.Logger: Configured logger instance.
+
+    """
+    if name is None or name == ROOT_LOGGER_NAME:
+        return logging.getLogger(ROOT_LOGGER_NAME)
+
+    # Ensure we use the hierarchy (SecInterp.something.else)
+    full_name = name if name.startswith(ROOT_LOGGER_NAME + ".") else f"{ROOT_LOGGER_NAME}.{name}"
+
+    logger = logging.getLogger(full_name)
+
+    # Auto-initialize if root has no handlers (for tests or standalone usage)
+    root = logging.getLogger(ROOT_LOGGER_NAME)
+    if not root.handlers and name != ROOT_LOGGER_NAME:
+        setup_logging()
 
     return logger
 
