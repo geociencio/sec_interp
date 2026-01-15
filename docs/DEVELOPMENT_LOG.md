@@ -532,3 +532,19 @@ Sesión enfocada en la estabilización del plugin tras la refactorización de `Q
 ### Verification
 - Full test suite passed: **316 tests** (312 passed, 4 skipped).
 - Detailed report saved in: [ruff_cleanup_2026-01-03_10-20.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/ruff_cleanup_2026-01-03_10-20.md)
+
+## [2026-01-15] - Arquitectura de Validación (Niveles 1 y 2) (17:48)
+
+### Resumen
+Implementación exitosa de los dos primeros niveles de la arquitectura de validación jerárquica y estandarización del código base.
+
+### Logros
+- **Nivel 1 (Type Validation)**: Implementados validadores reutilizables en `core/validation/validators.py` e integrados en `settings_model.py`.
+- **Nivel 2 (Business Logic)**: Creado `validation_helpers.py` con `ValidationContext` para acumulación de errores. Refactorizado `ProjectValidator` para usar este contexto.
+- **Estandarización**: Formateo global aplicado con `black` y `ruff`.
+
+### Resultados
+- **Tests**: 363 tests pasando (16 nuevos añadidos para lógica de validación).
+- **Calidad**: Codebase consistente y listo para validación de dominio (Nivel 3).
+
+---

@@ -54,16 +54,17 @@ Script para construir la documentación y moverla automáticamente al directorio
 
 #### Arquitectura Propuesta
 
-**Nivel 1: Type Validation (Dataclass Layer)**
-- Validaciones básicas de tipo, rangos y conversiones automáticas
-- Validadores reutilizables y composables
+- [x] **Nivel 1: Type Validation (Dataclass Layer)**
+    - Crear `core/validation/validators.py` con validadores reusables (range, type, etc).
+    - Refactorizar `settings_model.py` para usar estos validadores en `__post_init__`.
+    - Sanitización automática de inputs (clamping) en lugar de errores duros.
 
-**Nivel 2: Business Logic Validation**
-- Validaciones cross-field y reglas de negocio
-- Acumulación de errores con contexto rico
-- Estrategia de 2 fases (Critical Fail Fast + Business Accumulate)
+- [x] **Nivel 2: Business Logic Validation**
+    - Refactorizar `core/validation/project_validator.py`.
+    - Implementar `ValidationContext` para acumular errores (evitar "fail-fast").
+    - Validar dependencias entre capas (ej: Si hay Drillholes, checks de Collar/Survey).
 
-**Nivel 3: Domain Validation**
+- [ ] **Nivel 3: Domain Validation (Service Layer)**
 - Validaciones específicas de QGIS
 - Validaciones geométricas complejas
 - Validaciones que requieren I/O

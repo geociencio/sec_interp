@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+- **Core**: Sistema de validación de lógica de negocio (Nivel 2) con reportes de error detallados (`ValidationContext`).
+- **Core**: Validadores reutilizables y robustos para configuración (Nivel 1).
+
+### Changed
+- **Core**: Refactorización masiva para estandarización de estilo (Black/Ruff).
+- **Core**: Mejora en la robustez de validación de proyectos (`ProjectValidator`).
 ### 🧪 Testing & Quality
 - **Test Suite Total Stabilization**:
   - Achieved 100% success rate (347/347 tests passing) after resolving massive mock-related failures.
