@@ -706,6 +706,9 @@ class MockQgsFields(MockQgsBase):
                 return i
         return -1
 
+    def indexFromName(self, name):
+        return self.indexOf(name)
+
     def names(self):
         return [f.name() for f in self._fields]
 

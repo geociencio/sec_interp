@@ -62,17 +62,17 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 106
-- **Lines of Code**: 17,285
-- **Functions**: 598
+- **Lines of Code**: 17,370
+- **Functions**: 599
 - **Classes**: 113
-- **Average Complexity**: 12.4
+- **Average Complexity**: 12.6
 - **Most Complex Modules**: core/services/drillhole_service.py, gui/preview_layer_factory.py, gui/main_dialog_preview.py
 
 ## 🔗 PRIMARY DEPENDENCIES
 
 ### Third Party (most frequent):
 - `qgis` (117 imports)
-- `sec_interp` (70 imports)
+- `sec_interp` (72 imports)
 - `pages` (8 imports)
 - `geometry_utils` (7 imports)
 - `layer_validator` (7 imports)
@@ -95,18 +95,18 @@ No clear design patterns detected.
 ### core/data_cache.py
 - **complexity_refactoring**: High complexity (19) with several functions. Consider breaking down large logic.
 
-### core/services/profile_service.py
-- **functions_too_long**: Very long functions (average 90.0 lines/function).
-
 ### core/controller.py
 - **complexity_refactoring**: High complexity (22) with several functions. Consider breaking down large logic.
+
+### core/services/profile_service.py
+- **functions_too_long**: Very long functions (average 90.0 lines/function).
 
 ### core/services/preview_service.py
 - **functions_too_long**: Very long functions (average 66.8 lines/function).
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 106
-- **Edges**: 124
+- **Edges**: 126
 - **Density**: 0.011
 - **Acyclic Graph**: Yes
 - **Connected Components**: 36

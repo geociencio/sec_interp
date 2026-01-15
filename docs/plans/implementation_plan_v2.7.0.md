@@ -45,12 +45,12 @@ Script para construir la documentación y moverla automáticamente al directorio
 
 ---
 
-### Objetivo 3: Arquitectura de Validación de 3 Niveles [APROBADO - EN PROGRESO]
+### [COMPLETADO] Objetivo 3: Arquitectura de Validación de 3 Niveles
 
 > [!NOTE]
-> **Plan Aprobado el 2026-01-15**
+> **Finalizado el 2026-01-15**
 >
-> Implementación de arquitectura de validación robusta basada en 3 niveles jerárquicos sin dependencias externas. Plan detallado disponible en sesión actual.
+> Implementación de arquitectura de validación robusta basada en 3 niveles jerárquicos (Tipos, Lógica de Negocio y Dominio de QGIS) sin dependencias externas. Validada con suites de pruebas dedicadas para cada nivel.
 
 #### Arquitectura Propuesta
 
@@ -64,10 +64,16 @@ Script para construir la documentación y moverla automáticamente al directorio
     - Implementar `ValidationContext` para acumular errores (evitar "fail-fast").
     - Validar dependencias entre capas (ej: Si hay Drillholes, checks de Collar/Survey).
 
-- [ ] **Nivel 3: Domain Validation (Service Layer)**
-- Validaciones específicas de QGIS
-- Validaciones geométricas complejas
-- Validaciones que requieren I/O
+- [x] **Nivel 3: Domain Validation (Service Layer)**
+    - **GeologyService**:
+        - `band_number`: Validar > 0 y existencia en raster.
+        - `outcrop_name_field`: Validar existencia en capa de afloramientos.
+        - `line_lyr`: Validar layer validity explícita.
+    - **DrillholeService**:
+        - `buffer_width`: Validar > 0.
+        - `section_azimuth`: Validar rango [0, 360].
+        - `fields`: Validar existencia de campos requeridos (id, x, y, z, depth) en sus respectivas capas.
+    - **Tests**: Crear `tests/core/validation/test_service_validation.py` para cubrir casos borde.
 
 #### Componentes a Implementar
 
@@ -84,7 +90,10 @@ Implementar `ValidationContext` y `RichValidationError` para errores con context
 Helpers para validaciones cross-field: `DependencyRule`, `validate_dependencies`.
 
 ##### [MODIFY] Services (geology_service.py, drillhole_service.py)
-Documentar y estandarizar validaciones de dominio específicas de QGIS.
+Implementar cláusulas de guarda usando `core/validation/validators.py` al inicio de los métodos públicos principales (`generate_geological_profile`, `project_collars`, `prepare_task_input`).
+
+##### [NEW] [test_service_validation.py](file:///home/jmbernales/qgispluginsdev/sec_interp/tests/core/validation/test_service_validation.py)
+Suite de pruebas dedicada a verificar que los servicios rechacen configuraciones inválidas (Fail Fast pattern).
 
 #### Estimación Detallada
 
@@ -144,6 +153,12 @@ Actualizar las instrucciones de desarrollo para recomendar el uso de Docker o De
 
 ### 1. Verificación de Modelos (Pendiente)
 Nuevos tests en `tests/core/test_settings_model.py` para validar la lógica de tipos y rangos sin dependencias externas.
+
+### 2. Verificación de Servicios (Validación)
+Ejecutar nueva suite de tests:
+```bash
+env PYTHONPATH=.. uv run python3 -m unittest tests/core/validation/test_service_validation.py
+```
 
 ### 2. Test de Integración de Logging [PASADA]
 Verificar que los mensajes llegan correctamente al `QgsMessageLog` de QGIS.

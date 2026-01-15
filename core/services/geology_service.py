@@ -101,6 +101,36 @@ class GeologyService(IGeologyService):
         band_number: int = 1,
     ) -> GeologyTaskInput:
         """Prepare detached data input for background task."""
+        # --- Level 3 Validation: Domain Guards ---
+        from sec_interp.core.exceptions import DataMissingError, ValidationError
+        from sec_interp.core.validation.validators import validate_positive
+
+        # 1. Layer Validity
+        for lyr, name in [
+            (line_lyr, "Line layer"),
+            (raster_lyr, "Raster layer"),
+            (outcrop_lyr, "Outcrop layer"),
+        ]:
+            if not lyr or not lyr.isValid():
+                raise DataMissingError(
+                    f"Invalid layer: {name}. Please check input layers.",
+                    {"layer": name},
+                )
+
+        # 2. Band Validation
+        validate_positive("Band number")(band_number)
+        if band_number > raster_lyr.bandCount():
+            raise ValidationError(
+                f"Band number {band_number} exceeds raster band count ({raster_lyr.bandCount()})."
+            )
+
+        # 3. Field Validation
+        idx = outcrop_lyr.fields().indexFromName(outcrop_name_field)
+        if idx == -1:
+            raise ValidationError(f"Field '{outcrop_name_field}' not found in outcrop layer.")
+
+        # --- End Validation ---
+
         line_geom, line_start = self._extract_line_info(line_lyr)
         crs = line_lyr.crs()
         da = scu.create_distance_area(crs)

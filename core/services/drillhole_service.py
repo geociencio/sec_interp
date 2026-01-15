@@ -73,6 +73,20 @@ class DrillholeService(IDrillholeService):
         if not collar_layer:
             raise DataMissingError("Collar layer is not provided")
 
+        from sec_interp.core.exceptions import ValidationError
+
+        if buffer_width <= 0:
+            raise ValidationError(f"Buffer width must be positive, got {buffer_width}")
+
+        # Validate Fields
+        if collar_id_field and collar_layer.fields().indexFromName(collar_id_field) == -1:
+            raise ValidationError(f"Field '{collar_id_field}' not found in collar layer.")
+
+        if not use_geometry:
+            for f_name in [collar_x_field, collar_y_field]:
+                if f_name and collar_layer.fields().indexFromName(f_name) == -1:
+                    raise ValidationError(f"Field '{f_name}' not found in collar layer.")
+
         projected_collars = []
         logger.info(f"Projecting collars from {collar_layer.name()} with buffer {buffer_width}m")
 
@@ -139,6 +153,36 @@ class DrillholeService(IDrillholeService):
         dem_layer: QgsRasterLayer | None = None,
     ) -> DrillholeTaskInput:
         """Prepare detached data for async processing."""
+        # --- Level 3 Validation: Domain Guards ---
+        from sec_interp.core.exceptions import ValidationError
+        from sec_interp.core.validation.validators import (
+            validate_positive,
+            validate_range,
+        )
+
+        # 1. Parameter Validation
+        validate_positive("Buffer width")(buffer_width)
+        validate_range(0, 360, "Section azimuth")(section_azimuth)
+
+        # 2. Field Existence Validation
+        # Helper to check fields in a layer
+        def check_field(layer: QgsVectorLayer, field_name: str, layer_name: str):
+            if not field_name:
+                return  # Optional or handled elsewhere?
+            if layer.fields().indexFromName(field_name) == -1:
+                raise ValidationError(f"Field '{field_name}' not found in {layer_name}.")
+
+        if collar_id_field:
+            check_field(collar_layer, collar_id_field, "collar layer")
+
+        # We don't strictly validate X/Y/Z/Depth here because they might be optional or mapped differently
+        # But if provided, they should exist.
+        if use_geometry is False:
+            check_field(collar_layer, collar_x_field, "collar layer")
+            check_field(collar_layer, collar_y_field, "collar layer")
+
+        # --- End Validation ---
+
         # 1. Filter Collars (Spatial)
         # Use buffer to limit feature fetching
         try:
