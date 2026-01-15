@@ -4,12 +4,14 @@ description: Procedimiento para finalizar una sesión de trabajo, actualizar log
 
 Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en memoria histórica para la próxima sesión.
 
-1.  **Actualización de Memoria (Logs)**:
-    *   **Identificación del Tema**: Define un nombre corto para la sesión (ej: `planning_v2.7.0`).
-    *   **`docs/maintenance/sesion_YYYY-MM-DD_[TEMA].md`**: **[OBLIGATORIO]** Crea este archivo con el resumen técnico de la sesión, logros, cambios en archivos y estado de la fase.
-    *   **`docs/DEVELOPMENT_LOG.md`**: **[CRÍTICO]** Añade una entrada `## [YYYY-MM-DD] Resumen` en la **PARTE SUPERIOR** (Orden cronológico inverso). Sigue [LOGGING_GUIDELINES.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/LOGGING_GUIDELINES.md).
-    *   **`docs/source/MAINTENANCE_LOG.md`**: Actualiza siempre que haya planificación de fases, cambios en CI/CD, pre-commit o infraestructura.
-    *   **`docs/CHANGELOG.md`**: Si completaste una feature visible para el usuario, añádela a `[Unreleased]`.
+1.  **Actualización de Memoria (Logs & Roadmap)**:
+    *   **Identificación del Tema**: Define un nombre corto para la sesión (ej: `stabilization_mocks`).
+    *   **`docs/plans/implementation_plan_v2.7.0.md`**: **[CRÍTICO]** Actualiza el estado de las tareas (marcar con `[x]` las completadas).
+    *   **`.agent/next_steps.md`**: **[CRÍTICO]** Crea o actualiza este archivo con el "paso de testigo": qué falta, qué errores hay pendientes y cuál es el comando para retomar.
+    *   **`docs/maintenance/sesion_YYYY-MM-DD_[TEMA].md`**: **[OBLIGATORIO]** Crea este archivo con el resumen técnico de la sesión.
+    *   **`docs/DEVELOPMENT_LOG.md`**: **[CRÍTICO]** Añade una entrada `## [YYYY-MM-DD] Resumen` en la parte superior.
+    *   **`docs/source/MAINTENANCE_LOG.md`**: Actualiza si hubo cambios de infraestructura.
+    *   **`docs/CHANGELOG.md`**: Registra cambios visibles para el usuario en `[Unreleased]`.
 
 2.  **Verificación Final (Safety Net)**:
     Ejecuta el formateador y los tests para no dejar la casa en llamas.
@@ -22,7 +24,7 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     Asegura que el "Cerebro" de la IA esté al día con los cambios finales.
     // turbo
     ```bash
-    uv run ai-ctx analyze --path .
+    uv run ai-ctx analyze --path . && cat .agent/next_steps.md
     ```
 
 4.  **Commit Local**:

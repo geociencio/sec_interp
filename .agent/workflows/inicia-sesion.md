@@ -8,15 +8,15 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     Actualiza y lee el contexto para entender "dónde nos quedamos".
     // turbo
     ```bash
-    uv run ai-ctx analyze --path .
+    uv run ai-ctx analyze --path . && cat .agent/next_steps.md
     ```
-    Revisa los siguientes archivos:
+    Revisa los siguientes archivos en este orden:
+    *   `docs/plans/implementation_plan_v2.7.0.md`: **Mapa de Ruta Maestro**. Fuente de verdad sobre tareas completadas.
+    *   `.agent/next_steps.md`: **El Testigo**. Punto exacto donde se detuvo la sesión anterior.
     *   `.ai-context/project_brain.md`: Memoria de largo plazo y métricas.
     *   `docs/DEVELOPMENT_LOG.md`: Ver resumen de la última sesión (orden cronológico inverso).
     *   `docs/LOGGING_GUIDELINES.md`: Seguir estrictamente para registrar nuevas actividades.
-    *   `docs/source/MAINTENANCE_LOG.md`: Ver si hubo cambios de infraestructura recientes.
-    *   `AI_CONTEXT.md`: Ver directrices de alto nivel y roadmap.
-    *   `task.md`: Ver tareas pendientes de la sesión actual.
+    *   `AI_CONTEXT.md`: Ver directrices de alto nivel y roadmap general.
 
 2.  **Sincronización de Entorno (Local)**:
     Asegura dependencias actualizadas.

@@ -23,7 +23,7 @@ Consolidar la infraestructura de soporte del plugin SecInterp mediante la automa
 
 ## Proposed Changes
 
-### Objetivo 1: Documentación Sphinx Automatizada (Salida Externa)
+### Objetivo 1: Documentación Sphinx Automatizada (Salida Externa) [PENDIENTE]
 
 #### Contexto
 Generar referencias de API automáticas y limpiar el repositorio de archivos HTML estáticos.
@@ -39,14 +39,13 @@ Script para construir la documentación y moverla automáticamente al directorio
 
 ---
 
-### Objetivo 2: Centralización del Sistema de Logging
-
-#### [MODIFY] [logger_config.py](file:///home/jmbernales/qgispluginsdev/sec_interp/logger_config.py)
-Refactorizar para integrar un sistema de rotación de archivos y mejor integración con `QgsMessageLog`.
+### [COMPLETADO] Objetivo 2: Centralización del Sistema de Logging
+> [!NOTE]
+> Finalizado el 2026-01-13. Implementado logger raíz "SecInterp" con propagación jerárquica y rotación de archivos.
 
 ---
 
-### Objetivo 3: Validación Nativa de Configuraciones (Sin Dependencias)
+### Objetivo 3: Validación Nativa de Configuraciones (Sin Dependencias) [PENDIENTE]
 
 #### [NEW] [settings_model.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/models/settings_model.py)
 Uso de `dataclasses` con `@property` y setters para validación de rangos y tipos (reemplazo de Pydantic).
@@ -56,42 +55,20 @@ Integrar el nuevo modelo de datos para validar los valores de `QgsSettings` al c
 
 ---
 
-### Objetivo 4: Reducción de Deuda Técnica (Arquitectura)
+### Objetivo 4: Reducción de Deuda Técnica (Arquitectura) [EN PROGRESO]
 
 #### [MODIFY] [main_dialog.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog.py)
 Continuar la fragmentación de la lógica del diálogo principal hacia componentes especializados (sidebar, status bar, etc.).
 
 ---
 
-### Objetivo 5: Exportación 3D de Trazas de Sondajes (Original y Proyectada)
-
-#### Contexto
-Exportar las trayectorias 3D reales (`LineStringZ`) y su representación proyectada sobre el plano de sección en el espacio 3D.
-
-#### [NEW] [drillhole_3d_exporter.py](file:///home/jmbernales/qgispluginsdev/sec_interp/exporters/drillhole_3d_exporter.py)
-Implementar exportador con dos modos:
-- **Original**: Coordenadas (X, Y, Z) reales del sondaje.
-- **Proyectada**: Coordenadas (X', Y', Z) proyectadas sobre el plano de la sección pero re-mapeadas al CRS global.
+### [COMPLETADO] Objetivo 5 & 6: Exportación 3D de Sondajes (Original y Proyectada)
+> [!NOTE]
+> Finalizado el 2026-01-12. Implementados `DrillholeTrace3DExporter` y `DrillholeInterval3DExporter`. Controles añadidos a Settings/Advanced.
 
 ---
 
-### Objetivo 6: Exportación 3D de Intervalos de Sondajes (Original y Proyectada)
-
-#### [NEW] [drillhole_3d_interval_exporter.py](file:///home/jmbernales/qgispluginsdev/sec_interp/exporters/drillhole_3d_interval_exporter.py)
-Exportar intervalos geológicos en ambos modos:
-- **Original**: Segmentos 3D reales con atributos de litología.
-- **Proyectada**: Segmentos proyectados sobre el plano de sección en el espacio 3D.
-
-#### [MODIFY] [drillhole_service.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/services/drillhole_service.py)
-Asegurar que el servicio preserve y entregue las coordenadas 3D originales para el motor de exportación.
-
-#### [MODIFY] [settings_page.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/ui/pages/settings_page.py)
-Añadir controles (Checkboxes) en la pestaña **Advanced** para habilitar/deshabilitar las exportaciones 3D (Original y Proyectada) de sondajes.
-
-#### [MODIFY] [main_dialog_settings.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog_settings.py)
-Gestionar la persistencia de las nuevas preferencias de exportación 3D en `QgsSettings`.
-
-### Objetivo 7: Infraestructura de Testing Robusta (Dockerización)
+### Objetivo 7: Infraestructura de Testing Robusta (Dockerización) [PENDIENTE]
 
 #### Contexto
 Eliminar los errores de "ModuleNotFoundError: No module named 'qgis'" al ejecutar tests localmente, centralizando la ejecución en contenedores que replican el entorno real.
@@ -106,40 +83,44 @@ Actualizar las instrucciones de desarrollo para recomendar el uso de Docker o De
 
 ---
 
-## Verification Plan
-
-### 1. Verificación de Modelos
-Nuevos tests en `tests/core/test_settings_model.py` para validar la lógica de tipos y rangos sin dependencias externas.
-
-### 2. Test de Integración de Logging
-Verificar que los mensajes llegan correctamente al `QgsMessageLog` de QGIS.
-
-### 3. Simulación de Construcción Externa
-Validar que `build_docs.sh` genera archivos en la ruta esperada fuera del workspace actual.
-
-### 4. Pruebas de Exportación 3D y UI
-- Validar que los Checkboxes aparecen en **Settings/Advanced** y persisten los cambios.
-- Validar que los Shapefiles generados por los nuevos exportadores (Trazas e Intervalos) se visualizan correctamente en la vista 3D de QGIS.
-
-### 5. Verificación de Docker
-Ejecutar `make docker-test` y confirmar que todos los tests (incluyendo integración y benchmarks) pasan correctamente sin errores de importación de QGIS.
+### [COMPLETADO] Objetivo 8: Estabilización Masiva de Mocks (Infrastructure Fix)
+> [!IMPORTANT]
+> Finalizado el 2026-01-15. Lograda estabilidad de 347/347 tests mediante `ModuleProxy`, `MockSignal` y reseteo preservativo de estado en `base_test.py`.
 
 ---
 
-## Estimación de Esfuerzo
+## Verification Plan
+
+### 1. Verificación de Modelos (Pendiente)
+Nuevos tests en `tests/core/test_settings_model.py` para validar la lógica de tipos y rangos sin dependencias externas.
+
+### 2. Test de Integración de Logging [PASADA]
+Verificar que los mensajes llegan correctamente al `QgsMessageLog` de QGIS.
+
+### 3. Simulación de Construcción Externa (Pendiente)
+Validar que `build_docs.sh` genera archivos en la ruta esperada fuera del workspace actual.
+
+### 4. Pruebas de Exportación 3D y UI [PASADA]
+- Validar que los Checkboxes aparecen en **Settings/Advanced** y persisten los cambios.
+- Validar que los Shapefiles generados por los nuevos exportadores (Trazas e Intervalos) se visualizan correctamente en la vista 3D de QGIS.
+
+### 5. Verificación de Docker (Pendiente)
+Ejecutar `make docker-test` y confirmar que todos los tests pasan correctamente dentro del contenedor.
+
+---
+
+## Estimación de Esfuerzo Restante
 
 | Objetivo | Esfuerzo | Prioridad |
 |----------|----------|-----------|
 | Documentación Sphinx/Limpieza | 3 días | Alta |
-| Logging Centralizado | 2 días | Media |
 | Modelos de Validación (Dataclasses) | 3 días | Media |
-| **Exportación 3D Sondajes (Original/Proy)** | **4 días** | **Alta** |
-| **Infraestructura Docker (Testing)** | **2 días** | **Alta** |
+| Infraestructura Docker (Testing) | 2 días | Alta |
 | Refactor Main Dialog | 2 días | Baja |
-| **TOTAL** | **16 días** | |
+| **TOTAL RESTANTE** | **10 días** | |
 
 ---
 
-**Fecha:** 2026-01-09
+**Fecha Última Actualización:** 2026-01-15
 **Autor:** Antigravity
-**Estado:** Propuesto para inicio de fase v2.7.0.
+**Estado:** Fase v2.7.0 en ejecución. Infraestructura de pruebas estabilizada.
