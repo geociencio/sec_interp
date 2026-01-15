@@ -45,13 +45,63 @@ Script para construir la documentación y moverla automáticamente al directorio
 
 ---
 
-### Objetivo 3: Validación Nativa de Configuraciones (Sin Dependencias) [PENDIENTE]
+### Objetivo 3: Arquitectura de Validación de 3 Niveles [APROBADO - PENDIENTE]
 
-#### [NEW] [settings_model.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/models/settings_model.py)
-Uso de `dataclasses` con `@property` y setters para validación de rangos y tipos (reemplazo de Pydantic).
+> [!NOTE]
+> **Plan Aprobado el 2026-01-15**
+>
+> Implementación de arquitectura de validación robusta basada en 3 niveles jerárquicos sin dependencias externas. Plan detallado disponible en sesión actual.
 
-#### [MODIFY] [config.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/config.py)
-Integrar el nuevo modelo de datos para validar los valores de `QgsSettings` al cargar.
+#### Arquitectura Propuesta
+
+**Nivel 1: Type Validation (Dataclass Layer)**
+- Validaciones básicas de tipo, rangos y conversiones automáticas
+- Validadores reutilizables y composables
+
+**Nivel 2: Business Logic Validation**
+- Validaciones cross-field y reglas de negocio
+- Acumulación de errores con contexto rico
+- Estrategia de 2 fases (Critical Fail Fast + Business Accumulate)
+
+**Nivel 3: Domain Validation**
+- Validaciones específicas de QGIS
+- Validaciones geométricas complejas
+- Validaciones que requieren I/O
+
+#### Componentes a Implementar
+
+##### [NEW] [validators.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/validation/validators.py)
+Módulo con validadores reutilizables: `validate_range`, `validate_positive`, `validate_non_empty`, `coerce_type`, `FieldValidator`.
+
+##### [MODIFY] [settings_model.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/models/settings_model.py)
+Integrar validadores declarativos con metadatos de clase y aplicación en `__post_init__`.
+
+##### [MODIFY] [project_validator.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/validation/project_validator.py)
+Implementar `ValidationContext` y `RichValidationError` para errores con contexto enriquecido y sugerencias automáticas.
+
+##### [NEW] [validation_helpers.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/validation/validation_helpers.py)
+Helpers para validaciones cross-field: `DependencyRule`, `validate_dependencies`.
+
+##### [MODIFY] Services (geology_service.py, drillhole_service.py)
+Documentar y estandarizar validaciones de dominio específicas de QGIS.
+
+#### Estimación Detallada
+
+| Componente | Esfuerzo | Fase |
+|-----------|----------|------|
+| validators.py | 4 horas | Sprint 1 |
+| settings_model.py refactor | 3 horas | Sprint 1 |
+| Tests Level 1 | 2 horas | Sprint 1 |
+| project_validator.py refactor | 5 horas | Sprint 2 |
+| validation_helpers.py | 2 horas | Sprint 2 |
+| Tests Level 2 | 3 horas | Sprint 2 |
+| Services (domain validation) | 4 horas | Sprint 3 |
+| Tests Level 3 | 2 horas | Sprint 3 |
+| Documentation (ADR + Guides) | 3 horas | Sprint 3 |
+| Walkthrough | 2 horas | Sprint 3 |
+| **TOTAL** | **30 horas (~4 días)** | |
+
+
 
 ---
 
@@ -114,10 +164,10 @@ Ejecutar `make docker-test` y confirmar que todos los tests pasan correctamente 
 | Objetivo | Esfuerzo | Prioridad |
 |----------|----------|-----------|
 | Documentación Sphinx/Limpieza | 3 días | Alta |
-| Modelos de Validación (Dataclasses) | 3 días | Media |
+| **Arquitectura de Validación 3 Niveles** | **4 días** | **Alta** |
 | Infraestructura Docker (Testing) | 2 días | Alta |
 | Refactor Main Dialog | 2 días | Baja |
-| **TOTAL RESTANTE** | **10 días** | |
+| **TOTAL RESTANTE** | **11 días** | |
 
 ---
 
