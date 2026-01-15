@@ -559,7 +559,11 @@ class PreviewManager:
 
             # Easier: Just calculate azimuth here safely.
             p1 = line_start
-            p2 = line_geom.vertexAt(1)
+            p2_vertex = line_geom.vertexAt(1)
+            # Convert QgsPoint to QgsPointXY for azimuth calculation
+            from qgis.core import QgsPointXY
+
+            p2 = QgsPointXY(p2_vertex.x(), p2_vertex.y())
             azimuth = p1.azimuth(p2)
             if azimuth < 0:
                 azimuth += 360
