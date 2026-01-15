@@ -4,6 +4,28 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+---
+## [2026-01-15] - ADR Documentation & Async Drillholes (16:26)
+
+### Resumen
+Sesión dual enfocada en: (1) Implementación completa de procesamiento asíncrono de sondajes para prevenir congelamiento de UI, y (2) Documentación exhaustiva del sistema de ADRs reflejando la evolución arquitectónica del proyecto.
+
+### Logros
+- **Async Drillholes**:
+    - Implementado `DrillholeTaskInput` DTO y refactorizado `DrillholeService` con patrón prepare/process.
+    - Creado `DrillholeGenerationTask` (QgsTask) e integrado en `PreviewManager`.
+    - Tests unitarios: 11/11 pasando (drillhole_service + async_drillhole).
+- **Sistema ADR Completo**:
+    - Documentados 7 ADRs en orden cronológico (v1.0 → v2.7.0).
+    - Análisis de 376 commits históricos para identificar decisiones arquitectónicas clave.
+    - ADRs: Exporters, Commits, Decoupling, Mocks, Logging, Concurrency, Linting.
+
+### Resultados
+- **Commits**: 2 (feat: async drillholes, docs: ADR reorganization)
+- **Quality Score**: 83.6/100
+- **Tests**: 347 pasando
+- **Reporte**: [sesion_2026-01-15_adr_async_drillholes.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-15_adr_async_drillholes.md)
+
 ## [2026-01-15] - Estabilización de la Suite de Tests y Mocks (14:35)
 
 ### Resumen

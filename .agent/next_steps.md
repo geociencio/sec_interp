@@ -1,19 +1,58 @@
-# Próximos Pasos (Paso de Testigo)
+# Next Steps - Handoff Document
 
-**Estado Actual:**
-- **Suite de Tests:** 100% Estabilizada (347 OK). Infraestructura de mocks reconstruida en `tests/base_test.py`.
-- **Roadmap v2.7.0:** Fase de infraestructura (Mocks, Logging, Export 3D) completada.
-- **Pendiente Inmediato:** Inicio del **Objetivo 1 (Documentación Sphinx)** o **Objetivo 3 (Validación Nativa con Dataclasses)**.
+**Última Actualización**: 2026-01-15
+**Sesión Anterior**: `adr_documentation_async_drillholes`
 
-**Tareas Críticas para la Próxima Sesión:**
-1.  **Objetivo 1 (Sphinx):** Configurar `docs/source/conf.py` y crear `scripts/build_docs.sh` para limpiar el repo de HTMLs.
-2.  **Objetivo 3 (Dataclasses):** Implementar `core/models/settings_model.py` para reemplazar la validación manual dispersa.
+## Estado Actual del Proyecto
 
-**Comando para Verificar Estado:**
+### ✅ Completado en Esta Sesión
+1. **Migración Asíncrona de Sondajes**:
+   - Implementado `DrillholeTaskInput` DTO
+   - Refactorizado `DrillholeService` con `prepare_task_input` y `process_task_data`
+   - Creado `DrillholeGenerationTask` (QgsTask)
+   - Integrado en `PreviewManager`
+   - Tests unitarios pasando (11/11)
+
+2. **Sistema ADR Completo**:
+   - Documentados 7 ADRs en orden cronológico
+   - ADR-0001 a ADR-0007 reflejan evolución arquitectónica desde v1.0 hasta v2.7.0
+   - Índice actualizado en `docs/adr/README.md`
+
+### 🔄 En Progreso
+- Ninguno. Sesión cerrada limpiamente.
+
+### ⚠️ Problemas Conocidos
+- Ninguno reportado.
+
+### 📋 Próximas Tareas Sugeridas
+1. **Validación Manual**: Probar async drillholes en QGIS con datos reales
+2. **Optimización**: Considerar paralelización de múltiples sondajes
+3. **Documentación Usuario**: Actualizar guía de usuario con comportamiento asíncrono
+
+## Comandos Rápidos para Retomar
+
+### Iniciar Nueva Sesión
+```bash
+/inicia-sesion
+```
+
+### Ejecutar Tests
 ```bash
 env PYTHONPATH=.. uv run python3 -m unittest discover tests
 ```
 
-**Advertencias:**
-- El `ModuleProxy` en `base_test.py` es sensible. No resetear agresivamente si se añaden nuevos servicios.
-- La ejecución de tests en benchmarks requiere haber importado `tests.base_test` primero (esto ya está automatizado en `tests/__init__.py`).
+### Verificar Calidad
+```bash
+uv run ruff check . && uv run black --check .
+```
+
+## Métricas Actuales
+- **Quality Score**: 83.6/100
+- **Lines of Code**: 16,809
+- **Test Coverage**: 347 tests pasando
+- **ADRs Documentados**: 7
+
+## Notas Importantes
+- Todos los commits siguen Conventional Commits
+- Pre-commit hooks configurados y funcionando
+- Sistema de logging centralizado activo

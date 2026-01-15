@@ -120,8 +120,8 @@ graph TD
     main_dialog --> py
     main_dialog_export --> py
     main_dialog_validation --> py
-    drillhole_task --> py
     geology_task --> py
+    drillhole_task --> py
     main_dialog_preview --> py
 ```
 
