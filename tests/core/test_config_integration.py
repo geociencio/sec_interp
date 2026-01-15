@@ -1,18 +1,11 @@
-import sys
-from unittest.mock import MagicMock
-
-# Mock qgis.core before any imports of sec_interp modules that depend on it
-mock_qgis = MagicMock()
-sys.modules["qgis"] = mock_qgis
-sys.modules["qgis.core"] = mock_qgis
-
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
+from tests.base_test import BaseTestCase
 from sec_interp.core.config import ConfigService
 from sec_interp.core.models.settings_model import PluginSettings
 
 
-class TestConfigServiceIntegration(unittest.TestCase):
+class TestConfigServiceIntegration(BaseTestCase):
     """Integration test between ConfigService and PluginSettings."""
 
     def setUp(self):

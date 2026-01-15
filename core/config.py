@@ -203,11 +203,20 @@ class ConfigService:
         logger.debug(f"Config set: {full_key} = {value}")
 
     def reset_defaults(self) -> None:
-        # Reset all known persistent settings to their default values.
-
-        # Flatten and save (simplified for now)
-        # In a real scenario, we'd iterate over all keys in the model
-        # but for safety let's just use the existing defaults logic or a new one
+        """Reset all known persistent settings to their default values."""
         logger.info("Configuration reset to defaults initiated")
-        # For simplicity, we could just clear the settings or overwrite known ones
-        # Leaving implementation of full reset from model for next step if needed
+        self.set("scale", 50000.0)
+        self.set("vert_exag", 1.0)
+        self.set("buffer_dist", 100.0)
+        self.set("show_topo", True)
+        self.set("show_geol", True)
+        self.set("show_struct", True)
+        self.set("show_drillholes", True)
+        self.set("show_interpretations", True)
+        self.set("interp_inherit_geol", True)
+        self.set("interp_inherit_drill", True)
+        self.set("dh_use_geom", True)
+        self.set("auto_lod", False)
+        self.set("adaptive_sampling", True)
+        self.set("max_points", 10000)
+        self.set("dem_band", 1)

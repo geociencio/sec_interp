@@ -14,10 +14,18 @@ class BaseIntegrationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Initialize QgsApplication in headless mode (Singleton)."""
+        from qgis.core import QgsApplication
+
         cls.qgs = QgsApplication.instance()
         if cls.qgs is None:
             cls.qgs = QgsApplication([], False)
             cls.qgs.initQgis()
+
+    def setUp(self):
+        """Reset mocks before each test to prevent state leakage."""
+        from tests.base_test import restore_mocks
+
+        restore_mocks()
 
     @classmethod
     def tearDownClass(cls):

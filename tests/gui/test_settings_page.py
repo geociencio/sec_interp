@@ -25,6 +25,17 @@ class TestSettingsPage(BaseTestCase):
 
     def setUp(self):
         super().setUp()
+        from qgis.core import QgsSettings as ImportedQgsSettings
+        from tests.base_test import MockQgsSettings, mock_core
+
+        print(
+            f"\nDEBUG: ImportedQgsSettings: {ImportedQgsSettings} (id: {id(ImportedQgsSettings)})"
+        )
+        print(f"DEBUG: MockQgsSettings: {MockQgsSettings} (id: {id(MockQgsSettings)})")
+        print(
+            f"DEBUG: mock_core.QgsSettings: {mock_core.QgsSettings} (id: {id(mock_core.QgsSettings)})"
+        )
+
         # Reset settings before each test
         for key in list(QgsSettings()._shared_values.keys()):
             QgsSettings().remove(key)
@@ -85,5 +96,9 @@ class TestSettingsPage(BaseTestCase):
                 "exp_struct": True,
                 "exp_drill": True,
                 "exp_interp": True,
+                "drill_3d_intervals": True,
+                "drill_3d_original": True,
+                "drill_3d_projected": False,
+                "drill_3d_traces": True,
             },
         )

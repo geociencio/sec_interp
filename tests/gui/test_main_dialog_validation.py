@@ -10,7 +10,7 @@ from sec_interp.gui.main_dialog_validation import DialogValidator
 from sec_interp.core.exceptions import ValidationError
 
 
-class TestDialogValidator(unittest.TestCase):
+class TestDialogValidator(BaseTestCase):
 
     def setUp(self):
         """Set up test fixtures."""

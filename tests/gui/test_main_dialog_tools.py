@@ -9,7 +9,7 @@ from tests.base_test import BaseTestCase
 from sec_interp.gui.main_dialog_tools import DialogToolManager, NavigationManager
 
 
-class TestDialogToolManager(unittest.TestCase):
+class TestDialogToolManager(BaseTestCase):
 
     def setUp(self):
         """Set up test fixtures."""
@@ -191,7 +191,7 @@ class TestDialogToolManager(unittest.TestCase):
         self.mock_dialog.preview_widget.results_text.setHtml.assert_not_called()
 
 
-class TestNavigationManager(unittest.TestCase):
+class TestNavigationManager(BaseTestCase):
 
     def setUp(self):
         """Set up test fixtures."""
