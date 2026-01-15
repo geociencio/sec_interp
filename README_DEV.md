@@ -9,15 +9,20 @@
 - **QGIS**: 3.28 LTR o superior instalado en el sistema.
 - **uv**: Instalado en el sistema (`curl -LsSf https://astral.sh/uv/install.sh | sh`).
 
-## Configuración del Entorno Virtual (Recomendado)
-Para configurar el entorno de desarrollo usando `uv`:
+Para configurar el entorno de desarrollo usando `uv` (recomendado):
 
 ```bash
-# Crear entorno y sincronizar dependencias
+# Sincronizar dependencias desde pyproject.toml (incluye grupo dev)
 uv sync
 
-# Activar entorno
+# Activar el entorno virtual creado automáticamente
 source .venv/bin/activate
+```
+
+Si prefieres usar `pip` tradicional (aunque se recomienda `uv`), puedes instalarlo con:
+
+```bash
+uv pip install -e ".[dev]"
 ```
 
 ### Framework de Calidad: Pre-commit

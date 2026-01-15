@@ -61,7 +61,7 @@ class InterpretationService:
         line_start: QgsPointXY
     ) -> QgsGeometry:
         """Proyecta polígono 2D a geometría 2.5D."""
-        
+
     def interpolate_point_on_line(
         self,
         distance: float,
@@ -69,7 +69,7 @@ class InterpretationService:
         line_start: QgsPointXY
     ) -> QgsPointXY:
         """Calcula coordenadas X,Y para una distancia dada."""
-        
+
     def create_25d_geometry(
         self,
         points_3d: list[tuple[float, float, float]],  # (X, Y, M)
@@ -128,7 +128,7 @@ class InterpretationPolygon:
     attributes: dict[str, Any]
     color: str
     created_at: datetime
-    
+
 @dataclass
 class InterpretationPolygon25D:
     """Polígono de interpretación proyectado a 2.5D."""
@@ -164,11 +164,11 @@ class InterpretationPolygon25D:
 def calculate_m_coordinate(elevation: float, vertical_exag: float = 1.0) -> float:
     """
     Calcula coordenada M considerando exageración vertical.
-    
+
     Args:
         elevation: Elevación real del punto
         vertical_exag: Factor de exageración vertical usado en el perfil
-        
+
     Returns:
         Valor M (elevación sin exageración)
     """
@@ -202,7 +202,7 @@ class Interpretation25DExporter(BaseExporter):
     def export(self, output_path: Path, data: dict) -> None:
         """
         Exporta polígonos de interpretación a Shapefile 2.5D.
-        
+
         Args:
             output_path: Ruta del shapefile de salida
             data: {

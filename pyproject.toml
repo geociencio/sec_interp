@@ -11,9 +11,7 @@ authors = [
     { name = "Juan M Bernales", email = "juanbernales@gmail.com" }
 ]
 dependencies = [
-    "ai-context-core>=1.0.0",
     "PyQt5>=5.15.0,<5.16.0",
-    "qgis-plugin-analyzer>=1.4.0",
 ]
 
 [tool.setuptools]
@@ -23,11 +21,10 @@ packages = ["core", "gui", "resources", "exporters", "i18n"]
 dev = [
     "ruff>=0.4.0",
     "black==24.1.0",
-    "flake8>=6.0",
-    "isort>=5.12",
     "mypy>=1.10",
     "networkx>=3.0",
-    "pylint>=3.0",
+    "ai-context-core>=1.0.0",
+    "qgis-plugin-analyzer>=1.4.0",
     "sphinx>=7.0",
     "sphinx-rtd-theme>=2.0",
     "qgis-plugin-analyzer @ git+https://github.com/geociencio/qgis-plugin-analyzer.git",
@@ -97,7 +94,7 @@ select = [
 ignore = [
     "E501", "E402", "PLC0415", "PTH", "E722",
     "F821", "N802", "N803", "N806", "N815",
-    "C901", "PLR0915", "PLR0912", "PLR0911", "PLR0913",
+    "C901", "PLR0913", "ISC001",
     "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
     "D203", "D213", "D205",
     "TRY003", "TRY300", "TRY301", "TRY401", "RUF001", "RUF012", "RUF100", "SIM102", "PLR2004", "PLW0603", "PLW2901", "PLC0206", "T201", "E741", "N818",
@@ -117,38 +114,8 @@ line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = 72
 
-
-
-[tool.pylint.main]
-fail-under = 10
-ignore = ["CVS", ".git", "__pycache__"]
-ignored-modules = ["qgis", "qgis.PyQt", "PyQt5"]
-jobs = 0
-py-version = "3.10"
-recursive = "no"
-
-[tool.pylint."messages control"]
-disable = [
-    "E0401", "E0611", "E0402", "C0111", "R0903", "R0913",
-    "raw-checker-failed", "bad-inline-option", "locally-disabled", "file-ignored",
-    "suppressed-message", "useless-suppression", "deprecated-pragma",
-    "use-implicit-booleaness-not-comparison-to-string",
-    "use-implicit-booleaness-not-comparison-to-zero",
-    "use-symbolic-message-instead",
-]
-
-[tool.pylint.format]
-max-line-length = 100
-
-[tool.pylint.design]
-max-args = 7
-max-attributes = 7
-max-bool-expr = 5
-max-branches = 12
-max-locals = 15
-max-parents = 7
-max-positional-arguments = 5
-max-public-methods = 20
-max-returns = 6
-max-statements = 50
-min-public-methods = 2
+[tool.ruff.lint.pylint]
+max-args = 15
+max-branches = 20
+max-returns = 10
+max-statements = 60

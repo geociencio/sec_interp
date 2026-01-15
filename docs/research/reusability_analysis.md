@@ -9,7 +9,7 @@ De la rama `feature/interpretation-25d` se pueden reutilizar **~60%** de los com
 ## ✅ Componentes Totalmente Reutilizables
 
 ### 1. **Modelo de Datos** (`core/types.py`)
-**Archivo**: `core/types.py`  
+**Archivo**: `core/types.py`
 **Clase**: `InterpretationPolygon`
 
 ```python
@@ -24,7 +24,7 @@ class InterpretationPolygon:
     created_at: str = ""
 ```
 
-**Estado**: ✅ **Usar tal cual**  
+**Estado**: ✅ **Usar tal cual**
 **Razón**: Perfectamente alineado con el nuevo enfoque 2D puro.
 
 ---
@@ -40,7 +40,7 @@ class ProfileSnapper:
         # Lógica de snapping ya implementada
 ```
 
-**Estado**: ✅ **Usar tal cual**  
+**Estado**: ✅ **Usar tal cual**
 **Razón**: Funcionalidad de snapping independiente del enfoque 2D/3D.
 
 #### b) Lógica de `QgsRubberBand`
@@ -48,7 +48,7 @@ class ProfileSnapper:
 - Gestión de vértices
 - Colores aleatorios
 
-**Estado**: ✅ **Adaptar ligeramente**  
+**Estado**: ✅ **Adaptar ligeramente**
 **Cambios necesarios**: Remover lógica de proyección 3D en tiempo real.
 
 ---
@@ -67,7 +67,7 @@ def _generate_random_color() -> str:
 ## 🔄 Componentes Adaptables
 
 ### 4. **Exportador 2D** (Nuevo, simplificado)
-**Archivo actual**: `exporters/interpretation_exporters.py`  
+**Archivo actual**: `exporters/interpretation_exporters.py`
 **Clase actual**: `Interpretation25DExporter`
 
 **Adaptación necesaria**:
@@ -79,7 +79,7 @@ def _generate_random_color() -> str:
 ```python
 class Interpretation2DExporter(ShapefileExporter):
     """Exporta interpretaciones en coordenadas 2D del perfil."""
-    
+
     def export_interpretations(
         self,
         output_path: Path,
@@ -90,7 +90,7 @@ class Interpretation2DExporter(ShapefileExporter):
             # Crear polígono 2D simple
             points = [QgsPointXY(x, y) for x, y in interp.vertices_2d]
             geom = QgsGeometry.fromPolygonXY([points])
-            
+
             features_data.append({
                 "geometry": geom,
                 "attributes": {
@@ -100,7 +100,7 @@ class Interpretation2DExporter(ShapefileExporter):
                     "color": interp.color,
                 }
             })
-        
+
         self.settings["geometry_type"] = QgsWkbTypes.Polygon
         return self.export(output_path, features_data)
 ```
@@ -110,7 +110,7 @@ class Interpretation2DExporter(ShapefileExporter):
 ### 5. **Integración en Preview** (`gui/preview_renderer.py`)
 **Código actual**: Renderizado con `QgsRubberBand`
 
-**Estado**: ✅ **Usar con ajustes menores**  
+**Estado**: ✅ **Usar con ajustes menores**
 **Cambios**:
 - Mantener renderizado con `QgsRubberBand`
 - Remover lógica de proyección 3D
@@ -133,7 +133,7 @@ class Interpretation2DExporter(ShapefileExporter):
 ### 7. **Servicio de Proyección 3D** (`core/services/interpretation_service.py`)
 **Razón**: Implementa proyección en tiempo real, que queremos evitar en v2.5.0.
 
-**Decisión**: 
+**Decisión**:
 - ❌ No usar en Fase 1 (v2.5.0)
 - ✅ Guardar para Fase 2 (v2.6.0) cuando implementemos exportación 3D separada
 
@@ -142,7 +142,7 @@ class Interpretation2DExporter(ShapefileExporter):
 ### 8. **Dataclass `InterpretationPolygon25D`**
 **Razón**: Específica para geometrías con coordenada M.
 
-**Decisión**: 
+**Decisión**:
 - ❌ No usar en v2.5.0
 - ✅ Reutilizar en v2.6.0 para exportación 3D
 

@@ -22,18 +22,18 @@ Implementar una herramienta de dibujo de polígonos 2D sobre el perfil geológic
 ```python
 class InterpretationTool(QgsMapTool):
     """Herramienta para dibujar polígonos de interpretación en 2D."""
-    
+
     def __init__(self, canvas):
         self.rubber_band = QgsRubberBand(canvas, QgsWkbTypes.PolygonGeometry)
         self.vertices = []  # Lista de (distancia, elevación)
         self.polygons = []  # Polígonos finalizados
-    
+
     def canvasReleaseEvent(self, event):
         """Agregar vértice al polígono."""
         point = self.toMapCoordinates(event.pos())
         self.vertices.append((point.x(), point.y()))
         self.rubber_band.addPoint(point)
-    
+
     def finish_polygon(self):
         """Finalizar polígono actual."""
         if len(self.vertices) >= 3:
@@ -82,18 +82,18 @@ class InterpretationPolygon:
 ```python
 class Interpretation2DExporter(BaseExporter):
     """Exporta interpretaciones en coordenadas 2D del perfil."""
-    
+
     def export(self, output_path: Path, polygons: list[InterpretationPolygon]) -> None:
         """
         Exporta polígonos a Shapefile 2D.
-        
+
         Estructura:
         - Geometría: Polygon (coordenadas del perfil)
         - Atributos: id, name, type, description, color
         """
         # Crear capa en memoria
         layer = QgsVectorLayer("Polygon?crs=", "interpretations_2d", "memory")
-        
+
         # Definir campos
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.String))
@@ -101,24 +101,24 @@ class Interpretation2DExporter(BaseExporter):
         fields.append(QgsField("type", QVariant.String))
         fields.append(QgsField("descript", QVariant.String))
         fields.append(QgsField("color", QVariant.String))
-        
+
         layer.dataProvider().addAttributes(fields)
         layer.updateFields()
-        
+
         # Agregar features
         for poly in polygons:
             feature = QgsFeature()
             points = [QgsPointXY(x, y) for x, y in poly.vertices_2d]
             feature.setGeometry(QgsGeometry.fromPolygonXY([points]))
             feature.setAttributes([
-                poly.id, poly.name, poly.type, 
+                poly.id, poly.name, poly.type,
                 poly.description, poly.color
             ])
             layer.dataProvider().addFeature(feature)
-        
+
         # Guardar a disco
         QgsVectorFileWriter.writeAsVectorFormat(
-            layer, str(output_path), "UTF-8", 
+            layer, str(output_path), "UTF-8",
             QgsCoordinateReferenceSystem(), "ESRI Shapefile"
         )
 ```
@@ -136,7 +136,7 @@ class Interpretation2DExporter(BaseExporter):
 ```python
 class Interpretation3DService:
     """Servicio para proyectar interpretaciones 2D a 3D."""
-    
+
     def project_to_3d(
         self,
         polygon_2d: InterpretationPolygon,
@@ -145,31 +145,31 @@ class Interpretation3DService:
     ) -> QgsGeometry:
         """
         Proyecta polígono 2D a geometría 3D.
-        
+
         Args:
             polygon_2d: Polígono en coordenadas (distancia, elevación)
             section_line: Línea de sección 3D
             line_start: Punto inicial de la línea
-            
+
         Returns:
             Geometría PolygonM con coordenadas (X, Y, M=elevación)
         """
         points_3d = []
-        
+
         for dist, elev in polygon_2d.vertices_2d:
             # Interpolar punto en la línea
             point_on_line = section_line.interpolate(dist)
             xy = point_on_line.asPoint()
-            
+
             # Crear punto con M
             point_m = QgsPoint(xy.x(), xy.y(), m=elev)
             points_3d.append(point_m)
-        
+
         # Crear polígono M
         ring = QgsLineString(points_3d)
         polygon_m = QgsPolygon()
         polygon_m.setExteriorRing(ring)
-        
+
         return QgsGeometry(polygon_m)
 ```
 
@@ -179,7 +179,7 @@ class Interpretation3DService:
 ```python
 class Interpretation3DExporter(BaseExporter):
     """Exporta interpretaciones proyectadas a 3D."""
-    
+
     def export(
         self,
         input_2d_path: Path,
@@ -190,7 +190,7 @@ class Interpretation3DExporter(BaseExporter):
     ) -> None:
         """
         Lee Shapefile 2D y genera Shapefile 3D proyectado.
-        
+
         Args:
             input_2d_path: Shapefile 2D de entrada
             output_3d_path: Shapefile 3D de salida
@@ -199,45 +199,45 @@ class Interpretation3DExporter(BaseExporter):
             crs: Sistema de coordenadas de salida
         """
         service = Interpretation3DService()
-        
+
         # Leer polígonos 2D
         layer_2d = QgsVectorLayer(str(input_2d_path), "temp", "ogr")
-        
+
         # Crear capa 3D
         layer_3d = QgsVectorLayer(
-            f"PolygonM?crs={crs.authid()}", 
-            "interpretations_3d", 
+            f"PolygonM?crs={crs.authid()}",
+            "interpretations_3d",
             "memory"
         )
-        
+
         # Copiar campos
         layer_3d.dataProvider().addAttributes(layer_2d.fields())
         layer_3d.updateFields()
-        
+
         # Proyectar cada polígono
         for feat in layer_2d.getFeatures():
             # Extraer vértices 2D
             geom_2d = feat.geometry()
             vertices_2d = [(p.x(), p.y()) for p in geom_2d.asPolygon()[0]]
-            
+
             # Crear objeto temporal
             poly_2d = InterpretationPolygon(
                 vertices_2d=vertices_2d,
                 name=feat["name"]
             )
-            
+
             # Proyectar a 3D
             geom_3d = service.project_to_3d(poly_2d, section_line, line_start)
-            
+
             # Crear feature 3D
             feat_3d = QgsFeature()
             feat_3d.setGeometry(geom_3d)
             feat_3d.setAttributes(feat.attributes())
             layer_3d.dataProvider().addFeature(feat_3d)
-        
+
         # Guardar
         QgsVectorFileWriter.writeAsVectorFormat(
-            layer_3d, str(output_3d_path), "UTF-8", 
+            layer_3d, str(output_3d_path), "UTF-8",
             crs, "ESRI Shapefile"
         )
 ```

@@ -1,59 +1,56 @@
 # Arquitectura de SecInterp
 
-Este documento describe la arquitectura técnica del plugin SecInterp para QGIS, enfocándose en su diseño desacoplado y orientado a servicios.
+Este documento describe la arquitectura técnica del plugin SecInterp para QGIS, enfocándose en su diseño desacoplado, orientado a servicios y asíncrono.
 
 ## 🏗️ Visión General
-SecInterp sigue un patrón de diseño que separa estrictamente la lógica de negocio (Core) de la interfaz de usuario (GUI), permitiendo una mayor mantenibilidad y testabilidad.
+SecInterp sigue un patrón de diseño que separa estrictamente la lógica de negocio (Core) de la interfaz de usuario (GUI), y utiliza patrones de concurrencia seguros para QGIS.
 
 ```mermaid
 graph TD
     UI[GUI Layer: Main Dialog] --> PM[PreviewManager]
-    UI --> TM[DialogToolManager]
+    PM --> TS[Task System (QgsTask)]
+    TS --> DTO[DTOs: Task Inputs]
+    DTO --> GS[GeologyService (Stateless)]
     PM --> PS[PreviewService]
     PS --> DS[DrillholeService]
     PS --> SS[StructureService]
-    PS --> PRS[ProfileService]
-    PS --> GS[GeologyService]
-    GS --> PGS[ParallelGeologyService]
 ```
 
 ## 📂 Estructura de Capas
 
 ### 🎨 Capa de UI (gui/)
-Responsable de la interacción con el usuario y la visualización.
-- **`main_dialog.py`**: Orquestador delgado de la interfaz. Delego el trabajo pesado a managers especializados.
-- **`main_dialog_preview.py` (PreviewManager)**: Gestiona la generación de previsualizaciones, el caché por hash y los estados de renderizado.
-- **`main_dialog_tools.py` (DialogToolManager)**: Gestiona las herramientas de mapa (medición, snapping) y eventos de usuario.
-- **`preview_renderer.py`**: Renderiza geometrías nativas de QGIS en el canvas del plugin.
+Responsable de la interacción con el usuario y la orquestación.
+- **`main_dialog.py`**: Controlador principal de la ventana.
+- **`main_dialog_preview.py` (PreviewManager)**: Gestiona el estado de la previsualización, caché por hash y lanzamiento de tareas.
+- **`tasks/`**: Contiene implementaciones de `QgsTask` (e.g., `GeologyGenerationTask`) para procesamiento en segundo plano.
 
-### ⚙️ Capa de Negocio (core/services/)
-Contiene la lógica pura de procesamiento geológico y geométrico.
-- **`preview_service.py`**: Orquestador de datos para la previsualización. Implementa LOD para topografía.
-- **`drillhole_service.py`**: Procesamiento de sondajes, cálculo de trayectorias e interpolación de intervalos. Optimizado con `QgsSpatialIndex`.
-- **`geology_service.py`**: Interperetación de geología de superficie a partir de contactos.
-- **`structure_service.py`**: Proyección de medidas estructurales (Azimuth/Dip) sobre la sección.
+### ⚙️ Capa de Negocio (core/)
+Lógica pura, desacoplada de la GUI y thread-safe.
 
-### 🛠️ Utilidades (core/utils/)
-Funciones atómicas y puras.
-- **`geometry_utils/`**: Modularizado en `extraction`, `processing` y `filtering`.
-- **`sampling.py`**: Muestreo de elevación sobre DEMs.
-- **`parsing.py`**: Parsers para datos estructurales y geológicos.
+#### Servicios (`core/services/`)
+- **`geology_service.py`**: Implementa lógica pura de intersección geométrica. Diseñado para ser invocado tanto sincrónicamente como desde hilos secundarios.
+- **`drillhole_service.py`**: Procesamiento de sondajes y desurvey 3D.
+- **`structure_service.py`**: Proyección de medidas estructurales.
 
-### 🌍 Internacionalización (i18n/)
-- Soporte multilingüe (ES, FR, DE, RU, PT_BR).
-- Uso de `QCoreApplication.translate` para evitar errores de inicialización en Qt.
-- Compilación automatizada de archivos `.ts` a `.qm` vía Makefile.
+#### Tipos y DTOs (`core/types.py`)
+El intercambio de datos entre la UI y los hilos de fondo se realiza exclusivamente mediante **Data Transfer Objects (DTOs)**.
+- **`GeologyTaskInput`**: Encapsula geometrías copiadas y parámetros simples. Evita pasar objetos `QgsVectorLayer` vivos a hilos secundarios, previniendo crashes de la API C++.
+- **`PreviewParams`**: Objeto validado que contiene toda la configuración necesaria para generar una sección.
 
-## 🚀 Optimizaciones de Rendimiento
-1. **Hash-Based Caching**: En `PreviewManager`, los datos pesados solo se regeneran si los parámetros de entrada (capas, campos, distancias) cambian.
-2. **Topography LOD**: El muestreo de elevación se adapta dinámicamente según el ancho del canvas para mantener la fluidez en el zoom.
-3. **Spatial Indexing**: Uso de `QgsSpatialIndex` en el filtrado de sondajes y estructuras.
-4. **Parallel Processing**: Procesamiento de geología realizado en hilos secundarios (`ParallelGeologyService`).
+### 🛠️ Interfaces y Desacople
+- **`core/interfaces/`**: Define contratos abstractos (`IGeologyService`, `IPreviewService`) que permiten Inyección de Dependencias y facilitan el Mocking en tests.
+
+## 🚀 Patrones de Concurrencia
+Para garantizar que la interfaz de QGIS no se congele durante cálculos complejos, SecInterp utiliza el patrón **QgsTask + DTO**:
+
+1.  **Prepare (Main Thread)**: La UI recopila datos y crea un DTO (ej. `GeologyTaskInput`) copiando las geometrías necesarias.
+2.  **Process (Background Thread)**: Se lanza un `QgsTask` que invoca un servicio puro usando *solo* el DTO. No hay acceso a `QgsProject` ni capas.
+3.  **Finish (Main Thread)**: El resultado (otro DTO o lista de primitivas) se devuelve al hilo principal para actualizar la UI.
 
 ## 🛡️ Estándares y Calidad
-- **Core Decoupling**: El núcleo no tiene dependencias de `PyQt` o `qgis.gui` (SOLID).
-- **Static Analysis**: Cumplimiento con Ruff (vía pre-commit) y Pylint.
-- **Métricas**: Seguimiento automático de calidad (`quality_score`) en cada análisis.
+- **Type Safety**: Uso extensivo de Type Hints y validación con `mypy`.
+- **Linting**: Reglas estrictas de Ruff (incluyendo complejidad ciclomática).
+- **ADR**: Las decisiones arquitectónicas importantes se registran en `docs/adr/`.
 
 ---
-**Version**: 2.4.0 | **Updated**: 2025-12-25
+**Version**: 2.6.0 | **Updated**: 2026-01-15

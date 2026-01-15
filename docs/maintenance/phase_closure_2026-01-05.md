@@ -1,9 +1,9 @@
 # Cierre de Fase - SecInterp v2.5.0
 ## Documento de Cierre Formal de Fase de Desarrollo
 
-**Fecha de Cierre:** 2026-01-05  
-**Versión Actual:** 2.5.0  
-**Fase:** Desarrollo y Estabilización Post-Release  
+**Fecha de Cierre:** 2026-01-05
+**Versión Actual:** 2.5.0
+**Fase:** Desarrollo y Estabilización Post-Release
 **Responsable:** Juan M. Bernales
 
 ---
@@ -125,7 +125,7 @@ Esta fase de desarrollo del plugin **SecInterp** para QGIS ha culminado exitosam
 ### 3.1 Desafíos Técnicos
 
 #### Problema: Errores de Persistencia de Datos
-**Contexto:** Los valores de UI no se guardaban correctamente entre sesiones  
+**Contexto:** Los valores de UI no se guardaban correctamente entre sesiones
 **Solución:**
 - Refactorización de `DialogSettingsManager` con soporte multi-scope
 - Implementación de fallback Layer ID → Layer Name
@@ -133,20 +133,20 @@ Esta fase de desarrollo del plugin **SecInterp** para QGIS ha culminado exitosam
 - Guardado proactivo en Preview y Accept
 
 #### Problema: Rendering de Preview con GeologySegment
-**Contexto:** `TypeError: cannot unpack non-iterable GeologySegment object`  
+**Contexto:** `TypeError: cannot unpack non-iterable GeologySegment object`
 **Solución:**
 - Actualización de `preview_renderer.py` para extraer puntos de `GeologySegment.points`
 - Test de regresión agregado en `test_preview_components.py`
 
 #### Problema: Importaciones QGIS en Tests
-**Contexto:** `ModuleNotFoundError` y `AttributeError` en entorno Docker  
+**Contexto:** `ModuleNotFoundError` y `AttributeError` en entorno Docker
 **Solución:**
 - Configuración correcta de `PYTHONPATH` en `devcontainer.json`
 - Mejora del sistema de mocking en `tests/base_test.py`
 - Eliminación de tests frágiles dependientes de SIP
 
 #### Problema: Limitaciones de SIP en Tests GUI
-**Contexto:** `keyPressEvent` no puede ser mockeado debido a restricciones de SIP  
+**Contexto:** `keyPressEvent` no puede ser mockeado debido a restricciones de SIP
 **Solución:**
 - Skipping de tests específicos con `@unittest.skip`
 - Documentación de limitaciones en comentarios
@@ -171,61 +171,61 @@ Esta fase de desarrollo del plugin **SecInterp** para QGIS ha culminado exitosam
 ### 4.1 Deuda Técnica Crítica (Alta Prioridad)
 
 #### 🔴 Tests de Integración GUI Limitados
-**Descripción:** Solo 3 tests GUI están siendo skipped debido a limitaciones de SIP con `keyPressEvent`  
-**Impacto:** Cobertura de testing reducida para interacciones de teclado  
-**Esfuerzo Estimado:** 2-3 días  
+**Descripción:** Solo 3 tests GUI están siendo skipped debido a limitaciones de SIP con `keyPressEvent`
+**Impacto:** Cobertura de testing reducida para interacciones de teclado
+**Esfuerzo Estimado:** 2-3 días
 **Recomendación:** Explorar testing de integración en QGIS real usando `qgis_testrunner`
 
 #### 🔴 Complejidad Ciclomática en Exportadores
-**Descripción:** Algunos métodos en `interpretation_3d_exporter.py` tienen alta complejidad  
-**Impacto:** Mantenibilidad reducida, difícil de testear  
-**Esfuerzo Estimado:** 1-2 días  
+**Descripción:** Algunos métodos en `interpretation_3d_exporter.py` tienen alta complejidad
+**Impacto:** Mantenibilidad reducida, difícil de testear
+**Esfuerzo Estimado:** 1-2 días
 **Recomendación:** Aplicar patrón Strategy para diferentes tipos de exportación
 
 #### 🔴 Falta de Tests de Rendimiento
-**Descripción:** No hay benchmarks automatizados para operaciones críticas  
-**Impacto:** Regresiones de performance pueden pasar desapercibidas  
-**Esfuerzo Estimado:** 3-4 días  
+**Descripción:** No hay benchmarks automatizados para operaciones críticas
+**Impacto:** Regresiones de performance pueden pasar desapercibidas
+**Esfuerzo Estimado:** 3-4 días
 **Recomendación:** Implementar suite de benchmarks con `pytest-benchmark`
 
 ### 4.2 Deuda Técnica Moderada (Prioridad Media)
 
 #### 🟡 Documentación de API Incompleta
-**Descripción:** Algunos módulos en `core/` carecen de docstrings completos  
-**Impacto:** Onboarding de nuevos desarrolladores más lento  
-**Esfuerzo Estimado:** 2-3 días  
+**Descripción:** Algunos módulos en `core/` carecen de docstrings completos
+**Impacto:** Onboarding de nuevos desarrolladores más lento
+**Esfuerzo Estimado:** 2-3 días
 **Recomendación:** Generar documentación Sphinx automática
 
 #### 🟡 Configuración de Logging Dispersa
-**Descripción:** Configuración de loggers no está completamente centralizada  
-**Impacto:** Debugging más difícil en producción  
-**Esfuerzo Estimado:** 1 día  
+**Descripción:** Configuración de loggers no está completamente centralizada
+**Impacto:** Debugging más difícil en producción
+**Esfuerzo Estimado:** 1 día
 **Recomendación:** Centralizar en `logger_config.py` con niveles configurables
 
 #### 🟡 Falta de Validación de Schemas
-**Descripción:** No hay validación formal de estructuras de datos (e.g., drillhole JSON)  
-**Impacto:** Errores en runtime con datos malformados  
-**Esfuerzo Estimado:** 2 días  
+**Descripción:** No hay validación formal de estructuras de datos (e.g., drillhole JSON)
+**Impacto:** Errores en runtime con datos malformados
+**Esfuerzo Estimado:** 2 días
 **Recomendación:** Implementar Pydantic models para validación
 
 ### 4.3 Deuda Técnica Menor (Prioridad Baja)
 
 #### 🟢 Código Duplicado en Exportadores
-**Descripción:** Lógica común de exportación repetida en múltiples exportadores  
-**Impacto:** Mantenimiento duplicado  
-**Esfuerzo Estimado:** 1 día  
+**Descripción:** Lógica común de exportación repetida en múltiples exportadores
+**Impacto:** Mantenimiento duplicado
+**Esfuerzo Estimado:** 1 día
 **Recomendación:** Extraer clase base `BaseExporter` con template method
 
 #### 🟢 Nombres de Variables Inconsistentes
-**Descripción:** Mezcla de snake_case y camelCase en algunos módulos legacy  
-**Impacto:** Legibilidad reducida  
-**Esfuerzo Estimado:** 0.5 días  
+**Descripción:** Mezcla de snake_case y camelCase en algunos módulos legacy
+**Impacto:** Legibilidad reducida
+**Esfuerzo Estimado:** 0.5 días
 **Recomendación:** Refactorización automática con Ruff
 
 #### 🟢 Imports No Utilizados Residuales
-**Descripción:** Algunos imports no utilizados en módulos de research/  
-**Impacto:** Mínimo (archivos no en producción)  
-**Esfuerzo Estimado:** 0.5 días  
+**Descripción:** Algunos imports no utilizados en módulos de research/
+**Impacto:** Mínimo (archivos no en producción)
+**Esfuerzo Estimado:** 0.5 días
 **Recomendación:** Ejecutar `ruff check --fix` en directorio research/
 
 ---
@@ -257,7 +257,7 @@ graph LR
     H --> I[v2.3<br/>Measurement]
     I --> J[v2.4<br/>I18n + Interp]
     J --> K[v2.5<br/>3D Export]
-    
+
     style K fill:#4CAF50,stroke:#2E7D32,stroke-width:3px
 ```
 
@@ -277,9 +277,9 @@ graph LR
 
 ### 6.1 Estado Actual del Repositorio
 
-**Branch:** `main`  
-**Último Tag:** `v2.5.0`  
-**Commits Ahead:** 2 commits sin push  
+**Branch:** `main`
+**Último Tag:** `v2.5.0`
+**Commits Ahead:** 2 commits sin push
 **Estado:** Cambios sin commitear en archivos de desarrollo
 
 #### Archivos Modificados (Working Directory)
@@ -443,6 +443,6 @@ La deuda técnica identificada es **manejable** y está **priorizada**. Las reco
 
 ---
 
-**Documento generado:** 2026-01-05  
-**Próxima revisión:** Inicio de siguiente fase  
+**Documento generado:** 2026-01-05
+**Próxima revisión:** Inicio de siguiente fase
 **Versión del documento:** 1.0
