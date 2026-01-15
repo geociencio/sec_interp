@@ -34,7 +34,7 @@ def validate_range(
     def validator(value: float) -> float:
         if not (min_val <= value <= max_val):
             raise ValidationError(
-                f"{field_name or 'Value'} must be between {min_val} and {max_val}, " f"got {value}"
+                f"{field_name or 'Value'} must be between {min_val} and {max_val}, got {value}"
             )
         return value
 

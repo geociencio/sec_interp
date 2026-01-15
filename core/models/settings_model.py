@@ -6,6 +6,10 @@ Provides a structured and validated way to handle plugin configurations.
 from dataclasses import dataclass, field
 from typing import Any
 
+from sec_interp.core.validation.validators import (
+    validate_and_clamp,
+)
+
 
 @dataclass
 class SectionSettings:
@@ -17,7 +21,7 @@ class SectionSettings:
 
     def __post_init__(self):
         """Validate settings after initialization."""
-        self.buffer_dist = max(0.0, float(self.buffer_dist))
+        self.buffer_dist = validate_and_clamp(0.0, float("inf"))(self.buffer_dist)
 
 
 @dataclass
@@ -32,9 +36,9 @@ class DemSettings:
 
     def __post_init__(self):
         """Validate settings after initialization."""
-        self.band = max(1, int(self.band))
-        self.scale = max(1.0, float(self.scale))
-        self.vert_exag = max(0.1, float(self.vert_exag))
+        self.band = int(validate_and_clamp(1, float("inf"))(self.band))
+        self.scale = validate_and_clamp(1.0, float("inf"))(self.scale)
+        self.vert_exag = validate_and_clamp(0.1, float("inf"))(self.vert_exag)
 
 
 @dataclass
@@ -58,7 +62,7 @@ class StructureSettings:
 
     def __post_init__(self):
         """Validate settings after initialization."""
-        self.dip_scale_factor = max(0.1, float(self.dip_scale_factor))
+        self.dip_scale_factor = validate_and_clamp(0.1, float("inf"))(self.dip_scale_factor)
 
 
 @dataclass
@@ -122,7 +126,7 @@ class PreviewSettings:
 
     def __post_init__(self):
         """Validate settings after initialization."""
-        self.max_points = max(100, int(self.max_points))
+        self.max_points = int(validate_and_clamp(100, float("inf"))(self.max_points))
 
 
 @dataclass

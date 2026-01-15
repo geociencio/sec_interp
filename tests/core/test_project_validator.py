@@ -5,10 +5,10 @@ from tests.base_test import BaseTestCase
 from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsWkbTypes
 
 from sec_interp.core.validation.project_validator import (
-    validate_reasonable_ranges,
     ValidationParams,
     ProjectValidator,
 )
+from sec_interp.core.validation.validation_helpers import validate_reasonable_ranges
 from sec_interp.core.exceptions import ValidationError
 
 
@@ -117,8 +117,15 @@ class TestProjectValidator(BaseTestCase):
         params.survey_incl = "INCL"
         self.assertTrue(ProjectValidator.is_drillhole_complete(params))
 
-    def test_is_geology_complete(self):
+    @patch("sec_interp.core.validation.project_validator.validate_field_exists")
+    @patch("sec_interp.core.validation.project_validator.validate_layer_has_features")
+    @patch("sec_interp.core.validation.project_validator.validate_layer_geometry")
+    def test_is_geology_complete(self, mock_geom, mock_feat, mock_field):
         """Test geology completion check."""
+        mock_geom.return_value = (True, "")
+        mock_feat.return_value = (True, "")
+        mock_field.return_value = (True, "")
+
         params = ValidationParams()
         self.assertFalse(ProjectValidator.is_geology_complete(params))
 
@@ -126,8 +133,13 @@ class TestProjectValidator(BaseTestCase):
         params.outcrop_field = "UNIT"
         self.assertTrue(ProjectValidator.is_geology_complete(params))
 
-    def test_is_structure_complete(self):
+    @patch(
+        "sec_interp.core.validation.project_validator.validate_structural_requirements"
+    )
+    def test_is_structure_complete(self, mock_struct):
         """Test structure completion check."""
+        mock_struct.return_value = (True, "")
+
         params = ValidationParams()
         self.assertFalse(ProjectValidator.is_structure_complete(params))
 
