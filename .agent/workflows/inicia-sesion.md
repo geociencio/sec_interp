@@ -25,15 +25,9 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     ```
 
 3.  **Verificación de Estado (Sanity Check)**:
-    Confirma que el sistema está estable ("en verde").
+    Confirma que el sistema está estable ("en verde"). Todos los tests (347) deben pasar.
     ```bash
-    PYTHONPATH=.. uv run python3 -m unittest discover tests
-    ```
-
-4.  **Despliegue Local al QGIS (Hot-Reload)**:
-    Actualiza tu QGIS local.
-    ```bash
-    make deploy
+    env PYTHONPATH=.. uv run python3 -m unittest discover tests
     ```
 
 **Objetivo**: Empezar a codificar sabiendo *exactamente* qué pasó ayer.

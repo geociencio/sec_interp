@@ -4,6 +4,18 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-15] - Estabilización de la Suite de Tests y Mocks (14:35)
+
+### Resumen
+Sesión técnica intensiva para restaurar la estabilidad del proyecto tras detectar fallas masivas en los tests (de 45 fallas a 0). Se refactorizó la infraestructura de mocks para QGIS/PyQt.
+
+### Logros
+- **Estabilización de Tests**: Alcanzado el 100% de éxito (347 tests OK).
+- **Mocks Reutilizables**: Implementados `ModuleProxy` y `MockSignal` en `tests/base_test.py` para asegurar referencias estables y comunicación por señales en entornos simulados.
+- **Detección Z en Mocks**: Mejorada la creación de geometrías mock para detectar automáticamente coordenadas Z y tipos 25D.
+- **Bug Fix en Config**: Implementada la lógica de `ConfigService.reset_defaults()` que estaba pendiente.
+- **Optimización de Workflows**: Actualizado el workflow de inicio de sesión para reflejar la nueva infraestructura de pruebas.
+
 ## [2026-01-13] - Centralización de Logging y Modernización de Infraestructura (20:25)
 
 ### Resumen

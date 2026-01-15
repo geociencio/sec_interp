@@ -101,8 +101,8 @@ No clear design patterns detected.
 ### core/controller.py
 - **complexity_refactoring**: High complexity (22) with several functions. Consider breaking down large logic.
 
-### core/services/structure_service.py
-- **complexity_refactoring**: High complexity (20) with several functions. Consider breaking down large logic.
+### core/services/preview_service.py
+- **functions_too_long**: Very long functions (average 65.8 lines/function).
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 103
@@ -120,8 +120,8 @@ graph TD
     main_dialog --> py
     main_dialog_export --> py
     main_dialog_validation --> py
-    geology_task --> py
     main_dialog_preview --> py
+    geology_task --> py
 ```
 
 ## 🔑 PROJECT KEYWORDS
