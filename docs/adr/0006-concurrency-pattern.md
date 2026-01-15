@@ -1,6 +1,6 @@
-# 2. Concurrency Pattern: Queued Tasks and DTOs
+# 6. Concurrency Pattern: Queued Tasks and DTOs
 
-Date: 2026-01-15
+Date: 2025-12 (v2.6.0)
 
 ## Status
 

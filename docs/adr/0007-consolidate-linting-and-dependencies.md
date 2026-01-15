@@ -1,6 +1,6 @@
-# ADR 0001: Consolidación de Linting y Gestión de Dependencias
+# ADR 0007: Consolidación de Linting y Gestión de Dependencias
 
-## Estado
+Date: 2026-01 (v2.7.0)
 ✅ Aceptado
 
 ## Contexto
