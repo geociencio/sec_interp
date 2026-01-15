@@ -62,7 +62,7 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 104
-- **Lines of Code**: 16,809
+- **Lines of Code**: 16,813
 - **Functions**: 568
 - **Classes**: 109
 - **Average Complexity**: 12.5
@@ -120,8 +120,8 @@ graph TD
     main_dialog --> py
     main_dialog_export --> py
     main_dialog_validation --> py
-    geology_task --> py
     drillhole_task --> py
+    geology_task --> py
     main_dialog_preview --> py
 ```
 

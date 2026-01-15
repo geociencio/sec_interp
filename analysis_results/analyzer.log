@@ -137,3 +137,6 @@
 2026-01-12 01:16:10,141 - qgis_analyzer - INFO - 📁 Project type: GENERIC
 2026-01-12 01:16:10,141 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/deploy
 2026-01-12 01:16:10,177 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-15 16:32:21,158 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-01-15 16:32:21,158 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/deploy
+2026-01-15 16:32:21,163 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
