@@ -160,6 +160,45 @@ class GeologyTaskInput:
     tolerance: float = 0.001
 
 
+@dataclass
+class DrillholeTaskInput:
+    """Data Transfer Object for DrillholeGenerationTask.
+
+    Encapsulates all data required to project and process drillholes
+    in a background thread without accessing QGIS API objects.
+    """
+
+    # Section Line Info
+    line_geometry: QgsGeometry
+    line_start: QgsPointXY
+    line_crs_authid: str
+    section_azimuth: float
+
+    # Parameters
+    buffer_width: float
+    collar_id_field: str
+    use_geometry: bool
+    collar_x_field: str
+    collar_y_field: str
+    collar_z_field: str
+    collar_depth_field: str
+
+    # Detached Data
+    collar_data: list[dict[str, Any]]  # List of dicts with attrs and geometry
+    survey_data: dict[Any, list[tuple[float, float, float]]]  # hole_id -> [(depth, azim, incl)]
+    interval_data: dict[Any, list[tuple[float, float, str]]]  # hole_id -> [(from, to, lith)]
+
+    # Optional DEM data for fallback elevation
+    # Since Raster access is not thread safe, we might need to sample beforehand?
+    # Or pass a grid? For simplicity, we assume collars have Z or handled in prepare.
+    # Actually, DrillholeService projects collars which needs Z.
+    # If Z is missing, we need DEM.
+    # Constraint: Thread safe DEM access is tricky.
+    # Solution: Pre-sample collar elevations in 'prepare_task_input' (Main Thread)
+    # and pass 'pre_sampled_z' map.
+    pre_sampled_z: dict[Any, float] = field(default_factory=dict)
+
+
 # Final type aliases for processed data
 StructureData = list[StructureMeasurement]
 GeologyData = list[GeologySegment]

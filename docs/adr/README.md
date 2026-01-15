@@ -10,3 +10,4 @@ Un Architecture Decision Record (ADR) es un documento que captura una decisión 
 | ID | Título | Fecha | Estado |
 |---|---|---|---|
 | [0001](0001-consolidate-linting-and-dependencies.md) | Consolidación de Linting y Gestión de Dependencias | 2026-01-15 | ✅ Aceptado |
+| [0002](0002-concurrency-pattern.md) | Patrón de Concurrencia (QgsTask + DTO) | 2026-01-15 | ✅ Aceptado |

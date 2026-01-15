@@ -24,7 +24,7 @@ from qgis.core import (
 from sec_interp.core import utils as scu
 from sec_interp.core.exceptions import DataMissingError, GeometryError
 from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
-from sec_interp.core.types import GeologySegment
+from sec_interp.core.types import DrillholeTaskInput, GeologySegment
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -114,6 +114,200 @@ class DrillholeService(IDrillholeService):
             f"DrillholeService.project_collars END: Found {len(projected_collars)} collars."
         )
         return projected_collars
+
+    def prepare_task_input(
+        self,
+        line_geom: QgsGeometry,
+        line_start: QgsPointXY,
+        line_crs: QgsCoordinateReferenceSystem,
+        section_azimuth: float,
+        buffer_width: float,
+        # Collar Params
+        collar_layer: QgsVectorLayer,
+        collar_id_field: str,
+        use_geometry: bool,
+        collar_x_field: str,
+        collar_y_field: str,
+        collar_z_field: str,
+        collar_depth_field: str,
+        # Child Data params
+        survey_layer: QgsVectorLayer,
+        survey_fields: dict[str, str],
+        interval_layer: QgsVectorLayer,
+        interval_fields: dict[str, str],
+        # Optional
+        dem_layer: QgsRasterLayer | None = None,
+    ) -> DrillholeTaskInput:
+        """Prepare detached data for async processing."""
+        # 1. Filter Collars (Spatial)
+        # Use buffer to limit feature fetching
+        try:
+            line_buffer = line_geom.buffer(buffer_width, 8)
+        except Exception:
+            # Fallback to no spatial filter or bbox
+            line_buffer = None
+
+        collar_bbox = line_buffer.boundingBox() if line_buffer else line_geom.boundingBox()
+
+        # Prepare Request
+        # We need attrs+geometry
+        req = QgsFeatureRequest()
+        if line_buffer:
+            req.setFilterRect(collar_bbox)  # Optimization
+
+        collar_data = []
+        pre_sampled_z = {}
+        processed_ids = set()
+
+        # Iterate collars and detach
+        for feat in collar_layer.getFeatures(req):
+            # Check rigorous spatial intersection if buffer exists
+            if line_buffer and not feat.geometry().intersects(line_buffer):
+                continue
+
+            hid = feat[collar_id_field]
+            processed_ids.add(hid)
+
+            # Detach geometry
+            geom_copy = QgsGeometry(feat.geometry()) if feat.hasGeometry() else None
+
+            # Detach attributes
+            attrs = dict(zip(feat.fields().names(), feat.attributes(), strict=False))
+
+            collar_data.append({"geometry": geom_copy, "attributes": attrs, "id": hid})
+
+            # Pre-sample Z if DEM provided (Thread safety fix)
+            if dem_layer:
+                pt = self._extract_point(feat, use_geometry, collar_x_field, collar_y_field)
+                if pt:
+                    # Check if Z is in attributes first? Logic mirrors _get_collar_info
+                    z_val = 0.0
+                    try:
+                        if collar_z_field:
+                            z_val = float(feat[collar_z_field] or 0.0)
+                    except (ValueError, TypeError):
+                        z_val = 0.0
+
+                    if z_val == 0.0:
+                        sampled = self._sample_dem(dem_layer, pt)
+                        pre_sampled_z[hid] = sampled
+
+        # 2. Bulk Fetch Child Data (Sync)
+        # We fetch ALL data for the identified collars
+        survey_data = self._fetch_bulk_data_detached(survey_layer, processed_ids, survey_fields)
+        interval_data = self._fetch_bulk_data_detached(
+            interval_layer, processed_ids, interval_fields
+        )
+
+        return DrillholeTaskInput(
+            line_geometry=QgsGeometry(line_geom),
+            line_start=QgsPointXY(line_start),
+            line_crs_authid=line_crs.authid(),
+            section_azimuth=section_azimuth,
+            buffer_width=buffer_width,
+            collar_id_field=collar_id_field,
+            use_geometry=use_geometry,
+            collar_x_field=collar_x_field,
+            collar_y_field=collar_y_field,
+            collar_z_field=collar_z_field,
+            collar_depth_field=collar_depth_field,
+            collar_data=collar_data,
+            survey_data=survey_data,
+            interval_data=interval_data,
+            pre_sampled_z=pre_sampled_z,
+        )
+
+    def process_task_data(self, task_input: DrillholeTaskInput, feedback: Any | None = None) -> Any:
+        """Process drillholes using detached data (Thread-Safe)."""
+        # Reconstruct Objects
+        line_crs = QgsCoordinateReferenceSystem(task_input.line_crs_authid)
+        da = scu.create_distance_area(line_crs)
+
+        geol_data_all = []
+        drillhole_data_all = []  # (hid, trace2d, trace3d, proj3d, geologic_segments)
+
+        total = len(task_input.collar_data)
+
+        for i, c_item in enumerate(task_input.collar_data):
+            if feedback and feedback.isCanceled():
+                return None
+
+            # Build logical feature from detached data to reuse existing logic?
+            # Or refactor _get_collar_info to work with dicts.
+            # Adaptation: Inline/Refactor _get_collar_info logic for dicts
+
+            hid = c_item["id"]
+            attrs = c_item["attributes"]
+            geom = c_item["geometry"]
+
+            # --- Extract Point ---
+            pt = None
+            if task_input.use_geometry and geom:
+                pt = geom.asPoint()
+            else:
+                try:
+                    x = float(attrs.get(task_input.collar_x_field, 0.0))
+                    y = float(attrs.get(task_input.collar_y_field, 0.0))
+                    pt = QgsPointXY(x, y)
+                except (ValueError, TypeError):
+                    pass
+
+            if not pt:
+                continue
+
+            # --- Extract Z/Depth ---
+            z = 0.0
+            try:
+                z = float(attrs.get(task_input.collar_z_field, 0.0))
+            except:
+                z = 0.0
+
+            # Fallback Z
+            if z == 0.0 and hid in task_input.pre_sampled_z:
+                z = task_input.pre_sampled_z[hid]
+
+            depth = 0.0
+            try:
+                depth = float(attrs.get(task_input.collar_depth_field, 0.0))
+            except:
+                depth = 0.0
+
+            # --- Project ---
+            # Logic from _project_single_collar
+            collar_geom_pt = QgsGeometry.fromPointXY(pt)
+            nearest_point = task_input.line_geometry.nearestPoint(collar_geom_pt).asPoint()
+
+            offset = da.measureLine(pt, nearest_point)
+            if offset > task_input.buffer_width:
+                continue
+
+            # --- Full Processing ---
+            surveys = task_input.survey_data.get(hid, [])
+            intervals = task_input.interval_data.get(hid, [])
+
+            hole_geol, hole_tuple = self._process_single_hole(
+                hole_id=hid,
+                collar_point=pt,
+                collar_z=z,
+                given_depth=depth,
+                survey_data=surveys,
+                intervals=intervals,
+                line_geom=task_input.line_geometry,
+                line_start=task_input.line_start,
+                distance_area=da,
+                buffer_width=task_input.buffer_width,
+                section_azimuth=task_input.section_azimuth,
+            )
+
+            if hole_geol:
+                geol_data_all.extend(hole_geol)
+            drillhole_data_all.append(hole_tuple)
+
+            if feedback:
+                feedback.setProgress((i / total) * 100)
+
+        # Result Structure matches DrillholeService.process_intervals return
+        return geol_data_all, drillhole_data_all
 
     def process_intervals(
         self,
@@ -242,6 +436,15 @@ class DrillholeService(IDrillholeService):
                 result_map[h_id].sort(key=lambda x: x[0])
 
         return result_map
+
+    def _fetch_bulk_data_detached(
+        self, layer: QgsVectorLayer, hole_ids: set[Any], fields: dict[str, str]
+    ) -> dict[Any, list[tuple]]:
+        """Fetch data into pure python structures (no QgsFeature dependency)."""
+        # This is essentially the same as _fetch_bulk_data but guarantees primitive types
+        # in the returned list, which _extract_data_tuple already does.
+        # So we can reuse the logic but ensures it runs on Main Thread in prepare()
+        return self._fetch_bulk_data(layer, hole_ids, fields)
 
     def _process_single_hole(
         self,

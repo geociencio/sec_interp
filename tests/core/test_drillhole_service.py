@@ -12,6 +12,7 @@ from qgis.core import (
 
 from sec_interp.core.services.drillhole_service import DrillholeService
 from sec_interp.core.exceptions import DataMissingError
+from sec_interp.core.types import DrillholeTaskInput
 
 
 class TestDrillholeService(BaseTestCase):

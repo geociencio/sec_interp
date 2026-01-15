@@ -27,6 +27,7 @@ from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig
 from .preview_reporter import PreviewReporter
+from .tasks.drillhole_task import DrillholeGenerationTask
 from .tasks.geology_task import GeologyGenerationTask
 
 if TYPE_CHECKING:
@@ -67,7 +68,9 @@ class PreviewManager:
 
         # Initialize services
         # self.async_service removed in favor of QgsTask
+        # self.async_service removed in favor of QgsTask
         self.active_task: GeologyGenerationTask | None = None
+        self.active_drill_task: DrillholeGenerationTask | None = None
 
         self.preview_service = preview_service or PreviewService(
             self.dialog.plugin_instance.controller
@@ -88,6 +91,9 @@ class PreviewManager:
         if self.active_task:
             self.active_task.cancel()
             self.active_task = None
+        if self.active_drill_task:
+            self.active_drill_task.cancel()
+            self.active_drill_task = None
         self.debounce_timer.stop()
 
     def generate_preview(self) -> tuple[bool, str]:
@@ -176,14 +182,19 @@ class PreviewManager:
         transform_context = (
             self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
         )
-        result = self.preview_service.generate_all(params, transform_context)
+        # Skip drillholes in sync generation
+        result = self.preview_service.generate_all(
+            params,
+            transform_context,
+            skip_drillholes=True,  # Drillholes are now async
+        )
 
         # Merge results and metrics
         self.cached_data.update(
             {
                 "topo": result.topo,
                 "struct": result.struct,
-                "drillhole": result.drillhole,
+                # "drillhole": result.drillhole, # Don't update drillhole from sync result (it's None)
             }
         )
         self.metrics.timings.update(result.metrics.timings)
@@ -194,10 +205,19 @@ class PreviewManager:
             self.active_task.cancel()
             self.active_task = None
 
+        if self.active_drill_task:
+            self.active_drill_task.cancel()
+            self.active_drill_task = None
+
         # Start Async Geology if needed
         if self.dialog.page_geology.is_complete():
             self._start_async_geology(params)
             self.cached_data["geol"] = None  # Reset until async finished
+
+        # Start Async Drillholes if needed
+        if params.collar_layer:  # params.collar_layer is validated in PreviewParams
+            self._start_async_drillhole(params)
+            self.cached_data["drillhole"] = None  # Reset
 
         self.last_result = result
         return result
@@ -504,6 +524,128 @@ class PreviewManager:
             )
         )
         self.dialog.handle_error(error, "Geology Error")
+
+    def _start_async_drillhole(self, params: PreviewParams):
+        """Start asynchronous drillhole generation."""
+        if not params.collar_layer:
+            return
+
+        self.dialog.preview_widget.results_text.setPlainText(
+            self.dialog.preview_widget.results_text.toPlainText()
+            + "\n"
+            + QCoreApplication.translate("PreviewManager", "Generating Drillholes in background...")
+        )
+
+        # 1. Prepare Data (Sync)
+        try:
+            # We need section azimuth which is calculated in preview_service usually
+            # Re-calc here or pass it? PreviewParams doesn't store azimuth.
+            # params.line_layer geometry is available.
+            line_feat = next(params.line_layer.getFeatures())
+            line_geom = line_feat.geometry()
+            line_start = (
+                line_geom.asPolyline()[0]
+                if not line_geom.isMultipart()
+                else line_geom.asMultiPolyline()[0][0]
+            )
+
+            # Calculate Azimuth
+            # Import scu if needed or use simple math if possible, but scu is best.
+            # Wait, PreviewParams has methods? No.
+            # Let's import scu at top if not present? It is imported as 'scu' in preview_service but not here.
+            # Actually, main_dialog_preview imports services.
+            # To avoid circular imports or messy code, let's ask DrillholeService to calculate input?
+            # But prepare_task_input needs arguments.
+
+            # Easier: Just calculate azimuth here safely.
+            p1 = line_start
+            p2 = line_geom.vertexAt(1)
+            azimuth = p1.azimuth(p2)
+            if azimuth < 0:
+                azimuth += 360
+
+            # Gather Drillhole Fields maps
+            survey_fields = {
+                "id": params.survey_id_field,
+                "depth": params.survey_depth_field,
+                "azim": params.survey_azim_field,
+                "incl": params.survey_incl_field,
+            }
+            interval_fields = {
+                "id": params.interval_id_field,
+                "from": params.interval_from_field,
+                "to": params.interval_to_field,
+                "lith": params.interval_lith_field,
+            }
+
+            task_input = (
+                self.dialog.plugin_instance.controller.drillhole_service.prepare_task_input(
+                    line_geom=line_geom,
+                    line_start=line_start,
+                    line_crs=params.line_layer.crs(),
+                    section_azimuth=azimuth,
+                    buffer_width=params.buffer_dist,
+                    collar_layer=params.collar_layer,
+                    collar_id_field=params.collar_id_field,
+                    use_geometry=params.collar_use_geometry,
+                    collar_x_field=params.collar_x_field,
+                    collar_y_field=params.collar_y_field,
+                    collar_z_field=params.collar_z_field,
+                    collar_depth_field=params.collar_depth_field,
+                    survey_layer=params.survey_layer,
+                    survey_fields=survey_fields,
+                    interval_layer=params.interval_layer,
+                    interval_fields=interval_fields,
+                    dem_layer=params.raster_layer,
+                )
+            )
+        except Exception as e:
+            logger.exception(f"Failed to prepare drillhole task: {e}")
+            return
+
+        # 2. Launch Task
+        self.active_drill_task = DrillholeGenerationTask(
+            service=self.dialog.plugin_instance.controller.drillhole_service,
+            task_input=task_input,
+            on_finished=self._on_drillhole_finished,
+            on_error=self._on_geology_error,  # Reuse error handler or make generic
+        )
+
+        QgsApplication.taskManager().addTask(self.active_drill_task)
+
+    def _on_drillhole_finished(self, result: Any) -> None:
+        """Handle completion of drillhole task."""
+        self.active_drill_task = None
+
+        # result is (geol_data, drillhole_data)
+        _, drill_part = result
+
+        self.cached_data["drillhole"] = drill_part
+
+        # If drillholes generated geology segments (legacy 'process_intervals' behavior),
+        # we might want to merge them?
+        # Currently, 'geol' cache is from GeologyService (Surface geology).
+        # 'drillhole' cache contains (hid, ..., ..., ..., segments).
+        # The renderer handles drawing these segments stored inside drillhole data.
+        # So we just store drill_part.
+
+        logger.info(f"Async Drillholes finished: {len(drill_part)} holes")
+
+        # Trigger update
+        self.update_from_checkboxes()
+
+        # Update text
+        if self.cached_data["topo"]:
+            # Re-construct status message
+            res_obj = PreviewResult(
+                topo=self.cached_data["topo"],
+                geol=self.cached_data["geol"],
+                struct=self.cached_data["struct"],
+                drillhole=self.cached_data["drillhole"],
+                buffer_dist=self._get_buffer_distance(),
+            )
+            msg = PreviewReporter.format_results_message(res_obj, self.metrics)
+            self.dialog.preview_widget.results_text.setPlainText(msg)
 
     def _handle_invalid_plugin_instance(self):
         """Handle case where plugin instance is not available for rendering."""

@@ -70,12 +70,18 @@ class PreviewService:
             return base_points
         return manual_max
 
-    def generate_all(self, params: PreviewParams, transform_context: Any) -> PreviewResult:
+    def generate_all(
+        self,
+        params: PreviewParams,
+        transform_context: Any,
+        skip_drillholes: bool = False,
+    ) -> PreviewResult:
         """Generate all preview components in a consolidated result.
 
         Args:
             params: Validated parameters for preview generation.
             transform_context: QgsCoordinateTransformContext for CRS operations.
+            skip_drillholes: If True, skips synchronous drillhole generation.
 
         Returns:
             A consolidated object containing all generated preview data.
@@ -135,7 +141,7 @@ class PreviewService:
                         result.metrics.record_count("Structure Points", len(result.struct))
 
         # 3. Drillholes
-        if params.collar_layer:
+        if params.collar_layer and not skip_drillholes:
             with PerformanceTimer("Drillhole Generation", result.metrics):
                 result.drillhole = self._generate_drillholes(params)
                 if result.drillhole:
