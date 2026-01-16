@@ -5,7 +5,7 @@ This document serves as the central record for project history, release procedur
 ---
 
 ### [v2.7.0 Plan - Phase 1] - 2026-01-15
-- **Mock Infrastructure Overhaul**: Implemented `ModuleProxy` and `MockSignal` to stabilize the QGIS test environment. Resolved attribute errors and reference loss during mock resets.
+- **Mock Infrastructure Overhaul**: Implemented `ModuleProxy` and `MockSignal` to stabilize the QGIS test environment. Resolved attribute errors and reference loss during mock resets. Added `indexFromName` to `MockQgsFields` for better API parity.
 - **Config Fix**: Completed missing `reset_defaults()` logic in `ConfigService`.
 - **Workflow Update**: Simplified `inicia-sesion` by removing `make deploy` and standardizing the test execution command.
 

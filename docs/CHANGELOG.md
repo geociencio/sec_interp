@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Core**: Sistema de validación de lógica de negocio (Nivel 2) con reportes de error detallados (`ValidationContext`).
 - **Core**: Validadores reutilizables y robustos para configuración (Nivel 1).
+- **Core**: Validación de Dominio (Nivel 3) en capa de servicios con patrón "Fail Fast" para integridad de datos.
 
 ### Changed
 - **Core**: Refactorización masiva para estandarización de estilo (Black/Ruff).

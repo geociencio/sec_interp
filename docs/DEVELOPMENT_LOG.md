@@ -5,6 +5,27 @@ Chronological record of development activities, significant fixes, and technical
 
 ---
 ---
+## [2026-01-15] - Level 3 Domain Validation (18:12)
+
+### Resumen
+Sesión enfocada en completar la arquitectura de validación de 3 niveles mediante la implementación de "Domain Guards" (Nivel 3) en los servicios principales del núcleo. Se aseguró que operaciones inválidas fallen rápido ("Fail Fast") antes de procesamiento costoso.
+
+### Logros
+- **Validación Nivel 3 (Dominio)**:
+    - Implementadas cláusulas de guarda en `GeologyService` (capas, bandas, campos) y `DrillholeService` (buffer, azimut).
+    - Creada suite de pruebas dedicada: `tests/core/validation/test_service_validation.py` (6 nuevos tests).
+- **Mejora de Infraestructura de Tests**:
+    - Parcheado `MockQgsFields` en `tests/base_test.py` añadiendo `indexFromName` para paridad con API de QGIS.
+- **Documentación**:
+    - Actualizado `implementation_plan_v2.7.0.md` marcando Objetivo 3 como completado.
+    - Generado `walkthrough.md` con detalles de la implementación.
+
+### Resultados
+- **Tests**: 369 pasando (+6 nuevos).
+- **Commits**: 1 (feat: implement Level 3 Domain Validation).
+- **Estado**: Objetivo 3 al 100%. Siguiente paso: Documentación Sphinx.
+
+---
 ## [2026-01-15] - ADR Documentation & Async Drillholes (16:26)
 
 ### Resumen

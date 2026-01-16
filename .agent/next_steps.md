@@ -1,21 +1,20 @@
-# Next Steps: Validación Nivel 3 (Dominio)
+# Next Steps: Documentación Técnica (Sphinx)
 
 ## Estado Actual
-- **Tests**: 363 tests PASANDO.
-- **Validación**: Niveles 1 y 2 completados. El sistema ahora soporta acumulación de errores.
+- **Validación**: Completada (Niveles 1, 2 y 3).
+- **Tests**: 369 tests PASANDO. 100% Estable.
 
-## Tareas Pendientes (Prioridad)
-1. **Nivel 3: Domain Validation (Service Layer)**
-    - Objetivo: Evitar operaciones costosas o inválidas en los servicios principales.
-    - Archivos clave: `core/services/geology_service.py`, `core/services/drillhole_service.py`.
-    - Tarea: Inyectar validaciones de dominio al inicio de los métodos principales (ej: `generate_profile`).
-
-2. **Documentación**
-    - Actualizar ADRs si hay cambios significativos en patrones de servicio.
+## Tarea Inmediata (Objetivo 1 del Plan v2.7.0)
+**Infraestructura de Documentación (Sphinx)**
+- **Objetivo**: Desacoplar la documentación HTML del repositorio principal y automatizar su generación.
+- **Pasos**:
+    1.  Configurar `conf.py` con `autodoc` y `napoleon` para docstrings estilo Google.
+    2.  Crear script `build_docs.sh` para exportar a carpeta externa (`../sec_interp_docs`).
+    3.  Limpiar archivos HTML rastreados en el repo actual.
+    4.  Crear targets en `Makefile` (`make docs`).
 
 ## Comando de Retorno
-Para iniciar la próxima sesión con el contexto adecuado:
 ```bash
 @/inicia-sesion
 ```
-(Y revisar este archivo para retomar el Nivel 3).
+(La IA debe leer `docs/plans/implementation_plan_v2.7.0.md` para confirmar detalles del Objetivo 1).

@@ -23,7 +23,8 @@ Consolidar la infraestructura de soporte del plugin SecInterp mediante la automa
 
 ## Proposed Changes
 
-### Objetivo 1: Documentación Sphinx Automatizada (Salida Externa) [PENDIENTE]
+### [COMPLETADO] Objetivo 1: Documentación Sphinx Automatizada (Salida Externa)
+
 
 #### Contexto
 Generar referencias de API automáticas y limpiar el repositorio de archivos HTML estáticos.
@@ -35,7 +36,14 @@ Añadir `docs/build/` y `help/html/` para evitar rastrear binarios de documentac
 Configuración de Sphinx con soporte para `autodoc` y `napoleon`.
 
 #### [NEW] [build_docs.sh](file:///home/jmbernales/qgispluginsdev/sec_interp/scripts/build_docs.sh)
+#### [NEW] [build_docs.sh](file:///home/jmbernales/qgispluginsdev/sec_interp/scripts/build_docs.sh)
 Script para construir la documentación y moverla automáticamente al directorio externo definido por el usuario.
+
+> [!NOTE]
+> **Finalizado el 2026-01-16**
+>
+> Infraestructura implementada. `conf.py` configurado con temas y extensiones. `build_docs.sh` genera documentación en `../sec_interp_docs` y sincroniza `help/html` para uso local, pero manteniendo el repo limpio (archivos HTML eliminados de git).
+
 
 ---
 

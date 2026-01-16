@@ -12,4 +12,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   sec_interp.gui.tasks.drillhole_task
    sec_interp.gui.tasks.geology_task

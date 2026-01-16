@@ -25,6 +25,7 @@ class TestGeologyService(BaseTestCase):
         # Setup mock layers
         self.mock_line_lyr = MagicMock()
         self.mock_raster_lyr = MagicMock()
+        self.mock_raster_lyr.bandCount.return_value = 1
         self.mock_outcrop_lyr = MagicMock()
 
         # Setup line geometry

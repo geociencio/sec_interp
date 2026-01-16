@@ -14,6 +14,7 @@ Submodules
 
    sec_interp.exporters.base_exporter
    sec_interp.exporters.csv_exporter
+   sec_interp.exporters.drillhole_3d_exporter
    sec_interp.exporters.drillhole_exporters
    sec_interp.exporters.image_exporter
    sec_interp.exporters.interpretation_3d_exporter

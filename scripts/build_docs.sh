@@ -55,6 +55,15 @@ echo "📤 Exporting documentation to $OUTPUT_DIR..."
 # For now, we sync the content of docs/build/html to the output dir.
 cp -r "$BUILD_DIR/html/"* "$OUTPUT_DIR/"
 
+# 5. [OPTIONAL] Sync with internal help directory (for plugin usage)
+INTERNAL_HELP_DIR="help/html"
+if [ -d "help" ]; then
+    echo "🔄 Syncing with internal help directory ($INTERNAL_HELP_DIR)..."
+    rm -rf "$INTERNAL_HELP_DIR"
+    mkdir -p "$INTERNAL_HELP_DIR"
+    cp -r "$BUILD_DIR/html/"* "$INTERNAL_HELP_DIR/"
+fi
+
 echo "============================================================"
 echo "✅ SUCCESS: Documentation built and exported."
 echo "🔗 Open $OUTPUT_DIR/index.html to view."

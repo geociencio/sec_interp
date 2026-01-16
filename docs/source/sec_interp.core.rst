@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    sec_interp.core.interfaces
+   sec_interp.core.models
    sec_interp.core.services
    sec_interp.core.utils
    sec_interp.core.validation
