@@ -11,7 +11,7 @@ Welcome to the **SecInterp** development guide. This document outlines the stand
 - **Geospatial Engine**: PyQGIS API (`qgis.core`, `qgis.gui`)
 - **Package Manager**: `uv` (recommended) or `pip`
 - **Linter & Formatter**: `Ruff`
-- **Testing**: `pytest`
+- **Testing**: `unittest` (Standard Library)
 
 ---
 
@@ -79,17 +79,21 @@ It is highly recommended to install the **Ruff extension** in VS Code and enable
 
 ## 🧪 Testing
 
-### Running Tests
+### Running Tests (Local)
 ```bash
-# Run all tests
-pytest
+# Run all tests using the unified Makefile target
+make test
+```
 
-# Run tests with coverage report
-pytest --cov=sec_interp
+### Running Tests (Docker - Recommended)
+To avoid dependency issues with QGIS, use the containerized environment:
+```bash
+# Build the image and run all tests in an isolated QGIS container
+make docker-test
 ```
 
 ### Mocking QGIS
-When testing core services, use `unittest.mock` to avoid requiring a running QGIS instance. For integration tests, use the `qgis_app` fixture if available.
+When testing core services, use `unittest.mock` to avoid requiring a running QGIS instance. For integration tests in a headless environment, the project is configured to use `QT_QPA_PLATFORM=offscreen`.
 
 ---
 
@@ -126,5 +130,8 @@ Use the `Makefile` for common development tasks:
 
 - `make deploy`: Installs the plugin into your local QGIS plugins folder.
 - `make zip`: Creates a release-ready ZIP file.
+- `make test`: Runs all unit and integration tests locally.
+- `make docker-build`: Builds the testing Docker image.
+- `make docker-test`: Builds and runs tests within a QGIS Docker container.
 - `make docus`: Builds the Sphinx documentation.
 - `make clean`: Removes temporary and compiled files.

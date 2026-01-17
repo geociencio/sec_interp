@@ -145,7 +145,7 @@ This plugin is open-source and welcomes contributions.
     - [**Technical Compendium**](docs/TECHNICAL_COMPENDIUM.md): Geophysical research and details.
 - **Development Setup**: Use the `Makefile` and `DEVELOPMENT_GUIDE.md`.
 - **Testing with Docker** (Recommended):
-  To run tests in a clean and reproducible QGIS environment without local dependency issues:
+  Esta suite ejecuta los **349 tests** del proyecto dentro de un contenedor QGIS oficial (`qgis/qgis:latest`), garantizando un entorno reproducible y libre de conflictos de dependencias locales.
   ```bash
   make docker-build  # Build the test image
   make docker-test   # Run the full test suite inside a container

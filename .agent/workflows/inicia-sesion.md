@@ -25,7 +25,14 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     ```
 
 3.  **Verificación de Estado (Sanity Check)**:
-    Confirma que el sistema está estable ("en verde"). Todos los tests (347) deben pasar.
+    Confirma que el sistema está estable ("en verde"). Todos los tests (349) deben pasar.
+
+    *Opción A (Docker - Recomendado):*
+    ```bash
+    make docker-test
+    ```
+
+    *Opción B (Local):*
     ```bash
     env PYTHONPATH=.. uv run python3 -m unittest discover tests
     ```

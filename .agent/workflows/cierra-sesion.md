@@ -15,8 +15,18 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
 
 2.  **Verificación Final (Safety Net)**:
     Ejecuta el formateador y los tests para no dejar la casa en llamas.
+
     ```bash
     uv run black .
+    ```
+
+    *Opción A (Docker - Recomendado):*
+    ```bash
+    make docker-test
+    ```
+
+    *Opción B (Local):*
+    ```bash
     PYTHONPATH=.. uv run python3 -m unittest discover tests
     ```
 
