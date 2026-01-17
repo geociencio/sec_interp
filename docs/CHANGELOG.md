@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Core**: Refactorización masiva para estandarización de estilo (Black/Ruff).
 - **Core**: Mejora en la robustez de validación de proyectos (`ProjectValidator`).
+- **Architecture**: Fragmentación de `SecInterpDialog` reduciendo complejidad ciclomática de **95 a 13**.
+- **Architecture**: Extracción de lógica de interpretaciones geológicas a `DialogInterpretationManager`.
+- **Testing**: Actualización de suites de integración y GUI para soportar la nueva arquitectura modular.
 ### 🧪 Testing & Quality
 - **Test Suite Total Stabilization**:
   - Achieved 100% success rate (347/347 tests passing) after resolving massive mock-related failures.
