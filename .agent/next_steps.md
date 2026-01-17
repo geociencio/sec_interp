@@ -1,20 +1,20 @@
-# Next Steps: Documentación Técnica (Sphinx)
+# Next Steps: Deuda Técnica en UI
 
 ## Estado Actual
-- **Validación**: Completada (Niveles 1, 2 y 3).
-- **Tests**: 369 tests PASANDO. 100% Estable.
+- **Docker**: Infraestructura estable y documentada.
+- **Tests**: 100% pasando (349 tests).
+- **Plan v2.7.0**: Objetivo 7 completado.
 
-## Tarea Inmediata (Objetivo 1 del Plan v2.7.0)
-**Infraestructura de Documentación (Sphinx)**
-- **Objetivo**: Desacoplar la documentación HTML del repositorio principal y automatizar su generación.
+## Próxima Tarea (Objetivo 4 del Plan v2.7.0)
+**Reducción de Deuda Técnica (Arquitectura)**
+- **Objetivo**: Fragmentar la lógica de `gui/main_dialog.py` (Complejidad 95).
 - **Pasos**:
-    1.  Configurar `conf.py` con `autodoc` y `napoleon` para docstrings estilo Google.
-    2.  Crear script `build_docs.sh` para exportar a carpeta externa (`../sec_interp_docs`).
-    3.  Limpiar archivos HTML rastreados en el repo actual.
-    4.  Crear targets en `Makefile` (`make docs`).
+    1.  Identificar componentes extraíbles (StatusBar, Toolbar, SignalManager).
+    2.  Crear submódulos dedicados en `gui/`.
+    3.  Actualizar `main_dialog.py` para delegar en estos componentes.
+    4.  Verificar que no haya regresiones en el flujo de preview.
 
 ## Comando de Retorno
 ```bash
 @/inicia-sesion
 ```
-(La IA debe leer `docs/plans/implementation_plan_v2.7.0.md` para confirmar detalles del Objetivo 1).

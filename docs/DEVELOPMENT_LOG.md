@@ -5,6 +5,42 @@ Chronological record of development activities, significant fixes, and technical
 
 ---
 ---
+## [2026-01-16] - Infraestructura de Testing Docker (19:35)
+
+### Resumen
+Implementación exitosa de la infraestructura de testing robusta mediante Docker (Objetivo 7). Se logró centralizar y estandarizar la ejecución de los 349 tests en un entorno QGIS headless idéntico para todos los desarrolladores.
+
+### Logros
+- **Testing en Contenedor**:
+    - Creación de imagen Docker optimizada con `uv`.
+    - Targets en `Makefile` para ciclo build/test simplificado.
+- **Estandarización**: Unificación de la ejecución de pruebas bajo `unittest discover` eliminando dependencias de `pytest`.
+- **Corrección de Configuración**: Ajustes en `pyproject.toml` para compatibilidad global de empaquetado.
+
+### Resultados
+- **Tests**: 349 pasando (100% stable).
+- **Commits**: 1 (feat: docker testing infrastructure).
+- **Reporte**: [sesion_2026-01-16_docker_testing_infrastructure.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-16_docker_testing_infrastructure.md)
+
+---
+## [2026-01-16] - Sphinx Documentation Infrastructure (05:26)
+
+### Resumen
+Implementación exitosa del sistema automatizado de documentación con Sphinx (Objetivo 1). Se logró desacoplar la documentación generada del repositorio git mientras se mantiene la funcionalidad de ayuda local en tiempo de desarrollo.
+
+### Logros
+- **Infraestructura Docs**:
+    - Scripts y configuración para generar documentación API automática.
+    - Sincronización inteligente de carpeta `help/html` (untracked).
+- **Limpieza**: Reducción drástica de ruido en el repositorio al eliminar HTMLs.
+- **Calidad**: Corrección de regresiones menores en tests y formateo global.
+
+### Resultados
+- **Tests**: 369 pasando (100% stable).
+- **Commits**: 1 (feat: sphinx docs).
+- **Reporte**: [sesion_2026-01-16_sphinx_docs.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-16_sphinx_docs.md)
+
+---
 ## [2026-01-15] - Level 3 Domain Validation (18:12)
 
 ### Resumen

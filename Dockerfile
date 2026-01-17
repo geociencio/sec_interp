@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 # 2. Instalar uv para gestión de paquetes (mucho más rápido que pip)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.cargo/bin:${PATH}"
+ENV PATH="/root/.local/bin:${PATH}"
 
 # 3. Configurar el entorno de trabajo
 # Nota: Montaremos el proyecto en /app/sec_interp para que 'import sec_interp' funcione con PYTHONPATH=/app
@@ -27,17 +27,22 @@ COPY pyproject.toml uv.lock ./
 RUN uv venv --system-site-packages /app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Instalar dependencias de Python (sin instalar el proyecto aún)
-RUN uv pip install --no-build-isolation -e ".[dev]"
+# Instalar dependencias de Python (sin instalar el proyecto aún para optimizar cache)
+RUN uv sync --no-install-project --group dev
 
 # 4. Copiar el código completo del proyecto
 COPY . .
 
+# Instalar el proyecto en modo editable
+RUN uv pip install --no-build-isolation -e .
+
 # 5. Configurar variables de entorno críticas
 # PYTHONPATH=/app permite importar el paquete 'sec_interp' desde su directorio padre
-ENV PYTHONPATH="/app:${PYTHONPATH}"
+# Añadimos la raíz del proyecto para asegurar que los scripts en 'scripts/' y 'tests/' funcionen
+ENV PYTHONPATH="/app:/app/sec_interp:${PYTHONPATH}"
 # QT_QPA_PLATFORM=offscreen permite correr tests de GUI en entornos sin servidor X
 ENV QT_QPA_PLATFORM=offscreen
 
 # 6. Comando por defecto: Ejecutar todos los tests usando unittest
+# Usamos 'python3 -m unittest' directamente para evitar dependencias de runners externos
 CMD ["python3", "-m", "unittest", "discover", "tests"]

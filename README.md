@@ -144,6 +144,12 @@ This plugin is open-source and welcomes contributions.
     - [**Maintenance Log**](docs/MAINTENANCE_LOG.md): Changelog and release procedures.
     - [**Technical Compendium**](docs/TECHNICAL_COMPENDIUM.md): Geophysical research and details.
 - **Development Setup**: Use the `Makefile` and `DEVELOPMENT_GUIDE.md`.
+- **Testing with Docker** (Recommended):
+  To run tests in a clean and reproducible QGIS environment without local dependency issues:
+  ```bash
+  make docker-build  # Build the test image
+  make docker-test   # Run the full test suite inside a container
+  ```
 
 ---
 

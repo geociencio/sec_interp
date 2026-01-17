@@ -136,7 +136,7 @@ Continuar la fragmentación de la lógica del diálogo principal hacia component
 
 ---
 
-### Objetivo 7: Infraestructura de Testing Robusta (Dockerización) [PENDIENTE]
+### [COMPLETADO] Objetivo 7: Infraestructura de Testing Robusta (Dockerización)
 
 #### Contexto
 Eliminar los errores de "ModuleNotFoundError: No module named 'qgis'" al ejecutar tests localmente, centralizando la ejecución en contenedores que replican el entorno real.
@@ -148,6 +148,11 @@ Añadir objetivos para automatizar el ciclo de Docker:
 
 #### [MODIFY] [README.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README.md)
 Actualizar las instrucciones de desarrollo para recomendar el uso de Docker o Dev Containers como estándar de oro para evitar problemas de dependencias.
+
+> [!NOTE]
+> **Finalizado el 2026-01-16**
+>
+> Infraestructura Docker implementada exitosamente. Se unificó el motor de pruebas a `unittest discover` y se automatizó la ejecución en contenedor con `make docker-test`. Los 349 tests pasan correctamente en el entorno aislado.
 
 ---
 
@@ -178,7 +183,7 @@ Validar que `build_docs.sh` genera archivos en la ruta esperada fuera del worksp
 - Validar que los Checkboxes aparecen en **Settings/Advanced** y persisten los cambios.
 - Validar que los Shapefiles generados por los nuevos exportadores (Trazas e Intervalos) se visualizan correctamente en la vista 3D de QGIS.
 
-### 5. Verificación de Docker (Pendiente)
+### 5. Verificación de Docker [PASADA]
 Ejecutar `make docker-test` y confirmar que todos los tests pasan correctamente dentro del contenedor.
 
 ---
@@ -189,9 +194,9 @@ Ejecutar `make docker-test` y confirmar que todos los tests pasan correctamente 
 |----------|----------|-----------|
 | Documentación Sphinx/Limpieza | 3 días | Alta |
 | **Arquitectura de Validación 3 Niveles** | **4 días** | **Alta** |
-| Infraestructura Docker (Testing) | 2 días | Alta |
+| [x] Infraestructura Docker (Testing) | 2 días | Alta |
 | Refactor Main Dialog | 2 días | Baja |
-| **TOTAL RESTANTE** | **11 días** | |
+| **TOTAL RESTANTE** | **9 días** | |
 
 ---
 

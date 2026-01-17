@@ -106,11 +106,10 @@ test: compile transcompile
 	@echo "----------------------"
 
 	@# Preceding dash means that make will continue in case of errors
-	@-export PYTHONPATH=`pwd`:$(PYTHONPATH); \
+	@-export PYTHONPATH=..:$(PYTHONPATH); \
 		export QGIS_DEBUG=0; \
 		export QGIS_LOG_FILE=/dev/null; \
-		uv run pytest -v \
-		3>&1 1>&2 2>&3 3>&- || true
+		uv run python3 -m unittest discover tests
 	@echo "----------------------"
 	@echo "If you get a 'no module named qgis.core error, try sourcing"
 	@echo "the helper script we have provided first then run make test."
@@ -158,6 +157,13 @@ transclean:
 
 clean:
 	uv run qgis-manage clean
+
+# Docker targets
+docker-build:
+	docker build -t sec_interp_test .
+
+docker-test: docker-build
+	docker run --rm -v $(CURDIR):/app/sec_interp sec_interp_test
 
 .PHONY: apidoc docs docs-clean
 apidoc:

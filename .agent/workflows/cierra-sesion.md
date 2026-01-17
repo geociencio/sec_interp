@@ -33,7 +33,10 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     git add .
     git commit -m "chore: cerrar sesion [TEMA]"
     ```
-    *Nota: Si pre-commit falla, corrige y repite.*
+    *Si el pre-commit hook persiste en fallar:*
+    1. Revisa los mensajes de error detectados.
+    2. Ejecuta `git add` de nuevo si hubo cambios automáticos.
+    3. Repite el commit.
 
 5.  **Resumen para el Usuario**:
     Genera un mensaje final listando:
