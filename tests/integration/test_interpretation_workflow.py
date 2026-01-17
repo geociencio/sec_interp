@@ -32,7 +32,7 @@ class TestInterpretationWorkflow(BaseIntegrationTest):
         self.dialog.interpretations.append(interp)
 
         # Trigger save
-        self.dialog._save_interpretations()
+        self.dialog.interpretation_manager.save_interpretations()
 
         # Verify in project
         json_data, ok = self.project.readEntry("SecInterp", "interpretations")
@@ -59,7 +59,7 @@ class TestInterpretationWorkflow(BaseIntegrationTest):
         self.project.writeEntry("SecInterp", "interpretations", json.dumps(data))
 
         # Trigger load
-        self.dialog._load_interpretations()
+        self.dialog.interpretation_manager.load_interpretations()
 
         self.assertEqual(len(self.dialog.interpretations), 1)
         loaded = self.dialog.interpretations[0]
@@ -73,11 +73,12 @@ class TestInterpretationWorkflow(BaseIntegrationTest):
         """Test clearing all interpretations from project."""
         # Add one
         self.dialog.interpretations.append(InterpretationPolygon("id1", "n1", "t1", []))
-        self.dialog._save_interpretations()
+        self.dialog.interpretation_manager.save_interpretations()
 
         # Clear dialog list and save
+        # Using proxy property interpretations to clear the list in the manager
         self.dialog.interpretations = []
-        self.dialog._save_interpretations()
+        self.dialog.interpretation_manager.save_interpretations()
 
         # Verify empty in project
         json_data, ok = self.project.readEntry("SecInterp", "interpretations")

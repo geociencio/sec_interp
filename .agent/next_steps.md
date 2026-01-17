@@ -1,20 +1,18 @@
-# Next Steps: Deuda Técnica en UI
+# Próximos Pasos (Next Steps) - SecInterp
 
-## Estado Actual
-- **Docker**: Infraestructura estable y documentada.
-- **Tests**: 100% pasando (349 tests).
-- **Plan v2.7.0**: Objetivo 7 completado.
+## Estado de la Sesión Actual
+- **Refactorización `main_dialog.py` (Fase 1)**: Completada con éxito.
+- **Complejidad**: Reducida de 95 a 13.
+- **Estabilidad**: 353 tests passing (en verde).
 
-## Próxima Tarea (Objetivo 4 del Plan v2.7.0)
-**Reducción de Deuda Técnica (Arquitectura)**
-- **Objetivo**: Fragmentar la lógica de `gui/main_dialog.py` (Complejidad 95).
-- **Pasos**:
-    1.  Identificar componentes extraíbles (StatusBar, Toolbar, SignalManager).
-    2.  Crear submódulos dedicados en `gui/`.
-    3.  Actualizar `main_dialog.py` para delegar en estos componentes.
-    4.  Verificar que no haya regresiones en el flujo de preview.
+## Tareas Pendientes para la Próxima Sesión
+1. **Reducción de Deuda Técnica (Fase 2)**:
+   - Extraer el método `handle_error` a un gestor de UI o mensajes centralizado.
+   - Analizar si se puede simplificar más la lógica de los botones de cache y reset.
+2. **Validación**:
+   - Continuar con el Objetivo 3 (Validación en 3 niveles) si el usuario lo solicita.
 
-## Comando de Retorno
+## Comando para Retomar
 ```bash
-@/inicia-sesion
+/inicia-sesion
 ```

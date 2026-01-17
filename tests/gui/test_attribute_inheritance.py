@@ -88,7 +88,7 @@ class TestAttributeInheritance(BaseTestCase):
 
         # 4. Run Inheritance
         dialog.layer_factory = MagicMock()  # Avoid AttributeError
-        dialog._apply_attribute_inheritance(poly, config)
+        dialog.interpretation_manager.apply_attribute_inheritance(poly, config)
 
         # 5. Assertions
         # We EXPECT GeologyUnit to win because the polygon is at x=12 and Geol starts at x=10 (dist=2).

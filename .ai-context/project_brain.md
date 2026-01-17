@@ -7,16 +7,14 @@
 Plugin de QGIS para interpretación de secciones geológicas, manejo de sondajes (drillholes) y perfiles estructurales.
 
 <!-- METRICS_START -->
-## 📊 Métricas de Salud (Actualizado: 2026-01-11)
-- **Score de Calidad**: 92.0/100
-- **Score Cumplimiento QGIS**: 100.0/100
-- **Líneas de Código**: 15,324 en 100 módulos.
-- **Complejidad Promedio**: 14.5. (Módulos más complejos: `core/services/drillhole_service.py`, `gui/main_dialog_settings.py`, `gui/preview_layer_factory.py`).
+## 📊 Métricas de Salud (Actualizado: 2026-01-17)
+- **Score de Calidad**: 83.5/100
+- **Líneas de Código**: 16,960
+- **Complejidad Promedio**: Reducida tras refactorización de `gui/main_dialog.py`.
 <!-- METRICS_END -->
 ## 🏗️ Arquitectura Principal (Patrones Detectados)
 - **MVC (Model-View-Controller)**: Separación clara entre la lógica de QGIS (Model), los diálogos de PyQt (View) y el coordinador (`core/controller.py`).
-- **Repository**: Manejo de persistencia y acceso a datos a través de servicios.
-- **Snapping Manual**: Uso de `QgsPointLocator` para snapping en capas de memoria sin polucionar el proyecto.
+- **Gestores (Managers)**: Uso intensivo de gestores especializados para desacoplar la lógica de UI (`InterpretationManager`, `SettingsManager`, `ToolManager`, etc.).
 
 ## 🔗 Componentes Críticos
 1. **Controller (`core/controller.py`)**: Cerebro de la aplicación.
@@ -26,6 +24,6 @@ Plugin de QGIS para interpretación de secciones geológicas, manejo de sondajes
 
 ## 🚨 Deuda Técnica y Prioridades
 - **Violaciones de Arquitectura**: 10 casos detectados (mezcla UI en Core).
-- **Alta Complejidad**: `gui/main_dialog.py` (Complexity 95) y `core/validation.py` requieren fragmentación.
+- **Alta Complejidad**: `core/validation.py` requiere fragmentación. `gui/main_dialog.py` ahora tiene complejidad 13 (reducida desde 95).
 - **Refactorización de Workflow**: `ai_workflow.py` ha sido mejorado con normalización, pero necesita mayor modularidad.
 - **Snapping**: Expandir `QgsPointLocator` a otros tipos de entidades si es necesario.

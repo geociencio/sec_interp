@@ -123,10 +123,13 @@ Suite de pruebas dedicada a verificar que los servicios rechacen configuraciones
 
 ---
 
-### Objetivo 4: Reducción de Deuda Técnica (Arquitectura) [EN PROGRESO]
+### [EN PROGRESO] Objetivo 4: Reducción de Deuda Técnica (Arquitectura)
+*Fragmentación de `gui/main_dialog.py` para mejorar la mantenibilidad.*
 
-#### [MODIFY] [main_dialog.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog.py)
-Continuar la fragmentación de la lógica del diálogo principal hacia componentes especializados (sidebar, status bar, etc.).
+- [x] Extraer gestión de interpretaciones a `InterpretationManager`.
+- [ ] Extraer gestión de feedback/errores a `MessageManager` o `UIManager`.
+- [ ] Refactorizar lógica de validación interna del diálogo.
+- [x] Reducir complejidad ciclomática de 95 a < 15 (Logrado: 13).
 
 ---
 

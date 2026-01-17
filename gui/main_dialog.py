@@ -24,20 +24,17 @@
 Contains the SecInterpDialog class which is the primary UI for the plugin.
 """
 
-import json
 import traceback
 from pathlib import Path
 from typing import Any
 
 from qgis.core import (
     Qgis,
-    QgsPointXY,
     QgsProject,
 )
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import (
-    QDialog,
     QDialogButtonBox,
     QPushButton,
 )
@@ -62,6 +59,7 @@ logger = get_logger(__name__)
 from .main_dialog_cache_handler import CacheHandler
 from .main_dialog_data import DialogDataAggregator
 from .main_dialog_export import ExportManager
+from .main_dialog_interpretation import DialogInterpretationManager
 from .main_dialog_preview import PreviewManager
 from .main_dialog_settings import DialogSettingsManager
 from .main_dialog_signals import DialogSignalManager
@@ -115,8 +113,8 @@ class SecInterpDialog(SecInterpMainWindow):
         self.current_struct_data = None
         self.current_canvas = None
         self.current_layers = []
-        self.interpretations = []  # Store InterpretationPolygon objects
-        self._load_interpretations()
+        # Interpretations list is now managed by interpretation_manager
+        # Note: interpretation_manager is initialized later in _init_managers
 
         # Add cache and reset buttons
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
@@ -158,6 +156,8 @@ class SecInterpDialog(SecInterpMainWindow):
         self.settings_manager = DialogSettingsManager(self)
         self.status_manager = DialogStatusManager(self)
         self.status_manager.setup_indicators()
+        self.interpretation_manager = DialogInterpretationManager(self)
+        self.interpretation_manager.load_interpretations()
         self.tool_manager = DialogToolManager(self)
         self.navigation_manager = NavigationManager(self)
         self.layer_factory = PreviewLayerFactory()
@@ -197,7 +197,7 @@ class SecInterpDialog(SecInterpMainWindow):
             self.settings_manager.save_settings()
 
         logger.info("Closing dialog, cleaning up resources...")
-        self._save_interpretations()
+        self.interpretation_manager.save_interpretations()
         self.preview_manager.cleanup()
         super().closeEvent(event)
 
@@ -224,156 +224,20 @@ class SecInterpDialog(SecInterpMainWindow):
 
     def toggle_interpretation_tool(self, checked: bool) -> None:
         """Toggle interpretation tool via tool_manager."""
-        if checked:
-            # Deactivate measure tool if active
-            self.preview_widget.btn_measure.setChecked(False)
         self.tool_manager.toggle_interpretation_tool(checked)
 
     def on_interpretation_finished(self, interpretation: InterpretationPolygon) -> None:
-        """Handle finalized interpretation polygon.
+        """Handle finalized interpretation polygon."""
+        self.interpretation_manager.handle_interpretation_finished(interpretation)
 
-        Args:
-            interpretation: InterpretationPolygon object from the tool
+    @property
+    def interpretations(self):
+        """Proxy to interpretations in the manager for backward compatibility."""
+        return self.interpretation_manager.interpretations
 
-        """
-        from sec_interp.logger_config import log_critical_operation
-
-        from .dialogs.interpretation_properties_dialog import (
-            InterpretationPropertiesDialog,
-        )
-
-        log_critical_operation(
-            logger,
-            "on_interpretation_finished",
-            polygon_id=interpretation.id,
-            vertices=len(interpretation.vertices_2d),
-        )
-
-        # 1. Prepare for inheritance
-        interp_config = self.page_interpretation.get_data()
-
-        # Try to inherit attributes if enabled
-        if interp_config.get("inherit_geology") or interp_config.get("inherit_drillholes"):
-            self._apply_attribute_inheritance(interpretation, interp_config)
-
-        # 2. Show properties dialog
-        dlg = InterpretationPropertiesDialog(
-            interpretation, interp_config.get("custom_fields"), self
-        )
-
-        if dlg.exec_() != QDialog.Accepted:
-            logger.info(f"Interpretation canceled by user: {interpretation.id}")
-            # Deactivate interpretation tool anyway
-            self.preview_widget.btn_interpret.setChecked(False)
-            return
-
-        # Store interpretation
-        self.interpretations.append(interpretation)
-        self._save_interpretations()
-        logger.info(
-            f"Interpretation polygon added: {interpretation.id} "
-            f"({len(interpretation.vertices_2d)} vertices)"
-        )
-
-        # Display feedback in results area
-        msg = (
-            f"<b>Interpretación Finalizada</b><br>"
-            f"<b>Nombre:</b> {interpretation.name}<br>"
-            f"<b>Vértices:</b> {len(interpretation.vertices_2d)}<br>"
-            f"<b>ID:</b> {interpretation.id[:8]}..."
-        )
-        self.preview_widget.results_text.setHtml(msg)
-        self.preview_widget.results_group.setCollapsed(False)
-
-        # Deactivate interpretation tool
-        self.preview_widget.btn_interpret.setChecked(False)
-
-        # Update preview to show the new polygon
-        self.update_preview_from_checkboxes()
-
-    def _apply_attribute_inheritance(
-        self, interpretation: InterpretationPolygon, config: dict[str, Any]
-    ) -> None:
-        """Inherit attributes from nearest geology or drillhole data."""
-        from qgis.core import QgsGeometry
-
-        # Use centroid or first vertex as reference point
-        poly_geom = QgsGeometry.fromPolygonXY(
-            [[QgsPointXY(x, y) for x, y in interpretation.vertices_2d]]
-        )
-        ref_point = poly_geom.centroid().asPoint()
-
-        best_match = None
-        min_dist = float("inf")
-
-        # 1. Check Geology Data
-        if config.get("inherit_geology") and self.preview_manager.cached_data.get("geol"):
-            for segment in self.preview_manager.cached_data["geol"]:
-                # Check min distance to any point in the segment
-                if not segment.points:
-                    continue
-
-                # Find closest point in this segment
-                seg_min_dist = float("inf")
-                for p_dist, p_elev in segment.points:
-                    d = ref_point.distance(QgsPointXY(p_dist, p_elev))
-                    seg_min_dist = min(d, seg_min_dist)
-
-                if seg_min_dist < min_dist:
-                    min_dist = seg_min_dist
-                    best_match = {
-                        "name": segment.unit_name,
-                        "type": "geology",
-                        "attrs": segment.attributes,
-                    }
-
-        # 2. Check Drillhole Data (Intervals)
-        if config.get("inherit_drillholes") and self.preview_manager.cached_data.get("drillhole"):
-            for dh in self.preview_manager.cached_data["drillhole"]:
-                # Handle both tuple (id, trace, intervals) and object (with .intervals)
-                extracted_intervals = []
-                if isinstance(dh, tuple) and len(dh) >= 3:
-                    extracted_intervals = dh[2]
-                elif hasattr(dh, "intervals"):
-                    extracted_intervals = dh.intervals
-
-                if not extracted_intervals:
-                    continue
-
-                for interval in extracted_intervals:
-                    if not interval.points:
-                        continue
-
-                    # Find closest point in this interval
-                    int_min_dist = float("inf")
-                    for p_dist, p_elev in interval.points:
-                        d = ref_point.distance(QgsPointXY(p_dist, p_elev))
-                        int_min_dist = min(d, int_min_dist)
-
-                    if int_min_dist < min_dist:
-                        min_dist = int_min_dist
-                        # Polymorphic access: DrillholeInterval uses 'rock_unit', GeologySegment uses 'unit_name'
-                        unit_name = getattr(
-                            interval,
-                            "rock_unit",
-                            getattr(interval, "unit_name", "Unknown"),
-                        )
-
-                        best_match = {
-                            "name": unit_name,
-                            "type": "drillhole",
-                            "attrs": interval.attributes,
-                        }
-
-        if best_match:
-            logger.info(f"Inherited attributes from {best_match['type']}: {best_match['name']}")
-            interpretation.name = best_match["name"]
-            interpretation.type = best_match["type"]
-            # Copy all attributes from source
-            if best_match["attrs"]:
-                interpretation.attributes.update(best_match["attrs"])
-            # Update color to match unit color if possible
-            interpretation.color = self.layer_factory.get_color_for_unit(best_match["name"]).name()
+    @interpretations.setter
+    def interpretations(self, value):
+        self.interpretation_manager.interpretations = value
 
     def update_preview_checkbox_states(self):
         """Enable or disable preview checkboxes via status_manager."""
@@ -447,7 +311,7 @@ class SecInterpDialog(SecInterpMainWindow):
         if not self.validate_inputs():
             return
 
-        self._save_interpretations()
+        self.interpretation_manager.save_interpretations()
         self.accept()
 
     def reject_handler(self):
@@ -507,61 +371,3 @@ class SecInterpDialog(SecInterpMainWindow):
     def _save_user_settings(self):
         """Save user settings via settings_manager."""
         self.settings_manager.save_settings()
-
-    def _save_interpretations(self):
-        """Save interpretations to the QGIS project."""
-        if not self.project:
-            return
-
-        data = []
-        for interp in self.interpretations:
-            data.append(
-                {
-                    "id": interp.id,
-                    "name": interp.name,
-                    "type": interp.type,
-                    "vertices_2d": interp.vertices_2d,
-                    "attributes": interp.attributes,
-                    "color": interp.color,
-                    "created_at": interp.created_at,
-                }
-            )
-
-        def json_serial(obj):
-            """JSON serializer for objects not serializable by default json code."""
-            if hasattr(obj, "isNull"):  # Handle QVariant (PyQt5/PyQGIS)
-                if obj.isNull():
-                    return None
-                return obj.value()
-            return str(obj)
-
-        json_data = json.dumps(data, default=json_serial)
-        self.project.writeEntry("SecInterp", "interpretations", json_data)
-        logger.debug(f"Saved {len(data)} interpretations to project")
-
-    def _load_interpretations(self):
-        """Load interpretations from the QGIS project."""
-        if not self.project:
-            return
-
-        json_data, ok = self.project.readEntry("SecInterp", "interpretations", "[]")
-        if not ok or not json_data:
-            return
-
-        try:
-            data = json.loads(json_data)
-            self.interpretations = []
-            for item in data:
-                interp = InterpretationPolygon(
-                    id=item.get("id", ""),
-                    name=item.get("name", ""),
-                    type=item.get("type", "lithology"),
-                    vertices_2d=[tuple(v) for v in item.get("vertices_2d", [])],
-                    attributes=item.get("attributes", {}),
-                    color=item.get("color", "#FF0000"),
-                    created_at=item.get("created_at", ""),
-                )
-                self.interpretations.append(interp)
-            logger.info(f"Loaded {len(self.interpretations)} interpretations from project")
-        except Exception:
-            logger.exception("Failed to load interpretations")
