@@ -189,8 +189,13 @@ class DialogInterpretationManager:
         ):
             for dh in self.dialog.preview_manager.cached_data["drillhole"]:
                 extracted_intervals = []
-                if isinstance(dh, tuple) and len(dh) >= 3:
-                    extracted_intervals = dh[2]
+                if isinstance(dh, tuple):
+                    # Drillhole data is a tuple: (hid, trace2d, trace3d, proj3d, geologic_segments)
+                    if len(dh) == 5:
+                        extracted_intervals = dh[4]
+                    elif len(dh) >= 3:
+                        # Legacy/Fallback format
+                        extracted_intervals = dh[2]
                 elif hasattr(dh, "intervals"):
                     extracted_intervals = dh.intervals
 
@@ -198,11 +203,13 @@ class DialogInterpretationManager:
                     continue
 
                 for interval in extracted_intervals:
-                    if not interval.points:
+                    # Robust check for points attribute/existence
+                    points = getattr(interval, "points", None)
+                    if not points:
                         continue
 
                     int_min_dist = float("inf")
-                    for p_dist, p_elev in interval.points:
+                    for p_dist, p_elev in points:
                         d = ref_point.distance(QgsPointXY(p_dist, p_elev))
                         int_min_dist = min(d, int_min_dist)
 
@@ -211,7 +218,7 @@ class DialogInterpretationManager:
                         unit_name = getattr(
                             interval,
                             "rock_unit",
-                            getattr(interval, "unit_name", "Unknown"),
+                            getattr(interval, "unit_name", self.dialog.tr("Unknown")),
                         )
 
                         best_match = {

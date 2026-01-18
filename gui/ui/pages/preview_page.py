@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from qgis.core import QgsApplication
 from qgis.gui import QgsCollapsibleGroupBox, QgsMapCanvas
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
@@ -74,20 +75,26 @@ class PreviewWidget(QWidget):
         """Set up preview, measure, and export buttons."""
         btn_layout = QHBoxLayout()
         self.btn_preview = QPushButton(self.tr("Preview"))
+        self.btn_preview.setIcon(QgsApplication.getThemeIcon("mActionRefresh.svg"))
+
         self.btn_export = QPushButton(self.tr("Export"))
         self.btn_export.setToolTip(self.tr("Export preview to file"))
+        self.btn_export.setIcon(QgsApplication.getThemeIcon("mActionSaveMapAsImage.svg"))
 
         self.btn_measure = QPushButton(self.tr("Measure"))
         self.btn_measure.setCheckable(True)
         self.btn_measure.setToolTip(self.tr("Measure distance and slope"))
+        self.btn_measure.setIcon(QgsApplication.getThemeIcon("mActionMeasure.svg"))
 
         self.btn_interpret = QPushButton(self.tr("Interpret"))
         self.btn_interpret.setCheckable(True)
         self.btn_interpret.setToolTip(self.tr("Draw interpretation polygons"))
+        self.btn_interpret.setIcon(QgsApplication.getThemeIcon("mActionAddPolygon.svg"))
 
         self.btn_finalize = QPushButton(self.tr("Finalize"))
         self.btn_finalize.setToolTip(self.tr("Finalize multi-point measurement"))
         self.btn_finalize.setVisible(False)
+        self.btn_finalize.setIcon(QgsApplication.getThemeIcon("mActionCheck.svg"))
 
         btn_layout.addWidget(self.btn_preview)
         btn_layout.addWidget(self.btn_measure)

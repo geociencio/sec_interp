@@ -313,7 +313,7 @@ class SecInterpDialog(SecInterpMainWindow):
         """
         is_valid, error_message = self.validation_manager.validate_inputs()
         if not is_valid:
-            show_user_message(self, "Validation Error", error_message)
+            show_user_message(self, self.tr("Validation Error"), error_message)
         return is_valid
 
     def clear_cache_handler(self):

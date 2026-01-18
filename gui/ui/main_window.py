@@ -118,7 +118,7 @@ class SecInterpMainWindow(QDialog):
 
         # -- Bottom Area: Output & Buttons --
         out_layout = QHBoxLayout()
-        out_layout.addWidget(QLabel("Output Folder"))
+        out_layout.addWidget(QLabel(self.tr("Output Folder")))
 
         self.output_widget.setStorageMode(QgsFileWidget.GetDirectory)
         out_layout.addWidget(self.output_widget)
@@ -127,13 +127,13 @@ class SecInterpMainWindow(QDialog):
         main_layout.addWidget(self.button_box)
 
         # Populate sidebar
-        self.sidebar.add_item("DEM / Raster", "mIconRaster.svg")
-        self.sidebar.add_item("Section Line", "mIconLineLayer.svg")
-        self.sidebar.add_item("Geology", "mIconPolygonLayer.svg")
-        self.sidebar.add_item("Structural", "mIconPointLayer.svg")
-        self.sidebar.add_item("Drillholes", "mActionDataSourceManager.svg")
-        self.sidebar.add_item("Interpretation", "mActionEdit.svg")
-        self.sidebar.add_item("Settings", "mActionOptions.svg")
+        self.sidebar.add_item(self.tr("DEM / Raster"), "mIconRaster.svg")
+        self.sidebar.add_item(self.tr("Section Line"), "mIconLineLayer.svg")
+        self.sidebar.add_item(self.tr("Geology"), "mIconPolygonLayer.svg")
+        self.sidebar.add_item(self.tr("Structural"), "mIconPointLayer.svg")
+        self.sidebar.add_item(self.tr("Drillholes"), "mActionDataSourceManager.svg")
+        self.sidebar.add_item(self.tr("Interpretation"), "mActionEdit.svg")
+        self.sidebar.add_item(self.tr("Settings"), "mActionOptions.svg")
 
         self.sidebar.setCurrentRow(0)
 
