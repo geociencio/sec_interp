@@ -50,6 +50,7 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
     - Implementación de `CacheHandler` para centralizar la gestión de estado de cache.
     - Desplazamiento de notificaciones de reset al `DialogSettingsManager`.
     - Reducción de 20+ líneas de código boilerplate en el diálogo principal.
+    - **Bug Fix**: Restaurados métodos proxy `_load_interpretations` y `_load_user_settings` en `SecInterpDialog` para asegurar compatibilidad tras la fragmentación.
     - Nueva suite de pruebas unitarias para el gestor de mensajes.
 
 ### [2.7.0] - (In-Progress) 2026-01-16

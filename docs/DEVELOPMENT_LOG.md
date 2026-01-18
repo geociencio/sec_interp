@@ -10,6 +10,7 @@ Chronological record of development activities, significant fixes, and technical
 - **Refactorización de UI (Fase 2)**: Extraída gestión de mensajes y errores a `MessageManager`.
 - **Desacoplamiento**: Eliminada dependencia directa de `main_dialog_export.py` con widgets de QGIS.
 - **Simplificación**: Lógica de botones de Cache y Reset delegada a gestores especializados.
+- **Bug Fix**: Resuelto `AttributeError` en `SecInterpDialog` mediante métodos proxy para interpretaciones y ajustes, restaurando compatibilidad con el plugin.
 - **Calidad**: Añadidos tests unitarios para mensajería; 358 tests en verde en Docker.
 
 ## [2026-01-17] Resumen

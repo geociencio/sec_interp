@@ -62,8 +62,8 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 108
-- **Lines of Code**: 17,485
-- **Functions**: 608
+- **Lines of Code**: 17,497
+- **Functions**: 610
 - **Classes**: 115
 - **Average Complexity**: 12.4
 - **Most Complex Modules**: core/services/drillhole_service.py, gui/preview_layer_factory.py, gui/main_dialog_preview.py
@@ -106,7 +106,7 @@ No clear design patterns detected.
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 108
-- **Edges**: 132
+- **Edges**: 131
 - **Density**: 0.011
 - **Acyclic Graph**: Yes
 - **Connected Components**: 35

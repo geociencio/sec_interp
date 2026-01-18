@@ -340,6 +340,14 @@ class SecInterpDialog(SecInterpMainWindow):
         """Get a theme icon via DialogEntityManager."""
         return DialogEntityManager.get_theme_icon(name)
 
+    def _load_interpretations(self):
+        """Load interpretations via interpretation_manager."""
+        self.interpretation_manager.load_interpretations()
+
+    def _save_interpretations(self):
+        """Save interpretations via interpretation_manager."""
+        self.interpretation_manager.save_interpretations()
+
     def _load_user_settings(self):
         """Load user settings via settings_manager."""
         self.settings_manager.load_settings()

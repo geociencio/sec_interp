@@ -233,7 +233,7 @@ class SecInterp:
 
         # Reload interpretations and UI settings to reflect current project state
         self.dlg._load_interpretations()
-        self.dlg.settings_manager.load_settings()
+        self.dlg._load_user_settings()
         # Show the dialog
         self.dlg.show()
         # Run the dialog event loop
