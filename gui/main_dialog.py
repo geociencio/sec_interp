@@ -24,7 +24,6 @@
 Contains the SecInterpDialog class which is the primary UI for the plugin.
 """
 
-import traceback
 from pathlib import Path
 from typing import Any
 
@@ -39,7 +38,6 @@ from qgis.PyQt.QtWidgets import (
     QPushButton,
 )
 
-from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.types import InterpretationPolygon
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
@@ -60,6 +58,7 @@ from .main_dialog_cache_handler import CacheHandler
 from .main_dialog_data import DialogDataAggregator
 from .main_dialog_export import ExportManager
 from .main_dialog_interpretation import DialogInterpretationManager
+from .main_dialog_messages import MessageManager
 from .main_dialog_preview import PreviewManager
 from .main_dialog_settings import DialogSettingsManager
 from .main_dialog_signals import DialogSignalManager
@@ -148,6 +147,7 @@ class SecInterpDialog(SecInterpMainWindow):
         """Initialize all manager instances."""
         from sec_interp.core.services.preview_service import PreviewService
 
+        self.message_manager = MessageManager(self)
         self.validator = DialogValidator(self)
         self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
         self.export_manager = ExportManager(self)
@@ -170,20 +170,7 @@ class SecInterpDialog(SecInterpMainWindow):
             title: Title for the error message box.
 
         """
-        if isinstance(error, SecInterpError):
-            msg = str(error)
-            logger.warning(f"{title}: {msg} - Details: {error.details}")
-            show_user_message(self, title, msg, level="warning")
-        else:
-            msg = self.tr("An unexpected error occurred: {}").format(error)
-            details = traceback.format_exc()
-            logger.error(f"{title}: {msg}\n{details}")
-            show_user_message(
-                self,
-                title,
-                self.tr("{}\n\nPlease check the logs for details.").format(msg),
-                level="critical",
-            )
+        self.message_manager.handle_error(error, title)
 
     def wheelEvent(self, event: Any) -> None:
         """Handle mouse wheel for zooming in preview via navigation_manager."""
@@ -208,7 +195,7 @@ class SecInterpDialog(SecInterpMainWindow):
         if help_file.exists():
             QDesktopServices.openUrl(QUrl.fromLocalFile(str(help_file)))
         else:
-            self.messagebar.pushMessage(
+            self.message_manager.push_message(
                 self.tr("Error"),
                 self.tr("Help file not found. Please run 'make doc' to generate it."),
                 level=Qgis.Warning,
@@ -292,7 +279,7 @@ class SecInterpDialog(SecInterpMainWindow):
             self.settings_manager.save_settings()
 
         if not success and message:
-            self.messagebar.pushMessage("Preview Error", message, level=2)
+            self.message_manager.push_message(self.tr("Preview Error"), message, level=Qgis.Warning)
 
     def export_preview(self):
         """Export the current preview to a file using ExportManager."""
@@ -330,23 +317,12 @@ class SecInterpDialog(SecInterpMainWindow):
         return is_valid
 
     def clear_cache_handler(self):
-        """Clear cached data and notify user."""
-        if hasattr(self, "plugin_instance") and self.plugin_instance:
-            self.plugin_instance.controller.data_cache.clear()
-            self.preview_widget.results_text.append(
-                self.tr("✓ Cache cleared - next preview will re-process data")
-            )
-            # context specific usage
-            logger = get_logger(__name__)
-            logger.info("Cache cleared by user")
-        else:
-            self.preview_widget.results_text.append(self.tr("⚠ Cache not available"))
+        """Clear cached data via CacheHandler."""
+        self.cache_handler.clear_cache()
 
     def reset_defaults_handler(self):
-        """Reset all dialog inputs and notify user."""
+        """Reset all dialog inputs via settings_manager."""
         self.settings_manager.reset_to_defaults()
-        self.preview_widget.results_text.append(self.tr("✓ Form reset to default values"))
-        logger.info("Dialog reset to defaults by user")
 
     def _populate_field_combobox(self, source_combobox: Any, target_combobox: Any) -> None:
         """Populate a combobox with field names."""

@@ -44,6 +44,14 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
+### [2.7.0] - (In-Progress) 2026-01-18
+- **Refactorización de Interfaz (Fase 2)**:
+    - Introducción de `MessageManager` para desacoplar la lógica de presentación.
+    - Implementación de `CacheHandler` para centralizar la gestión de estado de cache.
+    - Desplazamiento de notificaciones de reset al `DialogSettingsManager`.
+    - Reducción de 20+ líneas de código boilerplate en el diálogo principal.
+    - Nueva suite de pruebas unitarias para el gestor de mensajes.
+
 ### [2.7.0] - (In-Progress) 2026-01-16
 - **Testing Infrastructure (Dockerization)**:
     - Implemented `Dockerfile` optimized for QGIS headless testing with `uv`.

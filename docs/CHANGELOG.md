@@ -16,11 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Infrastructure**: Mejoras en la compatibilidad de `pyproject.toml` para empaquetado universal.
 
 ### Changed
-- **Core**: Refactorización masiva para estandarización de estilo (Black/Ruff).
-- **Core**: Mejora en la robustez de validación de proyectos (`ProjectValidator`).
-- **Architecture**: Fragmentación de `SecInterpDialog` reduciendo complejidad ciclomática de **95 a 13**.
-- **Architecture**: Extracción de lógica de interpretaciones geológicas a `DialogInterpretationManager`.
-- **Testing**: Actualización de suites de integración y GUI para soportar la nueva arquitectura modular.
+- Refactored message and error handling into a centralized `MessageManager` for better testability.
+- Simplified Cache and Reset button logic by delegating to specialized handlers.
+- Reduced code coupling in `SecInterpDialog` and `ExportManager`.
+
+### Fixed
+- Fixed potential `NameError` in `CacheHandler` when logging without imports.
+
 ### 🧪 Testing & Quality
 - **Test Suite Total Stabilization**:
   - Achieved 100% success rate (353/353 tests passing) after resolving massive mock-related failures and adding new manager tests.

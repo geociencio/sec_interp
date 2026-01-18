@@ -342,6 +342,11 @@ class DialogSettingsManager:
                 self.dialog._save_interpretations()
             logger.info("Persistent interpretations cleared by reset")
 
+        self.dialog.preview_widget.results_text.append(
+            self.dialog.tr("✓ Form reset to default values")
+        )
+        logger.info("Dialog reset to defaults by user")
+
     # --- Helper Methods ---
     def _parse_setting_value(self, val: Any) -> Any:
         """Parse string values back to appropriate Python types."""

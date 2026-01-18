@@ -9,7 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from qgis.core import QgsSettings
+from qgis.core import Qgis, QgsSettings
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QFileDialog
@@ -58,18 +58,20 @@ class ExportManager:
         try:
             with PerformanceTimer("Total Preview Export Time", self.metrics):
                 if not self.dialog.current_canvas:
-                    self.dialog.messagebar.pushMessage(
-                        "Export Error",
-                        "No preview available to export. Generate a preview first.",
-                        level=2,
+                    self.dialog.message_manager.push_message(
+                        self.dialog.tr("Export Error"),
+                        self.dialog.tr("No preview available to export. Generate a preview first."),
+                        level=Qgis.Warning,
                     )
                     return False
 
                 canvas = self.dialog.current_canvas
                 layers = canvas.layers()
                 if not layers:
-                    self.dialog.messagebar.pushMessage(
-                        "Export Error", "No layers to export.", level=2
+                    self.dialog.message_manager.push_message(
+                        self.dialog.tr("Export Error"),
+                        self.dialog.tr("No layers to export."),
+                        level=Qgis.Warning,
                     )
                     return False
 
@@ -136,8 +138,10 @@ class ExportManager:
                 success = exporter.export(output_path, map_settings)
 
                 if success:
-                    self.dialog.messagebar.pushMessage(
-                        "Success", f"Preview exported to {output_path.name}", level=3
+                    self.dialog.message_manager.push_message(
+                        self.dialog.tr("Success"),
+                        self.dialog.tr("Preview exported to {}").format(output_path.name),
+                        level=Qgis.Success,
                     )
                 else:
                     raise ExportError(f"Failed to export preview to {output_path.name}")
@@ -181,7 +185,11 @@ class ExportManager:
             )
 
             if not profile_data:
-                self.dialog.messagebar.pushMessage("Error", "No profile data generated.", level=1)
+                self.dialog.message_manager.push_message(
+                    self.dialog.tr("Error"),
+                    self.dialog.tr("No profile data generated."),
+                    level=Qgis.Critical,
+                )
                 return False
 
             num_interps = len(self.dialog.interpretations)

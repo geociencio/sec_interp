@@ -5,6 +5,13 @@ Chronological record of development activities, significant fixes, and technical
 
 ---
 ---
+---
+## [2026-01-18] Resumen
+- **Refactorización de UI (Fase 2)**: Extraída gestión de mensajes y errores a `MessageManager`.
+- **Desacoplamiento**: Eliminada dependencia directa de `main_dialog_export.py` con widgets de QGIS.
+- **Simplificación**: Lógica de botones de Cache y Reset delegada a gestores especializados.
+- **Calidad**: Añadidos tests unitarios para mensajería; 358 tests en verde en Docker.
+
 ## [2026-01-17] Resumen
 - **Refactorización de Arquitectura**: Completada Fase 1 de fragmentación de `main_dialog.py`.
 - **Modularidad**: Creado `DialogInterpretationManager` para manejar lógica de interpretaciones.

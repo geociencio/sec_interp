@@ -1,7 +1,6 @@
-"""Cache handler for main dialog.
+from sec_interp.logger_config import get_logger
 
-Placeholder for future cache management functionality.
-"""
+logger = get_logger(__name__)
 
 
 class CacheHandler:
@@ -15,3 +14,14 @@ class CacheHandler:
 
         """
         self.dialog = dialog
+
+    def clear_cache(self) -> None:
+        """Clear cached data and notify user."""
+        if hasattr(self.dialog, "plugin_instance") and self.dialog.plugin_instance:
+            self.dialog.plugin_instance.controller.data_cache.clear()
+            self.dialog.preview_widget.results_text.append(
+                self.dialog.tr("✓ Cache cleared - next preview will re-process data")
+            )
+            logger.info("Cache cleared by user")
+        else:
+            self.dialog.preview_widget.results_text.append(self.dialog.tr("⚠ Cache not available"))

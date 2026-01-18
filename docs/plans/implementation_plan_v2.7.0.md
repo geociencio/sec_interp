@@ -123,12 +123,13 @@ Suite de pruebas dedicada a verificar que los servicios rechacen configuraciones
 
 ---
 
-### [EN PROGRESO] Objetivo 4: Reducción de Deuda Técnica (Arquitectura)
+### [COMPLETADO] Objetivo 4: Reducción de Deuda Técnica (Arquitectura)
 *Fragmentación de `gui/main_dialog.py` para mejorar la mantenibilidad.*
 
 - [x] Extraer gestión de interpretaciones a `InterpretationManager`.
-- [ ] Extraer gestión de feedback/errores a `MessageManager` o `UIManager`.
-- [ ] Refactorizar lógica de validación interna del diálogo.
+- [x] Extraer gestión de feedback/errores a `MessageManager`.
+- [x] Simplificar lógica de botones de Cache y Reset (delegación a gestores).
+- [ ] Refactorizar lógica de validación interna del diálogo (Pendiente).
 - [x] Reducir complejidad ciclomática de 95 a < 15 (Logrado: 13).
 
 ---
@@ -203,6 +204,6 @@ Ejecutar `make docker-test` y confirmar que todos los tests pasan correctamente 
 
 ---
 
-**Fecha Última Actualización:** 2026-01-15
+**Fecha Última Actualización:** 2026-01-18
 **Autor:** Antigravity
-**Estado:** Fase v2.7.0 en ejecución. Infraestructura de pruebas estabilizada.
+**Estado:** Fase v2.7.0 en ejecución. Refactorización de GUI en progreso (75% completado de Objetivo 4).
