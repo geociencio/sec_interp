@@ -1,23 +1,18 @@
-# Handoff: Refactorización de Validación de Diálogo Completada
+# Handoff: Objetivo 1 (Limpieza y Sphinx) Completado
 
 ## Estado Actual
-- **Objetivo 4 (Deuda Técnica)**: Refactor de validación interna del diálogo terminado.
-- **Arquitectura**: Implementado `DialogValidationManager` declarativo. `DialogStatusManager` y `SecInterpDialog` ahora usan este gestor.
+- **Objetivo 1 (Sphinx)**: Infraestructura automatizada validada. Los archivos HTML rastreados que polucionaban el repo han sido eliminados de Git.
+- **Limpieza**: `analysis_results/` ahora está ignorado en Git pero se mantiene físicamente.
+- **Documentación**: Generada con éxito en `../sec_interp_docs` y sincronizada en `help/html` (untracked).
 - **Tests**: 361 tests en verde (ejecutados vía Docker).
-- **Archivos Modificados/Creados**:
-    - `gui/main_dialog_validation_manager.py` (NUEVO)
-    - `gui/main_dialog_status.py` (Refactorizado)
-    - `gui/main_dialog.py` (Refactorizado)
-    - `tests/gui/test_main_dialog_validation_manager.py` (NUEVO/Actualizado)
-    - `gui/main_dialog_validation.py` (ELIMINADO)
 
 ## Pendiente
-- **Objetivo 1 (Sphinx)**: Continuar con la limpieza de archivos HTML rastreados que polucionan el repo (59.8% HTML).
-- **Objetivo 1**: Documentación Sphinx externa (ya iniciada pero requiere revisión de los scripts de limpieza).
+- Continuar con el roadmap **Fase v2.7.0**.
+- Revisar si hay ajustes adicionales en el sistema de validación de 3 niveles (aunque ya se marcó como completado, siempre es bueno verificar tras refactors de UI).
 
 ## Comando para Retomar
 ```bash
 /inicia-sesion
 ```
-O simplemente continuar con:
-"Limpieza de archivos HTML rastreados y validación del build de Sphinx."
+O simplemente:
+"Continuar con el roadmap de la Fase v2.7.0 (Excelencia Operativa)."

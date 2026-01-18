@@ -16,9 +16,8 @@ analyzer_config.json
 .analyzer_state.json
 AI_CONTEXT.md
 PROJECT_SUMMARY.md
-analysis.log
-analysis_errors.json
 project_context.json
+analysis_results/
 # Logs
 logs/
 *.log

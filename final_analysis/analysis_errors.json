@@ -1,0 +1,657 @@
+[
+  {
+    "timestamp": 1766932397.5394664,
+    "file": "gui/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5396779,
+    "file": "gui/main_dialog_cache_handler.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5399795,
+    "file": "gui/legend_widget.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5401618,
+    "file": "gui/main_dialog_config.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5403466,
+    "file": "gui/main_dialog_status.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5410013,
+    "file": "gui/services/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5412018,
+    "file": "gui/tools/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5413487,
+    "file": "gui/main_dialog_data.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5417085,
+    "file": "gui/main_dialog_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5419097,
+    "file": "gui/ui/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5420685,
+    "file": "gui/ui/pages/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5422995,
+    "file": "gui/main_dialog_validation.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5425608,
+    "file": "gui/ui/pages/base_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5426557,
+    "file": "gui/preview_reporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5427897,
+    "file": "gui/main_dialog_signals.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5429697,
+    "file": "gui/main_dialog.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.543131,
+    "file": "gui/main_dialog_export.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5432467,
+    "file": "gui/ui/pages/geology_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.543474,
+    "file": "gui/ui/main_window.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5442924,
+    "file": "gui/main_dialog_tools.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5444145,
+    "file": "gui/ui/sidebar.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5446076,
+    "file": "gui/services/parallel_geology_service.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5448506,
+    "file": "gui/utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5449924,
+    "file": "gui/preview_renderer.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5450847,
+    "file": "gui/preview_axes_manager.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5452602,
+    "file": "gui/ui/pages/section_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5454276,
+    "file": "gui/preview_legend_renderer.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5456824,
+    "file": "gui/main_dialog_settings.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5458214,
+    "file": "gui/tools/measure_tool.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5458586,
+    "file": "gui/main_dialog_preview.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5460324,
+    "file": "gui/ui/pages/dem_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5462358,
+    "file": "gui/ui/pages/structure_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5465498,
+    "file": "gui/preview_layer_factory.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5466957,
+    "file": "gui/ui/pages/preview_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5468342,
+    "file": "gui/ui/pages/drillhole_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.547083,
+    "file": "gui/tools/interpretation_tool.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5473363,
+    "file": "core/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.54757,
+    "file": "core/algorithms.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5478485,
+    "file": "__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.548219,
+    "file": "core/interfaces/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5484428,
+    "file": "core/interfaces/geology_interface.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.548615,
+    "file": "core/exceptions.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5488858,
+    "file": "core/interfaces/preview_interface.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5493433,
+    "file": "core/interfaces/cache_interface.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5494874,
+    "file": "core/interfaces/drillhole_interface.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5502331,
+    "file": "core/config.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5504577,
+    "file": "core/interfaces/structure_interface.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5508814,
+    "file": "core/interfaces/profile_interface.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5510454,
+    "file": "core/services/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5512059,
+    "file": "core/data_cache.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5513232,
+    "file": "core/utils/geology.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5516906,
+    "file": "core/utils/geometry_utils/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5519981,
+    "file": "core/utils/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5523095,
+    "file": "core/utils/geometry_utils/filtering.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5526567,
+    "file": "core/utils/geometry_utils/extraction.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5529718,
+    "file": "core/utils/geometry_utils/processing.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.553175,
+    "file": "core/utils/io.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.553635,
+    "file": "core/utils/geometry.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5540996,
+    "file": "core/utils/resource_manager.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5543437,
+    "file": "core/controller.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5546732,
+    "file": "core/utils/geometry_utils/measurement.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5548975,
+    "file": "core/services/profile_service.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5551186,
+    "file": "core/services/preview_service.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5552092,
+    "file": "core/performance_metrics.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5554056,
+    "file": "core/validation/path_validator.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.555446,
+    "file": "exporters/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5556345,
+    "file": "core/validation/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5558333,
+    "file": "exporters/csv_exporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5560462,
+    "file": "core/utils/rendering.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5563304,
+    "file": "core/services/structure_service.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.556575,
+    "file": "core/types.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5568445,
+    "file": "core/utils/parsing.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.557259,
+    "file": "core/services/geology_service.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5574605,
+    "file": "core/utils/sampling.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5575476,
+    "file": "exporters/base_exporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5576317,
+    "file": "exporters/image_exporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5579512,
+    "file": "core/utils/spatial.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5582209,
+    "file": "core/services/drillhole_service.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5585172,
+    "file": "exporters/drillhole_exporters.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.55867,
+    "file": "core/services/export_service.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5589564,
+    "file": "core/utils/drillhole.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.55905,
+    "file": "core/utils/geometry_utils/optimization.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5594332,
+    "file": "exporters/interpretation_exporters.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5595353,
+    "file": "core/validation/project_validator.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5596812,
+    "file": "core/validation/field_validator.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5599806,
+    "file": "core/validation/layer_validator.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.560095,
+    "file": "gui/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5602381,
+    "file": "gui/main_dialog_cache_handler.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5605314,
+    "file": "exporters/svg_exporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5609643,
+    "file": "generate_ai_templates.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5611687,
+    "file": "exporters/shp_exporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5614102,
+    "file": "gui/legend_widget.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5616457,
+    "file": "exporters/pdf_exporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.561845,
+    "file": "gui/main_dialog_config.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5621676,
+    "file": "gui/main_dialog_status.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5624585,
+    "file": "gui/services/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5627556,
+    "file": "gui/tools/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5629637,
+    "file": "gui/main_dialog_data.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5633376,
+    "file": "gui/main_dialog_utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5635023,
+    "file": "gui/ui/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5637507,
+    "file": "gui/ui/pages/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5639665,
+    "file": "gui/main_dialog_validation.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.564157,
+    "file": "gui/ui/pages/base_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5643604,
+    "file": "gui/preview_reporter.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5646133,
+    "file": "gui/main_dialog_signals.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5651445,
+    "file": "exporters/profile_exporters.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5653782,
+    "file": "gui/main_dialog.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.565628,
+    "file": "gui/main_dialog_export.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5658445,
+    "file": "gui/ui/pages/geology_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5660555,
+    "file": "resources/__init__.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5662422,
+    "file": "gui/ui/main_window.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5663612,
+    "file": "gui/main_dialog_tools.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5666203,
+    "file": "gui/ui/sidebar.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5669708,
+    "file": "gui/services/parallel_geology_service.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.567234,
+    "file": "gui/utils.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5673885,
+    "file": "gui/preview_renderer.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5677214,
+    "file": "resources/resources.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5678685,
+    "file": "gui/preview_axes_manager.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5682397,
+    "file": "gui/ui/pages/section_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5685394,
+    "file": "gui/preview_legend_renderer.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5688233,
+    "file": "gui/main_dialog_settings.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5692098,
+    "file": "gui/tools/measure_tool.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5692945,
+    "file": "gui/main_dialog_preview.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5698628,
+    "file": "gui/ui/pages/dem_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5703208,
+    "file": "gui/ui/pages/structure_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5707638,
+    "file": "gui/preview_layer_factory.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5709753,
+    "file": "logger_config.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5713608,
+    "file": "gui/ui/pages/preview_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5714407,
+    "file": "gui/ui/pages/drillhole_page.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5720043,
+    "file": "gui/tools/interpretation_tool.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  },
+  {
+    "timestamp": 1766932397.5721657,
+    "file": "sec_interp_plugin.py",
+    "error_message": "Error lectura: 'str' object has no attribute 'stat'"
+  }
+]

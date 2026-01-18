@@ -29,13 +29,15 @@ Submodules
    sec_interp.gui.main_dialog_config
    sec_interp.gui.main_dialog_data
    sec_interp.gui.main_dialog_export
+   sec_interp.gui.main_dialog_interpretation
+   sec_interp.gui.main_dialog_messages
    sec_interp.gui.main_dialog_preview
    sec_interp.gui.main_dialog_settings
    sec_interp.gui.main_dialog_signals
    sec_interp.gui.main_dialog_status
    sec_interp.gui.main_dialog_tools
    sec_interp.gui.main_dialog_utils
-   sec_interp.gui.main_dialog_validation
+   sec_interp.gui.main_dialog_validation_manager
    sec_interp.gui.preview_axes_manager
    sec_interp.gui.preview_layer_factory
    sec_interp.gui.preview_legend_renderer

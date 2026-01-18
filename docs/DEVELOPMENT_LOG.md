@@ -6,7 +6,13 @@ Chronological record of development activities, significant fixes, and technical
 ---
 ---
 ---
-## [2026-01-18] Resumen
+## [2026-01-18] Resumen (Tarde)
+- **Limpieza de Repo**: Eliminado rastreo de archivos HTML pesados (`analysis_results/`).
+- **Sphinx**: Validada la infraestructura de documentación con salida externa y sincronización local.
+- **Higiene**: Actualizado `.gitignore` para mantener el repositorio libre de artefactos de análisis.
+- **Calidad**: 361 tests OK en Docker.
+
+## [2026-01-18] Resumen (Mañana)
 - **Refactorización de Validación**: Implementado `DialogValidationManager` declarativo para centralizar reglas de UI.
 - **Desacoplamiento**: `DialogStatusManager` ahora consume el estado de validación desde el manager especializado.
 - **Arquitectura**: Completado Objetivo 4 de la fase v2.7.0 (Reducción de Deuda Técnica en Dialog).

@@ -40,9 +40,9 @@ Configuración de Sphinx con soporte para `autodoc` y `napoleon`.
 Script para construir la documentación y moverla automáticamente al directorio externo definido por el usuario.
 
 > [!NOTE]
-> **Finalizado el 2026-01-16**
+> **Finalizado el 2026-01-18**
 >
-> Infraestructura implementada. `conf.py` configurado con temas y extensiones. `build_docs.sh` genera documentación en `../sec_interp_docs` y sincroniza `help/html` para uso local, pero manteniendo el repo limpio (archivos HTML eliminados de git).
+> Infraestructura validada y repositorio limpiado. Se ha configurado el des-rastreo de archivos de análisis (`analysis_results/`) y se ha confirmado la generación externa de docs en `../sec_interp_docs` con sincronización untracked en `help/html`.
 
 
 ---

@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Core**: Sistema de validación de lógica de negocio (Nivel 2) con reportes de error detallados (`ValidationContext`).
 - **Core**: Validadores reutilizables y robustos para configuración (Nivel 1).
 - **Core**: Validación de Dominio (Nivel 3) en capa de servicios con patrón "Fail Fast" para integridad de datos.
-- **Docs**: Infraestructura automatizada con Sphinx (`build_docs.sh`) para generación de documentación API y limpieza de repositorio.
+- **Docs**: Infraestructura automatizada con Sphinx (`build_docs.sh`) para generación de documentación API y limpieza de repositorio (validado).
+- **Infrastructure**: Ignorancia selectiva de `analysis_results/` en Git para reportes de análisis locales.
 - **Infrastructure**: Nueva infraestructura de testing Dockerizada con target automatizado `make docker-test`.
 - **Infrastructure**: Mejoras en la compatibilidad de `pyproject.toml` para empaquetado universal.
 
