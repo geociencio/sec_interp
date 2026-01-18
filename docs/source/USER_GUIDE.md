@@ -9,9 +9,9 @@ SecInterp allows you to:
 - Project geological units from a polygon layer onto the profile.
 - Project structural measurements (e.g., dip and strike) onto the profile.
 - Project drillhole traces and geological intervals (sondajes) onto the section.
-- **New (v2.6.0)**: Digitize geological interpretations directly on the section with the **Interpretation Tool**.
-- **New (v2.6.0)**: Export your 2D interpretations as valid **3D Shapefiles (PolygonZ)**.
-- **New (v2.6.0)**: Configure the plugin interface in 5 different languages.
+- **Interpretation Tool**: Digitize geological interpretations directly on the section with smart snapping.
+- **3D Export (PolygonZ)**: Export your 2D interpretations as valid 3D Shapefiles.
+- **i18n Support**: Core interface available in English and Spanish.
 - View an interactive preview with level-of-detail (LOD) optimization.
 - Measure distances and gradients with automatic snapping to vertices.
 
@@ -28,7 +28,7 @@ The SecInterp dialog is divided into three main areas:
 ## 3. Step-by-Step Tutorial: Creating a Profile
 
 ### Step 1: Digital Elevation Model (DEM)
-1.  Navigate to the **DEM** tab in the sidebar.
+1.  Navigate to the **DEM** page in the sidebar.
 2.  **Raster Layer**: Select your Digital Elevation Model (Mandatory).
 3.  **Band**: Select the band containing the elevation values (Mandatory).
 4.  **Resolution**: Calculated automatically based on the DEM resolution.
@@ -39,7 +39,7 @@ The SecInterp dialog is divided into three main areas:
 *Digital Elevation Model configuration.*
 
 ### Step 2: Define Section Line
-1.  Navigate to the **Section Line** tab.
+1.  Navigate to the **Section Line** page.
 2.  **Section Layer**: Select the vector line layer representing your section traces (Mandatory).
 3.  **Buffer Dist. (m)**: Set a buffer distance (e.g., 50m) to capture data around the line (Mandatory).
 4.  **Important**: The line must be single line (not multipart, only P1 and P2) in order to calculate 3d section export.
@@ -51,7 +51,7 @@ The SecInterp dialog is divided into three main areas:
 *Profile DEM Section Preview.*
 
 ### Step 3: Adding Geological Data
-1.  Navigate to the **Geology** tab.
+1.  Navigate to the **Geology** page.
 2.  **Outcrop Layer**: Select the polygon layer containing your surface geology (optional).
 3.  **Name Field**: Choose the field containing the unit codes or names (Mandatory if Outcrop Layer is selected).
 
@@ -62,7 +62,7 @@ The SecInterp dialog is divided into three main areas:
 *Geology Section Preview.*
 
 ### Step 4: Adding Structural Data
-1.  Navigate to the **Structural** tab.
+1.  Navigate to the **Structural** page.
 2.  **Structural Layer**: Select the polygon layer containing your dip measurements (optional).
 3.  **Dip Field**: Choose the field containing the dip values (Mandatory if Structural Layer is selected).
 4.  **Strike Field**: Choose the field containing the strike values (Mandatory if Structural Layer is selected).
@@ -146,7 +146,13 @@ The new **Interpretation Tool** allows you to draw geological polygons directly 
 ![Digitizing a new geological unit using the Interpretation Tool - Step 3](images/guide_interpretation_tool_3.png)
 *Digitizing a new geological unit using the Interpretation Tool.*
 
-### 4.2 Exporting to 3D (PolygonZ)
+### 4.2 Attribute Inheritance
+When you digitize a new interpretation polygon, SecInterp attempts to automatically inherit attributes from underlying data:
+- **Geology Overlap**: If the new polygon overlaps with a projected geological outcrop, it will pre-fill the name and units.
+- **Drillhole Proximity**: If the polygon starts or ends near a drillhole interval, it will inherit the lithology/rock unit from that interval (e.g., "Andesite", "Tuff").
+- **Manual override**: You can always manualy change the inherited color or name in the properties dialog.
+
+### 4.3 Exporting to 3D (PolygonZ)
 SecInterp now bridges the gap between 2D sections and 3D modeling. This feature allows you to export your 2D interpretations as real 3D objects.
 
 **Workflow:**
@@ -156,7 +162,7 @@ SecInterp now bridges the gap between 2D sections and 3D modeling. This feature 
 4.  Every vertex of your interpretation is projected into real-world 3D coordinates based on the section plane and surface elevation.
 
 ### 4.3 Settings Page
-The **Settings** tab manages export configurations and advanced features. It is organized into three sub-tabs:
+The **Settings** page manages export configurations and advanced features. It is organized into three sub-tabs:
 
 #### 1. Default Tab (Export Selection)
 Control exactly what gets generated when you click **Save**.

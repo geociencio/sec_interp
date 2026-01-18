@@ -2,32 +2,34 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-2.5.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-2.7.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
-![Code Quality](https://img.shields.io/badge/Code--Quality-86.3%2F100-green)
+![Code Quality](https://img.shields.io/badge/Code--Quality-83.1%2F100-green)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 ![Linting](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
 ![Managed with uv](https://img.shields.io/badge/managed%20with-uv-blueviolet)
-![i18n](https://img.shields.io/badge/i18n-ES%20%7C%20FR%20%7C%20DE%20%7C%20RU%20%7C%20PT%20%7C%20EN-blue.svg)
+![i18n](https://img.shields.io/badge/i18n-ES%20%7C%20EN-blue.svg)
 
-**SecInterp** (Section Interpreter) is a QGIS plugin designed to streamline the extraction and visualization of geological data for cross-section interpretation. It allows geologists to quickly generate topographic profiles, project geological outcrops, and analyze structural data in a unified 2D view.
+**SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
+
+![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
+*SecInterp v2.7.0: Professional Geological Interpretation with Integrated High-Fidelity Profiles.*
 
 ---
 
 ---
 
-## 🆕 What's New in v2.5.0
-**Major Feature: 3D Export & Advanced Control**
+## 🆕 What's New in v2.7.0
+**Phase: Operational Excellence & UI Modernization**
 
-- **🧊 3D Interpretation Export**: Export your 2D geological drawings as **true 3D Shapefiles (PolygonZ)**. The plugin now performs robust vertex-wise affine transformation to project complex geometries (including overturned folds) accurately into 3D space.
-- **⚙️ Settings Page**: A new dedicated configuration hub in the sidebar for managing plugin preferences.
-- **🛡️ Access Control**: Logic to manage Pro/Premium features (currently toggling 3D export).
-- **🏗️ Improvements**:
-  - Native QGIS API implementation for high-performance geometry creation.
-  - Persistent settings across QGIS sessions.
-  - Fixes for geometric topology in complex structural scenarios.
+- **🎨 Modernized UI**: A new premium sidebar-based navigation and native QGIS icons provide a cohesive, professional experience.
+- **🌍 Full i18n Support**: Core architecture and all UI elements are fully translated and prepared for multi-language support (English and Spanish base).
+- **🛡️ 3-Level Robust Validation**: Implementing a tiered validation system (Type, Business Logic, and Domain) to ensure data integrity and prevent crashes.
+- **🐳 Dockerized QA**: Continuous testing infrastructure using Docker to run 340+ tests in an official QGIS environment.
+- **📚 Automated API Docs**: Clean, external documentation generated with Sphinx for enhanced developer maintainability.
+- **🧊 Enhanced 3D Export**: Improved projection algorithms for both drillhole traces and geological intervals.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
@@ -81,7 +83,7 @@ Before installing **SecInterp**, ensure your system meets the following requirem
 4. Click **Install Plugin**.
 
 ### From ZIP File
-1. Download the latest `sec_interp_v2.5.0.zip` from releases.
+1. Download the latest `sec_interp_v2.7.0.zip` from releases.
 2. Open QGIS.
 3. Go to **Plugins > Manage and Install Plugins > Install from ZIP**.
 4. Select the file and click **Install**.
@@ -90,7 +92,7 @@ Before installing **SecInterp**, ensure your system meets the following requirem
 
 ## 📖 Quick Start Guide
 
-For detailed instructions, please see the [**User Guide**](docs/USER_GUIDE.md).
+For detailed instructions, please see the [**User Guide**](docs/source/USER_GUIDE.md).
 
 1. **Prepare Data**: Load your DEM (Raster), Geology (Polygons), and Structure (Points) layers in QGIS.
 2. **Launch Plugin**: Click the **SecInterp** icon in the toolbar.
@@ -111,7 +113,7 @@ For detailed instructions, please see the [**User Guide**](docs/USER_GUIDE.md).
 
         ![Layer Setup](docs/images/workflow_06_structural_setup.png)
 
-    *   **Drillholes (Optional)**: Configure Collars, Survey, and Intervals in the "Drillholes" tab to project 2D drillhole traces.
+    *   **Drillholes (Optional)**: Configure Collars, Survey, and Intervals in the **Drillholes** page to project 2D drillhole traces.
 
         ![Collar Setup](docs/images/workflow_07_drillhole_collar_setup.png)
 
@@ -128,7 +130,7 @@ For detailed instructions, please see the [**User Guide**](docs/USER_GUIDE.md).
 
     ![Preview Collapsed](docs/images/workflow_04_preview_panels_colapsed.png)
 
-5. **Export**: Go to the "Export" tab to save your profile to your preferred format.
+5. **Export**: Use the **Export** button in the preview toolbar or go to the **Settings** page for batch export configuration.
 
 ---
 
@@ -138,11 +140,11 @@ This plugin is open-source and welcomes contributions.
 
 - **Source Code**: [GitHub Repository](https://github.com/geociencio/sec_interp)
 - **Documentation**:
-    - [**User Guide**](docs/USER_GUIDE.md): How to use the plugin.
-    - [**Architecture**](docs/ARCHITECTURE.md): Technical design and patterns.
-    - [**Development Guide**](docs/DEVELOPMENT_GUIDE.md): Code standards and setup.
-    - [**Maintenance Log**](docs/MAINTENANCE_LOG.md): Changelog and release procedures.
-    - [**Technical Compendium**](docs/TECHNICAL_COMPENDIUM.md): Geophysical research and details.
+- [**User Guide**](docs/source/USER_GUIDE.md): How to use the plugin.
+- [**Architecture**](docs/source/ARCHITECTURE.md): Technical design and patterns.
+- [**Development Guide**](docs/source/DEVELOPMENT_GUIDE.md): Code standards and setup.
+- [**Maintenance Log**](docs/source/MAINTENANCE_LOG.md): Changelog and release procedures.
+- [**Technical Compendium**](docs/source/TECHNICAL_COMPENDIUM.md): Geophysical research and details.
 - **Development Setup**: Use the `Makefile` and `DEVELOPMENT_GUIDE.md`.
 - **Testing with Docker** (Recommended):
   Esta suite ejecuta los **349 tests** del proyecto dentro de un contenedor QGIS oficial (`qgis/qgis:latest`), garantizando un entorno reproducible y libre de conflictos de dependencias locales.

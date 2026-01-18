@@ -5,59 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.7.0] - 2026-01-18
 
 ### Added
-- **GUI**: Nuevo gestor de validación declarativo (`DialogValidationManager`) para centralizar las reglas del diálogo principal.
-- **Core**: Sistema de validación de lógica de negocio (Nivel 2) con reportes de error detallados (`ValidationContext`).
-- **Core**: Validadores reutilizables y robustos para configuración (Nivel 1).
-- **Core**: Validación de Dominio (Nivel 3) en capa de servicios con patrón "Fail Fast" para integridad de datos.
-- **Docs**: Infraestructura automatizada con Sphinx (`build_docs.sh`) para generación de documentación API y limpieza de repositorio (validado).
-- **Infrastructure**: Ignorancia selectiva de `analysis_results/` en Git para reportes de análisis locales.
-- **Infrastructure**: Nueva infraestructura de testing Dockerizada con target automatizado `make docker-test`.
-- **Infrastructure**: Mejoras en la compatibilidad de `pyproject.toml` para empaquetado universal.
+- **GUI**: New sidebar-based navigation (replaces tabs) for improved workflow and native QGIS aesthetics.
+- **GUI**: Centralized validation manager (`DialogValidationManager`) and message system (`MessageManager`).
+- **Core**: Robust **3-Level Validation Architecture** (Type, Business Logic, and Domain).
+- **Core**: Enhanced 3D Export for Drillhole Traces and Geological Intervals (PolygonZ/LineStringZ).
+- **Infrastructure**: Dockerized QA environment (`make docker-test`) with stable mock system.
+- **Infrastructure**: Automated Sphinx API documentation with external build support.
+- **Internationalization (i18n)**: Comprehensive support for English and Spanish across the entire interface.
 
 ### Changed
-- **GUI**: Refactorización de `DialogStatusManager` para consumir reglas de validación declarativas.
-- Refactored message and error handling into a centralized `MessageManager` for better testability.
-- Simplified Cache and Reset button logic by delegating to specialized handlers.
-- Reduced code coupling in `SecInterpDialog` and `ExportManager`.
-
-### Removed
-- **GUI**: `gui/main_dialog_validation.py` - Lógica migrada íntegramente al `DialogValidationManager`.
+- **UX**: Unified terminology across all documentation (Page vs Tab).
+- **Docs**: Comprehensive overhaul of `ARCHITECTURE.md` and `USER_GUIDE.md` for phase alignment.
+- **Architecture**: Decoupled monolithic `SecInterpDialog` into specialized managers (Interpretation, Cache, Settings, etc.).
+- **Code Standards**: Strictly enforced Black formatting, Ruff linting, and Conventional Commits.
 
 ### Fixed
-- Fixed potential `NameError` in `CacheHandler` when logging without imports.
+- Fixed broken internal documentation links in README.
+- Restored backwards compatibility for plugin callers via method proxies in `SecInterpDialog`.
+- Stabilized massive mock signal/attribute errors in the testing suite.
 
 ### 🧪 Testing & Quality
-- **Test Suite Total Stabilization**:
-  - Achieved 100% success rate (353/353 tests passing) after resolving massive mock-related failures and adding new manager tests.
-  - Refactored `tests/base_test.py` with `ModuleProxy` for stable module references.
-  - Implemented `MockSignal` with real `connect()` and `emit()` support.
-  - Added robust Z-coordinate and 25D geometry detection in mocks.
-  - Fixed `ConfigService.reset_defaults()` implementation (was empty).
-  - Standardized `BaseIntegrationTest` and benchmarks to use centralized mock infrastructure.
-
-### 🏗️ Architecture & Infrastructure
-- **Centralized Logging System**:
-  - Refactored `logger_config.py` using a Root Logger pattern with hierarchical propagation.
-  - Implemented `setup_logging()` for unified initialization at plugin startup.
-  - Unified `PerformanceMonitor` with the centralized loggger system.
-  - Enhanced `QgsLogHandler` with automatic fallback to `stderr` for background thread safety.
-- **Development Standards**:
-  - Adopted **Conventional Commits** in English as the project standard.
-  - Enforced `black` formatting and `ruff` linting via pre-commit hooks.
-- **Advanced Project Analyzer**:
-  - Integrated Halstead metrics and Type Hint coverage for deep technical analysis.
-  - Added Mermaid-based dependency graph generation for enhanced AI context.
-  - Implemented automated "Project Brain" updates using HTML markers for safer parsing.
-- **Workflow Automation**:
-  - Integrated analyzer into `inicia-sesion` and `cierra-sesion` workflows with `// turbo` support.
-  - Enhanced `commit-changes` workflow with AI-assisted message generation and quality guarding.
-- **Enhanced 3D Export**:
-  - **Drillhole Traces & Intervals**: New exporters for creating `LineStringZ` geometries from subsurface data.
-  - **Coordinate Flexibility**: User-selectable export modes for Original 3D coordinates or Cross-Section Projected coordinates.
-  - **Stability**: Robust extraction logic that handles vertical holes, surveys, and geological unit attributes.
+- Achieved **100% success rate** with 361 tests passing in Docker.
+- Optimized mock infrastructure with `ModuleProxy` and `MockSignal`.
 
 ## [2.6.0] - 2026-01-09
 ### 🚀 Infrastructure & DevOps

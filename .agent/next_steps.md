@@ -1,18 +1,20 @@
-# Handoff: Objetivo 1 (Limpieza y Sphinx) Completado
+# Siguientes Pasos - SecInterp v2.8.0
 
-## Estado Actual
-- **Objetivo 1 (Sphinx)**: Infraestructura automatizada validada. Los archivos HTML rastreados que polucionaban el repo han sido eliminados de Git.
-- **Limpieza**: `analysis_results/` ahora está ignorado en Git pero se mantiene físicamente.
-- **Documentación**: Generada con éxito en `../sec_interp_docs` y sincronizada en `help/html` (untracked).
-- **Tests**: 361 tests en verde (ejecutados vía Docker).
+La **Fase v2.7.0 (Excelencia Operativa)** ha sido completada exitosamente. El proyecto ahora cuenta con una arquitectura de validación robusta, infraestructura de testing Dockerizada, documentación automatizada con Sphinx y una interfaz moderna basada en sidebar.
 
-## Pendiente
-- Continuar con el roadmap **Fase v2.7.0**.
-- Revisar si hay ajustes adicionales en el sistema de validación de 3 niveles (aunque ya se marcó como completado, siempre es bueno verificar tras refactors de UI).
+## Pendientes / Techo de Cristal
+1.  **Fase v2.8.0 - Automatización y Análisis**:
+    *   Implementar soporte para **Multi-Raster** (permitir múltiples superficies de terreno).
+    *   Añadir herramientas de **Análisis de Perfil** (ej: cálculo de áreas por unidad geológica).
+2.  **Calidad**:
+    *   Incrementar la cobertura de tests de integración para la herramienta de interpretación en modo 3D.
+3.  **Distribución**:
+    *   Preparar el empaquetado final y subir a [plugins.qgis.org](https://plugins.qgis.org/).
 
-## Comando para Retomar
+## Cómo Retomar
+Para iniciar una nueva sesión de desarrollo coordinada por IA:
 ```bash
 /inicia-sesion
 ```
-O simplemente:
-"Continuar con el roadmap de la Fase v2.7.0 (Excelencia Operativa)."
+
+**Estado Actual**: Estable (361 tests OK). Documentación v2.7.0 sincronizada.

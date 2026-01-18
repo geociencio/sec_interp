@@ -44,38 +44,23 @@ mv sec_interp.zip sec_interp_vX.Y.Z.zip
 
 ## 📜 Project History
 
-### [2.7.0] - (In-Progress) 2026-01-18
+### [2.7.0] - 2026-01-18
+- **Operational Excellence & Documentation Overhaul**:
+    - **Sphinx Integration**: Automated documentation generation with `conf.py` (autodoc/napoleon) and `build_docs.sh`.
+    - **Link Recovery**: Fixed 50+ broken links in `README.md` and aligned terminology with the new Sidebar-driven UI.
+    - **Architecture Documentation**: Added detailed records for the **3-Level Validation Architecture** and `DialogInterpretationManager`.
+    - **i18n Cleanup**: Wrapped all user-facing strings in `tr()` and audited English/Spanish source.
 - **Refactorización de Interfaz (Fase 2)**:
-    - Introducción de `MessageManager` para desacoplar la lógica de presentación.
-    - Implementación de `CacheHandler` para centralizar la gestión de estado de cache.
-    - Desplazamiento de notificaciones de reset al `DialogSettingsManager`.
-    - Reducción de 20+ líneas de código boilerplate en el diálogo principal.
-    - **Bug Fix**: Restaurados métodos proxy `_load_interpretations` y `_load_user_settings` en `SecInterpDialog` para asegurar compatibilidad tras la fragmentación.
-    - Nueva suite de pruebas unitarias para el gestor de mensajes.
-
-### [2.7.0] - (In-Progress) 2026-01-16
+    - Introducción de `MessageManager`, `CacheHandler`, y `SettingsManager` para fragmentar el diálogo principal (Reducción de ~700 líneas de código boilerplate).
+    - **Bug Fix**: Restaurados métodos proxy `_load_interpretations` y `_load_user_settings` para retrocompatibilidad.
 - **Testing Infrastructure (Dockerization)**:
-    - Implemented `Dockerfile` optimized for QGIS headless testing with `uv`.
+    - Implemented `Dockerfile` optimized for QGIS headless testing.
     - Added `make docker-build` and `make docker-test` for reproducible CI/CD environments.
-    - Standardized test runner to `unittest discover`.
-    - Fixed `pyproject.toml` license metadata for universal setuptools compatibility.
-
-### [2.7.0] - (In-Progress) 2026-01-13
-- **Infrastructure Evolution**:
-    - **Centralized Logging**: Refactored `logger_config.py` to use a root logger with hierarchical propagation. Unified performance monitoring with the new system.
-    - **Automated Sphinx Docs**: Implementation of `conf.py` (autodoc/napoleon) and `build_docs.sh` to decouple documentation from the repository. Validated validation and external output strategy on 2026-01-18.
-    - **External Build Strategy**: Documentation now exports to `../sec_interp_docs` as default, keeping the core repository clean.
-    - **Repository Hygiene**: Removed 100+ tracked HTML files and updated `.gitignore` to prevent future pollution (including `analysis_results/`).
-    - **Makefile Integration**: New `apidoc`, `docs`, and `docs-clean` targets for simplified developer workflow.
-- **Data Integrity Core**:
-    - **Native Validation**: Implemented hierarchical models using `dataclasses` in `core/models/settings_model.py`.
-    - **Robust Config Service**: Refactored `ConfigService` to use mass-loading with validation (`get_all_settings`), replacing loose dictionaries.
-    - **Testing Suite**: Added `tests/core/test_settings_model.py` and `test_config_integration.py` ensuring type safety and range audits.
+- **Data Integrity & Core**:
+    - **3-Level Validation**: Hierarchical system (Type/Logic/Domain) ensuring data safety across all layers.
+    - **Centralized Logging**: Refactored `logger_config.py` for hierarchical propagation.
 - **Enhanced 3D Export**:
-    - **Drillhole traces & intervals**: Implemented `DrillholeTrace3DExporter` and `DrillholeInterval3DExporter` for high-fidelity 3D output (PolygonZ/LineStringZ).
-    - **Flexible Coordinate Modes**: Added support for both "Original 3D" and "Projected 3D" (cross-section space) coordinates.
-    - **UI Integration**: Integrated export controls in `Export` tab for intuitive user workflow.
-    - **Verification**: Established a robust 3D validation suite in `tests/exporters/test_drillhole_3d_exporter.py`.
+    - Implemented high-fidelity 3D output for drillhole traces and geological intervals (PolygonZ/LineStringZ).
 
 ### [2.7.0] - (Planning) 2026-01-09
 - **Infrastructure Planning**:

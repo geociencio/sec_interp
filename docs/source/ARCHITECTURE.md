@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 2.2 | Last update: 2025-12-21
+> Version 2.7.0 | Last update: 2026-01-18
 
 ---
 
@@ -50,13 +50,17 @@ sec_interp/
 ├── core/                       # ⚙️ Business Logic (Core Layer)
 │   ├── controller.py           # Orchestrator (ProfileController)
 │   ├── algorithms.py           # Pure intersection logic
+│   ├── models/                 # Dataclasses and Pydantic-like models
 │   ├── services/               # Specialized services
 │   │   ├── profile_service.py  # Topography and sampling
 │   │   ├── geology_service.py  # Geological intersections
 │   │   ├── structure_service.py# Structural projection
 │   │   ├── drillhole_service.py# Desurvey and 3D intervals
 │   │   └── preview_service.py  # Preview orchestrator
-│   ├── validation/             # Modular validation package
+│   ├── validation/             # 🛡️ 3-Level Validation Architecture
+│   │   ├── validators.py       # Level 1: Reusable Type/Range validators
+│   │   ├── field_validator.py  # Level 2: Business field constraints
+│   │   └── project_validator.py# Level 3: Cross-layer domain logic
 │   └── utils/                  # Utilities (Geometry, Spatial, etc.)
 │
 ├── gui/                        # 🖥️ User Interface (GUI Layer)
@@ -609,6 +613,33 @@ graph TB
     H --> I[Create Segments]
     I --> J[Drillhole Data]
 ```
+
+---
+
+(validation-architecture)=
+## 🛡️ 3-Level Validation Architecture
+
+The project implements a robust, tiered validation system to ensure data integrity across all layers without external dependencies like Pydantic.
+
+### Level 1: Type & Range Validation (Dataclass Layer)
+- **Location**: `core/models/settings_model.py` using `core/validation/validators.py`.
+- **Purpose**: Immediate feedback during object instantiation.
+- **Mechanism**: `__post_init__` hooks use reusable validators (e.g., `validate_and_clamp`).
+- **Example**: Ensuring vertical exaggeration is within `(0.1, 10.0)`.
+
+### Level 2: Business Field Validation (Form Layer)
+- **Location**: `core/validation/field_validator.py`.
+- **Purpose**: Validates individual fields based on plugin-specific business rules.
+- **Mechanism**: Checks for required fields, valid data types in QGIS layers, and mandatory combinations.
+
+### Level 3: Domain & Cross-Layer Validation (Project Layer)
+- **Location**: `core/validation/project_validator.py`.
+- **Purpose**: Validates the relationship between different layers and the project state.
+- **Mechanism**: Checks if the section line intersects the DEM extent, or if drillholes fall within the buffer zone.
+
+---
+
+(drillhole-service)=
 
 #### Main Methods
 
