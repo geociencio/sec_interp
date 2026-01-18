@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **GUI**: Nuevo gestor de validación declarativo (`DialogValidationManager`) para centralizar las reglas del diálogo principal.
 - **Core**: Sistema de validación de lógica de negocio (Nivel 2) con reportes de error detallados (`ValidationContext`).
 - **Core**: Validadores reutilizables y robustos para configuración (Nivel 1).
 - **Core**: Validación de Dominio (Nivel 3) en capa de servicios con patrón "Fail Fast" para integridad de datos.
@@ -16,9 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Infrastructure**: Mejoras en la compatibilidad de `pyproject.toml` para empaquetado universal.
 
 ### Changed
+- **GUI**: Refactorización de `DialogStatusManager` para consumir reglas de validación declarativas.
 - Refactored message and error handling into a centralized `MessageManager` for better testability.
 - Simplified Cache and Reset button logic by delegating to specialized handlers.
 - Reduced code coupling in `SecInterpDialog` and `ExportManager`.
+
+### Removed
+- **GUI**: `gui/main_dialog_validation.py` - Lógica migrada íntegramente al `DialogValidationManager`.
 
 ### Fixed
 - Fixed potential `NameError` in `CacheHandler` when logging without imports.

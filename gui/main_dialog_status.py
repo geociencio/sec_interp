@@ -8,10 +8,6 @@ from typing import TYPE_CHECKING
 
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 
-from sec_interp.core.validation.project_validator import (
-    ProjectValidator,
-)
-
 if TYPE_CHECKING:
     pass
 
@@ -37,46 +33,42 @@ class DialogStatusManager:
 
     def update_preview_checkbox_states(self) -> None:
         """Enable or disable preview checkboxes based on input validity."""
-        # Collate current state into ValidationParams via aggregator
-        params = self.dialog.data_aggregator.get_validation_params()
-
-        has_section = bool(params.line_layer)
-        has_dem = bool(params.raster_layer)
+        vm = self.dialog.validation_manager
+        has_section = vm.is_section_valid("section")
+        has_dem = vm.is_section_valid("dem")
 
         # Topography requires DEM + Section Line
         self.dialog.preview_widget.chk_topo.setEnabled(has_dem and has_section)
 
         # Geology requires Geology Data + Section Line
-        has_geol = ProjectValidator.is_geology_complete(params)
-        self.dialog.preview_widget.chk_geol.setEnabled(has_geol and has_section)
+        self.dialog.preview_widget.chk_geol.setEnabled(
+            vm.is_section_valid("geology") and has_section
+        )
 
         # Structure requires Structure Data + Section Line
-        has_struct = ProjectValidator.is_structure_complete(params)
-        self.dialog.preview_widget.chk_struct.setEnabled(has_struct and has_section)
+        self.dialog.preview_widget.chk_struct.setEnabled(
+            vm.is_section_valid("structure") and has_section
+        )
 
         # Drillhole requires Drillhole Data + Section Line
-        has_drill = ProjectValidator.is_drillhole_complete(params)
-        self.dialog.preview_widget.chk_drillholes.setEnabled(has_drill and has_section)
+        self.dialog.preview_widget.chk_drillholes.setEnabled(
+            vm.is_section_valid("drillhole") and has_section
+        )
 
     def update_button_state(self) -> None:
         """Enable or disable buttons based on input validity."""
-        has_section = bool(self.dialog.page_section.line_combo.currentLayer())
-        has_dem = bool(self.dialog.page_dem.raster_combo.currentLayer())
-        has_output = bool(self.dialog.output_widget.filePath())
+        vm = self.dialog.validation_manager
+        can_preview = vm.can_preview()
 
         # Preview requires: DEM + Cross-section line
-        can_preview = has_dem and has_section
         self.dialog.preview_widget.btn_preview.setEnabled(can_preview)
 
         # OK button requires basic validation
         self.dialog.button_box.button(QDialogButtonBox.Ok).setEnabled(can_preview)
 
         # Export (Save) button requires: DEM + Cross-section line + Output path
-        # Note: Save button might be part of buttonBox or separate.
-        # In this plugin it usually uses the standard Ok button or a "Process" button.
-        # If there's an explicit Save button in some versions:
         if hasattr(self.dialog, "btn_save"):
-            self.dialog.btn_save.setEnabled(can_preview and has_output)
+            self.dialog.btn_save.setEnabled(vm.can_export())
 
     def setup_indicators(self) -> None:
         """Set up required field indicators with warning icons."""
@@ -93,22 +85,22 @@ class DialogStatusManager:
 
     def update_raster_status(self) -> None:
         """Update raster layer status icon based on selection."""
-        layer = self.dialog.page_dem.raster_combo.currentLayer()
+        vm = self.dialog.validation_manager
         label = self.dialog.page_dem.lbl_raster_status
-        if layer:
+        if vm.is_section_valid("dem"):
             label.setPixmap(self._success_icon.pixmap(16, 16))
             label.setToolTip(self.dialog.tr("Raster layer selected"))
         else:
             label.setPixmap(self._warning_icon.pixmap(16, 16))
-            label.setToolTip(self.dialog.tr("Raster layer is required"))
+            label.setToolTip(vm.get_section_error("dem"))
 
     def update_section_status(self) -> None:
         """Update section line status icon based on selection."""
-        layer = self.dialog.page_section.line_combo.currentLayer()
+        vm = self.dialog.validation_manager
         label = self.dialog.page_section.lbl_section_status
-        if layer:
+        if vm.is_section_valid("section"):
             label.setPixmap(self._success_icon.pixmap(16, 16))
             label.setToolTip(self.dialog.tr("Section line selected"))
         else:
             label.setPixmap(self._warning_icon.pixmap(16, 16))
-            label.setToolTip(self.dialog.tr("Section line is required"))
+            label.setToolTip(vm.get_section_error("section"))

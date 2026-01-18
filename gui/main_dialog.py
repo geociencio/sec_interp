@@ -65,7 +65,7 @@ from .main_dialog_signals import DialogSignalManager
 from .main_dialog_status import DialogStatusManager
 from .main_dialog_tools import DialogToolManager, NavigationManager
 from .main_dialog_utils import DialogEntityManager
-from .main_dialog_validation import DialogValidator
+from .main_dialog_validation_manager import DialogValidationManager
 from .preview_layer_factory import PreviewLayerFactory
 from .ui.main_window import SecInterpMainWindow
 
@@ -148,7 +148,7 @@ class SecInterpDialog(SecInterpMainWindow):
         from sec_interp.core.services.preview_service import PreviewService
 
         self.message_manager = MessageManager(self)
-        self.validator = DialogValidator(self)
+        self.validation_manager = DialogValidationManager(self)
         self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
         self.export_manager = ExportManager(self)
         self.cache_handler = CacheHandler(self)
@@ -309,9 +309,9 @@ class SecInterpDialog(SecInterpMainWindow):
     def validate_inputs(self):
         """Validate the inputs from the dialog.
 
-        This method delegates to DialogValidator for input validation.
+        This method delegates to DialogValidationManager for input validation.
         """
-        is_valid, error_message = self.validator.validate_inputs()
+        is_valid, error_message = self.validation_manager.validate_inputs()
         if not is_valid:
             show_user_message(self, "Validation Error", error_message)
         return is_valid

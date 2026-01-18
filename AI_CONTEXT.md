@@ -62,8 +62,8 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 108
-- **Lines of Code**: 17,497
-- **Functions**: 610
+- **Lines of Code**: 17,587
+- **Functions**: 615
 - **Classes**: 115
 - **Average Complexity**: 12.4
 - **Most Complex Modules**: core/services/drillhole_service.py, gui/preview_layer_factory.py, gui/main_dialog_preview.py
@@ -119,7 +119,7 @@ graph TD
     sec_interp_plugin --> py
     main_dialog --> py
     main_dialog_export --> py
-    main_dialog_validation --> py
+    main_dialog_validation_manager --> py
     drillhole_task --> py
     main_dialog_preview --> py
 ```

@@ -7,6 +7,12 @@ Chronological record of development activities, significant fixes, and technical
 ---
 ---
 ## [2026-01-18] Resumen
+- **Refactorización de Validación**: Implementado `DialogValidationManager` declarativo para centralizar reglas de UI.
+- **Desacoplamiento**: `DialogStatusManager` ahora consume el estado de validación desde el manager especializado.
+- **Arquitectura**: Completado Objetivo 4 de la fase v2.7.0 (Reducción de Deuda Técnica en Dialog).
+- **Calidad**: 361 tests en verde en Docker; eliminada lógica redundante en `main_dialog_validation.py`.
+
+## [2026-01-18] Resumen (Mañana)
 - **Refactorización de UI (Fase 2)**: Extraída gestión de mensajes y errores a `MessageManager`.
 - **Desacoplamiento**: Eliminada dependencia directa de `main_dialog_export.py` con widgets de QGIS.
 - **Simplificación**: Lógica de botones de Cache y Reset delegada a gestores especializados.

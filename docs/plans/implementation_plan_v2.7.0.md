@@ -129,7 +129,7 @@ Suite de pruebas dedicada a verificar que los servicios rechacen configuraciones
 - [x] Extraer gestión de interpretaciones a `InterpretationManager`.
 - [x] Extraer gestión de feedback/errores a `MessageManager`.
 - [x] Simplificar lógica de botones de Cache y Reset (delegación a gestores).
-- [ ] Refactorizar lógica de validación interna del diálogo (Pendiente).
+- [x] Refactorizar lógica de validación interna del diálogo (Completado).
 - [x] Reducir complejidad ciclomática de 95 a < 15 (Logrado: 13).
 
 ---
@@ -206,4 +206,4 @@ Ejecutar `make docker-test` y confirmar que todos los tests pasan correctamente 
 
 **Fecha Última Actualización:** 2026-01-18
 **Autor:** Antigravity
-**Estado:** Fase v2.7.0 en ejecución. Refactorización de GUI en progreso (75% completado de Objetivo 4).
+**Estado:** Fase v2.7.0 en ejecución. Refactorización de GUI completada (Objetivo 4 al 100%). Siguiente gran paso: Documentación Sphinx y Limpieza de HTML.
