@@ -1,17 +1,17 @@
-# Siguientes Pasos - SecInterp v2.9.0
+# Siguientes Pasos - Release v2.7.0
 
-La **Fase v2.7.0 (Excelencia Operativa)** ha sido cerrada formalmente.
+La infraestructura de documentación está completa. El siguiente paso es ejecutar el proceso de Release Candidate.
 
-## 🎯 Objetivo: Fase v2.8.0 - Análisis Avanzado y Multi-Raster
+## 🎯 Objetivo Inmediato: Release Candidate v2.7.0
 
-### Prioridades Inmediatas
-1.  **Soporte Multi-Raster**: Refactorizar `GeologyService` para soportar múltiples capas DEM (Topografía, Base de Oxidación, etc.).
-2.  **Herramientas de Análisis**: Implementar cálculo de áreas y volúmenes básicos en perfiles.
-3.  **Tests de Integración 3D**: Expandir la cobertura de tests para la herramienta de interpretación 3D.
+### Prioridades
+1.  **Smoke Test Final**: Ejecutar una última validación completa en Docker (`make docker-test`).
+2.  **Empaquetado**: Generar el ZIP final v2.7.0 (excluyendo archivos innecesarios).
+3.  **Publicación**: Crear Release en GitHub y adjuntar el ZIP y checksums.
 
 ### Cómo Retomar
 ```bash
-/inicia-sesion
+/release-plugin
 ```
 
-**Estado Actual**: v2.7.0 (Stable).
+**Estado Actual**: v2.7.0-rc1 (Documentation Ready).

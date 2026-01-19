@@ -6,6 +6,13 @@ Chronological record of development activities, significant fixes, and technical
 ---
 ---
 ---
+## [2026-01-18] Resumen: Infraestructura de Documentación Externa (Noche)
+- **Documentación Desacoplada**: Implementado repositorio externo `sec_interp_docs` con despliegue automático a GitHub Pages desde `build_docs.sh`.
+- **Soporte Markdown**: Habilitado `myst_parser` para renderizar guías `.md` como parte del sitio de documentación oficial.
+- **Metadatos**: Actualizados enlaces de documentación en `metadata.txt`, `README.md` y `pyproject.toml`.
+- **Limpieza**: Repositorio principal saneado de archivos HTML generados.
+- **Estado**: Lista la infraestructura para el Release v2.7.0.
+
 ## [2026-01-18] Resumen: Release v2.7.0 Finalizado
 **Autor:** AI Assistant
 **Estado:** ✅ Completado
