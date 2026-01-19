@@ -7,7 +7,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=2.6.0
+version=2.7.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -21,6 +21,14 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    2.7.0 (2026-01-18)
+    * Operational Excellence & Documentation:
+      - Infrastructure: Dockerized QA environment (100%% tests passing).
+      - Documentation: Automated Sphinx docs & Clean HTML.
+      - Architecture: 3-Level Robust Validation & Dialog Managers.
+      - Features: Enhanced 3D Export (PolygonZ) & Sidebar UI.
+      - i18n: Full English/Spanish support.
+
     2.6.0 (2026-01-09)
     * Infrastructure & DevOps:
       - CI/CD: Fully dockerized pipeline using official QGIS image.

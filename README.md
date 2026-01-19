@@ -6,7 +6,7 @@
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
-![Code Quality](https://img.shields.io/badge/Code--Quality-83.1%2F100-green)
+![Code Quality](https://img.shields.io/badge/Code--Quality-83.2%2F100-green)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 ![Linting](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
 ![Managed with uv](https://img.shields.io/badge/managed%20with-uv-blueviolet)
