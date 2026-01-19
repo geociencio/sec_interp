@@ -1095,6 +1095,9 @@ class MockQPushButton(MockQWidget):
         self.toggled = MagicMock()
         self.toggled.connect = MagicMock()
 
+    def setIcon(self, icon):
+        pass
+
     def setCheckable(self, checkable):
         self._checkable = checkable
 
