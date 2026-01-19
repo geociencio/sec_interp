@@ -6,13 +6,17 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "GPL-2.0-or-later" }
 
-
 authors = [
     { name = "Juan M Bernales", email = "juanbernales@gmail.com" }
 ]
 dependencies = [
     "PyQt5>=5.15.0,<5.16.0",
 ]
+
+[project.urls]
+Documentation = "https://geociencio.github.io/sec_interp_docs/"
+Source = "https://github.com/geociencio/sec_interp"
+Tracker = "https://github.com/geociencio/sec_interp/issues"
 
 [tool.setuptools]
 packages = ["core", "gui", "resources", "exporters", "i18n"]

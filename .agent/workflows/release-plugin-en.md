@@ -13,10 +13,11 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    - Update `version` and `changelog` in `metadata.txt`.
    - Update `version` in `pyproject.toml`.
    - Update the version badge in `README.md`.
-2. **Technical Changelog**: Move `[Unreleased]` to the new version in `docs/CHANGELOG.md`.
+2. **Technical Changelog**: Move `[Unreleased]` to the new version in `docs/CHANGELOG.md`. **Format: `[vX.Y.Z] - Title`**.
 3. **Release Notes**:
    ```bash
    sed -e "s/{version}/X.Y.Z/g" -e "s/{date}/$(date +%F)/g" .github/release_template.md > /tmp/release_notes.md
+   # EDIT manually to add " - Title" to the Header
    ```
 
 ### Phase 3: Verification
@@ -27,13 +28,14 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 1. **Preparation Commit**:
    `git add metadata.txt pyproject.toml docs/CHANGELOG.md README.md docs/source/MAINTENANCE_LOG.md`
    `git commit -m "chore(release): prepare vX.Y.Z"`
-2. **Tag**: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+2. **Tag**: `git tag -a vX.Y.Z -m "Release vX.Y.Z - Title"`
 3. **Push**: `git push origin main && git push origin vX.Y.Z`
 
 ### Phase 5: Build & Distribution
 1. **Build ZIP**: `make package VERSION=main` (Verify in `dist/`).
 2. **GitHub Release**:
    ```bash
-   gh release create vX.Y.Z --title "vX.Y.Z" --notes-file /tmp/release_notes.md dist/*.zip dist/*.sha256 --draft
+   # Add Title to the release title
+   gh release create vX.Y.Z --title "vX.Y.Z - Title" --notes-file /tmp/release_notes.md dist/*.zip dist/*.sha256 --draft
    ```
 3. **QGIS Portal**: Upload the ZIP to [plugins.qgis.org](https://plugins.qgis.org/).

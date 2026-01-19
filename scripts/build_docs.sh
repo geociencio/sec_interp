@@ -64,6 +64,34 @@ if [ -d "help" ]; then
     cp -r "$BUILD_DIR/html/"* "$INTERNAL_HELP_DIR/"
 fi
 
+# 6. [AUTO] Deploy to GitHub Pages (if output is a git repo)
+if [ -d "$OUTPUT_DIR/.git" ]; then
+    echo "☁️  Detected Git repository in output. Checking for changes..."
+
+    # Check if there are changes
+    if [ -n "$(git -C "$OUTPUT_DIR" status --porcelain)" ]; then
+        echo "📝 Changes detected. Committing and pushing..."
+
+        # Get current commit hash for reference
+        CURRENT_COMMIT=$(git rev-parse --short HEAD)
+
+        git -C "$OUTPUT_DIR" add .
+        git -C "$OUTPUT_DIR" commit -m "docs: auto-build from sec_interp@$CURRENT_COMMIT"
+
+        # Pull first to avoid conflicts (though we are the only writer usually)
+        # git -C "$OUTPUT_DIR" pull --rebase origin main
+
+        echo "🚀 Pushing to remote..."
+        git -C "$OUTPUT_DIR" push origin main
+
+        echo "✅ Deployed to GitHub Pages."
+    else
+        echo "✨ No changes to deploy."
+    fi
+else
+    echo "⚠️  Output directory is not a git repository. Skipping deployment."
+fi
+
 echo "============================================================"
 echo "✅ SUCCESS: Documentation built and exported."
 echo "🔗 Open $OUTPUT_DIR/index.html to view."

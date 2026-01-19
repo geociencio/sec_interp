@@ -25,7 +25,11 @@ for filepath, target, replacement in files_to_update:
     if os.path.exists(filepath):
         with open(filepath) as f:
             content = f.read()
-        if target in content and "REGLA CRÍTICA" not in content and "METADATA RULE" not in content:
+        if (
+            target in content
+            and "REGLA CRÍTICA" not in content
+            and "METADATA RULE" not in content
+        ):
             new_content = content.replace(target, replacement)
             with open(filepath, "w") as f:
                 f.write(new_content)

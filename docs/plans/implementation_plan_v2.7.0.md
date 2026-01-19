@@ -168,7 +168,7 @@ Actualizar las instrucciones de desarrollo para recomendar el uso de Docker o De
 
 ## Verification Plan
 
-### 1. Verificación de Modelos (Pendiente)
+### 1. Verificación de Modelos [COMPLETADO]
 Nuevos tests en `tests/core/test_settings_model.py` para validar la lógica de tipos y rangos sin dependencias externas.
 
 ### 2. Verificación de Servicios (Validación)
@@ -180,7 +180,7 @@ env PYTHONPATH=.. uv run python3 -m unittest tests/core/validation/test_service_
 ### 2. Test de Integración de Logging [PASADA]
 Verificar que los mensajes llegan correctamente al `QgsMessageLog` de QGIS.
 
-### 3. Simulación de Construcción Externa (Pendiente)
+### 3. Simulación de Construcción Externa [COMPLETADO]
 Validar que `build_docs.sh` genera archivos en la ruta esperada fuera del workspace actual.
 
 ### 4. Pruebas de Exportación 3D y UI [PASADA]

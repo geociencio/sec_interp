@@ -116,6 +116,23 @@ def process_data(self, layer: QgsVectorLayer, factor: float) -> Optional[list]:
     """
 ```
 
+### Documentation Workflow
+The project uses Sphinx to generate documentation. The build process is automated to publish results to a separate GitHub repository (`sec_interp_docs`) which serves as the source for GitHub Pages.
+
+**Building and Publishing**
+
+To build the documentation and automatically push changes to the docs repository:
+```bash
+./scripts/build_docs.sh
+```
+This script will:
+1. Build HTML from `docs/source`.
+2. Output to `../sec_interp_docs`.
+3. Check for changes in the output directory.
+4. If changed, commit and push to `geociencio/sec_interp_docs`.
+
+**Note:** You must have write access to the `sec_interp_docs` repository and have `../sec_interp_docs` initialized as a git repo (which is done automatically if you follow setup).
+
 ### Image Assets
 Save all documentation images in `docs/images/` using the following convention:
 - `workflow_DESC.png`: Step-by-step guides.

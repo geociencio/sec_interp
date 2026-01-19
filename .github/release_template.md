@@ -1,4 +1,4 @@
-# Release {version} - {date}
+# Release {version} - {title} - {date}
 
 Short Summary
 -------------

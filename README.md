@@ -140,11 +140,11 @@ This plugin is open-source and welcomes contributions.
 
 - **Source Code**: [GitHub Repository](https://github.com/geociencio/sec_interp)
 - **Documentation**:
-- [**User Guide**](docs/source/USER_GUIDE.md): How to use the plugin.
-- [**Architecture**](docs/source/ARCHITECTURE.md): Technical design and patterns.
-- [**Development Guide**](docs/source/DEVELOPMENT_GUIDE.md): Code standards and setup.
-- [**Maintenance Log**](docs/source/MAINTENANCE_LOG.md): Changelog and release procedures.
-- [**Technical Compendium**](docs/source/TECHNICAL_COMPENDIUM.md): Geophysical research and details.
+  - [**User Guide**](https://geociencio.github.io/sec_interp_docs/USER_GUIDE.html): How to use the plugin.
+  - [**Architecture**](https://geociencio.github.io/sec_interp_docs/ARCHITECTURE.html): Technical design and patterns.
+  - [**Development Guide**](https://geociencio.github.io/sec_interp_docs/DEVELOPMENT_GUIDE.html): Code standards and setup.
+  - [**Maintenance Log**](https://geociencio.github.io/sec_interp_docs/MAINTENANCE_LOG.html): Changelog and release procedures.
+  - [**Technical Compendium**](https://geociencio.github.io/sec_interp_docs/TECHNICAL_COMPENDIUM.html): Geophysical research and details.
 - **Development Setup**: Use the `Makefile` and `DEVELOPMENT_GUIDE.md`.
 - **Testing with Docker** (Recommended):
   Esta suite ejecuta los **361 tests** del proyecto dentro de un contenedor QGIS oficial (`qgis/qgis:latest`), garantizando un entorno reproducible y libre de conflictos de dependencias locales.
