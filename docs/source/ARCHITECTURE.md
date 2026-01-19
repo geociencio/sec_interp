@@ -50,7 +50,7 @@ sec_interp/
 ├── core/                       # ⚙️ Business Logic (Core Layer)
 │   ├── controller.py           # Orchestrator (ProfileController)
 │   ├── algorithms.py           # Pure intersection logic
-│   ├── models/                 # Dataclasses and Pydantic-like models
+│   ├── models/                 # Dataclasses and settings models
 │   ├── services/               # Specialized services
 │   │   ├── profile_service.py  # Topography and sampling
 │   │   ├── geology_service.py  # Geological intersections
@@ -59,15 +59,19 @@ sec_interp/
 │   │   └── preview_service.py  # Preview orchestrator
 │   ├── validation/             # 🛡️ 3-Level Validation Architecture
 │   │   ├── validators.py       # Level 1: Reusable Type/Range validators
-│   │   ├── field_validator.py  # Level 2: Business field constraints
+│   │   ├── validation_helpers.py# Level 2: Business field constraints
 │   │   └── project_validator.py# Level 3: Cross-layer domain logic
 │   └── utils/                  # Utilities (Geometry, Spatial, etc.)
 │
 ├── gui/                        # 🖥️ User Interface (GUI Layer)
 │   ├── main_dialog.py          # Main dialog (Simplified)
 │   ├── preview_renderer.py     # Native PyQGIS rendering
-│   ├── parallel_geology.py     # Worker for parallel processing
-│   ├── main_dialog_preview.py  # Preview manager
+│   ├── tasks/                  # 🚀 Asynchronous QgsTasks
+│   │   ├── geology_task.py     # Background geology intersection
+│   │   └── drillhole_task.py   # Background drillhole projection
+│   ├── managers/               # 🧩 UI Logic Managers
+│   │   ├── interpretation_mgr.py # Interpretation persistence
+│   │   └── message_mgr.py      # Feedback and alerts
 │   ├── ui/                     # Components and Pages (Layouts)
 │   └── tools/                  # Map tools (Measure Tool)
 │
@@ -100,7 +104,7 @@ graph TB
     subgraph GUI["🖥️ GUI Layer - User Interface"]
         direction TB
 
-        MAIN[main_dialog.py<br/>SecInterpDialog<br/>~340 lines]
+        MAIN[main_dialog.py<br/>SecInterpDialog<br/>~350 lines]
 
         subgraph MANAGERS["Managers"]
             SIGNALS_MGR[main_dialog_signals.py<br/>SignalManager]
@@ -108,21 +112,22 @@ graph TB
             PREVIEW_MGR[main_dialog_preview.py<br/>PreviewManager]
             EXPORT_MGR[main_dialog_export.py<br/>ExportManager]
             VALIDATION_MGR[main_dialog_validation.py<br/>DialogValidator]
+            INTERP_MGR[interpretation_manager.py<br/>InterpretationManager]
+            MSG_MGR[message_manager.py<br/>MessageManager]
             CONFIG_MGR[main_dialog_config.py<br/>DialogDefaults]
         end
 
-        RENDERER[preview_renderer.py<br/>PreviewRenderer<br/>1190 lines<br/>20 methods]
-        LEGEND[legend_widget.py<br/>LegendWidget<br/>1.6k lines]
+        RENDERER[preview_renderer.py<br/>PreviewRenderer<br/>~280 lines]
+        LEGEND[legend_widget.py<br/>LegendWidget]
 
         subgraph TOOLS["🛠️ Tools"]
-            MEASURE[measure_tool.py<br/>ProfileMeasureTool<br/>Snapping + Measurement]
+            MEASURE[measure_tool.py<br/>ProfileMeasureTool]
+            INTERP_TOOL[interpretation_tool.py<br/>InterpretationTool]
         end
 
         subgraph UI_WIDGETS["📦 UI Components"]
             UI_MAIN[main_window.py<br/>SecInterpMainWindow]
             UI_PAGES[Page Classes:<br/>DemPage, SectionPage,<br/>GeologyPage, StructPage,<br/>DrillholePage]
-            UI_PREVIEW[PreviewWidget]
-            UI_OUTPUT[OutputWidget]
         end
     end
 
@@ -130,38 +135,35 @@ graph TB
     subgraph CORE["⚙️ Core Layer - Business Logic"]
         direction TB
 
-        CONTROLLER[controller.py<br/>ProfileController<br/>192 lines]
+        CONTROLLER[controller.py<br/>ProfileController<br/>~280 lines]
 
         subgraph SERVICES["🔧 Services"]
-            PROFILE_SVC[profile_service.py<br/>ProfileService<br/>2.8k lines]
-            GEOLOGY_SVC[geology_service.py<br/>GeologyService<br/>244 lines<br/>8 methods]
-            STRUCTURE_SVC[structure_service.py<br/>StructureService<br/>216 lines<br/>7 methods]
-            DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService<br/>319 lines<br/>4 methods]
-            PARALLEL_GEO[parallel_geology.py<br/>ParallelGeologyService<br/>QThread Worker]
+            PROFILE_SVC[profile_service.py<br/>ProfileService]
+            GEOLOGY_SVC[geology_service.py<br/>GeologyService]
+            STRUCTURE_SVC[structure_service.py<br/>StructureService]
+            DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService]
         end
 
-        ALGORITHMS[core/algorithms.py<br/>Pure Business Logic<br/>~20 lines]
-
-        subgraph VALIDATION_PKG["🛡️ Validation Package"]
-            VALIDATION_INIT[core/validation/__init__.py<br/>Facade]
-            FIELD_VAL[core/validation/field_validator.py<br/>Fields and Inputs]
-            LAYER_VAL[core/validation/layer_validator.py<br/>QGIS Layers]
-            PATH_VAL[core/validation/path_validator.py<br/>File Paths]
-            PROJ_VAL[core/validation/project_validator.py<br/>Orchestrator]
+        subgraph TASKS["🚀 QGS TASKS (Extract-then-Compute)"]
+            GEO_TASK[geology_task.py<br/>GeologyGenerationTask]
+            DRILL_TASK[drillhole_task.py<br/>DrillholeGenerationTask]
         end
-        CACHE[data_cache.py<br/>DataCache<br/>7.8k lines]
-        METRICS[performance_metrics.py<br/>PerformanceMetrics<br/>7.8k lines]
-        TYPES[types.py<br/>Type Definitions<br/>1.8k lines]
+
+        subgraph VALIDATION_PKG["🛡️ Validation Architecture"]
+            LEVEL1[validators.py<br/>Type/Range Checks]
+            LEVEL2[validation_helpers.py<br/>Business Logic]
+            LEVEL3[project_validator.py<br/>Domain Interaction]
+        end
+
+        METRICS[performance_metrics.py<br/>Performance Profiling]
+        TYPES[types.py<br/>Data Models]
 
         subgraph UTILS["🔨 Utilities"]
-            GEOM_UTILS[geometry.py<br/>345 lines<br/>Geometric operations]
-            DRILL_UTILS[drillhole.py<br/>7.2k lines<br/>Desurvey + Projection]
-            GEOLOGY_UTILS[geology.py<br/>1.4k lines]
-            SPATIAL_UTILS[spatial.py<br/>3.2k lines]
-            SAMPLING_UTILS[sampling.py<br/>3.7k lines]
-            PARSING_UTILS[parsing.py<br/>2.7k lines]
-            RENDERING_UTILS[rendering.py<br/>2.9k lines]
-            IO_UTILS[io.py<br/>2.6k lines]
+            GEOM_UTILS[geometry.py]
+            DRILL_UTILS[drillhole.py]
+            GEOLOGY_UTILS[geology.py]
+            SPATIAL_UTILS[spatial.py]
+            SAMPLING_UTILS[sampling.py]
         end
     end
 
@@ -169,25 +171,20 @@ graph TB
     subgraph EXPORTERS["📤 Exporters Layer - Export"]
         direction TB
 
-        ORCHESTRATOR[orchestrator.py<br/>DataExportOrchestrator<br/>148 lines]
-        BASE_EXP[base_exporter.py<br/>BaseExporter<br/>Abstract Class]
+        ORCHESTRATOR[orchestrator.py<br/>DataExportOrchestrator]
+        BASE_EXP[base_exporter.py<br/>BaseExporter]
 
         subgraph EXPORT_FORMATS["Export Formats"]
-            SHP_EXP[shp_exporter.py<br/>ShapefileExporter<br/>3.3k lines]
-            CSV_EXP[csv_exporter.py<br/>CSVExporter<br/>1.3k lines]
-            PDF_EXP[pdf_exporter.py<br/>PDFExporter<br/>2.5k lines]
-            SVG_EXP[svg_exporter.py<br/>SVGExporter<br/>2.3k lines]
-            IMG_EXP[image_exporter.py<br/>ImageExporter<br/>2.1k lines]
-            PROFILE_EXP[profile_exporters.py<br/>ProfileLineShpExporter<br/>GeologyShpExporter<br/>StructureShpExporter<br/>AxesShpExporter<br/>8.3k lines]
-            DRILL_EXP[drillhole_exporters.py<br/>DrillholeTraceShpExporter<br/>DrillholeIntervalShpExporter<br/>4.2k lines]
+            SHP_EXP[shp_exporter.py<br/>ShapefileExporter]
+            CSV_EXP[csv_exporter.py<br/>CSVExporter]
+            PDF_EXP[pdf_exporter.py<br/>PDFExporter]
+            SVG_EXP[svg_exporter.py<br/>SVGExporter]
+            IMG_EXP[image_exporter.py<br/>ImageExporter]
+            PROFILE_EXP[profile_exporters.py<br/>Profile/Geology/Struct]
+            DRILL_EXP[drillhole_exporters.py<br/>2D Traces/Intervals]
+            DRILL_3D[drillhole_3d_exporter.py<br/>3D Traces/Intervals]
+            INTERP_3D[interpretation_3d_exporter.py<br/>3D Polygons]
         end
-    end
-
-    %% ========== EXTERNAL DEPENDENCIES ==========
-    subgraph EXTERNAL["🌐 External Dependencies"]
-        QGIS_CORE[qgis.core<br/>QgsVectorLayer<br/>QgsRasterLayer<br/>QgsGeometry<br/>QgsProcessing<br/>QgsSpatialIndex]
-        QGIS_GUI[qgis.gui<br/>QgsMapCanvas<br/>QgsMapTool<br/>QgsMapLayer]
-        PYQT5[PyQt5<br/>QtWidgets<br/>QtCore<br/>QtGui<br/>Signals/Slots]
     end
 
     %% ========== CONNECTIONS ==========
@@ -195,43 +192,23 @@ graph TB
     INIT -->|delegates| PLUGIN
     PLUGIN -->|initializes| MAIN
 
-    MAIN -->|delegates signals| SIGNALS_MGR
-    MAIN -->|uses data from| DATA_MGR
-    MAIN -->|manages| PREVIEW_MGR
-    MAIN -->|manages| EXPORT_MGR
-    MAIN -->|manages| VALIDATION_MGR
-    MAIN -->|manages| CONFIG_MGR
-    MAIN -->|manages| CACHE_HANDLER
+    MAIN -->|delegates| MANAGERS
     MAIN -->|uses| UI_MAIN
 
     PREVIEW_MGR -->|renders with| RENDERER
     PREVIEW_MGR -->|updates| LEGEND
-    PREVIEW_MGR -->|activates| MEASURE
-    PREVIEW_MGR -->|requests data| CONTROLLER
+    PREVIEW_MGR -->|activates| TOOLS
+    PREVIEW_MGR -->|launches| TASKS
+    TASKS -->|uses| SERVICES
 
     EXPORT_MGR -->|delegates to| ORCHESTRATOR
-    VALIDATION_MGR -->|validates with| PROJ_VAL
+    VALIDATION_MGR -->|validates with| VALIDATION_PKG
 
-    CONTROLLER -->|orchestrates| PROFILE_SVC
-    CONTROLLER -->|orchestrates| GEOLOGY_SVC
-    CONTROLLER -->|orchestrates| STRUCTURE_SVC
-    CONTROLLER -->|orchestrates| DRILLHOLE_SVC
-    CONTROLLER -->|uses| CACHE
-    CONTROLLER -->|tracks with| METRICS
+    CONTROLLER -->|orchestrates| SERVICES
+    SERVICES -->|uses| UTILS
+    SERVICES -->|uses| ALGORITHMS
 
-    GEOLOGY_SVC -->|offloads to| PARALLEL_GEO
-    GEOLOGY_SVC -->|uses| ALGORITHMS
-    STRUCTURE_SVC -->|uses| ALGORITHMS
-    DRILLHOLE_SVC -->|uses| DRILL_UTILS
-    PROFILE_SVC -->|uses| SAMPLING_UTILS
-
-    ALGORITHMS -->|uses| GEOM_UTILS
-    ALGORITHMS -->|uses| SPATIAL_UTILS
-
-    ORCHESTRATOR -->|delegates to| SHP_EXP
-    ORCHESTRATOR -->|delegates to| CSV_EXP
-    ORCHESTRATOR -->|delegates to| PROFILE_EXP
-    ORCHESTRATOR -->|delegates to| DRILL_EXP
+    ORCHESTRATOR -->|delegates to| EXPORT_FORMATS
 
     RENDERER -->|uses| QGIS_GUI
     CONTROLLER -->|uses| QGIS_CORE
@@ -279,7 +256,7 @@ graph LR
 
 **Main Class**: `SecInterpDialog`
 **Inherits from**: `SecInterpMainWindow`
-**Lines of code**: ~340 (Reduced from 1,057)
+**Lines of code**: ~350 (Unified logic handled by Managers)
 **Responsibility**: Simplified main dialog that coordinates components via Managers
 
 #### Key Components
@@ -299,6 +276,8 @@ class SecInterpDialog(SecInterpMainWindow):
         self.export_manager = ExportManager(self)
         self.status_manager = DialogStatusManager(self)
         self.settings_manager = DialogSettingsManager(self)
+        self.interpretation_manager = InterpretationManager(self)
+        self.message_manager = MessageManager(self)
 
         # Widgets
         self.legend_widget = LegendWidget(self.preview_widget.canvas)
@@ -342,7 +321,7 @@ self.page_section.line_combo.layerChanged.connect(self.update_button_state)
 ### 2. PreviewManager (main_dialog_preview.py)
 
 **Class**: `PreviewManager`
-**Lines of code**: ~31,000
+**Lines of code**: ~250
 **Responsibility**: Manages preview generation and updates
 
 #### Main Methods
@@ -367,7 +346,7 @@ class PreviewManager:
 ### 3. PreviewRenderer (preview_renderer.py)
 
 **Class**: `PreviewRenderer`
-**Lines of code**: 1,190
+**Lines of code**: ~280
 **Methods**: 20
 **Responsibility**: Renders the preview canvas using native PyQGIS
 
@@ -446,7 +425,7 @@ measurementCleared = pyqtSignal()
 ### 1. ProfileController (controller.py)
 
 **Class**: `ProfileController`
-**Lines of code**: 192
+**Lines of code**: ~280
 **Responsibility**: Orchestrates the data generation services
 
 #### Architecture
@@ -494,7 +473,7 @@ def generate_profile_data(self, values: Dict[str, Any]) -> Tuple[List, Any, Any,
 ### 2. GeologyService (geology_service.py)
 
 **Class**: `GeologyService`
-**Lines of code**: 244
+**Lines of code**: ~540
 **Methods**: 8
 **Responsibility**: Generates geological profiles by intersecting polygons
 
@@ -1405,6 +1384,6 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 
 This document provides a detailed view of the SecInterp plugin architecture. For development information, see [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last update**: 2025-12-21
-**Plugin Version**: 2.2
+**Last update**: 2026-01-18
+**Plugin Version**: 2.7.0
 **Author**: Juan M. Bernales

@@ -22,8 +22,8 @@ The SecInterp dialog is divided into three main areas:
 2.  **Configuration Page (Center)**: Where you configure the parameters for the selected module.
 3.  **Preview Panel (Right)**: An interactive canvas showing your cross-section in real-time.
 
-![The redesigned v2.6.0 Main Window with Sidebar navigation](images/ui_main_dialog_v26.png)
-*The redesigned v2.6.0 Main Window with Sidebar navigation.*
+![The redesigned v2.7.0 Main Window with Sidebar navigation](images/ui_main_dialog_v26.png)
+*The redesigned v2.7.0 Main Window with Sidebar navigation.*
 
 ## 3. Step-by-Step Tutorial: Creating a Profile
 
@@ -122,7 +122,7 @@ Configures geological or attribute intervals.
 ![Section Preview with all panels collapsed](images/preview_panels_collapsed.png)
 *Section Preview with all panels collapsed.*
 
-## 4. New Features in v2.6.0
+## 4. New Features in v2.7.0
 
 ### 4.1 Interpretation Tool (Drawing)
 The new **Interpretation Tool** allows you to draw geological polygons directly on the profile section.

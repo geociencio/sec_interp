@@ -92,7 +92,7 @@ Before installing **SecInterp**, ensure your system meets the following requirem
 
 ## 📖 Quick Start Guide
 
-For detailed instructions, please see the [**User Guide**](docs/source/USER_GUIDE.md).
+For detailed instructions, please see the [**User Guide**](https://geociencio.github.io/sec_interp_docs/USER_GUIDE.html).
 
 1. **Prepare Data**: Load your DEM (Raster), Geology (Polygons), and Structure (Points) layers in QGIS.
 2. **Launch Plugin**: Click the **SecInterp** icon in the toolbar.
@@ -145,7 +145,7 @@ This plugin is open-source and welcomes contributions.
   - [**Development Guide**](https://geociencio.github.io/sec_interp_docs/DEVELOPMENT_GUIDE.html): Code standards and setup.
   - [**Maintenance Log**](https://geociencio.github.io/sec_interp_docs/MAINTENANCE_LOG.html): Changelog and release procedures.
   - [**Technical Compendium**](https://geociencio.github.io/sec_interp_docs/TECHNICAL_COMPENDIUM.html): Geophysical research and details.
-- **Development Setup**: Use the `Makefile` and `DEVELOPMENT_GUIDE.md`.
+- **Development Setup**: Use the `Makefile` and the [**Development Guide**](https://geociencio.github.io/sec_interp_docs/DEVELOPMENT_GUIDE.html).
 - **Testing with Docker** (Recommended):
   Esta suite ejecuta los **361 tests** del proyecto dentro de un contenedor QGIS oficial (`qgis/qgis:latest`), garantizando un entorno reproducible y libre de conflictos de dependencias locales.
   ```bash
