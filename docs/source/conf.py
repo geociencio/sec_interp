@@ -37,7 +37,12 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
     "myst_parser",
+    "sphinxcontrib.mermaid",
 ]
+
+# MyST Configuration
+myst_fence_as_directive = ["mermaid"]
+myst_enable_extensions = ["colon_fence"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
