@@ -6,6 +6,16 @@ Chronological record of development activities, significant fixes, and technical
 ---
 ---
 ---
+## [2026-01-19] Inicio de Fase v2.8.0 (Reducción de Deuda y Mejoras de UI)
+- **Objetivo**: Reducción de deuda técnica en servicios core e implementación de controles de visibilidad para la leyenda.
+- **Estado Inicial**: Calidad 83.5/100, 361 Tests OK (Docker).
+- **Prioridades**:
+    1. Refactorización de `GeologyService` (métodos largos).
+    2. Checkbox para visibilidad de leyenda en Preview.
+    3. Suite de tests de integración 3D.
+
+---
+
 ## [2026-01-18] Resumen: Infraestructura de Documentación Externa (Noche)
 - **Documentación Desacoplada**: Implementado repositorio externo `sec_interp_docs` con despliegue automático a GitHub Pages desde `build_docs.sh`.
 - **Soporte Markdown**: Habilitado `myst_parser` para renderizar guías `.md` como parte del sitio de documentación oficial.
@@ -15,9 +25,10 @@ Chronological record of development activities, significant fixes, and technical
 - **Estado**: Lista la infraestructura para el Release v2.7.0.
 
 ## [2026-01-18] Resumen: Release v2.7.0 Finalizado
-**Autor:** AI Assistant
-**Estado:** ✅ Completado
-**Resumen:**
+**Fecha Última Actualización:** 2026-01-18
+**Autor:** Antigravity
+**Estado:** ¡Fase v2.7.0 Completada! 🎉 Todos los objetivos principales de excelencia operativa, documentación y exportación han sido alcanzados. Se han añadido mejoras finales de UI (iconos) e i18n en la última sesión. El proyecto está listo para el siguiente ciclo mayor.
+
 Ciclo completo de release para la versión 2.7.0 "Operational Excellence & Documentation". Se estabilizó el entorno de pruebas (mocking fixes), se ejecutó la validación de calidad (analyzer, tests), se generaron los artefactos de distribución (ZIP, GitHub Release Draft) y se realizó una limpieza profunda del proyecto.
 
 **Actividades Principales:**

@@ -1,17 +1,14 @@
-# Siguientes Pasos - Release v2.7.0
+# Siguientes Pasos - SecInterp v2.8.0
 
-La infraestructura de documentación está completa. El siguiente paso es ejecutar el proceso de Release Candidate.
+La **Fase v2.8.0 (Reducción de Deuda y Mejoras de UI)** ha iniciado. Los objetivos principales son:
 
-## 🎯 Objetivo Inmediato: Release Candidate v2.7.0
+1. **Reducción de Deuda Técnica**: Refactorizar `GeologyService` y mejorar tests de integración 3D.
+2. **Checkbox para Legend**: Añadir control de visibilidad de leyenda en la visualización previa.
 
-### Prioridades
-1.  **Smoke Test Final**: Ejecutar una última validación completa en Docker (`make docker-test`).
-2.  **Empaquetado**: Generar el ZIP final v2.7.0 (excluyendo archivos innecesarios).
-3.  **Publicación**: Crear Release en GitHub y adjuntar el ZIP y checksums.
-
-### Cómo Retomar
+## Cómo Retomar
+Para iniciar una sesión de desarrollo:
 ```bash
-/release-plugin
+/inicia-sesion
 ```
 
-**Estado Actual**: v2.7.0-rc1 (Documentation Ready).
+**Estado Actual**: Estable. Plan de implementación creado y pendiente de aprobación.
