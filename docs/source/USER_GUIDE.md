@@ -169,7 +169,7 @@ Control exactly what gets generated when you click **Save**.
 - **Topographic Profile**: Exports the surface line (CSV/SHP).
 - **Geological Profile**: Exports projected contacts (CSV/SHP).
 - **Structural Data**: Exports projected structural measurements (CSV/SHP).
-- **Drillhole Data**: Exports traces and interval cylinders (SHP).
+- **Drillhole Data**: Exports traces (`LineStringZ`) and interval cylinders (`PolygonZ`) as 3D Shapefiles.
 - **Interpretations (2D)**: Exports your drawn polygons (SHP).
 
 ![Default settings showing Export Selection](images/guide_settings_default.png)
@@ -240,7 +240,7 @@ Use this when you want to **share** your data or use it in other software.
   - Topographic Profile (LineString)
   - Geological Contacts (Points)
   - Structural Data (Points with Dip/Strike)
-  - Drillhole Traces and Intervals (3D Shapefiles)
+  - Drillhole Traces and Intervals (3D `LineStringZ` / `PolygonZ`)
   - **3D Interpretations** (PolygonZ, if enabled in Settings)
 
 ### **"OK" Button (Internal Persistence)**

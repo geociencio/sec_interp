@@ -29,7 +29,7 @@
 - **🛡️ 3-Level Robust Validation**: Implementing a tiered validation system (Type, Business Logic, and Domain) to ensure data integrity and prevent crashes.
 - **🐳 Dockerized QA**: Continuous testing infrastructure using Docker to run 340+ tests in an official QGIS environment.
 - **📚 Automated API Docs**: Clean, external documentation generated with Sphinx for enhanced developer maintainability.
-- **🧊 Enhanced 3D Export**: Improved projection algorithms for both drillhole traces and geological intervals.
+- **🧊 Enhanced 3D Export**: Improved projection algorithms for both drillhole traces (`LineStringZ`) and geological intervals (`PolygonZ`).
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
@@ -147,7 +147,7 @@ This plugin is open-source and welcomes contributions.
 - [**Technical Compendium**](docs/source/TECHNICAL_COMPENDIUM.md): Geophysical research and details.
 - **Development Setup**: Use the `Makefile` and `DEVELOPMENT_GUIDE.md`.
 - **Testing with Docker** (Recommended):
-  Esta suite ejecuta los **349 tests** del proyecto dentro de un contenedor QGIS oficial (`qgis/qgis:latest`), garantizando un entorno reproducible y libre de conflictos de dependencias locales.
+  Esta suite ejecuta los **361 tests** del proyecto dentro de un contenedor QGIS oficial (`qgis/qgis:latest`), garantizando un entorno reproducible y libre de conflictos de dependencias locales.
   ```bash
   make docker-build  # Build the test image
   make docker-test   # Run the full test suite inside a container
