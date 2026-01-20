@@ -36,11 +36,14 @@ class LegendWidget(QWidget):
             self.resize(event.size())
         return super().eventFilter(obj, event)
 
-    def update_legend(self, renderer: Renderer) -> None:
+    def update_legend(self, renderer: Renderer, visible: bool = True) -> None:
         """Update legend with data from renderer."""
         self.renderer = renderer
         self.update()
-        self.show()
+        if visible:
+            self.show()
+        else:
+            self.hide()
 
     def paintEvent(self, event: QEvent) -> None:
         """Handle paint event to draw the legend."""

@@ -466,6 +466,7 @@ class SecInterp:
             preserve_extent=kwargs.get("preserve_extent", False),
             drillhole_data=filtered_drill,
             interp_data=filtered_interp,
+            show_legend=options.get("show_legend", True),
         )
 
         # Store canvas and layers for export
@@ -474,6 +475,8 @@ class SecInterp:
 
         # Update legend
         if hasattr(self.dlg, "legend_widget"):
-            self.dlg.legend_widget.update_legend(self.preview_renderer)
+            self.dlg.legend_widget.update_legend(
+                self.preview_renderer, options.get("show_legend", True)
+            )
 
         logger.debug("Preview rendered with %d layers", len(layers) if layers else 0)

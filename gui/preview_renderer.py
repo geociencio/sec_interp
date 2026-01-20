@@ -82,6 +82,7 @@ class PreviewRenderer:
         use_adaptive_sampling: bool = False,
         drillhole_data: list | None = None,
         interp_data: list[InterpretationPolygon] | None = None,
+        show_legend: bool = True,
         **kwargs,
     ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
@@ -208,7 +209,8 @@ class PreviewRenderer:
             job.waitForFinished()
 
             # Delegate legend drawing
-            self.draw_legend(painter, QRectF(0, 0, width, height))
+            if show_legend:
+                self.draw_legend(painter, QRectF(0, 0, width, height))
             painter.end()
 
             return image.save(output_path)

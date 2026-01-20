@@ -21,10 +21,6 @@ jobs:
       - name: Set up Python
         run: uv python install 3.10
 
-      - name: Install documentation dependencies
-        run: |
-          uv pip install sphinx myst-parser sphinxcontrib-mermaid
-
       - name: Build optimized ZIP
         run: make zip
 

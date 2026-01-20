@@ -109,11 +109,13 @@ class ExportManager:
                     dpi = 300
 
                 # Prepare settings
+                opts = self.dialog.get_preview_options()
                 export_params = {
                     "width": width,
                     "height": height,
                     "dpi": dpi,
                     "background_color": QColor(255, 255, 255),
+                    "show_legend": opts.get("show_legend", True),
                     "legend_renderer": getattr(
                         self.dialog.plugin_instance, "preview_renderer", None
                     ),

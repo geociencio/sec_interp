@@ -120,6 +120,7 @@ class PreviewSettings:
     show_struct: bool = True
     show_drillholes: bool = True
     show_interpretations: bool = True
+    show_legend: bool = True
     auto_lod: bool = False
     adaptive_sampling: bool = True
     max_points: int = 10000

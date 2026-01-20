@@ -60,8 +60,9 @@ class SVGExporter(BaseExporter):
                 job.waitForFinished()
 
                 # Draw legend if available
+                show_legend = self.get_setting("show_legend", True)
                 legend_renderer = self.get_setting("legend_renderer")
-                if legend_renderer:
+                if legend_renderer and show_legend:
                     legend_renderer.draw_legend(painter, QRectF(0, 0, width, height))
 
                 return True

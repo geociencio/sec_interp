@@ -6,6 +6,19 @@ Chronological record of development activities, significant fixes, and technical
 ---
 ---
 ---
+## [2026-01-20] Implementación de Visibilidad de Leyenda (Mañana)
+- **Logro**: Implementado control granular de visibilidad para la leyenda en el preview y exportadores.
+- **Cambios**:
+    - Añadido `show_legend` a `PreviewSettings` y persistencia en proyecto.
+    - Nuevo checkbox `chk_legend` en la UI de Preview con actualización reactiva.
+    - Actualizados exportadores (`Image`, `PDF`, `SVG`) para honrar el ajuste de visibilidad.
+- **Bugs Corregidos**:
+    - Resuelto problema de visibilidad persistente en `LegendWidget` interactivo.
+    - Corregida fuga de leyenda en archivos exportados.
+- **Estado**: Funcionalidad verificada por el usuario y tests unitarios de modelo OK.
+
+---
+
 ## [2026-01-19] Inicio de Fase v2.8.0 (Reducción de Deuda y Mejoras de UI)
 - **Objetivo**: Reducción de deuda técnica en servicios core e implementación de controles de visibilidad para la leyenda.
 - **Estado Inicial**: Calidad 83.5/100, 361 Tests OK (Docker).
