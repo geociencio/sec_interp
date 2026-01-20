@@ -1,14 +1,13 @@
-# Siguientes Pasos - SecInterp v2.8.0
+# Siguientes Pasos - Fase v2.8.0
 
-La **Fase v2.8.0 (Reducción de Deuda y Mejoras de UI)** ha iniciado. Los objetivos principales son:
+## Contexto Actual
+Se ha completado la funcionalidad de visibilidad de leyenda. El sistema es estable y los cambios están confirmados.
 
-1. **Reducción de Deuda Técnica**: Refactorizar `GeologyService` y mejorar tests de integración 3D.
-2. **Checkbox para Legend**: Añadir control de visibilidad de leyenda en la visualización previa.
+## Objetivos Pendientes
+1. **Reducción de Deuda Técnica**: Refactorizar métodos largos en `GeologyService`.
+   - Identificar métodos de 50+ líneas.
+   - Extraer lógica de procesamiento de geometrías.
+2. **Tests de Integración 3D**: Mejorar cobertura para proyecciones.
 
-## Cómo Retomar
-Para iniciar una sesión de desarrollo:
-```bash
-/inicia-sesion
-```
-
-**Estado Actual**: Estable. Plan de implementación creado y pendiente de aprobación.
+## Cómo retomar
+Ejecuta `/inicia-sesion` y enfócate en la refactorización de `GeologyService`.

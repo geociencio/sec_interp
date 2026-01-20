@@ -3,6 +3,10 @@
 ## Objetivo General
 Iniciar la Fase v2.8.0 con un enfoque en la reducción de deuda técnica heredada y la implementación de controles de visibilidad para la leyenda en la visualización previa.
 
+- [ ] Reducción de Deuda Técnica: Refactorizar `GeologyService` (métodos largos).
+- [x] Implementar checkbox de visibilidad de leyenda en Preview (con persistencia).
+- [ ] Mejorar cobertura de tests de integración para proyección 3D.
+
 ---
 
 ## Proposed Changes
