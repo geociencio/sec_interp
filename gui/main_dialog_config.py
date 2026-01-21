@@ -1,7 +1,5 @@
 """Configuration and defaults for the SecInterp dialogs."""
 
-from __future__ import annotations
-
 from typing import Any, ClassVar
 
 from qgis.PyQt.QtGui import QColor

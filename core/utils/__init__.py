@@ -10,8 +10,6 @@ Organized by functionality:
 - geology: Geological calculations
 """
 
-from __future__ import annotations
-
 # Geometry operations
 # Geological calculations
 from .drillhole import (

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Logger Configuration Module.
 
 Provides centralized logging configuration for the Sec Interp plugin.

@@ -3,8 +3,6 @@
 This module provides the exporter for 3D geological interpretations.
 """
 
-from __future__ import annotations
-
 import math
 from pathlib import Path
 from typing import Any

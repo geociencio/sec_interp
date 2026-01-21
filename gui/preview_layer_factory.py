@@ -3,8 +3,6 @@
 Handles creation of temporary memory layers and configuration of native QGIS symbology.
 """
 
-from __future__ import annotations
-
 import math
 from typing import Any, ClassVar
 

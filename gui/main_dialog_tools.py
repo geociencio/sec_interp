@@ -4,8 +4,6 @@ This module handles the initialization and orchestration of map tools
 (pan, measure) used in the preview canvas.
 """
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any
 
 from qgis.gui import QgsMapTool, QgsMapToolPan

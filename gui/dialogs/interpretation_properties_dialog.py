@@ -4,8 +4,6 @@ This module provides a dialog to edit the attributes and visual properties
 of geological interpretations drawn on the profile.
 """
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any
 
 from qgis.PyQt.QtGui import QColor

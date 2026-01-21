@@ -4,8 +4,6 @@ This module provides the ProfileInterpretationTool for drawing
 interpretation polygons in the profile preview window.
 """
 
-from __future__ import annotations
-
 import contextlib
 import datetime
 import random

@@ -4,8 +4,6 @@ Handles rendering of interactive previews using native QGIS resources.
 This module has been refactored to delegate specialized tasks to modular components.
 """
 
-from __future__ import annotations
-
 import contextlib
 
 from qgis.core import (

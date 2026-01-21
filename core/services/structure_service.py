@@ -4,8 +4,6 @@ This module handles the calculation of apparent dips and projection
 of structural measurements (planes, lines) onto the section plane.
 """
 
-from __future__ import annotations
-
 # /***************************************************************************
 #  SecInterp - StructureService
 #                                  A QGIS plugin

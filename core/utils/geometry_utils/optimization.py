@@ -3,8 +3,6 @@
 Handles simplification and sampling of geometric data to improve rendering performance.
 """
 
-from __future__ import annotations
-
 import math
 
 from qgis.core import QgsGeometry, QgsPointXY

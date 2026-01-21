@@ -1,7 +1,5 @@
 """Spatial validation for QGIS layers (geometry types, CRS)."""
 
-from __future__ import annotations
-
 from qgis.core import (
     QgsMapLayer,
     QgsProject,

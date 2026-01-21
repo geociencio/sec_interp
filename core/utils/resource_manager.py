@@ -4,8 +4,6 @@ This module provides context managers for handling temporary QGIS resources
 and system files to ensure proper cleanup and prevent resource leaks.
 """
 
-from __future__ import annotations
-
 import contextlib
 import os
 import tempfile

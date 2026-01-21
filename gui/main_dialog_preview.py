@@ -4,8 +4,6 @@ This module handles preview generation, rendering, and updates,
 separating preview logic from the main dialog class.
 """
 
-from __future__ import annotations
-
 import hashlib
 from typing import TYPE_CHECKING, Any
 

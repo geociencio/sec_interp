@@ -3,8 +3,6 @@
 Handles the creation of grid lines and axes labels with nice intervals.
 """
 
-from __future__ import annotations
-
 import math
 
 from qgis.core import (

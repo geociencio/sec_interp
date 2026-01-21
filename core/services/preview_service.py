@@ -5,8 +5,6 @@ preview components, including topography, structures, and drillholes.
 It remains decoupled from the GUI layer.
 """
 
-from __future__ import annotations
-
 import math
 from typing import Any
 

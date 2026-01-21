@@ -3,8 +3,6 @@
 This module provides elevation sampling and profile context preparation tools.
 """
 
-from __future__ import annotations
-
 from qgis.core import (
     QgsDistanceArea,
     QgsGeometry,

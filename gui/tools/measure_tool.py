@@ -5,8 +5,6 @@ elevation differences, and slopes in the profile preview window.
 It separates UI event handling from spatial snapping logic.
 """
 
-from __future__ import annotations
-
 from qgis.core import (
     QgsMapLayer,
     QgsPointLocator,

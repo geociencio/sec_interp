@@ -4,8 +4,6 @@ Handles the drawing of the legend on a QPainter, including topography,
 structures, and geological units.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from qgis.PyQt.QtCore import QCoreApplication, QRectF, Qt

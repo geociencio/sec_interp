@@ -23,8 +23,6 @@ and unit segments from map layers to the cross-section plane.
 #  *                                                                         *
 #  ***************************************************************************/
 
-from __future__ import annotations
-
 from typing import Any
 
 from qgis.core import (

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """SecInterp QGIS Plugin.
 
 This plugin provides tools for cross-section generation and geological interpretation
@@ -24,7 +26,6 @@ data extraction from QGIS layers.
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
-from __future__ import annotations
 
 from typing import TYPE_CHECKING
 

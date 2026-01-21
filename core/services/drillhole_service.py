@@ -4,8 +4,6 @@ This module provides services for processing and projecting drillhole data,
 including collar projection, trajectory calculation, and interval interpolation.
 """
 
-from __future__ import annotations
-
 import contextlib
 from typing import Any
 

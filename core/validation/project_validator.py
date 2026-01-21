@@ -1,7 +1,5 @@
 """Validation for QGIS project state and layer presence."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsWkbTypes

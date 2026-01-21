@@ -1,7 +1,5 @@
 """Validation logic for QGIS layer fields and attributes."""
 
-from __future__ import annotations
-
 from qgis.core import QgsVectorLayer
 
 from sec_interp.core.types import FieldType

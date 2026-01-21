@@ -1,7 +1,5 @@
 """Geometry processing utilities."""
 
-from __future__ import annotations
-
 from typing import Any
 
 from qgis.core import (

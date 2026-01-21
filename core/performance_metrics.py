@@ -4,8 +4,6 @@ This module provides tools for tracking performance and resource usage
 across the plugin's operations.
 """
 
-from __future__ import annotations
-
 import time
 from collections.abc import Callable, Generator
 from contextlib import contextmanager

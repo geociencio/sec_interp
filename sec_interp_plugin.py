@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # /***************************************************************************
 #  SecInterp
 #                                  A QGIS plugin
@@ -24,7 +26,6 @@
 Orchestrates the lifecycle of the SecInterp QGIS plugin.
 """
 
-from __future__ import annotations
 
 from pathlib import Path
 from typing import Any

@@ -4,8 +4,6 @@ This module provides a service to orchestrate all export operations,
 including data (Shapefile, CSV) and preview (PNG, PDF, SVG) exports.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Any
 

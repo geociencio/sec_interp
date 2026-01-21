@@ -4,8 +4,6 @@ This module handles exporting preview data to various file formats
 (PNG, PDF, SVG) and orchestrating data exports (SHP, CSV) via ExportService.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 from typing import TYPE_CHECKING
 

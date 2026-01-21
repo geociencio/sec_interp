@@ -13,7 +13,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../../"))
+sys.path.insert(0, os.path.abspath("../../../"))
 
 
 # -- Project information -----------------------------------------------------
@@ -39,6 +39,9 @@ extensions = [
     "myst_parser",
     "sphinxcontrib.mermaid",
 ]
+
+# Mock imports for modules that are not available in the build environment
+autodoc_mock_imports = ["qgis", "PyQt5", "qgis.core", "qgis.gui", "qgis.utils"]
 
 # MyST Configuration
 myst_fence_as_directive = ["mermaid"]
