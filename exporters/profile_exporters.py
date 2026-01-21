@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Specific exporters for profile data (Shapefiles)."""
 
 import math

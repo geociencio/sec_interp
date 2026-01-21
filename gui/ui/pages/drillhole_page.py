@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """UI page for drillhole data configuration."""
 
 from typing import Any

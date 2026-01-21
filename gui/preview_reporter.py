@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Preview reporting and message formatting for SecInterp.
 
 This module provides the PreviewReporter class to handle the formatting of

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Main Window assembly."""
 
 from qgis.gui import QgsFileWidget

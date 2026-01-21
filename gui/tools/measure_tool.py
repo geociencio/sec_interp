@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Measurement tool for Profile View.
 
 This module provides the ProfileMeasureTool for measuring distances,

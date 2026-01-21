@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """CSV exporter module for tabular data."""
 
 import csv

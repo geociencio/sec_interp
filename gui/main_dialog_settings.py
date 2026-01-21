@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Settings management module for SecInterp main dialog.
 
 This module handles persistence of user settings between sessions.
@@ -18,7 +20,7 @@ logger = get_logger(__name__)
 class DialogSettingsManager:
     """Manages persistence of dialog settings."""
 
-    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
+    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
         """Initialize settings manager with reference to parent dialog.
 
         Args:

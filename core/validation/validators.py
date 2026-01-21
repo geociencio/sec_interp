@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Reusable validators for dataclass fields.
 
 This module provides composable validators that can be used to validate

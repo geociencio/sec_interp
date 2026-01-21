@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Layer factory for SecInterp preview.
 
 Handles creation of temporary memory layers and configuration of native QGIS symbology.

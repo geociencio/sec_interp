@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Exporters for drillhole data (Shapefiles)."""
 
 from typing import Any

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """3D Interpretation Exporter.
 
 This module provides the exporter for 3D geological interpretations.

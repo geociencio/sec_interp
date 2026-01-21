@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """DEM configuration page."""
 
 from typing import Any

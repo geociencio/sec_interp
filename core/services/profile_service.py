@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Profile Data Processing Service.
 
 This module handles the extraction and processing of topographic profile data

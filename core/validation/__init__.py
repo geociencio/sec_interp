@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Validation package for SecInterp plugin."""
 
 from .field_validator import (

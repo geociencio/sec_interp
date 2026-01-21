@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Drillhole Utilities Module.
 
 Calculations for drillhole geometry and projection.

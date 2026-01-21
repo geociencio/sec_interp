@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Interface for Cache services."""
 
 from typing import Any, Protocol, runtime_checkable

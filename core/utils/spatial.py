@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Spatial Utilities Module.
 
 Distance calculations, azimuth, and basic spatial operations.

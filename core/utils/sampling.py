@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Sampling Utilities Module.
 
 This module provides elevation sampling and profile context preparation tools.

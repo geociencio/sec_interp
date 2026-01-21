@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core algorithms module.
 
 IMPORTANT: The main SecInterp plugin class has been moved to sec_interp_plugin.py

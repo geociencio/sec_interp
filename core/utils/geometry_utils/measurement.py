@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Measurement calculation utilities for profile viewing."""
 
 import math

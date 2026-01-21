@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Legend Widget Module."""
 
 from typing import TYPE_CHECKING

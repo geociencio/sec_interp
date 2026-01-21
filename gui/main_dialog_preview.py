@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Preview management module for SecInterp main dialog.
 
 This module handles preview generation, rendering, and updates,

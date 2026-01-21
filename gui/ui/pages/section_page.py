@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Cross-section configuration page."""
 
 from typing import Any

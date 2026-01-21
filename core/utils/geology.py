@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Geology Utilities Module.
 
 Geological calculations and structural geology operations.

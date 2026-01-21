@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Interpretation exporters for SecInterp.
 
 This module provides exporters for 2D interpretation data.

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Interpretation tool for Profile View.
 
 This module provides the ProfileInterpretationTool for drawing

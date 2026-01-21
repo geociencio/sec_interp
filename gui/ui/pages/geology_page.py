@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Geology configuration page."""
 
 from qgis.core import QgsMapLayerProxyModel

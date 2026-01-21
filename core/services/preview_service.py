@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Preview service for SecInterp.
 
 This module provides a service to orchestrate the generation of all

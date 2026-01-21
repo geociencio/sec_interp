@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Axes and grid management for SecInterp preview.
 
 Handles the creation of grid lines and axes labels with nice intervals.

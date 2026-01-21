@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Legend rendering logic for SecInterp preview.
 
 Handles the drawing of the legend on a QPainter, including topography,

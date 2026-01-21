@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Structure Data Processing Service.
 
 This module handles the calculation of apparent dips and projection

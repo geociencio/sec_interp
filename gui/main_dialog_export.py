@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Export management module for SecInterp main dialog.
 
 This module handles exporting preview data to various file formats

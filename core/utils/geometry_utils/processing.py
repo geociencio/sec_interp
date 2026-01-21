@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Geometry processing utilities."""
 
 from typing import Any

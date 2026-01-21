@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Sidebar navigation widget."""
 
 from typing import Any

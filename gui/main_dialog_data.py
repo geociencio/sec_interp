@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Data aggregation module for SecInterp main dialog.
 
 This module handles aggregation of data from all dialog pages,
@@ -20,7 +22,7 @@ class DialogDataAggregator:
     expected by the rest of the application.
     """
 
-    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
+    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
         """Initialize data aggregator.
 
         Args:

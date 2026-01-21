@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Performance metrics module for SecInterp plugin.
 
 This module provides tools for tracking performance and resource usage

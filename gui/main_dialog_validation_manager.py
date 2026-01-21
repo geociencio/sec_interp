@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Validation manager for SecInterp main dialog.
 
 This module provides a declarative way to define and execute validation rules
@@ -16,7 +18,7 @@ if TYPE_CHECKING:
 class DialogValidationManager:
     """Manages UI-level validation rules and state."""
 
-    def __init__(self, dialog: "SecInterpDialog") -> None:
+    def __init__(self, dialog: SecInterpDialog) -> None:
         """Initialize validation manager.
 
         Args:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Dialog for editing interpretation properties.
 
 This module provides a dialog to edit the attributes and visual properties

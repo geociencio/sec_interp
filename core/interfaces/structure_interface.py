@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Interface for Structure services."""
 
 from abc import ABC, abstractmethod

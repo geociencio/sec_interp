@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Base class for configuration pages."""
 
 from qgis.PyQt.QtWidgets import QGroupBox, QVBoxLayout, QWidget

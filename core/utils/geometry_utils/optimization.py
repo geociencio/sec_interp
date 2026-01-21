@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Geometry optimization utilities for SecInterp preview.
 
 Handles simplification and sampling of geometric data to improve rendering performance.

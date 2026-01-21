@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Spatial validation for QGIS layers (geometry types, CRS)."""
 
 from qgis.core import (

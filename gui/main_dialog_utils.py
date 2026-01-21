@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """UI utility module for SecInterp main dialog.
 
 This module provides helper methods for layer filtering and field population.

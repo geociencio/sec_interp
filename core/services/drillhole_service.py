@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Drillhole Data Processing Service.
 
 This module provides services for processing and projecting drillhole data,

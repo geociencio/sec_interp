@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Interface for Preview services."""
 
 from abc import ABC, abstractmethod

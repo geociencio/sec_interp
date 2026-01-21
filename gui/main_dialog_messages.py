@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Message Management Module.
 
 Centralizes error handling and user notifications for the main dialog.

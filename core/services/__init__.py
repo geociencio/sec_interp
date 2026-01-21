@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Services package for geological data processing.
 
 This package contains service classes that handle specific data processing tasks:

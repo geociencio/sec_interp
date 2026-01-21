@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Preview Renderer Module (PyQGIS Native).
 
 Handles rendering of interactive previews using native QGIS resources.

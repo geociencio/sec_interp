@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Geometry extraction utilities."""
 
 from qgis.core import QgsGeometry, QgsPointXY, QgsWkbTypes

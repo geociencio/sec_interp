@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **UI**: Fixed bug where legend remained visible on canvas after toggling checkbox.
 - **Export**: Fixed legend leakage in PNG, PDF, and SVG exports when visibility was disabled.
+- **Docs**: Fixed visibility of Python docstrings in Sphinx output by implementing proper mocking and deferred type evaluation.
 
 ## [2.7.0] - 2026-01-18
 

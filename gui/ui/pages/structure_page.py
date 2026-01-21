@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Structural configuration page."""
 
 from typing import Any

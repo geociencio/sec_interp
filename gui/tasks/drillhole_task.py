@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Task for async drillhole generation."""
 
 from collections.abc import Callable

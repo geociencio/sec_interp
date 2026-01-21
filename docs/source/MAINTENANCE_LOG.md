@@ -6,6 +6,7 @@ This document serves as the central record for project history, release procedur
 
 ### [v2.8.0 Plan - Phase 1] - 2026-01-20
 - **Legend Visibility**: Implemented `show_legend` in `PreviewSettings` with project persistence. Added UI toggle in Preview page and ensured all image/vector exporters (PNG, PDF, SVG) respect the setting. Fixed interactive canvas visibility logic.
+- **API Documentation**: Fixed Sphinx build by implementing QGIS/PyQt mocks and project-wide deferred annotations (`from __future__ import annotations`). Resolved `ModuleNotFoundError` by correcting `sys.path`.
 
 ### [v2.7.0 Plan - Phase 1] - 2026-01-15
 - **Mock Infrastructure Overhaul**: Implemented `ModuleProxy` and `MockSignal` to stabilize the QGIS test environment. Resolved attribute errors and reference loss during mock resets. Added `indexFromName` to `MockQgsFields` for better API parity.

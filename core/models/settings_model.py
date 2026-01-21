@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Settings models using dataclasses for validation.
 
 Provides a structured and validated way to handle plugin configurations.
@@ -144,7 +146,7 @@ class PluginSettings:
     last_output_dir: str = ""
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "PluginSettings":
+    def from_dict(cls, data: dict[str, Any]) -> PluginSettings:
         """Create a PluginSettings instance from a dictionary with validation."""
         # This will be used by ConfigService to load from QgsSettings
         return cls(

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Helper classes and functions for Level 2 (Business Validation).
 
 This module provides tools for:
@@ -71,7 +73,7 @@ class ValidationContext:
         """Get list of accumulated warnings."""
         return self._warnings
 
-    def merge(self, other: "ValidationContext"):
+    def merge(self, other: ValidationContext):
         """Merge another context into this one."""
         self._errors.extend(other.errors)
         self._warnings.extend(other.warnings)

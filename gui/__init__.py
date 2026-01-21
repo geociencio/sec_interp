@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """GUI module for SecInterp plugin.
 
 Contains dialogs, widgets, and rendering components.

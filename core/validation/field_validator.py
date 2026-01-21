@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Validation logic for QGIS layer fields and attributes."""
 
 from qgis.core import QgsVectorLayer

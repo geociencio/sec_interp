@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Base exporter module for Sec Interp plugin."""
 
 from abc import ABC, abstractmethod

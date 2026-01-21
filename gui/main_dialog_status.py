@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """UI status management module for SecInterp main dialog.
 
 This module handles updating button states, preview checkboxes, and
@@ -15,7 +17,7 @@ if TYPE_CHECKING:
 class DialogStatusManager:
     """Manage the status bar and indicators for the main dialog."""
 
-    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
+    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
         """Initialize status manager with reference to parent dialog.
 
         Args:

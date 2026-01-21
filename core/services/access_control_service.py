@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Access Control Service.
 
 This module provides a service to manage access to restricted features.

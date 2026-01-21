@@ -61,7 +61,7 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 107
-- **Lines of Code**: 17,505
+- **Lines of Code**: 17,159
 - **Functions**: 615
 - **Classes**: 115
 - **Average Complexity**: 12.5
@@ -92,13 +92,13 @@ No clear design patterns detected.
 - **low_documentation_coverage**: Low docstring coverage (0/5 functions).
 
 ### core/exceptions.py
-- **functions_too_long**: Very long functions (average 57.0 lines/function).
+- **functions_too_long**: Very long functions (average 58.0 lines/function).
+
+### core/interfaces/drillhole_interface.py
+- **functions_too_long**: Very long functions (average 50.5 lines/function).
 
 ### core/data_cache.py
 - **complexity_refactoring**: High complexity (19) with several functions. Consider breaking down large logic.
-
-### core/services/profile_service.py
-- **functions_too_long**: Very long functions (average 90.0 lines/function).
 
 ### core/controller.py
 - **complexity_refactoring**: High complexity (22) with several functions. Consider breaking down large logic.
@@ -124,4 +124,4 @@ graph TD
 ```
 
 ## 🔑 PROJECT KEYWORDS
-- **Technologies**: .py, .dat, .pyi, .sip, .qml, .html, .pyc, .so
+- **Technologies**: .py, .dat, .pyi, .sip, .qml, .pyc, .html, .so

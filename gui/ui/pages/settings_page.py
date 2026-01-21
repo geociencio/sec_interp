@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Settings page for Sec Interp plugin."""
 
 from qgis.core import QgsSettings

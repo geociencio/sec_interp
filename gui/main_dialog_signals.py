@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Signal management module for SecInterp main dialog.
 
 This module handles all signal connections for the dialog,
@@ -24,7 +26,7 @@ class DialogSignalManager:
     making the dialog initialization cleaner and more maintainable.
     """
 
-    def __init__(self, dialog: "sec_interp.gui.main_dialog.SecInterpDialog"):
+    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
         """Initialize signal manager.
 
         Args:

@@ -1,13 +1,19 @@
-# Siguientes Pasos - Fase v2.8.0
+# Próximos Pasos - SecInterp
 
-## Contexto Actual
-Se ha completado la funcionalidad de visibilidad de leyenda. El sistema es estable y los cambios están confirmados.
+## Estado Actual
+- **Documentación API**: Totalmente funcional. Sphinx procesa correctamente todos los módulos.
+- **Legend Visibility**: Implementado y verificado.
+- **Entorno**: `.venv` restaurado y limpio.
 
-## Objetivos Pendientes
-1. **Reducción de Deuda Técnica**: Refactorizar métodos largos en `GeologyService`.
-   - Identificar métodos de 50+ líneas.
-   - Extraer lógica de procesamiento de geometrías.
-2. **Tests de Integración 3D**: Mejorar cobertura para proyecciones.
+## Próximo Objetivo
+**Reducción de Deuda Técnica: Refactorizar `GeologyService`**
+- El archivo `core/services/geology_service.py` contiene métodos que exceden las 50-70 líneas.
+- Se debe extraer lógica a métodos privados o utilidades.
 
-## Cómo retomar
-Ejecuta `/inicia-sesion` y enfócate en la refactorización de `GeologyService`.
+## Comando para retomar
+```bash
+/inicia-sesion
+```
+
+## Pendientes Menores
+- Ninguno detectado en esta sesión.

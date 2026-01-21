@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Map tool management module for SecInterp main dialog.
 
 This module handles the initialization and orchestration of map tools

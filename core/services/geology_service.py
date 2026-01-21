@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Geology Data Processing Service.
 
 This module handles the extraction and projection of geological boundaries

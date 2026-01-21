@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Image exporter module for raster formats (PNG, JPG)."""
 
 from pathlib import Path

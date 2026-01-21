@@ -5,6 +5,7 @@ Iniciar la Fase v2.8.0 con un enfoque en la reducción de deuda técnica heredad
 
 - [ ] Reducción de Deuda Técnica: Refactorizar `GeologyService` (métodos largos).
 - [x] Implementar checkbox de visibilidad de leyenda en Preview (con persistencia).
+- [x] Corregir build de documentación API (Mocks y Annotations).
 - [ ] Mejorar cobertura de tests de integración para proyección 3D.
 
 ---

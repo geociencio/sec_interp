@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Geometry filtering utilities."""
 
 from qgis.core import (

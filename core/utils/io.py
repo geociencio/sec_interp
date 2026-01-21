@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """I/O Utilities Module.
 
 File I/O operations and user messaging.

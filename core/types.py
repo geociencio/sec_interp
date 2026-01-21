@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core data types and enums for SecInterp."""
 
 from dataclasses import dataclass, field

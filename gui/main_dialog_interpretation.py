@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Interpretation management module for SecInterp main dialog.
 
 This module handles interpretation polygons, their persistence, and attribute inheritance,
@@ -21,7 +23,7 @@ logger = get_logger(__name__)
 class DialogInterpretationManager:
     """Manages interpretation polygons and their business logic."""
 
-    def __init__(self, dialog: "SecInterpDialog"):
+    def __init__(self, dialog: SecInterpDialog):
         """Initialize interpretation manager.
 
         Args:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Task for async geology generation."""
 
 from collections.abc import Callable

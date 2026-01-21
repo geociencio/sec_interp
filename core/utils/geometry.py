@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Geometry Utilities Facade.
 
 Spatial geometry operations using QGIS native algorithms.

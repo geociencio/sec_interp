@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Preview area widget."""
 
 from typing import Any

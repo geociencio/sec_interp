@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Controller for SecInterp profile data generation.
 
 This module handles the orchestration of various data generation services

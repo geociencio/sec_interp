@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """PDF exporter module for PDF documents."""
 
 from pathlib import Path

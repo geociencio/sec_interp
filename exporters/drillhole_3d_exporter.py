@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """3D Drillhole Exporter.
 
 This module provides exporters for 3D drillhole data (traces and intervals).

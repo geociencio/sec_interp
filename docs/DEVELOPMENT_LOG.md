@@ -6,6 +6,16 @@ Chronological record of development activities, significant fixes, and technical
 ---
 ---
 ---
+## [2026-01-20] Corrección de Documentación API (Noche)
+- **Logro**: Restaurada visibilidad completa de docstrings en el sitio de documentación.
+- **Cambios**:
+    - Configurado mocking de QGIS/PyQt en `conf.py`.
+    - Aplicado `from __future__ import annotations` a nivel de proyecto para soportar Union types con mocks.
+    - Build de documentación estabilizado y desplegado.
+- **Estado**: Infraestructura de documentación 100% funcional.
+
+---
+
 ## [2026-01-20] Implementación de Visibilidad de Leyenda (Mañana)
 - **Logro**: Implementado control granular de visibilidad para la leyenda en el preview y exportadores.
 - **Cambios**:
