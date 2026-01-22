@@ -101,9 +101,40 @@ class GeologyService(IGeologyService):
         band_number: int = 1,
     ) -> GeologyTaskInput:
         """Prepare detached data input for background task."""
-        # --- Level 3 Validation: Domain Guards ---
-        from sec_interp.core.exceptions import DataMissingError, ValidationError
-        from sec_interp.core.validation.validators import validate_positive
+        self._validate_inputs(line_lyr, raster_lyr, outcrop_lyr, outcrop_name_field, band_number)
+
+        line_geom, line_start = self._extract_line_info(line_lyr)
+        crs = line_lyr.crs()
+        da = scu.create_distance_area(crs)
+
+        # 1. Generate Master Profile Data (needs Raster access)
+        master_profile_data, master_grid_dists = self._generate_master_profile_data(
+            line_geom, raster_lyr, band_number, da, line_start
+        )
+
+        # 2. Extract Outcrop Data (needs Vector access)
+        outcrop_data = self._extract_outcrop_data(line_geom, outcrop_lyr, outcrop_name_field)
+
+        return GeologyTaskInput(
+            line_geometry=QgsGeometry(line_geom),
+            line_start=QgsPointXY(line_start),
+            crs_authid=crs.authid(),
+            master_profile_data=master_profile_data,
+            master_grid_dists=master_grid_dists,
+            outcrop_data=outcrop_data,
+            outcrop_name_field=outcrop_name_field,
+        )
+
+    def _validate_inputs(
+        self,
+        line_lyr: QgsVectorLayer,
+        raster_lyr: QgsRasterLayer,
+        outcrop_lyr: QgsVectorLayer,
+        outcrop_name_field: str,
+        band_number: int,
+    ) -> None:
+        """Validate input layers and parameters."""
+        from sec_interp.core.exceptions import ValidationError
 
         # 1. Layer Validity
         for lyr, name in [
@@ -118,7 +149,9 @@ class GeologyService(IGeologyService):
                 )
 
         # 2. Band Validation
-        validate_positive("Band number")(band_number)
+        if band_number < 1:
+            raise ValidationError("Band number must be positive.")
+
         if band_number > raster_lyr.bandCount():
             raise ValidationError(
                 f"Band number {band_number} exceeds raster band count ({raster_lyr.bandCount()})."
@@ -129,18 +162,13 @@ class GeologyService(IGeologyService):
         if idx == -1:
             raise ValidationError(f"Field '{outcrop_name_field}' not found in outcrop layer.")
 
-        # --- End Validation ---
-
-        line_geom, line_start = self._extract_line_info(line_lyr)
-        crs = line_lyr.crs()
-        da = scu.create_distance_area(crs)
-
-        # 1. Generate Master Profile Data (needs Raster access)
-        master_profile_data, master_grid_dists = self._generate_master_profile_data(
-            line_geom, raster_lyr, band_number, da, line_start
-        )
-
-        # 2. Extract Outcrop Data (needs Vector access)
+    def _extract_outcrop_data(
+        self,
+        line_geom: QgsGeometry,
+        outcrop_lyr: QgsVectorLayer,
+        outcrop_name_field: str,
+    ) -> list[dict[str, Any]]:
+        """Extract outcrop features intersecting the line bounding box."""
         outcrop_data = []
         line_bbox = line_geom.boundingBox()
         request = QgsFeatureRequest().setFilterRect(line_bbox)
@@ -164,16 +192,7 @@ class GeologyService(IGeologyService):
                     "unit_name": unit_name,
                 }
             )
-
-        return GeologyTaskInput(
-            line_geometry=QgsGeometry(line_geom),
-            line_start=QgsPointXY(line_start),
-            crs_authid=crs.authid(),
-            master_profile_data=master_profile_data,
-            master_grid_dists=master_grid_dists,
-            outcrop_data=outcrop_data,
-            outcrop_name_field=outcrop_name_field,
-        )
+        return outcrop_data
 
     def process_task_data(
         self, task_input: GeologyTaskInput, feedback: Any | None = None
@@ -241,22 +260,9 @@ class GeologyService(IGeologyService):
         if not geom or geom.isNull():
             return []
 
-        geometries = []
-        if geom.wkbType() in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
-            geometries.append(geom)
-        elif geom.wkbType() in [
-            QgsWkbTypes.MultiLineString,
-            QgsWkbTypes.MultiLineString25D,
-        ]:
-            for part in geom.asMultiPolyline():
-                geometries.append(QgsGeometry.fromPolylineXY(part))
-
+        geometries = self._extract_geometries(geom)
         segments = []
         for seg_geom in geometries:
-            # We call _create_segment_from_geometry, but it expects QgsFeature
-            # We need to refactor _create_segment_from_geometry to take attributes dict
-            # Refactoring _create_segment_from_geometry to be detached-friendly
-
             segment = self._create_segment_from_detached(
                 seg_geom,
                 attributes,
@@ -271,6 +277,19 @@ class GeologyService(IGeologyService):
                 segments.append(segment)
         return segments
 
+    def _extract_geometries(self, geom: QgsGeometry) -> list[QgsGeometry]:
+        """Extract individual LineString geometries from a (possibly Multi) geometry."""
+        geometries = []
+        if geom.wkbType() in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
+            geometries.append(geom)
+        elif geom.wkbType() in [
+            QgsWkbTypes.MultiLineString,
+            QgsWkbTypes.MultiLineString25D,
+        ]:
+            for part in geom.asMultiPolyline():
+                geometries.append(QgsGeometry.fromPolylineXY(part))
+        return geometries
+
     def _create_segment_from_detached(
         self,
         seg_geom: QgsGeometry,
@@ -283,6 +302,29 @@ class GeologyService(IGeologyService):
         tolerance: float,
     ) -> GeologySegment | None:
         """Create segment from detached data."""
+        rng = self._calculate_segment_range(seg_geom, line_start, da)
+        if not rng:
+            return None
+
+        dist_start, dist_end = rng
+        segment_points = self._convert_to_segment_points(
+            dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
+        )
+
+        return GeologySegment(
+            unit_name=glg_val,
+            geometry=seg_geom,
+            attributes=attributes,
+            points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
+        )
+
+    def _calculate_segment_range(
+        self,
+        seg_geom: QgsGeometry,
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
+    ) -> tuple[float, float] | None:
+        """Calculate the start and end distance for a segment geometry."""
         verts = scu.get_line_vertices(seg_geom)
         if not verts:
             return None
@@ -294,16 +336,7 @@ class GeologyService(IGeologyService):
         if dist_start > dist_end:
             dist_start, dist_end = dist_end, dist_start
 
-        segment_points = self._convert_to_segment_points(
-            dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
-        )
-
-        return GeologySegment(
-            unit_name=glg_val,
-            geometry=seg_geom,
-            attributes=attributes,
-            points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
-        )
+        return dist_start, dist_end
 
     def _generate_master_profile_data(
         self,
@@ -367,36 +400,12 @@ class GeologyService(IGeologyService):
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[GeologySegment]:
-        """Process an intersection geometry to extract geology segments.
-
-        Args:
-            geom: The intersection geometry (LineString or MultiLineString).
-            feature: The original feature (for attributes).
-            outcrop_name_field: The field name for geological unit names.
-            line_start: Start point of the section line.
-            da: Geodesic distance calculation object.
-            master_grid_dists: Master grid elevation data for sampling.
-            master_profile_data: Master profile data for boundary interpolation.
-            tolerance: Small distance tolerance for grid point inclusion.
-
-        Returns:
-            A list of GeologySegment objects.
-
-        """
+        """Process an intersection geometry to extract geology segments."""
         if not geom or geom.isNull():
             return []
 
-        geometries = []
-        if geom.wkbType() in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
-            geometries.append(geom)
-        elif geom.wkbType() in [
-            QgsWkbTypes.MultiLineString,
-            QgsWkbTypes.MultiLineString25D,
-        ]:
-            for part in geom.asMultiPolyline():
-                geometries.append(QgsGeometry.fromPolylineXY(part))
-        else:
-            # Handle GeometryCollection if needed, or other types
+        geometries = self._extract_geometries(geom)
+        if not geometries:
             return []
 
         try:
@@ -432,35 +441,12 @@ class GeologyService(IGeologyService):
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> GeologySegment | None:
-        """Create a GeologySegment from a geometry part by sampling elevations.
-
-        Args:
-            seg_geom: The part geometry to process.
-            feature: Original source feature for attribute extraction.
-            glg_val: The geology unit name for this segment.
-            line_start: Start point of the section line.
-            da: Geodesic distance calculation object.
-            master_grid_dists: Master grid elevation data.
-            master_profile_data: Master profile topography data.
-            tolerance: Geometrical distance tolerance.
-
-        Returns:
-            A new GeologySegment object, or None if the geometry has no vertices.
-
-        """
-        verts = scu.get_line_vertices(seg_geom)
-        if not verts:
+        """Create a GeologySegment from a geometry part by sampling elevations."""
+        rng = self._calculate_segment_range(seg_geom, line_start, da)
+        if not rng:
             return None
 
-        # Get start/end distances
-        start_pt, end_pt = verts[0], verts[-1]
-        dist_start = da.measureLine(line_start, start_pt)
-        dist_end = da.measureLine(line_start, end_pt)
-
-        if dist_start > dist_end:
-            dist_start, dist_end = dist_end, dist_start
-
-        # Convert to points
+        dist_start, dist_end = rng
         segment_points = self._convert_to_segment_points(
             dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
         )

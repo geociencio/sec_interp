@@ -4,7 +4,14 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
----
+## [2026-01-21] Refactorización de GeologyService (Tarde)
+- **Logro**: Fragmentados métodos largos en `GeologyService` para cumplir con los estándares de mantenibilidad.
+- **Cambios**:
+    - Extraídas validaciones a `_validate_inputs`.
+    - Extraída recopilación de datos a `_extract_outcrop_data`.
+    - Modularizado procesamiento geométrico en `_extract_geometries` y `_calculate_segment_range`.
+- **Estado**: 361 tests OK (Docker). Deuda técnica reducida en el núcleo.
+
 ---
 ## [2026-01-20] Corrección de Documentación API (Noche)
 - **Logro**: Restaurada visibilidad completa de docstrings en el sitio de documentación.

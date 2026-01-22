@@ -61,8 +61,8 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 107
-- **Lines of Code**: 17,159
-- **Functions**: 615
+- **Lines of Code**: 17,697
+- **Functions**: 619
 - **Classes**: 115
 - **Average Complexity**: 12.5
 - **Most Complex Modules**: core/services/drillhole_service.py, gui/preview_layer_factory.py, gui/main_dialog_preview.py
@@ -92,10 +92,10 @@ No clear design patterns detected.
 - **low_documentation_coverage**: Low docstring coverage (0/5 functions).
 
 ### core/exceptions.py
-- **functions_too_long**: Very long functions (average 58.0 lines/function).
+- **functions_too_long**: Very long functions (average 59.0 lines/function).
 
 ### core/interfaces/drillhole_interface.py
-- **functions_too_long**: Very long functions (average 50.5 lines/function).
+- **functions_too_long**: Very long functions (average 51.0 lines/function).
 
 ### core/data_cache.py
 - **complexity_refactoring**: High complexity (19) with several functions. Consider breaking down large logic.
@@ -105,7 +105,7 @@ No clear design patterns detected.
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 107
-- **Edges**: 130
+- **Edges**: 129
 - **Density**: 0.011
 - **Acyclic Graph**: Yes
 - **Connected Components**: 35

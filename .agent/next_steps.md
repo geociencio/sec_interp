@@ -1,14 +1,13 @@
 # Próximos Pasos - SecInterp
 
 ## Estado Actual
-- **Documentación API**: Totalmente funcional. Sphinx procesa correctamente todos los módulos.
-- **Legend Visibility**: Implementado y verificado.
-- **Entorno**: `.venv` restaurado y limpio.
+- **Refactorización GeologyService**: Completada. Métodos fragmentados y lógica modularizada.
+- **Documentación API**: Funcional.
+- **Legend Visibility**: Implementado.
 
 ## Próximo Objetivo
-**Reducción de Deuda Técnica: Refactorizar `GeologyService`**
-- El archivo `core/services/geology_service.py` contiene métodos que exceden las 50-70 líneas.
-- Se debe extraer lógica a métodos privados o utilidades.
+**Mejorar cobertura de tests de integración para proyección 3D**
+- El archivo `tests/integration/test_3d_integration.py` debe ser implementado para cubrir casos de trazas e intervalos con coordenadas proyectadas.
 
 ## Comando para retomar
 ```bash
