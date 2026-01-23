@@ -1,5 +1,10 @@
 ---
 description: How to run unit tests reliably
+agent: QA Engineer
+skills: [qa-docker]
+validation: |
+  - Verificar que todos los tests pasen (361 tests OK)
+  - Confirmar que no hay errores de mocking
 ---
 This workflow describes how to run unit tests for the SecInterp project using `unittest`, ensuring that the Python path and QGIS environment are correctly configured.
 
@@ -20,3 +25,8 @@ PYTHONPATH=.. uv run python3 -m unittest sec_interp.tests.core.test_drillhole_se
 **Key Notes:**
 - Do not use `pytest`. The project has migrated to strict `unittest`.
 - Always set `PYTHONPATH=..` when running from the project root to ensure `import sec_interp` works correctly.
+
+🤖 **Agent Action**: Usar skill **qa-docker** para:
+- Interpretar fallos de tests (mocks vs lógica real)
+- Sugerir correcciones basadas en estándares de mocking del skill
+- Verificar que los mocks de QGIS están correctamente configurados según `tests/base_test.py`

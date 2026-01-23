@@ -1,5 +1,12 @@
 ---
 description: Procedimiento formal para cerrar una fase de desarrollo mayor
+agent: Senior Architect
+skills: [qgis-core, qa-docker]
+validation: |
+  - Verificar que 361 tests pasan en Docker
+  - Confirmar que documento de cierre está completo
+  - Validar que métricas están documentadas
+  - Verificar que deuda técnica está clasificada
 ---
 
 # Workflow: Cierre de Fase
@@ -7,6 +14,8 @@ description: Procedimiento formal para cerrar una fase de desarrollo mayor
 Este workflow documenta el proceso completo para cerrar formalmente una fase de desarrollo mayor (ej: v2.6.0 → v2.7.0).
 
 ## 1. Revisión Comprehensiva de Logros
+
+🤖 **Agent Action**: Usar skill **qgis-core** para validar cumplimiento de estándares QGIS.
 
 Analiza y documenta todos los objetivos completados durante la fase:
 
@@ -25,6 +34,8 @@ Clasifica la deuda técnica acumulada en tres niveles:
 
 ## 3. Métricas y Verificación Final
 
+🤖 **Agent Action**: Analizar métricas y comparar con fase anterior.
+
 Ejecuta el análisis completo del proyecto y documenta:
 
 // turbo
@@ -39,8 +50,10 @@ Verifica que todos los tests pasen:
 make docker-test
 ```
 
+🤖 **Agent Action**: Usar skill **qa-docker** para validar que 361 tests pasan.
+
 Documenta las métricas clave:
-- Tests totales y estado
+- Tests totales y estado (361 tests)
 - Pylint/Ruff score
 - Complejidad ciclomática máxima
 - Type hint coverage

@@ -1,5 +1,11 @@
 ---
 description: How to commit changes cleanly (handling hooks)
+agent: QA Engineer
+skills: [qa-docker, commit-standards]
+validation: |
+  - Verificar que ruff y black pasan sin errores
+  - Confirmar que ai-ctx analyze se ejecutó correctamente
+  - Validar que el mensaje de commit sigue Conventional Commits
 ---
 This workflow describes the process for committing changes, ensuring code quality standards are met without getting blocked by pre-commit hook conflicts.
 
@@ -24,15 +30,29 @@ This workflow describes the process for committing changes, ensuring code qualit
    uv run ai-ctx analyze --path .
    ```
 
+   🤖 **Agent Action**: Analizar métricas de calidad y alertar si:
+   - Complejidad ciclomática aumentó significativamente
+   - Docstring coverage bajó
+   - Se detectaron nuevas violaciones de QGIS compliance
+
 4. **Propuesta de Mensaje (Asistida por IA)**:
-   Si el usuario pide un commit, la IA debe:
-   - Analizar los cambios preparados (`git diff --cached`).
-   - Sugerir al menos 2 opciones de mensajes siguiendo las [Commit Guidelines](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/docsec/COMMIT_GUIDELINES.md) (Inglés, Convencional).
-   - Indicar si hay cambios críticos en las métricas (ej: aumento súbito de complejidad).
+
+   🤖 **Agent Action**: Usar skill **commit-standards** para:
+   - Analizar cambios preparados (`git diff --cached`)
+   - Generar 2-3 opciones de mensajes siguiendo Conventional Commits
+   - Validar formato: tipo correcto, scope apropiado, inglés, imperativo
+   - Sugerir scope basado en archivos modificados (core, gui, export, etc.)
+   - Alertar si hay breaking changes que requieren `!` o footer
+
+   Ejemplo de sugerencias:
+   ```text
+   Opción 1: refactor(core): reduce complexity in GeologyService.prepare_task_input
+   Opción 2: refactor(core): extract validation logic from GeologyService
+   ```
 
 5. **Commit**: Ejecuta el commit con el mensaje aprobado.
    ```bash
-   git commit -m "type: description" -m "detailed body"
+   git commit -m "type(scope): description" -m "detailed body"
    ```
 
    *Si el pre-commit hook persiste en fallar:*

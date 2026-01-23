@@ -4,6 +4,19 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-22] Integración Completa de Workflows + Skills
+- **Logro**: Sistema de workflows completamente integrado con AGENTS.md y skills (100% de workflows).
+- **Cambios**:
+    - Creadas 2 nuevas skills: `commit-standards` y `release-management`.
+    - Actualizados 10 workflows con metadata YAML (agent, skills, validation).
+    - Añadidas 40+ anotaciones `🤖 Agent Action` en workflows.
+    - Mejorado `skill_sync.py` con validación automática de workflows.
+    - Creado `QUICK_REFERENCE.md` para consulta rápida.
+- **Skills totales**: 6 (commit-standards, geological-logic, qa-docker, qgis-core, release-management, ui-framework).
+- **Workflows validados**: 10/10 (inicia-sesion, crea-commit, run-tests, refactor-code, release-plugin, release-plugin-en, cierra-sesion, cierra-fase, inicia-fase, run-tests-in-qgis).
+- **Estado**: 361 tests OK (Docker). Sistema workflow-aware completamente funcional.
+
+---
 ## [2026-01-21] Refactorización de GeologyService (Tarde)
 - **Logro**: Fragmentados métodos largos en `GeologyService` para cumplir con los estándares de mantenibilidad.
 - **Cambios**:

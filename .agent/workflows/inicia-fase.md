@@ -1,5 +1,12 @@
 ---
 description: Procedimiento formal para iniciar una nueva fase de desarrollo mayor
+agent: Senior Architect
+skills: [qgis-core, geological-logic, qa-docker]
+validation: |
+  - Verificar que implementation_plan está creado y completo
+  - Confirmar que 361 tests pasan antes de iniciar
+  - Validar que objetivos están claros y priorizados
+  - Verificar que next_steps.md está actualizado
 ---
 
 # Workflow: Apertura de Fase
@@ -7,6 +14,8 @@ description: Procedimiento formal para iniciar una nueva fase de desarrollo mayo
 Este workflow documenta el proceso completo para iniciar formalmente una nueva fase de desarrollo mayor (ej: v2.7.0 → v2.8.0).
 
 ## 1. Revisión del Cierre de Fase Anterior
+
+🤖 **Agent Action**: Analizar documento de cierre y extraer deuda técnica priorizada.
 
 Lee el documento de cierre de la fase anterior:
 
@@ -91,6 +100,8 @@ Documenta el estado base:
 
 ## 4. Verificación de Estabilidad
 
+🤖 **Agent Action**: Usar skill **qa-docker** para validar estabilidad base.
+
 Asegura que el proyecto está en estado estable antes de comenzar:
 
 // turbo
@@ -98,7 +109,7 @@ Asegura que el proyecto está en estado estable antes de comenzar:
 make docker-test
 ```
 
-**Criterio de Éxito**: 100% de tests unitarios pasando (los tests de integración pueden tener issues conocidos documentados).
+**Criterio de Éxito**: 361 tests unitarios pasando (100% success rate).
 
 ## 5. Sincronización de Entorno
 
