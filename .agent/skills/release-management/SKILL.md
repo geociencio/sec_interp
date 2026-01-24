@@ -158,9 +158,10 @@ make docker-test
 uv run ai-ctx analyze --path .
 ```
 
-Verify metrics in `project_brain.md`:
+Verify metrics in `AI_CONTEXT.md` and `project_context.json`:
 - Code Maintainability Score: 100/100
 - No new architectural violations
+
 
 ---
 

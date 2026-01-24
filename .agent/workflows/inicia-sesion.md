@@ -4,7 +4,8 @@ agent: Senior Architect
 skills: [qgis-core, qa-docker]
 validation: |
   - Verificar que 361 tests pasen en Docker
-  - Confirmar que project_brain.md está actualizado con métricas recientes
+  - Confirmar que AI_CONTEXT.md está actualizado con métricas recientes
+
   - Validar que no hay regresiones en complejidad ciclomática
 ---
 
@@ -17,18 +18,21 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     uv run ai-ctx analyze --path . && cat .agent/next_steps.md
     ```
 
-    🤖 **Agent Action**: Revisar `project_brain.md` usando skill **qgis-core** para identificar:
+    🤖 **Agent Action**: Revisar `AI_CONTEXT.md` y `project_context.json` usando skill **qgis-core** para identificar:
     - Deuda técnica crítica relacionada con QGIS API
     - Métodos con alta complejidad ciclomática (CC > 15)
     - Violaciones de arquitectura (UI en Core)
 
+
     Revisa los siguientes archivos en este orden:
     *   `docs/plans/implementation_plan_v2.8.0.md`: **Mapa de Ruta Maestro**. Fuente de verdad sobre tareas completadas.
     *   `.agent/next_steps.md`: **El Testigo**. Punto exacto donde se detuvo la sesión anterior.
-    *   `.ai-context/project_brain.md`: Memoria de largo plazo y métricas.
+    *   `AI_CONTEXT.md`: Memoria de largo plazo, métricas y directrices de alto nivel.
+    *   `project_context.json`: Datos estructurados de complejidad y dependencias.
     *   `docs/DEVELOPMENT_LOG.md`: Ver resumen de la última sesión (orden cronológico inverso).
+
     *   `docs/LOGGING_GUIDELINES.md`: Seguir estrictamente para registrar nuevas actividades.
-    *   `AI_CONTEXT.md`: Ver directrices de alto nivel y roadmap general.
+
 
 2.  **Sincronización de Entorno (Local)**:
     Asegura dependencias actualizadas.

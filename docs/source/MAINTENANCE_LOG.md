@@ -23,7 +23,8 @@ Follow these steps to prepare and release a new version of **SecInterp**.
 
 ### 1. Preparation
 - **Update Metadata**: Increment `version` in `metadata.txt`.
-- **Sync Project Brain**: Update `.ai-context/project_brain.md`.
+- **Sync AI Context**: Update `AI_CONTEXT.md` and `project_context.json`.
+
 - **Update Changelog**: Add the new version to the top of the [Project History](#-project-history) section below.
 - **Update User Guide**: Ensure screenshots and feature descriptions in `docs/USER_GUIDE.md` are current.
 

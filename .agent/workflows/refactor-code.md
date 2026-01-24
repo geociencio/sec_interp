@@ -13,8 +13,9 @@ Este workflow guía la refactorización de código siguiendo los estándares del
 ## Cuándo Usar Este Workflow
 
 - Cuando `qgis-analyzer` detecta métodos con CC > 15
-- Cuando `project_brain.md` identifica deuda técnica crítica
+- Cuando `AI_CONTEXT.md` identifica deuda técnica crítica
 - Antes de añadir nuevas funcionalidades a módulos complejos
+
 
 ## Pasos de Refactorización
 

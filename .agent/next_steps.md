@@ -53,7 +53,8 @@ Para iniciar la próxima sesión de desarrollo:
 ```
 
 El workflow automáticamente:
-1. Sincronizará contexto (project_brain.md, next_steps.md)
+1. Sincronizará contexto (AI_CONTEXT.md, project_context.json, next_steps.md)
+
 2. Ejecutará `make docker-test` (361 tests)
 3. Validará métricas de calidad
 4. Cargará skills: qgis-core, qa-docker

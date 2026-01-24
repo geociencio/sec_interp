@@ -232,7 +232,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Performance optimization with locator caching.
 - **AI Workflow Enhancements**:
   - Improved `ai_workflow.py` with Unicode normalization (NFD) for robust keyword extraction (supports accents/special characters).
-  - Robust context loading with mandatory project-level files (`AI_CONTEXT.md`, `project_brain.md`).
+  - Robust context loading with mandatory project-level files (`AI_CONTEXT.md`, `project_context.json`).
+
 
 ### Fixed
 - Fixed critical `AttributeError` in `QgsSnappingConfig` by correctly using `QgsTolerance.Pixels`.

@@ -6,13 +6,8 @@ rule_en = "\n> [!CAUTION]\n> **CRITICAL METADATA RULE**: The QGIS repository use
 files_to_update = [
     (
         "AI_CONTEXT.md",
-        "# CONTEXTO PARA IA - sec_interp",
-        "# CONTEXTO PARA IA - sec_interp\n" + rule_es,
-    ),
-    (
-        ".ai-context/project_brain.md",
-        "## Visión General",
-        "## 🚨 Reglas Críticas (Globales)\n- **ESCAPADO DE METADATOS**: Escapar % como %% en metadata.txt.\n\n## Visión General",
+        "# AI CONTEXT - sec_interp",
+        "# AI CONTEXT - sec_interp\n" + rule_es,
     ),
     (
         ".ai-context/prompt_inicial.md",

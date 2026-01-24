@@ -46,7 +46,8 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
 
 3.  **Sincronización de Memoria Final (IA)**:
 
-    🤖 **Agent Action**: Actualizar project_brain.md y validar que next_steps.md es claro.
+    🤖 **Agent Action**: Actualizar AI_CONTEXT.md y validar que next_steps.md es claro.
+
 
     Asegura que el "Cerebro" de la IA esté al día con los cambios finales.
     // turbo

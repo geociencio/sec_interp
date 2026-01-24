@@ -67,7 +67,8 @@ El proyecto SecInterp cuenta con un sistema completo de **6 skills** y **10 work
 **Qué hace**:
 - Activa "Senior Architect Agent"
 - Carga skills: qgis-core, qa-docker
-- Sincroniza contexto (project_brain.md, next_steps.md)
+- Sincroniza contexto (AI_CONTEXT.md, project_context.json, next_steps.md)
+
 - Ejecuta `make docker-test` (361 tests)
 - Valida métricas de calidad
 

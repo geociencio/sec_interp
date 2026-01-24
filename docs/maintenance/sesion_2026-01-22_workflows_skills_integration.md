@@ -188,7 +188,8 @@ Scanning workflows in /home/jmbernales/qgispluginsdev/sec_interp/.agent/workflow
 # 2. Activa el rol "Senior Architect"
 # 3. Carga conocimiento de qgis-core y qa-docker
 # 4. Ejecuta pasos con contexto especializado:
-#    - Analiza project_brain.md buscando deuda técnica QGIS
+#    - Analiza AI_CONTEXT.md buscando deuda técnica QGIS
+
 #    - Verifica dependencias PyQGIS
 #    - Interpreta fallos de tests usando estándares de qa-docker
 # 5. Valida: 361 tests OK + métricas actualizadas

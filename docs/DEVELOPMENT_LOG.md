@@ -4,6 +4,17 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-23] Refactorización de DrillholeService (Noche)
+- **Logro**: Reducida la complejidad de los métodos principales de `DrillholeService` mediante modularización.
+- **Cambios**:
+    - Extraídas validaciones a métodos `_validate_*`.
+    - Modularizado `prepare_task_input` con `_detach_collar_features` y `_pre_sample_z_for_task`.
+    - Modularizado `process_task_data` con `_process_detached_collar_item`.
+    - Fragmentados `_process_single_hole` y `_get_collar_info`.
+    - Añadidos type hints y docstrings faltantes.
+- **Estado**: 361 tests OK (Docker). Estructura del núcleo más mantenible.
+
+---
 ## [2026-01-22] Integración Completa de Workflows + Skills
 - **Logro**: Sistema de workflows completamente integrado con AGENTS.md y skills (100% de workflows).
 - **Cambios**:
