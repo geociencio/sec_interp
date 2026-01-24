@@ -61,7 +61,7 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 107
-- **Lines of Code**: 17,757
+- **Lines of Code**: 17,311
 - **Functions**: 628
 - **Classes**: 115
 - **Average Complexity**: 12.5
@@ -101,7 +101,7 @@ No clear design patterns detected.
 - **complexity_refactoring**: High complexity (19) with several functions. Consider breaking down large logic.
 
 ### core/services/profile_service.py
-- **functions_too_long**: Very long functions (average 92.0 lines/function).
+- **functions_too_long**: Very long functions (average 88.0 lines/function).
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 107
