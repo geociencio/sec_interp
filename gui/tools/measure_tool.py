@@ -112,9 +112,10 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
     - Right-click or Escape to cancel and reset
     """
 
-    # args: dict with measurement metrics
+    # signals use dict with measurement metrics
     measurementChanged = pyqtSignal(dict)
     measurementCleared = pyqtSignal()
+    measurementFinished = pyqtSignal()
 
     def __init__(self, canvas: QgsMapCanvas):
         super().__init__(canvas)
@@ -137,8 +138,11 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         logger.debug("ProfileMeasureTool activated")
 
     def deactivate(self) -> None:
-        """Deactivate the measurement tool."""
-        self.reset()
+        """Deactivate the measurement tool.
+
+        Note: We no longer call reset() here to allow measurements to persist
+        visually until a new one is started or explicitly cleared.
+        """
         super().deactivate()
         logger.debug("ProfileMeasureTool deactivated")
 
@@ -297,6 +301,9 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         pan_tool = QgsMapToolPan(self.canvas)
         self.canvas.setMapTool(pan_tool)
         logger.info("Pan tool activated - measurement should be frozen")
+
+        # Notify that measurement is officially finished
+        self.measurementFinished.emit()
 
     def _add_vertex_marker(self, point: QgsPointXY):
         """Add a visual marker at the point location."""

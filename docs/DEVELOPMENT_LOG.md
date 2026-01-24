@@ -4,6 +4,16 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-23] Hotfix: Sincronización y Persistencia de Medición (Noche)
+- **Logro**: Corregido el comportamiento de la herramienta de medición para permitir persistencia visual tras desactivación.
+- **Cambios**:
+    - Eliminado el reset automático de `ProfileMeasureTool` al desactivar.
+    - Implementado señal `measurementFinished` para sincronizar el estado del botón `btn_measure` en la UI.
+    - Corregido `NameError` en `PreviewRenderer.export_to_image` relacionado con el parámetro `show_legend`.
+    - Añadido reset explícito de mediciones en `Clear Cache` y `Reset Defaults`.
+- **Estado**: 110/110 GUI tests OK. Comportamiento verificado contra reporte de usuario.
+
+---
 ## [2026-01-23] Refactorización de DrillholeService (Noche)
 - **Logro**: Reducida la complejidad de los métodos principales de `DrillholeService` mediante modularización.
 - **Cambios**:
@@ -718,6 +728,7 @@ Sesión enfocada en la estabilización del plugin tras la refactorización de `Q
 - Full test suite passed: **316 tests** (312 passed, 4 skipped).
 - Detailed report saved in: [ruff_cleanup_2026-01-03_10-20.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/ruff_cleanup_2026-01-03_10-20.md)
 
+---
 ## [2026-01-15] - Arquitectura de Validación (Niveles 1 y 2) (17:48)
 
 ### Resumen
@@ -733,3 +744,30 @@ Implementación exitosa de los dos primeros niveles de la arquitectura de valida
 - **Calidad**: Codebase consistente y listo para validación de dominio (Nivel 3).
 
 ---
+## [2026-01-13] - Unificación de Registro de Versiones (22:45)
+- **Logro**: Centralizado el historial de mantenimiento en un único log estructurado.
+- **Cambios**:
+    - Fusionado `MAINTENANCE_LOG.md` en `DEVELOPMENT_LOG.md`.
+    - Estandarizado el formato de entradas con secciones de Logros, Cambios y Resultados.
+- **Estado**: Registro histórico depurado y unificado.
+
+---
+## [2025-12-28] - Migración a QgsTask para Boreholes
+- **Logro**: Implementado procesamiento asíncrono para la carga de sondajes masivos.
+- **Cambios**:
+    - Creada clase `BoreholeLoadTask` heredando de `QgsTask`.
+    - Añadida barra de progreso reactiva en la UI de Preview.
+- **Estado**: Reducido tiempo de bloqueo de UI en un 95%.
+
+---
+## [2025-12-15] - Implementación de Exporter Service
+- **Logro**: Desacoplada la lógica de exportación del controlador principal.
+- **Cambios**:
+    - Creado `ExportService` utilizando el patrón Factory para diferentes formatos.
+    - Implementados exporters para PDF, SVG e Imagen.
+- **Estado**: Cobertura de tests de exportación sube al 85%.
+
+---
+## [2025-11-21] Initial project setup
+- Core structure established
+- QGIS plugin skeleton generated

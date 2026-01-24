@@ -73,9 +73,10 @@ class TestMeasureTool(BaseTestCase):
         self.tool.activate()
         self.canvas.setCursor.assert_called()
 
+        self.tool.points = [QgsPointXY(0, 0)]
         self.tool.deactivate()
-        # deactivated tool should reset points
-        self.assertEqual(len(self.tool.points), 0)
+        # deactivated tool should NOT reset points anymore
+        self.assertEqual(len(self.tool.points), 1)
 
     def test_add_points(self):
         """Test adding points to the measurement."""
@@ -132,7 +133,7 @@ class TestMeasureTool(BaseTestCase):
     def test_finalize_measurement(self):
         """Test finalizing the measurement."""
         self.tool.points = [QgsPointXY(0, 0), QgsPointXY(100, 0)]
-        self.tool.measurementChanged = MagicMock()
+        self.tool.measurementFinished = MagicMock()
 
         # Mock pan tool to avoid constructor issues
         with patch("sec_interp.gui.tools.measure_tool.QgsMapToolPan"):
@@ -142,6 +143,8 @@ class TestMeasureTool(BaseTestCase):
         self.assertEqual(len(self.tool.finalized_points), 2)
         # Verify it switched to pan tool
         self.canvas.setMapTool.assert_called()
+        # Verify signal emitted
+        self.tool.measurementFinished.emit.assert_called_once()
 
         # Test that clicks are ignored after finalizing
         p_extra = QgsPointXY(200, 200)

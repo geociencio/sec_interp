@@ -21,6 +21,8 @@ class CacheHandler:
         """Clear cached data and notify user."""
         if hasattr(self.dialog, "plugin_instance") and self.dialog.plugin_instance:
             self.dialog.plugin_instance.controller.data_cache.clear()
+            if hasattr(self.dialog, "tool_manager"):
+                self.dialog.tool_manager.measure_tool.reset()
             self.dialog.preview_widget.results_text.append(
                 self.dialog.tr("✓ Cache cleared - next preview will re-process data")
             )

@@ -339,7 +339,10 @@ class DialogSettingsManager:
         pw.chk_adaptive_sampling.setChecked(True)
         pw.spin_max_points.setValue(1000)
 
-        # Clear interpretations
+        # Clear interpretations and measurements
+        if hasattr(self.dialog, "tool_manager"):
+            self.dialog.tool_manager.measure_tool.reset()
+
         if hasattr(self.dialog, "interpretations"):
             self.dialog.interpretations = []
             # Persist empty state to project

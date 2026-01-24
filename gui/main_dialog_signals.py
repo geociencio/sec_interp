@@ -147,6 +147,9 @@ class DialogSignalManager:
         self.dialog.tool_manager.measure_tool.measurementChanged.connect(
             self.dialog.update_measurement_display
         )
+        self.dialog.tool_manager.measure_tool.measurementFinished.connect(
+            lambda: self.dialog.preview_widget.btn_measure.setChecked(False)
+        )
         self.dialog.tool_manager.measure_tool.measurementCleared.connect(
             lambda: self.dialog.preview_widget.results_text.clear()
         )

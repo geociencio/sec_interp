@@ -189,6 +189,7 @@ class PreviewRenderer:
         height: int,
         output_path: str,
         dpi: int = 300,
+        show_legend: bool = True,
     ) -> bool:
         """Export preview to image file. Maintains same logic but orchestrated."""
         try:

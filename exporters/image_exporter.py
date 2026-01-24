@@ -61,7 +61,6 @@ class ImageExporter(BaseExporter):
             painter.end()
 
             # Save image
-            output_path.suffix.lower()
 
             return image.save(str(output_path))
 
