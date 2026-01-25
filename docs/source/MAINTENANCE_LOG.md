@@ -4,15 +4,15 @@ This document serves as the central record for project history, release procedur
 
 ---
 
-### [v2.8.0 Plan - Phase 2] - 2026-01-24
-- **Core-QGIS Architectural Decoupling**: Refactored `core/` to eliminate direct QGIS API dependencies. Migrated DTOs to WKT/primitive types. Reconstructed `MockQgsGeometry` and stabilized vertex/intersection logic. Achieved 100% success rate in unit tests (204 core tests). Core is now thread-safe and ready for advanced async integration.
+### [Phase Closure v2.8.0] - DEBT REDUCTION & UI IMPROVEMENTS
+- **Date**: 2026-01-25
+- **Focus**: Core Decoupling, Async Safety, Legend Visibility.
+- **Outcome**: 359 Tests Passing, Core-QGIS Decoupling finalized with WKT/DTO pattern.
+- **Reference**: [Phase Closure Document](../maintenance/phase_closure_v2.8.0.md)
 
 ---
 
-### [v2.8.0 Plan - Phase 1] - 2026-01-21
-- **GeologyService Refactoring**: Fragmented long methods into granular private methods (`_validate_inputs`, `_extract_outcrop_data`, `_extract_geometries`, `_calculate_segment_range`). Complexity significantly reduced, aiding maintainability for future core changes. 361 tests verified in Docker.
-- **Legend Visibility**: Implemented `show_legend` in `PreviewSettings` with project persistence. Added UI toggle in Preview page and ensured all image/vector exporters respect the setting.
-- **API Documentation**: Fixed Sphinx build by implementing QGIS/PyQt mocks and project-wide deferred annotations.
+### [v2.8.0 Plan - Phase 2] - 2026-01-24
 
 ### [v2.7.0 Plan - Phase 1] - 2026-01-15
 - **Mock Infrastructure Overhaul**: Implemented `ModuleProxy` and `MockSignal` to stabilize the QGIS test environment. Resolved attribute errors and reference loss during mock resets. Added `indexFromName` to `MockQgsFields` for better API parity.

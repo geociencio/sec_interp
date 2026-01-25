@@ -62,7 +62,7 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 107
-- **Lines of Code**: 17,767
+- **Lines of Code**: 17,311
 - **Functions**: 628
 - **Classes**: 115
 - **Average Complexity**: 12.8
@@ -89,17 +89,17 @@ No clear design patterns detected.
 
 ## 💡 OPTIMIZATION RECOMMENDATIONS
 
-### .gemini-temp/reproduce_proxy.py
-- **low_documentation_coverage**: Low docstring coverage (0/5 functions).
-
 ### core/exceptions.py
 - **functions_too_long**: Very long functions (average 59.0 lines/function).
+
+### .gemini-temp/reproduce_proxy.py
+- **low_documentation_coverage**: Low docstring coverage (0/5 functions).
 
 ### core/data_cache.py
 - **complexity_refactoring**: High complexity (19) with several functions. Consider breaking down large logic.
 
 ### core/services/profile_service.py
-- **functions_too_long**: Very long functions (average 92.0 lines/function).
+- **functions_too_long**: Very long functions (average 88.0 lines/function).
 
 ### core/controller.py
 - **complexity_refactoring**: High complexity (22) with several functions. Consider breaking down large logic.
@@ -120,7 +120,7 @@ graph TD
     main_dialog --> py
     main_dialog_export --> py
     main_dialog_validation_manager --> py
-    drillhole_task --> py
+    geology_task --> py
     main_dialog_preview --> py
 ```
 

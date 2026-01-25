@@ -4,6 +4,13 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-25] CIERRE DE FASE v2.8.0: Reducción de Deuda y Mejoras de UI
+- **Hito**: Cierre formal de la Fase v2.8.0.
+- **Logros**: Desacoplamiento total del Core (WKT/DTO), refactorización de servicios y control de leyenda.
+- **Calidad**: 359 tests OK (Docker). Quality Score estabilizado.
+- **Estado**: Fase completada. Ver [phase_closure_v2.8.0.md](maintenance/phase_closure_v2.8.0.md).
+
+---
 ## [2026-01-25] Resumen: Refactorización de Tareas Background (Día)
 - **Logro**: Centralizada la extracción de datos en el hilo principal y optimizado el flujo asíncrono.
 - **Cambios**:
