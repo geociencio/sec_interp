@@ -4,6 +4,16 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-25] Resumen: Refactorización de Tareas Background (Día)
+- **Logro**: Centralizada la extracción de datos en el hilo principal y optimizado el flujo asíncrono.
+- **Cambios**:
+    - Refactorizados `GeologyService` y `DrillholeService` para usar DTOs planos (WKT/dicts) en la preparación de tareas.
+    - Implementado método `azimuth` en `MockQgsPointXY` para soporte geométrico en tests.
+    - Simplificado `PreviewManager` delegando lógica compleja a servicios.
+    - Actualizada la suite de pruebas para coincidir con el desacoplamiento Core-QGIS.
+- **Estado**: 359 tests OK (Docker). Ver [sesion_2026-01-25_background_task_refactor.md](maintenance/sesion_2026-01-25_background_task_refactor.md).
+
+---
 ## [2026-01-24] Resumen: Estabilización de Tests en Docker (Noche)
 - **Logro**: Restaurada la integridad de la CI/CD con 100% de éxito en entorno Docker.
 - **Cambios**:

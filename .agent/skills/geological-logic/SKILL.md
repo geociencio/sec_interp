@@ -19,6 +19,8 @@ Every model and service must implement:
 3. **Level 3 (Business)**: External consistency (e.g., "Layer exists in project", "No overlaps in geology").
 
 ## Geometry Rules
-- Use `QgsGeometry` where possible for spatial operations.
+- **Core Decoupling**: Core services (`GeologyService`, `DrillholeService`) MUST NOT depend on `QgsGeometry`. Use DTOs with WKT strings or point tuples.
+- **WKT Standards**: Use WKT-agnostic logic in the core; convert to/from `QgsGeometry` only at the GUI/Exporter boundary.
+- **Mocks**: Use `MockQgsGeometry` standards (supports `pointN`, `is3D`) for local unit tests.
 - All spatial logic must be unit-tested with varying CRS contexts.
 - Handle edge cases like vertical drillholes or parallel section lines.

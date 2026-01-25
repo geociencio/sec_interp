@@ -538,37 +538,7 @@ class PreviewManager:
 
         # 1. Prepare Data (Sync)
         try:
-            # We need section azimuth which is calculated in preview_service usually
-            # Re-calc here or pass it? PreviewParams doesn't store azimuth.
-            # params.line_layer geometry is available.
-            line_feat = next(params.line_layer.getFeatures())
-            line_geom = line_feat.geometry()
-            line_start = (
-                line_geom.asPolyline()[0]
-                if not line_geom.isMultipart()
-                else line_geom.asMultiPolyline()[0][0]
-            )
-
-            # Calculate Azimuth
-            # Import scu if needed or use simple math if possible, but scu is best.
-            # Wait, PreviewParams has methods? No.
-            # Let's import scu at top if not present? It is imported as 'scu' in preview_service but not here.
-            # Actually, main_dialog_preview imports services.
-            # To avoid circular imports or messy code, let's ask DrillholeService to calculate input?
-            # But prepare_task_input needs arguments.
-
-            # Easier: Just calculate azimuth here safely.
-            p1 = line_start
-            p2_vertex = line_geom.vertexAt(1)
-            # Convert QgsPoint to QgsPointXY for azimuth calculation
-            from qgis.core import QgsPointXY
-
-            p2 = QgsPointXY(p2_vertex.x(), p2_vertex.y())
-            azimuth = p1.azimuth(p2)
-            if azimuth < 0:
-                azimuth += 360
-
-            # Gather Drillhole Fields maps
+            # Map simplified fields for the service
             survey_fields = {
                 "id": params.survey_id_field,
                 "depth": params.survey_depth_field,
@@ -584,10 +554,7 @@ class PreviewManager:
 
             task_input = (
                 self.dialog.plugin_instance.controller.drillhole_service.prepare_task_input(
-                    line_geom=line_geom,
-                    line_start=line_start,
-                    line_crs=params.line_layer.crs(),
-                    section_azimuth=azimuth,
+                    line_layer=params.line_layer,
                     buffer_width=params.buffer_dist,
                     collar_layer=params.collar_layer,
                     collar_id_field=params.collar_id_field,

@@ -97,10 +97,7 @@ class DrillholeService(IDrillholeService):
 
     def prepare_task_input(
         self,
-        line_geom: QgsGeometry,
-        line_start: QgsPointXY,
-        line_crs: QgsCoordinateReferenceSystem,
-        section_azimuth: float,
+        line_layer: QgsVectorLayer,
         buffer_width: float,
         # Collar Params
         collar_layer: QgsVectorLayer,
@@ -117,8 +114,36 @@ class DrillholeService(IDrillholeService):
         interval_fields: dict[str, str],
         # Optional
         dem_layer: QgsRasterLayer | None = None,
+        band_num: int = 1,
     ) -> DrillholeTaskInput:
-        """Prepare detached domain data for async processing."""
+        """Prepare detached domain data for async processing.
+
+        This method centralizes the extraction of data from QGIS layers in the
+        Main Thread, creating a detached DrillholeTaskInput DTO.
+        """
+        line_feat = next(line_layer.getFeatures(), None)
+        if not line_feat:
+            from sec_interp.core.exceptions import DataMissingError
+
+            raise DataMissingError("Line layer has no features")
+
+        line_geom = line_feat.geometry()
+        line_crs = line_layer.crs()
+
+        # Calculate line start and azimuth
+        line_start = (
+            line_geom.asPolyline()[0]
+            if not line_geom.isMultipart()
+            else line_geom.asMultiPolyline()[0][0]
+        )
+
+        p1 = line_start
+        p2_vertex = line_geom.vertexAt(1)
+        p2 = QgsPointXY(p2_vertex.x(), p2_vertex.y())
+        section_azimuth = p1.azimuth(p2)
+        if section_azimuth < 0:
+            section_azimuth += 360
+
         self._validate_prepare_task_params(
             buffer_width,
             section_azimuth,

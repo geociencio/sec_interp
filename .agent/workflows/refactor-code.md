@@ -41,7 +41,8 @@ Este workflow guía la refactorización de código siguiendo los estándares del
    Principios a seguir (según skill **qgis-core**):
    - Extraer métodos privados para lógica compleja
    - Usar `QgsTask` para operaciones pesadas
-   - Mantener separación UI/Core estricta
+   - Mantener separación UI/Core estricta (Core no debe importar `qgis.core.QgsGeometry`)
+   - Usar WKT y primitivos para el paso de datos entre Core y GUI (ver skill **geological-logic**)
    - Añadir type hints y docstrings Google-style
 
 4. **Validar con Tests**:

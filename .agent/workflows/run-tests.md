@@ -5,26 +5,26 @@ skills: [qa-docker]
 validation: |
   - Verificar que todos los tests pasen (361 tests OK)
   - Confirmar que no hay errores de mocking
----
-This workflow describes how to run unit tests for the SecInterp project using `unittest`, ensuring that the Python path and QGIS environment are correctly configured.
+1. **Run Unit Tests (Fast)**:
+   ```bash
+   PYTHONPATH=.. uv run python3 -m unittest discover tests/core
+   ```
 
-1. Ensure you are in the project root directory (`qgispluginsdev/sec_interp`).
+2. **Run Integration Tests (Real QGIS)**:
+   ```bash
+   FORCE_MOCKS=0 PYTHONPATH=.. uv run python3 -m unittest discover tests/integration
+   ```
 
-2. Run the tests using `uv` to handle dependencies and set `PYTHONPATH` to include the parent directory so that `sec_interp` package resolution works.
-
-```bash
-PYTHONPATH=.. uv run python3 -m unittest discover sec_interp/tests
-```
-
-Or to run a specific test file, reference it as a module relative to the parent directory:
-
-```bash
-PYTHONPATH=.. uv run python3 -m unittest sec_interp.tests.core.test_drillhole_service
-```
+3. **Recommended Method (Docker - Complete)**:
+   The definitive health check is running all tests in Docker:
+   ```bash
+   make docker-test
+   ```
 
 **Key Notes:**
 - Do not use `pytest`. The project has migrated to strict `unittest`.
-- Always set `PYTHONPATH=..` when running from the project root to ensure `import sec_interp` works correctly.
+- Always set `PYTHONPATH=..` when running unit tests from the project root.
+- **Process Isolation**: Do NOT run `tests/core` and `tests/integration` in the same process to avoid Mock pollution.
 
 🤖 **Agent Action**: Usar skill **qa-docker** para:
 - Interpretar fallos de tests (mocks vs lógica real)

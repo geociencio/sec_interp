@@ -16,7 +16,12 @@ scope: root
 - **Coverage**: Every new service must have at least 80% unit test coverage.
 - **Integration**: 1 integration test per major feature is required.
 
+## Environment Isolation
+- **Process Splitting**: To avoid contamination between Mocks and the real QGIS API, execute tests in separate processes (core/exporters/gui vs integration).
+- **FORCE_MOCKS**: Use environment variable `FORCE_MOCKS=0` to force load the real QGIS API in integration tests.
+- **Cleanup**: Always call `remove_mock_patches()` from `tests.base_test` before initializing `QgsApplication` in integration tests.
+
 ## Tools
-- `unittest` for running tests.
-- `ruff` for linting.
-- `black` for formatting.
+- `unittest` for running tests. Direct reference via module path is preferred.
+- `make docker-test` as the definitive health check (runs all suites in isolated processes).
+- `ruff` and `black` for linting and formatting.

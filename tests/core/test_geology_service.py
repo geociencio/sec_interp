@@ -67,15 +67,19 @@ class TestGeologyService(BaseTestCase):
         self.mock_raster_lyr.dataProvider.return_value = provider
 
         # Setup outcrop feature
-        outcrop_feat = QgsFeature()
+        from qgis.core import QgsFields, QgsField
+        from PyQt5.QtCore import QVariant
+
+        fields = QgsFields()
+        fields.append(QgsField("unit", QVariant.String))
+
+        outcrop_feat = QgsFeature(fields)
         outcrop_feat["unit"] = "Unit A"
         outcrop_feat.setGeometry(
             QgsGeometry.fromPolylineXY([QgsPointXY(20, -10), QgsPointXY(20, 10)])
         )
         self.mock_outcrop_lyr.getFeatures.return_value = [outcrop_feat]
-
-        # Mock intersection
-        # By default MockQgsGeometry.intersection returns self
+        self.mock_outcrop_lyr.fields.return_value = fields
 
         segments = self.service.generate_geological_profile(
             self.mock_line_lyr, self.mock_raster_lyr, self.mock_outcrop_lyr, "unit"

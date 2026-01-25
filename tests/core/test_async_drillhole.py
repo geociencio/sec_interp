@@ -38,11 +38,16 @@ class TestAsyncDrillhole(BaseTestCase):
         interval_layer = MagicMock()
 
         # Test basic preparation
+        mock_line_layer = MagicMock()
+        line_feat = QgsFeature()
+        line_feat.setGeometry(
+            QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
+        )
+        mock_line_layer.getFeatures.return_value = iter([line_feat])
+        mock_line_layer.crs.return_value = self.crs
+
         task_input = self.service.prepare_task_input(
-            line_geom=self.line_geom,
-            line_start=self.line_start,
-            line_crs=self.crs,
-            section_azimuth=90.0,
+            line_layer=mock_line_layer,
             buffer_width=50.0,
             collar_layer=collar_layer,
             collar_id_field="id",

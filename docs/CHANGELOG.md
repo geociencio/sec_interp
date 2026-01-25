@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nuevo DTO `DrillholeTaskInput` para procesamiento asíncrono desacoplado.
 - Soporte para geometrías WKT en `GeologySegment`.
 - **UI**: Added checkbox to toggle legend visibility in the preview widget.
+- **Core**: Centralized section azimuth and field mapping calculation in services.
+- **Mocks**: Added `azimuth` method to `MockQgsPointXY`.
 
 ### Changed
 - Refactorización mayor de `GeologyService` y `DrillholeService` para eliminar dependencias directas de QGIS durante el cálculo.

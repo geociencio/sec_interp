@@ -115,16 +115,8 @@ class GeologyService(IGeologyService):
         master_grid_dists = [(d, (pt.x(), pt.y()), e) for d, pt, e in master_grid_dists_raw]
 
         # 2. Extract Outcrop Data (needs Vector access)
-        outcrop_data_raw = self._extract_outcrop_data(line_geom, outcrop_lyr, outcrop_name_field)
-        outcrop_data = []
-        for item in outcrop_data_raw:
-            outcrop_data.append(
-                {
-                    "wkt": item["geometry"].asWkt(),
-                    "attrs": item["attributes"],
-                    "unit_name": item["unit_name"],
-                }
-            )
+        # This already returns detached dicts with WKT
+        outcrop_data = self._extract_outcrop_data(line_geom, outcrop_lyr, outcrop_name_field)
 
         return GeologyTaskInput(
             line_geometry_wkt=line_geom.asWkt(),
@@ -180,7 +172,11 @@ class GeologyService(IGeologyService):
         outcrop_lyr: QgsVectorLayer,
         outcrop_name_field: str,
     ) -> list[dict[str, Any]]:
-        """Extract outcrop features intersecting the line bounding box."""
+        """Extract outcrop features intersecting the line bounding box.
+
+        Returns a list of dictionaries with WKT geometry and attributes,
+        completely detached from QGIS objects.
+        """
         outcrop_data = []
         line_bbox = line_geom.boundingBox()
         request = QgsFeatureRequest().setFilterRect(line_bbox)
@@ -199,8 +195,8 @@ class GeologyService(IGeologyService):
 
             outcrop_data.append(
                 {
-                    "geometry": QgsGeometry(feature.geometry()),  # Deep copy geometry
-                    "attributes": attrs,
+                    "wkt": feature.geometry().asWkt(),  # Store as WKT immediately
+                    "attrs": attrs,
                     "unit_name": unit_name,
                 }
             )

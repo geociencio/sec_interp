@@ -540,6 +540,16 @@ class MockQgsPointXY(MockQgsPoint):
     def distance(self, other):
         return ((self._x - other.x()) ** 2 + (self._y - other.y()) ** 2) ** 0.5
 
+    def azimuth(self, other):
+        import math
+
+        dx = other.x() - self._x
+        dy = other.y() - self._y
+        angle = math.degrees(math.atan2(dx, dy))
+        if angle < 0:
+            angle += 360
+        return angle
+
     def compare(self, other, epsilon=1e-6):
         return self.distance(other) < epsilon
 
