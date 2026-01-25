@@ -23,10 +23,6 @@ class MockQgsBase:
 
     def get(self):
         return self
-        return True
-
-    def type(self):
-        return 0
 
 
 class MockQObject:
@@ -187,18 +183,19 @@ class MockQgsGeometry(MockQgsBase):
         self._polygons = []
         self._point = MockQgsPointXY()
         self._wkb_type = 2  # Default LineString
+        self._wkt = None
 
         if args:
             arg = args[0]
             if isinstance(arg, MockQgsGeometry):
-                self._polyline = arg._polyline
+                self._polyline = list(arg._polyline)
                 self._wkb_type = arg._wkb_type
-                self._point = arg._point
-                self._polygons = arg._polygons
+                self._point = MockQgsPointXY(arg._point.x(), arg._point.y())
+                self._polygons = [list(r) for r in arg._polygons]
+                self._wkt = arg._wkt
             elif "MockQgsPolygon" in str(type(arg)):
                 self._polygons = arg._rings
                 self._wkb_type = 3  # Default Polygon
-                # Check for Z in points
                 if self._polygons and self._polygons[0]:
                     first_pt = self._polygons[0][0]
                     if hasattr(first_pt, "z") or hasattr(first_pt, "_z"):
@@ -251,61 +248,100 @@ class MockQgsGeometry(MockQgsBase):
         return MockQgsGeometry.fromPolylineXY(points)
 
     @staticmethod
-    def fromPolygon(rings):
-        if (
-            rings
-            and rings[0]
-            and (hasattr(rings[0][0], "z") or hasattr(rings[0][0], "_z"))
-        ):
-            return MockQgsGeometry.fromPolygonZ(rings)
-        return MockQgsGeometry.fromPolygonXY(rings)
-
-    @staticmethod
     def fromPointXY(point):
         geom = MockQgsGeometry()
         geom._point = point
-        geom._wkb_type = 1  # Point
+        geom._wkb_type = 1
         return geom
 
-    def intersects(self, other):
-        return True
+    @staticmethod
+    def fromWkt(wkt):
+        geom = MockQgsGeometry()
+        geom._wkt = wkt
+        if "LINESTRING" in wkt.upper():
+            geom._wkb_type = 2
+        elif "POLYGON" in wkt.upper():
+            geom._wkb_type = 3
+        elif "POINT" in wkt.upper():
+            geom._wkb_type = 1
+        return geom
 
-    def isMultipart(self):
-        return False
+    def asWkt(self):
+        if self._wkt:
+            return self._wkt
+        if self._wkb_type in [1, 1001]:
+            return f"POINT({self._point.x()} {self._point.y()})"
+        if self._polyline:
+            pts = ", ".join([f"{p.x()} {p.y()}" for p in self._polyline])
+            return f"LINESTRING ({pts})"
+        return "GEOMETRYCOLLECTION EMPTY"
+
+    def vertices(self):
+        if self._polyline:
+            return self._polyline
+        if self._wkt and "LINESTRING" in self._wkt.upper():
+            try:
+                content = self._wkt.upper().split("(")[1].split(")")[0]
+                pts = []
+                for pair in content.split(","):
+                    coords = pair.strip().split()
+                    pts.append(MockQgsPointXY(float(coords[0]), float(coords[1])))
+                return pts
+            except Exception:
+                return []
+        if self._wkb_type in [1, 1001]:
+            return [self._point]
+        return []
 
     def asPolyline(self):
-        return self._polyline
+        return self.vertices()
 
     def asPolygon(self):
-        # returns list of rings, each ring is a list of QgsPointXY
         return self._polygons
 
     def asMultiPolygon(self):
-        # returns list of polygons, each polygon is a list of rings
         return [self._polygons]
 
     def asMultiPolyline(self):
         return [self._polyline]
 
+    def intersection(self, other):
+        return self.clone()
+
+    def intersects(self, other):
+        return True
+
+    def isEmpty(self):
+        return not (self._polyline or self._polygons or self._wkt)
+
+    def isNull(self):
+        return False
+
+    def isMultipart(self):
+        return False
+
     def isGeosValid(self):
         return True
 
+    def clone(self):
+        new_geom = MockQgsGeometry()
+        new_geom._polyline = list(self._polyline)
+        new_geom._polygons = [list(r) for r in self._polygons]
+        new_geom._point = MockQgsPointXY(self._point.x(), self._point.y())
+        new_geom._wkb_type = self._wkb_type
+        new_geom._wkt = self._wkt
+        return new_geom
+
     def centroid(self):
-        # Mock centroid
-        p = MockQgsPointXY(0, 0)
-        if hasattr(self, "_point") and self._point:
-            p = self._point
-        elif hasattr(self, "_polyline") and self._polyline:
+        p = self._point
+        if self._polyline:
             p = self._polyline[0]
-        elif hasattr(self, "_polygons") and self._polygons and self._polygons[0]:
+        elif self._polygons and self._polygons[0]:
             p = self._polygons[0][0]
         return MockQgsGeometry.fromPointXY(p)
 
     def makeValid(self):
         return self
-
-    def isNull(self):
-        return False
 
     def wkbType(self):
         return self._wkb_type
@@ -313,42 +349,41 @@ class MockQgsGeometry(MockQgsBase):
     def is3D(self):
         return self._wkb_type >= 1000
 
-    def pointN(self, index):
-        return self.vertexAt(index)
-
     def asPoint(self):
         return self._point
 
     def type(self):
-        from qgis.core import QgsWkbTypes
-
-        return QgsWkbTypes.geometryType(self.wkbType())
+        # 0: Point, 1: Line, 2: Polygon
+        if self._wkb_type in [1, 1001]:
+            return 0
+        if self._wkb_type in [2, 1002, 4, 1004]:
+            return 1
+        if self._wkb_type in [3, 1003, 6, 1006]:
+            return 2
+        return 4
 
     def length(self):
-        if len(self._polyline) < 2:
+        verts = self.vertices()
+        if len(verts) < 2:
             return 0.0
         total = 0.0
-        for i in range(len(self._polyline) - 1):
-            p1 = self._polyline[i]
-            p2 = self._polyline[i + 1]
+        for i in range(len(verts) - 1):
+            p1, p2 = verts[i], verts[i + 1]
             total += ((p1.x() - p2.x()) ** 2 + (p1.y() - p2.y()) ** 2) ** 0.5
         return total
 
     def interpolate(self, distance):
-        # Mock interpolation: assume line is on X axis for simplicity
         return MockQgsGeometry.fromPointXY(MockQgsPointXY(distance, 0.0))
 
     def lineLocatePoint(self, point_geom):
-        # Mock locate: for horizontal line starting at 0,0, it's just the X coordinate
         if isinstance(point_geom, MockQgsGeometry):
             return point_geom.asPoint().x()
         return 0.0
 
     def nearestPoint(self, other):
-        # For mocking purposes, check if we're a horizontal line at y=0
-        # and project the point accordingly. This supports drillhole tests.
-        if self._wkb_type == 2 and self._polyline:
-            if all(getattr(pt, "_y", 1) == 0 for pt in self._polyline):
+        if self.type() == 1 and self.vertices():
+            verts = self.vertices()
+            if all(pt.y() == 0 for pt in verts):
                 try:
                     other_pt = other.asPoint()
                     return MockQgsGeometry.fromPointXY(
@@ -359,26 +394,33 @@ class MockQgsGeometry(MockQgsBase):
         return other
 
     def simplify(self, tolerance):
-        # For mock, just return self or a copy
         return self
 
     def buffer(self, distance, segments):
-        # Simple mock: return a polygon-ish geometry
         geom = MockQgsGeometry()
-        geom._wkb_type = 2  # Polygon
+        geom._wkb_type = 3  # Polygon
+        # Add dummy vertices to make it non-empty
+        geom._polygons = [
+            [
+                MockQgsPointXY(0, 0),
+                MockQgsPointXY(1, 1),
+                MockQgsPointXY(0, 1),
+                MockQgsPointXY(0, 0),
+            ]
+        ]
         return geom
 
     def densifyByDistance(self, distance):
-        # Simple mock: just return self
         return self
 
     def boundingBox(self):
-        if not self._polyline:
+        verts = self.vertices()
+        if not verts:
             return MagicMock()
-        min_x = min(p.x() for p in self._polyline)
-        max_x = max(p.x() for p in self._polyline)
-        min_y = min(p.y() for p in self._polyline)
-        max_y = max(p.y() for p in self._polyline)
+        min_x = min(p.x() for p in verts)
+        max_x = max(p.x() for p in verts)
+        min_y = min(p.y() for p in verts)
+        max_y = max(p.y() for p in verts)
         box = MagicMock()
         box.width.return_value = max_x - min_x
         box.height.return_value = max_y - min_y
@@ -388,21 +430,10 @@ class MockQgsGeometry(MockQgsBase):
         box.yMaximum.return_value = max_y
         return box
 
-    def intersection(self, other):
-        # Mock intersection: for now just return self if it's not null
-        if self.isNull():
-            return self
-        return self
-
-    def isEmpty(self):
-        return not self._polyline and not self._point
-
     def transform(self, transform):
+        pass
         # Mock transformation: does nothing for now
         pass
-
-    def vertices(self):
-        return self._polyline
 
     def vertexAt(self, index):
         if self._wkb_type == 1 or self._wkb_type == 1001:  # Point / PointZ
@@ -456,26 +487,13 @@ class MockQgsPolygon(MockQgsBase):
 class MockQgsPoint(MockQgsBase):
     def __init__(self, x=0, y=0, z=0):
         super().__init__()
-        try:
-            # Try to convert to float to catch actual errors,
-            # but allow Mocks/Proxies to pass as-is
-            self._x = (
-                float(x)
-                if not hasattr(x, "_mock") and not isinstance(x, MagicMock)
-                else x
-            )
-            self._y = (
-                float(y)
-                if not hasattr(y, "_mock") and not isinstance(y, MagicMock)
-                else y
-            )
-            self._z = (
-                float(z)
-                if not hasattr(z, "_mock") and not isinstance(z, MagicMock)
-                else z
-            )
-        except (TypeError, ValueError):
-            self._x, self._y, self._z = x, y, z
+        if isinstance(x, (MockQgsPoint, MockQgsPointXY)):
+            self._x, self._y, self._z = x.x(), x.y(), getattr(x, "z", lambda: 0)()
+        elif isinstance(x, (tuple, list)):
+            self._x, self._y = float(x[0]), float(x[1])
+            self._z = float(x[2]) if len(x) > 2 else 0.0
+        else:
+            self._x, self._y, self._z = float(x), float(y), float(z)
 
     def x(self):
         return self._x
@@ -486,7 +504,6 @@ class MockQgsPoint(MockQgsBase):
     def z(self):
         return self._z
 
-    # PointXY compatibility
     def setX(self, x):
         self._x = float(x)
 
@@ -496,10 +513,20 @@ class MockQgsPoint(MockQgsBase):
     def setZ(self, z):
         self._z = float(z)
 
+    def __iter__(self):
+        yield self._x
+        yield self._y
+
 
 class MockQgsPointXY(MockQgsPoint):
     def __init__(self, x=0, y=0):
-        super().__init__(x, y, 0)
+        if isinstance(x, (MockQgsPoint, MockQgsPointXY)):
+            super().__init__(x.x(), x.y(), 0)
+        else:
+            super().__init__(x, y, 0)
+
+    def distance(self, other):
+        return ((self._x - other.x()) ** 2 + (self._y - other.y()) ** 2) ** 0.5
 
 
 class MockQgsCoordinateReferenceSystem(MockQgsBase):
@@ -648,35 +675,6 @@ class MockQgsRectangle(MockQgsBase):
         self._ymin = min(self._ymin, other.yMinimum())
         self._xmax = max(self._xmax, other.xMaximum())
         self._ymax = max(self._ymax, other.yMaximum())
-
-
-class MockQgsPointXY:
-    def __init__(self, x=0, y=0):
-        if isinstance(x, MockQgsPointXY):
-            self._x = x.x()
-            self._y = x.y()
-        else:
-            self._x = x
-            self._y = y
-
-    def __iter__(self):
-        yield self._x
-        yield self._y
-
-    def x(self):
-        return self._x
-
-    def y(self):
-        return self._y
-
-    def distance(self, other):
-        return ((self._x - other.x()) ** 2 + (self._y - other.y()) ** 2) ** 0.5
-
-    def compare(self, other, epsilon):
-        return abs(self._x - other.x()) < epsilon and abs(self._y - other.y()) < epsilon
-
-    def isValid(self):
-        return True
 
 
 class MockQgsField(MockQgsBase):
@@ -1193,6 +1191,8 @@ def mock_signal(*args, **kwargs):
 class MockQgsWkbTypes:
     Point, LineString, Polygon = 1, 2, 3
     PointZ, LineStringZ, PolygonZ = 1001, 1002, 1003
+    MultiPoint, MultiLineString, MultiPolygon = 4, 5, 6
+    MultiPointZ, MultiLineStringZ, MultiPolygonZ = 1004, 1005, 1006
     Point25D, LineString25D, Polygon25D = 1001, 1002, 1003
 
     PointGeometry = 0
@@ -1492,8 +1492,56 @@ def restore_mocks():
 
     writer = get_or_reset(mock_core, "QgsVectorFileWriter")
     writer.NoError = 0
-    writer.create.return_value.hasError.return_value = 0
-    writer.create.return_value.errorMessage.return_value = ""
+
+    def create_real_writer(
+        output_path, fields, geometry_type, crs, transform_context, options
+    ):
+        """Mock writer that creates actual shapefile-like files for testing."""
+        import os
+
+        base_path = os.path.splitext(output_path)[0]
+
+        # Create immediate files to simulate successful export
+        def mock_addFeature(feature):
+            return True
+
+        def mock_flushBuffer():
+            pass
+
+        # Create mock writer object that actually creates files on first feature add
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = 0
+        mock_writer.errorMessage.return_value = ""
+        mock_writer.addFeature.side_effect = mock_addFeature
+        mock_writer.flushBuffer.side_effect = mock_flushBuffer
+
+        # Immediately create files since export will succeed
+        def create_files_now():
+            # Create main .shp file
+            with open(output_path, "w") as f:
+                f.write("# Mock shapefile created for testing\n")
+
+            # Create supporting files including .qml for tests that need it
+            for ext in [".shx", ".dbf", ".prj", ".qml"]:
+                support_path = base_path + ext
+                with open(support_path, "w") as f:
+                    if ext == ".prj":
+                        f.write(
+                            'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","4326"]]'
+                        )
+                    elif ext == ".qml":
+                        f.write(
+                            '<!DOCTYPE qgis PUBLIC "http://mrcc.com/qgis.dtd" "SYSTEM">\n<qgis version="3.28.0-Firenze"></qgis>\n'
+                        )
+                    else:
+                        f.write(f"# Mock {ext} file for testing\n")
+
+        # Create files immediately to simulate successful export
+        create_files_now()
+
+        return mock_writer
+
+    writer.create.side_effect = create_real_writer
     writer.writeAsVectorFormatV3.return_value = (0, "", "", "")
 
 

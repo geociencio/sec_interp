@@ -12,39 +12,17 @@ from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 
 
 def calculate_drillhole_trajectory(
-    collar_point: QgsPointXY,
+    collar_point: Any,  # Expected tuple[float, float] or QgsPointXY
     collar_z: float,
     survey_data: list[tuple[float, float, float]],
     section_azimuth: float,
     densify_step: float = 1.0,
     total_depth: float = 0.0,
 ) -> list[tuple[float, float, float, float, float, float]]:
-    """Calculate 3D trajectory of a drillhole using survey data.
-
-    Uses the tangential method for trajectory calculation with densification
-    to generate intermediate points for continuous interval projection.
-
-    Args:
-        collar_point: QgsPointXY of collar location (X, Y).
-        collar_z: Elevation of collar (Z).
-        survey_data: List of tuples (depth, azimuth, inclination) sorted by depth.
-        section_azimuth: Azimuth of the section line in degrees.
-        densify_step: Distance in meters between interpolated points (default 1.0m).
-        total_depth: Optional total depth. If greater than last survey depth,
-                     trajectory will be extrapolated using last orientation.
-
-    Returns:
-        A list of tuples (depth, x, y, z, dist_along_section, offset_from_section):
-            - depth: Depth along the hole.
-            - x, y, z: 3D coordinates.
-            - dist_along_section: Distance along the section line (initially 0.0).
-            - offset_from_section: Perpendicular distance from section line (initially 0.0).
-
-    """
+    """Calculate 3D trajectory of a drillhole using survey data."""
     if not survey_data:
         if total_depth > 0:
             # No survey but depth provided: assume vertical hole
-            # Add a dummy survey point at surface with vertical inclination (-90)
             survey_data = [(0.0, 0.0, -90.0)]
         else:
             return []
@@ -52,7 +30,13 @@ def calculate_drillhole_trajectory(
     trajectory = []
 
     # Start at collar
-    x, y, z = collar_point.x(), collar_point.y(), collar_z
+    try:
+        # Support both QgsPointXY and tuple
+        x = collar_point.x() if hasattr(collar_point, "x") else collar_point[0]
+        y = collar_point.y() if hasattr(collar_point, "y") else collar_point[1]
+    except Exception:
+        x, y = 0.0, 0.0
+    z = collar_z
     prev_depth = 0.0
 
     # Add collar point
@@ -147,26 +131,14 @@ def calculate_drillhole_trajectory(
 def project_trajectory_to_section(
     trajectory: list[tuple],
     line_geom: QgsGeometry,
-    line_start: QgsPointXY,
+    line_start: Any,  # Point2D or QgsPointXY
     distance_area: QgsDistanceArea,
-) -> list[tuple[float, float, float, float, float, float]]:
-    """Project drillhole trajectory points onto section line.
-
-    Args:
-        trajectory: List of (depth, x, y, z, _, _) from `calculate_drillhole_trajectory`.
-        line_geom: QgsGeometry of the section line.
-        line_start: QgsPointXY of the section line start.
-        distance_area: QgsDistanceArea for geodesic measurements.
-
-    Returns:
-        List of tuples (depth, x, y, z, dist_along, offset):
-            - depth: Original depth.
-            - x, y, z: Original 3D coordinates.
-            - dist_along: Projected distance along the section line.
-            - offset: Perpendicular offset from the section line.
-
-    """
+) -> list[tuple[float, float, float, float, float, float, float, float]]:
+    """Project drillhole trajectory points onto section line."""
     projected = []
+
+    # Ensure line_start is QgsPointXY
+    start_pt = line_start if hasattr(line_start, "x") else QgsPointXY(line_start[0], line_start[1])
 
     for depth, x, y, z, _, _ in trajectory:
         point = QgsPointXY(x, y)
@@ -177,7 +149,7 @@ def project_trajectory_to_section(
         nearest_pt_xy = nearest_point.asPoint()
 
         # Calculate distance along section
-        dist_along = distance_area.measureLine(line_start, nearest_pt_xy)
+        dist_along = distance_area.measureLine(start_pt, nearest_pt_xy)
 
         # Calculate offset from section
         offset = distance_area.measureLine(point, nearest_pt_xy)

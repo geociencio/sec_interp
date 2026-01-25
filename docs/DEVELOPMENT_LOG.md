@@ -4,6 +4,15 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-24] Resumen: Desacoplamiento Arquitectónico Core-QGIS (Noche)
+- **Logro**: Finalizada la arquitectura agnóstica del Core con 100% de éxito en tests.
+- **Cambios**:
+    - Refactorizados `GeologyService` y `DrillholeService` para operar sobre DTOs agnósticos (WKT/primitivos).
+    - Mocks de QGIS reconstruidos en `base_test.py` con soporte WKT.
+    - Eliminada deuda técnica de shadowing de métodos en mocks.
+- **Estado**: Core validado (204 tests OK). Ver [sesion_2026-01-24_core_decoupling.md](maintenance/sesion_2026-01-24_core_decoupling.md).
+
+---
 ## [2026-01-23] Hotfix: Sincronización y Persistencia de Medición (Noche)
 - **Logro**: Corregido el comportamiento de la herramienta de medición para permitir persistencia visual tras desactivación.
 - **Cambios**:

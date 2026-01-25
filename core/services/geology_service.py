@@ -30,7 +30,6 @@ from typing import Any
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
-    QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
@@ -100,7 +99,7 @@ class GeologyService(IGeologyService):
         outcrop_name_field: str,
         band_number: int = 1,
     ) -> GeologyTaskInput:
-        """Prepare detached data input for background task."""
+        """Prepare detached domain data for background task."""
         self._validate_inputs(line_lyr, raster_lyr, outcrop_lyr, outcrop_name_field, band_number)
 
         line_geom, line_start = self._extract_line_info(line_lyr)
@@ -108,16 +107,29 @@ class GeologyService(IGeologyService):
         da = scu.create_distance_area(crs)
 
         # 1. Generate Master Profile Data (needs Raster access)
-        master_profile_data, master_grid_dists = self._generate_master_profile_data(
+        master_profile_data, master_grid_dists_raw = self._generate_master_profile_data(
             line_geom, raster_lyr, band_number, da, line_start
         )
 
+        # Convert master_grid_dists to domain types (dist, (x, y), elev)
+        master_grid_dists = [(d, (pt.x(), pt.y()), e) for d, pt, e in master_grid_dists_raw]
+
         # 2. Extract Outcrop Data (needs Vector access)
-        outcrop_data = self._extract_outcrop_data(line_geom, outcrop_lyr, outcrop_name_field)
+        outcrop_data_raw = self._extract_outcrop_data(line_geom, outcrop_lyr, outcrop_name_field)
+        outcrop_data = []
+        for item in outcrop_data_raw:
+            outcrop_data.append(
+                {
+                    "wkt": item["geometry"].asWkt(),
+                    "attrs": item["attributes"],
+                    "unit_name": item["unit_name"],
+                }
+            )
 
         return GeologyTaskInput(
-            line_geometry=QgsGeometry(line_geom),
-            line_start=QgsPointXY(line_start),
+            line_geometry_wkt=line_geom.asWkt(),
+            line_start_x=line_start.x(),
+            line_start_y=line_start.y(),
             crs_authid=crs.authid(),
             master_profile_data=master_profile_data,
             master_grid_dists=master_grid_dists,
@@ -197,9 +209,12 @@ class GeologyService(IGeologyService):
     def process_task_data(
         self, task_input: GeologyTaskInput, feedback: Any | None = None
     ) -> GeologyData:
-        """Process geological data in a thread-safe way (Pure Computation)."""
+        """Process geological data in a thread-safe way (Domain-Pure logic)."""
+        # Reconstruct necessary tools from IDs/Strings
         crs = QgsCoordinateReferenceSystem(task_input.crs_authid)
         da = scu.create_distance_area(crs)
+        line_geom = QgsGeometry.fromWkt(task_input.line_geometry_wkt)
+        line_start = QgsPointXY(task_input.line_start_x, task_input.line_start_y)
 
         segments = []
         total = len(task_input.outcrop_data)
@@ -208,29 +223,17 @@ class GeologyService(IGeologyService):
             if feedback and feedback.isCanceled():
                 return []
 
-            outcrop_geom = item["geometry"]
-            intersection = task_input.line_geometry.intersection(outcrop_geom)
+            outcrop_geom = QgsGeometry.fromWkt(item["wkt"])
+            intersection = line_geom.intersection(outcrop_geom)
 
             if intersection.isEmpty():
                 continue
 
-            # Process intersection
-            # We need to adapt _process_intersection_geometry to work with detached data
-            # Or create a helper. Since _process_intersection_geometry uses QgsFeature mainly for attributes
-            # we should adapt/reuse it.
-
-            # Helper to mimic feature behavior for _process_intersection_geometry
-            # Actually, let's just refactor _process_intersection_geometry to take dict or make a specialized one
-            # For minimal change, we'll inline the logic or adapt _process_intersection_geometry
-
-            # Let's adapt _process_intersection_geometry to be more flexible?
-            # Or simplified here since we have explicit data.
-
             new_segments = self._process_detached_intersection(
                 intersection,
-                item["attributes"],
+                item["attrs"],
                 item["unit_name"],
-                task_input.line_start,
+                line_start,
                 da,
                 task_input.master_grid_dists,
                 task_input.master_profile_data,
@@ -389,18 +392,18 @@ class GeologyService(IGeologyService):
 
         return master_profile_data, master_grid_dists
 
-    def _process_intersection_geometry(
+    def _process_detached_intersection(
         self,
         geom: QgsGeometry,
-        feature: QgsFeature,
-        outcrop_name_field: str,
+        attrs: dict[str, Any],
+        unit_name: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
-        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_grid_dists: list[tuple[float, tuple[float, float], float]],
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[GeologySegment]:
-        """Process an intersection geometry to extract geology segments."""
+        """Process a detached intersection geometry to extract geology segments."""
         if not geom or geom.isNull():
             return []
 
@@ -408,17 +411,12 @@ class GeologyService(IGeologyService):
         if not geometries:
             return []
 
-        try:
-            glg_val = feature[outcrop_name_field]
-        except KeyError:
-            glg_val = "Unknown"
-
         segments = []
         for seg_geom in geometries:
             segment = self._create_segment_from_geometry(
                 seg_geom,
-                feature,
-                str(glg_val),
+                attrs,
+                unit_name,
                 line_start,
                 da,
                 master_grid_dists,
@@ -433,11 +431,11 @@ class GeologyService(IGeologyService):
     def _create_segment_from_geometry(
         self,
         seg_geom: QgsGeometry,
-        feature: QgsFeature,
-        glg_val: str,
+        attrs: dict[str, Any],
+        unit_name: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
-        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_grid_dists: list[tuple[float, tuple[float, float], float]],
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> GeologySegment | None:
@@ -451,12 +449,9 @@ class GeologyService(IGeologyService):
             dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
         )
 
-        # Attributes from original feature
-        attrs = dict(zip(feature.fields().names(), feature.attributes(), strict=False))
-
         return GeologySegment(
-            unit_name=glg_val,
-            geometry=seg_geom,
+            unit_name=unit_name,
+            geometry_wkt=seg_geom.asWkt(),
             attributes=attrs,
             points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
         )
@@ -494,7 +489,7 @@ class GeologyService(IGeologyService):
         self,
         dist_start: float,
         dist_end: float,
-        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_grid_dists: list[tuple[float, tuple[float, float], float]],
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[tuple[float, float]]:

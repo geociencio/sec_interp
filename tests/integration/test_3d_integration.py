@@ -11,15 +11,16 @@ from qgis.core import (
     QgsPointXY,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsPoint
+    QgsPoint,
 )
 from tests.integration.base_integration import BaseIntegrationTest
 from sec_interp.core.types import InterpretationPolygon, GeologySegment
 from sec_interp.exporters.drillhole_3d_exporter import (
     DrillholeTrace3DExporter,
-    DrillholeInterval3DExporter
+    DrillholeInterval3DExporter,
 )
 from sec_interp.exporters.interpretation_3d_exporter import Interpretation3DExporter
+
 
 class Test3DIntegration(BaseIntegrationTest):
     """Integration tests for 3D projection and export functionality."""
@@ -28,7 +29,7 @@ class Test3DIntegration(BaseIntegrationTest):
     def setUpClass(cls):
         super().setUpClass()
         cls.test_dir = tempfile.mkdtemp()
-        cls.crs = QgsCoordinateReferenceSystem("EPSG:32719") # Example projected CRS
+        cls.crs = QgsCoordinateReferenceSystem("EPSG:32719")  # Example projected CRS
 
     @classmethod
     def tearDownClass(cls):
@@ -47,7 +48,7 @@ class Test3DIntegration(BaseIntegrationTest):
                 attributes={"from": 0.0, "to": 10.0},
                 points=[(0, 50), (5, 45)],
                 points_3d=[(1000, 2000, 50), (1005, 2000, 45)],
-                points_3d_projected=[(1001, 2001, 50), (1006, 2001, 45)]
+                points_3d_projected=[(1001, 2001, 50), (1006, 2001, 45)],
             )
         ]
         self.drillhole_data = [
@@ -56,7 +57,7 @@ class Test3DIntegration(BaseIntegrationTest):
                 [(0, 50), (10, 40)],
                 [(1000, 2000, 50), (1010, 2000, 40)],
                 [(1001, 2001, 50), (1011, 2001, 40)],
-                self.segments
+                self.segments,
             )
         ]
 
@@ -69,18 +70,23 @@ class Test3DIntegration(BaseIntegrationTest):
         data = {
             "drillhole_data": self.drillhole_data,
             "crs": self.crs,
-            "use_projected": False
+            "use_projected": False,
         }
 
         success = exporter.export(output_path, data)
         self.assertTrue(success, "Exporter returned False")
-        self.assertTrue(os.path.exists(output_path), f"File {output_path} does not exist after success")
+        self.assertTrue(
+            os.path.exists(output_path),
+            f"File {output_path} does not exist after success",
+        )
 
         # Verify layer
         layer = QgsVectorLayer(output_path, "trace", "ogr")
         self.assertTrue(layer.isValid())
         # Shapefiles often report MultiLineStringZ even for single part geometries
-        self.assertIn(layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ])
+        self.assertIn(
+            layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ]
+        )
 
         # Check coordinates
         features = list(layer.getFeatures())
@@ -100,7 +106,7 @@ class Test3DIntegration(BaseIntegrationTest):
         data = {
             "drillhole_data": self.drillhole_data,
             "crs": self.crs,
-            "use_projected": True
+            "use_projected": True,
         }
 
         success = exporter.export(output_path, data)
@@ -108,11 +114,13 @@ class Test3DIntegration(BaseIntegrationTest):
 
         layer = QgsVectorLayer(output_path, "trace_proj", "ogr")
         self.assertTrue(layer.isValid())
-        self.assertIn(layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ])
+        self.assertIn(
+            layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ]
+        )
 
         geom = next(layer.getFeatures()).geometry()
         p0 = geom.vertexAt(0)
-        self.assertAlmostEqual(p0.x(), 1001.0) # From points_3d_projected
+        self.assertAlmostEqual(p0.x(), 1001.0)  # From points_3d_projected
         self.assertAlmostEqual(p0.y(), 2001.0)
         self.assertAlmostEqual(p0.z(), 50.0)
 
@@ -124,7 +132,7 @@ class Test3DIntegration(BaseIntegrationTest):
         data = {
             "drillhole_data": self.drillhole_data,
             "crs": self.crs,
-            "use_projected": False
+            "use_projected": False,
         }
 
         success = exporter.export(output_path, data)
@@ -132,7 +140,9 @@ class Test3DIntegration(BaseIntegrationTest):
 
         layer = QgsVectorLayer(output_path, "intervals", "ogr")
         self.assertTrue(layer.isValid())
-        self.assertIn(layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ])
+        self.assertIn(
+            layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ]
+        )
 
         features = list(layer.getFeatures())
         self.assertEqual(len(features), 1)
@@ -157,15 +167,10 @@ class Test3DIntegration(BaseIntegrationTest):
         )
 
         interp = InterpretationPolygon(
-            "p1", "UnitB", "L",
-            [(10, 100), (20, 100), (20, 110), (10, 110), (10, 100)]
+            "p1", "UnitB", "L", [(10, 100), (20, 100), (20, 110), (10, 110), (10, 100)]
         )
 
-        data = {
-            "section_line": line_geom,
-            "interpretations": [interp],
-            "crs": self.crs
-        }
+        data = {"section_line": line_geom, "interpretations": [interp], "crs": self.crs}
 
         success = exporter.export(output_path, data)
         self.assertTrue(success, "Interpretation exporter returned False")
@@ -173,12 +178,16 @@ class Test3DIntegration(BaseIntegrationTest):
 
         # Verify QML existence
         qml_path = output_path.replace(".shp", ".qml")
-        self.assertTrue(os.path.exists(qml_path), f"QML style {qml_path} was not generated")
+        self.assertTrue(
+            os.path.exists(qml_path), f"QML style {qml_path} was not generated"
+        )
 
         layer = QgsVectorLayer(output_path, "interp", "ogr")
         self.assertTrue(layer.isValid(), "Layer is not valid")
         # PolygonZ = 1003, MultiPolygonZ = 1006
-        self.assertIn(layer.wkbType(), [QgsWkbTypes.PolygonZ, QgsWkbTypes.MultiPolygonZ])
+        self.assertIn(
+            layer.wkbType(), [QgsWkbTypes.PolygonZ, QgsWkbTypes.MultiPolygonZ]
+        )
 
         feat = next(layer.getFeatures())
         self.assertEqual(feat["name"], "UnitB")

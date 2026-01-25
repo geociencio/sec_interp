@@ -65,8 +65,9 @@ class TestAsyncDrillhole(BaseTestCase):
         """Test processing detached data."""
         # Create detached input manually
         task_input = DrillholeTaskInput(
-            line_geometry=self.line_geom,
-            line_start=self.line_start,
+            line_geometry_wkt=self.line_geom.asWkt(),
+            line_start_x=self.line_start.x(),
+            line_start_y=self.line_start.y(),
             line_crs_authid=self.crs.authid(),
             section_azimuth=90.0,
             buffer_width=50.0,
@@ -80,11 +81,11 @@ class TestAsyncDrillhole(BaseTestCase):
                 {
                     "id": "DH01",
                     "attributes": {"id": "DH01", "z": 100.0, "depth": 200.0},
-                    "geometry": QgsGeometry.fromPointXY(QgsPointXY(50, 10)),
+                    "wkt": QgsGeometry.fromPointXY(QgsPointXY(50, 10)).asWkt(),
                 }
             ],
-            survey_data={"DH01": [(0, 0, -90), (200, 0, -90)]},  # Vertical hole
-            interval_data={"DH01": [(0, 50, "RockA"), (50, 100, "RockB")]},
+            survey_data={"DH01": [(0.0, 0.0, -90.0), (200.0, 0.0, -90.0)]},
+            interval_data={"DH01": [(0.0, 50.0, "RockA"), (50.0, 100.0, "RockB")]},
             pre_sampled_z={},
         )
 

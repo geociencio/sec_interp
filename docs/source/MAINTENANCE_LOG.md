@@ -4,6 +4,11 @@ This document serves as the central record for project history, release procedur
 
 ---
 
+### [v2.8.0 Plan - Phase 2] - 2026-01-24
+- **Core-QGIS Architectural Decoupling**: Refactored `core/` to eliminate direct QGIS API dependencies. Migrated DTOs to WKT/primitive types. Reconstructed `MockQgsGeometry` and stabilized vertex/intersection logic. Achieved 100% success rate in unit tests (204 core tests). Core is now thread-safe and ready for advanced async integration.
+
+---
+
 ### [v2.8.0 Plan - Phase 1] - 2026-01-21
 - **GeologyService Refactoring**: Fragmented long methods into granular private methods (`_validate_inputs`, `_extract_outcrop_data`, `_extract_geometries`, `_calculate_segment_range`). Complexity significantly reduced, aiding maintainability for future core changes. 361 tests verified in Docker.
 - **Legend Visibility**: Implemented `show_legend` in `PreviewSettings` with project persistence. Added UI toggle in Preview page and ensured all image/vector exporters respect the setting.

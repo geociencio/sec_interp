@@ -82,7 +82,7 @@ class TestExportService(BaseTestCase):
         geol_data = [
             GeologySegment(
                 unit_name="Unit A",
-                geometry=QgsGeometry(),
+                geometry_wkt=None,
                 attributes={},
                 points=[(0, 10), (50, 10)],
             )
@@ -200,7 +200,7 @@ class TestExportService(BaseTestCase):
         from sec_interp.core.exceptions import ExportError
 
         mock_geol_shp.return_value.export.side_effect = Exception("error")
-        geol_data = [GeologySegment("A", QgsGeometry(), {}, [(0, 0)])]
+        geol_data = [GeologySegment("A", None, {}, [(0, 0)])]
 
         with self.assertRaises(ExportError):
             self.service._export_geology(

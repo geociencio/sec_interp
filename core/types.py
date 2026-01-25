@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from enum import IntEnum
 from typing import Any
 
-from qgis.core import QgsGeometry, QgsPointXY, QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsRasterLayer, QgsVectorLayer
 
 from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.performance_metrics import MetricsCollector
@@ -49,9 +49,18 @@ ExportSettings = dict[str, Any]
 ValidationResult = tuple[bool, str]
 """Tuple of (is_valid, error_message) from validation functions."""
 
-# Point data
-PointList = list[QgsPointXY]
-"""List of QgsPointXY objects."""
+# Point and Geometry Domain Types
+Point2D = tuple[float, float]
+"""A 2D point represented as (x, y) or (distance, elevation)."""
+
+Point3D = tuple[float, float, float]
+"""A 3D point represented as (x, y, z)."""
+
+DomainGeometry = str
+"""A geometry represented in WKT (Well-Known Text) format."""
+
+PointList = list[Point2D]
+"""List of 2D points."""
 
 
 @dataclass
@@ -82,18 +91,18 @@ class GeologySegment:
 
     Attributes:
         unit_name: Name of the geological unit.
-        geometry: QGIS geometry of the segment.
+        geometry_wkt: WKT representation of the segment geometry (optional).
         attributes: Dictionary containing original feature attributes.
         points: Sampled points (distance, elevation) representing the segment boundary.
 
     """
 
     unit_name: str
-    geometry: QgsGeometry  # Forward reference
+    geometry_wkt: DomainGeometry | None
     attributes: dict[str, Any]
-    points: list[tuple[float, float]]
-    points_3d: list[tuple[float, float, float]] = field(default_factory=list)
-    points_3d_projected: list[tuple[float, float, float]] = field(default_factory=list)
+    points: list[Point2D]
+    points_3d: list[Point3D] = field(default_factory=list)
+    points_3d_projected: list[Point3D] = field(default_factory=list)
 
 
 @dataclass
@@ -128,18 +137,18 @@ class InterpretationPolygon25D:
         id: Inherited identifier.
         name: Inherited name.
         type: Inherited type.
-        geometry: QGIS Geometry (PolygonM or LineStringM).
+        geometry_wkt: Domain Geometry in WKT format.
         attributes: Inherited and calculated attributes.
-        crs: Coordinate Reference System of the geometry.
+        crs_authid: CRS Auth ID (e.g. 'EPSG:4326').
 
     """
 
     id: str
     name: str
     type: str
-    geometry: QgsGeometry
+    geometry_wkt: DomainGeometry
     attributes: dict[str, Any]
-    crs: Any
+    crs_authid: str
 
 
 @dataclass
@@ -150,12 +159,13 @@ class GeologyTaskInput:
     without accessing QGIS layers directly.
     """
 
-    line_geometry: QgsGeometry
-    line_start: QgsPointXY
+    line_geometry_wkt: DomainGeometry
+    line_start_x: float
+    line_start_y: float
     crs_authid: str
-    master_profile_data: list[tuple[float, float]]
-    master_grid_dists: list[tuple[float, QgsPointXY, float]]
-    outcrop_data: list[dict[str, Any]]
+    master_profile_data: list[Point2D]
+    master_grid_dists: list[tuple[float, Point2D, float]]
+    outcrop_data: list[dict[str, Any]]  # List of dicts with 'wkt', 'attrs', 'unit_name'
     outcrop_name_field: str
     tolerance: float = 0.001
 
@@ -169,8 +179,9 @@ class DrillholeTaskInput:
     """
 
     # Section Line Info
-    line_geometry: QgsGeometry
-    line_start: QgsPointXY
+    line_geometry_wkt: DomainGeometry
+    line_start_x: float
+    line_start_y: float
     line_crs_authid: str
     section_azimuth: float
 

@@ -33,8 +33,8 @@ class TestCalculateBounds(BaseTestCase):
 
         # GeologySegment takes unit_name, geometry, attributes, points
         geol_data = [
-            GeologySegment("Unit A", MagicMock(), {}, [(50.0, 80.0), (150.0, 60.0)]),
-            GeologySegment("Unit B", MagicMock(), {}, [(200.0, 40.0), (250.0, 20.0)]),
+            GeologySegment("Unit A", None, {}, [(50.0, 80.0), (150.0, 60.0)]),
+            GeologySegment("Unit B", None, {}, [(200.0, 40.0), (250.0, 20.0)]),
         ]
 
         bounds = calculate_bounds(topo_data, geol_data)

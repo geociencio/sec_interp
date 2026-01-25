@@ -8,9 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Nuevo DTO `DrillholeTaskInput` para procesamiento asíncrono desacoplado.
+- Soporte para geometrías WKT en `GeologySegment`.
 - **UI**: Added checkbox to toggle legend visibility in the preview widget.
 
 ### Changed
+- Refactorización mayor de `GeologyService` y `DrillholeService` para eliminar dependencias directas de QGIS durante el cálculo.
+- Estabilización y robustecimiento de mocks de QGIS en la suite de pruebas.
+- Migración de DTOs de dominio para usar tipos primitivos de Python.
 - **Tech Debt**: Refactored `GeologyService` to improve maintainability by reducing method length.
 
 ### Fixed

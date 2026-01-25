@@ -4,15 +4,6 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsDistanceArea,
-    QgsGeometry,
-    QgsPointXY,
-    QgsRasterLayer,
-    QgsVectorLayer,
-)
-
 
 class IDrillholeService(ABC):
     """Abstract interface for the Drillhole Processing Service."""
@@ -20,10 +11,9 @@ class IDrillholeService(ABC):
     @abstractmethod
     def project_collars(
         self,
-        collar_layer: QgsVectorLayer,
-        line_geom: QgsGeometry,
-        line_start: QgsPointXY,
-        distance_area: QgsDistanceArea,
+        collar_data: list[dict[str, Any]],
+        line_data: Any,
+        distance_area: Any,
         buffer_width: float,
         collar_id_field: str,
         use_geometry: bool,
@@ -31,25 +21,22 @@ class IDrillholeService(ABC):
         collar_y_field: str,
         collar_z_field: str,
         collar_depth_field: str,
-        dem_layer: QgsRasterLayer | None,
-        line_crs: QgsCoordinateReferenceSystem | None = None,
+        pre_sampled_z: dict[Any, float] | None = None,
     ) -> list[tuple]:
-        """Project collar points onto section line.
+        """Project collar points onto section line using detached data.
 
         Args:
-            collar_layer: Vector layer containing drillhole collars.
-            line_geom: Geometry of the cross-section line.
-            line_start: Start point of the section line.
-            distance_area: Distance calculation object.
+            collar_data: List of detached collar entities (with geometry/attrs).
+            line_data: Section line orientation data.
+            distance_area: Calculation tool (or domain equivalent).
             buffer_width: Search buffer distance in meters.
             collar_id_field: Field name for unique drillhole ID.
-            use_geometry: Whether to use feature geometry for X/Y coordinates.
-            collar_x_field: Field name for X coordinate (if not using geometry).
-            collar_y_field: Field name for Y coordinate (if not using geometry).
-            collar_z_field: Field name for collar elevation.
-            collar_depth_field: Field name for total drillhole depth.
-            dem_layer: Optional DEM layer for elevation if Z field is missing/zero.
-            line_crs: CRS of the section line for spatial filtering.
+            use_geometry: Whether to use geometry for coordinates.
+            collar_x_field: Field for X.
+            collar_y_field: Field for Y.
+            collar_z_field: Field for elevation.
+            collar_depth_field: Field for total depth.
+            pre_sampled_z: Optional map of pre-sampled elevations.
 
         Returns:
             A list of tuples (hole_id, dist_along, z, offset, total_depth).
@@ -61,39 +48,37 @@ class IDrillholeService(ABC):
     def process_intervals(
         self,
         collar_points: list[tuple],
-        collar_layer: QgsVectorLayer,
-        survey_layer: QgsVectorLayer,
-        interval_layer: QgsVectorLayer,
+        collar_data: list[dict[str, Any]],
+        survey_data: dict[Any, list[tuple]],
+        interval_data: dict[Any, list[tuple]],
         collar_id_field: str,
         use_geometry: bool,
         collar_x_field: str,
         collar_y_field: str,
-        line_geom: QgsGeometry,
-        line_start: QgsPointXY,
-        distance_area: QgsDistanceArea,
+        line_data: Any,
+        distance_area: Any,
         buffer_width: float,
         section_azimuth: float,
         survey_fields: dict[str, str],
         interval_fields: dict[str, str],
     ) -> tuple[list, list]:
-        """Process drillhole interval data and project onto the section.
+        """Process interval data using detached data structures.
 
         Args:
-            collar_points: List of projected collar tuples from `project_collars`.
-            collar_layer: The collar vector layer.
-            survey_layer: The survey vector layer.
-            interval_layer: The interval/geology vector layer.
-            collar_id_field: Field name for hole ID in collar layer.
-            use_geometry: Use geometry for collar coordinates.
-            collar_x_field: Field name for X in collar layer.
-            collar_y_field: Field name for Y in collar layer.
-            line_geom: Section line geometry.
-            line_start: Section line start point.
+            collar_points: List of projected collar tuples.
+            collar_data: List of detached collar entities.
+            survey_data: Map of hole_id to list of survey tuples.
+            interval_data: Map of hole_id to list of interval tuples.
+            collar_id_field: Field name for ID.
+            use_geometry: Use geometry for coordinates.
+            collar_x_field: Field for X.
+            collar_y_field: Field for Y.
+            line_data: Line orientation data.
             distance_area: Distance calculation object.
-            buffer_width: Section buffer width in meters.
-            section_azimuth: Azimuth of the section line.
-            survey_fields: Mapping of survey field roles to field names.
-            interval_fields: Mapping of interval field roles to field names.
+            buffer_width: Buffer width.
+            section_azimuth: Section azimuth.
+            survey_fields: Survey field mapping.
+            interval_fields: Interval field mapping.
 
         Returns:
             A tuple containing (geol_data, drillhole_data).
