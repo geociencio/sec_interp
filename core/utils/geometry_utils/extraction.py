@@ -45,3 +45,26 @@ def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
         raise ValueError("Line geometry has no vertices")
 
     return vertices
+
+
+def extract_lines_from_geometry(geometry: QgsGeometry) -> list[QgsGeometry]:
+    """Extract individual LineString geometries from a (possibly Multi) geometry.
+
+    Args:
+        geometry: Input geometry (LineString or MultiLineString).
+
+    Returns:
+        List of single LineString geometries.
+
+    """
+    geometries = []
+    if not geometry or geometry.isNull():
+        return geometries
+
+    # MultiLineString handling
+    if geometry.isMultipart():
+        for part in geometry.asGeometryCollection():
+            geometries.append(part.clone())
+    else:
+        geometries.append(geometry.clone())
+    return geometries

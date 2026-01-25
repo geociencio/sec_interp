@@ -42,7 +42,11 @@ from sec_interp.core.exceptions import DataMissingError, GeometryError
 from sec_interp.core.interfaces.geology_interface import IGeologyService
 from sec_interp.core.performance_metrics import performance_monitor
 from sec_interp.core.types import GeologyData, GeologySegment, GeologyTaskInput
-from sec_interp.core.utils.sampling import interpolate_elevation
+from sec_interp.core.utils.geometry_utils.extraction import extract_lines_from_geometry
+from sec_interp.core.utils.geometry_utils.processing import (
+    calculate_segment_range,
+    interpolate_segment_points,
+)
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -277,7 +281,7 @@ class GeologyService(IGeologyService):
         """
         segments = []
         # Extract individual LineString geometries
-        line_geometries = self._extract_geometries(geom)
+        line_geometries = extract_lines_from_geometry(geom)
 
         for seg_geom in line_geometries:
             segment = self._create_segment_from_detached(
@@ -294,17 +298,6 @@ class GeologyService(IGeologyService):
                 segments.append(segment)
         return segments
 
-    def _extract_geometries(self, geom: QgsGeometry) -> list[QgsGeometry]:
-        """Extract individual LineString geometries from a (possibly Multi) geometry."""
-        geometries = []
-        # MultiLineString handling
-        if geom.isMultipart():
-            for part in geom.asGeometryCollection():
-                geometries.append(part.clone())
-        else:
-            geometries.append(geom.clone())
-        return geometries
-
     def _create_segment_from_detached(
         self,
         seg_geom: QgsGeometry,
@@ -317,12 +310,12 @@ class GeologyService(IGeologyService):
         tolerance: float,
     ) -> GeologySegment | None:
         """Create segment from detached data."""
-        rng = self._calculate_segment_range(seg_geom, line_start, da)
+        rng = calculate_segment_range(seg_geom, line_start, da)
         if not rng:
             return None
 
         dist_start, dist_end = rng
-        segment_points = self._convert_to_segment_points(
+        segment_points = interpolate_segment_points(
             dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
         )
 
@@ -332,26 +325,6 @@ class GeologyService(IGeologyService):
             attributes=attributes,
             points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
         )
-
-    def _calculate_segment_range(
-        self,
-        seg_geom: QgsGeometry,
-        line_start: QgsPointXY,
-        da: QgsDistanceArea,
-    ) -> tuple[float, float] | None:
-        """Calculate the start and end distance for a segment geometry."""
-        verts = scu.get_line_vertices(seg_geom)
-        if not verts:
-            return None
-
-        start_pt, end_pt = verts[0], verts[-1]
-        dist_start = da.measureLine(line_start, start_pt)
-        dist_end = da.measureLine(line_start, end_pt)
-
-        if dist_start > dist_end:
-            dist_start, dist_end = dist_end, dist_start
-
-        return dist_start, dist_end
 
     def _generate_master_profile_data(
         self,
@@ -419,7 +392,7 @@ class GeologyService(IGeologyService):
         if not geom or geom.isNull():
             return []
 
-        geometries = self._extract_geometries(geom)
+        geometries = extract_lines_from_geometry(geom)
         if not geometries:
             return []
 
@@ -443,7 +416,7 @@ class GeologyService(IGeologyService):
     def _create_segment_from_geometry(
         self,
         seg_geom: QgsGeometry,
-        attrs: dict[str, Any],
+        attributes: dict[str, Any],
         unit_name: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
@@ -452,19 +425,19 @@ class GeologyService(IGeologyService):
         tolerance: float,
     ) -> GeologySegment | None:
         """Create a GeologySegment from a geometry part by sampling elevations."""
-        rng = self._calculate_segment_range(seg_geom, line_start, da)
+        rng = calculate_segment_range(seg_geom, line_start, da)
         if not rng:
             return None
 
         dist_start, dist_end = rng
-        segment_points = self._convert_to_segment_points(
+        segment_points = interpolate_segment_points(
             dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
         )
 
         return GeologySegment(
             unit_name=unit_name,
             geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
-            attributes=attrs,
+            attributes=attributes,
             points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
         )
 
@@ -496,37 +469,3 @@ class GeologyService(IGeologyService):
             line_start = line_geom.asPolyline()[0]
 
         return line_geom, line_start
-
-    def _convert_to_segment_points(
-        self,
-        dist_start: float,
-        dist_end: float,
-        master_grid_dists: list[tuple[float, tuple[float, float], float]],
-        master_profile_data: list[tuple[float, float]],
-        tolerance: float,
-    ) -> list[tuple[float, float]]:
-        """Convert start/end distances to a list of segment points with elevations.
-
-        Args:
-            dist_start: Start distance of the segment.
-            dist_end: End distance of the segment.
-            master_grid_dists: Master grid elevation data.
-            master_profile_data: Master profile topography data.
-            tolerance: Tolerance for grid point inclusion.
-
-        Returns:
-            List of (distance, elevation) tuples.
-
-        """
-        # Get Inner Grid Points
-        inner_points = [
-            (d, e)
-            for d, _, e in master_grid_dists
-            if dist_start + tolerance < d < dist_end - tolerance
-        ]
-
-        # Interpolate Boundary Elevations
-        elev_start = interpolate_elevation(master_profile_data, dist_start)
-        elev_end = interpolate_elevation(master_profile_data, dist_end)
-
-        return [(dist_start, elev_start), *inner_points, (dist_end, elev_end)]

@@ -62,7 +62,7 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 116
-- **Lines of Code**: 17,546
+- **Lines of Code**: 18,043
 - **Functions**: 637
 - **Classes**: 119
 - **Average Complexity**: 11.7
@@ -72,7 +72,7 @@ No clear design patterns detected.
 
 ### Third Party (most frequent):
 - `qgis` (120 imports)
-- `sec_interp` (76 imports)
+- `sec_interp` (80 imports)
 - `domain_types` (18 imports)
 - `pages` (8 imports)
 - `geometry_utils` (7 imports)
@@ -95,18 +95,18 @@ No clear design patterns detected.
 ### core/exceptions.py
 - **functions_too_long**: Very long functions (average 59.0 lines/function).
 
+### core/services/drillhole/interval_processor.py
+- **functions_too_long**: Very long functions (average 52.0 lines/function).
+
 ### core/data_cache.py
 - **complexity_refactoring**: High complexity (19) with several functions. Consider breaking down large logic.
 
-### core/controller.py
-- **complexity_refactoring**: High complexity (22) with several functions. Consider breaking down large logic.
-
 ### core/services/profile_service.py
-- **functions_too_long**: Very long functions (average 88.0 lines/function).
+- **functions_too_long**: Very long functions (average 92.0 lines/function).
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 116
-- **Edges**: 111
+- **Edges**: 113
 - **Density**: 0.008
 - **Acyclic Graph**: Yes
 - **Connected Components**: 44
@@ -117,7 +117,6 @@ graph TD
     sec_interp_plugin --> py
     sec_interp_plugin --> py
     sec_interp_plugin --> py
-    controller --> py
     main_dialog --> py
     main_dialog_export --> py
     main_dialog_validation_manager --> py

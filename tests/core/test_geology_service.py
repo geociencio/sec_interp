@@ -13,6 +13,7 @@ from qgis.core import (
 
 from sec_interp.core.services.geology_service import GeologyService
 from sec_interp.core.exceptions import DataMissingError, GeometryError
+from sec_interp.core.utils.geometry_utils.processing import interpolate_segment_points
 
 
 class TestGeologyService(BaseTestCase):
@@ -118,9 +119,7 @@ class TestGeologyService(BaseTestCase):
         profile = [(0.0, 100.0), (10.0, 110.0), (20.0, 120.0)]
 
         # Segment from 5 to 15
-        points = self.service._convert_to_segment_points(
-            5.0, 15.0, grid, profile, 0.001
-        )
+        points = interpolate_segment_points(5.0, 15.0, grid, profile, 0.001)
 
         self.assertEqual(len(points), 3)  # (5, 105), (10, 110), (15, 115)
         self.assertAlmostEqual(points[0][0], 5.0)

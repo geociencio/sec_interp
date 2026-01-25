@@ -101,3 +101,72 @@ def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
     # For now it just logs and performs the op if possible
     logger.debug(f"Running geometry operation: {operation}")
     return None
+
+
+def calculate_segment_range(
+    seg_geom: QgsGeometry,
+    line_start: QgsPointXY,
+    da: Any,  # QgsDistanceArea
+) -> tuple[float, float] | None:
+    """Calculate the start and end distance for a segment geometry along the line.
+
+    Args:
+        seg_geom: Segment geometry (LineString).
+        line_start: Start point of the main section line.
+        da: QgsDistanceArea object.
+
+    Returns:
+        Tuple of (dist_start, dist_end) or None if invalid.
+
+    """
+    from sec_interp.core.utils.geometry_utils.extraction import get_line_vertices
+
+    try:
+        verts = get_line_vertices(seg_geom)
+        if not verts:
+            return None
+
+        start_pt, end_pt = verts[0], verts[-1]
+        dist_start = da.measureLine(line_start, start_pt)
+        dist_end = da.measureLine(line_start, end_pt)
+
+        if dist_start > dist_end:
+            dist_start, dist_end = dist_end, dist_start
+
+        return dist_start, dist_end
+    except ValueError:
+        return None
+
+
+def interpolate_segment_points(
+    dist_start: float,
+    dist_end: float,
+    master_grid_dists: list[tuple[float, Any, float]],  # (dist, point, elev)
+    master_profile_data: list[tuple[float, float]],  # (dist, elev)
+    tolerance: float,
+) -> list[tuple[float, float]]:
+    """Convert start/end distances to a list of segment points with interpolated elevations.
+
+    Args:
+        dist_start: Start distance of the segment.
+        dist_end: End distance of the segment.
+        master_grid_dists: Master grid elevation data (dist, point, elev).
+        master_profile_data: Master profile topography data (dist, elev).
+        tolerance: Tolerance for grid point inclusion.
+
+    Returns:
+        List of (distance, elevation) tuples.
+
+    """
+    from sec_interp.core.utils.sampling import interpolate_elevation
+
+    # Get Inner Grid Points
+    inner_points = [
+        (d, e) for d, _, e in master_grid_dists if dist_start + tolerance < d < dist_end - tolerance
+    ]
+
+    # Interpolate Boundary Elevations
+    elev_start = interpolate_elevation(master_profile_data, dist_start)
+    elev_end = interpolate_elevation(master_profile_data, dist_end)
+
+    return [(dist_start, elev_start), *inner_points, (dist_end, elev_end)]
