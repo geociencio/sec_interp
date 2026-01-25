@@ -54,9 +54,18 @@ sec_interp/
 │   │   ├── profile_service.py  # Topography and sampling
 │   │   ├── geology_service.py  # Geological intersections
 │   │   ├── structure_service.py# Structural projection
-│   │   ├── drillhole_service.py# Desurvey and 3D intervals
+│   │   ├── drillhole/          # [NEW] Drillhole Sub-system
+│   │   │   ├── collar_processor.py
+│   │   │   ├── survey_processor.py
+│   │   │   ├── interval_processor.py
+│   │   │   └── projection_engine.py
+│   │   ├── drillhole_service.py# Facade for drillhole processing
 │   │   └── preview_service.py  # Preview orchestrator
 │   ├── validation/             # Modular validation package
+│   ├── types/                  # [NEW] Domain Types Package
+│   │   ├── domain_types.py     # Entities
+│   │   ├── dtos.py             # Data Transfer Objects
+│   │   └── task_inputs.py      # Async Task Inputs
 │   └── utils/                  # Utilities (Geometry, Spatial, etc.)
 │
 ├── gui/                        # 🖥️ User Interface (GUI Layer)
@@ -131,7 +140,15 @@ graph TB
             PROFILE_SVC[profile_service.py<br/>ProfileService]
             GEOLOGY_SVC[geology_service.py<br/>GeologyService]
             STRUCTURE_SVC[structure_service.py<br/>StructureService]
-            DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService]
+
+            subgraph DRILLHOLE_PKG["Drillhole Sub-system"]
+                DRILLHOLE_FACADE[drillhole_service.py<br/>DrillholeService (Facade)]
+                COLLAR_PROC[collar_processor.py]
+                SURVEY_PROC[survey_processor.py]
+                INTERVAL_PROC[interval_processor.py]
+                PROJ_ENGINE[projection_engine.py<br/>Pure Math]
+            end
+
             PARALLEL_GEO[parallel_geology.py<br/>ParallelGeologyService]
         end
 
@@ -146,7 +163,7 @@ graph TB
         end
         CACHE[data_cache.py<br/>DataCache]
         METRICS[performance_metrics.py<br/>PerformanceMetrics]
-        TYPES[types.py<br/>Type Definitions]
+        TYPES[core/types/<br/>Domain Types Package]
 
         subgraph UTILS["🔨 Utilities"]
             GEOM_UTILS[geometry.py]
@@ -209,7 +226,13 @@ graph TB
     CONTROLLER -->|orchestrates| PROFILE_SVC
     CONTROLLER -->|orchestrates| GEOLOGY_SVC
     CONTROLLER -->|orchestrates| STRUCTURE_SVC
-    CONTROLLER -->|orchestrates| DRILLHOLE_SVC
+    CONTROLLER -->|orchestrates| DRILLHOLE_FACADE
+
+    DRILLHOLE_FACADE -->|delegates to| COLLAR_PROC
+    DRILLHOLE_FACADE -->|delegates to| SURVEY_PROC
+    DRILLHOLE_FACADE -->|delegates to| INTERVAL_PROC
+    COLLAR_PROC -->|uses| PROJ_ENGINE
+
     CONTROLLER -->|uses| CACHE
     CONTROLLER -->|tracks with| METRICS
 
@@ -352,8 +375,8 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 
 | Metric | Value |
 |--------|-------|
-| **Python Modules** | ~60 files |
-| **Total Lines of Code** | ~15,000 LOC |
+| **Python Modules** | ~70 files |
+| **Total Lines of Code** | ~17,000 LOC |
 | **Core Layer** | ~53% |
 | **GUI Layer** | ~33% |
 | **Export Layer** | ~14% |

@@ -13,6 +13,16 @@
 - **Estado**: Fase completada. Ver [phase_closure_v2.8.0.md](maintenance/phase_closure_v2.8.0.md).
 
 ---
+## [2026-01-25] Resumen: Refactorización Arquitectónica Core v2.9.1 (Tarde)
+- **Logro**: Descomposición exitosa del monolito `DrillholeService` y modularización del sistema de tipos.
+- **Cambios**:
+    - Creado sistema de procesadores en `core/services/drillhole/` (`Collar`, `Survey`, `Interval`, `Projection`).
+    - Implementado paquete `core/types/` separando Dominio, DTOs y Enums.
+    - Creado **ADR-0008** y actualizado `ARCHITECTURE_EN.md`.
+    - Eliminado código legacy y corregidos tests de integración core.
+- **Estado**: 208 Tests Core OK. Versión v2.9.1 lista para fase de Geometría. Ver [sesion_2026-01-25_refactorizacion_arquitectonica.md](maintenance/sesion_2026-01-25_refactorizacion_arquitectonica.md).
+
+---
 ## [2026-01-25] Resumen: Refactorización de Tareas Background (Día)
 - **Logro**: Centralizada la extracción de datos en el hilo principal y optimizado el flujo asíncrono.
 - **Cambios**:

@@ -62,7 +62,7 @@ No clear design patterns detected.
 
 ## 📈 COMPLEXITY AND METRICS
 - **Total Modules**: 116
-- **Lines of Code**: 18,010
+- **Lines of Code**: 17,546
 - **Functions**: 637
 - **Classes**: 119
 - **Average Complexity**: 11.7
@@ -98,11 +98,11 @@ No clear design patterns detected.
 ### core/data_cache.py
 - **complexity_refactoring**: High complexity (19) with several functions. Consider breaking down large logic.
 
-### core/services/drillhole/interval_processor.py
-- **functions_too_long**: Very long functions (average 52.0 lines/function).
-
 ### core/controller.py
 - **complexity_refactoring**: High complexity (22) with several functions. Consider breaking down large logic.
+
+### core/services/profile_service.py
+- **functions_too_long**: Very long functions (average 88.0 lines/function).
 
 ## 🕸️  DEPENDENCY STRUCTURE
 - **Nodes**: 116

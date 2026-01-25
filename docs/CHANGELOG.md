@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [2.9.1] - 2026-01-25
+### Changed
+- **Arquitectura**: Descomposición de `DrillholeService` (Monolito) en procesadores especializados (`CollarProcessor`, `SurveyProcessor`, `IntervalProcessor`, `ProjectionEngine`).
+- **Arquitectura**: Modularización del sistema de tipos `core.types` en un paquete con separación de responsabilidades (`domain_types`, `task_inputs`, `dtos`).
+- **Refactor**: Reducción drástica de complejidad ciclomática en el núcleo de procesamiento de sondajes.
+- **Calidad**: Eliminación de ~300 líneas de código legacy y adopción del patrón Facade para servicios principales.
+
 ## [2.8.0] - 2026-01-25
 ### Added
 - Nuevo DTO `DrillholeTaskInput` para procesamiento asíncrono desacoplado.

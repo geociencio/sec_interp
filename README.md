@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-2.8.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-2.9.1-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
@@ -21,14 +21,13 @@
 
 ---
 
-## 🆕 What's New in v2.8.0
-**Phase: Debt Reduction & UI Improvements**
+## 🆕 What's New in v2.9.1
+**Phase: Architectural Modernization**
 
-- **🧊 Core Decoupling**: Full architectural separation between Core and QGIS API using WKT/DTO patterns for maximum stability.
-- **⚡ Thread-Safety**: Optimized background tasks (drillholes/geology) for crash-free asynchronous processing.
-- **🗺️ Legend Control**: New toggle to show/hide the legend on the preview canvas with configuration persistence.
-- **📐 Advanced Mocks**: Improved testing infrastructure with native geometric calculation support in mocks.
-- **📚 Docs Revived**: Restored automated API documentation build and styling.
+- **🏗️ Core Refactoring**: Complete decomposition of `DrillholeService` into specialized processors for better maintainability.
+- **🧩 Modular Types**: Restructured `core.types` into a domain-driven package structure.
+- **⚡ Stability**: Enhanced test mocks and removal of legacy UI calls in background threads.
+- **📚 Documentation**: Updated architecture diagrams and added ADR-0008.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
