@@ -48,6 +48,16 @@ class TestDrillholeService(BaseTestCase):
             }
         ]
 
+        # Mock CollarProcessor
+        self.service.collar_processor = MagicMock()
+        self.service.collar_processor.extract_and_project_detached.return_value = (
+            "DH01",
+            10.0,
+            50.0,
+            0.0,
+            100.0,
+        )
+
         results = self.service.project_collars(
             collar_data=collar_data,
             line_data=self.mock_line_data,
@@ -62,6 +72,7 @@ class TestDrillholeService(BaseTestCase):
             pre_sampled_z=None,
         )
 
+        self.service.collar_processor.extract_and_project_detached.assert_called()
         self.assertEqual(len(results), 1)
         hole_id, dist, z, offset, depth = results[0]
         self.assertEqual(hole_id, "DH01")
@@ -112,9 +123,27 @@ class TestDrillholeService(BaseTestCase):
         ]
 
         # Mock dependencies
+        # Mock dependencies via processors or scu inside service
+        # Since we use processors now, let's mock the processors attached to service
+        self.service.survey_processor = MagicMock()
+        self.service.survey_processor.determine_final_depth.return_value = 100.0
+
+        self.service.interval_processor = MagicMock()
+        self.service.interval_processor.interpolate_hole_intervals.return_value = []
+
+        # We also need to mock scu used in _process_single_hole for trajectory
+        # This one IS in drillhole_service.py
         mock_calc.return_value = []
         mock_proj.return_value = []
-        mock_interp.return_value = []
+        mock_interp.return_value = (
+            []
+        )  # This won't be used if we mock interval_processor, but harmless
+
+        # Mock CollarProcessor for _extract_point_agnostic attached to service
+        self.service.collar_processor = MagicMock()
+        self.service.collar_processor.extract_point_agnostic.return_value = QgsPointXY(
+            10, 10
+        )
 
         geol, dh = self.service.process_intervals(
             collar_points,
