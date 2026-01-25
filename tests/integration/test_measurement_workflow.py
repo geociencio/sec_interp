@@ -1,3 +1,8 @@
+import os
+
+# Force real QGIS for integration tests
+os.environ["FORCE_MOCKS"] = "0"
+
 """Integration tests for measurement tool workflow."""
 
 from qgis.core import QgsPointXY, QgsMapSettings

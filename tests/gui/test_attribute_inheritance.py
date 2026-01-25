@@ -41,9 +41,9 @@ class TestAttributeInheritance(BaseTestCase):
         geol_points = [(x, 0) for x in range(10, 101, 10)]  # 10, 20, ... 100
         geol_seg = GeologySegment(
             unit_name="GeologyUnit",
-            points=geol_points,
+            geometry_wkt=None,
             attributes={},
-            geometry=MagicMock(),
+            points=geol_points,
         )
 
         dh_points_tuple = [(30, 0), (31, 0)]

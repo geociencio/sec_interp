@@ -1,24 +1,27 @@
-# Siguiente Paso: Integración de UI Asíncrona
+# Siguiente Paso: Integración de UI Asíncrona y Refactorización Final v2.8.0
 
 ## Estado Actual
 - **Core**: 100% desacoplado de QGIS. Los servicios operan con WKT y DTOs agnósticos.
-- **Validación**: 100% tests OK (204 tests core pasando).
-- **Mocks**: Estabilizados y con soporte WKT.
+- **Validación**: 100% tests OK (359/359 tests en Docker exitosos).
+- **Infraestructura**: Entorno Docker estabilizado con aislamiento entre Mocks y API Real.
+- **Mocks**: Mejorados con soporte para métodos de geometría 3D (`pointN`, `is3D`) y comparación.
 
 ## Tareas Pendientes
-- [ ] Integrar el nuevo `GeologyGenerationTask` y `DrillholeGenerationTask` en el `PreviewManager`.
-- [ ] Refactorizar la extracción de datos en el hilo principal (Main Thread) antes de lanzar las tareas.
+- [ ] Integrar el nuevo `GeologyGenerationTask` y `DrillholeGenerationTask` en el `PreviewManager` para procesamiento background.
+- [ ] Refactorizar la extracción de datos en el hilo principal (Main Thread) antes de lanzar las tareas (preparar DTOs planos).
 - [ ] Verificar la coherencia de la visualización estructural con los nuevos DTOs de dominio.
+- [ ] Revisar el impacto del cambio `geometry` -> `geometry_wkt` en scripts externos de automatización.
 
 ## Comando para Retomar
 ```bash
 /inicia-sesion
 ```
-O simplemente ejecutar los tests para validar el estado:
+O validar el estado completo:
 ```bash
-PYTHONPATH=.. uv run python3 -m unittest discover tests/core
+make docker-test
 ```
 
 ## Notas Técnicas
-- El `DrillholeService` ahora espera diccionarios con llaves `attributes` y `wkt`.
-- `GeologySegment` ya no tiene el campo `geometry`, ahora es `geometry_wkt`.
+- El entorno Docker es ahora la fuente de verdad definitiva para la estabilidad del plugin.
+- Se ha corregido la contaminación de `sys.modules` en tests de integración usando `remove_mock_patches()`.
+- `GeologySegment.geometry_wkt` es ahora el estándar para intercambio de geometrías entre Core y GUI.

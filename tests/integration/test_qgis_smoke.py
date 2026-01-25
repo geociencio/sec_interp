@@ -1,3 +1,8 @@
+import os
+
+# Force real QGIS for integration tests
+os.environ["FORCE_MOCKS"] = "0"
+
 """Smoke test to verify QGIS integration infrastructure."""
 
 from qgis.core import QgsVectorLayer, QgsProject

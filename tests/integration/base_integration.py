@@ -1,6 +1,13 @@
-"""Base class for integration tests needing a real QgsApplication."""
-
+import os
 import unittest
+
+# Disable mocks for integration tests
+os.environ["FORCE_MOCKS"] = "0"
+
+from tests.base_test import remove_mock_patches
+
+remove_mock_patches()
+
 from qgis.core import QgsApplication
 
 

@@ -299,6 +299,18 @@ class MockQgsGeometry(MockQgsBase):
     def asPolygon(self):
         return self._polygons
 
+    def is3D(self):
+        return self._wkb_type >= 1000
+
+    def wkbType(self):
+        return self._wkb_type
+
+    def pointN(self, n):
+        pts = self._polyline if self._polyline else self.vertices()
+        if 0 <= n < len(pts):
+            return pts[n]
+        return None
+
     def asMultiPolygon(self):
         return [self._polygons]
 
@@ -527,6 +539,9 @@ class MockQgsPointXY(MockQgsPoint):
 
     def distance(self, other):
         return ((self._x - other.x()) ** 2 + (self._y - other.y()) ** 2) ** 0.5
+
+    def compare(self, other, epsilon=1e-6):
+        return self.distance(other) < epsilon
 
 
 class MockQgsCoordinateReferenceSystem(MockQgsBase):
@@ -1394,6 +1409,9 @@ mock_processing = MagicMock(name="processing")
 
 def restore_mocks():
     """Re-assigns all stable mock classes to their respective proxies."""
+    if os.environ.get("FORCE_MOCKS", "1") == "0":
+        return
+
     # Qt Widgets
     mock_qtwidgets.QApplication = MockQApplication
     mock_qtwidgets.QCheckBox = MockQCheckBox
@@ -1545,29 +1563,25 @@ def restore_mocks():
     writer.writeAsVectorFormatV3.return_value = (0, "", "", "")
 
 
-# Initial setup
-restore_mocks()
+def apply_mock_patches():
+    """Apply mock patches to sys.modules for unit testing."""
+    import types
 
-# 5. Conditional Patching of sys.modules (Force usage for unit tests)
-# We ONLY want to skip patching if we are explicitly in an integration test
-# marked with an environment variable, but for discovery we patch.
-try:
-    import qgis.core
+    global qgis_pkg, pyqt_pkg
 
-    CORE_AVAILABLE = True
-except ImportError:
-    CORE_AVAILABLE = False
+    if not hasattr(sys.modules, "qgis_pkg"):
+        qgis_pkg = types.ModuleType("qgis")
+        qgis_pkg.__path__ = []
 
-if not CORE_AVAILABLE or os.environ.get("FORCE_MOCKS", "1") == "1":
-    qgis_pkg = types.ModuleType("qgis")
-    qgis_pkg.__path__ = []
+    if not hasattr(sys.modules, "pyqt_pkg"):
+        pyqt_pkg = types.ModuleType("qgis.PyQt")
+        pyqt_pkg.__path__ = []
+
     sys.modules["qgis"] = qgis_pkg
     sys.modules["qgis.core"] = mock_core
     sys.modules["qgis.gui"] = mock_gui
     qgis_pkg.core, qgis_pkg.gui = mock_core, mock_gui
 
-    pyqt_pkg = types.ModuleType("qgis.PyQt")
-    pyqt_pkg.__path__ = []
     sys.modules["qgis.PyQt"] = pyqt_pkg
     qgis_pkg.PyQt = pyqt_pkg
 
@@ -1581,10 +1595,33 @@ if not CORE_AVAILABLE or os.environ.get("FORCE_MOCKS", "1") == "1":
     )
 
     sys.modules["qgis.PyQt.QtSvg"] = MagicMock()
-
     sys.modules["processing"] = mock_processing
     sys.modules["qgis.processing"] = mock_processing
     qgis_pkg.processing = mock_processing
+    restore_mocks()
+
+
+def remove_mock_patches():
+    """Remove mock patches from sys.modules to allow real QGIS usage."""
+    for m in list(sys.modules.keys()):
+        if m.startswith("qgis") or m == "processing":
+            del sys.modules[m]
+
+
+# Initial check
+try:
+    import qgis.core
+
+    CORE_AVAILABLE = True
+except ImportError:
+    CORE_AVAILABLE = False
+
+# Initial setup
+if not CORE_AVAILABLE or os.environ.get("FORCE_MOCKS", "1") == "1":
+    apply_mock_patches()
+else:
+    restore_mocks()
+
 
 # --- 6. Base Test Case Implementation ---
 
@@ -1594,8 +1631,9 @@ class BaseTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Perform once-per-class setup."""
-        pass
+        """Ensure mocks are applied for unit tests."""
+        if CORE_AVAILABLE and os.environ.get("FORCE_MOCKS", "1") == "1":
+            apply_mock_patches()
 
     def setUp(self):
         """Set up temporary test directory and reset shared mock states."""

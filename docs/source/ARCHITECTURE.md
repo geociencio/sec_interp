@@ -1,7 +1,9 @@
 # SecInterp - Detailed Project Architecture
 
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 2.7.0 | Last update: 2026-01-18
+> Version 2.8.0 | Last update: 2026-01-24
+>
+> ⚠️ **Important Note**: See the [Core Components Distinction Guide (EN)](../CORE_DISTINCTION_GUIDE_EN.md) or [Guía de Distinción de Core (ES)](../CORE_DISTINCTION_GUIDE.md) to differentiate between the `SecInterp Core` and the `qgis.core` API.
 
 ---
 

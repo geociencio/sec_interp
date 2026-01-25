@@ -22,6 +22,8 @@ Plugin de QGIS para interpretación de secciones geológicas, manejo de sondajes
 
 ## 🏗️ Arquitectura Principal (Patrones Detectados)
 - **MVC (Model-View-Controller)**: Separación clara entre la lógica de QGIS (Model), los diálogos de PyQt (View) y el coordinador (`core/controller.py`).
+- **Desacoplamiento Core-QGIS (v2.8.0)**: El núcleo (`/core`) es agnóstico a la API de QGIS durante el procesamiento pesado.
+- **Patrón "Extract-then-Compute"**: La capa GUI extrae datos (WKT/Attributes) y el Core realiza el cálculo geométrico puro sobre tipos primitivos (Thread-Safe).
 - **Gestores (Managers)**: Uso intensivo de gestores especializados para desacoplar la lógica de UI (`InterpretationManager`, `SettingsManager`, `ToolManager`, etc.).
 
 ## 🔗 Componentes Críticos

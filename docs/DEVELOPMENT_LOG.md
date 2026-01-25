@@ -4,6 +4,16 @@ Chronological record of development activities, significant fixes, and technical
 *Note: This log is maintained in reverse chronological order (newest on top).*
 
 ---
+## [2026-01-24] Resumen: Estabilización de Tests en Docker (Noche)
+- **Logro**: Restaurada la integridad de la CI/CD con 100% de éxito en entorno Docker.
+- **Cambios**:
+    - Sincronizada la nomenclatura de DTOs (`GeologySegment`) en toda la suite de tests.
+    - Implementado aislamiento de procesos en el `Dockerfile` para evitar contaminación de Mocks vs API Real.
+    - Refactorizada la carga de Mocks en `tests/base_test.py` con control dinámico.
+    - Robustecidos los Mocks con métodos de geometría faltantes.
+- **Estado**: 359 tests OK (Docker). Ver [sesion_2026-01-24_docker_test_stabilization.md](maintenance/sesion_2026-01-24_docker_test_stabilization.md).
+
+---
 ## [2026-01-24] Resumen: Desacoplamiento Arquitectónico Core-QGIS (Noche)
 - **Logro**: Finalizada la arquitectura agnóstica del Core con 100% de éxito en tests.
 - **Cambios**:

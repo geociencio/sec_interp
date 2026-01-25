@@ -70,13 +70,13 @@ class TestPreviewComponents(BaseTestCase):
         """Test geology layer creation."""
         seg1 = GeologySegment(
             unit_name="A",
-            geometry=MagicMock(),
+            geometry_wkt=None,
             attributes={"unit": "A"},
             points=[(0, 100), (50, 110)],
         )
         seg2 = GeologySegment(
             unit_name="B",
-            geometry=MagicMock(),
+            geometry_wkt=None,
             attributes={"unit": "B"},
             points=[(50, 110), (100, 120)],
         )
@@ -114,7 +114,7 @@ class TestPreviewComponents(BaseTestCase):
                 [
                     GeologySegment(
                         unit_name="A",
-                        geometry=MagicMock(),
+                        geometry_wkt=None,
                         attributes={},
                         points=[(0, 100), (0, 80)],
                     )
@@ -132,7 +132,7 @@ class TestPreviewComponents(BaseTestCase):
                 [
                     GeologySegment(
                         unit_name="B",
-                        geometry=MagicMock(),
+                        geometry_wkt=None,
                         attributes={},
                         points=[(0, 150), (0, 100)],
                         points_3d=[(10, 20, 150), (10, 20, 100)],
@@ -187,7 +187,7 @@ class TestPreviewComponents(BaseTestCase):
         self.assertIsNotNone(l)
 
         # Create geol layer skip short segments
-        seg_short = GeologySegment("A", MagicMock(), {}, [(0, 0)])
+        seg_short = GeologySegment("A", None, {}, [(0, 0)])
         l = self.factory.create_geol_layer([seg_short])
         # Layer is created but has 0 features
         self.assertEqual(len(l.dataProvider().addFeatures.call_args[0][0]), 0)
@@ -560,7 +560,7 @@ class TestPreviewComponents(BaseTestCase):
         # Should just return/log, not crash
 
         # Regression: Render with geol but no topo (unpacking error)
-        geol_data = [GeologySegment("A", MagicMock(), {}, [(0, 0), (10, 10)])]
+        geol_data = [GeologySegment("A", None, {}, [(0, 0), (10, 10)])]
         # Should NOT raise TypeError
         self.renderer.render(topo_data=None, geol_data=geol_data)
 

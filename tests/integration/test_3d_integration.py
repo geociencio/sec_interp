@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import os
+
+# Force real QGIS for integration tests
+os.environ["FORCE_MOCKS"] = "0"
+
 """Integration tests for 3D projection and export."""
 
-import os
 import tempfile
 import shutil
 from qgis.core import (
@@ -44,7 +48,7 @@ class Test3DIntegration(BaseIntegrationTest):
         self.segments = [
             GeologySegment(
                 unit_name="UnitA",
-                geometry=None,
+                geometry_wkt=None,
                 attributes={"from": 0.0, "to": 10.0},
                 points=[(0, 50), (5, 45)],
                 points_3d=[(1000, 2000, 50), (1005, 2000, 45)],

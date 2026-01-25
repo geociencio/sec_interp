@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **UI**: Fixed bug where legend remained visible on canvas after toggling checkbox.
 - **Export**: Fixed legend leakage in PNG, PDF, and SVG exports when visibility was disabled.
 - **Docs**: Fixed visibility of Python docstrings in Sphinx output by implementing proper mocking and deferred type evaluation.
+- **Tests**: Core decoupled tests fixed in Docker by synchronizing `GeologySegment` schema and implementing environment isolation (Mocks vs Real API).
+- **Docker**: Optimized `Dockerfile` to execute test suites in isolated processes to prevent state contamination.
 
 ## [2.7.0] - 2026-01-18
 

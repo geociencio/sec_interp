@@ -43,6 +43,5 @@ ENV PYTHONPATH="/app:/app/sec_interp:${PYTHONPATH}"
 # QT_QPA_PLATFORM=offscreen permite correr tests de GUI en entornos sin servidor X
 ENV QT_QPA_PLATFORM=offscreen
 
-# 6. Comando por defecto: Ejecutar todos los tests usando unittest
-# Usamos 'python3 -m unittest' directamente para evitar dependencias de runners externos
-CMD ["python3", "-m", "unittest", "discover", "tests"]
+# 6. Comando por defecto: Ejecutar tests en grupos separados para evitar contaminación de Mocks vs Real API
+CMD ["/bin/bash", "-c", "python3 -m unittest discover tests/core && python3 -m unittest discover tests/exporters && python3 -m unittest discover tests/gui && FORCE_MOCKS=0 python3 -m unittest discover tests/integration"]

@@ -316,7 +316,7 @@ class GeologyService(IGeologyService):
 
         return GeologySegment(
             unit_name=glg_val,
-            geometry=seg_geom,
+            geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
             attributes=attributes,
             points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
         )
@@ -451,7 +451,7 @@ class GeologyService(IGeologyService):
 
         return GeologySegment(
             unit_name=unit_name,
-            geometry_wkt=seg_geom.asWkt(),
+            geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
             attributes=attrs,
             points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
         )

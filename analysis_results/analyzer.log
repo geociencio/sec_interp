@@ -156,3 +156,7 @@
 2026-01-22 21:27:21,117 - qgis_analyzer - ERROR - Error running Ruff: [Errno 2] No such file or directory: 'ruff'
 2026-01-22 21:27:21,135 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
 2026-01-22 21:27:23,752 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-01-24 20:15:10,438 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-01-24 20:15:10,440 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-01-24 20:15:10,750 - qgis_analyzer - INFO - Running QGIS repository compliance checks...
+2026-01-24 20:15:13,582 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results

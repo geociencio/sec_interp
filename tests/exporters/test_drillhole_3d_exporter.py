@@ -43,9 +43,9 @@ class TestDrillhole3DExporters(BaseTestCase):
 
         seg1 = GeologySegment(
             unit_name="Unit A",
-            geometry=QgsGeometry(),
-            attributes={"from": 0.0, "to": 10.0},
-            points=[],
+            geometry_wkt=None,
+            attributes={"attr": 1},
+            points=[(0, 50), (10, 45)],
             points_3d=[(0.0, 0.0, 100.0), (0.0, 0.0, 90.0)],
             points_3d_projected=[(10.0, 0.0, 100.0), (10.0, 0.0, 90.0)],
         )
