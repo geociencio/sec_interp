@@ -167,67 +167,14 @@ class DialogInterpretationManager:
         min_dist = float("inf")
 
         # 1. Check Geology Data
-        if config.get("inherit_geology") and self.dialog.preview_manager.cached_data.get("geol"):
-            for segment in self.dialog.preview_manager.cached_data["geol"]:
-                if not segment.points:
-                    continue
-
-                seg_min_dist = float("inf")
-                for p_dist, p_elev in segment.points:
-                    d = ref_point.distance(QgsPointXY(p_dist, p_elev))
-                    seg_min_dist = min(d, seg_min_dist)
-
-                if seg_min_dist < min_dist:
-                    min_dist = seg_min_dist
-                    best_match = {
-                        "name": segment.unit_name,
-                        "type": "geology",
-                        "attrs": segment.attributes,
-                    }
+        if config.get("inherit_geology"):
+            best_match, min_dist = self._check_geology_inheritance(ref_point, min_dist, best_match)
 
         # 2. Check Drillhole Data (Intervals)
-        if config.get("inherit_drillholes") and self.dialog.preview_manager.cached_data.get(
-            "drillhole"
-        ):
-            for dh in self.dialog.preview_manager.cached_data["drillhole"]:
-                extracted_intervals = []
-                if isinstance(dh, tuple):
-                    # Drillhole data is a tuple: (hid, trace2d, trace3d, proj3d, geologic_segments)
-                    if len(dh) == 5:
-                        extracted_intervals = dh[4]
-                    elif len(dh) >= 3:
-                        # Legacy/Fallback format
-                        extracted_intervals = dh[2]
-                elif hasattr(dh, "intervals"):
-                    extracted_intervals = dh.intervals
-
-                if not extracted_intervals:
-                    continue
-
-                for interval in extracted_intervals:
-                    # Robust check for points attribute/existence
-                    points = getattr(interval, "points", None)
-                    if not points:
-                        continue
-
-                    int_min_dist = float("inf")
-                    for p_dist, p_elev in points:
-                        d = ref_point.distance(QgsPointXY(p_dist, p_elev))
-                        int_min_dist = min(d, int_min_dist)
-
-                    if int_min_dist < min_dist:
-                        min_dist = int_min_dist
-                        unit_name = getattr(
-                            interval,
-                            "rock_unit",
-                            getattr(interval, "unit_name", self.dialog.tr("Unknown")),
-                        )
-
-                        best_match = {
-                            "name": unit_name,
-                            "type": "drillhole",
-                            "attrs": interval.attributes,
-                        }
+        if config.get("inherit_drillholes"):
+            best_match, min_dist = self._check_drillhole_inheritance(
+                ref_point, min_dist, best_match
+            )
 
         if best_match:
             logger.info(f"Inherited attributes from {best_match['type']}: {best_match['name']}")
@@ -238,3 +185,78 @@ class DialogInterpretationManager:
             interpretation.color = self.dialog.layer_factory.get_color_for_unit(
                 best_match["name"]
             ).name()
+
+    def _check_geology_inheritance(
+        self, ref_point: QgsPointXY, min_dist: float, best_match: dict[str, Any] | None
+    ) -> tuple[dict[str, Any] | None, float]:
+        """Search for nearest geological segment."""
+        geol_data = self.dialog.preview_manager.cached_data.get("geol")
+        if not geol_data:
+            return best_match, min_dist
+
+        for segment in geol_data:
+            if not segment.points:
+                continue
+
+            seg_min = float("inf")
+            for p_dist, p_elev in segment.points:
+                d = ref_point.distance(QgsPointXY(p_dist, p_elev))
+                seg_min = min(d, seg_min)
+
+            if seg_min < min_dist:
+                min_dist = seg_min
+                best_match = {
+                    "name": segment.unit_name,
+                    "type": "geology",
+                    "attrs": segment.attributes,
+                }
+        return best_match, min_dist
+
+    def _check_drillhole_inheritance(
+        self, ref_point: QgsPointXY, min_dist: float, best_match: dict[str, Any] | None
+    ) -> tuple[dict[str, Any] | None, float]:
+        """Search for nearest drillhole interval."""
+        dh_data = self.dialog.preview_manager.cached_data.get("drillhole")
+        if not dh_data:
+            return best_match, min_dist
+
+        for dh in dh_data:
+            intervals = self._extract_intervals_from_dh_data(dh)
+            if not intervals:
+                continue
+
+            for interval in intervals:
+                int_dist = self._calculate_min_dist_to_interval(ref_point, interval)
+                if int_dist < min_dist:
+                    min_dist = int_dist
+                    best_match = {
+                        "name": getattr(
+                            interval,
+                            "rock_unit",
+                            getattr(interval, "unit_name", "Unknown"),
+                        ),
+                        "type": "drillhole",
+                        "attrs": interval.attributes,
+                    }
+        return best_match, min_dist
+
+    def _extract_intervals_from_dh_data(self, dh: Any) -> list[Any]:
+        """Safely extract intervals from various drillhole data formats."""
+        if isinstance(dh, tuple):
+            if len(dh) == 5:
+                return dh[4]
+            if len(dh) >= 3:
+                return dh[2]
+        return getattr(dh, "intervals", [])
+
+    def _calculate_min_dist_to_interval(self, ref_point: QgsPointXY, interval: Any) -> float:
+        """Calculate minimum distance from reference point to interval points."""
+        points = getattr(interval, "points", None)
+        if not points:
+            return float("inf")
+
+        min_d = float("inf")
+        for p_dist, p_elev in points:
+            d = ref_point.distance(QgsPointXY(p_dist, p_elev))
+            min_d = min(d, min_d)
+        return min_d

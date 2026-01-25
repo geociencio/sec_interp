@@ -308,7 +308,15 @@ class ProjectValidator:
 
     @staticmethod
     def is_drillhole_complete(params: ValidationParams) -> bool:
-        """Check if required fields are filled if drillhole layers are selected."""
+        """Check if required fields are filled if drillhole layers are selected.
+
+        Args:
+            params: The parameters to check.
+
+        Returns:
+            True if drillhole configuration is complete and consistent.
+
+        """
         # Basic presence check
         if not params.collar_layer or not params.collar_id:
             return False
@@ -320,6 +328,15 @@ class ProjectValidator:
 
     @staticmethod
     def is_dem_complete(params: ValidationParams) -> bool:
+        """Check if DEM configuration is complete.
+
+        Args:
+            params: Parameters to check.
+
+        Returns:
+            bool: True if valid.
+
+        """
         if not params.raster_layer:
             return False
         context = ValidationContext()
@@ -328,6 +345,15 @@ class ProjectValidator:
 
     @staticmethod
     def is_geology_complete(params: ValidationParams) -> bool:
+        """Check if geology configuration is complete.
+
+        Args:
+            params: Parameters to check.
+
+        Returns:
+            bool: True if valid.
+
+        """
         if not params.outcrop_layer or not params.outcrop_field:
             return False
         context = ValidationContext()
@@ -336,6 +362,15 @@ class ProjectValidator:
 
     @staticmethod
     def is_structure_complete(params: ValidationParams) -> bool:
+        """Check if structural configuration is complete.
+
+        Args:
+            params: Parameters to check.
+
+        Returns:
+            bool: True if valid.
+
+        """
         if not params.struct_layer or not params.struct_dip_field or not params.struct_strike_field:
             return False
         context = ValidationContext()

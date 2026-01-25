@@ -143,7 +143,15 @@ class PreviewManager:
             )
 
     def _process_preview_data(self, params: PreviewParams) -> PreviewResult:
-        """Process or retrieve cached preview data."""
+        """Process or retrieve cached preview data.
+
+        Args:
+            params: Preview configuration.
+
+        Returns:
+            PreviewResult: Computed or cached results.
+
+        """
         current_hash = self._calculate_params_hash(params)
         data_unchanged = current_hash == self.last_params_hash
         self.last_params_hash = current_hash
@@ -223,13 +231,17 @@ class PreviewManager:
         return result
 
     def _run_render_pipeline(self, result: PreviewResult) -> None:
-        """Orchestrate the rendering of generated data."""
-        try:
-            if not self.dialog.plugin_instance or not hasattr(
-                self.dialog.plugin_instance, "draw_preview"
-            ):
-                self._handle_invalid_plugin_instance()
+        """Orchestrate the rendering of generated data.
 
+        Args:
+            result: The preview data to render.
+
+        """
+        if not self.dialog.plugin_instance:
+            self._handle_invalid_plugin_instance()
+            return
+
+        try:
             with PerformanceTimer("Rendering", self.metrics):
                 opts = self.dialog.get_preview_options()
 
@@ -258,7 +270,7 @@ class PreviewManager:
         This method re-renders the preview using cached data and
         current checkbox states without regenerating data.
         """
-        if not self.cached_data["topo"]:
+        if not self.last_result:
             return  # No data to display
 
         # Get checkbox states
@@ -308,7 +320,7 @@ class PreviewManager:
 
         def get_id(layer: QgsVectorLayer | None) -> str:
             """Safe layer ID retrieval."""
-            return layer.id() if layer else "None"
+            return layer.id() if layer and layer.isValid() else "None"
 
         data_parts = [
             get_id(params.raster_layer),
@@ -346,8 +358,9 @@ class PreviewManager:
         """
         return self.dialog.page_section.buffer_spin.value()
 
-    def _on_extents_changed(self):
+    def _on_extents_changed(self) -> None:
         """Handle map canvas extent changes (zoom/pan)."""
+        self.debounce_timer.start(DialogConfig.ZOOM_DEBOUNCE_MS)
         # Only handle if Auto LOD is enabled
         if not self.dialog.preview_widget.chk_auto_lod.isChecked():
             return
@@ -355,62 +368,62 @@ class PreviewManager:
         # Restart debounce timer
         self.debounce_timer.start(200)
 
-    def _update_lod_for_zoom(self):
+    def _update_lod_for_zoom(self) -> None:
         """Update LOD based on current zoom level."""
-        try:
-            canvas = self.dialog.preview_widget.canvas
-            if not self.cached_data["topo"]:
-                return
+        if not self.last_result:
+            return
+        canvas = self.dialog.preview_widget.canvas
+        if not self.cached_data["topo"]:
+            return
 
-            full_extent = canvas.fullExtent()
-            current_extent = canvas.extent()
+        full_extent = canvas.fullExtent()
+        current_extent = canvas.extent()
 
-            if current_extent.width() <= 0 or full_extent.width() <= 0:
-                return
+        if current_extent.width() <= 0 or full_extent.width() <= 0:
+            return
 
-            # Calculate zoom ratio
-            ratio = full_extent.width() / current_extent.width()
+        # Calculate zoom ratio
+        ratio = full_extent.width() / current_extent.width()
 
-            # If ratio is close to 1, we are at full extent, use standard calculation
-            if ratio < 1.1:
-                # Let the standard update logic handle it or just do nothing if consistent?
-                # Actually standard logic just uses canvas width.
-                # If we return here, we might miss resetting to low detail when zooming out.
-                pass
+        # If ratio is close to 1, we are at full extent, use standard calculation
+        if ratio < 1.1:
+            # Let the standard update logic handle it or just do nothing if consistent?
+            # Actually standard logic just uses canvas width.
+            # If we return here, we might miss resetting to low detail when zooming out.
+            pass
 
-            # Calculate max_points via PreviewService
-            new_max_points = PreviewService.calculate_max_points(
-                canvas_width=canvas.width(), ratio=ratio, auto_lod=True
-            )
+        # Calculate max_points via PreviewService
+        new_max_points = PreviewService.calculate_max_points(
+            canvas_width=canvas.width(), ratio=ratio, auto_lod=True
+        )
 
-            # Check if we actually need to update (hysteresis)
-            # This requires knowing the last used max_points...
-            # We can just re-render, it handles caching of data, but re-decimation takes time.
+        # Check if we actually need to update (hysteresis)
+        # This requires knowing the last used max_points...
+        # We can just re-render, it handles caching of data, but re-decimation takes time.
 
-            logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
+        logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
 
-            if not self.dialog.plugin_instance:
-                return
+        if not self.dialog.plugin_instance:
+            return
 
-            preview_options = self.dialog.get_preview_options()
-            use_adaptive_sampling = preview_options["use_adaptive_sampling"]
+        preview_options = self.dialog.get_preview_options()
+        use_adaptive_sampling = preview_options["use_adaptive_sampling"]
 
-            # Re-render with preserve_extent=True
-            self.dialog.plugin_instance.draw_preview(
-                self.cached_data["topo"],
-                self.cached_data["geol"],
-                self.cached_data["struct"],
-                drillhole_data=self.cached_data["drillhole"],
-                max_points=new_max_points,
-                preserve_extent=True,
-                use_adaptive_sampling=use_adaptive_sampling,
-            )
+        # Re-render with preserve_extent=True
+        self.dialog.plugin_instance.draw_preview(
+            self.cached_data["topo"],
+            self.cached_data["geol"],
+            self.cached_data["struct"],
+            drillhole_data=self.cached_data["drillhole"],
+            max_points=new_max_points,
+            preserve_extent=True,
+            use_adaptive_sampling=use_adaptive_sampling,
+        )
 
-        except Exception as e:
-            logger.error(f"Error in zoom LOD update: {e}", exc_info=True)
-
-    def _start_async_geology(self, params: PreviewParams):
+    def _start_async_geology(self, params: PreviewParams) -> None:
         """Start asynchronous geology generation."""
+        if self.active_task:
+            self.active_task.cancel()
         outcrop_layer = params.outcrop_layer
         outcrop_name_field = params.outcrop_name_field
 
@@ -514,9 +527,10 @@ class PreviewManager:
             )
         )
 
-    def _on_geology_error(self, error_msg: str):
+    def _on_geology_error(self, error_msg: str) -> None:
         """Handle error during parallel geology generation."""
-        logger.error(f"Async geology error: {error_msg}")
+        logger.error(f"Geology Task Error: {error_msg}")
+        self.active_task = None
         # Map string error to ProcessingError for centralized handling
         error = ProcessingError(
             QCoreApplication.translate("PreviewManager", "Geology processing failed: {}").format(
@@ -525,8 +539,10 @@ class PreviewManager:
         )
         self.dialog.handle_error(error, "Geology Error")
 
-    def _start_async_drillhole(self, params: PreviewParams):
+    def _start_async_drillhole(self, params: PreviewParams) -> None:
         """Start asynchronous drillhole generation."""
+        if self.active_drill_task:
+            self.active_drill_task.cancel()
         if not params.collar_layer:
             return
 
@@ -587,7 +603,8 @@ class PreviewManager:
     def _on_drillhole_finished(self, result: Any) -> None:
         """Handle completion of drillhole task."""
         self.active_drill_task = None
-
+        if not result:
+            return
         # result is (geol_data, drillhole_data)
         _, drill_part = result
 
@@ -618,8 +635,9 @@ class PreviewManager:
             msg = PreviewReporter.format_results_message(res_obj, self.metrics)
             self.dialog.preview_widget.results_text.setPlainText(msg)
 
-    def _handle_invalid_plugin_instance(self):
+    def _handle_invalid_plugin_instance(self) -> None:
         """Handle case where plugin instance is not available for rendering."""
+        logger.error("Plugin instance not available in PreviewManager")
         raise AttributeError("Plugin instance or draw_preview method not available")
 
     def _update_crs_label(self, layer: QgsVectorLayer | None) -> None:
@@ -629,6 +647,9 @@ class PreviewManager:
             layer: The reference layer to get CRS from.
 
         """
+        if not layer or not layer.isValid():
+            return
+
         try:
             if layer:
                 auth_id = layer.crs().authid()

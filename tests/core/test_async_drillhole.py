@@ -10,7 +10,7 @@ from qgis.core import (
     QgsFeature,
     QgsCoordinateReferenceSystem,
 )
-from PyQt5.QtCore import QVariant
+from qgis.PyQt.QtCore import QWaitCondition, QMutex
 
 from sec_interp.core.services.drillhole_service import DrillholeService
 from sec_interp.core.types import DrillholeTaskInput

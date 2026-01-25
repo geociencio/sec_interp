@@ -67,11 +67,10 @@ class TestGeologyService(BaseTestCase):
         self.mock_raster_lyr.dataProvider.return_value = provider
 
         # Setup outcrop feature
-        from qgis.core import QgsFields, QgsField
-        from PyQt5.QtCore import QVariant
+        from qgis.core import QgsFields, QgsField, QMetaType
 
         fields = QgsFields()
-        fields.append(QgsField("unit", QVariant.String))
+        fields.append(QgsField("unit", QMetaType.Type.QString))
 
         outcrop_feat = QgsFeature(fields)
         outcrop_feat["unit"] = "Unit A"

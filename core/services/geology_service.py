@@ -35,7 +35,6 @@ from qgis.core import (
     QgsPointXY,
     QgsRasterLayer,
     QgsVectorLayer,
-    QgsWkbTypes,
 )
 
 from sec_interp.core import utils as scu
@@ -255,13 +254,32 @@ class GeologyService(IGeologyService):
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[GeologySegment]:
-        """Variant of _process_intersection_geometry for detached data."""
-        if not geom or geom.isNull():
-            return []
+        """Process a detached intersection geometry to extract geology segments.
 
-        geometries = self._extract_geometries(geom)
+        This method takes an intersection geometry (which can be a MultiLineString)
+        and breaks it down into individual LineString segments. For each segment,
+        it creates a `GeologySegment` object by sampling elevations from the
+        master profile data.
+
+        Args:
+            geom: The QgsGeometry representing the intersection of the section line and an outcrop.
+            attributes: A dictionary of attributes for the outcrop.
+            unit_name: The geological unit name for the outcrop.
+            line_start: The start point of the main cross-section line.
+            da: The QgsDistanceArea object for distance calculations.
+            master_grid_dists: List of (distance, point, elevation) tuples for the entire profile.
+            master_profile_data: List of (distance, elevation) tuples for the entire profile.
+            tolerance: The tolerance for point matching.
+
+        Returns:
+            list[GeologySegment]: A list of `GeologySegment` objects derived from the intersection.
+
+        """
         segments = []
-        for seg_geom in geometries:
+        # Extract individual LineString geometries
+        line_geometries = self._extract_geometries(geom)
+
+        for seg_geom in line_geometries:
             segment = self._create_segment_from_detached(
                 seg_geom,
                 attributes,
@@ -279,14 +297,12 @@ class GeologyService(IGeologyService):
     def _extract_geometries(self, geom: QgsGeometry) -> list[QgsGeometry]:
         """Extract individual LineString geometries from a (possibly Multi) geometry."""
         geometries = []
-        if geom.wkbType() in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
-            geometries.append(geom)
-        elif geom.wkbType() in [
-            QgsWkbTypes.MultiLineString,
-            QgsWkbTypes.MultiLineString25D,
-        ]:
-            for part in geom.asMultiPolyline():
-                geometries.append(QgsGeometry.fromPolylineXY(part))
+        # MultiLineString handling
+        if geom.isMultipart():
+            for part in geom.asGeometryCollection():
+                geometries.append(part.clone())
+        else:
+            geometries.append(geom.clone())
         return geometries
 
     def _create_segment_from_detached(

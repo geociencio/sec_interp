@@ -1,31 +1,29 @@
-# Release 2.8.0 - {title} - 2026-01-25
+# Release 2.8.0 - Debt Reduction & UI Improvements - 2026-01-25
 
 Short Summary
 -------------
-A brief description (1-2 lines) of what is included in this release.
+This release transforms the SecInterp core into a thread-safe, agnostic architecture while introducing high-precision geometric mocks and user-requested UI visibility controls.
 
 Highlights
 ----------
-- Highlight 1 (new feature / improvement).
-- Highlight 2 (important fix or security patch).
+- **Core-QGIS Architectural Decoupling**: Heavy geometric calculations now operate on detached DTOs (WKT strings and dictionaries), preventing crashes in background tasks.
+- **Legend Toggle**: Added a persistent UI control to show or hide the legend on the preview widget and exports.
+- **Enhanced Test Suite**: Implemented native geometric calculations in the QGIS mock system to stabilize continuous integration.
 
 Notable Changes (Detailed)
 ----------------------------
-- [PR #NNN](link) — feat: brief description of the improvement.
-- [PR #MMM](link) — fix: brief description of the fixed bug.
-- [PR #PPP](link) — docs: changes in documentation.
+- **Refactoring** — [Core] Fragmented `GeologyService` and `DrillholeService` to reduce cyclomatic complexity and improve modularity.
+- **UI** — [Preview] Simplified `PreviewManager` by delegating data preparation logic to services.
+- **Testing** — [Mocks] Added `azimuth` support to `MockQgsPointXY` for section orientation validation.
+- **Docs** — [Sphinx] Restored and fixed the automated API documentation build infrastructure.
 
 Security Fixes
 -------------------------
-- CVE / CVE-like notes (if applicable) and mitigation measures.
-- Recommendation for affected users (update immediately, steps, etc.).
+- No known security vulnerabilities were addressed in this release.
 
 Breaking Changes
 ----------------------------------------------------
-If applicable, detail:
-- What changed.
-- Why it was necessary.
-- How to migrate (clear steps and commands).
+- **Internal API**: The `prepare_task_input` and `process_task_data` signatures in services have changed to support detached data. External scripts using these internal methods must update to pass raw geometry layers or WKT strings.
 
 Installation / Update Instructions
 --------------------------------------------
@@ -43,26 +41,13 @@ Published Artifacts
 
 Verifications Performed (CI)
 ------------------------------
-- [ ] Tests and Linter passed.
-- [ ] Manual verification in QGIS.
+- [x] Full suite of 359 tests passed in Docker (Ubuntu/QGIS 3.44 Headless).
+- [x] Manual verification of Legend Toggle and Section Rotation persistence.
+- [x] Documentation build verified with Sphinx.
 
 Suggested Commands
 ------------------
 ```bash
-# Build artifacts (SecInterp ZIP)
-make package VERSION=main
-
-# Create release using GitHub CLI
-gh release create v2.8.0 --title "v2.8.0" --notes-file /tmp/release_notes.md dist/*.zip dist/*.sha256 --draft
+# Verify package integrity
+sha256sum -c sec_interp.2.8.0.zip.sha256
 ```
-
-Example (execute upon publishing)
-------------------------------
-Title: Release v1.1.0 - The Security & Licensing Release
-
-Summary:
-- Added GPLv3 license.
-- SSRF/XXE/Path Traversal fixes.
-- Documentation and badges updates.
-
-(Add links to PRs and workflows supporting the release)

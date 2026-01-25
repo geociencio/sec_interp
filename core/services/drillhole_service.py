@@ -200,7 +200,21 @@ class DrillholeService(IDrillholeService):
         x_field: str,
         y_field: str,
     ) -> None:
-        """Validate parameters for prepare_task_input."""
+        """Validate parameters for prepare_task_input.
+
+        Args:
+            buffer_width: Buffer distance.
+            section_azimuth: Section orientation.
+            collar_layer: Layer to check.
+            id_field: ID field name.
+            use_geom: Whether geometric extraction is active.
+            x_field: X field for fallback.
+            y_field: Y field for fallback.
+
+        Raises:
+            ValidationError: If any constraint fails.
+
+        """
         from sec_interp.core.exceptions import ValidationError
         from sec_interp.core.validation.validators import (
             validate_positive,
@@ -210,12 +224,14 @@ class DrillholeService(IDrillholeService):
         validate_positive("Buffer width")(buffer_width)
         validate_range(0, 360, "Section azimuth")(section_azimuth)
 
-        if id_field and collar_layer.fields().indexFromName(id_field) == -1:
-            raise ValidationError(f"Field '{id_field}' not found in collar layer.")
+        fields = collar_layer.fields()
+        if id_field and fields.indexFromName(id_field) == -1:
+            raise ValidationError(f"Collar ID field '{id_field}' not found.")
 
         if not use_geom:
-            if x_field and collar_layer.fields().indexFromName(x_field) == -1:
-                raise ValidationError(f"Field '{x_field}' not found in collar layer.")
+            for f in [x_field, y_field]:
+                if f and fields.indexFromName(f) == -1:
+                    raise ValidationError(f"Field '{f}' not found for coordinate extraction.")
             if y_field and collar_layer.fields().indexFromName(y_field) == -1:
                 raise ValidationError(f"Field '{y_field}' not found in collar layer.")
 
@@ -314,56 +330,12 @@ class DrillholeService(IDrillholeService):
             if feedback and feedback.isCanceled():
                 return None
 
-            result = self._project_single_detached_collar(
-                c_item,
-                line_geom,
-                line_start,
-                da,
-                task_input.buffer_width,
-                task_input.collar_id_field,
-                task_input.use_geometry,
-                task_input.collar_x_field,
-                task_input.collar_y_field,
-                task_input.collar_z_field,
-                task_input.collar_depth_field,
-                task_input.pre_sampled_z,
+            # Process each collar and its associated data
+            result = self._process_detached_collar_item(
+                c_item, task_input, da, line_geom, line_start
             )
             if result:
-                # result is (hid, dist, z, offset, total_depth)
-                hid, _, z, _, depth = result
-                # Full Processing
-                surveys = task_input.survey_data.get(hid, [])
-                intervals = task_input.interval_data.get(hid, [])
-
-                # We can reuse _process_single_hole as it already takes primitives
-                # but we need to pass pt (collar_point) which we extracted in result
-                # but wait, result doesn't have pt.
-                # Actually _project_single_detached_collar should probably return pt too or extract it here.
-
-                # Let's refactor slightly to avoid re-extracting pt.
-                # Actually, I'll just re-extract it for now for simplicity.
-                pt = (
-                    QgsGeometry.fromWkt(c_item["wkt"]).asPoint()
-                    if task_input.use_geometry and c_item.get("wkt")
-                    else QgsPointXY(
-                        float(c_item["attributes"].get(task_input.collar_x_field, 0.0)),
-                        float(c_item["attributes"].get(task_input.collar_y_field, 0.0)),
-                    )
-                )
-
-                hole_geol, hole_tuple = self._process_single_hole(
-                    hole_id=hid,
-                    collar_point=pt,
-                    collar_z=z,
-                    given_depth=depth,
-                    survey_data=surveys,
-                    intervals=intervals,
-                    line_geom=line_geom,
-                    line_start=line_start,
-                    distance_area=da,
-                    buffer_width=task_input.buffer_width,
-                    section_azimuth=task_input.section_azimuth,
-                )
+                hole_geol, hole_tuple = result
                 geol_data_all.extend(hole_geol)
                 drillhole_data_all.append(hole_tuple)
 
@@ -377,58 +349,56 @@ class DrillholeService(IDrillholeService):
         c_item: dict[str, Any],
         task_input: DrillholeTaskInput,
         da: QgsDistanceArea,
+        line_geom: QgsGeometry,
+        line_start: QgsPointXY,
     ) -> tuple[list[GeologySegment], tuple] | None:
         """Process a single detached collar item."""
-        hid = c_item["id"]
-        attrs = c_item["attributes"]
-        geom = c_item["geometry"]
+        # 1. Project collar using the common logic
+        result = self._project_single_detached_collar(
+            c_item,
+            line_geom,
+            line_start,
+            da,
+            task_input.buffer_width,
+            task_input.collar_id_field,
+            task_input.use_geometry,
+            task_input.collar_x_field,
+            task_input.collar_y_field,
+            task_input.collar_z_field,
+            task_input.collar_depth_field,
+            task_input.pre_sampled_z,
+        )
 
-        # 1. Extract Point
-        pt = None
-        if task_input.use_geometry and geom:
-            pt = geom.asPoint()
-        else:
-            with contextlib.suppress(ValueError, TypeError):
-                x = float(attrs.get(task_input.collar_x_field, 0.0))
-                y = float(attrs.get(task_input.collar_y_field, 0.0))
-                pt = QgsPointXY(x, y)
+        if not result:
+            return None
+
+        hole_id, _dist, z, _offset, depth = result
+
+        # 2. Extract point for single hole processing
+        pt = self._extract_point_agnostic(
+            c_item,
+            True,  # it's a dict
+            task_input.use_geometry,
+            task_input.collar_x_field,
+            task_input.collar_y_field,
+        )
 
         if not pt:
             return None
 
-        # 2. Extract Z/Depth
-        z = 0.0
-        with contextlib.suppress(ValueError, TypeError):
-            z = float(attrs.get(task_input.collar_z_field, 0.0))
-
-        if z == 0.0 and hid in task_input.pre_sampled_z:
-            z = task_input.pre_sampled_z[hid]
-
-        depth = 0.0
-        with contextlib.suppress(ValueError, TypeError):
-            depth = float(attrs.get(task_input.collar_depth_field, 0.0))
-
-        # 3. Project
-        collar_geom_pt = QgsGeometry.fromPointXY(pt)
-        nearest_point = task_input.line_geometry.nearestPoint(collar_geom_pt).asPoint()
-
-        offset = da.measureLine(pt, nearest_point)
-        if offset > task_input.buffer_width:
-            return None
-
-        # 4. Full Processing
-        surveys = task_input.survey_data.get(hid, [])
-        intervals = task_input.interval_data.get(hid, [])
+        # 3. Full Processing
+        surveys = task_input.survey_data.get(hole_id, [])
+        intervals = task_input.interval_data.get(hole_id, [])
 
         return self._process_single_hole(
-            hole_id=hid,
+            hole_id=hole_id,
             collar_point=pt,
             collar_z=z,
             given_depth=depth,
             survey_data=surveys,
             intervals=intervals,
-            line_geom=task_input.line_geometry,
-            line_start=task_input.line_start,
+            line_geom=line_geom,
+            line_start=line_start,
             distance_area=da,
             buffer_width=task_input.buffer_width,
             section_azimuth=task_input.section_azimuth,
@@ -748,118 +718,150 @@ class DrillholeService(IDrillholeService):
         pre_sampled_z: dict[Any, float] | None = None,
         dem_layer: QgsRasterLayer | None = None,
     ) -> tuple[Any, float, float, float, float] | None:
-        """Process and project a single collar from either dict or feature.
-
-        Args:
-            collar_data: Dictionary (detached) or QgsFeature.
-            line_geom: Section line geometry.
-            line_start: Start point of section line.
-            distance_area: Distance calculation object.
-            buffer_width: Buffer distance for exclusion.
-            collar_id_field: Field for ID.
-            use_geometry: Use geometry for coordinates.
-            collar_x_field: Field for X.
-            collar_y_field: Field for Y.
-            collar_z_field: Field for Z.
-            collar_depth_field: Field for depth.
-            pre_sampled_z: Pre-sampled elevations map.
-            dem_layer: Optional DEM layer for sampling.
-
-        Returns:
-            Tuple of (hole_id, dist_along, z, offset, total_depth) or None.
-
-        """
+        """Process and project a single collar from either dict or feature."""
         # 1. Extract Data agnosticly
-        is_dict = isinstance(collar_data, dict)
-        attrs = collar_data.get("attributes", {}) if is_dict else collar_data
+        extracted = self._extract_attributes_agnostic(
+            collar_data,
+            collar_id_field,
+            use_geometry,
+            collar_x_field,
+            collar_y_field,
+            collar_z_field,
+            collar_depth_field,
+            pre_sampled_z,
+            dem_layer,
+        )
 
-        # Get hole ID
-        try:
-            hole_id = attrs.get(collar_id_field) if is_dict else attrs[collar_id_field]
-        except (KeyError, AttributeError):
+        if not extracted:
             return None
 
-        if not hole_id:
-            return None
-
-        # Extract point
-        collar_pt = None
-        if use_geometry:
-            if is_dict:
-                wkt = collar_data.get("wkt", "")
-                if wkt:
-                    geom = QgsGeometry.fromWkt(wkt)
-                    if not geom.isNull() and not geom.isEmpty():
-                        pt = geom.asPoint()
-                        collar_pt = QgsPointXY(pt.x(), pt.y())
-            else:
-                geom = collar_data.geometry()
-                if not geom.isNull() and not geom.isEmpty():
-                    pt = geom.asPoint()
-                    collar_pt = QgsPointXY(pt.x(), pt.y())
-
-        if not collar_pt:
-            # Fallback to fields
-            try:
-                x = (
-                    float(attrs.get(collar_x_field, 0.0))
-                    if is_dict
-                    else float(attrs[collar_x_field] or 0.0)
-                )
-                y = (
-                    float(attrs.get(collar_y_field, 0.0))
-                    if is_dict
-                    else float(attrs[collar_y_field] or 0.0)
-                )
-                collar_pt = QgsPointXY(x, y)
-            except (ValueError, TypeError, KeyError):
-                return None
-
-        # Extract Z
-        z = 0.0
-        try:
-            if collar_z_field:
-                z = (
-                    float(attrs.get(collar_z_field, 0.0))
-                    if is_dict
-                    else float(attrs[collar_z_field] or 0.0)
-                )
-        except (ValueError, TypeError, KeyError):
-            z = 0.0
-
-        if z == 0.0:
-            if pre_sampled_z and hole_id in pre_sampled_z:
-                z = pre_sampled_z[hole_id]
-            elif dem_layer:
-                z = self._sample_dem(dem_layer, collar_pt)
-
-        # Extract depth
-        total_depth = 0.0
-        try:
-            if collar_depth_field:
-                total_depth = (
-                    float(attrs.get(collar_depth_field, 0.0))
-                    if is_dict
-                    else float(attrs[collar_depth_field] or 0.0)
-                )
-        except (ValueError, TypeError, KeyError):
-            total_depth = 0.0
+        hole_id, collar_pt, z, total_depth = extracted
 
         # 2. Project to section line
-        collar_geom_pt = QgsGeometry.fromPointXY(collar_pt)
-        nearest_point_geom = line_geom.nearestPoint(collar_geom_pt)
-        nearest_point = nearest_point_geom.asPoint()
-        nearest_point_xy = QgsPointXY(nearest_point.x(), nearest_point.y())
+        projection = self._project_point_to_line(collar_pt, line_geom, line_start, distance_area)
+        dist_along, offset = projection
 
-        # 3. Calculate distances
-        dist_along = distance_area.measureLine(line_start, nearest_point_xy)
-        offset = distance_area.measureLine(collar_pt, nearest_point_xy)
-
-        # 4. Check if within buffer
+        # 3. Check if within buffer
         if offset <= buffer_width:
             return (hole_id, dist_along, z, offset, total_depth)
 
         return None
+
+    def _extract_attributes_agnostic(
+        self,
+        data: dict[str, Any] | QgsFeature,
+        id_field: str,
+        use_geometry: bool,
+        x_field: str,
+        y_field: str,
+        z_field: str,
+        depth_field: str,
+        pre_sampled_z: dict[Any, float] | None = None,
+        dem_layer: QgsRasterLayer | None = None,
+    ) -> tuple[Any, QgsPointXY, float, float] | None:
+        """Extract collar ID, coordinate, Z and depth agnosticly from dict or feature."""
+        is_dict = isinstance(data, dict)
+        attrs = data.get("attributes", {}) if is_dict else data
+
+        # ID
+        try:
+            hole_id = attrs.get(id_field) if is_dict else attrs[id_field]
+        except (KeyError, AttributeError):
+            return None
+        if not hole_id:
+            return None
+
+        # Point
+        collar_pt = self._extract_point_agnostic(data, is_dict, use_geometry, x_field, y_field)
+        if not collar_pt:
+            return None
+
+        # Z
+        z = self._extract_z_agnostic(
+            data, is_dict, z_field, hole_id, collar_pt, pre_sampled_z, dem_layer
+        )
+
+        # Depth
+        depth = self._extract_depth_agnostic(data, is_dict, depth_field)
+
+        return hole_id, collar_pt, z, depth
+
+    def _extract_point_agnostic(
+        self, data: Any, is_dict: bool, use_geom: bool, x_f: str, y_f: str
+    ) -> QgsPointXY | None:
+        """Extract point from geometry or fields agnosticly."""
+        if use_geom:
+            if is_dict:
+                wkt = data.get("wkt", "")
+                if wkt:
+                    geom = QgsGeometry.fromWkt(wkt)
+                    if not geom.isNull() and not geom.isEmpty():
+                        pt = geom.asPoint()
+                        return QgsPointXY(pt.x(), pt.y())
+            else:
+                geom = data.geometry()
+                if not geom.isNull() and not geom.isEmpty():
+                    pt = geom.asPoint()
+                    return QgsPointXY(pt.x(), pt.y())
+
+        # Fallback to fields
+        attrs = data.get("attributes", {}) if is_dict else data
+        try:
+            x = float(attrs.get(x_f, 0.0)) if is_dict else float(attrs[x_f] or 0.0)
+            y = float(attrs.get(y_f, 0.0)) if is_dict else float(attrs[y_f] or 0.0)
+            return QgsPointXY(x, y)
+        except (ValueError, TypeError, KeyError):
+            return None
+
+    def _extract_z_agnostic(
+        self,
+        data: Any,
+        is_dict: bool,
+        z_f: str,
+        hole_id: Any,
+        pt: QgsPointXY,
+        pre_sampled: dict[Any, float] | None,
+        dem: QgsRasterLayer | None,
+    ) -> float:
+        """Extract Z with fallbacks agnosticly."""
+        attrs = data.get("attributes", {}) if is_dict else data
+        z = 0.0
+        if z_f:
+            with contextlib.suppress(ValueError, TypeError, KeyError):
+                z = float(attrs.get(z_f, 0.0)) if is_dict else float(attrs[z_f] or 0.0)
+
+        if z == 0.0:
+            if pre_sampled and hole_id in pre_sampled:
+                z = pre_sampled[hole_id]
+            elif dem:
+                z = self._sample_dem(dem, pt)
+        return z
+
+    def _extract_depth_agnostic(self, data: Any, is_dict: bool, depth_f: str) -> float:
+        """Extract depth agnosticly."""
+        attrs = data.get("attributes", {}) if is_dict else data
+        depth = 0.0
+        if depth_f:
+            with contextlib.suppress(ValueError, TypeError, KeyError):
+                depth = float(attrs.get(depth_f, 0.0)) if is_dict else float(attrs[depth_f] or 0.0)
+        return depth
+
+    def _project_point_to_line(
+        self,
+        pt: QgsPointXY,
+        line_geom: QgsGeometry,
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
+    ) -> tuple[float, float]:
+        """Project point to line and return (dist_along, offset)."""
+        collar_geom_pt = QgsGeometry.fromPointXY(pt)
+        nearest_point_geom = line_geom.nearestPoint(collar_geom_pt)
+        nearest_point = nearest_point_geom.asPoint()
+        nearest_point_xy = QgsPointXY(nearest_point.x(), nearest_point.y())
+
+        dist_along = da.measureLine(line_start, nearest_point_xy)
+        offset = da.measureLine(pt, nearest_point_xy)
+        return dist_along, offset
 
     def _get_collar_info(
         self,

@@ -1,238 +1,712 @@
-# 🔍 Análisis Detallado del Proyecto SecInterp
+# 📋 Project Analysis Report: sec_interp
+*Generated on: 2026-01-25 13:36:18*
 
-**Fecha**: 2026-01-25
-**Versión**: v2.8.0
-**Total de Archivos Analizados**: 108 archivos Python
-**Líneas de Código Total**: ~17,316
+## 📊 Quality Indicators
+- **Module Stability Score**: `55.2/100` (Based on file-level complexity)
+- **Code Maintainability Score**: `100.0/100` (Based on function-level complexity)
+- **Overall Plugin Score**: `27.6/100`
+- **QGIS Compliance**: `0/100`
 
----
 
-## 📊 Resumen Ejecutivo
+## 🔬 Research-based Metrics
+- **Type Hint Coverage (Params)**: 75.9% (Microsoft/Dropbox Std)
+- **Type Hint Coverage (Returns)**: 37.2%
+- **Docstring Coverage**: 65.8% (PEP 257)
+- **Detected Documentation Style**: Google
 
-| Módulo | Archivos | Líneas | Complejidad Promedio | Estado General |
-|--------|----------|--------|---------------------|---------------|
-| **Core** | 48 | 7,279 | 12.5 | ⚠️ Necesita refactorización |
-| **GUI** | 43 | 7,028 | - | ✅ Arquitectura saludable |
-| **Exporters** | 11 | 1,830 | - | ⚠️ Mejor manejo de errores |
-| **Tests** | 54 | 7,610 | - | ✅ Cobertura completa |
-
----
-
-## 🧠 Core Module Analysis
-
-### 📈 Métricas de Calidad
-- **Complejidad Total**: 602 (CC promedio: 12.5 por archivo)
-- **Funciones Complejas (CC > 15)**: 1 detectada
-- **Archivo más grande**: `drillhole_service.py` (960 líneas, CC=115)
-- **Función más compleja**: `_project_single_detached_collar` (CC=25)
-
-### ⚠️ Problemas Críticos Identificados
-
-#### 🔥 **ALTA PRIORIDAD**
-1. **`drillhole_service.py`** - Complejidad extrema
-   - **Problema**: CC=115, 960 líneas
-   - **Impacto**: Mantenimiento muy difícil, riesgos de bugs
-   - **Acción Recomendada**:
-     - Dividir en servicios más pequeños
-     - Extraer lógica de proyección a utils dedicadas
-     - Implementar fábrica de procesadores de collar
-
-2. **`geology_service.py`** - Complejidad alta
-   - **Problema**: CC=41, 521 líneas
-   - **Impacto**: Difícil de testear y extender
-   - **Acción Recomendada**:
-     - Extraer lógica de intersección geométrica
-     - Separar validación de procesamiento
-
-3. **`types.py`** - Complejidad estructural
-   - **Problema**: CC=33, demasiado tipos en un archivo
-   - **Impacto**: Dificultad de navegación
-   - **Acción Recomendada**:
-     - Dividir en `domain_types.py`, `task_inputs.py`, `dtos.py`
-
-#### 🟡 **MEDIA PRIORIDAD**
-4. **`validation/project_validator.py`** - CC=37
-   - **Problema**: Demasiada lógica en un solo validador
-   - **Acción**: Dividir por dominio (geología, estructuras, etc.)
-
-5. **`services/export_service.py`** - CC=31
-   - **Problema**: Mezcla de lógica de exportación y UI
-   - **Acción**: Separar estrategia de exportación de configuración
-
----
-
-## 🖥️ GUI Module Analysis
-
-### ✅ Aspectos Positivos
-- **Sin violaciones arquitectónicas** detectadas
-- **Buen desacoplamiento**: Core imports bien distribuidos
-- **Tamaño moderado**: Promedio de 163 líneas por archivo
-
-### ⚠️ Áreas de Mejora
-
-#### 🟡 **MEDIA PRIORIDAD**
-1. **`main_dialog_preview.py`** - 679 líneas
-   - **Problema**: Direct QGIS processing en GUI layer
-   - **Acción Recomendada**:
-     - Mover lógica de procesamiento a PreviewManager
-     - Mantener solo coordinación y eventos en la UI
-
-2. **`preview_layer_factory.py`** - 482 líneas
-   - **Problema**: Demasiadas responsabilidades
-   - **Acción**: Dividir por tipo de capa (geología, estructuras, etc.)
-
-3. **Falta de abstracción en páginas UI**
-   - **Problema**: Código duplicado en pages/
-   - **Acción**: Crear clases base para patrones comunes
-
----
-
-## 📤 Exporters Module Analysis
-
-### ⚠️ Problemas de Calidad
-
-#### 🟡 **MEDIA PRIORIDAD**
-1. **Manejo de Errores Inconsistente**
-   - **Archivos afectados**: `base_exporter.py`, `csv_exporter.py`
-   - **Problema**: Sin bloques try/catch en operaciones de archivo
-   - **Acción**: Implementar manejo robusto de errores
-
-2. **`interpretation_3d_exporter.py`** - 467 líneas
-   - **Problema**: Monolítico, difícil de mantener
-   - **Acción**: Dividir en componentes lógicos
-
-3. **Falta de validación de entrada**
-   - **Problema**: No se validan parámetros antes de exportar
-   - **Acción**: Añadir validaciones consistentes
-
----
-
-## 🧪 Tests Module Analysis
-
-### ✅ Fortalezas
-- **Cobertura completa**: 363 tests pasando (100% success rate)
-- **Buenas prácticas**: Uso extensivo de mocks y fixtures
-- **Separación clara**: Tests de core, GUI, integration separados
-
-### ⚠️ Mejoras Potenciales
-
-#### 🟢 **BAJA PRIORIDAD**
-1. **Optimización de mocks**
-   - **Situación**: Algunos tests podrían ser más simples
-   - **Acción**: Simplificar mocks donde sea posible
-
-2. **Tests de integración adicionales**
-   - **Situación**: Podría haber más casos edge
-   - **Acción**: Añadir tests para workflows completos
-
----
-
-## 🎯 Recomendaciones Estratégicas
-
-### 🔥 **ACCIONES INMEDIATAS (Próximos 2-3 días)**
-
-1. **Refactorizar DrillholeService**
-   ```python
-   # Estructura sugerida:
-   services/
-     ├── drillhole/
-     │   ├── collar_processor.py
-     │   ├── survey_processor.py
-     │   ├── interval_processor.py
-     │   └── projection_engine.py
-   ```
-
-2. **Dividir Types Module**
-   ```python
-   types/
-     ├── domain_types.py      # GeologySegment, etc.
-     ├── task_inputs.py       # TaskInput DTOs
-     └── dtos.py            # Data transfer objects
-   ```
-
-### 🟡 **ACCIONES CORTO PLAZO (1-2 semanas)**
-
-3. **Mejorar Preview Layer Factory**
-   - Extraer factory methods por tipo de capa
-   - Implementar builder pattern para configuraciones complejas
-
-4. **Estandarizar Manejo de Errores en Exporters**
-   - Crear ExporterException base
-   - Implementar logging consistente
-   - Añadir validaciones pre-exportación
-
-### 🟢 **ACCIONES MEDIANO PLAZO (2-4 semanas)**
-
-5. **Optimizar Performance**
-   - Revisar funciones con CC > 15
-   - Implementar caching de cálculos repetitivos
-   - Optimizar renderizado de previews grandes
-
-6. **Mejorar Documentación**
-   - Añadir ejemplos de uso en docstrings
-   - Crear diagramas de flujo para servicios complejos
-   - Documentar patrones arquitectónicos
-
----
-
-## 📋 Métricas de Calidad Actuales
-
-| Métrica | Valor | Objetivo | Estado |
-|---------|-------|----------|---------|
-| **Quality Score** | 54.6/100 | 70/100 | ⚠️ Por debajo |
-| **Type Hint Coverage** | 78.37% | 95% | ⚠️ Mejorable |
-| **Docstring Coverage** | 81.95% | 90% | ⚠️ Mejorable |
-| **Test Success Rate** | 100% | 95% | ✅ Excelente |
-| **Avg Complexity** | 12.79 | <10 | ⚠️ Alta |
-
----
-
-## 🚀 Plan de Acción Priorizado
-
-### **Fase 1: Emergencia (Esta semana)**
-1. ✅ Analizar estado actual (completado)
-2. 🔥 Refactorizar `drillhole_service.py`
-3. 🔥 Dividir `types.py`
-
-### **Fase 2: Estabilización (Próxima semana)**
-4. 🟡 Mejorar manejo de errores en exporters
-5. 🟡 Optimizar `geology_service.py`
-6. 🟡 Separar lógica de preview
-
-### **Fase 3: Mejora Continua (2-3 semanas)**
-7. 🟢 Optimizar performance general
-8. 🟢 Mejorar documentación y tests
-9. 🟢 Implementar métricas de calidad automáticas
-
----
-
-## 💡 Recomendaciones de Herramientas
-
-1. **Para Refactorización**:
-   - Usar `black` y `ruff` para formato consistente
-   - Implementar pre-commit hooks con complejidad ciclomática
-
-2. **Para Métricas Continuas**:
-   - Configurar `sonar-scanner` o `codeclimate`
-   - Integrar métricas en CI/CD
-
-3. **Para Tests**:
-   - Usar `pytest-cov` para cobertura
-   - Implementar `pytest-benchmark` para performance
-
----
-
-## ⚠️ Riesgos y Consideraciones
-
-1. **Riesgo de Regresión**: Al refactorizar servicios grandes
-   - **Mitigación**: Tests de integración exhaustivos
-
-2. **Impacto en UI**: Cambios en tipos pueden afectar GUI
-   - **Mitigación**: Versionamiento de DTOs y backward compatibility
-
-3. **Complejidad Temporal**: Refactorización durante desarrollo activo
-   - **Mitigación**: Trabajo en branches separadas, merge gradual
-
----
-
-**Conclusión**: El proyecto tiene una arquitectura sólida con buena separación de responsabilidades, pero presenta problemas de complejidad en servicios principales que requieren atención inmediata para garantizar mantenibilidad a largo plazo.
+## 📊 General Metrics
+- **Total Files**: 172
+- **Total Lines**: 26923
+## 🛠️ QGIS Standard Findings
+Detected **684** technical deviations.
+- 🟡 `core/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/algorithms.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `.gemini-temp/reproduce_proxy.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `.gemini-temp/reproduce_proxy.py:5`: Public class 'ModuleProxy' is missing a docstring.
+- 🟡 `.gemini-temp/reproduce_proxy.py:10`: Function '__getattr__' has no type annotations.
+- 🟡 `.gemini-temp/reproduce_proxy.py:16`: Function '__setattr__' has no type annotations.
+- 🟡 `.gemini-temp/reproduce_proxy.py:22`: Public function 'reset_mock' is missing a docstring.
+- 🟡 `.gemini-temp/reproduce_proxy.py:26`: Public class 'MockClass' is missing a docstring.
+- 🟡 `.gemini-temp/reproduce_proxy.py:30`: Public function 'value' is missing a docstring.
+- 🟡 `.gemini-temp/reproduce_proxy.py:1`: print() usage detected. Use QgsMessageLog.
+- 🟡 `__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/exceptions.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/interfaces/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/interfaces/cache_interface.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/data_cache.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/interfaces/geology_interface.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/interfaces/drillhole_interface.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/interfaces/preview_interface.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/interfaces/profile_interface.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/interfaces/structure_interface.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/config.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/access_control_service.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/controller.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/models/settings_model.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/performance_metrics.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/export_service.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/preview_service.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/profile_service.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/geology_service.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/structure_service.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/geology.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/geometry.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/geometry_utils/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/geometry_utils/extraction.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/types.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/geometry_utils/filtering.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/geometry_utils/measurement.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/drillhole.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/geometry_utils/processing.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/io.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/parsing.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/geometry_utils/optimization.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/rendering.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/resource_manager.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/validation/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/sampling.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/utils/spatial.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/drillhole_service.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/services/drillhole_service.py:735`: Function '_project_single_detached_collar' is too complex (CC=25 > 15). Consider extracting methods to improve maintainability.
+- 🟡 `core/validation/path_validator.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/validation/field_validator.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/validation/layer_validator.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/base_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/validation/validators.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/validation/validators.py:36`: Public function 'validator' is missing a docstring.
+- 🟡 `core/validation/validators.py:60`: Public function 'validator' is missing a docstring.
+- 🟡 `core/validation/validators.py:82`: Public function 'validator' is missing a docstring.
+- 🟡 `core/validation/validators.py:104`: Public function 'validator' is missing a docstring.
+- 🟡 `core/validation/validators.py:130`: Public function 'validator' is missing a docstring.
+- 🟡 `core/validation/validators.py:160`: Public function 'validator' is missing a docstring.
+- 🟡 `core/validation/validation_helpers.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/csv_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/validation/project_validator.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `core/validation/project_validator.py:322`: Public function 'is_dem_complete' is missing a docstring.
+- 🟡 `core/validation/project_validator.py:330`: Public function 'is_geology_complete' is missing a docstring.
+- 🟡 `core/validation/project_validator.py:338`: Public function 'is_structure_complete' is missing a docstring.
+- 🟡 `exporters/image_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/drillhole_3d_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/drillhole_exporters.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/pdf_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/interpretation_exporters.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/svg_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/shp_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/legend_widget.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/dialogs/interpretation_properties_dialog.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_cache_handler.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/profile_exporters.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_config.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `exporters/interpretation_3d_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_data.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_messages.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog.py:228`: Public function 'interpretations' is missing a docstring.
+- 🟡 `gui/main_dialog.py:228`: Function 'interpretations' has no type annotations.
+- 🟡 `gui/main_dialog_export.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_interpretation.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_interpretation.py:82`: Function 'json_serial' has no type annotations.
+- 🟡 `gui/main_dialog_interpretation.py:156`: Function 'apply_attribute_inheritance' is too complex (CC=21 > 15). Consider extracting methods to improve maintainability.
+- 🟡 `gui/main_dialog_signals.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_status.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_utils.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_tools.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_validation_manager.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/preview_axes_manager.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_preview.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/main_dialog_settings.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/preview_legend_renderer.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/services/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/tasks/drillhole_task.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/preview_renderer.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/tools/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/preview_reporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/tasks/geology_task.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/preview_layer_factory.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/base_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/main_window.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/dem_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/tools/interpretation_tool.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/tools/measure_tool.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/geology_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/section_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/interpretation_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/drillhole_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/preview_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/sidebar.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/structure_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/utils.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `resources/resources.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `resources/resources.py:9`: Legacy import detected: 'from PyQt5 import ...'. Use 'qgis.PyQt' for compatibility.
+- 🟡 `resources/resources.py:163`: Public function 'qInitResources' is missing a docstring.
+- 🟡 `resources/resources.py:166`: Public function 'qCleanupResources' is missing a docstring.
+- 🟡 `tests/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `gui/ui/pages/settings_page.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/benchmarks/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `logger_config.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/benchmarks/test_export_benchmarks.py:27`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/benchmarks/test_export_benchmarks.py:32`: Public function 'tearDown' is missing a docstring.
+- 🟡 `tests/benchmarks/test_export_benchmarks.py:56`: Public function 'write_shp' is missing a docstring.
+- 🟡 `tests/benchmarks/test_export_benchmarks.py:85`: Public function 'write_shp' is missing a docstring.
+- 🟡 `tests/benchmarks/test_geometry_benchmarks.py:22`: Public function 'setUpClass' is missing a docstring.
+- 🟡 `tests/benchmarks/test_geometry_benchmarks.py:33`: Public function 'create_polygon' is missing a docstring.
+- 🟡 `tests/benchmarks/test_geometry_benchmarks.py:44`: Public function 'validate' is missing a docstring.
+- 🟡 `tests/benchmarks/test_geometry_benchmarks.py:59`: Public function 'project_points' is missing a docstring.
+- 🟡 `tests/benchmarks/test_geometry_benchmarks.py:74`: Public function 'construct_3d' is missing a docstring.
+- 🟡 `tests/core/test_algorithms.py:10`: Public class 'TestAlgorithms' is missing a docstring.
+- 🟡 `tests/core/test_config.py:11`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_async_drillhole.py:13`: Legacy import detected: 'from PyQt5.QtCore import ...'. Use 'qgis.PyQt' for compatibility.
+- 🟡 `tests/core/test_async_drillhole.py:22`: Public function 'setUp' is missing a docstring.
+- 🟡 `sec_interp_plugin.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/core/test_config_integration.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/core/test_config_integration.py:11`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_config_integration.py:21`: Public function 'tearDown' is missing a docstring.
+- 🟡 `tests/core/test_config_integration.py:28`: Public function 'mock_value' is missing a docstring.
+- 🟡 `tests/core/test_config_integration.py:28`: Function 'mock_value' has no type annotations.
+- 🟡 `tests/core/test_data_cache_fix.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/core/test_data_cache_fix.py:7`: Public class 'TestDataCache' is missing a docstring.
+- 🟡 `tests/core/test_data_cache_fix.py:8`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_data_cache_fix.py:12`: Public function 'test_get_cache_key' is missing a docstring.
+- 🟡 `tests/core/test_data_cache_fix.py:27`: Public function 'test_set_and_get' is missing a docstring.
+- 🟡 `tests/core/test_data_cache_fix.py:53`: Public function 'test_get_missing' is missing a docstring.
+- 🟡 `tests/core/test_drillhole_service.py:21`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_drillhole_service.py:70`: Legacy import detected: 'from PyQt5.QtCore import ...'. Use 'qgis.PyQt' for compatibility.
+- 🟡 `tests/core/test_drillhole_service.py:102`: Function 'test_process_intervals' has no type annotations.
+- 🟡 `tests/core/test_drillhole_service.py:73`: Obsolete QVariant type constants detected. Use QMetaType or native types.
+- 🟡 `tests/core/test_drillhole_service.py:74`: Obsolete QVariant type constants detected. Use QMetaType or native types.
+- 🟡 `tests/core/test_drillhole_service.py:75`: Obsolete QVariant type constants detected. Use QMetaType or native types.
+- 🟡 `tests/core/test_drillhole_service.py:76`: Obsolete QVariant type constants detected. Use QMetaType or native types.
+- 🟡 `tests/core/test_export_service.py:21`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_export_service.py:40`: Function 'test_export_data_minimal' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:66`: Function 'test_export_data_all_types' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:127`: Function 'test_export_data_3d_restricted' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:182`: Function 'test_export_data_no_line_layer' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:197`: Function 'test_export_geology_error' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:211`: Function 'test_export_structures_error' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:230`: Function 'test_export_drillholes_error' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:242`: Function 'test_export_axes_error' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:253`: Function 'test_export_interpretation_3d_invalid_line' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:268`: Function 'test_export_interpretation_error' has no type annotations.
+- 🟡 `tests/core/test_export_service.py:301`: Function 'test_export_topography_error' has no type annotations.
+- 🟡 `tests/core/test_drillhole_utils.py:23`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_drillhole_utils.py:190`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_geology_service.py:21`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_geology_service.py:56`: Function 'test_generate_geological_profile' has no type annotations.
+- 🟡 `tests/core/test_geology_service.py:71`: Legacy import detected: 'from PyQt5.QtCore import ...'. Use 'qgis.PyQt' for compatibility.
+- 🟡 `tests/core/test_geology_service.py:74`: Obsolete QVariant type constants detected. Use QMetaType or native types.
+- 🟡 `tests/core/test_layer_validator.py:27`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_project_validator.py:50`: Function 'test_validate_all_success' has no type annotations.
+- 🟡 `tests/core/test_project_validator.py:123`: Function 'test_is_geology_complete' has no type annotations.
+- 🟡 `tests/core/test_project_validator.py:139`: Function 'test_is_structure_complete' has no type annotations.
+- 🟡 `tests/core/test_profile_exporters.py:27`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_profile_exporters.py:34`: Function 'test_profile_line_exporter_success' has no type annotations.
+- 🟡 `tests/core/test_profile_exporters.py:51`: Function 'test_geology_exporter_success' has no type annotations.
+- 🟡 `tests/core/test_profile_exporters.py:78`: Function 'test_structure_exporter_success' has no type annotations.
+- 🟡 `tests/core/test_profile_exporters.py:106`: Function 'test_axes_exporter_success' has no type annotations.
+- 🟡 `tests/core/test_profile_exporters.py:119`: Function 'test_axes_exporter_single_point' has no type annotations.
+- 🟡 `tests/core/test_profile_exporters.py:174`: Function 'test_profile_line_exporter_null_geom' has no type annotations.
+- 🟡 `tests/core/test_settings_model.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/core/test_preview_service.py:14`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_preview_service.py:103`: Function 'test_generate_all_with_drillholes' has no type annotations.
+- 🟡 `tests/core/test_structure_service.py:21`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/test_validation_refactor.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/core/test_validation_refactor.py:17`: Public function 'test_numeric_input' is missing a docstring.
+- 🟡 `tests/core/test_validation_refactor.py:22`: Public function 'test_integer_input' is missing a docstring.
+- 🟡 `tests/core/test_validation_refactor.py:26`: Public function 'test_angle_range' is missing a docstring.
+- 🟡 `tests/core/test_validation_refactor.py:34`: Public function 'test_valid_path' is missing a docstring.
+- 🟡 `tests/core/test_utils.py:218`: Public function 'test_create_buffer_geometry_no_features' is missing a docstring.
+- 🟡 `tests/core/test_utils.py:222`: Public function 'test_create_buffer_geometry_processing_error' is missing a docstring.
+- 🟡 `tests/core/test_utils.py:230`: Public function 'test_filter_features_by_buffer_basic' is missing a docstring.
+- 🟡 `tests/core/validation/test_validation_helpers.py:17`: Public function 'test_add_error' is missing a docstring.
+- 🟡 `tests/core/validation/test_validation_helpers.py:31`: Public function 'test_add_warning' is missing a docstring.
+- 🟡 `tests/core/validation/test_validation_helpers.py:39`: Public function 'test_raise_if_errors' is missing a docstring.
+- 🟡 `tests/core/validation/test_validation_helpers.py:45`: Public function 'test_no_raise_if_only_warnings' is missing a docstring.
+- 🟡 `tests/core/validation/test_validation_helpers.py:57`: Public function 'test_rule_passed' is missing a docstring.
+- 🟡 `tests/core/validation/test_validation_helpers.py:71`: Public function 'test_rule_failed' is missing a docstring.
+- 🟡 `tests/core/validation/test_validation_helpers.py:105`: Public function 'test_valid_ranges' is missing a docstring.
+- 🟡 `tests/core/validation/test_validation_helpers.py:110`: Public function 'test_extreme_values' is missing a docstring.
+- 🟡 `tests/core/validation/test_service_validation.py:15`: Legacy import detected: 'from PyQt5.QtCore import ...'. Use 'qgis.PyQt' for compatibility.
+- 🟡 `tests/core/validation/test_service_validation.py:25`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/core/validation/test_service_validation.py:52`: Obsolete QVariant type constants detected. Use QMetaType or native types.
+- 🟡 `tests/exporters/test_dynamic_attrs.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/exporters/test_dynamic_attrs.py:10`: Public class 'TestDynamicAttributes' is missing a docstring.
+- 🟡 `tests/exporters/test_drillhole_3d_exporter.py:27`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/exporters/test_drillhole_3d_exporter.py:56`: Function 'test_trace_exporter_real' has no type annotations.
+- 🟡 `tests/exporters/test_drillhole_3d_exporter.py:82`: Function 'test_trace_exporter_projected' has no type annotations.
+- 🟡 `tests/exporters/test_drillhole_3d_exporter.py:103`: Function 'test_interval_exporter_real' has no type annotations.
+- 🟡 `tests/exporters/test_drillhole_3d_exporter.py:124`: Function 'test_interval_exporter_projected' has no type annotations.
+- 🟡 `tests/gui/test_cache_fix.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/gui/test_cache_fix.py:6`: Public class 'TestCacheRegression' is missing a docstring.
+- 🟡 `tests/gui/test_cache_fix.py:7`: Public function 'test_clear_cache_handler_attribute_error' is missing a docstring.
+- 🟡 `tests/gui/test_attribute_inheritance.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/gui/test_attribute_inheritance.py:8`: Public class 'TestAttributeInheritance' is missing a docstring.
+- 🟡 `tests/gui/test_attribute_inheritance.py:11`: Public function 'setUpClass' is missing a docstring.
+- 🟡 `tests/gui/test_attribute_inheritance.py:17`: Public function 'tearDownClass' is missing a docstring.
+- 🟡 `tests/gui/test_gui_utils.py:12`: Function 'test_show_user_message_warning' has no type annotations.
+- 🟡 `tests/gui/test_gui_utils.py:23`: Function 'test_show_user_message_info' has no type annotations.
+- 🟡 `tests/gui/test_gui_utils.py:34`: Function 'test_show_user_message_error' has no type annotations.
+- 🟡 `tests/base_test.py:15`: Public function 'isNull' is missing a docstring.
+- 🟡 `tests/base_test.py:18`: Public function 'isValid' is missing a docstring.
+- 🟡 `tests/base_test.py:21`: Public function 'constGet' is missing a docstring.
+- 🟡 `tests/base_test.py:24`: Public function 'get' is missing a docstring.
+- 🟡 `tests/base_test.py:28`: Public class 'MockQObject' is missing a docstring.
+- 🟡 `tests/base_test.py:32`: Public function 'tr' is missing a docstring.
+- 🟡 `tests/base_test.py:32`: Function 'tr' has no type annotations.
+- 🟡 `tests/base_test.py:35`: Public function 'setObjectName' is missing a docstring.
+- 🟡 `tests/base_test.py:35`: Function 'setObjectName' has no type annotations.
+- 🟡 `tests/base_test.py:38`: Public function 'setToolTip' is missing a docstring.
+- 🟡 `tests/base_test.py:38`: Function 'setToolTip' has no type annotations.
+- 🟡 `tests/base_test.py:41`: Public function 'property' is missing a docstring.
+- 🟡 `tests/base_test.py:41`: Function 'property' has no type annotations.
+- 🟡 `tests/base_test.py:44`: Public function 'setProperty' is missing a docstring.
+- 🟡 `tests/base_test.py:44`: Function 'setProperty' has no type annotations.
+- 🟡 `tests/base_test.py:48`: Public class 'MockQgsMapLayer' is missing a docstring.
+- 🟡 `tests/base_test.py:52`: Public class 'LayerType' is missing a docstring.
+- 🟡 `tests/base_test.py:93`: Public function 'crs' is missing a docstring.
+- 🟡 `tests/base_test.py:96`: Public function 'fields' is missing a docstring.
+- 🟡 `tests/base_test.py:99`: Function '_add_attributes' has no type annotations.
+- 🟡 `tests/base_test.py:104`: Function '_add_features' has no type annotations.
+- 🟡 `tests/base_test.py:109`: Public function 'isValid' is missing a docstring.
+- 🟡 `tests/base_test.py:112`: Public function 'featureCount' is missing a docstring.
+- 🟡 `tests/base_test.py:115`: Public function 'setCrs' is missing a docstring.
+- 🟡 `tests/base_test.py:115`: Function 'setCrs' has no type annotations.
+- 🟡 `tests/base_test.py:118`: Public function 'dataProvider' is missing a docstring.
+- 🟡 `tests/base_test.py:121`: Public function 'updateFields' is missing a docstring.
+- 🟡 `tests/base_test.py:124`: Public function 'rasterUnitsPerPixelX' is missing a docstring.
+- 🟡 `tests/base_test.py:127`: Public function 'source' is missing a docstring.
+- 🟡 `tests/base_test.py:130`: Public function 'updateExtents' is missing a docstring.
+- 🟡 `tests/base_test.py:133`: Public function 'setLabeling' is missing a docstring.
+- 🟡 `tests/base_test.py:133`: Function 'setLabeling' has no type annotations.
+- 🟡 `tests/base_test.py:136`: Public function 'setLabelsEnabled' is missing a docstring.
+- 🟡 `tests/base_test.py:136`: Function 'setLabelsEnabled' has no type annotations.
+- 🟡 `tests/base_test.py:139`: Public function 'saveNamedStyle' is missing a docstring.
+- 🟡 `tests/base_test.py:139`: Function 'saveNamedStyle' has no type annotations.
+- 🟡 `tests/base_test.py:142`: Public function 'labelsEnabled' is missing a docstring.
+- 🟡 `tests/base_test.py:145`: Public function 'wkbType' is missing a docstring.
+- 🟡 `tests/base_test.py:148`: Public function 'extent' is missing a docstring.
+- 🟡 `tests/base_test.py:152`: Public class 'MockQgsVectorLayer' is missing a docstring.
+- 🟡 `tests/base_test.py:175`: Public class 'MockQgsRasterLayer' is missing a docstring.
+- 🟡 `tests/base_test.py:179`: Public class 'MockQgsGeometry' is missing a docstring.
+- 🟡 `tests/base_test.py:217`: Public function 'fromPolygonXY' is missing a docstring.
+- 🟡 `tests/base_test.py:217`: Function 'fromPolygonXY' has no type annotations.
+- 🟡 `tests/base_test.py:224`: Public function 'fromPolylineXY' is missing a docstring.
+- 🟡 `tests/base_test.py:224`: Function 'fromPolylineXY' has no type annotations.
+- 🟡 `tests/base_test.py:231`: Public function 'fromPolylineZ' is missing a docstring.
+- 🟡 `tests/base_test.py:231`: Function 'fromPolylineZ' has no type annotations.
+- 🟡 `tests/base_test.py:238`: Public function 'fromPolygonZ' is missing a docstring.
+- 🟡 `tests/base_test.py:238`: Function 'fromPolygonZ' has no type annotations.
+- 🟡 `tests/base_test.py:245`: Public function 'fromPolyline' is missing a docstring.
+- 🟡 `tests/base_test.py:245`: Function 'fromPolyline' has no type annotations.
+- 🟡 `tests/base_test.py:251`: Public function 'fromPointXY' is missing a docstring.
+- 🟡 `tests/base_test.py:251`: Function 'fromPointXY' has no type annotations.
+- 🟡 `tests/base_test.py:258`: Public function 'fromWkt' is missing a docstring.
+- 🟡 `tests/base_test.py:258`: Function 'fromWkt' has no type annotations.
+- 🟡 `tests/base_test.py:269`: Public function 'asWkt' is missing a docstring.
+- 🟡 `tests/base_test.py:279`: Public function 'vertices' is missing a docstring.
+- 🟡 `tests/base_test.py:296`: Public function 'asPolyline' is missing a docstring.
+- 🟡 `tests/base_test.py:299`: Public function 'asPolygon' is missing a docstring.
+- 🟡 `tests/base_test.py:302`: Public function 'is3D' is missing a docstring.
+- 🟡 `tests/base_test.py:305`: Public function 'wkbType' is missing a docstring.
+- 🟡 `tests/base_test.py:308`: Public function 'pointN' is missing a docstring.
+- 🟡 `tests/base_test.py:308`: Function 'pointN' has no type annotations.
+- 🟡 `tests/base_test.py:314`: Public function 'asMultiPolygon' is missing a docstring.
+- 🟡 `tests/base_test.py:317`: Public function 'asMultiPolyline' is missing a docstring.
+- 🟡 `tests/base_test.py:320`: Public function 'intersection' is missing a docstring.
+- 🟡 `tests/base_test.py:320`: Function 'intersection' has no type annotations.
+- 🟡 `tests/base_test.py:323`: Public function 'intersects' is missing a docstring.
+- 🟡 `tests/base_test.py:323`: Function 'intersects' has no type annotations.
+- 🟡 `tests/base_test.py:326`: Public function 'isEmpty' is missing a docstring.
+- 🟡 `tests/base_test.py:329`: Public function 'isNull' is missing a docstring.
+- 🟡 `tests/base_test.py:332`: Public function 'isMultipart' is missing a docstring.
+- 🟡 `tests/base_test.py:335`: Public function 'isGeosValid' is missing a docstring.
+- 🟡 `tests/base_test.py:338`: Public function 'clone' is missing a docstring.
+- 🟡 `tests/base_test.py:347`: Public function 'centroid' is missing a docstring.
+- 🟡 `tests/base_test.py:355`: Public function 'makeValid' is missing a docstring.
+- 🟡 `tests/base_test.py:358`: Public function 'wkbType' is missing a docstring.
+- 🟡 `tests/base_test.py:361`: Public function 'is3D' is missing a docstring.
+- 🟡 `tests/base_test.py:364`: Public function 'asPoint' is missing a docstring.
+- 🟡 `tests/base_test.py:367`: Public function 'type' is missing a docstring.
+- 🟡 `tests/base_test.py:377`: Public function 'length' is missing a docstring.
+- 🟡 `tests/base_test.py:387`: Public function 'interpolate' is missing a docstring.
+- 🟡 `tests/base_test.py:387`: Function 'interpolate' has no type annotations.
+- 🟡 `tests/base_test.py:390`: Public function 'lineLocatePoint' is missing a docstring.
+- 🟡 `tests/base_test.py:390`: Function 'lineLocatePoint' has no type annotations.
+- 🟡 `tests/base_test.py:395`: Public function 'nearestPoint' is missing a docstring.
+- 🟡 `tests/base_test.py:395`: Function 'nearestPoint' has no type annotations.
+- 🟡 `tests/base_test.py:408`: Public function 'simplify' is missing a docstring.
+- 🟡 `tests/base_test.py:408`: Function 'simplify' has no type annotations.
+- 🟡 `tests/base_test.py:411`: Public function 'buffer' is missing a docstring.
+- 🟡 `tests/base_test.py:411`: Function 'buffer' has no type annotations.
+- 🟡 `tests/base_test.py:425`: Public function 'densifyByDistance' is missing a docstring.
+- 🟡 `tests/base_test.py:425`: Function 'densifyByDistance' has no type annotations.
+- 🟡 `tests/base_test.py:428`: Public function 'boundingBox' is missing a docstring.
+- 🟡 `tests/base_test.py:445`: Public function 'transform' is missing a docstring.
+- 🟡 `tests/base_test.py:445`: Function 'transform' has no type annotations.
+- 🟡 `tests/base_test.py:450`: Public function 'vertexAt' is missing a docstring.
+- 🟡 `tests/base_test.py:450`: Function 'vertexAt' has no type annotations.
+- 🟡 `tests/base_test.py:472`: Public class 'MockQgsLineString' is missing a docstring.
+- 🟡 `tests/base_test.py:477`: Public function 'points' is missing a docstring.
+- 🟡 `tests/base_test.py:481`: Public class 'MockQgsPolygon' is missing a docstring.
+- 🟡 `tests/base_test.py:486`: Public function 'setExteriorRing' is missing a docstring.
+- 🟡 `tests/base_test.py:486`: Function 'setExteriorRing' has no type annotations.
+- 🟡 `tests/base_test.py:492`: Public function 'addInteriorRing' is missing a docstring.
+- 🟡 `tests/base_test.py:492`: Function 'addInteriorRing' has no type annotations.
+- 🟡 `tests/base_test.py:499`: Public class 'MockQgsPoint' is missing a docstring.
+- 🟡 `tests/base_test.py:510`: Public function 'x' is missing a docstring.
+- 🟡 `tests/base_test.py:513`: Public function 'y' is missing a docstring.
+- 🟡 `tests/base_test.py:516`: Public function 'z' is missing a docstring.
+- 🟡 `tests/base_test.py:519`: Public function 'setX' is missing a docstring.
+- 🟡 `tests/base_test.py:519`: Function 'setX' has no type annotations.
+- 🟡 `tests/base_test.py:522`: Public function 'setY' is missing a docstring.
+- 🟡 `tests/base_test.py:522`: Function 'setY' has no type annotations.
+- 🟡 `tests/base_test.py:525`: Public function 'setZ' is missing a docstring.
+- 🟡 `tests/base_test.py:525`: Function 'setZ' has no type annotations.
+- 🟡 `tests/base_test.py:533`: Public class 'MockQgsPointXY' is missing a docstring.
+- 🟡 `tests/base_test.py:540`: Public function 'distance' is missing a docstring.
+- 🟡 `tests/base_test.py:540`: Function 'distance' has no type annotations.
+- 🟡 `tests/base_test.py:543`: Public function 'azimuth' is missing a docstring.
+- 🟡 `tests/base_test.py:543`: Function 'azimuth' has no type annotations.
+- 🟡 `tests/base_test.py:553`: Public function 'compare' is missing a docstring.
+- 🟡 `tests/base_test.py:553`: Function 'compare' has no type annotations.
+- 🟡 `tests/base_test.py:557`: Public class 'MockQgsCoordinateReferenceSystem' is missing a docstring.
+- 🟡 `tests/base_test.py:562`: Public function 'authid' is missing a docstring.
+- 🟡 `tests/base_test.py:565`: Public function 'ellipsoidAcronym' is missing a docstring.
+- 🟡 `tests/base_test.py:568`: Public function 'isValid' is missing a docstring.
+- 🟡 `tests/base_test.py:572`: Public class 'MockQgsCoordinateTransform' is missing a docstring.
+- 🟡 `tests/base_test.py:576`: Public function 'transform' is missing a docstring.
+- 🟡 `tests/base_test.py:576`: Function 'transform' has no type annotations.
+- 🟡 `tests/base_test.py:580`: Public class 'MockQgsSpatialIndex' is missing a docstring.
+- 🟡 `tests/base_test.py:584`: Public function 'intersects' is missing a docstring.
+- 🟡 `tests/base_test.py:584`: Function 'intersects' has no type annotations.
+- 🟡 `tests/base_test.py:588`: Public class 'MockQgsFeatureRequest' is missing a docstring.
+- 🟡 `tests/base_test.py:591`: Public function 'setFilterFids' is missing a docstring.
+- 🟡 `tests/base_test.py:591`: Function 'setFilterFids' has no type annotations.
+- 🟡 `tests/base_test.py:594`: Public function 'setFilterRect' is missing a docstring.
+- 🟡 `tests/base_test.py:594`: Function 'setFilterRect' has no type annotations.
+- 🟡 `tests/base_test.py:597`: Public function 'setFilterExpression' is missing a docstring.
+- 🟡 `tests/base_test.py:597`: Function 'setFilterExpression' has no type annotations.
+- 🟡 `tests/base_test.py:600`: Public function 'setSubsetOfAttributes' is missing a docstring.
+- 🟡 `tests/base_test.py:600`: Function 'setSubsetOfAttributes' has no type annotations.
+- 🟡 `tests/base_test.py:603`: Public function 'setFlags' is missing a docstring.
+- 🟡 `tests/base_test.py:603`: Function 'setFlags' has no type annotations.
+- 🟡 `tests/base_test.py:607`: Public class 'MockQgsFeature' is missing a docstring.
+- 🟡 `tests/base_test.py:613`: Public function 'setGeometry' is missing a docstring.
+- 🟡 `tests/base_test.py:613`: Function 'setGeometry' has no type annotations.
+- 🟡 `tests/base_test.py:616`: Public function 'setFields' is missing a docstring.
+- 🟡 `tests/base_test.py:616`: Function 'setFields' has no type annotations.
+- 🟡 `tests/base_test.py:619`: Public function 'setAttributes' is missing a docstring.
+- 🟡 `tests/base_test.py:619`: Function 'setAttributes' has no type annotations.
+- 🟡 `tests/base_test.py:634`: Public function 'setAttribute' is missing a docstring.
+- 🟡 `tests/base_test.py:634`: Function 'setAttribute' has no type annotations.
+- 🟡 `tests/base_test.py:637`: Public function 'geometry' is missing a docstring.
+- 🟡 `tests/base_test.py:640`: Public function 'hasGeometry' is missing a docstring.
+- 🟡 `tests/base_test.py:643`: Public function 'fields' is missing a docstring.
+- 🟡 `tests/base_test.py:648`: Public function 'attributes' is missing a docstring.
+- 🟡 `tests/base_test.py:651`: Function '__getitem__' has no type annotations.
+- 🟡 `tests/base_test.py:665`: Function '__setitem__' has no type annotations.
+- 🟡 `tests/base_test.py:669`: Public class 'MockQgsRectangle' is missing a docstring.
+- 🟡 `tests/base_test.py:674`: Public function 'xMinimum' is missing a docstring.
+- 🟡 `tests/base_test.py:677`: Public function 'xMaximum' is missing a docstring.
+- 🟡 `tests/base_test.py:680`: Public function 'yMinimum' is missing a docstring.
+- 🟡 `tests/base_test.py:683`: Public function 'yMaximum' is missing a docstring.
+- 🟡 `tests/base_test.py:686`: Public function 'width' is missing a docstring.
+- 🟡 `tests/base_test.py:689`: Public function 'height' is missing a docstring.
+- 🟡 `tests/base_test.py:692`: Public function 'isEmpty' is missing a docstring.
+- 🟡 `tests/base_test.py:698`: Public function 'combineExtentWith' is missing a docstring.
+- 🟡 `tests/base_test.py:698`: Function 'combineExtentWith' has no type annotations.
+- 🟡 `tests/base_test.py:705`: Public class 'MockQgsField' is missing a docstring.
+- 🟡 `tests/base_test.py:711`: Public function 'name' is missing a docstring.
+- 🟡 `tests/base_test.py:714`: Public function 'type' is missing a docstring.
+- 🟡 `tests/base_test.py:718`: Public class 'MockQgsFields' is missing a docstring.
+- 🟡 `tests/base_test.py:723`: Public function 'append' is missing a docstring.
+- 🟡 `tests/base_test.py:723`: Function 'append' has no type annotations.
+- 🟡 `tests/base_test.py:726`: Public function 'indexOf' is missing a docstring.
+- 🟡 `tests/base_test.py:726`: Function 'indexOf' has no type annotations.
+- 🟡 `tests/base_test.py:732`: Public function 'indexFromName' is missing a docstring.
+- 🟡 `tests/base_test.py:732`: Function 'indexFromName' has no type annotations.
+- 🟡 `tests/base_test.py:735`: Public function 'names' is missing a docstring.
+- 🟡 `tests/base_test.py:738`: Public function 'count' is missing a docstring.
+- 🟡 `tests/base_test.py:747`: Public function 'field' is missing a docstring.
+- 🟡 `tests/base_test.py:747`: Function 'field' has no type annotations.
+- 🟡 `tests/base_test.py:756`: Public class 'MockQgsDistanceArea' is missing a docstring.
+- 🟡 `tests/base_test.py:757`: Public function 'setSourceCrs' is missing a docstring.
+- 🟡 `tests/base_test.py:757`: Function 'setSourceCrs' has no type annotations.
+- 🟡 `tests/base_test.py:760`: Public function 'setEllipsoid' is missing a docstring.
+- 🟡 `tests/base_test.py:760`: Function 'setEllipsoid' has no type annotations.
+- 🟡 `tests/base_test.py:763`: Public function 'measureLine' is missing a docstring.
+- 🟡 `tests/base_test.py:763`: Function 'measureLine' has no type annotations.
+- 🟡 `tests/base_test.py:773`: Public class 'MockQgsSettings' is missing a docstring.
+- 🟡 `tests/base_test.py:779`: Public function 'value' is missing a docstring.
+- 🟡 `tests/base_test.py:779`: Function 'value' has no type annotations.
+- 🟡 `tests/base_test.py:782`: Public function 'setValue' is missing a docstring.
+- 🟡 `tests/base_test.py:782`: Function 'setValue' has no type annotations.
+- 🟡 `tests/base_test.py:785`: Public function 'remove' is missing a docstring.
+- 🟡 `tests/base_test.py:785`: Function 'remove' has no type annotations.
+- 🟡 `tests/base_test.py:790`: Public class 'MockQgsProject' is missing a docstring.
+- 🟡 `tests/base_test.py:798`: Public function 'readEntry' is missing a docstring.
+- 🟡 `tests/base_test.py:798`: Function 'readEntry' has no type annotations.
+- 🟡 `tests/base_test.py:801`: Public function 'writeEntry' is missing a docstring.
+- 🟡 `tests/base_test.py:801`: Function 'writeEntry' has no type annotations.
+- 🟡 `tests/base_test.py:805`: Public function 'clear' is missing a docstring.
+- 🟡 `tests/base_test.py:810`: Public function 'instance' is missing a docstring.
+- 🟡 `tests/base_test.py:815`: Public function 'mapLayer' is missing a docstring.
+- 🟡 `tests/base_test.py:815`: Function 'mapLayer' has no type annotations.
+- 🟡 `tests/base_test.py:818`: Public function 'mapLayers' is missing a docstring.
+- 🟡 `tests/base_test.py:821`: Public function 'addMapLayer' is missing a docstring.
+- 🟡 `tests/base_test.py:821`: Function 'addMapLayer' has no type annotations.
+- 🟡 `tests/base_test.py:825`: Public function 'removeMapLayer' is missing a docstring.
+- 🟡 `tests/base_test.py:825`: Function 'removeMapLayer' has no type annotations.
+- 🟡 `tests/base_test.py:829`: Public function 'transformContext' is missing a docstring.
+- 🟡 `tests/base_test.py:832`: Public function 'crs' is missing a docstring.
+- 🟡 `tests/base_test.py:836`: Public class 'MockQgsPalLayerSettings' is missing a docstring.
+- 🟡 `tests/base_test.py:837`: Public class 'Placement' is missing a docstring.
+- 🟡 `tests/base_test.py:841`: Public class 'Property' is missing a docstring.
+- 🟡 `tests/base_test.py:851`: Public function 'setFormat' is missing a docstring.
+- 🟡 `tests/base_test.py:851`: Function 'setFormat' has no type annotations.
+- 🟡 `tests/base_test.py:854`: Public function 'setDataDefinedProperties' is missing a docstring.
+- 🟡 `tests/base_test.py:854`: Function 'setDataDefinedProperties' has no type annotations.
+- 🟡 `tests/base_test.py:858`: Public class 'MockQgsTextFormat' is missing a docstring.
+- 🟡 `tests/base_test.py:862`: Public function 'setColor' is missing a docstring.
+- 🟡 `tests/base_test.py:862`: Function 'setColor' has no type annotations.
+- 🟡 `tests/base_test.py:865`: Public function 'setSize' is missing a docstring.
+- 🟡 `tests/base_test.py:865`: Function 'setSize' has no type annotations.
+- 🟡 `tests/base_test.py:869`: Public class 'MockQgsPropertyCollection' is missing a docstring.
+- 🟡 `tests/base_test.py:873`: Public function 'setProperty' is missing a docstring.
+- 🟡 `tests/base_test.py:873`: Function 'setProperty' has no type annotations.
+- 🟡 `tests/base_test.py:877`: Public class 'MockQgsProperty' is missing a docstring.
+- 🟡 `tests/base_test.py:879`: Public function 'fromField' is missing a docstring.
+- 🟡 `tests/base_test.py:879`: Function 'fromField' has no type annotations.
+- 🟡 `tests/base_test.py:883`: Public function 'fromExpression' is missing a docstring.
+- 🟡 `tests/base_test.py:883`: Function 'fromExpression' has no type annotations.
+- 🟡 `tests/base_test.py:887`: Public class 'MockQgsVectorLayerSimpleLabeling' is missing a docstring.
+- 🟡 `tests/base_test.py:892`: Public class 'MockQgsSymbol' is missing a docstring.
+- 🟡 `tests/base_test.py:894`: Public function 'createSimple' is missing a docstring.
+- 🟡 `tests/base_test.py:894`: Function 'createSimple' has no type annotations.
+- 🟡 `tests/base_test.py:898`: Public class 'MockQgsLineSymbol' is missing a docstring.
+- 🟡 `tests/base_test.py:902`: Public class 'MockQgsMarkerSymbol' is missing a docstring.
+- 🟡 `tests/base_test.py:906`: Public class 'MockQgsSingleSymbolRenderer' is missing a docstring.
+- 🟡 `tests/base_test.py:914`: Public class 'MockQApplication' is missing a docstring.
+- 🟡 `tests/base_test.py:923`: Public function 'instance' is missing a docstring.
+- 🟡 `tests/base_test.py:929`: Public function 'installTranslator' is missing a docstring.
+- 🟡 `tests/base_test.py:929`: Function 'installTranslator' has no type annotations.
+- 🟡 `tests/base_test.py:932`: Public function 'thread' is missing a docstring.
+- 🟡 `tests/base_test.py:936`: Public class 'MockQWidget' is missing a docstring.
+- 🟡 `tests/base_test.py:941`: Public function 'setLayout' is missing a docstring.
+- 🟡 `tests/base_test.py:941`: Function 'setLayout' has no type annotations.
+- 🟡 `tests/base_test.py:944`: Public function 'layout' is missing a docstring.
+- 🟡 `tests/base_test.py:947`: Public function 'findChildren' is missing a docstring.
+- 🟡 `tests/base_test.py:947`: Function 'findChildren' has no type annotations.
+- 🟡 `tests/base_test.py:950`: Public function 'setStyleSheet' is missing a docstring.
+- 🟡 `tests/base_test.py:950`: Function 'setStyleSheet' has no type annotations.
+- 🟡 `tests/base_test.py:953`: Public function 'setWindowTitle' is missing a docstring.
+- 🟡 `tests/base_test.py:953`: Function 'setWindowTitle' has no type annotations.
+- 🟡 `tests/base_test.py:956`: Public function 'windowTitle' is missing a docstring.
+- 🟡 `tests/base_test.py:959`: Public function 'property' is missing a docstring.
+- 🟡 `tests/base_test.py:959`: Function 'property' has no type annotations.
+- 🟡 `tests/base_test.py:962`: Public function 'setProperty' is missing a docstring.
+- 🟡 `tests/base_test.py:962`: Function 'setProperty' has no type annotations.
+- 🟡 `tests/base_test.py:966`: Public function 'resize' is missing a docstring.
+- 🟡 `tests/base_test.py:966`: Function 'resize' has no type annotations.
+- 🟡 `tests/base_test.py:969`: Public function 'show' is missing a docstring.
+- 🟡 `tests/base_test.py:972`: Public function 'hide' is missing a docstring.
+- 🟡 `tests/base_test.py:975`: Public function 'setVisible' is missing a docstring.
+- 🟡 `tests/base_test.py:975`: Function 'setVisible' has no type annotations.
+- 🟡 `tests/base_test.py:978`: Public function 'setEnabled' is missing a docstring.
+- 🟡 `tests/base_test.py:978`: Function 'setEnabled' has no type annotations.
+- 🟡 `tests/base_test.py:981`: Public function 'setFixedSize' is missing a docstring.
+- 🟡 `tests/base_test.py:981`: Function 'setFixedSize' has no type annotations.
+- 🟡 `tests/base_test.py:984`: Public function 'setFixedHeight' is missing a docstring.
+- 🟡 `tests/base_test.py:984`: Function 'setFixedHeight' has no type annotations.
+- 🟡 `tests/base_test.py:987`: Public function 'setFixedWidth' is missing a docstring.
+- 🟡 `tests/base_test.py:987`: Function 'setFixedWidth' has no type annotations.
+- 🟡 `tests/base_test.py:990`: Public function 'setAttribute' is missing a docstring.
+- 🟡 `tests/base_test.py:990`: Function 'setAttribute' has no type annotations.
+- 🟡 `tests/base_test.py:993`: Public function 'setAutoFillBackground' is missing a docstring.
+- 🟡 `tests/base_test.py:993`: Function 'setAutoFillBackground' has no type annotations.
+- 🟡 `tests/base_test.py:996`: Public function 'exec' is missing a docstring.
+- 🟡 `tests/base_test.py:1000`: Public class 'MockQThread' is missing a docstring.
+- 🟡 `tests/base_test.py:1012`: Public function 'currentThread' is missing a docstring.
+- 🟡 `tests/base_test.py:1017`: Public function 'start' is missing a docstring.
+- 🟡 `tests/base_test.py:1020`: Public function 'run' is missing a docstring.
+- 🟡 `tests/base_test.py:1023`: Public function 'wait' is missing a docstring.
+- 🟡 `tests/base_test.py:1026`: Public function 'quit' is missing a docstring.
+- 🟡 `tests/base_test.py:1029`: Public function 'terminate' is missing a docstring.
+- 🟡 `tests/base_test.py:1032`: Public function 'isFinished' is missing a docstring.
+- 🟡 `tests/base_test.py:1035`: Public function 'isRunning' is missing a docstring.
+- 🟡 `tests/base_test.py:1038`: Public function 'requestInterruption' is missing a docstring.
+- 🟡 `tests/base_test.py:1041`: Public function 'isInterruptionRequested' is missing a docstring.
+- 🟡 `tests/base_test.py:1045`: Public class 'MockQDialog' is missing a docstring.
+- 🟡 `tests/base_test.py:1046`: Public function 'accept' is missing a docstring.
+- 🟡 `tests/base_test.py:1049`: Public function 'reject' is missing a docstring.
+- 🟡 `tests/base_test.py:1053`: Public class 'MockQCheckBox' is missing a docstring.
+- 🟡 `tests/base_test.py:1064`: Function '_set_checked' has no type annotations.
+- 🟡 `tests/base_test.py:1069`: Public class 'MockQGroupBox' is missing a docstring.
+- 🟡 `tests/base_test.py:1073`: Public class 'MockQVBoxLayout' is missing a docstring.
+- 🟡 `tests/base_test.py:1077`: Public function 'addWidget' is missing a docstring.
+- 🟡 `tests/base_test.py:1077`: Function 'addWidget' has no type annotations.
+- 🟡 `tests/base_test.py:1080`: Public function 'addSpacing' is missing a docstring.
+- 🟡 `tests/base_test.py:1080`: Function 'addSpacing' has no type annotations.
+- 🟡 `tests/base_test.py:1083`: Public function 'setSpacing' is missing a docstring.
+- 🟡 `tests/base_test.py:1083`: Function 'setSpacing' has no type annotations.
+- 🟡 `tests/base_test.py:1086`: Public function 'setContentsMargins' is missing a docstring.
+- 🟡 `tests/base_test.py:1086`: Function 'setContentsMargins' has no type annotations.
+- 🟡 `tests/base_test.py:1089`: Public function 'insertWidget' is missing a docstring.
+- 🟡 `tests/base_test.py:1089`: Function 'insertWidget' has no type annotations.
+- 🟡 `tests/base_test.py:1092`: Public function 'addLayout' is missing a docstring.
+- 🟡 `tests/base_test.py:1092`: Function 'addLayout' has no type annotations.
+- 🟡 `tests/base_test.py:1095`: Public function 'addStretch' is missing a docstring.
+- 🟡 `tests/base_test.py:1095`: Function 'addStretch' has no type annotations.
+- 🟡 `tests/base_test.py:1098`: Public function 'count' is missing a docstring.
+- 🟡 `tests/base_test.py:1102`: Public class 'MockQLabel' is missing a docstring.
+- 🟡 `tests/base_test.py:1106`: Public function 'setPixmap' is missing a docstring.
+- 🟡 `tests/base_test.py:1106`: Function 'setPixmap' has no type annotations.
+- 🟡 `tests/base_test.py:1110`: Public class 'MockQPushButton' is missing a docstring.
+- 🟡 `tests/base_test.py:1121`: Public function 'setIcon' is missing a docstring.
+- 🟡 `tests/base_test.py:1121`: Function 'setIcon' has no type annotations.
+- 🟡 `tests/base_test.py:1124`: Public function 'setCheckable' is missing a docstring.
+- 🟡 `tests/base_test.py:1124`: Function 'setCheckable' has no type annotations.
+- 🟡 `tests/base_test.py:1127`: Function '_set_checked' has no type annotations.
+- 🟡 `tests/base_test.py:1132`: Public class 'MockQListWidget' is missing a docstring.
+- 🟡 `tests/base_test.py:1137`: Function '__getattr__' has no type annotations.
+- 🟡 `tests/base_test.py:1143`: Public class 'MockQListWidgetItem' is missing a docstring.
+- 🟡 `tests/base_test.py:1162`: Function '__getattr__' has no type annotations.
+- 🟡 `tests/base_test.py:1169`: Function '__setattr__' has no type annotations.
+- 🟡 `tests/base_test.py:1176`: Public function 'reset_mock' is missing a docstring.
+- 🟡 `tests/base_test.py:1180`: Function 'mock_geometry_type' has no type annotations.
+- 🟡 `tests/base_test.py:1191`: Public class 'MockSignal' is missing a docstring.
+- 🟡 `tests/base_test.py:1198`: Function '_connect_slot' has no type annotations.
+- 🟡 `tests/base_test.py:1209`: Public function 'mock_signal' is missing a docstring.
+- 🟡 `tests/base_test.py:1216`: Public class 'MockQgsWkbTypes' is missing a docstring.
+- 🟡 `tests/base_test.py:1229`: Public class 'GeometryType' is missing a docstring.
+- 🟡 `tests/base_test.py:1234`: Public function 'geometryType' is missing a docstring.
+- 🟡 `tests/base_test.py:1234`: Function 'geometryType' has no type annotations.
+- 🟡 `tests/base_test.py:1238`: Public function 'hasZ' is missing a docstring.
+- 🟡 `tests/base_test.py:1238`: Function 'hasZ' has no type annotations.
+- 🟡 `tests/base_test.py:1242`: Public class 'MockQgis' is missing a docstring.
+- 🟡 `tests/base_test.py:1246`: Public class 'LayerFilter' is missing a docstring.
+- 🟡 `tests/base_test.py:1251`: Public class 'MockQgsTask' is missing a docstring.
+- 🟡 `tests/base_test.py:1259`: Public class 'MockQgsMapTool' is missing a docstring.
+- 🟡 `tests/base_test.py:1266`: Public function 'activate' is missing a docstring.
+- 🟡 `tests/base_test.py:1269`: Public function 'deactivate' is missing a docstring.
+- 🟡 `tests/base_test.py:1272`: Public function 'canvasReleaseEvent' is missing a docstring.
+- 🟡 `tests/base_test.py:1272`: Function 'canvasReleaseEvent' has no type annotations.
+- 🟡 `tests/base_test.py:1275`: Public function 'canvasMoveEvent' is missing a docstring.
+- 🟡 `tests/base_test.py:1275`: Function 'canvasMoveEvent' has no type annotations.
+- 🟡 `tests/base_test.py:1278`: Public function 'keyPressEvent' is missing a docstring.
+- 🟡 `tests/base_test.py:1278`: Function 'keyPressEvent' has no type annotations.
+- 🟡 `tests/base_test.py:1282`: Public class 'MockQgsRubberBand' is missing a docstring.
+- 🟡 `tests/base_test.py:1286`: Public function 'addPoint' is missing a docstring.
+- 🟡 `tests/base_test.py:1286`: Function 'addPoint' has no type annotations.
+- 🟡 `tests/base_test.py:1289`: Public function 'reset' is missing a docstring.
+- 🟡 `tests/base_test.py:1289`: Function 'reset' has no type annotations.
+- 🟡 `tests/base_test.py:1292`: Public function 'show' is missing a docstring.
+- 🟡 `tests/base_test.py:1295`: Public function 'hide' is missing a docstring.
+- 🟡 `tests/base_test.py:1298`: Public function 'setColor' is missing a docstring.
+- 🟡 `tests/base_test.py:1298`: Function 'setColor' has no type annotations.
+- 🟡 `tests/base_test.py:1301`: Public function 'setFillColor' is missing a docstring.
+- 🟡 `tests/base_test.py:1301`: Function 'setFillColor' has no type annotations.
+- 🟡 `tests/base_test.py:1304`: Public function 'setStrokeColor' is missing a docstring.
+- 🟡 `tests/base_test.py:1304`: Function 'setStrokeColor' has no type annotations.
+- 🟡 `tests/base_test.py:1307`: Public function 'setWidth' is missing a docstring.
+- 🟡 `tests/base_test.py:1307`: Function 'setWidth' has no type annotations.
+- 🟡 `tests/base_test.py:1310`: Public function 'setToGeometry' is missing a docstring.
+- 🟡 `tests/base_test.py:1310`: Function 'setToGeometry' has no type annotations.
+- 🟡 `tests/base_test.py:1314`: Public class 'MockQgsVertexMarker' is missing a docstring.
+- 🟡 `tests/base_test.py:1320`: Public function 'setCenter' is missing a docstring.
+- 🟡 `tests/base_test.py:1320`: Function 'setCenter' has no type annotations.
+- 🟡 `tests/base_test.py:1323`: Public function 'setColor' is missing a docstring.
+- 🟡 `tests/base_test.py:1323`: Function 'setColor' has no type annotations.
+- 🟡 `tests/base_test.py:1326`: Public function 'setIconSize' is missing a docstring.
+- 🟡 `tests/base_test.py:1326`: Function 'setIconSize' has no type annotations.
+- 🟡 `tests/base_test.py:1329`: Public function 'setIconType' is missing a docstring.
+- 🟡 `tests/base_test.py:1329`: Function 'setIconType' has no type annotations.
+- 🟡 `tests/base_test.py:1332`: Public function 'setPenWidth' is missing a docstring.
+- 🟡 `tests/base_test.py:1332`: Function 'setPenWidth' has no type annotations.
+- 🟡 `tests/base_test.py:1336`: Public class 'MockQPoint' is missing a docstring.
+- 🟡 `tests/base_test.py:1340`: Public function 'x' is missing a docstring.
+- 🟡 `tests/base_test.py:1343`: Public function 'y' is missing a docstring.
+- 🟡 `tests/base_test.py:1347`: Public class 'MockQgsMapCanvas' is missing a docstring.
+- 🟡 `tests/base_test.py:1354`: Public class 'MockQPainter' is missing a docstring.
+- 🟡 `tests/base_test.py:1361`: Public class 'MockQImage' is missing a docstring.
+- 🟡 `tests/base_test.py:1368`: Public class 'MockQColor' is missing a docstring.
+- 🟡 `tests/base_test.py:1369`: Public function 'isValid' is missing a docstring.
+- 🟡 `tests/base_test.py:1372`: Public function 'darker' is missing a docstring.
+- 🟡 `tests/base_test.py:1372`: Function 'darker' has no type annotations.
+- 🟡 `tests/base_test.py:1375`: Public function 'setAlpha' is missing a docstring.
+- 🟡 `tests/base_test.py:1375`: Function 'setAlpha' has no type annotations.
+- 🟡 `tests/base_test.py:1378`: Public function 'red' is missing a docstring.
+- 🟡 `tests/base_test.py:1381`: Public function 'green' is missing a docstring.
+- 🟡 `tests/base_test.py:1384`: Public function 'blue' is missing a docstring.
+- 🟡 `tests/base_test.py:1388`: Public function 'fromHsv' is missing a docstring.
+- 🟡 `tests/base_test.py:1388`: Function 'fromHsv' has no type annotations.
+- 🟡 `tests/base_test.py:1392`: Public class 'MockQRectF' is missing a docstring.
+- 🟡 `tests/base_test.py:1397`: Public function 'x' is missing a docstring.
+- 🟡 `tests/base_test.py:1400`: Public function 'y' is missing a docstring.
+- 🟡 `tests/base_test.py:1403`: Public function 'width' is missing a docstring.
+- 🟡 `tests/base_test.py:1406`: Public function 'height' is missing a docstring.
+- 🟡 `tests/base_test.py:1510`: Public function 'get_or_reset' is missing a docstring.
+- 🟡 `tests/base_test.py:1510`: Function 'get_or_reset' has no type annotations.
+- 🟡 `tests/base_test.py:1524`: Function 'create_real_writer' has no type annotations.
+- 🟡 `tests/base_test.py:1533`: Public function 'mock_addFeature' is missing a docstring.
+- 🟡 `tests/base_test.py:1533`: Function 'mock_addFeature' has no type annotations.
+- 🟡 `tests/base_test.py:1536`: Public function 'mock_flushBuffer' is missing a docstring.
+- 🟡 `tests/base_test.py:1547`: Public function 'create_files_now' is missing a docstring.
+- 🟡 `tests/exporters/test_interpretation_3d_exporter.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/gui/test_geology_task.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/gui/test_geology_task.py:8`: Public class 'TestGeologyGenerationTask' is missing a docstring.
+- 🟡 `tests/gui/test_geology_task.py:9`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/gui/test_geology_task.py:26`: Public function 'tearDown' is missing a docstring.
+- 🟡 `tests/gui/test_main_dialog_interpretation.py:13`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/gui/test_main_dialog_interpretation.py:54`: Function 'test_apply_attribute_inheritance_geology' has no type annotations.
+- 🟡 `tests/gui/test_main_dialog_settings.py:13`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/gui/test_main_dialog_validation_manager.py:13`: Public class 'TestDialogValidationManager' is missing a docstring.
+- 🟡 `tests/gui/test_main_dialog_tools.py:12`: Public class 'TestDialogToolManager' is missing a docstring.
+- 🟡 `tests/gui/test_main_dialog_tools.py:194`: Public class 'TestNavigationManager' is missing a docstring.
+- 🟡 `tests/gui/test_message_manager.py:14`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/gui/test_message_manager.py:35`: Function 'test_show_dialog' has no type annotations.
+- 🟡 `tests/gui/test_message_manager.py:43`: Function 'test_handle_error_sec_interp_error' has no type annotations.
+- 🟡 `tests/gui/test_message_manager.py:54`: Function 'test_handle_error_unexpected' has no type annotations.
+- 🟡 `tests/gui/test_preview_renderer_custom.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/gui/test_preview_renderer_custom.py:10`: Public class 'TestPreviewRendererCustom' is missing a docstring.
+- 🟡 `tests/gui/test_preview_renderer_custom.py:11`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/gui/test_settings_page.py:26`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/integration/__init__.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/gui/test_interpretation_tool.py:18`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/integration/base_integration.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/gui/test_measure_tool.py:15`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/gui/test_measure_tool.py:44`: Function 'test_snapper_with_layer' has no type annotations.
+- 🟡 `tests/gui/test_measure_tool.py:301`: Public function 'get_locator_side_effect' is missing a docstring.
+- 🟡 `tests/gui/test_measure_tool.py:301`: Function 'get_locator_side_effect' has no type annotations.
+- 🟡 `tests/integration/test_measurement_workflow.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/integration/test_measurement_workflow.py:17`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/integration/test_interpretation_workflow.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/integration/test_interpretation_workflow.py:18`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/integration/test_qgis_smoke.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/integration/test_qgis_smoke.py:39`: Public class 'DummyPlugin' is missing a docstring.
+- 🟡 `tests/integration/test_3d_integration.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/integration/test_3d_integration.py:33`: Public function 'setUpClass' is missing a docstring.
+- 🟡 `tests/integration/test_3d_integration.py:39`: Public function 'tearDownClass' is missing a docstring.
+- 🟡 `tests/integration/test_3d_integration.py:44`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/test_translation_loading.py:1`: Module is missing a docstring (PEP 257).
+- 🟡 `tests/test_translation_loading.py:13`: Public class 'TestTranslationLoading' is missing a docstring.
+- 🟡 `tests/test_translation_loading.py:15`: Public function 'setUp' is missing a docstring.
+- 🟡 `tests/test_translation_loading.py:25`: Function 'test_translation_loads_es' has no type annotations.
+- 🟡 `tests/test_translation_loading.py:61`: Function 'test_translation_loads_fr' has no type annotations.
+- 🟡 `tests/test_translation_loading.py:97`: Function 'test_translation_loads_pt_br' has no type annotations.
+- 🟡 `tests/test_translation_loading.py:133`: Function 'test_translation_loads_de' has no type annotations.
+- 🟡 `tests/test_translation_loading.py:168`: Function 'test_translation_loads_default_on_fail' has no type annotations.
+- 🟡 `tests/test_translation_loading.py:195`: Function 'test_translation_loads_ru' has no type annotations.
+- 🟡 `tests/gui/test_preview_components.py:31`: Public function 'setUp' is missing a docstring.
+- **Metadata (metadata.txt)**: ✅ OK
+## 🧠 Semantic Analysis
+- No circular imports detected.
+- All resource paths validated.
+## 📦 Official Repository Standards
+- **File Structure**: ✅ OK
+- **Metadata (metadata.txt)**: ✅ OK

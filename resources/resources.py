@@ -6,9 +6,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore
+from qgis.PyQt.QtCore import qInitResources, qCleanupResources, QDir
 
-qt_resource_data = b"\
+_data = b"\
 \x00\x00\x06\x97\
 \x89\
 \x50\x4e\x47\x0d\x0a\x1a\x0a\x00\x00\x00\x0d\x49\x48\x44\x52\x00\

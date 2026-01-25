@@ -1,11 +1,34 @@
 # Plan de Implementación - Fase v2.9.0 (Análisis Avanzado y Geometría)
 
 ## Objetivo General
-Evolucionar las capacidades geométricas de SecInterp para soportar perfiles no lineales (polilíneas/túneles) y consolidar la suite de verificación 3D iniciada en la v2.8.0.
+Evolucionar las capacidades geométricas de SecInterp para soportar perfiles no lineales (polilíneas/túneles) y consolidar la suite de verificación 3D, priorizando el saneamiento crítico de calidad del código base.
 
 ---
 
 ## Proposed Changes
+
+### Objetivo 0: Saneamiento Crítico de Calidad (Inmediato)
+
+#### Contexto
+El análisis de calidad identificó un déficit crítico en type hints de retorno y alta complejidad ciclomática en métodos clave.
+
+#### Componentes a Implementar
+
+##### [MODIFY] Type Hints en Return Values
+Incrementar cobertura de return type hints al >80% en:
+- `core/services/drillhole_service.py`
+- `core/services/geology_service.py`
+- `core/validation/project_validator.py`
+- `gui/main_dialog_preview.py`
+
+##### [REFACTOR] [drillhole_service.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/services/drillhole_service.py)
+Reducir CC en `_project_single_detached_collar` (actual CC=25) mediante extracción de lógica de transformación.
+
+##### [FIX] Legacy Imports & Docstrings
+- Eliminar imports obsoletos de QGIS detectados por el analyzer.
+- Rellenar docstrings faltantes en módulos core utilizando el estándar Google.
+
+---
 
 ### Objetivo 1: Suite de Integración 3D Completa
 

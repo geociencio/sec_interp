@@ -11,8 +11,8 @@ from qgis.core import (
     QgsFields,
     QgsField,
     QgsCoordinateReferenceSystem,
+    QMetaType,
 )
-from PyQt5.QtCore import QVariant
 
 from sec_interp.core.services.geology_service import GeologyService
 from sec_interp.core.services.drillhole_service import DrillholeService
@@ -49,7 +49,7 @@ class TestServiceValidation(BaseTestCase):
 
         # Mock Fields for Outcrop
         fields = QgsFields()
-        fields.append(QgsField("unit", QVariant.String))
+        fields.append(QgsField("unit", QMetaType.Type.String))
         self.mock_outcrop_lyr.fields.return_value = fields
 
     def test_geology_service_validates_band_number(self):

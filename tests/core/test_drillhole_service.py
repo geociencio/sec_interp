@@ -1,14 +1,20 @@
 """Tests for Drillhole Service."""
 
 from unittest.mock import MagicMock, patch
-from tests.base_test import BaseTestCase
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
-    QgsPointXY,
-    QgsGeometry,
+    QgsVectorLayer,
+    QgsProject,
+    QgsDistanceArea,
     QgsCoordinateReferenceSystem,
     QgsFeature,
-    QgsVectorLayer,
+    QgsGeometry,
+    QgsPointXY,
+    QgsField,
+    QgsFields,  # QgsFields is still used, so keep it
 )
+from qgis.core import QMetaType
+from tests.base_test import BaseTestCase
 
 from sec_interp.core.services.drillhole_service import DrillholeService
 from sec_interp.core.exceptions import DataMissingError
@@ -66,14 +72,13 @@ class TestDrillholeService(BaseTestCase):
         survey_layer = MagicMock()
         survey_layer.isValid.return_value = True
 
-        from qgis.core import QgsFields, QgsField
-        from PyQt5.QtCore import QVariant
+        from qgis.core import QgsFields, QgsField, QMetaType
 
         fields_cfg = QgsFields()
-        fields_cfg.append(QgsField("hole_id", QVariant.String))
-        fields_cfg.append(QgsField("depth", QVariant.Double))
-        fields_cfg.append(QgsField("azim", QVariant.Double))
-        fields_cfg.append(QgsField("incl", QVariant.Double))
+        fields_cfg.append(QgsField("hole_id", QMetaType.Type.QString))
+        fields_cfg.append(QgsField("depth", QMetaType.Type.Double))
+        fields_cfg.append(QgsField("azim", QMetaType.Type.Double))
+        fields_cfg.append(QgsField("incl", QMetaType.Type.Double))
 
         feat = QgsFeature(fields_cfg)
         feat["hole_id"] = "DH01"
