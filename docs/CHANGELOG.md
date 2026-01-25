@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- [Pendiente: Soporte para perfiles poligonales/túneles]
+- [Pendiente: Suite de integración 3D avanzada]
 
 ### Changed
 
