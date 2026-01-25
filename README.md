@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-2.7.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-2.8.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
@@ -15,21 +15,20 @@
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v2.7.0: Professional Geological Interpretation with Integrated High-Fidelity Profiles.*
+*SecInterp v2.8.0: Professional Geological Interpretation with Integrated High-Fidelity Profiles.*
 
 ---
 
 ---
 
-## 🆕 What's New in v2.7.0
-**Phase: Operational Excellence & UI Modernization**
+## 🆕 What's New in v2.8.0
+**Phase: Debt Reduction & UI Improvements**
 
-- **🎨 Modernized UI**: A new premium sidebar-based navigation and native QGIS icons provide a cohesive, professional experience.
-- **🌍 Full i18n Support**: Core architecture and all UI elements are fully translated and prepared for multi-language support (English and Spanish base).
-- **🛡️ 3-Level Robust Validation**: Implementing a tiered validation system (Type, Business Logic, and Domain) to ensure data integrity and prevent crashes.
-- **🐳 Dockerized QA**: Continuous testing infrastructure using Docker to run 340+ tests in an official QGIS environment.
-- **📚 Automated API Docs**: Clean, external documentation generated with Sphinx for enhanced developer maintainability.
-- **🧊 Enhanced 3D Export**: Improved projection algorithms for both drillhole traces (`LineStringZ`) and geological intervals (`PolygonZ`).
+- **🧊 Core Decoupling**: Full architectural separation between Core and QGIS API using WKT/DTO patterns for maximum stability.
+- **⚡ Thread-Safety**: Optimized background tasks (drillholes/geology) for crash-free asynchronous processing.
+- **🗺️ Legend Control**: New toggle to show/hide the legend on the preview canvas with configuration persistence.
+- **📐 Advanced Mocks**: Improved testing infrastructure with native geometric calculation support in mocks.
+- **📚 Docs Revived**: Restored automated API documentation build and styling.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 

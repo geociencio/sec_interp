@@ -7,7 +7,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=2.7.0
+version=2.8.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -21,6 +21,14 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    2.8.0 (2026-01-25)
+    * Debt Reduction & UI Improvements:
+      - Core: Full Core-QGIS Architectural Decoupling using WKT/DTO pattern.
+      - Core: Improved thread-safety for background tasks.
+      - UI: Added legend visibility toggle with project/global persistence.
+      - Infrastructure: Enhanced geometric mocks (azimuth support).
+      - Documentation: Fixed API docs Sphinx build.
+
     2.7.0 (2026-01-18)
     * Operational Excellence & Documentation:
       - Infrastructure: Dockerized QA environment (100%% tests passing).
