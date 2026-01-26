@@ -30,8 +30,14 @@ Se aplicará el principio de Responsabilidad Única (SRP) para descomponer servi
     - `projection_engine.py`: Matemática pura de proyección 2D/3D (`_project_point_to_line`, desurveying).
 - `DrillholeService` (Facade): Se mantiene en `core/services/drillhole_service.py` (o `core/services/drillhole/service.py` re-exportado) para orquestar estos procesadores.
 
-### 3. Geology Service (Prioridad 3)
-*Sin cambios en la estructura solicitada, se mantiene el plan original de extracción de geometría.*
+### 3. Geology Service (Prioridad 3) ✅ COMPLETADO
+**Estado Actual**: Refactorización completada.
+
+**Cambios Realizados**:
+- Extraída lógica geométrica a `core/utils/geometry_utils/processing.py`
+- Extraída lógica de extracción a `core/utils/geometry_utils/extraction.py`
+- Reducida complejidad ciclomática en `GeologyService`
+- Tests actualizados y validados (361 tests OK)
 
 ## Plan de Ejecución
 
@@ -45,8 +51,9 @@ Se aplicará el principio de Responsabilidad Única (SRP) para descomponer servi
 2. Crear `DrillholeExtractor` y mover `prepare_task_input`, `_extract_attributes_agnostic`.
 3. Conectar `DrillholeService` a estos nuevos componentes.
 
-### Fase 3: Limpieza de GeologyService
-1. Extraer métodos privados de geometría a utilidades.
+### Fase 3: Limpieza de GeologyService ✅ COMPLETADO
+1. ✅ Extraídos métodos privados de geometría a `core/utils/geometry_utils`
+2. ✅ Commit: `d32c017` - "refactor(core): extract geometry logic from GeologyService"
 
 ## Verificación
 - Ejecución de suite de tests unitarios completa (208 tests) tras cada fase.

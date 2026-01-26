@@ -10,7 +10,7 @@ authors = [
     { name = "Juan M Bernales", email = "juanbernales@gmail.com" }
 ]
 dependencies = [
-    "ai-context-core>=1.0.1",
+    "ai-context-core>=2.5.2",
     "PyQt5>=5.15.0,<5.16.0",
 ]
 
@@ -28,7 +28,7 @@ dev = [
     "black==24.1.0",
     "mypy>=1.10",
     "networkx>=3.0",
-    "ai-context-core>=1.0.0",
+    "ai-context-core>=2.1.1",
     "qgis-plugin-analyzer>=1.4.0",
     "sphinx>=7.0",
     "sphinx-rtd-theme>=2.0",

@@ -1,4 +1,13 @@
 ---
+## [2026-01-26] Resumen: Estabilización de Ai-Context-Core (v2.5.2)
+- **Logro**: Resuelto el bloqueo crítico en el análisis del proyecto mediante la actualización a la v2.5.2 de `ai-context-core`.
+- **Cambios**:
+    - Identificada y verificada la persistencia del bug en la v2.5.1 de PyPI.
+    - Actualizada dependencia a `ai-context-core>=2.5.2` en `pyproject.toml`.
+    - Regenerado `AI_CONTEXT.md` y `PROJECT_SUMMARY.md` con métricas reales.
+- **Estado**: Análisis funcional completado exitosamente (Score 38.8). Ver [sesion_2026-01-26_ai_context_core_stabilization.md](maintenance/sesion_2026-01-26_ai_context_core_stabilization.md).
+
+---
 ## [2026-01-25] INICIO DE FASE v2.9.0: Análisis Avanzado y Geometría
 - **Objetivo**: Implementar soporte para secciones poligonales (túneles) y suite de tests 3D avanzada.
 - **Duración Estimada**: 2 semanas.

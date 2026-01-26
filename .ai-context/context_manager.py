@@ -2,6 +2,7 @@
 """context_manager.py - Gestiona contexto para múltiples IAs."""
 
 import json
+import time
 from pathlib import Path
 
 import yaml
@@ -17,7 +18,7 @@ class AIContextManager:
     def _load_contexts(self) -> dict:
         """Carga contextos existentes."""
         contexts = {}
-        context_files = ["project_context.json", "AI_CONTEXT.md", ".ai-context.yaml"]
+        context_files = ["project_context.json", "AI_CONTEXT.md"]
 
         for file in context_files:
             path = self.project_path / file
@@ -25,6 +26,15 @@ class AIContextManager:
                 contexts[file] = self._load_file(path)
 
         return contexts
+
+    def _load_file(self, path: Path) -> any:
+        """Carga archivo según su extensión."""
+        if path.suffix == ".json":
+            return json.loads(path.read_text(encoding="utf-8"))
+        elif path.suffix in [".yaml", ".yml"]:
+            return yaml.safe_load(path.read_text(encoding="utf-8"))
+        else:
+            return path.read_text(encoding="utf-8")
 
     def create_optimized_prompt(
         self, task: str, ai_model: str = "deepseek-coder", max_tokens: int = 4000
@@ -47,7 +57,7 @@ class AIContextManager:
         full_prompt = prompt_template.format(
             task=task,
             context=base_context[: max_tokens // 2],
-            project_name=self.project_path.name,
+            project_name=self.project_path.absolute().name,
         )
 
         return self._truncate_to_tokens(full_prompt, max_tokens)

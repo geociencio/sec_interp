@@ -15,7 +15,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     Actualiza y lee el contexto para entender "dónde nos quedamos".
     // turbo
     ```bash
-    uv run ai-ctx analyze --path . && cat .agent/next_steps.md
+    ai-ctx analyze --path . && cat .agent/next_steps.md
     ```
 
     🤖 **Agent Action**: Revisar `AI_CONTEXT.md` y `project_context.json` usando skill **qgis-core** para identificar:

@@ -53,7 +53,7 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     Asegura que el "Cerebro" de la IA esté al día con los cambios finales.
     // turbo
     ```bash
-    uv run ai-ctx analyze --path . && cat .agent/next_steps.md
+    ai-ctx analyze --path . && cat .agent/next_steps.md
     ```
 
 4.  **Commit Local**:

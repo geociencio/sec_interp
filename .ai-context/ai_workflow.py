@@ -39,7 +39,7 @@ class AIWorkflowManager:
 
         # Archivos esenciales
         essential_files = {
-            "project_brain.md": self._default_brain_template(),
+            "AI_CONTEXT.md": self._default_brain_template(),
             "tech_stack.yaml": self._default_tech_stack(),
             "decisions_log.md": "# Registro de Decisiones\n\n",
             "context_cheatsheet.md": self._cheatsheet_template(),
@@ -172,14 +172,16 @@ class AIWorkflowManager:
 
         # Leer archivos de contexto
         context_files = {
-            "project_brain.md": "general",
             "tech_stack.yaml": "technical",
             "decisions_log.md": "decisions",
             "context_cheatsheet.md": "cheatsheet",
         }
 
         # Archivos generados por ProjectAnalyzer (en la raíz)
-        analyzer_files = {"AI_CONTEXT.md": "analyzer_findings"}
+        analyzer_files = {
+            "AI_CONTEXT.md": "general",
+            "project_context.json": "technical_metrics",
+        }
 
         relevant_parts = []
 
@@ -618,8 +620,8 @@ class AIWorkflowManager:
         return actions
 
     def _update_project_brain(self, updates: dict):
-        """Actualiza el 'cerebro' del proyecto."""
-        brain_file = self.context_dir / "project_brain.md"
+        """Actualiza el contexto del proyecto."""
+        brain_file = self.root / "AI_CONTEXT.md"
 
         if brain_file.exists():
             content = brain_file.read_text(encoding="utf-8")
