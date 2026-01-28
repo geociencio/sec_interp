@@ -1,4 +1,12 @@
 ---
+## [2026-01-27] Resumen: Suite 3D Completa y Preparación QGIS 4 (Noche)
+- **Logro**: Finalizada la implementación de la Suite de Integración 3D (v2.9.0) y establecida la infraestructura para QGIS 4.x.
+- **Cambios**:
+    - **3D**: Pruebas de integración para transformaciones CRS complejas y corrección de proyección de collares en el Core.
+    - **QGIS 4**: Creación de rama `qgis4-migration` y entorno `docker-test-nightly`.
+    - **Calidad**: 100% Type Hints en servicios críticos y corrección de regresiones en tests.
+- **Estado**: 377 tests OK (Docker). Ver [sesion_2026-01-27_3d_integration_and_qgis4_prep.md](maintenance/sesion_2026-01-27_3d_integration_and_qgis4_prep.md).
+
 ## [2026-01-26] Resumen: Estabilización de Ai-Context-Core (v2.5.2)
 - **Logro**: Resuelto el bloqueo crítico en el análisis del proyecto mediante la actualización a la v2.5.2 de `ai-context-core`.
 - **Cambios**:
