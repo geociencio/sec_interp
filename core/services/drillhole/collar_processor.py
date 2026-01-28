@@ -6,6 +6,7 @@ import contextlib
 from typing import Any
 
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsDistanceArea,
     QgsFeatureRequest,
     QgsGeometry,
@@ -32,6 +33,8 @@ class CollarProcessor:
         y_field: str,
         z_field: str,
         dem_layer: QgsRasterLayer | None,
+        target_crs: QgsCoordinateReferenceSystem | None = None,
+        transform_context: Any | None = None,
     ) -> tuple[set[Any], list[dict[str, Any]], dict[Any, float]]:
         """Detach collar features and pre-sample Z using WKT for decoupling."""
         try:
@@ -41,6 +44,13 @@ class CollarProcessor:
 
         collar_bbox = line_buffer.boundingBox() if line_buffer else line_geom.boundingBox()
         req = QgsFeatureRequest().setFilterRect(collar_bbox)
+
+        if target_crs and target_crs.isValid() and layer.crs() != target_crs:
+            if not transform_context:
+                from qgis.core import QgsProject
+
+                transform_context = QgsProject.instance().transformContext()
+            req.setDestinationCrs(target_crs, transform_context)
 
         collar_ids = set()
         collar_data = []

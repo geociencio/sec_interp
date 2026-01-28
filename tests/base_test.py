@@ -603,6 +603,9 @@ class MockQgsFeatureRequest:
     def setFlags(self, flags):
         return self
 
+    def setDestinationCrs(self, crs, context):
+        return self
+
 
 class MockQgsFeature:
     def __init__(self, fields=None):

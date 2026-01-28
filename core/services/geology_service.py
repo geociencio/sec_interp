@@ -250,7 +250,7 @@ class GeologyService(IGeologyService):
     def _process_detached_intersection(
         self,
         geom: QgsGeometry,
-        attributes: dict[str, Any],
+        attrs: dict[str, Any],
         unit_name: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
@@ -258,35 +258,19 @@ class GeologyService(IGeologyService):
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[GeologySegment]:
-        """Process a detached intersection geometry to extract geology segments.
+        """Process a detached intersection geometry to extract geology segments."""
+        if not geom or geom.isNull():
+            return []
 
-        This method takes an intersection geometry (which can be a MultiLineString)
-        and breaks it down into individual LineString segments. For each segment,
-        it creates a `GeologySegment` object by sampling elevations from the
-        master profile data.
+        geometries = extract_lines_from_geometry(geom)
+        if not geometries:
+            return []
 
-        Args:
-            geom: The QgsGeometry representing the intersection of the section line and an outcrop.
-            attributes: A dictionary of attributes for the outcrop.
-            unit_name: The geological unit name for the outcrop.
-            line_start: The start point of the main cross-section line.
-            da: The QgsDistanceArea object for distance calculations.
-            master_grid_dists: List of (distance, point, elevation) tuples for the entire profile.
-            master_profile_data: List of (distance, elevation) tuples for the entire profile.
-            tolerance: The tolerance for point matching.
-
-        Returns:
-            list[GeologySegment]: A list of `GeologySegment` objects derived from the intersection.
-
-        """
         segments = []
-        # Extract individual LineString geometries
-        line_geometries = extract_lines_from_geometry(geom)
-
-        for seg_geom in line_geometries:
-            segment = self._create_segment_from_detached(
+        for seg_geom in geometries:
+            segment = self._create_segment_from_geometry(
                 seg_geom,
-                attributes,
+                attrs,
                 unit_name,
                 line_start,
                 da,
@@ -296,20 +280,21 @@ class GeologyService(IGeologyService):
             )
             if segment:
                 segments.append(segment)
+
         return segments
 
-    def _create_segment_from_detached(
+    def _create_segment_from_geometry(
         self,
         seg_geom: QgsGeometry,
         attributes: dict[str, Any],
-        glg_val: str,
+        unit_name: str,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
         master_grid_dists: list[tuple[float, QgsPointXY, float]],
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> GeologySegment | None:
-        """Create segment from detached data."""
+        """Create a GeologySegment from a geometry part by sampling elevations."""
         rng = calculate_segment_range(seg_geom, line_start, da)
         if not rng:
             return None
@@ -320,7 +305,7 @@ class GeologyService(IGeologyService):
         )
 
         return GeologySegment(
-            unit_name=glg_val,
+            unit_name=unit_name,
             geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
             attributes=attributes,
             points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
@@ -376,70 +361,6 @@ class GeologyService(IGeologyService):
             master_grid_dists.append((current_dist, pt, elev))
 
         return master_profile_data, master_grid_dists
-
-    def _process_detached_intersection(
-        self,
-        geom: QgsGeometry,
-        attrs: dict[str, Any],
-        unit_name: str,
-        line_start: QgsPointXY,
-        da: QgsDistanceArea,
-        master_grid_dists: list[tuple[float, tuple[float, float], float]],
-        master_profile_data: list[tuple[float, float]],
-        tolerance: float,
-    ) -> list[GeologySegment]:
-        """Process a detached intersection geometry to extract geology segments."""
-        if not geom or geom.isNull():
-            return []
-
-        geometries = extract_lines_from_geometry(geom)
-        if not geometries:
-            return []
-
-        segments = []
-        for seg_geom in geometries:
-            segment = self._create_segment_from_geometry(
-                seg_geom,
-                attrs,
-                unit_name,
-                line_start,
-                da,
-                master_grid_dists,
-                master_profile_data,
-                tolerance,
-            )
-            if segment:
-                segments.append(segment)
-
-        return segments
-
-    def _create_segment_from_geometry(
-        self,
-        seg_geom: QgsGeometry,
-        attributes: dict[str, Any],
-        unit_name: str,
-        line_start: QgsPointXY,
-        da: QgsDistanceArea,
-        master_grid_dists: list[tuple[float, tuple[float, float], float]],
-        master_profile_data: list[tuple[float, float]],
-        tolerance: float,
-    ) -> GeologySegment | None:
-        """Create a GeologySegment from a geometry part by sampling elevations."""
-        rng = calculate_segment_range(seg_geom, line_start, da)
-        if not rng:
-            return None
-
-        dist_start, dist_end = rng
-        segment_points = interpolate_segment_points(
-            dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
-        )
-
-        return GeologySegment(
-            unit_name=unit_name,
-            geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
-            attributes=attributes,
-            points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
-        )
 
     def _extract_line_info(self, line_lyr: QgsVectorLayer) -> tuple[QgsGeometry, QgsPointXY]:
         """Extract geometry and start point from the line layer.

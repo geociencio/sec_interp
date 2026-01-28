@@ -159,6 +159,7 @@ class DrillholeService(IDrillholeService):
             collar_y_field,
             collar_z_field,
             dem_layer,
+            target_crs=line_crs,
         )
 
         # 2. Bulk Fetch Child Data (Sync)
@@ -337,7 +338,8 @@ class DrillholeService(IDrillholeService):
         interval_fields: dict[str, str],
     ) -> tuple[list, list]:
         """Process drillhole interval data using detached structures."""
-        geol_data, drillhole_data = [], []
+        geol_data: list[GeologySegment] = []
+        drillhole_data: list[tuple] = []
 
         # 1. Build collar coordinate map from detached data
         collar_coords = {}
@@ -613,7 +615,7 @@ class DrillholeService(IDrillholeService):
                 z = float(feat[z_field])
 
         if z == 0.0 and dem_layer:
-            z = self._sample_dem(dem_layer, pt)
+            z = self.collar_processor._sample_dem(dem_layer, pt)
         return z
 
     def _extract_collar_depth(self, feat: QgsFeature, depth_field: str) -> float:

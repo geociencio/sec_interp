@@ -11,14 +11,14 @@ class IntervalProcessor:
 
     def interpolate_hole_intervals(
         self,
-        traj: list[tuple[float, float, float, float, float]],
+        traj: list[tuple[float, float, float, float, float, float, float, float]],
         intervals: list[tuple[float, float, str]],
         buffer_width: float,
     ) -> list[GeologySegment]:
         """Interpolate intervals along a trajectory and return GeologySegments.
 
         Args:
-            traj: The projected trajectory tuples.
+            traj: The projected trajectory tuples (depth, x, y, z, dist_along, offset, nx, ny).
             intervals: List of (from, to, lith) tuples.
             buffer_width: Section buffer width.
 

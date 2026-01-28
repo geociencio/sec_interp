@@ -65,6 +65,7 @@ class DialogConfig:
     AUTO_REFRESH_PREVIEW = False
     SHOW_LEGEND = True
     ENABLE_ZOOM = True
+    ZOOM_DEBOUNCE_MS = 200  # Milliseconds
 
     # Performance
     MAX_PREVIEW_POINTS = 10000

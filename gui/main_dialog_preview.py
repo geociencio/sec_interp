@@ -62,7 +62,7 @@ class PreviewManager:
             "struct": None,
             "drillhole": None,
         }
-        self.last_params_hash = None
+        self.last_params_hash: str | None = None
         self.last_result: PreviewResult | None = None
         self.metrics = MetricsCollector()
 
@@ -86,7 +86,7 @@ class PreviewManager:
         # Initial connection is safe
         self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Clean up resources and stop background tasks."""
         if self.active_task:
             self.active_task.cancel()
