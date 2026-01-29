@@ -1,4 +1,14 @@
 ---
+## [2026-01-28] Resumen: Consolidación de Redundancias Fase 3 (Noche)
+- **Logro**: Completada la consolidación de redundancias en servicios core (v2.9.0) y resolución de regresiones críticas de importación y geometría.
+- **Cambios**:
+    - **Refactor**: Unificación de `StructureService`, `GeologyService` y `DrillholeService` bajo flujo de datos desacoplado.
+    - **Utils**: Centralización de extracción de líneas y preparación de contexto de sección en `core/utils`.
+    - **Fix**: Resolución de error `AttributeError: 'QgsGeometry' object has no attribute 'clone'` mediante uso de constructores robustos.
+    - **Ambiente**: Estandarización de `PYTHONPATH` y prefijos `sec_interp.` en todo el proyecto.
+- **Estado**: 206 tests OK (Total success en Phase 3). Ver [sesion_2026-01-28_phase3_consolidation_regressions.md](maintenance/sesion_2026-01-28_phase3_consolidation_regressions.md).
+
+---
 ## [2026-01-27] Resumen: Suite 3D Completa y Preparación QGIS 4 (Noche)
 - **Logro**: Finalizada la implementación de la Suite de Integración 3D (v2.9.0) y establecida la infraestructura para QGIS 4.x.
 - **Cambios**:

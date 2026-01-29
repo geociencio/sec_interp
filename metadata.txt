@@ -2,7 +2,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=2.8.0
+version=2.9.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -16,6 +16,13 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    2.9.0 (2026-01-28)
+    * Quality Sprint - Redundancy Consolidation:
+      - Core: Unified detached data flow across all core services (Geology, Structure, Drillhole).
+      - Core: Centralized section setup in 'prepare_profile_context' utility.
+      - Core: Robust geometry handling (replaced .clone() with constructor for QGIS compatibility).
+      - Environment: Stabilized Docker/PYTHONPATH and standardized package-prefixed imports.
+      - Quality: 100%% Success in Phase 3 test suite (206 tests passing).
     2.8.0 (2026-01-25)
     * Debt Reduction & UI Improvements:
       - Core: Full Core-QGIS Architectural Decoupling using WKT/DTO pattern.

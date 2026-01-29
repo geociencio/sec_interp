@@ -22,6 +22,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Refactor**: Reducción drástica de complejidad ciclomática en el núcleo de procesamiento de sondajes.
 - **Calidad**: Eliminación de ~300 líneas de código legacy y adopción del patrón Facade para servicios principales.
 
+## [2.9.0] - 2026-01-28
+### Added
+- **Core**: Centralized profile context preparation in `prepare_profile_context`.
+- **Utils**: Unified attribute detachment using `extract_feature_attributes`.
+- **Stability**: Enhanced `PYTHONPATH` robustness in Docker and local environments.
+
+### Changed
+- **Arquitectura**: Consolidación de Fase 3: Unificación de todos los servicios core (Geology, Structure, Drillhole) bajo el patrón de flujo de datos desacoplado (Domain-Pure logic).
+- **Core**: Reducción de redundancia mediante la centralización de lógica de muestreo de elevación y configuración de sección.
+- **Imports**: Estandarización de importaciones internas usando el prefijo `sec_interp.` para evitar conflictos de identidad de clases.
+
+### Fixed
+- **Geometry**: Resolución definitiva del error `'QgsGeometry' object has no attribute 'clone'` mediante el uso de constructores de clonación robustos compatibles con todas las versiones de QGIS 3.x.
+- **Tests**: Resolución de fallos en `assertRaises` causados por carga duplicada de módulos en el `PYTHONPATH`.
+- **Geology**: Corrección de formateo en la generación asíncrona de segmentos geológicos.
+
 ## [2.8.0] - 2026-01-25
 ### Added
 - Nuevo DTO `DrillholeTaskInput` para procesamiento asíncrono desacoplado.
