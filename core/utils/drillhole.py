@@ -34,7 +34,7 @@ def calculate_drillhole_trajectory(
         # Support both QgsPointXY and tuple
         x = collar_point.x() if hasattr(collar_point, "x") else collar_point[0]
         y = collar_point.y() if hasattr(collar_point, "y") else collar_point[1]
-    except Exception:
+    except (AttributeError, TypeError, IndexError):
         x, y = 0.0, 0.0
     z = collar_z
     prev_depth = 0.0

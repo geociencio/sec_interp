@@ -32,13 +32,12 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
     QgsPointXY,
-    QgsRaster,
     QgsRasterLayer,
     QgsVectorLayer,
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.exceptions import DataMissingError, GeometryError, ProcessingError
+from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.interfaces.structure_interface import IStructureService
 from sec_interp.core.types import StructureData, StructureMeasurement
 from sec_interp.logger_config import get_logger
@@ -53,59 +52,45 @@ class StructureService(IStructureService):
     (dip/strike) onto a cross-section plane to calculate apparent dip.
     """
 
+    def detach_structures(
+        self,
+        struct_lyr: QgsVectorLayer,
+        line_geom: QgsGeometry,
+        buffer_m: float,
+    ) -> list[dict[str, Any]]:
+        """Extract structural features within buffer into detached dictionaries."""
+        buffer_geom = self._create_buffer_zone(line_geom, struct_lyr.crs(), buffer_m)
+        filtered_features = self._filter_structures(struct_lyr, buffer_geom, struct_lyr.crs())
+
+        detached_data = []
+        for feat in filtered_features:
+            detached_data.append(
+                {
+                    "wkt": feat.geometry().asWkt() if feat.hasGeometry() else None,
+                    "attributes": scu.extract_feature_attributes(feat),
+                }
+            )
+        return detached_data
+
     def project_structures(
         self,
-        line_lyr: QgsVectorLayer,
+        line_geom: QgsGeometry,
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
         raster_lyr: QgsRasterLayer,
-        struct_lyr: QgsVectorLayer,
-        buffer_m: int,
+        struct_data: list[dict[str, Any]],
+        buffer_m: float,
         line_az: float,
         dip_field: str,
         strike_field: str,
         band_number: int = 1,
     ) -> StructureData:
-        """Project structural measurements onto the cross-section plane.
-
-        Filters structures within a buffer, samples elevation, and calculates
-        apparent dip for each measurement.
-
-        Args:
-            line_lyr: The cross-section line vector layer.
-            raster_lyr: The DEM raster layer for elevation sampling.
-            struct_lyr: Vector layer containing structural measurements.
-            buffer_m: Search buffer distance in meters.
-            line_az: Azimuth of the section line in degrees.
-            dip_field: Name of the field containing dip values.
-            strike_field: Name of the field containing strike values.
-            band_number: Raster band to use for elevation (default: 1).
-
-        Returns:
-            A list of StructureMeasurement objects sorted by distance along section.
-
-        Raises:
-            DataMissingError: If line layer has no features.
-            GeometryError: If line geometry is invalid.
-
-        """
-        # Logging: Initial setup
-        logger.info(f"Analyzing structures in {struct_lyr.name()} with buffer {buffer_m}m")
-
-        line_geom, line_start = self._extract_line_info(line_lyr)
-
-        # 1. Create Buffer
-        buffer_geom = self._create_buffer_zone(line_geom, line_lyr.crs(), buffer_m)
-
-        # 2. Filter Measures
-        filtered_features = self._filter_structures(struct_lyr, buffer_geom, line_lyr.crs())
-
-        # 3. Process Features
+        """Project detached structural measurements onto the section plane."""
         projected_structs = []
-        crs = struct_lyr.crs()
-        da = scu.create_distance_area(crs)
 
-        for f in filtered_features:
+        for item in struct_data:
             measurement = self._process_single_structure(
-                f,
+                item,
                 line_geom,
                 line_start,
                 da,
@@ -121,9 +106,7 @@ class StructureService(IStructureService):
         # Sort by distance
         projected_structs.sort(key=lambda x: x.distance)
 
-        logger.info(
-            f"Processed {len(projected_structs)} structural measurements from {struct_lyr.name()}"
-        )
+        logger.info(f"Processed {len(projected_structs)} structural measurements")
         return projected_structs
 
     def _create_buffer_zone(
@@ -184,7 +167,7 @@ class StructureService(IStructureService):
 
     def _process_single_structure(
         self,
-        feature: QgsFeature,
+        data: dict[str, Any],
         line_geom: QgsGeometry,
         line_start: QgsPointXY,
         da: QgsDistanceArea,
@@ -194,25 +177,13 @@ class StructureService(IStructureService):
         dip_field: str,
         strike_field: str,
     ) -> StructureMeasurement | None:
-        """Process a single structure feature to calculate its 2D coordinates and apparent dip.
+        """Process a single structure from detached data."""
+        wkt = data.get("wkt")
+        if not wkt:
+            return None
 
-        Args:
-            feature: The source structural point feature.
-            line_geom: The section line geometry.
-            line_start: The start point of the section line.
-            da: The distance calculation object.
-            raster_lyr: The DEM layer for elevation sampling.
-            band_number: The raster band index.
-            line_az: The azimuth of the section line.
-            dip_field: Field name for original dip.
-            strike_field: Field name for original strike.
-
-        Returns:
-            The projected measurement object, or None if invalid or cannot be projected.
-
-        """
-        struct_geom = feature.geometry()
-        if not struct_geom or struct_geom.isNull():
+        struct_geom = QgsGeometry.fromWkt(wkt)
+        if struct_geom.isNull():
             return None
 
         # Project point onto line to get true station distance
@@ -224,12 +195,13 @@ class StructureService(IStructureService):
         proj_pt = line_geom.interpolate(proj_dist).asPoint()
 
         # Measure geodesic distance from start
-        # Using measureLine ensures correct units (meters) even if CRS is geographic
         dist = da.measureLine(line_start, proj_pt)
 
-        elev = self._sample_elevation(raster_lyr, proj_pt, band_number)
+        elev = scu.sample_point_elevation(raster_lyr, proj_pt, band_number)
 
-        parsed_data = self._parse_structural_data(feature, strike_field, dip_field, line_az)
+        parsed_data = self._parse_structural_data(
+            data["attributes"], strike_field, dip_field, line_az
+        )
         if not parsed_data:
             return None
 
@@ -242,78 +214,21 @@ class StructureService(IStructureService):
             apparent_dip=round(app_dip, 1),
             original_dip=dip_angle,
             original_strike=strike,
-            attributes=dict(zip(feature.fields().names(), feature.attributes(), strict=False)),
+            attributes=data["attributes"],
         )
-
-    def _extract_line_info(self, line_lyr: QgsVectorLayer) -> tuple[QgsGeometry, QgsPointXY]:
-        """Extract geometry and start point from the line layer.
-
-        Args:
-            line_lyr: The vector layer containing the section line.
-
-        Returns:
-            A tuple containing (line_geometry, start_point).
-
-        Raises:
-            DataMissingError: If layer has no features.
-            GeometryError: If geometry is invalid.
-
-        """
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
-            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
-
-        line_geom = line_feat.geometry()
-        if not line_geom or line_geom.isNull():
-            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
-
-        if line_geom.isMultipart():
-            line_start = line_geom.asMultiPolyline()[0][0]
-        else:
-            line_start = line_geom.asPolyline()[0]
-
-        return line_geom, line_start
-
-    def _sample_elevation(
-        self, raster_lyr: QgsRasterLayer, point: QgsPointXY, band_number: int
-    ) -> float:
-        """Sample elevation from a raster at a given point.
-
-        Args:
-            raster_lyr: The DEM raster layer.
-            point: The point to sample.
-            band_number: The band index.
-
-        Returns:
-            The sampled elevation value or 0.0 if sampling fails.
-
-        """
-        res_val = raster_lyr.dataProvider().identify(point, QgsRaster.IdentifyFormatValue).results()
-        return res_val.get(band_number, 0.0)
 
     def _parse_structural_data(
         self,
-        feature: QgsFeature,
+        attributes: dict[str, Any],
         strike_field: str,
         dip_field: str,
         line_az: float,
     ) -> tuple[float, float, float] | None:
-        """Parse strike and dip attributes and calculate apparent dip.
-
-        Args:
-            feature: The feature containing attributes.
-            strike_field: Field name for strike.
-            dip_field: Field name for dip.
-            line_az: Azimuth of the section line.
-
-        Returns:
-            A tuple of (strike, dip_angle, apparent_dip) or None if validation fails.
-
-        """
+        """Parse strike and dip attributes and calculate apparent dip."""
         try:
-            strike_raw = feature[strike_field]
-            dip_raw = feature[dip_field]
-        except KeyError:
+            strike_raw = attributes.get(strike_field)
+            dip_raw = attributes.get(dip_field)
+        except (AttributeError, KeyError):
             return None
 
         strike = scu.parse_strike(strike_raw)

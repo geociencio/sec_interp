@@ -28,5 +28,4 @@ __all__ = [
     "filter_features_by_buffer",
     "get_line_vertices",
     "run_geometry_operation",
-    "run_geometry_operation",
 ]

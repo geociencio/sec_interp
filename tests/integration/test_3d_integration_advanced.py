@@ -1,4 +1,3 @@
-
 import unittest
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -16,7 +15,9 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QVariant
 from tests.integration.base_integration import BaseIntegrationTest
 from sec_interp.core.services.drillhole_service import DrillholeService
+
 # from sec_interp.core.utils import rendering as rnd # Not needed if we use QgsCoordinateTransform directly
+
 
 class Test3DIntegrationAdvanced(BaseIntegrationTest):
 
@@ -26,7 +27,7 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
 
         # Define CRS
         self.crs_wgs84 = QgsCoordinateReferenceSystem("EPSG:4326")
-        self.crs_utm18s = QgsCoordinateReferenceSystem("EPSG:32718") # UTM Zone 18S
+        self.crs_utm18s = QgsCoordinateReferenceSystem("EPSG:32718")  # UTM Zone 18S
 
     def _create_memory_layer(self, name, geom_type, crs, fields_def):
         uri = f"{geom_type}?crs={crs.authid()}"
@@ -44,39 +45,63 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
 
         # 1. Create Section Line in UTM 18S
         # (Approx Lima coords in UTM: 279000 E, 8660000 N)
-        section_layer = self._create_memory_layer("Section", "LineString", self.crs_utm18s, [])
+        section_layer = self._create_memory_layer(
+            "Section", "LineString", self.crs_utm18s, []
+        )
         feat = QgsFeature()
         # 1000m line running North-South
-        line_geom = QgsGeometry.fromPolylineXY([
-            QgsPointXY(279000, 8660000),
-            QgsPointXY(279000, 8661000)
-        ])
+        line_geom = QgsGeometry.fromPolylineXY(
+            [QgsPointXY(279000, 8660000), QgsPointXY(279000, 8661000)]
+        )
         feat.setGeometry(line_geom)
         section_layer.dataProvider().addFeatures([feat])
 
         # 2. Create Collar in WGS84
-        transform = QgsCoordinateTransform(self.crs_utm18s, self.crs_wgs84, QgsProject.instance())
-        utm_pt = QgsPointXY(279000, 8660500) # Midpoint of section
+        transform = QgsCoordinateTransform(
+            self.crs_utm18s, self.crs_wgs84, QgsProject.instance()
+        )
+        utm_pt = QgsPointXY(279000, 8660500)  # Midpoint of section
         wgs_pt = transform.transform(utm_pt)
 
-        collar_layer = self._create_memory_layer("Collar", "Point", self.crs_wgs84, [("HoleID", QVariant.String), ("Elev", QVariant.Double)])
+        collar_layer = self._create_memory_layer(
+            "Collar",
+            "Point",
+            self.crs_wgs84,
+            [("HoleID", QVariant.String), ("Elev", QVariant.Double)],
+        )
         c_feat = QgsFeature()
         c_feat.setGeometry(QgsGeometry.fromPointXY(wgs_pt))
         c_feat.setAttributes(["H001", 100.0])
         collar_layer.dataProvider().addFeatures([c_feat])
 
         # 3. Create dummy child layers (empty but valid schema)
-        survey_layer = self._create_memory_layer("Survey", "NoGeometry", self.crs_wgs84,
-                                                 [("HoleID", QVariant.String), ("Depth", QVariant.Double),
-                                                  ("Azim", QVariant.Double), ("Incl", QVariant.Double)])
+        survey_layer = self._create_memory_layer(
+            "Survey",
+            "NoGeometry",
+            self.crs_wgs84,
+            [
+                ("HoleID", QVariant.String),
+                ("Depth", QVariant.Double),
+                ("Azim", QVariant.Double),
+                ("Incl", QVariant.Double),
+            ],
+        )
         # Add straight hole survey (Vertical)
         s_feat = QgsFeature()
         s_feat.setAttributes(["H001", 0.0, 0.0, -90.0])
         survey_layer.dataProvider().addFeatures([s_feat])
 
-        interval_layer = self._create_memory_layer("Interval", "NoGeometry", self.crs_wgs84,
-                                                   [("HoleID", QVariant.String), ("From", QVariant.Double),
-                                                    ("To", QVariant.Double), ("Lith", QVariant.String)])
+        interval_layer = self._create_memory_layer(
+            "Interval",
+            "NoGeometry",
+            self.crs_wgs84,
+            [
+                ("HoleID", QVariant.String),
+                ("From", QVariant.Double),
+                ("To", QVariant.Double),
+                ("Lith", QVariant.String),
+            ],
+        )
         i_feat = QgsFeature()
         i_feat.setAttributes(["H001", 0.0, 50.0, "ROCK"])
         interval_layer.dataProvider().addFeatures([i_feat])
@@ -88,11 +113,24 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
             collar_layer=collar_layer,
             collar_id_field="HoleID",
             use_geometry=True,
-            collar_x_field="", collar_y_field="", collar_z_field="Elev", collar_depth_field="",
+            collar_x_field="",
+            collar_y_field="",
+            collar_z_field="Elev",
+            collar_depth_field="",
             survey_layer=survey_layer,
-            survey_fields={"id": "HoleID", "depth": "Depth", "azim": "Azim", "incl": "Incl"},
+            survey_fields={
+                "id": "HoleID",
+                "depth": "Depth",
+                "azim": "Azim",
+                "incl": "Incl",
+            },
             interval_layer=interval_layer,
-            interval_fields={"id": "HoleID", "from": "From", "to": "To", "lith": "Lith"}
+            interval_fields={
+                "id": "HoleID",
+                "from": "From",
+                "to": "To",
+                "lith": "Lith",
+            },
         )
 
         # 5. Process
@@ -107,58 +145,97 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
         self.assertEqual(h_id, "H001")
 
         # Verify CRS transformation accuracy (allow small error due to float/reprojection)
-        proj_x_on_section = pts_2d[0][0] # Distance along
-        self.assertAlmostEqual(proj_x_on_section, 500.0, delta=1.0) # 1m tolerance
+        proj_x_on_section = pts_2d[0][0]  # Distance along
+        self.assertAlmostEqual(proj_x_on_section, 500.0, delta=1.0)  # 1m tolerance
 
     def test_deviated_drillhole_projection(self):
         """Test projecting a deviated hole onto a diagonal section."""
 
         # 1. Diagonal Section (45 degrees NE)
-        section_layer = self._create_memory_layer("Section", "LineString", self.crs_utm18s, [])
+        section_layer = self._create_memory_layer(
+            "Section", "LineString", self.crs_utm18s, []
+        )
         feat = QgsFeature()
         # Start at 0,0, End at 100,100
-        line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0,0), QgsPointXY(100,100)])
+        line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 100)])
         feat.setGeometry(line_geom)
         section_layer.dataProvider().addFeatures([feat])
 
         # 2. Collar at 50,50 (Exact midpoint, on section)
-        collar_layer = self._create_memory_layer("Collar", "Point", self.crs_utm18s, [("HoleID", QVariant.String), ("Elev", QVariant.Double)])
+        collar_layer = self._create_memory_layer(
+            "Collar",
+            "Point",
+            self.crs_utm18s,
+            [("HoleID", QVariant.String), ("Elev", QVariant.Double)],
+        )
         c_feat = QgsFeature()
         c_feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(50, 50)))
         c_feat.setAttributes(["D001", 100.0])
         collar_layer.dataProvider().addFeatures([c_feat])
 
         # 3. Deviated Survey: Starts vertical, then bends due East (Azim 90)
-        survey_layer = self._create_memory_layer("Survey", "NoGeometry", self.crs_utm18s,
-                                                 [("HoleID", QVariant.String), ("Depth", QVariant.Double),
-                                                  ("Azim", QVariant.Double), ("Incl", QVariant.Double)])
+        survey_layer = self._create_memory_layer(
+            "Survey",
+            "NoGeometry",
+            self.crs_utm18s,
+            [
+                ("HoleID", QVariant.String),
+                ("Depth", QVariant.Double),
+                ("Azim", QVariant.Double),
+                ("Incl", QVariant.Double),
+            ],
+        )
 
         # 0m: Vert
-        f1 = QgsFeature(); f1.setAttributes(["D001", 0.0, 0.0, -90.0]);
+        f1 = QgsFeature()
+        f1.setAttributes(["D001", 0.0, 0.0, -90.0])
         # 50m: Bend to East, Incl -45
-        f2 = QgsFeature(); f2.setAttributes(["D001", 50.0, 90.0, -45.0]);
+        f2 = QgsFeature()
+        f2.setAttributes(["D001", 50.0, 90.0, -45.0])
 
         survey_layer.dataProvider().addFeatures([f1, f2])
 
-        interval_layer = self._create_memory_layer("Interval", "NoGeometry", self.crs_utm18s,
-                                                  [("HoleID", QVariant.String), ("From", QVariant.Double),
-                                                   ("To", QVariant.Double), ("Lith", QVariant.String)])
+        interval_layer = self._create_memory_layer(
+            "Interval",
+            "NoGeometry",
+            self.crs_utm18s,
+            [
+                ("HoleID", QVariant.String),
+                ("From", QVariant.Double),
+                ("To", QVariant.Double),
+                ("Lith", QVariant.String),
+            ],
+        )
         # Interval covering the deviation
-        i_feat = QgsFeature(); i_feat.setAttributes(["D001", 40.0, 60.0, "ORE"]);
+        i_feat = QgsFeature()
+        i_feat.setAttributes(["D001", 40.0, 60.0, "ORE"])
         interval_layer.dataProvider().addFeatures([i_feat])
 
         # 4. Prepare & Process
         task_input = self.service.prepare_task_input(
             line_layer=section_layer,
-            buffer_width=200.0, # Wide buffer to catch deviation
+            buffer_width=200.0,  # Wide buffer to catch deviation
             collar_layer=collar_layer,
             collar_id_field="HoleID",
             use_geometry=True,
-            collar_x_field="", collar_y_field="", collar_z_field="Elev", collar_depth_field="",
+            collar_x_field="",
+            collar_y_field="",
+            collar_z_field="Elev",
+            collar_depth_field="",
             survey_layer=survey_layer,
-            survey_fields={"id": "HoleID", "depth": "Depth", "azim": "Azim", "incl": "Incl"},
+            survey_fields={
+                "id": "HoleID",
+                "depth": "Depth",
+                "azim": "Azim",
+                "incl": "Incl",
+            },
             interval_layer=interval_layer,
-            interval_fields={"id": "HoleID", "from": "From", "to": "To", "lith": "Lith"}
+            interval_fields={
+                "id": "HoleID",
+                "from": "From",
+                "to": "To",
+                "lith": "Lith",
+            },
         )
 
         geol, drill = self.service.process_task_data(task_input)
@@ -182,7 +259,8 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
         # Verify Z consistency
         self.assertEqual(len(pts_3d), len(pts_3d_proj))
         for p3, pp3 in zip(pts_3d, pts_3d_proj):
-            self.assertAlmostEqual(p3[2], pp3[2]) # Z should be identical
+            self.assertAlmostEqual(p3[2], pp3[2])  # Z should be identical
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

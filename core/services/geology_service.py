@@ -222,22 +222,7 @@ class GeologyService(IGeologyService):
             if feedback and feedback.isCanceled():
                 return []
 
-            outcrop_geom = QgsGeometry.fromWkt(item["wkt"])
-            intersection = line_geom.intersection(outcrop_geom)
-
-            if intersection.isEmpty():
-                continue
-
-            new_segments = self._process_detached_intersection(
-                intersection,
-                item["attrs"],
-                item["unit_name"],
-                line_start,
-                da,
-                task_input.master_grid_dists,
-                task_input.master_profile_data,
-                task_input.tolerance,
-            )
+            new_segments = self._process_single_outcrop(item, line_geom, line_start, da, task_input)
             segments.extend(new_segments)
 
             if feedback:
@@ -283,6 +268,32 @@ class GeologyService(IGeologyService):
 
         return segments
 
+    def _process_single_outcrop(
+        self,
+        item: dict[str, Any],
+        line_geom: QgsGeometry,
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
+        task_input: GeologyTaskInput,
+    ) -> list[GeologySegment]:
+        """Process a single outcrop feature intersection."""
+        outcrop_geom = QgsGeometry.fromWkt(item["wkt"])
+        intersection = line_geom.intersection(outcrop_geom)
+
+        if intersection.isEmpty():
+            return []
+
+        return self._process_detached_intersection(
+            intersection,
+            item["attrs"],
+            item["unit_name"],
+            line_start,
+            da,
+            task_input.master_grid_dists,
+            task_input.master_profile_data,
+            task_input.tolerance,
+        )
+
     def _create_segment_from_geometry(
         self,
         seg_geom: QgsGeometry,
@@ -308,7 +319,7 @@ class GeologyService(IGeologyService):
             unit_name=unit_name,
             geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
             attributes=attributes,
-            points=[(round(d, 1), round(e, 1)) for d, e in segment_points],
+            points=[(float(d), float(e)) for d, e in segment_points],
         )
 
     def _generate_master_profile_data(
@@ -319,41 +330,44 @@ class GeologyService(IGeologyService):
         da: QgsDistanceArea,
         line_start: QgsPointXY,
     ) -> tuple[list[tuple[float, float]], list[tuple[float, QgsPointXY, float]]]:
-        """Generate the master profile data (grid points and elevations).
+        """Generate the master profile data (grid points and elevations)."""
+        # 1. Generate densified grid points
+        grid_points = self._get_densified_grid_points(line_geom, raster_lyr)
 
-        Args:
-            line_geom: The geometry of the cross-section line.
-            raster_lyr: The DEM raster layer for elevation.
-            band_number: The raster band to sample.
-            da: The distance calculation object.
-            line_start: The start point of the section line.
+        # 2. Sample elevations at grid points
+        return self._sample_elevation_at_points(
+            grid_points, raster_lyr, band_number, da, line_start
+        )
 
-        Returns:
-            A tuple containing:
-                - master_profile_data: List of (distance, elevation) tuples.
-                - master_grid_dists: List of (distance, point, elevation) tuples.
-
-        """
-        interval = raster_lyr.rasterUnitsPerPixelX()
-        logger.debug(f"Generating master profile with interval={interval:.2f}")
-
+    def _get_densified_grid_points(
+        self, line_geom: QgsGeometry, raster_lyr: QgsRasterLayer
+    ) -> list[QgsPointXY]:
+        """Densify line and extract vertices."""
         try:
+            interval = raster_lyr.rasterUnitsPerPixelX()
             master_densified = scu.densify_line_by_interval(line_geom, interval)
-            master_grid_points = scu.get_line_vertices(master_densified)
-        except Exception as e:
-            logger.warning(f"Failed to generate master grid: {e}")
-            master_grid_points = scu.get_line_vertices(line_geom)
+            return scu.get_line_vertices(master_densified)
+        except (AttributeError, ValueError, TypeError) as e:
+            logger.warning(f"Failed to densify line, using original vertices: {e}")
+            return scu.get_line_vertices(line_geom)
 
+    def _sample_elevation_at_points(
+        self,
+        points: list[QgsPointXY],
+        raster_lyr: QgsRasterLayer,
+        band_number: int,
+        da: QgsDistanceArea,
+        line_start: QgsPointXY,
+    ) -> tuple[list[tuple[float, float]], list[tuple[float, QgsPointXY, float]]]:
+        """Sample elevation from raster at provided points."""
         master_profile_data = []
         master_grid_dists = []
         current_dist = 0.0
 
-        for i, pt in enumerate(master_grid_points):
+        for i, pt in enumerate(points):
             if i > 0:
-                segment_len = da.measureLine(master_grid_points[i - 1], pt)
-                current_dist += segment_len
+                current_dist += da.measureLine(points[i - 1], pt)
 
-            # Use sample() for faster single band access
             val, ok = raster_lyr.dataProvider().sample(pt, band_number)
             elev = val if ok else 0.0
 

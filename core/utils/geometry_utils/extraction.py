@@ -64,7 +64,7 @@ def extract_lines_from_geometry(geometry: QgsGeometry) -> list[QgsGeometry]:
     # MultiLineString handling
     if geometry.isMultipart():
         for part in geometry.asGeometryCollection():
-            geometries.append(part.clone())
+            geometries.append(QgsGeometry(part))
     else:
-        geometries.append(geometry.clone())
+        geometries.append(QgsGeometry(geometry))
     return geometries

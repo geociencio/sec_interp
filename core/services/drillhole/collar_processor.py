@@ -11,16 +11,18 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
-    QgsRaster,
     QgsRasterLayer,
     QgsVectorLayer,
 )
 
+from sec_interp.core import utils as scu
 from sec_interp.core.services.drillhole.projection_engine import ProjectionEngine
 
 
 class CollarProcessor:
     """Handles extraction and projection of collar data."""
+
+    DEFAULT_BUFFER_SEGMENTS = 8
 
     def detach_features(
         self,
@@ -38,8 +40,8 @@ class CollarProcessor:
     ) -> tuple[set[Any], list[dict[str, Any]], dict[Any, float]]:
         """Detach collar features and pre-sample Z using WKT for decoupling."""
         try:
-            line_buffer = line_geom.buffer(buffer_width, 8)
-        except Exception:
+            line_buffer = line_geom.buffer(buffer_width, self.DEFAULT_BUFFER_SEGMENTS)
+        except (AttributeError, TypeError, ValueError):
             line_buffer = None
 
         collar_bbox = line_buffer.boundingBox() if line_buffer else line_geom.boundingBox()
@@ -65,7 +67,7 @@ class CollarProcessor:
 
             # Detach geometry as WKT and attributes
             wkt = feat.geometry().asWkt() if feat.hasGeometry() else None
-            attrs = dict(zip(feat.fields().names(), feat.attributes(), strict=False))
+            attrs = scu.extract_feature_attributes(feat)
 
             collar_data.append({"wkt": wkt, "attributes": attrs, "id": hid})
 
@@ -106,7 +108,7 @@ class CollarProcessor:
         if z_val == 0.0:
             pt = self.extract_point_agnostic(feat, False, use_geom, x_field, y_field)
             if pt:
-                return self._sample_dem(dem_layer, pt)
+                return scu.sample_point_elevation(dem_layer, pt)
         return None
 
     def extract_and_project_detached(
@@ -252,12 +254,3 @@ class CollarProcessor:
             with contextlib.suppress(ValueError, TypeError, KeyError):
                 depth = float(attrs.get(depth_f, 0.0)) if is_dict else float(attrs[depth_f] or 0.0)
         return depth
-
-    def _sample_dem(self, dem_layer: QgsRasterLayer, pt: QgsPointXY) -> float:
-        """Sample elevation at point from DEM."""
-        ident = dem_layer.dataProvider().identify(pt, QgsRaster.IdentifyFormatValue)
-        if ident.isValid():
-            val = ident.results().get(1)
-            if val is not None:
-                return float(val)
-        return 0.0

@@ -15,6 +15,18 @@ class ConfigService:
 
     PREFIX = "SecInterp/"
 
+    # Default values to avoid magic numbers
+    DEFAULT_SCALE = 50000.0
+    DEFAULT_BUFFER_DIST = 100.0
+    DEFAULT_VERT_EXAG = 1.0
+    DEFAULT_DPI = 300
+    DEFAULT_MAX_POINTS = 10000
+    DEFAULT_DEM_BAND = 1
+    DEFAULT_SAMPLING_INTERVAL = 10.0
+    DEFAULT_EXPORT_QUALITY = 95
+    DEFAULT_PREVIEW_WIDTH = 800
+    DEFAULT_PREVIEW_HEIGHT = 600
+
     # Non-persistent constants
     SUPPORTED_IMAGE_FORMATS = [".png", ".jpg", ".jpeg"]
     SUPPORTED_VECTOR_FORMATS = [".shp"]
@@ -41,16 +53,16 @@ class ConfigService:
         data["section"] = {
             "layer_id": self.get("section_layer", ""),
             "layer_name": self.get("section_layer_name", ""),
-            "buffer_dist": self.get("buffer_dist", 100.0),
+            "buffer_dist": self.get("buffer_dist", self.DEFAULT_BUFFER_DIST),
         }
 
         # DEM
         data["dem"] = {
             "layer_id": self.get("dem_layer", ""),
             "layer_name": self.get("dem_layer_name", ""),
-            "band": self.get("dem_band", 1),
-            "scale": self.get("scale", 50000.0),
-            "vert_exag": self.get("vert_exag", 1.0),
+            "band": self.get("dem_band", self.DEFAULT_DEM_BAND),
+            "scale": self.get("scale", self.DEFAULT_SCALE),
+            "vert_exag": self.get("vert_exag", self.DEFAULT_VERT_EXAG),
         }
 
         # Geology
@@ -121,14 +133,14 @@ class ConfigService:
             "show_interpretations": self.get("show_interpretations", True),
             "auto_lod": self.get("auto_lod", False),
             "adaptive_sampling": self.get("adaptive_sampling", True),
-            "max_points": self.get("max_points", 10000),
+            "max_points": self.get("max_points", self.DEFAULT_MAX_POINTS),
         }
 
         data["last_output_dir"] = self.get("last_output_dir", "")
 
         try:
             return PluginSettings.from_dict(data)
-        except Exception:
+        except (ValueError, TypeError, KeyError):
             logger.exception("Failed to validate settings during load. Using defaults.")
             return PluginSettings()
 
@@ -148,19 +160,19 @@ class ConfigService:
         # Internal static defaults for backward compatibility if needed
         # (Though we prefer the model now)
         static_defaults = {
-            "scale": 50000.0,
-            "vert_exag": 1.0,
-            "buffer_dist": 100.0,
+            "scale": self.DEFAULT_SCALE,
+            "vert_exag": self.DEFAULT_VERT_EXAG,
+            "buffer_dist": self.DEFAULT_BUFFER_DIST,
             "dip_scale_factor": 1.0,
             "last_output_dir": "",
-            "dpi": 300,
-            "preview_width": 800,
-            "preview_height": 600,
-            "sampling_interval": 10.0,
-            "export_quality": 95,
+            "dpi": self.DEFAULT_DPI,
+            "preview_width": self.DEFAULT_PREVIEW_WIDTH,
+            "preview_height": self.DEFAULT_PREVIEW_HEIGHT,
+            "sampling_interval": self.DEFAULT_SAMPLING_INTERVAL,
+            "export_quality": self.DEFAULT_EXPORT_QUALITY,
             "auto_lod": True,
-            "max_preview_points": 10000,
-            "max_points": 10000,
+            "max_preview_points": self.DEFAULT_MAX_POINTS,
+            "max_points": self.DEFAULT_MAX_POINTS,
             "dh_use_geom": True,
             "interp_inherit_geol": True,
             "interp_inherit_drill": True,
@@ -170,7 +182,7 @@ class ConfigService:
             "show_drillholes": True,
             "show_interpretations": True,
             "adaptive_sampling": True,
-            "dem_band": 1,
+            "dem_band": self.DEFAULT_DEM_BAND,
         }
 
         if default is None:
@@ -207,9 +219,9 @@ class ConfigService:
     def reset_defaults(self) -> None:
         """Reset all known persistent settings to their default values."""
         logger.info("Configuration reset to defaults initiated")
-        self.set("scale", 50000.0)
-        self.set("vert_exag", 1.0)
-        self.set("buffer_dist", 100.0)
+        self.set("scale", self.DEFAULT_SCALE)
+        self.set("vert_exag", self.DEFAULT_VERT_EXAG)
+        self.set("buffer_dist", self.DEFAULT_BUFFER_DIST)
         self.set("show_topo", True)
         self.set("show_geol", True)
         self.set("show_struct", True)
@@ -220,5 +232,5 @@ class ConfigService:
         self.set("dh_use_geom", True)
         self.set("auto_lod", False)
         self.set("adaptive_sampling", True)
-        self.set("max_points", 10000)
-        self.set("dem_band", 1)
+        self.set("max_points", self.DEFAULT_MAX_POINTS)
+        self.set("dem_band", self.DEFAULT_DEM_BAND)

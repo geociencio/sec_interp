@@ -264,15 +264,8 @@ class SecInterp:
         return None
 
     def _get_and_validate_inputs(self) -> PreviewParams | None:
-        """Retrieve and validate inputs from the dialog.
-
-        Returns:
-            PreviewParams: Validated parameters, or None if validation fails.
-
-        """
-        # Get values from the dialog pages
+        """Retrieve and validate inputs from the dialog."""
         values = self.dlg.get_selected_values()
-        # Get preview/LOD options from the preview widget
         preview_options = self.dlg.get_preview_options()
 
         # 1. Resolve Layer Objects
@@ -282,19 +275,16 @@ class SecInterp:
         line_layer = self._resolve_layer_obj(
             values.get("crossline_layer"), self.tr("Select a crossline layer")
         )
-        outcrop_layer = self._resolve_layer_obj(values.get("outcrop_layer"))
-        structural_layer = self._resolve_layer_obj(values.get("structural_layer"))
 
-        # 2. Build PreviewParams
         try:
             params = PreviewParams(
                 raster_layer=raster_layer,
                 line_layer=line_layer,
                 band_num=values.get("selected_band", 1),
                 buffer_dist=values.get("buffer_distance", 100.0),
-                outcrop_layer=outcrop_layer,
+                outcrop_layer=self._resolve_layer_obj(values.get("outcrop_layer")),
                 outcrop_name_field=values.get("outcrop_name_field"),
-                struct_layer=structural_layer,
+                struct_layer=self._resolve_layer_obj(values.get("structural_layer")),
                 dip_field=values.get("dip_field"),
                 strike_field=values.get("strike_field"),
                 dip_scale_factor=values.get("dip_scale_factor", 1.0),
@@ -319,17 +309,21 @@ class SecInterp:
                 auto_lod=preview_options.get("auto_lod", True),
                 canvas_width=self.dlg.preview_widget.canvas.width(),
             )
-            # Internal Native Validation
             params.validate()
         except SecInterpError as e:
             self.dlg.handle_error(e, self.tr("Configuration Error"))
             return None
-        except Exception as e:
-            self.dlg.handle_error(e, self.tr("Unexpected Error"))
+        except (ValueError, TypeError, KeyError, AttributeError) as e:
+            self.dlg.handle_error(e, self.tr("Input Processing Error"))
             return None
 
-        # 3. Connect Layer Notifications for Cache Invalidation
-        active_layers = [
+        # 3. Connect Layer Notifications
+        self.controller.connect_layer_notifications(self._collect_active_layers(params))
+        return params
+
+    def _collect_active_layers(self, params: PreviewParams) -> list[QgsMapLayer]:
+        """Collect all active layers from parameters for monitoring."""
+        return [
             l
             for l in [
                 params.raster_layer,
@@ -342,11 +336,6 @@ class SecInterp:
             ]
             if l
         ]
-        self.controller.connect_layer_notifications(active_layers)
-
-        # Store output path temporarily or return as tuple if needed
-        # but for now we only return params. Callers need the path separately.
-        return params
 
     def process_data(self, inputs: dict[str, Any] | None = None) -> tuple[Any, Any, Any] | None:
         """Process profile data by delegating to the dialog's preview manager.
@@ -385,99 +374,74 @@ class SecInterp:
         max_points: int = 1000,
         **kwargs,
     ) -> None:
-        """Draw enhanced interactive preview using native PyQGIS renderer.
+        """Draw enhanced interactive preview using native PyQGIS renderer."""
+        # 1. State Persistence
+        self._store_preview_data(topo_data, geol_data, struct_data, drillhole_data)
 
-        Args:
-            topo_data: List of (dist, elev) tuples for topographic profile
-            geol_data: Optional list of (dist, elev, geology_name) tuples
-            struct_data: Optional list of (dist, app_dip) tuples
-            drillhole_data: Optional list of (hole_id, traces, segments) tuples
-            max_points (int): Maximum number of points for simplified preview (LOD)
-            **kwargs: Additional arguments passed to renderer (e.g. preserve_extent)
-
-        """
-        logger.debug("draw_preview called with:")
-        logger.debug("  - topo_data: %d points", len(topo_data) if topo_data else 0)
-        logger.debug("  - geol_data: %d points", len(geol_data) if geol_data else 0)
-        logger.debug("  - struct_data: %d points", len(struct_data) if struct_data else 0)
-        logger.debug("  - drillhole_data: %d holes", len(drillhole_data) if drillhole_data else 0)
-        logger.debug("  - max_points: %d", max_points)
-
-        # Store data in dialog for re-rendering when checkboxes change
-        self.dlg.current_topo_data = topo_data
-        self.dlg.current_geol_data = geol_data
-        self.dlg.current_struct_data = struct_data
-        self.dlg.current_drillhole_data = drillhole_data
-
-        self.dlg.current_drillhole_data = drillhole_data
-
-        # Get preview options from dialog checkboxes
+        # 2. Parameter Calculation
         options = self.dlg.get_preview_options()
-        logger.debug("Preview options: %s", options)
-
-        # Filter data based on checkbox states
-        filtered_topo = topo_data if options.get("show_topo", True) else None
-        filtered_geol = geol_data if options.get("show_geol", True) else None
-        filtered_struct = struct_data if options.get("show_struct", True) else None
-        filtered_drill = drillhole_data if options.get("show_drillholes", True) else None
-        filtered_interp = (
-            self.dlg.interpretations if options.get("show_interpretations", True) else None
-        )
-
-        logger.debug("Filtered data:")
-        logger.debug("  - filtered_topo: %d points", len(filtered_topo) if filtered_topo else 0)
-        logger.debug("  - filtered_geol: %d points", len(filtered_geol) if filtered_geol else 0)
-        logger.debug(
-            "  - filtered_struct: %d points",
-            len(filtered_struct) if filtered_struct else 0,
-        )
-        logger.debug(
-            "  - filtered_interp: %d polygons",
-            len(filtered_interp) if filtered_interp else 0,
-        )
-
-        # Get vertical exaggeration from dialog
-
-        # Use new numeric method or direct accessor from Page
         vert_exag = self.dlg.page_dem.vertexag_spin.value()
+        dip_length = self._calculate_dip_length(struct_data)
 
-        logger.debug("Vertical exaggeration: %.2f", vert_exag)
+        # 3. Data Filtering
+        filtered = self._get_filtered_preview_data(
+            topo_data, geol_data, struct_data, drillhole_data, options
+        )
 
-        # Calculate dip line length based on scale factor and raster resolution
-        dip_line_length = None
-        if filtered_struct:
-            dip_scale = self.dlg.page_struct.scale_spin.value()
-
-            if dip_scale > 0:
-                raster_layer = self.dlg.page_dem.raster_combo.currentLayer()
-                if raster_layer and raster_layer.isValid():
-                    res = raster_layer.rasterUnitsPerPixelX()
-                    if res > 0:
-                        dip_line_length = res * dip_scale
-            logger.debug("Dip line length: %s (scale: %.2f)", dip_line_length, dip_scale)
-
-        # Render using native PyQGIS
+        # 4. Rendering
         canvas, layers = self.preview_renderer.render(
-            topo_data=filtered_topo,
-            geol_data=filtered_geol,
-            struct_data=filtered_struct,
+            topo_data=filtered["topo"],
+            geol_data=filtered["geol"],
+            struct_data=filtered["struct"],
             vert_exag=vert_exag,
-            dip_line_length=dip_line_length,
+            dip_line_length=dip_length,
             max_points=max_points,
             preserve_extent=kwargs.get("preserve_extent", False),
-            drillhole_data=filtered_drill,
-            interp_data=filtered_interp,
+            drillhole_data=filtered["drill"],
+            interp_data=filtered["interp"],
             show_legend=options.get("show_legend", True),
         )
 
-        # Store canvas and layers for export
+        # 5. UI Updates
         self.dlg.current_canvas = canvas
         self.dlg.current_layers = layers
 
-        # Update legend
         if hasattr(self.dlg, "legend_widget"):
             self.dlg.legend_widget.update_legend(
                 self.preview_renderer, options.get("show_legend", True)
             )
 
-        logger.debug("Preview rendered with %d layers", len(layers) if layers else 0)
+    def _store_preview_data(self, topo, geol, struct, drill) -> None:
+        """Store current data in dialog for re-rendering."""
+        self.dlg.current_topo_data = topo
+        self.dlg.current_geol_data = geol
+        self.dlg.current_struct_data = struct
+        self.dlg.current_drillhole_data = drill
+
+    def _get_filtered_preview_data(self, topo, geol, struct, drill, options) -> dict:
+        """Filter data based on visibility options."""
+        return {
+            "topo": topo if options.get("show_topo", True) else None,
+            "geol": geol if options.get("show_geol", True) else None,
+            "struct": struct if options.get("show_struct", True) else None,
+            "drill": drill if options.get("show_drillholes", True) else None,
+            "interp": (
+                self.dlg.interpretations if options.get("show_interpretations", True) else None
+            ),
+        }
+
+    def _calculate_dip_length(self, struct_data: list | None) -> float | None:
+        """Calculate dip line length based on scale factor and raster resolution."""
+        if not struct_data:
+            return None
+
+        dip_scale = self.dlg.page_struct.scale_spin.value()
+        if dip_scale <= 0:
+            return None
+
+        raster_layer = self.dlg.page_dem.raster_combo.currentLayer()
+        if raster_layer and raster_layer.isValid():
+            res = raster_layer.rasterUnitsPerPixelX()
+            if res > 0:
+                return res * dip_scale
+        return None

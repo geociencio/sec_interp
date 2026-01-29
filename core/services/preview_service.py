@@ -10,17 +10,18 @@ It remains decoupled from the GUI layer.
 import math
 from typing import Any
 
-from qgis.core import (
-    QgsDistanceArea,
-)
-
 from sec_interp.core import utils as scu
-from sec_interp.core.exceptions import GeometryError, ProcessingError
+from sec_interp.core.exceptions import (
+    ProcessingError,
+    SecInterpError,
+)
 from sec_interp.core.performance_metrics import PerformanceTimer
 from sec_interp.core.types import (
     PreviewParams,
     PreviewResult,
 )
+from sec_interp.core.utils.sampling import prepare_profile_context
+from sec_interp.core.utils.spatial import calculate_line_azimuth
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -93,20 +94,15 @@ class PreviewService:
         result = PreviewResult(buffer_dist=params.buffer_dist)
         self.transform_context = transform_context
 
-        # 1. Topography
+        # 1. Topography & Context Extraction
         with PerformanceTimer("Topography Generation", result.metrics):
+            line_geom, line_start, distance_area = prepare_profile_context(params.line_layer)
+            self.distance_area = distance_area  # Store for other layers
+
             # Calculate LOD interval
             interval = None
             if params.auto_lod:
-                # Get line length
-                line_feat = next(params.line_layer.getFeatures(), None)
-                if not line_feat:
-                    raise GeometryError(
-                        "Section line layer has no features",
-                        {"layer": params.line_layer.name()},
-                    )
-
-                line_len = line_feat.geometry().length()
+                line_len = line_geom.length()
                 max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
                 interval = line_len / max_pts if max_pts > 0 else None
 
@@ -119,26 +115,31 @@ class PreviewService:
             if result.topo:
                 result.metrics.record_count("Topography Points", len(result.topo))
 
-        # 2. Structures
+        # 2. Structures (Now using detached flow)
         if params.struct_layer and params.dip_field and params.strike_field:
             with PerformanceTimer("Structure Generation", result.metrics):
-                line_feat = next(params.line_layer.getFeatures(), None)
-                if line_feat:
-                    line_geom = line_feat.geometry()
-                    line_azimuth = scu.calculate_line_azimuth(line_geom)
+                line_azimuth = calculate_line_azimuth(line_geom)
 
-                    result.struct = self.controller.structure_service.project_structures(
-                        line_lyr=params.line_layer,
-                        raster_lyr=params.raster_layer,
-                        struct_lyr=params.struct_layer,
-                        buffer_m=params.buffer_dist,
-                        line_az=line_azimuth,
-                        dip_field=params.dip_field,
-                        strike_field=params.strike_field,
-                        band_number=params.band_num,
-                    )
-                    if result.struct:
-                        result.metrics.record_count("Structure Points", len(result.struct))
+                # Detach
+                struct_data = self.controller.structure_service.detach_structures(
+                    params.struct_layer, line_geom, params.buffer_dist
+                )
+
+                # Project
+                result.struct = self.controller.structure_service.project_structures(
+                    line_geom=line_geom,
+                    line_start=line_start,
+                    da=self.distance_area,
+                    raster_lyr=params.raster_layer,
+                    struct_data=struct_data,
+                    buffer_m=params.buffer_dist,
+                    line_az=line_azimuth,
+                    dip_field=params.dip_field,
+                    strike_field=params.strike_field,
+                    band_number=params.band_num,
+                )
+                if result.struct:
+                    result.metrics.record_count("Structure Points", len(result.struct))
 
         # 3. Drillholes
         if params.collar_layer and not skip_drillholes:
@@ -150,48 +151,38 @@ class PreviewService:
         return result
 
     def _generate_drillholes(self, params: PreviewParams) -> Any | None:
-        """Generate drillhole trace and interval data.
-
-        Args:
-            params: Preview parameters containing drillhole layer and fields.
-
-        Returns:
-            A list of drillhole data tuples, or None if no collars found or skipped.
-
-        """
-        line_feat = next(params.line_layer.getFeatures(), None)
-        if not line_feat:
-            raise GeometryError(
-                "Section line layer has no features",
-                {"layer": params.line_layer.name()},
-            )
-
+        """Generate drillhole trace and interval data."""
         # Validation: Ensure critical drillhole fields are selected
         if not params.collar_id_field:
             logger.info("Drillhole preview skipped: No Collar ID field selected.")
             return None
 
-        line_geom = line_feat.geometry()
-        if line_geom.isMultipart():
-            lines = line_geom.asMultiPolyline()
-            points = lines[0] if lines else []
-        else:
-            points = line_geom.asPolyline()
+        line_geom, line_start, distance_area = prepare_profile_context(params.line_layer)
 
-        if not points:
-            raise GeometryError("Section line has no vertices", {"layer": params.line_layer.name()})
+        # 1. Detach Data
+        collar_ids, collar_data, pre_sampled_z = (
+            self.controller.drillhole_service.collar_processor.detach_features(
+                params.collar_layer,
+                line_geom,
+                params.buffer_dist,
+                params.collar_id_field,
+                params.collar_use_geometry,
+                params.collar_x_field,
+                params.collar_y_field,
+                params.collar_z_field,
+                params.raster_layer,
+                target_crs=params.line_layer.crs(),
+            )
+        )
 
-        line_start = points[0]
+        if not collar_data:
+            return None
 
-        # Setup distance area
-        distance_area = QgsDistanceArea()
-        distance_area.setSourceCrs(params.line_layer.crs(), self.transform_context)
-
+        # 2. Project Collars
         try:
             projected_collars = self.controller.drillhole_service.project_collars(
-                collar_layer=params.collar_layer,
-                line_geom=line_geom,
-                line_start=line_start,
+                collar_data=collar_data,
+                line_data=line_geom,
                 distance_area=distance_area,
                 buffer_width=params.buffer_dist,
                 collar_id_field=params.collar_id_field,
@@ -200,38 +191,43 @@ class PreviewService:
                 collar_y_field=params.collar_y_field,
                 collar_z_field=params.collar_z_field,
                 collar_depth_field=params.collar_depth_field,
-                dem_layer=params.raster_layer,
-                line_crs=params.line_layer.crs(),
+                pre_sampled_z=pre_sampled_z,
             )
-        except Exception as e:
-            raise ProcessingError(
-                "Failed to project drillhole collars",
-                {"hole_id_field": params.collar_id_field},
-            ) from e
+        except (ValueError, TypeError, SecInterpError) as e:
+            raise ProcessingError(f"Failed to project drillhole collars: {e}") from e
 
         if not projected_collars:
             return None
 
-        survey_fields = {
-            "id": params.survey_id_field,
-            "depth": params.survey_depth_field,
-            "azim": params.survey_azim_field,
-            "incl": params.survey_incl_field,
-        }
+        # 3. Fetch Child Data
+        survey_map = self.controller.drillhole_service._fetch_bulk_data(
+            params.survey_layer,
+            collar_ids,
+            {
+                "id": params.survey_id_field,
+                "depth": params.survey_depth_field,
+                "azim": params.survey_azim_field,
+                "incl": params.survey_incl_field,
+            },
+        )
+        interval_map = self.controller.drillhole_service._fetch_bulk_data(
+            params.interval_layer,
+            collar_ids,
+            {
+                "id": params.interval_id_field,
+                "from": params.interval_from_field,
+                "to": params.interval_to_field,
+                "lith": params.interval_lith_field,
+            },
+        )
 
-        interval_fields = {
-            "id": params.interval_id_field,
-            "from": params.interval_from_field,
-            "to": params.interval_to_field,
-            "lith": params.interval_lith_field,
-        }
-
+        # 4. Process Intervals
         try:
             _, drillhole_data = self.controller.drillhole_service.process_intervals(
                 collar_points=projected_collars,
-                collar_layer=params.collar_layer,
-                survey_layer=params.survey_layer,
-                interval_layer=params.interval_layer,
+                collar_data=collar_data,
+                survey_data=survey_map,
+                interval_data=interval_map,
                 collar_id_field=params.collar_id_field,
                 use_geometry=params.collar_use_geometry,
                 collar_x_field=params.collar_x_field,
@@ -241,15 +237,15 @@ class PreviewService:
                 distance_area=distance_area,
                 buffer_width=params.buffer_dist,
                 section_azimuth=scu.calculate_line_azimuth(line_geom),
-                survey_fields=survey_fields,
-                interval_fields=interval_fields,
+                survey_fields={},
+                interval_fields={},
             )
+        except (ValueError, TypeError, SecInterpError) as e:
+            logger.exception(f"Failed to process drillhole intervals: {e}")
+            raise ProcessingError(f"Failed to process drillhole intervals: {e}") from e
         except Exception as e:
-            logger.exception(f"Failed to process drillhole intervals: {type(e).__name__}: {e}")
-            import traceback
-
-            logger.exception(traceback.format_exc())
-            raise ProcessingError("Failed to process drillhole intervals") from e
+            logger.exception("Unexpected error during drillhole processing")
+            raise ProcessingError("Unexpected error during drillhole processing") from e
 
         logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
         return drillhole_data

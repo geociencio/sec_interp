@@ -127,8 +127,12 @@ class ExportService:
                 folder / "profile_line.shp", {"profile_data": data, "crs": crs}
             )
             msg.extend(["  - topo_profile.csv", "  - profile_line.shp"])
-        except Exception as e:
+        except (OSError, ValueError, TypeError, DataMissingError) as e:
+            logger.exception(f"Topography export failed: {e}")
             raise ExportError(f"Topography export failed: {e!s}") from e
+        except Exception as e:
+            logger.exception("Unexpected system error during topography export")
+            raise ExportError(f"Critical error exporting topography: {e}") from e
 
     def _export_geology(
         self,
@@ -154,8 +158,12 @@ class ExportService:
                 folder / "geol_profile.shp", {"geology_data": data, "crs": crs}
             )
             msg.extend(["  - geol_profile.csv", "  - geol_profile.shp"])
-        except Exception as e:
+        except (OSError, ValueError, TypeError, DataMissingError) as e:
+            logger.exception(f"Geology export failed: {e}")
             raise ExportError(f"Geology export failed: {e!s}") from e
+        except Exception as e:
+            logger.exception("Unexpected system error during geology export")
+            raise ExportError(f"Critical error exporting geology: {e}") from e
 
     def _export_structures(
         self,
@@ -193,8 +201,12 @@ class ExportService:
                 },
             )
             msg.extend(["  - structural_profile.csv", "  - structural_profile.shp"])
-        except Exception as e:
+        except (OSError, ValueError, TypeError, DataMissingError) as e:
+            logger.exception(f"Structure export failed: {e}")
             raise ExportError(f"Structure export failed: {e!s}") from e
+        except Exception as e:
+            logger.exception("Unexpected system error during structure export")
+            raise ExportError(f"Critical error exporting structures: {e}") from e
 
     def _export_drillholes(
         self,
@@ -271,8 +283,12 @@ class ExportService:
                         )
                         msg.append(f"  - {path.name} (3D Proj)")
 
-        except Exception as e:
+        except (OSError, ValueError, TypeError, DataMissingError) as e:
+            logger.exception(f"Drillhole export failed: {e}")
             raise ExportError(f"Drillhole export failed: {e!s}") from e
+        except Exception as e:
+            logger.exception("Unexpected system error during drillhole export")
+            raise ExportError(f"Critical error exporting drillholes: {e}") from e
 
     def _export_interpretations(
         self,

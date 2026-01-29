@@ -22,7 +22,9 @@ class DataCache(ICacheService):
     Time-To-Live (TTL) expiration, and arbitrary metadata (e.g., for LOD tracking).
     """
 
-    def __init__(self, default_ttl: int = 3600) -> None:
+    DEFAULT_TTL_SECONDS = 3600
+
+    def __init__(self, default_ttl: int = DEFAULT_TTL_SECONDS) -> None:
         """Initialize the data cache.
 
         Args:

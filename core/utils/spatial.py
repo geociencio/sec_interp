@@ -108,7 +108,12 @@ def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
     if geometry.isMultipart():
         return geometry.asMultiPolyline()[0][0]
 
-    return geometry.asPolyline()[0]
+    polyline = geometry.asPolyline()
+    if not polyline:
+        from sec_interp.core.exceptions import GeometryError
+
+        raise GeometryError("Polyline has no vertices")
+    return polyline[0]
 
 
 def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:

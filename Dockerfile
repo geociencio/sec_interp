@@ -38,8 +38,7 @@ RUN uv pip install --no-build-isolation -e .
 
 # 5. Configurar variables de entorno críticas
 # PYTHONPATH=/app permite importar el paquete 'sec_interp' desde su directorio padre
-# Añadimos la raíz del proyecto para asegurar que los scripts en 'scripts/' y 'tests/' funcionen
-ENV PYTHONPATH="/app:/app/sec_interp:${PYTHONPATH}"
+ENV PYTHONPATH="/app:${PYTHONPATH}"
 # QT_QPA_PLATFORM=offscreen permite correr tests de GUI en entornos sin servidor X
 ENV QT_QPA_PLATFORM=offscreen
 

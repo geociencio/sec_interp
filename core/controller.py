@@ -228,58 +228,105 @@ class ProfileController:
             ]
         )
         drillhole_data = self.data_cache.get("drill", drill_key)
+
         if drillhole_data:
             logger.debug("Cache hit: Drillholes")
-        else:
-            line_feat = next(params.line_layer.getFeatures(), None)
-            if line_feat:
-                section_geom = line_feat.geometry()
-                section_start = scu.get_line_vertices(section_geom)[0]
-                distance_area = scu.create_distance_area(params.line_layer.crs())
-                collars = self.drillhole_service.project_collars(
-                    collar_layer=params.collar_layer,
-                    line_geom=section_geom,
-                    line_start=section_start,
-                    distance_area=distance_area,
-                    buffer_width=params.buffer_dist,
-                    collar_id_field=params.collar_id_field,
-                    use_geometry=params.collar_use_geometry,
-                    collar_x_field=params.collar_x_field,
-                    collar_y_field=params.collar_y_field,
-                    collar_z_field=params.collar_z_field,
-                    collar_depth_field=params.collar_depth_field,
-                    dem_layer=params.raster_layer,
-                    line_crs=params.line_layer.crs(),
-                )
-                if collars and params.survey_layer and params.interval_layer:
-                    section_azimuth = scu.calculate_line_azimuth(section_geom)
-                    _, drillhole_data = self.drillhole_service.process_intervals(
-                        collar_points=collars,
-                        collar_layer=params.collar_layer,
-                        survey_layer=params.survey_layer,
-                        interval_layer=params.interval_layer,
-                        collar_id_field=params.collar_id_field,
-                        use_geometry=params.collar_use_geometry,
-                        collar_x_field=params.collar_x_field,
-                        collar_y_field=params.collar_y_field,
-                        line_geom=section_geom,
-                        line_start=section_start,
-                        distance_area=distance_area,
-                        buffer_width=params.buffer_dist,
-                        section_azimuth=section_azimuth,
-                        survey_fields={
-                            "id": params.survey_id_field,
-                            "depth": params.survey_depth_field,
-                            "azim": params.survey_azim_field,
-                            "incl": params.survey_incl_field,
-                        },
-                        interval_fields={
-                            "id": params.interval_id_field,
-                            "from": params.interval_from_field,
-                            "to": params.interval_to_field,
-                            "lith": params.interval_lith_field,
-                        },
-                    )
-                    if drillhole_data:
-                        self.data_cache.set("drill", drill_key, drillhole_data, cache_meta)
+            return drillhole_data
+
+        drillhole_data = self._generate_drillhole_data(params)
+
+        if drillhole_data:
+            self.data_cache.set("drill", drill_key, drillhole_data, cache_meta)
+
+        return drillhole_data
+
+    def _generate_drillhole_data(self, params: PreviewParams) -> Any | None:
+        """Orchestrate the generation of drillhole traces and intervals."""
+        line_feat = next(params.line_layer.getFeatures(), None)
+        if not line_feat:
+            return None
+
+        section_geom = line_feat.geometry()
+        section_start = scu.get_line_vertices(section_geom)[0]
+        distance_area = scu.create_distance_area(params.line_layer.crs())
+
+        # 1. Detach Collar Data
+        collar_ids, collar_data, pre_sampled_z = (
+            self.drillhole_service.collar_processor.detach_features(
+                params.collar_layer,
+                section_geom,
+                params.buffer_dist,
+                params.collar_id_field,
+                params.collar_use_geometry,
+                params.collar_x_field,
+                params.collar_y_field,
+                params.collar_z_field,
+                params.raster_layer,
+                target_crs=params.line_layer.crs(),
+            )
+        )
+
+        if not collar_data:
+            return None
+
+        # 2. Project Collars (Detached)
+        collars_projected = self.drillhole_service.project_collars(
+            collar_data=collar_data,
+            line_data=section_geom,
+            distance_area=distance_area,
+            buffer_width=params.buffer_dist,
+            collar_id_field=params.collar_id_field,
+            use_geometry=params.collar_use_geometry,
+            collar_x_field=params.collar_x_field,
+            collar_y_field=params.collar_y_field,
+            collar_z_field=params.collar_z_field,
+            collar_depth_field=params.collar_depth_field,
+            pre_sampled_z=pre_sampled_z,
+        )
+
+        if not (collars_projected and params.survey_layer and params.interval_layer):
+            return None
+
+        # 3. Extract Detached Data for Child Layers
+        survey_map = self.drillhole_service._fetch_bulk_data(
+            params.survey_layer,
+            collar_ids,
+            {
+                "id": params.survey_id_field,
+                "depth": params.survey_depth_field,
+                "azim": params.survey_azim_field,
+                "incl": params.survey_incl_field,
+            },
+        )
+        interval_map = self.drillhole_service._fetch_bulk_data(
+            params.interval_layer,
+            collar_ids,
+            {
+                "id": params.interval_id_field,
+                "from": params.interval_from_field,
+                "to": params.interval_to_field,
+                "lith": params.interval_lith_field,
+            },
+        )
+
+        section_azimuth = scu.calculate_line_azimuth(section_geom)
+
+        # 4. Process Intervals (Detached)
+        _, drillhole_data = self.drillhole_service.process_intervals(
+            collar_points=collars_projected,
+            collar_data=collar_data,
+            survey_data=survey_map,
+            interval_data=interval_map,
+            collar_id_field=params.collar_id_field,
+            use_geometry=params.collar_use_geometry,
+            collar_x_field=params.collar_x_field,
+            collar_y_field=params.collar_y_field,
+            line_geom=section_geom,
+            line_start=section_start,
+            distance_area=distance_area,
+            buffer_width=params.buffer_dist,
+            section_azimuth=section_azimuth,
+            survey_fields={},
+            interval_fields={},
+        )
         return drillhole_data

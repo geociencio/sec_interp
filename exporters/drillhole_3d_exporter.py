@@ -71,8 +71,11 @@ class DrillholeTrace3DExporter(BaseExporter):
                     writer.addFeature(feat)
 
             del writer
+        except (OSError, AttributeError, TypeError, ValueError) as e:
+            logger.exception(f"Data or IO error exporting 3D traces to {output_path}: {e}")
+            return False
         except Exception:
-            logger.exception(f"Failed to export 3D drillhole traces to {output_path}")
+            logger.exception(f"Unexpected system error exporting 3D traces to {output_path}")
             return False
         else:
             return True
@@ -139,8 +142,11 @@ class DrillholeInterval3DExporter(BaseExporter):
                         writer.addFeature(feat)
 
             del writer
+        except (OSError, AttributeError, TypeError, ValueError) as e:
+            logger.exception(f"Data or IO error exporting 3D intervals to {output_path}: {e}")
+            return False
         except Exception:
-            logger.exception(f"Failed to export 3D drillhole intervals to {output_path}")
+            logger.exception(f"Unexpected system error exporting 3D intervals to {output_path}")
             return False
         else:
             return True

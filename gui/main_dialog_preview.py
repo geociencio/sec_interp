@@ -97,79 +97,112 @@ class PreviewManager:
         self.debounce_timer.stop()
 
     def generate_preview(self) -> tuple[bool, str]:
-        """Generate complete preview with all available data layers.
-
-        This is the main preview generation method that orchestrates
-        data generation and rendering.
-
-        Returns:
-            Tuple of (success, message)
-
-        """
+        """Generate complete preview with all available data layers."""
         self.metrics.clear()
 
         try:
             with PerformanceTimer("Total Preview Generation", self.metrics):
-                # 1. Validation & Parameter Collection
                 params = self.dialog.plugin_instance._get_and_validate_inputs()
                 if not params:
                     return False, QCoreApplication.translate(
                         "PreviewManager", "Invalid configuration"
                     )
 
-                # 2. Data processing (with caching)
                 result = self._process_preview_data(params)
-
-                # 3. UI Update & Visualization
-                self._update_crs_label(params.line_layer)
-                self._run_render_pipeline(result)
-
-                # 4. Results Reporting
-                result_msg = PreviewReporter.format_results_message(result, self.metrics)
-                self.dialog.preview_widget.results_text.setPlainText(result_msg)
-
-                if DialogConfig.LOG_DETAILED_METRICS:
-                    logger.info(f"Preview Performance: {self.metrics.get_summary()}")
+                self._update_ui_state(params, result)
 
         except SecInterpError as e:
             self.dialog.handle_error(e, "Preview Error")
             return False, str(e)
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError) as e:
+            logger.exception("Unexpected UI error during preview generation")
             self.dialog.handle_error(e, "Unexpected Preview Error")
+            return False, str(e)
+        except Exception as e:
+            logger.exception("Critical unexpected error in preview generation")
+            self.dialog.handle_error(e, "Critical Error")
             return False, str(e)
         else:
             return True, QCoreApplication.translate(
                 "PreviewManager", "Preview generated successfully"
             )
 
+    def _update_ui_state(self, params: PreviewParams, result: PreviewResult) -> None:
+        """Update UI and trigger render pipeline."""
+        self._update_crs_label(params.line_layer)
+        self._run_render_pipeline(result)
+
+        result_msg = PreviewReporter.format_results_message(result, self.metrics)
+        self.dialog.preview_widget.results_text.setPlainText(result_msg)
+
+        if DialogConfig.LOG_DETAILED_METRICS:
+            logger.info(f"Preview Performance: {self.metrics.get_summary()}")
+
     def _process_preview_data(self, params: PreviewParams) -> PreviewResult:
-        """Process or retrieve cached preview data.
-
-        Args:
-            params: Preview configuration.
-
-        Returns:
-            PreviewResult: Computed or cached results.
-
-        """
-        current_hash = self._calculate_params_hash(params)
-        data_unchanged = current_hash == self.last_params_hash
-        self.last_params_hash = current_hash
-
-        if data_unchanged and self.last_result:
+        """Process or retrieve cached preview data."""
+        if self._is_data_unchanged(params):
             logger.info("Using cached data (params unchanged)")
             return self.last_result
 
-        # Generate fresh data - clear interpretations ONLY if the section geometry has changed
-        # Changing buffer distance or fields shouldn't clear digitized polygons.
-        old_geo_params = getattr(self, "_last_geo_params", None)
-        line_geom = (
-            next(params.line_layer.getFeatures()).geometry().asWkt()
-            if params.line_layer
-            and params.line_layer.isValid()
-            and next(params.line_layer.getFeatures(), None)
-            else None
+        self._handle_geometric_changes(params)
+        transform_context = self._get_transform_context()
+
+        # Skip drillholes in sync generation
+        result = self.preview_service.generate_all(
+            params,
+            transform_context,
+            skip_drillholes=True,
         )
+
+        self._update_cache_and_metrics(result)
+        self._cancel_active_tasks()
+        self._trigger_async_updates(params)
+
+        self.last_result = result
+        return result
+
+    def _get_transform_context(self) -> Any:
+        """Safely retrieve transform context from canvas."""
+        if not self.dialog.plugin_instance:
+            return None
+        return self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
+
+    def _update_cache_and_metrics(self, result: PreviewResult) -> None:
+        """Update local cache and cumulative metrics."""
+        self.cached_data.update(
+            {
+                "topo": result.topo,
+                "struct": result.struct,
+            }
+        )
+        self.metrics.timings.update(result.metrics.timings)
+        self.metrics.counts.update(result.metrics.counts)
+
+    def _trigger_async_updates(self, params: PreviewParams) -> None:
+        """Launch background tasks for biology and drillholes."""
+        # Start Async Geology if needed
+        if self.dialog.page_geology.is_complete():
+            self._start_async_geology(params)
+            self.cached_data["geol"] = None
+
+        # Start Async Drillholes if needed
+        if params.collar_layer:
+            self._start_async_drillhole(params)
+            self.cached_data["drillhole"] = None
+
+    def _is_data_unchanged(self, params: PreviewParams) -> bool:
+        """Check if parameters haven't changed since last generation."""
+        current_hash = self._calculate_params_hash(params)
+        unchanged = current_hash == self.last_params_hash
+        self.last_params_hash = current_hash
+        return unchanged and self.last_result is not None
+
+    def _handle_geometric_changes(self, params: PreviewParams) -> None:
+        """Clear interpretations if the section geometry has changed."""
+        old_geo_params = getattr(self, "_last_geo_params", None)
+        line_feat = next(params.line_layer.getFeatures(), None) if params.line_layer else None
+        line_geom = line_feat.geometry().asWkt() if line_feat else None
+
         new_geo_params = (
             params.line_layer.id() if params.line_layer else None,
             params.raster_layer.id() if params.raster_layer else None,
@@ -179,36 +212,12 @@ class PreviewManager:
 
         if old_geo_params and old_geo_params != new_geo_params:
             if hasattr(self.dialog, "interpretations"):
-                logger.info(
-                    "Clearing interpretations due to geometric change (Orientation or Raster changed)"
-                )
+                logger.info("Geometric change detected: Clearing interpretations.")
                 self.dialog.interpretations = []
                 self.dialog._save_interpretations()
-        elif not old_geo_params:
-            # First run, don't clear anything
-            pass
-        transform_context = (
-            self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
-        )
-        # Skip drillholes in sync generation
-        result = self.preview_service.generate_all(
-            params,
-            transform_context,
-            skip_drillholes=True,  # Drillholes are now async
-        )
 
-        # Merge results and metrics
-        self.cached_data.update(
-            {
-                "topo": result.topo,
-                "struct": result.struct,
-                # "drillhole": result.drillhole, # Don't update drillhole from sync result (it's None)
-            }
-        )
-        self.metrics.timings.update(result.metrics.timings)
-        self.metrics.counts.update(result.metrics.counts)
-
-        # Cancel any existing async work before starting new one
+    def _cancel_active_tasks(self) -> None:
+        """Cancel any existing async work before starting new ones."""
         if self.active_task:
             self.active_task.cancel()
             self.active_task = None
@@ -216,19 +225,6 @@ class PreviewManager:
         if self.active_drill_task:
             self.active_drill_task.cancel()
             self.active_drill_task = None
-
-        # Start Async Geology if needed
-        if self.dialog.page_geology.is_complete():
-            self._start_async_geology(params)
-            self.cached_data["geol"] = None  # Reset until async finished
-
-        # Start Async Drillholes if needed
-        if params.collar_layer:  # params.collar_layer is validated in PreviewParams
-            self._start_async_drillhole(params)
-            self.cached_data["drillhole"] = None  # Reset
-
-        self.last_result = result
-        return result
 
     def _run_render_pipeline(self, result: PreviewResult) -> None:
         """Orchestrate the rendering of generated data.
@@ -260,9 +256,12 @@ class PreviewManager:
                     max_points=max_points,
                     use_adaptive_sampling=opts["use_adaptive_sampling"],
                 )
-        except Exception as e:
-            logger.error(f"Error drawing preview: {e}", exc_info=True)
+        except (AttributeError, TypeError, ValueError) as e:
+            logger.exception(f"Rendering error: {e}")
             raise ValueError(f"Failed to render preview: {e!s}") from e
+        except Exception as e:
+            logger.exception("Unexpected rendering pipeline error")
+            raise ValueError(f"Critical rendering error: {e!s}") from e
 
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.
@@ -312,8 +311,10 @@ class PreviewManager:
                 max_points=max_points_for_render,
                 use_adaptive_sampling=use_adaptive_sampling,
             )
-        except Exception as e:
-            logger.error(f"Error updating preview from checkboxes: {e}", exc_info=True)
+        except (AttributeError, TypeError, ValueError) as e:
+            logger.exception(f"UI Sync error in preview: {e}")
+        except Exception:
+            logger.exception("Unexpected error updating preview from checkboxes")
 
     def _calculate_params_hash(self, params: PreviewParams) -> str:
         """Calculate a unique hash for preview parameters to check for changes."""
@@ -443,8 +444,13 @@ class PreviewManager:
                 outcrop_name_field,
                 params.band_num,
             )
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, SecInterpError) as e:
+            logger.exception(f"Failed to prepare geology task: {e}")
             self._on_geology_error(str(e))
+            return
+        except Exception:
+            logger.exception("Unexpected error preparing geology task")
+            self._on_geology_error("Internal error during task preparation")
             return
 
         # 2. Launch Task (Async - Background Thread)
@@ -462,57 +468,38 @@ class PreviewManager:
         QgsApplication.taskManager().addTask(self.active_task)
 
     def _on_geology_finished(self, results: list[Any]) -> None:
-        """Handle completion of geology generation task.
-
-        Args:
-            results: List of generated geology segments.
-
-        """
+        """Handle completion of geology generation task."""
         self.active_task = None
+        self.cached_data["geol"] = results if results else None
 
-        # Results are now a flat list of segments (GeologyData)
-        final_geol_data = results
+        logger.info(f"Async geology finished: {len(results) if results else 0} segments")
 
-        self.cached_data["geol"] = final_geol_data if final_geol_data else None
-
-        # Log success
-        logger.info(
-            f"Async geology finished: {len(final_geol_data) if final_geol_data else 0} segments"
-        )
-
-        # Trigger update of preview
         try:
-            # We reuse the update logic but need to ensure it uses the new cached data
-            # Since checkbox logic handles 'if show_geol -> use cached', we just need
-            # to force redraw
-            # But first we might want to update the result text to say "Done"
-
-            # Re-render
             self.update_from_checkboxes()
+            self._update_results_display()
+        except SecInterpError as e:
+            logger.exception(f"Error updating UI after async geology: {e}")
+        except (AttributeError, TypeError, ValueError):
+            logger.exception("Unexpected UI error after async geology")
 
-            # Update results text (we need to regenerate the whole message)
-            # Note: This requires current state of other layers
-            topo = self.cached_data["topo"]
-            struct = self.cached_data["struct"]
-            buffer_dist = self._get_buffer_distance()
+    def _update_results_display(self) -> None:
+        """Update results text and status display based on current cache."""
+        topo = self.cached_data.get("topo")
+        if not topo:
+            return
 
-            if topo:  # Only valid if we have topo
-                # Reconstruct a partial result for formatting
-                result = PreviewResult(
-                    topo=topo,
-                    geol=final_geol_data,
-                    struct=struct,
-                    drillhole=self.cached_data.get("drillhole"),
-                    buffer_dist=buffer_dist,
-                )
-                msg = PreviewReporter.format_results_message(result, self.metrics)
-                self.dialog.preview_widget.results_text.setPlainText(msg)
+        result = PreviewResult(
+            topo=topo,
+            geol=self.cached_data.get("geol"),
+            struct=self.cached_data.get("struct"),
+            drillhole=self.cached_data.get("drillhole"),
+            buffer_dist=self._get_buffer_distance(),
+        )
+        msg = PreviewReporter.format_results_message(result, self.metrics)
+        self.dialog.preview_widget.results_text.setPlainText(msg)
 
-                # CRITICAL: Update last_result so cached renders include geology
-                self.last_result = result
-
-        except Exception as e:
-            logger.error(f"Error updating UI after async geology: {e}", exc_info=True)
+        # Sync last_result so checkbox updates work correctly
+        self.last_result = result
 
     def _on_geology_progress(self, progress: float) -> None:
         """Handle progress updates from parallel service.
@@ -586,8 +573,11 @@ class PreviewManager:
                     dem_layer=params.raster_layer,
                 )
             )
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, SecInterpError) as e:
             logger.exception(f"Failed to prepare drillhole task: {e}")
+            return
+        except Exception:
+            logger.exception("Unexpected error preparing drillhole task")
             return
 
         # 2. Launch Task
@@ -605,35 +595,18 @@ class PreviewManager:
         self.active_drill_task = None
         if not result:
             return
+
         # result is (geol_data, drillhole_data)
         _, drill_part = result
-
         self.cached_data["drillhole"] = drill_part
-
-        # If drillholes generated geology segments (legacy 'process_intervals' behavior),
-        # we might want to merge them?
-        # Currently, 'geol' cache is from GeologyService (Surface geology).
-        # 'drillhole' cache contains (hid, ..., ..., ..., segments).
-        # The renderer handles drawing these segments stored inside drillhole data.
-        # So we just store drill_part.
 
         logger.info(f"Async Drillholes finished: {len(drill_part)} holes")
 
-        # Trigger update
-        self.update_from_checkboxes()
-
-        # Update text
-        if self.cached_data["topo"]:
-            # Re-construct status message
-            res_obj = PreviewResult(
-                topo=self.cached_data["topo"],
-                geol=self.cached_data["geol"],
-                struct=self.cached_data["struct"],
-                drillhole=self.cached_data["drillhole"],
-                buffer_dist=self._get_buffer_distance(),
-            )
-            msg = PreviewReporter.format_results_message(res_obj, self.metrics)
-            self.dialog.preview_widget.results_text.setPlainText(msg)
+        try:
+            self.update_from_checkboxes()
+            self._update_results_display()
+        except (AttributeError, TypeError, ValueError, SecInterpError):
+            logger.exception("Error syncing UI after async drillhole")
 
     def _handle_invalid_plugin_instance(self) -> None:
         """Handle case where plugin instance is not available for rendering."""
@@ -660,7 +633,9 @@ class PreviewManager:
                 self.dialog.preview_widget.lbl_crs.setText(
                     QCoreApplication.translate("PreviewManager", "CRS: None")
                 )
-        except Exception:
+        except (AttributeError, TypeError, ValueError):
             self.dialog.preview_widget.lbl_crs.setText(
                 QCoreApplication.translate("PreviewManager", "CRS: Unknown")
             )
+        except Exception:
+            logger.exception("Unexpected error updating CRS label")

@@ -154,7 +154,8 @@ class TestDrillholeService(BaseTestCase):
             True,
             "x",
             "y",
-            self.mock_line_geom,  # Using mock_line_geom instead of mock_line_data for clarity
+            self.mock_line_geom,
+            QgsPointXY(0, 0),
             self.mock_da,
             50.0,
             0.0,

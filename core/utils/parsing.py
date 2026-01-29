@@ -127,3 +127,18 @@ def cardinal_to_azimuth(text: str) -> float | None:
     }
 
     return table.get(text)
+
+
+def extract_feature_attributes(feature: Any) -> dict[str, Any]:
+    """Extract attributes from a QgsFeature into a pure Python dictionary.
+
+    Args:
+        feature: The QgsFeature object.
+
+    Returns:
+        A dictionary mapping field names to attribute values.
+
+    """
+    if not feature or not hasattr(feature, "fields"):
+        return {}
+    return dict(zip(feature.fields().names(), feature.attributes(), strict=False))

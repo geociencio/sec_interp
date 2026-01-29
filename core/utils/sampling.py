@@ -13,6 +13,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
+from sec_interp.core.exceptions import GeometryError
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -103,11 +104,19 @@ def prepare_profile_context(
 
     line_feat = next(line_lyr.getFeatures(), None)
     if not line_feat:
-        raise ValueError("Line layer has no features")
+        raise GeometryError("Line layer has no features", {"layer": line_lyr.name()})
 
     line_geom = line_feat.geometry()
     if not line_geom or line_geom.isNull():
-        raise ValueError("Line geometry is not valid")
+        raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
+
+    from .geometry import get_line_vertices
+
+    try:
+        if not get_line_vertices(line_geom):
+            raise GeometryError("Line geometry has no vertices", {"layer": line_lyr.name()})
+    except ValueError as e:
+        raise GeometryError(str(e), {"layer": line_lyr.name()}) from e
 
     line_start = get_line_start_point(line_geom)
     da = create_distance_area(line_lyr.crs())
@@ -151,3 +160,35 @@ def interpolate_elevation(topo_data: list, distance: float) -> float:
 
     ratio = (distance - dist1) / (dist2 - dist1)
     return elev1 + (elev2 - elev1) * ratio
+
+
+def sample_point_elevation(
+    raster_layer: QgsRasterLayer, point: QgsPointXY, band_number: int = 1
+) -> float:
+    """Sample elevation from a raster layer at a specific point.
+
+    Args:
+        raster_layer: The DEM raster layer.
+        point: The coordinate point to sample.
+        band_number: The raster band index (default 1).
+
+    Returns:
+        The sampled elevation value or 0.0 if sampling fails.
+
+    """
+    if not raster_layer or not raster_layer.isValid():
+        return 0.0
+
+    try:
+        # identify() is more robust across different raster types than sample()
+        # for single point access when speed is not the primary constraint.
+        from qgis.core import QgsRaster
+
+        ident = raster_layer.dataProvider().identify(point, QgsRaster.IdentifyFormatValue)
+        if ident.isValid():
+            val = ident.results().get(band_number)
+            if val is not None:
+                return float(val)
+    except (AttributeError, ValueError, TypeError):
+        pass
+    return 0.0
