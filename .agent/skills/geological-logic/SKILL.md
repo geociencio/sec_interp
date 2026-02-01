@@ -1,26 +1,41 @@
 ---
 name: geological-logic
-description: Standards for handling drillhole data, section interpolation and 3-level validation.
-trigger: when implementing geological algorithms, data validation or drillhole processing logic.
-scope: root
+description: Estándares para el manejo de datos de sondajes, interpolación de secciones y validación de 3 niveles.
+trigger: al implementar algoritmos geológicos, validación de datos o lógica de procesamiento de sondajes.
 ---
 
-# Geological & Domain Logic Skill
+# Lógica Geológica y de Dominio
 
-## Data Domain
-- **Drillholes**: Handling of collar, survey, and geology (intervals) tables.
-- **Sections**: Calculation of intersection points between 3D objects and 2D planes.
-- **Interpolation**: Ensuring geometric consistency during manual interpretation.
+Define las reglas de negocio para el procesamiento de datos mineros/geológicos, asegurando la consistencia geométrica y la integridad de los datos de sondajes.
 
-## 3-Level Validation
-Every model and service must implement:
-1. **Level 1 (Type)**: Dataclass types and basic range clamps.
-2. **Level 2 (Schema)**: Cross-field consistency (e.g., `StartDepth < EndDepth`).
-3. **Level 3 (Business)**: External consistency (e.g., "Layer exists in project", "No overlaps in geology").
+## Cuándo usar este skill
+- Al modificar servicios de procesamiento de sondajes (`DrillholeService`).
+- Al diseñar algoritmos de interpolación o intersección de secciones.
+- Al implementar nuevas reglas de validación de datos geológicos.
 
-## Geometry Rules
-- **Core Decoupling**: Core services (`GeologyService`, `DrillholeService`) MUST NOT depend on `QgsGeometry`. Use DTOs with WKT strings or point tuples.
-- **WKT Standards**: Use WKT-agnostic logic in the core; convert to/from `QgsGeometry` only at the GUI/Exporter boundary.
-- **Mocks**: Use `MockQgsGeometry` standards (supports `pointN`, `is3D`) for local unit tests.
-- All spatial logic must be unit-tested with varying CRS contexts.
-- Handle edge cases like vertical drillholes or parallel section lines.
+## Grado de Libertad
+- **Estricto**: Las reglas de validación de 3 niveles y el desacoplamiento de PyQGIS son obligatorios.
+
+## Workflow
+1. **Modelado**: Definir las entidades usando Dataclasses y tipos estrictos.
+2. **Validación**: Implementar los 3 niveles (Tipo, Esquema, Negocio).
+3. **Abstracción**: Asegurar que la lógica core use WKT o DTOs, no `QgsGeometry`.
+4. **Pruebas**: Crear tests unitarios con contextos de CRS variados.
+
+## Instrucciones y Reglas
+
+### Validación de 3 Niveles
+1. **Nivel 1 (Tipo)**: Tipos de datos básicos y rangos permitidos.
+2. **Nivel 2 (Esquema)**: Consistencia entre campos (ej. `StartDepth < EndDepth`).
+3. **Nivel 3 (Negocio)**: Consistencia externa (ej. "Capa existe", "Sin solapes en geología").
+
+### Reglas de Geometría
+- **Desacoplamiento**: Los servicios core NUNCA deben depender de `QgsGeometry`.
+- **Estándar WKT**: Operar con strings WKT; convertir a PyQGIS solo en la frontera de UI.
+- **Mocks**: Usar `MockQgsGeometry` para tests unitarios locales.
+
+## Checklist de Calidad
+- [ ] ¿La lógica core es independiente de PyQGIS?
+- [ ] ¿Se implementan los 3 niveles de validación?
+- [ ] ¿Existen tests para casos de borde (sondajes verticales, paralelos)?
+- [ ] ¿Se manejan correctamente las unidades y CRS?

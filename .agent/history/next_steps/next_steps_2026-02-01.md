@@ -16,5 +16,4 @@ Ejecutar el workflow de inicio:
 ```
 
 ## Errores Conocidos / Notas
-- **Regresión**: Se detectó un fallo en `make docker-test` relacionado con `QgsDistanceArea` en `preview_service.py`. Debe revisarse si es un problema de mocking o una dependencia faltante.
 - El script `skill_sync.py` debe ser verificado en entornos Windows si se pretende una compatibilidad total fuera de Linux.

@@ -9,16 +9,15 @@ resolution-markers = [
 
 [[package]]
 name = "ai-context-core"
-version = "2.5.2"
+version = "3.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
-    { name = "pyyaml" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bd/4d/3680030b968d3b22860562ffeda0ea00c9b75a8ae9a8c1db6cf96dbc733c/ai_context_core-2.5.2.tar.gz", hash = "sha256:3efe5b9fc35989b3466d5e76aa531636cdae7724b4b7d780307a274f2819b6c9", size = 64421, upload-time = "2026-01-26T08:19:25.064Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4c/32/9ac9458f09b9380a61d2a11b89032b387d4d3b5918a5bc2133d385f0301f/ai_context_core-3.0.1.tar.gz", hash = "sha256:69de70aef47f989d8a782bf71345e7be7462292ee64f11f8ec8b3fc243f415a7", size = 90118, upload-time = "2026-01-30T09:10:36.894Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/40/19/1ade55d17b0f464e7da6935901bdd8f8d281d63842cf43e18901e7f19521/ai_context_core-2.5.2-py3-none-any.whl", hash = "sha256:89bcc566a8356cdbd8f75a927d42e37cd1214026105d79ba4278cdb363bf6ac1", size = 62157, upload-time = "2026-01-26T08:19:23.599Z" },
+    { url = "https://files.pythonhosted.org/packages/01/f2/8d546d09fc3b7dc8679e3401d8d96ceed7383321a1690b2c0cbb0e2fb30f/ai_context_core-3.0.1-py3-none-any.whl", hash = "sha256:98567a326a5ccbdf54819e821c5bab753d8fccea12ee383c5043e10aa644814c", size = 98270, upload-time = "2026-01-30T09:10:35.38Z" },
 ]
 
 [[package]]
@@ -939,13 +938,13 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ai-context-core", specifier = ">=2.5.2" },
+    { name = "ai-context-core", specifier = ">=3.0.1" },
     { name = "pyqt5", specifier = ">=5.15.0,<5.16.0" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "ai-context-core", specifier = ">=2.1.1" },
+    { name = "ai-context-core", specifier = ">=3.0.1" },
     { name = "black", specifier = "==24.1.0" },
     { name = "dominate", specifier = ">=2.9.1" },
     { name = "linkify-it-py", specifier = ">=2.0.0" },

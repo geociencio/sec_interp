@@ -56,16 +56,22 @@ class TestStructureService(BaseTestCase):
         fields.names.return_value = ["dip", "strike"]
         feat.fields = MagicMock(return_value=fields)
         feat.attributes = MagicMock(return_value=[45.0, 90.0])
-        feat.geometry = MagicMock(return_value=QgsGeometry.fromPointXY(QgsPointXY(50, 5)))
+        feat.geometry = MagicMock(
+            return_value=QgsGeometry.fromPointXY(QgsPointXY(50, 5))
+        )
 
         # Patch dependencies
-        with patch(
-            "sec_interp.core.services.structure_service.scu.filter_features_by_buffer"
-        ) as mock_filter, patch(
-            "sec_interp.core.services.structure_service.scu.create_distance_area"
-        ) as mock_da_cls, patch(
-            "sec_interp.core.services.structure_service.scu.sample_point_elevation"
-        ) as mock_sample:
+        with (
+            patch(
+                "sec_interp.core.services.structure_service.scu.filter_features_by_buffer"
+            ) as mock_filter,
+            patch(
+                "sec_interp.core.services.structure_service.scu.create_distance_area"
+            ) as mock_da_cls,
+            patch(
+                "sec_interp.core.services.structure_service.scu.sample_point_elevation"
+            ) as mock_sample,
+        ):
             mock_filter.return_value = [feat]
 
             da = MagicMock()
@@ -122,7 +128,9 @@ class TestStructureService(BaseTestCase):
 
         # Provider mock setup is done in test_project_structures_success,
         # but let's re-do it or use scu.sample_point_elevation mock
-        with patch("sec_interp.core.services.structure_service.scu.sample_point_elevation") as mock_sample:
+        with patch(
+            "sec_interp.core.services.structure_service.scu.sample_point_elevation"
+        ) as mock_sample:
             mock_sample.return_value = 250.0
             val = self.service._process_single_structure(
                 {"wkt": "POINT(0 0)", "attributes": {"dip": 45, "strike": 0}},
@@ -133,6 +141,6 @@ class TestStructureService(BaseTestCase):
                 1,
                 0.0,
                 "dip",
-                "strike"
+                "strike",
             )
             self.assertEqual(val.elevation, 250.0)

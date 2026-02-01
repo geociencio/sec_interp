@@ -31,12 +31,14 @@ Este sistema utiliza disparadores técnicos para cargar contexto bajo demanda. L
 <!-- SKILLS_TABLE_START -->
 | Skill | Description | Trigger (Auto-invoke) |
 | :--- | :--- | :--- |
-| [commit-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/commit-standards/SKILL.md) | Standards for creating clean, conventional commits with quality validation | when creating commits, writing commit messages, or using /crea-commit workflow |
-| [geological-logic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/geological-logic/SKILL.md) | Standards for handling drillhole data, section interpolation and 3-level validation. | when implementing geological algorithms, data validation or drillhole processing logic. |
-| [qa-docker](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qa-docker/SKILL.md) | Standards for testing within the Dockerized QA environment and using Mocks for QGIS. | when writing or running tests, using mocks or dealing with Docker infrastructure. |
-| [qgis-core](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qgis-core/SKILL.md) | Knowledge about QGIS API, plugin structure, and asynchronous processing with QgsTask. | when working with PyQGIS, layers, CRS or QgsTask. |
-| [release-management](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/release-management/SKILL.md) | Standards for QGIS plugin release process with quality validation | when preparing releases, updating versions, or using /release-plugin workflow |
-| [ui-framework](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/ui-framework/SKILL.md) | Standards for the SecInterp custom UI, focusing on programmatic creation and premium aesthetics. | when modifying or creating GUI widgets, layouts or CSS styles. |
+| [coding-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/coding-standards/SKILL.md) | Estándares de codificación del proyecto, enfocados en el uso de pathlib, docstrings de Google y tipado estricto. | al escribir código Python, realizar refactorizaciones o definir rutas de archivos. |
+| [commit-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/commit-standards/SKILL.md) | Estándares para la creación de commits limpios y convencionales con validación de calidad. | al crear commits, escribir mensajes de commit o usar el workflow /crea-commit |
+| [geological-logic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/geological-logic/SKILL.md) | Estándares para el manejo de datos de sondajes, interpolación de secciones y validación de 3 niveles. | al implementar algoritmos geológicos, validación de datos o lógica de procesamiento de sondajes. |
+| [project-context](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/project-context/SKILL.md) | Resumen del propósito, arquitectura y estructura del proyecto SecInterp. | al iniciar nuevas tareas, solicitar resúmenes o explicar la arquitectura del plugin. |
+| [qa-docker](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qa-docker/SKILL.md) | Estándares para pruebas en entorno Dockerizado y uso de Mocks para QGIS. | al escribir o ejecutar tests, usar mocks o manejar infraestructura Docker. |
+| [qgis-core](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qgis-core/SKILL.md) | Conocimiento sobre la API de QGIS, estructura de plugins y procesamiento asíncrono con QgsTask. | al trabajar con PyQGIS, capas, CRS o QgsTask. |
+| [release-management](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/release-management/SKILL.md) | Estándares para el proceso de liberación del plugin QGIS con validación de calidad. | al preparar lanzamientos, actualizar versiones o usar el workflow /release-plugin |
+| [ui-framework](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/ui-framework/SKILL.md) | Estándares para la interfaz personalizada de SecInterp, enfocados en creación programática y estética premium. | al modificar o crear widgets de GUI, layouts o estilos CSS. |
 <!-- SKILLS_TABLE_END -->
 
 ---

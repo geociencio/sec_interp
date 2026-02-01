@@ -6,12 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
 ### Added
+- Nuevo "Antigravity Framework Starter Kit" para portabilidad del sistema agentico.
+- Sistema de Memoria Semántica (`AGENT_LESSONS.md`) y Recursos Técnicos (`qgis_gold_snippets.md`).
+- Workflow de auditoría de estándares (`verificar-estandares.md`).
+- Skills de Contexto de Proyecto y Estándares de Codificación Modernos.
 - [Pendiente: Soporte para perfiles poligonales/túneles]
 - [Pendiente: Suite de integración 3D avanzada]
 
 ### Changed
+- Refactorización de todos los Skills agenticos al sistema bilingüe ES/EN.
+- Mejora de los Workflows con secciones de "Resultado Esperado" y pasos corregidos.
 
 ### Fixed
 

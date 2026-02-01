@@ -36,6 +36,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
 
 2.  **Sincronización de Entorno (Local)**:
     Asegura dependencias actualizadas.
+    // turbo
     ```bash
     uv sync
     ```
@@ -46,6 +47,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     Confirma que el sistema está estable ("en verde"). Todos los tests (361) deben pasar.
 
     *Opción A (Docker - Recomendado):*
+    // turbo
     ```bash
     make docker-test
     ```
@@ -55,9 +57,11 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     env PYTHONPATH=.. uv run python3 -m unittest discover tests
     ```
 
-    🤖 **Agent Action**: Usar skill **qa-docker** para interpretar fallos de tests:
-    - Identificar si son fallos de mocks o de lógica real
-    - Sugerir correcciones basadas en estándares del skill
-    - Verificar que tests de integración 3D están cubiertos
+    🤖 **Agent Action**: Usar skill **qa-docker** para interpretar fallos de tests e identificar regresiones.
 
-**Objetivo**: Empezar a codificar sabiendo *exactamente* qué pasó ayer y con el contexto especializado cargado.
+## Resultado Esperado
+- Entorno sincronizado y validado (361 tests OK).
+- Mapa mental claro de las tareas pendientes en `next_steps.md`.
+- Agente operando con los perfiles y skills correctos cargados.
+
+**Filosofía**: Empezar a codificar sabiendo *exactamente* qué pasó ayer y con el contexto especializado cargado.

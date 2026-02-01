@@ -17,6 +17,7 @@ validation: |
 
 3. **Recommended Method (Docker - Complete)**:
    The definitive health check is running all tests in Docker:
+   // turbo
    ```bash
    make docker-test
    ```
@@ -26,7 +27,9 @@ validation: |
 - Always set `PYTHONPATH=..` when running unit tests from the project root.
 - **Process Isolation**: Do NOT run `tests/core` and `tests/integration` in the same process to avoid Mock pollution.
 
-🤖 **Agent Action**: Usar skill **qa-docker** para:
-- Interpretar fallos de tests (mocks vs lógica real)
-- Sugerir correcciones basadas en estándares de mocking del skill
-- Verificar que los mocks de QGIS están correctamente configurados según `tests/base_test.py`
+🤖 **Agent Action**: Usar skill **qa-docker** para interpretar fallos y validar la estrategia de mocking.
+
+## Resultado Esperado
+- Informe claro del estado de estabilidad del proyecto.
+- Identificación de regresiones o fallos democks.
+- Confirmación de si el código es seguro para ser integrado.

@@ -1,27 +1,40 @@
 ---
 name: qa-docker
-description: Standards for testing within the Dockerized QA environment and using Mocks for QGIS.
-trigger: when writing or running tests, using mocks or dealing with Docker infrastructure.
-scope: root
+description: Estándares para pruebas en entorno Dockerizado y uso de Mocks para QGIS.
+trigger: al escribir o ejecutar tests, usar mocks o manejar infraestructura Docker.
 ---
 
-# QA & Docker Automation Skill
+# QA y Automatización Docker
 
-## Environment
-- **Docker**: The primary testing environment uses the `qgis/qgis:latest` image.
-- **Commands**: Use `make docker-test` to run the full suite.
+Garantiza la estabilidad del código mediante un entorno de ejecución controlado (Docker) y estrategias de simulación (Mocks) para PyQGIS.
 
-## Testing Rules
-- **Mock-First**: Follow [ADR-0004](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/adr/ADR-0004-Mock-First-Testing-Strategy.md). Use `unittest.mock` to simulate QGIS components when running outside a full QGIS instance.
-- **Coverage**: Every new service must have at least 80% unit test coverage.
-- **Integration**: 1 integration test per major feature is required.
+## Cuándo usar este skill
+- Al crear nuevos casos de prueba unitarios o de integración.
+- Al depurar fallos en el pipeline de CI/CD.
+- Al configurar o modificar el entorno de desarrollo Docker.
 
-## Environment Isolation
-- **Process Splitting**: To avoid contamination between Mocks and the real QGIS API, execute tests in separate processes (core/exporters/gui vs integration).
-- **FORCE_MOCKS**: Use environment variable `FORCE_MOCKS=0` to force load the real QGIS API in integration tests.
-- **Cleanup**: Always call `remove_mock_patches()` from `tests.base_test` before initializing `QgsApplication` in integration tests.
+## Grado de Libertad
+- **Guiado**: Se deben seguir las estrategias de mocking definidas, pero existe libertad en el diseño de los casos de prueba.
 
-## Tools
-- `unittest` for running tests. Direct reference via module path is preferred.
-- `make docker-test` as the definitive health check (runs all suites in isolated processes).
-- `ruff` and `black` for linting and formatting.
+## Workflow
+1. **Diseño**: Aplicar estrategia "Mock-First" para lógica independiente de la UI.
+2. **Implementación**: Crear tests usando `unittest` o `pytest`.
+3. **Ejecución**: Validar localmente y luego en Docker (`make docker-test`).
+4. **Cobertura**: Verificar que se alcanza el mínimo del 80% en nuevos servicios.
+
+## Instrucciones y Reglas
+
+### Estrategia de Mocking
+- **Mock-First**: Seguir el [ADR-0004](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/adr/ADR-0004-Mock-First-Testing-Strategy.md).
+- **Aislamiento**: Ejecutar tests en procesos separados para evitar contaminación de Mocks.
+- **FORCE_MOCKS**: Usar `FORCE_MOCKS=0` solo para tests de integración reales.
+
+### Entorno Docker
+- **Imagen**: Usar `qgis/qgis:latest` como base.
+- **Comando Maestro**: `make docker-test` es el control de salud definitivo.
+
+## Checklist de Calidad
+- [ ] ¿La cobertura de nuevos servicios es > 80%?
+- [ ] ¿Se limpian los patches de Mocks después de cada test?
+- [ ] ¿El test de integración se ejecuta en un proceso aislado?
+- [ ] ¿El reporte de Docker muestra 0 fallos?

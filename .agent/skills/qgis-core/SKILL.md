@@ -1,22 +1,41 @@
 ---
 name: qgis-core
-description: Knowledge about QGIS API, plugin structure, and asynchronous processing with QgsTask.
-trigger: when working with PyQGIS, layers, CRS or QgsTask.
-scope: root
+description: Conocimiento sobre la API de QGIS, estructura de plugins y procesamiento asíncrono con QgsTask.
+trigger: al trabajar con PyQGIS, capas, CRS o QgsTask.
 ---
 
-# QGIS Core Development Skill
+# Desarrollo Core QGIS
 
-## Context
-This project is a QGIS plugin named `sec_interp`. It uses the QGIS Python API (PyQGIS).
+Estandariza la interacción con la API de QGIS, asegurando un plugin responsivo y bien estructurado.
 
-## Mandatory Guidelines
-- **QgsTask**: Use `QgsTask` for any operation that takes more than 0.5s to prevent UI freezing.
-- **Layers Handling**: Always check if a layer is valid (`isValid()`) before operating on it.
-- **CRS Management**: Explicitly handle Coordinate Reference Systems. Use `QgsProject.instance().crs()` if no specific CRS is provided.
-- **Project Structure**: Follow the established structure: `core/` for business logic (Agnostic/WKT), `gui/` for widgets (PyQGIS dependent), `exporters/` for output.
-- **Boundary Rules**: Use `asWkt()` and `fromWkt()` to communicate between CLI/Core and the QGIS UI.
+## Cuándo usar este skill
+- Al implementar nuevas herramientas que interactúen con el lienzo del mapa.
+- Al manejar capas vectoriales o ráster.
+- Al realizar operaciones pesadas que requieran hilos secundarios.
 
-## Code Style
-- Use `iface` only when necessary; prefer passing required objects in constructors for better testability.
-- Follow the PEP8 standard and the project's `.pre-commit-config.yaml`.
+## Grado de Libertad
+- **Estricto**: El uso de `QgsTask` para procesos largos y el desacoplamiento Core/GUI son obligatorios.
+
+## Workflow
+1. **Arquitectura**: Separar la lógica en `core/` (procesamiento) y `gui/` (visualización).
+2. **Validación**: Siempre verificar `isValid()` en las capas antes de operar.
+3. **Asincronía**: Envolver procesos de >0.5s en una `QgsTask`.
+4. **Gestión de CRS**: Manejar explícitamente las transformaciones de coordenadas.
+
+## Instrucciones y Reglas
+
+### Reglas de Oro
+- **QgsTask**: No bloquear la UI. Usar señales y slots para comunicación.
+- **Fronteras**: Usar WKT para comunicar la lógica core con la interfaz gráfica.
+- **Inyección**: Evitar el uso global de `iface`; preferir pasar objetos en constructores.
+
+### Estructura del Plugin
+- `core/`: Lógica de negocio agnóstica a la UI.
+- `gui/`: Widgets y diálogos dependientes de PyQGIS.
+- `exporters/`: Módulos de salida de datos.
+
+## Checklist de Calidad
+- [ ] ¿Se evitan bloqueos en la interfaz mediante `QgsTask`?
+- [ ] ¿Se valida la integridad de las capas en cada operación?
+- [ ] ¿Las transformaciones de CRS están explícitamente definidas?
+- [ ] ¿Se sigue la separación de responsabilidades Core/GUI?

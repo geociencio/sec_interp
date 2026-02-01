@@ -6,7 +6,12 @@ from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsGeometry, QgsPointXY
 
 from sec_interp.core.services.preview_service import PreviewService
 from sec_interp.core.types import PreviewParams, PreviewResult
-from sec_interp.core.exceptions import SecInterpError, GeometryError, ProcessingError, DataMissingError
+from sec_interp.core.exceptions import (
+    SecInterpError,
+    GeometryError,
+    ProcessingError,
+    DataMissingError,
+)
 
 
 class TestPreviewService(BaseTestCase):
@@ -130,7 +135,11 @@ class TestPreviewService(BaseTestCase):
 
         # Mock drillhole service
         ds = self.mock_controller.drillhole_service
-        ds.collar_processor.detach_features.return_value = ({"BH1"}, [{"id": "BH1"}], {})
+        ds.collar_processor.detach_features.return_value = (
+            {"BH1"},
+            [{"id": "BH1"}],
+            {},
+        )
         ds.project_collars.return_value = [("BH1", 0.0, 100.0, 0.0, 50.0)]
         ds._fetch_bulk_data.return_value = {"BH1": []}
         ds.process_intervals.return_value = (None, [{"id": "BH1", "trace": []}])
@@ -157,7 +166,7 @@ class TestPreviewService(BaseTestCase):
         line_geom.vertices.return_value = pts
         line_geom.length.return_value = 100.0
         line_geom.isNull.return_value = False
-        line_geom.type.return_value = 1 # QgsWkbTypes.LineGeometry
+        line_geom.type.return_value = 1  # QgsWkbTypes.LineGeometry
 
         line_feat = MagicMock()
         line_feat.geometry.return_value = line_geom
@@ -179,7 +188,11 @@ class TestPreviewService(BaseTestCase):
         self.params.interval_lith_field = "LITH"
 
         ds = self.mock_controller.drillhole_service
-        ds.collar_processor.detach_features.return_value = ({"BH1"}, [{"id": "BH1"}], {})
+        ds.collar_processor.detach_features.return_value = (
+            {"BH1"},
+            [{"id": "BH1"}],
+            {},
+        )
         ds.project_collars.return_value = [("BH1", 0.0, 100.0, 0.0, 50.0)]
         ds._fetch_bulk_data.return_value = {"BH1": []}
         ds.process_intervals.return_value = (None, [{"id": "BH1", "trace": []}])
@@ -208,9 +221,9 @@ class TestPreviewService(BaseTestCase):
         line_geom = QgsGeometry()
         # Ensure it has NO points
         line_geom._polyline = []
-        if hasattr(line_geom, 'isNull'):
-             # If it's a mock or has the method
-             line_geom.isNull = MagicMock(return_value=False)
+        if hasattr(line_geom, "isNull"):
+            # If it's a mock or has the method
+            line_geom.isNull = MagicMock(return_value=False)
 
         line_feat = MagicMock()
         line_feat.geometry.return_value = line_geom
@@ -252,7 +265,11 @@ class TestPreviewService(BaseTestCase):
         self.params.interval_lith_field = "LITH"
 
         ds = self.mock_controller.drillhole_service
-        ds.collar_processor.detach_features.return_value = ({"BH1"}, [{"id": "BH1"}], {})
+        ds.collar_processor.detach_features.return_value = (
+            {"BH1"},
+            [{"id": "BH1"}],
+            {},
+        )
         ds.project_collars.return_value = [("BH1", 0.0, 100.0, 0.0, 50.0)]
         ds._fetch_bulk_data.return_value = {"BH1": []}
         ds.process_intervals.side_effect = SecInterpError("Interval failure")
@@ -274,7 +291,11 @@ class TestPreviewService(BaseTestCase):
 
         self.params.collar_id_field = "HOLEID"
         ds = self.mock_controller.drillhole_service
-        ds.collar_processor.detach_features.return_value = ({"BH1"}, [{"id": "BH1"}], {})
+        ds.collar_processor.detach_features.return_value = (
+            {"BH1"},
+            [{"id": "BH1"}],
+            {},
+        )
         ds.project_collars.return_value = []
 
         result = self.service._generate_drillholes(self.params)
@@ -305,7 +326,11 @@ class TestPreviewService(BaseTestCase):
 
         self.params.collar_id_field = "HOLEID"
         ds = self.mock_controller.drillhole_service
-        ds.collar_processor.detach_features.return_value = ({"BH1"}, [{"id": "BH1"}], {})
+        ds.collar_processor.detach_features.return_value = (
+            {"BH1"},
+            [{"id": "BH1"}],
+            {},
+        )
         ds.project_collars.side_effect = SecInterpError("Test failure")
 
         from sec_interp.core.exceptions import ProcessingError

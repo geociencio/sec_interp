@@ -83,4 +83,9 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     *   Contenido de `.agent/next_steps.md`.
     *   Sugerencia para la próxima sesión (comando `/inicia-sesion`).
 
+## Resultado Esperado
+- Memoria de la sesión persistida en Logs y `next_steps.md`.
+- Repositorio limpio y validado técnicamente.
+- Instrucciones claras para que el asistente retome la tarea sin pérdida de contexto.
+
 **Filosofía**: Una sesión no termina cuando el código funciona, sino cuando la historia está contada.

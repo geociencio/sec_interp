@@ -15,7 +15,11 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **release-management** para validar checklist completo de pre-release.
 
-1. **Analizar Calidad**: Ejecutar `uv run qgis-analyzer . -o analysis_results`.
+1. **Analizar Calidad**:
+   // turbo
+   ```bash
+   uv run qgis-analyzer . -o analysis_results
+   ```
 
    🤖 **Agent Action**: Verificar que:
    - Overall Plugin Score > 25/100
@@ -38,6 +42,7 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 2. **Changelog Técnico**: Mover `[Unreleased]` a la nueva versión en `docs/CHANGELOG.md`.
 
 3. **Notas de Lanzamiento**:
+   // turbo
    ```bash
    sed -e "s/{version}/X.Y.Z/g" -e "s/{date}/$(date +%F)/g" .github/release_template.md > /tmp/release_notes.md
    ```
@@ -48,8 +53,17 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **qa-docker** para validar tests y skill **commit-standards** para linting.
 
-1. **Linting & Formatting**: `uv run ruff check --fix . && uv run ruff format . && uv run black .`
-2. **Tests**: `make docker-test` (361+ tests deben pasar).
+1. **Linting & Formatting**:
+   // turbo
+   ```bash
+   uv run ruff check --fix . && uv run ruff format . && uv run black .
+   ```
+2. **Tests**:
+   // turbo
+   ```bash
+   make docker-test
+   ```
+   (361+ tests deben pasar).
 
    🤖 **Agent Action**: Alertar si algún test falla o si hay regresión en cobertura.
 
@@ -70,12 +84,14 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **release-management** para validar artifacts y proceso de publicación.
 
-1. **Build ZIP**: `make package VERSION=main` (Verificar en `dist/`).
+1. **Build ZIP**:
+   // turbo
+   ```bash
+   make package VERSION=main
+   ```
+   (Verificar en `dist/`).
 
-   🤖 **Agent Action**: Validar contenido del ZIP:
-   - metadata.txt tiene versión correcta
-   - No hay archivos __pycache__ o .pyc
-   - No hay archivos de tests
+   🤖 **Agent Action**: Validar contenido del ZIP (metadata, sin basura técnica).
 
 2. **GitHub Release**:
    ```bash
@@ -88,3 +104,8 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
    - Plugin aparece en QGIS Plugin Manager
    - Versión es correcta
    - Changelog es visible
+
+## Resultado Esperado
+- Versión oficial publicada en el repositorio de QGIS y GitHub.
+- Documentación y tags de Git sincronizados.
+- Plugin validado técnicamente con métricas visibles.

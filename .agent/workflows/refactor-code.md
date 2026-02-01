@@ -20,93 +20,41 @@ Este workflow guía la refactorización de código siguiendo los estándares del
 ## Pasos de Refactorización
 
 1. **Identificar Objetivo de Refactorización**:
+   // turbo
    ```bash
    qgis-analyzer analyze .
    ```
 
-   🤖 **Agent Action**: Analizar `analysis_results/PROJECT_SUMMARY.md` para identificar:
-   - Métodos con alta complejidad ciclomática
-   - Funciones sin type hints o docstrings
-   - Violaciones de estándares QGIS
+   🤖 **Agent Action**: Analizar `analysis_results/PROJECT_SUMMARY.md` para identificar hotspots y deuda técnica.
 
 2. **Cargar Contexto Especializado**:
 
-   🤖 **Agent Action**: Según el módulo a refactorizar, cargar skill apropiado:
-   - **`core/services/geology_service.py`** → Usar skill **geological-logic**
-   - **`core/services/drillhole_service.py`** → Usar skill **geological-logic** + **qgis-core**
-   - **`gui/`** → Usar skill **ui-framework** + **qgis-core**
+   🤖 **Agent Action**: Según el módulo, cargar skill apropiado (geological-logic, qgis-core, o ui-framework).
 
 3. **Aplicar Refactorización**:
 
-   Principios a seguir (según skill **qgis-core**):
-   - Extraer métodos privados para lógica compleja
-   - Usar `QgsTask` para operaciones pesadas
-   - Mantener separación UI/Core estricta (Core no debe importar `qgis.core.QgsGeometry`)
-   - Usar WKT y primitivos para el paso de datos entre Core y GUI (ver skill **geological-logic**)
-   - Añadir type hints y docstrings Google-style
+   🤖 **Agent Action**: Aplicar principios SOLID y reducir complejidad ciclomática.
 
 4. **Validar con Tests**:
+   // turbo
    ```bash
    make docker-test
    ```
 
-   🤖 **Agent Action**: Usar skill **qa-docker** para:
-   - Verificar que todos los tests pasan
-   - Identificar si hay tests faltantes para el código refactorizado
-   - Sugerir nuevos tests si es necesario
+   🤖 **Agent Action**: Usar skill **qa-docker** para asegurar que no hay regresiones.
 
 5. **Verificar Métricas de Calidad**:
+   // turbo
    ```bash
    qgis-analyzer analyze .
    ```
 
-   🤖 **Agent Action**: Comparar métricas antes/después:
-   - Complejidad ciclomática debe haber bajado
-   - Type hint coverage debe haber aumentado
-   - No deben aparecer nuevas violaciones
+   🤖 **Agent Action**: Confirmar mejora en el Quality Score y reducción de CC.
 
 6. **Commit de Refactorización**:
-   Usar workflow `/crea-commit` con mensaje tipo:
-   ```
-   refactor(core): reduce complexity in GeologyService.prepare_task_input
+   Usar workflow `/crea-commit` con mensaje técnico estructurado.
 
-   - Extract validation logic to _validate_inputs (CC: 16 → 8)
-   - Extract data collection to _extract_outcrop_data (CC: 16 → 6)
-   - Add type hints and docstrings
-   ```
-
-## Ejemplo de Refactorización
-
-**Antes** (CC = 21):
-```python
-def apply_attribute_inheritance(self, polygon, geology_data, drillhole_data):
-    # 50+ líneas de lógica mezclada
-    ...
-```
-
-**Después** (CC = 8):
-```python
-def apply_attribute_inheritance(
-    self, polygon: QgsGeometry, geology_data: List[GeologySegment],
-    drillhole_data: List[DrillholeData]
-) -> Dict[str, Any]:
-    """Apply attribute inheritance from nearest geological feature.
-
-    Args:
-        polygon: Target polygon geometry
-        geology_data: List of geology segments
-        drillhole_data: List of drillhole data
-
-    Returns:
-        Dictionary with inherited attributes
-    """
-    nearest_feature = self._find_nearest_feature(polygon, geology_data, drillhole_data)
-    attributes = self._extract_attributes(nearest_feature)
-    return self._format_attributes(attributes)
-
-def _find_nearest_feature(self, polygon, geology_data, drillhole_data):
-    # Lógica de búsqueda aislada
-    ...
-```
-
-**Objetivo**: Código más mantenible, testeable y conforme a estándares QGIS.
+## Resultado Esperado
+- Código más mantenible, testeable y con menor complejidad ciclomática.
+- Cero regresiones funcionales confirmadas por tests.
+- Documentación técnica (docstrings) actualizada.
