@@ -30,6 +30,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
 1. **Sync Version**:
    - Update `version` and `changelog` in `metadata.txt`.
+     - ⚠️ **CRITICAL**: Escape all `%` as `%%` in changelog (e.g., `100%%` not `100%`).
    - Update `version` in `pyproject.toml`.
    - Update the version badge in `README.md`.
 

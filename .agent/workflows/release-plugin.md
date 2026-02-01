@@ -34,6 +34,7 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 1. **Sincronizar Versión**:
    - Actualizar `version` y `changelog` en `metadata.txt`.
+     - ⚠️ **CRÍTICO**: Escapar todo `%` como `%%` en el changelog (e.g., `100%%` no `100%`).
    - Actualizar `version` en `pyproject.toml`.
    - Actualizar el badge de versión en `README.md`.
 
