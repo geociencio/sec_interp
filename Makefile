@@ -192,6 +192,8 @@ pylint:
 
 # Run pep8 style checking
 #http://pypi.python.org/pypi/pep8
+# Run pep8 style checking
+#http://pypi.python.org/pypi/pep8
 pep8:
 	@echo
 	@echo "-----------"
@@ -199,3 +201,18 @@ pep8:
 	@echo "-----------"
 	@uv run ruff check . || true
 	@echo "-----------"
+
+# Security scanning (QGIS Portal compatible)
+.PHONY: security-scan
+security-scan:
+	@echo
+	@echo "-------------------------------------------------------"
+	@echo "Running QGIS Portal-compatible security scan..."
+	@echo "Tools: Bandit, detect-secrets, Flake8"
+	@echo "-------------------------------------------------------"
+	@uv run python scripts/security_scan.py
+
+# Pre-release validation (includes security)
+.PHONY: pre-release
+pre-release: security-scan docker-test
+	@echo "✅ Pre-release validation complete"

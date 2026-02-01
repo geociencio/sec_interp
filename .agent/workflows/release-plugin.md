@@ -54,7 +54,15 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **qa-docker** para validar tests y skill **commit-standards** para linting.
 
-1. **Linting & Formatting**:
+3. **Security Scan** (Compatible QGIS Portal):
+   // turbo
+   ```bash
+   make security-scan
+   ```
+
+   🤖 **Agent Action**: Revisar reportes de seguridad para evitar rechazos en el portal.
+
+4. **Linting & Formatting**:
    // turbo
    ```bash
    uv run ruff check --fix . && uv run ruff format . && uv run black .

@@ -1,0 +1,33 @@
+# Bandit Security Configuration for SecInterp
+# https://bandit.readthedocs.io/en/latest/config.html
+
+exclude_dirs:
+  - /tests/
+  - /.venv/
+  - /build/
+  - /dist/
+  - /docs/
+  - /examples/
+  - /.git/
+  - /__pycache__/
+
+# Skip known false positives
+skips:
+  # B303: MD5 used for cache keys (non-cryptographic purpose)
+  # Location: gui/main_dialog_cache_handler.py
+  # Justification: Hash used for cache identifiers, not security
+  - B303
+
+  # B404: subprocess import (legitimate use in build scripts)
+  # Location: scripts/
+  # Justification: Build automation, not user input
+  - B404
+
+# Severity and confidence levels
+# Options: low, medium, high
+severity: medium
+confidence: medium
+
+# Output format
+format: json
+output: bandit_report.json

@@ -1,15 +1,15 @@
-# Next Steps - 2026-02-01
+# Siguientes Pasos - SecInterp v2.10.0
 
-## Contexto
-Se completó la refactorización de `export_service.py` reduciendo la CC de >60 a <10 en métodos clave. Se estandarizó el uso de `ai-ctx` para mantenimiento y `qgis-analyzer` para releases. Se pospuso el parche de `resources.py` por pragmatismo técnico.
+La **Fase v2.10.0 (Calidad y QGIS 4.x)** ha iniciado. Los objetivos principales son:
 
-## Pendientes
-- [ ] Revisión de importaciones legacy adicionales reportadas por `qgis-analyzer` (si hubiera en otros archivos).
-- [ ] Mejora de cobertura de docstrings (actualmente 65.9%).
-- [ ] Mejora de cobertura de type hints (actualmente 38.8% en retornos).
-- [ ] Iniciar preparativos para QGIS 4.x (revisar rama de migración).
+1. **Eliminación de Deuda Técnica Crítica**: Preparación para QGIS 4.x eliminando dependencias directas de PyQt5.
+2. **Reducción de Complejidad**: Refactorización de `ExportService` para mejorar mantenibilidad.
+3. **Calidad de Código**: Elevar el Quality Score > 60 y mejorar cobertura de documentación.
 
-## Comando para retomar
+## Cómo Retomar
+Para iniciar una sesión de desarrollo:
 ```bash
 /inicia-sesion
 ```
+
+**Estado Actual**: Fase Iniciada. Plan de implementación aprobado.

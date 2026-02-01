@@ -50,7 +50,12 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
 🤖 **Agent Action**: Use skill **qa-docker** to validate tests and skill **commit-standards** for linting.
 
-1. **Linting & Formatting**: `uv run ruff check --fix . && uv run ruff format . && uv run black .`
+1. **Security Scan** (QGIS Portal Compatible):
+   `make security-scan` (Bandit, detect-secrets, Flake8)
+
+   🤖 **Agent Action**: Review security reports to prevent QGIS portal rejection.
+
+2. **Linting & Formatting**: `uv run ruff check --fix . && uv run ruff format . && uv run black .`
 2. **Tests**: `make docker-test` (361+ tests must pass).
 
    🤖 **Agent Action**: Alert if any test fails or if there's coverage regression.

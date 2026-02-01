@@ -81,7 +81,7 @@ class ProfileSnapper:
                 if e_match.isValid() and e_match.distance() < best_dist:
                     best_match = e_match
                     best_dist = e_match.distance()
-            except Exception:
+            except Exception:  # nosec B112
                 # If layer was deleted or something went wrong with locator
                 continue
 
@@ -307,9 +307,9 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
         # Generate a random vivid color for the new interpretation
         # Random hue (0-359), high saturation (200-255), medium-lightness (100-200)
-        hue = random.randint(0, 359)
-        sat = random.randint(200, 255)
-        val = random.randint(150, 255)
+        hue = random.randint(0, 359)  # nosec B311
+        sat = random.randint(200, 255)  # nosec B311
+        val = random.randint(150, 255)  # nosec B311
         # Use simple hex format if QColor is not easily serializable, but QColor.name() works
         rand_color = QColor.fromHsv(hue, sat, val)
         color_hex = rand_color.name()  # e.g. #RRGGBB

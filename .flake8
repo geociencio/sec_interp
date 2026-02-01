@@ -1,0 +1,34 @@
+[flake8]
+# Flake8 Configuration for QGIS Portal Compatibility
+# Used only for pre-release security scanning
+
+max-line-length = 100
+max-complexity = 15
+
+# Exclude directories
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    build,
+    dist,
+    tests,
+    docs,
+    examples,
+    .eggs,
+    *.egg-info
+
+# Ignore specific rules
+ignore =
+    E203,  # whitespace before ':' (conflicts with black)
+    W503,  # line break before binary operator (updated PEP 8)
+    E501,  # line too long (handled by black)
+
+# Per-file ignores
+per-file-ignores =
+    __init__.py:F401,F403  # imported but unused (exports)
+    resources/resources.py:E501  # auto-generated file
+
+# Output format for security scanner
+format = json
+output-file = flake8_report.json

@@ -40,6 +40,10 @@ dev = [
     "pre-commit>=4.5.1",
     "dominate>=2.9.1",
     "setuptools>=70.0.0",
+    "bandit>=1.7.0",
+    "detect-secrets>=1.4.0",
+    "flake8>=6.0.0",
+    "flake8-json>=21.7.0",
 ]
 
 [tool.uv]

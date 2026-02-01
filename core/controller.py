@@ -112,7 +112,7 @@ class ProfileController:
         """Generate a sub-key for caching specific components."""
         import hashlib
 
-        hasher = hashlib.md5()
+        hasher = hashlib.md5()  # nosec B324
         for val in param_values:
             from qgis.core import QgsMapLayer
 
