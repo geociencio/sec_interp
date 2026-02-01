@@ -31,14 +31,14 @@ We decomposed `DrillholeService` into specialized processors located in a new pa
 *   **`IntervalProcessor`**: Handles the interpolation of geological intervals along the drillhole trace.
 *   **`ProjectionEngine`**: Contains pure geometric math functions (e.g., `project_point_to_line`), completely decoupled from QGIS API objects where possible.
 
-### 2. Types Modularization
-We split `core/types.py` into a package `core/types/` with specialized modules:
+### 2. Domain Layer Modularization
+We split `core/domain` into a package with specialized modules:
 
-*   **`domain_types.py`**: Core domain entities (`GeologySegment`, `StructureMeasurement`).
+*   **`entities.py`**: Core domain entities (`GeologySegment`, `StructureMeasurement`).
 *   **`task_inputs.py`**: DTOs specifically designed for decoupling background tasks (`DrillholeTaskInput`).
 *   **`dtos.py`**: General data transfer objects like `PreviewParams`.
 *   **`enums.py`**: Enumerations like `FieldType`.
-*   **`__init__.py`**: Re-exports all types to maintain backward compatibility with existing imports.
+*   **`__init__.py`**: Re-exports all types to maintain ease of use.
 
 ## Consequences
 

@@ -8,7 +8,7 @@ os.environ["FORCE_MOCKS"] = "0"
 import json
 from qgis.core import QgsProject
 from tests.integration.base_integration import BaseIntegrationTest, DummyPlugin
-from sec_interp.core.types import InterpretationPolygon
+from sec_interp.core.domain import InterpretationPolygon
 from sec_interp.gui.main_dialog import SecInterpDialog
 
 

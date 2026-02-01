@@ -43,9 +43,9 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
 from sec_interp.core.controller import ProfileController
+from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.services.export_service import ExportService
-from sec_interp.core.types import PreviewParams
 from sec_interp.gui.main_dialog import SecInterpDialog
 from sec_interp.gui.preview_renderer import PreviewRenderer
 from sec_interp.logger_config import get_logger, setup_logging

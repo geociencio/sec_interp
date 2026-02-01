@@ -64,9 +64,9 @@ uv run qgis-manage deploy
 ## Documentación de Referencia
 - [ARCHITECTURE.md](ARCHITECTURE.md) - Arquitectura técnica unificada.
 - [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) - Guía detallada para desarrolladores.
-- [CHANGELOG.md](docs/docsec/CHANGELOG.md) - Historial de versiones y cambios críticos.
+- [CHANGELOG.md](docs/CHANGELOG.md) - Historial de versiones y cambios críticos.
 - [FEATURE_INTERPRETATION_25D.md](FEATURE_INTERPRETATION_25D.md) - Plan para v2.5.0.
 - [UV_MODERNIZATION_GUIDE.md](docs/maintainer/uv_modernization_guide.md) - Guía de modernización de plugins con `uv`.
 
 ---
-**Plugin Version**: 2.5.0 | **Last Update**: 2026-01-01
+**Plugin Version**: 2.9.0 | **Last Update**: 2026-02-01

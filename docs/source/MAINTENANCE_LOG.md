@@ -4,6 +4,14 @@ This document serves as the central record for project history, release procedur
 
 ---
 
+### [Phase Closure v2.9.0] - ARCHITECTURAL CONSOLIDATION
+- **Date**: 2026-02-01
+- **Focus**: Core Domain Migration, Drillhole Service Decomposition, v2.9.0 Stability.
+- **Outcome**: 199 Tests Passing in Docker. Clean architectural separation between Domain, Services, and GUI.
+- **Reference**: [Technical Analysis](../research/v2.9.0_technical_analysis.md)
+
+---
+
 ### [Phase Closure v2.8.0] - DEBT REDUCTION & UI IMPROVEMENTS
 - **Date**: 2026-01-25
 - **Focus**: Core Decoupling, Async Safety, Legend Visibility.

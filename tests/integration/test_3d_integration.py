@@ -18,7 +18,7 @@ from qgis.core import (
     QgsPoint,
 )
 from tests.integration.base_integration import BaseIntegrationTest
-from sec_interp.core.types import InterpretationPolygon, GeologySegment
+from sec_interp.core.domain import InterpretationPolygon, GeologySegment
 from sec_interp.exporters.drillhole_3d_exporter import (
     DrillholeTrace3DExporter,
     DrillholeInterval3DExporter,

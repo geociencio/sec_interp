@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsGeometry, QgsPointXY
 
-from sec_interp.core.types import InterpretationPolygon
+from sec_interp.core.domain import InterpretationPolygon
 from sec_interp.logger_config import get_logger, log_critical_operation
 
 if TYPE_CHECKING:

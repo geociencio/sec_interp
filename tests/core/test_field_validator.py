@@ -11,7 +11,7 @@ from sec_interp.core.validation.field_validator import (
     validate_field_exists,
     validate_field_type,
 )
-from sec_interp.core.types import FieldType
+from sec_interp.core.domain import FieldType
 
 
 class TestFieldValidator(BaseTestCase):

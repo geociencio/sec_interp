@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from sec_interp.gui.main_dialog_interpretation import DialogInterpretationManager
-from sec_interp.core.types import InterpretationPolygon
+from sec_interp.core.domain import InterpretationPolygon
 
 
 class TestDialogInterpretationManager(BaseTestCase):

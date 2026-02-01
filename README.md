@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-2.9.1-orange.svg)
+![Version](https://img.shields.io/badge/Version-2.9.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
@@ -15,13 +15,13 @@
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v2.8.0: Professional Geological Interpretation with Integrated High-Fidelity Profiles.*
+*SecInterp v2.9.0: Professional Geological Interpretation with Integrated High-Fidelity Profiles.*
 
 ---
 
 ---
 
-## 🆕 What's New in v2.9.1
+## 🆕 What's New in v2.9.0
 **Phase: Architectural Modernization**
 
 - **🏗️ Core Refactoring**: Complete decomposition of `DrillholeService` into specialized processors for better maintainability.
@@ -145,7 +145,7 @@ This plugin is open-source and welcomes contributions.
   - [**Technical Compendium**](https://geociencio.github.io/sec_interp_docs/TECHNICAL_COMPENDIUM.html): Geophysical research and details.
 - **Development Setup**: Use the `Makefile` and the [**Development Guide**](https://geociencio.github.io/sec_interp_docs/DEVELOPMENT_GUIDE.html).
 - **Testing with Docker** (Recommended):
-  Esta suite ejecuta los **361 tests** del proyecto dentro de un contenedor QGIS oficial (`qgis/qgis:latest`), garantizando un entorno reproducible y libre de conflictos de dependencias locales.
+  Esta suite ejecuta los **tests** del proyecto dentro de un contenedor QGIS oficial (`qgis/qgis:latest`), garantizando un entorno reproducible y libre de conflictos de dependencias locales.
   ```bash
   make docker-build  # Build the test image
   make docker-test   # Run the full test suite inside a container

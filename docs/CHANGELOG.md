@@ -23,21 +23,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Corregida importación legacy en `resources.py` (Deuda técnica documentada para QGIS 4.x).
 
-## [2.9.1] - 2026-01-25
-### Changed
+## [2.9.0] - 2026-02-01
+### Added
 - **Arquitectura**: Descomposición de `DrillholeService` (Monolito) en procesadores especializados (`CollarProcessor`, `SurveyProcessor`, `IntervalProcessor`, `ProjectionEngine`).
 - **Arquitectura**: Modularización del sistema de tipos `core.types` en un paquete con separación de responsabilidades (`domain_types`, `task_inputs`, `dtos`).
-- **Refactor**: Reducción drástica de complejidad ciclomática en el núcleo de procesamiento de sondajes.
-- **Calidad**: Eliminación de ~300 líneas de código legacy y adopción del patrón Facade para servicios principales.
-
-## [2.9.0] - 2026-01-28
-### Added
 - **Core**: Centralized profile context preparation in `prepare_profile_context`.
 - **Utils**: Unified attribute detachment using `extract_feature_attributes`.
 - **Stability**: Enhanced `PYTHONPATH` robustness in Docker and local environments.
 
 ### Changed
 - **Arquitectura**: Consolidación de Fase 3: Unificación de todos los servicios core (Geology, Structure, Drillhole) bajo el patrón de flujo de datos desacoplado (Domain-Pure logic).
+- **Core**: Reducción drástica de complejidad ciclomática en el núcleo de procesamiento de sondajes.
+- **Calidad**: Eliminación de ~300 líneas de código legacy y adopción del patrón Facade para servicios principales.
 - **Core**: Reducción de redundancia mediante la centralización de lógica de muestreo de elevación y configuración de sección.
 - **Imports**: Estandarización de importaciones internas usando el prefijo `sec_interp.` para evitar conflictos de identidad de clases.
 

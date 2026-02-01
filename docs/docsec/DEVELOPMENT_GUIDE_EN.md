@@ -15,7 +15,7 @@ This document provides guidelines for extending and maintaining the SecInterp pl
 
 ## 🧪 Adding a New Feature
 If you want to add a new type of preview:
-1. **Core**: Create a method in `PreviewService` (or a new service) that processes the data and returns a type defined in `core/types.py`.
+1. **Core**: Create a method in `PreviewService` (or a new service) that processes the data and returns a type defined in `core/domain/entities.py`.
 2. **GUI Manager**: Update `PreviewManager` to call the new service and store the result in `cached_data`. Update the hash calculation if the data depends on new parameters.
 3. **Renderer**: Update `PreviewRenderer` and `PreviewLayerFactory` to create the new visualization layer and apply symbology.
 
@@ -59,4 +59,4 @@ To avoid conflicts with pre-commit hooks (which might reformat code and fail the
 - Keep cyclomatic complexity per function below 15 whenever possible.
 
 ---
-**Version**: 2.5.0 | **Ref**: [README_DEV.md](README_DEV.md)
+**Version**: 2.9.0 | **Ref**: [README_DEV.md](README_DEV.md)

@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import QRectF
 from sec_interp.gui.preview_layer_factory import PreviewLayerFactory
 from sec_interp.gui.preview_axes_manager import PreviewAxesManager
 from sec_interp.gui.preview_renderer import PreviewRenderer
-from sec_interp.core.types import GeologySegment, InterpretationPolygon
+from sec_interp.core.domain import GeologySegment, InterpretationPolygon
 
 
 class TestPreviewComponents(BaseTestCase):

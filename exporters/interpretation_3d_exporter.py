@@ -23,8 +23,8 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QMetaType
 from qgis.PyQt.QtGui import QColor
 
+from sec_interp.core.domain import InterpretationPolygon
 from sec_interp.core.exceptions import ExportError
-from sec_interp.core.types import InterpretationPolygon
 from sec_interp.exporters.base_exporter import BaseExporter
 from sec_interp.logger_config import get_logger
 

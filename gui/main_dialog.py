@@ -40,7 +40,7 @@ from qgis.PyQt.QtWidgets import (
     QPushButton,
 )
 
-from sec_interp.core.types import InterpretationPolygon
+from sec_interp.core.domain import InterpretationPolygon
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 

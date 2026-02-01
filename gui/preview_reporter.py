@@ -8,12 +8,12 @@ preview generation results and performance metrics into human-readable messages.
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from sec_interp.core.performance_metrics import MetricsCollector, format_duration
-from sec_interp.core.types import (
+from sec_interp.core.domain import (
     GeologyData,
     PreviewResult,
     StructureData,
 )
+from sec_interp.core.performance_metrics import MetricsCollector, format_duration
 
 from .main_dialog_config import DialogConfig
 

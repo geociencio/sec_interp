@@ -13,7 +13,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QWaitCondition, QMutex
 
 from sec_interp.core.services.drillhole_service import DrillholeService
-from sec_interp.core.types import DrillholeTaskInput
+from sec_interp.core.domain import DrillholeTaskInput
 
 
 class TestAsyncDrillhole(BaseTestCase):

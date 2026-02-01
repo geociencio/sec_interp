@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 2.8.0 | Last update: 2026-01-24
+> Version 2.9.0 | Last update: 2026-02-01
 >
 > ⚠️ **Important Note**: See the [Core Components Distinction Guide (EN)](../CORE_DISTINCTION_GUIDE_EN.md) or [Guía de Distinción de Core (ES)](../CORE_DISTINCTION_GUIDE.md) to differentiate between the `SecInterp Core` and the `qgis.core` API.
 
@@ -63,6 +63,11 @@ sec_interp/
 │   │   ├── validators.py       # Level 1: Reusable Type/Range validators
 │   │   ├── validation_helpers.py# Level 2: Business field constraints
 │   │   └── project_validator.py# Level 3: Cross-layer domain logic
+│   ├── domain/                 # [NEW] Domain Layer (Entities & DTOs)
+│   │   ├── entities.py         # Business objects with identity
+│   │   ├── dtos.py             # Data Transfer Objects
+│   │   ├── task_inputs.py      # Async Task Inputs
+│   │   └── enums.py            # Domain-pure enumerations
 │   └── utils/                  # Utilities (Geometry, Spatial, etc.)
 │
 ├── gui/                        # 🖥️ User Interface (GUI Layer)
@@ -143,7 +148,14 @@ graph TB
             PROFILE_SVC[profile_service.py<br/>ProfileService]
             GEOLOGY_SVC[geology_service.py<br/>GeologyService]
             STRUCTURE_SVC[structure_service.py<br/>StructureService]
-            DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService]
+            STRUCTURE_SVC[structure_service.py<br/>StructureService]
+            subgraph DRILLHOLE_PKG["Drillhole Sub-system"]
+                DRILLHOLE_FACADE[drillhole_service.py<br/>DrillholeService (Facade)]
+                COLLAR_PROC[collar_processor.py]
+                SURVEY_PROC[survey_processor.py]
+                INTERVAL_PROC[interval_processor.py]
+                PROJ_ENGINE[projection_engine.py<br/>Pure Math]
+            end
         end
 
         subgraph TASKS["🚀 QGS TASKS (Extract-then-Compute)"]
@@ -158,7 +170,7 @@ graph TB
         end
 
         METRICS[performance_metrics.py<br/>Performance Profiling]
-        TYPES[types.py<br/>Data Models]
+        DOMAIN[core/domain/<br/>Domain Layer Package]
 
         subgraph UTILS["🔨 Utilities"]
             GEOM_UTILS[geometry.py]
@@ -224,7 +236,7 @@ graph TB
 
     class QGIS,PLUGIN entryPoint
     class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,LEGEND,MEASURE guiLayer
-    class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,TYPES coreLayer
+    class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,DOMAIN coreLayer
     class PROFILE_SVC,GEOLOGY_SVC,STRUCTURE_SVC,DRILLHOLE_SVC,PARALLEL_GEO coreLayer
     class ORCHESTRATOR,BASE_EXP,SHP_EXP,CSV_EXP,PDF_EXP,SVG_EXP,IMG_EXP,PROFILE_EXP,DRILL_EXP exportLayer
     class QGIS_CORE,QGIS_GUI,PYQT5 externalLayer

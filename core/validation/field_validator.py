@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from qgis.core import QgsVectorLayer
 
-from sec_interp.core.types import FieldType
+from sec_interp.core.domain import FieldType
 
 
 def validate_numeric_input(

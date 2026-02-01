@@ -12,6 +12,10 @@ from typing import TYPE_CHECKING, Any
 from qgis.core import QgsApplication, QgsVectorLayer
 from qgis.PyQt.QtCore import QCoreApplication, QTimer
 
+from sec_interp.core.domain import (
+    PreviewParams,
+    PreviewResult,
+)
 from sec_interp.core.exceptions import ProcessingError, SecInterpError
 from sec_interp.core.interfaces.preview_interface import IPreviewService
 from sec_interp.core.performance_metrics import (
@@ -19,10 +23,6 @@ from sec_interp.core.performance_metrics import (
     PerformanceTimer,
 )
 from sec_interp.core.services.preview_service import PreviewService
-from sec_interp.core.types import (
-    PreviewParams,
-    PreviewResult,
-)
 from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig

@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from tests.base_test import BaseTestCase
 from qgis.core import QgsFields
 from sec_interp.exporters.interpretation_exporters import Interpretation2DExporter
-from sec_interp.core.types import InterpretationPolygon
+from sec_interp.core.domain import InterpretationPolygon
 
 
 class TestDynamicAttributes(BaseTestCase):

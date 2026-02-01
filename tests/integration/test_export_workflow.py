@@ -3,7 +3,7 @@
 import math
 from qgis.core import QgsGeometry, QgsPointXY
 from tests.integration.base_integration import BaseIntegrationTest
-from sec_interp.core.types import InterpretationPolygon
+from sec_interp.core.domain import InterpretationPolygon
 from sec_interp.exporters.interpretation_3d_exporter import Interpretation3DExporter
 
 

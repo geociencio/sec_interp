@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 2.4 | Last Updated: 2025-12-25
+> Version 2.9.0 | Last Updated: 2026-02-01
 
 ---
 
@@ -62,10 +62,11 @@ sec_interp/
 │   │   ├── drillhole_service.py# Facade for drillhole processing
 │   │   └── preview_service.py  # Preview orchestrator
 │   ├── validation/             # Modular validation package
-│   ├── types/                  # [NEW] Domain Types Package
-│   │   ├── domain_types.py     # Entities
+│   ├── domain/                 # [NEW] Domain Layer (Entities & DTOs)
+│   │   ├── entities.py         # Business objects with identity
 │   │   ├── dtos.py             # Data Transfer Objects
-│   │   └── task_inputs.py      # Async Task Inputs
+│   │   ├── task_inputs.py      # Async Task Inputs
+│   │   └── enums.py            # Domain-pure enumerations
 │   └── utils/                  # Utilities (Geometry, Spatial, etc.)
 │
 ├── gui/                        # 🖥️ User Interface (GUI Layer)
@@ -163,7 +164,7 @@ graph TB
         end
         CACHE[data_cache.py<br/>DataCache]
         METRICS[performance_metrics.py<br/>PerformanceMetrics]
-        TYPES[core/types/<br/>Domain Types Package]
+        DOMAIN[core/domain/<br/>Domain Layer Package]
 
         subgraph UTILS["🔨 Utilities"]
             GEOM_UTILS[geometry.py]
@@ -250,7 +251,7 @@ graph TB
 
     class QGIS,PLUGIN entryPoint
     class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,LEGEND,MEASURE guiLayer
-    class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,TYPES coreLayer
+    class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,DOMAIN coreLayer
     class PROFILE_SVC,GEOLOGY_SVC,STRUCTURE_SVC,DRILLHOLE_SVC,PARALLEL_GEO coreLayer
     class ORCHESTRATOR,BASE_EXP,SHP_EXP,CSV_EXP,PDF_EXP,SVG_EXP,IMG_EXP,PROFILE_EXP,DRILL_EXP exportLayer
     class QGIS_CORE,QGIS_GUI,PYQT5 externalLayer
@@ -388,5 +389,5 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
 **Last Updated**: 2025-12-25
-**Plugin Version**: 2.4
+**Plugin Version**: 2.9.0
 **Author**: Juan M. Bernales

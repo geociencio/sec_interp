@@ -23,7 +23,7 @@ copyright = "2026, Juan M Bernales"
 author = "Juan M Bernales"
 
 # The full version, including alpha/beta/rc tags
-release = "2.7.0"
+release = "2.9.0"
 
 
 # -- General configuration ---------------------------------------------------

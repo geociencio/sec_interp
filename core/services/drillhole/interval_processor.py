@@ -3,7 +3,7 @@ from __future__ import annotations
 """Processing logic for Drillhole Intervals."""
 
 from sec_interp.core import utils as scu
-from sec_interp.core.types import GeologySegment
+from sec_interp.core.domain import GeologySegment
 
 
 class IntervalProcessor:

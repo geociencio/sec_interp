@@ -38,10 +38,10 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
+from sec_interp.core.domain import GeologyData, GeologySegment, GeologyTaskInput
 from sec_interp.core.exceptions import DataMissingError, GeometryError
 from sec_interp.core.interfaces.geology_interface import IGeologyService
 from sec_interp.core.performance_metrics import performance_monitor
-from sec_interp.core.types import GeologyData, GeologySegment, GeologyTaskInput
 from sec_interp.core.utils.geometry_utils.extraction import extract_lines_from_geometry
 from sec_interp.core.utils.geometry_utils.processing import (
     calculate_segment_range,

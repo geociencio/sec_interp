@@ -15,7 +15,7 @@ Este documento proporciona directrices para extender y mantener el plugin SecInt
 
 ## 🧪 Añadiendo una Nueva Funcionalidad
 Si deseas añadir un nuevo tipo de previsualización:
-1. **Core**: Crea un método en `PreviewService` (o un nuevo servicio) que procese los datos y devuelva un tipo definido en `core/types.py`.
+1. **Core**: Crea un método en `PreviewService` (o un nuevo servicio) que procese los datos y devuelva un tipo definido en `core/domain/entities.py`.
 2. **GUI Manager**: Actualiza `PreviewManager` para llamar al nuevo servicio y almacenar el resultado en `cached_data`. Actualiza el cálculo del hash si los datos dependen de nuevos parámetros.
 3. **Renderer**: Actualiza `PreviewRenderer` y `PreviewLayerFactory` para crear la nueva capa de visualización y aplicarle simbología.
 
@@ -59,4 +59,4 @@ Para evitar conflictos con los hooks de pre-commit (que pueden reformatear códi
 - Mantén una complejidad ciclomática por función inferior a 15 siempre que sea posible.
 
 ---
-**Version**: 2.5.0 | **Ref**: [README_DEV.md](README_DEV.md)
+**Version**: 2.9.0 | **Ref**: [README_DEV.md](README_DEV.md)

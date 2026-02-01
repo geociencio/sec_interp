@@ -39,7 +39,7 @@ class TestDrillhole3DExporters(BaseTestCase):
         )
 
         # Sample interval data
-        from sec_interp.core.types import GeologySegment
+        from sec_interp.core.domain import GeologySegment
 
         seg1 = GeologySegment(
             unit_name="Unit A",

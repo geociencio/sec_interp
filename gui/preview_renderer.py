@@ -20,7 +20,7 @@ from qgis.gui import QgsMapCanvas, QgsRubberBand
 from qgis.PyQt.QtCore import QRectF, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
-from sec_interp.core.types import (
+from sec_interp.core.domain import (
     GeologyData,
     InterpretationPolygon,
     ProfileData,

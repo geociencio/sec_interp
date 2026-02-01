@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 # qgis imports will be handled by BaseTestCase mock if needed
 from qgis.core import QgsVectorLayer, QgsGeometry
 from sec_interp.gui.preview_renderer import PreviewRenderer
-from sec_interp.core.types import StructureMeasurement
+from sec_interp.core.domain import StructureMeasurement
 
 
 class TestPreviewRendererCustom(BaseTestCase):

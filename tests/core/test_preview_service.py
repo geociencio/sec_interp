@@ -5,7 +5,7 @@ from tests.base_test import BaseTestCase
 from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsGeometry, QgsPointXY
 
 from sec_interp.core.services.preview_service import PreviewService
-from sec_interp.core.types import PreviewParams, PreviewResult
+from sec_interp.core.domain import PreviewParams, PreviewResult
 from sec_interp.core.exceptions import (
     SecInterpError,
     GeometryError,

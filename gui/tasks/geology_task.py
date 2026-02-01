@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from qgis.core import Qgis, QgsMessageLog, QgsTask
 
-from sec_interp.core.types import GeologyData, GeologyTaskInput
+from sec_interp.core.domain import GeologyData, GeologyTaskInput
 from sec_interp.logger_config import get_logger
 
 if TYPE_CHECKING:

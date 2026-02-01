@@ -23,7 +23,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 if TYPE_CHECKING:
-    from sec_interp.core.types import InterpretationPolygon
+    from sec_interp.core.domain import InterpretationPolygon
 
 
 class InterpretationPropertiesDialog(QDialog):

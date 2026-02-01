@@ -18,7 +18,7 @@ from tests.base_test import BaseTestCase
 
 from sec_interp.core.services.drillhole_service import DrillholeService
 from sec_interp.core.exceptions import DataMissingError
-from sec_interp.core.types import DrillholeTaskInput
+from sec_interp.core.domain import DrillholeTaskInput
 
 
 class TestDrillholeService(BaseTestCase):

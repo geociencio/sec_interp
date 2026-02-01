@@ -10,7 +10,7 @@ from qgis.core import QgsRasterLayer, QgsVectorLayer
 from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.performance_metrics import MetricsCollector
 
-from .domain_types import (
+from .entities import (
     GeologyData,
     ProfileData,
     StructureData,

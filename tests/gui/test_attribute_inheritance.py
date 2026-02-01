@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from qgis.core import QgsPointXY, QgsApplication
 from sec_interp.gui.main_dialog import SecInterpDialog
-from sec_interp.core.types import InterpretationPolygon, GeologySegment
+from sec_interp.core.domain import InterpretationPolygon, GeologySegment
 
 
 class TestAttributeInheritance(BaseTestCase):

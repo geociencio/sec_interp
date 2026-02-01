@@ -1,8 +1,17 @@
 from __future__ import annotations
 
-"""Facade for SecInterp core types re-exporting to maintain compatibility."""
+"""SecInterp Core Domain Package.
 
-from .domain_types import (
+This package contains the domain entities, DTOs, and enums that define
+the core business logic of the plugin, decoupled from QGIS-specific
+implementation details where possible.
+"""
+
+from .dtos import (
+    PreviewParams,
+    PreviewResult,
+)
+from .entities import (
     DomainGeometry,
     ExportSettings,
     GeologyData,
@@ -21,10 +30,6 @@ from .domain_types import (
     StructureMeasurement,
     StructurePoints,
     ValidationResult,
-)
-from .dtos import (
-    PreviewParams,
-    PreviewResult,
 )
 from .enums import FieldType
 from .task_inputs import (

@@ -37,9 +37,9 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
+from sec_interp.core.domain import StructureData, StructureMeasurement
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.interfaces.structure_interface import IStructureService
-from sec_interp.core.types import StructureData, StructureMeasurement
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)

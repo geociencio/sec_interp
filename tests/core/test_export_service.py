@@ -12,7 +12,7 @@ from qgis.core import (
 )
 
 from sec_interp.core.services.export_service import ExportService
-from sec_interp.core.types import PreviewParams, GeologyData, StructureData
+from sec_interp.core.domain import PreviewParams, GeologyData, StructureData
 
 
 class TestExportService(BaseTestCase):
@@ -76,7 +76,7 @@ class TestExportService(BaseTestCase):
         mock_csv,
     ):
         """Test export with all data types."""
-        from sec_interp.core.types import GeologySegment, StructureMeasurement
+        from sec_interp.core.domain import GeologySegment, StructureMeasurement
 
         profile_data = [(0, 10)]
         geol_data = [
@@ -196,7 +196,7 @@ class TestExportService(BaseTestCase):
     @patch("sec_interp.exporters.GeologyShpExporter")
     def test_export_geology_error(self, mock_geol_shp):
         """Test error handling in geology export."""
-        from sec_interp.core.types import GeologySegment
+        from sec_interp.core.domain import GeologySegment
         from sec_interp.core.exceptions import ExportError
 
         mock_geol_shp.return_value.export.side_effect = Exception("error")
@@ -210,7 +210,7 @@ class TestExportService(BaseTestCase):
     @patch("sec_interp.exporters.StructureShpExporter")
     def test_export_structures_error(self, mock_struct_shp):
         """Test error handling in structure export."""
-        from sec_interp.core.types import StructureMeasurement
+        from sec_interp.core.domain import StructureMeasurement
         from sec_interp.core.exceptions import ExportError
 
         mock_struct_shp.return_value.export.side_effect = Exception("error")

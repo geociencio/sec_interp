@@ -11,15 +11,15 @@ import math
 from typing import Any
 
 from sec_interp.core import utils as scu
+from sec_interp.core.domain import (
+    PreviewParams,
+    PreviewResult,
+)
 from sec_interp.core.exceptions import (
     ProcessingError,
     SecInterpError,
 )
 from sec_interp.core.performance_metrics import PerformanceTimer
-from sec_interp.core.types import (
-    PreviewParams,
-    PreviewResult,
-)
 from sec_interp.core.utils.sampling import prepare_profile_context
 from sec_interp.core.utils.spatial import calculate_line_azimuth
 from sec_interp.logger_config import get_logger

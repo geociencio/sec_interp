@@ -1,0 +1,746 @@
+{
+  "inspect_qgs_api.py": {
+    "hash": "2eb1c7850ee4a17516a7ab098ea0bd7db2196b80a6783d0fd0ed9c32f0be314a",
+    "data": {
+      "path": "inspect_qgs_api.py",
+      "lines": 17,
+      "sloc": 14,
+      "file_size_kb": 0.4716796875,
+      "complexity": 7,
+      "imports": [
+        "qgis.core.QgsPalLayerSettings"
+      ],
+      "classes": [],
+      "functions": [],
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {}
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 18,
+        "length": 39,
+        "volume": 156,
+        "difficulty": 4.29,
+        "effort": 668.57
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 58.7,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 7
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968309.8030713
+  },
+  "update_metadata_rule.py": {
+    "hash": "ce7e1b14d1d7bc393bed5c2fbc6f8d095298320b0c2ef0e7fbab630f1ef3d927",
+    "data": {
+      "path": "update_metadata_rule.py",
+      "lines": 33,
+      "sloc": 30,
+      "file_size_kb": 1.3505859375,
+      "complexity": 7,
+      "imports": [
+        "os"
+      ],
+      "classes": [],
+      "functions": [],
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {}
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 32,
+        "length": 55,
+        "volume": 275,
+        "difficulty": 6.3,
+        "effort": 1732.5
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 49.76,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 12
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968309.8044775
+  },
+  "clean_imports.py": {
+    "hash": "777e52e8123783e52888832212db581b46a267c765a3f07d3ea1d37a10fc6ad1",
+    "data": {
+      "path": "clean_imports.py",
+      "lines": 68,
+      "sloc": 44,
+      "file_size_kb": 1.93359375,
+      "complexity": 8,
+      "imports": [
+        "pathlib.Path",
+        "re"
+      ],
+      "classes": [],
+      "functions": [],
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {}
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 0,
+        "typed_functions": 0,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 49,
+        "length": 96,
+        "volume": 480,
+        "difficulty": 5.93,
+        "effort": 2846.51
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 44.3,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 31
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968309.8057063
+  },
+  "generate_ai_templates.py": {
+    "hash": "7e2f2709c7eef9aff43691ac2cd2d108e30046492ea6164e22c698e9fe8e8ddf",
+    "data": {
+      "path": "generate_ai_templates.py",
+      "lines": 339,
+      "sloc": 313,
+      "file_size_kb": 11.4306640625,
+      "complexity": 4,
+      "imports": [
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        "main"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "main": false
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": true,
+        "type": "main_guard"
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 1,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 55,
+        "length": 73,
+        "volume": 365,
+        "difficulty": 4.74,
+        "effort": 1729.95
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 27.08,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 34
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968309.8058944
+  },
+  "run_benchmarks.py": {
+    "hash": "330c717d4a8db3026e18911ae2e99d3af44761d7ef353cb34a83844ab0e73ca1",
+    "data": {
+      "path": "run_benchmarks.py",
+      "lines": 88,
+      "sloc": 50,
+      "file_size_kb": 2.337890625,
+      "complexity": 12,
+      "imports": [
+        "sys",
+        "os",
+        "unittest",
+        "logging",
+        "pathlib",
+        "qgis.core.QgsApplication"
+      ],
+      "classes": [],
+      "functions": [
+        "setup_environment",
+        "run_benchmarks"
+      ],
+      "docstrings": {
+        "module": true,
+        "classes": {},
+        "functions": {
+          "setup_environment": true,
+          "run_benchmarks": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": true,
+        "type": "main_guard"
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 2,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 51,
+        "length": 100,
+        "volume": 500,
+        "difficulty": 7.35,
+        "effort": 3674.42
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 60",
+          "line": 50,
+          "value": 60
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 60",
+          "line": 53,
+          "value": 60
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 69,
+          "value": 2
+        }
+      ],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [],
+      "maintenance_index": 42.43,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 17
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968309.8069177
+  },
+  "skill_sync.py": {
+    "hash": "9b9dbb0548694fc210af956950cebb3f2e82a9bcc20f74a1596518f5331baa75",
+    "data": {
+      "path": "skill_sync.py",
+      "lines": 143,
+      "sloc": 105,
+      "file_size_kb": 4.69921875,
+      "complexity": 24,
+      "imports": [
+        "os",
+        "re",
+        "yaml",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        "sync_skills",
+        "sync_workflows"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {
+          "sync_skills": false,
+          "sync_workflows": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": true,
+        "type": "main_guard"
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 2,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 103,
+        "length": 299,
+        "volume": 1794,
+        "difficulty": 16.88,
+        "effort": 30281.14
+      },
+      "antipatterns": [],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 30,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 116,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "os"
+      ],
+      "maintenance_index": 29.9,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 68
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968309.8225589
+  },
+  "verify_refactor_mock.py": {
+    "hash": "7ee5f26cc85a616e888e9a66b08a67ba288971a5c0b964d32d81a55cc190f679",
+    "data": {
+      "path": "verify_refactor_mock.py",
+      "lines": 314,
+      "sloc": 210,
+      "file_size_kb": 9.0732421875,
+      "complexity": 15,
+      "imports": [
+        "sys",
+        "os",
+        "unittest.mock.MagicMock",
+        "unittest.mock.Mock",
+        "sec_interp.core.types.StructureMeasurement",
+        "sec_interp.core.types.GeologySegment",
+        "sec_interp.core.services.structure_service.StructureService",
+        "sec_interp.core.services.geology_service.GeologyService",
+        "traceback"
+      ],
+      "classes": [
+        "MockQgsPointXY",
+        "MockQgsGeometry",
+        "MockQgsRasterLayer",
+        "MockQgsFeature"
+      ],
+      "functions": [
+        "__init__(3 args)",
+        "x(1 args)",
+        "y(1 args)",
+        "lineLocatePoint(2 args)",
+        "interpolate(2 args)",
+        "asPoint(1 args)",
+        "intersects(2 args)",
+        "isNull(1 args)",
+        "length(1 args)",
+        "isMultipart(1 args)",
+        "asPolyline(1 args)",
+        "wkbType(1 args)",
+        "dataProvider(1 args)",
+        "identify(3 args)",
+        "rasterUnitsPerPixelX(1 args)",
+        "__init__(3 args)",
+        "geometry(1 args)",
+        "attributes(1 args)",
+        "fields(1 args)",
+        "__getitem__(2 args)",
+        "test_structure_service",
+        "test_geology_service"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "MockQgsPointXY": false,
+          "MockQgsGeometry": false,
+          "MockQgsRasterLayer": false,
+          "MockQgsFeature": false
+        },
+        "functions": {
+          "__init__": false,
+          "x": false,
+          "y": false,
+          "lineLocatePoint": false,
+          "interpolate": false,
+          "asPoint": false,
+          "intersects": false,
+          "isNull": false,
+          "length": false,
+          "isMultipart": false,
+          "asPolyline": false,
+          "wkbType": false,
+          "dataProvider": false,
+          "identify": false,
+          "rasterUnitsPerPixelX": false,
+          "geometry": false,
+          "attributes": false,
+          "fields": false,
+          "__getitem__": false,
+          "test_structure_service": false,
+          "test_geology_service": false
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": true,
+        "type": "main_guard"
+      },
+      "has_main": true,
+      "type_hints": {
+        "total_functions": 22,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 129,
+        "length": 394,
+        "volume": 2758,
+        "difficulty": 13.01,
+        "effort": 35888.47
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 122,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2147483650",
+          "line": 123,
+          "value": 2147483650
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 5",
+          "line": 124,
+          "value": 5
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2147483653",
+          "line": 125,
+          "value": 2147483653
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 45.0",
+          "line": 141,
+          "value": 45.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 90.0",
+          "line": 143,
+          "value": 90.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 30.0",
+          "line": 144,
+          "value": 30.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 150.0",
+          "line": 151,
+          "value": 150.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 75.0",
+          "line": 245,
+          "value": 75.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100.0",
+          "line": 51,
+          "value": 100.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 500.0",
+          "line": 67,
+          "value": 500.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 76,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 45.0",
+          "line": 142,
+          "value": 45.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 50.0",
+          "line": 214,
+          "value": 50.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10.0",
+          "line": 228,
+          "value": 10.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100.0",
+          "line": 230,
+          "value": 100.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 200.0",
+          "line": 231,
+          "value": 200.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 123.0",
+          "line": 58,
+          "value": 123.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 456.0",
+          "line": 58,
+          "value": 456.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 50.0",
+          "line": 85,
+          "value": 50.0
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 20",
+          "line": 188,
+          "value": 20
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 240,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 240,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 73,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 73,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 45",
+          "line": 170,
+          "value": 45
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 90",
+          "line": 170,
+          "value": 90
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 310,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "unittest.mock.Mock"
+      ],
+      "maintenance_index": 23.23,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 53
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968309.8311973
+  }
+}

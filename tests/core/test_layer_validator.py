@@ -18,7 +18,7 @@ from sec_interp.core.validation.layer_validator import (
     validate_structural_requirements,
     validate_crs_compatibility,
 )
-from sec_interp.core.types import FieldType
+from sec_interp.core.domain import FieldType
 
 
 class TestLayerValidator(BaseTestCase):

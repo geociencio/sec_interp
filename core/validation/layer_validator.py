@@ -10,7 +10,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
-from sec_interp.core.types import FieldType
+from sec_interp.core.domain import FieldType
 
 from .field_validator import validate_field_exists, validate_field_type
 

@@ -1,0 +1,1549 @@
+{
+  "csv_exporter.py": {
+    "hash": "6a0a8148dd9d88113684cee26162758bafbbc0a62be6b42c750da8b5a1e92c3d",
+    "data": {
+      "path": "csv_exporter.py",
+      "lines": 53,
+      "sloc": 28,
+      "file_size_kb": 1.369140625,
+      "complexity": 8,
+      "imports": [
+        "__future__.annotations",
+        "csv",
+        "pathlib.Path",
+        "typing.Any",
+        "sec_interp.logger_config.get_logger",
+        "base_exporter.BaseExporter"
+      ],
+      "classes": [
+        "CSVExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "CSVExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 2,
+        "typed_functions": 2,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 36,
+        "length": 56,
+        "volume": 280,
+        "difficulty": 5.43,
+        "effort": 1520.69
+      },
+      "antipatterns": [],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 49,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 50.22,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 9
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968285.9884195
+  },
+  "__init__.py": {
+    "hash": "c36db2c60476496ed8f8019d2d96ef9f260c8c9d726f5e7b5bfb0a67a7464c1c",
+    "data": {
+      "path": "__init__.py",
+      "lines": 79,
+      "sloc": 59,
+      "file_size_kb": 2.087890625,
+      "complexity": 7,
+      "imports": [
+        "__future__.annotations",
+        "base_exporter.BaseExporter",
+        "csv_exporter.CSVExporter",
+        "drillhole_3d_exporter.DrillholeInterval3DExporter",
+        "drillhole_3d_exporter.DrillholeTrace3DExporter",
+        "drillhole_exporters.DrillholeIntervalShpExporter",
+        "drillhole_exporters.DrillholeTraceShpExporter",
+        "image_exporter.ImageExporter",
+        "interpretation_3d_exporter.Interpretation3DExporter",
+        "interpretation_exporters.Interpretation2DExporter",
+        "pdf_exporter.PDFExporter",
+        "profile_exporters.AxesShpExporter",
+        "profile_exporters.GeologyShpExporter",
+        "profile_exporters.ProfileLineShpExporter",
+        "profile_exporters.StructureShpExporter",
+        "shp_exporter.ShapefileExporter",
+        "svg_exporter.SVGExporter"
+      ],
+      "classes": [],
+      "functions": [
+        "get_exporter(2 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {},
+        "functions": {
+          "get_exporter": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 1,
+        "typed_functions": 0,
+        "coverage": 0.0
+      },
+      "halstead": {
+        "vocabulary": 38,
+        "length": 61,
+        "volume": 305,
+        "difficulty": 2.94,
+        "effort": 897.06
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations",
+        "base_exporter.BaseExporter",
+        "drillhole_3d_exporter.DrillholeInterval3DExporter",
+        "drillhole_3d_exporter.DrillholeTrace3DExporter",
+        "drillhole_exporters.DrillholeIntervalShpExporter",
+        "drillhole_exporters.DrillholeTraceShpExporter",
+        "interpretation_3d_exporter.Interpretation3DExporter",
+        "interpretation_exporters.Interpretation2DExporter",
+        "profile_exporters.AxesShpExporter",
+        "profile_exporters.GeologyShpExporter",
+        "profile_exporters.ProfileLineShpExporter",
+        "profile_exporters.StructureShpExporter"
+      ],
+      "maintenance_index": 43.03,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 28
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968285.9885726
+  },
+  "base_exporter.py": {
+    "hash": "ee17ef9d86be2cfd995346c8e4735eef8a003e9134de68c3927384be45d3c69e",
+    "data": {
+      "path": "base_exporter.py",
+      "lines": 110,
+      "sloc": 28,
+      "file_size_kb": 3.1318359375,
+      "complexity": 2,
+      "imports": [
+        "__future__.annotations",
+        "abc.ABC",
+        "abc.abstractmethod",
+        "pathlib.Path",
+        "typing.Any",
+        "sec_interp.core.validation.validate_safe_output_path"
+      ],
+      "classes": [
+        "BaseExporter(ABC)"
+      ],
+      "functions": [
+        "__init__(2 args)",
+        "export(3 args)",
+        "validate_export_path(3 args)",
+        "get_supported_extensions(1 args)",
+        "validate_path(2 args)",
+        "get_setting(3 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "BaseExporter": true
+        },
+        "functions": {
+          "__init__": true,
+          "export": true,
+          "validate_export_path": true,
+          "get_supported_extensions": true,
+          "validate_path": true,
+          "get_setting": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 5,
+        "coverage": 83.33333333333334
+      },
+      "halstead": {
+        "vocabulary": 40,
+        "length": 67,
+        "volume": 335,
+        "difficulty": 4.94,
+        "effort": 1655.29
+      },
+      "antipatterns": [],
+      "ast_security": [],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 50.48,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 9
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968285.9889321
+  },
+  "image_exporter.py": {
+    "hash": "c6b9e10f06c8de3b8ff19b0429f91e78bde59c0578e8cc9c1614ac75c4e4098a",
+    "data": {
+      "path": "image_exporter.py",
+      "lines": 69,
+      "sloc": 34,
+      "file_size_kb": 2.15234375,
+      "complexity": 7,
+      "imports": [
+        "__future__.annotations",
+        "pathlib.Path",
+        "qgis.core.QgsMapRendererCustomPainterJob",
+        "qgis.core.QgsMapSettings",
+        "qgis.PyQt.QtCore.QRectF",
+        "qgis.PyQt.QtCore.QSize",
+        "qgis.PyQt.QtGui.QColor",
+        "qgis.PyQt.QtGui.QImage",
+        "qgis.PyQt.QtGui.QPainter",
+        "sec_interp.logger_config.get_logger",
+        "base_exporter.BaseExporter"
+      ],
+      "classes": [
+        "ImageExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "ImageExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 2,
+        "typed_functions": 2,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 46,
+        "length": 83,
+        "volume": 415,
+        "difficulty": 4.7,
+        "effort": 1948.48
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 800",
+          "line": 37,
+          "value": 800
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 600",
+          "line": 38,
+          "value": 600
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 255",
+          "line": 39,
+          "value": 255
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 255",
+          "line": 39,
+          "value": 255
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 255",
+          "line": 39,
+          "value": 255
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 67,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 47.32,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 13
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968285.992284
+  },
+  "pdf_exporter.py": {
+    "hash": "312f3e5b8306b5711414de1fa8d2dbcacc98b07d0734b4e614a987dcc2687504",
+    "data": {
+      "path": "pdf_exporter.py",
+      "lines": 77,
+      "sloc": 43,
+      "file_size_kb": 2.548828125,
+      "complexity": 13,
+      "imports": [
+        "__future__.annotations",
+        "pathlib.Path",
+        "qgis.core.QgsMapRendererCustomPainterJob",
+        "qgis.core.QgsMapSettings",
+        "qgis.PyQt.QtCore.QMarginsF",
+        "qgis.PyQt.QtCore.QRectF",
+        "qgis.PyQt.QtCore.QSize",
+        "qgis.PyQt.QtCore.QSizeF",
+        "qgis.PyQt.QtGui.QPageSize",
+        "qgis.PyQt.QtGui.QPainter",
+        "qgis.PyQt.QtGui.QPdfWriter",
+        "sec_interp.logger_config.get_logger",
+        "base_exporter.BaseExporter"
+      ],
+      "classes": [
+        "PDFExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "PDFExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 2,
+        "typed_functions": 2,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 48,
+        "length": 96,
+        "volume": 480,
+        "difficulty": 6.21,
+        "effort": 2982.86
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 800",
+          "line": 37,
+          "value": 800
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 600",
+          "line": 38,
+          "value": 600
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 300",
+          "line": 42,
+          "value": 300
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 73,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 43.84,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 11
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968285.9964106
+  },
+  "svg_exporter.py": {
+    "hash": "c852e4cc930cbdd47d500ca58f403cc6ca1b1e47fdcf3cc5dcd92cd5508020ce",
+    "data": {
+      "path": "svg_exporter.py",
+      "lines": 77,
+      "sloc": 43,
+      "file_size_kb": 2.3896484375,
+      "complexity": 13,
+      "imports": [
+        "__future__.annotations",
+        "pathlib.Path",
+        "qgis.core.QgsMapRendererCustomPainterJob",
+        "qgis.PyQt.QtCore.QRectF",
+        "qgis.PyQt.QtCore.QSize",
+        "qgis.PyQt.QtGui.QPainter",
+        "qgis.PyQt.QtSvg.QSvgGenerator",
+        "sec_interp.logger_config.get_logger",
+        "base_exporter.BaseExporter"
+      ],
+      "classes": [
+        "SVGExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "SVGExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 2,
+        "typed_functions": 1,
+        "coverage": 50.0
+      },
+      "halstead": {
+        "vocabulary": 45,
+        "length": 93,
+        "volume": 465,
+        "difficulty": 6.46,
+        "effort": 3004.62
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 800",
+          "line": 38,
+          "value": 800
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 600",
+          "line": 39,
+          "value": 600
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 75,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 43.94,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 14
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968285.998903
+  },
+  "shp_exporter.py": {
+    "hash": "b9163413b8ff03ef2ca1f522f4a2a2df349ec9d0a43af4a74552d956b4a5d97c",
+    "data": {
+      "path": "shp_exporter.py",
+      "lines": 128,
+      "sloc": 84,
+      "file_size_kb": 4.0791015625,
+      "complexity": 15,
+      "imports": [
+        "__future__.annotations",
+        "pathlib.Path",
+        "typing.Any",
+        "qgis.core.QgsCoordinateReferenceSystem",
+        "qgis.core.QgsFeature",
+        "qgis.core.QgsField",
+        "qgis.core.QgsFields",
+        "qgis.core.QgsProject",
+        "qgis.core.QgsVectorFileWriter",
+        "qgis.core.QgsWkbTypes",
+        "qgis.PyQt.QtCore.QMetaType",
+        "sec_interp.logger_config.get_logger",
+        "base_exporter.BaseExporter"
+      ],
+      "classes": [
+        "ShapefileExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_write_features(4 args)",
+        "_prepare_fields(2 args)",
+        "_create_writer(5 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "ShapefileExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true,
+          "_write_features": true,
+          "_prepare_fields": true,
+          "_create_writer": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 5,
+        "typed_functions": 5,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 70,
+        "length": 173,
+        "volume": 1038,
+        "difficulty": 12.5,
+        "effort": 12975.0
+      },
+      "antipatterns": [],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 63,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {
+        "Factory": [
+          {
+            "class": "ShapefileExporter",
+            "method": "_create_writer",
+            "confidence": 70,
+            "evidence": [
+              "Method '_create_writer' matches factory naming",
+              "Method instantiates and returns an object"
+            ]
+          }
+        ]
+      },
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 34.89,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 24
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968286.0002122
+  },
+  "interpretation_exporters.py": {
+    "hash": "0b62f54a9d3f66a8a0e99620a7703cce7cd97024b6ab905b3f12b991995fde32",
+    "data": {
+      "path": "interpretation_exporters.py",
+      "lines": 160,
+      "sloc": 102,
+      "file_size_kb": 4.87890625,
+      "complexity": 16,
+      "imports": [
+        "__future__.annotations",
+        "pathlib.Path",
+        "typing.Any",
+        "qgis.core.QgsFeature",
+        "qgis.core.QgsField",
+        "qgis.core.QgsFields",
+        "qgis.core.QgsGeometry",
+        "qgis.core.QgsPointXY",
+        "qgis.core.QgsProject",
+        "qgis.core.QgsVectorFileWriter",
+        "qgis.core.QgsVectorLayer",
+        "qgis.PyQt.QtCore.QMetaType",
+        "sec_interp.exporters.base_exporter.BaseExporter",
+        "sec_interp.logger_config.get_logger"
+      ],
+      "classes": [
+        "Interpretation2DExporter(BaseExporter)"
+      ],
+      "functions": [
+        "__init__(2 args)",
+        "export(3 args)",
+        "_prepare_fields(2 args)",
+        "_create_feature(4 args)",
+        "_write_to_file(3 args)",
+        "get_supported_extensions(1 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "Interpretation2DExporter": true
+        },
+        "functions": {
+          "__init__": true,
+          "export": true,
+          "_prepare_fields": true,
+          "_create_feature": true,
+          "_write_to_file": true,
+          "get_supported_extensions": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 5,
+        "coverage": 83.33333333333334
+      },
+      "halstead": {
+        "vocabulary": 92,
+        "length": 214,
+        "volume": 1284,
+        "difficulty": 11.71,
+        "effort": 15032.2
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 50",
+          "line": 91,
+          "value": 50
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 92,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 50",
+          "line": 93,
+          "value": 50
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 94,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 30",
+          "line": 95,
+          "value": 30
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 255",
+          "line": 98,
+          "value": 255
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 78,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 32.27,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 24
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968286.007039
+  },
+  "drillhole_3d_exporter.py": {
+    "hash": "ed3cef9677e994f7e909683b546fa91cdb90d115e355f3105cbf7c8cbc5e82c3",
+    "data": {
+      "path": "drillhole_3d_exporter.py",
+      "lines": 161,
+      "sloc": 107,
+      "file_size_kb": 5.5751953125,
+      "complexity": 41,
+      "imports": [
+        "__future__.annotations",
+        "typing.Any",
+        "qgis.core.QgsFeature",
+        "qgis.core.QgsField",
+        "qgis.core.QgsFields",
+        "qgis.core.QgsGeometry",
+        "qgis.core.QgsPoint",
+        "qgis.core.QgsWkbTypes",
+        "qgis.PyQt.QtCore.QMetaType",
+        "sec_interp.core.utils",
+        "sec_interp.logger_config.get_logger",
+        "base_exporter.BaseExporter"
+      ],
+      "classes": [
+        "DrillholeTrace3DExporter(BaseExporter)",
+        "DrillholeInterval3DExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_prepare_fields(1 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_prepare_fields(1 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "DrillholeTrace3DExporter": true,
+          "DrillholeInterval3DExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true,
+          "_prepare_fields": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 6,
+        "typed_functions": 6,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 78,
+        "length": 269,
+        "volume": 1614,
+        "difficulty": 15.13,
+        "effort": 24420.52
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 61,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 128,
+          "value": 2
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 77,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 148,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 27.75,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 33
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968286.0077562
+  },
+  "drillhole_exporters.py": {
+    "hash": "568e63d4335f334bcab5d6218c1df205497fcfe2fc06e2f280fd1abd3641e190",
+    "data": {
+      "path": "drillhole_exporters.py",
+      "lines": 188,
+      "sloc": 101,
+      "file_size_kb": 5.7265625,
+      "complexity": 25,
+      "imports": [
+        "__future__.annotations",
+        "typing.Any",
+        "qgis.core.QgsFeature",
+        "qgis.core.QgsField",
+        "qgis.core.QgsFields",
+        "qgis.core.QgsGeometry",
+        "qgis.core.QgsPointXY",
+        "qgis.PyQt.QtCore.QMetaType",
+        "sec_interp.core.utils",
+        "sec_interp.logger_config.get_logger",
+        "base_exporter.BaseExporter"
+      ],
+      "classes": [
+        "DrillholeTraceShpExporter(BaseExporter)",
+        "DrillholeIntervalShpExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_write_traces(4 args)",
+        "_prepare_fields(1 args)",
+        "_create_feature(4 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_write_intervals(4 args)",
+        "_prepare_fields(1 args)",
+        "_create_feature(4 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "DrillholeTraceShpExporter": true,
+          "DrillholeIntervalShpExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true,
+          "_write_traces": true,
+          "_prepare_fields": true,
+          "_create_feature": true,
+          "_write_intervals": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 10,
+        "typed_functions": 10,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 72,
+        "length": 280,
+        "volume": 1680,
+        "difficulty": 16.79,
+        "effort": 28200.0
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 170,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 74,
+          "value": 2
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 58,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 135,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 30.33,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 33
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968286.0084999
+  },
+  "profile_exporters.py": {
+    "hash": "419b3be407a828f29dbf6f469b42516b81bc5b30843373042afacedbda6a8ff7",
+    "data": {
+      "path": "profile_exporters.py",
+      "lines": 336,
+      "sloc": 188,
+      "file_size_kb": 10.4736328125,
+      "complexity": 47,
+      "imports": [
+        "__future__.annotations",
+        "math",
+        "pathlib.Path",
+        "typing.Any",
+        "qgis.core.QgsFeature",
+        "qgis.core.QgsField",
+        "qgis.core.QgsFields",
+        "qgis.core.QgsGeometry",
+        "qgis.core.QgsPointXY",
+        "qgis.PyQt.QtCore.QMetaType",
+        "sec_interp.core.utils",
+        "sec_interp.logger_config.get_logger",
+        "base_exporter.BaseExporter"
+      ],
+      "classes": [
+        "ProfileLineShpExporter(BaseExporter)",
+        "GeologyShpExporter(BaseExporter)",
+        "StructureShpExporter(BaseExporter)",
+        "AxesShpExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_write_geology_features(4 args)",
+        "_create_geology_fields(2 args)",
+        "_create_geology_feature(3 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_write_structure_features(5 args)",
+        "_create_structure_fields(2 args)",
+        "_create_structure_feature(4 args)",
+        "_calculate_dip_geometry(3 args)",
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_write_axes_features(4 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "ProfileLineShpExporter": true,
+          "GeologyShpExporter": true,
+          "StructureShpExporter": true,
+          "AxesShpExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true,
+          "_write_geology_features": true,
+          "_create_geology_fields": true,
+          "_create_geology_feature": true,
+          "_write_structure_features": true,
+          "_create_structure_fields": true,
+          "_create_structure_feature": true,
+          "_calculate_dip_geometry": true,
+          "_write_axes_features": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 16,
+        "typed_functions": 16,
+        "coverage": 100.0
+      },
+      "halstead": {
+        "vocabulary": 123,
+        "length": 550,
+        "volume": 3300,
+        "difficulty": 32.57,
+        "effort": 107479.17
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 138,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 4",
+          "line": 178,
+          "value": 4
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 293,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 295,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.05",
+          "line": 298,
+          "value": 0.05
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 0.05",
+          "line": 299,
+          "value": 0.05
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 66,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 106,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 191,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 316,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {},
+      "unused_imports": [
+        "__future__.annotations"
+      ],
+      "maintenance_index": 19.43,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 50
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968286.0236156
+  },
+  "interpretation_3d_exporter.py": {
+    "hash": "782b4ea8b5a3adce4b3f04aae4ab53b08e80280534a76b0434f6e1f60ac5d46b",
+    "data": {
+      "path": "interpretation_3d_exporter.py",
+      "lines": 466,
+      "sloc": 334,
+      "file_size_kb": 15.0810546875,
+      "complexity": 51,
+      "imports": [
+        "__future__.annotations",
+        "math",
+        "pathlib.Path",
+        "typing.Any",
+        "qgis.core.QgsCoordinateReferenceSystem",
+        "qgis.core.QgsFeature",
+        "qgis.core.QgsField",
+        "qgis.core.QgsGeometry",
+        "qgis.core.QgsLineString",
+        "qgis.core.QgsPoint",
+        "qgis.core.QgsPointXY",
+        "qgis.core.QgsPolygon",
+        "qgis.core.QgsWkbTypes",
+        "qgis.PyQt.QtCore.QMetaType",
+        "qgis.PyQt.QtGui.QColor",
+        "sec_interp.core.exceptions.ExportError",
+        "sec_interp.core.types.InterpretationPolygon",
+        "sec_interp.exporters.base_exporter.BaseExporter",
+        "sec_interp.logger_config.get_logger",
+        "qgis.core.QgsVectorLayer",
+        "qgis._3d",
+        "qgis.core.QgsCategorizedSymbolRenderer",
+        "qgis.core.QgsFillSymbol",
+        "qgis.core.QgsRendererCategory",
+        "qgis.core.QgsVectorFileWriter",
+        "qgis.core.QgsProject",
+        "qgis.core.QgsFields",
+        "qgis._3d.QgsPhongMaterialSettings",
+        "qgis._3d.QgsPolygon3DSymbol",
+        "qgis._3d.QgsVectorLayer3DRenderer",
+        "qgis.core.QgsProperty",
+        "qgis._3d.QgsPhongMaterialSettings",
+        "qgis._3d.QgsAbstractMaterialSettings"
+      ],
+      "classes": [
+        "Interpretation3DExporter(BaseExporter)"
+      ],
+      "functions": [
+        "get_supported_extensions(1 args)",
+        "export(3 args)",
+        "_validate_export_input(3 args)",
+        "_handle_post_export_styles(5 args)",
+        "_generate_qml_style(5 args)",
+        "_setup_2d_renderer(3 args)",
+        "_project_to_3d_features(9 args)",
+        "_create_3d_rings(6 args)",
+        "_write_shapefile(6 args)",
+        "_make_fields_obj(2 args)",
+        "_make_fields(2 args)",
+        "_prepare_fields(2 args)",
+        "_calculate_section_geometry(2 args)",
+        "_collect_projected_features(7 args)",
+        "_prepare_2d_geometry(2 args)",
+        "_get_unique_vertices(2 args)",
+        "_ensure_closed_polygon(2 args)",
+        "_configure_3d_renderer(2 args)",
+        "_get_material_property_key(2 args)",
+        "_check_property_in_class(3 args)"
+      ],
+      "docstrings": {
+        "module": false,
+        "classes": {
+          "Interpretation3DExporter": true
+        },
+        "functions": {
+          "get_supported_extensions": true,
+          "export": true,
+          "_validate_export_input": true,
+          "_handle_post_export_styles": true,
+          "_generate_qml_style": true,
+          "_setup_2d_renderer": true,
+          "_project_to_3d_features": true,
+          "_create_3d_rings": true,
+          "_write_shapefile": true,
+          "_make_fields_obj": false,
+          "_make_fields": false,
+          "_prepare_fields": false,
+          "_calculate_section_geometry": true,
+          "_collect_projected_features": false,
+          "_prepare_2d_geometry": true,
+          "_get_unique_vertices": true,
+          "_ensure_closed_polygon": true,
+          "_configure_3d_renderer": false,
+          "_get_material_property_key": true,
+          "_check_property_in_class": true
+        }
+      },
+      "entry_point_info": {
+        "is_entry_point": false,
+        "type": null
+      },
+      "has_main": false,
+      "type_hints": {
+        "total_functions": 20,
+        "typed_functions": 19,
+        "coverage": 95.0
+      },
+      "halstead": {
+        "vocabulary": 217,
+        "length": 723,
+        "volume": 5061,
+        "difficulty": 28.4,
+        "effort": 143742.57
+      },
+      "antipatterns": [
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 4",
+          "line": 382,
+          "value": 4
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 2",
+          "line": 409,
+          "value": 2
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 200",
+          "line": 423,
+          "value": 200
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 200",
+          "line": 423,
+          "value": 200
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 200",
+          "line": 423,
+          "value": 200
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 50",
+          "line": 314,
+          "value": 50
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 100",
+          "line": 315,
+          "value": 100
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 50",
+          "line": 316,
+          "value": 50
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 10",
+          "line": 317,
+          "value": 10
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 30",
+          "line": 318,
+          "value": 30
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 255",
+          "line": 322,
+          "value": 255
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 150",
+          "line": 158,
+          "value": 150
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 150",
+          "line": 158,
+          "value": 150
+        },
+        {
+          "type": "magic_number",
+          "severity": "low",
+          "message": "Magic number detected: 150",
+          "line": 158,
+          "value": 150
+        }
+      ],
+      "ast_security": [
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 56,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 89,
+          "description": "Too broad exception handler"
+        },
+        {
+          "pattern": "except Exception:",
+          "severity": "low",
+          "line": 127,
+          "description": "Too broad exception handler"
+        }
+      ],
+      "patterns": {
+        "Factory": [
+          {
+            "class": "Interpretation3DExporter",
+            "method": "_make_fields",
+            "confidence": 70,
+            "evidence": [
+              "Method '_make_fields' matches factory naming",
+              "Method instantiates and returns an object"
+            ]
+          }
+        ]
+      },
+      "unused_imports": [
+        "__future__.annotations",
+        "qgis._3d"
+      ],
+      "maintenance_index": 12.15,
+      "qgis_compliance": {
+        "processing_framework": false,
+        "i18n_usage": {
+          "tr": 0,
+          "total_strings": 67
+        },
+        "gdal_import_style": "Modern",
+        "qt_transition": {
+          "pyqt5_imports": [],
+          "pyqt6_imports": []
+        },
+        "signals_slots": {
+          "legacy": 0,
+          "modern": 0
+        }
+      },
+      "syntax_error": false
+    },
+    "timestamp": 1769968286.0321326
+  }
+}

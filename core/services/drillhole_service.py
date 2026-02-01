@@ -20,12 +20,12 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
+from sec_interp.core.domain import DrillholeTaskInput, GeologySegment
 from sec_interp.core.exceptions import SecInterpError, ValidationError
 from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
 from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
 from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
 from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
-from sec_interp.core.types import DrillholeTaskInput, GeologySegment
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)

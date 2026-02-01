@@ -8,7 +8,7 @@ This module provides visualization and coordinate transformation utilities for p
 import math
 from collections.abc import Callable
 
-from sec_interp.core.types import GeologySegment
+from sec_interp.core.domain import GeologySegment
 
 
 def calculate_bounds(

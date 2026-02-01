@@ -12,6 +12,7 @@ from typing import Any
 from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
+from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.services import (
     DrillholeService,
@@ -19,7 +20,6 @@ from sec_interp.core.services import (
     ProfileService,
     StructureService,
 )
-from sec_interp.core.types import PreviewParams
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)

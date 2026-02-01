@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from sec_interp.gui.tasks.geology_task import GeologyGenerationTask
-from sec_interp.core.types import GeologyTaskInput
+from sec_interp.core.domain import GeologyTaskInput
 from qgis.core import QgsTask
 
 

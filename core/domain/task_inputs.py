@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from .domain_types import DomainGeometry, Point2D
+from .entities import DomainGeometry, Point2D
 
 
 @dataclass

@@ -28,9 +28,9 @@ from DEM layers along section lines.
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 
 from sec_interp.core import utils as scu
+from sec_interp.core.domain import ProfileData
 from sec_interp.core.exceptions import DataMissingError, GeometryError
 from sec_interp.core.interfaces.profile_interface import IProfileService
-from sec_interp.core.types import ProfileData
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)

@@ -26,7 +26,7 @@ class TestCalculateBounds(BaseTestCase):
 
     def test_calculate_bounds_with_geol(self):
         """Test bounds calculation with both topography and geology data."""
-        from sec_interp.core.types import GeologySegment
+        from sec_interp.core.domain import GeologySegment
         from unittest.mock import MagicMock
 
         topo_data = [(0.0, 100.0), (100.0, 150.0)]
