@@ -1,4 +1,12 @@
 ---
+## [2026-02-01] Resumen: Refactorización de ExportService y Estandarización
+- **Logro**: Reducida la complejidad técnica de `export_service.py` (CC de >60 a <10) y estandarizado el uso de `ai-ctx` vs `qgis-analyzer`.
+- **Cambios**:
+    - **Refactor**: Descomposición de métodos monolíticos de exportación 3D.
+    - **Tooling**: Integración de `ai-ctx` para mantenimiento diario.
+    - **Docs**: Guía Generación 2 con recursos técnicos completos para el framework.
+- **Estado**: 126 tests OK (Core + Integration). Ver [sesion_2026-02-01_export_refactor_and_framework_standardization.md](maintenance/sesion_2026-02-01_export_refactor_and_framework_standardization.md).
+
 ## [2026-01-28] Resumen: Consolidación de Redundancias Fase 3 (Noche)
 - **Logro**: Completada la consolidación de redundancias en servicios core (v2.9.0) y resolución de regresiones críticas de importación y geometría.
 - **Cambios**:

@@ -11,14 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sistema de Memoria Semántica (`AGENT_LESSONS.md`) y Recursos Técnicos (`qgis_gold_snippets.md`).
 - Workflow de auditoría de estándares (`verificar-estandares.md`).
 - Skills de Contexto de Proyecto y Estándares de Codificación Modernos.
+- Nuevo estándar dual de análisis: `ai-ctx` (universal) y `qgis-analyzer` (experto QGIS).
 - [Pendiente: Soporte para perfiles poligonales/túneles]
 - [Pendiente: Suite de integración 3D avanzada]
 
 ### Changed
+- Refactorización mayor de `export_service.py` para reducir la complejidad ciclomática de métodos 3D.
 - Refactorización de todos los Skills agenticos al sistema bilingüe ES/EN.
 - Mejora de los Workflows con secciones de "Resultado Esperado" y pasos corregidos.
 
 ### Fixed
+- Corregida importación legacy en `resources.py` (Deuda técnica documentada para QGIS 4.x).
 
 ## [2.9.1] - 2026-01-25
 ### Changed

@@ -40,8 +40,10 @@ Los hooks ejecutarán automáticamente:
 - **YAML/TOML Check**: Validación de sintaxis en archivos de configuración.
 
 ## Comandos de Desarrollo
-- **Análisis de Calidad**: `uv run qgis-analyzer analyze .`
-  - Ejecuta la suite de auditoría específica para plugins de QGIS.
+- **Métricas de Calidad (Higiene)**: `uv run ai-ctx analyze .`
+  - Recomendado para mantenimiento diario y control de complejidad ciclomática.
+- **Auditoría de QGIS (Compliance)**: `uv run qgis-analyzer analyze .`
+  - Específico para validar estándares de la comunidad QGIS (i18n, threading, metadatos).
 - **Linting Manual**: `uv run ruff check .`
 - **Formateo Manual**: `uv run ruff format .`
 - **Tests**: `uv run pytest`

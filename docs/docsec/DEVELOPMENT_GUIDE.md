@@ -52,7 +52,8 @@ Para evitar conflictos con los hooks de pre-commit (que pueden reformatear códi
 ## 🧹 Calidad de Código
 - **Pre-commit**: Instala con `uv run pre-commit install`. Los checks se ejecutan en cada commit.
 - **Linting**: Ejecuta `uv run ruff check .` para validar estándares.
-- **Análisis**: Usa `uv run qgis-analyzer analyze .` para obtener un informe de calidad y evolucion de métricas.
+- **Análisis de Métricas**: Ejecuta `uv run ai-ctx analyze .` habitualmente para controlar la complejidad.
+- **Auditoría QGIS**: Usa `uv run qgis-analyzer analyze .` para validaciones reglamentarias de QGIS.
 - Sigue las convenciones de [COMMIT_GUIDELINES.md](../standards/COMMIT_GUIDELINES.md) (Conventional Commits).
 - **Importante**: Intenta corregir los errores de pre-commit en lugar de saltártelos. Usa `--no-verify` solo si es absolutamente necesario y temporal.
 - Mantén una complejidad ciclomática por función inferior a 15 siempre que sea posible.

@@ -105,8 +105,7 @@ class TestPreviewService(BaseTestCase):
         self.assertEqual(len(result.struct), 1)
         self.mock_controller.structure_service.project_structures.assert_called_once()
 
-    @patch("sec_interp.core.services.preview_service.QgsDistanceArea")
-    def test_generate_all_with_drillholes(self, mock_da_cls):
+    def test_generate_all_with_drillholes(self):
         """Test generating topo and drillholes."""
         # Setup topo mocks
         line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])

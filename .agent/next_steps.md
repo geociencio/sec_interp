@@ -1,20 +1,15 @@
-# Próximos Pasos (Next Steps) - 2026-02-01
+# Next Steps - 2026-02-01
 
-## Estado Actual
-- He completado la generalización del **Antigravity Framework Starter Kit**.
-- El proyecto `sec_interp` tiene ahora una infraestructura agentica alineada con los estándares 2025.
-- Se ha limpiado la carpeta de investigación para que sirva como kit de despegue para otros proyectos.
+## Contexto
+Se completó la refactorización de `export_service.py` reduciendo la CC de >60 a <10 en métodos clave. Se estandarizó el uso de `ai-ctx` para mantenimiento y `qgis-analyzer` para releases. Se pospuso el parche de `resources.py` por pragmatismo técnico.
 
-## Tareas Pendientes
-- [ ] Implementar un ejemplo de Skill para Data Science real en el scaffold.
-- [ ] Publicar el Framework como una guía independiente en un repositorio template (Opcional).
+## Pendientes
+- [ ] Revisión de importaciones legacy adicionales reportadas por `qgis-analyzer` (si hubiera en otros archivos).
+- [ ] Mejora de cobertura de docstrings (actualmente 65.9%).
+- [ ] Mejora de cobertura de type hints (actualmente 38.8% en retornos).
+- [ ] Iniciar preparativos para QGIS 4.x (revisar rama de migración).
 
-## Cómo retomar
-Ejecutar el workflow de inicio:
+## Comando para retomar
 ```bash
 /inicia-sesion
 ```
-
-## Errores Conocidos / Notas
-- **Regresión**: Se detectó un fallo en `make docker-test` relacionado con `QgsDistanceArea` en `preview_service.py`. Debe revisarse si es un problema de mocking o una dependencia faltante.
-- El script `skill_sync.py` debe ser verificado en entornos Windows si se pretende una compatibilidad total fuera de Linux.

@@ -22,10 +22,10 @@ Este workflow guía la refactorización de código siguiendo los estándares del
 1. **Identificar Objetivo de Refactorización**:
    // turbo
    ```bash
-   qgis-analyzer analyze .
+   uv run ai-ctx analyze .
    ```
 
-   🤖 **Agent Action**: Analizar `analysis_results/PROJECT_SUMMARY.md` para identificar hotspots y deuda técnica.
+   🤖 **Agent Action**: Analizar `analysis_results/PROJECT_SUMMARY.md` para identificar hotspots (CC > 15) y deuda técnica.
 
 2. **Cargar Contexto Especializado**:
 
@@ -46,10 +46,10 @@ Este workflow guía la refactorización de código siguiendo los estándares del
 5. **Verificar Métricas de Calidad**:
    // turbo
    ```bash
-   qgis-analyzer analyze .
+   uv run ai-ctx analyze .
    ```
 
-   🤖 **Agent Action**: Confirmar mejora en el Quality Score y reducción de CC.
+   🤖 **Agent Action**: Confirmar mejora en el Quality Score y reducción de la Complejidad Ciclomática (CC).
 
 6. **Commit de Refactorización**:
    Usar workflow `/crea-commit` con mensaje técnico estructurado.

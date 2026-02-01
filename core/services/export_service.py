@@ -220,9 +220,7 @@ class ExportService:
         if not data:
             return
         from sec_interp.exporters import (
-            DrillholeInterval3DExporter,
             DrillholeIntervalShpExporter,
-            DrillholeTrace3DExporter,
             DrillholeTraceShpExporter,
         )
 
@@ -239,49 +237,7 @@ class ExportService:
 
             # 2. Advanced 3D Export
             if options:
-                # Traces 3D
-                if options.get("drill_3d_traces", False):
-                    if options.get("drill_3d_original", True):
-                        path = folder / "drillhole_traces_3d_real.shp"
-                        DrillholeTrace3DExporter({}).export(
-                            path,
-                            {
-                                "drillhole_data": data,
-                                "crs": crs,
-                                "use_projected": False,
-                            },
-                        )
-                        msg.append(f"  - {path.name} (3D Real)")
-
-                    if options.get("drill_3d_projected", False):
-                        path = folder / "drillhole_traces_3d_projected.shp"
-                        DrillholeTrace3DExporter({}).export(
-                            path,
-                            {"drillhole_data": data, "crs": crs, "use_projected": True},
-                        )
-                        msg.append(f"  - {path.name} (3D Proj)")
-
-                # Intervals 3D
-                if options.get("drill_3d_intervals", False):
-                    if options.get("drill_3d_original", True):
-                        path = folder / "drillhole_intervals_3d_real.shp"
-                        DrillholeInterval3DExporter({}).export(
-                            path,
-                            {
-                                "drillhole_data": data,
-                                "crs": crs,
-                                "use_projected": False,
-                            },
-                        )
-                        msg.append(f"  - {path.name} (3D Real)")
-
-                    if options.get("drill_3d_projected", False):
-                        path = folder / "drillhole_intervals_3d_projected.shp"
-                        DrillholeInterval3DExporter({}).export(
-                            path,
-                            {"drillhole_data": data, "crs": crs, "use_projected": True},
-                        )
-                        msg.append(f"  - {path.name} (3D Proj)")
+                self._export_drillholes_3d(folder, data, crs, msg, options)
 
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Drillhole export failed: {e}")
@@ -289,6 +245,52 @@ class ExportService:
         except Exception as e:
             logger.exception("Unexpected system error during drillhole export")
             raise ExportError(f"Critical error exporting drillholes: {e}") from e
+
+    def _export_drillholes_3d(
+        self,
+        folder: Path,
+        data: list[Any],
+        crs: Any,
+        msg: list[str],
+        options: dict[str, bool],
+    ) -> None:
+        """Export 3D drillhole traces and intervals."""
+        from sec_interp.exporters import (
+            DrillholeInterval3DExporter,
+            DrillholeTrace3DExporter,
+        )
+
+        # Traces 3D
+        if options.get("drill_3d_traces", False):
+            if options.get("drill_3d_original", True):
+                path = folder / "drillhole_traces_3d_real.shp"
+                DrillholeTrace3DExporter({}).export(
+                    path, {"drillhole_data": data, "crs": crs, "use_projected": False}
+                )
+                msg.append(f"  - {path.name} (3D Real)")
+
+            if options.get("drill_3d_projected", False):
+                path = folder / "drillhole_traces_3d_projected.shp"
+                DrillholeTrace3DExporter({}).export(
+                    path, {"drillhole_data": data, "crs": crs, "use_projected": True}
+                )
+                msg.append(f"  - {path.name} (3D Proj)")
+
+        # Intervals 3D
+        if options.get("drill_3d_intervals", False):
+            if options.get("drill_3d_original", True):
+                path = folder / "drillhole_intervals_3d_real.shp"
+                DrillholeInterval3DExporter({}).export(
+                    path, {"drillhole_data": data, "crs": crs, "use_projected": False}
+                )
+                msg.append(f"  - {path.name} (3D Real)")
+
+            if options.get("drill_3d_projected", False):
+                path = folder / "drillhole_intervals_3d_projected.shp"
+                DrillholeInterval3DExporter({}).export(
+                    path, {"drillhole_data": data, "crs": crs, "use_projected": True}
+                )
+                msg.append(f"  - {path.name} (3D Proj)")
 
     def _export_interpretations(
         self,
@@ -314,29 +316,31 @@ class ExportService:
 
             # 3D Export (Restricted Feature)
             if self.access_control.can_export_3d():
-                from sec_interp.exporters import Interpretation3DExporter
-
-                logger.info("✓ Saving 3D interpretation data...")
-                # Get section line geometry
-                if line_layer and line_layer.isValid():
-                    line_geom = next(line_layer.getFeatures()).geometry()
-
-                    Interpretation3DExporter({}).export(
-                        folder / "interpretations_3d.shp",
-                        {
-                            "interpretations": data,
-                            "section_line": line_geom,
-                            "crs": crs,
-                        },
-                    )
-                    msg.append("  - interpretations_3d.shp (3D)")
-                else:
-                    logger.warning("Invalid section line layer, skipping 3D export.")
+                self._export_interpretations_3d(folder, data, line_layer, crs, msg)
             else:
                 logger.info("3D Export features are restricted for this user.")
 
         except Exception as e:
             raise ExportError(f"Interpretation export failed: {e!s}") from e
+
+    def _export_interpretations_3d(
+        self, folder: Path, data: list[Any], line_layer: Any, crs: Any, msg: list[str]
+    ) -> None:
+        """Export interpretation polygons to 3D space."""
+        from sec_interp.exporters import Interpretation3DExporter
+
+        logger.info("✓ Saving 3D interpretation data...")
+        # Get section line geometry
+        if line_layer and line_layer.isValid():
+            line_geom = next(line_layer.getFeatures()).geometry()
+
+            Interpretation3DExporter({}).export(
+                folder / "interpretations_3d.shp",
+                {"interpretations": data, "section_line": line_geom, "crs": crs},
+            )
+            msg.append("  - interpretations_3d.shp (3D)")
+        else:
+            logger.warning("Invalid section line layer, skipping 3D export.")
 
     def _export_axes(self, folder: Path, data: list[tuple], crs: Any, msg: list[str]) -> None:
         """Export profile axes."""

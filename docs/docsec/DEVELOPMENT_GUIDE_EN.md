@@ -52,7 +52,8 @@ To avoid conflicts with pre-commit hooks (which might reformat code and fail the
 ## 🧹 Code Quality
 - **Pre-commit**: Install with `uv run pre-commit install`. Checks run on every commit.
 - **Linting**: Run `uv run ruff check .` to validate standards.
-- **Analysis**: Use `uv run qgis-analyzer analyze .` to get a quality report and metrics evolution.
+- **Metrics Analysis**: Run `uv run ai-ctx analyze .` regularly to monitor cyclomatic complexity.
+- **QGIS Audit**: Use `uv run qgis-analyzer analyze .` for QGIS-specific compliance checks.
 - Follow the conventions in [COMMIT_GUIDELINES.md](../standards/COMMIT_GUIDELINES.md) (Conventional Commits).
 - **Important**: Try to fix pre-commit errors instead of bypassing them. Use `--no-verify` only if absolutely necessary and temporary.
 - Keep cyclomatic complexity per function below 15 whenever possible.
