@@ -103,6 +103,14 @@ Actualiza los siguientes archivos:
 
 ## 6. Sincronización de Control de Versiones
 
+### 6.1 Archivado de Tareas de Fase
+Mueve el archivo de tareas activo al historial para trazabilidad:
+
+```bash
+mv .agent/task.md .agent/history/tasks/tasks_vX.Y.Z.md
+```
+
+### 6.2 Git Sync
 Verifica el estado del repositorio:
 
 ```bash

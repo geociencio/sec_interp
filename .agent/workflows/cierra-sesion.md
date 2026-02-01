@@ -16,6 +16,9 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
 
     *   **Identificación del Tema**: Define un nombre corto para la sesión (ej: `stabilization_mocks`).
     *   **`docs/plans/implementation_plan_vX.Y.Z.md`**: **[CRÍTICO]** Actualiza el estado de las tareas (marcar con `[x]` las completadas).
+    *   **Persistencia de Tareas**:
+        *   Asegura que `.agent/task.md` refleja el progreso real.
+        *   **NO BORRES** este archivo; debe persistir para la siguiente sesión.
     *   **`.agent/next_steps.md`**: **[CRÍTICO]** Crea o actualiza este archivo con el "paso de testigo": qué falta, qué errores hay pendientes y cuál es el comando para retomar.
     *   **Archivado de Next Steps**: **[NUEVO]** Copia `.agent/next_steps.md` a `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` para mantener el registro histórico.
     *   **`docs/maintenance/sesion_YYYY-MM-DD_[TEMA].md`**: **[OBLIGATORIO]** Crea este archivo con el resumen técnico de la sesión.
@@ -44,6 +47,10 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     ```bash
     PYTHONPATH=.. uv run python3 -m unittest discover tests
     ```
+
+    🤖 **Agent Action**: Validar Tareas Activas.
+
+    Verifica que `.agent/task.md` existe y está actualizado antes de commitear.
 
 3.  **Sincronización de Memoria Final (IA)**:
 

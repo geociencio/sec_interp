@@ -18,6 +18,13 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     ai-ctx analyze --path . && cat .agent/next_steps.md
     ```
 
+    🤖 **Agent Action**: Validar Tareas Activas.
+
+    *   **Gestión de Tareas**:
+        *   Verifica si existe `.agent/task.md`.
+        *   Si existe: Muestra el contenido ("Estado Actual").
+        *   Si NO existe: Créalo basándote en el Plan de Implementación activo o `next_steps.md`.
+
     🤖 **Agent Action**: Revisar `AI_CONTEXT.md` y `project_context.json` usando skill **qgis-core** para identificar:
     - Deuda técnica crítica relacionada con QGIS API
     - Métodos con alta complejidad ciclomática (CC > 15)
