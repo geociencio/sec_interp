@@ -4,6 +4,10 @@ This document serves as the central record for project history, release procedur
 
 ---
 
+### [v2.10.0 Plan - Phase 1] - 2026-02-01
+- **Focus**: Quality Score > 60, QGIS 4.x Prep (PyQt5 cleanup), ExportService Refactor.
+- **Goals**: Eliminate technical debt in resources.py and reduce cyclomatic complexity in 3D exporters.
+
 ### [Phase Closure v2.9.0] - ARCHITECTURAL CONSOLIDATION
 - **Date**: 2026-02-01
 - **Focus**: Core Domain Migration, Drillhole Service Decomposition, v2.9.0 Release Stabilization.
