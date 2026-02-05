@@ -20,11 +20,12 @@ Controla el ciclo de vida de las versiones del plugin, garantizando que cada ent
 ## Workflow Detallado
 
 ### Fase 1: Calidad y Preparación
-1. **Análisis de Calidad**:
+1. **Análisis de Calidad y Seguridad**:
    ```bash
    uv run qgis-analyzer analyze . -o analysis_results
+   uv run qgis-analyzer security --deep .
    ```
-   - Validar: Score > 25, sin violaciones críticas (CC > 20), sin imports legacy de PyQt5.
+   - Validar: Score > 25, zero High-Severity security issues, sin violaciones críticas (CC > 20).
 2. **Actualizar Badges**: Reflejar métricas en `README.md`.
 
 ### Fase 2: Versionado y Documentación

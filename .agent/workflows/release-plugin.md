@@ -5,6 +5,7 @@ skills: [release-management, qa-docker, commit-standards]
 validation: |
   - Verificar que 361 tests pasan en Docker
   - Confirmar que qgis-analyzer score > 25/100
+  - Asegurar Zero High-Severity Security Findings (`security --deep`)
   - Validar que versiones están sincronizadas en 3 archivos
   - Verificar que ZIP se generó correctamente
 ---
@@ -54,13 +55,13 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **qa-docker** para validar tests y skill **commit-standards** para linting.
 
-3. **Security Scan** (Compatible QGIS Portal):
+3. **Security Scan** (Deep Audit):
    // turbo
    ```bash
-   make security-scan
+   uv run qgis-analyzer security --deep .
    ```
 
-   🤖 **Agent Action**: Revisar reportes de seguridad para evitar rechazos en el portal.
+   🤖 **Agent Action**: Revisar reportes de seguridad. No se permiten hallazgos de severidad ALTA para proceder.
 
 4. **Linting & Formatting**:
    // turbo

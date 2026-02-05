@@ -1,7 +1,7 @@
 ---
 description: Procedimiento para finalizar una sesión de trabajo, actualizar logs y archivar resultados
 agent: QA Engineer
-skills: [qa-docker, commit-standards]
+skills: [qa-docker, commit-standards, agentic-memory]
 validation: |
   - Verificar que todos los logs están actualizados
   - Confirmar que tests pasan antes de cerrar
@@ -56,6 +56,10 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
 
     🤖 **Agent Action**: Actualizar AI_CONTEXT.md y validar que next_steps.md es claro.
 
+    🤖 **Agent Action (Brain Evolution)**: Ejecutar extracción de patrones usando **agentic-memory**.
+    *   Identificar lecciones clave en esta sesión.
+    *   Actualizar entradas YAML en `AGENT_LESSONS.md`.
+    *   Actualizar `agent_metrics.json` con el resumen de la sesión.
 
     Asegura que el "Cerebro" de la IA esté al día con los cambios finales.
     // turbo

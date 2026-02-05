@@ -1,7 +1,7 @@
 ---
 description: Procedimiento estándar y robusto para iniciar una sesión de desarrollo "Local First"
 agent: Senior Architect
-skills: [qgis-core, qa-docker]
+skills: [qgis-core, qa-docker, agentic-memory]
 validation: |
   - Verificar que 361 tests pasen en Docker
   - Confirmar que AI_CONTEXT.md está actualizado con métricas recientes
@@ -15,7 +15,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     Actualiza y lee el contexto para entender "dónde nos quedamos".
     // turbo
     ```bash
-    ai-ctx analyze --path . && cat .agent/next_steps.md
+    ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/AGENT_LESSONS.md
     ```
 
     🤖 **Agent Action**: Validar Tareas Activas.
@@ -34,6 +34,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     Revisa los siguientes archivos en este orden:
     *   `docs/plans/implementation_plan_v2.8.0.md`: **Mapa de Ruta Maestro**. Fuente de verdad sobre tareas completadas.
     *   `.agent/next_steps.md`: **El Testigo**. Punto exacto donde se detuvo la sesión anterior.
+    *   `.agent/memory/AGENT_LESSONS.md`: **El Cerebro**. Historial de lecciones, preferencias y patrones de error a evitar.
     *   `AI_CONTEXT.md`: Memoria de largo plazo, métricas y directrices de alto nivel.
     *   `project_context.json`: Datos estructurados de complejidad y dependencias.
     *   `docs/DEVELOPMENT_LOG.md`: Ver resumen de la última sesión (orden cronológico inverso).

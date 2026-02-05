@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- **Arquitectura Gen 3**: Implementada la Capa de Consciencia con Memoria Semántica, Auditoría Proactiva y Observabilidad.
+- **Agentes**: Introducción del rol **Agent Auditor** para validación crítica de planes.
+- **Memoria**: Sistema de registro estructurado `AGENT_LESSONS.md` (YAML) para aprendizaje continuo.
+- **Workflows**: Nuevo flujo `/ia-critic` para auditoría técnica proactiva.
+- **Framework**: Actualización mayor del `antigravity-framerepo` a la Generación 3.
+- **Observabilidad**: Seguimiento dinámico de efectividad en `agent_metrics.json`.
 - Nuevo "Antigravity Framework Starter Kit" para portabilidad del sistema agentico.
 - Sistema de Memoria Semántica (`AGENT_LESSONS.md`) y Recursos Técnicos (`qgis_gold_snippets.md`).
 - Workflow de auditoría de estándares (`verificar-estandares.md`).

@@ -26,7 +26,9 @@ Estandariza la interacción con la API de QGIS, asegurando un plugin responsivo 
 
 ### Reglas de Oro
 - **QgsTask**: No bloquear la UI. Usar señales y slots para comunicación.
+- **Red/Hilos**: Evitar `threading.Thread` (usar `QgsTask`) y llamadas de red síncronas (reglas `UNSAFE_THREAD` y `BLOCKING_NETWORK_CALL`).
 - **Fronteras**: Usar WKT para comunicar la lógica core con la interfaz gráfica.
+- **Modernización**: Evitar `QVariant` legacy; el analizador detectará `OBSOLETE_VARIANT`.
 - **Inyección**: Evitar el uso global de `iface`; preferir pasar objetos en constructores.
 
 ### Estructura del Plugin

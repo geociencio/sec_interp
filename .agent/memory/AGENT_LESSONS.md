@@ -1,24 +1,41 @@
 # Memoria de Aprendizaje del Agente (SecInterp)
 
-Este archivo registra lecciones técnicas, preferencias del usuario y soluciones a problemas complejos encontrados durante el desarrollo. Sirve como memoria semántica para evitar repetir errores y optimizar decisiones futuras.
+Este archivo registra lecciones técnicas, preferencias del usuario y soluciones a problemas complejos. Utiliza un formato estructurado para permitir una recuperación eficiente por parte del sistema de agentes.
 
-## 🧠 Lecciones Críticas
+## 🧠 Registro de Lecciones (YAML Structured)
 
-### Infraestructura Agentica (2026-02-01)
-- **Lección**: La sobre-simplificación de Skills durante refactorizaciones lingüísticas puede causar pérdida de manuales técnicos críticos (ej. `release-management`).
-- **Acción**: Mantener siempre el "músculo" técnico en inglés mientras se traduce la estructura operativa al español.
+```yaml
+lessons:
+  - date: 2026-02-01
+    category: ARCHITECTURE
+    topic: Skill Localization
+    lesson: "La sobre-simplificación de Skills durante traducciones puede causar pérdida de manuales técnicos."
+    action: "Mantener núcleos técnicos en Inglés; estructura operativa en Español."
 
-### Arquitectura de Tests
-- **Lección**: El mocking de `QgsGeometry` en entornos sin QGIS instalado requiere cuidado con métodos específicos como `pointN` o `is3D`.
-- **Preferencia**: El usuario prefiere `unittest` estricto sobre `pytest` para este proyecto.
+  - date: 2026-02-01
+    category: TECHNICAL
+    topic: QgsGeometry Mocking
+    lesson: "Mocking de QgsGeometry requiere cuidado con métodos como pointN o is3D."
+    action: "Preferir unittest para este proyecto según preferencia del usuario."
 
-## ⚙️ Preferencias del Usuario
-- **Idioma**: Comunicación y gestión en Español; código y commits en Inglés.
-- **Formateo**: Uso obligatorio de `black` y gestión de dependencias con `uv`.
-- **UI**: Diseño programático (sin archivos `.ui`) para mayor control y estética premium.
+  - date: 2026-02-05
+    category: USER_PREFERENCE
+    topic: Development Tools
+    lesson: "Preferencia por black (formateo), uv (dependencias) y UI programática (sin .ui)."
+    action: "Aplicar estos estándares en cada nueva implementación de GUI."
 
-## 🛠️ Soluciones a Hotspots
-- (Pendiente de registro tras próximas sesiones de refactorización).
+  - date: 2026-02-05
+    category: ARCHITECTURE
+    topic: Agentic Brain Evolution
+    lesson: "La Gen 3 introduce autocrítica (Auditor) y memoria semántica para mayor estabilidad cognitiva."
+    action: "Invocación de /ia-critic tras planificación y /cierra-sesion para aprendizaje continuo."
+```
+
+## ⚙️ Configuración Global de Preferencias
+
+- **Idioma**: Comunicación (Español), Código/Commits (Inglés).
+- **Estándares**: Google Docstrings, Pathlib, Strict Typing.
+- **Workflow**: Inicia con `/inicia-sesion`, Cierra con `/cierra-sesion`.
 
 ---
-*Última actualización: 2026-02-01*
+*Última actualización: 2026-02-05 - Estructura optimizada para Agentic Memory.*

@@ -25,13 +25,25 @@ Este archivo define los roles y comportamientos específicos que el asistente de
 
 ---
 
+## 🕵️ Agent Auditor (NUEVO)
+- **Rol**: Auditor técnico de IA especializado en rigor arquitectónico y cumplimiento de estándares.
+- **Objetivo**: Actuar como "segundo par de ojos" para validar planes de implementación y detectar potenciales alucinaciones o degradación de la calidad.
+- **Skills**: [coding-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/coding-standards/SKILL.md), [project-context](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/project-context/SKILL.md), [agentic-memory](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/agentic-memory/SKILL.md)
+- **Directrices Estrictas**:
+  - **Neutralidad**: Debe ser crítico con los planes propuestos por otros agentes.
+  - **Estándares**: No permite ninguna desviación de `black`, `uv` o la separación Core/GUI.
+  - **Memoria**: Debe verificar que las lecciones en `AGENT_LESSONS.md` se están aplicando.
+
+---
+
 ## 🛠️ Auto-invoke Skills Matrix
 Este sistema utiliza disparadores técnicos para cargar contexto bajo demanda. Los agentes deben consultar esta tabla ante cualquier nueva tarea.
 
 <!-- SKILLS_TABLE_START -->
 | Skill | Description | Trigger (Auto-invoke) |
 | :--- | :--- | :--- |
-| [coding-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/coding-standards/SKILL.md) | Estándares de codificación del proyecto, enfocados en el uso de pathlib, docstrings de Google y tipado estricto. | al escribir código Python, realizar refactorizaciones o definir rutas de archivos. |
+| [agentic-memory](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/agentic-memory/SKILL.md) | Gestión de memoria semántica, extracción de patrones y lecciones para el cerebro del agente. | al finalizar sesiones, actualizar logs de aprendizaje o gestionar preferencias del usuario. |
+34: | [coding-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/coding-standards/SKILL.md) | Estándares de codificación del proyecto, enfocados en el uso de pathlib, docstrings de Google y tipado estricto. | al escribir código Python, realizar refactorizaciones o definir rutas de archivos. |
 | [commit-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/commit-standards/SKILL.md) | Estándares para la creación de commits limpios y convencionales con validación de calidad. | al crear commits, escribir mensajes de commit o usar el workflow /crea-commit |
 | [geological-logic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/geological-logic/SKILL.md) | Estándares para el manejo de datos de sondajes, interpolación de secciones y validación de 3 niveles. | al implementar algoritmos geológicos, validación de datos o lógica de procesamiento de sondajes. |
 | [project-context](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/project-context/SKILL.md) | Resumen del propósito, arquitectura y estructura del proyecto SecInterp. | al iniciar nuevas tareas, solicitar resúmenes o explicar la arquitectura del plugin. |

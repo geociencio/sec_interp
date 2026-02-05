@@ -906,8 +906,12 @@ wheels = [
 
 [[package]]
 name = "qgis-plugin-analyzer"
-version = "1.4.0"
-source = { git = "https://github.com/geociencio/qgis-plugin-analyzer.git#a61bf0f16d2c1e06e10806648697744a24a483b0" }
+version = "1.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2d/10/3cff2ca4dc4d569b3b29e0155628984507b7d27704478aa04cbc0c3005b6/qgis_plugin_analyzer-1.5.0.tar.gz", hash = "sha256:79d53be8d732aa58d6ba2ba89f1a8e7a9a2f076ec7e442928d2ea79b3954483b", size = 71676, upload-time = "2026-02-01T23:36:16.711Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c8/65/b57319ac37557376c9dd163ed2609cc2f4096401c7c2f51f7b9708e3dbdc/qgis_plugin_analyzer-1.5.0-py3-none-any.whl", hash = "sha256:efa81ff074167b91956aa61ef2579667be9ea2e8fc3786217129c87d0d43e87c", size = 72981, upload-time = "2026-02-01T23:36:17.836Z" },
+]
 
 [[package]]
 name = "qgis-plugin-manager"
@@ -1038,8 +1042,7 @@ dev = [
     { name = "myst-parser", specifier = ">=2.0.0" },
     { name = "networkx", specifier = ">=3.0" },
     { name = "pre-commit", specifier = ">=4.5.1" },
-    { name = "qgis-plugin-analyzer", specifier = ">=1.4.0" },
-    { name = "qgis-plugin-analyzer", git = "https://github.com/geociencio/qgis-plugin-analyzer.git" },
+    { name = "qgis-plugin-analyzer", specifier = ">=1.5.0" },
     { name = "qgis-plugin-manager", git = "https://github.com/geociencio/qgis-plugin-manager" },
     { name = "ruff", specifier = ">=0.4.0" },
     { name = "setuptools", specifier = ">=70.0.0" },

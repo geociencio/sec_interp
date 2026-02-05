@@ -27,7 +27,14 @@ Este workflow guía la refactorización de código siguiendo los estándares del
 
    🤖 **Agent Action**: Analizar `analysis_results/PROJECT_SUMMARY.md` para identificar hotspots (CC > 15) y deuda técnica.
 
-2. **Cargar Contexto Especializado**:
+2. **Auto-Corrección Rápida** (Opcional):
+   // turbo
+   ```bash
+   uv run qgis-analyzer fix --dry-run .
+   ```
+   🤖 **Agent Action**: Si hay correcciones disponibles y seguras, aplicarlas usando `fix --apply` antes de proceder con refactorización manual.
+
+3. **Cargar Contexto Especializado**:
 
    🤖 **Agent Action**: Según el módulo, cargar skill apropiado (geological-logic, qgis-core, o ui-framework).
 
