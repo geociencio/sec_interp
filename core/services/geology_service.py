@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Geology Data Processing Service.
 
 This module handles the extraction and projection of geological boundaries
 and unit segments from map layers to the cross-section plane.
 """
+
+from __future__ import annotations
 
 # /***************************************************************************
 #  SecInterp - GeologyService
@@ -24,7 +24,6 @@ and unit segments from map layers to the cross-section plane.
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
-
 from typing import Any
 
 from qgis.core import (
@@ -57,7 +56,11 @@ class GeologyService(IGeologyService):
     """Service for generating geological profiles."""
 
     def __init__(self) -> None:
-        """Initialize service with specialized processors."""
+        """Initialize service with specialized processors.
+
+        The service delegates the heavy lifting of elevation sampling and
+        outcrop extraction to specialized sub-components.
+        """
         self.profile_sampler = ProfileSampler()
         self.outcrop_processor = OutcropProcessor()
 
@@ -104,7 +107,22 @@ class GeologyService(IGeologyService):
         outcrop_name_field: str,
         band_number: int = 1,
     ) -> GeologyTaskInput:
-        """Prepare detached domain data for background task."""
+        """Prepare detached domain data for background task execution.
+
+        Extracts all necessary geometric and attribute data from QGIS layers
+        to create a serializable input for asynchronous processing.
+
+        Args:
+            line_lyr: The cross-section line vector layer.
+            raster_lyr: The elevation raster layer.
+            outcrop_lyr: The geological outcrop vector layer.
+            outcrop_name_field: Field name for geological units.
+            band_number: Raster band for elevation sampling.
+
+        Returns:
+            GeologyTaskInput: Detached data ready for processing.
+
+        """
         self._validate_inputs(line_lyr, raster_lyr, outcrop_lyr, outcrop_name_field, band_number)
 
         line_geom, line_start = self._extract_line_info(line_lyr)
@@ -143,7 +161,22 @@ class GeologyService(IGeologyService):
         outcrop_name_field: str,
         band_number: int,
     ) -> None:
-        """Validate input layers and parameters."""
+        """Validate input layers and parameters for correctness.
+
+        Checks layer validity, raster band range, and field existence.
+
+        Args:
+            line_lyr: Section line layer.
+            raster_lyr: Raster layer.
+            outcrop_lyr: Outcrop layer.
+            outcrop_name_field: Unit field name.
+            band_number: Targeted raster band.
+
+        Raises:
+            DataMissingError: If a layer is invalid.
+            ValidationError: If parameters are out of range or missing.
+
+        """
         from sec_interp.core.exceptions import ValidationError
 
         # 1. Layer Validity
@@ -175,7 +208,19 @@ class GeologyService(IGeologyService):
     def process_task_data(
         self, task_input: GeologyTaskInput, feedback: Any | None = None
     ) -> GeologyData:
-        """Process geological data in a thread-safe way (Domain-Pure logic)."""
+        """Process geological data in a thread-safe way (Domain-Pure logic).
+
+        Intersects the section line with detached outcrop geometries and
+        assigns elevations sampled from the master profile.
+
+        Args:
+            task_input: Detached data for processing.
+            feedback: Optional QgsFeedback for progress tracking.
+
+        Returns:
+            GeologyData: Sorted list of geological segments.
+
+        """
         # Reconstruct necessary tools from IDs/Strings
         crs = QgsCoordinateReferenceSystem(task_input.crs_authid)
         da = scu.create_distance_area(crs)
@@ -210,7 +255,24 @@ class GeologyService(IGeologyService):
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[GeologySegment]:
-        """Process a detached intersection geometry to extract geology segments."""
+        """Process a detached intersection geometry to extract geology segments.
+
+        Handles multi-part geometries resulting from complex intersections.
+
+        Args:
+            geom: Intersection geometry (detachable).
+            attrs: Feature attributes.
+            unit_name: Geological unit name.
+            line_start: Section start point.
+            da: Distance calculator.
+            master_grid_dists: Master grid distances.
+            master_profile_data: Master profile elevation data.
+            tolerance: Interpolation tolerance.
+
+        Returns:
+            List of GeologySegment objects.
+
+        """
         if not geom or geom.isNull():
             return []
 
@@ -243,7 +305,19 @@ class GeologyService(IGeologyService):
         da: QgsDistanceArea,
         task_input: GeologyTaskInput,
     ) -> list[GeologySegment]:
-        """Process a single outcrop feature intersection."""
+        """Process a single outcrop feature intersection.
+
+        Args:
+            item: Detached outcrop dictionary (wkt, attrs, unit_name).
+            line_geom: Master section geometry.
+            line_start: Section start point.
+            da: Distance calculator.
+            task_input: Full task input for context.
+
+        Returns:
+            List of GeologySegment objects for this feature.
+
+        """
         outcrop_geom = QgsGeometry.fromWkt(item["wkt"])
         intersection = line_geom.intersection(outcrop_geom)
 
@@ -272,7 +346,25 @@ class GeologyService(IGeologyService):
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> GeologySegment | None:
-        """Create a GeologySegment from a geometry part by sampling elevations."""
+        """Create a GeologySegment from a geometry part by sampling elevations.
+
+        Calculates the distance range of the segment along the section and
+        interpolates elevations from the master profile.
+
+        Args:
+            seg_geom: Part geometry.
+            attributes: Original feature attributes.
+            unit_name: Unit name.
+            line_start: Section start point.
+            da: Distance calculator.
+            master_grid_dists: Master grid data.
+            master_profile_data: Master profile data.
+            tolerance: Sampling tolerance.
+
+        Returns:
+            GeologySegment or None if geometry is invalid.
+
+        """
         rng = calculate_segment_range(seg_geom, line_start, da)
         if not rng:
             return None

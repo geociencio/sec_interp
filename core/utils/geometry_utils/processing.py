@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Geometry processing utilities."""
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -72,12 +72,14 @@ def create_memory_layer(
 def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeometry:
     """Densify a line geometry by a specific distance interval.
 
+    Adds intermediate vertices to ensure segments are no longer than the interval.
+
     Args:
         geometry: Line geometry to densify.
-        interval: Maximum distance between vertices.
+        interval: Maximum distance between vertices (in CRS units).
 
     Returns:
-        The densified geometry.
+        The densified QgsGeometry.
 
     """
     if not geometry or geometry.isNull():
@@ -145,17 +147,20 @@ def interpolate_segment_points(
     master_profile_data: list[tuple[float, float]],  # (dist, elev)
     tolerance: float,
 ) -> list[tuple[float, float]]:
-    """Convert start/end distances to a list of segment points with interpolated elevations.
+    """Convert boundary distances into a list of points with sampled elevations.
+
+    Includes the start/end points and any intermediate grid points from the
+    master profile that fall within the specified distance range.
 
     Args:
-        dist_start: Start distance of the segment.
-        dist_end: End distance of the segment.
-        master_grid_dists: Master grid elevation data (dist, point, elev).
-        master_profile_data: Master profile topography data (dist, elev).
-        tolerance: Tolerance for grid point inclusion.
+        dist_start: Start distance along section.
+        dist_end: End distance along section.
+        master_grid_dists: Full grid of coordinates and elevations.
+        master_profile_data: Topography profile (dist, elevation).
+        tolerance: Distance tolerance for grid inclusions.
 
     Returns:
-        List of (distance, elevation) tuples.
+        List of (distance, elevation) tuples defining the segment profile.
 
     """
     from sec_interp.core.utils.sampling import interpolate_elevation

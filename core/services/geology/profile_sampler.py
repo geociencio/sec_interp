@@ -20,7 +20,23 @@ class ProfileSampler:
         da: QgsDistanceArea,
         line_start: QgsPointXY,
     ) -> tuple[list[tuple[float, float]], list[tuple[float, QgsPointXY, float]]]:
-        """Generate master profile data (grid points and elevations)."""
+        """Generate master profile data (grid points and elevations).
+
+        Densifies the section line and samples elevations from the DEM.
+
+        Args:
+            line_geom: Section line geometry.
+            raster_lyr: Elevation raster layer.
+            band_number: Raster band to sample.
+            da: Distance calculator.
+            line_start: Section start point.
+
+        Returns:
+            Tuple containing:
+            - List of (distance, elevation) tuples.
+            - List of (distance, point, elevation) tuples.
+
+        """
         grid_points = self._get_densified_grid_points(line_geom, raster_lyr)
         return self._sample_elevation_at_points(
             grid_points, raster_lyr, band_number, da, line_start

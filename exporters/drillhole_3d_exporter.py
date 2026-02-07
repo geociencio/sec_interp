@@ -69,14 +69,40 @@ class DrillholeTrace3DExporter(BaseExporter):
         self, writer: Any, fields: QgsFields, hole_data: tuple, use_projected: bool
     ) -> None:
         """Process and write a single hole trace feature."""
-        hole_id, _, traces_3d, traces_3d_proj, _ = hole_data
-        points_source = traces_3d_proj if use_projected else traces_3d
-        if not points_source or len(points_source) < 2:
+        # Standard format: (hid, spatial_points, segments)
+        # Legacy/Test format: (hid, trace2d, trace3d, traces3d_proj, segments)
+        hole_id = hole_data[0]
+
+        if len(hole_data) == 3:
+            # New format with SpatialMeta objects
+            spatial_points = hole_data[1]
+            if use_projected:
+                points = [
+                    QgsPoint(p.x_proj or 0.0, p.y_proj or 0.0, p.z)
+                    for p in spatial_points
+                    if p.x_proj is not None
+                ]
+            else:
+                points = [
+                    QgsPoint(p.x_3d or 0.0, p.y_3d or 0.0, p.z)
+                    for p in spatial_points
+                    if p.x_3d is not None
+                ]
+        elif len(hole_data) == 5:
+            # Legacy/Integration Test format
+            _, _, traces_3d, traces_3d_proj, _ = hole_data
+            points_source = traces_3d_proj if use_projected else traces_3d
+            points = [QgsPoint(x, y, z) for x, y, z in points_source]
+        else:
+            logger.warning(
+                f"Unexpected hole data format (length {len(hole_data)}) for hole {hole_id}"
+            )
             return
 
-        points = [QgsPoint(x, y, z) for x, y, z in points_source]
-        geom = QgsGeometry.fromPolyline(points)
+        if not points or len(points) < 2:
+            return
 
+        geom = QgsGeometry.fromPolyline(points)
         if geom and not geom.isNull():
             feat = QgsFeature(fields)
             feat.setGeometry(geom)
@@ -134,8 +160,11 @@ class DrillholeInterval3DExporter(BaseExporter):
         self, writer: Any, fields: QgsFields, hole_data: tuple, use_projected: bool
     ) -> None:
         """Process and write intervals for a single hole."""
-        hole_id, _, _, _, segments = hole_data
-        if not segments:
+        # segments are always the last element in both 3 and 5 element formats
+        hole_id = hole_data[0]
+        segments = hole_data[-1]
+
+        if not segments or not isinstance(segments, list):
             return
 
         for segment in segments:

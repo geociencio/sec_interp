@@ -110,10 +110,9 @@ class TestServiceValidation(BaseTestCase):
 
         with self.assertRaises(ValidationError) as cm:
             self.drillhole_service.project_collars(
-                MagicMock(),
-                line_geom,
-                line_start,
-                da,
+                collar_data=[{"id": "test"}],
+                line_data=line_geom,
+                distance_area=da,
                 buffer_width=-5.0,  # Invalid
                 collar_id_field="id",
                 use_geometry=True,
@@ -121,7 +120,6 @@ class TestServiceValidation(BaseTestCase):
                 collar_y_field="",
                 collar_z_field="",
                 collar_depth_field="",
-                dem_layer=None,
             )
         self.assertIn("must be positive", str(cm.exception))
 
@@ -132,25 +130,16 @@ class TestServiceValidation(BaseTestCase):
         mock_line_crs.authid.return_value = "EPSG:32718"
 
         with self.assertRaises(ValidationError) as cm:
-            self.drillhole_service.prepare_task_input(
-                line_geom=MagicMock(),
-                line_start=MagicMock(),
-                line_crs=mock_line_crs,
-                section_azimuth=400.0,  # Invalid > 360
+            self.drillhole_service._validate_prepare_task_params(
                 buffer_width=10.0,
+                section_azimuth=400.0,  # Invalid > 360
                 collar_layer=MagicMock(),
-                collar_id_field="id",
-                use_geometry=True,
-                collar_x_field="",
-                collar_y_field="",
-                collar_z_field="",
-                collar_depth_field="",
-                survey_layer=MagicMock(),
-                survey_fields={},
-                interval_layer=MagicMock(),
-                interval_fields={},
+                id_field="id",
+                use_geom=True,
+                x_field="",
+                y_field="",
             )
-        self.assertIn("must be between 0 and 360", str(cm.exception))
+        self.assertIn("Section azimuth must be between 0 and 360", str(cm.exception))
 
     def test_drillhole_service_validates_collar_fields(self):
         """DrillholeService should validate existence of ID field."""
@@ -161,18 +150,21 @@ class TestServiceValidation(BaseTestCase):
         line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
 
         with self.assertRaises(ValidationError) as cm:
-            self.drillhole_service.project_collars(
-                mock_layer,
-                line_geom,
-                QgsPointXY(0, 0),
-                MagicMock(),
-                10.0,
+            self.drillhole_service.prepare_task_input(
+                line_layer=self.mock_line_lyr,
+                buffer_width=10.0,
+                collar_layer=mock_layer,
                 collar_id_field="id_does_not_exist",
                 use_geometry=True,
                 collar_x_field="",
                 collar_y_field="",
-                collar_z_field="",
-                collar_depth_field="",
-                dem_layer=None,
+                collar_z_field="z",
+                collar_depth_field="depth",
+                survey_layer=MagicMock(),
+                survey_fields={},
+                interval_layer=MagicMock(),
+                interval_fields={},
             )
-        self.assertIn("Field 'id_does_not_exist' not found", str(cm.exception))
+        self.assertIn(
+            "Collar ID field 'id_does_not_exist' not found", str(cm.exception)
+        )

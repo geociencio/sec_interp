@@ -16,7 +16,17 @@ class OutcropProcessor:
         outcrop_lyr: QgsVectorLayer,
         outcrop_name_field: str,
     ) -> list[dict[str, Any]]:
-        """Extract outcrop features intersecting the line bounding box (detached)."""
+        """Extract outcrop features intersecting the line bounding box (detached).
+
+        Args:
+            line_geom: Section line geometry.
+            outcrop_lyr: Outcrop vector layer.
+            outcrop_name_field: Field for geological unit names.
+
+        Returns:
+            List of detached outcrop dictionaries.
+
+        """
         outcrop_data = []
         line_bbox = line_geom.boundingBox()
         request = QgsFeatureRequest().setFilterRect(line_bbox)

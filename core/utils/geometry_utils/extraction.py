@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Geometry extraction utilities."""
+
+from __future__ import annotations
 
 from qgis.core import QgsGeometry, QgsPointXY, QgsWkbTypes
 
@@ -50,11 +50,11 @@ def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
 def extract_lines_from_geometry(geometry: QgsGeometry) -> list[QgsGeometry]:
     """Extract individual LineString geometries from a (possibly Multi) geometry.
 
+    If the input is a MultiLineString, it decomposes it into its constituent
+    parts. If it's a single LineString, it returns it in a list.
+
     Args:
         geometry: Input geometry (LineString or MultiLineString).
-
-    Returns:
-        List of single LineString geometries.
 
     """
     geometries = []

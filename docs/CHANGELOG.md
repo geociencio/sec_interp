@@ -21,12 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Preparación 3D**: Introducción de `SpatialMeta` DTO para transporte unificado de datos 2D/3D.
 - **Interfaces**: Definición de `IRenderer3D` para futuros motores de renderizado.
 - **Testing**: Integración de `pytest`, `pytest-qt` y `pytest-mock` en el entorno de desarrollo.
+- **Documentación Core**: Cobertura masiva de docstrings (Google Style) en servicios, dominio y utilidades geométricas.
 
 ### Changed
 - **Refactorización Core**: Reducción masiva de la complejidad ciclomática (CC < 8) en 8 hotspots críticos.
 - **Modularización de Servicios**: Fragmentación de `DrillholeService` y `GeologyService` en componentes especializados (`DataFetcher`, `ProfileSampler`, `OutcropProcessor`).
 - **Desacoplamiento**: La lógica de proyección de trayectorias ahora es independiente de la UI de previsualización.
 - **Limpieza**: Consolidación y estandarización del sub-paquete `geometry_utils`.
+- **Mantenibilidad**: Corrección estructural de docstrings de módulo para cumplimiento estricto con PEP 257.
 
 ### Fixed
 - **Integridad**: Corregida la exportación de tipos de dominio en `__init__.py`.

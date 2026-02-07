@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Drillhole Utilities Module.
 
 Calculations for drillhole geometry and projection.
 """
+
+from __future__ import annotations
 
 import math
 from typing import Any
@@ -19,7 +19,23 @@ def calculate_drillhole_trajectory(
     densify_step: float = 1.0,
     total_depth: float = 0.0,
 ) -> list[tuple[float, float, float, float, float, float]]:
-    """Calculate 3D trajectory of a drillhole using survey data."""
+    """Calculate the 3D trajectory of a drillhole using survey data.
+
+    Calculates X, Y, Z positions along the hole using minimum curvature or
+    tangential approximation based on survey readings (depth, azimuth, dip).
+
+    Args:
+        collar_point: Starting point (QgsPointXY or tuple).
+        collar_z: Starting elevation.
+        survey_data: List of (depth, azimuth, inclination) tuples.
+        section_azimuth: Azimuth of the section line (for relative calcs).
+        densify_step: Distance between interpolated points in meters.
+        total_depth: Total depth of the hole.
+
+    Returns:
+        List of (depth, x, y, z, 0.0, 0.0) trajectory points.
+
+    """
     if not survey_data:
         if total_depth <= 0:
             return []
@@ -145,7 +161,21 @@ def project_trajectory_to_section(
     line_start: Any,  # Point2D or QgsPointXY
     distance_area: QgsDistanceArea,
 ) -> list[tuple[float, float, float, float, float, float, float, float]]:
-    """Project drillhole trajectory points onto section line."""
+    """Project drillhole trajectory points onto the section line.
+
+    Calculates the 2D projection (distance along section) and the offset
+    (distance from section) for each point in a 3D trajectory.
+
+    Args:
+        trajectory: List of 3D trajectory points (depth, x, y, z, ...).
+        line_geom: Section line geometry.
+        line_start: Reference start point for distance calculation.
+        distance_area: Distance calculation utility.
+
+    Returns:
+        List of (depth, x, y, z, dist_along, offset, proj_x, proj_y) tuples.
+
+    """
     projected = []
 
     # Ensure line_start is QgsPointXY

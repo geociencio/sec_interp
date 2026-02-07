@@ -94,7 +94,7 @@ class PreviewRenderer:
         self.has_structures = False
 
         # 2. Create data layers via internal orchestrator
-        data_layers = self._create_data_layers(
+        data_layers = self._collect_data_layers(
             topo_data,
             geol_data,
             struct_data,

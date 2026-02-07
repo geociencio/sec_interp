@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Drillhole Data Processing Service.
 
 This module provides services for processing and projecting drillhole data,
 including collar projection, trajectory calculation, and interval interpolation.
 """
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -31,7 +31,13 @@ logger = get_logger(__name__)
 
 
 class DrillholeService(IDrillholeService):
-    """Service for processing drillhole data."""
+    """Service for processing and orchestrating drillhole data.
+
+    This service handles the projection of collars onto a 2D section line,
+    the calculation of 3D trajectories from survey data, and the interpolation
+    of geological intervals along those trajectories. It leverages specialized
+    processors to maintain a clean separation of concerns.
+    """
 
     def __init__(self) -> None:
         """Initialize the service with specialized processors."""
@@ -54,7 +60,28 @@ class DrillholeService(IDrillholeService):
         collar_depth_field: str,
         pre_sampled_z: dict[Any, float] | None = None,
     ) -> list[tuple[Any, float, float, float, float]]:
-        """Project collar points onto section line using detached domain data."""
+        """Project collar points onto section line using detached domain data.
+
+        Args:
+            collar_data: List of detached collar dictionaries.
+            line_data: Section line geometry or feature.
+            distance_area: QgsDistanceArea for measurements.
+            buffer_width: Maximum distance from section for projection.
+            collar_id_field: Name of the ID field.
+            use_geometry: Whether to use geometric data for projection.
+            collar_x_field: Field name for X coordinate (if not using geometry).
+            collar_y_field: Field name for Y coordinate (if not using geometry).
+            collar_z_field: Field name for Z coordinate.
+            collar_depth_field: Field name for total depth.
+            pre_sampled_z: Optional dict of pre-sampled elevations.
+
+        Returns:
+            List of projection tuples: (hole_id, dist_along, z, offset, total_depth).
+
+        Raises:
+            ValidationError: If parameters are invalid.
+
+        """
         # Simple parameter validation
         if buffer_width <= 0:
             raise ValidationError(f"Buffer width must be positive, got {buffer_width}")
@@ -109,7 +136,32 @@ class DrillholeService(IDrillholeService):
         dem_layer: QgsRasterLayer | None = None,
         band_num: int = 1,
     ) -> DrillholeTaskInput:
-        """Prepare detached domain data for async processing."""
+        """Prepare detached domain data for asynchronous processing.
+
+        This method extracts and detaches all necessary data from QGIS layers
+        to create a serializable task input.
+
+        Args:
+            line_layer: The section line vector layer.
+            buffer_width: Projection buffer distance.
+            collar_layer: The drillhole collars vector layer.
+            collar_id_field: Name of the identifier field.
+            use_geometry: Whether to extract coordinates from geometry.
+            collar_x_field: Field name for X coordinate.
+            collar_y_field: Field name for Y coordinate.
+            collar_z_field: Field name for Z coordinate.
+            collar_depth_field: Field name for hole depth.
+            survey_layer: Vector layer containing survey data.
+            survey_fields: Mapping of logical fields to layer field names.
+            interval_layer: Vector layer containing interval/geology data.
+            interval_fields: Mapping of logical fields to layer field names.
+            dem_layer: Optional raster layer for elevation sampling.
+            band_num: Raster band number to sample.
+
+        Returns:
+            A DrillholeTaskInput object containing serialized data.
+
+        """
         line_geom, line_crs = self._extract_line_data(line_layer)
         line_start, section_azimuth = self._calculate_line_orientation(line_geom)
 
@@ -165,7 +217,18 @@ class DrillholeService(IDrillholeService):
     def _extract_line_data(
         self, line_layer: QgsVectorLayer
     ) -> tuple[QgsGeometry, QgsCoordinateReferenceSystem]:
-        """Extract line geometry and CRS from the layer."""
+        """Extract line geometry and CRS from the layer.
+
+        Args:
+            line_layer: The vector layer to extract data from.
+
+        Returns:
+            Tuple containing the line geometry and its CRS.
+
+        Raises:
+            DataMissingError: If the layer has no features.
+
+        """
         line_feat = next(line_layer.getFeatures(), None)
         if not line_feat:
             from sec_interp.core.exceptions import DataMissingError
@@ -174,7 +237,15 @@ class DrillholeService(IDrillholeService):
         return line_feat.geometry(), line_layer.crs()
 
     def _calculate_line_orientation(self, line_geom: QgsGeometry) -> tuple[QgsPointXY, float]:
-        """Calculate line start point and section azimuth."""
+        """Calculate line start point and section azimuth.
+
+        Args:
+            line_geom: The section line geometry.
+
+        Returns:
+            Tuple with (start_point, azimuth_in_degrees).
+
+        """
         line_start = (
             line_geom.asPolyline()[0]
             if not line_geom.isMultipart()
@@ -232,7 +303,16 @@ class DrillholeService(IDrillholeService):
                 raise ValidationError(f"Field '{y_field}' not found in collar layer.")
 
     def process_task_data(self, task_input: DrillholeTaskInput, feedback: Any | None = None) -> Any:
-        """Process drillholes using detached domain data (Thread-Safe)."""
+        """Process drillholes using detached domain data (Thread-Safe).
+
+        Args:
+            task_input: The serialized data for processing.
+            feedback: Optional QgsFeedback for progress and cancellation.
+
+        Returns:
+            Tuple (geol_data_all, drillhole_data_all) or None if canceled.
+
+        """
         # Reconstruct Objects
         line_crs = QgsCoordinateReferenceSystem(task_input.line_crs_authid)
         da = scu.create_distance_area(line_crs)
@@ -340,7 +420,29 @@ class DrillholeService(IDrillholeService):
         survey_fields: dict[str, str],
         interval_fields: dict[str, str],
     ) -> tuple[list[GeologySegment], list[tuple]]:
-        """Process drillhole interval data using detached structures."""
+        """Process drillhole interval data using detached structures.
+
+        Args:
+            collar_points: Projected collar results.
+            collar_data: Original detached collar data.
+            survey_data: Map of hole IDs to survey tuples.
+            interval_data: Map of hole IDs to interval tuples.
+            collar_id_field: ID field name.
+            use_geometry: Whether geometry was used.
+            collar_x_field: X field name.
+            collar_y_field: Y field name.
+            line_geom: Section geometry.
+            line_start: Section start point.
+            distance_area: Distance measurer.
+            buffer_width: Buffer width.
+            section_azimuth: Section orientation.
+            survey_fields: Survey field mapping.
+            interval_fields: Interval field mapping.
+
+        Returns:
+            Tuple of (geology_segments, drillhole_results).
+
+        """
         geol_data: list[GeologySegment] = []
         drillhole_data: list[tuple] = []
 
@@ -454,7 +556,25 @@ class DrillholeService(IDrillholeService):
         buffer_width: float,
         section_azimuth: float,
     ) -> tuple[list[GeologySegment], tuple]:
-        """Process a single drillhole's trajectory and intervals."""
+        """Process a single drillhole's trajectory and intervals.
+
+        Args:
+            hole_id: Unique identifier.
+            collar_point: 3D point in map coordinates.
+            collar_z: Collar elevation.
+            given_depth: Nominal hole depth.
+            survey_data: List of dip/azim readings.
+            intervals: List of geological intervals.
+            line_geom: Section geometry.
+            line_start: Section start point.
+            distance_area: Measurement tool.
+            buffer_width: Buffer distance.
+            section_azimuth: Section azimuth.
+
+        Returns:
+            Tuple (list_of_geology_segments, final_hole_tuple).
+
+        """
         # 1. Determine Final Depth
         final_depth = self.survey_processor.determine_final_depth(
             given_depth, survey_data, intervals
@@ -500,8 +620,9 @@ class DrillholeService(IDrillholeService):
                     z=p[3],
                     x_3d=p[1],
                     y_3d=p[2],
-                    norm_x=p[6],
-                    norm_y=p[7],
+                    x_proj=p[6],
+                    y_proj=p[7],
+                    # Optional normals calculation could go here if needed
                 )
             )
 
@@ -558,7 +679,15 @@ class DrillholeService(IDrillholeService):
             raise
 
     def generate_drillhole_data(self, params: Any) -> Any | None:
-        """Orchestrate the generation of drillhole traces and intervals."""
+        """Orchestrate the generation of drillhole traces and intervals.
+
+        Args:
+            params: Configuration object (PreviewParams).
+
+        Returns:
+            List of drillhole data tuples or None if failed.
+
+        """
         line_feat = next(params.line_layer.getFeatures(), None)
         if not line_feat:
             return None

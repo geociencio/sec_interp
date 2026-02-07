@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Data Transfer Objects for async task inputs."""
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any
@@ -14,6 +14,18 @@ class GeologyTaskInput:
 
     Contains all necessary data to process geological profiles
     without accessing QGIS layers directly.
+
+    Attributes:
+        line_geometry_wkt: Section geometry in WKT format.
+        line_start_x: X coordinate of section start vertex.
+        line_start_y: Y coordinate of section start vertex.
+        crs_authid: Authority ID for the CRS (e.g., 'EPSG:4326').
+        master_profile_data: Sampled topography elevations.
+        master_grid_dists: Grid distances for point sampling.
+        outcrop_data: Detached outcrop features (geometries and attrs).
+        outcrop_name_field: Name of the field containing unit info.
+        tolerance: Distance tolerance for intersection sampling.
+
     """
 
     line_geometry_wkt: DomainGeometry
@@ -33,6 +45,25 @@ class DrillholeTaskInput:
 
     Encapsulates all data required to project and process drillholes
     in a background thread without accessing QGIS API objects.
+
+    Attributes:
+        line_geometry_wkt: Section geometry in WKT.
+        line_start_x: Start vertex X.
+        line_start_y: Start vertex Y.
+        line_crs_authid: CRS of the section line.
+        section_azimuth: Azimuth orientation in degrees.
+        buffer_width: Maximum horizontal projection buffer.
+        collar_id_field: ID field name.
+        use_geometry: Whether to use geometric coordinates for collars.
+        collar_x_field: Fallback X field name.
+        collar_y_field: Fallback Y field name.
+        collar_z_field: Collar elevation field.
+        collar_depth_field: Total depth field.
+        collar_data: List of detached features.
+        survey_data: Dictionary mapping hole IDs to survey readings.
+        interval_data: Dictionary mapping hole IDs to geological logs.
+        pre_sampled_z: Dictionary of pre-calculated collar elevations.
+
     """
 
     # Section Line Info

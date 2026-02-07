@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Sampling Utilities Module.
 
 This module provides elevation sampling and profile context preparation tools.
 """
+
+from __future__ import annotations
 
 from qgis.core import (
     QgsDistanceArea,
@@ -125,14 +125,16 @@ def prepare_profile_context(
 
 
 def interpolate_elevation(topo_data: list, distance: float) -> float:
-    """Interpolate elevation at given distance.
+    """Interpolate elevation at a given distance along the topography profile.
+
+    Uses linear interpolation between the two nearest sampled points.
 
     Args:
         topo_data: List of (distance, elevation) tuples.
-        distance: Distance at which to interpolate elevation.
+        distance: Horizontal distance along the section.
 
     Returns:
-        The interpolated elevation value.
+        The interpolated elevation value (Z) at that distance.
 
     """
     if not topo_data:
@@ -165,15 +167,15 @@ def interpolate_elevation(topo_data: list, distance: float) -> float:
 def sample_point_elevation(
     raster_layer: QgsRasterLayer, point: QgsPointXY, band_number: int = 1
 ) -> float:
-    """Sample elevation from a raster layer at a specific point.
+    """Sample elevation from a raster layer at a specific 2D coordinate.
 
     Args:
         raster_layer: The DEM raster layer.
-        point: The coordinate point to sample.
+        point: The coordinate point (X, Y) to sample.
         band_number: The raster band index (default 1).
 
     Returns:
-        The sampled elevation value or 0.0 if sampling fails.
+        The sampled elevation value (Z) or 0.0 if the point is out of bounds.
 
     """
     if not raster_layer or not raster_layer.isValid():

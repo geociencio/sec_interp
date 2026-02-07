@@ -367,7 +367,13 @@ class PreviewLayerFactory:
                 )
                 continue
 
-            render_points = [QgsPointXY(p.dist_along, p.z * vert_exag) for p in trace_points]
+            render_points = []
+            for p in trace_points:
+                # Handle both SpatialMeta objects and legacy tuples
+                dist = getattr(p, "dist_along", p[0] if isinstance(p, list | tuple) else 0.0)
+                z = getattr(p, "z", p[1] if isinstance(p, list | tuple) else 0.0)
+                render_points.append(QgsPointXY(dist, z * vert_exag))
+
             line_geom = QgsGeometry.fromPolylineXY(render_points)
 
             feat = QgsFeature(layer.fields())
@@ -410,9 +416,9 @@ class PreviewLayerFactory:
 
         all_segments = []
         for hole_data in drillhole_data:
-            # segments are at index 2
-            segments = hole_data[2]
-            if segments:
+            # segments are usually the last element
+            segments = hole_data[-1] if len(hole_data) >= 3 else []
+            if segments and isinstance(segments, list):
                 all_segments.extend(segments)
 
         if not all_segments:

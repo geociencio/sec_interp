@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Performance metrics module for SecInterp plugin.
 
 This module provides tools for tracking performance and resource usage
 across the plugin's operations.
 """
+
+from __future__ import annotations
 
 import time
 from collections.abc import Callable, Generator
@@ -248,8 +248,13 @@ class PerformanceMonitor:
                 self.metrics[operation_name] = []
             self.metrics[operation_name].append(log_data)
 
-    def _get_memory_usage(self):
-        """Get current memory usage in MB."""
+    def _get_memory_usage(self) -> float:
+        """Get current process memory usage in MB.
+
+        Returns:
+            Current memory usage in megabytes.
+
+        """
         try:
             import psutil
 

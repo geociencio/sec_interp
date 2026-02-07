@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Complex Data Transfer Objects."""
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any
@@ -152,7 +152,12 @@ class PreviewParams:
                 raise ValidationError("Survey layer selected but some required fields are missing.")
 
     def _validate_interval_params(self) -> None:
-        """Validate drillhole interval parameters."""
+        """Validate drillhole interval parameters for consistency and field existence.
+
+        Raises:
+            ValidationError: If required interval fields are missing.
+
+        """
         if self.interval_layer and self.interval_layer.isValid():
             required = [
                 self.interval_id_field,
@@ -188,7 +193,10 @@ class PreviewResult:
     buffer_dist: float = 0.0
 
     def get_elevation_range(self) -> tuple[float, float]:
-        """Calculate the global minimum and maximum elevation across all layers.
+        """Calculate the global minimum and maximum elevation across all active layers.
+
+        Scans topography, geology, structural measurements, and drillhole data
+        to find the absolute vertical bounds.
 
         Returns:
             A tuple containing (min_elevation, max_elevation).
@@ -213,7 +221,12 @@ class PreviewResult:
         return [p[1] for segment in self.geol for p in segment.points]
 
     def _get_struct_elevations(self) -> list[float]:
-        """Extract elevations from structural data."""
+        """Extract elevations from structural data points.
+
+        Returns:
+            List of elevation values (Z).
+
+        """
         if not self.struct:
             return []
         return [m.elevation for m in self.struct]
@@ -237,6 +250,9 @@ class PreviewResult:
 
     def get_distance_range(self) -> tuple[float, float]:
         """Calculate the horizontal distance range based on topography.
+
+        Uses the first and last points of the sampled topography as the
+        authoritative horizontal bounds of the section.
 
         Returns:
             A tuple containing (min_distance, max_distance).

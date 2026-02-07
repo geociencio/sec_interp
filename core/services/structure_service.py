@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Structure Data Processing Service.
 
 This module handles the calculation of apparent dips and projection
 of structural measurements (planes, lines) onto the section plane.
 """
+
+from __future__ import annotations
 
 # /***************************************************************************
 #  SecInterp - StructureService
@@ -58,7 +58,19 @@ class StructureService(IStructureService):
         line_geom: QgsGeometry,
         buffer_m: float,
     ) -> list[dict[str, Any]]:
-        """Extract structural features within buffer into detached dictionaries."""
+        """Extract structural features within buffer into detached dictionaries.
+
+        Uses a spatial index filter via a buffer around the section line.
+
+        Args:
+            struct_lyr: Structural measurements vector layer.
+            line_geom: Section line geometry.
+            buffer_m: Buffer distance in meters.
+
+        Returns:
+            List of detached dictionaries containing WKT and attributes.
+
+        """
         buffer_geom = self._create_buffer_zone(line_geom, struct_lyr.crs(), buffer_m)
         filtered_features = self._filter_structures(struct_lyr, buffer_geom, struct_lyr.crs())
 
@@ -85,7 +97,27 @@ class StructureService(IStructureService):
         strike_field: str,
         band_number: int = 1,
     ) -> StructureData:
-        """Project detached structural measurements onto the section plane."""
+        """Project detached structural measurements onto the section plane.
+
+        Calculates stations (distance along section), elevations from DEM,
+        and apparent dips based on the section orientation.
+
+        Args:
+            line_geom: Section line geometry.
+            line_start: Section start point.
+            da: Distance calculator.
+            raster_lyr: Elevation raster layer.
+            struct_data: List of detached structural data.
+            buffer_m: Projection buffer (m).
+            line_az: Section azimuth in degrees.
+            dip_field: Field name for dip angle.
+            strike_field: Field name for strike azimuth.
+            band_number: Raster band for elevation.
+
+        Returns:
+            StructureData: Sorted list of projected StructureMeasurement objects.
+
+        """
         projected_structs = []
 
         for item in struct_data:
@@ -177,7 +209,26 @@ class StructureService(IStructureService):
         dip_field: str,
         strike_field: str,
     ) -> StructureMeasurement | None:
-        """Process a single structure from detached data."""
+        """Process a single structure from detached data.
+
+        Projects the measurement point onto the section line and calculates
+        geological properties.
+
+        Args:
+            data: Detached structure data.
+            line_geom: Section line geometry.
+            line_start: Start point.
+            da: Distance measurer.
+            raster_lyr: Elevation raster.
+            band_number: Band num.
+            line_az: Section azimuth.
+            dip_field: Dip field.
+            strike_field: Strike field.
+
+        Returns:
+            StructureMeasurement or None if projection fails.
+
+        """
         wkt = data.get("wkt")
         if not wkt:
             return None
@@ -224,7 +275,18 @@ class StructureService(IStructureService):
         dip_field: str,
         line_az: float,
     ) -> tuple[float, float, float] | None:
-        """Parse strike and dip attributes and calculate apparent dip."""
+        """Parse strike and dip attributes and calculate apparent dip.
+
+        Args:
+            attributes: Feature attributes dictionary.
+            strike_field: Name of the strike field.
+            dip_field: Name of the dip field.
+            line_az: Azimuth of the section line.
+
+        Returns:
+            Tuple (strike, dip, apparent_dip) or None if parsing fails.
+
+        """
         try:
             strike_raw = attributes.get(strike_field)
             dip_raw = attributes.get(dip_field)
