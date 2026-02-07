@@ -60,7 +60,8 @@ grep -r "from PyQt5" .
 ```bash
 # Verificar aumento de Quality Score
 uv run ai-ctx analyze --path .
-# Meta: > 60.0
+# Baseline actual: 58.5
+# Meta: > 60.0 (+1.5 ptos)
 ```
 
 ### 3. Estabilidad

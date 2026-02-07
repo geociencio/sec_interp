@@ -1,4 +1,14 @@
 ---
+## [2026-02-06] INICIO DE FASE v2.10.0: Calidad y QGIS 4.x
+- **Objetivo**: Elevar el Quality Score > 60 y resolver deuda crítica de PyQt5.
+- **Duración Estimada**: 1-2 días.
+- **Prioridades**:
+    1. Eliminación de importaciones directas de PyQt5 en `resources.py`.
+    2. Reducción de complejidad en `ExportService`.
+    3. Completar docstrings y type hints (meta 85% coverage).
+- **Estado Inicial**: 199 tests OK, Quality Score 58.5. Plan oficial en `docs/plans/implementation_plan_v2.10.0.md`.
+
+---
 ## [2026-02-05] Resumen: Evolución Arquitectónica (Cerebro Gen 3)
 - **Logro**: Implementada la Generación 3 del framework con Memoria Semántica, Auditoría Proactiva y Observabilidad.
 - **Cambios**:
