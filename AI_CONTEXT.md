@@ -105,57 +105,57 @@ No clear design patterns detected.
 graph TD
     init --> py
     classDef module fill:#f9f,stroke:#333,stroke-width:2px;
-    profile_interface
-    class profile_interface module;
-    init
-    class init module;
-    eda_template
-    class eda_template module;
-    init
-    class init module;
     algorithms
     class algorithms module;
-    init
-    class init module;
+    profile_interface
+    class profile_interface module;
+    enums
+    class enums module;
     entities
     class entities module;
     init
     class init module;
-    drillhole_interface
-    class drillhole_interface module;
-    structure_interface
-    class structure_interface module;
-    algorithm_template
-    class algorithm_template module;
-    dialog_template
-    class dialog_template module;
-    config
-    class config module;
-    enums
-    class enums module;
+    init
+    class init module;
     i_renderer_3d
     class i_renderer_3d module;
-    preview_interface
-    class preview_interface module;
-    reproduce_proxy
-    class reproduce_proxy module;
+    drillhole_interface
+    class drillhole_interface module;
     bootstrap
     class bootstrap module;
-    exceptions
-    class exceptions module;
     geology_interface
     class geology_interface module;
+    algorithm_template
+    class algorithm_template module;
+    exceptions
+    class exceptions module;
+    reproduce_proxy
+    class reproduce_proxy module;
+    spatial_meta
+    class spatial_meta module;
+    config
+    class config module;
+    init
+    class init module;
+    dialog_template
+    class dialog_template module;
+    eda_template
+    class eda_template module;
+    init
+    class init module;
+    preview_interface
+    class preview_interface module;
 ```
 
 ## 🔄 GIT AND EVOLUTION
 ### Top Hotspots:
 - `gui/main_dialog.py` (63 commits)
 - `gui/main_dialog_preview.py` (50 commits)
-- `gui/preview_renderer.py` (43 commits)
-- `core/services/geology_service.py` (37 commits)
-- `core/services/drillhole_service.py` (32 commits)
+- `gui/preview_renderer.py` (44 commits)
+- `core/services/geology_service.py` (38 commits)
+- `core/services/drillhole_service.py` (33 commits)
 ### Recent Churn (30 days):
-- Total lines changed: 183261
+- Total lines changed: 184026
 
 ## 🔑 PROJECT KEYWORDS
 - **Technologies**: .json, .py, .md, .txt, .csv, .qm, .ts, .log
