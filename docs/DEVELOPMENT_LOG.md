@@ -10,7 +10,7 @@
     - **Compatibilidad Dual**: Exportadores 3D y `PreviewLayerFactory` ahora soportan tanto formato nuevo (SpatialMeta) como legacy (tuplas).
 - **Métricas**:
     - **Quality Score**: 59.0 (+0.5 desde baseline 58.5).
-    - **Tests**: 110 tests pasando en contenedor Docker oficial de QGIS.
+    - **Tests**: 347 tests pasando en contenedor Docker oficial de QGIS (206 Core + 15 Exporters + 110 GUI + 16 Integration).
     - **Archivos**: 78 modificados (+1,401 líneas, -456 líneas).
 - **Commit**: `5a79417` - `refactor(core): massive CC reduction, 3D preparation, and core documentation`.
 - **Docs**: Ver [sesion_2026-02-06_phase_closure_v2.10.0.md](maintenance/sesion_2026-02-06_phase_closure_v2.10.0.md).

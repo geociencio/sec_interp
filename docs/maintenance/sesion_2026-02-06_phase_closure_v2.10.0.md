@@ -84,8 +84,12 @@ Durante la validación en Docker, se detectaron **3 regresiones críticas** intr
 ### 5. Validación Técnica Rigurosa
 
 **Tests en Docker**:
-- **Suite Completa**: Unit, GUI, Exporters, Integration.
-- **Resultado Final**: **110 tests pasando** (16 integration + 94 otros).
+- **Suite Completa**: Core, Exporters, GUI, Integration.
+- **Resultado Final**: **347 tests pasando**
+  - Core: 206 tests
+  - Exporters: 15 tests
+  - GUI: 110 tests
+  - Integration: 16 tests
 - **Comando**: `make docker-test` (contenedor oficial QGIS).
 
 **Iteraciones de Corrección**:
@@ -145,7 +149,7 @@ Durante la validación en Docker, se detectaron **3 regresiones críticas** intr
 
 **Verificación Rápida**:
 ```bash
-make docker-test  # Debe pasar 110 tests
+make docker-test  # Debe pasar 347 tests
 ```
 
 ---
