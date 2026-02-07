@@ -125,48 +125,57 @@ def validate_reasonable_ranges(values: dict[str, Any]) -> list[str]:
 
     """
     warnings = []
-
-    # Vertical exaggeration
-    try:
-        vert_exag = float(values.get("vert_exag", 1.0))
-        if vert_exag > 10:
-            warnings.append(
-                f"⚠ Vertical exaggeration ({vert_exag}) is very high. "
-                f"Values > 10 may distort the profile significantly."
-            )
-        elif vert_exag < 0.1:
-            warnings.append(
-                f"⚠ Vertical exaggeration ({vert_exag}) is very low. Profile may appear flattened."
-            )
-        elif vert_exag <= 0:
-            warnings.append(f"❌ Vertical exaggeration ({vert_exag}) must be positive.")
-    except (ValueError, TypeError):
-        pass
-
-    # Buffer distance
-    try:
-        buffer = float(values.get("buffer", 0))
-        if buffer > 5000:
-            warnings.append(
-                f"⚠ Buffer distance ({buffer}m) is very large. "
-                f"This may include distant structures not relevant to the section."
-            )
-        elif buffer < 0:
-            warnings.append(f"❌ Buffer distance ({buffer}m) cannot be negative.")
-    except (ValueError, TypeError):
-        pass
-
-    # Dip scale
-    try:
-        dip_scale = float(values.get("dip_scale", 1.0))
-        if dip_scale > 5:
-            warnings.append(
-                f"⚠ Dip scale ({dip_scale}) is very high. "
-                f"Dip symbols may overlap and obscure the profile."
-            )
-        elif dip_scale <= 0:
-            warnings.append(f"❌ Dip scale ({dip_scale}) must be positive.")
-    except (ValueError, TypeError):
-        pass
-
+    warnings.extend(_validate_vert_exag(values.get("vert_exag", 1.0)))
+    warnings.extend(_validate_buffer(values.get("buffer", 0)))
+    warnings.extend(_validate_dip_scale(values.get("dip_scale", 1.0)))
     return warnings
+
+
+def _validate_vert_exag(value: Any) -> list[str]:
+    """Validate vertical exaggeration range."""
+    try:
+        val = float(value)
+        if val > 10:
+            return [
+                f"⚠ Vertical exaggeration ({val}) is very high. "
+                f"Values > 10 may distort the profile significantly."
+            ]
+        if val < 0.1:
+            return [f"⚠ Vertical exaggeration ({val}) is very low. Profile may appear flattened."]
+        if val <= 0:
+            return [f"❌ Vertical exaggeration ({val}) must be positive."]
+    except (ValueError, TypeError):
+        pass
+    return []
+
+
+def _validate_buffer(value: Any) -> list[str]:
+    """Validate search buffer range."""
+    try:
+        val = float(value)
+        if val > 5000:
+            return [
+                f"⚠ Buffer distance ({val}m) is very large. "
+                f"This may include distant structures not relevant to the section."
+            ]
+        if val < 0:
+            return [f"❌ Buffer distance ({val}m) cannot be negative."]
+    except (ValueError, TypeError):
+        pass
+    return []
+
+
+def _validate_dip_scale(value: Any) -> list[str]:
+    """Validate dip symbol scale range."""
+    try:
+        val = float(value)
+        if val > 5:
+            return [
+                f"⚠ Dip scale ({val}) is very high. "
+                f"Dip symbols may overlap and obscure the profile."
+            ]
+        if val <= 0:
+            return [f"❌ Dip scale ({val}) must be positive."]
+    except (ValueError, TypeError):
+        pass
+    return []

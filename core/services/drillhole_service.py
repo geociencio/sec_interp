@@ -11,8 +11,6 @@ from typing import Any
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
-    QgsFeature,
-    QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
     QgsRasterLayer,
@@ -20,10 +18,11 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.domain import DrillholeTaskInput, GeologySegment
+from sec_interp.core.domain import DrillholeTaskInput, GeologySegment, SpatialMeta
 from sec_interp.core.exceptions import SecInterpError, ValidationError
 from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
 from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
+from sec_interp.core.services.drillhole.data_fetcher import DataFetcher
 from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
 from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
 from sec_interp.logger_config import get_logger
@@ -39,6 +38,7 @@ class DrillholeService(IDrillholeService):
         self.collar_processor = CollarProcessor()
         self.survey_processor = SurveyProcessor()
         self.interval_processor = IntervalProcessor()
+        self.data_fetcher = DataFetcher()
 
     def project_collars(
         self,
@@ -138,8 +138,10 @@ class DrillholeService(IDrillholeService):
         )
 
         # 2. Bulk Fetch Child Data (Sync)
-        survey_map = self._fetch_bulk_data_detached(survey_layer, collar_ids, survey_fields)
-        interval_map = self._fetch_bulk_data_detached(interval_layer, collar_ids, interval_fields)
+        survey_map = self.data_fetcher.fetch_bulk_data(survey_layer, collar_ids, survey_fields)
+        interval_map = self.data_fetcher.fetch_bulk_data(
+            interval_layer, collar_ids, interval_fields
+        )
 
         return DrillholeTaskInput(
             line_geometry_wkt=line_geom.asWkt(),
@@ -432,63 +434,11 @@ class DrillholeService(IDrillholeService):
                 drillhole_data,
             )
 
-    def _fetch_bulk_data(
-        self, layer: QgsVectorLayer, hole_ids: set[Any], fields: dict[str, str]
-    ) -> dict[Any, list[tuple[Any, ...]]]:
-        """Fetch data for multiple holes in a single pass."""
-        if not self._validate_bulk_fetch_fields(layer, fields):
-            return {}
-
-        result_map: dict[Any, list[tuple]] = {}
-        if not hole_ids:
-            return {}
-
-        id_f = fields["id"]
-        is_survey = "depth" in fields
-
-        ids_str = ", ".join([f"'{hid!s}'" for hid in hole_ids])
-        request = QgsFeatureRequest().setFilterExpression(f'"{id_f}" IN ({ids_str})')
-
-        for feat in layer.getFeatures(request):
-            hole_id = feat[id_f]
-            data = self._extract_data_tuple(feat, fields, is_survey)
-            if data:
-                result_map.setdefault(hole_id, []).append(data)
-
-        # Sort surveys by depth
-        if is_survey:
-            for h_id in result_map:
-                result_map[h_id].sort(key=lambda x: x[0])
-
-        return result_map
-
-    def _validate_bulk_fetch_fields(self, layer: QgsVectorLayer, fields: dict[str, str]) -> bool:
-        """Validate fields for bulk fetching."""
-        if not layer or not layer.isValid():
-            return False
-
-        id_f = fields.get("id")
-        if not id_f or layer.fields().indexFromName(id_f) == -1:
-            return False
-
-        is_survey = "depth" in fields
-        required = ["depth", "azim", "incl"] if is_survey else ["from", "to", "lith"]
-
-        for field_key in required:
-            f_name = fields.get(field_key)
-            if not f_name or layer.fields().indexFromName(f_name) == -1:
-                return False
-
-        return True
-
     def _fetch_bulk_data_detached(
         self, layer: QgsVectorLayer, hole_ids: set[Any], fields: dict[str, str]
     ) -> dict[Any, list[tuple]]:
         """Fetch data into pure python structures (no QgsFeature dependency)."""
-        # This is essentially the same as _fetch_bulk_data but guarantees primitive types
-        # in the returned list, which _extract_data_tuple already does.
-        # So we can reuse the logic but ensures it runs on Main Thread in prepare()
-        return self._fetch_bulk_data(layer, hole_ids, fields)
+        return self.data_fetcher.fetch_bulk_data(layer, hole_ids, fields)
 
     def _process_single_hole(
         self,
@@ -538,16 +488,26 @@ class DrillholeService(IDrillholeService):
         projected_traj: list[tuple],
         hole_geol_data: list[GeologySegment],
     ) -> tuple:
-        """Create the final result tuple for a drillhole."""
-        traj_points_2d = [(p[4], p[3]) for p in projected_traj]
-        traj_points_3d = [(p[1], p[2], p[3]) for p in projected_traj]
-        traj_points_3d_proj = [(p[6], p[7], p[3]) for p in projected_traj]
+        """Create the final result tuple for a drillhole using SpatialMeta."""
+        # projected_traj elements: (depth, x, y, z, dist_along, offset, nx, ny)
+        spatial_points = []
+        for p in projected_traj:
+            spatial_points.append(
+                SpatialMeta(
+                    hole_id=str(hole_id),
+                    dist_along=p[4],
+                    offset=p[5],
+                    z=p[3],
+                    x_3d=p[1],
+                    y_3d=p[2],
+                    norm_x=p[6],
+                    norm_y=p[7],
+                )
+            )
 
         return (
             hole_id,
-            traj_points_2d,
-            traj_points_3d,
-            traj_points_3d_proj,
+            spatial_points,
             hole_geol_data,
         )
 
@@ -597,22 +557,96 @@ class DrillholeService(IDrillholeService):
             logger.exception(f"Critical unexpected error processing hole {hole_id}")
             raise
 
-    def _extract_data_tuple(
-        self, feat: QgsFeature, fields: dict[str, str], is_survey: bool
-    ) -> tuple[float, float, Any] | None:
-        """Extract a data tuple from a feature based on its role."""
-        try:
-            if is_survey:
-                return (
-                    float(feat[fields["depth"]]),
-                    float(feat[fields["azim"]]),
-                    float(feat[fields["incl"]]),
-                )
-            else:
-                return (
-                    float(feat[fields["from"]]),
-                    float(feat[fields["to"]]),
-                    str(feat[fields["lith"]]),
-                )
-        except (ValueError, TypeError, KeyError):
+    def generate_drillhole_data(self, params: Any) -> Any | None:
+        """Orchestrate the generation of drillhole traces and intervals."""
+        line_feat = next(params.line_layer.getFeatures(), None)
+        if not line_feat:
             return None
+
+        section_geom = line_feat.geometry()
+        from sec_interp.core import utils as scu
+
+        vertices = scu.get_line_vertices(section_geom)
+        if not vertices:
+            return None
+        section_start = vertices[0]
+        distance_area = scu.create_distance_area(params.line_layer.crs())
+
+        # 1. Detach Collar Data
+        collar_ids, collar_data, pre_sampled_z = self.collar_processor.detach_features(
+            params.collar_layer,
+            section_geom,
+            params.buffer_dist,
+            params.collar_id_field,
+            params.collar_use_geometry,
+            params.collar_x_field,
+            params.collar_y_field,
+            params.collar_z_field,
+            params.raster_layer,
+            target_crs=params.line_layer.crs(),
+        )
+
+        if not collar_data:
+            return None
+
+        # 2. Project Collars (Detached)
+        collars_projected = self.project_collars(
+            collar_data=collar_data,
+            line_data=section_geom,
+            distance_area=distance_area,
+            buffer_width=params.buffer_dist,
+            collar_id_field=params.collar_id_field,
+            use_geometry=params.collar_use_geometry,
+            collar_x_field=params.collar_x_field,
+            collar_y_field=params.collar_y_field,
+            collar_z_field=params.collar_z_field,
+            collar_depth_field=params.collar_depth_field,
+            pre_sampled_z=pre_sampled_z,
+        )
+
+        if not (collars_projected and params.survey_layer and params.interval_layer):
+            return None
+
+        # 3. Extract Detached Data for Child Layers
+        survey_map = self.data_fetcher.fetch_bulk_data(
+            params.survey_layer,
+            collar_ids,
+            {
+                "id": params.survey_id_field,
+                "depth": params.survey_depth_field,
+                "azim": params.survey_azim_field,
+                "incl": params.survey_incl_field,
+            },
+        )
+        interval_map = self.data_fetcher.fetch_bulk_data(
+            params.interval_layer,
+            collar_ids,
+            {
+                "id": params.interval_id_field,
+                "from": params.interval_from_field,
+                "to": params.interval_to_field,
+                "lith": params.interval_lith_field,
+            },
+        )
+
+        section_azimuth = scu.calculate_line_azimuth(section_geom)
+
+        # 4. Process Intervals (Detached)
+        _, drillhole_data = self.process_intervals(
+            collar_points=collars_projected,
+            collar_data=collar_data,
+            survey_data=survey_map,
+            interval_data=interval_map,
+            collar_id_field=params.collar_id_field,
+            use_geometry=params.collar_use_geometry,
+            collar_x_field=params.collar_x_field,
+            collar_y_field=params.collar_y_field,
+            line_geom=section_geom,
+            line_start=section_start,
+            distance_area=distance_area,
+            buffer_width=params.buffer_dist,
+            section_azimuth=section_azimuth,
+            survey_fields={},
+            interval_fields={},
+        )
+        return drillhole_data

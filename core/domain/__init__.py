@@ -32,6 +32,7 @@ from .entities import (
     ValidationResult,
 )
 from .enums import FieldType
+from .spatial_meta import SpatialMeta
 from .task_inputs import (
     DrillholeTaskInput,
     GeologyTaskInput,
@@ -57,6 +58,7 @@ __all__ = [
     "ProfileData",
     "ProfilePoints",
     "SettingsDict",
+    "SpatialMeta",
     "StructureData",
     "StructureMeasurement",
     "StructurePoints",

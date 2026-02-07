@@ -12,7 +12,7 @@ from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 
 
 def calculate_drillhole_trajectory(
-    collar_point: Any,  # Expected tuple[float, float] or QgsPointXY
+    collar_point: Any,
     collar_z: float,
     survey_data: list[tuple[float, float, float]],
     section_azimuth: float,
@@ -21,111 +21,122 @@ def calculate_drillhole_trajectory(
 ) -> list[tuple[float, float, float, float, float, float]]:
     """Calculate 3D trajectory of a drillhole using survey data."""
     if not survey_data:
-        if total_depth > 0:
-            # No survey but depth provided: assume vertical hole
-            survey_data = [(0.0, 0.0, -90.0)]
-        else:
+        if total_depth <= 0:
             return []
+        survey_data = [(0.0, 0.0, -90.0)]
 
     trajectory = []
-
-    # Start at collar
     try:
-        # Support both QgsPointXY and tuple
         x = collar_point.x() if hasattr(collar_point, "x") else collar_point[0]
         y = collar_point.y() if hasattr(collar_point, "y") else collar_point[1]
     except (AttributeError, TypeError, IndexError):
         x, y = 0.0, 0.0
+
     z = collar_z
     prev_depth = 0.0
-
-    # Add collar point
     trajectory.append((0.0, x, y, z, 0.0, 0.0))
 
-    last_azimuth = 0.0
-    last_inclination = 0.0
+    last_azim = 0.0
+    last_incl = 0.0
     last_survey_depth = 0.0
 
     for depth, azimuth, inclination in survey_data:
-        # Keep track of last orientation for extrapolation
-        last_azimuth = azimuth
-        last_inclination = inclination
-        last_survey_depth = depth
-
+        last_azim, last_incl, last_survey_depth = azimuth, inclination, depth
         if depth <= prev_depth:
             continue
 
-        # Calculate interval
         interval = depth - prev_depth
+        total_dx, total_dy, total_dz = _calculate_segment_delta(interval, azimuth, inclination)
 
-        # Convert angles to radians
-        azim_rad = math.radians(azimuth)
+        trajectory.extend(
+            _calculate_segment_points(
+                x,
+                y,
+                z,
+                prev_depth,
+                total_dx,
+                total_dy,
+                total_dz,
+                interval,
+                densify_step,
+            )
+        )
 
-        # Inclination convention: -90° = vertical down, 0° = horizontal
-        # We need to convert to standard convention where 0° = vertical down
-        # Standard: 0° down, 90° horizontal
-        standard_incl_rad = math.radians(90 + inclination)
-
-        # Vertical component (negative because Z decreases downward)
-        total_dz = -interval * math.cos(standard_incl_rad)
-
-        # Horizontal components (East, North)
-        total_dx = interval * math.sin(standard_incl_rad) * math.sin(azim_rad)
-        total_dy = interval * math.sin(standard_incl_rad) * math.cos(azim_rad)
-
-        # Densify: generate intermediate points along this segment
-        num_steps = max(1, int(interval / densify_step))
-
-        for i in range(1, num_steps + 1):
-            # Calculate fraction of segment
-            fraction = i / num_steps
-
-            # Interpolate depth
-            interp_depth = prev_depth + interval * fraction
-
-            # Interpolate position (linear interpolation along segment)
-            interp_x = x + total_dx * fraction
-            interp_y = y + total_dy * fraction
-            interp_z = z + total_dz * fraction
-
-            # Add interpolated point
-            trajectory.append((interp_depth, interp_x, interp_y, interp_z, 0.0, 0.0))
-
-        # Update position to end of segment
-        x += total_dx
-        y += total_dy
-        z += total_dz
-
+        x, y, z = x + total_dx, y + total_dy, z + total_dz
         prev_depth = depth
 
-    # Extrapolate if total_depth is provided and greater than last survey
     if total_depth > last_survey_depth:
-        # Calculate interval
-        interval = total_depth - last_survey_depth
-
-        # Use last known orientation
-        azim_rad = math.radians(last_azimuth)
-        standard_incl_rad = math.radians(90 + last_inclination)
-
-        # Vertical component
-        total_dz = -interval * math.cos(standard_incl_rad)
-
-        # Horizontal components
-        total_dx = interval * math.sin(standard_incl_rad) * math.sin(azim_rad)
-        total_dy = interval * math.sin(standard_incl_rad) * math.cos(azim_rad)
-
-        # Densify extrapolation
-        num_steps = max(1, int(interval / densify_step))
-
-        for i in range(1, num_steps + 1):
-            fraction = i / num_steps
-            interp_depth = last_survey_depth + interval * fraction
-            interp_x = x + total_dx * fraction
-            interp_y = y + total_dy * fraction
-            interp_z = z + total_dz * fraction
-            trajectory.append((interp_depth, interp_x, interp_y, interp_z, 0.0, 0.0))
+        trajectory.extend(
+            _extrapolate_trajectory(
+                x,
+                y,
+                z,
+                last_survey_depth,
+                total_depth,
+                last_azim,
+                last_incl,
+                densify_step,
+            )
+        )
 
     return trajectory
+
+
+def _calculate_segment_delta(
+    interval: float, azimuth: float, inclination: float
+) -> tuple[float, float, float]:
+    """Calculate X, Y, Z deltas for a survey segment."""
+    azim_rad = math.radians(azimuth)
+    standard_incl_rad = math.radians(90 + inclination)
+    dz = -interval * math.cos(standard_incl_rad)
+    dx = interval * math.sin(standard_incl_rad) * math.sin(azim_rad)
+    dy = interval * math.sin(standard_incl_rad) * math.cos(azim_rad)
+    return dx, dy, dz
+
+
+def _calculate_segment_points(
+    x: float,
+    y: float,
+    z: float,
+    prev_depth: float,
+    dx: float,
+    dy: float,
+    dz: float,
+    interval: float,
+    step: float,
+) -> list[tuple[float, float, float, float, float, float]]:
+    """Generate densified points for a single segment."""
+    points = []
+    num_steps = max(1, int(interval / step))
+    for i in range(1, num_steps + 1):
+        frac = i / num_steps
+        points.append(
+            (
+                prev_depth + interval * frac,
+                x + dx * frac,
+                y + dy * frac,
+                z + dz * frac,
+                0.0,
+                0.0,
+            )
+        )
+    return points
+
+
+def _extrapolate_trajectory(
+    x: float,
+    y: float,
+    z: float,
+    last_depth: float,
+    total_depth: float,
+    azim: float,
+    incl: float,
+    step: float,
+) -> list[tuple[float, float, float, float, float, float]]:
+    """Extrapolate trajectory from last known survey point."""
+    interval = total_depth - last_depth
+    dx, dy, dz = _calculate_segment_delta(interval, azim, incl)
+    return _calculate_segment_points(x, y, z, last_depth, dx, dy, dz, interval, step)
 
 
 def project_trajectory_to_section(

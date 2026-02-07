@@ -100,7 +100,7 @@ class TestDrillholeService(BaseTestCase):
         survey_layer.getFeatures.return_value = [feat]
 
         fields = {"id": "hole_id", "depth": "depth", "azim": "azim", "incl": "incl"}
-        res = self.service._fetch_bulk_data(survey_layer, {"DH01"}, fields)
+        res = self.service.data_fetcher.fetch_bulk_data(survey_layer, {"DH01"}, fields)
 
         self.assertIn("DH01", res)
         self.assertEqual(len(res["DH01"]), 1)
@@ -165,3 +165,5 @@ class TestDrillholeService(BaseTestCase):
 
         self.assertEqual(len(dh), 1)
         self.assertEqual(dh[0][0], "DH01")
+        # dh[0] is (hole_id, spatial_points, segments)
+        self.assertEqual(len(dh[0]), 3)

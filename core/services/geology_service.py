@@ -30,7 +30,6 @@ from typing import Any
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
-    QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
     QgsRasterLayer,
@@ -42,6 +41,8 @@ from sec_interp.core.domain import GeologyData, GeologySegment, GeologyTaskInput
 from sec_interp.core.exceptions import DataMissingError, GeometryError
 from sec_interp.core.interfaces.geology_interface import IGeologyService
 from sec_interp.core.performance_metrics import performance_monitor
+from sec_interp.core.services.geology.outcrop_processor import OutcropProcessor
+from sec_interp.core.services.geology.profile_sampler import ProfileSampler
 from sec_interp.core.utils.geometry_utils.extraction import extract_lines_from_geometry
 from sec_interp.core.utils.geometry_utils.processing import (
     calculate_segment_range,
@@ -53,11 +54,12 @@ logger = get_logger(__name__)
 
 
 class GeologyService(IGeologyService):
-    """Service for generating geological profiles.
+    """Service for generating geological profiles."""
 
-    This service handles the extraction of geological unit intersections
-    along a cross-section line.
-    """
+    def __init__(self) -> None:
+        """Initialize service with specialized processors."""
+        self.profile_sampler = ProfileSampler()
+        self.outcrop_processor = OutcropProcessor()
 
     @performance_monitor
     def generate_geological_profile(
@@ -110,7 +112,7 @@ class GeologyService(IGeologyService):
         da = scu.create_distance_area(crs)
 
         # 1. Generate Master Profile Data (needs Raster access)
-        master_profile_data, master_grid_dists_raw = self._generate_master_profile_data(
+        master_profile_data, master_grid_dists_raw = self.profile_sampler.generate_master_profile(
             line_geom, raster_lyr, band_number, da, line_start
         )
 
@@ -118,8 +120,9 @@ class GeologyService(IGeologyService):
         master_grid_dists = [(d, (pt.x(), pt.y()), e) for d, pt, e in master_grid_dists_raw]
 
         # 2. Extract Outcrop Data (needs Vector access)
-        # This already returns detached dicts with WKT
-        outcrop_data = self._extract_outcrop_data(line_geom, outcrop_lyr, outcrop_name_field)
+        outcrop_data = self.outcrop_processor.extract_outcrop_data(
+            line_geom, outcrop_lyr, outcrop_name_field
+        )
 
         return GeologyTaskInput(
             line_geometry_wkt=line_geom.asWkt(),
@@ -168,42 +171,6 @@ class GeologyService(IGeologyService):
         idx = outcrop_lyr.fields().indexFromName(outcrop_name_field)
         if idx == -1:
             raise ValidationError(f"Field '{outcrop_name_field}' not found in outcrop layer.")
-
-    def _extract_outcrop_data(
-        self,
-        line_geom: QgsGeometry,
-        outcrop_lyr: QgsVectorLayer,
-        outcrop_name_field: str,
-    ) -> list[dict[str, Any]]:
-        """Extract outcrop features intersecting the line bounding box.
-
-        Returns a list of dictionaries with WKT geometry and attributes,
-        completely detached from QGIS objects.
-        """
-        outcrop_data = []
-        line_bbox = line_geom.boundingBox()
-        request = QgsFeatureRequest().setFilterRect(line_bbox)
-
-        for feature in outcrop_lyr.getFeatures(request):
-            if not feature.hasGeometry():
-                continue
-
-            # Copy attributes and geometry to detached structures
-            attrs = dict(zip(feature.fields().names(), feature.attributes(), strict=False))
-            try:
-                # Ensure we handle potential attribute read errors safely
-                unit_name = str(feature[outcrop_name_field])
-            except KeyError:
-                unit_name = "Unknown"
-
-            outcrop_data.append(
-                {
-                    "wkt": feature.geometry().asWkt(),  # Store as WKT immediately
-                    "attrs": attrs,
-                    "unit_name": unit_name,
-                }
-            )
-        return outcrop_data
 
     def process_task_data(
         self, task_input: GeologyTaskInput, feedback: Any | None = None
@@ -321,60 +288,6 @@ class GeologyService(IGeologyService):
             attributes=attributes,
             points=[(float(d), float(e)) for d, e in segment_points],
         )
-
-    def _generate_master_profile_data(
-        self,
-        line_geom: QgsGeometry,
-        raster_lyr: QgsRasterLayer,
-        band_number: int,
-        da: QgsDistanceArea,
-        line_start: QgsPointXY,
-    ) -> tuple[list[tuple[float, float]], list[tuple[float, QgsPointXY, float]]]:
-        """Generate the master profile data (grid points and elevations)."""
-        # 1. Generate densified grid points
-        grid_points = self._get_densified_grid_points(line_geom, raster_lyr)
-
-        # 2. Sample elevations at grid points
-        return self._sample_elevation_at_points(
-            grid_points, raster_lyr, band_number, da, line_start
-        )
-
-    def _get_densified_grid_points(
-        self, line_geom: QgsGeometry, raster_lyr: QgsRasterLayer
-    ) -> list[QgsPointXY]:
-        """Densify line and extract vertices."""
-        try:
-            interval = raster_lyr.rasterUnitsPerPixelX()
-            master_densified = scu.densify_line_by_interval(line_geom, interval)
-            return scu.get_line_vertices(master_densified)
-        except (AttributeError, ValueError, TypeError) as e:
-            logger.warning(f"Failed to densify line, using original vertices: {e}")
-            return scu.get_line_vertices(line_geom)
-
-    def _sample_elevation_at_points(
-        self,
-        points: list[QgsPointXY],
-        raster_lyr: QgsRasterLayer,
-        band_number: int,
-        da: QgsDistanceArea,
-        line_start: QgsPointXY,
-    ) -> tuple[list[tuple[float, float]], list[tuple[float, QgsPointXY, float]]]:
-        """Sample elevation from raster at provided points."""
-        master_profile_data = []
-        master_grid_dists = []
-        current_dist = 0.0
-
-        for i, pt in enumerate(points):
-            if i > 0:
-                current_dist += da.measureLine(points[i - 1], pt)
-
-            val, ok = raster_lyr.dataProvider().sample(pt, band_number)
-            elev = val if ok else 0.0
-
-            master_profile_data.append((current_dist, elev))
-            master_grid_dists.append((current_dist, pt, elev))
-
-        return master_profile_data, master_grid_dists
 
     def _extract_line_info(self, line_lyr: QgsVectorLayer) -> tuple[QgsGeometry, QgsPointXY]:
         """Extract geometry and start point from the line layer.

@@ -1,83 +1,83 @@
-# Plan de Implementación - Fase v2.10.0 (Calidad y QGIS 4.x)
+# Plan de Implementación - Fase v2.10.0 (Calidad y Preparación 3D)
 
 ## Objetivo General
-Elevar el **Quality Score** del proyecto por encima de 60 (+6 ptos) y preparar la base de código para la migración a **QGIS 4.x**, resolviendo deuda técnica crítica heredada de la fase v2.9.0.
-
----
-
-## User Review Required
-
-> [!IMPORTANT]
-> **Compatibilidad QGIS 4.x**
->
-> Se eliminará el soporte heredado para PyQt5 directo. Todos los imports se estandarizarán a `qgis.PyQt`. Esto es un cambio interno transparente pero crítico para el futuro.
+Realizar una **reducción masiva de Complejidad Ciclomática (CC)** en los módulos core (`services`, `exporters`, `utils`) para estabilizar el sistema y preparar la arquitectura para futuras implementaciones de **renderizado y preview 3D nativo**.
 
 ---
 
 ## Estructura de Objetivos
 
-### Objetivo 1: Eliminación de Deuda Técnica Crítica (QGIS 4.x)
+### Objetivo 1: Reducción Masiva de Complejidad (CC >= 9)
 
 #### Contexto
-La importación directa de `PyQt5` en `resources.py` bloqueará la ejecución en QGIS 4.x (que usará Qt6).
+Se han identificado 8 métodos críticos con complejidad ciclomática superior a 9 que degradan la mantenibilidad.
 
-#### Cambios
-##### [MODIFY] [resources.py](file:///home/jmbernales/qgispluginsdev/sec_interp/resources/resources.py)
-- Reemplazar `from PyQt5 import QtCore` por `from qgis.PyQt import QtCore`.
-- Actualizar script de generación de recursos si es necesario.
+#### Targets Específicos
+- **`core/domain/dtos.py`**: `get_elevation_range` (CC=12)
+- **`core/validation/validation_helpers.py`**: `validate_reasonable_ranges` (CC=11)
+- **`exporters/drillhole_3d_exporter.py`**: `export` (CC=10)
+- **`gui/main_dialog_export.py`**: `export_preview` (CC=10)
+- **`gui/preview_renderer.py`**: `render` (CC=10)
+- **`core/services/export_service.py`**: `export_data` (CC=9)
+- **`core/utils/drillhole.py`**: `calculate_drillhole_trajectory` (CC=9)
+- **`core/validation/layer_validator.py`**: `validate_structural_requirements` (CC=9)
 
-### Objetivo 2: Reducción de Complejidad Ciclomática (ExportService)
+#### Cambios Propuestos
+- Fragmentar métodos monolíticos aplicando el principio de Responsabilidad Única (SRP).
+- Extraer validaciones y transformaciones geométricas a utilerías puras.
+- Implementar el patrón **Command** o **Strategy** en los exporters para simplificar la toma de decisiones.
+
+### Objetivo 2: Preparación Arquitectónica para Preview 3D
 
 #### Contexto
-`ExportService` contiene métodos 3D con alta complejidad ciclomática (>10) que dificultan el mantenimiento y bajan el Quality Score.
+El sistema actual está optimizado para 2D. Se requiere desacoplar aún más la lógica de proyección para permitir vistas 3D reales.
 
-#### Cambios
-##### [MODIFY] [export_service.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/services/export_service.py)
-- Extraer lógica de exportación 3D a clases helper dedicadas.
-- Aplicar patrón Strategy para formatos de exportación complejos.
+#### Cambios Propuestos
+- **Core Entities**: Extender `DomainGeometry` para soportar metadatos de rendering 3D.
+- **Interfaces**: Definir contratos para un futuro `Preview3DEngine`.
+- **Decoupling**: Asegurar que ningún servicio core dependa de widgets 2D de QGIS.
 
-### Objetivo 3: Optimizaciones de Rendimiento y Calidad
+### Objetivo 3: Optimización y Documentación (Calidad > 60)
 
 #### Contexto
-`ai-ctx` ha identificado 24 oportunidades de optimización y el coverage de docstrings está en 75.9% (meta 85%).
+Mantener la meta de elevar el Quality Score por encima de 60 (+1.5 ptos).
 
 #### Cambios
-- Implementar las 24 optimizaciones sugeridas por `ai-ctx`.
-- Completar docstrings faltantes en módulos `core`.
-- Estandarizar type hints en utilerías.
+- Implementar optimizaciones sugeridas por `ai-ctx`.
+- Alcanzar el 85% de cobertura de docstrings en el paquete `core`.
+- Estandarizar el uso de `pathlib` y `typing` en todo el repositorio.
 
 ---
 
 ## Verification Plan
 
-### 1. Compatibilidad QGIS
+### 1. Calidad de Código
 ```bash
-# Verificar que no quedan imports directos de PyQt5
-grep -r "from PyQt5" .
+# Verificar reducción de CC y aumento de Quality Score
+uv run ai-ctx analyze --path . --complexity 10
+# Meta: Quality Score > 60.0
+# Meta: Métodos con CC > 10 reducidos en un 50%
 ```
 
-### 2. Calidad de Código
-```bash
-# Verificar aumento de Quality Score
-uv run ai-ctx analyze --path .
-# Baseline actual: 58.5
-# Meta: > 60.0 (+1.5 ptos)
-```
-
-### 3. Estabilidad
+### 2. Estabilidad
 ```bash
 make docker-test
-# Meta: 199 tests pasando
+# Meta: 199 tests pasando (o nuevos si se agregan)
 ```
 
 ---
+
+## Monitoreo y Futuro
+- **Compatibilidad QGIS 4.x**: Se abordará cuando el compilador de recursos se actualice para Qt6/QGIS 4.x.
 
 ## Estimación de Esfuerzo
 
 | Objetivo | Esfuerzo | Prioridad |
 |----------|----------|-----------|
-| Deuda Técnica (PyQt5) | 2 horas | Alta |
-| Complejidad (ExportService) | 4 horas | Media |
-| Optimizaciones y Docs | 3 horas | Media |
+| Reducción Masiva CC | 8 horas | Alta |
+| Preparación 3D | 4 horas | Media |
+| Calidad y Docs | 4 horas | Media |
+
+**Total fase**: ~2-3 días
 
 **Total fase**: ~1-2 días

@@ -93,61 +93,100 @@ class PreviewRenderer:
         self.has_topography = False
         self.has_structures = False
 
-        # 2. Create data layers via LayerFactory
-        topo_layer = self.layer_factory.create_topo_layer(
-            topo_data, vert_exag, max_points, use_adaptive_sampling
+        # 2. Create data layers via internal orchestrator
+        data_layers = self._create_data_layers(
+            topo_data,
+            geol_data,
+            struct_data,
+            vert_exag,
+            max_points,
+            use_adaptive_sampling,
+            dip_line_length,
+            drillhole_data,
         )
-        if topo_layer:
-            self.has_topography = True
-
-        topo_fill_layer = self.layer_factory.create_topo_fill_layer(
-            topo_data, vert_exag, max_points
-        )
-
-        geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
-
-        # ... rest of data layers ...
-        # For structural layer, use topo or geol as reference
-        reference_data = (
-            topo_data
-            if topo_data
-            else ([p for seg in geol_data for p in seg.points] if geol_data else None)
-        )
-        struct_layer = self.layer_factory.create_struct_layer(
-            struct_data, reference_data, vert_exag, dip_line_length
-        )
-        if struct_layer:
-            self.has_structures = True
-
-        # Drillhole layers
-        drillhole_layers = []
-        if drillhole_data:
-            trace_layer = self.layer_factory.create_drillhole_trace_layer(drillhole_data, vert_exag)
-            if trace_layer:
-                drillhole_layers.append(trace_layer)
-            interval_layer = self.layer_factory.create_drillhole_interval_layer(
-                drillhole_data, vert_exag
-            )
-            if interval_layer:
-                drillhole_layers.append(interval_layer)
 
         # 2.5 Render interpretations (using rubber bands)
         if interp_data:
             self._render_interpretations(interp_data, vert_exag)
 
-        # 3. Collect valid data layers
-        # Order: Structures on top, then Geology, then Topography line, then Fill, then Drillholes
-        data_layers = [
-            layer
-            for layer in [
-                struct_layer,
-                geol_layer,
-                topo_layer,
-                topo_fill_layer,
-                *drillhole_layers,
-            ]
-            if layer is not None
-        ]
+        if not data_layers:
+            logger.warning("No valid layers to render")
+            return None, []
+
+        # 4. Axes and Labels
+        extent = self._calculate_extent(data_layers)
+        axes_layer = self.axes_manager.create_axes_layer(extent, vert_exag)
+        labels_layer = self.axes_manager.create_axes_labels_layer(extent, vert_exag)
+
+        # 5. Finalize layers list
+        layers = [labels_layer, *data_layers, axes_layer]
+        layers = [layer for layer in layers if layer is not None]
+        self.layers = layers
+
+        # 6. Configure canvas
+        if self.canvas and extent:
+            self.canvas.setLayers(layers)
+            if not preserve_extent:
+                padded_extent = extent
+                padded_extent.scale(1.1)
+                self.canvas.setExtent(padded_extent)
+            self.canvas.refresh()
+
+        return self.canvas, layers
+
+    def _collect_data_layers(
+        self,
+        topo_data,
+        geol_data,
+        struct_data,
+        vert_exag,
+        max_points,
+        use_adaptive,
+        dip_len,
+        drill_data,
+    ) -> list:
+        """Collect all data layers in order."""
+        # Topography & Geology
+        topo_layer = self.layer_factory.create_topo_layer(
+            topo_data, vert_exag, max_points, use_adaptive
+        )
+        if topo_layer:
+            self.has_topography = True
+
+        topo_fill = self.layer_factory.create_topo_fill_layer(topo_data, vert_exag, max_points)
+        geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
+
+        # Specialized layers
+        struct_layer = self._add_struct_layer(struct_data, topo_data, geol_data, vert_exag, dip_len)
+        drill_layers = self._add_drillhole_layers(drill_data, vert_exag)
+
+        # Combine in Z-order (top to bottom)
+        candidates = [struct_layer, geol_layer, topo_layer, topo_fill, *drill_layers]
+        return [L for L in candidates if L is not None]
+
+    def _add_struct_layer(self, data, topo, geol, exag, dip_len) -> Any | None:
+        """Create structural layer if data exists."""
+        ref = topo if topo else ([p for s in geol for p in s.points] if geol else None)
+        layer = self.layer_factory.create_struct_layer(data, ref, exag, dip_len)
+        if layer:
+            self.has_structures = True
+        return layer
+
+    def _add_drillhole_layers(self, data, exag) -> list:
+        """Create drillhole layers if data exists."""
+        layers = []
+        if not data:
+            return layers
+
+        t_layer = self.layer_factory.create_drillhole_trace_layer(data, exag)
+        if t_layer:
+            layers.append(t_layer)
+
+        i_layer = self.layer_factory.create_drillhole_interval_layer(data, exag)
+        if i_layer:
+            layers.append(i_layer)
+
+        return layers
 
         if not data_layers:
             logger.warning("No valid layers to render")

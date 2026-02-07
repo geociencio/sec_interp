@@ -57,7 +57,6 @@ class ExportService:
 
         """
         if export_options is None:
-            # Default to all True if not provided
             export_options = {
                 "exp_topo": True,
                 "exp_geol": True,
@@ -65,7 +64,7 @@ class ExportService:
                 "exp_drill": True,
                 "exp_interp": True,
             }
-        # Ensure we have data to work with
+
         if not profile_data:
             raise DataMissingError("No profile data available for export")
 
@@ -73,39 +72,55 @@ class ExportService:
         if not line_layer:
             raise DataMissingError("Section line layer not found in parameters")
 
-        line_crs = line_layer.crs()
         result_msg = ["✓ Saving files..."]
+        self._orchestrate_exports(
+            output_folder,
+            params,
+            profile_data,
+            geol_data,
+            struct_data,
+            drillhole_data,
+            interp_data,
+            export_options,
+            result_msg,
+        )
 
+        result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
+        return result_msg
+
+    def _orchestrate_exports(
+        self,
+        folder: Path,
+        params: PreviewParams,
+        profile_data: list[tuple],
+        geol_data: list[Any] | None,
+        struct_data: list[Any] | None,
+        drillhole_data: list[Any] | None,
+        interp_data: list[Any] | None,
+        options: dict[str, bool],
+        msg: list[str],
+    ) -> None:
+        """Call individual exporters based on options."""
+        line_crs = params.line_layer.crs()
         from sec_interp.exporters import CSVExporter
 
         csv_exporter = CSVExporter({})
 
-        # Orchestrate sub-exports
-        # Orchestrate sub-exports
-        if export_options.get("exp_topo", True):
-            self._export_topography(output_folder, profile_data, line_crs, csv_exporter, result_msg)
-            self._export_axes(output_folder, profile_data, line_crs, result_msg)
+        if options.get("exp_topo", True):
+            self._export_topography(folder, profile_data, line_crs, csv_exporter, msg)
+            self._export_axes(folder, profile_data, line_crs, msg)
 
-        if export_options.get("exp_geol", True):
-            self._export_geology(output_folder, geol_data, line_crs, csv_exporter, result_msg)
+        if options.get("exp_geol", True):
+            self._export_geology(folder, geol_data, line_crs, csv_exporter, msg)
 
-        if export_options.get("exp_struct", True):
-            self._export_structures(
-                output_folder, struct_data, params, line_crs, csv_exporter, result_msg
-            )
+        if options.get("exp_struct", True):
+            self._export_structures(folder, struct_data, params, line_crs, csv_exporter, msg)
 
-        if export_options.get("exp_drill", True):
-            self._export_drillholes(
-                output_folder, drillhole_data, line_crs, result_msg, export_options
-            )
+        if options.get("exp_drill", True):
+            self._export_drillholes(folder, drillhole_data, line_crs, msg, options)
 
-        if export_options.get("exp_interp", True):
-            self._export_interpretations(
-                output_folder, interp_data, line_layer, line_crs, result_msg
-            )
-
-        result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
-        return result_msg
+        if options.get("exp_interp", True):
+            self._export_interpretations(folder, interp_data, params.line_layer, line_crs, msg)
 
     def _export_topography(
         self,

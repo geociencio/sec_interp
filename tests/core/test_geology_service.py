@@ -81,15 +81,15 @@ class TestGeologyService(BaseTestCase):
         self.mock_outcrop_lyr.getFeatures.return_value = [outcrop_feat]
         self.mock_outcrop_lyr.fields.return_value = fields
 
-        segments = self.service.generate_geological_profile(
-            self.mock_line_lyr, self.mock_raster_lyr, self.mock_outcrop_lyr, "unit"
+        results = self.service.outcrop_processor.extract_outcrop_data(
+            self.line_geom, self.mock_outcrop_lyr, "unit"
         )
 
-        self.assertIsInstance(segments, list)
-        self.assertGreater(len(segments), 0)
-        self.assertEqual(segments[0].unit_name, "Unit A")
+        self.assertIsInstance(results, list)
+        self.assertGreater(len(results), 0)
+        self.assertEqual(results[0]["unit_name"], "Unit A")
 
-    def test_generate_master_profile_data(self):
+    def test_generate_master_profile(self):
         """Test master profile generation logic."""
         da = MagicMock()
         da.measureLine.return_value = 10.0
@@ -104,7 +104,8 @@ class TestGeologyService(BaseTestCase):
         provider.sample.return_value = (100.0, True)
         self.mock_raster_lyr.dataProvider.return_value = provider
 
-        profile, grid = self.service._generate_master_profile_data(
+        # Use ProfileSampler through GeologyService
+        profile, grid = self.service.profile_sampler.generate_master_profile(
             self.line_geom, self.mock_raster_lyr, 1, da, line_start
         )
 

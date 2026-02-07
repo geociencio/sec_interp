@@ -197,29 +197,43 @@ class PreviewResult:
         elevations = []
         if self.topo:
             elevations.extend(p[1] for p in self.topo)
-        if self.geol:
-            for segment in self.geol:
-                elevations.extend(p[1] for p in segment.points)
-        if self.struct:
-            elevations.extend(m.elevation for m in self.struct)
-        if self.drillhole:
-            for hole_data in self.drillhole:
-                # drillhole_data is (hole_id, trace_2d, trace_3d, trace_3d_proj, segments)
-                if len(hole_data) >= 5:
-                    _, trace, _, _, segments = hole_data
-                else:
-                    # Fallback for legacy 3-element tuples if any
-                    _, trace, segments = hole_data
 
-                if trace:
-                    elevations.extend(p[1] for p in trace)
-                if segments:
-                    for seg in segments:
-                        elevations.extend(p[1] for p in seg.points)
+        elevations.extend(self._get_geol_elevations())
+        elevations.extend(self._get_struct_elevations())
+        elevations.extend(self._get_drillhole_elevations())
 
         if not elevations:
             return 0.0, 0.0
         return min(elevations), max(elevations)
+
+    def _get_geol_elevations(self) -> list[float]:
+        """Extract elevations from geology data."""
+        if not self.geol:
+            return []
+        return [p[1] for segment in self.geol for p in segment.points]
+
+    def _get_struct_elevations(self) -> list[float]:
+        """Extract elevations from structural data."""
+        if not self.struct:
+            return []
+        return [m.elevation for m in self.struct]
+
+    def _get_drillhole_elevations(self) -> list[float]:
+        """Extract elevations from drillhole data using SpatialMeta."""
+        if not self.drillhole:
+            return []
+
+        elevations = []
+        for hole_data in self.drillhole:
+            # hole_data is (hole_id, spatial_points, segments)
+            _, spatial_points, segments = hole_data
+
+            if spatial_points:
+                elevations.extend(p.z for p in spatial_points)
+            if segments:
+                for seg in segments:
+                    elevations.extend(p[1] for p in seg.points)
+        return elevations
 
     def get_distance_range(self) -> tuple[float, float]:
         """Calculate the horizontal distance range based on topography.

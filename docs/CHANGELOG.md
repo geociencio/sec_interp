@@ -17,22 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.10.0-dev] - 2026-02-06
 ### Added
-- **Arquitectura Gen 3**: Implementada la Capa de Consciencia con Memoria Semántica, Auditoría Proactiva y Observabilidad (Trabajo previo consolidado).
-- **Agentes**: Introducción del rol **Agent Auditor** para validación crítica de planes.
-- **Memoria**: Sistema de registro estructurado `AGENT_LESSONS.md` (YAML) para aprendizaje continuo.
-- **Workflows**: Nuevo flujo `/ia-critic` para auditoría técnica proactiva.
-- **Framework**: Actualización mayor del `antigravity-framerepo` a la Generación 3.
-- **Observabilidad**: Seguimiento dinámico de efectividad en `agent_metrics.json`.
-
-### Added
-- [Pendiente]
+- **Arquitectura Gen 3**: Implementada la Capa de Consciencia con Memoria Semántica, Auditoría Proactiva y Observabilidad.
+- **Preparación 3D**: Introducción de `SpatialMeta` DTO para transporte unificado de datos 2D/3D.
+- **Interfaces**: Definición de `IRenderer3D` para futuros motores de renderizado.
+- **Testing**: Integración de `pytest`, `pytest-qt` y `pytest-mock` en el entorno de desarrollo.
 
 ### Changed
-- Inicio de migración a QGIS 4.x (eliminación de PyQt5 directo).
-- Refactorización de servicios de exportación para reducir complejidad.
+- **Refactorización Core**: Reducción masiva de la complejidad ciclomática (CC < 8) en 8 hotspots críticos.
+- **Modularización de Servicios**: Fragmentación de `DrillholeService` y `GeologyService` en componentes especializados (`DataFetcher`, `ProfileSampler`, `OutcropProcessor`).
+- **Desacoplamiento**: La lógica de proyección de trayectorias ahora es independiente de la UI de previsualización.
+- **Limpieza**: Consolidación y estandarización del sub-paquete `geometry_utils`.
 
 ### Fixed
-- [Pendiente]
+- **Integridad**: Corregida la exportación de tipos de dominio en `__init__.py`.
+- **Tests**: Actualizada la suite de pruebas unitarias para compatibilidad con la arquitectura delegada.
 
 ## [2.9.0] - 2026-02-01
 ### Added

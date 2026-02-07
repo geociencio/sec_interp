@@ -153,48 +153,38 @@ def validate_structural_requirements(
     dip_field: str | None,
     strike_field: str | None,
 ) -> tuple[bool, str]:
-    """Validate structural layer requirements (geometry and attribute fields).
-
-    Args:
-        layer: The QGIS point layer containing structural data.
-        layer_name: Human-readable name of the layer.
-        dip_field: Name of the attribute field containing dip values.
-        strike_field: Name of the attribute field containing strike values.
-
-    Returns:
-        tuple: (is_valid, error_message)
-            - is_valid: True if both geometry and fields are valid.
-            - error_message: Detailed error if validation fails.
-
-    """
+    """Validate structural layer requirements (geometry and attribute fields)."""
     if not layer.isValid():
         return False, f"Structural layer '{layer_name}' is not valid."
 
-    # Validate geometry (points)
     if QgsWkbTypes.geometryType(layer.wkbType()) != QgsWkbTypes.PointGeometry:
         return False, "Structural layer must be a point layer."
 
+    # Validate individual fields
     if dip_field:
-        is_valid, msg = validate_field_exists(layer, dip_field)
+        is_valid, msg = _validate_struct_field(layer, dip_field, "Dip")
         if not is_valid:
             return False, msg
-
-        is_valid, msg = validate_field_type(
-            layer, dip_field, [FieldType.INT, FieldType.DOUBLE, FieldType.LONG_LONG]
-        )
-        if not is_valid:
-            return False, f"Dip field error: {msg}"
 
     if strike_field:
-        is_valid, msg = validate_field_exists(layer, strike_field)
+        is_valid, msg = _validate_struct_field(layer, strike_field, "Strike")
         if not is_valid:
             return False, msg
 
-        is_valid, msg = validate_field_type(
-            layer, strike_field, [FieldType.INT, FieldType.DOUBLE, FieldType.LONG_LONG]
-        )
-        if not is_valid:
-            return False, f"Strike field error: {msg}"
+    return True, ""
+
+
+def _validate_struct_field(layer: QgsVectorLayer, field_name: str, label: str) -> tuple[bool, str]:
+    """Validate a specific structural field existance and type."""
+    is_valid, msg = validate_field_exists(layer, field_name)
+    if not is_valid:
+        return False, msg
+
+    is_valid, msg = validate_field_type(
+        layer, field_name, [FieldType.INT, FieldType.DOUBLE, FieldType.LONG_LONG]
+    )
+    if not is_valid:
+        return False, f"{label} field error: {msg}"
 
     return True, ""
 

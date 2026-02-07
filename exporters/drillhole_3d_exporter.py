@@ -56,29 +56,32 @@ class DrillholeTrace3DExporter(BaseExporter):
                 str(output_path), crs, fields, QgsWkbTypes.LineStringZ
             )
 
-            for hole_id, _, traces_3d, traces_3d_proj, _ in drillhole_data:
-                points_source = traces_3d_proj if use_projected else traces_3d
-                if not points_source or len(points_source) < 2:
-                    continue
-
-                points = [QgsPoint(x, y, z) for x, y, z in points_source]
-                geom = QgsGeometry.fromPolyline(points)
-
-                if geom and not geom.isNull():
-                    feat = QgsFeature(fields)
-                    feat.setGeometry(geom)
-                    feat.setAttribute("hole_id", str(hole_id))
-                    writer.addFeature(feat)
+            for hole_data in drillhole_data:
+                self._process_hole_trace(writer, fields, hole_data, use_projected)
 
             del writer
-        except (OSError, AttributeError, TypeError, ValueError) as e:
-            logger.exception(f"Data or IO error exporting 3D traces to {output_path}: {e}")
+        except Exception as e:
+            logger.exception(f"Error exporting 3D traces to {output_path}: {e}")
             return False
-        except Exception:
-            logger.exception(f"Unexpected system error exporting 3D traces to {output_path}")
-            return False
-        else:
-            return True
+        return True
+
+    def _process_hole_trace(
+        self, writer: Any, fields: QgsFields, hole_data: tuple, use_projected: bool
+    ) -> None:
+        """Process and write a single hole trace feature."""
+        hole_id, _, traces_3d, traces_3d_proj, _ = hole_data
+        points_source = traces_3d_proj if use_projected else traces_3d
+        if not points_source or len(points_source) < 2:
+            return
+
+        points = [QgsPoint(x, y, z) for x, y, z in points_source]
+        geom = QgsGeometry.fromPolyline(points)
+
+        if geom and not geom.isNull():
+            feat = QgsFeature(fields)
+            feat.setGeometry(geom)
+            feat.setAttribute("hole_id", str(hole_id))
+            writer.addFeature(feat)
 
     def _prepare_fields(self) -> QgsFields:
         """Create standard fields for drillhole trace."""
@@ -118,38 +121,40 @@ class DrillholeInterval3DExporter(BaseExporter):
                 str(output_path), crs, fields, QgsWkbTypes.LineStringZ
             )
 
-            for hole_id, _, _, _, segments in drillhole_data:
-                if not segments:
-                    continue
-                for segment in segments:
-                    points_source = (
-                        segment.points_3d_projected if use_projected else segment.points_3d
-                    )
-                    if not points_source or len(points_source) < 2:
-                        continue
-
-                    points = [QgsPoint(x, y, z) for x, y, z in points_source]
-                    geom = QgsGeometry.fromPolyline(points)
-
-                    if geom and not geom.isNull():
-                        feat = QgsFeature(fields)
-                        feat.setGeometry(geom)
-                        feat.setAttribute("hole_id", str(hole_id))
-                        attrs = segment.attributes
-                        feat.setAttribute("from_depth", attrs.get("from", 0.0))
-                        feat.setAttribute("to_depth", attrs.get("to", 0.0))
-                        feat.setAttribute("unit", segment.unit_name)
-                        writer.addFeature(feat)
+            for hole_data in drillhole_data:
+                self._process_hole_intervals(writer, fields, hole_data, use_projected)
 
             del writer
-        except (OSError, AttributeError, TypeError, ValueError) as e:
-            logger.exception(f"Data or IO error exporting 3D intervals to {output_path}: {e}")
+        except Exception as e:
+            logger.exception(f"Error exporting 3D intervals to {output_path}: {e}")
             return False
-        except Exception:
-            logger.exception(f"Unexpected system error exporting 3D intervals to {output_path}")
-            return False
-        else:
-            return True
+        return True
+
+    def _process_hole_intervals(
+        self, writer: Any, fields: QgsFields, hole_data: tuple, use_projected: bool
+    ) -> None:
+        """Process and write intervals for a single hole."""
+        hole_id, _, _, _, segments = hole_data
+        if not segments:
+            return
+
+        for segment in segments:
+            points_source = segment.points_3d_projected if use_projected else segment.points_3d
+            if not points_source or len(points_source) < 2:
+                continue
+
+            points = [QgsPoint(x, y, z) for x, y, z in points_source]
+            geom = QgsGeometry.fromPolyline(points)
+
+            if geom and not geom.isNull():
+                feat = QgsFeature(fields)
+                feat.setGeometry(geom)
+                feat.setAttribute("hole_id", str(hole_id))
+                attrs = segment.attributes
+                feat.setAttribute("from_depth", attrs.get("from", 0.0))
+                feat.setAttribute("to_depth", attrs.get("to", 0.0))
+                feat.setAttribute("unit", segment.unit_name)
+                writer.addFeature(feat)
 
     def _prepare_fields(self) -> QgsFields:
         """Create fields for drillhole intervals."""

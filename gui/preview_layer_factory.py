@@ -358,11 +358,8 @@ class PreviewLayerFactory:
 
         features = []
         for hole_data in drillhole_data:
-            # hole_data is (hole_id, trace_2d, trace_3d, trace_3d_proj, segments)
-            if len(hole_data) >= 5:
-                hole_id, trace_points = hole_data[0], hole_data[1]
-            else:
-                hole_id, trace_points = hole_data[0], hole_data[1]
+            # hole_data is (hole_id, spatial_points, segments)
+            hole_id, trace_points = hole_data[0], hole_data[1]
 
             if not trace_points or len(trace_points) < 2:
                 logger.debug(
@@ -370,7 +367,7 @@ class PreviewLayerFactory:
                 )
                 continue
 
-            render_points = [QgsPointXY(x, y * vert_exag) for x, y in trace_points]
+            render_points = [QgsPointXY(p.dist_along, p.z * vert_exag) for p in trace_points]
             line_geom = QgsGeometry.fromPolylineXY(render_points)
 
             feat = QgsFeature(layer.fields())
@@ -413,8 +410,8 @@ class PreviewLayerFactory:
 
         all_segments = []
         for hole_data in drillhole_data:
-            # segments are at index 2 (legacy) or 4 (v2.7.0)
-            segments = hole_data[4] if len(hole_data) >= 5 else hole_data[2]
+            # segments are at index 2
+            segments = hole_data[2]
             if segments:
                 all_segments.extend(segments)
 
