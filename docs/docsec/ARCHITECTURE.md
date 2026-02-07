@@ -53,4 +53,4 @@ Para garantizar que la interfaz de QGIS no se congele durante cálculos complejo
 - **ADR**: Las decisiones arquitectónicas importantes se registran en `docs/adr/`.
 
 ---
-**Version**: 2.6.0 | **Updated**: 2026-01-15
+**Version**: 2.9.1 | **Updated**: 2026-02-07

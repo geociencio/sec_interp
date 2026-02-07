@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 2.9.0 | Last Updated: 2026-02-01
+> Version 2.9.1 | Last Updated: 2026-02-07
 
 ---
 
@@ -68,6 +68,7 @@ sec_interp/
 │   │   ├── task_inputs.py      # Async Task Inputs
 │   │   └── enums.py            # Domain-pure enumerations
 │   └── utils/                  # Utilities (Geometry, Spatial, etc.)
+│       └── metadata_reader.py  # [NEW] Single source of truth for plugin info
 │
 ├── gui/                        # 🖥️ User Interface (GUI Layer)
 │   ├── main_dialog.py          # Main Dialog (Simplified)
@@ -175,6 +176,7 @@ graph TB
             PARSING_UTILS[parsing.py]
             RENDERING_UTILS[rendering.py]
             IO_UTILS[io.py]
+            METADATA[metadata_reader.py]
         end
     end
 

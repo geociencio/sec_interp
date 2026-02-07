@@ -45,6 +45,7 @@ sec_interp/
 │       │   ├── extraction.py  # Vertex and line extraction
 │       │   ├── processing.py  # Buffer, densify, memory layers
 │       │   └── filtering.py   # Spatial filtering with CRS support
+│       ├── metadata_reader.py # [NEW] Metadata management
 │       ├── spatial.py
 │       ├── sampling.py
 │       ├── drillhole.py
@@ -124,7 +125,7 @@ Contains specialized services that encapsulate the core business logic for speci
 
 #### `utils/` (Package) ⭐
 A package of utility modules providing reusable functions for:
-- Geometry operations, data parsing, spatial calculations, and more.
+- Geometry operations, data parsing, metadata reading, spatial calculations, and more.
 
 #### `validation.py` ⭐
 Handles all input validation, ensuring that layers, fields, and parameters are correct before processing.

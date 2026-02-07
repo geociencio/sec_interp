@@ -96,7 +96,7 @@ No clear design patterns detected.
 - **core/domain/__init__.py**: __future__.annotations, dtos.PreviewParams, dtos.PreviewResult, entities.DomainGeometry, entities.ExportSettings
 
 ## 🕸️  DEPENDENCY STRUCTURE
-- **Nodes**: 126
+- **Nodes**: 127
 - **Edges**: 1
 - **Density**: 0.000
 
@@ -105,46 +105,46 @@ No clear design patterns detected.
 graph TD
     init --> py
     classDef module fill:#f9f,stroke:#333,stroke-width:2px;
-    algorithms
-    class algorithms module;
-    profile_interface
-    class profile_interface module;
-    enums
-    class enums module;
-    entities
-    class entities module;
-    init
-    class init module;
-    init
-    class init module;
-    i_renderer_3d
-    class i_renderer_3d module;
-    drillhole_interface
-    class drillhole_interface module;
-    bootstrap
-    class bootstrap module;
-    geology_interface
-    class geology_interface module;
-    algorithm_template
-    class algorithm_template module;
-    exceptions
-    class exceptions module;
-    reproduce_proxy
-    class reproduce_proxy module;
-    spatial_meta
-    class spatial_meta module;
-    config
-    class config module;
-    init
-    class init module;
-    dialog_template
-    class dialog_template module;
     eda_template
     class eda_template module;
     init
     class init module;
+    spatial_meta
+    class spatial_meta module;
+    init
+    class init module;
+    dialog_template
+    class dialog_template module;
+    reproduce_proxy
+    class reproduce_proxy module;
+    algorithm_template
+    class algorithm_template module;
+    init
+    class init module;
+    config
+    class config module;
+    geology_interface
+    class geology_interface module;
+    init
+    class init module;
+    entities
+    class entities module;
     preview_interface
     class preview_interface module;
+    algorithms
+    class algorithms module;
+    enums
+    class enums module;
+    exceptions
+    class exceptions module;
+    i_renderer_3d
+    class i_renderer_3d module;
+    profile_interface
+    class profile_interface module;
+    bootstrap
+    class bootstrap module;
+    drillhole_interface
+    class drillhole_interface module;
 ```
 
 ## 🔄 GIT AND EVOLUTION
@@ -155,7 +155,7 @@ graph TD
 - `core/services/geology_service.py` (38 commits)
 - `core/services/drillhole_service.py` (33 commits)
 ### Recent Churn (30 days):
-- Total lines changed: 184026
+- Total lines changed: 184619
 
 ## 🔑 PROJECT KEYWORDS
 - **Technologies**: .json, .py, .md, .txt, .csv, .qm, .ts, .log

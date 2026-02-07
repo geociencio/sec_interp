@@ -6,7 +6,7 @@ from pathlib import Path
 
 from sec_interp.core.utils.metadata_reader import (
     read_plugin_metadata,
-    clear_metadata_cache
+    clear_metadata_cache,
 )
 
 
@@ -28,7 +28,9 @@ class TestMetadataReader(unittest.TestCase):
         # Setup mocks
         mock_path_obj = mock_path_cls.return_value
         # Mock __file__ parent chain
-        mock_path_obj.parent.parent.parent.__truediv__.return_value.exists.return_value = True
+        mock_path_obj.parent.parent.parent.__truediv__.return_value.exists.return_value = (
+            True
+        )
 
         # Mock parser
         mock_parser = mock_parser_cls.return_value
@@ -38,7 +40,7 @@ class TestMetadataReader(unittest.TestCase):
             "author": "Test Author",
             "email": "test@example.com",
             "description": "Test Description",
-            "homepage": "http://example.com"
+            "homepage": "http://example.com",
         }.get(option)
 
         # Execute
@@ -57,7 +59,9 @@ class TestMetadataReader(unittest.TestCase):
         # Setup mocks
         mock_path_obj = mock_path_cls.return_value
         # Mock exists() to return False
-        mock_path_obj.parent.parent.parent.__truediv__.return_value.exists.return_value = False
+        mock_path_obj.parent.parent.parent.__truediv__.return_value.exists.return_value = (
+            False
+        )
 
         # Execute & Assert
         with self.assertRaises(FileNotFoundError):
@@ -69,14 +73,18 @@ class TestMetadataReader(unittest.TestCase):
         """Test error when required fields are missing."""
         # Setup mocks
         mock_path_obj = mock_path_cls.return_value
-        mock_path_obj.parent.parent.parent.__truediv__.return_value.exists.return_value = True
+        mock_path_obj.parent.parent.parent.__truediv__.return_value.exists.return_value = (
+            True
+        )
 
         # Mock parser to fail on 'version'
         mock_parser = mock_parser_cls.return_value
+
         def side_effect(section, option):
             if option == "version":
                 raise Exception("Missing field")
             return "Test Value"
+
         mock_parser.get.side_effect = side_effect
 
         # Execute & Assert
