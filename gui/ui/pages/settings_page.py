@@ -12,7 +12,12 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
+from sec_interp.core.utils.metadata_reader import read_plugin_metadata
+from sec_interp.logger_config import get_logger
+
 from .base_page import BasePage
+
+logger = get_logger(__name__)
 
 
 class SettingsPage(BasePage):
@@ -122,10 +127,27 @@ class SettingsPage(BasePage):
         """Set up Plugin Information tab."""
         layout = QVBoxLayout(parent_widget)
 
-        layout.addWidget(QLabel("<b>Plugin Information</b>"))
-        layout.addWidget(QLabel(self.tr("Sec Interp v2.6.0")))
-        layout.addWidget(QLabel(self.tr("Developed by Juan M Bernales")))
-        layout.addWidget(QLabel(self.tr("Contact: juanbernales@gmail.com")))
+        try:
+            metadata = read_plugin_metadata()
+
+            layout.addWidget(QLabel("<b>Plugin Information</b>"))
+            layout.addWidget(QLabel(self.tr(f"{metadata['name']} v{metadata['version']}")))
+            layout.addWidget(QLabel(self.tr(f"Developed by {metadata['author']}")))
+            layout.addWidget(QLabel(self.tr(f"Contact: {metadata['email']}")))
+
+            if metadata.get("homepage"):
+                # Add clickable documentation link
+                doc_label = QLabel(
+                    f"<a href='{metadata['homepage']}'>{self.tr('Documentation')}</a>"
+                )
+                doc_label.setOpenExternalLinks(True)
+                layout.addWidget(doc_label)
+
+        except (FileNotFoundError, ValueError) as e:
+            logger.warning(f"Metadata read error: {e}")
+            layout.addWidget(QLabel("<b>Plugin Information</b>"))
+            layout.addWidget(QLabel(self.tr("Sec Interp (version unavailable)")))
+            layout.addWidget(QLabel(self.tr("Metadata missing")))
 
         layout.addStretch()
 

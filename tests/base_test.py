@@ -1109,6 +1109,9 @@ class MockQLabel(MockQWidget):
     def setPixmap(self, pixmap):
         pass
 
+    def setOpenExternalLinks(self, open):
+        pass
+
 
 class MockQPushButton(MockQWidget):
     def __init__(self, text="", parent=None):
