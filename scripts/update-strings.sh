@@ -20,5 +20,5 @@ mkdir -p i18n
 # Generate .ts files for each locale
 for LOCALE in $LOCALES; do
     echo "Updating $LOCALE.ts..."
-    $PYLUPDATE -noobsolete sec_interp_plugin.py gui/*.py gui/ui/pages/*.py -ts i18n/$LOCALE.ts
+    $PYLUPDATE -noobsolete sec_interp_plugin.py core/*.py core/*/*.py core/*/*/*.py gui/*.py gui/*/*.py gui/*/*/*.py exporters/*.py -ts i18n/$LOCALE.ts
 done

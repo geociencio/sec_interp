@@ -1,0 +1,19 @@
+[patterns.qgis_compliance]
+enabled = true
+
+[patterns.i18n]
+scope = "gui_only"
+
+[analysis]
+exclude_patterns = [
+    "tests/**",
+    "scripts/**",
+    "docs/**",
+    "antigravity-framerepo/**",
+    "examples/**",
+    "venv/**",
+    ".venv/**",
+    "build/**",
+    "dist/**",
+    "*.egg-info/**"
+]

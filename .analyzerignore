@@ -1,32 +1,20 @@
-# Exclude non-production code from quality metrics
-.git/
-.github/
-.idea/
-.venv/
-__pycache__/
-*.py[cod]
-dist/
-build/
-*.egg-info/
-*.zip
-
-# Tools and Context
-.agent/
-.ai-context/
+tests/
 scripts/
-research/
-analyze_project_optfixed.py
-generate_ai_templates.py
-
-# Documentation resources
 docs/
-help/
-
-# Analyzer Results
-analyzer_config.json
-.analyzer_state.json
-AI_CONTEXT.md
+antigravity-framerepo/
+examples/
+venv/
+.venv/
+.ai-context/
+.agent/
+build/
+dist/
+*.egg-info/
+logger_config.py
+reproduce_metadata_issue.py
+__init__.py
 PROJECT_SUMMARY.md
-analysis.log
-analysis_errors.json
+AI_CONTEXT.md
 project_context.json
+i18n/*.qm
+i18n/*.ts

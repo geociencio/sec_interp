@@ -1,51 +1,53 @@
-# Bug Report: `ai-ctx qgis` reports N/A for valid `metadata.txt`
+# Bug Report: Critical Incompatibility with Python 3.14 in `ai-context-core`
 
-## 🐛 Description
-The command `ai-ctx qgis` correctly identifies `metadata.txt` as valid but fails to extract and display key fields (`Plugin Name`, `Version`, `QGIS Min Version`), showing them as `N/A`.
+**Date**: 2026-02-07
+**Severity**: High
+**Component**: `ai_context_core.analyzer.ast_metrics`
 
-## 📉 Observed Behavior
-```text
-🗺️  QGIS PLUGIN VALIDATION
+## Description
 
-✅ metadata.txt is valid
-Plugin Name: N/A
-Version: N/A
-QGIS Min Version: N/A
+The `ai-context-core` package fails to analyze Python files containing docstrings or string constants when running on Python 3.14. This causes the analyzer to silently discard these files during the scanning process, resulting in incorrect metrics, particularly 0% i18n coverage, despite valid `tr()` calls being present in the codebase.
+
+## Root Cause
+
+The issue is caused by the removal of `ast.Str` in Python 3.14. The `ai_context_core` codebase explicitly references `ast.Str` in `ast_metrics.py`, which raises an `AttributeError` when the code attempts to access it.
+
+**File**: `.venv/lib/python3.14/site-packages/ai_context_core/analyzer/ast_metrics.py`
+**Line**: ~240 (inside `calculate_sloc`)
+
+```python
+# Failing code in ast_metrics.py
+and isinstance(body[0].value, (ast.Constant, ast.Str))
 ```
 
-## 📈 Expected Behavior
-The tool should extract and display the values present in the `metadata.txt` file:
-```text
-Plugin Name: Sec Interp
-Version: 2.9.0
-QGIS Min Version: 3.0
+## Traceback
+
+When running `ai-ctx inspect sec_interp_plugin.py` (or any file with docstrings), the following error occurs:
+
+```
+❌ Syntax Error: module 'ast' has no attribute 'Str'
 ```
 
-## 🕵️ Reproduction Steps
-1.  Environment: Linux, `ai-context-core` v3.0.0 (installed via `uv`).
-2.  File: `metadata.txt` containing a `[general]` section.
-3.  Command: Run `uv run ai-ctx qgis`.
+This error is caught by the broad `except Exception` block in `engine.py`, causing the file to be treated as having a syntax error or simply ignored, leading to zero counts for all metrics derived from that file (including i18n strings).
 
-## 🛠️ Technical Details & Investigation
-A local reproduction script using Python's standard `configparser` confirms the file is parsable and valid.
+## Suggested Fix
 
-**File Content (`metadata.txt`):**
-```ini
-[general]
-name=Sec Interp
-qgisMinimumVersion=3.0
-description=Data extraction for geological interpretation
-version=2.9.0
-...
+Replace the direct reference to `ast.Str` with a safe fallback that works across Python versions (since `ast.Str` was deprecated in 3.8 and removed in 3.14).
+
+**Recommended Change**:
+
+```python
+# In ai_context_core/analyzer/ast_metrics.py
+
+# CHANGE THIS:
+# and isinstance(body[0].value, (ast.Constant, ast.Str))
+
+# TO THIS:
+and isinstance(body[0].value, (ast.Constant, getattr(ast, "Str", ast.Constant)))
 ```
 
-**Reproduction Script Result:**
-Using `configparser.ConfigParser(strict=False)` successfully reads the `[general]` section and retrieves the keys `name`, `version`, and `qgisMinimumVersion`.
+This change ensures that on Python 3.14+, `ast.Str` is effectively ignored (replaced by `ast.Constant`, which is already in the tuple), preventing the `AttributeError` while maintaining backward compatibility for older Python versions if necessary.
 
-**Hypothesis:**
-The `ai-ctx` parser might be looking for keys in a global scope (without section) or using a parser configuration that strictly requires specific formatting not present in this file (though standard QGIS metadata usually allows `[general]`).
+## Impact on i18n
 
-## 💻 System Information
-- **OS**: Linux
-- **Python**: 3.13
-- **ai-context-core**: 3.0.0
+Because the main plugin files (like `sec_interp_plugin.py` and `gui/main_dialog.py`) contain docstrings, they trigger this crash. Consequently, the QGIS Compliance Checker logic (which runs on the same AST) never gets to execute the `visit_Call` method to count `tr()` calls, resulting in a reported 0% translation coverage.

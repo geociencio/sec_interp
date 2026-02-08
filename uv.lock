@@ -9,15 +9,15 @@ resolution-markers = [
 
 [[package]]
 name = "ai-context-core"
-version = "3.0.1"
+version = "3.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4c/32/9ac9458f09b9380a61d2a11b89032b387d4d3b5918a5bc2133d385f0301f/ai_context_core-3.0.1.tar.gz", hash = "sha256:69de70aef47f989d8a782bf71345e7be7462292ee64f11f8ec8b3fc243f415a7", size = 90118, upload-time = "2026-01-30T09:10:36.894Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/56/500535b7c63ec49d55a33716a0fa7eaac17b0be26e4f9dc0693ca9465277/ai_context_core-3.2.1.tar.gz", hash = "sha256:9e40c8fd1da3bb1564cfd2f4a0ebb220a204f1ef3469957ac1c5f173dbcca1dd", size = 163899, upload-time = "2026-02-08T04:52:37.127Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/01/f2/8d546d09fc3b7dc8679e3401d8d96ceed7383321a1690b2c0cbb0e2fb30f/ai_context_core-3.0.1-py3-none-any.whl", hash = "sha256:98567a326a5ccbdf54819e821c5bab753d8fccea12ee383c5043e10aa644814c", size = 98270, upload-time = "2026-01-30T09:10:35.38Z" },
+    { url = "https://files.pythonhosted.org/packages/62/d9/39ba816c6b31d88d046fd4d13b5e7f96b25f3bd19bbc848f01a9472cfaa4/ai_context_core-3.2.1-py3-none-any.whl", hash = "sha256:527c09bc55695d1229c5df00b73f56d89f0c997700213f3b90b9380f4f5311d4", size = 184608, upload-time = "2026-02-08T04:52:35.377Z" },
 ]
 
 [[package]]
@@ -1101,13 +1101,13 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ai-context-core", specifier = ">=3.0.1" },
+    { name = "ai-context-core", specifier = ">=3.2.1" },
     { name = "pyqt5", specifier = ">=5.15.0,<5.16.0" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "ai-context-core", specifier = ">=3.0.1" },
+    { name = "ai-context-core", specifier = ">=3.2.1" },
     { name = "bandit", specifier = ">=1.7.0" },
     { name = "black", specifier = "==24.1.0" },
     { name = "detect-secrets", specifier = ">=1.4.0" },
