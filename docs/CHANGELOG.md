@@ -13,7 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Pendiente]
 
 ### Fixed
-- [Pendiente]
+- Actualizada dependencia a `ai-context-core>=3.2.1` para corregir errores de segmentación de i18n (scope `gui_only`).
+- Corregida omisión de configuración de i18n en el agregador de resultados de QGIS.
+- Corregido matching de rutas recursivas en el análisis de cumplimiento de QGIS.
+- Añadida opción `--i18n-scope` al comando `ai-ctx qgis`.
 
 ## [2.10.0-dev] - 2026-02-06
 ### Added

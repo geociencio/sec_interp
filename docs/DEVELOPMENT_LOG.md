@@ -1,5 +1,15 @@
 ---
 ---
+## [2026-02-08] Resumen: Update ai-context-core v3.2.1
+- **Logro**: Actualizada la dependencia de `ai-context-core` a v3.2.1, resolviendo errores críticos de i18n scope (segmentación).
+- **Cambios**:
+    - **Dep**: Actualizado `ai-context-core` de v3.2.0 a v3.2.1 en `pyproject.toml`.
+    - **Fix**: Verificada la corrección de los Bug 1 (configuración), Bug 2 (recursion) y Bug 3 (CLI option) de la v3.2.0.
+    - **Estilo**: Formateo masivo del proyecto con `black` para asegurar consistencia tras los cambios.
+    - **Docs**: Creado reporte de resolución en [bug_report_v320.md](maintenance/ai-context-core/bug_report_v320.md) y registro de sesión en [sesion_2026-02-08_update_ai_core_v321.md](maintenance/sesion_2026-02-08_update_ai_core_v321.md).
+- **Estado**: 🟢 Verificado y estable. El scope `gui_only` ahora funciona correctamente.
+
+---
 ## [2026-02-06] CIERRE DE FASE v2.10.0: Massive CC Reduction & 3D Prep
 - **Logro**: Completada la refactorización masiva de complejidad ciclomática y preparación arquitectónica para soporte 3D completo.
 - **Cambios Principales**:
