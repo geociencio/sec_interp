@@ -6,7 +6,6 @@ This module handles preview generation, rendering, and updates,
 separating preview logic from the main dialog class.
 """
 
-import hashlib
 from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsApplication, QgsVectorLayer
@@ -25,8 +24,11 @@ from sec_interp.core.performance_metrics import (
 from sec_interp.core.services.preview_service import PreviewService
 from sec_interp.logger_config import get_logger
 
+from .lod_calculator import LODCalculator
 from .main_dialog_config import DialogConfig
+from .preview_param_hasher import PreviewParamHasher
 from .preview_reporter import PreviewReporter
+from .preview_task_orchestrator import PreviewTaskOrchestrator
 from .tasks.drillhole_task import DrillholeGenerationTask
 from .tasks.geology_task import GeologyGenerationTask
 
@@ -47,15 +49,20 @@ class PreviewManager:
         self,
         dialog: Any,
         preview_service: IPreviewService | None = None,
-    ) -> None:
-        """Initialize preview manager with reference to parent dialog.
-
-        Args:
-            dialog: The parent SecInterpDialog instance.
-            preview_service: Optional preview service for dependency injection.
-
-        """
+    ):
+        """Initialize preview manager with specialized components."""
         self.dialog = dialog
+        self.preview_service = preview_service or PreviewService(
+            self.dialog.plugin_instance.controller
+        )
+        self.metrics = MetricsCollector()
+
+        # Specialized components
+        self.orchestrator = PreviewTaskOrchestrator(self)
+        self.hasher = PreviewParamHasher()
+        self.lod_calculator = LODCalculator(self.dialog.preview_widget.canvas)
+
+        # Cache & State
         self.cached_data: dict[str, Any] = {
             "topo": None,
             "geol": None,
@@ -64,17 +71,6 @@ class PreviewManager:
         }
         self.last_params_hash: str | None = None
         self.last_result: PreviewResult | None = None
-        self.metrics = MetricsCollector()
-
-        # Initialize services
-        # self.async_service removed in favor of QgsTask
-        # self.async_service removed in favor of QgsTask
-        self.active_task: GeologyGenerationTask | None = None
-        self.active_drill_task: DrillholeGenerationTask | None = None
-
-        self.preview_service = preview_service or PreviewService(
-            self.dialog.plugin_instance.controller
-        )
 
         # Initialize zoom debounce timer
         self.debounce_timer = QTimer()
@@ -88,12 +84,7 @@ class PreviewManager:
 
     def cleanup(self) -> None:
         """Clean up resources and stop background tasks."""
-        if self.active_task:
-            self.active_task.cancel()
-            self.active_task = None
-        if self.active_drill_task:
-            self.active_drill_task.cancel()
-            self.active_drill_task = None
+        self.orchestrator.cancel_active_tasks()
         self.debounce_timer.stop()
 
     def generate_preview(self) -> tuple[bool, str]:
@@ -179,16 +170,9 @@ class PreviewManager:
         self.metrics.counts.update(result.metrics.counts)
 
     def _trigger_async_updates(self, params: PreviewParams) -> None:
-        """Launch background tasks for biology and drillholes."""
-        # Start Async Geology if needed
-        if self.dialog.page_geology.is_complete():
-            self._start_async_geology(params)
-            self.cached_data["geol"] = None
-
-        # Start Async Drillholes if needed
-        if params.collar_layer:
-            self._start_async_drillhole(params)
-            self.cached_data["drillhole"] = None
+        """Launch background tasks via orchestrator."""
+        self.orchestrator.start_geology_task(params, self.preview_service.geology_service)
+        self.orchestrator.start_drillhole_task(params, self.preview_service.drillhole_service)
 
     def _is_data_unchanged(self, params: PreviewParams) -> bool:
         """Check if parameters haven't changed since last generation."""
@@ -217,14 +201,8 @@ class PreviewManager:
                 self.dialog._save_interpretations()
 
     def _cancel_active_tasks(self) -> None:
-        """Cancel any existing async work before starting new ones."""
-        if self.active_task:
-            self.active_task.cancel()
-            self.active_task = None
-
-        if self.active_drill_task:
-            self.active_drill_task.cancel()
-            self.active_drill_task = None
+        """Cancel any existing async work via orchestrator."""
+        self.orchestrator.cancel_active_tasks()
 
     def _run_render_pipeline(self, result: PreviewResult) -> None:
         """Orchestrate the rendering of generated data.
@@ -317,38 +295,8 @@ class PreviewManager:
             logger.exception("Unexpected error updating preview from checkboxes")
 
     def _calculate_params_hash(self, params: PreviewParams) -> str:
-        """Calculate a unique hash for preview parameters to check for changes."""
-
-        def get_id(layer: QgsVectorLayer | None) -> str:
-            """Safe layer ID retrieval."""
-            return layer.id() if layer and layer.isValid() else "None"
-
-        data_parts = [
-            get_id(params.raster_layer),
-            get_id(params.line_layer),
-            str(params.band_num),
-            str(params.buffer_dist),
-            get_id(params.outcrop_layer),
-            str(params.outcrop_name_field),
-            get_id(params.struct_layer),
-            str(params.dip_field),
-            str(params.strike_field),
-            get_id(params.collar_layer),
-            str(params.collar_id_field),
-            get_id(params.survey_layer),
-            get_id(params.interval_layer),
-        ]
-
-        # Add geometry WKT if available to detect line changes
-        line_feat = next(params.line_layer.getFeatures(), None)
-        if line_feat:
-            data_parts.append(line_feat.geometry().asWkt())
-
-        hasher = hashlib.sha256()
-        for part in data_parts:
-            hasher.update(str(part).encode("utf-8"))
-
-        return hasher.hexdigest()
+        """Analyze params via hasher."""
+        return self.hasher.calculate_hash(params)
 
     def _get_buffer_distance(self) -> float:
         """Get buffer distance from dialog, with fallback to default.
@@ -370,30 +318,6 @@ class PreviewManager:
         self.debounce_timer.start(200)
 
     def _update_lod_for_zoom(self) -> None:
-        """Update LOD based on current zoom level."""
-        if not self.last_result:
-            return
-        canvas = self.dialog.preview_widget.canvas
-        if not self.cached_data["topo"]:
-            return
-
-        full_extent = canvas.fullExtent()
-        current_extent = canvas.extent()
-
-        if current_extent.width() <= 0 or full_extent.width() <= 0:
-            return
-
-        # Calculate zoom ratio
-        ratio = full_extent.width() / current_extent.width()
-
-        # If ratio is close to 1, we are at full extent, use standard calculation
-        if ratio < 1.1:
-            # Let the standard update logic handle it or just do nothing if consistent?
-            # Actually standard logic just uses canvas width.
-            # If we return here, we might miss resetting to low detail when zooming out.
-            pass
-
-        # Calculate max_points via PreviewService
         new_max_points = PreviewService.calculate_max_points(
             canvas_width=canvas.width(), ratio=ratio, auto_lod=True
         )
