@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Cache system for SecInterp data.
 
 Provides a hash-based caching mechanism for geological and topographic data.
 """
+
+from __future__ import annotations
 
 import hashlib
 import time

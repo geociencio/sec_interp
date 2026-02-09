@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Domain-specific exceptions for SecInterp.
 
 This module defines a hierarchy of exceptions to provide clearer error reporting
 and better handling of expected and unexpected conditions.
 """
+
+from __future__ import annotations
 
 
 class SecInterpError(Exception):

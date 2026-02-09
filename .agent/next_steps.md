@@ -1,32 +1,22 @@
-# Próximos Pasos: Release v2.10.0
+# Proximos Pasos - SecInterp
 
-La fase de estabilización ha concluido con éxito (347/347 tests pasando). El código está listo para ser empaquetado y liberado.
+## 🎯 Objetivo Inmediato
+Consolidar la calidad del código tras la habilitación de reglas estrictas de Ruff y corregir los 686 problemas pendientes (docstrings, magic values, complejidad).
 
-## Estado Actual
-- **Tests**: 100% Passing (Core, GUI, Integration, Exporters).
-- **Calidad**: Refactorización masiva de mocks y tests completada.
-- **Documentación**: Walkthrough de estabilización generado.
+## 🛠️ Acciones Pendientes
+1. **Corrección Masiva de Docstrings**:
+   - Priorizar módulos de `gui/ui/pages/` que carecen totalmente de documentación.
+   - Usar el estándar Google Docstrings.
+2. **Refactorización de Valores Mágicos (`PLR2004`)**:
+   - Extraer constantes en `gui/preview_layer_factory.py` y `gui/tools/interpretation_tool.py`.
+3. **Optimización de Firmas de Funciones (`PLR0913`)**:
+   - Evaluar el uso de dataclasses para agrupaer parámetros en métodos con más de 5 argumentos.
 
-## Acciones Inmediatas (Siguiente Sesión)
+## 🐛 Bugs del Analizador
+- Se debe asegurar que el parche aplicado localmente a `.venv/lib/python3.14/site-packages/analyzer/engine.py` (cambiando `--format` por `--output-format`) se reporte o se mantenga si se reinstala el entorno.
+- Revisar `docs/dev/qgis_analyzer_issues.md` para detalles técnicos.
 
-### 1. Preparar Release v2.10.0
-- [ ] Ejecutar workflow `/release-plugin`.
-- [ ] Verificar `metadata.txt` (versión, changelog).
-- [ ] Generar paquete ZIP.
-
-### 2. Validación Manual Final
-- [ ] Instalar ZIP en QGIS limpio.
-- [ ] Verificar carga de plugin.
-- [ ] Ejecutar "Smoke Test" manual (crear sección, importar sondajes).
-
-### 3. Publicación
-- [ ] Subir a repositorio de plugins (o release en GitHub).
-- [ ] Notificar a usuarios.
-
-## Comandos para Retomar
+## 🚀 Comando para retomar
 ```bash
-# Iniciar sesión de release
 /inicia-sesion
-# Ejecutar workflow de release
-/release-plugin
 ```

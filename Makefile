@@ -95,6 +95,8 @@ default:
 
 compile:
 	uv run qgis-manage compile
+	@# Patch resources.py to use qgis.PyQt instead of PyQt5 (QGIS Policy)
+	@sed -i 's/from PyQt5 import QtCore/from qgis.PyQt import QtCore/g' resources/resources.py
 
 %.qm : %.ts
 	uv run qgis-manage compile --type translations

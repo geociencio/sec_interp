@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- [Pendiente]
+- **Auditoría Estricta**: Habilitadas reglas de Ruff para Complejidad (`C901`), Argumentos (`PLR0913`), Valores Mágicos (`PLR2004`) y Docstrings (`D10x`).
+- **Docs Dev**: Reporte de incidencias técnicas en el analizador de plugins.
 
 ### Changed
-- [Pendiente]
+- **Linter**: Endurecimiento de la configuración de `pyproject.toml` para reflejar la calidad real del código.
 
 ### Fixed
 - Actualizada dependencia a `ai-context-core>=3.2.1` para corregir errores de segmentación de i18n (scope `gui_only`).

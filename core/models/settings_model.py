@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Settings models using dataclasses for validation.
 
 Provides a structured and validated way to handle plugin configurations.
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any

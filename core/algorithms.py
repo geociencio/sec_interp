@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Core algorithms module.
 
 IMPORTANT: The main SecInterp plugin class has been moved to sec_interp_plugin.py
@@ -8,6 +6,8 @@ business logic.
 
 This module is reserved for pure business logic algorithms without UI dependencies.
 """
+
+from __future__ import annotations
 
 # The SecInterp class has been moved to sec_interp_plugin.py
 # Import it from there if needed:

@@ -12,7 +12,7 @@ from qgis.core import (
     QgsField,
     QgsFields,
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from tests.integration.base_integration import BaseIntegrationTest
 from sec_interp.core.services.drillhole_service import DrillholeService
 
@@ -67,7 +67,7 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
             "Collar",
             "Point",
             self.crs_wgs84,
-            [("HoleID", QVariant.String), ("Elev", QVariant.Double)],
+            [("HoleID", QMetaType.Type.QString), ("Elev", QMetaType.Type.Double)],
         )
         c_feat = QgsFeature()
         c_feat.setGeometry(QgsGeometry.fromPointXY(wgs_pt))
@@ -80,10 +80,10 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
             "NoGeometry",
             self.crs_wgs84,
             [
-                ("HoleID", QVariant.String),
-                ("Depth", QVariant.Double),
-                ("Azim", QVariant.Double),
-                ("Incl", QVariant.Double),
+                ("HoleID", QMetaType.Type.QString),
+                ("Depth", QMetaType.Type.Double),
+                ("Azim", QMetaType.Type.Double),
+                ("Incl", QMetaType.Type.Double),
             ],
         )
         # Add straight hole survey (Vertical)
@@ -96,10 +96,10 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
             "NoGeometry",
             self.crs_wgs84,
             [
-                ("HoleID", QVariant.String),
-                ("From", QVariant.Double),
-                ("To", QVariant.Double),
-                ("Lith", QVariant.String),
+                ("HoleID", QMetaType.Type.QString),
+                ("From", QMetaType.Type.Double),
+                ("To", QMetaType.Type.Double),
+                ("Lith", QMetaType.Type.QString),
             ],
         )
         i_feat = QgsFeature()
@@ -166,7 +166,7 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
             "Collar",
             "Point",
             self.crs_utm18s,
-            [("HoleID", QVariant.String), ("Elev", QVariant.Double)],
+            [("HoleID", QMetaType.Type.QString), ("Elev", QMetaType.Type.Double)],
         )
         c_feat = QgsFeature()
         c_feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(50, 50)))
@@ -179,10 +179,10 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
             "NoGeometry",
             self.crs_utm18s,
             [
-                ("HoleID", QVariant.String),
-                ("Depth", QVariant.Double),
-                ("Azim", QVariant.Double),
-                ("Incl", QVariant.Double),
+                ("HoleID", QMetaType.Type.QString),
+                ("Depth", QMetaType.Type.Double),
+                ("Azim", QMetaType.Type.Double),
+                ("Incl", QMetaType.Type.Double),
             ],
         )
 
@@ -200,10 +200,10 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
             "NoGeometry",
             self.crs_utm18s,
             [
-                ("HoleID", QVariant.String),
-                ("From", QVariant.Double),
-                ("To", QVariant.Double),
-                ("Lith", QVariant.String),
+                ("HoleID", QMetaType.Type.QString),
+                ("From", QMetaType.Type.Double),
+                ("To", QMetaType.Type.Double),
+                ("Lith", QMetaType.Type.QString),
             ],
         )
         # Interval covering the deviation

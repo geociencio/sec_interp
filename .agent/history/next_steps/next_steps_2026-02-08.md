@@ -1,14 +1,22 @@
-# Next Steps: update_ai_core_v321
+# Proximos Pasos - SecInterp
 
-## Resumen de Pendientes
-- [ ] Monitorear el score de i18n en el flujo de CI/CD para asegurar que la v3.2.1 mantiene la mejora.
-- [ ] Explorar mejoras adicionales en `i18n_improvement_guide.md` para alcanzar el 100% de cumplimiento.
-- [ ] Verificar compatibilidad con los nuevos hooks de pre-commit tras el formateo masivo.
+## 🎯 Objetivo Inmediato
+Consolidar la calidad del código tras la habilitación de reglas estrictas de Ruff y corregir los 686 problemas pendientes (docstrings, magic values, complejidad).
 
-## Comando para retomar
+## 🛠️ Acciones Pendientes
+1. **Corrección Masiva de Docstrings**:
+   - Priorizar módulos de `gui/ui/pages/` que carecen totalmente de documentación.
+   - Usar el estándar Google Docstrings.
+2. **Refactorización de Valores Mágicos (`PLR2004`)**:
+   - Extraer constantes en `gui/preview_layer_factory.py` y `gui/tools/interpretation_tool.py`.
+3. **Optimización de Firmas de Funciones (`PLR0913`)**:
+   - Evaluar el uso de dataclasses para agrupaer parámetros en métodos con más de 5 argumentos.
+
+## 🐛 Bugs del Analizador
+- Se debe asegurar que el parche aplicado localmente a `.venv/lib/python3.14/site-packages/analyzer/engine.py` (cambiando `--format` por `--output-format`) se reporte o se mantenga si se reinstala el entorno.
+- Revisar `docs/dev/qgis_analyzer_issues.md` para detalles técnicos.
+
+## 🚀 Comando para retomar
 ```bash
 /inicia-sesion
 ```
-
-## Notas adicionales
-La sesión concluyó con la actualización exitosa a `ai-context-core` v3.2.1, resolviendo los bugs de segmentación de i18n. El proyecto se reformateó completamente con `black` para asegurar consistencia tras los cambios.

@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Controller for SecInterp profile data generation.
 
 This module handles the orchestration of various data generation services
 (topography, geology, structures, drillholes) and manages result caching.
 """
+
+from __future__ import annotations
 
 import time
 from typing import Any
