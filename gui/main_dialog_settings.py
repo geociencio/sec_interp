@@ -5,6 +5,7 @@ from __future__ import annotations
 This module handles persistence of user settings between sessions.
 """
 
+import json
 from typing import TYPE_CHECKING, Any
 
 from sec_interp.logger_config import get_logger
@@ -12,7 +13,7 @@ from sec_interp.logger_config import get_logger
 from .main_dialog_config import DialogDefaults
 
 if TYPE_CHECKING:
-    pass
+    from sec_interp.gui.main_dialog import SecInterpDialog
 
 logger = get_logger(__name__)
 
@@ -20,16 +21,14 @@ logger = get_logger(__name__)
 class DialogSettingsManager:
     """Manages persistence of dialog settings."""
 
-    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
+    def __init__(self, dialog: SecInterpDialog):
         """Initialize settings manager with reference to parent dialog.
 
         Args:
-            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+            dialog: The main dialog instance.
 
         """
         self.dialog = dialog
-        # Access config service through the plugin instance controller
-        # Safety check for tests where plugin_instance might be mock or None
         self.config = None
         if hasattr(self.dialog, "plugin_instance") and self.dialog.plugin_instance:
             self.config = self.dialog.plugin_instance.controller.config_service
@@ -158,8 +157,6 @@ class DialogSettingsManager:
         custom_fields_json = self._get_setting("interp_custom_fields")
         if custom_fields_json:
             try:
-                import json
-
                 fields = json.loads(custom_fields_json)
                 p_interp.fields_table.setRowCount(0)
                 for f in fields:
@@ -168,7 +165,7 @@ class DialogSettingsManager:
                     p_interp.fields_table.item(row, 0).setText(f.get("name", ""))
                     p_interp.fields_table.cellWidget(row, 1).setCurrentText(f.get("type", "String"))
                     p_interp.fields_table.item(row, 2).setText(f.get("default", ""))
-            except Exception as e:
+            except (json.JSONDecodeError, TypeError) as e:
                 logger.warning(f"Failed to restore custom fields: {e}")
 
     def _load_preview_settings(self) -> None:
@@ -257,8 +254,6 @@ class DialogSettingsManager:
         self._save_check(p_interp.chk_inherit_geol, "interp_inherit_geol")
         self._save_check(p_interp.chk_inherit_drill, "interp_inherit_drill")
 
-        import json
-
         custom_fields = p_interp.get_data()["custom_fields"]
         self._set_setting("interp_custom_fields", json.dumps(custom_fields))
 
@@ -277,83 +272,93 @@ class DialogSettingsManager:
 
     def reset_to_defaults(self) -> None:
         """Reset all dialog inputs to their default values."""
-        # --- Section Page ---
-        self.dialog.page_section.line_combo.setLayer(None)
-        self.dialog.page_section.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
-
-        # --- DEM Page ---
-        self.dialog.page_dem.raster_combo.setLayer(None)
-        self.dialog.page_dem.band_combo.setBand(DialogDefaults.DEFAULT_BAND)
-        self.dialog.page_dem.scale_spin.setValue(float(DialogDefaults.SCALE))
-        self.dialog.page_dem.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
-
-        # --- Geology Page ---
-        self.dialog.page_geology.layer_combo.setLayer(None)
-        self.dialog.page_geology.field_combo.setField("")
-
-        # --- Structure Page ---
-        self.dialog.page_struct.layer_combo.setLayer(None)
-        self.dialog.page_struct.dip_combo.setField("")
-        self.dialog.page_struct.strike_combo.setField("")
-        self.dialog.page_struct.scale_spin.setValue(float(DialogDefaults.DIP_SCALE_FACTOR))
-
-        # --- Drillhole Page ---
-        dpage = self.dialog.page_drillhole
-        dpage.c_layer.setLayer(None)
-        dpage.c_id.setField("")
-        dpage.chk_use_geom.setChecked(True)
-        dpage.c_x.setField("")
-        dpage.c_y.setField("")
-        dpage.c_z.setField("")
-        dpage.c_depth.setField("")
-
-        dpage.s_layer.setLayer(None)
-        dpage.s_id.setField("")
-        dpage.s_depth.setField("")
-        dpage.s_azim.setField("")
-        dpage.s_incl.setField("")
-
-        dpage.i_layer.setLayer(None)
-        dpage.i_id.setField("")
-        dpage.i_from.setField("")
-        dpage.i_to.setField("")
-        dpage.i_lith.setField("")
-
-        # Output folder
-        self.dialog.output_widget.setFilePath("")
-
-        # --- Interpretation Page ---
-        self.dialog.page_interpretation.fields_table.setRowCount(0)
-        self.dialog.page_interpretation.chk_inherit_geol.setChecked(True)
-        self.dialog.page_interpretation.chk_inherit_drill.setChecked(True)
-
-        # --- Preview Widget ---
-        pw = self.dialog.preview_widget
-        pw.chk_topo.setChecked(True)
-        pw.chk_geol.setChecked(True)
-        pw.chk_struct.setChecked(True)
-        pw.chk_drillholes.setChecked(True)
-        pw.chk_interpretations.setChecked(True)
-        pw.chk_legend.setChecked(True)
-        pw.chk_auto_lod.setChecked(False)
-        pw.chk_adaptive_sampling.setChecked(True)
-        pw.spin_max_points.setValue(1000)
-
-        # Clear interpretations and measurements
-        if hasattr(self.dialog, "tool_manager"):
-            self.dialog.tool_manager.measure_tool.reset()
-
-        if hasattr(self.dialog, "interpretations"):
-            self.dialog.interpretations = []
-            # Persist empty state to project
-            if hasattr(self.dialog, "_save_interpretations"):
-                self.dialog._save_interpretations()
-            logger.info("Persistent interpretations cleared by reset")
+        self._reset_pages()
+        self._reset_preview()
+        self._reset_tools()
 
         self.dialog.preview_widget.results_text.append(
             self.dialog.tr("✓ Form reset to default values")
         )
         logger.info("Dialog reset to defaults by user")
+
+    def _reset_pages(self) -> None:
+        """Reset main input pages."""
+        # Section Page
+        self.dialog.page_section.line_combo.setLayer(None)
+        self.dialog.page_section.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
+
+        # DEM Page
+        self.dialog.page_dem.raster_combo.setLayer(None)
+        self.dialog.page_dem.band_combo.setBand(DialogDefaults.DEFAULT_BAND)
+        self.dialog.page_dem.scale_spin.setValue(float(DialogDefaults.SCALE))
+        self.dialog.page_dem.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
+
+        # Geology Page
+        self.dialog.page_geology.layer_combo.setLayer(None)
+        self.dialog.page_geology.field_combo.setField("")
+
+        # Structure Page
+        self.dialog.page_struct.layer_combo.setLayer(None)
+        self.dialog.page_struct.dip_combo.setField("")
+        self.dialog.page_struct.strike_combo.setField("")
+        self.dialog.page_struct.scale_spin.setValue(float(DialogDefaults.DIP_SCALE_FACTOR))
+
+        # Drillhole Page
+        dpage = self.dialog.page_drillhole
+        for combo in [dpage.c_layer, dpage.s_layer, dpage.i_layer]:
+            combo.setLayer(None)
+        for field in [
+            dpage.c_id,
+            dpage.c_x,
+            dpage.c_y,
+            dpage.c_z,
+            dpage.c_depth,
+            dpage.s_id,
+            dpage.s_depth,
+            dpage.s_azim,
+            dpage.s_incl,
+            dpage.i_id,
+            dpage.i_from,
+            dpage.i_to,
+            dpage.i_lith,
+        ]:
+            field.setField("")
+        dpage.chk_use_geom.setChecked(True)
+
+        # Output folder
+        self.dialog.output_widget.setFilePath("")
+
+        # Interpretation Page
+        self.dialog.page_interpretation.fields_table.setRowCount(0)
+        self.dialog.page_interpretation.chk_inherit_geol.setChecked(True)
+        self.dialog.page_interpretation.chk_inherit_drill.setChecked(True)
+
+    def _reset_preview(self) -> None:
+        """Reset preview widget settings."""
+        pw = self.dialog.preview_widget
+        for chk in [
+            pw.chk_topo,
+            pw.chk_geol,
+            pw.chk_struct,
+            pw.chk_drillholes,
+            pw.chk_interpretations,
+            pw.chk_legend,
+            pw.chk_adaptive_sampling,
+        ]:
+            chk.setChecked(True)
+        pw.chk_auto_lod.setChecked(False)
+        pw.spin_max_points.setValue(1000)
+
+    def _reset_tools(self) -> None:
+        """Reset interaction tools and internal data."""
+        if hasattr(self.dialog, "tool_manager"):
+            self.dialog.tool_manager.measure_tool.reset()
+
+        if hasattr(self.dialog, "interpretations"):
+            self.dialog.interpretations = []
+            if hasattr(self.dialog, "_save_interpretations"):
+                self.dialog._save_interpretations()
+            logger.info("Persistent interpretations cleared by reset")
 
     # --- Helper Methods ---
     def _parse_setting_value(self, val: Any) -> Any:
@@ -371,11 +376,20 @@ class DialogSettingsManager:
             if "." in str(val):
                 return float(val)
             return int(val)
-        except ValueError:
+        except (ValueError, TypeError):
             return val
 
     def _get_setting(self, key: str, default: Any = None) -> Any:
-        """Get setting from Project (multiple scopes) first, then Global config."""
+        """Get setting from Project (multiple scopes) first, then Global config.
+
+        Args:
+            key: Setting key.
+            default: Default value if not found.
+
+        Returns:
+            The setting value parsed to its original type.
+
+        """
         # 1. Try Project (New Scope)
         val, ok = self.dialog.project.readEntry("SecInterp", key, "")
         if not ok or val in (None, "", "None", "NULL"):
@@ -390,11 +404,14 @@ class DialogSettingsManager:
 
         # 2. Try Global fallback
         if self.config:
-            val = self.config.get(key, default)
-            parsed = self._parse_setting_value(val)
-            if parsed is not None:
-                logger.debug(f"Global setting fallback: {key} = {parsed}")
-                return parsed
+            try:
+                val = self.config.get(key, default)
+                parsed = self._parse_setting_value(val)
+                if parsed is not None:
+                    logger.debug(f"Global setting fallback: {key} = {parsed}")
+                    return parsed
+            except Exception as e:
+                logger.debug(f"Global config access failed for {key}: {e}")
 
         return default
 

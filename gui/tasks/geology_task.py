@@ -2,10 +2,10 @@ from __future__ import annotations
 
 """Task for async geology generation."""
 
-from collections.abc import Callable
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from qgis.core import Qgis, QgsMessageLog, QgsTask
+from qgis.PyQt.QtCore import pyqtSignal
 
 from sec_interp.core.domain import GeologyData, GeologyTaskInput
 from sec_interp.logger_config import get_logger
@@ -23,27 +23,31 @@ class GeologyGenerationTask(QgsTask):
     using only detached data (DTOs) to ensure thread safety.
     """
 
+    # Signals
+    finished_with_results = pyqtSignal(object)
+    error_occurred = pyqtSignal(str)
+    progress_changed = pyqtSignal(float)
+
     def __init__(
         self,
-        service: GeologyService,
+        description: str,
         task_input: GeologyTaskInput,
-        on_finished: Callable[[GeologyData], None],
-        on_error: Callable[[str], None] | None = None,
+        service: GeologyService,
+        params: Any,
     ):
         """Initialize the task.
 
         Args:
-            service: The GeologyService instance (stateless logic).
+            description: Description of the task.
             task_input: The detached data input DTO.
-            on_finished: Callback function to receive results (list of segments).
-            on_error: Optional callback for error handling.
+            service: The GeologyService instance (stateless logic).
+            params: Original params for context (backward compatibility).
 
         """
-        super().__init__("SecInterp: Generating Geology", QgsTask.CanCancel)
+        super().__init__(description, QgsTask.CanCancel)
         self.service = service
         self.task_input = task_input
-        self.on_finished_callback = on_finished
-        self.on_error_callback = on_error
+        self.params = params
 
         self.result: GeologyData | None = None
         self.exception: Exception | None = None
@@ -66,13 +70,16 @@ class GeologyGenerationTask(QgsTask):
         """Handle task completion on Main Thread."""
         if result:
             if self.result is None:
-                # Should not happen if run returns True
                 self.result = []
-            self.on_finished_callback(self.result)
+            self.finished_with_results.emit(self.result)
         elif self.exception:
             error_msg = str(self.exception)
             QgsMessageLog.logMessage(
                 f"Geology Task Failed: {error_msg}", "SecInterp", Qgis.Critical
             )
-            if self.on_error_callback:
-                self.on_error_callback(error_msg)
+            self.error_occurred.emit(error_msg)
+
+    def setProgress(self, progress: float):
+        """Override to emit signal."""
+        super().setProgress(progress)
+        self.progress_changed.emit(progress)

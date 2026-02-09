@@ -110,7 +110,7 @@ class PreviewRenderer:
             self._render_interpretations(interp_data, vert_exag)
 
         if not data_layers:
-            logger.warning("No valid layers to render")
+            logger.debug("No valid data layers to render yet")
             return None, []
 
         # 4. Axes and Labels
@@ -187,10 +187,6 @@ class PreviewRenderer:
             layers.append(i_layer)
 
         return layers
-
-        if not data_layers:
-            logger.warning("No valid layers to render")
-            return None, []
 
         # 4. Axes and Labels
         extent = self._calculate_extent(data_layers)

@@ -9,6 +9,8 @@ This module handles the orchestration of various data generation services
 import time
 from typing import Any
 
+from qgis.core import QgsDistanceArea, QgsProject
+
 from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
@@ -194,16 +196,33 @@ class ProfileController:
             if line_feat:
                 line_geom = line_feat.geometry()
                 if line_geom and not line_geom.isNull():
+                    line_start = scu.get_line_start_point(line_geom)
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
+
+                    da = QgsDistanceArea()
+                    da.setSourceCrs(
+                        params.line_layer.crs(),
+                        QgsProject.instance().transformContext(),
+                    )
+                    da.setEllipsoid(QgsProject.instance().ellipsoid())
+
+                    # 1. Detach structures
+                    detached_structs = self.structure_service.detach_structures(
+                        params.struct_layer, line_geom, params.buffer_dist
+                    )
+
+                    # 2. Project structures
                     struct_data = self.structure_service.project_structures(
-                        params.line_layer,
-                        params.raster_layer,
-                        params.struct_layer,
-                        params.buffer_dist,
-                        line_azimuth,
-                        params.dip_field,
-                        params.strike_field,
-                        params.band_num,
+                        line_geom=line_geom,
+                        line_start=line_start,
+                        da=da,
+                        raster_lyr=params.raster_layer,
+                        struct_data=detached_structs,
+                        buffer_m=params.buffer_dist,
+                        line_az=line_azimuth,
+                        dip_field=params.dip_field,
+                        strike_field=params.strike_field,
+                        band_number=params.band_num,
                     )
                     if struct_data:
                         self.data_cache.set("struct", struct_key, struct_data, cache_meta)

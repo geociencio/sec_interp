@@ -33,18 +33,18 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
     if line_geom.wkbType() == QgsWkbTypes.Point:
         return 0  # Points have no azimuth
 
-    if line_geom.wkbType() == QgsWkbTypes.LineString:
-        line = line_geom.asPolyline()
-        if len(line) < 2:
-            return 0
-        # Calculate azimuth of first segment (from first to second point)
-        p1 = line[0]
-        p2 = line[1]
-        azimuth = math.degrees(math.atan2(p2.x() - p1.x(), p2.y() - p1.y()))
-        # Convert to compass bearing (0-360)
-        if azimuth < 0:
-            azimuth += 360
-        return azimuth
+    line = line_geom.asMultiPolyline()[0] if line_geom.isMultipart() else line_geom.asPolyline()
+
+    if len(line) < 2:
+        return 0
+    # Calculate azimuth of first segment (from first to second point)
+    p1 = line[0]
+    p2 = line[1]
+    azimuth = math.degrees(math.atan2(p2.x() - p1.x(), p2.y() - p1.y()))
+    # Convert to compass bearing (0-360)
+    if azimuth < 0:
+        azimuth += 360
+    return azimuth
 
     # For other geometry types, return a default value
     return 0

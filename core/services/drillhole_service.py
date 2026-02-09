@@ -19,12 +19,16 @@ from qgis.core import (
 
 from sec_interp.core import utils as scu
 from sec_interp.core.domain import DrillholeTaskInput, GeologySegment
-from sec_interp.core.exceptions import SecInterpError, ValidationError
+from sec_interp.core.exceptions import (
+    SecInterpError,
+    ValidationError,
+)
 from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
 from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
 from sec_interp.core.services.drillhole.data_fetcher import DataFetcher
 from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
 from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
+from sec_interp.core.services.drillhole.trajectory_engine import TrajectoryEngine
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -41,10 +45,6 @@ class DrillholeService(IDrillholeService):
 
     def __init__(self) -> None:
         """Initialize the service with specialized processors."""
-        from sec_interp.core.services.drillhole.trajectory_engine import (
-            TrajectoryEngine,
-        )
-
         self.collar_processor = CollarProcessor()
         self.survey_processor = SurveyProcessor()
         self.interval_processor = IntervalProcessor()
@@ -55,7 +55,7 @@ class DrillholeService(IDrillholeService):
         self,
         collar_data: list[dict[str, Any]],
         line_data: Any,
-        distance_area: Any,
+        distance_area: QgsDistanceArea,
         buffer_width: float,
         collar_id_field: str,
         use_geometry: bool,
@@ -64,7 +64,7 @@ class DrillholeService(IDrillholeService):
         collar_z_field: str,
         collar_depth_field: str,
         pre_sampled_z: dict[Any, float] | None = None,
-    ) -> list[tuple[Any, float, float, float, float]]:
+    ) -> list[tuple]:
         """Project collar points onto section line using detached domain data.
 
         Args:
@@ -94,8 +94,8 @@ class DrillholeService(IDrillholeService):
         da = distance_area
         line_geom = line_data.geometry() if hasattr(line_data, "geometry") else line_data
         try:
-            line_start = line_geom.vertexAt(0)
-        except (AttributeError, TypeError, ValueError):
+            line_start = scu.get_line_start_point(line_geom)
+        except (AttributeError, TypeError, ValueError, SecInterpError):
             line_start = QgsPointXY(0, 0)  # Fallback
 
         results = []

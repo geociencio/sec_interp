@@ -1,12 +1,7 @@
 from __future__ import annotations
 
-"""Layer factory for SecInterp preview.
-
-Handles creation of temporary memory layers and configuration of native QGIS symbology.
-"""
-
 import math
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from qgis.core import (
     QgsFeature,
@@ -20,6 +15,15 @@ from qgis.PyQt.QtGui import QColor
 from sec_interp.core.domain import GeologyData, ProfileData, StructureData
 from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
 from sec_interp.logger_config import get_logger
+
+if TYPE_CHECKING:
+    from qgis.core import QgsVectorDataProvider
+
+    from sec_interp.gui.renderers.color_manager import ColorManager
+    from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
+    from sec_interp.gui.renderers.geology_renderer import GeologyRenderer
+    from sec_interp.gui.renderers.structure_renderer import StructureRenderer
+    from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 
 logger = get_logger(__name__)
 
@@ -38,7 +42,7 @@ class PreviewLayerFactory:
         if not value:
             self.color_manager._active_units = {}
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the layer factory with specialized renderers."""
         from sec_interp.gui.renderers.color_manager import ColorManager
         from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
@@ -46,11 +50,11 @@ class PreviewLayerFactory:
         from sec_interp.gui.renderers.structure_renderer import StructureRenderer
         from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 
-        self.color_manager = ColorManager()
-        self.topo_renderer = TopoRenderer()
-        self.geol_renderer = GeologyRenderer(self.color_manager)
-        self.struct_renderer = StructureRenderer()
-        self.drill_renderer = DrillholeRenderer(self.color_manager)
+        self.color_manager: ColorManager = ColorManager()
+        self.topo_renderer: TopoRenderer = TopoRenderer()
+        self.geol_renderer: GeologyRenderer = GeologyRenderer(self.color_manager)
+        self.struct_renderer: StructureRenderer = StructureRenderer()
+        self.drill_renderer: DrillholeRenderer = DrillholeRenderer(self.color_manager)
 
     def get_color_for_unit(self, name: str) -> QColor:
         """Get a consistent color for a geological unit based on its name."""
@@ -61,16 +65,16 @@ class PreviewLayerFactory:
         geometry_type: str,
         name: str,
         fields: str | None = None,
-    ) -> tuple[QgsVectorLayer | None, Any]:
-        """Create a memory layer with an unknown CRS.
+    ) -> tuple[QgsVectorLayer | None, QgsVectorDataProvider | None]:
+        """Create a memory layer with project CRS.
 
         Args:
-            geometry_type: "Point", "LineString", "Polygon"
-            name: Layer display name
-            fields: Optional field definition string (e.g., "field=id:integer")
+            geometry_type: Geometry type (e.g., "Point", "LineString").
+            name: Display name for the layer.
+            fields: Optional field definition URI string.
 
         Returns:
-            Tuple of (QgsVectorLayer, QgsDataProvider) or (None, None) if failed
+            Tuple of (Layer, DataProvider).
 
         """
         uri = geometry_type

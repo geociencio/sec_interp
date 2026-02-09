@@ -39,6 +39,16 @@ class PreviewService:
         """
         self.controller = controller
 
+    @property
+    def geology_service(self) -> Any:
+        """Expose geology service from controller."""
+        return self.controller.geology_service
+
+    @property
+    def drillhole_service(self) -> Any:
+        """Expose drillhole service from controller."""
+        return self.controller.drillhole_service
+
     @staticmethod
     def calculate_max_points(
         canvas_width: int,

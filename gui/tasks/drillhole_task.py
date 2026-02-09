@@ -2,10 +2,10 @@ from __future__ import annotations
 
 """Task for async drillhole generation."""
 
-from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from qgis.core import Qgis, QgsMessageLog, QgsTask
+from qgis.PyQt.QtCore import pyqtSignal
 
 from sec_interp.core.domain import DrillholeTaskInput
 from sec_interp.logger_config import get_logger
@@ -23,27 +23,30 @@ class DrillholeGenerationTask(QgsTask):
     using only detached data (DTOs) ensuring thread safety.
     """
 
+    # Signals
+    finished_with_results = pyqtSignal(object)
+    error_occurred = pyqtSignal(str)
+
     def __init__(
         self,
-        service: DrillholeService,
+        description: str,
         task_input: DrillholeTaskInput,
-        on_finished: Callable[[Any], None],
-        on_error: Callable[[str], None] | None = None,
+        service: DrillholeService,
+        params: Any,
     ):
         """Initialize the task.
 
         Args:
-            service: The DrillholeService instance (stateless logic).
+            description: Description of the task.
             task_input: The detached data input DTO.
-            on_finished: Callback function to receive results (drillhole tuple).
-            on_error: Optional callback for error handling.
+            service: The DrillholeService instance (stateless logic).
+            params: Original params for context (backward compatibility).
 
         """
-        super().__init__("SecInterp: Generating Drillholes", QgsTask.CanCancel)
+        super().__init__(description, QgsTask.CanCancel)
         self.service = service
         self.task_input = task_input
-        self.on_finished_callback = on_finished
-        self.on_error_callback = on_error
+        self.params = params
 
         # Result is tuple (geol_data_all, drillhole_data_all)
         self.result: Any | None = None
@@ -73,11 +76,10 @@ class DrillholeGenerationTask(QgsTask):
         if result:
             if self.result is None:
                 self.result = ([], [])
-            self.on_finished_callback(self.result)
+            self.finished_with_results.emit(self.result)
         elif self.exception:
             error_msg = str(self.exception)
             QgsMessageLog.logMessage(
                 f"Drillhole Task Failed: {error_msg}", "SecInterp", Qgis.Critical
             )
-            if self.on_error_callback:
-                self.on_error_callback(error_msg)
+            self.error_occurred.emit(error_msg)

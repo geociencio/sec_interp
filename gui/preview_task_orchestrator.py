@@ -60,20 +60,33 @@ class PreviewTaskOrchestrator:
         if self.drillhole_task:
             self.drillhole_task.cancel()
 
+        survey_fields_dict = {
+            "id": params.survey_id_field,
+            "depth": params.survey_depth_field,
+            "azim": params.survey_azim_field,
+            "incl": params.survey_incl_field,
+        }
+        interval_fields_dict = {
+            "id": params.interval_id_field,
+            "from": params.interval_from_field,
+            "to": params.interval_to_field,
+            "lith": params.interval_lith_field,
+        }
+
         task_input = service.prepare_task_input(
             params.line_layer,
-            params.buffer_width,
+            params.buffer_dist,
             params.collar_layer,
             params.collar_id_field,
-            params.use_geometry,
+            params.collar_use_geometry,
             params.collar_x_field,
             params.collar_y_field,
             params.collar_z_field,
             params.collar_depth_field,
             params.survey_layer,
-            params.survey_fields,
+            survey_fields_dict,
             params.interval_layer,
-            params.interval_fields,
+            interval_fields_dict,
             params.raster_layer,
             params.band_num,
         )

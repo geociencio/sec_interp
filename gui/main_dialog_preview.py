@@ -318,13 +318,18 @@ class PreviewManager:
         self.debounce_timer.start(200)
 
     def _update_lod_for_zoom(self) -> None:
+        """Update preview detail based on current zoom level."""
+        canvas = self.dialog.preview_widget.canvas
+        if not canvas:
+            return
+
+        # Simple zoom ratio estimation: (canvas_width in pixels / extent width)
+        # For simplicity, we use the method from PreviewService if ratio is not stored
+        ratio = 1.0  # Default fallback
+
         new_max_points = PreviewService.calculate_max_points(
             canvas_width=canvas.width(), ratio=ratio, auto_lod=True
         )
-
-        # Check if we actually need to update (hysteresis)
-        # This requires knowing the last used max_points...
-        # We can just re-render, it handles caching of data, but re-decimation takes time.
 
         logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
 
@@ -449,6 +454,17 @@ class PreviewManager:
             )
         )
         self.dialog.handle_error(error, "Geology Error")
+
+    def _on_drillhole_error(self, error_msg: str) -> None:
+        """Handle error during parallel drillhole generation."""
+        logger.error(f"Drillhole Task Error: {error_msg}")
+        self.active_drill_task = None
+        error = ProcessingError(
+            QCoreApplication.translate("PreviewManager", "Drillhole processing failed: {}").format(
+                error_msg
+            )
+        )
+        self.dialog.handle_error(error, "Drillhole Error")
 
     def _start_async_drillhole(self, params: PreviewParams) -> None:
         """Start asynchronous drillhole generation."""

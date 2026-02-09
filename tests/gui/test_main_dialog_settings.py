@@ -16,7 +16,7 @@ class TestMainDialogSettings(BaseTestCase):
         self.dialog.project = QgsProject.instance()
 
         # Reset project entries
-        self.dialog.project._entries = {}
+        self.dialog.project._settings = {}
         self.dialog.project._layers = {}
 
         # Mock plugin_instance and controller
@@ -57,13 +57,15 @@ class TestMainDialogSettings(BaseTestCase):
         self.manager._save_layer(combo, "test_layer")
 
         # Check that both ID and Name were stored (in project mock)
-        self.assertEqual(self.dialog.project._entries["SecInterp/test_layer"], "id_123")
         self.assertEqual(
-            self.dialog.project._entries["SecInterp/test_layer_name"], "RealName"
+            self.dialog.project._settings["SecInterp/test_layer"], "id_123"
+        )
+        self.assertEqual(
+            self.dialog.project._settings["SecInterp/test_layer_name"], "RealName"
         )
 
         # Now clear the ID (simulate new project) but keep the name
-        del self.dialog.project._entries["SecInterp/test_layer"]
+        del self.dialog.project._settings["SecInterp/test_layer"]
 
         # Add layer to project by name
         self.dialog.project._layers["some_other_id"] = mock_layer

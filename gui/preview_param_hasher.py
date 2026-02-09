@@ -30,17 +30,28 @@ class PreviewParamHasher:
         hash_parts.append(get_id(params.line_layer))
         hash_parts.append(get_id(params.raster_layer))
         hash_parts.append(get_id(params.outcrop_layer))
-        hash_parts.append(get_id(params.structure_layer))
-        hash_parts.append(get_id(params.drillhole_trace_layer))
-        hash_parts.append(get_id(params.drillhole_interval_layer))
+        hash_parts.append(get_id(params.struct_layer))
+        hash_parts.append(get_id(params.collar_layer))
+        hash_parts.append(get_id(params.survey_layer))
+        hash_parts.append(get_id(params.interval_layer))
 
-        # Settings
-        hash_parts.append(str(params.vert_exag))
-        hash_parts.append(str(params.buffer_width))
-        hash_parts.append(str(params.use_geometry))
+        # Core Settings
+        hash_parts.append(str(params.band_num))
+        hash_parts.append(str(params.buffer_dist))
+
+        # Structure Settings
+        hash_parts.append(str(params.dip_field))
+        hash_parts.append(str(params.strike_field))
+        hash_parts.append(str(params.dip_scale_factor))
+
+        # Drillhole Settings
+        hash_parts.append(str(params.collar_id_field))
+        hash_parts.append(str(params.collar_use_geometry))
+
+        # LOD Params
         hash_parts.append(str(params.max_points))
-        hash_parts.append(str(params.use_adaptive_sampling))
-        hash_parts.append(str(params.dip_line_length))
+        hash_parts.append(str(params.canvas_width))
+        hash_parts.append(str(params.auto_lod))
 
         # Join and hash
         combined = "|".join(hash_parts)

@@ -29,6 +29,12 @@ class ValidationError(SecInterpError):
     pass
 
 
+class ParameterError(ValidationError):
+    """Raised when an invalid parameter is provided to a service or tool."""
+
+    pass
+
+
 class ProcessingError(SecInterpError):
     """Raised when data processing fails."""
 

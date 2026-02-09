@@ -1,4 +1,4 @@
-tests/
+# tests/ (Habilitado para score de calidad)
 scripts/
 docs/
 antigravity-framerepo/

@@ -70,7 +70,15 @@ class DrillholeTraceShpExporter(BaseExporter):
             fields: The QGIS field collection.
 
         """
-        for hole_id, traces, _traces_3d, _traces_3d_proj, _ in drillhole_data:
+        for item in drillhole_data:
+            # Handle variable tuple length (legacy 5 vs new 3)
+            if len(item) == 3:
+                hole_id, traces, _ = item
+            elif len(item) >= 5:
+                hole_id, traces, _traces_3d, _traces_3d_proj, _ = item
+            else:
+                continue
+
             if not traces or len(traces) < 2:
                 continue
 
@@ -86,7 +94,17 @@ class DrillholeTraceShpExporter(BaseExporter):
 
     def _create_feature(self, hole_id: str, traces: list, fields: QgsFields) -> QgsFeature | None:
         """Create a trace feature from points."""
-        points = [QgsPointXY(d, e) for d, e in traces]
+        points = []
+        for p in traces:
+            # Handle SpatialMeta object or tuple/list
+            if hasattr(p, "dist_along") and hasattr(p, "z"):
+                points.append(QgsPointXY(p.dist_along, p.z))
+            elif isinstance(p, list | tuple) and len(p) >= 2:
+                points.append(QgsPointXY(p[0], p[1]))
+
+        if not points:
+            return None
+
         geom = QgsGeometry.fromPolylineXY(points)
 
         if not geom or geom.isNull():
@@ -147,7 +165,14 @@ class DrillholeIntervalShpExporter(BaseExporter):
             fields: The QGIS field collection.
 
         """
-        for hole_id, _, _, _, segments in drillhole_data:
+        for item in drillhole_data:
+            # Handle variable tuple length (legacy 5 vs new 3)
+            # Segments are always the last element
+            if len(item) == 3 or len(item) >= 5:
+                hole_id = item[0]
+                segments = item[-1]
+            else:
+                continue
             if not segments:
                 continue
 
