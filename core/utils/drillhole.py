@@ -42,11 +42,7 @@ def calculate_drillhole_trajectory(
         survey_data = [(0.0, 0.0, -90.0)]
 
     trajectory = []
-    try:
-        x = collar_point.x() if hasattr(collar_point, "x") else collar_point[0]
-        y = collar_point.y() if hasattr(collar_point, "y") else collar_point[1]
-    except (AttributeError, TypeError, IndexError):
-        x, y = 0.0, 0.0
+    x, y = _initialize_start_point(collar_point)
 
     z = collar_z
     prev_depth = 0.0
@@ -57,29 +53,10 @@ def calculate_drillhole_trajectory(
     last_survey_depth = 0.0
 
     for depth, azimuth, inclination in survey_data:
-        last_azim, last_incl, last_survey_depth = azimuth, inclination, depth
-        if depth <= prev_depth:
-            continue
-
-        interval = depth - prev_depth
-        total_dx, total_dy, total_dz = _calculate_segment_delta(interval, azimuth, inclination)
-
-        trajectory.extend(
-            _calculate_segment_points(
-                x,
-                y,
-                z,
-                prev_depth,
-                total_dx,
-                total_dy,
-                total_dz,
-                interval,
-                densify_step,
-            )
+        x, y, z, prev_depth = _process_survey_segment(
+            depth, azimuth, inclination, x, y, z, prev_depth, densify_step, trajectory
         )
-
-        x, y, z = x + total_dx, y + total_dy, z + total_dz
-        prev_depth = depth
+        last_azim, last_incl, last_survey_depth = azimuth, inclination, depth
 
     if total_depth > last_survey_depth:
         trajectory.extend(
@@ -108,6 +85,41 @@ def _calculate_segment_delta(
     dx = interval * math.sin(standard_incl_rad) * math.sin(azim_rad)
     dy = interval * math.sin(standard_incl_rad) * math.cos(azim_rad)
     return dx, dy, dz
+
+
+def _initialize_start_point(collar_point: Any) -> tuple[float, float]:
+    """Extract X and Y coordinates from a point-like object."""
+    try:
+        x = collar_point.x() if hasattr(collar_point, "x") else collar_point[0]
+        y = collar_point.y() if hasattr(collar_point, "y") else collar_point[1]
+        return float(x), float(y)
+    except (AttributeError, TypeError, IndexError):
+        return 0.0, 0.0
+
+
+def _process_survey_segment(
+    depth: float,
+    azimuth: float,
+    inclination: float,
+    x: float,
+    y: float,
+    z: float,
+    prev_depth: float,
+    densify_step: float,
+    trajectory: list,
+) -> tuple[float, float, float, float]:
+    """Process a single survey segment and update coordinates."""
+    if depth <= prev_depth:
+        return x, y, z, prev_depth
+
+    interval = depth - prev_depth
+    dx, dy, dz = _calculate_segment_delta(interval, azimuth, inclination)
+
+    trajectory.extend(
+        _calculate_segment_points(x, y, z, prev_depth, dx, dy, dz, interval, densify_step)
+    )
+
+    return x + dx, y + dy, z + dz, depth
 
 
 def _calculate_segment_points(

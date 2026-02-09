@@ -106,21 +106,27 @@ class ExportService:
 
         csv_exporter = CSVExporter({})
 
-        if options.get("exp_topo", True):
-            self._export_topography(folder, profile_data, line_crs, csv_exporter, msg)
-            self._export_axes(folder, profile_data, line_crs, msg)
-
-        if options.get("exp_geol", True):
-            self._export_geology(folder, geol_data, line_crs, csv_exporter, msg)
-
-        if options.get("exp_struct", True):
-            self._export_structures(folder, struct_data, params, line_crs, csv_exporter, msg)
-
-        if options.get("exp_drill", True):
-            self._export_drillholes(folder, drillhole_data, line_crs, msg, options)
-
-        if options.get("exp_interp", True):
-            self._export_interpretations(folder, interp_data, params.line_layer, line_crs, msg)
+        handlers = {
+            "exp_topo": lambda: (
+                self._export_topography(folder, profile_data, line_crs, csv_exporter, msg),
+                self._export_axes(folder, profile_data, line_crs, msg),
+            ),
+            "exp_geol": lambda: self._export_geology(
+                folder, geol_data, line_crs, csv_exporter, msg
+            ),
+            "exp_struct": lambda: self._export_structures(
+                folder, struct_data, params, line_crs, csv_exporter, msg
+            ),
+            "exp_drill": lambda: self._export_drillholes(
+                folder, drillhole_data, line_crs, msg, options
+            ),
+            "exp_interp": lambda: self._export_interpretations(
+                folder, interp_data, params.line_layer, line_crs, msg
+            ),
+        }
+        for opt, handler in handlers.items():
+            if options.get(opt, True):
+                handler()
 
     def _export_topography(
         self,
