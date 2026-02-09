@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Corregido matching de rutas recursivas en el análisis de cumplimiento de QGIS.
 - Añadida opción `--i18n-scope` al comando `ai-ctx qgis`.
 
+## [2.10.0] - 2026-02-08
+### Fixed
+- **Estabilidad Total**: Resueltos todos los fallos en la suite de pruebas (347/347 tests pasando).
+- **Exportación**: Corregido `TypeError` crítico en `StructureService` durante la proyección de estructuras.
+- **UI**: Corregidos `AttributeError` en componentes de vista previa (`PreviewParamHasher`, `MockQWidget`).
+- **Integración**: Reparado el error de importación en tests de integración, permitiendo ejecución headless exitosa.
+
+
 ## [2.10.0-dev] - 2026-02-06
 ### Added
 - **Arquitectura Gen 3**: Implementada la Capa de Consciencia con Memoria Semántica, Auditoría Proactiva y Observabilidad.

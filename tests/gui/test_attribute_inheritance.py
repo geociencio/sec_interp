@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from qgis.core import QgsPointXY, QgsApplication
-from sec_interp.gui.main_dialog import SecInterpDialog
+from sec_interp.gui.main_dialog_interpretation import DialogInterpretationManager
 from sec_interp.core.domain import InterpretationPolygon, GeologySegment
 
 
@@ -24,19 +24,18 @@ class TestAttributeInheritance(BaseTestCase):
         Test that inheritance picks the *geometrically* closest feature,
         even if its midpoint is further away.
         """
-        # 1. Setup Dialog with mocked cache
-        # Patch load_settings to avoid init crash
-        with patch("sec_interp.gui.main_dialog.DialogSettingsManager.load_settings"):
-            dialog = SecInterpDialog(None, MagicMock())
+        # 1. Setup DialogInterpretationManager with minimal mocks
+        mock_dialog = MagicMock()
+        mock_dialog.layer_factory = MagicMock()
+        mock_dialog.layer_factory.get_color_for_unit.return_value = MagicMock(
+            name=lambda: "#FF0000"
+        )
+        mock_dialog.preview_manager = MagicMock()
+
         # Mock cached data
         # geology segment: long line from x=10 to x=100. Midpoint x=55.
         # polygon: at x=12. Distance to geol start=2. Distance to geol mid=43.
         # drillhole: at x=30. Distance to poly=18.
-
-        # If we use midpoints:
-        # Dist to Geol(55) = 43
-        # Dist to DH(30) = 18
-        # -> Drillhole wins (WRONG, geol is actually 2 units away)
 
         geol_points = [(x, 0) for x in range(10, 101, 10)]  # 10, 20, ... 100
         geol_seg = GeologySegment(
@@ -65,10 +64,13 @@ class TestAttributeInheritance(BaseTestCase):
         dh_obj = MagicMock()
         dh_obj.intervals = [dh_int_obj]
 
-        dialog.preview_manager.cached_data = {
+        mock_dialog.preview_manager.cached_data = {
             "geol": [geol_seg],
             "drillhole": [dh_tuple, dh_obj],
         }
+
+        # Create InterpretationManager
+        interp_manager = DialogInterpretationManager(mock_dialog)
 
         # 2. Setup Polygon at x=12, y=0
         poly = InterpretationPolygon(
@@ -87,8 +89,7 @@ class TestAttributeInheritance(BaseTestCase):
         }
 
         # 4. Run Inheritance
-        dialog.layer_factory = MagicMock()  # Avoid AttributeError
-        dialog.interpretation_manager.apply_attribute_inheritance(poly, config)
+        interp_manager.apply_attribute_inheritance(poly, config)
 
         # 5. Assertions
         # We EXPECT GeologyUnit to win because the polygon is at x=12 and Geol starts at x=10 (dist=2).
@@ -103,4 +104,6 @@ class TestAttributeInheritance(BaseTestCase):
 
 
 if __name__ == "__main__":
+    import unittest
+
     unittest.main()

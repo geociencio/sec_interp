@@ -6,14 +6,21 @@ from .qt_mocks import mock_signal
 
 class MockQgsMapCanvas(MagicMock):
     def __init__(self, *args, **kwargs):
+        # CRITICAL: Call super().__init__() FIRST
         super().__init__(*args, **kwargs)
+
+        # Set custom attributes
         self.scene = MagicMock()
         self._layers = []
         self._map_settings = MagicMock()
         self._map_settings.mapUnitsPerPixel.return_value = 1.0
         self._map_settings.extent.return_value = MagicMock()
         self._map_settings.destinationCrs.return_value = MagicMock()
-        self.layers.return_value = self._layers
+
+        # Configure methods - AVOID accessing self.layers before assignment
+        self.layers = MagicMock(return_value=self._layers)
+        self.xyCoordinates = mock_signal()
+        self.scaleChanged = mock_signal()
 
     def mapSettings(self):
         return self._map_settings

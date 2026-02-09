@@ -60,9 +60,10 @@ class TestSettingsPage(BaseTestCase):
         page = SettingsPage()
 
         # Verify checkbox was set based on settings
-        # The checkbox is a Mock (because QtWidgets is mocked globally)
-        # So we check if setChecked(True) was called on it.
-        page.chk_enable_3d.setChecked.assert_called_with(True)
+        # The checkbox is a MockQWidget. We check if it is checked.
+        # But wait, QgsSettings logic sets the checkbox state.
+        # So we assert that the checkbox state changed.
+        self.assertTrue(page.chk_enable_3d.isChecked())
 
     def test_save_settings(self):
         """Test that changing settings saves to QgsSettings."""
@@ -71,7 +72,7 @@ class TestSettingsPage(BaseTestCase):
 
         # Simulate checkbox change
         # chk_enable_3d is a Mock. We set its state.
-        page.chk_enable_3d.isChecked.return_value = True
+        page.chk_enable_3d.setChecked(True)
 
         # Manually trigger the slot
         page._on_settings_changed()
@@ -84,7 +85,7 @@ class TestSettingsPage(BaseTestCase):
         page = SettingsPage()
 
         # Set mock state
-        page.chk_enable_3d.isChecked.return_value = True
+        page.chk_enable_3d.setChecked(True)
 
         data = page.get_data()
         self.assertEqual(

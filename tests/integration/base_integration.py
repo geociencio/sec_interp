@@ -4,9 +4,8 @@ import unittest
 # Disable mocks for integration tests
 os.environ["FORCE_MOCKS"] = "0"
 
-from tests.base_test import remove_mock_patches
-
-remove_mock_patches()
+# Note: FORCE_MOCKS=0 is checked in base_test.py to skip mock setup
+# No need to manually remove patches
 
 from qgis.core import QgsApplication
 
@@ -29,10 +28,9 @@ class BaseIntegrationTest(unittest.TestCase):
             cls.qgs.initQgis()
 
     def setUp(self):
-        """Reset mocks before each test to prevent state leakage."""
-        from tests.base_test import restore_mocks
-
-        restore_mocks()
+        """Setup for each test."""
+        # With FORCE_MOCKS=0, mocks are not applied, so no need to restore
+        pass
 
     @classmethod
     def tearDownClass(cls):

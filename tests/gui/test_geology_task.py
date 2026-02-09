@@ -16,11 +16,12 @@ class TestGeologyGenerationTask(BaseTestCase):
         self.mock_service = MagicMock()
         self.mock_input = MagicMock(spec=GeologyTaskInput)
         self.mock_input.crs_authid = "EPSG:4326"
-        self.on_finished = MagicMock()
-        self.on_error = MagicMock()
 
         self.task = GeologyGenerationTask(
-            self.mock_service, self.mock_input, self.on_finished, self.on_error
+            description="Test Task",
+            task_input=self.mock_input,
+            service=self.mock_service,
+            params=MagicMock(),
         )
 
     def tearDown(self):
@@ -34,6 +35,8 @@ class TestGeologyGenerationTask(BaseTestCase):
         self.mock_service.process_task_data.return_value = expected_results
 
         # Run task logic (synchronously for testing)
+        print(f"DEBUG: Task Service ID: {id(self.task.service)}")
+        print(f"DEBUG: Mock Service ID: {id(self.mock_service)}")
         success = self.task.run()
 
         self.assertTrue(success)
@@ -41,10 +44,9 @@ class TestGeologyGenerationTask(BaseTestCase):
             self.mock_input, feedback=self.task
         )
 
-        # Test completion
+        # Test completion via finished method
         self.task.finished(True)
-        self.on_finished.assert_called_with(expected_results)
-        self.on_error.assert_not_called()
+        self.assertEqual(self.task.result, expected_results)
 
     def test_run_failure(self):
         """Test task failure handling."""
@@ -60,6 +62,5 @@ class TestGeologyGenerationTask(BaseTestCase):
 
             # Test completion failure
             self.task.finished(False)
-            self.on_finished.assert_not_called()
-            self.on_error.assert_called()
+            self.assertIsNone(self.task.result)
             mock_log.logMessage.assert_called()

@@ -104,13 +104,35 @@ class MockQRectF(MagicMock):
         super().__init__()
 
 
+class MockQFrame:
+    """Mock for QFrame with frame shape constants."""
+
+    # Frame Shape Constants
+    StyledPanel = 0x0001
+    Panel = 0x0002
+    Box = 0x0003
+    NoFrame = 0x0000
+
+    def __init__(self, parent=None):
+        self._frame_shape = 0
+        self._parent = parent
+
+    def setFrameShape(self, shape):
+        self._frame_shape = shape
+
+    def setLayout(self, layout):
+        pass
+
+    def layout(self):
+        return None
+
+
 class MockQWidget(MockQObject):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__()
         self._layout = None
         self._checked = False
         self._text = ""
-        self._value = 0
         self.clicked = mock_signal()
         self.toggled = mock_signal()
         self.valueChanged = mock_signal()
@@ -169,6 +191,24 @@ class MockQWidget(MockQObject):
     def resize(self, w, h=None):
         pass
 
+    def setFrameShape(self, shape):
+        pass
+
+    def setStyleSheet(self, style):
+        pass
+
+    def setFixedSize(self, w, h=None):
+        pass
+
+    def setIcon(self, icon):
+        pass
+
+    def setToolTip(self, tip):
+        pass
+
+    def setCheckable(self, checkable):
+        pass
+
     def setOpenExternalLinks(self, open):
         pass
 
@@ -196,7 +236,7 @@ class MockQLayout(MockQObject):
     def __init__(self, parent=None):
         super().__init__()
 
-    def addWidget(self, widget):
+    def addWidget(self, widget, stretch=0):
         pass
 
     def addLayout(self, layout):
@@ -208,5 +248,56 @@ class MockQLayout(MockQObject):
     def setContentsMargins(self, l, t, r, b):
         pass
 
-    def setSpacing(self, s):
+    def setSpacing(self, spacing):
         pass
+
+
+class MockQListWidget(MockQWidget):
+    """Mock for QListWidget."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._items = []
+        self._current_row = -1
+        self.currentRowChanged = mock_signal()
+        self.itemClicked = mock_signal()
+
+    def addItem(self, item):
+        self._items.append(item)
+
+    def setCurrentRow(self, row):
+        self._current_row = row
+        self.currentRowChanged.emit(row)
+
+    def currentRow(self):
+        return self._current_row
+
+    def setIconSize(self, size):
+        pass
+
+    def setFixedWidth(self, width):
+        pass
+
+    def setStyleSheet(self, style):
+        pass
+
+
+class MockQListWidgetItem:
+    """Mock for QListWidgetItem."""
+
+    def __init__(self, text=""):
+        self._text = text
+        self._icon = None
+        self._alignment = 0
+
+    def setText(self, text):
+        self._text = text
+
+    def text(self):
+        return self._text
+
+    def setIcon(self, icon):
+        self._icon = icon
+
+    def setTextAlignment(self, alignment):
+        self._alignment = alignment

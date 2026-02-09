@@ -165,7 +165,9 @@ def restore_mocks():
     mock_qtwidgets.QVBoxLayout = MockQLayout
     mock_qtwidgets.QHBoxLayout = MockQLayout
     mock_qtwidgets.QScrollArea = MockQWidget
-    mock_qtwidgets.QFrame = MockQWidget
+    from .mocks.qt_mocks import MockQFrame
+
+    mock_qtwidgets.QFrame = MockQFrame
     mock_qtwidgets.QLabel = MockQWidget
     mock_qtwidgets.QPushButton = MockQWidget
     mock_qtwidgets.QCheckBox = MockQWidget
@@ -175,6 +177,10 @@ def restore_mocks():
     mock_qtwidgets.QGroupBox = MockQWidget
     mock_qtwidgets.QAbstractItemView = MockQWidget
     mock_qtwidgets.QListView = MockQWidget
+    from .mocks.qt_mocks import MockQListWidget, MockQListWidgetItem
+
+    mock_qtwidgets.QListWidget = MockQListWidget
+    mock_qtwidgets.QListWidgetItem = MockQListWidgetItem
     mock_qtwidgets.QLayout = MockQLayout
 
     # Core
