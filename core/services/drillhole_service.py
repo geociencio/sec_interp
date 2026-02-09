@@ -18,7 +18,7 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.domain import DrillholeTaskInput, GeologySegment, SpatialMeta
+from sec_interp.core.domain import DrillholeTaskInput, GeologySegment
 from sec_interp.core.exceptions import SecInterpError, ValidationError
 from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
 from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
@@ -41,10 +41,15 @@ class DrillholeService(IDrillholeService):
 
     def __init__(self) -> None:
         """Initialize the service with specialized processors."""
+        from sec_interp.core.services.drillhole.trajectory_engine import (
+            TrajectoryEngine,
+        )
+
         self.collar_processor = CollarProcessor()
         self.survey_processor = SurveyProcessor()
         self.interval_processor = IntervalProcessor()
         self.data_fetcher = DataFetcher()
+        self.trajectory_engine = TrajectoryEngine()
 
     def project_collars(
         self,
@@ -475,30 +480,17 @@ class DrillholeService(IDrillholeService):
         collar_y_field: str,
     ) -> dict[Any, QgsPointXY]:
         """Build a mapping of hole IDs to collar coordinates."""
-        collar_coords = {}
-        for item in collar_data:
-            hid = item["id"]
-            wkt = item.get("wkt")
-            attrs = item["attributes"]
-            pt = None
-            if use_geometry and wkt:
-                pt = QgsGeometry.fromWkt(wkt).asPoint()
-            else:
-                pt = self._extract_point_from_attrs(attrs, collar_x_field, collar_y_field)
-            if pt:
-                collar_coords[hid] = pt
-        return collar_coords
+        return self.collar_processor.build_coordinate_map(
+            collar_data, use_geometry, collar_x_field, collar_y_field
+        )
 
     def _extract_point_from_attrs(
         self, attrs: dict[str, Any], x_field: str, y_field: str
     ) -> QgsPointXY | None:
         """Safely extract a point from attribute dictionary."""
-        try:
-            x = float(attrs.get(x_field, 0))
-            y = float(attrs.get(y_field, 0))
-            return QgsPointXY(x, y)
-        except (ValueError, TypeError):
-            return None
+        return self.collar_processor.extract_point_agnostic(
+            {"attributes": attrs}, True, False, x_field, y_field
+        )
 
     def _process_hole_batch(
         self,
@@ -556,51 +548,20 @@ class DrillholeService(IDrillholeService):
         buffer_width: float,
         section_azimuth: float,
     ) -> tuple[list[GeologySegment], tuple]:
-        """Process a single drillhole's trajectory and intervals.
-
-        Args:
-            hole_id: Unique identifier.
-            collar_point: 3D point in map coordinates.
-            collar_z: Collar elevation.
-            given_depth: Nominal hole depth.
-            survey_data: List of dip/azim readings.
-            intervals: List of geological intervals.
-            line_geom: Section geometry.
-            line_start: Section start point.
-            distance_area: Measurement tool.
-            buffer_width: Buffer distance.
-            section_azimuth: Section azimuth.
-
-        Returns:
-            Tuple (list_of_geology_segments, final_hole_tuple).
-
-        """
-        # 1. Determine Final Depth
-        final_depth = self.survey_processor.determine_final_depth(
-            given_depth, survey_data, intervals
-        )
-
-        # 2. Trajectory and Projection
-        trajectory = scu.calculate_drillhole_trajectory(
+        """Process a single drillhole's trajectory and intervals."""
+        return self.trajectory_engine.process_single_hole(
+            hole_id,
             collar_point,
             collar_z,
+            given_depth,
             survey_data,
+            intervals,
+            line_geom,
+            line_start,
+            distance_area,
+            buffer_width,
             section_azimuth,
-            total_depth=final_depth,
         )
-        projected_traj = scu.project_trajectory_to_section(
-            trajectory, line_geom, line_start, distance_area
-        )
-
-        # 3. Interpolate Intervals
-        hole_geol_data = self.interval_processor.interpolate_hole_intervals(
-            projected_traj, intervals, buffer_width
-        )
-
-        # 4. Generate trace results
-        hole_tuple = self._create_drillhole_result_tuple(hole_id, projected_traj, hole_geol_data)
-
-        return hole_geol_data, hole_tuple
 
     def _create_drillhole_result_tuple(
         self,
@@ -609,27 +570,8 @@ class DrillholeService(IDrillholeService):
         hole_geol_data: list[GeologySegment],
     ) -> tuple:
         """Create the final result tuple for a drillhole using SpatialMeta."""
-        # projected_traj elements: (depth, x, y, z, dist_along, offset, nx, ny)
-        spatial_points = []
-        for p in projected_traj:
-            spatial_points.append(
-                SpatialMeta(
-                    hole_id=str(hole_id),
-                    dist_along=p[4],
-                    offset=p[5],
-                    z=p[3],
-                    x_3d=p[1],
-                    y_3d=p[2],
-                    x_proj=p[6],
-                    y_proj=p[7],
-                    # Optional normals calculation could go here if needed
-                )
-            )
-
-        return (
-            hole_id,
-            spatial_points,
-            hole_geol_data,
+        return self.trajectory_engine.create_drillhole_result_tuple(
+            hole_id, projected_traj, hole_geol_data
         )
 
     def _safe_process_single_hole(

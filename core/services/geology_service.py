@@ -42,11 +42,6 @@ from sec_interp.core.interfaces.geology_interface import IGeologyService
 from sec_interp.core.performance_metrics import performance_monitor
 from sec_interp.core.services.geology.outcrop_processor import OutcropProcessor
 from sec_interp.core.services.geology.profile_sampler import ProfileSampler
-from sec_interp.core.utils.geometry_utils.extraction import extract_lines_from_geometry
-from sec_interp.core.utils.geometry_utils.processing import (
-    calculate_segment_range,
-    interpolate_segment_points,
-)
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -255,47 +250,17 @@ class GeologyService(IGeologyService):
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> list[GeologySegment]:
-        """Process a detached intersection geometry to extract geology segments.
-
-        Handles multi-part geometries resulting from complex intersections.
-
-        Args:
-            geom: Intersection geometry (detachable).
-            attrs: Feature attributes.
-            unit_name: Geological unit name.
-            line_start: Section start point.
-            da: Distance calculator.
-            master_grid_dists: Master grid distances.
-            master_profile_data: Master profile elevation data.
-            tolerance: Interpolation tolerance.
-
-        Returns:
-            List of GeologySegment objects.
-
-        """
-        if not geom or geom.isNull():
-            return []
-
-        geometries = extract_lines_from_geometry(geom)
-        if not geometries:
-            return []
-
-        segments = []
-        for seg_geom in geometries:
-            segment = self._create_segment_from_geometry(
-                seg_geom,
-                attrs,
-                unit_name,
-                line_start,
-                da,
-                master_grid_dists,
-                master_profile_data,
-                tolerance,
-            )
-            if segment:
-                segments.append(segment)
-
-        return segments
+        """Process a detached intersection geometry to extract geology segments."""
+        return self.outcrop_processor.process_detached_intersection(
+            geom,
+            attrs,
+            unit_name,
+            line_start,
+            da,
+            master_grid_dists,
+            master_profile_data,
+            tolerance,
+        )
 
     def _process_single_outcrop(
         self,
@@ -346,39 +311,16 @@ class GeologyService(IGeologyService):
         master_profile_data: list[tuple[float, float]],
         tolerance: float,
     ) -> GeologySegment | None:
-        """Create a GeologySegment from a geometry part by sampling elevations.
-
-        Calculates the distance range of the segment along the section and
-        interpolates elevations from the master profile.
-
-        Args:
-            seg_geom: Part geometry.
-            attributes: Original feature attributes.
-            unit_name: Unit name.
-            line_start: Section start point.
-            da: Distance calculator.
-            master_grid_dists: Master grid data.
-            master_profile_data: Master profile data.
-            tolerance: Sampling tolerance.
-
-        Returns:
-            GeologySegment or None if geometry is invalid.
-
-        """
-        rng = calculate_segment_range(seg_geom, line_start, da)
-        if not rng:
-            return None
-
-        dist_start, dist_end = rng
-        segment_points = interpolate_segment_points(
-            dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
-        )
-
-        return GeologySegment(
-            unit_name=unit_name,
-            geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
-            attributes=attributes,
-            points=[(float(d), float(e)) for d, e in segment_points],
+        """Create a GeologySegment from a geometry part by sampling elevations."""
+        return self.outcrop_processor.create_segment_from_geometry(
+            seg_geom,
+            attributes,
+            unit_name,
+            line_start,
+            da,
+            master_grid_dists,
+            master_profile_data,
+            tolerance,
         )
 
     def _extract_line_info(self, line_lyr: QgsVectorLayer) -> tuple[QgsGeometry, QgsPointXY]:

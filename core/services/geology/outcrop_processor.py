@@ -4,7 +4,19 @@ from __future__ import annotations
 
 from typing import Any
 
-from qgis.core import QgsFeatureRequest, QgsGeometry, QgsVectorLayer
+from qgis.core import (
+    QgsDistanceArea,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsPointXY,
+    QgsVectorLayer,
+)
+from sec_interp.core.domain import GeologySegment
+from sec_interp.core.utils.geometry_utils.extraction import extract_lines_from_geometry
+from sec_interp.core.utils.geometry_utils.processing import (
+    calculate_segment_range,
+    interpolate_segment_points,
+)
 
 
 class OutcropProcessor:
@@ -16,17 +28,7 @@ class OutcropProcessor:
         outcrop_lyr: QgsVectorLayer,
         outcrop_name_field: str,
     ) -> list[dict[str, Any]]:
-        """Extract outcrop features intersecting the line bounding box (detached).
-
-        Args:
-            line_geom: Section line geometry.
-            outcrop_lyr: Outcrop vector layer.
-            outcrop_name_field: Field for geological unit names.
-
-        Returns:
-            List of detached outcrop dictionaries.
-
-        """
+        """Extract outcrop features intersecting the line bounding box (detached)."""
         outcrop_data = []
         line_bbox = line_geom.boundingBox()
         request = QgsFeatureRequest().setFilterRect(line_bbox)
@@ -49,3 +51,67 @@ class OutcropProcessor:
                 }
             )
         return outcrop_data
+
+    def process_detached_intersection(
+        self,
+        geom: QgsGeometry,
+        attrs: dict[str, Any],
+        unit_name: str,
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
+        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_profile_data: list[tuple[float, float]],
+        tolerance: float,
+    ) -> list[GeologySegment]:
+        """Process a detached intersection geometry to extract geology segments."""
+        if not geom or geom.isNull():
+            return []
+
+        geometries = extract_lines_from_geometry(geom)
+        if not geometries:
+            return []
+
+        segments = []
+        for seg_geom in geometries:
+            segment = self.create_segment_from_geometry(
+                seg_geom,
+                attrs,
+                unit_name,
+                line_start,
+                da,
+                master_grid_dists,
+                master_profile_data,
+                tolerance,
+            )
+            if segment:
+                segments.append(segment)
+
+        return segments
+
+    def create_segment_from_geometry(
+        self,
+        seg_geom: QgsGeometry,
+        attributes: dict[str, Any],
+        unit_name: str,
+        line_start: QgsPointXY,
+        da: QgsDistanceArea,
+        master_grid_dists: list[tuple[float, QgsPointXY, float]],
+        master_profile_data: list[tuple[float, float]],
+        tolerance: float,
+    ) -> GeologySegment | None:
+        """Create a GeologySegment from a geometry part by sampling elevations."""
+        rng = calculate_segment_range(seg_geom, line_start, da)
+        if not rng:
+            return None
+
+        dist_start, dist_end = rng
+        segment_points = interpolate_segment_points(
+            dist_start, dist_end, master_grid_dists, master_profile_data, tolerance
+        )
+
+        return GeologySegment(
+            unit_name=unit_name,
+            geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
+            attributes=attributes,
+            points=[(float(d), float(e)) for d, e in segment_points],
+        )

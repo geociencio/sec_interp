@@ -254,3 +254,25 @@ class CollarProcessor:
             with contextlib.suppress(ValueError, TypeError, KeyError):
                 depth = float(attrs.get(depth_f, 0.0)) if is_dict else float(attrs[depth_f] or 0.0)
         return depth
+
+    def build_coordinate_map(
+        self,
+        collar_data: list[dict[str, Any]],
+        use_geometry: bool,
+        collar_x_field: str,
+        collar_y_field: str,
+    ) -> dict[Any, QgsPointXY]:
+        """Build a mapping of hole IDs to collar coordinates."""
+        collar_coords = {}
+        for item in collar_data:
+            hid = item["id"]
+            pt = self.extract_point_agnostic(
+                item,
+                True,  # is_dict
+                use_geometry,
+                collar_x_field,
+                collar_y_field,
+            )
+            if pt:
+                collar_coords[hid] = pt
+        return collar_coords
