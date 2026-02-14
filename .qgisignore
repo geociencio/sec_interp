@@ -1,0 +1,72 @@
+# Version Control & Build
+.git*
+.venv*
+__pycache__
+*.pyc
+tests/
+scripts/
+docs/
+.agent/
+.gemini/
+.gemini-temp/
+dist/
+Makefile
+uv.lock
+pyproject.toml
+
+# AI Context & Analysis
+.ai_context_cache.json
+analysis_results/
+analysis_results_final/
+bandit_report.json
+project_context.json
+quality_details.json
+latest_quality_report.md
+report.md
+ai-context-core-patch.md
+ARCHITECTURE.mmd
+AI_CONTEXT.md
+antigravity-framerepo/
+
+# Example Data (too heavy for distribution)
+examples/sample_data/
+
+# Translation source files (only .qm compiled files are needed)
+i18n/*.ts
+
+# Resources source (only compiled .py is needed)
+resources/resources.qrc
+resources/resources.py~
+metadata.txt~
+
+# Development noise
+.devcontainer/
+*.zip
+*.tar.gz
+*.sha256
+agentic_framework_skeleton.zip
+antigravity_framework_starter_kit.zip
+AGENTS.md
+prompt_*.txt
+ai_ctx_bug_report.md
+reproduce_*.py
+.flake8
+.bandit
+.secrets.baseline
+PROJECT_SUMMARY.md
+.qgisignore
+.dockerignore
+symbology-style.db
+
+# Logs and Coverage
+logs/
+*.log*
+.coverage
+final_analysis/
+final_standard_analysis/
+analyzer_config.json
+.analyzerignore
+README_DEV.md
+Dockerfile
+*.qgs~
+help/

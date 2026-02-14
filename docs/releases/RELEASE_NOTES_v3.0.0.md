@@ -13,7 +13,7 @@ Highlights
 
 Notable Changes (Detailed)
 ----------------------------
-- **Internacionalización (I18n)**: 
+- **Internacionalización (I18n)**:
     - Automated translation workflow integrated with `ai-context-core`.
     - 100% translation coverage for UI components.
 - **Core Services**:
