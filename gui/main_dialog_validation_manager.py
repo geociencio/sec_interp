@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Validation manager for SecInterp main dialog.
 
 This module provides a declarative way to define and execute validation rules
 for the main dialog UI, separating UI logic from core business rules.
 """
+
+from __future__ import annotations
 
 from typing import TYPE_CHECKING
 

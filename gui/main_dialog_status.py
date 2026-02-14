@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """UI status management module for SecInterp main dialog.
 
 This module handles updating button states, preview checkboxes, and
 required field indicators.
 """
+
+from __future__ import annotations
 
 from typing import TYPE_CHECKING
 

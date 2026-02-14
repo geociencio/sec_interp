@@ -181,24 +181,39 @@ class DrillholeService(IDrillholeService):
         )
 
         # 1. Filter and Detach Collars
-        collar_ids, collar_data, pre_sampled_z = self.collar_processor.detach_features(
-            collar_layer,
-            line_geom,
-            buffer_width,
-            collar_id_field,
-            use_geometry,
-            collar_x_field,
-            collar_y_field,
-            collar_z_field,
-            dem_layer,
-            target_crs=line_crs,
-        )
+        collar_ids = set()
+        collar_data = []
+        pre_sampled_z = {}
+        if collar_layer:
+            (
+                collar_ids,
+                collar_data,
+                pre_sampled_z,
+            ) = self.collar_processor.detach_features(
+                collar_layer,
+                line_geom,
+                buffer_width,
+                collar_id_field,
+                use_geometry,
+                collar_x_field,
+                collar_y_field,
+                collar_z_field,
+                dem_layer,
+                target_crs=line_crs,
+            )
 
         # 2. Bulk Fetch Child Data (Sync)
-        survey_map = self.data_fetcher.fetch_bulk_data(survey_layer, collar_ids, survey_fields)
-        interval_map = self.data_fetcher.fetch_bulk_data(
-            interval_layer, collar_ids, interval_fields
-        )
+        survey_map = {}
+        interval_map = {}
+        if collar_ids:
+            if survey_layer:
+                survey_map = self.data_fetcher.fetch_bulk_data(
+                    survey_layer, collar_ids, survey_fields
+                )
+            if interval_layer:
+                interval_map = self.data_fetcher.fetch_bulk_data(
+                    interval_layer, collar_ids, interval_fields
+                )
 
         return DrillholeTaskInput(
             line_geometry_wkt=line_geom.asWkt(),
@@ -296,6 +311,9 @@ class DrillholeService(IDrillholeService):
         validate_positive("Buffer width")(buffer_width)
         validate_range(0, 360, "Section azimuth")(section_azimuth)
 
+        if not collar_layer:
+            return
+
         fields = collar_layer.fields()
         if id_field and fields.indexFromName(id_field) == -1:
             raise ValidationError(f"Collar ID field '{id_field}' not found.")
@@ -304,8 +322,6 @@ class DrillholeService(IDrillholeService):
             for f in [x_field, y_field]:
                 if f and fields.indexFromName(f) == -1:
                     raise ValidationError(f"Field '{f}' not found for coordinate extraction.")
-            if y_field and collar_layer.fields().indexFromName(y_field) == -1:
-                raise ValidationError(f"Field '{y_field}' not found in collar layer.")
 
     def process_task_data(self, task_input: DrillholeTaskInput, feedback: Any | None = None) -> Any:
         """Process drillholes using detached domain data (Thread-Safe).

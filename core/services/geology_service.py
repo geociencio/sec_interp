@@ -133,9 +133,11 @@ class GeologyService(IGeologyService):
         master_grid_dists = [(d, (pt.x(), pt.y()), e) for d, pt, e in master_grid_dists_raw]
 
         # 2. Extract Outcrop Data (needs Vector access)
-        outcrop_data = self.outcrop_processor.extract_outcrop_data(
-            line_geom, outcrop_lyr, outcrop_name_field
-        )
+        outcrop_data = []
+        if outcrop_lyr:
+            outcrop_data = self.outcrop_processor.extract_outcrop_data(
+                line_geom, outcrop_lyr, outcrop_name_field
+            )
 
         return GeologyTaskInput(
             line_geometry_wkt=line_geom.asWkt(),
@@ -178,13 +180,18 @@ class GeologyService(IGeologyService):
         for lyr, name in [
             (line_lyr, "Line layer"),
             (raster_lyr, "Raster layer"),
-            (outcrop_lyr, "Outcrop layer"),
         ]:
             if not lyr or not lyr.isValid():
                 raise DataMissingError(
                     f"Invalid layer: {name}. Please check input layers.",
                     {"layer": name},
                 )
+
+        if outcrop_lyr and not outcrop_lyr.isValid():
+            raise DataMissingError(
+                "Invalid layer: Outcrop layer. Please check input layers.",
+                {"layer": "Outcrop layer"},
+            )
 
         # 2. Band Validation
         if band_number < 1:
@@ -196,9 +203,10 @@ class GeologyService(IGeologyService):
             )
 
         # 3. Field Validation
-        idx = outcrop_lyr.fields().indexFromName(outcrop_name_field)
-        if idx == -1:
-            raise ValidationError(f"Field '{outcrop_name_field}' not found in outcrop layer.")
+        if outcrop_lyr:
+            idx = outcrop_lyr.fields().indexFromName(outcrop_name_field)
+            if idx == -1:
+                raise ValidationError(f"Field '{outcrop_name_field}' not found in outcrop layer.")
 
     def process_task_data(
         self, task_input: GeologyTaskInput, feedback: Any | None = None

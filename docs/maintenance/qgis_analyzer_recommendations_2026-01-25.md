@@ -1,7 +1,7 @@
 # 🔍 Análisis con QGIS Plugin Analyzer - Recomendaciones para el Equipo de Desarrollo
 
 **Fecha**: 2026-01-25
-** Herramienta**: qgis-plugin-analyzer v1.4.0
+**Herramienta**: QGIS Plugin Analyzer (ejecutado vía `qgis-analyzer`) v1.4.0
 **Proyecto**: SecInterp v2.8.0
 
 ---
@@ -372,7 +372,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run QGIS Plugin Analyzer
         run: |
-          python -m qgis_plugin_analyzer analyze . --report
+          uv run qgis-analyzer analyze . --report
       - name: Quality Gate
         run: |
           # Fail if overall score < 50

@@ -980,11 +980,11 @@ wheels = [
 
 [[package]]
 name = "qgis-plugin-analyzer"
-version = "1.6.0"
+version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/70/7f/243e4749e5ce0eb74edc58e8ac17fb5daf2d7e792c361a4cd986160a6db0/qgis_plugin_analyzer-1.6.0.tar.gz", hash = "sha256:94e92a2434d739c6e6bf376094fb1e3e36bebb58330d28d73d7d06bee197d78b", size = 80872, upload-time = "2026-02-04T03:04:21.1Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b2/35/d1f337f968c5bee9a11bea71d7eac08f30aa2514763f065cbb4fef7754d4/qgis_plugin_analyzer-1.7.0.tar.gz", hash = "sha256:f610f0f8a4e89f4b70ae887602bab3fd9bc693eb27a17c3a06ab28b79b0e5d36", size = 90511, upload-time = "2026-02-09T06:15:32.13Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/ad/5403e8bf75246c90e9278451e520e2404928096d4b105beed8bc647ab2cc/qgis_plugin_analyzer-1.6.0-py3-none-any.whl", hash = "sha256:eb7a777e5b01c8661a3e888f0b15deed8d87964603852a3c9d8c43a32350cbea", size = 87281, upload-time = "2026-02-04T03:04:19.839Z" },
+    { url = "https://files.pythonhosted.org/packages/01/5e/7e6c1728c2a936edb3460b77e42fe4adced7b6ada134b315b45155d59985/qgis_plugin_analyzer-1.7.0-py3-none-any.whl", hash = "sha256:1b1642ee5dea47f8f2288c4295d58761546d74686626eebbf1353bddab6f808a", size = 97353, upload-time = "2026-02-09T06:15:33.525Z" },
 ]
 
 [[package]]
@@ -1122,7 +1122,7 @@ dev = [
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-mock", specifier = ">=3.15.1" },
     { name = "pytest-qt", specifier = ">=4.5.0" },
-    { name = "qgis-plugin-analyzer", specifier = ">=1.6.0" },
+    { name = "qgis-plugin-analyzer", specifier = ">=1.7.0" },
     { name = "qgis-plugin-manager", git = "https://github.com/geociencio/qgis-plugin-manager" },
     { name = "ruff", specifier = ">=0.4.0" },
     { name = "setuptools", specifier = ">=70.0.0" },

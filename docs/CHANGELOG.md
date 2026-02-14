@@ -7,8 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- **Auditoría**: Actualización a `qgis-plugin-analyzer` v1.7.0 con soporte para el nuevo comando `qgis-analyzer`.
+- **Documentación**: Clarificación global entre nombre de herramienta (`qgis-plugin-analyzer`) y comando CLI (`qgis-analyzer`).
 - **Auditoría Estricta**: Habilitadas reglas de Ruff para Complejidad (`C901`), Argumentos (`PLR0913`), Valores Mágicos (`PLR2004`) y Docstrings (`D10x`).
 - **Docs Dev**: Reporte de incidencias técnicas en el analizador de plugins.
+
+### Fixed
+- **Hotfix**: Corregido bug en `DrillholeService` que causaba `AttributeError` al procesar sondajes sin capas opcionales (Survey/Intervals) configuradas.
+- **Validación**: Fortalecida la validación de la ruta de salida en el diálogo principal para evitar el botón "Save" habilitado sin ruta válida.
+- **UI**: Corregido typo en `DialogStatusManager` (`btn_save`) que impedía la correcta gestión de estado del botón de exportación.
+- **UI**: Añadida capa de seguridad en `ExportManager` para validar la existencia de una carpeta de salida antes de iniciar el proceso.
 
 ### Changed
 - **Linter**: Endurecimiento de la configuración de `pyproject.toml` para reflejar la calidad real del código.

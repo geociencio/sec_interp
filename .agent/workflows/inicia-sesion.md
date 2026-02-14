@@ -3,7 +3,7 @@ description: Procedimiento estándar y robusto para iniciar una sesión de desar
 agent: Senior Architect
 skills: [qgis-core, qa-docker, agentic-memory]
 validation: |
-  - Verificar que 361 tests pasen en Docker
+  - Verificar que todos los tests pasen en Docker
   - Confirmar que AI_CONTEXT.md está actualizado con métricas recientes
 
   - Validar que no hay regresiones en complejidad ciclomática
@@ -15,7 +15,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     Actualiza y lee el contexto para entender "dónde nos quedamos".
     // turbo
     ```bash
-    ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/AGENT_LESSONS.md
+    uv run ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/AGENT_LESSONS.md
     ```
 
     🤖 **Agent Action**: Validar Tareas Activas.
@@ -32,7 +32,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
 
 
     Revisa los siguientes archivos en este orden:
-    *   `docs/plans/implementation_plan_v2.8.0.md`: **Mapa de Ruta Maestro**. Fuente de verdad sobre tareas completadas.
+    *   `docs/plans/implementation_plan_v2.10.0.md`: **Mapa de Ruta Maestro**. Fuente de verdad sobre tareas completadas.
     *   `.agent/next_steps.md`: **El Testigo**. Punto exacto donde se detuvo la sesión anterior.
     *   `.agent/memory/AGENT_LESSONS.md`: **El Cerebro**. Historial de lecciones, preferencias y patrones de error a evitar.
     *   `AI_CONTEXT.md`: Memoria de largo plazo, métricas y directrices de alto nivel.
@@ -52,7 +52,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     🤖 **Agent Action**: Verificar que no hay conflictos de dependencias relacionadas con PyQGIS.
 
 3.  **Verificación de Estado (Sanity Check)**:
-    Confirma que el sistema está estable ("en verde"). Todos los tests (361) deben pasar.
+    Confirma que el sistema está estable ("en verde"). Todos los tests deben pasar.
 
     *Opción A (Docker - Recomendado):*
     // turbo
@@ -68,7 +68,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     🤖 **Agent Action**: Usar skill **qa-docker** para interpretar fallos de tests e identificar regresiones.
 
 ## Resultado Esperado
-- Entorno sincronizado y validado (361 tests OK).
+- Entorno sincronizado y validado (Todos los tests OK).
 - Mapa mental claro de las tareas pendientes en `next_steps.md`.
 - Agente operando con los perfiles y skills correctos cargados.
 

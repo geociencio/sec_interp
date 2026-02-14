@@ -1,3 +1,5 @@
+"""Orchestrator for background preview generation tasks."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
@@ -15,17 +17,28 @@ class PreviewTaskOrchestrator:
     """Manages asynchronous geology and drillhole generation tasks."""
 
     def __init__(self, manager: PreviewManager):
+        """Initialize the orchestrator with its parent manager.
+
+        Args:
+            manager: The preview manager owning this orchestrator.
+
+        """
         self.manager = manager
         self.geology_task: GeologyGenerationTask | None = None
         self.drillhole_task: DrillholeGenerationTask | None = None
 
     def cancel_active_tasks(self) -> None:
         """Cancel any existing async work."""
+        import contextlib
+
         if self.geology_task:
-            self.geology_task.cancel()
+            with contextlib.suppress(RuntimeError):
+                self.geology_task.cancel()
             self.geology_task = None
+
         if self.drillhole_task:
-            self.drillhole_task.cancel()
+            with contextlib.suppress(RuntimeError):
+                self.drillhole_task.cancel()
             self.drillhole_task = None
 
     def start_geology_task(self, params: Any, service: Any) -> None:

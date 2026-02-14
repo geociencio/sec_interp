@@ -20,8 +20,8 @@
 - **Testing**: Added comprehensive unit tests for geometric transformations and azimuth calculations.
 
 ### 🔧 Infrastructure & Tooling
-- **Release Automation**: Updated workflows to utilize **`qgis-plugin-manager`** and **`qgis-plugin-analyzer`**.
-- **Modern Analysis**: Migrated project analysis scripts to the standalone `qgis-analyzer` tool for better metrics and compliance tracking.
+- **Release Automation**: Updated workflows to utilize **`qgis-plugin-manager`** and the **QGIS Plugin Analyzer** tool.
+- **Modern Analysis**: Migrated project analysis to the standalone **`qgis-analyzer`** command for better metrics and compliance tracking.
 - **Documentation**: Updated directory structure maps and release process documentation to reflect the new architecture.
 
 ### 📝 Documentation

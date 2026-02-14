@@ -10,7 +10,7 @@
 
 ---
 
-**QGIS Plugin Analyzer** is a high-performance static analysis tool specifically designed for QGIS plugin developers. It serves as a guardian for your code, ensuring compliance with community best practices while preparing your project for seamless collaboration with Modern LLMs.
+**QGIS Plugin Analyzer** is a high-performance static analysis tool specifically designed for QGIS plugin developers. It is installed as the package `qgis-plugin-analyzer` and provides the command-line interface `qgis-analyzer`. It serves as a guardian for your code, ensuring compliance with community best practices while preparing your project for seamless collaboration with Modern LLMs.
 
 ## ✨ Key Features
 

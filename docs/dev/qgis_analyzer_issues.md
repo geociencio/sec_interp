@@ -1,6 +1,6 @@
 # 🐞 QGIS Plugin Analyzer - Issues & Improvements Report
 
-This document outlines bugs, configuration issues, and algorithmic weaknesses identified during the analysis of the `sec_interp` project. It is intended for the maintainers of `qgis-plugin-analyzer` to improve the tool's accuracy and reliability.
+This document outlines bugs, configuration issues, and algorithmic weaknesses identified during the analysis of the `sec_interp` project. It is intended for the maintainers of the **QGIS Plugin Analyzer** tool (package `qgis-plugin-analyzer`, command `qgis-analyzer`) to improve the tool's accuracy and reliability.
 
 ## 🚨 Critical Bugs
 

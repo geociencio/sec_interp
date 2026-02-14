@@ -1,19 +1,34 @@
-# Tareas - Fase v2.10.0 (Calidad y QGIS 4.x)
+# Tareas - Sesión de Pruebas Manuales y Calidad
 
-## Objetivo 1: Deuda Técnica Crítica (QGIS 4.x) <!-- id: 1 -->
-- [ ] Eliminar importación directa `PyQt5` en `resources.py` <!-- id: 2 -->
-- [ ] Verificar compatibilidad con script `scripts/security_scan.py` <!-- id: 3 -->
+## 🛠️ Pruebas Manuales y Correcciones (COMPLETADO) <!-- id: 1 -->
+- [x] **HOTFIX**: Corregir crash en `GeologyGenerationTask` al cerrar diálogo <!-- id: 15 -->
+- [x] **HOTFIX**: Corregir error "Invalid Outcrop Layer" al generar solo relieve <!-- id: 19 -->
+- [x] **HOTFIX**: Corregir error "NoneType object has no attribute fields" en DrillholeService <!-- id: 20 -->
+- [x] **HOTFIX**: Corregir validación de botón Guardar (ruta de salida requerida) <!-- id: 22 -->
+- [x] Ejecutar flujo completo de creación de sección <!-- id: 16 -->
+- [x] Validar generación de geología en segundo plano <!-- id: 17 -->
+- [x] Verificar interpretación estructural <!-- id: 18 -->
+- [x] Validar comportamiento con capas opcionales (Hotfixes 19 y 20) <!-- id: 21 -->
 
-## Objetivo 2: Refactorización ExportService (Reducción CC) <!-- id: 4 -->
-- [ ] Analizar complejidad actual de `export_service.py` <!-- id: 5 -->
-- [ ] Extraer lógica 3D a `exporters/drillhole_3d_exporter.py` <!-- id: 6 -->
-- [ ] Implementar patrón Strategy para formatos vectoriales <!-- id: 7 -->
+## 🔍 Pruebas Exhaustivas de Características (EN PROGRESO) <!-- id: 23 -->
+- [x] **Geología**: Validar proyección de contactos y nombres de unidades <!-- id: 24 -->
+- [x] **Estructural**: Validar orientación de símbolos y factor de escala <!-- id: 25 -->
+- [x] **Sondajes**: Verificar proyección de collares, trazas (3D) e intervalos <!-- id: 26 -->
+- [x] **Interpretación**: Validar creación, edición y persistencia de polígonos <!-- id: 27 -->
+- [ ] **Avanzado**: Probar LOD dinámico y muestreo adaptativo en secciones largas <!-- id: 28 -->
+- [x] **Exportación**: Verificar integridad de SHP/CSV y formatos gráficos (PNG, PDF, SVG) <!-- id: 29 -->
+    - [x] Exportación completa (8 polígonos + 3D QML) OK <!-- id: 34 -->
 
-## Objetivo 3: Optimizaciones y Calidad <!-- id: 8 -->
-- [ ] Aplicar optimizaciones detectadas por `ai-ctx` (24 items) <!-- id: 9 -->
-- [ ] Mejorar cobertura de docstrings en `core/` (Meta: 85%) <!-- id: 10 -->
-- [ ] Estandarizar Type Hints en utilerías <!-- id: 11 -->
+## Objetivo (PAUSADO): Migración a QGIS 4.x / API Agnostic <!-- id: 2 -->
+- [ ] Reemplazar `from PyQt5...` por `from qgis.PyQt...` (Global) <!-- id: 3 -->
+- [ ] Actualizar `resources.py` y compilador de recursos <!-- id: 4 -->
+- [ ] Añadir job de CI/CD para verificar imports prohibidos <!-- id: 5 -->
 
-## Cierre de Fase <!-- id: 12 -->
-- [ ] Ejecutar validación final (`make pre-release`) <!-- id: 13 -->
-- [ ] Actualizar documentación y CHANGELOG <!-- id: 14 -->
+## Objetivo (PAUSADO): Preview 3D Engine (Fase 1) <!-- id: 6 -->
+- [ ] Implementar `core/engines/preview_3d_engine.py` <!-- id: 7 -->
+- [ ] Integrar widget 3D en la pestaña de preview <!-- id: 8 -->
+- [ ] Sincronizar vista 2D (Perfil) y 3D (Espacio) <!-- id: 9 -->
+
+## Cierre de Fase <!-- id: 10 -->
+- [ ] Ejecutar validación final <!-- id: 11 -->
+- [ ] Actualizar documentación y CHANGELOG <!-- id: 12 -->

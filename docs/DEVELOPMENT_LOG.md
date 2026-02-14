@@ -1,5 +1,27 @@
 ---
 ---
+## [2026-02-14] RESUMEN: Hotfixes de Exportación y Capas Opcionales
+- **Logro**: Resueltos bugs críticos de validación y manejo de capas opcionales detectados durante pruebas manuales exhaustivas.
+- **Cambios**:
+    - **Drillholes**: Reparada lógica en `DrillholeService` para manejar limpiamente la ausencia de capas de Survey o Intervals.
+    - **Validación**: Corregido typo en `DialogStatusManager` y reforzada la regla de validación de `output_path`.
+    - **Exportación**: Añadida verificación de seguridad en `ExportManager`.
+- **Métricas**:
+    - **Tests**: 16 Integration tests OK + Suite base verificada.
+    - **Estado**: 🟢 Todas las componentes principales (Topo, Geología, Estructural, Sondajes, Interpretación, Exportación) validadas visualmente y funcionalmente.
+- **Mantenimiento**: [sesion_2026-02-14_fixing_export_and_optional_layers.md](maintenance/sesion_2026-02-14_fixing_export_and_optional_layers.md).
+
+---
+## [2026-02-09] Tooling: Update qgis-plugin-analyzer v1.7.0
+- **Logro**: Actualizado `qgis-plugin-analyzer` a la versión 1.7.0.
+- **Cambios**:
+    - **CLI**: Se detectó que el punto de entrada cambió de `qgis-plugin-analyzer` a `qgis-analyzer`.
+    - **Dep**: Actualizado `pyproject.toml` y sincronizado el entorno con `uv sync`.
+- **Verificación**: Ejecutada auditoría de línea base con `qgis-analyzer analyze .` exitosamente.
+- **Diferenciación**: Se clarificó en toda la documentación la distinción entre el nombre de la herramienta (`qgis-plugin-analyzer`) y el comando CLI (`qgis-analyzer`).
+- **Estado**: 🟢 Herramienta operativa y actualizada.
+
+---
 ## [2026-02-08] RESUMEN: Auditoría de Calidad y Enlace Ruff
 - **Logro**: Revelada la "falsa perfección" del 100/100. Identificado y parchado bug crítico en `qgis-analyzer` relacionado con flags de Ruff.
 - **Cambios**:
