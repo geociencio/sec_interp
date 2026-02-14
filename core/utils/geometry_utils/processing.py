@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsField,
@@ -35,7 +36,7 @@ def create_buffer_geometry(
 
     """
     if not geometry or geometry.isNull():
-        raise ValueError("Geometry is null or invalid")
+        raise ValueError(QCoreApplication.translate("GeometryProcessing", "Geometry is null or invalid"))
     return geometry.buffer(distance, segments)
 
 

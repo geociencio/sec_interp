@@ -2,7 +2,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=2.9.0
+version=3.0.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -16,6 +16,16 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    3.0.0 (2026-02-14)
+    * Major Evolution - Global Reach & Core Stability:
+      - i18n: Achieved 100%% core coverage for 8 languages (ES, FR, PT_BR, DE, RU, ZH_CN, ID, IT).
+      - Automation: Integrated full i18n maintenance workflow into Makefile (`make transup`).
+      - Architecture: Decomposed `DrillholeService` into specialized processors (`Collar`, `Survey`, `Interval`) using the Facade Pattern (ADR-0008).
+      - Architecture: Implemented `AccessControlService` for secure management of restricted 3D features.
+      - Domain Layer: Transitioned from monolithic `types.py` to a modular `core.domain` package (Entities, DTOs, Enums).
+      - Performance: Enhanced asynchronous background tasks with safer UI decoupling.
+      - Infrastructure: Automated translation engine (`apply_full.py`) with version-controlled master data.
+      - Quality: Overhauled test infrastructure with robust QGIS API mocks (160+ mock methods).
     2.9.0 (2026-02-01)
     * Quality Sprint - Architecture Consolidation:
       - Core: Decoupled DrillholeService into specialized processors (SRP).

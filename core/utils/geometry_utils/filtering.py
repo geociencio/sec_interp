@@ -2,6 +2,7 @@ from __future__ import annotations
 
 """Geometry filtering utilities."""
 
+from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -34,10 +35,10 @@ def filter_features_by_buffer(
 
     """
     if not features_layer or not features_layer.isValid():
-        raise ValueError("Invalid features layer")
+        raise ValueError(QCoreApplication.translate("GeometryFiltering", "Invalid features layer"))
 
     if not buffer_geometry or buffer_geometry.isNull():
-        raise ValueError("Invalid buffer geometry")
+        raise ValueError(QCoreApplication.translate("GeometryFiltering", "Invalid buffer geometry"))
 
     # 1. Transform buffer geometry if needed
     query_geom = buffer_geometry

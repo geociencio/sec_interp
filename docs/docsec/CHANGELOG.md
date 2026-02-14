@@ -5,6 +5,26 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-02-14
+### 🚀 Características Principales
+- **Internacionalización (I18n) Avanzada**:
+  - Expansión del soporte a 8 idiomas: Inglés (EN), Español (ES), Francés (FR), Alemán (DE), Ruso (RU), Portugués Brasil (PT-BR), Chino (ZH-CN) y Japonés (JA).
+  - Automatización del flujo de traducción mediante integración con `ai-context-core`.
+- **Evolución Arquitectónica**:
+  - Descomposición de `DrillholeService` para una gestión modular de datos de sondajes.
+  - Implementación de `AccessControlService` para el control fino de funcionalidades y seguridad.
+  - Fortalecimiento de la inyección de dependencias en el núcleo del plugin.
+- **Calidad y Automatización**:
+  - Actualización a `qgis-plugin-analyzer` v1.7.0 para una auditoría de cumplimiento más rigurosa.
+  - Configuración estricta de linters (Ruff) enfocada en la reducción de complejidad y mejora de la documentación.
+
+### 🐛 Correcciones (Hotfixes)
+- Corregido error crítico en `DrillholeService` al faltar capas opcionales de Survey e Intervalos.
+- Corregida validación de archivos de salida en la interfaz de usuario para evitar exportaciones incompletas.
+- Estabilización de la gestión de tareas asíncronas (`QgsTask`) para prevenir crashes al cerrar el diálogo principal.
+
+---
+
 ## [2.5.0] - 2026-01-01
 ### 🚀 Características Principales
 - **Exportación de Interpretación 3D**:

@@ -6,12 +6,12 @@
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="49"/>
             <source>Interpretation Properties</source>
-            <translation>Propiedades de Interpretación</translation>
+            <translation>Proprietà Interpretazione</translation>
         </message>
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="63"/>
             <source>Name:</source>
-            <translation>Nombre:</translation>
+            <translation>Nome:</translation>
         </message>
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="66"/>
@@ -21,22 +21,22 @@
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="74"/>
             <source>Change...</source>
-            <translation>Cambiar...</translation>
+            <translation>Cambia...</translation>
         </message>
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="80"/>
             <source>Color:</source>
-            <translation>Color:</translation>
+            <translation>Colore:</translation>
         </message>
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="86"/>
             <source>Custom Attributes</source>
-            <translation>Atributos Personalizados</translation>
+            <translation>Attributi Personalizzati</translation>
         </message>
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="116"/>
             <source>Select Color</source>
-            <translation>Seleccionar Color</translation>
+            <translation>Seleziona Colore</translation>
         </message>
     </context>
     <context>
@@ -44,7 +44,7 @@
         <message>
             <location filename="../gui/tools/interpretation_tool.py" line="317"/>
             <source>New Interpretation</source>
-            <translation>Nueva Interpretación</translation>
+            <translation>Nuova Interpretazione</translation>
         </message>
     </context>
     <context>
@@ -52,12 +52,7 @@
         <message>
             <location filename="../sec_interp_plugin.py" line="194"/>
             <source>&amp;Sec Interp</source>
-            <translation>&amp;Sec Interp</translation>
-        </message>
-        <message>
-            <location filename="../sec_interp_plugin.py" line="181"/>
-            <source>Geological data extraction</source>
-            <translation>Extracción de datos geológicos</translation>
+            <translation type="unfinished"></translation>
         </message>
         <message>
             <location filename="../sec_interp_plugin.py" line="94"/>
@@ -65,24 +60,29 @@
             <translation>Sec Interp</translation>
         </message>
         <message>
+            <location filename="../sec_interp_plugin.py" line="181"/>
+            <source>Geological data extraction</source>
+            <translation>Estrazione dati geologici</translation>
+        </message>
+        <message>
             <location filename="../sec_interp_plugin.py" line="250"/>
             <source>Select a raster layer</source>
-            <translation>Seleccione una capa ráster</translation>
+            <translation>Seleziona layer raster</translation>
         </message>
         <message>
             <location filename="../sec_interp_plugin.py" line="253"/>
             <source>Select a crossline layer</source>
-            <translation>Seleccione una capa de línea de sección</translation>
+            <translation>Seleziona layer linea sezione</translation>
         </message>
         <message>
             <location filename="../sec_interp_plugin.py" line="292"/>
             <source>Configuration Error</source>
-            <translation>Error de Configuración</translation>
+            <translation>Errore di Configurazione</translation>
         </message>
         <message>
             <location filename="../sec_interp_plugin.py" line="295"/>
             <source>Input Processing Error</source>
-            <translation>Error de Procesamiento de Entrada</translation>
+            <translation>Errore Processo Input</translation>
         </message>
     </context>
     <context>
@@ -95,42 +95,42 @@
         <message>
             <location filename="../gui/ui/main_window.py" line="123"/>
             <source>Output Folder</source>
-            <translation>Carpeta de Salida</translation>
+            <translation>Cartella Output</translation>
         </message>
         <message>
             <location filename="../gui/ui/main_window.py" line="132"/>
             <source>DEM / Raster</source>
-            <translation>DEM / Ráster</translation>
+            <translation>DEM / Raster</translation>
         </message>
         <message>
             <location filename="../gui/ui/main_window.py" line="133"/>
             <source>Section Line</source>
-            <translation>Línea de Sección</translation>
+            <translation>Linea Sezione</translation>
         </message>
         <message>
             <location filename="../gui/ui/main_window.py" line="134"/>
             <source>Geology</source>
-            <translation>Geología</translation>
+            <translation>Geologia</translation>
         </message>
         <message>
             <location filename="../gui/ui/main_window.py" line="135"/>
             <source>Structural</source>
-            <translation>Estructural</translation>
+            <translation>Strutturale</translation>
         </message>
         <message>
             <location filename="../gui/ui/main_window.py" line="136"/>
             <source>Drillholes</source>
-            <translation>Sondajes</translation>
+            <translation>Sondaggi</translation>
         </message>
         <message>
             <location filename="../gui/ui/main_window.py" line="137"/>
             <source>Interpretation</source>
-            <translation>Interpretación</translation>
+            <translation>Interpretazione</translation>
         </message>
         <message>
             <location filename="../gui/ui/main_window.py" line="138"/>
             <source>Settings</source>
-            <translation>Ajustes</translation>
+            <translation>Ajusti</translation>
         </message>
     </context>
 </TS>

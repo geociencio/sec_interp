@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.0.0] - 2026-02-14
 ### Added
 - **Auditoría**: Actualización a `qgis-plugin-analyzer` v1.7.0 con soporte para el nuevo comando `qgis-analyzer`.
 - **Documentación**: Clarificación global entre nombre de herramienta (`qgis-plugin-analyzer`) y comando CLI (`qgis-analyzer`).
 - **Auditoría Estricta**: Habilitadas reglas de Ruff para Complejidad (`C901`), Argumentos (`PLR0913`), Valores Mágicos (`PLR2004`) y Docstrings (`D10x`).
 - **Docs Dev**: Reporte de incidencias técnicas en el analizador de plugins.
+- **I18n**: Soporte expandido a 8 idiomas con automatización mediante `ai-context-core`.
 
 ### Fixed
 - **Hotfix**: Corregido bug en `DrillholeService` que causaba `AttributeError` al procesar sondajes sin capas opcionales (Survey/Intervals) configuradas.
@@ -20,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Linter**: Endurecimiento de la configuración de `pyproject.toml` para reflejar la calidad real del código.
+- **Arquitectura**: Descomposición de `DrillholeService` para mejorar la mantenibilidad y modularidad.
+- **Access Control**: Implementación de `AccessControlService` para gestión de funcionalidades.
 
 ### Fixed
 - Actualizada dependencia a `ai-context-core>=3.2.1` para corregir errores de segmentación de i18n (scope `gui_only`).

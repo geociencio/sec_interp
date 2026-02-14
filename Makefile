@@ -23,10 +23,9 @@
 #################################################
 
 
-#Add iso code for any locales you want to support here (space separated)
-# default is no locales
-# LOCALES = af
-LOCALES = SecInterp_es SecInterp_fr SecInterp_pt_BR SecInterp_de SecInterp_ru
+# Add iso code for any locales you want to support here (space separated)
+# Supported: es, fr, pt_BR, de, ru, zh_CN, id, it
+LOCALES = es fr pt_BR de ru zh_CN id it
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to
@@ -138,10 +137,17 @@ upload: zip
 transup:
 	@echo
 	@echo "------------------------------------------------"
-	@echo "Updating translation files with any new strings."
+	@echo "Updating translation files and applying masters."
 	@echo "------------------------------------------------"
-	@chmod +x scripts/update-strings.sh
-	@scripts/update-strings.sh "$(LOCALES)" pylupdate5
+	@# 1. Update .ts files from source (efficient single call)
+	pylupdate5 -noobsolete sec_interp_plugin.py core/**/*.py gui/**/*.py exporters/*.py -ts $(addprefix i18n/SecInterp_, $(addsuffix .ts, $(LOCALES)))
+	@# 2. Apply master translations for all languages except Spanish (the source)
+	@for lang in $(filter-out es, $(LOCALES)); do \
+		echo "Applying master data for $$lang..."; \
+		python3 scripts/i18n/apply_full.py $$lang scripts/i18n/master_data/$$lang.json; \
+	done
+	@# 3. Clean and normalize XML
+	python3 scripts/i18n/clean_translations.py
 
 transcompile:
 	@echo

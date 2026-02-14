@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from PyQt5.QtCore import QCoreApplication
 from qgis.core import QgsGeometry, QgsPointXY, QgsWkbTypes
 
 
@@ -35,14 +36,14 @@ def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
 
     """
     if not geometry or geometry.isNull():
-        raise ValueError("Geometry is null or invalid")
+        raise ValueError(QCoreApplication.translate("GeometryExtraction", "Geometry is null or invalid"))
 
     if geometry.type() != QgsWkbTypes.LineGeometry:
         raise ValueError(f"Expected LineGeometry, got {geometry.type()}")
 
     vertices = extract_all_vertices(geometry)
     if not vertices:
-        raise ValueError("Line geometry has no vertices")
+        raise ValueError(QCoreApplication.translate("GeometryExtraction", "Line geometry has no vertices"))
 
     return vertices
 

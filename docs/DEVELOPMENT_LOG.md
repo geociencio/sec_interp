@@ -942,6 +942,15 @@ Implementación exitosa de los dos primeros niveles de la arquitectura de valida
 - **Estado**: Registro histórico depurado y unificado.
 
 ---
+## [2026-02-14] - Lanzamiento de Versión 3.0.0 (Major Release)
+- **Logro**: Formalización de la versión 3.0.0 con soporte i18n masivo y arquitectura modular.
+- **Cambios**:
+    - Consolidación de 8 idiomas con automatización `ai-context-core`.
+    - Refactorización de `DrillholeService` y creación de `AccessControlService`.
+    - Cumplimiento del 100/100 en QGIS Compliance tras auditoría con `qgis-plugin-analyzer` v1.7.0.
+- **Estado**: Fase de estabilización completada. Listos para iniciar migración a QGIS 4.x.
+
+---
 ## [2025-12-28] - Migración a QgsTask para Boreholes
 - **Logro**: Implementado procesamiento asíncrono para la carga de sondajes masivos.
 - **Cambios**:
