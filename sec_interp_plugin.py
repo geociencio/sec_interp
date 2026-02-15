@@ -64,7 +64,8 @@ class SecInterp:
         # Try full locale first (e.g., pt_BR)
         locale_path = self.plugin_dir / f"i18n/SecInterp_{user_locale}.qm"
 
-        if not locale_path.exists() and user_locale and len(user_locale) > 2:
+        MIN_LOCALE_LENGTH = 2
+        if not locale_path.exists() and user_locale and len(user_locale) > MIN_LOCALE_LENGTH:
             # Fallback to language code (e.g., pt)
             locale_short = user_locale[0:2]
             locale_path = self.plugin_dir / f"i18n/SecInterp_{locale_short}.qm"

@@ -39,6 +39,10 @@ class MockQApplication(MagicMock):
     def translate(context, text, disambiguation=None, n=-1):
         return text
 
+    @staticmethod
+    def installTranslator(translator):
+        return True
+
 
 class MockQThread(MagicMock):
     @staticmethod
@@ -139,6 +143,9 @@ class MockQWidget(MockQObject):
         self.textChanged = mock_signal()
         self.stateChanged = mock_signal()
         self.currentIndexChanged = mock_signal()
+
+    def setVisible(self, visible):
+        pass
 
     def setLayout(self, layout):
         self._layout = layout

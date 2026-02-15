@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """UI Utilities Module.
 
 General purpose UI helpers and user messaging.
 """
+
+from __future__ import annotations
 
 from qgis.PyQt.QtWidgets import QMessageBox
 

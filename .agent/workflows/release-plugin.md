@@ -1,7 +1,7 @@
 ---
 description: Proceso unificado de liberación (QGIS Release Flow) basado en la guía de IA
 agent: QA Engineer
-skills: [release-management, qa-docker, commit-standards]
+skills: [release-management, qa-docker, commit-standards, i18n-standards]
 validation: |
   - Verificar que 361 tests pasan en Docker
   - Confirmar que qgis-analyzer score > 25/100
@@ -24,8 +24,8 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
    🤖 **Agent Action**: Verificar que:
    - Overall Plugin Score > 25/100
-   - No hay métodos con CC > 20
    - No hay violaciones críticas de QGIS compliance
+   - **Nota**: Descartar falsos positivos de i18n en docstrings si `core/` tiene cobertura 100%.
 
 2. **Actualizar Badges**: Actualizar `Code Quality` y `QGIS Compliance` en `README.md` según los resultados.
 
@@ -41,7 +41,7 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
    🤖 **Agent Action**: Validar que las 3 versiones coinciden exactamente.
 
-2. **Changelog Técnico**: Mover `[Unreleased]` a la nueva versión en `docs/CHANGELOG.md`.
+2. **Changelog Técnico**: Mover `[Unreleased]` a la nueva versión en `docs/CHANGELOG.md` y sincronizar `docs/docsec/CHANGELOG.md` (Español).
 
 3. **Notas de Lanzamiento**:
    // turbo
@@ -55,7 +55,7 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **qa-docker** para validar tests y skill **commit-standards** para linting.
 
-3. **Security Scan** (Deep Audit):
+1. **Security Scan** (Deep Audit):
    // turbo
    ```bash
    uv run qgis-analyzer security --deep .
@@ -63,12 +63,13 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
    🤖 **Agent Action**: Revisar reportes de seguridad. No se permiten hallazgos de severidad ALTA para proceder.
 
-4. **Linting & Formatting**:
+2. **Linting & Formatting**:
    // turbo
    ```bash
    uv run ruff check --fix . && uv run ruff format . && uv run black .
    ```
-2. **Tests**:
+   **Nota**: Documentar issues de linting menores (como F821/W503 en reportes externos) para fix posterior si no bloquean funcionalidad.
+3. **Tests**:
    // turbo
    ```bash
    make docker-test
@@ -82,8 +83,9 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 🤖 **Agent Action**: Usar skill **commit-standards** para mensaje de commit.
 
 1. **Commit de Preparación**:
+   Asegurar que `.qgisignore` está actualizado y optimizado.
    ```bash
-   git add metadata.txt pyproject.toml docs/CHANGELOG.md README.md docs/releases/RELEASE_NOTES_vX.Y.Z.md
+   git add metadata.txt pyproject.toml docs/CHANGELOG.md docs/docsec/CHANGELOG.md README.md docs/releases/RELEASE_NOTES_vX.Y.Z.md .qgisignore
    git commit -m "chore(release): prepare vX.Y.Z"
    ```
 
@@ -94,14 +96,17 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **release-management** para validar artifacts y proceso de publicación.
 
-1. **Build ZIP**:
+1. **Build ZIP Optimizado**:
    // turbo
    ```bash
    make package VERSION=main
    ```
    (Verificar en `dist/`).
 
-   🤖 **Agent Action**: Validar contenido del ZIP (metadata, sin basura técnica).
+   🤖 **Agent Action**:
+   - Validar contenido del ZIP (sin logs, sin `sample_data`, sin caches).
+   - **Métrica Clave**: El tamaño del paquete debe ser < 500KB (Idealmente ~220KB).
+   - Verificar `sha256` checksum.
 
 2. **GitHub Release**:
    ```bash

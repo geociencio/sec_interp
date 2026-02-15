@@ -1,7 +1,7 @@
 ---
 description: Unified Release Workflow (QGIS Release Flow) based on IA Guide
 agent: QA Engineer
-skills: [release-management, qa-docker, commit-standards]
+skills: [release-management, qa-docker, commit-standards, i18n-standards]
 validation: |
   - Verify that 361 tests pass in Docker
   - Confirm that qgis-analyzer score > 25/100
@@ -15,12 +15,16 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
 🤖 **Agent Action**: Use skill **release-management** to validate complete pre-release checklist.
 
-1. **Analyze Quality**: Run `uv run qgis-analyzer . -o analysis_results`.
+1. **Analyze Quality**:
+   // turbo
+   ```bash
+   uv run qgis-analyzer . -o analysis_results
+   ```
 
    🤖 **Agent Action**: Verify that:
    - Overall Plugin Score > 25/100
-   - No methods with CC > 20
    - No critical QGIS compliance violations
+   - **Note**: Discard i18n false positives in docstrings if `core/` has 100% coverage.
 
 2. **Update Badges**: Update `Code Quality` and `QGIS Compliance` in `README.md` based on results.
 
@@ -36,12 +40,12 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
    🤖 **Agent Action**: Validate that all 3 versions match exactly.
 
-2. **Technical Changelog**: Move `[Unreleased]` to the new version in `docs/CHANGELOG.md`. **Format: `[vX.Y.Z] - Title`**.
+2. **Technical Changelog**: Move `[Unreleased]` to the new version in `docs/CHANGELOG.md` and sync `docs/docsec/CHANGELOG.md` (Spanish).
 
 3. **Release Notes**:
+   // turbo
    ```bash
    sed -e "s/{version}/X.Y.Z/g" -e "s/{date}/$(date +%F)/g" .github/release_template.md > /tmp/release_notes.md
-   # EDIT manually to add " - Title" to the Header
    ```
 
    🤖 **Agent Action**: Generate structured release notes following **release-management** skill template.
@@ -50,23 +54,36 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
 🤖 **Agent Action**: Use skill **qa-docker** to validate tests and skill **commit-standards** for linting.
 
-1. **Security Scan** (QGIS Portal Compatible):
-   `make security-scan` (Bandit, detect-secrets, Flake8)
+1. **Security Scan** (Deep Audit):
+   // turbo
+   ```bash
+   uv run qgis-analyzer security --deep .
+   ```
 
-   🤖 **Agent Action**: Review security reports to prevent QGIS portal rejection.
+   🤖 **Agent Action**: Review security reports. No HIGH severity findings allowed.
 
-2. **Linting & Formatting**: `uv run ruff check --fix . && uv run ruff format . && uv run black .`
-2. **Tests**: `make docker-test` (361+ tests must pass).
+2. **Linting & Formatting**:
+   // turbo
+   ```bash
+   uv run ruff check --fix . && uv run ruff format . && uv run black .
+   ```
+   **Note**: Document minor linting issues (like F821/W503 in external reports) for later fix if not blocking.
 
-   🤖 **Agent Action**: Alert if any test fails or if there's coverage regression.
+3. **Tests**:
+   // turbo
+   ```bash
+   make docker-test
+   ```
+   (361+ tests must pass).
 
 ### Phase 4: Git & Tagging
 
 🤖 **Agent Action**: Use skill **commit-standards** for commit message.
 
 1. **Preparation Commit**:
+   Ensure `.qgisignore` is updated and optimized.
    ```bash
-   git add metadata.txt pyproject.toml docs/CHANGELOG.md README.md docs/releases/RELEASE_NOTES_vX.Y.Z.md
+   git add metadata.txt pyproject.toml docs/CHANGELOG.md docs/docsec/CHANGELOG.md README.md docs/releases/RELEASE_NOTES_vX.Y.Z.md .qgisignore
    git commit -m "chore(release): prepare vX.Y.Z"
    ```
 
@@ -77,16 +94,21 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
 🤖 **Agent Action**: Use skill **release-management** to validate artifacts and publication process.
 
-1. **Build ZIP**: `make package VERSION=main` (Verify in `dist/`).
+1. **Build Optimized ZIP**:
+   // turbo
+   ```bash
+   make package VERSION=main
+   ```
+   (Verify in `dist/`).
 
    🤖 **Agent Action**: Validate ZIP contents:
    - metadata.txt has correct version
-   - No __pycache__ or .pyc files
-   - No test files
+   - No logs, no `sample_data`, no caches.
+   - **Key Metric**: Package size should be < 500KB (Ideally ~220KB).
+   - Check `sha256` checksum.
 
 2. **GitHub Release**:
    ```bash
-   # Add Title to the release title
    gh release create vX.Y.Z --title "vX.Y.Z - Title" --notes-file docs/releases/RELEASE_NOTES_vX.Y.Z.md dist/*.zip dist/*.sha256 --draft
    ```
 

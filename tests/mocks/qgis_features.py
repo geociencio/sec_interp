@@ -23,6 +23,9 @@ class MockQgsFields(MockQgsBase):
         super().__init__()
         self._fields = []
 
+    def count(self):
+        return len(self._fields)
+
     def append(self, field):
         self._fields.append(field)
 

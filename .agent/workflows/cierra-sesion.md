@@ -18,7 +18,8 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     *   **`docs/plans/implementation_plan_vX.Y.Z.md`**: **[CRÍTICO]** Actualiza el estado de las tareas (marcar con `[x]` las completadas).
     *   **Persistencia de Tareas**:
         *   Asegura que `.agent/task.md` refleja el progreso real.
-        *   **NO BORRES** este archivo; debe persistir para la siguiente sesión.
+        *   Si completaste una fase mayor, archívalo en `.agent/history/tasks/`.
+        *   **NO BORRES** este archivo si la fase continúa.
     *   **`.agent/next_steps.md`**: **[CRÍTICO]** Crea o actualiza este archivo con el "paso de testigo": qué falta, qué errores hay pendientes y cuál es el comando para retomar.
     *   **Archivado de Next Steps**: **[NUEVO]** Copia `.agent/next_steps.md` a `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` para mantener el registro histórico.
     *   **`docs/maintenance/sesion_YYYY-MM-DD_[TEMA].md`**: **[OBLIGATORIO]** Crea este archivo con el resumen técnico de la sesión.
@@ -30,13 +31,14 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
 
     🤖 **Agent Action**: Usar skill **qa-docker** para validar estabilidad antes de cerrar.
 
-    Ejecuta el formateador y los tests para no dejar la casa en llamas.
+    Ejecuta el formateador, linter y tests para asegurar calidad.
 
     ```bash
-    uv run black .
+    uv run ruff check --fix . && uv run ruff format . && uv run black .
     ```
 
     *Opción A (Docker - Recomendado):*
+    // turbo
     ```bash
     make docker-test
     ```
@@ -64,7 +66,7 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     Asegura que el "Cerebro" de la IA esté al día con los cambios finales.
     // turbo
     ```bash
-    ai-ctx analyze --path . && cat .agent/next_steps.md
+    uv run ai-ctx analyze --path . && cat .agent/next_steps.md
     ```
 
 4.  **Commit Local**:

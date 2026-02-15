@@ -51,10 +51,24 @@ jobs:
         . .venv/bin/activate
         uv pip install --no-build-isolation -e ".[dev]"
 
-    - name: Run all tests (Unit + Integration)
+    - name: Run Unit Tests
       env:
         QT_QPA_PLATFORM: offscreen
         PYTHONPATH: ${{ github.workspace }}/..
+        FORCE_MOCKS: "1"
       run: |
         . .venv/bin/activate
-        python3 -m unittest discover tests
+        python3 -m unittest discover tests/core
+        python3 -m unittest discover tests/gui
+        python3 -m unittest discover tests/exporters
+        python3 -m unittest discover tests/benchmarks
+        python3 -m unittest tests/test_translation_loading.py
+
+    - name: Run Integration Tests
+      env:
+        QT_QPA_PLATFORM: offscreen
+        PYTHONPATH: ${{ github.workspace }}/..
+        FORCE_MOCKS: "0"
+      run: |
+        . .venv/bin/activate
+        python3 -m unittest discover tests/integration

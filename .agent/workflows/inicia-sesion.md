@@ -32,10 +32,10 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
 
 
     Revisa los siguientes archivos en este orden:
-    *   `docs/plans/implementation_plan_v2.10.0.md`: **Mapa de Ruta Maestro**. Fuente de verdad sobre tareas completadas.
-    *   `.agent/next_steps.md`: **El Testigo**. Punto exacto donde se detuvo la sesión anterior.
-    *   `.agent/memory/AGENT_LESSONS.md`: **El Cerebro**. Historial de lecciones, preferencias y patrones de error a evitar.
-    *   `AI_CONTEXT.md`: Memoria de largo plazo, métricas y directrices de alto nivel.
+    *   `.agent/next_steps.md`: **El Testigo (Fuente de Verdad)**. Define el punto de partida exacto y objetivos inmediatos.
+    *   `.agent/task.md`: **Tablero Activo**. Si existe, debe alinearse con `next_steps.md`. Si no, créalo basado en `next_steps.md`.
+    *   `.agent/memory/AGENT_LESSONS.md`: **El Cerebro**. Patrones de error a evitar y preferencias.
+    *   `AI_CONTEXT.md`: Contexto arquitectónico y métricas de largo plazo.
     *   `project_context.json`: Datos estructurados de complejidad y dependencias.
     *   `docs/DEVELOPMENT_LOG.md`: Ver resumen de la última sesión (orden cronológico inverso).
 
