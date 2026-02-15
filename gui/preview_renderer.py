@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Preview Renderer Module (PyQGIS Native).
 
 Handles rendering of interactive previews using native QGIS resources.
 This module has been refactored to delegate specialized tasks to modular components.
 """
+
+from __future__ import annotations
 
 import contextlib
 
@@ -279,8 +279,9 @@ class PreviewRenderer:
         if not self.canvas:
             return
 
+        MIN_INTERP_VERTICES = 3
         for interp in interp_data:
-            if not interp.vertices_2d or len(interp.vertices_2d) < 3:
+            if not interp.vertices_2d or len(interp.vertices_2d) < MIN_INTERP_VERTICES:
                 continue
 
             # Create rubber band

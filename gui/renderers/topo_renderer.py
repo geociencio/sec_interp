@@ -1,3 +1,5 @@
+"""Renderer for topographic profile elevation polychromy."""
+
 from __future__ import annotations
 
 from qgis.core import (

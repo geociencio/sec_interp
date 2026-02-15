@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Structural configuration page."""
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -24,6 +24,12 @@ class StructurePage(BasePage):
     dataChanged = pyqtSignal()
 
     def __init__(self, parent: Any = None) -> None:
+        """Initialize the structure configuration page.
+
+        Args:
+            parent: Optional parent widget.
+
+        """
         super().__init__(
             QCoreApplication.translate("StructurePage", "Structural Measurements"),
             parent,

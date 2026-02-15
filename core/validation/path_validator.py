@@ -1,3 +1,5 @@
+"""Validation logic for filesystem paths and workspace settings."""
+
 from __future__ import annotations
 
 """Validation for file system paths and export directories."""

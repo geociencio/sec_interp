@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Data Fetching logic for Drillhole child layers."""
+
+from __future__ import annotations
 
 from typing import Any
 

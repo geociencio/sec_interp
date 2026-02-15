@@ -1,3 +1,5 @@
+"""Factory for creating and styling QGIS memory layers for the preview."""
+
 from __future__ import annotations
 
 import math
@@ -103,7 +105,8 @@ class PreviewLayerFactory:
         use_adaptive_sampling: bool = False,
     ) -> QgsVectorLayer | None:
         """Create temporary layer for topographic profile with polychromatic elevation styling."""
-        if not topo_data or len(topo_data) < 2:
+        MIN_REQUIRED_POINTS = 2
+        if not topo_data or len(topo_data) < MIN_REQUIRED_POINTS:
             return None
 
         # Apply LOD decimation
@@ -153,7 +156,8 @@ class PreviewLayerFactory:
         base_elevation: float | None = None,
     ) -> QgsVectorLayer | None:
         """Create a solid 'curtain' fill layer under the topography for depth."""
-        if not topo_data or len(topo_data) < 2:
+        MIN_REQUIRED_POINTS = 2
+        if not topo_data or len(topo_data) < MIN_REQUIRED_POINTS:
             return None
 
         render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
@@ -205,8 +209,9 @@ class PreviewLayerFactory:
 
         unique_units = {s.unit_name for s in geol_data}
         features = []
+        MIN_REQUIRED_POINTS = 2
         for segment in geol_data:
-            if not segment.points or len(segment.points) < 2:
+            if not segment.points or len(segment.points) < MIN_REQUIRED_POINTS:
                 continue
 
             render_points = PreviewOptimizer.decimate(segment.points, max_points=max_points)
@@ -296,7 +301,8 @@ class PreviewLayerFactory:
             # hole_data is (hole_id, spatial_points, segments)
             hole_id, trace_points = hole_data[0], hole_data[1]
 
-            if not trace_points or len(trace_points) < 2:
+            MIN_TRACE_POINTS = 2
+            if not trace_points or len(trace_points) < MIN_TRACE_POINTS:
                 logger.debug(
                     f"Skipping hole {hole_id}: insufficient trace points ({len(trace_points) if trace_points else 0})"
                 )
@@ -333,7 +339,8 @@ class PreviewLayerFactory:
         all_segments = []
         for hole_data in drillhole_data:
             # segments are usually the last element
-            segments = hole_data[-1] if len(hole_data) >= 3 else []
+            MIN_HOLE_DATA_FOR_SEGMENTS = 3
+            segments = hole_data[-1] if len(hole_data) >= MIN_HOLE_DATA_FOR_SEGMENTS else []
             if segments and isinstance(segments, list):
                 all_segments.extend(segments)
 
@@ -348,8 +355,9 @@ class PreviewLayerFactory:
 
         features = []
         unique_units = set()
+        MIN_SEGMENT_POINTS = 2
         for segment in all_segments:
-            if not segment.points or len(segment.points) < 2:
+            if not segment.points or len(segment.points) < MIN_SEGMENT_POINTS:
                 continue
 
             unique_units.add(segment.unit_name)

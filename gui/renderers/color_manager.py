@@ -1,3 +1,5 @@
+"""Color management for geological units."""
+
 from __future__ import annotations
 
 from typing import ClassVar
@@ -28,6 +30,7 @@ class ColorManager:
     ]
 
     def __init__(self):
+        """Initialize the color manager."""
         self._active_units: dict[str, QColor] = {}
 
     def get_color(self, name: str) -> QColor:

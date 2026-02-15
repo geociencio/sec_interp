@@ -1,3 +1,5 @@
+"""Geometry filtering and cleaning utilities."""
+
 from __future__ import annotations
 
 """Geometry filtering utilities."""

@@ -1,3 +1,5 @@
+"""Geometric measurement utilities for 1D, 2D and 3D."""
+
 from __future__ import annotations
 
 """Measurement calculation utilities for profile viewing."""
@@ -25,7 +27,8 @@ def calculate_polyline_metrics(points: list[QgsPointXY]) -> dict[str, Any]:
             - point_count: Number of points.
 
     """
-    if len(points) < 2:
+    MIN_POINTS_REQUIRED = 2
+    if len(points) < MIN_POINTS_REQUIRED:
         return {
             "total_distance": 0.0,
             "horizontal_distance": 0.0,

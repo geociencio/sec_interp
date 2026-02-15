@@ -1,3 +1,5 @@
+"""Geometry optimization and curvature computation."""
+
 from __future__ import annotations
 
 """Geometry optimization utilities for SecInterp preview.
@@ -86,7 +88,8 @@ class PreviewOptimizer:
             List of curvature values (angles in degrees), same length as data.
 
         """
-        if len(data) < 3:
+        MIN_COMPONENTS_REQUIRED = 3
+        if len(data) < MIN_COMPONENTS_REQUIRED:
             return [0.0] * len(data)
 
         curvatures = [0.0]  # First point has no preceding segment

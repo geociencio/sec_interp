@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Processing logic for Outcrop intersections."""
+
+from __future__ import annotations
 
 from typing import Any
 

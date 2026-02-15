@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Task for async drillhole generation."""
+
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 

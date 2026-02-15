@@ -1,3 +1,5 @@
+"""Renderer for drillhole traces and intervals."""
+
 from __future__ import annotations
 
 from qgis.core import (
@@ -20,6 +22,12 @@ class DrillholeRenderer(BasePreviewRenderer):
     """Renderer for drillhole trace and interval layers."""
 
     def __init__(self, color_manager: ColorManager):
+        """Initialize the drillhole renderer.
+
+        Args:
+            color_manager: Manager for geological unit colors.
+
+        """
         self.color_manager = color_manager
 
     def apply_style(self, layer: QgsVectorLayer, **kwargs) -> None:

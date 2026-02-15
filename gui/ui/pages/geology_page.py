@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Geology configuration page."""
+
+from __future__ import annotations
 
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
@@ -21,6 +21,12 @@ class GeologyPage(BasePage):
     dataChanged = pyqtSignal()
 
     def __init__(self, parent=None):
+        """Initialize the geology page.
+
+        Args:
+            parent: Optional parent widget.
+
+        """
         super().__init__(QCoreApplication.translate("GeologyPage", "Geological Outcrops"), parent)
 
     def _setup_ui(self):

@@ -1,3 +1,5 @@
+"""Validation logic for individual layer fields."""
+
 from __future__ import annotations
 
 """Validation logic for QGIS layer fields and attributes."""
@@ -145,10 +147,11 @@ def validate_field_exists(layer: QgsVectorLayer, field_name: str | None) -> tupl
     field_names = [field.name() for field in layer.fields()]
 
     if field_name not in field_names:
+        MAX_FIELDS_TO_SHOW = 5
         return False, (
             f"Field '{field_name}' not found in layer '{layer.name()}'. "
-            f"Available fields: {', '.join(field_names[:5])}"
-            f"{', ...' if len(field_names) > 5 else ''}"
+            f"Available fields: {', '.join(field_names[:MAX_FIELDS_TO_SHOW])}"
+            f"{', ...' if len(field_names) > MAX_FIELDS_TO_SHOW else ''}"
         )
 
     return True, ""

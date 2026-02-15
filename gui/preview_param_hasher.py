@@ -1,3 +1,5 @@
+"""Configuration hashing for preview change detection."""
+
 from __future__ import annotations
 
 import hashlib

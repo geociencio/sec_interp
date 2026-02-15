@@ -1,3 +1,5 @@
+"""Signals management for SecInterp main dialog."""
+
 from __future__ import annotations
 
 """Signal management module for SecInterp main dialog.

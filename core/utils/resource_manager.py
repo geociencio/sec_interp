@@ -1,3 +1,5 @@
+"""QGIS resource and theme icon management."""
+
 from __future__ import annotations
 
 """Resource management utilities for SecInterp.

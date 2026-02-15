@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Sidebar navigation widget."""
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -13,6 +13,12 @@ class Sidebar(QListWidget):
     """Sidebar navigation widget."""
 
     def __init__(self, parent: Any = None) -> None:
+        """Initialize the sidebar widget.
+
+        Args:
+            parent: Optional parent widget.
+
+        """
         super().__init__(parent)
         self.setIconSize(QSize(32, 32))
         self.setFixedWidth(140)  # Slightly wider for better text fit

@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """UI page for drillhole data configuration."""
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -33,6 +33,12 @@ class DrillholePage(BasePage):
     dataChanged = pyqtSignal()
 
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Initialize the drillhole page.
+
+        Args:
+            parent: Optional parent widget.
+
+        """
         super().__init__(QCoreApplication.translate("DrillholePage", "Drillhole Data"), parent)
 
     def _setup_ui(self) -> None:

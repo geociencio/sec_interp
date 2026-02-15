@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Cross-section configuration page."""
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -16,6 +16,12 @@ class SectionPage(BasePage):
     """Configuration page for Cross Section settings."""
 
     def __init__(self, parent: Any = None) -> None:
+        """Initialize the section configuration page.
+
+        Args:
+            parent: Optional parent widget.
+
+        """
         super().__init__(QCoreApplication.translate("SectionPage", "Cross Section Line"), parent)
 
     def _setup_ui(self) -> None:

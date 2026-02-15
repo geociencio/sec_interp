@@ -1,3 +1,5 @@
+"""Geological computation utilities."""
+
 from __future__ import annotations
 
 """Geology Utilities Module.

@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Processing logic for Drillhole Collars."""
+
+from __future__ import annotations
 
 import contextlib
 from typing import Any

@@ -1,3 +1,5 @@
+"""Interpretation management for SecInterp main dialog."""
+
 from __future__ import annotations
 
 """Interpretation management module for SecInterp main dialog.
@@ -243,9 +245,12 @@ class DialogInterpretationManager:
     def _extract_intervals_from_dh_data(self, dh: Any) -> list[Any]:
         """Safely extract intervals from various drillhole data formats."""
         if isinstance(dh, tuple):
-            if len(dh) == 5:
-                return dh[4]
-            if len(dh) >= 3:
+            LEGACY_HOLE_SIZE = 5
+            INTERVALS_INDEX_LEGACY = 4
+            if len(dh) == LEGACY_HOLE_SIZE:
+                return dh[INTERVALS_INDEX_LEGACY]
+            MIN_COMPONENTS = 3
+            if len(dh) >= MIN_COMPONENTS:
                 return dh[2]
         return getattr(dh, "intervals", [])
 

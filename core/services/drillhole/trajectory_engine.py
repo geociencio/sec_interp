@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Engine for calculating and projecting drillhole trajectories."""
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -16,6 +16,7 @@ class TrajectoryEngine:
     """Orchestrates trajectory calculation and projection for individual drillholes."""
 
     def __init__(self) -> None:
+        """Initialize the trajectory engine."""
         self.survey_processor = SurveyProcessor()
         self.interval_processor = IntervalProcessor()
 

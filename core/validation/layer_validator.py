@@ -1,3 +1,5 @@
+"""Validation logic for QGIS map layers."""
+
 from __future__ import annotations
 
 """Spatial validation for QGIS layers (geometry types, CRS)."""

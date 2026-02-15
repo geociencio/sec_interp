@@ -1,3 +1,5 @@
+"""Base class for preview renderers."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

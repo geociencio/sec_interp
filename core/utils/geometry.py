@@ -1,3 +1,5 @@
+"""Geometry computation utilities."""
+
 from __future__ import annotations
 
 """Geometry Utilities Facade.

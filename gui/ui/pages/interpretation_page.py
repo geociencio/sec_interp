@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Interpretation configuration page."""
+
+from __future__ import annotations
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (

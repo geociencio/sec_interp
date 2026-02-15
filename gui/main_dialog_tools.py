@@ -1,3 +1,5 @@
+"""Map tools management for SecInterp main dialog."""
+
 from __future__ import annotations
 
 """Map tool management module for SecInterp main dialog.
@@ -104,7 +106,8 @@ class DialogToolManager:
             metrics: Dictionary containing measurement data.
 
         """
-        if not metrics or metrics.get("point_count", 0) < 2:
+        MIN_POINT_COUNT = 2
+        if not metrics or metrics.get("point_count", 0) < MIN_POINT_COUNT:
             return
 
         total_dist = metrics.get("total_distance", 0)

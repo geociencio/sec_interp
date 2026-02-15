@@ -1,3 +1,5 @@
+"""Helper classes for rich validation results and collection."""
+
 from __future__ import annotations
 
 """Helper classes and functions for Level 2 (Business Validation).
@@ -25,6 +27,7 @@ class RichValidationError:
     context: dict[str, Any] = field(default_factory=dict)
 
     def __str__(self) -> str:
+        """Return a string representation of the error."""
         prefix = f"[{self.severity.upper()}] " if self.severity != "error" else ""
         ctx_str = f" ({self.field_name})" if self.field_name else ""
         return f"{prefix}{self.message}{ctx_str}"
@@ -38,6 +41,7 @@ class ValidationContext:
     """
 
     def __init__(self):
+        """Initialize the validation results collector."""
         self._errors: list[RichValidationError] = []
         self._warnings: list[RichValidationError] = []
 
@@ -135,12 +139,14 @@ def _validate_vert_exag(value: Any) -> list[str]:
     """Validate vertical exaggeration range."""
     try:
         val = float(value)
-        if val > 10:
+        MAX_VE_THRESHOLD = 10
+        MIN_VE_THRESHOLD = 0.1
+        if val > MAX_VE_THRESHOLD:
             return [
                 f"⚠ Vertical exaggeration ({val}) is very high. "
-                f"Values > 10 may distort the profile significantly."
+                f"Values > {MAX_VE_THRESHOLD} may distort the profile significantly."
             ]
-        if val < 0.1:
+        if val < MIN_VE_THRESHOLD:
             return [f"⚠ Vertical exaggeration ({val}) is very low. Profile may appear flattened."]
         if val <= 0:
             return [f"❌ Vertical exaggeration ({val}) must be positive."]
@@ -153,7 +159,8 @@ def _validate_buffer(value: Any) -> list[str]:
     """Validate search buffer range."""
     try:
         val = float(value)
-        if val > 5000:
+        MAX_BUFFER_DIST = 5000
+        if val > MAX_BUFFER_DIST:
             return [
                 f"⚠ Buffer distance ({val}m) is very large. "
                 f"This may include distant structures not relevant to the section."
@@ -169,7 +176,8 @@ def _validate_dip_scale(value: Any) -> list[str]:
     """Validate dip symbol scale range."""
     try:
         val = float(value)
-        if val > 5:
+        MAX_DIP_SCALE = 5
+        if val > MAX_DIP_SCALE:
             return [
                 f"⚠ Dip scale ({val}) is very high. "
                 f"Dip symbols may overlap and obscure the profile."

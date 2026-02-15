@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """SecInterp Core Domain Package.
 
 This package contains the domain entities, DTOs, and enums that define
 the core business logic of the plugin, decoupled from QGIS-specific
 implementation details where possible.
 """
+
+from __future__ import annotations
 
 from .dtos import (
     PreviewParams,

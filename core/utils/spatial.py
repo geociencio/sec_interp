@@ -1,3 +1,5 @@
+"""Spatial analysis and layer querying utilities."""
+
 from __future__ import annotations
 
 """Spatial Utilities Module.
@@ -35,7 +37,8 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
 
     line = line_geom.asMultiPolyline()[0] if line_geom.isMultipart() else line_geom.asPolyline()
 
-    if len(line) < 2:
+    MIN_REQUIRED_POINTS = 2
+    if len(line) < MIN_REQUIRED_POINTS:
         return 0
     # Calculate azimuth of first segment (from first to second point)
     p1 = line[0]
@@ -80,7 +83,8 @@ def calculate_step_size(geom: QgsGeometry, raster_lyr) -> float:
         else:
             line_pts = geom.asPolyline()
 
-        if line_pts and len(line_pts) >= 2:
+        MIN_REQUIRED_POINTS = 2
+        if line_pts and len(line_pts) >= MIN_REQUIRED_POINTS:
             p1 = line_pts[0]
             p2 = line_pts[-1]
             dx = abs(p2.x() - p1.x())

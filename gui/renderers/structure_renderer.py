@@ -1,3 +1,5 @@
+"""Renderer for structural data dips."""
+
 from __future__ import annotations
 
 from qgis.core import QgsLineSymbol, QgsSingleSymbolRenderer, QgsVectorLayer

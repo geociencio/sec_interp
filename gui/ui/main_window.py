@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Main Window assembly."""
+
+from __future__ import annotations
 
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import Qt
@@ -29,6 +29,13 @@ class SecInterpMainWindow(QDialog):
     """Main Programmatic Interface for SecInterp."""
 
     def __init__(self, iface=None, parent=None):
+        """Initialize the main dialog.
+
+        Args:
+            iface: QGIS interface.
+            parent: Parent widget.
+
+        """
         super().__init__(parent)
         self.setWindowTitle(self.tr("Sec Interp"))
         self.resize(1200, 700)

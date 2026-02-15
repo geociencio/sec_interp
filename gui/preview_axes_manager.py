@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Axes and grid management for SecInterp preview.
 
 Handles the creation of grid lines and axes labels with nice intervals.
 """
+
+from __future__ import annotations
 
 import math
 
@@ -42,12 +42,19 @@ class PreviewAxesManager:
         exponent = math.floor(math.log10(target_step))
         fraction = target_step / (10**exponent)
 
-        if fraction < 1.5:
-            nice_fraction = 1.0
-        elif fraction < 3.5:
-            nice_fraction = 2.0
-        elif fraction < 7.5:
-            nice_fraction = 5.0
+        THRESHOLD_QUARTER = 1.5
+        THRESHOLD_HALF = 3.5
+        THRESHOLD_FULL = 7.5
+        DIV_ONE = 1.0
+        DIV_TWO = 2.0
+        DIV_FIVE = 5.0
+
+        if fraction < THRESHOLD_QUARTER:
+            nice_fraction = DIV_ONE
+        elif fraction < THRESHOLD_HALF:
+            nice_fraction = DIV_TWO
+        elif fraction < THRESHOLD_FULL:
+            nice_fraction = DIV_FIVE
         else:
             nice_fraction = 10.0
 

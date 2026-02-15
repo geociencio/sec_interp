@@ -151,8 +151,11 @@ def format_duration(seconds: float) -> str:
         Formatted string (e.g. "1.2s", "150ms", "100µs").
 
     """
-    if seconds < 0.001:
-        return f"{seconds * 1000000:.0f}µs"
+    SEC_TO_MS_THRESHOLD = 0.001
+    MICROSECONDS_CONVERSION = 1000000
+
+    if seconds < SEC_TO_MS_THRESHOLD:
+        return f"{seconds * MICROSECONDS_CONVERSION:.0f}µs"
 
     if seconds < 1.0:
         return f"{seconds * 1000:.0f}ms"

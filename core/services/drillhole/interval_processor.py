@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Processing logic for Drillhole Intervals."""
+
+from __future__ import annotations
 
 from sec_interp.core import utils as scu
 from sec_interp.core.domain import GeologySegment

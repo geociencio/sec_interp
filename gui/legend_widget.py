@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Legend Widget Module."""
+
+from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -19,6 +19,12 @@ class LegendWidget(QWidget):
     """Widget to display the geological legend over the map canvas."""
 
     def __init__(self, dialog: SecInterpDialog) -> None:
+        """Initialize the legend widget.
+
+        Args:
+            dialog: The main SecInterp dialog.
+
+        """
         super().__init__(dialog)  # Use dialog as the parent
         self.dialog = dialog  # Store reference to the dialog
         self.renderer: Renderer | None = None  # Apply UP037

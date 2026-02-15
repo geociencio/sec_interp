@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Interpretation tool for Profile View.
 
 This module provides the ProfileInterpretationTool for drawing
 interpretation polygons in the profile preview window.
 """
+
+from __future__ import annotations
 
 import contextlib
 import datetime
@@ -41,6 +41,12 @@ class ProfileSnapper:
     """
 
     def __init__(self, canvas: QgsMapCanvas):
+        """Initialize the profile snapper.
+
+        Args:
+            canvas: The map canvas to snap on.
+
+        """
         self.canvas = canvas
         self._locators: dict[str, QgsPointLocator] = {}
 
@@ -124,6 +130,12 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
     polygonFinished = pyqtSignal(InterpretationPolygon)
 
     def __init__(self, canvas: QgsMapCanvas):
+        """Initialize the profile interpretation tool.
+
+        Args:
+            canvas: The map canvas where interpretation is drawn.
+
+        """
         super().__init__(canvas)
         self.canvas = canvas
         self.points: list[QgsPointXY] = []
@@ -213,7 +225,8 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             event: Map tool event from QGIS
 
         """
-        if len(self.points) >= 3:
+        MIN_POLYGON_POINTS = 3
+        if len(self.points) >= MIN_POLYGON_POINTS:
             self.finalize_polygon()
 
     def keyPressEvent(self, event: Any) -> None:
@@ -224,7 +237,8 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
         """
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
-            if len(self.points) >= 3:
+            MIN_POLYGON_POINTS = 3
+            if len(self.points) >= MIN_POLYGON_POINTS:
                 self.finalize_polygon()
                 event.accept()
             return
@@ -298,7 +312,8 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         logger.debug(
             f"ProfileInterpretationTool.finalize_polygon() called with {len(self.points)} points"
         )
-        if len(self.points) < 3:
+        MIN_POLYGON_POINTS = 3
+        if len(self.points) < MIN_POLYGON_POINTS:
             logger.warning("finalize_polygon() aborted - less than 3 points")
             return
 

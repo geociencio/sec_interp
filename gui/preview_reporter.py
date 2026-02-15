@@ -1,3 +1,5 @@
+"""Reporting and results formatting for SecInterp preview."""
+
 from __future__ import annotations
 
 """Preview reporting and message formatting for SecInterp.

@@ -1,3 +1,5 @@
+"""Cache management for SecInterp main dialog."""
+
 from __future__ import annotations
 
 from sec_interp.logger_config import get_logger

@@ -1,3 +1,5 @@
+"""Legend rendering logic for SecInterp preview."""
+
 from __future__ import annotations
 
 """Legend rendering logic for SecInterp preview.

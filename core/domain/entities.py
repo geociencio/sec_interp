@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Domain entities and basic aliases."""
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any

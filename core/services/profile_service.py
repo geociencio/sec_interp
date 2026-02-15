@@ -1,3 +1,5 @@
+"""Service for managing cross-section profiles."""
+
 from __future__ import annotations
 
 """Profile Data Processing Service.

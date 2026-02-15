@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Configuration and defaults for the SecInterp dialogs."""
+
+from __future__ import annotations
 
 from typing import Any, ClassVar
 

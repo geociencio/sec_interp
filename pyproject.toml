@@ -78,6 +78,8 @@ exclude = [
     "**/*test.py",
     "tests/",
     "research/",
+    ".gemini-temp",
+    ".ai-context",
 ]
 
 [tool.ruff.lint]

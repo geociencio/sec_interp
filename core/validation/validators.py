@@ -1,3 +1,5 @@
+"""Registry and facade for all project validators."""
+
 from __future__ import annotations
 
 """Reusable validators for dataclass fields.

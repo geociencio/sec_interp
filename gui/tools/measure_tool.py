@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """Measurement tool for Profile View.
 
 This module provides the ProfileMeasureTool for measuring distances,
 elevation differences, and slopes in the profile preview window.
 It separates UI event handling from spatial snapping logic.
 """
+
+from __future__ import annotations
 
 from qgis.core import (
     QgsMapLayer,
@@ -35,6 +35,12 @@ class ProfileSnapper:
     """Helper class to handle point snapping functionality."""
 
     def __init__(self, canvas: QgsMapCanvas):
+        """Initialize the profile snapper.
+
+        Args:
+            canvas: The map canvas to snap on.
+
+        """
         self.canvas = canvas
         self._locators: dict[str, QgsPointLocator] = {}
 
@@ -118,6 +124,12 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
     measurementFinished = pyqtSignal()
 
     def __init__(self, canvas: QgsMapCanvas):
+        """Initialize the profile measurement tool.
+
+        Args:
+            canvas: The map canvas where measurement is performed.
+
+        """
         super().__init__(canvas)
         self.canvas = canvas
         self.points: list[QgsPointXY] = []
@@ -234,7 +246,8 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
 
         """
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
-            if len(self.points) >= 2:
+            MIN_MEASURE_POINTS = 2
+            if len(self.points) >= MIN_MEASURE_POINTS:
                 self.finalize_measurement()
                 event.accept()
             return
@@ -257,7 +270,8 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         logger.debug(f"Point {len(self.points)} added: {point.x():.2f}, {point.y():.2f}")
 
         # Emit measurement update if we have at least 2 points
-        if len(self.points) >= 2:
+        MIN_RELEVANT_POINTS = 2
+        if len(self.points) >= MIN_RELEVANT_POINTS:
             metrics = calculate_polyline_metrics(self.points)
             self.measurementChanged.emit(metrics)
 
@@ -269,7 +283,8 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         """
         logger.info(f"finalize_measurement called with {len(self.points)} points")
 
-        if len(self.points) < 2:
+        MIN_RELEVANT_POINTS = 2
+        if len(self.points) < MIN_RELEVANT_POINTS:
             logger.warning("Cannot finalize measurement with less than 2 points")
             return
 

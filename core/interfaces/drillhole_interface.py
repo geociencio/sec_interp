@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Interface for Drillhole services."""
+
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 

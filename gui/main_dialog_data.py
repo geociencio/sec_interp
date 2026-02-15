@@ -1,3 +1,5 @@
+"""Data aggregation logic for SecInterp main dialog."""
+
 from __future__ import annotations
 
 """Data aggregation module for SecInterp main dialog.

@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Enumerations for domain types."""
+
+from __future__ import annotations
 
 from enum import IntEnum
 

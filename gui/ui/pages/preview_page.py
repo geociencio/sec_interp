@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Preview area widget."""
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -24,6 +24,12 @@ class PreviewWidget(QWidget):
     """Widget for profile preview and controls."""
 
     def __init__(self, parent: Any = None) -> None:
+        """Initialize the preview widget.
+
+        Args:
+            parent: Optional parent widget.
+
+        """
         super().__init__(parent)
         self._setup_ui()
 

@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Pure geometric projection logic for drillhole operations."""
+
+from __future__ import annotations
 
 from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 

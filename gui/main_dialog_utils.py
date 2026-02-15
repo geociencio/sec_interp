@@ -1,3 +1,5 @@
+"""Utility management for SecInterp main dialog."""
+
 from __future__ import annotations
 
 """UI utility module for SecInterp main dialog.

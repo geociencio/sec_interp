@@ -1,3 +1,5 @@
+"""Sampling logic for geological units on profiles."""
+
 from __future__ import annotations
 
 """Sampling logic for Master Profile elevations."""

@@ -1,3 +1,5 @@
+"""Rendering and polychromy utilities."""
+
 from __future__ import annotations
 
 """Rendering Utilities Module.
@@ -117,10 +119,13 @@ def calculate_interval(data_range: float) -> float:
     magnitude = 10 ** math.floor(math.log10(data_range))
     normalized = data_range / magnitude
 
-    if normalized < 2:
+    THRESHOLD_SMALL = 2
+    THRESHOLD_LARGE = 5
+
+    if normalized < THRESHOLD_SMALL:
         return magnitude * 0.5
 
-    if normalized < 5:
+    if normalized < THRESHOLD_LARGE:
         return magnitude
 
     return magnitude * 2

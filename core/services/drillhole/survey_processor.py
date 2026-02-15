@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Processing logic for Drillhole Surveys."""
+
+from __future__ import annotations
 
 
 class SurveyProcessor:

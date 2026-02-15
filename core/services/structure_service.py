@@ -299,8 +299,11 @@ class StructureService(IStructureService):
         if strike is None or dip_angle is None:
             return None
 
+        MAX_STRIKE = 360
+        MAX_DIP_ANGLE = 90
+
         # Validate ranges
-        if not (0 <= strike <= 360) or not (0 <= dip_angle <= 90):
+        if not (0 <= strike <= MAX_STRIKE) or not (0 <= dip_angle <= MAX_DIP_ANGLE):
             return None
 
         app_dip = scu.calculate_apparent_dip(strike, dip_angle, line_az)

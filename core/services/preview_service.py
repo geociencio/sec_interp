@@ -1,3 +1,5 @@
+"""Service for managing preview generation and rendering."""
+
 from __future__ import annotations
 
 """Preview service for SecInterp.
@@ -73,7 +75,8 @@ class PreviewService:
             base_points = max(200, int(canvas_width * 2))
 
             # Apply zoom boost if ratio is significant
-            if ratio > 1.1:
+            ZOOM_DETAIL_BOOST_THRESHOLD = 1.1
+            if ratio > ZOOM_DETAIL_BOOST_THRESHOLD:
                 # Slight detail boost as we zoom in
                 detail_boost = 1.0 + (math.log10(ratio) * 0.5)
                 return int(base_points * detail_boost)
