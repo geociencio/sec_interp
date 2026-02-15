@@ -17,6 +17,7 @@ from .path_validator import validate_output_path
 from .validation_helpers import ValidationContext, validate_reasonable_ranges
 
 # validate_reasonable_ranges moved to validation_helpers.py
+MIN_FLOAT_THRESHOLD = 0.1
 
 
 @dataclass
@@ -153,11 +154,11 @@ class ProjectValidator:
 
         if params.scale < 1:
             context.add_error("Scale must be >= 1", "scale")
-        if params.vert_exag < 0.1:
+        if params.vert_exag < MIN_FLOAT_THRESHOLD:
             context.add_error("Vertical exaggeration must be >= 0.1", "vert_exag")
         if params.buffer_dist < 0:
             context.add_error("Buffer distance must be >= 0", "buffer_dist")
-        if params.dip_scale_factor < 0.1:
+        if params.dip_scale_factor < MIN_FLOAT_THRESHOLD:
             context.add_error("Dip scale factor must be >= 0.1", "dip_scale_factor")
 
     @staticmethod
