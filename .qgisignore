@@ -69,4 +69,3 @@ analyzer_config.json
 README_DEV.md
 Dockerfile
 *.qgs~
-help/

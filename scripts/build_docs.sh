@@ -62,6 +62,31 @@ if [ -d "help" ]; then
     rm -rf "$INTERNAL_HELP_DIR"
     mkdir -p "$INTERNAL_HELP_DIR"
     cp -r "$BUILD_DIR/html/"* "$INTERNAL_HELP_DIR/"
+
+    # Remove Developer API docs from User Help (User Preference)
+    echo "🧹 Removing API docs and source code from plugin help..."
+    rm -rf "$INTERNAL_HELP_DIR/_modules"
+    rm -rf "$INTERNAL_HELP_DIR/_sources"
+    # shellcheck disable=SC2086
+    rm -f $INTERNAL_HELP_DIR/sec_interp*.html
+    # shellcheck disable=SC2086
+    rm -f $INTERNAL_HELP_DIR/modules.html
+
+    # Remove large font sets to save space (~9MB reduction)
+    echo "📦 Pruning large fonts from help (optimizing for ZIP size)..."
+    rm -rf "$INTERNAL_HELP_DIR/_static/fonts/Lato"
+    rm -rf "$INTERNAL_HELP_DIR/_static/fonts/RobotoSlab"
+    rm -rf "$INTERNAL_HELP_DIR/_static/css/fonts" # FontAwesome
+
+    # Further micro-optimizations (removing unused RTD extras)
+    rm -f "$INTERNAL_HELP_DIR/_static/js/badge_only.js"
+    rm -f "$INTERNAL_HELP_DIR/_static/js/versions.js"
+    rm -f "$INTERNAL_HELP_DIR/_static/css/badge_only.css"
+    find "$INTERNAL_HELP_DIR" -type d -empty -delete
+
+    echo "🔍 Verifying cleanup..."
+    ls -d "$INTERNAL_HELP_DIR"/sec_interp*.html 2>/dev/null || echo "✅ API docs gone"
+    ls -d "$INTERNAL_HELP_DIR/_static/fonts/Lato" 2>/dev/null || echo "✅ Lato gone"
 fi
 
 # 6. [AUTO] Deploy to GitHub Pages (if output is a git repo)

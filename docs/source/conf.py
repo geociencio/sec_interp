@@ -36,7 +36,6 @@ release = "2.9.0"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
     "myst_parser",
     "sphinxcontrib.mermaid",

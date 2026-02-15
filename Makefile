@@ -51,7 +51,7 @@ PY_FILES = $(SOURCES)
 UI_FILES =
 EXTRAS = metadata.txt icon.png
 
-EXTRA_DIRS =
+EXTRA_DIRS = help/html
 
 COMPILED_RESOURCE_FILES = resources/resources.py
 COMPILED_UI_FILES =
@@ -93,7 +93,7 @@ default:
 	@echo See https://g-sherman.github.io/plugin_build_tool/ for info.
 
 compile:
-	uv run qgis-manage compile
+	uv run qgis-manage compile --type resources --type translations
 	@# Patch resources.py to use qgis.PyQt instead of PyQt5 (QGIS Policy)
 	@sed -i 's/from PyQt5 import QtCore/from qgis.PyQt import QtCore/g' resources/resources.py
 
@@ -117,12 +117,12 @@ test: compile transcompile
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
 	@echo "----------------------"
 
-deploy:
+deploy: docs
 	uv run qgis-manage deploy
 
 # The dclean target removes compiled python files from plugin directory
 
-zip: compile
+zip: docs compile
 	uv run qgis-manage package
 
 package: zip

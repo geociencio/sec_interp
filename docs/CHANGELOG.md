@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- **Optimización**: Reducción del 79% en el tamaño del paquete ZIP (12MB -> 2.5MB) mediante poda de fuentes y documentación técnica.
+- **Build**: Nueva lógica en `Makefile` y `build_docs.sh` para empaquetado ligero y despliegue externo de APIs.
+
+### Changed
+- **Documentación**: Desacoplamiento de la documentación de la API del paquete de ayuda offline integrado en el plugin.
+
 ## [3.0.0] - 2026-02-14
 ### Added
 - **Calidad**: Eliminación sistemática de números mágicos (`PLR2004`) en todo el proyecto, reemplazándolos con constantes nombradas.

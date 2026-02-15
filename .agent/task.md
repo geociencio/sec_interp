@@ -14,7 +14,7 @@
 - [ ] Integrar `qgis-analyzer` v1.9.0 en sistema agéntico (Skills/Workflows) <!-- id: 53 -->
 
 > [!NOTE]
-> Se han detectado fallos pre-existentes en tests de integración 3D (desde v3.0.0). Documentado en `next_steps.md`.
+> Tests passed successfully in Docker environment (Green State). Starting session with clean baseline.
 
 ## 🚀 Migración a QGIS 4.x / API Agnostic <!-- id: 2 -->
 - [ ] Reemplazar `from PyQt5...` por `from qgis.PyQt...` (Global) <!-- id: 3 -->

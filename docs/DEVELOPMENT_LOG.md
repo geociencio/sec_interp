@@ -1,4 +1,16 @@
 ---
+## [2026-02-15] RESUMEN: Optimización Extrema del Paquete ZIP (v3.0.0)
+- **Logro**: Reducción del tamaño del plugin de **12.0 MB** a **2.5 MB** (-79%).
+- **Cambios**:
+    - **Asset Pruning**: Eliminación de fuentes redundantes (~9MB), API docs y vistas de código fuente en el manual manual interno.
+    - **Build System**: Makefile ajustado para evitar que `qgis-manage compile` sobreescriba la optimización.
+    - **Infraestructura**: Despliegue automático de docs técnicos al repo externo `sec_interp_docs`.
+- **Métricas**:
+    - **ZIP**: 2.5 MB (Goal < 5MB OK).
+    - **Tests**: 361/361 OK (100%).
+- **Mantenimiento**: [sesion_2026-02-15_optimization_zip_size.md](maintenance/sesion_2026-02-15_optimization_zip_size.md).
+
+---
 ## [2026-02-14] RESUMEN: Limpieza de Deuda Técnica (Documentación y PLR2004)
 - **Logro**: Alcanzado el 100% de cumplimiento en documentación (D100, D105, D107) y eliminación de números mágicos en los módulos `core/` y `gui/`.
 - **Cambios**:

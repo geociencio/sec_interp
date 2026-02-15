@@ -6,6 +6,14 @@ sec\_interp.core.services package
    :show-inheritance:
    :undoc-members:
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   sec_interp.core.services.drillhole
+
 Submodules
 ----------
 
