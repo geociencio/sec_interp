@@ -1,4 +1,16 @@
 ---
+## [2026-02-15] RESUMEN: Resolución de Fugas de Señales y Estabilidad de UI
+- **Logro**: Resueltas 65 fugas de señales potenciales identificadas por `qgis-analyzer`.
+- **Cambios**:
+    - **UI**: Implementado sistema de desconexión en cascada en `DialogSignalManager` y todas las páginas de configuración.
+    - **Mantenibilidad**: Refactorizado `disconnect_all` para reducir complejidad y cumplir con estándares de `ruff`.
+    - **Stability**: Asegurada la limpieza de señales en tareas asíncronas canceladas.
+- **Métricas**:
+    - **Signal Leaks**: Reducción neta de 36 fugas (Falsos positivos remanentes: 29).
+    - **Tests**: 361/361 OK (100%).
+- **Mantenimiento**: [sesion_2026-02-15_signal_leak_resolution.md](maintenance/sesion_2026-02-15_signal_leak_resolution.md).
+
+---
 ## [2026-02-15] RESUMEN: Optimización Extrema del Paquete ZIP (v3.0.0)
 - **Logro**: Reducción del tamaño del plugin de **12.0 MB** a **2.5 MB** (-79%).
 - **Cambios**:

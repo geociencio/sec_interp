@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- **Estabilidad**: Implementado sistema de desconexión de señales en cascada para prevenir fugas de memoria en el ciclo de vida del diálogo.
+- **Refactorización**: Modularizado `DialogSignalManager` para reducir la complejidad ciclomática (`C901`) y mejorar la mantenibilidad de las conexiones.
 - **Optimización**: Reducción del 79% en el tamaño del paquete ZIP (12MB -> 2.5MB) mediante poda de fuentes y documentación técnica.
 - **Build**: Nueva lógica en `Makefile` y `build_docs.sh` para empaquetado ligero y despliegue externo de APIs.
 
