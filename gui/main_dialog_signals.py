@@ -158,7 +158,7 @@ class DialogSignalManager:
             self.dialog.page_struct,
             self.dialog.page_drillhole,
             self.dialog.page_interpretation,
-            self.dialog.page_preview,
+            self.dialog.preview_widget,
             self.dialog.page_settings,
         ]
         for page in pages:
