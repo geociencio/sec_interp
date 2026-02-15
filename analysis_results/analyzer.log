@@ -229,3 +229,11 @@
 2026-02-14 14:14:51,130 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
 2026-02-14 14:14:51,843 - qgis_analyzer - INFO - 📁 Project type: QGIS
 2026-02-14 14:14:53,135 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-02-14 21:31:22,575 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-02-14 21:31:22,575 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-02-14 21:31:23,452 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-02-14 21:31:25,731 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-02-14 22:15:50,550 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-02-14 22:15:50,553 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp
+2026-02-14 22:15:51,228 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-02-14 22:15:53,517 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results

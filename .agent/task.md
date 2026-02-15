@@ -1,18 +1,16 @@
 # Tareas - Fase v3.0.1 (Limpieza de Linting)
 
 ## 🛠️ Corrección de Issues de Linting (v3.0.1) <!-- id: 1 -->
-**Contexto**: QGIS Security Scan reportó 85 issues de linting que no afectan funcionalidad pero deben corregirse para mantener calidad del código.
+**Contexto**: QGIS Security Scan reportó 85 issues de linting. Se ha alcanzado el 100% de cumplimiento en Docstrings y Constantes.
 
-- [ ] Corregir imports faltantes (F821 - 65 issues) <!-- id: 40 -->
-  - `core/interfaces/drillhole_interface.py`: Añadir `from typing import Any`
-  - `core/interfaces/structure_interface.py`: Añadir `from qgis.core import QgsGeometry`
-  - `core/services/drillhole/*.py`: Añadir `from qgis.core import QgsFeature`
-- [ ] Ajustar line breaks antes de operadores binarios (W503 - 15 issues) <!-- id: 41 -->
-  - `core/domain/dtos.py`: Reformatear expresiones multi-línea
-- [ ] Reorganizar imports de módulos (E402 - 3 issues) <!-- id: 42 -->
-  - `core/performance_metrics.py`: Mover imports al inicio del archivo
-- [ ] Eliminar variables no usadas (F841 - 2 issues) <!-- id: 43 -->
-  - `core/performance_metrics.py`: Remover variable `_current`
+- [x] Corregir imports faltantes (F821 - 65 issues) <!-- id: 40 -->
+- [x] Ajustar line breaks antes de operadores binarios (W503 - 15 issues) <!-- id: 41 -->
+- [x] Reorganizar imports de módulos (E402 - 3 issues) <!-- id: 42 -->
+- [x] Eliminar variables no usadas (F841 - 2 issues) <!-- id: 43 -->
+- [x] Cobertura del 100% de Docstrings y eliminación de números mágicos (PLR2004) <!-- id: 44 -->
+
+> [!NOTE]
+> Se han detectado fallos pre-existentes en tests de integración 3D (desde v3.0.0). Documentado en `next_steps.md`.
 
 ## 🚀 Migración a QGIS 4.x / API Agnostic <!-- id: 2 -->
 - [ ] Reemplazar `from PyQt5...` por `from qgis.PyQt...` (Global) <!-- id: 3 -->
