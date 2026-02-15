@@ -1,3 +1,5 @@
+"""PDF export utilities."""
+
 from __future__ import annotations
 
 """PDF exporter module for PDF documents."""

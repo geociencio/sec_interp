@@ -1,6 +1,9 @@
-from __future__ import annotations
+"""Profile export façade.
 
-"""Specific exporters for profile data (Shapefiles)."""
+Specific exporters for profile data (Shapefiles).
+"""
+
+from __future__ import annotations
 
 import math
 from pathlib import Path
@@ -21,6 +24,9 @@ from sec_interp.logger_config import get_logger
 from .base_exporter import BaseExporter
 
 logger = get_logger(__name__)
+
+# Constants for profile geometry validation
+MIN_REQUIRED_POINTS = 2
 
 
 class ProfileLineShpExporter(BaseExporter):
@@ -135,7 +141,7 @@ class GeologyShpExporter(BaseExporter):
 
     def _create_geology_feature(self, segment: Any, fields: QgsFields) -> QgsFeature | None:
         """Create a feature for a geology segment."""
-        if len(segment.points) < 2:
+        if len(segment.points) < MIN_REQUIRED_POINTS:
             return None
 
         points = [QgsPointXY(d, e) for d, e in segment.points]

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0] - 2026-02-14
 ### Added
+- **Calidad**: Eliminación sistemática de números mágicos (`PLR2004`) en todo el proyecto, reemplazándolos con constantes nombradas.
+- **Documentación**: Cobertura del 100% en docstrings para `core/` y `gui/` (cumplimiento de reglas `D10x`).
 - **Auditoría**: Actualización a `qgis-plugin-analyzer` v1.7.0 con soporte para el nuevo comando `qgis-analyzer`.
 - **Documentación**: Clarificación global entre nombre de herramienta (`qgis-plugin-analyzer`) y comando CLI (`qgis-analyzer`).
 - **Auditoría Estricta**: Habilitadas reglas de Ruff para Complejidad (`C901`), Argumentos (`PLR0913`), Valores Mágicos (`PLR2004`) y Docstrings (`D10x`).

@@ -1,4 +1,15 @@
 ---
+## [2026-02-14] RESUMEN: Limpieza de Deuda Técnica (Documentación y PLR2004)
+- **Logro**: Alcanzado el 100% de cumplimiento en documentación (D100, D105, D107) y eliminación de números mágicos en los módulos `core/` y `gui/`.
+- **Cambios**:
+    - **Documentación**: Corregidos 86 archivos con docstrings de módulo e inicializadores faltantes.
+    - **Calidad**: Extraídas 40+ constantes para umbrales de validación, LOD y parámetros geológicos.
+    - **Refinado**: El usuario pulió manualmente las cabeceras para una alineación estética total.
+- **Métricas**:
+    - **Quality Score**: 72.3/100 🟢.
+    - **Tests**: 361/361 OK (100%).
+- **Mantenimiento**: [sesion_2026-02-14_technical_debt_cleanup.md](maintenance/sesion_2026-02-14_technical_debt_cleanup.md).
+
 ---
 ## [2026-02-14] RESUMEN: Hotfixes de Exportación y Capas Opcionales
 - **Logro**: Resueltos bugs críticos de validación y manejo de capas opcionales detectados durante pruebas manuales exhaustivas.

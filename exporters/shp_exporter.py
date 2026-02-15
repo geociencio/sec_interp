@@ -1,3 +1,5 @@
+"""Shapefile export utilities."""
+
 from __future__ import annotations
 
 """Shapefile exporter module for vector data."""

@@ -1,9 +1,9 @@
-from __future__ import annotations
-
-"""3D Interpretation Exporter.
+"""Interpretation 3D export utilities.
 
 This module provides the exporter for 3D geological interpretations.
 """
+
+from __future__ import annotations
 
 import math
 from pathlib import Path
@@ -29,6 +29,10 @@ from sec_interp.exporters.base_exporter import BaseExporter
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
+
+# Constants for 3D geometry validation
+MIN_VALID_POLYGON_VERTICES = 4
+MIN_REQUIRED_FOR_CLOSURE = 2
 
 
 class Interpretation3DExporter(BaseExporter):
@@ -379,7 +383,7 @@ class Interpretation3DExporter(BaseExporter):
 
         vertices = self._ensure_closed_polygon(vertices)
 
-        if len(vertices) < 4:
+        if len(vertices) < MIN_VALID_POLYGON_VERTICES:
             logger.warning(f"Polygon {polygon.id} has insufficient unique vertices. Skipping.")
             return None
 
@@ -406,7 +410,7 @@ class Interpretation3DExporter(BaseExporter):
 
     def _ensure_closed_polygon(self, vertices: list) -> list:
         """Ensure the polygon vertices are closed."""
-        if len(vertices) > 2 and vertices[0] != vertices[-1]:
+        if len(vertices) > MIN_REQUIRED_FOR_CLOSURE and vertices[0] != vertices[-1]:
             return [*vertices, vertices[0]]
         return vertices
 

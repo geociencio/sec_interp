@@ -1,3 +1,5 @@
+"""Image export utilities."""
+
 from __future__ import annotations
 
 """Image exporter module for raster formats (PNG, JPG)."""

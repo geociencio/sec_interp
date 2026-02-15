@@ -1,3 +1,5 @@
+"""SVG export utilities."""
+
 from __future__ import annotations
 
 """SVG exporter module for vector graphics."""
