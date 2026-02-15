@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import contextlib
+
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
@@ -149,3 +151,10 @@ class SecInterpMainWindow(QDialog):
     def _connect_signals(self):
         """Connect navigation signals."""
         self.sidebar.currentRowChanged.connect(self.stacked_widget.setCurrentIndex)
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.sidebar.currentRowChanged.disconnect(self.stacked_widget.setCurrentIndex)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.output_widget.fileChanged.disconnect(self.update_button_state)

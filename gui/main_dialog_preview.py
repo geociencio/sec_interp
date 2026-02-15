@@ -6,6 +6,7 @@ separating preview logic from the main dialog class.
 
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsApplication, QgsVectorLayer
@@ -86,6 +87,11 @@ class PreviewManager:
         """Clean up resources and stop background tasks."""
         self.orchestrator.cancel_active_tasks()
         self.debounce_timer.stop()
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.debounce_timer.timeout.disconnect()
+
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.dialog.preview_widget.canvas.extentsChanged.disconnect(self._on_extents_changed)
 
     def generate_preview(self) -> tuple[bool, str]:
         """Generate complete preview with all available data layers."""

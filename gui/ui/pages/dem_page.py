@@ -168,3 +168,11 @@ class DemPage(BasePage):
         data = self.get_data()
         params = ValidationParams(raster_layer=data["raster_layer"])
         return ProjectValidator.is_dem_complete(params)
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        try:
+            self.raster_combo.layerChanged.disconnect(self.band_combo.setLayer)
+            self.raster_combo.layerChanged.disconnect(self._update_resolution)
+        except (TypeError, RuntimeError):
+            pass

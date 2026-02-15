@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from typing import Any
 
 from qgis.core import QgsMapLayerProxyModel
@@ -114,3 +115,17 @@ class StructurePage(BasePage):
             struct_strike_field=data["strike_field"],
         )
         return ProjectValidator.is_structure_complete(params)
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        try:
+            self.layer_combo.layerChanged.disconnect(self._on_layer_changed)
+            self.layer_combo.layerChanged.disconnect(self.dataChanged.emit)
+        except (TypeError, RuntimeError):
+            pass
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.dip_combo.fieldChanged.disconnect(self.dataChanged.emit)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.strike_combo.fieldChanged.disconnect(self.dataChanged.emit)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.dataChanged.disconnect()

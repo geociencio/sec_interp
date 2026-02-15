@@ -6,6 +6,7 @@ of geological interpretations drawn on the profile.
 
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING, Any
 
 from qgis.PyQt.QtGui import QColor
@@ -118,6 +119,21 @@ class InterpretationPropertiesDialog(QDialog):
             self.interpretation.color = new_color.name()
             self._set_preview_color(self.interpretation.color)
 
+    def reject(self) -> None:
+        """Close dialog without saving."""
+        self.disconnect_signals()
+        super().reject()
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.btn_change_color.clicked.disconnect(self._pick_color)
+        try:
+            self.button_box.accepted.disconnect(self.accept)
+            self.button_box.rejected.disconnect(self.reject)
+        except (TypeError, RuntimeError):
+            pass
+
     def accept(self) -> None:
         """Update interpretation object and close."""
         self.interpretation.name = self.name_edit.text()
@@ -127,8 +143,5 @@ class InterpretationPropertiesDialog(QDialog):
         for name, widget in self.field_widgets.items():
             self.interpretation.attributes[name] = widget.text()
 
+        self.disconnect_signals()
         super().accept()
-
-    def reject(self) -> None:
-        """Close dialog without saving."""
-        super().reject()

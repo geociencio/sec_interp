@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import contextlib
+
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
@@ -82,3 +84,15 @@ class GeologyPage(BasePage):
             outcrop_field=data["outcrop_name_field"],
         )
         return ProjectValidator.is_geology_complete(params)
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        try:
+            self.layer_combo.layerChanged.disconnect(self.field_combo.setLayer)
+            self.layer_combo.layerChanged.disconnect(self.dataChanged.emit)
+        except (TypeError, RuntimeError):
+            pass
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.field_combo.fieldChanged.disconnect(self.dataChanged.emit)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.dataChanged.disconnect()

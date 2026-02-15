@@ -167,6 +167,7 @@ class SecInterpDialog(SecInterpMainWindow):
         logger.info("Closing dialog, cleaning up resources...")
         self.interpretation_manager.save_interpretations()
         self.preview_manager.cleanup()
+        self.signal_manager.disconnect_all()
         super().closeEvent(event)
 
     def open_help(self):

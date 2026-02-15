@@ -7,10 +7,14 @@ from .qgis_features import MockQgsFields, MockQgsField
 
 
 class MockQgsMapLayer(MockQObject):
+    """Mock implementation for QgsMapLayer."""
+
     VectorLayer = 0
     RasterLayer = 1
 
     class LayerType:
+        """Layer type constants."""
+
         VectorLayer = 0
         RasterLayer = 1
         PluginLayer = 2
@@ -20,6 +24,7 @@ class MockQgsMapLayer(MockQObject):
         AnnotationLayer = 6
 
     def __init__(self, *args, **kwargs):
+        """Initialize the mock map layer."""
         super().__init__(*args, **kwargs)
         self._dataProvider = MagicMock()
         self._name_val = (
@@ -49,66 +54,87 @@ class MockQgsMapLayer(MockQObject):
         self._crs = MockQgsCoordinateReferenceSystem()
 
     def crs(self):
+        """Get the layer CRS."""
         return self._crs
 
     def fields(self):
+        """Get the layer fields."""
         return self._internal_fields
 
     def _add_attributes(self, fields):
+        """Add attributes to the internal fields (mock side effect)."""
         for f in fields:
             self._internal_fields.append(f)
         return True
 
     def _add_features(self, features):
+        """Add features to the layer (mock side effect)."""
         self._features.extend(features)
         self.getFeatures.return_value = iter(self._features)
         return True
 
     def isValid(self):
+        """Check if the layer is valid."""
         return True
 
     def featureCount(self):
+        """Get the number of features."""
         return len(self._features)
 
     def setCrs(self, crs):
+        """Set the layer CRS."""
         pass
 
     def dataProvider(self):
+        """Get the data provider."""
         return self._dataProvider
 
     def updateFields(self):
+        """Update fields."""
         pass
 
     def rasterUnitsPerPixelX(self):
+        """Get raster units per pixel X."""
         return 1.0
 
     def source(self):
+        """Get the layer source."""
         return "mock_source"
 
     def updateExtents(self):
+        """Update layer extents."""
         pass
 
     def setLabeling(self, labeling):
+        """Set layer labeling."""
         pass
 
     def setLabelsEnabled(self, enabled):
+        """Set if labels are enabled."""
         self._labels_enabled = enabled
 
     def saveNamedStyle(self, path):
+        """Save named style to path."""
         return "Success", True
 
     def labelsEnabled(self):
+        """Check if labels are enabled."""
         return getattr(self, "_labels_enabled", False)
 
     def wkbType(self):
+        """Get WKB type."""
         return 3
 
     def extent(self):
+        """Get the layer extent."""
         return MockQgsRectangle(0, 0, 100, 100)
 
 
 class MockQgsVectorLayer(MockQgsMapLayer):
+    """Mock implementation for QgsVectorLayer."""
+
     def __init__(self, path="path", name="layer", provider="memory", options=None):
+        """Initialize the mock vector layer mapping path attributes to fields."""
         super().__init__(path, name)
         if "?" in path:
             params = path.split("?")[1].split("&")
@@ -127,4 +153,6 @@ class MockQgsVectorLayer(MockQgsMapLayer):
 
 
 class MockQgsRasterLayer(MockQgsMapLayer):
+    """Mock implementation for QgsRasterLayer."""
+
     pass

@@ -6,6 +6,7 @@ This module handles the initialization and orchestration of map tools
 
 from __future__ import annotations
 
+import contextlib
 from typing import TYPE_CHECKING, Any
 
 from qgis.gui import QgsMapTool, QgsMapToolPan
@@ -127,6 +128,19 @@ class DialogToolManager:
         self.dialog.preview_widget.results_text.setHtml(msg)
         # Ensure results group is expanded
         self.dialog.preview_widget.results_group.setCollapsed(False)
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        if self.interpretation_tool:
+            with contextlib.suppress(TypeError, RuntimeError):
+                self.interpretation_tool.polygonFinished.disconnect()
+        if self.measure_tool:
+            try:
+                self.measure_tool.measurementChanged.disconnect()
+                self.measure_tool.measurementFinished.disconnect()
+                self.measure_tool.measurementCleared.disconnect()
+            except (TypeError, RuntimeError):
+                pass
 
 
 class NavigationManager:

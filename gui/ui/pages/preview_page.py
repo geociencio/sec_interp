@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from typing import Any
 
 from qgis.core import QgsApplication
@@ -185,3 +186,12 @@ class PreviewWidget(QWidget):
     def _toggle_lod_spin(self, checked: bool) -> None:
         """Enable/disable max points spinbox based on auto checkbox."""
         self.spin_max_points.setEnabled(not checked)
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.canvas.xyCoordinates.disconnect(self._update_coords)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.canvas.scaleChanged.disconnect(self._update_scale)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_auto_lod.toggled.disconnect(self._toggle_lod_spin)

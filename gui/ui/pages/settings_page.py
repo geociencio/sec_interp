@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import contextlib
+
 from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (
@@ -258,3 +260,21 @@ class SettingsPage(BasePage):
 
         """
         return True, ""
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        for chk in [
+            self.chk_exp_topo,
+            self.chk_exp_geol,
+            self.chk_exp_struct,
+            self.chk_exp_drill,
+            self.chk_exp_interp,
+            self.chk_enable_3d,
+            self.chk_3d_traces,
+            self.chk_3d_intervals,
+            self.chk_3d_original,
+            self.chk_3d_projected,
+        ]:
+            if chk:
+                with contextlib.suppress(TypeError, RuntimeError):
+                    chk.stateChanged.disconnect(self._on_settings_changed)

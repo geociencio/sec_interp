@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import contextlib
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -137,3 +139,10 @@ class InterpretationPage(BasePage):
                     return False, self.tr("Duplicate field name: {}").format(name)
                 names.append(name)
         return True, ""
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.btn_add_field.clicked.disconnect()
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.btn_remove_field.clicked.disconnect()

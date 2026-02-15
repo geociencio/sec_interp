@@ -34,11 +34,22 @@ class PreviewTaskOrchestrator:
         if self.geology_task:
             with contextlib.suppress(RuntimeError):
                 self.geology_task.cancel()
+            try:
+                self.geology_task.finished_with_results.disconnect()
+                self.geology_task.progress_changed.disconnect()
+                self.geology_task.error_occurred.disconnect()
+            except (TypeError, RuntimeError):
+                pass
             self.geology_task = None
 
         if self.drillhole_task:
             with contextlib.suppress(RuntimeError):
                 self.drillhole_task.cancel()
+            try:
+                self.drillhole_task.finished_with_results.disconnect()
+                self.drillhole_task.error_occurred.disconnect()
+            except (TypeError, RuntimeError):
+                pass
             self.drillhole_task = None
 
     def start_geology_task(self, params: Any, service: Any) -> None:

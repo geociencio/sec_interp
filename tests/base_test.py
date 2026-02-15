@@ -58,89 +58,130 @@ from .mocks.processing_mocks import mock_processing
 
 
 class MockQgsDistanceArea(MockQgsBase):
+    """Mock implementation for QgsDistanceArea."""
+
     def __init__(self):
+        """Initialize the mock distance area."""
         super().__init__()
 
     def setSourceCrs(self, crs, context=None):
+        """Set source CRS."""
         pass
 
     def setEllipsoid(self, ellipsoid):
+        """Set ellipsoid."""
         pass
 
     def measureLength(self, geom):
+        """Measure length of geometry."""
         return geom.length()
 
     def measureLine(self, p1, p2):
+        """Measure distance between two points."""
         return ((p1.x() - p2.x()) ** 2 + (p1.y() - p2.y()) ** 2) ** 0.5
 
     def convertLengthMeasurement(self, val, unit):
+        """Convert length measurement."""
         return val
 
 
 class MockQgsProperty(MockQgsBase):
+    """Mock implementation for QgsProperty."""
+
     def __init__(self):
+        """Initialize the mock property."""
         super().__init__()
 
     def setField(self, field):
+        """Set property field."""
         pass
 
 
 class MockQgsPropertyCollection(MockQgsBase):
+    """Mock implementation for QgsPropertyCollection."""
+
     def __init__(self):
+        """Initialize the mock property collection."""
         super().__init__()
 
     def setProperty(self, key, property):
+        """Set property by key."""
         pass
 
 
 class MockQgsPalLayerSettings(MockQgsBase):
+    """Mock implementation for QgsPalLayerSettings."""
+
     def __init__(self):
+        """Initialize the mock PAL layer settings."""
         super().__init__()
         self.fieldName = ""
         self.enabled = True
 
     def setFormat(self, format):
+        """Set text format."""
         pass
 
 
 class MockQgsTextFormat(MockQgsBase):
+    """Mock implementation for QgsTextFormat."""
+
     def __init__(self):
+        """Initialize the mock text format."""
         super().__init__()
 
     def setSize(self, size):
+        """Set text size."""
         pass
 
 
 class MockQgsVectorLayerSimpleLabeling(MockQgsBase):
+    """Mock implementation for QgsVectorLayerSimpleLabeling."""
+
     def __init__(self, settings):
+        """Initialize the mock labeling."""
         super().__init__()
 
 
 class MockQgsSingleSymbolRenderer(MockQgsBase):
+    """Mock implementation for QgsSingleSymbolRenderer."""
+
     def __init__(self, symbol):
+        """Initialize the mock renderer."""
         super().__init__()
 
 
 class MockQgsLineSymbol:
+    """Mock implementation for QgsLineSymbol."""
+
     @staticmethod
     def createSimple(config):
+        """Create a simple line symbol."""
         return MagicMock()
 
 
 class MockQgsMarkerSymbol:
+    """Mock implementation for QgsMarkerSymbol."""
+
     @staticmethod
     def createSimple(config):
+        """Create a simple marker symbol."""
         return MagicMock()
 
 
 class MockQgsLabelBackgroundSettings(MockQgsBase):
+    """Mock implementation for QgsLabelBackgroundSettings."""
+
     def __init__(self):
+        """Initialize the mock background settings."""
         super().__init__()
 
     def setEnabled(self, enabled):
+        """Set enabled status."""
         pass
 
     def setFillColor(self, color):
+        """Set fill color."""
         pass
 
 

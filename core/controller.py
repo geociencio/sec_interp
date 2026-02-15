@@ -38,6 +38,7 @@ class ProfileController:
         self.geology_service = GeologyService()
         self.structure_service = StructureService()
         self.drillhole_service = DrillholeService()
+        self._connected_layers: list[Any] = []
         logger.debug("ProfileController initialized")
 
     def connect_layer_notifications(self, layers: list[Any]) -> None:
@@ -47,12 +48,26 @@ class ProfileController:
             layers: List of QgsMapLayer objects to monitor.
 
         """
+        self.disconnect_layer_notifications()
         for layer in layers:
             if not layer:
                 continue
             # When layer data changes, clear cache for its bucket or altogether
             layer.dataChanged.connect(self.data_cache.clear)
+            self._connected_layers.append(layer)
             logger.debug(f"Connected cache invalidation to layer: {layer.name()}")
+
+    def disconnect_layer_notifications(self) -> None:
+        """Disconnect from all previously connected layer signals."""
+        for layer in self._connected_layers:
+            try:
+                # Disconnect specific slot to avoid breaking other connections
+                layer.dataChanged.disconnect(self.data_cache.clear)
+                logger.debug(f"Disconnected cache invalidation from layer: {layer.name()}")
+            except (TypeError, RuntimeError):
+                # Signal might not be connected or layer might be deleted
+                pass
+        self._connected_layers.clear()
 
     def get_cached_data(self, inputs: dict[str, Any]) -> dict[str, Any] | None:
         """Retrieve data from cache if available for the given inputs.

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from typing import Any
 
 from qgis.core import QgsMapLayerProxyModel
@@ -85,3 +86,8 @@ class SectionPage(BasePage):
     def is_complete(self) -> bool:
         """Check if required fields are filled."""
         return bool(self.line_combo.currentLayer())
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.line_combo.layerChanged.disconnect()

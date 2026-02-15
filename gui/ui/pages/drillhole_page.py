@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from typing import Any
 
 from qgis.core import Qgis, QgsMapLayerProxyModel
@@ -328,3 +329,57 @@ class DrillholePage(BasePage):
         )
 
         return ProjectValidator.is_drillhole_complete(params)
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        # Collar signals
+        try:
+            self.c_layer.layerChanged.disconnect(self.c_id.setLayer)
+            self.c_layer.layerChanged.disconnect(self.c_x.setLayer)
+            self.c_layer.layerChanged.disconnect(self.c_y.setLayer)
+            self.c_layer.layerChanged.disconnect(self.c_z.setLayer)
+            self.c_layer.layerChanged.disconnect(self.c_depth.setLayer)
+            self.c_layer.layerChanged.disconnect(self.dataChanged.emit)
+        except (TypeError, RuntimeError):
+            pass
+        try:
+            self.chk_use_geom.toggled.disconnect(self._toggle_xy_fields)
+            self.chk_use_geom.toggled.disconnect(self.dataChanged.emit)
+        except (TypeError, RuntimeError):
+            pass
+
+        collar_combos = [self.c_id, self.c_x, self.c_y, self.c_z, self.c_depth]
+        for w in collar_combos:
+            with contextlib.suppress(TypeError, RuntimeError, AttributeError):
+                w.fieldChanged.disconnect(self.dataChanged.emit)
+
+        # Survey signals
+        try:
+            self.s_layer.layerChanged.disconnect(self.s_id.setLayer)
+            self.s_layer.layerChanged.disconnect(self.s_depth.setLayer)
+            self.s_layer.layerChanged.disconnect(self.s_azim.setLayer)
+            self.s_layer.layerChanged.disconnect(self.s_incl.setLayer)
+            self.s_layer.layerChanged.disconnect(self.dataChanged.emit)
+        except (TypeError, RuntimeError):
+            pass
+        survey_combos = [self.s_id, self.s_depth, self.s_azim, self.s_incl]
+        for w in survey_combos:
+            with contextlib.suppress(TypeError, RuntimeError, AttributeError):
+                w.fieldChanged.disconnect(self.dataChanged.emit)
+
+        # Interval signals
+        try:
+            self.i_layer.layerChanged.disconnect(self.i_id.setLayer)
+            self.i_layer.layerChanged.disconnect(self.i_from.setLayer)
+            self.i_layer.layerChanged.disconnect(self.i_to.setLayer)
+            self.i_layer.layerChanged.disconnect(self.i_lith.setLayer)
+            self.i_layer.layerChanged.disconnect(self.dataChanged.emit)
+        except (TypeError, RuntimeError):
+            pass
+        interval_combos = [self.i_id, self.i_from, self.i_to, self.i_lith]
+        for w in interval_combos:
+            with contextlib.suppress(TypeError, RuntimeError, AttributeError):
+                w.fieldChanged.disconnect(self.dataChanged.emit)
+
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.dataChanged.disconnect()
