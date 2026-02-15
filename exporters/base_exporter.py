@@ -19,7 +19,7 @@ class BaseExporter(ABC):
     and validation logic while delegating format-specific export to subclasses.
     """
 
-    def __init__(self, settings: dict[str, Any]):
+    def __init__(self, settings: dict[str, Any]) -> None:
         """Initialize the exporter with settings.
 
         Args:

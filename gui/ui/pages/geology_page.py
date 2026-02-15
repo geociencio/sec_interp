@@ -22,7 +22,7 @@ class GeologyPage(BasePage):
 
     dataChanged = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the geology page.
 
         Args:
@@ -31,7 +31,7 @@ class GeologyPage(BasePage):
         """
         super().__init__(QCoreApplication.translate("GeologyPage", "Geological Outcrops"), parent)
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         super()._setup_ui()
 
         self.group_layout = QGridLayout(self.group_box)
@@ -69,7 +69,7 @@ class GeologyPage(BasePage):
         self.layer_combo.layerChanged.connect(self.dataChanged.emit)
         self.field_combo.fieldChanged.connect(self.dataChanged.emit)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> dict[str, Any]:
         """Get geology configuration."""
         return {
             "outcrop_layer": self.layer_combo.currentLayer(),

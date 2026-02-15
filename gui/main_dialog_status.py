@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class DialogStatusManager:
     """Manage the status bar and indicators for the main dialog."""
 
-    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
+    def __init__(self, dialog: SecInterpDialog) -> None:
         """Initialize status manager with reference to parent dialog.
 
         Args:

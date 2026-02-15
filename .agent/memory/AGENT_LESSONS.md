@@ -29,7 +29,17 @@ lessons:
     topic: Agentic Brain Evolution
     lesson: "La Gen 3 introduce autocrítica (Auditor) y memoria semántica para mayor estabilidad cognitiva."
     action: "Invocación de /ia-critic tras planificación y /cierra-sesion para aprendizaje continuo."
-```
+  - date: 2026-02-15
+    category: QUALITY
+    topic: qgis-analyzer Context
+    lesson: "El analizador de QGIS incluye la carpeta tests/ en el score global de tipado, lo que puede distorsionar la percepción de calidad de producción."
+    action: "Realizar desgloses por carpeta para validar el cumplimiento del código de producción (core/gui)."
+
+  - date: 2026-02-15
+    category: TECHNICAL
+    topic: QGIS Signal Leaks
+    lesson: "Las señales conectadas a herramientras de mapa (MapTools) o páginas de diálogos deben desconectarse explícitamente para evitar fugas y comportamientos erráticos."
+    action: "Implementar siempre un método disconnect_signals() que se invoque al cerrar el contexto."
 
 ## ⚙️ Configuración Global de Preferencias
 

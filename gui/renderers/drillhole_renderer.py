@@ -21,7 +21,7 @@ from sec_interp.gui.renderers.color_manager import ColorManager
 class DrillholeRenderer(BasePreviewRenderer):
     """Renderer for drillhole trace and interval layers."""
 
-    def __init__(self, color_manager: ColorManager):
+    def __init__(self, color_manager: ColorManager) -> None:
         """Initialize the drillhole renderer.
 
         Args:

@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 class DialogSettingsManager:
     """Manages persistence of dialog settings."""
 
-    def __init__(self, dialog: SecInterpDialog):
+    def __init__(self, dialog: SecInterpDialog) -> None:
         """Initialize settings manager with reference to parent dialog.
 
         Args:

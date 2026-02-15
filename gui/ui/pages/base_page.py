@@ -11,7 +11,7 @@ class BasePage(QWidget):
     Each page manages a specific set of parameters (e.g., DEM, Section, Geology).
     """
 
-    def __init__(self, title: str, parent=None):
+    def __init__(self, title: str, parent: QWidget | None = None) -> None:
         """Initialize the page.
 
         Args:
@@ -23,7 +23,7 @@ class BasePage(QWidget):
         self.title = title
         self._setup_ui()
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         """Set up the user interface."""
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
@@ -37,7 +37,7 @@ class BasePage(QWidget):
         # Add stretch at the bottom to keep widgets at the top
         self.main_layout.addStretch()
 
-    def get_data(self) -> dict:
+    def get_data(self) -> dict[str, Any]:
         """Get the current configuration data from the page.
 
         Returns:

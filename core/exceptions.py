@@ -10,7 +10,7 @@ from __future__ import annotations
 class SecInterpError(Exception):
     """Base class for all SecInterp-specific exceptions."""
 
-    def __init__(self, message: str, details: dict | None = None):
+    def __init__(self, message: str, details: dict | None = None) -> None:
         """Initialize the SecInterp error with a message and optional details.
 
         Args:

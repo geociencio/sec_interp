@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from PyQt5.QtCore import QCoreApplication
 from qgis.core import QgsGeometry, QgsPointXY, QgsWkbTypes
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 def extract_all_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:

@@ -26,7 +26,7 @@ class MetricsCollector:
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize empty metrics collection."""
         self.timings: dict[str, float] = {}
         self.counts: dict[str, int] = {}
@@ -93,7 +93,7 @@ class PerformanceTimer:
         operation_name: str,
         collector: MetricsCollector | None = None,
         logger_func: Any | None = None,
-    ):
+    ) -> None:
         """Initialize timer.
 
         Args:
@@ -108,7 +108,7 @@ class PerformanceTimer:
         self.start_time: float = 0.0
         self.duration: float = 0.0
 
-    def __enter__(self):
+    def __enter__(self) -> PerformanceTimer:
         """Start the timer.
 
         Returns:
@@ -176,7 +176,7 @@ class PerformanceMonitor:
     Tracks duration and memory usage of specific operations.
     """
 
-    def __init__(self, log_file="performance.log"):
+    def __init__(self, log_file: str = "performance.log") -> None:
         """Initialize monitor and setup logging.
 
         Args:

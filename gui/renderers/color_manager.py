@@ -29,7 +29,7 @@ class ColorManager:
         QColor(22, 160, 133),  # Green Sea
     ]
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the color manager."""
         self._active_units: dict[str, QColor] = {}
 

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -12,6 +11,7 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.logger_config import get_logger
 

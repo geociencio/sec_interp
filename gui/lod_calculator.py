@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class LODCalculator:
     """Calculates Level of Detail (LOD) based on canvas zoom levels."""
 
-    def __init__(self, canvas: QgsMapCanvas):
+    def __init__(self, canvas: QgsMapCanvas) -> None:
         """Initialize the LOD calculator.
 
         Args:

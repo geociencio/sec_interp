@@ -16,7 +16,7 @@ from sec_interp.gui.renderers.color_manager import ColorManager
 class GeologyRenderer(BasePreviewRenderer):
     """Renderer for geological units in section."""
 
-    def __init__(self, color_manager: ColorManager):
+    def __init__(self, color_manager: ColorManager) -> None:
         """Initialize the geology renderer.
 
         Args:

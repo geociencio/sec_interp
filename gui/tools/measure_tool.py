@@ -34,7 +34,7 @@ logger = get_logger(__name__)
 class ProfileSnapper:
     """Helper class to handle point snapping functionality."""
 
-    def __init__(self, canvas: QgsMapCanvas):
+    def __init__(self, canvas: QgsMapCanvas) -> None:
         """Initialize the profile snapper.
 
         Args:
@@ -88,7 +88,7 @@ class ProfileSnapper:
 
         return point
 
-    def _cleanup_locators(self, current_ids: set[str]):
+    def _cleanup_locators(self, current_ids: set[str]) -> None:
         """Remove locators for layers that are no longer active."""
         hits_to_remove = [lid for lid in self._locators if lid not in current_ids]
         for lid in hits_to_remove:
@@ -123,7 +123,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
     measurementCleared = pyqtSignal()
     measurementFinished = pyqtSignal()
 
-    def __init__(self, canvas: QgsMapCanvas):
+    def __init__(self, canvas: QgsMapCanvas) -> None:
         """Initialize the profile measurement tool.
 
         Args:
@@ -158,7 +158,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         super().deactivate()
         logger.debug("ProfileMeasureTool deactivated")
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the tool state.
 
         If measurement is finalized, only clears the points data but keeps
@@ -260,7 +260,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         # Let parent handle other keys
         super().keyPressEvent(event)
 
-    def _add_point(self, point: QgsPointXY):
+    def _add_point(self, point: QgsPointXY) -> None:
         """Add a point to the measurement polyline."""
         self.points.append(point)
         self._ensure_rubber_band()
@@ -275,7 +275,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
             metrics = calculate_polyline_metrics(self.points)
             self.measurementChanged.emit(metrics)
 
-    def finalize_measurement(self):
+    def finalize_measurement(self) -> None:
         """Finalize the measurement and emit final metrics.
 
         This is a public method that can be called from UI buttons.
@@ -320,7 +320,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         # Notify that measurement is officially finished
         self.measurementFinished.emit()
 
-    def _add_vertex_marker(self, point: QgsPointXY):
+    def _add_vertex_marker(self, point: QgsPointXY) -> None:
         """Add a visual marker at the point location."""
         marker = QgsVertexMarker(self.canvas)
         marker.setCenter(point)
@@ -330,7 +330,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         marker.setPenWidth(2)
         self.vertex_markers.append(marker)
 
-    def _ensure_rubber_band(self):
+    def _ensure_rubber_band(self) -> None:
         """Create rubber band if not exists."""
         if self.rubber_band:
             return
@@ -339,7 +339,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         self.rubber_band.setColor(QColor(255, 0, 0))
         self.rubber_band.setWidth(2)
 
-    def _update_rubber_band(self, current_point: QgsPointXY):
+    def _update_rubber_band(self, current_point: QgsPointXY) -> None:
         """Update the rubber band geometry dynamically."""
         if not self.rubber_band or len(self.points) == 0:
             return
@@ -353,7 +353,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         # Add temporary line to current cursor position
         self.rubber_band.addPoint(current_point, True)
 
-    def _calculate_and_emit_preview(self, target_point: QgsPointXY):
+    def _calculate_and_emit_preview(self, target_point: QgsPointXY) -> None:
         """Calculate and emit preview metrics while moving cursor."""
         if len(self.points) == 0:
             return

@@ -27,7 +27,7 @@ class DialogSignalManager:
     making the dialog initialization cleaner and more maintainable.
     """
 
-    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
+    def __init__(self, dialog: SecInterpDialog) -> None:
         """Initialize signal manager.
 
         Args:

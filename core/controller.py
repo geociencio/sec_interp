@@ -10,6 +10,7 @@ import time
 from typing import Any
 
 from qgis.core import QgsDistanceArea, QgsProject
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
@@ -30,7 +31,7 @@ logger = get_logger(__name__)
 class ProfileController:
     """Orchestrates data generation services for SecInterp profile creation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize services and the data cache."""
         self.config_service = ConfigService()
         self.data_cache = DataCache()
@@ -152,9 +153,19 @@ class ProfileController:
                 params.line_layer, params.raster_layer, params.band_num
             )
             if not profile_data:
-                raise ProcessingError("No topographic profile data was generated.")
+                raise ProcessingError(
+                    QCoreApplication.translate(
+                        "ProfileController",
+                        "No topographic profile data was generated.",
+                    )
+                )
             self.data_cache.set("topo", topo_key, profile_data, cache_meta)
-        messages.append(f"✓ Data processed successfully!\n\nTopography: {len(profile_data)} points")
+        messages.append(
+            QCoreApplication.translate(
+                "ProfileController",
+                "✓ Data processed successfully!\n\nTopography: {0} points",
+            ).format(len(profile_data))
+        )
         return profile_data
 
     def _process_geology(
@@ -170,7 +181,11 @@ class ProfileController:
         geol_data = self.data_cache.get("geol", geol_key)
         if geol_data:
             logger.debug("Cache hit: Geology")
-            messages.append(f"Geology: {len(geol_data)} segments")
+            messages.append(
+                QCoreApplication.translate("ProfileController", "Geology: {0} segments").format(
+                    len(geol_data)
+                )
+            )
         else:
             geol_data = self.geology_service.generate_geological_profile(
                 params.line_layer,
@@ -181,9 +196,15 @@ class ProfileController:
             )
             if geol_data:
                 self.data_cache.set("geol", geol_key, geol_data, cache_meta)
-                messages.append(f"Geology: {len(geol_data)} segments")
+                messages.append(
+                    QCoreApplication.translate("ProfileController", "Geology: {0} segments").format(
+                        len(geol_data)
+                    )
+                )
             else:
-                messages.append("Geology: No intersections")
+                messages.append(
+                    QCoreApplication.translate("ProfileController", "Geology: No intersections")
+                )
         return geol_data
 
     def _process_structures(
@@ -205,7 +226,11 @@ class ProfileController:
         struct_data = self.data_cache.get("struct", struct_key)
         if struct_data:
             logger.debug("Cache hit: Structure")
-            messages.append(f"Structures: {len(struct_data)} points")
+            messages.append(
+                QCoreApplication.translate("ProfileController", "Structures: {0} points").format(
+                    len(struct_data)
+                )
+            )
         else:
             line_feat = next(params.line_layer.getFeatures(), None)
             if line_feat:
@@ -241,9 +266,17 @@ class ProfileController:
                     )
                     if struct_data:
                         self.data_cache.set("struct", struct_key, struct_data, cache_meta)
-                        messages.append(f"Structures: {len(struct_data)} points")
+                        messages.append(
+                            QCoreApplication.translate(
+                                "ProfileController", "Structures: {0} points"
+                            ).format(len(struct_data))
+                        )
                     else:
-                        messages.append(f"Structures: None in {params.buffer_dist}m buffer")
+                        messages.append(
+                            QCoreApplication.translate(
+                                "ProfileController", "Structures: None in {0}m buffer"
+                            ).format(params.buffer_dist)
+                        )
         return struct_data
 
     def _process_drillholes(

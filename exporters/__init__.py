@@ -49,7 +49,7 @@ __all__ = [
 ]
 
 
-def get_exporter(extension: str, settings: dict):
+def get_exporter(extension: str, settings: dict) -> BaseExporter:
     """Get the appropriate exporter instance for the file extension.
 
     Args:

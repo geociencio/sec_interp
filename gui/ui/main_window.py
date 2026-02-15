@@ -30,7 +30,7 @@ from .sidebar import Sidebar
 class SecInterpMainWindow(QDialog):
     """Main Programmatic Interface for SecInterp."""
 
-    def __init__(self, iface=None, parent=None):
+    def __init__(self, iface: Any | None = None, parent: QWidget | None = None) -> None:
         """Initialize the main dialog.
 
         Args:
@@ -66,7 +66,7 @@ class SecInterpMainWindow(QDialog):
         self._setup_ui()
         self._connect_signals()
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         """Assemble the UI."""
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(5, 5, 5, 5)
@@ -148,7 +148,7 @@ class SecInterpMainWindow(QDialog):
 
         self.sidebar.setCurrentRow(0)
 
-    def _connect_signals(self):
+    def _connect_signals(self) -> None:
         """Connect navigation signals."""
         self.sidebar.currentRowChanged.connect(self.stacked_widget.setCurrentIndex)
 

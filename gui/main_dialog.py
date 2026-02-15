@@ -27,7 +27,7 @@ from sec_interp.logger_config import get_logger
 class _NoOpMessageBar:
     """Safe no-op messagebar when iface is not available."""
 
-    def pushMessage(self, *_args, **_kwargs):
+    def pushMessage(self, *_args, **_kwargs) -> None:
         """No-op implementation of pushMessage."""
         return None
 
@@ -66,7 +66,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
     """
 
-    def __init__(self, iface=None, plugin_instance=None, parent=None):
+    def __init__(self, iface=None, plugin_instance=None, parent=None) -> None:
         """Initialize the dialog."""
         # Initialize the base class which sets up the programmatic UI
         super().__init__(iface, parent)
@@ -124,7 +124,7 @@ class SecInterpDialog(SecInterpMainWindow):
         # Flag to control saving settings on close
         self._save_on_close = True
 
-    def _init_managers(self):
+    def _init_managers(self) -> None:
         """Initialize all manager instances."""
         from sec_interp.core.services.preview_service import PreviewService
 
@@ -143,7 +143,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self.navigation_manager = NavigationManager(self)
         self.layer_factory = PreviewLayerFactory()
 
-    def handle_error(self, error: Exception, title: str = "Error"):
+    def handle_error(self, error: Exception, title: str = "Error") -> None:
         """Centralized error handling for the dialog.
 
         Args:
@@ -170,7 +170,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self.signal_manager.disconnect_all()
         super().closeEvent(event)
 
-    def open_help(self):
+    def open_help(self) -> None:
         """Open the help file in the default browser."""
         # Fix: help is at project root, main_dialog is in gui/
         help_file = Path(__file__).parent.parent / "help" / "html" / "index.html"
@@ -200,23 +200,23 @@ class SecInterpDialog(SecInterpMainWindow):
         self.interpretation_manager.handle_interpretation_finished(interpretation)
 
     @property
-    def interpretations(self):
+    def interpretations(self) -> list[InterpretationPolygon]:
         """Proxy to interpretations in the manager for backward compatibility."""
         return self.interpretation_manager.interpretations
 
     @interpretations.setter
-    def interpretations(self, value):
+    def interpretations(self, value: list[InterpretationPolygon]) -> None:
         self.interpretation_manager.interpretations = value
 
-    def update_preview_checkbox_states(self):
+    def update_preview_checkbox_states(self) -> None:
         """Enable or disable preview checkboxes via status_manager."""
         self.status_manager.update_preview_checkbox_states()
 
-    def update_button_state(self):
+    def update_button_state(self) -> None:
         """Enable or disable buttons via status_manager."""
         self.status_manager.update_button_state()
 
-    def get_selected_values(self):
+    def get_selected_values(self) -> dict[str, Any]:
         """Get the selected values from the dialog.
 
         Returns:
@@ -225,7 +225,7 @@ class SecInterpDialog(SecInterpMainWindow):
         """
         return self.data_aggregator.get_all_values()
 
-    def get_preview_options(self):
+    def get_preview_options(self) -> dict[str, Any]:
         """Return the state of preview layer checkboxes.
 
         Returns:
@@ -244,14 +244,14 @@ class SecInterpDialog(SecInterpMainWindow):
             "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
         }
 
-    def update_preview_from_checkboxes(self):
+    def update_preview_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.
 
         This method delegates to PreviewManager for preview updates.
         """
         self.preview_manager.update_from_checkboxes()
 
-    def preview_profile_handler(self):
+    def preview_profile_handler(self) -> None:
         """Generate a quick preview with topographic, geological, and structural data.
 
         This method delegates to PreviewManager for preview generation.
@@ -264,11 +264,11 @@ class SecInterpDialog(SecInterpMainWindow):
         if not success and message:
             self.message_manager.push_message(self.tr("Preview Error"), message, level=Qgis.Warning)
 
-    def export_preview(self):
+    def export_preview(self) -> None:
         """Export the current preview to a file using ExportManager."""
         self.export_manager.export_preview()
 
-    def accept_handler(self):
+    def accept_handler(self) -> None:
         """Handle the accept button click event."""
         # Proactively save settings as UI state, even if validation fails
         self.settings_manager.save_settings()
@@ -284,12 +284,12 @@ class SecInterpDialog(SecInterpMainWindow):
         self.interpretation_manager.save_interpretations()
         self.accept()
 
-    def reject_handler(self):
+    def reject_handler(self) -> None:
         """Handle the reject button click event."""
         self._save_on_close = False
         self.close()
 
-    def validate_inputs(self):
+    def validate_inputs(self) -> bool:
         """Validate the inputs from the dialog.
 
         This method delegates to DialogValidationManager for input validation.
@@ -299,11 +299,11 @@ class SecInterpDialog(SecInterpMainWindow):
             show_user_message(self, self.tr("Validation Error"), error_message)
         return is_valid
 
-    def clear_cache_handler(self):
+    def clear_cache_handler(self) -> None:
         """Clear cached data via CacheHandler."""
         self.cache_handler.clear_cache()
 
-    def reset_defaults_handler(self):
+    def reset_defaults_handler(self) -> None:
         """Reset all dialog inputs via settings_manager."""
         self.settings_manager.reset_to_defaults()
 
@@ -323,18 +323,18 @@ class SecInterpDialog(SecInterpMainWindow):
         """Get a theme icon via DialogEntityManager."""
         return DialogEntityManager.get_theme_icon(name)
 
-    def _load_interpretations(self):
+    def _load_interpretations(self) -> None:
         """Load interpretations via interpretation_manager."""
         self.interpretation_manager.load_interpretations()
 
-    def _save_interpretations(self):
+    def _save_interpretations(self) -> None:
         """Save interpretations via interpretation_manager."""
         self.interpretation_manager.save_interpretations()
 
-    def _load_user_settings(self):
+    def _load_user_settings(self) -> None:
         """Load user settings via settings_manager."""
         self.settings_manager.load_settings()
 
-    def _save_user_settings(self):
+    def _save_user_settings(self) -> None:
         """Save user settings via settings_manager."""
         self.settings_manager.save_settings()

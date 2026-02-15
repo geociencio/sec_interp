@@ -1,0 +1,69 @@
+
+[1m📋 QGIS Plugin Analyzer: Project Summary[0m
+=============================================
+
+[1m📊 Quality Indicators[0m
+- Module Stability Score: [91m23.8/100[0m
+- Code Maintainability Score: [93m69.9/100[0m
+- Security Score (Bandit): [92m100.0/100[0m
+
+[1m🔬 Research-based Metrics[0m
+- Type Hint Coverage (Params): 74.9%
+- Type Hint Coverage (Returns): 41.1%
+- Docstring Coverage: 85.8%
+- Documentation Style: Google
+
+[1m🏗️  QGIS Transition & Style[0m
+- GDAL Import Style: Modern
+- PyQt5 Usage: Detected
+- Legacy Signals/Slots: 0
+🚨 Signal Leaks Detected: 29
+  - action.triggered
+  - cancel_btn.clicked
+  - ok_btn.clicked
+  - save_btn.clicked
+  - self.active_task.progressChanged
+  - self.chk_enable_3d.stateChanged
+  - self.clear_cache_btn.clicked
+  - self.dialog.preview_widget.btn_export.clicked
+  - self.dialog.preview_widget.btn_finalize.clicked
+  - self.dialog.preview_widget.btn_interpret.toggled
+  - self.dialog.preview_widget.btn_measure.toggled
+  - self.dialog.preview_widget.btn_preview.clicked
+  - self.dialog.preview_widget.chk_adaptive_sampling.toggled
+  - self.dialog.preview_widget.chk_auto_lod.toggled
+  - self.dialog.preview_widget.chk_drillholes.stateChanged
+  - self.dialog.preview_widget.chk_geol.stateChanged
+  - self.dialog.preview_widget.chk_interpretations.stateChanged
+  - self.dialog.preview_widget.chk_legend.stateChanged
+  - self.dialog.preview_widget.chk_struct.stateChanged
+  - self.dialog.preview_widget.chk_topo.stateChanged
+  - self.dialog.preview_widget.spin_max_points.valueChanged
+  - self.dialog.tool_manager.measure_tool.measurementChanged
+  - self.dialog.tool_manager.measure_tool.measurementCleared
+  - self.dialog.tool_manager.measure_tool.measurementFinished
+  - self.dlg.accepted
+  - self.reset_defaults_btn.clicked
+  - self.tool.measurementChanged
+  - widget.fieldChanged
+  - widget.toggled
+
+[1m⚠️  Issue Statistics (1297 total)[0m
+- MISSING_I18N: 864
+- MISSING_DOCSTRING: 223
+- MISSING_TYPE_HINTS: 203
+- QGIS_LEGACY_IMPORT: 3
+- PYQT5_IMPORT: 3
+- HIGH_COMPLEXITY: 1
+
+[1m🔍 Sample Issues[0m
+[93m[MEDIUM][0m core/data_cache.py:59 - Untranslated user-facing string: 'source'. Use self.tr().
+[93m[MEDIUM][0m core/controller.py:155 - Untranslated user-facing string: 'No topographic profile data was generated.'. Use self.tr().
+[93m[MEDIUM][0m core/controller.py:157 - Untranslated user-facing string: '✓ Data processed successfully!
+
+Topography: '. Use self.tr().
+[93m[MEDIUM][0m core/controller.py:157 - Untranslated user-facing string: ' points'. Use self.tr().
+[93m[MEDIUM][0m core/controller.py:173 - Untranslated user-facing string: 'Geology: '. Use self.tr().
+... and 1292 more issues.
+
+=============================================

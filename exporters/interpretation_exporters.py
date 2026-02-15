@@ -31,7 +31,7 @@ logger = get_logger(__name__)
 class Interpretation2DExporter(BaseExporter):
     """Exports interpretations in 2D profile coordinates."""
 
-    def __init__(self, settings: dict[str, Any]):
+    def __init__(self, settings: dict[str, Any]) -> None:
         """Initialize with settings.
 
         Args:

@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 class AccessControlService:
     """Service to manage access to restricted features."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the access control service."""
         self.settings = QgsSettings()
 

@@ -45,7 +45,7 @@ class PreviewRenderer:
     - PreviewLegendRenderer: Handles legend drawing.
     """
 
-    def __init__(self, canvas: QgsMapCanvas | None = None):
+    def __init__(self, canvas: QgsMapCanvas | None = None) -> None:
         """Initialize preview renderer.
 
         Args:
@@ -66,7 +66,7 @@ class PreviewRenderer:
         self.has_structures = False
 
     @property
-    def active_units(self):
+    def active_units(self) -> dict[str, Any]:
         """Expose active units from factory for legend compatibility."""
         return self.layer_factory.active_units
 
@@ -210,7 +210,7 @@ class PreviewRenderer:
 
         return self.canvas, layers
 
-    def draw_legend(self, painter: QPainter, rect: QRectF):
+    def draw_legend(self, painter: QPainter, rect: QRectF) -> None:
         """Draw legend on the given painter. Delegates to PreviewLegendRenderer."""
         self.legend_renderer.draw_legend(
             painter, rect, self.active_units, self.has_topography, self.has_structures
@@ -255,7 +255,7 @@ class PreviewRenderer:
             logger.exception("Error exporting preview")
             return False
 
-    def _cleanup_layers(self):
+    def _cleanup_layers(self) -> None:
         """Remove previous layers from QgsProject."""
         for layer in self.layers:
             if layer:
@@ -274,7 +274,9 @@ class PreviewRenderer:
                     self.canvas.scene().removeItem(rb)
         self.interpretation_rubbers = []
 
-    def _render_interpretations(self, interp_data: list[InterpretationPolygon], vert_exag: float):
+    def _render_interpretations(
+        self, interp_data: list[InterpretationPolygon], vert_exag: float
+    ) -> None:
         """Render interpretations as QgsRubberBand objects."""
         if not self.canvas:
             return
@@ -313,7 +315,7 @@ class PreviewRenderer:
 
             self.interpretation_rubbers.append(rb)
 
-    def _calculate_extent(self, layers: list):
+    def _calculate_extent(self, layers: list) -> Any | None:
         """Combine extents of all given layers."""
         extent = None
         for layer in layers:

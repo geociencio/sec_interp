@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class PreviewTaskOrchestrator:
     """Manages asynchronous geology and drillhole generation tasks."""
 
-    def __init__(self, manager: PreviewManager):
+    def __init__(self, manager: PreviewManager) -> None:
         """Initialize the orchestrator with its parent manager.
 
         Args:

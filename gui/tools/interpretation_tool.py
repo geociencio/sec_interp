@@ -40,7 +40,7 @@ class ProfileSnapper:
     Duplicates logic from ProfileMeasureTool to avoid tight coupling.
     """
 
-    def __init__(self, canvas: QgsMapCanvas):
+    def __init__(self, canvas: QgsMapCanvas) -> None:
         """Initialize the profile snapper.
 
         Args:
@@ -96,7 +96,7 @@ class ProfileSnapper:
 
         return point
 
-    def _cleanup_locators(self, current_ids: set[str]):
+    def _cleanup_locators(self, current_ids: set[str]) -> None:
         """Remove locators for layers that are no longer active."""
         hits_to_remove = [lid for lid in self._locators if lid not in current_ids]
         for lid in hits_to_remove:
@@ -129,7 +129,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
     polygonFinished = pyqtSignal(InterpretationPolygon)
 
-    def __init__(self, canvas: QgsMapCanvas):
+    def __init__(self, canvas: QgsMapCanvas) -> None:
         """Initialize the profile interpretation tool.
 
         Args:
@@ -160,7 +160,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         super().deactivate()
         logger.debug("ProfileInterpretationTool deactivated successfully")
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the tool state safely."""
         log_critical_operation(
             logger,
@@ -248,7 +248,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             return
         super().keyPressEvent(event)
 
-    def _add_point(self, point: QgsPointXY):
+    def _add_point(self, point: QgsPointXY) -> None:
         """Add a vertex to the current polygon."""
         # Prevent adding the exact same point twice in a row (e.g. slow click)
         if self.points and self.points[-1].compare(point, 1e-6):
@@ -259,7 +259,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         self.rubber_band.addPoint(point, True)
         self._add_vertex_marker(point)
 
-    def _remove_last_point(self):
+    def _remove_last_point(self) -> None:
         """Remove the last added vertex."""
         if not self.points:
             return
@@ -277,7 +277,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             for p in self.points:
                 self.rubber_band.addPoint(p, False)
 
-    def _add_vertex_marker(self, point: QgsPointXY):
+    def _add_vertex_marker(self, point: QgsPointXY) -> None:
         """Add a visual marker for a vertex."""
         marker = QgsVertexMarker(self.canvas)
         marker.setCenter(point)
@@ -287,7 +287,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         marker.setPenWidth(2)
         self.vertex_markers.append(marker)
 
-    def _ensure_rubber_band(self):
+    def _ensure_rubber_band(self) -> None:
         """Ensure the rubber band exists."""
         if self.rubber_band:
             return
@@ -297,7 +297,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         self.rubber_band.setFillColor(color)
         self.rubber_band.setWidth(2)
 
-    def _update_rubber_band(self, current_point: QgsPointXY):
+    def _update_rubber_band(self, current_point: QgsPointXY) -> None:
         """Update rubber band geometry."""
         if not self.rubber_band or not self.points:
             return
@@ -306,7 +306,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             self.rubber_band.addPoint(p, False)
         self.rubber_band.addPoint(current_point, True)
 
-    def finalize_polygon(self):
+    def finalize_polygon(self) -> None:
         """Finalize the polygon and emit signal."""
         log_critical_operation(logger, "finalize_polygon", points=len(self.points))
         logger.debug(

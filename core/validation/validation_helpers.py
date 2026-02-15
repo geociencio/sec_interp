@@ -38,18 +38,18 @@ class ValidationContext:
     before presenting them to the user.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the validation results collector."""
         self._errors: list[RichValidationError] = []
         self._warnings: list[RichValidationError] = []
 
-    def add_error(self, message: str, field_name: str | None = None, **kwargs):
+    def add_error(self, message: str, field_name: str | None = None, **kwargs) -> None:
         """Add a hard error to the context."""
         self._errors.append(
             RichValidationError(message, field_name, severity="error", context=kwargs)
         )
 
-    def add_warning(self, message: str, field_name: str | None = None, **kwargs):
+    def add_warning(self, message: str, field_name: str | None = None, **kwargs) -> None:
         """Add a warning (soft error) to the context."""
         self._warnings.append(
             RichValidationError(message, field_name, severity="warning", context=kwargs)
@@ -75,12 +75,12 @@ class ValidationContext:
         """Get list of accumulated warnings."""
         return self._warnings
 
-    def merge(self, other: ValidationContext):
+    def merge(self, other: ValidationContext) -> None:
         """Merge another context into this one."""
         self._errors.extend(other.errors)
         self._warnings.extend(other.warnings)
 
-    def raise_if_errors(self):
+    def raise_if_errors(self) -> None:
         """Raise ValidationError if any errors exist."""
         if self.has_errors:
             msg = "\n".join(str(e) for e in self._errors)
@@ -101,13 +101,13 @@ class DependencyRule:
     error_message: str
     target_field: str | None = None
 
-    def validate(self, context: ValidationContext):
+    def validate(self, context: ValidationContext) -> None:
         """Evaluate the rule and add error to context if failed."""
         if self.condition() and not self.check():
             context.add_error(self.error_message, self.target_field)
 
 
-def validate_dependencies(rules: list[DependencyRule], context: ValidationContext):
+def validate_dependencies(rules: list[DependencyRule], context: ValidationContext) -> None:
     """Batch validate a list of dependency rules."""
     for rule in rules:
         rule.validate(context)

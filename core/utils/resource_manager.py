@@ -90,7 +90,7 @@ class ResourceManager:
     """Consolidated resource manager for plugin-wide cleanup."""
 
     @staticmethod
-    def cleanup_layer(layer: QgsMapLayer):
+    def cleanup_layer(layer: QgsMapLayer) -> None:
         """Remove a layer safely from the project.
 
         Args:

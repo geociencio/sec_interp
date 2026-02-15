@@ -4,13 +4,15 @@ from __future__ import annotations
 
 from typing import Any
 
-from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsCoordinateReferenceSystem,
+    QgsDistanceArea,
     QgsField,
     QgsGeometry,
+    QgsPointXY,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.logger_config import get_logger
 
@@ -111,7 +113,7 @@ def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
 def calculate_segment_range(
     seg_geom: QgsGeometry,
     line_start: QgsPointXY,
-    da: Any,  # QgsDistanceArea
+    da: QgsDistanceArea,
 ) -> tuple[float, float] | None:
     """Calculate the start and end distance for a segment geometry along the line.
 

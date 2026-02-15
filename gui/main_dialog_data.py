@@ -22,7 +22,7 @@ class DialogDataAggregator:
     expected by the rest of the application.
     """
 
-    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
+    def __init__(self, dialog: SecInterpDialog) -> None:
         """Initialize data aggregator.
 
         Args:
@@ -31,7 +31,7 @@ class DialogDataAggregator:
         """
         self.dialog = dialog
 
-    def get_all_values(self) -> dict:
+    def get_all_values(self) -> dict[str, Any]:
         """Get all values from pages as flat dictionary.
 
         Returns:
@@ -48,7 +48,7 @@ class DialogDataAggregator:
             "output_path": self.dialog.output_widget.filePath(),
         }
 
-    def _get_dem_values(self) -> dict:
+    def _get_dem_values(self) -> dict[str, Any]:
         """Get DEM page values.
 
         Returns:
@@ -63,7 +63,7 @@ class DialogDataAggregator:
             "vertexag": dem_data["vertexag"],
         }
 
-    def _get_section_values(self) -> dict:
+    def _get_section_values(self) -> dict[str, Any]:
         """Get section page values.
 
         Returns:
@@ -76,7 +76,7 @@ class DialogDataAggregator:
             "buffer_distance": section_data["buffer_distance"],
         }
 
-    def _get_geology_values(self) -> dict:
+    def _get_geology_values(self) -> dict[str, Any]:
         """Get geology page values.
 
         Returns:
@@ -89,7 +89,7 @@ class DialogDataAggregator:
             "outcrop_name_field": geology_data["outcrop_name_field"],
         }
 
-    def _get_structure_values(self) -> dict:
+    def _get_structure_values(self) -> dict[str, Any]:
         """Get structure page values.
 
         Returns:
@@ -104,7 +104,7 @@ class DialogDataAggregator:
             "dip_scale_factor": structure_data["dip_scale_factor"],
         }
 
-    def _get_drillhole_values(self) -> dict:
+    def _get_drillhole_values(self) -> dict[str, Any]:
         """Get drillhole page values.
 
         Returns:
@@ -134,7 +134,7 @@ class DialogDataAggregator:
             "interval_lith_field": drillhole_data["interval_lith"],
         }
 
-    def _get_settings_values(self) -> dict:
+    def _get_settings_values(self) -> dict[str, Any]:
         """Get settings page values.
 
         Returns:

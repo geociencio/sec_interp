@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 class ExportService:
     """Service to orchestrate all export operations."""
 
-    def __init__(self, controller: Any | None = None):
+    def __init__(self, controller: Any | None = None) -> None:
         """Initialize the export service.
 
         Args:

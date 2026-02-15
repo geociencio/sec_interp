@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 class MessageManager:
     """Manages user messages and error handling for the SecInterp dialog."""
 
-    def __init__(self, dialog):
+    def __init__(self, dialog: Any) -> None:
         """Initialize the MessageManager.
 
         Args:
@@ -28,7 +28,9 @@ class MessageManager:
         """
         self.dialog = dialog
 
-    def push_message(self, title: str, message: str, level: int = Qgis.Info, duration: int = 5):
+    def push_message(
+        self, title: str, message: str, level: int = Qgis.Info, duration: int = 5
+    ) -> None:
         """Push a message to the QGIS message bar.
 
         Args:
@@ -41,7 +43,7 @@ class MessageManager:
         if self.dialog.messagebar:
             self.dialog.messagebar.pushMessage(title, message, level=level, duration=duration)
 
-    def show_dialog(self, title: str, message: str, level: str = "info"):
+    def show_dialog(self, title: str, message: str, level: str = "info") -> Any:
         """Show a message box dialog.
 
         Args:
@@ -52,7 +54,7 @@ class MessageManager:
         """
         return show_user_message(self.dialog, title, message, level=level)
 
-    def handle_error(self, error: Exception, title: str = "Error"):
+    def handle_error(self, error: Exception, title: str = "Error") -> None:
         """Centralized error handling.
 
         Args:

@@ -24,10 +24,10 @@ class DialogToolManager:
     def __init__(
         self,
         dialog: SecInterpDialog,
-        pan_tool: Optional[QgsMapTool] = None,
-        measure_tool: Optional[ProfileMeasureTool] = None,
-        interpretation_tool: Optional[ProfileInterpretationTool] = None,
-    ):
+        pan_tool: QgsMapTool | None = None,
+        measure_tool: ProfileMeasureTool | None = None,
+        interpretation_tool: ProfileInterpretationTool | None = None,
+    ) -> None:
         """Initialize tool manager with reference to parent dialog.
 
         Args:
@@ -146,7 +146,7 @@ class DialogToolManager:
 class NavigationManager:
     """Handles navigation events (zooming) for the preview canvas."""
 
-    def __init__(self, dialog: SecInterpDialog):
+    def __init__(self, dialog: SecInterpDialog) -> None:
         """Initialize navigation manager.
 
         Args:

@@ -55,7 +55,7 @@ class PreviewWidget(QWidget):
         self.canvas.xyCoordinates.connect(self._update_coords)
         self.canvas.scaleChanged.connect(self._update_scale)
 
-    def _setup_canvas_area(self):
+    def _setup_canvas_area(self) -> None:
         """Set up map canvas and status bar."""
         self.canvas = QgsMapCanvas()
         self.canvas.setCanvasColor(QColor(255, 255, 255))
@@ -80,7 +80,7 @@ class PreviewWidget(QWidget):
         status_layout.addWidget(self.lbl_crs)
         self.frame_layout.addLayout(status_layout)
 
-    def _setup_action_buttons(self):
+    def _setup_action_buttons(self) -> None:
         """Set up preview, measure, and export buttons."""
         btn_layout = QHBoxLayout()
         self.btn_preview = QPushButton(self.tr("Preview"))
@@ -112,7 +112,7 @@ class PreviewWidget(QWidget):
         btn_layout.addWidget(self.btn_export)
         self.frame_layout.addLayout(btn_layout)
 
-    def _setup_lod_controls(self):
+    def _setup_lod_controls(self) -> None:
         """Set up level of detail controls."""
         lod_layout = QHBoxLayout()
         lod_layout.addWidget(QLabel(self.tr("Max Points:")))
@@ -141,7 +141,7 @@ class PreviewWidget(QWidget):
         lod_layout.addStretch()
         self.frame_layout.addLayout(lod_layout)
 
-    def _setup_layer_checkboxes(self):
+    def _setup_layer_checkboxes(self) -> None:
         """Set up checkboxes for layer visibility."""
         chk_layout = QHBoxLayout()
         self.chk_topo = QCheckBox(self.tr("Show Topography"))
@@ -165,7 +165,7 @@ class PreviewWidget(QWidget):
         chk_layout.addWidget(self.chk_legend)
         self.frame_layout.addLayout(chk_layout)
 
-    def _setup_results_area(self):
+    def _setup_results_area(self) -> None:
         """Set up results group and text display."""
         self.results_group = QgsCollapsibleGroupBox(self.tr("Results"))
         results_layout = QVBoxLayout(self.results_group)

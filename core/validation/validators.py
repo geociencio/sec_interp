@@ -179,7 +179,7 @@ class FieldValidator:
 
     """
 
-    def __init__(self, *validators: Callable[[Any], Any]):
+    def __init__(self, *validators: Callable[[Any], Any]) -> None:
         """Initialize with a sequence of validators.
 
         Args:

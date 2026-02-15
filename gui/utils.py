@@ -12,7 +12,7 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 
-def show_user_message(parent, title: str, message: str, level: str = "warning"):
+def show_user_message(parent: Any, title: str, message: str, level: str = "warning") -> Any:
     """Show message box with consistent styling and automatic logging.
 
     Args:

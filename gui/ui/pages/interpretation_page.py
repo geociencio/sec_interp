@@ -23,14 +23,14 @@ from .base_page import BasePage
 class InterpretationPage(BasePage):
     """Page for managing interpretation attributes and custom fields."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the interpretation page."""
         super().__init__(
             QCoreApplication.translate("InterpretationPage", "Interpretation Settings"),
             parent,
         )
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         """Set up the UI for interpretation settings."""
         super()._setup_ui()
 
@@ -79,7 +79,7 @@ class InterpretationPage(BasePage):
         self.group_layout.addWidget(self.chk_inherit_geol)
         self.group_layout.addWidget(self.chk_inherit_drill)
 
-    def _add_field_row(self):
+    def _add_field_row(self) -> None:
         row = self.fields_table.rowCount()
         self.fields_table.insertRow(row)
 
@@ -92,12 +92,12 @@ class InterpretationPage(BasePage):
         self.fields_table.setItem(row, 0, QTableWidgetItem(f"field_{row + 1}"))
         self.fields_table.setItem(row, 2, QTableWidgetItem(""))
 
-    def _remove_field_row(self):
+    def _remove_field_row(self) -> None:
         current_row = self.fields_table.currentRow()
         if current_row >= 0:
             self.fields_table.removeRow(current_row)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> dict[str, Any]:
         """Get the current configuration.
 
         Returns:

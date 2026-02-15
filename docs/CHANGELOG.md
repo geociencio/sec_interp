@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Comprehensive return type hints across Core, GUI, and Exporters for better IDE support and stability.
+- Robust signal disconnection mechanism in main dialog pages to prevent memory leaks.
+- Improved i18n coverage in several core services.
 - **Estabilidad**: Implementado sistema de desconexión de señales en cascada para prevenir fugas de memoria en el ciclo de vida del diálogo.
 - **Refactorización**: Modularizado `DialogSignalManager` para reducir la complejidad ciclomática (`C901`) y mejorar la mantenibilidad de las conexiones.
 - **Optimización**: Reducción del 79% en el tamaño del paquete ZIP (12MB -> 2.5MB) mediante poda de fuentes y documentación técnica.
 - **Build**: Nueva lógica en `Makefile` y `build_docs.sh` para empaquetado ligero y despliegue externo de APIs.
 
 ### Changed
+- Modernized type annotations to use `| None` syntax.
+- Standardized geometry utility imports to use `qgis.PyQt`.
 - **Documentación**: Desacoplamiento de la documentación de la API del paquete de ayuda offline integrado en el plugin.
 
 ## [3.0.0] - 2026-02-14

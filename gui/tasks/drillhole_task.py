@@ -33,7 +33,7 @@ class DrillholeGenerationTask(QgsTask):
         task_input: DrillholeTaskInput,
         service: DrillholeService,
         params: Any,
-    ):
+    ) -> None:
         """Initialize the task.
 
         Args:
@@ -71,7 +71,7 @@ class DrillholeGenerationTask(QgsTask):
             self.exception = e
             return False
 
-    def finished(self, result: bool):
+    def finished(self, result: bool) -> None:
         """Handle task completion on Main Thread."""
         if result:
             if self.result is None:

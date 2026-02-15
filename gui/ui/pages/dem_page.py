@@ -50,7 +50,7 @@ class DemPage(BasePage):
         self.raster_combo.layerChanged.connect(self.band_combo.setLayer)
         self.raster_combo.layerChanged.connect(self._update_resolution)
 
-    def _setup_raster_selection(self):
+    def _setup_raster_selection(self) -> None:
         """Set up raster layer selection widgets."""
         # Row 0: Raster Layer
         self.group_layout.addWidget(QLabel(self.tr("Raster Layer *")), 0, 0)
@@ -66,7 +66,7 @@ class DemPage(BasePage):
         self.lbl_raster_status.setFixedSize(16, 16)
         self.group_layout.addWidget(self.lbl_raster_status, 0, 2)
 
-    def _setup_band_and_resolution(self):
+    def _setup_band_and_resolution(self) -> None:
         """Set up band and resolution display widgets."""
         # Row 1: Band, Resolution
         self.group_layout.addWidget(QLabel(self.tr("Band")), 1, 0)
@@ -91,7 +91,7 @@ class DemPage(BasePage):
         res_layout.addWidget(self.units_edit)
         self.group_layout.addLayout(res_layout, 1, 3)
 
-    def _setup_profile_settings(self):
+    def _setup_profile_settings(self) -> None:
         """Set up scale and exaggeration settings."""
         self.settings_group = QGroupBox(self.tr("Profile Settings"))
         settings_layout = QGridLayout(self.settings_group)
@@ -117,7 +117,7 @@ class DemPage(BasePage):
         count = self.main_layout.count()
         self.main_layout.insertWidget(count - 1, self.settings_group)
 
-    def _update_resolution(self):
+    def _update_resolution(self) -> None:
         """Calculate and update resolution and suggested scale."""
         layer = self.raster_combo.currentLayer()
         if not layer:

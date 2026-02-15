@@ -25,7 +25,7 @@ logger = get_logger(__name__)
 class SettingsPage(BasePage):
     """Page for managing plugin settings and restricted features."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the settings page."""
         self.settings = QgsSettings()
         # Ensure we have all necessary widgets
@@ -33,7 +33,7 @@ class SettingsPage(BasePage):
         self.chk_enable_3d = None
         super().__init__(QCoreApplication.translate("SettingsPage", "Plugin Settings"), parent)
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         """Set up the UI for settings using Tabs."""
         super()._setup_ui()
 
@@ -153,7 +153,7 @@ class SettingsPage(BasePage):
 
         layout.addStretch()
 
-    def _load_settings(self):
+    def _load_settings(self) -> None:
         """Load current state from QgsSettings."""
         # Advanced
         enabled_3d = self.settings.value("sec_interp/enable_3d", False, type=bool)
@@ -193,7 +193,7 @@ class SettingsPage(BasePage):
                 self.settings.value("sec_interp/drill_3d_projected", False, type=bool)
             )
 
-    def _on_settings_changed(self):
+    def _on_settings_changed(self) -> None:
         """Save settings when they are changed."""
         # Advanced
         if self.chk_enable_3d:
@@ -218,7 +218,7 @@ class SettingsPage(BasePage):
                 "sec_interp/drill_3d_projected", self.chk_3d_projected.isChecked()
             )
 
-    def get_data(self) -> dict:
+    def get_data(self) -> dict[str, Any]:
         """Get the current settings.
 
         Returns:

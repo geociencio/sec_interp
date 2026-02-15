@@ -34,7 +34,7 @@ class ConfigService:
     SUPPORTED_VECTOR_FORMATS = [".shp"]
     SUPPORTED_DOCUMENT_FORMATS = [".pdf", ".svg"]
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the Configuration Service with QgsSettings."""
         self.settings = QgsSettings()
         self._current_settings: PluginSettings | None = None

@@ -1,24 +1,15 @@
-# Próximos Pasos - SecInterp (Fase v3.0.1)
+# Next Steps - SecInterp
 
-## 🎯 Objetivo Inmediato
-Continuar con la limpieza de deuda técnica y preparación para QGIS 4.0.
+## Contexto Final de la Sesión (2026-02-15)
+Se ha completado la limpieza masiva de Type Hints (Returns) y la estabilización de señales en la GUI. El código de producción (`core`, `gui`, `exporters`) está ahora libre de incidencias de tipado según las reglas de `qgis-analyzer`.
 
-## 📝 Tareas Pendientes
-1.  **Migración PyQt**: Reemplazar los 4 imports restantes de `PyQt5` por `from qgis.PyQt...` en el resto del proyecto (especialmente en `resources.py` y tests).
-2.  **Señales (Refinado)**: Monitorear el comportamiento de las señales en cascada en producción. Investigar si se pueden eliminar los 29 falsos positivos remanentes de `qgis-analyzer` mediante anotaciones.
-3.  **Docstrings**: Seguir con la cobertura de docstrings en `resources/` y `tests/` para alcanzar el 100% global.
-4.  **Preview 3D**: Iniciar el diseño/prototipo del `preview_3d_engine.py`.
+## Tareas Pendientes
+1. **Migración PyQt5 -> qgis.PyQt**: Quedan 3 incidencias reportadas en el punto de entrada o utilidades menores.
+2. **i18n de Tests**: Muchos strings en la carpeta `tests/` no usan `self.tr()`. Aunque no es crítico para producción, afecta al score global.
+3. **Mypy Integration**: Iniciar la validación estática estricta con Mypy ahora que hay tipos base.
+4. **Optimización de Tests**: Reducir el tiempo de ejecución en Docker.
 
-## 🛠️ Comandos Útiles
-Para verificar el tamaño del build tras cambios:
+## Comando para retomar
 ```bash
-make zip && ls -lh dist/sec_interp.3.0.0.zip
+/inicia-sesion
 ```
-
-Para correr la suite de tests oficial:
-```bash
-make docker-test
-```
-
-## ⚠️ Bloqueos
-- Ninguno. El sistema está en estado **VERDE** (361 tests OK).

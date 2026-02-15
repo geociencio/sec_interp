@@ -21,7 +21,7 @@ class SectionSettings:
     layer_name: str = ""
     buffer_dist: float = 100.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate settings after initialization."""
         self.buffer_dist = validate_and_clamp(0.0, float("inf"))(self.buffer_dist)
 
@@ -36,7 +36,7 @@ class DemSettings:
     scale: float = 50000.0
     vert_exag: float = 1.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate settings after initialization."""
         self.band = int(validate_and_clamp(1, float("inf"))(self.band))
         self.scale = validate_and_clamp(1.0, float("inf"))(self.scale)
@@ -62,7 +62,7 @@ class StructureSettings:
     strike_field: str = ""
     dip_scale_factor: float = 1.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate settings after initialization."""
         self.dip_scale_factor = validate_and_clamp(0.1, float("inf"))(self.dip_scale_factor)
 
@@ -127,7 +127,7 @@ class PreviewSettings:
     adaptive_sampling: bool = True
     max_points: int = 10000
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate settings after initialization."""
         self.max_points = int(validate_and_clamp(100, float("inf"))(self.max_points))
 

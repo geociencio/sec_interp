@@ -33,7 +33,7 @@ class ExportManager:
     (PNG, PDF, SVG) and orchestrating data exports (SHP, CSV) via ExportService.
     """
 
-    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
+    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog) -> None:
         """Initialize export manager with reference to parent dialog.
 
         Args:

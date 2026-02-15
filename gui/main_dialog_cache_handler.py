@@ -10,7 +10,7 @@ logger = get_logger(__name__)
 class CacheHandler:
     """Handles cache operations for the dialog."""
 
-    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog):
+    def __init__(self, dialog: sec_interp.gui.main_dialog.SecInterpDialog) -> None:
         """Initialize cache handler.
 
         Args:

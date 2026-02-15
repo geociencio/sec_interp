@@ -50,7 +50,7 @@ class PreviewManager:
         self,
         dialog: Any,
         preview_service: IPreviewService | None = None,
-    ):
+    ) -> None:
         """Initialize preview manager with specialized components."""
         self.dialog = dialog
         self.preview_service = preview_service or PreviewService(

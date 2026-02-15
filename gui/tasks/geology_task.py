@@ -34,7 +34,7 @@ class GeologyGenerationTask(QgsTask):
         task_input: GeologyTaskInput,
         service: GeologyService,
         params: Any,
-    ):
+    ) -> None:
         """Initialize the task.
 
         Args:
@@ -66,7 +66,7 @@ class GeologyGenerationTask(QgsTask):
             self.exception = e
             return False
 
-    def finished(self, result: bool):
+    def finished(self, result: bool) -> None:
         """Handle task completion on Main Thread."""
         if result:
             if self.result is None:
@@ -79,7 +79,7 @@ class GeologyGenerationTask(QgsTask):
             )
             self.error_occurred.emit(error_msg)
 
-    def setProgress(self, progress: float):
+    def setProgress(self, progress: float) -> None:
         """Override to emit signal."""
         super().setProgress(progress)
         self.progress_changed.emit(progress)

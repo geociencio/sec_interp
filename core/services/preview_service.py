@@ -30,7 +30,7 @@ logger = get_logger(__name__)
 class PreviewService:
     """Orchestrates preview data generation."""
 
-    def __init__(self, controller: Any):
+    def __init__(self, controller: Any) -> None:
         """Initialize with plugin controller to access other services.
 
         Args:
