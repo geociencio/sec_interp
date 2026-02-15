@@ -158,3 +158,7 @@ class MockQgsSettings(MockQgsBase):
 
     def contains(self, key):
         return key in self._shared_values
+
+    def remove(self, key):
+        if key in self._shared_values:
+            del self._shared_values[key]

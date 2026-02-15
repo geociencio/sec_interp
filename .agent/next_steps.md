@@ -1,21 +1,26 @@
-# Próximos Pasos - SecInterp
+# Siguientes Pasos (2026-02-14)
 
-## Estado de la Sesión
-- **Fecha**: 2026-02-14
-- **Hito Alcanzado**: Limpieza Masiva de Deuda Técnica (Fase 1-3).
-- **Último Commit**: `60d818f` (Refinado de Docstrings).
+## Estado Actual
+Se ha completado la integración de `qgis-plugin-analyzer` v1.9.0 en los workflows del agente. El sistema ahora cuenta con herramientas especializadas para auditoría de i18n, seguridad y rendimiento.
 
-## Pendientes Inmediatos
-1.  **Refactorización de Exportadores**:
-    - Abordar la complejidad ciclomática remanente en `Interpretation3DExporter.export`.
-    - Extraer lógica de segmentación a métodos privados.
-2.  **Soporte QGIS 4.x**:
-    - Iniciar auditoría de compatibilidad usando la skill `qgis-migration-4x`.
-    - Identificar usos de APIs deprecadas de PyQt5 y QGIS 3.
-3.  **Refinado de I18n**:
-    - Validar traducciones en los nuevos idiomas añadidos (8 en total).
+## Tareas Pendientes (Prioridad Alta)
+- [ ] **Infrastructure Fix (Tests)**: Refactorizar `tests/mocks/qt_mocks.py` urgentemente. La suite de tests falla por mocks incompletos (`MockQWidget`, `MockQLayout` faltan métodos como `addSpacing`, `insertWidget`, etc.).
+- [ ] **Migración PyQt5**: Ejecutar reemplazo de imports en `resources/resources.py`.
+- [ ] **Corrección de Signal Leaks**: Abordar las 66 fugas detectadas.
+- [ ] **Cobertura de Docstrings**: Completar documentación faltante.
 
-## Comandos Útiles
-- **Siguiente Sesión**: `/inicia-sesion`
-- **QA Final**: `make docker-test`
-- **Analizador**: `uv run ai-ctx analyze --path .`
+## Problemas Conocidos (Deuda Técnica)
+- **Tests de Integración 3D**: Fallos en exportación (Geometry type mismatch, `IndexError`).
+- **Smoke Tests**: Bloqueados por `AttributeError` en mocks de UI (`DemPage`, `InterpretationPage`).
+
+## Comandos para Retomar
+Para iniciar la fase de corrección:
+```bash
+/inicia-sesion
+# Primero arreglar la infraestructura de tests
+uv run pytest tests/integration/test_qgis_smoke.py
+```
+
+## Notas Técnicas
+- El nuevo workflow `/audit-plugin` debe ser el punto de partida para validar cada corrección.
+- La migración de `qgis.PyQt` es esencial para la compatibilidad futura con QGIS 4.

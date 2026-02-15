@@ -42,7 +42,13 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     *   `docs/LOGGING_GUIDELINES.md`: Seguir estrictamente para registrar nuevas actividades.
 
 
-2.  **Sincronización de Entorno (Local)**:
+### 3. Quick Quality Scan (Novedad v1.9.0)
+Realiza un escaneo rápido del estado del proyecto para identificar deuda técnica crítica.
+```bash
+uv run qgis-analyzer summary
+```
+
+### 4. Validación de Integridad (Tests)**:
     Asegura dependencias actualizadas.
     // turbo
     ```bash

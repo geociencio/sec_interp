@@ -238,6 +238,12 @@ class MockQWidget(MockQObject):
     def currentText(self):
         return self._text
 
+    def setReadOnly(self, local_ro):
+        pass
+
+    def setMaximumWidth(self, width):
+        pass
+
 
 class MockQLayout(MockQObject):
     def __init__(self, parent=None):
@@ -256,6 +262,12 @@ class MockQLayout(MockQObject):
         pass
 
     def setSpacing(self, spacing):
+        pass
+
+    def count(self):
+        return 0
+
+    def insertWidget(self, index, widget):
         pass
 
 

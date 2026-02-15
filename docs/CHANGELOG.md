@@ -376,6 +376,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation**:
   - Added COMMIT_GUIDELINES.md for standardized commit messages.
   - Added RELEASE_PROCESS.md with version release workflow.
+## [Unreleased]
+
+### Agente
+- **Integración**: Actualizado `qgis-plugin-analyzer` a v1.9.0 con soporte para subcomandos especializados (`i18n`, `security`, `performance`).
+- **Workflow**: Añadido nuevo workflow `/audit-plugin` para auditorías modulares.
+- **Skills**: Actualizado `coding-standards` para validar traducciones y seguridad en código nuevo.
+- **Procesos**: Incorporado *Quick Scan* en inicio de sesión y validación estricta en releases.
   - Added drilllogs_research.md with future integration requirements.
 
 ### Changed

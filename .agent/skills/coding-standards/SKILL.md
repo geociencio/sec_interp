@@ -21,6 +21,7 @@ Define las normas técnicas para asegurar un código Python moderno, mantenible 
 2. **Documentación**: Redactar docstrings siguiendo el formato de Google.
 3. **Rutas**: Reemplazar manipulaciones de strings u `os.path` por objetos `pathlib.Path`.
 4. **Validación**: Ejecutar `black .` y `ruff check .` para confirmar el cumplimiento.
+5. **Auditoría**: Usar `qgis-analyzer analyze i18n` para nuevos strings y `security` para código sensible.
 
 ## Instrucciones y Reglas
 

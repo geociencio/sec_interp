@@ -8,6 +8,10 @@
 - [x] Reorganizar imports de módulos (E402 - 3 issues) <!-- id: 42 -->
 - [x] Eliminar variables no usadas (F841 - 2 issues) <!-- id: 43 -->
 - [x] Cobertura del 100% de Docstrings y eliminación de números mágicos (PLR2004) <!-- id: 44 -->
+- [ ] Migrar imports de `PyQt5` a `qgis.PyQt` (4 ocurrencias) <!-- id: 50 -->
+- [ ] Corregir fugas de señales en `core/controller.py` (66 ocurrencias) <!-- id: 51 -->
+- [ ] Completar docstrings faltantes en `resources/` y `tests/` (406 issues) <!-- id: 52 -->
+- [ ] Integrar `qgis-analyzer` v1.9.0 en sistema agéntico (Skills/Workflows) <!-- id: 53 -->
 
 > [!NOTE]
 > Se han detectado fallos pre-existentes en tests de integración 3D (desde v3.0.0). Documentado en `next_steps.md`.

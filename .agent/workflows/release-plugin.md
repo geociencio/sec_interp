@@ -96,7 +96,25 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **release-management** para validar artifacts y proceso de publicación.
 
-1. **Build ZIP Optimizado**:
+1. **Validar `metadata.txt`**:
+   // turbo
+   ```bash
+   uv run qgis-analyzer metadata .
+   ```
+
+2. **Validar `pyproject.toml`**:
+   // turbo
+   ```bash
+   uv run qgis-analyzer pyproject .
+   ```
+
+3. **Quick Scan (Linting & Security)**:
+   // turbo
+   ```bash
+   uv run qgis-analyzer analyze . --strict
+   ```
+
+4. **Build ZIP Optimizado**:
    // turbo
    ```bash
    make package VERSION=main

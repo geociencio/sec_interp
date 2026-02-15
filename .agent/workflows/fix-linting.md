@@ -17,6 +17,18 @@ Este workflow automatiza la corrección de problemas de estilo y calidad de cód
 uv run ruff check .
 ```
 
+🤖4. **Corrección Automática QGIS Analyze**:
+   Usa el fix automático para problemas específicos de QGIS (imports, señales, logging).
+   ```bash
+   uv run qgis-analyzer fix . --apply --auto-approve
+   ```
+
+5. **Verificación Final**:
+   Ejecuta nuevamente los linters para asegurar que no quedaron errores residuales.
+   ```bash
+   uv run ruff check .
+   ```
+
 ### 2. Corrección Automática (Auto-Fix)
 
 🤖 **Agent Action**: Aplicar correcciones automáticas seguras.
