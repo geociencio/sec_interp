@@ -1,13 +1,11 @@
-"""Service for managing preview generation and rendering."""
-
-from __future__ import annotations
-
-"""Preview service for SecInterp.
+"""Service for managing preview generation and rendering.
 
 This module provides a service to orchestrate the generation of all
 preview components, including topography, structures, and drillholes.
 It remains decoupled from the GUI layer.
 """
+
+from __future__ import annotations
 
 import math
 from typing import Any

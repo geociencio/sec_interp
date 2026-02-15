@@ -1,11 +1,9 @@
-"""Geological computation utilities."""
-
-from __future__ import annotations
-
-"""Geology Utilities Module.
+"""Geological computation utilities.
 
 Geological calculations and structural geology operations.
 """
+
+from __future__ import annotations
 
 import math
 

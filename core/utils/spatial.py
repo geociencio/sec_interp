@@ -1,11 +1,9 @@
-"""Spatial analysis and layer querying utilities."""
-
-from __future__ import annotations
-
-"""Spatial Utilities Module.
+"""Spatial Utilities and layer querying Module.
 
 Distance calculations, azimuth, and basic spatial operations.
 """
+
+from __future__ import annotations
 
 import math
 

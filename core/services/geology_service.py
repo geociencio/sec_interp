@@ -4,8 +4,6 @@ This module handles the extraction and projection of geological boundaries
 and unit segments from map layers to the cross-section plane.
 """
 
-from __future__ import annotations
-
 # /***************************************************************************
 #  SecInterp - GeologyService
 #                                  A QGIS plugin
@@ -24,6 +22,9 @@ from __future__ import annotations
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
+
+from __future__ import annotations
+
 from typing import Any
 
 from qgis.core import (

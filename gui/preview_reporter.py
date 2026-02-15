@@ -1,12 +1,10 @@
-"""Reporting and results formatting for SecInterp preview."""
-
-from __future__ import annotations
-
-"""Preview reporting and message formatting for SecInterp.
+"""Reporting and results formatting for SecInterp preview.
 
 This module provides the PreviewReporter class to handle the formatting of
 preview generation results and performance metrics into human-readable messages.
 """
+
+from __future__ import annotations
 
 from qgis.PyQt.QtCore import QCoreApplication
 

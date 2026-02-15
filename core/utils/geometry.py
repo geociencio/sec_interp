@@ -1,12 +1,10 @@
-"""Geometry computation utilities."""
-
-from __future__ import annotations
-
 """Geometry Utilities Facade.
 
 Spatial geometry operations using QGIS native algorithms.
 This module now serves as a facade for modularized sub-submodules.
 """
+
+from __future__ import annotations
 
 from .geometry_utils.extraction import (
     extract_all_vertices,

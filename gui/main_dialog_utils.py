@@ -1,11 +1,9 @@
-"""Utility management for SecInterp main dialog."""
-
-from __future__ import annotations
-
 """UI utility module for SecInterp main dialog.
 
 This module provides helper methods for layer filtering and field population.
 """
+
+from __future__ import annotations
 
 from qgis.core import QgsApplication, QgsMapLayer, QgsProject, QgsWkbTypes
 from qgis.PyQt.QtGui import QIcon

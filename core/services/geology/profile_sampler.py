@@ -1,8 +1,6 @@
-"""Sampling logic for geological units on profiles."""
+"""Sampling logic for Master Profile elevations."""
 
 from __future__ import annotations
-
-"""Sampling logic for Master Profile elevations."""
 
 from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY, QgsRasterLayer
 from sec_interp.core import utils as scu

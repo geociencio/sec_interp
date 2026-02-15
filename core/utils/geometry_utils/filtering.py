@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-"""Geometry filtering utilities."""
-
 from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsCoordinateReferenceSystem,

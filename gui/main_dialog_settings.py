@@ -1,11 +1,9 @@
-"""Settings management for SecInterp main dialog."""
-
-from __future__ import annotations
-
 """Settings management module for SecInterp main dialog.
 
 This module handles persistence of user settings between sessions.
 """
+
+from __future__ import annotations
 
 import json
 from typing import TYPE_CHECKING, Any

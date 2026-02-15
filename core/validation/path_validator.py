@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-"""Validation for file system paths and export directories."""
-
 from pathlib import Path
 
 

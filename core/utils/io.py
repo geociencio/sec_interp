@@ -1,11 +1,9 @@
-"""File I/O and projection export utilities."""
-
-from __future__ import annotations
-
 """I/O Utilities Module.
 
 File I/O operations and user messaging.
 """
+
+from __future__ import annotations
 
 from pathlib import Path
 

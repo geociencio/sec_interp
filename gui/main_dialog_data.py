@@ -1,12 +1,10 @@
-"""Data aggregation logic for SecInterp main dialog."""
-
-from __future__ import annotations
-
 """Data aggregation module for SecInterp main dialog.
 
 This module handles aggregation of data from all dialog pages,
 separating data collection logic from the main dialog class.
 """
+
+from __future__ import annotations
 
 from typing import TYPE_CHECKING
 

@@ -1,12 +1,10 @@
-"""QGIS resource and theme icon management."""
-
-from __future__ import annotations
-
-"""Resource management utilities for SecInterp.
+"""QGIS resource and theme icon management.
 
 This module provides context managers for handling temporary QGIS resources
 and system files to ensure proper cleanup and prevent resource leaks.
 """
+
+from __future__ import annotations
 
 import contextlib
 import os

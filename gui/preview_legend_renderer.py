@@ -1,12 +1,10 @@
-"""Legend rendering logic for SecInterp preview."""
-
-from __future__ import annotations
-
 """Legend rendering logic for SecInterp preview.
 
 Handles the drawing of the legend on a QPainter, including topography,
 structures, and geological units.
 """
+
+from __future__ import annotations
 
 from typing import Any
 

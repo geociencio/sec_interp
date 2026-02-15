@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-"""Coordinate and string parsing utilities."""
-
 import re
 from typing import Any
 

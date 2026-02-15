@@ -1,12 +1,10 @@
-"""Map tools management for SecInterp main dialog."""
-
-from __future__ import annotations
-
 """Map tool management module for SecInterp main dialog.
 
 This module handles the initialization and orchestration of map tools
 (pan, measure) used in the preview canvas.
 """
+
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 

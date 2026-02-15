@@ -1,7 +1,3 @@
-"""Helper classes for rich validation results and collection."""
-
-from __future__ import annotations
-
 """Helper classes and functions for Level 2 (Business Validation).
 
 This module provides tools for:
@@ -9,6 +5,8 @@ This module provides tools for:
 - Handling structured errors (RichValidationError)
 - Defining and checking dependency rules between fields/layers.
 """
+
+from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, field

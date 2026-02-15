@@ -1,8 +1,4 @@
-"""Service for managing cross-section profiles."""
-
-from __future__ import annotations
-
-"""Profile Data Processing Service.
+"""Service for managing cross-section profiles.
 
 This module handles the extraction and processing of topographic profile data
 from DEM layers along section lines.
@@ -26,6 +22,8 @@ from DEM layers along section lines.
 #  *   (at your option) any later version.                                   *
 #  *                                                                         *
 #  ***************************************************************************/
+
+from __future__ import annotations
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 

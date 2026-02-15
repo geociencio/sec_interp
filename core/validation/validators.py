@@ -1,12 +1,10 @@
-"""Registry and facade for all project validators."""
-
-from __future__ import annotations
-
 """Reusable validators for dataclass fields.
 
 This module provides composable validators that can be used to validate
 and coerce field values in dataclasses without external dependencies.
 """
+
+from __future__ import annotations
 
 from collections.abc import Callable
 from typing import Any, TypeVar

@@ -1,11 +1,9 @@
-"""Message and error management for SecInterp main dialog."""
-
-from __future__ import annotations
-
-"""Message Management Module.
+"""Message and error management for SecInterp main dialog.
 
 Centralizes error handling and user notifications for the main dialog.
 """
+
+from __future__ import annotations
 
 import traceback
 

@@ -1,12 +1,10 @@
-"""Interpretation management for SecInterp main dialog."""
-
-from __future__ import annotations
-
 """Interpretation management module for SecInterp main dialog.
 
 This module handles interpretation polygons, their persistence, and attribute inheritance,
 decoupling this logic from the main dialog class.
 """
+
+from __future__ import annotations
 
 import json
 from typing import TYPE_CHECKING, Any
