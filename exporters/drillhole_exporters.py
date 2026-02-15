@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Exporters for drillhole data (Shapefiles)."""
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -19,6 +19,13 @@ from sec_interp.logger_config import get_logger
 from .base_exporter import BaseExporter
 
 logger = get_logger(__name__)
+
+# Constants for drillhole data validation
+MIN_REQUIRED_TRACE_POINTS = 2
+LEGACY_DATA_LENGTH = 5
+NEW_DATA_LENGTH = 3
+MIN_POINTS_FOR_INTERVAL = 2
+COORD_PAIR_LENGTH = 2
 
 
 class DrillholeTraceShpExporter(BaseExporter):
@@ -72,14 +79,14 @@ class DrillholeTraceShpExporter(BaseExporter):
         """
         for item in drillhole_data:
             # Handle variable tuple length (legacy 5 vs new 3)
-            if len(item) == 3:
+            if len(item) == NEW_DATA_LENGTH:
                 hole_id, traces, _ = item
-            elif len(item) >= 5:
+            elif len(item) >= LEGACY_DATA_LENGTH:
                 hole_id, traces, _traces_3d, _traces_3d_proj, _ = item
             else:
                 continue
 
-            if not traces or len(traces) < 2:
+            if not traces or len(traces) < MIN_REQUIRED_TRACE_POINTS:
                 continue
 
             feat = self._create_feature(hole_id, traces, fields)
@@ -99,7 +106,7 @@ class DrillholeTraceShpExporter(BaseExporter):
             # Handle SpatialMeta object or tuple/list
             if hasattr(p, "dist_along") and hasattr(p, "z"):
                 points.append(QgsPointXY(p.dist_along, p.z))
-            elif isinstance(p, list | tuple) and len(p) >= 2:
+            elif isinstance(p, list | tuple) and len(p) >= COORD_PAIR_LENGTH:
                 points.append(QgsPointXY(p[0], p[1]))
 
         if not points:
@@ -168,7 +175,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
         for item in drillhole_data:
             # Handle variable tuple length (legacy 5 vs new 3)
             # Segments are always the last element
-            if len(item) == 3 or len(item) >= 5:
+            if len(item) == NEW_DATA_LENGTH or len(item) >= LEGACY_DATA_LENGTH:
                 hole_id = item[0]
                 segments = item[-1]
             else:
@@ -192,7 +199,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
 
     def _create_feature(self, hole_id: str, segment: Any, fields: QgsFields) -> QgsFeature | None:
         """Create an interval feature from segment data."""
-        if not segment.points or len(segment.points) < 2:
+        if not segment.points or len(segment.points) < MIN_POINTS_FOR_INTERVAL:
             return None
 
         points = [QgsPointXY(d, e) for d, e in segment.points]

@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """3D Drillhole Exporter.
 
 This module provides exporters for 3D drillhole data (traces and intervals).
 """
+
+from __future__ import annotations
 
 from typing import Any
 
@@ -23,6 +23,11 @@ from sec_interp.logger_config import get_logger
 from .base_exporter import BaseExporter
 
 logger = get_logger(__name__)
+
+# Constants for drillhole data lengths
+NEW_DATA_LENGTH = 3
+LEGACY_DATA_LENGTH = 5
+MIN_POINTS_FOR_INTERVAL = 2
 
 
 class DrillholeTrace3DExporter(BaseExporter):
@@ -73,7 +78,7 @@ class DrillholeTrace3DExporter(BaseExporter):
         # Legacy/Test format: (hid, trace2d, trace3d, traces3d_proj, segments)
         hole_id = hole_data[0]
 
-        if len(hole_data) == 3:
+        if len(hole_data) == NEW_DATA_LENGTH:
             # New format with SpatialMeta objects
             spatial_points = hole_data[1]
             if use_projected:
@@ -88,7 +93,7 @@ class DrillholeTrace3DExporter(BaseExporter):
                     for p in spatial_points
                     if p.x_3d is not None
                 ]
-        elif len(hole_data) == 5:
+        elif len(hole_data) == LEGACY_DATA_LENGTH:
             # Legacy/Integration Test format
             _, _, traces_3d, traces_3d_proj, _ = hole_data
             points_source = traces_3d_proj if use_projected else traces_3d
@@ -99,7 +104,7 @@ class DrillholeTrace3DExporter(BaseExporter):
             )
             return
 
-        if not points or len(points) < 2:
+        if not points or len(points) < MIN_POINTS_FOR_INTERVAL:
             return
 
         geom = QgsGeometry.fromPolyline(points)
@@ -169,7 +174,7 @@ class DrillholeInterval3DExporter(BaseExporter):
 
         for segment in segments:
             points_source = segment.points_3d_projected if use_projected else segment.points_3d
-            if not points_source or len(points_source) < 2:
+            if not points_source or len(points_source) < MIN_POINTS_FOR_INTERVAL:
                 continue
 
             points = [QgsPoint(x, y, z) for x, y, z in points_source]
