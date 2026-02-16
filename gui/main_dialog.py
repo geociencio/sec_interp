@@ -5,21 +5,17 @@ Contains the SecInterpDialog class which is the primary UI for the plugin.
 
 from __future__ import annotations
 
+import traceback
 from pathlib import Path
 from typing import Any
 
-from qgis.core import (
-    Qgis,
-    QgsProject,
-)
+from qgis.core import Qgis, QgsProject
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices
-from qgis.PyQt.QtWidgets import (
-    QDialogButtonBox,
-    QPushButton,
-)
+from qgis.PyQt.QtWidgets import QDialogButtonBox, QPushButton
 
 from sec_interp.core.domain import InterpretationPolygon
+from sec_interp.core.exceptions import SecInterpError
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
@@ -35,18 +31,14 @@ class _NoOpMessageBar:
 from .legend_widget import LegendWidget
 
 logger = get_logger(__name__)
-from .main_dialog_cache_handler import CacheHandler
-from .main_dialog_data import DialogDataAggregator
+from .dialog_input_manager import DialogInputManager
+from .dialog_state_manager import DialogStateManager
 from .main_dialog_export import ExportManager
 from .main_dialog_interpretation import DialogInterpretationManager
-from .main_dialog_messages import MessageManager
 from .main_dialog_preview import PreviewManager
-from .main_dialog_settings import DialogSettingsManager
 from .main_dialog_signals import DialogSignalManager
-from .main_dialog_status import DialogStatusManager
 from .main_dialog_tools import DialogToolManager, NavigationManager
 from .main_dialog_utils import DialogEntityManager
-from .main_dialog_validation_manager import DialogValidationManager
 from .preview_layer_factory import PreviewLayerFactory
 from .ui.main_window import SecInterpMainWindow
 
@@ -117,9 +109,8 @@ class SecInterpDialog(SecInterpMainWindow):
         self.reset_defaults_btn.clicked.connect(self.reset_defaults_handler)
 
         # Initial state update
-        # Initial state update
-        self.status_manager.update_all()
-        self.settings_manager.load_settings()
+        self.state_manager.update_all()
+        self.state_manager.load_settings()
 
         # Flag to control saving settings on close
         self._save_on_close = True
@@ -128,20 +119,42 @@ class SecInterpDialog(SecInterpMainWindow):
         """Initialize all manager instances."""
         from sec_interp.core.services.preview_service import PreviewService
 
-        self.message_manager = MessageManager(self)
-        self.validation_manager = DialogValidationManager(self)
+        self.input_manager = DialogInputManager(self)
+        self.state_manager = DialogStateManager(self)
         self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
         self.export_manager = ExportManager(self)
-        self.cache_handler = CacheHandler(self)
-        self.data_aggregator = DialogDataAggregator(self)
-        self.settings_manager = DialogSettingsManager(self)
-        self.status_manager = DialogStatusManager(self)
-        self.status_manager.setup_indicators()
+        self.state_manager.setup_indicators()
         self.interpretation_manager = DialogInterpretationManager(self)
         self.interpretation_manager.load_interpretations()
         self.tool_manager = DialogToolManager(self)
         self.navigation_manager = NavigationManager(self)
         self.layer_factory = PreviewLayerFactory()
+
+    def push_message(
+        self, title: str, message: str, level: int = Qgis.Info, duration: int = 5
+    ) -> None:
+        """Push a message to the QGIS message bar.
+
+        Args:
+            title: Message title.
+            message: Message content.
+            level: Qgis message level (Info, Warning, Critical, Success).
+            duration: Visibility duration in seconds.
+
+        """
+        if self.messagebar:
+            self.messagebar.pushMessage(title, message, level=level, duration=duration)
+
+    def show_dialog(self, title: str, message: str, level: str = "info") -> Any:
+        """Show a message box dialog.
+
+        Args:
+            title: Dialog title.
+            message: Dialog content.
+            level: Message level ("info", "warning", "critical", "question").
+
+        """
+        return show_user_message(self, title, message, level=level)
 
     def handle_error(self, error: Exception, title: str = "Error") -> None:
         """Centralized error handling for the dialog.
@@ -151,7 +164,19 @@ class SecInterpDialog(SecInterpMainWindow):
             title: Title for the error message box.
 
         """
-        self.message_manager.handle_error(error, title)
+        if isinstance(error, SecInterpError):
+            msg = str(error)
+            logger.warning(f"{title}: {msg} - Details: {getattr(error, 'details', 'N/A')}")
+            self.show_dialog(title, msg, level="warning")
+        else:
+            msg = self.tr("An unexpected error occurred: {}").format(error)
+            details = traceback.format_exc()
+            logger.error(f"{title}: {msg}\n{details}")
+            self.show_dialog(
+                title,
+                self.tr("{}\n\nPlease check the logs for details.").format(msg),
+                level="critical",
+            )
 
     def wheelEvent(self, event: Any) -> None:
         """Handle mouse wheel for zooming in preview via navigation_manager."""
@@ -162,7 +187,7 @@ class SecInterpDialog(SecInterpMainWindow):
     def closeEvent(self, event: Any) -> None:
         """Handle dialog close event to clean up resources."""
         if self._save_on_close:
-            self.settings_manager.save_settings()
+            self.state_manager.save_settings()
 
         logger.info("Closing dialog, cleaning up resources...")
         self.interpretation_manager.save_interpretations()
@@ -177,7 +202,7 @@ class SecInterpDialog(SecInterpMainWindow):
         if help_file.exists():
             QDesktopServices.openUrl(QUrl.fromLocalFile(str(help_file)))
         else:
-            self.message_manager.push_message(
+            self.push_message(
                 self.tr("Error"),
                 self.tr("Help file not found. Please run 'make doc' to generate it."),
                 level=Qgis.Warning,
@@ -209,12 +234,12 @@ class SecInterpDialog(SecInterpMainWindow):
         self.interpretation_manager.interpretations = value
 
     def update_preview_checkbox_states(self) -> None:
-        """Enable or disable preview checkboxes via status_manager."""
-        self.status_manager.update_preview_checkbox_states()
+        """Enable or disable preview checkboxes via state_manager."""
+        self.state_manager.update_preview_checkbox_states()
 
     def update_button_state(self) -> None:
-        """Enable or disable buttons via status_manager."""
-        self.status_manager.update_button_state()
+        """Enable or disable buttons via state_manager."""
+        self.state_manager.update_button_state()
 
     def get_selected_values(self) -> dict[str, Any]:
         """Get the selected values from the dialog.
@@ -223,7 +248,7 @@ class SecInterpDialog(SecInterpMainWindow):
             Dictionary with all dialog values in legacy flat format
 
         """
-        return self.data_aggregator.get_all_values()
+        return self.input_manager.get_all_values()
 
     def get_preview_options(self) -> dict[str, Any]:
         """Return the state of preview layer checkboxes.
@@ -259,10 +284,10 @@ class SecInterpDialog(SecInterpMainWindow):
         success, message = self.preview_manager.generate_preview()
         if success:
             # Auto-save settings on successful preview
-            self.settings_manager.save_settings()
+            self.state_manager.save_settings()
 
         if not success and message:
-            self.message_manager.push_message(self.tr("Preview Error"), message, level=Qgis.Warning)
+            self.push_message(self.tr("Preview Error"), message, level=Qgis.Warning)
 
     def export_preview(self) -> None:
         """Export the current preview to a file using ExportManager."""
@@ -271,7 +296,7 @@ class SecInterpDialog(SecInterpMainWindow):
     def accept_handler(self) -> None:
         """Handle the accept button click event."""
         # Proactively save settings as UI state, even if validation fails
-        self.settings_manager.save_settings()
+        self.state_manager.save_settings()
 
         # When running without a QGIS iface (tests), skip strict validation
         if self.iface is None:
@@ -292,20 +317,29 @@ class SecInterpDialog(SecInterpMainWindow):
     def validate_inputs(self) -> bool:
         """Validate the inputs from the dialog.
 
-        This method delegates to DialogValidationManager for input validation.
+        This method delegates to DialogInputManager for input validation.
         """
-        is_valid, error_message = self.validation_manager.validate_inputs()
+        is_valid, error_message = self.input_manager.validate_inputs()
         if not is_valid:
             show_user_message(self, self.tr("Validation Error"), error_message)
         return is_valid
 
     def clear_cache_handler(self) -> None:
-        """Clear cached data via CacheHandler."""
-        self.cache_handler.clear_cache()
+        """Clear cached data and notify user."""
+        if hasattr(self, "plugin_instance") and self.plugin_instance:
+            self.plugin_instance.controller.data_cache.clear()
+            if hasattr(self, "tool_manager"):
+                self.tool_manager.measure_tool.reset()
+            self.preview_widget.results_text.append(
+                self.tr("✓ Cache cleared - next preview will re-process data")
+            )
+            logger.info("Cache cleared by user")
+        else:
+            self.preview_widget.results_text.append(self.tr("⚠ Cache not available"))
 
     def reset_defaults_handler(self) -> None:
-        """Reset all dialog inputs via settings_manager."""
-        self.settings_manager.reset_to_defaults()
+        """Reset all dialog inputs via state_manager."""
+        self.state_manager.reset_to_defaults()
 
     def _populate_field_combobox(self, source_combobox: Any, target_combobox: Any) -> None:
         """Populate a combobox with field names."""
@@ -332,9 +366,9 @@ class SecInterpDialog(SecInterpMainWindow):
         self.interpretation_manager.save_interpretations()
 
     def _load_user_settings(self) -> None:
-        """Load user settings via settings_manager."""
-        self.settings_manager.load_settings()
+        """Load user settings via state_manager."""
+        self.state_manager.load_settings()
 
     def _save_user_settings(self) -> None:
-        """Save user settings via settings_manager."""
-        self.settings_manager.save_settings()
+        """Save user settings via state_manager."""
+        self.state_manager.save_settings()

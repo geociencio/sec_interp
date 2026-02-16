@@ -188,6 +188,18 @@ class MockQWidget(MockQObject):
         """Set widget visibility."""
         pass
 
+    def setAttribute(self, attr, on=True):
+        """Set widget attribute."""
+        pass
+
+    def accept(self):
+        """Accept dialog logic."""
+        pass
+
+    def reject(self):
+        """Reject dialog logic."""
+        pass
+
     def setLayout(self, layout):
         """Set widget layout."""
         self._layout = layout
@@ -350,6 +362,10 @@ class MockQLayout(MockQObject):
 
     def insertWidget(self, index, widget):
         """Insert widget at index."""
+        pass
+
+    def addSpacing(self, spacing):
+        """Add spacing to layout."""
         pass
 
 

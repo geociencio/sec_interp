@@ -43,13 +43,29 @@ class DrillholeService(IDrillholeService):
     processors to maintain a clean separation of concerns.
     """
 
-    def __init__(self) -> None:
-        """Initialize the service with specialized processors."""
-        self.collar_processor = CollarProcessor()
-        self.survey_processor = SurveyProcessor()
-        self.interval_processor = IntervalProcessor()
-        self.data_fetcher = DataFetcher()
-        self.trajectory_engine = TrajectoryEngine()
+    def __init__(
+        self,
+        collar_processor: CollarProcessor | None = None,
+        survey_processor: SurveyProcessor | None = None,
+        interval_processor: IntervalProcessor | None = None,
+        data_fetcher: DataFetcher | None = None,
+        trajectory_engine: TrajectoryEngine | None = None,
+    ) -> None:
+        """Initialize the service with specialized processors.
+
+        Args:
+            collar_processor: Optional collar processor.
+            survey_processor: Optional survey processor.
+            interval_processor: Optional interval processor.
+            data_fetcher: Optional data fetcher.
+            trajectory_engine: Optional trajectory engine.
+
+        """
+        self.collar_processor = collar_processor or CollarProcessor()
+        self.survey_processor = survey_processor or SurveyProcessor()
+        self.interval_processor = interval_processor or IntervalProcessor()
+        self.data_fetcher = data_fetcher or DataFetcher()
+        self.trajectory_engine = trajectory_engine or TrajectoryEngine()
 
     def project_collars(
         self,

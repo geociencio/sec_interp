@@ -23,6 +23,13 @@ from sec_interp.core.services import (
     ProfileService,
     StructureService,
 )
+from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
+from sec_interp.core.services.drillhole.data_fetcher import DataFetcher
+from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
+from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
+from sec_interp.core.services.drillhole.trajectory_engine import TrajectoryEngine
+from sec_interp.core.services.geology.outcrop_processor import OutcropProcessor
+from sec_interp.core.services.geology.profile_sampler import ProfileSampler
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -32,15 +39,38 @@ class ProfileController:
     """Orchestrates data generation services for SecInterp profile creation."""
 
     def __init__(self) -> None:
-        """Initialize services and the data cache."""
+        """Initialize services and the data cache using Dependency Injection."""
         self.config_service = ConfigService()
         self.data_cache = DataCache()
+
+        # 1. Shared Infrastructure
+        self.data_fetcher = DataFetcher()
+
+        # 2. Domain Processors
+        self.collar_processor = CollarProcessor()
+        self.survey_processor = SurveyProcessor()
+        self.interval_processor = IntervalProcessor()
+        self.trajectory_engine = TrajectoryEngine()
+        self.profile_sampler = ProfileSampler()
+        self.outcrop_processor = OutcropProcessor()
+
+        # 3. Services (with Dependency Injection)
         self.profile_service = ProfileService()
-        self.geology_service = GeologyService()
+        self.geology_service = GeologyService(
+            profile_sampler=self.profile_sampler,
+            outcrop_processor=self.outcrop_processor,
+        )
         self.structure_service = StructureService()
-        self.drillhole_service = DrillholeService()
+        self.drillhole_service = DrillholeService(
+            collar_processor=self.collar_processor,
+            survey_processor=self.survey_processor,
+            interval_processor=self.interval_processor,
+            data_fetcher=self.data_fetcher,
+            trajectory_engine=self.trajectory_engine,
+        )
+
         self._connected_layers: list[Any] = []
-        logger.debug("ProfileController initialized")
+        logger.debug("ProfileController initialized with DI")
 
     def connect_layer_notifications(self, layers: list[Any]) -> None:
         """Connect to layer signals for automatic cache invalidation on data changes.

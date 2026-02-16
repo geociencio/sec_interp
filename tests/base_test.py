@@ -50,6 +50,8 @@ from .mocks.qgis_gui import (
     MockQgsRubberBand,
     MockQgsVertexMarker,
     MockQgsMapToolEmitPoint,
+    MockQgsMapLayerComboBox,
+    MockQgsFileWidget,
 )
 from .mocks.qgis_utils import MockQgsWkbTypes, MockQgis, MockQgsTask
 from .mocks.processing_mocks import mock_processing
@@ -254,6 +256,8 @@ def restore_mocks():
     mock_gui.QgsRubberBand = MockQgsRubberBand
     mock_gui.QgsVertexMarker = MockQgsVertexMarker
     mock_gui.QgsMapCanvas = MockQgsMapCanvas
+    mock_gui.QgsMapLayerComboBox = MockQgsMapLayerComboBox
+    mock_gui.QgsFileWidget = MockQgsFileWidget
 
     # QtCore
     mock_qtcore.QPoint = MockQPoint

@@ -1,7 +1,7 @@
 """QGIS GUI mocks."""
 
 from unittest.mock import MagicMock
-from .qt_mocks import mock_signal
+from .qt_mocks import mock_signal, MockQWidget
 
 
 class MockQgsMapCanvas(MagicMock):
@@ -132,4 +132,56 @@ class MockQgsVertexMarker:
         pass
 
     def setPenWidth(self, width):
+        pass
+
+
+class MockQgsMapLayerComboBox(MockQWidget):
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.layerChanged = mock_signal()
+
+    def setLayer(self, layer):
+        pass
+
+    def currentLayer(self):
+        return None
+
+    def setFilters(self, filters):
+        pass
+
+    def setAllowEmptyLayer(self, allow):
+        pass
+
+    def setShowFieldStrategy(self, strategy):
+        pass
+
+    def setAdditionalLayers(self, layers):
+        pass
+
+
+class MockQgsFileWidget(MockQWidget):
+    GetDirectory = 0
+    SaveFile = 1
+    OpenFile = 2
+
+    def __init__(self, parent=None, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.fileChanged = mock_signal()
+
+    def setFilePath(self, path):
+        pass
+
+    def filePath(self):
+        return ""
+
+    def setStorageMode(self, mode):
+        pass
+
+    def setFilter(self, filter_string):
+        pass
+
+    def setSelectedFilter(self, filter_string):
+        pass
+
+    def setDialogTitle(self, title):
         pass

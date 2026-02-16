@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from .dtos import PreviewResult
+from sec_interp.core.domain.dtos import PreviewResult
 
 
 class IRenderer3D(ABC):

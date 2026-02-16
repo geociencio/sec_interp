@@ -51,14 +51,20 @@ logger = get_logger(__name__)
 class GeologyService(IGeologyService):
     """Service for generating geological profiles."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        profile_sampler: ProfileSampler | None = None,
+        outcrop_processor: OutcropProcessor | None = None,
+    ) -> None:
         """Initialize service with specialized processors.
 
-        The service delegates the heavy lifting of elevation sampling and
-        outcrop extraction to specialized sub-components.
+        Args:
+            profile_sampler: Optional profile sampler.
+            outcrop_processor: Optional outcrop processor.
+
         """
-        self.profile_sampler = ProfileSampler()
-        self.outcrop_processor = OutcropProcessor()
+        self.profile_sampler = profile_sampler or ProfileSampler()
+        self.outcrop_processor = outcrop_processor or OutcropProcessor()
 
     @performance_monitor
     def generate_geological_profile(

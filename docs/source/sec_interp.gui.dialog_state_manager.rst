@@ -1,7 +1,7 @@
-sec\_interp.gui.main\_dialog\_settings module
+sec\_interp.gui.dialog\_state\_manager module
 =============================================
 
-.. automodule:: sec_interp.gui.main_dialog_settings
+.. automodule:: sec_interp.gui.dialog_state_manager
    :members:
    :show-inheritance:
    :undoc-members:
