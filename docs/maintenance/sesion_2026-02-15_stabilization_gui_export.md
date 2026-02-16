@@ -20,13 +20,19 @@ Esta sesión se centró en resolver la inestabilidad residual tras la refactoriz
     1. La barra de mensajes de QGIS (nativo).
     2. El área de resultados del plugin (`preview_widget.results_text`) con formato HTML y colores semánticos (Verde/Rojo/Amarillo).
 
+### 4. Fixes Post-Sesión (Docker)
+- **Mocks GUI**: Corregidos `KeyError` en `test_main_dialog_validation_manager` añadiendo mocks completos.
+- **Integración 3D**: Solucionada regresión en `test_3d_integration_advanced` migrando llamada de `DrillholeService` a `DrillholeTaskOrchestrator`.
+
 ## Archivos Modificados
 - `core/services/export_service.py`: Lógica de resolución de capas.
 - `gui/dialog_export_manager.py`: Limpieza de llamadas a managers obsoletos.
 - `gui/main_dialog.py`: Mejora en `push_message`.
 - `sec_interp_plugin.py`: Validación de entradas.
+- `tests/gui/test_main_dialog_validation_manager.py`: Mocks actualizados.
+- `tests/integration/test_3d_integration_advanced.py`: Fix regresión orquestación.
 
 ## Estado Final
-- **Tests**: 361 tests pasando en Docker.
+- **Tests**: 361 tests PASANDO en Docker (Exit Code 0).
 - **Funcionalidad**: Preview y Exportación validadas manualmente.
-- **Estabilidad**: Alta. Fase 5 considerada estable.
+- **Estabilidad**: MUY ALTA. Fase 5 cerrada exitosamente.

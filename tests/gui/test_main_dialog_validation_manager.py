@@ -28,7 +28,7 @@ class TestInputManager(BaseTestCase):
         self.mock_dialog.output_widget = MagicMock()
 
         # Default empty data
-        default_data = {
+        self.default_data = {
             "raster_layer": None, "selected_band": 1, "scale": 1.0, "vertexag": 1.0,
             "crossline_layer": None, "buffer_distance": 0.0,
             "outcrop_layer": None, "outcrop_name_field": None,
@@ -39,11 +39,11 @@ class TestInputManager(BaseTestCase):
             "interval_layer": None, "interval_id": None, "interval_from": None, "interval_to": None, "interval_lith": None
         }
 
-        self.mock_dialog.page_dem.get_data.return_value = default_data
-        self.mock_dialog.page_section.get_data.return_value = default_data
-        self.mock_dialog.page_geology.get_data.return_value = default_data
-        self.mock_dialog.page_struct.get_data.return_value = default_data
-        self.mock_dialog.page_drillhole.get_data.return_value = default_data
+        self.mock_dialog.page_dem.get_data.return_value = self.default_data.copy()
+        self.mock_dialog.page_section.get_data.return_value = self.default_data.copy()
+        self.mock_dialog.page_geology.get_data.return_value = self.default_data.copy()
+        self.mock_dialog.page_struct.get_data.return_value = self.default_data.copy()
+        self.mock_dialog.page_drillhole.get_data.return_value = self.default_data.copy()
         self.mock_dialog.output_widget.filePath.return_value = ""
 
         self.manager = InputManager(self.mock_dialog)
@@ -80,48 +80,56 @@ class TestInputManager(BaseTestCase):
     def test_is_section_valid(self):
         """Test declarative section validation."""
         # Setup mock page data
-        self.mock_dialog.page_dem.get_data.return_value = {
-            "raster_layer": "SomeLayer",
-            "selected_band": 1,
-        }
-        self.mock_dialog.page_section.get_data.return_value = {"crossline_layer": None}
+        dem_data = self.default_data.copy()
+        dem_data.update({"raster_layer": "SomeLayer"})
+        self.mock_dialog.page_dem.get_data.return_value = dem_data
+
+        sect_data = self.default_data.copy()
+        sect_data.update({"crossline_layer": None})
+        self.mock_dialog.page_section.get_data.return_value = sect_data
 
         self.assertTrue(self.manager.is_section_valid("dem"))
         self.assertFalse(self.manager.is_section_valid("section"))
 
     def test_can_preview(self):
         """Test can_preview logic."""
-        self.mock_dialog.page_dem.get_data.return_value = {
-            "raster_layer": "SomeLayer",
-            "selected_band": 1,
-        }
-        self.mock_dialog.page_section.get_data.return_value = {
-            "crossline_layer": "LineLayer"
-        }
+        # Case 1: Valid
+        dem_data = self.default_data.copy()
+        dem_data.update({"raster_layer": "SomeLayer"})
+        self.mock_dialog.page_dem.get_data.return_value = dem_data
+
+        sect_data = self.default_data.copy()
+        sect_data.update({"crossline_layer": "LineLayer"})
+        self.mock_dialog.page_section.get_data.return_value = sect_data
+
         self.assertTrue(self.manager.can_preview())
 
-        self.mock_dialog.page_dem.get_data.return_value = {
-            "raster_layer": None,
-            "selected_band": 1,
-        }
-        self.mock_dialog.page_section.get_data.return_value = {
-            "crossline_layer": None
-        }
+        # Case 2: Invalid
+        dem_data_invalid = self.default_data.copy()
+        dem_data_invalid.update({"raster_layer": None})
+        self.mock_dialog.page_dem.get_data.return_value = dem_data_invalid
+
+        sect_data_invalid = self.default_data.copy()
+        sect_data_invalid.update({"crossline_layer": None})
+        self.mock_dialog.page_section.get_data.return_value = sect_data_invalid
+
         self.assertFalse(self.manager.can_preview())
 
     def test_get_section_error(self):
         """Test error message retrieval."""
-        self.mock_dialog.page_dem.get_data.return_value = {
-            "raster_layer": None,
-            "selected_band": 1,
-        }
+        # Case 1: Error
+        dem_data = self.default_data.copy()
+        dem_data.update({"raster_layer": None})
+        self.mock_dialog.page_dem.get_data.return_value = dem_data
+
         error = self.manager.get_section_error("dem")
         self.assertEqual(error, "Raster DEM layer is required")
 
-        self.mock_dialog.page_dem.get_data.return_value = {
-            "raster_layer": "Layer",
-            "selected_band": 1,
-        }
+        # Case 2: No Error
+        dem_data_valid = self.default_data.copy()
+        dem_data_valid.update({"raster_layer": "Layer"})
+        self.mock_dialog.page_dem.get_data.return_value = dem_data_valid
+
         error = self.manager.get_section_error("dem")
         self.assertEqual(error, "")
 
