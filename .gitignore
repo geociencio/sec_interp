@@ -26,3 +26,6 @@ logs/
 # Documentation
 docs/build/
 help/html/
+
+# Archive
+_archive/
