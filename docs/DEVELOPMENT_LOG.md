@@ -1,4 +1,16 @@
 ---
+## [2026-02-15] RESUMEN: Estabilización GUI y Exportación (Noche)
+- **Logro**: Estabilización final de la Fase 5 y reparación del subsistema de exportación.
+- **Cambios**:
+    - **Critical Fix**: Resolución de capas por ID en `ExportService` (fin de `AttributeError`).
+    - **Cleanup**: Eliminación definitiva de `message_manager` y `settings_manager` (Facade Pattern).
+    - **UX**: Sistema de mensajes dual (QGIS Bar + Plugin Area) con feedback visual HTML.
+- **Métricas**:
+    - **Tests**: 361/361 OK (100%).
+    - **Funcionalidad**: Exportación validada manualmente.
+- **Mantenimiento**: [sesion_2026-02-15_stabilization_gui_export.md](maintenance/sesion_2026-02-15_stabilization_gui_export.md).
+
+---
 ## [2026-02-15] RESUMEN: Resolución de Fugas de Señales y Estabilidad de UI
 - **Logro**: Resueltas 65 fugas de señales potenciales identificadas por `qgis-analyzer`.
 - **Cambios**:

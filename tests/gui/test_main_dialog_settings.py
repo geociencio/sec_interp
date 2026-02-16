@@ -1,14 +1,14 @@
-"""Tests for DialogSettingsManager with enhanced persistence logic."""
+"""Tests for StateManager with enhanced persistence logic."""
 
 import unittest
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from qgis.core import QgsProject, QgsSettings
-from sec_interp.gui.main_dialog_settings import DialogSettingsManager
+from sec_interp.gui.dialog_state_manager import StateManager
 
 
 class TestMainDialogSettings(BaseTestCase):
-    """Tests for the DialogSettingsManager class."""
+    """Tests for the StateManager class."""
 
     def setUp(self):
         super().setUp()
@@ -32,7 +32,7 @@ class TestMainDialogSettings(BaseTestCase):
         self.dialog.preview_widget = MagicMock()
         self.dialog.status_manager = MagicMock()
 
-        self.manager = DialogSettingsManager(self.dialog)
+        self.manager = StateManager(self.dialog)
 
     def test_parse_setting_value(self):
         """Test parsing of different value types and edge cases."""

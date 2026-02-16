@@ -19,10 +19,17 @@ class MockSignal:
         self._slots.append(slot)
 
     def _emit_to_slots(self, *args, **kwargs):
-        """Emit signal to connected slots."""
+        """Emit signal to connected slots with flexible signature support."""
         for slot in self._slots:
             try:
                 slot(*args, **kwargs)
+            except TypeError:
+                # If slot doesn't accept all arguments, try calling it without them
+                # This emulates PyQt behavior where slots can ignore extra arguments
+                try:
+                    slot()
+                except Exception:
+                    pass
             except Exception:
                 pass
 

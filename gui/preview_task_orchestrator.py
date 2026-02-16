@@ -57,10 +57,15 @@ class PreviewTaskOrchestrator:
         if self.geology_task:
             self.geology_task.cancel()
 
+        # Resolve layer IDs to actual layer objects
+        line_lyr = self.manager._resolve_layer(params.line_layer)
+        raster_lyr = self.manager._resolve_layer(params.raster_layer)
+        outcrop_lyr = self.manager._resolve_layer(params.outcrop_layer)
+
         task_input = service.prepare_task_input(
-            params.line_layer,
-            params.raster_layer,
-            params.outcrop_layer,
+            line_lyr,
+            raster_lyr,
+            outcrop_lyr,
             params.outcrop_name_field,
             params.band_num,
         )
@@ -73,9 +78,7 @@ class PreviewTaskOrchestrator:
         )
 
         # Connect signals
-        self.geology_task.finished_with_results.connect(
-            self.manager._on_geology_finished
-        )
+        self.geology_task.finished_with_results.connect(self.manager._on_geology_finished)
         self.geology_task.progress_changed.connect(self.manager._on_geology_progress)
         self.geology_task.error_occurred.connect(self.manager._on_geology_error)
 
@@ -85,6 +88,13 @@ class PreviewTaskOrchestrator:
         """Launch background drillhole generation."""
         if self.drillhole_task:
             self.drillhole_task.cancel()
+
+        # Resolve layer IDs to actual layer objects
+        line_lyr = self.manager._resolve_layer(params.line_layer)
+        collar_lyr = self.manager._resolve_layer(params.collar_layer)
+        survey_lyr = self.manager._resolve_layer(params.survey_layer)
+        interval_lyr = self.manager._resolve_layer(params.interval_layer)
+        raster_lyr = self.manager._resolve_layer(params.raster_layer)
 
         survey_fields_dict = {
             "id": params.survey_id_field,
@@ -100,20 +110,20 @@ class PreviewTaskOrchestrator:
         }
 
         task_input = service.prepare_task_input(
-            params.line_layer,
+            line_lyr,
             params.buffer_dist,
-            params.collar_layer,
+            collar_lyr,
             params.collar_id_field,
             params.collar_use_geometry,
             params.collar_x_field,
             params.collar_y_field,
             params.collar_z_field,
             params.collar_depth_field,
-            params.survey_layer,
+            survey_lyr,
             survey_fields_dict,
-            params.interval_layer,
+            interval_lyr,
             interval_fields_dict,
-            params.raster_layer,
+            raster_lyr,
             params.band_num,
         )
 
@@ -124,9 +134,7 @@ class PreviewTaskOrchestrator:
             params,
         )
 
-        self.drillhole_task.finished_with_results.connect(
-            self.manager._on_drillhole_finished
-        )
+        self.drillhole_task.finished_with_results.connect(self.manager._on_drillhole_finished)
         self.drillhole_task.error_occurred.connect(self.manager._on_drillhole_error)
 
         QgsApplication.taskManager().addTask(self.drillhole_task)

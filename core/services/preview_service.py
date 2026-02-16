@@ -40,9 +40,24 @@ class PreviewService:
         self.controller = controller
 
     @property
-    def drillhole_service(self) -> Any:
-        """Expose drillhole service from controller."""
-        return self.controller.drillhole_service
+    def drillhole_orchestrator(self) -> Any:
+        """Expose drillhole orchestrator from controller."""
+        return self.controller.drillhole_orchestrator
+
+    @property
+    def geology_service(self) -> Any:
+        """Expose geology service from controller."""
+        return self.controller.geology_service
+
+    @property
+    def structure_service(self) -> Any:
+        """Expose structure service from controller."""
+        return self.controller.structure_service
+
+    @property
+    def profile_service(self) -> Any:
+        """Expose profile service from controller."""
+        return self.controller.profile_service
 
     def _resolve_layer(self, layer_ref: Any) -> Any:
         """Resolve layer ID or object to a QgsMapLayer."""
@@ -124,9 +139,7 @@ class PreviewService:
             interval = None
             if params.auto_lod:
                 line_len = line_geom.length()
-                max_pts = self.calculate_max_points(
-                    params.canvas_width, params.max_points, True
-                )
+                max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
                 interval = line_len / max_pts if max_pts > 0 else None
 
             result.topo = self.controller.profile_service.generate_topographic_profile(
@@ -289,7 +302,5 @@ class PreviewService:
             logger.exception("Unexpected error during drillhole processing")
             raise ProcessingError("Unexpected error during drillhole processing") from e
 
-        logger.info(
-            f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces"
-        )
+        logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
         return drillhole_data

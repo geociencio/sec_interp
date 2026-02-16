@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentación**: Desacoplamiento de la documentación de la API del paquete de ayuda offline integrado en el plugin.
 
 ## [3.0.0] - 2026-02-14
+### Fixed
+- **Exportación**: Corregido `AttributeError` crítico en `ExportService` implementando resolución explícita de IDs de capa a objetos `QgsMapLayer`.
+- **Arquitectura**: Eliminadas referencias obsoletas a `message_manager` y `settings_manager`, completando la transición fuera del patrón Facade.
+- **UX**: Mejorada la visibilidad de mensajes de éxito/error, mostrándolos ahora también en el panel de resultados del plugin.
+
 ### Added
 - **Calidad**: Eliminación sistemática de números mágicos (`PLR2004`) en todo el proyecto, reemplazándolos con constantes nombradas.
 - **Documentación**: Cobertura del 100% en docstrings para `core/` y `gui/` (cumplimiento de reglas `D10x`).

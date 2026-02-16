@@ -18,12 +18,12 @@ class TestMainDialogWiring(BaseTestCase):
         mock_plugin.controller = MagicMock()
 
         with (
-            patch("sec_interp.gui.main_dialog.DialogStateManager"),
-            patch("sec_interp.gui.main_dialog.DialogInputManager"),
+            patch("sec_interp.gui.main_dialog.StateManager"),
+            patch("sec_interp.gui.main_dialog.InputManager"),
             patch("sec_interp.gui.main_dialog.ExportManager"),
             patch("sec_interp.gui.main_dialog.PreviewManager"),
-            patch("sec_interp.gui.main_dialog.DialogInterpretationManager"),
-            patch("sec_interp.gui.main_dialog.DialogToolManager"),
+            patch("sec_interp.gui.main_dialog.InterpretationManager"),
+            patch("sec_interp.gui.main_dialog.ToolManager"),
             patch("sec_interp.gui.main_dialog.LegendWidget"),
         ):
             self.dialog = SecInterpDialog(plugin_instance=mock_plugin)

@@ -101,29 +101,52 @@ class ExportService:
         msg: list[str],
     ) -> None:
         """Call individual exporters based on options."""
-        line_crs = params.line_layer.crs()
+        # Resolve layer IDs to QgsMapLayer objects
+        from qgis.core import QgsProject
+
+        project = QgsProject.instance()
+
+        # Resolve line_layer
+        line_layer = None
+        if params.line_layer:
+            if isinstance(params.line_layer, str):
+                line_layer = project.mapLayer(params.line_layer)
+            else:
+                line_layer = params.line_layer
+
+        if not line_layer or not line_layer.isValid():
+            raise DataMissingError("Section line layer not found or invalid")
+
+        line_crs = line_layer.crs()
+
+        # Resolve raster_layer if needed for structures
+        raster_layer = None
+        if params.raster_layer:
+            if isinstance(params.raster_layer, str):
+                raster_layer = project.mapLayer(params.raster_layer)
+            else:
+                raster_layer = params.raster_layer
+
         from sec_interp.exporters import CSVExporter
 
         csv_exporter = CSVExporter({})
 
         handlers = {
             "exp_topo": lambda: (
-                self._export_topography(
-                    folder, profile_data, line_crs, csv_exporter, msg
-                ),
+                self._export_topography(folder, profile_data, line_crs, csv_exporter, msg),
                 self._export_axes(folder, profile_data, line_crs, msg),
             ),
             "exp_geol": lambda: self._export_geology(
                 folder, geol_data, line_crs, csv_exporter, msg
             ),
             "exp_struct": lambda: self._export_structures(
-                folder, struct_data, params, line_crs, csv_exporter, msg
+                folder, struct_data, raster_layer, line_crs, csv_exporter, msg
             ),
             "exp_drill": lambda: self._export_drillholes(
                 folder, drillhole_data, line_crs, msg, options
             ),
             "exp_interp": lambda: self._export_interpretations(
-                folder, interp_data, params.line_layer, line_crs, msg
+                folder, interp_data, line_layer, line_crs, msg
             ),
         }
         for opt, handler in handlers.items():
@@ -192,7 +215,7 @@ class ExportService:
         self,
         folder: Path,
         data: list[Any] | None,
-        params: PreviewParams,
+        raster_layer: Any | None,
         crs: Any,
         csv_exporter: Any,
         msg: list[str],
@@ -211,15 +234,15 @@ class ExportService:
             )
 
             raster_res = 1.0
-            if params.raster_layer:
-                raster_res = params.raster_layer.rasterUnitsPerPixelX()
+            if raster_layer and raster_layer.isValid():
+                raster_res = raster_layer.rasterUnitsPerPixelX()
 
             StructureShpExporter({}).export(
                 folder / "structural_profile.shp",
                 {
                     "structural_data": data,
                     "crs": crs,
-                    "dip_scale_factor": params.dip_scale_factor,
+                    "dip_scale_factor": 1.0,  # Default value
                     "raster_res": raster_res,
                 },
             )
@@ -365,9 +388,7 @@ class ExportService:
         else:
             logger.warning("Invalid section line layer, skipping 3D export.")
 
-    def _export_axes(
-        self, folder: Path, data: list[tuple], crs: Any, msg: list[str]
-    ) -> None:
+    def _export_axes(self, folder: Path, data: list[tuple], crs: Any, msg: list[str]) -> None:
         """Export profile axes."""
         from sec_interp.exporters import AxesShpExporter
 

@@ -1,4 +1,4 @@
-"""Tests for main_dialog_tools.py - DialogToolManager and NavigationManager classes."""
+"""Tests for main_dialog_tools.py - ToolManager and NavigationManager classes."""
 
 import unittest
 from unittest.mock import MagicMock, patch, call
@@ -6,10 +6,10 @@ from unittest.mock import MagicMock, patch, call
 # BaseTestCase MUST be imported before qgis.core to setup mocks correctly
 from tests.base_test import BaseTestCase
 
-from sec_interp.gui.main_dialog_tools import DialogToolManager, NavigationManager
+from sec_interp.gui.dialog_tool_manager import ToolManager, NavigationManager
 
 
-class TestDialogToolManager(BaseTestCase):
+class TestToolManager(BaseTestCase):
 
     def setUp(self):
         """Set up test fixtures."""
@@ -22,15 +22,15 @@ class TestDialogToolManager(BaseTestCase):
         self.mock_dialog.preview_widget.results_text = MagicMock()
         self.mock_dialog.preview_widget.results_group = MagicMock()
 
-        self.manager = DialogToolManager(self.mock_dialog)
+        self.manager = ToolManager(self.mock_dialog)
 
     def test_initialize_tools_creates_default_tools(self):
         """Test that initialize_tools creates tools if not provided."""
         with (
-            patch("sec_interp.gui.main_dialog_tools.QgsMapToolPan") as MockPan,
-            patch("sec_interp.gui.main_dialog_tools.ProfileMeasureTool") as MockMeasure,
+            patch("sec_interp.gui.dialog_tool_manager.QgsMapToolPan") as MockPan,
+            patch("sec_interp.gui.dialog_tool_manager.ProfileMeasureTool") as MockMeasure,
             patch(
-                "sec_interp.gui.main_dialog_tools.ProfileInterpretationTool"
+                "sec_interp.gui.dialog_tool_manager.ProfileInterpretationTool"
             ) as MockInterp,
         ):
 
@@ -53,14 +53,14 @@ class TestDialogToolManager(BaseTestCase):
         mock_measure = MagicMock()
         mock_interp = MagicMock()
 
-        manager = DialogToolManager(
+        manager = ToolManager(
             self.mock_dialog,
             pan_tool=mock_pan,
             measure_tool=mock_measure,
             interpretation_tool=mock_interp,
         )
 
-        with patch("sec_interp.gui.main_dialog_tools.QgsMapToolPan") as MockPan:
+        with patch("sec_interp.gui.dialog_tool_manager.QgsMapToolPan") as MockPan:
             manager.initialize_tools()
 
             # Verify no new tools were created

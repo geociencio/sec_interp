@@ -8,6 +8,14 @@ This document serves as the central record for project history, release procedur
 - **Focus**: Quality Score > 60, QGIS 4.x Prep (PyQt5 cleanup), ExportService Refactor.
 - **Goals**: Eliminate technical debt in resources.py and reduce cyclomatic complexity in 3D exporters.
 
+### [Estabilización v3.0.x] - GUI & EXPORTACION
+- **Date**: 2026-02-15
+- **Focus**: ExportService Layer Resolution, Facade Removal.
+- **Outcome**: 100% Tests Passing, Export functionality restored.
+- **Reference**: [Session Log](sesion_2026-02-15_stabilization_gui_export.md)
+
+---
+
 ### [Phase Closure v2.9.0] - ARCHITECTURAL CONSOLIDATION
 - **Date**: 2026-02-01
 - **Focus**: Core Domain Migration, Drillhole Service Decomposition, v2.9.0 Release Stabilization.

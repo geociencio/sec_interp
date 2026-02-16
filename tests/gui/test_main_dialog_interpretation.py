@@ -1,20 +1,20 @@
-"""Tests for DialogInterpretationManager."""
+"""Tests for InterpretationManager."""
 
 import unittest
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
-from sec_interp.gui.main_dialog_interpretation import DialogInterpretationManager
+from sec_interp.gui.dialog_interpretation_manager import InterpretationManager
 from sec_interp.core.domain import InterpretationPolygon
 
 
-class TestDialogInterpretationManager(BaseTestCase):
-    """Tests for the DialogInterpretationManager class."""
+class TestInterpretationManager(BaseTestCase):
+    """Tests for the InterpretationManager class."""
 
     def setUp(self):
         super().setUp()
         self.dialog = MagicMock()
         self.dialog.project = MagicMock()
-        self.manager = DialogInterpretationManager(self.dialog)
+        self.manager = InterpretationManager(self.dialog)
 
     def test_load_interpretations_empty(self):
         """Test loading interpretations when none exist."""
@@ -50,7 +50,7 @@ class TestDialogInterpretationManager(BaseTestCase):
         self.assertEqual(args[1], "interpretations")
         self.assertIn('"name": "Unit A"', args[2])
 
-    @patch("sec_interp.gui.main_dialog_interpretation.QgsGeometry")
+    @patch("sec_interp.gui.dialog_interpretation_manager.QgsGeometry")
     def test_apply_attribute_inheritance_geology(self, MockGeom):
         """Test attribute inheritance from geology data."""
         # Setup interpretation to inherit

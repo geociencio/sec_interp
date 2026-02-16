@@ -1,14 +1,14 @@
-"""Tests for DialogStateManager - Consolidation of Status and Settings Managers."""
+"""Tests for StateManager - Consolidation of Status and Settings Managers."""
 
 import unittest
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from qgis.core import QgsProject
-from sec_interp.gui.dialog_state_manager import DialogStateManager
+from sec_interp.gui.dialog_state_manager import StateManager
 
 
-class TestDialogStateManager(BaseTestCase):
-    """Tests for the DialogStateManager class."""
+class TestStateManager(BaseTestCase):
+    """Tests for the StateManager class."""
 
     def setUp(self):
         super().setUp()
@@ -32,7 +32,7 @@ class TestDialogStateManager(BaseTestCase):
         self.dialog.button_box = MagicMock()
         self.dialog.output_widget = MagicMock()
 
-        self.manager = DialogStateManager(self.dialog)
+        self.manager = StateManager(self.dialog)
 
     def test_reset_to_defaults_interacts_with_widgets(self):
         """Verify that reset_to_defaults interacts with major UI components."""

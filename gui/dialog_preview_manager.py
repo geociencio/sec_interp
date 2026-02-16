@@ -9,7 +9,7 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING, Any
 
-from qgis.core import QgsApplication, QgsVectorLayer
+from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtCore import QCoreApplication, QTimer
 
 from sec_interp.core.domain import (
@@ -30,8 +30,6 @@ from .main_dialog_config import DialogConfig
 from .preview_param_hasher import PreviewParamHasher
 from .preview_reporter import PreviewReporter
 from .preview_task_orchestrator import PreviewTaskOrchestrator
-from .tasks.drillhole_task import DrillholeGenerationTask
-from .tasks.geology_task import GeologyGenerationTask
 
 if TYPE_CHECKING:
     pass
@@ -81,9 +79,7 @@ class PreviewManager:
         # Connect extents changed signal
         # We need to do this carefully to avoid signal loops
         # Initial connection is safe
-        self.dialog.preview_widget.canvas.extentsChanged.connect(
-            self._on_extents_changed
-        )
+        self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
 
     def cleanup(self) -> None:
         """Clean up resources and stop background tasks."""
@@ -93,9 +89,7 @@ class PreviewManager:
             self.debounce_timer.timeout.disconnect()
 
         with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.preview_widget.canvas.extentsChanged.disconnect(
-                self._on_extents_changed
-            )
+            self.dialog.preview_widget.canvas.extentsChanged.disconnect(self._on_extents_changed)
 
     def generate_preview(self) -> tuple[bool, str]:
         """Generate complete preview with all available data layers."""
@@ -167,11 +161,7 @@ class PreviewManager:
         """Safely retrieve transform context from canvas."""
         if not self.dialog.plugin_instance:
             return None
-        return (
-            self.dialog.plugin_instance.iface.mapCanvas()
-            .mapSettings()
-            .transformContext()
-        )
+        return self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
 
     def _update_cache_and_metrics(self, result: PreviewResult) -> None:
         """Update local cache and cumulative metrics."""
@@ -186,12 +176,8 @@ class PreviewManager:
 
     def _trigger_async_updates(self, params: PreviewParams) -> None:
         """Launch background tasks via orchestrator."""
-        self.orchestrator.start_geology_task(
-            params, self.preview_service.geology_service
-        )
-        self.orchestrator.start_drillhole_task(
-            params, self.preview_service.drillhole_service
-        )
+        self.orchestrator.start_geology_task(params, self.preview_service.geology_service)
+        self.orchestrator.start_drillhole_task(params, self.preview_service.drillhole_orchestrator)
 
     def _is_data_unchanged(self, params: PreviewParams) -> bool:
         """Check if parameters haven't changed since last generation."""
@@ -351,9 +337,7 @@ class PreviewManager:
             canvas_width=canvas.width(), ratio=ratio, auto_lod=True
         )
 
-        logger.debug(
-            f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}"
-        )
+        logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
 
         if not self.dialog.plugin_instance:
             return
@@ -372,69 +356,11 @@ class PreviewManager:
             use_adaptive_sampling=use_adaptive_sampling,
         )
 
-    def _start_async_geology(self, params: PreviewParams) -> None:
-        """Start asynchronous geology generation."""
-        if self.active_task:
-            self.active_task.cancel()
-        outcrop_layer = params.outcrop_layer
-        outcrop_name_field = params.outcrop_name_field
-
-        if not outcrop_layer or not outcrop_name_field:
-            return
-
-        self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate(
-                "PreviewManager", "Generating Geology in background..."
-            )
-        )
-
-        # 1. Prepare Data (Sync - Main Thread)
-        try:
-            line_lyr = self._resolve_layer(params.line_layer)
-            raster_lyr = self._resolve_layer(params.raster_layer)
-            outcrop_lyr = self._resolve_layer(params.outcrop_layer)
-
-            if not all([line_lyr, raster_lyr, outcrop_lyr]):
-                return
-
-            task_input = self.dialog.plugin_instance.controller.geology_service.prepare_task_input(
-                line_lyr,
-                raster_lyr,
-                outcrop_lyr,
-                outcrop_name_field,
-                params.band_num,
-            )
-        except (AttributeError, TypeError, ValueError, SecInterpError) as e:
-            logger.exception(f"Failed to prepare geology task: {e}")
-            self._on_geology_error(str(e))
-            return
-        except Exception:
-            logger.exception("Unexpected error preparing geology task")
-            self._on_geology_error("Internal error during task preparation")
-            return
-
-        # 2. Launch Task (Async - Background Thread)
-        self.active_task = GeologyGenerationTask(
-            service=self.dialog.plugin_instance.controller.geology_service,
-            task_input=task_input,
-            on_finished=self._on_geology_finished,
-            on_error=self._on_geology_error,
-        )
-
-        # Connect progress signal from QgsTask
-        self.active_task.progressChanged.connect(self._on_geology_progress)
-
-        # Add to QGIS Task Manager
-        QgsApplication.taskManager().addTask(self.active_task)
-
     def _on_geology_finished(self, results: list[Any]) -> None:
         """Handle completion of geology generation task."""
-        self.active_task = None
         self.cached_data["geol"] = results if results else None
 
-        logger.info(
-            f"Async geology finished: {len(results) if results else 0} segments"
-        )
+        logger.info(f"Async geology finished: {len(results) if results else 0} segments")
 
         try:
             self.update_from_checkboxes()
@@ -471,110 +397,31 @@ class PreviewManager:
 
         """
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate(
-                "PreviewManager", "Generating Geology: {}%..."
-            ).format(progress)
+            QCoreApplication.translate("PreviewManager", "Generating Geology: {}%...").format(
+                progress
+            )
         )
 
     def _on_geology_error(self, error_msg: str) -> None:
         """Handle error during parallel geology generation."""
         logger.error(f"Geology Task Error: {error_msg}")
-        self.active_task = None
         # Map string error to ProcessingError for centralized handling
         error = ProcessingError(
-            QCoreApplication.translate(
-                "PreviewManager", "Geology processing failed: {}"
-            ).format(error_msg)
+            QCoreApplication.translate("PreviewManager", "Geology processing failed: {}").format(
+                error_msg
+            )
         )
         self.dialog.handle_error(error, "Geology Error")
 
     def _on_drillhole_error(self, error_msg: str) -> None:
         """Handle error during parallel drillhole generation."""
         logger.error(f"Drillhole Task Error: {error_msg}")
-        self.active_drill_task = None
         error = ProcessingError(
-            QCoreApplication.translate(
-                "PreviewManager", "Drillhole processing failed: {}"
-            ).format(error_msg)
+            QCoreApplication.translate("PreviewManager", "Drillhole processing failed: {}").format(
+                error_msg
+            )
         )
         self.dialog.handle_error(error, "Drillhole Error")
-
-    def _start_async_drillhole(self, params: PreviewParams) -> None:
-        """Start asynchronous drillhole generation."""
-        if self.active_drill_task:
-            self.active_drill_task.cancel()
-        if not params.collar_layer:
-            return
-
-        self.dialog.preview_widget.results_text.setPlainText(
-            self.dialog.preview_widget.results_text.toPlainText()
-            + "\n"
-            + QCoreApplication.translate(
-                "PreviewManager", "Generating Drillholes in background..."
-            )
-        )
-
-        # 1. Prepare Data (Sync)
-        try:
-            line_lyr = self._resolve_layer(params.line_layer)
-            collar_lyr = self._resolve_layer(params.collar_layer)
-            survey_lyr = self._resolve_layer(params.survey_layer)
-            interval_lyr = self._resolve_layer(params.interval_layer)
-            dem_lyr = self._resolve_layer(params.raster_layer)
-
-            if not all([line_lyr, collar_lyr]):
-                return
-
-            # Map simplified fields for the service
-            survey_fields = {
-                "id": params.survey_id_field,
-                "depth": params.survey_depth_field,
-                "azim": params.survey_azim_field,
-                "incl": params.survey_incl_field,
-            }
-            interval_fields = {
-                "id": params.interval_id_field,
-                "from": params.interval_from_field,
-                "to": params.interval_to_field,
-                "lith": params.interval_lith_field,
-            }
-
-            task_input = self.dialog.plugin_instance.controller.drillhole_orchestrator.prepare_task_input(
-                line_layer=line_lyr,
-                buffer_width=params.buffer_dist,
-                collar_layer=collar_lyr,
-                collar_id_field=params.collar_id_field,
-                use_geometry=params.collar_use_geometry,
-                collar_x_field=params.collar_x_field,
-                collar_y_field=params.collar_y_field,
-                collar_z_field=params.collar_z_field,
-                collar_depth_field=params.collar_depth_field,
-                survey_layer=survey_lyr,
-                survey_fields=survey_fields,
-                interval_layer=interval_lyr,
-                interval_fields=interval_fields,
-                dem_layer=dem_lyr,
-            )
-        except (AttributeError, TypeError, ValueError, SecInterpError) as e:
-            logger.exception(f"Failed to prepare drillhole task: {e}")
-            return
-        except Exception:
-            logger.exception("Unexpected error preparing drillhole task")
-            return
-
-        # 2. Launch Task
-        self.active_drill_task = DrillholeGenerationTask(
-            description=self.tr("Generating drillhole data"),
-            orchestrator=self.dialog.plugin_instance.controller.drillhole_orchestrator,
-            task_input=task_input,
-            params=params,
-        )
-        self.active_drill_task.finished_with_results.connect(
-            self._on_drillhole_finished
-        )
-        self.active_drill_task.error_occurred.connect(self._on_geology_error)
-
-        QgsApplication.taskManager().addTask(self.active_drill_task)
 
     def _on_drillhole_finished(self, result: Any) -> None:
         """Handle completion of drillhole task."""
@@ -610,9 +457,7 @@ class PreviewManager:
             if layer and layer.isValid():
                 auth_id = layer.crs().authid()
                 self.dialog.preview_widget.lbl_crs.setText(
-                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(
-                        auth_id
-                    )
+                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(auth_id)
                 )
             else:
                 self.dialog.preview_widget.lbl_crs.setText(

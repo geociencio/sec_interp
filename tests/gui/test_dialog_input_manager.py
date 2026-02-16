@@ -1,14 +1,14 @@
-"""Tests for DialogInputManager - Consolidation of Data Aggregator and Validation Manager."""
+"""Tests for InputManager - Consolidation of Data Aggregator and Validation Manager."""
 
 import unittest
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
-from sec_interp.gui.dialog_input_manager import DialogInputManager
+from sec_interp.gui.dialog_input_manager import InputManager
 from sec_interp.core.exceptions import ValidationError
 
 
-class TestDialogInputManager(BaseTestCase):
-    """Tests for the DialogInputManager class."""
+class TestInputManager(BaseTestCase):
+    """Tests for the InputManager class."""
 
     def setUp(self):
         super().setUp()
@@ -24,7 +24,7 @@ class TestDialogInputManager(BaseTestCase):
         self.mock_dialog.page_interpretation = MagicMock()
         self.mock_dialog.output_widget = MagicMock()
 
-        self.manager = DialogInputManager(self.mock_dialog)
+        self.manager = InputManager(self.mock_dialog)
 
     def test_get_all_values_collects_from_all_pages(self):
         """Verify that get_all_values calls gathering methods on all pages."""

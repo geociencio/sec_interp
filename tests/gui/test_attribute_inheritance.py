@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from qgis.core import QgsPointXY, QgsApplication
-from sec_interp.gui.main_dialog_interpretation import DialogInterpretationManager
+from sec_interp.gui.dialog_interpretation_manager import InterpretationManager
 from sec_interp.core.domain import InterpretationPolygon, GeologySegment
 
 
@@ -24,7 +24,7 @@ class TestAttributeInheritance(BaseTestCase):
         Test that inheritance picks the *geometrically* closest feature,
         even if its midpoint is further away.
         """
-        # 1. Setup DialogInterpretationManager with minimal mocks
+        # 1. Setup InterpretationManager with minimal mocks
         mock_dialog = MagicMock()
         mock_dialog.layer_factory = MagicMock()
         mock_dialog.layer_factory.get_color_for_unit.return_value = MagicMock(
@@ -70,7 +70,7 @@ class TestAttributeInheritance(BaseTestCase):
         }
 
         # Create InterpretationManager
-        interp_manager = DialogInterpretationManager(mock_dialog)
+        interp_manager = InterpretationManager(mock_dialog)
 
         # 2. Setup Polygon at x=12, y=0
         poly = InterpretationPolygon(
