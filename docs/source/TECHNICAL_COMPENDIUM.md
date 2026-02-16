@@ -38,7 +38,9 @@ The plugin is prepared for future integration of deep geophysical data:
 - **Formula**: `tan(beta) = tan(alpha) * |cos(strike - azimuth)|`.
 
 #### `DrillholeService`
-- **`project_collars()`** & **`process_intervals()`**: Handle full 3D→2D pipeline for drillholes.
+- **Architecture**: Decomposed into specialized processors (`CollarProcessor`, `SurveyProcessor`, `IntervalProcessor`).
+- **`project_collars()`**: Projects collar points 3D->2D.
+- **`process_intervals()`**: Handles full pipeline for trace and interval generation.
 
 ---
 

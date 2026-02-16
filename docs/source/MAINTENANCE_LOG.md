@@ -2,6 +2,12 @@
 
 This document serves as the central record for project history, release procedures, and past refactoring analysis.
 
+### [v3.0.0 Release] - i18n Expansion & Drillhole Refactor
+- **Date**: 2026-02-16
+- **Focus**: Global i18n (10 languages), Facade Removal, Drillhole Service Decomposition.
+- **Outcome**: Added Hindi/Japanese support. Verified 3D Export stability. Updated Architecture documentation.
+- **Reference**: [Task Log](/home/jmbernales/.gemini/antigravity/brain/ad157467-1590-4579-b78f-b53dc0c8b054/task.md)
+
 ---
 
 ### [v2.10.0 Plan - Phase 1] - 2026-02-01

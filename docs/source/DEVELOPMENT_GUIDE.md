@@ -152,3 +152,5 @@ Use the `Makefile` for common development tasks:
 - `make docker-test`: Builds and runs tests within a QGIS Docker container.
 - `make docus`: Builds the Sphinx documentation.
 - `make clean`: Removes temporary and compiled files.
+- `make transup`: Updates `.ts` files and applies master data using `apply_full.py`.
+- `make transcompile`: Compiles `.qm` files.

@@ -11,7 +11,7 @@ SecInterp allows you to:
 - Project drillhole traces and geological intervals (sondajes) onto the section.
 - **Interpretation Tool**: Digitize geological interpretations directly on the section with smart snapping.
 - **3D Export (PolygonZ)**: Export your 2D interpretations as valid 3D Shapefiles.
-- **i18n Support**: Core interface available in English and Spanish.
+- **i18n Support**: Core interface available in 10 languages (English, Spanish, French, German, Italian, Portuguese, Russian, Chinese, Hindi, Japanese).
 - View an interactive preview with level-of-detail (LOD) optimization.
 - Measure distances and gradients with automatic snapping to vertices.
 
@@ -122,7 +122,7 @@ Configures geological or attribute intervals.
 ![Section Preview with all panels collapsed](images/preview_panels_collapsed.png)
 *Section Preview with all panels collapsed.*
 
-## 4. Evolución hacia v2.9.0
+## 4. Advanced Features (v3.0.0)
 
 ### 4.1 Interpretation Tool (Drawing)
 The new **Interpretation Tool** allows you to draw geological polygons directly on the profile section.
@@ -160,6 +160,7 @@ SecInterp now bridges the gap between 2D sections and 3D modeling. This feature 
 2.  Use the **Save** button (not Export) to generate your data.
 3.  The plugin will create a **PolygonZ** Shapefile in your output folder.
 4.  Every vertex of your interpretation is projected into real-world 3D coordinates based on the section plane and surface elevation.
+5.  **Note**: This feature is now standard and available to all users.
 
 ### 4.3 Settings Page
 The **Settings** page manages export configurations and advanced features. It is organized into three sub-tabs:

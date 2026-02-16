@@ -59,7 +59,7 @@ sec_interp/
 │   │   │   ├── survey_processor.py
 │   │   │   ├── interval_processor.py
 │   │   │   └── projection_engine.py
-│   │   ├── drillhole_service.py# Facade for drillhole processing
+│   │   └── drillhole_service.py# Drillhole processing service
 │   │   └── preview_service.py  # Preview orchestrator
 │   ├── validation/             # Modular validation package
 │   ├── domain/                 # [NEW] Domain Layer (Entities & DTOs)
@@ -142,9 +142,11 @@ graph TB
             PROFILE_SVC[profile_service.py<br/>ProfileService]
             GEOLOGY_SVC[geology_service.py<br/>GeologyService]
             STRUCTURE_SVC[structure_service.py<br/>StructureService]
+            ACCESS_SVC[access_control_service.py<br/>AccessControlService]
+
 
             subgraph DRILLHOLE_PKG["Drillhole Sub-system"]
-                DRILLHOLE_FACADE[drillhole_service.py<br/>DrillholeService (Facade)]
+                DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService]
                 COLLAR_PROC[collar_processor.py]
                 SURVEY_PROC[survey_processor.py]
                 INTERVAL_PROC[interval_processor.py]
@@ -229,11 +231,11 @@ graph TB
     CONTROLLER -->|orchestrates| PROFILE_SVC
     CONTROLLER -->|orchestrates| GEOLOGY_SVC
     CONTROLLER -->|orchestrates| STRUCTURE_SVC
-    CONTROLLER -->|orchestrates| DRILLHOLE_FACADE
+    CONTROLLER -->|orchestrates| DRILLHOLE_SVC
 
-    DRILLHOLE_FACADE -->|delegates to| COLLAR_PROC
-    DRILLHOLE_FACADE -->|delegates to| SURVEY_PROC
-    DRILLHOLE_FACADE -->|delegates to| INTERVAL_PROC
+    DRILLHOLE_SVC -->|delegates to| COLLAR_PROC
+    DRILLHOLE_SVC -->|delegates to| SURVEY_PROC
+    DRILLHOLE_SVC -->|delegates to| INTERVAL_PROC
     COLLAR_PROC -->|uses| PROJ_ENGINE
 
     CONTROLLER -->|uses| CACHE

@@ -150,7 +150,7 @@ graph TB
             STRUCTURE_SVC[structure_service.py<br/>StructureService]
             STRUCTURE_SVC[structure_service.py<br/>StructureService]
             subgraph DRILLHOLE_PKG["Drillhole Sub-system"]
-                DRILLHOLE_FACADE[drillhole_service.py<br/>DrillholeService (Facade)]
+                DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService]
                 COLLAR_PROC[collar_processor.py]
                 SURVEY_PROC[survey_processor.py]
                 INTERVAL_PROC[interval_processor.py]
