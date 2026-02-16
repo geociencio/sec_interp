@@ -3,7 +3,7 @@
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
 > Version 2.9.0 | Last update: 2026-02-01
 >
-> ⚠️ **Important Note**: See the [Core Components Distinction Guide (EN)](../CORE_DISTINCTION_GUIDE_EN.md) or [Guía de Distinción de Core (ES)](../CORE_DISTINCTION_GUIDE.md) to differentiate between the `SecInterp Core` and the `qgis.core` API.
+> ⚠️ **Important Note**: See the [Core Components Distinction Guide (EN)](CORE_DISTINCTION_GUIDE_EN.md) or [Guía de Distinción de Core (ES)](CORE_DISTINCTION_GUIDE.md) to differentiate between the `SecInterp Core` and the `qgis.core` API.
 
 ---
 

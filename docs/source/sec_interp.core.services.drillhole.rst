@@ -14,6 +14,7 @@ Submodules
 
    sec_interp.core.services.drillhole.collar_processor
    sec_interp.core.services.drillhole.data_fetcher
+   sec_interp.core.services.drillhole.drillhole_orchestrator
    sec_interp.core.services.drillhole.interval_processor
    sec_interp.core.services.drillhole.projection_engine
    sec_interp.core.services.drillhole.survey_processor

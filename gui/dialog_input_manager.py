@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from sec_interp.gui.main_dialog import SecInterpDialog
 
 
-class DialogInputManager:
+class InputManager:
     """Manages dialog inputs, including data collection and validation."""
 
     def __init__(self, dialog: SecInterpDialog) -> None:
@@ -53,17 +53,13 @@ class DialogInputManager:
             },
             "structure": {
                 "check": lambda p: (
-                    ProjectValidator.is_structure_complete(p)
-                    if p.struct_layer
-                    else True
+                    ProjectValidator.is_structure_complete(p) if p.struct_layer else True
                 ),
                 "message": self.dialog.tr("Structure configuration is incomplete"),
             },
             "drillhole": {
                 "check": lambda p: (
-                    ProjectValidator.is_drillhole_complete(p)
-                    if p.collar_layer
-                    else True
+                    ProjectValidator.is_drillhole_complete(p) if p.collar_layer else True
                 ),
                 "message": self.dialog.tr("Drillhole configuration is incomplete"),
             },

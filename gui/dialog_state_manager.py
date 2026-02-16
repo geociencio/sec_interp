@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class DialogStateManager:
+class StateManager:
     """Manages the state of the dialog, including UI status and settings persistence."""
 
     def __init__(self, dialog: SecInterpDialog) -> None:
@@ -45,9 +45,7 @@ class DialogStateManager:
     def setup_indicators(self) -> None:
         """Set up required field indicators with warning icons."""
         self._warning_icon = self.dialog.getThemeIcon("mMessageLogCritical.svg")
-        self._success_icon = self._success_icon = self.dialog.getThemeIcon(
-            "mIconSuccess.svg"
-        )
+        self._success_icon = self._success_icon = self.dialog.getThemeIcon("mIconSuccess.svg")
 
         # Initial update
         self.update_raster_status()
@@ -252,9 +250,7 @@ class DialogStateManager:
                     p_interp._add_field_row()
                     row = p_interp.fields_table.rowCount() - 1
                     p_interp.fields_table.item(row, 0).setText(f.get("name", ""))
-                    p_interp.fields_table.cellWidget(row, 1).setCurrentText(
-                        f.get("type", "String")
-                    )
+                    p_interp.fields_table.cellWidget(row, 1).setCurrentText(f.get("type", "String"))
                     p_interp.fields_table.item(row, 2).setText(f.get("default", ""))
             except (json.JSONDecodeError, TypeError) as e:
                 logger.warning(f"Failed to restore custom fields: {e}")
@@ -294,9 +290,7 @@ class DialogStateManager:
         self._save_layer(self.dialog.page_struct.layer_combo, "struct_layer")
         self._save_field(self.dialog.page_struct.dip_combo, "struct_dip_field")
         self._save_field(self.dialog.page_struct.strike_combo, "struct_strike_field")
-        self._set_setting(
-            "dip_scale_factor", self.dialog.page_struct.scale_spin.value()
-        )
+        self._set_setting("dip_scale_factor", self.dialog.page_struct.scale_spin.value())
 
     def _save_drillhole_settings(self) -> None:
         dpage = self.dialog.page_drillhole
@@ -345,23 +339,17 @@ class DialogStateManager:
 
     def _reset_pages(self) -> None:
         self.dialog.page_section.line_combo.setLayer(None)
-        self.dialog.page_section.buffer_spin.setValue(
-            float(DialogDefaults.BUFFER_DISTANCE)
-        )
+        self.dialog.page_section.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
         self.dialog.page_dem.raster_combo.setLayer(None)
         self.dialog.page_dem.band_combo.setBand(DialogDefaults.DEFAULT_BAND)
         self.dialog.page_dem.scale_spin.setValue(float(DialogDefaults.SCALE))
-        self.dialog.page_dem.vertexag_spin.setValue(
-            float(DialogDefaults.VERTICAL_EXAGGERATION)
-        )
+        self.dialog.page_dem.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
         self.dialog.page_geology.layer_combo.setLayer(None)
         self.dialog.page_geology.field_combo.setField("")
         self.dialog.page_struct.layer_combo.setLayer(None)
         self.dialog.page_struct.dip_combo.setField("")
         self.dialog.page_struct.strike_combo.setField("")
-        self.dialog.page_struct.scale_spin.setValue(
-            float(DialogDefaults.DIP_SCALE_FACTOR)
-        )
+        self.dialog.page_struct.scale_spin.setValue(float(DialogDefaults.DIP_SCALE_FACTOR))
         dpage = self.dialog.page_drillhole
         for combo in [dpage.c_layer, dpage.s_layer, dpage.i_layer]:
             combo.setLayer(None)

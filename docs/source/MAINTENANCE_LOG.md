@@ -12,7 +12,7 @@ This document serves as the central record for project history, release procedur
 - **Date**: 2026-02-01
 - **Focus**: Core Domain Migration, Drillhole Service Decomposition, v2.9.0 Release Stabilization.
 - **Outcome**: 199 Tests Passing (100%). Quality Score: 54.3/100 (+9 pts). Official release published.
-- **Reference**: [Phase Closure Document](../maintenance/phase_closure_v2.9.0.md) | [Technical Analysis](../research/v2.9.0_technical_analysis.md)
+- **Reference**: [Phase Closure Document](phase_closure_v2.9.0.md) | [Technical Analysis](v2.9.0_technical_analysis.md)
 
 ---
 
@@ -20,7 +20,7 @@ This document serves as the central record for project history, release procedur
 - **Date**: 2026-01-25
 - **Focus**: Core Decoupling, Async Safety, Legend Visibility.
 - **Outcome**: 359 Tests Passing, Core-QGIS Decoupling finalized with WKT/DTO pattern.
-- **Reference**: [Phase Closure Document](../maintenance/phase_closure_v2.8.0.md)
+- **Reference**: [Phase Closure Document](phase_closure_v2.8.0.md)
 
 ---
 
@@ -171,10 +171,10 @@ For detailed information on past major refactoring sessions, refer to the follow
 - **Focus**: Internationalization (i18n), Modular Services, Release Optimization.
 - **Outcome**: 8 Languages Supported, Package Size Reduced 99.6% (218KB), 361 Tests Passing.
 - **Key Infra**: `.qgisignore`, GitHub Actions Security Scan (100/100).
-- **Reference**: [Phase Closure Document](../maintenance/phase_closure_v3.0.0.md)
+- **Reference**: [Phase Closure Document](phase_closure_v3.0.0.md)
 
 ### [Phase Closure v2.7.0] - REFACTOR & STABILIZATION
 - **Date**: 2026-01-18
 - **Focus**: Validation Architecture, Docker Infrastructure, Sphinx Docs.
 - **Outcome**: 361 Tests Passing, 100% Mock Stability.
-- **Reference**: [Phase Closure Document](../maintenance/phase_closure_v2.7.0.md)
+- **Reference**: [Phase Closure Document](phase_closure_v2.7.0.md)

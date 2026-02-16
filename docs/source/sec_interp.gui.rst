@@ -24,17 +24,17 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   sec_interp.gui.dialog_export_manager
    sec_interp.gui.dialog_input_manager
+   sec_interp.gui.dialog_interpretation_manager
+   sec_interp.gui.dialog_preview_manager
+   sec_interp.gui.dialog_signal_manager
    sec_interp.gui.dialog_state_manager
+   sec_interp.gui.dialog_tool_manager
    sec_interp.gui.legend_widget
    sec_interp.gui.lod_calculator
    sec_interp.gui.main_dialog
    sec_interp.gui.main_dialog_config
-   sec_interp.gui.main_dialog_export
-   sec_interp.gui.main_dialog_interpretation
-   sec_interp.gui.main_dialog_preview
-   sec_interp.gui.main_dialog_signals
-   sec_interp.gui.main_dialog_tools
    sec_interp.gui.main_dialog_utils
    sec_interp.gui.preview_axes_manager
    sec_interp.gui.preview_layer_factory
