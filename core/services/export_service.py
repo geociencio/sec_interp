@@ -108,7 +108,9 @@ class ExportService:
 
         handlers = {
             "exp_topo": lambda: (
-                self._export_topography(folder, profile_data, line_crs, csv_exporter, msg),
+                self._export_topography(
+                    folder, profile_data, line_crs, csv_exporter, msg
+                ),
                 self._export_axes(folder, profile_data, line_crs, msg),
             ),
             "exp_geol": lambda: self._export_geology(
@@ -363,7 +365,9 @@ class ExportService:
         else:
             logger.warning("Invalid section line layer, skipping 3D export.")
 
-    def _export_axes(self, folder: Path, data: list[tuple], crs: Any, msg: list[str]) -> None:
+    def _export_axes(
+        self, folder: Path, data: list[tuple], crs: Any, msg: list[str]
+    ) -> None:
         """Export profile axes."""
         from sec_interp.exporters import AxesShpExporter
 

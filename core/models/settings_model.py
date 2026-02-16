@@ -64,7 +64,9 @@ class StructureSettings:
 
     def __post_init__(self) -> None:
         """Validate settings after initialization."""
-        self.dip_scale_factor = validate_and_clamp(0.1, float("inf"))(self.dip_scale_factor)
+        self.dip_scale_factor = validate_and_clamp(0.1, float("inf"))(
+            self.dip_scale_factor
+        )
 
 
 @dataclass
@@ -141,7 +143,9 @@ class PluginSettings:
     geology: GeologySettings = field(default_factory=GeologySettings)
     structure: StructureSettings = field(default_factory=StructureSettings)
     drillhole: DrillholeSettings = field(default_factory=DrillholeSettings)
-    interpretation: InterpretationSettings = field(default_factory=InterpretationSettings)
+    interpretation: InterpretationSettings = field(
+        default_factory=InterpretationSettings
+    )
     preview: PreviewSettings = field(default_factory=PreviewSettings)
     last_output_dir: str = ""
 

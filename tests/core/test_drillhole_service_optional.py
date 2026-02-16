@@ -1,12 +1,16 @@
 import unittest
 from unittest.mock import MagicMock, patch
 from sec_interp.core.services.drillhole_service import DrillholeService
+from sec_interp.core.services.drillhole.drillhole_orchestrator import (
+    DrillholeTaskOrchestrator,
+)
 from sec_interp.core.exceptions import ValidationError
 
 
 class TestDrillholeServiceOptionalLayer(unittest.TestCase):
     def setUp(self):
         self.service = DrillholeService()
+        self.orchestrator = DrillholeTaskOrchestrator(self.service)
 
     def test_prepare_task_input_without_collar_layer(self):
         """Test that prepare_task_input handles missing collar_layer gracefully or raises correct error."""
@@ -34,7 +38,7 @@ class TestDrillholeServiceOptionalLayer(unittest.TestCase):
 
         # This SHOULD fail with AttributeError: 'NoneType' object has no attribute 'fields'
         # if the bug is present.
-        self.service.prepare_task_input(
+        self.orchestrator.prepare_task_input(
             line_layer=mock_line,
             buffer_width=100.0,
             collar_layer=None,

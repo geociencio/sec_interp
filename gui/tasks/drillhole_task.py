@@ -11,7 +11,9 @@ from sec_interp.core.domain import DrillholeTaskInput
 from sec_interp.logger_config import get_logger
 
 if TYPE_CHECKING:
-    from sec_interp.core.services.drillhole_service import DrillholeService
+    from sec_interp.core.services.drillhole.drillhole_orchestrator import (
+        DrillholeTaskOrchestrator,
+    )
 
 logger = get_logger(__name__)
 
@@ -31,7 +33,7 @@ class DrillholeGenerationTask(QgsTask):
         self,
         description: str,
         task_input: DrillholeTaskInput,
-        service: DrillholeService,
+        orchestrator: DrillholeTaskOrchestrator,
         params: Any,
     ) -> None:
         """Initialize the task.
@@ -39,12 +41,12 @@ class DrillholeGenerationTask(QgsTask):
         Args:
             description: Description of the task.
             task_input: The detached data input DTO.
-            service: The DrillholeService instance (stateless logic).
+            orchestrator: The DrillholeTaskOrchestrator instance.
             params: Original params for context (backward compatibility).
 
         """
         super().__init__(description, QgsTask.CanCancel)
-        self.service = service
+        self.orchestrator = orchestrator
         self.task_input = task_input
         self.params = params
 
@@ -56,7 +58,9 @@ class DrillholeGenerationTask(QgsTask):
         """Execute the task in background thread."""
         try:
             logger.info("DrillholeGenerationTask started (Background Thread)")
-            self.result = self.service.process_task_data(self.task_input, feedback=self)
+            self.result = self.orchestrator.process_task_data(
+                self.task_input, feedback=self
+            )
 
             count = 0
             if self.result and len(self.result) > 1:

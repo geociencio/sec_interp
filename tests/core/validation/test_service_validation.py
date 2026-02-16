@@ -16,6 +16,9 @@ from qgis.core import (
 
 from sec_interp.core.services.geology_service import GeologyService
 from sec_interp.core.services.drillhole_service import DrillholeService
+from sec_interp.core.services.drillhole.drillhole_orchestrator import (
+    DrillholeTaskOrchestrator,
+)
 from sec_interp.core.exceptions import ValidationError, DataMissingError
 
 
@@ -26,6 +29,7 @@ class TestServiceValidation(BaseTestCase):
         super().setUp()
         self.geology_service = GeologyService()
         self.drillhole_service = DrillholeService()
+        self.orchestrator = DrillholeTaskOrchestrator(self.drillhole_service)
 
         # Common Mocks
         self.mock_line_lyr = MagicMock()
@@ -123,23 +127,36 @@ class TestServiceValidation(BaseTestCase):
             )
         self.assertIn("must be positive", str(cm.exception))
 
-    def test_drillhole_service_validates_azimuth(self):
-        """DrillholeService should reject invalid azimuth in prepare_task_input."""
-        # Note: project_collars doesn't take azimuth, but prepare_task_input does
-        mock_line_crs = MagicMock()
-        mock_line_crs.authid.return_value = "EPSG:32718"
+    def test_drillhole_orchestrator_validates_line_layer(self):
+        """DrillholeTaskOrchestrator should reject line layer with no features."""
+        empty_line_lyr = MagicMock()
+        empty_line_lyr.isValid.return_value = True
+        empty_line_lyr.getFeatures.return_value = iter([])
 
-        with self.assertRaises(ValidationError) as cm:
-            self.drillhole_service._validate_prepare_task_params(
+        mock_collar_lyr = MagicMock()
+        fields = QgsFields()
+        fields.append(QgsField("id"))
+        fields.append(QgsField("z"))
+        fields.append(QgsField("depth"))
+        mock_collar_lyr.fields.return_value = fields
+
+        with self.assertRaises(DataMissingError) as cm:
+            self.orchestrator.prepare_task_input(
+                line_layer=empty_line_lyr,
                 buffer_width=10.0,
-                section_azimuth=400.0,  # Invalid > 360
-                collar_layer=MagicMock(),
-                id_field="id",
-                use_geom=True,
-                x_field="",
-                y_field="",
+                collar_layer=mock_collar_lyr,
+                collar_id_field="id",
+                use_geometry=True,
+                collar_x_field="",
+                collar_y_field="",
+                collar_z_field="z",
+                collar_depth_field="depth",
+                survey_layer=MagicMock(),
+                survey_fields={},
+                interval_layer=MagicMock(),
+                interval_fields={},
             )
-        self.assertIn("Section azimuth must be between 0 and 360", str(cm.exception))
+        self.assertIn("Line layer has no features", str(cm.exception))
 
     def test_drillhole_service_validates_collar_fields(self):
         """DrillholeService should validate existence of ID field."""
@@ -150,7 +167,7 @@ class TestServiceValidation(BaseTestCase):
         line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
 
         with self.assertRaises(ValidationError) as cm:
-            self.drillhole_service.prepare_task_input(
+            self.orchestrator.prepare_task_input(
                 line_layer=self.mock_line_lyr,
                 buffer_width=10.0,
                 collar_layer=mock_layer,

@@ -6,7 +6,7 @@ import hashlib
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from qgis.core import QgsVectorLayer
+    pass
 
 
 class PreviewParamHasher:
@@ -25,8 +25,10 @@ class PreviewParamHasher:
         """
         hash_parts = []
 
-        def get_id(layer: QgsVectorLayer | None) -> str:
-            return layer.id() if layer and layer.isValid() else "None"
+        def get_id(layer: Any) -> str:
+            if isinstance(layer, str):
+                return layer
+            return layer.id() if hasattr(layer, "id") else "None"
 
         # Geometric & Layer IDs
         hash_parts.append(get_id(params.line_layer))

@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
 
 
-class DialogToolManager:
+class ToolManager:
     """Manages map tools and related event handling for the preview canvas."""
 
     def __init__(
@@ -49,9 +49,13 @@ class DialogToolManager:
         if not self.measure_tool:
             self.measure_tool = ProfileMeasureTool(self.dialog.preview_widget.canvas)
         if not self.interpretation_tool:
-            self.interpretation_tool = ProfileInterpretationTool(self.dialog.preview_widget.canvas)
+            self.interpretation_tool = ProfileInterpretationTool(
+                self.dialog.preview_widget.canvas
+            )
             # Connect polygonFinished signal to dialog handler
-            self.interpretation_tool.polygonFinished.connect(self.dialog.on_interpretation_finished)
+            self.interpretation_tool.polygonFinished.connect(
+                self.dialog.on_interpretation_finished
+            )
 
         self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
 

@@ -5,8 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from qgis.core import QgsRasterLayer, QgsVectorLayer
-
 from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.performance_metrics import MetricsCollector
 
@@ -22,29 +20,29 @@ class PreviewParams:
     """Consolidated parameters for profile generation and preview.
 
     Attributes:
-        raster_layer: QGIS raster layer for DEM sampling.
-        line_layer: QGIS vector layer for the section orientation.
+        raster_layer: QGIS layer ID for DEM sampling.
+        line_layer: QGIS layer ID for the section orientation.
         band_num: Raster band number to use for elevation.
         buffer_dist: Search buffer for projecting data onto the section.
-        outcrop_layer: Optional vector layer with geological outcrops.
+        outcrop_layer: Optional layer ID with geological outcrops.
         outcrop_name_field: Field name for geological unit names.
-        struct_layer: Optional vector layer with structural measurements.
+        struct_layer: Optional layer ID with structural measurements.
         dip_field: Field name for dip values.
         strike_field: Field name for strike/azimuth values.
         dip_scale_factor: Visual scale factor for dip lines.
-        collar_layer: Optional vector layer with drillhole collars.
+        collar_layer: Optional layer ID with drillhole collars.
         collar_id_field: Field name for drillhole IDs in collar layer.
         collar_use_geometry: Whether to use layer geometry for collar coordinates.
         collar_x_field: Field name for X coordinate.
         collar_y_field: Field name for Y coordinate.
         collar_z_field: Field name for Z coordinate.
         collar_depth_field: Field name for total hole depth.
-        survey_layer: Optional vector layer with drillhole surveys.
+        survey_layer: Optional layer ID with drillhole surveys.
         survey_id_field: Field name for drillhole IDs in survey layer.
         survey_depth_field: Field name for downhole depth in survey.
         survey_azim_field: Field name for azimuth in survey.
         survey_incl_field: Field name for inclination in survey.
-        interval_layer: Optional vector layer with drillhole intervals.
+        interval_layer: Optional layer ID with drillhole intervals.
         interval_id_field: Field name for drillhole IDs in interval layer.
         interval_from_field: Field name for 'from' depth.
         interval_to_field: Field name for 'to' depth.
@@ -55,35 +53,35 @@ class PreviewParams:
 
     """
 
-    raster_layer: QgsRasterLayer
-    line_layer: QgsVectorLayer
+    raster_layer: str
+    line_layer: str
     band_num: int
     buffer_dist: float = 100.0
 
     # Geology params
-    outcrop_layer: QgsVectorLayer | None = None
+    outcrop_layer: str | None = None
     outcrop_name_field: str | None = None
 
     # Structure params
-    struct_layer: QgsVectorLayer | None = None
+    struct_layer: str | None = None
     dip_field: str | None = None
     strike_field: str | None = None
     dip_scale_factor: float = 1.0
 
     # Drillhole params
-    collar_layer: QgsVectorLayer | None = None
+    collar_layer: str | None = None
     collar_id_field: str | None = None
     collar_use_geometry: bool = True
     collar_x_field: str | None = None
     collar_y_field: str | None = None
     collar_z_field: str | None = None
     collar_depth_field: str | None = None
-    survey_layer: QgsVectorLayer | None = None
+    survey_layer: str | None = None
     survey_id_field: str | None = None
     survey_depth_field: str | None = None
     survey_azim_field: str | None = None
     survey_incl_field: str | None = None
-    interval_layer: QgsVectorLayer | None = None
+    interval_layer: str | None = None
     interval_id_field: str | None = None
     interval_from_field: str | None = None
     interval_to_field: str | None = None
@@ -107,33 +105,33 @@ class PreviewParams:
         self._validate_drillhole_params()
 
     def _validate_core_params(self) -> None:
-        """Validate core raster and line layer parameters."""
-        if not self.raster_layer or not self.raster_layer.isValid():
-            raise ValidationError("Raster layer is missing or invalid.")
-        if not self.line_layer or not self.line_layer.isValid():
-            raise ValidationError("Section line layer is missing or invalid.")
+        """Validate core raster and line layer IDs."""
+        if not self.raster_layer:
+            raise ValidationError("Raster layer ID is missing.")
+        if not self.line_layer:
+            raise ValidationError("Section line layer ID is missing.")
         if self.band_num < 1:
             raise ValidationError(f"Invalid band number: {self.band_num}")
         if self.buffer_dist < 0:
-            raise ValidationError(f"Buffer distance cannot be negative: {self.buffer_dist}")
+            raise ValidationError(
+                f"Buffer distance cannot be negative: {self.buffer_dist}"
+            )
 
     def _validate_geology_params(self) -> None:
         """Validate geology specific parameters."""
-        if self.outcrop_layer and self.outcrop_layer.isValid() and not self.outcrop_name_field:
+        if self.outcrop_layer and not self.outcrop_name_field:
             raise ValidationError("Outcrop layer selected but no name field provided.")
 
     def _validate_structure_params(self) -> None:
         """Validate structure specific parameters."""
-        if (
-            self.struct_layer
-            and self.struct_layer.isValid()
-            and (not self.dip_field or not self.strike_field)
-        ):
-            raise ValidationError("Structural layer selected but dip/strike fields missing.")
+        if self.struct_layer and (not self.dip_field or not self.strike_field):
+            raise ValidationError(
+                "Structural layer selected but dip/strike fields missing."
+            )
 
     def _validate_drillhole_params(self) -> None:
         """Validate drillhole specific parameters."""
-        if self.collar_layer and self.collar_layer.isValid():
+        if self.collar_layer:
             if not self.collar_id_field:
                 raise ValidationError("Collar layer selected but no ID field provided.")
             self._validate_survey_params()
@@ -141,7 +139,7 @@ class PreviewParams:
 
     def _validate_survey_params(self) -> None:
         """Validate drillhole survey parameters."""
-        if self.survey_layer and self.survey_layer.isValid():
+        if self.survey_layer:
             required = [
                 self.survey_id_field,
                 self.survey_depth_field,
@@ -149,16 +147,13 @@ class PreviewParams:
                 self.survey_incl_field,
             ]
             if not all(required):
-                raise ValidationError("Survey layer selected but some required fields are missing.")
+                raise ValidationError(
+                    "Survey layer selected but some required fields are missing."
+                )
 
     def _validate_interval_params(self) -> None:
-        """Validate drillhole interval parameters for consistency and field existence.
-
-        Raises:
-            ValidationError: If required interval fields are missing.
-
-        """
-        if self.interval_layer and self.interval_layer.isValid():
+        """Validate drillhole interval parameters for consistency and field existence."""
+        if self.interval_layer:
             required = [
                 self.interval_id_field,
                 self.interval_from_field,

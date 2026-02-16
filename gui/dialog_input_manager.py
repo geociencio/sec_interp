@@ -53,13 +53,17 @@ class DialogInputManager:
             },
             "structure": {
                 "check": lambda p: (
-                    ProjectValidator.is_structure_complete(p) if p.struct_layer else True
+                    ProjectValidator.is_structure_complete(p)
+                    if p.struct_layer
+                    else True
                 ),
                 "message": self.dialog.tr("Structure configuration is incomplete"),
             },
             "drillhole": {
                 "check": lambda p: (
-                    ProjectValidator.is_drillhole_complete(p) if p.collar_layer else True
+                    ProjectValidator.is_drillhole_complete(p)
+                    if p.collar_layer
+                    else True
                 ),
                 "message": self.dialog.tr("Drillhole configuration is incomplete"),
             },

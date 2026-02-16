@@ -31,13 +31,13 @@ class _NoOpMessageBar:
 from .legend_widget import LegendWidget
 
 logger = get_logger(__name__)
-from .dialog_input_manager import DialogInputManager
-from .dialog_state_manager import DialogStateManager
-from .main_dialog_export import ExportManager
-from .main_dialog_interpretation import DialogInterpretationManager
-from .main_dialog_preview import PreviewManager
-from .main_dialog_signals import DialogSignalManager
-from .main_dialog_tools import DialogToolManager, NavigationManager
+from .dialog_export_manager import ExportManager
+from .dialog_input_manager import InputManager
+from .dialog_interpretation_manager import InterpretationManager
+from .dialog_preview_manager import PreviewManager
+from .dialog_signal_manager import SignalManager
+from .dialog_state_manager import StateManager
+from .dialog_tool_manager import NavigationManager, ToolManager
 from .main_dialog_utils import DialogEntityManager
 from .preview_layer_factory import PreviewLayerFactory
 from .ui.main_window import SecInterpMainWindow
@@ -90,18 +90,22 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Add cache and reset buttons
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
-        self.clear_cache_btn.setToolTip(self.tr("Clear cached data to force re-processing."))
+        self.clear_cache_btn.setToolTip(
+            self.tr("Clear cached data to force re-processing.")
+        )
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
 
         self.reset_defaults_btn = QPushButton(self.tr("Reset Defaults"))
-        self.reset_defaults_btn.setToolTip(self.tr("Reset all inputs to their default values."))
+        self.reset_defaults_btn.setToolTip(
+            self.tr("Reset all inputs to their default values.")
+        )
         self.button_box.addButton(self.reset_defaults_btn, QDialogButtonBox.ActionRole)
 
         # Initialize map tools via tool_manager
         self.tool_manager.initialize_tools()
 
         # Connect all signals
-        self.signal_manager = DialogSignalManager(self)
+        self.signal_manager = SignalManager(self)
         self.signal_manager.connect_all()
 
         # Connect extra tool buttons
@@ -119,14 +123,16 @@ class SecInterpDialog(SecInterpMainWindow):
         """Initialize all manager instances."""
         from sec_interp.core.services.preview_service import PreviewService
 
-        self.input_manager = DialogInputManager(self)
-        self.state_manager = DialogStateManager(self)
-        self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
+        self.input_manager = InputManager(self)
+        self.state_manager = StateManager(self)
+        self.preview_manager = PreviewManager(
+            self, PreviewService(self.plugin_instance.controller)
+        )
         self.export_manager = ExportManager(self)
         self.state_manager.setup_indicators()
-        self.interpretation_manager = DialogInterpretationManager(self)
+        self.interpretation_manager = InterpretationManager(self)
         self.interpretation_manager.load_interpretations()
-        self.tool_manager = DialogToolManager(self)
+        self.tool_manager = ToolManager(self)
         self.navigation_manager = NavigationManager(self)
         self.layer_factory = PreviewLayerFactory()
 
@@ -166,7 +172,9 @@ class SecInterpDialog(SecInterpMainWindow):
         """
         if isinstance(error, SecInterpError):
             msg = str(error)
-            logger.warning(f"{title}: {msg} - Details: {getattr(error, 'details', 'N/A')}")
+            logger.warning(
+                f"{title}: {msg} - Details: {getattr(error, 'details', 'N/A')}"
+            )
             self.show_dialog(title, msg, level="warning")
         else:
             msg = self.tr("An unexpected error occurred: {}").format(error)
@@ -262,11 +270,15 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_geol": bool(self.preview_widget.chk_geol.isChecked()),
             "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
-            "show_interpretations": bool(self.preview_widget.chk_interpretations.isChecked()),
+            "show_interpretations": bool(
+                self.preview_widget.chk_interpretations.isChecked()
+            ),
             "show_legend": bool(self.preview_widget.chk_legend.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
-            "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
+            "use_adaptive_sampling": bool(
+                self.preview_widget.chk_adaptive_sampling.isChecked()
+            ),
         }
 
     def update_preview_from_checkboxes(self) -> None:
@@ -341,7 +353,9 @@ class SecInterpDialog(SecInterpMainWindow):
         """Reset all dialog inputs via state_manager."""
         self.state_manager.reset_to_defaults()
 
-    def _populate_field_combobox(self, source_combobox: Any, target_combobox: Any) -> None:
+    def _populate_field_combobox(
+        self, source_combobox: Any, target_combobox: Any
+    ) -> None:
         """Populate a combobox with field names."""
         DialogEntityManager.populate_field_combobox(source_combobox, target_combobox)
 

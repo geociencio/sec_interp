@@ -58,7 +58,9 @@ class TrajectoryEngine:
         )
 
         # 4. Generate results
-        hole_tuple = self.create_drillhole_result_tuple(hole_id, projected_traj, hole_geol_data)
+        hole_tuple = self.create_drillhole_result_tuple(
+            hole_id, projected_traj, hole_geol_data
+        )
 
         return hole_geol_data, hole_tuple
 

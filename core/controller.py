@@ -25,6 +25,9 @@ from sec_interp.core.services import (
 )
 from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
 from sec_interp.core.services.drillhole.data_fetcher import DataFetcher
+from sec_interp.core.services.drillhole.drillhole_orchestrator import (
+    DrillholeTaskOrchestrator,
+)
 from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
 from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
 from sec_interp.core.services.drillhole.trajectory_engine import TrajectoryEngine
@@ -68,6 +71,7 @@ class ProfileController:
             data_fetcher=self.data_fetcher,
             trajectory_engine=self.trajectory_engine,
         )
+        self.drillhole_orchestrator = DrillholeTaskOrchestrator(self.drillhole_service)
 
         self._connected_layers: list[Any] = []
         logger.debug("ProfileController initialized with DI")
@@ -94,7 +98,9 @@ class ProfileController:
             try:
                 # Disconnect specific slot to avoid breaking other connections
                 layer.dataChanged.disconnect(self.data_cache.clear)
-                logger.debug(f"Disconnected cache invalidation from layer: {layer.name()}")
+                logger.debug(
+                    f"Disconnected cache invalidation from layer: {layer.name()}"
+                )
             except (TypeError, RuntimeError):
                 # Signal might not be connected or layer might be deleted
                 pass
@@ -124,9 +130,7 @@ class ProfileController:
         cache_key = self.data_cache.get_cache_key(inputs)
         self.data_cache.set(cache_key, data)
 
-    def generate_profile_data(
-        self, params: PreviewParams
-    ) -> tuple[
+    def generate_profile_data(self, params: PreviewParams) -> tuple[
         list[tuple[float, float]],
         list[Any] | None,
         list[Any] | None,
@@ -156,6 +160,15 @@ class ProfileController:
 
         return profile_data, geol_data, struct_data, drillhole_data, messages
 
+    def _resolve_layer(self, layer_ref: Any) -> Any:
+        """Resolve a layer reference (ID or object) to a QgsMapLayer."""
+        from qgis.core import QgsProject
+
+        if not isinstance(layer_ref, str) or not layer_ref:
+            return layer_ref
+
+        return QgsProject.instance().mapLayer(str(layer_ref))
+
     def _get_cache_sub_key(self, param_values: list[Any]) -> str:
         """Generate a sub-key for caching specific components."""
         import hashlib
@@ -164,8 +177,10 @@ class ProfileController:
         for val in param_values:
             from qgis.core import QgsMapLayer
 
-            if isinstance(val, QgsMapLayer):
-                hasher.update(val.id().encode("utf-8"))
+            if isinstance(val, QgsMapLayer | str):
+                # If it's a layer object, use its ID. If it's already an ID, use it directly.
+                layer_id = val.id() if hasattr(val, "id") else str(val)
+                hasher.update(layer_id.encode("utf-8"))
             else:
                 hasher.update(str(val).encode("utf-8"))
         return hasher.hexdigest()
@@ -179,8 +194,14 @@ class ProfileController:
         if profile_data:
             logger.debug("Cache hit: Topography")
         else:
+            line_lyr = self._resolve_layer(params.line_layer)
+            raster_lyr = self._resolve_layer(params.raster_layer)
+
+            if not line_lyr or not raster_lyr:
+                raise ProcessingError("Required layers for topography are missing.")
+
             profile_data = self.profile_service.generate_topographic_profile(
-                params.line_layer, params.raster_layer, params.band_num
+                line_lyr, raster_lyr, params.band_num
             )
             if not profile_data:
                 raise ProcessingError(
@@ -212,28 +233,37 @@ class ProfileController:
         if geol_data:
             logger.debug("Cache hit: Geology")
             messages.append(
-                QCoreApplication.translate("ProfileController", "Geology: {0} segments").format(
-                    len(geol_data)
-                )
+                QCoreApplication.translate(
+                    "ProfileController", "Geology: {0} segments"
+                ).format(len(geol_data))
             )
         else:
+            line_lyr = self._resolve_layer(params.line_layer)
+            raster_lyr = self._resolve_layer(params.raster_layer)
+            outcrop_lyr = self._resolve_layer(params.outcrop_layer)
+
+            if not all([line_lyr, raster_lyr, outcrop_lyr]):
+                return None
+
             geol_data = self.geology_service.generate_geological_profile(
-                params.line_layer,
-                params.raster_layer,
-                params.outcrop_layer,
+                line_lyr,
+                raster_lyr,
+                outcrop_lyr,
                 params.outcrop_name_field,
                 params.band_num,
             )
             if geol_data:
                 self.data_cache.set("geol", geol_key, geol_data, cache_meta)
                 messages.append(
-                    QCoreApplication.translate("ProfileController", "Geology: {0} segments").format(
-                        len(geol_data)
-                    )
+                    QCoreApplication.translate(
+                        "ProfileController", "Geology: {0} segments"
+                    ).format(len(geol_data))
                 )
             else:
                 messages.append(
-                    QCoreApplication.translate("ProfileController", "Geology: No intersections")
+                    QCoreApplication.translate(
+                        "ProfileController", "Geology: No intersections"
+                    )
                 )
         return geol_data
 
@@ -257,28 +287,38 @@ class ProfileController:
         if struct_data:
             logger.debug("Cache hit: Structure")
             messages.append(
-                QCoreApplication.translate("ProfileController", "Structures: {0} points").format(
-                    len(struct_data)
-                )
+                QCoreApplication.translate(
+                    "ProfileController", "Structures: {0} points"
+                ).format(len(struct_data))
             )
         else:
-            line_feat = next(params.line_layer.getFeatures(), None)
+            line_lyr = self._resolve_layer(params.line_layer)
+            if not line_lyr:
+                return None
+
+            line_feat = next(line_lyr.getFeatures(), None)
             if line_feat:
                 line_geom = line_feat.geometry()
                 if line_geom and not line_geom.isNull():
                     line_start = scu.get_line_start_point(line_geom)
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
 
+                    struct_lyr = self._resolve_layer(params.struct_layer)
+                    raster_lyr = self._resolve_layer(params.raster_layer)
+
+                    if not struct_lyr:
+                        return None
+
                     da = QgsDistanceArea()
                     da.setSourceCrs(
-                        params.line_layer.crs(),
+                        line_lyr.crs(),
                         QgsProject.instance().transformContext(),
                     )
                     da.setEllipsoid(QgsProject.instance().ellipsoid())
 
                     # 1. Detach structures
                     detached_structs = self.structure_service.detach_structures(
-                        params.struct_layer, line_geom, params.buffer_dist
+                        struct_lyr, line_geom, params.buffer_dist
                     )
 
                     # 2. Project structures
@@ -286,7 +326,7 @@ class ProfileController:
                         line_geom=line_geom,
                         line_start=line_start,
                         da=da,
-                        raster_lyr=params.raster_layer,
+                        raster_lyr=raster_lyr,
                         struct_data=detached_structs,
                         buffer_m=params.buffer_dist,
                         line_az=line_azimuth,
@@ -295,7 +335,9 @@ class ProfileController:
                         band_number=params.band_num,
                     )
                     if struct_data:
-                        self.data_cache.set("struct", struct_key, struct_data, cache_meta)
+                        self.data_cache.set(
+                            "struct", struct_key, struct_data, cache_meta
+                        )
                         messages.append(
                             QCoreApplication.translate(
                                 "ProfileController", "Structures: {0} points"
@@ -330,7 +372,11 @@ class ProfileController:
             logger.debug("Cache hit: Drillholes")
             return drillhole_data
 
-        drillhole_data = self.drillhole_service.generate_drillhole_data(params)
+        collar_lyr = self._resolve_layer(params.collar_layer)
+        if not collar_lyr:
+            return None
+
+        drillhole_data = self.drillhole_orchestrator.run_preview(params)
 
         if drillhole_data:
             self.data_cache.set("drill", drill_key, drillhole_data, cache_meta)

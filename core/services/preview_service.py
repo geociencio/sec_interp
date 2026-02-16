@@ -40,14 +40,18 @@ class PreviewService:
         self.controller = controller
 
     @property
-    def geology_service(self) -> Any:
-        """Expose geology service from controller."""
-        return self.controller.geology_service
-
-    @property
     def drillhole_service(self) -> Any:
         """Expose drillhole service from controller."""
         return self.controller.drillhole_service
+
+    def _resolve_layer(self, layer_ref: Any) -> Any:
+        """Resolve layer ID or object to a QgsMapLayer."""
+        from qgis.core import QgsProject
+
+        if not isinstance(layer_ref, str) or not layer_ref:
+            return layer_ref
+
+        return QgsProject.instance().mapLayer(str(layer_ref))
 
     @staticmethod
     def calculate_max_points(
@@ -107,19 +111,27 @@ class PreviewService:
 
         # 1. Topography & Context Extraction
         with PerformanceTimer("Topography Generation", result.metrics):
-            line_geom, line_start, distance_area = prepare_profile_context(params.line_layer)
+            line_lyr = self._resolve_layer(params.line_layer)
+            raster_lyr = self._resolve_layer(params.raster_layer)
+
+            if not line_lyr or not raster_lyr:
+                raise ProcessingError("Required layers for topography are missing.")
+
+            line_geom, line_start, distance_area = prepare_profile_context(line_lyr)
             self.distance_area = distance_area  # Store for other layers
 
             # Calculate LOD interval
             interval = None
             if params.auto_lod:
                 line_len = line_geom.length()
-                max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
+                max_pts = self.calculate_max_points(
+                    params.canvas_width, params.max_points, True
+                )
                 interval = line_len / max_pts if max_pts > 0 else None
 
             result.topo = self.controller.profile_service.generate_topographic_profile(
-                params.line_layer,
-                params.raster_layer,
+                line_lyr,
+                raster_lyr,
                 params.band_num,
                 interval=interval,
             )
@@ -129,11 +141,15 @@ class PreviewService:
         # 2. Structures (Now using detached flow)
         if params.struct_layer and params.dip_field and params.strike_field:
             with PerformanceTimer("Structure Generation", result.metrics):
+                struct_lyr = self._resolve_layer(params.struct_layer)
+                if not struct_lyr:
+                    return result
+
                 line_azimuth = calculate_line_azimuth(line_geom)
 
                 # Detach
                 struct_data = self.controller.structure_service.detach_structures(
-                    params.struct_layer, line_geom, params.buffer_dist
+                    struct_lyr, line_geom, params.buffer_dist
                 )
 
                 # Project
@@ -141,7 +157,7 @@ class PreviewService:
                     line_geom=line_geom,
                     line_start=line_start,
                     da=self.distance_area,
-                    raster_lyr=params.raster_layer,
+                    raster_lyr=raster_lyr,  # Already resolved above
                     struct_data=struct_data,
                     buffer_m=params.buffer_dist,
                     line_az=line_azimuth,
@@ -168,12 +184,19 @@ class PreviewService:
             logger.info("Drillhole preview skipped: No Collar ID field selected.")
             return None
 
-        line_geom, line_start, distance_area = prepare_profile_context(params.line_layer)
+        line_lyr = self._resolve_layer(params.line_layer)
+        raster_lyr = self._resolve_layer(params.raster_layer)
+        collar_lyr = self._resolve_layer(params.collar_layer)
+
+        if not line_lyr or not collar_lyr:
+            return None
+
+        line_geom, line_start, distance_area = prepare_profile_context(line_lyr)
 
         # 1. Detach Data
         collar_ids, collar_data, pre_sampled_z = (
             self.controller.drillhole_service.collar_processor.detach_features(
-                params.collar_layer,
+                collar_lyr,
                 line_geom,
                 params.buffer_dist,
                 params.collar_id_field,
@@ -181,8 +204,8 @@ class PreviewService:
                 params.collar_x_field,
                 params.collar_y_field,
                 params.collar_z_field,
-                params.raster_layer,
-                target_crs=params.line_layer.crs(),
+                raster_lyr,
+                target_crs=line_lyr.crs(),
             )
         )
 
@@ -211,26 +234,34 @@ class PreviewService:
             return None
 
         # 3. Fetch Child Data
-        survey_map = self.controller.drillhole_service._fetch_bulk_data(
-            params.survey_layer,
-            collar_ids,
-            {
-                "id": params.survey_id_field,
-                "depth": params.survey_depth_field,
-                "azim": params.survey_azim_field,
-                "incl": params.survey_incl_field,
-            },
-        )
-        interval_map = self.controller.drillhole_service._fetch_bulk_data(
-            params.interval_layer,
-            collar_ids,
-            {
-                "id": params.interval_id_field,
-                "from": params.interval_from_field,
-                "to": params.interval_to_field,
-                "lith": params.interval_lith_field,
-            },
-        )
+        survey_lyr = self._resolve_layer(params.survey_layer)
+        interval_lyr = self._resolve_layer(params.interval_layer)
+
+        survey_map = {}
+        if survey_lyr:
+            survey_map = self.controller.drillhole_service._fetch_bulk_data(
+                survey_lyr,
+                collar_ids,
+                {
+                    "id": params.survey_id_field,
+                    "depth": params.survey_depth_field,
+                    "azim": params.survey_azim_field,
+                    "incl": params.survey_incl_field,
+                },
+            )
+
+        interval_map = {}
+        if interval_lyr:
+            interval_map = self.controller.drillhole_service._fetch_bulk_data(
+                interval_lyr,
+                collar_ids,
+                {
+                    "id": params.interval_id_field,
+                    "from": params.interval_from_field,
+                    "to": params.interval_to_field,
+                    "lith": params.interval_lith_field,
+                },
+            )
 
         # 4. Process Intervals
         try:
@@ -258,5 +289,7 @@ class PreviewService:
             logger.exception("Unexpected error during drillhole processing")
             raise ProcessingError("Unexpected error during drillhole processing") from e
 
-        logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
+        logger.info(
+            f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces"
+        )
         return drillhole_data

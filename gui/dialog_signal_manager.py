@@ -17,10 +17,10 @@ logger = get_logger(__name__)
 
 
 if TYPE_CHECKING:
-    pass
+    from .main_dialog import SecInterpDialog
 
 
-class DialogSignalManager:
+class SignalManager:
     """Manages all signal connections for SecInterpDialog.
 
     This class organizes signal connections into logical groups,
@@ -71,7 +71,9 @@ class DialogSignalManager:
             self.dialog.button_box.helpRequested.disconnect(self.dialog.open_help)
 
         with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.clear_cache_btn.clicked.disconnect(self.dialog.clear_cache_handler)
+            self.dialog.clear_cache_btn.clicked.disconnect(
+                self.dialog.clear_cache_handler
+            )
 
     def _disconnect_preview_signals(self) -> None:
         """Disconnect preview-related signals."""
@@ -121,7 +123,9 @@ class DialogSignalManager:
     def _disconnect_page_signals(self) -> None:
         """Disconnect page-specific signals."""
         with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.output_widget.fileChanged.disconnect(self.dialog.update_button_state)
+            self.dialog.output_widget.fileChanged.disconnect(
+                self.dialog.update_button_state
+            )
 
         with contextlib.suppress(TypeError, RuntimeError):
             self.dialog.page_dem.raster_combo.layerChanged.disconnect(
@@ -202,8 +206,12 @@ class DialogSignalManager:
     def _connect_preview_signals(self) -> None:
         """Connect preview-related signals."""
         # Preview action buttons
-        self.dialog.preview_widget.btn_preview.clicked.connect(self.dialog.preview_profile_handler)
-        self.dialog.preview_widget.btn_export.clicked.connect(self.dialog.export_preview)
+        self.dialog.preview_widget.btn_preview.clicked.connect(
+            self.dialog.preview_profile_handler
+        )
+        self.dialog.preview_widget.btn_export.clicked.connect(
+            self.dialog.export_preview
+        )
 
         # Preview layer checkboxes
         self.dialog.preview_widget.chk_topo.stateChanged.connect(
@@ -242,26 +250,38 @@ class DialogSignalManager:
         self.dialog.output_widget.fileChanged.connect(self.dialog.update_button_state)
 
         # DEM page
-        self.dialog.page_dem.raster_combo.layerChanged.connect(self.dialog.update_button_state)
+        self.dialog.page_dem.raster_combo.layerChanged.connect(
+            self.dialog.update_button_state
+        )
         self.dialog.page_dem.raster_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
 
         # Section page
-        self.dialog.page_section.line_combo.layerChanged.connect(self.dialog.update_button_state)
+        self.dialog.page_section.line_combo.layerChanged.connect(
+            self.dialog.update_button_state
+        )
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
 
         # Data pages
-        self.dialog.page_geology.dataChanged.connect(self.dialog.update_preview_checkbox_states)
-        self.dialog.page_struct.dataChanged.connect(self.dialog.update_preview_checkbox_states)
-        self.dialog.page_drillhole.dataChanged.connect(self.dialog.update_preview_checkbox_states)
+        self.dialog.page_geology.dataChanged.connect(
+            self.dialog.update_preview_checkbox_states
+        )
+        self.dialog.page_struct.dataChanged.connect(
+            self.dialog.update_preview_checkbox_states
+        )
+        self.dialog.page_drillhole.dataChanged.connect(
+            self.dialog.update_preview_checkbox_states
+        )
 
     def _connect_tool_signals(self) -> None:
         """Connect map tool signals."""
         # Measure tool
-        self.dialog.preview_widget.btn_measure.toggled.connect(self.dialog.toggle_measure_tool)
+        self.dialog.preview_widget.btn_measure.toggled.connect(
+            self.dialog.toggle_measure_tool
+        )
 
         # Interpretation tool
         self.dialog.preview_widget.btn_interpret.toggled.connect(

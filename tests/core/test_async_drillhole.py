@@ -13,6 +13,9 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QWaitCondition, QMutex
 
 from sec_interp.core.services.drillhole_service import DrillholeService
+from sec_interp.core.services.drillhole.drillhole_orchestrator import (
+    DrillholeTaskOrchestrator,
+)
 from sec_interp.core.domain import DrillholeTaskInput
 
 
@@ -22,6 +25,7 @@ class TestAsyncDrillhole(BaseTestCase):
     def setUp(self):
         super().setUp()
         self.service = DrillholeService()
+        self.orchestrator = DrillholeTaskOrchestrator(self.service)
         self.line_geom = QgsGeometry.fromPolylineXY(
             [QgsPointXY(0, 0), QgsPointXY(100, 0)]
         )
@@ -32,10 +36,17 @@ class TestAsyncDrillhole(BaseTestCase):
         """Test gathering detached data."""
         # Setup layers
         collar_layer = MagicMock()
+        fields = QgsFields()
+        fields.append(QgsField("id"))
+        fields.append(QgsField("z"))
+        fields.append(QgsField("depth"))
+        collar_layer.fields.return_value = fields
         collar_layer.getFeatures.return_value = []
 
         survey_layer = MagicMock()
+        survey_layer.fields.return_value = QgsFields()
         interval_layer = MagicMock()
+        interval_layer.fields.return_value = QgsFields()
 
         # Test basic preparation
         mock_line_layer = MagicMock()
@@ -46,7 +57,7 @@ class TestAsyncDrillhole(BaseTestCase):
         mock_line_layer.getFeatures.return_value = iter([line_feat])
         mock_line_layer.crs.return_value = self.crs
 
-        task_input = self.service.prepare_task_input(
+        task_input = self.orchestrator.prepare_task_input(
             line_layer=mock_line_layer,
             buffer_width=50.0,
             collar_layer=collar_layer,
@@ -94,7 +105,7 @@ class TestAsyncDrillhole(BaseTestCase):
             pre_sampled_z={},
         )
 
-        results = self.service.process_task_data(task_input)
+        results = self.orchestrator.process_task_data(task_input)
 
         self.assertIsNotNone(results)
         self.assertEqual(len(results), 2)

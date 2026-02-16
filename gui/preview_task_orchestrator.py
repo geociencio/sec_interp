@@ -73,7 +73,9 @@ class PreviewTaskOrchestrator:
         )
 
         # Connect signals
-        self.geology_task.finished_with_results.connect(self.manager._on_geology_finished)
+        self.geology_task.finished_with_results.connect(
+            self.manager._on_geology_finished
+        )
         self.geology_task.progress_changed.connect(self.manager._on_geology_progress)
         self.geology_task.error_occurred.connect(self.manager._on_geology_error)
 
@@ -122,7 +124,9 @@ class PreviewTaskOrchestrator:
             params,
         )
 
-        self.drillhole_task.finished_with_results.connect(self.manager._on_drillhole_finished)
+        self.drillhole_task.finished_with_results.connect(
+            self.manager._on_drillhole_finished
+        )
         self.drillhole_task.error_occurred.connect(self.manager._on_drillhole_error)
 
         QgsApplication.taskManager().addTask(self.drillhole_task)

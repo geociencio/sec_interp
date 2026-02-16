@@ -65,7 +65,11 @@ class SecInterp:
         locale_path = self.plugin_dir / f"i18n/SecInterp_{user_locale}.qm"
 
         MIN_LOCALE_LENGTH = 2
-        if not locale_path.exists() and user_locale and len(user_locale) > MIN_LOCALE_LENGTH:
+        if (
+            not locale_path.exists()
+            and user_locale
+            and len(user_locale) > MIN_LOCALE_LENGTH
+        ):
             # Fallback to language code (e.g., pt)
             locale_short = user_locale[0:2]
             locale_path = self.plugin_dir / f"i18n/SecInterp_{locale_short}.qm"
@@ -224,7 +228,9 @@ class SecInterp:
             # substitute with your code.
             pass
 
-    def _resolve_layer_obj(self, value: Any, placeholder_text: str = "") -> QgsMapLayer | None:
+    def _resolve_layer_obj(
+        self, value: Any, placeholder_text: str = ""
+    ) -> QgsMapLayer | None:
         """Resolve layer object from UI value."""
         if isinstance(value, QgsMapLayer):
             return value
@@ -247,39 +253,40 @@ class SecInterp:
         values = self.dlg.get_selected_values()
         preview_options = self.dlg.get_preview_options()
 
-        # 1. Resolve Layer Objects
-        raster_layer = self._resolve_layer_obj(
-            values.get("raster_layer"), self.tr("Select a raster layer")
-        )
-        line_layer = self._resolve_layer_obj(
-            values.get("crossline_layer"), self.tr("Select a crossline layer")
-        )
+        # 1. Get Layer IDs (PreviewParams now expects str)
+        def get_id(val):
+            if isinstance(val, QgsMapLayer):
+                return val.id()
+            return str(val) if val else None
+
+        raster_id = get_id(values.get("raster_layer"))
+        line_id = get_id(values.get("crossline_layer"))
 
         try:
             params = PreviewParams(
-                raster_layer=raster_layer,
-                line_layer=line_layer,
+                raster_layer=raster_id,
+                line_layer=line_id,
                 band_num=values.get("selected_band", 1),
                 buffer_dist=values.get("buffer_distance", 100.0),
-                outcrop_layer=self._resolve_layer_obj(values.get("outcrop_layer")),
+                outcrop_layer=get_id(values.get("outcrop_layer")),
                 outcrop_name_field=values.get("outcrop_name_field"),
-                struct_layer=self._resolve_layer_obj(values.get("structural_layer")),
+                struct_layer=get_id(values.get("structural_layer")),
                 dip_field=values.get("dip_field"),
                 strike_field=values.get("strike_field"),
                 dip_scale_factor=values.get("dip_scale_factor", 1.0),
-                collar_layer=self._resolve_layer_obj(values.get("collar_layer_obj")),
+                collar_layer=get_id(values.get("collar_layer_obj")),
                 collar_id_field=values.get("collar_id_field"),
                 collar_use_geometry=values.get("collar_use_geometry", True),
                 collar_x_field=values.get("collar_x_field"),
                 collar_y_field=values.get("collar_y_field"),
                 collar_z_field=values.get("collar_z_field"),
                 collar_depth_field=values.get("collar_depth_field"),
-                survey_layer=self._resolve_layer_obj(values.get("survey_layer_obj")),
+                survey_layer=get_id(values.get("survey_layer_obj")),
                 survey_id_field=values.get("survey_id_field"),
                 survey_depth_field=values.get("survey_depth_field"),
                 survey_azim_field=values.get("survey_azim_field"),
                 survey_incl_field=values.get("survey_incl_field"),
-                interval_layer=self._resolve_layer_obj(values.get("interval_layer_obj")),
+                interval_layer=get_id(values.get("interval_layer_obj")),
                 interval_id_field=values.get("interval_id_field"),
                 interval_from_field=values.get("interval_from_field"),
                 interval_to_field=values.get("interval_to_field"),
@@ -301,22 +308,28 @@ class SecInterp:
         return params
 
     def _collect_active_layers(self, params: PreviewParams) -> list[QgsMapLayer]:
-        """Collect all active layers from parameters for monitoring."""
-        return [
-            l
-            for l in [
-                params.raster_layer,
-                params.line_layer,
-                params.outcrop_layer,
-                params.struct_layer,
-                params.collar_layer,
-                params.survey_layer,
-                params.interval_layer,
-            ]
-            if l
+        """Collect all active layer objects from parameter IDs for monitoring."""
+        ids = [
+            params.raster_layer,
+            params.line_layer,
+            params.outcrop_layer,
+            params.struct_layer,
+            params.collar_layer,
+            params.survey_layer,
+            params.interval_layer,
         ]
+        layers = []
+        for lid in ids:
+            if not lid:
+                continue
+            lyr = self._resolve_layer_obj(lid)
+            if lyr:
+                layers.append(lyr)
+        return layers
 
-    def process_data(self, inputs: dict[str, Any] | None = None) -> tuple[Any, Any, Any] | None:
+    def process_data(
+        self, inputs: dict[str, Any] | None = None
+    ) -> tuple[Any, Any, Any] | None:
         """Process profile data by delegating to the dialog's preview manager.
 
         Args:
@@ -405,7 +418,9 @@ class SecInterp:
             "struct": struct if options.get("show_struct", True) else None,
             "drill": drill if options.get("show_drillholes", True) else None,
             "interp": (
-                self.dlg.interpretations if options.get("show_interpretations", True) else None
+                self.dlg.interpretations
+                if options.get("show_interpretations", True)
+                else None
             ),
         }
 

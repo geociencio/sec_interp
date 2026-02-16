@@ -24,32 +24,32 @@ MIN_FLOAT_THRESHOLD = 0.1
 class ValidationParams:
     """Data container for all parameters that need cross-layer validation."""
 
-    raster_layer: QgsRasterLayer | None = None
+    raster_layer: str | QgsRasterLayer | None = None
     band_number: int | None = None
-    line_layer: QgsVectorLayer | None = None
+    line_layer: str | QgsVectorLayer | None = None
     output_path: str = ""
     scale: float = 1.0
     vert_exag: float = 1.0
     buffer_dist: float = 0.0
-    outcrop_layer: QgsVectorLayer | None = None
+    outcrop_layer: str | QgsVectorLayer | None = None
     outcrop_field: str | None = None
-    struct_layer: QgsVectorLayer | None = None
+    struct_layer: str | QgsVectorLayer | None = None
     struct_dip_field: str | None = None
     struct_strike_field: str | None = None
     dip_scale_factor: float = 1.0
 
     # Drillhole params
-    collar_layer: QgsVectorLayer | None = None
+    collar_layer: str | QgsVectorLayer | None = None
     collar_id: str | None = None
     collar_use_geom: bool = True
     collar_x: str | None = None
     collar_y: str | None = None
-    survey_layer: QgsVectorLayer | None = None
+    survey_layer: str | QgsVectorLayer | None = None
     survey_id: str | None = None
     survey_depth: str | None = None
     survey_azim: str | None = None
     survey_incl: str | None = None
-    interval_layer: QgsVectorLayer | None = None
+    interval_layer: str | QgsVectorLayer | None = None
     interval_id: str | None = None
     interval_from: str | None = None
     interval_to: str | None = None
@@ -64,19 +64,18 @@ class ProjectValidator:
     """
 
     @staticmethod
+    def _resolve_layer(layer_ref: Any) -> Any:
+        """Resolve layer ID or object to a QgsMapLayer."""
+        from qgis.core import QgsProject
+
+        if not isinstance(layer_ref, str) or not layer_ref:
+            return layer_ref
+
+        return QgsProject.instance().mapLayer(str(layer_ref))
+
+    @staticmethod
     def validate_all(params: ValidationParams) -> bool:
-        """Perform a comprehensive validation of all project parameters.
-
-        Args:
-            params: The parameters to validate.
-
-        Returns:
-            True if all checks passed.
-
-        Raises:
-            ValidationError: If any validation check fails (contains list of errors).
-
-        """
+        """Perform a comprehensive validation of all project parameters."""
         # Level 2 Validation: Business Context Accumulation
         context = ValidationContext()
 
@@ -85,9 +84,6 @@ class ProjectValidator:
         ProjectValidator._validate_dem(params, context)
         ProjectValidator._validate_section(params, context)
         ProjectValidator._validate_output(params, context)
-
-        # Stop here if critical foundations are missing?
-        # For now, we continue to gather as much info as possible unless it crashes.
 
         # Phase 2: Numeric Ranges & Business Rules
         ProjectValidator._validate_numeric_ranges(params, context)
@@ -106,10 +102,16 @@ class ProjectValidator:
         """Validate Raster DEM layer."""
         if not params.raster_layer:
             context.add_error("Raster DEM layer is required", "raster_layer")
-        elif params.band_number is not None:
-            is_valid, error = validate_raster_band(params.raster_layer, params.band_number)
-            if not is_valid:
-                context.add_error(error, "band_number")
+        else:
+            raster_lyr = ProjectValidator._resolve_layer(params.raster_layer)
+            if not raster_lyr:
+                context.add_error(
+                    "Raster DEM layer not found in project", "raster_layer"
+                )
+            elif params.band_number is not None:
+                is_valid, error = validate_raster_band(raster_lyr, params.band_number)
+                if not is_valid:
+                    context.add_error(error, "band_number")
 
     @staticmethod
     def _validate_section(params: ValidationParams, context: ValidationContext) -> None:
@@ -118,11 +120,18 @@ class ProjectValidator:
             context.add_error("Cross-section line layer is required", "line_layer")
             return
 
-        is_valid, error = validate_layer_geometry(params.line_layer, QgsWkbTypes.LineGeometry)
+        line_lyr = ProjectValidator._resolve_layer(params.line_layer)
+        if not line_lyr:
+            context.add_error(
+                "Cross-section line layer not found in project", "line_layer"
+            )
+            return
+
+        is_valid, error = validate_layer_geometry(line_lyr, QgsWkbTypes.LineGeometry)
         if not is_valid:
             context.add_error(error, "line_layer")
 
-        is_valid, error = validate_layer_has_features(params.line_layer)
+        is_valid, error = validate_layer_has_features(line_lyr)
         if not is_valid:
             context.add_error(error, "line_layer")
 
@@ -137,7 +146,9 @@ class ProjectValidator:
                 context.add_error(error, "output_path")
 
     @staticmethod
-    def _validate_numeric_ranges(params: ValidationParams, context: ValidationContext) -> None:
+    def _validate_numeric_ranges(
+        params: ValidationParams, context: ValidationContext
+    ) -> None:
         """Validate numeric parameter ranges."""
         # Level 1 logic might handle simple types, but business rules (Project Level) check context consistency here.
         # Warnings are accumulated too.
@@ -166,15 +177,20 @@ class ProjectValidator:
         """Validate Geology Inputs using Dependency Rules."""
         # Rule: If outcrop layer is present, field is required.
         if params.outcrop_layer:
+            outcrop_lyr = ProjectValidator._resolve_layer(params.outcrop_layer)
+            if not outcrop_lyr:
+                context.add_error("Geology layer not found in project", "outcrop_layer")
+                return
+
             # Check geometry
             is_valid, error = validate_layer_geometry(
-                params.outcrop_layer, QgsWkbTypes.PolygonGeometry
+                outcrop_lyr, QgsWkbTypes.PolygonGeometry
             )
             if not is_valid:
                 context.add_error(error, "outcrop_layer")
 
             # Check features
-            is_valid, error = validate_layer_has_features(params.outcrop_layer)
+            is_valid, error = validate_layer_has_features(outcrop_lyr)
             if not is_valid:
                 context.add_error(error, "outcrop_layer")
 
@@ -185,17 +201,28 @@ class ProjectValidator:
                     "outcrop_field",
                 )
             else:
-                is_valid, error = validate_field_exists(params.outcrop_layer, params.outcrop_field)
+                is_valid, error = validate_field_exists(
+                    outcrop_lyr, params.outcrop_field
+                )
                 if not is_valid:
                     context.add_error(error, "outcrop_field")
 
     @staticmethod
-    def _validate_structural(params: ValidationParams, context: ValidationContext) -> None:
+    def _validate_structural(
+        params: ValidationParams, context: ValidationContext
+    ) -> None:
         """Validate Structural Inputs."""
         if params.struct_layer:
+            struct_lyr = ProjectValidator._resolve_layer(params.struct_layer)
+            if not struct_lyr:
+                context.add_error(
+                    "Structural layer not found in project", "struct_layer"
+                )
+                return
+
             is_valid, error = validate_structural_requirements(
-                params.struct_layer,
-                params.struct_layer.name(),
+                struct_lyr,
+                struct_lyr.name(),
                 params.struct_dip_field,
                 params.struct_strike_field,
             )
@@ -203,7 +230,9 @@ class ProjectValidator:
                 context.add_error(error, "struct_layer")
 
     @staticmethod
-    def _validate_drillholes(params: ValidationParams, context: ValidationContext) -> None:
+    def _validate_drillholes(
+        params: ValidationParams, context: ValidationContext
+    ) -> None:
         """Validate Drillhole Complex Dependencies (Level 2)."""
         from sec_interp.core.validation.validation_helpers import (
             DependencyRule,
@@ -372,7 +401,11 @@ class ProjectValidator:
             bool: True if valid.
 
         """
-        if not params.struct_layer or not params.struct_dip_field or not params.struct_strike_field:
+        if (
+            not params.struct_layer
+            or not params.struct_dip_field
+            or not params.struct_strike_field
+        ):
             return False
         context = ValidationContext()
         ProjectValidator._validate_structural(params, context)

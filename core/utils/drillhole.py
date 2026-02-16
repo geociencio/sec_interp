@@ -116,7 +116,9 @@ def _process_survey_segment(
     dx, dy, dz = _calculate_segment_delta(interval, azimuth, inclination)
 
     trajectory.extend(
-        _calculate_segment_points(x, y, z, prev_depth, dx, dy, dz, interval, densify_step)
+        _calculate_segment_points(
+            x, y, z, prev_depth, dx, dy, dz, interval, densify_step
+        )
     )
 
     return x + dx, y + dy, z + dz, depth
@@ -191,7 +193,11 @@ def project_trajectory_to_section(
     projected = []
 
     # Ensure line_start is QgsPointXY
-    start_pt = line_start if hasattr(line_start, "x") else QgsPointXY(line_start[0], line_start[1])
+    start_pt = (
+        line_start
+        if hasattr(line_start, "x")
+        else QgsPointXY(line_start[0], line_start[1])
+    )
 
     for depth, x, y, z, _, _ in trajectory:
         point = QgsPointXY(x, y)
@@ -207,7 +213,9 @@ def project_trajectory_to_section(
         # Calculate offset from section
         offset = distance_area.measureLine(point, nearest_pt_xy)
 
-        projected.append((depth, x, y, z, dist_along, offset, nearest_pt_xy.x(), nearest_pt_xy.y()))
+        projected.append(
+            (depth, x, y, z, dist_along, offset, nearest_pt_xy.x(), nearest_pt_xy.y())
+        )
 
     return projected
 

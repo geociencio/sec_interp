@@ -233,6 +233,7 @@ class TestPreviewService(BaseTestCase):
 
         # MUST set this or it returns None early
         self.params.collar_id_field = "HOLEID"
+        self.params.collar_layer = MagicMock()
 
         from sec_interp.core.exceptions import GeometryError
 
@@ -308,6 +309,7 @@ class TestPreviewService(BaseTestCase):
         mock_lyr.name.return_value = "Mock Line"
 
         self.params.line_layer = mock_lyr
+        self.params.collar_layer = MagicMock()
         self.params.collar_id_field = "hole_id"  # Ensure it doesn't return early
 
         with self.assertRaises(GeometryError):
@@ -322,6 +324,7 @@ class TestPreviewService(BaseTestCase):
             side_effect=lambda: iter([line_feat])
         )
         self.service.transform_context = MagicMock()
+        self.params.collar_layer = MagicMock()
 
         self.params.collar_id_field = "HOLEID"
         ds = self.mock_controller.drillhole_service

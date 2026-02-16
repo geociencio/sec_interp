@@ -81,7 +81,9 @@ class PreviewManager:
         # Connect extents changed signal
         # We need to do this carefully to avoid signal loops
         # Initial connection is safe
-        self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
+        self.dialog.preview_widget.canvas.extentsChanged.connect(
+            self._on_extents_changed
+        )
 
     def cleanup(self) -> None:
         """Clean up resources and stop background tasks."""
@@ -91,7 +93,9 @@ class PreviewManager:
             self.debounce_timer.timeout.disconnect()
 
         with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.preview_widget.canvas.extentsChanged.disconnect(self._on_extents_changed)
+            self.dialog.preview_widget.canvas.extentsChanged.disconnect(
+                self._on_extents_changed
+            )
 
     def generate_preview(self) -> tuple[bool, str]:
         """Generate complete preview with all available data layers."""
@@ -126,7 +130,8 @@ class PreviewManager:
 
     def _update_ui_state(self, params: PreviewParams, result: PreviewResult) -> None:
         """Update UI and trigger render pipeline."""
-        self._update_crs_label(params.line_layer)
+        line_lyr = self._resolve_layer(params.line_layer)
+        self._update_crs_label(line_lyr)
         self._run_render_pipeline(result)
 
         result_msg = PreviewReporter.format_results_message(result, self.metrics)
@@ -162,7 +167,11 @@ class PreviewManager:
         """Safely retrieve transform context from canvas."""
         if not self.dialog.plugin_instance:
             return None
-        return self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
+        return (
+            self.dialog.plugin_instance.iface.mapCanvas()
+            .mapSettings()
+            .transformContext()
+        )
 
     def _update_cache_and_metrics(self, result: PreviewResult) -> None:
         """Update local cache and cumulative metrics."""
@@ -177,8 +186,12 @@ class PreviewManager:
 
     def _trigger_async_updates(self, params: PreviewParams) -> None:
         """Launch background tasks via orchestrator."""
-        self.orchestrator.start_geology_task(params, self.preview_service.geology_service)
-        self.orchestrator.start_drillhole_task(params, self.preview_service.drillhole_service)
+        self.orchestrator.start_geology_task(
+            params, self.preview_service.geology_service
+        )
+        self.orchestrator.start_drillhole_task(
+            params, self.preview_service.drillhole_service
+        )
 
     def _is_data_unchanged(self, params: PreviewParams) -> bool:
         """Check if parameters haven't changed since last generation."""
@@ -190,21 +203,22 @@ class PreviewManager:
     def _handle_geometric_changes(self, params: PreviewParams) -> None:
         """Clear interpretations if the section geometry has changed."""
         old_geo_params = getattr(self, "_last_geo_params", None)
-        line_feat = next(params.line_layer.getFeatures(), None) if params.line_layer else None
+        line_lyr = self._resolve_layer(params.line_layer)
+        line_feat = next(line_lyr.getFeatures(), None) if line_lyr else None
         line_geom = line_feat.geometry().asWkt() if line_feat else None
 
         new_geo_params = (
-            params.line_layer.id() if params.line_layer else None,
-            params.raster_layer.id() if params.raster_layer else None,
+            params.line_layer,
+            params.raster_layer,
             line_geom,
         )
         self._last_geo_params = new_geo_params
 
         if old_geo_params and old_geo_params != new_geo_params:
-            if hasattr(self.dialog, "interpretations"):
+            if hasattr(self.dialog, "interpretation_manager"):
                 logger.info("Geometric change detected: Clearing interpretations.")
-                self.dialog.interpretations = []
-                self.dialog._save_interpretations()
+                self.dialog.interpretation_manager.interpretations = []
+                self.dialog.interpretation_manager.save_interpretations()
 
     def _cancel_active_tasks(self) -> None:
         """Cancel any existing async work via orchestrator."""
@@ -337,7 +351,9 @@ class PreviewManager:
             canvas_width=canvas.width(), ratio=ratio, auto_lod=True
         )
 
-        logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
+        logger.debug(
+            f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}"
+        )
 
         if not self.dialog.plugin_instance:
             return
@@ -367,15 +383,24 @@ class PreviewManager:
             return
 
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate("PreviewManager", "Generating Geology in background...")
+            QCoreApplication.translate(
+                "PreviewManager", "Generating Geology in background..."
+            )
         )
 
         # 1. Prepare Data (Sync - Main Thread)
         try:
+            line_lyr = self._resolve_layer(params.line_layer)
+            raster_lyr = self._resolve_layer(params.raster_layer)
+            outcrop_lyr = self._resolve_layer(params.outcrop_layer)
+
+            if not all([line_lyr, raster_lyr, outcrop_lyr]):
+                return
+
             task_input = self.dialog.plugin_instance.controller.geology_service.prepare_task_input(
-                params.line_layer,
-                params.raster_layer,
-                outcrop_layer,
+                line_lyr,
+                raster_lyr,
+                outcrop_lyr,
                 outcrop_name_field,
                 params.band_num,
             )
@@ -407,7 +432,9 @@ class PreviewManager:
         self.active_task = None
         self.cached_data["geol"] = results if results else None
 
-        logger.info(f"Async geology finished: {len(results) if results else 0} segments")
+        logger.info(
+            f"Async geology finished: {len(results) if results else 0} segments"
+        )
 
         try:
             self.update_from_checkboxes()
@@ -444,9 +471,9 @@ class PreviewManager:
 
         """
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate("PreviewManager", "Generating Geology: {}%...").format(
-                progress
-            )
+            QCoreApplication.translate(
+                "PreviewManager", "Generating Geology: {}%..."
+            ).format(progress)
         )
 
     def _on_geology_error(self, error_msg: str) -> None:
@@ -455,9 +482,9 @@ class PreviewManager:
         self.active_task = None
         # Map string error to ProcessingError for centralized handling
         error = ProcessingError(
-            QCoreApplication.translate("PreviewManager", "Geology processing failed: {}").format(
-                error_msg
-            )
+            QCoreApplication.translate(
+                "PreviewManager", "Geology processing failed: {}"
+            ).format(error_msg)
         )
         self.dialog.handle_error(error, "Geology Error")
 
@@ -466,9 +493,9 @@ class PreviewManager:
         logger.error(f"Drillhole Task Error: {error_msg}")
         self.active_drill_task = None
         error = ProcessingError(
-            QCoreApplication.translate("PreviewManager", "Drillhole processing failed: {}").format(
-                error_msg
-            )
+            QCoreApplication.translate(
+                "PreviewManager", "Drillhole processing failed: {}"
+            ).format(error_msg)
         )
         self.dialog.handle_error(error, "Drillhole Error")
 
@@ -482,11 +509,22 @@ class PreviewManager:
         self.dialog.preview_widget.results_text.setPlainText(
             self.dialog.preview_widget.results_text.toPlainText()
             + "\n"
-            + QCoreApplication.translate("PreviewManager", "Generating Drillholes in background...")
+            + QCoreApplication.translate(
+                "PreviewManager", "Generating Drillholes in background..."
+            )
         )
 
         # 1. Prepare Data (Sync)
         try:
+            line_lyr = self._resolve_layer(params.line_layer)
+            collar_lyr = self._resolve_layer(params.collar_layer)
+            survey_lyr = self._resolve_layer(params.survey_layer)
+            interval_lyr = self._resolve_layer(params.interval_layer)
+            dem_lyr = self._resolve_layer(params.raster_layer)
+
+            if not all([line_lyr, collar_lyr]):
+                return
+
             # Map simplified fields for the service
             survey_fields = {
                 "id": params.survey_id_field,
@@ -501,23 +539,21 @@ class PreviewManager:
                 "lith": params.interval_lith_field,
             }
 
-            task_input = (
-                self.dialog.plugin_instance.controller.drillhole_service.prepare_task_input(
-                    line_layer=params.line_layer,
-                    buffer_width=params.buffer_dist,
-                    collar_layer=params.collar_layer,
-                    collar_id_field=params.collar_id_field,
-                    use_geometry=params.collar_use_geometry,
-                    collar_x_field=params.collar_x_field,
-                    collar_y_field=params.collar_y_field,
-                    collar_z_field=params.collar_z_field,
-                    collar_depth_field=params.collar_depth_field,
-                    survey_layer=params.survey_layer,
-                    survey_fields=survey_fields,
-                    interval_layer=params.interval_layer,
-                    interval_fields=interval_fields,
-                    dem_layer=params.raster_layer,
-                )
+            task_input = self.dialog.plugin_instance.controller.drillhole_orchestrator.prepare_task_input(
+                line_layer=line_lyr,
+                buffer_width=params.buffer_dist,
+                collar_layer=collar_lyr,
+                collar_id_field=params.collar_id_field,
+                use_geometry=params.collar_use_geometry,
+                collar_x_field=params.collar_x_field,
+                collar_y_field=params.collar_y_field,
+                collar_z_field=params.collar_z_field,
+                collar_depth_field=params.collar_depth_field,
+                survey_layer=survey_lyr,
+                survey_fields=survey_fields,
+                interval_layer=interval_lyr,
+                interval_fields=interval_fields,
+                dem_layer=dem_lyr,
             )
         except (AttributeError, TypeError, ValueError, SecInterpError) as e:
             logger.exception(f"Failed to prepare drillhole task: {e}")
@@ -528,11 +564,15 @@ class PreviewManager:
 
         # 2. Launch Task
         self.active_drill_task = DrillholeGenerationTask(
-            service=self.dialog.plugin_instance.controller.drillhole_service,
+            description=self.tr("Generating drillhole data"),
+            orchestrator=self.dialog.plugin_instance.controller.drillhole_orchestrator,
             task_input=task_input,
-            on_finished=self._on_drillhole_finished,
-            on_error=self._on_geology_error,  # Reuse error handler or make generic
+            params=params,
         )
+        self.active_drill_task.finished_with_results.connect(
+            self._on_drillhole_finished
+        )
+        self.active_drill_task.error_occurred.connect(self._on_geology_error)
 
         QgsApplication.taskManager().addTask(self.active_drill_task)
 
@@ -566,14 +606,13 @@ class PreviewManager:
             layer: The reference layer to get CRS from.
 
         """
-        if not layer or not layer.isValid():
-            return
-
         try:
-            if layer:
+            if layer and layer.isValid():
                 auth_id = layer.crs().authid()
                 self.dialog.preview_widget.lbl_crs.setText(
-                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(auth_id)
+                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(
+                        auth_id
+                    )
                 )
             else:
                 self.dialog.preview_widget.lbl_crs.setText(
@@ -585,3 +624,7 @@ class PreviewManager:
             )
         except Exception:
             logger.exception("Unexpected error updating CRS label")
+
+    def _resolve_layer(self, layer_ref: Any) -> Any:
+        """Resolve a layer reference via controller."""
+        return self.dialog.plugin_instance.controller._resolve_layer(layer_ref)

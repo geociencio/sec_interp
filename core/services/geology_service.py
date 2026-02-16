@@ -125,19 +125,25 @@ class GeologyService(IGeologyService):
             GeologyTaskInput: Detached data ready for processing.
 
         """
-        self._validate_inputs(line_lyr, raster_lyr, outcrop_lyr, outcrop_name_field, band_number)
+        self._validate_inputs(
+            line_lyr, raster_lyr, outcrop_lyr, outcrop_name_field, band_number
+        )
 
         line_geom, line_start = self._extract_line_info(line_lyr)
         crs = line_lyr.crs()
         da = scu.create_distance_area(crs)
 
         # 1. Generate Master Profile Data (needs Raster access)
-        master_profile_data, master_grid_dists_raw = self.profile_sampler.generate_master_profile(
-            line_geom, raster_lyr, band_number, da, line_start
+        master_profile_data, master_grid_dists_raw = (
+            self.profile_sampler.generate_master_profile(
+                line_geom, raster_lyr, band_number, da, line_start
+            )
         )
 
         # Convert master_grid_dists to domain types (dist, (x, y), elev)
-        master_grid_dists = [(d, (pt.x(), pt.y()), e) for d, pt, e in master_grid_dists_raw]
+        master_grid_dists = [
+            (d, (pt.x(), pt.y()), e) for d, pt, e in master_grid_dists_raw
+        ]
 
         # 2. Extract Outcrop Data (needs Vector access)
         outcrop_data = []
@@ -213,7 +219,9 @@ class GeologyService(IGeologyService):
         if outcrop_lyr:
             idx = outcrop_lyr.fields().indexFromName(outcrop_name_field)
             if idx == -1:
-                raise ValidationError(f"Field '{outcrop_name_field}' not found in outcrop layer.")
+                raise ValidationError(
+                    f"Field '{outcrop_name_field}' not found in outcrop layer."
+                )
 
     def process_task_data(
         self, task_input: GeologyTaskInput, feedback: Any | None = None
@@ -244,7 +252,9 @@ class GeologyService(IGeologyService):
             if feedback and feedback.isCanceled():
                 return []
 
-            new_segments = self._process_single_outcrop(item, line_geom, line_start, da, task_input)
+            new_segments = self._process_single_outcrop(
+                item, line_geom, line_start, da, task_input
+            )
             segments.extend(new_segments)
 
             if feedback:
@@ -338,7 +348,9 @@ class GeologyService(IGeologyService):
             tolerance,
         )
 
-    def _extract_line_info(self, line_lyr: QgsVectorLayer) -> tuple[QgsGeometry, QgsPointXY]:
+    def _extract_line_info(
+        self, line_lyr: QgsVectorLayer
+    ) -> tuple[QgsGeometry, QgsPointXY]:
         """Extract geometry and start point from the line layer.
 
         Args:
@@ -354,11 +366,15 @@ class GeologyService(IGeologyService):
         """
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
-            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
+            raise DataMissingError(
+                "Line layer has no features", {"layer": line_lyr.name()}
+            )
 
         line_geom = line_feat.geometry()
         if not line_geom or line_geom.isNull():
-            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
+            raise GeometryError(
+                "Line geometry is not valid", {"layer": line_lyr.name()}
+            )
 
         if line_geom.isMultipart():
             line_start = line_geom.asMultiPolyline()[0][0]
