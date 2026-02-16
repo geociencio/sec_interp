@@ -1,4 +1,16 @@
 ---
+## [2026-02-15] RESUMEN: Estabilización de Mocks y Tests 3D Avanzados (Noche)
+- **Logro**: Suite completa (378 tests) estabilizada tras corregir fallos críticos de integridad de datos en mocks.
+- **Cambios**:
+    - **Mocks Core**: Implementado parsing WKT en `MockQgsGeometry` y corregido bug de pérdida de atributos en `MockQgsFeature`.
+    - **Exporters**: Estabilizada la exportación 3D asegurando tipos `LineStringZ` y `PolygonZ`.
+    - **Integración**: Resuelta la falta de resultados en tests avanzados debido a fallos silenciosos en la recuperación de campos.
+- **Métricas**:
+    - **Tests**: 378/378 OK (100%).
+    - **Calidad**: Entorno de pruebas 100% funcional y desacoplado.
+- **Mantenimiento**: [sesion_2026-02-15_stabilization_mocks_3d.md](maintenance/sesion_2026-02-15_stabilization_mocks_3d.md).
+
+---
 ## [2026-02-15] RESUMEN: Estabilización GUI y Exportación (Noche)
 - **Logro**: Estabilización final de la Fase 5 y reparación del subsistema de exportación.
 - **Cambios**:

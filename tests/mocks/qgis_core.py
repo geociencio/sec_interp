@@ -34,7 +34,7 @@ class MockQgsCoordinateTransform(MockQgsBase):
 
     def transform(self, geom):
         """Transform the geometry (no-op in mock)."""
-        pass
+        return geom
 
 
 class MockQgsSpatialIndex:
@@ -42,11 +42,16 @@ class MockQgsSpatialIndex:
 
     def __init__(self, features=None):
         """Initialize the mock spatial index."""
-        pass
+        if features:
+            self._fids = [
+                f.id() if hasattr(f, "id") else i for i, f in enumerate(features)
+            ]
+        else:
+            self._fids = []
 
     def intersects(self, rect):
-        """Perform intersection query (returns empty list in mock)."""
-        return []
+        """Perform intersection query (returns all IDs in mock for simplicity)."""
+        return self._fids
 
 
 class MockQgsFeatureRequest:
@@ -57,6 +62,28 @@ class MockQgsFeatureRequest:
     def setFilterFids(self, fids):
         """Set filter FIDs."""
         return self
+
+    def setFilterExpression(self, expr):
+        """Set filter expression."""
+        return self
+
+    def setDestinationCrs(self, crs, context):
+        """Set destination CRS."""
+        self._dest_crs = crs
+        return self
+
+    def destinationCrs(self):
+        """Get destination CRS."""
+        return getattr(self, "_dest_crs", None)
+
+    def setFilterRect(self, rect):
+        """Set filter rectangle."""
+        self._rect = rect
+        return self
+
+    def filterRect(self):
+        """Get filter rectangle."""
+        return getattr(self, "_rect", None)
 
     def setFilterRect(self, rect):
         """Set filter rectangle."""

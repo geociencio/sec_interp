@@ -101,9 +101,13 @@ class MockQgsFeature(MockQgsBase):
 
     def setFields(self, fields, initAttributes=True):
         """Set feature fields."""
+        old_attributes = self._attributes
         self._fields = fields
         if initAttributes:
             self._attributes = [None] * len(self._fields)
+            # Try to preserve attributes by index if they fit
+            for i in range(min(len(old_attributes), len(self._attributes))):
+                self._attributes[i] = old_attributes[i]
 
     def setAttribute(self, name, value):
         """Set attribute value by name or index."""

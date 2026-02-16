@@ -1,24 +1,19 @@
-# Próximos Pasos - SecInterp (Fase v3.0.1)
+# Próximos Pasos - SecInterp
 
-## 🎯 Objetivo Inmediato
-Continuar con la limpieza de deuda técnica y preparación para QGIS 4.0.
+## Sesión Anterior: `stabilization_mocks_3d` (2026-02-15)
+- **Estado**: 🟢 378/378 tests OK (Suite de integración avanzada estabilizada).
+- **Logros**:
+    - Reparada la integridad de atributos en `MockQgsFeature`.
+    - Implementado parsing robusto de WKT en `MockQgsGeometry`.
+    - Estabilizados exportadores 3D con tipos nativos Z.
 
-## 📝 Tareas Pendientes
-1.  **Migración PyQt**: Reemplazar los 4 imports restantes de `PyQt5` por `from qgis.PyQt...` en el resto del proyecto (especialmente en `resources.py` y tests).
-2.  **Señales (Refinado)**: Monitorear el comportamiento de las señales en cascada en producción. Investigar si se pueden eliminar los 29 falsos positivos remanentes de `qgis-analyzer` mediante anotaciones.
-3.  **Docstrings**: Seguir con la cobertura de docstrings en `resources/` y `tests/` para alcanzar el 100% global.
-4.  **Preview 3D**: Iniciar el diseño/prototipo del `preview_3d_engine.py`.
+## Pendiente
+### Fase 6: Preparación QGIS 4.0
+- [ ] **Migración a PyQt6/QGIS 4.0**: Identificar y encapsular dependencias directas de PyQt5.
+- [ ] **Limpieza de Señales (Fase Final)**: Resolver las 22 fugas remanentes reportadas por `qgis-analyzer`.
+- [ ] **i18n Coverage**: Abordar cadenas `MISSING_I18N` en `controller.py`.
 
-## 🛠️ Comandos Útiles
-Para verificar el tamaño del build tras cambios:
+## Comando para retomar
 ```bash
-make zip && ls -lh dist/sec_interp.3.0.0.zip
+/inicia-sesion
 ```
-
-Para correr la suite de tests oficial:
-```bash
-make docker-test
-```
-
-## ⚠️ Bloqueos
-- Ninguno. El sistema está en estado **VERDE** (361 tests OK).

@@ -15,7 +15,9 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QMetaType
 from tests.integration.base_integration import BaseIntegrationTest
 from sec_interp.core.services.drillhole_service import DrillholeService
-from sec_interp.core.services.drillhole.drillhole_orchestrator import DrillholeTaskOrchestrator
+from sec_interp.core.services.drillhole.drillhole_orchestrator import (
+    DrillholeTaskOrchestrator,
+)
 
 
 class Test3DIntegrationAdvanced(BaseIntegrationTest):

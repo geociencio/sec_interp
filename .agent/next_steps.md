@@ -1,13 +1,17 @@
-# Next Steps - SecInterp
+# Próximos Pasos - SecInterp
 
-## Contexto Final de la Sesión (2026-02-15 - Noche)
-Se ha completado la estabilización crítica de la GUI y el subsistema de Exportación tras la refactorización de la Fase 5. El problema de `AttributeError` en exportación por IDs de capa ha sido resuelto y verificado. Se eliminaron `message_manager` y `settings_manager` obsoletos.
+## Sesión Anterior: `stabilization_mocks_3d` (2026-02-15)
+- **Estado**: 🟢 378/378 tests OK (Suite de integración avanzada estabilizada).
+- **Logros**:
+    - Reparada la integridad de atributos en `MockQgsFeature`.
+    - Implementado parsing robusto de WKT en `MockQgsGeometry`.
+    - Estabilizados exportadores 3D con tipos nativos Z.
 
-## Tareas Pendientes Prioritarias
-1. **Fase 6: QGIS 4.x Preparation**: Iniciar la migración activa de `PyQt5` a `qgis.PyQt` y preparación para Python 3.12+.
-2. **Advanced 3D**: Implementar soporte para secciones de túneles (poligonales) y visualización avanzada.
-3. **Refactorización Mayor**: Completar la Inyección de Dependencias en `DrillholeService` si quedan remanentes (verificar plan).
-4. **Testing**: Ampliar cobertura de tests de integración para casos de borde en exportación 3D.
+## Pendiente
+### Fase 6: Preparación QGIS 4.0
+- [ ] **Migración a PyQt6/QGIS 4.0**: Identificar y encapsular dependencias directas de PyQt5.
+- [ ] **Limpieza de Señales (Fase Final)**: Resolver las 22 fugas remanentes reportadas por `qgis-analyzer`.
+- [ ] **i18n Coverage**: Abordar cadenas `MISSING_I18N` en `controller.py`.
 
 ## Comando para retomar
 ```bash

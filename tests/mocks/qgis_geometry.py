@@ -21,25 +21,31 @@ class MockQgsGeometry(MockQgsBase):
                 self._point = MockQgsPointXY(arg._point.x(), arg._point.y())
                 self._polygons = [list(r) for r in arg._polygons]
                 self._wkt = arg._wkt
-            elif "MockQgsPolygon" in str(type(arg)):
-                self._polygons = arg._rings
+            elif "MockQgsPolygon" in str(type(arg)) or "Polygon" in str(type(arg)):
+                self._polygons = arg._rings if hasattr(arg, "_rings") else []
                 self._wkb_type = 3  # Default Polygon
                 if self._polygons and self._polygons[0]:
                     first_pt = self._polygons[0][0]
+                    # Check for z method OR _z attribute
                     if hasattr(first_pt, "z") or hasattr(first_pt, "_z"):
                         self._wkb_type = 1003  # PolygonZ
-            elif "MockQgsLineString" in str(type(arg)):
-                self._polyline = arg._points
+            elif "MockQgsLineString" in str(type(arg)) or "LineString" in str(
+                type(arg)
+            ):
+                self._polyline = arg._points if hasattr(arg, "_points") else []
                 self._wkb_type = 2  # LineString
                 if self._polyline:
                     first_pt = self._polyline[0]
                     if hasattr(first_pt, "z") or hasattr(first_pt, "_z"):
                         self._wkb_type = 1002  # LineStringZ
-            elif "MockQgsPoint" in str(type(arg)):
+            elif "MockQgsPoint" in str(type(arg)) or "Point" in str(type(arg)):
                 self._point = MockQgsPointXY(arg.x(), arg.y())
                 self._wkb_type = 1  # Point
                 if hasattr(arg, "z") or hasattr(arg, "_z"):
                     self._wkb_type = 1001  # PointZ
+            else:
+                # Default fallback
+                self._point = MockQgsPointXY(0, 0)
 
     @staticmethod
     def fromPolygonXY(rings):
@@ -86,12 +92,31 @@ class MockQgsGeometry(MockQgsBase):
     def fromWkt(wkt):
         geom = MockQgsGeometry()
         geom._wkt = wkt
-        if "LINESTRING" in wkt.upper():
-            geom._wkb_type = 2
-        elif "POLYGON" in wkt.upper():
-            geom._wkb_type = 3
-        elif "POINT" in wkt.upper():
+        if not wkt:
+            return geom
+
+        upper_wkt = wkt.upper()
+        import re
+
+        if "POINT" in upper_wkt:
             geom._wkb_type = 1
+            m = re.search(r"POINT\s*\(\s*([-\d.]+)\s+([-\d.]+)\s*\)", upper_wkt)
+            if m:
+                geom._point = MockQgsPointXY(float(m.group(1)), float(m.group(2)))
+        elif "LINESTRING" in upper_wkt:
+            geom._wkb_type = 2
+            m = re.search(r"LINESTRING\s*\((.*)\)", upper_wkt)
+            if m:
+                content = m.group(1)
+                pts = []
+                for p_str in content.split(","):
+                    xy = p_str.strip().split()
+                    if len(xy) >= 2:
+                        pts.append(MockQgsPointXY(float(xy[0]), float(xy[1])))
+                geom._polyline = pts
+        elif "POLYGON" in upper_wkt:
+            geom._wkb_type = 3
+
         return geom
 
     def asWkt(self):
@@ -169,7 +194,10 @@ class MockQgsGeometry(MockQgsBase):
         new_geom = MockQgsGeometry()
         new_geom._polyline = list(self._polyline)
         new_geom._polygons = [list(r) for r in self._polygons]
-        new_geom._point = MockQgsPointXY(self._point.x(), self._point.y())
+        if self._point:
+            new_geom._point = MockQgsPointXY(self._point.x(), self._point.y())
+        else:
+            new_geom._point = MockQgsPointXY(0, 0)
         new_geom._wkb_type = self._wkb_type
         new_geom._wkt = self._wkt
         return new_geom
@@ -180,6 +208,8 @@ class MockQgsGeometry(MockQgsBase):
             p = self._polyline[0]
         elif self._polygons and self._polygons[0]:
             p = self._polygons[0][0]
+        if p is None:
+            p = MockQgsPointXY(0, 0)
         return MockQgsGeometry.fromPointXY(p)
 
     def makeValid(self):

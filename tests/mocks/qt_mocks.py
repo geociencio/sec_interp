@@ -60,6 +60,21 @@ class MockQApplication(MagicMock):
         """Install translator."""
         return True
 
+    @staticmethod
+    def getThemeIcon(name):
+        """Get theme icon."""
+        return MockQIcon()
+
+    @staticmethod
+    def initQgis():
+        """Initialize QGIS."""
+        pass
+
+    @staticmethod
+    def exitQgis():
+        """Exit QGIS."""
+        pass
+
 
 class MockQThread(MagicMock):
     """Mock implementation for QThread."""
@@ -142,6 +157,39 @@ class MockQPoint:
     def y(self):
         """Get Y coordinate."""
         return self._y
+
+
+class MockQSize:
+    """Mock implementation for QSize."""
+
+    def __init__(self, w=0, h=0):
+        self._w, self._h = w, h
+
+    def width(self):
+        return self._w
+
+    def height(self):
+        return self._h
+
+
+class MockQPixmap(MagicMock):
+    """Mock implementation for QPixmap."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+    def size(self):
+        return MockQSize(16, 16)
+
+
+class MockQIcon(MagicMock):
+    """Mock implementation for QIcon."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+    def pixmap(self, w, h=None):
+        return MockQPixmap()
 
 
 class MockQRectF(MagicMock):
@@ -327,8 +375,28 @@ class MockQWidget(MockQObject):
         """Get current text."""
         return self._text
 
+    def setPixmap(self, pixmap):
+        """Set widget pixmap (for QLabel)."""
+        self._pixmap = pixmap
+
+    def pixmap(self):
+        """Get widget pixmap."""
+        return getattr(self, "_pixmap", None)
+
+    def windowTitle(self):
+        """Get window title."""
+        return getattr(self, "_window_title", "")
+
+    def setWindowTitle(self, title):
+        """Set window title."""
+        self._window_title = title
+
     def setReadOnly(self, local_ro):
         """Set read only status."""
+        pass
+
+    def setAutoFillBackground(self, enabled):
+        """Set auto fill background."""
         pass
 
     def setMaximumWidth(self, width):

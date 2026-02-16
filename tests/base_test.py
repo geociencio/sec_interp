@@ -248,6 +248,7 @@ def restore_mocks():
     mock_core.QgsTask = MockQgsTask
     mock_core.Qgis = MockQgis
     mock_core.QgsWkbTypes = MockQgsWkbTypes
+    mock_core.QgsApplication = MockQApplication
 
     # Gui
     mock_gui.QgsMapTool = MockQgsMapTool
@@ -285,11 +286,20 @@ def restore_mocks():
         output_path, fields, geometry_type, crs, transform_context, options
     ):
         import os
+        from .mocks.qgis_base import MOCK_FILE_REGISTRY
 
+        output_path = str(output_path)
         base_path = os.path.splitext(output_path)[0]
+
+        # Initialize storage for this path
+        MOCK_FILE_REGISTRY[output_path] = []
+
         mock_writer = MagicMock()
         mock_writer.hasError.return_value = 0
         mock_writer.errorMessage.return_value = ""
+        mock_writer.addFeature.side_effect = lambda f: MOCK_FILE_REGISTRY[
+            output_path
+        ].append(f)
 
         # Create supporting files
         with open(output_path, "w") as f:

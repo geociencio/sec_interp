@@ -28,7 +28,9 @@ class TestToolManager(BaseTestCase):
         """Test that initialize_tools creates tools if not provided."""
         with (
             patch("sec_interp.gui.dialog_tool_manager.QgsMapToolPan") as MockPan,
-            patch("sec_interp.gui.dialog_tool_manager.ProfileMeasureTool") as MockMeasure,
+            patch(
+                "sec_interp.gui.dialog_tool_manager.ProfileMeasureTool"
+            ) as MockMeasure,
             patch(
                 "sec_interp.gui.dialog_tool_manager.ProfileInterpretationTool"
             ) as MockInterp,

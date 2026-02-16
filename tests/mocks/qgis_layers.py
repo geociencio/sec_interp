@@ -36,7 +36,17 @@ class MockQgsMapLayer(MockQObject):
         self.setRenderer = MagicMock()
         self.setSubsetString = MagicMock()
         self.triggerRepaint = MagicMock()
-        self.getFeatures = MagicMock(return_value=iter([]))
+        self.getFeatures = MagicMock()
+
+        def _get_features_cooperative(*args, **kwargs):
+            rv = self.getFeatures.return_value
+            # If return_value was changed from its default MagicMock instance to something else, use it.
+            if not isinstance(rv, MagicMock):
+                return rv
+            # Otherwise use our internal features list
+            return iter(self._features)
+
+        self.getFeatures.side_effect = _get_features_cooperative
 
         self._provider = MagicMock()
         self._dataProvider.return_value = self._provider
@@ -52,6 +62,23 @@ class MockQgsMapLayer(MockQObject):
         self._provider.identify().results.return_value = {1: 100.0}
 
         self._crs = MockQgsCoordinateReferenceSystem()
+
+        # Load features if this is a registered mock path
+        from .qgis_base import MOCK_FILE_REGISTRY
+
+        path_val = args[0] if args else None
+        if path_val and path_val in MOCK_FILE_REGISTRY:
+            self._features = list(MOCK_FILE_REGISTRY[path_val])
+            self.getFeatures.return_value = iter(self._features)
+        self._wkb_type = 1003  # Default PolygonZ
+
+    def setWkbType(self, wkb_type):
+        """Set the WKB type for the layer (mock helper)."""
+        self._wkb_type = wkb_type
+
+    def wkbType(self):
+        """Get WKB type."""
+        return self._wkb_type
 
     def crs(self):
         """Get the layer CRS."""
@@ -69,8 +96,14 @@ class MockQgsMapLayer(MockQObject):
 
     def _add_features(self, features):
         """Add features to the layer (mock side effect)."""
+        layer_fields = self.fields()
+        for f in features:
+            if hasattr(f, "setFields"):
+                # Only set layer fields if the feature has no fields or we want to ensure consistency
+                # but preserve existing fields if they might contain dynamic attributes for tests
+                if not f.fields() or f.fields().count() == 0:
+                    f.setFields(layer_fields)
         self._features.extend(features)
-        self.getFeatures.return_value = iter(self._features)
         return True
 
     def isValid(self):
@@ -114,16 +147,23 @@ class MockQgsMapLayer(MockQObject):
         self._labels_enabled = enabled
 
     def saveNamedStyle(self, path):
-        """Save named style to path."""
+        """Save named style to path (mock creating the file)."""
+        import os
+
+        # Actually create the file so os.path.exists works
+        with open(path, "w") as f:
+            f.write("<!-- Mock QML Style -->\n")
         return "Success", True
 
     def labelsEnabled(self):
         """Check if labels are enabled."""
         return getattr(self, "_labels_enabled", False)
 
-    def wkbType(self):
-        """Get WKB type."""
-        return 3
+    def geometryType(self):
+        """Get geometry type (0: Point, 1: Line, 2: Polygon)."""
+        from .qgis_utils import mock_geometry_type
+
+        return mock_geometry_type(self._wkb_type)
 
     def extent(self):
         """Get the layer extent."""
@@ -150,6 +190,16 @@ class MockQgsVectorLayer(MockQgsMapLayer):
                         elif "double" in f_info[1] or "float" in f_info[1]:
                             f_type = 6
                     self._internal_fields.append(MockQgsField(f_name, f_type))
+
+        # Infer geometry type from path for tests
+        if (
+            "drillhole" in path.lower()
+            or "trace" in path.lower()
+            or "interval" in path.lower()
+        ):
+            self._wkb_type = 1002  # LineStringZ
+        elif "interp" in path.lower() or "poly" in path.lower():
+            self._wkb_type = 1003  # PolygonZ
 
 
 class MockQgsRasterLayer(MockQgsMapLayer):

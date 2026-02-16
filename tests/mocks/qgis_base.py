@@ -2,6 +2,9 @@
 
 from unittest.mock import MagicMock
 
+# Global registry for simulated persistent files (path -> features)
+MOCK_FILE_REGISTRY = {}
+
 
 class MockQgsBase:
     """Base class for non-mock QGIS objects to provide standard methods."""

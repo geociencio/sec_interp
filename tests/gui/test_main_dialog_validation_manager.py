@@ -29,14 +29,35 @@ class TestInputManager(BaseTestCase):
 
         # Default empty data
         self.default_data = {
-            "raster_layer": None, "selected_band": 1, "scale": 1.0, "vertexag": 1.0,
-            "crossline_layer": None, "buffer_distance": 0.0,
-            "outcrop_layer": None, "outcrop_name_field": None,
-            "structural_layer": None, "dip_field": None, "strike_field": None, "dip_scale_factor": 1.0,
-            "collar_layer": None, "collar_id": None, "use_geometry": True,
-            "collar_x": None, "collar_y": None, "collar_z": None, "collar_depth": None,
-            "survey_layer": None, "survey_id": None, "survey_depth": None, "survey_azim": None, "survey_incl": None,
-            "interval_layer": None, "interval_id": None, "interval_from": None, "interval_to": None, "interval_lith": None
+            "raster_layer": None,
+            "selected_band": 1,
+            "scale": 1.0,
+            "vertexag": 1.0,
+            "crossline_layer": None,
+            "buffer_distance": 0.0,
+            "outcrop_layer": None,
+            "outcrop_name_field": None,
+            "structural_layer": None,
+            "dip_field": None,
+            "strike_field": None,
+            "dip_scale_factor": 1.0,
+            "collar_layer": None,
+            "collar_id": None,
+            "use_geometry": True,
+            "collar_x": None,
+            "collar_y": None,
+            "collar_z": None,
+            "collar_depth": None,
+            "survey_layer": None,
+            "survey_id": None,
+            "survey_depth": None,
+            "survey_azim": None,
+            "survey_incl": None,
+            "interval_layer": None,
+            "interval_id": None,
+            "interval_from": None,
+            "interval_to": None,
+            "interval_lith": None,
         }
 
         self.mock_dialog.page_dem.get_data.return_value = self.default_data.copy()
@@ -61,6 +82,7 @@ class TestInputManager(BaseTestCase):
             self.assertEqual(message, "")
             # Verify call with some ANY to avoid strict object identity check
             from sec_interp.core.validation.project_validator import ValidationParams
+
             mock_validate.assert_called_once()
             args, _ = mock_validate.call_args
             self.assertIsInstance(args[0], ValidationParams)
