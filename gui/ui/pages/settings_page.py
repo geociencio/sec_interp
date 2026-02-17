@@ -31,9 +31,7 @@ class SettingsPage(BasePage):
         # Ensure we have all necessary widgets
         self.tab_widget = None
         self.chk_enable_3d = None
-        super().__init__(
-            QCoreApplication.translate("SettingsPage", "Plugin Settings"), parent
-        )
+        super().__init__(QCoreApplication.translate("SettingsPage", "Plugin Settings"), parent)
 
     def _setup_ui(self) -> None:
         """Set up the UI for settings using Tabs."""
@@ -83,16 +81,16 @@ class SettingsPage(BasePage):
         self.chk_exp_drill = QCheckBox(self.tr("Drillhole Data"))
         self.chk_exp_interp = QCheckBox(self.tr("Interpretations (2D)"))
 
-        for chk in [
-            self.chk_exp_topo,
-            self.chk_exp_geol,
-            self.chk_exp_struct,
-            self.chk_exp_drill,
-            self.chk_exp_interp,
-        ]:
-            chk.setChecked(True)  # Default True
-            chk.stateChanged.connect(self._on_settings_changed)
-            layout.addWidget(chk)
+        self.chk_exp_topo.stateChanged.connect(self._on_settings_changed)
+        self.chk_exp_geol.stateChanged.connect(self._on_settings_changed)
+        self.chk_exp_struct.stateChanged.connect(self._on_settings_changed)
+        self.chk_exp_drill.stateChanged.connect(self._on_settings_changed)
+        self.chk_exp_interp.stateChanged.connect(self._on_settings_changed)
+        layout.addWidget(self.chk_exp_topo)
+        layout.addWidget(self.chk_exp_geol)
+        layout.addWidget(self.chk_exp_struct)
+        layout.addWidget(self.chk_exp_drill)
+        layout.addWidget(self.chk_exp_interp)
 
         layout.addStretch()
 
@@ -114,18 +112,16 @@ class SettingsPage(BasePage):
         self.chk_3d_traces = QCheckBox(self.tr("Export 3D Traces"))
         self.chk_3d_intervals = QCheckBox(self.tr("Export 3D Intervals"))
         self.chk_3d_original = QCheckBox(self.tr("Use Original Coordinates (Real 3D)"))
-        self.chk_3d_projected = QCheckBox(
-            self.tr("Use Projected Coordinates (Section Plane)")
-        )
+        self.chk_3d_projected = QCheckBox(self.tr("Use Projected Coordinates (Section Plane)"))
 
-        for chk in [
-            self.chk_3d_traces,
-            self.chk_3d_intervals,
-            self.chk_3d_original,
-            self.chk_3d_projected,
-        ]:
-            chk.stateChanged.connect(self._on_settings_changed)
-            layout.addWidget(chk)
+        self.chk_3d_traces.stateChanged.connect(self._on_settings_changed)
+        self.chk_3d_intervals.stateChanged.connect(self._on_settings_changed)
+        self.chk_3d_original.stateChanged.connect(self._on_settings_changed)
+        self.chk_3d_projected.stateChanged.connect(self._on_settings_changed)
+        layout.addWidget(self.chk_3d_traces)
+        layout.addWidget(self.chk_3d_intervals)
+        layout.addWidget(self.chk_3d_original)
+        layout.addWidget(self.chk_3d_projected)
 
         layout.addStretch()
 
@@ -137,9 +133,7 @@ class SettingsPage(BasePage):
             metadata = read_plugin_metadata()
 
             layout.addWidget(QLabel("<b>Plugin Information</b>"))
-            layout.addWidget(
-                QLabel(self.tr(f"{metadata['name']} v{metadata['version']}"))
-            )
+            layout.addWidget(QLabel(self.tr(f"{metadata['name']} v{metadata['version']}")))
             layout.addWidget(QLabel(self.tr(f"Developed by {metadata['author']}")))
             layout.addWidget(QLabel(self.tr(f"Contact: {metadata['email']}")))
 
@@ -203,35 +197,23 @@ class SettingsPage(BasePage):
         """Save settings when they are changed."""
         # Advanced
         if self.chk_enable_3d:
-            self.settings.setValue(
-                "sec_interp/enable_3d", self.chk_enable_3d.isChecked()
-            )
+            self.settings.setValue("sec_interp/enable_3d", self.chk_enable_3d.isChecked())
 
         # Default
         if hasattr(self, "chk_exp_topo"):
             self.settings.setValue("sec_interp/exp_topo", self.chk_exp_topo.isChecked())
             self.settings.setValue("sec_interp/exp_geol", self.chk_exp_geol.isChecked())
-            self.settings.setValue(
-                "sec_interp/exp_struct", self.chk_exp_struct.isChecked()
-            )
-            self.settings.setValue(
-                "sec_interp/exp_drill", self.chk_exp_drill.isChecked()
-            )
-            self.settings.setValue(
-                "sec_interp/exp_interp", self.chk_exp_interp.isChecked()
-            )
+            self.settings.setValue("sec_interp/exp_struct", self.chk_exp_struct.isChecked())
+            self.settings.setValue("sec_interp/exp_drill", self.chk_exp_drill.isChecked())
+            self.settings.setValue("sec_interp/exp_interp", self.chk_exp_interp.isChecked())
 
         # Drillhole 3D
         if hasattr(self, "chk_3d_traces"):
-            self.settings.setValue(
-                "sec_interp/drill_3d_traces", self.chk_3d_traces.isChecked()
-            )
+            self.settings.setValue("sec_interp/drill_3d_traces", self.chk_3d_traces.isChecked())
             self.settings.setValue(
                 "sec_interp/drill_3d_intervals", self.chk_3d_intervals.isChecked()
             )
-            self.settings.setValue(
-                "sec_interp/drill_3d_original", self.chk_3d_original.isChecked()
-            )
+            self.settings.setValue("sec_interp/drill_3d_original", self.chk_3d_original.isChecked())
             self.settings.setValue(
                 "sec_interp/drill_3d_projected", self.chk_3d_projected.isChecked()
             )
@@ -244,49 +226,29 @@ class SettingsPage(BasePage):
 
         """
         return {
-            "enable_3d": (
-                self.chk_enable_3d.isChecked() if self.chk_enable_3d else False
-            ),
-            "exp_topo": (
-                self.chk_exp_topo.isChecked() if hasattr(self, "chk_exp_topo") else True
-            ),
-            "exp_geol": (
-                self.chk_exp_geol.isChecked() if hasattr(self, "chk_exp_geol") else True
-            ),
+            "enable_3d": (self.chk_enable_3d.isChecked() if self.chk_enable_3d else False),
+            "exp_topo": (self.chk_exp_topo.isChecked() if hasattr(self, "chk_exp_topo") else True),
+            "exp_geol": (self.chk_exp_geol.isChecked() if hasattr(self, "chk_exp_geol") else True),
             "exp_struct": (
-                self.chk_exp_struct.isChecked()
-                if hasattr(self, "chk_exp_struct")
-                else True
+                self.chk_exp_struct.isChecked() if hasattr(self, "chk_exp_struct") else True
             ),
             "exp_drill": (
-                self.chk_exp_drill.isChecked()
-                if hasattr(self, "chk_exp_drill")
-                else True
+                self.chk_exp_drill.isChecked() if hasattr(self, "chk_exp_drill") else True
             ),
             "exp_interp": (
-                self.chk_exp_interp.isChecked()
-                if hasattr(self, "chk_exp_interp")
-                else True
+                self.chk_exp_interp.isChecked() if hasattr(self, "chk_exp_interp") else True
             ),
             "drill_3d_traces": (
-                self.chk_3d_traces.isChecked()
-                if hasattr(self, "chk_3d_traces")
-                else True
+                self.chk_3d_traces.isChecked() if hasattr(self, "chk_3d_traces") else True
             ),
             "drill_3d_intervals": (
-                self.chk_3d_intervals.isChecked()
-                if hasattr(self, "chk_3d_intervals")
-                else True
+                self.chk_3d_intervals.isChecked() if hasattr(self, "chk_3d_intervals") else True
             ),
             "drill_3d_original": (
-                self.chk_3d_original.isChecked()
-                if hasattr(self, "chk_3d_original")
-                else True
+                self.chk_3d_original.isChecked() if hasattr(self, "chk_3d_original") else True
             ),
             "drill_3d_projected": (
-                self.chk_3d_projected.isChecked()
-                if hasattr(self, "chk_3d_projected")
-                else False
+                self.chk_3d_projected.isChecked() if hasattr(self, "chk_3d_projected") else False
             ),
         }
 
@@ -301,18 +263,23 @@ class SettingsPage(BasePage):
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
-        for chk in [
-            self.chk_exp_topo,
-            self.chk_exp_geol,
-            self.chk_exp_struct,
-            self.chk_exp_drill,
-            self.chk_exp_interp,
-            self.chk_enable_3d,
-            self.chk_3d_traces,
-            self.chk_3d_intervals,
-            self.chk_3d_original,
-            self.chk_3d_projected,
-        ]:
-            if chk:
-                with contextlib.suppress(TypeError, RuntimeError):
-                    chk.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_topo.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_geol.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_struct.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_drill.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_interp.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_enable_3d.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_3d_traces.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_3d_intervals.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_3d_original.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_3d_projected.stateChanged.disconnect(self._on_settings_changed)

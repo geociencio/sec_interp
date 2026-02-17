@@ -5,6 +5,7 @@ Orchestrates the lifecycle of the SecInterp QGIS plugin.
 
 from __future__ import annotations
 
+import contextlib
 from pathlib import Path
 from typing import Any
 
@@ -65,11 +66,7 @@ class SecInterp:
         locale_path = self.plugin_dir / f"i18n/SecInterp_{user_locale}.qm"
 
         MIN_LOCALE_LENGTH = 2
-        if (
-            not locale_path.exists()
-            and user_locale
-            and len(user_locale) > MIN_LOCALE_LENGTH
-        ):
+        if not locale_path.exists() and user_locale and len(user_locale) > MIN_LOCALE_LENGTH:
             # Fallback to language code (e.g., pt)
             locale_short = user_locale[0:2]
             locale_path = self.plugin_dir / f"i18n/SecInterp_{locale_short}.qm"
@@ -195,14 +192,33 @@ class SecInterp:
 
     def unload(self) -> None:
         """Remove the plugin menu item and icon from QGIS GUI."""
+        # Disconnect all signals before removing actions
+        self.disconnect_signals()
+
         for action in self.actions:
             self.iface.removePluginMenu(self.tr("&Sec Interp"), action)
             self.iface.removeToolBarIcon(action)
 
         # Remove custom toolbar
         if self.toolbar:
+            # noinspection PyBroadException
+            with contextlib.suppress(Exception):
+                # In QGIS, we should remove the toolbar from the interface if possible
+                self.iface.mainWindow().removeToolBar(self.toolbar)
             del self.toolbar
             self.toolbar = None
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals to prevent memory leaks."""
+        # Disconnect plugin actions
+        for action in self.actions:
+            with contextlib.suppress(TypeError, RuntimeError):
+                action.triggered.disconnect()
+
+        # Disconnect dialog connections if it exists
+        if hasattr(self, "dlg") and self.dlg:
+            with contextlib.suppress(TypeError, RuntimeError):
+                self.dlg.accepted.disconnect(self.process_data)
 
     def run(self) -> None:
         """Run method that performs all the real work."""
@@ -228,9 +244,7 @@ class SecInterp:
             # substitute with your code.
             pass
 
-    def _resolve_layer_obj(
-        self, value: Any, placeholder_text: str = ""
-    ) -> QgsMapLayer | None:
+    def _resolve_layer_obj(self, value: Any, placeholder_text: str = "") -> QgsMapLayer | None:
         """Resolve layer object from UI value."""
         if isinstance(value, QgsMapLayer):
             return value
@@ -327,9 +341,7 @@ class SecInterp:
                 layers.append(lyr)
         return layers
 
-    def process_data(
-        self, inputs: dict[str, Any] | None = None
-    ) -> tuple[Any, Any, Any] | None:
+    def process_data(self, inputs: dict[str, Any] | None = None) -> tuple[Any, Any, Any] | None:
         """Process profile data by delegating to the dialog's preview manager.
 
         Args:
@@ -418,9 +430,7 @@ class SecInterp:
             "struct": struct if options.get("show_struct", True) else None,
             "drill": drill if options.get("show_drillholes", True) else None,
             "interp": (
-                self.dlg.interpretations
-                if options.get("show_interpretations", True)
-                else None
+                self.dlg.interpretations if options.get("show_interpretations", True) else None
             ),
         }
 

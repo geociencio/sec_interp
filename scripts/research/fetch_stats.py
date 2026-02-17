@@ -25,7 +25,9 @@ def fetch_stats(plugin_name: str = "sec_interp"):
         # We find all occurrences of <td class="downloads">X</td> and sum them
         html = response.text
 
-        matches = re.findall(r'<td class="downloads">([\d,.]+)</td>', html, re.IGNORECASE)
+        matches = re.findall(
+            r'<td class="downloads">([\d,.]+)</td>', html, re.IGNORECASE
+        )
 
         if matches:
             total_downloads = 0

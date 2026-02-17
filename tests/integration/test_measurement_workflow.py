@@ -22,6 +22,11 @@ class TestMeasurementWorkflow(BaseIntegrationTest):
         self.received_metrics = []
         self.tool.measurementChanged.connect(self.received_metrics.append)
 
+    def tearDown(self):
+        """Clean up signals."""
+        self.tool.measurementChanged.disconnect()
+        super().tearDown()
+
     def test_multi_point_measurement(self):
         """Test sequence of points and final metrics calculation."""
         # Simulate adding points (programmatically to avoid UI event issues)

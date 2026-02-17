@@ -31,6 +31,12 @@ class TestMeasureTool(BaseTestCase):
 
         self.tool = ProfileMeasureTool(self.canvas)
 
+    def tearDown(self):
+        """Clean up tool signals."""
+        if hasattr(self, "tool"):
+            self.tool.disconnect_signals()
+        super().tearDown()
+
     def test_snapper_no_layers(self):
         """Test snapping with no layers."""
         snapper = ProfileSnapper(self.canvas)

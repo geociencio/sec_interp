@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import contextlib
-
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
@@ -29,9 +27,7 @@ class GeologyPage(BasePage):
             parent: Optional parent widget.
 
         """
-        super().__init__(
-            QCoreApplication.translate("GeologyPage", "Geological Outcrops"), parent
-        )
+        super().__init__(QCoreApplication.translate("GeologyPage", "Geological Outcrops"), parent)
 
     def _setup_ui(self) -> None:
         super()._setup_ui()
@@ -48,16 +44,12 @@ class GeologyPage(BasePage):
         try:
             from qgis.core import Qgis  # noqa: PLC0415
 
-            self.layer_combo.setFilters(
-                Qgis.LayerFilters(Qgis.LayerFilter.PolygonLayer)
-            )
+            self.layer_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.PolygonLayer))
         except (ImportError, AttributeError, TypeError):
             self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
         self.layer_combo.setAllowEmptyLayer(True)
-        self.layer_combo.setToolTip(
-            self.tr("Select the polygon layer with geological outcrops")
-        )
+        self.layer_combo.setToolTip(self.tr("Select the polygon layer with geological outcrops"))
         self.layer_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.layer_combo, 0, 1)
 
@@ -93,12 +85,7 @@ class GeologyPage(BasePage):
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
-        try:
-            self.layer_combo.layerChanged.disconnect(self.field_combo.setLayer)
-            self.layer_combo.layerChanged.disconnect(self.dataChanged.emit)
-        except (TypeError, RuntimeError):
-            pass
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.field_combo.fieldChanged.disconnect(self.dataChanged.emit)
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dataChanged.disconnect()
+        self.layer_combo.layerChanged.disconnect(self.field_combo.setLayer)
+        self.layer_combo.layerChanged.disconnect(self.dataChanged.emit)
+        self.field_combo.fieldChanged.disconnect(self.dataChanged.emit)
+        self.dataChanged.disconnect()

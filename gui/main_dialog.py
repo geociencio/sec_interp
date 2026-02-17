@@ -104,10 +104,6 @@ class SecInterpDialog(SecInterpMainWindow):
         self.signal_manager = SignalManager(self)
         self.signal_manager.connect_all()
 
-        # Connect extra tool buttons
-        self.clear_cache_btn.clicked.connect(self.clear_cache_handler)
-        self.reset_defaults_btn.clicked.connect(self.reset_defaults_handler)
-
         # Initial state update
         self.state_manager.update_all()
         self.state_manager.load_settings()

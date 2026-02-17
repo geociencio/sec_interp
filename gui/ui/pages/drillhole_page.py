@@ -40,9 +40,7 @@ class DrillholePage(BasePage):
             parent: Optional parent widget.
 
         """
-        super().__init__(
-            QCoreApplication.translate("DrillholePage", "Drillhole Data"), parent
-        )
+        super().__init__(QCoreApplication.translate("DrillholePage", "Drillhole Data"), parent)
 
     def _setup_ui(self) -> None:
         # Override BasePage layout slightly to allow for Tabs or multiple Groups
@@ -57,9 +55,7 @@ class DrillholePage(BasePage):
         # Clear any default layout in group_box if BasePage added any (it creates an empty
         # QVBoxLayout usually)
         if self.group_box.layout():
-            QWidget().setLayout(
-                self.group_box.layout()
-            )  # Hack to delete layout? No, just use it.
+            QWidget().setLayout(self.group_box.layout())  # Hack to delete layout? No, just use it.
             layout = self.group_box.layout()
         else:
             layout = QVBoxLayout(self.group_box)
@@ -159,18 +155,12 @@ class DrillholePage(BasePage):
         self.chk_use_geom.toggled.connect(self._toggle_xy_fields)
         self._toggle_xy_fields(True)
 
-        for widget in [
-            self.c_id,
-            self.c_x,
-            self.c_y,
-            self.c_z,
-            self.c_depth,
-            self.chk_use_geom,
-        ]:
-            if hasattr(widget, "fieldChanged"):
-                widget.fieldChanged.connect(self.dataChanged.emit)
-            elif hasattr(widget, "toggled"):
-                widget.toggled.connect(self.dataChanged.emit)
+        self.c_id.fieldChanged.connect(self.dataChanged.emit)
+        self.c_x.fieldChanged.connect(self.dataChanged.emit)
+        self.c_y.fieldChanged.connect(self.dataChanged.emit)
+        self.c_z.fieldChanged.connect(self.dataChanged.emit)
+        self.c_depth.fieldChanged.connect(self.dataChanged.emit)
+        self.chk_use_geom.toggled.connect(self.dataChanged.emit)
 
     def _setup_survey_tab(self, parent_widget: QWidget) -> None:
         layout = QGridLayout(parent_widget)
@@ -182,9 +172,7 @@ class DrillholePage(BasePage):
         # Use modern flags if available (QGIS 3.32+)
         try:
             self.s_layer.setFilters(
-                Qgis.LayerFilters(
-                    Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry
-                )
+                Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
             )
         except (AttributeError, TypeError):
             self.s_layer.setFilters(
@@ -237,9 +225,7 @@ class DrillholePage(BasePage):
         # Use modern flags if available (QGIS 3.32+)
         try:
             self.i_layer.setFilters(
-                Qgis.LayerFilters(
-                    Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry
-                )
+                Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
             )
         except (AttributeError, TypeError):
             self.i_layer.setFilters(
@@ -356,10 +342,11 @@ class DrillholePage(BasePage):
         except (TypeError, RuntimeError):
             pass
 
-        collar_combos = [self.c_id, self.c_x, self.c_y, self.c_z, self.c_depth]
-        for w in collar_combos:
-            with contextlib.suppress(TypeError, RuntimeError, AttributeError):
-                w.fieldChanged.disconnect(self.dataChanged.emit)
+        self.c_id.fieldChanged.disconnect(self.dataChanged.emit)
+        self.c_x.fieldChanged.disconnect(self.dataChanged.emit)
+        self.c_y.fieldChanged.disconnect(self.dataChanged.emit)
+        self.c_z.fieldChanged.disconnect(self.dataChanged.emit)
+        self.c_depth.fieldChanged.disconnect(self.dataChanged.emit)
 
         # Survey signals
         try:
