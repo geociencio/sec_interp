@@ -98,9 +98,7 @@ class ProfileController:
             try:
                 # Disconnect specific slot to avoid breaking other connections
                 layer.dataChanged.disconnect(self.data_cache.clear)
-                logger.debug(
-                    f"Disconnected cache invalidation from layer: {layer.name()}"
-                )
+                logger.debug(f"Disconnected cache invalidation from layer: {layer.name()}")
             except (TypeError, RuntimeError):
                 # Signal might not be connected or layer might be deleted
                 pass
@@ -130,7 +128,9 @@ class ProfileController:
         cache_key = self.data_cache.get_cache_key(inputs)
         self.data_cache.set(cache_key, data)
 
-    def generate_profile_data(self, params: PreviewParams) -> tuple[
+    def generate_profile_data(
+        self, params: PreviewParams
+    ) -> tuple[
         list[tuple[float, float]],
         list[Any] | None,
         list[Any] | None,
@@ -185,6 +185,10 @@ class ProfileController:
                 hasher.update(str(val).encode("utf-8"))
         return hasher.hexdigest()
 
+    def tr(self, message: str) -> str:
+        """Translate a message using QCoreApplication."""
+        return QCoreApplication.translate("ProfileController", message)
+
     def _process_topography(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
     ) -> list[tuple[float, float]]:
@@ -198,24 +202,18 @@ class ProfileController:
             raster_lyr = self._resolve_layer(params.raster_layer)
 
             if not line_lyr or not raster_lyr:
-                raise ProcessingError("Required layers for topography are missing.")
+                raise ProcessingError(self.tr("Required layers for topography are missing."))
 
             profile_data = self.profile_service.generate_topographic_profile(
                 line_lyr, raster_lyr, params.band_num
             )
             if not profile_data:
-                raise ProcessingError(
-                    QCoreApplication.translate(
-                        "ProfileController",
-                        "No topographic profile data was generated.",
-                    )
-                )
+                raise ProcessingError(self.tr("No topographic profile data was generated."))
             self.data_cache.set("topo", topo_key, profile_data, cache_meta)
         messages.append(
-            QCoreApplication.translate(
-                "ProfileController",
-                "✓ Data processed successfully!\n\nTopography: {0} points",
-            ).format(len(profile_data))
+            self.tr("✓ Data processed successfully!\n\nTopography: {0} points").format(
+                len(profile_data)
+            )
         )
         return profile_data
 
@@ -232,11 +230,7 @@ class ProfileController:
         geol_data = self.data_cache.get("geol", geol_key)
         if geol_data:
             logger.debug("Cache hit: Geology")
-            messages.append(
-                QCoreApplication.translate(
-                    "ProfileController", "Geology: {0} segments"
-                ).format(len(geol_data))
-            )
+            messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))
         else:
             line_lyr = self._resolve_layer(params.line_layer)
             raster_lyr = self._resolve_layer(params.raster_layer)
@@ -254,17 +248,9 @@ class ProfileController:
             )
             if geol_data:
                 self.data_cache.set("geol", geol_key, geol_data, cache_meta)
-                messages.append(
-                    QCoreApplication.translate(
-                        "ProfileController", "Geology: {0} segments"
-                    ).format(len(geol_data))
-                )
+                messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))
             else:
-                messages.append(
-                    QCoreApplication.translate(
-                        "ProfileController", "Geology: No intersections"
-                    )
-                )
+                messages.append(self.tr("Geology: No intersections"))
         return geol_data
 
     def _process_structures(
@@ -286,11 +272,7 @@ class ProfileController:
         struct_data = self.data_cache.get("struct", struct_key)
         if struct_data:
             logger.debug("Cache hit: Structure")
-            messages.append(
-                QCoreApplication.translate(
-                    "ProfileController", "Structures: {0} points"
-                ).format(len(struct_data))
-            )
+            messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
         else:
             line_lyr = self._resolve_layer(params.line_layer)
             if not line_lyr:
@@ -335,19 +317,11 @@ class ProfileController:
                         band_number=params.band_num,
                     )
                     if struct_data:
-                        self.data_cache.set(
-                            "struct", struct_key, struct_data, cache_meta
-                        )
-                        messages.append(
-                            QCoreApplication.translate(
-                                "ProfileController", "Structures: {0} points"
-                            ).format(len(struct_data))
-                        )
+                        self.data_cache.set("struct", struct_key, struct_data, cache_meta)
+                        messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
                     else:
                         messages.append(
-                            QCoreApplication.translate(
-                                "ProfileController", "Structures: None in {0}m buffer"
-                            ).format(params.buffer_dist)
+                            self.tr("Structures: None in {0}m buffer").format(params.buffer_dist)
                         )
         return struct_data
 

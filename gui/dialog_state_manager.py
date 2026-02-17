@@ -39,6 +39,7 @@ class StateManager:
         # Icons for status indicators
         self._warning_icon = None
         self._success_icon = None
+        self._connected_widgets: list[Any] = []
 
     # --- UI Status Management ---
 
@@ -57,6 +58,19 @@ class StateManager:
         self.update_preview_checkbox_states()
         self.update_raster_status()
         self.update_section_status()
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all UI signals to prevent memory leaks."""
+        logger.debug(f"Disconnecting {len(self._connected_widgets)} UI signals")
+        for _widget, signal, slot in self._connected_widgets:
+            with contextlib.suppress(TypeError, RuntimeError):
+                signal.disconnect(slot)
+        self._connected_widgets.clear()
+
+    def _connect_checked(self, widget: Any, signal: Any, slot: Any) -> None:
+        """Connect a signal and track it for later disconnection."""
+        signal.connect(slot)
+        self._connected_widgets.append((widget, signal, slot))
 
     def update_preview_checkbox_states(self) -> None:
         """Enable or disable preview checkboxes based on input validity."""

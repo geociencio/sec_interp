@@ -1,4 +1,16 @@
 ---
+## [2026-02-16] RESUMEN: Estabilización de Señales e i18n
+- **Logro**: Resueltas fugas de señales en la GUI e internacionalizado el `ProfileController`. Suite de tests elevada a 386 OK.
+- **Cambios**:
+    - **Señales**: Sistema de rastreo dinámico en `StateManager` para desconexión segura en `closeEvent`.
+    - **i18n**: Cobertura total en `controller.py`.
+    - **Estabilidad**: Ajuste de conexiones para compatibilidad dual con Mocks y tiempo de ejecución.
+- **Métricas**:
+    - **Tests**: 386/386 OK (Docker).
+    - **i18n**: 100% en Core controller.
+- **Mantenimiento**: [sesion_2026-02-16_stabilization_signals_i18n.md](maintenance/sesion_2026-02-16_stabilization_signals_i18n.md).
+
+---
 ## [2026-02-15] RESUMEN: Estabilización de Mocks y Tests 3D Avanzados (Noche)
 - **Logro**: Suite completa (378 tests) estabilizada tras corregir fallos críticos de integridad de datos en mocks.
 - **Cambios**:

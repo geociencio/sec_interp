@@ -71,9 +71,7 @@ class SignalManager:
             self.dialog.button_box.helpRequested.disconnect(self.dialog.open_help)
 
         with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.clear_cache_btn.clicked.disconnect(
-                self.dialog.clear_cache_handler
-            )
+            self.dialog.clear_cache_btn.clicked.disconnect(self.dialog.clear_cache_handler)
 
     def _disconnect_preview_signals(self) -> None:
         """Disconnect preview-related signals."""
@@ -123,9 +121,7 @@ class SignalManager:
     def _disconnect_page_signals(self) -> None:
         """Disconnect page-specific signals."""
         with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.output_widget.fileChanged.disconnect(
-                self.dialog.update_button_state
-            )
+            self.dialog.output_widget.fileChanged.disconnect(self.dialog.update_button_state)
 
         with contextlib.suppress(TypeError, RuntimeError):
             self.dialog.page_dem.raster_combo.layerChanged.disconnect(
@@ -180,68 +176,63 @@ class SignalManager:
 
     def _connect_button_signals(self) -> None:
         """Connect dialog button signals."""
-        # Main dialog buttons
-        # Connect standard buttons explicitly
-        # We avoid connecting accepting/rejected signals directly because 'Save' button
-        # might have AcceptRole by default in some Qt versions/styles, triggering accept().
+        sm = self.dialog.state_manager
 
         ok_btn = self.dialog.button_box.button(QDialogButtonBox.Ok)
         if ok_btn:
-            ok_btn.clicked.connect(self.dialog.accept_handler)
+            sm._connect_checked(ok_btn, ok_btn.clicked, self.dialog.accept_handler)
 
         cancel_btn = self.dialog.button_box.button(QDialogButtonBox.Cancel)
         if cancel_btn:
-            cancel_btn.clicked.connect(self.dialog.reject_handler)
+            sm._connect_checked(cancel_btn, cancel_btn.clicked, self.dialog.reject_handler)
 
         save_btn = self.dialog.button_box.button(QDialogButtonBox.Save)
         if save_btn:
-            # Save should ONLY trigger export, not close the dialog
-            save_btn.clicked.connect(self.dialog.export_manager.export_data)
+            sm._connect_checked(save_btn, save_btn.clicked, self.dialog.export_manager.export_data)
 
-        self.dialog.button_box.helpRequested.connect(self.dialog.open_help)
-
-        # Clear cache button
-        self.dialog.clear_cache_btn.clicked.connect(self.dialog.clear_cache_handler)
+        sm._connect_checked(
+            self.dialog.button_box, self.dialog.button_box.helpRequested, self.dialog.open_help
+        )
+        sm._connect_checked(
+            self.dialog.clear_cache_btn,
+            self.dialog.clear_cache_btn.clicked,
+            self.dialog.clear_cache_handler,
+        )
 
     def _connect_preview_signals(self) -> None:
         """Connect preview-related signals."""
-        # Preview action buttons
-        self.dialog.preview_widget.btn_preview.clicked.connect(
-            self.dialog.preview_profile_handler
+        sm = self.dialog.state_manager
+        pw = self.dialog.preview_widget
+
+        sm._connect_checked(
+            pw.btn_preview, pw.btn_preview.clicked, self.dialog.preview_profile_handler
         )
-        self.dialog.preview_widget.btn_export.clicked.connect(
-            self.dialog.export_preview
-        )
+        sm._connect_checked(pw.btn_export, pw.btn_export.clicked, self.dialog.export_preview)
 
         # Preview layer checkboxes
-        self.dialog.preview_widget.chk_topo.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
-        )
-        self.dialog.preview_widget.chk_geol.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
-        )
-        self.dialog.preview_widget.chk_struct.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
-        )
-        self.dialog.preview_widget.chk_drillholes.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
-        )
-        self.dialog.preview_widget.chk_interpretations.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
-        )
-        self.dialog.preview_widget.chk_legend.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
-        )
+        for chk in [
+            pw.chk_topo,
+            pw.chk_geol,
+            pw.chk_struct,
+            pw.chk_drillholes,
+            pw.chk_interpretations,
+            pw.chk_legend,
+        ]:
+            sm._connect_checked(chk, chk.stateChanged, self.dialog.update_preview_from_checkboxes)
 
         # Preview settings
-        self.dialog.preview_widget.spin_max_points.valueChanged.connect(
-            self.dialog.update_preview_from_checkboxes
+        sm._connect_checked(
+            pw.spin_max_points,
+            pw.spin_max_points.valueChanged,
+            self.dialog.update_preview_from_checkboxes,
         )
-        self.dialog.preview_widget.chk_auto_lod.toggled.connect(
-            self.dialog.update_preview_from_checkboxes
+        sm._connect_checked(
+            pw.chk_auto_lod, pw.chk_auto_lod.toggled, self.dialog.update_preview_from_checkboxes
         )
-        self.dialog.preview_widget.chk_adaptive_sampling.toggled.connect(
-            self.dialog.update_preview_from_checkboxes
+        sm._connect_checked(
+            pw.chk_adaptive_sampling,
+            pw.chk_adaptive_sampling.toggled,
+            self.dialog.update_preview_from_checkboxes,
         )
 
     def _connect_page_signals(self) -> None:
@@ -250,58 +241,34 @@ class SignalManager:
         self.dialog.output_widget.fileChanged.connect(self.dialog.update_button_state)
 
         # DEM page
-        self.dialog.page_dem.raster_combo.layerChanged.connect(
-            self.dialog.update_button_state
-        )
+        self.dialog.page_dem.raster_combo.layerChanged.connect(self.dialog.update_button_state)
         self.dialog.page_dem.raster_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
 
         # Section page
-        self.dialog.page_section.line_combo.layerChanged.connect(
-            self.dialog.update_button_state
-        )
+        self.dialog.page_section.line_combo.layerChanged.connect(self.dialog.update_button_state)
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
 
         # Data pages
-        self.dialog.page_geology.dataChanged.connect(
-            self.dialog.update_preview_checkbox_states
-        )
-        self.dialog.page_struct.dataChanged.connect(
-            self.dialog.update_preview_checkbox_states
-        )
-        self.dialog.page_drillhole.dataChanged.connect(
-            self.dialog.update_preview_checkbox_states
-        )
+        self.dialog.page_geology.dataChanged.connect(self.dialog.update_preview_checkbox_states)
+        self.dialog.page_struct.dataChanged.connect(self.dialog.update_preview_checkbox_states)
+        self.dialog.page_drillhole.dataChanged.connect(self.dialog.update_preview_checkbox_states)
 
     def _connect_tool_signals(self) -> None:
         """Connect map tool signals."""
-        # Measure tool
-        self.dialog.preview_widget.btn_measure.toggled.connect(
-            self.dialog.toggle_measure_tool
-        )
+        sm = self.dialog.state_manager
+        pw = self.dialog.preview_widget
+        mt = self.dialog.tool_manager.measure_tool
 
-        # Interpretation tool
-        self.dialog.preview_widget.btn_interpret.toggled.connect(
-            self.dialog.toggle_interpretation_tool
+        sm._connect_checked(pw.btn_measure, pw.btn_measure.toggled, self.dialog.toggle_measure_tool)
+        sm._connect_checked(
+            pw.btn_interpret, pw.btn_interpret.toggled, self.dialog.toggle_interpretation_tool
         )
+        sm._connect_checked(pw.btn_finalize, pw.btn_finalize.clicked, mt.finalize_measurement)
 
-        # Finalize button with debug wrapper
-        def finalize_with_log() -> None:
-            """Log finalization action and trigger measurement finalization."""
-            logger.info("Finalize button clicked!")
-            self.dialog.tool_manager.measure_tool.finalize_measurement()
-
-        self.dialog.preview_widget.btn_finalize.clicked.connect(finalize_with_log)
-
-        self.dialog.tool_manager.measure_tool.measurementChanged.connect(
-            self.dialog.update_measurement_display
-        )
-        self.dialog.tool_manager.measure_tool.measurementFinished.connect(
-            lambda: self.dialog.preview_widget.btn_measure.setChecked(False)
-        )
-        self.dialog.tool_manager.measure_tool.measurementCleared.connect(
-            lambda: self.dialog.preview_widget.results_text.clear()
-        )
+        sm._connect_checked(mt, mt.measurementChanged, self.dialog.update_measurement_display)
+        sm._connect_checked(mt, mt.measurementFinished, lambda: pw.btn_measure.setChecked(False))
+        sm._connect_checked(mt, mt.measurementCleared, lambda: pw.results_text.clear())

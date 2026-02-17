@@ -48,4 +48,11 @@ lessons:
 - **Workflow**: Inicia con `/inicia-sesion`, Cierra con `/cierra-sesion`.
 
 ---
-*Última actualización: 2026-02-05 - Estructura optimizada para Agentic Memory.*
+  - date: 2026-02-16
+    category: TECHNICAL
+    topic: Signal Tracing vs Mocks
+    lesson: "El uso de wrappers para conectar señales (como sm._connect_checked) puede romper los tests unitarios si estos esperan llamadas directas al Mock del slot. Las señales conectadas mdiante wrappers no son detectadas por `assert_called_with` de objetos Mock."
+    action: "Para métodos que son mocks en tests unitarios, mantener conexiones de señal directas sin wrappers de rastreo, u orquestar la desconexión selectiva."
+
+---
+*Última actualización: 2026-02-16 - Estabilización de señales e i18n.*

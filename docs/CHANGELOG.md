@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Comprehensive return type hints across Core, GUI, and Exporters for better IDE support and stability.
-- Robust signal disconnection mechanism in main dialog pages to prevent memory leaks.
-- Improved i18n coverage in several core services.
+- Robust signal disconnection mechanism in main dialog using `StateManager` tracking to prevent memory leaks.
+- Full i18n coverage in `ProfileController` and improved string extraction.
+- **Estabilidad**: Suite de tests elevada a **386 tests OK** (Docker), validando la coexistencia de rastreo de señales y mocks.
 - **Estabilidad**: Corregida la suite de tests de integración avanzada resolviendo la pérdida de atributos en `MockQgsFeature` y el parsing de WKT en `MockQgsGeometry`.
 - **Exporters**: Asegurada la integridad de coordenadas Z en las exportaciones Shapefile mediante el uso de tipos nativos `Z`.
 - **Mocks**: Implementado un sistema de `getFeatures` dinámico y cooperativo en `MockQgsMapLayer`.
