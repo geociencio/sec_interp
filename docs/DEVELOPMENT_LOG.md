@@ -903,6 +903,14 @@ Sesión enfocada en la estabilización del plugin tras la refactorización de `Q
 - Se configuró `devcontainer.json` para construir la imagen localmente y establecer `PYTHONPATH`.
 
 ---
+## [2026-02-17] Zero-Leak Milestone & v3.0.1 Release
+- **Fugas de Señales**: Resolución del 100% de las fugas de señales detectadas (22 leaks).
+- **Lanzamiento**: Liberación de la versión 3.0.1 (Expert Stability & Global Reach).
+- **Idiomas**: Integración de soporte para Hindi y Japonés.
+- **Calidad**: Formateo masivo (Black/Ruff) y validación de integridad en Docker (386 tests).
+- **Optimización**: Reducción del 80% del paquete ZIP mediante `.qgisignore`.
+
+---
 ## [2026-01-04-1] - Dev Containers Architecture (21:30)
 
 ### Actividades
