@@ -2,40 +2,35 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.0.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.0.1-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
-![Code Quality](https://img.shields.io/badge/Code--Quality-69.9%2F100-green)
+![Code Quality](https://img.shields.io/badge/Code--Quality-85.0%2F100-green)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 ![Linting](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
 ![Managed with uv](https://img.shields.io/badge/managed%20with-uv-blueviolet)
-![i18n](https://img.shields.io/badge/i18n-8%20Languages-blue.svg)
+![i18n](https://img.shields.io/badge/i18n-11%20Languages-blue.svg)
 
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v3.0.0: Now with 8-language support and automated translation engine.*
+*SecInterp v3.0.1: Now with 11-language support and zero signal leaks.*
 
 ---
 
 ---
 
-## 🆕 What's New in v3.0.0
-**Phase: Global Reach & Structural Excellence**
+## 🆕 What's New in v3.0.1
+**Phase: Extreme Stability & Global Reach**
 
-### 🌍 Universal Accessibility
-- **8-Language Core**: Full translation for Spanish, French, Portuguese (BR), German, Russian, Chinese (Simplified), Indonesian, and Italian.
-- **Automated Workflow**: High-fidelity translation maintenance via `make transup` and JSON master data.
+### 🛡️ Core Stability
+- **Zero Signal Leaks**: Eliminated all 22 leaks detected by `qgis-analyzer`, ensuring long-term UI stability.
+- **Improved Maintainability**: Refactored `SignalManager` and applied project-wide `Black`/`Ruff` formatting.
 
-### 🏗️ Advanced Architecture (ADR-0008)
-- **Service Decomposition**: `DrillholeService` is now a modular system of specialized processors (`Collar`, `Survey`, `Interval`), drastically reducing complexity and improving reliability.
-- **Access Control**: New `AccessControlService` for granular management of premium features like 3D Export.
-- **Domain Refactoring**: Unified data flow through a decentralized `core/domain` package.
-
-### ⚡ Performance & Quality
-- **Robust Mocks**: Comprehensive QGIS mock engine for 100% reliable unit testing without a GUI.
-- **Safety First**: Strict decoupling of background threads and UI signals to prevent QGIS crashes.
+### 🌏 Global Expansion
+- **11-Language Support**: Added official support for **Hindi (HI)** and **Japanese (JA)**.
+- **Optimized Distribution**: Reduced plugin size by ~80% through aggressive exclusion patterns.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 

@@ -6,10 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [3.0.1] - 2026-02-17
 ### Added
 - Comprehensive return type hints across Core, GUI, and Exporters for better IDE support and stability.
-- Robust signal disconnection mechanism in main dialog using `StateManager` tracking to prevent memory leaks.
-- Full i18n coverage in `ProfileController` and improved string extraction.
+- Robust signal disconnection mechanism in main dialog using `StateManager` tracking to prevent memory leaks (22 leaks resolved).
+- Expanded i18n support to 11 languages (added Hindi and Japanese).
 - **Estabilidad**: Suite de tests elevada a **386 tests OK** (Docker), validando la coexistencia de rastreo de señales y mocks.
 - **Estabilidad**: Corregida la suite de tests de integración avanzada resolviendo la pérdida de atributos en `MockQgsFeature` y el parsing de WKT en `MockQgsGeometry`.
 - **Exporters**: Asegurada la integridad de coordenadas Z en las exportaciones Shapefile mediante el uso de tipos nativos `Z`.
@@ -20,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modernized type annotations to use `| None` syntax.
 - Standardized geometry utility imports to use `qgis.PyQt`.
 - **Documentación**: Desacoplamiento de la documentación de la API del paquete de ayuda offline integrado en el plugin.
+- Applied project-wide code formatting with Black and Ruff.
 
 ## [3.0.0] - 2026-02-14
 ### Fixed

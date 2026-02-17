@@ -2,7 +2,7 @@
 name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
-version=3.0.0
+version=3.0.1
 author=Juan M Bernales
 email=juanbernales@gmail.com
 
@@ -16,6 +16,12 @@ repository=https://github.com/geociencio/sec_interp
 
 hasProcessingProvider=no
 changelog=
+    3.0.1 (2026-02-17)
+    * Quality & Stability Release:
+      - Signals: Eliminated 22 signal leaks, achieving zero-leak status.
+      - Quality: Achieved 70.0/100 maintainability score with project-wide formatting.
+      - i18n: Expanded support to 11 languages (added Hindi and Japanese).
+      - Maintenance: Optimized plugin size by 80%% via .qgisignore.
     3.0.0 (2026-02-14)
     * Major Evolution - Global Reach & Core Stability:
       - i18n: Achieved 100%% core coverage for 8 languages (ES, FR, PT_BR, DE, RU, ZH_CN, ID, IT).

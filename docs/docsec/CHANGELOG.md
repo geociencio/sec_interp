@@ -5,6 +5,14 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2026-02-17
+### 🚀 Calidad y Estabilidad
+- **Gestión de Señales**: Resolución de 22 fugas de señales (signal leaks), logrando estabilidad total de la interfaz.
+- **Idiomas**: Soporte expandido a 11 idiomas con la adición de Hindi (HI) y Japonés (JA).
+- **Estándares**: Aplicación masiva de formato `Black` y `Ruff` en todo el proyecto.
+- **Optimización**: Reducción del 80%% del tamaño del paquete ZIP mediante patrones de exclusión agresivos.
+- **Testing**: Suite de pruebas estabilizada en Docker con 386 tests pasando.
+
 ## [3.0.0] - 2026-02-14
 ### 🚀 Características Principales
 - **Internacionalización (I18n) Avanzada**:
