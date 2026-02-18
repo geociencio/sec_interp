@@ -8,6 +8,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 from sec_interp.core.validation import validate_safe_output_path
 
 
@@ -73,7 +75,9 @@ class BaseExporter(ABC):
         )
 
         if not is_valid:
-            return False, f"Invalid export path: {error}"
+            return False, QCoreApplication.translate(
+                "BaseExporter", "Invalid export path: {error}"
+            ).format(error=error)
 
         return True, ""
 

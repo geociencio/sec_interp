@@ -20,7 +20,7 @@ from qgis.core import (
     QgsPolygon,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QMetaType
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 from qgis.PyQt.QtGui import QColor
 
 from sec_interp.core.domain import InterpretationPolygon
@@ -81,7 +81,12 @@ class Interpretation3DExporter(BaseExporter):
             return False
 
         if not section_line:
-            raise ExportError("Section line geometry is required for 3D projection.")
+            raise ExportError(
+                QCoreApplication.translate(
+                    "Interpretation3DExporter",
+                    "Section line geometry is required for 3D projection.",
+                )
+            )
         return True
 
     def _handle_post_export_styles(

@@ -65,6 +65,13 @@ class ExportService:
                 "exp_interp": True,
             }
 
+        # Log parameters for debugging
+        logger.info(f"Export options: {export_options}")
+
+        if not any(export_options.values()):
+            logger.warning("All export options are disabled. Nothing will be exported.")
+            return ["⚠ No export options selected. Check Settings tab."]
+
         if not profile_data:
             raise DataMissingError("No profile data available for export")
 
