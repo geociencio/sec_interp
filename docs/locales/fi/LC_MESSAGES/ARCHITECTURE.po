@@ -1,0 +1,1446 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fi\n"
+"Language-Team: fi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/ARCHITECTURE.md:1
+msgid "SecInterp - Detailed Project Architecture"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:3
+msgid ""
+"**Complete Technical Documentation for the SecInterp QGIS Plugin** "
+"Version 2.9.0 | Last update: 2026-02-01"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:6
+msgid ""
+"⚠️ **Important Note**: See the [Core Components Distinction Guide "
+"(EN)](CORE_DISTINCTION_GUIDE_EN.md) or [Guía de Distinción de Core "
+"(ES)](CORE_DISTINCTION_GUIDE.md) to differentiate between the `SecInterp "
+"Core` and the `qgis.core` API."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:10
+msgid "📑 Table of Contents"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:12
+msgid "[Overview](#overview)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:13
+msgid "[System Architecture](#system-architecture)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:14
+msgid "[GUI Layer - User Interface](#gui-layer---user-interface)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:15
+msgid "[Core Layer - Business Logic](#core-layer---business-logic)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:16
+msgid "[Exporters Layer - Data Export](#exporters-layer---data-export)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:17
+msgid "[Main Data Flows](#main-data-flows)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:18
+msgid "[Design Patterns](#design-patterns)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:19
+msgid "[External Dependencies](#external-dependencies)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:20
+msgid "[Performance Optimizations](#performance-optimizations)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:21
+msgid "[Project Metrics](#project-metrics)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:26
+msgid "🎯 Overview"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:28
+msgid ""
+"**SecInterp** (Section Interpreter) is a QGIS plugin designed for the "
+"extraction and visualization of geological data in cross-sections. The "
+"plugin allows geologists to generate topographic profiles, project "
+"geological outcrops, and analyze structural data in a unified 2D view."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:30
+msgid "Main Features"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:32
+msgid "✅ **Interactive Preview System** with real-time rendering"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:33
+msgid "✅ **Parallel Processing** for complex geological intersections"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:34
+msgid "✅ **Adaptive LOD** (Level of Detail) based on zoom"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:35
+msgid "✅ **Measurement Tools** with automatic snapping"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:36
+msgid "✅ **Drillhole Support** with 3D→2D projection"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:37
+msgid "✅ **Multi-format Export** (SHP, CSV, PDF, SVG, PNG)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:41
+msgid "📂 Directory Structure"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:43
+msgid ""
+"The project organization follows a clear modular structure to separate "
+"the interface, business logic, and utilities."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:99
+msgid "🏗️ System Architecture"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:101
+msgid "Full Architecture Diagram"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:247
+msgid "🧩 Visualizing Mermaid Diagrams in VS Code"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:249
+msgid ""
+"You can preview Mermaid diagrams in VS Code with the **Mermaid Editor** "
+"extension (installed). Quick steps:"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:251
+msgid "Open this file `docs/ARCHITECTURE.md`."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:252
+msgid ""
+"Place the cursor inside a ```mermaid``` block and open the command "
+"palette (Ctrl+Shift+P) → \"Open Mermaid Editor\" or \"Preview Mermaid\"."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:253
+msgid ""
+"Alternatively, use the Markdown preview (Ctrl+Shift+V) if you have "
+"`Markdown Preview Mermaid Support` (already installed)."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:255
+msgid "Quick Example (edit this block and save to see the preview):"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:267
+msgid "🖥️ GUI Layer - User Interface"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:269
+msgid "1. SecInterpDialog (main_dialog.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:271
+msgid ""
+"**Main Class**: `SecInterpDialog` **Inherits from**: "
+"`SecInterpMainWindow` **Lines of code**: ~350 (Unified logic handled by "
+"Managers) **Responsibility**: Simplified main dialog that coordinates "
+"components via Managers"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:276
+msgid "Key Components"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:302 ../../../source/ARCHITECTURE.md:341
+#: ../../../source/ARCHITECTURE.md:637
+msgid "Main Methods"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257 ../../../source/ARCHITECTURE.md:369
+#: ../../../source/ARCHITECTURE.md:496
+msgid "Method"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257 ../../../source/ARCHITECTURE.md:496
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Description"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "Location"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "`_init_managers()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "Initializes dedicated managers"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257 ../../../source/ARCHITECTURE.md:1275
+msgid "`main_dialog.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "`get_selected_values()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "Facade for the DataAggregator"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "`get_all_values()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "Actual data aggregation from pages"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257 ../../../source/ARCHITECTURE.md:1275
+msgid "`main_dialog_data.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "`connect_all()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "Bulk signal connection"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257 ../../../source/ARCHITECTURE.md:1275
+msgid "`main_dialog_signals.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "`preview_profile_handler()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "Delegated to PreviewManager"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "`export_preview()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "Delegated to ExportManager"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "`update_button_state()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:257
+msgid "Delegated to StatusManager"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:314
+msgid "Signals and Slots"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:335
+msgid "2. PreviewManager (main_dialog_preview.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:337
+msgid ""
+"**Class**: `PreviewManager` **Lines of code**: ~250 **Responsibility**: "
+"Manages preview generation and updates"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:360
+msgid "3. PreviewRenderer (preview_renderer.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:362
+msgid ""
+"**Class**: `PreviewRenderer` **Lines of code**: ~280 **Methods**: 20 "
+"**Responsibility**: Renders the preview canvas using native PyQGIS"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:367
+msgid "Renderer Architecture"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:388
+msgid "LOD Optimization Methods"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "Purpose"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "Algorithm"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "`_decimate_line_data()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "Line simplification"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "Douglas-Peucker"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "`_calculate_curvature()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "Local curvature calculation"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "Angle between segments"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "`_adaptive_sample()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "Adaptive sampling"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:369
+msgid "Curvature-based"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:396
+msgid "Usage Example"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:414
+msgid "4. ProfileMeasureTool (measure_tool.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:416
+msgid ""
+"**Class**: `ProfileMeasureTool` **Inherits from**: `QgsMapTool` "
+"**Responsibility**: Measurement tool with snapping"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:420
+msgid "Features"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:422
+msgid "✅ **Snapping to vertices** of visible layers"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:423
+msgid "✅ **Distance calculation** (Euclidean)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:424
+msgid "✅ **Slope calculation** (slope in degrees)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:425
+msgid "✅ **Real-time visualization** with rubber band"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:427
+msgid "Signals"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:437
+msgid "⚙️ Core Layer - Business Logic"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:439
+msgid "1. ProfileController (controller.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:441
+msgid ""
+"**Class**: `ProfileController` **Lines of code**: ~280 "
+"**Responsibility**: Orchestrates the data generation services"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:445
+msgid "Architecture"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:457 ../../../source/ARCHITECTURE.md:752
+msgid "Main Method"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:487
+msgid "2. GeologyService (geology_service.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:489
+msgid ""
+"**Class**: `GeologyService` **Lines of code**: ~540 **Methods**: 8 "
+"**Responsibility**: Generates geological profiles by intersecting "
+"polygons"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:494 ../../../source/ARCHITECTURE.md:593
+msgid "Processing Flow"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:518
+msgid "Key Methods"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "`generate_geological_profile()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "Main method that orchestrates the process"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "`_generate_master_profile_data()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "Generates grid of points and elevations"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "`_perform_intersection()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "Executes QGIS intersection algorithm"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "`_process_intersection_feature()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "Processes each intersection feature"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "`_create_segment_from_geometry()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:496
+msgid "Creates GeologySegment from geometry"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:528 ../../../source/ARCHITECTURE.md:571
+msgid "Return Type"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:541
+msgid "3. StructureService (structure_service.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:543
+msgid ""
+"**Class**: `StructureService` **Lines of code**: 216 **Methods**: 7 "
+"**Responsibility**: Projects structural measurements (dip/strike)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:548
+msgid "Projection Algorithm"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:561
+msgid "Apparent Dip Calculation"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:563
+msgid "The formula used is:"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:569
+msgid "Implemented in `utils.calculate_apparent_dip()`."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:586
+msgid "4. DrillholeService (drillhole_service.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:588
+msgid ""
+"**Class**: `DrillholeService` **Lines of code**: 319 **Methods**: 4 "
+"**Responsibility**: Processes and projects drillhole data"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:613
+msgid "🛡️ 3-Level Validation Architecture"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:615
+msgid ""
+"The project implements a robust, tiered validation system to ensure data "
+"integrity across all layers without external dependencies like Pydantic."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:617
+msgid "Level 1: Type & Range Validation (Dataclass Layer)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:618
+msgid ""
+"**Location**: `core/models/settings_model.py` using "
+"`core/validation/validators.py`."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:619
+msgid "**Purpose**: Immediate feedback during object instantiation."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:620
+msgid ""
+"**Mechanism**: `__post_init__` hooks use reusable validators (e.g., "
+"`validate_and_clamp`)."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:621
+msgid "**Example**: Ensuring vertical exaggeration is within `(0.1, 10.0)`."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:623
+msgid "Level 2: Business Field Validation (Form Layer)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:624
+msgid "**Location**: `core/validation/field_validator.py`."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:625
+msgid ""
+"**Purpose**: Validates individual fields based on plugin-specific "
+"business rules."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:626
+msgid ""
+"**Mechanism**: Checks for required fields, valid data types in QGIS "
+"layers, and mandatory combinations."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:628
+msgid "Level 3: Domain & Cross-Layer Validation (Project Layer)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:629
+msgid "**Location**: `core/validation/project_validator.py`."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:630
+msgid ""
+"**Purpose**: Validates the relationship between different layers and the "
+"project state."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:631
+msgid ""
+"**Mechanism**: Checks if the section line intersects the DEM extent, or "
+"if drillholes fall within the buffer zone."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:639
+msgid "**1. project_collars()**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:641
+msgid "Projects collar points to the section line."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:662
+msgid "**2. process_intervals()**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:664
+msgid "Processes intervals and generates 2D traces."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:680
+msgid "5. Utilities (core/utils/)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:682
+msgid "geometry.py (345 lines)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:684
+msgid "**Geometric Operations with QGIS Core API**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Function"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`create_memory_layer()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Creates temporary in-memory layer"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`extract_all_vertices()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Extracts geometry vertices (multipart-safe)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`get_line_vertices()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Extracts line vertices"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`run_processing_algorithm()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Runs QGIS algorithm with error handling"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`create_buffer_geometry()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Creates buffer using `native:buffer`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`filter_features_by_buffer()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Filters features with spatial index"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`densify_line_by_interval()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Densifies line with `native:densifygeometriesgivenaninterval`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:696
+msgid "drillhole.py (7,297 lines)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:698
+msgid "**Drillhole Processing**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`desurvey_drillhole()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Calculates 3D trajectory from survey"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`project_drillhole_to_section()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Projects 3D trace to 2D plane"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`interpolate_intervals()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Interpolates intervals on trace"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:706
+msgid "sampling.py (3,783 lines)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:708
+msgid "**Sampling and Interpolation**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`interpolate_elevation()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Interpolates elevation on grid"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "`sample_raster_along_line()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:595
+msgid "Samples raster along a line"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:717
+msgid "6. DataCache (data_cache.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:719
+msgid ""
+"**Class**: `DataCache` **Lines of code**: 7,883 **Responsibility**: Cache"
+" of processed data"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:723
+msgid "Cache Strategy"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:744
+msgid "📤 Exporters Layer - Data Export"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:746
+msgid "1. DataExportOrchestrator (orchestrator.py)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:748
+msgid ""
+"**Class**: `DataExportOrchestrator` **Lines of code**: 148 "
+"**Responsibility**: Coordinates exports to multiple formats"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:801
+msgid "2. Exporter Hierarchy"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:847
+msgid "🔄 Main Data Flows"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:849
+msgid "Flow 1: Preview Generation"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:901
+msgid "Flow 2: Data Export"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:942
+msgid "Flow 3: Parallel Geological Processing"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:973
+msgid "🎨 Design Patterns"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:975
+msgid "1. MVC (Model-View-Controller)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:983
+msgid "2. Strategy Pattern"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:985
+msgid "Different exporters implement the same `BaseExporter` interface:"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1002
+msgid "3. Observer Pattern"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1004
+msgid "PyQt5 Signals/Slots for communication between components:"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1019
+msgid "4. Facade Pattern"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1021
+msgid "`ProfileController` acts as a facade for the services:"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1034
+msgid "5. Factory Pattern"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1036
+msgid "Exporter Factory:"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1050
+msgid "6. Singleton Pattern (Implicit)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1052
+msgid "`DataCache` is instantiated once in the controller."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1054
+msgid "7. Template Method Pattern"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1056
+msgid "`BaseExporter` defines the template, subclasses implement details:"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1074
+msgid "🌐 External Dependencies"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1076
+msgid "QGIS Core API"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1094
+msgid ""
+"**Main use**: All geometric operations, spatial processing, and layer "
+"management."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1096
+msgid "QGIS GUI API"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1108
+msgid "**Main use**: User interface, interactive tools, specialized widgets."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1110
+msgid "PyQt5"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1141
+msgid "**Main use**: Complete UI framework, signals/slots, layouts, widgets."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1146
+msgid "⚡ Performance Optimizations"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1148
+msgid "1. Adaptive Level of Detail (LOD)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1150
+msgid "**Implemented in**: `PreviewRenderer`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1168
+msgid ""
+"**Benefit**: Reduces 10,000+ points to ~1,000 without significant visual "
+"loss."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1170
+msgid "2. Curvature-based Adaptive Sampling"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1191
+msgid ""
+"**Benefit**: Preserves important details (tight curves) while simplifying"
+" straight areas."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1193
+msgid "3. Parallel Geological Processing"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1195
+msgid "**Implemented in**: `ParallelGeologyService`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1210
+msgid "**Benefit**: UI remains responsive during heavy processing."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1212
+msgid "4. Processed Data Cache"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1214
+msgid "**Implemented in**: `DataCache`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1229
+msgid "**Benefit**: Avoids re-processing when only display parameters change."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1231
+msgid "5. Spatial Index for Filtering"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1233
+msgid "**Implemented in**: `geometry.filter_features_by_buffer()`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1254
+msgid "**Benefit**: O(log n) instead of O(n) for spatial filtering."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1259
+msgid "📊 Project Metrics"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1261
+msgid "Code Statistics"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "Metric"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "Value"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "**Python Modules**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "~60 files"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "**Total Lines of Code**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "~15,000 LOC"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "**Core Lines of Code**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "~8,000 LOC"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "**GUI Lines of Code**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "~5,000 LOC"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "**Exporters Lines of Code**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "~2,000 LOC"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "**Main Classes**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "25+"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "**Functions/Methods**"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:944
+msgid "200+"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1273
+msgid "Distribution by Layer"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1282
+msgid "Complexity by Module"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "Module"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "Lines"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "Classes"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "Methods"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "Complexity"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`sec_interp_plugin.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "~600"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "1"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "15"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "Medium"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "~340"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "12"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "Low/Medium"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "~200"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "10"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "~150"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "8"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`preview_renderer.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "1,190"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "20"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "High"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`controller.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "192"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "4"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "Low"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`core/validation/`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "~800"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "0"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "25"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`geology_service.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "244"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`structure_service.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "216"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "7"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`drillhole_service.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "319"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`geometry.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "345"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "`orchestrator.py`"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1275
+msgid "148"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1299
+msgid "Dependencies"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1318
+msgid "Feature Coverage"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Feature"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Status"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Coverage"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Topographic Profile"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "✅ Complete"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "100%"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Geological Projection"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Structural Projection"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Drillhole Projection"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Interactive Preview"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Measurement Tools"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "CSV Export"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Shapefile Export"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "PDF Export"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "SVG Export"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "PNG/JPG Export"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Adaptive LOD"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Parallel Processing"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1301
+msgid "Data Cache"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1339
+msgid "🔗 References"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1341
+msgid "[Source Code](file:///home/jmbernales/qgispluginsdev/sec_interp)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1342
+msgid "[Main README](file:///home/jmbernales/qgispluginsdev/sec_interp/README.md)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1343
+msgid ""
+"[User "
+"Guide](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/USER_GUIDE.md)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1344
+msgid ""
+"[Architecture "
+"Graph](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/sec_interp_architecture_graph.md)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1345
+msgid "[QGIS API Documentation](https://qgis.org/pyqgis/master/)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1346
+msgid ""
+"[PyQt5 "
+"Documentation](https://www.riverbankcomputing.com/static/Docs/PyQt5/)"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1350
+msgid "🎨 Design Principles"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1352
+msgid ""
+"The SecInterp plugin has been designed following robust software "
+"engineering principles to ensure quality and maintainability."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1354
+msgid "SOLID Principles"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1356
+msgid ""
+"**SRP (Single Responsibility Principle)**: Each service (Profile, "
+"Geology, Structure, Drillhole) has a single, clear responsibility."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1357
+msgid ""
+"**OCP (Open/Closed Principle)**: Exporters are easily extensible through "
+"the abstract base class without modifying the core logic."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1358
+msgid ""
+"**LSP (Liskov Substitution Principle)**: All concrete exporters can "
+"subtitute the `BaseExporter` class."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1359
+msgid ""
+"**ISP (Interface Segregation Principle)**: Service interfaces are focused"
+" on their specific domain."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1360
+msgid ""
+"**DIP (Dependency Inversion Principle)**: The controller depends on "
+"abstractions and injected services, not on heavy concrete "
+"implementations."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1362
+msgid "Other Patterns and Principles"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1363
+msgid ""
+"**DRY (Don't Repeat Yourself)**: Intensive use of `utils` modules to "
+"centralize mathematical and spatial calculations."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1364
+msgid ""
+"**Separation of Concerns**: Clear distinction between the GUI Layer "
+"(Managers), Core Layer (Services), and Data Layer (DataCache)."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1368
+msgid "🚀 Extensibility"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1370
+msgid "Quick guide for developers wishing to expand the plugin."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1372
+msgid "Adding a New Service"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1373
+msgid "Create the new file in `core/services/` (e.g., `seismic_service.py`)."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1374
+msgid "Implement the service logic following the pattern of other services."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1375
+msgid ""
+"Register the service in `controller.py` within the `ProfileController` "
+"constructor."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1376
+msgid ""
+"Add the orchestrator method in the controller and connect it to "
+"`PreviewManager`."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1378
+msgid "Adding a New Export Format"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1379
+msgid "Create a class in `exporters/` that inherits from `BaseExporter`."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1380
+msgid "Implement the required `export()` method."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1381
+msgid ""
+"Register the new exporter in the factory in `orchestrator.py` or the "
+"specific export modules."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1385
+msgid "📦 Deployment"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1387
+msgid ""
+"The plugin uses a `Makefile`-based system to facilitate local deployment "
+"and packaging."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1389
+msgid ""
+"**Main command**: `make deploy` (Copies files to the QGIS plugins "
+"directory)."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1390
+msgid "**Process**:"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1391
+msgid "Temporary files (`.pyc`, etc.) are cleaned."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1392
+msgid "Resources and translations are copied."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1393
+msgid "Synchronized with the local QGIS directory for immediate testing."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1397
+msgid "📝 Final Notes"
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1399
+msgid ""
+"This document provides a detailed view of the SecInterp plugin "
+"architecture. For development information, see "
+"[README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md)."
+msgstr ""
+
+#: ../../../source/ARCHITECTURE.md:1401
+msgid ""
+"**Last update**: 2026-01-18 **Plugin Version**: 2.7.0 **Author**: Juan M."
+" Bernales"
+msgstr ""

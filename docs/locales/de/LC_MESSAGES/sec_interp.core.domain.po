@@ -1,0 +1,692 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.domain.rst:2
+msgid "sec\\_interp.core.domain package"
+msgstr ""
+
+#: of sec_interp.core.domain:1
+msgid "SecInterp Core Domain Package."
+msgstr ""
+
+#: of sec_interp.core.domain:3
+msgid ""
+"This package contains the domain entities, DTOs, and enums that define "
+"the core business logic of the plugin, decoupled from QGIS-specific "
+"implementation details where possible."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:1
+msgid "Data Transfer Object for DrillholeGenerationTask."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:3
+msgid ""
+"Encapsulates all data required to project and process drillholes in a "
+"background thread without accessing QGIS API objects."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:8
+msgid "Section geometry in WKT."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams
+#: sec_interp.core.domain.dtos.PreviewResult
+#: sec_interp.core.domain.entities.GeologySegment
+#: sec_interp.core.domain.entities.InterpretationPolygon
+#: sec_interp.core.domain.entities.InterpretationPolygon25D
+#: sec_interp.core.domain.entities.StructureMeasurement
+#: sec_interp.core.domain.spatial_meta.SpatialMeta
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput
+msgid "type"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:7
+#: sec_interp.core.domain.dtos.PreviewParams:13
+#: sec_interp.core.domain.entities.GeologySegment:7
+#: sec_interp.core.domain.entities.InterpretationPolygon:7
+#: sec_interp.core.domain.entities.InterpretationPolygon:13
+#: sec_interp.core.domain.entities.InterpretationPolygon:19
+#: sec_interp.core.domain.entities.InterpretationPolygon:37
+#: sec_interp.core.domain.entities.InterpretationPolygon:43
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:7
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:13
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:19
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:25
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:37
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:10
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:28
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:46
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:58
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:64
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:70
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:76
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:10
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:28
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:52
+msgid "str"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:14
+msgid "Start vertex X."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:25
+#: sec_interp.core.domain.dtos.PreviewParams:61
+#: sec_interp.core.domain.dtos.PreviewResult:37
+#: sec_interp.core.domain.entities.StructureMeasurement:7
+#: sec_interp.core.domain.entities.StructureMeasurement:13
+#: sec_interp.core.domain.entities.StructureMeasurement:19
+#: sec_interp.core.domain.entities.StructureMeasurement:25
+#: sec_interp.core.domain.entities.StructureMeasurement:31
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:17
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:23
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:29
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:16
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:22
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:34
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:40
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:16
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:22
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:58
+msgid "float"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:20
+msgid "Start vertex Y."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:26
+msgid "CRS of the section line."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:32
+msgid "Azimuth orientation in degrees."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:38
+msgid "Maximum horizontal projection buffer."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:44
+msgid "ID field name."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:50
+msgid "Whether to use geometric coordinates for collars."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:79
+#: sec_interp.core.domain.dtos.PreviewParams:181
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:52
+msgid "bool"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:56
+msgid "Fallback X field name."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:62
+msgid "Fallback Y field name."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:68
+msgid "Collar elevation field."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:74
+msgid "Total depth field."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:80
+msgid "List of detached features."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:82
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:46
+msgid "list[dict[str, Any]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:86
+msgid "Dictionary mapping hole IDs to survey readings."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:88
+msgid "dict[Any, list[tuple[float, float, float]]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:92
+msgid "Dictionary mapping hole IDs to geological logs."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:94
+msgid "dict[Any, list[tuple[float, float, str]]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:98
+msgid "Dictionary of pre-calculated collar elevations."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:100
+msgid "dict[Any, float]"
+msgstr ""
+
+#: of sec_interp.core.domain.enums.FieldType:1
+msgid "Core-safe field types mapping to QVariant.Type values."
+msgstr ""
+
+#: of sec_interp.core.domain.enums.FieldType:3
+msgid ""
+"This allows the core module to perform type validation WITHOUT direct "
+"dependencies on PyQt components."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:1
+msgid "Represents a geological unit segment along the profile."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:5
+msgid "Name of the geological unit."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:11
+msgid "WKT representation of the segment geometry (optional)."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:31
+#: sec_interp.core.domain.dtos.PreviewParams:37
+#: sec_interp.core.domain.dtos.PreviewParams:43
+#: sec_interp.core.domain.dtos.PreviewParams:49
+#: sec_interp.core.domain.dtos.PreviewParams:55
+#: sec_interp.core.domain.dtos.PreviewParams:67
+#: sec_interp.core.domain.dtos.PreviewParams:73
+#: sec_interp.core.domain.dtos.PreviewParams:85
+#: sec_interp.core.domain.dtos.PreviewParams:91
+#: sec_interp.core.domain.dtos.PreviewParams:97
+#: sec_interp.core.domain.dtos.PreviewParams:103
+#: sec_interp.core.domain.dtos.PreviewParams:109
+#: sec_interp.core.domain.dtos.PreviewParams:115
+#: sec_interp.core.domain.dtos.PreviewParams:121
+#: sec_interp.core.domain.dtos.PreviewParams:127
+#: sec_interp.core.domain.dtos.PreviewParams:133
+#: sec_interp.core.domain.dtos.PreviewParams:139
+#: sec_interp.core.domain.dtos.PreviewParams:145
+#: sec_interp.core.domain.dtos.PreviewParams:151
+#: sec_interp.core.domain.dtos.PreviewParams:157
+#: sec_interp.core.domain.dtos.PreviewParams:163
+#: sec_interp.core.domain.entities.GeologySegment:13
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:11
+msgid "str | None"
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:17
+#: sec_interp.core.domain.entities.StructureMeasurement:35
+msgid "Dictionary containing original feature attributes."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:19
+#: sec_interp.core.domain.entities.InterpretationPolygon:31
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:31
+#: sec_interp.core.domain.entities.StructureMeasurement:37
+msgid "dict[str, Any]"
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:23
+msgid "Sampled points (distance, elevation) representing the segment boundary."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:25
+#: sec_interp.core.domain.entities.InterpretationPolygon:25
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:34
+msgid "list[tuple[float, float]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:1
+msgid "Data Transfer Object for GeologyGenerationTask."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:3
+msgid ""
+"Contains all necessary data to process geological profiles without "
+"accessing QGIS layers directly."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:8
+msgid "Section geometry in WKT format."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:14
+msgid "X coordinate of section start vertex."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:20
+msgid "Y coordinate of section start vertex."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:26
+msgid "Authority ID for the CRS (e.g., 'EPSG:4326')."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:32
+msgid "Sampled topography elevations."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:38
+msgid "Grid distances for point sampling."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:40
+msgid "list[tuple[float, tuple[float, float], float]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:44
+msgid "Detached outcrop features (geometries and attrs)."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:50
+msgid "Name of the field containing unit info."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:56
+msgid "Distance tolerance for intersection sampling."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:1
+msgid "Represents a 2D digitized interpretation polygon on the section profile."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:5
+msgid "Unique identifier for the polygon."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:11
+msgid "User-defined name for the interpreted unit/feature."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:17
+msgid "Classification (e.g., 'lithology', 'fault', 'alteration')."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:23
+msgid "List of (distance, elevation) points defining the polygon."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:29
+msgid "Metadata for the interpretation."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:35
+msgid "Visual representation color (HEX)."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:41
+msgid "ISO timestamp of creation."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:1
+msgid ""
+"Represents a georeferenced 2.5D interpretation geometry (with M "
+"coordinates)."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:5
+msgid "Inherited identifier."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:11
+msgid "Inherited name."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:17
+msgid "Inherited type."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:23
+msgid "Domain Geometry in WKT format."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:29
+msgid "Inherited and calculated attributes."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:35
+msgid "CRS Auth ID (e.g. 'EPSG:4326')."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:1
+msgid "Consolidated parameters for profile generation and preview."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:5
+msgid "QGIS layer ID for DEM sampling."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:11
+msgid "QGIS layer ID for the section orientation."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:17
+msgid "Raster band number to use for elevation."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:19
+#: sec_interp.core.domain.dtos.PreviewParams:169
+#: sec_interp.core.domain.dtos.PreviewParams:175
+msgid "int"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:23
+msgid "Search buffer for projecting data onto the section."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:29
+msgid "Optional layer ID with geological outcrops."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:35
+msgid "Field name for geological unit names."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:41
+msgid "Optional layer ID with structural measurements."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:47
+msgid "Field name for dip values."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:53
+msgid "Field name for strike/azimuth values."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:59
+msgid "Visual scale factor for dip lines."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:65
+msgid "Optional layer ID with drillhole collars."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:71
+msgid "Field name for drillhole IDs in collar layer."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:77
+msgid "Whether to use layer geometry for collar coordinates."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:83
+msgid "Field name for X coordinate."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:89
+msgid "Field name for Y coordinate."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:95
+msgid "Field name for Z coordinate."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:101
+msgid "Field name for total hole depth."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:107
+msgid "Optional layer ID with drillhole surveys."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:113
+msgid "Field name for drillhole IDs in survey layer."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:119
+msgid "Field name for downhole depth in survey."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:125
+msgid "Field name for azimuth in survey."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:131
+msgid "Field name for inclination in survey."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:137
+msgid "Optional layer ID with drillhole intervals."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:143
+msgid "Field name for drillhole IDs in interval layer."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:149
+msgid "Field name for 'from' depth."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:155
+msgid "Field name for 'to' depth."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:161
+msgid "Field name for lithology code/name."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:167
+msgid "Max number of points for simplified preview (LOD)."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:173
+msgid "Width of the preview canvas in pixels."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:179
+msgid "Whether to automatically adjust LOD based on canvas width."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams.validate:1
+msgid "Perform native validation of parameters."
+msgstr ""
+
+#: ../../../source/sec_interp.core.domain.rst
+msgid "Raises"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams.validate:3
+msgid "If critical parameters are missing or invalid."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:1
+msgid "Consolidated result set from profile generation."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:5
+msgid "Sampled topographic profile data."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:7
+msgid "list[tuple[float, float]] | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:11
+msgid "List of geological unit segments."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:13
+msgid "list[sec_interp.core.domain.entities.GeologySegment] | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:17
+msgid "List of projected structural measurements."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:19
+msgid "list[sec_interp.core.domain.entities.StructureMeasurement] | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:23
+msgid "Processed drillhole projection data."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:25
+msgid "Any | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:29
+msgid "Performance metrics collector for the generation cycle."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:31
+msgid "sec_interp.core.performance_metrics.MetricsCollector"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:35
+msgid "Buffer distance used for this result."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_distance_range:1
+msgid "Calculate the horizontal distance range based on topography."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_distance_range:3
+msgid ""
+"Uses the first and last points of the sampled topography as the "
+"authoritative horizontal bounds of the section."
+msgstr ""
+
+#: ../../../source/sec_interp.core.domain.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_distance_range:6
+msgid "A tuple containing (min_distance, max_distance)."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_elevation_range:1
+msgid ""
+"Calculate the global minimum and maximum elevation across all active "
+"layers."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_elevation_range:3
+msgid ""
+"Scans topography, geology, structural measurements, and drillhole data to"
+" find the absolute vertical bounds."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_elevation_range:6
+msgid "A tuple containing (min_elevation, max_elevation)."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:1
+msgid "Carrying spatial metadata for 3D/2D decoupling."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:3
+msgid ""
+"This DTO acts as a universal bridge between raw spatial data and various "
+"renderers (2D profiling or 3D engines), carrying coordinates, "
+"normalization vectors, and original attributes without layer "
+"dependencies."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:9
+msgid "Unique identifier for the drillhole."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:15
+msgid "Distance along the section line (station)."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:21
+msgid "Orthogonal distance from the section line."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:27
+msgid "Elevation or vertical coordinate."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:33
+msgid "X coordinate in global 3D space."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:35
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:41
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:47
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:53
+msgid "float | None"
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:39
+msgid "Y coordinate in global 3D space."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:45
+msgid "Normalized X component of the orientation vector."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:51
+msgid "Normalized Y component of the orientation vector."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:57
+msgid "Original feature attributes for contextual display."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:59
+msgid "dict[str, Any] | None"
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta.to_vec2_profile:1
+msgid "Convert spatial data to a 2D profile vector (Distance, Z)."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta.to_vec3:1
+msgid "Convert spatial data to a 3D vector tuple (X, Y, Z)."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:1
+msgid "Represents a projected structural measurement on the section plane."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:5
+msgid "Horizontal distance from the start of the profile."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:11
+msgid "Elevation (Z) at the projected point."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:17
+msgid "Dip angle relative to the section plane."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:23
+msgid "True dip measured in the field."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:29
+msgid "True strike (azimuth) measured in the field."
+msgstr ""
+
+#: ../../../source/sec_interp.core.domain.rst:10
+msgid "Submodules"
+msgstr ""

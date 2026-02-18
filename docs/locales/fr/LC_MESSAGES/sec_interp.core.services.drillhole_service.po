@@ -1,0 +1,247 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.services.drillhole_service.rst:2
+msgid "sec\\_interp.core.services.drillhole\\_service module"
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service:1
+msgid "Drillhole Data Processing Service."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service:3
+msgid ""
+"This module provides services for processing and projecting drillhole "
+"data, including collar projection, trajectory calculation, and interval "
+"interpolation."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService:1
+msgid "Service for processing and orchestrating drillhole data."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService:3
+msgid ""
+"This service handles the projection of collars onto a 2D section line, "
+"the calculation of 3D trajectories from survey data, and the "
+"interpolation of geological intervals along those trajectories. It "
+"leverages specialized processors to maintain a clean separation of "
+"concerns."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:1
+msgid "Initialize the service with specialized processors."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.drillhole_service.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:3
+msgid "Optional collar processor."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:4
+msgid "Optional survey processor."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:5
+msgid "Optional interval processor."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:6
+msgid "Optional data fetcher."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:7
+msgid "Optional trajectory engine."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:1
+msgid "Process drillhole interval data using detached structures."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:3
+msgid "Projected collar results."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:4
+msgid "Original detached collar data."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:5
+msgid "Map of hole IDs to survey tuples."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:6
+msgid "Map of hole IDs to interval tuples."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:7
+msgid "ID field name."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:8
+msgid "Whether geometry was used."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:9
+msgid "X field name."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:10
+msgid "Y field name."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:11
+msgid "Section geometry."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:12
+msgid "Section start point."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:13
+msgid "Distance measurer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:14
+msgid "Buffer width."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:15
+msgid "Section orientation."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:16
+msgid "Survey field mapping."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:17
+msgid "Interval field mapping."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.drillhole_service.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:19
+msgid "Tuple of (geology_segments, drillhole_results)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:1
+msgid "Project collar points onto section line using detached domain data."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:3
+msgid "List of detached collar dictionaries."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:4
+msgid "Section line geometry or feature."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:5
+msgid "QgsDistanceArea for measurements."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:6
+msgid "Maximum distance from section for projection."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:7
+msgid "Name of the ID field."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:8
+msgid "Whether to use geometric data for projection."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:9
+msgid "Field name for X coordinate (if not using geometry)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:10
+msgid "Field name for Y coordinate (if not using geometry)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:11
+msgid "Field name for Z coordinate."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:12
+msgid "Field name for total depth."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:13
+msgid "Optional dict of pre-sampled elevations."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:15
+msgid "(hole_id, dist_along, z, offset, total_depth)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.drillhole_service.rst
+msgid "Return type"
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.drillhole_service.rst
+msgid "Raises"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:18
+msgid "If parameters are invalid."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.tr:1
+msgid "Translate a message using QCoreApplication."
+msgstr ""

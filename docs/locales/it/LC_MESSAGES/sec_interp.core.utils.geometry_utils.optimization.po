@@ -1,0 +1,113 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: it\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.optimization.rst:2
+msgid "sec\\_interp.core.utils.geometry\\_utils.optimization module"
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.optimization:1
+msgid "Geometry optimization and curvature computation."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer:1
+msgid "Provides geometric optimization and sampling logic for preview rendering."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.adaptive_sample:1
+msgid "Adaptively sample data based on local curvature."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.optimization.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.adaptive_sample:3
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.decimate:3
+msgid "List of (x, y) tuples"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.adaptive_sample:4
+msgid "Minimum tolerance for high-detail areas"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.adaptive_sample:5
+msgid "Maximum tolerance for low-detail areas"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.adaptive_sample:6
+msgid "Maximum points to keep (approximate target)"
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.optimization.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.adaptive_sample:8
+msgid "Adaptively sampled data"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.calculate_curvature:1
+msgid "Calculate a simple curvature metric for each point in a line."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.calculate_curvature:3
+msgid ""
+"This approximates curvature by the angle deviation between successive "
+"segments. High values indicate sharper turns."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.calculate_curvature:6
+msgid "List of (x, y) tuples."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.calculate_curvature:8
+msgid "List of curvature values (angles in degrees), same length as data."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.decimate:1
+msgid "Decimate line data using Douglas-Peucker algorithm."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.decimate:4
+msgid "Simplification tolerance (if provided, overrides max_points heuristic)"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.decimate:5
+msgid "Maximum points to keep (approximate target if tolerance is None)"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.optimization.PreviewOptimizer.decimate:7
+msgid "Decimated list of (x, y) tuples"
+msgstr ""

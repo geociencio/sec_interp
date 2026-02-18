@@ -1,0 +1,78 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: it\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.validation.project_validators.rst:2
+msgid "sec\\_interp.core.validation.project\\_validators module"
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators:1
+msgid "Specialized validators for project components."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.DEMValidator:1
+msgid "Validates Raster DEM requirements."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.DEMValidator.validate:1
+msgid "Validate Raster DEM requirements."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.DrillholeValidator:1
+msgid "Validates complex Drillhole data dependencies."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.project_validators.DrillholeValidator.validate:1
+msgid "Validate complex Drillhole data dependencies."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.GeologyValidator:1
+msgid "Validates Geology layer and field requirements."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.GeologyValidator.validate:1
+msgid "Validate Geology layer and field requirements."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.OutputValidator:1
+msgid "Validates output path and range requirements."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.OutputValidator.validate:1
+msgid "Validate output path and range requirements."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.SectionValidator:1
+msgid "Validates section line requirements."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.SectionValidator.validate:1
+msgid "Validate cross-section line layer requirements."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validators.StructureValidator:1
+msgid "Validates Structural measurements requirements."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.project_validators.StructureValidator.validate:1
+msgid "Validate Structural measurements requirements."
+msgstr ""

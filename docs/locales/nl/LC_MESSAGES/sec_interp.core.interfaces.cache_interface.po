@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.interfaces.cache_interface.rst:2
+msgid "sec\\_interp.core.interfaces.cache\\_interface module"
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface:1
+msgid "Interface for Cache services."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService:1
+msgid "Abstract protocol for the Processing Data Cache Service."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.clear:1
+msgid "Clear the entire cache."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.get:1
+msgid "Retrieve data from a specific cache bucket."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.cache_interface.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.get:3
+msgid "The cache category (e.g., 'topo', 'geol')."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.get:4
+#: sec_interp.core.interfaces.cache_interface.ICacheService.set:4
+msgid "Unique key for the parameter set."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.cache_interface.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.get:6
+msgid "The cached data or None if not found or expired."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.get_metadata:1
+msgid "Retrieve metadata for a cached entry."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.get_metadata:3
+#: sec_interp.core.interfaces.cache_interface.ICacheService.set:3
+msgid "The cache category."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.get_metadata:4
+msgid "Unique key for the entry."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.get_metadata:6
+msgid "Dictionary containing entry metadata or None if not found."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.invalidate:1
+msgid "Invalidate cache entries."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.invalidate:3
+msgid "If provided, only invalidate this bucket."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.invalidate:4
+msgid "If provided, only invalidate this specific key."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.set:1
+msgid "Store data in a specific cache bucket."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.set:5
+msgid "The data to cache."
+msgstr ""
+
+#: of sec_interp.core.interfaces.cache_interface.ICacheService.set:6
+msgid "Optional metadata (e.g., TTL, LOD info)."
+msgstr ""

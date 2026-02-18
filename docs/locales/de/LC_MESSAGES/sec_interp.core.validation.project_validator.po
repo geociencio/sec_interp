@@ -1,0 +1,76 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.validation.project_validator.rst:2
+msgid "sec\\_interp.core.validation.project\\_validator module"
+msgstr ""
+
+#: of sec_interp.core.validation.project_validator:1
+msgid "Validation for QGIS project state and layer presence."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validator.ProjectValidator:1
+msgid "Orchestrates validation of project parameters independent of the GUI."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validator.ProjectValidator:3
+msgid ""
+"Level 2: Business Logic Validation. Uses ValidationContext to accumulate "
+"errors and verify cross-field dependencies."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.project_validator.ProjectValidator.is_dem_complete:1
+msgid "Check if DEM configuration is complete."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.project_validator.ProjectValidator.is_drillhole_complete:1
+msgid "Check if required fields are filled if drillhole layers are selected."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.project_validator.ProjectValidator.is_geology_complete:1
+msgid "Check if geology configuration is complete."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.project_validator.ProjectValidator.is_structure_complete:1
+msgid "Check if structural configuration is complete."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validator.ProjectValidator.tr:1
+msgid "Translate a message using QCoreApplication."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.project_validator.ProjectValidator.validate_all:1
+msgid "Perform a comprehensive validation of all project parameters."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.project_validator.ProjectValidator.validate_preview_requirements:1
+msgid "Validate only the minimum requirements needed to generate a preview."
+msgstr ""
+
+#: of sec_interp.core.validation.project_validator.ValidationParams:1
+msgid "Data container for all parameters that need cross-layer validation."
+msgstr ""

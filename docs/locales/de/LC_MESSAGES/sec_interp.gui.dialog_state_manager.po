@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.dialog_state_manager.rst:2
+msgid "sec\\_interp.gui.dialog\\_state\\_manager module"
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager:1
+msgid "State management module for SecInterp main dialog."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager:3
+msgid ""
+"Handles both visual status (indicators, button enablement) and "
+"persistence (saving/loading settings) by delegating to specialized "
+"managers."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager:1
+msgid "Manages the state of the dialog via delegation."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager:3
+msgid ""
+"This class acts as a central orchestrator connecting specialized managers"
+" for persistence and visual status."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.__init__:1
+msgid "Initialize state manager and its components."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.connect_checked:1
+msgid "Connect a signal and track it for later disconnection."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.disconnect_signals:1
+msgid "Disconnect all UI signals to prevent memory leaks."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.load_settings:1
+msgid "Load user settings from previous session."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.reset_to_defaults:1
+msgid "Reset all dialog inputs to their default values."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.save_settings:1
+msgid "Save user settings for next session."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.setup_indicators:1
+msgid "Set up required field indicators with warning icons."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.update_all:1
+msgid "Update all UI status components."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.update_button_state:1
+msgid "Enable or disable buttons based on input validity."
+msgstr ""
+
+#: of
+#: sec_interp.gui.dialog_state_manager.StateManager.update_preview_checkbox_states:1
+msgid "Enable or disable preview checkboxes."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.update_raster_status:1
+msgid "Update raster layer status icon."
+msgstr ""
+
+#: of sec_interp.gui.dialog_state_manager.StateManager.update_section_status:1
+msgid "Update section line status icon."
+msgstr ""

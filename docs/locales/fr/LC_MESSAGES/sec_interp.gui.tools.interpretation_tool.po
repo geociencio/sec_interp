@@ -1,0 +1,149 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.tools.interpretation_tool.rst:2
+msgid "sec\\_interp.gui.tools.interpretation\\_tool module"
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool:1
+msgid "Interpretation tool for Profile View."
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool:3
+msgid ""
+"This module provides the ProfileInterpretationTool for drawing "
+"interpretation polygons in the profile preview window."
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool:1
+msgid "Tool for drawing interpretation polygons on the profile canvas."
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool:3
+msgid "Left Click: Add vertex"
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool:4
+msgid "Move: Update preview rubber band"
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool:5
+msgid "Right Click: Remove last vertex"
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool:6
+msgid "Enter/Double Click: Finalize polygon"
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool:7
+msgid "Escape: Cancel"
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.__init__:1
+msgid "Initialize the profile interpretation tool."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.tools.interpretation_tool.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.__init__:3
+msgid "The map canvas where interpretation is drawn."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.activate:1
+msgid "Activate the interpretation tool."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.canvasDoubleClickEvent:1
+msgid "Finalize polygon on double click."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.canvasDoubleClickEvent:3
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.canvasMoveEvent:3
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.canvasReleaseEvent:3
+msgid "Map tool event from QGIS"
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.canvasMoveEvent:1
+msgid "Handle mouse move for rubber band update."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.canvasReleaseEvent:1
+msgid "Handle mouse click release."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.deactivate:1
+msgid "Deactivate the interpretation tool."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.disconnect_signals:1
+msgid "Disconnect signals to prevent memory leaks."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.finalize_polygon:1
+msgid "Finalize the polygon and emit signal."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.keyPressEvent:1
+msgid "Handle keyboard events."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.keyPressEvent:3
+msgid "Key event from QGIS"
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.interpretation_tool.ProfileInterpretationTool.reset:1
+msgid "Reset the tool state safely."
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileSnapper:1
+msgid "Helper class to handle point snapping functionality."
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileSnapper:3
+msgid "Duplicates logic from ProfileMeasureTool to avoid tight coupling."
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileSnapper.__init__:1
+msgid "Initialize the profile snapper."
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileSnapper.__init__:3
+msgid "The map canvas to snap on."
+msgstr ""
+
+#: of sec_interp.gui.tools.interpretation_tool.ProfileSnapper.snap:1
+msgid "Find the nearest vertex or edge to the mouse position."
+msgstr ""

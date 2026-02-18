@@ -1,0 +1,676 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fi\n"
+"Language-Team: fi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.rst:2
+msgid "sec\\_interp.core.utils package"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:1
+msgid "Convert true dip to apparent dip in section plane."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:3
+msgid ""
+"The apparent dip is the inclination of a plane measured in a direction "
+"not perpendicular to the strike. In a vertical cross-section, the "
+"apparent dip depends on the angle between the strike of the plane and the"
+" azimuth of the cross-section line."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:8
+msgid "Formula:"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:9
+msgid "tan(apparent_dip) = tan(true_dip) * sin(alpha)"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:11
+msgid ""
+"Where alpha is the angle between the strike of the plane and the "
+"direction of the cross-section (section azimuth). alpha = strike - "
+"section_azimuth"
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:15
+msgid "Strike of the geological plane (0-360 degrees)."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:16
+msgid "True dip of the geological plane (0-90 degrees)."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:17
+msgid "Azimuth of the cross-section line (0-360 degrees)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:19
+msgid ""
+"Apparent dip in degrees. Positive values indicate dip, negative values "
+"might occur depending on quadrant but are typically normalized."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:1
+msgid "Calculate the bounding box for all profile data with padding."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:3
+msgid ""
+"Calculates the minimum and maximum distance and elevation across "
+"topography and optional geological segments."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:6
+msgid "List of (distance, elevation) tuples for topography."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:7
+msgid "Optional list of geological segments."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:9
+msgid "Bounds containing 'min_d', 'max_d', 'min_e', 'max_e' with 5% padding."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:1
+msgid "Calculate the 3D trajectory of a drillhole using survey data."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:3
+msgid ""
+"Calculates X, Y, Z positions along the hole using minimum curvature or "
+"tangential approximation based on survey readings (depth, azimuth, dip)."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:6
+msgid "Starting point (QgsPointXY or tuple)."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:7
+msgid "Starting elevation."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:8
+msgid "List of (depth, azimuth, inclination) tuples."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:9
+msgid "Azimuth of the section line (for relative calcs)."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:10
+msgid "Distance between interpolated points in meters."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:11
+msgid "Total depth of the hole."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:13
+msgid "List of (depth, x, y, z, 0.0, 0.0) trajectory points."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_interval:1
+msgid "Calculate a 'nice' interval for axis labels based on the data range."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_interval:3
+msgid "The total range of data values (e.g., max_d - min_d)."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_interval:5
+msgid "A human-readable interval (e.g., 1, 2, 5, 10, etc.) for grid lines."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_line_azimuth:1
+msgid "Calculate the azimuth (compass bearing) of a line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_line_azimuth:3
+msgid ""
+"Calculates the azimuth based on the first two vertices of the line. "
+"Returns 0 for points or single-vertex lines."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_line_azimuth:6
+msgid "The QGIS line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_line_azimuth:8
+msgid "Azimuth in degrees (0-360)."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:1
+msgid "Calculate step size based on slope and raster resolution."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:3
+msgid ""
+"densify_line_by_interval() instead for better precision and simpler code."
+" This function is kept for backward compatibility but may be removed in "
+"future versions."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:7
+msgid ""
+"Ensures that sampling occurs at approximately one pixel intervals, "
+"accounting for the slope of the line relative to the raster grid."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:10
+msgid "The geometry to sample along."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:11
+msgid "The raster layer being sampled."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:13
+msgid "Calculated step size in map units."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.cardinal_to_azimuth:1
+msgid "Convert a cardinal direction string to its equivalent azimuth."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.cardinal_to_azimuth:3
+msgid "Supports: N, NE, E, SE, S, SW, W, NW."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.cardinal_to_azimuth:5
+msgid "The cardinal direction string."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.cardinal_to_azimuth:7
+msgid "The azimuth in degrees (0-360), or None if invalid."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:1
+msgid "Create a buffer around a geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:3
+msgid "Input geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:4
+msgid "Coordinate Reference System of the geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:5
+msgid "Buffer distance in layer units."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:6
+msgid "Number of segments for the buffer approximation."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:8
+msgid "The buffered geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:1
+msgid "Create a coordinate transformation function for screen projection."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:3
+msgid ""
+"Returns a function that transforms data coordinates (distance, elevation)"
+" to pixel coordinates (x, y) based on the provided view dimensions."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:6
+msgid "Dictionary with 'min_d', 'max_d', 'min_e', 'max_e'."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:7
+msgid "Screen/view width in pixels."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:8
+msgid "Screen/view height in pixels."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:9
+msgid "Plot margin in pixels."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:10
+msgid "Vertical exaggeration multiplier (default 1.0)."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:12
+msgid "A function `transform(dist, elev) -> (x, y)` converting data to pixels."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.create_distance_area:1
+msgid "Create and configure a QgsDistanceArea object."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.create_distance_area:3
+msgid ""
+"Configures the distance area with the provided CRS, project transform "
+"context, and associated ellipsoid for geodesic calculations."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.create_distance_area:6
+msgid "The Coordinate Reference System to use."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.create_distance_area:8
+msgid "The configured distance calculation object."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:1
+msgid "Create a temporary memory (scratch) layer."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:3
+msgid "Name for the layer."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:4
+msgid "QGIS geometry type string (e.g., 'Point', 'LineString')."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:5
+msgid "Coordinate reference system."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:6
+msgid "List of fields for the layer."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:8
+msgid "The created memory layer."
+msgstr ""
+
+#: of sec_interp.core.utils.io.create_shapefile_writer:1
+msgid "Create and initialize a QgsVectorFileWriter for Shapefiles."
+msgstr ""
+
+#: of sec_interp.core.utils.io.create_shapefile_writer:3
+msgid "Uses the modern `create` static method for QGIS 3.38+ compatibility."
+msgstr ""
+
+#: of sec_interp.core.utils.io.create_shapefile_writer:5
+msgid "File system path where the shapefile will be created."
+msgstr ""
+
+#: of sec_interp.core.utils.io.create_shapefile_writer:6
+msgid "The Coordinate Reference System for the new file."
+msgstr ""
+
+#: of sec_interp.core.utils.io.create_shapefile_writer:7
+msgid "The attribute fields definition."
+msgstr ""
+
+#: of sec_interp.core.utils.io.create_shapefile_writer:8
+msgid "The mapping geometry type (default: LineString)."
+msgstr ""
+
+#: of sec_interp.core.utils.io.create_shapefile_writer:10
+msgid "An initialized writer object for creating a Shapefile."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.rst
+msgid "Raises"
+msgstr ""
+
+#: of sec_interp.core.utils.io.create_shapefile_writer:12
+msgid "If the writer cannot be created or has an initialization error."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:1
+msgid "Densify a line geometry by a specific distance interval."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:3
+msgid ""
+"Adds intermediate vertices to ensure segments are no longer than the "
+"interval."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:5
+msgid "Line geometry to densify."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:6
+msgid "Maximum distance between vertices (in CRS units)."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:8
+msgid "The densified QgsGeometry."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.extract_feature_attributes:1
+msgid "Extract attributes from a QgsFeature into a pure Python dictionary."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.extract_feature_attributes:3
+msgid "The QgsFeature object."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.extract_feature_attributes:5
+msgid "A dictionary mapping field names to attribute values."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.filtering.filter_features_by_buffer:1
+msgid "Filter features that intersect with buffer using spatial index."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.filtering.filter_features_by_buffer:3
+msgid "Layer containing features to filter."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.filtering.filter_features_by_buffer:4
+msgid "Buffer geometry to use for spatial filter."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.filtering.filter_features_by_buffer:5
+msgid "CRS of the buffer geometry (optional)."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.filtering.filter_features_by_buffer:7
+msgid "List of QgsFeature objects that intersect the query buffer."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.get_line_start_point:1
+msgid "Get the start point of a line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.get_line_start_point:3
+msgid "Handles both singlepart and multipart line geometries."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.get_line_start_point:5
+msgid "The line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.get_line_start_point:7
+msgid "The first vertex of the first part of the geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.extraction.get_line_vertices:1
+msgid "Extract vertices specifically from a line or multiline geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.extraction.get_line_vertices:3
+msgid "A QGIS geometry of type `LineGeometry`."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.extraction.get_line_vertices:5
+msgid "A flat list of vertices."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.extraction.get_line_vertices:7
+msgid "If the geometry is null, not a line, or contains no vertices."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.interpolate_elevation:1
+msgid "Interpolate elevation at a given distance along the topography profile."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.interpolate_elevation:3
+msgid "Uses linear interpolation between the two nearest sampled points."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.interpolate_elevation:5
+msgid "List of (distance, elevation) tuples."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.interpolate_elevation:6
+msgid "Horizontal distance along the section."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.interpolate_elevation:8
+msgid "The interpolated elevation value (Z) at that distance."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:1
+msgid "Interpolate interval attributes along drillhole trajectory."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:3
+msgid ""
+"Filters and maps geological intervals onto the 3D trajectory points that "
+"fall within the specified section buffer."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:6
+msgid "List of (depth, x, y, z, dist_along, offset) tuples."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:7
+msgid "List of (from_depth, to_depth, attribute) tuples."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:8
+msgid "Maximum perpendicular offset to include a point."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:10
+msgid ""
+"- attribute: The metadata/geology associated with the interval. - "
+"points_2d: List of (distance, elevation) coordinates for rendering. - "
+"points_3d: List of (x, y, z) original coordinates for 3D export."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:10
+msgid "attribute: The metadata/geology associated with the interval."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:11
+msgid "points_2d: List of (distance, elevation) coordinates for rendering."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:12
+msgid "points_3d: List of (x, y, z) original coordinates for 3D export."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_dip:1
+msgid "Parse a dip value from various formats."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_dip:3
+msgid ""
+"Supports numeric dip (\"45\") and field notation with direction (\"45 "
+"NE\", \"22 SW\")."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_dip:5
+msgid "The raw dip value."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_dip:7
+msgid ""
+"A tuple of (dip_angle, dip_direction_azimuth). Values are None if parsing"
+" fails."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_strike:1
+msgid "Parse a strike value from various formats into an azimuth (0-360)."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_strike:3
+msgid ""
+"Supports numeric values, strings, and quadrant notation (e.g., \"N 30 "
+"E\", \"S 45 W\")."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_strike:5
+msgid "The raw strike value (string, int, float, or None)."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_strike:7
+msgid "Strike in azimuth degrees (0-360) or None if parsing fails."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.prepare_profile_context:1
+msgid "Prepare a common context for profile calculation operations."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.prepare_profile_context:3
+msgid "The cross-section line vector layer."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.prepare_profile_context:5
+msgid ""
+"- line_geom: The geometry of the section line. - line_start: The starting"
+" point of the line. - distance_area: Fully configured geodesic distance "
+"object."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.prepare_profile_context:5
+msgid "line_geom: The geometry of the section line."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.prepare_profile_context:6
+msgid "line_start: The starting point of the line."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.prepare_profile_context:7
+msgid "distance_area: Fully configured geodesic distance object."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.prepare_profile_context:10
+msgid "If the input layer is empty or has invalid geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:1
+msgid "Project drillhole trajectory points onto the section line."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:3
+msgid ""
+"Calculates the 2D projection (distance along section) and the offset "
+"(distance from section) for each point in a 3D trajectory."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:6
+msgid "List of 3D trajectory points (depth, x, y, z, ...)."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:7
+msgid "Section line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:8
+msgid "Reference start point for distance calculation."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:9
+msgid "Distance calculation utility."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:11
+msgid "List of (depth, x, y, z, dist_along, offset, proj_x, proj_y) tuples."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:1
+msgid "Sample elevation values along a line geometry from a raster layer."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:3
+msgid ""
+"Densifies the line at raster resolution and samples the elevation at each"
+" vertex."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:5
+msgid "The line geometry to sample along."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:6
+msgid "The source DEM raster layer."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:7
+msgid "The raster band index to sample."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:8
+msgid "Object for geodesic distance calculations."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:9
+msgid "Optional start point for distance measurements."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:10
+msgid "Optional sampling interval. If None, uses raster resolution."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_elevation_along_line:12
+msgid ""
+"A list of QgsPointXY objects where x is horizontal distance and y is "
+"elevation."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_point_elevation:1
+msgid "Sample elevation from a raster layer at a specific 2D coordinate."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_point_elevation:3
+msgid "The DEM raster layer."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_point_elevation:4
+msgid "The coordinate point (X, Y) to sample."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_point_elevation:5
+msgid "The raster band index (default 1)."
+msgstr ""
+
+#: of sec_interp.core.utils.sampling.sample_point_elevation:7
+msgid "The sampled elevation value (Z) or 0.0 if the point is out of bounds."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.rst:10
+msgid "Subpackages"
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.rst:18
+msgid "Submodules"
+msgstr ""

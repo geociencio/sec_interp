@@ -1,0 +1,155 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: hi\n"
+"Language-Team: hi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.tools.measure_tool.rst:2
+msgid "sec\\_interp.gui.tools.measure\\_tool module"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool:1
+msgid "Measurement tool for Profile View."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool:3
+msgid ""
+"This module provides the ProfileMeasureTool for measuring distances, "
+"elevation differences, and slopes in the profile preview window. It "
+"separates UI event handling from spatial snapping logic."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool:1
+msgid "Map tool for measuring distances in profile view."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool:3
+msgid ""
+"Supports multi-point polyline measurements: - Click to add points along "
+"the trace - Click \"Finalizar\" button in UI to complete measurement - "
+"Right-click or Escape to cancel and reset"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.__init__:1
+msgid "Initialize the profile measurement tool."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.tools.measure_tool.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.__init__:3
+msgid "The map canvas where measurement is performed."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.activate:1
+msgid "Activate the measurement tool."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasMoveEvent:1
+msgid "Handle mouse move for rubber band update."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasMoveEvent:3
+#: sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasReleaseEvent:7
+msgid "Map tool event from QGIS"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasReleaseEvent:1
+msgid "Handle mouse click release."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasReleaseEvent:3
+msgid "Left click: Add point to measurement"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasReleaseEvent:4
+msgid "Right click: Cancel and reset"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.canvasReleaseEvent:5
+msgid "Press Enter to finalize (see keyPressEvent)"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.deactivate:1
+msgid "Deactivate the measurement tool."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.deactivate:3
+msgid ""
+"Note: We no longer call reset() here to allow measurements to persist "
+"visually until a new one is started or explicitly cleared."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.disconnect_signals:1
+msgid "Disconnect signals to prevent memory leaks."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.measure_tool.ProfileMeasureTool.finalize_measurement:1
+msgid "Finalize the measurement and emit final metrics."
+msgstr ""
+
+#: of
+#: sec_interp.gui.tools.measure_tool.ProfileMeasureTool.finalize_measurement:3
+msgid ""
+"This is a public method that can be called from UI buttons. After "
+"finalizing, the tool is deactivated but results remain visible."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.keyPressEvent:1
+msgid "Handle keyboard events."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.keyPressEvent:3
+msgid "Enter/Return: Finalize measurement"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.keyPressEvent:4
+msgid "Escape: Cancel measurement"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.keyPressEvent:6
+msgid "Key event from QGIS"
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.reset:1
+msgid "Reset the tool state."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileMeasureTool.reset:3
+msgid ""
+"If measurement is finalized, only clears the points data but keeps the "
+"visual elements (rubber band and markers) visible."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileSnapper:1
+msgid "Helper class to handle point snapping functionality."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileSnapper.__init__:1
+msgid "Initialize the profile snapper."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileSnapper.__init__:3
+msgid "The map canvas to snap on."
+msgstr ""
+
+#: of sec_interp.gui.tools.measure_tool.ProfileSnapper.snap:1
+msgid "Find the nearest vertex or edge to the mouse position."
+msgstr ""

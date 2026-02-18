@@ -1,0 +1,168 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pl\n"
+"Language-Team: pl <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.validation.validation_helpers.rst:2
+msgid "sec\\_interp.core.validation.validation\\_helpers module"
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers:1
+msgid "Helper classes and functions for Level 2 (Business Validation)."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers:3
+msgid ""
+"This module provides tools for: - Accumulating validation errors "
+"(ValidationContext) - Handling structured errors (RichValidationError) - "
+"Defining and checking dependency rules between fields/layers."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.DependencyRule:1
+msgid "Rule defining a dependency between fields."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.DependencyRule:4
+msgid "Example"
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.DependencyRule:5
+msgid "If `layer_selected` is True, then `field_name` must be set."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.DependencyRule.validate:1
+msgid "Evaluate the rule and add error to context if failed."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.RichValidationError:1
+msgid "A validation error with context details."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.RichValidationError.__str__:1
+msgid "Return a string representation of the error."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.ValidationContext:1
+msgid "Accumulates validation results instead of failing fast."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.ValidationContext:3
+msgid ""
+"Allows implementing a strategy where we collect all business logic errors"
+" before presenting them to the user."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.ValidationContext.__init__:1
+msgid "Initialize the validation results collector."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.ValidationContext.add_error:1
+msgid "Add a hard error to the context."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.ValidationContext.add_warning:1
+msgid "Add a warning (soft error) to the context."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.ValidationContext.errors:1
+msgid "Get list of accumulated errors."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.ValidationContext.has_errors:1
+msgid "Check if any hard errors exist."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.ValidationContext.has_warnings:1
+msgid "Check if any warnings exist."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.ValidationContext.merge:1
+msgid "Merge another context into this one."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.ValidationContext.raise_if_errors:1
+msgid "Raise ValidationError if any errors exist."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.ValidationContext.warnings:1
+msgid "Get list of accumulated warnings."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.resolve_layer:1
+msgid "Resolve a layer reference (ID string or QgsMapLayer) to a QgsMapLayer."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.resolve_layer:3
+msgid ""
+"This is a free function extracted from "
+"``ProjectValidator._resolve_layer`` to avoid circular imports between "
+"``project_validator`` and ``project_validators``."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.validation_helpers.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.resolve_layer:7
+msgid "A ``QgsMapLayer`` instance or a layer ID string."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.validation_helpers.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.resolve_layer:9
+msgid "The resolved ``QgsMapLayer``, or ``None`` if not found."
+msgstr ""
+
+#: of sec_interp.core.validation.validation_helpers.validate_dependencies:1
+msgid "Batch validate a list of dependency rules."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.validate_reasonable_ranges:1
+msgid "Check for unreasonable or potentially erroneous parameter values."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.validate_reasonable_ranges:3
+msgid ""
+"This function does not return hard errors, but a list of warning strings "
+"to inform the user about extreme values (e.g., vertical exaggeration > "
+"10)."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.validate_reasonable_ranges:6
+msgid "Dictionary containing parameter names and their current values."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.validation_helpers.validate_reasonable_ranges:8
+msgid "A list of warning messages. If empty, all values are reasonable."
+msgstr ""

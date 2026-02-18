@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.preview_layer_factory.rst:2
+msgid "sec\\_interp.gui.preview\\_layer\\_factory module"
+msgstr ""
+
+#: of sec_interp.gui.preview_layer_factory:1
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory:1
+msgid "Factory for creating and styling QGIS memory layers for the preview."
+msgstr ""
+
+#: of sec_interp.gui.preview_layer_factory.PreviewLayerFactory.__init__:1
+msgid "Initialize the layer factory with specialized renderers."
+msgstr ""
+
+#: of sec_interp.gui.preview_layer_factory.PreviewLayerFactory.active_units:1
+msgid "Compatibility property for active geological units."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_drillhole_interval_layer:1
+msgid "Create temporary layer for drillhole intervals."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_drillhole_trace_layer:1
+msgid "Create temporary layer for drillhole traces."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_geol_layer:1
+msgid "Create temporary layer for geological profile."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_memory_layer:1
+msgid "Create a memory layer with project CRS."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.preview_layer_factory.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_memory_layer:3
+msgid "Geometry type (e.g., \"Point\", \"LineString\")."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_memory_layer:4
+msgid "Display name for the layer."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_memory_layer:5
+msgid "Optional field definition URI string."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.preview_layer_factory.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_memory_layer:7
+msgid "Tuple of (Layer, DataProvider)."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_struct_layer:1
+msgid "Create temporary layer for structural dips."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_topo_fill_layer:1
+msgid "Create a solid 'curtain' fill layer under the topography for depth."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.create_topo_layer:1
+msgid ""
+"Create temporary layer for topographic profile with polychromatic "
+"elevation styling."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.get_color_for_unit:1
+msgid "Get a consistent color for a geological unit based on its name."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_layer_factory.PreviewLayerFactory.interpolate_elevation:1
+msgid "Interpolate elevation at a given distance."
+msgstr ""

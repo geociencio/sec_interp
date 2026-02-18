@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: hi\n"
+"Language-Team: hi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.metadata_reader.rst:2
+msgid "sec\\_interp.core.utils.metadata\\_reader module"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader:1
+msgid "Utility for reading plugin metadata from metadata.txt."
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader:3
+msgid ""
+"This module provides functionality to read plugin information from the "
+"standard QGIS metadata.txt file, ensuring a single source of truth for "
+"plugin version, author, and other metadata."
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.clear_metadata_cache:1
+msgid "Clear the metadata cache."
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.clear_metadata_cache:3
+msgid "Useful for testing or when metadata.txt is updated at runtime."
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:1
+msgid "Read plugin metadata from metadata.txt."
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:3
+msgid ""
+"Reads the standard QGIS metadata.txt file and extracts key information "
+"about the plugin. Results are cached to avoid repeated file I/O."
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:6
+msgid ""
+"Dictionary containing plugin metadata with keys:     - name: Plugin name"
+"     - version: Plugin version     - author: Plugin author     - email: "
+"Contact email     - description: Short description     - homepage: "
+"Documentation URL (if available)     - repository: Source code URL (if "
+"available)"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:8
+msgid "Dictionary containing plugin metadata with keys:"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:9
+msgid "name: Plugin name"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:10
+msgid "version: Plugin version"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:11
+msgid "author: Plugin author"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:12
+msgid "email: Contact email"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:13
+msgid "description: Short description"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:14
+msgid "homepage: Documentation URL (if available)"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:15
+msgid "repository: Source code URL (if available)"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata
+msgid "Raises"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:18
+msgid "If metadata.txt cannot be found"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:19
+msgid "If required fields (name, version, author, email) are missing"
+msgstr ""
+
+#: of sec_interp.core.utils.metadata_reader.read_plugin_metadata:22
+msgid "Example"
+msgstr ""

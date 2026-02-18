@@ -1,0 +1,129 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.interfaces.structure_interface.rst:2
+msgid "sec\\_interp.core.interfaces.structure\\_interface module"
+msgstr ""
+
+#: of sec_interp.core.interfaces.structure_interface:1
+msgid "Interface for Structure services."
+msgstr ""
+
+#: of sec_interp.core.interfaces.structure_interface.IStructureService:1
+msgid "Abstract interface for the Structural Projection Service."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.detach_structures:1
+msgid "Extract structure features within buffer into detached dictionaries."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.structure_interface.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.detach_structures:3
+msgid "Layer containing structural measurements."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.detach_structures:4
+msgid "Section line geometry."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.detach_structures:5
+msgid "Buffer distance."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.structure_interface.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.detach_structures:7
+msgid "List of feature data dictionaries (wkt, attributes)."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:1
+msgid "Project detached structural measurements onto the section plane."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:3
+msgid "The section line geometry."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:4
+msgid "Start point of the line."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:5
+msgid "Distance calculation object."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:6
+msgid "The DEM raster layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:7
+msgid "List of detached structure dictionaries."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:8
+msgid "Search buffer distance."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:9
+msgid "Azimuth of the section line."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:10
+msgid "Name of the dip field."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:11
+msgid "Name of the strike field."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:12
+msgid "Raster band index."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.structure_interface.IStructureService.project_structures:14
+msgid "List of StructureMeasurement objects."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.structure_interface.rst
+msgid "Return type"
+msgstr ""

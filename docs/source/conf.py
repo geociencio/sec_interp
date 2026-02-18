@@ -56,6 +56,14 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+# -- Options for i18n --------------------------------------------------------
+
+# Path to the message catalogs (.po files)
+locale_dirs = ["../locales/"]
+# Keep translation catalogs organized by source file
+gettext_compact = False
+language = "en"
+
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -84,3 +92,23 @@ napoleon_use_rtype = True
 napoleon_preprocess_types = False
 napoleon_type_aliases = None
 napoleon_attr_annotations = True
+
+
+# -- Warnings suppression ----------------------------------------------------
+# Suppress duplicate object warnings (common when re-exporting in __init__.py)
+suppress_warnings = ["ref.python", "toc.not_included"]
+
+
+def setup(app):
+    """Register custom handlers."""
+
+    def skip_imported_members(app, what, name, obj, skip, options):
+        """Skip members that are imported from other modules to avoid duplication."""
+        if what == "module":
+            # Check if the member is imported (has a different __module__ than the current one)
+            # This is tricky because we need to know the current module being documented.
+            # A simpler way is to skip everything in __init__.py if it's already in a submodule.
+            pass
+        return skip
+
+    # app.connect("autodoc-skip-member", skip_imported_members)

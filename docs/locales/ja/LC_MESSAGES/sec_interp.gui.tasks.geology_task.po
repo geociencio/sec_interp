@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.tasks.geology_task.rst:2
+msgid "sec\\_interp.gui.tasks.geology\\_task module"
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task:1
+msgid "Task for async geology generation."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask:1
+msgid "Background task for generating geological profiles."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask:3
+msgid ""
+"This task executes the geometric intersection logic in a separate thread,"
+" using only detached data (DTOs) to ensure thread safety."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask.__init__:1
+msgid "Initialize the task."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.tasks.geology_task.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask.__init__:3
+msgid "Description of the task."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask.__init__:4
+msgid "The detached data input DTO."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask.__init__:5
+msgid "The GeologyService instance (stateless logic)."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask.__init__:6
+msgid "Original params for context (backward compatibility)."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask.finished:1
+msgid "Handle task completion on Main Thread."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask.run:1
+msgid "Execute the task in background thread."
+msgstr ""
+
+#: of sec_interp.gui.tasks.geology_task.GeologyGenerationTask.setProgress:1
+msgid "Override to emit signal."
+msgstr ""

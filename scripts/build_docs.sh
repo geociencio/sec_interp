@@ -44,49 +44,92 @@ uv run sphinx-apidoc -o "$SOURCE_DIR" . \
     build/ \
     --force --separate --module-first
 
-# 3. Run sphinx-build to generate HTML
-echo "🛠️  Building HTML documentation..."
-uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR"
+# 3. Run sphinx-build to generate HTML for each language
+# Supported locales (Web and Plugin)
+LOCALES="en es fr pt_BR de ru zh_CN id it pl nl fi hi ja"
+PLUGIN_LOCALES="$LOCALES"
 
-# 4. Move/Copy output to external directory
+echo "🛠️  Building HTML documentation for multiple languages..."
+for lang in $LOCALES; do
+    echo "  - Language: $lang"
+    if [ "$lang" == "en" ]; then
+        # Default language (English)
+        uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/en" -D language=en
+    else
+        # Translated languages
+        uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/$lang" -D language="$lang"
+    fi
+done
+
+# 4. Move/Copy output to external directory (Full Web Version)
 echo "📤 Exporting documentation to $OUTPUT_DIR..."
-# We use copy followed by clean to ensure external directory is fresh
-# but we might want to keep history if it's a git repo.
-# For now, we sync the content of docs/build/html to the output dir.
-cp -r "$BUILD_DIR/html/"* "$OUTPUT_DIR/"
+for lang in $LOCALES; do
+    mkdir -p "$OUTPUT_DIR/$lang"
+    cp -r "$BUILD_DIR/$lang/html/"* "$OUTPUT_DIR/$lang/"
+done
 
-# 5. [OPTIONAL] Sync with internal help directory (for plugin usage)
+# 5. [OPTIONAL] Sync with internal help directory (for plugin usage - OPTIMIZED)
 INTERNAL_HELP_DIR="help/html"
 if [ -d "help" ]; then
-    echo "🔄 Syncing with internal help directory ($INTERNAL_HELP_DIR)..."
+    echo "🔄 Syncing with internal help directory (OPTIMIZED OFFLINE MANUAL)..."
     rm -rf "$INTERNAL_HELP_DIR"
     mkdir -p "$INTERNAL_HELP_DIR"
-    cp -r "$BUILD_DIR/html/"* "$INTERNAL_HELP_DIR/"
 
-    # Remove Developer API docs from User Help (User Preference)
-    echo "🧹 Removing API docs and source code from plugin help..."
-    rm -rf "$INTERNAL_HELP_DIR/_modules"
-    rm -rf "$INTERNAL_HELP_DIR/_sources"
-    # shellcheck disable=SC2086
-    rm -f $INTERNAL_HELP_DIR/sec_interp*.html
-    # shellcheck disable=SC2086
-    rm -f $INTERNAL_HELP_DIR/modules.html
+    # A. Sync all languages
+    for lang in $PLUGIN_LOCALES; do
+        if [ -d "$BUILD_DIR/$lang/html" ]; then
+            echo "    - Syncing $lang..."
+            mkdir -p "$INTERNAL_HELP_DIR/$lang"
+            cp -r "$BUILD_DIR/$lang/html/"* "$INTERNAL_HELP_DIR/$lang/"
+        fi
+    done
 
-    # Remove large font sets to save space (~9MB reduction)
-    echo "📦 Pruning large fonts from help (optimizing for ZIP size)..."
-    rm -rf "$INTERNAL_HELP_DIR/_static/fonts/Lato"
-    rm -rf "$INTERNAL_HELP_DIR/_static/fonts/RobotoSlab"
-    rm -rf "$INTERNAL_HELP_DIR/_static/css/fonts" # FontAwesome
+    # B. Deduplicate Images: Mover _images al nivel superior compartido
+    echo "🖼️  Deduplicating images (shared assets)..."
+    if [ -d "$INTERNAL_HELP_DIR/en/_images" ]; then
+        mv "$INTERNAL_HELP_DIR/en/_images" "$INTERNAL_HELP_DIR/"
+        # Eliminar _images de los demás idiomas
+        rm -rf "$INTERNAL_HELP_DIR"/*/_images
+        # Actualizar rutas en los HTML (cambiar _images/ por ../_images/)
+        echo "🔗 Patching HTML image paths..."
+        find "$INTERNAL_HELP_DIR" -name "*.html" -exec sed -i 's/src="_images\//src="..\/_images\//g' {} +
+        find "$INTERNAL_HELP_DIR" -name "*.html" -exec sed -i 's/href="_images\//href="..\/_images\//g' {} +
+    fi
 
-    # Further micro-optimizations (removing unused RTD extras)
-    rm -f "$INTERNAL_HELP_DIR/_static/js/badge_only.js"
-    rm -f "$INTERNAL_HELP_DIR/_static/js/versions.js"
-    rm -f "$INTERNAL_HELP_DIR/_static/css/badge_only.css"
+    # C. Remove Search and bulky navigation artifacts from Offline Help
+    echo "🧹 Removing search indexes and developer docs from offline help..."
+    find "$INTERNAL_HELP_DIR" -name "searchindex.js" -delete
+    find "$INTERNAL_HELP_DIR" -name "search.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "genindex.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "py-modindex.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "objects.inv" -delete
+
+    # Remove Developer API docs
+    echo "🧪 Removing API docs and source code..."
+    find "$INTERNAL_HELP_DIR" -type d -name "_modules" -exec rm -rf {} +
+    find "$INTERNAL_HELP_DIR" -type d -name "_sources" -exec rm -rf {} +
+    find "$INTERNAL_HELP_DIR" -name "sec_interp*.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "modules.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "ARCHITECTURE.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "DEVELOPMENT_GUIDE.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "MAINTENANCE_LOG.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "CORE_DISTINCTION_GUIDE*.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "phase_closure_*.html" -delete
+    find "$INTERNAL_HELP_DIR" -name "v2.9.0_technical_analysis.html" -delete
+
+    # Remove large font sets
+    echo "📦 Pruning large fonts..."
+    find "$INTERNAL_HELP_DIR" -type d -path "*/_static/fonts/Lato" -exec rm -rf {} +
+    find "$INTERNAL_HELP_DIR" -type d -path "*/_static/fonts/RobotoSlab" -exec rm -rf {} +
+    find "$INTERNAL_HELP_DIR" -type d -path "*/_static/css/fonts" -exec rm -rf {} +
+
+    # Micro-optimizations
+    find "$INTERNAL_HELP_DIR" -name "badge_only.js" -delete
+    find "$INTERNAL_HELP_DIR" -name "versions.js" -delete
+    find "$INTERNAL_HELP_DIR" -name "badge_only.css" -delete
     find "$INTERNAL_HELP_DIR" -type d -empty -delete
 
-    echo "🔍 Verifying cleanup..."
-    ls -d "$INTERNAL_HELP_DIR"/sec_interp*.html 2>/dev/null || echo "✅ API docs gone"
-    ls -d "$INTERNAL_HELP_DIR/_static/fonts/Lato" 2>/dev/null || echo "✅ Lato gone"
+    echo "✅ Optimization complete."
 fi
 
 # 6. [AUTO] Deploy to GitHub Pages (if output is a git repo)

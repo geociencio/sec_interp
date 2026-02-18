@@ -118,7 +118,7 @@ test: compile transcompile
 	@echo "----------------------"
 
 deploy: docs
-	uv run qgis-manage deploy
+	uv run qgis-manage deploy --no-compile
 
 # The dclean target removes compiled python files from plugin directory
 

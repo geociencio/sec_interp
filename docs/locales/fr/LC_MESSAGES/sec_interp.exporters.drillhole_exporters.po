@@ -1,0 +1,88 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.exporters.drillhole_exporters.rst:2
+msgid "sec\\_interp.exporters.drillhole\\_exporters module"
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_exporters:1
+msgid "Exporters for drillhole data (Shapefiles)."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter:1
+msgid "Exports drillhole intervals to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export:1
+msgid "Export drillhole intervals to a Shapefile."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.drillhole_exporters.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export:3
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export:3
+msgid "Path to the output Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export:4
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export:4
+msgid "Dictionary containing 'drillhole_data' and 'crs'."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.drillhole_exporters.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export:6
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export:6
+msgid "True if export successful, False otherwise."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.drillhole_exporters.rst
+msgid "Return type"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.get_supported_extensions:1
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.get_supported_extensions:1
+msgid "Get supported file extensions."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.get_supported_extensions:3
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.get_supported_extensions:3
+msgid "List of supported extensions."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter:1
+msgid "Exports drillhole traces to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export:1
+msgid "Export drillhole traces to a Shapefile."
+msgstr ""

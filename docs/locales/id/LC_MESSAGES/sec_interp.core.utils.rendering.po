@@ -1,0 +1,110 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: id\n"
+"Language-Team: id <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.rendering.rst:2
+msgid "sec\\_interp.core.utils.rendering module"
+msgstr ""
+
+#: of sec_interp.core.utils.rendering:1
+msgid "Rendering and polychromy Utilities Module."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering:3
+msgid ""
+"This module provides visualization and coordinate transformation "
+"utilities for profile rendering."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:1
+msgid "Calculate the bounding box for all profile data with padding."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:3
+msgid ""
+"Calculates the minimum and maximum distance and elevation across "
+"topography and optional geological segments."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.rendering.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:6
+msgid "List of (distance, elevation) tuples for topography."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:7
+msgid "Optional list of geological segments."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.rendering.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_bounds:9
+msgid "Bounds containing 'min_d', 'max_d', 'min_e', 'max_e' with 5% padding."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_interval:1
+msgid "Calculate a 'nice' interval for axis labels based on the data range."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_interval:3
+msgid "The total range of data values (e.g., max_d - min_d)."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.calculate_interval:5
+msgid "A human-readable interval (e.g., 1, 2, 5, 10, etc.) for grid lines."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:1
+msgid "Create a coordinate transformation function for screen projection."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:3
+msgid ""
+"Returns a function that transforms data coordinates (distance, elevation)"
+" to pixel coordinates (x, y) based on the provided view dimensions."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:6
+msgid "Dictionary with 'min_d', 'max_d', 'min_e', 'max_e'."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:7
+msgid "Screen/view width in pixels."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:8
+msgid "Screen/view height in pixels."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:9
+msgid "Plot margin in pixels."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:10
+msgid "Vertical exaggeration multiplier (default 1.0)."
+msgstr ""
+
+#: of sec_interp.core.utils.rendering.create_coordinate_transform:12
+msgid "A function `transform(dist, elev) -> (x, y)` converting data to pixels."
+msgstr ""

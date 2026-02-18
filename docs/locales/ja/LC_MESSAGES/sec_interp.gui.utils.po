@@ -1,0 +1,66 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.utils.rst:2
+msgid "sec\\_interp.gui.utils module"
+msgstr ""
+
+#: of sec_interp.gui.utils:1
+msgid "UI Utilities Module."
+msgstr ""
+
+#: of sec_interp.gui.utils:3
+msgid "General purpose UI helpers and user messaging."
+msgstr ""
+
+#: of sec_interp.gui.utils.show_user_message:1
+msgid "Show message box with consistent styling and automatic logging."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.utils.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.utils.show_user_message:3
+msgid "Parent widget (usually dialog or main window)"
+msgstr ""
+
+#: of sec_interp.gui.utils.show_user_message:4
+msgid "Message box title"
+msgstr ""
+
+#: of sec_interp.gui.utils.show_user_message:5
+msgid "Message content"
+msgstr ""
+
+#: of sec_interp.gui.utils.show_user_message:6
+msgid ""
+"Message level - \"warning\", \"info\", \"error\", \"critical\", "
+"\"question\""
+msgstr ""
+
+#: ../../../source/sec_interp.gui.utils.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.gui.utils.show_user_message:8
+msgid "QMessageBox.StandardButton for \"question\" level, None otherwise"
+msgstr ""

@@ -1,0 +1,91 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pl\n"
+"Language-Team: pl <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.exporters.drillhole_3d_exporter.rst:2
+msgid "sec\\_interp.exporters.drillhole\\_3d\\_exporter module"
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_3d_exporter:1
+msgid "3D Drillhole Exporter."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_3d_exporter:3
+msgid ""
+"This module provides exporters for 3D drillhole data (traces and "
+"intervals)."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter:1
+msgid "Exports 3D drillhole intervals to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.export:1
+msgid "Export 3D drillhole intervals to a Shapefile."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.drillhole_3d_exporter.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.export:3
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.export:3
+msgid "Path to the output Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.export:4
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.export:4
+msgid ""
+"Dictionary containing 'drillhole_data' and 'crs'. Can include "
+"'use_projected' (bool)."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.drillhole_3d_exporter.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.export:7
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.export:7
+msgid "True if export successful, False otherwise."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.drillhole_3d_exporter.rst
+msgid "Return type"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.get_supported_extensions:1
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.get_supported_extensions:1
+msgid "Get supported extensions."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter:1
+msgid "Exports 3D drillhole traces to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.export:1
+msgid "Export 3D drillhole traces to a Shapefile."
+msgstr ""

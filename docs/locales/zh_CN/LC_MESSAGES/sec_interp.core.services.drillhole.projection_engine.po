@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.services.drillhole.projection_engine.rst:2
+msgid "sec\\_interp.core.services.drillhole.projection\\_engine module"
+msgstr ""
+
+#: of sec_interp.core.services.drillhole.projection_engine:1
+msgid "Pure geometric projection logic for drillhole operations."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole.projection_engine.ProjectionEngine:1
+msgid "Encapsulates geometric projection logic."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.projection_engine.ProjectionEngine.project_point_to_line:1
+msgid "Project point to line and return (dist_along, offset)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.drillhole.projection_engine.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.projection_engine.ProjectionEngine.project_point_to_line:3
+msgid "The point to project."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.projection_engine.ProjectionEngine.project_point_to_line:4
+msgid "The profile line geometry."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.projection_engine.ProjectionEngine.project_point_to_line:5
+msgid "The start point of the profile (dist=0)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.projection_engine.ProjectionEngine.project_point_to_line:6
+msgid "Distance area object for measurements."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.drillhole.projection_engine.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.projection_engine.ProjectionEngine.project_point_to_line:8
+msgid "Tuple of (distance_along_line, offset_from_line)."
+msgstr ""

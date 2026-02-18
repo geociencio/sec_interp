@@ -1,0 +1,360 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:1
+msgid "SecInterp - Development Guide"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:3
+msgid ""
+"Welcome to the **SecInterp** development guide. This document outlines "
+"the standards, best practices, and workflows for contributing to the "
+"project."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:7
+msgid "🏗️ Technical Stack"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:9
+msgid "**Language**: Python 3.10+ (QGIS 3.x compatible)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:10
+msgid "**GUI Framework**: PyQt5 (Native QGIS integration)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:11
+msgid "**Geospatial Engine**: PyQGIS API (`qgis.core`, `qgis.gui`)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:12
+msgid "**Package Manager**: `uv` (recommended) or `pip`"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:13
+msgid "**Linter & Formatter**: `Ruff`"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:14
+msgid "**Testing**: `unittest` (Standard Library)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:18
+msgid "🎨 Coding Standards"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:20
+msgid "🧬 Design Principles"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:21
+msgid "**SOLID**: Follow SRP, OCP, and DIP strictly."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:22
+msgid ""
+"**Separation of Concerns**: GUI code (Managers/UI) MUST NOT contain "
+"business logic. Delegating to `Core/Services` is mandatory."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:23
+msgid ""
+"**DRY (Don't Repeat Yourself)**: If a calculation or check is used twice,"
+" move it to a `core/utils` module."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:25
+msgid "📝 Naming Conventions"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:26
+msgid "**Classes**: `CapWords` (e.g., `ProfileService`)."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:27
+msgid "**Variables/Functions**: `snake_case` (e.g., `calculate_apparent_dip`)."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:28
+msgid ""
+"**Qt Overrides**: `camelCase` (MUST match the original C++ signature, "
+"e.g., `showEvent`)."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:29
+msgid "**Signals**: `camelCase` (PyQt style, e.g., `dataChanged`)."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:31
+msgid "🐍 Imports Ordering"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:32
+msgid "**Standard Library**: `os`, `sys`, `math`, etc."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:33
+msgid "**Third-Party**: `numpy`, `pandas`, etc."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:34
+msgid "**QGIS Core**: `from qgis.core import ...`"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:35
+msgid "**QGIS GUI**: `from qgis.gui import ...`"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:36
+msgid ""
+"**PyQt**: `from qgis.PyQt.QtWidgets import ...` (Always use `qgis.PyQt` "
+"shim)."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:37
+msgid "**Local Modules**: `from sec_interp.core import ...`"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:41
+msgid "⚡ Git Workflow"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:43
+msgid "Conventional Commits"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:44
+msgid ""
+"All commits MUST follow the [Conventional "
+"Commits](https://www.conventionalcommits.org/) specification:"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:46
+msgid "**Format**: `<type>(<scope>): <description>`"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:48
+msgid "`feat`: A new feature (e.g., `feat(drill): add 3d projection`)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:49
+msgid "`fix`: A bug fix (e.g., `fix(gui): resolve range attribute error`)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:50
+msgid "`refactor`: Code change that neither fixes a bug nor adds a feature."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:51
+msgid "`docs`: Documentation changes."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:52
+msgid "`test`: Adding or correcting tests."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:53
+msgid "`chore`: Build process or auxiliary tool changes."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:55
+msgid "**Language**: All commit messages must be in **English**."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:59
+msgid "🛠️ Tooling (Ruff)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:61
+msgid ""
+"We use **Ruff** for linting and formatting. It replaces Black, isort, and"
+" Flake8."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:63
+msgid "Basic Commands"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:75
+msgid "IDE Integration"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:76
+msgid ""
+"It is highly recommended to install the **Ruff extension** in VS Code and"
+" enable \"Format on Save\"."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:80
+msgid "🧪 Testing"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:82
+msgid "Running Tests (Local)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:88
+msgid "Running Tests (Docker - Recommended)"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:89
+msgid "To avoid dependency issues with QGIS, use the containerized environment:"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:95
+msgid "Mocking QGIS"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:96
+msgid ""
+"When testing core services, use `unittest.mock` to avoid requiring a "
+"running QGIS instance. For integration tests in a headless environment, "
+"the project is configured to use `QT_QPA_PLATFORM=offscreen`."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:100
+msgid "📝 Documentation Standards"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:102
+msgid "Docstrings"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:103
+msgid "All public functions and methods MUST have docstrings in **Google Style**:"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:119
+msgid "Documentation Workflow"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:120
+msgid ""
+"The project uses Sphinx to generate documentation. The build process is "
+"automated to publish results to a separate GitHub repository "
+"(`sec_interp_docs`) which serves as the source for GitHub Pages."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:122
+msgid "**Building and Publishing**"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:124
+msgid ""
+"To build the documentation and automatically push changes to the docs "
+"repository:"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:128
+msgid "This script will:"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:129
+msgid "Build HTML from `docs/source`."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:130
+msgid "Output to `../sec_interp_docs`."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:131
+msgid "Check for changes in the output directory."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:132
+msgid "If changed, commit and push to `geociencio/sec_interp_docs`."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:134
+msgid ""
+"**Note:** You must have write access to the `sec_interp_docs` repository "
+"and have `../sec_interp_docs` initialized as a git repo (which is done "
+"automatically if you follow setup)."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:136
+msgid "Image Assets"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:137
+msgid ""
+"Save all documentation images in `docs/images/` using the following "
+"convention:"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:138
+msgid "`workflow_DESC.png`: Step-by-step guides."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:139
+msgid "`ui_DESC.png`: General interface screenshots."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:140
+msgid "`feature_DESC.png`: Specific highlighted features."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:144
+msgid "📦 Deployment & Makefile"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:146
+msgid "Use the `Makefile` for common development tasks:"
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:148
+msgid "`make deploy`: Installs the plugin into your local QGIS plugins folder."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:149
+msgid "`make zip`: Creates a release-ready ZIP file."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:150
+msgid "`make test`: Runs all unit and integration tests locally."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:151
+msgid "`make docker-build`: Builds the testing Docker image."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:152
+msgid "`make docker-test`: Builds and runs tests within a QGIS Docker container."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:153
+msgid "`make docus`: Builds the Sphinx documentation."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:154
+msgid "`make clean`: Removes temporary and compiled files."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:155
+msgid ""
+"`make transup`: Updates `.ts` files and applies master data using "
+"`apply_full.py`."
+msgstr ""
+
+#: ../../../source/DEVELOPMENT_GUIDE.md:156
+msgid "`make transcompile`: Compiles `.qm` files."
+msgstr ""

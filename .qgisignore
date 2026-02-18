@@ -27,6 +27,14 @@ ai-context-core-patch.md
 ARCHITECTURE.mmd
 AI_CONTEXT.md
 antigravity-framerepo/
+_archive/
+analysis_results_linting/
+quality_report/
+quality_reports/
+quality_report_debug/
+detailed_report.json
+dummy.qml
+quality_report.txt
 
 # Example Data (too heavy for distribution)
 examples/sample_data/

@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: hi\n"
+"Language-Team: hi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.ui.pages.base_page.rst:2
+msgid "sec\\_interp.gui.ui.pages.base\\_page module"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page:1
+msgid "Base class for configuration pages."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage:1
+msgid "Abstract base class for configuration pages."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage:3
+msgid ""
+"Each page manages a specific set of parameters (e.g., DEM, Section, "
+"Geology)."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage.__init__:1
+msgid "Initialize the page."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.base_page.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage.__init__:3
+msgid "Title for the group box."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage.__init__:5
+msgid "Parent widget."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage.disconnect_signals:1
+msgid "Disconnect all signals to prevent memory leaks."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage.get_data:1
+msgid "Get the current configuration data from the page."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.base_page.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage.get_data:3
+msgid "Dictionary with parameter names and values."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.base_page.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage.validate:1
+msgid "Validate the current configuration."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.base_page.BasePage.validate:3
+msgid "(is_valid, error_message)"
+msgstr ""

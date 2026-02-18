@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fi\n"
+"Language-Team: fi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.ui.pages.section_page.rst:2
+msgid "sec\\_interp.gui.ui.pages.section\\_page module"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page:1
+msgid "Cross-section configuration page."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page.SectionPage:1
+msgid "Configuration page for Cross Section settings."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page.SectionPage.__init__:1
+msgid "Initialize the section configuration page."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.section_page.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page.SectionPage.__init__:3
+msgid "Optional parent widget."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page.SectionPage.disconnect_signals:1
+msgid "Disconnect all signals to prevent memory leaks."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page.SectionPage.get_data:1
+msgid "Get section configuration."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page.SectionPage.is_complete:1
+msgid "Check if required fields are filled."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page.SectionPage.validate:1
+msgid "Validate page settings."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.section_page.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.section_page.SectionPage.validate:3
+msgid "Tuple of (success, error message)."
+msgstr ""

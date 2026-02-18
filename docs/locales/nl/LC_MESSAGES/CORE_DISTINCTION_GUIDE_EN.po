@@ -1,0 +1,238 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:1
+msgid "Core Components Distinction Guide"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:3
+msgid ""
+"This document aims to clarify the distinction between the different "
+"\"Core\" components within the **SecInterp** project to avoid confusion "
+"for both human developers and AI agents."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:5
+msgid "⚠️ The Fundamental Distinction"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:7
+msgid "Two \"Core\" entities coexist in this development environment:"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:9
+msgid "**SecInterp Core** (The Project's Kernel):"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:10
+msgid "**Location**: `/core` directory within the project root."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:11
+msgid ""
+"**Purpose**: Contains pure business logic, geological algorithms, "
+"processing services, and domain models (DTOs) specific to SecInterp."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:12
+msgid ""
+"**Current State**: **Decoupled**. As of version 2.8.0, this module has "
+"been sanitized to have no direct dependencies on QGIS live classes during"
+" heavy processing (Thread-Safe)."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:14
+msgid "**QGIS Core** (The QGIS API):"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:15
+msgid "**Reference**: `qgis.core` Python package."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:16
+msgid ""
+"**Purpose**: Provides the underlying geospatial infrastructure "
+"(geometries, layers, projects, CRS)."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:17
+msgid ""
+"**Interaction**: SecInterp uses `qgis.core` to extract data in the main "
+"thread, but the **SecInterp Core** processes this data using agnostic "
+"types (WKT, dictionaries, primitives)."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:21
+msgid "🧭 Guidelines for Developers and AI"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:23
+msgid "To maintain architectural integrity, follow these directives:"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:25
+msgid "1. Do not assume \"Core\" always means QGIS"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:26
+msgid ""
+"If asked to \"review the core\", it almost exclusively refers to the "
+"`/core` directory of this plugin. Do not attempt to search for or modify "
+"internal files of the QGIS engine."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:28
+msgid "2. Data Boundaries (Decoupling)"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:29
+msgid ""
+"**Inside `/core`**: Agnostic domain types must be used. Avoid "
+"instantiating `QgsVectorLayer` or accessing `QgsProject.instance()` "
+"within kernel services. Use `DomainGeometry` (WKT) and attribute "
+"dictionaries."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:30
+msgid ""
+"**Inside `/gui`**: This is where the translation between the real QGIS "
+"API (`qgis.core`) and the **SecInterp Core** takes place. Geometries are "
+"extracted and DTOs are prepared here."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:32
+msgid "3. File Naming and Imports"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:33
+msgid ""
+"**Local Files**: Files in `core/` (e.g., "
+"`core/services/geology_service.py`) are the **SecInterp Brain**."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:34
+msgid ""
+"**External API**: Imports starting with `qgis.core`, `qgis.gui`, or "
+"`qgis.utils` are **External Dependencies**."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:35
+msgid ""
+"**Naming Rule**: In discussions or code comments, use \"Internal Core\" "
+"to refer to `/core` and \"PyQGIS API\" for the software's API."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:37
+msgid "4. The \"Extract-then-Compute\" Pattern"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:38
+msgid "To avoid future complications, the data flow **MUST** follow this pattern:"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:39
+msgid ""
+"**GUI/Task Interface Layer**: Receives QGIS objects (`QgsVectorLayer`, "
+"`QgsFeature`). Extracts what is necessary (WKT geometry, attribute "
+"dictionaries)."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:40
+msgid ""
+"**Core Layer**: Receives only the extracted data (strings, dicts, "
+"floats). Performs heavy geometric calculations."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:41
+msgid ""
+"**Result**: The Core returns DTOs (Data Transfer Objects) defined in "
+"`core/types.py`. The GUI layer is responsible for converting these back "
+"to QGIS layers if necessary."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:43
+msgid "5. Golden Rules for Thread-Safety"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:44
+msgid ""
+"**Prohibited**: Importing `qgis.gui` inside `core/`. Background threads "
+"will crash if they attempt to touch any widget or window."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:45
+msgid ""
+"**Restriction**: Minimize the use of `qgis.core` inside `core/`. While "
+"some classes like `QgsGeometry` are thread-safe, it is preferable to "
+"operate on WKT to guarantee total independence."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:46
+msgid ""
+"**Application Context**: Never use `iface` or `QgsProject.instance()` "
+"inside `core/`. If project data is needed, pass it as pre-extracted "
+"arguments."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:50
+msgid "🧪 Differentiated Testing Strategy"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:52
+msgid ""
+"**Core Tests (`tests/core/`)**: Must be able to run without a full QGIS "
+"installation. They use lightweight mocks. They are the thermometer of "
+"geological logic."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:53
+msgid ""
+"**Integration Tests (`tests/integration/`)**: Require real QGIS. They "
+"test that our \"Core\" correctly communicates with the \"QGIS API\"."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:57
+msgid "🛠️ Decoupling Summary (January 2026)"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:59
+msgid "A major effort has been completed to ensure:"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:60
+msgid "`GeologyService` does not use live QGIS layers in its processing method."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:61
+msgid ""
+"`DrillholeService` uses dictionaries instead of `QgsFeature` objects "
+"during trace calculation."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:62
+msgid "3D projection logic accepts tuples and primitive types."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE_EN.md:64
+msgid ""
+"**In summary: Keep our Core \"pure\". Treat QGIS as an external service "
+"provider. Do not let the roots of one enter the logic of the other.**"
+msgstr ""

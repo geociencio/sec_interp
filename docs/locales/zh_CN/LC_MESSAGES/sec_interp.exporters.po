@@ -1,0 +1,445 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.exporters.rst:2
+msgid "sec\\_interp.exporters package"
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.AxesShpExporter:1
+msgid "Exports the profile axes to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.AxesShpExporter.export:1
+msgid "Export the profile axes to a Shapefile."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.export:3
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.export:3
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export:3
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export:3
+#: sec_interp.exporters.profile_exporters.AxesShpExporter.export:3
+#: sec_interp.exporters.profile_exporters.GeologyShpExporter.export:3
+#: sec_interp.exporters.profile_exporters.ProfileLineShpExporter.export:3
+#: sec_interp.exporters.profile_exporters.StructureShpExporter.export:3
+msgid "Path to the output Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.AxesShpExporter.export:4
+#: sec_interp.exporters.profile_exporters.ProfileLineShpExporter.export:4
+msgid "Dictionary containing 'profile_data' and 'crs'."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.get_supported_extensions:1
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.get_supported_extensions:1
+#: sec_interp.exporters.profile_exporters.AxesShpExporter.get_supported_extensions:1
+#: sec_interp.exporters.profile_exporters.GeologyShpExporter.get_supported_extensions:1
+#: sec_interp.exporters.profile_exporters.ProfileLineShpExporter.get_supported_extensions:1
+#: sec_interp.exporters.profile_exporters.StructureShpExporter.get_supported_extensions:1
+msgid "Get supported file extensions."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.get_supported_extensions:3
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.get_supported_extensions:3
+#: sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.get_supported_extensions:3
+#: sec_interp.exporters.profile_exporters.AxesShpExporter.get_supported_extensions:3
+#: sec_interp.exporters.profile_exporters.GeologyShpExporter.get_supported_extensions:3
+#: sec_interp.exporters.profile_exporters.ProfileLineShpExporter.get_supported_extensions:3
+#: sec_interp.exporters.profile_exporters.StructureShpExporter.get_supported_extensions:3
+msgid "List of supported extensions."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter:1
+msgid "Abstract base class for all exporters."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter:3
+msgid ""
+"This class defines the interface that all concrete exporters must "
+"implement. It follows the Template Method pattern, providing common "
+"initialization and validation logic while delegating format-specific "
+"export to subclasses."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.__init__:1
+msgid "Initialize the exporter with settings."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.__init__:3
+msgid ""
+"Dictionary containing export settings such as: - width: Output width in "
+"pixels - height: Output height in pixels - dpi: Dots per inch for "
+"resolution - background_color: Background color (QColor) - "
+"legend_renderer: Optional renderer for legend overlay"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:1
+msgid "Export data to file."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:3
+msgid "This method must be implemented by all concrete exporters."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:5
+msgid "Destination file path"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:6
+msgid "Data to export (format depends on exporter type)"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:8
+#: sec_interp.exporters.csv_exporter.CSVExporter.export:7
+#: sec_interp.exporters.image_exporter.ImageExporter.export:6
+#: sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.export:7
+#: sec_interp.exporters.pdf_exporter.PDFExporter.export:6
+#: sec_interp.exporters.shp_exporter.ShapefileExporter.export:6
+#: sec_interp.exporters.svg_exporter.SVGExporter.export:6
+msgid "True if export successful, False otherwise"
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.get_setting:1
+msgid "Get a setting value with optional default."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.get_setting:3
+msgid "Setting key"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.get_setting:4
+msgid "Default value if key not found"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.get_setting:6
+msgid "Setting value or default"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.base_exporter.BaseExporter.get_supported_extensions:1
+#: sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.get_supported_extensions:1
+msgid "Get list of supported file extensions."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.base_exporter.BaseExporter.get_supported_extensions:3
+msgid "List of supported extensions (e.g., ['.png', '.jpg'])"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:1
+msgid "Validate export path for security."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:3
+msgid "Uses secure path validation to prevent path traversal attacks."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:5
+#: sec_interp.exporters.base_exporter.BaseExporter.validate_path:3
+msgid "Path to validate"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:6
+msgid "Optional base directory to restrict exports to"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:8
+msgid "(is_valid, error_message)"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_path:1
+msgid "Validate that the output path has a supported extension."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_path:5
+msgid "True if path has a supported extension, False otherwise"
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter:1
+msgid "Exporter for CSV tabular format."
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.export:1
+msgid "Export tabular data to CSV."
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.export:3
+msgid "Output file path."
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.export:4
+msgid ""
+"A dictionary containing 'headers' (list of strings) and 'rows' (list of "
+"tuples or lists)."
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.get_supported_extensions:1
+msgid "Get supported CSV extension."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter:1
+msgid "Exports 3D drillhole intervals to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.export:1
+msgid "Export 3D drillhole intervals to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.export:4
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.export:4
+msgid ""
+"Dictionary containing 'drillhole_data' and 'crs'. Can include "
+"'use_projected' (bool)."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.export:7
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.export:7
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export:6
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export:6
+msgid "True if export successful, False otherwise."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeInterval3DExporter.get_supported_extensions:1
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.get_supported_extensions:1
+#: sec_interp.exporters.interpretation_3d_exporter.Interpretation3DExporter.get_supported_extensions:1
+msgid "Get supported extensions."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter:1
+msgid "Exports drillhole intervals to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export:1
+msgid "Export drillhole intervals to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeIntervalShpExporter.export:4
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export:4
+msgid "Dictionary containing 'drillhole_data' and 'crs'."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter:1
+msgid "Exports 3D drillhole traces to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_3d_exporter.DrillholeTrace3DExporter.export:1
+msgid "Export 3D drillhole traces to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter:1
+msgid "Exports drillhole traces to a Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.drillhole_exporters.DrillholeTraceShpExporter.export:1
+msgid "Export drillhole traces to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.GeologyShpExporter:1
+msgid "Exports the geological profile to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.GeologyShpExporter.export:1
+msgid "Export the geological profile to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.GeologyShpExporter.export:4
+msgid "Dictionary containing 'geology_data' and 'crs'."
+msgstr ""
+
+#: of sec_interp.exporters.image_exporter.ImageExporter:1
+msgid "Exporter for raster image formats (PNG, JPG, JPEG)."
+msgstr ""
+
+#: of sec_interp.exporters.image_exporter.ImageExporter.export:1
+msgid "Export map to raster image."
+msgstr ""
+
+#: of sec_interp.exporters.image_exporter.ImageExporter.export:3
+#: sec_interp.exporters.pdf_exporter.PDFExporter.export:3
+#: sec_interp.exporters.shp_exporter.ShapefileExporter.export:3
+#: sec_interp.exporters.svg_exporter.SVGExporter.export:3
+msgid "Output file path"
+msgstr ""
+
+#: of sec_interp.exporters.image_exporter.ImageExporter.export:4
+#: sec_interp.exporters.pdf_exporter.PDFExporter.export:4
+#: sec_interp.exporters.svg_exporter.SVGExporter.export:4
+msgid "QgsMapSettings instance configured for rendering"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.image_exporter.ImageExporter.get_supported_extensions:1
+msgid "Get supported image extensions."
+msgstr ""
+
+#: of sec_interp.exporters.interpretation_exporters.Interpretation2DExporter:1
+msgid "Exports interpretations in 2D profile coordinates."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.__init__:1
+msgid "Initialize with settings."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.__init__:3
+msgid "Dictionary of configuration settings."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.export:1
+msgid "Export interpretations to Shapefile."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.export:3
+msgid "Path to the output Shapefile (.shp)"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.interpretation_exporters.Interpretation2DExporter.export:4
+msgid ""
+"Dictionary containing: - interpretations: List of InterpretationPolygon "
+"objects"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.interpretation_3d_exporter.Interpretation3DExporter:1
+msgid "Exporter for 3D Interpretation polygons (Shapefile 2.5D)."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.interpretation_3d_exporter.Interpretation3DExporter.export:1
+msgid "Export interpretation data to a 3D Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.pdf_exporter.PDFExporter:1
+msgid "Exporter for PDF format."
+msgstr ""
+
+#: of sec_interp.exporters.pdf_exporter.PDFExporter.export:1
+msgid "Export map to PDF."
+msgstr ""
+
+#: of sec_interp.exporters.pdf_exporter.PDFExporter.get_supported_extensions:1
+msgid "Get supported PDF extension."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.ProfileLineShpExporter:1
+msgid "Exports the topographic profile line to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.ProfileLineShpExporter.export:1
+msgid "Export the topographic profile line to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.svg_exporter.SVGExporter:1
+msgid "Exporter for SVG vector format."
+msgstr ""
+
+#: of sec_interp.exporters.svg_exporter.SVGExporter.export:1
+msgid "Export map to SVG."
+msgstr ""
+
+#: of sec_interp.exporters.svg_exporter.SVGExporter.get_supported_extensions:1
+msgid "Get supported SVG extension."
+msgstr ""
+
+#: of sec_interp.exporters.shp_exporter.ShapefileExporter:1
+msgid "Exporter for Shapefile and GeoPackage formats."
+msgstr ""
+
+#: of sec_interp.exporters.shp_exporter.ShapefileExporter.export:1
+msgid "Export features to shapefile or geopackage."
+msgstr ""
+
+#: of sec_interp.exporters.shp_exporter.ShapefileExporter.export:4
+msgid "List of dicts with 'geometry' and 'attributes' keys"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.shp_exporter.ShapefileExporter.get_supported_extensions:1
+msgid "Get supported vector format extensions."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.StructureShpExporter:1
+msgid "Exports the structural profile to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.StructureShpExporter.export:1
+msgid "Export the structural profile to a Shapefile."
+msgstr ""
+
+#: of sec_interp.exporters.profile_exporters.StructureShpExporter.export:4
+msgid ""
+"Dictionary containing 'structural_data', 'crs', 'dip_scale_factor', and "
+"'raster_res'."
+msgstr ""
+
+#: of sec_interp.exporters.get_exporter:1
+msgid "Get the appropriate exporter instance for the file extension."
+msgstr ""
+
+#: of sec_interp.exporters.get_exporter:3
+msgid "File extension (e.g., '.png', '.svg')"
+msgstr ""
+
+#: of sec_interp.exporters.get_exporter:4
+msgid "Export settings dictionary"
+msgstr ""
+
+#: of sec_interp.exporters.get_exporter:6
+msgid "Appropriate exporter instance"
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.rst
+msgid "Raises"
+msgstr ""
+
+#: of sec_interp.exporters.get_exporter:8
+msgid "If extension is not supported"
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.rst:10
+msgid "Submodules"
+msgstr ""

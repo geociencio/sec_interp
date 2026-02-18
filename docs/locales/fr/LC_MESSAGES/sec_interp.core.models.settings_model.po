@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.models.settings_model.rst:2
+msgid "sec\\_interp.core.models.settings\\_model module"
+msgstr ""
+
+#: of sec_interp.core.models.settings_model:1
+msgid "Settings models using dataclasses for validation."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model:3
+msgid "Provides a structured and validated way to handle plugin configurations."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.DemSettings:1
+msgid "Settings for the DEM page."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.DemSettings.__post_init__:1
+#: sec_interp.core.models.settings_model.PreviewSettings.__post_init__:1
+#: sec_interp.core.models.settings_model.SectionSettings.__post_init__:1
+#: sec_interp.core.models.settings_model.StructureSettings.__post_init__:1
+msgid "Validate settings after initialization."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.DrillholeSettings:1
+msgid "Settings for the Drillhole page."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.GeologySettings:1
+msgid "Settings for the Geology page."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.InterpretationSettings:1
+msgid "Settings for the Interpretation page."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.PluginSettings:1
+msgid "Main container for all plugin settings."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.PluginSettings.from_dict:1
+msgid "Create a PluginSettings instance from a dictionary with validation."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.PluginSettings.to_dict:1
+msgid "Convert settings to a nested dictionary for easier persistence/inspection."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.PreviewSettings:1
+msgid "Settings for the preview widget."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.SectionSettings:1
+msgid "Settings for the Section page."
+msgstr ""
+
+#: of sec_interp.core.models.settings_model.StructureSettings:1
+msgid "Settings for the Structure page."
+msgstr ""

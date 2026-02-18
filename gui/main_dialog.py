@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from qgis.core import Qgis, QgsProject
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QSettings, QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QDialogButtonBox, QPushButton
 
@@ -221,15 +221,31 @@ class SecInterpDialog(SecInterpMainWindow):
         super().closeEvent(event)
 
     def open_help(self) -> None:
-        """Open the help file in the default browser."""
-        # Fix: help is at project root, main_dialog is in gui/
-        help_file = Path(__file__).parent.parent / "help" / "html" / "index.html"
+        """Open the help file in the default browser based on user locale."""
+        # Get QGIS locale (e.g., 'es', 'pt_BR', 'pl')
+        user_locale = QSettings().value("locale/userLocale", "en")
+        if not isinstance(user_locale, str):
+            user_locale = "en"
+
+        # 1. Try exact locale folder first (e.g., help/html/pt_BR/)
+        plugin_dir = Path(__file__).parent.parent
+        help_dir = plugin_dir / "help" / "html"
+        help_file = help_dir / user_locale / "index.html"
+
+        # 2. Try language-only fallback (e.g., pt)
+        if not help_file.exists() and len(user_locale) > 2:  # noqa: PLR2004
+            help_file = help_dir / user_locale[0:2] / "index.html"
+
+        # 3. Final fallback to English
+        if not help_file.exists():
+            help_file = help_dir / "en" / "index.html"
+
         if help_file.exists():
             QDesktopServices.openUrl(QUrl.fromLocalFile(str(help_file)))
         else:
             self.push_message(
                 self.tr("Error"),
-                self.tr("Help file not found. Please run 'make doc' to generate it."),
+                self.tr("Help file not found. Please run 'make docs' to generate it."),
                 level=Qgis.Warning,
             )
 

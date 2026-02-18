@@ -1,0 +1,135 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pl\n"
+"Language-Team: pl <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.dialog_tool_manager.rst:2
+msgid "sec\\_interp.gui.dialog\\_tool\\_manager module"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager:1
+msgid "Map tool management module for SecInterp main dialog."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager:3
+msgid ""
+"This module handles the initialization and orchestration of map tools "
+"(pan, measure) used in the preview canvas."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.NavigationManager:1
+msgid "Handles navigation events (zooming) for the preview canvas."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.NavigationManager.__init__:1
+msgid "Initialize navigation manager."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.dialog_tool_manager.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.NavigationManager.__init__:3
+msgid "The SecInterpDialog instance"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.NavigationManager.handle_wheel_event:1
+msgid "Handle mouse wheel for zooming in preview canvas."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.NavigationManager.handle_wheel_event:3
+msgid "The mouse wheel event."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.dialog_tool_manager.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.NavigationManager.handle_wheel_event:5
+msgid "True if event was handled, False otherwise."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.dialog_tool_manager.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager:1
+msgid "Manages map tools and related event handling for the preview canvas."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.__init__:1
+msgid "Initialize tool manager with reference to parent dialog."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.__init__:3
+msgid "The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.__init__:4
+msgid "Optional pan tool for injection"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.__init__:5
+msgid "Optional measure tool for injection"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.__init__:6
+msgid "Optional interpretation tool for injection"
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.activate_default_tool:1
+msgid "Set the default (pan) tool."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.disconnect_signals:1
+msgid "Disconnect all signals to prevent memory leaks."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.initialize_tools:1
+msgid "Create and configure map tools if not already provided."
+msgstr ""
+
+#: of
+#: sec_interp.gui.dialog_tool_manager.ToolManager.toggle_interpretation_tool:1
+msgid "Toggle between interpretation and pan tools."
+msgstr ""
+
+#: of
+#: sec_interp.gui.dialog_tool_manager.ToolManager.toggle_interpretation_tool:3
+msgid "True to activate interpretation tool, False for pan tool."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.toggle_measure_tool:1
+msgid "Toggle between measurement and pan tools."
+msgstr ""
+
+#: of sec_interp.gui.dialog_tool_manager.ToolManager.toggle_measure_tool:3
+msgid "True to activate measure tool, False for pan tool."
+msgstr ""
+
+#: of
+#: sec_interp.gui.dialog_tool_manager.ToolManager.update_measurement_display:1
+msgid "Display measurement results from multi-point tool."
+msgstr ""
+
+#: of
+#: sec_interp.gui.dialog_tool_manager.ToolManager.update_measurement_display:3
+msgid "Dictionary containing measurement data."
+msgstr ""

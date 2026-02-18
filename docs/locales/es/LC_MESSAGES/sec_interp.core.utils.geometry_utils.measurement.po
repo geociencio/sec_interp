@@ -1,0 +1,96 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.measurement.rst:2
+msgid "sec\\_interp.core.utils.geometry\\_utils.measurement module"
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.measurement:1
+msgid "Geometric measurement utilities for 1D, 2D and 3D."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:1
+msgid "Calculate comprehensive measurement metrics from a list of points."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.measurement.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:3
+msgid "List of QgsPointXY points defining the polyline on the profile plane."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.measurement.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:5
+msgid ""
+"- total_distance: Accumulated 2D distance along all segments. - "
+"horizontal_distance: Total horizontal distance (X span). - "
+"elevation_change: Total elevation change (Y span from first to last). - "
+"avg_slope: Average slope in degrees. - segment_count: Number of segments."
+" - segments: List of segment details with distance, dx, and dy. - "
+"point_count: Number of points."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:5
+msgid "total_distance: Accumulated 2D distance along all segments."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:6
+msgid "horizontal_distance: Total horizontal distance (X span)."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:7
+msgid "elevation_change: Total elevation change (Y span from first to last)."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:8
+msgid "avg_slope: Average slope in degrees."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:9
+msgid "segment_count: Number of segments."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:10
+msgid "segments: List of segment details with distance, dx, and dy."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.measurement.calculate_polyline_metrics:11
+msgid "point_count: Number of points."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.measurement.rst
+msgid "Return type"
+msgstr ""

@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.geology.rst:2
+msgid "sec\\_interp.core.utils.geology module"
+msgstr ""
+
+#: of sec_interp.core.utils.geology:1
+msgid "Geological computation utilities."
+msgstr ""
+
+#: of sec_interp.core.utils.geology:3
+msgid "Geological calculations and structural geology operations."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:1
+msgid "Convert true dip to apparent dip in section plane."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:3
+msgid ""
+"The apparent dip is the inclination of a plane measured in a direction "
+"not perpendicular to the strike. In a vertical cross-section, the "
+"apparent dip depends on the angle between the strike of the plane and the"
+" azimuth of the cross-section line."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:8
+msgid "Formula:"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:9
+msgid "tan(apparent_dip) = tan(true_dip) * sin(alpha)"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:11
+msgid ""
+"Where alpha is the angle between the strike of the plane and the "
+"direction of the cross-section (section azimuth). alpha = strike - "
+"section_azimuth"
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geology.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:15
+msgid "Strike of the geological plane (0-360 degrees)."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:16
+msgid "True dip of the geological plane (0-90 degrees)."
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:17
+msgid "Azimuth of the cross-section line (0-360 degrees)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geology.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.utils.geology.calculate_apparent_dip:19
+msgid ""
+"Apparent dip in degrees. Positive values indicate dip, negative values "
+"might occur depending on quadrant but are typically normalized."
+msgstr ""

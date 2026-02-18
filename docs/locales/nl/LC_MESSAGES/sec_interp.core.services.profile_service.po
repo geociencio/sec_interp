@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.services.profile_service.rst:2
+msgid "sec\\_interp.core.services.profile\\_service module"
+msgstr ""
+
+#: of sec_interp.core.services.profile_service:1
+msgid "Service for managing cross-section profiles."
+msgstr ""
+
+#: of sec_interp.core.services.profile_service:3
+msgid ""
+"This module handles the extraction and processing of topographic profile "
+"data from DEM layers along section lines."
+msgstr ""
+
+#: of sec_interp.core.services.profile_service.ProfileService:1
+msgid "Service for generating topographic profiles."
+msgstr ""
+
+#: of sec_interp.core.services.profile_service.ProfileService:3
+msgid ""
+"This service handles the extraction of elevation data along a cross-"
+"section line by sampling a raster DEM."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:1
+msgid ""
+"Generate topographic profile data by sampling elevation along the section"
+" line."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.profile_service.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:3
+msgid "The cross-section line layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:4
+msgid "The DEM/raster layer for elevation."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:5
+msgid "Raster band to sample (default: 1)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:6
+msgid "Optional sampling interval. If None, uses raster resolution."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.profile_service.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:8
+msgid "A list of (distance, elevation) tuples representing the profile."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.profile_service.rst
+msgid "Raises"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:10
+msgid "If line layer has no features."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:11
+msgid "If line geometry is invalid."
+msgstr ""

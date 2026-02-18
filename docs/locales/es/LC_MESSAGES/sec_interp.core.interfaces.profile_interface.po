@@ -1,0 +1,76 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.interfaces.profile_interface.rst:2
+msgid "sec\\_interp.core.interfaces.profile\\_interface module"
+msgstr ""
+
+#: of sec_interp.core.interfaces.profile_interface:1
+msgid "Interface for Profile services."
+msgstr ""
+
+#: of sec_interp.core.interfaces.profile_interface.IProfileService:1
+msgid "Abstract interface for the Topographic Profile Service."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.profile_interface.IProfileService.generate_topographic_profile:1
+msgid ""
+"Generate topographic profile data by sampling elevation along a section "
+"line."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.profile_interface.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.profile_interface.IProfileService.generate_topographic_profile:3
+msgid "The cross-section line vector layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.profile_interface.IProfileService.generate_topographic_profile:4
+msgid "The DEM raster layer for elevation."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.profile_interface.IProfileService.generate_topographic_profile:5
+msgid "Raster band to sample (default: 1)."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.profile_interface.IProfileService.generate_topographic_profile:6
+msgid "Optional sampling interval. If None, uses raster resolution."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.profile_interface.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.profile_interface.IProfileService.generate_topographic_profile:8
+msgid "List of (distance, elevation) tuples."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.profile_interface.rst
+msgid "Return type"
+msgstr ""

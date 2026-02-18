@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.legend_widget.rst:2
+msgid "sec\\_interp.gui.legend\\_widget module"
+msgstr ""
+
+#: of sec_interp.gui.legend_widget:1
+msgid "Legend Widget Module."
+msgstr ""
+
+#: of sec_interp.gui.legend_widget.LegendWidget:1
+msgid "Widget to display the geological legend over the map canvas."
+msgstr ""
+
+#: of sec_interp.gui.legend_widget.LegendWidget.__init__:1
+msgid "Initialize the legend widget."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.legend_widget.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.legend_widget.LegendWidget.__init__:3
+msgid "The main SecInterp dialog."
+msgstr ""
+
+#: of sec_interp.gui.legend_widget.LegendWidget.eventFilter:1
+msgid "Handle parent resize events."
+msgstr ""
+
+#: of sec_interp.gui.legend_widget.LegendWidget.paintEvent:1
+msgid "Handle paint event to draw the legend."
+msgstr ""
+
+#: of sec_interp.gui.legend_widget.LegendWidget.update_legend:1
+msgid "Update legend with data from renderer."
+msgstr ""

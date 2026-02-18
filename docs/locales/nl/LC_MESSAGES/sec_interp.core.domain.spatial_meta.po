@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.domain.spatial_meta.rst:2
+msgid "sec\\_interp.core.domain.spatial\\_meta module"
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta:1
+msgid "Spatial Meta Data for 3D and 2D projections."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:1
+msgid "Carrying spatial metadata for 3D/2D decoupling."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:3
+msgid ""
+"This DTO acts as a universal bridge between raw spatial data and various "
+"renderers (2D profiling or 3D engines), carrying coordinates, "
+"normalization vectors, and original attributes without layer "
+"dependencies."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:9
+msgid "Unique identifier for the drillhole."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta
+msgid "type"
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:11
+msgid "str | None"
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:15
+msgid "Distance along the section line (station)."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:17
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:23
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:29
+msgid "float"
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:21
+msgid "Orthogonal distance from the section line."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:27
+msgid "Elevation or vertical coordinate."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:33
+msgid "X coordinate in global 3D space."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:35
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:41
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:47
+#: sec_interp.core.domain.spatial_meta.SpatialMeta:53
+msgid "float | None"
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:39
+msgid "Y coordinate in global 3D space."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:45
+msgid "Normalized X component of the orientation vector."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:51
+msgid "Normalized Y component of the orientation vector."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:57
+msgid "Original feature attributes for contextual display."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta:59
+msgid "dict[str, Any] | None"
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta.to_vec2_profile:1
+msgid "Convert spatial data to a 2D profile vector (Distance, Z)."
+msgstr ""
+
+#: of sec_interp.core.domain.spatial_meta.SpatialMeta.to_vec3:1
+msgid "Convert spatial data to a 3D vector tuple (X, Y, Z)."
+msgstr ""

@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.services.drillhole.drillhole_orchestrator.rst:2
+msgid "sec\\_interp.core.services.drillhole.drillhole\\_orchestrator module"
+msgstr ""
+
+#: of sec_interp.core.services.drillhole.drillhole_orchestrator:1
+msgid "Orchestrator for drillhole processing tasks."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole.drillhole_orchestrator:3
+msgid ""
+"This module provides the DrillholeTaskOrchestrator, which coordinates the"
+" high-level flow of drillhole data processing, including synchronous "
+"previews and asynchronous task preparation and execution."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.drillhole_orchestrator.DrillholeTaskOrchestrator:1
+msgid "Orchestrates high-level drillhole processing workflows."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.drillhole_orchestrator.DrillholeTaskOrchestrator:3
+msgid ""
+"This class separates the orchestration (the \"how\" and \"when\") from "
+"the business logic (the \"what\") contained in DrillholeService."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.drillhole_orchestrator.DrillholeTaskOrchestrator.__init__:1
+msgid "Initialize with a drillhole service."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.drillhole.drillhole_orchestrator.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.drillhole_orchestrator.DrillholeTaskOrchestrator.__init__:3
+msgid "The service containing the core processing logic."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.drillhole_orchestrator.DrillholeTaskOrchestrator.prepare_task_input:1
+msgid "Prepare detached domain data for asynchronous processing."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.drillhole_orchestrator.DrillholeTaskOrchestrator.process_task_data:1
+msgid "Process drillholes using detached domain data (Thread-Safe)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.drillhole_orchestrator.DrillholeTaskOrchestrator.run_preview:1
+msgid "Execute a synchronous drillhole preview."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole.drillhole_orchestrator.DrillholeTaskOrchestrator.run_preview:3
+msgid ""
+"This mimics the legacy generate_drillhole_data but is now managed by the "
+"orchestrator."
+msgstr ""

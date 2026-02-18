@@ -1,0 +1,69 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.dialog_preview_manager.rst:2
+msgid "sec\\_interp.gui.dialog\\_preview\\_manager module"
+msgstr ""
+
+#: of sec_interp.gui.dialog_preview_manager:1
+msgid "Preview management module for SecInterp main dialog."
+msgstr ""
+
+#: of sec_interp.gui.dialog_preview_manager:3
+msgid ""
+"This module handles preview generation, rendering, and updates, "
+"separating preview logic from the main dialog class."
+msgstr ""
+
+#: of sec_interp.gui.dialog_preview_manager.PreviewManager:1
+msgid "Manages preview generation and rendering for the dialog."
+msgstr ""
+
+#: of sec_interp.gui.dialog_preview_manager.PreviewManager:3
+msgid ""
+"This class encapsulates all preview-related logic, including data "
+"generation, rendering, and updates based on user interactions."
+msgstr ""
+
+#: of sec_interp.gui.dialog_preview_manager.PreviewManager.__init__:1
+msgid "Initialize preview manager with specialized components."
+msgstr ""
+
+#: of sec_interp.gui.dialog_preview_manager.PreviewManager.cleanup:1
+msgid "Clean up resources and stop background tasks."
+msgstr ""
+
+#: of sec_interp.gui.dialog_preview_manager.PreviewManager.generate_preview:1
+msgid "Generate complete preview with all available data layers."
+msgstr ""
+
+#: of
+#: sec_interp.gui.dialog_preview_manager.PreviewManager.update_from_checkboxes:1
+msgid "Update preview when checkboxes change."
+msgstr ""
+
+#: of
+#: sec_interp.gui.dialog_preview_manager.PreviewManager.update_from_checkboxes:3
+msgid ""
+"This method re-renders the preview using cached data and current checkbox"
+" states without regenerating data."
+msgstr ""

@@ -1,13 +1,18 @@
-# Next Steps - SecInterp
+# Próximos Pasos - SecInterp
 
-## 1. i18n Expansion (Phase 2 - Market Gap)
-- [ ] **Swedish (sv) & Danish (da)**: Follow the `/i18n-maintenance` workflow to complete the Northern European cluster.
-- [ ] **User Feedback**: Monitor downloads from PL, NL, and FI to validate the impact of new translations.
+## 🎯 Próximo Objetivo
+**Automatización de Metadatos y Versión 3.0.1 Final**
 
-## 2. Infrastructure
-- [ ] **Automated CI Checks**: Integrate `i18n_diagnostic.py` into the CI pipeline to alert on untranslated strings in PRs.
+## 📋 Tareas Pendientes
+- [ ] **Automatización de metadata**: Crear un script que actualice automáticamente el campo `general_description` en `metadata.txt` con la lista de idiomas disponibles.
+- [ ] **Validación en Windows**: Si el usuario cambia de entorno, verificar que el parche de `sed` en `build_docs.sh` funcione o buscar alternativa cross-platform.
+- [ ] **Limpieza de RAM**: Investigar si el caché de ayuda en QGIS consume recursos innecesarios tras ver múltiples manuales.
 
-## 3. Documentation
-- [ ] **Help System**: Regenerate HTML help with `make docs` to include updated i18n information in the User Guide.
+## 🛠️ Comando para Retomar
+```bash
+/inicia-sesion
+```
 
-**Retomar sesión con**: `./scripts/update_ai_ctx.sh` (o `uv run ai-ctx analyze --path .`) para sincronizar el estado.
+## ⚠️ Notas
+- El despliegue ahora requiere `make deploy` para asegurar que el flag `--no-compile` se aplique.
+- No borrar la carpeta `help/html` manualmente sin ejecutar el build después, o el plugin no encontrará la ayuda.

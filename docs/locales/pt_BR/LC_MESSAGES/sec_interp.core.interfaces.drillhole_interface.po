@@ -1,0 +1,177 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.interfaces.drillhole_interface.rst:2
+msgid "sec\\_interp.core.interfaces.drillhole\\_interface module"
+msgstr ""
+
+#: of sec_interp.core.interfaces.drillhole_interface:1
+msgid "Interface for Drillhole services."
+msgstr ""
+
+#: of sec_interp.core.interfaces.drillhole_interface.IDrillholeService:1
+msgid "Abstract interface for the Drillhole Processing Service."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:1
+msgid "Process interval data using detached data structures."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.drillhole_interface.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:3
+msgid "List of projected collar tuples."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:4
+msgid "List of detached collar entities."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:5
+msgid "Map of hole_id to list of survey tuples."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:6
+msgid "Map of hole_id to list of interval tuples."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:7
+msgid "Field name for ID."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:8
+msgid "Use geometry for coordinates."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:9
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:9
+msgid "Field for X."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:10
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:10
+msgid "Field for Y."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:11
+msgid "Line orientation data."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:12
+msgid "Distance calculation object."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:13
+msgid "Buffer width."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:14
+msgid "Section azimuth."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:15
+msgid "Survey field mapping."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:16
+msgid "Interval field mapping."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.drillhole_interface.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.process_intervals:18
+msgid "A tuple containing (geol_data, drillhole_data)."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:1
+msgid "Project collar points onto section line using detached data."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:3
+msgid "List of detached collar entities (with geometry/attrs)."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:4
+msgid "Section line orientation data."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:5
+msgid "Calculation tool (or domain equivalent)."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:6
+msgid "Search buffer distance in meters."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:7
+msgid "Field name for unique drillhole ID."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:8
+msgid "Whether to use geometry for coordinates."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:11
+msgid "Field for elevation."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:12
+msgid "Field for total depth."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:13
+msgid "Optional map of pre-sampled elevations."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.drillhole_interface.IDrillholeService.project_collars:15
+msgid "A list of tuples (hole_id, dist_along, z, offset, total_depth)."
+msgstr ""

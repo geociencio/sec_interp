@@ -1,0 +1,214 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/v2.9.0_technical_analysis.md:1
+msgid "Análisis Técnico Avanzado: SecInterp v2.9.0"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:3
+msgid ""
+"La versión 2.9.0 representa un hito de madurez arquitectónica para el "
+"plugin, transformando componentes monolíticos en una infraestructura "
+"desacoplada, testable y orientada al dominio."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:5
+msgid "🏛️ Innovaciones Arquitectónicas"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:7
+msgid "1. Descomposición de Servicios (Patrón Facade + Procesadores)"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:8
+msgid ""
+"El mayor cambio reside en la atomización del `DrillholeService`. Lo que "
+"antes era un archivo de >600 líneas con múltiples responsabilidades, "
+"ahora es una **Fachada** que orquesta cuatro procesadores especializados:"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:10
+msgid ""
+"**CollarProcessor**: Especializado en la proyección geodésica de collares"
+" sobre la línea de sección."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:11
+msgid ""
+"**SurveyProcessor**: Gestiona la matemática de trayectorias (desurveying)"
+" y validación de profundidades."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:12
+msgid ""
+"**IntervalProcessor**: Encargado de la interpolación de intervalos "
+"litológicos 3D en segmentos 2D."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:13
+msgid ""
+"**ProjectionEngine**: Contiene la lógica matemática pura de "
+"transformación de coordenadas $X,Y,Z \\rightarrow Dist, Elev$."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:15
+msgid ""
+"[!TIP] **Impacto**: La complejidad ciclomática de los métodos de "
+"procesamiento bajó de un promedio de 22 a 8, facilitando enormemente el "
+"mantenimiento y la depuración."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:18
+msgid "2. Capa de Dominio Semántica (`core/domain`)"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:19
+msgid ""
+"Se ha migrado del genérico `core/types` a un paquete de dominio "
+"estructurado. Esta distinción no es solo nominal; define la jerarquía de "
+"la **Arquitectura Limpia**:"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:20
+msgid ""
+"**Entities**: Objetos con identidad de negocio (`GeologySegment`, "
+"`StructureMeasurement`)."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:21
+msgid ""
+"**TaskInputs**: DTOs inmutables diseñados específicamente para el flujo "
+"de datos asíncrono."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:22
+msgid ""
+"**Enums**: Definiciones contractuales que eliminan el uso de \"Magic "
+"Strings\" en validaciones."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:24
+msgid "🚀 Patrón \"Domain-Pure Logic\" (Desacoplamiento QGIS)"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:25
+msgid ""
+"SecInterp v2.9.0 implementa un flujo de datos en dos etapas que garantiza"
+" la seguridad de hilos (thread-safety):"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:27
+msgid ""
+"**Ingesta (Main Thread)**: El método `prepare_task_input` extrae datos de"
+" objetos `QgsVectorLayer` hacia tipos primitivos de Python y strings WKT."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:28
+msgid ""
+"**Cálculo (Background)**: El método `process_task_data` recibe el "
+"`TaskInput` y computa las intersecciones sin tocar la API de QGIS que no "
+"sea thread-safe."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Característica"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Antes (v2.7.x)"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Ahora (v2.9.0)"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "**Acceso a Datos**"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Directo a `QgsFeature` durante cálculo"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Vía DTOs desacoplados (WKT/Attr Dicts)"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "**Seguridad de Hilos**"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Riesgosa (crashes aleatorios)"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Garantizada por diseño"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "**Testabilidad**"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Requiere QGIS completo"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md
+msgid "Posible con Mocks mínimos o Python puro"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:36
+msgid "🧪 Estabilidad y Calidad de Código"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:37
+msgid ""
+"**Corrección de Geometría**: Se eliminó el uso de `.clone()` (causante de"
+" inestabilidad en versiones específicas de PyQt5) por constructores de "
+"copia explícitos."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:38
+msgid ""
+"**Standardization**: Adopción de `from sec_interp.core...` para todas las"
+" importaciones internas, evitando colisiones de nombres."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:39
+msgid ""
+"**Infraestructura**: Suite de **199 pruebas** ejecutadas exitosamente en "
+"contenedores Docker, asegurando paridad entre entornos de desarrollo y "
+"producción."
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:41
+msgid "📈 Conclusión"
+msgstr ""
+
+#: ../../../source/v2.9.0_technical_analysis.md:42
+msgid ""
+"La versión 2.9.0 sienta las bases para el **Objetivo 2**: Soporte para "
+"secciones poligonales (bent sections). Gracias a que la lógica de "
+"proyección está ahora aislada en el `ProjectionEngine`, implementar "
+"polilíneas será una extensión del motor actual en lugar de una "
+"reescritura masiva."
+msgstr ""

@@ -1,0 +1,302 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: it\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.rst:2
+msgid "sec\\_interp.gui package"
+msgstr ""
+
+#: of sec_interp.gui:1
+msgid "GUI module for SecInterp plugin."
+msgstr ""
+
+#: of sec_interp.gui:3
+msgid "Contains dialogs, widgets, and rendering components."
+msgstr ""
+
+#: of sec_interp.gui.preview_renderer.PreviewRenderer:1
+msgid "Renders interactive preview using native PyQGIS resources."
+msgstr ""
+
+#: of sec_interp.gui.preview_renderer.PreviewRenderer:3
+msgid ""
+"Acts as an orchestrator for several specialized modules: - "
+"PreviewLayerFactory: Handles layer creation and symbology. - "
+"PreviewAxesManager: Handles grid lines and axes labels. - "
+"PreviewOptimizer: Handles geometric simplification (LOD). - "
+"PreviewLegendRenderer: Handles legend drawing."
+msgstr ""
+
+#: of sec_interp.gui.preview_renderer.PreviewRenderer.__init__:1
+msgid "Initialize preview renderer."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.preview_renderer.PreviewRenderer.__init__:3
+msgid "QgsMapCanvas instance (optional)"
+msgstr ""
+
+#: of sec_interp.gui.PreviewRenderer.active_units:1
+msgid "Expose active units from factory for legend compatibility."
+msgstr ""
+
+#: of sec_interp.gui.preview_renderer.PreviewRenderer.draw_legend:1
+msgid "Draw legend on the given painter. Delegates to PreviewLegendRenderer."
+msgstr ""
+
+#: of sec_interp.gui.preview_renderer.PreviewRenderer.export_to_image:1
+msgid "Export preview to image file. Maintains same logic but orchestrated."
+msgstr ""
+
+#: of sec_interp.gui.preview_renderer.PreviewRenderer.render:1
+msgid "Render preview with all data layers."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog:1
+msgid "Dialog for the SecInterp QGIS plugin."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog:3
+msgid ""
+"This dialog provides the user interface and helper methods to populate "
+"combo boxes with layers from the current QGIS project (raster and vector "
+"layers filtered by geometry type). It also exposes the interface and "
+"plugin instance for interaction with the host application."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog:10
+msgid "The QGIS interface instance."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog
+msgid "type"
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog:12
+msgid "QgsInterface"
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog:16
+msgid "The plugin instance that created this dialog."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog:18
+msgid "SecInterp"
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog:22
+msgid "The message bar widget for notifications."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog:24
+msgid "QgsMessageBar"
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.__init__:1
+msgid "Initialize the dialog."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.accept_handler:1
+msgid "Handle the accept button click event."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.clear_cache_handler:1
+msgid "Clear cached data and notify user."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.closeEvent:1
+msgid "Handle dialog close event to clean up resources."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.export_preview:1
+msgid "Export the current preview to a file using ExportManager."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.getThemeIcon:1
+msgid "Get a theme icon via DialogEntityManager."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_geometry:1
+msgid "Get layer names by geometry."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.get_layer_names_by_type:1
+msgid "Get layer names by type."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.get_preview_options:1
+msgid "Return the state of preview layer checkboxes."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.get_preview_options:3
+msgid "Keys 'show_topo', 'show_geol', 'show_struct' with boolean values."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.get_selected_values:1
+msgid "Get the selected values from the dialog."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.get_selected_values:3
+msgid "Dictionary with all dialog values in legacy flat format"
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.handle_error:1
+msgid "Centralized error handling for the dialog."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.handle_error:3
+msgid "The exception to handle."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.handle_error:4
+msgid "Title for the error message box."
+msgstr ""
+
+#: of sec_interp.gui.SecInterpDialog.interpretations:1
+msgid "Proxy to interpretations in the manager for backward compatibility."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.on_interpretation_finished:1
+msgid "Handle finalized interpretation polygon."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.open_help:1
+msgid "Open the help file in the default browser."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.preview_profile_handler:1
+msgid ""
+"Generate a quick preview with topographic, geological, and structural "
+"data."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.preview_profile_handler:3
+msgid "This method delegates to PreviewManager for preview generation."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.push_message:1
+msgid "Push a message to the QGIS message bar and optionally to plugin results."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.push_message:3
+msgid "Message title."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.push_message:4
+msgid "Message content."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.push_message:5
+msgid "Qgis message level (Info, Warning, Critical, Success)."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.push_message:6
+msgid "Visibility duration in seconds."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.push_message:7
+msgid "If True, also show message in plugin results area."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.reject_handler:1
+msgid "Handle the reject button click event."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.reset_defaults_handler:1
+msgid "Reset all dialog inputs via state_manager."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.show_dialog:1
+msgid "Show a message box dialog."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.show_dialog:3
+msgid "Dialog title."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.show_dialog:4
+msgid "Dialog content."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.show_dialog:5
+msgid "Message level (\"info\", \"warning\", \"critical\", \"question\")."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.toggle_interpretation_tool:1
+msgid "Toggle interpretation tool via tool_manager."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.toggle_measure_tool:1
+msgid "Toggle measurement tool via tool_manager."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.update_button_state:1
+msgid "Enable or disable buttons via state_manager."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.update_measurement_display:1
+msgid "Display measurement results from multi-point tool via tool_manager."
+msgstr ""
+
+#: of
+#: sec_interp.gui.main_dialog.SecInterpDialog.update_preview_checkbox_states:1
+msgid "Enable or disable preview checkboxes via state_manager."
+msgstr ""
+
+#: of
+#: sec_interp.gui.main_dialog.SecInterpDialog.update_preview_from_checkboxes:1
+msgid "Update preview when checkboxes change."
+msgstr ""
+
+#: of
+#: sec_interp.gui.main_dialog.SecInterpDialog.update_preview_from_checkboxes:3
+msgid "This method delegates to PreviewManager for preview updates."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.validate_inputs:1
+msgid "Validate the inputs from the dialog."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.validate_inputs:3
+msgid "This method delegates to DialogInputManager for input validation."
+msgstr ""
+
+#: of sec_interp.gui.main_dialog.SecInterpDialog.wheelEvent:1
+msgid "Handle mouse wheel for zooming in preview via navigation_manager."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.rst:10
+msgid "Subpackages"
+msgstr ""
+
+#: ../../../source/sec_interp.gui.rst:22
+msgid "Submodules"
+msgstr ""

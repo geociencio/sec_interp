@@ -1,0 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.ui.main_window.rst:2
+msgid "sec\\_interp.gui.ui.main\\_window module"
+msgstr ""
+
+#: of sec_interp.gui.ui.main_window:1
+msgid "Main Window assembly."
+msgstr ""
+
+#: of sec_interp.gui.ui.main_window.SecInterpMainWindow:1
+msgid "Main Programmatic Interface for SecInterp."
+msgstr ""
+
+#: of sec_interp.gui.ui.main_window.SecInterpMainWindow.__init__:1
+msgid "Initialize the main dialog."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.main_window.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.ui.main_window.SecInterpMainWindow.__init__:3
+msgid "QGIS interface."
+msgstr ""
+
+#: of sec_interp.gui.ui.main_window.SecInterpMainWindow.__init__:4
+msgid "Parent widget."
+msgstr ""
+
+#: of sec_interp.gui.ui.main_window.SecInterpMainWindow.disconnect_signals:1
+msgid "Disconnect all signals to prevent memory leaks."
+msgstr ""

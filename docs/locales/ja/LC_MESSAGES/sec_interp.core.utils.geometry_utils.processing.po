@@ -1,0 +1,195 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.processing.rst:2
+msgid "sec\\_interp.core.utils.geometry\\_utils.processing module"
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing:1
+msgid "Geometry processing utilities."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.calculate_segment_range:1
+msgid ""
+"Calculate the start and end distance for a segment geometry along the "
+"line."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.processing.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.calculate_segment_range:3
+msgid "Segment geometry (LineString)."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.calculate_segment_range:4
+msgid "Start point of the main section line."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.calculate_segment_range:5
+msgid "QgsDistanceArea object."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.geometry_utils.processing.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.calculate_segment_range:7
+msgid "Tuple of (dist_start, dist_end) or None if invalid."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:1
+msgid "Create a buffer around a geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:3
+msgid "Input geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:4
+msgid "Coordinate Reference System of the geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:5
+msgid "Buffer distance in layer units."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:6
+msgid "Number of segments for the buffer approximation."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_buffer_geometry:8
+msgid "The buffered geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:1
+msgid "Create a temporary memory (scratch) layer."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:3
+msgid "Name for the layer."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:4
+msgid "QGIS geometry type string (e.g., 'Point', 'LineString')."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:5
+msgid "Coordinate reference system."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:6
+msgid "List of fields for the layer."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.create_memory_layer:8
+msgid "The created memory layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:1
+msgid "Densify a line geometry by a specific distance interval."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:3
+msgid ""
+"Adds intermediate vertices to ensure segments are no longer than the "
+"interval."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:5
+msgid "Line geometry to densify."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:6
+msgid "Maximum distance between vertices (in CRS units)."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.densify_line_by_interval:8
+msgid "The densified QgsGeometry."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.interpolate_segment_points:1
+msgid "Convert boundary distances into a list of points with sampled elevations."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.interpolate_segment_points:3
+msgid ""
+"Includes the start/end points and any intermediate grid points from the "
+"master profile that fall within the specified distance range."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.interpolate_segment_points:6
+msgid "Start distance along section."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.interpolate_segment_points:7
+msgid "End distance along section."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.interpolate_segment_points:8
+msgid "Full grid of coordinates and elevations."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.interpolate_segment_points:9
+msgid "Topography profile (dist, elevation)."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.interpolate_segment_points:10
+msgid "Distance tolerance for grid inclusions."
+msgstr ""
+
+#: of
+#: sec_interp.core.utils.geometry_utils.processing.interpolate_segment_points:12
+msgid "List of (distance, elevation) tuples defining the segment profile."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.run_geometry_operation:1
+msgid "Wrap generic geometry operations."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.run_geometry_operation:3
+msgid "Name of the operation to perform."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.run_geometry_operation:4
+msgid "Positional arguments for the operation."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.run_geometry_operation:5
+msgid "Keyword arguments for the operation."
+msgstr ""
+
+#: of sec_interp.core.utils.geometry_utils.processing.run_geometry_operation:7
+msgid "Result of the operation."
+msgstr ""

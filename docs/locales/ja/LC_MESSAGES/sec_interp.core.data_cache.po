@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.data_cache.rst:2
+msgid "sec\\_interp.core.data\\_cache module"
+msgstr ""
+
+#: of sec_interp.core.data_cache:1
+msgid "Cache system for SecInterp data."
+msgstr ""
+
+#: of sec_interp.core.data_cache:3
+msgid ""
+"Provides a hash-based caching mechanism for geological and topographic "
+"data."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache:1
+msgid "Memory-based cache service for storing processed profile data."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache:3
+msgid ""
+"Implements ICacheService. Supports categorized buckets ('topo', 'geol', "
+"'struct', 'drill'), Time-To-Live (TTL) expiration, and arbitrary metadata"
+" (e.g., for LOD tracking)."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.__init__:1
+msgid "Initialize the data cache."
+msgstr ""
+
+#: ../../../source/sec_interp.core.data_cache.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.__init__:3
+msgid "Default Time-To-Live in seconds for new entries."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.clear:1
+msgid "Clear all entries across all cache buckets."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get:1
+msgid "Retrieve data from a specific cache bucket if not expired."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get:3
+msgid "Name of the cache category (e.g., 'topo')."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get:4
+#: sec_interp.core.data_cache.DataCache.get_metadata:4
+#: sec_interp.core.data_cache.DataCache.set:4
+msgid "Unique hash key for the entry."
+msgstr ""
+
+#: ../../../source/sec_interp.core.data_cache.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get:6
+msgid "The cached data if valid and found, else None."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get_cache_key:1
+msgid "Generate a unique MD5 hash key from input parameters."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get_cache_key:3
+msgid "Dictionary of parameters to hash."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get_cache_key:5
+msgid "The generated MD5 hash string."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get_cache_size:1
+msgid "Get the number of entries in each bucket."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get_cache_size:3
+msgid "Dictionary mapping bucket names to entry counts."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get_metadata:1
+msgid "Retrieve the metadata associated with a cached entry."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get_metadata:3
+#: sec_interp.core.data_cache.DataCache.set:3
+msgid "Name of the cache category."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.get_metadata:6
+msgid "Metadata dictionary if found, else None."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.invalidate:1
+msgid "Remove entries from the cache selectively or entirely."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.invalidate:3
+msgid "Optional name of the bucket to invalidate."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.invalidate:4
+msgid "Optional specific entry key to remove within the bucket."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.set:1
+msgid "Store data in a specific cache bucket with optional metadata."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.set:5
+msgid "The data object to be cached."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.set:6
+msgid "Optional dictionary for TTL or Level of Detail information."
+msgstr ""
+
+#: of sec_interp.core.data_cache.DataCache.tr:1
+msgid "Translate a message using QCoreApplication."
+msgstr ""

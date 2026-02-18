@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.validation.path_validator.rst:2
+msgid "sec\\_interp.core.validation.path\\_validator module"
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator:1
+msgid "Validation logic for filesystem paths and workspace settings."
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_output_path:1
+msgid "Validate that an output path is a valid directory and currently writable."
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_output_path:3
+msgid ""
+"This is a convenience wrapper around `validate_safe_output_path()` for "
+"general directory validation."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.path_validator.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_output_path:6
+msgid "The path string to validate."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.path_validator.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_output_path:8
+msgid ""
+"(is_valid, error_message, resolved_path)     - is_valid: True if the "
+"directory is valid and writable.     - error_message: Error details if "
+"validation fails.     - resolved_path: Absolute Path object if valid, "
+"else None."
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_output_path:10
+msgid "(is_valid, error_message, resolved_path)"
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_output_path:11
+msgid "is_valid: True if the directory is valid and writable."
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_output_path:12
+msgid "error_message: Error details if validation fails."
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_output_path:13
+msgid "resolved_path: Absolute Path object if valid, else None."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.path_validator.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.core.validation.path_validator.validate_safe_output_path:1
+msgid ""
+"Validate an output path string with security and path traversal "
+"protection."
+msgstr ""

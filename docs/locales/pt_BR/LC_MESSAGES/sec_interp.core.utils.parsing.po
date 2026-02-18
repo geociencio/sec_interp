@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.parsing.rst:2
+msgid "sec\\_interp.core.utils.parsing module"
+msgstr ""
+
+#: of sec_interp.core.utils.parsing:1
+msgid "Data parsing and conversion utilities."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.cardinal_to_azimuth:1
+msgid "Convert a cardinal direction string to its equivalent azimuth."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.cardinal_to_azimuth:3
+msgid "Supports: N, NE, E, SE, S, SW, W, NW."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.parsing.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.cardinal_to_azimuth:5
+msgid "The cardinal direction string."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.parsing.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.cardinal_to_azimuth:7
+msgid "The azimuth in degrees (0-360), or None if invalid."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.extract_feature_attributes:1
+msgid "Extract attributes from a QgsFeature into a pure Python dictionary."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.extract_feature_attributes:3
+msgid "The QgsFeature object."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.extract_feature_attributes:5
+msgid "A dictionary mapping field names to attribute values."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_dip:1
+msgid "Parse a dip value from various formats."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_dip:3
+msgid ""
+"Supports numeric dip (\"45\") and field notation with direction (\"45 "
+"NE\", \"22 SW\")."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_dip:5
+msgid "The raw dip value."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_dip:7
+msgid ""
+"A tuple of (dip_angle, dip_direction_azimuth). Values are None if parsing"
+" fails."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_strike:1
+msgid "Parse a strike value from various formats into an azimuth (0-360)."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_strike:3
+msgid ""
+"Supports numeric values, strings, and quadrant notation (e.g., \"N 30 "
+"E\", \"S 45 W\")."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_strike:5
+msgid "The raw strike value (string, int, float, or None)."
+msgstr ""
+
+#: of sec_interp.core.utils.parsing.parse_strike:7
+msgid "Strike in azimuth degrees (0-360) or None if parsing fails."
+msgstr ""

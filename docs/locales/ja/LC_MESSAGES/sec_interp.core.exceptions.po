@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.exceptions.rst:2
+msgid "sec\\_interp.core.exceptions module"
+msgstr ""
+
+#: of sec_interp.core.exceptions:1
+msgid "Domain-specific exceptions for SecInterp."
+msgstr ""
+
+#: of sec_interp.core.exceptions:3
+msgid ""
+"This module defines a hierarchy of exceptions to provide clearer error "
+"reporting and better handling of expected and unexpected conditions."
+msgstr ""
+
+#: of sec_interp.core.exceptions.ConfigurationError:1
+msgid "Raised for configuration-related issues."
+msgstr ""
+
+#: of sec_interp.core.exceptions.DataMissingError:1
+msgid "Raised when required data (e.g. from a layer) is missing."
+msgstr ""
+
+#: of sec_interp.core.exceptions.ExportError:1
+msgid "Raised when data export fails."
+msgstr ""
+
+#: of sec_interp.core.exceptions.GeometryError:1
+msgid "Raised for geometry-related errors (invalid, null, etc.)."
+msgstr ""
+
+#: of sec_interp.core.exceptions.ParameterError:1
+msgid "Raised when an invalid parameter is provided to a service or tool."
+msgstr ""
+
+#: of sec_interp.core.exceptions.ProcessingError:1
+msgid "Raised when data processing fails."
+msgstr ""
+
+#: of sec_interp.core.exceptions.SecInterpError:1
+msgid "Base class for all SecInterp-specific exceptions."
+msgstr ""
+
+#: of sec_interp.core.exceptions.SecInterpError.__init__:1
+msgid "Initialize the SecInterp error with a message and optional details."
+msgstr ""
+
+#: ../../../source/sec_interp.core.exceptions.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.exceptions.SecInterpError.__init__:3
+msgid "Human-readable error message explaining what happened."
+msgstr ""
+
+#: of sec_interp.core.exceptions.SecInterpError.__init__:4
+msgid "Optional dictionary containing technical error context or details."
+msgstr ""
+
+#: of sec_interp.core.exceptions.ValidationError:1
+msgid "Raised when input validation fails."
+msgstr ""

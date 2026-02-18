@@ -1,0 +1,86 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.preview_reporter.rst:2
+msgid "sec\\_interp.gui.preview\\_reporter module"
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter:1
+msgid "Reporting and results formatting for SecInterp preview."
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter:3
+msgid ""
+"This module provides the PreviewReporter class to handle the formatting "
+"of preview generation results and performance metrics into human-readable"
+" messages."
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter.PreviewReporter:1
+msgid "Formatter for preview generation results and status messages."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_reporter.PreviewReporter.format_drillhole_summary:1
+msgid "Format a summary line for drillhole data."
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter.PreviewReporter.format_geology_summary:1
+msgid "Format a summary line for geology data."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_reporter.PreviewReporter.format_performance_metrics:1
+msgid "Format performance metrics into a list of strings."
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter.PreviewReporter.format_result_metrics:1
+msgid "Format elevation metrics for the results message."
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter.PreviewReporter.format_results_message:1
+msgid "Format results message for display using core result objects."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.preview_reporter.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter.PreviewReporter.format_results_message:3
+msgid "The preview result object containing data and metadata."
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter.PreviewReporter.format_results_message:4
+msgid "Performance metrics collector."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.preview_reporter.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.gui.preview_reporter.PreviewReporter.format_results_message:6
+msgid "A formatted string ready for display in the UI."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_reporter.PreviewReporter.format_structure_summary:1
+msgid "Format a summary line for structural data."
+msgstr ""

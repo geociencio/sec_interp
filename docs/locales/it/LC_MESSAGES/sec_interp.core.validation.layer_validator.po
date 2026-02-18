@@ -1,0 +1,173 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: it\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.validation.layer_validator.rst:2
+msgid "sec\\_interp.core.validation.layer\\_validator module"
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator:1
+msgid "Spatial validation for QGIS layers (geometry types, CRS)."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_crs_compatibility:1
+msgid ""
+"Validate that a list of layers have compatible Coordinate Reference "
+"Systems."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_crs_compatibility:3
+msgid ""
+"If layers have different CRSs, it returns a warning message instead of an"
+" error."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.layer_validator.validate_geology_requirements:1
+msgid "Validate geology layer requirements (polygons and attribute field)."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_exists:1
+msgid ""
+"Validate that a layer with the given name exists in the current QGIS "
+"project."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.layer_validator.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_exists:3
+msgid "The name of the layer to search for."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.layer_validator.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_exists:5
+msgid ""
+"(is_valid, error_message, layer)     - is_valid: True if at least one "
+"matching layer was found.     - error_message: Error details if no layer "
+"was found.     - layer: The first matching layer instance if valid, else "
+"None."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_exists:7
+msgid "(is_valid, error_message, layer)"
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_exists:8
+msgid "is_valid: True if at least one matching layer was found."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_exists:9
+msgid "error_message: Error details if no layer was found."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_exists:10
+msgid "layer: The first matching layer instance if valid, else None."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.layer_validator.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_geometry:1
+msgid "Validate that a vector layer matches the expected QGIS geometry type."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_geometry:3
+#: sec_interp.core.validation.layer_validator.validate_layer_has_features:3
+msgid "The QGIS vector layer to check."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_geometry:4
+msgid "The required QgsWkbTypes.GeometryType."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_geometry:6
+msgid ""
+"(is_valid, error_message)     - is_valid: True if the geometry type "
+"matches.     - error_message: Detailed error if types mismatch."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_geometry:8
+#: sec_interp.core.validation.layer_validator.validate_layer_has_features:7
+#: sec_interp.core.validation.layer_validator.validate_raster_band:8
+msgid "(is_valid, error_message)"
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_geometry:9
+msgid "is_valid: True if the geometry type matches."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_geometry:10
+msgid "error_message: Detailed error if types mismatch."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_has_features:1
+msgid "Validate that a vector layer contains at least one feature."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_has_features:5
+msgid ""
+"(is_valid, error_message)     - is_valid: True if the layer has features."
+"     - error_message: Error details if the layer is empty."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_has_features:8
+msgid "is_valid: True if the layer has features."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_layer_has_features:9
+msgid "error_message: Error details if the layer is empty."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_raster_band:1
+msgid "Validate that a specified band number exists in the given raster layer."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_raster_band:3
+msgid "The QGIS raster layer to check."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_raster_band:4
+msgid "The 1-based index of the raster band."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_raster_band:6
+msgid ""
+"(is_valid, error_message)     - is_valid: True if the band exists.     - "
+"error_message: Error message if the band is out of range."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_raster_band:9
+msgid "is_valid: True if the band exists."
+msgstr ""
+
+#: of sec_interp.core.validation.layer_validator.validate_raster_band:10
+msgid "error_message: Error message if the band is out of range."
+msgstr ""
+
+#: of
+#: sec_interp.core.validation.layer_validator.validate_structural_requirements:1
+msgid "Validate structural layer requirements (geometry and attribute fields)."
+msgstr ""

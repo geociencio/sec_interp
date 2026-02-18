@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.spatial.rst:2
+msgid "sec\\_interp.core.utils.spatial module"
+msgstr ""
+
+#: of sec_interp.core.utils.spatial:1
+msgid "Spatial Utilities and layer querying Module."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial:3
+msgid "Distance calculations, azimuth, and basic spatial operations."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_line_azimuth:1
+msgid "Calculate the azimuth (compass bearing) of a line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_line_azimuth:3
+msgid ""
+"Calculates the azimuth based on the first two vertices of the line. "
+"Returns 0 for points or single-vertex lines."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.spatial.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_line_azimuth:6
+msgid "The QGIS line geometry."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.spatial.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_line_azimuth:8
+msgid "Azimuth in degrees (0-360)."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:1
+msgid "Calculate step size based on slope and raster resolution."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:3
+msgid ""
+"densify_line_by_interval() instead for better precision and simpler code."
+" This function is kept for backward compatibility but may be removed in "
+"future versions."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:7
+msgid ""
+"Ensures that sampling occurs at approximately one pixel intervals, "
+"accounting for the slope of the line relative to the raster grid."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:10
+msgid "The geometry to sample along."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:11
+msgid "The raster layer being sampled."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.calculate_step_size:13
+msgid "Calculated step size in map units."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.create_distance_area:1
+msgid "Create and configure a QgsDistanceArea object."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.create_distance_area:3
+msgid ""
+"Configures the distance area with the provided CRS, project transform "
+"context, and associated ellipsoid for geodesic calculations."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.create_distance_area:6
+msgid "The Coordinate Reference System to use."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.create_distance_area:8
+msgid "The configured distance calculation object."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.get_line_start_point:1
+msgid "Get the start point of a line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.get_line_start_point:3
+msgid "Handles both singlepart and multipart line geometries."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.get_line_start_point:5
+msgid "The line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.spatial.get_line_start_point:7
+msgid "The first vertex of the first part of the geometry."
+msgstr ""

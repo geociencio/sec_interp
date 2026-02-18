@@ -1,0 +1,554 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.services.rst:2
+msgid "sec\\_interp.core.services package"
+msgstr ""
+
+#: of sec_interp.core.services:1
+msgid "Services package for geological data processing."
+msgstr ""
+
+#: of sec_interp.core.services:3
+msgid ""
+"This package contains service classes that handle specific data "
+"processing tasks: - ProfileService: Topographic profile generation - "
+"GeologyService: Geological profile generation - StructureService: "
+"Structural data projection"
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService:1
+msgid "Service for processing and orchestrating drillhole data."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService:3
+msgid ""
+"This service handles the projection of collars onto a 2D section line, "
+"the calculation of 3D trajectories from survey data, and the "
+"interpolation of geological intervals along those trajectories. It "
+"leverages specialized processors to maintain a clean separation of "
+"concerns."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:1
+msgid "Initialize the service with specialized processors."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:3
+msgid "Optional collar processor."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:4
+msgid "Optional survey processor."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:5
+msgid "Optional interval processor."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:6
+msgid "Optional data fetcher."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.__init__:7
+msgid "Optional trajectory engine."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:1
+msgid "Process drillhole interval data using detached structures."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:3
+msgid "Projected collar results."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:4
+msgid "Original detached collar data."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:5
+msgid "Map of hole IDs to survey tuples."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:6
+msgid "Map of hole IDs to interval tuples."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:7
+msgid "ID field name."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:8
+msgid "Whether geometry was used."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:9
+msgid "X field name."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:10
+msgid "Y field name."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:11
+msgid "Section geometry."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:12
+#: sec_interp.core.services.structure_service.StructureService.project_structures:7
+msgid "Section start point."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:13
+msgid "Distance measurer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:14
+msgid "Buffer width."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:15
+msgid "Section orientation."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:16
+msgid "Survey field mapping."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:17
+msgid "Interval field mapping."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.process_intervals:19
+msgid "Tuple of (geology_segments, drillhole_results)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:1
+msgid "Project collar points onto section line using detached domain data."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:3
+msgid "List of detached collar dictionaries."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:4
+msgid "Section line geometry or feature."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:5
+msgid "QgsDistanceArea for measurements."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:6
+msgid "Maximum distance from section for projection."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:7
+msgid "Name of the ID field."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:8
+msgid "Whether to use geometric data for projection."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:9
+msgid "Field name for X coordinate (if not using geometry)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:10
+msgid "Field name for Y coordinate (if not using geometry)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:11
+msgid "Field name for Z coordinate."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:12
+msgid "Field name for total depth."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:13
+msgid "Optional dict of pre-sampled elevations."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:15
+msgid "(hole_id, dist_along, z, offset, total_depth)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.rst
+msgid "Return type"
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.rst
+msgid "Raises"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.drillhole_service.DrillholeService.project_collars:18
+msgid "If parameters are invalid."
+msgstr ""
+
+#: of sec_interp.core.services.drillhole_service.DrillholeService.tr:1
+#: sec_interp.core.services.geology_service.GeologyService.tr:1
+#: sec_interp.core.services.structure_service.StructureService.tr:1
+msgid "Translate a message using QCoreApplication."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService:1
+msgid "Service for generating geological profiles."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService.__init__:1
+msgid "Initialize service with specialized processors."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService.__init__:3
+msgid "Optional profile sampler."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService.__init__:4
+msgid "Optional outcrop processor."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:1
+msgid ""
+"Generate geological profile data by intersecting the section line with "
+"outcrop polygons."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:3
+msgid ""
+"Extracts geological unit intersections along the cross-section line, "
+"calculates elevations from the DEM, and returns a list of segments."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:6
+msgid "The QGIS vector layer representing the cross-section line."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:7
+msgid "The Digital Elevation Model (DEM) raster layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:8
+msgid "The QGIS vector layer containing geological outcrop polygons."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:9
+msgid "The attribute field name for geological unit names."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:10
+msgid "The raster band to use for elevation sampling (default 1)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:12
+msgid "A list of `GeologySegment` objects, sorted by distance along the section."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:15
+msgid "If the line layer has no features."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:16
+msgid "If the line geometry is invalid."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:17
+msgid "If the intersection processing fails."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:1
+msgid "Prepare detached domain data for background task execution."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:3
+msgid ""
+"Extracts all necessary geometric and attribute data from QGIS layers to "
+"create a serializable input for asynchronous processing."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:6
+msgid "The cross-section line vector layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:7
+msgid "The elevation raster layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:8
+msgid "The geological outcrop vector layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:9
+msgid "Field name for geological units."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:10
+msgid "Raster band for elevation sampling."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:12
+msgid "Detached data ready for processing."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:1
+msgid "Process geological data in a thread-safe way (Domain-Pure logic)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:3
+msgid ""
+"Intersects the section line with detached outcrop geometries and assigns "
+"elevations sampled from the master profile."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:6
+msgid "Detached data for processing."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:7
+msgid "Optional QgsFeedback for progress tracking."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:9
+msgid "Sorted list of geological segments."
+msgstr ""
+
+#: of sec_interp.core.services.profile_service.ProfileService:1
+msgid "Service for generating topographic profiles."
+msgstr ""
+
+#: of sec_interp.core.services.profile_service.ProfileService:3
+msgid ""
+"This service handles the extraction of elevation data along a cross-"
+"section line by sampling a raster DEM."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:1
+msgid ""
+"Generate topographic profile data by sampling elevation along the section"
+" line."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:3
+msgid "The cross-section line layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:4
+msgid "The DEM/raster layer for elevation."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:5
+msgid "Raster band to sample (default: 1)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:6
+msgid "Optional sampling interval. If None, uses raster resolution."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:8
+msgid "A list of (distance, elevation) tuples representing the profile."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:10
+msgid "If line layer has no features."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.profile_service.ProfileService.generate_topographic_profile:11
+msgid "If line geometry is invalid."
+msgstr ""
+
+#: of sec_interp.core.services.structure_service.StructureService:1
+msgid "Service for projecting structural measurements onto cross-sections."
+msgstr ""
+
+#: of sec_interp.core.services.structure_service.StructureService:3
+msgid ""
+"This service handles the filtering and projection of structural "
+"measurements (dip/strike) onto a cross-section plane to calculate "
+"apparent dip."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.detach_structures:1
+msgid "Extract structural features within buffer into detached dictionaries."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.detach_structures:3
+msgid "Uses a spatial index filter via a buffer around the section line."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.detach_structures:5
+msgid "Structural measurements vector layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.detach_structures:6
+#: sec_interp.core.services.structure_service.StructureService.project_structures:6
+msgid "Section line geometry."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.detach_structures:7
+msgid "Buffer distance in meters."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.detach_structures:9
+msgid "List of detached dictionaries containing WKT and attributes."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:1
+msgid "Project detached structural measurements onto the section plane."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:3
+msgid ""
+"Calculates stations (distance along section), elevations from DEM, and "
+"apparent dips based on the section orientation."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:8
+msgid "Distance calculator."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:9
+msgid "Elevation raster layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:10
+msgid "List of detached structural data."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:11
+msgid "Projection buffer (m)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:12
+msgid "Section azimuth in degrees."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:13
+msgid "Field name for dip angle."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:14
+msgid "Field name for strike azimuth."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:15
+msgid "Raster band for elevation."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.structure_service.StructureService.project_structures:17
+msgid "Sorted list of projected StructureMeasurement objects."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.rst:10
+msgid "Subpackages"
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.rst:18
+msgid "Submodules"
+msgstr ""

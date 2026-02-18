@@ -1,0 +1,153 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.utils.drillhole.rst:2
+msgid "sec\\_interp.core.utils.drillhole module"
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole:1
+msgid "Drillhole Utilities Module."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole:3
+msgid "Calculations for drillhole geometry and projection."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:1
+msgid "Calculate the 3D trajectory of a drillhole using survey data."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:3
+msgid ""
+"Calculates X, Y, Z positions along the hole using minimum curvature or "
+"tangential approximation based on survey readings (depth, azimuth, dip)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.drillhole.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:6
+msgid "Starting point (QgsPointXY or tuple)."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:7
+msgid "Starting elevation."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:8
+msgid "List of (depth, azimuth, inclination) tuples."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:9
+msgid "Azimuth of the section line (for relative calcs)."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:10
+msgid "Distance between interpolated points in meters."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:11
+msgid "Total depth of the hole."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.drillhole.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.calculate_drillhole_trajectory:13
+msgid "List of (depth, x, y, z, 0.0, 0.0) trajectory points."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:1
+msgid "Interpolate interval attributes along drillhole trajectory."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:3
+msgid ""
+"Filters and maps geological intervals onto the 3D trajectory points that "
+"fall within the specified section buffer."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:6
+msgid "List of (depth, x, y, z, dist_along, offset) tuples."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:7
+msgid "List of (from_depth, to_depth, attribute) tuples."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:8
+msgid "Maximum perpendicular offset to include a point."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:10
+msgid ""
+"- attribute: The metadata/geology associated with the interval. - "
+"points_2d: List of (distance, elevation) coordinates for rendering. - "
+"points_3d: List of (x, y, z) original coordinates for 3D export."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:10
+msgid "attribute: The metadata/geology associated with the interval."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:11
+msgid "points_2d: List of (distance, elevation) coordinates for rendering."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.interpolate_intervals_on_trajectory:12
+msgid "points_3d: List of (x, y, z) original coordinates for 3D export."
+msgstr ""
+
+#: ../../../source/sec_interp.core.utils.drillhole.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:1
+msgid "Project drillhole trajectory points onto the section line."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:3
+msgid ""
+"Calculates the 2D projection (distance along section) and the offset "
+"(distance from section) for each point in a 3D trajectory."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:6
+msgid "List of 3D trajectory points (depth, x, y, z, ...)."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:7
+msgid "Section line geometry."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:8
+msgid "Reference start point for distance calculation."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:9
+msgid "Distance calculation utility."
+msgstr ""
+
+#: of sec_interp.core.utils.drillhole.project_trajectory_to_section:11
+msgid "List of (depth, x, y, z, dist_along, offset, proj_x, proj_y) tuples."
+msgstr ""

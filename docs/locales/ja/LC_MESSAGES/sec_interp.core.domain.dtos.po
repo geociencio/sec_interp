@@ -1,0 +1,297 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.domain.dtos.rst:2
+msgid "sec\\_interp.core.domain.dtos module"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos:1
+msgid "Complex Data Transfer Objects."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:1
+msgid "Consolidated parameters for profile generation and preview."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:5
+msgid "QGIS layer ID for DEM sampling."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams
+#: sec_interp.core.domain.dtos.PreviewResult
+msgid "type"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:7
+#: sec_interp.core.domain.dtos.PreviewParams:13
+msgid "str"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:11
+msgid "QGIS layer ID for the section orientation."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:17
+msgid "Raster band number to use for elevation."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:19
+#: sec_interp.core.domain.dtos.PreviewParams:169
+#: sec_interp.core.domain.dtos.PreviewParams:175
+msgid "int"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:23
+msgid "Search buffer for projecting data onto the section."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:25
+#: sec_interp.core.domain.dtos.PreviewParams:61
+#: sec_interp.core.domain.dtos.PreviewResult:37
+msgid "float"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:29
+msgid "Optional layer ID with geological outcrops."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:31
+#: sec_interp.core.domain.dtos.PreviewParams:37
+#: sec_interp.core.domain.dtos.PreviewParams:43
+#: sec_interp.core.domain.dtos.PreviewParams:49
+#: sec_interp.core.domain.dtos.PreviewParams:55
+#: sec_interp.core.domain.dtos.PreviewParams:67
+#: sec_interp.core.domain.dtos.PreviewParams:73
+#: sec_interp.core.domain.dtos.PreviewParams:85
+#: sec_interp.core.domain.dtos.PreviewParams:91
+#: sec_interp.core.domain.dtos.PreviewParams:97
+#: sec_interp.core.domain.dtos.PreviewParams:103
+#: sec_interp.core.domain.dtos.PreviewParams:109
+#: sec_interp.core.domain.dtos.PreviewParams:115
+#: sec_interp.core.domain.dtos.PreviewParams:121
+#: sec_interp.core.domain.dtos.PreviewParams:127
+#: sec_interp.core.domain.dtos.PreviewParams:133
+#: sec_interp.core.domain.dtos.PreviewParams:139
+#: sec_interp.core.domain.dtos.PreviewParams:145
+#: sec_interp.core.domain.dtos.PreviewParams:151
+#: sec_interp.core.domain.dtos.PreviewParams:157
+#: sec_interp.core.domain.dtos.PreviewParams:163
+msgid "str | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:35
+msgid "Field name for geological unit names."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:41
+msgid "Optional layer ID with structural measurements."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:47
+msgid "Field name for dip values."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:53
+msgid "Field name for strike/azimuth values."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:59
+msgid "Visual scale factor for dip lines."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:65
+msgid "Optional layer ID with drillhole collars."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:71
+msgid "Field name for drillhole IDs in collar layer."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:77
+msgid "Whether to use layer geometry for collar coordinates."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:79
+#: sec_interp.core.domain.dtos.PreviewParams:181
+msgid "bool"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:83
+msgid "Field name for X coordinate."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:89
+msgid "Field name for Y coordinate."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:95
+msgid "Field name for Z coordinate."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:101
+msgid "Field name for total hole depth."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:107
+msgid "Optional layer ID with drillhole surveys."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:113
+msgid "Field name for drillhole IDs in survey layer."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:119
+msgid "Field name for downhole depth in survey."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:125
+msgid "Field name for azimuth in survey."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:131
+msgid "Field name for inclination in survey."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:137
+msgid "Optional layer ID with drillhole intervals."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:143
+msgid "Field name for drillhole IDs in interval layer."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:149
+msgid "Field name for 'from' depth."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:155
+msgid "Field name for 'to' depth."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:161
+msgid "Field name for lithology code/name."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:167
+msgid "Max number of points for simplified preview (LOD)."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:173
+msgid "Width of the preview canvas in pixels."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams:179
+msgid "Whether to automatically adjust LOD based on canvas width."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams.validate:1
+msgid "Perform native validation of parameters."
+msgstr ""
+
+#: ../../../source/sec_interp.core.domain.dtos.rst
+msgid "Raises"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewParams.validate:3
+msgid "If critical parameters are missing or invalid."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:1
+msgid "Consolidated result set from profile generation."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:5
+msgid "Sampled topographic profile data."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:7
+msgid "list[tuple[float, float]] | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:11
+msgid "List of geological unit segments."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:13
+msgid "list[sec_interp.core.domain.entities.GeologySegment] | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:17
+msgid "List of projected structural measurements."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:19
+msgid "list[sec_interp.core.domain.entities.StructureMeasurement] | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:23
+msgid "Processed drillhole projection data."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:25
+msgid "Any | None"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:29
+msgid "Performance metrics collector for the generation cycle."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:31
+msgid "sec_interp.core.performance_metrics.MetricsCollector"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult:35
+msgid "Buffer distance used for this result."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_distance_range:1
+msgid "Calculate the horizontal distance range based on topography."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_distance_range:3
+msgid ""
+"Uses the first and last points of the sampled topography as the "
+"authoritative horizontal bounds of the section."
+msgstr ""
+
+#: ../../../source/sec_interp.core.domain.dtos.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_distance_range:6
+msgid "A tuple containing (min_distance, max_distance)."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_elevation_range:1
+msgid ""
+"Calculate the global minimum and maximum elevation across all active "
+"layers."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_elevation_range:3
+msgid ""
+"Scans topography, geology, structural measurements, and drillhole data to"
+" find the absolute vertical bounds."
+msgstr ""
+
+#: of sec_interp.core.domain.dtos.PreviewResult.get_elevation_range:6
+msgid "A tuple containing (min_elevation, max_elevation)."
+msgstr ""

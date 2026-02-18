@@ -1,0 +1,198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.services.geology_service.rst:2
+msgid "sec\\_interp.core.services.geology\\_service module"
+msgstr ""
+
+#: of sec_interp.core.services.geology_service:1
+msgid "Geology Data Processing Service."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service:3
+msgid ""
+"This module handles the extraction and projection of geological "
+"boundaries and unit segments from map layers to the cross-section plane."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService:1
+msgid "Service for generating geological profiles."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService.__init__:1
+msgid "Initialize service with specialized processors."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.geology_service.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService.__init__:3
+msgid "Optional profile sampler."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService.__init__:4
+msgid "Optional outcrop processor."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:1
+msgid ""
+"Generate geological profile data by intersecting the section line with "
+"outcrop polygons."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:3
+msgid ""
+"Extracts geological unit intersections along the cross-section line, "
+"calculates elevations from the DEM, and returns a list of segments."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:6
+msgid "The QGIS vector layer representing the cross-section line."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:7
+msgid "The Digital Elevation Model (DEM) raster layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:8
+msgid "The QGIS vector layer containing geological outcrop polygons."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:9
+msgid "The attribute field name for geological unit names."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:10
+msgid "The raster band to use for elevation sampling (default 1)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.geology_service.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:12
+msgid "A list of `GeologySegment` objects, sorted by distance along the section."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.geology_service.rst
+msgid "Return type"
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.geology_service.rst
+msgid "Raises"
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:15
+msgid "If the line layer has no features."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:16
+msgid "If the line geometry is invalid."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.generate_geological_profile:17
+msgid "If the intersection processing fails."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:1
+msgid "Prepare detached domain data for background task execution."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:3
+msgid ""
+"Extracts all necessary geometric and attribute data from QGIS layers to "
+"create a serializable input for asynchronous processing."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:6
+msgid "The cross-section line vector layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:7
+msgid "The elevation raster layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:8
+msgid "The geological outcrop vector layer."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:9
+msgid "Field name for geological units."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:10
+msgid "Raster band for elevation sampling."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.prepare_task_input:12
+msgid "Detached data ready for processing."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:1
+msgid "Process geological data in a thread-safe way (Domain-Pure logic)."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:3
+msgid ""
+"Intersects the section line with detached outcrop geometries and assigns "
+"elevations sampled from the master profile."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:6
+msgid "Detached data for processing."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:7
+msgid "Optional QgsFeedback for progress tracking."
+msgstr ""
+
+#: of
+#: sec_interp.core.services.geology_service.GeologyService.process_task_data:9
+msgid "Sorted list of geological segments."
+msgstr ""
+
+#: of sec_interp.core.services.geology_service.GeologyService.tr:1
+msgid "Translate a message using QCoreApplication."
+msgstr ""

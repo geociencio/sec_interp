@@ -1,0 +1,63 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: id\n"
+"Language-Team: id <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.ui_status_manager.rst:2
+msgid "sec\\_interp.gui.ui\\_status\\_manager module"
+msgstr ""
+
+#: of sec_interp.gui.ui_status_manager:1
+msgid "UI Status and indication manager for SecInterp main dialog."
+msgstr ""
+
+#: of sec_interp.gui.ui_status_manager.UIStatusManager:1
+msgid ""
+"Manages visual status (indicators, icons, button enablement) of the "
+"dialog."
+msgstr ""
+
+#: of sec_interp.gui.ui_status_manager.UIStatusManager.__init__:1
+msgid "Initialize UI status manager."
+msgstr ""
+
+#: of sec_interp.gui.ui_status_manager.UIStatusManager.setup_indicators:1
+msgid "Set up required field indicators with warning icons."
+msgstr ""
+
+#: of sec_interp.gui.ui_status_manager.UIStatusManager.update_all:1
+msgid "Update all visual status components."
+msgstr ""
+
+#: of sec_interp.gui.ui_status_manager.UIStatusManager.update_button_state:1
+msgid "Enable or disable buttons based on input validity."
+msgstr ""
+
+#: of
+#: sec_interp.gui.ui_status_manager.UIStatusManager.update_preview_checkbox_states:1
+msgid "Enable or disable preview checkboxes based on input validity."
+msgstr ""
+
+#: of sec_interp.gui.ui_status_manager.UIStatusManager.update_raster_status:1
+msgid "Update raster layer status icon."
+msgstr ""
+
+#: of sec_interp.gui.ui_status_manager.UIStatusManager.update_section_status:1
+msgid "Update section line status icon."
+msgstr ""

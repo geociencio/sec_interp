@@ -1,0 +1,314 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fi\n"
+"Language-Team: fi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/phase_closure_v2.7.0.md:1
+msgid "Cierre de Fase - SecInterp v2.7.0"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:3
+msgid "Documento de Cierre Formal de Fase de Desarrollo"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:5
+msgid ""
+"**Fecha de Cierre:** 2026-01-18 **Versión Actual:** 2.7.0 **Fase:** "
+"Excelencia Operativa y Documentación **Responsable:** Antigravity (IA "
+"Assistant)"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:12
+msgid "1. Resumen Ejecutivo"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:13
+msgid ""
+"La Fase v2.7.0 se centró en consolidar los cimientos del proyecto para "
+"garantizar su escalabilidad a largo plazo. Se logró una transformación "
+"completa de la infraestructura de validación, documentación y testing, "
+"eliminando deudas técnicas críticas y preparando el terreno para nuevas "
+"funcionalidades analíticas. El proyecto ahora cuenta con una arquitectura"
+" robusta de 3 niveles de validación, documentación automática desacoplada"
+" y un entorno de QA dockerizado reproducible."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:15
+msgid "2. Logros Principales"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:17
+msgid "Infraestructura y Calidad"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:18
+msgid ""
+"**Testing Dockerizado**: Implementación de un entorno de pruebas aislado "
+"(`make docker-test`) que replica exactamente las condiciones de ejecución"
+" de QGIS, eliminando los errores de \"funciona en mi máquina\"."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:19
+#, python-format
+msgid ""
+"**Infraestructura de Mocks**: Estabilización total de los mocks de PyQGIS"
+" (`ModuleProxy`, `MockSignal`), logrando una tasa de paso del 100% en 361"
+" tests."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:20
+msgid ""
+"**Logging Centralizado**: Unificación del sistema de logs bajo un logger "
+"raíz con propagación jerárquica, facilitando la depuración."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:22
+msgid "Arquitectura de Software"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:23
+msgid ""
+"**Validación de 3 Niveles**: Implementación de una arquitectura de "
+"validación jerárquica:"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:24
+msgid ""
+"**Nivel 1 (Tipos)**: Validadores reusables (`validators.py`) y Data "
+"Classes."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:25
+msgid ""
+"**Nivel 2 (Lógica)**: Reglas de negocio y contexto de validación "
+"(`ValidationContext`)."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:26
+msgid ""
+"**Nivel 3 (Dominio)**: Cláusulas de guarda en servicios "
+"(`GeologyService`, `DrillholeService`)."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:27
+msgid ""
+"**Desacoplamiento de UI**: Fragmentación del `SecInterpDialog` en "
+"gestores especializados (`InterpretationManager`, `MessageManager`, "
+"`SettingsManager`), reduciendo drásticamente la complejidad ciclomática."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:29
+msgid "Documentación"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:30
+msgid ""
+"**Sphinx Automatizado**: Configuración de un pipeline de documentación "
+"que genera HTML API docs fuera del repositorio, manteniendo el código "
+"fuente limpio."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:31
+msgid ""
+"**Limpieza de Repositorio**: Eliminación de archivos HTML rastreados que "
+"inflaban el tamaño del repo."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:32
+msgid ""
+"**Documentación de Arquitectura**: Creación de nuevos documentos de "
+"diseño técnico y guías de usuario alineadas con la v2.7.0."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:34
+msgid "Funcionalidad"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:35
+msgid ""
+"**Exportación 3D Avanzada**: Capacidad de exportar trazas e intervalos de"
+" sondajes como geometrías 3D reales (`PolygonZ`, `LineStringZ`), tanto en"
+" coordenadas originales como proyectadas."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:36
+msgid ""
+"**Navegación Sidebar**: Modernización de la interfaz con una barra "
+"lateral de navegación nativa estilo QGIS."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:38
+msgid "3. Desafíos Enfrentados y Soluciones"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:40
+msgid "Inestabilidad de Mocks"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:41
+msgid ""
+"**Problema**: Los tests fallaban aleatoriamente debido a la pérdida de "
+"referencias en los objetos mockeados de Qt/QGIS al resetear el estado "
+"entre tests."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:42
+msgid ""
+"**Solución**: Se implementó `ModuleProxy` para mantener referencias "
+"estables a las clases mock y se mejoró la lógica de `tearDown` para "
+"resetear el estado interno sin destruir los objetos."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:44
+msgid "Dependencia de UI en Validación"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:45
+msgid ""
+"**Problema**: La lógica de validación estaba fuertemente acoplada a los "
+"widgets de la interfaz (`QComboBox`, `QSpinBox`)."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:46
+msgid ""
+"**Solución**: Se creó un `DialogDataAggregator` para extraer datos puros "
+"de la UI y pasarlos a un `DialogValidationManager` agnóstico de la "
+"interfaz visual."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:48
+msgid "4. Deuda Técnica Acumulada"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:50
+msgid "🟡 Moderada (Para v2.8.0)"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:51
+msgid ""
+"**Soporte Multi-Raster**: La arquitectura actual asume un único DEM. Se "
+"requiere refactoring para soportar múltiples superficies."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:52
+msgid ""
+"**Tests de Integración 3D**: La herramienta de interpretación 3D tiene "
+"cobertura limitada en tests de integración pura."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:54
+msgid "🟢 Menor"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:55
+msgid ""
+"**Longitud de Funciones**: Algunos métodos en `GeologyService` exceden "
+"las 50 líneas y podrían beneficiarse de una mayor extracción de métodos "
+"auxiliares."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:57
+msgid "5. Métricas del Proyecto"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "Métrica"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "Valor"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "Estado"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "**Tests Totales**"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "361"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "✅ Passing"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "**Score de Calidad**"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "~83.5/100"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "Estable"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "**Cobertura Type Hints**"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid ">76% (Params)"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "Bueno"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "**Complejidad Promedio**"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "12.4"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "Aceptable"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "**Archivos Python**"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "~108"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md
+msgid "-"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:67
+msgid "6. Conclusión y Recomendaciones"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.7.0.md:68
+msgid ""
+"La versión 2.7.0 representa un punto de inflexión en la madurez técnica "
+"de SecInterp. Con la base sólida establecida, el equipo está listo para "
+"abordar funcionalidades de análisis avanzado en la versión 2.8.0 sin el "
+"lastre de una infraestructura frágil. Se recomienda mantener la "
+"disciplina de `conventional commits` y el uso del contenedor Docker para "
+"todo desarrollo futuro."
+msgstr ""

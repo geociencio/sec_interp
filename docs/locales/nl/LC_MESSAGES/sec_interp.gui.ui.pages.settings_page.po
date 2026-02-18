@@ -1,0 +1,64 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.ui.pages.settings_page.rst:2
+msgid "sec\\_interp.gui.ui.pages.settings\\_page module"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.settings_page:1
+msgid "Settings page for Sec Interp plugin."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.settings_page.SettingsPage:1
+msgid "Page for managing plugin settings and restricted features."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.settings_page.SettingsPage.__init__:1
+msgid "Initialize the settings page."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.settings_page.SettingsPage.disconnect_signals:1
+msgid "Disconnect all signals to prevent memory leaks."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.settings_page.SettingsPage.get_data:1
+msgid "Get the current settings."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.settings_page.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.settings_page.SettingsPage.get_data:3
+msgid "Current settings."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.settings_page.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.settings_page.SettingsPage.validate:1
+msgid "Validate settings."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.settings_page.SettingsPage.validate:3
+msgid "(is_valid, error_message)"
+msgstr ""

@@ -1,0 +1,178 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.validation.field_validator.rst:2
+msgid "sec\\_interp.core.validation.field\\_validator module"
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator:1
+msgid "Validation logic for QGIS layer fields and attributes."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:1
+msgid "Validate that an angle value is within the expected range."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.field_validator.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:3
+msgid "The angle value to validate."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:4
+#: sec_interp.core.validation.field_validator.validate_integer_input:6
+#: sec_interp.core.validation.field_validator.validate_numeric_input:6
+msgid "Name of the field for error messages."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:5
+msgid "Minimum allowed angle (default 0.0)."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:6
+msgid "Maximum allowed angle (default 360.0)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.field_validator.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:8
+#: sec_interp.core.validation.field_validator.validate_field_exists:6
+#: sec_interp.core.validation.field_validator.validate_field_type:7
+msgid ""
+"(is_valid, error_message)     - is_valid: True if validation passed.     "
+"- error_message: Error details if validation failed."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:10
+#: sec_interp.core.validation.field_validator.validate_field_exists:8
+#: sec_interp.core.validation.field_validator.validate_field_type:9
+msgid "(is_valid, error_message)"
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:11
+#: sec_interp.core.validation.field_validator.validate_field_exists:9
+#: sec_interp.core.validation.field_validator.validate_field_type:10
+#: sec_interp.core.validation.field_validator.validate_integer_input:12
+#: sec_interp.core.validation.field_validator.validate_numeric_input:12
+msgid "is_valid: True if validation passed."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_angle_range:12
+#: sec_interp.core.validation.field_validator.validate_field_exists:10
+#: sec_interp.core.validation.field_validator.validate_field_type:11
+#: sec_interp.core.validation.field_validator.validate_integer_input:13
+#: sec_interp.core.validation.field_validator.validate_numeric_input:13
+msgid "error_message: Error details if validation failed."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.field_validator.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_field_exists:1
+msgid "Validate that a specific field exists in a vector layer."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_field_exists:3
+msgid "The QGIS vector layer to check."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_field_exists:4
+msgid "The name of the field to search for."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_field_type:1
+msgid "Validate that a field in a layer has one of the expected data types."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_field_type:3
+msgid "The QGIS vector layer containing the field."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_field_type:4
+msgid "The name of the field to check."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_field_type:5
+msgid "List of allowed FieldType values."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_integer_input:1
+msgid "Validate an integer input string from a text field."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_integer_input:3
+#: sec_interp.core.validation.field_validator.validate_numeric_input:3
+msgid "The string value to validate."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_integer_input:4
+#: sec_interp.core.validation.field_validator.validate_numeric_input:4
+msgid "Optional minimum value allowed."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_integer_input:5
+#: sec_interp.core.validation.field_validator.validate_numeric_input:5
+msgid "Optional maximum value allowed."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_integer_input:7
+#: sec_interp.core.validation.field_validator.validate_numeric_input:7
+msgid "Whether to allow an empty string."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_integer_input:9
+msgid ""
+"(is_valid, error_message, int_value)     - is_valid: True if validation "
+"passed.     - error_message: Error details if validation failed.     - "
+"int_value: The parsed integer value if valid, else None."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_integer_input:11
+msgid "(is_valid, error_message, int_value)"
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_integer_input:14
+msgid "int_value: The parsed integer value if valid, else None."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_numeric_input:1
+msgid "Validate a numeric input string from a text field."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_numeric_input:9
+msgid ""
+"(is_valid, error_message, float_value)     - is_valid: True if validation"
+" passed.     - error_message: Error details if validation failed.     - "
+"float_value: The parsed numeric value if valid, else None."
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_numeric_input:11
+msgid "(is_valid, error_message, float_value)"
+msgstr ""
+
+#: of sec_interp.core.validation.field_validator.validate_numeric_input:14
+msgid "float_value: The parsed numeric value if valid, else None."
+msgstr ""

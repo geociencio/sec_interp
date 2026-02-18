@@ -1,0 +1,205 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.domain.task_inputs.rst:2
+msgid "sec\\_interp.core.domain.task\\_inputs module"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs:1
+msgid "Data Transfer Objects for async task inputs."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:1
+msgid "Data Transfer Object for DrillholeGenerationTask."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:3
+msgid ""
+"Encapsulates all data required to project and process drillholes in a "
+"background thread without accessing QGIS API objects."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:8
+msgid "Section geometry in WKT."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput
+msgid "type"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:10
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:28
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:46
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:58
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:64
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:70
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:76
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:10
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:28
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:52
+msgid "str"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:14
+msgid "Start vertex X."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:16
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:22
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:34
+#: sec_interp.core.domain.task_inputs.DrillholeTaskInput:40
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:16
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:22
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:58
+msgid "float"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:20
+msgid "Start vertex Y."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:26
+msgid "CRS of the section line."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:32
+msgid "Azimuth orientation in degrees."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:38
+msgid "Maximum horizontal projection buffer."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:44
+msgid "ID field name."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:50
+msgid "Whether to use geometric coordinates for collars."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:52
+msgid "bool"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:56
+msgid "Fallback X field name."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:62
+msgid "Fallback Y field name."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:68
+msgid "Collar elevation field."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:74
+msgid "Total depth field."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:80
+msgid "List of detached features."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:82
+#: sec_interp.core.domain.task_inputs.GeologyTaskInput:46
+msgid "list[dict[str, Any]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:86
+msgid "Dictionary mapping hole IDs to survey readings."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:88
+msgid "dict[Any, list[tuple[float, float, float]]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:92
+msgid "Dictionary mapping hole IDs to geological logs."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:94
+msgid "dict[Any, list[tuple[float, float, str]]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:98
+msgid "Dictionary of pre-calculated collar elevations."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.DrillholeTaskInput:100
+msgid "dict[Any, float]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:1
+msgid "Data Transfer Object for GeologyGenerationTask."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:3
+msgid ""
+"Contains all necessary data to process geological profiles without "
+"accessing QGIS layers directly."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:8
+msgid "Section geometry in WKT format."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:14
+msgid "X coordinate of section start vertex."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:20
+msgid "Y coordinate of section start vertex."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:26
+msgid "Authority ID for the CRS (e.g., 'EPSG:4326')."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:32
+msgid "Sampled topography elevations."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:34
+msgid "list[tuple[float, float]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:38
+msgid "Grid distances for point sampling."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:40
+msgid "list[tuple[float, tuple[float, float], float]]"
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:44
+msgid "Detached outcrop features (geometries and attrs)."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:50
+msgid "Name of the field containing unit info."
+msgstr ""
+
+#: of sec_interp.core.domain.task_inputs.GeologyTaskInput:56
+msgid "Distance tolerance for intersection sampling."
+msgstr ""

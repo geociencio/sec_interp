@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.exporters.csv_exporter.rst:2
+msgid "sec\\_interp.exporters.csv\\_exporter module"
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter:1
+msgid "CSV export utilities."
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter:1
+msgid "Exporter for CSV tabular format."
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.export:1
+msgid "Export tabular data to CSV."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.csv_exporter.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.export:3
+msgid "Output file path."
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.export:4
+msgid ""
+"A dictionary containing 'headers' (list of strings) and 'rows' (list of "
+"tuples or lists)."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.csv_exporter.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.export:7
+msgid "True if export successful, False otherwise"
+msgstr ""
+
+#: of sec_interp.exporters.csv_exporter.CSVExporter.get_supported_extensions:1
+msgid "Get supported CSV extension."
+msgstr ""

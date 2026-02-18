@@ -1,0 +1,43 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: hi\n"
+"Language-Team: hi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.preview_legend_renderer.rst:2
+msgid "sec\\_interp.gui.preview\\_legend\\_renderer module"
+msgstr ""
+
+#: of sec_interp.gui.preview_legend_renderer:1
+msgid "Legend rendering logic for SecInterp preview."
+msgstr ""
+
+#: of sec_interp.gui.preview_legend_renderer:3
+msgid ""
+"Handles the drawing of the legend on a QPainter, including topography, "
+"structures, and geological units."
+msgstr ""
+
+#: of sec_interp.gui.preview_legend_renderer.PreviewLegendRenderer:1
+msgid "Handles drawing the map legend for the profile preview."
+msgstr ""
+
+#: of
+#: sec_interp.gui.preview_legend_renderer.PreviewLegendRenderer.draw_legend:1
+msgid "Draw legend on the given painter within the rect."
+msgstr ""

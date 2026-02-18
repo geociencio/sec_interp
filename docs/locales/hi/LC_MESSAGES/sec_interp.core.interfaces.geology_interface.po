@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: hi\n"
+"Language-Team: hi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.interfaces.geology_interface.rst:2
+msgid "sec\\_interp.core.interfaces.geology\\_interface module"
+msgstr ""
+
+#: of sec_interp.core.interfaces.geology_interface:1
+msgid "Interface for Geology services."
+msgstr ""
+
+#: of sec_interp.core.interfaces.geology_interface.IGeologyService:1
+msgid "Abstract interface for the Geological Profiling Service."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.geology_interface.IGeologyService.generate_geological_profile:1
+msgid "Generate geological profile data using detached structures."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.geology_interface.rst
+msgid "Parameters"
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.geology_interface.IGeologyService.generate_geological_profile:3
+msgid "Section line orientation data."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.geology_interface.IGeologyService.generate_geological_profile:4
+msgid "DEM elevation data."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.geology_interface.IGeologyService.generate_geological_profile:5
+msgid "List of detached outcrop entities."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.geology_interface.IGeologyService.generate_geological_profile:6
+msgid "Field name for unit names."
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.geology_interface.IGeologyService.generate_geological_profile:7
+msgid "Raster band to use."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.geology_interface.rst
+msgid "Returns"
+msgstr ""
+
+#: of
+#: sec_interp.core.interfaces.geology_interface.IGeologyService.generate_geological_profile:9
+msgid "List of GeologySegment objects."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.geology_interface.rst
+msgid "Return type"
+msgstr ""

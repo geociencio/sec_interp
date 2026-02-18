@@ -1,0 +1,139 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.exporters.base_exporter.rst:2
+msgid "sec\\_interp.exporters.base\\_exporter module"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter:1
+msgid "Base exporter class definition."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter:1
+msgid "Abstract base class for all exporters."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter:3
+msgid ""
+"This class defines the interface that all concrete exporters must "
+"implement. It follows the Template Method pattern, providing common "
+"initialization and validation logic while delegating format-specific "
+"export to subclasses."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.__init__:1
+msgid "Initialize the exporter with settings."
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.base_exporter.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.__init__:3
+msgid ""
+"Dictionary containing export settings such as: - width: Output width in "
+"pixels - height: Output height in pixels - dpi: Dots per inch for "
+"resolution - background_color: Background color (QColor) - "
+"legend_renderer: Optional renderer for legend overlay"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:1
+msgid "Export data to file."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:3
+msgid "This method must be implemented by all concrete exporters."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:5
+msgid "Destination file path"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:6
+msgid "Data to export (format depends on exporter type)"
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.base_exporter.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.export:8
+msgid "True if export successful, False otherwise"
+msgstr ""
+
+#: ../../../source/sec_interp.exporters.base_exporter.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.get_setting:1
+msgid "Get a setting value with optional default."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.get_setting:3
+msgid "Setting key"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.get_setting:4
+msgid "Default value if key not found"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.get_setting:6
+msgid "Setting value or default"
+msgstr ""
+
+#: of
+#: sec_interp.exporters.base_exporter.BaseExporter.get_supported_extensions:1
+msgid "Get list of supported file extensions."
+msgstr ""
+
+#: of
+#: sec_interp.exporters.base_exporter.BaseExporter.get_supported_extensions:3
+msgid "List of supported extensions (e.g., ['.png', '.jpg'])"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:1
+msgid "Validate export path for security."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:3
+msgid "Uses secure path validation to prevent path traversal attacks."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:5
+#: sec_interp.exporters.base_exporter.BaseExporter.validate_path:3
+msgid "Path to validate"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:6
+msgid "Optional base directory to restrict exports to"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_export_path:8
+msgid "(is_valid, error_message)"
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_path:1
+msgid "Validate that the output path has a supported extension."
+msgstr ""
+
+#: of sec_interp.exporters.base_exporter.BaseExporter.validate_path:5
+msgid "True if path has a supported extension, False otherwise"
+msgstr ""

@@ -1,0 +1,128 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.logger_config.rst:2
+msgid "sec\\_interp.logger\\_config module"
+msgstr ""
+
+#: of sec_interp.logger_config:1
+msgid "Logger Configuration Module."
+msgstr ""
+
+#: of sec_interp.logger_config:3
+msgid "Provides centralized logging configuration for the Sec Interp plugin."
+msgstr ""
+
+#: of sec_interp.logger_config.ImmediateFlushFileHandler:1
+msgid "File handler that flushes immediately after each write."
+msgstr ""
+
+#: of sec_interp.logger_config.ImmediateFlushFileHandler:3
+msgid ""
+"This ensures logs are written to disk before a crash occurs. Uses "
+"os.fsync() to force OS-level write to disk."
+msgstr ""
+
+#: of sec_interp.logger_config.ImmediateFlushFileHandler.emit:1
+msgid "Emit a log record and flush immediately."
+msgstr ""
+
+#: ../../../source/sec_interp.logger_config.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.logger_config.ImmediateFlushFileHandler.emit:3
+msgid "The log record to emit."
+msgstr ""
+
+#: of sec_interp.logger_config.QgsLogHandler:1
+msgid "Custom logging handler that writes to QGIS message log."
+msgstr ""
+
+#: of sec_interp.logger_config.QgsLogHandler.__init__:1
+msgid "Initialize handler with a specific tag for QGIS message log."
+msgstr ""
+
+#: of sec_interp.logger_config.QgsLogHandler.emit:1
+msgid "Emit a log record to QGIS message log safely."
+msgstr ""
+
+#: of sec_interp.logger_config.get_logger:1
+msgid "Get a configured logger for a plugin module."
+msgstr ""
+
+#: of sec_interp.logger_config.get_logger:3
+msgid ""
+"Name of the logger (typically __name__ from calling module). If None, "
+"returns the root plugin logger."
+msgstr ""
+
+#: ../../../source/sec_interp.logger_config.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.logger_config.get_logger:6
+msgid "Configured logger instance."
+msgstr ""
+
+#: ../../../source/sec_interp.logger_config.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.logger_config.log_critical_operation:1
+msgid "Log a critical operation with maximum persistence."
+msgstr ""
+
+#: of sec_interp.logger_config.log_critical_operation:3
+msgid ""
+"Use this before operations that might crash QGIS (e.g., canvas "
+"operations, rubber band manipulation, tool activation)."
+msgstr ""
+
+#: of sec_interp.logger_config.log_critical_operation:6
+msgid "Logger instance."
+msgstr ""
+
+#: of sec_interp.logger_config.log_critical_operation:7
+msgid "Name of the operation."
+msgstr ""
+
+#: of sec_interp.logger_config.log_critical_operation:8
+msgid "Additional context to log."
+msgstr ""
+
+#: of sec_interp.logger_config.setup_logging:1
+msgid "Configure the root logger for the plugin."
+msgstr ""
+
+#: of sec_interp.logger_config.setup_logging:3
+msgid ""
+"This should be called once at plugin initialization. It sets up handlers "
+"for QGIS message log, file logging with rotation, and stderr."
+msgstr ""
+
+#: of sec_interp.logger_config.setup_logging:6
+msgid "Logging level for the root logger. Defaults to DEBUG."
+msgstr ""
+
+#: of sec_interp.logger_config.setup_logging:8
+msgid "The configured root logger."
+msgstr ""

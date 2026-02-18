@@ -1,0 +1,212 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: hi\n"
+"Language-Team: hi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.domain.entities.rst:2
+msgid "sec\\_interp.core.domain.entities module"
+msgstr ""
+
+#: of sec_interp.core.domain.entities:1
+msgid "Domain entities and basic aliases."
+msgstr ""
+
+#: ../../../../docstring builtins.str:1 of
+msgid "A geometry represented in WKT (Well-Known Text) format."
+msgstr ""
+
+#: builtins.dict:1 of
+msgid "Dictionary of export configuration parameters."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:1
+msgid "Represents a geological unit segment along the profile."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:5
+msgid "Name of the geological unit."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment
+#: sec_interp.core.domain.entities.InterpretationPolygon
+#: sec_interp.core.domain.entities.InterpretationPolygon25D
+#: sec_interp.core.domain.entities.StructureMeasurement
+msgid "type"
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:7
+#: sec_interp.core.domain.entities.InterpretationPolygon:7
+#: sec_interp.core.domain.entities.InterpretationPolygon:13
+#: sec_interp.core.domain.entities.InterpretationPolygon:19
+#: sec_interp.core.domain.entities.InterpretationPolygon:37
+#: sec_interp.core.domain.entities.InterpretationPolygon:43
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:7
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:13
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:19
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:25
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:37
+msgid "str"
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:11
+msgid "WKT representation of the segment geometry (optional)."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:13
+msgid "str | None"
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:17
+#: sec_interp.core.domain.entities.StructureMeasurement:35
+msgid "Dictionary containing original feature attributes."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:19
+#: sec_interp.core.domain.entities.InterpretationPolygon:31
+#: sec_interp.core.domain.entities.InterpretationPolygon25D:31
+#: sec_interp.core.domain.entities.StructureMeasurement:37
+msgid "dict[str, Any]"
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:23
+msgid "Sampled points (distance, elevation) representing the segment boundary."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.GeologySegment:25
+#: sec_interp.core.domain.entities.InterpretationPolygon:25
+msgid "list[tuple[float, float]]"
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:1
+msgid "Represents a 2D digitized interpretation polygon on the section profile."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:5
+msgid "Unique identifier for the polygon."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:11
+msgid "User-defined name for the interpreted unit/feature."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:17
+msgid "Classification (e.g., 'lithology', 'fault', 'alteration')."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:23
+msgid "List of (distance, elevation) points defining the polygon."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:29
+msgid "Metadata for the interpretation."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:35
+msgid "Visual representation color (HEX)."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon:41
+msgid "ISO timestamp of creation."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:1
+msgid ""
+"Represents a georeferenced 2.5D interpretation geometry (with M "
+"coordinates)."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:5
+msgid "Inherited identifier."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:11
+msgid "Inherited name."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:17
+msgid "Inherited type."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:23
+msgid "Domain Geometry in WKT format."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:29
+msgid "Inherited and calculated attributes."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.InterpretationPolygon25D:35
+msgid "CRS Auth ID (e.g. 'EPSG:4326')."
+msgstr ""
+
+#: builtins.dict:1 of
+msgid "Dictionary mapping layer names to QgsVectorLayer objects."
+msgstr ""
+
+#: builtins.tuple:1 of
+msgid "A 2D point represented as (x, y) or (distance, elevation)."
+msgstr ""
+
+#: builtins.tuple:1 of
+msgid "A 3D point represented as (x, y, z)."
+msgstr ""
+
+#: builtins.list:1 of
+msgid "List of 2D points."
+msgstr ""
+
+#: builtins.dict:1 of
+msgid "Dictionary of plugin settings and configuration values."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:1
+msgid "Represents a projected structural measurement on the section plane."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:5
+msgid "Horizontal distance from the start of the profile."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:7
+#: sec_interp.core.domain.entities.StructureMeasurement:13
+#: sec_interp.core.domain.entities.StructureMeasurement:19
+#: sec_interp.core.domain.entities.StructureMeasurement:25
+#: sec_interp.core.domain.entities.StructureMeasurement:31
+msgid "float"
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:11
+msgid "Elevation (Z) at the projected point."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:17
+msgid "Dip angle relative to the section plane."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:23
+msgid "True dip measured in the field."
+msgstr ""
+
+#: of sec_interp.core.domain.entities.StructureMeasurement:29
+msgid "True strike (azimuth) measured in the field."
+msgstr ""
+
+#: builtins.tuple:1 of
+msgid "Tuple of (is_valid, error_message) from validation functions."
+msgstr ""

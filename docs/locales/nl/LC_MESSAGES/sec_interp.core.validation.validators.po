@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.validation.validators.rst:2
+msgid "sec\\_interp.core.validation.validators module"
+msgstr ""
+
+#: of sec_interp.core.validation.validators:1
+msgid "Reusable validators for dataclass fields."
+msgstr ""
+
+#: of sec_interp.core.validation.validators:3
+msgid ""
+"This module provides composable validators that can be used to validate "
+"and coerce field values in dataclasses without external dependencies."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator:1
+msgid "Container for applying multiple validators to a field."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator:3
+msgid ""
+"This class allows composition of multiple validators that are applied in "
+"sequence to a field value."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator:7
+msgid "Example"
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator.__call__:1
+msgid "Apply validators in sequence."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.validators.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator.__call__:3
+msgid "The value to validate."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.validators.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator.__call__:5
+msgid "The validated (and possibly transformed) value."
+msgstr ""
+
+#: ../../../source/sec_interp.core.validation.validators.rst
+msgid "Raises"
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator.__call__:7
+msgid "If any validator fails."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator.__init__:1
+msgid "Initialize with a sequence of validators."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.FieldValidator.__init__:3
+msgid "Variable number of validator functions to apply."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.coerce_type:1
+msgid "Create a type coercion validator."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.coerce_type:3
+msgid ""
+"Attempts to convert value to the target type. If conversion fails, raises"
+" a ValidationError with details."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.coerce_type:6
+msgid "The type to convert to (e.g., int, float, str)."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.coerce_type:7
+#: sec_interp.core.validation.validators.validate_non_empty:3
+#: sec_interp.core.validation.validators.validate_non_negative:3
+#: sec_interp.core.validation.validators.validate_percentage:3
+#: sec_interp.core.validation.validators.validate_positive:3
+#: sec_interp.core.validation.validators.validate_positive_int:3
+#: sec_interp.core.validation.validators.validate_probability:3
+#: sec_interp.core.validation.validators.validate_range:5
+msgid "Optional field name for error messages."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.coerce_type:9
+msgid "Validator function that coerces value to target type."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.coerce_type:11
+msgid "If type conversion fails."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_and_clamp:1
+msgid "Create a validator that clamps values to a range."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_and_clamp:3
+msgid ""
+"Unlike validate_range, this validator does not raise an error. Instead, "
+"it clamps the value to the nearest boundary."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_and_clamp:6
+msgid "Minimum allowed value."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_and_clamp:7
+msgid "Maximum allowed value."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_and_clamp:9
+msgid "Validator function that clamps value to [min_val, max_val]."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_non_empty:1
+msgid "Create a validator for non-empty strings."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_non_empty:5
+msgid "Validator function that checks if string is non-empty."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_non_empty:7
+msgid "If string is empty or whitespace-only."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_non_negative:1
+msgid "Create a validator for non-negative values."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_non_negative:5
+msgid "Validator function that checks if value is >= 0."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_non_negative:7
+msgid "If value is negative."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_percentage:1
+msgid "Create a validator for percentage values (0-100)."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_percentage:5
+msgid "Composite validator for percentage values."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_positive:1
+msgid "Create a validator for positive values."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_positive:5
+msgid "Validator function that checks if value is positive."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_positive:7
+msgid "If value is not positive."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_positive_int:1
+msgid "Create a validator for positive integers."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_positive_int:5
+msgid "Composite validator for positive integers."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_probability:1
+msgid "Create a validator for probability values (0-1)."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_probability:5
+msgid "Composite validator for probability values."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_range:1
+msgid "Create a range validator."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_range:3
+msgid "Minimum allowed value (inclusive)."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_range:4
+msgid "Maximum allowed value (inclusive)."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_range:7
+msgid "Validator function that checks if value is within range."
+msgstr ""
+
+#: of sec_interp.core.validation.validators.validate_range:9
+msgid "If value is outside the specified range."
+msgstr ""

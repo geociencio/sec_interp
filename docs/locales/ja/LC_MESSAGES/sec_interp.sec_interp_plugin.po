@@ -1,0 +1,182 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.sec_interp_plugin.rst:2
+msgid "sec\\_interp.sec\\_interp\\_plugin module"
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin:1
+msgid "Main Plugin Module."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin:3
+msgid "Orchestrates the lifecycle of the SecInterp QGIS plugin."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp:1
+msgid "QGIS Plugin Implementation for Geological Data Extraction."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp:3
+msgid ""
+"This class implements the main logic of the SecInterp plugin, handling "
+"initialization, UI integration, and orchestration of data processing "
+"tasks. It connects the QGIS interface with the plugin's dialog and "
+"processing algorithms."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.__init__:1
+msgid "Initialize the plugin."
+msgstr ""
+
+#: ../../../source/sec_interp.sec_interp_plugin.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.__init__:3
+msgid ""
+"An interface instance that will be passed to this class which provides "
+"the hook by which you can manipulate the QGIS application at run time."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:1
+msgid "Add a toolbar icon to the toolbar."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:3
+msgid "Path to the icon for this action."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:5
+msgid "Text that should be shown in menu items for this action."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:7
+msgid "Function to be called when the action is triggered."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:9
+msgid ""
+"A flag indicating if the action should be enabled by default. Defaults to"
+" True."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:12
+msgid ""
+"Flag indicating whether the action should also be added to the menu. "
+"Defaults to True."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:15
+msgid ""
+"Flag indicating whether the action should also be added to the toolbar. "
+"Defaults to True."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:18
+msgid ""
+"Optional text to show in a popup when mouse pointer hovers over the "
+"action."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:21
+msgid ""
+"Optional text to show in the status bar when the mouse pointer hovers "
+"over the action."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:24
+msgid "Parent widget for the new action. Defaults None."
+msgstr ""
+
+#: ../../../source/sec_interp.sec_interp_plugin.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:27
+msgid ""
+"The action that was created. Note that the action is also     added to "
+"self.actions list."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:29
+msgid "The action that was created. Note that the action is also"
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.add_action:30
+msgid "added to self.actions list."
+msgstr ""
+
+#: ../../../source/sec_interp.sec_interp_plugin.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.disconnect_signals:1
+msgid "Disconnect all signals to prevent memory leaks."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.draw_preview:1
+msgid "Draw enhanced interactive preview using native PyQGIS renderer."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.initGui:1
+msgid "Create the menu entries and toolbar icons inside the QGIS GUI."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.process_data:1
+msgid "Process profile data by delegating to the dialog's preview manager."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.process_data:3
+msgid "Pre-validated inputs (optional)"
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.process_data:5
+msgid "Tuple of (profile_data, geol_data, struct_data) or None"
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.run:1
+msgid "Run method that performs all the real work."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.save_profile_line:1
+msgid "Save profile data by delegating to the dialog's export manager."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.tr:1
+msgid "Get the translation for a string using Qt translation API."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.tr:3
+msgid "We implement this ourselves since we do not inherit QObject."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.tr:5
+msgid "String for translation."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.tr:8
+msgid "Translated string (or original if no translation found)."
+msgstr ""
+
+#: of sec_interp.sec_interp_plugin.SecInterp.unload:1
+msgid "Remove the plugin menu item and icon from QGIS GUI."
+msgstr ""

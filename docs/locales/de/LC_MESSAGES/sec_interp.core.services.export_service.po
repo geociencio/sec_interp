@@ -1,0 +1,114 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.services.export_service.rst:2
+msgid "sec\\_interp.core.services.export\\_service module"
+msgstr ""
+
+#: of sec_interp.core.services.export_service:1
+msgid "Export service for SecInterp."
+msgstr ""
+
+#: of sec_interp.core.services.export_service:3
+msgid ""
+"This module provides a service to orchestrate all export operations, "
+"including data (Shapefile, CSV) and preview (PNG, PDF, SVG) exports."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService:1
+msgid "Service to orchestrate all export operations."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.__init__:1
+msgid "Initialize the export service."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.export_service.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.__init__:3
+msgid "Optional reference to ProfileController for data access."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:1
+msgid "Export generated data to CSV and Shapefile formats."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:3
+msgid "Destination directory for all exported files."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:4
+msgid "Correctly validated parameters for the export run."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:5
+msgid "Topographic profile points (dist, elevation)."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:6
+msgid "List of GeologySegment objects."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:7
+msgid "List of StructureMeasurement objects."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:8
+msgid "Optional list of drillhole data."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:9
+msgid "Optional list of InterpretationPolygon objects."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.export_data:10
+msgid "Dictionary of flags 'exp_topo', 'exp_geol', etc."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.get_map_settings:1
+msgid "Create and configure QgsMapSettings for canvas or image export."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.get_map_settings:3
+msgid "List of map layers to be rendered."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.get_map_settings:4
+msgid "The spatial extent (bounding box) of the view."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.get_map_settings:5
+msgid "Optional output size in pixels (QSize)."
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.get_map_settings:6
+msgid "The background color for the render (QColor)."
+msgstr ""
+
+#: ../../../source/sec_interp.core.services.export_service.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.services.export_service.ExportService.get_map_settings:8
+msgid "A configured QgsMapSettings instance ready for rendering."
+msgstr ""

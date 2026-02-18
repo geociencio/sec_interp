@@ -1,0 +1,247 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:1
+msgid "Guía de Distinción de Componentes \"Core\""
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:3
+msgid ""
+"Este documento tiene como objetivo aclarar la distinción entre los "
+"diferentes componentes denominados \"Core\" dentro del proyecto "
+"**SecInterp**, para evitar confusiones tanto por parte de desarrolladores"
+" humanos como de agentes de IA."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:5
+msgid "⚠️ La Distinción Fundamental"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:7
+msgid ""
+"Existen dos entidades \"Core\" que coexisten en este entorno de "
+"desarrollo:"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:9
+msgid "**SecInterp Core** (El Núcleo del Proyecto):"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:10
+msgid "**Ubicación**: Directorio `/core` dentro de la raíz del proyecto."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:11
+msgid ""
+"**Propósito**: Contiene la lógica de negocio pura, algoritmos geológicos,"
+" servicios de procesamiento y modelos de datos (DTOs) específicos de "
+"SecInterp."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:12
+msgid ""
+"**Estado Actual**: **Desacoplado**. A partir de la versión 2.8.0, este "
+"módulo ha sido saneado para no tener dependencias directas de las clases "
+"vivas de QGIS durante el procesamiento pesado (Thread-Safe)."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:14
+msgid "**QGIS Core** (La API de QGIS):"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:15
+msgid "**Referencia**: Paquete de Python `qgis.core`."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:16
+msgid ""
+"**Propósito**: Proporciona la infraestructura geoespacial subyacente "
+"(geometrías, capas, proyectos, CRS)."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:17
+msgid ""
+"**Interacción**: SecInterp utiliza `qgis.core` para extraer datos en el "
+"hilo principal, pero el **SecInterp Core** procesa estos datos usando "
+"tipos agnósticos (WKT, diccionarios, primitivos)."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:21
+msgid "🧭 Reglas para Desarrolladores e IA"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:23
+msgid "Para mantener la integridad arquitectónica, siga estas directrices:"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:25
+msgid "1. No asuma que \"Core\" siempre es QGIS"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:26
+msgid ""
+"Si se le pide \"revisar el core\", se refiere casi exclusivamente al "
+"directorio `/core` de este plugin. No intente buscar o modificar archivos"
+" internos del motor de QGIS."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:28
+msgid "2. Límites de Datos (Decoupling)"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:29
+msgid ""
+"**En `/core`**: Se deben usar tipos de dominio agnósticos. Evite "
+"instanciar `QgsVectorLayer` o acceder a `QgsProject.instance()` dentro de"
+" los servicios del núcleo. Use `DomainGeometry` (WKT) y diccionarios de "
+"atributos."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:30
+msgid ""
+"**En `/gui`**: Es el lugar donde se realiza la traducción entre la API "
+"real de QGIS (`qgis.core`) y el **SecInterp Core**. Aquí es donde se "
+"extraen las geometrías y se preparan los DTOs."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:32
+msgid "3. Nomenclatura de Archivos e Importaciones"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:33
+msgid ""
+"**Archivos Locales**: Los archivos en `core/` (ej. "
+"`core/services/geology_service.py`) son el **Cerebro de SecInterp**."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:34
+msgid ""
+"**API Externa**: Las importaciones que empiezan con `qgis.core`, "
+"`qgis.gui` o `qgis.utils` son **Dependencias Externas**."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:35
+msgid ""
+"**Regla de Nomenclatura**: En discusiones o comentarios de código, use "
+"\"Internal Core\" para referirse a `/core` y \"PyQGIS API\" para la del "
+"software."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:37
+msgid "4. El Patrón \"Extract-then-Compute\" (Extraer y Calcular)"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:38
+msgid ""
+"Para evitar complicaciones futuras, el flujo de datos **DEBE** seguir "
+"este patrón:"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:39
+msgid ""
+"**Capa GUI/Task Interface**: Recibe objetos de QGIS (`QgsVectorLayer`, "
+"`QgsFeature`). Extrae lo necesario (geometría en WKT, diccionarios de "
+"atributos)."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:40
+msgid ""
+"**Capa Core**: Recibe únicamente los datos extraídos (strings, dicts, "
+"floats). Realiza los cálculos geométricos pesados."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:41
+msgid ""
+"**Resultado**: El Core devuelve DTOs (Data Transfer Objects) definidos en"
+" `core/types.py`. La capa GUI se encarga de convertir esto de nuevo a "
+"capas de QGIS si es necesario."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:43
+msgid "5. Reglas de Oro de Hilo-Seguridad (Thread-Safety)"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:44
+msgid ""
+"**Prohibido**: Importar `qgis.gui` dentro de `core/`. Los hilos de fondo "
+"morirán si intentan tocar cualquier widget o ventana."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:45
+msgid ""
+"**Restricción**: Minimizar el uso de `qgis.core` dentro de `core/`. "
+"Aunque algunas clases como `QgsGeometry` son seguras, es preferible "
+"operar sobre WKT para garantizar total independencia."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:46
+msgid ""
+"**Contexto de Aplicación**: Nunca use `iface` o `QgsProject.instance()` "
+"dentro de `core/`. Si necesita datos del proyecto, páselos como "
+"argumentos pre-extraídos."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:50
+msgid "🧪 Estrategia de Testing Diferenciada"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:52
+msgid ""
+"**Tests del Core (`tests/core/`)**: Deben poder ejecutarse sin instalar "
+"QGIS completo. Usan mocks ligeros. Son el termómetro de la lógica "
+"geológica."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:53
+msgid ""
+"**Tests de Integración (`tests/integration/`)**: Requieren QGIS real. "
+"Prueban que nuestro \"Core\" se entiende correctamente con la \"API de "
+"QGIS\"."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:57
+msgid "🛠️ Resumen de Desacoplamiento (Enero 2026)"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:59
+msgid "Se ha completado un esfuerzo mayor para asegurar que:"
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:60
+msgid "`GeologyService` no use capas vivas de QGIS en su método de procesamiento."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:61
+msgid ""
+"`DrillholeService` use diccionarios en lugar de objetos `QgsFeature` "
+"durante el cálculo de trazas."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:62
+msgid "La lógica de proyección 3D acepta tuplas y tipos primitivos."
+msgstr ""
+
+#: ../../../source/CORE_DISTINCTION_GUIDE.md:64
+msgid ""
+"**En resumen: Mantenga nuestro Core \"puro\". Trate a QGIS como un "
+"proveedor de servicios externo. No permita que las raíces de uno entren "
+"en la lógica del otro.**"
+msgstr ""

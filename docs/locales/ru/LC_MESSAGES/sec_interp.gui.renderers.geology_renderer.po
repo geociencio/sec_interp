@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.renderers.geology_renderer.rst:2
+msgid "sec\\_interp.gui.renderers.geology\\_renderer module"
+msgstr ""
+
+#: of sec_interp.gui.renderers.geology_renderer:1
+msgid "Renderer for geological segments."
+msgstr ""
+
+#: of sec_interp.gui.renderers.geology_renderer.GeologyRenderer:1
+msgid "Renderer for geological units in section."
+msgstr ""
+
+#: of sec_interp.gui.renderers.geology_renderer.GeologyRenderer.__init__:1
+msgid "Initialize the geology renderer."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.renderers.geology_renderer.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.gui.renderers.geology_renderer.GeologyRenderer.__init__:3
+msgid "Manager for geological unit colors."
+msgstr ""
+
+#: of sec_interp.gui.renderers.geology_renderer.GeologyRenderer.apply_style:1
+msgid "Apply categorized styling based on unit names."
+msgstr ""

@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.interfaces.i_renderer_3d.rst:2
+msgid "sec\\_interp.core.interfaces.i\\_renderer\\_3d module"
+msgstr ""
+
+#: of sec_interp.core.interfaces.i_renderer_3d:1
+msgid "Interface for 3D Rendering Engines."
+msgstr ""
+
+#: of sec_interp.core.interfaces.i_renderer_3d.IRenderer3D:1
+msgid "Interface for engines that can render profile data in 3D space."
+msgstr ""
+
+#: of sec_interp.core.interfaces.i_renderer_3d.IRenderer3D.clear:1
+msgid "Clear the 3D scene."
+msgstr ""
+
+#: of sec_interp.core.interfaces.i_renderer_3d.IRenderer3D.render_3d:1
+msgid "Render the provided data in a 3D context."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.i_renderer_3d.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.interfaces.i_renderer_3d.IRenderer3D.render_3d:3
+msgid "The processed profile data containing SpatialMeta."
+msgstr ""
+
+#: of sec_interp.core.interfaces.i_renderer_3d.IRenderer3D.render_3d:4
+msgid "Implementation specific rendering options."
+msgstr ""
+
+#: ../../../source/sec_interp.core.interfaces.i_renderer_3d.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.interfaces.i_renderer_3d.IRenderer3D.render_3d:6
+msgid "True if rendering was successful."
+msgstr ""

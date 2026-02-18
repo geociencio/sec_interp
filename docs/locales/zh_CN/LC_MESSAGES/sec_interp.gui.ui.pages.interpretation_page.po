@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.gui.ui.pages.interpretation_page.rst:2
+msgid "sec\\_interp.gui.ui.pages.interpretation\\_page module"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.interpretation_page:1
+msgid "Interpretation configuration page."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.interpretation_page.InterpretationPage:1
+msgid "Page for managing interpretation attributes and custom fields."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.interpretation_page.InterpretationPage.__init__:1
+msgid "Initialize the interpretation page."
+msgstr ""
+
+#: of
+#: sec_interp.gui.ui.pages.interpretation_page.InterpretationPage.disconnect_signals:1
+msgid "Disconnect all signals to prevent memory leaks."
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.interpretation_page.InterpretationPage.get_data:1
+msgid "Get the current configuration."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.interpretation_page.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.interpretation_page.InterpretationPage.get_data:3
+msgid "Custom fields and inheritance settings."
+msgstr ""
+
+#: ../../../source/sec_interp.gui.ui.pages.interpretation_page.rst
+msgid "Return type"
+msgstr ""
+
+#: of sec_interp.gui.ui.pages.interpretation_page.InterpretationPage.validate:1
+msgid "Validate fields."
+msgstr ""

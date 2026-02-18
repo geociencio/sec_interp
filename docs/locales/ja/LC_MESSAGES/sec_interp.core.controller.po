@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/sec_interp.core.controller.rst:2
+msgid "sec\\_interp.core.controller module"
+msgstr ""
+
+#: of sec_interp.core.controller:1
+msgid "Controller for SecInterp profile data generation."
+msgstr ""
+
+#: of sec_interp.core.controller:3
+msgid ""
+"This module handles the orchestration of various data generation services"
+" (topography, geology, structures, drillholes) and manages result "
+"caching."
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController:1
+msgid "Orchestrates data generation services for SecInterp profile creation."
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController.__init__:1
+msgid "Initialize services and the data cache using Dependency Injection."
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController.cache_data:1
+msgid "Cache the generated data resulting from the given inputs."
+msgstr ""
+
+#: ../../../source/sec_interp.core.controller.rst
+msgid "Parameters"
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController.cache_data:3
+#: sec_interp.core.controller.ProfileController.get_cached_data:3
+msgid "Dictionary of input parameters to generate cache key."
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController.cache_data:4
+msgid "Data dictionary to cache."
+msgstr ""
+
+#: of
+#: sec_interp.core.controller.ProfileController.connect_layer_notifications:1
+msgid "Connect to layer signals for automatic cache invalidation on data changes."
+msgstr ""
+
+#: of
+#: sec_interp.core.controller.ProfileController.connect_layer_notifications:3
+msgid "List of QgsMapLayer objects to monitor."
+msgstr ""
+
+#: of
+#: sec_interp.core.controller.ProfileController.disconnect_layer_notifications:1
+msgid "Disconnect from all previously connected layer signals."
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController.generate_profile_data:1
+msgid ""
+"Unified method to generate all profile data components with granular "
+"caching."
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController.get_cached_data:1
+msgid "Retrieve data from cache if available for the given inputs."
+msgstr ""
+
+#: ../../../source/sec_interp.core.controller.rst
+msgid "Returns"
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController.get_cached_data:5
+msgid "Cached data dictionary if found, else None."
+msgstr ""
+
+#: of sec_interp.core.controller.ProfileController.tr:1
+msgid "Translate a message using QCoreApplication."
+msgstr ""

@@ -1,0 +1,216 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Juan M Bernales
+# This file is distributed under the same license as the SecInterp package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SecInterp \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../../source/phase_closure_v2.8.0.md:1
+msgid "Cierre de Fase - SecInterp v2.8.0"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:2
+msgid "Documento de Cierre Formal de Fase de Desarrollo"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:4
+msgid ""
+"**Fecha de Cierre:** 2026-01-25 **Versión Actual:** 2.8.0 **Fase:** "
+"Reducción de Deuda y Mejoras de UI **Responsable:** Antigravity (Google "
+"DeepMind Team)"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:11
+msgid "1. Resumen Ejecutivo"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:12
+msgid ""
+"La Fase v2.8.0 se centró en la transformación del núcleo arquitectónico "
+"de SecInterp hacia un modelo agnóstico y robusto para el procesamiento "
+"asíncrono. Se eliminó la deuda técnica de métodos largos y el "
+"acoplamiento estrecho con la API de QGIS en los servicios críticos, "
+"además de implementar mejoras de usabilidad solicitadas por los usuarios."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:14
+msgid "2. Logros Principales"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:16
+msgid "Infraestructura y Core"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:17
+msgid ""
+"**Desacoplamiento Arquitectónico**: Implementado un flujo de datos basado"
+" en WKT y tipos primitivos (\"Extract-then-Compute\"), eliminando "
+"dependencias de C++ en hilos de fondo."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:18
+msgid ""
+"**Refactorización de Servicios**: Fragmentación granular de "
+"`GeologyService` y `DrillholeService`, reduciendo significativamente la "
+"complejidad ciclomática."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:19
+msgid ""
+"**Mocks Geométricos**: Implementación de funcionalidades avanzadas en la "
+"suite de pruebas para soportar cálculos espaciales en entornos sin GUI."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:21
+msgid "Funcionalidades y UI"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:22
+msgid ""
+"**Control de Leyenda**: Implementado checkbox de visibilidad para la "
+"leyenda en el Preview con persistencia total (Proyecto/Global)."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:23
+msgid ""
+"**Simplificación de UI Logic**: Reducción de ~100 líneas de código en "
+"`PreviewManager` delegando la preparación de tareas a los servicios."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:25
+msgid "Calidad y Documentación"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:26
+#, python-format
+msgid ""
+"**Estabilidad Docker**: 100% de éxito en la suite de pruebas (359 tests "
+"OK)."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:27
+msgid ""
+"**Sphinx Fix**: Restaurado el build de documentación API mediante mocks "
+"de anotaciones diferidas."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:29
+msgid "3. Desafíos Enfrentados y Soluciones"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:30
+msgid ""
+"**Thread Safety en QGIS**: Se resolvieron crashes aleatorios al mover el "
+"cálculo pesado a `QgsTask` con datos completamente desacoplados."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:31
+msgid ""
+"**Mock Pollution**: Se implementó aislamiento de procesos en Docker para "
+"evitar interferencia entre tests unitarios que comparten estado global."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:33
+msgid "4. Deuda Técnica Acumulada"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:34
+msgid ""
+"**🟡 Moderada**: Implementar suite de tests de integración 3D específica "
+"(en fase de boceto)."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:35
+msgid ""
+"**🟢 Menor**: Optimización del buffer de mediciones para tramos "
+"extremadamente largos (>100k puntos)."
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:37
+msgid "5. Métricas del Proyecto"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "Métrica"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "Valor"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "Estado"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "Tests Totales"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "359"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "✅ 100% Pass"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "Quality Score"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "54.6 / 100"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "🟡 Estable"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "Cobertura Type Hints"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid ">75%"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "✅ Alta"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "Complejidad Máxima"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "< 15"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md
+msgid "✅ Excelente"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:45
+msgid "6. Conclusión y Recomendaciones"
+msgstr ""
+
+#: ../../../source/phase_closure_v2.8.0.md:46
+msgid ""
+"Fase finalizada con éxito. El Core está ahora en su estado más estable y "
+"mantenible desde el inicio del proyecto. Se recomienda iniciar la v2.9.0 "
+"enfocándose en análisis avanzado de túneles y secciones no-rectas."
+msgstr ""
