@@ -329,3 +329,7 @@
 2026-02-17 23:59:03,568 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: architecture]
 2026-02-17 23:59:04,204 - qgis_analyzer - INFO - 📁 Project type: QGIS
 2026-02-17 23:59:05,103 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-02-18 13:13:12,700 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-02-18 13:13:12,702 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/resources/resources.py [Scope: all]
+2026-02-18 13:13:12,702 - qgis_analyzer - INFO - 📁 Project type: GENERIC
+2026-02-18 13:13:12,748 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results

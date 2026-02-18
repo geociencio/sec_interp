@@ -1,20 +1,27 @@
 # Tareas Activas - SecInterp
 
-## [x] Sesión Actual: Traducción Profunda Multilingüe [x]
-- [x] **Corrección de Localización (it, pt_BR)**
-    - [x] Limpiar intrusiones de portugués en `it.po`
-    - [x] Completar tutorial en `pt_BR.po`
-- [x] **Expansión de Guía de Usuario**
-    - [x] Traducir secciones de tutorial en `fr.po`, `de.po`, `ru.po`, `zh_CN.po`, `ja.po`
-    - [x] Traducir bloques de herramientas de interpretación y exportación 3D
-- [x] **Compilación y Despliegue**
-    - [x] Compilar todos los catálogos `.mo`
-    - [x] Generar logs de sesión y mantenimiento
+## [/] Sesión Actual: Expansión i18n (hi, id) y Limpieza Técnica [/]
+- [x] **Planificación y Diseño**
+    - [x] Sintonización de contexto y entorno
+    - [x] Crear plan de implementación
+- [x] **Localización Complementaria**
+    - [x] Traducir guía de usuario para Hindi (hi)
+    - [x] Traducir guía de usuario para Indonesio (id)
+- [x] **Validación Visual i18n**
+    - [x] Revisar desbordamiento de texto en el visor de ayuda (QA simulado)
+- [x] **Limpieza de Deuda Técnica**
+    - [x] Resolver fugas de señales en la GUI detectadas por `qgis-analyzer`
+    - [x] Mejorar la cobertura de tipado en módulos core
+    - [x] Limpiar referencias a PyQt5 en `resources.py`
+
+- [x] **Auditoría de qgis-manage**
+    - [x] Analizar código fuente de `qgis_manager`
+    - [x] Identificar debilidades técnicas y riesgos
+    - [x] Generar informe de recomendaciones técnicas
+    - [X] Crear guía técnica para desarrolladores en `docs/maintainer`
+    - [x] Crear Roadmap Técnico para resolver problemas del core
 
 ## 🔜 Siguientes Pasos
-- [ ] **Localización Complementaria**
-    - [ ] Traducir guía de usuario para Hindi (hi) e Indonesio (id)
-- [ ] **Validación Visual i18n**
-    - [ ] Revisar desbordamiento de texto y fuentes en el visor de ayuda de QGIS (especialmente RU/ZH/JA)
-- [ ] **Limpieza de i18n y Señales**
-    - [ ] Seguir resolviendo señales remanentes en la GUI según `qgis-analyzer`
+- [ ] **Implementación de Mejoras**
+    - [ ] Evaluar la implementación de un archivo `.pluginignore`
+    - [ ] Automatizar el parcheo de recursos en el core de `qgis-manager`

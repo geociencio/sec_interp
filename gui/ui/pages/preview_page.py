@@ -88,9 +88,7 @@ class PreviewWidget(QWidget):
 
         self.btn_export = QPushButton(self.tr("Export"))
         self.btn_export.setToolTip(self.tr("Export preview to file"))
-        self.btn_export.setIcon(
-            QgsApplication.getThemeIcon("mActionSaveMapAsImage.svg")
-        )
+        self.btn_export.setIcon(QgsApplication.getThemeIcon("mActionSaveMapAsImage.svg"))
 
         self.btn_measure = QPushButton(self.tr("Measure"))
         self.btn_measure.setCheckable(True)
@@ -129,9 +127,7 @@ class PreviewWidget(QWidget):
         lod_layout.addWidget(self.spin_max_points)
 
         self.chk_auto_lod = QCheckBox(self.tr("Auto"))
-        self.chk_auto_lod.setToolTip(
-            self.tr("Automatically adjust details based on preview size")
-        )
+        self.chk_auto_lod.setToolTip(self.tr("Automatically adjust details based on preview size"))
         self.chk_auto_lod.toggled.connect(self._toggle_lod_spin)
         lod_layout.addWidget(self.chk_auto_lod)
 

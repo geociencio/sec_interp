@@ -192,6 +192,81 @@ class TestTranslationLoading(BaseTestCase):
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QTranslator")
     @patch("sec_interp_plugin.QSettings")
+    def test_translation_loads_hi(
+        self,
+        MockSettings,
+        MockTranslatorClass,
+        MockInstall,
+        MockExport,
+        MockController,
+        MockRenderer,
+        MockDialog,
+    ):
+        """Test that Hindi translation loads correctly."""
+        # Setup mock settings to return hi
+        MockSettings.return_value.value.return_value = "hi"
+
+        # Mock file existence
+        with patch("sec_interp_plugin.Path.exists") as MockExists:
+            MockExists.return_value = True
+
+            plugin = SecInterp(self.iface)
+
+            # Check if load was called with correct path pattern
+            self.assertTrue(hasattr(plugin, "translator"))
+            MockTranslatorClass.return_value.load.assert_called_once()
+            args, _ = MockTranslatorClass.return_value.load.call_args
+            self.assertTrue(args[0].endswith("i18n/SecInterp_hi.qm"))
+
+            # Check if installed
+            MockInstall.assert_called_once()
+
+            # Check if installed
+            MockInstall.assert_called_once()
+
+    @patch("sec_interp_plugin.SecInterpDialog")
+    @patch("sec_interp_plugin.PreviewRenderer")
+    @patch("sec_interp_plugin.ProfileController")
+    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp_plugin.QCoreApplication.installTranslator")
+    @patch("sec_interp_plugin.QTranslator")
+    @patch("sec_interp_plugin.QSettings")
+    def test_translation_loads_id(
+        self,
+        MockSettings,
+        MockTranslatorClass,
+        MockInstall,
+        MockExport,
+        MockController,
+        MockRenderer,
+        MockDialog,
+    ):
+        """Test that Indonesian translation loads correctly."""
+        # Setup mock settings to return id
+        MockSettings.return_value.value.return_value = "id"
+
+        # Mock file existence
+        with patch("sec_interp_plugin.Path.exists") as MockExists:
+            MockExists.return_value = True
+
+            plugin = SecInterp(self.iface)
+
+            # Check if load was called with correct path pattern
+            self.assertTrue(hasattr(plugin, "translator"))
+            MockTranslatorClass.return_value.load.assert_called_once()
+            args, _ = MockTranslatorClass.return_value.load.call_args
+            self.assertTrue(args[0].endswith("i18n/SecInterp_id.qm"))
+
+            # Check if installed
+            MockInstall.assert_called_once()
+
+    @patch("sec_interp_plugin.SecInterpDialog")
+    @patch("sec_interp_plugin.PreviewRenderer")
+    @patch("sec_interp_plugin.ProfileController")
+    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp_plugin.QCoreApplication.installTranslator")
+    @patch("sec_interp_plugin.QTranslator")
+    @patch("sec_interp_plugin.QSettings")
     def test_translation_loads_ru(
         self,
         MockSettings,

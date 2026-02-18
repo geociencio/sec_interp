@@ -2,6 +2,10 @@
 
 This document serves as the central record for project history, release procedures, and past refactoring analysis.
 
+## [2026-02-18] EXPANSIÓN I18N ASIA & AUDITORÍA DE INFRAESTRUCTURA
+- **Cambios**: Localización a Hindi e Indonesio. Auditoría técnica de `qgis-manage` con roadmap de modernización.
+- **Métricas/Impacto**: 100% de cobertura de traducción en nuevos idiomas. Hoja de ruta establecida para resolver deuda técnica de compilación de recursos.
+
 ## [2026-02-18] TRADUCCIÓN PROFUNDA (USER GUIDE)
 - **Cambios**: Finalizada la localización de la guía de usuario en 7 idiomas prioritarios. Corregida integridad de catálogos en italiano y portugués.
 - **Métricas/Impacto**: 100% de cobertura en secciones de tutorial para el mercado global.

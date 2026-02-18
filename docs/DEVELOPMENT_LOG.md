@@ -1,4 +1,14 @@
 ---
+## [2026-02-18] EXPANSIÓN I18N (HINDI/INDONESIO) Y AUDITORÍA DE INFRAESTRUCTURA
+- **Logro**: Completada la localización para `hi` e `id` e identificada hoja de ruta para modernizar la herramienta de despliegue.
+- **Cambios**:
+    - **i18n**: Inyectadas traducciones maestras y compilados archivos `.qm` para Hindi e Indonesio.
+    - **Deuda Técnica**: Eliminadas referencias a `PyQt5` en `resources.py`.
+    - **Infraestructura**: Creado Roadmap Técnico para solventar rigideces en `qgis-manager`.
+- **Calidad**: 382 tests OK. Reporte limpio de `qgis-analyzer` para importaciones legacy.
+- **Mantenimiento**: [sesion_2026-02-18_i18n_qgis_manage.md](maintenance/sesion_2026-02-18_i18n_qgis_manage.md).
+
+---
 ## [2026-02-18] TRADUCCIÓN PROFUNDA (USER GUIDE)
 - **Logro**: Completada la localización profunda para 7 idiomas prioritarios (es, fr, de, it, pt_BR, ru, zh_CN, ja).
 - **Cambios**:

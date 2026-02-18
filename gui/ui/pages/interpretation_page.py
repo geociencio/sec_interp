@@ -38,9 +38,7 @@ class InterpretationPage(BasePage):
         self.group_box.setLayout(self.group_layout)
 
         # 1. Custom Fields Section
-        self.group_layout.addWidget(
-            QLabel("<b>" + self.tr("Custom Attributes") + "</b>")
-        )
+        self.group_layout.addWidget(QLabel("<b>" + self.tr("Custom Attributes") + "</b>"))
 
         self.fields_table = QTableWidget(0, 3)
         self.fields_table.setHorizontalHeaderLabels(
@@ -62,21 +60,15 @@ class InterpretationPage(BasePage):
         self.group_layout.addSpacing(15)
 
         # 2. Inheritance Options
-        self.group_layout.addWidget(
-            QLabel("<b>" + self.tr("Attribute Inheritance") + "</b>")
-        )
+        self.group_layout.addWidget(QLabel("<b>" + self.tr("Attribute Inheritance") + "</b>"))
 
         self.chk_inherit_geol = QCheckBox(self.tr("Auto-inherit from Geology layers"))
         self.chk_inherit_geol.setChecked(True)
         self.chk_inherit_geol.setToolTip(
-            self.tr(
-                "Automatically copy unit name and attributes from the nearest geology segment."
-            )
+            self.tr("Automatically copy unit name and attributes from the nearest geology segment.")
         )
 
-        self.chk_inherit_drill = QCheckBox(
-            self.tr("Auto-inherit from Drillhole intervals")
-        )
+        self.chk_inherit_drill = QCheckBox(self.tr("Auto-inherit from Drillhole intervals"))
         self.chk_inherit_drill.setChecked(True)
         self.chk_inherit_drill.setToolTip(
             self.tr(

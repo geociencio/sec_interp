@@ -56,9 +56,7 @@ class StructurePage(BasePage):
             self.layer_combo.setFilters(QgsMapLayerProxyModel.PointLayer)
 
         self.layer_combo.setAllowEmptyLayer(True)
-        self.layer_combo.setToolTip(
-            self.tr("Select the point layer with structural measurements")
-        )
+        self.layer_combo.setToolTip(self.tr("Select the point layer with structural measurements"))
         self.layer_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.layer_combo, 0, 1)
 

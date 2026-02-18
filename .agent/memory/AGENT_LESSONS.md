@@ -54,5 +54,11 @@ lessons:
     lesson: "El uso de wrappers para conectar señales (como sm._connect_checked) puede romper los tests unitarios si estos esperan llamadas directas al Mock del slot. Las señales conectadas mdiante wrappers no son detectadas por `assert_called_with` de objetos Mock."
     action: "Para métodos que son mocks en tests unitarios, mantener conexiones de señal directas sin wrappers de rastreo, u orquestar la desconexión selectiva."
 
+  - date: 2026-02-18
+    category: TECHNICAL
+    topic: qgis-manage Build Rigidity
+    lesson: "La herramienta qgis-manage tiene exclusiones hardcoded y depende de pyrcc5 (PyQt5), lo que genera deuda técnica automática en resources.py."
+    action: "Tras compilar recursos, aplicar siempre un parcheo de imports (sed) y verificar que no falten archivos necesarios en el despliegue debido a exclusiones ocultas."
+
 ---
-*Última actualización: 2026-02-16 - Estabilización de señales e i18n.*
+*Última actualización: 2026-02-18 - i18n Asia y auditoría de qgis-manage.*

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- **i18n**: Localización complementaria para Hindi (`hi`) e Indonesio (`id`), ampliando la cobertura al mercado asiático.
+- **Auditoría**: Publicado Roadmap Técnico para la modernización de `qgis-manage` (soporte `.pluginignore` y parcheo de RCC).
+- **Desarrollo**: Nueva guía de despliegue y problemas conocidos para desarrolladores en `docs/maintainer`.
 - **i18n**: Localización profunda de la guía de usuario para 7 idiomas prioritarios (FR, DE, IT, PT_BR, RU, ZH_CN, JA), cubriendo tutoriales y funciones avanzadas.
 - **i18n**: Sistema de compilación automática de catálogos `.mo` integrado en el flujo de documentación.
 - **Arquitectura**: Nuevo sistema de validación modular basado en Pipeline y micro-validadores (`IValidator`).
