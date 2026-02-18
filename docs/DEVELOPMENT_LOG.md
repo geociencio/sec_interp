@@ -1,4 +1,16 @@
 ---
+## [2026-02-18] RESUMEN: Expansión i18n (Market Gap - Central/North Europe)
+- **Logro**: Expandido el soporte a 14 idiomas (añadidos pl, nl, fi) con 100% de cobertura core.
+- **Cambios**:
+    - **i18n**: Implementado motor de "Master Data" JSON y automatización de inyección de traducciones.
+    - **Infraestructura**: Creado workflow `/i18n-maintenance` y actualizada skill `i18n-standards`.
+    - **Calidad**: Verificados locales polaco, neerlandés y finlandés sin cadenas pendientes.
+- **Métricas**:
+    - **Idiomas**: 14 (Soporte global robusto).
+    - **Sincronización**: 🟢 Master Data Engine operativo.
+- **Mantenimiento**: [sesion_2026-02-18_i18n_gap_expansion.md](maintenance/sesion_2026-02-18_i18n_gap_expansion.md).
+
+---
 ## [2026-02-18] RESUMEN: Optimización de Estabilidad de Módulos
 - **Logro**: Resuelto issue crítico de ciclos de importación circular (Module Stability de 0.0 a 53.7) y actualizado tooling.
 - **Cambios**:

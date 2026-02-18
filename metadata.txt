@@ -20,7 +20,7 @@ changelog=
     * Quality & Stability Release:
       - Signals: Eliminated 22 signal leaks, achieving zero-leak status.
       - Quality: Achieved 70.0/100 maintainability score with project-wide formatting.
-      - i18n: Expanded support to 11 languages (added Hindi and Japanese).
+      - i18n: Expanded support to 14 languages (added Polish, Dutch, and Finnish).
       - Maintenance: Optimized plugin size by 80%% via .qgisignore.
     3.0.0 (2026-02-14)
     * Major Evolution - Global Reach & Core Stability:

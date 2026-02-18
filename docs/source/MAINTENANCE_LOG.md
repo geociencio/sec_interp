@@ -2,10 +2,12 @@
 
 This document serves as the central record for project history, release procedures, and past refactoring analysis.
 
+## [2026-02-18] i18n Market Gap Expansion
+- **Idiomas**: Añadido soporte para **pl**, **nl**, **fi** (14 idiomas ahora).
+- **Automatización**: Implementado motor de Master Data JSON y workflow de mantenimiento.
+- **Skill**: Actualizada `i18n-standards` con guía técnica de inyección de cadenas.
+
 ## [2026-02-17] Signal Management & i18n Infrastructure
-- **Signals**: Transitioned from dynamic connection loops to explicit unrolled connections in `SignalManager`.
-- **i18n**: Migrated translation system to Master Data JSON to support rapid expansion (11 languages now).
-- **Build**: Enhanced `Makefile` package logic with `.qgisignore` support.
 
 ### [v3.0.0 Release] - i18n Expansion & Drillhole Refactor
 - **Date**: 2026-02-16

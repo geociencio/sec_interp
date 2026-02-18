@@ -16,17 +16,25 @@ Esta skill define el flujo de trabajo estándar para mantener, actualizar y vali
 
 ## 2. Flujo de Trabajo (Workflow)
 
-### 2.1. Actualización de Cadenas (.ts)
-Cuando se añade nueva UI o mensajes de error:
+### 2.1. El Motor de "Master Data" (Recomendado para Escalado)
+Para añadir múltiples idiomas o actualizar masivamente:
+1. **Archivo JSON**: Crear/Actualizar el archivo en `scripts/i18n/master_data/<lang>.json`. Contiene el mapa `Fuente: Traducción`.
+2. **Inyección**:
+   ```bash
+   # Genera/Sincroniza el .ts con el código fuente
+   ./scripts/update-strings.sh "<lang>"
 
-```bash
-# Extrae cadenas nuevas del código fuente
-make trans-update
-```
-Esto actualiza los archivos `.ts` en `i18n/`.
+   # Inyecta las traducciones del JSON al .ts
+   python3 scripts/i18n/apply_full.py <lang> scripts/i18n/master_data/<lang>.json
+   ```
+3. **Compilación**:
+   ```bash
+   lrelease i18n/SecInterp_<lang>.ts
+   ```
 
-### 2.2. Edición de Traducciones
-Usar **Qt Linguist** o editar los XML directamente (solo para correcciones menores).
+### 2.2. Flujo Tradicional (Qt Linguist)
+Para correcciones puntuales o revisión de contexto:
+Usar **Qt Linguist** sobre los archivos `.ts` en `i18n/`.
 
 *   **Contexto**: Asegurarse de entender dónde aparece la cadena.
 *   **Variables**: Mantener `%1`, `%s`, etc. intactos.
