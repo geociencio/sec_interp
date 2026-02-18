@@ -1,5 +1,15 @@
 ---
+## [2026-02-18] TRADUCCIÓN PROFUNDA (USER GUIDE)
+- **Logro**: Completada la localización profunda para 7 idiomas prioritarios (es, fr, de, it, pt_BR, ru, zh_CN, ja).
+- **Cambios**:
+    - **i18n**: Finalizada la traducción de tutoriales y funciones avanzadas en archivos `.po`.
+    - **Calidad**: Corregidos errores de intrusión de idioma en `it.po` y `pt_BR.po`.
+    - **Compilación**: Generados binarios `.mo` para todos los idiomas soportados.
+- **Mantenimiento**: [sesion_2026-02-18_deep_translation_user_guide.md](maintenance/sesion_2026-02-18_deep_translation_user_guide.md).
+
+---
 ## [2026-02-18] EXPANSIÓN I18N (MARKET GAP)
+
 - **Logro**: Expandido el soporte a 14 idiomas (añadidos pl, nl, fi) con 100% de cobertura core.
 - **Cambios**:
     - **i18n**: Implementado motor de "Master Data" JSON y automatización de inyección.

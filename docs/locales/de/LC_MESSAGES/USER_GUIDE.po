@@ -21,51 +21,56 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:1
 msgid "SecInterp User Guide"
-msgstr ""
+msgstr "SecInterp Benutzerhandbuch"
 
 #: ../../../source/USER_GUIDE.md:3
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. Einleitung"
 
 #: ../../../source/USER_GUIDE.md:5
 msgid ""
 "Welcome to the SecInterp plugin! This guide will help you get started "
 "with creating geological cross-sections from your QGIS layers."
 msgstr ""
+"Willkommen beim SecInterp-Plugin! Diese Anleitung hilft Ihnen beim Einstieg "
+"in die Erstellung geologischer Querschnitte aus Ihren QGIS-Layern."
 
 #: ../../../source/USER_GUIDE.md:7
 msgid "SecInterp allows you to:"
-msgstr ""
+msgstr "SecInterp ermöglicht es Ihnen:"
 
 #: ../../../source/USER_GUIDE.md:8
 msgid "Create a topographic profile from a Digital Elevation Model (DEM)."
-msgstr ""
+msgstr "Erstellen eines topografischen Profils aus einem Digitalen Geländemodell (DGM/DEM)."
 
 #: ../../../source/USER_GUIDE.md:9
 msgid "Project geological units from a polygon layer onto the profile."
-msgstr ""
+msgstr "Projizieren von geologischen Einheiten aus einem Polygon-Layer auf das Profil."
 
 #: ../../../source/USER_GUIDE.md:10
 msgid "Project structural measurements (e.g., dip and strike) onto the profile."
-msgstr ""
+msgstr "Projizieren von Strukturmessungen (z. B. Einfallen und Streichen) auf das Profil."
 
 #: ../../../source/USER_GUIDE.md:11
 msgid ""
 "Project drillhole traces and geological intervals (sondajes) onto the "
 "section."
 msgstr ""
+"Projizieren von Bohrlochspuren und geologischen Intervallen auf den Schnitt."
 
 #: ../../../source/USER_GUIDE.md:12
 msgid ""
 "**Interpretation Tool**: Digitize geological interpretations directly on "
 "the section with smart snapping."
 msgstr ""
+"**Interpretations-Werkzeug**: Digitalisieren Sie geologische Interpretationen direkt im Schnitt mit intelligentem Snapping."
 
 #: ../../../source/USER_GUIDE.md:13
 msgid ""
 "**3D Export (PolygonZ)**: Export your 2D interpretations as valid 3D "
 "Shapefiles."
 msgstr ""
+"**3D-Export (PolygonZ)**: Exportieren Sie Ihre 2D-Interpretationen als valide 3D-Shapefiles."
 
 #: ../../../source/USER_GUIDE.md:14
 msgid ""
@@ -73,40 +78,44 @@ msgid ""
 "Spanish, French, German, Italian, Portuguese, Russian, Chinese, Hindi, "
 "Japanese)."
 msgstr ""
+"**i18n-Unterstützung**: Kernoberfläche in 10 Sprachen verfügbar (Englisch, Spanisch, Französisch, Deutsch, Italienisch, Portugiesisch, Russisch, Chinesisch, Hindi, Japanisch)."
 
 #: ../../../source/USER_GUIDE.md:15
 msgid "View an interactive preview with level-of-detail (LOD) optimization."
-msgstr ""
+msgstr "Anzeigen einer interaktiven Vorschau mit Detailgrad-Optimierung (LOD)."
 
 #: ../../../source/USER_GUIDE.md:16
 msgid "Measure distances and gradients with automatic snapping to vertices."
-msgstr ""
+msgstr "Messen von Entfernungen und Gradienten mit automatischem Snapping an Stützpunkte."
 
 #: ../../../source/USER_GUIDE.md:18
 msgid "2. The Main Window"
-msgstr ""
+msgstr "2. Das Hauptfenster"
 
 #: ../../../source/USER_GUIDE.md:20
 msgid "The SecInterp dialog is divided into three main areas:"
-msgstr ""
+msgstr "Der SecInterp-Dialog ist in drei Hauptbereiche unterteilt:"
 
 #: ../../../source/USER_GUIDE.md:21
 msgid ""
 "**Sidebar Navigation (Left)**: Navigate between different modules: DEM, "
 "Drillholes, Geology, Structure, Settings, and Help."
 msgstr ""
+"**Seitenleisten-Navigation (Links)**: Navigation zwischen verschiedenen Modulen: DEM, Bohrlöcher, Geologie, Struktur, Einstellungen und Hilfe."
 
 #: ../../../source/USER_GUIDE.md:22
 msgid ""
 "**Configuration Page (Center)**: Where you configure the parameters for "
 "the selected module."
 msgstr ""
+"**Konfigurationsseite (Mitte)**: Hier konfigurieren Sie die Parameter für das ausgewählte Modul."
 
 #: ../../../source/USER_GUIDE.md:23
 msgid ""
 "**Preview Panel (Right)**: An interactive canvas showing your cross-"
 "section in real-time."
 msgstr ""
+"**Vorschaufenster (Rechts)**: Legt eine interaktive Leinwand fest, die Ihren Querschnitt in Echtzeit anzeigt."
 
 #: ../../../source/USER_GUIDE.md:25
 msgid ""
@@ -121,15 +130,15 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:28
 msgid "3. Step-by-Step Tutorial: Creating a Profile"
-msgstr ""
+msgstr "3. Schritt-für-Schritt-Anleitung: Erstellen eines Profils"
 
 #: ../../../source/USER_GUIDE.md:30
 msgid "Step 1: Digital Elevation Model (DEM)"
-msgstr ""
+msgstr "Schritt 1: Digitales Geländemodell (DGM/DEM)"
 
 #: ../../../source/USER_GUIDE.md:31
 msgid "Navigate to the **DEM** page in the sidebar."
-msgstr ""
+msgstr "Navigieren Sie zur **DEM**-Seite in der Seitenleiste."
 
 #: ../../../source/USER_GUIDE.md:32
 msgid "**Raster Layer**: Select your Digital Elevation Model (Mandatory)."
@@ -163,23 +172,25 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:41
 msgid "Step 2: Define Section Line"
-msgstr ""
+msgstr "Schritt 2: Schnittlinie definieren"
 
 #: ../../../source/USER_GUIDE.md:42
 msgid "Navigate to the **Section Line** page."
-msgstr ""
+msgstr "Navigieren Sie zur Seite **Schnittlinie**."
 
 #: ../../../source/USER_GUIDE.md:43
 msgid ""
 "**Section Layer**: Select the vector line layer representing your section"
 " traces (Mandatory)."
 msgstr ""
+"**Schnitt-Layer**: Wählen Sie den Vektorlinien-Layer aus, der Ihre Schnittspuren darstellt (Obligatorisch)."
 
 #: ../../../source/USER_GUIDE.md:44
 msgid ""
 "**Buffer Dist. (m)**: Set a buffer distance (e.g., 50m) to capture data "
 "around the line (Mandatory)."
 msgstr ""
+"**Pufferabstand (m)**: Legen Sie einen Pufferabstand fest (z. B. 50 m), um Daten um die Linie herum zu erfassen (Obligatorisch)."
 
 #: ../../../source/USER_GUIDE.md:45
 msgid ""
@@ -210,23 +221,25 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:53
 msgid "Step 3: Adding Geological Data"
-msgstr ""
+msgstr "Schritt 3: Geologische Daten hinzufügen"
 
 #: ../../../source/USER_GUIDE.md:54
 msgid "Navigate to the **Geology** page."
-msgstr ""
+msgstr "Navigieren Sie zur Seite **Geonomie**."
 
 #: ../../../source/USER_GUIDE.md:55
 msgid ""
 "**Outcrop Layer**: Select the polygon layer containing your surface "
 "geology (optional)."
 msgstr ""
+"**Ausbiss-Layer**: Wählen Sie den Polygon-Layer aus, der Ihre Oberflächengeologie enthält (Optional)."
 
 #: ../../../source/USER_GUIDE.md:56
 msgid ""
 "**Name Field**: Choose the field containing the unit codes or names "
 "(Mandatory if Outcrop Layer is selected)."
 msgstr ""
+"**Namensfeld**: Wählen Sie das Feld aus, das die Einheitenkürzel oder -namen enthält (Obligatorisch, wenn der Ausbiss-Layer ausgewählt ist)."
 
 #: ../../../source/USER_GUIDE.md:58
 msgid ""
@@ -250,11 +263,11 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:64
 msgid "Step 4: Adding Structural Data"
-msgstr ""
+msgstr "Schritt 4: Strukturdaten hinzufügen"
 
 #: ../../../source/USER_GUIDE.md:65
 msgid "Navigate to the **Structural** page."
-msgstr ""
+msgstr "Navigieren Sie zur Seite **Struktur**."
 
 #: ../../../source/USER_GUIDE.md:66
 msgid ""
@@ -489,17 +502,18 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:125
 msgid "4. Advanced Features (v3.0.0)"
-msgstr ""
+msgstr "4. Erweiterte Funktionen (v3.0.0)"
 
 #: ../../../source/USER_GUIDE.md:127
 msgid "4.1 Interpretation Tool (Drawing)"
-msgstr ""
+msgstr "4.1 Interpretations-Werkzeug (Zeichnen)"
 
 #: ../../../source/USER_GUIDE.md:128
 msgid ""
 "The new **Interpretation Tool** allows you to draw geological polygons "
 "directly on the profile section."
 msgstr ""
+"Das neue **Interpretations-Werkzeug** ermöglicht es Ihnen, geologische Polygone direkt im Profilschnitt zu zeichnen."
 
 #: ../../../source/USER_GUIDE.md:130
 msgid ""
@@ -730,7 +744,7 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:188
 msgid "Plugin Information"
-msgstr ""
+msgstr "Plugin-Informationen"
 
 #: ../../../source/USER_GUIDE.md:191
 msgid "5. Preview Panel & Tools"

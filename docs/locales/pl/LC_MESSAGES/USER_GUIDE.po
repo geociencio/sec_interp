@@ -22,29 +22,29 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:1
 msgid "SecInterp User Guide"
-msgstr ""
+msgstr "Podręcznik użytkownika SecInterp"
 
 #: ../../../source/USER_GUIDE.md:3
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. Wstęp"
 
 #: ../../../source/USER_GUIDE.md:5
 msgid ""
 "Welcome to the SecInterp plugin! This guide will help you get started "
 "with creating geological cross-sections from your QGIS layers."
-msgstr ""
+msgstr "Witaj w wtyczce SecInterp! Ten przewodnik pomoże Ci zacząć tworzyć geologiczne przekroje poprzeczne z Twoich warstw QGIS."
 
 #: ../../../source/USER_GUIDE.md:7
 msgid "SecInterp allows you to:"
-msgstr ""
+msgstr "SecInterp umożliwia:"
 
 #: ../../../source/USER_GUIDE.md:8
 msgid "Create a topographic profile from a Digital Elevation Model (DEM)."
-msgstr ""
+msgstr "Tworzenie profilu topograficznego z Cyfrowego Modelu Wysokości (DEM)."
 
 #: ../../../source/USER_GUIDE.md:9
 msgid "Project geological units from a polygon layer onto the profile."
-msgstr ""
+msgstr "Projektowanie jednostek geologicznych z warstwy poligonowej na profil."
 
 #: ../../../source/USER_GUIDE.md:10
 msgid "Project structural measurements (e.g., dip and strike) onto the profile."
@@ -731,7 +731,7 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:188
 msgid "Plugin Information"
-msgstr ""
+msgstr "Informacje o wtyczce"
 
 #: ../../../source/USER_GUIDE.md:191
 msgid "5. Preview Panel & Tools"

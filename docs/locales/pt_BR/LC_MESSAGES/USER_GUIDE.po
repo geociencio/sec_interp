@@ -21,58 +21,58 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:1
 msgid "SecInterp User Guide"
-msgstr ""
+msgstr "Guia do Usuário SecInterp"
 
 #: ../../../source/USER_GUIDE.md:3
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. Introdução"
 
 #: ../../../source/USER_GUIDE.md:5
 msgid ""
 "Welcome to the SecInterp plugin! This guide will help you get started "
 "with creating geological cross-sections from your QGIS layers."
-msgstr ""
+msgstr "Bem-vindo ao plugin SecInterp! Este guia o ajudará a começar a criar seções geológicas transversais a partir de suas camadas do QGIS."
 
 #: ../../../source/USER_GUIDE.md:7
 msgid "SecInterp allows you to:"
-msgstr ""
+msgstr "O SecInterp permite que você:"
 
 #: ../../../source/USER_GUIDE.md:8
 msgid "Create a topographic profile from a Digital Elevation Model (DEM)."
-msgstr ""
+msgstr "Criar um perfil topográfico a partir de um Modelo Digital de Elevação (DEM)."
 
 #: ../../../source/USER_GUIDE.md:9
 msgid "Project geological units from a polygon layer onto the profile."
-msgstr ""
+msgstr "Projetar unidades geológicas de uma camada de polígonos no perfil."
 
 #: ../../../source/USER_GUIDE.md:10
 msgid "Project structural measurements (e.g., dip and strike) onto the profile."
-msgstr ""
+msgstr "Projetar medidas estruturais (ex: mergulho e direção) no perfil."
 
 #: ../../../source/USER_GUIDE.md:11
 msgid ""
 "Project drillhole traces and geological intervals (sondajes) onto the "
 "section."
-msgstr ""
+msgstr "Projetar traços de furos e intervalos geológicos (sondagens) na seção."
 
 #: ../../../source/USER_GUIDE.md:12
 msgid ""
 "**Interpretation Tool**: Digitize geological interpretations directly on "
 "the section with smart snapping."
-msgstr ""
+msgstr "**Ferramenta de Interpretação**: Digitalize interpretações geológicas diretamente na seção com snapping inteligente."
 
 #: ../../../source/USER_GUIDE.md:13
 msgid ""
 "**3D Export (PolygonZ)**: Export your 2D interpretations as valid 3D "
 "Shapefiles."
-msgstr ""
+msgstr "**Exportação 3D (PolygonZ)**: Exporte suas interpretações 2D como arquivos Shapefile 3D válidos."
 
 #: ../../../source/USER_GUIDE.md:14
 msgid ""
 "**i18n Support**: Core interface available in 10 languages (English, "
 "Spanish, French, German, Italian, Portuguese, Russian, Chinese, Hindi, "
 "Japanese)."
-msgstr ""
+msgstr "**Suporte i18n**: Interface principal disponível em 10 idiomas (Inglês, Espanhol, Francês, Alemão, Italiano, Português, Russo, Chinês, Hindi, Japonês)."
 
 #: ../../../source/USER_GUIDE.md:15
 msgid "View an interactive preview with level-of-detail (LOD) optimization."
@@ -80,33 +80,37 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:16
 msgid "Measure distances and gradients with automatic snapping to vertices."
-msgstr ""
+msgstr "Medir distâncias e gradientes com snapping automático aos vértices."
 
 #: ../../../source/USER_GUIDE.md:18
 msgid "2. The Main Window"
-msgstr ""
+msgstr "2. A Janela Principal"
 
 #: ../../../source/USER_GUIDE.md:20
 msgid "The SecInterp dialog is divided into three main areas:"
-msgstr ""
+msgstr "O diálogo SecInterp está dividido em três áreas principais:"
 
 #: ../../../source/USER_GUIDE.md:21
 msgid ""
 "**Sidebar Navigation (Left)**: Navigate between different modules: DEM, "
 "Drillholes, Geology, Structure, Settings, and Help."
 msgstr ""
+"**Navegação Lateral (Esquerda)**: Navegue entre diferentes módulos: DEM, Furos, Geologia, Estrutura, Configurações e Ajuda."
+"**Navegação Lateral (Esquerda)**: Navegue entre diferentes módulos: DEM, Furos, Geologia, Estrutura, Configurações e Ajuda."
 
 #: ../../../source/USER_GUIDE.md:22
 msgid ""
 "**Configuration Page (Center)**: Where you configure the parameters for "
 "the selected module."
 msgstr ""
+"**Página de Configuração (Centro)**: Onde você configura os parâmetros para o módulo selecionado."
 
 #: ../../../source/USER_GUIDE.md:23
 msgid ""
 "**Preview Panel (Right)**: An interactive canvas showing your cross-"
 "section in real-time."
 msgstr ""
+"**Painel de Visualização (Direita)**: Uma tela interativa que mostra sua seção transversal em tempo real."
 
 #: ../../../source/USER_GUIDE.md:25
 msgid ""
@@ -121,15 +125,15 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:28
 msgid "3. Step-by-Step Tutorial: Creating a Profile"
-msgstr ""
+msgstr "3. Tutorial Passo a Passo: Criando um Perfil"
 
 #: ../../../source/USER_GUIDE.md:30
 msgid "Step 1: Digital Elevation Model (DEM)"
-msgstr ""
+msgstr "Passo 1: Modelo Digital de Elevação (DEM)"
 
 #: ../../../source/USER_GUIDE.md:31
 msgid "Navigate to the **DEM** page in the sidebar."
-msgstr ""
+msgstr "Navegue até a página **DEM** na barra lateral."
 
 #: ../../../source/USER_GUIDE.md:32
 msgid "**Raster Layer**: Select your Digital Elevation Model (Mandatory)."
@@ -730,7 +734,7 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:188
 msgid "Plugin Information"
-msgstr ""
+msgstr "Informação do Plugin"
 
 #: ../../../source/USER_GUIDE.md:191
 msgid "5. Preview Panel & Tools"

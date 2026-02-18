@@ -1,18 +1,14 @@
 # Próximos Pasos - SecInterp
 
-## 🎯 Próximo Objetivo
-**Automatización de Metadatos y Versión 3.0.1 Final**
+## Retomar en:
+Localización profunda de los idiomas restantes (Hindi e Indonesio) y validación visual de la ayuda integrada en QGIS.
 
-## 📋 Tareas Pendientes
-- [ ] **Automatización de metadata**: Crear un script que actualice automáticamente el campo `general_description` en `metadata.txt` con la lista de idiomas disponibles.
-- [ ] **Validación en Windows**: Si el usuario cambia de entorno, verificar que el parche de `sed` en `build_docs.sh` funcione o buscar alternativa cross-platform.
-- [ ] **Limpieza de RAM**: Investigar si el caché de ayuda en QGIS consume recursos innecesarios tras ver múltiples manuales.
+## Tareas Pendientes:
+1. **i18n**: Completar traducciones para `hi` e `id`.
+2. **QA**: Revisar el visor de ayuda de QGIS para idiomas con alfabetos no latinos.
+3. **Mantenimiento**: Seguir con la reducción de señales detectadas por `qgis-analyzer`.
 
-## 🛠️ Comando para Retomar
+## Comando para retomar:
 ```bash
 /inicia-sesion
 ```
-
-## ⚠️ Notas
-- El despliegue ahora requiere `make deploy` para asegurar que el flag `--no-compile` se aplique.
-- No borrar la carpeta `help/html` manualmente sin ejecutar el build después, o el plugin no encontrará la ayuda.

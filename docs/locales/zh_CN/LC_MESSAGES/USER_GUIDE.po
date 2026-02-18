@@ -21,92 +21,92 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:1
 msgid "SecInterp User Guide"
-msgstr ""
+msgstr "SecInterp 用户指南"
 
 #: ../../../source/USER_GUIDE.md:3
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. 简介"
 
 #: ../../../source/USER_GUIDE.md:5
 msgid ""
 "Welcome to the SecInterp plugin! This guide will help you get started "
 "with creating geological cross-sections from your QGIS layers."
-msgstr ""
+msgstr "欢迎使用 SecInterp 插件！本指南将帮助您开始从 QGIS 图层创建地质剖面图。"
 
 #: ../../../source/USER_GUIDE.md:7
 msgid "SecInterp allows you to:"
-msgstr ""
+msgstr "SecInterp 允许您："
 
 #: ../../../source/USER_GUIDE.md:8
 msgid "Create a topographic profile from a Digital Elevation Model (DEM)."
-msgstr ""
+msgstr "根据数字高程模型 (DEM) 创建地形剖面。"
 
 #: ../../../source/USER_GUIDE.md:9
 msgid "Project geological units from a polygon layer onto the profile."
-msgstr ""
+msgstr "将面图层中的地质单元投影到剖面上。"
 
 #: ../../../source/USER_GUIDE.md:10
 msgid "Project structural measurements (e.g., dip and strike) onto the profile."
-msgstr ""
+msgstr "将结构测量数据（如倾向和走向）投影到剖面上。"
 
 #: ../../../source/USER_GUIDE.md:11
 msgid ""
 "Project drillhole traces and geological intervals (sondajes) onto the "
 "section."
-msgstr ""
+msgstr "将钻孔轨迹和地质间隔投影到剖面上。"
 
 #: ../../../source/USER_GUIDE.md:12
 msgid ""
 "**Interpretation Tool**: Digitize geological interpretations directly on "
 "the section with smart snapping."
-msgstr ""
+msgstr "**解释工具**：利用智能捕捉功能直接在剖面上数字化地质解释。"
 
 #: ../../../source/USER_GUIDE.md:13
 msgid ""
 "**3D Export (PolygonZ)**: Export your 2D interpretations as valid 3D "
 "Shapefiles."
-msgstr ""
+msgstr "**3D 导出 (PolygonZ)**：将您的 2D 解释导出为有效的 3D Shapefile。"
 
 #: ../../../source/USER_GUIDE.md:14
 msgid ""
 "**i18n Support**: Core interface available in 10 languages (English, "
 "Spanish, French, German, Italian, Portuguese, Russian, Chinese, Hindi, "
 "Japanese)."
-msgstr ""
+msgstr "**多语言支持**：核心界面提供 10 种语言（英语、西班牙语、法语、德语、意大利语、葡萄牙语、俄语、中文、印地语、日语）。"
 
 #: ../../../source/USER_GUIDE.md:15
 msgid "View an interactive preview with level-of-detail (LOD) optimization."
-msgstr ""
+msgstr "通过细节层次 (LOD) 优化查看交互式预览。"
 
 #: ../../../source/USER_GUIDE.md:16
 msgid "Measure distances and gradients with automatic snapping to vertices."
-msgstr ""
+msgstr "通过自动捕捉到节点来测量距离和梯度。"
 
 #: ../../../source/USER_GUIDE.md:18
 msgid "2. The Main Window"
-msgstr ""
+msgstr "2. 主窗口"
 
 #: ../../../source/USER_GUIDE.md:20
 msgid "The SecInterp dialog is divided into three main areas:"
-msgstr ""
+msgstr "SecInterp 对话框分为三个主要区域："
 
 #: ../../../source/USER_GUIDE.md:21
 msgid ""
 "**Sidebar Navigation (Left)**: Navigate between different modules: DEM, "
 "Drillholes, Geology, Structure, Settings, and Help."
-msgstr ""
+msgstr "**侧边栏导航（左侧）**：在不同模块之间切换：DEM、钻孔、地质、结构、设置和帮助。"
 
 #: ../../../source/USER_GUIDE.md:22
 msgid ""
 "**Configuration Page (Center)**: Where you configure the parameters for "
 "the selected module."
-msgstr ""
+msgstr "**配置页面（中间）**：用于配置所选模块的参数。"
 
 #: ../../../source/USER_GUIDE.md:23
 msgid ""
 "**Preview Panel (Right)**: An interactive canvas showing your cross-"
 "section in real-time."
-msgstr ""
+msgstr "**预览面板（右侧）**：实时显示剖面的交互式画布。"
 
 #: ../../../source/USER_GUIDE.md:25
 msgid ""
@@ -121,15 +121,15 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:28
 msgid "3. Step-by-Step Tutorial: Creating a Profile"
-msgstr ""
+msgstr "3. 分步教程：创建剖面"
 
 #: ../../../source/USER_GUIDE.md:30
 msgid "Step 1: Digital Elevation Model (DEM)"
-msgstr ""
+msgstr "第 1 步：数字高程模型 (DEM)"
 
 #: ../../../source/USER_GUIDE.md:31
 msgid "Navigate to the **DEM** page in the sidebar."
-msgstr ""
+msgstr "在侧边栏中导航至 **DEM** 页面。"
 
 #: ../../../source/USER_GUIDE.md:32
 msgid "**Raster Layer**: Select your Digital Elevation Model (Mandatory)."
@@ -730,7 +730,7 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:188
 msgid "Plugin Information"
-msgstr ""
+msgstr "插件信息"
 
 #: ../../../source/USER_GUIDE.md:191
 msgid "5. Preview Panel & Tools"

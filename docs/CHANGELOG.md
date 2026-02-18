@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- **i18n**: Localización profunda de la guía de usuario para 7 idiomas prioritarios (FR, DE, IT, PT_BR, RU, ZH_CN, JA), cubriendo tutoriales y funciones avanzadas.
+- **i18n**: Sistema de compilación automática de catálogos `.mo` integrado en el flujo de documentación.
 - **Arquitectura**: Nuevo sistema de validación modular basado en Pipeline y micro-validadores (`IValidator`).
 - **Arquitectura**: Descomposición de `StateManager` en componentes especializados para persistencia y gestión de estado de UI.
 

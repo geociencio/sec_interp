@@ -44,6 +44,10 @@ uv run sphinx-apidoc -o "$SOURCE_DIR" . \
     build/ \
     --force --separate --module-first
 
+# 2.5 Compile translation catalogs (.po -> .mo)
+echo "🌐 Compiling translation catalogs..."
+python3 scripts/i18n/translate_docs.py compile
+
 # 3. Run sphinx-build to generate HTML for each language
 # Supported locales (Web and Plugin)
 LOCALES="en es fr pt_BR de ru zh_CN id it pl nl fi hi ja"

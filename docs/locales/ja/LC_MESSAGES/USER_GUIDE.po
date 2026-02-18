@@ -21,92 +21,92 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:1
 msgid "SecInterp User Guide"
-msgstr ""
+msgstr "SecInterp ユーザーガイド"
 
 #: ../../../source/USER_GUIDE.md:3
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. はじめに"
 
 #: ../../../source/USER_GUIDE.md:5
 msgid ""
 "Welcome to the SecInterp plugin! This guide will help you get started "
 "with creating geological cross-sections from your QGIS layers."
-msgstr ""
+msgstr "SecInterpプラグインへようこそ！このガイドでは、QGISレイヤーから地質断面図を作成する方法を説明します。"
 
 #: ../../../source/USER_GUIDE.md:7
 msgid "SecInterp allows you to:"
-msgstr ""
+msgstr "SecInterpでは以下のことが可能です："
 
 #: ../../../source/USER_GUIDE.md:8
 msgid "Create a topographic profile from a Digital Elevation Model (DEM)."
-msgstr ""
+msgstr "数値標高モデル（DEM）から地形プロファイルを作成する。"
 
 #: ../../../source/USER_GUIDE.md:9
 msgid "Project geological units from a polygon layer onto the profile."
-msgstr ""
+msgstr "ポリゴンレイヤーから地質ユニットをプロファイルに投影する。"
 
 #: ../../../source/USER_GUIDE.md:10
 msgid "Project structural measurements (e.g., dip and strike) onto the profile."
-msgstr ""
+msgstr "構造測定値（傾斜や走向など）をプロファイルに投影する。"
 
 #: ../../../source/USER_GUIDE.md:11
 msgid ""
 "Project drillhole traces and geological intervals (sondajes) onto the "
 "section."
-msgstr ""
+msgstr "ボーリング孔の軌跡と地質学的区間を断面図に投影する。"
 
 #: ../../../source/USER_GUIDE.md:12
 msgid ""
 "**Interpretation Tool**: Digitize geological interpretations directly on "
 "the section with smart snapping."
-msgstr ""
+msgstr "**解釈ツール**：スマートスナップを使用して、断面図上で直接地質学的解釈をデジタル化します。"
 
 #: ../../../source/USER_GUIDE.md:13
 msgid ""
 "**3D Export (PolygonZ)**: Export your 2D interpretations as valid 3D "
 "Shapefiles."
-msgstr ""
+msgstr "**3Dエクスポート (PolygonZ)**：2D解釈を有効な3Dシェープファイルとしてエクスポートします。"
 
 #: ../../../source/USER_GUIDE.md:14
 msgid ""
 "**i18n Support**: Core interface available in 10 languages (English, "
 "Spanish, French, German, Italian, Portuguese, Russian, Chinese, Hindi, "
 "Japanese)."
-msgstr ""
+msgstr "**多言語サポート (i18n)**：コアインターフェースは10言語（英語、スペイン語、フランス語、ドイツ語、イタリア語、ポルトガル語、ロシア語、中国語、ヒンディー語、日本語）で利用可能です。"
 
 #: ../../../source/USER_GUIDE.md:15
 msgid "View an interactive preview with level-of-detail (LOD) optimization."
-msgstr ""
+msgstr "詳細レベル (LOD) の最適化により、インタラクティブなプレビューを表示します。"
 
 #: ../../../source/USER_GUIDE.md:16
 msgid "Measure distances and gradients with automatic snapping to vertices."
-msgstr ""
+msgstr "頂点への自動スナップにより、距離と勾配を測定します。"
 
 #: ../../../source/USER_GUIDE.md:18
 msgid "2. The Main Window"
-msgstr ""
+msgstr "2. メインウィンドウ"
 
 #: ../../../source/USER_GUIDE.md:20
 msgid "The SecInterp dialog is divided into three main areas:"
-msgstr ""
+msgstr "SecInterpダイアログは、3つの主要な領域に分かれています："
 
 #: ../../../source/USER_GUIDE.md:21
 msgid ""
 "**Sidebar Navigation (Left)**: Navigate between different modules: DEM, "
 "Drillholes, Geology, Structure, Settings, and Help."
-msgstr ""
+msgstr "**サイドバーナビゲーション（左）**：DEM、ボーリング孔、地質、構造、設定、ヘルプの各モジュール間を移動します。"
 
 #: ../../../source/USER_GUIDE.md:22
 msgid ""
 "**Configuration Page (Center)**: Where you configure the parameters for "
 "the selected module."
-msgstr ""
+msgstr "**構成ページ（中央）**：選択したモジュールのパラメータを構成します。"
 
 #: ../../../source/USER_GUIDE.md:23
 msgid ""
 "**Preview Panel (Right)**: An interactive canvas showing your cross-"
 "section in real-time."
-msgstr ""
+msgstr "**プレビューパネル（右）**：断面図をリアルタイムで表示するインタラクティブなキャンバスです。"
 
 #: ../../../source/USER_GUIDE.md:25
 msgid ""
@@ -121,15 +121,15 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:28
 msgid "3. Step-by-Step Tutorial: Creating a Profile"
-msgstr ""
+msgstr "3. ステップバイステップ・チュートリアル：プロファイルの作成"
 
 #: ../../../source/USER_GUIDE.md:30
 msgid "Step 1: Digital Elevation Model (DEM)"
-msgstr ""
+msgstr "ステップ1：数値標高モデル (DEM)"
 
 #: ../../../source/USER_GUIDE.md:31
 msgid "Navigate to the **DEM** page in the sidebar."
-msgstr ""
+msgstr "サイドバーの **DEM** ページに移動します。"
 
 #: ../../../source/USER_GUIDE.md:32
 msgid "**Raster Layer**: Select your Digital Elevation Model (Mandatory)."
@@ -730,7 +730,7 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:188
 msgid "Plugin Information"
-msgstr ""
+msgstr "プラグイン情報"
 
 #: ../../../source/USER_GUIDE.md:191
 msgid "5. Preview Panel & Tools"

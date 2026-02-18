@@ -148,6 +148,8 @@ transup:
 	done
 	@# 3. Clean and normalize XML
 	python3 scripts/i18n/clean_translations.py
+	@# 4. Update metadata with supported languages
+	python3 scripts/i18n/update_metadata_languages.py
 
 transcompile:
 	@echo

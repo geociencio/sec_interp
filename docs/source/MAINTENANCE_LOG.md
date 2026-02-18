@@ -2,6 +2,10 @@
 
 This document serves as the central record for project history, release procedures, and past refactoring analysis.
 
+## [2026-02-18] TRADUCCIÓN PROFUNDA (USER GUIDE)
+- **Cambios**: Finalizada la localización de la guía de usuario en 7 idiomas prioritarios. Corregida integridad de catálogos en italiano y portugués.
+- **Métricas/Impacto**: 100% de cobertura en secciones de tutorial para el mercado global.
+
 ## [2026-02-18] EXPANSIÓN I18N (MARKET GAP)
 - **Cambios**: Añadido soporte para **pl**, **nl**, **fi** (14 idiomas ahora). Implementado motor de Master Data JSON y workflow de mantenimiento.
 - **Métricas/Impacto**: 100% de cobertura core en nuevas lenguas. Skill `i18n-standards` actualizada.

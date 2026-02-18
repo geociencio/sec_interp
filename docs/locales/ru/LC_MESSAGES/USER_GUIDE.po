@@ -22,92 +22,92 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:1
 msgid "SecInterp User Guide"
-msgstr ""
+msgstr "Руководство пользователя SecInterp"
 
 #: ../../../source/USER_GUIDE.md:3
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. Введение"
 
 #: ../../../source/USER_GUIDE.md:5
 msgid ""
 "Welcome to the SecInterp plugin! This guide will help you get started "
 "with creating geological cross-sections from your QGIS layers."
-msgstr ""
+msgstr "Добро пожаловать в плагин SecInterp! Это руководство поможет вам начать создавать геологические разрезы из ваших слоев QGIS."
 
 #: ../../../source/USER_GUIDE.md:7
 msgid "SecInterp allows you to:"
-msgstr ""
+msgstr "SecInterp позволяет вам:"
 
 #: ../../../source/USER_GUIDE.md:8
 msgid "Create a topographic profile from a Digital Elevation Model (DEM)."
-msgstr ""
+msgstr "Создавать топографический профиль на основе цифровой модели рельефа (ЦМР/DEM)."
 
 #: ../../../source/USER_GUIDE.md:9
 msgid "Project geological units from a polygon layer onto the profile."
-msgstr ""
+msgstr "Проецировать геологические единицы из полигонального слоя на профиль."
 
 #: ../../../source/USER_GUIDE.md:10
 msgid "Project structural measurements (e.g., dip and strike) onto the profile."
-msgstr ""
+msgstr "Проецировать структурные измерения (например, падение и простирание) на профиль."
 
 #: ../../../source/USER_GUIDE.md:11
 msgid ""
 "Project drillhole traces and geological intervals (sondajes) onto the "
 "section."
-msgstr ""
+msgstr "Проецировать траектории скважин и геологические интервалы на разрез."
 
 #: ../../../source/USER_GUIDE.md:12
 msgid ""
 "**Interpretation Tool**: Digitize geological interpretations directly on "
 "the section with smart snapping."
-msgstr ""
+msgstr "**Инструмент интерпретации**: Дигитализация геологических интерпретаций непосредственно на разрезе с умной привязкой."
 
 #: ../../../source/USER_GUIDE.md:13
 msgid ""
 "**3D Export (PolygonZ)**: Export your 2D interpretations as valid 3D "
 "Shapefiles."
-msgstr ""
+msgstr "**3D-экспорт (PolygonZ)**: Экспортируйте ваши 2D-интерпретации в виде валидных 3D-шейп-файлов."
 
 #: ../../../source/USER_GUIDE.md:14
 msgid ""
 "**i18n Support**: Core interface available in 10 languages (English, "
 "Spanish, French, German, Italian, Portuguese, Russian, Chinese, Hindi, "
 "Japanese)."
-msgstr ""
+msgstr "**Поддержка i18n**: Основной интерфейс доступен на 10 языках (английский, испанский, французский, немецкий, итальянский, португальский, русский, китайский, хинди, японский)."
 
 #: ../../../source/USER_GUIDE.md:15
 msgid "View an interactive preview with level-of-detail (LOD) optimization."
-msgstr ""
+msgstr "Просмотр интерактивного превью с оптимизацией детализации (LOD)."
 
 #: ../../../source/USER_GUIDE.md:16
 msgid "Measure distances and gradients with automatic snapping to vertices."
-msgstr ""
+msgstr "Измерение расстояний и уклонов с автоматической привязкой к вершинам."
 
 #: ../../../source/USER_GUIDE.md:18
 msgid "2. The Main Window"
-msgstr ""
+msgstr "2. Главное окно"
 
 #: ../../../source/USER_GUIDE.md:20
 msgid "The SecInterp dialog is divided into three main areas:"
-msgstr ""
+msgstr "Диалоговое окно SecInterp разделено на три основные области:"
 
 #: ../../../source/USER_GUIDE.md:21
 msgid ""
 "**Sidebar Navigation (Left)**: Navigate between different modules: DEM, "
 "Drillholes, Geology, Structure, Settings, and Help."
-msgstr ""
+msgstr "**Боковая навигация (слева)**: Навигация между различными модулями: ЦМР, Скважины, Геология, Структура, Настройки и Помощь."
 
 #: ../../../source/USER_GUIDE.md:22
 msgid ""
 "**Configuration Page (Center)**: Where you configure the parameters for "
 "the selected module."
-msgstr ""
+msgstr "**Страница конфигурации (в центре)**: здесь вы настраиваете параметры для выбранного модуля."
 
 #: ../../../source/USER_GUIDE.md:23
 msgid ""
 "**Preview Panel (Right)**: An interactive canvas showing your cross-"
 "section in real-time."
-msgstr ""
+msgstr "**Панель предварительного просмотра (справа)**: интерактивный холст, показывающий ваш разрез в реальном времени."
 
 #: ../../../source/USER_GUIDE.md:25
 msgid ""
@@ -122,15 +122,15 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:28
 msgid "3. Step-by-Step Tutorial: Creating a Profile"
-msgstr ""
+msgstr "3. Пошаговое руководство: создание профиля"
 
 #: ../../../source/USER_GUIDE.md:30
 msgid "Step 1: Digital Elevation Model (DEM)"
-msgstr ""
+msgstr "Шаг 1: Цифровая модель рельефа (ЦМР/DEM)"
 
 #: ../../../source/USER_GUIDE.md:31
 msgid "Navigate to the **DEM** page in the sidebar."
-msgstr ""
+msgstr "Перейдите на страницу **ЦМР (DEM)** на боковой панели."
 
 #: ../../../source/USER_GUIDE.md:32
 msgid "**Raster Layer**: Select your Digital Elevation Model (Mandatory)."
@@ -731,7 +731,7 @@ msgstr ""
 
 #: ../../../source/USER_GUIDE.md:188
 msgid "Plugin Information"
-msgstr ""
+msgstr "Информация о плагине"
 
 #: ../../../source/USER_GUIDE.md:191
 msgid "5. Preview Panel & Tools"

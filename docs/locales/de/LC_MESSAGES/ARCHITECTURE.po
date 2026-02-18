@@ -1189,7 +1189,7 @@ msgstr ""
 
 #: ../../../source/ARCHITECTURE.md:1301
 msgid "Topographic Profile"
-msgstr ""
+msgstr "Topographisches Profil"
 
 #: ../../../source/ARCHITECTURE.md:1301
 msgid "✅ Complete"
