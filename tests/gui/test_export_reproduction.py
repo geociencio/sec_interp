@@ -1,9 +1,11 @@
 """Reproduction test for export functionality."""
+
 import unittest
 from unittest.mock import MagicMock, patch
 
 from qgis.core import QgsApplication, QgsSettings
 from sec_interp.gui.ui.pages.settings_page import SettingsPage
+
 
 class TestSettingsReproduction(unittest.TestCase):
     """Test case to reproduce settings retrieval issues."""
@@ -24,7 +26,7 @@ class TestSettingsReproduction(unittest.TestCase):
         self.settings = QgsSettings()
         # Clear settings to ensure clean state
         if hasattr(self.settings, "_shared_values"):
-             self.settings._shared_values.clear()
+            self.settings._shared_values.clear()
 
         # Create page
         self.page = SettingsPage()
@@ -65,6 +67,7 @@ class TestSettingsReproduction(unittest.TestCase):
         data = new_page.get_data()
         self.assertFalse(data["exp_geol"], "exp_geol must load False from settings")
         self.assertTrue(data["exp_topo"], "exp_topo must stay True default")
+
 
 if __name__ == "__main__":
     unittest.main()
