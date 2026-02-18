@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- **Arquitectura**: Nuevo sistema de validación modular basado en Pipeline y micro-validadores (`IValidator`).
+- **Arquitectura**: Descomposición de `StateManager` en componentes especializados para persistencia y gestión de estado de UI.
+
+### Fixed
+- **Estabilidad**: Corregida la suite de tests unitarios para sincronizar con la nueva estructura modular de validación.
+
+### Changed
+- **Refactorización**: Reducción masiva de complejidad ciclomática en `StateManager` (CC 70) y `ProjectValidator` (CC 44).
 
 ## [3.0.1] - 2026-02-17
 ### Added

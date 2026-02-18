@@ -1,4 +1,16 @@
 ---
+## [2026-02-17] RESUMEN: Refactorización de Hotspots (StateManager y ProjectValidator)
+- **Logro**: Reducción drástica de la complejidad ciclomática en los dos mayores "hotspots" del proyecto, mejorando la mantenibilidad y modularidad.
+- **Cambios**:
+    - **StateManager**: Descompuesto en `DialogSettingsPersistence` y `UIStatusManager`. CC de 70 a modular.
+    - **ProjectValidator**: Implementado patrón Pipeline con micro-validadores independientes (`IValidator`). CC de 44 a modular.
+    - **Calidad**: Suite de 377 tests pasando al 100% tras la reubicación lógica.
+- **Métricas**:
+    - **Tests**: 377/377 OK (100%).
+    - **CC**: Reducción significativa en el Top 10 de hotspots.
+- **Mantenimiento**: [sesion_2026-02-17_refactor_hotspots.md](maintenance/sesion_2026-02-17_refactor_hotspots.md).
+
+---
 ## [2026-02-16] RESUMEN: Estabilización de Señales e i18n
 - **Logro**: Resueltas fugas de señales en la GUI e internacionalizado el `ProfileController`. Suite de tests elevada a 386 OK.
 - **Cambios**:
