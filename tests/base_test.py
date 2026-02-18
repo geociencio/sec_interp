@@ -249,6 +249,7 @@ def restore_mocks():
     mock_core.Qgis = MockQgis
     mock_core.QgsWkbTypes = MockQgsWkbTypes
     mock_core.QgsApplication = MockQApplication
+    mock_core.QCoreApplication = MockQApplication
 
     # Gui
     mock_gui.QgsMapTool = MockQgsMapTool

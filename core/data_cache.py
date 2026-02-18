@@ -9,6 +9,8 @@ import hashlib
 import time
 from typing import Any
 
+from qgis.core import QCoreApplication
+
 from sec_interp.core.interfaces.cache_interface import ICacheService
 from sec_interp.logger_config import get_logger
 
@@ -23,6 +25,10 @@ class DataCache(ICacheService):
     """
 
     DEFAULT_TTL_SECONDS = 3600
+
+    def tr(self, message: str) -> str:
+        """Translate a message using QCoreApplication."""
+        return QCoreApplication.translate("DataCache", message)
 
     def __init__(self, default_ttl: int = DEFAULT_TTL_SECONDS) -> None:
         """Initialize the data cache.
@@ -90,9 +96,7 @@ class DataCache(ICacheService):
 
         return entry.get("data")
 
-    def set(
-        self, bucket: str, key: str, data: Any, metadata: dict | None = None
-    ) -> None:
+    def set(self, bucket: str, key: str, data: Any, metadata: dict | None = None) -> None:
         """Store data in a specific cache bucket with optional metadata.
 
         Args:

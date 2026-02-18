@@ -27,6 +27,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 
 from qgis.core import (
+    QCoreApplication,
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
     QgsFeature,
@@ -52,6 +53,10 @@ class StructureService(IStructureService):
     (dip/strike) onto a cross-section plane to calculate apparent dip.
     """
 
+    def tr(self, message: str) -> str:
+        """Translate a message using QCoreApplication."""
+        return QCoreApplication.translate("StructureService", message)
+
     def detach_structures(
         self,
         struct_lyr: QgsVectorLayer,
@@ -72,9 +77,7 @@ class StructureService(IStructureService):
 
         """
         buffer_geom = self._create_buffer_zone(line_geom, struct_lyr.crs(), buffer_m)
-        filtered_features = self._filter_structures(
-            struct_lyr, buffer_geom, struct_lyr.crs()
-        )
+        filtered_features = self._filter_structures(struct_lyr, buffer_geom, struct_lyr.crs())
 
         detached_data = []
         for feat in filtered_features:
@@ -140,7 +143,7 @@ class StructureService(IStructureService):
         # Sort by distance
         projected_structs.sort(key=lambda x: x.distance)
 
-        logger.info(f"Processed {len(projected_structs)} structural measurements")
+        logger.info(self.tr("Processed {0} structural measurements").format(len(projected_structs)))
         return projected_structs
 
     def _create_buffer_zone(
@@ -166,9 +169,10 @@ class StructureService(IStructureService):
         try:
             return scu.create_buffer_geometry(line_geom, crs, buffer_m, segments=25)
         except (ValueError, RuntimeError) as e:
-            logger.exception("Buffer creation failed")
+            logger.exception(self.tr("Buffer creation failed"))
             raise ProcessingError(
-                "Cannot create buffer zone", {"buffer_m": buffer_m, "crs": crs.authid()}
+                self.tr("Cannot create buffer zone"),
+                {"buffer_m": buffer_m, "crs": crs.authid()},
             ) from e
 
     def _filter_structures(
@@ -194,9 +198,10 @@ class StructureService(IStructureService):
         try:
             return scu.filter_features_by_buffer(struct_lyr, buffer_geom, target_crs)
         except (ValueError, RuntimeError) as e:
-            logger.exception("Spatial filtering failed")
+            logger.exception(self.tr("Spatial filtering failed"))
             raise ProcessingError(
-                "Cannot filter structures by buffer", {"layer": struct_lyr.name()}
+                self.tr("Cannot filter structures by buffer"),
+                {"layer": struct_lyr.name()},
             ) from e
 
     def _process_single_structure(

@@ -70,7 +70,7 @@ class SettingsPage(BasePage):
         """Set up Default tab."""
         layout = QVBoxLayout(parent_widget)
 
-        layout.addWidget(QLabel("<b>Export Selection (Save)</b>"))
+        layout.addWidget(QLabel(self.tr("<b>Export Selection (Save)</b>")))
         layout.addWidget(
             QLabel(self.tr("<i>Select which data to generate when clicking Save.</i>"))
         )
@@ -98,7 +98,7 @@ class SettingsPage(BasePage):
         """Set up Advanced tab (Restricted Features)."""
         layout = QVBoxLayout(parent_widget)
 
-        layout.addWidget(QLabel("<b>Advanced Features</b>"))
+        layout.addWidget(QLabel(self.tr("<b>Advanced Features</b>")))
 
         self.chk_enable_3d = QCheckBox(self.tr("Enable 3D Interpretation Export"))
         self.chk_enable_3d.setToolTip(
@@ -108,7 +108,7 @@ class SettingsPage(BasePage):
         layout.addWidget(self.chk_enable_3d)
 
         # -- Drillhole 3D Export --
-        layout.addWidget(QLabel("<br><b>Drillhole 3D Export Options</b>"))
+        layout.addWidget(QLabel(self.tr("<br><b>Drillhole 3D Export Options</b>")))
         self.chk_3d_traces = QCheckBox(self.tr("Export 3D Traces"))
         self.chk_3d_intervals = QCheckBox(self.tr("Export 3D Intervals"))
         self.chk_3d_original = QCheckBox(self.tr("Use Original Coordinates (Real 3D)"))
@@ -132,7 +132,7 @@ class SettingsPage(BasePage):
         try:
             metadata = read_plugin_metadata()
 
-            layout.addWidget(QLabel("<b>Plugin Information</b>"))
+            layout.addWidget(QLabel(self.tr("<b>Plugin Information</b>")))
             layout.addWidget(QLabel(self.tr(f"{metadata['name']} v{metadata['version']}")))
             layout.addWidget(QLabel(self.tr(f"Developed by {metadata['author']}")))
             layout.addWidget(QLabel(self.tr(f"Contact: {metadata['email']}")))
@@ -147,7 +147,7 @@ class SettingsPage(BasePage):
 
         except (FileNotFoundError, ValueError) as e:
             logger.warning(f"Metadata read error: {e}")
-            layout.addWidget(QLabel("<b>Plugin Information</b>"))
+            layout.addWidget(QLabel(self.tr("<b>Plugin Information</b>")))
             layout.addWidget(QLabel(self.tr("Sec Interp (version unavailable)")))
             layout.addWidget(QLabel(self.tr("Metadata missing")))
 

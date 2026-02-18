@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from qgis.core import QgsSettings
+from qgis.core import QCoreApplication, QgsSettings
 
 from sec_interp.core.models.settings_model import PluginSettings
 from sec_interp.logger_config import get_logger
@@ -44,6 +44,10 @@ class ConfigService:
         if self._current_settings is None:
             self._current_settings = self._load_from_qgs_settings()
         return self._current_settings
+
+    def tr(self, message: str) -> str:
+        """Translate a message using QCoreApplication."""
+        return QCoreApplication.translate("ConfigService", message)
 
     def _load_from_qgs_settings(self) -> PluginSettings:
         """Gather all settings from QgsSettings and create a validated model."""
@@ -143,7 +147,7 @@ class ConfigService:
         try:
             return PluginSettings.from_dict(data)
         except (ValueError, TypeError, KeyError):
-            logger.exception("Failed to validate settings during load. Using defaults.")
+            logger.exception(self.tr("Failed to validate settings during load. Using defaults."))
             return PluginSettings()
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -220,7 +224,7 @@ class ConfigService:
 
     def reset_defaults(self) -> None:
         """Reset all known persistent settings to their default values."""
-        logger.info("Configuration reset to defaults initiated")
+        logger.info(self.tr("Configuration reset to defaults initiated"))
         self.set("scale", self.DEFAULT_SCALE)
         self.set("vert_exag", self.DEFAULT_VERT_EXAG)
         self.set("buffer_dist", self.DEFAULT_BUFFER_DIST)

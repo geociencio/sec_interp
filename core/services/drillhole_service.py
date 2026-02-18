@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Any
 
 from qgis.core import (
+    QCoreApplication,
     QgsDistanceArea,
     QgsGeometry,
     QgsPointXY,
@@ -64,6 +65,10 @@ class DrillholeService(IDrillholeService):
         self.data_fetcher = data_fetcher or DataFetcher()
         self.trajectory_engine = trajectory_engine or TrajectoryEngine()
 
+    def tr(self, message: str) -> str:
+        """Translate a message using QCoreApplication."""
+        return QCoreApplication.translate("DrillholeService", message)
+
     def project_collars(
         self,
         collar_data: list[dict[str, Any]],
@@ -102,12 +107,12 @@ class DrillholeService(IDrillholeService):
         """
         # Simple parameter validation
         if buffer_width <= 0:
-            raise ValidationError(f"Buffer width must be positive, got {buffer_width}")
+            raise ValidationError(
+                self.tr("Buffer width must be positive, got {0}").format(buffer_width)
+            )
 
         da = distance_area
-        line_geom = (
-            line_data.geometry() if hasattr(line_data, "geometry") else line_data
-        )
+        line_geom = line_data.geometry() if hasattr(line_data, "geometry") else line_data
         try:
             line_start = scu.get_line_start_point(line_geom)
         except (AttributeError, TypeError, ValueError, SecInterpError):
@@ -310,9 +315,7 @@ class DrillholeService(IDrillholeService):
         buffer_width: float,
         section_azimuth: float,
         geol_data: list[GeologySegment],
-        drillhole_data: list[
-            tuple[Any, list[tuple[float, float]], list[GeologySegment]]
-        ],
+        drillhole_data: list[tuple[Any, list[tuple[float, float]], list[GeologySegment]]],
     ) -> None:
         """Safely process a single hole with error logging."""
         try:
@@ -334,12 +337,16 @@ class DrillholeService(IDrillholeService):
                 geol_data.extend(hole_geol)
             drillhole_data.append(hole_drill)
         except (ValueError, TypeError, KeyError) as e:
-            logger.exception(f"Data error in hole {hole_id}: {e}")
+            logger.exception(self.tr("Data error in hole {0}: {1}").format(hole_id, e))
         except SecInterpError as e:
-            logger.exception(f"Processing error in hole {hole_id}: {e}")
+            logger.exception(self.tr("Processing error in hole {0}: {1}").format(hole_id, e))
         except (AttributeError, RuntimeError) as e:
-            logger.exception(f"Runtime or attribute error processing hole {hole_id}")
-            raise SecInterpError(f"Unexpected processing error: {e}") from e
+            logger.exception(
+                self.tr("Runtime or attribute error processing hole {0}").format(hole_id)
+            )
+            raise SecInterpError(self.tr("Unexpected processing error: {0}").format(e)) from e
         except Exception:
-            logger.exception(f"Critical unexpected error processing hole {hole_id}")
+            logger.exception(
+                self.tr("Critical unexpected error processing hole {0}").format(hole_id)
+            )
             raise
