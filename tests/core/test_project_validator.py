@@ -54,7 +54,7 @@ class TestProjectValidator(BaseTestCase):
             params.line_layer = MagicMock(spec=QgsVectorLayer)
             self.assertTrue(ProjectValidator.validate_preview_requirements(params))
 
-    @patch("sec_interp.core.validation.project_validators.validate_output_path")
+    @patch("sec_interp.core.validation.path_validator.validate_output_path")
     @patch("qgis.core.QgsProject.instance")
     def test_validate_all_success(self, mock_project, mock_output):
         """Test full validation success path."""
@@ -101,7 +101,7 @@ class TestProjectValidator(BaseTestCase):
                 return_value=(True, ""),
             ),
             patch(
-                "sec_interp.core.validation.project_validators.validate_output_path",
+                "sec_interp.core.validation.path_validator.validate_output_path",
                 return_value=(True, "", None),
             ),
         ):

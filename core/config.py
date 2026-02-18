@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from qgis.core import QCoreApplication, QgsSettings
+from qgis.core import QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.models.settings_model import PluginSettings
 from sec_interp.logger_config import get_logger

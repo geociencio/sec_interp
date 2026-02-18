@@ -28,6 +28,7 @@ Submodules
    sec_interp.gui.dialog_input_manager
    sec_interp.gui.dialog_interpretation_manager
    sec_interp.gui.dialog_preview_manager
+   sec_interp.gui.dialog_settings_persistence
    sec_interp.gui.dialog_signal_manager
    sec_interp.gui.dialog_state_manager
    sec_interp.gui.dialog_tool_manager
@@ -43,4 +44,5 @@ Submodules
    sec_interp.gui.preview_renderer
    sec_interp.gui.preview_reporter
    sec_interp.gui.preview_task_orchestrator
+   sec_interp.gui.ui_status_manager
    sec_interp.gui.utils

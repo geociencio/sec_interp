@@ -24,8 +24,8 @@ from .path_validator import (
 from .project_validator import (
     ProjectValidator,
     ValidationParams,
-    validate_reasonable_ranges,
 )
+from .validation_helpers import validate_reasonable_ranges
 
 __all__ = [
     "ProjectValidator",

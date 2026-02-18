@@ -9,11 +9,11 @@ from __future__ import annotations
 from typing import Any
 
 from qgis.core import (
-    QCoreApplication,
     QgsDistanceArea,
     QgsGeometry,
     QgsPointXY,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core import utils as scu
 from sec_interp.core.domain import GeologySegment

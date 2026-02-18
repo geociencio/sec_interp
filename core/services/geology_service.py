@@ -28,7 +28,6 @@ from __future__ import annotations
 from typing import Any
 
 from qgis.core import (
-    QCoreApplication,
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
     QgsGeometry,
@@ -36,6 +35,7 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core import utils as scu
 from sec_interp.core.domain import GeologyData, GeologySegment, GeologyTaskInput

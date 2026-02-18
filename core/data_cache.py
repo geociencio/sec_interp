@@ -9,7 +9,7 @@ import hashlib
 import time
 from typing import Any
 
-from qgis.core import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.interfaces.cache_interface import ICacheService
 from sec_interp.logger_config import get_logger

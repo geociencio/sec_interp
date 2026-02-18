@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from qgis.core import QCoreApplication, QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.PyQt.QtCore import QCoreApplication
 
 from .validation_helpers import ValidationContext
 
