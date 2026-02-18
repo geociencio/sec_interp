@@ -8,7 +8,9 @@ from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
+    QHBoxLayout,
     QLabel,
+    QPushButton,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -91,6 +93,17 @@ class SettingsPage(BasePage):
         layout.addWidget(self.chk_exp_struct)
         layout.addWidget(self.chk_exp_drill)
         layout.addWidget(self.chk_exp_interp)
+
+        # Reset button
+        btn_layout = QHBoxLayout()
+        self.btn_reset_export = QPushButton(self.tr("Reset to defaults"))
+        self.btn_reset_export.setToolTip(
+            self.tr("Re-enables all export options (useful if all were accidentally disabled)")
+        )
+        self.btn_reset_export.clicked.connect(self._reset_export_defaults)
+        btn_layout.addStretch()
+        btn_layout.addWidget(self.btn_reset_export)
+        layout.addLayout(btn_layout)
 
         layout.addStretch()
 
@@ -192,6 +205,22 @@ class SettingsPage(BasePage):
             self.chk_3d_projected.setChecked(
                 self.settings.value("sec_interp/drill_3d_projected", False, type=bool)
             )
+
+    def _reset_export_defaults(self) -> None:
+        """Reset all export checkboxes to their default values (all enabled)."""
+        defaults = {
+            "chk_exp_topo": True,
+            "chk_exp_geol": True,
+            "chk_exp_struct": True,
+            "chk_exp_drill": True,
+            "chk_exp_interp": True,
+        }
+        for attr, value in defaults.items():
+            widget = getattr(self, attr, None)
+            if widget is not None:
+                widget.setChecked(value)
+        # _on_settings_changed is triggered automatically by stateChanged signals
+        logger.info("Export options reset to defaults.")
 
     def _on_settings_changed(self) -> None:
         """Save settings when they are changed."""
