@@ -49,9 +49,7 @@ class ValidationContext:
             RichValidationError(message, field_name, severity="error", context=kwargs)
         )
 
-    def add_warning(
-        self, message: str, field_name: str | None = None, **kwargs
-    ) -> None:
+    def add_warning(self, message: str, field_name: str | None = None, **kwargs) -> None:
         """Add a warning (soft error) to the context."""
         self._warnings.append(
             RichValidationError(message, field_name, severity="warning", context=kwargs)
@@ -86,9 +84,7 @@ class ValidationContext:
         """Raise ValidationError if any errors exist."""
         if self.has_errors:
             msg = "\n".join(str(e) for e in self._errors)
-            raise ValidationError(
-                msg, details={"errors": self._errors, "warnings": self._warnings}
-            )
+            raise ValidationError(msg, details={"errors": self._errors, "warnings": self._warnings})
 
 
 @dataclass
@@ -111,9 +107,7 @@ class DependencyRule:
             context.add_error(self.error_message, self.target_field)
 
 
-def validate_dependencies(
-    rules: list[DependencyRule], context: ValidationContext
-) -> None:
+def validate_dependencies(rules: list[DependencyRule], context: ValidationContext) -> None:
     """Batch validate a list of dependency rules."""
     for rule in rules:
         rule.validate(context)
@@ -151,9 +145,7 @@ def _validate_vert_exag(value: Any) -> list[str]:
                 f"Values > {MAX_VE_THRESHOLD} may distort the profile significantly."
             ]
         if val < MIN_VE_THRESHOLD:
-            return [
-                f"⚠ Vertical exaggeration ({val}) is very low. Profile may appear flattened."
-            ]
+            return [f"⚠ Vertical exaggeration ({val}) is very low. Profile may appear flattened."]
         if val <= 0:
             return [f"❌ Vertical exaggeration ({val}) must be positive."]
     except (ValueError, TypeError):
@@ -193,3 +185,26 @@ def _validate_dip_scale(value: Any) -> list[str]:
     except (ValueError, TypeError):
         pass
     return []
+
+
+def resolve_layer(layer_ref: Any) -> Any:
+    """Resolve a layer reference (ID string or QgsMapLayer) to a QgsMapLayer.
+
+    This is a free function extracted from ``ProjectValidator._resolve_layer``
+    to avoid circular imports between ``project_validator`` and
+    ``project_validators``.
+
+    Args:
+        layer_ref: A ``QgsMapLayer`` instance or a layer ID string.
+
+    Returns:
+        The resolved ``QgsMapLayer``, or ``None`` if not found.
+
+    """
+    from qgis.core import QgsMapLayer, QgsProject
+
+    if isinstance(layer_ref, QgsMapLayer):
+        return layer_ref
+    if isinstance(layer_ref, str) and layer_ref:
+        return QgsProject.instance().mapLayer(layer_ref)
+    return None

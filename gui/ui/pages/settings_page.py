@@ -312,3 +312,5 @@ class SettingsPage(BasePage):
             self.chk_3d_original.stateChanged.disconnect(self._on_settings_changed)
         with contextlib.suppress(TypeError, RuntimeError):
             self.chk_3d_projected.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.btn_reset_export.clicked.disconnect(self._reset_export_defaults)

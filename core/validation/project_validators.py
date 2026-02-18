@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from qgis.core import QgsRasterLayer, QgsWkbTypes
+from qgis.PyQt.QtCore import QCoreApplication
 
 from .base_validator import IValidator
 from .layer_validator import (
@@ -15,6 +16,7 @@ from .layer_validator import (
 )
 from .validation_helpers import (
     DependencyRule,
+    resolve_layer,
     validate_dependencies,
     validate_reasonable_ranges,
 )
@@ -33,9 +35,7 @@ class SectionValidator(IValidator):
             context.add_error("Cross-section line layer is required", "line_layer")
             return
 
-        from .project_validator import ProjectValidator
-
-        layer = ProjectValidator._resolve_layer(params.line_layer)
+        layer = resolve_layer(params.line_layer)
         if not layer:
             context.add_error("Cross-section line layer not found in project", "line_layer")
             return
@@ -60,9 +60,7 @@ class DEMValidator(IValidator):
             context.add_error("Raster DEM layer is required", "raster_layer")
             return
 
-        from .project_validator import ProjectValidator
-
-        layer = ProjectValidator._resolve_layer(params.raster_layer)
+        layer = resolve_layer(params.raster_layer)
         if not layer:
             context.add_error("Raster DEM layer not found in project", "raster_layer")
             return
@@ -85,9 +83,7 @@ class GeologyValidator(IValidator):
         if not params.outcrop_layer:
             return
 
-        from .project_validator import ProjectValidator
-
-        layer = ProjectValidator._resolve_layer(params.outcrop_layer)
+        layer = resolve_layer(params.outcrop_layer)
         if not layer:
             context.add_error("Geology layer not found in project", "outcrop_layer")
             return
@@ -103,14 +99,9 @@ class StructureValidator(IValidator):
     def validate(self, params: ValidationParams, context: ValidationContext) -> None:
         """Validate Structural measurements requirements."""
         if not params.struct_layer:
-            # Note: For completeness checks, we might want to add an error here,
-            # but for validate_all it's optional.
-            # We'll handle mandatory presence in the ProjectValidator methods.
             return
 
-        from .project_validator import ProjectValidator
-
-        layer = ProjectValidator._resolve_layer(params.struct_layer)
+        layer = resolve_layer(params.struct_layer)
         if not layer:
             context.add_error("Structural layer not found in project", "struct_layer")
             return
@@ -239,18 +230,25 @@ class OutputValidator(IValidator):
             context.add_warning(warn)
 
         MIN_FLOAT_THRESHOLD = 0.1
-        from .project_validator import ProjectValidator
-
         if params.scale < 1:
-            context.add_error(ProjectValidator.tr("Scale must be >= 1"), "scale")
+            context.add_error(
+                QCoreApplication.translate("ProjectValidator", "Scale must be >= 1"),
+                "scale",
+            )
         if params.vert_exag < MIN_FLOAT_THRESHOLD:
             context.add_error(
-                ProjectValidator.tr("Vertical exaggeration must be >= 0.1"), "vert_exag"
+                QCoreApplication.translate(
+                    "ProjectValidator", "Vertical exaggeration must be >= 0.1"
+                ),
+                "vert_exag",
             )
         if params.buffer_dist < 0:
-            context.add_error(ProjectValidator.tr("Buffer distance must be >= 0"), "buffer_dist")
+            context.add_error(
+                QCoreApplication.translate("ProjectValidator", "Buffer distance must be >= 0"),
+                "buffer_dist",
+            )
         if params.dip_scale_factor < MIN_FLOAT_THRESHOLD:
             context.add_error(
-                ProjectValidator.tr("Dip scale factor must be >= 0.1"),
+                QCoreApplication.translate("ProjectValidator", "Dip scale factor must be >= 0.1"),
                 "dip_scale_factor",
             )

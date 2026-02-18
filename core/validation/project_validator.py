@@ -154,11 +154,11 @@ class ProjectValidator:
 
     @staticmethod
     def _resolve_layer(layer_ref: Any) -> Any:
-        """Resolve layer ID or object to a QgsMapLayer."""
-        from qgis.core import QgsMapLayer, QgsProject
+        """Resolve layer ID or object to a QgsMapLayer.
 
-        if isinstance(layer_ref, QgsMapLayer):
-            return layer_ref
-        if isinstance(layer_ref, str) and layer_ref:
-            return QgsProject.instance().mapLayer(layer_ref)
-        return None
+        Delegates to :func:`sec_interp.core.validation.validation_helpers.resolve_layer`.
+        Kept for backward compatibility.
+        """
+        from .validation_helpers import resolve_layer
+
+        return resolve_layer(layer_ref)
