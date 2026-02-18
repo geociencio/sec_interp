@@ -31,37 +31,54 @@ class TestProjectValidator(BaseTestCase):
         self.assertEqual(len(warnings), 1)
         self.assertIn("cannot be negative", warnings[0])
 
-    def test_validate_preview_requirements(self):
+    @patch("qgis.core.QgsProject.instance")
+    def test_validate_preview_requirements(self, mock_project):
         """Test minimal requirements for preview."""
         params = ValidationParams()
+        with (
+            patch(
+                "sec_interp.core.validation.project_validators.validate_layer_geometry",
+                return_value=(True, ""),
+            ),
+            patch(
+                "sec_interp.core.validation.project_validators.validate_layer_has_features",
+                return_value=(True, ""),
+            ),
+        ):
+            # Missing everything
+            with self.assertRaises(ValidationError):
+                ProjectValidator.validate_preview_requirements(params)
 
-        # Missing everything
-        with self.assertRaises(ValidationError):
-            ProjectValidator.validate_preview_requirements(params)
+            # Valid setup
+            params.raster_layer = MagicMock(spec=QgsRasterLayer)
+            params.line_layer = MagicMock(spec=QgsVectorLayer)
+            self.assertTrue(ProjectValidator.validate_preview_requirements(params))
 
-        # Valid
-        params.raster_layer = QgsRasterLayer()
-        params.line_layer = QgsVectorLayer()
-        self.assertTrue(ProjectValidator.validate_preview_requirements(params))
-
-    @patch("sec_interp.core.validation.project_validator.validate_output_path")
-    @patch("sec_interp.core.validation.project_validator.validate_layer_has_features")
-    @patch("sec_interp.core.validation.project_validator.validate_layer_geometry")
-    def test_validate_all_success(self, mock_geom, mock_feat, mock_output):
+    @patch("sec_interp.core.validation.project_validators.validate_output_path")
+    @patch("qgis.core.QgsProject.instance")
+    def test_validate_all_success(self, mock_project, mock_output):
         """Test full validation success path."""
-        mock_geom.return_value = (True, "")
-        mock_feat.return_value = (True, "")
         mock_output.return_value = (True, "", None)
 
         params = ValidationParams(
-            raster_layer=QgsRasterLayer(),
-            line_layer=QgsVectorLayer(),
+            raster_layer=MagicMock(spec=QgsRasterLayer),
+            line_layer=MagicMock(spec=QgsVectorLayer),
             output_path="/tmp/test",
             scale=1000,
             vert_exag=1.0,
         )
 
-        self.assertTrue(ProjectValidator.validate_all(params))
+        with (
+            patch(
+                "sec_interp.core.validation.project_validators.validate_layer_geometry",
+                return_value=(True, ""),
+            ),
+            patch(
+                "sec_interp.core.validation.project_validators.validate_layer_has_features",
+                return_value=(True, ""),
+            ),
+        ):
+            self.assertTrue(ProjectValidator.validate_all(params))
 
     def test_validate_all_numeric_failures(self):
         """Test numeric range failures in validate_all."""
@@ -76,15 +93,15 @@ class TestProjectValidator(BaseTestCase):
         # Mock other validators to not fail
         with (
             patch(
-                "sec_interp.core.validation.project_validator.validate_layer_geometry",
+                "sec_interp.core.validation.project_validators.validate_layer_geometry",
                 return_value=(True, ""),
             ),
             patch(
-                "sec_interp.core.validation.project_validator.validate_layer_has_features",
+                "sec_interp.core.validation.project_validators.validate_layer_has_features",
                 return_value=(True, ""),
             ),
             patch(
-                "sec_interp.core.validation.project_validator.validate_output_path",
+                "sec_interp.core.validation.project_validators.validate_output_path",
                 return_value=(True, "", None),
             ),
         ):
@@ -117,10 +134,11 @@ class TestProjectValidator(BaseTestCase):
         params.survey_incl = "INCL"
         self.assertTrue(ProjectValidator.is_drillhole_complete(params))
 
-    @patch("sec_interp.core.validation.project_validator.validate_field_exists")
-    @patch("sec_interp.core.validation.project_validator.validate_layer_has_features")
-    @patch("sec_interp.core.validation.project_validator.validate_layer_geometry")
-    def test_is_geology_complete(self, mock_geom, mock_feat, mock_field):
+    @patch("sec_interp.core.validation.layer_validator.validate_field_exists")
+    @patch("sec_interp.core.validation.layer_validator.validate_layer_has_features")
+    @patch("sec_interp.core.validation.layer_validator.validate_layer_geometry")
+    @patch("qgis.core.QgsProject.instance")
+    def test_is_geology_complete(self, mock_project, mock_geom, mock_feat, mock_field):
         """Test geology completion check."""
         mock_geom.return_value = (True, "")
         mock_feat.return_value = (True, "")
@@ -129,21 +147,33 @@ class TestProjectValidator(BaseTestCase):
         params = ValidationParams()
         self.assertFalse(ProjectValidator.is_geology_complete(params))
 
-        params.outcrop_layer = MagicMock()
+        # Setup success
+        params.outcrop_layer = "layer"
         params.outcrop_field = "UNIT"
+        layer = MagicMock()
+        layer.isValid.return_value = True
+        layer.name.return_value = "geology"
+        mock_project.return_value.mapLayer.return_value = layer
+
         self.assertTrue(ProjectValidator.is_geology_complete(params))
 
     @patch(
-        "sec_interp.core.validation.project_validator.validate_structural_requirements"
+        "sec_interp.core.validation.project_validators.validate_structural_requirements"
     )
-    def test_is_structure_complete(self, mock_struct):
+    @patch("qgis.core.QgsProject.instance")
+    def test_is_structure_complete(self, mock_project, mock_struct):
         """Test structure completion check."""
         mock_struct.return_value = (True, "")
 
         params = ValidationParams()
         self.assertFalse(ProjectValidator.is_structure_complete(params))
 
-        params.struct_layer = MagicMock()
+        params.struct_layer = "layer"
         params.struct_dip_field = "DIP"
         params.struct_strike_field = "STRIKE"
+        layer = MagicMock()
+        layer.isValid.return_value = True
+        layer.name.return_value = "struct"
+        mock_project.return_value.mapLayer.return_value = layer
+
         self.assertTrue(ProjectValidator.is_structure_complete(params))

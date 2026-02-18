@@ -152,31 +152,81 @@ def validate_structural_requirements(
     layer_name: str,
     dip_field: str | None,
     strike_field: str | None,
+    context: ValidationContext | None = None,
 ) -> tuple[bool, str]:
     """Validate structural layer requirements (geometry and attribute fields)."""
+    is_valid, msg = _check_struct_layer_validity(layer, layer_name)
+    if not is_valid:
+        if context:
+            context.add_error(msg)
+        return False, msg
+
+    # Validate individual fields
+    for field, label in [(dip_field, "Dip"), (strike_field, "Strike")]:
+        if field:
+            is_valid, msg = _validate_struct_field(layer, field, label)
+            if not is_valid:
+                if context:
+                    context.add_error(msg)
+                return False, msg
+
+    return True, ""
+
+
+def _check_struct_layer_validity(layer: QgsVectorLayer, layer_name: str) -> tuple[bool, str]:
+    """Check if the structural layer is valid and has correct geometry."""
     if not layer.isValid():
         return False, f"Structural layer '{layer_name}' is not valid."
 
     if QgsWkbTypes.geometryType(layer.wkbType()) != QgsWkbTypes.PointGeometry:
         return False, "Structural layer must be a point layer."
+    return True, ""
 
-    # Validate individual fields
-    if dip_field:
-        is_valid, msg = _validate_struct_field(layer, dip_field, "Dip")
-        if not is_valid:
-            return False, msg
 
-    if strike_field:
-        is_valid, msg = _validate_struct_field(layer, strike_field, "Strike")
-        if not is_valid:
-            return False, msg
+def validate_geology_requirements(
+    layer: QgsVectorLayer,
+    field_name: str | None,
+    context: ValidationContext | None = None,
+) -> tuple[bool, str]:
+    """Validate geology layer requirements (polygons and attribute field)."""
+    is_valid, error = _check_geology_layer_validity(layer)
+    if not is_valid:
+        if context:
+            context.add_error(error, "geology_layer")
+        return False, error
+
+    # Check field
+    if not field_name:
+        msg = "Geology unit field is required when geology layer is selected"
+        if context:
+            context.add_error(msg, "geology_field")
+        return False, msg
+
+    is_valid, error = validate_field_exists(layer, field_name)
+    if not is_valid:
+        if context:
+            context.add_error(error, "geology_field")
+        return False, error
 
     return True, ""
 
 
-def _validate_struct_field(
-    layer: QgsVectorLayer, field_name: str, label: str
-) -> tuple[bool, str]:
+def _check_geology_layer_validity(layer: QgsVectorLayer) -> tuple[bool, str]:
+    """Check if the geology layer is valid and has correct geometry."""
+    if not layer.isValid():
+        return False, f"Geology layer '{layer.name()}' is not valid."
+
+    is_valid, error = validate_layer_geometry(layer, QgsWkbTypes.PolygonGeometry)
+    if not is_valid:
+        return False, error
+
+    is_valid, error = validate_layer_has_features(layer)
+    if not is_valid:
+        return False, error
+    return True, ""
+
+
+def _validate_struct_field(layer: QgsVectorLayer, field_name: str, label: str) -> tuple[bool, str]:
     """Validate a specific structural field existance and type."""
     is_valid, msg = validate_field_exists(layer, field_name)
     if not is_valid:
@@ -204,9 +254,7 @@ def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
     ref_crs = ref_layer.crs()
 
     incompatible = [
-        f"  - {L.name()}: {L.crs().authid()}"
-        for L in valid_layers
-        if L.crs() != ref_crs
+        f"  - {L.name()}: {L.crs().authid()}" for L in valid_layers if L.crs() != ref_crs
     ]
 
     if incompatible:
