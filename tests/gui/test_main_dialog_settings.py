@@ -36,14 +36,16 @@ class TestMainDialogSettings(BaseTestCase):
 
     def test_parse_setting_value(self):
         """Test parsing of different value types and edge cases."""
-        self.assertEqual(self.manager._parse_setting_value("True"), True)
-        self.assertEqual(self.manager._parse_setting_value("false"), False)
-        self.assertEqual(self.manager._parse_setting_value("123"), 123)
-        self.assertEqual(self.manager._parse_setting_value("123.4"), 123.4)
-        self.assertEqual(self.manager._parse_setting_value("None"), None)
-        self.assertEqual(self.manager._parse_setting_value("NULL"), None)
-        self.assertEqual(self.manager._parse_setting_value(""), None)
-        self.assertEqual(self.manager._parse_setting_value("MyLayer"), "MyLayer")
+        self.assertEqual(self.manager.persistence._parse_setting_value("True"), True)
+        self.assertEqual(self.manager.persistence._parse_setting_value("false"), False)
+        self.assertEqual(self.manager.persistence._parse_setting_value("123"), 123)
+        self.assertEqual(self.manager.persistence._parse_setting_value("123.4"), 123.4)
+        self.assertEqual(self.manager.persistence._parse_setting_value("None"), None)
+        self.assertEqual(self.manager.persistence._parse_setting_value("NULL"), None)
+        self.assertEqual(self.manager.persistence._parse_setting_value(""), None)
+        self.assertEqual(
+            self.manager.persistence._parse_setting_value("MyLayer"), "MyLayer"
+        )
 
     def test_save_and_load_layer_with_name(self):
         """Test that layer ID and Name are saved and restored."""
@@ -54,7 +56,7 @@ class TestMainDialogSettings(BaseTestCase):
         combo = MagicMock()
         combo.currentLayer.return_value = mock_layer
 
-        self.manager._save_layer(combo, "test_layer")
+        self.manager.persistence._save_layer(combo, "test_layer")
 
         # Check that both ID and Name were stored (in project mock)
         self.assertEqual(
@@ -71,7 +73,7 @@ class TestMainDialogSettings(BaseTestCase):
         self.dialog.project._layers["some_other_id"] = mock_layer
 
         restore_combo = MagicMock()
-        self.manager._restore_layer(restore_combo, "test_layer")
+        self.manager.persistence._restore_layer(restore_combo, "test_layer")
 
         # Should have found it by name fallback
         restore_combo.setLayer.assert_called_with(mock_layer)
@@ -82,13 +84,13 @@ class TestMainDialogSettings(BaseTestCase):
         # 2. Global has a numeric string
         self.config_service.get.return_value = "100.5"
 
-        val = self.manager._get_setting("buffer_dist")
+        val = self.manager.persistence._get_setting("buffer_dist")
         self.assertEqual(val, 100.5)
 
-    def test_reset_to_defaults_clears_interpretations(self):
-        """Test that reset_to_defaults clears persistent interpretations."""
         # Setup initial state
         self.dialog.interpretations = ["interp1", "interp2"]
+        # In mock, make it work even if accessed via interpretation_manager
+        del self.dialog.interpretation_manager
         self.dialog._save_interpretations = MagicMock()
 
         # Run reset

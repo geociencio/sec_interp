@@ -67,10 +67,10 @@ class TestStateManager(BaseTestCase):
 
     def test_parse_setting_value_types(self):
         """Test the internal parser for different string types."""
-        self.assertEqual(self.manager._parse_setting_value("True"), True)
-        self.assertEqual(self.manager._parse_setting_value("123"), 123)
-        self.assertEqual(self.manager._parse_setting_value("12.5"), 12.5)
-        self.assertEqual(self.manager._parse_setting_value("NULL"), None)
+        self.assertEqual(self.manager.persistence._parse_setting_value("True"), True)
+        self.assertEqual(self.manager.persistence._parse_setting_value("123"), 123)
+        self.assertEqual(self.manager.persistence._parse_setting_value("12.5"), 12.5)
+        self.assertEqual(self.manager.persistence._parse_setting_value("NULL"), None)
 
 
 if __name__ == "__main__":
