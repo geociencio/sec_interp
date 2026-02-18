@@ -1,7 +1,7 @@
 ---
 description: Procedimiento para finalizar una sesión de trabajo, actualizar logs y archivar resultados
 agent: QA Engineer
-skills: [qa-docker, commit-standards, agentic-memory]
+skills: [qa-docker, commit-standards, agentic-memory, documentation-standards]
 validation: |
   - Verificar que todos los logs están actualizados
   - Confirmar que tests pasan antes de cerrar
@@ -23,8 +23,8 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
     *   **`.agent/next_steps.md`**: **[CRÍTICO]** Crea o actualiza este archivo con el "paso de testigo": qué falta, qué errores hay pendientes y cuál es el comando para retomar.
     *   **Archivado de Next Steps**: **[NUEVO]** Copia `.agent/next_steps.md` a `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` para mantener el registro histórico.
     *   **`docs/maintenance/sesion_YYYY-MM-DD_[TEMA].md`**: **[OBLIGATORIO]** Crea este archivo con el resumen técnico de la sesión.
-    *   **`docs/DEVELOPMENT_LOG.md`**: **[CRÍTICO]** Añade una entrada `## [YYYY-MM-DD] Resumen` en la parte superior.
-    *   **`docs/source/MAINTENANCE_LOG.md`**: Actualiza si hubo cambios de infraestructura.
+    *   **`docs/DEVELOPMENT_LOG.md`**: **[CRÍTICO]** Añade entrada siguiendo el formato de `documentation-standards`.
+    *   **`docs/source/MAINTENANCE_LOG.md`**: Actualiza cambios de infraestructura siguiendo el formato de `documentation-standards`.
     *   **`docs/CHANGELOG.md`**: Registra cambios visibles para el usuario en `[Unreleased]`.
 
 2.  **Verificación Final (Safety Net)**:

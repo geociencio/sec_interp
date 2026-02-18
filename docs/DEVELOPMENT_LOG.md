@@ -1,25 +1,19 @@
 ---
-## [2026-02-18] RESUMEN: Expansión i18n (Market Gap - Central/North Europe)
+## [2026-02-18] EXPANSIÓN I18N (MARKET GAP)
 - **Logro**: Expandido el soporte a 14 idiomas (añadidos pl, nl, fi) con 100% de cobertura core.
 - **Cambios**:
-    - **i18n**: Implementado motor de "Master Data" JSON y automatización de inyección de traducciones.
+    - **i18n**: Implementado motor de "Master Data" JSON y automatización de inyección.
     - **Infraestructura**: Creado workflow `/i18n-maintenance` y actualizada skill `i18n-standards`.
-    - **Calidad**: Verificados locales polaco, neerlandés y finlandés sin cadenas pendientes.
-- **Métricas**:
-    - **Idiomas**: 14 (Soporte global robusto).
-    - **Sincronización**: 🟢 Master Data Engine operativo.
+- **Calidad**: 16/16 Integration tests OK y 377+ unit tests validados.
 - **Mantenimiento**: [sesion_2026-02-18_i18n_gap_expansion.md](maintenance/sesion_2026-02-18_i18n_gap_expansion.md).
 
 ---
-## [2026-02-18] RESUMEN: Optimización de Estabilidad de Módulos
-- **Logro**: Resuelto issue crítico de ciclos de importación circular (Module Stability de 0.0 a 53.7) y actualizado tooling.
+## [2026-02-18] ESTABILIDAD DE MÓDULOS
+- **Logro**: Eliminados ciclos de importación circular y optimizada la estabilidad del sistema de validación.
 - **Cambios**:
-    - **Refactorización**: Eliminados 7 ciclos en `core/validation/` extrayendo lógica a `validation_helpers.py`.
-    - **Calidad**: Corregidos signal leaks en `settings_page.py` y legacy imports en `resources.py`.
-    - **Tooling**: Actualizado `qgis-plugin-analyzer` a 1.10.0.
-- **Métricas**:
-    - **Tests**: 16/16 Integration tests OK (100% stable).
-    - **Module Stability**: 53.7/100 (Estable).
+    - **Refactorización**: Movida lógica a `validation_helpers.py` resolviendo 7 ciclos de dependencia.
+    - **Mantenimiento**: Corregidos signal leaks en `settings_page.py`.
+- **Calidad**: Module Stability optimizada de 0.0 a 53.7.
 - **Mantenimiento**: [sesion_2026-02-18_module_stability.md](maintenance/sesion_2026-02-18_module_stability.md).
 
 ---
