@@ -21,12 +21,9 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
-from sec_interp.core.controller import ProfileController
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import SecInterpError
-from sec_interp.core.services.export_service import ExportService
-from sec_interp.gui.main_dialog import SecInterpDialog
-from sec_interp.gui.preview_renderer import PreviewRenderer
+from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger, setup_logging
 
 logger = get_logger(__name__)
@@ -77,16 +74,30 @@ class SecInterp:
             QCoreApplication.installTranslator(self.translator)
 
         # Prepare core services BEFORE the dialog (required by PreviewManager)
-        # Create preview renderer
-        self.preview_renderer = PreviewRenderer()
-        # Initialize controller
-        self.controller = ProfileController()
-        # Initialize export service
-        self.export_service = ExportService(self.controller)
+        # 1. Preview Renderer (Heavy GUI component)
+        self.preview_renderer = SafeLoader.lazy_load(
+            "sec_interp.gui.preview_renderer", "PreviewRenderer"
+        )
+        # 2. Controller (Business Logic orchestrator)
+        self.controller = SafeLoader.lazy_load("sec_interp.core.controller", "ProfileController")
+
+        # 3. Export Service
+        # We need the controller to instantiate ExportService
+        export_mod = SafeLoader.safe_import("sec_interp.core.services.export_service")
+        export_klass = SafeLoader.get_class(export_mod, "ExportService")
+        self.export_service = export_klass(self.controller) if export_klass else None
 
         # Create the dialog (after services and translation) and keep reference
-        self.dlg = SecInterpDialog(self.iface, self)
-        self.dlg.plugin_instance = self
+        # We need iface and self (plugin_instance) to instantiate the dialog
+        dialog_mod = SafeLoader.safe_import("sec_interp.gui.main_dialog")
+        dialog_klass = SafeLoader.get_class(dialog_mod, "SecInterpDialog")
+        self.dlg = dialog_klass(self.iface, self) if dialog_klass else None
+
+        if self.dlg:
+            self.dlg.plugin_instance = self
+        else:
+            logger.error("Failed to initialize main dialog. Plugin functionality will be limited.")
+
         self.first_start = True
 
         # Declare instance attributes
@@ -222,11 +233,22 @@ class SecInterp:
 
     def run(self) -> None:
         """Run method that performs all the real work."""
+        if not self.dlg:
+            from qgis.PyQt.QtWidgets import QMessageBox
+
+            QMessageBox.critical(
+                self.iface.mainWindow(),
+                self.tr("Initialization Error"),
+                self.tr("The plugin dialog failed to initialize. Please check the logs."),
+            )
+            return
+
         if self.first_start:
             self.first_start = False
             # Dialog is already initialized in __init__
             # Update preview renderer with the dialog's canvas
-            self.preview_renderer.canvas = self.dlg.preview_widget.canvas
+            if self.preview_renderer:
+                self.preview_renderer.canvas = self.dlg.preview_widget.canvas
 
             # Connect dialog accepted signal to final processing
             self.dlg.accepted.connect(self.process_data)
@@ -379,6 +401,10 @@ class SecInterp:
         **kwargs,
     ) -> None:
         """Draw enhanced interactive preview using native PyQGIS renderer."""
+        if not self.dlg or not self.preview_renderer:
+            logger.warning("Cannot draw preview: dialog or renderer missing.")
+            return
+
         # 1. State Persistence
         self._store_preview_data(topo_data, geol_data, struct_data, drillhole_data)
 

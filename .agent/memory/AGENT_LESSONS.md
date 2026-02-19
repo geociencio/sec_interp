@@ -12,6 +12,13 @@ lessons:
     lesson: "La sobre-simplificación de Skills durante traducciones puede causar pérdida de manuales técnicos."
     action: "Mantener núcleos técnicos en Inglés; estructura operativa en Español."
 
+  - date: 2026-02-19
+    category: ARCHITECTURE
+    topic: Resilience & Lazy Loading
+    lesson: "When implementing experimental features or heavy domain services, use a SafeLoader/Lazy Loading pattern to prevent cascading failures during plugin initialization. This ensures the core plugin remains functional even if a specific module fails to load (e.g., due to missing dependencies)."
+    action: "Implement SafeLoader for all optional or heavy services and use demand-based instantiation."
+
+
   - date: 2026-02-01
     category: TECHNICAL
     topic: QgsGeometry Mocking
@@ -60,5 +67,11 @@ lessons:
     lesson: "La herramienta qgis-manage tiene exclusiones hardcoded y depende de pyrcc5 (PyQt5), lo que genera deuda técnica automática en resources.py."
     action: "Tras compilar recursos, aplicar siempre un parcheo de imports (sed) y verificar que no falten archivos necesarios en el despliegue debido a exclusiones ocultas."
 
+  - date: 2026-02-18
+    category: USER_PREFERENCE
+    topic: Fast Deployment
+    lesson: "Para iteraciones rápidas que no requieran cambios en recursos o traducciones, se prefiere evitar la compilación."
+    action: "Utilizar el comando: 'uv run qgis-manage deploy --no-compile'"
+
 ---
-*Última actualización: 2026-02-18 - i18n Asia y auditoría de qgis-manage.*
+*Última actualización: 2026-02-18 - Registro de despliegue rápido y lecciones de SEV.*

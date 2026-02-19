@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- `SafeLoader` utility for resilient module imports and error handling.
+
+### Changed
+- Refactorized plugin initialization (`SecInterp` class) to use lazy loading.
+- Decoupled domain services in `ProfileController` using `SafeLoader` for better resilience.
+
+### Added
 - **i18n**: Localización complementaria para Hindi (`hi`) e Indonesio (`id`), ampliando la cobertura al mercado asiático.
 - **Auditoría**: Publicado Roadmap Técnico para la modernización de `qgis-manage` (soporte `.pluginignore` y parcheo de RCC).
 - **Desarrollo**: Nueva guía de despliegue y problemas conocidos para desarrolladores en `docs/maintainer`.

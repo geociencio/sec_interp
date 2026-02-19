@@ -17,22 +17,7 @@ from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import ProcessingError
-from sec_interp.core.services import (
-    DrillholeService,
-    GeologyService,
-    ProfileService,
-    StructureService,
-)
-from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
-from sec_interp.core.services.drillhole.data_fetcher import DataFetcher
-from sec_interp.core.services.drillhole.drillhole_orchestrator import (
-    DrillholeTaskOrchestrator,
-)
-from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
-from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
-from sec_interp.core.services.drillhole.trajectory_engine import TrajectoryEngine
-from sec_interp.core.services.geology.outcrop_processor import OutcropProcessor
-from sec_interp.core.services.geology.profile_sampler import ProfileSampler
+from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -46,32 +31,72 @@ class ProfileController:
         self.config_service = ConfigService()
         self.data_cache = DataCache()
 
-        # 1. Shared Infrastructure
-        self.data_fetcher = DataFetcher()
-
-        # 2. Domain Processors
-        self.collar_processor = CollarProcessor()
-        self.survey_processor = SurveyProcessor()
-        self.interval_processor = IntervalProcessor()
-        self.trajectory_engine = TrajectoryEngine()
-        self.profile_sampler = ProfileSampler()
-        self.outcrop_processor = OutcropProcessor()
-
-        # 3. Services (with Dependency Injection)
-        self.profile_service = ProfileService()
-        self.geology_service = GeologyService(
-            profile_sampler=self.profile_sampler,
-            outcrop_processor=self.outcrop_processor,
+        # 1. Component Factories (Loaded safely)
+        # Processors
+        self.collar_processor = SafeLoader.lazy_load(
+            "sec_interp.core.services.drillhole.collar_processor", "CollarProcessor"
         )
-        self.structure_service = StructureService()
-        self.drillhole_service = DrillholeService(
-            collar_processor=self.collar_processor,
-            survey_processor=self.survey_processor,
-            interval_processor=self.interval_processor,
-            data_fetcher=self.data_fetcher,
-            trajectory_engine=self.trajectory_engine,
+        self.survey_processor = SafeLoader.lazy_load(
+            "sec_interp.core.services.drillhole.survey_processor", "SurveyProcessor"
         )
-        self.drillhole_orchestrator = DrillholeTaskOrchestrator(self.drillhole_service)
+        self.interval_processor = SafeLoader.lazy_load(
+            "sec_interp.core.services.drillhole.interval_processor", "IntervalProcessor"
+        )
+        self.trajectory_engine = SafeLoader.lazy_load(
+            "sec_interp.core.services.drillhole.trajectory_engine", "TrajectoryEngine"
+        )
+        self.profile_sampler = SafeLoader.lazy_load(
+            "sec_interp.core.services.geology.profile_sampler", "ProfileSampler"
+        )
+        self.outcrop_processor = SafeLoader.lazy_load(
+            "sec_interp.core.services.geology.outcrop_processor", "OutcropProcessor"
+        )
+        self.data_fetcher = SafeLoader.lazy_load(
+            "sec_interp.core.services.drillhole.data_fetcher", "DataFetcher"
+        )
+
+        # 3. Services (Safely instantiated)
+        self.profile_service = SafeLoader.lazy_load(
+            "sec_interp.core.services.profile_service", "ProfileService"
+        )
+
+        # Geology Service needs DI
+        geol_mod = SafeLoader.safe_import("sec_interp.core.services.geology_service")
+        geol_klass = SafeLoader.get_class(geol_mod, "GeologyService")
+        self.geology_service = (
+            geol_klass(
+                profile_sampler=self.profile_sampler,
+                outcrop_processor=self.outcrop_processor,
+            )
+            if geol_klass
+            else None
+        )
+
+        self.structure_service = SafeLoader.lazy_load(
+            "sec_interp.core.services.structure_service", "StructureService"
+        )
+
+        # Drillhole Service needs DI
+        dh_mod = SafeLoader.safe_import("sec_interp.core.services.drillhole_service")
+        dh_klass = SafeLoader.get_class(dh_mod, "DrillholeService")
+        self.drillhole_service = (
+            dh_klass(
+                collar_processor=self.collar_processor,
+                survey_processor=self.survey_processor,
+                interval_processor=self.interval_processor,
+                data_fetcher=self.data_fetcher,
+                trajectory_engine=self.trajectory_engine,
+            )
+            if dh_klass
+            else None
+        )
+
+        # Orchestrator
+        orch_mod = SafeLoader.safe_import(
+            "sec_interp.core.services.drillhole.drillhole_orchestrator"
+        )
+        orch_klass = SafeLoader.get_class(orch_mod, "DrillholeTaskOrchestrator")
+        self.drillhole_orchestrator = orch_klass(self.drillhole_service) if orch_klass else None
 
         self._connected_layers: list[Any] = []
         logger.debug("ProfileController initialized with DI")
@@ -204,6 +229,9 @@ class ProfileController:
             if not line_lyr or not raster_lyr:
                 raise ProcessingError(self.tr("Required layers for topography are missing."))
 
+            if not self.profile_service:
+                raise ProcessingError(self.tr("Topography service failed to load."))
+
             profile_data = self.profile_service.generate_topographic_profile(
                 line_lyr, raster_lyr, params.band_num
             )
@@ -237,6 +265,10 @@ class ProfileController:
             outcrop_lyr = self._resolve_layer(params.outcrop_layer)
 
             if not all([line_lyr, raster_lyr, outcrop_lyr]):
+                return None
+
+            if not self.geology_service:
+                messages.append(self.tr("Geology: Service failed to load"))
                 return None
 
             geol_data = self.geology_service.generate_geological_profile(
@@ -289,6 +321,10 @@ class ProfileController:
                     raster_lyr = self._resolve_layer(params.raster_layer)
 
                     if not struct_lyr:
+                        return None
+
+                    if not self.structure_service:
+                        messages.append(self.tr("Structures: Service failed to load"))
                         return None
 
                     da = QgsDistanceArea()
@@ -348,6 +384,10 @@ class ProfileController:
 
         collar_lyr = self._resolve_layer(params.collar_layer)
         if not collar_lyr:
+            return None
+
+        if not self.drillhole_orchestrator:
+            messages.append(self.tr("Drillholes: Orchestrator failed to load"))
             return None
 
         drillhole_data = self.drillhole_orchestrator.run_preview(params)

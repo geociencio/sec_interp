@@ -34,6 +34,7 @@ El proyecto SecInterp cuenta con un sistema completo de **6 skills** y **10 work
 | [/crea-commit](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/crea-commit.md) | QA Engineer | qa-docker, commit-standards | Commit con validación de calidad |
 | [/run-tests](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests.md) | QA Engineer | qa-docker | Ejecutar tests con interpretación inteligente |
 | [/cierra-sesion](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/cierra-sesion.md) | QA Engineer | qa-docker, commit-standards | Cerrar sesión con logs actualizados |
+| **Fast Deploy** | N/A | qgis-core | `uv run qgis-manage deploy --no-compile` |
 
 ### Refactorización y Calidad
 
