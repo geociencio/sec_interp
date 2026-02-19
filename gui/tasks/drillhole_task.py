@@ -58,9 +58,7 @@ class DrillholeGenerationTask(QgsTask):
         """Execute the task in background thread."""
         try:
             logger.info("DrillholeGenerationTask started (Background Thread)")
-            self.result = self.orchestrator.process_task_data(
-                self.task_input, feedback=self
-            )
+            self.result = self.orchestrator.process_task_data(self.task_input, feedback=self)
 
             count = 0
             if self.result and len(self.result) > 1:
@@ -75,9 +73,9 @@ class DrillholeGenerationTask(QgsTask):
             self.exception = e
             return False
 
-    def finished(self, result: bool) -> None:
+    def finished(self, is_successful: bool) -> None:
         """Handle task completion on Main Thread."""
-        if result:
+        if is_successful:
             if self.result is None:
                 self.result = ([], [])
             self.finished_with_results.emit(self.result)

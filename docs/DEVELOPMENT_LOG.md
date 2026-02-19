@@ -1,4 +1,11 @@
 ---
+## [2026-02-18] INFRAESTRUCTURA (QGIS-MANAGER) Y TIPADO
+- **Logro**: Automatizado el parcheo de compatibilidad para QGIS (PyQt -> qgis.PyQt) en `qgis-manager` y reforzada la validación estructural del plugin.
+- **Cambios**:
+    - **qgis-manager**: Implementado parcheo automático de recursos RCC y validación de `classFactory`.
+    - **SecInterp**: Mejorado tipado en tareas asíncronas (`drillhole_task`, `geology_task`).
+    - **Investigación**: Descartado soporte redundante de `.pluginignore`.
+- **Mantenimiento**: [sesion_2026-02-18_infrastructure_qgis_manager.md](maintenance/sesion_2026-02-18_infrastructure_qgis_manager.md).
 ## [2026-02-18] EXPANSIÓN I18N (HINDI/INDONESIO) Y AUDITORÍA DE INFRAESTRUCTURA
 - **Logro**: Completada la localización para `hi` e `id` e identificada hoja de ruta para modernizar la herramienta de despliegue.
 - **Cambios**:

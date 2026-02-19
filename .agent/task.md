@@ -1,27 +1,26 @@
 # Tareas Activas - SecInterp
 
-## [/] Sesión Actual: Expansión i18n (hi, id) y Limpieza Técnica [/]
-- [x] **Planificación y Diseño**
-    - [x] Sintonización de contexto y entorno
-    - [x] Crear plan de implementación
-- [x] **Localización Complementaria**
-    - [x] Traducir guía de usuario para Hindi (hi)
-    - [x] Traducir guía de usuario para Indonesio (id)
-- [x] **Validación Visual i18n**
-    - [x] Revisar desbordamiento de texto en el visor de ayuda (QA simulado)
-- [x] **Limpieza de Deuda Técnica**
-    - [x] Resolver fugas de señales en la GUI detectadas por `qgis-analyzer`
-    - [x] Mejorar la cobertura de tipado en módulos core
-    - [x] Limpiar referencias a PyQt5 en `resources.py`
+## [/] Sesión Actual: Mejoras de Infraestructura (qgis-manage) [/]
+- [x] **Sintonización de Contexto**
+    - [x] Ejecutar `ai-ctx analyze`
+    - [x] Revisar `next_steps.md` y `AGENT_LESSONS.md`
+    - [x] Validar reporte de `qgis-analyzer summary`
+    - [x] Sincronizar entorno (`uv sync`) y ejecutar tests (`make docker-test`)
 
-- [x] **Auditoría de qgis-manage**
-    - [x] Analizar código fuente de `qgis_manager`
-    - [x] Identificar debilidades técnicas y riesgos
-    - [x] Generar informe de recomendaciones técnicas
-    - [X] Crear guía técnica para desarrolladores en `docs/maintainer`
-    - [x] Crear Roadmap Técnico para resolver problemas del core
+- [-] **Soporte para `.pluginignore`**
+    - [x] Investigar implementación actual de exclusiones en `qgis_manager`
+    - [-] Implementar lectura de `.pluginignore` (Redundante: usar `.qgisignore` o `.toml`)
+    - [-] Validar con tests unitarios
+
+- [x] **RCC Patching Automatizado**
+    - [x] Identificar punto de inyección en el comando de compilación
+    - [x] Implementar reemplazo de `PyQt5` por `qgis.PyQt` vía `sed` o Python
+    - [x] Verificar compilación de recursos
+
+- [x] **Validación Estructural**
+    - [x] Añadir chequeos para iconos y `classFactory`
+    - [x] Integrar nuevos chequeos en `qgis-manage validate`
 
 ## 🔜 Siguientes Pasos
-- [ ] **Implementación de Mejoras**
-    - [ ] Evaluar la implementación de un archivo `.pluginignore`
-    - [ ] Automatizar el parcheo de recursos en el core de `qgis-manager`
+- [x] Mantenimiento de tipado en `core/tasks`
+- [ ] Cierre de sesión y actualización de memoria

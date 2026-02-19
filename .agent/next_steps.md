@@ -1,15 +1,12 @@
-# Próximos Pasos - SecInterp
+# Next Steps
 
-## Retomar en:
-Implementación de mejoras en `qgis-manage` basadas en el Roadmap Técnico y validación estructural del plugin.
+## Immediate Actions
+- [ ] **Desacoplar Lógica de Negocio**: Continuar con la refactorización de servicios para eliminar dependencias de GUI.
+- [ ] **Monitorización RCC**: Verificar la estabilidad del parche de `qgis.PyQt` en futuras compilaciones.
+- [ ] **Validación Estructural**: Considerar añadir chequeos más estrictos para metadatos en `qgis-manage`.
 
-## Tareas Pendientes:
-1. **Infraestructura**: Implementar soporte para `.pluginignore` en el core de `qgis-manager`.
-2. **RCC Patching**: Automatizar el reemplazo de imports de PyQt5 en el comando de compilación.
-3. **Validación**: Extender `qgis-manage validate` con chequeos estructurales (iconos, classFactory).
-4. **Mantenimiento**: Continuar con la mejora de cobertura de tipado en módulos asíncronos (`core/tasks`).
+## Pending Issues
+- Ninguno crítico reportado en esta sesión.
 
-## Comando para retomar:
-```bash
-/inicia-sesion
-```
+## Resume Command
+- `/inicia-sesion`
