@@ -1,4 +1,10 @@
 ---
+## [2026-02-18] REGRESIÓN DE INFRAESTRUCTURA GEOFÍSICA (SEV)
+- **Nota**: Se decidió abortar la implementación de SEV por inestabilidades críticas en el cargador de plugins tras la refactorización.
+- **Acción**: Ejecutada regresión total al commit `d5b5837` para asegurar estabilidad v4.0.4.
+- **Lección**: La refactorización de la GUI y la integración de nuevas dependencias (`numpy`/`scipy`) requieren un enfoque de validación más modular y pruebas aisladas antes de la integración final.
+- **Mantenimiento**: [sesion_2026-02-18_cancelled_sev.md](maintenance/sesion_2026-02-18_cancelled_sev.md).
+
 ## [2026-02-18] INFRAESTRUCTURA (QGIS-MANAGER) Y TIPADO
 - **Logro**: Automatizado el parcheo de compatibilidad para QGIS (PyQt -> qgis.PyQt) en `qgis-manager` y reforzada la validación estructural del plugin.
 - **Cambios**:

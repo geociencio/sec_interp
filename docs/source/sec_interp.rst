@@ -24,4 +24,6 @@ Submodules
    :maxdepth: 4
 
    sec_interp.logger_config
+   sec_interp.run_qgis_manage
    sec_interp.sec_interp_plugin
+   sec_interp.test_patch
