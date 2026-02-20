@@ -6,7 +6,7 @@
     <message>
         <location filename="../exporters/base_exporter.py" line="78"/>
         <source>Invalid export path: {error}</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen vientipolku: {error}</translation>
     </message>
 </context>
 <context>
@@ -14,12 +14,12 @@
     <message>
         <location filename="../core/config.py" line="151"/>
         <source>Failed to validate settings during load. Using defaults.</source>
-        <translation type="unfinished"></translation>
+        <translation>Asetusten vahvistaminen latauksen aikana epäonnistui. Oletusasetusten käyttäminen.</translation>
     </message>
     <message>
         <location filename="../core/config.py" line="228"/>
         <source>Configuration reset to defaults initiated</source>
-        <translation type="unfinished"></translation>
+        <translation>Kokoonpanon palautus oletusasetuksiin aloitettu</translation>
     </message>
 </context>
 <context>
@@ -30,52 +30,52 @@
         <translation>Digitaalinen korkeusmalli (DEM)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="58"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="56"/>
         <source>Raster Layer *</source>
         <translation>Rasteritaso *</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="63"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="61"/>
         <source>Select the raster DEM layer</source>
         <translation>Valitse rasteri-DEM-taso</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="74"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="72"/>
         <source>Band</source>
         <translation>Kaista</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="78"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="76"/>
         <source>Select the raster band</source>
         <translation>Valitse rasterikaista</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="81"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="79"/>
         <source>Resolution</source>
         <translation>Resoluutio</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="86"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="84"/>
         <source>Raster resolution (auto-calculated)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasteriresoluutio (laskettu automaattisesti)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="98"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="96"/>
         <source>Profile Settings</source>
         <translation>Profiiliasetukset</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="102"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="100"/>
         <source>Scale 1:</source>
         <translation>Mittakaava 1:</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="110"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="108"/>
         <source>Vert. Exag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vert. Esim.</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="165"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="163"/>
         <source>Raster layer is required</source>
         <translation>Rasteritaso vaaditaan</translation>
     </message>
@@ -120,17 +120,17 @@
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="117"/>
         <source>East (X):</source>
-        <translation type="unfinished"></translation>
+        <translation>Itä (X):</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="123"/>
         <source>North (Y):</source>
-        <translation type="unfinished"></translation>
+        <translation>Pohjoinen (Y):</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="130"/>
         <source>Elevation (Z):</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeus (Z):</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="133"/>
@@ -180,7 +180,7 @@
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="255"/>
         <source>Lithology/Attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Litologia/ominaisuus:</translation>
     </message>
 </context>
 <context>
@@ -188,32 +188,32 @@
     <message>
         <location filename="../core/services/drillhole_service.py" line="110"/>
         <source>Buffer width must be positive, got {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Puskurin leveyden on oltava positiivinen, sain {0}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="340"/>
         <source>Data error in hole {0}: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Tietovirhe reiässä {0}: {1}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="342"/>
         <source>Processing error in hole {0}: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Käsittelyvirhe reiässä {0}: {1}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="344"/>
         <source>Runtime or attribute error processing hole {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajonaikaisen tai määritteen virheen käsittelyreikä {0}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="347"/>
         <source>Unexpected processing error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Odottamaton käsittelyvirhe: {0}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="349"/>
         <source>Critical unexpected error processing hole {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Kriittinen odottamaton virhe käsittelyreikä {0}</translation>
     </message>
 </context>
 <context>
@@ -249,22 +249,22 @@
     <message>
         <location filename="../core/services/geology_service.py" line="197"/>
         <source>Invalid layer: {0}. Please check input layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen taso: {0}. Tarkista syöttötasot.</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="203"/>
         <source>Invalid layer: Outcrop layer. Please check input layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen taso: Paljastustaso. Tarkista syöttötasot.</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="210"/>
         <source>Band number must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bändinumeron on oltava positiivinen.</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="213"/>
         <source>Band number {0} exceeds raster band count ({1}).</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaistan numero {0} ylittää rasterikaistan määrän ({1}).</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="223"/>
@@ -274,12 +274,12 @@
     <message>
         <location filename="../core/services/geology_service.py" line="366"/>
         <source>Line layer has no features</source>
-        <translation type="unfinished"></translation>
+        <translation>Viivakerroksella ei ole ominaisuuksia</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="372"/>
         <source>Line geometry is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Viivan geometria ei kelpaa</translation>
     </message>
 </context>
 <context>
@@ -290,7 +290,7 @@
         <translation>Geometria on tyhjä tai virheellinen</translation>
     </message>
     <message>
-        <location filename="../core/utils/geometry_utils/extraction.py" line="50"/>
+        <location filename="../core/utils/geometry_utils/extraction.py" line="48"/>
         <source>Line geometry has no vertices</source>
         <translation>Viivageometriassa ei ole pisteitä</translation>
     </message>
@@ -303,7 +303,7 @@
         <translation>Virheellinen kohdetaso</translation>
     </message>
     <message>
-        <location filename="../core/utils/geometry_utils/filtering.py" line="43"/>
+        <location filename="../core/utils/geometry_utils/filtering.py" line="41"/>
         <source>Invalid buffer geometry</source>
         <translation>Virheellinen puskurigeometria</translation>
     </message>
@@ -329,64 +329,64 @@
         <translation>Omat attribuutit</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="46"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="44"/>
         <source>Field Name</source>
         <translation>Kentän nimi</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="46"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="44"/>
         <source>Type</source>
         <translation>Tyyppi</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="46"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="44"/>
         <source>Default Value</source>
         <translation>Oletusarvo</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="54"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="52"/>
         <source>Add Field</source>
         <translation>Lisää kenttä</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="55"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="53"/>
         <source>Remove Field</source>
         <translation>Poista kenttä</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="65"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="63"/>
         <source>Attribute Inheritance</source>
         <translation>Attribuuttien perintä</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="69"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="65"/>
         <source>Auto-inherit from Geology layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaattinen periminen geologisista tasoista</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="71"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="67"/>
         <source>Automatically copy unit name and attributes from the nearest geology segment.</source>
         <translation>Kopioi yksikön nimi ja attribuutit automaattisesti lähimmästä geologiasegmentistä.</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="77"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="71"/>
         <source>Auto-inherit from Drillhole intervals</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaattinen periminen porausreikien aikaväleistä</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="81"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="73"/>
         <source>Automatically copy rock code and attributes from the nearest drillhole interval.</source>
         <translation>Kopioi kivilajikoodi ja attribuutit automaattisesti lähimmästä kairausreikäintervallista.</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="145"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="137"/>
         <source>Field name cannot be empty</source>
         <translation>Kentän nimi ei voi olla tyhjä</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="147"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="139"/>
         <source>Duplicate field name: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Päällekkäinen kentän nimi: {}</translation>
     </message>
 </context>
 <context>
@@ -422,7 +422,7 @@
         <translation>Omat attribuutit</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="121"/>
+        <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="117"/>
         <source>Select Color</source>
         <translation>Valitse väri</translation>
     </message>
@@ -435,7 +435,7 @@
         <translation>Topografia</translation>
     </message>
     <message>
-        <location filename="../gui/preview_legend_renderer.py" line="108"/>
+        <location filename="../gui/preview_legend_renderer.py" line="106"/>
         <source>Structures</source>
         <translation>Rakenteet</translation>
     </message>
@@ -455,22 +455,22 @@
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="399"/>
         <source>Generating Geology: {}%...</source>
-        <translation type="unfinished"></translation>
+        <translation>Luodaan geologiaa: {}%...</translation>
     </message>
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="409"/>
         <source>Geology processing failed: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Geologinen käsittely epäonnistui: {}</translation>
     </message>
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="419"/>
         <source>Drillhole processing failed: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiän käsittely epäonnistui: {}</translation>
     </message>
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="459"/>
         <source>CRS: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS: {}</translation>
     </message>
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="463"/>
@@ -493,55 +493,55 @@
     <message>
         <location filename="../gui/preview_reporter.py" line="39"/>
         <source>Topography: {} points</source>
-        <translation type="unfinished"></translation>
+        <translation>Topografia: {} pistettä</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="77"/>
+        <location filename="../gui/preview_reporter.py" line="72"/>
         <source>Geology: No data</source>
         <translation>Geologia: Ei dataa</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="78"/>
+        <location filename="../gui/preview_reporter.py" line="73"/>
         <source>Geology: {} segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Geologia: {} segmenttiä</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="88"/>
+        <location filename="../gui/preview_reporter.py" line="81"/>
         <source>Structures: No data</source>
         <translation>Rakenteet: Ei dataa</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="89"/>
+        <location filename="../gui/preview_reporter.py" line="82"/>
         <source>Structures: {} measurements (buffer: {}m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rakenteet: {} mittaa (puskuri: {} m)</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="97"/>
+        <location filename="../gui/preview_reporter.py" line="90"/>
         <source>Drillholes: No data</source>
         <translation>Kairausreiät: Ei dataa</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="98"/>
+        <location filename="../gui/preview_reporter.py" line="91"/>
         <source>Drillholes: {} holes found</source>
-        <translation type="unfinished"></translation>
+        <translation>Porareiät: {} reikää löydetty</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="110"/>
+        <location filename="../gui/preview_reporter.py" line="103"/>
         <source>Geometry Range:</source>
         <translation>Geometrian ulottuvuus:</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="111"/>
+        <location filename="../gui/preview_reporter.py" line="104"/>
         <source>  Elevation: {} to {} m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="114"/>
+        <location filename="../gui/preview_reporter.py" line="107"/>
         <source>  Distance: {} to {} m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="128"/>
+        <location filename="../gui/preview_reporter.py" line="119"/>
         <source>Performance:</source>
         <translation>Suorituskyky:</translation>
     </message>
@@ -579,144 +579,166 @@
         <translation>Vie esikatselu tiedostoon</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="95"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="93"/>
         <source>Measure</source>
         <translation>Mittaa</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="97"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="95"/>
         <source>Measure distance and slope</source>
         <translation>Mittaa etäisyys ja kaltevuus</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="100"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="98"/>
         <source>Interpret</source>
         <translation>Tulkitse</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="102"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="100"/>
         <source>Draw interpretation polygons</source>
         <translation>Piirrä tulkintamonikulmioita</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="105"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="103"/>
         <source>Finalize</source>
         <translation>Viimeistele</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="106"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="104"/>
         <source>Finalize multi-point measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>Viimeistele monipistemittaus</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="120"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="118"/>
         <source>Max Points:</source>
         <translation>Pisteitä enint.:</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="126"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="124"/>
         <source>Maximum points to render in preview (LOD Optimization)</source>
-        <translation type="unfinished"></translation>
+        <translation>Esikatselussa hahmonnettavien pisteiden enimmäismäärä (LOD-optimointi)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="131"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="129"/>
         <source>Auto</source>
         <translation>Auto</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="132"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="130"/>
         <source>Automatically adjust details based on preview size</source>
         <translation>Säädä yksityiskohdat automaattisesti esikatselun koon mukaan</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="138"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="134"/>
         <source>Adaptive</source>
         <translation>Adaptiivinen</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="139"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="135"/>
         <source>Use adaptive sampling based on curvature (Phase 2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä mukautuvaa näytteenottoa kaarevuuden perusteella (vaihe 2)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="151"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="147"/>
         <source>Show Topography</source>
         <translation>Näytä topografia</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="153"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="149"/>
         <source>Show Geology</source>
         <translation>Näytä geologia</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="155"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="151"/>
         <source>Show Structures</source>
         <translation>Näytä rakenteet</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="157"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="153"/>
         <source>Show Drillholes</source>
         <translation>Näytä kairausreiät</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="159"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="155"/>
         <source>Show Interpretations</source>
         <translation>Näytä tulkinnat</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="161"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="157"/>
         <source>Show Legend</source>
         <translation>Näytä selite</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="174"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="170"/>
         <source>Results</source>
         <translation>Tulokset</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="188"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="184"/>
         <source>Scale 1:{}</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittakaava 1:{}</translation>
     </message>
 </context>
 <context>
     <name>ProfileController</name>
     <message>
-        <location filename="../core/controller.py" line="205"/>
+        <location filename="../core/controller.py" line="230"/>
         <source>Required layers for topography are missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Topografiaa varten vaadittavat tasot puuttuvat.</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="211"/>
+        <location filename="../core/controller.py" line="239"/>
         <source>No topographic profile data was generated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Topografisia profiilitietoja ei luotu.</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="213"/>
+        <location filename="../core/controller.py" line="241"/>
         <source>✓ Data processed successfully!
 
 Topography: {0} points</source>
-        <translation type="unfinished"></translation>
+        <translation>✓ Tietojen käsittely onnistui!
+
+Topografia: {0} pistettä</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="251"/>
+        <location filename="../core/controller.py" line="283"/>
         <source>Geology: {0} segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Geologia: {0} segmenttiä</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="253"/>
+        <location filename="../core/controller.py" line="285"/>
         <source>Geology: No intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Geologia: Ei risteyksiä</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="321"/>
+        <location filename="../core/controller.py" line="357"/>
         <source>Structures: {0} points</source>
-        <translation type="unfinished"></translation>
+        <translation>Rakenteet: {0} pistettä</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="323"/>
+        <location filename="../core/controller.py" line="359"/>
         <source>Structures: None in {0}m buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Rakenteet: Ei mitään {0} metrin puskurissa</translation>
+    </message>
+    <message>
+        <location filename="../core/controller.py" line="233"/>
+        <source>Topography service failed to load.</source>
+        <translation>Topografiapalvelun lataaminen epäonnistui.</translation>
+    </message>
+    <message>
+        <location filename="../core/controller.py" line="271"/>
+        <source>Geology: Service failed to load</source>
+        <translation>Geologia: Palvelun lataaminen epäonnistui</translation>
+    </message>
+    <message>
+        <location filename="../core/controller.py" line="327"/>
+        <source>Structures: Service failed to load</source>
+        <translation>Rakenteet: Palvelun lataaminen epäonnistui</translation>
+    </message>
+    <message>
+        <location filename="../core/controller.py" line="390"/>
+        <source>Drillholes: Orchestrator failed to load</source>
+        <translation>Porausreiät: Orchestrator ei latautunut</translation>
     </message>
 </context>
 <context>
@@ -755,40 +777,50 @@ Topography: {0} points</source>
     <message>
         <location filename="../exporters/svg_exporter.py" line="42"/>
         <source>Section Interpretation Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Osion tulkinnan esikatselu</translation>
     </message>
     <message>
         <location filename="../exporters/svg_exporter.py" line="46"/>
         <source>Generated by SecInterp QGIS Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Luonut SecInterp QGIS Plugin</translation>
     </message>
 </context>
 <context>
     <name>SecInterp</name>
     <message>
-        <location filename="../sec_interp_plugin.py" line="199"/>
+        <location filename="../sec_interp_plugin.py" line="210"/>
         <source>&amp;Sec Interp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sec_interp_plugin.py" line="96"/>
+        <location filename="../sec_interp_plugin.py" line="107"/>
         <source>Sec Interp</source>
         <translation>Sec Interp</translation>
     </message>
     <message>
-        <location filename="../sec_interp_plugin.py" line="183"/>
+        <location filename="../sec_interp_plugin.py" line="194"/>
         <source>Geological data extraction</source>
         <translation>Geologisen datan poiminta</translation>
     </message>
     <message>
-        <location filename="../sec_interp_plugin.py" line="314"/>
+        <location filename="../sec_interp_plugin.py" line="336"/>
         <source>Configuration Error</source>
         <translation>Konfiguraatiovirhe</translation>
     </message>
     <message>
-        <location filename="../sec_interp_plugin.py" line="317"/>
+        <location filename="../sec_interp_plugin.py" line="339"/>
         <source>Input Processing Error</source>
         <translation>Syötteen käsittelyvirhe</translation>
+    </message>
+    <message>
+        <location filename="../sec_interp_plugin.py" line="239"/>
+        <source>Initialization Error</source>
+        <translation>Alustusvirhe</translation>
+    </message>
+    <message>
+        <location filename="../sec_interp_plugin.py" line="239"/>
+        <source>The plugin dialog failed to initialize. Please check the logs.</source>
+        <translation>Plugin-valintaikkunan alustus epäonnistui. Tarkista lokit.</translation>
     </message>
 </context>
 <context>
@@ -801,7 +833,7 @@ Topography: {0} points</source>
     <message>
         <location filename="../gui/main_dialog.py" line="93"/>
         <source>Clear cached data to force re-processing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjennä välimuistissa olevat tiedot pakottaaksesi uudelleenkäsittelyn.</translation>
     </message>
     <message>
         <location filename="../gui/main_dialog.py" line="96"/>
@@ -816,44 +848,46 @@ Topography: {0} points</source>
     <message>
         <location filename="../gui/main_dialog.py" line="197"/>
         <source>An unexpected error occurred: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Tapahtui odottamaton virhe: {}</translation>
     </message>
     <message>
         <location filename="../gui/main_dialog.py" line="200"/>
         <source>{}
 
 Please check the logs for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>{}
+
+Tarkista tiedot lokeista.</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="230"/>
+        <location filename="../gui/main_dialog.py" line="246"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="230"/>
-        <source>Help file not found. Please run &apos;make doc&apos; to generate it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/main_dialog.py" line="315"/>
+        <location filename="../gui/main_dialog.py" line="331"/>
         <source>Preview Error</source>
         <translation>Virhe esikatselussa</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="349"/>
+        <location filename="../gui/main_dialog.py" line="365"/>
         <source>Validation Error</source>
         <translation>Validointivirhe</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="358"/>
+        <location filename="../gui/main_dialog.py" line="374"/>
         <source>✓ Cache cleared - next preview will re-process data</source>
-        <translation type="unfinished"></translation>
+        <translation>✓ Välimuisti tyhjennetty - seuraava esikatselu käsittelee tiedot uudelleen</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="363"/>
+        <location filename="../gui/main_dialog.py" line="379"/>
         <source>⚠ Cache not available</source>
         <translation>⚠ Välimuisti ei ole käytettävissä</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog.py" line="246"/>
+        <source>Help file not found. Please run &apos;make docs&apos; to generate it.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -909,35 +943,35 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/section_page.py" line="26"/>
         <source>Cross Section Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Poikkileikkausviiva</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="37"/>
+        <location filename="../gui/ui/pages/section_page.py" line="35"/>
         <source>Section Line *</source>
         <translation>Sektio-viiva *</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="50"/>
+        <location filename="../gui/ui/pages/section_page.py" line="48"/>
         <source>Select the line layer defining the cross-section</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse poikkileikkauksen määrittävä viivakerros</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="61"/>
+        <location filename="../gui/ui/pages/section_page.py" line="57"/>
         <source>Buffer Dist. (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Puskuriväli (m)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="66"/>
+        <location filename="../gui/ui/pages/section_page.py" line="62"/>
         <source> m</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="67"/>
+        <location filename="../gui/ui/pages/section_page.py" line="63"/>
         <source>Distance to include structures around the section line</source>
         <translation>Etäisyys rakenteiden sisällyttämiseksi sektio-viivan ympäriltä</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="87"/>
+        <location filename="../gui/ui/pages/section_page.py" line="83"/>
         <source>Section line layer is required</source>
         <translation>Sektio-viivataso vaaditaan</translation>
     </message>
@@ -952,7 +986,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="56"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Oletus</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="61"/>
@@ -997,17 +1031,17 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="84"/>
         <source>Interpretations (2D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulkinnat (2D)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="99"/>
         <source>Reset to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Palauta oletusasetukset</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="100"/>
         <source>Re-enables all export options (useful if all were accidentally disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ottaa kaikki vientivaihtoehdot uudelleen käyttöön (hyödyllinen, jos kaikki poistettiin vahingossa käytöstä)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="114"/>
@@ -1022,7 +1056,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="117"/>
         <source>Enables the generation of 3D Shapefiles (.shp) during export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mahdollistaa 3D-muototiedostojen (.shp) luomisen viennin aikana.</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="124"/>
@@ -1042,12 +1076,12 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="127"/>
         <source>Use Original Coordinates (Real 3D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä alkuperäisiä koordinaatteja (oikea 3D)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="128"/>
         <source>Use Projected Coordinates (Section Plane)</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä projisoituja koordinaatteja (leikkaustaso)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="163"/>
@@ -1072,7 +1106,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="164"/>
         <source>Sec Interp (version unavailable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sec Interp (versio ei saatavilla)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="165"/>
@@ -1085,45 +1119,45 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/structure_page.py" line="34"/>
         <source>Structural Measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Rakenteelliset mittaukset</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/structure_page.py" line="46"/>
         <source>Structural Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Rakenteellinen kerros</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/structure_page.py" line="59"/>
         <source>Select the point layer with structural measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse pistekerros rakennemitoilla</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="66"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="64"/>
         <source>Dip Field</source>
         <translation>Kaadekenttä</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="69"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="67"/>
         <source>Select field with dip values (0-90)</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse kenttä, jossa on notkahdusarvot (0-90)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="73"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="71"/>
         <source>Strike Field</source>
         <translation>Suuntakenttä</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="76"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="74"/>
         <source>Select field with strike values (0-360)</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse kenttä, jossa varoitusarvot (0-360)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="80"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="78"/>
         <source>Dip Line Scale</source>
         <translation>Kaadeviivan mittakaava</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="86"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="84"/>
         <source>Length factor for drawing dip lines</source>
         <translation>Pituuskertoja kaadeviivojen piirtämiseen</translation>
     </message>
@@ -1133,27 +1167,120 @@ Please check the logs for details.</source>
     <message>
         <location filename="../core/services/structure_service.py" line="146"/>
         <source>Processed {0} structural measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Käsitelty {0} rakennemittausta</translation>
     </message>
     <message>
         <location filename="../core/services/structure_service.py" line="172"/>
         <source>Buffer creation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Puskurin luominen epäonnistui</translation>
     </message>
     <message>
         <location filename="../core/services/structure_service.py" line="173"/>
         <source>Cannot create buffer zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Puskurivyöhykettä ei voi luoda</translation>
     </message>
     <message>
         <location filename="../core/services/structure_service.py" line="201"/>
         <source>Spatial filtering failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilasuodatus epäonnistui</translation>
     </message>
     <message>
         <location filename="../core/services/structure_service.py" line="202"/>
         <source>Cannot filter structures by buffer</source>
+        <translation>Puskurin rakenteita ei voi suodattaa</translation>
+    </message>
+</context>
+<context>
+    <name>ValidationMessages</name>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="86"/>
+        <source>DEM raster layer is required</source>
+        <translation>DEM-rasterikerros vaaditaan</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="91"/>
+        <source>Cross-section line is required</source>
+        <translation>Poikkileikkausviiva vaaditaan</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="96"/>
+        <source>Output path is required</source>
+        <translation>Lähtöpolku vaaditaan</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="101"/>
+        <source>Selected raster layer is not valid</source>
+        <translation>Valittu rasteritaso ei kelpaa</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="108"/>
+        <source>Selected section line is not valid</source>
+        <translation>Valittu osarivi ei kelpaa</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="115"/>
+        <source>Output path is not valid or not writable</source>
+        <translation>Lähtöpolku ei kelpaa tai sitä ei voi kirjoittaa</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="122"/>
+        <source>Layer has incorrect geometry type</source>
+        <translation>Tasolla on väärä geometriatyyppi</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="127"/>
+        <source>Layer contains no features</source>
+        <translation>Taso ei sisällä ominaisuuksia</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="132"/>
+        <source>Layer contains invalid geometries</source>
+        <translation>Taso sisältää virheellisiä geometrioita</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="137"/>
+        <source>Required field &apos;{}&apos; not found in layer</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="144"/>
+        <source>Field &apos;{}&apos; has incorrect type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="151"/>
+        <source>Outcrop layer is required for geological profile</source>
+        <translation>Paljastuskerros tarvitaan geologiseen profiiliin</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="158"/>
+        <source>Outcrop name field is required</source>
+        <translation>Paljastuman nimikenttä on pakollinen</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="163"/>
+        <source>Structural layer is required for structure projection</source>
+        <translation>Rakenteellinen kerros tarvitaan rakenteen projisointiin</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="170"/>
+        <source>Dip field is required</source>
+        <translation>Dip-kenttä on pakollinen</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="175"/>
+        <source>Strike field is required</source>
+        <translation>Varoituskenttä on pakollinen</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="180"/>
+        <source>Input validation failed</source>
+        <translation>Syötteen vahvistus epäonnistui</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="185"/>
+        <source>An unknown error occurred</source>
+        <translation>Tapahtui tuntematon virhe</translation>
     </message>
 </context>
 <context>
@@ -1176,7 +1303,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/dialog_export_manager.py" line="69"/>
         <source>Preview exported to {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Esikatselu viety kohteeseen {}</translation>
     </message>
     <message>
         <location filename="../gui/dialog_export_manager.py" line="82"/>
@@ -1201,7 +1328,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/dialog_input_manager.py" line="42"/>
         <source>Cross-section line layer is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Poikkileikkausviivakerros vaaditaan</translation>
     </message>
     <message>
         <location filename="../gui/dialog_input_manager.py" line="46"/>

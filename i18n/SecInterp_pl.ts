@@ -6,7 +6,7 @@
     <message>
         <location filename="../exporters/base_exporter.py" line="78"/>
         <source>Invalid export path: {error}</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieprawidłowa ścieżka eksportu: {błąd}</translation>
     </message>
 </context>
 <context>
@@ -14,12 +14,12 @@
     <message>
         <location filename="../core/config.py" line="151"/>
         <source>Failed to validate settings during load. Using defaults.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie udało się zweryfikować ustawień podczas ładowania. Używanie ustawień domyślnych.</translation>
     </message>
     <message>
         <location filename="../core/config.py" line="228"/>
         <source>Configuration reset to defaults initiated</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozpoczęto resetowanie konfiguracji do ustawień domyślnych</translation>
     </message>
 </context>
 <context>
@@ -30,52 +30,52 @@
         <translation>Cyfrowy Model Wysokości (DEM)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="58"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="56"/>
         <source>Raster Layer *</source>
         <translation>Warstwa rastrowa *</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="63"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="61"/>
         <source>Select the raster DEM layer</source>
         <translation>Wybierz warstwę rastrową DEM</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="74"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="72"/>
         <source>Band</source>
         <translation>Kanał</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="78"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="76"/>
         <source>Select the raster band</source>
         <translation>Wybierz kanał rastra</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="81"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="79"/>
         <source>Resolution</source>
         <translation>Rozdzielczość</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="86"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="84"/>
         <source>Raster resolution (auto-calculated)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczość rastrowa (obliczana automatycznie)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="98"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="96"/>
         <source>Profile Settings</source>
         <translation>Ustawienia profilu</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="102"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="100"/>
         <source>Scale 1:</source>
         <translation>Skala 1:</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="110"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="108"/>
         <source>Vert. Exag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielony. Przykład.</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/dem_page.py" line="165"/>
+        <location filename="../gui/ui/pages/dem_page.py" line="163"/>
         <source>Raster layer is required</source>
         <translation>Wymagana warstwa rastrowa</translation>
     </message>
@@ -120,17 +120,17 @@
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="117"/>
         <source>East (X):</source>
-        <translation type="unfinished"></translation>
+        <translation>Wschód (X):</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="123"/>
         <source>North (Y):</source>
-        <translation type="unfinished"></translation>
+        <translation>Północ (Y):</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="130"/>
         <source>Elevation (Z):</source>
-        <translation type="unfinished"></translation>
+        <translation>Wysokość (Z):</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="133"/>
@@ -180,7 +180,7 @@
     <message>
         <location filename="../gui/ui/pages/drillhole_page.py" line="255"/>
         <source>Lithology/Attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Litologia/atrybut:</translation>
     </message>
 </context>
 <context>
@@ -188,32 +188,32 @@
     <message>
         <location filename="../core/services/drillhole_service.py" line="110"/>
         <source>Buffer width must be positive, got {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość bufora musi być dodatnia, mam {0}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="340"/>
         <source>Data error in hole {0}: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd danych w otworze {0}: {1}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="342"/>
         <source>Processing error in hole {0}: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd przetwarzania w otworze {0}: {1}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="344"/>
         <source>Runtime or attribute error processing hole {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd wykonania lub błąd przetwarzania atrybutu {0}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="347"/>
         <source>Unexpected processing error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieoczekiwany błąd przetwarzania: {0}</translation>
     </message>
     <message>
         <location filename="../core/services/drillhole_service.py" line="349"/>
         <source>Critical unexpected error processing hole {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Krytyczny nieoczekiwany błąd podczas przetwarzania {0}</translation>
     </message>
 </context>
 <context>
@@ -249,22 +249,22 @@
     <message>
         <location filename="../core/services/geology_service.py" line="197"/>
         <source>Invalid layer: {0}. Please check input layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieprawidłowa warstwa: {0}. Sprawdź warstwy wejściowe.</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="203"/>
         <source>Invalid layer: Outcrop layer. Please check input layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieprawidłowa warstwa: warstwa odkrywki. Sprawdź warstwy wejściowe.</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="210"/>
         <source>Band number must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Numer pasma musi być dodatni.</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="213"/>
         <source>Band number {0} exceeds raster band count ({1}).</source>
-        <translation type="unfinished"></translation>
+        <translation>Numer pasma {0} przekracza liczbę pasm rastrowych ({1}).</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="223"/>
@@ -274,12 +274,12 @@
     <message>
         <location filename="../core/services/geology_service.py" line="366"/>
         <source>Line layer has no features</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa liniowa nie ma żadnych funkcji</translation>
     </message>
     <message>
         <location filename="../core/services/geology_service.py" line="372"/>
         <source>Line geometry is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria linii jest nieprawidłowa</translation>
     </message>
 </context>
 <context>
@@ -290,7 +290,7 @@
         <translation>Geometria jest pusta lub nieprawidłowa</translation>
     </message>
     <message>
-        <location filename="../core/utils/geometry_utils/extraction.py" line="50"/>
+        <location filename="../core/utils/geometry_utils/extraction.py" line="48"/>
         <source>Line geometry has no vertices</source>
         <translation>Geometria linii nie ma wierzchołków</translation>
     </message>
@@ -303,7 +303,7 @@
         <translation>Nieprawidłowa warstwa obiektów</translation>
     </message>
     <message>
-        <location filename="../core/utils/geometry_utils/filtering.py" line="43"/>
+        <location filename="../core/utils/geometry_utils/filtering.py" line="41"/>
         <source>Invalid buffer geometry</source>
         <translation>Nieprawidłowa geometria bufora</translation>
     </message>
@@ -329,64 +329,64 @@
         <translation>Atrybuty niestandardowe</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="46"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="44"/>
         <source>Field Name</source>
         <translation>Nazwa pola</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="46"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="44"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="46"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="44"/>
         <source>Default Value</source>
         <translation>Wartość domyślna</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="54"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="52"/>
         <source>Add Field</source>
         <translation>Dodaj pole</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="55"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="53"/>
         <source>Remove Field</source>
         <translation>Usuń pole</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="65"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="63"/>
         <source>Attribute Inheritance</source>
         <translation>Dziedziczenie atrybutów</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="69"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="65"/>
         <source>Auto-inherit from Geology layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatyczne dziedziczenie z warstw geologicznych</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="71"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="67"/>
         <source>Automatically copy unit name and attributes from the nearest geology segment.</source>
         <translation>Automatycznie kopiuj nazwę jednostki i atrybuty z najbliższego segmentu geologii.</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="77"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="71"/>
         <source>Auto-inherit from Drillhole intervals</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatyczne dziedziczenie z interwałów wierceń</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="81"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="73"/>
         <source>Automatically copy rock code and attributes from the nearest drillhole interval.</source>
         <translation>Automatycznie kopiuj kod skały i atrybuty z najbliższego interwału otworowego.</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="145"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="137"/>
         <source>Field name cannot be empty</source>
         <translation>Nazwa pola nie może być pusta</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/interpretation_page.py" line="147"/>
+        <location filename="../gui/ui/pages/interpretation_page.py" line="139"/>
         <source>Duplicate field name: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Zduplikowana nazwa pola: {}</translation>
     </message>
 </context>
 <context>
@@ -422,7 +422,7 @@
         <translation>Atrybuty niestandardowe</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="121"/>
+        <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="117"/>
         <source>Select Color</source>
         <translation>Wybierz kolor</translation>
     </message>
@@ -435,7 +435,7 @@
         <translation>Topografia</translation>
     </message>
     <message>
-        <location filename="../gui/preview_legend_renderer.py" line="108"/>
+        <location filename="../gui/preview_legend_renderer.py" line="106"/>
         <source>Structures</source>
         <translation>Struktury</translation>
     </message>
@@ -455,22 +455,22 @@
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="399"/>
         <source>Generating Geology: {}%...</source>
-        <translation type="unfinished"></translation>
+        <translation>Generowanie geologii: {}%...</translation>
     </message>
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="409"/>
         <source>Geology processing failed: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetwarzanie geologiczne nie powiodło się: {}</translation>
     </message>
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="419"/>
         <source>Drillhole processing failed: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetwarzanie otworu wiertniczego nie powiodło się: {}</translation>
     </message>
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="459"/>
         <source>CRS: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>KRS: {}</translation>
     </message>
     <message>
         <location filename="../gui/dialog_preview_manager.py" line="463"/>
@@ -493,55 +493,55 @@
     <message>
         <location filename="../gui/preview_reporter.py" line="39"/>
         <source>Topography: {} points</source>
-        <translation type="unfinished"></translation>
+        <translation>Topografia: {} punktów</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="77"/>
+        <location filename="../gui/preview_reporter.py" line="72"/>
         <source>Geology: No data</source>
         <translation>Geologia: Brak danych</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="78"/>
+        <location filename="../gui/preview_reporter.py" line="73"/>
         <source>Geology: {} segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Geologia: {} segmentów</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="88"/>
+        <location filename="../gui/preview_reporter.py" line="81"/>
         <source>Structures: No data</source>
         <translation>Struktury: Brak danych</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="89"/>
+        <location filename="../gui/preview_reporter.py" line="82"/>
         <source>Structures: {} measurements (buffer: {}m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Struktury: {} wymiary (bufor: {}m)</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="97"/>
+        <location filename="../gui/preview_reporter.py" line="90"/>
         <source>Drillholes: No data</source>
         <translation>Otwory: Brak danych</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="98"/>
+        <location filename="../gui/preview_reporter.py" line="91"/>
         <source>Drillholes: {} holes found</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwory wiertnicze: znaleziono {} otworów</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="110"/>
+        <location filename="../gui/preview_reporter.py" line="103"/>
         <source>Geometry Range:</source>
         <translation>Zakres geometrii:</translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="111"/>
+        <location filename="../gui/preview_reporter.py" line="104"/>
         <source>  Elevation: {} to {} m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="114"/>
+        <location filename="../gui/preview_reporter.py" line="107"/>
         <source>  Distance: {} to {} m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/preview_reporter.py" line="128"/>
+        <location filename="../gui/preview_reporter.py" line="119"/>
         <source>Performance:</source>
         <translation>Wydajność:</translation>
     </message>
@@ -579,144 +579,166 @@
         <translation>Eksportuj podgląd do pliku</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="95"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="93"/>
         <source>Measure</source>
         <translation>Pomiar</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="97"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="95"/>
         <source>Measure distance and slope</source>
         <translation>Mierz odległość i nachylenie</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="100"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="98"/>
         <source>Interpret</source>
         <translation>Interpretuj</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="102"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="100"/>
         <source>Draw interpretation polygons</source>
         <translation>Rysuj poligony interpretacyjne</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="105"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="103"/>
         <source>Finalize</source>
         <translation>Zakończ</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="106"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="104"/>
         <source>Finalize multi-point measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakończ pomiar wielopunktowy</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="120"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="118"/>
         <source>Max Points:</source>
         <translation>Maks. punktów:</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="126"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="124"/>
         <source>Maximum points to render in preview (LOD Optimization)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba punktów do renderowania w podglądzie (optymalizacja LOD)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="131"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="129"/>
         <source>Auto</source>
         <translation>Auto</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="132"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="130"/>
         <source>Automatically adjust details based on preview size</source>
         <translation>Automatycznie dostosuj szczegóły do rozmiaru podglądu</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="138"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="134"/>
         <source>Adaptive</source>
         <translation>Adaptacyjny</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="139"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="135"/>
         <source>Use adaptive sampling based on curvature (Phase 2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj próbkowania adaptacyjnego w oparciu o krzywiznę (faza 2)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="151"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="147"/>
         <source>Show Topography</source>
         <translation>Pokaż topografię</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="153"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="149"/>
         <source>Show Geology</source>
         <translation>Pokaż geologię</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="155"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="151"/>
         <source>Show Structures</source>
         <translation>Pokaż struktury</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="157"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="153"/>
         <source>Show Drillholes</source>
         <translation>Pokaż otwory</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="159"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="155"/>
         <source>Show Interpretations</source>
         <translation>Pokaż interpretacje</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="161"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="157"/>
         <source>Show Legend</source>
         <translation>Pokaż legendę</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="174"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="170"/>
         <source>Results</source>
         <translation>Wyniki</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/preview_page.py" line="188"/>
+        <location filename="../gui/ui/pages/preview_page.py" line="184"/>
         <source>Scale 1:{}</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala 1:{}</translation>
     </message>
 </context>
 <context>
     <name>ProfileController</name>
     <message>
-        <location filename="../core/controller.py" line="205"/>
+        <location filename="../core/controller.py" line="230"/>
         <source>Required layers for topography are missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak wymaganych warstw dla topografii.</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="211"/>
+        <location filename="../core/controller.py" line="239"/>
         <source>No topographic profile data was generated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wygenerowano żadnych danych profilu topograficznego.</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="213"/>
+        <location filename="../core/controller.py" line="241"/>
         <source>✓ Data processed successfully!
 
 Topography: {0} points</source>
-        <translation type="unfinished"></translation>
+        <translation>✓ Dane przetworzone pomyślnie!
+
+Topografia: {0} punktów</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="251"/>
+        <location filename="../core/controller.py" line="283"/>
         <source>Geology: {0} segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Geologia: {0} segmentów</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="253"/>
+        <location filename="../core/controller.py" line="285"/>
         <source>Geology: No intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Geologia: Brak skrzyżowań</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="321"/>
+        <location filename="../core/controller.py" line="357"/>
         <source>Structures: {0} points</source>
-        <translation type="unfinished"></translation>
+        <translation>Struktury: {0} punktów</translation>
     </message>
     <message>
-        <location filename="../core/controller.py" line="323"/>
+        <location filename="../core/controller.py" line="359"/>
         <source>Structures: None in {0}m buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Struktury: Brak w buforze {0}m</translation>
+    </message>
+    <message>
+        <location filename="../core/controller.py" line="233"/>
+        <source>Topography service failed to load.</source>
+        <translation>Nie udało się załadować usługi topograficznej.</translation>
+    </message>
+    <message>
+        <location filename="../core/controller.py" line="271"/>
+        <source>Geology: Service failed to load</source>
+        <translation>Geologia: Nie udało się załadować usługi</translation>
+    </message>
+    <message>
+        <location filename="../core/controller.py" line="327"/>
+        <source>Structures: Service failed to load</source>
+        <translation>Struktury: Nie udało się załadować usługi</translation>
+    </message>
+    <message>
+        <location filename="../core/controller.py" line="390"/>
+        <source>Drillholes: Orchestrator failed to load</source>
+        <translation>Otwory wiertnicze: nie udało się załadować programu Orchestrator</translation>
     </message>
 </context>
 <context>
@@ -755,40 +777,50 @@ Topography: {0} points</source>
     <message>
         <location filename="../exporters/svg_exporter.py" line="42"/>
         <source>Section Interpretation Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd interpretacji sekcji</translation>
     </message>
     <message>
         <location filename="../exporters/svg_exporter.py" line="46"/>
         <source>Generated by SecInterp QGIS Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Wygenerowane przez wtyczkę SecInterp QGIS</translation>
     </message>
 </context>
 <context>
     <name>SecInterp</name>
     <message>
-        <location filename="../sec_interp_plugin.py" line="199"/>
+        <location filename="../sec_interp_plugin.py" line="210"/>
         <source>&amp;Sec Interp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sec_interp_plugin.py" line="96"/>
+        <location filename="../sec_interp_plugin.py" line="107"/>
         <source>Sec Interp</source>
         <translation>Sec Interp</translation>
     </message>
     <message>
-        <location filename="../sec_interp_plugin.py" line="183"/>
+        <location filename="../sec_interp_plugin.py" line="194"/>
         <source>Geological data extraction</source>
         <translation>Ekstrakcja danych geologicznych</translation>
     </message>
     <message>
-        <location filename="../sec_interp_plugin.py" line="314"/>
+        <location filename="../sec_interp_plugin.py" line="336"/>
         <source>Configuration Error</source>
         <translation>Error konfiguracji</translation>
     </message>
     <message>
-        <location filename="../sec_interp_plugin.py" line="317"/>
+        <location filename="../sec_interp_plugin.py" line="339"/>
         <source>Input Processing Error</source>
         <translation>Błąd przetwarzania danych wejściowych</translation>
+    </message>
+    <message>
+        <location filename="../sec_interp_plugin.py" line="239"/>
+        <source>Initialization Error</source>
+        <translation>Błąd inicjalizacji</translation>
+    </message>
+    <message>
+        <location filename="../sec_interp_plugin.py" line="239"/>
+        <source>The plugin dialog failed to initialize. Please check the logs.</source>
+        <translation>Nie udało się zainicjować okna wtyczki. Proszę sprawdzić logi.</translation>
     </message>
 </context>
 <context>
@@ -801,7 +833,7 @@ Topography: {0} points</source>
     <message>
         <location filename="../gui/main_dialog.py" line="93"/>
         <source>Clear cached data to force re-processing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść dane w pamięci podręcznej, aby wymusić ponowne przetworzenie.</translation>
     </message>
     <message>
         <location filename="../gui/main_dialog.py" line="96"/>
@@ -816,44 +848,46 @@ Topography: {0} points</source>
     <message>
         <location filename="../gui/main_dialog.py" line="197"/>
         <source>An unexpected error occurred: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Wystąpił nieoczekiwany błąd: {}</translation>
     </message>
     <message>
         <location filename="../gui/main_dialog.py" line="200"/>
         <source>{}
 
 Please check the logs for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>{}
+
+Aby poznać szczegóły, sprawdź logi.</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="230"/>
+        <location filename="../gui/main_dialog.py" line="246"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="230"/>
-        <source>Help file not found. Please run &apos;make doc&apos; to generate it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../gui/main_dialog.py" line="315"/>
+        <location filename="../gui/main_dialog.py" line="331"/>
         <source>Preview Error</source>
         <translation>Błąd podglądu</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="349"/>
+        <location filename="../gui/main_dialog.py" line="365"/>
         <source>Validation Error</source>
         <translation>Błąd walidacji</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="358"/>
+        <location filename="../gui/main_dialog.py" line="374"/>
         <source>✓ Cache cleared - next preview will re-process data</source>
-        <translation type="unfinished"></translation>
+        <translation>✓ Pamięć podręczna wyczyszczona - następny podgląd spowoduje ponowne przetworzenie danych</translation>
     </message>
     <message>
-        <location filename="../gui/main_dialog.py" line="363"/>
+        <location filename="../gui/main_dialog.py" line="379"/>
         <source>⚠ Cache not available</source>
         <translation>⚠ Cache niedostępny</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog.py" line="246"/>
+        <source>Help file not found. Please run &apos;make docs&apos; to generate it.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -909,35 +943,35 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/section_page.py" line="26"/>
         <source>Cross Section Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linia przekroju</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="37"/>
+        <location filename="../gui/ui/pages/section_page.py" line="35"/>
         <source>Section Line *</source>
         <translation>Linia przekroju *</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="50"/>
+        <location filename="../gui/ui/pages/section_page.py" line="48"/>
         <source>Select the line layer defining the cross-section</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz warstwę linii definiującą przekrój</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="61"/>
+        <location filename="../gui/ui/pages/section_page.py" line="57"/>
         <source>Buffer Dist. (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufor Odległ. (M)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="66"/>
+        <location filename="../gui/ui/pages/section_page.py" line="62"/>
         <source> m</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="67"/>
+        <location filename="../gui/ui/pages/section_page.py" line="63"/>
         <source>Distance to include structures around the section line</source>
         <translation>Odległość uwzględniania struktur wokół linii przekroju</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/section_page.py" line="87"/>
+        <location filename="../gui/ui/pages/section_page.py" line="83"/>
         <source>Section line layer is required</source>
         <translation>Warstwa linii przekroju jest wymagana</translation>
     </message>
@@ -952,7 +986,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="56"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślny</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="61"/>
@@ -997,17 +1031,17 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="84"/>
         <source>Interpretations (2D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpretacje (2D)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="99"/>
         <source>Reset to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Przywróć ustawienia domyślne</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="100"/>
         <source>Re-enables all export options (useful if all were accidentally disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponownie włącza wszystkie opcje eksportu (przydatne, jeśli wszystkie zostały przypadkowo wyłączone)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="114"/>
@@ -1022,7 +1056,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="117"/>
         <source>Enables the generation of 3D Shapefiles (.shp) during export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Umożliwia generowanie plików kształtów 3D (.shp) podczas eksportu.</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="124"/>
@@ -1042,12 +1076,12 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="127"/>
         <source>Use Original Coordinates (Real 3D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj oryginalnych współrzędnych (prawdziwe 3D)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="128"/>
         <source>Use Projected Coordinates (Section Plane)</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj rzutowanych współrzędnych (płaszczyzna przekroju)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="163"/>
@@ -1072,7 +1106,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="164"/>
         <source>Sec Interp (version unavailable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sec Interp (wersja niedostępna)</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/settings_page.py" line="165"/>
@@ -1085,45 +1119,45 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/ui/pages/structure_page.py" line="34"/>
         <source>Structural Measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomiary konstrukcyjne</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/structure_page.py" line="46"/>
         <source>Structural Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa strukturalna</translation>
     </message>
     <message>
         <location filename="../gui/ui/pages/structure_page.py" line="59"/>
         <source>Select the point layer with structural measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz warstwę punktową z pomiarami konstrukcyjnymi</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="66"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="64"/>
         <source>Dip Field</source>
         <translation>Pole upadu</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="69"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="67"/>
         <source>Select field with dip values (0-90)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz pole z wartościami spadku (0-90)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="73"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="71"/>
         <source>Strike Field</source>
         <translation>Pole biegu</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="76"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="74"/>
         <source>Select field with strike values (0-360)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz pole z wartościami ostrzeżeń (0-360)</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="80"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="78"/>
         <source>Dip Line Scale</source>
         <translation>Skala linii upadu</translation>
     </message>
     <message>
-        <location filename="../gui/ui/pages/structure_page.py" line="86"/>
+        <location filename="../gui/ui/pages/structure_page.py" line="84"/>
         <source>Length factor for drawing dip lines</source>
         <translation>Współczynnik długości przy rysowaniu linii upadu</translation>
     </message>
@@ -1133,27 +1167,120 @@ Please check the logs for details.</source>
     <message>
         <location filename="../core/services/structure_service.py" line="146"/>
         <source>Processed {0} structural measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetworzone {0} pomiary strukturalne</translation>
     </message>
     <message>
         <location filename="../core/services/structure_service.py" line="172"/>
         <source>Buffer creation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Utworzenie bufora nie powiodło się</translation>
     </message>
     <message>
         <location filename="../core/services/structure_service.py" line="173"/>
         <source>Cannot create buffer zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można utworzyć strefy buforowej</translation>
     </message>
     <message>
         <location filename="../core/services/structure_service.py" line="201"/>
         <source>Spatial filtering failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrowanie przestrzenne nie powiodło się</translation>
     </message>
     <message>
         <location filename="../core/services/structure_service.py" line="202"/>
         <source>Cannot filter structures by buffer</source>
+        <translation>Nie można filtrować struktur według bufora</translation>
+    </message>
+</context>
+<context>
+    <name>ValidationMessages</name>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="86"/>
+        <source>DEM raster layer is required</source>
+        <translation>Wymagana jest warstwa rastrowa DEM</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="91"/>
+        <source>Cross-section line is required</source>
+        <translation>Wymagana jest linia przekroju</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="96"/>
+        <source>Output path is required</source>
+        <translation>Ścieżka wyjściowa jest wymagana</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="101"/>
+        <source>Selected raster layer is not valid</source>
+        <translation>Wybrana warstwa rastrowa jest nieprawidłowa</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="108"/>
+        <source>Selected section line is not valid</source>
+        <translation>Wybrana linia przekroju jest nieprawidłowa</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="115"/>
+        <source>Output path is not valid or not writable</source>
+        <translation>Ścieżka wyjściowa jest nieprawidłowa lub nie można jej zapisać</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="122"/>
+        <source>Layer has incorrect geometry type</source>
+        <translation>Warstwa ma nieprawidłowy typ geometrii</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="127"/>
+        <source>Layer contains no features</source>
+        <translation>Warstwa nie zawiera żadnych obiektów</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="132"/>
+        <source>Layer contains invalid geometries</source>
+        <translation>Warstwa zawiera nieprawidłowe geometrie</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="137"/>
+        <source>Required field &apos;{}&apos; not found in layer</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="144"/>
+        <source>Field &apos;{}&apos; has incorrect type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="151"/>
+        <source>Outcrop layer is required for geological profile</source>
+        <translation>Warstwa wychodni jest wymagana dla profilu geologicznego</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="158"/>
+        <source>Outcrop name field is required</source>
+        <translation>Pole nazwy wychodni jest wymagane</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="163"/>
+        <source>Structural layer is required for structure projection</source>
+        <translation>Do rzutowania konstrukcji wymagana jest warstwa konstrukcyjna</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="170"/>
+        <source>Dip field is required</source>
+        <translation>Pole zanurzenia jest wymagane</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="175"/>
+        <source>Strike field is required</source>
+        <translation>Pole uderzenia jest wymagane</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="180"/>
+        <source>Input validation failed</source>
+        <translation>Sprawdzanie poprawności danych wejściowych nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../gui/main_dialog_config.py" line="185"/>
+        <source>An unknown error occurred</source>
+        <translation>Wystąpił nieznany błąd</translation>
     </message>
 </context>
 <context>
@@ -1176,7 +1303,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/dialog_export_manager.py" line="69"/>
         <source>Preview exported to {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd wyeksportowany do {}</translation>
     </message>
     <message>
         <location filename="../gui/dialog_export_manager.py" line="82"/>
@@ -1201,7 +1328,7 @@ Please check the logs for details.</source>
     <message>
         <location filename="../gui/dialog_input_manager.py" line="42"/>
         <source>Cross-section line layer is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Wymagana jest warstwa linii przekroju</translation>
     </message>
     <message>
         <location filename="../gui/dialog_input_manager.py" line="46"/>

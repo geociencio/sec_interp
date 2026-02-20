@@ -161,7 +161,8 @@ class ValidationMessages:
     def missing_structural_layer() -> str:
         """Return translated 'Structural layer required' message."""
         return QCoreApplication.translate(
-            "ValidationMessages", "Structural layer is required for structure projection"
+            "ValidationMessages",
+            "Structural layer is required for structure projection",
         )
 
     @staticmethod
