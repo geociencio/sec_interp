@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, ClassVar
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
 
 
@@ -79,37 +80,109 @@ class DialogConfig:
 class ValidationMessages:
     """Standard validation error messages."""
 
-    # Required fields
-    MISSING_RASTER = "DEM raster layer is required"
-    MISSING_SECTION_LINE = "Cross-section line is required"
-    MISSING_OUTPUT_PATH = "Output path is required"
+    @staticmethod
+    def missing_raster() -> str:
+        """Return translated 'DEM raster layer is required' message."""
+        return QCoreApplication.translate("ValidationMessages", "DEM raster layer is required")
 
-    # Invalid inputs
-    INVALID_RASTER = "Selected raster layer is not valid"
-    INVALID_SECTION_LINE = "Selected section line is not valid"
-    INVALID_OUTPUT_PATH = "Output path is not valid or not writable"
+    @staticmethod
+    def missing_section_line() -> str:
+        """Return translated 'Cross-section line is required' message."""
+        return QCoreApplication.translate("ValidationMessages", "Cross-section line is required")
 
-    # Geometry errors
-    WRONG_GEOMETRY_TYPE = "Layer has incorrect geometry type"
-    EMPTY_LAYER = "Layer contains no features"
-    INVALID_GEOMETRY = "Layer contains invalid geometries"
+    @staticmethod
+    def missing_output_path() -> str:
+        """Return translated 'Output path is required' message."""
+        return QCoreApplication.translate("ValidationMessages", "Output path is required")
 
-    # Field errors
-    MISSING_FIELD = "Required field '{}' not found in layer"
-    INVALID_FIELD_TYPE = "Field '{}' has incorrect type"
+    @staticmethod
+    def invalid_raster() -> str:
+        """Return translated 'Selected raster layer is not valid' message."""
+        return QCoreApplication.translate(
+            "ValidationMessages", "Selected raster layer is not valid"
+        )
 
-    # Geology specific
-    MISSING_OUTCROP_LAYER = "Outcrop layer is required for geological profile"
-    MISSING_OUTCROP_FIELD = "Outcrop name field is required"
+    @staticmethod
+    def invalid_section_line() -> str:
+        """Return translated 'Selected section line is not valid' message."""
+        return QCoreApplication.translate(
+            "ValidationMessages", "Selected section line is not valid"
+        )
 
-    # Structure specific
-    MISSING_STRUCTURAL_LAYER = "Structural layer is required for structure projection"
-    MISSING_DIP_FIELD = "Dip field is required"
-    MISSING_STRIKE_FIELD = "Strike field is required"
+    @staticmethod
+    def invalid_output_path() -> str:
+        """Return translated 'Output path is not valid or not writable' message."""
+        return QCoreApplication.translate(
+            "ValidationMessages", "Output path is not valid or not writable"
+        )
 
-    # General
-    VALIDATION_FAILED = "Input validation failed"
-    UNKNOWN_ERROR = "An unknown error occurred"
+    @staticmethod
+    def wrong_geometry_type() -> str:
+        """Return translated 'Layer has incorrect geometry type' message."""
+        return QCoreApplication.translate("ValidationMessages", "Layer has incorrect geometry type")
+
+    @staticmethod
+    def empty_layer() -> str:
+        """Return translated 'Layer contains no features' message."""
+        return QCoreApplication.translate("ValidationMessages", "Layer contains no features")
+
+    @staticmethod
+    def invalid_geometry() -> str:
+        """Return translated 'Layer contains invalid geometries' message."""
+        return QCoreApplication.translate("ValidationMessages", "Layer contains invalid geometries")
+
+    @staticmethod
+    def missing_field(field: str) -> str:
+        """Return translated 'Required field not found' message."""
+        return QCoreApplication.translate(
+            "ValidationMessages", "Required field '{}' not found in layer"
+        ).format(field)
+
+    @staticmethod
+    def invalid_field_type(field: str) -> str:
+        """Return translated 'Field type incorrect' message."""
+        return QCoreApplication.translate(
+            "ValidationMessages", "Field '{}' has incorrect type"
+        ).format(field)
+
+    @staticmethod
+    def missing_outcrop_layer() -> str:
+        """Return translated 'Outcrop layer required' message."""
+        return QCoreApplication.translate(
+            "ValidationMessages", "Outcrop layer is required for geological profile"
+        )
+
+    @staticmethod
+    def missing_outcrop_field() -> str:
+        """Return translated 'Outcrop name field required' message."""
+        return QCoreApplication.translate("ValidationMessages", "Outcrop name field is required")
+
+    @staticmethod
+    def missing_structural_layer() -> str:
+        """Return translated 'Structural layer required' message."""
+        return QCoreApplication.translate(
+            "ValidationMessages", "Structural layer is required for structure projection"
+        )
+
+    @staticmethod
+    def missing_dip_field() -> str:
+        """Return translated 'Dip field required' message."""
+        return QCoreApplication.translate("ValidationMessages", "Dip field is required")
+
+    @staticmethod
+    def missing_strike_field() -> str:
+        """Return translated 'Strike field required' message."""
+        return QCoreApplication.translate("ValidationMessages", "Strike field is required")
+
+    @staticmethod
+    def validation_failed() -> str:
+        """Return translated 'Input validation failed' message."""
+        return QCoreApplication.translate("ValidationMessages", "Input validation failed")
+
+    @staticmethod
+    def unknown_error() -> str:
+        """Return translated 'Unknown error' message."""
+        return QCoreApplication.translate("ValidationMessages", "An unknown error occurred")
 
 
 class UIConstants:
