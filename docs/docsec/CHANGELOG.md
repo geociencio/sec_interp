@@ -5,6 +5,15 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [3.1.0] - 2026-02-19
+### 🚀 Características Principales
+- **i18n & GUI**: Traducción automática masiva de cadenas faltantes para todos los 14 idiomas soportados. Añadidos mensajes de validación traducibles.
+- **Exportación**: Adición de registros de depuración y soporte i18n para exportadores. Añadido botón 'Reset to defaults' para opciones de exportación.
+- **Arquitectura**: Modularización de `ProjectValidator` usando el patrón Pipeline. Descomposición de `StateManager` en componentes especializados.
+- **Estabilidad**: Eliminación de importaciones circulares en el módulo de validación. Estabilización de importaciones de `QCoreApplication` en tests.
+
 ## [3.0.1] - 2026-02-17
 ### 🚀 Calidad y Estabilidad
 - **Gestión de Señales**: Resolución de 22 fugas de señales (signal leaks), logrando estabilidad total de la interfaz.

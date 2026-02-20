@@ -3,7 +3,7 @@ name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=4.0.4
+version=3.1.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -11,6 +11,12 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.1.0 (2026-02-19)
+	* Global i18n Expansion & Architecture Pipeline:
+	- i18n & GUI: Mass automatic translation of missing strings in all 14 Supported languages. Added translatable validation messages.
+	- Export: Added debug logging and i18n support to exporters. Added 'Reset to defaults' button for export options.
+	- Core: Modularized ProjectValidator using Pipeline pattern. Decomposed StateManager.
+	- Core: Eliminated circular imports in validation. Stabilized QCoreApplication imports for tests.
 	3.0.1 (2026-02-17)
 	* Quality & Stability Release:
 	- Signals: Eliminated 22 signal leaks, achieving zero-leak status.
