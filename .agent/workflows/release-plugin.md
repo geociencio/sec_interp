@@ -33,15 +33,16 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
 
 🤖 **Agent Action**: Usar skill **release-management** para sincronizar versiones automáticamente.
 
-1. **Sincronizar Versión**:
-   - Actualizar `version` y `changelog` en `metadata.txt`.
+1. **Sincronizar Versión (Semantic Versioning)**:
+   - Acatar `X.Y.Z` (Major.Minor.Patch).
+   - Actualizar `version` y `changelog` explícitamente en `metadata.txt`.
      - ⚠️ **CRÍTICO**: Escapar todo `%` como `%%` en el changelog (e.g., `100%%` no `100%`).
    - Actualizar `version` en `pyproject.toml`.
    - Actualizar el badge de versión en `README.md`.
 
    🤖 **Agent Action**: Validar que las 3 versiones coinciden exactamente.
 
-2. **Changelog Técnico**: Mover `[Unreleased]` a la nueva versión en `docs/CHANGELOG.md` y sincronizar `docs/docsec/CHANGELOG.md` (Español).
+2. **Changelog Técnico (Keep A Changelog)**: Mover `[Unreleased]` a la nueva versión en `docs/CHANGELOG.md` y sincronizar `docs/docsec/CHANGELOG.md` (Español) usando los tipos válidos (`Added`, `Changed`, `Fixed`, etc).
 
 3. **Notas de Lanzamiento**:
    // turbo

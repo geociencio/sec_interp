@@ -30,11 +30,15 @@ Controla el ciclo de vida de las versiones del plugin, garantizando que cada ent
 
 ### Fase 2: Versionado y Documentación
 1. **Sincronización**: Actualizar `metadata.txt` (incluyendo changelog), `pyproject.toml` y `README.md`.
-2. **Reglas Semver**:
-   - MAJOR (X): Cambios incompatibles.
-   - MINOR (Y): Nuevas funcionalidades.
-   - PATCH (Z): Correcciones.
-3. **Notas de Versión**: Generar en `docs/releases/RELEASE_NOTES_vX.Y.Z.md` usando la plantilla estándar.
+2. **Estándares de Versionamiento y Registro (CRÍTICO)**:
+   - **[Semantic Versioning (SemVer)](https://semver.org/spec/v2.0.0.html)**:
+     - MAJOR (X): Cambios incompatibles (Breaking Changes).
+     - MINOR (Y): Nuevas funcionalidades retrocompatibles.
+     - PATCH (Z): Correcciones de errores (Bugfixes).
+   - **[Keep a Changelog](https://keepachangelog.com/es/1.0.0/)**:
+     - Mantener los archivos `docs/CHANGELOG.md` y `docs/docsec/CHANGELOG.md` estrictamente alineados con este estándar.
+     - Agrupar cambios lógicamente (`Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`).
+3. **Notas de Versión**: Generar el release detallado en `docs/releases/RELEASE_NOTES_vX.Y.Z.md`.
 
 ### Fase 3: Verificación Técnica
 1. Lograr 361+ tests pasando.
