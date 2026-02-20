@@ -1,15 +1,22 @@
-# Próximos Pasos - SecInterp (2026-02-19)
+# Próximos Pasos - SecInterp (2026-02-20)
 
 ## Situación Actual
-La arquitectura de carga segura ha sido implementada exitosamente. El plugin es ahora resiliente a fallos en módulos opcionales. El sistema ha vuelto a una estabilidad total post-reversión de SEV.
+Sesión de auditoría I18n completada. Se agregaron mensajes traducibles a ValidationMessages en gui/main_dialog_config.py.
+
+## Tareas Completadas
+- [x] Auditoría I18n GUI: ValidationMessages con QCoreApplication.translate()
+- [x] Commit: c9ce867 feat(gui): add translatable validation messages
 
 ## Tareas Pendientes
-1.  **Refactorización de Diálogo**: Considerar aplicar el mismo patrón de carga perezosa (`SafeLoader`) dentro de `SecInterpDialog` para las páginas individuales (`interpretation_page`, `drillhole_page`, etc.) y así reducir el tiempo de carga inicial de la GUI.
-2.  **SEV 2.0 (Preparación)**: Una vez que se decida reintentar SEV, se debe implementar como un módulo opcional que use `SafeLoader` para garantizar que su fallo no rompa SecInterp.
-3.  **Auditoría de I18n**: El escaneo de calidad (`qgis-analyzer`) muestra baja cobertura de `self.tr()`. Planificar una sesión de formalización de strings.
+1. **Refactorización de Diálogo**: Considerar aplicar el mismo patrón de carga perezosa (`SafeLoader`) dentro de `SecInterpDialog` para las páginas individuales.
+2. **SEV 2.0 (Preparación)**: Implementar como módulo opcional con `SafeLoader`.
+3. **Auditoría I18n completa**: Los 884 MISSING_I18N restantes están en código core (no GUI).
+
+## Estado Tests
+- 368 tests OK
+- Quality Score: 72.0/100
 
 ## Modo de Retomar
-Para iniciar la siguiente sesión de optimización de UI:
 ```bash
 /inicia-sesion
 ```

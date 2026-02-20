@@ -75,19 +75,17 @@ class DrillholeTaskOrchestrator:
         distance_area = scu.create_distance_area(line_lyr.crs())
 
         # 1. Detach Collar Data
-        collar_ids, collar_data, pre_sampled_z = (
-            self.service.collar_processor.detach_features(
-                collar_lyr,
-                section_geom,
-                params.buffer_dist,
-                params.collar_id_field,
-                params.collar_use_geometry,
-                params.collar_x_field,
-                params.collar_y_field,
-                params.collar_z_field,
-                raster_lyr,
-                target_crs=line_lyr.crs(),
-            )
+        collar_ids, collar_data, pre_sampled_z = self.service.collar_processor.detach_features(
+            collar_lyr,
+            section_geom,
+            params.buffer_dist,
+            params.collar_id_field,
+            params.collar_use_geometry,
+            params.collar_x_field,
+            params.collar_y_field,
+            params.collar_z_field,
+            raster_lyr,
+            target_crs=line_lyr.crs(),
         )
 
         if not collar_data:
@@ -219,9 +217,7 @@ class DrillholeTaskOrchestrator:
         if dept_f and dept_f not in fields:
             raise ValidationError(f"Collar Depth field '{dept_f}' not found")
 
-    def _validate_survey_params(
-        self, layer: QgsVectorLayer, fields: dict[str, str]
-    ) -> None:
+    def _validate_survey_params(self, layer: QgsVectorLayer, fields: dict[str, str]) -> None:
         """Validate survey layer fields."""
         from sec_interp.core.exceptions import ValidationError
 
@@ -230,9 +226,7 @@ class DrillholeTaskOrchestrator:
             if fname and fname not in layer_fields:
                 raise ValidationError(f"Survey field '{fname}' not found")
 
-    def _validate_interval_params(
-        self, layer: QgsVectorLayer, fields: dict[str, str]
-    ) -> None:
+    def _validate_interval_params(self, layer: QgsVectorLayer, fields: dict[str, str]) -> None:
         """Validate interval layer fields."""
         from sec_interp.core.exceptions import ValidationError
 
@@ -349,9 +343,7 @@ class DrillholeTaskOrchestrator:
             pre_sampled_z=pre_sampled_z,
         )
 
-    def process_task_data(
-        self, task_input: DrillholeTaskInput, feedback: Any | None = None
-    ) -> Any:
+    def process_task_data(self, task_input: DrillholeTaskInput, feedback: Any | None = None) -> Any:
         """Process drillholes using detached domain data (Thread-Safe)."""
         # Reconstruct Objects
         line_crs = QgsCoordinateReferenceSystem(task_input.line_crs_authid)

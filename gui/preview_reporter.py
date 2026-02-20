@@ -36,26 +36,21 @@ class PreviewReporter:
         lines = [
             QCoreApplication.translate("PreviewReporter", "✓ Preview generated!"),
             "",
-            QCoreApplication.translate(
-                "PreviewReporter", "Topography: {} points"
-            ).format(len(result.topo) if result.topo else 0),
+            QCoreApplication.translate("PreviewReporter", "Topography: {} points").format(
+                len(result.topo) if result.topo else 0
+            ),
         ]
 
         # Add components
         lines.append(PreviewReporter.format_geology_summary(result.geol))
-        lines.append(
-            PreviewReporter.format_structure_summary(result.struct, result.buffer_dist)
-        )
+        lines.append(PreviewReporter.format_structure_summary(result.struct, result.buffer_dist))
         lines.append(PreviewReporter.format_drillhole_summary(result.drillhole))
 
         # Add ranges
         lines.extend(PreviewReporter.format_result_metrics(result))
 
         # Add performance metrics if enabled
-        if (
-            DialogConfig.ENABLE_PERFORMANCE_METRICS
-            and DialogConfig.SHOW_METRICS_IN_RESULTS
-        ):
+        if DialogConfig.ENABLE_PERFORMANCE_METRICS and DialogConfig.SHOW_METRICS_IN_RESULTS:
             lines.extend(PreviewReporter.format_performance_metrics(metrics, result))
 
         lines.extend(
@@ -75,14 +70,12 @@ class PreviewReporter:
         """Format a summary line for geology data."""
         if not geol_data:
             return QCoreApplication.translate("PreviewReporter", "Geology: No data")
-        return QCoreApplication.translate(
-            "PreviewReporter", "Geology: {} segments"
-        ).format(len(geol_data))
+        return QCoreApplication.translate("PreviewReporter", "Geology: {} segments").format(
+            len(geol_data)
+        )
 
     @staticmethod
-    def format_structure_summary(
-        struct_data: StructureData | None, buffer_dist: float
-    ) -> str:
+    def format_structure_summary(struct_data: StructureData | None, buffer_dist: float) -> str:
         """Format a summary line for structural data."""
         if not struct_data:
             return QCoreApplication.translate("PreviewReporter", "Structures: No data")
@@ -95,9 +88,9 @@ class PreviewReporter:
         """Format a summary line for drillhole data."""
         if not drillhole_data:
             return QCoreApplication.translate("PreviewReporter", "Drillholes: No data")
-        return QCoreApplication.translate(
-            "PreviewReporter", "Drillholes: {} holes found"
-        ).format(len(drillhole_data))
+        return QCoreApplication.translate("PreviewReporter", "Drillholes: {} holes found").format(
+            len(drillhole_data)
+        )
 
     @staticmethod
     def format_result_metrics(result: PreviewResult) -> list[str]:
@@ -108,18 +101,16 @@ class PreviewReporter:
         return [
             "",
             QCoreApplication.translate("PreviewReporter", "Geometry Range:"),
-            QCoreApplication.translate(
-                "PreviewReporter", "  Elevation: {} to {} m"
-            ).format(round(min_elev, 1), round(max_elev, 1)),
-            QCoreApplication.translate(
-                "PreviewReporter", "  Distance: {} to {} m"
-            ).format(round(min_dist, 1), round(max_dist, 1)),
+            QCoreApplication.translate("PreviewReporter", "  Elevation: {} to {} m").format(
+                round(min_elev, 1), round(max_elev, 1)
+            ),
+            QCoreApplication.translate("PreviewReporter", "  Distance: {} to {} m").format(
+                round(min_dist, 1), round(max_dist, 1)
+            ),
         ]
 
     @staticmethod
-    def format_performance_metrics(
-        metrics: MetricsCollector, result: PreviewResult
-    ) -> list[str]:
+    def format_performance_metrics(metrics: MetricsCollector, result: PreviewResult) -> list[str]:
         """Format performance metrics into a list of strings."""
         timings = metrics.timings
         if not timings:

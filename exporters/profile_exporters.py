@@ -115,9 +115,7 @@ class GeologyShpExporter(BaseExporter):
         else:
             return True
 
-    def _write_geology_features(
-        self, writer: Any, geology_data: list, fields: QgsFields
-    ) -> None:
+    def _write_geology_features(self, writer: Any, geology_data: list, fields: QgsFields) -> None:
         """Write geology segments to the writer.
 
         Args:
@@ -141,9 +139,7 @@ class GeologyShpExporter(BaseExporter):
                 fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
 
-    def _create_geology_feature(
-        self, segment: Any, fields: QgsFields
-    ) -> QgsFeature | None:
+    def _create_geology_feature(self, segment: Any, fields: QgsFields) -> QgsFeature | None:
         """Create a feature for a geology segment."""
         if len(segment.points) < MIN_REQUIRED_POINTS:
             return None
@@ -329,9 +325,7 @@ class AxesShpExporter(BaseExporter):
         else:
             return True
 
-    def _write_axes_features(
-        self, writer: Any, lines: list, axis_names: list[str]
-    ) -> None:
+    def _write_axes_features(self, writer: Any, lines: list, axis_names: list[str]) -> None:
         """Write axes lines to the writer.
 
         Args:

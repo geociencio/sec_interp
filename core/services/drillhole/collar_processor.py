@@ -44,9 +44,7 @@ class CollarProcessor:
         except (AttributeError, TypeError, ValueError):
             line_buffer = None
 
-        collar_bbox = (
-            line_buffer.boundingBox() if line_buffer else line_geom.boundingBox()
-        )
+        collar_bbox = line_buffer.boundingBox() if line_buffer else line_geom.boundingBox()
         req = QgsFeatureRequest().setFilterRect(collar_bbox)
 
         if target_crs and target_crs.isValid() and layer.crs() != target_crs:
@@ -149,9 +147,7 @@ class CollarProcessor:
         hole_id, collar_pt, z, total_depth = extracted
 
         # 2. Project to section line
-        projection = ProjectionEngine.project_point_to_line(
-            collar_pt, line_geom, line_start, da
-        )
+        projection = ProjectionEngine.project_point_to_line(collar_pt, line_geom, line_start, da)
         dist_along, offset = projection
 
         # 3. Check if within buffer
@@ -185,9 +181,7 @@ class CollarProcessor:
             return None
 
         # Point
-        collar_pt = self.extract_point_agnostic(
-            data, is_dict, use_geometry, x_field, y_field
-        )
+        collar_pt = self.extract_point_agnostic(data, is_dict, use_geometry, x_field, y_field)
         if not collar_pt:
             return None
 
@@ -258,11 +252,7 @@ class CollarProcessor:
         depth = 0.0
         if depth_f:
             with contextlib.suppress(ValueError, TypeError, KeyError):
-                depth = (
-                    float(attrs.get(depth_f, 0.0))
-                    if is_dict
-                    else float(attrs[depth_f] or 0.0)
-                )
+                depth = float(attrs.get(depth_f, 0.0)) if is_dict else float(attrs[depth_f] or 0.0)
         return depth
 
     def build_coordinate_map(

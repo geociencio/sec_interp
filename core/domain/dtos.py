@@ -113,9 +113,7 @@ class PreviewParams:
         if self.band_num < 1:
             raise ValidationError(f"Invalid band number: {self.band_num}")
         if self.buffer_dist < 0:
-            raise ValidationError(
-                f"Buffer distance cannot be negative: {self.buffer_dist}"
-            )
+            raise ValidationError(f"Buffer distance cannot be negative: {self.buffer_dist}")
 
     def _validate_geology_params(self) -> None:
         """Validate geology specific parameters."""
@@ -125,9 +123,7 @@ class PreviewParams:
     def _validate_structure_params(self) -> None:
         """Validate structure specific parameters."""
         if self.struct_layer and (not self.dip_field or not self.strike_field):
-            raise ValidationError(
-                "Structural layer selected but dip/strike fields missing."
-            )
+            raise ValidationError("Structural layer selected but dip/strike fields missing.")
 
     def _validate_drillhole_params(self) -> None:
         """Validate drillhole specific parameters."""
@@ -147,9 +143,7 @@ class PreviewParams:
                 self.survey_incl_field,
             ]
             if not all(required):
-                raise ValidationError(
-                    "Survey layer selected but some required fields are missing."
-                )
+                raise ValidationError("Survey layer selected but some required fields are missing.")
 
     def _validate_interval_params(self) -> None:
         """Validate drillhole interval parameters for consistency and field existence."""
