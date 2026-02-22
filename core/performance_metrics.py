@@ -222,7 +222,7 @@ class PerformanceMonitor:
                 _, peak = tracemalloc.get_traced_memory()
             except RuntimeError:
                 # Tracemalloc might not be started if nested calls improperly handle it
-                _current, peak = 0, 0
+                _, peak = 0, 0
 
             tracemalloc.stop()
 

@@ -19,15 +19,20 @@ exclude =
     *.egg-info
 
 # Ignore specific rules
+# E203: whitespace before ':' (conflicts with black)
+# W503: line break before binary operator (updated PEP 8)
+# E501: line too long (handled by black)
 ignore =
-    E203,  # whitespace before ':' (conflicts with black)
-    W503,  # line break before binary operator (updated PEP 8)
-    E501,  # line too long (handled by black)
+    E203,
+    W503,
+    E501
 
 # Per-file ignores
+# __init__.py: F401/F403 imported but unused (exports)
+# resources/resources.py: E501 auto-generated file
 per-file-ignores =
-    __init__.py:F401,F403  # imported but unused (exports)
-    resources/resources.py:E501  # auto-generated file
+    __init__.py:F401,F403
+    resources/resources.py:E501
 
 # Output format for security scanner
 format = json
