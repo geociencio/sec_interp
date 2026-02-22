@@ -6,9 +6,12 @@ across the plugin's operations.
 
 from __future__ import annotations
 
+import logging
 import time
+import tracemalloc
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
+from functools import wraps
 from typing import Any
 
 from sec_interp.logger_config import get_logger
@@ -161,13 +164,6 @@ def format_duration(seconds: float) -> str:
         return f"{seconds * 1000:.0f}ms"
 
     return f"{seconds:.1f}s"
-
-
-# --- New Implementation ---
-
-import logging
-import tracemalloc
-from functools import wraps
 
 
 class PerformanceMonitor:

@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsGeometry, QgsRasterLayer, QgsVectorLayer
 
 
 class IStructureService(ABC):
