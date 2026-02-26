@@ -14,7 +14,13 @@ from qgis.core import (
 )
 from qgis.PyQt.QtGui import QColor
 
-from sec_interp.core.domain import GeologyData, ProfileData, StructureData
+from sec_interp.core.domain import (
+    DrillholeProjection,
+    GeologyData,
+    GeologySegment,
+    ProfileData,
+    StructureData,
+)
 from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
 from sec_interp.logger_config import get_logger
 
@@ -298,8 +304,12 @@ class PreviewLayerFactory:
 
         features = []
         for hole_data in drillhole_data:
-            # hole_data is (hole_id, spatial_points, segments)
-            hole_id, trace_points = hole_data[0], hole_data[1]
+            # hole_data can be DrillholeProjection object or (hole_id, spatial_points, segments) tuple
+            if isinstance(hole_data, DrillholeProjection):
+                hole_id = hole_data.hole_id
+                trace_points = hole_data.points_3d
+            else:
+                hole_id, trace_points = hole_data[0], hole_data[1]
 
             MIN_TRACE_POINTS = 2
             if not trace_points or len(trace_points) < MIN_TRACE_POINTS:
@@ -338,9 +348,14 @@ class PreviewLayerFactory:
 
         all_segments = []
         for hole_data in drillhole_data:
-            # segments are usually the last element
-            MIN_HOLE_DATA_FOR_SEGMENTS = 3
-            segments = hole_data[-1] if len(hole_data) >= MIN_HOLE_DATA_FOR_SEGMENTS else []
+            # hole_data can be DrillholeProjection or legacy tuple
+            if isinstance(hole_data, DrillholeProjection):
+                segments = hole_data.segments
+            else:
+                # segments are usually the last element
+                MIN_HOLE_DATA_FOR_SEGMENTS = 3
+                segments = hole_data[-1] if len(hole_data) >= MIN_HOLE_DATA_FOR_SEGMENTS else []
+
             if segments and isinstance(segments, list):
                 all_segments.extend(segments)
 
