@@ -185,26 +185,3 @@ def _validate_dip_scale(value: Any) -> list[str]:
     except (ValueError, TypeError):
         pass
     return []
-
-
-def resolve_layer(layer_ref: Any) -> Any:
-    """Resolve a layer reference (ID string or QgsMapLayer) to a QgsMapLayer.
-
-    This is a free function extracted from ``ProjectValidator._resolve_layer``
-    to avoid circular imports between ``project_validator`` and
-    ``project_validators``.
-
-    Args:
-        layer_ref: A ``QgsMapLayer`` instance or a layer ID string.
-
-    Returns:
-        The resolved ``QgsMapLayer``, or ``None`` if not found.
-
-    """
-    from qgis.core import QgsMapLayer, QgsProject
-
-    if isinstance(layer_ref, QgsMapLayer):
-        return layer_ref
-    if isinstance(layer_ref, str) and layer_ref:
-        return QgsProject.instance().mapLayer(layer_ref)
-    return None

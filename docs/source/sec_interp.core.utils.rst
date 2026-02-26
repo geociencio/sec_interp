@@ -28,5 +28,6 @@ Submodules
    sec_interp.core.utils.parsing
    sec_interp.core.utils.rendering
    sec_interp.core.utils.resource_manager
+   sec_interp.core.utils.safe_loader
    sec_interp.core.utils.sampling
    sec_interp.core.utils.spatial

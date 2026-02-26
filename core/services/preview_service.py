@@ -20,6 +20,7 @@ from sec_interp.core.exceptions import (
     SecInterpError,
 )
 from sec_interp.core.performance_metrics import PerformanceTimer
+from sec_interp.core.utils.qgis import resolve_layer
 from sec_interp.core.utils.sampling import prepare_profile_context
 from sec_interp.core.utils.spatial import calculate_line_azimuth
 from sec_interp.logger_config import get_logger
@@ -58,15 +59,6 @@ class PreviewService:
     def profile_service(self) -> Any:
         """Expose profile service from controller."""
         return self.controller.profile_service
-
-    def _resolve_layer(self, layer_ref: Any) -> Any:
-        """Resolve layer ID or object to a QgsMapLayer."""
-        from qgis.core import QgsProject
-
-        if not isinstance(layer_ref, str) or not layer_ref:
-            return layer_ref
-
-        return QgsProject.instance().mapLayer(str(layer_ref))
 
     @staticmethod
     def calculate_max_points(
@@ -126,8 +118,8 @@ class PreviewService:
 
         # 1. Topography & Context Extraction
         with PerformanceTimer("Topography Generation", result.metrics):
-            line_lyr = self._resolve_layer(params.line_layer)
-            raster_lyr = self._resolve_layer(params.raster_layer)
+            line_lyr = resolve_layer(params.line_layer)
+            raster_lyr = resolve_layer(params.raster_layer)
 
             if not line_lyr or not raster_lyr:
                 raise ProcessingError("Required layers for topography are missing.")
@@ -154,7 +146,7 @@ class PreviewService:
         # 2. Structures (Now using detached flow)
         if params.struct_layer and params.dip_field and params.strike_field:
             with PerformanceTimer("Structure Generation", result.metrics):
-                struct_lyr = self._resolve_layer(params.struct_layer)
+                struct_lyr = resolve_layer(params.struct_layer)
                 if not struct_lyr:
                     return result
 
@@ -197,9 +189,9 @@ class PreviewService:
             logger.info("Drillhole preview skipped: No Collar ID field selected.")
             return None
 
-        line_lyr = self._resolve_layer(params.line_layer)
-        raster_lyr = self._resolve_layer(params.raster_layer)
-        collar_lyr = self._resolve_layer(params.collar_layer)
+        line_lyr = resolve_layer(params.line_layer)
+        raster_lyr = resolve_layer(params.raster_layer)
+        collar_lyr = resolve_layer(params.collar_layer)
 
         if not line_lyr or not collar_lyr:
             return None
@@ -247,8 +239,8 @@ class PreviewService:
             return None
 
         # 3. Fetch Child Data
-        survey_lyr = self._resolve_layer(params.survey_layer)
-        interval_lyr = self._resolve_layer(params.interval_layer)
+        survey_lyr = resolve_layer(params.survey_layer)
+        interval_lyr = resolve_layer(params.interval_layer)
 
         survey_map = {}
         if survey_lyr:

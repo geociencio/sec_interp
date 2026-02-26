@@ -13,7 +13,6 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsGeometry,
     QgsPointXY,
-    QgsProject,
     QgsRasterLayer,
     QgsVectorLayer,
 )
@@ -21,6 +20,7 @@ from qgis.core import (
 from sec_interp.core import utils as scu
 from sec_interp.core.domain import DrillholeTaskInput, PreviewParams
 from sec_interp.core.exceptions import DataMissingError
+from sec_interp.core.utils.qgis import resolve_layer
 
 if TYPE_CHECKING:
     from sec_interp.core.services.drillhole_service import DrillholeService
@@ -42,23 +42,17 @@ class DrillholeTaskOrchestrator:
         """
         self.service = service
 
-    def _resolve_layer(self, layer_ref: Any) -> Any:
-        """Resolve a layer reference (ID or object) to a QgsMapLayer."""
-        if not isinstance(layer_ref, str) or not layer_ref:
-            return layer_ref
-        return QgsProject.instance().mapLayer(str(layer_ref))
-
     def run_preview(self, params: PreviewParams) -> list[tuple] | None:
         """Execute a synchronous drillhole preview.
 
         This mimics the legacy generate_drillhole_data but is now managed
         by the orchestrator.
         """
-        line_lyr = self._resolve_layer(params.line_layer)
-        collar_lyr = self._resolve_layer(params.collar_layer)
-        raster_lyr = self._resolve_layer(params.raster_layer)
-        survey_lyr = self._resolve_layer(params.survey_layer)
-        interval_lyr = self._resolve_layer(params.interval_layer)
+        line_lyr = resolve_layer(params.line_layer)
+        collar_lyr = resolve_layer(params.collar_layer)
+        raster_lyr = resolve_layer(params.raster_layer)
+        survey_lyr = resolve_layer(params.survey_layer)
+        interval_lyr = resolve_layer(params.interval_layer)
 
         if not line_lyr or not collar_lyr:
             return None

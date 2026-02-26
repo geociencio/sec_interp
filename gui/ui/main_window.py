@@ -78,8 +78,7 @@ class SecInterpMainWindow(QDialog):
         splitter.setChildrenCollapsible(True)
 
         # Style the splitter handle to be visible and indicate interaction
-        splitter.setStyleSheet(
-            """
+        splitter.setStyleSheet("""
             QSplitter::handle {
                 background-color: #e0e0e0;
                 border: 1px solid #c0c0c0;
@@ -94,8 +93,7 @@ class SecInterpMainWindow(QDialog):
                 background-color: #b0b0b0;
                 border-color: #808080;
             }
-        """
-        )
+        """)
 
         # 1. Left: Sidebar
         splitter.addWidget(self.sidebar)

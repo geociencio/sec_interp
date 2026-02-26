@@ -58,7 +58,7 @@ class ToolManager:
                 lambda: self.dialog.preview_widget.btn_measure.setChecked(False)
             )
             self.measure_tool.measurementCleared.connect(
-                lambda: self.dialog.preview_widget.results_text.clear()
+                self.dialog.preview_widget.results_text.clear
             )
 
         self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)

@@ -11,7 +11,6 @@ from typing import Any
 
 from qgis.core import (
     QgsMapLayer,
-    QgsProject,
 )
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -23,6 +22,8 @@ from qgis.PyQt.QtWidgets import QAction
 
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import SecInterpError
+from sec_interp.core.utils.i18n import TranslatableMixin
+from sec_interp.core.utils.qgis import resolve_layer
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger, setup_logging
 
@@ -32,7 +33,7 @@ logger = get_logger(__name__)
 # DataCache has been moved to core/data_cache.py
 
 
-class SecInterp:
+class SecInterp(TranslatableMixin):
     """QGIS Plugin Implementation for Geological Data Extraction.
 
     This class implements the main logic of the SecInterp plugin, handling
@@ -111,22 +112,6 @@ class SecInterp:
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
-
-    # noinspection PyMethodMayBeStatic
-    def tr(self, message: str) -> str:
-        """Get the translation for a string using Qt translation API.
-
-        We implement this ourselves since we do not inherit QObject.
-
-        Args:
-            message (str): String for translation.
-
-        Returns:
-            str: Translated string (or original if no translation found).
-
-        """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate("SecInterp", message)
 
     def add_action(
         self,
@@ -259,30 +244,7 @@ class SecInterp:
         # Show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
-
-    def _resolve_layer_obj(self, value: Any, placeholder_text: str = "") -> QgsMapLayer | None:
-        """Resolve layer object from UI value."""
-        if isinstance(value, QgsMapLayer):
-            return value
-        if isinstance(value, str) and value:
-            if placeholder_text and value == placeholder_text:
-                return None
-            # Try resolving by ID first (most robust)
-            layer = QgsProject.instance().mapLayer(value)
-            if not layer:
-                # Fallback to name search
-                for lyr in QgsProject.instance().mapLayers().values():
-                    if lyr.name() == value:
-                        layer = lyr
-                        break
-            return layer
-        return None
+        self.dlg.exec_()
 
     def _get_and_validate_inputs(self) -> PreviewParams | None:
         """Retrieve and validate inputs from the dialog."""
@@ -356,9 +318,7 @@ class SecInterp:
         ]
         layers = []
         for lid in ids:
-            if not lid:
-                continue
-            lyr = self._resolve_layer_obj(lid)
+            lyr = resolve_layer(lid)
             if lyr:
                 layers.append(lyr)
         return layers

@@ -5,7 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
-from qgis.PyQt.QtCore import QCoreApplication
+
+from sec_interp.core.utils.i18n import TranslatableMixin
 
 from .validation_helpers import ValidationContext
 
@@ -49,17 +50,12 @@ class ValidationParams:
     interval_lith: str | None = None
 
 
-class ProjectValidator:
+class ProjectValidator(TranslatableMixin):
     """Orchestrates validation of project parameters independent of the GUI.
 
     Level 2: Business Logic Validation.
     Uses ValidationContext to accumulate errors and verify cross-field dependencies.
     """
-
-    @staticmethod
-    def tr(message: str) -> str:
-        """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("ProjectValidator", message)
 
     @classmethod
     def validate_all(cls, params: ValidationParams) -> bool:
@@ -151,14 +147,3 @@ class ProjectValidator:
         context = ValidationContext()
         StructureValidator().validate(params, context)
         return not context.has_errors
-
-    @staticmethod
-    def _resolve_layer(layer_ref: Any) -> Any:
-        """Resolve layer ID or object to a QgsMapLayer.
-
-        Delegates to :func:`sec_interp.core.validation.validation_helpers.resolve_layer`.
-        Kept for backward compatibility.
-        """
-        from .validation_helpers import resolve_layer
-
-        return resolve_layer(layer_ref)

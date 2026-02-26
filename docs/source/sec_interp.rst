@@ -26,4 +26,5 @@ Submodules
    sec_interp.logger_config
    sec_interp.run_qgis_manage
    sec_interp.sec_interp_plugin
+   sec_interp.test_ignore_logic
    sec_interp.test_patch

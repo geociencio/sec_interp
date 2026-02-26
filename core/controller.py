@@ -10,20 +10,21 @@ import time
 from typing import Any
 
 from qgis.core import QgsDistanceArea, QgsProject
-from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import ProcessingError
+from sec_interp.core.utils.i18n import TranslatableMixin
+from sec_interp.core.utils.qgis import resolve_layer
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
 
-class ProfileController:
+class ProfileController(TranslatableMixin):
     """Orchestrates data generation services for SecInterp profile creation."""
 
     def __init__(self) -> None:
@@ -185,15 +186,6 @@ class ProfileController:
 
         return profile_data, geol_data, struct_data, drillhole_data, messages
 
-    def _resolve_layer(self, layer_ref: Any) -> Any:
-        """Resolve a layer reference (ID or object) to a QgsMapLayer."""
-        from qgis.core import QgsProject
-
-        if not isinstance(layer_ref, str) or not layer_ref:
-            return layer_ref
-
-        return QgsProject.instance().mapLayer(str(layer_ref))
-
     def _get_cache_sub_key(self, param_values: list[Any]) -> str:
         """Generate a sub-key for caching specific components."""
         import hashlib
@@ -210,10 +202,6 @@ class ProfileController:
                 hasher.update(str(val).encode("utf-8"))
         return hasher.hexdigest()
 
-    def tr(self, message: str) -> str:
-        """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("ProfileController", message)
-
     def _process_topography(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
     ) -> list[tuple[float, float]]:
@@ -223,8 +211,8 @@ class ProfileController:
         if profile_data:
             logger.debug("Cache hit: Topography")
         else:
-            line_lyr = self._resolve_layer(params.line_layer)
-            raster_lyr = self._resolve_layer(params.raster_layer)
+            line_lyr = resolve_layer(params.line_layer)
+            raster_lyr = resolve_layer(params.raster_layer)
 
             if not line_lyr or not raster_lyr:
                 raise ProcessingError(self.tr("Required layers for topography are missing."))
@@ -260,9 +248,9 @@ class ProfileController:
             logger.debug("Cache hit: Geology")
             messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))
         else:
-            line_lyr = self._resolve_layer(params.line_layer)
-            raster_lyr = self._resolve_layer(params.raster_layer)
-            outcrop_lyr = self._resolve_layer(params.outcrop_layer)
+            line_lyr = resolve_layer(params.line_layer)
+            raster_lyr = resolve_layer(params.raster_layer)
+            outcrop_lyr = resolve_layer(params.outcrop_layer)
 
             if not all([line_lyr, raster_lyr, outcrop_lyr]):
                 return None
@@ -306,7 +294,7 @@ class ProfileController:
             logger.debug("Cache hit: Structure")
             messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
         else:
-            line_lyr = self._resolve_layer(params.line_layer)
+            line_lyr = resolve_layer(params.line_layer)
             if not line_lyr:
                 return None
 
@@ -317,8 +305,8 @@ class ProfileController:
                     line_start = scu.get_line_start_point(line_geom)
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
 
-                    struct_lyr = self._resolve_layer(params.struct_layer)
-                    raster_lyr = self._resolve_layer(params.raster_layer)
+                    struct_lyr = resolve_layer(params.struct_layer)
+                    raster_lyr = resolve_layer(params.raster_layer)
 
                     if not struct_lyr:
                         return None
@@ -382,7 +370,7 @@ class ProfileController:
             logger.debug("Cache hit: Drillholes")
             return drillhole_data
 
-        collar_lyr = self._resolve_layer(params.collar_layer)
+        collar_lyr = resolve_layer(params.collar_layer)
         if not collar_lyr:
             return None
 

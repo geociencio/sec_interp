@@ -24,8 +24,7 @@ class Sidebar(QListWidget):
         self.setFixedWidth(140)  # Slightly wider for better text fit
 
         # Style to look like QGIS options dialog sidebar
-        self.setStyleSheet(
-            """
+        self.setStyleSheet("""
             QListWidget {
                 background-color: #f0f0f0;
                 border-right: 1px solid #d0d0d0;
@@ -44,8 +43,7 @@ class Sidebar(QListWidget):
             QListWidget::item:hover {
                 background-color: #e8e8e8;
             }
-        """
-        )
+        """)
 
     def add_item(self, text: str, icon_name: str | None = None) -> None:
         """Add an item to the sidebar.

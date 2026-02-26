@@ -10,7 +10,7 @@ import contextlib
 from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsVectorLayer
-from qgis.PyQt.QtCore import QCoreApplication, QTimer
+from qgis.PyQt.QtCore import QTimer
 
 from sec_interp.core.domain import (
     PreviewParams,
@@ -23,6 +23,8 @@ from sec_interp.core.performance_metrics import (
     PerformanceTimer,
 )
 from sec_interp.core.services.preview_service import PreviewService
+from sec_interp.core.utils.i18n import TranslatableMixin
+from sec_interp.core.utils.qgis import resolve_layer
 from sec_interp.logger_config import get_logger
 
 from .lod_calculator import LODCalculator
@@ -37,7 +39,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class PreviewManager:
+class PreviewManager(TranslatableMixin):
     """Manages preview generation and rendering for the dialog.
 
     This class encapsulates all preview-related logic, including data
@@ -99,9 +101,7 @@ class PreviewManager:
             with PerformanceTimer("Total Preview Generation", self.metrics):
                 params = self.dialog.plugin_instance._get_and_validate_inputs()
                 if not params:
-                    return False, QCoreApplication.translate(
-                        "PreviewManager", "Invalid configuration"
-                    )
+                    return False, self.tr("Invalid configuration")
 
                 result = self._process_preview_data(params)
                 self._update_ui_state(params, result)
@@ -118,13 +118,11 @@ class PreviewManager:
             self.dialog.handle_error(e, "Critical Error")
             return False, str(e)
         else:
-            return True, QCoreApplication.translate(
-                "PreviewManager", "Preview generated successfully"
-            )
+            return True, self.tr("Preview generated successfully")
 
     def _update_ui_state(self, params: PreviewParams, result: PreviewResult) -> None:
         """Update UI and trigger render pipeline."""
-        line_lyr = self._resolve_layer(params.line_layer)
+        line_lyr = resolve_layer(params.line_layer)
         self._update_crs_label(line_lyr)
         self._run_render_pipeline(result)
 
@@ -189,7 +187,7 @@ class PreviewManager:
     def _handle_geometric_changes(self, params: PreviewParams) -> None:
         """Clear interpretations if the section geometry has changed."""
         old_geo_params = getattr(self, "_last_geo_params", None)
-        line_lyr = self._resolve_layer(params.line_layer)
+        line_lyr = resolve_layer(params.line_layer)
         line_feat = next(line_lyr.getFeatures(), None) if line_lyr else None
         line_geom = line_feat.geometry().asWkt() if line_feat else None
 
@@ -397,30 +395,20 @@ class PreviewManager:
 
         """
         self.dialog.preview_widget.results_text.setPlainText(
-            QCoreApplication.translate("PreviewManager", "Generating Geology: {}%...").format(
-                progress
-            )
+            self.tr("Generating Geology: {}%...").format(progress)
         )
 
     def _on_geology_error(self, error_msg: str) -> None:
         """Handle error during parallel geology generation."""
         logger.error(f"Geology Task Error: {error_msg}")
         # Map string error to ProcessingError for centralized handling
-        error = ProcessingError(
-            QCoreApplication.translate("PreviewManager", "Geology processing failed: {}").format(
-                error_msg
-            )
-        )
+        error = ProcessingError(self.tr("Geology processing failed: {}").format(error_msg))
         self.dialog.handle_error(error, "Geology Error")
 
     def _on_drillhole_error(self, error_msg: str) -> None:
         """Handle error during parallel drillhole generation."""
         logger.error(f"Drillhole Task Error: {error_msg}")
-        error = ProcessingError(
-            QCoreApplication.translate("PreviewManager", "Drillhole processing failed: {}").format(
-                error_msg
-            )
-        )
+        error = ProcessingError(self.tr("Drillhole processing failed: {}").format(error_msg))
         self.dialog.handle_error(error, "Drillhole Error")
 
     def _on_drillhole_finished(self, result: Any) -> None:
@@ -469,7 +457,3 @@ class PreviewManager:
             )
         except Exception:
             logger.exception("Unexpected error updating CRS label")
-
-    def _resolve_layer(self, layer_ref: Any) -> Any:
-        """Resolve a layer reference via controller."""
-        return self.dialog.plugin_instance.controller._resolve_layer(layer_ref)

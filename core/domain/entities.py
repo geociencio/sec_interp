@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from qgis.core import QgsVectorLayer
+if TYPE_CHECKING:
+    from qgis.core import QgsVectorLayer
 
 # --- Aliases ---
 

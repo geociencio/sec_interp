@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsApplication
 
+from sec_interp.core.utils.qgis import resolve_layer
+
 from .tasks.drillhole_task import DrillholeGenerationTask
 from .tasks.geology_task import GeologyGenerationTask
 
@@ -58,9 +60,9 @@ class PreviewTaskOrchestrator:
             self.geology_task.cancel()
 
         # Resolve layer IDs to actual layer objects
-        line_lyr = self.manager._resolve_layer(params.line_layer)
-        raster_lyr = self.manager._resolve_layer(params.raster_layer)
-        outcrop_lyr = self.manager._resolve_layer(params.outcrop_layer)
+        line_lyr = resolve_layer(params.line_layer)
+        raster_lyr = resolve_layer(params.raster_layer)
+        outcrop_lyr = resolve_layer(params.outcrop_layer)
 
         task_input = service.prepare_task_input(
             line_lyr,
@@ -90,11 +92,11 @@ class PreviewTaskOrchestrator:
             self.drillhole_task.cancel()
 
         # Resolve layer IDs to actual layer objects
-        line_lyr = self.manager._resolve_layer(params.line_layer)
-        collar_lyr = self.manager._resolve_layer(params.collar_layer)
-        survey_lyr = self.manager._resolve_layer(params.survey_layer)
-        interval_lyr = self.manager._resolve_layer(params.interval_layer)
-        raster_lyr = self.manager._resolve_layer(params.raster_layer)
+        line_lyr = resolve_layer(params.line_layer)
+        collar_lyr = resolve_layer(params.collar_layer)
+        survey_lyr = resolve_layer(params.survey_layer)
+        interval_lyr = resolve_layer(params.interval_layer)
+        raster_lyr = resolve_layer(params.raster_layer)
 
         survey_fields_dict = {
             "id": params.survey_id_field,

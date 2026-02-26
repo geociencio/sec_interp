@@ -16,7 +16,20 @@ lessons:
     category: ARCHITECTURE
     topic: Resilience & Lazy Loading
     lesson: "When implementing experimental features or heavy domain services, use a SafeLoader/Lazy Loading pattern to prevent cascading failures during plugin initialization. This ensures the core plugin remains functional even if a specific module fails to load (e.g., due to missing dependencies)."
-    action: "Implement SafeLoader for all optional or heavy services and use demand-based instantiation."
+    action: "Implement SafeLoader for all optional or heavy services and use demand-based instantiation. IMPROVEMENT: Support constructor arguments in lazy_load."
+
+  - date: 2026-02-25
+    category: ARCHITECTURE
+    topic: Layer Resolution Standardization
+    lesson: "Distributed layer resolution logic leads to inconsistent error handling and fragile code."
+    action: "Centralize all QGIS layer resolution in core/utils/qgis.py avoiding ad-hoc QgsProject.instance() calls."
+
+  - date: 2026-02-25
+    category: TECHNICAL
+    topic: Data Modeling and Typing
+    lesson: "Using tuples for complex data transfer makes code unreadable and hard to refactor (index-based access)."
+    action: "Mandatory use of Dataclasses (entities) for all service returns. Avoid list[tuple]."
+
 
 
   - date: 2026-02-01

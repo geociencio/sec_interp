@@ -11,6 +11,7 @@ Tools Used (QGIS Portal Compatible):
     - detect-secrets: Secrets and credentials detector
     - Flake8: Code quality checker (portal compatible)
 """
+
 import argparse
 import json
 import subprocess
