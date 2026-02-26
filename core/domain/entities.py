@@ -16,7 +16,7 @@ GeologyPoints = list[tuple[float, float, str]]
 StructurePoints = list[tuple[float, float]]
 
 # Layer collections
-LayerDict = dict[str, QgsVectorLayer]
+LayerDict = dict[str, "QgsVectorLayer"]
 """Dictionary mapping layer names to QgsVectorLayer objects."""
 
 # Settings and configuration

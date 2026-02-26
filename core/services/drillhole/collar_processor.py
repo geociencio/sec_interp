@@ -8,6 +8,7 @@ from typing import Any
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
+    QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
