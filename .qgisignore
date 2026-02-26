@@ -83,9 +83,9 @@ latest_quality_report.md
 
 # Documentación, Scripts y Ejemplos de desarrollo
 docs/
-examples/
-scripts/
-tools/
+/examples/
+/scripts/
+/tools/
 
 # Archivos de empaquetado y dependencias (excepto lo mínimo)
 uv.lock
