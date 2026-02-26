@@ -219,9 +219,17 @@ class DrillholeService(IDrillholeService):
     ) -> None:
         """Process a batch of holes sequentially."""
         for result in collar_points:
-            hole_id = result.hole_id
-            collar_z = result.elevation
-            given_depth = result.total_depth
+            # Polymorphic handling: handle both DrillholeProjection objects and legacy tuples
+            if hasattr(result, "hole_id"):
+                hole_id = result.hole_id
+                collar_z = result.elevation
+                given_depth = result.total_depth
+            else:
+                # Legacy tuple: (hole_id, dist, z, offset, total_depth)
+                hole_id = result[0]
+                collar_z = result[2]
+                given_depth = result[4]
+
             collar_point = collar_coords.get(hole_id)
             if not collar_point:
                 continue
@@ -255,7 +263,7 @@ class DrillholeService(IDrillholeService):
         distance_area: QgsDistanceArea,
         buffer_width: float,
         section_azimuth: float,
-    ) -> tuple[list[GeologySegment], tuple]:
+    ) -> tuple[list[GeologySegment], DrillholeProjection]:
         """Process a single drillhole's trajectory and intervals."""
         return self.trajectory_engine.process_single_hole(
             hole_id,
@@ -296,7 +304,7 @@ class DrillholeService(IDrillholeService):
         buffer_width: float,
         section_azimuth: float,
         geol_data: list[GeologySegment],
-        drillhole_data: list[tuple[Any, list[tuple[float, float]], list[GeologySegment]]],
+        drillhole_data: list[DrillholeProjection],
     ) -> None:
         """Safely process a single hole with error logging."""
         try:

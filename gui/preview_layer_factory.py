@@ -17,7 +17,6 @@ from qgis.PyQt.QtGui import QColor
 from sec_interp.core.domain import (
     DrillholeProjection,
     GeologyData,
-    GeologySegment,
     ProfileData,
     StructureData,
 )

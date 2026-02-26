@@ -143,7 +143,9 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
         self.assertEqual(len(drill), 1)
         # Should be at dist_along ~ 500m (midpoint)
         # Check projected points
-        h_id, spatial_points, segments = drill[0]
+        h_id = drill[0].hole_id
+        spatial_points = drill[0].points_3d
+        segments = drill[0].segments
         self.assertEqual(h_id, "H001")
 
         # Verify CRS transformation accuracy (allow small error due to float/reprojection)
@@ -243,7 +245,9 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
         geol, drill = self.orchestrator.process_task_data(task_input)
 
         # 5. Verify 3D projection logic
-        h_id, spatial_points, segments = drill[0]
+        h_id = drill[0].hole_id
+        spatial_points = drill[0].points_3d
+        segments = drill[0].segments
 
         # Check integrity: 3D points should drift East (X increases)
         # At depth 0 (Index 0): X=50, Y=50

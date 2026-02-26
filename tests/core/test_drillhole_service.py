@@ -164,6 +164,7 @@ class TestDrillholeService(BaseTestCase):
         )
 
         self.assertEqual(len(dh), 1)
-        self.assertEqual(dh[0][0], "DH01")
-        # dh[0] is (hole_id, spatial_points, segments)
-        self.assertEqual(len(dh[0]), 3)
+        self.assertEqual(dh[0].hole_id, "DH01")
+        # dh[0] is DrillholeProjection
+        self.assertTrue(hasattr(dh[0], "points_3d"))
+        self.assertTrue(hasattr(dh[0], "segments"))

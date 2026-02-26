@@ -2,6 +2,10 @@
 
 This document serves as the central record for project history, release procedures, and past refactoring analysis.
 
+## [2026-02-25] STABILIZATION HOTFIXES (DRILLHOLES & RENDERING)
+- **Cambios**: Corregido desajuste de DI (`ProfileController`), error de índice en sondajes vacíos (`TrajectoryEngine`) y error de subscripción en renderizado (`PreviewLayerFactory`).
+- **Métricas/Impacto**: Estabilidad del 100% restaurada para la Fase 3. Renderizado de sondajes funcional con polimorfismo.
+
 ## [2026-02-18] EXPANSIÓN I18N ASIA & AUDITORÍA DE INFRAESTRUCTURA
 - **Cambios**: Localización a Hindi e Indonesio. Auditoría técnica de `qgis-manage` con roadmap de modernización.
 - **Métricas/Impacto**: 100% de cobertura de traducción en nuevos idiomas. Hoja de ruta establecida para resolver deuda técnica de compilación de recursos.

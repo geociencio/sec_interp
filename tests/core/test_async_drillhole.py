@@ -112,7 +112,7 @@ class TestAsyncDrillhole(BaseTestCase):
         geol_data, drill_data = results
 
         self.assertEqual(len(drill_data), 1)
-        hid, spatial_points, segments = drill_data[0]
-        self.assertEqual(hid, "DH01")
-        self.assertTrue(len(spatial_points) > 0)
-        self.assertTrue(len(segments) > 0)
+        proj = drill_data[0]
+        self.assertEqual(proj.hole_id, "DH01")
+        self.assertTrue(len(proj.points_3d) > 0)
+        self.assertTrue(len(proj.segments) > 0)

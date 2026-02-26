@@ -18,7 +18,11 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.domain import DrillholeProjection, DrillholeTaskInput, PreviewParams
+from sec_interp.core.domain import (
+    DrillholeProjection,
+    DrillholeTaskInput,
+    PreviewParams,
+)
 from sec_interp.core.exceptions import DataMissingError
 from sec_interp.core.utils.qgis import resolve_layer
 

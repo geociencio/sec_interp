@@ -12,6 +12,7 @@ from sec_interp.core.data_cache import DataCache
 
 class TestComponent:
     """Mock component for testing SafeLoader DI."""
+
     def __init__(self, arg1=None, arg2=None):
         self.arg1 = arg1
         self.arg2 = arg2
@@ -27,7 +28,7 @@ class TestSafeLoaderDI(unittest.TestCase):
             "tests.core.utils.test_safe_loader_di",
             "TestComponent",
             arg1="hello",
-            arg2=123
+            arg2=123,
         )
 
         self.assertIsNotNone(instance)
@@ -48,7 +49,7 @@ class TestDataCacheGranular(unittest.TestCase):
         self.cache._buckets = {
             "topo": {"key1": "data1"},
             "geol": {"key2": "data2"},
-            "drill": {"key3": "data3"}
+            "drill": {"key3": "data3"},
         }
 
     def test_invalidate_specific_bucket(self):

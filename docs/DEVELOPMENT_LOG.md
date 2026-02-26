@@ -1,4 +1,14 @@
 ---
+## [2026-02-25] - Estabilización Fase 2.1: Hotfixes de Sondajes y Renderizado (22:30)
+- **Logro**: Resueltas 3 regresiones críticas introducidas por la optimización de la Fase 2, restaurando el renderizado de sondajes y la estabilidad del motor trayectorias.
+- **Cambios**:
+    - **Fix DI**: Corregido desajuste de argumentos en `DrillholeTaskOrchestrator`.
+    - **Fix Robustez**: Añadidas guardas contra trayectorias vacías en `TrajectoryEngine` (Evita `IndexError`).
+    - **Fix Renderizado**: Implementado soporte polimórfico en `PreviewLayerFactory` para objetos `DrillholeProjection`.
+- **Estado**: Sistema estabilizado v4.1.0-hotfix.
+- **Mantenimiento**: [sesion_2026-02-25_stabilization_phase_2_hotfixes.md](maintenance/sesion_2026-02-25_stabilization_phase_2_hotfixes.md)
+
+---
 ## [2026-02-19] - Arquitectura de Resiliencia (Lazy Loading) (07:15)
 - **Logro**: Implementada arquitectura de carga segura post-reversión de SEV para garantizar estabilidad core.
 - **Cambios**:

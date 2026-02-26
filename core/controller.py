@@ -7,7 +7,6 @@ This module handles the orchestration of various data generation services
 from __future__ import annotations
 
 import contextlib
-import logging
 import time
 from typing import Any
 
@@ -115,8 +114,10 @@ class ProfileController(TranslatableMixin):
 
             # Special case for 'section': invalidates ALL buckets as it's the base geometry
             if bucket == "section":
+
                 def callback():
                     return self.data_cache.invalidate()
+
             else:
                 # Use a closure to capture the bucket name
                 callback = self._create_invalidation_callback(cache_bucket)
