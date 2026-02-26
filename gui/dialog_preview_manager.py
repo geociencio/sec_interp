@@ -444,16 +444,10 @@ class PreviewManager(TranslatableMixin):
         try:
             if layer and layer.isValid():
                 auth_id = layer.crs().authid()
-                self.dialog.preview_widget.lbl_crs.setText(
-                    QCoreApplication.translate("PreviewManager", "CRS: {}").format(auth_id)
-                )
+                self.dialog.preview_widget.lbl_crs.setText(self.tr("CRS: {}").format(auth_id))
             else:
-                self.dialog.preview_widget.lbl_crs.setText(
-                    QCoreApplication.translate("PreviewManager", "CRS: None")
-                )
+                self.dialog.preview_widget.lbl_crs.setText(self.tr("CRS: None"))
         except (AttributeError, TypeError, ValueError):
-            self.dialog.preview_widget.lbl_crs.setText(
-                QCoreApplication.translate("PreviewManager", "CRS: Unknown")
-            )
+            self.dialog.preview_widget.lbl_crs.setText(self.tr("CRS: Unknown"))
         except Exception:
             logger.exception("Unexpected error updating CRS label")
