@@ -49,13 +49,17 @@ class SafeLoader:
         module_name: str,
         class_name: str,
         fallback_factory: Callable[[], T] | None = None,
+        *args: Any,
+        **kwargs: Any,
     ) -> T | None:
-        """Lazy load and instantiate a class safely.
+        """Lazy load and instantiate a class safely with arguments.
 
         Args:
             module_name: Module to load from.
             class_name: Class to instantiate.
             fallback_factory: Optional factory to create a fallback instance.
+            *args: Positional arguments for the class constructor.
+            **kwargs: Keyword arguments for the class constructor.
 
         Returns:
             An instance of the class or None/Fallback if loading failed.
@@ -65,8 +69,11 @@ class SafeLoader:
         klass = SafeLoader.get_class(module, class_name)
         if klass:
             try:
-                return klass()
+                return klass(*args, **kwargs)
             except Exception:
-                logger.exception(f"Failed to instantiate {class_name} from {module_name}")
+                logger.exception(
+                    f"Failed to instantiate {class_name} from {module_name} "
+                    f"with args={args}, kwargs={kwargs}"
+                )
 
         return fallback_factory() if fallback_factory else None

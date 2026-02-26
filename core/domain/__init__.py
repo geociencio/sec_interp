@@ -13,6 +13,7 @@ from .dtos import (
 )
 from .entities import (
     DomainGeometry,
+    DrillholeProjection,
     ExportSettings,
     GeologyData,
     GeologyPoints,
@@ -40,6 +41,7 @@ from .task_inputs import (
 
 __all__ = [
     "DomainGeometry",
+    "DrillholeProjection",
     "DrillholeTaskInput",
     "ExportSettings",
     "FieldType",

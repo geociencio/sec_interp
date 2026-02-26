@@ -131,11 +131,14 @@ class DataCache(ICacheService):
             if key:
                 if key in self._buckets[bucket]:
                     del self._buckets[bucket][key]
+                    logger.debug(f"Cache invalidated: {bucket}/{key}")
             else:
                 self._buckets[bucket].clear()
+                logger.debug(f"Bucket invalidated: {bucket}")
         elif not bucket:
-            for b in self._buckets.values():
-                b.clear()
+            for _b_name, b_data in self._buckets.items():
+                b_data.clear()
+            logger.debug("Cache cleared entirely")
 
     def clear(self) -> None:
         """Clear all entries across all cache buckets."""

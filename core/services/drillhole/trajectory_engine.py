@@ -7,7 +7,7 @@ from typing import Any
 from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 
 from sec_interp.core import utils as scu
-from sec_interp.core.domain import GeologySegment, SpatialMeta
+from sec_interp.core.domain import DrillholeProjection, GeologySegment, SpatialMeta
 from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
 from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
 
@@ -33,7 +33,7 @@ class TrajectoryEngine:
         distance_area: QgsDistanceArea,
         buffer_width: float,
         section_azimuth: float,
-    ) -> tuple[list[GeologySegment], tuple]:
+    ) -> tuple[list[GeologySegment], DrillholeProjection]:
         """Core logic for a single hole processing."""
         # 1. Determine Final Depth
         final_depth = self.survey_processor.determine_final_depth(
@@ -58,17 +58,18 @@ class TrajectoryEngine:
         )
 
         # 4. Generate results
-        hole_tuple = self.create_drillhole_result_tuple(hole_id, projected_traj, hole_geol_data)
+        hole_proj = self.create_drillhole_result(hole_id, projected_traj, hole_geol_data)
 
-        return hole_geol_data, hole_tuple
+        return hole_geol_data, hole_proj
 
-    def create_drillhole_result_tuple(
+    def create_drillhole_result(
         self,
         hole_id: Any,
         projected_traj: list[tuple],
         hole_geol_data: list[GeologySegment],
-    ) -> tuple:
-        """Create the final result tuple for a drillhole."""
+        collar_proj: Any = None,
+    ) -> DrillholeProjection:
+        """Create the final DrillholeProjection for a drillhole."""
         spatial_points = []
         for p in projected_traj:
             spatial_points.append(
@@ -84,8 +85,24 @@ class TrajectoryEngine:
                 )
             )
 
-        return (
-            hole_id,
-            spatial_points,
-            hole_geol_data,
+        # Basic projection info
+
+        # Basic projection info from collar_proj or first point
+        dist = (
+            collar_proj.distance
+            if hasattr(collar_proj, "distance")
+            else spatial_points[0].dist_along
+        )
+        elev = collar_proj.elevation if hasattr(collar_proj, "elevation") else spatial_points[0].z
+        offset = collar_proj.offset if hasattr(collar_proj, "offset") else spatial_points[0].offset
+        depth = collar_proj.total_depth if hasattr(collar_proj, "total_depth") else 0.0
+
+        return DrillholeProjection(
+            hole_id=str(hole_id),
+            distance=dist,
+            elevation=elev,
+            offset=offset,
+            total_depth=depth,
+            points_3d=spatial_points,
+            segments=hole_geol_data,
         )

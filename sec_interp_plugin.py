@@ -305,23 +305,27 @@ class SecInterp(TranslatableMixin):
         self.controller.connect_layer_notifications(self._collect_active_layers(params))
         return params
 
-    def _collect_active_layers(self, params: PreviewParams) -> list[QgsMapLayer]:
+    def _collect_active_layers(self, params: PreviewParams) -> dict[str, QgsMapLayer]:
         """Collect all active layer objects from parameter IDs for monitoring."""
-        ids = [
-            params.raster_layer,
-            params.line_layer,
-            params.outcrop_layer,
-            params.struct_layer,
-            params.collar_layer,
-            params.survey_layer,
-            params.interval_layer,
-        ]
-        layers = []
-        for lid in ids:
+        mapping = {
+            "topo": params.raster_layer,
+            "section": params.line_layer,
+            "geol": params.outcrop_layer,
+            "struct": params.struct_layer,
+            "drill_collar": params.collar_layer,
+            "drill_survey": params.survey_layer,
+            "drill_interval": params.interval_layer,
+        }
+
+        active_layers = {}
+        for bucket, lid in mapping.items():
+            if not lid:
+                continue
             lyr = resolve_layer(lid)
             if lyr:
-                layers.append(lyr)
-        return layers
+                active_layers[bucket] = lyr
+
+        return active_layers
 
     def process_data(self, inputs: dict[str, Any] | None = None) -> tuple[Any, Any, Any] | None:
         """Process profile data by delegating to the dialog's preview manager.

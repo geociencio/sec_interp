@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from qgis.core import QgsVectorLayer
 
+    from .spatial_meta import SpatialMeta
+
 # --- Aliases ---
 
 # Profile data types (Initial aliases)
@@ -133,6 +135,30 @@ class InterpretationPolygon25D:
     geometry_wkt: DomainGeometry
     attributes: dict[str, Any]
     crs_authid: str
+
+
+@dataclass
+class DrillholeProjection:
+    """Represents a projected drillhole on the section plane.
+
+    Attributes:
+        hole_id: Unique identifier for the drillhole.
+        distance: Horizontal distance from the profile start.
+        elevation: Elevation (Z) of the collar.
+        offset: Orthogonal distance from the section line.
+        total_depth: Total length of the drillhole.
+        points_3d: Optional list of spatial metadata points along the trajectory.
+        segments: Optional list of geological segments along the hole.
+
+    """
+
+    hole_id: str
+    distance: float
+    elevation: float
+    offset: float
+    total_depth: float
+    points_3d: list[SpatialMeta] = field(default_factory=list)
+    segments: list[GeologySegment] = field(default_factory=list)
 
 
 # Final type aliases for processed data

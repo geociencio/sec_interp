@@ -6,6 +6,8 @@ This module handles the orchestration of various data generation services
 
 from __future__ import annotations
 
+import contextlib
+import logging
 import time
 from typing import Any
 
@@ -61,74 +63,85 @@ class ProfileController(TranslatableMixin):
             "sec_interp.core.services.profile_service", "ProfileService"
         )
 
-        # Geology Service needs DI
-        geol_mod = SafeLoader.safe_import("sec_interp.core.services.geology_service")
-        geol_klass = SafeLoader.get_class(geol_mod, "GeologyService")
-        self.geology_service = (
-            geol_klass(
-                profile_sampler=self.profile_sampler,
-                outcrop_processor=self.outcrop_processor,
-            )
-            if geol_klass
-            else None
+        # Geology Service (Using the new lazy_load with DI)
+        self.geology_service = SafeLoader.lazy_load(
+            "sec_interp.core.services.geology_service",
+            "GeologyService",
+            profile_sampler=self.profile_sampler,
+            outcrop_processor=self.outcrop_processor,
         )
 
         self.structure_service = SafeLoader.lazy_load(
             "sec_interp.core.services.structure_service", "StructureService"
         )
 
-        # Drillhole Service needs DI
-        dh_mod = SafeLoader.safe_import("sec_interp.core.services.drillhole_service")
-        dh_klass = SafeLoader.get_class(dh_mod, "DrillholeService")
-        self.drillhole_service = (
-            dh_klass(
-                collar_processor=self.collar_processor,
-                survey_processor=self.survey_processor,
-                interval_processor=self.interval_processor,
-                data_fetcher=self.data_fetcher,
-                trajectory_engine=self.trajectory_engine,
-            )
-            if dh_klass
-            else None
+        # Drillhole Service (Using the new lazy_load with DI)
+        self.drillhole_service = SafeLoader.lazy_load(
+            "sec_interp.core.services.drillhole_service",
+            "DrillholeService",
+            collar_processor=self.collar_processor,
+            survey_processor=self.survey_processor,
+            interval_processor=self.interval_processor,
+            data_fetcher=self.data_fetcher,
+            trajectory_engine=self.trajectory_engine,
         )
 
         # Orchestrator
-        orch_mod = SafeLoader.safe_import(
-            "sec_interp.core.services.drillhole.drillhole_orchestrator"
+        self.drillhole_orchestrator = SafeLoader.lazy_load(
+            "sec_interp.core.services.drillhole.drillhole_orchestrator",
+            "DrillholeTaskOrchestrator",
+            drillhole_service=self.drillhole_service,
         )
-        orch_klass = SafeLoader.get_class(orch_mod, "DrillholeTaskOrchestrator")
-        self.drillhole_orchestrator = orch_klass(self.drillhole_service) if orch_klass else None
 
         self._connected_layers: list[Any] = []
         logger.debug("ProfileController initialized with DI")
 
-    def connect_layer_notifications(self, layers: list[Any]) -> None:
+    def connect_layer_notifications(self, layers: dict[str, Any]) -> None:
         """Connect to layer signals for automatic cache invalidation on data changes.
 
         Args:
-            layers: List of QgsMapLayer objects to monitor.
+            layers: Dictionary mapping bucket names to QgsMapLayer objects.
 
         """
         self.disconnect_layer_notifications()
-        for layer in layers:
+        for bucket, layer in layers.items():
             if not layer:
                 continue
-            # When layer data changes, clear cache for its bucket or altogether
-            layer.dataChanged.connect(self.data_cache.clear)
-            self._connected_layers.append(layer)
-            logger.debug(f"Connected cache invalidation to layer: {layer.name()}")
+
+            # Map specific internal layer buckets to cache buckets
+            cache_bucket = bucket
+            if bucket in ["drill_collar", "drill_survey", "drill_interval"]:
+                cache_bucket = "drill"
+
+            # Special case for 'section': invalidates ALL buckets as it's the base geometry
+            if bucket == "section":
+                def callback():
+                    return self.data_cache.invalidate()
+            else:
+                # Use a closure to capture the bucket name
+                callback = self._create_invalidation_callback(cache_bucket)
+
+            layer.dataChanged.connect(callback)
+            self._connected_layers.append((layer, callback))
+            logger.debug(
+                f"Connected cache invalidation to layer: {layer.name()} -> bucket: {cache_bucket}"
+            )
+
+    def _create_invalidation_callback(self, bucket: str) -> Any:
+        """Create a callback for specific bucket invalidation."""
+
+        def callback():
+            return self.data_cache.invalidate(bucket)
+
+        return callback
 
     def disconnect_layer_notifications(self) -> None:
         """Disconnect from all previously connected layer signals."""
-        for layer in self._connected_layers:
-            try:
-                # Disconnect specific slot to avoid breaking other connections
-                layer.dataChanged.disconnect(self.data_cache.clear)
-                logger.debug(f"Disconnected cache invalidation from layer: {layer.name()}")
-            except (TypeError, RuntimeError):
-                # Signal might not be connected or layer might be deleted
-                pass
+        for layer, callback in self._connected_layers:
+            with contextlib.suppress(TypeError, RuntimeError):
+                layer.dataChanged.disconnect(callback)
         self._connected_layers.clear()
+        logger.debug("Layer signals disconnected")
 
     def get_cached_data(self, inputs: dict[str, Any]) -> dict[str, Any] | None:
         """Retrieve data from cache if available for the given inputs.

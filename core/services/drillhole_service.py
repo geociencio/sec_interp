@@ -82,7 +82,7 @@ class DrillholeService(IDrillholeService):
         collar_z_field: str,
         collar_depth_field: str,
         pre_sampled_z: dict[Any, float] | None = None,
-    ) -> list[tuple]:
+    ) -> list[DrillholeProjection]:
         """Project collar points onto section line using detached domain data.
 
         Args:
@@ -162,7 +162,7 @@ class DrillholeService(IDrillholeService):
 
     def process_intervals(
         self,
-        collar_points: list[tuple],
+        collar_points: list[DrillholeProjection],
         collar_data: list[dict[str, Any]],
         survey_data: dict[Any, list[tuple]],
         interval_data: dict[Any, list[tuple]],
@@ -177,32 +177,10 @@ class DrillholeService(IDrillholeService):
         section_azimuth: float,
         survey_fields: dict[str, str],
         interval_fields: dict[str, str],
-    ) -> tuple[list[GeologySegment], list[tuple]]:
-        """Process drillhole interval data using detached structures.
-
-        Args:
-            collar_points: Projected collar results.
-            collar_data: Original detached collar data.
-            survey_data: Map of hole IDs to survey tuples.
-            interval_data: Map of hole IDs to interval tuples.
-            collar_id_field: ID field name.
-            use_geometry: Whether geometry was used.
-            collar_x_field: X field name.
-            collar_y_field: Y field name.
-            line_geom: Section geometry.
-            line_start: Section start point.
-            distance_area: Distance measurer.
-            buffer_width: Buffer width.
-            section_azimuth: Section orientation.
-            survey_fields: Survey field mapping.
-            interval_fields: Interval field mapping.
-
-        Returns:
-            Tuple of (geology_segments, drillhole_results).
-
-        """
+    ) -> tuple[list[GeologySegment], list[DrillholeProjection]]:
+        """Process drillhole interval data using detached structures."""
         geol_data: list[GeologySegment] = []
-        drillhole_data: list[tuple] = []
+        drillhole_data: list[DrillholeProjection] = []
 
         # 1. Build collar coordinate map from detached data
         collar_coords = self._build_collar_coordinate_map(
@@ -227,7 +205,7 @@ class DrillholeService(IDrillholeService):
 
     def _process_hole_batch(
         self,
-        collar_points: list[tuple],
+        collar_points: list[DrillholeProjection],
         collar_coords: dict[Any, QgsPointXY],
         survey_data: dict[Any, list[tuple]],
         interval_data: dict[Any, list[tuple]],
@@ -237,10 +215,13 @@ class DrillholeService(IDrillholeService):
         buffer_width: float,
         section_azimuth: float,
         geol_data: list[GeologySegment],
-        drillhole_data: list[tuple],
+        drillhole_data: list[DrillholeProjection],
     ) -> None:
         """Process a batch of holes sequentially."""
-        for hole_id, _dist, collar_z, _off, given_depth in collar_points:
+        for result in collar_points:
+            hole_id = result.hole_id
+            collar_z = result.elevation
+            given_depth = result.total_depth
             collar_point = collar_coords.get(hole_id)
             if not collar_point:
                 continue

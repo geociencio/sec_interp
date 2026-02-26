@@ -221,19 +221,17 @@ class PreviewResult:
         return [m.elevation for m in self.struct]
 
     def _get_drillhole_elevations(self) -> list[float]:
-        """Extract elevations from drillhole data using SpatialMeta."""
+        """Extract elevations from drillhole data using DrillholeProjection entities."""
         if not self.drillhole:
             return []
 
         elevations = []
-        for hole_data in self.drillhole:
-            # hole_data is (hole_id, spatial_points, segments)
-            _, spatial_points, segments = hole_data
-
-            if spatial_points:
-                elevations.extend(p.z for p in spatial_points)
-            if segments:
-                for seg in segments:
+        for hole_proj in self.drillhole:
+            # hole_proj is a DrillholeProjection object
+            if hole_proj.points_3d:
+                elevations.extend(p.z for p in hole_proj.points_3d)
+            if hole_proj.segments:
+                for seg in hole_proj.segments:
                     elevations.extend(p[1] for p in seg.points)
         return elevations
 

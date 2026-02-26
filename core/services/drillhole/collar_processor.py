@@ -17,6 +17,7 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
+from sec_interp.core.domain import DrillholeProjection
 from sec_interp.core.services.drillhole.projection_engine import ProjectionEngine
 
 
@@ -127,7 +128,7 @@ class CollarProcessor:
         collar_depth_field: str,
         pre_sampled_z: dict[Any, float] | None = None,
         dem_layer: QgsRasterLayer | None = None,
-    ) -> tuple[Any, float, float, float, float] | None:
+    ) -> DrillholeProjection | None:
         """Process and project a single collar from either dict or feature."""
         # 1. Extract Data agnosticly
         extracted = self.extract_attributes_agnostic(
@@ -153,7 +154,13 @@ class CollarProcessor:
 
         # 3. Check if within buffer
         if offset <= buffer_width:
-            return (hole_id, dist_along, z, offset, total_depth)
+            return DrillholeProjection(
+                hole_id=str(hole_id),
+                distance=dist_along,
+                elevation=z,
+                offset=offset,
+                total_depth=total_depth,
+            )
 
         return None
 

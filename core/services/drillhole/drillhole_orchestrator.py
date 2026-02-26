@@ -18,7 +18,7 @@ from qgis.core import (
 )
 
 from sec_interp.core import utils as scu
-from sec_interp.core.domain import DrillholeTaskInput, PreviewParams
+from sec_interp.core.domain import DrillholeProjection, DrillholeTaskInput, PreviewParams
 from sec_interp.core.exceptions import DataMissingError
 from sec_interp.core.utils.qgis import resolve_layer
 
@@ -42,7 +42,7 @@ class DrillholeTaskOrchestrator:
         """
         self.service = service
 
-    def run_preview(self, params: PreviewParams) -> list[tuple] | None:
+    def run_preview(self, params: PreviewParams) -> list[DrillholeProjection] | None:
         """Execute a synchronous drillhole preview.
 
         This mimics the legacy generate_drillhole_data but is now managed
@@ -337,7 +337,9 @@ class DrillholeTaskOrchestrator:
             pre_sampled_z=pre_sampled_z,
         )
 
-    def process_task_data(self, task_input: DrillholeTaskInput, feedback: Any | None = None) -> Any:
+    def process_task_data(
+        self, task_input: DrillholeTaskInput, feedback: Any | None = None
+    ) -> tuple[list[GeologySegment], list[DrillholeProjection]]:
         """Process drillholes using detached domain data (Thread-Safe)."""
         # Reconstruct Objects
         line_crs = QgsCoordinateReferenceSystem(task_input.line_crs_authid)
@@ -371,7 +373,9 @@ class DrillholeTaskOrchestrator:
             )
 
             if result:
-                hole_id, _dist, z, _offset, depth = result
+                hole_id = result.hole_id
+                z = result.elevation
+                depth = result.total_depth
                 pt = self.service.collar_processor.extract_point_agnostic(
                     c_item,
                     True,
