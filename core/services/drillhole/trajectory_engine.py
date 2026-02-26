@@ -88,14 +88,22 @@ class TrajectoryEngine:
         # Basic projection info
 
         # Basic projection info from collar_proj or first point
-        dist = (
-            collar_proj.distance
-            if hasattr(collar_proj, "distance")
-            else spatial_points[0].dist_along
-        )
-        elev = collar_proj.elevation if hasattr(collar_proj, "elevation") else spatial_points[0].z
-        offset = collar_proj.offset if hasattr(collar_proj, "offset") else spatial_points[0].offset
-        depth = collar_proj.total_depth if hasattr(collar_proj, "total_depth") else 0.0
+        if collar_proj:
+            dist = collar_proj.distance
+            elev = collar_proj.elevation
+            offset = collar_proj.offset
+            depth = collar_proj.total_depth
+        elif spatial_points:
+            dist = spatial_points[0].dist_along
+            elev = spatial_points[0].z
+            offset = spatial_points[0].offset
+            depth = 0.0  # Or infer from points if available
+        else:
+            # Fallback for completely empty trajectory and no collar projection
+            dist = 0.0
+            elev = 0.0
+            offset = 0.0
+            depth = 0.0
 
         return DrillholeProjection(
             hole_id=str(hole_id),
