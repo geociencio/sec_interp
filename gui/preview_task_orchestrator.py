@@ -7,6 +7,9 @@ from typing import TYPE_CHECKING, Any
 from qgis.core import QgsApplication
 
 from sec_interp.core.utils.qgis import resolve_layer
+from sec_interp.logger_config import get_logger
+
+logger = get_logger(__name__)
 
 from .tasks.drillhole_task import DrillholeGenerationTask
 from .tasks.geology_task import GeologyGenerationTask

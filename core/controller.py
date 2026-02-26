@@ -90,7 +90,7 @@ class ProfileController(TranslatableMixin):
         self.drillhole_orchestrator = SafeLoader.lazy_load(
             "sec_interp.core.services.drillhole.drillhole_orchestrator",
             "DrillholeTaskOrchestrator",
-            drillhole_service=self.drillhole_service,
+            service=self.drillhole_service,
         )
 
         self._connected_layers: list[Any] = []
