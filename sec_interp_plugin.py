@@ -30,9 +30,6 @@ from sec_interp.logger_config import get_logger, setup_logging
 logger = get_logger(__name__)
 
 
-# DataCache has been moved to core/data_cache.py
-
-
 class SecInterp(TranslatableMixin):
     """QGIS Plugin Implementation for Geological Data Extraction.
 
@@ -108,10 +105,6 @@ class SecInterp(TranslatableMixin):
         self.toolbar = self.iface.addToolBar(self.tr("Sec Interp"))
         self.toolbar.setObjectName("SecInterp")
         self.toolbar.setVisible(True)  # Ensure toolbar is visible
-
-        # Check if plugin was started the first time in current QGIS session
-        # Must be set in initGui() to survive plugin reloads
-        self.first_start = None
 
     def add_action(
         self,
@@ -299,6 +292,9 @@ class SecInterp(TranslatableMixin):
             return None
         except (ValueError, TypeError, KeyError, AttributeError) as e:
             self.dlg.handle_error(e, self.tr("Input Processing Error"))
+            return None
+        except (MemoryError, SystemError, KeyboardInterrupt) as e:
+            self.dlg.handle_error(e, self.tr("Critical System Error"))
             return None
 
         # 3. Connect Layer Notifications

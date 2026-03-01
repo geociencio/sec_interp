@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Fixed
+- **Estabilidad**: Corregida la resolución de capas mediante `LayerResolver` centralizado con caché.
+- **Validación**: Unificada la lógica de validación de proyectos eliminando duplicación en DTOs.
+- **UX**: Implementado reporte de progreso reactivo para la generación de sondajes en la UI.
+- **Mocks**: Robustecido el entorno de pruebas con soporte para IDs de capa únicos y validación estricta de geometría y campos.
 - **Estabilidad**: Corregido `TypeError` en `ProfileController` por desajuste de inyección de dependencias.
-- **Estabilidad**: Corregido `IndexError` en `TrajectoryEngine` al procesar sondajes fuera de sección.
-- **Renderizado**: Corregido `TypeError` en `PreviewLayerFactory` habilitando soporte polimórfico para objetos `DrillholeProjection`.
-- **Robustez**: Añadida guarda defensiva en `PreviewTaskOrchestrator` para fallos de carga de servicios.
 
 ## [3.1.0] - 2026-02-19
 ### Added

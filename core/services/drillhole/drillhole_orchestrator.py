@@ -24,7 +24,7 @@ from sec_interp.core.domain import (
     PreviewParams,
 )
 from sec_interp.core.exceptions import DataMissingError
-from sec_interp.core.utils.qgis import resolve_layer
+from sec_interp.core.utils.qgis import LayerResolver
 
 if TYPE_CHECKING:
     from sec_interp.core.services.drillhole_service import DrillholeService
@@ -52,11 +52,11 @@ class DrillholeTaskOrchestrator:
         This mimics the legacy generate_drillhole_data but is now managed
         by the orchestrator.
         """
-        line_lyr = resolve_layer(params.line_layer)
-        collar_lyr = resolve_layer(params.collar_layer)
-        raster_lyr = resolve_layer(params.raster_layer)
-        survey_lyr = resolve_layer(params.survey_layer)
-        interval_lyr = resolve_layer(params.interval_layer)
+        line_lyr = LayerResolver.resolve(params.line_layer)
+        collar_lyr = LayerResolver.resolve(params.collar_layer)
+        raster_lyr = LayerResolver.resolve(params.raster_layer)
+        survey_lyr = LayerResolver.resolve(params.survey_layer)
+        interval_lyr = LayerResolver.resolve(params.interval_layer)
 
         if not line_lyr or not collar_lyr:
             return None

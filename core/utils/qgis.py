@@ -14,40 +14,83 @@ if TYPE_CHECKING:
     from qgis.core import QgsMapLayer
 
 
-def resolve_layer(layer_ref: Any) -> QgsMapLayer | None:
-    """Resolve a layer reference (ID, name, or object) to a QgsMapLayer.
+class LayerResolver:
+    """Centralized service to resolve and cache QgsMapLayer references.
 
-    This function is the single point of entry for layer resolution, ensuring
-    that the layer is valid and retrieved from the current QgsProject instance.
-
-    Args:
-        layer_ref: A string (layer ID or name) or a QgsMapLayer object.
-
-    Returns:
-        The resolved QgsMapLayer object if valid, else None.
-
+    Acts as a singleton/cache to avoid repeated `project.mapLayer()` calls
+    within the same processing transaction.
     """
-    if layer_ref is None:
+
+    _cache: dict[str, QgsMapLayer] = {}
+
+    @classmethod
+    def resolve(cls, layer_ref: Any, use_cache: bool = True) -> QgsMapLayer | None:
+        """Resolve a layer reference (ID, name, or object) to a QgsMapLayer.
+
+        Args:
+            layer_ref: A string (layer ID or name) or a QgsMapLayer object.
+            use_cache: If True, uses the internal dict cache for faster lookups.
+
+        Returns:
+            The resolved QgsMapLayer object if valid, else None.
+
+        """
+        if layer_ref is None:
+            return None
+
+        # 0. Check if it's already a valid QgsMapLayer
+        if not isinstance(layer_ref, str):
+            if hasattr(layer_ref, "isValid") and layer_ref.isValid():
+                return layer_ref
+            return None
+
+        ref_str = str(layer_ref)
+
+        # 1. Check cache first
+        if use_cache and ref_str in cls._cache:
+            cached_layer = cls._cache[ref_str]
+            if cached_layer and cached_layer.isValid():
+                return cached_layer
+            else:
+                # Invalidate broken cache
+                del cls._cache[ref_str]
+
+        project = QgsProject.instance()
+
+        # 2. Try resolving by ID
+        layer = project.mapLayer(ref_str)
+        if layer and layer.isValid():
+            cls._cache[ref_str] = layer
+            # Also cache by name if possible
+            cls._cache[layer.name()] = layer
+            return layer
+
+        # 3. Try resolving by Name (fallback)
+        layers_by_name = project.mapLayersByName(ref_str)
+        if layers_by_name:
+            for lyr in layers_by_name:
+                if lyr.isValid():
+                    cls._cache[ref_str] = lyr
+                    cls._cache[lyr.id()] = lyr
+                    return lyr
+
         return None
 
-    # If it's already a layer object, just check if it's still valid
-    if not isinstance(layer_ref, str):
-        if hasattr(layer_ref, "isValid") and layer_ref.isValid():
-            return layer_ref
-        return None
+    @classmethod
+    def clear_cache(cls) -> None:
+        """Clear the internal layer cache."""
+        cls._cache.clear()
 
-    project = QgsProject.instance()
+    @classmethod
+    def invalidate(cls, layer_id: str) -> None:
+        """Remove a specific layer from the cache."""
+        if layer_id in cls._cache:
+            del cls._cache[layer_id]
 
-    # 1. Try resolving by ID (fastest)
-    layer = project.mapLayer(str(layer_ref))
-    if layer and layer.isValid():
-        return layer
 
-    # 2. Try resolving by Name (fallback)
-    layers_by_name = project.mapLayersByName(str(layer_ref))
-    if layers_by_name:
-        for lyr in layers_by_name:
-            if lyr.isValid():
-                return lyr
+def resolve_layer(layer_ref: Any) -> QgsMapLayer | None:
+    """Resolve a layer reference. (Legacy wrapper).
 
-    return None
+    Delegates to LayerResolver for backward compatibility.
+    """
+    return LayerResolver.resolve(layer_ref)

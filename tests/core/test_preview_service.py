@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsGeometry, QgsPointXY
+from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsGeometry, QgsPointXY, QgsField
 
 from sec_interp.core.services.preview_service import PreviewService
 from sec_interp.core.domain import PreviewParams, PreviewResult
@@ -26,6 +26,8 @@ class TestPreviewService(BaseTestCase):
         self.mock_line_lyr = QgsVectorLayer()
         self.mock_line_lyr.isValid = MagicMock(return_value=True)
         self.mock_line_lyr.name = MagicMock(return_value="Section Line")
+        self.mock_line_lyr.setWkbType(1002)  # LineStringZ
+        self.mock_line_lyr.featureCount = MagicMock(return_value=1)
 
         self.mock_raster_lyr = QgsRasterLayer()
         self.mock_raster_lyr.isValid = MagicMock(return_value=True)
@@ -91,6 +93,12 @@ class TestPreviewService(BaseTestCase):
 
         # Setup structure params
         self.params.struct_layer = QgsVectorLayer()
+        self.params.struct_layer.isValid = MagicMock(return_value=True)
+        self.params.struct_layer.setWkbType(1001)  # PointZ
+        self.params.struct_layer.name = MagicMock(return_value="Structures")
+        self.params.struct_layer.featureCount = MagicMock(return_value=10)
+        self.params.struct_layer.fields().append(QgsField("dip", 6))
+        self.params.struct_layer.fields().append(QgsField("strike", 6))
         self.params.dip_field = "dip"
         self.params.strike_field = "strike"
 
@@ -120,13 +128,28 @@ class TestPreviewService(BaseTestCase):
 
         # Setup drillhole params
         self.params.collar_layer = QgsVectorLayer()
+        self.params.collar_layer.isValid = MagicMock(return_value=True)
+        self.params.collar_layer.name = MagicMock(return_value="Collars")
+        self.params.collar_layer.fields().append(QgsField("HOLEID", 10))
         self.params.collar_id_field = "HOLEID"
         self.params.survey_layer = QgsVectorLayer()
+        self.params.survey_layer.isValid = MagicMock(return_value=True)
+        self.params.survey_layer.name = MagicMock(return_value="Surveys")
+        self.params.survey_layer.fields().append(QgsField("HOLEID", 10))
+        self.params.survey_layer.fields().append(QgsField("DEPTH", 6))
+        self.params.survey_layer.fields().append(QgsField("AZIMUTH", 6))
+        self.params.survey_layer.fields().append(QgsField("DIP", 6))
         self.params.survey_id_field = "HOLEID"
         self.params.survey_depth_field = "DEPTH"
         self.params.survey_azim_field = "AZIMUTH"
         self.params.survey_incl_field = "DIP"
         self.params.interval_layer = QgsVectorLayer()
+        self.params.interval_layer.isValid = MagicMock(return_value=True)
+        self.params.interval_layer.name = MagicMock(return_value="Intervals")
+        self.params.interval_layer.fields().append(QgsField("HOLEID", 10))
+        self.params.interval_layer.fields().append(QgsField("FROM", 6))
+        self.params.interval_layer.fields().append(QgsField("TO", 6))
+        self.params.interval_layer.fields().append(QgsField("LITH", 10))
         self.params.interval_id_field = "HOLEID"
         self.params.interval_from_field = "FROM"
         self.params.interval_to_field = "TO"
@@ -152,8 +175,10 @@ class TestPreviewService(BaseTestCase):
     def test_generate_all_no_features(self):
         """Test error when no features in line layer."""
         self.mock_line_lyr.getFeatures = MagicMock(return_value=iter([]))
+        self.mock_line_lyr.featureCount = MagicMock(return_value=0)
 
-        with self.assertRaises(GeometryError):
+        from sec_interp.core.exceptions import ValidationError
+        with self.assertRaises(ValidationError):
             self.service.generate_all(self.params, MagicMock())
 
     def test_generate_drillholes_multipart(self):
@@ -174,13 +199,19 @@ class TestPreviewService(BaseTestCase):
         )
 
         self.params.collar_layer = QgsVectorLayer()
+        self.params.collar_layer.isValid = MagicMock(return_value=True)
+        self.params.collar_layer.name = MagicMock(return_value="Collars")
         self.params.collar_id_field = "HOLEID"
         self.params.survey_layer = QgsVectorLayer()
+        self.params.survey_layer.isValid = MagicMock(return_value=True)
+        self.params.survey_layer.name = MagicMock(return_value="Surveys")
         self.params.survey_id_field = "HOLEID"
         self.params.survey_depth_field = "DEPTH"
         self.params.survey_azim_field = "AZIMUTH"
         self.params.survey_incl_field = "DIP"
         self.params.interval_layer = QgsVectorLayer()
+        self.params.interval_layer.isValid = MagicMock(return_value=True)
+        self.params.interval_layer.name = MagicMock(return_value="Intervals")
         self.params.interval_id_field = "HOLEID"
         self.params.interval_from_field = "FROM"
         self.params.interval_to_field = "TO"
@@ -252,13 +283,19 @@ class TestPreviewService(BaseTestCase):
         self.service.transform_context = MagicMock()
 
         self.params.collar_layer = QgsVectorLayer()
+        self.params.collar_layer.isValid = MagicMock(return_value=True)
+        self.params.collar_layer.name = MagicMock(return_value="Collars")
         self.params.collar_id_field = "HOLEID"
         self.params.survey_layer = QgsVectorLayer()
+        self.params.survey_layer.isValid = MagicMock(return_value=True)
+        self.params.survey_layer.name = MagicMock(return_value="Surveys")
         self.params.survey_id_field = "HOLEID"
         self.params.survey_depth_field = "DEPTH"
         self.params.survey_azim_field = "AZIMUTH"
         self.params.survey_incl_field = "DIP"
         self.params.interval_layer = QgsVectorLayer()
+        self.params.interval_layer.isValid = MagicMock(return_value=True)
+        self.params.interval_layer.name = MagicMock(return_value="Intervals")
         self.params.interval_id_field = "HOLEID"
         self.params.interval_from_field = "FROM"
         self.params.interval_to_field = "TO"

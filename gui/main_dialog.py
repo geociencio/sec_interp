@@ -19,18 +19,6 @@ from sec_interp.core.exceptions import SecInterpError
 from sec_interp.gui.utils import show_user_message
 from sec_interp.logger_config import get_logger
 
-
-class _NoOpMessageBar:
-    """Safe no-op messagebar when iface is not available."""
-
-    def pushMessage(self, *_args, **_kwargs) -> None:
-        """No-op implementation of pushMessage."""
-        return None
-
-
-from .legend_widget import LegendWidget
-
-logger = get_logger(__name__)
 from .dialog_export_manager import ExportManager
 from .dialog_input_manager import InputManager
 from .dialog_interpretation_manager import InterpretationManager
@@ -38,9 +26,20 @@ from .dialog_preview_manager import PreviewManager
 from .dialog_signal_manager import SignalManager
 from .dialog_state_manager import StateManager
 from .dialog_tool_manager import NavigationManager, ToolManager
+from .legend_widget import LegendWidget
 from .main_dialog_utils import DialogEntityManager
 from .preview_layer_factory import PreviewLayerFactory
 from .ui.main_window import SecInterpMainWindow
+
+logger = get_logger(__name__)
+
+
+class _NoOpMessageBar:
+    """Safe no-op messagebar when iface is not available."""
+
+    def pushMessage(self, *_args, **_kwargs) -> None:
+        """No-op implementation of pushMessage."""
+        return None
 
 
 class SecInterpDialog(SecInterpMainWindow):

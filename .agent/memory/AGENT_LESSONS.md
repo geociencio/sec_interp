@@ -19,16 +19,22 @@ lessons:
     action: "Implement SafeLoader for all optional or heavy services and use demand-based instantiation. IMPROVEMENT: Support constructor arguments in lazy_load."
 
   - date: 2026-02-25
-    category: ARCHITECTURE
-    topic: Layer Resolution Standardization
-    lesson: "Distributed layer resolution logic leads to inconsistent error handling and fragile code."
-    action: "Centralize all QGIS layer resolution in core/utils/qgis.py avoiding ad-hoc QgsProject.instance() calls."
-
-  - date: 2026-02-25
     category: TECHNICAL
     topic: Data Modeling and Typing
     lesson: "Using tuples for complex data transfer makes code unreadable and hard to refactor (index-based access)."
     action: "Mandatory use of Dataclasses (entities) for all service returns. Avoid list[tuple]."
+
+  - date: 2026-02-28
+    category: ARCHITECTURE
+    topic: Layer Caching and Mock Integrity
+    lesson: "When centralizing layer resolution with caching (LayerResolver), mock layers must have unique IDs across tests to prevent cross-test cache pollution."
+    action: "Implement a global UNIQUE_ID_COUNTER in test mocks and call LayerResolver.clear_cache() in BaseTestCase.setUp()."
+
+  - date: 2026-02-28
+    category: TECHNICAL
+    topic: Strict QGIS Validation in Mocks
+    lesson: "Strict validators use layer.wkbType() and check for formal QgsField existence. Mocks must support setWkbType and formal field addition to pass production-grade validation."
+    action: "Update MockQgsMapLayer to support WKB types and use real QgsField objects instead of simpler mocks when validation is involved."
 
 
 
@@ -87,4 +93,4 @@ lessons:
     action: "Utilizar el comando: 'uv run qgis-manage deploy --no-compile'"
 
 ---
-*Última actualización: 2026-02-18 - Registro de despliegue rápido y lecciones de SEV.*
+*Última actualización: 2026-02-28 - Refactor LayerResolver y mejora de robustez de mocks.*

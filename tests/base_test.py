@@ -31,7 +31,12 @@ from .mocks.qgis_core import (
     MockQgsSettings,
 )
 from .mocks.qgis_features import MockQgsField, MockQgsFields, MockQgsFeature
-from .mocks.qgis_layers import MockQgsMapLayer, MockQgsVectorLayer, MockQgsRasterLayer
+from .mocks.qgis_layers import (
+    MockQgsMapLayer,
+    MockQgsVectorLayer,
+    MockQgsRasterLayer,
+    UNIQUE_ID_COUNTER,
+)
 from .mocks.qt_mocks import (
     mock_signal,
     MockQApplication,
@@ -370,6 +375,12 @@ class BaseTestCase(unittest.TestCase):
         self.output_dir = Path(self.test_dir)
         MockQgsProject.instance().clear()
         MockQgsSettings._shared_values.clear()
+        from sec_interp.core.utils.qgis import LayerResolver
+
+        LayerResolver.clear_cache()
+        # Reset unique ID counter per test for deterministic behavior if needed,
+        # but better to let it grow to avoid cache collisions from previous tests
+        # if clear_cache() somehow failed.
 
     @property
     def sample_strike_values(self):

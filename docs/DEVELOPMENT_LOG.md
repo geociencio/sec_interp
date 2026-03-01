@@ -1,4 +1,15 @@
 ---
+## [2026-02-28] - Fase 3: Refactor LayerResolver y Feedback de UX (20:30)
+- **Logro**: Centralizada la resolución de capas con caché y unificada la validación de parámetros, mejorando performance y mantenibilidad.
+- **Cambios**:
+    - **LayerResolver**: Implementado sistema de caché para resolución de capas.
+    - **Validation**: Unificada lógica de validación en `PreviewParams` delegando a `ProjectValidator`.
+    - **UX**: Implementado reporte de progreso real en `DrillholeGenerationTask`.
+    - **Tests**: Suite de mocks robustecida (IDs únicos, WKB types, QgsFields).
+- **Estado**: Fase 3 (UX & Perf) verificado con 229 tests OK.
+- **Mantenimiento**: [sesion_2026-02-28_refactor_layer_resolver.md](maintenance/sesion_2026-02-28_refactor_layer_resolver.md)
+
+---
 ## [2026-02-25] - Estabilización Fase 2.1: Hotfixes de Sondajes y Renderizado (22:30)
 - **Logro**: Resueltas 3 regresiones críticas introducidas por la optimización de la Fase 2, restaurando el renderizado de sondajes y la estabilidad del motor trayectorias.
 - **Cambios**:

@@ -166,7 +166,9 @@ class PreviewManager(TranslatableMixin):
         self.cached_data.update(
             {
                 "topo": result.topo,
+                "geol": result.geol,
                 "struct": result.struct,
+                "drillhole": result.drillhole,
             }
         )
         self.metrics.timings.update(result.metrics.timings)
@@ -313,13 +315,11 @@ class PreviewManager(TranslatableMixin):
 
     def _on_extents_changed(self) -> None:
         """Handle map canvas extent changes (zoom/pan)."""
-        self.debounce_timer.start(DialogConfig.ZOOM_DEBOUNCE_MS)
         # Only handle if Auto LOD is enabled
         if not self.dialog.preview_widget.chk_auto_lod.isChecked():
             return
 
-        # Restart debounce timer
-        self.debounce_timer.start(200)
+        self.debounce_timer.start(DialogConfig.ZOOM_DEBOUNCE_MS)
 
     def _update_lod_for_zoom(self) -> None:
         """Update preview detail based on current zoom level."""
@@ -404,6 +404,12 @@ class PreviewManager(TranslatableMixin):
         # Map string error to ProcessingError for centralized handling
         error = ProcessingError(self.tr("Geology processing failed: {}").format(error_msg))
         self.dialog.handle_error(error, "Geology Error")
+
+    def _on_drillhole_progress(self, progress: float) -> None:
+        """Handle progress updates from parallel drillhole service."""
+        self.dialog.preview_widget.results_text.setPlainText(
+            self.tr("Generating Drillholes: {:.1f}%...").format(progress)
+        )
 
     def _on_drillhole_error(self, error_msg: str) -> None:
         """Handle error during parallel drillhole generation."""

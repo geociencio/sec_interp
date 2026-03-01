@@ -52,6 +52,7 @@ class PreviewTaskOrchestrator:
                 self.drillhole_task.cancel()
             try:
                 self.drillhole_task.finished_with_results.disconnect()
+                self.drillhole_task.progress_changed.disconnect()
                 self.drillhole_task.error_occurred.disconnect()
             except (TypeError, RuntimeError):
                 pass
@@ -140,6 +141,7 @@ class PreviewTaskOrchestrator:
         )
 
         self.drillhole_task.finished_with_results.connect(self.manager._on_drillhole_finished)
+        self.drillhole_task.progress_changed.connect(self.manager._on_drillhole_progress)
         self.drillhole_task.error_occurred.connect(self.manager._on_drillhole_error)
 
         QgsApplication.taskManager().addTask(self.drillhole_task)

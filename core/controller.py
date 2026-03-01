@@ -7,6 +7,7 @@ This module handles the orchestration of various data generation services
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import time
 from typing import Any
 
@@ -18,7 +19,7 @@ from sec_interp.core.data_cache import DataCache
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.utils.i18n import TranslatableMixin
-from sec_interp.core.utils.qgis import resolve_layer
+from sec_interp.core.utils.qgis import LayerResolver
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger
 
@@ -202,8 +203,6 @@ class ProfileController(TranslatableMixin):
 
     def _get_cache_sub_key(self, param_values: list[Any]) -> str:
         """Generate a sub-key for caching specific components."""
-        import hashlib
-
         hasher = hashlib.md5()  # nosec B324
         for val in param_values:
             from qgis.core import QgsMapLayer
@@ -225,8 +224,8 @@ class ProfileController(TranslatableMixin):
         if profile_data:
             logger.debug("Cache hit: Topography")
         else:
-            line_lyr = resolve_layer(params.line_layer)
-            raster_lyr = resolve_layer(params.raster_layer)
+            line_lyr = LayerResolver.resolve(params.line_layer)
+            raster_lyr = LayerResolver.resolve(params.raster_layer)
 
             if not line_lyr or not raster_lyr:
                 raise ProcessingError(self.tr("Required layers for topography are missing."))
@@ -262,9 +261,9 @@ class ProfileController(TranslatableMixin):
             logger.debug("Cache hit: Geology")
             messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))
         else:
-            line_lyr = resolve_layer(params.line_layer)
-            raster_lyr = resolve_layer(params.raster_layer)
-            outcrop_lyr = resolve_layer(params.outcrop_layer)
+            line_lyr = LayerResolver.resolve(params.line_layer)
+            raster_lyr = LayerResolver.resolve(params.raster_layer)
+            outcrop_lyr = LayerResolver.resolve(params.outcrop_layer)
 
             if not all([line_lyr, raster_lyr, outcrop_lyr]):
                 return None
@@ -308,7 +307,7 @@ class ProfileController(TranslatableMixin):
             logger.debug("Cache hit: Structure")
             messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
         else:
-            line_lyr = resolve_layer(params.line_layer)
+            line_lyr = LayerResolver.resolve(params.line_layer)
             if not line_lyr:
                 return None
 
@@ -319,8 +318,8 @@ class ProfileController(TranslatableMixin):
                     line_start = scu.get_line_start_point(line_geom)
                     line_azimuth = scu.calculate_line_azimuth(line_geom)
 
-                    struct_lyr = resolve_layer(params.struct_layer)
-                    raster_lyr = resolve_layer(params.raster_layer)
+                    struct_lyr = LayerResolver.resolve(params.struct_layer)
+                    raster_lyr = LayerResolver.resolve(params.raster_layer)
 
                     if not struct_lyr:
                         return None
@@ -384,7 +383,7 @@ class ProfileController(TranslatableMixin):
             logger.debug("Cache hit: Drillholes")
             return drillhole_data
 
-        collar_lyr = resolve_layer(params.collar_layer)
+        collar_lyr = LayerResolver.resolve(params.collar_layer)
         if not collar_lyr:
             return None
 

@@ -1,20 +1,21 @@
-# Próximos Pasos - 2026-02-25
+# Próximos Pasos - 2026-02-28
 
 ## Estado Actual
-La Fase 2.1 de estabilización ha concluido con éxito. Se han resuelto todos los fallos críticos detectados tras la refactorización de optimización (inyección de dependencias, errores de índice y polimorfismo en renderizado).
+Finalizada la **Fase 3** de optimización de performance y UX. Se implementó `LayerResolver` con caché, se unificaron las validaciones en `PreviewParams` y se mejoró el feedback de progreso en la UI. La suite de pruebas es estable con 229 tests OK.
 
 ## Tareas Pendientes
-- [ ] Iniciar Fase 3: UX & Performance Elevado.
-    - [ ] Optimizar el refresco del canvas en el preview.
-    - [ ] Mejorar la feedback visual durante tareas asíncronas largas.
-- [ ] Revisión de cobertura de tests para los nuevos objetos `DrillholeProjection`.
+- [ ] **Auditoría de Señales**: Retomar el plan de `implementation_plan_v3.0.1.md` para cerrar las 22 fugas detectadas por `qgis-analyzer`.
+- [ ] **Fase 4: Consolidación de Configuración**: Unificar `ConfigService`, `ConfigManager` y `DialogConfig` (Pendiente de la Fase 3 original).
+- [ ] **Refactorización de Herramientas**: Revisar `InterpretationTool` y `MeasureTool` para asegurar que aprovechan `LayerResolver`.
+- [ ] **Modernización QGIS 4**: Iniciar revisión de compatibilidad siguiendo la skill `qgis-migration-4x`.
 
 ## Comandos para Retomar
 ```bash
 /inicia-sesion
-uv run pytest tests/core/services/test_drillhole_engine_crash.py
+/audit-plugin
+make docker-test
 ```
 
 ## Notas Técnicas
-- El motor de trayectorias ahora es robusto ante sondajes fuera de sección.
-- El renderizador soporta tanto el formato antiguo como el nuevo, pero se recomienda migrar todos los flujos a `DrillholeProjection`.
+- El sistema de mocks ahora es más estricto; cualquier cambio en validadores de capa debe reflejarse en `tests/mocks/qgis_layers.py` (WKB types y Fields).
+- Se recomienda mantener `LayerResolver.clear_cache()` en el `setUp` de los tests para evitar efectos secundarios.

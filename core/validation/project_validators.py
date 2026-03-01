@@ -16,7 +16,7 @@ from .layer_validator import (
 )
 from .validation_helpers import (
     DependencyRule,
-    resolve_layer,
+    LayerResolver,
     validate_dependencies,
     validate_reasonable_ranges,
 )
@@ -35,7 +35,7 @@ class SectionValidator(IValidator):
             context.add_error("Cross-section line layer is required", "line_layer")
             return
 
-        layer = resolve_layer(params.line_layer)
+        layer = LayerResolver.resolve(params.line_layer)
         if not layer:
             context.add_error("Cross-section line layer not found in project", "line_layer")
             return
@@ -60,7 +60,7 @@ class DEMValidator(IValidator):
             context.add_error("Raster DEM layer is required", "raster_layer")
             return
 
-        layer = resolve_layer(params.raster_layer)
+        layer = LayerResolver.resolve(params.raster_layer)
         if not layer:
             context.add_error("Raster DEM layer not found in project", "raster_layer")
             return
@@ -83,7 +83,7 @@ class GeologyValidator(IValidator):
         if not params.outcrop_layer:
             return
 
-        layer = resolve_layer(params.outcrop_layer)
+        layer = LayerResolver.resolve(params.outcrop_layer)
         if not layer:
             context.add_error("Geology layer not found in project", "outcrop_layer")
             return
@@ -101,7 +101,7 @@ class StructureValidator(IValidator):
         if not params.struct_layer:
             return
 
-        layer = resolve_layer(params.struct_layer)
+        layer = LayerResolver.resolve(params.struct_layer)
         if not layer:
             context.add_error("Structural layer not found in project", "struct_layer")
             return

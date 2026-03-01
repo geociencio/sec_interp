@@ -2,6 +2,10 @@
 
 This document serves as the central record for project history, release procedures, and past refactoring analysis.
 
+## [2026-02-28] REFACTOR LAYER RESOLUTION & UX FEEDBACK
+- **Cambios**: Implementado `LayerResolver` con caché, unificación de validaciones en `ProjectValidator` y feedback de progreso en UI.
+- **Métricas/Impacto**: 229 tests ejecutados con éxito. Optimización de acceso a capas y mejora en la percepción de performance del usuario.
+
 ## [2026-02-25] STABILIZATION HOTFIXES (DRILLHOLES & RENDERING)
 - **Cambios**: Corregido desajuste de DI (`ProfileController`), error de índice en sondajes vacíos (`TrajectoryEngine`) y error de subscripción en renderizado (`PreviewLayerFactory`).
 - **Métricas/Impacto**: Estabilidad del 100% restaurada para la Fase 3. Renderizado de sondajes funcional con polimorfismo.

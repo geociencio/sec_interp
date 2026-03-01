@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.performance_metrics import MetricsCollector
 
 from .entities import (
@@ -93,71 +92,45 @@ class PreviewParams:
     auto_lod: bool = True
 
     def validate(self) -> None:
-        """Perform native validation of parameters.
+        """Perform native validation using ProjectValidator to avoid duplication.
 
         Raises:
             ValidationError: If critical parameters are missing or invalid.
 
         """
-        self._validate_core_params()
-        self._validate_geology_params()
-        self._validate_structure_params()
-        self._validate_drillhole_params()
+        from sec_interp.core.validation.project_validator import (
+            ProjectValidator,
+            ValidationParams,
+        )
 
-    def _validate_core_params(self) -> None:
-        """Validate core raster and line layer IDs."""
-        if not self.raster_layer:
-            raise ValidationError("Raster layer ID is missing.")
-        if not self.line_layer:
-            raise ValidationError("Section line layer ID is missing.")
-        if self.band_num < 1:
-            raise ValidationError(f"Invalid band number: {self.band_num}")
-        if self.buffer_dist < 0:
-            raise ValidationError(f"Buffer distance cannot be negative: {self.buffer_dist}")
-
-    def _validate_geology_params(self) -> None:
-        """Validate geology specific parameters."""
-        if self.outcrop_layer and not self.outcrop_name_field:
-            raise ValidationError("Outcrop layer selected but no name field provided.")
-
-    def _validate_structure_params(self) -> None:
-        """Validate structure specific parameters."""
-        if self.struct_layer and (not self.dip_field or not self.strike_field):
-            raise ValidationError("Structural layer selected but dip/strike fields missing.")
-
-    def _validate_drillhole_params(self) -> None:
-        """Validate drillhole specific parameters."""
-        if self.collar_layer:
-            if not self.collar_id_field:
-                raise ValidationError("Collar layer selected but no ID field provided.")
-            self._validate_survey_params()
-            self._validate_interval_params()
-
-    def _validate_survey_params(self) -> None:
-        """Validate drillhole survey parameters."""
-        if self.survey_layer:
-            required = [
-                self.survey_id_field,
-                self.survey_depth_field,
-                self.survey_azim_field,
-                self.survey_incl_field,
-            ]
-            if not all(required):
-                raise ValidationError("Survey layer selected but some required fields are missing.")
-
-    def _validate_interval_params(self) -> None:
-        """Validate drillhole interval parameters for consistency and field existence."""
-        if self.interval_layer:
-            required = [
-                self.interval_id_field,
-                self.interval_from_field,
-                self.interval_to_field,
-                self.interval_lith_field,
-            ]
-            if not all(required):
-                raise ValidationError(
-                    "Interval layer selected but some required fields are missing."
-                )
+        val_params = ValidationParams(
+            raster_layer=self.raster_layer,
+            band_number=self.band_num,
+            line_layer=self.line_layer,
+            buffer_dist=self.buffer_dist,
+            outcrop_layer=self.outcrop_layer,
+            outcrop_field=self.outcrop_name_field,
+            struct_layer=self.struct_layer,
+            struct_dip_field=self.dip_field,
+            struct_strike_field=self.strike_field,
+            dip_scale_factor=self.dip_scale_factor,
+            collar_layer=self.collar_layer,
+            collar_id=self.collar_id_field,
+            collar_use_geom=self.collar_use_geometry,
+            collar_x=self.collar_x_field,
+            collar_y=self.collar_y_field,
+            survey_layer=self.survey_layer,
+            survey_id=self.survey_id_field,
+            survey_depth=self.survey_depth_field,
+            survey_azim=self.survey_azim_field,
+            survey_incl=self.survey_incl_field,
+            interval_layer=self.interval_layer,
+            interval_id=self.interval_id_field,
+            interval_from=self.interval_from_field,
+            interval_to=self.interval_to_field,
+            interval_lith=self.interval_lith_field,
+        )
+        ProjectValidator.validate_all(val_params)
 
 
 @dataclass

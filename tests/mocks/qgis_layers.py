@@ -5,6 +5,8 @@ from .qgis_base import MockQObject
 from .qgis_core import MockQgsCoordinateReferenceSystem, MockQgsRectangle
 from .qgis_features import MockQgsFields, MockQgsField
 
+UNIQUE_ID_COUNTER = 0
+
 
 class MockQgsMapLayer(MockQObject):
     """Mock implementation for QgsMapLayer."""
@@ -26,12 +28,16 @@ class MockQgsMapLayer(MockQObject):
     def __init__(self, *args, **kwargs):
         """Initialize the mock map layer."""
         super().__init__(*args, **kwargs)
+        global UNIQUE_ID_COUNTER
+        UNIQUE_ID_COUNTER += 1
+        self._id = f"mock_layer_{UNIQUE_ID_COUNTER}"
+
         self._dataProvider = MagicMock()
         self._name_val = (
             args[1] if len(args) > 1 else "MockLayer" if len(args) > 0 else ""
         )
         self.name = MagicMock(side_effect=lambda: self._name_val)
-        self.id = MagicMock(return_value="mock_layer_id")
+        self.id = MagicMock(side_effect=lambda: self._id)
         self.renderer = MagicMock()
         self.setRenderer = MagicMock()
         self.setSubsetString = MagicMock()
@@ -161,9 +167,16 @@ class MockQgsMapLayer(MockQObject):
 
     def geometryType(self):
         """Get geometry type (0: Point, 1: Line, 2: Polygon)."""
+        if hasattr(self, "_geometry_type_override"):
+            return self._geometry_type_override
+
         from .qgis_utils import mock_geometry_type
 
         return mock_geometry_type(self._wkb_type)
+
+    def setGeometryType(self, geom_type):
+        """Helper to set geometry type for mocks."""
+        self._geometry_type_override = geom_type
 
     def extent(self):
         """Get the layer extent."""
@@ -205,4 +218,6 @@ class MockQgsVectorLayer(MockQgsMapLayer):
 class MockQgsRasterLayer(MockQgsMapLayer):
     """Mock implementation for QgsRasterLayer."""
 
-    pass
+    def bandCount(self):
+        """Mock returning 1 band."""
+        return 1

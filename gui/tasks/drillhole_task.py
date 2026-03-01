@@ -28,6 +28,7 @@ class DrillholeGenerationTask(QgsTask):
     # Signals
     finished_with_results = pyqtSignal(object)
     error_occurred = pyqtSignal(str)
+    progress_changed = pyqtSignal(float)
 
     def __init__(
         self,
@@ -85,3 +86,8 @@ class DrillholeGenerationTask(QgsTask):
                 f"Drillhole Task Failed: {error_msg}", "SecInterp", Qgis.Critical
             )
             self.error_occurred.emit(error_msg)
+
+    def setProgress(self, progress: float) -> None:
+        """Override to emit signal for UI progress bar."""
+        super().setProgress(progress)
+        self.progress_changed.emit(progress)
