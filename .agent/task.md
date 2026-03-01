@@ -1,19 +1,15 @@
 # Tareas Activas - SecInterp
 
-## [x] Sesión Actual: Inicia Fase 3 (UX & Performance & Code Quality) [x]
-- [x] **Sintonización de Contexto**
-    - [x] Ejecutar `ai-ctx analyze`
-    - [x] Revisar `next_steps.md` y `AGENT_LESSONS.md`
-    - [x] Validar reporte de `qgis-analyzer summary`
-    - [x] Sincronizar entorno (`uv sync`) y ejecutar tests (`make docker-test`)
+## [x] Sesión Actual: Inicialización y Validación [x]
+- [x] Sintonización de Contexto (`ai-ctx`, `next_steps.md`, `AGENT_LESSONS.md`)
+- [x] Validación de Calidad (`qgis-analyzer summary`)
+- [x] Sincronización de Entorno (`uv sync`)
+- [x] Verificación de Estabilidad (`make docker-test` - **ALL PASS**)
 
-## [x] Fase 3: UX & Performance & Code Quality (Refactor) [x]
-- [x] **Fixes Críticos**: `first_start` en plugin, manejo de caché inconsistente para geol/drillhole, doble `debounce` en zoom de canvas.
-- [x] **Optimización de Performance**: Evitar `import` en runtime en methods, corrección simple de pipeline validator.
-- [x] **Limpieza y Centralización**: Consolidar LayerResolver para evitar redundancia de obtención de capas, unificar validación de params.
-- [x] **Feedback de UI**: Mejorar la transpiración visual del progreso de renderizado de sondajes (señal de progreso).
-- [x] Revisión de cobertura de tests tras aplicar las refactorizaciones (229 tests OK).
-
-## [/] Siguiente Objetivo: Consolidación de Configuración & Auditoría de Señales [/]
-- [ ] Auditoría de Señales (implementation_plan_v3.0.1.md)
-- [ ] Consolidación de ConfigService/Manager/Dialog
+## [x] Objetivo Completado: Fase 3.0.1 - Estabilización y Refactorización [x]
+- [x] **Limpieza Crítica**: Eliminar código muerto en `preview_renderer.py`.
+- [x] **Manejo de Errores**: Corregir captura de excepciones en `sec_interp_plugin.py` (Propagar KeyboardInterrupt).
+- [x] **Auditoría de Señales**: Implementar desconexiones según `implementation_plan_v3.0.1.md`.
+- [x] **Validación y Seguridad**: Centralizar validación de capas y añadir protección contra Path Traversal en exportadores.
+- [x] **Consolidación de Configuración**: Unificar `ConfigService`, `ConfigManager` y `DialogConfig`.
+- [x] **Memoria**: Robustecer `_cleanup_layers` para liberación de `QgsRubberBand`.

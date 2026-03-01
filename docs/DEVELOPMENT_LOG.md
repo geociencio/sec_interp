@@ -1,4 +1,30 @@
 ---
+## [Unreleased]
+### Added
+- **Seguridad**: Protección contra Path Traversal en todos los exportadores de datos.
+- **Validación**: Validación de tipos y rangos para parámetros de previsualización en `PreviewParams`.
+
+### Fixed
+- **Memoria**: Resueltas fugas de memoria por `QgsRubberBand` no liberados y desconexiones de señales faltantes en botones de reset/clear.
+- **Estabilidad**: Corregida la captura de excepciones críticas del sistema, permitiendo terminación limpia de QGIS.
+- **Estabilidad**: Corregida la resolución de capas mediante `LayerResolver` centralizado con caché.
+- **Validación**: Unificada la lógica de validación de proyectos eliminando duplicación en DTOs.
+- **UX**: Implementado reporte de progreso reactivo para la generación de sondajes en la UI.
+- **Mocks**: Robustecido el entorno de pruebas con soporte para IDs de capa únicos y validación estricta de geometría y campos.
+- **Estabilidad**: Corregido `TypeError` en `ProfileController` por desajuste de inyección de dependencias.
+
+---
+## [2026-03-01] - Fase 3.0.1: Estabilización, Seguridad y Gestión de Memoria (14:30)
+- **Logro**: Implementadas mejoras críticas de seguridad (Path Traversal) y estabilidad (Signal Leaks & Memory), resolviendo regresiones en el renderizador y alcanzando una suite verde.
+- **Cambios**:
+    - **Seguridad**: Protección contra Path Traversal en exportadores mediante resolución de rutas absolutas.
+    - **Memoria**: Limpieza explícita de `QgsRubberBand` y robustecimiento de desconexión de señales en la UI.
+    - **Resiliencia**: Corrección de manejo de excepciones críticas (`KeyboardInterrupt`) y validación temprana de parámetros en DTOs.
+    - **Cleanup**: Eliminación de código muerto duplicado en el renderizador de previsualización.
+- **Estado**: Estabilización v3.0.1 verificada con 124 tests OK.
+- **Mantenimiento**: [session_2026-03-01.md](logs/session_2026-03-01.md)
+
+---
 ## [2026-02-28] - Fase 3: Refactor LayerResolver y Feedback de UX (20:30)
 - **Logro**: Centralizada la resolución de capas con caché y unificada la validación de parámetros, mejorando performance y mantenibilidad.
 - **Cambios**:

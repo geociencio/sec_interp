@@ -178,6 +178,7 @@ class TestPreviewService(BaseTestCase):
         self.mock_line_lyr.featureCount = MagicMock(return_value=0)
 
         from sec_interp.core.exceptions import ValidationError
+
         with self.assertRaises(ValidationError):
             self.service.generate_all(self.params, MagicMock())
 

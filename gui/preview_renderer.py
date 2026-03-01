@@ -6,8 +6,6 @@ This module has been refactored to delegate specialized tasks to modular compone
 
 from __future__ import annotations
 
-import contextlib
-
 from qgis.core import (
     QgsGeometry,
     QgsMapRendererCustomPainterJob,
@@ -188,28 +186,6 @@ class PreviewRenderer:
 
         return layers
 
-        # 4. Axes and Labels
-        extent = self._calculate_extent(data_layers)
-        axes_layer = self.axes_manager.create_axes_layer(extent, vert_exag)
-        labels_layer = self.axes_manager.create_axes_labels_layer(extent, vert_exag)
-
-        # 5. Finalize layers list
-        layers = [labels_layer, *data_layers, axes_layer]
-        layers = [layer for layer in layers if layer is not None]
-        self.layers = layers
-
-        # 6. Configure canvas
-        if self.canvas and extent:
-            self.canvas.setLayers(layers)
-            if not preserve_extent:
-                # Add 10% padding to extent
-                padded_extent = extent
-                padded_extent.scale(1.1)
-                self.canvas.setExtent(padded_extent)
-            self.canvas.refresh()
-
-        return self.canvas, layers
-
     def draw_legend(self, painter: QPainter, rect: QRectF) -> None:
         """Draw legend on the given painter. Delegates to PreviewLegendRenderer."""
         self.legend_renderer.draw_legend(
@@ -259,19 +235,27 @@ class PreviewRenderer:
         """Remove previous layers from QgsProject."""
         for layer in self.layers:
             if layer:
-                with contextlib.suppress(Exception):
+                try:
                     QgsProject.instance().removeMapLayer(layer.id())
+                except Exception:
+                    logger.warning(
+                        f"Failed to remove map layer {layer.id() if hasattr(layer, 'id') else 'unknown'}"
+                    )
+
         self.layers = []
         self.layer_factory.active_units = {}
 
         # Clear interpretation rubber bands
-        for rb in self.interpretation_rubbers:
-            if rb:
-                with contextlib.suppress(Exception):
-                    rb.hide()
-                    # Python garbage collection should clean up QgsRubberBand if canvas reference is lost
-                    # but explicit removal from canvas Scene is better
-                    self.canvas.scene().removeItem(rb)
+        if self.canvas and self.canvas.scene():
+            scene = self.canvas.scene()
+            for rb in self.interpretation_rubbers:
+                if rb:
+                    try:
+                        rb.hide()
+                        scene.removeItem(rb)
+                    except Exception:
+                        logger.warning("Failed to remove rubber band from scene")
+
         self.interpretation_rubbers = []
 
     def _render_interpretations(

@@ -103,11 +103,18 @@ class PreviewParams:
             ValidationParams,
         )
 
+        # Basic type and range validation before calling ProjectValidator
+        if not isinstance(self.buffer_dist, int | float) or self.buffer_dist < 0:
+            raise ValueError("Buffer distance must be a non-negative number")
+
+        if not isinstance(self.band_num, int) or self.band_num < 1:
+            raise ValueError("Band number must be a positive integer")
+
         val_params = ValidationParams(
             raster_layer=self.raster_layer,
             band_number=self.band_num,
             line_layer=self.line_layer,
-            buffer_dist=self.buffer_dist,
+            buffer_dist=float(self.buffer_dist),
             outcrop_layer=self.outcrop_layer,
             outcrop_field=self.outcrop_name_field,
             struct_layer=self.struct_layer,

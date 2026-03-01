@@ -201,13 +201,19 @@ class SecInterp(TranslatableMixin):
         """Disconnect all signals to prevent memory leaks."""
         # Disconnect plugin actions
         for action in self.actions:
-            with contextlib.suppress(TypeError, RuntimeError):
-                action.triggered.disconnect()
+            if action:
+                with contextlib.suppress(TypeError, RuntimeError):
+                    action.triggered.disconnect()
 
         # Disconnect dialog connections if it exists
         if hasattr(self, "dlg") and self.dlg:
             with contextlib.suppress(TypeError, RuntimeError):
                 self.dlg.accepted.disconnect(self.process_data)
+
+            # Explicitly call dialog's cleanup if it exists
+            if hasattr(self.dlg, "cleanup"):
+                with contextlib.suppress(Exception):
+                    self.dlg.cleanup()
 
     def run(self) -> None:
         """Run method that performs all the real work."""
@@ -293,8 +299,13 @@ class SecInterp(TranslatableMixin):
         except (ValueError, TypeError, KeyError, AttributeError) as e:
             self.dlg.handle_error(e, self.tr("Input Processing Error"))
             return None
-        except (MemoryError, SystemError, KeyboardInterrupt) as e:
-            self.dlg.handle_error(e, self.tr("Critical System Error"))
+        except (MemoryError, SystemError, KeyboardInterrupt):
+            # Re-raise critical system exceptions
+            raise
+        except Exception as e:
+            # Catch-all for other unexpected errors
+            logger.exception("Unexpected error during input processing")
+            self.dlg.handle_error(e, self.tr("Unexpected Error"))
             return None
 
         # 3. Connect Layer Notifications

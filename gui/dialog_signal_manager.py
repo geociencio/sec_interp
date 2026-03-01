@@ -55,26 +55,28 @@ class SignalManager:
         ok_btn = self.dialog.button_box.button(QDialogButtonBox.Ok)
         if ok_btn:
             with contextlib.suppress(TypeError, RuntimeError):
-                ok_btn.clicked.disconnect(self.dialog.accept_handler)
+                ok_btn.clicked.disconnect()
 
         cancel_btn = self.dialog.button_box.button(QDialogButtonBox.Cancel)
         if cancel_btn:
             with contextlib.suppress(TypeError, RuntimeError):
-                cancel_btn.clicked.disconnect(self.dialog.reject_handler)
+                cancel_btn.clicked.disconnect()
 
         save_btn = self.dialog.button_box.button(QDialogButtonBox.Save)
         if save_btn:
             with contextlib.suppress(TypeError, RuntimeError):
-                save_btn.clicked.disconnect(self.dialog.export_manager.export_data)
+                save_btn.clicked.disconnect()
 
         with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.button_box.helpRequested.disconnect(self.dialog.open_help)
+            self.dialog.button_box.helpRequested.disconnect()
 
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.clear_cache_btn.clicked.disconnect(self.dialog.clear_cache_handler)
+        if hasattr(self.dialog, "clear_cache_btn") and self.dialog.clear_cache_btn:
+            with contextlib.suppress(TypeError, RuntimeError):
+                self.dialog.clear_cache_btn.clicked.disconnect()
 
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.reset_defaults_btn.clicked.disconnect(self.dialog.reset_defaults_handler)
+        if hasattr(self.dialog, "reset_defaults_btn") and self.dialog.reset_defaults_btn:
+            with contextlib.suppress(TypeError, RuntimeError):
+                self.dialog.reset_defaults_btn.clicked.disconnect()
 
     def _disconnect_preview_signals(self) -> None:
         """Disconnect preview-related signals."""

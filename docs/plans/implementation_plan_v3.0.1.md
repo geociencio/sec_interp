@@ -1,28 +1,42 @@
-# Plan de Corrección de Fugas de Señales
+# Plan de Estabilización y Refactorización v3.0.1
 
-Corregir las 22 fugas de señales detectadas por `qgis-analyzer` para mejorar la estabilidad de QGIS y evitar comportamientos erráticos tras cerrar diálogos o cambiar herramientas.
+Este plan aborda tanto la auditoría de señales como los hallazgos críticos del análisis de código exhaustivo (`CODE_ANALYSIS2.md`) para garantizar una base de código limpia y segura.
 
-## Cambios Propuestos
+## User Review Required
 
-### [SecInterp Plugin] [sec_interp_plugin.py](file:///home/jmbernales/qgispluginsdev/sec_interp/sec_interp_plugin.py)
-- Implementar `disconnect_signals()` para desconectar `action.triggered` y `dlg.accepted`.
-- Llamar a `disconnect_signals()` en `unload()`.
+> [!IMPORTANT]
+> Se eliminará código inalcanzable en el renderizador y se ajustará el manejo de excepciones globales. Esto puede cambiar ligeramente cómo se reportan errores críticos del sistema (ahora se propagarán en lugar de silenciarse).
 
-### [Signal Manager] [dialog_signal_manager.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/dialog_signal_manager.py)
-- Añadir desconexión para `reset_defaults_btn.clicked`.
-- Añadir desconexión para `btn_finalize.clicked` (conectado al slot de `measure_tool`).
-- Asegurar que `disconnect_all()` sea infalible ante objetos ya destruidos.
+## Proposed Changes
 
-### [Data Pages]
-- **[MODIFY] [drillhole_page.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/ui/pages/drillhole_page.py)**: Asegurar desconexión de `chk_use_geom`.
-- **[MODIFY] [geology_page.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/ui/pages/geology_page.py)**: Validar desconexión de `fieldChanged`.
-- **[MODIFY] [structure_page.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/ui/pages/structure_page.py)**: Validar desconexión de `dip_combo` y `strike_combo`.
+### 1. Eliminación de Código Muerto y Limpieza de Memoria
+#### [MODIFY] [preview_renderer.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/preview_renderer.py)
+- **Eliminar** el bloque de código duplicado e inalcanzable (Líneas 191-211).
+- **Robustecer** `_cleanup_layers()`: Asegurar que los `QgsRubberBand` se eliminen explícitamente de la escena del canvas antes de limpiar la lista.
+- **Logging**: Reemplazar supresiones ciegas de excepciones con logs de advertencia.
 
-## Plan de Verificación
+### 2. Manejo de Excepciones y Señales
+#### [MODIFY] [sec_interp_plugin.py](file:///home/jmbernales/qgispluginsdev/sec_interp/sec_interp_plugin.py)
+- **Corregir** bloques `except`: Dejar de capturar `KeyboardInterrupt`, `SystemError` y `MemoryError` globalmente para permitir que el sistema responda correctamente a interrupciones.
+- **Mejorar** `disconnect_signals()`: Implementar desconexiones más granulares y seguras.
 
-### Pruebas Automatizadas
-- Ejecutar `/audit-plugin` para verificar que el número de fugas de señales detectadas por `qgis-analyzer` se reduzca a 0.
-- Ejecutar `make docker-test` para asegurar que las desconexiones no rompan la lógica funcional de la UI (especialmente en integración).
+### 3. Validación Centralizada y Seguridad de Paths
+#### [MODIFY] [dtos.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/domain/dtos.py)
+- Mover importaciones de validación al nivel de módulo (usando `TYPE_CHECKING`).
+- Agregar validaciones de tipo y rango para parámetros numéricos en `PreviewParams.validate()`.
+#### [MODIFY] [base_exporter.py](file:///home/jmbernales/qgispluginsdev/sec_interp/exporters/base_exporter.py)
+- Implementar verificación de **Path Traversal** en `validate_export_path` para prevenir fugas de datos fuera del directorio permitido.
 
-### Verificación Manual
-- Validar visualmente en QGIS (si fuera posible) que el cambio de herramientas de mapa no deje rastros o logs de errores de señales ya muertas.
+### 4. Auditoría de Señales (Original)
+- Implementar desconexiones faltantes en `sec_interp_plugin.py`, `dialog_signal_manager.py` y páginas de datos (`drillhole_page.py`, etc.) según el reporte de `qgis-analyzer`.
+
+## Verification Plan
+
+### Automated Tests
+- **QGIS Analyzer**: Ejecutar `/audit-plugin` para confirmar que las fugas de señales bajan a 0 y que el código muerto desaparece.
+- **Docker Tests**: `make docker-test` para verificar regresiones en el flujo de renderizado y exportación.
+- **Nuevos Tests**: Crear un test unitario en `tests/core/test_security.py` para validar la protección contra Path Traversal.
+
+### Manual Verification
+- Validar que al cerrar el diálogo repetidamente no se incremente el uso de memoria (fuga de RubberBands).
+- Forzar un error de validación de path para confirmar que el sistema bloquea directorios prohibidos.

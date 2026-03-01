@@ -66,20 +66,40 @@ class BaseExporter(ABC):
             tuple: (is_valid, error_message)
 
         """
-        # Get parent directory of the file
-        parent_dir = output_path.parent
+        try:
+            # Resolve the absolute path to detect traversal
+            resolved_path = output_path.resolve()
 
-        # Validate parent directory is safe
-        is_valid, error, _ = validate_safe_output_path(
-            str(parent_dir), base_dir=base_dir, must_exist=False, create_if_missing=True
-        )
+            if base_dir:
+                resolved_base = base_dir.resolve()
+                if not str(resolved_path).startswith(str(resolved_base)):
+                    return False, QCoreApplication.translate(
+                        "BaseExporter",
+                        "Path traversal detected: {path} is outside of {base}",
+                    ).format(path=output_path, base=base_dir)
 
-        if not is_valid:
+            # Get parent directory for existence/permissions validation
+            parent_dir = output_path.parent
+
+            # Validate parent directory using existing helper
+            is_valid, error, _ = validate_safe_output_path(
+                str(parent_dir),
+                base_dir=base_dir,
+                must_exist=False,
+                create_if_missing=True,
+            )
+
+            if not is_valid:
+                return False, QCoreApplication.translate(
+                    "BaseExporter", "Invalid export path: {error}"
+                ).format(error=error)
+
+            return True, ""
+
+        except (OSError, ValueError) as e:
             return False, QCoreApplication.translate(
-                "BaseExporter", "Invalid export path: {error}"
-            ).format(error=error)
-
-        return True, ""
+                "BaseExporter", "Path resolution error: {error}"
+            ).format(error=str(e))
 
     @abstractmethod
     def get_supported_extensions(self) -> list[str]:

@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- **Seguridad**: Protección contra Path Traversal en todos los exportadores de datos.
+- **Validación**: Validación de tipos y rangos para parámetros de previsualización en `PreviewParams`.
+
 ### Fixed
+- **Memoria**: Resueltas fugas de memoria por `QgsRubberBand` no liberados y desconexiones de señales faltantes en botones de reset/clear.
+- **Estabilidad**: Corregida la captura de excepciones críticas del sistema, permitiendo terminación limpia de QGIS.
 - **Estabilidad**: Corregida la resolución de capas mediante `LayerResolver` centralizado con caché.
 - **Validación**: Unificada la lógica de validación de proyectos eliminando duplicación en DTOs.
 - **UX**: Implementado reporte de progreso reactivo para la generación de sondajes en la UI.
