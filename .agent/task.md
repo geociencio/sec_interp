@@ -13,3 +13,16 @@
 - [x] **Validación y Seguridad**: Centralizar validación de capas y añadir protección contra Path Traversal en exportadores.
 - [x] **Consolidación de Configuración**: Unificar `ConfigService`, `ConfigManager` y `DialogConfig`.
 - [x] **Memoria**: Robustecer `_cleanup_layers` para liberación de `QgsRubberBand`.
+
+## Fase 3.2.0 - Expansión de Cobertura de Tests [x]
+- [x] Implementar infraestructura de tests para `gui/tasks/`
+- [x] Añadir tests unitarios para `access_control_service.py`
+- [x] Implementar tests unitarios para procesadores de `drillhole/`
+- [x] Implementar tests de estado para `gui/renderers/`
+- [x] Validar utilidades de performance (`lod_calculator.py`)
+- [x] Alcanzar meta de >400 tests OK en Docker
+
+## Fase 3.2.1 - Automatización de la Documentación de Tests [x]
+- [x] Diseñar estrategia de actualización dinámica para `TESTING_STATUS.md`
+- [x] Implementar script `scripts/update_testing_status.py`
+- [x] Integrar actualización en el flujo de `make docker-test`

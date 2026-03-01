@@ -243,3 +243,26 @@ class MockQgsSettings(MockQgsBase):
         """Remove key from settings."""
         if key in self._shared_values:
             del self._shared_values[key]
+
+
+class MockQgsDistanceArea(MockQgsBase):
+    """Mock implementation for QgsDistanceArea."""
+
+    def __init__(self):
+        """Initialize the mock distance area."""
+        super().__init__()
+        self._ellipsoid = "WGS84"
+
+    def setEllipsoid(self, ellipsoid):
+        """Set ellipsoid."""
+        self._ellipsoid = ellipsoid
+
+    def ellipsoid(self):
+        """Get ellipsoid."""
+        return self._ellipsoid
+
+    def measureLine(self, p1, p2):
+        """Measure distance between two points (Euclidean in mock)."""
+        import math
+
+        return math.sqrt((p1.x() - p2.x()) ** 2 + (p1.y() - p2.y()) ** 2)

@@ -48,9 +48,13 @@ class TrajectoryEngine:
             section_azimuth,
             total_depth=final_depth,
         )
-        projected_traj = scu.project_trajectory_to_section(
-            trajectory, line_geom, line_start, distance_area
-        )
+        projected_traj = [
+            p
+            for p in scu.project_trajectory_to_section(
+                trajectory, line_geom, line_start, distance_area
+            )
+            if p[5] <= buffer_width
+        ]
 
         # 3. Interpolate Intervals
         hole_geol_data = self.interval_processor.interpolate_hole_intervals(

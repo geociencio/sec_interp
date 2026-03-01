@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- **Testing**: Expansión masiva de la suite de pruebas alcanzando **450 tests exitosos** en Docker.
+- **Automatización**: Implementado sistema de "Documentation-as-Code" para actualización dinámica de `TESTING_STATUS.md`.
+- **Testing**: Nuevas suites para GUI Tasks asíncronas, Core Processors (Collar, Survey, Interval) y Renderers.
 - **Seguridad**: Protección contra Path Traversal en todos los exportadores de datos.
 - **Validación**: Validación de tipos y rangos para parámetros de previsualización en `PreviewParams`.
 
 ### Fixed
+- **Core**: Corregida regresión en `TrajectoryEngine` que afectaba el filtrado por buffer.
+- **Integración**: Restaurada la carga de traducciones para sistemas con `SafeLoader`.
 - **Memoria**: Resueltas fugas de memoria por `QgsRubberBand` no liberados y desconexiones de señales faltantes en botones de reset/clear.
 - **Estabilidad**: Corregida la captura de excepciones críticas del sistema, permitiendo terminación limpia de QGIS.
 - **Estabilidad**: Corregida la resolución de capas mediante `LayerResolver` centralizado con caché.

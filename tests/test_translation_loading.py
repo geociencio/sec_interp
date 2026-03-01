@@ -15,10 +15,10 @@ class TestTranslationLoading(BaseTestCase):
     def setUp(self):
         self.iface = MagicMock()
 
-    @patch("sec_interp_plugin.SecInterpDialog")
-    @patch("sec_interp_plugin.PreviewRenderer")
-    @patch("sec_interp_plugin.ProfileController")
-    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp.gui.main_dialog.SecInterpDialog")
+    @patch("sec_interp.gui.preview_renderer.PreviewRenderer")
+    @patch("sec_interp.core.controller.ProfileController")
+    @patch("sec_interp.core.services.export_service.ExportService")
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QTranslator")
     @patch("sec_interp_plugin.QSettings")
@@ -51,10 +51,10 @@ class TestTranslationLoading(BaseTestCase):
             # Check if installed
             MockInstall.assert_called_once()
 
-    @patch("sec_interp_plugin.SecInterpDialog")
-    @patch("sec_interp_plugin.PreviewRenderer")
-    @patch("sec_interp_plugin.ProfileController")
-    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp.gui.main_dialog.SecInterpDialog")
+    @patch("sec_interp.gui.preview_renderer.PreviewRenderer")
+    @patch("sec_interp.core.controller.ProfileController")
+    @patch("sec_interp.core.services.export_service.ExportService")
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QTranslator")
     @patch("sec_interp_plugin.QSettings")
@@ -87,10 +87,10 @@ class TestTranslationLoading(BaseTestCase):
             # Check if installed
             MockInstall.assert_called_once()
 
-    @patch("sec_interp_plugin.SecInterpDialog")
-    @patch("sec_interp_plugin.PreviewRenderer")
-    @patch("sec_interp_plugin.ProfileController")
-    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp.gui.main_dialog.SecInterpDialog")
+    @patch("sec_interp.gui.preview_renderer.PreviewRenderer")
+    @patch("sec_interp.core.controller.ProfileController")
+    @patch("sec_interp.core.services.export_service.ExportService")
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QTranslator")
     @patch("sec_interp_plugin.QSettings")
@@ -123,10 +123,10 @@ class TestTranslationLoading(BaseTestCase):
             # Check if installed
             MockInstall.assert_called_once()
 
-    @patch("sec_interp_plugin.SecInterpDialog")
-    @patch("sec_interp_plugin.PreviewRenderer")
-    @patch("sec_interp_plugin.ProfileController")
-    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp.gui.main_dialog.SecInterpDialog")
+    @patch("sec_interp.gui.preview_renderer.PreviewRenderer")
+    @patch("sec_interp.core.controller.ProfileController")
+    @patch("sec_interp.core.services.export_service.ExportService")
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QTranslator")
     @patch("sec_interp_plugin.QSettings")
@@ -159,10 +159,10 @@ class TestTranslationLoading(BaseTestCase):
             # Check if installed
             MockInstall.assert_called_once()
 
-    @patch("sec_interp_plugin.SecInterpDialog")
-    @patch("sec_interp_plugin.PreviewRenderer")
-    @patch("sec_interp_plugin.ProfileController")
-    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp.gui.main_dialog.SecInterpDialog")
+    @patch("sec_interp.gui.preview_renderer.PreviewRenderer")
+    @patch("sec_interp.core.controller.ProfileController")
+    @patch("sec_interp.core.services.export_service.ExportService")
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QSettings")
     def test_translation_loads_default_on_fail(
@@ -185,10 +185,10 @@ class TestTranslationLoading(BaseTestCase):
 
             MockInstall.assert_not_called()
 
-    @patch("sec_interp_plugin.SecInterpDialog")
-    @patch("sec_interp_plugin.PreviewRenderer")
-    @patch("sec_interp_plugin.ProfileController")
-    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp.gui.main_dialog.SecInterpDialog")
+    @patch("sec_interp.gui.preview_renderer.PreviewRenderer")
+    @patch("sec_interp.core.controller.ProfileController")
+    @patch("sec_interp.core.services.export_service.ExportService")
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QTranslator")
     @patch("sec_interp_plugin.QSettings")
@@ -224,10 +224,10 @@ class TestTranslationLoading(BaseTestCase):
             # Check if installed
             MockInstall.assert_called_once()
 
-    @patch("sec_interp_plugin.SecInterpDialog")
-    @patch("sec_interp_plugin.PreviewRenderer")
-    @patch("sec_interp_plugin.ProfileController")
-    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp.gui.main_dialog.SecInterpDialog")
+    @patch("sec_interp.gui.preview_renderer.PreviewRenderer")
+    @patch("sec_interp.core.controller.ProfileController")
+    @patch("sec_interp.core.services.export_service.ExportService")
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QTranslator")
     @patch("sec_interp_plugin.QSettings")
@@ -260,10 +260,10 @@ class TestTranslationLoading(BaseTestCase):
             # Check if installed
             MockInstall.assert_called_once()
 
-    @patch("sec_interp_plugin.SecInterpDialog")
-    @patch("sec_interp_plugin.PreviewRenderer")
-    @patch("sec_interp_plugin.ProfileController")
-    @patch("sec_interp_plugin.ExportService")
+    @patch("sec_interp.gui.main_dialog.SecInterpDialog")
+    @patch("sec_interp.gui.preview_renderer.PreviewRenderer")
+    @patch("sec_interp.core.controller.ProfileController")
+    @patch("sec_interp.core.services.export_service.ExportService")
     @patch("sec_interp_plugin.QCoreApplication.installTranslator")
     @patch("sec_interp_plugin.QTranslator")
     @patch("sec_interp_plugin.QSettings")

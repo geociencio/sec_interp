@@ -79,6 +79,12 @@ class MockQgsDistanceArea(MockQgsBase):
         """Set ellipsoid."""
         pass
 
+    def measureLine(self, p1, p2):
+        """Measure distance between two points (Euclidean in mock)."""
+        import math
+
+        return math.sqrt((p1.x() - p2.x()) ** 2 + (p1.y() - p2.y()) ** 2)
+
     def measureLength(self, geom):
         """Measure length of geometry."""
         return geom.length()

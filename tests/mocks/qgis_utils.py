@@ -53,3 +53,16 @@ class MockQgsTask(MagicMock):
     def __init__(self, description="", flags=0):
         super().__init__()
         self._description, self._flags = description, flags
+        self._progress = 0.0
+
+    def description(self) -> str:
+        """Return task description."""
+        return self._description
+
+    def setProgress(self, progress: float) -> None:
+        """Set task progress."""
+        self._progress = progress
+
+    def isCanceled(self) -> bool:
+        """Check if task is canceled."""
+        return False

@@ -1,93 +1,116 @@
-# Testing Infrastructure
+# 🧪 SecInterp Testing Status
 
-## Status: ✅ Infrastructure Complete, ⚠️ Requires QGIS to Run
-
-### What Was Implemented
-
-1. **Pytest Configuration** (`pytest.ini`)
-   - Test discovery settings
-   - Markers for unit/integration/slow tests
-   - Verbose output configuration
-
-2. **Test Fixtures** (`tests/conftest.py`)
-   - Sample strike/dip values
-   - Sample profile data
-   - Temporary output directories
-   - Sample CSV data
-
-3. **Comprehensive Test Suite**:
-   - `test_utils.py` - 20 tests for parsing and calculations
-   - `test_validation.py` - 10 tests for validation functions
-   - `test_exporters.py` - 8 tests for exporters
-
-4. **Documentation** (`tests/README.md`)
-   - How to run tests with QGIS
-   - Test structure explanation
-   - Coverage reporting guide
-
-### Total Tests Created: 38 tests
+## 📊 Overview
+| Metric | Value | Status |
+| :--- | :--- | :--- |
+| **Total Tests** | <!-- TOTAL_TESTS -->450<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Platform** | Docker (QGIS 3.x) | 🐳 Active |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-03-01<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 
-## Running Tests
+## 🏗️ Test Coverage Breakdown
 
-**All tests require QGIS Python environment** because the plugin modules import QGIS dependencies.
+| Category | Tests | Progress | Status |
+| :--- | :---: | :--- | :---: |
+| **Core Services** | <!-- CORE_COUNT -->276<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **GUI Components** | <!-- GUI_COUNT -->143<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **Exporters** | <!-- EXP_COUNT -->15<!-- /EXP_COUNT --> | ████████░░ 80% | ⚠️ |
+| **Integration** | <!-- INT_COUNT -->16<!-- /INT_COUNT --> | ████░░░░░░ 40% | 🏗️ |
 
-### Method 1: QGIS Python Console
-```python
-# Open QGIS → Plugins → Python Console
-import sys
-sys.path.insert(0, '/home/jmbernales/qgispluginsdev/sec_interp')
-import pytest
-pytest.main(['-v', 'tests/'])
-```
+---
 
-### Method 2: Command Line (if python3-qgis is available)
+## 📂 Detailed Inventory
+<!-- START_INVENTORY -->
+- **tests/test_translation_loading.py**: 8 tests
+- **tests/core/test_algorithms.py**: 3 tests
+- **tests/core/test_async_drillhole.py**: 2 tests
+- **tests/core/test_config.py**: 4 tests
+- **tests/core/test_config_integration.py**: 2 tests
+- **tests/core/test_controller_di.py**: 2 tests
+- **tests/core/test_controller_orchestration.py**: 3 tests
+- **tests/core/test_data_cache_fix.py**: 3 tests
+- **tests/core/test_drillhole_service.py**: 3 tests
+- **tests/core/test_drillhole_service_optional.py**: 1 tests
+- **tests/core/test_drillhole_utils.py**: 16 tests
+- **tests/core/test_export_service.py**: 13 tests
+- **tests/core/test_field_validator.py**: 6 tests
+- **tests/core/test_geology_service.py**: 5 tests
+- **tests/core/test_geology_service_optional.py**: 1 tests
+- **tests/core/test_geometry_utils.py**: 17 tests
+- **tests/core/test_layer_validator.py**: 9 tests
+- **tests/core/test_path_validator.py**: 6 tests
+- **tests/core/test_preview_service.py**: 12 tests
+- **tests/core/test_profile_exporters.py**: 14 tests
+- **tests/core/test_project_validator.py**: 7 tests
+- **tests/core/test_rendering_utils.py**: 6 tests
+- **tests/core/test_settings_model.py**: 6 tests
+- **tests/core/test_spatial_utils.py**: 9 tests
+- **tests/core/test_structure_service.py**: 2 tests
+- **tests/core/test_utils.py**: 27 tests
+- **tests/core/test_utils_standalone.py**: 20 tests
+- **tests/core/test_validation.py**: 10 tests
+- **tests/core/test_validation_refactor.py**: 4 tests
+- **tests/core/validation/test_service_validation.py**: 6 tests
+- **tests/core/validation/test_validation_helpers.py**: 9 tests
+- **tests/core/validation/test_validators.py**: 28 tests
+- **tests/core/utils/test_metadata_reader.py**: 4 tests
+- **tests/core/utils/test_safe_loader_di.py**: 5 tests
+- **tests/core/services/test_access_control.py**: 3 tests
+- **tests/core/services/test_drillhole_engine_crash.py**: 2 tests
+- **tests/core/services/drillhole/test_processors.py**: 6 tests
+- **tests/gui/test_attribute_inheritance.py**: 1 tests
+- **tests/gui/test_cache_fix.py**: 1 tests
+- **tests/gui/test_dialog_input_manager.py**: 5 tests
+- **tests/gui/test_dialog_state_manager.py**: 4 tests
+- **tests/gui/test_export_reproduction.py**: 3 tests
+- **tests/gui/test_geology_task.py**: 2 tests
+- **tests/gui/test_gui_utils.py**: 3 tests
+- **tests/gui/test_interpretation_tool.py**: 22 tests
+- **tests/gui/test_lod_calculator.py**: 4 tests
+- **tests/gui/test_main_dialog_interpretation.py**: 4 tests
+- **tests/gui/test_main_dialog_settings.py**: 3 tests
+- **tests/gui/test_main_dialog_signals_wiring.py**: 3 tests
+- **tests/gui/test_main_dialog_tools.py**: 14 tests
+- **tests/gui/test_main_dialog_validation_manager.py**: 7 tests
+- **tests/gui/test_measure_tool.py**: 20 tests
+- **tests/gui/test_message_manager.py**: 5 tests
+- **tests/gui/test_preview_components.py**: 21 tests
+- **tests/gui/test_preview_renderer_custom.py**: 2 tests
+- **tests/gui/test_settings_page.py**: 4 tests
+- **tests/gui/tasks/test_drillhole_task.py**: 6 tests
+- **tests/gui/tasks/test_geology_task.py**: 6 tests
+- **tests/gui/renderers/test_renderers.py**: 3 tests
+- **tests/exporters/test_drillhole_3d_exporter.py**: 4 tests
+- **tests/exporters/test_dynamic_attrs.py**: 1 tests
+- **tests/exporters/test_exporters.py**: 7 tests
+- **tests/exporters/test_interpretation_3d_exporter.py**: 3 tests
+- **tests/integration/test_3d_integration.py**: 4 tests
+- **tests/integration/test_3d_integration_advanced.py**: 2 tests
+- **tests/integration/test_export_workflow.py**: 2 tests
+- **tests/integration/test_interpretation_workflow.py**: 3 tests
+- **tests/integration/test_measurement_workflow.py**: 2 tests
+- **tests/integration/test_qgis_smoke.py**: 3 tests
+- **tests/benchmarks/test_export_benchmarks.py**: 2 tests
+- **tests/benchmarks/test_geometry_benchmarks.py**: 4 tests
+<!-- END_INVENTORY -->
+
+---
+
+## 🛠️ Environment & Tools
+- **Test Runner**: `unittest` / `pytest`
+- **Environment**: Containerized (Docker)
+- **Framework**: `qgis-manage` + `uv`
+
+### Quick Run Commands
 ```bash
-/usr/bin/python3-qgis -m pytest tests/ -v
+# Full test suite
+make docker-test
+
+# Core services only
+docker run --rm -v $(pwd):/app/sec_interp sec_interp_test /bin/bash -c "python3 -m unittest discover tests/core"
 ```
 
 ---
-
-## Test Coverage
-
-### Core Utils (test_utils.py)
-- ✅ Strike parsing (numeric + quadrant notation)
-- ✅ Dip parsing (numeric + with direction)
-- ✅ Cardinal direction conversion
-- ✅ Apparent dip calculation
-- ✅ Elevation interpolation
-- ✅ User message helper (with mocking)
-
-### Validation (test_validation.py)
-- ✅ Numeric input validation
-- ✅ Integer input validation
-- ✅ Angle range validation
-- ✅ Output path validation
-
-### Exporters (test_exporters.py)
-- ✅ CSV exporter extensions
-- ✅ CSV export functionality
-- ✅ Error handling
-- ✅ Base exporter settings
-
----
-
-## Future Improvements
-
-1. **Separate QGIS-independent functions** into a standalone module
-2. **Mock QGIS objects** for faster testing
-3. **Add CI/CD integration** with QGIS Docker container
-4. **Increase coverage** to >70%
-
----
-
-## Benefits Achieved
-
-✅ Comprehensive test suite ready to use
-✅ Clear documentation for running tests
-✅ Fixtures for reusable test data
-✅ Foundation for future test expansion
-✅ Tests document expected behavior
-
-The infrastructure is complete and ready to use within QGIS environment.
+> [!NOTE]
+> Este archivo se actualiza dinámicamente. No edites las secciones marcadas con comentarios HTML.

@@ -174,6 +174,7 @@ docker-build:
 
 docker-test: docker-build
 	docker run --rm -v $(CURDIR):/app/sec_interp sec_interp_test
+	python3 scripts/update_testing_status.py
 
 .PHONY: apidoc docs docs-clean
 apidoc:

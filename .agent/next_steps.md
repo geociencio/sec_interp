@@ -1,27 +1,18 @@
-# Próximos Pasos - 2026-03-01
+# Next Steps - 2026-03-01
 
-## Estado Actual
-Finalizada la **Fase 3.0.1** de Estabilización y Seguridad.
-- Implementada protección contra Path Traversal en `BaseExporter`.
-- Resueltas fugas de señales y `QgsRubberBand`.
-- Corregido el manejo de excepciones críticas (`KeyboardInterrupt`, etc.).
-- Eliminado código muerto en `PreviewRenderer`.
-- Suite de pruebas estable con **124 tests OK** en Docker.
-- Plugin desplegado localmente para pruebas de QGIS.
+## Contexto Actual
+Se ha completado la Fase 3.2.0 (Expansión de Tests) y la Fase 3.2.1 (Automatización de Documentación). El proyecto cuenta ahora con **450 tests unitarios e integración** que pasan exitosamente en Docker. Se corrigió una regresión en el motor de trayectorias.
 
-## Tareas Pendientes
-- [ ] **Fase 4: Consolidación de Configuración**: Unificar `ConfigService`, `ConfigManager` y `DialogConfig`.
-- [ ] **Auditoría de Señales (Final)**: Cerrar las fugas remanentes detectadas por `qgis-analyzer` (ahora que las desconexiones base son robustas).
-- [ ] **Refactorización de Herramientas**: Revisar `InterpretationTool` y `MeasureTool` para asegurar el uso óptimo de `LayerResolver`.
-- [ ] **Integración de Drill Logs**: Iniciar investigación sobre la integración de logs de perforación detallados.
+## Tareas Pendientes Inmediatas
+- [ ] **Migración a QGIS 4.x**: Iniciar la auditoría de compatibilidad de la API (Skill `qgis-migration-4x`).
+- [ ] **Refactorización de UI**: Reducir la complejidad en los gestores de diálogo que aún superan los umbrales de Ruff.
+- [ ] **Cobertura de 3D**: Expandir tests de integración para casos de bordes en proyecciones cartesianas complejas.
 
-## Comandos para Retomar
+## Comando para retomar
 ```bash
 /inicia-sesion
-make docker-test
-uv run qgis-manage deploy --no-compile
 ```
 
-## Notas Técnicas
-- El entorno local `uv run` presenta inconsistencias al resolver `sec_interp` como paquete si no se instala en modo editable (`-e .`). Se recomienda usar el contenedor Docker para validación formal.
-- La protección Path Traversal usa `path.resolve()` y comprobación de prefijo; cualquier nuevo exportador debe heredar de `BaseExporter` y llamar a `validate_export_path`.
+## Pendientes de Calidad
+- [ ] Corregir 4 tests "skipped" en la suite actual (verificar por qué se omiten en Docker).
+- [ ] Eliminar advertencias de `DEPRECATED` en el Docker build (cambiar a BuildKit si es posible en el entorno).

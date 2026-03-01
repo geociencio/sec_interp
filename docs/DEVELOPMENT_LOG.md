@@ -1,6 +1,24 @@
 ---
 ## [Unreleased]
 ### Added
+- **Testing**: Expansión masiva de la suite de pruebas alcanzando **450 tests exitosos** en Docker.
+- **Automatización**: Implementado sistema de "Documentation-as-Code" para actualización dinámica de `TESTING_STATUS.md`.
+- **Testing**: Nuevas suites para GUI Tasks asíncronas, Core Processors y Renderers.
+
+### Fixed
+- **Core**: Corregida regresión en `TrajectoryEngine` que afectaba el filtrado por buffer.
+- **Integración**: Restaurada la carga de traducciones para sistemas con `SafeLoader`.
+
+---
+## [2026-03-01] - Fase 3.2.0/3.2.1: Expansión de Tests (Tarde)
+- **Logro**: Alcanzado hito de 450 tests OK en Docker y automatizada la documentación de testing.
+- **Cambios**:
+    - **Tests**: Implementada cobertura para tareas asíncronas, servicios core y renderizadores de estado.
+    - **Automatización**: Creado script `update_testing_status.py` integrado en el `Makefile`.
+    - **Estabilidad**: Corregida regresión en el motor de trayectorias.
+- **Estado**: Suite 100% verde (450 tests).
+- **Mantenimiento**: [sesion_2026-03-01_testing_expansion.md](maintenance/sesion_2026-03-01_testing_expansion.md)
+### Added
 - **Seguridad**: Protección contra Path Traversal en todos los exportadores de datos.
 - **Validación**: Validación de tipos y rangos para parámetros de previsualización en `PreviewParams`.
 

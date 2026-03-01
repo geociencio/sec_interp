@@ -2,6 +2,10 @@
 
 This document serves as the central record for project history, release procedures, and past refactoring analysis.
 
+## [2026-03-01] TESTING EXPANSION & DaC AUTOMATION
+- **Cambios**: Expansión masiva de tests (450 OK) y automatización de `TESTING_STATUS.md`.
+- **Métricas/Impacto**: Incremento de cobertura en áreas críticas (GUI Tasks, Core). Estabilización del motor de trayectorias.
+
 ## [2026-02-28] REFACTOR LAYER RESOLUTION & UX FEEDBACK
 - **Cambios**: Implementado `LayerResolver` con caché, unificación de validaciones en `ProjectValidator` y feedback de progreso en UI.
 - **Métricas/Impacto**: 229 tests ejecutados con éxito. Optimización de acceso a capas y mejora en la percepción de performance del usuario.
