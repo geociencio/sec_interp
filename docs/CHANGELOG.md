@@ -7,22 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- **Testing**: Expansión masiva de la suite de pruebas alcanzando **450 tests exitosos** en Docker.
-- **Automatización**: Implementado sistema de "Documentation-as-Code" para actualización dinámica de `TESTING_STATUS.md`.
-- **Testing**: Nuevas suites para GUI Tasks asíncronas, Core Processors (Collar, Survey, Interval) y Renderers.
-- **Seguridad**: Protección contra Path Traversal en todos los exportadores de datos.
-- **Validación**: Validación de tipos y rangos para parámetros de previsualización en `PreviewParams`.
+- **Testing**: Massive expansion of the test suite reaching **450 successful tests** in Docker.
+- **Automation**: Implemented "Documentation-as-Code" system for dynamic updating of `TESTING_STATUS.md`.
+- **Testing**: New suites for asynchronous GUI Tasks, Core Processors (Collar, Survey, Interval), and Renderers.
+- **Security**: Path Traversal protection in all data exporters.
+- **Validation**: Type and range validation for preview parameters in `PreviewParams`.
 
 ### Fixed
-- **Core**: Corregida regresión en `TrajectoryEngine` que afectaba el filtrado por buffer.
-- **Integración**: Restaurada la carga de traducciones para sistemas con `SafeLoader`.
-- **Memoria**: Resueltas fugas de memoria por `QgsRubberBand` no liberados y desconexiones de señales faltantes en botones de reset/clear.
-- **Estabilidad**: Corregida la captura de excepciones críticas del sistema, permitiendo terminación limpia de QGIS.
-- **Estabilidad**: Corregida la resolución de capas mediante `LayerResolver` centralizado con caché.
-- **Validación**: Unificada la lógica de validación de proyectos eliminando duplicación en DTOs.
-- **UX**: Implementado reporte de progreso reactivo para la generación de sondajes en la UI.
-- **Mocks**: Robustecido el entorno de pruebas con soporte para IDs de capa únicos y validación estricta de geometría y campos.
-- **Estabilidad**: Corregido `TypeError` en `ProfileController` por desajuste de inyección de dependencias.
+- **Core**: Fixed regression in `TrajectoryEngine` affecting buffer filtering.
+- **Integration**: Restored translation loading for systems using `SafeLoader`.
+- **Memory**: Resolved memory leaks due to unreleased `QgsRubberBand` and missing signal disconnections in reset/clear buttons.
+- **Stability**: Fixed critical system exception capture, allowing for clean QGIS termination.
+- **Stability**: Fixed layer resolution via centralized `LayerResolver` with cache.
+- **Validation**: Unified project validation logic, eliminating duplication in DTOs.
+- **UX**: Implemented reactive progress reporting for drillhole generation in the UI.
+- **Mocks**: Robust testing environment with support for unique layer IDs and strict geometry and field validation.
+- **Stability**: Fixed `TypeError` in `ProfileController` due to dependency injection mismatch.
 
 ## [3.1.0] - 2026-02-19
 ### Added

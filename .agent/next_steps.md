@@ -1,18 +1,18 @@
 # Next Steps - 2026-03-01
 
-## Contexto Actual
-Se ha completado la Fase 3.2.0 (Expansión de Tests) y la Fase 3.2.1 (Automatización de Documentación). El proyecto cuenta ahora con **450 tests unitarios e integración** que pasan exitosamente en Docker. Se corrigió una regresión en el motor de trayectorias.
+## Current Context
+Phase 3.2.0 (Testing Expansion) and Phase 3.2.1 (Documentation Automation) have been completed. The project now has **450 unit and integration tests** passing successfully in Docker. A regression in the trajectory engine was fixed.
 
-## Tareas Pendientes Inmediatas
-- [ ] **Migración a QGIS 4.x**: Iniciar la auditoría de compatibilidad de la API (Skill `qgis-migration-4x`).
-- [ ] **Refactorización de UI**: Reducir la complejidad en los gestores de diálogo que aún superan los umbrales de Ruff.
-- [ ] **Cobertura de 3D**: Expandir tests de integración para casos de bordes en proyecciones cartesianas complejas.
+## Immediate Pending Tasks
+- [ ] **QGIS 4.x Migration**: Start the API compatibility audit (Skill `qgis-migration-4x`).
+- [ ] **UI Refactoring**: Reduce complexity in dialog managers that still exceed Ruff thresholds.
+- [ ] **3D Coverage**: Expand integration tests for edge cases in complex Cartesian projections.
 
-## Comando para retomar
+## Command to Resume
 ```bash
 /inicia-sesion
 ```
 
-## Pendientes de Calidad
-- [ ] Corregir 4 tests "skipped" en la suite actual (verificar por qué se omiten en Docker).
-- [ ] Eliminar advertencias de `DEPRECATED` en el Docker build (cambiar a BuildKit si es posible en el entorno).
+## Quality Items
+- [ ] Fix 4 "skipped" tests in the current suite (verify why they are skipped in Docker).
+- [ ] Remove `DEPRECATED` warnings in the Docker build (switch to BuildKit if possible in the environment).
