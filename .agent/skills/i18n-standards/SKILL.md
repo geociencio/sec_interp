@@ -1,5 +1,6 @@
 ---
-description: Estándares y mejores prácticas para la internacionalización (i18n) en SecInterp
+name: i18n-standards
+description: Standards and best practices for internationalization (i18n) in SecInterp
 ---
 
 # Skill: i18n Standards

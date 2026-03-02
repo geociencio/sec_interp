@@ -1,81 +1,77 @@
 ---
-description: Procedimiento estándar y robusto para iniciar una sesión de desarrollo "Local First"
+description: Standard and robust procedure for starting a "Local First" development session
 agent: Senior Architect
 skills: [qgis-core, qa-docker, agentic-memory]
 validation: |
-  - Verificar que todos los tests pasen en Docker
-  - Confirmar que AI_CONTEXT.md está actualizado con métricas recientes
-
-  - Validar que no hay regresiones en complejidad ciclomática
+  - Verify that all tests pass in Docker
+  - Confirm that AI_CONTEXT.md is updated with recent metrics
+  - Validate that there are no regressions in cyclomatic complexity
 ---
 
-Este workflow optimiza el inicio del desarrollo asegurando un entorno sincronizado, **contextualizado** y validado.
+This workflow optimizes the start of development by ensuring a synchronized, **contextualized**, and validated environment.
 
-1.  **Sintonización de Contexto (CRÍTICO)**:
-    Actualiza y lee el contexto para entender "dónde nos quedamos".
-    // turbo
-    ```bash
-    uv run ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/AGENT_LESSONS.md
-    ```
+### 1. Context Tuning (CRITICAL)
+Updates and reads the context to understand "where we left off".
+// turbo
+```bash
+uv run ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/AGENT_LESSONS.md
+```
 
-    🤖 **Agent Action**: Validar Tareas Activas.
+🤖 **Agent Action**: Validate Active Tasks.
 
-    *   **Gestión de Tareas**:
-        *   Verifica si existe `.agent/task.md`.
-        *   Si existe: Muestra el contenido ("Estado Actual").
-        *   Si NO existe: Créalo basándote en el Plan de Implementación activo o `next_steps.md`.
+*   **Task Management**:
+    *   Verify if `.agent/task.md` exists.
+    *   If it exists: Show the content ("Current Status").
+    *   If it DOES NOT exist: Create it based on the active Implementation Plan or `next_steps.md`.
 
-    🤖 **Agent Action**: Revisar `AI_CONTEXT.md` y `project_context.json` usando skill **qgis-core** para identificar:
-    - Deuda técnica crítica relacionada con QGIS API
-    - Métodos con alta complejidad ciclomática (CC > 15)
-    - Violaciones de arquitectura (UI en Core)
+🤖 **Agent Action**: Review `AI_CONTEXT.md` and `project_context.json` using **qgis-core** skill to identify:
+- Critical technical debt related to QGIS API
+- Methods with high cyclomatic complexity (CC > 15)
+- Architecture violations (UI in Core)
 
+Review the following files in this order:
+*   `.agent/next_steps.md`: **The Witness (Source of Truth)**. Defines the exact starting point and immediate goals.
+*   `.agent/task.md`: **Active Board**. If it exists, it must align with `next_steps.md`. If not, create it based on `next_steps.md`.
+*   `.agent/memory/AGENT_LESSONS.md`: **The Brain**. Error patterns to avoid and preferences.
+*   `AI_CONTEXT.md`: Architectural context and long-term metrics.
+*   `project_context.json`: Structured data on complexity and dependencies.
+*   `docs/DEVELOPMENT_LOG.md`: See summary of the last session (reverse chronological order).
+*   `docs/LOGGING_GUIDELINES.md`: Follow strictly for recording new activities.
 
-    Revisa los siguientes archivos en este orden:
-    *   `.agent/next_steps.md`: **El Testigo (Fuente de Verdad)**. Define el punto de partida exacto y objetivos inmediatos.
-    *   `.agent/task.md`: **Tablero Activo**. Si existe, debe alinearse con `next_steps.md`. Si no, créalo basado en `next_steps.md`.
-    *   `.agent/memory/AGENT_LESSONS.md`: **El Cerebro**. Patrones de error a evitar y preferencias.
-    *   `AI_CONTEXT.md`: Contexto arquitectónico y métricas de largo plazo.
-    *   `project_context.json`: Datos estructurados de complejidad y dependencias.
-    *   `docs/DEVELOPMENT_LOG.md`: Ver resumen de la última sesión (orden cronológico inverso).
-
-    *   `docs/LOGGING_GUIDELINES.md`: Seguir estrictamente para registrar nuevas actividades.
-
-
-### 3. Quick Quality Scan (Novedad v1.9.0)
-Realiza un escaneo rápido del estado del proyecto para identificar deuda técnica crítica.
+### 2. Quick Quality Scan
+Perform a quick scan of the project status to identify critical technical debt.
 ```bash
 uv run qgis-analyzer summary
 ```
 
-### 4. Validación de Integridad (Tests)**:
-    Asegura dependencias actualizadas.
-    // turbo
-    ```bash
-    uv sync
-    ```
+### 3. Integrity Validation (Tests)
+Ensure updated dependencies.
+// turbo
+```bash
+uv sync
+```
 
-    🤖 **Agent Action**: Verificar que no hay conflictos de dependencias relacionadas con PyQGIS.
+🤖 **Agent Action**: Verify that there are no dependency conflicts related to PyQGIS.
 
-3.  **Verificación de Estado (Sanity Check)**:
-    Confirma que el sistema está estable ("en verde"). Todos los tests deben pasar.
+### 4. Status Verification (Sanity Check)
+Confirm that the system is stable ("in green"). All tests must pass.
 
-    *Opción A (Docker - Recomendado):*
-    // turbo
-    ```bash
-    make docker-test
-    ```
+*Option A (Docker - Recommended):*
+// turbo
+```bash
+make docker-test
+```
 
-    *Opción B (Local):*
-    ```bash
-    env PYTHONPATH=.. uv run python3 -m unittest discover tests
-    ```
+🤖 **Agent Action**: Use **qa-docker** skill to interpret test failures and identify regressions.
 
-    🤖 **Agent Action**: Usar skill **qa-docker** para interpretar fallos de tests e identificar regresiones.
+*Option B (Local):*
+```bash
+env PYTHONPATH=.. uv run python3 -m unittest discover tests
+```
 
-## Resultado Esperado
-- Entorno sincronizado y validado (Todos los tests OK).
-- Mapa mental claro de las tareas pendientes en `next_steps.md`.
-- Agente operando con los perfiles y skills correctos cargados.
+## Expected Result
+- Synchronized and validated environment (All tests OK).
+- Clear mental map of pending tasks in `next_steps.md`.
+- Agent operating with the correct profiles and skills loaded.
 
-**Filosofía**: Empezar a codificar sabiendo *exactamente* qué pasó ayer y con el contexto especializado cargado.
+**Philosophy**: Start coding knowing *exactly* what happened yesterday and with specialized context loaded.

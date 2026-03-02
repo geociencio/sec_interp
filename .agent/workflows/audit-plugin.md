@@ -1,5 +1,7 @@
 ---
-description: Realiza una auditoría completa o parcial del plugin utilizando qgis-plugin-analyzer v1.9.0+.
+description: Perform a full or partial plugin audit using qgis-plugin-analyzer v1.9.0+.
+agent: Auditor
+skills: [project-context, coding-standards, i18n-standards]
 ---
 
 Este workflow ejecuta una serie de verificaciones estáticas especializadas para asegurar la calidad, seguridad y rendimiento del plugin.

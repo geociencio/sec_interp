@@ -1,5 +1,7 @@
 ---
-description: Procedimiento para mantenimiento y expansión de i18n (Traducciones)
+description: Procedure for i18n maintenance and expansion (Translations)
+agent: QA Engineer
+skills: [i18n-standards, project-context]
 ---
 
 # Workflow: Mantenimiento de i18n

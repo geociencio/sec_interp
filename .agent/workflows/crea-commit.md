@@ -1,63 +1,66 @@
 ---
 description: How to commit changes cleanly (handling hooks)
 agent: QA Engineer
-skills: [qa-docker, commit-standards]
+skills: [qa-docker, commit-standards, agentic-memory]
 validation: |
-  - Verificar que ruff y black pasan sin errores
-  - Confirmar que ai-ctx analyze se ejecutó correctamente
-  - Validar que el mensaje de commit sigue Conventional Commits
+  - Verify that ruff and black pass without errors
+  - Confirm that ai-ctx analyze runs successfully
+  - Validate that the commit message follows Conventional Commits
 ---
+
 This workflow describes the process for committing changes, ensuring code quality standards are met without getting blocked by pre-commit hook conflicts.
 
-1. **Preparación y Limpieza (Automático)**:
-   Asegura que el código cumple con el estándar de ruff y black para evitar fallos en los hooks.
-   // turbo
-   ```bash
-   uv run ruff check --fix .
-   uv run ruff format .
-   uv run black .
-   ```
+### 1. Preparation and Cleanup (Automatic)
+Ensures that the code complies with ruff and black standards to avoid hook failures.
+// turbo
+```bash
+uv run ruff check --fix .
+uv run ruff format .
+uv run black .
+```
 
-2. **Stage Changes**: Añade los archivos que deseas confirmar.
-   ```bash
-   git add .
-   ```
+### 2. Stage Changes
+Add the files you wish to commit.
+```bash
+git add .
+```
 
-3. **Sincronización de Calidad (Guardián)**:
-   Registra el impacto de los cambios en el Cerebro del Proyecto antes de guardar.
-   // turbo
-   ```bash
-   uv run ai-ctx analyze --path .
-   ```
+### 3. Quality Synchronization (Guardian)
+Record the impact of changes in the Project Brain before saving.
+// turbo
+```bash
+uv run ai-ctx analyze --path .
+```
 
-   🤖 **Agent Action**: Analizar métricas de calidad y alertar si:
-   - Complejidad ciclomática aumentó significativamente
-   - Docstring coverage bajó
-   - Se detectaron nuevas violaciones de QGIS compliance
+🤖 **Agent Action**: Analyze quality metrics and alert if:
+- Cyclomatic complexity increased significantly
+- Docstring coverage decreased
+- New QGIS compliance violations were detected
 
-4. **Propuesta de Mensaje (Asistida por IA)**:
+### 4. Message Proposal (AI-Assisted)
 
-   🤖 **Agent Action**: Usar skill **commit-standards** para:
-   - Analizar cambios preparados (`git diff --cached`)
-   - Generar 2-3 opciones de mensajes siguiendo Conventional Commits
-   - Validar formato: tipo correcto, scope apropiado, inglés, imperativo
-   - Sugerir scope basado en archivos modificados (core, gui, export, etc.)
-   - Alertar si hay breaking changes que requieren `!` o footer
+🤖 **Agent Action**: Use **commit-standards** skill to:
+- Analyze staged changes (`git diff --cached`)
+- Generate 2-3 message options following Conventional Commits
+- Validate format: correct type, appropriate scope, English, imperative
+- Suggest scope based on modified files (core, gui, export, etc.)
+- Alert if there are breaking changes requiring `!` or footer
 
-   Ejemplo de sugerencias:
-   ```text
-   Opción 1: refactor(core): reduce complexity in GeologyService.prepare_task_input
-   Opción 2: refactor(core): extract validation logic from GeologyService
-   ```
+Example suggestions:
+```text
+Option 1: refactor(core): reduce complexity in GeologyService.prepare_task_input
+Option 2: refactor(core): extract validation logic from GeologyService
+```
 
-5. **Commit**: Ejecuta el commit con el mensaje aprobado.
-   ```bash
-   git commit -m "type(scope): description" -m "detailed body"
-   ```
+### 5. Commit
+Execute the commit with the approved message.
+```bash
+git commit -m "type(scope): description" -m "detailed body"
+```
 
-   *Si el pre-commit hook persiste en fallar:*
-   1. Revisa los mensajes de error detectados.
-   2. Ejecuta `git add` de nuevo si hubo cambios automáticos.
-   3. Repite el commit.
+*If the pre-commit hook persists in failing:*
+1. Review the detected error messages.
+2. Run `git add` again if there were automatic changes.
+3. Repeat the commit.
 
-**Filosofía**: Cada commit es una unidad de valor limpio, documentado y validado métricamente.
+**Philosophy**: Each commit is a clean unit of value, documented and metrically validated.

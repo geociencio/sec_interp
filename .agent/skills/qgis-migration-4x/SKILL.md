@@ -1,5 +1,6 @@
 ---
-description: Guía experta para la migración a QGIS 4.x y el uso de API agnóstica
+name: qgis-migration-4x
+description: Expert guide for QGIS 4.x migration and agnostic API usage
 ---
 
 # Skill: QGIS Migration & Future-Proofing (4.x)

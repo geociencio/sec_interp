@@ -1,104 +1,106 @@
 ---
-description: Procedimiento para finalizar una sesión de trabajo, actualizar logs y archivar resultados
+description: Procedure to end a work session, update logs, and archive results
 agent: QA Engineer
 skills: [qa-docker, commit-standards, agentic-memory, documentation-standards]
 validation: |
-  - Verificar que todos los logs están actualizados
-  - Confirmar que tests pasan antes de cerrar
-  - Validar que .agent/next_steps.md existe y tiene contenido claro
+  - Verify that all logs are updated
+  - Confirm that tests pass before closing
+  - Validate that .agent/next_steps.md exists and has clear content
 ---
 
-Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en memoria histórica para la próxima sesión.
+This workflow closes the development cycle, converting technical work into historical memory for the next session.
 
-1.  **Actualización de Memoria (Logs & Roadmap)**:
+### 1. Memory Update (Logs & Roadmap)
 
-    🤖 **Agent Action**: Validar que todos los archivos críticos están actualizados.
+🤖 **Agent Action**: Validate that all critical files are updated.
 
-    *   **Identificación del Tema**: Define un nombre corto para la sesión (ej: `stabilization_mocks`).
-    *   **`docs/plans/implementation_plan_vX.Y.Z.md`**: **[CRÍTICO]** Actualiza el estado de las tareas (marcar con `[x]` las completadas).
-    *   **Persistencia de Tareas**:
-        *   Asegura que `.agent/task.md` refleja el progreso real.
-        *   Si completaste una fase mayor, archívalo en `.agent/history/tasks/`.
-        *   **NO BORRES** este archivo si la fase continúa.
-    *   **`.agent/next_steps.md`**: **[CRÍTICO]** Crea o actualiza este archivo con el "paso de testigo": qué falta, qué errores hay pendientes y cuál es el comando para retomar.
-    *   **Archivado de Next Steps**: **[NUEVO]** Copia `.agent/next_steps.md` a `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` para mantener el registro histórico.
-    *   **`docs/maintenance/sesion_YYYY-MM-DD_[TEMA].md`**: **[OBLIGATORIO]** Crea este archivo con el resumen técnico de la sesión.
-    *   **`docs/DEVELOPMENT_LOG.md`**: **[CRÍTICO]** Añade entrada siguiendo el formato de `documentation-standards`.
-    *   **`docs/source/MAINTENANCE_LOG.md`**: Actualiza cambios de infraestructura siguiendo el formato de `documentation-standards`.
-    *   **`docs/CHANGELOG.md`**: Registra cambios visibles para el usuario en `[Unreleased]`.
+*   **Session Topic**: Define a short name for the session (e.g., `stabilization_mocks`).
+*   **`docs/plans/implementation_plan_vX.Y.Z.md`**: **[CRITICAL]** Update task status (mark completed ones with `[x]`).
+*   **Task Persistence**:
+    *   Ensure `.agent/task.md` reflects actual progress.
+    *   If a major phase was completed, archive it in `.agent/history/tasks/`.
+    *   **DO NOT DELETE** this file if the phase continues.
+*   **`.agent/next_steps.md`**: **[CRITICAL]** Create or update this file with the "handover": what's missing, what errors are pending, and what command to resume.
+*   **Next Steps Archiving**: Copy `.agent/next_steps.md` to `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` to maintain a historical record.
+*   **`docs/maintenance/sesion_YYYY-MM-DD_[TOPIC].md`**: **[MANDATORY]** Create this file with the session's technical summary.
+*   **`docs/DEVELOPMENT_LOG.md`**: **[CRÍTICO]** Add entry following the `documentation-standards` format.
+*   **`docs/source/MAINTENANCE_LOG.md`**: Update infrastructure changes following the `documentation-standards` format.
+*   **`docs/CHANGELOG.md`**: Record user-visible changes in `[Unreleased]`.
 
-2.  **Verificación Final (Safety Net)**:
+### 2. Final Verification (Safety Net)
 
-    🤖 **Agent Action**: Usar skill **qa-docker** para validar estabilidad antes de cerrar.
+🤖 **Agent Action**: Use **qa-docker** skill to validate stability before closing.
 
-    Ejecuta el formateador, linter y tests para asegurar calidad.
+Run formatter, linter, and tests to ensure quality.
+```bash
+uv run ruff check --fix . && uv run ruff format . && uv run black .
+```
 
-    ```bash
-    uv run ruff check --fix . && uv run ruff format . && uv run black .
-    ```
+*Option A (Docker - Recommended):*
+// turbo
+```bash
+make docker-test
+```
 
-    *Opción A (Docker - Recomendado):*
-    // turbo
-    ```bash
-    make docker-test
-    ```
+🤖 **Agent Action**: Verify that tests pass. Alert if there are failures.
 
-    🤖 **Agent Action**: Verificar que 361 tests pasan. Alertar si hay fallos.
+*Option B (Local):*
+```bash
+PYTHONPATH=.. uv run python3 -m unittest discover tests
+```
 
-    *Opción B (Local):*
-    ```bash
-    PYTHONPATH=.. uv run python3 -m unittest discover tests
-    ```
+🤖 **Agent Action**: Validate Active Tasks.
+Verify that `.agent/task.md` exists and is updated before committing.
 
-    🤖 **Agent Action**: Validar Tareas Activas.
+### 3. Final Memory Synchronization (AI)
 
-    Verifica que `.agent/task.md` existe y está actualizado antes de commitear.
+🤖 **Agent Action (Skill Sync)**: Run skill synchronization and update AGENTS.md.
+// turbo
+```bash
+python3 scripts/skill_sync.py
+```
 
-3.  **Sincronización de Memoria Final (IA)**:
+🤖 **Agent Action (Learning)**: Explicitly identify the 3 most important technical lessons learned this session.
+*   Update YAML entries in `AGENT_LESSONS.md`.
+*   Update `agent_metrics.json` with the session summary.
 
-    🤖 **Agent Action**: Actualizar AI_CONTEXT.md y validar que next_steps.md es claro.
+🤖 **Agent Action**: Update AI_CONTEXT.md and validate that next_steps.md is clear.
+Ensure the AI "Brain" is up to date with the final changes.
+// turbo
+```bash
+uv run ai-ctx analyze --path . && cat .agent/next_steps.md
+```
 
-    🤖 **Agent Action (Brain Evolution)**: Ejecutar extracción de patrones usando **agentic-memory**.
-    *   Identificar lecciones clave en esta sesión.
-    *   Actualizar entradas YAML en `AGENT_LESSONS.md`.
-    *   Actualizar `agent_metrics.json` con el resumen de la sesión.
+### 4. Local Commit
 
-    Asegura que el "Cerebro" de la IA esté al día con los cambios finales.
-    // turbo
-    ```bash
-    uv run ai-ctx analyze --path . && cat .agent/next_steps.md
-    ```
+🤖 **Agent Action**: Use **commit-standards** skill to generate an appropriate message.
 
-4.  **Commit Local**:
+Save your progress.
+```bash
+git add .
+git commit -m "chore(docs): close session [TOPIC]"
+```
 
-    🤖 **Agent Action**: Usar skill **commit-standards** para generar mensaje apropiado.
+**Recommended Format**: `chore(docs): close session [descriptive_topic]`
 
-    Guarda tu progreso.
-    ```bash
-    git add .
-    git commit -m "chore(docs): close session [TEMA]"
-    ```
+*If the pre-commit hook persists in failing:*
+1. Review the detected error messages.
+2. Run `git add` again if there were automatic changes.
+3. Repeat the commit.
 
-    **Formato recomendado**: `chore(docs): close session [tema_descriptivo]`
+### 5. Summary for the User
 
-    *Si el pre-commit hook persiste en fallar:*
-    1. Revisa los mensajes de error detectados.
-    2. Ejecuta `git add` de nuevo si hubo cambios automáticos.
-    3. Repite el commit.
+🤖 **Agent Action**: Generate a structured session summary.
 
-5.  **Resumen para el Usuario**:
+Generate a final message listing:
+*   Updated log files.
+*   Test status (e.g., 450 tests OK).
+*   Content of `.agent/next_steps.md`.
+*   Suggestion for the next session (command `/inicia-sesion`).
 
-    🤖 **Agent Action**: Generar resumen estructurado de la sesión.
+## Expected Result
+- Session memory persisted in Logs and `next_steps.md`.
+- Repository clean and technically validated.
+- Clear instructions for the assistant to resume the task without context loss.
 
-    Genera un mensaje final listando:
-    *   Archivos de log actualizados.
-    *   Estado de los tests (361 tests OK).
-    *   Contenido de `.agent/next_steps.md`.
-    *   Sugerencia para la próxima sesión (comando `/inicia-sesion`).
-
-## Resultado Esperado
-- Memoria de la sesión persistida en Logs y `next_steps.md`.
-- Repositorio limpio y validado técnicamente.
-- Instrucciones claras para que el asistente retome la tarea sin pérdida de contexto.
-
-**Filosofía**: Una sesión no termina cuando el código funciona, sino cuando la historia está contada.
+**Philosophy**: A session doesn't end when the code works, but when the story is told.

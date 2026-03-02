@@ -170,7 +170,7 @@ clean:
 
 # Docker targets
 docker-build:
-	docker build -t sec_interp_test .
+	DOCKER_BUILDKIT=1 docker build -t sec_interp_test .
 
 docker-test: docker-build
 	docker run --rm -v $(CURDIR):/app/sec_interp sec_interp_test
