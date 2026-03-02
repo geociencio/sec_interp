@@ -70,7 +70,7 @@ El proyecto SecInterp cuenta con un sistema completo de **6 skills** y **10 work
 - Carga skills: qgis-core, qa-docker
 - Sincroniza contexto (AI_CONTEXT.md, project_context.json, next_steps.md)
 
-- Ejecuta `make docker-test` (361 tests)
+- Ejecuta `make docker-test` (450 tests)
 - Valida métricas de calidad
 
 ### Crear Commit con Validación
@@ -104,7 +104,7 @@ El proyecto SecInterp cuenta con un sistema completo de **6 skills** y **10 work
 - Activa "QA Engineer Agent"
 - Carga skills: release-management, qa-docker, commit-standards
 - Ejecuta 5 fases: Calidad → Versionamiento → Verificación → Git → Distribución
-- Valida 361 tests, sincroniza versiones, genera ZIP
+- Valida 450 tests, sincroniza versiones, genera ZIP
 - Crea GitHub release draft
 
 ---
@@ -118,7 +118,7 @@ El proyecto SecInterp cuenta con un sistema completo de **6 skills** y **10 work
 - ✅ Todos los skills referenciados validados
 
 **Tests**:
-- 361 tests totales
+- 450 tests totales
 - 100% success rate en Docker
 - Cobertura completa de mocking QGIS
 

@@ -7,7 +7,25 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
-## [3.1.0] - 2026-02-19
+## [3.2.0] - 2026-03-02
+### 🚀 Nuevas Características
+- **Testing**: Expansión masiva de la suite de tests alcanzando **450 tests exitosos** en Docker.
+- **Automatización**: Sistema de documentación-como-código para actualizar dinámicamente `TESTING_STATUS.md`.
+- **Integración**: Nueva suite para proyecciones 3D verticales en sistemas de coordenadas cartesianas.
+- **Seguridad**: Protección contra Path Traversal en todos los exportadores via resolución de rutas absolutas.
+- **Validación**: Validación de tipo y rango para parámetros de preview en `PreviewParams`.
+
+### 🔧 Cambios
+- **Compatibilidad**: Cumplimiento 100%% con la API agnóstica de QGIS 4.x (`qgis.PyQt`).
+- **UI**: Refactorización de `PreviewLayerFactory` con helpers compartidos de geometría/exageración.
+- **GUI**: Estandarización de `DialogSettingsPersistence` para reducir código repetitivo.
+
+### 🐞 Correcciones
+- **Core**: Regresión en el filtrado de buffer de `TrajectoryEngine`.
+- **Estabilidad**: Corregido `TypeError` en inyección de dependencias y `IndexError` en proyecciones de sondajes.
+- **Memoria**: Resueltas fugas en `QgsRubberBand` y desconexiones de señales faltantes.
+- **Mocks**: Entorno de testing robusto con IDs de capa únicos y validación estricta de geometría.
+
 ### 🚀 Características Principales
 - **i18n & GUI**: Traducción automática masiva de cadenas faltantes para todos los 14 idiomas soportados. Añadidos mensajes de validación traducibles.
 - **Exportación**: Adición de registros de depuración y soporte i18n para exportadores. Añadido botón 'Reset to defaults' para opciones de exportación.

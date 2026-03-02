@@ -29,6 +29,21 @@ Controla el ciclo de vida de las versiones del plugin, garantizando que cada ent
 2. **Actualizar Badges**: Reflejar métricas en `README.md`.
 
 ### Fase 2: Versionado y Documentación
+
+> [!IMPORTANT]
+> **CHECKLIST COMPLETO DE DOCUMENTOS A ACTUALIZAR** (cada archivo en este orden):
+>
+> | # | Archivo | Qué actualizar |
+> |:--|:--------|:--------------|
+> | 1 | `metadata.txt` | `version` + `changelog` (escapar `%%`) |
+> | 2 | `pyproject.toml` | `version` |
+> | 3 | `README.md` | Badge `Version`, `Code Quality`, `QGIS Compliance`, `i18n`, sección "What's New" |
+> | 4 | `docs/CHANGELOG.md` | Mover `[Unreleased]` a `[X.Y.Z]` con fecha |
+> | 5 | `docs/docsec/CHANGELOG.md` | Ídem en español |
+> | 6 | `docs/releases/RELEASE_NOTES_vX.Y.Z.md` | Crear nuevo archivo con highlights |
+> | 7 | `docs/DEVELOPMENT_LOG.md` | Añadir entrada de cierre de versión |
+> | 8 | `.agent/QUICK_REFERENCE.md` | Actualizar conteo de tests y métricas |
+
 1. **Sincronización**: Actualizar `metadata.txt` (incluyendo changelog), `pyproject.toml` y `README.md`.
 2. **Estándares de Versionamiento y Registro (CRÍTICO)**:
    - **[Semantic Versioning (SemVer)](https://semver.org/spec/v2.0.0.html)**:
@@ -39,6 +54,7 @@ Controla el ciclo de vida de las versiones del plugin, garantizando que cada ent
      - Mantener los archivos `docs/CHANGELOG.md` y `docs/docsec/CHANGELOG.md` estrictamente alineados con este estándar.
      - Agrupar cambios lógicamente (`Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`).
 3. **Notas de Versión**: Generar el release detallado en `docs/releases/RELEASE_NOTES_vX.Y.Z.md`.
+
 
 ### Fase 3: Verificación Técnica
 1. Lograr 455+ tests pasando.
