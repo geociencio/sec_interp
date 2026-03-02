@@ -38,11 +38,19 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    - Update `version` in `pyproject.toml`.
    - Update the version badge in `README.md`.
 
-   🤖 **Agent Action**: Validate that all 3 versions match exactly.
+2. **Update `README.md` (MANDATORY)**:
+   🤖 **Agent Action**: Verify and update all badges and version references in `README.md`:
+   - `Version` badge: `X.Y.Z`
+   - `Code Quality` badge: Update with current `ai-ctx analyze` score.
+   - `QGIS Compliance` badge: Update with `qgis-analyzer` result.
+   - `i18n Languages` badge: Update if new languages were added.
+   - "What's New" section: Summarize the main changes of this version.
 
-2. **Technical Changelog**: Move `[Unreleased]` to the new version in `docs/CHANGELOG.md` and sync `docs/docsec/CHANGELOG.md` (Spanish).
+   🤖 **Agent Action**: Validate that all 3 versions match exactly (`metadata.txt`, `pyproject.toml`, `README.md`).
 
-3. **Release Notes**:
+3. **Technical Changelog**: Move `[Unreleased]` to the new version in `docs/CHANGELOG.md` and sync `docs/docsec/CHANGELOG.md` (Spanish).
+
+4. **Release Notes**:
    // turbo
    ```bash
    sed -e "s/{version}/X.Y.Z/g" -e "s/{date}/$(date +%F)/g" .github/release_template.md > /tmp/release_notes.md

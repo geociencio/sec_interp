@@ -2,15 +2,15 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.1.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.2.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-100%2F100-brightgreen)
-![Code Quality](https://img.shields.io/badge/Code--Quality-84.6%2F100-green)
+![Code Quality](https://img.shields.io/badge/Code--Quality-72.6%2F100-green)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 ![Linting](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
 ![Managed with uv](https://img.shields.io/badge/managed%20with-uv-blueviolet)
-![i18n](https://img.shields.io/badge/i18n-11%20Languages-blue.svg)
+![i18n](https://img.shields.io/badge/i18n-14%20Languages-blue.svg)
 
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 

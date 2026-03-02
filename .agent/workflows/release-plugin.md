@@ -40,11 +40,19 @@ Sigue este flujo de 5 fases para realizar una liberación oficial del plugin Sec
    - Actualizar `version` en `pyproject.toml`.
    - Actualizar el badge de versión en `README.md`.
 
-   🤖 **Agent Action**: Validar que las 3 versiones coinciden exactamente.
+2. **Actualizar `README.md` (OBLIGATORIO)**:
+   🤖 **Agent Action**: Verificar y actualizar todos los badges y referencias de versión en `README.md`.
+   - Badge `Version`: `X.Y.Z`
+   - Badge `Code Quality`: Actualizar con el score actual de `ai-ctx analyze`.
+   - Badge `QGIS Compliance`: Actualizar con resultado de `qgis-analyzer`.
+   - Badge `i18n Languages`: Actualizar si se añadieron nuevos idiomas.
+   - Sección de "What's New": Resumir los cambios principales de esta versión.
 
-2. **Changelog Técnico (Keep A Changelog)**: Mover `[Unreleased]` a la nueva versión en `docs/CHANGELOG.md` y sincronizar `docs/docsec/CHANGELOG.md` (Español) usando los tipos válidos (`Added`, `Changed`, `Fixed`, etc).
+   🤖 **Agent Action**: Validar que las 3 versiones coinciden exactamente (`metadata.txt`, `pyproject.toml`, `README.md`).
 
-3. **Notas de Lanzamiento**:
+3. **Changelog Técnico (Keep A Changelog)**: Mover `[Unreleased]` a la nueva versión en `docs/CHANGELOG.md` y sincronizar `docs/docsec/CHANGELOG.md` (Español) usando los tipos válidos (`Added`, `Changed`, `Fixed`, etc).
+
+4. **Notas de Lanzamiento**:
    // turbo
    ```bash
    sed -e "s/{version}/X.Y.Z/g" -e "s/{date}/$(date +%F)/g" .github/release_template.md > /tmp/release_notes.md
