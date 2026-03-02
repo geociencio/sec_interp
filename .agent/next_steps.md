@@ -1,18 +1,26 @@
-# Next Steps - 2026-03-01
+# Next Steps - 2026-03-02
 
 ## Current Context
-Phase 3.2.0 (Testing Expansion) and Phase 3.2.1 (Documentation Automation) have been completed. The project now has **450 unit and integration tests** passing successfully in Docker. A regression in the trajectory engine was fixed.
+Phase 3.2.0 formally **closed**. SecInterp v3.2.0 has been officially tagged, packaged (`dist/sec_interp.3.2.0.zip`), and the GitHub Draft Release has been created. The plugin is QGIS 4.x compatible and has 450 passing tests.
 
 ## Immediate Pending Tasks
-- [ ] **QGIS 4.x Migration**: Start the API compatibility audit (Skill `qgis-migration-4x`).
-- [ ] **UI Refactoring**: Reduce complexity in dialog managers that still exceed Ruff thresholds.
-- [ ] **3D Coverage**: Expand integration tests for edge cases in complex Cartesian projections.
+
+### Manual Action Required
+- [ ] **QGIS Portal**: Upload `dist/sec_interp.3.2.0.zip` to [plugins.qgis.org](https://plugins.qgis.org/) and publish.
+- [ ] **GitHub Release**: Review and publish the draft release at GitHub.
+
+### Phase 3.3.0 Priorities
+- [ ] **Return Type Hints**: Increase coverage from 44.9%% to ≥70%% in core and GUI layers.
+- [ ] **i18n Audit**: Resolve MISSING_I18N findings in core source (895 detected by qgis-analyzer).
+- [ ] **Complexity Refactoring**: Target the 3 functions flagged with HIGH_COMPLEXITY.
+- [ ] **UX/Features**: Review GitHub Issues backlog for next user-facing features.
 
 ## Command to Resume
 ```bash
 /inicia-sesion
 ```
 
-## Quality Items
-- [ ] Fix 4 "skipped" tests in the current suite (verify why they are skipped in Docker).
-- [ ] Remove `DEPRECATED` warnings in the Docker build (switch to BuildKit if possible in the environment).
+## Reference
+- Phase Closure: `docs/maintenance/phase_closure_v3.2.0.md`
+- Release Notes: `docs/releases/RELEASE_NOTES_v3.2.0.md`
+- Distribution: `dist/sec_interp.3.2.0.zip`
