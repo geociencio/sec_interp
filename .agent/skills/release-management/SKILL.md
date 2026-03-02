@@ -41,7 +41,7 @@ Controla el ciclo de vida de las versiones del plugin, garantizando que cada ent
 3. **Notas de Versión**: Generar el release detallado en `docs/releases/RELEASE_NOTES_vX.Y.Z.md`.
 
 ### Fase 3: Verificación Técnica
-1. Lograr 361+ tests pasando.
+1. Lograr 455+ tests pasando.
 2. Ejecutar `make docker-test` para entorno aislado.
 3. Actualizar `AI_CONTEXT.md` vía `uv run ai-ctx analyze`.
 
@@ -75,4 +75,4 @@ Published Artifacts: `sec_interp.X.Y.Z.zip`
 - [ ] ¿Se han actualizado todas las referencias de versión?
 - [ ] ¿El archivo ZIP ha sido verificado (sin basura técnica)?
 - [ ] ¿Se han seguido las reglas de Git Tagging?
-- [ ] ¿Los 361+ tests pasaron satisfactoriamente?
+- [ ] ¿Los 455+ tests pasaron satisfactoriamente?

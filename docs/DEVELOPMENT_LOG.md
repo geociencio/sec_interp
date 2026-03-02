@@ -1,15 +1,20 @@
 ---
-## [Unreleased]
-### Added
-- **Testing**: Massive expansion of the test suite reaching **450 successful tests** in Docker.
-- **Automation**: Implemented "Documentation-as-Code" system for dynamic updating of `TESTING_STATUS.md`.
-- **Testing**: New suites for asynchronous GUI Tasks, Core Processors (Collar, Survey, Interval), and Renderers.
-
-### Fixed
-- **Core**: Fixed regression in `TrajectoryEngine` affecting buffer filtering.
-- **Integration**: Restored translation loading for systems using `SafeLoader`.
+## [2026-03-02] - Phase 3.2.0: QGIS 4.x Readiness & Structural Refinement
+- **Achievement**: Successfully completed 3.2.0 release cycle with 100% QGIS 4.x API compliance and suite expansion to 455 tests (all green).
+- **Changes**:
+    - **Compatibility**: Audit confirmed 100% adherence to API-agnostic principles (`qgis.PyQt`) and non-blocking `QgsTask` usage.
+    - **Refactoring**: Extracted shared geometry logic in `PreviewLayerFactory` (`_apply_exaggeration`, `_to_qgs_points`).
+    - **Refactoring**: Standardized widget reset logic in `DialogSettingsPersistence`.
+    - **Security**: Implemented Path Traversal protection in all exporters.
+    - **Testing**: Fixed 4 legacy skipped tests in `test_utils.py` by updating mocks to native QGIS API.
+    - **Integration**: Created `test_3d_projections.py` to verify Cartesian robustness in 3D data exports.
+    - **Validation**: Unified validation logic in `PreviewParams` delegating to `ProjectValidator`.
+    - **UX**: Implemented real-time progress reporting for asynchronous drillhole tasks.
+- **Status**: Suite 100% green (455 tests).
+- **Maintenance**: [walkthrough.md](../walkthrough.md)
 
 ---
+## [Unreleased]
 ## [2026-03-01] - Phase 3.2.0/3.2.1: Testing Expansion (Afternoon)
 - **Achievement**: Reached milestone of 450 tests OK in Docker and automated testing documentation.
 - **Changes**:

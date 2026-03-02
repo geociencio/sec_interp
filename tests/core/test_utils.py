@@ -165,41 +165,27 @@ class TestInterpolation(BaseTestCase):
 class TestBufferGeometry(BaseTestCase):
     """Tests for create_buffer_geometry using native algorithm."""
 
-    @unittest.skip("Requires fixing mocks for processing.run")
     def test_create_buffer_geometry_basic(self):
-        """Test basic buffer creation."""
-        # Internal imports are fine if mocked by BaseTestCase
-        from qgis.core import QgsGeometry, QgsCoordinateReferenceSystem, QgsVectorLayer
-        from unittest.mock import Mock, patch
-        import sec_interp.core.utils.geometry  # Ensure import path is correct
+        """Test basic buffer creation using native buffer method."""
+        from unittest.mock import Mock
 
-        # Create mock geometry - use Mock with proper setup instead of QgsGeometry instance
+        # Create mock geometry
         mock_geom = Mock()
         mock_geom.isNull.return_value = False
-        mock_geom.type.return_value = 1  # LineGeometry
+
+        # Mock the buffer method
+        mock_buffer_geom = Mock()
+        mock_geom.buffer.return_value = mock_buffer_geom
 
         # Create mock CRS
         mock_crs = Mock()
 
-        # Mock the processing result
-        mock_buffer_geom = Mock()
-        mock_buffer_geom.isNull.return_value = False
-        mock_buffer_feat = Mock()
-        mock_buffer_feat.geometry.return_value = mock_buffer_geom
+        # Call function
+        result = scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
 
-        mock_buffer_layer = Mock()
-        mock_buffer_layer.featureCount.return_value = 1
-        mock_buffer_layer.getFeatures.return_value = iter([mock_buffer_feat])
-
-        with patch("qgis.processing.run") as mock_run:
-            mock_run.return_value = {"OUTPUT": mock_buffer_layer}
-
-            # Call function
-            result = scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
-
-            # Verify processing.run was called
-            mock_run.assert_called_once()
-            self.assertEqual(result, mock_buffer_geom)
+        # Verify buffer was called
+        mock_geom.buffer.assert_called_once_with(100.0, 5)
+        self.assertEqual(result, mock_buffer_geom)
 
     def test_create_buffer_geometry_invalid_input(self):
         """Test buffer creation with invalid geometry."""
@@ -214,21 +200,46 @@ class TestBufferGeometry(BaseTestCase):
         with self.assertRaisesRegex(ValueError, "Geometry is null or invalid"):
             scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
 
-    @unittest.skip("Implementation changed to use geometry.buffer directly")
-    def test_create_buffer_geometry_no_features(self):
-        pass
+    def test_create_buffer_geometry_null_result(self):
+        """Test buffer creation returning null geometry."""
+        from unittest.mock import Mock
+        mock_geom = Mock()
+        mock_geom.isNull.return_value = False
+        mock_geom.buffer.return_value = None
 
-    @unittest.skip("Requires fixing mocks for processing.run")
-    def test_create_buffer_geometry_processing_error(self):
-        pass
+        mock_crs = Mock()
+        result = scu.create_buffer_geometry(mock_geom, mock_crs, 100.0)
+        self.assertIsNone(result)
 
 
 class TestSpatialFiltering(BaseTestCase):
     """Tests for filter_features_by_buffer using spatial index."""
 
-    @unittest.skip("Requires fixing mocks for spatial index")
     def test_filter_features_by_buffer_basic(self):
-        pass
+        """Test spatial filtering using native QgsFeatureRequest."""
+        from unittest.mock import Mock, MagicMock
+
+        mock_layer = Mock()
+        mock_layer.isValid.return_value = True
+        mock_layer.crs.return_value = Mock()
+
+        mock_buffer = MagicMock()
+        mock_buffer.isNull.return_value = False
+
+        # Mock feature and its geometry
+        mock_feat = Mock()
+        mock_feat_geom = Mock()
+        mock_feat.hasGeometry.return_value = True
+        mock_feat.geometry.return_value = mock_feat_geom
+        mock_feat_geom.intersects.return_value = True
+
+        mock_layer.getFeatures.return_value = [mock_feat]
+
+        result = scu.filter_features_by_buffer(mock_layer, mock_buffer)
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0], mock_feat)
+        mock_layer.getFeatures.assert_called_once()
 
     def test_filter_features_invalid_layer(self):
         """Test with invalid layer."""

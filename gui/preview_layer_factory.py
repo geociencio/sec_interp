@@ -67,6 +67,16 @@ class PreviewLayerFactory:
         """Get a consistent color for a geological unit based on its name."""
         return self.color_manager.get_color(name)
 
+    def _apply_exaggeration(
+        self, points: list[tuple[float, float]], vert_exag: float
+    ) -> list[tuple[float, float]]:
+        """Apply vertical exaggeration to a list of (dist, elev) points."""
+        return [(d, e * vert_exag) for d, e in points]
+
+    def _to_qgs_points(self, points: list[tuple[float, float]]) -> list[QgsPointXY]:
+        """Convert a list of (x, y) tuples to QgsPointXY objects."""
+        return [QgsPointXY(x, y) for x, y in points]
+
     def create_memory_layer(
         self,
         geometry_type: str,
@@ -132,10 +142,7 @@ class PreviewLayerFactory:
             p1 = render_data[i]
             p2 = render_data[i + 1]
 
-            line_points = [
-                QgsPointXY(p1[0], p1[1] * vert_exag),
-                QgsPointXY(p2[0], p2[1] * vert_exag),
-            ]
+            line_points = self._to_qgs_points(self._apply_exaggeration([p1, p2], vert_exag))
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -220,7 +227,7 @@ class PreviewLayerFactory:
                 continue
 
             render_points = PreviewOptimizer.decimate(segment.points, max_points=max_points)
-            line_points = [QgsPointXY(dist, elev * vert_exag) for dist, elev in render_points]
+            line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -271,10 +278,10 @@ class PreviewLayerFactory:
             if app_dip < 0:
                 dx = -dx
 
-            p1 = QgsPointXY(dist, elev * vert_exag)
-            p2 = QgsPointXY(dist + dx, (elev - dy) * vert_exag)
+            points = [(dist, elev), (dist + dx, elev - dy)]
+            line_points = self._to_qgs_points(self._apply_exaggeration(points, vert_exag))
 
-            line_geom = QgsGeometry.fromPolylineXY([p1, p2])
+            line_geom = QgsGeometry.fromPolylineXY(line_points)
             feat = QgsFeature()
             feat.setGeometry(line_geom)
             features.append(feat)
@@ -322,9 +329,10 @@ class PreviewLayerFactory:
                 # Handle both SpatialMeta objects and legacy tuples
                 dist = getattr(p, "dist_along", p[0] if isinstance(p, list | tuple) else 0.0)
                 z = getattr(p, "z", p[1] if isinstance(p, list | tuple) else 0.0)
-                render_points.append(QgsPointXY(dist, z * vert_exag))
+                render_points.append((dist, z))
 
-            line_geom = QgsGeometry.fromPolylineXY(render_points)
+            line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))
+            line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
             feat.setGeometry(line_geom)
@@ -375,8 +383,8 @@ class PreviewLayerFactory:
                 continue
 
             unique_units.add(segment.unit_name)
-            render_points = [QgsPointXY(x, y * vert_exag) for x, y in segment.points]
-            line_geom = QgsGeometry.fromPolylineXY(render_points)
+            line_points = self._to_qgs_points(self._apply_exaggeration(segment.points, vert_exag))
+            line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
             feat.setGeometry(line_geom)

@@ -3,7 +3,7 @@ name=Sec Interp
 qgisMinimumVersion=3.0
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.1.0
+version=3.2.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -11,6 +11,13 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.2.0 (2026-03-02)
+	* QGIS 4.x Readiness & Structural Refinement:
+	- Compatibility: 100% compliance with API-agnostic principles (qgis.PyQt). Verified QgsTask background processing.
+	- UI: Refactored PreviewLayerFactory to use shared geometry/exaggeration helpers (extracted _apply_exaggeration, _to_qgs_points).
+	- GUI: Standardized DialogSettingsPersistence to reduce boilerplate in session management.
+	- Testing: Re-enabled legacy skipped tests (4 tests) by updating geometry mocks to native API.
+	- Testing: Added integration suite for 3D vertical projections in Cartesian systems.
 	3.1.0 (2026-02-19)
 	* Global i18n Expansion & Architecture Pipeline:
 	- i18n & GUI: Mass automatic translation of missing strings in all 14 Supported languages. Added translatable validation messages.

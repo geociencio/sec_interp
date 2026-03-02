@@ -13,10 +13,10 @@
 
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :---: |
-| **Core Services** | <!-- CORE_COUNT -->276<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **Core Services** | <!-- CORE_COUNT -->275<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->143<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->15<!-- /EXP_COUNT --> | ████████░░ 80% | ⚠️ |
-| **Integration** | <!-- INT_COUNT -->16<!-- /INT_COUNT --> | ████░░░░░░ 40% | 🏗️ |
+| **Integration** | <!-- INT_COUNT -->17<!-- /INT_COUNT --> | ████░░░░░░ 40% | 🏗️ |
 
 ---
 
@@ -47,7 +47,7 @@
 - **tests/core/test_settings_model.py**: 6 tests
 - **tests/core/test_spatial_utils.py**: 9 tests
 - **tests/core/test_structure_service.py**: 2 tests
-- **tests/core/test_utils.py**: 27 tests
+- **tests/core/test_utils.py**: 26 tests
 - **tests/core/test_utils_standalone.py**: 20 tests
 - **tests/core/test_validation.py**: 10 tests
 - **tests/core/test_validation_refactor.py**: 4 tests
@@ -87,6 +87,7 @@
 - **tests/exporters/test_interpretation_3d_exporter.py**: 3 tests
 - **tests/integration/test_3d_integration.py**: 4 tests
 - **tests/integration/test_3d_integration_advanced.py**: 2 tests
+- **tests/integration/test_3d_projections.py**: 1 tests
 - **tests/integration/test_export_workflow.py**: 2 tests
 - **tests/integration/test_interpretation_workflow.py**: 3 tests
 - **tests/integration/test_measurement_workflow.py**: 2 tests

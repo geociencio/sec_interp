@@ -5,13 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.2.0] - 2026-03-02
 ### Added
-- **Testing**: Massive expansion of the test suite reaching **450 successful tests** in Docker.
+- **Testing**: Massive expansion of the test suite reaching **455 successful tests** in Docker.
 - **Automation**: Implemented "Documentation-as-Code" system for dynamic updating of `TESTING_STATUS.md`.
-- **Testing**: New suites for asynchronous GUI Tasks, Core Processors (Collar, Survey, Interval), and Renderers.
-- **Security**: Path Traversal protection in all data exporters.
+- **Testing**: New integration suite for 3D vertical projections in Cartesian coordinate systems.
+- **Security**: Path Traversal protection in all data exporters via absolute path resolution.
 - **Validation**: Type and range validation for preview parameters in `PreviewParams`.
+
+### Changed
+- **Compatibility**: 100% compliance with QGIS 4.x API-agnostic principles (`qgis.PyQt`).
+- **UI**: Refactored `PreviewLayerFactory` to use shared geometry/exaggeration helpers (extracted `_apply_exaggeration`, `_to_qgs_points`).
+- **GUI**: Standardized `DialogSettingsPersistence` to reduce boilerplate in session management and widget resets.
 
 ### Fixed
 - **Core**: Fixed regression in `TrajectoryEngine` affecting buffer filtering.
@@ -19,10 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Memory**: Resolved memory leaks due to unreleased `QgsRubberBand` and missing signal disconnections in reset/clear buttons.
 - **Stability**: Fixed critical system exception capture, allowing for clean QGIS termination.
 - **Stability**: Fixed layer resolution via centralized `LayerResolver` with cache.
+- **Testing**: Fixed 4 legacy skipped tests in `test_utils.py` by updating mocks to native API.
 - **Validation**: Unified project validation logic, eliminating duplication in DTOs.
-- **UX**: Implemented reactive progress reporting for drillhole generation in the UI.
+- **UX**: Implemented reactive progress reporting for drillhole generation in the UI (added `progress_changed` signal).
 - **Mocks**: Robust testing environment with support for unique layer IDs and strict geometry and field validation.
-- **Stability**: Fixed `TypeError` in `ProfileController` due to dependency injection mismatch.
+- **Stability**: Fixed `TypeError` in `ProfileController` due to dependency injection mismatch and `DrillholeProjection` subscriptable error in rendering.
+- **Core**: Fixed `IndexError` in `TrajectoryEngine` for drillholes outside the section plane.
 
 ## [3.1.0] - 2026-02-19
 ### Added

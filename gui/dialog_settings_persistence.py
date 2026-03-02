@@ -52,26 +52,38 @@ class DialogSettingsPersistence:
 
     def reset_pages(self) -> None:
         """Reset all dialog inputs in pages to their default values."""
+        # Section Page
         self.dialog.page_section.line_combo.setLayer(None)
         self.dialog.page_section.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
-        self.dialog.page_dem.raster_combo.setLayer(None)
-        self.dialog.page_dem.band_combo.setBand(DialogDefaults.DEFAULT_BAND)
-        self.dialog.page_dem.scale_spin.setValue(float(DialogDefaults.SCALE))
-        self.dialog.page_dem.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
+
+        # DEM Page
+        p_dem = self.dialog.page_dem
+        p_dem.raster_combo.setLayer(None)
+        p_dem.band_combo.setBand(DialogDefaults.DEFAULT_BAND)
+        p_dem.scale_spin.setValue(float(DialogDefaults.SCALE))
+        p_dem.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
+
+        # Geology and Structures
         self.dialog.page_geology.layer_combo.setLayer(None)
         self.dialog.page_geology.field_combo.setField("")
-        self.dialog.page_struct.layer_combo.setLayer(None)
-        self.dialog.page_struct.dip_combo.setField("")
-        self.dialog.page_struct.strike_combo.setField("")
-        self.dialog.page_struct.scale_spin.setValue(float(DialogDefaults.DIP_SCALE_FACTOR))
+        p_struct = self.dialog.page_struct
+        p_struct.layer_combo.setLayer(None)
+        p_struct.dip_combo.setField("")
+        p_struct.strike_combo.setField("")
+        p_struct.scale_spin.setValue(float(DialogDefaults.DIP_SCALE_FACTOR))
+
+        # Drillholes
         dpage = self.dialog.page_drillhole
         for combo in [dpage.c_layer, dpage.s_layer, dpage.i_layer]:
             combo.setLayer(None)
         dpage.chk_use_geom.setChecked(True)
+
+        # Output and Interpretation
         self.dialog.output_widget.setFilePath("")
-        self.dialog.page_interpretation.fields_table.setRowCount(0)
-        self.dialog.page_interpretation.chk_inherit_geol.setChecked(True)
-        self.dialog.page_interpretation.chk_inherit_drill.setChecked(True)
+        p_interp = self.dialog.page_interpretation
+        p_interp.fields_table.setRowCount(0)
+        p_interp.chk_inherit_geol.setChecked(True)
+        p_interp.chk_inherit_drill.setChecked(True)
 
     def reset_preview(self) -> None:
         """Reset preview settings to defaults."""
