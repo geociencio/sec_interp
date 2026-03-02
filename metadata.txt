@@ -13,7 +13,7 @@ hasProcessingProvider=no
 changelog=
 	3.2.0 (2026-03-02)
 	* QGIS 4.x Readiness & Structural Refinement:
-	- Compatibility: 100% compliance with API-agnostic principles (qgis.PyQt). Verified QgsTask background processing.
+	- Compatibility: 100%% compliance with API-agnostic principles (qgis.PyQt). Verified QgsTask background processing.
 	- UI: Refactored PreviewLayerFactory to use shared geometry/exaggeration helpers (extracted _apply_exaggeration, _to_qgs_points).
 	- GUI: Standardized DialogSettingsPersistence to reduce boilerplate in session management.
 	- Testing: Re-enabled legacy skipped tests (4 tests) by updating geometry mocks to native API.
