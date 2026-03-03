@@ -92,5 +92,13 @@ lessons:
     lesson: "Para iteraciones rápidas que no requieran cambios en recursos o traducciones, se prefiere evitar la compilación."
     action: "Utilizar el comando: 'uv run qgis-manage deploy --no-compile'"
 
+  - date: 2026-03-03
+    category: WORKFLOW
+    topic: Phase Initialization
+    lesson: "A standard phase initialization must include a baseline quality scan (ai-ctx) and a full test suite validation (docker) before any code change to ensure a healthy starting point."
+    action: "Adopt /inicia-fase as the mandatory gate for major version increments, documenting quality gaps as 'Objective 0'."
+
+## ⚙️ Configuración Global de Preferencias
+...
 ---
-*Última actualización: 2026-02-28 - Refactor LayerResolver y mejora de robustez de mocks.*
+*Última actualización: 2026-03-03 - Inicio de Fase v3.3.0 con baselines de calidad e i18n.*

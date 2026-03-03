@@ -23,9 +23,11 @@ Submodules
    sec_interp.core.utils.drillhole
    sec_interp.core.utils.geology
    sec_interp.core.utils.geometry
+   sec_interp.core.utils.i18n
    sec_interp.core.utils.io
    sec_interp.core.utils.metadata_reader
    sec_interp.core.utils.parsing
+   sec_interp.core.utils.qgis
    sec_interp.core.utils.rendering
    sec_interp.core.utils.resource_manager
    sec_interp.core.utils.safe_loader
