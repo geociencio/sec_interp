@@ -203,6 +203,7 @@ class TestBufferGeometry(BaseTestCase):
     def test_create_buffer_geometry_null_result(self):
         """Test buffer creation returning null geometry."""
         from unittest.mock import Mock
+
         mock_geom = Mock()
         mock_geom.isNull.return_value = False
         mock_geom.buffer.return_value = None

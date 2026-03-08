@@ -1,131 +1,85 @@
-# Plan de Implementación - Fase v3.3.0 (Calidad Estricta e i18n)
+# Plan de Implementación - Fase v3.3.0 (Refactorización Cautelosa)
 
 ## Objetivo General
 
-Elevar la calidad técnica del plugin mediante la cobertura de tipos de retorno, la resolución de lagunas de internacionalización (i18n) y la refactorización de funciones críticas con alta complejidad.
+Reiniciar las refactorizaciones de la v3.3.0 tras una regresión a un estado estable. El foco principal es la **Estabilidad de Memoria (Ciclo de Vida de Señales)** y la **Seguridad de Tipos**, aplicando un enfoque de "Cambio-Validación" granular.
 
 ---
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Decisiones Críticas para Revisión**
->
-> 1. **Prioridad de Type Hints**: ¿Iniciamos por la capa `core/` o `gui/`?
-> 2. **i18n Scope**: ¿Debemos resolver únicamente el código fuente core o también actualizar las traducciones en todos los idiomas soportados durante esta fase?
-> 3. **QGIS Portal**: El upload `sec_interp.3.2.0.zip` al portal oficial (`plugins.qgis.org`) quedó pendiente del cierre anterior. ¿Se incluye como Objetivo 0 de esta fase?
+> **Estrategia Cautelosa (Cambio-Validación)**
+> En lugar de una refactorización masiva, se propone:
+> 1. Modificar un solo componente/módulo a la vez.
+> 2. Ejecutar `make docker-test` inmediatamente después de cada cambio.
+> 3. No proceder al siguiente componente si los tests fallan o hay regresiones de estabilidad.
+> 4. Eliminar el uso de `contextlib.suppress` inseguro, reemplazándolo por logging explícito y manejo de errores.
 
 ---
 
 ## Proposed Changes
 
-### Objetivo 1: Cobertura de Return Type Hints (Meta: ≥ 70%)
+### Fase 1: Estabilidad de Recursos y Ciclo de Vida (Prioridad P0)
 
-#### Contexto
-La cobertura actual de return type hints es 44.9% (ci. v3.2.0). La capa GUI es la que más contribuye al déficit.
+Basado en los hallazgos críticos de `DEVELOPER_ANALYSIS.md`.
 
-#### Componentes a Implementar
+##### [MODIFY] [gui/dialog_signal_manager.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/dialog_signal_manager.py)
+- Implementar `_disconnect_known_page_signals` para asegurar que las páginas sin método `disconnect_signals` se limpien.
+- Mejorar el logging de desconexión.
 
-##### [MODIFY] core/ (servicios y utilidades)
-Completar anotaciones de retorno en funciones de servicios que aún carecen de tipo explícito.
+##### [MODIFY] [gui/tools/measure_tool.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/tools/measure_tool.py)
+- Implementar `cleanup_finalized` para limpiar elementos gráficos (rubber bands, markers) al cerrar el diálogo, incluso si la medición está finalizada.
 
-##### [MODIFY] gui/ (diálogos y widgets)
-Priorizar métodos de manejadores de señales, callbacks de Qt y factories.
+##### [MODIFY] [gui/main_dialog.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/main_dialog.py)
+- Orquestar la limpieza completa en `closeEvent` llamando a los nuevos métodos de limpieza de herramientas y managers.
 
-#### Estimación Detallada
-
-| Componente | Esfuerzo | Prioridad |
-|-----------|----------|------|
-| `core/services/` | 0.5 días | Alta |
-| `core/utils/` | 0.5 días | Alta |
-| `gui/` (managers) | 1 día | Alta |
-| `gui/` (dialogs / pages) | 1 día | Media |
+##### [MODIFY] [gui/preview_renderer.py](file:///home/jmbernales/qgispluginsdev/sec_interp/gui/preview_renderer.py)
+- Corregir `_cleanup_layers` para realizar `rb.reset()` y `rb = None` en los rubber bands de interpretación.
 
 ---
 
-### Objetivo 2: Auditoría y Limpieza de i18n
+### Fase 2: Calidad Core y Typed Orchestrators (Prioridad P1)
 
-#### Contexto
-895 hallazgos de `MISSING_I18N` detectados por `qgis-analyzer`. La mayoría puede ser en archivos de test o scripts, pero el core debe ser auditado.
+##### [MODIFY] [core/services/drillhole_service.py](file:///home/jmbernales/qgispluginsdev/sec_interp/core/services/drillhole_service.py)
+ - **Evolución a Orquestador**: Eliminar el uso de tuplas indexadas (`result[0]`) y forzar el uso de Dataclasses (`DrillholeProjection`).
+ - **Limpieza de Delegación**: Eliminar métodos de "pasamanería" que solo delegan sin lógica adicional, exponiendo los procesadores necesarios o simplificando la interfaz.
+ - **Validación Centralizada**: Mover validaciones de parámetros de entrada de los procesadores al inicio del servicio.
 
-#### Componentes a Implementar
-
-##### [MODIFY] core/ y gui/
-Envolver en `tr()` todas las cadenas visibles al usuario que aún no estén internacionalizadas.
-
-##### [MODIFY] i18n/*.po
-Actualizar archivos de traducción con los nuevos strings, al menos para `es` y `en`.
-
-#### Estimación Detallada
-
-| Componente | Esfuerzo | Prioridad |
-|-----------|----------|------|
-| Auditoría automática (`qgis-analyzer`) | 0.5 días | Alta |
-| Fix strings en `core/` y `gui/` | 1 día | Media |
-| Actualización `.po` (es, en) | 0.5 días | Media |
+##### [MODIFY] core/services/ (Otros)
+- Incrementar Return Type Hints en:
+  - `geology_service.py`
+  - `structure_service.py`
+- Eliminar `contextlib.suppress` inseguro en `controller.py` y mejorar el reporte de errores en la desconexión de capas.
 
 ---
 
-### Objetivo 3: Refactorización de Hotspots de Complejidad
+### Fase 3: Auditoría i18n GUI-Focus
 
-#### Contexto
-Existen 3 funciones catalogadas como `HIGH_COMPLEXITY` por `qgis-analyzer`. Estas deben ser refactorizadas para bajar la complejidad ciclomática y mejorar la testeabilidad.
-
-#### Componentes a Implementar
-
-##### [MODIFY] Hotspots a identificar con análisis
-Se ejecutará `qgis-analyzer analyze .` para identificar los 3 hotspots exactos.
-
-#### Estimación Detallada
-
-| Componente | Esfuerzo | Prioridad |
-|-----------|----------|------|
-| Identificación de hotspots | 0.25 días | Alta |
-| Refactorización (3 funciones) | 0.75 días | Alta |
-
----
-
-### Objetivo 4 (Opcional): QGIS Portal Upload
-
-#### Contexto
-El release v3.2.0 fue subido a GitHub pero no al portal oficial de QGIS. Este paso completa el ciclo de release.
+##### [MODIFY] gui/
+- Aplicar `tr()` a los strings detectados en la capa `gui/` y `SecInterpDialog`.
+- Evitar tocar scripts de tests para no contaminar el análisis de i18n.
 
 ---
 
 ## Verification Plan
 
-### 1. Automatizado
-```bash
-make docker-test          # ≥ 450 tests al 100%
-uv run ai-ctx analyze --path .  # Mejoría en métricas vs. baseline 3.2.0
-uv run qgis-analyzer analyze .  # Reducción de MISSING_I18N y HIGH_COMPLEXITY
-```
+### Flujo de Trabajo Mandatorio
+Para cada cambio realizado:
+1. **Linting**: `/fix-linting` (enfocado solo en el archivo modificado).
+2. **Unit Tests**: `uv run python3 -m unittest tests/gui/test_[modulo].py` (si existe).
+3. **Integrity Scan**: `make docker-test` (Validación completa de 450 tests).
+4. **Analysis**: `uv run qgis-analyzer summary` para verificar mejora en métricas.
 
-### 2. Manual
-- Navegar la UI para verificar que los labels y mensajes sigan correctamente traducidos.
+### Pruebas Manuales Específicas
+- **Prueba de Stress de Señales**: Abrir y cerrar el diálogo principal 10 veces seguidas manteniendo QGIS abierto, verificando en los logs que todas las desconexiones fueron exitosas.
+- **Prueba de Medición Huérfana**:
+  1. Activar herramienta de medición.
+  2. Finalizar una medición (doble click).
+  3. Cerrar el plugin.
+  4. Verificar visualmente que el "Rubber Band" rojo y los vértices han desaparecido del canvas de QGIS.
 
----
-
-## Estimación de Esfuerzo Total
-
-| Objetivo | Esfuerzo | Prioridad |
-|----------|----------|-----------|
-| Return Type Hints | 3 días | Alta |
-| i18n Audit & Fix | 2 días | Media |
-| CC Hotspots | 1 día | Alta |
-| QGIS Portal Upload | 0.5 días | Baja |
-| **Total** | **~6.5 días** | — |
-
----
-
-## Métricas Base (desde cierre v3.2.0)
-
-| Métrica | Valor Base |
-|:--------|:----------:|
-| Tests | 450 / 450 ✅ |
-| Quality Score | 72.6 / 100 |
-| Type Hints (Params) | 73.7% |
-| Type Hint (Returns) | 44.9% 🔴 |
-| Docstring Coverage | 85.6% |
-| MISSING_I18N | 895 |
-| HIGH_COMPLEXITY functions | 3 |
+## Métricas de Éxito
+- **Estabilidad**: 450/450 tests OK tras cada commit.
+- **Type Hints (Returns)**: Incrementar de 45.0% hacia la meta del 70%.
+- **Signal Leaks**: Reducir de 14 a 0 hallazgos detectados por `qgis-analyzer`.

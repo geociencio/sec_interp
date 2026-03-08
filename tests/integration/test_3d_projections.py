@@ -16,6 +16,7 @@ from tests.base_test import BaseTestCase
 from sec_interp.core.services.export_service import ExportService
 from sec_interp.core.domain import ProfileData, GeologyData, GeologySegment
 
+
 class Test3DProjections(BaseTestCase):
     """Integration tests for 3D projection consistency."""
 
@@ -34,12 +35,14 @@ class Test3DProjections(BaseTestCase):
 
         # Define a geology segment
         geol_data = GeologyData()
-        geol_data.append(GeologySegment(
-            unit_name="Unit A",
-            geometry_wkt=None,
-            attributes={},
-            points=[(20.0, 100.0), (80.0, 100.0)]
-        ))
+        geol_data.append(
+            GeologySegment(
+                unit_name="Unit A",
+                geometry_wkt=None,
+                attributes={},
+                points=[(20.0, 100.0), (80.0, 100.0)],
+            )
+        )
 
         from pathlib import Path
         import tempfile
@@ -58,7 +61,7 @@ class Test3DProjections(BaseTestCase):
             mock_layer.crs.return_value = self.crs
 
             # Mock QgsProject.instance().mapLayer
-            with unittest.mock.patch('qgis.core.QgsProject.instance') as mock_instance:
+            with unittest.mock.patch("qgis.core.QgsProject.instance") as mock_instance:
                 mock_proj = MagicMock()
                 mock_instance.return_value = mock_proj
                 mock_proj.mapLayer.return_value = mock_layer
@@ -69,7 +72,7 @@ class Test3DProjections(BaseTestCase):
                     raster_layer="mock_raster",
                     line_layer="mock_line",
                     band_num=1,
-                    buffer_dist=10.0
+                    buffer_dist=10.0,
                 )
 
                 try:
@@ -79,12 +82,16 @@ class Test3DProjections(BaseTestCase):
                         topo_data,
                         geol_data,
                         [],  # struct_data
-                        export_options={"exp_geol": True, "drill_3d_traces": True}
+                        export_options={"exp_geol": True, "drill_3d_traces": True},
                     )
                     self.assertIsNotNone(results)
                 except Exception as e:
                     import traceback
-                    self.fail(f"3D Export failed with error: {e}\n{traceback.format_exc()}")
+
+                    self.fail(
+                        f"3D Export failed with error: {e}\n{traceback.format_exc()}"
+                    )
+
 
 if __name__ == "__main__":
     unittest.main()
