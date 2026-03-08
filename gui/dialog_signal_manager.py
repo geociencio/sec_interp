@@ -138,38 +138,7 @@ class SignalManager:
             )
 
     def _disconnect_page_signals(self) -> None:
-        """Disconnect page-specific signals."""
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.output_widget.fileChanged.disconnect(self.dialog.update_button_state)
-
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.page_dem.raster_combo.layerChanged.disconnect(
-                self.dialog.update_button_state
-            )
-            self.dialog.page_dem.raster_combo.layerChanged.disconnect(
-                self.dialog.update_preview_checkbox_states
-            )
-
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.page_section.line_combo.layerChanged.disconnect(
-                self.dialog.update_button_state
-            )
-            self.dialog.page_section.line_combo.layerChanged.disconnect(
-                self.dialog.update_preview_checkbox_states
-            )
-
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.page_geology.dataChanged.disconnect(
-                self.dialog.update_preview_checkbox_states
-            )
-            self.dialog.page_struct.dataChanged.disconnect(
-                self.dialog.update_preview_checkbox_states
-            )
-            self.dialog.page_drillhole.dataChanged.disconnect(
-                self.dialog.update_preview_checkbox_states
-            )
-
-        # Recursively disconnect all pages
+        """Disconnect page-specific signals with full tracking."""
         pages = [
             self.dialog.page_dem,
             self.dialog.page_section,
@@ -180,10 +149,46 @@ class SignalManager:
             self.dialog.preview_widget,
             self.dialog.page_settings,
         ]
+
         for page in pages:
+            if not page:
+                continue
+
+            # Method 1: Call disconnect_signals if it exists
             if hasattr(page, "disconnect_signals"):
-                with contextlib.suppress(Exception):
+                try:
                     page.disconnect_signals()
+                    logger.debug(f"Disconnected signals for page: {page.__class__.__name__}")
+                except Exception as e:
+                    logger.warning(
+                        f"Failed to disconnect signals for {page.__class__.__name__}: {e}"
+                    )
+
+            # Method 2: Disconnect known signals explicitly for pages that might not have the method
+            self._disconnect_known_page_signals(page)
+
+        # Also disconnect output widget explicitly
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.dialog.output_widget.fileChanged.disconnect(self.dialog.update_button_state)
+
+        logger.info("All page signals disconnected")
+
+    def _disconnect_known_page_signals(self, page: Any) -> None:
+        """Disconnect known signals for pages that might not have disconnect_signals."""
+        # DEM Page
+        if hasattr(page, "raster_combo") and page.raster_combo:
+            with contextlib.suppress(TypeError, RuntimeError):
+                page.raster_combo.layerChanged.disconnect()
+
+        # Section Page
+        if hasattr(page, "line_combo") and page.line_combo:
+            with contextlib.suppress(TypeError, RuntimeError):
+                page.line_combo.layerChanged.disconnect()
+
+        # Data Pages (Geology, Struct, Drillhole)
+        if hasattr(page, "dataChanged"):
+            with contextlib.suppress(TypeError, RuntimeError):
+                page.dataChanged.disconnect()
 
     def _disconnect_tool_signals(self) -> None:
         """Disconnect map tool signals and window signals."""

@@ -209,14 +209,29 @@ class SecInterpDialog(SecInterpMainWindow):
         super().wheelEvent(event)
 
     def closeEvent(self, event: Any) -> None:
-        """Handle dialog close event to clean up resources."""
+        """Handle dialog close event to clean up all resources."""
         if self._save_on_close:
             self.state_manager.save_settings()
 
         logger.info("Closing dialog, cleaning up resources...")
+
+        # 1. Cleanup Map Tools logic
+        if hasattr(self, "tool_manager") and self.tool_manager:
+            if self.tool_manager.measure_tool:
+                self.tool_manager.measure_tool.cleanup_finalized()
+            if self.tool_manager.interpretation_tool:
+                self.tool_manager.interpretation_tool.reset()
+            self.tool_manager.disconnect_signals()
+
+        # 2. Sequential Manager Cleanup
         self.interpretation_manager.save_interpretations()
         self.preview_manager.cleanup()
         self.signal_manager.disconnect_all()
+
+        # 3. Component level cleanup
+        if hasattr(self, "legend_widget") and self.legend_widget:
+            self.legend_widget.cleanup()
+
         super().closeEvent(event)
 
     def open_help(self) -> None:

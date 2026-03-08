@@ -232,31 +232,37 @@ class PreviewRenderer:
             return False
 
     def _cleanup_layers(self) -> None:
-        """Remove previous layers from QgsProject."""
+        """Remove previous layers from QgsProject with complete cleanup."""
+        # Clean up data layers
         for layer in self.layers:
-            if layer:
+            if layer and layer.isValid():
                 try:
                     QgsProject.instance().removeMapLayer(layer.id())
-                except Exception:
-                    logger.warning(
-                        f"Failed to remove map layer {layer.id() if hasattr(layer, 'id') else 'unknown'}"
-                    )
+                except Exception as e:
+                    logger.warning(f"Failed to remove map layer: {e}")
 
         self.layers = []
         self.layer_factory.active_units = {}
 
-        # Clear interpretation rubber bands
+        # Cleanup interpretation rubber bands COMPLETELY
         if self.canvas and self.canvas.scene():
             scene = self.canvas.scene()
             for rb in self.interpretation_rubbers:
                 if rb:
                     try:
+                        # 1. Hide first
                         rb.hide()
+                        # 2. Reset geometry (releases C++ memory)
+                        rb.reset(QgsWkbTypes.PolygonGeometry)
+                        # 3. Remove from scene
                         scene.removeItem(rb)
-                    except Exception:
-                        logger.warning("Failed to remove rubber band from scene")
+                    except Exception as e:
+                        logger.warning(f"Failed to remove rubber band: {e}")
 
+        # Clear references to allow GC
         self.interpretation_rubbers = []
+
+        logger.debug("PreviewRenderer cleanup completed")
 
     def _render_interpretations(
         self, interp_data: list[InterpretationPolygon], vert_exag: float

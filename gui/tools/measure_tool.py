@@ -7,6 +7,8 @@ It separates UI event handling from spatial snapping logic.
 
 from __future__ import annotations
 
+import contextlib
+
 from qgis.core import (
     QgsMapLayer,
     QgsPointLocator,
@@ -167,6 +169,37 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         except TypeError:
             pass
 
+    def cleanup_finalized(self) -> None:
+        """Clean up finalized measurement elements.
+
+        Call this when dialog is closing to ensure no orphaned graphics.
+        """
+        logger.debug("Cleaning up finalized measurement elements")
+
+        if self.rubber_band:
+            try:
+                self.rubber_band.hide()
+                self.canvas.scene().removeItem(self.rubber_band)
+                logger.debug("Removed rubber band from scene")
+            except Exception as e:
+                logger.warning(f"Failed to remove rubber band: {e}")
+            finally:
+                self.rubber_band = None
+
+        for marker in self.vertex_markers:
+            try:
+                marker.hide()
+                self.canvas.scene().removeItem(marker)
+            except Exception as e:
+                logger.warning(f"Failed to remove vertex marker: {e}")
+
+        self.vertex_markers = []
+        self.finalized_points = []
+        self.finalized = False
+        self.points = []
+
+        logger.debug("Finalized measurement cleanup completed")
+
     def reset(self) -> None:
         """Reset the tool state.
 
@@ -193,12 +226,14 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         self.finalized_points = []
 
         if self.rubber_band:
-            self.canvas.scene().removeItem(self.rubber_band)
+            with contextlib.suppress(Exception):
+                self.canvas.scene().removeItem(self.rubber_band)
             self.rubber_band = None
 
         # Remove all vertex markers
         for marker in self.vertex_markers:
-            self.canvas.scene().removeItem(marker)
+            with contextlib.suppress(Exception):
+                self.canvas.scene().removeItem(marker)
         self.vertex_markers = []
 
         self.measurementCleared.emit()
