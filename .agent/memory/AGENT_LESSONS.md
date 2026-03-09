@@ -5,7 +5,12 @@ Este archivo registra lecciones técnicas, preferencias del usuario y soluciones
 ## 🧠 Registro de Lecciones (YAML Structured)
 
 ```yaml
-lessons:
+  - date: 2026-03-08
+    category: TESTING
+    topic: Qt Object Mocks
+    lesson: "When testing exporters like ImageExporter or PDFExporter, native Qt objects like QImage, QPainter, or QPdfWriter require precise mock attributes (e.g. SmoothPixmapTransform, save) to avoid exceptions."
+    action: "Always enrich tests/mocks/qt_mocks.py with the specific methods and attributes that the QGIS custom painter jobs expect."
+
   - date: 2026-02-01
     category: ARCHITECTURE
     topic: Skill Localization

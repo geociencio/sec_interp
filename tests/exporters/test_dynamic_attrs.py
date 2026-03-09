@@ -49,6 +49,5 @@ class TestDynamicAttributes(BaseTestCase):
             self.assertEqual(feat["Comentario"], "Validado")
 
 
-
 if __name__ == "__main__":
     unittest.main()

@@ -94,6 +94,7 @@ class MockQPainter(MagicMock):
     """Mock implementation for QPainter."""
 
     Antialiasing = 1
+    SmoothPixmapTransform = 2
 
     def __init__(self, *args, **kwargs):
         """Initialize the mock painter."""
@@ -109,9 +110,24 @@ class MockQImage(MagicMock):
         """Initialize the mock image."""
         super().__init__(**kwargs)
 
+    def save(self, path):
+        """Mock image saving."""
+        return True
+
 
 class MockQColor(MagicMock):
     """Mock implementation for QColor."""
+
+    def __init__(self, *args, **kwargs):
+        """Initialize the mock color."""
+        super().__init__()
+        self._args = args
+
+    def __eq__(self, other):
+        """Compare colors by their initialization arguments."""
+        if isinstance(other, MockQColor):
+            return self._args == other._args
+        return False
 
     def isValid(self):
         """Check if color is valid."""
@@ -198,6 +214,49 @@ class MockQRectF(MagicMock):
     def __init__(self, x=0, y=0, w=0, h=0):
         """Initialize the mock rectangle."""
         super().__init__()
+
+
+class MockQSizeF(MagicMock):
+    """Mock implementation for QSizeF."""
+
+    def __init__(self, w=0, h=0):
+        self._w, self._h = w, h
+
+    def width(self):
+        return self._w
+
+    def height(self):
+        return self._h
+
+
+class MockQPageSize(MagicMock):
+    """Mock implementation for QPageSize."""
+
+    class Unit:
+        Point = 0
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+
+class MockQPdfWriter(MagicMock):
+    """Mock implementation for QPdfWriter."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self._resolution = 300
+
+    def setResolution(self, res):
+        self._resolution = res
+
+    def resolution(self):
+        return self._resolution
+
+    def setPageSize(self, size):
+        pass
+
+    def setPageMargins(self, margins):
+        pass
 
 
 class MockQFrame:

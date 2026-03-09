@@ -23,6 +23,13 @@
 
 ---
 ## [Unreleased]
+## [2026-03-08] - Fase 3.3.0: Exporters Testing Coverage (100%)
+- **Logro**: Cubierta total (100%) del módulo de exportación de archivos mediante la generación de 5 nuevas suites completas de pruebas unitarias soportadas por Mocks.
+- **Cambios**:
+    - **Tests**: Añadidos tests unitarios exhaustivos para `ImageExporter`, `PDFExporter`, `SVGExporter`, `ShapefileExporter` e `Interpretation2DExporter`.
+    - **Mocks**: Robustecida la infraestructura de utilidades Qt en `tests/mocks/qt_mocks.py` resolviendo problemas de atributos perdidos sin instancia completa.
+- **Estado**: Suite 100% verde (535 tests).
+- **Mantenimiento**: [sesion_2026-03-08_exporters_coverage.md](maintenance/sesion_2026-03-08_exporters_coverage.md)
 ## [2026-03-08] - Fase 3.3.0: Testing Expansion (Integración)
 - **Logro**: Alcanzado el hito de 514 pruebas exitosas en Docker con cobertura del 86% en integración de UI y orquestadores asíncronos.
 - **Cambios**:
