@@ -1,11 +1,11 @@
 ---
-## [2026-03-03] Inicio de Fase v3.3.0 (Calidad Estricta e i18n)
-- **Objetivo**: Elevar la cobertura de return type hints, auditar i18n y refactorizar hotspots de complejidad.
-- **Duración Estimada**: 1 semana.
-- **Prioridades**:
-    1. Cobertura de Return Type Hints (Meta: >= 70%).
-    2. Auditoría y Limpieza de i18n (895 hallazgos).
-    3. Refactorización de 3 funciones de alta complejidad.
+## [2026-03-03] Start of Phase v3.3.0 (Strict Quality & i18n)
+- **Goal**: Raise return type hints coverage, audit i18n, and refactor complexity hotspots.
+- **Estimated Duration**: 1 week.
+- **Priorities**:
+    1. Return Type Hints Coverage (Target: >= 70%).
+    2. i18n Audit and Cleanup (895 findings).
+    3. Refactoring 3 high-complexity functions.
 
 ## [2026-03-02] - Phase 3.2.0: QGIS 4.x Readiness & Structural Refinement
 - **Achievement**: Successfully completed 3.2.0 release cycle with 100% QGIS 4.x API compliance and suite expansion to 455 tests (all green).
@@ -24,32 +24,32 @@
 ---
 ## [Unreleased]
 ## [2026-03-08] - Fase 3.3.0: Exporters Testing Coverage (100%)
-- **Logro**: Cubierta total (100%) del módulo de exportación de archivos mediante la generación de 5 nuevas suites completas de pruebas unitarias soportadas por Mocks.
-- **Cambios**:
+- **Achievement**: Cubierta total (100%) del módulo de exportación de archivos mediante la generación de 5 nuevas suites completas de pruebas unitarias soportadas por Mocks.
+- **Changes**:
     - **Tests**: Añadidos tests unitarios exhaustivos para `ImageExporter`, `PDFExporter`, `SVGExporter`, `ShapefileExporter` e `Interpretation2DExporter`.
     - **Mocks**: Robustecida la infraestructura de utilidades Qt en `tests/mocks/qt_mocks.py` resolviendo problemas de atributos perdidos sin instancia completa.
-- **Estado**: Suite 100% verde (535 tests).
-- **Mantenimiento**: [sesion_2026-03-08_exporters_coverage.md](maintenance/sesion_2026-03-08_exporters_coverage.md)
+- **Status**: Suite 100% verde (535 tests).
+- **Maintenance**: [session_2026-03-08_exporters_coverage.md](maintenance/session_2026-03-08_exporters_coverage.md)
 ## [2026-03-08] - Fase 3.3.0: Testing Expansion (Integración)
-- **Logro**: Alcanzado el hito de 514 pruebas exitosas en Docker con cobertura del 86% en integración de UI y orquestadores asíncronos.
-- **Cambios**:
+- **Achievement**: Alcanzado el hito de 514 pruebas exitosas en Docker con cobertura del 86% en integración de UI y orquestadores asíncronos.
+- **Changes**:
     - **Tests**: Implementada cobertura End-to-End para el Servicio de Exportación completo.
     - **Tests**: Creado suite profunda de evaluación para el `PreviewManager` (LOD, dependencias resolutorias, bounding boxes).
     - **Tests**: Cubierta la filtración asíncrona de geología y buffer en in-memory layers.
     - **Tests**: Añadidos tests funcionales y de QA para el Despachador de Tareas Asíncronas (Tasks Orchestrators).
-- **Estado**: Suite 100% verde (514 tests).
-- **Mantenimiento**: [sesion_2026-03-08_integration_testing.md](maintenance/sesion_2026-03-08_integration_testing.md)
+- **Status**: Suite 100% verde (514 tests).
+- **Maintenance**: [session_2026-03-08_integration_testing.md](maintenance/session_2026-03-08_integration_testing.md)
 
 ---
-## [2026-03-08] - Fase 3.3.0: Estabilidad de Recursos y Ciclo de Vida (Fase 1 completada)
-- **Logro**: Finalizada exitosamente la Fase 1 resolviendo múltiples problemas de ciclo de vida de la GUI y restaurando la robustez de las exportaciones.
-- **Cambios**:
-    - **Memory Safety**: Implementada limpieza exhaustiva de memoria en `closeEvent` (fugas de `QgsRubberBand`).
-    - **GUI Lifecycle**: Creados sistemas idempotentes en `ToolManager` y `SignalManager` permitiendo re-ejecuciones limpias.
-    - **Data Models**: Refactorizadas las `Interpretation` para utilizar capas vectoriales mock estándares y asegurar compatibilidad de exportación.
-    - **Export Services**: Extendida la exportación 2D y 3D de sondajes para reconocer las instancias `DrillholeProjection` además de tuplas primitivas.
-- **Estado**: Fase 1 estable con 409 tests pasando (100%).
-- **Mantenimiento**: [sesion_2026-03-08_phase1_stability.md](maintenance/sesion_2026-03-08_phase1_stability.md)
+## [2026-03-08] - Phase 3.3.0: Resource Stability and Lifecycle (Phase 1 completed)
+- **Achievement**: Successfully finalized Phase 1 by resolving multiple GUI lifecycle issues and restoring export robustness.
+- **Changes**:
+    - **Memory Safety**: Implemented exhaustive memory cleanup in `closeEvent` (resolving `QgsRubberBand` leaks).
+    - **GUI Lifecycle**: Created idempotent systems in `ToolManager` and `SignalManager` allowing clean re-executions.
+    - **Data Models**: Refactored `Interpretations` to use standard mock vector layers ensuring export compatibility.
+    - **Export Services**: Extended 2D and 3D drillhole export to recognize `DrillholeProjection` instances in addition to primitive tuples.
+- **Status**: Phase 1 stable with 409 tests passing (100%).
+- **Maintenance**: [session_2026-03-08_phase1_stability.md](maintenance/session_2026-03-08_phase1_stability.md)
 
 ---
 ## [2026-03-01] - Phase 3.2.0/3.2.1: Testing Expansion (Afternoon)
@@ -59,235 +59,235 @@
     - **Automation**: Created `update_testing_status.py` script integrated into the `Makefile`.
     - **Stability**: Fixed regression in the trajectory engine.
 - **Status**: Suite 100% green (450 tests).
-- **Maintenance**: [sesion_2026-03-01_testing_expansion.md](maintenance/sesion_2026-03-01_testing_expansion.md)
+- **Maintenance**: [session_2026-03-01_testing_expansion.md](maintenance/session_2026-03-01_testing_expansion.md)
 ### Added
-- **Seguridad**: Protección contra Path Traversal en todos los exportadores de datos.
-- **Validación**: Validación de tipos y rangos para parámetros de previsualización en `PreviewParams`.
+- **Security**: Path Traversal protection in all data exporters.
+- **Validation**: Type and range validation for preview parameters in `PreviewParams`.
 
 ### Fixed
-- **Memoria**: Resueltas fugas de memoria por `QgsRubberBand` no liberados y desconexiones de señales faltantes en botones de reset/clear.
-- **Estabilidad**: Corregida la captura de excepciones críticas del sistema, permitiendo terminación limpia de QGIS.
-- **Estabilidad**: Corregida la resolución de capas mediante `LayerResolver` centralizado con caché.
-- **Validación**: Unificada la lógica de validación de proyectos eliminando duplicación en DTOs.
-- **UX**: Implementado reporte de progreso reactivo para la generación de sondajes en la UI.
-- **Mocks**: Robustecido el entorno de pruebas con soporte para IDs de capa únicos y validación estricta de geometría y campos.
-- **Estabilidad**: Corregido `TypeError` en `ProfileController` por desajuste de inyección de dependencias.
+- **Memory**: Resolved memory leaks from unreleased `QgsRubberBand` and missing signal disconnections in reset/clear buttons.
+- **Stability**: Fixed critical system exception capture, allowing for clean QGIS termination.
+- **Stability**: Fixed layer resolution via centralized `LayerResolver` with cache.
+- **Validation**: Unified project validation logic, eliminating duplication in DTOs.
+- **UX**: Implemented reactive progress reporting for drillhole generation in the UI.
+- **Mocks**: Robust testing environment with support for unique layer IDs and strict geometry and field validation.
+- **Stability**: Fixed `TypeError` in `ProfileController` due to dependency injection mismatch.
 
 ---
 ## [2026-03-01] - Fase 3.0.1: Estabilización, Seguridad y Gestión de Memoria (14:30)
-- **Logro**: Implementadas mejoras críticas de seguridad (Path Traversal) y estabilidad (Signal Leaks & Memory), resolviendo regresiones en el renderizador y alcanzando una suite verde.
-- **Cambios**:
-    - **Seguridad**: Protección contra Path Traversal en exportadores mediante resolución de rutas absolutas.
-    - **Memoria**: Limpieza explícita de `QgsRubberBand` y robustecimiento de desconexión de señales en la UI.
-    - **Resiliencia**: Corrección de manejo de excepciones críticas (`KeyboardInterrupt`) y validación temprana de parámetros en DTOs.
-    - **Cleanup**: Eliminación de código muerto duplicado en el renderizador de previsualización.
-- **Estado**: Estabilización v3.0.1 verificada con 124 tests OK.
-- **Mantenimiento**: [session_2026-03-01.md](logs/session_2026-03-01.md)
+- **Achievement**: Implemented critical security (Path Traversal) and stability (Signal Leaks & Memory) improvements, resolving renderer regressions and achieving a green suite.
+- **Changes**:
+    - **Security**: Path Traversal protection in exporters via absolute path resolution.
+    - **Memory**: Explicit `QgsRubberBand` cleanup and reinforced UI signal disconnection.
+    - **Resilience**: Correction of critical exception handling (`KeyboardInterrupt`) and early parameter validation in DTOs.
+    - **Cleanup**: Elimination of dead duplicated code in the preview renderer.
+- **Status**: Stabilization v3.0.1 verified with 124 tests OK.
+- **Maintenance**: [session_2026-03-01.md](logs/session_2026-03-01.md)
 
 ---
-## [2026-02-28] - Fase 3: Refactor LayerResolver y Feedback de UX (20:30)
-- **Logro**: Centralizada la resolución de capas con caché y unificada la validación de parámetros, mejorando performance y mantenibilidad.
-- **Cambios**:
-    - **LayerResolver**: Implementado sistema de caché para resolución de capas.
-    - **Validation**: Unificada lógica de validación en `PreviewParams` delegando a `ProjectValidator`.
-    - **UX**: Implementado reporte de progreso real en `DrillholeGenerationTask`.
-    - **Tests**: Suite de mocks robustecida (IDs únicos, WKB types, QgsFields).
-- **Estado**: Fase 3 (UX & Perf) verificado con 229 tests OK.
-- **Mantenimiento**: [sesion_2026-02-28_refactor_layer_resolver.md](maintenance/sesion_2026-02-28_refactor_layer_resolver.md)
+## [2026-02-28] - Phase 3: LayerResolver Refactor and UX Feedback (20:30)
+- **Achievement**: Centralized layer resolution with caching and unified parameter validation, improving performance and maintainability.
+- **Changes**:
+    - **LayerResolver**: Implemented caching system for layer resolution.
+    - **Validation**: Unified validation logic in `PreviewParams` delegating to `ProjectValidator`.
+    - **UX**: Implemented real-time progress reporting in `DrillholeGenerationTask`.
+    - **Tests**: Robust mocked suite (unique IDs, WKB types, QgsFields).
+- **Status**: Phase 3 (UX & Perf) verified with 229 tests OK.
+- **Maintenance**: [session_2026-02-28_refactor_layer_resolver.md](maintenance/session_2026-02-28_refactor_layer_resolver.md)
 
 ---
-## [2026-02-25] - Estabilización Fase 2.1: Hotfixes de Sondajes y Renderizado (22:30)
-- **Logro**: Resueltas 3 regresiones críticas introducidas por la optimización de la Fase 2, restaurando el renderizado de sondajes y la estabilidad del motor trayectorias.
-- **Cambios**:
-    - **Fix DI**: Corregido desajuste de argumentos en `DrillholeTaskOrchestrator`.
-    - **Fix Robustez**: Añadidas guardas contra trayectorias vacías en `TrajectoryEngine` (Evita `IndexError`).
-    - **Fix Renderizado**: Implementado soporte polimórfico en `PreviewLayerFactory` para objetos `DrillholeProjection`.
-- **Estado**: Sistema estabilizado v4.1.0-hotfix.
-- **Mantenimiento**: [sesion_2026-02-25_stabilization_phase_2_hotfixes.md](maintenance/sesion_2026-02-25_stabilization_phase_2_hotfixes.md)
+## [2026-02-25] - Phase 2.1 Stabilization: Drillhole and Rendering Hotfixes (22:30)
+- **Achievement**: Resolved 3 critical regressions introduced by Phase 2 optimization, restoring drillhole rendering and trajectory engine stability.
+- **Changes**:
+    - **Fix DI**: Corrected argument mismatch in `DrillholeTaskOrchestrator`.
+    - **Fix Robustness**: Added guards against empty trajectories in `TrajectoryEngine` (Prevents `IndexError`).
+    - **Fix Rendering**: Implemented polymorphic support in `PreviewLayerFactory` for `DrillholeProjection` objects.
+- **Status**: System stabilized v4.1.0-hotfix.
+- **Maintenance**: [session_2026-02-25_stabilization_phase_2_hotfixes.md](maintenance/session_2026-02-25_stabilization_phase_2_hotfixes.md)
 
 ---
-## [2026-02-19] - Arquitectura de Resiliencia (Lazy Loading) (07:15)
-- **Logro**: Implementada arquitectura de carga segura post-reversión de SEV para garantizar estabilidad core.
-- **Cambios**:
-    - Creado `SafeLoader` para gestión de importaciones perezosas y resilientes.
-    - Refactorizados `SecInterp` y `ProfileController` para desacoplamiento de servicios.
-    - Tests de regresión (140+) confirmados satisfactorios post-refactor.
-- **Estado**: Sistema robustecido y en modo estable v4.0.4.
-- **Mantenimiento**: [sesion_2026-02-19_resilience_architecture.md](maintenance/sesion_2026-02-19_resilience_architecture.md)
+## [2026-02-19] - Resilience Architecture (Lazy Loading) (07:15)
+- **Achievement**: Implemented secure loading architecture post-SEV reversion to guarantee core stability.
+- **Changes**:
+    - Created `SafeLoader` for lazy and resilient import management.
+    - Refactored `SecInterp` and `ProfileController` for service decoupling.
+    - Regression tests (140+) confirmed successful post-refactor.
+- **Status**: System robustified and in stable mode v4.0.4.
+- **Maintenance**: [session_2026-02-19_resilience_architecture.md](maintenance/session_2026-02-19_resilience_architecture.md)
 
-## [2026-02-18] REGRESIÓN DE INFRAESTRUCTURA GEOFÍSICA (SEV)
-- **Nota**: Se decidió abortar la implementación de SEV por inestabilidades críticas en el cargador de plugins tras la refactorización.
-- **Acción**: Ejecutada regresión total al commit `d5b5837` para asegurar estabilidad v4.0.4.
-- **Lección**: La refactorización de la GUI y la integración de nuevas dependencias (`numpy`/`scipy`) requieren un enfoque de validación más modular y pruebas aisladas antes de la integración final.
-- **Mantenimiento**: [sesion_2026-02-18_cancelled_sev.md](maintenance/sesion_2026-02-18_cancelled_sev.md).
+## [2026-02-18] GEOPHYSICAL INFRASTRUCTURE REGRESSION (SEV)
+- **Note**: Decided to abort SEV implementation due to critical instabilities in the plugin loader post-refactoring.
+- **Action**: Performed total regression to commit `d5b5837` to ensure v4.0.4 stability.
+- **Lesson**: GUI refactoring and new dependency integration (`numpy`/`scipy`) require a more modular validation approach and isolated testing before final integration.
+- **Maintenance**: [session_2026-02-18_cancelled_sev.md](maintenance/session_2026-02-18_cancelled_sev.md).
 
 ## [2026-02-18] INFRAESTRUCTURA (QGIS-MANAGER) Y TIPADO
-- **Logro**: Automatizado el parcheo de compatibilidad para QGIS (PyQt -> qgis.PyQt) en `qgis-manager` y reforzada la validación estructural del plugin.
-- **Cambios**:
+- **Achievement**: Automatizado el parcheo de compatibilidad para QGIS (PyQt -> qgis.PyQt) en `qgis-manager` y reforzada la validación estructural del plugin.
+- **Changes**:
     - **qgis-manager**: Implementado parcheo automático de recursos RCC y validación de `classFactory`.
     - **SecInterp**: Mejorado tipado en tareas asíncronas (`drillhole_task`, `geology_task`).
     - **Investigación**: Descartado soporte redundante de `.pluginignore`.
-- **Mantenimiento**: [sesion_2026-02-18_infrastructure_qgis_manager.md](maintenance/sesion_2026-02-18_infrastructure_qgis_manager.md).
-## [2026-02-18] EXPANSIÓN I18N (HINDI/INDONESIO) Y AUDITORÍA DE INFRAESTRUCTURA
-- **Logro**: Completada la localización para `hi` e `id` e identificada hoja de ruta para modernizar la herramienta de despliegue.
-- **Cambios**:
-    - **i18n**: Inyectadas traducciones maestras y compilados archivos `.qm` para Hindi e Indonesio.
-    - **Deuda Técnica**: Eliminadas referencias a `PyQt5` en `resources.py`.
-    - **Infraestructura**: Creado Roadmap Técnico para solventar rigideces en `qgis-manager`.
-- **Calidad**: 382 tests OK. Reporte limpio de `qgis-analyzer` para importaciones legacy.
-- **Mantenimiento**: [sesion_2026-02-18_i18n_qgis_manage.md](maintenance/sesion_2026-02-18_i18n_qgis_manage.md).
+- **Maintenance**: [session_2026-02-18_infrastructure_qgis_manager.md](maintenance/session_2026-02-18_infrastructure_qgis_manager.md).
+## [2026-02-18] I18N EXPANSION (HINDI/INDONESIAN) AND INFRASTRUCTURE AUDIT
+- **Achievement**: Completed localization for `hi` and `id` and identified roadmap to modernize the deployment tool.
+- **Changes**:
+    - **i18n**: Injected master translations and compiled `.qm` files for Hindi and Indonesian.
+    - **Technical Debt**: Removed `PyQt5` references in `resources.py`.
+    - **Infrastructure**: Created Technical Roadmap to solve rigidities in `qgis-manager`.
+- **Quality**: 382 tests OK. Clean `qgis-analyzer` report for legacy imports.
+- **Maintenance**: [session_2026-02-18_i18n_qgis_manage.md](maintenance/session_2026-02-18_i18n_qgis_manage.md).
 
 ---
-## [2026-02-18] TRADUCCIÓN PROFUNDA (USER GUIDE)
-- **Logro**: Completada la localización profunda para 7 idiomas prioritarios (es, fr, de, it, pt_BR, ru, zh_CN, ja).
-- **Cambios**:
-    - **i18n**: Finalizada la traducción de tutoriales y funciones avanzadas en archivos `.po`.
-    - **Calidad**: Corregidos errores de intrusión de idioma en `it.po` y `pt_BR.po`.
-    - **Compilación**: Generados binarios `.mo` para todos los idiomas soportados.
-- **Mantenimiento**: [sesion_2026-02-18_deep_translation_user_guide.md](maintenance/sesion_2026-02-18_deep_translation_user_guide.md).
+## [2026-02-18] DEEP TRANSLATION (USER GUIDE)
+- **Achievement**: Completed deep localization for 7 priority languages (es, fr, de, it, pt_BR, ru, zh_CN, ja).
+- **Changes**:
+    - **i18n**: Finalized translation of tutorials and advanced functions in `.po` files.
+    - **Quality**: Corrected language intrusion errors in `it.po` and `pt_BR.po`.
+    - **Compilation**: Generated `.mo` binaries for all supported languages.
+- **Maintenance**: [session_2026-02-18_deep_translation_user_guide.md](maintenance/session_2026-02-18_deep_translation_user_guide.md).
 
 ---
 ## [2026-02-18] EXPANSIÓN I18N (MARKET GAP)
 
-- **Logro**: Expandido el soporte a 14 idiomas (añadidos pl, nl, fi) con 100% de cobertura core.
-- **Cambios**:
+- **Achievement**: Expandido el soporte a 14 idiomas (añadidos pl, nl, fi) con 100% de cobertura core.
+- **Changes**:
     - **i18n**: Implementado motor de "Master Data" JSON y automatización de inyección.
     - **Infraestructura**: Creado workflow `/i18n-maintenance` y actualizada skill `i18n-standards`.
 - **Calidad**: 16/16 Integration tests OK y 377+ unit tests validados.
-- **Mantenimiento**: [sesion_2026-02-18_i18n_gap_expansion.md](maintenance/sesion_2026-02-18_i18n_gap_expansion.md).
+- **Maintenance**: [session_2026-02-18_i18n_gap_expansion.md](maintenance/session_2026-02-18_i18n_gap_expansion.md).
 
 ---
 ## [2026-02-18] ESTABILIDAD DE MÓDULOS
-- **Logro**: Eliminados ciclos de importación circular y optimizada la estabilidad del sistema de validación.
-- **Cambios**:
+- **Achievement**: Eliminados ciclos de importación circular y optimizada la estabilidad del sistema de validación.
+- **Changes**:
     - **Refactorización**: Movida lógica a `validation_helpers.py` resolviendo 7 ciclos de dependencia.
-    - **Mantenimiento**: Corregidos signal leaks en `settings_page.py`.
+    - **Maintenance**: Corregidos signal leaks en `settings_page.py`.
 - **Calidad**: Module Stability optimizada de 0.0 a 53.7.
-- **Mantenimiento**: [sesion_2026-02-18_module_stability.md](maintenance/sesion_2026-02-18_module_stability.md).
+- **Maintenance**: [session_2026-02-18_module_stability.md](maintenance/session_2026-02-18_module_stability.md).
 
 ---
 ## [2026-02-17] RESUMEN: Refactorización de Hotspots (StateManager y ProjectValidator)
-- **Logro**: Reducción drástica de la complejidad ciclomática en los dos mayores "hotspots" del proyecto, mejorando la mantenibilidad y modularidad.
-- **Cambios**:
+- **Achievement**: Reducción drástica de la complejidad ciclomática en los dos mayores "hotspots" del proyecto, mejorando la mantenibilidad y modularidad.
+- **Changes**:
     - **StateManager**: Descompuesto en `DialogSettingsPersistence` y `UIStatusManager`. CC de 70 a modular.
     - **ProjectValidator**: Implementado patrón Pipeline con micro-validadores independientes (`IValidator`). CC de 44 a modular.
     - **Calidad**: Suite de 377 tests pasando al 100% tras la reubicación lógica.
 - **Métricas**:
     - **Tests**: 377/377 OK (100%).
     - **CC**: Reducción significativa en el Top 10 de hotspots.
-- **Mantenimiento**: [sesion_2026-02-17_refactor_hotspots.md](maintenance/sesion_2026-02-17_refactor_hotspots.md).
+- **Maintenance**: [session_2026-02-17_refactor_hotspots.md](maintenance/session_2026-02-17_refactor_hotspots.md).
 
 ---
 ## [2026-02-16] RESUMEN: Estabilización de Señales e i18n
-- **Logro**: Resueltas fugas de señales en la GUI e internacionalizado el `ProfileController`. Suite de tests elevada a 386 OK.
-- **Cambios**:
+- **Achievement**: Resueltas fugas de señales en la GUI e internacionalizado el `ProfileController`. Suite de tests elevada a 386 OK.
+- **Changes**:
     - **Señales**: Sistema de rastreo dinámico en `StateManager` para desconexión segura en `closeEvent`.
     - **i18n**: Cobertura total en `controller.py`.
     - **Estabilidad**: Ajuste de conexiones para compatibilidad dual con Mocks y tiempo de ejecución.
 - **Métricas**:
     - **Tests**: 386/386 OK (Docker).
     - **i18n**: 100% en Core controller.
-- **Mantenimiento**: [sesion_2026-02-16_stabilization_signals_i18n.md](maintenance/sesion_2026-02-16_stabilization_signals_i18n.md).
+- **Maintenance**: [session_2026-02-16_stabilization_signals_i18n.md](maintenance/session_2026-02-16_stabilization_signals_i18n.md).
 
 ---
 ## [2026-02-15] RESUMEN: Estabilización de Mocks y Tests 3D Avanzados (Noche)
-- **Logro**: Suite completa (378 tests) estabilizada tras corregir fallos críticos de integridad de datos en mocks.
-- **Cambios**:
+- **Achievement**: Suite completa (378 tests) estabilizada tras corregir fallos críticos de integridad de datos en mocks.
+- **Changes**:
     - **Mocks Core**: Implementado parsing WKT en `MockQgsGeometry` y corregido bug de pérdida de atributos en `MockQgsFeature`.
     - **Exporters**: Estabilizada la exportación 3D asegurando tipos `LineStringZ` y `PolygonZ`.
     - **Integración**: Resuelta la falta de resultados en tests avanzados debido a fallos silenciosos en la recuperación de campos.
 - **Métricas**:
     - **Tests**: 378/378 OK (100%).
     - **Calidad**: Entorno de pruebas 100% funcional y desacoplado.
-- **Mantenimiento**: [sesion_2026-02-15_stabilization_mocks_3d.md](maintenance/sesion_2026-02-15_stabilization_mocks_3d.md).
+- **Maintenance**: [session_2026-02-15_stabilization_mocks_3d.md](maintenance/session_2026-02-15_stabilization_mocks_3d.md).
 
 ---
 ## [2026-02-15] RESUMEN: Estabilización GUI y Exportación (Noche)
-- **Logro**: Estabilización final de la Fase 5 y reparación del subsistema de exportación.
-- **Cambios**:
+- **Achievement**: Estabilización final de la Fase 5 y reparación del subsistema de exportación.
+- **Changes**:
     - **Critical Fix**: Resolución de capas por ID en `ExportService` (fin de `AttributeError`).
     - **Cleanup**: Eliminación definitiva de `message_manager` y `settings_manager` (Facade Pattern).
     - **UX**: Sistema de mensajes dual (QGIS Bar + Plugin Area) con feedback visual HTML.
 - **Métricas**:
     - **Tests**: 361/361 OK (100%).
     - **Funcionalidad**: Exportación validada manualmente.
-- **Mantenimiento**: [sesion_2026-02-15_stabilization_gui_export.md](maintenance/sesion_2026-02-15_stabilization_gui_export.md).
+- **Maintenance**: [session_2026-02-15_stabilization_gui_export.md](maintenance/session_2026-02-15_stabilization_gui_export.md).
 
 ---
 ## [2026-02-15] RESUMEN: Resolución de Fugas de Señales y Estabilidad de UI
-- **Logro**: Resueltas 65 fugas de señales potenciales identificadas por `qgis-analyzer`.
-- **Cambios**:
+- **Achievement**: Resueltas 65 fugas de señales potenciales identificadas por `qgis-analyzer`.
+- **Changes**:
     - **UI**: Implementado sistema de desconexión en cascada en `DialogSignalManager` y todas las páginas de configuración.
     - **Mantenibilidad**: Refactorizado `disconnect_all` para reducir complejidad y cumplir con estándares de `ruff`.
     - **Stability**: Asegurada la limpieza de señales en tareas asíncronas canceladas.
 - **Métricas**:
     - **Signal Leaks**: Reducción neta de 36 fugas (Falsos positivos remanentes: 29).
     - **Tests**: 361/361 OK (100%).
-- **Mantenimiento**: [sesion_2026-02-15_signal_leak_resolution.md](maintenance/sesion_2026-02-15_signal_leak_resolution.md).
+- **Maintenance**: [session_2026-02-15_signal_leak_resolution.md](maintenance/session_2026-02-15_signal_leak_resolution.md).
 
 ---
 ## [2026-02-15] RESUMEN: Optimización Extrema del Paquete ZIP (v3.0.0)
-- **Logro**: Reducción del tamaño del plugin de **12.0 MB** a **2.5 MB** (-79%).
-- **Cambios**:
+- **Achievement**: Reducción del tamaño del plugin de **12.0 MB** a **2.5 MB** (-79%).
+- **Changes**:
     - **Asset Pruning**: Eliminación de fuentes redundantes (~9MB), API docs y vistas de código fuente en el manual manual interno.
     - **Build System**: Makefile ajustado para evitar que `qgis-manage compile` sobreescriba la optimización.
     - **Infraestructura**: Despliegue automático de docs técnicos al repo externo `sec_interp_docs`.
 - **Métricas**:
     - **ZIP**: 2.5 MB (Goal < 5MB OK).
     - **Tests**: 361/361 OK (100%).
-- **Mantenimiento**: [sesion_2026-02-15_optimization_zip_size.md](maintenance/sesion_2026-02-15_optimization_zip_size.md).
+- **Maintenance**: [session_2026-02-15_optimization_zip_size.md](maintenance/session_2026-02-15_optimization_zip_size.md).
 
 ---
 ## [2026-02-14] RESUMEN: Limpieza de Deuda Técnica (Documentación y PLR2004)
-- **Logro**: Alcanzado el 100% de cumplimiento en documentación (D100, D105, D107) y eliminación de números mágicos en los módulos `core/` y `gui/`.
-- **Cambios**:
+- **Achievement**: Alcanzado el 100% de cumplimiento en documentación (D100, D105, D107) y eliminación de números mágicos en los módulos `core/` y `gui/`.
+- **Changes**:
     - **Documentación**: Corregidos 86 archivos con docstrings de módulo e inicializadores faltantes.
     - **Calidad**: Extraídas 40+ constantes para umbrales de validación, LOD y parámetros geológicos.
     - **Refinado**: El usuario pulió manualmente las cabeceras para una alineación estética total.
 - **Métricas**:
     - **Quality Score**: 72.3/100 🟢.
     - **Tests**: 361/361 OK (100%).
-- **Mantenimiento**: [sesion_2026-02-14_technical_debt_cleanup.md](maintenance/sesion_2026-02-14_technical_debt_cleanup.md).
+- **Maintenance**: [session_2026-02-14_technical_debt_cleanup.md](maintenance/session_2026-02-14_technical_debt_cleanup.md).
 
 ---
 ## [2026-02-14] RESUMEN: Hotfixes de Exportación y Capas Opcionales
-- **Logro**: Resueltos bugs críticos de validación y manejo de capas opcionales detectados durante pruebas manuales exhaustivas.
-- **Cambios**:
+- **Achievement**: Resueltos bugs críticos de validación y manejo de capas opcionales detectados durante pruebas manuales exhaustivas.
+- **Changes**:
     - **Drillholes**: Reparada lógica en `DrillholeService` para manejar limpiamente la ausencia de capas de Survey o Intervals.
     - **Validación**: Corregido typo en `DialogStatusManager` y reforzada la regla de validación de `output_path`.
     - **Exportación**: Añadida verificación de seguridad en `ExportManager`.
 - **Métricas**:
     - **Tests**: 16 Integration tests OK + Suite base verificada.
-    - **Estado**: 🟢 Todas las componentes principales (Topo, Geología, Estructural, Sondajes, Interpretación, Exportación) validadas visualmente y funcionalmente.
-- **Mantenimiento**: [sesion_2026-02-14_fixing_export_and_optional_layers.md](maintenance/sesion_2026-02-14_fixing_export_and_optional_layers.md).
+    - **Status**: 🟢 Todas las componentes principales (Topo, Geología, Estructural, Sondajes, Interpretación, Exportación) validadas visualmente y funcionalmente.
+- **Maintenance**: [session_2026-02-14_fixing_export_and_optional_layers.md](maintenance/session_2026-02-14_fixing_export_and_optional_layers.md).
 
 ---
 ## [2026-02-09] Tooling: Update qgis-plugin-analyzer v1.7.0
-- **Logro**: Actualizado `qgis-plugin-analyzer` a la versión 1.7.0.
-- **Cambios**:
+- **Achievement**: Actualizado `qgis-plugin-analyzer` a la versión 1.7.0.
+- **Changes**:
     - **CLI**: Se detectó que el punto de entrada cambió de `qgis-plugin-analyzer` a `qgis-analyzer`.
     - **Dep**: Actualizado `pyproject.toml` y sincronizado el entorno con `uv sync`.
 - **Verificación**: Ejecutada auditoría de línea base con `qgis-analyzer analyze .` exitosamente.
 - **Diferenciación**: Se clarificó en toda la documentación la distinción entre el nombre de la herramienta (`qgis-plugin-analyzer`) y el comando CLI (`qgis-analyzer`).
-- **Estado**: 🟢 Herramienta operativa y actualizada.
+- **Status**: 🟢 Herramienta operativa y actualizada.
 
 ---
 ## [2026-02-08] RESUMEN: Auditoría de Calidad y Enlace Ruff
-- **Logro**: Revelada la "falsa perfección" del 100/100. Identificado y parchado bug crítico en `qgis-analyzer` relacionado con flags de Ruff.
-- **Cambios**:
+- **Achievement**: Revelada la "falsa perfección" del 100/100. Identificado y parchado bug crítico en `qgis-analyzer` relacionado con flags de Ruff.
+- **Changes**:
     - **Linting**: Activadas reglas estrictas de Docstrings (`D10x`) y Complejidad (`C901`, `PLR`).
     - **Análisis**: 686 incidencias detectadas tras habilitar auditoría real.
     - **Docs**: Creado reporte técnico de bugs en `docs/dev/qgis_analyzer_issues.md`.
 - **Métricas**:
     - **Maintainability**: 100.0 (Masked by low CC & line count dilution).
     - **Compliance**: 66.4/100 OK.
-- **Estado**: 🟡 Fase de Calidad Estricta iniciada. 686 problemas identificados para corrección.
-- **Mantenimiento**: [sesion_2026-02-08_qgis_quality_strict_audit.md](maintenance/sesion_2026-02-08_qgis_quality_strict_audit.md).
+- **Status**: 🟡 Fase de Calidad Estricta iniciada. 686 problemas identificados para corrección.
+- **Maintenance**: [session_2026-02-08_qgis_quality_strict_audit.md](maintenance/session_2026-02-08_qgis_quality_strict_audit.md).
 
 ---
 ## [2026-02-08] CIERRE DE ESTABILIZACIÓN: 100% Tests Passing
-- **Logro**: Alcanzada la "Victoria Absoluta" con 347/347 tests pasando en entorno Docker (Core, GUI, Exporters, Integration).
-- **Cambios**:
+- **Achievement**: Alcanzada la "Victoria Absoluta" con 347/347 tests pasando en entorno Docker (Core, GUI, Exporters, Integration).
+- **Changes**:
     - **Refactorización de Tests**: `test_attribute_inheritance` y `test_cache_fix` desacoplados de la UI completa.
     - **Mocks**: Robustecidos `MockQWidget` y `MockQgsMapTool` para soportar ciclo de vida completo.
     - **Fixes Críticos**: Resuelto `TypeError` en exportación de estructuras y `AttributeError` en hashing de parámetros.
@@ -295,22 +295,22 @@
 - **Métricas**:
     - **Quality Score**: 71.6/100 (Estable).
     - **Tests**: 347/347 OK (100%).
-- **Docs**: Registro en [sesion_2026-02-08_stabilization_complete.md](maintenance/sesion_2026-02-08_stabilization_complete.md).
-- **Estado**: 🟢 Listo para Release v2.10.0.
+- **Docs**: Registro en [session_2026-02-08_stabilization_complete.md](maintenance/session_2026-02-08_stabilization_complete.md).
+- **Status**: 🟢 Listo para Release v2.10.0.
 
 ---
 ## [2026-02-08] Resumen: Update ai-context-core v3.2.1
-- **Logro**: Actualizada la dependencia de `ai-context-core` a v3.2.1, resolviendo errores críticos de i18n scope (segmentación).
-- **Cambios**:
+- **Achievement**: Actualizada la dependencia de `ai-context-core` a v3.2.1, resolviendo errores críticos de i18n scope (segmentación).
+- **Changes**:
     - **Dep**: Actualizado `ai-context-core` de v3.2.0 a v3.2.1 en `pyproject.toml`.
     - **Fix**: Verificada la corrección de los Bug 1 (configuración), Bug 2 (recursion) y Bug 3 (CLI option) de la v3.2.0.
     - **Estilo**: Formateo masivo del proyecto con `black` para asegurar consistencia tras los cambios.
-    - **Docs**: Creado reporte de resolución en [bug_report_v320.md](maintenance/ai-context-core/bug_report_v320.md) y registro de sesión en [sesion_2026-02-08_update_ai_core_v321.md](maintenance/sesion_2026-02-08_update_ai_core_v321.md).
-- **Estado**: 🟢 Verificado y estable. El scope `gui_only` ahora funciona correctamente.
+    - **Docs**: Creado reporte de resolución en [bug_report_v320.md](maintenance/ai-context-core/bug_report_v320.md) y registro de sesión en [session_2026-02-08_update_ai_core_v321.md](maintenance/session_2026-02-08_update_ai_core_v321.md).
+- **Status**: 🟢 Verificado y estable. El scope `gui_only` ahora funciona correctamente.
 
 ---
 ## [2026-02-06] CIERRE DE FASE v2.10.0: Massive CC Reduction & 3D Prep
-- **Logro**: Completada la refactorización masiva de complejidad ciclomática y preparación arquitectónica para soporte 3D completo.
+- **Achievement**: Completada la refactorización masiva de complejidad ciclomática y preparación arquitectónica para soporte 3D completo.
 - **Cambios Principales**:
     - **Refactorización Core**: Reducción de CC en servicios (`DrillholeService`, `GeologyService`, `StructureService`) y utilidades críticas.
     - **Arquitectura 3D**: Implementación de `SpatialMeta` DTO con campos `x_proj`, `y_proj` para coordenadas proyectadas.
@@ -322,8 +322,8 @@
     - **Tests**: 347 tests pasando en contenedor Docker oficial de QGIS (206 Core + 15 Exporters + 110 GUI + 16 Integration).
     - **Archivos**: 78 modificados (+1,401 líneas, -456 líneas).
 - **Commit**: `5a79417` - `refactor(core): massive CC reduction, 3D preparation, and core documentation`.
-- **Docs**: Ver [sesion_2026-02-06_phase_closure_v2.10.0.md](maintenance/sesion_2026-02-06_phase_closure_v2.10.0.md).
-- **Estado**: 🟢 Estable y validado. Listo para v2.11.0.
+- **Docs**: Ver [session_2026-02-06_phase_closure_v2.10.0.md](maintenance/session_2026-02-06_phase_closure_v2.10.0.md).
+- **Status**: 🟢 Estable y validado. Listo para v2.11.0.
 
 ---
 ## [2026-02-06] INICIO DE FASE v2.10.0: Calidad y QGIS 4.x
@@ -337,58 +337,58 @@
 
 ---
 ## [2026-02-05] Resumen: Evolución Arquitectónica (Cerebro Gen 3)
-- **Logro**: Implementada la Generación 3 del framework con Memoria Semántica, Auditoría Proactiva y Observabilidad.
-- **Cambios**:
+- **Achievement**: Implementada la Generación 3 del framework con Memoria Semántica, Auditoría Proactiva y Observabilidad.
+- **Changes**:
     - **Cerebro**: Nueva skill `agentic-memory` y reestructuración de `AGENT_LESSONS.md` a YAML.
     - **Auditoría**: Registro del rol **Agent Auditor** y creación del workflow `/ia-critic`.
     - **Framework**: Actualización total del `antigravity-framerepo` (scaffold, docs, README) a Gen 3.
     - **Automatización**: Integración de actualización de memoria en `/inicia-sesion` y `/cierra-sesion`.
-    - **Docs**: Registro de sesión [sesion_2026-02-05_agentic_brain_evolution_gen3.md](maintenance/sesion_2026-02-05_agentic_brain_evolution_gen3.md).
-- **Estado**: Sistemas Gen 3 verificados y operativos. Framework maestro actualizado.
+    - **Docs**: Registro de sesión [session_2026-02-05_agentic_brain_evolution_gen3.md](maintenance/session_2026-02-05_agentic_brain_evolution_gen3.md).
+- **Status**: Sistemas Gen 3 verificados y operativos. Framework maestro actualizado.
 
 ---
 ## [2026-02-01] Resumen: Security Scan & Inicio Fase v2.10.0 (Tarde)
-- **Logro**: Implementado sistema de seguridad local compatible con QGIS Portal y arranque de fase de calidad.
-- **Cambios**:
+- **Achievement**: Implementado sistema de seguridad local compatible con QGIS Portal y arranque de fase de calidad.
+- **Changes**:
     - **Security**: Script unificado `security_scan.py` (Bandit, detect-secrets, Flake8) e integración en CI/CD.
     - **Fase v2.9.0**: Cierre formal con 199 tests pasando y release estable.
     - **Fase v2.10.0**: Plan aprobado para eliminación de PyQt5 (QGIS 4.x) y refactorización de exportadores.
-    - **Docs**: Registro de sesión [sesion_2026-02-01_security_scan_and_phase_init.md](maintenance/sesion_2026-02-01_security_scan_and_phase_init.md).
-- **Estado**: 199/199 tests OK. Escaneo de seguridad limpio.
+    - **Docs**: Registro de sesión [session_2026-02-01_security_scan_and_phase_init.md](maintenance/session_2026-02-01_security_scan_and_phase_init.md).
+- **Status**: 199/199 tests OK. Escaneo de seguridad limpio.
 
 ## [2026-02-01] Resumen: Refactorización de ExportService y Estandarización
-- **Logro**: Reducida la complejidad técnica de `export_service.py` (CC de >60 a <10) y estandarizado el uso de `ai-ctx` vs `qgis-analyzer`.
-- **Cambios**:
+- **Achievement**: Reducida la complejidad técnica de `export_service.py` (CC de >60 a <10) y estandarizado el uso de `ai-ctx` vs `qgis-analyzer`.
+- **Changes**:
     - **Refactor**: Descomposición de métodos monolíticos de exportación 3D.
     - **Tooling**: Integración de `ai-ctx` para mantenimiento diario.
     - **Docs**: Guía Generación 2 con recursos técnicos completos para el framework.
-- **Estado**: 126 tests OK (Core + Integration). Ver [sesion_2026-02-01_export_refactor_and_framework_standardization.md](maintenance/sesion_2026-02-01_export_refactor_and_framework_standardization.md).
+- **Status**: 126 tests OK (Core + Integration). Ver [session_2026-02-01_export_refactor_and_framework_standardization.md](maintenance/session_2026-02-01_export_refactor_and_framework_standardization.md).
 
 ## [2026-01-28] Resumen: Consolidación de Redundancias Fase 3 (Noche)
-- **Logro**: Completada la consolidación de redundancias en servicios core (v2.9.0) y resolución de regresiones críticas de importación y geometría.
-- **Cambios**:
+- **Achievement**: Completada la consolidación de redundancias en servicios core (v2.9.0) y resolución de regresiones críticas de importación y geometría.
+- **Changes**:
     - **Refactor**: Unificación de `StructureService`, `GeologyService` y `DrillholeService` bajo flujo de datos desacoplado.
     - **Utils**: Centralización de extracción de líneas y preparación de contexto de sección en `core/utils`.
     - **Fix**: Resolución de error `AttributeError: 'QgsGeometry' object has no attribute 'clone'` mediante uso de constructores robustos.
     - **Ambiente**: Estandarización de `PYTHONPATH` y prefijos `sec_interp.` en todo el proyecto.
-- **Estado**: 206 tests OK (Total success en Phase 3). Ver [sesion_2026-01-28_phase3_consolidation_regressions.md](maintenance/sesion_2026-01-28_phase3_consolidation_regressions.md).
+- **Status**: 206 tests OK (Total success en Phase 3). Ver [session_2026-01-28_phase3_consolidation_regressions.md](maintenance/session_2026-01-28_phase3_consolidation_regressions.md).
 
 ---
 ## [2026-01-27] Resumen: Suite 3D Completa y Preparación QGIS 4 (Noche)
-- **Logro**: Finalizada la implementación de la Suite de Integración 3D (v2.9.0) y establecida la infraestructura para QGIS 4.x.
-- **Cambios**:
+- **Achievement**: Finalizada la implementación de la Suite de Integración 3D (v2.9.0) y establecida la infraestructura para QGIS 4.x.
+- **Changes**:
     - **3D**: Pruebas de integración para transformaciones CRS complejas y corrección de proyección de collares en el Core.
     - **QGIS 4**: Creación de rama `qgis4-migration` y entorno `docker-test-nightly`.
     - **Calidad**: 100% Type Hints en servicios críticos y corrección de regresiones en tests.
-- **Estado**: 377 tests OK (Docker). Ver [sesion_2026-01-27_3d_integration_and_qgis4_prep.md](maintenance/sesion_2026-01-27_3d_integration_and_qgis4_prep.md).
+- **Status**: 377 tests OK (Docker). Ver [session_2026-01-27_3d_integration_and_qgis4_prep.md](maintenance/session_2026-01-27_3d_integration_and_qgis4_prep.md).
 
 ## [2026-01-26] Resumen: Estabilización de Ai-Context-Core (v2.5.2)
-- **Logro**: Resuelto el bloqueo crítico en el análisis del proyecto mediante la actualización a la v2.5.2 de `ai-context-core`.
-- **Cambios**:
+- **Achievement**: Resuelto el bloqueo crítico en el análisis del proyecto mediante la actualización a la v2.5.2 de `ai-context-core`.
+- **Changes**:
     - Identificada y verificada la persistencia del bug en la v2.5.1 de PyPI.
     - Actualizada dependencia a `ai-context-core>=2.5.2` en `pyproject.toml`.
     - Regenerado `AI_CONTEXT.md` y `PROJECT_SUMMARY.md` con métricas reales.
-- **Estado**: Análisis funcional completado exitosamente (Score 38.8). Ver [sesion_2026-01-26_ai_context_core_stabilization.md](maintenance/sesion_2026-01-26_ai_context_core_stabilization.md).
+- **Status**: Análisis funcional completado exitosamente (Score 38.8). Ver [session_2026-01-26_ai_context_core_stabilization.md](maintenance/session_2026-01-26_ai_context_core_stabilization.md).
 
 ---
 ## [2026-01-25] INICIO DE FASE v2.9.0: Análisis Avanzado y Geometría
@@ -400,74 +400,74 @@
 ---
 ## [2026-01-25] CIERRE DE FASE v2.8.0: Reducción de Deuda y Mejoras de UI
 - **Hito**: Cierre formal de la Fase v2.8.0.
-- **Logros**: Desacoplamiento total del Core (WKT/DTO), refactorización de servicios y control de leyenda.
+- **Achievements**: Desacoplamiento total del Core (WKT/DTO), refactorización de servicios y control de leyenda.
 - **Calidad**: 359 tests OK (Docker). Quality Score estabilizado.
-- **Estado**: Fase completada. Ver [phase_closure_v2.8.0.md](maintenance/phase_closure_v2.8.0.md).
+- **Status**: Fase completada. Ver [phase_closure_v2.8.0.md](maintenance/phase_closure_v2.8.0.md).
 
 ---
 ## [2026-01-25] Resumen: Refactorización Arquitectónica Core v2.9.1 (Tarde)
-- **Logro**: Descomposición exitosa del monolito `DrillholeService` y modularización del sistema de tipos.
-- **Cambios**:
+- **Achievement**: Descomposición exitosa del monolito `DrillholeService` y modularización del sistema de tipos.
+- **Changes**:
     - Creado sistema de procesadores en `core/services/drillhole/` (`Collar`, `Survey`, `Interval`, `Projection`).
     - Implementado paquete `core/types/` separando Dominio, DTOs y Enums.
     - Creado **ADR-0008** y actualizado `ARCHITECTURE_EN.md`.
     - Eliminado código legacy y corregidos tests de integración core.
-- **Estado**: 208 Tests Core OK. Versión v2.9.1 lista para fase de Geometría. Ver [sesion_2026-01-25_refactorizacion_arquitectonica.md](maintenance/sesion_2026-01-25_refactorizacion_arquitectonica.md).
+- **Status**: 208 Tests Core OK. Versión v2.9.1 lista para fase de Geometría. Ver [session_2026-01-25_refactorizacion_arquitectonica.md](maintenance/session_2026-01-25_refactorizacion_arquitectonica.md).
 
 ---
 ## [2026-01-25] Resumen: Refactorización de Tareas Background (Día)
-- **Logro**: Centralizada la extracción de datos en el hilo principal y optimizado el flujo asíncrono.
-- **Cambios**:
+- **Achievement**: Centralizada la extracción de datos en el hilo principal y optimizado el flujo asíncrono.
+- **Changes**:
     - Refactorizados `GeologyService` y `DrillholeService` para usar DTOs planos (WKT/dicts) en la preparación de tareas.
     - Implementado método `azimuth` en `MockQgsPointXY` para soporte geométrico en tests.
     - Simplificado `PreviewManager` delegando lógica compleja a servicios.
     - Actualizada la suite de pruebas para coincidir con el desacoplamiento Core-QGIS.
-- **Estado**: 359 tests OK (Docker). Ver [sesion_2026-01-25_background_task_refactor.md](maintenance/sesion_2026-01-25_background_task_refactor.md).
+- **Status**: 359 tests OK (Docker). Ver [session_2026-01-25_background_task_refactor.md](maintenance/session_2026-01-25_background_task_refactor.md).
 
 ---
 ## [2026-01-24] Resumen: Estabilización de Tests en Docker (Noche)
-- **Logro**: Restaurada la integridad de la CI/CD con 100% de éxito en entorno Docker.
-- **Cambios**:
+- **Achievement**: Restaurada la integridad de la CI/CD con 100% de éxito en entorno Docker.
+- **Changes**:
     - Sincronizada la nomenclatura de DTOs (`GeologySegment`) en toda la suite de tests.
     - Implementado aislamiento de procesos en el `Dockerfile` para evitar contaminación de Mocks vs API Real.
     - Refactorizada la carga de Mocks en `tests/base_test.py` con control dinámico.
     - Robustecidos los Mocks con métodos de geometría faltantes.
-- **Estado**: 359 tests OK (Docker). Ver [sesion_2026-01-24_docker_test_stabilization.md](maintenance/sesion_2026-01-24_docker_test_stabilization.md).
+- **Status**: 359 tests OK (Docker). Ver [session_2026-01-24_docker_test_stabilization.md](maintenance/session_2026-01-24_docker_test_stabilization.md).
 
 ---
 ## [2026-01-24] Resumen: Desacoplamiento Arquitectónico Core-QGIS (Noche)
-- **Logro**: Finalizada la arquitectura agnóstica del Core con 100% de éxito en tests.
-- **Cambios**:
+- **Achievement**: Finalizada la arquitectura agnóstica del Core con 100% de éxito en tests.
+- **Changes**:
     - Refactorizados `GeologyService` y `DrillholeService` para operar sobre DTOs agnósticos (WKT/primitivos).
     - Mocks de QGIS reconstruidos en `base_test.py` con soporte WKT.
     - Eliminada deuda técnica de shadowing de métodos en mocks.
-- **Estado**: Core validado (204 tests OK). Ver [sesion_2026-01-24_core_decoupling.md](maintenance/sesion_2026-01-24_core_decoupling.md).
+- **Status**: Core validado (204 tests OK). Ver [session_2026-01-24_core_decoupling.md](maintenance/session_2026-01-24_core_decoupling.md).
 
 ---
 ## [2026-01-23] Hotfix: Sincronización y Persistencia de Medición (Noche)
-- **Logro**: Corregido el comportamiento de la herramienta de medición para permitir persistencia visual tras desactivación.
-- **Cambios**:
+- **Achievement**: Corregido el comportamiento de la herramienta de medición para permitir persistencia visual tras desactivación.
+- **Changes**:
     - Eliminado el reset automático de `ProfileMeasureTool` al desactivar.
     - Implementado señal `measurementFinished` para sincronizar el estado del botón `btn_measure` en la UI.
     - Corregido `NameError` en `PreviewRenderer.export_to_image` relacionado con el parámetro `show_legend`.
     - Añadido reset explícito de mediciones en `Clear Cache` y `Reset Defaults`.
-- **Estado**: 110/110 GUI tests OK. Comportamiento verificado contra reporte de usuario.
+- **Status**: 110/110 GUI tests OK. Comportamiento verificado contra reporte de usuario.
 
 ---
 ## [2026-01-23] Refactorización de DrillholeService (Noche)
-- **Logro**: Reducida la complejidad de los métodos principales de `DrillholeService` mediante modularización.
-- **Cambios**:
+- **Achievement**: Reducida la complejidad de los métodos principales de `DrillholeService` mediante modularización.
+- **Changes**:
     - Extraídas validaciones a métodos `_validate_*`.
     - Modularizado `prepare_task_input` con `_detach_collar_features` y `_pre_sample_z_for_task`.
     - Modularizado `process_task_data` con `_process_detached_collar_item`.
     - Fragmentados `_process_single_hole` y `_get_collar_info`.
     - Añadidos type hints y docstrings faltantes.
-- **Estado**: 361 tests OK (Docker). Estructura del núcleo más mantenible.
+- **Status**: 361 tests OK (Docker). Estructura del núcleo más mantenible.
 
 ---
 ## [2026-01-22] Integración Completa de Workflows + Skills
-- **Logro**: Sistema de workflows completamente integrado con AGENTS.md y skills (100% de workflows).
-- **Cambios**:
+- **Achievement**: Sistema de workflows completamente integrado con AGENTS.md y skills (100% de workflows).
+- **Changes**:
     - Creadas 2 nuevas skills: `commit-standards` y `release-management`.
     - Actualizados 10 workflows con metadata YAML (agent, skills, validation).
     - Añadidas 40+ anotaciones `🤖 Agent Action` en workflows.
@@ -475,42 +475,42 @@
     - Creado `QUICK_REFERENCE.md` para consulta rápida.
 - **Skills totales**: 6 (commit-standards, geological-logic, qa-docker, qgis-core, release-management, ui-framework).
 - **Workflows validados**: 10/10 (inicia-sesion, crea-commit, run-tests, refactor-code, release-plugin, release-plugin-en, cierra-sesion, cierra-fase, inicia-fase, run-tests-in-qgis).
-- **Estado**: 361 tests OK (Docker). Sistema workflow-aware completamente funcional.
+- **Status**: 361 tests OK (Docker). Sistema workflow-aware completamente funcional.
 
 ---
 ## [2026-01-21] Refactorización de GeologyService (Tarde)
-- **Logro**: Fragmentados métodos largos en `GeologyService` para cumplir con los estándares de mantenibilidad.
-- **Cambios**:
+- **Achievement**: Fragmentados métodos largos en `GeologyService` para cumplir con los estándares de mantenibilidad.
+- **Changes**:
     - Extraídas validaciones a `_validate_inputs`.
     - Extraída recopilación de datos a `_extract_outcrop_data`.
     - Modularizado procesamiento geométrico en `_extract_geometries` y `_calculate_segment_range`.
-- **Estado**: 361 tests OK (Docker). Deuda técnica reducida en el núcleo.
+- **Status**: 361 tests OK (Docker). Deuda técnica reducida en el núcleo.
 
 ---
 ## [2026-01-20] Corrección de Documentación API (Noche)
-- **Logro**: Restaurada visibilidad completa de docstrings en el sitio de documentación.
-- **Cambios**:
+- **Achievement**: Restaurada visibilidad completa de docstrings en el sitio de documentación.
+- **Changes**:
     - Configurado mocking de QGIS/PyQt en `conf.py`.
     - Aplicado `from __future__ import annotations` a nivel de proyecto para soportar Union types con mocks.
     - Build de documentación estabilizado y desplegado.
-- **Estado**: Infraestructura de documentación 100% funcional.
+- **Status**: Infraestructura de documentación 100% funcional.
 
 ---
 
 ## [2026-01-20] Implementación de Visibilidad de Leyenda (Mañana)
-- **Logro**: Implementado control granular de visibilidad para la leyenda en el preview y exportadores.
-- **Cambios**:
+- **Achievement**: Implementado control granular de visibilidad para la leyenda en el preview y exportadores.
+- **Changes**:
     - Añadido `show_legend` a `PreviewSettings` y persistencia en proyecto.
     - Nuevo checkbox `chk_legend` en la UI de Preview con actualización reactiva.
     - Actualizados exportadores (`Image`, `PDF`, `SVG`) para honrar el ajuste de visibilidad.
 - **Bugs Corregidos**:
     - Resuelto problema de visibilidad persistente en `LegendWidget` interactivo.
     - Corregida fuga de leyenda en archivos exportados.
-- **Estado**: Funcionalidad verificada por el usuario y tests unitarios de modelo OK.
+- **Status**: Funcionalidad verificada por el usuario y tests unitarios de modelo OK.
 
 ---
 
-## [2026-01-19] Inicio de Fase v2.8.0 (Reducción de Deuda y Mejoras de UI)
+## [2026-01-19] Start of Phase v2.8.0 (Reducción de Deuda y Mejoras de UI)
 - **Objetivo**: Reducción de deuda técnica en servicios core e implementación de controles de visibilidad para la leyenda.
 - **Estado Inicial**: Calidad 83.5/100, 361 Tests OK (Docker).
 - **Prioridades**:
@@ -526,7 +526,7 @@
 - **Soporte Mermaid**: Configurado `sphinxcontrib-mermaid` y `myst_fence_as_directive` para renderizar diagramas en archivos Markdown.
 - **Metadatos**: Actualizados enlaces de documentación en `metadata.txt`, `README.md` y `pyproject.toml`.
 - **Limpieza**: Repositorio principal saneado de archivos HTML generados.
-- **Estado**: Lista la infraestructura para el Release v2.7.0.
+- **Status**: Lista la infraestructura para el Release v2.7.0.
 
 ## [2026-01-18] Resumen: Release v2.7.0 Finalizado
 **Fecha Última Actualización:** 2026-01-18
@@ -540,11 +540,11 @@ Ciclo completo de release para la versión 2.7.0 "Operational Excellence & Docum
 - **Calidad:** 361 Tests pasando verificados en Docker.
 - **Documentación:** Actualización exhaustiva de `USER_GUIDE.md` (3D Export details), `README.md` y centralización de Notas de Versión en `docs/releases/`.
 - **Limpieza:** Reorganización del directorio raíz (logs, scripts, fixtures).
-- **Detalles:** Ver [sesion_2026-01-18_release_v2.7.0.md](maintenance/sesion_2026-01-18_release_v2.7.0.md).
+- **Detalles:** Ver [session_2026-01-18_release_v2.7.0.md](maintenance/session_2026-01-18_release_v2.7.0.md).
 
 ***
 
-## [2026-02-14] Cierre de Sesión: Optimización del Sistema Agentico (Gen 4)
+## [2026-02-14] Session Closing: Optimización del Sistema Agentico (Gen 4)
 
 ### Resumen Ejecutivo
 Se realizó una actualización mayor al sistema `.agent` para consolidar las lecciones aprendidas durante el lanzamiento de v3.0.0 y preparar el terreno para el ciclo v3.0.1 y la futura migración a QGIS 4.x.
@@ -577,7 +577,7 @@ Se realizó una actualización mayor al sistema `.agent` para consolidar las lec
 - **Sincronización Documental**: Corregidos enlaces rotos hacia `docs/source` y unificada terminología (Sidebar/Page).
 - **Doc Técnica**: Documentada la arquitectura de validación de 3 niveles y herencia de atributos.
 - **i18n**: Audit de cadenas finalizado.
-- **Estado**: ¡Fase v2.7.0 Completada! 🎉
+- **Status**: ¡Fase v2.7.0 Completada! 🎉
 
 ## [2026-01-18] Resumen (Tarde)
 - **Limpieza de Repo**: Eliminado rastreo de archivos HTML pesados (`analysis_results/`).
@@ -619,7 +619,7 @@ Implementación exitosa de la infraestructura de testing robusta mediante Docker
 ### Resultados
 - **Tests**: 349 pasando (100% stable).
 - **Commits**: 1 (feat: docker testing infrastructure).
-- **Reporte**: [sesion_2026-01-16_docker_testing_infrastructure.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-16_docker_testing_infrastructure.md)
+- **Reporte**: [session_2026-01-16_docker_testing_infrastructure.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-16_docker_testing_infrastructure.md)
 
 ---
 ## [2026-01-16] - Sphinx Documentation Infrastructure (05:26)
@@ -637,13 +637,13 @@ Implementación exitosa del sistema automatizado de documentación con Sphinx (O
 ### Resultados
 - **Tests**: 369 pasando (100% stable).
 - **Commits**: 1 (feat: sphinx docs).
-- **Reporte**: [sesion_2026-01-16_sphinx_docs.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-16_sphinx_docs.md)
+- **Reporte**: [session_2026-01-16_sphinx_docs.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-16_sphinx_docs.md)
 
 ---
 ## [2026-01-15] - Level 3 Domain Validation (18:12)
 
 ### Resumen
-Sesión enfocada en completar la arquitectura de validación de 3 niveles mediante la implementación de "Domain Guards" (Nivel 3) en los servicios principales del núcleo. Se aseguró que operaciones inválidas fallen rápido ("Fail Fast") antes de procesamiento costoso.
+Session focused on completar la arquitectura de validación de 3 niveles mediante la implementación de "Domain Guards" (Nivel 3) en los servicios principales del núcleo. Se aseguró que operaciones inválidas fallen rápido ("Fail Fast") antes de procesamiento costoso.
 
 ### Logros
 - **Validación Nivel 3 (Dominio)**:
@@ -658,7 +658,7 @@ Sesión enfocada en completar la arquitectura de validación de 3 niveles median
 ### Resultados
 - **Tests**: 369 pasando (+6 nuevos).
 - **Commits**: 1 (feat: implement Level 3 Domain Validation).
-- **Estado**: Objetivo 3 al 100%. Siguiente paso: Documentación Sphinx.
+- **Status**: Objetivo 3 al 100%. Siguiente paso: Documentación Sphinx.
 
 ---
 ## [2026-01-15] - ADR Documentation & Async Drillholes (16:26)
@@ -680,7 +680,7 @@ Sesión dual enfocada en: (1) Implementación completa de procesamiento asíncro
 - **Commits**: 2 (feat: async drillholes, docs: ADR reorganization)
 - **Quality Score**: 83.6/100
 - **Tests**: 347 pasando
-- **Reporte**: [sesion_2026-01-15_adr_async_drillholes.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-15_adr_async_drillholes.md)
+- **Reporte**: [session_2026-01-15_adr_async_drillholes.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-15_adr_async_drillholes.md)
 
 ## [2026-01-15] - Estabilización de la Suite de Tests y Mocks (14:35)
 
@@ -697,7 +697,7 @@ Sesión técnica intensiva para restaurar la estabilidad del proyecto tras detec
 ## [2026-01-13] - Centralización de Logging y Modernización de Infraestructura (20:25)
 
 ### Resumen
-Sesión dedicada a cumplir el Objetivo 2 de la fase v2.7.0, consolidando el sistema de registro (logging) para mejorar la estabilidad y diagnóstico de crashes, seguida de la unificación del monitoreo de rendimiento.
+Session dedicated to cumplir el Objetivo 2 de la fase v2.7.0, consolidando el sistema de registro (logging) para mejorar la estabilidad y diagnóstico de crashes, seguida de la unificación del monitoreo de rendimiento.
 
 ### Logros
 - **Logging Centralizado**:
@@ -712,13 +712,13 @@ Sesión dedicada a cumplir el Objetivo 2 de la fase v2.7.0, consolidando el sist
 ### Resultados
 - **Archivos Modificados**: `logger_config.py`, `sec_interp_plugin.py`, `core/performance_metrics.py`.
 - **Estado de Tests**: ⚠️ **45 fallas/51 errores** (Incidencia heredada, pendiente de investigación).
-- **Reporte Detallado**: [sesion_2026-01-13_logging_centralization.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-13_logging_centralization.md).
+- **Reporte Detallado**: [session_2026-01-13_logging_centralization.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-13_logging_centralization.md).
 
 ---
 ## [2026-01-12] - Reparación de Bugs y Estandarización de Logs (20:38)
 
 ### Resumen
-Sesión enfocada en la corrección de errores críticos de desempaquetado de sondajes que impedían el funcionamiento del preview y las métricas, seguida de la estandarización del sistema de registro de desarrollo.
+Session focused on la corrección de errores críticos de desempaquetado de sondajes que impedían el funcionamiento del preview y las métricas, seguida de la estandarización del sistema de registro de desarrollo.
 
 ### Logros
 - **Fix Crítico**: Reparado `ValueError: too many values to unpack` en `core/types.py` y `gui/preview_layer_factory.py` mediante detección dinámica de estructura (3 o 5 elementos).
@@ -735,13 +735,13 @@ Sesión enfocada en la corrección de errores críticos de desempaquetado de son
 - **Calidad**: Score 83.8/100
 
 ### Documentación
-- Informe de sesión: [sesion_2026-01-12_bug_fix_y_estandarizacion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-12_bug_fix_y_estandarizacion.md)
+- Informe de sesión: [session_2026-01-12_bug_fix_y_estandarizacion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-12_bug_fix_y_estandarizacion.md)
 
 ---
 ## [2026-01-12] - Exportación 3D de Sondajes y Estabilización Core (01:10)
 
 ### Resumen
-Sesión enfocada en la implementación de la exportación 3D de sondajes y la resolución de inestabilidades en la suite de pruebas core tras los cambios arquitectónicos de la fase v2.7.0.
+Session focused on la implementación de la exportación 3D de sondajes y la resolución de inestabilidades en la suite de pruebas core tras los cambios arquitectónicos de la fase v2.7.0.
 
 ### Logros
 - **Exportación 3D**: Implementación de `DrillholeTrace3DExporter` y `DrillholeInterval3DExporter` para salida en `LineStringZ` (Original y Proyectado).
@@ -753,7 +753,7 @@ Sesión enfocada en la implementación de la exportación 3D de sondajes y la re
 - **Integración UI**: Adición de controles de modo de coordenadas en la pestaña Export.
 
 ### Documentación
-- Informe de sesión: [sesion_2026-01-12_exportacion_3d_sondajes.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-12_exportacion_3d_sondajes.md)
+- Informe de sesión: [session_2026-01-12_exportacion_3d_sondajes.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-12_exportacion_3d_sondajes.md)
 
 ---
 ## [2026-01-11] - Refactorización de Analyzer e Integración de Workflows (12:25)
@@ -768,7 +768,7 @@ Sesión técnica enfocada en potenciar la autoconsciencia del proyecto mediante 
 - **Calidad**: Score estabilizado en 92.0 con integración de linter `ruff`.
 
 ### Documentación
-- Informe de sesión: [sesion_2026-01-11_analyzer_refactor_and_workflow_integration.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-11_analyzer_refactor_and_workflow_integration.md)
+- Informe de sesión: [session_2026-01-11_analyzer_refactor_and_workflow_integration.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-11_analyzer_refactor_and_workflow_integration.md)
 
 ---
 ## [2026-01-10] - Cierre de Fase v2.6.0 (02:58)
@@ -824,7 +824,7 @@ Finalización de la etapa de planificación para la versión 2.7.0, integrando r
 ### Resultados
 - **Tests Unitarios**: 302 OK ✅
 - **Tests de Integración**: 10 OK ✅
-- **Estado**: Suite de pruebas 100% estable.
+- **Status**: Suite de pruebas 100% estable.
 
 ---
 ## [2026-01-08-4] - Despliegue v2.6.0 y Mejora de UX (23:00)
@@ -939,7 +939,7 @@ Finalización de la etapa de planificación para la versión 2.7.0, integrando r
 ## [2026-01-08] - Estabilización de Salud y Refactorización de Exporters
 
 ### Resumen
-Sesión enfocada en la estabilización del plugin tras la refactorización de `QgsTask` y la reducción de deuda técnica en el módulo de exportadores.
+Session focused on la estabilización del plugin tras la refactorización de `QgsTask` y la reducción de deuda técnica en el módulo de exportadores.
 
 ### Logros
 - **Estabilización de Tests**:
@@ -994,7 +994,7 @@ Sesión enfocada en la estabilización del plugin tras la refactorización de `Q
 - **Roadmap v2.6.0**: Completada la fase de benchmarks y refactorización de exportadores.
 
 ### Documentación
-- Archivo de Walkthrough: [sesion_2026-01-06_benchmarks.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-06_benchmarks.md)
+- Archivo de Walkthrough: [session_2026-01-06_benchmarks.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-06_benchmarks.md)
 
 ---
 ## [2026-01-06-0] - Fix Infraestructura de Tests de Integración (18:40)
@@ -1009,7 +1009,7 @@ Sesión enfocada en la estabilización del plugin tras la refactorización de `Q
 - Infraestructura estabilizada para validación de flujos de trabajo reales (Interpretación, Medición y Exportación 3D).
 
 ### Documentación
-- Archivo de Walkthrough: [sesion_2026-01-06_fix_integracion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-06_fix_integracion.md)
+- Archivo de Walkthrough: [session_2026-01-06_fix_integracion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-06_fix_integracion.md)
 
 ---
 ## [2026-01-05-2] - Implementación de Infraestructura de Tests de Integración Nativa (22:00)
@@ -1029,7 +1029,7 @@ Sesión enfocada en la estabilización del plugin tras la refactorización de `Q
 - **Mocks Híbridos**: Uso de `DummyPlugin` para inyectar controladores reales en tests que requieren lógica de negocio sin conexión total a la interfaz iface de QGIS.
 
 ### Documentación
-- Archivo de Walkthrough: [sesion_2026-01-05_integracion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/sesion_2026-01-05_integracion.md)
+- Archivo de Walkthrough: [session_2026-01-05_integracion.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/maintenance/session_2026-01-05_integracion.md)
 
 ---
 ## [2026-01-05-1] - Cierre Formal de Fase v2.5.0 (20:30)
@@ -1214,36 +1214,36 @@ Implementación exitosa de los dos primeros niveles de la arquitectura de valida
 
 ---
 ## [2026-01-13] - Unificación de Registro de Versiones (22:45)
-- **Logro**: Centralizado el historial de mantenimiento en un único log estructurado.
-- **Cambios**:
+- **Achievement**: Centralizado el historial de mantenimiento en un único log estructurado.
+- **Changes**:
     - Fusionado `MAINTENANCE_LOG.md` en `DEVELOPMENT_LOG.md`.
     - Estandarizado el formato de entradas con secciones de Logros, Cambios y Resultados.
-- **Estado**: Registro histórico depurado y unificado.
+- **Status**: Registro histórico depurado y unificado.
 
 ---
 ## [2026-02-14] - Lanzamiento de Versión 3.0.0 (Major Release)
-- **Logro**: Formalización de la versión 3.0.0 con soporte i18n masivo y arquitectura modular.
-- **Cambios**:
+- **Achievement**: Formalización de la versión 3.0.0 con soporte i18n masivo y arquitectura modular.
+- **Changes**:
     - Consolidación de 8 idiomas con automatización `ai-context-core`.
     - Refactorización de `DrillholeService` y creación de `AccessControlService`.
     - Cumplimiento del 100/100 en QGIS Compliance tras auditoría con `qgis-plugin-analyzer` v1.7.0.
-- **Estado**: Fase de estabilización completada. Listos para iniciar migración a QGIS 4.x.
+- **Status**: Fase de estabilización completada. Listos para iniciar migración a QGIS 4.x.
 
 ---
 ## [2025-12-28] - Migración a QgsTask para Boreholes
-- **Logro**: Implementado procesamiento asíncrono para la carga de sondajes masivos.
-- **Cambios**:
+- **Achievement**: Implementado procesamiento asíncrono para la carga de sondajes masivos.
+- **Changes**:
     - Creada clase `BoreholeLoadTask` heredando de `QgsTask`.
     - Añadida barra de progreso reactiva en la UI de Preview.
-- **Estado**: Reducido tiempo de bloqueo de UI en un 95%.
+- **Status**: Reducido tiempo de bloqueo de UI en un 95%.
 
 ---
 ## [2025-12-15] - Implementación de Exporter Service
-- **Logro**: Desacoplada la lógica de exportación del controlador principal.
-- **Cambios**:
+- **Achievement**: Desacoplada la lógica de exportación del controlador principal.
+- **Changes**:
     - Creado `ExportService` utilizando el patrón Factory para diferentes formatos.
     - Implementados exporters para PDF, SVG e Imagen.
-- **Estado**: Cobertura de tests de exportación sube al 85%.
+- **Status**: Cobertura de tests de exportación sube al 85%.
 
 ---
 ## [2025-11-21] Initial project setup

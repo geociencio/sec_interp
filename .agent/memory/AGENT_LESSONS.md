@@ -1,8 +1,8 @@
-# Memoria de Aprendizaje del Agente (SecInterp)
+# Agent Learning Memory (SecInterp)
 
-Este archivo registra lecciones técnicas, preferencias del usuario y soluciones a problemas complejos. Utiliza un formato estructurado para permitir una recuperación eficiente por parte del sistema de agentes.
+This file records technical lessons, user preferences, and solutions to complex problems. It uses a structured format for efficient retrieval by the agent system.
 
-## 🧠 Registro de Lecciones (YAML Structured)
+## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
   - date: 2026-03-08
@@ -14,8 +14,8 @@ Este archivo registra lecciones técnicas, preferencias del usuario y soluciones
   - date: 2026-02-01
     category: ARCHITECTURE
     topic: Skill Localization
-    lesson: "La sobre-simplificación de Skills durante traducciones puede causar pérdida de manuales técnicos."
-    action: "Mantener núcleos técnicos en Inglés; estructura operativa en Español."
+    lesson: "Over-simplification of Skills during translations can cause loss of technical manuals."
+    action: "Keep technical cores in English; operational structure in Spanish."
 
   - date: 2026-02-19
     category: ARCHITECTURE
@@ -46,56 +46,56 @@ Este archivo registra lecciones técnicas, preferencias del usuario y soluciones
   - date: 2026-02-01
     category: TECHNICAL
     topic: QgsGeometry Mocking
-    lesson: "Mocking de QgsGeometry requiere cuidado con métodos como pointN o is3D."
-    action: "Preferir unittest para este proyecto según preferencia del usuario."
+    lesson: "Mocking QgsGeometry requires care with methods like pointN or is3D."
+    action: "Prefer unittest for this project according to user preference."
 
   - date: 2026-02-05
     category: USER_PREFERENCE
     topic: Development Tools
-    lesson: "Preferencia por black (formateo), uv (dependencias) y UI programática (sin .ui)."
-    action: "Aplicar estos estándares en cada nueva implementación de GUI."
+    lesson: "Preference for black (formatting), uv (dependencies), and programmatic UI (no .ui)."
+    action: "Apply these standards in every new GUI implementation."
 
   - date: 2026-02-05
     category: ARCHITECTURE
     topic: Agentic Brain Evolution
-    lesson: "La Gen 3 introduce autocrítica (Auditor) y memoria semántica para mayor estabilidad cognitiva."
-    action: "Invocación de /ia-critic tras planificación y /cierra-sesion para aprendizaje continuo."
+    lesson: "Gen 3 introduces self-criticism (Auditor) and semantic memory for greater cognitive stability."
+    action: "Invoke /ia-critic after planning and /cierra-sesion for continuous learning."
   - date: 2026-02-15
     category: QUALITY
     topic: qgis-analyzer Context
-    lesson: "El analizador de QGIS incluye la carpeta tests/ en el score global de tipado, lo que puede distorsionar la percepción de calidad de producción."
-    action: "Realizar desgloses por carpeta para validar el cumplimiento del código de producción (core/gui)."
+    lesson: "The QGIS analyzer includes the tests/ folder in the global typing score, which can distort the perception of production quality."
+    action: "Perform breakdowns by folder to validate compliance of production code (core/gui)."
 
   - date: 2026-02-15
     category: TECHNICAL
     topic: QGIS Signal Leaks
-    lesson: "Las señales conectadas a herramientras de mapa (MapTools) o páginas de diálogos deben desconectarse explícitamente para evitar fugas y comportamientos erráticos."
-    action: "Implementar siempre un método disconnect_signals() que se invoque al cerrar el contexto."
+    lesson: "Signals connected to map tools (MapTools) or dialog pages must be explicitly disconnected to avoid leaks and erratic behavior."
+    action: "Always implement a disconnect_signals() method invoked when closing the context."
 
 ## ⚙️ Configuración Global de Preferencias
 
-- **Idioma**: Comunicación (Español), Código/Commits (Inglés).
-- **Estándares**: Google Docstrings, Pathlib, Strict Typing.
-- **Workflow**: Inicia con `/inicia-sesion`, Cierra con `/cierra-sesion`.
+- **Language**: Communication (Spanish), Code/Commits (English).
+- **Standards**: Google Docstrings, Pathlib, Strict Typing.
+- **Workflow**: Starts with `/inicia-sesion`, Closes with `/cierra-sesion`.
 
 ---
   - date: 2026-02-16
     category: TECHNICAL
     topic: Signal Tracing vs Mocks
-    lesson: "El uso de wrappers para conectar señales (como sm._connect_checked) puede romper los tests unitarios si estos esperan llamadas directas al Mock del slot. Las señales conectadas mdiante wrappers no son detectadas por `assert_called_with` de objetos Mock."
-    action: "Para métodos que son mocks en tests unitarios, mantener conexiones de señal directas sin wrappers de rastreo, u orquestar la desconexión selectiva."
+    lesson: "Using wrappers to connect signals (like sm._connect_checked) can break unit tests if they expect direct calls to the slot Mock. Signals connected via wrappers are not detected by `assert_called_with` of Mock objects."
+    action: "For methods that are mocks in unit tests, maintain direct signal connections without tracking wrappers, or orchestrate selective disconnection."
 
   - date: 2026-02-18
     category: TECHNICAL
     topic: qgis-manage Build Rigidity
-    lesson: "La herramienta qgis-manage tiene exclusiones hardcoded y depende de pyrcc5 (PyQt5), lo que genera deuda técnica automática en resources.py."
-    action: "Tras compilar recursos, aplicar siempre un parcheo de imports (sed) y verificar que no falten archivos necesarios en el despliegue debido a exclusiones ocultas."
+    lesson: "The qgis-manage tool has hardcoded exclusions and depends on pyrcc5 (PyQt5), which generates automatic technical debt in resources.py."
+    action: "After compiling resources, always apply an import patch (sed) and verify that no necessary files are missing in deployment due to hidden exclusions."
 
   - date: 2026-02-18
     category: USER_PREFERENCE
     topic: Fast Deployment
-    lesson: "Para iteraciones rápidas que no requieran cambios en recursos o traducciones, se prefiere evitar la compilación."
-    action: "Utilizar el comando: 'uv run qgis-manage deploy --no-compile'"
+    lesson: "For fast iterations that do not require changes in resources or translations, it is preferred to avoid compilation."
+    action: "Use the command: 'uv run qgis-manage deploy --no-compile'"
 
   - date: 2026-03-03
     category: WORKFLOW
@@ -106,4 +106,4 @@ Este archivo registra lecciones técnicas, preferencias del usuario y soluciones
 ## ⚙️ Configuración Global de Preferencias
 ...
 ---
-*Última actualización: 2026-03-03 - Inicio de Fase v3.3.0 con baselines de calidad e i18n.*
+*Last update: 2026-03-08 - Completion of Exporters Coverage v3.3.0 and global translation to English.*

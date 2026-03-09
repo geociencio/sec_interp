@@ -1,16 +1,16 @@
-# Próximos Pasos
+# Next Steps
 
-## Estado Actual
-- **Objetivo Completado:** Se alcanzó el 100% de cobertura en el módulo `exporters` mediante la implementación de suites unitarias para formatos vectoriales y de documentos.
-- **Tests Totales:** 535 tests ejecutándose exitosamente dentro de `make docker-test`.
-- **Sesión cerrada:** `exporters_coverage` documentada.
+## Current Status
+- **Objective Completed:** 100% coverage was reached in the `exporters` module by implementing unit suites for vector and document formats.
+- **Total Tests:** 535 tests running successfully within `make docker-test`.
+- **Session closed:** `exporters_coverage` documented.
 
-## Tareas Pendientes / Entregable
-- El módulo de Exportadores cuenta ahora con protección contra regresiones.
-- La siguiente área recomendada para mejorar cobertura de tests, de acuerdo con el `TESTING_STATUS.md` actualizado, son los **GUI Components** (actualmente en un 60%).
+## Pending Tasks / Deliverable
+- The Exporters module now has regression protection.
+- The next recommended area to improve test coverage, according to the updated `TESTING_STATUS.md`, is **GUI Components** (currently at 60%).
 
-## Comando para Retomar
-Para iniciar una nueva sesión orientada a los componentes GUI o a un feature distinto, utilizar:
+## Command to Resume
+To start a new session oriented to GUI components or a different feature, use:
 ```bash
-/[inicia-sesion]
+/inicia-sesion
 ```

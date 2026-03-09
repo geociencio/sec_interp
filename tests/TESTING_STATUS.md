@@ -127,4 +127,4 @@ docker run --rm -v $(pwd):/app/sec_interp sec_interp_test /bin/bash -c "python3 
 
 ---
 > [!NOTE]
-> Este archivo se actualiza dinámicamente. No edites las secciones marcadas con comentarios HTML.
+> This file is updated dynamically. Do not edit sections marked with HTML comments.
