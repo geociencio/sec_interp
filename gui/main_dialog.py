@@ -5,6 +5,7 @@ Contains the SecInterpDialog class which is the primary UI for the plugin.
 
 from __future__ import annotations
 
+import contextlib
 import traceback
 from pathlib import Path
 from typing import Any

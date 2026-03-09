@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->453<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->460<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-03-08<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -14,8 +14,8 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :---: |
 | **Core Services** | <!-- CORE_COUNT -->275<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->146<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
-| **Exporters** | <!-- EXP_COUNT -->15<!-- /EXP_COUNT --> | ████████░░ 80% | ⚠️ |
+| **GUI Components** | <!-- GUI_COUNT -->149<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **Exporters** | <!-- EXP_COUNT -->19<!-- /EXP_COUNT --> | ████████░░ 80% | ⚠️ |
 | **Integration** | <!-- INT_COUNT -->17<!-- /INT_COUNT --> | ████░░░░░░ 40% | 🏗️ |
 
 ---
@@ -66,6 +66,7 @@
 - **tests/gui/test_export_reproduction.py**: 3 tests
 - **tests/gui/test_geology_task.py**: 2 tests
 - **tests/gui/test_gui_utils.py**: 3 tests
+- **tests/gui/test_interpretation_export.py**: 1 tests
 - **tests/gui/test_interpretation_tool.py**: 22 tests
 - **tests/gui/test_lod_calculator.py**: 4 tests
 - **tests/gui/test_main_dialog_interpretation.py**: 4 tests
@@ -79,10 +80,12 @@
 - **tests/gui/test_preview_components.py**: 21 tests
 - **tests/gui/test_preview_renderer_custom.py**: 2 tests
 - **tests/gui/test_settings_page.py**: 4 tests
+- **tests/gui/test_signal_restoration.py**: 2 tests
 - **tests/gui/tasks/test_drillhole_task.py**: 6 tests
 - **tests/gui/tasks/test_geology_task.py**: 6 tests
 - **tests/gui/renderers/test_renderers.py**: 3 tests
 - **tests/exporters/test_drillhole_3d_exporter.py**: 4 tests
+- **tests/exporters/test_drillhole_export_objects.py**: 4 tests
 - **tests/exporters/test_dynamic_attrs.py**: 1 tests
 - **tests/exporters/test_exporters.py**: 7 tests
 - **tests/exporters/test_interpretation_3d_exporter.py**: 3 tests
