@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->509<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->514<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-03-08<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -16,7 +16,7 @@
 | **Core Services** | <!-- CORE_COUNT -->275<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->149<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->19<!-- /EXP_COUNT --> | ████████░░ 80% | ⚠️ |
-| **Integration** | <!-- INT_COUNT -->66<!-- /INT_COUNT --> | █████████░ 85% | ✅ |
+| **Integration** | <!-- INT_COUNT -->71<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
 ---
 
@@ -89,6 +89,7 @@
 - **tests/exporters/test_dynamic_attrs.py**: 1 tests
 - **tests/exporters/test_exporters.py**: 7 tests
 - **tests/exporters/test_interpretation_3d_exporter.py**: 3 tests
+- **tests/integration/test_async_orchestrators.py**: 5 tests
 - **tests/integration/test_3d_integration.py**: 4 tests
 - **tests/integration/test_3d_integration_advanced.py**: 2 tests
 - **tests/integration/test_3d_projections.py**: 1 tests
