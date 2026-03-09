@@ -51,6 +51,14 @@ class MockQObject:
         """Set property value."""
         pass
 
+    def close(self):
+        """Close mock."""
+        return True
+
+    def accept(self):
+        """Accept mock."""
+        pass
+
 
 class ModuleProxy:
     """A proxy module that captures all attribute accesses as MagicMocks."""

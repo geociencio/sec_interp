@@ -39,7 +39,7 @@ class MockQgsWkbTypes:
 
 
 class MockQgis:
-    Critical, Warning, Info = 2, 1, 0
+    Info, Success, Warning, Critical, NoLevel = 0, 1, 2, 3, 4
     LayerFilters = lambda x: x
 
     class LayerFilter:

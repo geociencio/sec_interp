@@ -1,3 +1,13 @@
+## [2026-03-09] GUI Coverage Expansion (91%)
+- **Achievement**: Exceeded the 90% GUI coverage goal, reaching 91% total for the `/gui` directory.
+- **Changes**:
+    - **Testing**: Implemented 7 new specialized test suites for Managers and Orchestrators.
+    - **Infrastructure**: Standardized `qt_mocks.py` (QRectF, QSizeF, QWidget constants) enabling arithmetic-based rendering tests.
+    - **Managers**: Achieved >94% coverage in `InterpretationManager`, `SettingsPersistence`, and `ExportManager`.
+    - **Rendering**: Reached 100% coverage for `PreviewLegendRenderer` and 97% for `PreviewTaskOrchestrator`.
+    - **Stability**: Fixed memory management in tests by enforcing strict `QApplication` instance handling and signal disconnection.
+    - **Validation**: Verified all Phase 3 "Specialized Pages" targets.
+
 ---
 ## [2026-03-03] Start of Phase v3.3.0 (Strict Quality & i18n)
 - **Goal**: Raise return type hints coverage, audit i18n, and refactor complexity hotspots.

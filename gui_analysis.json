@@ -1,0 +1,60 @@
+📁 Project type: GENERIC
+🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp/gui [Scope: all]
+📁 Project type: GENERIC
+
+[K📊 Progress: 1/52 (1.9%) | ETA: 0s
+[K📊 Progress: 10/52 (19.2%) | ETA: 0s
+[K📊 Progress: 20/52 (38.5%) | ETA: 0s
+[K📊 Progress: 30/52 (57.7%) | ETA: 0s
+[K📊 Progress: 40/52 (76.9%) | ETA: 0s
+[K📊 Progress: 50/52 (96.2%) | ETA: 0s
+✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/json
+
+[1m📋 QGIS Plugin Analyzer: Project Summary[0m
+=============================================
+
+[1m📊 Quality Indicators[0m
+- Module Stability Score: [93m55.3/100[0m
+- Code Maintainability Score: [92m100.0/100[0m
+- Security Score (Bandit): [92m100.0/100[0m
+
+[1m🔬 Research-based Metrics[0m
+- Type Hint Coverage (Params): 90.0%
+- Type Hint Coverage (Returns): 100.0%
+- Docstring Coverage: 98.4%
+- Documentation Style: Google
+
+[1m🏗️  QGIS Transition & Style[0m
+- GDAL Import Style: Modern
+- PyQt5 Usage: None
+- Legacy Signals/Slots: 0
+🚨 Signal Leaks Detected: 14
+  - self.dialog.page_dem.raster_combo.layerChanged
+  - self.dialog.page_drillhole.dataChanged
+  - self.dialog.page_geology.dataChanged
+  - self.dialog.page_section.line_combo.layerChanged
+  - self.dialog.page_struct.dataChanged
+  - self.dialog.preview_widget.chk_adaptive_sampling.toggled
+  - self.dialog.preview_widget.chk_auto_lod.toggled
+  - self.dialog.preview_widget.chk_drillholes.stateChanged
+  - self.dialog.preview_widget.chk_geol.stateChanged
+  - self.dialog.preview_widget.chk_interpretations.stateChanged
+  - self.dialog.preview_widget.chk_legend.stateChanged
+  - self.dialog.preview_widget.chk_struct.stateChanged
+  - self.dialog.preview_widget.chk_topo.stateChanged
+  - self.dialog.preview_widget.spin_max_points.valueChanged
+
+[1m⚠️  Issue Statistics (278 total)[0m
+- MISSING_I18N: 272
+- MISSING_DOCSTRING: 5
+- HIGH_COMPLEXITY: 1
+
+[1m🔍 Sample Issues[0m
+[93m[MEDIUM][0m preview_param_hasher.py:28 - Public function 'get_id' is missing a docstring.
+[93m[MEDIUM][0m ui_status_manager.py:41 - Untranslated user-facing string: 'section'. Use self.tr().
+[93m[MEDIUM][0m ui_status_manager.py:46 - Untranslated user-facing string: 'geology'. Use self.tr().
+[93m[MEDIUM][0m ui_status_manager.py:47 - Untranslated user-facing string: 'structure'. Use self.tr().
+[93m[MEDIUM][0m ui_status_manager.py:48 - Untranslated user-facing string: 'drillhole'. Use self.tr().
+... and 273 more issues.
+
+=============================================

@@ -1,0 +1,75 @@
+Inherited Name: GeologyUnit
+
+Default Data: {'enable_3d': False, 'exp_topo': True, 'exp_geol': True, 'exp_struct': True, 'exp_drill': True, 'exp_interp': True, 'drill_3d_traces': True, 'drill_3d_intervals': True, 'drill_3d_original': True, 'drill_3d_projected': False}
+DEBUG: Task Service ID: 134359446005968
+DEBUG: Mock Service ID: 134359446005968
+
+DEBUG: ImportedQgsSettings: <class 'sec_interp.tests.mocks.qgis_core.MockQgsSettings'> (id: 487153488)
+DEBUG: MockQgsSettings: <class 'tests.mocks.qgis_core.MockQgsSettings'> (id: 486937168)
+DEBUG: mock_core.QgsSettings: <class 'tests.mocks.qgis_core.MockQgsSettings'> (id: 486937168)
+
+DEBUG: ImportedQgsSettings: <class 'sec_interp.tests.mocks.qgis_core.MockQgsSettings'> (id: 487153488)
+DEBUG: MockQgsSettings: <class 'tests.mocks.qgis_core.MockQgsSettings'> (id: 486937168)
+DEBUG: mock_core.QgsSettings: <class 'tests.mocks.qgis_core.MockQgsSettings'> (id: 486937168)
+
+DEBUG: ImportedQgsSettings: <class 'sec_interp.tests.mocks.qgis_core.MockQgsSettings'> (id: 487153488)
+DEBUG: MockQgsSettings: <class 'tests.mocks.qgis_core.MockQgsSettings'> (id: 486937168)
+DEBUG: mock_core.QgsSettings: <class 'tests.mocks.qgis_core.MockQgsSettings'> (id: 486937168)
+
+DEBUG: ImportedQgsSettings: <class 'sec_interp.tests.mocks.qgis_core.MockQgsSettings'> (id: 487153488)
+DEBUG: MockQgsSettings: <class 'tests.mocks.qgis_core.MockQgsSettings'> (id: 486937168)
+DEBUG: mock_core.QgsSettings: <class 'tests.mocks.qgis_core.MockQgsSettings'> (id: 486937168)
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+gui/__init__.py                                4      0   100%
+gui/dialog_export_manager.py                  93     69    26%   49-78, 82, 86-102, 106-133, 137-142, 151-213
+gui/dialog_input_manager.py                   51      2    96%   178, 194
+gui/dialog_interpretation_manager.py         125     37    70%   39, 43, 60-61, 66, 84-88, 101-154, 195, 199, 221, 226, 231-232, 249, 259
+gui/dialog_preview_manager.py                226    165    27%   88-94, 98-121, 125-133, 137-156, 160-162, 166-175, 179-180, 184-187, 191-207, 211, 220-248, 260-301, 305, 314, 319-322, 326-347, 359-369, 373-388, 397, 403-406, 410, 416-418, 422-436, 440-441, 450-459
+gui/dialog_settings_persistence.py           290     81    72%   41-51, 122, 133-137, 144, 152-153, 165-166, 176-177, 185-186, 205-211, 235-236, 239-242, 245-246, 249-252, 255-272, 275, 278-282, 285-297, 315-317, 321, 347-348, 354, 369, 377
+gui/dialog_signal_manager.py                 131      5    96%   115-118, 135
+gui/dialog_state_manager.py                   57     10    82%   59, 63, 69-73, 77-78, 91
+gui/dialog_tool_manager.py                    86      0   100%
+gui/legend_widget.py                          36     16    56%   41-43, 47-49, 53-58, 62-69
+gui/lod_calculator.py                         20      0   100%
+gui/main_dialog.py                           206     62    70%   43, 154-171, 208-210, 246-266, 274, 278, 282, 286, 291, 295, 312, 321, 345-351, 355, 367-371, 375-376, 383-386, 399, 407, 411, 415, 423, 427, 431, 435
+gui/main_dialog_config.py                    115     18    84%   86, 91, 96, 101, 108, 115, 122, 127, 132, 137, 144, 151, 158, 163, 171, 176, 181, 186
+gui/main_dialog_utils.py                      20      7    65%   18-22, 27, 38
+gui/preview_axes_manager.py                  124      0   100%
+gui/preview_layer_factory.py                 263      6    98%   160, 183, 319-320, 364, 414
+gui/preview_legend_renderer.py                74     55    26%   35-88, 99-114, 121-128, 141-150, 162-174
+gui/preview_param_hasher.py                   30     24    20%   26-62
+gui/preview_renderer.py                      129      9    93%   248-249, 258-267
+gui/preview_reporter.py                       52     34    35%   36-66, 71-73, 80-82, 89-91, 98-101, 115-143
+gui/preview_task_orchestrator.py              63     47    25%   37-59, 63-91, 95-147
+gui/renderers/__init__.py                      0      0   100%
+gui/renderers/base_renderer.py                 7      1    86%   16
+gui/renderers/color_manager.py                17      0   100%
+gui/renderers/drillhole_renderer.py           32      0   100%
+gui/renderers/geology_renderer.py             15      0   100%
+gui/renderers/interpretation_renderer.py      16      0   100%
+gui/renderers/structure_renderer.py            7      0   100%
+gui/renderers/topo_renderer.py                14      0   100%
+gui/tasks/__init__.py                          0      0   100%
+gui/tasks/drillhole_task.py                   43      1    98%   81
+gui/tasks/geology_task.py                     40      1    98%   73
+gui/tools/__init__.py                          2      0   100%
+gui/tools/interpretation_tool.py             193      4    98%   165-166, 254, 260
+gui/tools/measure_tool.py                    210     23    89%   169-170, 177-201, 305
+gui/ui/__init__.py                             2      0   100%
+gui/ui/main_window.py                         77      4    95%   155-158
+gui/ui/pages/__init__.py                       3      0   100%
+gui/ui/pages/base_page.py                     22      3    86%   47, 56, 64
+gui/ui/pages/dem_page.py                     104     25    76%   118-140, 158-160, 164-166, 178-179
+gui/ui/pages/drillhole_page.py               222     13    94%   58-59, 283-301, 335-336, 340-341, 356-357, 370-371
+gui/ui/pages/geology_page.py                  46      9    80%   48-49, 74-79, 90-93
+gui/ui/pages/interpretation_page.py           75     29    61%   81-91, 94-96, 105-120, 129-139
+gui/ui/pages/preview_page.py                 129      2    98%   180, 184
+gui/ui/pages/section_page.py                  47      6    87%   44-45, 82-84, 88
+gui/ui/pages/settings_page.py                164      8    95%   44-45, 150-154, 285
+gui/ui/pages/structure_page.py                69      9    87%   55-56, 97-98, 111-117, 124-125
+gui/ui/sidebar.py                             18      0   100%
+gui/ui_status_manager.py                      54      4    93%   68-69, 81-82
+gui/utils.py                                  19      3    84%   43-45
+------------------------------------------------------------------------
+TOTAL                                       3842    792    79%

@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Testing**: 5 new test suites achieving 100% test coverage for the 2D and vector data Exporters.
 - **Testing**: Massive expansion of integration test suite reaching **514 successful tests** in Docker.
 - **Testing**: 50 new integration tests covering Export Service E2E, Preview Pipeline, Geology/Structure processing, and Async Orchestrators (`QgsTaskManager`).
+- **Testing**: Achieved **91% total GUI coverage** across all dialogs and managers.
+- **Testing**: new specialized test suites for `InterpretationManager` (94%), `SettingsPersistence` (97%), and `PreviewTaskOrchestrator` (97%).
+- **Testing**: 100% coverage for `PreviewLegendRenderer` rendering logic.
 - **Testing**: 4 new specific GUI tests to protect integration of Signal Restoration, Interpretation Exports, and Multi-Session Persistence.
 
 ### Changed

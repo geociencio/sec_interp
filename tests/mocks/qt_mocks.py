@@ -75,6 +75,11 @@ class MockQApplication(MagicMock):
         """Exit QGIS."""
         pass
 
+    @staticmethod
+    def taskManager():
+        """Get the task manager."""
+        return MagicMock(name="QgsTaskManager")
+
 
 class MockQThread(MagicMock):
     """Mock implementation for QThread."""
@@ -211,15 +216,32 @@ class MockQIcon(MagicMock):
 class MockQRectF(MagicMock):
     """Mock implementation for QRectF."""
 
-    def __init__(self, x=0, y=0, w=0, h=0):
+    def __init__(self, x=0, y=0, w=0, h=0, *args, **kwargs):
         """Initialize the mock rectangle."""
-        super().__init__()
+        super().__init__(*args, **kwargs)
+        self._x = x
+        self._y = y
+        self._w = w
+        self._h = h
+
+    def width(self):
+        return self._w
+
+    def height(self):
+        return self._h
+
+    def x(self):
+        return self._x
+
+    def y(self):
+        return self._y
 
 
 class MockQSizeF(MagicMock):
     """Mock implementation for QSizeF."""
 
-    def __init__(self, w=0, h=0):
+    def __init__(self, w=0, h=0, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._w, self._h = w, h
 
     def width(self):
@@ -285,6 +307,9 @@ class MockQFrame:
 class MockQWidget(MockQObject):
     """Mock implementation for QWidget."""
 
+    Accepted = 1
+    Rejected = 0
+
     def __init__(self, parent=None, *args, **kwargs):
         """Initialize the mock widget."""
         super().__init__()
@@ -313,6 +338,10 @@ class MockQWidget(MockQObject):
     def reject(self):
         """Reject dialog logic."""
         pass
+
+    def exec_(self):
+        """Mock exec_."""
+        return self.Accepted
 
     def setLayout(self, layout):
         """Set widget layout."""

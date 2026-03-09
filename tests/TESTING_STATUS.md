@@ -3,9 +3,9 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->535<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->604<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
-| **Last Updated** | <!-- LAST_UPDATE -->2026-03-08<!-- /LAST_UPDATE --> | 🕒 Auto |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-03-09<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 
@@ -14,7 +14,7 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :---: |
 | **Core Services** | <!-- CORE_COUNT -->275<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->149<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **GUI Components** | <!-- GUI_COUNT -->218<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->71<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
@@ -61,7 +61,11 @@
 - **tests/core/services/drillhole/test_processors.py**: 6 tests
 - **tests/gui/test_attribute_inheritance.py**: 1 tests
 - **tests/gui/test_cache_fix.py**: 1 tests
+- **tests/gui/test_dialog_export_manager.py**: 10 tests
 - **tests/gui/test_dialog_input_manager.py**: 5 tests
+- **tests/gui/test_dialog_interpretation_manager.py**: 10 tests
+- **tests/gui/test_dialog_preview_manager.py**: 18 tests
+- **tests/gui/test_dialog_settings_persistence.py**: 7 tests
 - **tests/gui/test_dialog_state_manager.py**: 4 tests
 - **tests/gui/test_export_reproduction.py**: 3 tests
 - **tests/gui/test_geology_task.py**: 2 tests
@@ -69,6 +73,7 @@
 - **tests/gui/test_interpretation_export.py**: 1 tests
 - **tests/gui/test_interpretation_tool.py**: 22 tests
 - **tests/gui/test_lod_calculator.py**: 4 tests
+- **tests/gui/test_main_dialog_core.py**: 15 tests
 - **tests/gui/test_main_dialog_interpretation.py**: 4 tests
 - **tests/gui/test_main_dialog_settings.py**: 3 tests
 - **tests/gui/test_main_dialog_signals_wiring.py**: 3 tests
@@ -78,7 +83,9 @@
 - **tests/gui/test_message_manager.py**: 5 tests
 - **tests/gui/test_multi_session_persistence.py**: 3 tests
 - **tests/gui/test_preview_components.py**: 21 tests
+- **tests/gui/test_preview_legend_renderer.py**: 3 tests
 - **tests/gui/test_preview_renderer_custom.py**: 2 tests
+- **tests/gui/test_preview_task_orchestrator.py**: 6 tests
 - **tests/gui/test_settings_page.py**: 4 tests
 - **tests/gui/test_signal_restoration.py**: 2 tests
 - **tests/gui/tasks/test_drillhole_task.py**: 6 tests

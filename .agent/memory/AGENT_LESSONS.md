@@ -5,6 +5,24 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
+  - date: 2026-03-09
+    category: TESTING
+    topic: Iterative Mocking for Arithmetic
+    lesson: "Complex Qt objects like QRectF/QSizeF used in layouts often undergo arithmetic operations or comparisons (e.g., max()). Mocking them requires returning numeric types for width/height/x/y to prevent TypeErrors."
+    action: "Enrich qt_mocks.py with basic numeric return values for dimensional methods (width, height, etc.) to support layout-heavy tests."
+
+  - date: 2026-03-09
+    category: TESTING
+    topic: Patch Specificity for Local Imports
+    lesson: "Classes imported locally inside functions (e.g., InterpretationPropertiesDialog) must be patched using the absolute path of the calling module where the lookup occurs, not the module of origin."
+    action: "Always verify if a class is imported at the module level or inside a method before defining the patch target path."
+
+  - date: 2026-03-09
+    category: TESTING
+    topic: Dynamic Mock Return Values
+    lesson: "QgsProject.readEntry returns (value, bool). In complex persistence flows with multiple calls, using fixed side_effects ensures that each specific setting (e.g., layers, bands, colors) is correctly simulated."
+    action: "Use side_effect lists or dynamic functions for readEntry mocks to verify multi-scope setting fallbacks (SecInterp vs SecInterpUI)."
+
   - date: 2026-03-08
     category: TESTING
     topic: Qt Object Mocks
@@ -112,4 +130,5 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## ⚙️ Configuración Global de Preferencias
 ...
 ---
-*Last update: 2026-03-08 - Completion of Exporters Coverage v3.3.0 and global translation to English.*
+*Last update: 2026-03-09 - Completion of GUI Coverage Expansion.*
+```
