@@ -27,23 +27,13 @@ class TestDynamicAttributes(BaseTestCase):
 
         output_path = Path("/tmp/test_dynamic.shp")
 
-        # Mock writeAsVectorFormatV3 to avoid file I/O errors in headless env
-        import qgis.core
+        from unittest.mock import patch
 
-        # Ensure the global mock has the correct return value
-        qgis.core.QgsVectorFileWriter.writeAsVectorFormatV3.return_value = (
-            0,
-            "Success",
-            "layer_id",
-            str(output_path),
-        )
-
-        try:
+        with patch.object(exporter, "_write_to_file", return_value=True) as mock_write:
             exporter.export(output_path, {"interpretations": [interp]})
 
             # Check if fields were correctly generated in the internal layer
-            # We need to capture the layer passed to writeAsVectorFormatV3
-            call_args = qgis.core.QgsVectorFileWriter.writeAsVectorFormatV3.call_args
+            call_args = mock_write.call_args
             layer = call_args[0][0]
 
             fields = layer.fields()
@@ -58,9 +48,6 @@ class TestDynamicAttributes(BaseTestCase):
             self.assertEqual(feat["Confianza"], "Alta")
             self.assertEqual(feat["Comentario"], "Validado")
 
-        finally:
-            # No need to restore since we are in a mock environment, but good practice if it existed
-            pass
 
 
 if __name__ == "__main__":

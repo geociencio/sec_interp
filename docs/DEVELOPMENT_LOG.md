@@ -23,6 +23,17 @@
 
 ---
 ## [Unreleased]
+## [2026-03-08] - Fase 3.3.0: Testing Expansion (Integración)
+- **Logro**: Alcanzado el hito de 514 pruebas exitosas en Docker con cobertura del 86% en integración de UI y orquestadores asíncronos.
+- **Cambios**:
+    - **Tests**: Implementada cobertura End-to-End para el Servicio de Exportación completo.
+    - **Tests**: Creado suite profunda de evaluación para el `PreviewManager` (LOD, dependencias resolutorias, bounding boxes).
+    - **Tests**: Cubierta la filtración asíncrona de geología y buffer en in-memory layers.
+    - **Tests**: Añadidos tests funcionales y de QA para el Despachador de Tareas Asíncronas (Tasks Orchestrators).
+- **Estado**: Suite 100% verde (514 tests).
+- **Mantenimiento**: [sesion_2026-03-08_integration_testing.md](maintenance/sesion_2026-03-08_integration_testing.md)
+
+---
 ## [2026-03-08] - Fase 3.3.0: Estabilidad de Recursos y Ciclo de Vida (Fase 1 completada)
 - **Logro**: Finalizada exitosamente la Fase 1 resolviendo múltiples problemas de ciclo de vida de la GUI y restaurando la robustez de las exportaciones.
 - **Cambios**:
