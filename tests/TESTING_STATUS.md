@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->468<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->491<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-03-08<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -16,7 +16,7 @@
 | **Core Services** | <!-- CORE_COUNT -->275<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->149<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->19<!-- /EXP_COUNT --> | ████████░░ 80% | ⚠️ |
-| **Integration** | <!-- INT_COUNT -->25<!-- /INT_COUNT --> | ████████░░ 65% | 🏗️ |
+| **Integration** | <!-- INT_COUNT -->48<!-- /INT_COUNT --> | █████████░ 80% | ✅ |
 
 ---
 
@@ -96,6 +96,7 @@
 - **tests/integration/test_export_workflow.py**: 2 tests
 - **tests/integration/test_interpretation_workflow.py**: 3 tests
 - **tests/integration/test_measurement_workflow.py**: 2 tests
+- **tests/integration/test_preview_pipeline.py**: 23 tests
 - **tests/integration/test_qgis_smoke.py**: 3 tests
 - **tests/benchmarks/test_export_benchmarks.py**: 2 tests
 - **tests/benchmarks/test_geometry_benchmarks.py**: 4 tests
