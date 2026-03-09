@@ -7,14 +7,12 @@ This module has been refactored to delegate specialized tasks to modular compone
 from __future__ import annotations
 
 from qgis.core import (
-    QgsGeometry,
     QgsMapRendererCustomPainterJob,
     QgsMapSettings,
-    QgsPointXY,
     QgsProject,
     QgsWkbTypes,
 )
-from qgis.gui import QgsMapCanvas, QgsRubberBand
+from qgis.gui import QgsMapCanvas
 from qgis.PyQt.QtCore import QRectF, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
@@ -101,11 +99,8 @@ class PreviewRenderer:
             use_adaptive_sampling,
             dip_line_length,
             drillhole_data,
+            interp_data,
         )
-
-        # 2.5 Render interpretations (using rubber bands)
-        if interp_data:
-            self._render_interpretations(interp_data, vert_exag)
 
         if not data_layers:
             logger.debug("No valid data layers to render yet")
@@ -126,7 +121,8 @@ class PreviewRenderer:
             self.canvas.setLayers(layers)
             if not preserve_extent:
                 padded_extent = extent
-                padded_extent.scale(1.1)
+                with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+                    padded_extent.scale(1.1)
                 self.canvas.setExtent(padded_extent)
             self.canvas.refresh()
 
@@ -142,6 +138,7 @@ class PreviewRenderer:
         use_adaptive,
         dip_len,
         drill_data,
+        interp_data,
     ) -> list:
         """Collect all data layers in order."""
         # Topography & Geology
@@ -157,9 +154,17 @@ class PreviewRenderer:
         # Specialized layers
         struct_layer = self._add_struct_layer(struct_data, topo_data, geol_data, vert_exag, dip_len)
         drill_layers = self._add_drillhole_layers(drill_data, vert_exag)
+        interp_layer = self.layer_factory.create_interp_layer(interp_data, vert_exag)
 
         # Combine in Z-order (top to bottom)
-        candidates = [struct_layer, geol_layer, topo_layer, topo_fill, *drill_layers]
+        candidates = [
+            struct_layer,
+            geol_layer,
+            topo_layer,
+            topo_fill,
+            *drill_layers,
+            interp_layer,
+        ]
         return [L for L in candidates if L is not None]
 
     def _add_struct_layer(self, data, topo, geol, exag, dip_len) -> Any | None:
@@ -263,47 +268,6 @@ class PreviewRenderer:
         self.interpretation_rubbers = []
 
         logger.debug("PreviewRenderer cleanup completed")
-
-    def _render_interpretations(
-        self, interp_data: list[InterpretationPolygon], vert_exag: float
-    ) -> None:
-        """Render interpretations as QgsRubberBand objects."""
-        if not self.canvas:
-            return
-
-        MIN_INTERP_VERTICES = 3
-        for interp in interp_data:
-            if not interp.vertices_2d or len(interp.vertices_2d) < MIN_INTERP_VERTICES:
-                continue
-
-            # Create rubber band
-            rb = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
-
-            # Set style
-            try:
-                poly_color = QColor(interp.color)
-                if not poly_color.isValid():
-                    poly_color = QColor("#FF0000")
-            except (ValueError, TypeError):
-                poly_color = QColor("#FF0000")
-
-            poly_color.setAlpha(180)  # More vibrant (approx 70%)
-            rb.setColor(poly_color)
-            rb.setWidth(2)  # Slightly thicker border
-            rb.setStrokeColor(poly_color.darker(160))  # More defined border
-
-            # Add geometry
-            # Points are (dist, elev) -> (x, y * exag)
-            points = [QgsPointXY(x, y * vert_exag) for x, y in interp.vertices_2d]
-            # Ensure closed for polygon
-            if points[0] != points[-1]:
-                points.append(points[0])
-
-            geom = QgsGeometry.fromPolygonXY([points])
-            rb.setToGeometry(geom, None)
-            rb.show()
-
-            self.interpretation_rubbers.append(rb)
 
     def _calculate_extent(self, layers: list) -> Any | None:
         """Combine extents of all given layers."""

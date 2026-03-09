@@ -55,6 +55,10 @@ class BasePage(QWidget):
         """
         return True, ""
 
+    def connect_signals(self) -> None:
+        """Connect internal signals for the page."""
+        pass
+
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         pass

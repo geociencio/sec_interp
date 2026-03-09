@@ -221,18 +221,23 @@ class SecInterpDialog(SecInterpMainWindow):
                 self.tool_manager.measure_tool.cleanup_finalized()
             if self.tool_manager.interpretation_tool:
                 self.tool_manager.interpretation_tool.reset()
-            self.tool_manager.disconnect_signals()
+            # Note: We don't disconnect here because SignalManager.disconnect_all()
+            # will call tool_manager.disconnect_signals() shortly.
 
         # 2. Sequential Manager Cleanup
         self.interpretation_manager.save_interpretations()
         self.preview_manager.cleanup()
-        self.signal_manager.disconnect_all()
 
-        # 3. Component level cleanup
+        # 3. Disconnect all signals safely (idempotent)
+        if hasattr(self, "signal_manager"):
+            self.signal_manager.disconnect_all()
+
+        # 4. Component level cleanup
         if hasattr(self, "legend_widget") and self.legend_widget:
             self.legend_widget.cleanup()
 
-        super().closeEvent(event)
+        with contextlib.suppress(AttributeError, RuntimeError, TypeError):
+            super().closeEvent(event)
 
     def open_help(self) -> None:
         """Open the help file in the default browser based on user locale."""

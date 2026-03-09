@@ -14,6 +14,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QMetaType
 
 from sec_interp.core import utils as scu
+from sec_interp.core.domain import DrillholeProjection
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
@@ -78,11 +79,17 @@ class DrillholeTraceShpExporter(BaseExporter):
 
         """
         for item in drillhole_data:
-            # Handle variable tuple length (legacy 5 vs new 3)
-            if len(item) == NEW_DATA_LENGTH:
-                hole_id, traces, _ = item
-            elif len(item) >= LEGACY_DATA_LENGTH:
-                hole_id, traces, _traces_3d, _traces_3d_proj, _ = item
+            if isinstance(item, DrillholeProjection):
+                hole_id = item.hole_id
+                traces = item.points_3d
+            elif isinstance(item, list | tuple):
+                # Handle variable tuple length (legacy 5 vs new 3)
+                if len(item) == NEW_DATA_LENGTH:
+                    hole_id, traces, _ = item
+                elif len(item) >= LEGACY_DATA_LENGTH:
+                    hole_id, traces, _traces_3d, _traces_3d_proj, _ = item
+                else:
+                    continue
             else:
                 continue
 
@@ -173,11 +180,17 @@ class DrillholeIntervalShpExporter(BaseExporter):
 
         """
         for item in drillhole_data:
-            # Handle variable tuple length (legacy 5 vs new 3)
-            # Segments are always the last element
-            if len(item) == NEW_DATA_LENGTH or len(item) >= LEGACY_DATA_LENGTH:
-                hole_id = item[0]
-                segments = item[-1]
+            if isinstance(item, DrillholeProjection):
+                hole_id = item.hole_id
+                segments = item.segments
+            elif isinstance(item, list | tuple):
+                # Handle variable tuple length (legacy 5 vs new 3)
+                # Segments are always the last element
+                if len(item) == NEW_DATA_LENGTH or len(item) >= LEGACY_DATA_LENGTH:
+                    hole_id = item[0]
+                    segments = item[-1]
+                else:
+                    continue
             else:
                 continue
             if not segments:

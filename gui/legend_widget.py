@@ -36,6 +36,12 @@ class LegendWidget(QWidget):
         # Install event filter on parent to track resize
         self.dialog.installEventFilter(self)
 
+    def cleanup(self) -> None:
+        """Remove event filter from dialog."""
+        if self.dialog:
+            self.dialog.removeEventFilter(self)
+            self.dialog = None
+
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         """Handle parent resize events."""
         if obj == self.dialog and event.type() == QtCore.QEvent.Resize:

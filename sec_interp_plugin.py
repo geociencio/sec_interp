@@ -237,6 +237,10 @@ class SecInterp(TranslatableMixin):
             # Connect dialog accepted signal to final processing
             self.dlg.accepted.connect(self.process_data)
 
+        # Re-connect all signals (idempotent) to ensure tools work in multi-session
+        if hasattr(self.dlg, "signal_manager"):
+            self.dlg.signal_manager.connect_all()
+
         # Reload interpretations and UI settings to reflect current project state
         self.dlg._load_interpretations()
         self.dlg._load_user_settings()

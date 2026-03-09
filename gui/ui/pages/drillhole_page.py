@@ -89,7 +89,6 @@ class DrillholePage(BasePage):
         self._add_collar_layer_widgets(layout)
         self._add_collar_coordinate_widgets(layout)
         self._add_collar_depth_widgets(layout)
-        self._connect_collar_signals()
 
     def _add_collar_layer_widgets(self, layout: QGridLayout) -> None:
         """Add layer and ID selection widgets to collar tab."""
@@ -202,18 +201,7 @@ class DrillholePage(BasePage):
         layout.addWidget(QLabel(self.tr("Inclination:")), row, 0)
         self.s_incl = QgsFieldComboBox()
         layout.addWidget(self.s_incl, row, 1)
-        row += 1
-
         layout.setRowStretch(row, 1)
-
-        self.s_layer.layerChanged.connect(self.s_id.setLayer)
-        self.s_layer.layerChanged.connect(self.s_depth.setLayer)
-        self.s_layer.layerChanged.connect(self.s_azim.setLayer)
-        self.s_layer.layerChanged.connect(self.s_incl.setLayer)
-        self.s_layer.layerChanged.connect(self.dataChanged.emit)
-
-        for w in [self.s_id, self.s_depth, self.s_azim, self.s_incl]:
-            w.fieldChanged.connect(self.dataChanged.emit)
 
     def _setup_interval_tab(self, parent_widget: QWidget) -> None:
         layout = QGridLayout(parent_widget)
@@ -255,18 +243,7 @@ class DrillholePage(BasePage):
         layout.addWidget(QLabel(self.tr("Lithology/Attribute:")), row, 0)
         self.i_lith = QgsFieldComboBox()
         layout.addWidget(self.i_lith, row, 1)
-        row += 1
-
         layout.setRowStretch(row, 1)
-
-        self.i_layer.layerChanged.connect(self.i_id.setLayer)
-        self.i_layer.layerChanged.connect(self.i_from.setLayer)
-        self.i_layer.layerChanged.connect(self.i_to.setLayer)
-        self.i_layer.layerChanged.connect(self.i_lith.setLayer)
-        self.i_layer.layerChanged.connect(self.dataChanged.emit)
-
-        for w in [self.i_id, self.i_from, self.i_to, self.i_lith]:
-            w.fieldChanged.connect(self.dataChanged.emit)
 
     def _toggle_xy_fields(self, checked: bool) -> None:
         """Enable/disable Easting/Northing fields based on geometry checkbox."""
@@ -321,8 +298,29 @@ class DrillholePage(BasePage):
             interval_to=data["interval_to"],
             interval_lith=data["interval_lith"],
         )
-
         return ProjectValidator.is_drillhole_complete(params)
+
+    def connect_signals(self) -> None:
+        """Connect internal signals for the drillhole page."""
+        self._connect_collar_signals()
+
+        self.s_layer.layerChanged.connect(self.s_id.setLayer)
+        self.s_layer.layerChanged.connect(self.s_depth.setLayer)
+        self.s_layer.layerChanged.connect(self.s_azim.setLayer)
+        self.s_layer.layerChanged.connect(self.s_incl.setLayer)
+        self.s_layer.layerChanged.connect(self.dataChanged.emit)
+
+        for w in [self.s_id, self.s_depth, self.s_azim, self.s_incl]:
+            w.fieldChanged.connect(self.dataChanged.emit)
+
+        self.i_layer.layerChanged.connect(self.i_id.setLayer)
+        self.i_layer.layerChanged.connect(self.i_from.setLayer)
+        self.i_layer.layerChanged.connect(self.i_to.setLayer)
+        self.i_layer.layerChanged.connect(self.i_lith.setLayer)
+        self.i_layer.layerChanged.connect(self.dataChanged.emit)
+
+        for w in [self.i_id, self.i_from, self.i_to, self.i_lith]:
+            w.fieldChanged.connect(self.dataChanged.emit)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""

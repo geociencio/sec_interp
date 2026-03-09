@@ -85,6 +85,10 @@ class DialogSettingsPersistence:
         p_interp.chk_inherit_geol.setChecked(True)
         p_interp.chk_inherit_drill.setChecked(True)
 
+        # Settings Page
+        if hasattr(self.dialog, "page_settings"):
+            self.dialog.page_settings._reset_export_defaults()
+
     def reset_preview(self) -> None:
         """Reset preview settings to defaults."""
         pw = self.dialog.preview_widget

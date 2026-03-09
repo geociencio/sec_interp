@@ -51,8 +51,6 @@ class InterpretationPage(BasePage):
         btn_layout = QHBoxLayout()
         self.btn_add_field = QPushButton(self.tr("Add Field"))
         self.btn_remove_field = QPushButton(self.tr("Remove Field"))
-        self.btn_add_field.clicked.connect(self._add_field_row)
-        self.btn_remove_field.clicked.connect(self._remove_field_row)
         btn_layout.addWidget(self.btn_add_field)
         btn_layout.addWidget(self.btn_remove_field)
         self.group_layout.addLayout(btn_layout)
@@ -139,6 +137,11 @@ class InterpretationPage(BasePage):
                     return False, self.tr("Duplicate field name: {}").format(name)
                 names.append(name)
         return True, ""
+
+    def connect_signals(self) -> None:
+        """Connect internal signals for the interpretation page."""
+        self.btn_add_field.clicked.connect(self._add_field_row)
+        self.btn_remove_field.clicked.connect(self._remove_field_row)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""

@@ -25,7 +25,16 @@ class Test3DProjections(BaseTestCase):
         self.project = QgsProject.instance()
         # Set a projected CRS (UTM 18S)
         self.crs = QgsCoordinateReferenceSystem("EPSG:32718")
-        self.project.setCrs(self.crs)
+        try:
+            self.project.setCrs(self.crs)
+        except AttributeError:
+            # Handle mock project that doesn't have setCrs
+            if hasattr(self.project, "crs"):
+                # If it's a mock, we might be able to set the attribute directly
+                try:
+                    self.project.crs.return_value = self.crs
+                except AttributeError:
+                    pass
         self.export_service = ExportService()
 
     def test_cartesian_projection_consistency(self):

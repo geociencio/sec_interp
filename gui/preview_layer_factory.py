@@ -54,6 +54,9 @@ class PreviewLayerFactory:
         from sec_interp.gui.renderers.color_manager import ColorManager
         from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
         from sec_interp.gui.renderers.geology_renderer import GeologyRenderer
+        from sec_interp.gui.renderers.interpretation_renderer import (
+            InterpretationRenderer,
+        )
         from sec_interp.gui.renderers.structure_renderer import StructureRenderer
         from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 
@@ -62,6 +65,7 @@ class PreviewLayerFactory:
         self.geol_renderer: GeologyRenderer = GeologyRenderer(self.color_manager)
         self.struct_renderer: StructureRenderer = StructureRenderer()
         self.drill_renderer: DrillholeRenderer = DrillholeRenderer(self.color_manager)
+        self.interp_renderer: InterpretationRenderer = InterpretationRenderer()
 
     def get_color_for_unit(self, name: str) -> QColor:
         """Get a consistent color for a geological unit based on its name."""
@@ -393,6 +397,45 @@ class PreviewLayerFactory:
 
         provider.addFeatures(features)
         self.drill_renderer.apply_style(layer, role="interval", unique_units=unique_units)
+        layer.updateExtents()
+        return layer
+
+    def create_interp_layer(
+        self, interp_data: list[InterpretationPolygon], vert_exag: float = 1.0
+    ) -> QgsVectorLayer | None:
+        """Create a memory layer for interpretation polygons."""
+        if not interp_data:
+            return None
+
+        layer, provider = self.create_memory_layer(
+            "Polygon", "Interpretations", "field=id:string&field=name:string"
+        )
+        if not layer:
+            return None
+
+        features = []
+        MIN_POLYGON_POINTS = 3
+        for interp in interp_data:
+            if not interp.vertices_2d or len(interp.vertices_2d) < MIN_POLYGON_POINTS:
+                continue
+
+            points = [QgsPointXY(x, y * vert_exag) for x, y in interp.vertices_2d]
+            # Polygon must be closed in QGIS Geometry
+            if points[0] != points[-1]:
+                points.append(points[0])
+
+            geom = QgsGeometry.fromPolygonXY([points])
+            feat = QgsFeature(layer.fields())
+            feat.setGeometry(geom)
+            feat.setAttribute("id", interp.id)
+            feat.setAttribute("name", interp.name)
+            features.append(feat)
+
+        if not features:
+            return None
+
+        provider.addFeatures(features)
+        self.interp_renderer.apply_style(layer, interp_data=interp_data)
         layer.updateExtents()
         return layer
 

@@ -60,12 +60,7 @@ class GeologyPage(BasePage):
         self.field_combo.setToolTip(self.tr("Select the field containing unit names"))
         self.group_layout.addWidget(self.field_combo, 1, 1)
 
-        # Connection: update fields when layer changes
-        self.layer_combo.layerChanged.connect(self.field_combo.setLayer)
-
-        # Emit dataChanged when selections change
-        self.layer_combo.layerChanged.connect(self.dataChanged.emit)
-        self.field_combo.fieldChanged.connect(self.dataChanged.emit)
+        # Fields combo and other UI setup complete
 
     def get_data(self) -> dict[str, Any]:
         """Get geology configuration."""
@@ -83,9 +78,16 @@ class GeologyPage(BasePage):
         )
         return ProjectValidator.is_geology_complete(params)
 
+    def connect_signals(self) -> None:
+        """Connect internal signals for the geology page."""
+        self.layer_combo.layerChanged.connect(self.field_combo.setLayer)
+        self.layer_combo.layerChanged.connect(self.dataChanged.emit)
+        self.field_combo.fieldChanged.connect(self.dataChanged.emit)
+
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
-        self.layer_combo.layerChanged.disconnect(self.field_combo.setLayer)
-        self.layer_combo.layerChanged.disconnect(self.dataChanged.emit)
-        self.field_combo.fieldChanged.disconnect(self.dataChanged.emit)
-        self.dataChanged.disconnect()
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.layer_combo.layerChanged.disconnect(self.field_combo.setLayer)
+            self.layer_combo.layerChanged.disconnect(self.dataChanged.emit)
+            self.field_combo.fieldChanged.disconnect(self.dataChanged.emit)
+            self.dataChanged.disconnect()

@@ -37,7 +37,12 @@ class SignalManager:
         self.dialog = dialog
 
     def connect_all(self) -> None:
-        """Connect all signals in organized groups."""
+        """Connect all signals in organized groups.
+
+        This method is idempotent: it disconnects first to avoid double connections.
+        """
+        self.disconnect_all()
+
         self._connect_button_signals()
         self._connect_preview_signals()
         self._connect_page_signals()
@@ -81,61 +86,36 @@ class SignalManager:
     def _disconnect_preview_signals(self) -> None:
         """Disconnect preview-related signals."""
         with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.btn_preview.clicked.disconnect(
-                self.dialog.preview_profile_handler
-            )
+            self.dialog.preview_widget.btn_preview.clicked.disconnect()
         with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.btn_export.clicked.disconnect(self.dialog.export_preview)
+            self.dialog.preview_widget.btn_export.clicked.disconnect()
         with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.btn_measure.toggled.disconnect(
-                self.dialog.toggle_measure_tool
-            )
+            self.dialog.preview_widget.btn_measure.toggled.disconnect()
         with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.btn_interpret.toggled.disconnect(
-                self.dialog.toggle_interpretation_tool
-            )
+            self.dialog.preview_widget.btn_interpret.toggled.disconnect()
         with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.btn_finalize.clicked.disconnect(
-                self.dialog.tool_manager.measure_tool.finalize_measurement
-            )
+            self.dialog.preview_widget.btn_finalize.clicked.disconnect()
 
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.chk_topo.stateChanged.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.chk_geol.stateChanged.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.chk_struct.stateChanged.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.chk_drillholes.stateChanged.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.chk_interpretations.stateChanged.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.chk_legend.stateChanged.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
-
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.spin_max_points.valueChanged.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.chk_auto_lod.toggled.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.chk_adaptive_sampling.toggled.disconnect(
-                self.dialog.update_preview_from_checkboxes
-            )
+        # Checkboxes
+        widgets = [
+            self.dialog.preview_widget.chk_topo,
+            self.dialog.preview_widget.chk_geol,
+            self.dialog.preview_widget.chk_struct,
+            self.dialog.preview_widget.chk_drillholes,
+            self.dialog.preview_widget.chk_interpretations,
+            self.dialog.preview_widget.chk_legend,
+            self.dialog.preview_widget.spin_max_points,
+            self.dialog.preview_widget.chk_auto_lod,
+            self.dialog.preview_widget.chk_adaptive_sampling,
+        ]
+        for w in widgets:
+            with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+                if hasattr(w, "stateChanged"):
+                    w.stateChanged.disconnect()
+                elif hasattr(w, "valueChanged"):
+                    w.valueChanged.disconnect()
+                elif hasattr(w, "toggled"):
+                    w.toggled.disconnect()
 
     def _disconnect_page_signals(self) -> None:
         """Disconnect page-specific signals with full tracking."""
@@ -156,47 +136,38 @@ class SignalManager:
 
             # Method 1: Call disconnect_signals if it exists
             if hasattr(page, "disconnect_signals"):
-                try:
+                with contextlib.suppress(Exception):
                     page.disconnect_signals()
-                    logger.debug(f"Disconnected signals for page: {page.__class__.__name__}")
-                except Exception as e:
-                    logger.warning(
-                        f"Failed to disconnect signals for {page.__class__.__name__}: {e}"
-                    )
 
-            # Method 2: Disconnect known signals explicitly for pages that might not have the method
+            # Method 2: Disconnect known signals explicitly
             self._disconnect_known_page_signals(page)
 
         # Also disconnect output widget explicitly
         with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.output_widget.fileChanged.disconnect(self.dialog.update_button_state)
-
-        logger.info("All page signals disconnected")
+            self.dialog.output_widget.fileChanged.disconnect()
 
     def _disconnect_known_page_signals(self, page: Any) -> None:
         """Disconnect known signals for pages that might not have disconnect_signals."""
         # DEM Page
         if hasattr(page, "raster_combo") and page.raster_combo:
-            with contextlib.suppress(TypeError, RuntimeError):
+            with contextlib.suppress(Exception):
                 page.raster_combo.layerChanged.disconnect()
 
         # Section Page
         if hasattr(page, "line_combo") and page.line_combo:
-            with contextlib.suppress(TypeError, RuntimeError):
+            with contextlib.suppress(Exception):
                 page.line_combo.layerChanged.disconnect()
 
         # Data Pages (Geology, Struct, Drillhole)
         if hasattr(page, "dataChanged"):
-            with contextlib.suppress(TypeError, RuntimeError):
+            with contextlib.suppress(Exception):
                 page.dataChanged.disconnect()
 
     def _disconnect_tool_signals(self) -> None:
         """Disconnect map tool signals and window signals."""
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.tool_manager.disconnect_signals()
-
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.disconnect_signals()
+        if hasattr(self.dialog, "tool_manager") and self.dialog.tool_manager:
+            with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+                self.dialog.tool_manager.disconnect_signals()
 
     def _connect_button_signals(self) -> None:
         """Connect dialog button signals."""
@@ -274,6 +245,21 @@ class SignalManager:
         self.dialog.page_struct.dataChanged.connect(self.dialog.update_preview_checkbox_states)
         self.dialog.page_drillhole.dataChanged.connect(self.dialog.update_preview_checkbox_states)
 
+        # Reconnect internal signals for all pages
+        pages = [
+            self.dialog.page_dem,
+            self.dialog.page_section,
+            self.dialog.page_geology,
+            self.dialog.page_struct,
+            self.dialog.page_drillhole,
+            self.dialog.page_interpretation,
+            self.dialog.page_settings,
+        ]
+        for page in pages:
+            if hasattr(page, "connect_signals"):
+                with contextlib.suppress(Exception):
+                    page.connect_signals()
+
     def _connect_tool_signals(self) -> None:
         """Connect map tool signals."""
         self.dialog.preview_widget.btn_measure.toggled.connect(self.dialog.toggle_measure_tool)
@@ -283,3 +269,7 @@ class SignalManager:
         self.dialog.preview_widget.btn_finalize.clicked.connect(
             self.dialog.tool_manager.measure_tool.finalize_measurement
         )
+
+        # IMPORTANT: Restore tool-internal signal connections (measurementChanged, polygonFinished, etc)
+        if hasattr(self.dialog, "tool_manager") and self.dialog.tool_manager:
+            self.dialog.tool_manager.connect_signals()

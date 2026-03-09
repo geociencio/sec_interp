@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->450<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->453<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-03-08<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -14,7 +14,7 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :---: |
 | **Core Services** | <!-- CORE_COUNT -->275<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->143<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **GUI Components** | <!-- GUI_COUNT -->146<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->15<!-- /EXP_COUNT --> | ████████░░ 80% | ⚠️ |
 | **Integration** | <!-- INT_COUNT -->17<!-- /INT_COUNT --> | ████░░░░░░ 40% | 🏗️ |
 
@@ -75,6 +75,7 @@
 - **tests/gui/test_main_dialog_validation_manager.py**: 7 tests
 - **tests/gui/test_measure_tool.py**: 20 tests
 - **tests/gui/test_message_manager.py**: 5 tests
+- **tests/gui/test_multi_session_persistence.py**: 3 tests
 - **tests/gui/test_preview_components.py**: 21 tests
 - **tests/gui/test_preview_renderer_custom.py**: 2 tests
 - **tests/gui/test_settings_page.py**: 4 tests

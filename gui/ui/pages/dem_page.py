@@ -46,10 +46,6 @@ class DemPage(BasePage):
         self._setup_band_and_resolution()
         self._setup_profile_settings()
 
-        # Connections
-        self.raster_combo.layerChanged.connect(self.band_combo.setLayer)
-        self.raster_combo.layerChanged.connect(self._update_resolution)
-
     def _setup_raster_selection(self) -> None:
         """Set up raster layer selection widgets."""
         # Row 0: Raster Layer
@@ -168,6 +164,11 @@ class DemPage(BasePage):
         data = self.get_data()
         params = ValidationParams(raster_layer=data["raster_layer"])
         return ProjectValidator.is_dem_complete(params)
+
+    def connect_signals(self) -> None:
+        """Connect internal signals for the DEM page."""
+        self.raster_combo.layerChanged.connect(self.band_combo.setLayer)
+        self.raster_combo.layerChanged.connect(self._update_resolution)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""

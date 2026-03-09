@@ -83,11 +83,6 @@ class SettingsPage(BasePage):
         self.chk_exp_drill = QCheckBox(self.tr("Drillhole Data"))
         self.chk_exp_interp = QCheckBox(self.tr("Interpretations (2D)"))
 
-        self.chk_exp_topo.stateChanged.connect(self._on_settings_changed)
-        self.chk_exp_geol.stateChanged.connect(self._on_settings_changed)
-        self.chk_exp_struct.stateChanged.connect(self._on_settings_changed)
-        self.chk_exp_drill.stateChanged.connect(self._on_settings_changed)
-        self.chk_exp_interp.stateChanged.connect(self._on_settings_changed)
         layout.addWidget(self.chk_exp_topo)
         layout.addWidget(self.chk_exp_geol)
         layout.addWidget(self.chk_exp_struct)
@@ -100,7 +95,6 @@ class SettingsPage(BasePage):
         self.btn_reset_export.setToolTip(
             self.tr("Re-enables all export options (useful if all were accidentally disabled)")
         )
-        self.btn_reset_export.clicked.connect(self._reset_export_defaults)
         btn_layout.addStretch()
         btn_layout.addWidget(self.btn_reset_export)
         layout.addLayout(btn_layout)
@@ -117,7 +111,6 @@ class SettingsPage(BasePage):
         self.chk_enable_3d.setToolTip(
             self.tr("Enables the generation of 3D Shapefiles (.shp) during export.")
         )
-        self.chk_enable_3d.stateChanged.connect(self._on_settings_changed)
         layout.addWidget(self.chk_enable_3d)
 
         # -- Drillhole 3D Export --
@@ -127,10 +120,6 @@ class SettingsPage(BasePage):
         self.chk_3d_original = QCheckBox(self.tr("Use Original Coordinates (Real 3D)"))
         self.chk_3d_projected = QCheckBox(self.tr("Use Projected Coordinates (Section Plane)"))
 
-        self.chk_3d_traces.stateChanged.connect(self._on_settings_changed)
-        self.chk_3d_intervals.stateChanged.connect(self._on_settings_changed)
-        self.chk_3d_original.stateChanged.connect(self._on_settings_changed)
-        self.chk_3d_projected.stateChanged.connect(self._on_settings_changed)
         layout.addWidget(self.chk_3d_traces)
         layout.addWidget(self.chk_3d_intervals)
         layout.addWidget(self.chk_3d_original)
@@ -214,6 +203,11 @@ class SettingsPage(BasePage):
             "chk_exp_struct": True,
             "chk_exp_drill": True,
             "chk_exp_interp": True,
+            "chk_enable_3d": False,
+            "chk_3d_traces": True,
+            "chk_3d_intervals": True,
+            "chk_3d_original": True,
+            "chk_3d_projected": False,
         }
         for attr, value in defaults.items():
             widget = getattr(self, attr, None)
@@ -289,6 +283,23 @@ class SettingsPage(BasePage):
 
         """
         return True, ""
+
+    def connect_signals(self) -> None:
+        """Connect internal signals for the settings page."""
+        # Default tab
+        self.chk_exp_topo.stateChanged.connect(self._on_settings_changed)
+        self.chk_exp_geol.stateChanged.connect(self._on_settings_changed)
+        self.chk_exp_struct.stateChanged.connect(self._on_settings_changed)
+        self.chk_exp_drill.stateChanged.connect(self._on_settings_changed)
+        self.chk_exp_interp.stateChanged.connect(self._on_settings_changed)
+        self.btn_reset_export.clicked.connect(self._reset_export_defaults)
+
+        # Advanced tab
+        self.chk_enable_3d.stateChanged.connect(self._on_settings_changed)
+        self.chk_3d_traces.stateChanged.connect(self._on_settings_changed)
+        self.chk_3d_intervals.stateChanged.connect(self._on_settings_changed)
+        self.chk_3d_original.stateChanged.connect(self._on_settings_changed)
+        self.chk_3d_projected.stateChanged.connect(self._on_settings_changed)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""

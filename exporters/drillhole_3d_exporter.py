@@ -19,6 +19,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QMetaType
 
 from sec_interp.core import utils as scu
+from sec_interp.core.domain import DrillholeProjection
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
@@ -72,16 +73,15 @@ class DrillholeTrace3DExporter(BaseExporter):
         return True
 
     def _process_hole_trace(
-        self, writer: Any, fields: QgsFields, hole_data: tuple, use_projected: bool
+        self, writer: Any, fields: QgsFields, hole_data: Any, use_projected: bool
     ) -> None:
         """Process and write a single hole trace feature."""
-        # Standard format: (hid, spatial_points, segments)
+        # Standard format: (hid, spatial_points, segments) or DrillholeProjection object
         # Legacy/Test format: (hid, trace2d, trace3d, traces3d_proj, segments)
-        hole_id = hole_data[0]
 
-        if len(hole_data) == NEW_DATA_LENGTH:
-            # New format with SpatialMeta objects
-            spatial_points = hole_data[1]
+        if isinstance(hole_data, DrillholeProjection):
+            hole_id = hole_data.hole_id
+            spatial_points = hole_data.points_3d
             if use_projected:
                 points = [
                     QgsPoint(p.x_proj or 0.0, p.y_proj or 0.0, p.z)
@@ -94,15 +94,34 @@ class DrillholeTrace3DExporter(BaseExporter):
                     for p in spatial_points
                     if p.x_3d is not None
                 ]
-        elif len(hole_data) == LEGACY_DATA_LENGTH:
-            # Legacy/Integration Test format
-            _, _, traces_3d, traces_3d_proj, _ = hole_data
-            points_source = traces_3d_proj if use_projected else traces_3d
-            points = [QgsPoint(x, y, z) for x, y, z in points_source]
+        elif isinstance(hole_data, list | tuple):
+            hole_id = hole_data[0]
+            if len(hole_data) == NEW_DATA_LENGTH:
+                # New format with SpatialMeta objects
+                spatial_points = hole_data[1]
+                if use_projected:
+                    points = [
+                        QgsPoint(p.x_proj or 0.0, p.y_proj or 0.0, p.z)
+                        for p in spatial_points
+                        if p.x_proj is not None
+                    ]
+                else:
+                    points = [
+                        QgsPoint(p.x_3d or 0.0, p.y_3d or 0.0, p.z)
+                        for p in spatial_points
+                        if p.x_3d is not None
+                    ]
+            elif len(hole_data) == LEGACY_DATA_LENGTH:
+                # Legacy/Integration Test format
+                _, _, traces_3d, traces_3d_proj, _ = hole_data
+                points_source = traces_3d_proj if use_projected else traces_3d
+                points = [QgsPoint(x, y, z) for x, y, z in points_source]
+            else:
+                logger.warning(
+                    f"Unexpected hole data format (length {len(hole_data)}) for hole {hole_id}"
+                )
+                return
         else:
-            logger.warning(
-                f"Unexpected hole data format (length {len(hole_data)}) for hole {hole_id}"
-            )
             return
 
         if not points or len(points) < MIN_POINTS_FOR_INTERVAL:
@@ -163,12 +182,18 @@ class DrillholeInterval3DExporter(BaseExporter):
         return True
 
     def _process_hole_intervals(
-        self, writer: Any, fields: QgsFields, hole_data: tuple, use_projected: bool
+        self, writer: Any, fields: QgsFields, hole_data: Any, use_projected: bool
     ) -> None:
         """Process and write intervals for a single hole."""
-        # segments are always the last element in both 3 and 5 element formats
-        hole_id = hole_data[0]
-        segments = hole_data[-1]
+        if isinstance(hole_data, DrillholeProjection):
+            hole_id = hole_data.hole_id
+            segments = hole_data.segments
+        elif isinstance(hole_data, list | tuple):
+            # segments are always the last element in both 3 and 5 element formats
+            hole_id = hole_data[0]
+            segments = hole_data[-1]
+        else:
+            return
 
         if not segments or not isinstance(segments, list):
             return

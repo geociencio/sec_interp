@@ -50,8 +50,18 @@ class ToolManager:
             self.measure_tool = ProfileMeasureTool(self.dialog.preview_widget.canvas)
         if not self.interpretation_tool:
             self.interpretation_tool = ProfileInterpretationTool(self.dialog.preview_widget.canvas)
-            # Connect polygonFinished signal to dialog handler
+
+        self.connect_signals()
+        self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
+
+    def connect_signals(self) -> None:
+        """Connect map tool signals idempotently."""
+        # Always disconnect first to ensure we don't have multiple connections
+        self.disconnect_signals()
+
+        if self.interpretation_tool:
             self.interpretation_tool.polygonFinished.connect(self.dialog.on_interpretation_finished)
+
         if self.measure_tool:
             self.measure_tool.measurementChanged.connect(self.dialog.update_measurement_display)
             self.measure_tool.measurementFinished.connect(
@@ -60,8 +70,6 @@ class ToolManager:
             self.measure_tool.measurementCleared.connect(
                 self.dialog.preview_widget.results_text.clear
             )
-
-        self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
 
     def toggle_measure_tool(self, checked: bool) -> None:
         """Toggle between measurement and pan tools.
@@ -77,6 +85,8 @@ class ToolManager:
             self.measure_tool.activate()
             # Show finalize button when measurement tool is active
             self.dialog.preview_widget.btn_finalize.setVisible(True)
+            # Ensure canvas has focus for keyboard events
+            self.dialog.preview_widget.canvas.setFocus()
         else:
             self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
             self.pan_tool.activate()
@@ -102,6 +112,8 @@ class ToolManager:
             self.interpretation_tool.reset()
             self.dialog.preview_widget.canvas.setMapTool(self.interpretation_tool)
             self.interpretation_tool.activate()
+            # Ensure canvas has focus for keyboard events
+            self.dialog.preview_widget.canvas.setFocus()
         else:
             self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
             self.pan_tool.activate()
