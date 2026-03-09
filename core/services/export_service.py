@@ -363,7 +363,8 @@ class ExportService:
         try:
             # 2D Export (Standard)
             Interpretation2DExporter({}).export(
-                folder / "interpretations.shp", {"interpretations": data}
+                folder / "interpretations.shp",
+                {"interpretations": data, "crs": crs},
             )
             msg.append("  - interpretations.shp")
 

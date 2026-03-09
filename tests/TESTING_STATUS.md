@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->460<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->468<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-03-08<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -16,7 +16,7 @@
 | **Core Services** | <!-- CORE_COUNT -->275<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->149<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->19<!-- /EXP_COUNT --> | ████████░░ 80% | ⚠️ |
-| **Integration** | <!-- INT_COUNT -->17<!-- /INT_COUNT --> | ████░░░░░░ 40% | 🏗️ |
+| **Integration** | <!-- INT_COUNT -->25<!-- /INT_COUNT --> | ████████░░ 65% | 🏗️ |
 
 ---
 
@@ -92,6 +92,7 @@
 - **tests/integration/test_3d_integration.py**: 4 tests
 - **tests/integration/test_3d_integration_advanced.py**: 2 tests
 - **tests/integration/test_3d_projections.py**: 1 tests
+- **tests/integration/test_export_service_e2e.py**: 8 tests
 - **tests/integration/test_export_workflow.py**: 2 tests
 - **tests/integration/test_interpretation_workflow.py**: 3 tests
 - **tests/integration/test_measurement_workflow.py**: 2 tests
