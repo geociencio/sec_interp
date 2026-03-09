@@ -1,63 +1,61 @@
 ---
-description: Workflow para corregir automáticamente problemas de linting y formateo
+description: Workflow to automatically correct linting and formatting issues
 agent: QA Engineer
 skills: [coding-standards, qa-docker]
 validation: |
-  - Verificar que ruff y black pasen sin errores
-  - Confirmar que imports están ordenados
+  - Verify that ruff and black pass without errors
+  - Confirm that imports are sorted
 ---
 
-Este workflow automatiza la corrección de problemas de estilo y calidad de código reportados por herramientas estáticas.
+# Workflow: Fix Linting
 
-### 1. Diagnóstico Inicial
+This workflow automates the correction of style and code quality issues reported by static tools.
 
-🤖 **Agent Action**: Ejecutar análisis para identificar problemas.
+### 1. Initial Diagnosis
+
+🤖 **Agent Action**: Run analysis to identify issues.
 
 ```bash
 uv run ruff check .
 ```
 
-🤖4. **Corrección Automática QGIS Analyze**:
-   Usa el fix automático para problemas específicos de QGIS (imports, señales, logging).
-   ```bash
-   uv run qgis-analyzer fix . --apply --auto-approve
-   ```
+### 2. Automatic Correction (Auto-Fix)
 
-5. **Verificación Final**:
-   Ejecuta nuevamente los linters para asegurar que no quedaron errores residuales.
-   ```bash
-   uv run ruff check .
-   ```
-
-### 2. Corrección Automática (Auto-Fix)
-
-🤖 **Agent Action**: Aplicar correcciones automáticas seguras.
+🤖 **Agent Action**: Apply safe automatic corrections.
 
 ```bash
-# 1. Ordenar imports
+# 1. Sort imports
 uv run ruff check --select I --fix .
 
-# 2. Formatear código (Black style via Ruff)
+# 2. Format code (Black style via Ruff)
 uv run ruff format .
 
-# 3. Aplicar fixes generales (F401, E711, etc.)
+# 3. Apply general fixes (F401, E711, etc.)
 uv run ruff check --fix .
 ```
 
-### 3. Verificación Manual Asistida
+### 3. QGIS-Specific Fixes
 
-Para los errores que NO se pueden corregir automáticamente (ej: `F821 Undefined name`), el agente debe:
-1.  Identificar el archivo y línea.
-2.  Aplicar un parche específico usando `sed` o edición manual.
-3.  Verificar que la corrección no rompa la lógica.
+🤖 **Agent Action**: Use automatic fix for QGIS-specific issues (imports, signals, logging).
 
-### 4. Validación Final
+```bash
+uv run qgis-analyzer fix . --apply --auto-approve
+```
+
+### 4. Assisted Manual Correction
+
+For errors that CANNOT be corrected automatically (e.g., `F821 Undefined name`), the agent must:
+1.  Identify the file and line.
+2.  Apply a specific patch or manual edit.
+3.  Verify that the correction does not break the logic.
+
+### 5. Final Validation
 
 ```bash
 uv run ruff check . && uv run black --check .
 ```
 
-### 5. Commit de Limpieza
+### 6. Cleanup Commit
 
 ```bash
 git add .

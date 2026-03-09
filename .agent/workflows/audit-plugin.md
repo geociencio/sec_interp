@@ -1,39 +1,46 @@
 ---
 description: Perform a full or partial plugin audit using qgis-plugin-analyzer v1.9.0+.
-agent: Auditor
+agent: Agent Auditor
 skills: [project-context, coding-standards, i18n-standards]
 ---
 
-Este workflow ejecuta una serie de verificaciones estáticas especializadas para asegurar la calidad, seguridad y rendimiento del plugin.
+# Workflow: Plugin Audit
 
-### Pasos
+This workflow executes a series of specialized static checks to ensure the quality, security, and performance of the plugin.
 
-1. **Análisis de Seguridad (Bandit & Secret Scan)**
-   Escanea el código en busca de vulnerabilidades conocidas y secretos hardcodeados.
+### Steps
+
+1. **Security Analysis (Bandit & Secret Scan)**
+   Scans the code for known vulnerabilities and hardcoded secrets.
    ```bash
    uv run qgis-analyzer analyze security .
    ```
 
-2. **Auditoría de Internacionalización (i18n)**
-   Detecta cadenas de texto de usuario que no están envueltas en `self.tr()` o `QCoreApplication.translate()`.
+2. **Internationalization Audit (i18n)**
+   Detects user text strings that are not wrapped in `self.tr()` or `QCoreApplication.translate()`.
    ```bash
    uv run qgis-analyzer analyze i18n .
    ```
 
-3. **Análisis de Rendimiento (Performance)**
-   Identifica bloqueos potenciales de la UI, bucles costosos y fugas de señales (Signal Leaks).
+3. **Performance Analysis**
+   Identifies potential UI blocks, expensive loops, and signal leaks.
    ```bash
    uv run qgis-analyzer analyze performance .
    ```
 
-4. **Verificación de Arquitectura (Opcional)**
-   Analiza las dependencias entre módulos y el uso de la API de QGIS.
+4. **Architecture Verification (Optional)**
+   Analyzes dependencies between modules and QGIS API usage.
    ```bash
    uv run qgis-analyzer analyze architecture .
    ```
 
-5. **Generación de Reporte (Opcional)**
-   Genera un reporte HTML consolidado si se requieren detalles profundos.
+5. **Report Generation (Optional)**
+   Generates a consolidated HTML report if deep details are required.
    ```bash
    uv run qgis-analyzer analyze . --report
    ```
+
+## Expected Result
+- Clear identification of security risks or performance bottlenecks.
+- Verification of 100% translatable string coverage.
+- Detailed report for technical debt prioritization.

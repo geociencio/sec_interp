@@ -1,43 +1,43 @@
 ---
 name: qgis-core
-description: Conocimiento sobre la API de QGIS, estructura de plugins y procesamiento asíncrono con QgsTask.
-trigger: al trabajar con PyQGIS, capas, CRS o QgsTask.
+description: Knowledge about the QGIS API, plugin structure, and asynchronous processing with QgsTask.
+trigger: when working with PyQGIS, layers, CRS, or QgsTask.
 ---
 
-# Desarrollo Core QGIS
+# QGIS Core Development
 
-Estandariza la interacción con la API de QGIS, asegurando un plugin responsivo y bien estructurado.
+Standardizes interaction with the QGIS API, ensuring a responsive and well-structured plugin.
 
-## Cuándo usar este skill
-- Al implementar nuevas herramientas que interactúen con el lienzo del mapa.
-- Al manejar capas vectoriales o ráster.
-- Al realizar operaciones pesadas que requieran hilos secundarios.
+## When to use this skill
+- When implementing new tools that interact with the map canvas.
+- When handling vector or raster layers.
+- When performing heavy operations that require secondary threads.
 
-## Grado de Libertad
-- **Estricto**: El uso de `QgsTask` para procesos largos y el desacoplamiento Core/GUI son obligatorios.
+## Degree of Freedom
+- **Strict**: The use of `QgsTask` for long processes and Core/GUI decoupling are mandatory.
 
 ## Workflow
-1. **Arquitectura**: Separar la lógica en `core/` (procesamiento) y `gui/` (visualización).
-2. **Validación**: Siempre verificar `isValid()` en las capas antes de operar.
-3. **Asincronía**: Envolver procesos de >0.5s en una `QgsTask`.
-4. **Gestión de CRS**: Manejar explícitamente las transformaciones de coordenadas.
+1. **Architecture**: Separate logic into `core/` (processing) and `gui/` (visualization).
+2. **Validation**: Always verify `isValid()` on layers before operating.
+3. **Asynchrony**: Wrap processes > 0.5s in a `QgsTask`.
+4. **CRS Management**: Explicitly handle coordinate transformations.
 
-## Instrucciones y Reglas
+## Instructions and Rules
 
-### Reglas de Oro
-- **QgsTask**: No bloquear la UI. Usar señales y slots para comunicación.
-- **Red/Hilos**: Evitar `threading.Thread` (usar `QgsTask`) y llamadas de red síncronas (reglas `UNSAFE_THREAD` y `BLOCKING_NETWORK_CALL`).
-- **Fronteras**: Usar WKT para comunicar la lógica core con la interfaz gráfica.
-- **Modernización**: Evitar `QVariant` legacy; el analizador detectará `OBSOLETE_VARIANT`.
-- **Inyección**: Evitar el uso global de `iface`; preferir pasar objetos en constructores.
+### Golden Rules
+- **QgsTask**: Do not block the UI. Use signals and slots for communication.
+- **Network/Threads**: Avoid `threading.Thread` (use `QgsTask`) and synchronous network calls (rules `UNSAFE_THREAD` and `BLOCKING_NETWORK_CALL`).
+- **Boundaries**: Use WKT to communicate core logic with the graphical interface.
+- **Modernization**: Avoid legacy `QVariant`; the analyzer will detect `OBSOLETE_VARIANT`.
+- **Injection**: Avoid global use of `iface`; prefer passing objects in constructors.
 
-### Estructura del Plugin
-- `core/`: Lógica de negocio agnóstica a la UI.
-- `gui/`: Widgets y diálogos dependientes de PyQGIS.
-- `exporters/`: Módulos de salida de datos.
+### Plugin Structure
+- `core/`: Business logic agnostic to the UI.
+- `gui/`: Widgets and dialogs dependent on PyQGIS.
+- `exporters/`: Data output modules.
 
-## Checklist de Calidad
-- [ ] ¿Se evitan bloqueos en la interfaz mediante `QgsTask`?
-- [ ] ¿Se valida la integridad de las capas en cada operación?
-- [ ] ¿Las transformaciones de CRS están explícitamente definidas?
-- [ ] ¿Se sigue la separación de responsabilidades Core/GUI?
+## Quality Checklist
+- [ ] Is UI blocking avoided through `QgsTask`?
+- [ ] Is layer integrity validated in every operation?
+- [ ] Are CRS transformations explicitly defined?
+- [ ] Is the Core/GUI separation of responsibilities followed?

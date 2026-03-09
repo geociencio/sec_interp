@@ -23,7 +23,15 @@
 
 ---
 ## [Unreleased]
-## [2026-03-08] - Fase 3.3.0: Exporters Testing Coverage (100%)
+## [2026-03-08] - Phase 3.3.0: Agentic System Standardization & 2025 Audit
+- **Achievement**: Fully translated the internal agentic system (.agent/) to English and implemented 2025 industry enhancements (Reflection Loops & Structured Outputs).
+- **Changes**:
+    - **Documentation**: Translated 12 skills and 15 workflows to English.
+    - **Architecture**: Integrated Formalized Reflection Loops in `AGENTS.md` and "Pre-flight Self-Audit" in memory protocols.
+    - **Automation**: Formalized YAML structured completion in core workflows.
+    - **Sync**: Updated `AGENTS.md` and `QUICK_REFERENCE.md` to reflect the new standardized state.
+- **Status**: System synchronized (12 skills, 15 workflows, 535 tests OK).
+- **Maintenance**: [session_2026-03-08_system_standardization.md](maintenance/session_2026-03-08_system_standardization.md)
 - **Achievement**: Cubierta total (100%) del módulo de exportación de archivos mediante la generación de 5 nuevas suites completas de pruebas unitarias soportadas por Mocks.
 - **Changes**:
     - **Tests**: Añadidos tests unitarios exhaustivos para `ImageExporter`, `PDFExporter`, `SVGExporter`, `ShapefileExporter` e `Interpretation2DExporter`.

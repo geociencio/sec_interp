@@ -17,8 +17,8 @@ This file defines the specific roles and behaviors that the AI assistant (Antigr
 
 ## 🧪 QA & Automation Engineer
 - **Role**: Testing, Continuous Integration, and Stability Specialist.
-- **Goal**: Ensure every release v2.8.x+ is a "Zero Bug Release".
-- **Skills**: [qa-docker](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qa-docker/SKILL.md), [i18n-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/i18n-standards/SKILL.md)
+- **Goal**: Ensure every release is a "Zero Bug Release".
+- **Skills**: [qa-docker](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qa-docker/SKILL.md), [i18n-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/i18n-standards/SKILL.md), [commit-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/commit-standards/SKILL.md)
 - **Strict Guidelines**:
   - **Docker First**: All integration tests must be validated in the Docker environment (`make docker-test`).
 
@@ -41,17 +41,18 @@ This system uses technical triggers to load context on demand. Agents must consu
 <!-- SKILLS_TABLE_START -->
 | Skill | Description | Trigger (Auto-invoke) |
 | :--- | :--- | :--- |
-| [coding-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/coding-standards/SKILL.md) | Estándares de codificación del proyecto, enfocados en el uso de pathlib, docstrings de Google y tipado estricto. | al escribir código Python, realizar refactorizaciones o definir rutas de archivos. |
-| [commit-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/commit-standards/SKILL.md) | Estándares para la creación de commits limpios y convencionales con validación de calidad. | al crear commits, escribir mensajes de commit o usar el workflow /crea-commit |
-| [documentation-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/documentation-standards/SKILL.md) | Estándares para el mantenimiento de logs técnicos, registros de sesión e historial del proyecto. | al actualizar DEVELOPMENT_LOG.md, MAINTENANCE_LOG.md, CHANGELOG.md o crear reportes de sesión en docs/maintenance/. |
-| [geological-logic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/geological-logic/SKILL.md) | Estándares para el manejo de datos de sondajes, interpolación de secciones y validación de 3 niveles. | al implementar algoritmos geológicos, validación de datos o lógica de procesamiento de sondajes. |
+| [agentic-memory](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/agentic-memory/SKILL.md) | This skill allows the agent to manage its own semantic memory, extracting lessons, patterns, and user preferences to improve long-term effectiveness. | at the end of each significant session, when detecting repetitive error patterns or user preferences. |
+| [coding-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/coding-standards/SKILL.md) | Project coding standards, focused on the use of pathlib, Google docstrings, and strict typing. | when writing Python code, performing refactors, or defining file paths. |
+| [commit-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/commit-standards/SKILL.md) | Standards for creating clean and conventional commits with quality validation. | when creating commits, writing commit messages, or using the /create-commit workflow. |
+| [documentation-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/documentation-standards/SKILL.md) | Standards for maintaining technical logs, session records, and project history. | when updating DEVELOPMENT_LOG.md, MAINTENANCE_LOG.md, CHANGELOG.md or creating session reports in docs/maintenance/. |
+| [geological-logic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/geological-logic/SKILL.md) | Standards for handling drillhole data, section interpolation, and 3-level validation. | when implementing geological algorithms, data validation, or drillhole processing logic. |
 | [i18n-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/i18n-standards/SKILL.md) | Standards and best practices for internationalization (i18n) in SecInterp | N/A |
-| [project-context](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/project-context/SKILL.md) | Resumen del propósito, arquitectura y estructura del proyecto SecInterp. | al iniciar nuevas tareas, solicitar resúmenes o explicar la arquitectura del plugin. |
-| [qa-docker](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qa-docker/SKILL.md) | Estándares para pruebas en entorno Dockerizado y uso de Mocks para QGIS. | al escribir o ejecutar tests, usar mocks o manejar infraestructura Docker. |
-| [qgis-core](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qgis-core/SKILL.md) | Conocimiento sobre la API de QGIS, estructura de plugins y procesamiento asíncrono con QgsTask. | al trabajar con PyQGIS, capas, CRS o QgsTask. |
+| [project-context](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/project-context/SKILL.md) | Summary of the purpose, architecture, and structure of the SecInterp project. | when starting new tasks, requesting summaries, or explaining the plugin architecture. |
+| [qa-docker](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qa-docker/SKILL.md) | Standards for testing in a Dockerized environment and use of Mocks for QGIS. | when writing or executing tests, using mocks, or managing Docker infrastructure. |
+| [qgis-core](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qgis-core/SKILL.md) | Knowledge about the QGIS API, plugin structure, and asynchronous processing with QgsTask. | when working with PyQGIS, layers, CRS, or QgsTask. |
 | [qgis-migration-4x](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qgis-migration-4x/SKILL.md) | Expert guide for QGIS 4.x migration and agnostic API usage | N/A |
-| [release-management](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/release-management/SKILL.md) | Estándares para el proceso de liberación del plugin QGIS con validación de calidad. | al preparar lanzamientos, actualizar versiones o usar el workflow /release-plugin |
-| [ui-framework](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/ui-framework/SKILL.md) | Estándares para la interfaz personalizada de SecInterp, enfocados en creación programática y estética premium. | al modificar o crear widgets de GUI, layouts o estilos CSS. |
+| [release-management](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/release-management/SKILL.md) | Standards for the QGIS plugin release process with quality validation. | when preparing releases, updating versions, or using the /release-plugin workflow. |
+| [ui-framework](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/ui-framework/SKILL.md) | Standards for the custom SecInterp interface, focused on programmatic creation and premium aesthetics. | when modifying or creating GUI widgets, layouts, or CSS styles. |
 <!-- SKILLS_TABLE_END -->
 
 ---
@@ -62,22 +63,28 @@ Workflows in `.agent/workflows/` are designed to automatically invoke the approp
 
 ### Workflow Execution Protocol
 
-When a user invokes a workflow (e.g., `/inicia-sesion`), the system:
+When a user invokes a workflow (e.g., `/start-session`), the system:
 
 1. **Parse Frontmatter**: Reads `agent`, `skills`, and `validation` from the `.md` file.
 2. **Activate Agent**: Loads the specified role (Senior Architect / QA Engineer).
 3. **Load Skills**: Reads the specified `SKILL.md` files for specialized context.
 4. **Execute Steps**: Follows the workflow with enriched knowledge.
 5. **Validate**: Executes validation checkpoints defined in the frontmatter.
+6. **Reflection & Learning**:
+   - The agent MUST review `AGENT_LESSONS.md` to incorporate insights.
+   - Summarize lessons learned during the task to update the project's semantic memory.
 
 ### Available Workflows
 
 | Workflow | Agent | Skills | Purpose |
 | :--- | :--- | :--- | :--- |
-| [/inicia-sesion](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/inicia-sesion.md) | Senior Architect | qgis-core, qa-docker | Start session with synchronized context |
-| [/crea-commit](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/crea-commit.md) | QA Engineer | qa-docker | Commit with quality validation |
+| [/start-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-session.md) | Senior Architect | qgis-core, qa-docker | Start session with synchronized context |
+| [/close-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-session.md) | QA Engineer | qa-docker, commit-standards | Close session with updated logs |
+| [/create-commit](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/create-commit.md) | QA Engineer | qa-docker, commit-standards | Commit with quality validation |
 | [/run-tests](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests.md) | QA Engineer | qa-docker | Run tests with intelligent interpretation |
 | [/refactor-code](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/refactor-code.md) | Senior Architect | qgis-core, geological-logic | Refactor code with complexity validation |
+| [/release-plugin](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/release-plugin.md) | QA Engineer | release-management, qa-docker | Full release process |
+| [/verify-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/verify-standards.md) | Senior Architect | coding-standards | Audit agent system consistency |
 
 ### Agent Action Annotations
 

@@ -1,34 +1,34 @@
 ---
 name: commit-standards
-description: Estándares para la creación de commits limpios y convencionales con validación de calidad.
-trigger: al crear commits, escribir mensajes de commit o usar el workflow /crea-commit
+description: Standards for creating clean and conventional commits with quality validation.
+trigger: when creating commits, writing commit messages, or using the /create-commit workflow.
 ---
 
-# Estándares de Commit
+# Commit Standards
 
-Estandariza el historial de Git asegurando que cada cambio sea rastreable, legible y cumpla con las normas de calidad antes de ser integrado.
+Standardizes the Git history ensuring each change is traceable, readable, and meets quality standards before being integrated.
 
-## Cuándo usar este skill
-- Al redactar mensajes de commit para cambios en el código o documentación.
-- Antes de realizar un `git commit` para asegurar que se han cumplido los pasos de calidad.
-- Al usar el workflow `/crea-commit` o `/crea-el-comit`.
+## When to use this skill
+- When writing commit messages for changes in code or documentation.
+- Before performing a `git commit` to ensure quality steps have been met.
+- When using the `/create-commit` workflow.
 
-## Grado de Libertad
-- **Estricto**: El formato Conventional Commits y las reglas de idioma (EN para el mensaje) deben seguirse al pie de la letra.
+## Degree of Freedom
+- **Strict**: Conventional Commits format and language rules (EN for the message) must be followed strictly.
 
 ## Workflow
-1. **Validación Previa**: Ejecutar linters (`ruff`, `black`) y validación de métricas (`ai-ctx analyze`).
-2. **Pruebas**: Confirmar que los tests pasan (`make docker-test`).
-3. **Formateo**: Redactar el mensaje siguiendo la especificación de Conventional Commits.
-4. **Revisión**: Verificar que el mensaje use el tiempo imperativo y descripción en minúsculas.
+1. **Pre-Validation**: Run linters (`ruff`, `black`) and metric validation (`ai-ctx analyze`).
+2. **Testing**: Confirm that tests pass (`make docker-test`).
+3. **Formatting**: Write the message following the Conventional Commits specification.
+4. **Review**: Verify that the message uses imperative mood and a lowercase description.
 
-## Instrucciones y Reglas
+## Instructions and Rules
 
-### Regla de Idioma
+### Language Rule
 > [!IMPORTANT]
-> Todos los mensajes de commit DEBEN escribirse en **Inglés**.
+> All commit messages MUST be written in **English**.
 
-### Formato Conventional Commits
+### Conventional Commits Format
 ```text
 <type>[optional scope]: <description>
 
@@ -37,19 +37,19 @@ Estandariza el historial de Git asegurando que cada cambio sea rastreable, legib
 [optional footer(s)]
 ```
 
-### Tipos de Commit
-| Tipo | Uso | Ejemplo |
+### Commit Types
+| Type | Usage | Example |
 |:-----|:------|:--------|
-| `feat` | Nueva funcionalidad | `feat(ui): add legend visibility toggle` |
-| `fix` | Corrección de error | `fix(drillhole): correct azimuth calculation` |
-| `refactor` | Cambio de código (ni fix ni feat) | `refactor(core): reduce complexity in service` |
-| `docs` | Solo documentación | `docs(api): update docstrings` |
-| `style` | Formateo, espacios | `style: apply black formatting` |
-| `test` | Añadir/corregir tests | `test(integration): add coverage` |
-| `chore` | Tareas de mantenimiento | `chore: update uv dependencies` |
+| `feat` | New functionality | `feat(ui): add legend visibility toggle` |
+| `fix` | Bug fix | `fix(drillhole): correct azimuth calculation` |
+| `refactor` | Code change (neither fix nor feat) | `refactor(core): reduce complexity in service` |
+| `docs` | Documentation only | `docs(api): update docstrings` |
+| `style` | Formatting, whitespace | `style: apply black formatting` |
+| `test` | Add/fix tests | `test(integration): add coverage` |
+| `chore` | Maintenance tasks | `chore: update uv dependencies` |
 
-## Checklist de Calidad
-- [ ] ¿El mensaje está en inglés e imperativo?
-- [ ] ¿Se han ejecutado `ruff` y `black`?
-- [ ] ¿Los tests pasan satisfactoriamente?
-- [ ] ¿El score de calidad no ha disminuido críticamente?
+## Quality Checklist
+- [ ] Is the message in English and imperative?
+- [ ] Have `ruff` and `black` been executed?
+- [ ] Do tests pass successfully?
+- [ ] Has the quality score not decreased critically?

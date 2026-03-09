@@ -8,6 +8,8 @@ validation: |
   - Validate that .agent/next_steps.md exists and has clear content
 ---
 
+# Workflow: Close Session
+
 This workflow closes the development cycle, converting technical work into historical memory for the next session.
 
 ### 1. Memory Update (Logs & Roadmap)
@@ -15,16 +17,15 @@ This workflow closes the development cycle, converting technical work into histo
 🤖 **Agent Action**: Validate that all critical files are updated.
 
 *   **Session Topic**: Define a short name for the session (e.g., `stabilization_mocks`).
-*   **`docs/plans/implementation_plan_vX.Y.Z.md`**: **[CRITICAL]** Update task status (mark completed ones with `[x]`).
+*   **Active Implementation Plan**: Update task status in the current plan.
 *   **Task Persistence**:
     *   Ensure `.agent/task.md` reflects actual progress.
     *   If a major phase was completed, archive it in `.agent/history/tasks/`.
     *   **DO NOT DELETE** this file if the phase continues.
 *   **`.agent/next_steps.md`**: **[CRITICAL]** Create or update this file with the "handover": what's missing, what errors are pending, and what command to resume.
 *   **Next Steps Archiving**: Copy `.agent/next_steps.md` to `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` to maintain a historical record.
-*   **`docs/maintenance/sesion_YYYY-MM-DD_[TOPIC].md`**: **[MANDATORY]** Create this file with the session's technical summary.
-*   **`docs/DEVELOPMENT_LOG.md`**: **[CRÍTICO]** Add entry following the `documentation-standards` format.
-*   **`docs/source/MAINTENANCE_LOG.md`**: Update infrastructure changes following the `documentation-standards` format.
+*   **`docs/maintenance/session_YYYY-MM-DD_[TOPIC].md`**: **[MANDATORY]** Create this file with the session's technical summary.
+*   **`docs/DEVELOPMENT_LOG.md`**: **[CRITICAL]** Add entry following the `documentation-standards` format.
 *   **`docs/CHANGELOG.md`**: Record user-visible changes in `[Unreleased]`.
 
 ### 2. Final Verification (Safety Net)
@@ -94,9 +95,9 @@ git commit -m "chore(docs): close session [TOPIC]"
 
 Generate a final message listing:
 *   Updated log files.
-*   Test status (e.g., 450 tests OK).
+*   Test status (e.g., 535 tests OK).
 *   Content of `.agent/next_steps.md`.
-*   Suggestion for the next session (command `/inicia-sesion`).
+*   Suggestion for the next session (command `/start-session`).
 
 ## Expected Result
 - Session memory persisted in Logs and `next_steps.md`.

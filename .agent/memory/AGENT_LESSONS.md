@@ -11,6 +11,12 @@ This file records technical lessons, user preferences, and solutions to complex 
     lesson: "When testing exporters like ImageExporter or PDFExporter, native Qt objects like QImage, QPainter, or QPdfWriter require precise mock attributes (e.g. SmoothPixmapTransform, save) to avoid exceptions."
     action: "Always enrich tests/mocks/qt_mocks.py with the specific methods and attributes that the QGIS custom painter jobs expect."
 
+  - date: 2026-03-08
+    category: ARCHITECTURE
+    topic: System Standardization & Reflection
+    lesson: "A purely English-based agentic system improves context injection and reduces parsing ambiguity. Implementing formalized reflection loops (post-execution) allows for better semantic memory retention."
+    action: "Adopt English as the universal standard for internal system files. Maintain a mandatory reflection phase in all core workflows."
+
   - date: 2026-02-01
     category: ARCHITECTURE
     topic: Skill Localization
@@ -74,7 +80,7 @@ This file records technical lessons, user preferences, and solutions to complex 
 
 ## ⚙️ Configuración Global de Preferencias
 
-- **Language**: Communication (Spanish), Code/Commits (English).
+- **Language**: Communication (Spanish), Code/Commits/Docs (English).
 - **Standards**: Google Docstrings, Pathlib, Strict Typing.
 - **Workflow**: Starts with `/inicia-sesion`, Closes with `/cierra-sesion`.
 

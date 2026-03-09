@@ -1,42 +1,42 @@
 ---
 name: project-context
-description: Resumen del propósito, arquitectura y estructura del proyecto SecInterp.
-trigger: al iniciar nuevas tareas, solicitar resúmenes o explicar la arquitectura del plugin.
+description: Summary of the purpose, architecture, and structure of the SecInterp project.
+trigger: when starting new tasks, requesting summaries, or explaining the plugin architecture.
 ---
 
-# Contexto del Proyecto SecInterp
+# SecInterp Project Context
 
-Proporciona una visión integral del plugin de QGIS para interpretación de secciones geológicas, facilitando la toma de decisiones arquitectónicas coherentes.
+Provides a comprehensive view of the QGIS plugin for geological section interpretation, facilitating consistent architectural decision-making.
 
-## Cuándo usar este skill
-- Al inicio de una sesión para refrescar la arquitectura.
-- Al proponer cambios estructurales o nuevas integraciones.
-- Cuando el usuario solicita un estado actual del proyecto.
+## When to use this skill
+- At the start of a session to refresh architectural knowledge.
+- When proposing structural changes or new integrations.
+- When the user requests the current project status.
 
-## Grado de Libertad
-- **Guiado**: Utilizar esta información como marco de referencia para proponer soluciones alineadas con la visión del proyecto.
+## Degree of Freedom
+- **Guided**: Use this information as a reference frame to propose solutions aligned with the project's vision.
 
 ## Workflow
-1. **Lectura**: Consultar `AI_CONTEXT.md` y `PROJECT_SUMMARY.md`.
-2. **Análisis**: Identificar los límites entre `core`, `gui` y `exporters`.
-3. **Validación**: Asegurar que las nuevas propuestas no violen el desacoplamiento definido.
+1. **Reading**: Consult `AI_CONTEXT.md` and `PROJECT_SUMMARY.md`.
+2. **Analysis**: Identify boundaries between `core`, `gui`, and `exporters`.
+3. **Validation**: Ensure new proposals do not violate defined decoupling.
 
-## Instrucciones y Reglas
+## Instructions and Rules
 
-### Propósito
-SecInterp es una herramienta avanzada para geólogos que permite interpolar datos de sondajes en secciones 2D/3D dentro de QGIS, optimizando el flujo de trabajo de modelamiento.
+### Purpose
+SecInterp is an advanced tool for geologists that allows for the interpolation of drillhole data into 2D/3D sections within QGIS, optimizing the modeling workflow.
 
-### Arquitectura Core
-- **Local First**: Prioriza el rendimiento local y el manejo eficiente de memoria.
-- **Agnóstico a la UI**: El núcleo del procesamiento debe funcionar sin depender de elementos gráficos de Qt.
-- **Validación de 3 Niveles**: (Tipo, Esquema, Negocio) en todos los servicios de dominio.
+### Core Architecture
+- **Local First**: Prioritizes local performance and efficient memory management.
+- **UI-Agnostic**: The processing core must function independently of Qt graphics elements.
+- **3-Level Validation**: (Type, Schema, Business) in all domain services.
 
-### Estructura de Carpetas
-- `core/`: Cerebro del plugin (servidores, lógica de sondajes).
-- `gui/`: Interfaz de usuario dinámica y responsiva.
-- `exporters/`: Lógica de exportación multi-formato.
+### Folder Structure
+- `core/`: Plugin brain (servers, drillhole logic).
+- `gui/`: Dynamic and responsive user interface.
+- `exporters/`: Multi-format export logic.
 
-## Checklist de Calidad
-- [ ] ¿La propuesta respeta la separación Core/GUI?
-- [ ] ¿Se alinea con la visión "Local First"?
-- [ ] ¿Se mantiene la integridad de la validación de 3 niveles?
+## Quality Checklist
+- [ ] Does the proposal respect Core/GUI separation?
+- [ ] Does it align with the "Local First" vision?
+- [ ] Is 3-level validation integrity maintained?

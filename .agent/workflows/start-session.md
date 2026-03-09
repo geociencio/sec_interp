@@ -8,6 +8,8 @@ validation: |
   - Validate that there are no regressions in cyclomatic complexity
 ---
 
+# Workflow: Start Session
+
 This workflow optimizes the start of development by ensuring a synchronized, **contextualized**, and validated environment.
 
 ### 1. Context Tuning (CRITICAL)
@@ -36,7 +38,6 @@ Review the following files in this order:
 *   `AI_CONTEXT.md`: Architectural context and long-term metrics.
 *   `project_context.json`: Structured data on complexity and dependencies.
 *   `docs/DEVELOPMENT_LOG.md`: See summary of the last session (reverse chronological order).
-*   `docs/LOGGING_GUIDELINES.md`: Follow strictly for recording new activities.
 
 ### 2. Quick Quality Scan
 Perform a quick scan of the project status to identify critical technical debt.
@@ -73,5 +74,16 @@ env PYTHONPATH=.. uv run python3 -m unittest discover tests
 - Synchronized and validated environment (All tests OK).
 - Clear mental map of pending tasks in `next_steps.md`.
 - Agent operating with the correct profiles and skills loaded.
+
+## Structured Session Status
+🤖 **Agent Action**: Conclude the initialization with:
+```yaml
+session_init: success
+context_sync: complete
+active_task: [task_name]
+current_metrics:
+  tests: 535
+  quality_score: X
+```
 
 **Philosophy**: Start coding knowing *exactly* what happened yesterday and with specialized context loaded.

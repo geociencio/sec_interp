@@ -8,6 +8,8 @@ validation: |
   - Validate that the commit message follows Conventional Commits
 ---
 
+# Workflow: Create Commit
+
 This workflow describes the process for committing changes, ensuring code quality standards are met without getting blocked by pre-commit hook conflicts.
 
 ### 1. Preparation and Cleanup (Automatic)
@@ -62,5 +64,14 @@ git commit -m "type(scope): description" -m "detailed body"
 1. Review the detected error messages.
 2. Run `git add` again if there were automatic changes.
 3. Repeat the commit.
+
+### 6. Structured Completion
+🤖 **Agent Action**: Provide a final summary in the following YAML format:
+```yaml
+commit_status: success
+files_changed: [list]
+conventional_type: fix | feat | docs | style | etc
+tests_verified: true/false
+```
 
 **Philosophy**: Each commit is a clean unit of value, documented and metrically validated.

@@ -1,41 +1,41 @@
 ---
 name: ui-framework
-description: Estándares para la interfaz personalizada de SecInterp, enfocados en creación programática y estética premium.
-trigger: al modificar o crear widgets de GUI, layouts o estilos CSS.
+description: Standards for the custom SecInterp interface, focused on programmatic creation and premium aesthetics.
+trigger: when modifying or creating GUI widgets, layouts, or CSS styles.
 ---
 
-# Framework de UI y UX
+# UI and UX Framework
 
-Define las reglas para crear interfaces de usuario elegantes, responsivas y eficientes dentro de QGIS, priorizando el control total mediante código.
+Defines the rules for creating elegant, responsive, and efficient user interfaces within QGIS, prioritizing full control through code.
 
-## Cuándo usar este skill
-- Al diseñar nuevos diálogos o paneles de herramientas.
-- Al aplicar estilos visuales o animaciones sutiles.
-- Al mejorar la usabilidad de widgets existentes.
+## When to use this skill
+- When designing new dialogs or tool panels.
+- When applying visual styles or subtle animations.
+- When improving the usability of existing widgets.
 
-## Grado de Libertad
-- **Guiado**: Se fomenta la creatividad en el diseño visual siempre que se respete la creación programática y la responsividad.
+## Degree of Freedom
+- **Guided**: Visual design creativity is encouraged as long as programmatic creation and responsiveness are respected.
 
 ## Workflow
-1. **Diseño**: Bocetar la estructura de layouts (HBox, VBox, Grid).
-2. **Implementación**: Crear widgets programáticamente (evitar archivos `.ui`).
-3. **Estilo**: Aplicar CSS personalizado para una apariencia "premium".
-4. **Validación**: Asegurar hilos seguros y feedback visual al usuario.
+1. **Design**: Sketch the layout structure (HBox, VBox, Grid).
+2. **Implementation**: Create widgets programmatically (avoid `.ui` files).
+3. **Style**: Apply custom CSS for a "premium" appearance.
+4. **Validation**: Ensure thread safety and visual feedback to the user.
 
-## Instrucciones y Reglas
+## Instructions and Rules
 
-### Principios de Diseño
-- **Programático**: No usar Qt Designer. Todo el diseño vive en el código Python.
-- **Responsividad**: El diálogo debe adaptarse a diferentes tamaños de ventana.
-- **Feedback**: Indicadores visuales claros para estados de validación o carga.
+### Design Principles
+- **Programmatic**: Do not use Qt Designer. The entire design lives in Python code.
+- **Responsiveness**: The dialog must adapt to different window sizes.
+- **Feedback**: Clear visual indicators for validation or loading states.
 
-### Estándares de Componentes
-- **Tooltips**: Obligatorios en cada elemento interactivo.
-- **Iconografía**: Usar recursos estandarizados del proyecto.
-- **Asincronía**: Actualizaciones de UI mediante señales/slots desde hilos secundarios.
+### Component Standards
+- **Tooltips**: Mandatory for every interactive element.
+- **Iconography**: Use standardized project resources.
+- **Asynchrony**: UI updates via signals/slots from secondary threads.
 
-## Checklist de Calidad
-- [ ] ¿Se ha evitado el uso de archivos `.ui`?
-- [ ] ¿La interfaz es responsiva ante cambios de tamaño?
-- [ ] ¿Existen tooltips para todos los elementos de interacción?
-- [ ] ¿Las actualizaciones son seguras en términos de hilos (thread-safe)?
+## Quality Checklist
+- [ ] Has the use of `.ui` files been avoided?
+- [ ] Is the interface responsive to resize changes?
+- [ ] Are there tooltips for all interaction elements?
+- [ ] Are updates thread-safe?

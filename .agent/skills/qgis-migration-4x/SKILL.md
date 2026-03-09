@@ -5,55 +5,55 @@ description: Expert guide for QGIS 4.x migration and agnostic API usage
 
 # Skill: QGIS Migration & Future-Proofing (4.x)
 
-Esta skill proporciona las directrices técnicas para preparar el código de SecInterp para la próxima versión mayor de QGIS (4.x), enfocándose en la eliminación de deuda técnica relacionada con cambios de API y dependencias de Qt.
+This skill provides technical guidelines to prepare the SecInterp code for the next major version of QGIS (4.x), focusing on the elimination of technical debt related to API changes and Qt dependencies.
 
-## 1. Principio "API Agnostic"
+## 1. "API Agnostic" Principle
 
-El código debe ser agnóstico de la versión subyacente de Qt (Qt5 vs Qt6) siempre que sea posible. QGIS proporciona proxies para esto.
+Code should be agnostic of the underlying Qt version (Qt5 vs. Qt6) whenever possible. QGIS provides proxies for this.
 
-### Regla de Oro: Imports de Qt
-❌ **PROHIBIDO**: Importar directamente de `PyQt5` o `PyQt6`.
-✅ **OBLIGATORIO**: Importar desde `qgis.PyQt`.
+### Golden Rule: Qt Imports
+❌ **FORBIDDEN**: Importing directly from `PyQt5` or `PyQt6`.
+✅ **MANDATORY**: Importing from `qgis.PyQt`.
 
-**Ejemplo Incorrecto**:
+**Incorrect Example**:
 ```python
 from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QWidget
 ```
 
-**Ejemplo Correcto**:
+**Correct Example**:
 ```python
 from qgis.PyQt.QtCore import pyqtSignal, QObject
 from qgis.PyQt.QtWidgets import QWidget
 ```
 
-Esto asegura que cuando QGIS migre a Qt6, el código funcionará sin cambios (siempre que QGIS mantenga el shim).
+This ensures that when QGIS migrates to Qt6, the code will work without changes (as long as QGIS maintains the shim).
 
-## 2. Cambios de API Detectados (v3 -> v4)
+## 2. Detected API Changes (v3 -> v4)
 
 ### 2.1. QgsProject
-*   Evitar `QgsProject.instance()` en loops cerrados o métodos estáticos si es posible pasar la instancia explícitamente. Implementar inyección de dependencias.
+*   Avoid `QgsProject.instance()` in tight loops or static methods if it's possible to pass the instance explicitly. Implement dependency injection.
 
-### 2.2. Procesamiento en Segundo Plano
-*   Cualquier cálculo que tome > 100ms debe usar `QgsTask`.
-*   La UI nunca debe bloquearse.
-*   Uso estricto de `QgsTask.fromFunction` o subclases de `QgsTask` con señales `finished`.
+### 2.2. Background Processing
+*   Any calculation taking > 100ms must use `QgsTask`.
+*   The UI must never be blocked.
+*   Strict use of `QgsTask.fromFunction` or `QgsTask` subclasses with `finished` signals.
 
-## 3. Estrategia de Refactorización
+## 3. Refactoring Strategy
 
-### Fase 1: Limpieza de Imports (Inmediato)
-Ejecutar scripts o refactorizaciones manuales para normalizar todos los imports de `PyQt`.
+### Phase 1: Import Cleanup (Immediate)
+Run scripts or manual refactors to normalize all `PyQt` imports.
 
-### Fase 2: Eliminación de Deprecados (Continuo)
-Monitorear los warnings de deprecación en la consola de QGIS y actuar inmediatamente.
-*   Configurar `pytest` para fallar ante `DeprecationWarning` de módulos `qgis.*`.
+### Phase 2: Deprecated Removal (Ongoing)
+Monitor deprecation warnings in the QGIS console and act immediately.
+*   Configure `pytest` to fail on `DeprecationWarning` from `qgis.*` modules.
 
-### Fase 3: Recursos (resources.py)
-Recompilar `resources.qrc` usando herramientas que soporten la abstracción de Qt, o asegurar que el compilador (`pyrcc5`) sea compatible con el entorno de ejecución.
+### Phase 3: Resources (resources.py)
+Recompile `resources.qrc` using tools that support Qt abstraction, or ensure the compiler (`pyrcc5`) is compatible with the execution environment.
 
-## 4. Checklist de Migración
+## 4. Migration Checklist
 
-- [ ] Todos los imports de Qt provienen de `qgis.PyQt`.
-- [ ] No hay uso de métodos marcados como `@deprecated` en la documentación de QGIS 3.34+.
-- [ ] Los tests de integración corren sin emitir `DeprecationWarning`.
-- [ ] La UI es responsive y no bloquea el hilo principal.
+- [ ] All Qt imports come from `qgis.PyQt`.
+- [ ] No use of methods marked as `@deprecated` in QGIS 3.34+ documentation.
+- [ ] Integration tests run without emitting `DeprecationWarning`.
+- [ ] The UI is responsive and does not block the main thread.

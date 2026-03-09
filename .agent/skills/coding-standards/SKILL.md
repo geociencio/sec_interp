@@ -1,54 +1,54 @@
 ---
 name: coding-standards
-description: Estándares de codificación del proyecto, enfocados en el uso de pathlib, docstrings de Google y tipado estricto.
-trigger: al escribir código Python, realizar refactorizaciones o definir rutas de archivos.
+description: Project coding standards, focused on the use of pathlib, Google docstrings, and strict typing.
+trigger: when writing Python code, performing refactors, or defining file paths.
 ---
 
-# Estándares de Codificación
+# Coding Standards
 
-Define las normas técnicas para asegurar un código Python moderno, mantenible y coherente en todo el plugin SecInterp.
+Defines the technical rules to ensure modern, maintainable, and consistent Python code throughout the SecInterp plugin.
 
-## Cuándo usar este skill
-- Al crear nuevos módulos o funciones en Python.
-- Al realizar refactorizaciones de código existente.
-- Al definir rutas de archivos o manipular el sistema de archivos.
+## When to use this skill
+- When creating new Python modules or functions.
+- When refactoring existing code.
+- When defining file paths or manipulating the file system.
 
-## Grado de Libertad
-- **Estricto**: El uso de `pathlib`, Google Docstrings y Type Hints es obligatorio.
+## Degree of Freedom
+- **Strict**: The use of `pathlib`, Google Docstrings, and Type Hints is mandatory.
 
 ## Workflow
-1. **Tipado**: Añadir anotaciones de tipos (Type Hints) a todos los argumentos y retornos.
-2. **Documentación**: Redactar docstrings siguiendo el formato de Google.
-3. **Rutas**: Reemplazar manipulaciones de strings u `os.path` por objetos `pathlib.Path`.
-4. **Validación**: Ejecutar `black .` y `ruff check .` para confirmar el cumplimiento.
-5. **Auditoría**: Usar `qgis-analyzer analyze i18n` para nuevos strings y `security` para código sensible.
+1. **Typing**: Add type annotations (Type Hints) to all arguments and return values.
+2. **Documentation**: Write docstrings following the Google format.
+3. **Paths**: Replace string manipulations or `os.path` with `pathlib.Path` objects.
+4. **Validation**: Run `black .` and `ruff check .` to confirm compliance.
+5. **Audit**: Use `qgis-analyzer analyze i18n` for new strings and `security` for sensitive code.
 
-## Instrucciones y Reglas
+## Instructions and Rules
 
 ### Modern Python (Pathlib)
-- NUNCA usar concatenación de strings para rutas.
-- Usar `/` para unir rutas con `Path`.
-- Ejemplo: `base_dir / "data" / "file.txt"`.
+- NEVER use string concatenation for paths.
+- Use `/` to join paths with `Path`.
+- Example: `base_dir / "data" / "file.txt"`.
 
-### Documentación (Google Style)
+### Documentation (Google Style)
 ```python
 def function(arg1: int) -> str:
-    """Resumen corto.
+    """Short summary.
 
     Args:
-        arg1: Descripción del argumento.
+        arg1: Argument description.
 
     Returns:
-        Descripción del retorno.
+        Return value description.
     """
 ```
 
-### Calidad de Código
-- Seguir principios SOLID.
-- Mantener la complejidad ciclomática por debajo de 15.
+### Code Quality
+- Follow SOLID principles.
+- Keep cyclomatic complexity below 15.
 
-## Checklist de Calidad
-- [ ] ¿Se usa `pathlib` para todas las rutas?
-- [ ] ¿Todas las funciones tienen Type Hints?
-- [ ] ¿Los docstrings siguen el formato de Google?
-- [ ] ¿El código pasa el chequeo de `ruff` y `black`?
+## Quality Checklist
+- [ ] Is `pathlib` used for all paths?
+- [ ] Do all functions have Type Hints?
+- [ ] Do docstrings follow the Google format?
+- [ ] Does the code pass `ruff` and `black` checks?

@@ -1,31 +1,35 @@
 ---
-description: Workflow para revisión crítica de planes de implementación por el Agent Auditor
+description: Workflow for critical review of implementation plans by the Agent Auditor
 agent: Agent Auditor
 skills: [coding-standards, project-context, agentic-memory]
 validation: |
-  - Verificar que el plan cumple con la separación Core/GUI
-  - Validar que no hay deuda técnica obvia introducida
-  - Confirmar que las lecciones de AGENT_LESSONS.md fueron tomadas en cuenta
+  - Verify that the plan complies with Core/GUI separation
+  - Validate that no obvious technical debt is introduced
+  - Confirm that lessons from AGENT_LESSONS.md were taken into account
 ---
 
-Este workflow debe ejecutarse tras la creación de un `implementation_plan.md` pero antes de iniciar la `EXECUTION`.
+# Workflow: AI Critic (Implementation Plan Audit)
 
-1.  **Carga de Contexto Crítico**:
-    🤖 **Agent Action**: Cargar `AGENT_LESSONS.md` y buscar lecciones relevantes para el plan actual.
+This workflow must be executed after creating an `implementation_plan.md` but before starting `EXECUTION`.
 
-2.  **Análisis de Cumplimiento**:
-    🤖 **Agent Action**: Contrastar el plan contra los estándares de codificación (Pathlib, Typing, Google Docstrings).
+### Steps
 
-3.  **Detección de Riesgos**:
-    *   ¿Introduce dependencias de QGIS en `core/`?
-    *   ¿Propone cambios que rompan la compatibilidad con QGIS 4.x (PyQt5)?
-    *   ¿El plan de verificación es suficiente?
+1. **Critical Context Loading**:
+   🤖 **Agent Action**: Load `AGENT_LESSONS.md` and look for lessons relevant to the current plan.
 
-4.  **Emisión de Veredicto**:
-    🤖 **Agent Action**: Generar un reporte de auditoría indicando:
-    *   **PASSED**: El plan es sólido.
-    *   **FAILED**: El plan requiere correcciones específicas.
-    *   **OBSERVATIONS**: Sugerencias de mejora no críticas.
+2. **Compliance Analysis**:
+   🤖 **Agent Action**: Contrast the plan against coding standards (Pathlib, Typing, Google Docstrings).
+
+3. **Risk Detection**:
+   - Does it introduce QGIS dependencies in `core/`?
+   - Does it propose changes that break QGIS 4.x compatibility (shim usage)?
+   - Is the verification plan sufficient?
+
+4. **Verdict Issuance**:
+   🤖 **Agent Action**: Generate an audit report indicating:
+   - **PASSED**: The plan is solid.
+   - **FAILED**: The plan requires specific corrections.
+   - **OBSERVATIONS**: Non-critical improvement suggestions.
 
 ---
-*Filosofía: Es mejor encontrar un error en el plano que en la obra.*
+*Philosophy: It is better to find an error in the blueprint than in the building.*
