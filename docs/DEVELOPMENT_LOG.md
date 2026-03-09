@@ -23,6 +23,17 @@
 
 ---
 ## [Unreleased]
+## [2026-03-08] - Fase 3.3.0: Estabilidad de Recursos y Ciclo de Vida (Fase 1 completada)
+- **Logro**: Finalizada exitosamente la Fase 1 resolviendo múltiples problemas de ciclo de vida de la GUI y restaurando la robustez de las exportaciones.
+- **Cambios**:
+    - **Memory Safety**: Implementada limpieza exhaustiva de memoria en `closeEvent` (fugas de `QgsRubberBand`).
+    - **GUI Lifecycle**: Creados sistemas idempotentes en `ToolManager` y `SignalManager` permitiendo re-ejecuciones limpias.
+    - **Data Models**: Refactorizadas las `Interpretation` para utilizar capas vectoriales mock estándares y asegurar compatibilidad de exportación.
+    - **Export Services**: Extendida la exportación 2D y 3D de sondajes para reconocer las instancias `DrillholeProjection` además de tuplas primitivas.
+- **Estado**: Fase 1 estable con 409 tests pasando (100%).
+- **Mantenimiento**: [sesion_2026-03-08_phase1_stability.md](maintenance/sesion_2026-03-08_phase1_stability.md)
+
+---
 ## [2026-03-01] - Phase 3.2.0/3.2.1: Testing Expansion (Afternoon)
 - **Achievement**: Reached milestone of 450 tests OK in Docker and automated testing documentation.
 - **Changes**:

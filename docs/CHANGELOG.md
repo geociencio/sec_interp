@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- *[Pending documentation during phase]*
+- **Testing**: 4 new specific GUI tests to protect integration of Signal Restoration, Interpretation Exports, and Multi-Session Persistence.
 
 ### Changed
-- *[Pending documentation during phase]*
+- **Architecture**: Redesigned signal lifecycle handling internally within pages via `connect_signals()` method.
+- **Data Model**: Interpretations are now real `QgsVectorLayer` instances under the hood for clean 2D/3D serialization.
 
 ### Fixed
-- *[Pending documentation during phase]*
+- **Stability**: Resolved major UI memory leak tracking missing explicit removal of measurement rubber bands.
+- **Stability**: Fixed GUI crash causing the plugin map tools to become unresponsive after reloading without restarting QGIS.
+- **Export**: Fixed `TypeError` preventing export of 3D drillhole traces and intervals due to object schema mismatch.
 
 ---
 
