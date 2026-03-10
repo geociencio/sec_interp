@@ -60,3 +60,49 @@ class TestSignalRestoration(unittest.TestCase):
         self.assertFalse(settings_page.chk_enable_3d.isChecked())
         self.assertTrue(settings_page.chk_3d_traces.isChecked())
         self.assertFalse(settings_page.chk_3d_projected.isChecked())
+
+    def test_preview_signals_wire(self):
+        """Test that PreviewWidget signals are reconnected by SignalManager."""
+        with (
+            patch.object(self.dialog.preview_widget, "connect_signals") as mock_connect,
+            patch.object(
+                self.dialog.preview_widget, "disconnect_signals"
+            ) as mock_disconnect,
+        ):
+
+            # This should trigger the calls
+            self.dialog.signal_manager.connect_all()
+
+            # Verify SignalManager integration
+            mock_disconnect.assert_called()
+            mock_connect.assert_called()
+
+    def test_preview_manager_signals_wire(self):
+        """Test that PreviewManager signals are reconnected by SignalManager."""
+        with (
+            patch.object(
+                self.dialog.preview_manager, "connect_signals"
+            ) as mock_connect,
+            patch.object(
+                self.dialog.preview_manager, "disconnect_signals"
+            ) as mock_disconnect,
+        ):
+
+            self.dialog.signal_manager.connect_all()
+
+            # Verify SignalManager integration
+            mock_disconnect.assert_called()
+            mock_connect.assert_called()
+
+    def test_preview_widget_connect_logic(self):
+        """Test the internal connection logic of PreviewWidget."""
+        widget = self.dialog.preview_widget
+        with patch.object(widget, "_update_coords") as mock_coords:
+            # Re-run connection to bind the mock
+            widget.connect_signals()
+
+            from qgis.core import QgsPointXY
+
+            widget.canvas.xyCoordinates.emit(QgsPointXY(123, 456))
+
+            mock_coords.assert_called_once()

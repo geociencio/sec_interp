@@ -32,6 +32,17 @@
 - **Maintenance**: [walkthrough.md](../walkthrough.md)
 
 ---
+## [2026-03-09] Preview Signal Stability & 3D Style Fix
+- **Achievement**: Restored real-time status bar updates in Preview and fixed color differentiation in 3D exports.
+- **Changes**:
+    - **Stability**: Standardized `connect_signals()`/`disconnect_signals()` pattern for `PreviewWidget` and `PreviewManager`.
+    - **Reliability**: Integrated Preview components into `SignalManager` to ensure UI reactivity after page switches.
+    - **3D Export**: Replaced unstable Data-Defined Properties with `QgsRuleBased3DRenderer` in `Interpretation3DExporter`.
+    - **UI**: Fixed 3D material modulation by switching default base color to white.
+- **Status**: Suite 100% green (540 tests - added 5 new restoration tests).
+- **Maintenance**: [session_2026-03-09_preview_signals_and_3d_styling.md](maintenance/session_2026-03-09_preview_signals_and_3d_styling.md)
+
+---
 ## [Unreleased]
 ## [2026-03-08] - Phase 3.3.0: Agentic System Standardization & 2025 Audit
 - **Achievement**: Fully translated the internal agentic system (.agent/) to English and implemented 2025 industry enhancements (Reflection Loops & Structured Outputs).

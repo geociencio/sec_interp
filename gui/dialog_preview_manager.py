@@ -76,22 +76,30 @@ class PreviewManager(TranslatableMixin):
         # Initialize zoom debounce timer
         self.debounce_timer = QTimer()
         self.debounce_timer.setSingleShot(True)
-        self.debounce_timer.timeout.connect(self._update_lod_for_zoom)
 
-        # Connect extents changed signal
-        # We need to do this carefully to avoid signal loops
-        # Initial connection is safe
+        # Connect all signals
+        self.connect_signals()
+
+    def connect_signals(self) -> None:
+        """Connect all signals for the preview manager."""
+        self.disconnect_signals()
+
+        self.debounce_timer.timeout.connect(self._update_lod_for_zoom)
         self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
+
+    def disconnect_signals(self) -> None:
+        """Disconnect all signals for the preview manager."""
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.debounce_timer.timeout.disconnect()
+
+        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+            self.dialog.preview_widget.canvas.extentsChanged.disconnect(self._on_extents_changed)
 
     def cleanup(self) -> None:
         """Clean up resources and stop background tasks."""
         self.orchestrator.cancel_active_tasks()
         self.debounce_timer.stop()
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.debounce_timer.timeout.disconnect()
-
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.preview_widget.canvas.extentsChanged.disconnect(self._on_extents_changed)
+        self.disconnect_signals()
 
     def generate_preview(self) -> tuple[bool, str]:
         """Generate complete preview with all available data layers."""

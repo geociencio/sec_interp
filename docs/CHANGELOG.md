@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Data Model**: Interpretations are now real `QgsVectorLayer` instances under the hood for clean 2D/3D serialization.
 
 ### Fixed
+- **UI**: Fixed loss of status bar updates (coordinates/scale) in Preview after switching between sidebar pages.
+- **Export**: Fixed 3D polygons appearing gray/black or all-white in QGIS by implementing `QgsRuleBased3DRenderer` for reliable color differentiation.
 - **Stability**: Resolved major UI memory leak tracking missing explicit removal of measurement rubber bands.
 - **Stability**: Fixed GUI crash causing the plugin map tools to become unresponsive after reloading without restarting QGIS.
 - **Export**: Fixed `TypeError` preventing export of 3D drillhole traces and intervals due to object schema mismatch.

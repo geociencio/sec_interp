@@ -52,8 +52,16 @@ class PreviewWidget(QWidget):
         layout.addWidget(self.frame)
 
         # Setup connections
+        self.connect_signals()
+
+    def connect_signals(self) -> None:
+        """Connect internal signals for coordinates and scale tracking."""
+        # Disconnect first to ensure idempotency
+        self.disconnect_signals()
+
         self.canvas.xyCoordinates.connect(self._update_coords)
         self.canvas.scaleChanged.connect(self._update_scale)
+        self.chk_auto_lod.toggled.connect(self._toggle_lod_spin)
 
     def _setup_canvas_area(self) -> None:
         """Set up map canvas and status bar."""

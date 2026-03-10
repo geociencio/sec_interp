@@ -127,6 +127,7 @@ class SignalManager:
             self.dialog.page_drillhole,
             self.dialog.page_interpretation,
             self.dialog.preview_widget,
+            self.dialog.preview_manager,
             self.dialog.page_settings,
         ]
 
@@ -253,6 +254,8 @@ class SignalManager:
             self.dialog.page_struct,
             self.dialog.page_drillhole,
             self.dialog.page_interpretation,
+            self.dialog.preview_widget,
+            self.dialog.preview_manager,
             self.dialog.page_settings,
         ]
         for page in pages:

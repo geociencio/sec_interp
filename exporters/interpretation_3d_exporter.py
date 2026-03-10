@@ -129,10 +129,10 @@ class Interpretation3DExporter(BaseExporter):
         # 1. 2D Categorized Symbology
         self._setup_2d_renderer(layer, interpretations)
 
-        # 2. 3D Symbology (Native QGIS 3D)
+        # 2. 3D Symbology (Native QGIS 3D - Rule Based)
         if HAS_3D:
             try:
-                self._configure_3d_renderer(layer)
+                self._configure_3d_renderer(layer, interpretations)
             except Exception as e:
                 logger.warning(f"Failed to configure 3D renderer: {e}")
 
@@ -421,57 +421,44 @@ class Interpretation3DExporter(BaseExporter):
             return [*vertices, vertices[0]]
         return vertices
 
-    def _configure_3d_renderer(self, layer: QgsVectorLayer) -> None:
+    def _configure_3d_renderer(
+        self, layer: QgsVectorLayer, interpretations: list[InterpretationPolygon]
+    ) -> None:
+        """Set up rule-based 3D renderer for the layer."""
         from qgis._3d import (
             QgsPhongMaterialSettings,
             QgsPolygon3DSymbol,
-            QgsVectorLayer3DRenderer,
+            QgsRuleBased3DRenderer,
         )
-        from qgis.core import QgsProperty
 
-        symbol_3d = QgsPolygon3DSymbol()
-        material = QgsPhongMaterialSettings()
-        material.setDiffuse(QColor(200, 200, 200))
+        # Create root rule
+        root_rule = QgsRuleBased3DRenderer.Rule(None)
 
-        # Setup data defined properties
-        diffuse_key = self._get_material_property_key("Diffuse")
-        ambient_key = self._get_material_property_key("Ambient")
+        unique_units = {p.name: p.color for p in interpretations}
 
-        if diffuse_key is not None and hasattr(material, "dataDefinedProperties"):
-            material.dataDefinedProperties().setProperty(
-                diffuse_key, QgsProperty.fromField("color")
-            )
-            material.dataDefinedProperties().setProperty(
-                ambient_key, QgsProperty.fromField("color")
-            )
+        for name, color_hex in unique_units.items():
+            # 1. Create specific material for this unit
+            color = QColor(color_hex)
+            if not color.isValid():
+                color = QColor("#FF0000")
 
-        symbol_3d.setMaterialSettings(material)
-        renderer_3d = QgsVectorLayer3DRenderer(symbol_3d)
+            material = QgsPhongMaterialSettings()
+            material.setDiffuse(color)
+            material.setAmbient(color.lighter(120))  # Slight ambient boost
+
+            # 2. Create symbol with this material
+            symbol_3d = QgsPolygon3DSymbol()
+            symbol_3d.setMaterialSettings(material)
+
+            # 3. Create rule with filter
+            # Signature: QgsRuleBased3DRenderer.Rule(symbol, filterExp='', description='', elseRule=False)
+            filter_expr = f"\"name\" = '{name}'"
+            rule = QgsRuleBased3DRenderer.Rule(symbol_3d, filter_expr, name)
+            root_rule.appendChild(rule)
+
+        # Apply renderer to layer
+        renderer_3d = QgsRuleBased3DRenderer(root_rule)
         layer.setRenderer3D(renderer_3d)
-        logger.debug("Configured native 3D renderer in QML")
-
-    def _get_material_property_key(self, prop_name: str) -> int | None:
-        """Help to find property keys across different QGIS versions."""
-        from qgis._3d import QgsPhongMaterialSettings
-
-        classes_to_check = [QgsPhongMaterialSettings]
-        try:
-            from qgis._3d import QgsAbstractMaterialSettings
-
-            classes_to_check.append(QgsAbstractMaterialSettings)
-        except ImportError:
-            pass
-
-        for cls in classes_to_check:
-            prop_found = self._check_property_in_class(cls, prop_name)
-            if prop_found is not None:
-                return prop_found
-
-        return None
-
-    def _check_property_in_class(self, cls: Any, prop_name: str) -> int | None:
-        """Check if a property exists in a class's Property enum."""
-        if hasattr(cls, "Property"):
-            if hasattr(cls.Property, prop_name):
-                return getattr(cls.Property, prop_name)
-        return None
+        logger.debug(
+            f"Configured Rule-Based 3D renderer in QML with {len(unique_units)} categories"
+        )
