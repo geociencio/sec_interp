@@ -1,3 +1,13 @@
+## [2026-03-10] Unittest Standardization & Global Reformat
+- **Achievement**: Codified strict `unittest` and "Mock-First" standards in `AGENTS.md` and normalized code style project-wide.
+- **Changes**:
+    - **Documentation**: Updated `AGENTS.md` with foundation rules (`BaseTestCase`), naming conventions, and QGIS best practices.
+    - **Infrastructure**: Verified testing stability with `make test` (558 tests OK).
+    - **Style**: Performed global reformatting covering 81 files using `ruff` and `black`.
+    - **Brain**: Synchronized project context with session results.
+- **Status**: Suite 100% green (558 tests).
+- **Maintenance**: [sesion_2026-03-10_unittest_standardization.md](maintenance/sesion_2026-03-10_unittest_standardization.md)
+
 ## [2026-03-09] GUI Coverage Expansion (91%)
 - **Achievement**: Exceeded the 90% GUI coverage goal, reaching 91% total for the `/gui` directory.
 - **Changes**:

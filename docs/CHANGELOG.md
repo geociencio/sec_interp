@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Documentation**: New `Testing Standards (unittest)` section in `AGENTS.md` defining `BaseTestCase` and "Mock-First" rules.
 - **Agentic System**: Full standardization of skills and workflows in English (12 skills, 15 workflows).
 - **Agentic System**: Implemented 2025 Industry Standards: Formalized Reflection Loops and Structured YAML Outputs.
 - **Agentic System**: New "Pre-flight Self-Audit" protocol in `agentic-memory` for state validation.

@@ -165,46 +165,46 @@ graph TD
     test_project_validator --> py
     test_translation_loading --> py
     classDef module fill:#f9f,stroke:#333,stroke-width:2px;
+    test_config_integration
+    class test_config_integration module;
+    test_drillhole_utils
+    class test_drillhole_utils module;
+    test_geometry_benchmarks
+    class test_geometry_benchmarks module;
+    test_data_cache_fix
+    class test_data_cache_fix module;
+    test_controller_orchestration
+    class test_controller_orchestration module;
+    test_profile_exporters
+    class test_profile_exporters module;
+    test_path_validator
+    class test_path_validator module;
+    test_layer_validator
+    class test_layer_validator module;
+    test_export_service
+    class test_export_service module;
     test_project_validator
     class test_project_validator module;
+    test_config
+    class test_config module;
+    test_export_benchmarks
+    class test_export_benchmarks module;
+    test_algorithms
+    class test_algorithms module;
+    test_drillhole_service
+    class test_drillhole_service module;
     test_preview_service
     class test_preview_service module;
     test_geology_service
     class test_geology_service module;
-    test_path_validator
-    class test_path_validator module;
-    test_config
-    class test_config module;
-    test_drillhole_service
-    class test_drillhole_service module;
-    test_field_validator
-    class test_field_validator module;
-    test_geometry_benchmarks
-    class test_geometry_benchmarks module;
-    test_controller_orchestration
-    class test_controller_orchestration module;
-    test_layer_validator
-    class test_layer_validator module;
-    test_data_cache_fix
-    class test_data_cache_fix module;
-    test_profile_exporters
-    class test_profile_exporters module;
     test_async_drillhole
     class test_async_drillhole module;
-    test_drillhole_utils
-    class test_drillhole_utils module;
-    test_export_service
-    class test_export_service module;
     test_translation_loading
     class test_translation_loading module;
-    test_export_benchmarks
-    class test_export_benchmarks module;
     test_geometry_utils
     class test_geometry_utils module;
-    test_algorithms
-    class test_algorithms module;
-    test_config_integration
-    class test_config_integration module;
+    test_field_validator
+    class test_field_validator module;
 ```
 
 ## 💡 OPTIMIZATION RECOMMENDATIONS
@@ -229,7 +229,7 @@ graph TD
 - `resources/resources.py` (46 commits)
 - `core/services/geology_service.py` (45 commits)
 ### Recent Churn (30 days):
-- Total lines changed: 500604
+- Total lines changed: 515596
 
 ## 🔑 PROJECT KEYWORDS
 - **Technologies**: .json, .pyc, .py, .js, .png, .html, .css, .log

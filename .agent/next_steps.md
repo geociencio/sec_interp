@@ -1,18 +1,21 @@
-# Next Steps - Preview Signals & 3D Styling (Session 2026-03-09)
+# Next Steps: Unittest Standardization Phase 3.3.0
+**Session End**: 2026-03-10
 
-## Handover Context
-- **Current Status**: Fixed two critical UX/Export issues.
-    1. **Signal Restoration**: The preview status bar (coords/scale) now survives signal disconnections during page switches. Centralized in `connect_signals()`/`disconnect_signals()`.
-    2. **3D Style Application**: Exported 3D polygons now use `QgsRuleBased3DRenderer` to ensure proper color differentiation in QGIS, bypassing unstable data-defined property keys.
-- **Pending Tasks**: None from this session. Verification is complete and confirmed by the user.
-- **Errors/Warnings**: Mypy warns about missing QGIS stubs/types, which is expected in this environment.
+## 🎯 Pending Tasks
+- [ ] Review implementation of `BaseTestCase` in legacy test files (ongoing cleanup).
+- [ ] Audit `tests/integration/` for potential mock injection opportunities to reduce test duration.
+- [ ] Implement coverage tracking for return type hints specifically (Requirement from Phase 3.3.0 start).
 
-## Priority for Next Session
-1. **Drillhole Logic expansion**: Resume planned Phase 3.3.0 tasks regarding drillhole data handling and validation.
-2. **Standardization**: Continue with return type hint coverage expansion (target >= 70%).
+## 🚀 How to Resume
+1. Run standard quality checks:
+   ```bash
+   make test
+   make pylint
+   ```
+2. Continue with the i18n audit (895 findings pending from previous phase).
 
-## Quick Resume
-```bash
-# Verify signal restoration tests
-make docker-test
-```
+## ⚠️ Known Issues
+- `test_translation_loading` failures when run via `unittest discover` without `PYTHONPATH` manipulation (Fixed in `make test`).
+
+---
+*Ready for the next development cycle.*
