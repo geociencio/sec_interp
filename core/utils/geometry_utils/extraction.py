@@ -62,7 +62,7 @@ def extract_lines_from_geometry(geometry: QgsGeometry) -> list[QgsGeometry]:
         geometry: Input geometry (LineString or MultiLineString).
 
     """
-    geometries = []
+    geometries: list[QgsGeometry] = []
     if not geometry or geometry.isNull():
         return geometries
 

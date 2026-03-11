@@ -92,7 +92,7 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
     return geometry.densifyByDistance(interval)
 
 
-def run_geometry_operation(operation: str, *args, **kwargs) -> Any:
+def run_geometry_operation(operation: str, *args: Any, **kwargs: Any) -> Any:
     """Wrap generic geometry operations.
 
     Args:

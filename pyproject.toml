@@ -132,3 +132,19 @@ max-args = 15
 max-branches = 20
 max-returns = 10
 max-statements = 60
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "qgis.*",
+    "PyQt5.*",
+    "psutil.*",
+    "networkx.*",
+]
+ignore_missing_imports = true

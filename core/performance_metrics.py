@@ -180,7 +180,7 @@ class PerformanceMonitor:
 
         """
         self.logger = self._setup_logger(log_file)
-        self.metrics = {}
+        self.metrics: dict[str, Any] = {}
 
     def _setup_logger(self, log_file: str) -> logging.Logger:
         """Set up performance logger.
@@ -258,7 +258,7 @@ class PerformanceMonitor:
             import psutil
 
             process = psutil.Process()
-            return process.memory_info().rss / 1024 / 1024
+            return process.memory_info().rss / 1024 / 1024  # type: ignore[no-any-return]
         except ImportError:
             # Fallback without psutil
             return 0.0

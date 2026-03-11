@@ -7,7 +7,7 @@ separating signal setup from the main dialog class.
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 
@@ -84,41 +84,56 @@ class SignalManager:
                 self.dialog.reset_defaults_btn.clicked.disconnect()
 
     def _disconnect_preview_signals(self) -> None:
-        """Disconnect preview-related signals."""
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+        """Disconnect preview-related signals explicitly for analyzer compliance."""
+        # Action Buttons
+        with contextlib.suppress(Exception):
             self.dialog.preview_widget.btn_preview.clicked.disconnect()
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+        with contextlib.suppress(Exception):
             self.dialog.preview_widget.btn_export.clicked.disconnect()
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+        with contextlib.suppress(Exception):
             self.dialog.preview_widget.btn_measure.toggled.disconnect()
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+        with contextlib.suppress(Exception):
             self.dialog.preview_widget.btn_interpret.toggled.disconnect()
-        with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+        with contextlib.suppress(Exception):
             self.dialog.preview_widget.btn_finalize.clicked.disconnect()
 
-        # Checkboxes
-        widgets = [
-            self.dialog.preview_widget.chk_topo,
-            self.dialog.preview_widget.chk_geol,
-            self.dialog.preview_widget.chk_struct,
-            self.dialog.preview_widget.chk_drillholes,
-            self.dialog.preview_widget.chk_interpretations,
-            self.dialog.preview_widget.chk_legend,
-            self.dialog.preview_widget.spin_max_points,
-            self.dialog.preview_widget.chk_auto_lod,
-            self.dialog.preview_widget.chk_adaptive_sampling,
-        ]
-        for w in widgets:
-            with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-                if hasattr(w, "stateChanged"):
-                    w.stateChanged.disconnect()
-                elif hasattr(w, "valueChanged"):
-                    w.valueChanged.disconnect()
-                elif hasattr(w, "toggled"):
-                    w.toggled.disconnect()
+        # Checkboxes and Spinbox
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.chk_topo.stateChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.chk_geol.stateChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.chk_struct.stateChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.chk_drillholes.stateChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.chk_interpretations.stateChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.chk_legend.stateChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.spin_max_points.valueChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.chk_auto_lod.toggled.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.preview_widget.chk_adaptive_sampling.toggled.disconnect()
 
     def _disconnect_page_signals(self) -> None:
         """Disconnect page-specific signals with full tracking."""
+        # 1. Explicitly disconnect the signals reported as leaking by analyzer
+        with contextlib.suppress(Exception):
+            self.dialog.page_dem.raster_combo.layerChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.page_section.line_combo.layerChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.page_geology.dataChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.page_struct.dataChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.page_drillhole.dataChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.output_widget.fileChanged.disconnect()
+
+        # 2. Sequential cleanup for all managed components
         pages = [
             self.dialog.page_dem,
             self.dialog.page_section,
@@ -140,12 +155,8 @@ class SignalManager:
                 with contextlib.suppress(Exception):
                     page.disconnect_signals()
 
-            # Method 2: Disconnect known signals explicitly
+            # Method 2: Disconnect known signals explicitly (legacy/fallback)
             self._disconnect_known_page_signals(page)
-
-        # Also disconnect output widget explicitly
-        with contextlib.suppress(TypeError, RuntimeError):
-            self.dialog.output_widget.fileChanged.disconnect()
 
     def _disconnect_known_page_signals(self, page: Any) -> None:
         """Disconnect known signals for pages that might not have disconnect_signals."""

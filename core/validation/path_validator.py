@@ -23,7 +23,7 @@ def validate_safe_output_path(
     # 2. Base directory restriction
     if base_dir:
         is_within, msg, resolved_path = _check_base_restriction(path_obj, base_dir)
-        if not is_within:
+        if not is_within or not resolved_path:
             return False, msg, None
     else:
         try:

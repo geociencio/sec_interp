@@ -171,7 +171,7 @@ class PreviewResult:
             A tuple containing (min_elevation, max_elevation).
 
         """
-        elevations = []
+        elevations: list[float] = []
         if self.topo:
             elevations.extend(p[1] for p in self.topo)
 
@@ -205,7 +205,7 @@ class PreviewResult:
         if not self.drillhole:
             return []
 
-        elevations = []
+        elevations: list[float] = []
         for hole_proj in self.drillhole:
             # hole_proj is a DrillholeProjection object
             if hole_proj.points_3d:

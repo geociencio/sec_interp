@@ -138,11 +138,12 @@ class ExportService:
 
         csv_exporter = CSVExporter({})
 
+        def topo_handler():
+            self._export_topography(folder, profile_data, line_crs, csv_exporter, msg)
+            self._export_axes(folder, profile_data, line_crs, msg)
+
         handlers = {
-            "exp_topo": lambda: (
-                self._export_topography(folder, profile_data, line_crs, csv_exporter, msg),
-                self._export_axes(folder, profile_data, line_crs, msg),
-            ),
+            "exp_topo": topo_handler,
             "exp_geol": lambda: self._export_geology(
                 folder, geol_data, line_crs, csv_exporter, msg
             ),
@@ -150,6 +151,9 @@ class ExportService:
                 folder, struct_data, raster_layer, line_crs, csv_exporter, msg
             ),
             "exp_drill": lambda: self._export_drillholes(
+                folder, drillhole_data, line_crs, msg, options
+            ),
+            "exp_drill_3d": lambda: self._export_drillholes_3d(
                 folder, drillhole_data, line_crs, msg, options
             ),
             "exp_interp": lambda: self._export_interpretations(
@@ -302,12 +306,15 @@ class ExportService:
     def _export_drillholes_3d(
         self,
         folder: Path,
-        data: list[Any],
+        data: list[Any] | None,
         crs: Any,
         msg: list[str],
         options: dict[str, bool],
     ) -> None:
         """Export 3D drillhole traces and intervals."""
+        if not data:
+            return
+
         from sec_interp.exporters import (
             DrillholeInterval3DExporter,
             DrillholeTrace3DExporter,
@@ -389,7 +396,7 @@ class ExportService:
             line_geom = next(line_layer.getFeatures()).geometry()
 
             Interpretation3DExporter({}).export(
-                folder / "interpretations_3d.shp",
+                str(folder / "interpretations_3d.shp"),
                 {"interpretations": data, "section_line": line_geom, "crs": crs},
             )
             msg.append("  - interpretations_3d.shp (3D)")

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from qgis.core import (
     QgsMapLayer,
     QgsProject,
@@ -13,6 +15,9 @@ from qgis.core import (
 from sec_interp.core.domain import FieldType
 
 from .field_validator import validate_field_exists, validate_field_type
+
+if TYPE_CHECKING:
+    from sec_interp.core.validation.validation_helpers import ValidationContext
 
 
 def validate_layer_exists(

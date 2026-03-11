@@ -124,7 +124,7 @@ def prepare_profile_context(
     return line_geom, line_start, da
 
 
-def interpolate_elevation(topo_data: list, distance: float) -> float:
+def interpolate_elevation(topo_data: list[tuple[float, float]], distance: float) -> float:
     """Interpolate elevation at a given distance along the topography profile.
 
     Uses linear interpolation between the two nearest sampled points.

@@ -21,6 +21,7 @@ from sec_interp.core import utils as scu
 from sec_interp.core.domain import (
     DrillholeProjection,
     DrillholeTaskInput,
+    GeologySegment,
     PreviewParams,
 )
 from sec_interp.core.exceptions import DataMissingError
@@ -77,11 +78,11 @@ class DrillholeTaskOrchestrator:
             collar_lyr,
             section_geom,
             params.buffer_dist,
-            params.collar_id_field,
+            params.collar_id_field or "",
             params.collar_use_geometry,
-            params.collar_x_field,
-            params.collar_y_field,
-            params.collar_z_field,
+            params.collar_x_field or "",
+            params.collar_y_field or "",
+            params.collar_z_field or "",
             raster_lyr,
             target_crs=line_lyr.crs(),
         )
@@ -95,12 +96,12 @@ class DrillholeTaskOrchestrator:
             line_data=section_geom,
             distance_area=distance_area,
             buffer_width=params.buffer_dist,
-            collar_id_field=params.collar_id_field,
+            collar_id_field=params.collar_id_field or "",
             use_geometry=params.collar_use_geometry,
-            collar_x_field=params.collar_x_field,
-            collar_y_field=params.collar_y_field,
-            collar_z_field=params.collar_z_field,
-            collar_depth_field=params.collar_depth_field,
+            collar_x_field=params.collar_x_field or "",
+            collar_y_field=params.collar_y_field or "",
+            collar_z_field=params.collar_z_field or "",
+            collar_depth_field=params.collar_depth_field or "",
             pre_sampled_z=pre_sampled_z,
         )
 
@@ -112,20 +113,20 @@ class DrillholeTaskOrchestrator:
             survey_lyr,
             collar_ids,
             {
-                "id": params.survey_id_field,
-                "depth": params.survey_depth_field,
-                "azim": params.survey_azim_field,
-                "incl": params.survey_incl_field,
+                "id": params.survey_id_field or "",
+                "depth": params.survey_depth_field or "",
+                "azim": params.survey_azim_field or "",
+                "incl": params.survey_incl_field or "",
             },
         )
         interval_map = self.service.data_fetcher.fetch_bulk_data(
             interval_lyr,
             collar_ids,
             {
-                "id": params.interval_id_field,
-                "from": params.interval_from_field,
-                "to": params.interval_to_field,
-                "lith": params.interval_lith_field,
+                "id": params.interval_id_field or "",
+                "from": params.interval_from_field or "",
+                "to": params.interval_to_field or "",
+                "lith": params.interval_lith_field or "",
             },
         )
 
@@ -137,10 +138,10 @@ class DrillholeTaskOrchestrator:
             collar_data=collar_data,
             survey_data=survey_map,
             interval_data=interval_map,
-            collar_id_field=params.collar_id_field,
+            collar_id_field=params.collar_id_field or "",
             use_geometry=params.collar_use_geometry,
-            collar_x_field=params.collar_x_field,
-            collar_y_field=params.collar_y_field,
+            collar_x_field=params.collar_x_field or "",
+            collar_y_field=params.collar_y_field or "",
             line_geom=section_geom,
             line_start=section_start,
             distance_area=distance_area,
@@ -288,9 +289,9 @@ class DrillholeTaskOrchestrator:
         section_azimuth = azimuth
 
         # 1. Filter and Detach Collars
-        collar_ids = set()
-        collar_data = []
-        pre_sampled_z = {}
+        collar_ids: set[str] = set()
+        collar_data: list[dict[str, Any]] = []
+        pre_sampled_z: dict[str, float] = {}
         if collar_layer:
             (
                 collar_ids,
@@ -343,7 +344,7 @@ class DrillholeTaskOrchestrator:
 
     def process_task_data(
         self, task_input: DrillholeTaskInput, feedback: Any | None = None
-    ) -> tuple[list[GeologySegment], list[DrillholeProjection]]:
+    ) -> tuple[list[GeologySegment], list[DrillholeProjection]] | None:
         """Process drillholes using detached domain data (Thread-Safe)."""
         # Reconstruct Objects
         line_crs = QgsCoordinateReferenceSystem(task_input.line_crs_authid)

@@ -6,6 +6,7 @@ Distance calculations, azimuth, and basic spatial operations.
 from __future__ import annotations
 
 import math
+from typing import Any
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -51,7 +52,7 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
     return 0
 
 
-def calculate_step_size(geom: QgsGeometry, raster_lyr) -> float:
+def calculate_step_size(geom: QgsGeometry, raster_lyr: Any) -> float:
     """Calculate step size based on slope and raster resolution.
 
     .. deprecated::
@@ -92,7 +93,7 @@ def calculate_step_size(geom: QgsGeometry, raster_lyr) -> float:
     except (ValueError, TypeError):
         # Fallback to simple resolution if geometry parsing fails
         pass
-    return dist_step
+    return dist_step  # type: ignore[no-any-return]
 
 
 def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:

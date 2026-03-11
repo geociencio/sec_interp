@@ -33,4 +33,4 @@ class AccessControlService:
         if not allowed:
             logger.info("Access denied for restricted feature: 3D Export")
 
-        return allowed
+        return bool(allowed)

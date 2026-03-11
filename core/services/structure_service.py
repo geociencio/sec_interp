@@ -24,7 +24,7 @@ of structural measurements (planes, lines) onto the section plane.
 #  ***************************************************************************/
 from __future__ import annotations
 
-from collections.abc import Iterator
+from typing import Any
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -55,7 +55,7 @@ class StructureService(IStructureService):
 
     def tr(self, message: str) -> str:
         """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("StructureService", message)
+        return QCoreApplication.translate("StructureService", message)  # type: ignore[no-any-return]
 
     def detach_structures(
         self,
@@ -180,7 +180,7 @@ class StructureService(IStructureService):
         struct_lyr: QgsVectorLayer,
         buffer_geom: QgsGeometry,
         target_crs: QgsCoordinateReferenceSystem,
-    ) -> Iterator[QgsFeature]:
+    ) -> list[QgsFeature]:
         """Select structure features within the buffer using spatial indexing.
 
         Args:

@@ -69,7 +69,7 @@ class GeologyService(IGeologyService):
 
     def tr(self, message: str) -> str:
         """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("GeologyService", message)
+        return QCoreApplication.translate("GeologyService", message)  # type: ignore[no-any-return]
 
     @performance_monitor
     def generate_geological_profile(

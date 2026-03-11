@@ -16,7 +16,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core import utils as scu
-from sec_interp.core.domain import GeologySegment
+from sec_interp.core.domain import DrillholeProjection, GeologySegment
 from sec_interp.core.exceptions import (
     SecInterpError,
     ValidationError,
@@ -67,7 +67,7 @@ class DrillholeService(IDrillholeService):
 
     def tr(self, message: str) -> str:
         """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("DrillholeService", message)
+        return QCoreApplication.translate("DrillholeService", message)  # type: ignore[no-any-return]
 
     def project_collars(
         self,
@@ -219,16 +219,9 @@ class DrillholeService(IDrillholeService):
     ) -> None:
         """Process a batch of holes sequentially."""
         for result in collar_points:
-            # Polymorphic handling: handle both DrillholeProjection objects and legacy tuples
-            if hasattr(result, "hole_id"):
-                hole_id = result.hole_id
-                collar_z = result.elevation
-                given_depth = result.total_depth
-            else:
-                # Legacy tuple: (hole_id, dist, z, offset, total_depth)
-                hole_id = result[0]
-                collar_z = result[2]
-                given_depth = result[4]
+            hole_id = result.hole_id
+            collar_z = result.elevation
+            given_depth = result.total_depth
 
             collar_point = collar_coords.get(hole_id)
             if not collar_point:
@@ -284,9 +277,9 @@ class DrillholeService(IDrillholeService):
         hole_id: Any,
         projected_traj: list[tuple],
         hole_geol_data: list[GeologySegment],
-    ) -> tuple:
+    ) -> DrillholeProjection:
         """Create the final result tuple for a drillhole using SpatialMeta."""
-        return self.trajectory_engine.create_drillhole_result_tuple(
+        return self.trajectory_engine.create_drillhole_result(
             hole_id, projected_traj, hole_geol_data
         )
 

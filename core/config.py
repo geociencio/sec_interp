@@ -48,7 +48,7 @@ class ConfigService:
 
     def tr(self, message: str) -> str:
         """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("ConfigService", message)
+        return QCoreApplication.translate("ConfigService", message)  # type: ignore[no-any-return]
 
     def _load_from_qgs_settings(self) -> PluginSettings:
         """Gather all settings from QgsSettings and create a validated model."""

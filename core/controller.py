@@ -9,6 +9,7 @@ from __future__ import annotations
 import contextlib
 import hashlib
 import time
+from collections.abc import Callable
 from typing import Any
 
 from qgis.core import QgsDistanceArea, QgsProject
@@ -16,7 +17,12 @@ from qgis.core import QgsDistanceArea, QgsProject
 from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
-from sec_interp.core.domain import PreviewParams
+from sec_interp.core.domain import (
+    DrillholeProjection,
+    GeologySegment,
+    PreviewParams,
+    StructureMeasurement,
+)
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.core.utils.qgis import LayerResolver
@@ -129,7 +135,7 @@ class ProfileController(TranslatableMixin):
                 f"Connected cache invalidation to layer: {layer.name()} -> bucket: {cache_bucket}"
             )
 
-    def _create_invalidation_callback(self, bucket: str) -> Any:
+    def _create_invalidation_callback(self, bucket: str) -> Callable[[], None]:
         """Create a callback for specific bucket invalidation."""
 
         def callback():
@@ -156,7 +162,7 @@ class ProfileController(TranslatableMixin):
 
         """
         cache_key = self.data_cache.get_cache_key(inputs)
-        return self.data_cache.get(cache_key)
+        return self.data_cache.get("main", cache_key)
 
     def cache_data(self, inputs: dict[str, Any], data: dict[str, Any]) -> None:
         """Cache the generated data resulting from the given inputs.
@@ -167,7 +173,7 @@ class ProfileController(TranslatableMixin):
 
         """
         cache_key = self.data_cache.get_cache_key(inputs)
-        self.data_cache.set(cache_key, data)
+        self.data_cache.set("main", cache_key, data)
 
     def generate_profile_data(
         self, params: PreviewParams
@@ -180,7 +186,7 @@ class ProfileController(TranslatableMixin):
     ]:
         """Unified method to generate all profile data components with granular caching."""
         params.validate()
-        messages = []
+        messages: list[str] = []
         cache_meta = {
             "max_points": params.max_points,
             "canvas_width": params.canvas_width,
@@ -238,17 +244,17 @@ class ProfileController(TranslatableMixin):
             )
             if not profile_data:
                 raise ProcessingError(self.tr("No topographic profile data was generated."))
-            self.data_cache.set("topo", topo_key, profile_data, cache_meta)
+        self.data_cache.set("topo", topo_key, profile_data, cache_meta)
         messages.append(
             self.tr("✓ Data processed successfully!\n\nTopography: {0} points").format(
                 len(profile_data)
             )
         )
-        return profile_data
+        return profile_data  # type: ignore[no-any-return]
 
     def _process_geology(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
-    ) -> list[Any] | None:
+    ) -> list[GeologySegment] | None:
         """Process geological profile data."""
         if not params.outcrop_layer:
             return None
@@ -284,11 +290,11 @@ class ProfileController(TranslatableMixin):
                 messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))
             else:
                 messages.append(self.tr("Geology: No intersections"))
-        return geol_data
+        return geol_data  # type: ignore[no-any-return]
 
     def _process_structures(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
-    ) -> list[Any] | None:
+    ) -> list[StructureMeasurement] | None:
         """Process structural profile data."""
         if not params.struct_layer:
             return None
@@ -360,11 +366,11 @@ class ProfileController(TranslatableMixin):
                         messages.append(
                             self.tr("Structures: None in {0}m buffer").format(params.buffer_dist)
                         )
-        return struct_data
+        return struct_data  # type: ignore[no-any-return]
 
     def _process_drillholes(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
-    ) -> Any | None:
+    ) -> list[DrillholeProjection] | None:
         """Process drillhole profile data."""
         if not params.collar_layer:
             return None
@@ -381,7 +387,7 @@ class ProfileController(TranslatableMixin):
 
         if drillhole_data:
             logger.debug("Cache hit: Drillholes")
-            return drillhole_data
+            return drillhole_data  # type: ignore[no-any-return]
 
         collar_lyr = LayerResolver.resolve(params.collar_layer)
         if not collar_lyr:
@@ -396,4 +402,4 @@ class ProfileController(TranslatableMixin):
         if drillhole_data:
             self.data_cache.set("drill", drill_key, drillhole_data, cache_meta)
 
-        return drillhole_data
+        return drillhole_data  # type: ignore[no-any-return]

@@ -216,7 +216,14 @@ def interpolate_intervals_on_trajectory(
     trajectory: list[tuple],
     intervals: list[tuple[float, float, Any]],
     buffer_width: float,
-) -> list[tuple[Any, list[tuple[float, float]], list[tuple[float, float, float]]]]:
+) -> list[
+    tuple[
+        Any,
+        list[tuple[float, float]],
+        list[tuple[float, float, float]],
+        list[tuple[float, float, float]],
+    ]
+]:
     """Interpolate interval attributes along drillhole trajectory.
 
     Filters and maps geological intervals onto the 3D trajectory points

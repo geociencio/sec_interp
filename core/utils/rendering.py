@@ -121,9 +121,9 @@ def calculate_interval(data_range: float) -> float:
     THRESHOLD_LARGE = 5
 
     if normalized < THRESHOLD_SMALL:
-        return magnitude * 0.5
+        return magnitude * 0.5  # type: ignore[no-any-return]
 
     if normalized < THRESHOLD_LARGE:
-        return magnitude
+        return magnitude  # type: ignore[no-any-return]
 
-    return magnitude * 2
+    return magnitude * 2  # type: ignore[no-any-return]

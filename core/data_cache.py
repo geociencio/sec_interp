@@ -28,7 +28,7 @@ class DataCache(ICacheService):
 
     def tr(self, message: str) -> str:
         """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("DataCache", message)
+        return QCoreApplication.translate("DataCache", message)  # type: ignore[no-any-return]
 
     def __init__(self, default_ttl: int = DEFAULT_TTL_SECONDS) -> None:
         """Initialize the data cache.

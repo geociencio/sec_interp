@@ -69,7 +69,7 @@ class SafeLoader:
         klass = SafeLoader.get_class(module, class_name)
         if klass:
             try:
-                return klass(*args, **kwargs)
+                return klass(*args, **kwargs)  # type: ignore[no-any-return]
             except Exception:
                 logger.exception(
                     f"Failed to instantiate {class_name} from {module_name} "

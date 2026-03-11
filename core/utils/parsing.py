@@ -47,7 +47,7 @@ def parse_strike(value: Any) -> float | None:
     ang = float(ang)
 
     # Quadrant rules
-    strike = 0  # Initialize to prevent NameError
+    strike = 0.0  # Initialize to prevent NameError
     if d1 == "N" and d2 == "E":
         strike = ang
     elif d1 == "N" and d2 == "W":

@@ -198,8 +198,8 @@ class PreviewWidget(QWidget):
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         with contextlib.suppress(TypeError, RuntimeError):
-            self.canvas.xyCoordinates.disconnect(self._update_coords)
+            self.canvas.xyCoordinates.disconnect()
         with contextlib.suppress(TypeError, RuntimeError):
-            self.canvas.scaleChanged.disconnect(self._update_scale)
+            self.canvas.scaleChanged.disconnect()
         with contextlib.suppress(TypeError, RuntimeError):
-            self.chk_auto_lod.toggled.disconnect(self._toggle_lod_spin)
+            self.chk_auto_lod.toggled.disconnect()

@@ -263,6 +263,10 @@ class CollarProcessor:
                 depth = float(attrs.get(depth_f, 0.0)) if is_dict else float(attrs[depth_f] or 0.0)
         return depth
 
+    def _sample_dem(self, dem: QgsRasterLayer, pt: QgsPointXY) -> float:
+        """Sample elevation from DEM at point."""
+        return scu.sample_point_elevation(dem, pt)
+
     def build_coordinate_map(
         self,
         collar_data: list[dict[str, Any]],

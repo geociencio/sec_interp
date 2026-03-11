@@ -27,4 +27,4 @@ class TranslatableMixin:
 
         """
         # use the class name as the context for translation
-        return QCoreApplication.translate(self.__class__.__name__, message)
+        return QCoreApplication.translate(self.__class__.__name__, message)  # type: ignore[no-any-return]
