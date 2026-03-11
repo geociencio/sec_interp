@@ -181,6 +181,9 @@ uv run pytest tests/core/ -v
 # Integration tests (require QGIS)
 uv run pytest tests/integration/ -v
 
+# Run with unittest (standard discovery)
+uv run python -m unittest discover tests/ -p "test_*.py"
+
 # Performance benchmarks
 uv run pytest tests/benchmarks/ -v
 
@@ -188,7 +191,40 @@ uv run pytest tests/benchmarks/ -v
 uv run pytest tests/core/test_algorithms.py::test_intersection -v --cov=core.algorithms
 ```
 
-### 3. Commit Standards
+### 3. Testing Standards (unittest)
+The project strictly uses the `unittest` framework with a **Mock-First** approach to ensure fast, isolated, and QGIS-independent unit tests.
+
+#### Foundation: BaseTestCase
+All test classes **MUST** inherit from `BaseTestCase` defined in `tests/base_test.py`.
+```python
+from tests.base_test import BaseTestCase
+
+class TestMyModule(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        # Custom setup logic
+```
+- **Benefits**: Automatic environment setup, mock injection, and temporary directory management.
+- **Cleanup**: `tearDown()` in `BaseTestCase` handles mock resets and file cleanup.
+
+#### Naming Conventions
+- **Files**: `test_*.py` (e.g., `test_geology_service.py`)
+- **Classes**: `Test[ModuleName]` (e.g., `TestGeologyService`)
+- **Methods**: `test_[behavior]` (e.g., `test_calculate_intersection_valid`)
+
+#### The "Mock-First" Rule (CRITICAL)
+Tests in `tests/core/` and `tests/gui/` should **never** require a real QGIS installation.
+- Use `tests.base_test.mock_core` and `mock_gui` for QGIS interaction.
+- Use `unittest.mock` for external dependencies (file system, network).
+- **Prohibited**: Importing `qgis.testing` or requiring `xvfb` for unit tests.
+
+#### Best Practices
+1. **Assertion Styles**: Prefer `self.assertEqual`, `self.assertTrue`, `self.assertRaises` over bare `assert`.
+2. **Layer Validation**: Always mock `layer.isValid()` to return `True` for valid test scenarios.
+3. **WKT Communication**: Use WKT strings to mock geometries instead of complex `QgsGeometry` objects where possible.
+4. **Isolation**: Ensure tests do not depend on each other's state.
+
+### 4. Commit Standards
 - Use conventional commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`
 - Pre-commit hooks enforce formatting and commit message standards
 - Each commit should pass tests locally
