@@ -5,6 +5,24 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
+  - date: 2026-03-12
+    category: TECHNICAL
+    topic: Deterministic Lifecycle Cleanup
+    lesson: "In QGIS plugins with complex UI/Tool interactions, relying on Python's garbage collector or implicit deletion is insufficient. Explicit and ordered cleanup in closeEvent is required to prevent orphaned GraphicsItems (rubber bands) and signal leaks."
+    action: "Orchestrate a cleanup sequence in closeEvent for all managers and tools. Implement a specialized cleanup_finalized() for tools to ensure canvas hygiene."
+
+  - date: 2026-03-12
+    category: ARCHITECTURE
+    topic: DTO vs Tuple Flow
+    lesson: "Data flow using tuples becomes unmanageable as the project grows. Standardizing on Dataclasses (DTOs) for service returns improves readability and simplifies background task preparation (Extract-then-Compute)."
+    action: "Migrate all legacy tuple-based service returns to explicit Dataclasses (e.g., DrillholeProjection)."
+
+  - date: 2026-03-12
+    category: DEPLOYMENT
+    topic: Deployment Exclusions
+    lesson: "Active development creates many noise files (coverage reports, Pyre configs, analyzer logs). If not explicitly excluded in .qgisignore or similar, they bloat the production environment."
+    action: "Maintain a strict .qgisignore synchronized with recently adopted Dev/QA tools."
+
   - date: 2026-03-09
     category: TESTING
     topic: Iterative Mocking for Arithmetic

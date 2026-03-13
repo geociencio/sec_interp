@@ -5,31 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.3.0] - 2026-03-12
 
 ### Added
-- **Documentation**: New `Testing Standards (unittest)` section in `AGENTS.md` defining `BaseTestCase` and "Mock-First" rules.
-- **Agentic System**: Full standardization of skills and workflows in English (12 skills, 15 workflows).
-- **Agentic System**: Implemented 2025 Industry Standards: Formalized Reflection Loops and Structured YAML Outputs.
-- **Agentic System**: New "Pre-flight Self-Audit" protocol in `agentic-memory` for state validation.
-- **Testing**: 5 new test suites achieving 100% test coverage for the 2D and vector data Exporters.
-- **Testing**: Massive expansion of integration test suite reaching **514 successful tests** in Docker.
-- **Testing**: 50 new integration tests covering Export Service E2E, Preview Pipeline, Geology/Structure processing, and Async Orchestrators (`QgsTaskManager`).
-- **Testing**: Achieved **91% total GUI coverage** across all dialogs and managers.
-- **Testing**: new specialized test suites for `InterpretationManager` (94%), `SettingsPersistence` (97%), and `PreviewTaskOrchestrator` (97%).
-- **Testing**: 100% coverage for `PreviewLegendRenderer` rendering logic.
-- **Testing**: 4 new specific GUI tests to protect integration of Signal Restoration, Interpretation Exports, and Multi-Session Persistence.
+- **Core**: Standardized `DrillholeProjection` as a Dataclass DTO across `DrillholeService`.
+- **Core**: Added comprehensive return type hints to `geology_service.py` and `structure_service.py`.
+- **Infrastructure**: Refined `.qgisignore` to exclude development noise (Pyre config, coverage logs, etc.).
 
 ### Changed
-- **Architecture**: Redesigned signal lifecycle handling internally within pages via `connect_signals()` method.
-- **Data Model**: Interpretations are now real `QgsVectorLayer` instances under the hood for clean 2D/3D serialization.
+- **Architecture**: Replaced unsafe `contextlib.suppress` with explicit exception handling in `controller.py`.
+- **Documentation**: Full update of internal task tracking and architectural logs.
 
 ### Fixed
-- **UI**: Fixed loss of status bar updates (coordinates/scale) in Preview after switching between sidebar pages.
-- **Export**: Fixed 3D polygons appearing gray/black or all-white in QGIS by implementing `QgsRuleBased3DRenderer` for reliable color differentiation.
-- **Stability**: Resolved major UI memory leak tracking missing explicit removal of measurement rubber bands.
-- **Stability**: Fixed GUI crash causing the plugin map tools to become unresponsive after reloading without restarting QGIS.
-- **Export**: Fixed `TypeError` preventing export of 3D drillhole traces and intervals due to object schema mismatch.
+- **Stability**: Resolved critical resource leaks in `QgsRubberBand` by implementing `cleanup_finalized` in `measure_tool.py`.
+- **Stability**: Fixed orphaned signal connections in `MainDialog` by orchestrating a deterministic cleanup sequence in `closeEvent`.
+- **Stability**: Improved signal disconnection traceability in `DialogSignalManager`.
 
 ---
 

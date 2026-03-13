@@ -1,3 +1,12 @@
+## [2026-03-12] Stability & Type Safety (v3.3.0 Final)
+- **Achievement**: Completed v3.3.0 with robust resource cleanup, standardized core types, and 100% passing test suite (607 tests).
+- **Changes**:
+    - **Stability**: Implemented explicit resource cleanup in `main_dialog.py`, `measure_tool.py`, and `dialog_signal_manager.py`.
+    - **Quality**: Standardized `DrillholeProjection` DTO and added comprehensive return type hints in core services.
+    - **Deployment**: Refined `.qgisignore` for cleaner releases and verified deployment to local QGIS profile.
+- **Quality**: Suite 100% green (607/607 OK).
+- **Maintenance**: [session_2026-03-12_stability_v3.3.0_final.md](maintenance/session_2026-03-12_stability_v3.3.0_final.md)
+
 ## [2026-03-10] Unittest Standardization & Global Reformat
 - **Achievement**: Codified strict `unittest` and "Mock-First" standards in `AGENTS.md` and normalized code style project-wide.
 - **Changes**:
