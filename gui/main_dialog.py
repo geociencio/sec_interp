@@ -218,24 +218,28 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # 1. Cleanup Map Tools logic
         if hasattr(self, "tool_manager") and self.tool_manager:
-            if self.tool_manager.measure_tool:
-                self.tool_manager.measure_tool.cleanup_finalized()
-            if self.tool_manager.interpretation_tool:
-                self.tool_manager.interpretation_tool.reset()
-            # Note: We don't disconnect here because SignalManager.disconnect_all()
-            # will call tool_manager.disconnect_signals() shortly.
+            with contextlib.suppress(Exception):
+                if self.tool_manager.measure_tool:
+                    self.tool_manager.measure_tool.cleanup_finalized()
+                if self.tool_manager.interpretation_tool:
+                    self.tool_manager.interpretation_tool.reset()
+            logger.debug("Map tools cleaned up")
 
         # 2. Sequential Manager Cleanup
-        self.interpretation_manager.save_interpretations()
-        self.preview_manager.cleanup()
+        with contextlib.suppress(Exception):
+            self.interpretation_manager.save_interpretations()
+            self.preview_manager.cleanup()
+        logger.debug("Managers cleaned up")
 
         # 3. Disconnect all signals safely (idempotent)
         if hasattr(self, "signal_manager"):
             self.signal_manager.disconnect_all()
+        logger.debug("Signals disconnected")
 
         # 4. Component level cleanup
         if hasattr(self, "legend_widget") and self.legend_widget:
-            self.legend_widget.cleanup()
+            with contextlib.suppress(Exception):
+                self.legend_widget.cleanup()
 
         with contextlib.suppress(AttributeError, RuntimeError, TypeError):
             super().closeEvent(event)

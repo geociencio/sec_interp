@@ -50,10 +50,12 @@ class SignalManager:
 
     def disconnect_all(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
+        logger.debug("Starting exhaustive signal disconnection")
         self._disconnect_button_signals()
         self._disconnect_preview_signals()
         self._disconnect_page_signals()
         self._disconnect_tool_signals()
+        logger.debug("Signal disconnection complete")
 
     def _disconnect_button_signals(self) -> None:
         """Disconnect main dialog button signals."""
@@ -174,6 +176,11 @@ class SignalManager:
         if hasattr(page, "dataChanged"):
             with contextlib.suppress(Exception):
                 page.dataChanged.disconnect()
+
+        # Output widget
+        if hasattr(page, "fileChanged"):
+            with contextlib.suppress(Exception):
+                page.fileChanged.disconnect()
 
     def _disconnect_tool_signals(self) -> None:
         """Disconnect map tool signals and window signals."""

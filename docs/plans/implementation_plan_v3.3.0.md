@@ -54,11 +54,12 @@ Basado en los hallazgos críticos de `DEVELOPER_ANALYSIS.md`.
 
 ---
 
-### Fase 3: Auditoría i18n GUI-Focus
+---
 
-##### [MODIFY] gui/
-- Aplicar `tr()` a los strings detectados en la capa `gui/` y `SecInterpDialog`.
-- Evitar tocar scripts de tests para no contaminar el análisis de i18n.
+### Fase 3: Auditoría i18n (POSTERGADA)
+
+> [!NOTE]
+> Esta fase se ha movido a la siguiente versión para priorizar la estabilidad técnica absoluta en la v3.3.0.
 
 ---
 

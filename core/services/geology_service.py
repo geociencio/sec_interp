@@ -160,6 +160,7 @@ class GeologyService(IGeologyService):
             master_grid_dists=master_grid_dists,
             outcrop_data=outcrop_data,
             outcrop_name_field=outcrop_name_field,
+            tolerance=0.001,  # Default tolerance
         )
 
     def _validate_inputs(

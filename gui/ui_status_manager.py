@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 
 if TYPE_CHECKING:
-    from sec_interp.gui.main_dialog import SecInterpDialog
+    from sec_interp.gui.main_dialog import SecInterpDialog  # type: ignore
 
 
 class UIStatusManager:

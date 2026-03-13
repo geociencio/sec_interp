@@ -1,0 +1,15 @@
+{
+  "source_directories": [
+    "."
+  ],
+  "search_path": [
+    "/usr/share/qgis/python",
+    "/usr/share/qgis/python/qgis",
+    "/usr/share/qgis/python/plugins",
+    "/usr/lib/python3.14/site-packages",
+    "/usr/lib/python3.14/site-packages/qgis",
+    "/usr/lib/python3.14/site-packages/PyQt5",
+    "/home/jmbernales/qgispluginsdev/sec_interp/.venv/lib/python3.12/site-packages",
+    "/home/jmbernales/qgispluginsdev"
+  ]
+}

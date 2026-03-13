@@ -1,11 +1,8 @@
 {
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        "./tests",
-        "-p",
-        "test_*.py"
-    ],
-    "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true
+    "python.analysis.extraPaths": [
+        "/usr/share/qgis/python",
+        "/usr/share/qgis/python/plugins",
+        "/usr/lib/python3.14/site-packages",
+        "/home/jmbernales/qgispluginsdev/sec_interp/.venv/lib/python3.12/site-packages"
+    ]
 }

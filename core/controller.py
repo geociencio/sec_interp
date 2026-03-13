@@ -6,7 +6,6 @@ This module handles the orchestration of various data generation services
 
 from __future__ import annotations
 
-import contextlib
 import hashlib
 import time
 from collections.abc import Callable
@@ -146,8 +145,10 @@ class ProfileController(TranslatableMixin):
     def disconnect_layer_notifications(self) -> None:
         """Disconnect from all previously connected layer signals."""
         for layer, callback in self._connected_layers:
-            with contextlib.suppress(TypeError, RuntimeError):
+            try:
                 layer.dataChanged.disconnect(callback)
+            except (TypeError, RuntimeError, Exception) as e:
+                logger.debug(f"Layer disconnection failed (expected on close): {e}")
         self._connected_layers.clear()
         logger.debug("Layer signals disconnected")
 

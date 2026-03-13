@@ -18,7 +18,7 @@ from tests.base_test import BaseTestCase
 
 from sec_interp.core.services.drillhole_service import DrillholeService
 from sec_interp.core.exceptions import DataMissingError
-from sec_interp.core.domain import DrillholeTaskInput
+from sec_interp.core.domain import DrillholeTaskInput, DrillholeProjection
 
 
 class TestDrillholeService(BaseTestCase):
@@ -51,11 +51,13 @@ class TestDrillholeService(BaseTestCase):
         # Mock CollarProcessor
         self.service.collar_processor = MagicMock()
         self.service.collar_processor.extract_and_project_detached.return_value = (
-            "DH01",
-            10.0,
-            50.0,
-            0.0,
-            100.0,
+            DrillholeProjection(
+                hole_id="DH01",
+                distance=10.0,
+                elevation=50.0,
+                offset=0.0,
+                total_depth=100.0,
+            )
         )
 
         results = self.service.project_collars(
@@ -74,9 +76,9 @@ class TestDrillholeService(BaseTestCase):
 
         self.service.collar_processor.extract_and_project_detached.assert_called()
         self.assertEqual(len(results), 1)
-        hole_id, dist, z, offset, depth = results[0]
-        self.assertEqual(hole_id, "DH01")
-        self.assertEqual(depth, 100.0)
+        res = results[0]
+        self.assertEqual(res.hole_id, "DH01")
+        self.assertEqual(res.total_depth, 100.0)
 
     def test_fetch_bulk_data_survey(self):
         """Test bulk fetching survey data."""
@@ -117,7 +119,15 @@ class TestDrillholeService(BaseTestCase):
     )
     def test_process_intervals(self, mock_interp, mock_proj, mock_calc):
         """Test processing intervals for multiple holes."""
-        collar_points = [("DH01", 10.0, 50.0, 2.0, 100.0)]
+        collar_points = [
+            DrillholeProjection(
+                hole_id="DH01",
+                distance=10.0,
+                elevation=50.0,
+                offset=2.0,
+                total_depth=100.0,
+            )
+        ]
         collar_data = [
             {"id": "DH01", "attributes": {"x": 10, "y": 10}, "wkt": "POINT(10 10)"}
         ]

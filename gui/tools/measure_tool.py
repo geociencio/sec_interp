@@ -177,21 +177,18 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         logger.debug("Cleaning up finalized measurement elements")
 
         if self.rubber_band:
-            try:
+            with contextlib.suppress(Exception):
                 self.rubber_band.hide()
-                self.canvas.scene().removeItem(self.rubber_band)
+                if self.canvas.scene():
+                    self.canvas.scene().removeItem(self.rubber_band)
                 logger.debug("Removed rubber band from scene")
-            except Exception as e:
-                logger.warning(f"Failed to remove rubber band: {e}")
-            finally:
-                self.rubber_band = None
+            self.rubber_band = None
 
         for marker in self.vertex_markers:
-            try:
+            with contextlib.suppress(Exception):
                 marker.hide()
-                self.canvas.scene().removeItem(marker)
-            except Exception as e:
-                logger.warning(f"Failed to remove vertex marker: {e}")
+                if self.canvas.scene():
+                    self.canvas.scene().removeItem(marker)
 
         self.vertex_markers = []
         self.finalized_points = []
