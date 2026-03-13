@@ -8,6 +8,8 @@
 .vscode
 .devcontainer
 .editorconfig
+.pyre_configuration
+.python-version
 
 # Caché y compilados de Python
 __pycache__/
@@ -72,6 +74,8 @@ final_analysis/
 final_standard_analysis/
 quality_report/
 quality_report_debug/
+analysis_results_v320/
+json/
 logs/
 _archive/
 bandit_report.json
@@ -80,6 +84,14 @@ quality_details.json
 quality_report.txt
 report.md
 latest_quality_report.md
+gui_coverage_final.txt
+gui_coverage_report.txt
+missing_tests.txt
+test_coverage_analysis.txt
+.ai_context_cache.json
+.coverage
+python_test.log
+docker_test.log
 
 # Documentación, Scripts y Ejemplos de desarrollo
 docs/
