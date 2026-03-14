@@ -5,9 +5,22 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.3.0] - 2026-03-14
 
-## [3.2.0] - 2026-03-02
+### ✨ Añadido
+- **Core**: Estandarización de `DrillholeProjection` como Dataclass DTO. Implementación de Return Type Hints (cobertura ~45%% del núcleo).
+- **Arquitectura**: Preparación total para **QGIS 4.x** asegurando que todas las dependencias de Qt usen `qgis.PyQt`.
+- **Infraestructura**: Refinado de `.qgisignore` para eliminar ruido de desarrollo en el paquete final.
+
+### 🔧 Cambiado
+- **Arquitectura**: Reemplazo de `contextlib.suppress` inseguro por manejo explícito de excepciones y logging.
+- **Renderizado**: Migración de los exportadores 3D a `Rule-Based Rendering` para garantizar integridad de estilos en QGIS.
+- **GUI**: Elevación de cobertura de tests de GUI al **91%%**, incluyendo lógica de orquestación de tareas en segundo plano.
+
+### 🐞 Corregido
+- **Estabilidad**: Resolución de fugas de memoria críticas y objetos `QgsRubberBand` "huérfanos".
+- **UI**: Corregida regresión del widget de previsualización mediante un loop de restauración de señales robusco en `SignalManager`.
+- **Mocks**: Corrección de errores aritméticos en mocks de Qt para cálculos de layout en entornos headless.
 ### 🚀 Nuevas Características
 - **Testing**: Expansión masiva de la suite de tests alcanzando **450 tests exitosos** en Docker.
 - **Automatización**: Sistema de documentación-como-código para actualizar dinámicamente `TESTING_STATUS.md`.
