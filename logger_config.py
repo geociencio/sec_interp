@@ -136,7 +136,9 @@ def setup_logging(level: int = logging.DEBUG) -> logging.Logger:
 
             # 3. Add stderr handler as backup for crash scenarios
             stderr_handler = logging.StreamHandler(sys.stderr)
-            stderr_handler.setLevel(logging.WARNING)  # Only warnings and errors to stderr
+            stderr_handler.setLevel(
+                logging.WARNING
+            )  # Only warnings and errors to stderr
             stderr_handler.setFormatter(file_formatter)
             root_logger.addHandler(stderr_handler)
 
@@ -173,7 +175,11 @@ def get_logger(name: str | None = None) -> logging.Logger:
         return logging.getLogger(ROOT_LOGGER_NAME)
 
     # Ensure we use the hierarchy (SecInterp.something.else)
-    full_name = name if name.startswith(ROOT_LOGGER_NAME + ".") else f"{ROOT_LOGGER_NAME}.{name}"
+    full_name = (
+        name
+        if name.startswith(ROOT_LOGGER_NAME + ".")
+        else f"{ROOT_LOGGER_NAME}.{name}"
+    )
 
     logger = logging.getLogger(full_name)
 
@@ -185,7 +191,9 @@ def get_logger(name: str | None = None) -> logging.Logger:
     return logger
 
 
-def log_critical_operation(logger: logging.Logger, operation_name: str, **context: Any) -> None:
+def log_critical_operation(
+    logger: logging.Logger, operation_name: str, **context: Any
+) -> None:
     """Log a critical operation with maximum persistence.
 
     Use this before operations that might crash QGIS (e.g., canvas operations,

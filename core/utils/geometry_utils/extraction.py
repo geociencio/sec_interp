@@ -37,7 +37,9 @@ def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
     """
     if not geometry or geometry.isNull():
         raise ValueError(
-            QCoreApplication.translate("GeometryExtraction", "Geometry is null or invalid")
+            QCoreApplication.translate(
+                "GeometryExtraction", "Geometry is null or invalid"
+            )
         )
 
     if geometry.type() != QgsWkbTypes.LineGeometry:
@@ -46,7 +48,9 @@ def get_line_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
     vertices = extract_all_vertices(geometry)
     if not vertices:
         raise ValueError(
-            QCoreApplication.translate("GeometryExtraction", "Line geometry has no vertices")
+            QCoreApplication.translate(
+                "GeometryExtraction", "Line geometry has no vertices"
+            )
         )
 
     return vertices

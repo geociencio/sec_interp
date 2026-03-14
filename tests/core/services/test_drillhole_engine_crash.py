@@ -3,12 +3,12 @@
 # Import tests to activate QGIS mocks
 import unittest
 
+from tests.base_test import BaseTestCase
 from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
-from sec_interp import tests  # noqa: F401
 from sec_interp.core.services.drillhole.trajectory_engine import TrajectoryEngine
 
 
-class TestDrillholeEngineCrash(unittest.TestCase):
+class TestDrillholeEngineCrash(BaseTestCase):
     def setUp(self):
         self.engine = TrajectoryEngine()
         self.line_geom = QgsGeometry.fromWkt("LINESTRING(0 0, 100 0)")

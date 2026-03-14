@@ -1,3 +1,22 @@
+## [2026-03-14] Start of Phase v3.4.0 - Advanced Export & Complexity Reduction
+- **Goal**: Implement new `GpkgfileExporter`, configurable naming options, and reduce architecture complexity.
+- **Estimated Duration**: 2 weeks.
+- **Priorities**:
+    1. New `GpkgfileExporter` (independent from Shapefile).
+    2. Native DXF 3D support.
+    3. UI format selector and naming options.
+    4. Complexity reduction in `ExportManager`.
+
+## [2026-03-14] Release v3.3.0 - Extreme Stability & QGIS 4.x Readiness
+- **Achievement**: Officially finalized and packaged v3.3.0. Verified with 607 tests, security scans, and API-agnostic audit.
+- **Changes**:
+    - **Documentation**: Finalized English/Spanish changelogs and generated official release notes.
+    - **Verification**: Completed deep security scan (Score: 100/100) and verified QGIS 4.x compliance.
+    - **Packaging**: Built optimized distribution ZIP (3.7MB) with full offline multi-language help.
+    - **Analysis**: Archived detailed refactoring report for v3.3.0.
+- **Status**: Suite 100% green (607/607 OK).
+- **Maintenance**: [analysis_v3.3.0_refactoring.md](maintenance/analysis_v3.3.0_refactoring.md)
+
 ## [2026-03-12] Stability & Type Safety (v3.3.0 Final)
 - **Achievement**: Completed v3.3.0 with robust resource cleanup, standardized core types, and 100% passing test suite (607 tests).
 - **Changes**:

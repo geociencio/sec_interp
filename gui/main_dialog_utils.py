@@ -38,7 +38,10 @@ class DialogEntityManager:
         return [
             layer.name()
             for layer in QgsProject.instance().mapLayers().values()
-            if (layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == geometry_type)
+            if (
+                layer.type() == QgsMapLayer.VectorLayer
+                and layer.geometryType() == geometry_type
+            )
         ]
 
     @staticmethod

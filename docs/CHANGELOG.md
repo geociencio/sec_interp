@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Nuevo `GpkgfileExporter` para exportación nativa de GeoPackage 3D.
+- Nuevo `DXFExporter` para soporte nativo de AutoCAD DXF en 3D.
+- Selector de formato de exportación en la página de interpretación.
+- Opción para nombres de archivos personalizados en el diálogo de exportación.
+
+### Changed
+- Refactorización de `ExportManager` para reducir complejidad ciclomática.
+
+### Fixed
+- [Sin cambios aún]
+
 ## [3.3.0] - 2026-03-14
 
 ### Added

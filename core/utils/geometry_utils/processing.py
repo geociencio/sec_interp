@@ -39,7 +39,9 @@ def create_buffer_geometry(
     """
     if not geometry or geometry.isNull():
         raise ValueError(
-            QCoreApplication.translate("GeometryProcessing", "Geometry is null or invalid")
+            QCoreApplication.translate(
+                "GeometryProcessing", "Geometry is null or invalid"
+            )
         )
     return geometry.buffer(distance, segments)
 
@@ -172,7 +174,9 @@ def interpolate_segment_points(
 
     # Get Inner Grid Points
     inner_points = [
-        (d, e) for d, _, e in master_grid_dists if dist_start + tolerance < d < dist_end - tolerance
+        (d, e)
+        for d, _, e in master_grid_dists
+        if dist_start + tolerance < d < dist_end - tolerance
     ]
 
     # Interpolate Boundary Elevations

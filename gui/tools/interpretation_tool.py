@@ -106,13 +106,17 @@ class ProfileSnapper:
         """Check if a layer is valid for snapping."""
         return bool(layer and layer.type() == QgsMapLayer.VectorLayer)
 
-    def _get_locator(self, layer: QgsVectorLayer, crs, context) -> QgsPointLocator | None:
+    def _get_locator(
+        self, layer: QgsVectorLayer, crs, context
+    ) -> QgsPointLocator | None:
         """Retrieve or create a locator for a layer."""
         if layer.id() not in self._locators:
             try:
                 self._locators[layer.id()] = QgsPointLocator(layer, crs, context)
             except Exception as e:
-                logger.warning(f"Failed to create locator for layer {layer.name()}: {e}")
+                logger.warning(
+                    f"Failed to create locator for layer {layer.name()}: {e}"
+                )
                 return None
         return self._locators[layer.id()]
 
@@ -336,7 +340,9 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
 
         interp = InterpretationPolygon(
             id=str(uuid.uuid4()),
-            name=QCoreApplication.translate("ProfileInterpretationTool", "New Interpretation"),
+            name=QCoreApplication.translate(
+                "ProfileInterpretationTool", "New Interpretation"
+            ),
             type="lithology",
             vertices_2d=vertices_2d,
             attributes={},
@@ -344,7 +350,9 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             created_at=datetime.datetime.now().isoformat(),
         )
 
-        logger.debug(f"finalize_polygon() - emitting polygonFinished signal for {interp.id}")
+        logger.debug(
+            f"finalize_polygon() - emitting polygonFinished signal for {interp.id}"
+        )
         self.polygonFinished.emit(interp)
         # Note: Do NOT call reset() here.
         # The dialog handler should deactivate the tool, which calls reset() cleanly.

@@ -33,7 +33,9 @@ class IntervalProcessor:
             (fd, td, {"unit": lith, "from": fd, "to": td}) for fd, td, lith in intervals
         ]
         # Scu returns (attr, points_2d, points_3d, points_3d_proj)
-        tuples = scu.interpolate_intervals_on_trajectory(traj, rich_intervals, buffer_width)
+        tuples = scu.interpolate_intervals_on_trajectory(
+            traj, rich_intervals, buffer_width
+        )
 
         segments = []
         for attr, points_2d, points_3d, points_3d_proj in tuples:

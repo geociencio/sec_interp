@@ -16,5 +16,6 @@ Submodules
    sec_interp.gui.renderers.color_manager
    sec_interp.gui.renderers.drillhole_renderer
    sec_interp.gui.renderers.geology_renderer
+   sec_interp.gui.renderers.interpretation_renderer
    sec_interp.gui.renderers.structure_renderer
    sec_interp.gui.renderers.topo_renderer

@@ -403,7 +403,9 @@ class ExportService:
         else:
             logger.warning("Invalid section line layer, skipping 3D export.")
 
-    def _export_axes(self, folder: Path, data: list[tuple], crs: Any, msg: list[str]) -> None:
+    def _export_axes(
+        self, folder: Path, data: list[tuple], crs: Any, msg: list[str]
+    ) -> None:
         """Export profile axes."""
         from sec_interp.exporters import AxesShpExporter
 

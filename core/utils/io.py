@@ -54,6 +54,8 @@ def create_shapefile_writer(
     )
 
     if writer.hasError() != QgsVectorFileWriter.NoError:
-        raise OSError(f"Error creating shapefile {output_path}: {writer.errorMessage()}")
+        raise OSError(
+            f"Error creating shapefile {output_path}: {writer.errorMessage()}"
+        )
 
     return writer

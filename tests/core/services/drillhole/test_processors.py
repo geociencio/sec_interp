@@ -3,11 +3,11 @@
 import unittest
 from unittest.mock import MagicMock
 
+from tests.base_test import BaseTestCase
 from qgis.core import QgsPointXY, QgsGeometry
 from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
 from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
 from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
-from sec_interp.tests.base_test import BaseTestCase
 
 
 class TestSurveyProcessor(BaseTestCase):

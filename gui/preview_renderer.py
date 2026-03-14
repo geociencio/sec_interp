@@ -150,11 +150,17 @@ class PreviewRenderer:
         if topo_layer:
             self.has_topography = True
 
-        topo_fill = self.layer_factory.create_topo_fill_layer(topo_data, vert_exag, max_points)
-        geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
+        topo_fill = self.layer_factory.create_topo_fill_layer(
+            topo_data, vert_exag, max_points
+        )
+        geol_layer = self.layer_factory.create_geol_layer(
+            geol_data, vert_exag, max_points
+        )
 
         # Specialized layers
-        struct_layer = self._add_struct_layer(struct_data, topo_data, geol_data, vert_exag, dip_len)
+        struct_layer = self._add_struct_layer(
+            struct_data, topo_data, geol_data, vert_exag, dip_len
+        )
         drill_layers = self._add_drillhole_layers(drill_data, vert_exag)
         interp_layer = self.layer_factory.create_interp_layer(interp_data, vert_exag)
 

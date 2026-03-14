@@ -199,7 +199,9 @@ class DrillholeInterval3DExporter(BaseExporter):
             return
 
         for segment in segments:
-            points_source = segment.points_3d_projected if use_projected else segment.points_3d
+            points_source = (
+                segment.points_3d_projected if use_projected else segment.points_3d
+            )
             if not points_source or len(points_source) < MIN_POINTS_FOR_INTERVAL:
                 continue
 

@@ -1,9 +1,9 @@
 """Tests for AccessControlService."""
 
 import unittest
+from tests.base_test import BaseTestCase
 from qgis.core import QgsSettings
 from sec_interp.core.services.access_control_service import AccessControlService
-from sec_interp.tests.base_test import BaseTestCase
 
 
 class TestAccessControlService(BaseTestCase):

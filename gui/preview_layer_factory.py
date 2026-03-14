@@ -130,12 +130,16 @@ class PreviewLayerFactory:
 
         # Apply LOD decimation
         if use_adaptive_sampling:
-            render_data = PreviewOptimizer.adaptive_sample(topo_data, max_points=max_points)
+            render_data = PreviewOptimizer.adaptive_sample(
+                topo_data, max_points=max_points
+            )
         else:
             render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
 
         # Create layer with elevation field for polychromy
-        layer, provider = self.create_memory_layer("LineString", "Topography", "field=elev:double")
+        layer, provider = self.create_memory_layer(
+            "LineString", "Topography", "field=elev:double"
+        )
         if not layer:
             return None
 
@@ -146,7 +150,9 @@ class PreviewLayerFactory:
             p1 = render_data[i]
             p2 = render_data[i + 1]
 
-            line_points = self._to_qgs_points(self._apply_exaggeration([p1, p2], vert_exag))
+            line_points = self._to_qgs_points(
+                self._apply_exaggeration([p1, p2], vert_exag)
+            )
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -219,7 +225,9 @@ class PreviewLayerFactory:
         if not geol_data:
             return None
 
-        layer, provider = self.create_memory_layer("LineString", "Geology", "field=unit:string")
+        layer, provider = self.create_memory_layer(
+            "LineString", "Geology", "field=unit:string"
+        )
         if not layer:
             return None
 
@@ -230,8 +238,12 @@ class PreviewLayerFactory:
             if not segment.points or len(segment.points) < MIN_REQUIRED_POINTS:
                 continue
 
-            render_points = PreviewOptimizer.decimate(segment.points, max_points=max_points)
-            line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))
+            render_points = PreviewOptimizer.decimate(
+                segment.points, max_points=max_points
+            )
+            line_points = self._to_qgs_points(
+                self._apply_exaggeration(render_points, vert_exag)
+            )
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -283,7 +295,9 @@ class PreviewLayerFactory:
                 dx = -dx
 
             points = [(dist, elev), (dist + dx, elev - dy)]
-            line_points = self._to_qgs_points(self._apply_exaggeration(points, vert_exag))
+            line_points = self._to_qgs_points(
+                self._apply_exaggeration(points, vert_exag)
+            )
 
             line_geom = QgsGeometry.fromPolylineXY(line_points)
             feat = QgsFeature()
@@ -331,11 +345,15 @@ class PreviewLayerFactory:
             render_points = []
             for p in trace_points:
                 # Handle both SpatialMeta objects and legacy tuples
-                dist = getattr(p, "dist_along", p[0] if isinstance(p, list | tuple) else 0.0)
+                dist = getattr(
+                    p, "dist_along", p[0] if isinstance(p, list | tuple) else 0.0
+                )
                 z = getattr(p, "z", p[1] if isinstance(p, list | tuple) else 0.0)
                 render_points.append((dist, z))
 
-            line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))
+            line_points = self._to_qgs_points(
+                self._apply_exaggeration(render_points, vert_exag)
+            )
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -365,7 +383,11 @@ class PreviewLayerFactory:
             else:
                 # segments are usually the last element
                 MIN_HOLE_DATA_FOR_SEGMENTS = 3
-                segments = hole_data[-1] if len(hole_data) >= MIN_HOLE_DATA_FOR_SEGMENTS else []
+                segments = (
+                    hole_data[-1]
+                    if len(hole_data) >= MIN_HOLE_DATA_FOR_SEGMENTS
+                    else []
+                )
 
             if segments and isinstance(segments, list):
                 all_segments.extend(segments)
@@ -387,7 +409,9 @@ class PreviewLayerFactory:
                 continue
 
             unique_units.add(segment.unit_name)
-            line_points = self._to_qgs_points(self._apply_exaggeration(segment.points, vert_exag))
+            line_points = self._to_qgs_points(
+                self._apply_exaggeration(segment.points, vert_exag)
+            )
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
             feat = QgsFeature(layer.fields())
@@ -396,7 +420,9 @@ class PreviewLayerFactory:
             features.append(feat)
 
         provider.addFeatures(features)
-        self.drill_renderer.apply_style(layer, role="interval", unique_units=unique_units)
+        self.drill_renderer.apply_style(
+            layer, role="interval", unique_units=unique_units
+        )
         layer.updateExtents()
         return layer
 
@@ -439,7 +465,9 @@ class PreviewLayerFactory:
         layer.updateExtents()
         return layer
 
-    def interpolate_elevation(self, reference_data: ProfileData, target_dist: float) -> float:
+    def interpolate_elevation(
+        self, reference_data: ProfileData, target_dist: float
+    ) -> float:
         """Interpolate elevation at a given distance."""
         if not reference_data:
             return 0

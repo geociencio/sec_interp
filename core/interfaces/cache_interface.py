@@ -22,7 +22,9 @@ class ICacheService(Protocol):
         """
         ...
 
-    def set(self, bucket: str, key: str, data: Any, metadata: dict | None = None) -> None:
+    def set(
+        self, bucket: str, key: str, data: Any, metadata: dict | None = None
+    ) -> None:
         """Store data in a specific cache bucket.
 
         Args:

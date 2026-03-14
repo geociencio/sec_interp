@@ -1,20 +1,18 @@
-# Handover: SecInterp v3.3.0 Stability and Quality
+# Next Steps - SecInterp v3.4.0
 
-## Current Status
-- **Phase v3.3.0**: **COMPLETED**.
-- **Stability**: Resource cleanup implemented in `SignalManager`, `MeasureTool`, and `MainDialog`.
-- **Quality**: Return type hints standardized in core services; unsafe `contextlib.suppress` removed.
-- **Testing**: 607 tests passing in Docker (`make docker-test`).
-- **Deployment**: Verified deployment to QGIS local profile with refined `.qgisignore`.
+**Phase v3.4.0 (Advanced Export & Complexity Reduction)** has started. The main goals are:
 
-## Pending / Next Steps
-1. **Fase 3: Auditoría i18n (P2)**: Now prioritized for **v3.4.0**.
-2. **Performance Profile**: Conduct deeper profiling of `TrajectoryEngine` with larger datasets.
-3. **UI Polish**: Final review of the new programmatic UI components for consistent margins and colors.
+1. **New `GpkgfileExporter`**: Independent class for GeoPackage.
+2. **Native DXF 3D Support**: Using QGIS internal APIs.
+3. **UI Flexibility**: Format selection and custom file naming.
+4. **Complexity Reduction**: Refactoring `ExportManager` and `MainDialog`.
 
-## Resuming
-To start the next session, run:
+## How to Resume
+To start a development session:
 ```bash
 /start-session
 ```
-Focus on: Starting Phase 3 (i18n Audit).
+
+**Current Status**: Stable. Implementation plan created and awaiting initial execution.
+Baseline Quality Score: 71.6
+Baseline Test Count: 607

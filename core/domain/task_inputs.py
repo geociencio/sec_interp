@@ -84,8 +84,12 @@ class DrillholeTaskInput:
 
     # Detached Data
     collar_data: list[dict[str, Any]]  # List of dicts with attrs and geometry
-    survey_data: dict[Any, list[tuple[float, float, float]]]  # hole_id -> [(depth, azim, incl)]
-    interval_data: dict[Any, list[tuple[float, float, str]]]  # hole_id -> [(from, to, lith)]
+    survey_data: dict[
+        Any, list[tuple[float, float, float]]
+    ]  # hole_id -> [(depth, azim, incl)]
+    interval_data: dict[
+        Any, list[tuple[float, float, str]]
+    ]  # hole_id -> [(from, to, lith)]
 
     # Optional DEM data for fallback elevation
     pre_sampled_z: dict[Any, float] = field(default_factory=dict)

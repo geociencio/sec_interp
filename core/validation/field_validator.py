@@ -117,7 +117,9 @@ def validate_angle_range(
     return True, ""
 
 
-def validate_field_exists(layer: QgsVectorLayer, field_name: str | None) -> tuple[bool, str]:
+def validate_field_exists(
+    layer: QgsVectorLayer, field_name: str | None
+) -> tuple[bool, str]:
     """Validate that a specific field exists in a vector layer.
 
     Args:
