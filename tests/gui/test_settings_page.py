@@ -101,5 +101,7 @@ class TestSettingsPage(BaseTestCase):
                 "drill_3d_original": True,
                 "drill_3d_projected": False,
                 "drill_3d_traces": True,
+                "export_format": "",  # MockComboBox has empty text by default
+                "export_naming": "{filename}_{profile}",  # This is the placeholder text but our mock QLineEdit doesn't do that yet
             },
         )

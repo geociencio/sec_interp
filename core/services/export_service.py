@@ -146,37 +146,82 @@ class ExportService:
         struct_data: list[Any] | None,
         drillhole_data: list[Any] | None,
         interp_data: list[Any] | None,
-        options: dict[str, bool],
+        options: dict[str, Any],
         msg: list[str],
     ) -> None:
         """Call individual exporters based on options."""
         line_layer, raster_layer = self._resolve_layers(params)
         line_crs = line_layer.crs()
 
+        # Get settings or defaults
+        export_settings = None
+        if self.controller and hasattr(self.controller, "settings"):
+            export_settings = getattr(self.controller.settings, "export", None)
+
+        format_ext = ".shp"
+        if export_settings:
+            if export_settings.default_format == "GeoPackage":
+                format_ext = ".gpkg"
+            elif export_settings.default_format == "DXF":
+                format_ext = ".dxf"
+
         from sec_interp.exporters import CSVExporter  # noqa: PLC0415 (lazy, testable)
 
         csv_exporter = CSVExporter({})
 
-        def topo_handler() -> None:
-            self._export_topography(folder, profile_data, line_crs, csv_exporter, msg)
-            self._export_axes(folder, profile_data, line_crs, msg)
+        def topo_handler(settings=export_settings, ext=format_ext) -> None:
+            self._export_topography(
+                folder, profile_data, line_crs, csv_exporter, msg, settings, ext
+            )
+            self._export_axes(folder, profile_data, line_crs, msg, settings, ext)
 
         handlers = {
             "exp_topo": topo_handler,
             "exp_geol": lambda: self._export_geology(
-                folder, geol_data, line_crs, csv_exporter, msg
+                folder,
+                geol_data,
+                line_crs,
+                csv_exporter,
+                msg,
+                export_settings,
+                format_ext,
             ),
             "exp_struct": lambda: self._export_structures(
-                folder, struct_data, raster_layer, line_crs, csv_exporter, msg
+                folder,
+                struct_data,
+                raster_layer,
+                line_crs,
+                csv_exporter,
+                msg,
+                export_settings,
+                format_ext,
             ),
             "exp_drill": lambda: self._export_drillholes(
-                folder, drillhole_data, line_crs, msg, options
+                folder,
+                drillhole_data,
+                line_crs,
+                msg,
+                options,
+                export_settings,
+                format_ext,
             ),
             "exp_drill_3d": lambda: self._export_drillholes_3d(
-                folder, drillhole_data, line_crs, msg, options
+                folder,
+                drillhole_data,
+                line_crs,
+                msg,
+                options,
+                export_settings,
+                format_ext,
             ),
             "exp_interp": lambda: self._export_interpretations(
-                folder, interp_data, line_layer, line_crs, msg
+                folder,
+                interp_data,
+                line_layer,
+                line_crs,
+                msg,
+                export_settings,
+                format_ext,
             ),
         }
         for opt, handler in handlers.items():
@@ -190,19 +235,21 @@ class ExportService:
         crs: Any,
         csv_exporter: Any,
         msg: list[str],
+        settings: Any | None = None,
+        ext: str = ".shp",
     ) -> None:
         """Export topographic data."""
-        from sec_interp.exporters import ProfileLineShpExporter
+        from sec_interp.exporters import DXFExporter, ProfileLineShpExporter
 
         logger.info("✓ Saving topographic profile...")
         try:
-            csv_exporter.export(
-                folder / "topo_profile.csv", {"headers": ["dist", "elev"], "rows": data}
-            )
-            ProfileLineShpExporter({}).export(
-                folder / "profile_line.shp", {"profile_data": data, "crs": crs}
-            )
-            msg.extend(["  - topo_profile.csv", "  - profile_line.shp"])
+            csv_path = self._get_export_path(folder, "topo_profile", settings, ".csv")
+            csv_exporter.export(csv_path, {"headers": ["dist", "elev"], "rows": data})
+
+            vec_path = self._get_export_path(folder, "profile_line", settings, ext)
+            vector_exporter = DXFExporter({}) if ext == ".dxf" else ProfileLineShpExporter({})
+            vector_exporter.export(vec_path, {"profile_data": data, "crs": crs})
+            msg.extend([f"  - {csv_path.name}", f"  - {vec_path.name}"])
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Topography export failed: {e}")
             raise ExportError(f"Topography export failed: {e!s}") from e
@@ -217,23 +264,27 @@ class ExportService:
         crs: Any,
         csv_exporter: Any,
         msg: list[str],
+        settings: Any | None = None,
+        ext: str = ".shp",
     ) -> None:
         """Export geological data."""
         if not data:
             return
-        from sec_interp.exporters import GeologyShpExporter
+        from sec_interp.exporters import DXFExporter, GeologyShpExporter
 
         logger.info("✓ Saving geological profile...")
         try:
             rows = [(p[0], p[1], s.unit_name) for s in data for p in s.points]
+            csv_path = self._get_export_path(folder, "geol_profile", settings, ".csv")
             csv_exporter.export(
-                folder / "geol_profile.csv",
+                csv_path,
                 {"headers": ["dist", "elev", "geology"], "rows": rows},
             )
-            GeologyShpExporter({}).export(
-                folder / "geol_profile.shp", {"geology_data": data, "crs": crs}
-            )
-            msg.extend(["  - geol_profile.csv", "  - geol_profile.shp"])
+
+            vec_path = self._get_export_path(folder, "geol_profile", settings, ext)
+            vector_exporter = DXFExporter({}) if ext == ".dxf" else GeologyShpExporter({})
+            vector_exporter.export(vec_path, {"geology_data": data, "crs": crs})
+            msg.extend([f"  - {csv_path.name}", f"  - {vec_path.name}"])
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Geology export failed: {e}")
             raise ExportError(f"Geology export failed: {e!s}") from e
@@ -249,17 +300,20 @@ class ExportService:
         crs: Any,
         csv_exporter: Any,
         msg: list[str],
+        settings: Any | None = None,
+        ext: str = ".shp",
     ) -> None:
         """Export structural data."""
         if not data:
             return
-        from sec_interp.exporters import StructureShpExporter
+        from sec_interp.exporters import DXFExporter, StructureShpExporter
 
         logger.info("✓ Saving structural profile...")
         try:
             rows = [(s.distance, s.apparent_dip) for s in data]
+            csv_path = self._get_export_path(folder, "structural_profile", settings, ".csv")
             csv_exporter.export(
-                folder / "structural_profile.csv",
+                csv_path,
                 {"headers": ["dist", "apparent_dip"], "rows": rows},
             )
 
@@ -267,8 +321,10 @@ class ExportService:
             if raster_layer and raster_layer.isValid():
                 raster_res = raster_layer.rasterUnitsPerPixelX()
 
-            StructureShpExporter({}).export(
-                folder / "structural_profile.shp",
+            vec_path = self._get_export_path(folder, "structural_profile", settings, ext)
+            vector_exporter = DXFExporter({}) if ext == ".dxf" else StructureShpExporter({})
+            vector_exporter.export(
+                vec_path,
                 {
                     "structural_data": data,
                     "crs": crs,
@@ -276,7 +332,7 @@ class ExportService:
                     "raster_res": raster_res,
                 },
             )
-            msg.extend(["  - structural_profile.csv", "  - structural_profile.shp"])
+            msg.extend([f"  - {csv_path.name}", f"  - {vec_path.name}"])
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Structure export failed: {e}")
             raise ExportError(f"Structure export failed: {e!s}") from e
@@ -290,7 +346,9 @@ class ExportService:
         data: list[Any] | None,
         crs: Any,
         msg: list[str],
-        options: dict[str, bool] | None = None,
+        options: dict[str, Any] | None = None,
+        settings: Any | None = None,
+        ext: str = ".shp",
     ) -> None:
         """Export drillhole data (2D and optional 3D)."""
         if not data:
@@ -298,22 +356,26 @@ class ExportService:
         from sec_interp.exporters import (
             DrillholeIntervalShpExporter,
             DrillholeTraceShpExporter,
+            DXFExporter,
         )
 
         logger.info("✓ Saving drillhole data...")
         try:
             # 1. Standard 2D Export
-            DrillholeTraceShpExporter({}).export(
-                folder / "drillhole_traces.shp", {"drillhole_data": data, "crs": crs}
+            traces_path = self._get_export_path(folder, "drillhole_traces", settings, ext)
+            traces_exporter = DXFExporter({}) if ext == ".dxf" else DrillholeTraceShpExporter({})
+            traces_exporter.export(traces_path, {"drillhole_data": data, "crs": crs})
+
+            intervals_path = self._get_export_path(folder, "drillhole_intervals", settings, ext)
+            intervals_exporter = (
+                DXFExporter({}) if ext == ".dxf" else DrillholeIntervalShpExporter({})
             )
-            DrillholeIntervalShpExporter({}).export(
-                folder / "drillhole_intervals.shp", {"drillhole_data": data, "crs": crs}
-            )
-            msg.extend(["  - drillhole_traces.shp", "  - drillhole_intervals.shp"])
+            intervals_exporter.export(intervals_path, {"drillhole_data": data, "crs": crs})
+            msg.extend([f"  - {traces_path.name}", f"  - {intervals_path.name}"])
 
             # 2. Advanced 3D Export
             if options:
-                self._export_drillholes_3d(folder, data, crs, msg, options)
+                self._export_drillholes_3d(folder, data, crs, msg, options, settings, ext)
 
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Drillhole export failed: {e}")
@@ -328,37 +390,28 @@ class ExportService:
         data: list[Any] | None,
         crs: Any,
         msg: list[str],
-        options: dict[str, bool],
+        options: dict[str, Any],
+        settings: Any | None = None,
+        ext: str = ".shp",
     ) -> None:
-        """Export 3D drillhole traces and intervals.
-
-        Uses a declarative task list to dispatch exports, replacing nested
-        conditionals with a single iteration loop.
-
-        Args:
-            folder: Destination directory for exported files.
-            data: List of drillhole data objects.
-            crs: Coordinate reference system for the output layers.
-            msg: Accumulator list for result messages.
-            options: Export option flags controlling which 3D variants to emit.
-
-        """
+        """Export 3D drillhole traces and intervals."""
         if not data:
             return
 
         from sec_interp.exporters import (
             DrillholeInterval3DExporter,
             DrillholeTrace3DExporter,
+            DXFExporter,
         )
 
         # Declarative task list: (type_flag, projection_flag, ExporterClass,
-        #                          filename, use_projected, label)
+        #                          filename_base, use_projected, label)
         tasks: list[tuple[str, str, Any, str, bool, str]] = [
             (
                 "drill_3d_traces",
                 "drill_3d_original",
                 DrillholeTrace3DExporter,
-                "drillhole_traces_3d_real.shp",
+                "drillhole_traces_3d_real",
                 False,
                 "3D Real",
             ),
@@ -366,7 +419,7 @@ class ExportService:
                 "drill_3d_traces",
                 "drill_3d_projected",
                 DrillholeTrace3DExporter,
-                "drillhole_traces_3d_projected.shp",
+                "drillhole_traces_3d_projected",
                 True,
                 "3D Proj",
             ),
@@ -374,7 +427,7 @@ class ExportService:
                 "drill_3d_intervals",
                 "drill_3d_original",
                 DrillholeInterval3DExporter,
-                "drillhole_intervals_3d_real.shp",
+                "drillhole_intervals_3d_real",
                 False,
                 "3D Real",
             ),
@@ -382,16 +435,17 @@ class ExportService:
                 "drill_3d_intervals",
                 "drill_3d_projected",
                 DrillholeInterval3DExporter,
-                "drillhole_intervals_3d_projected.shp",
+                "drillhole_intervals_3d_projected",
                 True,
                 "3D Proj",
             ),
         ]
 
-        for type_flag, proj_flag, ExporterClass, filename, use_proj, label in tasks:
+        for type_flag, proj_flag, ExporterClass, base_name, use_proj, label in tasks:
             if options.get(type_flag, False) and options.get(proj_flag, False):
-                path = folder / filename
-                ExporterClass({}).export(
+                path = self._get_export_path(folder, base_name, settings, ext)
+                exporter = DXFExporter({}) if ext == ".dxf" else ExporterClass({})
+                exporter.export(
                     path,
                     {"drillhole_data": data, "crs": crs, "use_projected": use_proj},
                 )
@@ -404,25 +458,29 @@ class ExportService:
         line_layer: Any,
         crs: Any,
         msg: list[str],
+        settings: Any | None = None,
+        ext: str = ".shp",
     ) -> None:
         """Export interpretation data."""
         if not data:
             logger.info("No interpretations provided for export.")
             return
-        from sec_interp.exporters import Interpretation2DExporter
+        from sec_interp.exporters import DXFExporter, Interpretation2DExporter
 
         logger.info("✓ Saving interpretation data...")
         try:
             # 2D Export (Standard)
-            Interpretation2DExporter({}).export(
-                folder / "interpretations.shp",
+            path = self._get_export_path(folder, "interpretations", settings, ext)
+            exporter = DXFExporter({}) if ext == ".dxf" else Interpretation2DExporter({})
+            exporter.export(
+                path,
                 {"interpretations": data, "crs": crs},
             )
-            msg.append("  - interpretations.shp")
+            msg.append(f"  - {path.name}")
 
             # 3D Export (Restricted Feature)
             if self.access_control.can_export_3d():
-                self._export_interpretations_3d(folder, data, line_layer, crs, msg)
+                self._export_interpretations_3d(folder, data, line_layer, crs, msg, settings, ext)
             else:
                 logger.info("3D Export features are restricted for this user.")
 
@@ -430,35 +488,85 @@ class ExportService:
             raise ExportError(f"Interpretation export failed: {e!s}") from e
 
     def _export_interpretations_3d(
-        self, folder: Path, data: list[Any], line_layer: Any, crs: Any, msg: list[str]
+        self,
+        folder: Path,
+        data: list[Any],
+        line_layer: Any,
+        crs: Any,
+        msg: list[str],
+        settings: Any | None = None,
+        ext: str = ".shp",
     ) -> None:
         """Export interpretation polygons to 3D space."""
-        from sec_interp.exporters import Interpretation3DExporter
+        from sec_interp.exporters import DXFExporter, Interpretation3DExporter
 
         logger.info("✓ Saving 3D interpretation data...")
         # Get section line geometry
         if line_layer and line_layer.isValid():
             line_geom = next(line_layer.getFeatures()).geometry()
 
-            Interpretation3DExporter({}).export(
-                str(folder / "interpretations_3d.shp"),
+            path = self._get_export_path(folder, "interpretations_3d", settings, ext)
+            exporter = DXFExporter({}) if ext == ".dxf" else Interpretation3DExporter({})
+
+            exporter.export(
+                str(path),
                 {"interpretations": data, "section_line": line_geom, "crs": crs},
             )
-            msg.append("  - interpretations_3d.shp (3D)")
+            msg.append(f"  - {path.name} (3D)")
         else:
             logger.warning("Invalid section line layer, skipping 3D export.")
 
-    def _export_axes(self, folder: Path, data: list[tuple], crs: Any, msg: list[str]) -> None:
+    def _export_axes(
+        self,
+        folder: Path,
+        data: list[tuple],
+        crs: Any,
+        msg: list[str],
+        settings: Any | None = None,
+        ext: str = ".shp",
+    ) -> None:
         """Export profile axes."""
-        from sec_interp.exporters import AxesShpExporter
+        from sec_interp.exporters import AxesShpExporter, DXFExporter
 
         logger.info("✓ Saving profile axes...")
         try:
-            AxesShpExporter({}).export(
-                folder / "profile_axes.shp", {"profile_data": data, "crs": crs}
-            )
+            path = self._get_export_path(folder, "profile_axes", settings, ext)
+            exporter = DXFExporter({}) if ext == ".dxf" else AxesShpExporter({})
+            exporter.export(path, {"profile_data": data, "crs": crs})
         except Exception as e:
             raise ExportError(f"Profile axes export failed: {e!s}") from e
+
+    def _get_export_path(
+        self, folder: Path, base_name: str, settings: Any | None, ext: str
+    ) -> Path:
+        """Generate output path with optional custom naming pattern."""
+        if not settings or ext == ".csv":
+            return folder / f"{base_name}{ext}"
+
+        pattern = settings.naming_pattern
+        if not pattern:
+            return folder / f"{base_name}{ext}"
+
+        # We will use "profile" as a generic name placeholder for the current section
+        # More complex patterns can be supported here in the future
+        profile_name = "profile"
+        if (
+            self.controller
+            and hasattr(self.controller, "settings")
+            and hasattr(self.controller.settings, "section")
+        ):
+            if (
+                hasattr(self.controller.settings.section, "layer_name")
+                and self.controller.settings.section.layer_name
+            ):
+                profile_name = self.controller.settings.section.layer_name
+
+        new_name = pattern.format(filename=base_name, profile=profile_name)
+
+        # Basic sanitation to ensure a valid filename
+        new_name = new_name.replace("/", "_").replace("\\", "_")
+
+        return folder / f"{new_name}{ext}"
 
     def get_map_settings(
         self,

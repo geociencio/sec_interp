@@ -15,6 +15,7 @@ from .drillhole_exporters import (
     DrillholeIntervalShpExporter,
     DrillholeTraceShpExporter,
 )
+from .dxf_exporter import DXFExporter
 from .image_exporter import ImageExporter
 from .interpretation_3d_exporter import Interpretation3DExporter
 from .interpretation_exporters import Interpretation2DExporter

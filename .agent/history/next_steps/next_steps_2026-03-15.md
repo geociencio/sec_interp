@@ -1,19 +1,16 @@
-# Next Steps - Advancing Export Features
+# Next Steps
 
-The current session focused on analyzing the previous refactoring of `ExportService` and planning Phase 3.4.0 (Advanced Export).
+**Status**: DXF Integration and ExportService Refactor are COMPLETE and tested successfully. No errors pending.
 
-## Current Status
-- [x] Language Server fixed (Pylance -> Default).
-- [x] Project state analyzed (v3.3.0 final results confirmed).
-- [x] Implementation Plan for v3.4.0 created and notified to user.
+## Current State
+- The `DXFExporter` is implemented and can be selected via the plugin Settings page.
+- Export formats (Shapefile, GeoPackage, DXF) and naming patterns (`{filename}_{profile}`) are fully functional.
+- The cyclomatic complexity of `ExportService` is reduced and all 607 unit/integration tests pass (Docker tested).
+- The `test_settings_page.py` mocks align with the new UI elements allowing seamless GUI validation.
+- All code has been formatted/linted using `ruff` and `black`.
 
-## Pending Tasks
-1. **User Approval**: Wait for user review of the `implementation_plan.md`.
-2. **Settings Expansion**: Add `ExportSettings` to `core/models/settings_model.py`.
-3. **DXF Implementation**: Create `exporters/dxf_exporter.py` using `QgsVectorFileWriter`.
-4. **UI Integration**: Update `gui/ui/pages/settings_page.py` to add export controls.
-
-## Resume Command
-```bash
-/start-session
-```
+## Handover Instructions for Next Agent
+1. **Sync Skills**: If necessary, run `python3 scripts/skill_sync.py` to ensure agent instructions are updated.
+2. **Review Pyre Type Errors**: Optional - Check if the remaining `Pyre` static analysis warnings regarding missing QGIS imports in GUI models need explicit suppression or if `.pyre_configuration` adjustments can resolve them safely.
+3. **Begin Next Phase**: Check `.agent/task.md` for the next logical feature or wait for user instructions.
+4. **Resuming**: Use `/start-session` to initialize the workspace with loaded variables.

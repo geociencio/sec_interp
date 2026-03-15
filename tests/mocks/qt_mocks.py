@@ -453,11 +453,26 @@ class MockQWidget(MockQObject):
 
     def currentIndex(self):
         """Get current index."""
-        return 0
+        return getattr(self, "_current_index", 0)
 
     def setCurrentIndex(self, index):
         """Set current index."""
+        self._current_index = index
         self.currentIndexChanged.emit(index)
+
+    def findText(self, text, flags=None):
+        """Find text in items."""
+        if hasattr(self, "_items") and text in self._items:
+            return self._items.index(text)
+        elif hasattr(self, "_items"):
+            return -1
+        return 0
+
+    def addItems(self, items):
+        """Add multiple items."""
+        if not hasattr(self, "_items"):
+            self._items = []
+        self._items.extend(items)
 
     def currentText(self):
         """Get current text."""
@@ -489,6 +504,18 @@ class MockQWidget(MockQObject):
 
     def setMaximumWidth(self, width):
         """Set maximum width."""
+        pass
+
+    def setPlaceholderText(self, text):
+        """Set placeholder text."""
+        pass
+
+    def setAlignment(self, alignment):
+        """Set text alignment."""
+        pass
+
+    def setValidator(self, validator):
+        """Set input validator."""
         pass
 
 

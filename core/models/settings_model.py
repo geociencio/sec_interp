@@ -64,9 +64,7 @@ class StructureSettings:
 
     def __post_init__(self) -> None:
         """Validate settings after initialization."""
-        self.dip_scale_factor = validate_and_clamp(0.1, float("inf"))(
-            self.dip_scale_factor
-        )
+        self.dip_scale_factor = validate_and_clamp(0.1, float("inf"))(self.dip_scale_factor)
 
 
 @dataclass
@@ -135,6 +133,15 @@ class PreviewSettings:
 
 
 @dataclass
+class ExportSettings:
+    """Settings for the Export configurable options."""
+
+    default_format: str = "Shapefile"
+    naming_pattern: str = "{filename}_{profile}"
+    overwrite_existing: bool = True
+
+
+@dataclass
 class PluginSettings:
     """Main container for all plugin settings."""
 
@@ -143,10 +150,9 @@ class PluginSettings:
     geology: GeologySettings = field(default_factory=GeologySettings)
     structure: StructureSettings = field(default_factory=StructureSettings)
     drillhole: DrillholeSettings = field(default_factory=DrillholeSettings)
-    interpretation: InterpretationSettings = field(
-        default_factory=InterpretationSettings
-    )
+    interpretation: InterpretationSettings = field(default_factory=InterpretationSettings)
     preview: PreviewSettings = field(default_factory=PreviewSettings)
+    export: ExportSettings = field(default_factory=ExportSettings)
     last_output_dir: str = ""
 
     @classmethod
@@ -161,6 +167,7 @@ class PluginSettings:
             drillhole=DrillholeSettings(**data.get("drillhole", {})),
             interpretation=InterpretationSettings(**data.get("interpretation", {})),
             preview=PreviewSettings(**data.get("preview", {})),
+            export=ExportSettings(**data.get("export", {})),
             last_output_dir=data.get("last_output_dir", ""),
         )
 

@@ -1334,3 +1334,16 @@ Implementación exitosa de los dos primeros niveles de la arquitectura de valida
 ## [2025-11-21] Initial project setup
 - Core structure established
 - QGIS plugin skeleton generated
+
+## [2026-03-15] DXF Integration and ExportService Refactor
+
+**Goal**: Implement DXF export and reduce cyclomatic complexity in `ExportService`.
+
+**Changes:**
+- Added `ExportSettings` with `default_format` and `naming_pattern`.
+- Implemented `DXFExporter` using `QgsVectorFileWriter`.
+- Refactored `ExportService` to dynamically use exporters based on settings and extracted layer resolution to pure functions.
+- Updated Settings GUI with a `QComboBox` for default format and `QLineEdit` for naming scheme.
+- Added missing UI Qt Mocks for `QComboBox` and `QLineEdit` to allow tests to pass.
+
+**Outcome**: Cyclomatic complexity successfully reduced. Full test suite (607 tests) passing via Docker.
