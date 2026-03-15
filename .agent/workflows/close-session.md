@@ -26,7 +26,7 @@ This workflow closes the development cycle, converting technical work into histo
 *   **Next Steps Archiving**: Copy `.agent/next_steps.md` to `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` to maintain a historical record.
 *   **`docs/maintenance/session_YYYY-MM-DD_[TOPIC].md`**: **[MANDATORY]** Create this file with the session's technical summary.
 *   **`docs/DEVELOPMENT_LOG.md`**: **[CRITICAL]** Add entry following the `documentation-standards` format.
-*   **`docs/CHANGELOG.md`**: Record user-visible changes in `[Unreleased]` using the **changelog-generator** skill based on session commits.
+*   **`docs/CHANGELOG.md`**: Record user-visible changes in `[Unreleased]` using the **changelog-generator** skill based on session commits. **(NOTA: La habilidad `changelog-generator` es interpretativa [prompt-based]. NO intentes ejecutar ningún script de Python. En su lugar, usa `git log` para leer los commits recientes de la sesión, analízalos mentalmente y usa la herramienta de edición de archivos para escribir directamente en CHANGELOG.md)**.
 
 ### 2. Final Verification (Safety Net)
 

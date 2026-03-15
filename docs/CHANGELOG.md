@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentación**: Actualización de `AGENTS.md` con documentación detallada de habilidades del agente.
 
 ### Fixed
-- [Sin cambios aún]
+- **Testing**: Soporte para componentes `QLineEdit` y `QComboBox` añadidos en mocks de pruebas (`MockQWidget`).
 
 ## [3.3.0] - 2026-03-14
 
