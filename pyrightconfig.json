@@ -1,29 +1,26 @@
 {
-  "pythonVersion": "3.12",
-  "venvPath": ".",
-  "venv": ".venv",
-  "extraPaths": [
-    "/usr/lib/python3.14/site-packages",
-    "/usr/share/qgis/python",
-    "/usr/share/qgis/python/plugins",
-    "/home/jmbernales/qgispluginsdev"
-  ],
   "include": [
     "core",
     "gui",
     "exporters",
-    "sec_interp_plugin.py",
-    "logger_config.py"
+    "tests"
   ],
   "exclude": [
-    "tests",
-    ".venv",
-    ".gemini-temp",
+    "**/node_modules",
+    "**/__pycache__",
     "antigravity-framerepo",
-    "scripts"
+    ".venv"
   ],
-  "reportMissingImports": "warning",
-  "reportMissingModuleSource": "none",
-  "reportAttributeAccessIssue": "warning",
-  "typeCheckingMode": "basic"
+  "extraPaths": [
+    "/usr/share/qgis/python",
+    "/usr/share/qgis/python/plugins",
+    "/usr/lib/python3.14/site-packages",
+    "/home/jmbernales/qgispluginsdev/sec_interp/.venv/lib/python3.12/site-packages",
+    ".."
+  ],
+  "executionEnvironments": [
+    {
+      "root": "."
+    }
+  ]
 }

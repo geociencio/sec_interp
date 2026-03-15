@@ -1347,3 +1347,13 @@ Implementación exitosa de los dos primeros niveles de la arquitectura de valida
 - Added missing UI Qt Mocks for `QComboBox` and `QLineEdit` to allow tests to pass.
 
 **Outcome**: Cyclomatic complexity successfully reduced. Full test suite (607 tests) passing via Docker.
+
+## [2026-03-15] Pyright Workspace Configuration and Workflow Fixes
+
+**Goal**: Clarify changelog workflow usage and resolve IDE static analysis ghost issues.
+
+**Changes:**
+- Clarified prompt-based execution in `close-session.md` workflow.
+- Configured `.pyre_configuration` and `.vscode/settings.json` to constrain Pyright to correct workspace paths.
+
+**Outcome**: Accurate changelog instructions prevent command execution failures. Phantom IDE diagnostics safely isolated.

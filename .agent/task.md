@@ -12,3 +12,8 @@
 - [x] **Settings Expansion**: Add `ExportSettings` to `core/models/settings_model.py`.
 - [x] **DXF Implementation**: Create `exporters/dxf_exporter.py` using `QgsVectorFileWriter`.
 - [x] **UI Integration**: Update `gui/ui/pages/settings_page.py` to add export controls.
+
+## Pyright & Workflow Fixes
+- [x] Investigate missing changelog script error
+- [x] Update `close-session.md` workflow instruction
+- [x] Configure `.pyre_configuration` and `.vscode/settings.json` to fix absolute import ghost errors
