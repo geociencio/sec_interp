@@ -1,3 +1,12 @@
+## [2026-03-15] Advanced Export Planning (v3.4.0)
+- **Achievement**: Fixed IDE language server and established implementation plan for Phase 3.4.0 (GeoPackage/DXF/Custom Naming).
+- **Changes**:
+    - **IDE**: Switched language server to "Default" to solve Pylance missing issue.
+    - **Analysis**: Confirmed successful refactoring of `ExportService`.
+    - **Planning**: Outlined architecture for `GpkgfileExporter`, `DXFExporter`, and naming patterns.
+- **Status**: Ready for v3.4.0 implementation.
+- **Maintenance**: [session_2026-03-15_advanced_export_planning.md](maintenance/session_2026-03-15_advanced_export_planning.md)
+
 ## [2026-03-14] Start of Phase v3.4.0 - Advanced Export & Complexity Reduction
 - **Goal**: Implement new `GpkgfileExporter`, configurable naming options, and reduce architecture complexity.
 - **Estimated Duration**: 2 weeks.

@@ -1,5 +1,5 @@
 {
-    "python.languageServer": "Pylance",
+    "python.languageServer": "Default",
     "python.analysis.typeCheckingMode": "basic",
     "python.analysis.extraPaths": [
         "/usr/lib/python3.14/site-packages",

@@ -9,7 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from qgis.core import QgsMapSettings, QgsProject, QgsRectangle
+from qgis.core import QgsMapSettings, QgsRectangle
 
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import DataMissingError, ExportError
@@ -110,6 +110,10 @@ class ExportService:
             DataMissingError: If the section line layer is not found or invalid.
 
         """
+        from qgis.core import (
+            QgsProject,
+        )  # noqa: PLC0415 (lazy: avoids IDE false positives)
+
         project = QgsProject.instance()
 
         line_layer = None
