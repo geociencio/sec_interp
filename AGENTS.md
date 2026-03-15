@@ -308,6 +308,18 @@ export QGIS_LOG_FILE=qgis_debug.log
 
 ---
 
+## 🛠️ AI Agent Skills
+
+### Specialized Capabilities
+The following specialized skills are available to assist in project development:
+
+- **changelog-generator**: Automatically creates user-facing changelogs from git commits.
+- **commit-standards**: Enforces clean and conventional commits.
+- **qa-docker**: Manages testing in isolated Docker environments.
+- **release-management**: Handles the official QGIS plugin release flow.
+
+---
+
 ## 📚 Key Resources
 
 - **Architecture**: `docs/ARCHITECTURE_EN.md`

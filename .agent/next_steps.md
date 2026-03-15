@@ -1,19 +1,11 @@
-# Next Steps - Advancing Export Features
-
-The current session focused on analyzing the previous refactoring of `ExportService` and planning Phase 3.4.0 (Advanced Export).
-
-## Current Status
-- [x] Language Server fixed (Pylance -> Default).
-- [x] Project state analyzed (v3.3.0 final results confirmed).
-- [x] Implementation Plan for v3.4.0 created and notified to user.
+# Next Steps: skill_integration_changelog
 
 ## Pending Tasks
-1. **User Approval**: Wait for user review of the `implementation_plan.md`.
-2. **Settings Expansion**: Add `ExportSettings` to `core/models/settings_model.py`.
-3. **DXF Implementation**: Create `exporters/dxf_exporter.py` using `QgsVectorFileWriter`.
-4. **UI Integration**: Update `gui/ui/pages/settings_page.py` to add export controls.
+- [ ] Test the `changelog-generator` skill during an actual release or phase closure. <!-- id: 0 -->
+- [ ] Explore further automation of release notes using the GitHub CLI. <!-- id: 1 -->
+
+## Technical Debt
+- None identified in this session.
 
 ## Resume Command
-```bash
-/start-session
-```
+`/start-session`

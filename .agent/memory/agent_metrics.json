@@ -1,6 +1,6 @@
 {
-    "total_sessions": 6,
-    "tasks_completed": 6,
+    "total_sessions": 7,
+    "tasks_completed": 7,
     "agent_retries": {
         "syntax_errors": 0,
         "logic_errors": 0,
@@ -8,13 +8,13 @@
     },
     "effectiveness_score": 1.0,
     "last_session": {
-        "date": "2026-03-12",
-        "topic": "stability_v3.3.0_final",
+        "date": "2026-03-15",
+        "topic": "skill_integration_changelog",
         "tests_ok": 607,
         "quality_score": 71.6,
-        "files_modified": 17,
-        "lines_added": 7471,
-        "lines_removed": 7529
+        "files_modified": 12,
+        "lines_added": 150,
+        "lines_removed": 50
     },
     "history": [
         {
@@ -89,6 +89,16 @@
                 "Standardize DrillholeProjection DTO",
                 "Add pervasive return type hints in services",
                 "Final deploy and .qgisignore refinement"
+            ],
+            "status": "SUCCESS"
+        },
+        {
+            "date": "2026-03-15",
+            "session": "skill_integration_changelog",
+            "tasks": [
+                "Relocate changelog-generator skill",
+                "Integrate skill into workflows (close-session, release-plugin, close-phase)",
+                "Update AGENTS.md and memory"
             ],
             "status": "SUCCESS"
         }

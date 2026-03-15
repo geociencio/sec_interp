@@ -1,7 +1,7 @@
 ---
 description: Unified Release Workflow (QGIS Release Flow) based on IA Guide
 agent: QA Engineer
-skills: [release-management, qa-docker, commit-standards, i18n-standards]
+skills: [release-management, qa-docker, commit-standards, i18n-standards, changelog-generator]
 validation: |
   - Verify that 535+ tests pass in Docker
   - Confirm that qgis-analyzer score > 25/100
@@ -52,7 +52,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
    🤖 **Agent Action**: Validate that all 3 versions match exactly (`metadata.txt`, `pyproject.toml`, `README.md`).
 
-3. **Technical Changelog (Keep A Changelog)**: Move `[Unreleased]` to the new version in `docs/CHANGELOG.md` and sync `docs/docsec/CHANGELOG.md` (Spanish) if applicable, using valid types (`Added`, `Changed`, `Fixed`, etc.).
+3. **Technical Changelog (Keep A Changelog)**: Use **changelog-generator** to move `[Unreleased]` to the new version in `docs/CHANGELOG.md` and sync `docs/docsec/CHANGELOG.md` (Spanish) if applicable, using valid types (`Added`, `Changed`, `Fixed`, etc.).
 
 4. **Release Notes**:
    // turbo
@@ -60,7 +60,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    sed -e "s/{version}/X.Y.Z/g" -e "s/{date}/$(date +%F)/g" .github/release_template.md > /tmp/release_notes.md
    ```
 
-   🤖 **Agent Action**: Generate structured release notes following **release-management** skill template.
+   🤖 **Agent Action**: Generate structured release notes using **changelog-generator** following **release-management** skill template.
 
 ### Phase 3: Verification
 

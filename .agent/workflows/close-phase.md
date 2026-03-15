@@ -1,7 +1,7 @@
 ---
 description: Formal procedure for closing a major development phase
 agent: Senior Architect
-skills: [qgis-core, qa-docker]
+skills: [qgis-core, qa-docker, changelog-generator]
 validation: |
   - Verify that 535 tests pass in Docker
   - Confirm that closure document is complete
@@ -98,7 +98,7 @@ Create the formal document in `docs/maintenance/phase_closure_vX.Y.Z.md` with:
 Update the following files:
 
 - **`docs/source/MAINTENANCE_LOG.md`**: Consolidate all phase changes into a single entry.
-- **`docs/CHANGELOG.md`**: Move all changes from `[Unreleased]` to `[X.Y.Z] - YYYY-MM-DD`.
+- **`docs/CHANGELOG.md`**: Use **changelog-generator** to move all changes from `[Unreleased]` to `[X.Y.Z] - YYYY-MM-DD`.
 - **`docs/DEVELOPMENT_LOG.md`**: Add phase closure entry at the top.
 
 ## 6. Version Control Synchronization

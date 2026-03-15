@@ -12,9 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nuevo `DXFExporter` para soporte nativo de AutoCAD DXF en 3D.
 - Selector de formato de exportación en la página de interpretación.
 - Opción para nombres de archivos personalizados en el diálogo de exportación.
+- **Skills**: Integración de `changelog-generator` para automatización de notas de lanzamiento.
+- **Workflows**: Actualización de flujos de cierre y lanzamiento para incluir generación automática de changelogs.
 
 ### Changed
 - Refactorización de `ExportManager` para reducir complejidad ciclomática.
+- **Documentación**: Actualización de `AGENTS.md` con documentación detallada de habilidades del agente.
 
 ### Fixed
 - [Sin cambios aún]

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "changelog-generator": {
+      "source": "composiohq/awesome-claude-skills",
+      "sourceType": "github",
+      "computedHash": "0facdb5c491a654e3b0f6d300fb8fa14472d811cb715c632dc2862919b277dae"
+    }
+  }
+}

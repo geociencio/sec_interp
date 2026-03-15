@@ -1,3 +1,12 @@
+## [2026-03-15] Skill Integration: Changelog Generator (v3.4.0)
+- **Achievement**: Successfully integrated the `changelog-generator` skill into the project's core workflows and updated AI standards.
+- **Changes**:
+    - **Skills**: Relocated `changelog-generator` to `.agent/skills/` for project compliance.
+    - **Workflows**: Integrated the skill into `close-session`, `release-plugin`, and `close-phase` workflows.
+    - **Documentation**: Updated `AGENTS.md` with comprehensive documentation for specialized AI skills.
+- **Status**: Workflows enhanced and standardized.
+- **Maintenance**: [session_2026-03-15_skill_integration_changelog.md](maintenance/session_2026-03-15_skill_integration_changelog.md)
+
 ## [2026-03-15] Advanced Export Planning (v3.4.0)
 - **Achievement**: Fixed IDE language server and established implementation plan for Phase 3.4.0 (GeoPackage/DXF/Custom Naming).
 - **Changes**:

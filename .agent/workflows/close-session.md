@@ -1,7 +1,7 @@
 ---
 description: Procedure to end a work session, update logs, and archive results
 agent: QA Engineer
-skills: [qa-docker, commit-standards, agentic-memory, documentation-standards]
+skills: [qa-docker, commit-standards, agentic-memory, documentation-standards, changelog-generator]
 validation: |
   - Verify that all logs are updated
   - Confirm that tests pass before closing
@@ -26,7 +26,7 @@ This workflow closes the development cycle, converting technical work into histo
 *   **Next Steps Archiving**: Copy `.agent/next_steps.md` to `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` to maintain a historical record.
 *   **`docs/maintenance/session_YYYY-MM-DD_[TOPIC].md`**: **[MANDATORY]** Create this file with the session's technical summary.
 *   **`docs/DEVELOPMENT_LOG.md`**: **[CRITICAL]** Add entry following the `documentation-standards` format.
-*   **`docs/CHANGELOG.md`**: Record user-visible changes in `[Unreleased]`.
+*   **`docs/CHANGELOG.md`**: Record user-visible changes in `[Unreleased]` using the **changelog-generator** skill based on session commits.
 
 ### 2. Final Verification (Safety Net)
 
