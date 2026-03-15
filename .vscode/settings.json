@@ -1,8 +1,16 @@
 {
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
     "python.analysis.extraPaths": [
+        "/usr/lib/python3.14/site-packages",
         "/usr/share/qgis/python",
         "/usr/share/qgis/python/plugins",
-        "/usr/lib/python3.14/site-packages",
+        "/home/jmbernales/qgispluginsdev",
         "/home/jmbernales/qgispluginsdev/sec_interp/.venv/lib/python3.12/site-packages"
+    ],
+    "python.analysis.ignore": [
+        "tests/**",
+        ".venv/**",
+        "antigravity-framerepo/**"
     ]
 }
