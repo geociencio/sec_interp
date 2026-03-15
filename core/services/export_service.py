@@ -9,7 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from qgis.core import QgsMapSettings, QgsRectangle
+from qgis.core import QgsMapSettings, QgsProject, QgsRectangle
 
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import DataMissingError, ExportError
@@ -95,6 +95,44 @@ class ExportService:
         result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
         return result_msg
 
+    def _resolve_layers(self, params: PreviewParams) -> tuple[Any, Any]:
+        """Resolve layer IDs to QgsMapLayer objects.
+
+        Args:
+            params: Preview parameters containing optional layer references
+                (either QgsMapLayer objects or string IDs).
+
+        Returns:
+            Tuple of (line_layer, raster_layer). Raises DataMissingError if
+            the section line layer is missing or invalid.
+
+        Raises:
+            DataMissingError: If the section line layer is not found or invalid.
+
+        """
+        project = QgsProject.instance()
+
+        line_layer = None
+        if params.line_layer:
+            line_layer = (
+                project.mapLayer(params.line_layer)
+                if isinstance(params.line_layer, str)
+                else params.line_layer
+            )
+
+        if not line_layer or not line_layer.isValid():
+            raise DataMissingError("Section line layer not found or invalid")
+
+        raster_layer = None
+        if params.raster_layer:
+            raster_layer = (
+                project.mapLayer(params.raster_layer)
+                if isinstance(params.raster_layer, str)
+                else params.raster_layer
+            )
+
+        return line_layer, raster_layer
+
     def _orchestrate_exports(
         self,
         folder: Path,
@@ -108,37 +146,14 @@ class ExportService:
         msg: list[str],
     ) -> None:
         """Call individual exporters based on options."""
-        # Resolve layer IDs to QgsMapLayer objects
-        from qgis.core import QgsProject
-
-        project = QgsProject.instance()
-
-        # Resolve line_layer
-        line_layer = None
-        if params.line_layer:
-            if isinstance(params.line_layer, str):
-                line_layer = project.mapLayer(params.line_layer)
-            else:
-                line_layer = params.line_layer
-
-        if not line_layer or not line_layer.isValid():
-            raise DataMissingError("Section line layer not found or invalid")
-
+        line_layer, raster_layer = self._resolve_layers(params)
         line_crs = line_layer.crs()
 
-        # Resolve raster_layer if needed for structures
-        raster_layer = None
-        if params.raster_layer:
-            if isinstance(params.raster_layer, str):
-                raster_layer = project.mapLayer(params.raster_layer)
-            else:
-                raster_layer = params.raster_layer
-
-        from sec_interp.exporters import CSVExporter
+        from sec_interp.exporters import CSVExporter  # noqa: PLC0415 (lazy, testable)
 
         csv_exporter = CSVExporter({})
 
-        def topo_handler():
+        def topo_handler() -> None:
             self._export_topography(folder, profile_data, line_crs, csv_exporter, msg)
             self._export_axes(folder, profile_data, line_crs, msg)
 
@@ -311,7 +326,19 @@ class ExportService:
         msg: list[str],
         options: dict[str, bool],
     ) -> None:
-        """Export 3D drillhole traces and intervals."""
+        """Export 3D drillhole traces and intervals.
+
+        Uses a declarative task list to dispatch exports, replacing nested
+        conditionals with a single iteration loop.
+
+        Args:
+            folder: Destination directory for exported files.
+            data: List of drillhole data objects.
+            crs: Coordinate reference system for the output layers.
+            msg: Accumulator list for result messages.
+            options: Export option flags controlling which 3D variants to emit.
+
+        """
         if not data:
             return
 
@@ -320,37 +347,51 @@ class ExportService:
             DrillholeTrace3DExporter,
         )
 
-        # Traces 3D
-        if options.get("drill_3d_traces", False):
-            if options.get("drill_3d_original", True):
-                path = folder / "drillhole_traces_3d_real.shp"
-                DrillholeTrace3DExporter({}).export(
-                    path, {"drillhole_data": data, "crs": crs, "use_projected": False}
-                )
-                msg.append(f"  - {path.name} (3D Real)")
+        # Declarative task list: (type_flag, projection_flag, ExporterClass,
+        #                          filename, use_projected, label)
+        tasks: list[tuple[str, str, Any, str, bool, str]] = [
+            (
+                "drill_3d_traces",
+                "drill_3d_original",
+                DrillholeTrace3DExporter,
+                "drillhole_traces_3d_real.shp",
+                False,
+                "3D Real",
+            ),
+            (
+                "drill_3d_traces",
+                "drill_3d_projected",
+                DrillholeTrace3DExporter,
+                "drillhole_traces_3d_projected.shp",
+                True,
+                "3D Proj",
+            ),
+            (
+                "drill_3d_intervals",
+                "drill_3d_original",
+                DrillholeInterval3DExporter,
+                "drillhole_intervals_3d_real.shp",
+                False,
+                "3D Real",
+            ),
+            (
+                "drill_3d_intervals",
+                "drill_3d_projected",
+                DrillholeInterval3DExporter,
+                "drillhole_intervals_3d_projected.shp",
+                True,
+                "3D Proj",
+            ),
+        ]
 
-            if options.get("drill_3d_projected", False):
-                path = folder / "drillhole_traces_3d_projected.shp"
-                DrillholeTrace3DExporter({}).export(
-                    path, {"drillhole_data": data, "crs": crs, "use_projected": True}
+        for type_flag, proj_flag, ExporterClass, filename, use_proj, label in tasks:
+            if options.get(type_flag, False) and options.get(proj_flag, False):
+                path = folder / filename
+                ExporterClass({}).export(
+                    path,
+                    {"drillhole_data": data, "crs": crs, "use_projected": use_proj},
                 )
-                msg.append(f"  - {path.name} (3D Proj)")
-
-        # Intervals 3D
-        if options.get("drill_3d_intervals", False):
-            if options.get("drill_3d_original", True):
-                path = folder / "drillhole_intervals_3d_real.shp"
-                DrillholeInterval3DExporter({}).export(
-                    path, {"drillhole_data": data, "crs": crs, "use_projected": False}
-                )
-                msg.append(f"  - {path.name} (3D Real)")
-
-            if options.get("drill_3d_projected", False):
-                path = folder / "drillhole_intervals_3d_projected.shp"
-                DrillholeInterval3DExporter({}).export(
-                    path, {"drillhole_data": data, "crs": crs, "use_projected": True}
-                )
-                msg.append(f"  - {path.name} (3D Proj)")
+                msg.append(f"  - {path.name} ({label})")
 
     def _export_interpretations(
         self,
@@ -403,9 +444,7 @@ class ExportService:
         else:
             logger.warning("Invalid section line layer, skipping 3D export.")
 
-    def _export_axes(
-        self, folder: Path, data: list[tuple], crs: Any, msg: list[str]
-    ) -> None:
+    def _export_axes(self, folder: Path, data: list[tuple], crs: Any, msg: list[str]) -> None:
         """Export profile axes."""
         from sec_interp.exporters import AxesShpExporter
 
