@@ -1,3 +1,12 @@
+## [2026-03-15] Export Refactoring & 3.4.0 Stabilization (v3.4.0)
+- **Achievement**: Generalized the vector writing system and fixed all test regressions.
+- **Changes**:
+    - **Core**: Unified vector writer in `io.py` supporting SHP, GPKG, and DXF.
+    - **Refactoring**: Ported all specialized exporters to the new centralized I/O system.
+    - **Verification**: Achieved 100% test success in Docker (71/71 OK).
+- **Status**: Export infrastructure stabilized for v3.4.0.
+- **Maintenance**: [session_2026-03-15_export_refactoring.md](maintenance/session_2026-03-15_export_refactoring.md)
+
 ## [2026-03-15] Skill Integration: Changelog Generator (v3.4.0)
 - **Achievement**: Successfully integrated the `changelog-generator` skill into the project's core workflows and updated AI standards.
 - **Changes**:
