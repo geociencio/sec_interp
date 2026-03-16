@@ -143,14 +143,19 @@ class ConfigService:
             "max_points": self.get("max_points", self.DEFAULT_MAX_POINTS),
         }
 
+        # Export
+        data["export"] = {
+            "default_format": self.get("export_format", "Shapefile"),
+            "naming_pattern": self.get("export_naming", "{filename}_{profile}"),
+            "overwrite_existing": self.get("overwrite_existing", True),
+        }
+
         data["last_output_dir"] = self.get("last_output_dir", "")
 
         try:
             return PluginSettings.from_dict(data)
         except (ValueError, TypeError, KeyError):
-            logger.exception(
-                self.tr("Failed to validate settings during load. Using defaults.")
-            )
+            logger.exception(self.tr("Failed to validate settings during load. Using defaults."))
             return PluginSettings()
 
     def get(self, key: str, default: Any = None) -> Any:

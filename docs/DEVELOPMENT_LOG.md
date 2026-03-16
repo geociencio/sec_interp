@@ -1,3 +1,11 @@
+## [2026-03-15] Fix: Export Format Persistence Standardized (v3.4.0)
+- **Achievement**: Resolved issue where export format (GPKG, DXF) was not persisting and standardized settings prefix.
+- **Changes**:
+    - **Core**: Updated `ConfigService` to load the `export` category from `QgsSettings`.
+    - **UI**: Standardized all `QgsSettings` keys to `SecInterp/` prefix in `SettingsPage`.
+    - **Cleanup**: Updated `AccessControlService` and tests to match new standardized keys.
+- **Status**: Export format persistence 100% verified.
+
 ## [2026-03-15] Export Refactoring & 3.4.0 Stabilization (v3.4.0)
 - **Achievement**: Generalized the vector writing system and fixed all test regressions.
 - **Changes**:

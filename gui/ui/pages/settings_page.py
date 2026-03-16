@@ -181,52 +181,48 @@ class SettingsPage(BasePage):
     def _load_settings(self) -> None:
         """Load current state from QgsSettings."""
         # Advanced
-        enabled_3d = self.settings.value("sec_interp/enable_3d", False, type=bool)
+        enabled_3d = self.settings.value("SecInterp/enable_3d", False, type=bool)
         if self.chk_enable_3d:
             self.chk_enable_3d.setChecked(enabled_3d)
 
         # Default (Export Selection)
         if hasattr(self, "chk_exp_topo"):
-            self.chk_exp_topo.setChecked(
-                self.settings.value("sec_interp/exp_topo", True, type=bool)
-            )
-            self.chk_exp_geol.setChecked(
-                self.settings.value("sec_interp/exp_geol", True, type=bool)
-            )
+            self.chk_exp_topo.setChecked(self.settings.value("SecInterp/exp_topo", True, type=bool))
+            self.chk_exp_geol.setChecked(self.settings.value("SecInterp/exp_geol", True, type=bool))
             self.chk_exp_struct.setChecked(
-                self.settings.value("sec_interp/exp_struct", True, type=bool)
+                self.settings.value("SecInterp/exp_struct", True, type=bool)
             )
             self.chk_exp_drill.setChecked(
-                self.settings.value("sec_interp/exp_drill", True, type=bool)
+                self.settings.value("SecInterp/exp_drill", True, type=bool)
             )
             self.chk_exp_interp.setChecked(
-                self.settings.value("sec_interp/exp_interp", True, type=bool)
+                self.settings.value("SecInterp/exp_interp", True, type=bool)
             )
 
         if hasattr(self, "combo_format"):
-            default_fmt = self.settings.value("sec_interp/export_format", "Shapefile", type=str)
+            default_fmt = self.settings.value("SecInterp/export_format", "Shapefile", type=str)
             index = self.combo_format.findText(default_fmt)
             if index >= 0:
                 self.combo_format.setCurrentIndex(index)
 
         if hasattr(self, "txt_naming"):
             self.txt_naming.setText(
-                self.settings.value("sec_interp/export_naming", "{filename}_{profile}", type=str)
+                self.settings.value("SecInterp/export_naming", "{filename}_{profile}", type=str)
             )
 
         # Drillhole 3D
         if hasattr(self, "chk_3d_traces"):
             self.chk_3d_traces.setChecked(
-                self.settings.value("sec_interp/drill_3d_traces", True, type=bool)
+                self.settings.value("SecInterp/drill_3d_traces", True, type=bool)
             )
             self.chk_3d_intervals.setChecked(
-                self.settings.value("sec_interp/drill_3d_intervals", True, type=bool)
+                self.settings.value("SecInterp/drill_3d_intervals", True, type=bool)
             )
             self.chk_3d_original.setChecked(
-                self.settings.value("sec_interp/drill_3d_original", True, type=bool)
+                self.settings.value("SecInterp/drill_3d_original", True, type=bool)
             )
             self.chk_3d_projected.setChecked(
-                self.settings.value("sec_interp/drill_3d_projected", False, type=bool)
+                self.settings.value("SecInterp/drill_3d_projected", False, type=bool)
             )
 
     def _reset_export_defaults(self) -> None:
@@ -262,31 +258,31 @@ class SettingsPage(BasePage):
         """Save settings when they are changed."""
         # Advanced
         if self.chk_enable_3d:
-            self.settings.setValue("sec_interp/enable_3d", self.chk_enable_3d.isChecked())
+            self.settings.setValue("SecInterp/enable_3d", self.chk_enable_3d.isChecked())
 
         # Default
         if hasattr(self, "chk_exp_topo"):
-            self.settings.setValue("sec_interp/exp_topo", self.chk_exp_topo.isChecked())
-            self.settings.setValue("sec_interp/exp_geol", self.chk_exp_geol.isChecked())
-            self.settings.setValue("sec_interp/exp_struct", self.chk_exp_struct.isChecked())
-            self.settings.setValue("sec_interp/exp_drill", self.chk_exp_drill.isChecked())
-            self.settings.setValue("sec_interp/exp_interp", self.chk_exp_interp.isChecked())
+            self.settings.setValue("SecInterp/exp_topo", self.chk_exp_topo.isChecked())
+            self.settings.setValue("SecInterp/exp_geol", self.chk_exp_geol.isChecked())
+            self.settings.setValue("SecInterp/exp_struct", self.chk_exp_struct.isChecked())
+            self.settings.setValue("SecInterp/exp_drill", self.chk_exp_drill.isChecked())
+            self.settings.setValue("SecInterp/exp_interp", self.chk_exp_interp.isChecked())
 
         if hasattr(self, "combo_format"):
-            self.settings.setValue("sec_interp/export_format", self.combo_format.currentText())
+            self.settings.setValue("SecInterp/export_format", self.combo_format.currentText())
 
         if hasattr(self, "txt_naming"):
-            self.settings.setValue("sec_interp/export_naming", self.txt_naming.text())
+            self.settings.setValue("SecInterp/export_naming", self.txt_naming.text())
 
         # Drillhole 3D
         if hasattr(self, "chk_3d_traces"):
-            self.settings.setValue("sec_interp/drill_3d_traces", self.chk_3d_traces.isChecked())
+            self.settings.setValue("SecInterp/drill_3d_traces", self.chk_3d_traces.isChecked())
             self.settings.setValue(
-                "sec_interp/drill_3d_intervals", self.chk_3d_intervals.isChecked()
+                "SecInterp/drill_3d_intervals", self.chk_3d_intervals.isChecked()
             )
-            self.settings.setValue("sec_interp/drill_3d_original", self.chk_3d_original.isChecked())
+            self.settings.setValue("SecInterp/drill_3d_original", self.chk_3d_original.isChecked())
             self.settings.setValue(
-                "sec_interp/drill_3d_projected", self.chk_3d_projected.isChecked()
+                "SecInterp/drill_3d_projected", self.chk_3d_projected.isChecked()
             )
 
     def get_data(self) -> dict[str, Any]:

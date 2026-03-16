@@ -28,7 +28,7 @@ class AccessControlService:
         """
         # For now, we link it to the UI toggle in Settings persisted via QgsSettings.
         # Default to False to demonstrate the "locked" feel or restricted nature.
-        allowed = self.settings.value("sec_interp/enable_3d", False, type=bool)
+        allowed = self.settings.value("SecInterp/enable_3d", False, type=bool)
 
         if not allowed:
             logger.info("Access denied for restricted feature: 3D Export")

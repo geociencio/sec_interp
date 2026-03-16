@@ -44,6 +44,10 @@ class TestConfigServiceIntegration(BaseTestCase):
         self.assertEqual(settings.section.buffer_dist, 0.0)  # Range validation
         self.assertEqual(settings.preview.show_topo, False)  # Bool conversion
 
+        # Check export settings
+        self.assertEqual(settings.export.default_format, "Shapefile")
+        self.assertEqual(settings.export.naming_pattern, "{filename}_{profile}")
+
     def test_cache_invalidation(self):
         """Test that set() invalidates the internal cache."""
         self.config.get_all_settings()  # Populate cache

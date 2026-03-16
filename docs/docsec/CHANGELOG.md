@@ -13,6 +13,8 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.
 - **Infraestructura**: Refinado de `.qgisignore` para eliminar ruido de desarrollo en el paquete final.
 
 ### 🔧 Cambiado
+- **Arquitectura**: Estandarización de todas las claves de `QgsSettings` al prefijo `SecInterp/` (PascalCase).
+- **Exportación**: El servicio de configuración ahora carga correctamente los valores de formato (GPKG, DXF) y patrones de nombrado desde las preferencias persistentes.
 - **Arquitectura**: Reemplazo de `contextlib.suppress` inseguro por manejo explícito de excepciones y logging.
 - **Renderizado**: Migración de los exportadores 3D a `Rule-Based Rendering` para garantizar integridad de estilos en QGIS.
 - **GUI**: Elevación de cobertura de tests de GUI al **91%%**, incluyendo lógica de orquestación de tareas en segundo plano.

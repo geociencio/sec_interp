@@ -55,7 +55,7 @@ class TestSettingsPage(BaseTestCase):
     def test_load_settings(self):
         """Test that settings are loaded into the UI."""
         # Pre-populate settings
-        QgsSettings().setValue("sec_interp/enable_3d", True)
+        QgsSettings().setValue("SecInterp/enable_3d", True)
 
         page = SettingsPage()
 
@@ -78,7 +78,7 @@ class TestSettingsPage(BaseTestCase):
         page._on_settings_changed()
 
         # Verify settings were saved to global QgsSettings
-        self.assertEqual(QgsSettings().value("sec_interp/enable_3d"), True)
+        self.assertEqual(QgsSettings().value("SecInterp/enable_3d"), True)
 
     def test_get_data(self):
         """Test get_data returns correct dictionary."""
