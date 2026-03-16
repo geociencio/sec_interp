@@ -24,6 +24,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **UI**: Fixed export format reset issue by synchronizing `SettingsPage` with `ConfigService`.
  (`MockQWidget`).
 
+## [3.5.0-dev] - 2026-03-15
+### Added
+- Native MCP (Model Context Protocol) server for standardized agent orchestration.
+- New automated workflow `/fix-linting` for technical debt reduction.
+- Technical English standardization for system context and architectural files.
+
+### Changed
+- Removed legacy `PyQt5` from mandatory dependencies to ensure QGIS 4.x (Qt6) compatibility.
+- Updated `AGENTS.md` with tool orchestration matrix.
+
+## [3.4.0] - 2026-03-15
+
+### Added
+- **Core**: Standardized `DrillholeProjection` as a Dataclass DTO across `DrillholeService`. Implemented explicit Return Type Hints (covering ~45% of core).
+- **Architecture**: Achieved **100% QGIS 4.x Readiness** by ensuring all Qt dependencies use `qgis.PyQt` (API-agnostic principle).
+- **Documentation**: New automated "Documentation-as-Code" system for testing and architectural metrics.
+- **Infrastructure**: Refined `.qgisignore` to eliminate 80% of development noise from the final package.
+
+### Changed
+- **Architecture**: Replaced unsafe `contextlib.suppress` with explicit exception handling and logging in `controller.py`.
+- **Rendering**: Migrated 3D Exporters to `Rule-Based Rendering` for cross-version coordinate and style integrity.
+- **GUI**: Raised GUI testing coverage to **91%**, including full orchestration logic for background tasks.
+
+### Fixed
+- **Stability**: Resolved critical memory leaks and "orphaned" `QgsRubberBand` instances in `measure_tool.py`.
+- **UI**: Fixed "Dead Status Bar" regression in preview widget by implementing a robust signal restoration loop in `SignalManager`.
+- **Mocks**: Fixed arithmetic `TypeError` in Qt mocks, allowing for verified headless layout calculations.
+
 ## [3.3.0] - 2026-03-14
 
 ### Added

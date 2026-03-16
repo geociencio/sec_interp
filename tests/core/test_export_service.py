@@ -220,10 +220,11 @@ class TestExportService(BaseTestCase):
             self.service._export_structures(
                 self.output_folder,
                 struct_data,
-                self.params,
+                self.params.raster_layer,
                 MagicMock(),
                 MagicMock(),
                 [],
+                options={"dip_scale": 4},
             )
 
     @patch("sec_interp.exporters.DrillholeTraceShpExporter")

@@ -52,7 +52,7 @@ For errors that CANNOT be corrected automatically (e.g., `F821 Undefined name`),
 ### 5. Final Validation
 
 ```bash
-uv run ruff check . && uv run black --check .
+uv run ruff check . && uv run ruff format --check .
 ```
 
 ### 6. Cleanup Commit

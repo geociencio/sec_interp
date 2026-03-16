@@ -93,15 +93,27 @@ Workflows include `🤖 **Agent Action**` annotations indicating intelligent act
 
 ---
 
+## 🔌 MCP Tool Orchestration (Generation 5)
+The system exposes core technical knowledge through the Model Context Protocol (MCP). Agents can invoke specialized tools via the `scripts/mcp_server.py`.
+
+| Tool Name | Purpose |
+| :--- | :--- |
+| `get_architectural_pattern` | Retrieve formal design patterns for SecInterp. |
+| `check_geological_logic` | Validate data consistency rules without manual skill lookup. |
+| `validate_i18n` | Audit code for internationalization compliance. |
+
+---
+
 ## 📏 Context & Performance Guidelines
 To maximize AI precision and avoid hallucinations:
-1.  **Keep it Small**: Instruction files (`SKILL.md`, `AGENTS.md`) should be kept between 250 and 500 lines.
-2.  **Explicit Triggers**: When a task matching a trigger is detected, the agent MUST announce that it is applying that Skill.
-3.  **Modular Context**: If functionality grows too large, a specific `AGENTS.md` should be created in its subdirectory (e.g., `gui/AGENTS.md`).
+1.  **Context Hygiene**: Keep subagents stateless and task-focused.
+2.  **MCP Priority**: Prefer MCP tools for procedural knowledge over raw markdown reading when possible.
+3.  **Strict Typing**: All new code must pass `mypy` and `qgis-analyzer` audits.
 
 ---
 
 ## 💡 Usage Instructions
-1.  **Invoke the Agent**: *"Activate the Architect Agent"*.
-2.  **Load a Skill**: *"Use the qgis-core skill to review this QgsTask"*.
-3.  **Synchronization**: When adding skills, run `python3 scripts/skill_sync.py` to update this guide.
+1.  **Activate Mode**: Load specified Agent Role (e.g., Senior Architect).
+2.  **Orchestrate**: Use `/start-session` to synchronize environment.
+3.  **Advanced Audit**: Invoke `/verify-standards` to check MCP server status.
+4.  **Cleaning**: Run `/fix-linting` before any major commit.

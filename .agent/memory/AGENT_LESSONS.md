@@ -132,11 +132,11 @@ This file records technical lessons, user preferences, and solutions to complex 
     lesson: "Signals connected to map tools (MapTools) or dialog pages must be explicitly disconnected to avoid leaks and erratic behavior."
     action: "Always implement a disconnect_signals() method invoked when closing the context."
 
-## ⚙️ Configuración Global de Preferencias
+## ⚙️ Global Preference Configuration
 
 - **Language**: Communication (Spanish), Code/Commits/Docs (English).
 - **Standards**: Google Docstrings, Pathlib, Strict Typing.
-- **Workflow**: Starts with `/inicia-sesion`, Closes with `/cierra-sesion`.
+- **Workflow**: Starts with `/start-session`, Closes with `/close-session`.
 
 ---
   - date: 2026-02-16
@@ -163,8 +163,20 @@ This file records technical lessons, user preferences, and solutions to complex 
     lesson: "A standard phase initialization must include a baseline quality scan (ai-ctx) and a full test suite validation (docker) before any code change to ensure a healthy starting point."
     action: "Adopt /inicia-fase as the mandatory gate for major version increments, documenting quality gaps as 'Objective 0'."
 
-## ⚙️ Configuración Global de Preferencias
-...
 ---
-*Last update: 2026-03-09 - Completion of GUI Coverage Expansion.*
+  - date: 2026-03-15
+    topic: "QGIS 4.x Readiness & MCP Integration"
+    lesson: "Removing hard PyQt5 dependencies is critical for Qt6 compatibility, as QGIS provides the runtime. Hardcoding versions in pyproject.toml causes orchestration deadlocks in modernized environments."
+    action: "Maintenance of 'Optional Dependency' status for PyQt during transition, and total removal for v4.0 environments."
+  - date: 2026-03-15
+    topic: "MCP Native Orchestration"
+    lesson: "Structural Tool Calls via MCP (scripts/mcp_server.py) reduce hallucination rates compared to raw markdown skill reading by providing a strict JSON-RPC interface for procedural knowledge."
+    action: "Expand mcp_server.py to cover all validation-heavy core logic."
+  - date: 2026-03-15
+    topic: "Refactoring Regressions"
+    lesson: "Large architectural changes in v3.4.0 (Unified I/O) changed internal method signatures of ExportService, breaking unit tests that mocked these private methods."
+    action: "Always run the full core test suite (make test) immediately after refactoring internal orchestration methods."
+
+---
+*Last update: 2026-03-15 - Generation 5 Modernization.*
 ```

@@ -13,4 +13,4 @@
 # We pin to 5.15.x to recognize the version used by modern QGIS 3.28+ LTR releases.
 # Check your specific QGIS version's Help -> About to confirm the exact PyQt version.
 
-PyQt5>=5.15.0,<5.16.0
+# PyQt5>=5.15.0,<5.16.0

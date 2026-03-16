@@ -1,50 +1,73 @@
-# Plan de Optimización del Sistema Agentico (Gen 4)
+# Agentic System Optimization Plan (SecInterp)
 
-Este documento detalla la evolución propuesta para el sistema `.agent` basada en el análisis de la fase v3.0.0.
+This document outlines the roadmap for the continuous evolution of the agentic system in `.agent/`, ensuring it remains at the industry's cutting edge.
 
-## 1. Diagnóstico Actual
+## 1. Current State Identification (Gen 4)
 
-### Fortalezas
-- ✅ **Modularidad**: Skills bien definidas y aisladas.
-- ✅ **Workflows**: Cobertura completa del ciclo de vida de desarrollo.
-- ✅ **Memoria**: `AGENT_LESSONS.md` captura conocimiento cualitativo.
+- ✅ **Strength**: Strict role separation (Senior Architect, QA, Auditor).
+- ✅ **Strength**: Context partitioning via Markdown-based Skills.
+- ✅ **Strength**: Episodic and procedural memory in `AGENT_LESSONS.md`.
+- ⚠️ **Gap**: Manual maintenance of `agent_metrics.json`.
+- ⚠️ **Automation Gap**: No workflow for mass cleanup (linting).
+- ⚠️ **Future Readiness**: Missing specific knowledge for QGIS 4.x migration.
 
-### Brechas Identificadas
-- ⚠️ **Métricas Estáticas**: `agent_metrics.json` no se actualiza automáticamente.
-- ⚠️ **Falta de Automatización de Deuda**: No hay workflow para limpiezas masivas (linting).
-- ⚠️ **Preparación Futura**: Falta conocimiento específico para la migración a QGIS 4.x.
+## 2. Evolution towards Generation 5 (Cutting Edge)
 
-## 2. Propuestas de Implementación
+Based on 2024-2025 trends, the following evolutionary leaps are proposed:
 
-### A. Nuevas Skills
+### A. MCP (Model Context Protocol) Integration
+- **Concept**: Standardize access to project resources and auxiliary tools under the Anthropic/Industry protocol.
+- **Benefit**: Allows any AI (IDE-independent) to consume SecInterp's Skills and Context natively and structurally.
+
+### B. Self-Evolving Memory (Recursive Reflection)
+- **Concept**: Implement a workflow that analyzes `AGENT_LESSONS.md` and automatically updates the corresponding `SKILL.md`.
+- **Action**: If there are >3 lessons on the same topic, the skill is "re-trained" or refactored to absorb that knowledge permanently.
+
+### C. Predictive Context Injection
+- **Concept**: Use semantic analysis to preload a "Dynamic Mix" of skills, surpassing the current static matrix.
+- **Benefit**: Reduces noise in the context window by loading only the skill fragments truly relevant to the current prompt.
+
+### D. Autonomous QA Gates (Quality Blocking)
+- **Concept**: Integrate `qgis-analyzer` into the commit workflow to forbid pushes if cyclomatic complexity increases or typing scores drop.
+- **Goal**: "Zero Technical Debt Injection".
+
+### E. Cognitive Alignment (Full English Core)
+- **Concept**: Migrate 100% of system files (`.agent/*`) to technical English to maximize model reasoning precision, keeping the user communication layer in Spanish.
+
+## 3. Implementation Proposals
+
+### A. New Skills
 
 #### 1. `qgis-migration-4x`
-- **Propósito**: Guía experta para la transición de API (v3 -> v4).
-- **Contenido**: Mapeo de clases obsoletas, reemplazos de `PyQt5` por `qgis.PyQt`, patrones asíncronos obligatorios.
+- **Purpose**: Expert guide for API transition (v3 -> v4).
+- **Content**: Deprecated class mapping, `PyQt5` replacements with `qgis.PyQt`, mandatory asynchronous patterns.
 
 #### 2. `refactoring-patterns`
-- **Propósito**: Patrones de diseño específicos para reducir complejidad ciclomática.
-- **Contenido**: Estrategias para descomponer "God Classes" (como era `DrillholeService`).
+- **Purpose**: Specific design patterns to reduce cyclomatic complexity.
+- **Content**: Strategies for decomposing "God Classes" (like `DrillholeService` used to be).
 
-### B. Nuevos Workflows
+### B. New Workflows
 
 #### 1. `/fix-linting`
-- **Propósito**: Automatizar la corrección de issues de estilo y estáticos.
-- **Pasos**: Ejecución agresiva de `ruff --fix`, `black`, organización de imports.
+- **Purpose**: Automate style and static issue correction.
+- **Steps**: Aggressive execution of `ruff --fix`, `black`, import organization.
 
 #### 2. `/migrate-qgis4`
-- **Propósito**: Workflow guiado para aplicar la skill `qgis-migration-4x`.
+- **Purpose**: Guided workflow to apply the `qgis-migration-4x` skill.
 
-### C. Mejora de Memoria (Agentic Brain)
+### C. Memory Improvement (Agentic Brain)
 
-#### Automatización de Métricas
-Actualizar el script o skill `agentic-memory` para que al cierre de sesión (`/cierra-sesion`):
-1. Lea el reporte de `qgis-analyzer`.
-2. Extraiga métricas clave (Score, Tests Pasados, CC Avg).
-3. Añada un nuevo registro histórico en `agent_metrics.json`.
+#### Metrics Automation
+Update the script or `agentic-memory` skill so that upon session closure (`/close-session`):
+1. It reads the `qgis-analyzer` report.
+2. Extracts key metrics (Score, Passed Tests, CC Avg).
+3. Adds a new historical entry in `agent_metrics.json`.
 
-## 3. Hoja de Ruta
+## 4. Roadmap
 
-1. **Inmediato**: Implementar `/fix-linting` para limpiar v3.0.1.
-2. **Corto Plazo**: Crear skill `qgis-migration-4x`.
-3. **Mediano Plazo**: Automatizar actualización de `agent_metrics.json`.
+1. **Immediate**: Implement `/fix-linting` to clean up v3.0.1.
+2. **Short Term**: Create `qgis-migration-4x` skill.
+3. **Medium Term**: Automate `agent_metrics.json` updates.
+
+---
+*Roadmap updated on 2026-03-15.*
