@@ -1,23 +1,18 @@
-# Handover: Export Refactoring Completion
+# Next Steps: SecInterp v3.4.0 Transition
 
-## Summary
-Completed the refactoring of the Export system to support multiple formats (SHP, GPKG, DXF) using a generalized vector writer. All test regressions introduced by the refactoring have been fixed and verified.
+## Current Status
+- **Export System**: Unified support for SHP, GPKG, and DXF is implemented and verified.
+- **Data Integrity**: Drillhole interval robustness and duplication issues are resolved.
+- **Persistence**: Export format and settings now persist correctly in QGIS settings.
 
-## Status
-- **Docker Tests**: 71/71 OK (100% pass rate in isolated environment).
-- **Core Logic**: Fully refactored to use `scu_io.create_vector_writer`.
-- **Integrations**: Specialized exporters (Drillhole, Profile, Interpretation) updated.
-- **Complexity**: Reduced by removing redundant writer creation logic.
+## Handover Details
+- **Known Issues**: DXF files do not contain attribute fields (by design, due to OGR limitations).
+- **Pending Tasks**:
+    1. **Naming Patterns**: Implement configurable naming patterns in `ExportService` (e.g., `{section}_{type}`).
+    2. **Audit i18n**: The new export options in `SettingsPage` might need translation updates.
+    3. **Docker Integration**: Verify that all 600+ tests pass in a clean Docker environment (current session used local verification).
 
-## Pending Errors / Known Issues
-- 3D Integration tests still show failures in the LOCAL environment due to missing QGIS GUI context or specific local configuration, but pass in Docker.
-
-## Missing Work
-- [ ] Manual verification in QGIS for DXF and GPKG export quality.
-- [ ] User documentation for the new export options in v3.4.0.
-
-## Command to Resume
+## Resume Command
 ```bash
-/start-session
-make docker-test
+/[start-session] unified_export_audit
 ```

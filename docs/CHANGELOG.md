@@ -7,20 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Nuevo `GpkgfileExporter` para exportación nativa de GeoPackage 3D.
-- Nuevo `DXFExporter` para soporte nativo de AutoCAD DXF en 3D.
-- Selector de formato de exportación en la página de interpretación.
-- Opción para nombres de archivos personalizados en el diálogo de exportación.
-- **Skills**: Integración de `changelog-generator` para automatización de notas de lanzamiento.
-- **Workflows**: Actualización de flujos de cierre y lanzamiento para incluir generación automática de changelogs.
+#### Added
+- Unified export system supporting **DXF**, **GeoPackage**, and **Shapefile** for all data types.
+- Robust 3D interpretation export with automatic coordinate transformation.
+- Persistent export settings across sessions.
 
 ### Changed
-- Refactorización de `ExportManager` para reducir complejidad ciclomática.
-- **Documentación**: Actualización de `AGENTS.md` con documentación detallada de habilidades del agente.
+- Refactored `ExportService` to decouple 2D and 3D drillhole exports for better accuracy.
+- Enhanced `TrajectoryEngine` with mandatory interval points at start/end depths.
+- Reduced cyclomatic complexity in export orchestration logic.
 
 ### Fixed
-- **Testing**: Soporte para componentes `QLineEdit` y `QComboBox` añadidos en mocks de pruebas (`MockQWidget`).
+- **DXF**: Fixed critical failure during field creation by stripping unsupported attributes for DXF format.
+- **Drillholes**: Resolved duplicated entries in logs and missing segments for very short geological intervals.
+- **Stability**: Fixed `KeyError: 0` in `DXFExporter` when processing empty or malformed feature sets.
+- **UI**: Fixed export format reset issue by synchronizing `SettingsPage` with `ConfigService`.
+ (`MockQWidget`).
 
 ## [3.3.0] - 2026-03-14
 

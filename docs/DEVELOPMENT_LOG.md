@@ -1,3 +1,13 @@
+## [2026-03-15] Fix: DXF Export and Robust Drillhole Intervals (v3.4.0)
+- **Achievement**: Resolved critical DXF export failures and improved drillhole data integrity for small segments.
+- **Changes**:
+    - **Core**: Enhanced `drillhole.py` with mandatory interpolation at start/end depths to prevent missing intervals.
+    - **Export**: Fixed `io.py` to strip unsupported fields for DXF format, resolving OGR driver errors.
+    - **Bugfix**: Resolved `KeyError: 0` in `DXFExporter` and cleaned up redundant special-casing in `ExportService`.
+    - **Quality**: Global reformatting and removal of ruff-detected magic numbers.
+- **Status**: Export system fully functional for SHP, GPKG, and DXF.
+- **Maintenance**: [session_2026-03-15_dxf_and_drillhole_fixes.md](maintenance/session_2026-03-15_dxf_and_drillhole_fixes.md)
+
 ## [2026-03-15] Fix: Export Format Persistence Standardized (v3.4.0)
 - **Achievement**: Resolved issue where export format (GPKG, DXF) was not persisting and standardized settings prefix.
 - **Changes**:
