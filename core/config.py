@@ -40,9 +40,9 @@ class ConfigService:
         self.settings = QgsSettings()
         self._current_settings: PluginSettings | None = None
 
-    def get_all_settings(self) -> PluginSettings:
+    def get_all_settings(self, reload: bool = False) -> PluginSettings:
         """Load and return all settings as a validated PluginSettings object."""
-        if self._current_settings is None:
+        if reload or self._current_settings is None:
             self._current_settings = self._load_from_qgs_settings()
         return self._current_settings
 

@@ -10,6 +10,10 @@ from typing import Any
 
 from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 
+# Constants for tolerance and validation
+DEPTH_TOLERANCE = 1e-5
+MIN_INTERVAL_POINTS = 2
+
 
 def calculate_drillhole_trajectory(
     collar_point: Any,
@@ -116,9 +120,7 @@ def _process_survey_segment(
     dx, dy, dz = _calculate_segment_delta(interval, azimuth, inclination)
 
     trajectory.extend(
-        _calculate_segment_points(
-            x, y, z, prev_depth, dx, dy, dz, interval, densify_step
-        )
+        _calculate_segment_points(x, y, z, prev_depth, dx, dy, dz, interval, densify_step)
     )
 
     return x + dx, y + dy, z + dz, depth
@@ -193,11 +195,7 @@ def project_trajectory_to_section(
     projected = []
 
     # Ensure line_start is QgsPointXY
-    start_pt = (
-        line_start
-        if hasattr(line_start, "x")
-        else QgsPointXY(line_start[0], line_start[1])
-    )
+    start_pt = line_start if hasattr(line_start, "x") else QgsPointXY(line_start[0], line_start[1])
 
     for depth, x, y, z, _, _ in trajectory:
         point = QgsPointXY(x, y)
@@ -213,9 +211,7 @@ def project_trajectory_to_section(
         # Calculate offset from section
         offset = distance_area.measureLine(point, nearest_pt_xy)
 
-        projected.append(
-            (depth, x, y, z, dist_along, offset, nearest_pt_xy.x(), nearest_pt_xy.y())
-        )
+        projected.append((depth, x, y, z, dist_along, offset, nearest_pt_xy.x(), nearest_pt_xy.y()))
 
     return projected
 
@@ -234,45 +230,76 @@ def interpolate_intervals_on_trajectory(
 ]:
     """Interpolate interval attributes along drillhole trajectory.
 
-    Filters and maps geological intervals onto the 3D trajectory points
-    that fall within the specified section buffer.
+    Ensures that even short intervals have at least two points by interpolating
+    at the exact from/to depths on the trajectory segments.
 
     Args:
-        trajectory: List of (depth, x, y, z, dist_along, offset) tuples.
+        trajectory: List of (depth, x, y, z, dist_along, offset, nx, ny) tuples.
         intervals: List of (from_depth, to_depth, attribute) tuples.
         buffer_width: Maximum perpendicular offset to include a point.
 
     Returns:
-        List of tuples containing:
-            - attribute: The metadata/geology associated with the interval.
-            - points_2d: List of (distance, elevation) coordinates for rendering.
-            - points_3d: List of (x, y, z) original coordinates for 3D export.
+        List of tuples (attribute, points_2d, points_3d, points_3d_proj).
 
     """
     geol_segments = []
+    if not trajectory or not intervals:
+        return geol_segments
 
-    for from_depth, to_depth, attribute in intervals:
-        # Find trajectory points within this interval
-        interval_points_2d = []
-        interval_points_3d = []
-        interval_points_3d_proj = []
+    # Sort trajectory by depth in case it's not (though it should be)
+    traj = sorted(trajectory, key=lambda p: p[0])
 
-        for depth, x, y, z, dist_along, offset, nx, ny in trajectory:
-            # Check if point is within interval and buffer
-            if from_depth <= depth <= to_depth and offset <= buffer_width:
-                interval_points_2d.append((dist_along, z))
-                interval_points_3d.append((x, y, z))
-                interval_points_3d_proj.append((nx, ny, z))
+    for from_val, to_val, attr in intervals:
+        points_in_interval = []
 
-        # Add segment if we have points
-        if interval_points_2d:
-            geol_segments.append(
-                (
-                    attribute,
-                    interval_points_2d,
-                    interval_points_3d,
-                    interval_points_3d_proj,
-                )
-            )
+        # 1. Add interpolated point at from_val
+        p_from = _interpolate_at_depth(traj, from_val)
+        if p_from and p_from[5] <= buffer_width:
+            points_in_interval.append(p_from)
+
+        # 2. Add all trajectory points strictly inside (from_val, to_val)
+        for p in traj:
+            if from_val < p[0] < to_val and p[5] <= buffer_width:
+                points_in_interval.append(p)
+
+        # 3. Add interpolated point at to_val
+        p_to = _interpolate_at_depth(traj, to_val)
+        if p_to and p_to[5] <= buffer_width:
+            # Avoid duplicate if to_val == from_val or coinciding with a traj point
+            if not points_in_interval or abs(points_in_interval[-1][0] - p_to[0]) > DEPTH_TOLERANCE:
+                points_in_interval.append(p_to)
+
+        if len(points_in_interval) >= MIN_INTERVAL_POINTS:
+            p_2d = [(p[4], p[3]) for p in points_in_interval]
+            p_3d = [(p[1], p[2], p[3]) for p in points_in_interval]
+            p_3d_proj = [(p[6], p[7], p[3]) for p in points_in_interval]
+            geol_segments.append((attr, p_2d, p_3d, p_3d_proj))
 
     return geol_segments
+
+
+def _interpolate_at_depth(trajectory: list[tuple], target_depth: float) -> tuple | None:
+    """Interpolate a trajectory point at a specific depth."""
+    if not trajectory:
+        return None
+
+    # Exact match or boundary checks
+    if abs(trajectory[0][0] - target_depth) < DEPTH_TOLERANCE:
+        return trajectory[0]
+    if abs(trajectory[-1][0] - target_depth) < DEPTH_TOLERANCE:
+        return trajectory[-1]
+    if target_depth < trajectory[0][0] or target_depth > trajectory[-1][0]:
+        return None
+
+    # Find the segment [p1, p2] containing target_depth
+    for i in range(len(trajectory) - 1):
+        p1, p2 = trajectory[i], trajectory[i + 1]
+        if p1[0] <= target_depth <= p2[0]:
+            d1, d2 = p1[0], p2[0]
+            if abs(d2 - d1) < DEPTH_TOLERANCE:
+                return p1
+            frac = (target_depth - d1) / (d2 - d1)
+            # Interpolate all fields (depth, x, y, z, dist, offset, nx, ny)
+            return tuple(p1[j] + (p2[j] - p1[j]) * frac for j in range(len(p1)))
+
+    return None

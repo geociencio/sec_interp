@@ -155,8 +155,15 @@ class ExportService:
 
         # Get settings or defaults
         export_settings = None
-        if self.controller and hasattr(self.controller, "settings"):
-            export_settings = getattr(self.controller.settings, "export", None)
+        if self.controller is not None:
+            # Ensure settings are current in the controller
+            reload_func = getattr(self.controller, "reload_settings", None)
+            if reload_func:
+                reload_func()
+
+            settings_obj = getattr(self.controller, "settings", None)
+            if settings_obj:
+                export_settings = getattr(settings_obj, "export", None)
 
         format_ext = ".shp"
         if export_settings:
@@ -191,8 +198,9 @@ class ExportService:
                 struct_data,
                 raster_layer,
                 line_crs,
+                csv_exporter,
                 msg,
-                {},
+                options,
                 export_settings,
                 format_ext,
             ),
@@ -201,7 +209,6 @@ class ExportService:
                 drillhole_data,
                 line_crs,
                 msg,
-                options,
                 export_settings,
                 format_ext,
             ),
@@ -244,12 +251,20 @@ class ExportService:
         logger.info("✓ Saving topographic profile...")
         try:
             csv_path = self._get_export_path(folder, "topo_profile", settings, ".csv")
-            csv_exporter.export(csv_path, {"headers": ["dist", "elev"], "rows": data})
+            csv_ok = csv_exporter.export(csv_path, {"headers": ["dist", "elev"], "rows": data})
+            if csv_ok:
+                msg.append(f"  - {csv_path.name}")
+            else:
+                logger.warning(f"Failed to write CSV topography to {csv_path}")
 
             vec_path = self._get_export_path(folder, "profile_line", settings, ext)
             vector_exporter = ProfileLineShpExporter({})
-            vector_exporter.export(vec_path, {"profile_data": data, "crs": crs})
-            msg.extend([f"  - {csv_path.name}", f"  - {vec_path.name}"])
+            vec_ok = vector_exporter.export(vec_path, {"profile_data": data, "crs": crs})
+            if vec_ok:
+                msg.append(f"  - {vec_path.name}")
+            else:
+                logger.warning(f"Failed to write vector topography to {vec_path}")
+
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Topography export failed: {e}")
             raise ExportError(f"Topography export failed: {e!s}") from e
@@ -276,15 +291,23 @@ class ExportService:
         try:
             rows = [(p[0], p[1], s.unit_name) for s in data for p in s.points]
             csv_path = self._get_export_path(folder, "geol_profile", settings, ".csv")
-            csv_exporter.export(
+            csv_ok = csv_exporter.export(
                 csv_path,
                 {"headers": ["dist", "elev", "geology"], "rows": rows},
             )
+            if csv_ok:
+                msg.append(f"  - {csv_path.name}")
 
             vec_path = self._get_export_path(folder, "geol_profile", settings, ext)
             vector_exporter = GeologyShpExporter({})
-            vector_exporter.export(vec_path, {"geology_data": data, "crs": crs})
-            msg.extend([f"  - {csv_path.name}", f"  - {vec_path.name}"])
+            vec_ok = vector_exporter.export(vec_path, {"geology_data": data, "crs": crs})
+            if vec_ok:
+                msg.append(f"  - {vec_path.name}")
+            else:
+                logger.warning(
+                    f"Failed to write vector geology to {vec_path} (likely no intersections)"
+                )
+
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Geology export failed: {e}")
             raise ExportError(f"Geology export failed: {e!s}") from e
@@ -300,6 +323,7 @@ class ExportService:
         crs: Any,
         csv_exporter: Any,
         msg: list[str],
+        options: dict[str, Any],
         settings: Any | None = None,
         ext: str = ".shp",
     ) -> None:
@@ -312,27 +336,33 @@ class ExportService:
         try:
             rows = [(s.distance, s.apparent_dip) for s in data]
             csv_path = self._get_export_path(folder, "structural_profile", settings, ".csv")
-            csv_exporter.export(
+            csv_ok = csv_exporter.export(
                 csv_path,
                 {"headers": ["dist", "apparent_dip"], "rows": rows},
             )
+            if csv_ok:
+                msg.append(f"  - {csv_path.name}")
 
             raster_res = 1.0
             if raster_layer and raster_layer.isValid():
                 raster_res = raster_layer.rasterUnitsPerPixelX()
 
-            vec_path = self._get_export_path(folder, "structural_profile", settings, ext)
+            vec_path = self._get_export_path(folder, "structural_measurements", settings, ext)
             vector_exporter = StructureShpExporter({})
-            vector_exporter.export(
+            vec_ok = vector_exporter.export(
                 vec_path,
                 {
                     "structural_data": data,
                     "crs": crs,
-                    "dip_scale_factor": 1.0,  # Default value
+                    "dip_scale_factor": options.get("dip_scale", 4),
                     "raster_res": raster_res,
                 },
             )
-            msg.extend([f"  - {csv_path.name}", f"  - {vec_path.name}"])
+            if vec_ok:
+                msg.append(f"  - {vec_path.name}")
+            else:
+                logger.warning(f"Failed to write vector structures to {vec_path}")
+
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Structure export failed: {e}")
             raise ExportError(f"Structure export failed: {e!s}") from e
@@ -346,17 +376,15 @@ class ExportService:
         data: list[Any] | None,
         crs: Any,
         msg: list[str],
-        options: dict[str, Any] | None = None,
         settings: Any | None = None,
         ext: str = ".shp",
     ) -> None:
-        """Export drillhole data (2D and optional 3D)."""
+        """Export drillhole data (2D)."""
         if not data:
             return
         from sec_interp.exporters import (
             DrillholeIntervalShpExporter,
             DrillholeTraceShpExporter,
-            DXFExporter,
         )
 
         logger.info("✓ Saving drillhole data...")
@@ -364,18 +392,21 @@ class ExportService:
             # 1. Standard 2D Export
             traces_path = self._get_export_path(folder, "drillhole_traces", settings, ext)
             traces_exporter = DrillholeTraceShpExporter({})
-            traces_exporter.export(traces_path, {"drillhole_data": data, "crs": crs})
+            traces_ok = traces_exporter.export(traces_path, {"drillhole_data": data, "crs": crs})
+            if traces_ok:
+                msg.append(f"  - {traces_path.name}")
+            else:
+                logger.warning(f"Failed to write drillhole traces to {traces_path}")
 
             intervals_path = self._get_export_path(folder, "drillhole_intervals", settings, ext)
-            intervals_exporter = (
-                DXFExporter({}) if ext == ".dxf" else DrillholeIntervalShpExporter({})
+            intervals_exporter = DrillholeIntervalShpExporter({})
+            intervals_ok = intervals_exporter.export(
+                intervals_path, {"drillhole_data": data, "crs": crs}
             )
-            intervals_exporter.export(intervals_path, {"drillhole_data": data, "crs": crs})
-            msg.extend([f"  - {traces_path.name}", f"  - {intervals_path.name}"])
-
-            # 2. Advanced 3D Export
-            if options:
-                self._export_drillholes_3d(folder, data, crs, msg, options, settings, ext)
+            if intervals_ok:
+                msg.append(f"  - {intervals_path.name}")
+            else:
+                logger.warning(f"Failed to write drillhole intervals to {intervals_path}")
 
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Drillhole export failed: {e}")
@@ -445,11 +476,14 @@ class ExportService:
             if options.get(type_flag, False) and options.get(proj_flag, False):
                 path = self._get_export_path(folder, base_name, settings, ext)
                 exporter = DXFExporter({}) if ext == ".dxf" else ExporterClass({})
-                exporter.export(
+                ok = exporter.export(
                     path,
                     {"drillhole_data": data, "crs": crs, "use_projected": use_proj},
                 )
-                msg.append(f"  - {path.name} ({label})")
+                if ok:
+                    msg.append(f"  - {path.name} ({label})")
+                else:
+                    logger.warning(f"Failed to write 3D drillhole data to {path} ({label})")
 
     def _export_interpretations(
         self,
@@ -473,11 +507,14 @@ class ExportService:
             # 2D Export (Standard) - Now supports SHP, GPKG, DXF via scu.create_vector_writer
             path = self._get_export_path(folder, "interpretations", settings, ext)
             exporter = Interpretation2DExporter({})
-            exporter.export(
+            ok = exporter.export(
                 path,
                 {"interpretations": data, "crs": crs},
             )
-            msg.append(f"  - {path.name}")
+            if ok:
+                msg.append(f"  - {path.name}")
+            else:
+                logger.warning(f"Failed to write 2D interpretations to {path}")
 
             # 3D Export (Restricted Feature)
             if self.access_control.can_export_3d():
@@ -510,46 +547,16 @@ class ExportService:
             path = self._get_export_path(folder, "interpretations_3d", settings, ext)
             exporter = Interpretation3DExporter({})
 
-            exporter.export(
+            ok = exporter.export(
                 str(path),
                 {"interpretations": data, "section_line": line_geom, "crs": crs},
             )
-            msg.append(f"  - {path.name} (3D)")
+            if ok:
+                msg.append(f"  - {path.name} (3D)")
+            else:
+                logger.warning(f"Failed to write 3D interpretations to {path}")
         else:
             logger.warning("Invalid section line layer, skipping 3D export.")
-
-    def _export_structures(
-        self,
-        folder: Path,
-        data: list[Any] | None,
-        raster_layer: Any | None,
-        crs: Any,
-        msg: list[str],
-        options: dict[str, Any],
-        settings: Any | None = None,
-        ext: str = ".shp",
-    ) -> None:
-        """Export structural measurements."""
-        if not data:
-            return
-        from sec_interp.exporters import StructureShpExporter
-
-        logger.info("✓ Saving structural measurements...")
-        try:
-            path = self._get_export_path(folder, "structural_measurements", settings, ext)
-            exporter = StructureShpExporter({})
-            exporter.export(
-                path,
-                {
-                    "structural_data": data,
-                    "crs": crs,
-                    "dip_scale_factor": options.get("dip_scale", 4),
-                    "raster_res": options.get("raster_res", 1.0),
-                },
-            )
-            msg.append(f"  - {path.name}")
-        except Exception as e:
-            raise ExportError(f"Structural export failed: {e!s}") from e
 
     def _export_axes(
         self,
@@ -567,8 +574,11 @@ class ExportService:
         try:
             path = self._get_export_path(folder, "profile_axes", settings, ext)
             exporter = AxesShpExporter({})
-            exporter.export(path, {"profile_data": data, "crs": crs})
-            msg.append(f"  - {path.name}")
+            ok = exporter.export(path, {"profile_data": data, "crs": crs})
+            if ok:
+                msg.append(f"  - {path.name}")
+            else:
+                logger.warning(f"Failed to write profile axes to {path}")
         except Exception as e:
             raise ExportError(f"Profile axes export failed: {e!s}") from e
 

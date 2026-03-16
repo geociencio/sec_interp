@@ -56,9 +56,13 @@ def create_vector_writer(
     options.driverName = drivers[ext]
     options.fileEncoding = "UTF-8"
 
+    effective_fields = fields
+    if ext == ".dxf":
+        effective_fields = QgsFields()
+
     writer = QgsVectorFileWriter.create(
         str(path),
-        fields,
+        effective_fields,
         geometry_type,
         crs,
         QgsProject.instance().transformContext(),

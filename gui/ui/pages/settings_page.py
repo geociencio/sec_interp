@@ -18,6 +18,7 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
+from sec_interp.core.config import ConfigService
 from sec_interp.core.utils.metadata_reader import read_plugin_metadata
 from sec_interp.logger_config import get_logger
 
@@ -32,6 +33,7 @@ class SettingsPage(BasePage):
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the settings page."""
         self.settings = QgsSettings()
+        self.config_service = ConfigService()
         # Ensure we have all necessary widgets
         self.tab_widget = None
         self.chk_enable_3d = None
@@ -258,32 +260,28 @@ class SettingsPage(BasePage):
         """Save settings when they are changed."""
         # Advanced
         if self.chk_enable_3d:
-            self.settings.setValue("SecInterp/enable_3d", self.chk_enable_3d.isChecked())
+            self.config_service.set("enable_3d", self.chk_enable_3d.isChecked())
 
         # Default
         if hasattr(self, "chk_exp_topo"):
-            self.settings.setValue("SecInterp/exp_topo", self.chk_exp_topo.isChecked())
-            self.settings.setValue("SecInterp/exp_geol", self.chk_exp_geol.isChecked())
-            self.settings.setValue("SecInterp/exp_struct", self.chk_exp_struct.isChecked())
-            self.settings.setValue("SecInterp/exp_drill", self.chk_exp_drill.isChecked())
-            self.settings.setValue("SecInterp/exp_interp", self.chk_exp_interp.isChecked())
+            self.config_service.set("exp_topo", self.chk_exp_topo.isChecked())
+            self.config_service.set("exp_geol", self.chk_exp_geol.isChecked())
+            self.config_service.set("exp_struct", self.chk_exp_struct.isChecked())
+            self.config_service.set("exp_drill", self.chk_exp_drill.isChecked())
+            self.config_service.set("exp_interp", self.chk_exp_interp.isChecked())
 
         if hasattr(self, "combo_format"):
-            self.settings.setValue("SecInterp/export_format", self.combo_format.currentText())
+            self.config_service.set("export_format", self.combo_format.currentText())
 
         if hasattr(self, "txt_naming"):
-            self.settings.setValue("SecInterp/export_naming", self.txt_naming.text())
+            self.config_service.set("export_naming", self.txt_naming.text())
 
         # Drillhole 3D
         if hasattr(self, "chk_3d_traces"):
-            self.settings.setValue("SecInterp/drill_3d_traces", self.chk_3d_traces.isChecked())
-            self.settings.setValue(
-                "SecInterp/drill_3d_intervals", self.chk_3d_intervals.isChecked()
-            )
-            self.settings.setValue("SecInterp/drill_3d_original", self.chk_3d_original.isChecked())
-            self.settings.setValue(
-                "SecInterp/drill_3d_projected", self.chk_3d_projected.isChecked()
-            )
+            self.config_service.set("drill_3d_traces", self.chk_3d_traces.isChecked())
+            self.config_service.set("drill_3d_intervals", self.chk_3d_intervals.isChecked())
+            self.config_service.set("drill_3d_original", self.chk_3d_original.isChecked())
+            self.config_service.set("drill_3d_projected", self.chk_3d_projected.isChecked())
 
     def get_data(self) -> dict[str, Any]:
         """Get the current settings.

@@ -235,6 +235,10 @@ class MockQgsSettings(MockQgsBase):
         """End group (no-op in mock)."""
         pass
 
+    def sync(self):
+        """Sync settings (no-op in mock)."""
+        pass
+
     def contains(self, key):
         """Check if settings contain key."""
         return key in self._shared_values

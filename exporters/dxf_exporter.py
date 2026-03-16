@@ -92,15 +92,21 @@ class DXFExporter(BaseExporter):
     def _prepare_fields(self, features_data: list[dict[str, Any]]) -> QgsFields:
         """Create fields based on first feature's attributes."""
         fields = QgsFields()
-        if features_data and "attributes" in features_data[0]:
-            first_attrs = features_data[0]["attributes"]
-            for key, value in first_attrs.items():
-                if isinstance(value, int):
-                    fields.append(QgsField(key, QMetaType.Type.Int))
-                elif isinstance(value, float):
-                    fields.append(QgsField(key, QMetaType.Type.Double))
-                else:
-                    fields.append(QgsField(key, QMetaType.Type.QString))
+        if not features_data or not isinstance(features_data, list):
+            return fields
+
+        first_item = features_data[0]
+        if not isinstance(first_item, dict) or "attributes" not in first_item:
+            return fields
+
+        first_attrs = first_item["attributes"]
+        for key, value in first_attrs.items():
+            if isinstance(value, int):
+                fields.append(QgsField(key, QMetaType.Type.Int))
+            elif isinstance(value, float):
+                fields.append(QgsField(key, QMetaType.Type.Double))
+            else:
+                fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
 
     def _create_writer(
