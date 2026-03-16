@@ -12,6 +12,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsCoordinateReferenceSystem,
     QgsGeometry,
+    QgsVectorFileWriter,
 )
 
 from tests.base_test import BaseTestCase
@@ -52,8 +53,12 @@ class TestDrillhole3DExporters(BaseTestCase):
         # Drillhole structure for intervals: (hole_id, traces_2d, traces_3d, traces_3d_proj, segments)
         self.sample_intervals = [("DH01", [], [], [], [seg1])]
 
-    @patch("sec_interp.exporters.drillhole_3d_exporter.scu.create_shapefile_writer")
-    def test_trace_exporter_real(self, mock_writer):
+    @patch("sec_interp.exporters.drillhole_3d_exporter.scu_io.create_vector_writer")
+    def test_trace_exporter_real(self, mock_writer_factory):
+        # 1. Setup
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         """Test DrillholeTrace3DExporter using real coordinates."""
         exporter = DrillholeTrace3DExporter(self.settings)
         output_path = Path(self.test_dir) / "traces_3d_real.shp"
@@ -66,20 +71,24 @@ class TestDrillhole3DExporters(BaseTestCase):
         exporter.export(output_path, data)
 
         # Verify writer call
-        mock_writer.assert_called_once()
-        args, _ = mock_writer.call_args
+        mock_writer_factory.assert_called_once()
+        args, _ = mock_writer_factory.call_args
         self.assertEqual(args[3], QgsWkbTypes.LineStringZ)
 
         # Verify feature addition
-        writer = mock_writer.return_value
+        writer = mock_writer
         writer.addFeature.assert_called_once()
         feat = writer.addFeature.call_args[0][0]
         geom = feat.geometry().constGet()
         self.assertTrue(geom.is3D())
         self.assertEqual(geom.pointN(0).z(), 100.0)
 
-    @patch("sec_interp.exporters.drillhole_3d_exporter.scu.create_shapefile_writer")
-    def test_trace_exporter_projected(self, mock_writer):
+    @patch("sec_interp.exporters.drillhole_3d_exporter.scu_io.create_vector_writer")
+    def test_trace_exporter_projected(self, mock_writer_factory):
+        # 1. Setup
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         """Test DrillholeTrace3DExporter using projected coordinates."""
         exporter = DrillholeTrace3DExporter(self.settings)
         output_path = Path(self.test_dir) / "traces_3d_proj.shp"
@@ -92,15 +101,19 @@ class TestDrillhole3DExporters(BaseTestCase):
         exporter.export(output_path, data)
 
         # Verify feature addition
-        writer = mock_writer.return_value
+        writer = mock_writer
         writer.addFeature.assert_called_once()
         feat = writer.addFeature.call_args[0][0]
         geom = feat.geometry().constGet()
         self.assertEqual(geom.pointN(0).x(), 10.0)
         self.assertEqual(geom.pointN(0).z(), 100.0)
 
-    @patch("sec_interp.exporters.drillhole_3d_exporter.scu.create_shapefile_writer")
-    def test_interval_exporter_real(self, mock_writer):
+    @patch("sec_interp.exporters.drillhole_3d_exporter.scu_io.create_vector_writer")
+    def test_interval_exporter_real(self, mock_writer_factory):
+        # 1. Setup
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         """Test DrillholeInterval3DExporter using real coordinates."""
         exporter = DrillholeInterval3DExporter(self.settings)
         output_path = Path(self.test_dir) / "intervals_3d_real.shp"
@@ -112,16 +125,22 @@ class TestDrillhole3DExporters(BaseTestCase):
         }
         exporter.export(output_path, data)
 
-        mock_writer.assert_called_once()
-        writer = mock_writer.return_value
-        writer.addFeature.assert_called_once()
-        feat = writer.addFeature.call_args[0][0]
+        mock_writer_factory.assert_called_once()
+        args, _ = mock_writer_factory.call_args
+        self.assertEqual(args[3], QgsWkbTypes.LineStringZ)
+
+        mock_writer.addFeature.assert_called_once()
+        feat = mock_writer.addFeature.call_args[0][0]
         self.assertEqual(feat["unit"], "Unit A")
         geom = feat.geometry().constGet()
         self.assertEqual(geom.pointN(0).z(), 100.0)
 
-    @patch("sec_interp.exporters.drillhole_3d_exporter.scu.create_shapefile_writer")
-    def test_interval_exporter_projected(self, mock_writer):
+    @patch("sec_interp.exporters.drillhole_3d_exporter.scu_io.create_vector_writer")
+    def test_interval_exporter_projected(self, mock_writer_factory):
+        # 1. Setup
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         """Test DrillholeInterval3DExporter using projected coordinates."""
         exporter = DrillholeInterval3DExporter(self.settings)
         output_path = Path(self.test_dir) / "intervals_3d_proj.shp"
@@ -133,9 +152,8 @@ class TestDrillhole3DExporters(BaseTestCase):
         }
         exporter.export(output_path, data)
 
-        writer = mock_writer.return_value
-        writer.addFeature.assert_called_once()
-        feat = writer.addFeature.call_args[0][0]
+        mock_writer.addFeature.assert_called_once()
+        feat = mock_writer.addFeature.call_args[0][0]
         geom = feat.geometry().constGet()
         self.assertEqual(geom.pointN(0).x(), 10.0)
         self.assertEqual(geom.pointN(0).z(), 100.0)

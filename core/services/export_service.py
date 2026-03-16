@@ -191,8 +191,8 @@ class ExportService:
                 struct_data,
                 raster_layer,
                 line_crs,
-                csv_exporter,
                 msg,
+                {},
                 export_settings,
                 format_ext,
             ),
@@ -239,7 +239,7 @@ class ExportService:
         ext: str = ".shp",
     ) -> None:
         """Export topographic data."""
-        from sec_interp.exporters import DXFExporter, ProfileLineShpExporter
+        from sec_interp.exporters import ProfileLineShpExporter
 
         logger.info("✓ Saving topographic profile...")
         try:
@@ -247,7 +247,7 @@ class ExportService:
             csv_exporter.export(csv_path, {"headers": ["dist", "elev"], "rows": data})
 
             vec_path = self._get_export_path(folder, "profile_line", settings, ext)
-            vector_exporter = DXFExporter({}) if ext == ".dxf" else ProfileLineShpExporter({})
+            vector_exporter = ProfileLineShpExporter({})
             vector_exporter.export(vec_path, {"profile_data": data, "crs": crs})
             msg.extend([f"  - {csv_path.name}", f"  - {vec_path.name}"])
         except (OSError, ValueError, TypeError, DataMissingError) as e:
@@ -270,7 +270,7 @@ class ExportService:
         """Export geological data."""
         if not data:
             return
-        from sec_interp.exporters import DXFExporter, GeologyShpExporter
+        from sec_interp.exporters import GeologyShpExporter
 
         logger.info("✓ Saving geological profile...")
         try:
@@ -282,7 +282,7 @@ class ExportService:
             )
 
             vec_path = self._get_export_path(folder, "geol_profile", settings, ext)
-            vector_exporter = DXFExporter({}) if ext == ".dxf" else GeologyShpExporter({})
+            vector_exporter = GeologyShpExporter({})
             vector_exporter.export(vec_path, {"geology_data": data, "crs": crs})
             msg.extend([f"  - {csv_path.name}", f"  - {vec_path.name}"])
         except (OSError, ValueError, TypeError, DataMissingError) as e:
@@ -306,7 +306,7 @@ class ExportService:
         """Export structural data."""
         if not data:
             return
-        from sec_interp.exporters import DXFExporter, StructureShpExporter
+        from sec_interp.exporters import StructureShpExporter
 
         logger.info("✓ Saving structural profile...")
         try:
@@ -322,7 +322,7 @@ class ExportService:
                 raster_res = raster_layer.rasterUnitsPerPixelX()
 
             vec_path = self._get_export_path(folder, "structural_profile", settings, ext)
-            vector_exporter = DXFExporter({}) if ext == ".dxf" else StructureShpExporter({})
+            vector_exporter = StructureShpExporter({})
             vector_exporter.export(
                 vec_path,
                 {
@@ -363,7 +363,7 @@ class ExportService:
         try:
             # 1. Standard 2D Export
             traces_path = self._get_export_path(folder, "drillhole_traces", settings, ext)
-            traces_exporter = DXFExporter({}) if ext == ".dxf" else DrillholeTraceShpExporter({})
+            traces_exporter = DrillholeTraceShpExporter({})
             traces_exporter.export(traces_path, {"drillhole_data": data, "crs": crs})
 
             intervals_path = self._get_export_path(folder, "drillhole_intervals", settings, ext)
@@ -465,13 +465,14 @@ class ExportService:
         if not data:
             logger.info("No interpretations provided for export.")
             return
-        from sec_interp.exporters import DXFExporter, Interpretation2DExporter
+
+        from sec_interp.exporters import Interpretation2DExporter
 
         logger.info("✓ Saving interpretation data...")
         try:
-            # 2D Export (Standard)
+            # 2D Export (Standard) - Now supports SHP, GPKG, DXF via scu.create_vector_writer
             path = self._get_export_path(folder, "interpretations", settings, ext)
-            exporter = DXFExporter({}) if ext == ".dxf" else Interpretation2DExporter({})
+            exporter = Interpretation2DExporter({})
             exporter.export(
                 path,
                 {"interpretations": data, "crs": crs},
@@ -485,6 +486,7 @@ class ExportService:
                 logger.info("3D Export features are restricted for this user.")
 
         except Exception as e:
+            logger.exception(f"Interpretation export failed: {e}")
             raise ExportError(f"Interpretation export failed: {e!s}") from e
 
     def _export_interpretations_3d(
@@ -498,7 +500,7 @@ class ExportService:
         ext: str = ".shp",
     ) -> None:
         """Export interpretation polygons to 3D space."""
-        from sec_interp.exporters import DXFExporter, Interpretation3DExporter
+        from sec_interp.exporters import Interpretation3DExporter
 
         logger.info("✓ Saving 3D interpretation data...")
         # Get section line geometry
@@ -506,7 +508,7 @@ class ExportService:
             line_geom = next(line_layer.getFeatures()).geometry()
 
             path = self._get_export_path(folder, "interpretations_3d", settings, ext)
-            exporter = DXFExporter({}) if ext == ".dxf" else Interpretation3DExporter({})
+            exporter = Interpretation3DExporter({})
 
             exporter.export(
                 str(path),
@@ -515,6 +517,39 @@ class ExportService:
             msg.append(f"  - {path.name} (3D)")
         else:
             logger.warning("Invalid section line layer, skipping 3D export.")
+
+    def _export_structures(
+        self,
+        folder: Path,
+        data: list[Any] | None,
+        raster_layer: Any | None,
+        crs: Any,
+        msg: list[str],
+        options: dict[str, Any],
+        settings: Any | None = None,
+        ext: str = ".shp",
+    ) -> None:
+        """Export structural measurements."""
+        if not data:
+            return
+        from sec_interp.exporters import StructureShpExporter
+
+        logger.info("✓ Saving structural measurements...")
+        try:
+            path = self._get_export_path(folder, "structural_measurements", settings, ext)
+            exporter = StructureShpExporter({})
+            exporter.export(
+                path,
+                {
+                    "structural_data": data,
+                    "crs": crs,
+                    "dip_scale_factor": options.get("dip_scale", 4),
+                    "raster_res": options.get("raster_res", 1.0),
+                },
+            )
+            msg.append(f"  - {path.name}")
+        except Exception as e:
+            raise ExportError(f"Structural export failed: {e!s}") from e
 
     def _export_axes(
         self,
@@ -526,13 +561,14 @@ class ExportService:
         ext: str = ".shp",
     ) -> None:
         """Export profile axes."""
-        from sec_interp.exporters import AxesShpExporter, DXFExporter
+        from sec_interp.exporters import AxesShpExporter
 
         logger.info("✓ Saving profile axes...")
         try:
             path = self._get_export_path(folder, "profile_axes", settings, ext)
-            exporter = DXFExporter({}) if ext == ".dxf" else AxesShpExporter({})
+            exporter = AxesShpExporter({})
             exporter.export(path, {"profile_data": data, "crs": crs})
+            msg.append(f"  - {path.name}")
         except Exception as e:
             raise ExportError(f"Profile axes export failed: {e!s}") from e
 

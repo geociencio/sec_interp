@@ -13,7 +13,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QMetaType
 
-from sec_interp.core import utils as scu
+import sec_interp.core.utils.io as scu_io
 from sec_interp.core.domain import DrillholeProjection
 from sec_interp.logger_config import get_logger
 
@@ -39,7 +39,7 @@ class DrillholeTraceShpExporter(BaseExporter):
             List of supported extensions.
 
         """
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
         """Export drillhole traces to a Shapefile.
@@ -59,7 +59,7 @@ class DrillholeTraceShpExporter(BaseExporter):
 
         try:
             fields = self._prepare_fields()
-            writer = scu.create_shapefile_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
 
             self._write_traces(writer, drillhole_data, fields)
             del writer
@@ -69,9 +69,7 @@ class DrillholeTraceShpExporter(BaseExporter):
         else:
             return True
 
-    def _write_traces(
-        self, writer: Any, drillhole_data: list, fields: QgsFields
-    ) -> None:
+    def _write_traces(self, writer: Any, drillhole_data: list, fields: QgsFields) -> None:
         """Write drillhole traces to the writer.
 
         Args:
@@ -108,9 +106,7 @@ class DrillholeTraceShpExporter(BaseExporter):
         fields.append(QgsField("hole_id", QMetaType.Type.QString))
         return fields
 
-    def _create_feature(
-        self, hole_id: str, traces: list, fields: QgsFields
-    ) -> QgsFeature | None:
+    def _create_feature(self, hole_id: str, traces: list, fields: QgsFields) -> QgsFeature | None:
         """Create a trace feature from points."""
         points = []
         for p in traces:
@@ -144,7 +140,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
             List of supported extensions.
 
         """
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
         """Export drillhole intervals to a Shapefile.
@@ -164,7 +160,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
 
         try:
             fields = self._prepare_fields()
-            writer = scu.create_shapefile_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
 
             self._write_intervals(writer, drillhole_data, fields)
             del writer
@@ -174,9 +170,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
         else:
             return True
 
-    def _write_intervals(
-        self, writer: Any, drillhole_data: list, fields: QgsFields
-    ) -> None:
+    def _write_intervals(self, writer: Any, drillhole_data: list, fields: QgsFields) -> None:
         """Write drillhole intervals to the writer.
 
         Args:
@@ -216,9 +210,7 @@ class DrillholeIntervalShpExporter(BaseExporter):
         fields.append(QgsField("unit", QMetaType.Type.QString))
         return fields
 
-    def _create_feature(
-        self, hole_id: str, segment: Any, fields: QgsFields
-    ) -> QgsFeature | None:
+    def _create_feature(self, hole_id: str, segment: Any, fields: QgsFields) -> QgsFeature | None:
         """Create an interval feature from segment data."""
         if not segment.points or len(segment.points) < MIN_POINTS_FOR_INTERVAL:
             return None

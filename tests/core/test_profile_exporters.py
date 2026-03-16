@@ -10,6 +10,7 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
     QgsCoordinateReferenceSystem,
+    QgsVectorFileWriter,
 )
 from qgis.PyQt.QtCore import QMetaType
 
@@ -30,10 +31,12 @@ class TestProfileExporters(BaseTestCase):
         self.crs = QgsCoordinateReferenceSystem("EPSG:4326")
         self.settings = {"dpi": 300}
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
-    def test_profile_line_exporter_success(self, mock_writer_func):
+    @patch("sec_interp.exporters.profile_exporters.scu_io.create_vector_writer")
+    def test_profile_line_exporter_success(self, mock_writer_factory):
         """Test successful export of profile line."""
-        mock_writer = mock_writer_func.return_value
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         exporter = ProfileLineShpExporter(self.settings)
 
         data = {"profile_data": [(0, 100), (100, 200)], "crs": self.crs}
@@ -47,10 +50,12 @@ class TestProfileExporters(BaseTestCase):
         exporter = ProfileLineShpExporter(self.settings)
         self.assertFalse(exporter.export(self.output_path, {}))
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
-    def test_geology_exporter_success(self, mock_writer_func):
+    @patch("sec_interp.exporters.profile_exporters.scu_io.create_vector_writer")
+    def test_geology_exporter_success(self, mock_writer_factory):
         """Test successful export of geology profile."""
-        mock_writer = mock_writer_func.return_value
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         exporter = GeologyShpExporter(self.settings)
 
         segment = MagicMock()
@@ -74,10 +79,12 @@ class TestProfileExporters(BaseTestCase):
         feat = exporter._create_geology_feature(segment, fields)
         self.assertIsNone(feat)
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
-    def test_structure_exporter_success(self, mock_writer_func):
+    @patch("sec_interp.exporters.profile_exporters.scu_io.create_vector_writer")
+    def test_structure_exporter_success(self, mock_writer_factory):
         """Test successful export of structural profile."""
-        mock_writer = mock_writer_func.return_value
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         exporter = StructureShpExporter(self.settings)
 
         m = MagicMock()
@@ -102,10 +109,12 @@ class TestProfileExporters(BaseTestCase):
         feat = exporter._create_structure_feature(m, QgsFields(), 4.0)
         self.assertIsNotNone(feat)
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
-    def test_axes_exporter_success(self, mock_writer_func):
+    @patch("sec_interp.exporters.profile_exporters.scu_io.create_vector_writer")
+    def test_axes_exporter_success(self, mock_writer_factory):
         """Test successful export of profile axes."""
-        mock_writer = mock_writer_func.return_value
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         exporter = AxesShpExporter(self.settings)
 
         data = {"profile_data": [(0, 100), (100, 200)], "crs": self.crs}
@@ -115,9 +124,12 @@ class TestProfileExporters(BaseTestCase):
         # Should add 3 features: Left, Right, Bottom axes
         self.assertEqual(mock_writer.addFeature.call_count, 3)
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
-    def test_axes_exporter_single_point(self, mock_writer_func):
+    @patch("sec_interp.exporters.profile_exporters.scu_io.create_vector_writer")
+    def test_axes_exporter_single_point(self, mock_writer_factory):
         """Test axes exporter with single point or constant data."""
+        mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_factory.return_value = mock_writer
         exporter = AxesShpExporter(self.settings)
         data = {"profile_data": [(100, 100), (100, 100)], "crs": self.crs}
         result = exporter.export(self.output_path, data)
@@ -126,7 +138,7 @@ class TestProfileExporters(BaseTestCase):
     def test_exporter_errors(self):
         """Test error handling in exporters."""
         with patch(
-            "sec_interp.core.utils.create_shapefile_writer",
+            "sec_interp.exporters.profile_exporters.scu_io.create_vector_writer",
             side_effect=Exception("mock fail"),
         ):
             data = {"profile_data": [(0, 0)], "crs": self.crs}
@@ -157,20 +169,18 @@ class TestProfileExporters(BaseTestCase):
 
     def test_supported_extensions(self):
         """Test supported extensions for all exporters."""
-        self.assertEqual(
-            ProfileLineShpExporter(self.settings).get_supported_extensions(), [".shp"]
-        )
-        self.assertEqual(
-            GeologyShpExporter(self.settings).get_supported_extensions(), [".shp"]
-        )
-        self.assertEqual(
-            StructureShpExporter(self.settings).get_supported_extensions(), [".shp"]
-        )
-        self.assertEqual(
-            AxesShpExporter(self.settings).get_supported_extensions(), [".shp"]
-        )
+        exporters = [
+            ProfileLineShpExporter(self.settings),
+            GeologyShpExporter(self.settings),
+            StructureShpExporter(self.settings),
+            AxesShpExporter(self.settings),
+        ]
+        for exporter in exporters:
+            self.assertEqual(
+                exporter.get_supported_extensions(), [".shp", ".gpkg", ".dxf"]
+            )
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
+    @patch("sec_interp.exporters.profile_exporters.scu_io.create_vector_writer")
     def test_profile_line_exporter_null_geom(self, mock_writer_func):
         """Test profile line exporter with null geometry."""
         exporter = ProfileLineShpExporter(self.settings)

@@ -23,6 +23,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 from qgis.PyQt.QtGui import QColor
 
+import sec_interp.core.utils.io as scu_io
 from sec_interp.core.domain import InterpretationPolygon
 from sec_interp.core.exceptions import ExportError
 from sec_interp.exporters.base_exporter import BaseExporter
@@ -40,7 +41,7 @@ class Interpretation3DExporter(BaseExporter):
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported extensions."""
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: str, data: dict[str, Any]) -> bool:
         """Export interpretation data to a 3D Shapefile."""
@@ -70,9 +71,7 @@ class Interpretation3DExporter(BaseExporter):
         )
 
         if success:
-            self._handle_post_export_styles(
-                output_path, interpretations, fields, src_crs
-            )
+            self._handle_post_export_styles(output_path, interpretations, fields, src_crs)
 
         return success
 
@@ -124,9 +123,7 @@ class Interpretation3DExporter(BaseExporter):
         qml_path = shp_path.with_suffix(".qml")
 
         # Create a temporary layer to build the style (with Z support)
-        layer = QgsVectorLayer(
-            f"Polygon?crs={crs.authid()}&z=yes", "temp_style", "memory"
-        )
+        layer = QgsVectorLayer(f"Polygon?crs={crs.authid()}&z=yes", "temp_style", "memory")
         layer.dataProvider().addAttributes(fields)
         layer.updateFields()
 
@@ -193,14 +190,10 @@ class Interpretation3DExporter(BaseExporter):
         projected_features = []
 
         # Handle MultiPolygon by treating it as multiple polygons
-        polygons_2d = (
-            geom_2d.asMultiPolygon() if geom_2d.isMultipart() else [geom_2d.asPolygon()]
-        )
+        polygons_2d = geom_2d.asMultiPolygon() if geom_2d.isMultipart() else [geom_2d.asPolygon()]
 
         for poly_2d in polygons_2d:
-            rings_3d = self._create_3d_rings(
-                poly_2d, origin_x, origin_y, azimuth, vert_exag
-            )
+            rings_3d = self._create_3d_rings(poly_2d, origin_x, origin_y, azimuth, vert_exag)
 
             if not rings_3d:
                 continue
@@ -283,21 +276,11 @@ class Interpretation3DExporter(BaseExporter):
         options = QgsVectorFileWriter.SaveVectorOptions()
         options.driverName = "ESRI Shapefile"
         options.fileEncoding = "UTF-8"
-
         # Create fields container
         # Note: In QGIS API, we often pass QgsFields object.
         qgs_fields = self._make_fields_obj(fields)
 
-        from qgis.core import QgsProject
-
-        writer = QgsVectorFileWriter.create(
-            str(path),
-            qgs_fields,
-            wkb_type,
-            crs,
-            QgsProject.instance().transformContext(),
-            options,
-        )
+        writer = scu_io.create_vector_writer(str(path), crs, qgs_fields, wkb_type)
 
         if writer.hasError() != QgsVectorFileWriter.NoError:
             raise ExportError(writer.errorMessage())
@@ -320,9 +303,7 @@ class Interpretation3DExporter(BaseExporter):
         # Compatibility helper if needed
         return self._make_fields_obj(fields_list)
 
-    def _prepare_fields(
-        self, interpretations: list[Any]
-    ) -> tuple[list[QgsField], list[str]]:
+    def _prepare_fields(self, interpretations: list[Any]) -> tuple[list[QgsField], list[str]]:
         all_attr_keys = set()
         for interp in interpretations:
             if interp.attributes:
@@ -341,9 +322,7 @@ class Interpretation3DExporter(BaseExporter):
             fields.append(QgsField(key, QMetaType.Type.QString, len=255))
         return fields, sorted_keys
 
-    def _calculate_section_geometry(
-        self, section_line: QgsGeometry
-    ) -> tuple[float, float, float]:
+    def _calculate_section_geometry(self, section_line: QgsGeometry) -> tuple[float, float, float]:
         """Calculate origin and azimuth from section line."""
         if section_line.isMultipart():
             line_points = section_line.asMultiPolyline()[0]
@@ -401,9 +380,7 @@ class Interpretation3DExporter(BaseExporter):
         vertices = self._ensure_closed_polygon(vertices)
 
         if len(vertices) < MIN_VALID_POLYGON_VERTICES:
-            logger.warning(
-                f"Polygon {polygon.id} has insufficient unique vertices. Skipping."
-            )
+            logger.warning(f"Polygon {polygon.id} has insufficient unique vertices. Skipping.")
             return None
 
         qgs_points_3d = [QgsPoint(x, y, 0.0) for x, y in vertices]

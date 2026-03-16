@@ -18,7 +18,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QMetaType
 
-from sec_interp.core import utils as scu
+import sec_interp.core.utils.io as scu_io
 from sec_interp.core.domain import DrillholeProjection
 from sec_interp.logger_config import get_logger
 
@@ -37,7 +37,7 @@ class DrillholeTrace3DExporter(BaseExporter):
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported extensions."""
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
         """Export 3D drillhole traces to a Shapefile.
@@ -59,7 +59,7 @@ class DrillholeTrace3DExporter(BaseExporter):
 
         try:
             fields = self._prepare_fields()
-            writer = scu.create_shapefile_writer(
+            writer = scu_io.create_vector_writer(
                 str(output_path), crs, fields, QgsWkbTypes.LineStringZ
             )
 
@@ -146,7 +146,7 @@ class DrillholeInterval3DExporter(BaseExporter):
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported extensions."""
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Any, data: dict[str, Any]) -> bool:
         """Export 3D drillhole intervals to a Shapefile.
@@ -168,7 +168,7 @@ class DrillholeInterval3DExporter(BaseExporter):
 
         try:
             fields = self._prepare_fields()
-            writer = scu.create_shapefile_writer(
+            writer = scu_io.create_vector_writer(
                 str(output_path), crs, fields, QgsWkbTypes.LineStringZ
             )
 
@@ -199,9 +199,7 @@ class DrillholeInterval3DExporter(BaseExporter):
             return
 
         for segment in segments:
-            points_source = (
-                segment.points_3d_projected if use_projected else segment.points_3d
-            )
+            points_source = segment.points_3d_projected if use_projected else segment.points_3d
             if not points_source or len(points_source) < MIN_POINTS_FOR_INTERVAL:
                 continue
 

@@ -16,36 +16,48 @@ from qgis.core import (
 )
 
 
-def create_shapefile_writer(
+def create_vector_writer(
     output_path: str | Path,
     crs: QgsCoordinateReferenceSystem,
     fields: QgsFields,
     geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.LineString,
 ) -> QgsVectorFileWriter:
-    """Create and initialize a QgsVectorFileWriter for Shapefiles.
+    """Create and initialize a QgsVectorFileWriter for various vector formats.
 
-    Uses the modern `create` static method for QGIS 3.38+ compatibility.
+    Supports Shapefile (.shp), GeoPackage (.gpkg), and DXF (.dxf) based on extension.
 
     Args:
-        output_path: File system path where the shapefile will be created.
-        crs: The Coordinate Reference System for the new file.
+        output_path: File system path for the new file.
+        crs: The Coordinate Reference System.
         fields: The attribute fields definition.
         geometry_type: The mapping geometry type (default: LineString).
 
     Returns:
-        An initialized writer object for creating a Shapefile.
+        An initialized writer object.
 
     Raises:
-        OSError: If the writer cannot be created or has an initialization error.
+        OSError: If the writer cannot be created.
+        ValueError: If the file extension is not supported.
 
     """
-    # Use new static create method for QGIS 3.38+
+    path = Path(output_path)
+    ext = path.suffix.lower()
+
+    drivers = {
+        ".shp": "ESRI Shapefile",
+        ".gpkg": "GPKG",
+        ".dxf": "DXF",
+    }
+
+    if ext not in drivers:
+        raise ValueError(f"Unsupported vector extension: {ext}")
+
     options = QgsVectorFileWriter.SaveVectorOptions()
-    options.driverName = "ESRI Shapefile"
+    options.driverName = drivers[ext]
     options.fileEncoding = "UTF-8"
 
     writer = QgsVectorFileWriter.create(
-        str(output_path),
+        str(path),
         fields,
         geometry_type,
         crs,
@@ -54,8 +66,11 @@ def create_shapefile_writer(
     )
 
     if writer.hasError() != QgsVectorFileWriter.NoError:
-        raise OSError(
-            f"Error creating shapefile {output_path}: {writer.errorMessage()}"
-        )
+        raise OSError(f"Error creating vector file {path}: {writer.errorMessage()}")
 
     return writer
+
+
+def create_shapefile_writer(*args, **kwargs) -> QgsVectorFileWriter:
+    """Delegate to create_vector_writer (deprecated shim)."""
+    return create_vector_writer(*args, **kwargs)

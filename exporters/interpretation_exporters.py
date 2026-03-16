@@ -16,12 +16,11 @@ from qgis.core import (
     QgsFields,
     QgsGeometry,
     QgsPointXY,
-    QgsProject,
     QgsVectorFileWriter,
-    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QMetaType
 
+import sec_interp.core.utils.io as scu_io
 from sec_interp.exporters.base_exporter import BaseExporter
 from sec_interp.logger_config import get_logger
 
@@ -62,37 +61,29 @@ class Interpretation2DExporter(BaseExporter):
             return False
 
         try:
-            fields, sorted_keys = self._prepare_fields(interpretations)
-            # Use a CRS-qualified URI when a CRS is provided to avoid silent
-            # write failures in writeAsVectorFormatV3 (QGIS requires a valid
-            # CRS on the source layer when writing to disk).
             crs = data.get("crs")
-            crs_str = (
-                crs.authid() or "EPSG:4326" if crs and crs.isValid() else "EPSG:4326"
-            )
-            layer = QgsVectorLayer(
-                f"Polygon?crs={crs_str}", "interpretations_2d", "memory"
-            )
-            layer.dataProvider().addAttributes(fields)
-            layer.updateFields()
 
-            features = []
+            fields, sorted_keys = self._prepare_fields(interpretations)
+            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
+
+            if writer.hasError() != QgsVectorFileWriter.NoError:
+                logger.error(f"Failed to create writer for {output_path}: {writer.errorMessage()}")
+                return False
+
             for interp in interpretations:
                 feat = self._create_feature(interp, fields, sorted_keys)
                 if feat:
-                    features.append(feat)
+                    writer.addFeature(feat)
 
-            layer.dataProvider().addFeatures(features)
-
-            return self._write_to_file(layer, output_path)
+            del writer  # Flushes and closes the file
+            logger.info(f"Successfully exported to {output_path}")
+            return True
 
         except Exception:
             logger.exception(f"Failed to export interpretations to {output_path}")
             return False
 
-    def _prepare_fields(
-        self, interpretations: list[Any]
-    ) -> tuple[QgsFields, list[str]]:
+    def _prepare_fields(self, interpretations: list[Any]) -> tuple[QgsFields, list[str]]:
         """Identify custom attributes and create fields."""
         all_attr_keys = set()
         for interp in interpretations:
@@ -111,9 +102,7 @@ class Interpretation2DExporter(BaseExporter):
             fields.append(QgsField(key, QMetaType.Type.QString, len=255))
         return fields, sorted_keys
 
-    def _create_feature(
-        self, interp: Any, fields: QgsFields, sorted_keys: list[str]
-    ) -> QgsFeature:
+    def _create_feature(self, interp: Any, fields: QgsFields, sorted_keys: list[str]) -> QgsFeature:
         """Create a QgsFeature with geometry and attributes."""
         # Create polygon geometry from 2D vertices
         points = [QgsPointXY(x, y) for x, y in interp.vertices_2d]
@@ -143,55 +132,6 @@ class Interpretation2DExporter(BaseExporter):
         feature.setAttributes(attrs)
         return feature
 
-    def _write_to_file(self, layer: QgsVectorLayer, output_path: Path) -> bool:
-        """Write the interpretations layer features to a Shapefile on disk.
-
-        Uses QgsVectorFileWriter.create() + addFeature() rather than
-        writeAsVectorFormatV3, which can silently skip writing in headless
-        (pytest / Docker) environments.
-
-        Args:
-            layer: In-memory QgsVectorLayer with all features already added.
-            output_path: Absolute path of the output Shapefile (.shp).
-
-        Returns:
-            True if the file was written successfully, False otherwise.
-
-        """
-        crs = layer.crs()
-        fields = layer.fields()
-
-        options = QgsVectorFileWriter.SaveVectorOptions()
-        options.driverName = "ESRI Shapefile"
-        options.fileEncoding = "UTF-8"
-
-        writer = QgsVectorFileWriter.create(
-            str(output_path),
-            fields,
-            layer.wkbType(),
-            crs,
-            QgsProject.instance().transformContext(),
-            options,
-        )
-
-        if writer.hasError() != QgsVectorFileWriter.NoError:
-            logger.error(
-                f"Failed to create writer for {output_path}: {writer.errorMessage()}"
-            )
-            return False
-
-        for feat in layer.getFeatures():
-            writer.addFeature(feat)
-
-        del writer  # Flushes and closes the file
-        logger.info(f"Successfully exported to {output_path}")
-        return True
-
     def get_supported_extensions(self) -> list[str]:
-        """Get list of supported file extensions.
-
-        Returns:
-            List of supported extensions.
-
-        """
-        return [".shp"]
+        """Get supported file extensions."""
+        return [".shp", ".gpkg", ".dxf"]

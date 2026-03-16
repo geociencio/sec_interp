@@ -18,7 +18,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QMetaType
 
-from sec_interp.core import utils as scu
+import sec_interp.core.utils.io as scu_io
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
@@ -39,7 +39,7 @@ class ProfileLineShpExporter(BaseExporter):
             List of supported extensions.
 
         """
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
         """Export the topographic profile line to a Shapefile.
@@ -63,7 +63,7 @@ class ProfileLineShpExporter(BaseExporter):
             fields = QgsFields()
             fields.append(QgsField("id", QMetaType.Type.Int))
 
-            writer = scu.create_shapefile_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
 
             feat = QgsFeature()
             feat.setGeometry(geom)
@@ -86,7 +86,7 @@ class GeologyShpExporter(BaseExporter):
             List of supported extensions.
 
         """
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
         """Export the geological profile to a Shapefile.
@@ -104,7 +104,7 @@ class GeologyShpExporter(BaseExporter):
 
         try:
             fields = self._create_geology_fields(geology_data)
-            writer = scu.create_shapefile_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
 
             self._write_geology_features(writer, geology_data, fields)
             del writer
@@ -115,9 +115,7 @@ class GeologyShpExporter(BaseExporter):
         else:
             return True
 
-    def _write_geology_features(
-        self, writer: Any, geology_data: list, fields: QgsFields
-    ) -> None:
+    def _write_geology_features(self, writer: Any, geology_data: list, fields: QgsFields) -> None:
         """Write geology segments to the writer.
 
         Args:
@@ -141,9 +139,7 @@ class GeologyShpExporter(BaseExporter):
                 fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
 
-    def _create_geology_feature(
-        self, segment: Any, fields: QgsFields
-    ) -> QgsFeature | None:
+    def _create_geology_feature(self, segment: Any, fields: QgsFields) -> QgsFeature | None:
         """Create a feature for a geology segment."""
         if len(segment.points) < MIN_REQUIRED_POINTS:
             return None
@@ -172,7 +168,7 @@ class StructureShpExporter(BaseExporter):
             List of supported extensions.
 
         """
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
         """Export the structural profile to a Shapefile.
@@ -194,7 +190,7 @@ class StructureShpExporter(BaseExporter):
         try:
             line_length = raster_res * dip_scale_factor
             fields = self._create_structure_fields(structural_data)
-            writer = scu.create_shapefile_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
 
             self._write_structure_features(writer, structural_data, fields, line_length)
             del writer
@@ -277,7 +273,7 @@ class AxesShpExporter(BaseExporter):
             List of supported extensions.
 
         """
-        return [".shp"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Path, data: dict[str, Any]) -> bool:
         """Export the profile axes to a Shapefile.
@@ -317,7 +313,7 @@ class AxesShpExporter(BaseExporter):
             fields = QgsFields()
             fields.append(QgsField("axis", QMetaType.Type.QString))
 
-            writer = scu.create_shapefile_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
 
             axis_names = ["Left", "Right", "Bottom"]
             self._write_axes_features(writer, lines, axis_names)
@@ -329,9 +325,7 @@ class AxesShpExporter(BaseExporter):
         else:
             return True
 
-    def _write_axes_features(
-        self, writer: Any, lines: list, axis_names: list[str]
-    ) -> None:
+    def _write_axes_features(self, writer: Any, lines: list, axis_names: list[str]) -> None:
         """Write axes lines to the writer.
 
         Args:

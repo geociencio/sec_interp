@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from qgis.core import QgsCoordinateReferenceSystem, QgsFields
+from qgis.core import QgsCoordinateReferenceSystem, QgsFields, QgsVectorFileWriter
 from sec_interp.exporters.drillhole_exporters import (
     DrillholeTraceShpExporter,
     DrillholeIntervalShpExporter,
@@ -20,9 +20,11 @@ class TestDrillholeExportObjects(unittest.TestCase):
         self.trace_3d_exporter = DrillholeTrace3DExporter({})
         self.interval_3d_exporter = DrillholeInterval3DExporter({})
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
-    def test_export_traces_with_objects(self, mock_writer_factory):
+    @patch("sec_interp.exporters.drillhole_exporters.scu_io.create_vector_writer")
+    def test_export_traces_success(self, mock_writer_factory):
+        # 1. Setup
         mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
 
         # Create test data with DrillholeProjection object
@@ -45,9 +47,11 @@ class TestDrillholeExportObjects(unittest.TestCase):
         self.assertTrue(success)
         mock_writer.addFeature.assert_called()
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
-    def test_export_intervals_with_objects(self, mock_writer_factory):
+    @patch("sec_interp.exporters.drillhole_exporters.scu_io.create_vector_writer")
+    def test_export_intervals_success(self, mock_writer_factory):
+        # 1. Setup
         mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
 
         # Create test data with segments
@@ -74,9 +78,11 @@ class TestDrillholeExportObjects(unittest.TestCase):
         self.assertTrue(success)
         mock_writer.addFeature.assert_called()
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
+    @patch("sec_interp.exporters.drillhole_3d_exporter.scu_io.create_vector_writer")
     def test_export_3d_traces_with_objects(self, mock_writer_factory):
+        # 1. Setup
         mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
 
         dh1 = DrillholeProjection(
@@ -97,9 +103,11 @@ class TestDrillholeExportObjects(unittest.TestCase):
         self.assertTrue(success)
         mock_writer.addFeature.assert_called()
 
-    @patch("sec_interp.core.utils.create_shapefile_writer")
+    @patch("sec_interp.exporters.drillhole_3d_exporter.scu_io.create_vector_writer")
     def test_export_3d_intervals_with_objects(self, mock_writer_factory):
+        # 1. Setup
         mock_writer = MagicMock()
+        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
 
         seg1 = GeologySegment(

@@ -29,22 +29,27 @@ class TestDynamicAttributes(BaseTestCase):
 
         from unittest.mock import patch
 
-        with patch.object(exporter, "_write_to_file", return_value=True) as mock_write:
+        with patch(
+            "sec_interp.exporters.interpretation_exporters.scu_io.create_vector_writer"
+        ) as mock_writer_factory:
+            mock_writer = MagicMock()
+            mock_writer.hasError.return_value = 0  # NoError
+            mock_writer_factory.return_value = mock_writer
+
             exporter.export(output_path, {"interpretations": [interp]})
 
-            # Check if fields were correctly generated in the internal layer
-            call_args = mock_write.call_args
-            layer = call_args[0][0]
+            # Check if fields were correctly generated in the writer call
+            call_args = mock_writer_factory.call_args
+            fields = call_args[0][2]
 
-            fields = layer.fields()
             field_names = [f.name() for f in fields]
 
             self.assertIn("Confianza", field_names)
             self.assertIn("Comentario", field_names)
             self.assertIn("id", field_names)
 
-            # Check values in first feature
-            feat = next(layer.getFeatures())
+            # Check values in first feature from the first addFeature call
+            feat = mock_writer.addFeature.call_args[0][0]
             self.assertEqual(feat["Confianza"], "Alta")
             self.assertEqual(feat["Comentario"], "Validado")
 
