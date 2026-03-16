@@ -5,6 +5,24 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
+  - date: 2026-03-15
+    category: TECHNICAL
+    topic: DXF Export Limitations (v3.4.0)
+    lesson: "The OGR DXF driver fails when creating arbitrary fields. Stripping fields is necessary for geometry-only exports to avoid termination errors."
+    action: "Centralize DXF field stripping in the primary I/O utility (io.py) and ensure DXFExporter handles empty attribute sets gracefully."
+
+  - date: 2026-03-15
+    category: ARCHITECTURE
+    topic: Drillhole Interval Integrity (v3.4.0)
+    lesson: "Densification of trajectories is insufficient for short geological intervals. Explicit endpoint interpolation is mandatory to ensure every segment has topological consistency."
+    action: "Mandate interpolation at exact interval depths in TrajectoryEngine to guarantee valid segment geometry generation."
+
+  - date: 2026-03-15
+    category: TECHNICAL
+    topic: Export Setting Persistence (v3.4.0)
+    lesson: "Synchronizing UI widgets via QgsSettings requires standardized prefixes (SecInterp/) and coordination with ConfigService to ensure multi-scope persistence."
+    action: "Standardize all persistence keys to use the SecInterp/ prefix for both UI state and core config."
+
   - date: 2026-03-12
     category: TECHNICAL
     topic: Deterministic Lifecycle Cleanup
