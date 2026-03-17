@@ -113,6 +113,7 @@
 - **tests/integration/test_qgis_smoke.py**: 3 tests
 - **tests/benchmarks/test_export_benchmarks.py**: 2 tests
 - **tests/benchmarks/test_geometry_benchmarks.py**: 4 tests
+- **tests/mcp/test_mcp_tools.py**: 3 tests
 <!-- END_INVENTORY -->
 
 ---

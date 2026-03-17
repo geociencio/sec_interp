@@ -5,6 +5,12 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
+  - date: 2026-03-16
+    category: TOOLING
+    topic: Static Analysis Parser Failures
+    lesson: "Tools relying on Regex for code parsing, like the current version of `qgis-plugin-analyzer`, frequently fail on multi-line function signatures (e.g., those formatted by `black`). This leads to severe false positives in Type Hint coverage reports."
+    action: "Do not blindly trust static analysis metrics that drop inexplicably. Always verify the true source code using the Python `ast` module before attempting massive, potentially redundant refactors."
+
   - date: 2026-03-15
     category: TECHNICAL
     topic: DXF Export Limitations (v3.4.0)

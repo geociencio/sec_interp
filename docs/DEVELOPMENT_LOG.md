@@ -137,6 +137,16 @@
 
 ---
 ## [Unreleased]
+## [2026-03-16] Type Hint Coverage Analysis & Bug Discovery
+- **Achievement**: Re-verified the project's true Return Type Hint coverage via AST analysis (achieving 89.0%) and documented a fatal regex parsing bug in `qgis-plugin-analyzer`.
+- **Changes**:
+    - **Analysis**: Wrote `ast_coverage.py` script to bypass the `qgis-analyzer` parsing failure.
+    - **Code Quality**: Corrected missing type hints in private methods throughout `core/services/drillhole/` and `ExportService`.
+    - **Documentation**: Generated `docs/maintenance/qgis_analyzer_type_hint_bug.md` proposing an `ast`-based refactor to the plugin authors.
+    - **Formatting**: Project-wide formatting applied via `ruff format` and `black`.
+- **Status**: False positive resolved. Suite 100% stable.
+- **Maintenance**: [session_2026-03-16_type_hints_bug_fix.md](maintenance/session_2026-03-16_type_hints_bug_fix.md)
+
 ## [2026-03-08] - Phase 3.3.0: Agentic System Standardization & 2025 Audit
 - **Achievement**: Fully translated the internal agentic system (.agent/) to English and implemented 2025 industry enhancements (Reflection Loops & Structured Outputs).
 - **Changes**:

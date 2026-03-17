@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Type Safety**: Verified an 89.0% Return Type Hint coverage and bypassed a regex parsing bug in `qgis-plugin-analyzer`, correctly adding remaining missing hints to internal methods in `drillhole` and `export` services.
+
 #### Added
 - Unified export system supporting **DXF**, **GeoPackage**, and **Shapefile** for all data types.
 - Robust 3D interpretation export with automatic coordinate transformation.
