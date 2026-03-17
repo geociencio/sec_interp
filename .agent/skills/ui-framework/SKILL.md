@@ -28,6 +28,7 @@ Defines the rules for creating elegant, responsive, and efficient user interface
 - **Programmatic**: Do not use Qt Designer. The entire design lives in Python code.
 - **Responsiveness**: The dialog must adapt to different window sizes.
 - **Feedback**: Clear visual indicators for validation or loading states.
+- **Deterministic Cleanup**: Explicitly disconnect signals and cleanup managers/tools in `closeEvent` to prevent orphaned GraphicsItems (rubber bands) and signal leaks.
 
 ### Component Standards
 - **Tooltips**: Mandatory for every interactive element.

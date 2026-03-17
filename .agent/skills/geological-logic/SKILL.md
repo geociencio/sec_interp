@@ -32,6 +32,7 @@ Defines the business rules for processing mining/geological data, ensuring geome
 ### Geometry Rules
 - **Decoupling**: Core services MUST NEVER depend on `QgsGeometry`.
 - **WKT Standard**: Operate with WKT strings; convert to PyQGIS only at the UI boundary.
+- **Endpoint Interpolation**: Mandate interpolation at exact interval depths in `TrajectoryEngine` to guarantee valid segment geometry generation for short intervals.
 - **Mocks**: Use `MockQgsGeometry` for local unit tests.
 
 ## Quality Checklist

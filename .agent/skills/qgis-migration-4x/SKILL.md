@@ -14,6 +14,7 @@ Code should be agnostic of the underlying Qt version (Qt5 vs. Qt6) whenever poss
 ### Golden Rule: Qt Imports
 ❌ **FORBIDDEN**: Importing directly from `PyQt5` or `PyQt6`.
 ✅ **MANDATORY**: Importing from `qgis.PyQt`.
+- *Migration Lesson*: Removing hard PyQt5 dependencies is critical for Qt6 compatibility. In v4.0 environments, PyQt5 should be completely removed from `pyproject.toml` and `requirements.txt`.
 
 **Incorrect Example**:
 ```python

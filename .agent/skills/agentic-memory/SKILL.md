@@ -21,9 +21,11 @@ The agent must actively look for the following elements during interaction:
 
 At the end of each significant session, the agent must:
 
-1.  **Synthesize**: Summarize findings in entries of at most 3 lines.
-2.  **Categorize**: Use tags such as `[TECHNICAL]`, `[USER_PREFERENCE]`, `[ARCHITECTURE]`.
-3.  **Structure**: Maintain a YAML-friendly format for future RAG integrations.
+1.  **Verify Path**: Ensure you are NOT in `antigravity-framerepo/` or `scaffold/`. All persistence must happen in the project root's `.agent/` directory.
+2.  **Target Metrics**: Update `.agent/memory/agent_metrics.json` (NEVER a scaffold file).
+3.  **Synthesize**: Summarize findings in entries of at most 3 lines in `AGENT_LESSONS.md`.
+4.  **Categorize**: Use tags such as `[TECHNICAL]`, `[USER_PREFERENCE]`, `[ARCHITECTURE]`.
+5.  **Structure**: Maintain a YAML-friendly format for future RAG integrations.
 
 ## Structured Entry Example
 

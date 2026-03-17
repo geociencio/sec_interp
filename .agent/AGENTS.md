@@ -110,6 +110,15 @@ To maximize AI precision and avoid hallucinations:
 2.  **MCP Priority**: Prefer MCP tools for procedural knowledge over raw markdown reading when possible.
 3.  **Strict Typing**: All new code must pass `mypy` and `qgis-analyzer` audits.
 
+## ⚠️ CRITICAL: Memory & Paths
+Under NO CIRCUMSTANCES should an agent update meta-files or logs in paths containing:
+- `antigravity-framerepo/`
+- `scaffold/`
+
+These are part of the base infrastructure or templates. All project-active memory, metrics, and logs MUST be managed in the project root's `.agent/` directory:
+- ✅ **Correct**: `.agent/memory/agent_metrics.json`
+- ❌ **Forbidden**: `antigravity-framerepo/scaffold/memory/agent_metrics.json`
+
 ---
 
 ## 💡 Usage Instructions

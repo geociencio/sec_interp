@@ -20,7 +20,8 @@ Defines the technical rules to ensure modern, maintainable, and consistent Pytho
 1. **Typing**: Add type annotations (Type Hints) to all arguments and return values.
 2. **Documentation**: Write docstrings following the Google format.
 3. **Paths**: Replace string manipulations or `os.path` with `pathlib.Path` objects.
-4. **Validation**: Run `black .` and `ruff check .` to confirm compliance.
+4. **Modeling**: Mandatory use of Dataclasses (DTOs) for all service returns. Avoid using index-based tuples for complex data transfer.
+5. **Validation**: Run `black .` and `ruff check .` to confirm compliance.
 5. **Audit**: Use `qgis-analyzer analyze i18n` for new strings and `security` for sensitive code.
 
 ## Instructions and Rules
@@ -30,8 +31,14 @@ Defines the technical rules to ensure modern, maintainable, and consistent Pytho
 - Use `/` to join paths with `Path`.
 - Example: `base_dir / "data" / "file.txt"`.
 
+### Data Transfer Objects (DTOs)
+- **Mandatory** use of Dataclasses (DTOs) for all service returns.
+- Avoid index-based tuples for complex data transfer.
+
 ### Documentation (Google Style)
 ```python
+"""Module-level docstring (MANDATORY per PEP 257)."""
+
 def function(arg1: int) -> str:
     """Short summary.
 
