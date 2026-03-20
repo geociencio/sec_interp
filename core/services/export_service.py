@@ -432,7 +432,6 @@ class ExportService:
         from sec_interp.exporters import (
             DrillholeInterval3DExporter,
             DrillholeTrace3DExporter,
-            DXFExporter,
         )
 
         # Declarative task list: (type_flag, projection_flag, ExporterClass,
@@ -475,7 +474,7 @@ class ExportService:
         for type_flag, proj_flag, ExporterClass, base_name, use_proj, label in tasks:
             if options.get(type_flag, False) and options.get(proj_flag, False):
                 path = self._get_export_path(folder, base_name, settings, ext)
-                exporter = DXFExporter({}) if ext == ".dxf" else ExporterClass({})
+                exporter = ExporterClass({})
                 ok = exporter.export(
                     path,
                     {"drillhole_data": data, "crs": crs, "use_projected": use_proj},

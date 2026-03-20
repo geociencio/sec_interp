@@ -6,11 +6,11 @@
 - [x] **UI Integration**: Update `gui/ui/pages/settings_page.py` with Format and Naming controls.
 - [/] **DXF/GPKG Implementation**:
     - [x] Create `exporters/dxf_exporter.py` (Generic Writer).
-    - [/] Fix `ExportService` integration (Fix signature mismatch and DTO conversion).
-    - [ ] Implement/Update specialized exporters to support DXF/GPKG formats natively.
-- [ ] **Verification**:
-    - [ ] Run 600+ tests and ensure no regressions.
-    - [ ] Perform manual export to DXF and GeoPackage.
+    - [x] Fix ExportService integration (Fix signature mismatch and DTO conversion).
+    - [x] Implement/Update specialized exporters to support DXF/GPKG formats natively.
+- [x] **Verification**:
+    - [x] Run 600+ tests and ensure no regressions.
+    - [x] Perform manual export to DXF and GeoPackage.
 
 ## [ ] Session Initialization [ ]
 - [x] Context Tuning (`ai-ctx`, `next_steps.md`, `AGENT_LESSONS.md`)
