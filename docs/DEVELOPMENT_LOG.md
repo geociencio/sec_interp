@@ -1,3 +1,12 @@
+## [2026-03-19] Session: DXF/GPKG Export Stabilization
+- **Achievement**: Stabilized DXF and GeoPackage export functionality by fixing a critical signature mismatch in `ExportService._export_drillholes_3d`. Verified all vector export formats (SHP, GPKG, DXF) using a reproduction script in the QGIS Docker environment. 604 tests passing.
+- **Changes**:
+    - **Core**: Fixed `TypeError` in `_export_drillholes_3d` where `DXFExporter` (generic) was being used for specialized drillhole data.
+    - **Exporters**: Specialized exporters (`DrillholeTrace3DExporter`, etc.) correctly handle DXF/GPKG through the unified `scu_io.create_vector_writer`.
+    - **Context**: Updated `AI_CONTEXT.md` and `TESTING_STATUS.md`.
+- **Status**: Completed (v3.4.0 Phase).
+- **Maintenance**: [session_2026-03-19_export_dxf_gpkg.md](maintenance/session_2026-03-19_export_dxf_gpkg.md)
+
 ## [2026-03-15] Agentic System Modernization: Generation 5 (v3.5.0-dev)
 - **Achievement**: Successfully transitioned the `.agent/` system to Generation 5 architecture, implementing MCP native orchestration and achieving QGIS 4.x (Qt6) readiness.
 - **Changes**:

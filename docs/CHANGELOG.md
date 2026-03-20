@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Export (DXF/GPKG)**: Resolved a critical signature mismatch in `ExportService._export_drillholes_3d` where `DXFExporter` was being incorrectly used for specialized 3D drillhole data.
 - **Type Safety**: Verified an 89.0% Return Type Hint coverage and bypassed a regex parsing bug in `qgis-plugin-analyzer`, correctly adding remaining missing hints to internal methods in `drillhole` and `export` services.
 
 #### Added

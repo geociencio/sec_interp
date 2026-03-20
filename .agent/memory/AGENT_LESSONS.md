@@ -5,6 +5,18 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
+  - date: 2026-03-19
+    category: TESTING
+    topic: Docker-based Verification (QGIS Headless)
+    lesson: "Verifying QGIS-dependent functionality (like DXF/GPKG export) is impossible in local environments lacking the full QGIS/PyQt stack. Relying on mocks only validates the orchestration logic, not the file driver compatibility."
+    action: "Always use `make docker-test` or run reproduction scripts inside the QGIS Docker container (`docker run -v ...`) to confirm actual file creation and driver-specific behavior."
+
+  - date: 2026-03-19
+    category: ARCHITECTURE
+    topic: Exporter Signature Consistency
+    lesson: "Mixing generic and specialized exporters in the same service (like `ExportService`) without a common interface for the `export` data payload leads to brittle logic and runtime TypeErrors."
+    action: "Standardize on specialized exporters that already encapsulate the format-specific logic (DXF/GPKG) and avoid special-casing format extensions in the orchestration service."
+
   - date: 2026-03-16
     category: TOOLING
     topic: Static Analysis Parser Failures
