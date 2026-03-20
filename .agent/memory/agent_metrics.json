@@ -61,6 +61,91 @@
                 "Global code reformatting and magic number removal"
             ],
             "status": "SUCCESS"
+        },
+        {
+            "date": "2026-03-15",
+            "session": "skill_integration_changelog",
+            "tasks": [
+                "Relocate changelog-generator skill",
+                "Integrate skill into workflows (close-session, release-plugin, close-phase)",
+                "Update AGENTS.md and memory"
+            ],
+            "status": "SUCCESS"
+        },
+        {
+            "date": "2026-03-12",
+            "session": "stability_v3.3.0_final",
+            "tasks": [
+                "Implement deterministic cleanup in MainDialog and MeasureTool",
+                "Standardize DrillholeProjection DTO",
+                "Add pervasive return type hints in services",
+                "Final deploy and .qgisignore refinement"
+            ],
+            "status": "SUCCESS"
+        },
+        {
+            "date": "2026-03-09",
+            "session": "gui_coverage_91",
+            "tasks": [
+                "Increase main_dialog.py coverage to 95%",
+                "Increase InterpretationManager coverage to 94%",
+                "Increase SettingsPersistence coverage to 97%",
+                "Reach 100% coverage for PreviewLegendRenderer",
+                "Standardize rendering mocks in qt_mocks.py"
+            ],
+            "status": "SUCCESS"
+        },
+        {
+            "date": "2026-03-08",
+            "session": "exporters_coverage",
+            "tasks": [
+                "Implement tests for ImageExporter",
+                "Implement tests for SVGExporter",
+                "Implement tests for PDFExporter",
+                "Implement tests for ShapefileExporter",
+                "Implement tests for Interpretation2DExporter",
+                "Fix qt_mocks.py missing attributes"
+            ],
+            "status": "SUCCESS"
+        },
+        {
+            "date": "2026-03-03",
+            "session": "inicio_fase_v3.3.0",
+            "tasks": [
+                "Analyze v3.2.0 closure",
+                "Define v3.3.0 objectives",
+                "Create implementation plan",
+                "Verify stability (450 tests)",
+                "Update technical documentation"
+            ],
+            "status": "SUCCESS"
+        },
+        {
+            "date": "2026-03-02",
+            "version": "3.2.0",
+            "tests_ok": 455,
+            "status": "release"
+        },
+        {
+            "date": "2026-02-28",
+            "session": "refactor_layer_resolver",
+            "tasks": [
+                "Refactor LayerResolver with Cache",
+                "Unify Validation in PreviewParams",
+                "Implement real progress signals in DrillholeGenerationTask",
+                "Robust Mock Infrastructure (WKB, Fields, Unique IDs)"
+            ],
+            "status": "SUCCESS"
+        },
+        {
+            "date": "2026-02-05",
+            "session": "agentic_brain_evolution_gen3",
+            "tasks": [
+                "Implement Memory Layer",
+                "Implement Audit Layer",
+                "Update Framework Repo"
+            ],
+            "status": "SUCCESS"
         }
     ]
 }
