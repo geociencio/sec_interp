@@ -10,7 +10,7 @@ authors = [
     { name = "Juan M Bernales", email = "juanbernales@gmail.com" }
 ]
 dependencies = [
-    "ai-context-core>=3.2.1",
+    "ai-context-core>=3.3.0",
     "sphinx-intl>=2.3.2",
 ]
 
@@ -28,8 +28,8 @@ dev = [
     "black==26.1.0",
     "mypy>=1.10",
     "networkx>=3.0",
-    "ai-context-core>=3.2.1",
-    "qgis-plugin-analyzer>=1.10.0",
+    "ai-context-core>=3.3.0",
+    "qgis-plugin-analyzer==1.10.1",
     "sphinx>=7.0",
     "sphinx-rtd-theme>=2.0",
     "sphinxcontrib-mermaid>=0.9.2",
@@ -148,3 +148,29 @@ module = [
     "networkx.*",
 ]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "sec_interp.core.*",
+    "sec_interp.exporters.*",
+]
+disallow_untyped_defs = true
+
+[tool.coverage.run]
+source = ["core", "exporters", "gui", "sec_interp_plugin.py"]
+omit = [
+    "tests/*",
+    "scripts/*",
+    "resources/resources.py",
+    "**/__init__.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]
