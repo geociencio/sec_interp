@@ -1,4 +1,10 @@
-# tests/ (Habilitado para score de calidad)
+# Ignore non-base code and development artifacts
+# Focus: core/, exporters/, gui/
+
+# Ignore tests directory to avoid score degradation due to missing type hints
+tests/
+
+# Development and packaging artifacts
 scripts/
 docs/
 antigravity-framerepo/
@@ -16,5 +22,26 @@ __init__.py
 PROJECT_SUMMARY.md
 AI_CONTEXT.md
 project_context.json
+
+# QGIS specific non-code files
 i18n/*.qm
 i18n/*.ts
+metadata.txt
+resources/
+help/
+LICENSE
+LICENSE-GPL-2.0.txt
+LICENSE-GPL-3.0.txt
+symbology-style.db
+dummy.qml
+
+# Config files
+pyproject.toml
+requirements.txt
+Makefile
+Dockerfile
+.dockerignore
+docker-compose.yml
+run_qgis_manage.py
+test_patch.py
+analyzer_config.json

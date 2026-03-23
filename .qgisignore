@@ -1,4 +1,11 @@
-# Control de versiones y configuraciones de IDE
+# .qgisignore
+# This file defines the patterns for files and directories that should be
+# ignored when packaging or deploying the QGIS plugin.
+# Its purpose is to prevent development artifacts (such as tests, virtual
+# environments, caches, and AI/Agent metadata) from being included
+# in the redistributable package (.zip).
+
+# Version control and IDE configurations
 .git
 .gitignore
 .qgisignore
@@ -10,8 +17,11 @@
 .editorconfig
 .pyre_configuration
 .python-version
+pyproject.toml
+pyrightconfig.json
+requirements.txt
 
-# Caché y compilados de Python
+# Python cache and compiled files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -35,13 +45,13 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# Entornos virtuales
+# Virtual environments
 .venv/
 venv/
 env/
 ENV/
 
-# IA, Agentes y Contextos
+# AI, Agents, and Contexts
 .agent/
 .gemini-temp/
 .ai-context/
@@ -51,8 +61,10 @@ AI_CONTEXT.md
 PROJECT_SUMMARY.md
 antigravity-framerepo/
 project_context.json
+ARCHITECTURE.mmd
+skills-lock.json
 
-# Herramientas de testing, linting y QA
+# Testing, linting, and QA tools
 tests/
 .pytest_cache/
 .coverage
@@ -93,13 +105,17 @@ test_coverage_analysis.txt
 python_test.log
 docker_test.log
 
-# Documentación, Scripts y Ejemplos de desarrollo
+# Documentation, Scripts, and Development Examples
 docs/
 /examples/
 /scripts/
 /tools/
+README_DEV.md
+core_files.txt
+test_files.txt
+gui_analysis.json
 
-# Archivos de empaquetado y dependencias (excepto lo mínimo)
+# Packaging files and dependencies (only minimal needed)
 uv.lock
 Makefile
 Dockerfile
@@ -110,5 +126,5 @@ test_patch.py
 dummy.qml
 symbology-style.db
 
-# Ignorar archivos .ts de traducciones (solo QGIS necesita .qm)
+# Ignore translation .ts files (QGIS only needs .qm)
 i18n/*.ts
