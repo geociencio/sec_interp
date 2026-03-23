@@ -1,3 +1,12 @@
+## [2026-03-22] Session: Update ai-context-core v3.3.0
+- **Achievement**: Updated `ai-context-core` to v3.3.0, resolving a critical aggregation bug in reports and enabling new QGIS compliance analysis. Verified with `ai-ctx analyze`.
+- **Changes**:
+    - **Dependencies**: Updated `pyproject.toml` and `uv.lock` for `ai-context-core>=3.3.0`.
+    - **Analysis**: Regenerated `AI_CONTEXT.md`, confirming fix for zeroed global metrics (Functions, Classes, MI).
+    - **Verification**: Confirmed new "QGIS Standards Compliance" score (80.3/100).
+- **Status**: Completed.
+- **Maintenance**: [session_2026-03-22_update_ai_context_core_v330.md](maintenance/session_2026-03-22_update_ai_context_core_v330.md)
+
 ## [2026-03-19] Session: DXF/GPKG Export Stabilization
 - **Achievement**: Stabilized DXF and GeoPackage export functionality by fixing a critical signature mismatch in `ExportService._export_drillholes_3d`. Verified all vector export formats (SHP, GPKG, DXF) using a reproduction script in the QGIS Docker environment. 604 tests passing.
 - **Changes**:

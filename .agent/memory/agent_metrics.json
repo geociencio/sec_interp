@@ -1,6 +1,6 @@
 {
-    "total_sessions": 11,
-    "tasks_completed": 14,
+    "total_sessions": 12,
+    "tasks_completed": 15,
     "agent_retries": {
         "syntax_errors": 0,
         "logic_errors": 2,
@@ -8,15 +8,26 @@
     },
     "effectiveness_score": 0.96,
     "last_session": {
-        "date": "2026-03-19",
-        "topic": "export_dxf_gpkg",
-        "tests_ok": 604,
-        "quality_score": 58.5,
-        "files_modified": 6,
-        "lines_added": 120,
-        "lines_removed": 15
+        "date": "2026-03-22",
+        "topic": "update_ai_context_core_v330",
+        "tests_ok": 607,
+        "quality_score": 41.6,
+        "files_modified": 3,
+        "lines_added": 102,
+        "lines_removed": 101
     },
     "history": [
+        {
+            "date": "2026-03-22",
+            "session": "update_ai_context_core_v330",
+            "tasks": [
+                "Update ai-context-core to v3.3.0",
+                "Verify aggregation bug fix",
+                "Verify QGIS Compliance analysis",
+                "Update agent memory"
+            ],
+            "status": "SUCCESS"
+        },
         {
             "date": "2026-03-19",
             "session": "export_dxf_gpkg",

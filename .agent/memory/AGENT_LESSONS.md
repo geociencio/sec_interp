@@ -195,8 +195,14 @@ This file records technical lessons, user preferences, and solutions to complex 
     lesson: "Large architectural changes in v3.4.0 (Unified I/O) changed internal method signatures of ExportService, breaking unit tests that mocked these private methods."
     action: "Always run the full core test suite (make test) immediately after refactoring internal orchestration methods."
 
+  - date: 2026-03-22
+    category: TOOLING
+    topic: ai-context-core v3.3.0 CLI & Features
+    lesson: "The CLI executable for `ai-context-core` is `ai-ctx`, not `ai-context`. The v3.3.0 update fixes previous aggregation bugs where global metrics (Functions, Classes, MI) were reported as zero."
+    action: "Always use `uv run ai-ctx` for project analysis. Leverage the new 'QGIS Standards Compliance' section to audit plugin best practices and i18n coverage."
+
 ---
-*Last update: 2026-03-16 - Generation 5 Memory Reflection.*
+*Last update: 2026-03-22 - Generation 5 Memory Reflection.*
 > [!NOTE]
 > Lessons from 2026-03-15 and earlier in this log have been consolidated into specialized `SKILL.md` files as part of the self-evolving memory workflow.
 ```
