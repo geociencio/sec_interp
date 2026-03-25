@@ -1,3 +1,12 @@
+## [2026-03-25] Session: Unified Export Architecture & Sync
+- **Achievement**: Refactored the export architecture to use a unified GeoPackage storage strategy and enabled layer-backed bi-directional synchronization for interpretation polygons.
+- **Changes**:
+    - **Core**: Grouped all Shapefiles inside `[SectionName]/` directories and placed multi-layer data inside one `export_all_[SectionName].gpkg`.
+    - **Exporters**: Propagated `layer_name` correctly across all 3D/2D exporters to enable GeoPackage appending. Forced `QgsWkbTypes.Polygon` geometry for 2D interpretations. Added missing docstrings (`D417`).
+    - **Sync**: Implemented `sync_from_layer()` and `save_to_layer()` in `InterpretationManager`.
+- **Status**: Completed. 604/604 tests OK (Docker).
+- **Maintenance**: [session_2026-03-25_unified_export_architecture.md](maintenance/session_2026-03-25_unified_export_architecture.md)
+
 ## [2026-03-22] Session: Update ai-context-core v3.3.0
 - **Achievement**: Updated `ai-context-core` to v3.3.0, resolving a critical aggregation bug in reports and enabling new QGIS compliance analysis. Verified with `ai-ctx analyze`.
 - **Changes**:

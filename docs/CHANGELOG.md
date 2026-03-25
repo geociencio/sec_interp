@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Type Safety**: Verified an 89.0% Return Type Hint coverage and bypassed a regex parsing bug in `qgis-plugin-analyzer`, correctly adding remaining missing hints to internal methods in `drillhole` and `export` services.
 - **Tooling**: Updated `ai-context-core` to **v3.3.0**, resolving the aggregation bug in project reports and enabling specialized **QGIS Standards Compliance** analysis.
 
-#### Added
+### Added
+- **Export (GeoPackage)**: Implemented unified GeoPackage layer appending under unique section subdirectories (`[SectionName]/`).
+- **Interpretations**: Added full bi-directional "Vector Layer Mode" synchronization between QGIS Vector Layers and internal features.
 - Unified export system supporting **DXF**, **GeoPackage**, and **Shapefile** for all data types.
 - Robust 3D interpretation export with automatic coordinate transformation.
 - Persistent export settings across sessions.

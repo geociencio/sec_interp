@@ -41,12 +41,15 @@ class ProfileLineShpExporter(BaseExporter):
         """
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(
+        self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export the topographic profile line to a Shapefile.
 
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'profile_data' and 'crs'.
+            layer_name: Optional conceptual layer name.
 
         """
         profile_data = data.get("profile_data")
@@ -63,7 +66,9 @@ class ProfileLineShpExporter(BaseExporter):
             fields = QgsFields()
             fields.append(QgsField("id", QMetaType.Type.Int))
 
-            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(
+                str(output_path), crs, fields, layer_name=layer_name
+            )
 
             feat = QgsFeature()
             feat.setGeometry(geom)
@@ -88,12 +93,15 @@ class GeologyShpExporter(BaseExporter):
         """
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(
+        self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export the geological profile to a Shapefile.
 
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'geology_data' and 'crs'.
+            layer_name: Optional conceptual layer name.
 
         """
         geology_data = data.get("geology_data")
@@ -104,7 +112,9 @@ class GeologyShpExporter(BaseExporter):
 
         try:
             fields = self._create_geology_fields(geology_data)
-            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(
+                str(output_path), crs, fields, layer_name=layer_name
+            )
 
             self._write_geology_features(writer, geology_data, fields)
             del writer
@@ -170,13 +180,16 @@ class StructureShpExporter(BaseExporter):
         """
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(
+        self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export the structural profile to a Shapefile.
 
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'structural_data', 'crs', 'dip_scale_factor',
                 and 'raster_res'.
+            layer_name: Optional conceptual layer name.
 
         """
         structural_data = data.get("structural_data")
@@ -190,7 +203,9 @@ class StructureShpExporter(BaseExporter):
         try:
             line_length = raster_res * dip_scale_factor
             fields = self._create_structure_fields(structural_data)
-            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(
+                str(output_path), crs, fields, layer_name=layer_name
+            )
 
             self._write_structure_features(writer, structural_data, fields, line_length)
             del writer
@@ -275,12 +290,15 @@ class AxesShpExporter(BaseExporter):
         """
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(
+        self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export the profile axes to a Shapefile.
 
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'profile_data' and 'crs'.
+            layer_name: Optional conceptual layer name.
 
         """
         profile_data = data.get("profile_data")
@@ -313,7 +331,9 @@ class AxesShpExporter(BaseExporter):
             fields = QgsFields()
             fields.append(QgsField("axis", QMetaType.Type.QString))
 
-            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(
+                str(output_path), crs, fields, layer_name=layer_name
+            )
 
             axis_names = ["Left", "Right", "Bottom"]
             self._write_axes_features(writer, lines, axis_names)

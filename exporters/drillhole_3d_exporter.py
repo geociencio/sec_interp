@@ -39,13 +39,14 @@ class DrillholeTrace3DExporter(BaseExporter):
         """Get supported extensions."""
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Any, data: dict[str, Any]) -> bool:
+    def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
         """Export 3D drillhole traces to a Shapefile.
 
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
                   Can include 'use_projected' (bool).
+            layer_name: Optional conceptual name for the layer.
 
         Returns:
             bool: True if export successful, False otherwise.
@@ -60,7 +61,11 @@ class DrillholeTrace3DExporter(BaseExporter):
         try:
             fields = self._prepare_fields()
             writer = scu_io.create_vector_writer(
-                str(output_path), crs, fields, QgsWkbTypes.LineStringZ
+                str(output_path),
+                crs,
+                fields,
+                QgsWkbTypes.LineStringZ,
+                layer_name=layer_name,
             )
 
             for hole_data in drillhole_data:
@@ -148,13 +153,14 @@ class DrillholeInterval3DExporter(BaseExporter):
         """Get supported extensions."""
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Any, data: dict[str, Any]) -> bool:
+    def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
         """Export 3D drillhole intervals to a Shapefile.
 
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
                   Can include 'use_projected' (bool).
+            layer_name: Optional conceptual layer name.
 
         Returns:
             bool: True if export successful, False otherwise.
@@ -169,7 +175,11 @@ class DrillholeInterval3DExporter(BaseExporter):
         try:
             fields = self._prepare_fields()
             writer = scu_io.create_vector_writer(
-                str(output_path), crs, fields, QgsWkbTypes.LineStringZ
+                str(output_path),
+                crs,
+                fields,
+                QgsWkbTypes.LineStringZ,
+                layer_name=layer_name,
             )
 
             for hole_data in drillhole_data:

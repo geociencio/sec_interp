@@ -41,12 +41,13 @@ class DrillholeTraceShpExporter(BaseExporter):
         """
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Any, data: dict[str, Any]) -> bool:
+    def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
         """Export drillhole traces to a Shapefile.
 
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
+            layer_name: Optional conceptual layer name.
 
         Returns:
             bool: True if export successful, False otherwise.
@@ -59,7 +60,9 @@ class DrillholeTraceShpExporter(BaseExporter):
 
         try:
             fields = self._prepare_fields()
-            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(
+                str(output_path), crs, fields, layer_name=layer_name
+            )
 
             self._write_traces(writer, drillhole_data, fields)
             del writer
@@ -142,12 +145,13 @@ class DrillholeIntervalShpExporter(BaseExporter):
         """
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Any, data: dict[str, Any]) -> bool:
+    def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
         """Export drillhole intervals to a Shapefile.
 
         Args:
             output_path: Path to the output Shapefile.
             data: Dictionary containing 'drillhole_data' and 'crs'.
+            layer_name: Optional conceptual layer name.
 
         Returns:
             bool: True if export successful, False otherwise.
@@ -160,7 +164,9 @@ class DrillholeIntervalShpExporter(BaseExporter):
 
         try:
             fields = self._prepare_fields()
-            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(
+                str(output_path), crs, fields, layer_name=layer_name
+            )
 
             self._write_intervals(writer, drillhole_data, fields)
             del writer

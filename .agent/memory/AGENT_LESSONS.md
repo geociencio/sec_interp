@@ -5,6 +5,18 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
+  - date: 2026-03-25
+    category: TECHNICAL
+    topic: GeoPackage Append & Layer Names (v3.4.0)
+    lesson: "The QGIS GeoPackage driver successfully appends new distinct layers into an existing .gpkg file if the `layerName` option is populated via `QgsVectorFileWriter.SaveVectorOptions`. If `layerName` is omitted and the target file exists, the layer will blindly overwrite or merge into the first available table."
+    action: "Always enforce supplying a layer_name to create_vector_writer when targeting GeoPackage outputs, and pass overwrite_layer=False when intended to append."
+
+  - date: 2026-03-25
+    category: ARCHITECTURE
+    topic: Vector Layer Synchronization (v3.4.0)
+    lesson: "In-memory layer updates inside QGIS require a strict transaction boundary (`startEditing`, `deleteFeatures`, `addFeatures`, `commitChanges`) to guarantee atomicity and correct signal emission for the canvas renderers. Bypassing these boundaries leads to phantom geometries."
+    action: "Encapsulate live QgsVectorLayer mutation in unified save_to_layer and sync_from_layer routines and explicitly clear cache logic to keep the Domain DTOs synced with UI state."
+
   - date: 2026-03-19
     category: TESTING
     topic: Docker-based Verification (QGIS Headless)

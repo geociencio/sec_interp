@@ -32,12 +32,18 @@ class ShapefileExporter(BaseExporter):
         """Get supported vector format extensions."""
         return [".shp", ".gpkg"]
 
-    def export(self, output_path: Path, features_data: list[dict[str, Any]]) -> bool:
+    def export(
+        self,
+        output_path: Path,
+        features_data: list[dict[str, Any]],
+        layer_name: str | None = None,
+    ) -> bool:
         """Export features to shapefile or geopackage.
 
         Args:
             output_path: Output file path
             features_data: List of dicts with 'geometry' and 'attributes' keys
+            layer_name: Optional layer name for multi-layer containers (GeoPackage)
 
         Returns:
             True if export successful, False otherwise
@@ -51,7 +57,7 @@ class ShapefileExporter(BaseExporter):
             crs = self.get_setting("crs", QgsCoordinateReferenceSystem("EPSG:4326"))
 
             fields = self._prepare_fields(features_data)
-            writer = self._create_writer(output_path, fields, geometry_type, crs)
+            writer = self._create_writer(output_path, fields, geometry_type, crs, layer_name)
 
             if writer.hasError() != QgsVectorFileWriter.NoError:
                 logger.error(f"Failed to create writer: {writer.errorMessage()}")
@@ -111,6 +117,7 @@ class ShapefileExporter(BaseExporter):
         fields: QgsFields,
         geometry_type: QgsWkbTypes,
         crs: QgsCoordinateReferenceSystem,
+        layer_name: str | None = None,
     ) -> QgsVectorFileWriter:
         """Create a QgsVectorFileWriter for the given path."""
         ext = output_path.suffix.lower()
@@ -119,6 +126,12 @@ class ShapefileExporter(BaseExporter):
         options = QgsVectorFileWriter.SaveVectorOptions()
         options.driverName = driver
         options.fileEncoding = "UTF-8"
+
+        if layer_name:
+            options.layerName = layer_name
+
+        if ext == ".gpkg" and output_path.exists() and layer_name:
+            options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
 
         return QgsVectorFileWriter.create(
             str(output_path),

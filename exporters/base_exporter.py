@@ -36,7 +36,7 @@ class BaseExporter(ABC):
         self.settings = settings
 
     @abstractmethod
-    def export(self, output_path: Path, data: Any) -> bool:
+    def export(self, output_path: Path, data: Any, layer_name: str | None = None) -> bool:
         """Export data to file.
 
         This method must be implemented by all concrete exporters.
@@ -44,6 +44,7 @@ class BaseExporter(ABC):
         Args:
             output_path: Destination file path
             data: Data to export (format depends on exporter type)
+            layer_name: Optional conceptual name for the layer (e.g. inside a GeoPackage)
 
         Returns:
             bool: True if export successful, False otherwise

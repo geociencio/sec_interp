@@ -43,7 +43,7 @@ class Interpretation3DExporter(BaseExporter):
         """Get supported extensions."""
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: str, data: dict[str, Any]) -> bool:
+    def export(self, output_path: str, data: dict[str, Any], layer_name: str | None = None) -> bool:
         """Export interpretation data to a 3D Shapefile."""
         interpretations = data.get("interpretations", [])
         section_line = data.get("section_line")
@@ -67,7 +67,12 @@ class Interpretation3DExporter(BaseExporter):
         )
 
         success = self._write_shapefile(
-            output_path, features, fields, QgsWkbTypes.PolygonZ, src_crs
+            output_path,
+            features,
+            fields,
+            QgsWkbTypes.PolygonZ,
+            src_crs,
+            layer_name=layer_name,
         )
 
         if success:
@@ -269,6 +274,7 @@ class Interpretation3DExporter(BaseExporter):
         fields: list[QgsField],
         wkb_type,
         crs,
+        layer_name: str | None = None,
     ) -> bool:
         """Write shapefile (if not in BaseExporter)."""
         from qgis.core import QgsVectorFileWriter
@@ -280,7 +286,9 @@ class Interpretation3DExporter(BaseExporter):
         # Note: In QGIS API, we often pass QgsFields object.
         qgs_fields = self._make_fields_obj(fields)
 
-        writer = scu_io.create_vector_writer(str(path), crs, qgs_fields, wkb_type)
+        writer = scu_io.create_vector_writer(
+            str(path), crs, qgs_fields, wkb_type, layer_name=layer_name
+        )
 
         if writer.hasError() != QgsVectorFileWriter.NoError:
             raise ExportError(writer.errorMessage())

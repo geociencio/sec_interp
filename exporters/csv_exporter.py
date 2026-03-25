@@ -22,13 +22,16 @@ class CSVExporter(BaseExporter):
         """Get supported CSV extension."""
         return [".csv"]
 
-    def export(self, output_path: Path, data: dict[str, Any]) -> bool:
+    def export(
+        self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export tabular data to CSV.
 
         Args:
             output_path: Output file path.
             data: A dictionary containing 'headers' (list of strings)
                   and 'rows' (list of tuples or lists).
+            layer_name: Optional conceptual name for the layer (ignored for CSV).
 
         Returns:
             True if export successful, False otherwise

@@ -17,6 +17,7 @@ from qgis.core import (
     QgsGeometry,
     QgsPointXY,
     QgsVectorFileWriter,
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
 
@@ -43,6 +44,7 @@ class Interpretation2DExporter(BaseExporter):
         self,
         output_path: Path,
         data: dict[str, Any],
+        layer_name: str | None = None,
     ) -> bool:
         """Export interpretations to Shapefile.
 
@@ -50,6 +52,7 @@ class Interpretation2DExporter(BaseExporter):
             output_path: Path to the output Shapefile (.shp)
             data: Dictionary containing:
                 - interpretations: List of InterpretationPolygon objects
+            layer_name: Optional conceptual name for the layer (e.g. inside a GeoPackage)
 
         Returns:
             bool: True if export successful, False otherwise
@@ -64,7 +67,13 @@ class Interpretation2DExporter(BaseExporter):
             crs = data.get("crs")
 
             fields, sorted_keys = self._prepare_fields(interpretations)
-            writer = scu_io.create_vector_writer(str(output_path), crs, fields)
+            writer = scu_io.create_vector_writer(
+                str(output_path),
+                crs,
+                fields,
+                geometry_type=QgsWkbTypes.Polygon,
+                layer_name=layer_name,
+            )
 
             if writer.hasError() != QgsVectorFileWriter.NoError:
                 logger.error(f"Failed to create writer for {output_path}: {writer.errorMessage()}")

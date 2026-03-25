@@ -250,16 +250,22 @@ class ExportService:
 
         logger.info("✓ Saving topographic profile...")
         try:
-            csv_path = self._get_export_path(folder, "topo_profile", settings, ".csv")
-            csv_ok = csv_exporter.export(csv_path, {"headers": ["dist", "elev"], "rows": data})
+            csv_path, csv_layer = self._get_export_path(folder, "topo_profile", settings, ".csv")
+            csv_ok = csv_exporter.export(
+                csv_path,
+                {"headers": ["dist", "elev"], "rows": data},
+                layer_name=csv_layer,
+            )
             if csv_ok:
                 msg.append(f"  - {csv_path.name}")
             else:
                 logger.warning(f"Failed to write CSV topography to {csv_path}")
 
-            vec_path = self._get_export_path(folder, "profile_line", settings, ext)
+            vec_path, vec_layer = self._get_export_path(folder, "profile_line", settings, ext)
             vector_exporter = ProfileLineShpExporter({})
-            vec_ok = vector_exporter.export(vec_path, {"profile_data": data, "crs": crs})
+            vec_ok = vector_exporter.export(
+                vec_path, {"profile_data": data, "crs": crs}, layer_name=vec_layer
+            )
             if vec_ok:
                 msg.append(f"  - {vec_path.name}")
             else:
@@ -290,17 +296,20 @@ class ExportService:
         logger.info("✓ Saving geological profile...")
         try:
             rows = [(p[0], p[1], s.unit_name) for s in data for p in s.points]
-            csv_path = self._get_export_path(folder, "geol_profile", settings, ".csv")
+            csv_path, csv_layer = self._get_export_path(folder, "geol_profile", settings, ".csv")
             csv_ok = csv_exporter.export(
                 csv_path,
                 {"headers": ["dist", "elev", "geology"], "rows": rows},
+                layer_name=csv_layer,
             )
             if csv_ok:
                 msg.append(f"  - {csv_path.name}")
 
-            vec_path = self._get_export_path(folder, "geol_profile", settings, ext)
+            vec_path, vec_layer = self._get_export_path(folder, "geol_profile", settings, ext)
             vector_exporter = GeologyShpExporter({})
-            vec_ok = vector_exporter.export(vec_path, {"geology_data": data, "crs": crs})
+            vec_ok = vector_exporter.export(
+                vec_path, {"geology_data": data, "crs": crs}, layer_name=vec_layer
+            )
             if vec_ok:
                 msg.append(f"  - {vec_path.name}")
             else:
@@ -335,10 +344,13 @@ class ExportService:
         logger.info("✓ Saving structural profile...")
         try:
             rows = [(s.distance, s.apparent_dip) for s in data]
-            csv_path = self._get_export_path(folder, "structural_profile", settings, ".csv")
+            csv_path, csv_layer = self._get_export_path(
+                folder, "structural_profile", settings, ".csv"
+            )
             csv_ok = csv_exporter.export(
                 csv_path,
                 {"headers": ["dist", "apparent_dip"], "rows": rows},
+                layer_name=csv_layer,
             )
             if csv_ok:
                 msg.append(f"  - {csv_path.name}")
@@ -347,7 +359,9 @@ class ExportService:
             if raster_layer and raster_layer.isValid():
                 raster_res = raster_layer.rasterUnitsPerPixelX()
 
-            vec_path = self._get_export_path(folder, "structural_measurements", settings, ext)
+            vec_path, vec_layer = self._get_export_path(
+                folder, "structural_measurements", settings, ext
+            )
             vector_exporter = StructureShpExporter({})
             vec_ok = vector_exporter.export(
                 vec_path,
@@ -357,6 +371,7 @@ class ExportService:
                     "dip_scale_factor": options.get("dip_scale", 4),
                     "raster_res": raster_res,
                 },
+                layer_name=vec_layer,
             )
             if vec_ok:
                 msg.append(f"  - {vec_path.name}")
@@ -390,18 +405,28 @@ class ExportService:
         logger.info("✓ Saving drillhole data...")
         try:
             # 1. Standard 2D Export
-            traces_path = self._get_export_path(folder, "drillhole_traces", settings, ext)
+            traces_path, traces_layer = self._get_export_path(
+                folder, "drillhole_traces", settings, ext
+            )
             traces_exporter = DrillholeTraceShpExporter({})
-            traces_ok = traces_exporter.export(traces_path, {"drillhole_data": data, "crs": crs})
+            traces_ok = traces_exporter.export(
+                traces_path,
+                {"drillhole_data": data, "crs": crs},
+                layer_name=traces_layer,
+            )
             if traces_ok:
                 msg.append(f"  - {traces_path.name}")
             else:
                 logger.warning(f"Failed to write drillhole traces to {traces_path}")
 
-            intervals_path = self._get_export_path(folder, "drillhole_intervals", settings, ext)
+            intervals_path, intervals_layer = self._get_export_path(
+                folder, "drillhole_intervals", settings, ext
+            )
             intervals_exporter = DrillholeIntervalShpExporter({})
             intervals_ok = intervals_exporter.export(
-                intervals_path, {"drillhole_data": data, "crs": crs}
+                intervals_path,
+                {"drillhole_data": data, "crs": crs},
+                layer_name=intervals_layer,
             )
             if intervals_ok:
                 msg.append(f"  - {intervals_path.name}")
@@ -473,11 +498,12 @@ class ExportService:
 
         for type_flag, proj_flag, ExporterClass, base_name, use_proj, label in tasks:
             if options.get(type_flag, False) and options.get(proj_flag, False):
-                path = self._get_export_path(folder, base_name, settings, ext)
+                path, path_layer = self._get_export_path(folder, base_name, settings, ext)
                 exporter = ExporterClass({})
                 ok = exporter.export(
                     path,
                     {"drillhole_data": data, "crs": crs, "use_projected": use_proj},
+                    layer_name=path_layer,
                 )
                 if ok:
                     msg.append(f"  - {path.name} ({label})")
@@ -504,12 +530,9 @@ class ExportService:
         logger.info("✓ Saving interpretation data...")
         try:
             # 2D Export (Standard) - Now supports SHP, GPKG, DXF via scu.create_vector_writer
-            path = self._get_export_path(folder, "interpretations", settings, ext)
+            path, path_layer = self._get_export_path(folder, "interpretations", settings, ext)
             exporter = Interpretation2DExporter({})
-            ok = exporter.export(
-                path,
-                {"interpretations": data, "crs": crs},
-            )
+            ok = exporter.export(path, {"interpretations": data, "crs": crs}, layer_name=path_layer)
             if ok:
                 msg.append(f"  - {path.name}")
             else:
@@ -543,12 +566,13 @@ class ExportService:
         if line_layer and line_layer.isValid():
             line_geom = next(line_layer.getFeatures()).geometry()
 
-            path = self._get_export_path(folder, "interpretations_3d", settings, ext)
+            path, path_layer = self._get_export_path(folder, "interpretations_3d", settings, ext)
             exporter = Interpretation3DExporter({})
 
             ok = exporter.export(
                 str(path),
                 {"interpretations": data, "section_line": line_geom, "crs": crs},
+                layer_name=path_layer,
             )
             if ok:
                 msg.append(f"  - {path.name} (3D)")
@@ -571,9 +595,9 @@ class ExportService:
 
         logger.info("✓ Saving profile axes...")
         try:
-            path = self._get_export_path(folder, "profile_axes", settings, ext)
+            path, path_layer = self._get_export_path(folder, "profile_axes", settings, ext)
             exporter = AxesShpExporter({})
-            ok = exporter.export(path, {"profile_data": data, "crs": crs})
+            ok = exporter.export(path, {"profile_data": data, "crs": crs}, layer_name=path_layer)
             if ok:
                 msg.append(f"  - {path.name}")
             else:
@@ -583,17 +607,8 @@ class ExportService:
 
     def _get_export_path(
         self, folder: Path, base_name: str, settings: Any | None, ext: str
-    ) -> Path:
-        """Generate output path with optional custom naming pattern."""
-        if not settings or ext == ".csv":
-            return folder / f"{base_name}{ext}"
-
-        pattern = settings.naming_pattern
-        if not pattern:
-            return folder / f"{base_name}{ext}"
-
-        # We will use "profile" as a generic name placeholder for the current section
-        # More complex patterns can be supported here in the future
+    ) -> tuple[Path, str]:
+        """Generate unified output path and logical layer name."""
         profile_name = "profile"
         if (
             self.controller
@@ -606,12 +621,19 @@ class ExportService:
             ):
                 profile_name = self.controller.settings.section.layer_name
 
-        new_name = pattern.format(filename=base_name, profile=profile_name)
+        profile_name = profile_name.replace("/", "_").replace("\\", "_")
 
-        # Basic sanitation to ensure a valid filename
-        new_name = new_name.replace("/", "_").replace("\\", "_")
+        new_name = base_name
+        if settings and settings.naming_pattern:
+            new_name = settings.naming_pattern.format(filename=base_name, profile=profile_name)
+            new_name = new_name.replace("/", "_").replace("\\", "_")
 
-        return folder / f"{new_name}{ext}"
+        if ext == ".gpkg":
+            return folder / f"{profile_name}{ext}", new_name
+
+        container_folder = folder / profile_name
+        container_folder.mkdir(parents=True, exist_ok=True)
+        return container_folder / f"{new_name}{ext}", new_name
 
     def get_map_settings(
         self,

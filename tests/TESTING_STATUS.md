@@ -5,7 +5,7 @@
 | :--- | :--- | :--- |
 | **Total Tests** | <!-- TOTAL_TESTS -->604<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
-| **Last Updated** | <!-- LAST_UPDATE -->2026-03-19<!-- /LAST_UPDATE --> | 🕒 Auto |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-03-25<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 

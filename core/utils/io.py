@@ -21,6 +21,8 @@ def create_vector_writer(
     crs: QgsCoordinateReferenceSystem,
     fields: QgsFields,
     geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.LineString,
+    layer_name: str | None = None,
+    overwrite_layer: bool = True,
 ) -> QgsVectorFileWriter:
     """Create and initialize a QgsVectorFileWriter for various vector formats.
 
@@ -31,6 +33,8 @@ def create_vector_writer(
         crs: The Coordinate Reference System.
         fields: The attribute fields definition.
         geometry_type: The mapping geometry type (default: LineString).
+        layer_name: Optional conceptual layer name.
+        overwrite_layer: Whether to overwrite existing layers.
 
     Returns:
         An initialized writer object.
@@ -55,6 +59,15 @@ def create_vector_writer(
     options = QgsVectorFileWriter.SaveVectorOptions()
     options.driverName = drivers[ext]
     options.fileEncoding = "UTF-8"
+
+    if layer_name:
+        options.layerName = layer_name
+
+    if ext == ".gpkg" and path.exists() and layer_name:
+        if overwrite_layer:
+            options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        else:
+            options.actionOnExistingFile = QgsVectorFileWriter.AppendToLayerAddFields
 
     effective_fields = fields
     if ext == ".dxf":

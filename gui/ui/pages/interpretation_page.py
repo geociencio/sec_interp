@@ -37,10 +37,39 @@ class InterpretationPage(BasePage):
         self.group_layout = QVBoxLayout()
         self.group_box.setLayout(self.group_layout)
 
-        # 1. Custom Fields Section
-        self.group_layout.addWidget(
-            QLabel("<b>" + self.tr("Custom Attributes") + "</b>")
+        # 1. Source Selection
+        self.group_layout.addWidget(QLabel("<b>" + self.tr("Interpretation Storage") + "</b>"))
+        source_layout = QHBoxLayout()
+        self.cb_source = QComboBox()
+        self.cb_source.addItems(
+            [self.tr("Project (Internal JSON)"), self.tr("Vector Layer (External)")]
         )
+        source_layout.addWidget(QLabel(self.tr("Source:")))
+        source_layout.addWidget(self.cb_source)
+        self.group_layout.addLayout(source_layout)
+
+        from qgis.core import QgsMapLayerProxyModel
+        from qgis.gui import QgsMapLayerComboBox
+
+        layer_layout = QHBoxLayout()
+        self.layer_combo = QgsMapLayerComboBox()
+        self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+        self.layer_combo.setEnabled(False)
+        layer_layout.addWidget(self.layer_combo)
+        self.group_layout.addLayout(layer_layout)
+
+        self.chk_auto_sync = QCheckBox(self.tr("Auto-Sync on layer edits"))
+        self.chk_auto_sync.setEnabled(False)
+        self.chk_auto_sync.setToolTip(
+            self.tr("Listen for changes in the target layer and update the preview.")
+        )
+        self.group_layout.addWidget(self.chk_auto_sync)
+        self.group_layout.addSpacing(15)
+
+        self.cb_source.currentIndexChanged.connect(self._on_source_changed)
+
+        # 2. Custom Fields Section
+        self.group_layout.addWidget(QLabel("<b>" + self.tr("Custom Attributes") + "</b>"))
 
         self.fields_table = QTableWidget(0, 3)
         self.fields_table.setHorizontalHeaderLabels(
@@ -59,22 +88,16 @@ class InterpretationPage(BasePage):
 
         self.group_layout.addSpacing(15)
 
-        # 2. Inheritance Options
-        self.group_layout.addWidget(
-            QLabel("<b>" + self.tr("Attribute Inheritance") + "</b>")
-        )
+        # 3. Inheritance Options
+        self.group_layout.addWidget(QLabel("<b>" + self.tr("Attribute Inheritance") + "</b>"))
 
         self.chk_inherit_geol = QCheckBox(self.tr("Auto-inherit from Geology layers"))
         self.chk_inherit_geol.setChecked(True)
         self.chk_inherit_geol.setToolTip(
-            self.tr(
-                "Automatically copy unit name and attributes from the nearest geology segment."
-            )
+            self.tr("Automatically copy unit name and attributes from the nearest geology segment.")
         )
 
-        self.chk_inherit_drill = QCheckBox(
-            self.tr("Auto-inherit from Drillhole intervals")
-        )
+        self.chk_inherit_drill = QCheckBox(self.tr("Auto-inherit from Drillhole intervals"))
         self.chk_inherit_drill.setChecked(True)
         self.chk_inherit_drill.setToolTip(
             self.tr(
@@ -84,6 +107,11 @@ class InterpretationPage(BasePage):
 
         self.group_layout.addWidget(self.chk_inherit_geol)
         self.group_layout.addWidget(self.chk_inherit_drill)
+
+    def _on_source_changed(self, index: int) -> None:
+        is_layer = index == 1
+        self.layer_combo.setEnabled(is_layer)
+        self.chk_auto_sync.setEnabled(is_layer)
 
     def _add_field_row(self) -> None:
         row = self.fields_table.rowCount()
@@ -126,6 +154,11 @@ class InterpretationPage(BasePage):
                 )
 
         return {
+            "source_type": "layer" if self.cb_source.currentIndex() == 1 else "json",
+            "target_layer_id": (
+                self.layer_combo.currentLayer().id() if self.layer_combo.currentLayer() else None
+            ),
+            "auto_sync": self.chk_auto_sync.isChecked(),
             "custom_fields": fields,
             "inherit_geology": self.chk_inherit_geol.isChecked(),
             "inherit_drillholes": self.chk_inherit_drill.isChecked(),

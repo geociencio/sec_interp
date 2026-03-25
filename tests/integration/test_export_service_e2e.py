@@ -136,7 +136,7 @@ class TestExportServiceTopographyE2E(BaseIntegrationTest):
             },
         )
 
-        csv_path = self.output_dir / "topo_profile.csv"
+        csv_path = self.output_dir / "profile" / "topo_profile.csv"
         self.assertTrue(csv_path.exists(), f"Expected {csv_path} to exist")
 
         with csv_path.open(encoding="utf-8") as f:
@@ -169,7 +169,7 @@ class TestExportServiceTopographyE2E(BaseIntegrationTest):
             },
         )
 
-        shp_path = self.output_dir / "profile_line.shp"
+        shp_path = self.output_dir / "profile" / "profile_line.shp"
         self.assertTrue(shp_path.exists(), f"Expected {shp_path} to exist")
 
         layer = QgsVectorLayer(str(shp_path), "profile", "ogr")
@@ -298,7 +298,7 @@ class TestExportServiceGeologyE2E(BaseIntegrationTest):
         )
 
         # CSV check
-        csv_path = self.output_dir / "geol_profile.csv"
+        csv_path = self.output_dir / "profile" / "geol_profile.csv"
         self.assertTrue(csv_path.exists(), f"Expected {csv_path}")
         with csv_path.open(encoding="utf-8") as f:
             reader = csv.DictReader(f)
@@ -308,7 +308,7 @@ class TestExportServiceGeologyE2E(BaseIntegrationTest):
         self.assertEqual(rows[0]["geology"], "Andesite")
 
         # SHP check
-        shp_path = self.output_dir / "geol_profile.shp"
+        shp_path = self.output_dir / "profile" / "geol_profile.shp"
         self.assertTrue(shp_path.exists(), f"Expected {shp_path}")
         layer = QgsVectorLayer(str(shp_path), "geol", "ogr")
         self.assertTrue(layer.isValid())
@@ -337,8 +337,8 @@ class TestExportServiceGeologyE2E(BaseIntegrationTest):
                 "exp_interp": False,
             },
         )
-        self.assertFalse((self.output_dir / "geol_profile.csv").exists())
-        self.assertFalse((self.output_dir / "geol_profile.shp").exists())
+        self.assertFalse((self.output_dir / "profile" / "geol_profile.csv").exists())
+        self.assertFalse((self.output_dir / "profile" / "geol_profile.shp").exists())
 
 
 class TestExportServiceInterpretationE2E(BaseIntegrationTest):
@@ -428,11 +428,11 @@ class TestExportServiceInterpretationE2E(BaseIntegrationTest):
         )
 
         # The exporter logs the path it wrote to; accept any .shp in the output dir
-        shp_files = list(self.output_dir.glob("*.shp"))
+        shp_files = list(self.output_dir.rglob("*.shp"))
         self.assertGreater(
             len(shp_files),
             0,
-            f"No .shp files found in {self.output_dir}. Contents: {list(self.output_dir.iterdir())}",
+            f"No .shp files found in {self.output_dir} or subdirectories. Contents: {list(self.output_dir.iterdir())}",
         )
 
         # Use the first (and expected only) shapefile found
@@ -466,4 +466,4 @@ class TestExportServiceInterpretationE2E(BaseIntegrationTest):
                 "exp_interp": True,
             },
         )
-        self.assertFalse((self.output_dir / "interpretations.shp").exists())
+        self.assertFalse((self.output_dir / "profile" / "interpretations.shp").exists())
