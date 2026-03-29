@@ -2,12 +2,12 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.3.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.4.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
-![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-54.1%2F100-yellow)
-![Code Quality](https://img.shields.io/badge/Code--Quality-71.9%2F100-green)
-![Tests](https://img.shields.io/badge/tests-607%20passing-brightgreen.svg)
+![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-52.9%2F100-yellow)
+![Code Quality](https://img.shields.io/badge/Code--Quality-41.3%2F100-green)
+![Tests](https://img.shields.io/badge/tests-pass-brightgreen.svg)
 ![Linting](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
 ![Managed with uv](https://img.shields.io/badge/managed%20with-uv-blueviolet)
 ![i18n](https://img.shields.io/badge/i18n-14%20Languages-blue.svg)
@@ -15,26 +15,28 @@
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v3.3.0: Extreme Stability & QGIS 4.x Readiness.*
+*SecInterp v3.4.0: Integration & Translation Completeness.*
 
 ---
 
-## 🆕 What's New in v3.3.0
-**Phase: Extreme Stability & QGIS 4.x Readiness**
+## 🆕 What's New in v3.4.0
+**Phase: Integration & Translation Completeness**
 
-### 🛡️ Stability & Resource Management
-- **Zero Memory Leaks**: Resolved critical `QgsRubberBand` leaks and signal orphans in sidebar navigation.
-- **Canvas Hygiene**: Integrated `cleanup_finalized` logic to ensure no temporary graphics remain on QGIS canvas after tool use.
-- **Deterministic Cleanup**: Optimized `SignalManager` orchestration for safe plugin closure.
+### 🌍 Global Translation Coverage
+- **100% i18n**: Achieved complete translation for the UI across all 13 supported languages.
+- **Robust Tools**: Rewrote translation injection (`apply_full.py`) with `ElementTree` for stable XML parsing and safe placeholder handling.
 
-### 🏗️ Architectural Excellence
-- **QGIS 4.x Ready**: 100% compliance with API-agnostic principles (`qgis.PyQt`).
-- **Type Safety**: Significant expansion of Return Type Hints and migration to DTOs for core services.
-- **Robust 3D**: Switched to Rule-Based rendering for exported 3D data, ensuring version-independent styling.
+### 📦 Unified Export Architecture
+- **GeoPackage Default**: Implemented unified, layer-backed GeoPackage storage under unique section subdirectories (`[SectionName]/`) for all vector outputs.
+- **3D DXF Fidelity**: Finalized true 3D drillhole trace exports with explicit `Z` dimension coordinates.
 
-### 🧪 Quality Assurance
-- **91% GUI Coverage**: Massive expansion of test suites for UI managers and task orchestrators.
-- **Improved Mocks**: Enhanced Qt mocks with arithmetic support for complex layout testing.
+### 🧪 Integration & Parsing Reliability
+- **Advanced Structural Parsing**: Restored and improved string parsing logic capable of handling multiple combined dip/strike notations simultaneously.
+- **Data Integrations**: Expanded vector driver tests (GPKG, SHP, DXF), enabling robust output validation independent of live QGIS environments.
+
+### 🛡️ Code & Architecture Stability
+- **Plugin Ecosystem**: Refined `Makefile` logic to recursively capture deep source files for full translation propagation.
+- **UX Improvements**: Support for arbitrary string fields in validation logs and relative path reporting for all exporters.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 

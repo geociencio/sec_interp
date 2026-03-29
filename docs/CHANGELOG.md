@@ -5,14 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Fixed
-- **Export (DXF/GPKG)**: Resolved a critical signature mismatch in `ExportService._export_drillholes_3d` where `DXFExporter` was being incorrectly used for specialized 3D drillhole data.
-- **Type Safety**: Verified an 89.0% Return Type Hint coverage and bypassed a regex parsing bug in `qgis-plugin-analyzer`, correctly adding remaining missing hints to internal methods in `drillhole` and `export` services.
-- **Tooling**: Updated `ai-context-core` to **v3.3.0**, resolving the aggregation bug in project reports and enabling specialized **QGIS Standards Compliance** analysis.
+## [3.4.0] - 2026-03-29
 
 ### Added
+- **i18n**: Achieved 100% complete translation for the UI across all 13 supported languages.
+- **Testing**: Added comprehensive Integration Tests for Vector Drivers (GPKG, SHP, DXF).
 - **Export (GeoPackage)**: Implemented unified GeoPackage layer appending under unique section subdirectories (`[SectionName]/`).
 - **Interpretations**: Added full bi-directional "Vector Layer Mode" synchronization between QGIS Vector Layers and internal features.
 - Unified export system supporting **DXF**, **GeoPackage**, and **Shapefile** for all data types.
@@ -20,16 +17,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Persistent export settings across sessions.
 
 ### Changed
+- **i18n**: Rewrote translation injection (`apply_full.py`) with `ElementTree` for stable XML parsing and safe placeholder handling.
+- **Plugin Ecosystem**: Refined `Makefile` logic to recursively capture deep source files for full translation propagation.
+- **Parsing**: Restored and improved structural string parsing logic capable of handling multiple combined dip/strike notations simultaneously.
 - Refactored `ExportService` to decouple 2D and 3D drillhole exports for better accuracy.
 - Enhanced `TrajectoryEngine` with mandatory interval points at start/end depths.
 - Reduced cyclomatic complexity in export orchestration logic.
 
 ### Fixed
+
+- **Export (DXF/GPKG)**: Resolved a critical signature mismatch in `ExportService._export_drillholes_3d` where `DXFExporter` was being incorrectly used for specialized 3D drillhole data.
+- **Type Safety**: Verified an 89.0% Return Type Hint coverage and bypassed a regex parsing bug in `qgis-plugin-analyzer`, correctly adding remaining missing hints to internal methods in `drillhole` and `export` services.
+- **Tooling**: Updated `ai-context-core` to **v3.3.0**, resolving the aggregation bug in project reports and enabling specialized **QGIS Standards Compliance** analysis.
 - **DXF**: Fixed critical failure during field creation by stripping unsupported attributes for DXF format.
 - **Drillholes**: Resolved duplicated entries in logs and missing segments for very short geological intervals.
 - **Stability**: Fixed `KeyError: 0` in `DXFExporter` when processing empty or malformed feature sets.
 - **UI**: Fixed export format reset issue by synchronizing `SettingsPage` with `ConfigService`.
- (`MockQWidget`).
 
 ## [3.5.0-dev] - 2026-03-15
 ### Added

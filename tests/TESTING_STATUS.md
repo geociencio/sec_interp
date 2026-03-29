@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->607<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->620<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-03-29<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -13,10 +13,10 @@
 
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :---: |
-| **Core Services** | <!-- CORE_COUNT -->278<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **Core Services** | <!-- CORE_COUNT -->287<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->218<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
-| **Integration** | <!-- INT_COUNT -->71<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
+| **Integration** | <!-- INT_COUNT -->75<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
 ---
 
@@ -46,6 +46,7 @@
 - **tests/core/test_rendering_utils.py**: 6 tests
 - **tests/core/test_settings_model.py**: 6 tests
 - **tests/core/test_spatial_utils.py**: 9 tests
+- **tests/core/test_structural_parsing_advanced.py**: 9 tests
 - **tests/core/test_structure_service.py**: 2 tests
 - **tests/core/test_utils.py**: 26 tests
 - **tests/core/test_utils_standalone.py**: 23 tests
@@ -104,13 +105,14 @@
 - **tests/integration/test_3d_integration_advanced.py**: 2 tests
 - **tests/integration/test_3d_projections.py**: 1 tests
 - **tests/integration/test_async_orchestrators.py**: 5 tests
-- **tests/integration/test_export_service_e2e.py**: 8 tests
+- **tests/integration/test_export_service_e2e.py**: 9 tests
 - **tests/integration/test_export_workflow.py**: 2 tests
 - **tests/integration/test_geology_structure_workflow.py**: 18 tests
 - **tests/integration/test_interpretation_workflow.py**: 3 tests
 - **tests/integration/test_measurement_workflow.py**: 2 tests
 - **tests/integration/test_preview_pipeline.py**: 23 tests
 - **tests/integration/test_qgis_smoke.py**: 3 tests
+- **tests/integration/test_vector_drivers_integration.py**: 3 tests
 - **tests/benchmarks/test_export_benchmarks.py**: 2 tests
 - **tests/benchmarks/test_geometry_benchmarks.py**: 4 tests
 - **tests/mcp/test_mcp_tools.py**: 3 tests

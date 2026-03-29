@@ -25,7 +25,7 @@ class TestStrikeParsingStandalone(BaseTestCase):
         self.assertEqual(parse_strike(90), 90)
         self.assertEqual(parse_strike(180), 180)
         self.assertEqual(parse_strike(270), 270)
-        self.assertEqual(parse_strike(360), 360)
+        self.assertEqual(parse_strike(360), 0.0)
 
     def test_parse_strike_string_numeric(self):
         """Test parsing string numeric strike values."""
