@@ -14,7 +14,7 @@ from qgis.core import (
     QgsField,
     QgsFeature,
     QgsGeometry,
-    QgsPointXY
+    QgsPointXY,
 )
 from qgis.PyQt.QtCore import QVariant
 from tests.base_test import BaseTestCase
@@ -27,17 +27,16 @@ class TestVectorDriversIntegration(BaseTestCase):
     def setUp(self):
         super().setUp()
         self.crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        self.exporter = VectorExporter({
-            "crs": self.crs,
-            "geometry_type": QgsWkbTypes.Point
-        })
+        self.exporter = VectorExporter(
+            {"crs": self.crs, "geometry_type": QgsWkbTypes.Point}
+        )
 
         # Create some real test data with geometries
         self.test_features = []
         for i in range(3):
             feat = {
                 "geometry": QgsGeometry.fromPointXY(QgsPointXY(i, i)),
-                "attributes": {"id": i, "label": f"Point {i}"}
+                "attributes": {"id": i, "label": f"Point {i}"},
             }
             self.test_features.append(feat)
 
@@ -48,9 +47,7 @@ class TestVectorDriversIntegration(BaseTestCase):
 
         # Export
         result = self.exporter.export(
-            output_path,
-            self.test_features,
-            layer_name=layer_name
+            output_path, self.test_features, layer_name=layer_name
         )
 
         self.assertTrue(result)
@@ -70,10 +67,7 @@ class TestVectorDriversIntegration(BaseTestCase):
         output_path = self.output_dir / "test_integration.dxf"
 
         # Export
-        result = self.exporter.export(
-            output_path,
-            self.test_features
-        )
+        result = self.exporter.export(output_path, self.test_features)
 
         self.assertTrue(result)
         self.assertTrue(output_path.exists())
@@ -81,7 +75,7 @@ class TestVectorDriversIntegration(BaseTestCase):
 
         # DXF is harder to verify with QgsVectorLayer (unreliable)
         # But we can at least check it contains some DXF headers
-        with open(output_path, 'r', encoding='ascii', errors='ignore') as f:
+        with open(output_path, "r", encoding="ascii", errors="ignore") as f:
             content = f.read(1024)
             self.assertIn("SECTION", content)
             self.assertIn("HEADER", content)
@@ -91,10 +85,7 @@ class TestVectorDriversIntegration(BaseTestCase):
         output_path = self.output_dir / "test_integration.shp"
 
         # Export
-        result = self.exporter.export(
-            output_path,
-            self.test_features
-        )
+        result = self.exporter.export(output_path, self.test_features)
 
         self.assertTrue(result)
         self.assertTrue(output_path.exists())

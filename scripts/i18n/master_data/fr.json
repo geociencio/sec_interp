@@ -297,5 +297,19 @@
     "Cross-section line layer is required": "Une couche de lignes de section transversale est requise",
     "An unknown error occurred": "Une erreur inconnue s'est produite",
     "Structural layer is required for structure projection": "Une couche structurelle est requise pour la projection de la structure",
-    "Dip field is required": "Un champ d'immersion est requis"
+    "Dip field is required": "Un champ d'immersion est requis",
+    "Path resolution error: {error}": "Erreur de résolution de chemin : {error}",
+    "Unexpected Error": "Erreur inattendue",
+    "Generating Drillholes: {:.1f}%...": "Génération de trous de forage :{:.1f}%...",
+    "Source:": "Source:",
+    "Auto-Sync on layer edits": "Synchronisation automatique lors des modifications de calques",
+    "Naming Pattern:": "Modèle de dénomination :",
+    "Interpretation Storage": "Stockage des interprétations",
+    "Vector Layer (External)": "Couche vectorielle (externe)",
+    "Default Vector Format:": "Format vectoriel par défaut :",
+    "Project (Internal JSON)": "Projet (JSON interne)",
+    "Listen for changes in the target layer and update the preview.": "Écoutez les modifications dans la couche cible et mettez à jour l'aperçu.",
+    "Re-enables all export options and resets format settings.": "Réactive toutes les options d'exportation et réinitialise les paramètres de format.",
+    "Pattern for exported files. Use {filename} and {profile} as placeholders.": "Modèle pour les fichiers exportés. Utilisez{filename}et{profile}comme espaces réservés.",
+    "<br><b>Export Format & Naming</b>": "<br><b>Format d'exportation et dénomination</b>"
 }

@@ -1,58 +1,59 @@
 import os
-import re
 import json
 import sys
+import xml.etree.ElementTree as ET
+import html
 
 
 def apply_translations(ts_file, lang_code, translations_map):
     """
-    Applies translations to a .ts file.
-    translations_map: dict where key is the source string.
+    Applies translations to a .ts file using ElementTree for XML safety.
     """
     if not os.path.exists(ts_file):
         print(f"File not found: {ts_file}")
         return
 
-    with open(ts_file, "r", encoding="utf-8") as f:
-        content = f.read()
+    # Parse XML
+    try:
+        # Register namespace to avoid 'ns0' prefixes
+        # Qt TS files usually don't have a namespace URI in the tag itself
+        # but sometimes they do. ElementTree handles simple cases well.
+        tree = ET.parse(ts_file)
+        root = tree.getroot()
+    except ET.ParseError as e:
+        print(f"XML Parse Error in {ts_file}: {e}")
+        return
 
-    # Regex to find <message> blocks
-    # We need to be careful with multi-line messages and tags
-    pattern = re.compile(
-        r"(<message>.*?(?:<location[^>]*/>\s*)*<source>(.*?)</source>.*?<translation[^>]*>).*?(</translation>.*?)</message>",
-        re.DOTALL,
-    )
+    count = 0
+    for context in root.findall("context"):
+        for message in context.findall("message"):
+            source = message.find("source")
+            if source is None or not source.text:
+                continue
 
-    def unescape(text):
-        """Minimal HTML unescape for .ts source strings."""
-        return (
-            text.replace("&apos;", "'")
-            .replace("&quot;", '"')
-            .replace("&amp;", "&")
-            .replace("&lt;", "<")
-            .replace("&gt;", ">")
-        )
+            # Verbatim source text as seen by XML parser (unescaped)
+            source_text = source.text
 
-    def replacer(match):
-        prefix = match.group(1)
-        source_raw = match.group(2).strip()
-        source_clean = unescape(source_raw)
-        suffix = match.group(3)
+            # Lookup strategy: Verbatim, then stripped
+            translation_val = translations_map.get(source_text)
+            if not translation_val:
+                translation_val = translations_map.get(source_text.strip())
 
-        # Clean prefix from unfinished marker if we have a translation
-        if source_clean in translations_map:
-            translation = translations_map[source_clean]
-            if translation:
-                # Remove type="unfinished" if present
-                new_prefix = re.sub(r' type="unfinished"', "", prefix)
-                return f"{new_prefix}{translation}{suffix}</message>"
-        return match.group(0)
+            if translation_val:
+                translation = message.find("translation")
+                if translation is not None:
+                    translation.text = translation_val
+                    # Remove 'type="unfinished"'
+                    if (
+                        "type" in translation.attrib
+                        and translation.attrib["type"] == "unfinished"
+                    ):
+                        del translation.attrib["type"]
+                    count += 1
 
-    new_content = pattern.sub(replacer, content)
-
-    with open(ts_file, "w", encoding="utf-8") as f:
-        f.write(new_content)
-    print(f"Applied translations to {ts_file} for {lang_code}")
+    # Save XML
+    tree.write(ts_file, encoding="utf-8", xml_declaration=True)
+    print(f"Applied {count} translations to {ts_file} for {lang_code}")
 
 
 if __name__ == "__main__":
@@ -63,6 +64,10 @@ if __name__ == "__main__":
     lang = sys.argv[1]
     json_path = sys.argv[2]
     ts_path = f"i18n/SecInterp_{lang}.ts"
+
+    if not os.path.exists(json_path):
+        print(f"JSON not found: {json_path}")
+        sys.exit(1)
 
     with open(json_path, "r", encoding="utf-8") as f:
         mapping = json.load(f)

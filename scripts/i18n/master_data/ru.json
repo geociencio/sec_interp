@@ -297,5 +297,19 @@
     "Layer contains invalid geometries": "Слой содержит недопустимую геометрию",
     "Structural layer is required for structure projection": "Структурный слой необходим для проецирования конструкции.",
     "Preview exported to {}": "Предварительный просмотр экспортирован в {}",
-    "Cross-section line layer is required": "Требуется слой линий поперечного сечения."
+    "Cross-section line layer is required": "Требуется слой линий поперечного сечения.",
+    "Unexpected Error": "Неожиданная ошибка",
+    "Path resolution error: {error}": "Ошибка разрешения пути: {error}",
+    "Generating Drillholes: {:.1f}%...": "Создание отверстий:{:.1f}%...",
+    "Source:": "Источник:",
+    "Listen for changes in the target layer and update the preview.": "Прослушайте изменения в целевом слое и обновите предварительный просмотр.",
+    "Interpretation Storage": "Хранение интерпретаций",
+    "Vector Layer (External)": "Векторный слой (внешний)",
+    "Re-enables all export options and resets format settings.": "Повторно включает все параметры экспорта и сбрасывает настройки формата.",
+    "Pattern for exported files. Use {filename} and {profile} as placeholders.": "Шаблон для экспортируемых файлов. Используйте{filename}и{profile}в качестве заполнителей.",
+    "<br><b>Export Format & Naming</b>": "<br><b>Формат экспорта и именование</b>",
+    "Auto-Sync on layer edits": "Автосинхронизация при редактировании слоев",
+    "Default Vector Format:": "Векторный формат по умолчанию:",
+    "Project (Internal JSON)": "Проект (внутренний JSON)",
+    "Naming Pattern:": "Шаблон именования:"
 }

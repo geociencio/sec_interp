@@ -297,5 +297,19 @@
     "Preview exported to {}": "Visualização exportada para {}",
     "Dip field is required": "O campo mergulho é obrigatório",
     "An unknown error occurred": "Ocorreu um erro desconhecido",
-    "Cross-section line layer is required": "A camada de linha de seção transversal é obrigatória"
+    "Cross-section line layer is required": "A camada de linha de seção transversal é obrigatória",
+    "Unexpected Error": "Erro inesperado",
+    "Path resolution error: {error}": "Erro de resolução de caminho: {error}",
+    "Generating Drillholes: {:.1f}%...": "Gerando furos de sondagem:{:.1f}%...",
+    "Source:": "Fonte:",
+    "Re-enables all export options and resets format settings.": "Reativa todas as opções de exportação e redefine as configurações de formato.",
+    "Listen for changes in the target layer and update the preview.": "Ouça as alterações na camada de destino e atualize a visualização.",
+    "<br><b>Export Format & Naming</b>": "<br><b>Formato e nomenclatura de exportação</b>",
+    "Pattern for exported files. Use {filename} and {profile} as placeholders.": "Padrão para arquivos exportados. Use{filename}e{profile}como espaços reservados.",
+    "Project (Internal JSON)": "Projeto (JSON interno)",
+    "Default Vector Format:": "Formato vetorial padrão:",
+    "Auto-Sync on layer edits": "Sincronização automática em edições de camadas",
+    "Vector Layer (External)": "Camada vetorial (externa)",
+    "Interpretation Storage": "Armazenamento de Interpretação",
+    "Naming Pattern:": "Padrão de nomenclatura:"
 }

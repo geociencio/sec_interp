@@ -140,7 +140,7 @@ transup:
 	@echo "Updating translation files and applying masters."
 	@echo "------------------------------------------------"
 	@# 1. Update .ts files from source (efficient single call)
-	pylupdate5 -noobsolete sec_interp_plugin.py core/**/*.py gui/**/*.py exporters/*.py -ts $(addprefix i18n/SecInterp_, $(addsuffix .ts, $(LOCALES)))
+	pylupdate5 -noobsolete $(shell find . -name "*.py" -not -path "*/.*" -not -path "./.venv/*" -not -path "./build/*") -ts $(addprefix i18n/SecInterp_, $(addsuffix .ts, $(LOCALES)))
 	@# 2. Apply master translations for all languages
 	@for lang in $(LOCALES); do \
 		echo "Applying master data for $$lang..."; \

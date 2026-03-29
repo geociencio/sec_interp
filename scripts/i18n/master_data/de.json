@@ -297,5 +297,19 @@
     "Input validation failed": "Die Eingabevalidierung ist fehlgeschlagen",
     "Preview exported to {}": "Vorschau exportiert nach {}",
     "Strike field is required": "Strike-Feld ist erforderlich",
-    "Structural layer is required for structure projection": "Für die Strukturprojektion ist eine Strukturschicht erforderlich"
+    "Structural layer is required for structure projection": "Für die Strukturprojektion ist eine Strukturschicht erforderlich",
+    "Path resolution error: {error}": "Pfadauflösungsfehler: {error}",
+    "Unexpected Error": "Unerwarteter Fehler",
+    "Generating Drillholes: {:.1f}%...": "Bohrlöcher werden erstellt:{:.1f}%...",
+    "Source:": "Quelle:",
+    "Vector Layer (External)": "Vektorebene (extern)",
+    "Interpretation Storage": "Interpretationsspeicher",
+    "Naming Pattern:": "Benennungsmuster:",
+    "Project (Internal JSON)": "Projekt (internes JSON)",
+    "Auto-Sync on layer edits": "Automatische Synchronisierung bei Ebenenbearbeitungen",
+    "Default Vector Format:": "Standard-Vektorformat:",
+    "<br><b>Export Format & Naming</b>": "<br><b>Exportformat und Benennung</b>",
+    "Pattern for exported files. Use {filename} and {profile} as placeholders.": "Muster für exportierte Dateien. Verwenden Sie{filename}und{profile}als Platzhalter.",
+    "Listen for changes in the target layer and update the preview.": "Achten Sie auf Änderungen in der Zielebene und aktualisieren Sie die Vorschau.",
+    "Re-enables all export options and resets format settings.": "Aktiviert alle Exportoptionen erneut und setzt die Formateinstellungen zurück."
 }

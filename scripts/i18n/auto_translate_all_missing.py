@@ -3,6 +3,7 @@ import sys
 import json
 import xml.etree.ElementTree as ET
 import time
+import re
 from deep_translator import GoogleTranslator
 from deep_translator.exceptions import RequestError
 
@@ -47,12 +48,22 @@ def translate_strings(strings_dict, target_lang):
 
     def translate_single(k):
         try:
+            # Protect placeholders from being translated/mangled
+            placeholders = re.findall(r"(\{[^}]+\})", k)
+            k_protected = k
+            for i, ph in enumerate(placeholders):
+                k_protected = k_protected.replace(ph, f" _PH{i}_ ")
+
             translator = GoogleTranslator(source="en", target=target_lang)
-            # Retries para evitar fallos por rate limit
+            # Retries to avoid rate limit issues
             for _ in range(3):
                 try:
-                    res = translator.translate(k)
+                    res = translator.translate(k_protected)
                     if res:
+                        # Restore placeholders
+                        for i, ph in enumerate(placeholders):
+                            res = re.sub(rf" _PH{i}_ ", ph, res, flags=re.IGNORECASE)
+                            res = res.replace(f"_PH{i}_", ph)  # Fallback
                         return k, res
                 except:
                     time.sleep(1)

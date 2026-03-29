@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Allow mocking by default unless overridden
 import os
+
 os.environ.setdefault("FORCE_MOCKS", "1")
 
 from qgis.core import (
@@ -150,8 +151,10 @@ class TestExportServiceTopographyE2E(BaseIntegrationTest):
         self.assertAlmostEqual(float(rows[2]["dist"]), 100.0)
 
         # Return messages should signal success with relative paths
-        self.assertTrue(any("profile/topo_profile.csv" in m for m in msgs),
-                        f"Expected relative path in: {msgs}")
+        self.assertTrue(
+            any("profile/topo_profile.csv" in m for m in msgs),
+            f"Expected relative path in: {msgs}",
+        )
 
     def test_export_topography_creates_shp(self) -> None:
         """ExportService should produce a valid profile_line.shp."""
@@ -470,6 +473,7 @@ class TestExportServiceInterpretationE2E(BaseIntegrationTest):
         )
         self.assertFalse((self.output_dir / "profile" / "interpretations.shp").exists())
 
+
 class TestExportServiceStructuralE2E(BaseIntegrationTest):
     """E2E tests for ExportService structural measurements export."""
 
@@ -495,6 +499,7 @@ class TestExportServiceStructuralE2E(BaseIntegrationTest):
 
     def _make_params(self) -> object:
         import types
+
         params = types.SimpleNamespace()
         params.line_layer = self.line_layer
         params.raster_layer = None
@@ -509,7 +514,7 @@ class TestExportServiceStructuralE2E(BaseIntegrationTest):
                 apparent_dip=15.0,
                 original_dip=19.0,
                 original_strike=344.0,
-                attributes={"label": "S1", "strike_txt": "N 16ø W, 19ø SW"}
+                attributes={"label": "S1", "strike_txt": "N 16ø W, 19ø SW"},
             )
         ]
 
@@ -534,5 +539,7 @@ class TestExportServiceStructuralE2E(BaseIntegrationTest):
         self.assertTrue(shp_path.exists())
 
         # Verify relative path in result message
-        self.assertTrue(any("profile/structural_measurements.shp" in m for m in msgs),
-                        f"Expected relative path 'profile/...' but got: {msgs}")
+        self.assertTrue(
+            any("profile/structural_measurements.shp" in m for m in msgs),
+            f"Expected relative path 'profile/...' but got: {msgs}",
+        )

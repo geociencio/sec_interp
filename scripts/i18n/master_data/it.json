@@ -297,5 +297,19 @@
     "Input validation failed": "Convalida dell'input non riuscita",
     "Strike field is required": "Il campo Strike è obbligatorio",
     "An unknown error occurred": "Si è verificato un errore sconosciuto",
-    "Cross-section line layer is required": "È richiesto lo strato della linea della sezione trasversale"
+    "Cross-section line layer is required": "È richiesto lo strato della linea della sezione trasversale",
+    "Path resolution error: {error}": "Errore di risoluzione del percorso: {error}",
+    "Unexpected Error": "Errore imprevisto",
+    "Generating Drillholes: {:.1f}%...": "Generazione fori:{:.1f}%...",
+    "Source:": "Fonte:",
+    "<br><b>Export Format & Naming</b>": "<br><b>Formato e denominazione di esportazione</b>",
+    "Pattern for exported files. Use {filename} and {profile} as placeholders.": "Modello per i file esportati. Utilizza{filename}e{profile}come segnaposto.",
+    "Listen for changes in the target layer and update the preview.": "Ascolta le modifiche nel livello di destinazione e aggiorna l'anteprima.",
+    "Re-enables all export options and resets format settings.": "Riattiva tutte le opzioni di esportazione e reimposta le impostazioni del formato.",
+    "Project (Internal JSON)": "Progetto (JSON interno)",
+    "Vector Layer (External)": "Livello vettoriale (esterno)",
+    "Auto-Sync on layer edits": "Sincronizzazione automatica sulle modifiche ai livelli",
+    "Naming Pattern:": "Modello di denominazione:",
+    "Interpretation Storage": "Archiviazione dell'interpretazione",
+    "Default Vector Format:": "Formato vettoriale predefinito:"
 }

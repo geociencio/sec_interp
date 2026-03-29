@@ -297,5 +297,19 @@
     "Strike field is required": "Bidang serangan diperlukan",
     "Input validation failed": "Validasi masukan gagal",
     "Preview exported to {}": "Pratinjau diekspor ke {}",
-    "Dip field is required": "Bidang celup wajib diisi"
+    "Dip field is required": "Bidang celup wajib diisi",
+    "Path resolution error: {error}": "Kesalahan resolusi jalur: {error}",
+    "Unexpected Error": "Kesalahan Tak Terduga",
+    "Generating Drillholes: {:.1f}%...": "Menghasilkan Lubang Bor:{:.1f}%...",
+    "Source:": "Sumber:",
+    "Default Vector Format:": "Format Vektor Default:",
+    "Interpretation Storage": "Penyimpanan Interpretasi",
+    "Auto-Sync on layer edits": "Sinkronisasi Otomatis pada pengeditan lapisan",
+    "Vector Layer (External)": "Lapisan Vektor (Eksternal)",
+    "Project (Internal JSON)": "Proyek (JSON Internal)",
+    "Naming Pattern:": "Pola Penamaan:",
+    "Re-enables all export options and resets format settings.": "Mengaktifkan kembali semua opsi ekspor dan mengatur ulang pengaturan format.",
+    "Listen for changes in the target layer and update the preview.": "Dengarkan perubahan pada lapisan target dan perbarui pratinjau.",
+    "<br><b>Export Format & Naming</b>": "<br><b>Format & Penamaan Ekspor</b>",
+    "Pattern for exported files. Use {filename} and {profile} as placeholders.": "Pola untuk file yang diekspor. Gunakan{filename}dan{profile}sebagai pengganti."
 }

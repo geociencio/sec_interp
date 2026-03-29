@@ -297,5 +297,19 @@
     "Layer contains invalid geometries": "图层包含无效几何图形",
     "Outcrop layer is required for geological profile": "地质剖面需要露头层",
     "Layer has incorrect geometry type": "图层的几何类型不正确",
-    "Cross-section line layer is required": "需要截面线层"
+    "Cross-section line layer is required": "需要截面线层",
+    "Unexpected Error": "意外错误",
+    "Path resolution error: {error}": "路径解析错误：{error}",
+    "Generating Drillholes: {:.1f}%...": "生成钻孔：{:.1f} %...",
+    "Source:": "来源：",
+    "<br><b>Export Format & Naming</b>": "<br><b>导出格式和命名</b>",
+    "Listen for changes in the target layer and update the preview.": "监听目标图层中的变化并更新预览。",
+    "Naming Pattern:": "命名模式：",
+    "Default Vector Format:": "默认矢量格式：",
+    "Auto-Sync on layer edits": "自动同步图层编辑",
+    "Project (Internal JSON)": "项目（内部 JSON）",
+    "Vector Layer (External)": "矢量层（外部）",
+    "Interpretation Storage": "解释存储",
+    "Pattern for exported files. Use {filename} and {profile} as placeholders.": "导出文件的模式。使用{filename}和{profile}作为占位符。",
+    "Re-enables all export options and resets format settings.": "重新启用所有导出选项并重置格式设置。"
 }
