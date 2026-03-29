@@ -12,8 +12,9 @@ import shutil
 import tempfile
 from pathlib import Path
 
-# Force real QGIS for integration tests
-os.environ["FORCE_MOCKS"] = "0"
+# Allow mocking by default unless overridden
+import os
+os.environ.setdefault("FORCE_MOCKS", "1")
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -148,8 +149,9 @@ class TestExportServiceTopographyE2E(BaseIntegrationTest):
         self.assertAlmostEqual(float(rows[0]["elev"]), 500.0)
         self.assertAlmostEqual(float(rows[2]["dist"]), 100.0)
 
-        # Return messages should signal success
-        self.assertTrue(any("topo_profile.csv" in m for m in msgs))
+        # Return messages should signal success with relative paths
+        self.assertTrue(any("profile/topo_profile.csv" in m for m in msgs),
+                        f"Expected relative path in: {msgs}")
 
     def test_export_topography_creates_shp(self) -> None:
         """ExportService should produce a valid profile_line.shp."""
@@ -467,3 +469,70 @@ class TestExportServiceInterpretationE2E(BaseIntegrationTest):
             },
         )
         self.assertFalse((self.output_dir / "profile" / "interpretations.shp").exists())
+
+class TestExportServiceStructuralE2E(BaseIntegrationTest):
+    """E2E tests for ExportService structural measurements export."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.crs = QgsCoordinateReferenceSystem("EPSG:32719")
+        cls.test_dir = Path(tempfile.mkdtemp(prefix="secinterp_struct_test_"))
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        super().tearDownClass()
+        if cls.test_dir.exists():
+            shutil.rmtree(cls.test_dir)
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.output_dir = self.test_dir / self._testMethodName
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.line_layer = _make_line_layer(self.crs)
+        QgsProject.instance().addMapLayer(self.line_layer)
+        self.service = ExportService(controller=None)
+
+    def _make_params(self) -> object:
+        import types
+        params = types.SimpleNamespace()
+        params.line_layer = self.line_layer
+        params.raster_layer = None
+        return params
+
+    def test_export_structures_with_string_fields(self) -> None:
+        """Verify export succeeds when structural fields are Strings (v3.4.1 fix)."""
+        struct_data = [
+            StructureMeasurement(
+                distance=50.0,
+                elevation=500.0,
+                apparent_dip=15.0,
+                original_dip=19.0,
+                original_strike=344.0,
+                attributes={"label": "S1", "strike_txt": "N 16ø W, 19ø SW"}
+            )
+        ]
+
+        params = self._make_params()
+        msgs = self.service.export_data(
+            output_folder=self.output_dir,
+            params=params,
+            profile_data=[(0.0, 500.0), (100.0, 500.0)],
+            geol_data=None,
+            struct_data=struct_data,
+            export_options={
+                "exp_topo": False,
+                "exp_geol": False,
+                "exp_struct": True,
+                "exp_drill": False,
+                "exp_interp": False,
+            },
+        )
+
+        # Check SHP file in subfolder
+        shp_path = self.output_dir / "profile" / "structural_measurements.shp"
+        self.assertTrue(shp_path.exists())
+
+        # Verify relative path in result message
+        self.assertTrue(any("profile/structural_measurements.shp" in m for m in msgs),
+                        f"Expected relative path 'profile/...' but got: {msgs}")

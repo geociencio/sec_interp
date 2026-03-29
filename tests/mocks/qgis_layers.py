@@ -73,9 +73,12 @@ class MockQgsMapLayer(MockQObject):
         from .qgis_base import MOCK_FILE_REGISTRY
 
         path_val = args[0] if args else None
-        if path_val and path_val in MOCK_FILE_REGISTRY:
-            self._features = list(MOCK_FILE_REGISTRY[path_val])
-            self.getFeatures.return_value = iter(self._features)
+        if path_val:
+            # Strip QGIS URI parameters (e.g., "|layername=test")
+            clean_path = path_val.split("|")[0]
+            if clean_path in MOCK_FILE_REGISTRY:
+                self._features = list(MOCK_FILE_REGISTRY[clean_path])
+                self.getFeatures.return_value = iter(self._features)
         self._wkb_type = 1003  # Default PolygonZ
 
     def setWkbType(self, wkb_type):

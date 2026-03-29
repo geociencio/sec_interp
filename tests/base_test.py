@@ -315,8 +315,16 @@ def restore_mocks():
 
         # Create supporting files
         with open(output_path, "w") as f:
-            f.write("# Mock shapefile\n")
+            if output_path.lower().endswith(".dxf"):
+                f.write("  0\nSECTION\n  2\nHEADER\n  0\nENDSEC\n")
+            elif output_path.lower().endswith(".gpkg"):
+                f.write("SQLite format 3\n")
+            else:
+                f.write("# Mock shapefile\n")
+
         for ext in [".shx", ".dbf", ".prj"]:
+            if not output_path.lower().endswith(".shp") and ext != ".prj":
+                continue
             with open(base_path + ext, "w") as f:
                 f.write("# Mock file\n")
 
