@@ -1,42 +1,42 @@
-# Sistema de Internacionalización (i18n) de SecInterp
+# SecInterp Internationalization (i18n) System
 
-Este directorio contiene la lógica para gestionar las traducciones del plugin SecInterp en múltiples idiomas. El sistema combina las herramientas estándar de Qt con un motor de "Master Data" para automatizar y normalizar las traducciones.
+This directory contains the logic for managing SecInterp plugin translations across multiple languages. The system combines standard Qt tools with a "Master Data" engine to automate and normalize translations.
 
-## Estructura del DirectorIO
+## Directory Structure
 
-- `master_data/`: Contiene archivos JSON (ej. `es.json`, `fr.json`) que actúan como "memoria de traducción" maestra.
-- `apply_full.py`: Script principal que inyecta las traducciones de `master_data/` en los archivos `.ts`.
-- `clean_translations.py`: Normaliza y embellece el XML de los archivos `.ts` para evitar ruido en el control de versiones.
-- `update_metadata_languages.py`: Sincroniza automáticamente la lista de idiomas soportados en el archivo `metadata.txt` del plugin.
-- `auto_translate_*.py`: (Opcional) Scripts para integración con servicios de traducción automática (ej. DeepL).
+- `master_data/`: Contains JSON files (e.g., `es.json`, `fr.json`) that act as a master "translation memory".
+- `apply_full.py`: Main script that injects translations from `master_data/` into `.ts` files.
+- `clean_translations.py`: Normalizes and beautifies the XML in `.ts` files to prevent version control noise.
+- `update_metadata_languages.py`: Automatically synchronizes the list of supported languages in the plugin's `metadata.txt` file.
+- `auto_translate_*.py`: (Optional) Scripts for integration with machine translation services (e.g., DeepL).
 
-## Flujo de Trabajo
+## Workflow
 
-El flujo de trabajo está integrado en el `Makefile` del proyecto para facilitar su ejecución:
+The workflow is integrated into the project's `Makefile` for ease of execution:
 
-1.  **Extracción de Cadenas**:
+1.  **String Extraction**:
     ```bash
     make transup
     ```
-    Este comando ejecuta internamente:
-    - `pylupdate5`: Escanea el código fuente y genera/actualiza los archivos `.ts` en la carpeta `i18n/`.
-    - `apply_full.py`: Busca cada cadena original en los archivos JSON de `master_data/` y, si existe una traducción, la introduce en el `.ts` quitando la marca de "unfinished".
-    - `clean_translations.py`: Limpia el XML resultante.
-    - `update_metadata_languages.py`: Actualiza el archivo `metadata.txt`.
+    This command internally executes:
+    - `pylupdate5`: Scans the source code and generates/updates the `.ts` files in the `i18n/` folder.
+    - `apply_full.py`: Searches for each original string in the `master_data/` JSON files and, if a translation exists, injects it into the `.ts` file, removing the "unfinished" marker.
+    - `clean_translations.py`: Cleans the resulting XML.
+    - `update_metadata_languages.py`: Updates the `metadata.txt` file.
 
-2.  **Traducción de Nuevas Cadenas**:
-    - Si hay cadenas nuevas que no están en `master_data/`, aparecerán como `type="unfinished"` en los archivos `.ts`.
-    - La recomendación es añadir la traducción al archivo JSON correspondiente en `master_data/` y volver a ejecutar `make transup`.
+2.  **Translating New Strings**:
+    - If there are new strings not present in `master_data/`, they will appear as `type="unfinished"` in the `.ts` files.
+    - The recommended approach is to add the translation to the corresponding JSON file in `master_data/` and run `make transup` again.
 
-3.  **Compilación**:
+3.  **Compilation**:
     ```bash
     make transcompile
     ```
-    Genera los archivos `.qm` binarios que QGIS carga en tiempo de ejecución.
+    Generate the binary `.qm` files that QGIS loads at runtime.
 
-## Reglas de Oro
+## Golden Rules
 
-- **Nunca edites los archivos `.qm`** directamente; son binarios generados.
-- **Evita editar los archivos `.ts` manualmente** si puedes añadir la traducción a `master_data/`. El sistema de inyección sobrescribirá los cambios manuales en el siguiente `make transup`.
-- **Cadenas en el código**: Siempre envuelve los textos de la interfaz con `self.tr("Texto")` para que sean detectables.
-- **Entidades HTML**: El script `apply_full.py` está diseñado para manejar automáticamente la conversión de entidades como `&apos;` o `&gt;`, por lo que en los archivos JSON puedes usar caracteres normales (`'`, `>`, `<`).
+- **Never edit `.qm` files** directly; they are generated binaries.
+- **Avoid manual edits to `.ts` files** if you can add the translation to `master_data/`. The injection system will overwrite manual changes during the next `make transup`.
+- **Strings in code**: Always wrap UI text with `self.tr("Text")` for it to be detectable.
+- **HTML Entities**: The `apply_full.py` script is designed to automatically handle entity conversion (like `&apos;` or `&gt;`), so you can use normal characters (`'`, `>`, `<`) in the JSON files.
