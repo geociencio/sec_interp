@@ -10,6 +10,7 @@ def parse_strike(value: Any) -> float | None:
     """Parse a strike value from various formats into an azimuth (0-360).
 
     Supports numeric values, strings, and quadrant notation (e.g., "N 30 E", "S 45 W").
+    Also handles combined strike/dip strings by splitting them.
 
     Args:
         value: The raw strike value (string, int, float, or None).
@@ -27,43 +28,48 @@ def parse_strike(value: Any) -> float | None:
     except (ValueError, TypeError):
         pass
 
-    # Normalize value
+    # Normalize value: remove degree symbols and typos
     text = (
         str(value)
         .replace("°", "")
         .replace("º", "")
-        .replace("ø", "")  # Support for alternative degree symbol
+        .replace("ø", "")
+        .replace("O", "")
         .strip()
         .upper()
     )
 
-    # Regex for quadrant notation: N/S + angle + E/W
-    # Supports integers and decimals for the angle
-    match = re.match(r"([NS])\s*(\d+\.?\d*)\s*([EW])", text)
-    if not match:
-        return None  # invalid notation
+    # If combined notation with comma, try the parts
+    parts = [text]
+    if "," in text:
+        parts = [p.strip() for p in text.split(",")]
 
-    d1, ang, d2 = match.groups()
-    ang = float(ang)
+    for part in parts:
+        # Regex for quadrant notation: N/S + angle + E/W
+        # Use re.match on the part to ensure it starts with N or S
+        match = re.match(r"([NS])\s*(\d+\.?\d*)\s*([EW])", part)
+        if match:
+            d1, ang, d2 = match.groups()
+            ang = float(ang)
+            strike = 0.0
+            if d1 == "N" and d2 == "E":
+                strike = ang
+            elif d1 == "N" and d2 == "W":
+                strike = 360 - ang
+            elif d1 == "S" and d2 == "E":
+                strike = 180 - ang
+            elif d1 == "S" and d2 == "W":
+                strike = 180 + ang
+            return strike % 360
 
-    # Quadrant rules
-    strike = 0.0  # Initialize to prevent NameError
-    if d1 == "N" and d2 == "E":
-        strike = ang
-    elif d1 == "N" and d2 == "W":
-        strike = 360 - ang
-    elif d1 == "S" and d2 == "E":
-        strike = 180 - ang
-    elif d1 == "S" and d2 == "W":
-        strike = 180 + ang
-
-    return strike % 360
+    return None
 
 
 def parse_dip(value: Any) -> tuple[float | None, float | None]:
     """Parse a dip value from various formats.
 
     Supports numeric dip ("45") and field notation with direction ("45 NE", "22 SW").
+    Also supports finding the dip part in combined strings (e.g. "N30E, 45NW").
 
     Args:
         value: The raw dip value.
@@ -80,27 +86,34 @@ def parse_dip(value: Any) -> tuple[float | None, float | None]:
         str(value)
         .replace("°", "")
         .replace("º", "")
-        .replace("ø", "")  # Support for alternative degree symbol
+        .replace("ø", "")
+        .replace("O", "")
         .strip()
         .upper()
     )
 
-    # Case 1: numeric only (integer or decimal)
+    # Case 1: numeric only (integer or decimal) - needs exact match on full string
     numeric_only = re.match(r"^(\d+\.?\d*)$", text)
     if numeric_only:
         return float(text), None
 
-    # Case 2: full dip + direction
-    match = re.match(r"(\d+\.?\d*)\s*([NSEW]{1,2})", text)
-    if not match:
-        return None, None
+    # Handle combined notation by splitting
+    parts = [text]
+    if "," in text:
+        parts = [p.strip() for p in text.split(",")]
 
-    dip, cardinal = match.groups()
-    dip = float(dip)
+    for part in parts:
+        # Case 2: full dip + direction.
+        # Use re.match on the part to ensure it starts with the number (dip)
+        match = re.match(r"(\d+\.?\d*)\s*([NSEW]{1,2})", part)
+        if match:
+            dip, cardinal = match.groups()
+            dip = float(dip)
+            dip_dir = cardinal_to_azimuth(cardinal)
+            if dip_dir is not None:
+                return dip, dip_dir
 
-    dip_dir = cardinal_to_azimuth(cardinal)
-
-    return dip, dip_dir
+    return None, None
 
 
 def cardinal_to_azimuth(text: str) -> float | None:

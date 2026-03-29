@@ -35,8 +35,8 @@ class TestExportService(BaseTestCase):
         )
 
     @patch("sec_interp.exporters.CSVExporter")
-    @patch("sec_interp.exporters.ProfileLineShpExporter")
-    @patch("sec_interp.exporters.AxesShpExporter")
+    @patch("sec_interp.exporters.ProfileLineVectorExporter")
+    @patch("sec_interp.exporters.AxesVectorExporter")
     def test_export_data_minimal(self, mock_axes, mock_profile_shp, mock_csv):
         """Test minimal export (topography only)."""
         profile_data = [(0, 10), (100, 20)]
@@ -55,14 +55,14 @@ class TestExportService(BaseTestCase):
         mock_axes.return_value.export.assert_called()
 
     @patch("sec_interp.exporters.CSVExporter")
-    @patch("sec_interp.exporters.ProfileLineShpExporter")
-    @patch("sec_interp.exporters.GeologyShpExporter")
-    @patch("sec_interp.exporters.StructureShpExporter")
-    @patch("sec_interp.exporters.DrillholeTraceShpExporter")
-    @patch("sec_interp.exporters.DrillholeIntervalShpExporter")
+    @patch("sec_interp.exporters.ProfileLineVectorExporter")
+    @patch("sec_interp.exporters.GeologyVectorExporter")
+    @patch("sec_interp.exporters.StructureVectorExporter")
+    @patch("sec_interp.exporters.DrillholeTraceVectorExporter")
+    @patch("sec_interp.exporters.DrillholeIntervalVectorExporter")
     @patch("sec_interp.exporters.Interpretation2DExporter")
     @patch("sec_interp.exporters.Interpretation3DExporter")
-    @patch("sec_interp.exporters.AxesShpExporter")
+    @patch("sec_interp.exporters.AxesVectorExporter")
     def test_export_data_all_types(
         self,
         mock_axes,
@@ -120,10 +120,10 @@ class TestExportService(BaseTestCase):
         # Interpretation3DExporter depends on can_export_3d() settings
 
     @patch("sec_interp.exporters.CSVExporter")
-    @patch("sec_interp.exporters.ProfileLineShpExporter")
+    @patch("sec_interp.exporters.ProfileLineVectorExporter")
     @patch("sec_interp.exporters.Interpretation2DExporter")
     @patch("sec_interp.exporters.Interpretation3DExporter")
-    @patch("sec_interp.exporters.AxesShpExporter")
+    @patch("sec_interp.exporters.AxesVectorExporter")
     def test_export_data_3d_restricted(
         self, mock_axes, mock_interp3d, mock_interp2d, mock_profile, mock_csv
     ):
@@ -193,7 +193,7 @@ class TestExportService(BaseTestCase):
                 struct_data=None,
             )
 
-    @patch("sec_interp.exporters.GeologyShpExporter")
+    @patch("sec_interp.exporters.GeologyVectorExporter")
     def test_export_geology_error(self, mock_geol_shp):
         """Test error handling in geology export."""
         from sec_interp.core.domain import GeologySegment
@@ -207,7 +207,7 @@ class TestExportService(BaseTestCase):
                 self.output_folder, geol_data, MagicMock(), MagicMock(), []
             )
 
-    @patch("sec_interp.exporters.StructureShpExporter")
+    @patch("sec_interp.exporters.StructureVectorExporter")
     def test_export_structures_error(self, mock_struct_shp):
         """Test error handling in structure export."""
         from sec_interp.core.domain import StructureMeasurement
@@ -227,7 +227,7 @@ class TestExportService(BaseTestCase):
                 options={"dip_scale": 4},
             )
 
-    @patch("sec_interp.exporters.DrillholeTraceShpExporter")
+    @patch("sec_interp.exporters.DrillholeTraceVectorExporter")
     def test_export_drillholes_error(self, mock_dh):
         """Test error handling in drillhole export."""
         from sec_interp.core.exceptions import ExportError
@@ -239,7 +239,7 @@ class TestExportService(BaseTestCase):
                 self.output_folder, [{"id": 1}], MagicMock(), []
             )
 
-    @patch("sec_interp.exporters.AxesShpExporter")
+    @patch("sec_interp.exporters.AxesVectorExporter")
     def test_export_axes_error(self, mock_axes):
         """Test error handling in axes export."""
         from sec_interp.core.exceptions import ExportError
@@ -298,7 +298,7 @@ class TestExportService(BaseTestCase):
         settings.setOutputSize.assert_called_with(size)
         settings.setBackgroundColor.assert_called_with(bg)
 
-    @patch("sec_interp.exporters.ProfileLineShpExporter")
+    @patch("sec_interp.exporters.ProfileLineVectorExporter")
     def test_export_topography_error(self, mock_profile_shp):
         """Test error handling in topography export."""
         from sec_interp.core.exceptions import ExportError

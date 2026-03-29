@@ -15,15 +15,15 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QMetaType
 
 from sec_interp.exporters.profile_exporters import (
-    ProfileLineShpExporter,
-    GeologyShpExporter,
-    StructureShpExporter,
-    AxesShpExporter,
+    ProfileLineVectorExporter,
+    GeologyVectorExporter,
+    StructureVectorExporter,
+    AxesVectorExporter,
 )
 
 
 class TestProfileExporters(BaseTestCase):
-    """Tests for ProfileLineShpExporter, GeologyShpExporter, StructureShpExporter, and AxesShpExporter."""
+    """Tests for ProfileLineVectorExporter, GeologyVectorExporter, StructureVectorExporter, and AxesVectorExporter."""
 
     def setUp(self):
         super().setUp()
@@ -37,7 +37,7 @@ class TestProfileExporters(BaseTestCase):
         mock_writer = MagicMock()
         mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
-        exporter = ProfileLineShpExporter(self.settings)
+        exporter = ProfileLineVectorExporter(self.settings)
 
         data = {"profile_data": [(0, 100), (100, 200)], "crs": self.crs}
 
@@ -47,7 +47,7 @@ class TestProfileExporters(BaseTestCase):
 
     def test_profile_line_exporter_missing_data(self):
         """Test profile line exporter with missing data."""
-        exporter = ProfileLineShpExporter(self.settings)
+        exporter = ProfileLineVectorExporter(self.settings)
         self.assertFalse(exporter.export(self.output_path, {}))
 
     @patch("sec_interp.exporters.profile_exporters.scu_io.create_vector_writer")
@@ -56,7 +56,7 @@ class TestProfileExporters(BaseTestCase):
         mock_writer = MagicMock()
         mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
-        exporter = GeologyShpExporter(self.settings)
+        exporter = GeologyVectorExporter(self.settings)
 
         segment = MagicMock()
         segment.points = [(0, 100), (100, 200)]
@@ -70,7 +70,7 @@ class TestProfileExporters(BaseTestCase):
 
     def test_geology_exporter_short_segment(self):
         """Test geology exporter with segment having less than 2 points."""
-        exporter = GeologyShpExporter(self.settings)
+        exporter = GeologyVectorExporter(self.settings)
         segment = MagicMock()
         segment.points = [(0, 100)]
         segment.attributes = {}
@@ -85,7 +85,7 @@ class TestProfileExporters(BaseTestCase):
         mock_writer = MagicMock()
         mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
-        exporter = StructureShpExporter(self.settings)
+        exporter = StructureVectorExporter(self.settings)
 
         m = MagicMock()
         m.distance = 50.0
@@ -115,7 +115,7 @@ class TestProfileExporters(BaseTestCase):
         mock_writer = MagicMock()
         mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
-        exporter = AxesShpExporter(self.settings)
+        exporter = AxesVectorExporter(self.settings)
 
         data = {"profile_data": [(0, 100), (100, 200)], "crs": self.crs}
 
@@ -130,7 +130,7 @@ class TestProfileExporters(BaseTestCase):
         mock_writer = MagicMock()
         mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
         mock_writer_factory.return_value = mock_writer
-        exporter = AxesShpExporter(self.settings)
+        exporter = AxesVectorExporter(self.settings)
         data = {"profile_data": [(100, 100), (100, 100)], "crs": self.crs}
         result = exporter.export(self.output_path, data)
         self.assertTrue(result)
@@ -143,37 +143,37 @@ class TestProfileExporters(BaseTestCase):
         ):
             data = {"profile_data": [(0, 0)], "crs": self.crs}
             self.assertFalse(
-                ProfileLineShpExporter(self.settings).export(self.output_path, data)
+                ProfileLineVectorExporter(self.settings).export(self.output_path, data)
             )
 
             data = {"geology_data": [MagicMock()], "crs": self.crs}
             self.assertFalse(
-                GeologyShpExporter(self.settings).export(self.output_path, data)
+                GeologyVectorExporter(self.settings).export(self.output_path, data)
             )
 
             data = {"structural_data": [MagicMock()], "crs": self.crs}
             self.assertFalse(
-                StructureShpExporter(self.settings).export(self.output_path, data)
+                StructureVectorExporter(self.settings).export(self.output_path, data)
             )
 
             data = {"profile_data": [(0, 0)], "crs": self.crs}
             self.assertFalse(
-                AxesShpExporter(self.settings).export(self.output_path, data)
+                AxesVectorExporter(self.settings).export(self.output_path, data)
             )
 
     def test_geology_fields_empty(self):
         """Test _create_geology_fields with empty data."""
-        exporter = GeologyShpExporter(self.settings)
+        exporter = GeologyVectorExporter(self.settings)
         fields = exporter._create_geology_fields([])
         self.assertEqual(len(fields.names()), 0)
 
     def test_supported_extensions(self):
         """Test supported extensions for all exporters."""
         exporters = [
-            ProfileLineShpExporter(self.settings),
-            GeologyShpExporter(self.settings),
-            StructureShpExporter(self.settings),
-            AxesShpExporter(self.settings),
+            ProfileLineVectorExporter(self.settings),
+            GeologyVectorExporter(self.settings),
+            StructureVectorExporter(self.settings),
+            AxesVectorExporter(self.settings),
         ]
         for exporter in exporters:
             self.assertEqual(
@@ -183,7 +183,7 @@ class TestProfileExporters(BaseTestCase):
     @patch("sec_interp.exporters.profile_exporters.scu_io.create_vector_writer")
     def test_profile_line_exporter_null_geom(self, mock_writer_func):
         """Test profile line exporter with null geometry."""
-        exporter = ProfileLineShpExporter(self.settings)
+        exporter = ProfileLineVectorExporter(self.settings)
         # Patch QgsGeometry via the module where it is imported/used
         with patch(
             "sec_interp.exporters.profile_exporters.QgsGeometry"
@@ -197,15 +197,15 @@ class TestProfileExporters(BaseTestCase):
 
     def test_geology_exporter_missing_data(self):
         """Test geology exporter with missing data."""
-        exporter = GeologyShpExporter(self.settings)
+        exporter = GeologyVectorExporter(self.settings)
         self.assertFalse(exporter.export(self.output_path, {}))
 
     def test_structure_exporter_missing_data(self):
         """Test structure exporter with missing data."""
-        exporter = StructureShpExporter(self.settings)
+        exporter = StructureVectorExporter(self.settings)
         self.assertFalse(exporter.export(self.output_path, {}))
 
     def test_axes_exporter_missing_data(self):
         """Test axes exporter with missing data."""
-        exporter = AxesShpExporter(self.settings)
+        exporter = AxesVectorExporter(self.settings)
         self.assertFalse(exporter.export(self.output_path, {}))

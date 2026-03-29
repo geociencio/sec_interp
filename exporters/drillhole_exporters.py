@@ -1,4 +1,4 @@
-"""Exporters for drillhole data (Shapefiles)."""
+"""Exporters for drillhole data (SHP, GPKG, DXF)."""
 
 from __future__ import annotations
 
@@ -29,8 +29,8 @@ MIN_POINTS_FOR_INTERVAL = 2
 COORD_PAIR_LENGTH = 2
 
 
-class DrillholeTraceShpExporter(BaseExporter):
-    """Exports drillhole traces to a Shapefile."""
+class DrillholeTraceVectorExporter(BaseExporter):
+    """Exports drillhole traces to a vector file (SHP, GPKG, DXF)."""
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported file extensions.
@@ -42,10 +42,10 @@ class DrillholeTraceShpExporter(BaseExporter):
         return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
-        """Export drillhole traces to a Shapefile.
+        """Export drillhole traces to a vector file.
 
         Args:
-            output_path: Path to the output Shapefile.
+            output_path: Path to the output file.
             data: Dictionary containing 'drillhole_data' and 'crs'.
             layer_name: Optional conceptual layer name.
 
@@ -133,8 +133,8 @@ class DrillholeTraceShpExporter(BaseExporter):
         return feat
 
 
-class DrillholeIntervalShpExporter(BaseExporter):
-    """Exports drillhole intervals to a Shapefile."""
+class DrillholeIntervalVectorExporter(BaseExporter):
+    """Exports drillhole intervals to a vector file (SHP, GPKG, DXF)."""
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported file extensions.
@@ -146,10 +146,10 @@ class DrillholeIntervalShpExporter(BaseExporter):
         return [".shp", ".gpkg", ".dxf"]
 
     def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
-        """Export drillhole intervals to a Shapefile.
+        """Export drillhole intervals to a vector file.
 
         Args:
-            output_path: Path to the output Shapefile.
+            output_path: Path to the output file.
             data: Dictionary containing 'drillhole_data' and 'crs'.
             layer_name: Optional conceptual layer name.
 

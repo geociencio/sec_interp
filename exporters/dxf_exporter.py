@@ -10,12 +10,12 @@ from qgis.core import (
     QgsFeature,
     QgsField,
     QgsFields,
-    QgsProject,
     QgsVectorFileWriter,
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
 
+from sec_interp.core.utils import io as scu_io
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
@@ -30,15 +30,21 @@ class DXFExporter(BaseExporter):
         """Get supported vector format extensions."""
         return [".dxf"]
 
-    def export(self, output_path: Path, features_data: list[dict[str, Any]]) -> bool:
+    def export(
+        self,
+        output_path: Path,
+        features_data: list[dict[str, Any]],
+        layer_name: str | None = None,
+    ) -> bool:
         """Export features to DXF.
 
         Args:
-            output_path: Output file path
-            features_data: List of dicts with 'geometry' and 'attributes' keys
+            output_path: Output file path.
+            features_data: List of dicts with 'geometry' and 'attributes' keys.
+            layer_name: Optional conceptual layer name.
 
         Returns:
-            True if export successful, False otherwise
+            True if export successful, False otherwise.
 
         """
         if not features_data:
@@ -47,9 +53,17 @@ class DXFExporter(BaseExporter):
         try:
             geometry_type = self.get_setting("geometry_type", QgsWkbTypes.LineString)
             crs = self.get_setting("crs", QgsCoordinateReferenceSystem("EPSG:4326"))
+            symb_mode = self.get_setting("symbology_export", QgsVectorFileWriter.NoSymbology)
 
             fields = self._prepare_fields(features_data)
-            writer = self._create_writer(output_path, fields, geometry_type, crs)
+            writer = scu_io.create_vector_writer(
+                output_path,
+                crs,
+                fields,
+                geometry_type,
+                layer_name=layer_name,
+                symbology_export=symb_mode,
+            )
 
             if writer.hasError() != QgsVectorFileWriter.NoError:
                 logger.error(f"Failed to create DXF writer: {writer.errorMessage()}")
@@ -108,26 +122,3 @@ class DXFExporter(BaseExporter):
             else:
                 fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
-
-    def _create_writer(
-        self,
-        output_path: Path,
-        fields: QgsFields,
-        geometry_type: QgsWkbTypes,
-        crs: QgsCoordinateReferenceSystem,
-    ) -> QgsVectorFileWriter:
-        """Create a QgsVectorFileWriter for the given path."""
-        options = QgsVectorFileWriter.SaveVectorOptions()
-        options.driverName = "DXF"
-        options.fileEncoding = "UTF-8"
-        # Optional: DXF specific options could be added here if needed in the future
-        # e.g. options.symbologyExport = QgsVectorFileWriter.NoSymbology
-
-        return QgsVectorFileWriter.create(
-            str(output_path),
-            fields,
-            geometry_type,
-            crs,
-            QgsProject.instance().transformContext(),
-            options,
-        )

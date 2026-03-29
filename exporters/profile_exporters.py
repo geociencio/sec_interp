@@ -29,8 +29,8 @@ logger = get_logger(__name__)
 MIN_REQUIRED_POINTS = 2
 
 
-class ProfileLineShpExporter(BaseExporter):
-    """Exports the topographic profile line to a Shapefile."""
+class ProfileLineVectorExporter(BaseExporter):
+    """Exports the topographic profile line to a vector file (SHP, GPKG, DXF)."""
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported file extensions.
@@ -44,10 +44,10 @@ class ProfileLineShpExporter(BaseExporter):
     def export(
         self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
     ) -> bool:
-        """Export the topographic profile line to a Shapefile.
+        """Export the topographic profile line to a vector file.
 
         Args:
-            output_path: Path to the output Shapefile.
+            output_path: Path to the output file.
             data: Dictionary containing 'profile_data' and 'crs'.
             layer_name: Optional conceptual layer name.
 
@@ -81,8 +81,8 @@ class ProfileLineShpExporter(BaseExporter):
             return True
 
 
-class GeologyShpExporter(BaseExporter):
-    """Exports the geological profile to a Shapefile."""
+class GeologyVectorExporter(BaseExporter):
+    """Exports the geological profile to a vector file (SHP, GPKG, DXF)."""
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported file extensions.
@@ -96,10 +96,10 @@ class GeologyShpExporter(BaseExporter):
     def export(
         self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
     ) -> bool:
-        """Export the geological profile to a Shapefile.
+        """Export the geological profile to a vector file.
 
         Args:
-            output_path: Path to the output Shapefile.
+            output_path: Path to the output file.
             data: Dictionary containing 'geology_data' and 'crs'.
             layer_name: Optional conceptual layer name.
 
@@ -168,8 +168,8 @@ class GeologyShpExporter(BaseExporter):
         return feat
 
 
-class StructureShpExporter(BaseExporter):
-    """Exports the structural profile to a Shapefile."""
+class StructureVectorExporter(BaseExporter):
+    """Exports the structural profile to a vector file (SHP, GPKG, DXF)."""
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported file extensions.
@@ -183,10 +183,10 @@ class StructureShpExporter(BaseExporter):
     def export(
         self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
     ) -> bool:
-        """Export the structural profile to a Shapefile.
+        """Export the structural profile to a vector file.
 
         Args:
-            output_path: Path to the output Shapefile.
+            output_path: Path to the output file.
             data: Dictionary containing 'structural_data', 'crs', 'dip_scale_factor',
                 and 'raster_res'.
             layer_name: Optional conceptual layer name.
@@ -278,8 +278,8 @@ class StructureShpExporter(BaseExporter):
         return QgsGeometry.fromPolylineXY([p1, p2])
 
 
-class AxesShpExporter(BaseExporter):
-    """Exports the profile axes to a Shapefile."""
+class AxesVectorExporter(BaseExporter):
+    """Exports the profile axes to a vector file (SHP, GPKG, DXF)."""
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported file extensions.
@@ -293,10 +293,10 @@ class AxesShpExporter(BaseExporter):
     def export(
         self, output_path: Path, data: dict[str, Any], layer_name: str | None = None
     ) -> bool:
-        """Export the profile axes to a Shapefile.
+        """Export the profile axes to a vector file.
 
         Args:
-            output_path: Path to the output Shapefile.
+            output_path: Path to the output file.
             data: Dictionary containing 'profile_data' and 'crs'.
             layer_name: Optional conceptual layer name.
 

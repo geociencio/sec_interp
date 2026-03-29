@@ -52,6 +52,12 @@ class TestStrikeParsingStandalone(BaseTestCase):
         result = parse_strike("S 15 W")
         self.assertEqual(result, 195)  # 180 + 15
 
+    def test_parse_strike_combined_notation(self):
+        """Test parsing strike from a combined strike/dip string."""
+        # Strike should be extracted from the beginning, ignoring the comma and dip
+        result = parse_strike("N 16ø W, 19ø SW")
+        self.assertEqual(result, 344)  # N 16 W = 360 - 16
+
     def test_parse_strike_invalid(self):
         """Test parsing invalid strike values."""
         self.assertIsNone(parse_strike(None))
@@ -90,6 +96,19 @@ class TestDipParsingStandalone(BaseTestCase):
             dip, direction = parse_dip(dip_str)
             self.assertEqual(dip, expected_dip)
             self.assertEqual(direction, expected_dir)
+
+    def test_parse_dip_combined_notation(self):
+        """Test parsing dip from a combined strike/dip string."""
+        # Dip should be found even if preceded by strike
+        dip, direction = parse_dip("N 16ø W, 19ø SW")
+        self.assertEqual(dip, 19.0)
+        self.assertEqual(direction, 225)  # SW = 225
+
+    def test_parse_dip_alternative_symbols(self):
+        """Test parsing dip with various degree symbols."""
+        self.assertEqual(parse_dip("45° NE")[0], 45.0)
+        self.assertEqual(parse_dip("45º NE")[0], 45.0)
+        self.assertEqual(parse_dip("45ø NE")[0], 45.0)
 
     def test_parse_dip_invalid(self):
         """Test parsing invalid dip values."""

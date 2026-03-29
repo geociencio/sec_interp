@@ -23,6 +23,7 @@ def create_vector_writer(
     geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.LineString,
     layer_name: str | None = None,
     overwrite_layer: bool = True,
+    symbology_export: QgsVectorFileWriter.SymbologyExport = QgsVectorFileWriter.NoSymbology,
 ) -> QgsVectorFileWriter:
     """Create and initialize a QgsVectorFileWriter for various vector formats.
 
@@ -35,13 +36,10 @@ def create_vector_writer(
         geometry_type: The mapping geometry type (default: LineString).
         layer_name: Optional conceptual layer name.
         overwrite_layer: Whether to overwrite existing layers.
+        symbology_export: Symbology export mode (default: NoSymbology).
 
     Returns:
         An initialized writer object.
-
-    Raises:
-        OSError: If the writer cannot be created.
-        ValueError: If the file extension is not supported.
 
     """
     path = Path(output_path)
@@ -59,18 +57,24 @@ def create_vector_writer(
     options = QgsVectorFileWriter.SaveVectorOptions()
     options.driverName = drivers[ext]
     options.fileEncoding = "UTF-8"
+    options.symbologyExport = symbology_export
 
     if layer_name:
         options.layerName = layer_name
 
+    # Specific handling for GeoPackage appending
     if ext == ".gpkg" and path.exists() and layer_name:
         if overwrite_layer:
             options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
         else:
             options.actionOnExistingFile = QgsVectorFileWriter.AppendToLayerAddFields
 
+    # Specific handling for DXF (CAD)
     effective_fields = fields
     if ext == ".dxf":
+        # DXF driver in QGIS typically doesn't use standard attributes unless specified,
+        # but we use an empty fields set to avoid conflicts with reserved CAD names
+        # unless we explicitly want CAD attributes (like 'Layer').
         effective_fields = QgsFields()
 
     writer = QgsVectorFileWriter.create(

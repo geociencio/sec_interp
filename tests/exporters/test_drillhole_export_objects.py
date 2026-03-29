@@ -2,8 +2,8 @@ import unittest
 from unittest.mock import MagicMock, patch
 from qgis.core import QgsCoordinateReferenceSystem, QgsFields, QgsVectorFileWriter
 from sec_interp.exporters.drillhole_exporters import (
-    DrillholeTraceShpExporter,
-    DrillholeIntervalShpExporter,
+    DrillholeTraceVectorExporter,
+    DrillholeIntervalVectorExporter,
 )
 from sec_interp.exporters.drillhole_3d_exporter import (
     DrillholeTrace3DExporter,
@@ -15,8 +15,8 @@ from sec_interp.core.domain import DrillholeProjection, GeologySegment, SpatialM
 class TestDrillholeExportObjects(unittest.TestCase):
     def setUp(self):
         self.crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        self.trace_exporter = DrillholeTraceShpExporter({})
-        self.interval_exporter = DrillholeIntervalShpExporter({})
+        self.trace_exporter = DrillholeTraceVectorExporter({})
+        self.interval_exporter = DrillholeIntervalVectorExporter({})
         self.trace_3d_exporter = DrillholeTrace3DExporter({})
         self.interval_3d_exporter = DrillholeInterval3DExporter({})
 

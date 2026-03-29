@@ -12,8 +12,8 @@ from .drillhole_3d_exporter import (
     DrillholeTrace3DExporter,
 )
 from .drillhole_exporters import (
-    DrillholeIntervalShpExporter,
-    DrillholeTraceShpExporter,
+    DrillholeIntervalVectorExporter,
+    DrillholeTraceVectorExporter,
 )
 from .dxf_exporter import DXFExporter
 from .image_exporter import ImageExporter
@@ -21,31 +21,32 @@ from .interpretation_3d_exporter import Interpretation3DExporter
 from .interpretation_exporters import Interpretation2DExporter
 from .pdf_exporter import PDFExporter
 from .profile_exporters import (
-    AxesShpExporter,
-    GeologyShpExporter,
-    ProfileLineShpExporter,
-    StructureShpExporter,
+    AxesVectorExporter,
+    GeologyVectorExporter,
+    ProfileLineVectorExporter,
+    StructureVectorExporter,
 )
-from .shp_exporter import ShapefileExporter
 from .svg_exporter import SVGExporter
+from .vector_exporter import VectorExporter
 
 __all__ = [
-    "AxesShpExporter",
+    "AxesVectorExporter",
     "BaseExporter",
     "CSVExporter",
+    "DXFExporter",
     "DrillholeInterval3DExporter",
-    "DrillholeIntervalShpExporter",
+    "DrillholeIntervalVectorExporter",
     "DrillholeTrace3DExporter",
-    "DrillholeTraceShpExporter",
-    "GeologyShpExporter",
+    "DrillholeTraceVectorExporter",
+    "GeologyVectorExporter",
     "ImageExporter",
     "Interpretation2DExporter",
     "Interpretation3DExporter",
     "PDFExporter",
-    "ProfileLineShpExporter",
+    "ProfileLineVectorExporter",
     "SVGExporter",
-    "ShapefileExporter",
-    "StructureShpExporter",
+    "StructureVectorExporter",
+    "VectorExporter",
     "get_exporter",
 ]
 
@@ -54,7 +55,7 @@ def get_exporter(extension: str, settings: dict) -> BaseExporter:
     """Get the appropriate exporter instance for the file extension.
 
     Args:
-        extension: File extension (e.g., '.png', '.svg')
+        extension: File extension (e.g., '.png', '.svg', '.dxf')
         settings: Export settings dictionary
 
     Returns:
@@ -74,7 +75,7 @@ def get_exporter(extension: str, settings: dict) -> BaseExporter:
         return PDFExporter(settings)
     if extension == ".csv":
         return CSVExporter(settings)
-    if extension in [".shp", ".gpkg"]:
-        return ShapefileExporter(settings)
+    if extension in [".shp", ".gpkg", ".dxf"]:
+        return VectorExporter(settings)
 
     raise ValueError(f"Unsupported file extension: {extension}")

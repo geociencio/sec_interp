@@ -3,9 +3,9 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->604<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->607<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
-| **Last Updated** | <!-- LAST_UPDATE -->2026-03-25<!-- /LAST_UPDATE --> | 🕒 Auto |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-03-29<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 
@@ -13,7 +13,7 @@
 
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :---: |
-| **Core Services** | <!-- CORE_COUNT -->275<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **Core Services** | <!-- CORE_COUNT -->278<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->218<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->71<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
@@ -48,7 +48,7 @@
 - **tests/core/test_spatial_utils.py**: 9 tests
 - **tests/core/test_structure_service.py**: 2 tests
 - **tests/core/test_utils.py**: 26 tests
-- **tests/core/test_utils_standalone.py**: 20 tests
+- **tests/core/test_utils_standalone.py**: 23 tests
 - **tests/core/test_validation.py**: 10 tests
 - **tests/core/test_validation_refactor.py**: 4 tests
 - **tests/core/validation/test_service_validation.py**: 6 tests
@@ -98,8 +98,8 @@
 - **tests/exporters/test_interpretation_3d_exporter.py**: 3 tests
 - **tests/exporters/test_interpretation_exporters.py**: 5 tests
 - **tests/exporters/test_pdf_exporter.py**: 4 tests
-- **tests/exporters/test_shp_exporter.py**: 5 tests
 - **tests/exporters/test_svg_exporter.py**: 3 tests
+- **tests/exporters/test_vector_exporter.py**: 5 tests
 - **tests/integration/test_3d_integration.py**: 4 tests
 - **tests/integration/test_3d_integration_advanced.py**: 2 tests
 - **tests/integration/test_3d_projections.py**: 1 tests

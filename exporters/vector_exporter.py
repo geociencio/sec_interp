@@ -1,8 +1,8 @@
-"""Shapefile export utilities."""
+"""Vector data export utilities."""
 
 from __future__ import annotations
 
-"""Shapefile exporter module for vector data."""
+"""Vector exporter module for Shapefile, GeoPackage and DXF data."""
 
 from pathlib import Path
 from typing import Any
@@ -12,12 +12,12 @@ from qgis.core import (
     QgsFeature,
     QgsField,
     QgsFields,
-    QgsProject,
     QgsVectorFileWriter,
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
 
+from sec_interp.core.utils import io as scu_io
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
@@ -25,12 +25,12 @@ from .base_exporter import BaseExporter
 logger = get_logger(__name__)
 
 
-class ShapefileExporter(BaseExporter):
-    """Exporter for Shapefile and GeoPackage formats."""
+class VectorExporter(BaseExporter):
+    """Generic exporter for vector formats (SHP, GPKG, DXF)."""
 
     def get_supported_extensions(self) -> list[str]:
         """Get supported vector format extensions."""
-        return [".shp", ".gpkg"]
+        return [".shp", ".gpkg", ".dxf"]
 
     def export(
         self,
@@ -38,15 +38,15 @@ class ShapefileExporter(BaseExporter):
         features_data: list[dict[str, Any]],
         layer_name: str | None = None,
     ) -> bool:
-        """Export features to shapefile or geopackage.
+        """Export features to a vector file.
 
         Args:
-            output_path: Output file path
-            features_data: List of dicts with 'geometry' and 'attributes' keys
-            layer_name: Optional layer name for multi-layer containers (GeoPackage)
+            output_path: Output file path.
+            features_data: List of dicts with 'geometry' and 'attributes' keys.
+            layer_name: Optional layer name for multi-layer containers (GeoPackage).
 
         Returns:
-            True if export successful, False otherwise
+            True if export successful, False otherwise.
 
         """
         if not features_data:
@@ -55,9 +55,17 @@ class ShapefileExporter(BaseExporter):
         try:
             geometry_type = self.get_setting("geometry_type", QgsWkbTypes.LineString)
             crs = self.get_setting("crs", QgsCoordinateReferenceSystem("EPSG:4326"))
+            symb_mode = self.get_setting("symbology_export", QgsVectorFileWriter.NoSymbology)
 
             fields = self._prepare_fields(features_data)
-            writer = self._create_writer(output_path, fields, geometry_type, crs, layer_name)
+            writer = scu_io.create_vector_writer(
+                output_path,
+                crs,
+                fields,
+                geometry_type,
+                layer_name=layer_name,
+                symbology_export=symb_mode,
+            )
 
             if writer.hasError() != QgsVectorFileWriter.NoError:
                 logger.error(f"Failed to create writer: {writer.errorMessage()}")
@@ -69,7 +77,7 @@ class ShapefileExporter(BaseExporter):
             del writer
 
         except Exception:
-            logger.exception(f"Shapefile export failed for {output_path}")
+            logger.exception(f"Vector export failed for {output_path}")
             return False
         else:
             return True
@@ -110,34 +118,3 @@ class ShapefileExporter(BaseExporter):
                 else:
                     fields.append(QgsField(key, QMetaType.Type.QString))
         return fields
-
-    def _create_writer(
-        self,
-        output_path: Path,
-        fields: QgsFields,
-        geometry_type: QgsWkbTypes,
-        crs: QgsCoordinateReferenceSystem,
-        layer_name: str | None = None,
-    ) -> QgsVectorFileWriter:
-        """Create a QgsVectorFileWriter for the given path."""
-        ext = output_path.suffix.lower()
-        driver = "GPKG" if ext == ".gpkg" else "ESRI Shapefile"
-
-        options = QgsVectorFileWriter.SaveVectorOptions()
-        options.driverName = driver
-        options.fileEncoding = "UTF-8"
-
-        if layer_name:
-            options.layerName = layer_name
-
-        if ext == ".gpkg" and output_path.exists() and layer_name:
-            options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
-
-        return QgsVectorFileWriter.create(
-            str(output_path),
-            fields,
-            geometry_type,
-            crs,
-            QgsProject.instance().transformContext(),
-            options,
-        )

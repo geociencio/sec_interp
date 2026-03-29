@@ -246,7 +246,7 @@ class ExportService:
         ext: str = ".shp",
     ) -> None:
         """Export topographic data."""
-        from sec_interp.exporters import ProfileLineShpExporter
+        from sec_interp.exporters import ProfileLineVectorExporter
 
         logger.info("✓ Saving topographic profile...")
         try:
@@ -262,7 +262,7 @@ class ExportService:
                 logger.warning(f"Failed to write CSV topography to {csv_path}")
 
             vec_path, vec_layer = self._get_export_path(folder, "profile_line", settings, ext)
-            vector_exporter = ProfileLineShpExporter({})
+            vector_exporter = ProfileLineVectorExporter({})
             vec_ok = vector_exporter.export(
                 vec_path, {"profile_data": data, "crs": crs}, layer_name=vec_layer
             )
@@ -291,7 +291,7 @@ class ExportService:
         """Export geological data."""
         if not data:
             return
-        from sec_interp.exporters import GeologyShpExporter
+        from sec_interp.exporters import GeologyVectorExporter
 
         logger.info("✓ Saving geological profile...")
         try:
@@ -306,7 +306,7 @@ class ExportService:
                 msg.append(f"  - {csv_path.name}")
 
             vec_path, vec_layer = self._get_export_path(folder, "geol_profile", settings, ext)
-            vector_exporter = GeologyShpExporter({})
+            vector_exporter = GeologyVectorExporter({})
             vec_ok = vector_exporter.export(
                 vec_path, {"geology_data": data, "crs": crs}, layer_name=vec_layer
             )
@@ -339,7 +339,7 @@ class ExportService:
         """Export structural data."""
         if not data:
             return
-        from sec_interp.exporters import StructureShpExporter
+        from sec_interp.exporters import StructureVectorExporter
 
         logger.info("✓ Saving structural profile...")
         try:
@@ -362,7 +362,7 @@ class ExportService:
             vec_path, vec_layer = self._get_export_path(
                 folder, "structural_measurements", settings, ext
             )
-            vector_exporter = StructureShpExporter({})
+            vector_exporter = StructureVectorExporter({})
             vec_ok = vector_exporter.export(
                 vec_path,
                 {
@@ -398,8 +398,8 @@ class ExportService:
         if not data:
             return
         from sec_interp.exporters import (
-            DrillholeIntervalShpExporter,
-            DrillholeTraceShpExporter,
+            DrillholeIntervalVectorExporter,
+            DrillholeTraceVectorExporter,
         )
 
         logger.info("✓ Saving drillhole data...")
@@ -408,7 +408,7 @@ class ExportService:
             traces_path, traces_layer = self._get_export_path(
                 folder, "drillhole_traces", settings, ext
             )
-            traces_exporter = DrillholeTraceShpExporter({})
+            traces_exporter = DrillholeTraceVectorExporter({})
             traces_ok = traces_exporter.export(
                 traces_path,
                 {"drillhole_data": data, "crs": crs},
@@ -422,7 +422,7 @@ class ExportService:
             intervals_path, intervals_layer = self._get_export_path(
                 folder, "drillhole_intervals", settings, ext
             )
-            intervals_exporter = DrillholeIntervalShpExporter({})
+            intervals_exporter = DrillholeIntervalVectorExporter({})
             intervals_ok = intervals_exporter.export(
                 intervals_path,
                 {"drillhole_data": data, "crs": crs},
@@ -591,12 +591,12 @@ class ExportService:
         ext: str = ".shp",
     ) -> None:
         """Export profile axes."""
-        from sec_interp.exporters import AxesShpExporter
+        from sec_interp.exporters import AxesVectorExporter
 
         logger.info("✓ Saving profile axes...")
         try:
             path, path_layer = self._get_export_path(folder, "profile_axes", settings, ext)
-            exporter = AxesShpExporter({})
+            exporter = AxesVectorExporter({})
             ok = exporter.export(path, {"profile_data": data, "crs": crs}, layer_name=path_layer)
             if ok:
                 msg.append(f"  - {path.name}")
