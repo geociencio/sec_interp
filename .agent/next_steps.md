@@ -1,16 +1,13 @@
-# Next Steps - 2026-03-22
+# Next Steps - Phase 3.5.x Planning
 
-The update to `ai-context-core` v3.3.0 has been completed and verified.
+## Prioritized Technical Debt
+1. **[Moderate]** Unify handling for multi-selection geological validations outside QGIS.
+2. **[Minor]** Simplify export settings configuration serialization to Pydantic if standard type serialization grows complex.
 
-## Pending Tasks
-- [ ] Monitor the new "QGIS Standards Compliance" section in future analyses to improve the project's score.
-- [ ] Address any new unused import or complexity warnings introduced or revealed by the new version of the tool.
-
-## Handover
-The project is in a stable state. All dependencies are synchronized.
-Next session can focus on addressing the QGIS compliance findings or proceeding with the planned v3.4.0 features (Advanced Export).
+## Preliminary Goals for Next Phase
+- Monitor crash reports from user metrics (if any via plugin stats).
+- Investigate deeper geological statistical insights directly in the plugin natively.
 
 ## Command to Resume
-```bash
-uv run ai-ctx analyze --path .
-```
+Use the following command to initialize the system for development:
+`/start-session`
