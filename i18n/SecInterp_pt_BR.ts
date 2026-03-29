@@ -801,9 +801,11 @@
         <message>
             <location filename="../core/controller.py" line="256" />
             <source>✓ Data processed successfully!
-            Topography: {0} points</source>
+
+Topography: {0} points</source>
             <translation>✓ Dados processados ​​com sucesso!
-            Topografia: {0} pontos</translation>
+
+Topografia: {0} pontos</translation>
         </message>
     </context>
     <context>
@@ -953,9 +955,11 @@
         <message>
             <location filename="../gui/main_dialog.py" line="206" />
             <source>{}
-            Please check the logs for details.</source>
+
+Please check the logs for details.</source>
             <translation>{}
-            Por favor, verifique os registros para obter detalhes.</translation>
+
+Por favor, verifique os registros para obter detalhes.</translation>
         </message>
     </context>
     <context>

@@ -146,9 +146,7 @@ transup:
 		echo "Applying master data for $$lang..."; \
 		python3 scripts/i18n/apply_full.py $$lang scripts/i18n/master_data/$$lang.json; \
 	done
-	@# 3. Clean and normalize XML
-	python3 scripts/i18n/clean_translations.py
-	@# 4. Update metadata with supported languages
+	@# 3. Update metadata with supported languages
 	python3 scripts/i18n/update_metadata_languages.py
 
 transcompile:

@@ -1,42 +1,62 @@
 # SecInterp Internationalization (i18n) System
 
-This directory contains the logic for managing SecInterp plugin translations across multiple languages. The system combines standard Qt tools with a "Master Data" engine to automate and normalize translations.
+This directory contains the logic for managing SecInterp plugin translations across multiple languages. The system combines standard Qt tools (`pylupdate5`, `lrelease`) with a rigorous "Master Data" engine to automate, format, and normalize translations safely.
 
-## Directory Structure
+## 🏗️ Architecture & Philosophy
 
-- `master_data/`: Contains JSON files (e.g., `es.json`, `fr.json`) that act as a master "translation memory".
-- `apply_full.py`: Main script that injects translations from `master_data/` into `.ts` files.
-- `clean_translations.py`: Normalizes and beautifies the XML in `.ts` files to prevent version control noise.
-- `update_metadata_languages.py`: Automatically synchronizes the list of supported languages in the plugin's `metadata.txt` file.
-- `auto_translate_*.py`: (Optional) Scripts for integration with machine translation services (e.g., DeepL).
+The i18n system strictly adheres to the **"Single Source of Truth" (SSoT)** pattern.
+Instead of developers directly modifying complex and fragile Qt XML (`.ts`) files, all translations are managed via simple JSON dictionaries located in `master_data/`.
 
-## Workflow
+During the build process, the system natively parses the XML using `xml.etree.ElementTree`, safely injects the strings from the JSON dictionaries, formats the XML using native indentation, and updates the plugin metadata—all without fragile regex hacks.
 
-The workflow is integrated into the project's `Makefile` for ease of execution:
+## 📂 Directory Structure
 
-1.  **String Extraction**:
-    ```bash
-    make transup
-    ```
-    This command internally executes:
-    - `pylupdate5`: Scans the source code and generates/updates the `.ts` files in the `i18n/` folder.
-    - `apply_full.py`: Searches for each original string in the `master_data/` JSON files and, if a translation exists, injects it into the `.ts` file, removing the "unfinished" marker.
-    - `clean_translations.py`: Cleans the resulting XML.
-    - `update_metadata_languages.py`: Updates the `metadata.txt` file.
+- `master_data/`: Contains JSON files (e.g., `es.json`, `de.json`) that act as the master "translation memory" for each supported locale.
+- `apply_full.py`: The core orchestrator. Parses the `.ts` files, injects translations safely via AST, and applies native XML beautification (`ET.indent`).
+- `auto_translate_all_missing.py`: Bulk automation script. Uses a translation API to find missing strings (marked as `unfinished`), translates them using Google Translate in parallel, and saves them back to `master_data/` asynchronously, enforcing alphabetical order.
+- `update_metadata_languages.py`: Automatically synchronizes the list of supported languages dynamically in the plugin's root `metadata.txt` file.
+- `translate_docs.py` / `bulk_translate_user_guide.py`: Ad-hoc pipelines for translating markdown documentation or Qt technical guides.
 
-2.  **Translating New Strings**:
-    - If there are new strings not present in `master_data/`, they will appear as `type="unfinished"` in the `.ts` files.
-    - The recommended approach is to add the translation to the corresponding JSON file in `master_data/` and run `make transup` again.
+*(Note: Legacy scripts like `apply_baseline.py` and `clean_translations.py` have been permanently deprecated in favor of native Python XML handlers and unified JSON registries).*
 
-3.  **Compilation**:
-    ```bash
-    make transcompile
-    ```
-    Generate the binary `.qm` files that QGIS loads at runtime.
+## 🔄 Daily Workflow (How to Translate)
 
-## Golden Rules
+The workflow is natively integrated into the project's root `Makefile` for zero-friction execution.
 
-- **Never edit `.qm` files** directly; they are generated binaries.
-- **Avoid manual edits to `.ts` files** if you can add the translation to `master_data/`. The injection system will overwrite manual changes during the next `make transup`.
-- **Strings in code**: Always wrap UI text with `self.tr("Text")` for it to be detectable.
-- **HTML Entities**: The `apply_full.py` script is designed to automatically handle entity conversion (like `&apos;` or `&gt;`), so you can use normal characters (`'`, `>`, `<`) in the JSON files.
+### 1. Extract, Update, and Inject Strings
+When you add new `self.tr("New Text")` strings in the Python code or UI, run:
+```bash
+make transup
+```
+**Under the hood, this command will:**
+1. Call `pylupdate5` to scan source code and generate/update the `.ts` files.
+2. Call `apply_full.py` to search for each original string in the `master_data/` JSON files and safely inject them into the `.ts` file, stripping the "unfinished" XML tag.
+3. Call `update_metadata_languages.py` to refresh `metadata.txt`.
+
+### 2. Auto-Translating New Strings (Machine Translation)
+If you introduced new strings that are not present in `master_data/`, they will appear as `type="unfinished"` inside the Qt `.ts` files.
+To automatically translate them across **all 13 supported languages** without manual dictionary editing:
+```bash
+python scripts/i18n/auto_translate_all_missing.py
+```
+This script will parse the missing keys, ping Google Translate in parallel threads, and rewrite the `master_data/*.json` files enforcing `sort_keys=True` to maintain tidy Git diffs.
+
+Once the JSON is updated, simply run `make transup` again to inject them!
+
+### 3. Compilation for QGIS
+To compile the raw XML `.ts` files into the binary `.qm` format that QGIS physically reads during runtime:
+```bash
+make transcompile
+```
+
+## 📜 The Golden Rules
+
+> [!CAUTION]
+> **Never edit `.qm` files directly.** They are compiled Qt binaries.
+
+> [!WARNING]
+> **Never edit `.ts` files directly.** Any manual modifications you make inside the XML files will be **wiped out** the next time `make transup` is executed. Always modify the corresponding `master_data/{lang}.json` file.
+
+- **Strings in code**: Always wrap user-facing text with `self.tr("Text")` or `QCoreApplication.translate("Context", "Text")` so that `pylupdate5` detects them.
+- **HTML Entities**: The `apply_full.py` orchestrator automatically handles entity conversion (`&apos;`, `&gt;`). Enter the strings normally in the JSON files (`'`, `>`, `<`).
+- **Alphabetical Sorting**: Our JSON dictionaries are strictly sorted alphabetically to preserve Git History readability. `auto_translate_all_missing.py` handles this automatically, but ensure you format the JSON if adding entries manually.

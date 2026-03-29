@@ -1,13 +1,21 @@
-# Next Steps - Phase 3.5.x Planning
+# 🚀 Next Steps
 
-## Prioritized Technical Debt
-1. **[Moderate]** Unify handling for multi-selection geological validations outside QGIS.
-2. **[Minor]** Simplify export settings configuration serialization to Pydantic if standard type serialization grows complex.
+*Last updated: 2026-03-29 (Session: autonomous_agent_i18n_refactor)*
 
-## Preliminary Goals for Next Phase
-- Monitor crash reports from user metrics (if any via plugin stats).
-- Investigate deeper geological statistical insights directly in the plugin natively.
+## 📍 Current State
+- The `scripts/i18n/` system has been safely refactored and documented. Legacy regex-based XML parsers are gone, and `make transup` utilizes native `ElementTree` handling and sorted JSON dictionaries.
+- The project is fully aligned with the Advanced Agentic Pipeline (`AGENTS.md`).
 
-## Command to Resume
-Use the following command to initialize the system for development:
-`/start-session`
+## 🚧 Pending Tasks & Blockers
+None. The plugin's internal systems are polished.
+
+## 🎯 Immediate Next Actions
+To resume work, the following paths are recommended:
+1. **[Feature Dev]**: Initialize the `/build-feature` workflow to build the next capability (e.g., *Cross-cutting Multi-Selection Validator*).
+2. **[Refactoring]**: Clean up `ExportService` serialization options slightly if Pydantic needs to be introduced for `GpkgfileExporter`.
+
+## 💻 Commands to Resume
+Run the local-first bootloader:
+```bash
+/start-session
+```

@@ -51,6 +51,10 @@ def apply_translations(ts_file, lang_code, translations_map):
                         del translation.attrib["type"]
                     count += 1
 
+    # Native Python 3.9+ XML Beautifier
+    if hasattr(ET, "indent"):
+        ET.indent(tree, space="    ")
+
     # Save XML
     tree.write(ts_file, encoding="utf-8", xml_declaration=True)
     print(f"Applied {count} translations to {ts_file} for {lang_code}")

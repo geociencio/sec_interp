@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **i18n**: Refactored the internal translation generation pipeline. Deprecated legacy regex-parsing scripts (`clean_translations.py`, `apply_baseline.py`) in favor of native Python XML ElementTree AST injection.
+- **i18n**: Enforced `sort_keys=True` in the automatic dictionary translator `auto_translate_all_missing.py` to guarantee stable Git diffs during localization updates.
+
 ## [3.4.0] - 2026-03-29
 
 ### Added

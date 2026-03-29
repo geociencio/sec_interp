@@ -133,7 +133,7 @@ def update_master_data(lang):
             master_data[k] = v
 
     with open(master_file, "w", encoding="utf-8") as f:
-        json.dump(master_data, f, indent=4, ensure_ascii=False)
+        json.dump(master_data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
     print(f"  Successfully updated {master_file} with {len(translated)} translations.")
 

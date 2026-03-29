@@ -16,10 +16,11 @@ Submodules
    sec_interp.exporters.csv_exporter
    sec_interp.exporters.drillhole_3d_exporter
    sec_interp.exporters.drillhole_exporters
+   sec_interp.exporters.dxf_exporter
    sec_interp.exporters.image_exporter
    sec_interp.exporters.interpretation_3d_exporter
    sec_interp.exporters.interpretation_exporters
    sec_interp.exporters.pdf_exporter
    sec_interp.exporters.profile_exporters
-   sec_interp.exporters.shp_exporter
    sec_interp.exporters.svg_exporter
+   sec_interp.exporters.vector_exporter

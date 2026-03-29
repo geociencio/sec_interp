@@ -5,6 +5,30 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
+  - date: 2026-03-29
+    category: TOOLING
+    topic: JSON Git-Diff Stability
+    lesson: "When using machine translation APIs to asynchronously update dictionaries, `json.dump` without deterministic key sorting creates chaotic and unreviewable git diffs on every run."
+    action: "Always enforce `sort_keys=True` when dumping JSON dictionary arrays that act as 'translation memories' or configuration hubs."
+
+  - date: 2026-03-29
+    category: ARCHITECTURE
+    topic: Internal Script Redundancy
+    lesson: "Maintaining duplicate entry points for the same operational block (e.g. apply_baseline.py vs apply_full.py) divides the Single Source of Truth and guarantees technical debt."
+    action: "Always migrate default dictionaries into unified baseline configuration files (like JSONs) and deprecate redundant injector scripts."
+
+  - date: 2026-03-29
+    category: TOOLING
+    topic: Robust XML Modification
+    lesson: "Using naive regex to search and replace values in Qt translation `.ts` files leads to massive malformed XML structures when dealing with special formats. `xml.etree.ElementTree` is orders of magnitude safer."
+    action: "Always utilize native AST or XML parsing libraries when injecting or modifying structured files, completely avoiding custom Regex patches."
+
+  - date: 2026-03-29
+    category: TECHNICAL
+    topic: Modulo Boundaries
+    lesson: "When validating geological or compass orientation mathematically, parsing logic around limits (360) usually evaluates to 0.0 due to internal normalizations (`azimuth % 360`)."
+    action: "Mathematical test assertions must strictly verify the normalized output representation (0.0), not just mirror the input literal (360)."
+
   - date: 2026-03-25
     category: TECHNICAL
     topic: GeoPackage Append & Layer Names (v3.4.0)

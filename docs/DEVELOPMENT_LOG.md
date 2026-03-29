@@ -1,3 +1,19 @@
+## [2026-03-29] Session: Autonomous Agent i18n Refactor
+- **Achievement**: Refactored the core i18n workflow by consolidating translations into `master_data/*.json`, replacing error-prone XML Regex parsers with native `ElementTree.indent`, and enabling clean git diffs with `sort_keys=True` in Google Translate automatons.
+- **Changes**:
+    - **i18n Scripts**: Deleted legacy `apply_baseline.py` and `clean_translations.py`. Formatted `apply_full.py` to handle ast injection and formatting safely.
+    - **Integration**: Updated `Makefile` to accommodate new streamlined `make transup` target.
+    - **Documentation**: Overhauled `scripts/i18n/README.md` to reflect the new Single Source of Truth architecture and provide deep translation guidelines.
+- **Status**: Completed. Pipeline 100% functional.
+- **Maintenance**: [session_2026-03-29_autonomous_agent_i18n_refactor.md](maintenance/session_2026-03-29_autonomous_agent_i18n_refactor.md)
+
+## [2026-03-29] Session: i18n Stabilization & v3.4.0 Release
+- **Changes**:
+    - **Core**: Repaired integration test assertions expecting raw `360` instead of properly normalized `0.0` azimuths.
+    - **Release**: Built, checked, and signed `dist/sec_interp.3.4.0.zip` with full markdown English integration (Phase Closure v3.4.0).
+- **Status**: Completed. 620/620 tests OK (Docker).
+- **Maintenance**: [session_2026-03-29_i18n_release_v3.4.0.md](maintenance/session_2026-03-29_i18n_release_v3.4.0.md)
+
 ## [2026-03-25] Session: Unified Export Architecture & Sync
 - **Achievement**: Refactored the export architecture to use a unified GeoPackage storage strategy and enabled layer-backed bi-directional synchronization for interpretation polygons.
 - **Changes**:
