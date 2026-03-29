@@ -257,7 +257,7 @@ class ExportService:
                 layer_name=csv_layer,
             )
             if csv_ok:
-                msg.append(f"  - {csv_path.name}")
+                msg.append(f"  - {csv_path.relative_to(folder)}")
             else:
                 logger.warning(f"Failed to write CSV topography to {csv_path}")
 
@@ -267,7 +267,7 @@ class ExportService:
                 vec_path, {"profile_data": data, "crs": crs}, layer_name=vec_layer
             )
             if vec_ok:
-                msg.append(f"  - {vec_path.name}")
+                msg.append(f"  - {vec_path.relative_to(folder)}")
             else:
                 logger.warning(f"Failed to write vector topography to {vec_path}")
 
@@ -303,7 +303,7 @@ class ExportService:
                 layer_name=csv_layer,
             )
             if csv_ok:
-                msg.append(f"  - {csv_path.name}")
+                msg.append(f"  - {csv_path.relative_to(folder)}")
 
             vec_path, vec_layer = self._get_export_path(folder, "geol_profile", settings, ext)
             vector_exporter = GeologyVectorExporter({})
@@ -311,7 +311,7 @@ class ExportService:
                 vec_path, {"geology_data": data, "crs": crs}, layer_name=vec_layer
             )
             if vec_ok:
-                msg.append(f"  - {vec_path.name}")
+                msg.append(f"  - {vec_path.relative_to(folder)}")
             else:
                 logger.warning(
                     f"Failed to write vector geology to {vec_path} (likely no intersections)"
@@ -353,7 +353,7 @@ class ExportService:
                 layer_name=csv_layer,
             )
             if csv_ok:
-                msg.append(f"  - {csv_path.name}")
+                msg.append(f"  - {csv_path.relative_to(folder)}")
 
             raster_res = 1.0
             if raster_layer and raster_layer.isValid():
@@ -374,7 +374,7 @@ class ExportService:
                 layer_name=vec_layer,
             )
             if vec_ok:
-                msg.append(f"  - {vec_path.name}")
+                msg.append(f"  - {vec_path.relative_to(folder)}")
             else:
                 logger.warning(f"Failed to write vector structures to {vec_path}")
 
@@ -415,7 +415,7 @@ class ExportService:
                 layer_name=traces_layer,
             )
             if traces_ok:
-                msg.append(f"  - {traces_path.name}")
+                msg.append(f"  - {traces_path.relative_to(folder)}")
             else:
                 logger.warning(f"Failed to write drillhole traces to {traces_path}")
 
@@ -429,7 +429,7 @@ class ExportService:
                 layer_name=intervals_layer,
             )
             if intervals_ok:
-                msg.append(f"  - {intervals_path.name}")
+                msg.append(f"  - {intervals_path.relative_to(folder)}")
             else:
                 logger.warning(f"Failed to write drillhole intervals to {intervals_path}")
 
@@ -506,7 +506,7 @@ class ExportService:
                     layer_name=path_layer,
                 )
                 if ok:
-                    msg.append(f"  - {path.name} ({label})")
+                    msg.append(f"  - {path.relative_to(folder)} ({label})")
                 else:
                     logger.warning(f"Failed to write 3D drillhole data to {path} ({label})")
 
@@ -534,7 +534,7 @@ class ExportService:
             exporter = Interpretation2DExporter({})
             ok = exporter.export(path, {"interpretations": data, "crs": crs}, layer_name=path_layer)
             if ok:
-                msg.append(f"  - {path.name}")
+                msg.append(f"  - {path.relative_to(folder)}")
             else:
                 logger.warning(f"Failed to write 2D interpretations to {path}")
 
@@ -575,7 +575,7 @@ class ExportService:
                 layer_name=path_layer,
             )
             if ok:
-                msg.append(f"  - {path.name} (3D)")
+                msg.append(f"  - {path.relative_to(folder)} (3D)")
             else:
                 logger.warning(f"Failed to write 3D interpretations to {path}")
         else:
@@ -599,7 +599,7 @@ class ExportService:
             exporter = AxesVectorExporter({})
             ok = exporter.export(path, {"profile_data": data, "crs": crs}, layer_name=path_layer)
             if ok:
-                msg.append(f"  - {path.name}")
+                msg.append(f"  - {path.relative_to(folder)}")
             else:
                 logger.warning(f"Failed to write profile axes to {path}")
         except Exception as e:

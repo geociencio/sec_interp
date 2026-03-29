@@ -178,9 +178,7 @@ def validate_structural_requirements(
     return True, ""
 
 
-def _check_struct_layer_validity(
-    layer: QgsVectorLayer, layer_name: str
-) -> tuple[bool, str]:
+def _check_struct_layer_validity(layer: QgsVectorLayer, layer_name: str) -> tuple[bool, str]:
     """Check if the structural layer is valid and has correct geometry."""
     if not layer.isValid():
         return False, f"Structural layer '{layer_name}' is not valid."
@@ -233,16 +231,16 @@ def _check_geology_layer_validity(layer: QgsVectorLayer) -> tuple[bool, str]:
     return True, ""
 
 
-def _validate_struct_field(
-    layer: QgsVectorLayer, field_name: str, label: str
-) -> tuple[bool, str]:
+def _validate_struct_field(layer: QgsVectorLayer, field_name: str, label: str) -> tuple[bool, str]:
     """Validate a specific structural field existance and type."""
     is_valid, msg = validate_field_exists(layer, field_name)
     if not is_valid:
         return False, msg
 
     is_valid, msg = validate_field_type(
-        layer, field_name, [FieldType.INT, FieldType.DOUBLE, FieldType.LONG_LONG]
+        layer,
+        field_name,
+        [FieldType.INT, FieldType.DOUBLE, FieldType.LONG_LONG, FieldType.STRING],
     )
     if not is_valid:
         return False, f"{label} field error: {msg}"
@@ -263,9 +261,7 @@ def validate_crs_compatibility(layers: list[QgsMapLayer]) -> tuple[bool, str]:
     ref_crs = ref_layer.crs()
 
     incompatible = [
-        f"  - {L.name()}: {L.crs().authid()}"
-        for L in valid_layers
-        if L.crs() != ref_crs
+        f"  - {L.name()}: {L.crs().authid()}" for L in valid_layers if L.crs() != ref_crs
     ]
 
     if incompatible:
