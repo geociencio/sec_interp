@@ -141,8 +141,8 @@ transup:
 	@echo "------------------------------------------------"
 	@# 1. Update .ts files from source (efficient single call)
 	pylupdate5 -noobsolete sec_interp_plugin.py core/**/*.py gui/**/*.py exporters/*.py -ts $(addprefix i18n/SecInterp_, $(addsuffix .ts, $(LOCALES)))
-	@# 2. Apply master translations for all languages except Spanish (the source)
-	@for lang in $(filter-out es, $(LOCALES)); do \
+	@# 2. Apply master translations for all languages
+	@for lang in $(LOCALES); do \
 		echo "Applying master data for $$lang..."; \
 		python3 scripts/i18n/apply_full.py $$lang scripts/i18n/master_data/$$lang.json; \
 	done

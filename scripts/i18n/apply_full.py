@@ -19,21 +19,33 @@ def apply_translations(ts_file, lang_code, translations_map):
     # Regex to find <message> blocks
     # We need to be careful with multi-line messages and tags
     pattern = re.compile(
-        r"(<message>.*?(?:<location[^>]*/>\s*)*<source>(.*?)</source>.*?<translation[^>]*>).*?(</translation>.*?) </message>",
+        r"(<message>.*?(?:<location[^>]*/>\s*)*<source>(.*?)</source>.*?<translation[^>]*>).*?(</translation>.*?)</message>",
         re.DOTALL,
     )
 
+    def unescape(text):
+        """Minimal HTML unescape for .ts source strings."""
+        return (
+            text.replace("&apos;", "'")
+            .replace("&quot;", '"')
+            .replace("&amp;", "&")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+        )
+
     def replacer(match):
         prefix = match.group(1)
-        source = match.group(2).strip()
+        source_raw = match.group(2).strip()
+        source_clean = unescape(source_raw)
         suffix = match.group(3)
 
         # Clean prefix from unfinished marker if we have a translation
-        if source in translations_map:
-            translation = translations_map[source]
-            # Remove type="unfinished" if present
-            new_prefix = re.sub(r' type="unfinished"', "", prefix)
-            return f"{new_prefix}{translation}{suffix} </message>"
+        if source_clean in translations_map:
+            translation = translations_map[source_clean]
+            if translation:
+                # Remove type="unfinished" if present
+                new_prefix = re.sub(r' type="unfinished"', "", prefix)
+                return f"{new_prefix}{translation}{suffix}</message>"
         return match.group(0)
 
     new_content = pattern.sub(replacer, content)
