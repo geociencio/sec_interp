@@ -1,21 +1,20 @@
-# 🚀 Next Steps
+# Handover: Documentation Modernization (v3.4.0)
+**Session Topic**: `docs_modernization_v340`
+**Date**: 2026-03-30
+**Status**: 🟢 Architecture and i18n guides updated to v3.4.0 standards.
 
-*Last updated: 2026-03-29 (Session: autonomous_agent_i18n_refactor)*
+## 🚀 Summary of Work
+- **ARCHITECTURE_EN.md**: Completely overhauled to reflect the Manager-based GUI and Interface-driven Core layer. Mermaid diagrams updated.
+- **MAINTENANCE_I18N.md**: Rewritten in English, documenting the SSoT Master Data workflow and automated parallel translation.
+- **Project Metrics**: Updated SLOC (12,633) and Maintainability (39.2) via `ai-ctx analyze`.
+- **Tests**: Verified 571 unit tests passing locally.
 
-## 📍 Current State
-- The `scripts/i18n/` system has been safely refactored and documented. Legacy regex-based XML parsers are gone, and `make transup` utilizes native `ElementTree` handling and sorted JSON dictionaries.
-- The project is fully aligned with the Advanced Agentic Pipeline (`AGENTS.md`).
+## 📌 Pending Tasks
+- [ ] **Refinement**: Improve the Mermaid diagram's visual styling for dark/light mode compatibility (using classDefs).
+- [ ] **Technical Deep-dives**: Extend the documentation for individual services in `core/services/geology/`.
+- [ ] **Automation**: Implement architecture validation scripts to prevent "Core -> GUI" illicit imports.
 
-## 🚧 Pending Tasks & Blockers
-None. The plugin's internal systems are polished.
-
-## 🎯 Immediate Next Actions
-To resume work, the following paths are recommended:
-1. **[Feature Dev]**: Initialize the `/build-feature` workflow to build the next capability (e.g., *Cross-cutting Multi-Selection Validator*).
-2. **[Refactoring]**: Clean up `ExportService` serialization options slightly if Pydantic needs to be introduced for `GpkgfileExporter`.
-
-## 💻 Commands to Resume
-Run the local-first bootloader:
+## 💻 Resume Command
 ```bash
-/start-session
+/start-session "Refine architecture diagrams and submodule docs"
 ```

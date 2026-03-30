@@ -237,8 +237,26 @@ This file records technical lessons, user preferences, and solutions to complex 
     lesson: "The CLI executable for `ai-context-core` is `ai-ctx`, not `ai-context`. The v3.3.0 update fixes previous aggregation bugs where global metrics (Functions, Classes, MI) were reported as zero."
     action: "Always use `uv run ai-ctx` for project analysis. Leverage the new 'QGIS Standards Compliance' section to audit plugin best practices and i18n coverage."
 
+  - date: 2026-03-30
+    category: ARCHITECTURE
+    topic: Manager-based GUI Orchestration
+    lesson: "Refactoring monolithic dialog classes into specialized Managers (Signal, Preview, Export, Input) reduces cyclomatic complexity (CC) and decouples UI lifecycle from feature logic."
+    action: "Adopt the Manager pattern for all complex QGIS Dialogs, delegating signal handling and state persistence to dedicated orchestrators."
+
+  - date: 2026-03-30
+    category: ARCHITECTURE
+    topic: Interface-driven Core Design
+    lesson: "Defining service contracts via Abstract Base Classes (ABCs) in `core/interfaces` allows the `ProfileController` to remain agnostic of concrete implementations, enabling seamless Dependency Injection and Mock-based testing."
+    action: "Always define a clear interface for new Core services before implementation to ensure loose coupling and testability."
+
+  - date: 2026-03-30
+    category: i18n
+    topic: Master Data SSoT Workflow
+    lesson: "Treating JSON dictionaries as the Single Source of Truth (SSoT) for translations allows for safe, automated injection into Qt `.ts` files, eliminating XML formatting errors and enabling asynchronous parallel machine translation."
+    action: "Never modify `.ts` files manually; always use the `master_data/*.json` registries as the primary editing point for all locales."
+
 ---
-*Last update: 2026-03-22 - Generation 5 Memory Reflection.*
+*Last update: 2026-03-30 - Generation 5 Memory Reflection.*
 > [!NOTE]
 > Lessons from 2026-03-15 and earlier in this log have been consolidated into specialized `SKILL.md` files as part of the self-evolving memory workflow.
 ```

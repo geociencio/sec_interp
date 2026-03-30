@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 2.9.1 | Last Updated: 2026-02-07
+> Version 3.4.0 | Last Updated: 2026-03-29
 
 ---
 
@@ -32,61 +32,53 @@
 - ✅ **Adaptive LOD** (Level of Detail) based on zoom.
 - ✅ **Measurement Tools** with automatic snapping.
 - ✅ **Drillhole Support** with 3D→2D trajectory projection.
-- ✅ **Multi-format Export** (SHP, CSV, PDF, SVG, PNG).
+- ✅ **Multi-format Export** (SHP, GPKG, DXF, CSV, PDF, SVG).
 
 ---
 
 ## 📂 Directory Structure
 
-The project organization follows a clear modular structure to separate the interface, business logic, and utilities.
+The project organization follows a highly modular architecture based on the **Separation of Concerns** (SoC) principle, decoupling the interface, business logic, and export formats.
 
 ```
 sec_interp/
 ├── __init__.py                 # Plugin entry point
 ├── sec_interp_plugin.py        # Root class (SecInterp)
 ├── metadata.txt                # QGIS Metadata
-├── Makefile                    # Automation (deploy, docs)
+├── Makefile                    # Automation (deploy, tests, docs)
 │
 ├── core/                       # ⚙️ Business Logic (Core Layer)
 │   ├── controller.py           # Orchestrator (ProfileController)
-│   ├── algorithms.py           # Pure intersection logic
+│   ├── interfaces/             # [NEW] Abstract Base Classes for DI
+│   ├── models/                 # [NEW] Domain Models and Settings
 │   ├── services/               # Specialized Services
-│   │   ├── profile_service.py  # Topography and sampling
-│   │   ├── geology_service.py  # Geological intersections
-│   │   ├── structure_service.py# Structural projection
-│   │   ├── drillhole/          # [NEW] Drillhole Sub-system
-│   │   │   ├── collar_processor.py
-│   │   │   ├── survey_processor.py
-│   │   │   ├── interval_processor.py
-│   │   │   └── projection_engine.py
-│   │   └── drillhole_service.py# Drillhole processing service
-│   │   └── preview_service.py  # Preview orchestrator
+│   │   ├── export_service.py   # [NEW] Unified Export Orchestration
+│   │   ├── access_control.py   # [NEW] Permission and Feature logic
+│   │   ├── drillhole/          # Drillhole Processing Sub-system
+│   │   ├── geology/            # Geology Processing Sub-system
+│   │   └── preview_service.py  # Preview Orchestrator
 │   ├── validation/             # Modular validation package
-│   ├── domain/                 # [NEW] Domain Layer (Entities & DTOs)
-│   │   ├── entities.py         # Business objects with identity
-│   │   ├── dtos.py             # Data Transfer Objects
-│   │   ├── task_inputs.py      # Async Task Inputs
-│   │   └── enums.py            # Domain-pure enumerations
-│   └── utils/                  # Utilities (Geometry, Spatial, etc.)
-│       └── metadata_reader.py  # [NEW] Single source of truth for plugin info
+│   ├── domain/                 # Domain Layer (Entities & DTOs)
+│   └── utils/                  # Utilities (Geometry, Spatial, i18n)
 │
 ├── gui/                        # 🖥️ User Interface (GUI Layer)
-│   ├── main_dialog.py          # Main Dialog (Simplified)
-│   ├── preview_renderer.py     # Native PyQGIS rendering
-│   ├── parallel_geology.py     # Parallel processing worker
-│   ├── main_dialog_preview.py  # Preview Manager
-│   ├── ui/                     # Components and Pages (Layouts)
-│   └── tools/                  # Map Tools (Measure Tool)
+│   ├── main_dialog.py          # Main Dialog (Manager Orchestrator)
+│   ├── dialog_signal_manager.py# Centralized Signal Handling
+│   ├── dialog_preview_manager.py# Preview and Canvas Lifecycle
+│   ├── dialog_export_manager.py# Export UI Logic
+│   ├── tasks/                  # [NEW] QgsTask Background Workers
+│   ├── renderers/              # [NEW] Specialized Canvas Renderers
+│   ├── ui/                     # Layouts and Components
+│   │   └── pages/              # Tab-based Page components
+│   └── tools/                  # QgsMapTool Implementations
 │
 ├── exporters/                  # 📤 Export Layer
-│   ├── base_exporter.py        # Export interface
-│   ├── shp_exporter.py         # Generic Shapefile exporter
-│   ├── profile_exporters.py    # Specific profile exporters
-│   └── drillhole_exporters.py  # Drillhole exporters
-│
-├── docs/                       # 📚 Technical documentation and manuals
-├── tests/                      # 🧪 Unit test suite
-└── resources/                  # 🎨 Icons and Qt resources
+│   ├── vector_exporter.py      # [NEW] Unified Vector (SHP/GPKG/DXF)
+│   ├── interpretation_3d.py    # [NEW] 3D Geologic Export
+│   └── csv_exporter.py         # Raw Data Export
+├── docs/                       # 📚 ADRs, Manuals, and Technical Logs
+├── tests/                      # 🧪 Test Suite (Core/GUI/Integration)
+└── resources/                  # 🎨 Icons, Styles, and Qt Resources
 ```
 
 ---
@@ -99,7 +91,6 @@ sec_interp/
 graph TB
     %% ========== ENTRY POINT ==========
     QGIS[QGIS Application]
-    INIT[__init__.py<br/>Entry Point]
     PLUGIN[sec_interp_plugin.py<br/>SecInterp Class<br/>Plugin Root]
 
     %% ========== GUI LAYER ==========
@@ -108,28 +99,28 @@ graph TB
 
         MAIN[main_dialog.py<br/>SecInterpDialog]
 
-        subgraph MANAGERS["Managers"]
-            SIGNALS_MGR[main_dialog_signals.py<br/>SignalManager]
-            DATA_MGR[main_dialog_data.py<br/>DataAggregator]
-            PREVIEW_MGR[main_dialog_preview.py<br/>PreviewManager]
-            EXPORT_MGR[main_dialog_export.py<br/>ExportManager]
-            VALIDATION_MGR[main_dialog_validation.py<br/>DialogValidator]
-            CONFIG_MGR[main_dialog_config.py<br/>DialogDefaults]
+        subgraph MANAGERS["Managers (Orchestration)"]
+            SIGNALS_MGR[dialog_signal_manager.py]
+            INPUT_MGR[dialog_input_manager.py]
+            PREVIEW_MGR[dialog_preview_manager.py]
+            EXPORT_MGR[dialog_export_manager.py]
+            INTERP_MGR[dialog_interpretation_manager.py]
+            STATE_MGR[dialog_state_manager.py]
         end
 
-        RENDERER[preview_renderer.py<br/>PreviewRenderer]
-        LEGEND[legend_widget.py<br/>LegendWidget]
-
-        subgraph TOOLS["🛠️ Tools"]
-            MEASURE[measure_tool.py<br/>ProfileMeasureTool]
+        subgraph RENDERING["Rendering Engine"]
+            LAYER_FACTORY[preview_layer_factory.py]
+            AXES_MGR[preview_axes_manager.py]
+            RENDERER[preview_renderer.py]
         end
 
-        subgraph UI_WIDGETS["📦 UI Components"]
-            UI_MAIN[main_window.py<br/>SecInterpMainWindow]
-            UI_PAGES[Page Classes:<br/>DemPage, SectionPage,<br/>GeologyPage, StructPage,<br/>DrillholePage]
-            UI_PREVIEW[PreviewWidget]
-            UI_OUTPUT[OutputWidget]
+        subgraph WORKERS["Async Tasks"]
+            TASK_ORCH[preview_task_orchestrator.py]
+            GEOLOGY_TASK[tasks/geology_task.py]
+            DRILL_TASK[tasks/drillhole_task.py]
         end
+
+        UI_PAGES[ui/pages/<br/>Component Based UI]
     end
 
     %% ========== CORE LAYER ==========
@@ -138,128 +129,131 @@ graph TB
 
         CONTROLLER[controller.py<br/>ProfileController]
 
-        subgraph SERVICES["🔧 Services"]
-            PROFILE_SVC[profile_service.py<br/>ProfileService]
-            GEOLOGY_SVC[geology_service.py<br/>GeologyService]
-            STRUCTURE_SVC[structure_service.py<br/>StructureService]
-            ACCESS_SVC[access_control_service.py<br/>AccessControlService]
-
-
-            subgraph DRILLHOLE_PKG["Drillhole Sub-system"]
-                DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService]
-                COLLAR_PROC[collar_processor.py]
-                SURVEY_PROC[survey_processor.py]
-                INTERVAL_PROC[interval_processor.py]
-                PROJ_ENGINE[projection_engine.py<br/>Pure Math]
-            end
-
-            PARALLEL_GEO[parallel_geology.py<br/>ParallelGeologyService]
+        subgraph INTERFACES["Abstractions (DI)"]
+            I_PROF[interfaces/profile_interface.py]
+            I_GEOL[interfaces/geology_interface.py]
+            I_DRILL[interfaces/drillhole_interface.py]
         end
 
-        ALGORITHMS[core/algorithms.py<br/>Pure Pure Logic]
-
-        subgraph VALIDATION_PKG["🛡️ Validation Package"]
-            VALIDATION_INIT[core/validation/__init__.py<br/>Facade]
-            FIELD_VAL[core/validation/field_validator.py]
-            LAYER_VAL[core/validation/layer_validator.py]
-            PATH_VAL[core/validation/path_validator.py]
-            PROJ_VAL[core/validation/project_validator.py]
+        subgraph SERVICES["Concrete Services"]
+            PROF_SVC[services/profile_service.py]
+            GEOL_SVC[services/geology_service.py]
+            DRILL_SVC[services/drillhole_service.py]
+            EXPORT_SVC[services/export_service.py]
         end
-        CACHE[data_cache.py<br/>DataCache]
-        METRICS[performance_metrics.py<br/>PerformanceMetrics]
-        DOMAIN[core/domain/<br/>Domain Layer Package]
 
-        subgraph UTILS["🔨 Utilities"]
-            GEOM_UTILS[geometry.py]
-            DRILL_UTILS[drillhole.py]
-            GEOLOGY_UTILS[geology.py]
-            SPATIAL_UTILS[spatial.py]
-            SAMPLING_UTILS[sampling.py]
-            PARSING_UTILS[parsing.py]
-            RENDERING_UTILS[rendering.py]
-            IO_UTILS[io.py]
-            METADATA[metadata_reader.py]
-        end
+        MODELS[core/models/<br/>Domain Models]
+        VALIDATION[core/validation/<br/>Pipeline Validation]
     end
 
     %% ========== EXPORTERS LAYER ==========
-    subgraph EXPORTERS["📤 Exporters Layer - Export"]
+    subgraph EXPORT["📤 Exporters Layer"]
         direction TB
-
-        ORCHESTRATOR[orchestrator.py<br/>DataExportOrchestrator]
-        BASE_EXP[base_exporter.py<br/>BaseExporter]
-
-        subgraph EXPORT_FORMATS["Export Formats"]
-            SHP_EXP[shp_exporter.py]
-            CSV_EXP[csv_exporter.py]
-            PDF_EXP[pdf_exporter.py]
-            SVG_EXP[svg_exporter.py]
-            IMG_EXP[image_exporter.py]
-            PROFILE_EXP[profile_exporters.py]
-            DRILL_EXP[drillhole_exporters.py]
-        end
-    end
-
-    %% ========== EXTERNAL DEPENDENCIES ==========
-    subgraph EXTERNAL["🌐 External Dependencies"]
-        QGIS_CORE[qgis.core]
-        QGIS_GUI[qgis.gui]
-        PYQT5[PyQt5]
+        VEC_EXP[vector_exporter.py<br/>GPKG/SHP/DXF]
+        I3D_EXP[interpretation_3d.py<br/>3D Geology]
+        D3D_EXP[drillhole_3d.py<br/>3D Drillholes]
+        PDF_EXP[pdf_exporter.py<br/>Layouts]
     end
 
     %% ========== CONNECTIONS ==========
-    QGIS -->|loads| INIT
-    INIT -->|delegates| PLUGIN
-    PLUGIN -->|initializes| MAIN
+    QGIS --> PLUGIN
+    PLUGIN --> MAIN
 
-    MAIN -->|delegates signals| SIGNALS_MGR
-    MAIN -->|uses data from| DATA_MGR
-    MAIN -->|manages| PREVIEW_MGR
-    MAIN -->|manages| EXPORT_MGR
-    MAIN -->|manages| VALIDATION_MGR
-    MAIN -->|manages| CONFIG_MGR
-    MAIN -->|uses| UI_MAIN
+    MAIN --> MANAGERS
+    MANAGERS --> WORKERS
+    MANAGERS --> UI_PAGES
 
-    PREVIEW_MGR -->|renders with| RENDERER
-    PREVIEW_MGR -->|updates| LEGEND
-    PREVIEW_MGR -->|activates| MEASURE
-    PREVIEW_MGR -->|requests data| CONTROLLER
+    WORKERS --> TASK_ORCH
+    TASK_ORCH --> CONTROLLER
 
-    EXPORT_MGR -->|delegates to| ORCHESTRATOR
-    VALIDATION_MGR -->|validates with| PROJ_VAL
+    CONTROLLER --> INTERFACES
+    INTERFACES -.-> SERVICES
 
-    CONTROLLER -->|orchestrates| PROFILE_SVC
-    CONTROLLER -->|orchestrates| GEOLOGY_SVC
-    CONTROLLER -->|orchestrates| STRUCTURE_SVC
-    CONTROLLER -->|orchestrates| DRILLHOLE_SVC
+    SERVICES --> VALIDATION
+    SERVICES --> MODELS
 
-    DRILLHOLE_SVC -->|delegates to| COLLAR_PROC
-    DRILLHOLE_SVC -->|delegates to| SURVEY_PROC
-    DRILLHOLE_SVC -->|delegates to| INTERVAL_PROC
-    COLLAR_PROC -->|uses| PROJ_ENGINE
+    EXPORT_MGR --> EXPORT_SVC
+    EXPORT_SVC --> EXPORT
 
-    CONTROLLER -->|uses| CACHE
-    CONTROLLER -->|tracks with| METRICS
+    %% Styles
+    classDef plugin fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px,color:#fff
+    classDef gui fill:#4ecdc4,stroke:#0a9396,stroke-width:2px,color:#000
+    classDef core fill:#95e1d3,stroke:#38a169,stroke-width:2px,color:#000
+    classDef export fill:#ffd93d,stroke:#f59e0b,stroke-width:2px,color:#000
 
-    GEOLOGY_SVC -->|offloads to| PARALLEL_GEO
-    DRILLHOLE_SVC -->|uses| DRILL_UTILS
-    PROFILE_SVC -->|uses| SAMPLING_UTILS
-
-    ORCHESTRATOR -->|delegates to| EXPORT_FORMATS
-
-    classDef entryPoint fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
-    classDef guiLayer fill:#4ecdc4,stroke:#0a9396,stroke-width:2px,color:#000
-    classDef coreLayer fill:#95e1d3,stroke:#38a169,stroke-width:2px,color:#000
-    classDef exportLayer fill:#ffd93d,stroke:#f59e0b,stroke-width:2px,color:#000
-    classDef externalLayer fill:#a8dadc,stroke:#457b9d,stroke-width:2px,color:#000
-
-    class QGIS,PLUGIN entryPoint
-    class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,LEGEND,MEASURE guiLayer
-    class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,DOMAIN coreLayer
-    class PROFILE_SVC,GEOLOGY_SVC,STRUCTURE_SVC,DRILLHOLE_SVC,PARALLEL_GEO coreLayer
-    class ORCHESTRATOR,BASE_EXP,SHP_EXP,CSV_EXP,PDF_EXP,SVG_EXP,IMG_EXP,PROFILE_EXP,DRILL_EXP exportLayer
-    class QGIS_CORE,QGIS_GUI,PYQT5 externalLayer
+    class PLUGIN plugin
+    class MAIN,MANAGERS,RENDERING,WORKERS gui
+    class CONTROLLER,INTERFACES,SERVICES,MODELS core
+    class EXPORT export
 ```
+
+---
+
+## 🖥️ GUI Layer - User Interface
+
+### 1. Manager-Based Orchestration (main_dialog.py)
+
+**Main Class**: `SecInterpDialog`
+**Responsibility**: The main dialog no longer contains business logic. It coordinates specialized **Managers** that handle specific lifecycle events and UI state.
+
+#### Key Managers
+
+| Manager | Responsibility |
+|---------|----------------|
+| `DialogSignalManager` | Centralizes all signal/slot connections to avoid spaghetti code. |
+| `DialogInputManager` | Manages input layer selection and schema validation. |
+| `PreviewManager` | Coordinates the preview canvas, axes, and LOD calculation. |
+| `ExportManager` | Maps UI selections to the `ExportService` in the Core layer. |
+| `InterpretationManager` | Handles 2D/3D geological interpretation state. |
+| `DialogStateManager` | Manages persistence and session-based UI defaults. |
+
+---
+
+### 2. Rendering Engine & Async Tasks
+
+**Responsibility**: Decouples heavy rendering logic from the main thread using `QgsTask`.
+
+- **PreviewLayerFactory**: Generates temporary memory layers for previewing.
+- **PreviewTaskOrchestrator**: Manages a queue of background tasks to keep the UI responsive.
+- **LOD Calculator**: Implements adaptive simplification for large geological datasets.
+
+---
+
+## ⚙️ Core Layer - Business Logic
+
+### 1. Interface-Driven Design (interfaces/)
+
+**Pattern**: Dependency Injection (DI)
+**Responsibility**: All services are defined as Abstract Base Classes (ABCs). The `ProfileController` consumes interfaces, allowing for easy mocking during testing and replacement of logic without affecting the GUI.
+
+```python
+class IGeologyService(abc.ABC):
+    @abc.abstractmethod
+    def calculate_intersections(self, profile: ProfileData) -> List[GeologySegment]:
+        pass
+```
+
+### 2. ProfileController (controller.py)
+
+**Responsibility**: Orchestrates the interaction between services through their interfaces.
+
+| Service | Responsibility |
+|---------|----------------|
+| `ProfileService` | Topography extraction and sampling logic. |
+| `GeologyService` | Core intersection algorithms (Outcrops/Polygons). |
+| `DrillholeService` | 3D trajectory calculation and 2D section projection. |
+| `ExportService` | Central orchestrator for the Exporters layer. |
+| `AccessControlService` | Validates licenses and feature availability. |
+
+---
+
+## 📤 Exporters Layer
+
+The Exporters layer has been modernized to support a wider range of engineering and geoscientific formats.
+
+- **Unified Vector Exporter**: A single entry point for SHP, GeoPackage, and DXF.
+- **3D Geospatial Export**: Specialized logic for exporting geological interpretations and drillholes as 3D geometries (Z-aware).
+- **Format Decoupling**: Exporters only consume DTOs from the `core/domain` package.
 
 ---
 
@@ -310,81 +304,47 @@ class SecInterpDialog(SecInterpMainWindow):
 | `_adaptive_sample()` | Adaptive sampling | Curvature-based |
 
 ---
-
-## ⚙️ Core Layer - Business Logic
-
-### 1. ProfileController (controller.py)
-
-**Responsibility**: Orchestrates data generation services.
-
-```python
-class ProfileController:
-    def __init__(self):
-        self.profile_service = ProfileService()
-        self.geology_service = GeologyService()
-        self.structure_service = StructureService()
-        self.drillhole_service = DrillholeService()
-        self.data_cache = DataCache()
-```
-
----
-
 ## 🎨 Design Principles
 
-The SecInterp plugin is designed following robust software engineering principles to ensure quality and maintainability.
+SecInterp v3.4.0 follows industry-standard architectural patterns to ensure high quality and testability.
 
-### SOLID Principles
+### Core Architectural Patterns
+- **Manager Pattern (GUI)**: Decouples the main window from individual feature logic (Export, Preview, etc.).
+- **Dependency Injection (Core)**: Uses `core/interfaces` to decouple the `ProfileController` from concrete service implementations.
+- **Factory Pattern (Exporters)**: The `ExportService` dynamically selects the appropriate `BaseExporter` subclass.
+- **Observer Pattern (Signals)**: Extensive use of `PyQt5.QtCore.pyqtSignal` for asynchronous communication between Core and GUI.
+- **DTO Pattern (Data Transfer Objects)**: All data passing between layers is encapsulated in immutable DTOs from `core/domain`.
 
-- **SRP (Single Responsibility Principle)**: Each service (Profile, Geology, Structure, Drillhole) has a single, clear responsibility.
-- **OCP (Open/Closed Principle)**: Exporters are easily extensible via an abstract base class without modifying the core logic.
-- **LSP (Liskov Substitution Principle)**: All concrete exporters can substitute the `BaseExporter` interface.
-- **ISP (Interface Segregation Principle)**: Service interfaces are focused on their specific domain.
-- **DIP (Dependency Inversion Principle)**: The controller depends on abstractions (services), avoiding heavy concrete implementations in the GUI.
-
-### Other Patterns and Principles
-- **DRY (Don't Repeat Yourself)**: Heavy use of `utils` modules to centralize mathematical and spatial calculations.
-- **Separation of Concerns**: Clear distinction between the GUI Layer (Managers), Core Layer (Services), and Data Layer (DataCache).
+### SOLID & Clean Code
+- **Interface Segregation**: Clients only depend on the specific service interfaces they need.
+- **Single Responsibility**: Each Manager and Service handles a unique, atomic part of the plugin workflow.
+- **Thread Safety**: Long-running operations only use `QgsTask` to avoid blocking the QGIS main thread.
 
 ---
 
 ## 🚀 Extensibility
 
-Quick guide for developers wishing to expand the plugin.
-
 ### Adding a New Service
-1. Create a new file in `core/services/` (e.g., `seismic_service.py`).
-2. Implement the service logic following the pattern of existing services.
-3. Register the service in `controller.py` within the `ProfileController` constructor.
-4. Add the orchestration method in the controller and connect it to the `PreviewManager`.
+1. Define the interface in `core/interfaces/` (inheriting from `abc.ABC`).
+2. Implement the concrete service in `core/services/`.
+3. Register the service in `controller.py` and inject it into the `ProfileController`.
 
 ### Adding a New Export Format
-1. Create a class in `exporters/` that inherits from `BaseExporter`.
-2. Implement the mandatory `export()` method.
-3. Register the new exporter in the factory in `orchestrator.py` or specific export modules.
+1. Inherit from `BaseExporter` in `exporters/`.
+2. Implement the `export()` method using QGIS-agnostic logic.
+3. Update the `ExportService` to include the new format in its registry.
 
 ---
 
-## 📦 Deployment
-
-The plugin uses a `Makefile`-based system to facilitate local deployment and packaging.
-
-- **Main command**: `make deploy` (Copies files to the QGIS plugins directory).
-- **Process**:
-  - Cleans temporary files (`.pyc`, etc.).
-  - Copies resources and translations.
-  - Syncs with the local QGIS directory for immediate testing.
-
----
-
-## 📊 Project Metrics (Estimates)
+## 📊 Project Metrics
 
 | Metric | Value |
 |--------|-------|
-| **Python Modules** | ~70 files |
-| **Total Lines of Code** | ~17,000 LOC |
-| **Core Layer** | ~53% |
-| **GUI Layer** | ~33% |
-| **Export Layer** | ~14% |
+| **Python Modules** | 121 |
+| **Source Lines of Code (SLOC)** | ~12,633 |
+| **Core Layer** | ~55% |
+| **GUI Layer** | ~30% |
+| **Export Layer** | ~15% |
 
 ---
 
@@ -392,6 +352,6 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last Updated**: 2025-12-25
-**Plugin Version**: 2.9.0
+**Last Updated**: 2026-03-29
+**Plugin Version**: 3.4.0
 **Author**: Juan M. Bernales

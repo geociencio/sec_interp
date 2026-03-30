@@ -1,3 +1,12 @@
+## [2026-03-30] Session: Documentation Modernization (v3.4.0 Audit)
+- **Achievement**: Modernized the plugin's architectural documentation to reflect the major refactor reaching version 3.4.0. Updated i18n workflows to reflect the new Master Data SSoT system.
+- **Changes**:
+    - **Architecture**: Redrew Mermaid diagrams and updated `ARCHITECTURE_EN.md` with Manager-based GUI and Interface-driven Core details.
+    - **i18n**: Rewrote `MAINTENANCE_I18N.md` in English, documenting the new automated `make transup` pipeline and parallel translation engines.
+    - **Metrics**: Synchronized project SLOC and Complexity using `ai-context-core`.
+- **Status**: Completed. Metrics: 121 modules, SLOC 12,633.
+- **Maintenance**: [session_2026-03-30_docs_modernization_v340.md](maintenance/session_2026-03-30_docs_modernization_v340.md)
+
 ## [2026-03-29] Session: Autonomous Agent i18n Refactor
 - **Achievement**: Refactored the core i18n workflow by consolidating translations into `master_data/*.json`, replacing error-prone XML Regex parsers with native `ElementTree.indent`, and enabling clean git diffs with `sort_keys=True` in Google Translate automatons.
 - **Changes**:
