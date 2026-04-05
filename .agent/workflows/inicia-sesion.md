@@ -1,7 +1,7 @@
 ---
 description: Procedimiento estándar y robusto para iniciar una sesión de desarrollo "Local First"
 agent: Tech Lead
-skills: [project-context, qa-docker]
+skills: [project-context, qa-standards]
 validation: |
   - Verificar que los tests configurados pasen correctamente
   - Confirmar que el contexto del AI está sincronizado
@@ -48,7 +48,7 @@ Este workflow optimiza el inicio del desarrollo asegurando un entorno sincroniza
     {{MASTER_TEST_COMMAND}}
     ```
 
-    🤖 **Agent Action**: Usar skill **qa-docker** para interpretar posibles fallos en el estado base del proyecto (ramas rotas).
+    🤖 **Agent Action**: Usar skill **qa-standards** para interpretar posibles fallos en el estado base del proyecto (ramas rotas).
 
 ## Resultado Esperado
 - Entorno local limpio, sincronizado y validado.

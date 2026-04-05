@@ -1,7 +1,7 @@
 ---
 description: Guided workflow for code refactoring with complexity validation
 agent: Senior Architect
-skills: [geological-logic, geological-logic]
+skills: [domain-logic, domain-logic]
 validation: |
   - Verify that cyclomatic complexity decreased (CC < 15)
   - Confirm that tests still pass after refactoring
@@ -37,7 +37,7 @@ This workflow guides code refactoring following project standards and using spec
 
 3. **Load Specialized Context**:
 
-   🤖 **Agent Action**: Depending on the module, load the appropriate skill (**geological-logic**, **geological-logic**, or **ui-framework**).
+   🤖 **Agent Action**: Depending on the module, load the appropriate skill (**domain-logic**, **domain-logic**, or **ui-framework**).
 
 4. **Apply Refactoring**:
 
@@ -49,7 +49,7 @@ This workflow guides code refactoring following project standards and using spec
    make docker-test
    ```
 
-   🤖 **Agent Action**: Use **qa-docker** skill to ensure no regressions.
+   🤖 **Agent Action**: Use **qa-standards** skill to ensure no regressions.
 
 6. **Verify Quality Metrics**:
    // turbo

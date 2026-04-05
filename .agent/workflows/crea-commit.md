@@ -1,7 +1,7 @@
 ---
 description: How to commit changes cleanly (handling hooks)
 agent: QA Engineer
-skills: [qa-docker, commit-standards]
+skills: [qa-standards, commit-standards]
 validation: |
   - Verificar que los linters de formato pasan sin errores
   - Confirmar que el código estático es válido

@@ -1,7 +1,7 @@
 ---
 description: Procedimiento para finalizar una sesión de trabajo, actualizar logs y archivar resultados
 agent: QA Engineer
-skills: [qa-docker, commit-standards]
+skills: [qa-standards, commit-standards]
 validation: |
   - Verificar que todos los logs están actualizados
   - Confirmar que tests pasan antes de cerrar
@@ -23,7 +23,7 @@ Este workflow cierra el ciclo de desarrollo, convirtiendo el trabajo técnico en
 
 2.  **Verificación Final (Safety Net)**:
 
-    🤖 **Agent Action**: Usar skill **qa-docker** para validar estabilidad antes de cerrar.
+    🤖 **Agent Action**: Usar skill **qa-standards** para validar estabilidad antes de cerrar.
 
     Ejecuta el formateador y los tests base (Sanity Check).
 
