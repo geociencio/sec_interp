@@ -48,11 +48,11 @@ uv run ai-ctx analyze --path .
 - Suggest scope based on modified files (core, gui, export, etc.)
 - Alert if there are breaking changes requiring `!` or footer
 
-Example suggestions:
-```text
-Option 1: refactor(core): reduce complexity in GeologyService.prepare_task_input
-Option 2: refactor(core): extract validation logic from GeologyService
-```
+### 4.5 Quality Reflection (Auditor Check) 🤖
+- **Agent Reflection**: Activate the **@auditor** role.
+- **Diff Analysis**: Contrast the generated commit message with `git diff --cached`.
+- **Validation**: Ensure no "leakage" of temporary debug code (print, TODOs, commented-out logic).
+- **Consolidation**: Verify that the commit represents a "clean unit of value."
 
 ### 5. Commit
 Execute the commit with the approved message.

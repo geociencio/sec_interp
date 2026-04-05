@@ -1,5 +1,7 @@
 ---
 description: Start the Autonomous AI Developer Pipeline sequence for a new feature.
+agent: Architect
+skills: [qgis-core, qa-docker]
 ---
 # Build Feature Autonomous Pipeline
 
@@ -12,6 +14,12 @@ When the user types `/build-feature <requirement>`, orchestrate the development 
    - **Important**: Save this plan as `docs/plans/Technical_Specification.md`.
    - **Approval Gate**: You MUST pause execution and eagerly ask the user: "Do you approve of this architecture? You can add comments directly to `Technical_Specification.md` if you want me to rethink any part."
    *(Wait for the user to explicitly type "Approved" or apply their requested feedback before moving to step 2).*
+
+1.5. **Technical Critique (Architect vs. Auditor) 🤖**
+   - **Agent Reflection**: Activate the **@auditor** role.
+   - **Challenge the Plan**: Identify 3 potential failure points or edge cases in the proposed strategy.
+   - **Mitigation**: The @architect must address these points before presenting the plan to the user.
+   - **Hallucination Hunt**: Verify that all proposed tool calls and file paths are valid.
 
 2. **Autonomous Execution Phase**
    Shift context. Act as the **@architect** again (now acting as the developer), but strictly follow the approved `Technical_Specification.md`.

@@ -1,7 +1,7 @@
 ---
 description: Guided workflow for code refactoring with complexity validation
 agent: Senior Architect
-skills: [qgis-core, geological-logic]
+skills: [geological-logic, geological-logic]
 validation: |
   - Verify that cyclomatic complexity decreased (CC < 15)
   - Confirm that tests still pass after refactoring
@@ -37,7 +37,7 @@ This workflow guides code refactoring following project standards and using spec
 
 3. **Load Specialized Context**:
 
-   🤖 **Agent Action**: Depending on the module, load the appropriate skill (**geological-logic**, **qgis-core**, or **ui-framework**).
+   🤖 **Agent Action**: Depending on the module, load the appropriate skill (**geological-logic**, **geological-logic**, or **ui-framework**).
 
 4. **Apply Refactoring**:
 
@@ -58,6 +58,11 @@ This workflow guides code refactoring following project standards and using spec
    ```
 
    🤖 **Agent Action**: Confirm improvement in Quality Score and reduction in Cyclomatic Complexity (CC).
+
+6.5 Complexity Audit (Auditor Reflection) 🤖
+- **Agent Reflection**: Activate the **@auditor** role.
+- **Verification**: Ensure the refactor didn't introduce new architecture violations or hide complexity in "wrapper" functions.
+- **Pattern Match**: Confirm adherence to the "Extract-then-Compute" standard.
 
 7. **Refactoring Commit**:
    Use `/create-commit` workflow with a structured technical message.

@@ -1,7 +1,7 @@
 ---
 description: Audits the consistency of the agentic system (Skills and Workflows) against the master standard.
 agent: Senior Architect
-skills: [qgis-core, commit-standards, documentation-standards]
+skills: [geological-logic, commit-standards, documentation-standards]
 validation:
   - Do all Skills have a Quality Checklist?
   - Is all Skill and Workflow documentation in English?
