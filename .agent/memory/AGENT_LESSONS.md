@@ -260,3 +260,9 @@ This file records technical lessons, user preferences, and solutions to complex 
 > [!NOTE]
 > Lessons from 2026-03-15 and earlier in this log have been consolidated into specialized `SKILL.md` files as part of the self-evolving memory workflow.
 ```
+- date: 2026-04-05
+  topic: gen5_modernization
+  lessons:
+    - "Blueprint Scaffolding architecture is superior for scaling frameworks while maintaining a generic core."
+    - "Integration of the Reflect Loop (Agent Auditor critique) significantly reduces hallucination risk in autonomous planning."
+    - "Model Context Protocol (MCP) is the backbone for standardized and secure tool orchestration in 2026 systems."
