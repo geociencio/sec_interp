@@ -131,9 +131,7 @@ class PreviewService:
             interval = None
             if params.auto_lod:
                 line_len = line_geom.length()
-                max_pts = self.calculate_max_points(
-                    params.canvas_width, params.max_points, True
-                )
+                max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
                 interval = line_len / max_pts if max_pts > 0 else None
 
             result.topo = self.controller.profile_service.generate_topographic_profile(
@@ -296,7 +294,5 @@ class PreviewService:
             logger.exception("Unexpected error during drillhole processing")
             raise ProcessingError("Unexpected error during drillhole processing") from e
 
-        logger.info(
-            f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces"
-        )
+        logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
         return drillhole_data

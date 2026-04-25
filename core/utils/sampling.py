@@ -114,9 +114,7 @@ def prepare_profile_context(
 
     try:
         if not get_line_vertices(line_geom):
-            raise GeometryError(
-                "Line geometry has no vertices", {"layer": line_lyr.name()}
-            )
+            raise GeometryError("Line geometry has no vertices", {"layer": line_lyr.name()})
     except ValueError as e:
         raise GeometryError(str(e), {"layer": line_lyr.name()}) from e
 
@@ -126,9 +124,7 @@ def prepare_profile_context(
     return line_geom, line_start, da
 
 
-def interpolate_elevation(
-    topo_data: list[tuple[float, float]], distance: float
-) -> float:
+def interpolate_elevation(topo_data: list[tuple[float, float]], distance: float) -> float:
     """Interpolate elevation at a given distance along the topography profile.
 
     Uses linear interpolation between the two nearest sampled points.
@@ -190,9 +186,7 @@ def sample_point_elevation(
         # for single point access when speed is not the primary constraint.
         from qgis.core import QgsRaster
 
-        ident = raster_layer.dataProvider().identify(
-            point, QgsRaster.IdentifyFormatValue
-        )
+        ident = raster_layer.dataProvider().identify(point, QgsRaster.IdentifyFormatValue)
         if ident.isValid():
             val = ident.results().get(band_number)
             if val is not None:

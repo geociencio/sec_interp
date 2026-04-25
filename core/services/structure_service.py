@@ -77,9 +77,7 @@ class StructureService(IStructureService):
 
         """
         buffer_geom = self._create_buffer_zone(line_geom, struct_lyr.crs(), buffer_m)
-        filtered_features = self._filter_structures(
-            struct_lyr, buffer_geom, struct_lyr.crs()
-        )
+        filtered_features = self._filter_structures(struct_lyr, buffer_geom, struct_lyr.crs())
 
         detached_data = []
         for feat in filtered_features:
@@ -145,11 +143,7 @@ class StructureService(IStructureService):
         # Sort by distance
         projected_structs.sort(key=lambda x: x.distance)
 
-        logger.info(
-            self.tr("Processed {0} structural measurements").format(
-                len(projected_structs)
-            )
-        )
+        logger.info(self.tr("Processed {0} structural measurements").format(len(projected_structs)))
         return projected_structs
 
     def _create_buffer_zone(

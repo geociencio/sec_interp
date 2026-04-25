@@ -57,9 +57,7 @@ class DrillholeRenderer(BasePreviewRenderer):
         layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
         layer.setLabelsEnabled(True)
 
-    def _apply_interval_style(
-        self, layer: QgsVectorLayer, unique_units: set[str]
-    ) -> None:
+    def _apply_interval_style(self, layer: QgsVectorLayer, unique_units: set[str]) -> None:
         """Styling for lithological intervals."""
         categories = []
         for unit_name in unique_units:

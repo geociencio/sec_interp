@@ -58,9 +58,7 @@ class GeologyGenerationTask(QgsTask):
             logger.info("GeologyGenerationTask started (Background Thread)")
             # Passing self as feedback object (has isCanceled and setProgress)
             self.result = self.service.process_task_data(self.task_input, feedback=self)
-            logger.info(
-                f"GeologyGenerationTask finished with {len(self.result)} segments"
-            )
+            logger.info(f"GeologyGenerationTask finished with {len(self.result)} segments")
             return True
 
         except Exception as e:
