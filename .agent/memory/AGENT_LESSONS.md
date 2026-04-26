@@ -273,3 +273,15 @@ This file records technical lessons, user preferences, and solutions to complex 
     - "Blueprint Scaffolding architecture is superior for scaling frameworks while maintaining a generic core."
     - "Integration of the Reflect Loop (Agent Auditor critique) significantly reduces hallucination risk in autonomous planning."
     - "Model Context Protocol (MCP) is the backbone for standardized and secure tool orchestration in 2026 systems."
+
+  - date: 2026-04-26
+    category: TOOLING
+    topic: QGIS-Analyzer Static Summary
+    lesson: "The 'summary' command is a static JSON viewer. It does not reflect real-time code changes unless 'analyze' is executed first."
+    action: "Always force a full re-analysis ('qgis-analyzer analyze .') before verifying fixes with 'summary' to avoid phantom issue reporting."
+
+  - date: 2026-04-26
+    category: ARCHITECTURE
+    topic: Explicit Signal Disconnection
+    lesson: "Static analyzers like qgis-analyzer may flag signal connections as leaks if disconnections are not explicit and symmetric within the same class context."
+    action: "Ensure all signals connected in 'connect_signals' are explicitly disconnected by slot name in 'disconnect_signals' using 'contextlib.suppress'."

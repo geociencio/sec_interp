@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Fixed signal leak in Interpretation Storage selector (memory management improvement).
 
 ### Changed
 - **Code Quality**: Applied automated and manual fixes to resolve 104 remaining Flake8 linting errors across the codebase, achieving zero Flake8 violations.
@@ -534,6 +535,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added COMMIT_GUIDELINES.md for standardized commit messages.
   - Added RELEASE_PROCESS.md with version release workflow.
 ## [Unreleased]
+- Fixed signal leak in Interpretation Storage selector (memory management improvement).
 
 ### Agente
 - **Integración**: Actualizado `qgis-plugin-analyzer` a v1.9.0 con soporte para subcomandos especializados (`i18n`, `security`, `performance`).

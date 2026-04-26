@@ -1,3 +1,11 @@
+## [2026-04-26] Signal Leak Fix
+- **Achievement**: Resolved a critical signal leak in the Interpretation settings page.
+- **Changes**:
+    - Refactored InterpretationPage to use the connect/disconnect_signals pattern.
+    - Performed a deep audit of the qgis-analyzer tool source code.
+- **Quality**: 620/620 tests OK. Signal Leaks: 0.
+- **Maintenance**: [session_2026-04-26_fix_signal_leak.md](maintenance/session_2026-04-26_fix_signal_leak.md)
+
 ## [2026-04-25] Session: Flake8 Linting Cleanup
 - **Achievement**: Cleaned up 104 Flake8 linting errors across the entire codebase to achieve full compliance with strict QGIS repository standards.
 - **Changes**:
