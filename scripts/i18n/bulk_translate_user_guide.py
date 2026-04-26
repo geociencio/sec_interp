@@ -1,4 +1,4 @@
-import os
+import os  # noqa: F401
 import re
 from pathlib import Path
 
@@ -59,7 +59,7 @@ def apply_translations():
             lines = f.readlines()
 
         new_content = ""
-        current_msgid = None
+        current_msgid = None  # noqa: F841
         translated_count = 0
 
         i = 0

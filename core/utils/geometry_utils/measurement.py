@@ -4,10 +4,10 @@ from __future__ import annotations
 
 """Measurement calculation utilities for profile viewing."""
 
-import math
-from typing import Any
+import math  # noqa: E402
+from typing import Any  # noqa: E402
 
-from qgis.core import QgsPointXY
+from qgis.core import QgsPointXY  # noqa: E402
 
 
 def calculate_polyline_metrics(points: list[QgsPointXY]) -> dict[str, Any]:

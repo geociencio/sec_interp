@@ -5,6 +5,8 @@ General purpose UI helpers and user messaging.
 
 from __future__ import annotations
 
+from typing import Any
+
 from qgis.PyQt.QtWidgets import QMessageBox
 
 from sec_interp.logger_config import get_logger

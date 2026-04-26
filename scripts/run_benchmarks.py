@@ -48,7 +48,7 @@ def setup_environment():
 def run_benchmarks():
     """Discovers and runs benchmark tests."""
     print("=" * 60)
-    print(f"⏱️  Starting Benchmark Run in QGIS Environment")
+    print("⏱️  Starting Benchmark Run in QGIS Environment")
     print(f"📂 Project Root: {PROJECT_ROOT}")
     print("=" * 60)
 

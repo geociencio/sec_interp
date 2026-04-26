@@ -81,7 +81,7 @@ def setup_environment():
 def run_tests():
     """Discovers and runs tests."""
     print("=" * 60)
-    print(f"🚀 Starting Test Run in QGIS Environment")
+    print("🚀 Starting Test Run in QGIS Environment")
     print(f"📂 Project Root: {PROJECT_ROOT}")
     print("=" * 60)
 

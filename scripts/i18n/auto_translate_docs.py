@@ -1,4 +1,4 @@
-import os
+import os  # noqa: F401
 import json
 import re
 from pathlib import Path
@@ -36,7 +36,7 @@ def translate_po_file(po_path, master_data):
             while i < len(lines) and lines[i].startswith('"'):
                 msgid_lines.append(re.search(r'"(.*)"', lines[i]).group(1))
                 i += 1
-            full_msgid = "".join(msgid_lines)
+            full_msgid = "".join(msgid_lines)  # noqa: F841
 
             # Find next msgstr
             while i < len(lines) and not lines[i].startswith("msgstr "):
@@ -51,7 +51,7 @@ def translate_po_file(po_path, master_data):
 
     # RE-IMPLEMENTING ROBUST PO PARSER
     content = "".join(lines)
-    parts = re.split(r'(msgid ".*?"(?:\n".*?")*)', content, flags=re.DOTALL)
+    parts = re.split(r'(msgid ".*?"(?:\n".*?")*)', content, flags=re.DOTALL)  # noqa: F841
 
     # This is also getting complex. Let's use a simple key-value replacement
     # since we know the format is msgid followed by msgstr

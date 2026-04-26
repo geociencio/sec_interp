@@ -11,8 +11,8 @@ from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
-from .tasks.drillhole_task import DrillholeGenerationTask
-from .tasks.geology_task import GeologyGenerationTask
+from .tasks.drillhole_task import DrillholeGenerationTask  # noqa: E402
+from .tasks.geology_task import GeologyGenerationTask  # noqa: E402
 
 if TYPE_CHECKING:
     from .main_dialog_preview import PreviewManager

@@ -13,11 +13,13 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsField,
+    QgsFields,
     QgsGeometry,
     QgsLineString,
     QgsPoint,
     QgsPointXY,
     QgsPolygon,
+    QgsVectorLayer,
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QCoreApplication, QMetaType

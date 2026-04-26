@@ -4,15 +4,15 @@ from __future__ import annotations
 
 """PDF exporter module for PDF documents."""
 
-from pathlib import Path
+from pathlib import Path  # noqa: E402
 
-from qgis.core import QgsMapRendererCustomPainterJob, QgsMapSettings
-from qgis.PyQt.QtCore import QMarginsF, QRectF, QSize, QSizeF
-from qgis.PyQt.QtGui import QPageSize, QPainter, QPdfWriter
+from qgis.core import QgsMapRendererCustomPainterJob, QgsMapSettings  # noqa: E402
+from qgis.PyQt.QtCore import QMarginsF, QRectF, QSize, QSizeF  # noqa: E402
+from qgis.PyQt.QtGui import QPageSize, QPainter, QPdfWriter  # noqa: E402
 
-from sec_interp.logger_config import get_logger
+from sec_interp.logger_config import get_logger  # noqa: E402
 
-from .base_exporter import BaseExporter
+from .base_exporter import BaseExporter  # noqa: E402
 
 logger = get_logger(__name__)
 

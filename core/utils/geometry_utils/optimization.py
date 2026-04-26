@@ -7,11 +7,11 @@ from __future__ import annotations
 Handles simplification and sampling of geometric data to improve rendering performance.
 """
 
-import math
+import math  # noqa: E402
 
-from qgis.core import QgsGeometry, QgsPointXY
+from qgis.core import QgsGeometry, QgsPointXY  # noqa: E402
 
-from sec_interp.logger_config import get_logger
+from sec_interp.logger_config import get_logger  # noqa: E402
 
 logger = get_logger(__name__)
 

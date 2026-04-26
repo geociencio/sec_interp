@@ -7,6 +7,7 @@ This module has been refactored to delegate specialized tasks to modular compone
 from __future__ import annotations
 
 import contextlib
+from typing import Any
 
 from qgis.core import (
     QgsMapRendererCustomPainterJob,

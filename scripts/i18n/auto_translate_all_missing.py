@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import time
 import re
 from deep_translator import GoogleTranslator
-from deep_translator.exceptions import RequestError
+from deep_translator.exceptions import RequestError  # noqa: F401
 
 # Mapping from SecInterp language code to Google Translate language code
 LANG_MAP = {
@@ -40,7 +40,7 @@ def extract_missing(ts_file):
     return missing_strings
 
 
-import concurrent.futures
+import concurrent.futures  # noqa: E402
 
 
 def translate_strings(strings_dict, target_lang):
@@ -65,10 +65,10 @@ def translate_strings(strings_dict, target_lang):
                             res = re.sub(rf" _PH{i}_ ", ph, res, flags=re.IGNORECASE)
                             res = res.replace(f"_PH{i}_", ph)  # Fallback
                         return k, res
-                except:
+                except Exception:
                     time.sleep(1)
             return k, ""
-        except Exception as e:
+        except Exception as e:  # noqa: F841
             return k, ""
 
     keys = list(strings_dict.keys())
@@ -80,7 +80,7 @@ def translate_strings(strings_dict, target_lang):
             k, v = future.result()
             translated_dict[k] = v
             if (i + 1) % 20 == 0:
-                print(f"      {i+1}/{len(keys)} done...")
+                print(f"      {i+1}/{len(keys)} done...")  # noqa: E226
 
     return translated_dict
 

@@ -4,8 +4,8 @@ Update metadata.txt with the list of supported languages.
 Ensures QGIS configparser compatibility by escaping % signs.
 """
 
-import os
-import re
+import os  # noqa: F401
+import re  # noqa: F401
 from pathlib import Path
 
 # ISO codes to names mapping

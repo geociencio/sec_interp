@@ -8,6 +8,7 @@ It separates UI event handling from spatial snapping logic.
 from __future__ import annotations
 
 import contextlib
+from typing import Any
 
 from qgis.core import (
     QgsMapLayer,

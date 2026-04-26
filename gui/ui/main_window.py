@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+from typing import Any
 
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import Qt
@@ -14,6 +15,7 @@ from qgis.PyQt.QtWidgets import (
     QSplitter,
     QStackedWidget,
     QVBoxLayout,
+    QWidget,
 )
 
 from .pages.dem_page import DemPage

@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import contextlib
+from typing import Any
+
 from qgis.core import QgsMapLayerProxyModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
-from qgis.PyQt.QtWidgets import QGridLayout, QLabel
+from qgis.PyQt.QtWidgets import QGridLayout, QLabel, QWidget
 
 from sec_interp.core.validation.project_validator import (
     ProjectValidator,

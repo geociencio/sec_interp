@@ -4,16 +4,16 @@ from __future__ import annotations
 
 """SVG exporter module for vector graphics."""
 
-from pathlib import Path
+from pathlib import Path  # noqa: E402
 
-from qgis.core import QgsMapRendererCustomPainterJob
-from qgis.PyQt.QtCore import QCoreApplication, QRectF, QSize
-from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtSvg import QSvgGenerator
+from qgis.core import QgsMapRendererCustomPainterJob  # noqa: E402
+from qgis.PyQt.QtCore import QCoreApplication, QRectF, QSize  # noqa: E402
+from qgis.PyQt.QtGui import QPainter  # noqa: E402
+from qgis.PyQt.QtSvg import QSvgGenerator  # noqa: E402
 
-from sec_interp.logger_config import get_logger
+from sec_interp.logger_config import get_logger  # noqa: E402
 
-from .base_exporter import BaseExporter
+from .base_exporter import BaseExporter  # noqa: E402
 
 logger = get_logger(__name__)
 

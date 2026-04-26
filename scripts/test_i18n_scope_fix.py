@@ -1,5 +1,5 @@
 import pathlib
-import json
+import json  # noqa: F401
 from ai_context_core.analyzer.engine import ProjectAnalyzer
 from ai_context_core.config.loader import ConfigLoader
 from ai_context_core.analyzer.builders import aggregator
@@ -18,7 +18,7 @@ def patched_run_qgis(self, m_data, metadata):
     from ai_context_core.analyzer.builders.aggregator_qgis import (
         aggregate_qgis_compliance,
     )
-    import fnmatch
+    import fnmatch  # noqa: F401
     from pathlib import Path
 
     def _match_path(path_str: str, pattern: str) -> bool:

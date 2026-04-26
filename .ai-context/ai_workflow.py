@@ -283,14 +283,14 @@ class AIWorkflowManager:
         if specific_template.exists():
             with open(specific_template) as f:
                 return yaml.safe_load(f)
-        if "gemini-3-pro" in model_lower or "gemini 3 pro" in model_lower:
+        if "gemini-3-pro" in model.lower() or "gemini 3 pro" in model.lower():
             return self._gemini_3_pro_template()
-        elif "claude-sonnet-4.5" in model_lower or "sonnet 4.5" in model_lower:
+        elif "claude-sonnet-4.5" in model.lower() or "sonnet 4.5" in model.lower():
             return self._claude_sonnet_45_template()
         elif (
-            "gpt-oss-120b" in model_lower
-            or "oss-120b" in model_lower
-            or "llama-3-120b" in model_lower
+            "gpt-oss-120b" in model.lower()
+            or "oss-120b" in model.lower()
+            or "llama-3-120b" in model.lower()
         ):
             return self._gpt_oss_120b_template()
 

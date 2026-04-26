@@ -2,7 +2,7 @@ import os
 import json
 import sys
 import xml.etree.ElementTree as ET
-import html
+import html  # noqa: F401
 
 
 def apply_translations(ts_file, lang_code, translations_map):

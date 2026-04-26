@@ -6,6 +6,8 @@ preview generation results and performance metrics into human-readable messages.
 
 from __future__ import annotations
 
+from typing import Any
+
 from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.domain import (

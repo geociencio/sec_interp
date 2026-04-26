@@ -1,6 +1,6 @@
 import sys
 import os
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock, Mock  # noqa: F401
 
 # --- Fix Sys Path ---
 # Add parent directory to path so we can import 'sec_interp' as a package
@@ -127,9 +127,9 @@ mock_core.QgsWkbTypes.MultiLineString25D = 2147483653
 # --- Import Project Modules ---
 # Now importing should work
 # Note: scu is already mocked in sys.modules, so imports in services will get the mock
-from sec_interp.core.domain import StructureMeasurement, GeologySegment
-from sec_interp.core.services.structure_service import StructureService
-from sec_interp.core.services.geology_service import GeologyService
+from sec_interp.core.domain import StructureMeasurement, GeologySegment  # noqa: E402
+from sec_interp.core.services.structure_service import StructureService  # noqa: E402
+from sec_interp.core.services.geology_service import GeologyService  # noqa: E402
 
 # --- Verification Tests ---
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import sys
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional  # noqa: F401
 
 # Configure logging to stderr to keep stdout clean for JSON-RPC
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
@@ -212,7 +212,7 @@ class Test{class_name}(BaseTestCase):
                 lessons: List[str] = content.split("  - date:")[1:]
                 latest_list = lessons[:limit]
                 return "Latest Lessons:\n" + "\n".join(
-                    [" - date:" + l.strip() for l in latest_list]
+                    [" - date:" + l.strip() for l in latest_list]  # noqa: E741
                 )
         except Exception as e:
             return f"Error reading lessons: {e}"

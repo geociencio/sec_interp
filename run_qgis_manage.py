@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, "/home/jmbernales/qgispluginsdev/qgis-plugin-manager/src")
 
-from qgis_manager.cli.app import CLIApp
+from qgis_manager.cli.app import CLIApp  # noqa: E402
 
 if __name__ == "__main__":
     app = CLIApp()

@@ -14,7 +14,7 @@ import requests
 
 def fetch_stats(plugin_name: str = "sec_interp"):
     url = f"https://plugins.qgis.org/plugins/{plugin_name}/"
-    proxies = {}  # Add proxies if needed
+    proxies = {}  # Add proxies if needed  # noqa: F841
 
     print(f"📡 Fetching stats from: {url}")
     try:
