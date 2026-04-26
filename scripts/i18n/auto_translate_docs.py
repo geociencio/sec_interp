@@ -51,7 +51,9 @@ def translate_po_file(po_path, master_data):
 
     # RE-IMPLEMENTING ROBUST PO PARSER
     content = "".join(lines)
-    parts = re.split(r'(msgid ".*?"(?:\n".*?")*)', content, flags=re.DOTALL)  # noqa: F841
+    parts = re.split(
+        r'(msgid ".*?"(?:\n".*?")*)', content, flags=re.DOTALL
+    )  # noqa: F841
 
     # This is also getting complex. Let's use a simple key-value replacement
     # since we know the format is msgid followed by msgstr

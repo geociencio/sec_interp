@@ -28,9 +28,13 @@ if TYPE_CHECKING:
     from qgis.core import QgsVectorDataProvider
 
     from sec_interp.gui.renderers.color_manager import ColorManager  # noqa: F401
-    from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer  # noqa: F401
+    from sec_interp.gui.renderers.drillhole_renderer import (
+        DrillholeRenderer,
+    )  # noqa: F401
     from sec_interp.gui.renderers.geology_renderer import GeologyRenderer  # noqa: F401
-    from sec_interp.gui.renderers.structure_renderer import StructureRenderer  # noqa: F401
+    from sec_interp.gui.renderers.structure_renderer import (
+        StructureRenderer,
+    )  # noqa: F401
     from sec_interp.gui.renderers.topo_renderer import TopoRenderer  # noqa: F401
 
 logger = get_logger(__name__)
@@ -53,12 +57,18 @@ class PreviewLayerFactory:
     def __init__(self) -> None:
         """Initialize the layer factory with specialized renderers."""
         from sec_interp.gui.renderers.color_manager import ColorManager  # noqa: F811
-        from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer  # noqa: F811
-        from sec_interp.gui.renderers.geology_renderer import GeologyRenderer  # noqa: F811
+        from sec_interp.gui.renderers.drillhole_renderer import (
+            DrillholeRenderer,
+        )  # noqa: F811
+        from sec_interp.gui.renderers.geology_renderer import (
+            GeologyRenderer,
+        )  # noqa: F811
         from sec_interp.gui.renderers.interpretation_renderer import (
             InterpretationRenderer,
         )
-        from sec_interp.gui.renderers.structure_renderer import StructureRenderer  # noqa: F811
+        from sec_interp.gui.renderers.structure_renderer import (
+            StructureRenderer,
+        )  # noqa: F811
         from sec_interp.gui.renderers.topo_renderer import TopoRenderer  # noqa: F811
 
         self.color_manager: ColorManager = ColorManager()

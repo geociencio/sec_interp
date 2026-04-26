@@ -5,6 +5,13 @@ This file records technical lessons, user preferences, and solutions to complex 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
+  - date: 2026-04-25
+    category: TOOLING
+    topic: Flake8 vs Ruff Configuration Parity
+    lesson: "Ruff and Flake8 can have different default rule scopes or ignored rules (like F821, E402). If the CI/CD or QGIS repository strict analyzer uses Flake8 without the pyproject.toml ignores, the build will fail despite Ruff reporting 0 errors."
+    action: "When resolving linting issues for external platforms, always run the exact tool (e.g., Flake8) expected by the platform and manage exclusions through `# noqa` comments directly in the code rather than relying exclusively on `pyproject.toml` ignores."
+
+
   - date: 2026-03-29
     category: TOOLING
     topic: JSON Git-Diff Stability

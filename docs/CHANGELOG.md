@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Code Quality**: Applied automated and manual fixes to resolve 104 remaining Flake8 linting errors across the codebase, achieving zero Flake8 violations.
 - **Documentation**: Overhauled `ARCHITECTURE_EN.md` (v3.4.0) to reflect the new modular **Manager-based GUI** and **Interface-driven Core** layer.
 - **Documentation**: Professionalized and translated `MAINTENANCE_I18N.md` to English, including instructions for the Master Data SSoT system and AI-powered parallel translation.
 - **i18n**: Refactored the internal translation generation pipeline. Deprecated legacy regex-parsing scripts (`clean_translations.py`, `apply_baseline.py`) in favor of native Python XML ElementTree AST injection.
