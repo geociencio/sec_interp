@@ -68,8 +68,6 @@ class InterpretationPage(BasePage):
         self.group_layout.addWidget(self.chk_auto_sync)
         self.group_layout.addSpacing(15)
 
-        self.cb_source.currentIndexChanged.connect(self._on_source_changed)
-
         # 2. Custom Fields Section
         self.group_layout.addWidget(QLabel("<b>" + self.tr("Custom Attributes") + "</b>"))
 
@@ -185,10 +183,13 @@ class InterpretationPage(BasePage):
         """Connect internal signals for the interpretation page."""
         self.btn_add_field.clicked.connect(self._add_field_row)
         self.btn_remove_field.clicked.connect(self._remove_field_row)
+        self.cb_source.currentIndexChanged.connect(self._on_source_changed)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         with contextlib.suppress(TypeError, RuntimeError):
-            self.btn_add_field.clicked.disconnect()
+            self.btn_add_field.clicked.disconnect(self._add_field_row)
         with contextlib.suppress(TypeError, RuntimeError):
-            self.btn_remove_field.clicked.disconnect()
+            self.btn_remove_field.clicked.disconnect(self._remove_field_row)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.cb_source.currentIndexChanged.disconnect(self._on_source_changed)
