@@ -81,53 +81,12 @@ class DrillholeTrace3DExporter(BaseExporter):
         self, writer: Any, fields: QgsFields, hole_data: Any, use_projected: bool
     ) -> None:
         """Process and write a single hole trace feature."""
-        # Standard format: (hid, spatial_points, segments) or DrillholeProjection object
-        # Legacy/Test format: (hid, trace2d, trace3d, traces3d_proj, segments)
-
-        if isinstance(hole_data, DrillholeProjection):
-            hole_id = hole_data.hole_id
-            spatial_points = hole_data.points_3d
-            if use_projected:
-                points = [
-                    QgsPoint(p.x_proj or 0.0, p.y_proj or 0.0, p.z)
-                    for p in spatial_points
-                    if p.x_proj is not None
-                ]
-            else:
-                points = [
-                    QgsPoint(p.x_3d or 0.0, p.y_3d or 0.0, p.z)
-                    for p in spatial_points
-                    if p.x_3d is not None
-                ]
-        elif isinstance(hole_data, list | tuple):
-            hole_id = hole_data[0]
-            if len(hole_data) == NEW_DATA_LENGTH:
-                # New format with SpatialMeta objects
-                spatial_points = hole_data[1]
-                if use_projected:
-                    points = [
-                        QgsPoint(p.x_proj or 0.0, p.y_proj or 0.0, p.z)
-                        for p in spatial_points
-                        if p.x_proj is not None
-                    ]
-                else:
-                    points = [
-                        QgsPoint(p.x_3d or 0.0, p.y_3d or 0.0, p.z)
-                        for p in spatial_points
-                        if p.x_3d is not None
-                    ]
-            elif len(hole_data) == LEGACY_DATA_LENGTH:
-                # Legacy/Integration Test format
-                _, _, traces_3d, traces_3d_proj, _ = hole_data
-                points_source = traces_3d_proj if use_projected else traces_3d
-                points = [QgsPoint(x, y, z) for x, y, z in points_source]
-            else:
-                logger.warning(
-                    f"Unexpected hole data format (length {len(hole_data)}) for hole {hole_id}"
-                )
-                return
-        else:
+        extracted = self._extract_hole_spatial_data(hole_data)
+        if not extracted:
             return
+
+        hole_id, spatial_points = extracted
+        points = self._get_trace_points(spatial_points, use_projected)
 
         if not points or len(points) < MIN_POINTS_FOR_INTERVAL:
             return
@@ -138,6 +97,43 @@ class DrillholeTrace3DExporter(BaseExporter):
             feat.setGeometry(geom)
             feat.setAttribute("hole_id", str(hole_id))
             writer.addFeature(feat)
+
+    def _extract_hole_spatial_data(self, hole_data: Any) -> tuple[Any, Any] | None:
+        """Extract hole ID and spatial points from various data formats."""
+        if isinstance(hole_data, DrillholeProjection):
+            return hole_data.hole_id, hole_data.points_3d
+
+        if isinstance(hole_data, list | tuple):
+            hole_id = hole_data[0]
+            if len(hole_data) == NEW_DATA_LENGTH:
+                # New format with SpatialMeta objects
+                return hole_id, hole_data[1]
+            if len(hole_data) == LEGACY_DATA_LENGTH:
+                # Legacy/Integration Test format
+                return hole_id, hole_data
+            logger.warning(
+                f"Unexpected hole data format (length {len(hole_data)}) for hole {hole_id}"
+            )
+        return None
+
+    def _get_trace_points(self, spatial_data: Any, use_projected: bool) -> list[QgsPoint]:
+        """Convert spatial data to QgsPoint list based on projection."""
+        if isinstance(spatial_data, list | tuple) and len(spatial_data) == LEGACY_DATA_LENGTH:
+            # Legacy/Integration Test format
+            _, _, traces_3d, traces_3d_proj, _ = spatial_data
+            points_source = traces_3d_proj if use_projected else traces_3d
+            return [QgsPoint(x, y, z) for x, y, z in points_source]
+
+        # Standard SpatialMeta objects
+        if use_projected:
+            return [
+                QgsPoint(p.x_proj or 0.0, p.y_proj or 0.0, p.z)
+                for p in spatial_data
+                if p.x_proj is not None
+            ]
+        return [
+            QgsPoint(p.x_3d or 0.0, p.y_3d or 0.0, p.z) for p in spatial_data if p.x_3d is not None
+        ]
 
     def _prepare_fields(self) -> QgsFields:
         """Create standard fields for drillhole trace."""

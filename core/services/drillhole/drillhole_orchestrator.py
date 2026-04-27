@@ -48,34 +48,50 @@ class DrillholeTaskOrchestrator:
         self.service = service
 
     def run_preview(self, params: PreviewParams) -> list[DrillholeProjection] | None:
-        """Execute a synchronous drillhole preview.
-
-        This mimics the legacy generate_drillhole_data but is now managed
-        by the orchestrator.
-        """
-        line_lyr = LayerResolver.resolve(params.line_layer)
-        collar_lyr = LayerResolver.resolve(params.collar_layer)
-        raster_lyr = LayerResolver.resolve(params.raster_layer)
-        survey_lyr = LayerResolver.resolve(params.survey_layer)
-        interval_lyr = LayerResolver.resolve(params.interval_layer)
-
-        if not line_lyr or not collar_lyr:
+        """Execute a synchronous drillhole preview."""
+        layers = self._resolve_preview_layers(params)
+        if not layers["line"] or not layers["collar"]:
             return None
 
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
+        context = self._prepare_preview_context(layers["line"])
+        if not context:
             return None
 
-        section_geom = line_feat.geometry()
-        vertices = scu.get_line_vertices(section_geom)
-        if not vertices:
-            return None
-        section_start = vertices[0]
-        distance_area = scu.create_distance_area(line_lyr.crs())
+        section_geom, section_start, distance_area = context
 
         # 1. Detach Collar Data
-        collar_ids, collar_data, pre_sampled_z = self.service.collar_processor.detach_features(
-            collar_lyr,
+        collar_res = self._step1_detach_collars(layers, section_geom, params)
+        if not collar_res:
+            return None
+        collar_ids, collar_data, pre_sampled_z = collar_res
+
+        # 2. Project Collars (Detached)
+        collars_projected = self._step2_project_collars(
+            collar_data, section_geom, distance_area, pre_sampled_z, params
+        )
+
+        if not (collars_projected and layers["survey"] and layers["interval"]):
+            return None
+
+        # 3. Extract Detached Data for Child Layers
+        survey_map, interval_map = self._step3_fetch_child_data(layers, collar_ids, params)
+
+        # 4. Process Intervals (Detached)
+        return self._step4_process_intervals(
+            collars_projected,
+            collar_data,
+            survey_map,
+            interval_map,
+            section_geom,
+            section_start,
+            distance_area,
+            params,
+        )
+
+    def _step1_detach_collars(self, layers: dict, section_geom: Any, params: PreviewParams) -> Any:
+        """Step 1: Detach Collar Data."""
+        return self.service.collar_processor.detach_features(
+            layers["collar"],
             section_geom,
             params.buffer_dist,
             params.collar_id_field or "",
@@ -83,15 +99,20 @@ class DrillholeTaskOrchestrator:
             params.collar_x_field or "",
             params.collar_y_field or "",
             params.collar_z_field or "",
-            raster_lyr,
-            target_crs=line_lyr.crs(),
+            layers["raster"],
+            target_crs=layers["line"].crs(),
         )
 
-        if not collar_data:
-            return None
-
-        # 2. Project Collars (Detached)
-        collars_projected = self.service.project_collars(
+    def _step2_project_collars(
+        self,
+        collar_data: Any,
+        section_geom: Any,
+        distance_area: Any,
+        pre_sampled_z: Any,
+        params: PreviewParams,
+    ) -> Any:
+        """Step 2: Project Collars (Detached)."""
+        return self.service.project_collars(
             collar_data=collar_data,
             line_data=section_geom,
             distance_area=distance_area,
@@ -105,12 +126,12 @@ class DrillholeTaskOrchestrator:
             pre_sampled_z=pre_sampled_z,
         )
 
-        if not (collars_projected and survey_lyr and interval_lyr):
-            return None
-
-        # 3. Extract Detached Data for Child Layers
+    def _step3_fetch_child_data(
+        self, layers: dict, collar_ids: Any, params: PreviewParams
+    ) -> tuple:
+        """Step 3: Extract Detached Data for Child Layers."""
         survey_map = self.service.data_fetcher.fetch_bulk_data(
-            survey_lyr,
+            layers["survey"],
             collar_ids,
             {
                 "id": params.survey_id_field or "",
@@ -120,7 +141,7 @@ class DrillholeTaskOrchestrator:
             },
         )
         interval_map = self.service.data_fetcher.fetch_bulk_data(
-            interval_lyr,
+            layers["interval"],
             collar_ids,
             {
                 "id": params.interval_id_field or "",
@@ -129,10 +150,21 @@ class DrillholeTaskOrchestrator:
                 "lith": params.interval_lith_field or "",
             },
         )
+        return survey_map, interval_map
 
+    def _step4_process_intervals(
+        self,
+        collars_projected: Any,
+        collar_data: Any,
+        survey_map: Any,
+        interval_map: Any,
+        section_geom: Any,
+        section_start: Any,
+        distance_area: Any,
+        params: PreviewParams,
+    ) -> Any:
+        """Step 4: Process Intervals (Detached)."""
         section_azimuth = scu.calculate_line_azimuth(section_geom)
-
-        # 4. Process Intervals (Detached)
         _, drillhole_data = self.service.process_intervals(
             collar_points=collars_projected,
             collar_data=collar_data,
@@ -151,6 +183,31 @@ class DrillholeTaskOrchestrator:
             interval_fields={},
         )
         return drillhole_data
+
+    def _resolve_preview_layers(self, params: PreviewParams) -> dict[str, Any]:
+        """Resolve all required layers for drillhole preview."""
+        return {
+            "line": LayerResolver.resolve(params.line_layer),
+            "collar": LayerResolver.resolve(params.collar_layer),
+            "raster": LayerResolver.resolve(params.raster_layer),
+            "survey": LayerResolver.resolve(params.survey_layer),
+            "interval": LayerResolver.resolve(params.interval_layer),
+        }
+
+    def _prepare_preview_context(self, line_lyr: Any) -> tuple[Any, Any, Any] | None:
+        """Prepare geometry and spatial context from line layer."""
+        line_feat = next(line_lyr.getFeatures(), None)
+        if not line_feat:
+            return None
+
+        section_geom = line_feat.geometry()
+        vertices = scu.get_line_vertices(section_geom)
+        if not vertices:
+            return None
+
+        section_start = vertices[0]
+        distance_area = scu.create_distance_area(line_lyr.crs())
+        return section_geom, section_start, distance_area
 
     def _validate_prepare_task_params(
         self,

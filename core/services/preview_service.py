@@ -117,6 +117,24 @@ class PreviewService:
         self.transform_context = transform_context
 
         # 1. Topography & Context Extraction
+        line_geom, line_start, raster_lyr = self._generate_topography_step(params, result)
+
+        # 2. Structures (Now using detached flow)
+        self._generate_structures_step(params, result, line_geom, line_start, raster_lyr)
+
+        # 3. Drillholes
+        if params.collar_layer and not skip_drillholes:
+            with PerformanceTimer("Drillhole Generation", result.metrics):
+                result.drillhole = self._generate_drillholes(params)
+                if result.drillhole:
+                    result.metrics.record_count("Drillholes", len(result.drillhole))
+
+        return result
+
+    def _generate_topography_step(
+        self, params: PreviewParams, result: PreviewResult
+    ) -> tuple[Any, Any, Any]:
+        """Step 1: Topography & Context Extraction."""
         with PerformanceTimer("Topography Generation", result.metrics):
             line_lyr = LayerResolver.resolve(params.line_layer)
             raster_lyr = LayerResolver.resolve(params.raster_layer)
@@ -142,13 +160,22 @@ class PreviewService:
             )
             if result.topo:
                 result.metrics.record_count("Topography Points", len(result.topo))
+        return line_geom, line_start, raster_lyr
 
-        # 2. Structures (Now using detached flow)
+    def _generate_structures_step(
+        self,
+        params: PreviewParams,
+        result: PreviewResult,
+        line_geom: Any,
+        line_start: Any,
+        raster_lyr: Any,
+    ) -> None:
+        """Step 2: Structures (Now using detached flow)."""
         if params.struct_layer and params.dip_field and params.strike_field:
             with PerformanceTimer("Structure Generation", result.metrics):
                 struct_lyr = LayerResolver.resolve(params.struct_layer)
                 if not struct_lyr:
-                    return result
+                    return
 
                 line_azimuth = calculate_line_azimuth(line_geom)
 
@@ -172,15 +199,6 @@ class PreviewService:
                 )
                 if result.struct:
                     result.metrics.record_count("Structure Points", len(result.struct))
-
-        # 3. Drillholes
-        if params.collar_layer and not skip_drillholes:
-            with PerformanceTimer("Drillhole Generation", result.metrics):
-                result.drillhole = self._generate_drillholes(params)
-                if result.drillhole:
-                    result.metrics.record_count("Drillholes", len(result.drillhole))
-
-        return result
 
     def _generate_drillholes(self, params: PreviewParams) -> Any | None:
         """Generate drillhole trace and interval data."""
