@@ -8,7 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - Fixed signal leak in Interpretation Storage selector (memory management improvement).
 
-### Refactored
+### Internal Improvements
+- **Agentic System (Gen 5 Complete)**: Upgraded AI development assistant configuration
+  to meet 2025/2026 industry standards. Added nested `AGENTS.md` files for `core/` and
+  `gui/` layers with explicit architectural constraints. Introduced a formal memory lifecycle
+  policy with automated pruning rules. Added stop conditions and human escalation tables
+  to all core workflows.
+
 - **Code Quality**: Resolved all high-complexity functions identified by `qgis-plugin-analyzer` v1.13.1. Monolithic methods in `drillhole_orchestrator.py`, `preview_service.py`, `drillhole_3d_exporter.py`, and `settings_page.py` were decomposed into smaller, maintainable private methods.
 - **Project Standards**: Applied project-wide code formatting using `black` and `ruff` to ensure consistent style and readability.
 

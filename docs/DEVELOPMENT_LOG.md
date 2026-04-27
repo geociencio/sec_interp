@@ -1,3 +1,16 @@
+## [2026-04-27] Agentic Standards Upgrade (Gen 5 → Gen 6 Roadmap)
+- **Achievement**: Upgraded `.agent/` system to 2025/2026 agentic industry standards.
+  Closed all Gen 5 targets and defined the Gen 6 roadmap.
+- **Changes**:
+    - **Agent system**: Fixed phantom skill reference (`domain-logic` → `geological-logic`).
+    - **Stop conditions**: Added explicit escalation tables to `build-feature.md` and `close-session.md`.
+    - **Memory**: Restructured `AGENT_LESSONS.md` (YAML fixed, 12 lessons pruned). Created `memory_policy.md` (3-tier model, 90-day rule, conflict resolution).
+    - **Nested AGENTS.md**: Created `core/AGENTS.md` and `gui/AGENTS.md` with layer-specific constraints.
+    - **Observability**: Upgraded `agent_metrics.json` to schema v2.0 (TCR, retries, stop events).
+    - **Roadmap**: Updated `OPTIMIZATION_PLAN.md` — Gen 5 complete, Gen 6 targets defined.
+- **Quality**: 571/571 tests OK. 0 skill_sync warnings. TCR: 100%.
+- **Maintenance**: [session_2026-04-27_agentic_standards_upgrade.md](maintenance/session_2026-04-27_agentic_standards_upgrade.md)
+
 ## [2026-04-26] Complexity Refactoring (v3.4.0)
 - **Achievement**: Eliminated all high-complexity functions identified by qgis-analyzer 1.13.1, achieving 0 HIGH_COMPLEXITY issues.
 - **Changes**:
