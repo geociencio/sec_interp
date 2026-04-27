@@ -1,22 +1,37 @@
 {
-    "total_sessions": 14,
-    "tasks_completed": 17,
+    "total_sessions": 15,
+    "tasks_completed": 19,
     "agent_retries": {
         "syntax_errors": 0,
         "logic_errors": 2,
-        "lint_fixes": 16
+        "lint_fixes": 17
     },
-    "effectiveness_score": 0.96,
+    "effectiveness_score": 0.97,
     "last_session": {
-        "date": "2026-04-25",
-        "topic": "flake8_linting_cleanup",
-        "tests_ok": 620,
-        "quality_score": 41.2,
-        "files_modified": 39,
-        "lines_added": 117,
-        "lines_removed": 96
+        "date": "2026-04-26",
+        "topic": "complexity_refactoring",
+        "tests_ok": 571,
+        "quality_score": 41.7,
+        "files_modified": 15,
+        "lines_added": 278,
+        "lines_removed": 173
     },
     "history": [
+        {
+            "date": "2026-04-26",
+            "session": "complexity_refactoring",
+            "tasks": [
+                "Update qgis-plugin-analyzer to v1.13.1",
+                "Refactor run_preview into step-based private methods",
+                "Refactor generate_all in preview_service",
+                "Refactor _process_hole_trace in drillhole_3d_exporter",
+                "Refactor disconnect_signals with _safe_disconnect helper",
+                "Project-wide formatting with black and ruff",
+                "Standardize agentic system to English (remove duplicates)",
+                "Fix phantom skill references (qa-standards, domain-logic)"
+            ],
+            "status": "SUCCESS"
+        },
         {
             "date": "2026-04-25",
             "session": "flake8_linting_cleanup",
