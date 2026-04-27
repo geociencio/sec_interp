@@ -38,9 +38,18 @@ cd /home/jmbernales/qgispluginsdev/sec_interp
 /start-session
 ```
 
-## Current State
+## Current State (Verified — 2026-04-27 fresh analysis)
 - **Tests**: 571 ✅
-- **CC hotspots**: 0
+- **CC hotspots**: 0 ✅ (confirmed — no `HIGH_COMPLEXITY` in `qgis-analyzer analyze .` output)
 - **skill_sync**: 13 skills / 15 workflows / 0 warnings
 - **agent_metrics schema**: v2.0
 - **AGENTS.md hierarchy**: root + core/ + gui/
+- **Quality Scores**: Module Stability: 53.1/100 | Maintainability: 93.2/100 | Security: 100/100
+- **Signal leaks detected**: 13 (all in export/settings page signals — see High Priority #2 below)
+
+## Updated Priorities
+
+### High Priority (newly confirmed)
+- **13 signal leaks** in `settings_page.py` or related export widgets:
+  `btn_reset_export.clicked`, `chk_3d_*`, `chk_exp_*`, `combo_format`, `txt_naming`
+  → These need explicit `disconnect_signals()` implementation before next release.

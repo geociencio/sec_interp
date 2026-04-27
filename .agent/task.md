@@ -1,16 +1,11 @@
-# Task: Antigravity Gen 5 Maintenance
+# Task: Gen 6 Immediate Priorities
 
-- [x] Push changes to remote repositories for the master frameworks.
-- [x] Audit agentic system against 2025/2026 industry standards.
-- [x] Fix phantom skill reference (`domain-logic` → `geological-logic`) in AGENTS.md.
-- [x] Add formal stop conditions to `build-feature.md` and `close-session.md`.
-- [x] Prune and restructure `AGENT_LESSONS.md` (300 → 220 lines, YAML fixed).
-- [x] Create `memory_policy.md` — Gen 5 Memory Policy v1.0 (3-tier model).
-- [x] Create `core/AGENTS.md` — nested layer constraints for QGIS-agnostic core.
-- [x] Create `gui/AGENTS.md` — nested layer constraints for GUI/QgsTask layer.
-- [x] Upgrade `agent_metrics.json` to schema v2.0 (TCR, retries, stop events).
-- [x] Update `OPTIMIZATION_PLAN.md` — Gen 5 closure + Gen 6 roadmap.
-- [ ] Monitor the effectiveness of the Auditor's critique in real-world feature development.
-- [ ] Create a "Mobile" or "Web" blueprint if needed.
+- [x] Fix 13 signal leaks in `settings_page.py` and export widgets (`disconnect_signals()`).
+- [x] Implement `scripts/memory_prune.py` to auto-prune consolidated lessons.
+- [x] Integrate memory prune into `/close-session` Step 3.
+- [x] Create `pre-push` CC gate (`qgis-analyzer analyze . --output json` -> block CC > 10).
+- [ ] Docstring coverage campaign for `core/services/` and `core/utils/`.
+- [ ] Implement `scripts/context_selector.py` for semantic skill injection.
+- [ ] Fix `SPATIAL_INDEX` warning in `gui/dialog_interpretation_manager.py:123`.
 
-**Status**: Gen 5 Complete — Gen 6 roadmap defined.
+**Status**: Session Initialized, ready to start Gen 6 tasks.

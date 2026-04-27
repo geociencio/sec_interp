@@ -357,29 +357,42 @@ class SettingsPage(BasePage):
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
-        connections = [
-            (self.chk_exp_topo.stateChanged, self._on_settings_changed),
-            (self.chk_exp_geol.stateChanged, self._on_settings_changed),
-            (self.chk_exp_struct.stateChanged, self._on_settings_changed),
-            (self.chk_exp_drill.stateChanged, self._on_settings_changed),
-            (self.chk_exp_interp.stateChanged, self._on_settings_changed),
-            (self.chk_enable_3d.stateChanged, self._on_settings_changed),
-            (self.chk_3d_traces.stateChanged, self._on_settings_changed),
-            (self.chk_3d_intervals.stateChanged, self._on_settings_changed),
-            (self.chk_3d_original.stateChanged, self._on_settings_changed),
-            (self.chk_3d_projected.stateChanged, self._on_settings_changed),
-            (self.btn_reset_export.clicked, self._reset_export_defaults),
-        ]
+        self._disconnect_default_tab_signals()
+        self._disconnect_advanced_tab_signals()
 
-        for signal, slot in connections:
-            self._safe_disconnect(signal, slot)
+    def _disconnect_default_tab_signals(self) -> None:
+        """Disconnect signals for the default tab."""
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_topo.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_geol.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_struct.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_drill.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_exp_interp.stateChanged.disconnect(self._on_settings_changed)
+
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.btn_reset_export.clicked.disconnect(self._reset_export_defaults)
 
         if hasattr(self, "combo_format"):
-            self._safe_disconnect(self.combo_format.currentIndexChanged, self._on_settings_changed)
-        if hasattr(self, "txt_naming"):
-            self._safe_disconnect(self.txt_naming.textChanged, self._on_settings_changed)
+            with contextlib.suppress(TypeError, RuntimeError):
+                self.combo_format.currentIndexChanged.disconnect(self._on_settings_changed)
 
-    def _safe_disconnect(self, signal: Any, slot: Any) -> None:
-        """Safely disconnect a signal from a slot."""
+        if hasattr(self, "txt_naming"):
+            with contextlib.suppress(TypeError, RuntimeError):
+                self.txt_naming.textChanged.disconnect(self._on_settings_changed)
+
+    def _disconnect_advanced_tab_signals(self) -> None:
+        """Disconnect signals for the advanced tab."""
         with contextlib.suppress(TypeError, RuntimeError):
-            signal.disconnect(slot)
+            self.chk_enable_3d.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_3d_traces.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_3d_intervals.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_3d_original.stateChanged.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_3d_projected.stateChanged.disconnect(self._on_settings_changed)
