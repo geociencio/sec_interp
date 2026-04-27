@@ -1,7 +1,7 @@
 ---
 description: Workflow to automatically correct linting and formatting issues
 agent: QA Engineer
-skills: [coding-standards, qa-standards]
+skills: [coding-standards, qa-docker]
 validation: |
   - Verify that ruff and black pass without errors
   - Confirm that imports are sorted
