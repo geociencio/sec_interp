@@ -1,299 +1,297 @@
 # Agent Learning Memory (SecInterp)
 
-This file records technical lessons, user preferences, and solutions to complex problems. It uses a structured format for efficient retrieval by the agent system.
+This file records technical lessons, user preferences, and solutions to complex problems.
+It uses a structured format for efficient retrieval by the agent system.
+
+**Memory Policy**: Lessons older than 90 days that are already reflected in a `SKILL.md`
+are marked `[consolidated]` and will be pruned in the next review cycle.
+See `.agent/memory/memory_policy.md` for the full policy.
+
+---
 
 ## 🧠 Lesson Log (YAML Structured)
 
 ```yaml
-  - date: 2026-04-25
-    category: TOOLING
-    topic: Flake8 vs Ruff Configuration Parity
-    lesson: "Ruff and Flake8 can have different default rule scopes or ignored rules (like F821, E402). If the CI/CD or QGIS repository strict analyzer uses Flake8 without the pyproject.toml ignores, the build will fail despite Ruff reporting 0 errors."
-    action: "When resolving linting issues for external platforms, always run the exact tool (e.g., Flake8) expected by the platform and manage exclusions through `# noqa` comments directly in the code rather than relying exclusively on `pyproject.toml` ignores."
+lessons:
 
-
-  - date: 2026-03-29
-    category: TOOLING
-    topic: JSON Git-Diff Stability
-    lesson: "When using machine translation APIs to asynchronously update dictionaries, `json.dump` without deterministic key sorting creates chaotic and unreviewable git diffs on every run."
-    action: "Always enforce `sort_keys=True` when dumping JSON dictionary arrays that act as 'translation memories' or configuration hubs."
-
-  - date: 2026-03-29
-    category: ARCHITECTURE
-    topic: Internal Script Redundancy
-    lesson: "Maintaining duplicate entry points for the same operational block (e.g. apply_baseline.py vs apply_full.py) divides the Single Source of Truth and guarantees technical debt."
-    action: "Always migrate default dictionaries into unified baseline configuration files (like JSONs) and deprecate redundant injector scripts."
-
-  - date: 2026-03-29
-    category: TOOLING
-    topic: Robust XML Modification
-    lesson: "Using naive regex to search and replace values in Qt translation `.ts` files leads to massive malformed XML structures when dealing with special formats. `xml.etree.ElementTree` is orders of magnitude safer."
-    action: "Always utilize native AST or XML parsing libraries when injecting or modifying structured files, completely avoiding custom Regex patches."
-
-  - date: 2026-03-29
-    category: TECHNICAL
-    topic: Modulo Boundaries
-    lesson: "When validating geological or compass orientation mathematically, parsing logic around limits (360) usually evaluates to 0.0 due to internal normalizations (`azimuth % 360`)."
-    action: "Mathematical test assertions must strictly verify the normalized output representation (0.0), not just mirror the input literal (360)."
-
-  - date: 2026-03-25
-    category: TECHNICAL
-    topic: GeoPackage Append & Layer Names (v3.4.0)
-    lesson: "The QGIS GeoPackage driver successfully appends new distinct layers into an existing .gpkg file if the `layerName` option is populated via `QgsVectorFileWriter.SaveVectorOptions`. If `layerName` is omitted and the target file exists, the layer will blindly overwrite or merge into the first available table."
-    action: "Always enforce supplying a layer_name to create_vector_writer when targeting GeoPackage outputs, and pass overwrite_layer=False when intended to append."
-
-  - date: 2026-03-25
-    category: ARCHITECTURE
-    topic: Vector Layer Synchronization (v3.4.0)
-    lesson: "In-memory layer updates inside QGIS require a strict transaction boundary (`startEditing`, `deleteFeatures`, `addFeatures`, `commitChanges`) to guarantee atomicity and correct signal emission for the canvas renderers. Bypassing these boundaries leads to phantom geometries."
-    action: "Encapsulate live QgsVectorLayer mutation in unified save_to_layer and sync_from_layer routines and explicitly clear cache logic to keep the Domain DTOs synced with UI state."
-
-  - date: 2026-03-19
-    category: TESTING
-    topic: Docker-based Verification (QGIS Headless)
-    lesson: "Verifying QGIS-dependent functionality (like DXF/GPKG export) is impossible in local environments lacking the full QGIS/PyQt stack. Relying on mocks only validates the orchestration logic, not the file driver compatibility."
-    action: "Always use `make docker-test` or run reproduction scripts inside the QGIS Docker container (`docker run -v ...`) to confirm actual file creation and driver-specific behavior."
-
-  - date: 2026-03-19
-    category: ARCHITECTURE
-    topic: Exporter Signature Consistency
-    lesson: "Mixing generic and specialized exporters in the same service (like `ExportService`) without a common interface for the `export` data payload leads to brittle logic and runtime TypeErrors."
-    action: "Standardize on specialized exporters that already encapsulate the format-specific logic (DXF/GPKG) and avoid special-casing format extensions in the orchestration service."
-
-  - date: 2026-03-16
-    category: TOOLING
-    topic: Static Analysis Parser Failures
-    lesson: "Tools relying on Regex for code parsing, like the current version of `qgis-plugin-analyzer`, frequently fail on multi-line function signatures (e.g., those formatted by `black`). This leads to severe false positives in Type Hint coverage reports."
-    action: "Do not blindly trust static analysis metrics that drop inexplicably. Always verify the true source code using the Python `ast` module before attempting massive, potentially redundant refactors."
-
-  - date: 2026-03-15
-    category: TECHNICAL
-    topic: DXF Export Limitations (v3.4.0)
-    lesson: "The OGR DXF driver fails when creating arbitrary fields. Stripping fields is necessary for geometry-only exports to avoid termination errors."
-    action: "Centralize DXF field stripping in the primary I/O utility (io.py) and ensure DXFExporter handles empty attribute sets gracefully."
-
-  - date: 2026-03-15
-    category: ARCHITECTURE
-    topic: Drillhole Interval Integrity (v3.4.0)
-    lesson: "Densification of trajectories is insufficient for short geological intervals. Explicit endpoint interpolation is mandatory to ensure every segment has topological consistency."
-    action: "Mandate interpolation at exact interval depths in TrajectoryEngine to guarantee valid segment geometry generation."
-
-  - date: 2026-03-15
-    category: TECHNICAL
-    topic: Export Setting Persistence (v3.4.0)
-    lesson: "Synchronizing UI widgets via QgsSettings requires standardized prefixes (SecInterp/) and coordination with ConfigService to ensure multi-scope persistence."
-    action: "Standardize all persistence keys to use the SecInterp/ prefix for both UI state and core config."
-
-  - date: 2026-03-12
-    category: TECHNICAL
-    topic: Deterministic Lifecycle Cleanup
-    lesson: "In QGIS plugins with complex UI/Tool interactions, relying on Python's garbage collector or implicit deletion is insufficient. Explicit and ordered cleanup in closeEvent is required to prevent orphaned GraphicsItems (rubber bands) and signal leaks."
-    action: "Orchestrate a cleanup sequence in closeEvent for all managers and tools. Implement a specialized cleanup_finalized() for tools to ensure canvas hygiene."
-
-  - date: 2026-03-12
-    category: ARCHITECTURE
-    topic: DTO vs Tuple Flow
-    lesson: "Data flow using tuples becomes unmanageable as the project grows. Standardizing on Dataclasses (DTOs) for service returns improves readability and simplifies background task preparation (Extract-then-Compute)."
-    action: "Migrate all legacy tuple-based service returns to explicit Dataclasses (e.g., DrillholeProjection)."
-
-  - date: 2026-03-12
-    category: DEPLOYMENT
-    topic: Deployment Exclusions
-    lesson: "Active development creates many noise files (coverage reports, Pyre configs, analyzer logs). If not explicitly excluded in .qgisignore or similar, they bloat the production environment."
-    action: "Maintain a strict .qgisignore synchronized with recently adopted Dev/QA tools."
-
-  - date: 2026-03-09
-    category: TESTING
-    topic: Iterative Mocking for Arithmetic
-    lesson: "Complex Qt objects like QRectF/QSizeF used in layouts often undergo arithmetic operations or comparisons (e.g., max()). Mocking them requires returning numeric types for width/height/x/y to prevent TypeErrors."
-    action: "Enrich qt_mocks.py with basic numeric return values for dimensional methods (width, height, etc.) to support layout-heavy tests."
-
-  - date: 2026-03-09
-    category: TESTING
-    topic: Patch Specificity for Local Imports
-    lesson: "Classes imported locally inside functions (e.g., InterpretationPropertiesDialog) must be patched using the absolute path of the calling module where the lookup occurs, not the module of origin."
-    action: "Always verify if a class is imported at the module level or inside a method before defining the patch target path."
-
-  - date: 2026-03-09
-    category: TESTING
-    topic: Dynamic Mock Return Values
-    lesson: "QgsProject.readEntry returns (value, bool). In complex persistence flows with multiple calls, using fixed side_effects ensures that each specific setting (e.g., layers, bands, colors) is correctly simulated."
-    action: "Use side_effect lists or dynamic functions for readEntry mocks to verify multi-scope setting fallbacks (SecInterp vs SecInterpUI)."
-
-  - date: 2026-03-08
-    category: TESTING
-    topic: Qt Object Mocks
-    lesson: "When testing exporters like ImageExporter or PDFExporter, native Qt objects like QImage, QPainter, or QPdfWriter require precise mock attributes (e.g. SmoothPixmapTransform, save) to avoid exceptions."
-    action: "Always enrich tests/mocks/qt_mocks.py with the specific methods and attributes that the QGIS custom painter jobs expect."
-
-  - date: 2026-03-08
-    category: ARCHITECTURE
-    topic: System Standardization & Reflection
-    lesson: "A purely English-based agentic system improves context injection and reduces parsing ambiguity. Implementing formalized reflection loops (post-execution) allows for better semantic memory retention."
-    action: "Adopt English as the universal standard for internal system files. Maintain a mandatory reflection phase in all core workflows."
-
-  - date: 2026-02-01
-    category: ARCHITECTURE
-    topic: Skill Localization
-    lesson: "Over-simplification of Skills during translations can cause loss of technical manuals."
-    action: "Keep technical cores in English; operational structure in Spanish."
-
-  - date: 2026-02-19
-    category: ARCHITECTURE
-    topic: Resilience & Lazy Loading
-    lesson: "When implementing experimental features or heavy domain services, use a SafeLoader/Lazy Loading pattern to prevent cascading failures during plugin initialization. This ensures the core plugin remains functional even if a specific module fails to load (e.g., due to missing dependencies)."
-    action: "Implement SafeLoader for all optional or heavy services and use demand-based instantiation. IMPROVEMENT: Support constructor arguments in lazy_load."
-
-  - date: 2026-02-25
-    category: TECHNICAL
-    topic: Data Modeling and Typing
-    lesson: "Using tuples for complex data transfer makes code unreadable and hard to refactor (index-based access)."
-    action: "Mandatory use of Dataclasses (entities) for all service returns. Avoid list[tuple]."
-
-  - date: 2026-02-28
-    category: ARCHITECTURE
-    topic: Layer Caching and Mock Integrity
-    lesson: "When centralizing layer resolution with caching (LayerResolver), mock layers must have unique IDs across tests to prevent cross-test cache pollution."
-    action: "Implement a global UNIQUE_ID_COUNTER in test mocks and call LayerResolver.clear_cache() in BaseTestCase.setUp()."
-
-  - date: 2026-02-28
-    category: TECHNICAL
-    topic: Strict QGIS Validation in Mocks
-    lesson: "Strict validators use layer.wkbType() and check for formal QgsField existence. Mocks must support setWkbType and formal field addition to pass production-grade validation."
-    action: "Update MockQgsMapLayer to support WKB types and use real QgsField objects instead of simpler mocks when validation is involved."
-
-
-
-  - date: 2026-02-01
-    category: TECHNICAL
-    topic: QgsGeometry Mocking
-    lesson: "Mocking QgsGeometry requires care with methods like pointN or is3D."
-    action: "Prefer unittest for this project according to user preference."
-
-  - date: 2026-02-05
-    category: USER_PREFERENCE
-    topic: Development Tools
-    lesson: "Preference for black (formatting), uv (dependencies), and programmatic UI (no .ui)."
-    action: "Apply these standards in every new GUI implementation."
-
-  - date: 2026-02-05
-    category: ARCHITECTURE
-    topic: Agentic Brain Evolution
-    lesson: "Gen 3 introduces self-criticism (Auditor) and semantic memory for greater cognitive stability."
-    action: "Invoke /ia-critic after planning and /cierra-sesion for continuous learning."
-  - date: 2026-02-15
-    category: QUALITY
-    topic: qgis-analyzer Context
-    lesson: "The QGIS analyzer includes the tests/ folder in the global typing score, which can distort the perception of production quality."
-    action: "Perform breakdowns by folder to validate compliance of production code (core/gui)."
-
-  - date: 2026-02-15
-    category: TECHNICAL
-    topic: QGIS Signal Leaks
-    lesson: "Signals connected to map tools (MapTools) or dialog pages must be explicitly disconnected to avoid leaks and erratic behavior."
-    action: "Always implement a disconnect_signals() method invoked when closing the context."
-
-## ⚙️ Global Preference Configuration
-
-- **Language**: Communication (Spanish), Code/Commits/Docs (English).
-- **Standards**: Google Docstrings, Pathlib, Strict Typing.
-- **Workflow**: Starts with `/start-session`, Closes with `/close-session`.
-
----
-  - date: 2026-02-16
-    category: TECHNICAL
-    topic: Signal Tracing vs Mocks
-    lesson: "Using wrappers to connect signals (like sm._connect_checked) can break unit tests if they expect direct calls to the slot Mock. Signals connected via wrappers are not detected by `assert_called_with` of Mock objects."
-    action: "For methods that are mocks in unit tests, maintain direct signal connections without tracking wrappers, or orchestrate selective disconnection."
-
-  - date: 2026-02-18
-    category: TECHNICAL
-    topic: qgis-manage Build Rigidity
-    lesson: "The qgis-manage tool has hardcoded exclusions and depends on pyrcc5 (PyQt5), which generates automatic technical debt in resources.py."
-    action: "After compiling resources, always apply an import patch (sed) and verify that no necessary files are missing in deployment due to hidden exclusions."
-
-  - date: 2026-02-18
-    category: USER_PREFERENCE
-    topic: Fast Deployment
-    lesson: "For fast iterations that do not require changes in resources or translations, it is preferred to avoid compilation."
-    action: "Use the command: 'uv run qgis-manage deploy --no-compile'"
-
-  - date: 2026-03-03
-    category: WORKFLOW
-    topic: Phase Initialization
-    lesson: "A standard phase initialization must include a baseline quality scan (ai-ctx) and a full test suite validation (docker) before any code change to ensure a healthy starting point."
-    action: "Adopt /inicia-fase as the mandatory gate for major version increments, documenting quality gaps as 'Objective 0'."
-
----
-  - date: 2026-03-15
-    topic: "QGIS 4.x Readiness & MCP Integration"
-    lesson: "Removing hard PyQt5 dependencies is critical for Qt6 compatibility, as QGIS provides the runtime. Hardcoding versions in pyproject.toml causes orchestration deadlocks in modernized environments."
-    action: "Maintenance of 'Optional Dependency' status for PyQt during transition, and total removal for v4.0 environments."
-  - date: 2026-03-15
-    topic: "MCP Native Orchestration"
-    lesson: "Structural Tool Calls via MCP (scripts/mcp_server.py) reduce hallucination rates compared to raw markdown skill reading by providing a strict JSON-RPC interface for procedural knowledge."
-    action: "Expand mcp_server.py to cover all validation-heavy core logic."
-  - date: 2026-03-15
-    topic: "Refactoring Regressions"
-    lesson: "Large architectural changes in v3.4.0 (Unified I/O) changed internal method signatures of ExportService, breaking unit tests that mocked these private methods."
-    action: "Always run the full core test suite (make test) immediately after refactoring internal orchestration methods."
-
-  - date: 2026-03-22
-    category: TOOLING
-    topic: ai-context-core v3.3.0 CLI & Features
-    lesson: "The CLI executable for `ai-context-core` is `ai-ctx`, not `ai-context`. The v3.3.0 update fixes previous aggregation bugs where global metrics (Functions, Classes, MI) were reported as zero."
-    action: "Always use `uv run ai-ctx` for project analysis. Leverage the new 'QGIS Standards Compliance' section to audit plugin best practices and i18n coverage."
-
-  - date: 2026-03-30
-    category: ARCHITECTURE
-    topic: Manager-based GUI Orchestration
-    lesson: "Refactoring monolithic dialog classes into specialized Managers (Signal, Preview, Export, Input) reduces cyclomatic complexity (CC) and decouples UI lifecycle from feature logic."
-    action: "Adopt the Manager pattern for all complex QGIS Dialogs, delegating signal handling and state persistence to dedicated orchestrators."
-
-  - date: 2026-03-30
-    category: ARCHITECTURE
-    topic: Interface-driven Core Design
-    lesson: "Defining service contracts via Abstract Base Classes (ABCs) in `core/interfaces` allows the `ProfileController` to remain agnostic of concrete implementations, enabling seamless Dependency Injection and Mock-based testing."
-    action: "Always define a clear interface for new Core services before implementation to ensure loose coupling and testability."
-
-  - date: 2026-03-30
-    category: i18n
-    topic: Master Data SSoT Workflow
-    lesson: "Treating JSON dictionaries as the Single Source of Truth (SSoT) for translations allows for safe, automated injection into Qt `.ts` files, eliminating XML formatting errors and enabling asynchronous parallel machine translation."
-    action: "Never modify `.ts` files manually; always use the `master_data/*.json` registries as the primary editing point for all locales."
-
----
-*Last update: 2026-03-30 - Generation 5 Memory Reflection.*
-> [!NOTE]
-> Lessons from 2026-03-15 and earlier in this log have been consolidated into specialized `SKILL.md` files as part of the self-evolving memory workflow.
-```
-- date: 2026-04-05
-  topic: gen5_modernization
-  lessons:
-    - "Blueprint Scaffolding architecture is superior for scaling frameworks while maintaining a generic core."
-    - "Integration of the Reflect Loop (Agent Auditor critique) significantly reduces hallucination risk in autonomous planning."
-    - "Model Context Protocol (MCP) is the backbone for standardized and secure tool orchestration in 2026 systems."
-
-  - date: 2026-04-26
-    category: TOOLING
-    topic: QGIS-Analyzer Static Summary
-    lesson: "The 'summary' command is a static JSON viewer. It does not reflect real-time code changes unless 'analyze' is executed first."
-    action: "Always force a full re-analysis ('qgis-analyzer analyze .') before verifying fixes with 'summary' to avoid phantom issue reporting."
-
-  - date: 2026-04-26
-    category: ARCHITECTURE
-    topic: Explicit Signal Disconnection
-    lesson: "Static analyzers like qgis-analyzer may flag signal connections as leaks if disconnections are not explicit and symmetric within the same class context."
-    action: "Ensure all signals connected in 'connect_signals' are explicitly disconnected by slot name in 'disconnect_signals' using 'contextlib.suppress'."
+  # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
 
   - date: 2026-04-26
     category: TOOLING
     topic: Complexity Branch Counting (or "")
-    lesson: "qgis-plugin-analyzer 1.13.1 counts 'or \"\"' expressions in function arguments or return statements as additional logical branches, which can push cyclomatic complexity over the limit in methods with many optional fields."
-    action: "Decompose monolithic orchestrators into discrete 'Steps' (private methods) and use intermediate variables or DTO defaults instead of inline 'or' logic to maintain low CC scores."
+    lesson: >
+      qgis-plugin-analyzer 1.13.1 counts 'or ""' expressions in function arguments
+      or return statements as additional logical branches, which can push cyclomatic
+      complexity over the limit in methods with many optional fields.
+    action: >
+      Decompose monolithic orchestrators into discrete 'Steps' (private methods) and
+      use intermediate variables or DTO defaults instead of inline 'or' logic to
+      maintain low CC scores.
 
   - date: 2026-04-26
     category: ARCHITECTURE
     topic: Orchestrator Decomposition
-    lesson: "Decoupling complex data processing flows into a 'Step-by-Step' pattern within orchestrator services (core/services) improves testability and reduces complexity without breaking the Extract-then-Compute paradigm."
-    action: "Use private methods prefixed with _stepN_ to document the execution flow of complex services, keeping the main method clean and linear."
+    lesson: >
+      Decoupling complex data processing flows into a 'Step-by-Step' pattern within
+      orchestrator services (core/services) improves testability and reduces complexity
+      without breaking the Extract-then-Compute paradigm.
+    action: >
+      Use private methods prefixed with _stepN_ to document the execution flow of
+      complex services, keeping the main method clean and linear.
+
+  - date: 2026-04-26
+    category: ARCHITECTURE
+    topic: Explicit Signal Disconnection
+    lesson: >
+      Static analyzers like qgis-analyzer may flag signal connections as leaks if
+      disconnections are not explicit and symmetric within the same class context.
+    action: >
+      Ensure all signals connected in 'connect_signals' are explicitly disconnected
+      by slot name in 'disconnect_signals' using 'contextlib.suppress'.
+
+  - date: 2026-04-26
+    category: TOOLING
+    topic: QGIS-Analyzer Static Summary
+    lesson: >
+      The 'summary' command is a static JSON viewer. It does not reflect real-time
+      code changes unless 'analyze' is executed first.
+    action: >
+      Always force a full re-analysis ('qgis-analyzer analyze .') before verifying
+      fixes with 'summary' to avoid phantom issue reporting.
+
+  - date: 2026-04-25
+    category: TOOLING
+    topic: Flake8 vs Ruff Configuration Parity
+    lesson: >
+      Ruff and Flake8 can have different default rule scopes or ignored rules (like
+      F821, E402). If the CI/CD or QGIS repository strict analyzer uses Flake8
+      without the pyproject.toml ignores, the build will fail despite Ruff reporting
+      0 errors.
+    action: >
+      When resolving linting issues for external platforms, always run the exact tool
+      (e.g., Flake8) expected by the platform and manage exclusions through
+      '# noqa' comments directly in the code rather than relying exclusively on
+      'pyproject.toml' ignores.
+
+  - date: 2026-04-05
+    category: ARCHITECTURE
+    topic: Gen 5 Blueprint Scaffolding
+    lesson: >
+      Blueprint Scaffolding architecture is superior for scaling frameworks while
+      maintaining a generic core. Integrating the Reflect Loop (Agent Auditor
+      critique) significantly reduces hallucination risk in autonomous planning.
+      MCP is the backbone for standardized and secure tool orchestration.
+    action: >
+      Use the /ia-critic workflow after every major planning phase. Expand
+      mcp_server.py to cover all validation-heavy core logic.
+
+  - date: 2026-03-30
+    category: ARCHITECTURE
+    topic: Manager-based GUI Orchestration
+    lesson: >
+      Refactoring monolithic dialog classes into specialized Managers (Signal,
+      Preview, Export, Input) reduces cyclomatic complexity (CC) and decouples
+      UI lifecycle from feature logic.
+    action: >
+      Adopt the Manager pattern for all complex QGIS Dialogs, delegating signal
+      handling and state persistence to dedicated orchestrators.
+    consolidated_in: ui-framework/SKILL.md
+
+  - date: 2026-03-30
+    category: ARCHITECTURE
+    topic: Interface-driven Core Design
+    lesson: >
+      Defining service contracts via Abstract Base Classes (ABCs) in 'core/interfaces'
+      allows the ProfileController to remain agnostic of concrete implementations,
+      enabling seamless Dependency Injection and Mock-based testing.
+    action: >
+      Always define a clear interface for new Core services before implementation
+      to ensure loose coupling and testability.
+    consolidated_in: coding-standards/SKILL.md
+
+  - date: 2026-03-30
+    category: i18n
+    topic: Master Data SSoT Workflow
+    lesson: >
+      Treating JSON dictionaries as the Single Source of Truth (SSoT) for translations
+      allows for safe, automated injection into Qt '.ts' files, eliminating XML
+      formatting errors and enabling asynchronous parallel machine translation.
+    action: >
+      Never modify '.ts' files manually; always use the 'master_data/*.json'
+      registries as the primary editing point for all locales.
+    consolidated_in: i18n-standards/SKILL.md
+
+  - date: 2026-03-29
+    category: TOOLING
+    topic: JSON Git-Diff Stability
+    lesson: >
+      When using machine translation APIs to asynchronously update dictionaries,
+      json.dump without deterministic key sorting creates chaotic and unreviewable
+      git diffs on every run.
+    action: >
+      Always enforce 'sort_keys=True' when dumping JSON dictionary arrays that act
+      as 'translation memories' or configuration hubs.
+    consolidated_in: coding-standards/SKILL.md
+
+  - date: 2026-03-29
+    category: TOOLING
+    topic: Robust XML Modification
+    lesson: >
+      Using naive regex to search and replace values in Qt translation '.ts' files
+      leads to massive malformed XML structures. 'xml.etree.ElementTree' is orders
+      of magnitude safer.
+    action: >
+      Always utilize native AST or XML parsing libraries when injecting or modifying
+      structured files, completely avoiding custom Regex patches.
+    consolidated_in: i18n-standards/SKILL.md
+
+  - date: 2026-03-25
+    category: ARCHITECTURE
+    topic: Vector Layer Synchronization
+    lesson: >
+      In-memory layer updates inside QGIS require a strict transaction boundary
+      (startEditing, deleteFeatures, addFeatures, commitChanges) to guarantee
+      atomicity and correct signal emission for the canvas renderers.
+    action: >
+      Encapsulate live QgsVectorLayer mutation in unified save_to_layer and
+      sync_from_layer routines and explicitly clear cache logic.
+    consolidated_in: qgis-core/SKILL.md
+
+  - date: 2026-03-22
+    category: TOOLING
+    topic: ai-context-core CLI
+    lesson: >
+      The CLI executable for 'ai-context-core' is 'ai-ctx', not 'ai-context'.
+      The v3.3.0 update fixes previous aggregation bugs where global metrics
+      (Functions, Classes, MI) were reported as zero.
+    action: >
+      Always use 'uv run ai-ctx' for project analysis.
+
+  - date: 2026-03-19
+    category: TESTING
+    topic: Docker-based Verification (QGIS Headless)
+    lesson: >
+      Verifying QGIS-dependent functionality (like DXF/GPKG export) is impossible
+      in local environments lacking the full QGIS/PyQt stack. Relying on mocks only
+      validates the orchestration logic, not the file driver compatibility.
+    action: >
+      Always use 'make docker-test' or run reproduction scripts inside the QGIS
+      Docker container to confirm actual file creation and driver-specific behavior.
+    consolidated_in: qa-docker/SKILL.md
+
+  - date: 2026-03-16
+    category: TOOLING
+    topic: Static Analysis Parser Failures
+    lesson: >
+      Tools relying on Regex for code parsing frequently fail on multi-line function
+      signatures (e.g., those formatted by 'black'). This leads to severe false
+      positives in Type Hint coverage reports.
+    action: >
+      Do not blindly trust static analysis metrics that drop inexplicably. Always
+      verify the true source code using the Python 'ast' module before attempting
+      massive refactors.
+
+  - date: 2026-03-12
+    category: ARCHITECTURE
+    topic: Deterministic Lifecycle Cleanup
+    lesson: >
+      In QGIS plugins with complex UI/Tool interactions, relying on Python's garbage
+      collector or implicit deletion is insufficient. Explicit and ordered cleanup
+      in closeEvent is required to prevent orphaned GraphicsItems and signal leaks.
+    action: >
+      Orchestrate a cleanup sequence in closeEvent for all managers and tools.
+      Implement a specialized cleanup_finalized() for tools to ensure canvas hygiene.
+    consolidated_in: qgis-core/SKILL.md
+
+  - date: 2026-03-09
+    category: TESTING
+    topic: Patch Specificity for Local Imports
+    lesson: >
+      Classes imported locally inside functions must be patched using the absolute
+      path of the calling module where the lookup occurs, not the module of origin.
+    action: >
+      Always verify if a class is imported at the module level or inside a method
+      before defining the patch target path.
+    consolidated_in: qa-docker/SKILL.md
+
+  - date: 2026-03-08
+    category: ARCHITECTURE
+    topic: System Standardization & Reflection
+    lesson: >
+      A purely English-based agentic system improves context injection and reduces
+      parsing ambiguity. Implementing formalized reflection loops (post-execution)
+      allows for better semantic memory retention.
+    action: >
+      Adopt English as the universal standard for internal system files. Maintain
+      a mandatory reflection phase in all core workflows.
+    consolidated_in: documentation-standards/SKILL.md
+
+  - date: 2026-02-28
+    category: ARCHITECTURE
+    topic: Layer Caching and Mock Integrity
+    lesson: >
+      When centralizing layer resolution with caching (LayerResolver), mock layers
+      must have unique IDs across tests to prevent cross-test cache pollution.
+    action: >
+      Implement a global UNIQUE_ID_COUNTER in test mocks and call
+      LayerResolver.clear_cache() in BaseTestCase.setUp().
+    consolidated_in: qa-docker/SKILL.md
+
+  - date: 2026-02-19
+    category: ARCHITECTURE
+    topic: Resilience & Lazy Loading
+    lesson: >
+      When implementing experimental features or heavy domain services, use a
+      SafeLoader/Lazy Loading pattern to prevent cascading failures during plugin
+      initialization.
+    action: >
+      Implement SafeLoader for all optional or heavy services and use demand-based
+      instantiation.
+    consolidated_in: qgis-core/SKILL.md
+
+  - date: 2026-02-05
+    category: USER_PREFERENCE
+    topic: Development Tools
+    lesson: >
+      Preference for black (formatting), uv (dependencies), and programmatic UI
+      (no .ui files).
+    action: Apply these standards in every new GUI implementation.
+    consolidated_in: coding-standards/SKILL.md
+
+  # ─── PRUNED LESSONS (already in SKILL.md — kept as index only) ─────────────
+  # The following entries have been fully absorbed into specialized skills.
+  # They are retained here as a consolidated index only.
+  #
+  # [PRUNED] 2026-03-29 TECHNICAL/Modulo Boundaries → geological-logic/SKILL.md
+  # [PRUNED] 2026-03-25 TECHNICAL/GeoPackage Append → qgis-core/SKILL.md
+  # [PRUNED] 2026-03-15 TECHNICAL/DXF Export Limitations → qgis-core/SKILL.md
+  # [PRUNED] 2026-03-15 TECHNICAL/Export Setting Persistence → coding-standards/SKILL.md
+  # [PRUNED] 2026-03-12 ARCHITECTURE/DTO vs Tuple Flow → coding-standards/SKILL.md
+  # [PRUNED] 2026-03-09 TESTING/Qt Object Mocks → qa-docker/SKILL.md
+  # [PRUNED] 2026-03-09 TESTING/Dynamic Mock Return Values → qa-docker/SKILL.md
+  # [PRUNED] 2026-03-08 TESTING/Iterative Mocking for Arithmetic → qa-docker/SKILL.md
+  # [PRUNED] 2026-02-25 TECHNICAL/Data Modeling → coding-standards/SKILL.md
+  # [PRUNED] 2026-02-16 TECHNICAL/Signal Tracing vs Mocks → qgis-core/SKILL.md
+  # [PRUNED] 2026-02-15 TECHNICAL/QGIS Signal Leaks → qgis-core/SKILL.md
+  # [PRUNED] 2026-02-15 QUALITY/qgis-analyzer Context → qa-docker/SKILL.md
+  # [PRUNED] 2026-02-01 TECHNICAL/QgsGeometry Mocking → qa-docker/SKILL.md
+```
+
+---
+
+## ⚙️ Global Preference Configuration
+
+| Preference | Value |
+|---|---|
+| **Language** | Communication: Spanish / Code, Commits, Docs: English |
+| **Formatter** | `black` |
+| **Package manager** | `uv` |
+| **UI approach** | Programmatic (no `.ui` files) |
+| **Testing framework** | `unittest` (Mock-First pattern) |
+| **Commit style** | Conventional Commits (see `docs/COMMIT_GUIDELINES.md`) |
+| **Workflows** | Start with `/start-session`, close with `/close-session` |
+
+---
+
+*Last update: 2026-04-27 — Memory Pruning & YAML restructure (Gen 5 Memory Policy applied).*
+*Next review: 2026-07-27 — Prune all entries marked `consolidated_in` older than 90 days.*

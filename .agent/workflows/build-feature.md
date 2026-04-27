@@ -2,6 +2,10 @@
 description: Start the Autonomous AI Developer Pipeline sequence for a new feature.
 agent: Architect
 skills: [qgis-core, qa-docker]
+stop_conditions:
+  - "Tests fail after 3 consecutive fix attempts → escalate to user"
+  - "Architectural conflict detected between Core and GUI layers → stop and request review"
+  - "Implementation plan diverges >30% from approved Technical_Specification.md → re-plan"
 ---
 # Build Feature Autonomous Pipeline
 
@@ -36,3 +40,14 @@ When the user types `/build-feature <requirement>`, orchestrate the development 
    Shift context to the **@auditor**.
    - Review that the code maintains the `.agent/AGENTS.md` metrics (such as the separation of Core and GUI).
    - Once successfully checked, generate an output confirming the feature is ready to be committed!
+
+---
+
+## ⛔ Stop Conditions (Human Escalation Required)
+
+| Condition | Action |
+|---|---|
+| Tests fail after **3+ fix attempts** on the same root cause | Stop. Report exact error. Ask user for direction. |
+| A Core module needs to import from `qgis.gui` | Stop immediately. This violates Extract-then-Compute. Request architectural review. |
+| The approved `Technical_Specification.md` no longer matches what was built | Stop. Present delta. Ask user to re-approve or adjust scope. |
+| A background thread needs a live QGIS object | Stop. Propose WKT/DTO alternative. Wait for approval. |

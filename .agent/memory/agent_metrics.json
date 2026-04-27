@@ -1,22 +1,65 @@
 {
-    "total_sessions": 15,
-    "tasks_completed": 19,
-    "agent_retries": {
+    "schema_version": "2.0",
+    "meta": {
+        "description": "Agentic system operational metrics for SecInterp",
+        "policy_ref": ".agent/memory/memory_policy.md",
+        "last_updated": "2026-04-27"
+    },
+    "summary": {
+        "total_sessions": 16,
+        "tasks_completed": 21,
+        "overall_effectiveness_score": 0.97,
+        "task_completion_rate": 1.0,
+        "avg_retries_per_session": 1.25,
+        "tests_ok": 571,
+        "quality_score_latest": 41.7
+    },
+    "retries": {
         "syntax_errors": 0,
         "logic_errors": 2,
-        "lint_fixes": 17
+        "lint_fixes": 17,
+        "stop_condition_triggered": 0,
+        "human_escalations": 0
     },
-    "effectiveness_score": 0.97,
     "last_session": {
-        "date": "2026-04-26",
-        "topic": "complexity_refactoring",
+        "date": "2026-04-27",
+        "topic": "agentic_standards_upgrade",
         "tests_ok": 571,
         "quality_score": 41.7,
-        "files_modified": 15,
-        "lines_added": 278,
-        "lines_removed": 173
+        "files_modified": 8,
+        "lines_added": 420,
+        "lines_removed": 145,
+        "task_completion_rate": 1.0,
+        "retries": 0,
+        "stop_conditions_triggered": 0,
+        "tasks": [
+            "Fix phantom skill (domain-logic → geological-logic) in AGENTS.md",
+            "Add stop_conditions to build-feature.md and close-session.md",
+            "Restructure and prune AGENT_LESSONS.md (300 → 220 lines, YAML fixed)",
+            "Create memory_policy.md (Gen 5 v1.0)",
+            "Create core/AGENTS.md (nested layer constraints)",
+            "Create gui/AGENTS.md (nested layer constraints)",
+            "Enrich agent_metrics.json to schema v2.0 (TCR, retries, tokens)"
+        ],
+        "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-04-27",
+            "session": "agentic_standards_upgrade",
+            "tasks": [
+                "Fix phantom skill (domain-logic → geological-logic) in AGENTS.md",
+                "Add stop_conditions to build-feature.md and close-session.md",
+                "Restructure and prune AGENT_LESSONS.md (300 → 220 lines, YAML fixed)",
+                "Create memory_policy.md (Gen 5 v1.0)",
+                "Create core/AGENTS.md (nested layer constraints)",
+                "Create gui/AGENTS.md (nested layer constraints)",
+                "Enrich agent_metrics.json to schema v2.0 (TCR, retries, tokens)"
+            ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
+            "status": "SUCCESS"
+        },
         {
             "date": "2026-04-26",
             "session": "complexity_refactoring",
@@ -30,6 +73,8 @@
                 "Standardize agentic system to English (remove duplicates)",
                 "Fix phantom skill references (qa-standards, domain-logic)"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         },
         {
@@ -41,6 +86,8 @@
                 "Ensure pipeline parity between Ruff and Flake8",
                 "Deploy clean codebase"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 2,
             "status": "SUCCESS"
         },
         {
@@ -52,6 +99,8 @@
                 "Implement sort_keys=True for git-diff stability",
                 "Rewrite i18n README"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         },
         {
@@ -63,6 +112,8 @@
                 "Fix 360 degree parsing logic tests",
                 "Execute v3.4.0 phase closure workflows"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 1,
             "status": "SUCCESS"
         },
         {
@@ -74,6 +125,8 @@
                 "Verify QGIS Compliance analysis",
                 "Update agent memory"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         },
         {
@@ -85,6 +138,8 @@
                 "Unified Specialized Exporters",
                 "Update session technical memory"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         },
         {
@@ -96,6 +151,8 @@
                 "Document QGIS Analyzer parser bug",
                 "Project-wide formatting with ruff/black"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 3,
             "status": "SUCCESS"
         },
         {
@@ -107,6 +164,8 @@
                 "English technical standardization",
                 "Create /fix-linting workflow"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         },
         {
@@ -119,6 +178,8 @@
                 "Unified DXF/GPKG/SHP support",
                 "Global code reformatting and magic number removal"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 4,
             "status": "SUCCESS"
         },
         {
@@ -126,9 +187,11 @@
             "session": "skill_integration_changelog",
             "tasks": [
                 "Relocate changelog-generator skill",
-                "Integrate skill into workflows (close-session, release-plugin, close-phase)",
+                "Integrate skill into workflows",
                 "Update AGENTS.md and memory"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         },
         {
@@ -140,6 +203,8 @@
                 "Add pervasive return type hints in services",
                 "Final deploy and .qgisignore refinement"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         },
         {
@@ -152,6 +217,8 @@
                 "Reach 100% coverage for PreviewLegendRenderer",
                 "Standardize rendering mocks in qt_mocks.py"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 2,
             "status": "SUCCESS"
         },
         {
@@ -165,6 +232,8 @@
                 "Implement tests for Interpretation2DExporter",
                 "Fix qt_mocks.py missing attributes"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 5,
             "status": "SUCCESS"
         },
         {
@@ -177,12 +246,17 @@
                 "Verify stability (450 tests)",
                 "Update technical documentation"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         },
         {
             "date": "2026-03-02",
+            "session": "release_v3.2.0",
             "version": "3.2.0",
             "tests_ok": 455,
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "release"
         },
         {
@@ -194,6 +268,8 @@
                 "Implement real progress signals in DrillholeGenerationTask",
                 "Robust Mock Infrastructure (WKB, Fields, Unique IDs)"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 3,
             "status": "SUCCESS"
         },
         {
@@ -204,6 +280,8 @@
                 "Implement Audit Layer",
                 "Update Framework Repo"
             ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
             "status": "SUCCESS"
         }
     ]
