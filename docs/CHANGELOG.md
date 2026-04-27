@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - Fixed signal leak in Interpretation Storage selector (memory management improvement).
 
+### Refactored
+- **Code Quality**: Resolved all high-complexity functions identified by `qgis-plugin-analyzer` v1.13.1. Monolithic methods in `drillhole_orchestrator.py`, `preview_service.py`, `drillhole_3d_exporter.py`, and `settings_page.py` were decomposed into smaller, maintainable private methods.
+- **Project Standards**: Applied project-wide code formatting using `black` and `ruff` to ensure consistent style and readability.
+
+### Changed
+- **Tooling**: Updated `qgis-plugin-analyzer` to **v1.13.1**, enabling more accurate complexity analysis and branch counting.
+
 ### Changed
 - **Code Quality**: Applied automated and manual fixes to resolve 104 remaining Flake8 linting errors across the codebase, achieving zero Flake8 violations.
 - **Documentation**: Overhauled `ARCHITECTURE_EN.md` (v3.4.0) to reflect the new modular **Manager-based GUI** and **Interface-driven Core** layer.

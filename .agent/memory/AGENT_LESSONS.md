@@ -285,3 +285,15 @@ This file records technical lessons, user preferences, and solutions to complex 
     topic: Explicit Signal Disconnection
     lesson: "Static analyzers like qgis-analyzer may flag signal connections as leaks if disconnections are not explicit and symmetric within the same class context."
     action: "Ensure all signals connected in 'connect_signals' are explicitly disconnected by slot name in 'disconnect_signals' using 'contextlib.suppress'."
+
+  - date: 2026-04-26
+    category: TOOLING
+    topic: Complexity Branch Counting (or "")
+    lesson: "qgis-plugin-analyzer 1.13.1 counts 'or \"\"' expressions in function arguments or return statements as additional logical branches, which can push cyclomatic complexity over the limit in methods with many optional fields."
+    action: "Decompose monolithic orchestrators into discrete 'Steps' (private methods) and use intermediate variables or DTO defaults instead of inline 'or' logic to maintain low CC scores."
+
+  - date: 2026-04-26
+    category: ARCHITECTURE
+    topic: Orchestrator Decomposition
+    lesson: "Decoupling complex data processing flows into a 'Step-by-Step' pattern within orchestrator services (core/services) improves testability and reduces complexity without breaking the Extract-then-Compute paradigm."
+    action: "Use private methods prefixed with _stepN_ to document the execution flow of complex services, keeping the main method clean and linear."

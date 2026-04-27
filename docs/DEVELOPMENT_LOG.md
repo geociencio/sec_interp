@@ -1,3 +1,12 @@
+## [2026-04-26] Complexity Refactoring (v3.4.0)
+- **Achievement**: Eliminated all high-complexity functions identified by qgis-analyzer 1.13.1, achieving 0 HIGH_COMPLEXITY issues.
+- **Changes**:
+    - **Refactoring**: Decomposed monolithic functions in `drillhole_orchestrator.py`, `preview_service.py`, `drillhole_3d_exporter.py`, and `settings_page.py`.
+    - **Standardization**: Applied project-wide formatting with `black` and `ruff`.
+    - **Tooling**: Updated `qgis-plugin-analyzer` to 1.13.1.
+- **Quality**: 571/571 tests OK. HIGH_COMPLEXITY: 0.
+- **Maintenance**: [session_2026-04-26_complexity_refactoring.md](maintenance/session_2026-04-26_complexity_refactoring.md)
+
 ## [2026-04-26] Signal Leak Fix
 - **Achievement**: Resolved a critical signal leak in the Interpretation settings page.
 - **Changes**:
