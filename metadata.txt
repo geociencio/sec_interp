@@ -1,6 +1,7 @@
 [general]
 name=Sec Interp
 qgisMinimumVersion=3.0
+qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
 version=3.4.0

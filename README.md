@@ -75,9 +75,9 @@ See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
 Before installing **SecInterp**, ensure your system meets the following requirements:
 
-*   **QGIS**: 3.28 LTR or superior.
+*   **QGIS**: 3.28 LTR or superior (including QGIS 4.x).
 *   **Python**: 3.10 or superior (included with QGIS).
-*   **Dependencies**: The plugin uses standard QGIS and PyQt5 libraries. Advanced analysis and development tools (like the **QGIS Plugin Analyzer** tool, executed via the `qgis-analyzer` command, and `ai-context-core`) are only required for developers and auditors.
+*   **Dependencies**: The plugin uses standard QGIS and PyQt libraries (fully compatible with both Qt5 and Qt6 via `qgis.PyQt`). Advanced analysis and development tools (like the **QGIS Plugin Analyzer** tool, executed via the `qgis-analyzer` command, and `ai-context-core`) are only required for developers and auditors.
 
 ---
 

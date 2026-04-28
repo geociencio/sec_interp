@@ -25,7 +25,7 @@ copyright = "2026, Juan M Bernales"
 author = "Juan M Bernales"
 
 # The full version, including alpha/beta/rc tags
-release = "2.9.0"
+release = "3.4.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -42,7 +42,15 @@ extensions = [
 ]
 
 # Mock imports for modules that are not available in the build environment
-autodoc_mock_imports = ["qgis", "PyQt5", "qgis.core", "qgis.gui", "qgis.utils"]
+autodoc_mock_imports = [
+    "qgis",
+    "PyQt5",
+    "PyQt6",
+    "qgis.PyQt",
+    "qgis.core",
+    "qgis.gui",
+    "qgis.utils",
+]
 
 # MyST Configuration
 myst_fence_as_directive = ["mermaid"]
