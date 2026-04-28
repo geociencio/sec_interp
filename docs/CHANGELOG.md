@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   policy with automated pruning rules. Added stop conditions and human escalation tables
   to all core workflows.
 
+- **Code Quality**: Reduced Cyclomatic Complexity (CC) across all core and GUI layers. Over 20 functions refactored by extracting specialized sub-methods (Batch 1-4), ensuring full compliance with the strict QGIS plugin quality gate.
+- **Maintainability**: Unified and standardized Python docstrings and applied global Gen 6 formatting (ruff/black).
 - **Code Quality**: Resolved all high-complexity functions identified by `qgis-plugin-analyzer` v1.13.1. Monolithic methods in `drillhole_orchestrator.py`, `preview_service.py`, `drillhole_3d_exporter.py`, and `settings_page.py` were decomposed into smaller, maintainable private methods.
 - **Project Standards**: Applied project-wide code formatting using `black` and `ruff` to ensure consistent style and readability.
 

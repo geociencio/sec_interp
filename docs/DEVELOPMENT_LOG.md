@@ -1,3 +1,12 @@
+## [2026-04-27] Session: CC Compliance Gen 6
+- **Achievement**: Reached full compliance with cyclomatic complexity quality gates (CC <= 10). Extracted monolithic methods into specialized sub-methods while preserving the Extract-then-Compute core/GUI isolation.
+- **Changes**:
+    - **Refactoring**: Decomposed highly complex functions in `qgis.py`, `drillhole.py`, `collar_processor.py`, `drillhole_orchestrator.py`, `preview_layer_factory.py`, and more.
+    - **Docstrings**: Formatted all new helper method docstrings to imperative mood to satisfy strict D401 requirements.
+    - **Quality**: Enforced global code formatting using `ruff format` and `black`.
+- **Status**: Completed. 0 HIGH_COMPLEXITY offenders.
+- **Maintenance**: [session_2026-04-27_cc_compliance_gen6.md](maintenance/session_2026-04-27_cc_compliance_gen6.md)
+
 ## [2026-04-27] Agentic Standards Upgrade (Gen 5 → Gen 6 Roadmap)
 - **Achievement**: Upgraded `.agent/` system to 2025/2026 agentic industry standards.
   Closed all Gen 5 targets and defined the Gen 6 roadmap.
