@@ -325,34 +325,10 @@ class PreviewLayerFactory:
 
         features = []
         for hole_data in drillhole_data:
-            # hole_data can be DrillholeProjection object or (hole_id, spatial_points, segments) tuple
-            if isinstance(hole_data, DrillholeProjection):
-                hole_id = hole_data.hole_id
-                trace_points = hole_data.points_3d
-            else:
-                hole_id, trace_points = hole_data[0], hole_data[1]
-
-            MIN_TRACE_POINTS = 2
-            if not trace_points or len(trace_points) < MIN_TRACE_POINTS:
-                logger.debug(
-                    f"Skipping hole {hole_id}: insufficient trace points ({len(trace_points) if trace_points else 0})"
-                )
-                continue
-
-            render_points = []
-            for p in trace_points:
-                # Handle both SpatialMeta objects and legacy tuples
-                dist = getattr(p, "dist_along", p[0] if isinstance(p, list | tuple) else 0.0)
-                z = getattr(p, "z", p[1] if isinstance(p, list | tuple) else 0.0)
-                render_points.append((dist, z))
-
-            line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))
-            line_geom = QgsGeometry.fromPolylineXY(line_points)
-
-            feat = QgsFeature(layer.fields())
-            feat.setGeometry(line_geom)
-            feat.setAttribute("hole_id", hole_id)
-            features.append(feat)
+            hole_id, trace_points = self._extract_trace_data(hole_data)
+            feat = self._create_trace_feature(hole_id, trace_points, layer.fields(), vert_exag)
+            if feat:
+                features.append(feat)
 
         logger.info(f"Adding {len(features)} drillhole trace features to layer")
 
@@ -361,6 +337,34 @@ class PreviewLayerFactory:
         layer.updateExtents()
         return layer
 
+    def _extract_trace_data(self, hole_data: Any) -> tuple[Any, Any]:
+        """Extract hole_id and trace_points from hole_data."""
+        if isinstance(hole_data, DrillholeProjection):
+            return hole_data.hole_id, hole_data.points_3d
+        return hole_data[0], hole_data[1]
+
+    def _create_trace_feature(
+        self, hole_id: Any, trace_points: Any, fields: Any, vert_exag: float
+    ) -> QgsFeature | None:
+        """Create a single trace feature if enough points exist."""
+        MIN_TRACE_POINTS = 2
+        if not trace_points or len(trace_points) < MIN_TRACE_POINTS:
+            return None
+
+        render_points = []
+        for p in trace_points:
+            dist = getattr(p, "dist_along", p[0] if isinstance(p, list | tuple) else 0.0)
+            z = getattr(p, "z", p[1] if isinstance(p, list | tuple) else 0.0)
+            render_points.append((dist, z))
+
+        line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))
+        line_geom = QgsGeometry.fromPolylineXY(line_points)
+
+        feat = QgsFeature(fields)
+        feat.setGeometry(line_geom)
+        feat.setAttribute("hole_id", hole_id)
+        return feat
+
     def create_drillhole_interval_layer(
         self, drillhole_data: list, vert_exag: float = 1.0
     ) -> QgsVectorLayer | None:
@@ -368,19 +372,7 @@ class PreviewLayerFactory:
         if not drillhole_data:
             return None
 
-        all_segments = []
-        for hole_data in drillhole_data:
-            # hole_data can be DrillholeProjection or legacy tuple
-            if isinstance(hole_data, DrillholeProjection):
-                segments = hole_data.segments
-            else:
-                # segments are usually the last element
-                MIN_HOLE_DATA_FOR_SEGMENTS = 3
-                segments = hole_data[-1] if len(hole_data) >= MIN_HOLE_DATA_FOR_SEGMENTS else []
-
-            if segments and isinstance(segments, list):
-                all_segments.extend(segments)
-
+        all_segments = self._collect_all_segments(drillhole_data)
         if not all_segments:
             return None
 
@@ -390,8 +382,35 @@ class PreviewLayerFactory:
         if not layer:
             return None
 
-        features = []
         unique_units = set()
+        features = self._create_interval_features(
+            all_segments, layer.fields(), vert_exag, unique_units
+        )
+
+        provider.addFeatures(features)
+        self.drill_renderer.apply_style(layer, role="interval", unique_units=unique_units)
+        layer.updateExtents()
+        return layer
+
+    def _collect_all_segments(self, drillhole_data: list) -> list:
+        """Collect all segments from a list of drillhole_data items."""
+        all_segments = []
+        for hole_data in drillhole_data:
+            if isinstance(hole_data, DrillholeProjection):
+                segments = hole_data.segments
+            else:
+                MIN_HOLE_DATA_FOR_SEGMENTS = 3
+                segments = hole_data[-1] if len(hole_data) >= MIN_HOLE_DATA_FOR_SEGMENTS else []
+
+            if segments and isinstance(segments, list):
+                all_segments.extend(segments)
+        return all_segments
+
+    def _create_interval_features(
+        self, all_segments: list, fields: Any, vert_exag: float, unique_units: set
+    ) -> list[QgsFeature]:
+        """Create QgsFeature objects for valid segments."""
+        features = []
         MIN_SEGMENT_POINTS = 2
         for segment in all_segments:
             if not segment.points or len(segment.points) < MIN_SEGMENT_POINTS:
@@ -401,15 +420,11 @@ class PreviewLayerFactory:
             line_points = self._to_qgs_points(self._apply_exaggeration(segment.points, vert_exag))
             line_geom = QgsGeometry.fromPolylineXY(line_points)
 
-            feat = QgsFeature(layer.fields())
+            feat = QgsFeature(fields)
             feat.setGeometry(line_geom)
             feat.setAttribute("unit", segment.unit_name)
             features.append(feat)
-
-        provider.addFeatures(features)
-        self.drill_renderer.apply_style(layer, role="interval", unique_units=unique_units)
-        layer.updateExtents()
-        return layer
+        return features
 
     def create_interp_layer(
         self, interp_data: list[InterpretationPolygon], vert_exag: float = 1.0

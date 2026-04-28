@@ -202,17 +202,14 @@ class PreviewService:
 
     def _generate_drillholes(self, params: PreviewParams) -> Any | None:
         """Generate drillhole trace and interval data."""
-        # Validation: Ensure critical drillhole fields are selected
         if not params.collar_id_field:
             logger.info("Drillhole preview skipped: No Collar ID field selected.")
             return None
 
-        line_lyr = LayerResolver.resolve(params.line_layer)
-        raster_lyr = LayerResolver.resolve(params.raster_layer)
-        collar_lyr = LayerResolver.resolve(params.collar_layer)
-
-        if not line_lyr or not collar_lyr:
+        lyrs = self._resolve_drillhole_layers(params)
+        if not lyrs:
             return None
+        line_lyr, raster_lyr, collar_lyr = lyrs
 
         line_geom, line_start, distance_area = prepare_profile_context(line_lyr)
 
@@ -236,8 +233,47 @@ class PreviewService:
             return None
 
         # 2. Project Collars
+        projected_collars = self._project_collars_safe(
+            collar_data, line_geom, distance_area, pre_sampled_z, params
+        )
+        if not projected_collars:
+            return None
+
+        # 3. Fetch Child Data
+        survey_map, interval_map = self._fetch_child_data(params, collar_ids)
+
+        # 4. Process Intervals
+        return self._process_intervals_safe(
+            projected_collars,
+            collar_data,
+            survey_map,
+            interval_map,
+            line_geom,
+            line_start,
+            distance_area,
+            params,
+        )
+
+    def _resolve_drillhole_layers(self, params: PreviewParams) -> tuple[Any, Any, Any] | None:
+        """Resolve required layers for drillholes."""
+        line_lyr = LayerResolver.resolve(params.line_layer)
+        raster_lyr = LayerResolver.resolve(params.raster_layer)
+        collar_lyr = LayerResolver.resolve(params.collar_layer)
+        if not line_lyr or not collar_lyr:
+            return None
+        return line_lyr, raster_lyr, collar_lyr
+
+    def _project_collars_safe(
+        self,
+        collar_data: Any,
+        line_geom: Any,
+        distance_area: Any,
+        pre_sampled_z: Any,
+        params: PreviewParams,
+    ) -> Any:
+        """Safely project drillhole collars handling exceptions."""
         try:
-            projected_collars = self.controller.drillhole_service.project_collars(
+            return self.controller.drillhole_service.project_collars(
                 collar_data=collar_data,
                 line_data=line_geom,
                 distance_area=distance_area,
@@ -253,10 +289,8 @@ class PreviewService:
         except (ValueError, TypeError, SecInterpError) as e:
             raise ProcessingError(f"Failed to project drillhole collars: {e}") from e
 
-        if not projected_collars:
-            return None
-
-        # 3. Fetch Child Data
+    def _fetch_child_data(self, params: PreviewParams, collar_ids: Any) -> tuple[dict, dict]:
+        """Fetch survey and interval data for collars."""
         survey_lyr = LayerResolver.resolve(params.survey_layer)
         interval_lyr = LayerResolver.resolve(params.interval_layer)
 
@@ -285,8 +319,20 @@ class PreviewService:
                     "lith": params.interval_lith_field,
                 },
             )
+        return survey_map, interval_map
 
-        # 4. Process Intervals
+    def _process_intervals_safe(
+        self,
+        projected_collars: Any,
+        collar_data: Any,
+        survey_map: dict,
+        interval_map: dict,
+        line_geom: Any,
+        line_start: Any,
+        distance_area: Any,
+        params: PreviewParams,
+    ) -> Any:
+        """Safely process drillhole intervals handling exceptions."""
         try:
             _, drillhole_data = self.controller.drillhole_service.process_intervals(
                 collar_points=projected_collars,
@@ -305,12 +351,13 @@ class PreviewService:
                 survey_fields={},
                 interval_fields={},
             )
+            logger.info(
+                f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces"
+            )
+            return drillhole_data
         except (ValueError, TypeError, SecInterpError) as e:
             logger.exception(f"Failed to process drillhole intervals: {e}")
             raise ProcessingError(f"Failed to process drillhole intervals: {e}") from e
         except Exception as e:
             logger.exception("Unexpected error during drillhole processing")
             raise ProcessingError("Unexpected error during drillhole processing") from e
-
-        logger.info(f"Generated {len(drillhole_data) if drillhole_data else 0} drillhole traces")
-        return drillhole_data

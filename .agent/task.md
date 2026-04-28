@@ -16,5 +16,5 @@
   - [x] `gui/dialog_signal_manager.py` (`_disconnect_button_signals`, etc.)
   - [x] `gui/ui/pages/settings_page.py` (`_disconnect_default_tab_signals`)
 - [x] **Lote 2**: Controladores UI y Persistencia (Riesgo Medio)
-- [ ] **Lote 3**: Fábricas de UI y Previsualización (Riesgo Medio)
+- [x] **Lote 3**: Fábricas de UI y Previsualización (Riesgo Medio)
 - [ ] **Lote 4**: Lógica Core Algorítmica (Riesgo Alto)

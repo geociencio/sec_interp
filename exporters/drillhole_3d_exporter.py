@@ -205,22 +205,33 @@ class DrillholeInterval3DExporter(BaseExporter):
             return
 
         for segment in segments:
-            points_source = segment.points_3d_projected if use_projected else segment.points_3d
-            if not points_source or len(points_source) < MIN_POINTS_FOR_INTERVAL:
-                continue
+            self._write_segment(writer, fields, hole_id, segment, use_projected)
 
-            points = [QgsPoint(x, y, z) for x, y, z in points_source]
-            geom = QgsGeometry(QgsLineString(points))
+    def _write_segment(
+        self,
+        writer: Any,
+        fields: QgsFields,
+        hole_id: Any,
+        segment: Any,
+        use_projected: bool,
+    ) -> None:
+        """Write a single segment to the writer."""
+        points_source = segment.points_3d_projected if use_projected else segment.points_3d
+        if not points_source or len(points_source) < MIN_POINTS_FOR_INTERVAL:
+            return
 
-            if geom and not geom.isNull():
-                feat = QgsFeature(fields)
-                feat.setGeometry(geom)
-                feat.setAttribute("hole_id", str(hole_id))
-                attrs = segment.attributes
-                feat.setAttribute("from_depth", attrs.get("from", 0.0))
-                feat.setAttribute("to_depth", attrs.get("to", 0.0))
-                feat.setAttribute("unit", segment.unit_name)
-                writer.addFeature(feat)
+        points = [QgsPoint(x, y, z) for x, y, z in points_source]
+        geom = QgsGeometry(QgsLineString(points))
+
+        if geom and not geom.isNull():
+            feat = QgsFeature(fields)
+            feat.setGeometry(geom)
+            feat.setAttribute("hole_id", str(hole_id))
+            attrs = segment.attributes
+            feat.setAttribute("from_depth", attrs.get("from", 0.0))
+            feat.setAttribute("to_depth", attrs.get("to", 0.0))
+            feat.setAttribute("unit", segment.unit_name)
+            writer.addFeature(feat)
 
     def _prepare_fields(self) -> QgsFields:
         """Create fields for drillhole intervals."""
