@@ -258,20 +258,22 @@ class DrillholeTaskOrchestrator:
         dept_f: str,
     ) -> None:
         """Validate collar layer fields."""
+        fields = [f.name() for f in layer.fields()]
+        self._check_field(id_field, fields, "Collar ID")
+        if not use_geom:
+            self._check_field(x_f, fields, "Collar X")
+            self._check_field(y_f, fields, "Collar Y")
+        if z_f:
+            self._check_field(z_f, fields, "Collar Z")
+        if dept_f:
+            self._check_field(dept_f, fields, "Collar Depth")
+
+    def _check_field(self, field_name: str, fields: list[str], label: str) -> None:
+        """Raise ValidationError if field is missing."""
         from sec_interp.core.exceptions import ValidationError
 
-        fields = [f.name() for f in layer.fields()]
-        if id_field not in fields:
-            raise ValidationError(f"Collar ID field '{id_field}' not found")
-        if not use_geom:
-            if x_f not in fields:
-                raise ValidationError(f"Collar X field '{x_f}' not found")
-            if y_f not in fields:
-                raise ValidationError(f"Collar Y field '{y_f}' not found")
-        if z_f and z_f not in fields:
-            raise ValidationError(f"Collar Z field '{z_f}' not found")
-        if dept_f and dept_f not in fields:
-            raise ValidationError(f"Collar Depth field '{dept_f}' not found")
+        if field_name not in fields:
+            raise ValidationError(f"{label} field '{field_name}' not found")
 
     def _validate_survey_params(self, layer: QgsVectorLayer, fields: dict[str, str]) -> None:
         """Validate survey layer fields."""

@@ -41,20 +41,10 @@ class CollarProcessor:
         transform_context: Any | None = None,
     ) -> tuple[set[Any], list[dict[str, Any]], dict[Any, float]]:
         """Detach collar features and pre-sample Z using WKT for decoupling."""
-        try:
-            line_buffer = line_geom.buffer(buffer_width, self.DEFAULT_BUFFER_SEGMENTS)
-        except (AttributeError, TypeError, ValueError):
-            line_buffer = None
-
-        collar_bbox = line_buffer.boundingBox() if line_buffer else line_geom.boundingBox()
-        req = QgsFeatureRequest().setFilterRect(collar_bbox)
-
-        if target_crs and target_crs.isValid() and layer.crs() != target_crs:
-            if not transform_context:
-                from qgis.core import QgsProject
-
-                transform_context = QgsProject.instance().transformContext()
-            req.setDestinationCrs(target_crs, transform_context)
+        line_buffer = self._create_line_buffer(line_geom, buffer_width)
+        req = self._prepare_feature_request(
+            line_geom, line_buffer, layer, target_crs, transform_context
+        )
 
         collar_ids = set()
         collar_data = []
@@ -73,21 +63,62 @@ class CollarProcessor:
 
             collar_data.append({"wkt": wkt, "attributes": attrs, "id": hid})
 
-            # Pre-sample Z
-            if dem_layer:
-                z = self.pre_sample_z(
-                    feat,
-                    hydro_id=hid,  # kept for consistency
-                    dem_layer=dem_layer,
-                    z_field=z_field,
-                    use_geom=use_geom,
-                    x_field=x_field,
-                    y_field=y_field,
-                )
-                if z is not None:
-                    pre_sampled_z[hid] = z
+            self._process_pre_sampled_z(
+                feat, hid, dem_layer, z_field, use_geom, x_field, y_field, pre_sampled_z
+            )
 
         return collar_ids, collar_data, pre_sampled_z
+
+    def _create_line_buffer(
+        self, line_geom: QgsGeometry, buffer_width: float
+    ) -> QgsGeometry | None:
+        try:
+            return line_geom.buffer(buffer_width, self.DEFAULT_BUFFER_SEGMENTS)
+        except (AttributeError, TypeError, ValueError):
+            return None
+
+    def _prepare_feature_request(
+        self,
+        line_geom: QgsGeometry,
+        line_buffer: QgsGeometry | None,
+        layer: QgsVectorLayer,
+        target_crs: QgsCoordinateReferenceSystem | None,
+        transform_context: Any | None,
+    ) -> QgsFeatureRequest:
+        collar_bbox = line_buffer.boundingBox() if line_buffer else line_geom.boundingBox()
+        req = QgsFeatureRequest().setFilterRect(collar_bbox)
+
+        if target_crs and target_crs.isValid() and layer.crs() != target_crs:
+            if not transform_context:
+                from qgis.core import QgsProject
+
+                transform_context = QgsProject.instance().transformContext()
+            req.setDestinationCrs(target_crs, transform_context)
+        return req
+
+    def _process_pre_sampled_z(
+        self,
+        feat: QgsFeature,
+        hid: Any,
+        dem_layer: QgsRasterLayer | None,
+        z_field: str,
+        use_geom: bool,
+        x_field: str,
+        y_field: str,
+        pre_sampled_z: dict,
+    ) -> None:
+        if dem_layer:
+            z = self.pre_sample_z(
+                feat,
+                hydro_id=hid,
+                dem_layer=dem_layer,
+                z_field=z_field,
+                use_geom=use_geom,
+                x_field=x_field,
+                y_field=y_field,
+            )
+            if z is not None:
+                pre_sampled_z[hid] = z
 
     def pre_sample_z(
         self,
@@ -208,20 +239,33 @@ class CollarProcessor:
     ) -> QgsPointXY | None:
         """Extract point from geometry or fields agnosticly."""
         if use_geom:
-            if is_dict:
-                wkt = data.get("wkt", "")
-                if wkt:
-                    geom = QgsGeometry.fromWkt(wkt)
-                    if not geom.isNull() and not geom.isEmpty():
-                        pt = geom.asPoint()
-                        return QgsPointXY(pt.x(), pt.y())
-            else:
-                geom = data.geometry()
+            pt = self._extract_point_from_geom(data, is_dict)
+            if pt:
+                return pt
+
+        # Fallback to fields
+        return self._extract_point_from_fields(data, is_dict, x_f, y_f)
+
+    def _extract_point_from_geom(self, data: Any, is_dict: bool) -> QgsPointXY | None:
+        """Extract point from geometry."""
+        if is_dict:
+            wkt = data.get("wkt", "")
+            if wkt:
+                geom = QgsGeometry.fromWkt(wkt)
                 if not geom.isNull() and not geom.isEmpty():
                     pt = geom.asPoint()
                     return QgsPointXY(pt.x(), pt.y())
+        else:
+            geom = data.geometry()
+            if not geom.isNull() and not geom.isEmpty():
+                pt = geom.asPoint()
+                return QgsPointXY(pt.x(), pt.y())
+        return None
 
-        # Fallback to fields
+    def _extract_point_from_fields(
+        self, data: Any, is_dict: bool, x_f: str, y_f: str
+    ) -> QgsPointXY | None:
+        """Extract point from coordinate fields."""
         attrs = data.get("attributes", {}) if is_dict else data
         try:
             x = float(attrs.get(x_f, 0.0)) if is_dict else float(attrs[x_f] or 0.0)
@@ -241,18 +285,33 @@ class CollarProcessor:
         dem: QgsRasterLayer | None,
     ) -> float:
         """Extract Z with fallbacks agnosticly."""
-        attrs = data.get("attributes", {}) if is_dict else data
-        z = 0.0
-        if z_f:
-            with contextlib.suppress(ValueError, TypeError, KeyError):
-                z = float(attrs.get(z_f, 0.0)) if is_dict else float(attrs[z_f] or 0.0)
-
+        z = self._get_z_from_field(data, is_dict, z_f)
         if z == 0.0:
-            if pre_sampled and hole_id in pre_sampled:
-                z = pre_sampled[hole_id]
-            elif dem:
-                z = self._sample_dem(dem, pt)
+            z = self._get_z_from_fallback(hole_id, pt, pre_sampled, dem)
         return z
+
+    def _get_z_from_field(self, data: Any, is_dict: bool, z_f: str) -> float:
+        """Get Z from attributes."""
+        if not z_f:
+            return 0.0
+        attrs = data.get("attributes", {}) if is_dict else data
+        with contextlib.suppress(ValueError, TypeError, KeyError):
+            return float(attrs.get(z_f, 0.0)) if is_dict else float(attrs[z_f] or 0.0)
+        return 0.0
+
+    def _get_z_from_fallback(
+        self,
+        hole_id: Any,
+        pt: QgsPointXY,
+        pre_sampled: dict[Any, float] | None,
+        dem: QgsRasterLayer | None,
+    ) -> float:
+        """Get Z from pre-sampled dict or DEM."""
+        if pre_sampled and hole_id in pre_sampled:
+            return pre_sampled[hole_id]
+        if dem:
+            return self._sample_dem(dem, pt)
+        return 0.0
 
     def _extract_depth_agnostic(self, data: Any, is_dict: bool, depth_f: str) -> float:
         """Extract depth agnosticly."""

@@ -250,24 +250,7 @@ def interpolate_intervals_on_trajectory(
     traj = sorted(trajectory, key=lambda p: p[0])
 
     for from_val, to_val, attr in intervals:
-        points_in_interval = []
-
-        # 1. Add interpolated point at from_val
-        p_from = _interpolate_at_depth(traj, from_val)
-        if p_from and p_from[5] <= buffer_width:
-            points_in_interval.append(p_from)
-
-        # 2. Add all trajectory points strictly inside (from_val, to_val)
-        for p in traj:
-            if from_val < p[0] < to_val and p[5] <= buffer_width:
-                points_in_interval.append(p)
-
-        # 3. Add interpolated point at to_val
-        p_to = _interpolate_at_depth(traj, to_val)
-        if p_to and p_to[5] <= buffer_width:
-            # Avoid duplicate if to_val == from_val or coinciding with a traj point
-            if not points_in_interval or abs(points_in_interval[-1][0] - p_to[0]) > DEPTH_TOLERANCE:
-                points_in_interval.append(p_to)
+        points_in_interval = _get_points_for_interval(traj, from_val, to_val, buffer_width)
 
         if len(points_in_interval) >= MIN_INTERVAL_POINTS:
             p_2d = [(p[4], p[3]) for p in points_in_interval]
@@ -276,6 +259,32 @@ def interpolate_intervals_on_trajectory(
             geol_segments.append((attr, p_2d, p_3d, p_3d_proj))
 
     return geol_segments
+
+
+def _get_points_for_interval(
+    traj: list[tuple], from_val: float, to_val: float, buffer_width: float
+) -> list[tuple]:
+    """Get points belonging to a specific interval."""
+    points = []
+
+    # 1. Add interpolated point at from_val
+    p_from = _interpolate_at_depth(traj, from_val)
+    if p_from and p_from[5] <= buffer_width:
+        points.append(p_from)
+
+    # 2. Add all trajectory points strictly inside (from_val, to_val)
+    for p in traj:
+        if from_val < p[0] < to_val and p[5] <= buffer_width:
+            points.append(p)
+
+    # 3. Add interpolated point at to_val
+    p_to = _interpolate_at_depth(traj, to_val)
+    if p_to and p_to[5] <= buffer_width:
+        # Avoid duplicate if to_val == from_val or coinciding with a traj point
+        if not points or abs(points[-1][0] - p_to[0]) > DEPTH_TOLERANCE:
+            points.append(p_to)
+
+    return points
 
 
 def _interpolate_at_depth(trajectory: list[tuple], target_depth: float) -> tuple | None:

@@ -17,4 +17,4 @@
   - [x] `gui/ui/pages/settings_page.py` (`_disconnect_default_tab_signals`)
 - [x] **Lote 2**: Controladores UI y Persistencia (Riesgo Medio)
 - [x] **Lote 3**: Fábricas de UI y Previsualización (Riesgo Medio)
-- [ ] **Lote 4**: Lógica Core Algorítmica (Riesgo Alto)
+- [x] **Lote 4**: Lógica Core Algorítmica (Riesgo Alto)

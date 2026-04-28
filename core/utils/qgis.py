@@ -47,25 +47,42 @@ class LayerResolver:
         ref_str = str(layer_ref)
 
         # 1. Check cache first
-        if use_cache and ref_str in cls._cache:
-            cached_layer = cls._cache[ref_str]
-            if cached_layer and cached_layer.isValid():
-                return cached_layer
-            else:
-                # Invalidate broken cache
-                del cls._cache[ref_str]
+        cached_layer = cls._resolve_from_cache(ref_str, use_cache)
+        if cached_layer:
+            return cached_layer
 
         project = QgsProject.instance()
 
         # 2. Try resolving by ID
+        layer = cls._resolve_by_id(project, ref_str)
+        if layer:
+            return layer
+
+        # 3. Try resolving by Name (fallback)
+        return cls._resolve_by_name(project, ref_str)
+
+    @classmethod
+    def _resolve_from_cache(cls, ref_str: str, use_cache: bool) -> QgsMapLayer | None:
+        if use_cache and ref_str in cls._cache:
+            cached_layer = cls._cache[ref_str]
+            if cached_layer and cached_layer.isValid():
+                return cached_layer
+            # Invalidate broken cache
+            del cls._cache[ref_str]
+        return None
+
+    @classmethod
+    def _resolve_by_id(cls, project: Any, ref_str: str) -> QgsMapLayer | None:
         layer = project.mapLayer(ref_str)
         if layer and layer.isValid():
             cls._cache[ref_str] = layer
             # Also cache by name if possible
             cls._cache[layer.name()] = layer
             return layer
+        return None
 
-        # 3. Try resolving by Name (fallback)
+    @classmethod
+    def _resolve_by_name(cls, project: Any, ref_str: str) -> QgsMapLayer | None:
         layers_by_name = project.mapLayersByName(ref_str)
         if layers_by_name:
             for lyr in layers_by_name:
@@ -73,7 +90,6 @@ class LayerResolver:
                     cls._cache[ref_str] = lyr
                     cls._cache[lyr.id()] = lyr
                     return lyr
-
         return None
 
     @classmethod
