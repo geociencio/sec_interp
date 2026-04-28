@@ -199,13 +199,18 @@ class SecInterp(TranslatableMixin):
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
-        # Disconnect plugin actions
+        self._disconnect_actions()
+        self._disconnect_dialog()
+
+    def _disconnect_actions(self) -> None:
+        """Disconnect plugin actions."""
         for action in self.actions:
             if action:
                 with contextlib.suppress(TypeError, RuntimeError):
                     action.triggered.disconnect()
 
-        # Disconnect dialog connections if it exists
+    def _disconnect_dialog(self) -> None:
+        """Disconnect dialog connections."""
         if hasattr(self, "dlg") and self.dlg:
             with contextlib.suppress(TypeError, RuntimeError):
                 self.dlg.accepted.disconnect(self.process_data)

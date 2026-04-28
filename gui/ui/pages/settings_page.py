@@ -291,8 +291,14 @@ class SettingsPage(BasePage):
             dict: Current settings.
 
         """
+        data = {"enable_3d": (self.chk_enable_3d.isChecked() if self.chk_enable_3d else False)}
+        data.update(self._get_export_data())
+        data.update(self._get_3d_data())
+        return data
+
+    def _get_export_data(self) -> dict[str, Any]:
+        """Get the export selection settings."""
         return {
-            "enable_3d": (self.chk_enable_3d.isChecked() if self.chk_enable_3d else False),
             "exp_topo": (self.chk_exp_topo.isChecked() if hasattr(self, "chk_exp_topo") else True),
             "exp_geol": (self.chk_exp_geol.isChecked() if hasattr(self, "chk_exp_geol") else True),
             "exp_struct": (
@@ -304,6 +310,17 @@ class SettingsPage(BasePage):
             "exp_interp": (
                 self.chk_exp_interp.isChecked() if hasattr(self, "chk_exp_interp") else True
             ),
+            "export_format": (
+                self.combo_format.currentText() if hasattr(self, "combo_format") else "Shapefile"
+            ),
+            "export_naming": (
+                self.txt_naming.text() if hasattr(self, "txt_naming") else "{filename}_{profile}"
+            ),
+        }
+
+    def _get_3d_data(self) -> dict[str, Any]:
+        """Get the 3D specific settings."""
+        return {
             "drill_3d_traces": (
                 self.chk_3d_traces.isChecked() if hasattr(self, "chk_3d_traces") else True
             ),
@@ -315,12 +332,6 @@ class SettingsPage(BasePage):
             ),
             "drill_3d_projected": (
                 self.chk_3d_projected.isChecked() if hasattr(self, "chk_3d_projected") else False
-            ),
-            "export_format": (
-                self.combo_format.currentText() if hasattr(self, "combo_format") else "Shapefile"
-            ),
-            "export_naming": (
-                self.txt_naming.text() if hasattr(self, "txt_naming") else "{filename}_{profile}"
             ),
         }
 
@@ -362,6 +373,11 @@ class SettingsPage(BasePage):
 
     def _disconnect_default_tab_signals(self) -> None:
         """Disconnect signals for the default tab."""
+        self._disconnect_export_checkboxes()
+        self._disconnect_format_settings()
+
+    def _disconnect_export_checkboxes(self) -> None:
+        """Disconnect export checkboxes."""
         with contextlib.suppress(TypeError, RuntimeError):
             self.chk_exp_topo.stateChanged.disconnect(self._on_settings_changed)
         with contextlib.suppress(TypeError, RuntimeError):
@@ -376,6 +392,8 @@ class SettingsPage(BasePage):
         with contextlib.suppress(TypeError, RuntimeError):
             self.btn_reset_export.clicked.disconnect(self._reset_export_defaults)
 
+    def _disconnect_format_settings(self) -> None:
+        """Disconnect format and naming settings."""
         if hasattr(self, "combo_format"):
             with contextlib.suppress(TypeError, RuntimeError):
                 self.combo_format.currentIndexChanged.disconnect(self._on_settings_changed)

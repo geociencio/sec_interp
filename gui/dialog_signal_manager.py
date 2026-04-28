@@ -59,6 +59,11 @@ class SignalManager:
 
     def _disconnect_button_signals(self) -> None:
         """Disconnect main dialog button signals."""
+        self._disconnect_dialog_buttons()
+        self._disconnect_custom_buttons()
+
+    def _disconnect_dialog_buttons(self) -> None:
+        """Disconnect standard dialog buttons."""
         ok_btn = self.dialog.button_box.button(QDialogButtonBox.Ok)
         if ok_btn:
             with contextlib.suppress(TypeError, RuntimeError):
@@ -77,6 +82,8 @@ class SignalManager:
         with contextlib.suppress(TypeError, RuntimeError):
             self.dialog.button_box.helpRequested.disconnect()
 
+    def _disconnect_custom_buttons(self) -> None:
+        """Disconnect custom buttons like clear cache and reset defaults."""
         if hasattr(self.dialog, "clear_cache_btn") and self.dialog.clear_cache_btn:
             with contextlib.suppress(TypeError, RuntimeError):
                 self.dialog.clear_cache_btn.clicked.disconnect()
@@ -87,7 +94,11 @@ class SignalManager:
 
     def _disconnect_preview_signals(self) -> None:
         """Disconnect preview-related signals explicitly for analyzer compliance."""
-        # Action Buttons
+        self._disconnect_preview_action_buttons()
+        self._disconnect_preview_options()
+
+    def _disconnect_preview_action_buttons(self) -> None:
+        """Disconnect preview action buttons."""
         with contextlib.suppress(Exception):
             self.dialog.preview_widget.btn_preview.clicked.disconnect()
         with contextlib.suppress(Exception):
@@ -99,7 +110,13 @@ class SignalManager:
         with contextlib.suppress(Exception):
             self.dialog.preview_widget.btn_finalize.clicked.disconnect()
 
-        # Checkboxes and Spinbox
+    def _disconnect_preview_options(self) -> None:
+        """Disconnect preview options."""
+        self._disconnect_preview_checkboxes()
+        self._disconnect_preview_misc_options()
+
+    def _disconnect_preview_checkboxes(self) -> None:
+        """Disconnect layer visibility checkboxes."""
         with contextlib.suppress(Exception):
             self.dialog.preview_widget.chk_topo.stateChanged.disconnect()
         with contextlib.suppress(Exception):
@@ -110,6 +127,9 @@ class SignalManager:
             self.dialog.preview_widget.chk_drillholes.stateChanged.disconnect()
         with contextlib.suppress(Exception):
             self.dialog.preview_widget.chk_interpretations.stateChanged.disconnect()
+
+    def _disconnect_preview_misc_options(self) -> None:
+        """Disconnect legend, spinboxes, and adaptive sampling."""
         with contextlib.suppress(Exception):
             self.dialog.preview_widget.chk_legend.stateChanged.disconnect()
         with contextlib.suppress(Exception):
@@ -121,7 +141,11 @@ class SignalManager:
 
     def _disconnect_page_signals(self) -> None:
         """Disconnect page-specific signals with full tracking."""
-        # 1. Explicitly disconnect the signals reported as leaking by analyzer
+        self._disconnect_explicit_page_signals()
+        self._disconnect_sequential_pages()
+
+    def _disconnect_explicit_page_signals(self) -> None:
+        """Explicitly disconnect the signals reported as leaking by analyzer."""
         with contextlib.suppress(Exception):
             self.dialog.page_dem.raster_combo.layerChanged.disconnect()
         with contextlib.suppress(Exception):
@@ -135,7 +159,8 @@ class SignalManager:
         with contextlib.suppress(Exception):
             self.dialog.output_widget.fileChanged.disconnect()
 
-        # 2. Sequential cleanup for all managed components
+    def _disconnect_sequential_pages(self) -> None:
+        """Sequential cleanup for all managed components."""
         pages = [
             self.dialog.page_dem,
             self.dialog.page_section,
@@ -162,22 +187,25 @@ class SignalManager:
 
     def _disconnect_known_page_signals(self, page: Any) -> None:
         """Disconnect known signals for pages that might not have disconnect_signals."""
-        # DEM Page
+        self._disconnect_layer_combo_signals(page)
+        self._disconnect_data_changed_signals(page)
+
+    def _disconnect_layer_combo_signals(self, page: Any) -> None:
+        """Disconnect layer combo signals."""
         if hasattr(page, "raster_combo") and page.raster_combo:
             with contextlib.suppress(Exception):
                 page.raster_combo.layerChanged.disconnect()
 
-        # Section Page
         if hasattr(page, "line_combo") and page.line_combo:
             with contextlib.suppress(Exception):
                 page.line_combo.layerChanged.disconnect()
 
-        # Data Pages (Geology, Struct, Drillhole)
+    def _disconnect_data_changed_signals(self, page: Any) -> None:
+        """Disconnect data changed signals."""
         if hasattr(page, "dataChanged"):
             with contextlib.suppress(Exception):
                 page.dataChanged.disconnect()
 
-        # Output widget
         if hasattr(page, "fileChanged"):
             with contextlib.suppress(Exception):
                 page.fileChanged.disconnect()

@@ -214,9 +214,19 @@ class SecInterpDialog(SecInterpMainWindow):
         if self._save_on_close:
             self.state_manager.save_settings()
 
-        logger.info("Closing dialog, cleaning up resources...")
+        self._cleanup_resources()
 
-        # 1. Cleanup Map Tools logic
+        with contextlib.suppress(AttributeError, RuntimeError, TypeError):
+            super().closeEvent(event)
+
+    def _cleanup_resources(self) -> None:
+        """Clean up map tools, managers, signals, and components."""
+        logger.info("Closing dialog, cleaning up resources...")
+        self._cleanup_map_tools()
+        self._cleanup_managers()
+        self._cleanup_signals_and_components()
+
+    def _cleanup_map_tools(self) -> None:
         if hasattr(self, "tool_manager") and self.tool_manager:
             with contextlib.suppress(Exception):
                 if self.tool_manager.measure_tool:
@@ -225,24 +235,20 @@ class SecInterpDialog(SecInterpMainWindow):
                     self.tool_manager.interpretation_tool.reset()
             logger.debug("Map tools cleaned up")
 
-        # 2. Sequential Manager Cleanup
+    def _cleanup_managers(self) -> None:
         with contextlib.suppress(Exception):
             self.interpretation_manager.save_interpretations()
             self.preview_manager.cleanup()
         logger.debug("Managers cleaned up")
 
-        # 3. Disconnect all signals safely (idempotent)
+    def _cleanup_signals_and_components(self) -> None:
         if hasattr(self, "signal_manager"):
             self.signal_manager.disconnect_all()
         logger.debug("Signals disconnected")
 
-        # 4. Component level cleanup
         if hasattr(self, "legend_widget") and self.legend_widget:
             with contextlib.suppress(Exception):
                 self.legend_widget.cleanup()
-
-        with contextlib.suppress(AttributeError, RuntimeError, TypeError):
-            super().closeEvent(event)
 
     def open_help(self) -> None:
         """Open the help file in the default browser based on user locale."""

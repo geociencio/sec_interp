@@ -516,3 +516,18 @@
 2026-04-27 19:33:12,038 - qgis_analyzer - INFO - 📁 Project type: QGIS
 2026-04-27 19:33:12,038 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
 2026-04-27 19:33:15,586 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-04-27 19:38:16,303 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-04-27 19:38:16,303 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
+2026-04-27 19:38:20,127 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-04-27 20:00:54,803 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-04-27 20:00:54,803 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
+2026-04-27 20:00:58,687 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-04-27 20:01:29,470 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-04-27 20:01:29,471 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
+2026-04-27 20:01:32,027 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-04-27 20:04:16,069 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-04-27 20:04:16,069 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
+2026-04-27 20:04:19,956 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-04-27 20:05:39,104 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-04-27 20:05:39,104 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
+2026-04-27 20:05:42,823 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results

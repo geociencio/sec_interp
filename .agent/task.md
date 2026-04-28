@@ -9,3 +9,12 @@
 - [ ] Fix `SPATIAL_INDEX` warning in `gui/dialog_interpretation_manager.py:123`.
 
 **Status**: Session Initialized, ready to start Gen 6 tasks.
+
+## Refactorización CC (Rama: refactor/cc-compliance)
+- [x] **Lote 1**: Gestores de Señales (Riesgo Bajo)
+  - [x] `sec_interp_plugin.py` (`disconnect_signals`)
+  - [x] `gui/dialog_signal_manager.py` (`_disconnect_button_signals`, etc.)
+  - [x] `gui/ui/pages/settings_page.py` (`_disconnect_default_tab_signals`)
+- [x] **Lote 2**: Controladores UI y Persistencia (Riesgo Medio)
+- [ ] **Lote 3**: Fábricas de UI y Previsualización (Riesgo Medio)
+- [ ] **Lote 4**: Lógica Core Algorítmica (Riesgo Alto)

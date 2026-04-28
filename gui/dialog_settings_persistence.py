@@ -356,20 +356,33 @@ class DialogSettingsPersistence:
     def _restore_layer(self, combo: Any, key: str) -> None:
         layer_id = self._get_setting(key)
         layer_name = self._get_setting(f"{key}_name")
-        if not layer_id and not layer_name:
-            return
-        layer = None
-        if layer_id:
-            layer = self.dialog.project.mapLayer(str(layer_id))
-        if not layer and layer_name:
-            for lyr in self.dialog.project.mapLayers().values():
-                if lyr.name() == layer_name:
-                    layer = lyr
-                    break
+
+        layer = self._find_layer_by_id_or_name(layer_id, layer_name)
         if layer:
             combo.blockSignals(True)
             combo.setLayer(layer)
             combo.blockSignals(False)
+
+    def _find_layer_by_id_or_name(self, layer_id: Any, layer_name: Any) -> Any:
+        if not layer_id and not layer_name:
+            return None
+        layer = self._find_layer_by_id(layer_id)
+        if layer:
+            return layer
+        return self._find_layer_by_name(layer_name)
+
+    def _find_layer_by_id(self, layer_id: Any) -> Any:
+        if not layer_id:
+            return None
+        return self.dialog.project.mapLayer(str(layer_id))
+
+    def _find_layer_by_name(self, layer_name: Any) -> Any:
+        if not layer_name:
+            return None
+        for lyr in self.dialog.project.mapLayers().values():
+            if lyr.name() == layer_name:
+                return lyr
+        return None
 
     def _save_field(self, combo: Any, key: str) -> None:
         self._set_setting(key, combo.currentField())

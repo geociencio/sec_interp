@@ -62,8 +62,7 @@ class ProfileSnapper:
         best_dist = float("inf")
 
         layers = self.canvas.layers()
-        current_layer_ids = {layer.id() for layer in layers if layer is not None}
-        self._cleanup_locators(current_layer_ids)
+        self._cleanup_locators({layer.id() for layer in layers if layer is not None})
 
         crs = self.canvas.mapSettings().destinationCrs()
         context = QgsProject.instance().transformContext()
@@ -74,20 +73,10 @@ class ProfileSnapper:
 
             try:
                 locator = self._get_locator(layer, crs, context)
-                if not locator:
-                    continue
-
-                # Try vertex snap
-                v_match = locator.nearestVertex(point, tolerance)
-                if v_match.isValid() and v_match.distance() < best_dist:
-                    best_match = v_match
-                    best_dist = v_match.distance()
-
-                # Try edge snap
-                e_match = locator.nearestEdge(point, tolerance)
-                if e_match.isValid() and e_match.distance() < best_dist:
-                    best_match = e_match
-                    best_dist = e_match.distance()
+                if locator:
+                    best_match, best_dist = self._find_best_match_in_locator(
+                        locator, point, tolerance, best_match, best_dist
+                    )
             except Exception:  # nosec B112
                 # If layer was deleted or something went wrong with locator
                 continue
@@ -96,6 +85,30 @@ class ProfileSnapper:
             return best_match.point()
 
         return point
+
+    def _find_best_match_in_locator(
+        self,
+        locator: QgsPointLocator,
+        point: QgsPointXY,
+        tolerance: float,
+        current_best: Any,
+        current_dist: float,
+    ) -> tuple[Any, float]:
+        """Find the best match (vertex or edge) in a given locator."""
+        best_match = current_best
+        best_dist = current_dist
+
+        v_match = locator.nearestVertex(point, tolerance)
+        if v_match.isValid() and v_match.distance() < best_dist:
+            best_match = v_match
+            best_dist = v_match.distance()
+
+        e_match = locator.nearestEdge(point, tolerance)
+        if e_match.isValid() and e_match.distance() < best_dist:
+            best_match = e_match
+            best_dist = e_match.distance()
+
+        return best_match, best_dist
 
     def _cleanup_locators(self, current_ids: set[str]) -> None:
         """Remove locators for layers that are no longer active."""
