@@ -46,13 +46,23 @@ uv run python scripts/context_selector.py "release preparation and packaging" --
 1. **Synchronize Version (vX.Y.Z)**:
    - Update `metadata.txt`: `version` and `changelog` (Escape `%` as `%%`).
    - Update `pyproject.toml`: `version`.
-   - Update `README.md`: Version badge and "What's New" section.
+   - **README Update**: Update metrics badges (Module Stability, Maintainability, Test counts) and the "What's New" section in `README.md`.
 
    🤖 **Agent Action**: Validate that all 3 versions match exactly.
 
-2. **Changelog Rotation**:
+2. **Changelog Update**:
    - Use **changelog-generator** to move `[Unreleased]` to the new version in `docs/CHANGELOG.md`.
-   - Add a summary of the Phase v3.5.0 achievements (100% Docstrings, Gen 6 Autonomy).
+   - Add a summary of the Phase achievements.
+
+3. **Generate Release Notes**:
+   - Create `docs/releases/notes/v[VERSION].md` with a descriptive and professional title (English required).
+   - Use the **changelog-generator** skill to transform technical commits into user-facing value.
+
+4. **Development Log Milestone**:
+   - Add a milestone entry in `docs/DEVELOPMENT_LOG.md` summarizing the phase closure.
+
+5. **Documentation Audit**:
+   - Ensure `AGENT_RULES.md`, `AGENTS.md` and other core docs reflect the latest architectural changes or standards.
 
 ### Phase 3: Final Verification (Safety Net)
 
@@ -106,7 +116,7 @@ uv run python scripts/context_selector.py "release preparation and packaging" --
 
 4. **GitHub Release**:
    ```bash
-   gh release create vX.Y.Z --title "vX.Y.Z" --notes-file docs/releases/RELEASE_NOTES_vX.Y.Z.md dist/*.zip --draft
+   gh release create vX.Y.Z --title "vX.Y.Z" --notes-file docs/releases/notes/vX.Y.Z.md dist/*.zip --draft
    ```
 
 ## Expected Result
