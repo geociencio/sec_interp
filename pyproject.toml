@@ -1,6 +1,6 @@
 [project]
 name = "sec-interp"
-version = "3.4.0"
+version = "3.5.0"
 description = "QGIS Plugin for geological interpretation and data extraction"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
