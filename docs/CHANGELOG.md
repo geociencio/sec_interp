@@ -4,11 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [Unreleased]
-- Fixed signal leak in Interpretation Storage selector (memory management improvement).
 
-### Internal Improvements
+### Added
+- **Gen 6 Agentic System (In Progress)**: Starting implementation of autonomous maintenance scripts (`memory_prune.py`, `context_selector.py`).
+- **Docstring Coverage Campaign**: Initiated project-wide documentation effort to reach 100% coverage.
+
+### Fixed
+- **Performance**: Addressing `SPATIAL_INDEX` warning in interpretation manager.
+
+## [3.5.0-dev] - 2026-04-29
+### Added
+- **QGIS 4.x Readiness**: Achieved full compatibility with QGIS 4.x (Qt6).
+- **Complexity Refactoring**: Merged `refactor/cc-compliance`, achieving CC <= 10 across the entire project.
+- **Memory Management**: Implemented `memory_prune.py` (Gen 6) and consolidated episodic memory.
+- **Signal Safety**: Resolved signal leaks in `settings_page.py` and export widgets.
+- **Quality**: Achieved 620/620 passing tests in Docker.
+
 - **Agentic System (Gen 5 Complete)**: Upgraded AI development assistant configuration
   to meet 2025/2026 industry standards. Added nested `AGENTS.md` files for `core/` and
   `gui/` layers with explicit architectural constraints. Introduced a formal memory lifecycle
@@ -59,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Stability**: Fixed `KeyError: 0` in `DXFExporter` when processing empty or malformed feature sets.
 - **UI**: Fixed export format reset issue by synchronizing `SettingsPage` with `ConfigService`.
 
-## [3.5.0-dev] - 2026-03-15
+
 ### Added
 - Native MCP (Model Context Protocol) server for standardized agent orchestration.
 - New automated workflow `/fix-linting` for technical debt reduction.

@@ -1,24 +1,15 @@
-# Next Steps: QGIS 4 Stabilization & Feature Expansion
+# Next Steps - SecInterp v3.5.0 (Operational Excellence & Agentic Autonomy)
 
-## 🎯 Immediate Objectives
-1.  **Docstring Coverage campaign**:
-    - [ ] `core/services/` (Target: 100% coverage).
-    - [ ] `core/utils/` (Target: 100% coverage).
-2.  **Fix Pending Issues**:
-    - [ ] `gui/dialog_interpretation_manager.py:123`: Fix `SPATIAL_INDEX` warning.
-    - [ ] Perform a full audit with `qgis-analyzer analyze` to catch any new regressions after merge.
-3.  **Functional Features (v3.5.0-dev)**:
-    - [ ] Implement `scripts/context_selector.py` for semantic skill injection.
-    - [ ] Review functional roadmap for Phase 3.5.0.
+**Phase v3.5.0** has started. The main goals are:
 
-## 🛠️ Maintenance Tasks
-- [ ] Run `make test` regularly to ensure stability in `main`.
-- [ ] Monitor performance metrics (LOD and RAM).
+1.  **Full Technical Documentation (100% Coverage)**: Complete docstrings for all modules.
+2.  **Gen 6 Agentic System**: Implement `memory_prune.py`, `context_selector.py`, and `metrics_report.py`.
+3.  **Zero-Regression Architecture**: Implement `pre-push` CC gate and fix `SPATIAL_INDEX` warning.
 
-## 🚀 Resume Command
+## How to Resume
+To start a development session:
 ```bash
 /start-session
 ```
 
----
-*Last update: 2026-04-28 — Session [qgis4_readiness_and_cc_merge] closed.*
+**Current Status**: Phase Initialized. Implementation plan approved. Baseline metrics established.
