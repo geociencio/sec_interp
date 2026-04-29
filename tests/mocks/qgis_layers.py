@@ -157,7 +157,6 @@ class MockQgsMapLayer(MockQObject):
 
     def saveNamedStyle(self, path):
         """Save named style to path (mock creating the file)."""
-        import os
 
         # Actually create the file so os.path.exists works
         with open(path, "w") as f:

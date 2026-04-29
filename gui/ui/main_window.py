@@ -49,12 +49,14 @@ class SecInterpMainWindow(QDialog):
         self.stacked_widget = QStackedWidget()
         self.preview_widget = PreviewWidget()
         self.output_widget = QgsFileWidget()
-        self.button_box = QDialogButtonBox(
+
+        flags = (
             QDialogButtonBox.Ok
             | QDialogButtonBox.Cancel
             | QDialogButtonBox.Save
             | QDialogButtonBox.Help
         )
+        self.button_box = QDialogButtonBox(flags)
 
         # Initialize Pages
         self.page_dem = DemPage(iface)
