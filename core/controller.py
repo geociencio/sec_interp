@@ -128,7 +128,8 @@ class ProfileController(TranslatableMixin):
             # Special case for 'section': invalidates ALL buckets as it's the base geometry
             if bucket == "section":
 
-                def callback():
+                def callback() -> None:
+                    """Invalidate all cache buckets."""
                     return self.data_cache.invalidate()
 
             else:
@@ -144,7 +145,8 @@ class ProfileController(TranslatableMixin):
     def _create_invalidation_callback(self, bucket: str) -> Callable[[], None]:
         """Create a callback for specific bucket invalidation."""
 
-        def callback():
+        def callback() -> None:
+            """Invalidate specific cache bucket."""
             return self.data_cache.invalidate(bucket)
 
         return callback
@@ -216,7 +218,15 @@ class ProfileController(TranslatableMixin):
         return profile_data, geol_data, struct_data, drillhole_data, messages
 
     def _get_cache_sub_key(self, param_values: list[Any]) -> str:
-        """Generate a sub-key for caching specific components."""
+        """Generate a sub-key for caching specific components.
+
+        Args:
+            param_values: List of values to include in the cache key.
+
+        Returns:
+            MD5 hash string of the parameter values.
+
+        """
         hasher = hashlib.md5()  # nosec B324
         for val in param_values:
             from qgis.core import QgsMapLayer
@@ -232,7 +242,20 @@ class ProfileController(TranslatableMixin):
     def _process_topography(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
     ) -> list[tuple[float, float]]:
-        """Process topographic profile data."""
+        """Process topographic profile data.
+
+        Args:
+            params: Preview parameters containing layer IDs and settings.
+            cache_meta: Metadata to store with the cached result.
+            messages: List to append processing status messages.
+
+        Returns:
+            List of (distance, elevation) tuples.
+
+        Raises:
+            ProcessingError: If required layers are missing or service fails.
+
+        """
         topo_key = self._get_cache_sub_key([params.band_num, params.max_points])
         profile_data = self.data_cache.get("topo", topo_key)
         if profile_data:
@@ -263,7 +286,17 @@ class ProfileController(TranslatableMixin):
     def _process_geology(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
     ) -> list[GeologySegment] | None:
-        """Process geological profile data."""
+        """Process geological profile data.
+
+        Args:
+            params: Preview parameters containing layer IDs and settings.
+            cache_meta: Metadata to store with the cached result.
+            messages: List to append processing status messages.
+
+        Returns:
+            List of geological segments if successful, None otherwise.
+
+        """
         if not params.outcrop_layer:
             return None
 
@@ -303,7 +336,17 @@ class ProfileController(TranslatableMixin):
     def _process_structures(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
     ) -> list[StructureMeasurement] | None:
-        """Process structural profile data."""
+        """Process structural profile data.
+
+        Args:
+            params: Preview parameters containing layer IDs and settings.
+            cache_meta: Metadata to store with the cached result.
+            messages: List to append processing status messages.
+
+        Returns:
+            List of projected structural measurements if successful, None otherwise.
+
+        """
         if not params.struct_layer:
             return None
 
@@ -379,7 +422,17 @@ class ProfileController(TranslatableMixin):
     def _process_drillholes(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
     ) -> list[DrillholeProjection] | None:
-        """Process drillhole profile data."""
+        """Process drillhole profile data.
+
+        Args:
+            params: Preview parameters containing layer IDs and settings.
+            cache_meta: Metadata to store with the cached result.
+            messages: List to append processing status messages.
+
+        Returns:
+            List of projected drillholes if successful, None otherwise.
+
+        """
         if not params.collar_layer:
             return None
 

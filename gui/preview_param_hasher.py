@@ -26,6 +26,15 @@ class PreviewParamHasher:
         hash_parts = []
 
         def get_id(layer: Any) -> str:
+            """Extract ID from a layer object or string.
+
+            Args:
+                layer: QgsMapLayer object or string ID.
+
+            Returns:
+                Layer ID string.
+
+            """
             if isinstance(layer, str):
                 return layer
             return layer.id() if hasattr(layer, "id") else "None"

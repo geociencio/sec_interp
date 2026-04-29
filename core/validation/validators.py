@@ -34,6 +34,7 @@ def validate_range(
     """
 
     def validator(value: float) -> float:
+        """Validate that value is within range."""
         if not (min_val <= value <= max_val):
             raise ValidationError(
                 f"{field_name or 'Value'} must be between {min_val} and {max_val}, got {value}"
@@ -58,6 +59,7 @@ def validate_positive(field_name: str = "") -> Callable[[float], float]:
     """
 
     def validator(value: float) -> float:
+        """Validate that value is positive."""
         if value <= 0:
             raise ValidationError(f"{field_name or 'Value'} must be positive, got {value}")
         return value
@@ -80,6 +82,7 @@ def validate_non_negative(field_name: str = "") -> Callable[[float], float]:
     """
 
     def validator(value: float) -> float:
+        """Validate that value is non-negative."""
         if value < 0:
             raise ValidationError(f"{field_name or 'Value'} must be non-negative, got {value}")
         return value
@@ -102,6 +105,7 @@ def validate_non_empty(field_name: str = "") -> Callable[[str], str]:
     """
 
     def validator(value: str) -> str:
+        """Validate that string is non-empty."""
         if not value or not value.strip():
             raise ValidationError(f"{field_name or 'Field'} cannot be empty")
         return value.strip()
@@ -128,6 +132,7 @@ def coerce_type(target_type: type, field_name: str = "") -> Callable[[Any], Any]
     """
 
     def validator(value: Any) -> Any:
+        """Coerce value to target type."""
         if isinstance(value, target_type):
             return value
         try:
@@ -158,6 +163,7 @@ def validate_and_clamp(min_val: float, max_val: float) -> Callable[[float], floa
     """
 
     def validator(value: float) -> float:
+        """Clamp value to range boundaries."""
         return max(min_val, min(max_val, float(value)))
 
     return validator

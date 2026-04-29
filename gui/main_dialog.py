@@ -227,6 +227,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self._cleanup_signals_and_components()
 
     def _cleanup_map_tools(self) -> None:
+        """Clean up active map tools and reset their states."""
         if hasattr(self, "tool_manager") and self.tool_manager:
             with contextlib.suppress(Exception):
                 if self.tool_manager.measure_tool:
@@ -236,12 +237,14 @@ class SecInterpDialog(SecInterpMainWindow):
             logger.debug("Map tools cleaned up")
 
     def _cleanup_managers(self) -> None:
+        """Clean up all manager instances and save their data."""
         with contextlib.suppress(Exception):
             self.interpretation_manager.save_interpretations()
             self.preview_manager.cleanup()
         logger.debug("Managers cleaned up")
 
     def _cleanup_signals_and_components(self) -> None:
+        """Disconnect all signals and clean up UI components."""
         if hasattr(self, "signal_manager"):
             self.signal_manager.disconnect_all()
         logger.debug("Signals disconnected")
@@ -302,6 +305,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
     @interpretations.setter
     def interpretations(self, value: list[InterpretationPolygon]) -> None:
+        """Set interpretations in the manager."""
         self.interpretation_manager.interpretations = value
 
     def update_preview_checkbox_states(self) -> None:

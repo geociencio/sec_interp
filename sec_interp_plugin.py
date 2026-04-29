@@ -260,7 +260,16 @@ class SecInterp(TranslatableMixin):
         preview_options = self.dlg.get_preview_options()
 
         # 1. Get Layer IDs (PreviewParams now expects str)
-        def get_id(val):
+        def get_id(val: Any) -> str | None:
+            """Extract ID from a layer object or value.
+
+            Args:
+                val: QgsMapLayer object or other value.
+
+            Returns:
+                Layer ID string or None.
+
+            """
             if isinstance(val, QgsMapLayer):
                 return val.id()
             return str(val) if val else None
@@ -421,15 +430,37 @@ class SecInterp(TranslatableMixin):
                 self.preview_renderer, options.get("show_legend", True)
             )
 
-    def _store_preview_data(self, topo, geol, struct, drill) -> None:
-        """Store current data in dialog for re-rendering."""
+    def _store_preview_data(self, topo: Any, geol: Any, struct: Any, drill: Any) -> None:
+        """Store current data in dialog for re-rendering.
+
+        Args:
+            topo: Topographic profile data.
+            geol: Geological profile data.
+            struct: Structural profile data.
+            drill: Drillhole profile data.
+
+        """
         self.dlg.current_topo_data = topo
         self.dlg.current_geol_data = geol
         self.dlg.current_struct_data = struct
         self.dlg.current_drillhole_data = drill
 
-    def _get_filtered_preview_data(self, topo, geol, struct, drill, options) -> dict:
-        """Filter data based on visibility options."""
+    def _get_filtered_preview_data(
+        self, topo: Any, geol: Any, struct: Any, drill: Any, options: dict
+    ) -> dict:
+        """Filter data based on visibility options.
+
+        Args:
+            topo: Topographic profile data.
+            geol: Geological profile data.
+            struct: Structural profile data.
+            drill: Drillhole profile data.
+            options: Dictionary of visibility flags.
+
+        Returns:
+            Dictionary containing only visible data components.
+
+        """
         return {
             "topo": topo if options.get("show_topo", True) else None,
             "geol": geol if options.get("show_geol", True) else None,
@@ -441,7 +472,15 @@ class SecInterp(TranslatableMixin):
         }
 
     def _calculate_dip_length(self, struct_data: list | None) -> float | None:
-        """Calculate dip line length based on scale factor and raster resolution."""
+        """Calculate dip line length based on scale factor and raster resolution.
+
+        Args:
+            struct_data: List of structural measurements.
+
+        Returns:
+            Calculated dip line length in map units, or None if not applicable.
+
+        """
         if not struct_data:
             return None
 

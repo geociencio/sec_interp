@@ -135,6 +135,7 @@ class InterpretationManager:
             fields = layer.fields()
 
             def get_field_val(name: str, default: Any = "", _attrs=attrs, _fields=fields) -> Any:
+                """Get attribute value by field name."""
                 idx = _fields.indexOf(name)
                 return (
                     _attrs[idx]
@@ -173,7 +174,8 @@ class InterpretationManager:
             qgs_pts = [QgsPointXY(x, y) for x, y in interp.vertices_2d]
             feat.setGeometry(QgsGeometry.fromPolygonXY([qgs_pts]))
 
-            def set_field(name: str, value: Any, _feat=feat, _fields=fields):
+            def set_field(name: str, value: Any, _feat=feat, _fields=fields) -> None:
+                """Set feature attribute by field name."""
                 idx = _fields.indexOf(name)
                 if idx != -1:
                     _feat.setAttribute(idx, value)
@@ -288,7 +290,17 @@ class InterpretationManager:
     def _check_geology_inheritance(
         self, ref_point: QgsPointXY, min_dist: float, best_match: dict[str, Any] | None
     ) -> tuple[dict[str, Any] | None, float]:
-        """Search for nearest geological segment."""
+        """Search for nearest geological segment.
+
+        Args:
+            ref_point: Reference point for distance calculation.
+            min_dist: Current minimum distance found.
+            best_match: Current best match found.
+
+        Returns:
+            Tuple of (new best match dictionary, new minimum distance).
+
+        """
         geol_data = self.dialog.preview_manager.cached_data.get("geol")
         if not geol_data:
             return best_match, min_dist
@@ -314,7 +326,17 @@ class InterpretationManager:
     def _check_drillhole_inheritance(
         self, ref_point: QgsPointXY, min_dist: float, best_match: dict[str, Any] | None
     ) -> tuple[dict[str, Any] | None, float]:
-        """Search for nearest drillhole interval."""
+        """Search for nearest drillhole interval.
+
+        Args:
+            ref_point: Reference point for distance calculation.
+            min_dist: Current minimum distance found.
+            best_match: Current best match found.
+
+        Returns:
+            Tuple of (new best match dictionary, new minimum distance).
+
+        """
         dh_data = self.dialog.preview_manager.cached_data.get("drillhole")
         if not dh_data:
             return best_match, min_dist
@@ -340,7 +362,15 @@ class InterpretationManager:
         return best_match, min_dist
 
     def _extract_intervals_from_dh_data(self, dh: Any) -> list[Any]:
-        """Safely extract intervals from various drillhole data formats."""
+        """Safely extract intervals from various drillhole data formats.
+
+        Args:
+            dh: Drillhole data (tuple or object).
+
+        Returns:
+            List of interval objects.
+
+        """
         if isinstance(dh, tuple):
             LEGACY_HOLE_SIZE = 5
             INTERVALS_INDEX_LEGACY = 4
@@ -352,7 +382,16 @@ class InterpretationManager:
         return getattr(dh, "intervals", [])
 
     def _calculate_min_dist_to_interval(self, ref_point: QgsPointXY, interval: Any) -> float:
-        """Calculate minimum distance from reference point to interval points."""
+        """Calculate minimum distance from reference point to interval points.
+
+        Args:
+            ref_point: Reference point for distance calculation.
+            interval: Interval object containing points.
+
+        Returns:
+            Minimum distance to the interval.
+
+        """
         points = getattr(interval, "points", None)
         if not points:
             return float("inf")

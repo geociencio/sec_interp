@@ -177,6 +177,7 @@ class ExportService:
         csv_exporter = CSVExporter({})
 
         def topo_handler(settings=export_settings, ext=format_ext) -> None:
+            """Handle topographic and axes export."""
             self._export_topography(
                 folder, profile_data, line_crs, csv_exporter, msg, settings, ext
             )

@@ -1,0 +1,52 @@
+📁 Project type: QGIS
+🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
+
+[K📊 Progress: 1/121 (0.8%) | ETA: 0s
+[K📊 Progress: 10/121 (8.3%) | ETA: 0s
+[K📊 Progress: 20/121 (16.5%) | ETA: 0s
+[K📊 Progress: 30/121 (24.8%) | ETA: 0s
+[K📊 Progress: 40/121 (33.1%) | ETA: 0s
+[K📊 Progress: 50/121 (41.3%) | ETA: 0s
+[K📊 Progress: 60/121 (49.6%) | ETA: 0s
+[K📊 Progress: 70/121 (57.9%) | ETA: 0s
+[K📊 Progress: 80/121 (66.1%) | ETA: 0s
+[K📊 Progress: 90/121 (74.4%) | ETA: 0s
+[K📊 Progress: 100/121 (82.6%) | ETA: 0s
+[K📊 Progress: 110/121 (90.9%) | ETA: 0s
+[K📊 Progress: 120/121 (99.2%) | ETA: 0s
+✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/json
+
+[1m📋 QGIS Plugin Analyzer: Project Summary[0m
+=============================================
+
+[1m📊 Quality Indicators[0m
+- Module Stability Score: [93m53.0/100[0m
+- Code Maintainability Score: [92m93.4/100[0m
+- Security Score (Bandit): [92m100.0/100[0m
+
+[1m🔬 Research-based Metrics[0m
+- Type Hint Coverage (Params): 96.3%
+- Type Hint Coverage (Returns): 99.0%
+- Docstring Coverage: 97.4%
+- Documentation Style: Google
+
+[1m🏗️  QGIS Transition & Style[0m
+- GDAL Import Style: Modern
+- PyQt5 Usage: None
+- Legacy Signals/Slots: 0
+
+[1m⚠️  Issue Statistics (615 total)[0m
+- MISSING_I18N: 592
+- MISSING_DOCSTRING: 19
+- MISSING_TYPE_HINTS: 3
+- SPATIAL_INDEX: 1
+
+[1m🔍 Sample Issues[0m
+[93m[MEDIUM][0m core/performance_metrics.py:196 - Untranslated user-facing string: 'performance'. Use self.tr().
+[93m[MEDIUM][0m core/performance_metrics.py:239 - Untranslated user-facing string: '%Y-%m-%d %H:%M:%S'. Use self.tr().
+[93m[MEDIUM][0m core/data_cache.py:65 - Untranslated user-facing string: 'source'. Use self.tr().
+[93m[MEDIUM][0m core/config.py:60 - Untranslated user-facing string: 'section'. Use self.tr().
+[93m[MEDIUM][0m core/config.py:76 - Untranslated user-facing string: 'geology'. Use self.tr().
+... and 610 more issues.
+
+=============================================
