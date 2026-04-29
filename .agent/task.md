@@ -9,3 +9,8 @@
 - [ ] Benchmark current iteration in Interpretation Manager <!-- id: 4 -->
 - [ ] Implement `QgsSpatialIndex` lookup <!-- id: 5 -->
 - [ ] Verify optimization gains <!-- id: 6 -->
+
+## Goal 3: Linting Debt Resolution
+- [x] Resolve W503/W504 binary operator conflicts <!-- id: 7 -->
+- [x] Fix F401/F811 unused and redefined imports <!-- id: 8 -->
+- [x] Standardize project-wide formatting with black/ruff <!-- id: 9 -->

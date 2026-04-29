@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [To be documented during the phase]
 
 ### Fixed
-- [To be documented during the phase]
+- **Linting**: Resolved project-wide W503/W504 binary operator conflicts and F401/F811 unused import violations.
+- **Formatting**: Standardized the entire codebase using `black` and `ruff`.
 
 ## [3.5.0] - 2026-04-28
 

@@ -15,6 +15,41 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: 2026-04-29
+    category: TOOLING
+    topic: Formatter vs Linter Conflict (W503)
+    lesson: >
+      Modern formatters (Ruff/Black) enforce PEP 8 "break-before" for operators,
+      while legacy linters (W503) flag it. Refactoring multi-line conditions into
+      intermediate variables or removing parentheses for single-line blocks is the
+      most stable way to satisfy both without standard deviation.
+    action: >
+      Avoid 'if ( ... )' blocks with multi-line operators. Use intermediate variables
+      to decompose complex logic and keep conditions on a single line where possible.
+
+  - date: 2026-04-29
+    category: ARCHITECTURE
+    topic: precise noqa placement
+    lesson: >
+      In modular systems with lazy imports, static analysis may trigger false
+      positives (F401/F811) for local redefinitions. Placing '# noqa' precisely on
+      the line of the second import/definition is required to maintain the
+      'Extract-then-Compute' pattern without linter noise.
+    action: >
+      Always place noqa tags on the specific line causing the violation instead of
+      suppressing the entire file or block.
+
+  - date: 2026-04-29
+    category: TOOLING
+    topic: Pre-commit Auto-Reversion
+    lesson: >
+      Pre-commit hooks that modify files (like ruff-format) can silently revert
+      manual linting fixes if they are incompatible with the enforced project
+      style, leading to recursive build failures.
+    action: >
+      Always verify if a formatter reverts a fix and adapt the code structure
+      (e.g., using variables) to be compatible with the formatter's standards.
+
   - date: 2026-04-28
     category: TOOLING
     topic: QGIS 4 Sphinx Mocking

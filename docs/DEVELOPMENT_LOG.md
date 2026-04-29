@@ -1,4 +1,17 @@
 - **Achievement**: Successfully deployed **SecInterp v3.5.0**. Completed Generation 6 modernization with automated maintenance, metrics, and quality gates.
+
+## [2026-04-29] Session: Linting Debt Resolution (Phase v3.6.0)
+- **Achievement**: Resolved all W503, W504, F401, and F811 linting violations. Established a stable, formatted foundation for Phase 3.6.0.
+- **Operational Metrics**:
+    - Linting Violations: 0
+    - Passing Tests: 571
+    - Formatted Files: 86
+- **Changes**:
+    - **Core**: Refactored `export_service.py` conditions to avoid W503.
+    - **GUI**: Fixed signal managers and button boxes for linting compliance.
+    - **Mocks**: Cleaned up `qgis_layers.py` logic and imports.
+- **Status**: Completed.
+- **Maintenance**: [session_2026-04-29_linting_resolution.md](maintenance/session_2026-04-29_linting_resolution.md)
 - **Operational Metrics**:
     - TCR: 1.0
     - Maintainability Score: 94.1/100
