@@ -15,6 +15,39 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: 2026-04-28
+    category: TOOLING
+    topic: QGIS 4 Sphinx Mocking
+    lesson: >
+      When updating Sphinx documentation for QGIS 4.x readiness, adding 'qgis.PyQt',
+      'PyQt6', and specific Qt modules to 'autodoc_mock_imports' is essential to
+      prevent build errors in environments where these libraries are not installed.
+    action: >
+      Always include Qt6-related mocks in 'conf.py' when targeting QGIS 4 compatibility
+      to ensure documentation builds are decoupled from the local Qt environment.
+
+  - date: 2026-04-28
+    category: TESTING
+    topic: Post-Merge Stability Verification
+    lesson: >
+      Major branch merges (like the Cyclomatic Complexity refactoring) can introduce
+      subtle regressions in complex orchestrators even if individual tests passed
+      in the branch.
+    action: >
+      Always execute the full project test suite ('make test' or discovery)
+      immediately after a merge to 'main' to verify global system integrity.
+
+  - date: 2026-04-28
+    category: ARCHITECTURE
+    topic: API-Agnostic Stability
+    lesson: >
+      Consistently using 'qgis.PyQt' shims instead of direct 'PyQt5' or 'PyQt6' imports
+      guarantees a stable codebase that operates seamlessly across QGIS 3 and 4
+      runtimes without requiring conditional branching or manual porting.
+    action: >
+      Enforce the 'qgis.PyQt' standard in all new modules and use 'qgis-analyzer'
+      to audit and prevent direct Qt library imports.
+
 
   - date: 2026-04-26
     category: TOOLING

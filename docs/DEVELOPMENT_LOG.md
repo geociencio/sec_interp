@@ -1,3 +1,12 @@
+## [2026-04-28] Session: QGIS 4 Readiness & CC Merge
+- **Achievement**: Finalized QGIS 4.x (Qt6) compatibility and merged the massive Cyclomatic Complexity refactoring branch (`refactor/cc-compliance`) into `main`.
+- **Changes**:
+    - **Compatibility**: Updated `metadata.txt` (qgisMaximumVersion=4.99), `README.md`, and `conf.py` (version 3.4.0 + Qt6 mocks).
+    - **Merge**: Integrated 4 batches of CC reduction, achieving project-wide compliance with CC <= 10.
+    - **Verification**: 571/571 tests OK. 100% API-agnostic (no PyQt5).
+- **Status**: Completed. Phase v3.4.0 initialization.
+- **Maintenance**: [session_2026-04-28_qgis4_readiness_and_cc_merge.md](maintenance/session_2026-04-28_qgis4_readiness_and_cc_merge.md)
+
 ## [2026-04-27] Session: CC Compliance Gen 6
 - **Achievement**: Reached full compliance with cyclomatic complexity quality gates (CC <= 10). Extracted monolithic methods into specialized sub-methods while preserving the Extract-then-Compute core/GUI isolation.
 - **Changes**:
