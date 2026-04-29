@@ -1,16 +1,15 @@
-# Next Steps: SecInterp Phase v3.6.0
+# Next Steps - SecInterp v3.6.0
 
-## Context
-We have successfully completed Phase v3.5.0 (Operational Excellence & Autonomy). The Generation 6 Agentic Framework is fully implemented, metrics are synchronized, and the codebase is 100% documented with a strict CC <= 10 quality gate.
+**Phase v3.6.0 (Global i18n & Performance)** has started. The main goals are:
 
-## Pending Tasks
-1.  **i18n Restoration**: The primary focus for v3.6.0 should be addressing the `MISSING_I18N` backlog (587 issues).
-2.  **Spatial Index Refinement**: Investigate the warning in `gui/dialog_interpretation_manager.py:123` to further optimize feature iteration.
-3.  **Advanced 3D Geometry**: Research support for non-planar section interpolation if required by future user requests.
+1. **Global i18n**: Resolve the 587 untranslated strings to achieve 100% localization coverage.
+2. **Spatial Performance**: Implement `QgsSpatialIndex` in `InterpretationManager` to optimize feature lookup.
+3. **Automated Audits**: Maintain CC <= 10 and 100% docstring coverage.
 
-## Resuming
-To resume development, run:
+## How to Resume
+To start a development session:
 ```bash
 /start-session
 ```
-The session will automatically inject the necessary semantic context (Gen 6).
+
+**Current Status**: Stable. Implementation plan approved.
