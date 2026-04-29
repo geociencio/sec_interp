@@ -39,6 +39,7 @@ When the user types `/build-feature <requirement>`, orchestrate the development 
 4. **Integration & Handover**
    Shift context to the **@auditor**.
    - Review that the code maintains the `.agent/AGENTS.md` metrics (such as the separation of Core and GUI).
+   - **Gen 6 Quality Check**: Run `uv run python scripts/check_cc.py` to ensure no new feature method exceeds CC=10.
    - Once successfully checked, generate an output confirming the feature is ready to be committed!
 
 ---

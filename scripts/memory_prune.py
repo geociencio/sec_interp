@@ -1,167 +1,129 @@
 #!/usr/bin/env python3
 """
-Script to automatically prune consolidated lessons from AGENT_LESSONS.md.
-Lessons older than 90 days with a 'consolidated_in' field are moved to the
-PRUNED index at the bottom.
+Memory Pruning Utility (Gen 6)
+Auto-prunes consolidated lessons older than 90 days from AGENT_LESSONS.md.
 """
 
-import datetime
-import re
+import sys
+import yaml
+from datetime import datetime, timedelta, date
 from pathlib import Path
+import re
 
+# Configuration
 LESSONS_FILE = Path(".agent/memory/AGENT_LESSONS.md")
 PRUNE_DAYS = 90
 
 
-def prune_lessons() -> None:
-    """Prune lessons older than PRUNE_DAYS and append to the pruned list."""
+def main():
     if not LESSONS_FILE.exists():
         print(f"Error: {LESSONS_FILE} not found.")
+        sys.exit(1)
+
+    content = LESSONS_FILE.read_text()
+
+    # Extract YAML block
+    yaml_match = re.search(r"```yaml\n(.*?)\n```", content, re.DOTALL)
+    if not yaml_match:
+        print("Error: Could not find YAML block in AGENT_LESSONS.md")
+        sys.exit(1)
+
+    yaml_content = yaml_match.group(1)
+
+    try:
+        data = yaml.safe_load(yaml_content)
+    except Exception as e:
+        print(f"Error parsing YAML: {e}")
+        sys.exit(1)
+
+    lessons = data.get("lessons", [])
+    if not lessons:
+        print("No lessons found in AGENT_LESSONS.md")
         return
 
-    content = LESSONS_FILE.read_text(encoding="utf-8")
+    today = datetime.now()
+    threshold = today - timedelta(days=PRUNE_DAYS)
 
-    # We will process the content line by line inside the yaml block
-    lines = content.splitlines()
+    active_lessons = []
+    new_pruned_entries = []
 
-    in_yaml = False
-    new_lines = []
-
-    pruned_entries = []
-
-    current_lesson_lines = []
-    current_lesson_date = None
-    current_lesson_category = None
-    current_lesson_topic = None
-    current_lesson_consolidated = None
-
-    # Helper to process a lesson block
-    def process_lesson_block():
-        nonlocal current_lesson_lines, current_lesson_date, current_lesson_category, current_lesson_topic, current_lesson_consolidated
-        if not current_lesson_lines:
-            return
-
-        should_prune = False
-        if current_lesson_date and current_lesson_consolidated:
-            try:
-                lesson_date = datetime.datetime.strptime(
-                    current_lesson_date, "%Y-%m-%d"
-                ).date()
-                age = (datetime.date.today() - lesson_date).days
-                if age > PRUNE_DAYS:
-                    should_prune = True
-            except ValueError:
-                pass  # If date parsing fails, do not prune
-
-        if should_prune:
-            # Add to pruned list
-            category = current_lesson_category or "UNKNOWN"
-            topic = current_lesson_topic or "Unknown Topic"
-            pruned_line = f"  # [PRUNED] {current_lesson_date} {category}/{topic} \u2192 {current_lesson_consolidated}"
-            pruned_entries.append(pruned_line)
-            print(f"Pruned: {current_lesson_date} - {topic}")
-        else:
-            # Keep the lesson
-            new_lines.extend(current_lesson_lines)
-
-        current_lesson_lines = []
-        current_lesson_date = None
-        current_lesson_category = None
-        current_lesson_topic = None
-        current_lesson_consolidated = None
-
-    yaml_end_index = -1
-    pruned_section_index = -1
-
-    i = 0
-    while i < len(lines):
-        line = lines[i]
-
-        if line.startswith("```yaml"):
-            in_yaml = True
-            new_lines.append(line)
-            i += 1
+    pruned_count = 0
+    for lesson in lessons:
+        if not lesson:
             continue
-
-        if line.startswith("```") and in_yaml:
-            in_yaml = False
-            process_lesson_block()  # process the last block if any
-            # Insert pruned entries right before the PRUNED LESSONS section or at the end of yaml
-            # Wait, the pruned section is inside the yaml block!
-            # Let's handle it differently.
-            yaml_end_index = len(new_lines)
-            new_lines.append(line)
-            i += 1
-            continue
-
-        if in_yaml:
-            if "─── PRUNED LESSONS" in line:
-                process_lesson_block()
-                pruned_section_index = len(new_lines)
-                new_lines.append(line)
-                i += 1
-                continue
-
-            if line.strip().startswith("- date:"):
-                process_lesson_block()
-                current_lesson_lines.append(line)
-                m = re.match(r"\s*-\s*date:\s*(\d{4}-\d{2}-\d{2})", line)
-                if m:
-                    current_lesson_date = m.group(1)
-            elif current_lesson_lines:
-                current_lesson_lines.append(line)
-
-                # Extract metadata
-                cat_m = re.match(r"\s*category:\s*(.+)", line)
-                if cat_m:
-                    current_lesson_category = cat_m.group(1).strip()
-
-                top_m = re.match(r"\s*topic:\s*(.+)", line)
-                if top_m:
-                    current_lesson_topic = top_m.group(1).strip()
-
-                con_m = re.match(r"\s*consolidated_in:\s*(.+)", line)
-                if con_m:
-                    current_lesson_consolidated = con_m.group(1).strip()
+        try:
+            lesson_date_val = lesson.get("date")
+            if isinstance(lesson_date_val, datetime):
+                lesson_date = lesson_date_val
+            elif isinstance(lesson_date_val, date):
+                lesson_date = datetime.combine(lesson_date_val, datetime.min.time())
             else:
-                new_lines.append(line)
-        else:
-            new_lines.append(line)
+                lesson_date = datetime.strptime(str(lesson_date_val), "%Y-%m-%d")
 
-        i += 1
+            consolidated = lesson.get("consolidated_in")
 
-    # Insert the newly pruned entries into the PRUNED LESSONS section
-    if pruned_entries:
-        if pruned_section_index != -1:
-            # Find the end of the pruned section (the last # comment before the end of yaml)
-            insert_idx = yaml_end_index
-            new_lines.insert(insert_idx, "\n".join(pruned_entries))
-        else:
-            print("Warning: Pruned section not found, appending before end of yaml.")
-            new_lines.insert(
-                yaml_end_index,
-                "  # ─── PRUNED LESSONS (already in SKILL.md — kept as index only) ─────────────",
-            )
-            new_lines.insert(yaml_end_index + 1, "\n".join(pruned_entries))
+            if lesson_date < threshold and consolidated:
+                # Prune this lesson
+                topic = lesson.get("topic", "Unknown")
+                category = lesson.get("category", "GENERAL")
+                entry = f"  # [PRUNED] {lesson_date.strftime('%Y-%m-%d')} {category}/{topic} → {consolidated}"
+                new_pruned_entries.append(entry)
+                pruned_count += 1
+            else:
+                active_lessons.append(lesson)
+        except Exception as e:
+            print(f"Warning: Skipping invalid lesson entry: {e}")
+            active_lessons.append(lesson)
 
-        # We need to flatten the list if we inserted strings with \n, but insert actually just shifts.
-        # Better to insert them one by one.
-        pass
+    if pruned_count == 0:
+        print("No lessons meet the pruning criteria (consolidated & > 90 days).")
+        return
 
-    # Rebuilding correctly
-    final_lines = []
-    for line in new_lines:
-        if "\n" in line:
-            final_lines.extend(line.split("\n"))
-        else:
-            final_lines.append(line)
+    # Construct new YAML block
+    header = "  # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────\n"
+    pruned_header = "\n  # ─── PRUNED LESSONS (already in SKILL.md — kept as index only) ─────────────\n"
+    pruned_footer = "  # The following entries have been fully absorbed into specialized skills.\n  # They are retained here as a consolidated index only.\n  #\n"
 
-    if pruned_entries:
-        LESSONS_FILE.write_text("\n".join(final_lines) + "\n", encoding="utf-8")
-        print(f"Successfully pruned {len(pruned_entries)} lessons.")
-    else:
-        print("No lessons to prune.")
+    final_yaml = "lessons:\n\n" + header
+
+    # Add active lessons YAML
+    for lesson in active_lessons:
+        # Convert date back to string for clean output
+        if isinstance(lesson.get("date"), (datetime, date)):
+            lesson["date"] = lesson["date"].strftime("%Y-%m-%d")
+
+        lesson_yaml = yaml.dump(
+            [lesson],
+            sort_keys=False,
+            allow_unicode=True,
+            default_flow_style=False,
+            indent=2,
+        )
+        # Prefix with two spaces
+        indented = ""
+        for line in lesson_yaml.splitlines():
+            indented += "  " + line + "\n"
+        final_yaml += indented
+
+    # Add pruned section
+    final_yaml += pruned_header + pruned_footer
+
+    # Extract existing pruned entries from old content
+    existing_pruned = re.findall(r"  # \[PRUNED\] .*", yaml_content)
+
+    # Combine all pruned entries
+    all_pruned = new_pruned_entries + existing_pruned
+    # Sort by date descending (assuming format YYYY-MM-DD)
+    all_pruned.sort(reverse=True)
+
+    final_yaml += "\n".join(all_pruned)
+
+    # Replace the old YAML block
+    new_content = content.replace(yaml_content, final_yaml)
+
+    LESSONS_FILE.write_text(new_content)
+    print(f"Successfully pruned {pruned_count} lessons. Updated {LESSONS_FILE}")
 
 
 if __name__ == "__main__":
-    prune_lessons()
+    main()

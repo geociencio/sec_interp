@@ -35,7 +35,7 @@ uv run ai-ctx analyze --path .
 ```
 
 🤖 **Agent Action**: Analyze quality metrics and alert if:
-- Cyclomatic complexity increased significantly
+- Cyclomatic complexity increased significantly (Run `uv run python scripts/check_cc.py`)
 - Docstring coverage decreased
 - New QGIS compliance violations were detected
 

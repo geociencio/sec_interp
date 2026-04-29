@@ -67,8 +67,8 @@ python3 scripts/skill_sync.py
 
 🤖 **Agent Action (Learning)**: Explicitly identify the 3 most important technical lessons learned this session.
 *   Update YAML entries in `AGENT_LESSONS.md`.
-*   Run `python3 scripts/memory_prune.py` to auto-prune old consolidated lessons.
-*   Update `agent_metrics.json` with the session summary.
+*   Run `uv run python scripts/memory_prune.py` to auto-prune old consolidated lessons.
+*   Update `agent_metrics.json` with the session summary and generate report: `uv run python scripts/metrics_report.py`.
 
 🤖 **Agent Action**: Update AI_CONTEXT.md and validate that next_steps.md is clear.
 Ensure the AI "Brain" is up to date with the final changes.

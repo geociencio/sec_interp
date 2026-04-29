@@ -1,13 +1,13 @@
 # Quick Reference: Workflows + Skills System
 
 **Created Date**: 2026-03-09
-**Version**: 1.2 (Updated 2026-04-27)
+**Version**: 1.5 (Updated 2026-04-29 — Generation 6)
 
 ---
 
 ## 📋 Executive Summary
 
-The SecInterp project features a complete system of **13 skills** and **16 workflows** integrated to automate the invocation of specialized agents and contextual knowledge.
+The SecInterp project features a complete system of **13 skills** and **16 workflows** integrated to automate the invocation of specialized agents and contextual knowledge. As of **Phase v3.5.0**, the system has reached **Generation 6** maturity.
 
 ---
 
@@ -37,16 +37,16 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/start-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-session.md) | Senior Architect | qgis-core, qa-docker | Start session with synchronized context |
+| [/start-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-session.md) | Senior Architect | qgis-core, qa-docker | Start session with semantic skill injection |
 | [/create-commit](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/create-commit.md) | QA Engineer | qa-docker, commit-standards | Commit with quality validation |
 | [/run-tests](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests.md) | QA Engineer | qa-docker | Run tests with intelligent interpretation |
-| [/close-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-session.md) | QA Engineer | qa-docker, commit-standards | Close session with updated logs |
+| [/close-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-session.md) | QA Engineer | qa-docker, commit-standards | Close session with auto-metrics and pruning |
 
 ### Refactoring and Quality
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/refactor-code](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/refactor-code.md) | Senior Architect | qgis-core, geological-logic | Refactor code with complexity validation |
+| [/refactor-code](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/refactor-code.md) | Senior Architect | qgis-core, geological-logic | Refactor code with CC validation |
 | [/run-tests-in-qgis](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests-in-qgis.md) | QA Engineer | qa-docker | Integration tests in real QGIS |
 | [/audit-plugin](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/audit-plugin.md) | Agent Auditor | project-context, i18n-standards | Full quality and security audit |
 | [/fix-linting](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/fix-linting.md) | QA Engineer | coding-standards | Automatically fix style issues |
@@ -70,48 +70,33 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 
 ---
 
-## 🎯 Common Use Cases
+## ⚡ Gen 6 Automation Scripts
 
-### Start Development Session
-```bash
-/start-session
-```
-**What it does**:
-- Activates "Senior Architect Agent"
-- Loads skills: qgis-core, qa-docker, project-context
-- Syncs context (AI_CONTEXT.md, next_steps.md)
-- Runs `make test` or `make docker-test` (571 tests)
-- Validates quality metrics
-
-### Create Commit with Validation
-```bash
-/create-commit
-```
-**What it does**:
-- Activates "QA Engineer Agent"
-- Loads skills: qa-docker, commit-standards
-- Runs ruff/black
-- Analyzes metrics (ai-ctx analyze)
-- Generates Conventional Commits message options
+| Script | Purpose | Command |
+|:-------|:--------|:--------|
+| **Memory Pruning** | Auto-prune consolidated lessons | `uv run python scripts/memory_prune.py` |
+| **Context Selector**| Semantic skill selection | `uv run python scripts/context_selector.py` |
+| **Metrics Report** | Markdown trend report | `uv run python scripts/metrics_report.py` |
+| **CC Checker** | Validate complexity thresholds | `uv run python scripts/check_cc.py` |
 
 ---
 
 ## 📊 System Metrics
 
-**Current Status** *(updated 2026-04-27)*:
-- ✅ 13 skills synchronized
-- ✅ 16 workflows with full metadata (100%)
-- ✅ Zero legacy or duplicate workflows
-- ✅ All referenced skills validated (0 warnings)
+**Current Status** *(updated 2026-04-29)*:
+- ✅ **Generation 6 Enabled**: Automated memory, context, and quality gates.
+- ✅ **Docstring Coverage**: **100.0%** (Project-wide compliance).
+- ✅ **Return Type Coverage**: **100.0%**.
+- ✅ **Complexity Gate**: **CC <= 10** enforced via pre-push hook.
+- ✅ **Tests**: 620 tests passing (100% success rate).
 
-**Tests**:
-- 571 tests total
-- 100% success rate (local `make test`)
-- Complete QGIS mocking coverage
+---
 
-**Quality** *(qgis-plugin-analyzer v1.13.1)*:
-- HIGH_COMPLEXITY issues: 0
-- Overall Plugin Score: 41.7/100 (pending i18n/docstring work)
+## 🛡️ Pre-push Quality Gate
+
+The system includes a mandatory `.git/hooks/pre-push` gate that blocks any push if:
+1. `qgis-analyzer` analysis fails.
+2. Any function has a **Cyclomatic Complexity > 10**.
 
 ---
 
@@ -122,24 +107,20 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 uv run python3 scripts/skill_sync.py
 ```
 
-### Add New Skill
-1. Create directory: `.agent/skills/[skill-name]/`
-2. Create `SKILL.md` with YAML frontmatter.
-3. Run `skill_sync.py`.
-
-### Add New Workflow
-1. Create file: `.agent/workflows/[name].md`
-2. Add YAML frontmatter.
-3. Run `skill_sync.py`.
+### Run Metrics Report
+```bash
+uv run python3 scripts/metrics_report.py
+```
 
 ---
 
 ## 📚 References
 
+- [.agent/README.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/README.md) - **Full System Documentation**
 - [AGENTS.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/AGENTS.md) - Full agents and skills definition
 - [DEVELOPMENT_LOG.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/DEVELOPMENT_LOG.md) - Project history
 
 ---
 
-**Last update**: 2026-04-27
-**System Version**: 1.2 (Deduplication + Metrics Refresh)
+**Last update**: 2026-04-29
+**System Version**: 1.5 (Generation 6 — Operational Excellence)

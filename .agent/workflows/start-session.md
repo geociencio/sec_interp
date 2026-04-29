@@ -10,7 +10,16 @@ validation: |
 
 # Workflow: Start Session
 
-This workflow optimizes the start of development by ensuring a synchronized, **contextualized**, and validated environment.
+This workflow optimizes the start of development by ensuring a synchronized, **contextualized**, and validated environment using Generation 6 semantic injection.
+
+### 0. Semantic Skill Injection (Gen 6)
+Optimize the current context by pre-loading only the necessary skills for the active tasks.
+// turbo
+```bash
+uv run python scripts/context_selector.py --shell
+```
+
+🤖 **Agent Action**: Based on the output, prioritize the suggested skills and restrict loading of irrelevant modules to optimize token usage.
 
 ### 1. Context Tuning (CRITICAL)
 Updates and reads the context to understand "where we left off".
