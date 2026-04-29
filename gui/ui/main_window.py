@@ -50,12 +50,8 @@ class SecInterpMainWindow(QDialog):
         self.preview_widget = PreviewWidget()
         self.output_widget = QgsFileWidget()
 
-        flags = (
-            QDialogButtonBox.Ok
-            | QDialogButtonBox.Cancel
-            | QDialogButtonBox.Save
-            | QDialogButtonBox.Help
-        )
+        flags = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        flags |= QDialogButtonBox.Save | QDialogButtonBox.Help
         self.button_box = QDialogButtonBox(flags)
 
         # Initialize Pages

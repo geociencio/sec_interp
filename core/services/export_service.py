@@ -611,16 +611,13 @@ class ExportService:
     ) -> tuple[Path, str]:
         """Generate unified output path and logical layer name."""
         profile_name = "profile"
-        if (
-            self.controller
-            and hasattr(self.controller, "settings")
-            and hasattr(self.controller.settings, "section")
-        ):
-            if (
-                hasattr(self.controller.settings.section, "layer_name")
-                and self.controller.settings.section.layer_name
-            ):
-                profile_name = self.controller.settings.section.layer_name
+        ctrl = self.controller
+        has_sect = ctrl and hasattr(ctrl, "settings") and hasattr(ctrl.settings, "section")
+
+        if has_sect:
+            sect = ctrl.settings.section
+            if hasattr(sect, "layer_name") and sect.layer_name:
+                profile_name = sect.layer_name
 
         profile_name = profile_name.replace("/", "_").replace("\\", "_")
 

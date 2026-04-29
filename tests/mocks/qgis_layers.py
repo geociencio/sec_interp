@@ -207,11 +207,7 @@ class MockQgsVectorLayer(MockQgsMapLayer):
                     self._internal_fields.append(MockQgsField(f_name, f_type))
 
         # Infer geometry type from path for tests
-        if (
-            "drillhole" in path.lower()
-            or "trace" in path.lower()
-            or "interval" in path.lower()
-        ):
+        if "drillhole" in path.lower() or "trace" in path.lower() or "interval" in path.lower():
             self._wkb_type = 1002  # LineStringZ
         elif "interp" in path.lower() or "poly" in path.lower():
             self._wkb_type = 1003  # PolygonZ
