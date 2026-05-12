@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.5.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.6.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-52.9%2F100-yellow)
@@ -15,30 +15,29 @@
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v3.5.0: Operational Excellence & Autonomy.*
+*SecInterp v3.6.0: Next-Gen Stability & QGIS 4 Ready.*
 
 ---
 
-## 🆕 What's New in v3.5.0
-**Phase: Operational Excellence & Autonomy**
+## 🆕 What's New in v3.6.0
+**Phase: Next-Gen Stability & QGIS 4 Ready**
 
-### 🧠 Generation 6 Agentic Autonomy
-- **Self-Pruning Memory**: Implemented automated lesson maintenance to prevent token bloat and ensure high context fidelity.
-- **Semantic Context Injection**: Dynamic skill loading based on active tasks for optimized agentic performance.
-- **Observability Engine**: Automated performance metrics reporting (TCR, Retries, Quality Scores).
+### 🚀 QGIS 4.x & Qt6 Full Compatibility
+- **Thread-Safe Architecture**: Eradicated legacy UI threading issues and segmentation faults using robust asynchronous task anchoring.
+- **Deferred Signal Emission**: Implemented `QTimer.singleShot` patterns to safely pass complex geodata from background threads to the main Qt event loop.
 
-### 🛡️ Zero-Regression Quality Gate
-- **Strict Complexity Control**: Enforced CC <= 10 across the entire codebase with automated pre-push audits.
-- **100% Documentation**: Achieved full Google-style docstring coverage for all public and private methods.
-- **High-Fidelity Typing**: 100% return type hint coverage and 97%+ parameter coverage.
+### 🛡️ Asynchronous Rendering Stability
+- **Re-entry Locks**: Added strict rendering flags in the `PreviewRenderer` to prevent race conditions during rapid preview regeneration.
+- **Graceful Lifecycle Management**: Enhanced cleanup methods and C++ memory management for layer objects, ensuring zero-crash teardowns.
+- **Legend Resilience**: Hardened UI components to fail silently and recover smoothly during rapid canvas repaints.
 
-### 🧪 Advanced Core Stability
-- **Spatial Indexing**: Optimized feature iteration in critical paths.
-- **Thread-Safe Architecture**: Validated core services for background execution parity.
+### 📦 Modernized Deployment (`qgis-manage`)
+- **Multi-Version Support**: Unified CLI deployment supporting both QGIS 3 (`~/.local/share/QGIS/QGIS3/...`) and QGIS 4 (`~/.local/share/QGIS/QGIS4/...`) profiles.
+- **Automated Module Discovery**: `Makefile` now automatically finds and packages all Python source files via advanced `find` logic, eliminating missing module errors.
 
-### 🛡️ Code & Architecture Stability
-- **Plugin Ecosystem**: Refined `Makefile` logic to recursively capture deep source files for full translation propagation.
-- **UX Improvements**: Support for arbitrary string fields in validation logs and relative path reporting for all exporters.
+### ✨ Sustained Quality Gates
+- **Cyclomatic Complexity**: Successfully refactored massive monolithic patches to ensure all project functions strictly comply with CC <= 10.
+- **Testing**: 620 fully passing unit and integration tests, verified across both local and Docker environments.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
@@ -92,7 +91,7 @@ Before installing **SecInterp**, ensure your system meets the following requirem
 4. Click **Install Plugin**.
 
 ### From ZIP File
-1. Download the latest `sec_interp_v2.7.0.zip` from releases.
+1. Download the latest `sec_interp_v3.6.0.zip` from releases.
 2. Open QGIS.
 3. Go to **Plugins > Manage and Install Plugins > Install from ZIP**.
 4. Select the file and click **Install**.
