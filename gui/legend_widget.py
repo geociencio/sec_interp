@@ -28,8 +28,14 @@ class LegendWidget(QWidget):
         super().__init__(dialog)  # Use dialog as the parent
         self.dialog = dialog  # Store reference to the dialog
         self.renderer: Renderer | None = None  # Apply UP037
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setAttribute(Qt.WA_TransparentForMouseEvents)  # Let clicks pass through
+        # Use a safer way to access attributes that moved in Qt6
+        # These are usually patched by qt6_compat, but we use a fallback here for extra safety
+        for attr_name in ["WA_TranslucentBackground", "WA_TransparentForMouseEvents"]:
+            attr = getattr(Qt, attr_name, None)
+            if attr is None and hasattr(Qt, "WidgetAttribute"):
+                attr = getattr(Qt.WidgetAttribute, attr_name, None)
+            if attr is not None:
+                self.setAttribute(attr)
         self.setAutoFillBackground(False)  # Don't fill background
         self.hide()
 
@@ -59,11 +65,18 @@ class LegendWidget(QWidget):
 
     def paintEvent(self, event: QEvent) -> None:
         """Handle paint event to draw the legend."""
-        if not self.renderer or not self.renderer.active_units:
-            return
+        try:
+            if not self.renderer or not hasattr(self.renderer, "active_units"):
+                return
 
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
+            if not self.renderer.active_units:
+                return
 
-        # Draw legend using the shared method
-        self.renderer.draw_legend(painter, QRectF(self.rect()))
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.Antialiasing)
+
+            # Draw legend using the shared method
+            self.renderer.draw_legend(painter, QRectF(self.rect()))
+        except (AttributeError, RuntimeError, TypeError):
+            # Silent fail to avoid crashing during rapid updates
+            pass

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from qgis.core import Qgis, QgsMessageLog, QgsTask
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import QTimer, pyqtSignal
 
 from sec_interp.core.domain import DrillholeTaskInput
 from sec_interp.logger_config import get_logger
@@ -76,16 +76,30 @@ class DrillholeGenerationTask(QgsTask):
 
     def finished(self, is_successful: bool) -> None:
         """Handle task completion on Main Thread."""
-        if is_successful:
-            if self.result is None:
-                self.result = ([], [])
-            self.finished_with_results.emit(self.result)
-        elif self.exception:
-            error_msg = str(self.exception)
-            QgsMessageLog.logMessage(
-                f"Drillhole Task Failed: {error_msg}", "SecInterp", Qgis.Critical
-            )
-            self.error_occurred.emit(error_msg)
+        logger.debug(f"DrillholeGenerationTask.finished() called. Success: {is_successful}")
+        try:
+            if is_successful:
+                if self.result is None:
+                    self.result = ([], [])
+
+                res_type = type(self.result)
+                res_len = len(self.result) if isinstance(self.result, tuple | list) else "N/A"
+                logger.debug(
+                    f"Emitting finished_with_results deferred. Type: {res_type}, Len: {res_len}"
+                )
+
+                # Defer emission to next event loop cycle to avoid race conditions with geology render
+                QTimer.singleShot(0, lambda: self.finished_with_results.emit(self.result))
+                logger.debug("Deferred emission scheduled")
+            elif self.exception:
+                error_msg = str(self.exception)
+                logger.error(f"Drillhole Task Exception: {error_msg}")
+                QgsMessageLog.logMessage(
+                    f"Drillhole Task Failed: {error_msg}", "SecInterp", Qgis.Critical
+                )
+                self.error_occurred.emit(error_msg)
+        except Exception as e:
+            logger.exception(f"Critical error in DrillholeGenerationTask.finished: {e}")
 
     def setProgress(self, progress: float) -> None:
         """Override to emit signal for UI progress bar."""

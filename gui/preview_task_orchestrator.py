@@ -32,31 +32,33 @@ class PreviewTaskOrchestrator:
         self.geology_task: GeologyGenerationTask | None = None
         self.drillhole_task: DrillholeGenerationTask | None = None
 
+        # Anchor tasks to prevent GC issues in QGIS 4/Qt6
+        self._active_tasks: set[Any] = set()
+
     def cancel_active_tasks(self) -> None:
-        """Cancel any existing async work."""
+        """Cancel any existing async work and clear anchors."""
         import contextlib
 
-        if self.geology_task:
-            with contextlib.suppress(RuntimeError):
-                self.geology_task.cancel()
-            try:
-                self.geology_task.finished_with_results.disconnect()
-                self.geology_task.progress_changed.disconnect()
-                self.geology_task.error_occurred.disconnect()
-            except (TypeError, RuntimeError):
-                pass
-            self.geology_task = None
+        for task in list(self._active_tasks):
+            if task:
+                with contextlib.suppress(RuntimeError):
+                    task.cancel()
+                try:
+                    task.finished_with_results.disconnect()
+                    task.progress_changed.disconnect()
+                    task.error_occurred.disconnect()
+                except (TypeError, RuntimeError):
+                    pass
 
-        if self.drillhole_task:
-            with contextlib.suppress(RuntimeError):
-                self.drillhole_task.cancel()
-            try:
-                self.drillhole_task.finished_with_results.disconnect()
-                self.drillhole_task.progress_changed.disconnect()
-                self.drillhole_task.error_occurred.disconnect()
-            except (TypeError, RuntimeError):
-                pass
-            self.drillhole_task = None
+        self._active_tasks.clear()
+        self.geology_task = None
+        self.drillhole_task = None
+
+    def remove_task(self, task: Any) -> None:
+        """Safely remove a task from active anchors."""
+        if task in self._active_tasks:
+            self._active_tasks.remove(task)
+            logger.debug(f"Task removed from anchors: {task}")
 
     def start_geology_task(self, params: Any, service: Any) -> None:
         """Launch background geology generation."""
@@ -83,11 +85,15 @@ class PreviewTaskOrchestrator:
             params,
         )
 
+        # Anchor task
+        self._active_tasks.add(self.geology_task)
+
         # Connect signals
         self.geology_task.finished_with_results.connect(self.manager._on_geology_finished)
         self.geology_task.progress_changed.connect(self.manager._on_geology_progress)
         self.geology_task.error_occurred.connect(self.manager._on_geology_error)
 
+        logger.debug(f"Adding Geology task to manager: {self.geology_task}")
         QgsApplication.taskManager().addTask(self.geology_task)
 
     def start_drillhole_task(self, params: Any, service: Any) -> None:
@@ -140,8 +146,12 @@ class PreviewTaskOrchestrator:
             params,
         )
 
+        # Anchor task
+        self._active_tasks.add(self.drillhole_task)
+
         self.drillhole_task.finished_with_results.connect(self.manager._on_drillhole_finished)
         self.drillhole_task.progress_changed.connect(self.manager._on_drillhole_progress)
         self.drillhole_task.error_occurred.connect(self.manager._on_drillhole_error)
 
+        logger.debug(f"Adding Drillhole task to manager: {self.drillhole_task}")
         QgsApplication.taskManager().addTask(self.drillhole_task)

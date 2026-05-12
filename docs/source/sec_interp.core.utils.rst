@@ -28,6 +28,7 @@ Submodules
    sec_interp.core.utils.metadata_reader
    sec_interp.core.utils.parsing
    sec_interp.core.utils.qgis
+   sec_interp.core.utils.qt6_compat
    sec_interp.core.utils.rendering
    sec_interp.core.utils.resource_manager
    sec_interp.core.utils.safe_loader

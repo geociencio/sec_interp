@@ -192,13 +192,31 @@ def cardinal_to_azimuth(text: str) -> float | None:
 def extract_feature_attributes(feature: Any) -> dict[str, Any]:
     """Extract attributes from a QgsFeature into a pure Python dictionary.
 
+    Ensures all values are converted to standard Python primitives to avoid
+    threading issues with QVariant objects in QGIS 4/Qt6.
+
     Args:
         feature: The QgsFeature object.
 
     Returns:
-        A dictionary mapping field names to attribute values.
+        A dictionary mapping field names to sanitized attribute values.
 
     """
     if not feature or not hasattr(feature, "fields"):
         return {}
-    return dict(zip(feature.fields().names(), feature.attributes(), strict=False))
+
+    names = feature.fields().names()
+    raw_values = feature.attributes()
+    sanitized = {}
+
+    for name, val in zip(names, raw_values, strict=False):
+        # Convert QVariant/NULL/etc to pure Python
+        if val is None or str(val) == "NULL":
+            sanitized[name] = None
+        elif isinstance(val, int | float | str | bool):
+            sanitized[name] = val
+        else:
+            # Fallback for complex types (dates, etc) to string
+            sanitized[name] = str(val)
+
+    return sanitized

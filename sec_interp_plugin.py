@@ -24,8 +24,12 @@ from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.core.utils.qgis import resolve_layer
+from sec_interp.core.utils.qt6_compat import apply_qt6_patches
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger, setup_logging
+
+# Apply Qt6 compatibility patches before any other UI imports
+apply_qt6_patches()
 
 logger = get_logger(__name__)
 
@@ -420,6 +424,10 @@ class SecInterp(TranslatableMixin):
             interp_data=filtered["interp"],
             show_legend=options.get("show_legend", True),
         )
+
+        if canvas is None:
+            logger.debug("draw_preview: Render skipped (lock active or no data)")
+            return
 
         # 5. UI Updates
         self.dlg.current_canvas = canvas

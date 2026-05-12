@@ -35,14 +35,14 @@ LRELEASE = lrelease
 
 
 # translation
-SOURCES = \
-	__init__.py sec_interp_plugin.py \
-	core/algorithms.py core/config.py core/data_cache.py core/exceptions.py core/types.py core/utils.py core/utils/drillhole.py core/validation.py core/validation/field_validator.py core/validation/layer_validator.py core/validation/path_validator.py core/validation/project_validator.py \
-	core/services/geology_service.py core/services/profile_service.py core/services/structure_service.py core/services/drillhole_service.py core/services/export_service.py \
-	exporters/base_exporter.py exporters/image_exporter.py exporters/svg_exporter.py exporters/pdf_exporter.py exporters/csv_exporter.py exporters/shp_exporter.py exporters/interpretation_exporters.py \
-	gui/main_window.py gui/main_dialog.py gui/main_dialog_signals.py gui/main_dialog_data.py gui/main_dialog_export.py gui/main_dialog_preview.py gui/main_dialog_settings.py gui/main_dialog_status.py gui/main_dialog_tools.py gui/main_dialog_utils.py gui/main_dialog_validation.py gui/preview_renderer.py gui/sidebar.py \
-	gui/ui/pages/base_page.py gui/ui/pages/dem_page.py gui/ui/pages/section_page.py gui/ui/pages/geology_page.py gui/ui/pages/structure_page.py gui/ui/pages/preview_page.py gui/ui/pages/drillhole_page.py \
-	gui/tools/measure_tool.py gui/tools/interpretation_tool.py
+# Automatic discovery of all Python source files excluding virtual environments and hidden dirs
+SOURCES = $(shell find . -maxdepth 4 -name "*.py" \
+	-not -path "./.*" \
+	-not -path "./tests/*" \
+	-not -path "./scripts/*" \
+	-not -path "./.venv/*" \
+	-not -path "./build/*" \
+	-not -path "./research/*" | sed 's@^\./@@')
 
 PLUGINNAME = sec_interp
 
@@ -71,7 +71,9 @@ PEP8EXCLUDE=pydev,resources.py,conf.py,third_party,ui,.venv
 ## the trailing /python/plugins part if you intend to reuse $(HOME)/$(QGISDIR)/python/plugins
 ## in targets below). Default is kept relative so Make targets that prefix
 ## $(HOME)/$(QGISDIR) work as intended.
-QGISDIR=.local/share/QGIS/QGIS3/profiles/default
+QGIS_VERSION ?= 4
+QGISDIR=.local/share/QGIS/QGIS$(QGIS_VERSION)/profiles/default
+PLUGIN_DEPLOY_DIR=$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
 #################################################
 # Normally you would not need to edit below here
@@ -117,8 +119,10 @@ test: compile transcompile
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
 	@echo "----------------------"
 
-deploy: docs
-	uv run qgis-manage deploy --no-compile
+deploy: docs compile transcompile
+	@echo "🚀 Deploying to QGIS $(QGIS_VERSION)..."
+	uv run qgis-manage deploy --no-compile --qgis-version $(QGIS_VERSION)
+	@echo "✨ Deployment to QGIS $(QGIS_VERSION) complete."
 
 # The dclean target removes compiled python files from plugin directory
 

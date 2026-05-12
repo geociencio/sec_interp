@@ -49,12 +49,15 @@ Los hooks ejecutarán automáticamente:
 - **Tests**: `uv run pytest`
 
 ## Despliegue Local (`qgis-manage`)
-Usa la nueva herramienta CLI para desplegar tus cambios en QGIS:
+Usa la herramienta CLI para desplegar tus cambios en QGIS (soporta QGIS 3 y 4):
 ```bash
-# Despliegue rápido con backup automático
+# Despliegue rápido con backup automático (por defecto QGIS 3)
 uv run qgis-manage deploy
+
+# Despliegue para QGIS 4
+uv run qgis-manage deploy --qgis-version 4
 ```
-*Tip: El comando detecta automáticamente tu sistema operativo y realiza backups de seguridad.*
+*Tip: El comando detecta automáticamente tu sistema operativo, gestiona perfiles y realiza backups de seguridad.*
 
 ## Estándares de Código
 1. **Conventional Commits**: Sigue el estándar definido en `docs/docsec/COMMIT_GUIDELINES.md`.

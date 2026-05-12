@@ -52,17 +52,18 @@ class PreviewRenderer:
 
         """
         self.canvas = canvas
-        self.layers = []
-        self.interpretation_rubbers = []
+        self.layers: list = []
+        self.interpretation_rubbers: list = []
 
         # Specialized components
         self.layer_factory = PreviewLayerFactory()
         self.axes_manager = PreviewAxesManager()
         self.legend_renderer = PreviewLegendRenderer()
 
-        # State for legend rendering (maintained for backward compatibility)
+        # State for legend and rendering control
         self.has_topography = False
         self.has_structures = False
+        self.is_rendering = False
 
     @property
     def active_units(self) -> dict[str, Any]:
@@ -85,51 +86,76 @@ class PreviewRenderer:
         **kwargs,
     ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
-        logger.debug("render() called")
-
-        # 1. Clean up previous layers
-        self._cleanup_layers()
-        self.has_topography = False
-        self.has_structures = False
-
-        # 2. Create data layers via internal orchestrator
-        data_layers = self._collect_data_layers(
-            topo_data,
-            geol_data,
-            struct_data,
-            vert_exag,
-            max_points,
-            use_adaptive_sampling,
-            dip_line_length,
-            drillhole_data,
-            interp_data,
-        )
-
-        if not data_layers:
-            logger.debug("No valid data layers to render yet")
+        if self.is_rendering:
+            logger.warning("Render already in progress, skipping overlapping call.")
             return None, []
 
-        # 4. Axes and Labels
-        extent = self._calculate_extent(data_layers)
-        axes_layer = self.axes_manager.create_axes_layer(extent, vert_exag)
-        labels_layer = self.axes_manager.create_axes_labels_layer(extent, vert_exag)
+        try:
+            self.is_rendering = True
+            logger.debug("render() called - LOCK ACQUIRED")
 
-        # 5. Finalize layers list
-        layers = [labels_layer, *data_layers, axes_layer]
-        layers = [layer for layer in layers if layer is not None]
-        self.layers = layers
+            # 1. Clean up previous layers
+            self._cleanup_layers()
+            self.has_topography = False
+            self.has_structures = False
 
-        # 6. Configure canvas
-        if self.canvas and extent:
-            self.canvas.setLayers(layers)
-            if not preserve_extent:
-                padded_extent = extent
-                with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-                    padded_extent.scale(1.1)
-                self.canvas.setExtent(padded_extent)
-            self.canvas.refresh()
+            # 2. Create data layers via internal orchestrator
+            logger.debug("render: Collecting data layers...")
+            data_layers = self._collect_data_layers(
+                topo_data,
+                geol_data,
+                struct_data,
+                vert_exag,
+                max_points,
+                use_adaptive_sampling,
+                dip_line_length,
+                drillhole_data,
+                interp_data,
+            )
 
-        return self.canvas, layers
+            if not data_layers:
+                logger.debug("No valid data layers to render yet")
+                return None, []
+
+            # 4. Axes and Labels
+            logger.debug("render: Creating axes and labels...")
+            extent = self._calculate_extent(data_layers)
+            axes_layer = self.axes_manager.create_axes_layer(extent, vert_exag)
+            labels_layer = self.axes_manager.create_axes_labels_layer(extent, vert_exag)
+
+            # 5. Finalize layers list and register in project to ensure lifetime
+            logger.debug("render: Finalizing layer list...")
+            layers = [labels_layer, *data_layers, axes_layer]
+            layers = [layer for layer in layers if layer is not None]
+
+            # In QGIS 4, layers must be in a project to be reliably rendered without crashes
+            for layer in layers:
+                if layer and not QgsProject.instance().mapLayer(layer.id()):
+                    QgsProject.instance().addMapLayer(layer, False)  # False = don't add to legend
+
+            self.layers = layers
+
+            # 6. Configure canvas
+            if self.canvas and extent:
+                logger.debug("render: Setting layers to canvas...")
+                self.canvas.setLayers(layers)
+                if not preserve_extent:
+                    padded_extent = extent
+                    with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+                        padded_extent.scale(1.1)
+                    logger.debug("render: Setting canvas extent...")
+                    self.canvas.setExtent(padded_extent)
+                logger.debug("render: Refreshing canvas...")
+                self.canvas.refresh()
+                # Force a repaint of the scene to ensure stability in Qt6
+                if self.canvas.scene():
+                    self.canvas.scene().update()
+
+            logger.debug("render: Complete.")
+            return self.canvas, layers
+        finally:
+            self.is_rendering = False
+            logger.debug("render: LOCK RELEASED")
 
     def _collect_data_layers(
         self,
@@ -239,35 +265,59 @@ class PreviewRenderer:
             logger.exception("Error exporting preview")
             return False
 
-    def _cleanup_layers(self) -> None:
-        """Remove previous layers from QgsProject with complete cleanup."""
-        # Clean up data layers
-        for layer in self.layers:
-            if layer and layer.isValid():
-                try:
-                    QgsProject.instance().removeMapLayer(layer.id())
-                except Exception as e:
-                    logger.warning(f"Failed to remove map layer: {e}")
+    def _cleanup_layers(self, layers: list | None = None) -> None:
+        """Safely remove transient layers from the project."""
+        if layers is None:
+            layers = self.layers
+
+        project = QgsProject.instance()
+        if not project or not layers:
+            return
+
+        valid_ids = self._get_valid_layer_ids(layers)
+        if valid_ids:
+            logger.debug(
+                f"PreviewRenderer: Requesting removal of {len(valid_ids)} transient layers"
+            )
+            try:
+                project.removeMapLayers(valid_ids)
+                logger.debug("PreviewRenderer map layer cleanup successful")
+            except Exception as e:
+                logger.warning(f"Non-critical error during layer cleanup: {e}")
 
         self.layers = []
         self.layer_factory.active_units = {}
+        self._cleanup_rubber_bands()
+        logger.debug("PreviewRenderer cleanup completed")
 
-        # Cleanup interpretation rubber bands COMPLETELY
-        if self.canvas and self.canvas.scene():
-            scene = self.canvas.scene()
-            for rb in self.interpretation_rubbers:
-                if rb:
-                    try:
-                        # 1. Hide first
-                        rb.hide()
-                        # 2. Reset geometry (releases C++ memory)
-                        rb.reset(QgsWkbTypes.PolygonGeometry)
-                        # 3. Remove from scene
-                        scene.removeItem(rb)
-                    except Exception as e:
-                        logger.warning(f"Failed to remove rubber band: {e}")
+    def _get_valid_layer_ids(self, layers: list) -> list[str]:
+        """Extract valid IDs from a list of layers, handling stale objects."""
+        valid_ids = []
+        for layer in layers:
+            try:
+                if layer and hasattr(layer, "id"):
+                    valid_ids.append(layer.id())
+            except (RuntimeError, AttributeError):
+                continue
+        return valid_ids
 
-        # Clear references to allow GC
+    def _cleanup_rubber_bands(self) -> None:
+        """Thoroughly cleanup interpretation rubber bands to release C++ memory."""
+        if not self.canvas or not self.canvas.scene():
+            self.interpretation_rubbers = []
+            return
+
+        scene = self.canvas.scene()
+        for rb in self.interpretation_rubbers:
+            if not rb:
+                continue
+            try:
+                rb.hide()
+                rb.reset(QgsWkbTypes.PolygonGeometry)
+                scene.removeItem(rb)
+            except Exception as e:
+                logger.warning(f"Failed to remove rubber band: {e}")
+
         self.interpretation_rubbers = []
 
         logger.debug("PreviewRenderer cleanup completed")

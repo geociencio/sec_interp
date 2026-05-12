@@ -362,19 +362,25 @@ class PreviewManager(TranslatableMixin):
             use_adaptive_sampling=use_adaptive_sampling,
         )
 
-    def _on_geology_finished(self, results: list[Any]) -> None:
+    def _on_geology_finished(self, results: Any) -> None:
         """Handle completion of geology generation task."""
-        self.cached_data["geol"] = results if results else None
-
-        logger.info(f"Async geology finished: {len(results) if results else 0} segments")
+        logger.debug(f"_on_geology_finished called with results type: {type(results)}")
 
         try:
+            if results and isinstance(results, list):
+                self.cached_data["geol"] = results
+                logger.info(f"Async geology finished: {len(results)} segments")
+            else:
+                self.cached_data["geol"] = None
+                logger.debug("Geology task returned no results or invalid format.")
+
             self.update_from_checkboxes()
             self._update_results_display()
-        except SecInterpError as e:
+            self.orchestrator.remove_task(self.orchestrator.geology_task)
+        except (AttributeError, TypeError, ValueError, SecInterpError) as e:
             logger.exception(f"Error updating UI after async geology: {e}")
-        except (AttributeError, TypeError, ValueError):
-            logger.exception("Unexpected UI error after async geology")
+        except Exception as e:
+            logger.exception(f"Unexpected critical error after async geology: {e}")
 
     def _update_results_display(self) -> None:
         """Update results text and status display based on current cache."""
@@ -428,20 +434,30 @@ class PreviewManager(TranslatableMixin):
     def _on_drillhole_finished(self, result: Any) -> None:
         """Handle completion of drillhole task."""
         self.active_drill_task = None
+        logger.debug(f"_on_drillhole_finished called with result type: {type(result)}")
+
         if not result:
+            logger.debug("Drillhole task returned no results.")
             return
 
-        # result is (geol_data, drillhole_data)
-        _, drill_part = result
-        self.cached_data["drillhole"] = drill_part
-
-        logger.info(f"Async Drillholes finished: {len(drill_part)} holes")
-
+        # result is expected to be (geol_data, drillhole_data)
+        MIN_RESULT_PARTS = 2
         try:
+            if isinstance(result, tuple) and len(result) >= MIN_RESULT_PARTS:
+                _, drill_part = result[:MIN_RESULT_PARTS]
+                self.cached_data["drillhole"] = drill_part
+                logger.info(f"Async Drillholes finished: {len(drill_part)} holes")
+            else:
+                logger.warning(f"Unexpected result format from drillhole task: {type(result)}")
+                return
+
             self.update_from_checkboxes()
             self._update_results_display()
-        except (AttributeError, TypeError, ValueError, SecInterpError):
-            logger.exception("Error syncing UI after async drillhole")
+            self.orchestrator.remove_task(self.orchestrator.drillhole_task)
+        except (AttributeError, TypeError, ValueError, SecInterpError) as e:
+            logger.exception(f"Error syncing UI after async drillhole: {e}")
+        except Exception as e:
+            logger.exception(f"Unexpected critical error after async drillhole: {e}")
 
     def _handle_invalid_plugin_instance(self) -> None:
         """Handle case where plugin instance is not available for rendering."""
