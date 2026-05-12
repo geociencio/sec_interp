@@ -1,4 +1,20 @@
+## [2026-05-12] Session: Qt6 QDialog Hotfix (Post-Release)
+- **Achievement**: Resolved a runtime `AttributeError` crash in QGIS 4.0.1 (Qt6) caused by `QDialog.Accepted` enum being removed from the Qt6 API surface.
+- **Root Cause**: In Qt6, `QDialog.Accepted` is no longer a flat class attribute — it moved to `QDialog.DialogCode.Accepted`. Both `exec_()` (deprecated in Qt5, removed in Qt6) and the enum constant failed at runtime.
+- **Fix Applied**:
+    - `gui/dialog_interpretation_manager.py`: `dlg.exec_() != QDialog.Accepted` → `dlg.exec() != 1`.
+    - `sec_interp_plugin.py`: `self.dlg.exec_()` → `self.dlg.exec()`.
+    - `tests/mocks/qt_mocks.py`: `MockQWidget.exec_()` → `MockQWidget.exec()`.
+    - `tests/gui/test_dialog_interpretation_manager.py`: Mocks updated to return `1` (accepted) / `0` (rejected).
+- **Operational Metrics**:
+    - Tests Passing: 571/571 (100%)
+    - Files Modified: 4
+    - Commit: `0694e80`
+- **Status**: 🟢 Hotfix committed. Pending push to `origin/main` and `v3.6.1` tag evaluation.
+- **Maintenance**: session_2026-05-12_qt6_qdialog_hotfix.md
+
 ## [2026-05-12] CIERRE DE FASE v3.6.0: Next-Gen Stability & QGIS 4 Ready
+
 - **Achievement**: Completada la fase v3.6.0. Resolvimos la compatibilidad asíncrona con QGIS 4.x y estabilizamos el motor de renderizado evitando segmentation faults mediante bloqueos y señales diferidas.
 - **Cambios Principales**:
     - **Compatibilidad**: 100% de operaciones en QgsTask refactorizadas para evitar objetos in-hasheables en PyQt6.

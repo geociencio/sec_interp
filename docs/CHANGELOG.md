@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Qt6 Compatibility**: Replaced deprecated `exec_()` with `exec()` and `QDialog.Accepted` enum (removed in Qt6) with the integer literal `1`. Resolves a runtime `AttributeError` crash on QGIS 4.0.1 / Qt6.
+
 ## [3.6.0] - 2026-05-12
 
 ### Added
