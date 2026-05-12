@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from qgis.core import QgsMapSettings, QgsRectangle
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import DataMissingError, ExportError
@@ -31,6 +32,10 @@ class ExportService:
         """
         self.controller = controller
         self.access_control = AccessControlService()
+
+    def tr(self, message: str) -> str:
+        """Translate a message using QCoreApplication."""
+        return QCoreApplication.translate("ExportService", message)  # type: ignore[no-any-return]
 
     def export_data(
         self,
@@ -70,16 +75,16 @@ class ExportService:
 
         if not any(export_options.values()):
             logger.warning("All export options are disabled. Nothing will be exported.")
-            return ["⚠ No export options selected. Check Settings tab."]
+            return [self.tr("⚠ No export options selected. Check Settings tab.")]
 
         if not profile_data:
-            raise DataMissingError("No profile data available for export")
+            raise DataMissingError(self.tr("No profile data available for export"))
 
         line_layer = params.line_layer
         if not line_layer:
-            raise DataMissingError("Section line layer not found in parameters")
+            raise DataMissingError(self.tr("Section line layer not found in parameters"))
 
-        result_msg = ["✓ Saving files..."]
+        result_msg = [self.tr("✓ Saving files...")]
         self._orchestrate_exports(
             output_folder,
             params,
@@ -92,7 +97,7 @@ class ExportService:
             result_msg,
         )
 
-        result_msg.append(f"\n✓ All files saved to:\n{output_folder}")
+        result_msg.append(self.tr("\n✓ All files saved to:\n{0}").format(output_folder))
         return result_msg
 
     def _resolve_layers(self, params: PreviewParams) -> tuple[Any, Any]:
@@ -125,7 +130,7 @@ class ExportService:
             )
 
         if not line_layer or not line_layer.isValid():
-            raise DataMissingError("Section line layer not found or invalid")
+            raise DataMissingError(self.tr("Section line layer not found or invalid"))
 
         raster_layer = None
         if params.raster_layer:

@@ -26,6 +26,7 @@ from DEM layers along section lines.
 from __future__ import annotations
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core import utils as scu
 from sec_interp.core.domain import ProfileData
@@ -42,6 +43,10 @@ class ProfileService(IProfileService):
     This service handles the extraction of elevation data along a cross-section
     line by sampling a raster DEM.
     """
+
+    def tr(self, message: str) -> str:
+        """Translate a message using QCoreApplication."""
+        return QCoreApplication.translate("ProfileService", message)  # type: ignore[no-any-return]
 
     def generate_topographic_profile(
         self,
@@ -68,11 +73,13 @@ class ProfileService(IProfileService):
         """
         line_feat = next(line_lyr.getFeatures(), None)
         if not line_feat:
-            raise DataMissingError("Line layer has no features", {"layer": line_lyr.name()})
+            raise DataMissingError(
+                self.tr("Line layer has no features"), {"layer": line_lyr.name()}
+            )
 
         geom = line_feat.geometry()
         if not geom or geom.isNull():
-            raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
+            raise GeometryError(self.tr("Line geometry is not valid"), {"layer": line_lyr.name()})
 
         da = scu.create_distance_area(line_lyr.crs())
 
