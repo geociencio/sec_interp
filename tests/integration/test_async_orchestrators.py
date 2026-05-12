@@ -204,6 +204,10 @@ class TestPreviewTaskOrchestrator(BaseIntegrationTest):
         self.orchestrator.geology_task = mock_geo_task
         self.orchestrator.drillhole_task = mock_drill_task
 
+        # Add to the active tasks set for the new anchoring logic
+        self.orchestrator._active_tasks.append(mock_geo_task)
+        self.orchestrator._active_tasks.append(mock_drill_task)
+
         self.orchestrator.cancel_active_tasks()
 
         mock_geo_task.cancel.assert_called_once()

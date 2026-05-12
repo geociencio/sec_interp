@@ -33,7 +33,7 @@ class PreviewTaskOrchestrator:
         self.drillhole_task: DrillholeGenerationTask | None = None
 
         # Anchor tasks to prevent GC issues in QGIS 4/Qt6
-        self._active_tasks: set[Any] = set()
+        self._active_tasks: list[Any] = []
 
     def cancel_active_tasks(self) -> None:
         """Cancel any existing async work and clear anchors."""
@@ -86,7 +86,7 @@ class PreviewTaskOrchestrator:
         )
 
         # Anchor task
-        self._active_tasks.add(self.geology_task)
+        self._active_tasks.append(self.geology_task)
 
         # Connect signals
         self.geology_task.finished_with_results.connect(self.manager._on_geology_finished)
@@ -147,7 +147,7 @@ class PreviewTaskOrchestrator:
         )
 
         # Anchor task
-        self._active_tasks.add(self.drillhole_task)
+        self._active_tasks.append(self.drillhole_task)
 
         self.drillhole_task.finished_with_results.connect(self.manager._on_drillhole_finished)
         self.drillhole_task.progress_changed.connect(self.manager._on_drillhole_progress)

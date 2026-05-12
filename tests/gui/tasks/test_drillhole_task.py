@@ -58,7 +58,10 @@ class TestDrillholeGenerationTask(BaseTestCase):
         expected_result = (["geol"], ["hole1"])
         self.task.result = expected_result
 
-        self.task.finished(True)
+        with patch("sec_interp.gui.tasks.drillhole_task.QTimer.singleShot") as mock_timer:
+            # Execute the lambda immediately
+            mock_timer.side_effect = lambda ms, func: func()
+            self.task.finished(True)
 
         self.task.finished_with_results.emit.assert_called_once_with(expected_result)
 

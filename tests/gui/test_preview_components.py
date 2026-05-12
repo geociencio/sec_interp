@@ -484,7 +484,7 @@ class TestPreviewComponents(BaseTestCase):
         project = QgsProject.instance()
         project.addMapLayer(mock_layer)  # Ensure it's in the project
 
-        with patch.object(project, "removeMapLayer") as mock_remove:
+        with patch.object(project, "removeMapLayers") as mock_remove:
             self.renderer._cleanup_layers()
             mock_remove.assert_called()
             self.assertEqual(len(self.renderer.layers), 0)

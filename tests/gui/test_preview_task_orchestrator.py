@@ -27,6 +27,8 @@ class TestPreviewTaskOrchestrator(BaseTestCase):
         mock_drill_task = MagicMock()
         self.orchestrator.geology_task = mock_geol_task
         self.orchestrator.drillhole_task = mock_drill_task
+        self.orchestrator._active_tasks.append(mock_geol_task)
+        self.orchestrator._active_tasks.append(mock_drill_task)
 
         self.orchestrator.cancel_active_tasks()
 
@@ -72,6 +74,7 @@ class TestPreviewTaskOrchestrator(BaseTestCase):
             "Mock error"
         )
         self.orchestrator.geology_task = mock_geol_task
+        self.orchestrator._active_tasks.append(mock_geol_task)
 
         # Should not raise
         self.orchestrator.cancel_active_tasks()
@@ -82,6 +85,7 @@ class TestPreviewTaskOrchestrator(BaseTestCase):
         """Test that starting a new geology task cancels the previous one."""
         old_task = MagicMock()
         self.orchestrator.geology_task = old_task
+        self.orchestrator._active_tasks.append(old_task)
         params = MagicMock()
         service = MagicMock()
 
@@ -95,6 +99,7 @@ class TestPreviewTaskOrchestrator(BaseTestCase):
         """Test that starting a new drillhole task cancels the previous one."""
         old_task = MagicMock()
         self.orchestrator.drillhole_task = old_task
+        self.orchestrator._active_tasks.append(old_task)
         params = MagicMock()
         service = MagicMock()
 

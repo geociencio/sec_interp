@@ -186,6 +186,11 @@ class MockQgsProject(MockQgsBase):
             if lid in self._layers:
                 del self._layers[lid]
 
+    def removeMapLayers(self, layer_ids):
+        """Remove multiple map layers from the project."""
+        for lid in layer_ids:
+            self.removeMapLayer(lid)
+
     def crs(self):
         """Get the project CRS."""
         return MockQgsCoordinateReferenceSystem()

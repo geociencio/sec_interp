@@ -47,13 +47,19 @@ class MockQgis:
         All = 15
 
 
-class MockQgsTask(MagicMock):
+class MockQgsTask:
     CanCancel = 1
 
-    def __init__(self, description="", flags=0):
-        super().__init__()
-        self._description, self._flags = description, flags
+    def __init__(self, description="", flags=0, **kwargs):
+        self._description = description
+        self._flags = flags
         self._progress = 0.0
+
+        # Explicit mock signals to maintain compatibility with test suites
+        from unittest.mock import MagicMock
+        self.finished_with_results = MagicMock()
+        self.progress_changed = MagicMock()
+        self.error_occurred = MagicMock()
 
     def description(self) -> str:
         """Return task description."""
@@ -66,3 +72,7 @@ class MockQgsTask(MagicMock):
     def isCanceled(self) -> bool:
         """Check if task is canceled."""
         return False
+
+    def cancel(self):
+        """Cancel task."""
+        pass
