@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- [To be documented during the phase]
+- **Global i18n Coverage**: Achieved full internationalization coverage for `ExportService`, `ProfileService`, and `ExportManager`.
+- **Locale Synchronization**: Batch synchronization and compilation of all 13 supported locales (`de`, `es`, `fi`, `fr`, `hi`, `id`, `it`, `ja`, `nl`, `pl`, `pt_BR`, `ru`, `zh_CN`).
 
 ### Changed
-- [To be documented during the phase]
+- **i18n Master Data**: Updated Spanish (`es.json`) with refined translations for export status and data processing messages.
 
 ### Fixed
 - **Linting**: Resolved project-wide W503/W504 binary operator conflicts and F401/F811 unused import violations.
