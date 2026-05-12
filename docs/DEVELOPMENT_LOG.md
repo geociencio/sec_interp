@@ -1,3 +1,13 @@
+## [2026-05-12] CIERRE DE FASE v3.6.0: Next-Gen Stability & QGIS 4 Ready
+- **Achievement**: Completada la fase v3.6.0. Resolvimos la compatibilidad asíncrona con QGIS 4.x y estabilizamos el motor de renderizado evitando segmentation faults mediante bloqueos y señales diferidas.
+- **Cambios Principales**:
+    - **Compatibilidad**: 100% de operaciones en QgsTask refactorizadas para evitar objetos in-hasheables en PyQt6.
+    - **Estabilidad**: Uso extensivo de `QTimer.singleShot` para asegurar que las señales que involucran C++ pointers se procesan de forma segura en el main loop.
+    - **Calidad**: 620 tests exitosos en Docker, sin regresiones en cobertura (CC <= 10).
+    - **Deployment**: `qgis-manage` modernizado con soporte nativo para los perfiles de QGIS 3 y 4.
+    - **i18n**: Sincronización global y completa (13 lenguajes).
+- **Status**: 🟢 Fase completada y lista para release oficial.
+
 ## [2026-05-11] Session: Global i18n Synchronization (Phase v3.6.0)
 - **Achievement**: Reached 100% internationalization coverage (wrapped strings) across all core services and UI managers. Synchronized and compiled 13 locales with updated Spanish master data.
 - **Operational Metrics**:

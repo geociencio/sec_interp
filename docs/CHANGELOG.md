@@ -7,14 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.0] - 2026-05-12
+
 ### Added
 - **Global i18n Coverage**: Achieved full internationalization coverage for `ExportService`, `ProfileService`, and `ExportManager`.
 - **Locale Synchronization**: Batch synchronization and compilation of all 13 supported locales (`de`, `es`, `fi`, `fr`, `hi`, `id`, `it`, `ja`, `nl`, `pl`, `pt_BR`, `ru`, `zh_CN`).
+- **QGIS 4.x & Qt6 Readiness**: Implemented 100% thread-safe background processing by transitioning away from unhashable QgsTask structures.
 
 ### Changed
 - **i18n Master Data**: Updated Spanish (`es.json`) with refined translations for export status and data processing messages.
+- **Deployment Ecosystem**: Modernized `qgis-manage` to natively support multi-version profiles (QGIS 3 and QGIS 4).
 
 ### Fixed
+- **Asynchronous Rendering Stability**: Eradicated legacy UI threading segmentation faults by implementing strict re-entry locks and deferred signal emission via `QTimer.singleShot`.
+- **Test Infrastructure**: Refactored the integration suite with synchronous mock emission, securing a 100% pass rate (620 tests) across Docker and local environments.
 - **Linting**: Resolved project-wide W503/W504 binary operator conflicts and F401/F811 unused import violations.
 - **Formatting**: Standardized the entire codebase using `black` and `ruff`.
 

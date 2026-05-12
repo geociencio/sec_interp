@@ -136,26 +136,41 @@ class PreviewRenderer:
             self.layers = layers
 
             # 6. Configure canvas
-            if self.canvas and extent:
-                logger.debug("render: Setting layers to canvas...")
-                self.canvas.setLayers(layers)
-                if not preserve_extent:
-                    padded_extent = extent
-                    with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-                        padded_extent.scale(1.1)
-                    logger.debug("render: Setting canvas extent...")
-                    self.canvas.setExtent(padded_extent)
-                logger.debug("render: Refreshing canvas...")
-                self.canvas.refresh()
-                # Force a repaint of the scene to ensure stability in Qt6
-                if self.canvas.scene():
-                    self.canvas.scene().update()
+            self._setup_canvas(layers, extent, preserve_extent)
 
             logger.debug("render: Complete.")
             return self.canvas, layers
         finally:
             self.is_rendering = False
             logger.debug("render: LOCK RELEASED")
+
+    def _setup_canvas(self, layers: list, extent, preserve_extent: bool) -> None:
+        """Set layers and extent on the map canvas.
+
+        Args:
+            layers: List of map layers to render.
+            extent: The bounding box extent of the layers.
+            preserve_extent: Whether to keep the current extent or zoom to the new layers.
+
+        """
+        if not self.canvas or not extent:
+            return
+
+        logger.debug("render: Setting layers to canvas...")
+        self.canvas.setLayers(layers)
+
+        if not preserve_extent:
+            padded_extent = extent
+            with contextlib.suppress(AttributeError, TypeError, RuntimeError):
+                padded_extent.scale(1.1)
+            logger.debug("render: Setting canvas extent...")
+            self.canvas.setExtent(padded_extent)
+
+        logger.debug("render: Refreshing canvas...")
+        self.canvas.refresh()
+        # Force a repaint of the scene to ensure stability in Qt6
+        if self.canvas.scene():
+            self.canvas.scene().update()
 
     def _collect_data_layers(
         self,

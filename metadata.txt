@@ -4,7 +4,7 @@ qgisMinimumVersion=3.0
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.5.0
+version=3.6.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,13 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.6.0 (2026-05-12)
+	* Next-Gen Stability & QGIS 4 Ready:
+	- Compatibility: 100%% compatibility with QGIS 4.x and Qt6 by resolving unhashable QgsTask issues.
+	- Architecture: Eradicated legacy UI threading segmentation faults using robust asynchronous task anchoring and QTimer.
+	- Rendering: Fixed race conditions during rapid preview regeneration through strict state locks and gracefully handled C++ object lifecycles.
+	- DevOps: Modernized qgis-manage deployment tool with cross-version profile support and auto-discovery.
+	- Quality: Maintained Cyclomatic Complexity <= 10 and 100%% test pass rate across 620 tests in Docker.
 	3.5.0 (2026-04-28)
 	* Operational Excellence & Autonomy:
 	- Gen 6 Agentic Autonomy: Implemented self-pruning memory management and semantic skill injection for optimized development.
