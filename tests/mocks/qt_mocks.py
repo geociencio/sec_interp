@@ -339,8 +339,8 @@ class MockQWidget(MockQObject):
         """Reject dialog logic."""
         pass
 
-    def exec_(self):
-        """Mock exec_."""
+    def exec(self):
+        """Mock exec."""
         return self.Accepted
 
     def setLayout(self, layout):

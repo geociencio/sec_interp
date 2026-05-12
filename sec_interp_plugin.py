@@ -256,7 +256,7 @@ class SecInterp(TranslatableMixin):
         # Show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        self.dlg.exec_()
+        self.dlg.exec()
 
     def _get_and_validate_inputs(self) -> PreviewParams | None:
         """Retrieve and validate inputs from the dialog."""

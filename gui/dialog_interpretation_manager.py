@@ -199,8 +199,6 @@ class InterpretationManager:
             interpretation: The finished interpretation polygon.
 
         """
-        from qgis.PyQt.QtWidgets import QDialog
-
         from .dialogs.interpretation_properties_dialog import (
             InterpretationPropertiesDialog,
         )
@@ -224,7 +222,7 @@ class InterpretationManager:
             interpretation, interp_config.get("custom_fields"), self.dialog
         )
 
-        if dlg.exec_() != QDialog.Accepted:
+        if dlg.exec() != 1:
             logger.info(f"Interpretation canceled by user: {interpretation.id}")
             # Deactivate interpretation tool anyway
             self.dialog.preview_widget.btn_interpret.setChecked(False)

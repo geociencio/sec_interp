@@ -75,7 +75,7 @@ class TestDialogInterpretationManager(BaseTestCase):
             mock_dlg = mock_dlg_class.return_value
             from qgis.PyQt.QtWidgets import QDialog
 
-            mock_dlg.exec_.return_value = QDialog.Accepted
+            mock_dlg.exec.return_value = 1
 
             self.manager.handle_interpretation_finished(interp)
 
@@ -94,7 +94,7 @@ class TestDialogInterpretationManager(BaseTestCase):
             mock_dlg = mock_dlg_class.return_value
             from qgis.PyQt.QtWidgets import QDialog
 
-            mock_dlg.exec_.return_value = QDialog.Rejected
+            mock_dlg.exec.return_value = 0
 
             self.manager.handle_interpretation_finished(interp)
 
