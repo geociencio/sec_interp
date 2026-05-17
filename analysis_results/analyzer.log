@@ -558,3 +558,9 @@
 2026-05-11 21:30:07,105 - qgis_analyzer - INFO - 📁 Project type: QGIS
 2026-05-11 21:30:07,107 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
 2026-05-11 21:30:11,176 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-05-12 00:20:47,562 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-05-12 00:20:47,562 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
+2026-05-12 00:20:51,101 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results
+2026-05-12 00:24:40,221 - qgis_analyzer - INFO - 📁 Project type: QGIS
+2026-05-12 00:24:40,222 - qgis_analyzer - INFO - 🔍 Analyzing: /home/jmbernales/qgispluginsdev/sec_interp [Scope: all]
+2026-05-12 00:24:43,795 - qgis_analyzer - INFO - ✅ Analysis completed. Reports in: /home/jmbernales/qgispluginsdev/sec_interp/analysis_results

@@ -107,6 +107,8 @@ def _patch_qt_core() -> None:
     _patch_alignment()
     _patch_flags()
     _patch_input_types()
+    _patch_pen_and_brush()
+    _patch_global_color()
 
 
 def _patch_alignment() -> None:
@@ -241,6 +243,82 @@ def _patch_input_types() -> None:
             )
     except ImportError:
         pass
+
+
+def _patch_pen_and_brush() -> None:
+    """Patch PenStyle and BrushStyle."""
+    if hasattr(Qt, "PenStyle"):
+        _safe_patch(
+            Qt,
+            Qt.PenStyle,
+            [
+                "NoPen",
+                "SolidLine",
+                "DashLine",
+                "DotLine",
+                "DashDotLine",
+                "DashDotDotLine",
+                "CustomDashLine",
+            ],
+        )
+
+    if hasattr(Qt, "BrushStyle"):
+        _safe_patch(
+            Qt,
+            Qt.BrushStyle,
+            [
+                "NoBrush",
+                "SolidPattern",
+                "Dense1Pattern",
+                "Dense2Pattern",
+                "Dense3Pattern",
+                "Dense4Pattern",
+                "Dense5Pattern",
+                "Dense6Pattern",
+                "Dense7Pattern",
+                "HorPattern",
+                "VerPattern",
+                "CrossPattern",
+                "BDiagPattern",
+                "FDiagPattern",
+                "DiagCrossPattern",
+                "LinearGradientPattern",
+                "RadialGradientPattern",
+                "ConicalGradientPattern",
+                "TexturePattern",
+            ],
+        )
+
+
+def _patch_global_color() -> None:
+    """Patch GlobalColor."""
+    if hasattr(Qt, "GlobalColor"):
+        _safe_patch(
+            Qt,
+            Qt.GlobalColor,
+            [
+                "white",
+                "black",
+                "red",
+                "darkRed",
+                "green",
+                "darkGreen",
+                "blue",
+                "darkBlue",
+                "cyan",
+                "darkCyan",
+                "magenta",
+                "darkMagenta",
+                "yellow",
+                "darkYellow",
+                "gray",
+                "darkGray",
+                "lightGray",
+                "transparent",
+                "color0",
+                "color1",
+            ],
+        )
 
 
 def _patch_qframe() -> None:

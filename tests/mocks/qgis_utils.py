@@ -57,6 +57,7 @@ class MockQgsTask:
 
         # Explicit mock signals to maintain compatibility with test suites
         from unittest.mock import MagicMock
+
         self.finished_with_results = MagicMock()
         self.progress_changed = MagicMock()
         self.error_occurred = MagicMock()

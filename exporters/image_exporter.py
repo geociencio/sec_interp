@@ -40,8 +40,9 @@ class ImageExporter(BaseExporter):
             height = self.get_setting("height", 600)
             background_color = self.get_setting("background_color", QColor(255, 255, 255))
 
-            # Create image
-            image = QImage(QSize(width, height), QImage.Format_ARGB32)
+            # Create image (Qt5/Qt6 compatibility for enum)
+            img_format = getattr(QImage, "Format", QImage).Format_ARGB32
+            image = QImage(QSize(width, height), img_format)
             image.fill(background_color)
 
             # Setup painter

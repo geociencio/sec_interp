@@ -259,7 +259,8 @@ class PreviewRenderer:
             settings.setOutputSize(QSize(width, height))
             settings.setOutputDpi(dpi)
 
-            image = QImage(QSize(width, height), QImage.Format_ARGB32)
+            img_format = getattr(QImage, "Format", QImage).Format_ARGB32
+            image = QImage(QSize(width, height), img_format)
             image.fill(QColor(255, 255, 255))
 
             painter = QPainter(image)
