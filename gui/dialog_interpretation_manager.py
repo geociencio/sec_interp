@@ -288,7 +288,7 @@ class InterpretationManager:
     def _check_geology_inheritance(
         self, ref_point: QgsPointXY, min_dist: float, best_match: dict[str, Any] | None
     ) -> tuple[dict[str, Any] | None, float]:
-        """Search for nearest geological segment.
+        """Search for nearest geological segment using QgsSpatialIndex.
 
         Args:
             ref_point: Reference point for distance calculation.
@@ -303,28 +303,44 @@ class InterpretationManager:
         if not geol_data:
             return best_match, min_dist
 
-        for segment in geol_data:
+        from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsSpatialIndex
+
+        index = QgsSpatialIndex()
+        feature_dict = {}
+        for i, segment in enumerate(geol_data):
             if not segment.points:
                 continue
 
-            seg_min = float("inf")
-            for p_dist, p_elev in segment.points:
-                d = ref_point.distance(QgsPointXY(p_dist, p_elev))
-                seg_min = min(d, seg_min)
+            feat = QgsFeature(i)
+            pts = [QgsPointXY(x, y) for x, y in segment.points]
 
-            if seg_min < min_dist:
-                min_dist = seg_min
+            if len(pts) == 1:
+                geom = QgsGeometry.fromPointXY(pts[0])
+            else:
+                geom = QgsGeometry.fromPolylineXY(pts)
+
+            feat.setGeometry(geom)
+            index.addFeature(feat)
+            feature_dict[i] = (segment, geom)
+
+        nearest_ids = index.nearestNeighbor(ref_point, 1)
+        if nearest_ids:
+            segment, geom = feature_dict[nearest_ids[0]]
+            d = geom.distance(QgsGeometry.fromPointXY(ref_point))
+            if d < min_dist:
+                min_dist = d
                 best_match = {
                     "name": segment.unit_name,
                     "type": "geology",
                     "attrs": segment.attributes,
                 }
+
         return best_match, min_dist
 
     def _check_drillhole_inheritance(
         self, ref_point: QgsPointXY, min_dist: float, best_match: dict[str, Any] | None
     ) -> tuple[dict[str, Any] | None, float]:
-        """Search for nearest drillhole interval.
+        """Search for nearest drillhole interval using QgsSpatialIndex.
 
         Args:
             ref_point: Reference point for distance calculation.
@@ -339,24 +355,51 @@ class InterpretationManager:
         if not dh_data:
             return best_match, min_dist
 
+        from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsSpatialIndex
+
+        index = QgsSpatialIndex()
+        feature_dict = {}
+        feat_id = 0
+
         for dh in dh_data:
             intervals = self._extract_intervals_from_dh_data(dh)
             if not intervals:
                 continue
 
             for interval in intervals:
-                int_dist = self._calculate_min_dist_to_interval(ref_point, interval)
-                if int_dist < min_dist:
-                    min_dist = int_dist
-                    best_match = {
-                        "name": getattr(
-                            interval,
-                            "rock_unit",
-                            getattr(interval, "unit_name", "Unknown"),
-                        ),
-                        "type": "drillhole",
-                        "attrs": interval.attributes,
-                    }
+                points = getattr(interval, "points", None)
+                if not points:
+                    continue
+
+                feat = QgsFeature(feat_id)
+                pts = [QgsPointXY(x, y) for x, y in points]
+
+                if len(pts) == 1:
+                    geom = QgsGeometry.fromPointXY(pts[0])
+                else:
+                    geom = QgsGeometry.fromPolylineXY(pts)
+
+                feat.setGeometry(geom)
+                index.addFeature(feat)
+                feature_dict[feat_id] = (interval, geom)
+                feat_id += 1
+
+        nearest_ids = index.nearestNeighbor(ref_point, 1)
+        if nearest_ids:
+            interval, geom = feature_dict[nearest_ids[0]]
+            d = geom.distance(QgsGeometry.fromPointXY(ref_point))
+            if d < min_dist:
+                min_dist = d
+                best_match = {
+                    "name": getattr(
+                        interval,
+                        "rock_unit",
+                        getattr(interval, "unit_name", "Unknown"),
+                    ),
+                    "type": "drillhole",
+                    "attrs": interval.attributes,
+                }
+
         return best_match, min_dist
 
     def _extract_intervals_from_dh_data(self, dh: Any) -> list[Any]:
@@ -378,24 +421,3 @@ class InterpretationManager:
             if len(dh) >= MIN_COMPONENTS:
                 return dh[2]
         return getattr(dh, "intervals", [])
-
-    def _calculate_min_dist_to_interval(self, ref_point: QgsPointXY, interval: Any) -> float:
-        """Calculate minimum distance from reference point to interval points.
-
-        Args:
-            ref_point: Reference point for distance calculation.
-            interval: Interval object containing points.
-
-        Returns:
-            Minimum distance to the interval.
-
-        """
-        points = getattr(interval, "points", None)
-        if not points:
-            return float("inf")
-
-        min_d = float("inf")
-        for p_dist, p_elev in points:
-            d = ref_point.distance(QgsPointXY(p_dist, p_elev))
-            min_d = min(d, min_d)
-        return min_d
