@@ -43,15 +43,22 @@ class MockQgsSpatialIndex:
     def __init__(self, features=None):
         """Initialize the mock spatial index."""
         if features:
-            self._fids = [
-                f.id() if hasattr(f, "id") else i for i, f in enumerate(features)
-            ]
+            self._fids = [f.id() if hasattr(f, "id") else i for i, f in enumerate(features)]
         else:
             self._fids = []
 
     def intersects(self, rect):
         """Perform intersection query (returns all IDs in mock for simplicity)."""
         return self._fids
+
+    def addFeature(self, feature):
+        """Add a feature to the spatial index."""
+        if hasattr(feature, "id"):
+            self._fids.append(feature.id())
+
+    def nearestNeighbor(self, point, count=1, maxDistance=0):
+        """Find nearest neighbors (returns all IDs in mock up to count)."""
+        return self._fids[:count]
 
 
 class MockQgsFeatureRequest:

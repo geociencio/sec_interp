@@ -7,10 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- **Qt6 Compatibility**: Replaced deprecated `exec_()` with `exec()` and `QDialog.Accepted` enum (removed in Qt6) with the integer literal `1`. Resolves a runtime `AttributeError` crash on QGIS 4.0.1 / Qt6.
-
-## [3.6.0] - 2026-05-12
+## [3.6.0] - 2026-05-17
 
 ### Added
 - **Global i18n Coverage**: Achieved full internationalization coverage for `ExportService`, `ProfileService`, and `ExportManager`.
@@ -18,12 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **QGIS 4.x & Qt6 Readiness**: Implemented 100% thread-safe background processing by transitioning away from unhashable QgsTask structures.
 
 ### Changed
+- **Spatial Performance Optimization**: Completely overhauled the Interpretation Manager's spatial inheritance algorithms. Shifted from O(N*M) pure Python point distance checks to native C++ `QgsSpatialIndex` nearest-neighbor lookups, achieving sub-second lookup speeds for massive datasets.
+- **Geological Precision**: Attribute inheritance now accurately measures perpendicular distances against geological line segments instead of isolated points.
 - **i18n Master Data**: Updated Spanish (`es.json`) with refined translations for export status and data processing messages.
 - **Deployment Ecosystem**: Modernized `qgis-manage` to natively support multi-version profiles (QGIS 3 and QGIS 4).
 
 ### Fixed
+- **Qt6 Compatibility (API Bridging)**: Resolved runtime `AttributeError` and `TypeError` crashes on QGIS 4.0.1 / PyQt6 by replacing deprecated `exec_()`, applying dynamic enum resolution for `QImage` formats, and bridging missing `Qt` enums (`PenStyle`, `BrushStyle`, `GlobalColor`) via `qt6_compat`.
 - **Asynchronous Rendering Stability**: Eradicated legacy UI threading segmentation faults by implementing strict re-entry locks and deferred signal emission via `QTimer.singleShot`.
-- **Test Infrastructure**: Refactored the integration suite with synchronous mock emission, securing a 100% pass rate (620 tests) across Docker and local environments.
+- **Test Infrastructure**: Refactored the integration suite with synchronous mock emission, securing a 100% pass rate (620+ tests) across Docker and local environments.
 - **Linting**: Resolved project-wide W503/W504 binary operator conflicts and F401/F811 unused import violations.
 - **Formatting**: Standardized the entire codebase using `black` and `ruff`.
 

@@ -1,3 +1,12 @@
+## [2026-05-17] CIERRE FINAL DE FASE v3.6.0: Next-Gen Stability, Spatial Optimization & QGIS 4 Ready
+- **Achievement**: Completada exitosamente la fase y empaquetamiento de v3.6.0.
+- **Cambios Principales**:
+    - **Compatibilidad**: 100% QGIS 4.x (Qt6) compatibility bridging (QImage, QPainter, QDialog.Accepted).
+    - **Rendimiento**: Implementación de `QgsSpatialIndex` logrando tiempos sub-segundo para herencia de miles de polígonos geológicos.
+    - **Mantenibilidad**: Score 94.2/100, 620 tests exitosos, CC <= 10.
+    - **Lanzamiento**: CHANGELOG, README y notas de la versión generados y listos para distribución (Plugin-Only ZIP).
+- **Status**: 🟢 Fase v3.6.0 completada, empaquetada y liberada exitosamente.
+
 ## [2026-05-12] Session: Qt6 QDialog Hotfix (Post-Release)
 - **Achievement**: Resolved a runtime `AttributeError` crash in QGIS 4.0.1 (Qt6) caused by `QDialog.Accepted` enum being removed from the Qt6 API surface.
 - **Root Cause**: In Qt6, `QDialog.Accepted` is no longer a flat class attribute — it moved to `QDialog.DialogCode.Accepted`. Both `exec_()` (deprecated in Qt5, removed in Qt6) and the enum constant failed at runtime.

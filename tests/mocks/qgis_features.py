@@ -82,7 +82,8 @@ class MockQgsFeature(MockQgsBase):
     def __init__(self, fields=None):
         """Initialize the mock feature."""
         super().__init__()
-        self._fields = fields or MockQgsFields()
+        self._id = fields if isinstance(fields, int) else 1
+        self._fields = fields if not isinstance(fields, int) and fields else MockQgsFields()
         self._attributes = [None] * len(self._fields)
         self._geometry = MockQgsGeometry()
         self._valid = True
@@ -143,7 +144,7 @@ class MockQgsFeature(MockQgsBase):
 
     def id(self):
         """Get feature ID."""
-        return 1
+        return self._id
 
     def fields(self):
         """Get feature fields."""

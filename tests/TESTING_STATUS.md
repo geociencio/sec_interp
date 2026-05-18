@@ -115,6 +115,7 @@
 - **tests/integration/test_vector_drivers_integration.py**: 3 tests
 - **tests/benchmarks/test_export_benchmarks.py**: 2 tests
 - **tests/benchmarks/test_geometry_benchmarks.py**: 4 tests
+- **tests/benchmarks/test_spatial_index_benchmark.py**: 1 tests
 - **tests/mcp/test_mcp_tools.py**: 3 tests
 <!-- END_INVENTORY -->
 
