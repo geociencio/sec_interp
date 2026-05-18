@@ -1,22 +1,28 @@
-# Next Steps - Qt6 Hotfix Applied + Spatial Optimization Pending
+# Next Steps - Post Phase v3.6.0 Closure (v3.7.0 Planning)
 
-## Completed in Session: qt6_qdialog_hotfix
-- [x] Fix `AttributeError: QDialog has no attribute 'Accepted'` in QGIS 4.0.1 (Qt6).
-- [x] Replace `exec_()` → `exec()` and `QDialog.Accepted` → `1` across all call sites.
-- [x] Update `MockQWidget` and test mocks for Qt6 API consistency.
+We have successfully closed the `v3.6.0` phase, which established 100% QGIS 4.x compatibility and high-performance spatial indexing via `QgsSpatialIndex`. The release package is verified and deployed. The next phase (v3.7.0) will focus on deep translation audit resolution and advanced 3D visual capabilities.
 
-## Pending - Pre-Release Tasks for v3.6.0
-- [x] Push hotfix commit `0694e80` to `origin/main` (`git push origin main`).
-- [x] Applied Qt6 QImage and QPainter global color fixes and pushed.
-- [x] Review remaining `MISSING_I18N` in `ProfileService` for completeness (No missing strings found in codebase).
-- [ ] Final check of `.qm` translation binaries in a live QGIS 4 environment (manual).
-- [ ] **Release v3.6.0**: Prepare Changelog, metadata, and generate release artifact.
+## 🎯 Preliminary Goals for Phase v3.7.0
 
-## Upcoming Tasks (Goal 2 - Phase v3.6.0)
-- [x] **Benchmark Spatial Performance**: Run current benchmarks in `tests/benchmarks/` to establish baseline for interpretation lookup.
-- [x] **Implement QgsSpatialIndex**: Integrate spatial index in `InterpretationManager` to speed up point-in-polygon lookups.
-- [x] **Verify Gains**: Re-run benchmarks to quantify performance improvement.
+### Goal 1: Technical Translation Audit (i18n Debt Reduction)
+- **Objective**: Reduce the 596 static analysis warnings for `MISSING_I18N`.
+- **Tasks**:
+  - [ ] Audit untranslated strings flagged by `qgis-analyzer`.
+  - [ ] Add `# no-i18n` or exclusion comments to technical string keys (e.g., datetime formats `%Y-%m-%d`, database query strings, schema names, logger patterns) to eliminate static analysis noise.
+  - [ ] Implement a standardized script to verify that no user-facing strings are added without `self.tr()` wrapping.
 
-## How to Resume
-1. Perform the Final Release Workflow for `v3.6.0` using `/release-plugin`.
-2. Close the session using `/close-session`.
+### Goal 2: 3D Interpretation & Symbology Enhancements
+- **Objective**: Extend custom rendering and styling features.
+- **Tasks**:
+  - [ ] Implement a live symbology/legend styling preview under the Settings sidebar.
+  - [ ] Investigate adaptive vertical exaggeration settings for complex structural projections.
+  - [ ] Expand Cartesian vertical projection integration tests for highly deviated drillhole surveys.
+
+## 🛠️ Prioritized Technical Debt
+- **🟡 Moderate**: Resolve false-positive `MISSING_I18N` linting warnings.
+- **🟢 Minor**: Add a strict check in pre-commit hooks to validate `qt6_compat` import hygiene across all GUI pages.
+
+## 🚀 How to Resume
+Start the next development session using the standard workflow:
+1. Run **`@[/start-session]`** to synchronize packages, execute the unit test suite, and audit the repository metrics.
+2. Initialize the next task board.
