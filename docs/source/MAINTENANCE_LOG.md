@@ -1,6 +1,16 @@
 # SecInterp - Maintenance & Release Log
 
 
+## [2026-05-18] CIERRE DE FASE v3.6.0 (NEXT-GEN STABILITY & SPATIAL OPTIMIZATION)
+- **Achievements**: Estabilidad extrema y total compatibilidad con QGIS 4.x/Qt6. Optimización de rendimiento espacial mediante QgsSpatialIndex, logrando tiempos de consulta sub-segundo. Cobertura de traducción del 100% y 572 tests exitosos.
+- **Reference**: [Phase Closure Document](../maintenance/phase_closure_v3.6.0.md)
+- **Metrics**: 572 tests Green, Code Maintainability 94.2/100, Type Hint Params 97.3%, CC <= 10.
+
+## [2026-04-28] CIERRE DE FASE v3.5.0 (OPERATIONAL EXCELLENCE & AGENTIC AUTONOMY)
+- **Achievements**: Modernización del ciclo de desarrollo con el framework de Agente Gen 6, automatización de poda de memoria y métricas de observabilidad. Puerta de calidad estricta (CC <= 10) y 100% de docstrings.
+- **Reference**: [Phase Closure Document](../maintenance/phase_closure_v3.5.0.md)
+- **Metrics**: 620 tests Green, Code Maintainability 94.1/100, Docstring Coverage 100.0%.
+
 ## [2026-03-29] CIERRE DE FASE v3.4.0 (INTEGRATION & TRANSLATION)
 - **Achievements**: Alcanzada cobertura de traducción del 100% en 13 idiomas y 620 tests exitosos en Docker. Pruebas exhaustivas para integración estructural vectorial.
 - **Reference**: [Phase Closure Document](../maintenance/phase_closure_v3.4.0.md)

@@ -6,9 +6,9 @@
 - [/] Verify 100% coverage in all 14 languages (Real strings covered, technical false positives remains) <!-- id: 3 -->
 
 ## Goal 2: Spatial Performance Optimization
-- [ ] Benchmark current iteration in Interpretation Manager <!-- id: 4 -->
-- [ ] Implement `QgsSpatialIndex` lookup <!-- id: 5 -->
-- [ ] Verify optimization gains <!-- id: 6 -->
+- [x] Benchmark current iteration in Interpretation Manager <!-- id: 4 -->
+- [x] Implement `QgsSpatialIndex` lookup <!-- id: 5 -->
+- [x] Verify optimization gains <!-- id: 6 -->
 
 ## Goal 3: Linting Debt Resolution
 - [x] Resolve W503/W504 binary operator conflicts <!-- id: 7 -->
