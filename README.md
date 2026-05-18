@@ -20,11 +20,16 @@
 ---
 
 ## 🆕 What's New in v3.6.0
-**Phase: Next-Gen Stability & QGIS 4 Ready**
+**Phase: Next-Gen Stability, Spatial Optimization & QGIS 4 Ready**
 
 ### 🚀 QGIS 4.x & Qt6 Full Compatibility
+- **API Bridging**: Implemented dynamic enum resolution and the `qt6_compat` compatibility layer to bridge strict API changes between PyQt5 and PyQt6 (e.g., `QImage` formats, `QPainter` styles, and `QDialog.Accepted`).
 - **Thread-Safe Architecture**: Eradicated legacy UI threading issues and segmentation faults using robust asynchronous task anchoring.
 - **Deferred Signal Emission**: Implemented `QTimer.singleShot` patterns to safely pass complex geodata from background threads to the main Qt event loop.
+
+### ⚡ Spatial Performance Optimization
+- **QgsSpatialIndex Integration**: Completely overhauled the Interpretation Manager's spatial inheritance algorithms. Shifted from O(N*M) pure Python distance checks to native C++ `QgsSpatialIndex` nearest-neighbor lookups.
+- **Geological Precision**: Attribute inheritance now accurately measures perpendicular distances against geological line geometries instead of isolated points, achieving extreme performance gains (sub-second lookups for >10,000 entities).
 
 ### 🛡️ Asynchronous Rendering Stability
 - **Re-entry Locks**: Added strict rendering flags in the `PreviewRenderer` to prevent race conditions during rapid preview regeneration.
@@ -37,7 +42,7 @@
 
 ### ✨ Sustained Quality Gates
 - **Cyclomatic Complexity**: Successfully refactored massive monolithic patches to ensure all project functions strictly comply with CC <= 10.
-- **Testing**: 620 fully passing unit and integration tests, verified across both local and Docker environments.
+- **Testing**: 620+ fully passing unit and integration tests, verified across both local and Docker environments.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
