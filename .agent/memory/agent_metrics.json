@@ -3,16 +3,16 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent/memory/memory_policy.md",
-        "last_updated": "2026-04-27"
+        "last_updated": "2026-05-18"
     },
     "summary": {
-        "total_sessions": 16,
-        "tasks_completed": 21,
+        "total_sessions": 17,
+        "tasks_completed": 26,
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
-        "avg_retries_per_session": 1.25,
-        "tests_ok": 571,
-        "quality_score_latest": 41.7
+        "avg_retries_per_session": 1.18,
+        "tests_ok": 572,
+        "quality_score_latest": 40.8
     },
     "retries": {
         "syntax_errors": 0,
@@ -22,28 +22,40 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-04-27",
-        "topic": "agentic_standards_upgrade",
-        "tests_ok": 571,
-        "quality_score": 41.7,
-        "files_modified": 8,
-        "lines_added": 420,
-        "lines_removed": 145,
+        "date": "2026-05-18",
+        "topic": "v3.6.0_release_finalization",
+        "tests_ok": 572,
+        "quality_score": 40.8,
+        "files_modified": 5,
+        "lines_added": 210,
+        "lines_removed": 40,
         "task_completion_rate": 1.0,
         "retries": 0,
         "stop_conditions_triggered": 0,
         "tasks": [
-            "Fix phantom skill (domain-logic → geological-logic) in AGENTS.md",
-            "Add stop_conditions to build-feature.md and close-session.md",
-            "Restructure and prune AGENT_LESSONS.md (300 → 220 lines, YAML fixed)",
-            "Create memory_policy.md (Gen 5 v1.0)",
-            "Create core/AGENTS.md (nested layer constraints)",
-            "Create gui/AGENTS.md (nested layer constraints)",
-            "Enrich agent_metrics.json to schema v2.0 (TCR, retries, tokens)"
+            "Verify packaged Complement ZIP structure and size (dist/sec_interp.3.6.0.zip)",
+            "Close development phase v3.6.0 with formal document docs/maintenance/phase_closure_v3.6.0.md",
+            "Update master MAINTENANCE_LOG.md with v3.5.0 and v3.6.0 metrics",
+            "Sync skills and workflows metadata in AGENTS.md",
+            "Plan goals and Technical Debt for phase v3.7.0 in next_steps.md"
         ],
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-05-18",
+            "session": "v3.6.0_release_finalization",
+            "tasks": [
+                "Verify packaged Complement ZIP structure and size (dist/sec_interp.3.6.0.zip)",
+                "Close development phase v3.6.0 with formal document docs/maintenance/phase_closure_v3.6.0.md",
+                "Update master MAINTENANCE_LOG.md with v3.5.0 and v3.6.0 metrics",
+                "Sync skills and workflows metadata in AGENTS.md",
+                "Plan goals and Technical Debt for phase v3.7.0 in next_steps.md"
+            ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
+            "status": "SUCCESS"
+        },
         {
             "date": "2026-04-27",
             "session": "agentic_standards_upgrade",

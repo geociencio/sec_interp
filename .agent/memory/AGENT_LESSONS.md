@@ -15,6 +15,24 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-05-18'
+    category: TOOLING
+    topic: QGIS Ignore Verification
+    lesson: 'Relying on .qgisignore in the packaging script ensures that all internal agent files (.agent/, scripts/, tests/) are completely excluded, which results in a highly compact zip (reduced by over 50%).'
+    action: 'Always verify package exclusions using unzip -l on the generated zip before distribution.'
+
+  - date: '2026-05-18'
+    category: ARCHITECTURE
+    topic: Qt6 QDialog Enum Code
+    lesson: 'Using explicit integer literals (1 for Accepted, 0 for Rejected) for QDialog execution status results is the most robust and backward-compatible bridge between PyQt5 and PyQt6, avoiding Qt6-specific enum hierarchy errors.'
+    action: 'Adopt integer literals (1 and 0) for QDialog execution status checks across all GUI modules.'
+
+  - date: '2026-05-18'
+    category: i18n
+    topic: Translation Analyzer False Positives
+    lesson: 'Many missing translation warnings from static analyzers represent technical strings (formats, logs, queries) rather than user-facing text. Using explicit # no-i18n tags is crucial to prevent static analysis noise.'
+    action: 'Systematically annotate technical string literals with exclusion tags to maintain clean translation reports.'
+
   - date: '2026-04-29'
     category: TOOLING
     topic: Formatter vs Linter Conflict (W503)
