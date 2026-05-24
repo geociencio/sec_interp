@@ -24,16 +24,16 @@ class TestInterpretationManager(BaseTestCase):
 
     def test_load_interpretations_valid(self):
         """Test loading valid interpretations from project."""
-        json_data = (
-            '[{"id": "1", "name": "Unit A", "type": "lithology", "vertices_2d": [[0,0], [10,10]]}]'
-        )
+        json_data = '[{"id": "1", "name": "Unit A", "type": "lithology", "vertices_2d": [[0,0], [10,10]]}]'
         self.dialog.project.readEntry.return_value = (json_data, True)
 
         self.manager.load_interpretations()
 
         self.assertEqual(len(self.manager.interpretations), 1)
         self.assertEqual(self.manager.interpretations[0].name, "Unit A")
-        self.assertEqual(self.manager.interpretations[0].vertices_2d, [(0, 0), (10, 10)])
+        self.assertEqual(
+            self.manager.interpretations[0].vertices_2d, [(0, 0), (10, 10)]
+        )
 
     def test_save_interpretations(self):
         """Test saving interpretations to project."""
@@ -64,7 +64,9 @@ class TestInterpretationManager(BaseTestCase):
         mock_segment.attributes = {"lithology": "LST"}
 
         self.dialog.preview_manager.cached_data = {"geol": [mock_segment]}
-        self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = "#FF0000"
+        self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = (
+            "#FF0000"
+        )
 
         config = {"inherit_geology": True, "inherit_drillholes": False}
 

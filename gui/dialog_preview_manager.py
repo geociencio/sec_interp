@@ -85,7 +85,9 @@ class PreviewManager(TranslatableMixin):
         self.disconnect_signals()
 
         self.debounce_timer.timeout.connect(self._update_lod_for_zoom)
-        self.dialog.preview_widget.canvas.extentsChanged.connect(self._on_extents_changed)
+        self.dialog.preview_widget.canvas.extentsChanged.connect(
+            self._on_extents_changed
+        )
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals for the preview manager."""
@@ -93,7 +95,9 @@ class PreviewManager(TranslatableMixin):
             self.debounce_timer.timeout.disconnect()
 
         with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-            self.dialog.preview_widget.canvas.extentsChanged.disconnect(self._on_extents_changed)
+            self.dialog.preview_widget.canvas.extentsChanged.disconnect(
+                self._on_extents_changed
+            )
 
     def cleanup(self) -> None:
         """Clean up resources and stop background tasks."""
@@ -167,7 +171,11 @@ class PreviewManager(TranslatableMixin):
         """Safely retrieve transform context from canvas."""
         if not self.dialog.plugin_instance:
             return None
-        return self.dialog.plugin_instance.iface.mapCanvas().mapSettings().transformContext()
+        return (
+            self.dialog.plugin_instance.iface.mapCanvas()
+            .mapSettings()
+            .transformContext()
+        )
 
     def _update_cache_and_metrics(self, result: PreviewResult) -> None:
         """Update local cache and cumulative metrics."""
@@ -184,8 +192,12 @@ class PreviewManager(TranslatableMixin):
 
     def _trigger_async_updates(self, params: PreviewParams) -> None:
         """Launch background tasks via orchestrator."""
-        self.orchestrator.start_geology_task(params, self.preview_service.geology_service)
-        self.orchestrator.start_drillhole_task(params, self.preview_service.drillhole_orchestrator)
+        self.orchestrator.start_geology_task(
+            params, self.preview_service.geology_service
+        )
+        self.orchestrator.start_drillhole_task(
+            params, self.preview_service.drillhole_orchestrator
+        )
 
     def _is_data_unchanged(self, params: PreviewParams) -> bool:
         """Check if parameters haven't changed since last generation."""
@@ -343,7 +355,9 @@ class PreviewManager(TranslatableMixin):
             canvas_width=canvas.width(), ratio=ratio, auto_lod=True
         )
 
-        logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
+        logger.debug(
+            f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}"
+        )
 
         if not self.dialog.plugin_instance:
             return
@@ -416,7 +430,9 @@ class PreviewManager(TranslatableMixin):
         """Handle error during parallel geology generation."""
         logger.error(f"Geology Task Error: {error_msg}")
         # Map string error to ProcessingError for centralized handling
-        error = ProcessingError(self.tr("Geology processing failed: {}").format(error_msg))
+        error = ProcessingError(
+            self.tr("Geology processing failed: {}").format(error_msg)
+        )
         self.dialog.handle_error(error, "Geology Error")
 
     def _on_drillhole_progress(self, progress: float) -> None:
@@ -428,7 +444,9 @@ class PreviewManager(TranslatableMixin):
     def _on_drillhole_error(self, error_msg: str) -> None:
         """Handle error during parallel drillhole generation."""
         logger.error(f"Drillhole Task Error: {error_msg}")
-        error = ProcessingError(self.tr("Drillhole processing failed: {}").format(error_msg))
+        error = ProcessingError(
+            self.tr("Drillhole processing failed: {}").format(error_msg)
+        )
         self.dialog.handle_error(error, "Drillhole Error")
 
     def _on_drillhole_finished(self, result: Any) -> None:
@@ -448,7 +466,9 @@ class PreviewManager(TranslatableMixin):
                 self.cached_data["drillhole"] = drill_part
                 logger.info(f"Async Drillholes finished: {len(drill_part)} holes")
             else:
-                logger.warning(f"Unexpected result format from drillhole task: {type(result)}")
+                logger.warning(
+                    f"Unexpected result format from drillhole task: {type(result)}"
+                )
                 return
 
             self.update_from_checkboxes()
@@ -474,7 +494,9 @@ class PreviewManager(TranslatableMixin):
         try:
             if layer and layer.isValid():
                 auth_id = layer.crs().authid()
-                self.dialog.preview_widget.lbl_crs.setText(self.tr("CRS: {}").format(auth_id))
+                self.dialog.preview_widget.lbl_crs.setText(
+                    self.tr("CRS: {}").format(auth_id)
+                )
             else:
                 self.dialog.preview_widget.lbl_crs.setText(self.tr("CRS: None"))
         except (AttributeError, TypeError, ValueError):

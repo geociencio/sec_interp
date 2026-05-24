@@ -30,7 +30,9 @@ class GeologyPage(BasePage):
             parent: Optional parent widget.
 
         """
-        super().__init__(QCoreApplication.translate("GeologyPage", "Geological Outcrops"), parent)
+        super().__init__(
+            QCoreApplication.translate("GeologyPage", "Geological Outcrops"), parent
+        )
 
     def _setup_ui(self) -> None:
         super()._setup_ui()
@@ -47,12 +49,16 @@ class GeologyPage(BasePage):
         try:
             from qgis.core import Qgis  # noqa: PLC0415
 
-            self.layer_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.PolygonLayer))
+            self.layer_combo.setFilters(
+                Qgis.LayerFilters(Qgis.LayerFilter.PolygonLayer)
+            )
         except (ImportError, AttributeError, TypeError):
             self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
 
         self.layer_combo.setAllowEmptyLayer(True)
-        self.layer_combo.setToolTip(self.tr("Select the polygon layer with geological outcrops"))
+        self.layer_combo.setToolTip(
+            self.tr("Select the polygon layer with geological outcrops")
+        )
         self.layer_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.layer_combo, 0, 1)
 

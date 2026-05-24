@@ -43,7 +43,9 @@ class MockQgsSpatialIndex:
     def __init__(self, features=None):
         """Initialize the mock spatial index."""
         if features:
-            self._fids = [f.id() if hasattr(f, "id") else i for i, f in enumerate(features)]
+            self._fids = [
+                f.id() if hasattr(f, "id") else i for i, f in enumerate(features)
+            ]
         else:
             self._fids = []
 

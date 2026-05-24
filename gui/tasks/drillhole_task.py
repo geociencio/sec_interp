@@ -95,7 +95,9 @@ class DrillholeGenerationTask(QgsTask):
                 error_msg = str(self.exception)
                 logger.error(f"Drillhole Task Exception: {error_msg}")
                 QgsMessageLog.logMessage(
-                    f"Drillhole Task Failed: {error_msg}", "SecInterp", Qgis.Critical
+                    f"Drillhole Task Failed: {error_msg}",  # no-i18n: developer log tag
+                    "SecInterp",
+                    Qgis.Critical,
                 )
                 self.error_occurred.emit(error_msg)
         except Exception as e:

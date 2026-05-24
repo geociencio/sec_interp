@@ -49,7 +49,9 @@ class ToolManager:
         if not self.measure_tool:
             self.measure_tool = ProfileMeasureTool(self.dialog.preview_widget.canvas)
         if not self.interpretation_tool:
-            self.interpretation_tool = ProfileInterpretationTool(self.dialog.preview_widget.canvas)
+            self.interpretation_tool = ProfileInterpretationTool(
+                self.dialog.preview_widget.canvas
+            )
 
         self.connect_signals()
         self.dialog.preview_widget.canvas.setMapTool(self.pan_tool)
@@ -60,10 +62,14 @@ class ToolManager:
         self.disconnect_signals()
 
         if self.interpretation_tool:
-            self.interpretation_tool.polygonFinished.connect(self.dialog.on_interpretation_finished)
+            self.interpretation_tool.polygonFinished.connect(
+                self.dialog.on_interpretation_finished
+            )
 
         if self.measure_tool:
-            self.measure_tool.measurementChanged.connect(self.dialog.update_measurement_display)
+            self.measure_tool.measurementChanged.connect(
+                self.dialog.update_measurement_display
+            )
             self.measure_tool.measurementFinished.connect(
                 lambda: self.dialog.preview_widget.btn_measure.setChecked(False)
             )

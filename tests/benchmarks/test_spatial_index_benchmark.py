@@ -11,6 +11,7 @@ from sec_interp.gui.dialog_interpretation_manager import InterpretationManager
 
 class MockDialog:
     """Mock main dialog for testing."""
+
     def __init__(self):
         self.preview_manager = MagicMock()
         self.layer_factory = MagicMock()
@@ -20,6 +21,7 @@ class MockDialog:
 
 class MockSegment:
     """Mock geological segment."""
+
     def __init__(self, unit_name, points):
         self.unit_name = unit_name
         self.points = points
@@ -28,6 +30,7 @@ class MockSegment:
 
 class MockInterval:
     """Mock drillhole interval."""
+
     def __init__(self, rock_unit, points):
         self.rock_unit = rock_unit
         self.points = points
@@ -58,12 +61,12 @@ class TestSpatialIndexBenchmarks(BaseIntegrationTest, BenchmarkMixin):
 
         self.dialog.preview_manager.cached_data = {
             "geol": self.geol_data,
-            "drillhole": self.dh_data
+            "drillhole": self.dh_data,
         }
 
         self.dialog.page_interpretation.get_data.return_value = {
             "inherit_geology": True,
-            "inherit_drillholes": True
+            "inherit_drillholes": True,
         }
 
     @benchmark
@@ -71,7 +74,12 @@ class TestSpatialIndexBenchmarks(BaseIntegrationTest, BenchmarkMixin):
         """Benchmark applying attribute inheritance using the baseline O(N*M) search."""
         # Create a mock interpretation polygon
         interp = MagicMock()
-        interp.vertices_2d = [(2500.0, 5.0), (2510.0, 5.0), (2510.0, -5.0), (2500.0, -5.0)]
+        interp.vertices_2d = [
+            (2500.0, 5.0),
+            (2510.0, 5.0),
+            (2510.0, -5.0),
+            (2500.0, -5.0),
+        ]
         interp.attributes = {}
 
         config = self.dialog.page_interpretation.get_data()

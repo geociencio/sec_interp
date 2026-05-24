@@ -87,7 +87,9 @@ class GeologyGenerationTask(QgsTask):
                 error_msg = str(self.exception)
                 logger.error(f"Geology Task Exception: {error_msg}")
                 QgsMessageLog.logMessage(
-                    f"Geology Task Failed: {error_msg}", "SecInterp", Qgis.Critical
+                    f"Geology Task Failed: {error_msg}",  # no-i18n: developer log tag
+                    "SecInterp",
+                    Qgis.Critical,
                 )
                 self.error_occurred.emit(error_msg)
         except Exception as e:

@@ -29,7 +29,9 @@ class MockQgsGeometry(MockQgsBase):
                     # Check for z method OR _z attribute
                     if hasattr(first_pt, "z") or hasattr(first_pt, "_z"):
                         self._wkb_type = 1003  # PolygonZ
-            elif "MockQgsLineString" in str(type(arg)) or "LineString" in str(type(arg)):
+            elif "MockQgsLineString" in str(type(arg)) or "LineString" in str(
+                type(arg)
+            ):
                 self._polyline = arg._points if hasattr(arg, "_points") else []
                 self._wkb_type = 2  # LineString
                 if self._polyline:
@@ -252,7 +254,9 @@ class MockQgsGeometry(MockQgsBase):
             if all(pt.y() == 0 for pt in verts):
                 try:
                     other_pt = other.asPoint()
-                    return MockQgsGeometry.fromPointXY(MockQgsPointXY(other_pt.x(), 0.0))
+                    return MockQgsGeometry.fromPointXY(
+                        MockQgsPointXY(other_pt.x(), 0.0)
+                    )
                 except AttributeError:
                     pass
         return other

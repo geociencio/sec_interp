@@ -83,7 +83,9 @@ class MockQgsFeature(MockQgsBase):
         """Initialize the mock feature."""
         super().__init__()
         self._id = fields if isinstance(fields, int) else 1
-        self._fields = fields if not isinstance(fields, int) and fields else MockQgsFields()
+        self._fields = (
+            fields if not isinstance(fields, int) and fields else MockQgsFields()
+        )
         self._attributes = [None] * len(self._fields)
         self._geometry = MockQgsGeometry()
         self._valid = True

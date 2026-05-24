@@ -1,5 +1,17 @@
-# Ignore non-base code and development artifacts
-# Focus: core/, exporters/, gui/
+# Focus: gui/ and sec_interp_plugin.py
+# Exclude technical core logic (which has no UI) and exporters
+core/
+exporters/
+
+# Exclude technical UI/Graphics managers, factories and orchestrators
+gui/preview_layer_factory.py
+gui/preview_legend_renderer.py
+gui/preview_axes_manager.py
+gui/preview_task_orchestrator.py
+gui/preview_renderer.py
+gui/ui_status_manager.py
+gui/dialog_tool_manager.py
+gui/dialog_state_manager.py
 
 # Ignore tests directory to avoid score degradation due to missing type hints
 tests/

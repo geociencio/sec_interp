@@ -53,7 +53,9 @@ def _check_path_security(path: str) -> tuple[bool, str, Path | None]:
         return False, f"Invalid path: {e!s}", None
 
 
-def _check_base_restriction(path_obj: Path, base_dir: Path) -> tuple[bool, str, Path | None]:
+def _check_base_restriction(
+    path_obj: Path, base_dir: Path
+) -> tuple[bool, str, Path | None]:
     """Ensure path is within a base directory."""
     try:
         resolved_path = path_obj.resolve(strict=False)
@@ -66,7 +68,9 @@ def _check_base_restriction(path_obj: Path, base_dir: Path) -> tuple[bool, str, 
         return False, f"Cannot validate base directory: {e!s}", None
 
 
-def _validate_path_state(path: Path, must_exist: bool, create_if_missing: bool) -> tuple[bool, str]:
+def _validate_path_state(
+    path: Path, must_exist: bool, create_if_missing: bool
+) -> tuple[bool, str]:
     """Check existence, type, and writability of a path."""
     if not path.exists():
         if must_exist:

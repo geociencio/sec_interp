@@ -185,9 +185,7 @@ class ProfileController(TranslatableMixin):
         cache_key = self.data_cache.get_cache_key(inputs)
         self.data_cache.set("main", cache_key, data)
 
-    def generate_profile_data(
-        self, params: PreviewParams
-    ) -> tuple[
+    def generate_profile_data(self, params: PreviewParams) -> tuple[
         list[tuple[float, float]],
         list[Any] | None,
         list[Any] | None,
@@ -265,7 +263,9 @@ class ProfileController(TranslatableMixin):
             raster_lyr = LayerResolver.resolve(params.raster_layer)
 
             if not line_lyr or not raster_lyr:
-                raise ProcessingError(self.tr("Required layers for topography are missing."))
+                raise ProcessingError(
+                    self.tr("Required layers for topography are missing.")
+                )
 
             if not self.profile_service:
                 raise ProcessingError(self.tr("Topography service failed to load."))
@@ -274,7 +274,9 @@ class ProfileController(TranslatableMixin):
                 line_lyr, raster_lyr, params.band_num
             )
             if not profile_data:
-                raise ProcessingError(self.tr("No topographic profile data was generated."))
+                raise ProcessingError(
+                    self.tr("No topographic profile data was generated.")
+                )
         self.data_cache.set("topo", topo_key, profile_data, cache_meta)
         messages.append(
             self.tr("✓ Data processed successfully!\n\nTopography: {0} points").format(
@@ -411,11 +413,17 @@ class ProfileController(TranslatableMixin):
                         band_number=params.band_num,
                     )
                     if struct_data:
-                        self.data_cache.set("struct", struct_key, struct_data, cache_meta)
-                        messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
+                        self.data_cache.set(
+                            "struct", struct_key, struct_data, cache_meta
+                        )
+                        messages.append(
+                            self.tr("Structures: {0} points").format(len(struct_data))
+                        )
                     else:
                         messages.append(
-                            self.tr("Structures: None in {0}m buffer").format(params.buffer_dist)
+                            self.tr("Structures: None in {0}m buffer").format(
+                                params.buffer_dist
+                            )
                         )
         return struct_data  # type: ignore[no-any-return]
 

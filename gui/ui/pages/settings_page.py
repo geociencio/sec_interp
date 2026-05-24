@@ -38,7 +38,9 @@ class SettingsPage(BasePage):
         # Ensure we have all necessary widgets
         self.tab_widget = None
         self.chk_enable_3d = None
-        super().__init__(QCoreApplication.translate("SettingsPage", "Plugin Settings"), parent)
+        super().__init__(
+            QCoreApplication.translate("SettingsPage", "Plugin Settings"), parent
+        )
 
     def _setup_ui(self) -> None:
         """Set up the UI for settings using Tabs."""
@@ -110,7 +112,9 @@ class SettingsPage(BasePage):
         self.txt_naming = QLineEdit()
         self.txt_naming.setPlaceholderText("{filename}_{profile}")
         self.txt_naming.setToolTip(
-            self.tr("Pattern for exported files. Use {filename} and {profile} as placeholders.")
+            self.tr(
+                "Pattern for exported files. Use {filename} and {profile} as placeholders."
+            )
         )
         naming_layout.addWidget(self.txt_naming)
         layout.addLayout(naming_layout)
@@ -144,7 +148,9 @@ class SettingsPage(BasePage):
         self.chk_3d_traces = QCheckBox(self.tr("Export 3D Traces"))
         self.chk_3d_intervals = QCheckBox(self.tr("Export 3D Intervals"))
         self.chk_3d_original = QCheckBox(self.tr("Use Original Coordinates (Real 3D)"))
-        self.chk_3d_projected = QCheckBox(self.tr("Use Projected Coordinates (Section Plane)"))
+        self.chk_3d_projected = QCheckBox(
+            self.tr("Use Projected Coordinates (Section Plane)")
+        )
 
         layout.addWidget(self.chk_3d_traces)
         layout.addWidget(self.chk_3d_intervals)
@@ -161,7 +167,9 @@ class SettingsPage(BasePage):
             metadata = read_plugin_metadata()
 
             layout.addWidget(QLabel(self.tr("<b>Plugin Information</b>")))
-            layout.addWidget(QLabel(self.tr(f"{metadata['name']} v{metadata['version']}")))
+            layout.addWidget(
+                QLabel(self.tr(f"{metadata['name']} v{metadata['version']}"))
+            )
             layout.addWidget(QLabel(self.tr(f"Developed by {metadata['author']}")))
             layout.addWidget(QLabel(self.tr(f"Contact: {metadata['email']}")))
 
@@ -190,8 +198,12 @@ class SettingsPage(BasePage):
 
         # Default (Export Selection)
         if hasattr(self, "chk_exp_topo"):
-            self.chk_exp_topo.setChecked(self.settings.value("SecInterp/exp_topo", True, type=bool))
-            self.chk_exp_geol.setChecked(self.settings.value("SecInterp/exp_geol", True, type=bool))
+            self.chk_exp_topo.setChecked(
+                self.settings.value("SecInterp/exp_topo", True, type=bool)
+            )
+            self.chk_exp_geol.setChecked(
+                self.settings.value("SecInterp/exp_geol", True, type=bool)
+            )
             self.chk_exp_struct.setChecked(
                 self.settings.value("SecInterp/exp_struct", True, type=bool)
             )
@@ -203,14 +215,18 @@ class SettingsPage(BasePage):
             )
 
         if hasattr(self, "combo_format"):
-            default_fmt = self.settings.value("SecInterp/export_format", "Shapefile", type=str)
+            default_fmt = self.settings.value(
+                "SecInterp/export_format", "Shapefile", type=str
+            )
             index = self.combo_format.findText(default_fmt)
             if index >= 0:
                 self.combo_format.setCurrentIndex(index)
 
         if hasattr(self, "txt_naming"):
             self.txt_naming.setText(
-                self.settings.value("SecInterp/export_naming", "{filename}_{profile}", type=str)
+                self.settings.value(
+                    "SecInterp/export_naming", "{filename}_{profile}", type=str
+                )
             )
 
         # Drillhole 3D
@@ -280,9 +296,15 @@ class SettingsPage(BasePage):
         # Drillhole 3D
         if hasattr(self, "chk_3d_traces"):
             self.config_service.set("drill_3d_traces", self.chk_3d_traces.isChecked())
-            self.config_service.set("drill_3d_intervals", self.chk_3d_intervals.isChecked())
-            self.config_service.set("drill_3d_original", self.chk_3d_original.isChecked())
-            self.config_service.set("drill_3d_projected", self.chk_3d_projected.isChecked())
+            self.config_service.set(
+                "drill_3d_intervals", self.chk_3d_intervals.isChecked()
+            )
+            self.config_service.set(
+                "drill_3d_original", self.chk_3d_original.isChecked()
+            )
+            self.config_service.set(
+                "drill_3d_projected", self.chk_3d_projected.isChecked()
+            )
 
     def get_data(self) -> dict[str, Any]:
         """Get the current settings.
@@ -291,7 +313,11 @@ class SettingsPage(BasePage):
             dict: Current settings.
 
         """
-        data = {"enable_3d": (self.chk_enable_3d.isChecked() if self.chk_enable_3d else False)}
+        data = {
+            "enable_3d": (
+                self.chk_enable_3d.isChecked() if self.chk_enable_3d else False
+            )
+        }
         data.update(self._get_export_data())
         data.update(self._get_3d_data())
         return data
@@ -299,22 +325,36 @@ class SettingsPage(BasePage):
     def _get_export_data(self) -> dict[str, Any]:
         """Get the export selection settings."""
         return {
-            "exp_topo": (self.chk_exp_topo.isChecked() if hasattr(self, "chk_exp_topo") else True),
-            "exp_geol": (self.chk_exp_geol.isChecked() if hasattr(self, "chk_exp_geol") else True),
+            "exp_topo": (
+                self.chk_exp_topo.isChecked() if hasattr(self, "chk_exp_topo") else True
+            ),
+            "exp_geol": (
+                self.chk_exp_geol.isChecked() if hasattr(self, "chk_exp_geol") else True
+            ),
             "exp_struct": (
-                self.chk_exp_struct.isChecked() if hasattr(self, "chk_exp_struct") else True
+                self.chk_exp_struct.isChecked()
+                if hasattr(self, "chk_exp_struct")
+                else True
             ),
             "exp_drill": (
-                self.chk_exp_drill.isChecked() if hasattr(self, "chk_exp_drill") else True
+                self.chk_exp_drill.isChecked()
+                if hasattr(self, "chk_exp_drill")
+                else True
             ),
             "exp_interp": (
-                self.chk_exp_interp.isChecked() if hasattr(self, "chk_exp_interp") else True
+                self.chk_exp_interp.isChecked()
+                if hasattr(self, "chk_exp_interp")
+                else True
             ),
             "export_format": (
-                self.combo_format.currentText() if hasattr(self, "combo_format") else "Shapefile"
+                self.combo_format.currentText()
+                if hasattr(self, "combo_format")
+                else "Shapefile"
             ),
             "export_naming": (
-                self.txt_naming.text() if hasattr(self, "txt_naming") else "{filename}_{profile}"
+                self.txt_naming.text()
+                if hasattr(self, "txt_naming")
+                else "{filename}_{profile}"
             ),
         }
 
@@ -322,16 +362,24 @@ class SettingsPage(BasePage):
         """Get the 3D specific settings."""
         return {
             "drill_3d_traces": (
-                self.chk_3d_traces.isChecked() if hasattr(self, "chk_3d_traces") else True
+                self.chk_3d_traces.isChecked()
+                if hasattr(self, "chk_3d_traces")
+                else True
             ),
             "drill_3d_intervals": (
-                self.chk_3d_intervals.isChecked() if hasattr(self, "chk_3d_intervals") else True
+                self.chk_3d_intervals.isChecked()
+                if hasattr(self, "chk_3d_intervals")
+                else True
             ),
             "drill_3d_original": (
-                self.chk_3d_original.isChecked() if hasattr(self, "chk_3d_original") else True
+                self.chk_3d_original.isChecked()
+                if hasattr(self, "chk_3d_original")
+                else True
             ),
             "drill_3d_projected": (
-                self.chk_3d_projected.isChecked() if hasattr(self, "chk_3d_projected") else False
+                self.chk_3d_projected.isChecked()
+                if hasattr(self, "chk_3d_projected")
+                else False
             ),
         }
 
@@ -396,7 +444,9 @@ class SettingsPage(BasePage):
         """Disconnect format and naming settings."""
         if hasattr(self, "combo_format"):
             with contextlib.suppress(TypeError, RuntimeError):
-                self.combo_format.currentIndexChanged.disconnect(self._on_settings_changed)
+                self.combo_format.currentIndexChanged.disconnect(
+                    self._on_settings_changed
+                )
 
         if hasattr(self, "txt_naming"):
             with contextlib.suppress(TypeError, RuntimeError):

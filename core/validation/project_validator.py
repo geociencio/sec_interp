@@ -139,7 +139,11 @@ class ProjectValidator(TranslatableMixin):
     @classmethod
     def is_structure_complete(cls, params: ValidationParams) -> bool:
         """Check if structural configuration is complete."""
-        if not params.struct_layer or not params.struct_dip_field or not params.struct_strike_field:
+        if (
+            not params.struct_layer
+            or not params.struct_dip_field
+            or not params.struct_strike_field
+        ):
             return False
 
         from .project_validators import StructureValidator

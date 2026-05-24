@@ -123,7 +123,9 @@ class PreviewAxesManager:
         return layer
 
     @classmethod
-    def create_axes_labels_layer(cls, extent, vert_exag: float = 1.0) -> QgsVectorLayer | None:
+    def create_axes_labels_layer(
+        cls, extent, vert_exag: float = 1.0
+    ) -> QgsVectorLayer | None:
         """Create a point layer for axes labels."""
         if not extent:
             return None

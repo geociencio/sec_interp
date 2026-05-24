@@ -39,7 +39,9 @@ class DrillholeTrace3DExporter(BaseExporter):
         """Get supported extensions."""
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
+    def export(
+        self, output_path: Any, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export 3D drillhole traces to a Shapefile.
 
         Args:
@@ -116,9 +118,14 @@ class DrillholeTrace3DExporter(BaseExporter):
             )
         return None
 
-    def _get_trace_points(self, spatial_data: Any, use_projected: bool) -> list[QgsPoint]:
+    def _get_trace_points(
+        self, spatial_data: Any, use_projected: bool
+    ) -> list[QgsPoint]:
         """Convert spatial data to QgsPoint list based on projection."""
-        if isinstance(spatial_data, list | tuple) and len(spatial_data) == LEGACY_DATA_LENGTH:
+        if (
+            isinstance(spatial_data, list | tuple)
+            and len(spatial_data) == LEGACY_DATA_LENGTH
+        ):
             # Legacy/Integration Test format
             _, _, traces_3d, traces_3d_proj, _ = spatial_data
             points_source = traces_3d_proj if use_projected else traces_3d
@@ -132,7 +139,9 @@ class DrillholeTrace3DExporter(BaseExporter):
                 if p.x_proj is not None
             ]
         return [
-            QgsPoint(p.x_3d or 0.0, p.y_3d or 0.0, p.z) for p in spatial_data if p.x_3d is not None
+            QgsPoint(p.x_3d or 0.0, p.y_3d or 0.0, p.z)
+            for p in spatial_data
+            if p.x_3d is not None
         ]
 
     def _prepare_fields(self) -> QgsFields:
@@ -149,7 +158,9 @@ class DrillholeInterval3DExporter(BaseExporter):
         """Get supported extensions."""
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
+    def export(
+        self, output_path: Any, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export 3D drillhole intervals to a Shapefile.
 
         Args:
@@ -216,7 +227,9 @@ class DrillholeInterval3DExporter(BaseExporter):
         use_projected: bool,
     ) -> None:
         """Write a single segment to the writer."""
-        points_source = segment.points_3d_projected if use_projected else segment.points_3d
+        points_source = (
+            segment.points_3d_projected if use_projected else segment.points_3d
+        )
         if not points_source or len(points_source) < MIN_POINTS_FOR_INTERVAL:
             return
 

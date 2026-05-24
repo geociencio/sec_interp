@@ -36,7 +36,9 @@ class BaseExporter(ABC):
         self.settings = settings
 
     @abstractmethod
-    def export(self, output_path: Path, data: Any, layer_name: str | None = None) -> bool:
+    def export(
+        self, output_path: Path, data: Any, layer_name: str | None = None
+    ) -> bool:
         """Export data to file.
 
         This method must be implemented by all concrete exporters.

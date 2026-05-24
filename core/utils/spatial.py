@@ -34,7 +34,11 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
     if line_geom.wkbType() == QgsWkbTypes.Point:
         return 0  # Points have no azimuth
 
-    line = line_geom.asMultiPolyline()[0] if line_geom.isMultipart() else line_geom.asPolyline()
+    line = (
+        line_geom.asMultiPolyline()[0]
+        if line_geom.isMultipart()
+        else line_geom.asPolyline()
+    )
 
     MIN_REQUIRED_POINTS = 2
     if len(line) < MIN_REQUIRED_POINTS:

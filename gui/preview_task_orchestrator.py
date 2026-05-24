@@ -79,7 +79,7 @@ class PreviewTaskOrchestrator:
         )
 
         self.geology_task = GeologyGenerationTask(
-            "Geology Preview (Async)",
+            "Geology Preview (Async)",  # no-i18n: QgsTask identifier for task manager
             task_input,
             service,
             params,
@@ -140,7 +140,7 @@ class PreviewTaskOrchestrator:
         )
 
         self.drillhole_task = DrillholeGenerationTask(
-            "Drillhole Preview (Async)",
+            "Drillhole Preview (Async)",  # no-i18n: QgsTask identifier for task manager
             task_input,
             service,
             params,

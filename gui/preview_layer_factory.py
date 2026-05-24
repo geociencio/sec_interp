@@ -189,7 +189,12 @@ class PreviewLayerFactory:
 
         render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
 
-        layer, provider = self.create_memory_layer("Polygon", "Topography Fill")
+        from qgis.PyQt.QtCore import QCoreApplication
+
+        layer, provider = self.create_memory_layer(
+            "Polygon",
+            QCoreApplication.translate("PreviewLayerFactory", "Topography Fill"),
+        )
         if not layer:
             return None
 
@@ -317,8 +322,12 @@ class PreviewLayerFactory:
             logger.warning("No drillhole data provided for trace layer")
             return None
 
+        from qgis.PyQt.QtCore import QCoreApplication
+
         layer, provider = self.create_memory_layer(
-            "LineString", "Drillhole Traces", "field=hole_id:string"
+            "LineString",
+            QCoreApplication.translate("PreviewLayerFactory", "Drillhole Traces"),
+            "field=hole_id:string",
         )
         if not layer:
             return None
@@ -376,8 +385,12 @@ class PreviewLayerFactory:
         if not all_segments:
             return None
 
+        from qgis.PyQt.QtCore import QCoreApplication
+
         layer, provider = self.create_memory_layer(
-            "LineString", "Drillhole Intervals", "field=unit:string"
+            "LineString",
+            QCoreApplication.translate("PreviewLayerFactory", "Drillhole Intervals"),
+            "field=unit:string",
         )
         if not layer:
             return None

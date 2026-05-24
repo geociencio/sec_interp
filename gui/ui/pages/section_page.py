@@ -23,7 +23,9 @@ class SectionPage(BasePage):
             parent: Optional parent widget.
 
         """
-        super().__init__(QCoreApplication.translate("SectionPage", "Cross Section Line"), parent)
+        super().__init__(
+            QCoreApplication.translate("SectionPage", "Cross Section Line"), parent
+        )
 
     def _setup_ui(self) -> None:
         super()._setup_ui()
@@ -45,7 +47,9 @@ class SectionPage(BasePage):
             self.line_combo.setFilters(QgsMapLayerProxyModel.LineLayer)
 
         self.line_combo.setAllowEmptyLayer(True)
-        self.line_combo.setToolTip(self.tr("Select the line layer defining the cross-section"))
+        self.line_combo.setToolTip(
+            self.tr("Select the line layer defining the cross-section")
+        )
         self.line_combo.setCurrentIndex(0)
         self.group_layout.addWidget(self.line_combo, 0, 1)
 

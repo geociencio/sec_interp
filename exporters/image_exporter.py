@@ -38,7 +38,9 @@ class ImageExporter(BaseExporter):
         try:
             width = self.get_setting("width", 800)
             height = self.get_setting("height", 600)
-            background_color = self.get_setting("background_color", QColor(255, 255, 255))
+            background_color = self.get_setting(
+                "background_color", QColor(255, 255, 255)
+            )
 
             # Create image (Qt5/Qt6 compatibility for enum)
             img_format = getattr(QImage, "Format", QImage).Format_ARGB32

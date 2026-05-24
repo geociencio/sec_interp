@@ -117,10 +117,14 @@ class PreviewService:
         self.transform_context = transform_context
 
         # 1. Topography & Context Extraction
-        line_geom, line_start, raster_lyr = self._generate_topography_step(params, result)
+        line_geom, line_start, raster_lyr = self._generate_topography_step(
+            params, result
+        )
 
         # 2. Structures (Now using detached flow)
-        self._generate_structures_step(params, result, line_geom, line_start, raster_lyr)
+        self._generate_structures_step(
+            params, result, line_geom, line_start, raster_lyr
+        )
 
         # 3. Drillholes
         if params.collar_layer and not skip_drillholes:
@@ -149,7 +153,9 @@ class PreviewService:
             interval = None
             if params.auto_lod:
                 line_len = line_geom.length()
-                max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
+                max_pts = self.calculate_max_points(
+                    params.canvas_width, params.max_points, True
+                )
                 interval = line_len / max_pts if max_pts > 0 else None
 
             result.topo = self.controller.profile_service.generate_topographic_profile(
@@ -254,7 +260,9 @@ class PreviewService:
             params,
         )
 
-    def _resolve_drillhole_layers(self, params: PreviewParams) -> tuple[Any, Any, Any] | None:
+    def _resolve_drillhole_layers(
+        self, params: PreviewParams
+    ) -> tuple[Any, Any, Any] | None:
         """Resolve required layers for drillholes."""
         line_lyr = LayerResolver.resolve(params.line_layer)
         raster_lyr = LayerResolver.resolve(params.raster_layer)
@@ -289,7 +297,9 @@ class PreviewService:
         except (ValueError, TypeError, SecInterpError) as e:
             raise ProcessingError(f"Failed to project drillhole collars: {e}") from e
 
-    def _fetch_child_data(self, params: PreviewParams, collar_ids: Any) -> tuple[dict, dict]:
+    def _fetch_child_data(
+        self, params: PreviewParams, collar_ids: Any
+    ) -> tuple[dict, dict]:
         """Fetch survey and interval data for collars."""
         survey_lyr = LayerResolver.resolve(params.survey_layer)
         interval_lyr = LayerResolver.resolve(params.interval_layer)

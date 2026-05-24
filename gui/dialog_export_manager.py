@@ -93,7 +93,7 @@ class ExportManager:
         )
 
         path_str, _ = QFileDialog.getSaveFileName(
-            self.dialog, "Export Preview", default_path, file_filter
+            self.dialog, self.dialog.tr("Export Preview"), default_path, file_filter
         )
         if not path_str:
             return None

@@ -60,7 +60,9 @@ class DialogSettingsPersistence:
         """Reset all dialog inputs in pages to their default values."""
         # Section Page
         self.dialog.page_section.line_combo.setLayer(None)
-        self.dialog.page_section.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
+        self.dialog.page_section.buffer_spin.setValue(
+            float(DialogDefaults.BUFFER_DISTANCE)
+        )
 
         # DEM Page
         p_dem = self.dialog.page_dem
@@ -213,7 +215,9 @@ class DialogSettingsPersistence:
                     p_interp._add_field_row()
                     row = p_interp.fields_table.rowCount() - 1
                     p_interp.fields_table.item(row, 0).setText(f.get("name", ""))
-                    p_interp.fields_table.cellWidget(row, 1).setCurrentText(f.get("type", "String"))
+                    p_interp.fields_table.cellWidget(row, 1).setCurrentText(
+                        f.get("type", "String")
+                    )
                     p_interp.fields_table.item(row, 2).setText(f.get("default", ""))
             except (json.JSONDecodeError, TypeError) as e:
                 logger.warning(f"Failed to restore custom fields: {e}")
@@ -255,7 +259,9 @@ class DialogSettingsPersistence:
         self._save_layer(self.dialog.page_struct.layer_combo, "struct_layer")
         self._save_field(self.dialog.page_struct.dip_combo, "struct_dip_field")
         self._save_field(self.dialog.page_struct.strike_combo, "struct_strike_field")
-        self._set_setting("dip_scale_factor", self.dialog.page_struct.scale_spin.value())
+        self._set_setting(
+            "dip_scale_factor", self.dialog.page_struct.scale_spin.value()
+        )
 
     def _save_drillhole_settings(self) -> None:
         dpage = self.dialog.page_drillhole

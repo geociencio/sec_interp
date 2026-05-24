@@ -37,7 +37,9 @@ class OutcropProcessor:
             if not feature.hasGeometry():
                 continue
 
-            attrs = dict(zip(feature.fields().names(), feature.attributes(), strict=False))
+            attrs = dict(
+                zip(feature.fields().names(), feature.attributes(), strict=False)
+            )
             try:
                 unit_name = str(feature[outcrop_name_field])
             except KeyError:
@@ -111,7 +113,9 @@ class OutcropProcessor:
 
         return GeologySegment(
             unit_name=unit_name,
-            geometry_wkt=(seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None),
+            geometry_wkt=(
+                seg_geom.asWkt() if seg_geom and not seg_geom.isNull() else None
+            ),
             attributes=attributes,
             points=[(float(d), float(e)) for d, e in segment_points],
         )

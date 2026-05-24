@@ -112,7 +112,9 @@ class DrillholeService(IDrillholeService):
             )
 
         da = distance_area
-        line_geom = line_data.geometry() if hasattr(line_data, "geometry") else line_data
+        line_geom = (
+            line_data.geometry() if hasattr(line_data, "geometry") else line_data
+        )
         try:
             line_start = scu.get_line_start_point(line_geom)
         except (AttributeError, TypeError, ValueError, SecInterpError):
@@ -321,12 +323,18 @@ class DrillholeService(IDrillholeService):
         except (ValueError, TypeError, KeyError) as e:
             logger.exception(self.tr("Data error in hole {0}: {1}").format(hole_id, e))
         except SecInterpError as e:
-            logger.exception(self.tr("Processing error in hole {0}: {1}").format(hole_id, e))
+            logger.exception(
+                self.tr("Processing error in hole {0}: {1}").format(hole_id, e)
+            )
         except (AttributeError, RuntimeError) as e:
             logger.exception(
-                self.tr("Runtime or attribute error processing hole {0}").format(hole_id)
+                self.tr("Runtime or attribute error processing hole {0}").format(
+                    hole_id
+                )
             )
-            raise SecInterpError(self.tr("Unexpected processing error: {0}").format(e)) from e
+            raise SecInterpError(
+                self.tr("Unexpected processing error: {0}").format(e)
+            ) from e
         except Exception:
             logger.exception(
                 self.tr("Critical unexpected error processing hole {0}").format(hole_id)

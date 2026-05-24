@@ -121,19 +121,19 @@ class PreviewReporter:
         lines = ["", QCoreApplication.translate("PreviewReporter", "Performance:")]
 
         mapping = {
-            "Topography Generation": "  Topo: {}",
-            "Geology Generation": "  Geol: {}",
-            "Structure Generation": "  Struct: {}",
-            "Rendering": "  Render: {}",
-            "Total Preview Generation": "  Total: {}",
+            "Topography Generation": "  Topo: {}",  # no-i18n: internal perf key
+            "Geology Generation": "  Geol: {}",  # no-i18n: internal perf key
+            "Structure Generation": "  Struct: {}",  # no-i18n: internal perf key
+            "Rendering": "  Render: {}",  # no-i18n: internal perf key
+            "Total Preview Generation": "  Total: {}",  # no-i18n: internal perf key
         }
 
         for key, template in mapping.items():
             if key in timings:
                 # Special skip for geol if result says no geol (though usually timing exists if it ran)
-                if key == "Geology Generation" and not result.geol:
+                if key == "Geology Generation" and not result.geol:  # no-i18n: dict key
                     continue
-                if key == "Structure Generation" and not result.struct:
+                if key == "Structure Generation" and not result.struct:  # no-i18n: dict key
                     continue
 
                 lines.append(

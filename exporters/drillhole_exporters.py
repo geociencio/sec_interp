@@ -41,7 +41,9 @@ class DrillholeTraceVectorExporter(BaseExporter):
         """
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
+    def export(
+        self, output_path: Any, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export drillhole traces to a vector file.
 
         Args:
@@ -72,7 +74,9 @@ class DrillholeTraceVectorExporter(BaseExporter):
         else:
             return True
 
-    def _write_traces(self, writer: Any, drillhole_data: list, fields: QgsFields) -> None:
+    def _write_traces(
+        self, writer: Any, drillhole_data: list, fields: QgsFields
+    ) -> None:
         """Write drillhole traces to the writer.
 
         Args:
@@ -109,7 +113,9 @@ class DrillholeTraceVectorExporter(BaseExporter):
         fields.append(QgsField("hole_id", QMetaType.Type.QString))
         return fields
 
-    def _create_feature(self, hole_id: str, traces: list, fields: QgsFields) -> QgsFeature | None:
+    def _create_feature(
+        self, hole_id: str, traces: list, fields: QgsFields
+    ) -> QgsFeature | None:
         """Create a trace feature from points."""
         points = []
         for p in traces:
@@ -145,7 +151,9 @@ class DrillholeIntervalVectorExporter(BaseExporter):
         """
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: Any, data: dict[str, Any], layer_name: str | None = None) -> bool:
+    def export(
+        self, output_path: Any, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export drillhole intervals to a vector file.
 
         Args:
@@ -176,7 +184,9 @@ class DrillholeIntervalVectorExporter(BaseExporter):
         else:
             return True
 
-    def _write_intervals(self, writer: Any, drillhole_data: list, fields: QgsFields) -> None:
+    def _write_intervals(
+        self, writer: Any, drillhole_data: list, fields: QgsFields
+    ) -> None:
         """Write drillhole intervals to the writer.
 
         Args:
@@ -216,7 +226,9 @@ class DrillholeIntervalVectorExporter(BaseExporter):
         fields.append(QgsField("unit", QMetaType.Type.QString))
         return fields
 
-    def _create_feature(self, hole_id: str, segment: Any, fields: QgsFields) -> QgsFeature | None:
+    def _create_feature(
+        self, hole_id: str, segment: Any, fields: QgsFields
+    ) -> QgsFeature | None:
         """Create an interval feature from segment data."""
         if not segment.points or len(segment.points) < MIN_POINTS_FOR_INTERVAL:
             return None

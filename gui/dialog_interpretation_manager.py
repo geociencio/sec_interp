@@ -50,7 +50,9 @@ class InterpretationManager:
         if not self.dialog.project:
             return
 
-        json_data, ok = self.dialog.project.readEntry("SecInterp", "interpretations", "[]")
+        json_data, ok = self.dialog.project.readEntry(
+            "SecInterp", "interpretations", "[]"
+        )
         if not ok or not json_data:
             return
 
@@ -68,7 +70,9 @@ class InterpretationManager:
                     created_at=item.get("created_at", ""),
                 )
                 self.interpretations.append(interp)
-            logger.info(f"Loaded {len(self.interpretations)} interpretations from project")
+            logger.info(
+                f"Loaded {len(self.interpretations)} interpretations from project"
+            )
         except Exception:
             logger.exception("Failed to load interpretations")
 
@@ -134,7 +138,9 @@ class InterpretationManager:
             attrs = feature.attributes()
             fields = layer.fields()
 
-            def get_field_val(name: str, default: Any = "", _attrs=attrs, _fields=fields) -> Any:
+            def get_field_val(
+                name: str, default: Any = "", _attrs=attrs, _fields=fields
+            ) -> Any:
                 """Get attribute value by field name."""
                 idx = _fields.indexOf(name)
                 return (
@@ -190,9 +196,13 @@ class InterpretationManager:
 
         layer.addFeatures(features_to_add)
         layer.commitChanges()
-        logger.info(f"Saved {len(features_to_add)} interpretations to layer {layer.name()}")
+        logger.info(
+            f"Saved {len(features_to_add)} interpretations to layer {layer.name()}"
+        )
 
-    def handle_interpretation_finished(self, interpretation: InterpretationPolygon) -> None:
+    def handle_interpretation_finished(
+        self, interpretation: InterpretationPolygon
+    ) -> None:
         """Process a finished interpretation polygon.
 
         Args:
@@ -214,7 +224,9 @@ class InterpretationManager:
         interp_config = self.dialog.page_interpretation.get_data()
 
         # Try to inherit attributes if enabled
-        if interp_config.get("inherit_geology") or interp_config.get("inherit_drillholes"):
+        if interp_config.get("inherit_geology") or interp_config.get(
+            "inherit_drillholes"
+        ):
             self.apply_attribute_inheritance(interpretation, interp_config)
 
         # 2. Show properties dialog
@@ -267,7 +279,9 @@ class InterpretationManager:
 
         # 1. Check Geology Data
         if config.get("inherit_geology"):
-            best_match, min_dist = self._check_geology_inheritance(ref_point, min_dist, best_match)
+            best_match, min_dist = self._check_geology_inheritance(
+                ref_point, min_dist, best_match
+            )
 
         # 2. Check Drillhole Data (Intervals)
         if config.get("inherit_drillholes"):
@@ -276,7 +290,9 @@ class InterpretationManager:
             )
 
         if best_match:
-            logger.info(f"Inherited attributes from {best_match['type']}: {best_match['name']}")
+            logger.info(
+                f"Inherited attributes from {best_match['type']}: {best_match['name']}"
+            )
             interpretation.name = best_match["name"]
             interpretation.type = best_match["type"]
             if best_match["attrs"]:
