@@ -1,9 +1,9 @@
-# Arquitectura de SecInterp
+# SecInterp Architecture
 
-Este documento describe la arquitectura técnica del plugin SecInterp para QGIS, enfocándose en su diseño desacoplado, orientado a servicios y asíncrono.
+This document describes the technical architecture of the SecInterp QGIS plugin, focusing on its decoupled, service-oriented, and asynchronous design.
 
-## 🏗️ Visión General
-SecInterp sigue un patrón de diseño que separa estrictamente la lógica de negocio (Core) de la interfaz de usuario (GUI), y utiliza patrones de concurrencia seguros para QGIS.
+## 🏗️ Overview
+SecInterp follows a design pattern that strictly separates business logic (Core) from the user interface (GUI), and uses QGIS-safe concurrency patterns.
 
 ```mermaid
 graph TD
@@ -16,41 +16,41 @@ graph TD
     PS --> SS[StructureService]
 ```
 
-## 📂 Estructura de Capas
+## 📂 Layer Structure
 
-### 🎨 Capa de UI (gui/)
-Responsable de la interacción con el usuario y la orquestación.
-- **`main_dialog.py`**: Controlador principal de la ventana.
-- **`main_dialog_preview.py` (PreviewManager)**: Gestiona el estado de la previsualización, caché por hash y lanzamiento de tareas.
-- **`tasks/`**: Contiene implementaciones de `QgsTask` (e.g., `GeologyGenerationTask`) para procesamiento en segundo plano.
+### 🎨 UI Layer (gui/)
+Responsible for user interaction and orchestration.
+- **`main_dialog.py`**: Main window controller.
+- **`main_dialog_preview.py` (PreviewManager)**: Manages preview state, hash-based caching, and task launching.
+- **`tasks/`**: Contains `QgsTask` implementations (e.g., `GeologyGenerationTask`) for background processing.
 
-### ⚙️ Capa de Negocio (core/)
-Lógica pura, desacoplada de la GUI y thread-safe.
+### ⚙️ Business Layer (core/)
+Pure logic, decoupled from the GUI and thread-safe.
 
-#### Servicios (`core/services/`)
-- **`geology_service.py`**: Implementa lógica pura de intersección geométrica. Diseñado para ser invocado tanto sincrónicamente como desde hilos secundarios.
-- **`drillhole_service.py`**: Procesamiento de sondajes y desurvey 3D.
-- **`structure_service.py`**: Proyección de medidas estructurales.
+#### Services (`core/services/`)
+- **`geology_service.py`**: Implements pure geometric intersection logic. Designed to be invoked both synchronously and from secondary threads.
+- **`drillhole_service.py`**: Drillhole processing and 3D desurvey.
+- **`structure_service.py`**: Structural measurement projection.
 
-#### Tipos y DTOs (`core/types.py`)
-El intercambio de datos entre la UI y los hilos de fondo se realiza exclusivamente mediante **Data Transfer Objects (DTOs)**.
-- **`GeologyTaskInput`**: Encapsula geometrías copiadas y parámetros simples. Evita pasar objetos `QgsVectorLayer` vivos a hilos secundarios, previniendo crashes de la API C++.
-- **`PreviewParams`**: Objeto validado que contiene toda la configuración necesaria para generar una sección.
+#### Types and DTOs (`core/types.py`)
+Data exchange between the UI and background threads is performed exclusively through **Data Transfer Objects (DTOs)**.
+- **`GeologyTaskInput`**: Encapsulates copied geometries and simple parameters. Prevents passing live `QgsVectorLayer` objects to secondary threads, avoiding C++ API crashes.
+- **`PreviewParams`**: Validated object containing all configuration needed to generate a section.
 
-### 🛠️ Interfaces y Desacople
-- **`core/interfaces/`**: Define contratos abstractos (`IGeologyService`, `IPreviewService`) que permiten Inyección de Dependencias y facilitan el Mocking en tests.
+### 🛠️ Interfaces and Decoupling
+- **`core/interfaces/`**: Defines abstract contracts (`IGeologyService`, `IPreviewService`) that enable Dependency Injection and facilitate Mocking in tests.
 
-## 🚀 Patrones de Concurrencia
-Para garantizar que la interfaz de QGIS no se congele durante cálculos complejos, SecInterp utiliza el patrón **QgsTask + DTO**:
+## 🚀 Concurrency Patterns
+To ensure the QGIS interface does not freeze during complex calculations, SecInterp uses the **QgsTask + DTO** pattern:
 
-1.  **Prepare (Main Thread)**: La UI recopila datos y crea un DTO (ej. `GeologyTaskInput`) copiando las geometrías necesarias.
-2.  **Process (Background Thread)**: Se lanza un `QgsTask` que invoca un servicio puro usando *solo* el DTO. No hay acceso a `QgsProject` ni capas.
-3.  **Finish (Main Thread)**: El resultado (otro DTO o lista de primitivas) se devuelve al hilo principal para actualizar la UI.
+1.  **Prepare (Main Thread)**: The UI collects data and creates a DTO (e.g., `GeologyTaskInput`) by copying the necessary geometries.
+2.  **Process (Background Thread)**: A `QgsTask` is launched that invokes a pure service using *only* the DTO. There is no access to `QgsProject` or layers.
+3.  **Finish (Main Thread)**: The result (another DTO or list of primitives) is returned to the main thread to update the UI.
 
-## 🛡️ Estándares y Calidad
-- **Type Safety**: Uso extensivo de Type Hints y validación con `mypy`.
-- **Linting**: Reglas estrictas de Ruff (incluyendo complejidad ciclomática).
-- **ADR**: Las decisiones arquitectónicas importantes se registran en `docs/adr/`.
+## 🛡️ Standards & Quality
+- **Type Safety**: Extensive use of Type Hints and validation with `mypy`.
+- **Linting**: Strict Ruff rules (including cyclomatic complexity).
+- **ADR**: Important architectural decisions are recorded in `docs/adr/`.
 
 ---
 **Version**: 2.9.1 | **Updated**: 2026-02-07

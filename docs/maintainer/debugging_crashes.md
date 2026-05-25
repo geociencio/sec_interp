@@ -1,116 +1,116 @@
-# Guía de Debugging para Crashes de QGIS
+# Debugging Guide for QGIS Crashes
 
-## Introducción
+## Introduction
 
-Los crashes de QGIS relacionados con el plugin pueden ocurrir a dos niveles:
-1. **Python**: Excepciones capturadas por nuestro logging
-2. **C++/Qt**: Segfaults que requieren journalctl del sistema
+QGIS crashes related to the plugin can occur at two levels:
+1. **Python**: Exceptions captured by our logging
+2. **C++/Qt**: Segfaults requiring system journalctl
 
-Esta guía cubre ambos escenarios.
+This guide covers both scenarios.
 
 ---
 
-## 1. Logging del Plugin
+## 1. Plugin Logging
 
-### Ubicación de Logs
+### Log Location
 
 ```bash
-# Log principal del plugin
+# Main plugin log
 /home/jmbernales/qgispluginsdev/sec_interp/logs/sec_interp_debug.log
 
-# Logs rotados (backups)
+# Rotated logs (backups)
 sec_interp_debug.log.1
 sec_interp_debug.log.2
 ...
 sec_interp_debug.log.5
 ```
 
-### Ver Logs en Tiempo Real
+### View Logs in Real Time
 
 ```bash
-# Seguir el log mientras usas QGIS
+# Follow the log while using QGIS
 tail -f logs/sec_interp_debug.log
 
-# Ver solo operaciones críticas
+# View only critical operations
 tail -f logs/sec_interp_debug.log | grep CRITICAL_OP
 ```
 
 ---
 
-## 2. Journalctl (Logs del Sistema)
+## 2. Journalctl (System Logs)
 
-### Comandos Básicos
+### Basic Commands
 
 ```bash
-# Ver logs de QGIS desde el último boot
+# View QGIS logs since last boot
 journalctl -b | grep -i qgis
 
-# Ver logs en tiempo real
+# View logs in real time
 journalctl -f | grep -i qgis
 
-# Ver logs desde hace 1 hora
+# View logs from the last hour
 journalctl --since "1 hour ago" | grep -i qgis
 ```
 
-### Buscar Segfaults
+### Search for Segfaults
 
 ```bash
-# Buscar segmentation faults
+# Search for segmentation faults
 journalctl -b | grep -i "segfault"
 
-# Buscar crashes de QGIS específicamente
+# Search for QGIS crashes specifically
 journalctl -b | grep -i "qgis.*segfault"
 ```
 
 ---
 
-## 3. Workflow de Debugging de Crashes
+## 3. Crash Debugging Workflow
 
-### Paso 1: Preparar el Entorno
+### Step 1: Prepare the Environment
 
 ```bash
-# Terminal 1: Seguir log del plugin
+# Terminal 1: Follow plugin log
 tail -f logs/sec_interp_debug.log
 
-# Terminal 2: Seguir journalctl
+# Terminal 2: Follow journalctl
 journalctl -f | grep -i qgis
 ```
 
-### Paso 2: Reproducir el Crash
+### Step 2: Reproduce the Crash
 
-1. Ejecutar QGIS desde terminal para ver stderr:
+1. Run QGIS from terminal to see stderr:
    ```bash
    qgis 2>&1 | tee qgis_stderr.log
    ```
 
-2. Realizar la operación que causa el crash
+2. Perform the operation that causes the crash
 
-### Paso 3: Analizar Logs
+### Step 3: Analyze Logs
 
-1. Ver última operación en plugin log
-2. Buscar `CRITICAL_OP` antes del crash
-3. Buscar segfault en journalctl
-
----
-
-## 4. Patrones Comunes de Crashes
-
-### Crash en RubberBand
-**Causa**: Operación de canvas desde thread incorrecto.
-
-### Crash en Tool Activation
-**Causa**: Conflicto con otra herramienta activa o estado inconsistente del canvas.
-
-### Crash en Canvas Refresh
-**Causa**: Rubber band no removido correctamente de la escena antes de su eliminación en Python.
+1. Check last operation in plugin log
+2. Look for `CRITICAL_OP` before the crash
+3. Look for segfault in journalctl
 
 ---
 
-## 5. Checklist de Debugging
+## 4. Common Crash Patterns
 
-- [ ] Revisar `logs/sec_interp_debug.log` - última operación.
-- [ ] Buscar `CRITICAL_OP` antes del crash.
-- [ ] Revisar `journalctl` para segfault.
-- [ ] Correlacionar timestamps entre ambos logs.
-- [ ] Verificar stack trace en journalctl.
-- [ ] Revisar stderr de QGIS si se ejecutó desde terminal.
+### Crash in RubberBand
+**Cause**: Canvas operation from an incorrect thread.
+
+### Crash in Tool Activation
+**Cause**: Conflict with another active tool or inconsistent canvas state.
+
+### Crash in Canvas Refresh
+**Cause**: Rubber band not properly removed from the scene before its Python-side deletion.
+
+---
+
+## 5. Debugging Checklist
+
+- [ ] Check `logs/sec_interp_debug.log` — last operation.
+- [ ] Look for `CRITICAL_OP` before the crash.
+- [ ] Check `journalctl` for segfault.
+- [ ] Correlate timestamps between both logs.
+- [ ] Verify stack trace in journalctl.
+- [ ] Check QGIS stderr if run from terminal.

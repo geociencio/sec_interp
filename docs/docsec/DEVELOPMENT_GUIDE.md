@@ -1,44 +1,44 @@
-# Guía de Desarrollo de SecInterp
+# SecInterp Development Guide
 
-Este documento proporciona directrices para extender y mantener el plugin SecInterp siguiendo la nueva arquitectura desacoplada.
+This document provides guidelines for extending and maintaining the SecInterp plugin following the new decoupled architecture.
 
-## 🛠️ Entorno de Desarrollo
+## 🛠️ Development Environment
 - **Python**: 3.9+
-- **QGIS**: 3.28 LTR o superior.
-- **Gestor de Paquetes**: se prefiere el uso de `uv` para la gestión de dependencias y scripts de análisis.
+- **QGIS**: 3.28 LTR or higher.
+- **Package Manager**: `uv` is preferred for dependency management and analysis scripts.
 
-## 📐 Principios de Diseño
-1. **Separación Core/GUI**: Nunca importes `PyQt5`, `PyQt6` o `qgis.gui` dentro de `core/`. Si necesitas tipos de datos específicos de QGIS, usa `qgis.core`.
-2. **Servicios Especializados**: Toda lógica de negocio pesada debe residir en un servicio dentro de `core/services/`.
-3. **Managers de UI**: El `MainDialog` debe delegar responsabilidades a clases Manager (ej. `PreviewManager`, `DialogToolManager`).
-4. **Puras Geometrías**: Utiliza `core/utils/geometry.py` (y sus subgrupos) para operaciones espaciales comunes.
+## 📐 Design Principles
+1. **Core/GUI Separation**: Never import `PyQt5`, `PyQt6`, or `qgis.gui` inside `core/`. If you need QGIS-specific data types, use `qgis.core`.
+2. **Specialized Services**: All heavy business logic must reside in a service within `core/services/`.
+3. **UI Managers**: `MainDialog` must delegate responsibilities to Manager classes (e.g., `PreviewManager`, `DialogToolManager`).
+4. **Pure Geometry**: Use `core/utils/geometry.py` (and its subgroups) for common spatial operations.
 
-## 🧪 Añadiendo una Nueva Funcionalidad
-Si deseas añadir un nuevo tipo de previsualización:
-1. **Core**: Crea un método en `PreviewService` (o un nuevo servicio) que procese los datos y devuelva un tipo definido en `core/domain/entities.py`.
-2. **GUI Manager**: Actualiza `PreviewManager` para llamar al nuevo servicio y almacenar el resultado en `cached_data`. Actualiza el cálculo del hash si los datos dependen de nuevos parámetros.
-3. **Renderer**: Actualiza `PreviewRenderer` y `PreviewLayerFactory` para crear la nueva capa de visualización y aplicarle simbología.
+## 🧪 Adding a New Feature
+If you want to add a new preview type:
+1. **Core**: Create a method in `PreviewService` (or a new service) that processes the data and returns a type defined in `core/domain/entities.py`.
+2. **GUI Manager**: Update `PreviewManager` to call the new service and store the result in `cached_data`. Update the hash calculation if the data depends on new parameters.
+3. **Renderer**: Update `PreviewRenderer` and `PreviewLayerFactory` to create the new visualization layer and apply symbology.
 
-## 📈 Rendimiento y Caché
-- **Caché por Hash**: Si añades parámetros al diálogo, inclúyelos en `PreviewManager._calculate_params_hash()`.
-- **Simplificación**: Implementa LOD si la funcionalidad implica procesar miles de geometrías.
-- **Indexación Espacial**: Usa siempre `QgsSpatialIndex` cuando necesites filtrar capas vectoriales por proximidad.
+## 📈 Performance & Caching
+- **Hash-based Cache**: If you add parameters to the dialog, include them in `PreviewManager._calculate_params_hash()`.
+- **Simplification**: Implement LOD if the feature involves processing thousands of geometries.
+- **Spatial Indexing**: Always use `QgsSpatialIndex` when you need to filter vector layers by proximity.
 
-## 🔄 Flujos de Trabajo (Recomendado)
+## 🔄 Workflows (Recommended)
 
-### 🧪 Ejecución de Tests
-El proyecto utiliza `unittest`. Para ejecutar los tests correctamente y resolver el paquete `sec_interp`, usa el siguiente comando desde la raíz:
+### 🧪 Running Tests
+The project uses `unittest`. To run tests correctly and resolve the `sec_interp` package, use the following command from the root:
 
 ```bash
 PYTHONPATH=.. uv run python3 -m unittest discover sec_interp/tests
 ```
 
-**Nota**: No uses `pytest`. Asegúrate de incluir `PYTHONPATH=..` para que las importaciones funcionen correctamente.
+**Note**: Do not use `pytest`. Make sure to include `PYTHONPATH=..` so that imports work correctly.
 
-### 💾 Commits Limpios
-Para evitar conflictos con los hooks de pre-commit (que pueden reformatear código y fallar el commit), se recomienda seguir este orden:
+### 💾 Clean Commits
+To avoid conflicts with pre-commit hooks (which may reformat code and cause the commit to fail), it is recommended to follow this order:
 
-1. **Formateo Previo**:
+1. **Pre-formatting**:
    ```bash
    uv run ruff check --fix .
    uv run ruff format .
@@ -46,17 +46,17 @@ Para evitar conflictos con los hooks de pre-commit (que pueden reformatear códi
 2. **Commit**:
    ```bash
    git add .
-   git commit -m "tipo: descripción"
+   git commit -m "type: description"
    ```
 
-## 🧹 Calidad de Código
-- **Pre-commit**: Instala con `uv run pre-commit install`. Los checks se ejecutan en cada commit.
-- **Linting**: Ejecuta `uv run ruff check .` para validar estándares.
-- **Análisis de Métricas**: Ejecuta `uv run ai-ctx analyze .` habitualmente para controlar la complejidad.
-- **Auditoría QGIS**: Usa `uv run qgis-analyzer analyze .` para validaciones reglamentarias de QGIS.
-- Sigue las convenciones de [COMMIT_GUIDELINES.md](../standards/COMMIT_GUIDELINES.md) (Conventional Commits).
-- **Importante**: Intenta corregir los errores de pre-commit en lugar de saltártelos. Usa `--no-verify` solo si es absolutamente necesario y temporal.
-- Mantén una complejidad ciclomática por función inferior a 15 siempre que sea posible.
+## 🧹 Code Quality
+- **Pre-commit**: Install with `uv run pre-commit install`. Checks run on every commit.
+- **Linting**: Run `uv run ruff check .` to validate standards.
+- **Metrics Analysis**: Run `uv run ai-ctx analyze .` regularly to monitor complexity.
+- **QGIS Audit**: Use `uv run qgis-analyzer analyze .` for QGIS regulatory validations.
+- Follow the conventions in [COMMIT_GUIDELINES.md](../standards/COMMIT_GUIDELINES.md) (Conventional Commits).
+- **Important**: Try to fix pre-commit errors instead of skipping them. Use `--no-verify` only if absolutely necessary and temporary.
+- Keep cyclomatic complexity per function below 15 whenever possible.
 
 ---
 **Version**: 2.9.0 | **Ref**: [README_DEV.md](README_DEV.md)
