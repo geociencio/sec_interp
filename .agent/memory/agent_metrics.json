@@ -51,12 +51,12 @@
                 "lines": 450
             },
             {
-                "path": "gui/dialog_interpretation_manager.py",
-                "lines": 424
-            },
-            {
                 "path": "gui/tools/measure_tool.py",
                 "lines": 407
+            },
+            {
+                "path": "gui/dialog_interpretation_manager.py",
+                "lines": 424
             },
             {
                 "path": "gui/ui/pages/settings_page.py",

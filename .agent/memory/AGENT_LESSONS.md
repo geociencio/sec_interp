@@ -16,6 +16,10 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-05-24'
+    category: TECHNICAL
+    topic: qgis-analyzer i18n False Positives
+    lesson: 'qgis-analyzer MISSING_I18N check only recognizes self.tr() as a valid i18n wrapper. QCoreApplication.translate() — the standard Qt API for non-QObject contexts (static methods, factories, super().__init__()) — is flagged as untranslated. In SecInterp, 254 of 257 total issues are these false positives.'n
+  - date: '2026-05-24'
     category: AGENTIC_SYSTEM
     topic: Ground-Truth Metric Staleness
     lesson: Agentic system self-reported metrics (quality score, i18n coverage, CC average)
