@@ -97,9 +97,7 @@ class InterpretationPropertiesDialog(QDialog):
         layout.addStretch()
 
         # Buttons
-        self.button_box = QDialogButtonBox(
-            QDialogButtonBox.Ok | QDialogButtonBox.Cancel
-        )
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
         layout.addWidget(self.button_box)
@@ -111,9 +109,7 @@ class InterpretationPropertiesDialog(QDialog):
             hex_color: Color in hex format (e.g., '#RRGGBB').
 
         """
-        self.color_preview.setStyleSheet(
-            f"background-color: {hex_color}; border: 1px solid black;"
-        )
+        self.color_preview.setStyleSheet(f"background-color: {hex_color}; border: 1px solid black;")
 
     def _pick_color(self) -> None:
         """Open a color dialog to change the interpretation color."""

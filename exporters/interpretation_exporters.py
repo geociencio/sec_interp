@@ -76,9 +76,7 @@ class Interpretation2DExporter(BaseExporter):
             )
 
             if writer.hasError() != QgsVectorFileWriter.NoError:
-                logger.error(
-                    f"Failed to create writer for {output_path}: {writer.errorMessage()}"
-                )
+                logger.error(f"Failed to create writer for {output_path}: {writer.errorMessage()}")
                 return False
 
             for interp in interpretations:
@@ -94,9 +92,7 @@ class Interpretation2DExporter(BaseExporter):
             logger.exception(f"Failed to export interpretations to {output_path}")
             return False
 
-    def _prepare_fields(
-        self, interpretations: list[Any]
-    ) -> tuple[QgsFields, list[str]]:
+    def _prepare_fields(self, interpretations: list[Any]) -> tuple[QgsFields, list[str]]:
         """Identify custom attributes and create fields."""
         all_attr_keys = set()
         for interp in interpretations:
@@ -115,9 +111,7 @@ class Interpretation2DExporter(BaseExporter):
             fields.append(QgsField(key, QMetaType.Type.QString, len=255))
         return fields, sorted_keys
 
-    def _create_feature(
-        self, interp: Any, fields: QgsFields, sorted_keys: list[str]
-    ) -> QgsFeature:
+    def _create_feature(self, interp: Any, fields: QgsFields, sorted_keys: list[str]) -> QgsFeature:
         """Create a QgsFeature with geometry and attributes."""
         # Create polygon geometry from 2D vertices
         points = [QgsPointXY(x, y) for x, y in interp.vertices_2d]

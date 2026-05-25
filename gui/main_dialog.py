@@ -90,15 +90,11 @@ class SecInterpDialog(SecInterpMainWindow):
 
         # Add cache and reset buttons
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
-        self.clear_cache_btn.setToolTip(
-            self.tr("Clear cached data to force re-processing.")
-        )
+        self.clear_cache_btn.setToolTip(self.tr("Clear cached data to force re-processing."))
         self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
 
         self.reset_defaults_btn = QPushButton(self.tr("Reset Defaults"))
-        self.reset_defaults_btn.setToolTip(
-            self.tr("Reset all inputs to their default values.")
-        )
+        self.reset_defaults_btn.setToolTip(self.tr("Reset all inputs to their default values."))
         self.button_box.addButton(self.reset_defaults_btn, QDialogButtonBox.ActionRole)
 
         # Initialize map tools via tool_manager
@@ -121,9 +117,7 @@ class SecInterpDialog(SecInterpMainWindow):
 
         self.input_manager = InputManager(self)
         self.state_manager = StateManager(self)
-        self.preview_manager = PreviewManager(
-            self, PreviewService(self.plugin_instance.controller)
-        )
+        self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
         self.export_manager = ExportManager(self)
         self.state_manager.setup_indicators()
         self.interpretation_manager = InterpretationManager(self)
@@ -171,7 +165,9 @@ class SecInterpDialog(SecInterpMainWindow):
                 color = "#17a2b8"  # Blue
 
             # Format message with HTML
-            formatted_msg = f'<span style="color: {color}; font-weight: bold;">{icon} {title}:</span> {message}'
+            formatted_msg = (
+                f'<span style="color: {color}; font-weight: bold;">{icon} {title}:</span> {message}'
+            )
             self.preview_widget.results_text.append(formatted_msg)
 
     def show_dialog(self, title: str, message: str, level: str = "info") -> Any:
@@ -195,9 +191,7 @@ class SecInterpDialog(SecInterpMainWindow):
         """
         if isinstance(error, SecInterpError):
             msg = str(error)
-            logger.warning(
-                f"{title}: {msg} - Details: {getattr(error, 'details', 'N/A')}"
-            )
+            logger.warning(f"{title}: {msg} - Details: {getattr(error, 'details', 'N/A')}")
             self.show_dialog(title, msg, level="warning")
         else:
             msg = self.tr("An unexpected error occurred: {}").format(error)
@@ -343,15 +337,11 @@ class SecInterpDialog(SecInterpMainWindow):
             "show_geol": bool(self.preview_widget.chk_geol.isChecked()),
             "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
-            "show_interpretations": bool(
-                self.preview_widget.chk_interpretations.isChecked()
-            ),
+            "show_interpretations": bool(self.preview_widget.chk_interpretations.isChecked()),
             "show_legend": bool(self.preview_widget.chk_legend.isChecked()),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
-            "use_adaptive_sampling": bool(
-                self.preview_widget.chk_adaptive_sampling.isChecked()
-            ),
+            "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
         }
 
     def update_preview_from_checkboxes(self) -> None:
@@ -426,9 +416,7 @@ class SecInterpDialog(SecInterpMainWindow):
         """Reset all dialog inputs via state_manager."""
         self.state_manager.reset_to_defaults()
 
-    def _populate_field_combobox(
-        self, source_combobox: Any, target_combobox: Any
-    ) -> None:
+    def _populate_field_combobox(self, source_combobox: Any, target_combobox: Any) -> None:
         """Populate a combobox with field names."""
         DialogEntityManager.populate_field_combobox(source_combobox, target_combobox)
 

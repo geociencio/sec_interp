@@ -61,9 +61,7 @@ def validate_positive(field_name: str = "") -> Callable[[float], float]:
     def validator(value: float) -> float:
         """Validate that value is positive."""
         if value <= 0:
-            raise ValidationError(
-                f"{field_name or 'Value'} must be positive, got {value}"
-            )
+            raise ValidationError(f"{field_name or 'Value'} must be positive, got {value}")
         return value
 
     return validator
@@ -86,9 +84,7 @@ def validate_non_negative(field_name: str = "") -> Callable[[float], float]:
     def validator(value: float) -> float:
         """Validate that value is non-negative."""
         if value < 0:
-            raise ValidationError(
-                f"{field_name or 'Value'} must be non-negative, got {value}"
-            )
+            raise ValidationError(f"{field_name or 'Value'} must be non-negative, got {value}")
         return value
 
     return validator
@@ -227,9 +223,7 @@ def validate_percentage(field_name: str = "") -> FieldValidator:
         Composite validator for percentage values.
 
     """
-    return FieldValidator(
-        coerce_type(float, field_name), validate_range(0.0, 100.0, field_name)
-    )
+    return FieldValidator(coerce_type(float, field_name), validate_range(0.0, 100.0, field_name))
 
 
 def validate_probability(field_name: str = "") -> FieldValidator:
@@ -242,9 +236,7 @@ def validate_probability(field_name: str = "") -> FieldValidator:
         Composite validator for probability values.
 
     """
-    return FieldValidator(
-        coerce_type(float, field_name), validate_range(0.0, 1.0, field_name)
-    )
+    return FieldValidator(coerce_type(float, field_name), validate_range(0.0, 1.0, field_name))
 
 
 def validate_positive_int(field_name: str = "") -> FieldValidator:

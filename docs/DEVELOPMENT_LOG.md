@@ -1,3 +1,18 @@
+## [2026-05-23] Session: i18n Hygiene & Quality Gate Implementation
+- **Achievement**: Completada la auditoría de traducciones de la interfaz gráfica de usuario y establecida la herramienta AST de verificación estática de i18n (`verify_i18n_hygiene.py`).
+- **Root Cause/Context**: La fase `v3.7.0` requiere reducir la deuda de internacionalización acumulada eliminando falsos positivos en variables técnicas de la GUI y traduciendo cadenas visibles genuinas.
+- **Actions Taken**:
+    - Se diseñó e implementó un script de higiene de i18n basado en árboles de sintaxis abstracta (AST) para rastrear cadenas sin envoltura de traducción o marcado `# no-i18n`.
+    - Se envolvieron en `self.tr()` y `QCoreApplication.translate()` los títulos de diálogos y nombres dinámicos de capas de la leyenda (`Export Preview`, `Topography Fill`, `Drillhole Traces`, `Drillhole Intervals`).
+    - Se marcaron con `# no-i18n` las claves internas de rendimiento, nombres técnicos de `QgsTask` y tags de logging para desarrolladores.
+    - Se optimizó `.analyzerignore` para enfocar la herramienta estática de traducción únicamente en la capa de UI.
+- **Operational Metrics**:
+    - Tests Passing: 572/572 (100%)
+    - i18n Quality Gate Violations: 0 en 53 archivos
+    - Maintainability Score: 94.2/100
+- **Status**: 🟢 Cierre de sesión y avance de i18n completado con éxito. Listo para Goal 2 de v3.7.0.
+- **Maintenance**: [session_2026-05-23_i18n_hygiene_and_quality_gate.md](maintenance/session_2026-05-23_i18n_hygiene_and_quality_gate.md)
+
 ## [2026-05-18] Session: v3.6.0 Release Finalization & Verification
 - **Achievement**: Completada la verificación de empaquetado del archivo `sec_interp.3.6.0.zip` y cierre formal del ciclo de desarrollo de la fase `v3.6.0`.
 - **Root Cause/Context**: El plugin ya se encuentra publicado en el repositorio de QGIS, por lo que realizamos la auditoría final de exclusión de archivos de desarrollo y la sincronización total de logs.

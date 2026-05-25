@@ -35,21 +35,15 @@ def filter_features_by_buffer(
 
     """
     if not features_layer or not features_layer.isValid():
-        raise ValueError(
-            QCoreApplication.translate("GeometryFiltering", "Invalid features layer")
-        )
+        raise ValueError(QCoreApplication.translate("GeometryFiltering", "Invalid features layer"))
 
     if not buffer_geometry or buffer_geometry.isNull():
-        raise ValueError(
-            QCoreApplication.translate("GeometryFiltering", "Invalid buffer geometry")
-        )
+        raise ValueError(QCoreApplication.translate("GeometryFiltering", "Invalid buffer geometry"))
 
     # 1. Transform buffer geometry if needed
     query_geom = buffer_geometry
     if buffer_crs and features_layer.crs() != buffer_crs:
-        transform = QgsCoordinateTransform(
-            buffer_crs, features_layer.crs(), QgsProject.instance()
-        )
+        transform = QgsCoordinateTransform(buffer_crs, features_layer.crs(), QgsProject.instance())
         query_geom = QgsGeometry(buffer_geometry)
         query_geom.transform(transform)
 
@@ -63,8 +57,6 @@ def filter_features_by_buffer(
         if feature.hasGeometry() and feature.geometry().intersects(query_geom):
             filtered_features.append(feature)
 
-    logger.debug(
-        f"Spatial Filter: confirmed {len(filtered_features)} features intersecting buffer"
-    )
+    logger.debug(f"Spatial Filter: confirmed {len(filtered_features)} features intersecting buffer")
 
     return filtered_features

@@ -65,10 +65,37 @@ Verify that `.agent/task.md` exists and is updated before committing.
 python3 scripts/skill_sync.py
 ```
 
-🤖 **Agent Action (Learning)**: Explicitly identify the 3 most important technical lessons learned this session.
-*   Update YAML entries in `AGENT_LESSONS.md`.
+
+🚀 **Agent Action (Lesson Extraction — Gen 7)**: Run the structured lesson extraction protocol:
+
+1. **Scan for candidates** — check these signals:
+   - Error patterns: bugs that took 3+ attempts
+   - Implicit preferences: user repeatedly approved a style
+   - Technical hotspots: code areas difficult to test
+   - New tooling: surprising script/command behavior
+   - Metric changes: any score moved > 5 points
+
+2. **Draft 2-3 lessons** in YAML:
+   ```yaml
+   - date: YYYY-MM-DD
+     category: [TECHNICAL|ARCHITECTURE|TESTING|TOOLING|i18n|ENVIRONMENT|AGENTIC_SYSTEM]
+     topic: short description
+     lesson: What happened and why. Under 3 sentences.
+     action: Concrete action for future sessions.
+   ```
+
+3. **Insert** into `.agent/memory/AGENT_LESSONS.md` at top of ACTIVE LESSONS.
+
+4. **Skip if**: duplicates an existing lesson, already in a SKILL.md, or one-time throwaway.
+
+🤖 **Agent Action (Metrics Sync — CRITICAL)**: Run unified ground-truth metric extraction before closing.
+```bash
+uv run python scripts/sync_metrics.py
+```
+This updates `agent_metrics.json` with live scores from qgis-analyzer + check_cc.py + verify_i18n_hygiene.py.
+
 *   Run `uv run python scripts/memory_prune.py` to auto-prune old consolidated lessons.
-*   Update `agent_metrics.json` with the session summary and generate report: `uv run python scripts/metrics_report.py`.
+*   Generate metrics report: `uv run python scripts/metrics_report.py`.
 
 🤖 **Agent Action**: Update AI_CONTEXT.md and validate that next_steps.md is clear.
 Ensure the AI "Brain" is up to date with the final changes.

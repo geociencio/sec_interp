@@ -83,23 +83,17 @@ class ValidationMessages:
     @staticmethod
     def missing_raster() -> str:
         """Return translated 'DEM raster layer is required' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "DEM raster layer is required"
-        )
+        return QCoreApplication.translate("ValidationMessages", "DEM raster layer is required")
 
     @staticmethod
     def missing_section_line() -> str:
         """Return translated 'Cross-section line is required' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "Cross-section line is required"
-        )
+        return QCoreApplication.translate("ValidationMessages", "Cross-section line is required")
 
     @staticmethod
     def missing_output_path() -> str:
         """Return translated 'Output path is required' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "Output path is required"
-        )
+        return QCoreApplication.translate("ValidationMessages", "Output path is required")
 
     @staticmethod
     def invalid_raster() -> str:
@@ -125,23 +119,17 @@ class ValidationMessages:
     @staticmethod
     def wrong_geometry_type() -> str:
         """Return translated 'Layer has incorrect geometry type' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "Layer has incorrect geometry type"
-        )
+        return QCoreApplication.translate("ValidationMessages", "Layer has incorrect geometry type")
 
     @staticmethod
     def empty_layer() -> str:
         """Return translated 'Layer contains no features' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "Layer contains no features"
-        )
+        return QCoreApplication.translate("ValidationMessages", "Layer contains no features")
 
     @staticmethod
     def invalid_geometry() -> str:
         """Return translated 'Layer contains invalid geometries' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "Layer contains invalid geometries"
-        )
+        return QCoreApplication.translate("ValidationMessages", "Layer contains invalid geometries")
 
     @staticmethod
     def missing_field(field: str) -> str:
@@ -167,9 +155,7 @@ class ValidationMessages:
     @staticmethod
     def missing_outcrop_field() -> str:
         """Return translated 'Outcrop name field required' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "Outcrop name field is required"
-        )
+        return QCoreApplication.translate("ValidationMessages", "Outcrop name field is required")
 
     @staticmethod
     def missing_structural_layer() -> str:
@@ -187,23 +173,17 @@ class ValidationMessages:
     @staticmethod
     def missing_strike_field() -> str:
         """Return translated 'Strike field required' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "Strike field is required"
-        )
+        return QCoreApplication.translate("ValidationMessages", "Strike field is required")
 
     @staticmethod
     def validation_failed() -> str:
         """Return translated 'Input validation failed' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "Input validation failed"
-        )
+        return QCoreApplication.translate("ValidationMessages", "Input validation failed")
 
     @staticmethod
     def unknown_error() -> str:
         """Return translated 'Unknown error' message."""
-        return QCoreApplication.translate(
-            "ValidationMessages", "An unknown error occurred"
-        )
+        return QCoreApplication.translate("ValidationMessages", "An unknown error occurred")
 
 
 class UIConstants:

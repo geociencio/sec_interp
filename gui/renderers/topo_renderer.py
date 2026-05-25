@@ -19,9 +19,7 @@ class TopoRenderer(BasePreviewRenderer):
     def apply_style(self, layer: QgsVectorLayer, **kwargs) -> None:
         """Apply polychromatic elevation styling."""
         renderer = QgsGraduatedSymbolRenderer("elev")
-        renderer.setSourceSymbol(
-            QgsLineSymbol.createSimple({"width": "0.8", "capstyle": "round"})
-        )
+        renderer.setSourceSymbol(QgsLineSymbol.createSimple({"width": "0.8", "capstyle": "round"}))
 
         style = QgsStyle.defaultStyle()
         # Try a terrain-like default ramp

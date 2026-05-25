@@ -74,9 +74,7 @@ class DrillholeTaskOrchestrator:
             return None
 
         # 3. Extract Detached Data for Child Layers
-        survey_map, interval_map = self._step3_fetch_child_data(
-            layers, collar_ids, params
-        )
+        survey_map, interval_map = self._step3_fetch_child_data(layers, collar_ids, params)
 
         # 4. Process Intervals (Detached)
         return self._step4_process_intervals(
@@ -90,9 +88,7 @@ class DrillholeTaskOrchestrator:
             params,
         )
 
-    def _step1_detach_collars(
-        self, layers: dict, section_geom: Any, params: PreviewParams
-    ) -> Any:
+    def _step1_detach_collars(self, layers: dict, section_geom: Any, params: PreviewParams) -> Any:
         """Step 1: Detach Collar Data."""
         return self.service.collar_processor.detach_features(
             layers["collar"],
@@ -279,9 +275,7 @@ class DrillholeTaskOrchestrator:
         if field_name not in fields:
             raise ValidationError(f"{label} field '{field_name}' not found")
 
-    def _validate_survey_params(
-        self, layer: QgsVectorLayer, fields: dict[str, str]
-    ) -> None:
+    def _validate_survey_params(self, layer: QgsVectorLayer, fields: dict[str, str]) -> None:
         """Validate survey layer fields."""
         from sec_interp.core.exceptions import ValidationError
 
@@ -290,9 +284,7 @@ class DrillholeTaskOrchestrator:
             if fname and fname not in layer_fields:
                 raise ValidationError(f"Survey field '{fname}' not found")
 
-    def _validate_interval_params(
-        self, layer: QgsVectorLayer, fields: dict[str, str]
-    ) -> None:
+    def _validate_interval_params(self, layer: QgsVectorLayer, fields: dict[str, str]) -> None:
         """Validate interval layer fields."""
         from sec_interp.core.exceptions import ValidationError
 

@@ -82,9 +82,7 @@ class ExportService:
 
         line_layer = params.line_layer
         if not line_layer:
-            raise DataMissingError(
-                self.tr("Section line layer not found in parameters")
-            )
+            raise DataMissingError(self.tr("Section line layer not found in parameters"))
 
         result_msg = [self.tr("✓ Saving files...")]
         self._orchestrate_exports(
@@ -258,9 +256,7 @@ class ExportService:
 
         logger.info("✓ Saving topographic profile...")
         try:
-            csv_path, csv_layer = self._get_export_path(
-                folder, "topo_profile", settings, ".csv"
-            )
+            csv_path, csv_layer = self._get_export_path(folder, "topo_profile", settings, ".csv")
             csv_ok = csv_exporter.export(
                 csv_path,
                 {"headers": ["dist", "elev"], "rows": data},
@@ -271,9 +267,7 @@ class ExportService:
             else:
                 logger.warning(f"Failed to write CSV topography to {csv_path}")
 
-            vec_path, vec_layer = self._get_export_path(
-                folder, "profile_line", settings, ext
-            )
+            vec_path, vec_layer = self._get_export_path(folder, "profile_line", settings, ext)
             vector_exporter = ProfileLineVectorExporter({})
             vec_ok = vector_exporter.export(
                 vec_path, {"profile_data": data, "crs": crs}, layer_name=vec_layer
@@ -308,9 +302,7 @@ class ExportService:
         logger.info("✓ Saving geological profile...")
         try:
             rows = [(p[0], p[1], s.unit_name) for s in data for p in s.points]
-            csv_path, csv_layer = self._get_export_path(
-                folder, "geol_profile", settings, ".csv"
-            )
+            csv_path, csv_layer = self._get_export_path(folder, "geol_profile", settings, ".csv")
             csv_ok = csv_exporter.export(
                 csv_path,
                 {"headers": ["dist", "elev", "geology"], "rows": rows},
@@ -319,9 +311,7 @@ class ExportService:
             if csv_ok:
                 msg.append(f"  - {csv_path.relative_to(folder)}")
 
-            vec_path, vec_layer = self._get_export_path(
-                folder, "geol_profile", settings, ext
-            )
+            vec_path, vec_layer = self._get_export_path(folder, "geol_profile", settings, ext)
             vector_exporter = GeologyVectorExporter({})
             vec_ok = vector_exporter.export(
                 vec_path, {"geology_data": data, "crs": crs}, layer_name=vec_layer
@@ -447,9 +437,7 @@ class ExportService:
             if intervals_ok:
                 msg.append(f"  - {intervals_path.relative_to(folder)}")
             else:
-                logger.warning(
-                    f"Failed to write drillhole intervals to {intervals_path}"
-                )
+                logger.warning(f"Failed to write drillhole intervals to {intervals_path}")
 
         except (OSError, ValueError, TypeError, DataMissingError) as e:
             logger.exception(f"Drillhole export failed: {e}")
@@ -516,9 +504,7 @@ class ExportService:
 
         for type_flag, proj_flag, ExporterClass, base_name, use_proj, label in tasks:
             if options.get(type_flag, False) and options.get(proj_flag, False):
-                path, path_layer = self._get_export_path(
-                    folder, base_name, settings, ext
-                )
+                path, path_layer = self._get_export_path(folder, base_name, settings, ext)
                 exporter = ExporterClass({})
                 ok = exporter.export(
                     path,
@@ -528,9 +514,7 @@ class ExportService:
                 if ok:
                     msg.append(f"  - {path.relative_to(folder)} ({label})")
                 else:
-                    logger.warning(
-                        f"Failed to write 3D drillhole data to {path} ({label})"
-                    )
+                    logger.warning(f"Failed to write 3D drillhole data to {path} ({label})")
 
     def _export_interpretations(
         self,
@@ -552,13 +536,9 @@ class ExportService:
         logger.info("✓ Saving interpretation data...")
         try:
             # 2D Export (Standard) - Now supports SHP, GPKG, DXF via scu.create_vector_writer
-            path, path_layer = self._get_export_path(
-                folder, "interpretations", settings, ext
-            )
+            path, path_layer = self._get_export_path(folder, "interpretations", settings, ext)
             exporter = Interpretation2DExporter({})
-            ok = exporter.export(
-                path, {"interpretations": data, "crs": crs}, layer_name=path_layer
-            )
+            ok = exporter.export(path, {"interpretations": data, "crs": crs}, layer_name=path_layer)
             if ok:
                 msg.append(f"  - {path.relative_to(folder)}")
             else:
@@ -566,9 +546,7 @@ class ExportService:
 
             # 3D Export (Restricted Feature)
             if self.access_control.can_export_3d():
-                self._export_interpretations_3d(
-                    folder, data, line_layer, crs, msg, settings, ext
-                )
+                self._export_interpretations_3d(folder, data, line_layer, crs, msg, settings, ext)
             else:
                 logger.info("3D Export features are restricted for this user.")
 
@@ -594,9 +572,7 @@ class ExportService:
         if line_layer and line_layer.isValid():
             line_geom = next(line_layer.getFeatures()).geometry()
 
-            path, path_layer = self._get_export_path(
-                folder, "interpretations_3d", settings, ext
-            )
+            path, path_layer = self._get_export_path(folder, "interpretations_3d", settings, ext)
             exporter = Interpretation3DExporter({})
 
             ok = exporter.export(
@@ -625,13 +601,9 @@ class ExportService:
 
         logger.info("✓ Saving profile axes...")
         try:
-            path, path_layer = self._get_export_path(
-                folder, "profile_axes", settings, ext
-            )
+            path, path_layer = self._get_export_path(folder, "profile_axes", settings, ext)
             exporter = AxesVectorExporter({})
-            ok = exporter.export(
-                path, {"profile_data": data, "crs": crs}, layer_name=path_layer
-            )
+            ok = exporter.export(path, {"profile_data": data, "crs": crs}, layer_name=path_layer)
             if ok:
                 msg.append(f"  - {path.relative_to(folder)}")
             else:
@@ -645,9 +617,7 @@ class ExportService:
         """Generate unified output path and logical layer name."""
         profile_name = "profile"
         ctrl = self.controller
-        has_sect = (
-            ctrl and hasattr(ctrl, "settings") and hasattr(ctrl.settings, "section")
-        )
+        has_sect = ctrl and hasattr(ctrl, "settings") and hasattr(ctrl.settings, "section")
 
         if has_sect:
             sect = ctrl.settings.section
@@ -658,9 +628,7 @@ class ExportService:
 
         new_name = base_name
         if settings and settings.naming_pattern:
-            new_name = settings.naming_pattern.format(
-                filename=base_name, profile=profile_name
-            )
+            new_name = settings.naming_pattern.format(filename=base_name, profile=profile_name)
             new_name = new_name.replace("/", "_").replace("\\", "_")
 
         if ext == ".gpkg":

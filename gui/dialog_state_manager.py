@@ -108,10 +108,7 @@ class StateManager:
             self.dialog.tool_manager.measure_tool.reset()
 
         # Handle interpretations via manager or direct property (backward compat)
-        if (
-            hasattr(self.dialog, "interpretation_manager")
-            and self.dialog.interpretation_manager
-        ):
+        if hasattr(self.dialog, "interpretation_manager") and self.dialog.interpretation_manager:
             self.dialog.interpretation_manager.interpretations = []
             self.dialog.interpretation_manager.save_interpretations()
         elif hasattr(self.dialog, "interpretations"):

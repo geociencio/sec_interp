@@ -12,7 +12,7 @@ The system uses a **3-tier cognitive architecture** aligned with 2025/2026 agent
 | Tier | File | Purpose | Retention |
 |---|---|---|---|
 | **Short-term** (Working) | `AI_CONTEXT.md` | Current session state, active tasks, decisions in progress | Per session (reset on start) |
-| **Episodic** (Event History) | `history/sessions/`, `history/tasks/`, `next_steps.md` | Records of past sessions, outcomes, and decisions | 6 months → archived |
+| **Episodic** (Event History) | `docs/maintenance/` (100+ session logs), `history/tasks/`, `next_steps.md` | Records of past sessions, outcomes, and decisions | 6 months → archived |
 | **Semantic** (Long-term) | `AGENT_LESSONS.md`, `SKILL.md` files | Distilled patterns, user preferences, reusable procedures | Permanent (with pruning) |
 
 ---
@@ -75,8 +75,8 @@ Session observation → AGENT_LESSONS.md (raw lesson)
 
 To avoid **memory bloat** (a primary cause of agent performance degradation):
 
-- `AGENT_LESSONS.md` must stay **under 250 lines** of active content.
-- If the file exceeds this limit, consolidate the oldest lessons into their respective `SKILL.md` files.
+- `AGENT_LESSONS.md` must stay **under 350 lines** of active content.
+- If the file exceeds this limit, run `uv run python scripts/prune_consolidated.py` to move `consolidated_in` lessons to the `[PRUNED]` index. If still over, consolidate the oldest lessons into their respective `SKILL.md` files.
 - Pruned entries are retained as a one-line comment index (e.g., `# [PRUNED] 2026-01-15 TESTING/topic → qa-docker/SKILL.md`).
 - `AI_CONTEXT.md` is **reset at the start of every session** — it is never a long-term store.
 

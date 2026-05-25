@@ -155,9 +155,7 @@ class ConfigService:
         try:
             return PluginSettings.from_dict(data)
         except (ValueError, TypeError, KeyError):
-            logger.exception(
-                self.tr("Failed to validate settings during load. Using defaults.")
-            )
+            logger.exception(self.tr("Failed to validate settings during load. Using defaults."))
             return PluginSettings()
 
     def get(self, key: str, default: Any = None) -> Any:

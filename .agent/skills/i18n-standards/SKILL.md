@@ -65,6 +65,19 @@ The `i18n/sec_interp.pro` file controls which files are scanned.
 The `qgis-plugin-ci` tool may report false positives for "Partial Translation" if it detects docstrings as translatable strings.
 *   **Rule**: If real UI coverage is 100%, warnings about untranslated docstrings or internal classes can be ignored.
 
+### 3.4. Dual-Scope i18n Checking (Gen 6+)
+SecInterp uses **two complementary i18n tools** with different scopes:
+
+| Tool | Method | Scope | False Positives |
+|------|--------|-------|-----------------|
+| `verify_i18n_hygiene.py` | AST parsing | Validates `self.tr()` wrapping in GUI files | Near-zero |
+| `qgis-analyzer i18n` | Heuristic string detection | Detects *any* user-facing string without translation context | Higher (flags format strings, CSS, etc.) |
+
+**Key distinction**: A `PASS` on `verify_i18n_hygiene.py` (0 violations) does **not** mean 0 `MISSING_I18N` on `qgis-analyzer`. The AST checker validates that translatable strings are *wrapped*; the analyzer detects strings that may need translation regardless of wrapping. Both metrics must be tracked separately in `agent_metrics.json`.
+
+*   **AST checker target**: 0 violations (blocking gate)
+*   **qgis-analyzer i18n target**: Triage false positives, reduce true violations to < 20
+
 ## 4. Directory Structure
 
 ```

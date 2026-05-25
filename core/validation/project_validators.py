@@ -37,9 +37,7 @@ class SectionValidator(IValidator):
 
         layer = LayerResolver.resolve(params.line_layer)
         if not layer:
-            context.add_error(
-                "Cross-section line layer not found in project", "line_layer"
-            )
+            context.add_error("Cross-section line layer not found in project", "line_layer")
             return
 
         # Check geometry
@@ -215,9 +213,7 @@ class OutputValidator(IValidator):
         if params.output_path:
             from .path_validator import validate_safe_output_path
 
-            is_valid, error, _ = validate_safe_output_path(
-                params.output_path, must_exist=False
-            )
+            is_valid, error, _ = validate_safe_output_path(params.output_path, must_exist=False)
             if not is_valid:
                 context.add_error(error, "output_path")
 
@@ -248,15 +244,11 @@ class OutputValidator(IValidator):
             )
         if params.buffer_dist < 0:
             context.add_error(
-                QCoreApplication.translate(
-                    "ProjectValidator", "Buffer distance must be >= 0"
-                ),
+                QCoreApplication.translate("ProjectValidator", "Buffer distance must be >= 0"),
                 "buffer_dist",
             )
         if params.dip_scale_factor < MIN_FLOAT_THRESHOLD:
             context.add_error(
-                QCoreApplication.translate(
-                    "ProjectValidator", "Dip scale factor must be >= 0.1"
-                ),
+                QCoreApplication.translate("ProjectValidator", "Dip scale factor must be >= 0.1"),
                 "dip_scale_factor",
             )

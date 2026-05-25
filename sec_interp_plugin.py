@@ -65,11 +65,7 @@ class SecInterp(TranslatableMixin):
         locale_path = self.plugin_dir / f"i18n/SecInterp_{user_locale}.qm"
 
         MIN_LOCALE_LENGTH = 2
-        if (
-            not locale_path.exists()
-            and user_locale
-            and len(user_locale) > MIN_LOCALE_LENGTH
-        ):
+        if not locale_path.exists() and user_locale and len(user_locale) > MIN_LOCALE_LENGTH:
             # Fallback to language code (e.g., pt)
             locale_short = user_locale[0:2]
             locale_path = self.plugin_dir / f"i18n/SecInterp_{locale_short}.qm"
@@ -85,9 +81,7 @@ class SecInterp(TranslatableMixin):
             "sec_interp.gui.preview_renderer", "PreviewRenderer"
         )
         # 2. Controller (Business Logic orchestrator)
-        self.controller = SafeLoader.lazy_load(
-            "sec_interp.core.controller", "ProfileController"
-        )
+        self.controller = SafeLoader.lazy_load("sec_interp.core.controller", "ProfileController")
 
         # 3. Export Service
         # We need the controller to instantiate ExportService
@@ -104,9 +98,7 @@ class SecInterp(TranslatableMixin):
         if self.dlg:
             self.dlg.plugin_instance = self
         else:
-            logger.error(
-                "Failed to initialize main dialog. Plugin functionality will be limited."
-            )
+            logger.error("Failed to initialize main dialog. Plugin functionality will be limited.")
 
         self.first_start = True
 
@@ -240,9 +232,7 @@ class SecInterp(TranslatableMixin):
             QMessageBox.critical(
                 self.iface.mainWindow(),
                 self.tr("Initialization Error"),
-                self.tr(
-                    "The plugin dialog failed to initialize. Please check the logs."
-                ),
+                self.tr("The plugin dialog failed to initialize. Please check the logs."),
             )
             return
 
@@ -366,9 +356,7 @@ class SecInterp(TranslatableMixin):
 
         return active_layers
 
-    def process_data(
-        self, inputs: dict[str, Any] | None = None
-    ) -> tuple[Any, Any, Any] | None:
+    def process_data(self, inputs: dict[str, Any] | None = None) -> tuple[Any, Any, Any] | None:
         """Process profile data by delegating to the dialog's preview manager.
 
         Args:
@@ -450,9 +438,7 @@ class SecInterp(TranslatableMixin):
                 self.preview_renderer, options.get("show_legend", True)
             )
 
-    def _store_preview_data(
-        self, topo: Any, geol: Any, struct: Any, drill: Any
-    ) -> None:
+    def _store_preview_data(self, topo: Any, geol: Any, struct: Any, drill: Any) -> None:
         """Store current data in dialog for re-rendering.
 
         Args:
@@ -489,9 +475,7 @@ class SecInterp(TranslatableMixin):
             "struct": struct if options.get("show_struct", True) else None,
             "drill": drill if options.get("show_drillholes", True) else None,
             "interp": (
-                self.dlg.interpretations
-                if options.get("show_interpretations", True)
-                else None
+                self.dlg.interpretations if options.get("show_interpretations", True) else None
             ),
         }
 

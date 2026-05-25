@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **i18n Quality Gate**: Developed an Abstract Syntax Tree (AST) validation script (`verify_i18n_hygiene.py`) to systematically scan UI components for untranslated strings and enforce translation hygiene.
+
+### Changed
+- **UI Translation Coverage**: Wrapped user-facing text in `self.dialog.tr()` and dynamic layer names (`Topography Fill`, `Drillhole Traces`, `Drillhole Intervals`) in `QCoreApplication.translate()`.
+- **Developer Noise Isolation**: Applied `# no-i18n` exclusion annotations to internal performance metrics, timing dictionaries, developer log tags, and orchestrator task names.
+- **Static Translation Tuning**: Calibrated `.analyzerignore` to completely bypass core services, internal exporters, and headless GUI managers from `MISSING_I18N` analysis.
+
 ## [3.6.0] - 2026-05-17
 
 ### Added

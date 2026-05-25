@@ -88,10 +88,7 @@ class SignalManager:
             with contextlib.suppress(TypeError, RuntimeError):
                 self.dialog.clear_cache_btn.clicked.disconnect()
 
-        if (
-            hasattr(self.dialog, "reset_defaults_btn")
-            and self.dialog.reset_defaults_btn
-        ):
+        if hasattr(self.dialog, "reset_defaults_btn") and self.dialog.reset_defaults_btn:
             with contextlib.suppress(TypeError, RuntimeError):
                 self.dialog.reset_defaults_btn.clicked.disconnect()
 
@@ -235,18 +232,12 @@ class SignalManager:
 
         self.dialog.button_box.helpRequested.connect(self.dialog.open_help)
         self.dialog.clear_cache_btn.clicked.connect(self.dialog.clear_cache_handler)
-        self.dialog.reset_defaults_btn.clicked.connect(
-            self.dialog.reset_defaults_handler
-        )
+        self.dialog.reset_defaults_btn.clicked.connect(self.dialog.reset_defaults_handler)
 
     def _connect_preview_signals(self) -> None:
         """Connect preview-related signals."""
-        self.dialog.preview_widget.btn_preview.clicked.connect(
-            self.dialog.preview_profile_handler
-        )
-        self.dialog.preview_widget.btn_export.clicked.connect(
-            self.dialog.export_preview
-        )
+        self.dialog.preview_widget.btn_preview.clicked.connect(self.dialog.preview_profile_handler)
+        self.dialog.preview_widget.btn_export.clicked.connect(self.dialog.export_preview)
 
         # Preview layer checkboxes
         self.dialog.preview_widget.chk_topo.stateChanged.connect(
@@ -285,31 +276,21 @@ class SignalManager:
         self.dialog.output_widget.fileChanged.connect(self.dialog.update_button_state)
 
         # DEM page
-        self.dialog.page_dem.raster_combo.layerChanged.connect(
-            self.dialog.update_button_state
-        )
+        self.dialog.page_dem.raster_combo.layerChanged.connect(self.dialog.update_button_state)
         self.dialog.page_dem.raster_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
 
         # Section page
-        self.dialog.page_section.line_combo.layerChanged.connect(
-            self.dialog.update_button_state
-        )
+        self.dialog.page_section.line_combo.layerChanged.connect(self.dialog.update_button_state)
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.dialog.update_preview_checkbox_states
         )
 
         # Data pages
-        self.dialog.page_geology.dataChanged.connect(
-            self.dialog.update_preview_checkbox_states
-        )
-        self.dialog.page_struct.dataChanged.connect(
-            self.dialog.update_preview_checkbox_states
-        )
-        self.dialog.page_drillhole.dataChanged.connect(
-            self.dialog.update_preview_checkbox_states
-        )
+        self.dialog.page_geology.dataChanged.connect(self.dialog.update_preview_checkbox_states)
+        self.dialog.page_struct.dataChanged.connect(self.dialog.update_preview_checkbox_states)
+        self.dialog.page_drillhole.dataChanged.connect(self.dialog.update_preview_checkbox_states)
 
         # Reconnect internal signals for all pages
         pages = [
@@ -330,9 +311,7 @@ class SignalManager:
 
     def _connect_tool_signals(self) -> None:
         """Connect map tool signals."""
-        self.dialog.preview_widget.btn_measure.toggled.connect(
-            self.dialog.toggle_measure_tool
-        )
+        self.dialog.preview_widget.btn_measure.toggled.connect(self.dialog.toggle_measure_tool)
         self.dialog.preview_widget.btn_interpret.toggled.connect(
             self.dialog.toggle_interpretation_tool
         )

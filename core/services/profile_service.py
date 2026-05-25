@@ -79,9 +79,7 @@ class ProfileService(IProfileService):
 
         geom = line_feat.geometry()
         if not geom or geom.isNull():
-            raise GeometryError(
-                self.tr("Line geometry is not valid"), {"layer": line_lyr.name()}
-            )
+            raise GeometryError(self.tr("Line geometry is not valid"), {"layer": line_lyr.name()})
 
         da = scu.create_distance_area(line_lyr.crs())
 

@@ -120,9 +120,7 @@ def _process_survey_segment(
     dx, dy, dz = _calculate_segment_delta(interval, azimuth, inclination)
 
     trajectory.extend(
-        _calculate_segment_points(
-            x, y, z, prev_depth, dx, dy, dz, interval, densify_step
-        )
+        _calculate_segment_points(x, y, z, prev_depth, dx, dy, dz, interval, densify_step)
     )
 
     return x + dx, y + dy, z + dz, depth
@@ -197,11 +195,7 @@ def project_trajectory_to_section(
     projected = []
 
     # Ensure line_start is QgsPointXY
-    start_pt = (
-        line_start
-        if hasattr(line_start, "x")
-        else QgsPointXY(line_start[0], line_start[1])
-    )
+    start_pt = line_start if hasattr(line_start, "x") else QgsPointXY(line_start[0], line_start[1])
 
     for depth, x, y, z, _, _ in trajectory:
         point = QgsPointXY(x, y)
@@ -217,9 +211,7 @@ def project_trajectory_to_section(
         # Calculate offset from section
         offset = distance_area.measureLine(point, nearest_pt_xy)
 
-        projected.append(
-            (depth, x, y, z, dist_along, offset, nearest_pt_xy.x(), nearest_pt_xy.y())
-        )
+        projected.append((depth, x, y, z, dist_along, offset, nearest_pt_xy.x(), nearest_pt_xy.y()))
 
     return projected
 
@@ -258,9 +250,7 @@ def interpolate_intervals_on_trajectory(
     traj = sorted(trajectory, key=lambda p: p[0])
 
     for from_val, to_val, attr in intervals:
-        points_in_interval = _get_points_for_interval(
-            traj, from_val, to_val, buffer_width
-        )
+        points_in_interval = _get_points_for_interval(traj, from_val, to_val, buffer_width)
 
         if len(points_in_interval) >= MIN_INTERVAL_POINTS:
             p_2d = [(p[4], p[3]) for p in points_in_interval]

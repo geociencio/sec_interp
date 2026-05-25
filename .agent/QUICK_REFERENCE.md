@@ -78,17 +78,24 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 | **Context Selector**| Semantic skill selection | `uv run python scripts/context_selector.py` |
 | **Metrics Report** | Markdown trend report | `uv run python scripts/metrics_report.py` |
 | **CC Checker** | Validate complexity thresholds | `uv run python scripts/check_cc.py` |
+| **Metrics Sync** | Unified ground-truth metric extraction | `uv run python scripts/sync_metrics.py` |
 
 ---
 
 ## 📊 System Metrics
 
-**Current Status** *(updated 2026-04-29)*:
+**Current Status** *(updated 2026-05-24 — ground-truth audit)*:
 - ✅ **Generation 6 Enabled**: Automated memory, context, and quality gates.
+- ✅ **Security Score**: **100.0/100** (Bandit).
+- ✅ **Maintainability**: **90.7/100** (qgis-analyzer).
+- ✅ **Module Stability**: **52.3/100** (qgis-analyzer).
 - ✅ **Docstring Coverage**: **100.0%** (Project-wide compliance).
 - ✅ **Return Type Coverage**: **100.0%**.
-- ✅ **Complexity Gate**: **CC <= 10** enforced via pre-push hook.
-- ✅ **Tests**: 620 tests passing (100% success rate).
+- ✅ **Param Type Coverage**: **94.2%**.
+- ✅ **Complexity Gate**: **CC <= 10** (verified 2026-05-24 by check_cc.py).
+- ✅ **i18n Hygiene Gate**: **0 violations** (verified by verify_i18n_hygiene.py).
+- ⚠️ **qgis-analyzer i18n**: 254 MISSING_I18N flagged (broader heuristic scope).
+- ✅ **Tests**: **620 passing** (confirmed 2026-05-24 via `make docker-test`).
 
 ---
 
@@ -118,6 +125,8 @@ uv run python3 scripts/metrics_report.py
 
 - [.agent/README.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/README.md) - **Full System Documentation**
 - [AGENTS.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/AGENTS.md) - Full agents and skills definition
+- [.codewhale/instructions.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.codewhale/instructions.md) - **CodeWhale Runtime Bridge**
+- [workflows/index.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/index.md) - **Workflow Quick Reference**
 - [DEVELOPMENT_LOG.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/DEVELOPMENT_LOG.md) - Project history
 
 ---
