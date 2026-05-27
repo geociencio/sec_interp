@@ -44,7 +44,7 @@ A lesson in `AGENT_LESSONS.md` should be **promoted to `[consolidated]` status**
 | Lesson contradicts a newer lesson on the same topic | Keep the newer one, mark the older as `[SUPERSEDED]` |
 | Lesson is no longer relevant (e.g., removed feature) | Mark as `[OBSOLETE]` and remove within 30 days |
 
-**Review cadence**: Memory pruning should occur once per quarter, during `/close-phase`.
+**Review cadence**: Memory pruning should occur monthly, during the last session of each month (via `/close-session`).
 
 ---
 
@@ -98,7 +98,7 @@ The following must **never** appear in `AGENT_LESSONS.md`:
 
 | Review Type | Cadence | Owner | Triggered By |
 |---|---|---|---|
-| **Memory Pruning** | Quarterly | Agent (auto) | `/close-phase` workflow |
+| **Memory Pruning** | Monthly (at session close) | Agent (auto) | `/close-session` workflow |
 | **Skill Promotion** | On demand | Agent | Pattern repeats 2+ times |
 | **Policy Review** | Biannually | Human | Major framework version upgrade |
 

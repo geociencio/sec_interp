@@ -82,6 +82,10 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 | **Metric Validator** | Cross-file consistency check | `uv run python scripts/validate_agent_metrics.py` |
 | **Workflow Graph** | Dependency graph & ref validator | `uv run python scripts/workflow_graph.py` |
 | **Metrics Trends** | Trend report with ASCII sparklines | `uv run python scripts/metrics_report.py` |
+| **Lesson Extractor** | Auto-propose AGENT_LESSONS candidates | `uv run python scripts/lesson_extractor.py --propose` |
+| **Session Index** | Chronological index of maintenance logs | `uv run python scripts/session_index.py` |
+| **Workflow Executor** | Runtime-agnostic workflow translator | `uv run python scripts/workflow_executor.py <name>` |
+| **System Validator** | Validate .agent/ structure integrity | `uv run python scripts/validate_agent_system.py` |
 
 ---
 

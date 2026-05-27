@@ -2,6 +2,7 @@
 description: Procedure to end a work session, update logs, and archive results
 agent: QA Engineer
 skills: [qa-docker, commit-standards, agentic-memory, documentation-standards, changelog-generator]
+runtimes: [antigravity, codewhale]
 stop_conditions:
   - "Tests fail during final verification → report failures, do NOT commit, escalate to user"
   - "Pre-commit hook fails 3+ times on same file → skip that file, report issue"
@@ -101,6 +102,7 @@ uv run python scripts/validate_agent_metrics.py
 This scans all .agent/ files for stale metric references (test counts, quality scores, CC thresholds) and reports any drift from `agent_metrics.json`. Fix any reported inconsistencies before proceeding.
 
 *   Run `uv run python scripts/memory_prune.py` to auto-prune old consolidated lessons.
+*   Run `uv run python scripts/lesson_extractor.py --since HEAD~1 --propose` to generate candidate lessons from session diff.
 *   Generate metrics report: `uv run python scripts/metrics_report.py`.
 
 🤖 **Agent Action**: Update AI_CONTEXT.md and validate that next_steps.md is clear.
