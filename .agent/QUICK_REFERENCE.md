@@ -1,7 +1,7 @@
 # Quick Reference: Workflows + Skills System
 
 **Created Date**: 2026-03-09
-**Version**: 1.5 (Updated 2026-04-29 — Generation 6)
+**Version**: 1.6 (Updated 2026-05-26 — Generation 6)
 
 ---
 
@@ -79,6 +79,9 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 | **Metrics Report** | Markdown trend report | `uv run python scripts/metrics_report.py` |
 | **CC Checker** | Validate complexity thresholds | `uv run python scripts/check_cc.py` |
 | **Metrics Sync** | Unified ground-truth metric extraction | `uv run python scripts/sync_metrics.py` |
+| **Metric Validator** | Cross-file consistency check | `uv run python scripts/validate_agent_metrics.py` |
+| **Workflow Graph** | Dependency graph & ref validator | `uv run python scripts/workflow_graph.py` |
+| **Metrics Trends** | Trend report with ASCII sparklines | `uv run python scripts/metrics_report.py` |
 
 ---
 
@@ -111,12 +114,12 @@ The system includes a mandatory `.git/hooks/pre-push` gate that blocks any push 
 
 ### Sync Skills and Workflows
 ```bash
-uv run python3 scripts/skill_sync.py
+uv run python scripts/skill_sync.py
 ```
 
 ### Run Metrics Report
 ```bash
-uv run python3 scripts/metrics_report.py
+uv run python scripts/metrics_report.py
 ```
 
 ---
@@ -131,5 +134,5 @@ uv run python3 scripts/metrics_report.py
 
 ---
 
-**Last update**: 2026-04-29
-**System Version**: 1.5 (Generation 6 — Operational Excellence)
+**Last update**: 2026-05-26
+**System Version**: 1.6 (Generation 6 — Operational Excellence)

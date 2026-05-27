@@ -83,4 +83,4 @@ The system exposes foundational knowledge through the Model Context Protocol (MC
 Specialized capabilities (e.g., QGIS, Cloud, Mobile) are located in the `scaffold/` directory. Use the appropriate blueprint to extend this generic core.
 
 ---
-*Antigravity Framework - Generation 5 Core*
+*Antigravity Framework - Generation 6 Core*

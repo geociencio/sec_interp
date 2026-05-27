@@ -62,7 +62,7 @@ Verify that `.agent/task.md` exists and is updated before committing.
 🤖 **Agent Action (Skill Sync)**: Run skill synchronization and update AGENTS.md.
 // turbo
 ```bash
-python3 scripts/skill_sync.py
+uv run python scripts/skill_sync.py
 ```
 
 
@@ -93,6 +93,12 @@ python3 scripts/skill_sync.py
 uv run python scripts/sync_metrics.py
 ```
 This updates `agent_metrics.json` with live scores from qgis-analyzer + check_cc.py + verify_i18n_hygiene.py.
+
+🤖 **Agent Action (Metric Validation — CRITICAL)**: Verify that all .agent/ documentation files are consistent with the ground truth.
+```bash
+uv run python scripts/validate_agent_metrics.py
+```
+This scans all .agent/ files for stale metric references (test counts, quality scores, CC thresholds) and reports any drift from `agent_metrics.json`. Fix any reported inconsistencies before proceeding.
 
 *   Run `uv run python scripts/memory_prune.py` to auto-prune old consolidated lessons.
 *   Generate metrics report: `uv run python scripts/metrics_report.py`.
@@ -127,7 +133,7 @@ git commit -m "chore(docs): close session [TOPIC]"
 
 Generate a final message listing:
 *   Updated log files.
-*   Test status (e.g., 535 tests OK).
+*   Test status (e.g., 620 tests OK).
 *   Content of `.agent/next_steps.md`.
 *   Suggestion for the next session (command `/start-session`).
 

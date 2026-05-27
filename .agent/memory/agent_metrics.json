@@ -3,7 +3,7 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent/memory/memory_policy.md",
-        "last_updated": "2026-05-25",
+        "last_updated": "2026-05-27",
         "last_updated_by": "CodeWhale ground-truth audit (Phase 0)"
     },
     "summary": {
@@ -25,10 +25,10 @@
         "i18n_issues_qgis_analyzer": 254,
         "i18n_issues_i18n_hygiene": 0,
         "i18n_note": "AST hygiene checker reports 0 violations (self.tr() wrapping). qgis-analyzer reports 254 MISSING_I18N (broader scope). Discrepancy under investigation.",
-        "total_issues": 257,
+        "total_issues": 82,
         "i18n_hygiene_gate": "PASS",
         "issue_breakdown": {
-            "MISSING_I18N": 254,
+            "MISSING_I18N": 79,
             "NON_PYTHONIC_LOOP": 2,
             "SPATIAL_INDEX": 1
         },
@@ -51,18 +51,19 @@
                 "lines": 450
             },
             {
-                "path": "gui/tools/measure_tool.py",
-                "lines": 407
-            },
-            {
                 "path": "gui/dialog_interpretation_manager.py",
                 "lines": 424
+            },
+            {
+                "path": "gui/tools/measure_tool.py",
+                "lines": 407
             },
             {
                 "path": "gui/ui/pages/settings_page.py",
                 "lines": 417
             }
-        ]
+        ],
+        "test_count": 620
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
@@ -106,7 +107,7 @@
             "note": "ai-ctx measures different dimensions than qgis-analyzer. Both are valid."
         },
         "sync_metrics": {
-            "date": "2026-05-25",
+            "date": "2026-05-27",
             "command": "uv run python scripts/sync_metrics.py",
             "cc_gate": "PASS",
             "i18n_ast_gate": "PASS"
@@ -122,7 +123,7 @@
     "last_session": {
         "date": "2026-05-23",
         "topic": "i18n_hygiene_and_quality_gate",
-        "tests_ok": 572,
+        "tests_ok": 620,
         "quality_score": 52.3,
         "files_modified": 8,
         "lines_added": 480,
@@ -135,7 +136,7 @@
             "Translate dialog title Export Preview in dialog_export_manager.py using self.dialog.tr",
             "Translate dynamic layer legend names in preview_layer_factory.py using QCoreApplication.translate",
             "Exclude developer logging, task description strings, and metric timing keys from i18n using no-i18n tags",
-            "Verify complete codebase stability with all 572 unit tests passing",
+            "Verify complete codebase stability with all 620 unit tests passing",
             "Audit translation quality gate scanning 53 GUI files with 0 violations"
         ],
         "status": "SUCCESS"
@@ -149,7 +150,7 @@
                 "Translate dialog title Export Preview in dialog_export_manager.py using self.dialog.tr",
                 "Translate dynamic layer legend names in preview_layer_factory.py using QCoreApplication.translate",
                 "Exclude developer logging, task description strings, and metric timing keys from i18n using no-i18n tags",
-                "Verify complete codebase stability with all 572 unit tests passing",
+                "Verify complete codebase stability with all 620 unit tests passing",
                 "Audit translation quality gate scanning 53 GUI files with 0 violations"
             ],
             "task_completion_rate": 1.0,

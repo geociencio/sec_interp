@@ -52,7 +52,7 @@ def function(arg1: int) -> str:
 
 ### Code Quality
 - Follow SOLID principles.
-- Keep cyclomatic complexity below 15.
+- Keep cyclomatic complexity below 10.
 
 ## Quality Checklist
 - [ ] Is `pathlib` used for all paths?

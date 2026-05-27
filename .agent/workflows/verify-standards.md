@@ -31,7 +31,7 @@ Review each file in `.agent/workflows/` looking for:
 Run synchronization to ensure `AGENTS.md` is up to date.
 // turbo
 ```bash
-python3 scripts/skill_sync.py
+uv run python scripts/skill_sync.py
 ```
 
 ## Expected Result

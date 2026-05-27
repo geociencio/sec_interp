@@ -20,7 +20,7 @@ This file is the reverse chronological record of **daily activity**.
 - **Changes**:
     - Relevant technical detail 1 (mention modules if applicable).
     - Relevant technical detail 2.
-- **Quality**: Test status (e.g., 535/535 OK) and ruff/black metrics.
+- **Quality**: Test status (e.g., 620/620 OK) and ruff/black metrics.
 - **Maintenance**: Link to the maintenance log [session_YYYY-MM-DD_topic.md](maintenance/session_YYYY-MM-DD_topic.md).
 ```
 

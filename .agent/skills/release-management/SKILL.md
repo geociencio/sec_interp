@@ -25,7 +25,7 @@ Controls the plugin's version lifecycle, ensuring that each delivery meets the s
    uv run qgis-analyzer analyze . -o analysis_results
    uv run qgis-analyzer security --deep .
    ```
-   - Validate: Score > 25, zero High-Severity security issues, no critical violations (CC > 20).
+   - Validate: Score > 25, zero High-Severity security issues, no critical violations (CC > 10).
 2. **Update Badges**: Reflect metrics in `README.md`.
 
 ### Phase 2: Versioning and Documentation
@@ -56,7 +56,7 @@ Controls the plugin's version lifecycle, ensuring that each delivery meets the s
 3. **Release Notes**: Generate detailed release notes in `docs/releases/RELEASE_NOTES_vX.Y.Z.md`.
 
 ### Phase 3: Technical Verification
-1. Achieve 535+ passing tests.
+1. Achieve 620+ passing tests.
 2. Run `make docker-test` for an isolated environment.
 3. Update `AI_CONTEXT.md` via `uv run ai-ctx analyze`.
 
@@ -90,4 +90,4 @@ Published Artifacts: `sec_interp.X.Y.Z.zip`
 - [ ] Have all version references been updated?
 - [ ] Has the ZIP file been verified (no technical garbage)?
 - [ ] Have Git Tagging rules been followed?
-- [ ] Did the 535+ tests pass successfully?
+- [ ] Did the 620+ tests pass successfully?

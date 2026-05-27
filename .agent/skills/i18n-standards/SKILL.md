@@ -1,6 +1,7 @@
 ---
 name: i18n-standards
 description: Standards and best practices for internationalization (i18n) in SecInterp
+trigger: when adding or modifying user-facing strings, running translation tools (update-strings.sh, apply-all-i18n.sh), triaging MISSING_I18N analyzer flags, or using the /i18n-maintenance workflow.
 ---
 
 # Skill: i18n Standards

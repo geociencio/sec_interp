@@ -37,7 +37,7 @@ uv run ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/
 
 🤖 **Agent Action**: Review `AI_CONTEXT.md` and `project_context.json` using **qgis-core** skill to identify:
 - Critical technical debt related to QGIS API
-- Methods with high cyclomatic complexity (CC > 15)
+- Methods with high cyclomatic complexity (CC > 10)
 - Architecture violations (UI in Core)
 
 Review the following files in this order:
@@ -47,6 +47,16 @@ Review the following files in this order:
 *   `AI_CONTEXT.md`: Architectural context and long-term metrics.
 *   `project_context.json`: Structured data on complexity and dependencies.
 *   `docs/DEVELOPMENT_LOG.md`: See summary of the last session (reverse chronological order).
+
+### 1.5 Metric Coherence Validation (CRITICAL)
+Before starting work, verify that all .agent/ documentation files are consistent with ground-truth metrics. This catches stale references (test counts, quality scores, CC thresholds) that may have drifted between sessions.
+
+// turbo
+```bash
+uv run python scripts/sync_metrics.py --quiet && uv run python scripts/validate_agent_metrics.py
+```
+
+🤖 **Agent Action**: If the validator reports inconsistencies, fix them before proceeding. Stale metrics in documentation lead to incorrect decisions.
 
 ### 2. Quick Quality Scan
 Perform a quick scan of the project status to identify critical technical debt.
@@ -85,14 +95,22 @@ env PYTHONPATH=.. uv run python3 -m unittest discover tests
 - Agent operating with the correct profiles and skills loaded.
 
 ## Structured Session Status
-🤖 **Agent Action**: Conclude the initialization with:
+🤖 **Agent Action**: Conclude the initialization with a YAML block showing current metrics AND the delta from the previous session:
 ```yaml
 session_init: success
 context_sync: complete
 active_task: [task_name]
 current_metrics:
-  tests: 535
+  tests: 620
   quality_score: X
+  cc_gate: PASS|FAIL
+  i18n_gate: PASS|FAIL
+delta_from_last:
+  quality_score: +X.X
+  tests: +N | -N | =
+  issues: +N | -N | =
 ```
+
+🤖 **Agent Action**: To compute the delta, compare `agent_metrics.json` → `last_session` values against the current `sync_metrics.py` output. If the delta shows a regression (negative quality, new CC failures), flag it immediately.
 
 **Philosophy**: Start coding knowing *exactly* what happened yesterday and with specialized context loaded.

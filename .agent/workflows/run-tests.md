@@ -3,7 +3,7 @@ description: How to run unit tests reliably
 agent: QA Engineer
 skills: [qa-docker]
 validation: |
-  - Verify that all tests pass (535 tests OK)
+  - Verify that all tests pass (620 tests OK)
   - Confirm that there are no mocking errors
 ---
 
@@ -44,7 +44,7 @@ make docker-test
 🤖 **Agent Action**: Conclude with a YAML block summarizing the test run:
 ```yaml
 test_run: complete
-total_tests: 535
+total_tests: 620
 passed: X
 failed: Y
 errors: Z

@@ -221,6 +221,7 @@ def update_metrics_json(metrics: dict) -> bool:
     summary["i18n_hygiene_gate"] = (
         "PASS" if i18n_ast.get("passed") else ("FAIL" if i18n_ast.get("passed") is False else "UNKNOWN")
     )
+    summary["test_count"] = summary.get("tests_ok", summary.get("test_count", "?"))
     summary["total_issues"] = analyzer.get("total_issues", summary.get("total_issues", "?"))
 
     module_sizes = metrics.get("module_sizes", {})

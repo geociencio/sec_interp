@@ -19,5 +19,5 @@ Este tablero de tareas activas registra el progreso de la sesión actual de desa
 ## 🧪 Operational Status
 - **Active Task**: [verify_i18n] Verificación del impacto de la auditoría de i18n y ejecución del script de higiene
 - **Current Metrics**:
-  - Tests Passing: 572/572 (100%) (v3.6.0 Baseline)
-  - Quality Score: 40.8/100 (v3.6.0 Baseline)
+  - Tests Passing: 620/620 (100%) (v3.7.0 Verified)
+  - Quality Score: 52.3/100 (v3.7.0 Verified)
