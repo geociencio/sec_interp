@@ -6,6 +6,8 @@ Este tablero de tareas activas registra el progreso de la sesión actual de desa
 - [x] Audit untranslated strings flagged by `qgis-analyzer` <!-- id: 1.1 -->
 - [x] Add `# no-i18n` or exclusion comments to technical string keys (e.g., datetime formats, database queries, logger patterns) to eliminate noise <!-- id: 1.2 -->
 - [x] Implement a standardized script to verify that no user-facing strings are added without `self.tr()` wrapping <!-- id: 1.3 -->
+- [x] Triage 79 analyzer flags — 9 genuine gaps fixed, 70 false positives (dict keys, CSS, logging, HTML markup) <!-- id: 1.4 -->
+- [x] Fix 9 genuine i18n gaps: wrapped dialog error titles with self.dialog.tr() in export_manager, preview_manager, and interpretation_manager <!-- id: 1.4b -->
 
 ## 🎯 Goal 2: 3D Interpretation & Symbology Enhancements
 - [ ] Implement a live symbology/legend styling preview under the Settings sidebar <!-- id: 2.1 -->
@@ -17,7 +19,9 @@ Este tablero de tareas activas registra el progreso de la sesión actual de desa
 - [ ] Add a strict check in pre-commit hooks to validate `qt6_compat` import hygiene across all GUI pages <!-- id: 3.2 -->
 
 ## 🧪 Operational Status
-- **Active Task**: [verify_i18n] Verificación del impacto de la auditoría de i18n y ejecución del script de higiene
+- **Active Task**: [i18n_gaps_fix] Cierre de sesión — 9 gaps genuinos de i18n resueltos, 70 falsos positivos documentados
 - **Current Metrics**:
   - Tests Passing: 620/620 (100%) (v3.7.0 Verified)
   - Quality Score: 52.3/100 (v3.7.0 Verified)
+  - AST i18n Gate: PASS (0 violations)
+  - qgis-analyzer MISSING_I18N: 70 remaining (all false positives)

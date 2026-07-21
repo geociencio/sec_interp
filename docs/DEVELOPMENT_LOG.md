@@ -1,3 +1,17 @@
+## [2026-07-20] Session: i18n Genuine Gaps Fix
+- **Achievement**: Auditoria completa de los 79 MISSING_I18N del qgis-analyzer y reparacion de los 9 gaps genuinos restantes.
+- **Root Cause/Context**: La fase v3.7.0 Goal 1 requeria triage de los flags del analyzer. De 79 flags, 70 son falsos positivos (dict keys, CSS/QSS, colores hex, simbolos unicode, strings de logging) y 9 eran titulos de dialogo y labels HTML visibles al usuario sin envoltura tr().
+- **Actions Taken**:
+    - Clasificacion exhaustiva de los 79 flags en 10 categorias de falsos positivos vs 9 gaps genuinos.
+    - Envuelto con self.dialog.tr() los 9 strings en dialog_export_manager.py (3), dialog_preview_manager.py (5), y dialog_interpretation_manager.py (1).
+    - Verificacion: AST i18n gate 0 violaciones, ruff check PASS, CC gate PASS.
+- **Operational Metrics**:
+    - Tests Passing: 620/620 (100%)
+    - AST i18n Gate: PASS (0 violations)
+    - Quality Score: 52.3/100
+- **Status**: Goal 1 de v3.7.0 completado. Pendiente Goal 2 (symbology preview) y deuda tecnica (qt6_compat, NON_PYTHONIC_LOOP, SPATIAL_INDEX).
+- **Maintenance**: [session_2026-07-20_i18n_gaps_fix.md](maintenance/session_2026-07-20_i18n_gaps_fix.md)
+
 ## [2026-05-23] Session: i18n Hygiene & Quality Gate Implementation
 - **Achievement**: Completada la auditoría de traducciones de la interfaz gráfica de usuario y establecida la herramienta AST de verificación estática de i18n (`verify_i18n_hygiene.py`).
 - **Root Cause/Context**: La fase `v3.7.0` requiere reducir la deuda de internacionalización acumulada eliminando falsos positivos en variables técnicas de la GUI y traduciendo cadenas visibles genuinas.

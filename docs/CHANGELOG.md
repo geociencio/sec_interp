@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **i18n Quality Gate**: Developed an Abstract Syntax Tree (AST) validation script (`verify_i18n_hygiene.py`) to systematically scan UI components for untranslated strings and enforce translation hygiene.
 
+### Fixed
+- **i18n Dialog Titles**: Wrapped 9 untranslated error dialog titles (`Export Error`, `Preview Error`, `Geology Error`, `Drillhole Error`, etc.) and the `"ID:"` results HTML label with `self.dialog.tr()` in `ExportManager`, `PreviewManager`, and `InterpretationManager`.
+
 ### Changed
 - **UI Translation Coverage**: Wrapped user-facing text in `self.dialog.tr()` and dynamic layer names (`Topography Fill`, `Drillhole Traces`, `Drillhole Intervals`) in `QCoreApplication.translate()`.
 - **Developer Noise Isolation**: Applied `# no-i18n` exclusion annotations to internal performance metrics, timing dictionaries, developer log tags, and orchestrator task names.
