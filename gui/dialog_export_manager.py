@@ -75,7 +75,7 @@ class ExportManager:
                 return success
 
         except Exception as e:
-            self.dialog.handle_error(e, "Export Error")
+            self.dialog.handle_error(e, self.dialog.tr("Export Error"))
             return False
 
     def _show_export_error(self, message: str) -> None:
@@ -207,10 +207,10 @@ class ExportManager:
 
             self.dialog.preview_widget.results_text.setPlainText("\n".join(result_msg))
         except SecInterpError as e:
-            self.dialog.handle_error(e, "Data Export Error")
+            self.dialog.handle_error(e, self.dialog.tr("Data Export Error"))
             return False
         except Exception as e:
-            self.dialog.handle_error(e, "Unexpected Data Export Error")
+            self.dialog.handle_error(e, self.dialog.tr("Unexpected Data Export Error"))
             return False
         else:
             return True

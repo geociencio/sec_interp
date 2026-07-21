@@ -241,7 +241,7 @@ class InterpretationManager:
             f"<b>{self.dialog.tr('Interpretation Finished')}</b><br>"
             f"<b>{self.dialog.tr('Name')}:</b> {interpretation.name}<br>"
             f"<b>{self.dialog.tr('Vertices')}:</b> {len(interpretation.vertices_2d)}<br>"
-            f"<b>ID:</b> {interpretation.id[:8]}..."
+            f"<b>{self.dialog.tr('ID')}:</b> {interpretation.id[:8]}..."
         )
         self.dialog.preview_widget.results_text.setHtml(msg)
         self.dialog.preview_widget.results_group.setCollapsed(False)

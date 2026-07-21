@@ -115,15 +115,15 @@ class PreviewManager(TranslatableMixin):
                 self._update_ui_state(params, result)
 
         except SecInterpError as e:
-            self.dialog.handle_error(e, "Preview Error")
+            self.dialog.handle_error(e, self.dialog.tr("Preview Error"))
             return False, str(e)
         except (AttributeError, TypeError, ValueError) as e:
             logger.exception("Unexpected UI error during preview generation")
-            self.dialog.handle_error(e, "Unexpected Preview Error")
+            self.dialog.handle_error(e, self.dialog.tr("Unexpected Preview Error"))
             return False, str(e)
         except Exception as e:
             logger.exception("Critical unexpected error in preview generation")
-            self.dialog.handle_error(e, "Critical Error")
+            self.dialog.handle_error(e, self.dialog.tr("Critical Error"))
             return False, str(e)
         else:
             return True, self.tr("Preview generated successfully")
@@ -417,7 +417,7 @@ class PreviewManager(TranslatableMixin):
         logger.error(f"Geology Task Error: {error_msg}")
         # Map string error to ProcessingError for centralized handling
         error = ProcessingError(self.tr("Geology processing failed: {}").format(error_msg))
-        self.dialog.handle_error(error, "Geology Error")
+        self.dialog.handle_error(error, self.dialog.tr("Geology Error"))
 
     def _on_drillhole_progress(self, progress: float) -> None:
         """Handle progress updates from parallel drillhole service."""
@@ -429,7 +429,7 @@ class PreviewManager(TranslatableMixin):
         """Handle error during parallel drillhole generation."""
         logger.error(f"Drillhole Task Error: {error_msg}")
         error = ProcessingError(self.tr("Drillhole processing failed: {}").format(error_msg))
-        self.dialog.handle_error(error, "Drillhole Error")
+        self.dialog.handle_error(error, self.dialog.tr("Drillhole Error"))
 
     def _on_drillhole_finished(self, result: Any) -> None:
         """Handle completion of drillhole task."""
