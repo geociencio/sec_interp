@@ -1,3 +1,18 @@
+## [2026-07-20b] Session: Adaptive Vertical Exaggeration Plan
+- **Achievement**: Plan de implementacion completo para exageracion vertical adaptiva (Goal 2.2 de v3.7.0).
+- **Root Cause/Context**: El sistema actual usa un valor estatico de exageracion vertical (0.1-100, default 1.0) que no se adapta a la geometria del perfil. Perfiles largos con poco relieve quedan visualmente planos; perfiles cortos con mucho relieve se distorsionan.
+- **Actions Taken**:
+    - Analisis completo del flujo de exageracion vertical a traves de 15+ archivos (desde DemPage.vertexag_spin hasta PreviewLayerFactory._apply_exaggeration y PreviewAxesManager).
+    - Diseno de algoritmo de dos componentes: VE base por aspect ratio (4 tiers: 1.0, 2.0, 5.0, 10.0) + multiplicador de densidad estructural (0.7-1.3).
+    - Creacion del plan de 5 fases: Core service → GUI toggle → Integration → Persistence → Verification (7 tests).
+    - Documentacion guardada en docs/plans/implementation_plan_adaptive_ve_v3.7.0.md.
+- **Operational Metrics**:
+    - Tests Passing: 620/620 (100%)
+    - Quality Score: 52.3/100
+    - Ruff: PASS
+- **Status**: Plan listo para ejecucion. Proxima sesion: Fase 1 — implementar VerticalExaggerationService + tests.
+- **Maintenance**: [session_2026-07-20b_adaptive_ve_plan.md](maintenance/session_2026-07-20b_adaptive_ve_plan.md)
+
 ## [2026-07-20] Session: i18n Genuine Gaps Fix
 - **Achievement**: Auditoria completa de los 79 MISSING_I18N del qgis-analyzer y reparacion de los 9 gaps genuinos restantes.
 - **Root Cause/Context**: La fase v3.7.0 Goal 1 requeria triage de los flags del analyzer. De 79 flags, 70 son falsos positivos (dict keys, CSS/QSS, colores hex, simbolos unicode, strings de logging) y 9 eran titulos de dialogo y labels HTML visibles al usuario sin envoltura tr().

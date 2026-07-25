@@ -3,7 +3,7 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent/memory/memory_policy.md",
-        "last_updated": "2026-07-21",
+        "last_updated": "2026-07-25",
         "last_updated_by": "CodeWhale ground-truth audit (Phase 0)"
     },
     "summary": {
@@ -107,7 +107,7 @@
             "note": "ai-ctx measures different dimensions than qgis-analyzer. Both are valid."
         },
         "sync_metrics": {
-            "date": "2026-07-21",
+            "date": "2026-07-25",
             "command": "uv run python scripts/sync_metrics.py",
             "cc_gate": "PASS",
             "i18n_ast_gate": "PASS"

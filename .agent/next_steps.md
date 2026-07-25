@@ -27,7 +27,10 @@ A full metric re-scan was performed. Key findings:
 - **Objective**: Extend custom rendering and styling features.
 - **Tasks**:
   - [ ] Implement a live symbology/legend styling preview under the Settings sidebar. <!-- id: 2.1 -->
-  - [ ] Investigate adaptive vertical exaggeration settings for complex structural projections. <!-- id: 2.2 -->
+  - [x] Implementation plan created (session 2026-07-20): `docs/plans/implementation_plan_adaptive_ve_v3.7.0.md` — 5-fase plan with aspect-ratio algorithm + structural density factor <!-- id: 2.2 -->
+  - [ ] Execute Fase 1: Implement `core/services/vertical_exaggeration_service.py` + unit tests <!-- id: 2.2a -->
+  - [ ] Execute Fase 2: Add Auto/Manual toggle to `dem_page.py` <!-- id: 2.2b -->
+  - [ ] Execute Fase 3: Integrate into `sec_interp_plugin.py` render pipeline <!-- id: 2.2c -->
   - [ ] Expand Cartesian vertical projection integration tests for highly deviated drillhole surveys. <!-- id: 2.3 -->
 
 ### Goal 3: Agentic System Integrity (Phase 2 — COMPLETE)
