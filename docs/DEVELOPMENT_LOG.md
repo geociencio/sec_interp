@@ -1,3 +1,16 @@
+## [2026-07-20c] Session: Collapsible Preview Controls
+- **Achievement**: Separado el canvas de preview de los botones, controles LOD y checkboxes, permitiendo colapsarlos en un QgsCollapsibleGroupBox.
+- **Root Cause/Context**: El PreviewWidget agrupaba canvas, status bar, botones, LOD y checkboxes en una sola columna no colapsable. El usuario requirio poder colapsar los controles hacia abajo para maximizar el area de visualizacion.
+- **Actions Taken**:
+    - Refactor de PreviewWidget: canvas + status bar siempre visibles, controles (botones, LOD, checkboxes) dentro de QgsCollapsibleGroupBox("Controls"), resultados en QgsCollapsibleGroupBox("Results") independiente.
+    - _setup_action_buttons, _setup_lod_controls y _setup_layer_checkboxes ahora aceptan parent_layout en vez de self.frame_layout.
+- **Operational Metrics**:
+    - Tests Passing: 620/620 (100%)
+    - Quality Score: 52.3/100
+    - Ruff / CC / i18n: PASS
+- **Status**: UX enhancement completado. Proxima sesion: Fase 1 de adaptive vertical exaggeration.
+- **Maintenance**: [session_2026-07-20c_collapsible_preview_controls.md](maintenance/session_2026-07-20c_collapsible_preview_controls.md)
+
 ## [2026-07-20b] Session: Adaptive Vertical Exaggeration Plan
 - **Achievement**: Plan de implementacion completo para exageracion vertical adaptiva (Goal 2.2 de v3.7.0).
 - **Root Cause/Context**: El sistema actual usa un valor estatico de exageracion vertical (0.1-100, default 1.0) que no se adapta a la geometria del perfil. Perfiles largos con poco relieve quedan visualmente planos; perfiles cortos con mucho relieve se distorsionan.

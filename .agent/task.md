@@ -10,6 +10,7 @@ Este tablero de tareas activas registra el progreso de la sesión actual de desa
 - [x] Fix 9 genuine i18n gaps: wrapped dialog error titles with self.dialog.tr() in export_manager, preview_manager, and interpretation_manager <!-- id: 1.4b -->
 
 ## 🎯 Goal 2: 3D Interpretation & Symbology Enhancements
+- [x] Make preview controls (buttons, LOD, checkboxes) collapsible via QgsCollapsibleGroupBox — separate from canvas <!-- id: 2.0 -->
 - [ ] Implement a live symbology/legend styling preview under the Settings sidebar <!-- id: 2.1 -->
 - [x] Implementation plan created for adaptive vertical exaggeration (docs/plans/implementation_plan_adaptive_ve_v3.7.0.md) <!-- id: 2.2 -->
 - [ ] Execute Fase 1: Implement VerticalExaggerationService + unit tests <!-- id: 2.2a -->
@@ -20,7 +21,7 @@ Este tablero de tareas activas registra el progreso de la sesión actual de desa
 - [ ] Add a strict check in pre-commit hooks to validate `qt6_compat` import hygiene across all GUI pages <!-- id: 3.2 -->
 
 ## 🧪 Operational Status
-- **Active Task**: [adaptive_ve_plan] Implementation plan created for adaptive vertical exaggeration. Next: Fase 1 — VerticalExaggerationService.
+- **Active Task**: [collapsible_preview_controls] Separated preview canvas from collapsible controls/results. Next: Fase 1 — VerticalExaggerationService.
 - **Current Metrics**:
   - Tests Passing: 620/620 (100%) (v3.7.0 Verified)
   - Quality Score: 52.3/100 (v3.7.0 Verified)

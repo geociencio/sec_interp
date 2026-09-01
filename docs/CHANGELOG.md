@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **i18n Dialog Titles**: Wrapped 9 untranslated error dialog titles (`Export Error`, `Preview Error`, `Geology Error`, `Drillhole Error`, etc.) and the `"ID:"` results HTML label with `self.dialog.tr()` in `ExportManager`, `PreviewManager`, and `InterpretationManager`.
 
 ### Changed
+- **Collapsible Preview Controls**: Grouped the preview action buttons, LOD controls, and layer checkboxes into a collapsible `QgsCollapsibleGroupBox("Controls")`, keeping the map canvas and status bar always visible.
 - **UI Translation Coverage**: Wrapped user-facing text in `self.dialog.tr()` and dynamic layer names (`Topography Fill`, `Drillhole Traces`, `Drillhole Intervals`) in `QCoreApplication.translate()`.
 - **Developer Noise Isolation**: Applied `# no-i18n` exclusion annotations to internal performance metrics, timing dictionaries, developer log tags, and orchestrator task names.
 - **Static Translation Tuning**: Calibrated `.analyzerignore` to completely bypass core services, internal exporters, and headless GUI managers from `MISSING_I18N` analysis.

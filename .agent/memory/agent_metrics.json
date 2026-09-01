@@ -3,7 +3,7 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent/memory/memory_policy.md",
-        "last_updated": "2026-07-25",
+        "last_updated": "2026-09-01",
         "last_updated_by": "CodeWhale ground-truth audit (Phase 0)"
     },
     "summary": {
@@ -18,7 +18,7 @@
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
         "maintainability_score": 90.7,
         "security_score": 100.0,
-        "type_hint_coverage_params": 94.2,
+        "type_hint_coverage_params": 94.3,
         "type_hint_coverage_returns": 100.0,
         "docstring_coverage": 100.0,
         "cyclomatic_complexity_gate": "PASS",
@@ -107,7 +107,7 @@
             "note": "ai-ctx measures different dimensions than qgis-analyzer. Both are valid."
         },
         "sync_metrics": {
-            "date": "2026-07-25",
+            "date": "2026-09-01",
             "command": "uv run python scripts/sync_metrics.py",
             "cc_gate": "PASS",
             "i18n_ast_gate": "PASS"
