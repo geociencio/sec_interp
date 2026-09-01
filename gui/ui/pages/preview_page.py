@@ -44,9 +44,7 @@ class PreviewWidget(QWidget):
         self.frame_layout = QVBoxLayout(self.frame)
 
         self._setup_canvas_area()
-        self._setup_action_buttons()
-        self._setup_lod_controls()
-        self._setup_layer_checkboxes()
+        self._setup_controls_group()
         self._setup_results_area()
 
         layout.addWidget(self.frame)
@@ -88,7 +86,18 @@ class PreviewWidget(QWidget):
         status_layout.addWidget(self.lbl_crs)
         self.frame_layout.addLayout(status_layout)
 
-    def _setup_action_buttons(self) -> None:
+    def _setup_controls_group(self) -> None:
+        """Set up collapsible controls (action buttons, LOD, checkboxes)."""
+        self.controls_group = QgsCollapsibleGroupBox(self.tr("Controls"))
+        controls_layout = QVBoxLayout(self.controls_group)
+
+        self._setup_action_buttons(controls_layout)
+        self._setup_lod_controls(controls_layout)
+        self._setup_layer_checkboxes(controls_layout)
+
+        self.frame_layout.addWidget(self.controls_group)
+
+    def _setup_action_buttons(self, parent_layout: QVBoxLayout) -> None:
         """Set up preview, measure, and export buttons."""
         btn_layout = QHBoxLayout()
         self.btn_preview = QPushButton(self.tr("Preview"))
@@ -118,9 +127,9 @@ class PreviewWidget(QWidget):
         btn_layout.addWidget(self.btn_interpret)
         btn_layout.addWidget(self.btn_finalize)
         btn_layout.addWidget(self.btn_export)
-        self.frame_layout.addLayout(btn_layout)
+        parent_layout.addLayout(btn_layout)
 
-    def _setup_lod_controls(self) -> None:
+    def _setup_lod_controls(self, parent_layout: QVBoxLayout) -> None:
         """Set up level of detail controls."""
         lod_layout = QHBoxLayout()
         lod_layout.addWidget(QLabel(self.tr("Max Points:")))
@@ -147,9 +156,9 @@ class PreviewWidget(QWidget):
         lod_layout.addWidget(self.chk_adaptive_sampling)
 
         lod_layout.addStretch()
-        self.frame_layout.addLayout(lod_layout)
+        parent_layout.addLayout(lod_layout)
 
-    def _setup_layer_checkboxes(self) -> None:
+    def _setup_layer_checkboxes(self, parent_layout: QVBoxLayout) -> None:
         """Set up checkboxes for layer visibility."""
         chk_layout = QHBoxLayout()
         self.chk_topo = QCheckBox(self.tr("Show Topography"))
@@ -171,7 +180,7 @@ class PreviewWidget(QWidget):
         chk_layout.addWidget(self.chk_drillholes)
         chk_layout.addWidget(self.chk_interpretations)
         chk_layout.addWidget(self.chk_legend)
-        self.frame_layout.addLayout(chk_layout)
+        parent_layout.addLayout(chk_layout)
 
     def _setup_results_area(self) -> None:
         """Set up results group and text display."""
