@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.6.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.7.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-52.6%2F100-yellow)
@@ -15,34 +15,22 @@
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v3.6.0: Next-Gen Stability & QGIS 4 Ready.*
+*SecInterp v3.7.0: i18n Quality Gate & UX Improvements.*
 
 ---
 
-## 🆕 What's New in v3.6.0
-**Phase: Next-Gen Stability, Spatial Optimization & QGIS 4 Ready**
+## 🆕 What's New in v3.7.0
+**Phase: Internationalization Quality Gate & Preview UX**
 
-### 🚀 QGIS 4.x & Qt6 Full Compatibility
-- **API Bridging**: Implemented dynamic enum resolution and the `qt6_compat` compatibility layer to bridge strict API changes between PyQt5 and PyQt6 (e.g., `QImage` formats, `QPainter` styles, and `QDialog.Accepted`).
-- **Thread-Safe Architecture**: Eradicated legacy UI threading issues and segmentation faults using robust asynchronous task anchoring.
-- **Deferred Signal Emission**: Implemented `QTimer.singleShot` patterns to safely pass complex geodata from background threads to the main Qt event loop.
+### 🌐 i18n Quality Gate
+- **AST-Based Translation Hygiene**: Developed `verify_i18n_hygiene.py`, a static analyzer that scans UI components for untranslated strings and enforces `self.tr()` wrapping with near-zero false positives.
+- **Dialog Title Coverage**: Wrapped 9 untranslated error dialog titles (`Export Error`, `Preview Error`, `Geology Error`, `Drillhole Error`) and the results `"ID:"` label in `self.dialog.tr()`.
 
-### ⚡ Spatial Performance Optimization
-- **QgsSpatialIndex Integration**: Completely overhauled the Interpretation Manager's spatial inheritance algorithms. Shifted from O(N*M) pure Python distance checks to native C++ `QgsSpatialIndex` nearest-neighbor lookups.
-- **Geological Precision**: Attribute inheritance now accurately measures perpendicular distances against geological line geometries instead of isolated points, achieving extreme performance gains (sub-second lookups for >10,000 entities).
+### 🎛️ Collapsible Preview Controls
+- **Decluttered Workspace**: Grouped the preview action buttons, LOD controls, and layer checkboxes into a collapsible `QgsCollapsibleGroupBox("Controls")`, keeping the map canvas and status bar always visible for a cleaner interpretation experience.
 
-### 🛡️ Asynchronous Rendering Stability
-- **Re-entry Locks**: Added strict rendering flags in the `PreviewRenderer` to prevent race conditions during rapid preview regeneration.
-- **Graceful Lifecycle Management**: Enhanced cleanup methods and C++ memory management for layer objects, ensuring zero-crash teardowns.
-- **Legend Resilience**: Hardened UI components to fail silently and recover smoothly during rapid canvas repaints.
-
-### 📦 Modernized Deployment (`qgis-manage`)
-- **Multi-Version Support**: Unified CLI deployment supporting both QGIS 3 (`~/.local/share/QGIS/QGIS3/...`) and QGIS 4 (`~/.local/share/QGIS/QGIS4/...`) profiles.
-- **Automated Module Discovery**: `Makefile` now automatically finds and packages all Python source files via advanced `find` logic, eliminating missing module errors.
-
-### ✨ Sustained Quality Gates
-- **Cyclomatic Complexity**: Successfully refactored massive monolithic patches to ensure all project functions strictly comply with CC <= 10.
-- **Testing**: 620+ fully passing unit and integration tests, verified across both local and Docker environments.
+### 📦 Cleaner Packaging
+- **Lean Distribution**: Excluded AI/agent tooling directories (`.codewhale`, `.continue`, `.deepseek`, `artifacts`) from the distributable ZIP, ensuring a plugin-only package.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
@@ -96,7 +84,7 @@ Before installing **SecInterp**, ensure your system meets the following requirem
 4. Click **Install Plugin**.
 
 ### From ZIP File
-1. Download the latest `sec_interp_v3.6.0.zip` from releases.
+1. Download the latest `sec_interp_v3.7.0.zip` from releases.
 2. Open QGIS.
 3. Go to **Plugins > Manage and Install Plugins > Install from ZIP**.
 4. Select the file and click **Install**.

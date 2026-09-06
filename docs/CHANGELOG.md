@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.7.0] - 2026-09-06
 
 ### Added
 - **i18n Quality Gate**: Developed an Abstract Syntax Tree (AST) validation script (`verify_i18n_hygiene.py`) to systematically scan UI components for untranslated strings and enforce translation hygiene.

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.0] - 2026-09-06
+
+### Added
+- **i18n Quality Gate**: Script de validación AST (`verify_i18n_hygiene.py`) que escanea componentes UI para detectar cadenas sin traducir y forzar el uso de `self.tr()`.
+
+### Fixed
+- **i18n Dialog Titles**: Envueltos 9 títulos de diálogos de error (`Export Error`, `Preview Error`, `Geology Error`, `Drillhole Error`, etc.) y el label `"ID:"` con `self.dialog.tr()`.
+
+### Changed
+- **Collapsible Preview Controls**: Botones de preview, controles LOD y checkboxes agrupados en un `QgsCollapsibleGroupBox("Controls")` colapsable.
+- **Cleaner Packaging**: Exclusion de directorios de tooling de agentes (`.codewhale`, `.continue`, `.deepseek`, `artifacts`) del paquete distribuible.
+
 ## [3.4.0] - 2026-03-29
 
 ### Added

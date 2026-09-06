@@ -4,7 +4,7 @@ qgisMinimumVersion=3.0
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.6.0
+version=3.7.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,12 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.7.0 (2026-09-06)
+	* i18n Quality Gate & UX Improvements:
+	- i18n: Added AST-based translation hygiene gate (verify_i18n_hygiene.py) to enforce self.tr() wrapping.
+	- i18n: Wrapped 9 untranslated dialog error titles (Export, Preview, Geology, Drillhole) in self.dialog.tr().
+	- UI: Grouped preview action buttons, LOD controls, and layer checkboxes into a collapsible Controls section.
+	- Packaging: Excluded AI/agent tooling directories from the distributable package.
 	3.6.0 (2026-05-12)
 	* Next-Gen Stability & QGIS 4 Ready:
 	- Compatibility: 100%% compatibility with QGIS 4.x and Qt6 by resolving unhashable QgsTask issues.

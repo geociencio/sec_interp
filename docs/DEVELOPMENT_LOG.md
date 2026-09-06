@@ -1,3 +1,18 @@
+## [2026-09-06] MILESTONE: Release v3.7.0 — i18n Quality Gate & UX Improvements
+- **Achievement**: Publicacion oficial de SecInterp v3.7.0.
+- **Release Content**:
+    - **i18n Quality Gate**: Script AST `verify_i18n_hygiene.py` para enforcement de `self.tr()`.
+    - **i18n Dialog Titles**: 9 titulos de dialogo de error envueltos en `self.dialog.tr()`.
+    - **UX**: Controles de preview agrupados en `QgsCollapsibleGroupBox("Controls")` colapsable.
+    - **Packaging**: Exclusion de tooling de agentes (`.codewhale`, `.continue`, `.deepseek`) del ZIP.
+- **Operational Metrics**:
+    - Tests: 620/620 (100%)
+    - Security: 100/100 (0 vulnerabilidades)
+    - CC <= 10: PASS
+    - i18n AST Gate: PASS
+- **Status**: Release v3.7.0 completado. Proximo release: Goal 2 (adaptive vertical exaggeration, symbology preview, Cartesian tests).
+- **Release Notes**: [notes/v3.7.0.md](releases/notes/v3.7.0.md)
+
 ## [2026-07-20c] Session: Collapsible Preview Controls
 - **Achievement**: Separado el canvas de preview de los botones, controles LOD y checkboxes, permitiendo colapsarlos en un QgsCollapsibleGroupBox.
 - **Root Cause/Context**: El PreviewWidget agrupaba canvas, status bar, botones, LOD y checkboxes en una sola columna no colapsable. El usuario requirio poder colapsar los controles hacia abajo para maximizar el area de visualizacion.

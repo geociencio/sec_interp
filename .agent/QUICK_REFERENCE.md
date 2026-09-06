@@ -101,7 +101,7 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 - ✅ **Param Type Coverage**: **94.2%**.
 - ✅ **Complexity Gate**: **CC <= 10** (verified 2026-05-24 by check_cc.py).
 - ✅ **i18n Hygiene Gate**: **0 violations** (verified by verify_i18n_hygiene.py).
-- ⚠️ **qgis-analyzer i18n**: 254 MISSING_I18N flagged (broader heuristic scope).
+- ⚠️ **qgis-analyzer i18n**: 72 MISSING_I18N flagged (all false positives after triage).
 - ✅ **Tests**: **620 passing** (confirmed 2026-05-24 via `make docker-test`).
 
 ---
