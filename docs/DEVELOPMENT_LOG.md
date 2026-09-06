@@ -1,3 +1,15 @@
+## [2026-09-06] MILESTONE: Release v3.7.1 — Security Patch
+- **Achievement**: Publicacion de SecInterp v3.7.1 (parche de seguridad).
+- **Release Content**:
+    - **Security**: Reemplazado el `try/except/pass` silencioso en `_get_setting` por `logger.warning` (Bandit B110).
+    - **Pipeline**: Cableado el escaner de seguridad completo (Bandit + detect-secrets + Flake8) al workflow de release.
+- **Operational Metrics**:
+    - Tests: 620/620 (100%)
+    - Security: 100/100 (bandit PASS, detect-secrets PASS)
+    - CC <= 10: PASS
+- **Status**: Release v3.7.1 completado.
+- **Release Notes**: [notes/v3.7.1.md](releases/notes/v3.7.1.md)
+
 ## [2026-09-06] MILESTONE: Release v3.7.0 — i18n Quality Gate & UX Improvements
 - **Achievement**: Publicacion oficial de SecInterp v3.7.0.
 - **Release Content**:

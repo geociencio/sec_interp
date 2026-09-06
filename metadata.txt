@@ -4,7 +4,7 @@ qgisMinimumVersion=3.0
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.7.0
+version=3.7.1
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,10 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.7.1 (2026-09-06)
+	* Security Patch:
+	- Security: Replaced a silent exception swallow (try/except/pass) in settings persistence with a logged warning.
+	- Security: Wired the full Bandit security scan into the release pipeline to catch code smells before packaging.
 	3.7.0 (2026-09-06)
 	* i18n Quality Gate & UX Improvements:
 	- i18n: Added AST-based translation hygiene gate (verify_i18n_hygiene.py) to enforce self.tr() wrapping.
