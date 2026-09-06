@@ -24,10 +24,36 @@ jobs:
       - name: Run Ruff
         run: uvx ruff check .
 
+  qt6:
+    name: Qt6 / QGIS 4 Enum Check
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/qgis/pyqgis4-checker:main-ubuntu
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v4
+
+      - name: Run PyQGIS 4 migration check
+        run: |
+          pyqt5_to_pyqt6.py --dry_run --logfile pyqt6_checker.log .
+          if [ -s pyqt6_checker.log ]; then
+            cat pyqt6_checker.log
+            echo "::error::Qt6/PyQt6 enum incompatibilities detected (see log above)."
+            exit 1
+          fi
+
+      - name: Upload checker report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pyqgis4-checker-report
+          path: pyqt6_checker.log
+          retention-days: 7
+
   test:
     name: Tests (QGIS Headless)
     runs-on: ubuntu-latest
-    needs: quality
+    needs: [quality, qt6]
     container:
       image: qgis/qgis:latest
 

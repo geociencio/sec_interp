@@ -126,6 +126,9 @@ help/html/.doctrees/
 help/html/_static/fonts/
 help/html/_static/css/fonts/
 
+# Qt6 / QGIS 4 checker artifacts
+pyqt6_checker.log
+
 # Packaging files and dependencies (only minimal needed)
 uv.lock
 Makefile

@@ -225,7 +225,32 @@ security-scan:
 	@echo "-------------------------------------------------------"
 	@uv run python scripts/security_scan.py
 
-# Pre-release validation (includes security)
+# Qt6 / QGIS 4 enum check (same tool plugins.qgis.org runs on upload)
+.PHONY: qt6-check
+qt6-check:
+	@echo
+	@echo "-------------------------------------------------------"
+	@echo "Running Qt6 / QGIS 4 compatibility check (pyqgis4-checker)..."
+	@echo "-------------------------------------------------------"
+	docker run --rm --pull always --user $(shell id -u):$(shell id -g) \
+		--workdir /workspace/ -v $(CURDIR):/workspace/ \
+		ghcr.io/qgis/pyqgis4-checker:main-ubuntu \
+		pyqt5_to_pyqt6.py --dry_run --logfile /workspace/pyqt6_checker.log .
+
+# Auto-migrate enums to scoped Qt6 form (edits files in place; use with a clean tree)
+.PHONY: qt6-fix
+qt6-fix:
+	@echo
+	@echo "-------------------------------------------------------"
+	@echo "Auto-migrating enums to Qt6 scoped form (pyqgis4-checker)..."
+	@echo "WARNING: edits files in place. Commit first to allow revert."
+	@echo "-------------------------------------------------------"
+	docker run --rm --pull always --user $(shell id -u):$(shell id -g) \
+		--workdir /workspace/ -v $(CURDIR):/workspace/ \
+		ghcr.io/qgis/pyqgis4-checker:main-ubuntu \
+		pyqt5_to_pyqt6.py --logfile /workspace/pyqt6_checker.log .
+
+# Pre-release validation (includes security + Qt6 enum check)
 .PHONY: pre-release
-pre-release: security-scan docker-test
+pre-release: qt6-check security-scan docker-test
 	@echo "✅ Pre-release validation complete"
