@@ -318,8 +318,8 @@ class DialogSettingsPersistence:
                 parsed = self._parse_setting_value(val)
                 if parsed is not None:
                     return parsed
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Failed to read setting '{key}': {e}")
         return default
 
     def _set_setting(self, key: str, value: Any) -> None:
