@@ -55,6 +55,9 @@ ENV/
 .agent/
 .gemini-temp/
 .ai-context/
+.codewhale/
+.continue/
+.deepseek/
 .ai_context_cache.json
 AGENTS.md
 AI_CONTEXT.md
@@ -90,6 +93,7 @@ analysis_results_v320/
 json/
 logs/
 _archive/
+artifacts/
 bandit_report.json
 detailed_report.json
 quality_details.json
