@@ -82,6 +82,7 @@ htmlcov/
 .pre-commit-config.yaml
 .secrets.baseline
 analyzer_config.json
+analysis_results.json
 analysis_results/
 analysis_results_final/
 analysis_results_linting/
@@ -118,6 +119,11 @@ README_DEV.md
 core_files.txt
 test_files.txt
 gui_analysis.json
+
+# Sphinx help build artifacts (keep only compiled offline HTML)
+help/html/.doctrees/
+help/html/_static/fonts/
+help/html/_static/css/fonts/
 
 # Packaging files and dependencies (only minimal needed)
 uv.lock
