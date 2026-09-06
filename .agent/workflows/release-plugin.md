@@ -6,6 +6,7 @@ stop_conditions:
   - "Any function exceeds CC > 10 → Block release and refactor"
   - "Docstring coverage < 100% → Block release and fix documentation"
   - "Forbidden files (.agent, scripts, tests) found in ZIP → Abort and fix .qgisignore"
+  - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
   - Verify that 620+ tests pass in Docker
   - Confirm CC <= 10 for all methods (scripts/check_cc.py)
@@ -66,11 +67,17 @@ uv run python scripts/context_selector.py "release preparation and packaging" --
 
 ### Phase 3: Final Verification (Safety Net)
 
-1. **Security Scan**:
+1. **Security Scan (CRITICAL — includes Bandit)**:
+   // turbo
+   ```bash
+   make security-scan
+   ```
    // turbo
    ```bash
    uv run qgis-analyzer security --deep .
    ```
+
+   🤖 **Agent Action**: `make security-scan` runs **Bandit** (`B110 try_except_pass`, hardcoded passwords, unsafe functions, etc.), **detect-secrets**, and **Flake8** via `scripts/security_scan.py`. It exits non-zero on any CRITICAL finding. Do NOT proceed to packaging if it fails. This is the full scan that catches code smells the `qgis-analyzer security` secrets-only check does not.
 
 2. **Tests (Full Suite)**:
    // turbo

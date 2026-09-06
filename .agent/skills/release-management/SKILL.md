@@ -24,8 +24,10 @@ Controls the plugin's version lifecycle, ensuring that each delivery meets the s
    ```bash
    uv run qgis-analyzer analyze . -o analysis_results
    uv run qgis-analyzer security --deep .
+   make security-scan
    ```
    - Validate: Score > 25, zero High-Severity security issues, no critical violations (CC > 10).
+   - **`make security-scan`** runs Bandit (`B110 try_except_pass`, hardcoded passwords, unsafe functions), detect-secrets, and Flake8. It exits non-zero on any CRITICAL finding — block the release until resolved.
 2. **Update Badges**: Reflect metrics in `README.md`.
 
 ### Phase 2: Versioning and Documentation
