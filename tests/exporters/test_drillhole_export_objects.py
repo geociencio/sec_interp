@@ -24,7 +24,7 @@ class TestDrillholeExportObjects(unittest.TestCase):
     def test_export_traces_success(self, mock_writer_factory):
         # 1. Setup
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
 
         # Create test data with DrillholeProjection object
@@ -51,7 +51,7 @@ class TestDrillholeExportObjects(unittest.TestCase):
     def test_export_intervals_success(self, mock_writer_factory):
         # 1. Setup
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
 
         # Create test data with segments
@@ -82,7 +82,7 @@ class TestDrillholeExportObjects(unittest.TestCase):
     def test_export_3d_traces_with_objects(self, mock_writer_factory):
         # 1. Setup
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
 
         dh1 = DrillholeProjection(
@@ -107,7 +107,7 @@ class TestDrillholeExportObjects(unittest.TestCase):
     def test_export_3d_intervals_with_objects(self, mock_writer_factory):
         # 1. Setup
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
 
         seg1 = GeologySegment(

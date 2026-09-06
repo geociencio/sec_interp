@@ -59,5 +59,5 @@ class Sidebar(QListWidget):
             item.setIcon(icon)
 
         # Center text alignment
-        item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.addItem(item)

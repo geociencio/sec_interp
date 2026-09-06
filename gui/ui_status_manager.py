@@ -53,7 +53,7 @@ class UIStatusManager:
         can_preview = im.can_preview()
 
         self.dialog.preview_widget.btn_preview.setEnabled(can_preview)
-        self.dialog.button_box.button(QDialogButtonBox.Ok).setEnabled(can_preview)
+        self.dialog.button_box.button(QDialogButtonBox.StandardButton.Ok).setEnabled(can_preview)
 
         if hasattr(self.dialog, "btn_save"):
             self.dialog.btn_save.setEnabled(im.can_export())

@@ -55,7 +55,7 @@ class InterpretationPage(BasePage):
 
         layer_layout = QHBoxLayout()
         self.layer_combo = QgsMapLayerComboBox()
-        self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+        self.layer_combo.setFilters(QgsMapLayerProxyModel.Filter.PolygonLayer)
         self.layer_combo.setEnabled(False)
         layer_layout.addWidget(self.layer_combo)
         self.group_layout.addLayout(layer_layout)
@@ -75,7 +75,7 @@ class InterpretationPage(BasePage):
         self.fields_table.setHorizontalHeaderLabels(
             [self.tr("Field Name"), self.tr("Type"), self.tr("Default Value")]
         )
-        self.fields_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.fields_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.fields_table.setMinimumHeight(150)
         self.group_layout.addWidget(self.fields_table)
 

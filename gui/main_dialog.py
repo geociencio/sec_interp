@@ -91,11 +91,11 @@ class SecInterpDialog(SecInterpMainWindow):
         # Add cache and reset buttons
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
         self.clear_cache_btn.setToolTip(self.tr("Clear cached data to force re-processing."))
-        self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ActionRole)
+        self.button_box.addButton(self.clear_cache_btn, QDialogButtonBox.ButtonRole.ActionRole)
 
         self.reset_defaults_btn = QPushButton(self.tr("Reset Defaults"))
         self.reset_defaults_btn.setToolTip(self.tr("Reset all inputs to their default values."))
-        self.button_box.addButton(self.reset_defaults_btn, QDialogButtonBox.ActionRole)
+        self.button_box.addButton(self.reset_defaults_btn, QDialogButtonBox.ButtonRole.ActionRole)
 
         # Initialize map tools via tool_manager
         self.tool_manager.initialize_tools()
@@ -130,7 +130,7 @@ class SecInterpDialog(SecInterpMainWindow):
         self,
         title: str,
         message: str,
-        level: int = Qgis.Info,
+        level: int = Qgis.MessageLevel.Info,
         duration: int = 5,
         show_in_plugin: bool = True,
     ) -> None:
@@ -151,13 +151,13 @@ class SecInterpDialog(SecInterpMainWindow):
         # Also show in plugin results area if requested
         if show_in_plugin and hasattr(self, "preview_widget"):
             # Determine icon and color based on level
-            if level == Qgis.Success:
+            if level == Qgis.MessageLevel.Success:
                 icon = "✓"
                 color = "#28a745"  # Green
-            elif level == Qgis.Warning:
+            elif level == Qgis.MessageLevel.Warning:
                 icon = "⚠"
                 color = "#ffc107"  # Yellow
-            elif level == Qgis.Critical:
+            elif level == Qgis.MessageLevel.Critical:
                 icon = "✗"
                 color = "#dc3545"  # Red
             else:  # Info
@@ -279,7 +279,7 @@ class SecInterpDialog(SecInterpMainWindow):
             self.push_message(
                 self.tr("Error"),
                 self.tr("Help file not found. Please run 'make docs' to generate it."),
-                level=Qgis.Warning,
+                level=Qgis.MessageLevel.Warning,
             )
 
     def toggle_measure_tool(self, checked: bool) -> None:
@@ -362,7 +362,7 @@ class SecInterpDialog(SecInterpMainWindow):
             self.state_manager.save_settings()
 
         if not success and message:
-            self.push_message(self.tr("Preview Error"), message, level=Qgis.Warning)
+            self.push_message(self.tr("Preview Error"), message, level=Qgis.MessageLevel.Warning)
 
     def export_preview(self) -> None:
         """Export the current preview to a file using ExportManager."""

@@ -31,7 +31,7 @@ def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
         Azimuth in degrees (0-360).
 
     """
-    if line_geom.wkbType() == QgsWkbTypes.Point:
+    if line_geom.wkbType() == QgsWkbTypes.Type.Point:
         return 0  # Points have no azimuth
 
     line = line_geom.asMultiPolyline()[0] if line_geom.isMultipart() else line_geom.asPolyline()

@@ -46,7 +46,7 @@ class DrillholeGenerationTask(QgsTask):
             params: Original params for context (backward compatibility).
 
         """
-        super().__init__(description, QgsTask.CanCancel)
+        super().__init__(description, QgsTask.Flag.CanCancel)
         self.orchestrator = orchestrator
         self.task_input = task_input
         self.params = params
@@ -97,7 +97,7 @@ class DrillholeGenerationTask(QgsTask):
                 QgsMessageLog.logMessage(
                     f"Drillhole Task Failed: {error_msg}",  # no-i18n: developer log tag
                     "SecInterp",
-                    Qgis.Critical,
+                    Qgis.MessageLevel.Critical,
                 )
                 self.error_occurred.emit(error_msg)
         except Exception as e:

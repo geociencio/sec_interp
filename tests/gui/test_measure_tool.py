@@ -106,7 +106,7 @@ class TestMeasureTool(BaseTestCase):
     def test_canvas_release_left_click(self):
         """Test left click adding a point."""
         event = MagicMock()
-        event.button.return_value = Qt.LeftButton
+        event.button.return_value = Qt.MouseButton.LeftButton
         event.pos.return_value = QPoint(50, 50)
 
         self.tool.canvasReleaseEvent(event)
@@ -118,7 +118,7 @@ class TestMeasureTool(BaseTestCase):
         self.tool.points = [QgsPointXY(0, 0)]
 
         event = MagicMock()
-        event.button.return_value = Qt.RightButton
+        event.button.return_value = Qt.MouseButton.RightButton
 
         self.tool.canvasReleaseEvent(event)
         self.assertEqual(len(self.tool.points), 0)
@@ -155,7 +155,7 @@ class TestMeasureTool(BaseTestCase):
         # Test that clicks are ignored after finalizing
         p_extra = QgsPointXY(200, 200)
         event = MagicMock()
-        event.button.return_value = Qt.LeftButton
+        event.button.return_value = Qt.MouseButton.LeftButton
         event.pos.return_value = QPoint(200, 200)
 
         self.tool.canvasReleaseEvent(event)
@@ -186,13 +186,13 @@ class TestMeasureTool(BaseTestCase):
 
         # Enter to finalize
         event = MagicMock()
-        event.key.return_value = Qt.Key_Return
+        event.key.return_value = Qt.Key.Key_Return
         self.tool.keyPressEvent(event)
         self.assertTrue(self.tool.finalized)
 
         # Escape to reset
         self.tool.finalized = False
-        event.key.return_value = Qt.Key_Escape
+        event.key.return_value = Qt.Key.Key_Escape
         self.tool.keyPressEvent(event)
         self.assertEqual(len(self.tool.points), 0)
 
@@ -337,5 +337,5 @@ class TestMeasureTool(BaseTestCase):
         self.tool.rubber_band.reset.reset_mock()
         with patch("sec_interp.gui.tools.measure_tool.QgsMapToolPan"):
             self.tool.finalize_measurement()
-        self.tool.rubber_band.reset.assert_called_with(QgsWkbTypes.LineGeometry)
+        self.tool.rubber_band.reset.assert_called_with(QgsWkbTypes.GeometryType.LineGeometry)
         self.tool.rubber_band.show.assert_called()

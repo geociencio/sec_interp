@@ -242,7 +242,7 @@ class TestPreviewRenderer(BaseIntegrationTest):
         from qgis.core import QgsWkbTypes
 
         self.assertIn(
-            QgsWkbTypes.PolygonGeometry,
+            QgsWkbTypes.GeometryType.PolygonGeometry,
             geom_types,
             "Expected a polygon layer for interpretations",
         )

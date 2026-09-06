@@ -64,17 +64,17 @@ class SignalManager:
 
     def _disconnect_dialog_buttons(self) -> None:
         """Disconnect standard dialog buttons."""
-        ok_btn = self.dialog.button_box.button(QDialogButtonBox.Ok)
+        ok_btn = self.dialog.button_box.button(QDialogButtonBox.StandardButton.Ok)
         if ok_btn:
             with contextlib.suppress(TypeError, RuntimeError):
                 ok_btn.clicked.disconnect()
 
-        cancel_btn = self.dialog.button_box.button(QDialogButtonBox.Cancel)
+        cancel_btn = self.dialog.button_box.button(QDialogButtonBox.StandardButton.Cancel)
         if cancel_btn:
             with contextlib.suppress(TypeError, RuntimeError):
                 cancel_btn.clicked.disconnect()
 
-        save_btn = self.dialog.button_box.button(QDialogButtonBox.Save)
+        save_btn = self.dialog.button_box.button(QDialogButtonBox.StandardButton.Save)
         if save_btn:
             with contextlib.suppress(TypeError, RuntimeError):
                 save_btn.clicked.disconnect()
@@ -218,15 +218,15 @@ class SignalManager:
 
     def _connect_button_signals(self) -> None:
         """Connect dialog button signals."""
-        ok_btn = self.dialog.button_box.button(QDialogButtonBox.Ok)
+        ok_btn = self.dialog.button_box.button(QDialogButtonBox.StandardButton.Ok)
         if ok_btn:
             ok_btn.clicked.connect(self.dialog.accept_handler)
 
-        cancel_btn = self.dialog.button_box.button(QDialogButtonBox.Cancel)
+        cancel_btn = self.dialog.button_box.button(QDialogButtonBox.StandardButton.Cancel)
         if cancel_btn:
             cancel_btn.clicked.connect(self.dialog.reject_handler)
 
-        save_btn = self.dialog.button_box.button(QDialogButtonBox.Save)
+        save_btn = self.dialog.button_box.button(QDialogButtonBox.StandardButton.Save)
         if save_btn:
             save_btn.clicked.connect(self.dialog.export_manager.export_data)
 

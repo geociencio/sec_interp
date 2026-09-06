@@ -42,7 +42,7 @@ class SectionPage(BasePage):
 
             self.line_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.LineLayer))
         except (ImportError, AttributeError, TypeError):
-            self.line_combo.setFilters(QgsMapLayerProxyModel.LineLayer)
+            self.line_combo.setFilters(QgsMapLayerProxyModel.Filter.LineLayer)
 
         self.line_combo.setAllowEmptyLayer(True)
         self.line_combo.setToolTip(self.tr("Select the line layer defining the cross-section"))

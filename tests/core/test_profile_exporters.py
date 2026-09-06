@@ -35,7 +35,7 @@ class TestProfileExporters(BaseTestCase):
     def test_profile_line_exporter_success(self, mock_writer_factory):
         """Test successful export of profile line."""
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         exporter = ProfileLineVectorExporter(self.settings)
 
@@ -54,7 +54,7 @@ class TestProfileExporters(BaseTestCase):
     def test_geology_exporter_success(self, mock_writer_factory):
         """Test successful export of geology profile."""
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         exporter = GeologyVectorExporter(self.settings)
 
@@ -83,7 +83,7 @@ class TestProfileExporters(BaseTestCase):
     def test_structure_exporter_success(self, mock_writer_factory):
         """Test successful export of structural profile."""
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         exporter = StructureVectorExporter(self.settings)
 
@@ -113,7 +113,7 @@ class TestProfileExporters(BaseTestCase):
     def test_axes_exporter_success(self, mock_writer_factory):
         """Test successful export of profile axes."""
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         exporter = AxesVectorExporter(self.settings)
 
@@ -128,7 +128,7 @@ class TestProfileExporters(BaseTestCase):
     def test_axes_exporter_single_point(self, mock_writer_factory):
         """Test axes exporter with single point or constant data."""
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         exporter = AxesVectorExporter(self.settings)
         data = {"profile_data": [(100, 100), (100, 100)], "crs": self.crs}

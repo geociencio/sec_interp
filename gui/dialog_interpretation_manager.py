@@ -122,7 +122,7 @@ class InterpretationManager:
         self.interpretations = []
         for feature in layer.getFeatures():  # noqa: SPATIAL_INDEX — full sync, no filter needed
             geom = feature.geometry()
-            if geom.isNull() or geom.type() != QgsWkbTypes.PolygonGeometry:
+            if geom.isNull() or geom.type() != QgsWkbTypes.GeometryType.PolygonGeometry:
                 continue
 
             vertices = []

@@ -42,13 +42,13 @@ class TestSpatialUtils(BaseTestCase):
     def test_calculate_line_azimuth_unsupported(self):
         """Test azimuth for unsupported geometry types."""
         geom = QgsGeometry()
-        geom._wkb_type = QgsWkbTypes.PolygonGeometry
+        geom._wkb_type = QgsWkbTypes.GeometryType.PolygonGeometry
         self.assertEqual(calculate_line_azimuth(geom), 0)
 
     def test_calculate_line_azimuth_short_line(self):
         """Test azimuth for line with less than 2 points."""
         geom = QgsGeometry()
-        geom._wkb_type = QgsWkbTypes.LineString
+        geom._wkb_type = QgsWkbTypes.Type.LineString
         geom._polyline = [QgsPointXY(1, 1)]
         self.assertEqual(calculate_line_azimuth(geom), 0)
 

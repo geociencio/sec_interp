@@ -36,8 +36,8 @@ class TestExportBenchmarks(BaseIntegrationTest, BenchmarkMixin):
     def _create_dummy_features(self, count: int) -> list[QgsFeature]:
         features = []
         fields = QgsFields()
-        fields.append(QgsField("id", QMetaType.Int))
-        fields.append(QgsField("name", QMetaType.QString))
+        fields.append(QgsField("id", QMetaType.Type.Int))
+        fields.append(QgsField("name", QMetaType.Type.QString))
 
         for i in range(count):
             feat = QgsFeature(fields)
@@ -60,13 +60,13 @@ class TestExportBenchmarks(BaseIntegrationTest, BenchmarkMixin):
             writer = QgsVectorFileWriter.create(
                 output_path,
                 features[0].fields(),
-                QgsWkbTypes.Point,
+                QgsWkbTypes.Type.Point,
                 self.crs,
                 QgsProject.instance().transformContext(),
                 options,
             )
 
-            if writer.hasError() != QgsVectorFileWriter.NoError:
+            if writer.hasError() != QgsVectorFileWriter.WriterError.NoError:
                 raise Exception(writer.errorMessage())
 
             for feat in features:
@@ -89,7 +89,7 @@ class TestExportBenchmarks(BaseIntegrationTest, BenchmarkMixin):
             writer = QgsVectorFileWriter.create(
                 output_path,
                 features[0].fields(),
-                QgsWkbTypes.Point,
+                QgsWkbTypes.Type.Point,
                 self.crs,
                 QgsProject.instance().transformContext(),
                 options,

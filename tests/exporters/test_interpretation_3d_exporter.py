@@ -88,7 +88,7 @@ class TestInterpretation3DExporter(BaseTestCase):
         # Vertical polygons on sections are technically invalid in 2D top-down view
         # so we check geometry type and Z presence instead of isGeosValid()
         self.assertTrue(QgsWkbTypes.hasZ(geom.wkbType()))
-        self.assertEqual(geom.type(), QgsWkbTypes.PolygonGeometry)
+        self.assertEqual(geom.type(), QgsWkbTypes.GeometryType.PolygonGeometry)
 
     def test_overturned_fold_geometry(self):
         """Test that 'backwards' X values (geometric regression) are handled correctly."""
@@ -120,7 +120,7 @@ class TestInterpretation3DExporter(BaseTestCase):
         geom = features[0].geometry()
 
         self.assertTrue(QgsWkbTypes.hasZ(geom.wkbType()))
-        self.assertEqual(geom.type(), QgsWkbTypes.PolygonGeometry)
+        self.assertEqual(geom.type(), QgsWkbTypes.GeometryType.PolygonGeometry)
 
 
 if __name__ == "__main__":

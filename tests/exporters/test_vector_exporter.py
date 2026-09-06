@@ -41,7 +41,7 @@ class TestVectorExporter(BaseTestCase):
 
         # We need to simulate that create_vector_writer returns a writer that says NoError
         mock_writer_instance = MagicMock()
-        mock_writer_instance.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer_instance.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_create_writer.return_value = mock_writer_instance
 
         # Execute Export

@@ -99,7 +99,7 @@ class ProfileSnapper:
 
     def _is_snappable(self, layer: QgsMapLayer) -> bool:
         """Check if a layer is valid for snapping."""
-        return bool(layer and layer.type() == QgsMapLayer.VectorLayer)
+        return bool(layer and layer.type() == QgsMapLayer.LayerType.VectorLayer)
 
     def _get_locator(self, layer: QgsVectorLayer, crs, context) -> QgsPointLocator | None:
         """Retrieve or create a locator for a layer."""
@@ -141,7 +141,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
 
         self.rubber_band: QgsRubberBand | None = None
         self.vertex_markers: list[QgsVertexMarker] = []
-        self.cursor = Qt.CrossCursor
+        self.cursor = Qt.CursorShape.CrossCursor
 
         # Delegate snapping logic
         self.snapper = ProfileSnapper(canvas)
@@ -247,7 +247,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
             event: Map tool event from QGIS
 
         """
-        if event.button() == Qt.RightButton:
+        if event.button() == Qt.MouseButton.RightButton:
             self.reset()
             return
 
@@ -287,14 +287,14 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
             event: Key event from QGIS
 
         """
-        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+        if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
             MIN_MEASURE_POINTS = 2
             if len(self.points) >= MIN_MEASURE_POINTS:
                 self.finalize_measurement()
                 event.accept()
             return
 
-        if event.key() == Qt.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape:
             self.reset()
             event.accept()
             return
@@ -346,7 +346,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
 
         # Redraw rubber band with ONLY the final points (no temporary line)
         if self.rubber_band:
-            self.rubber_band.reset(QgsWkbTypes.LineGeometry)
+            self.rubber_band.reset(QgsWkbTypes.GeometryType.LineGeometry)
             for point in self.finalized_points:
                 self.rubber_band.addPoint(point, False)
             self.rubber_band.show()
@@ -368,7 +368,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         marker.setCenter(point)
         marker.setColor(QColor(0, 255, 0))  # Green for intermediate points
         marker.setIconSize(8)
-        marker.setIconType(QgsVertexMarker.ICON_CIRCLE)
+        marker.setIconType(QgsVertexMarker.IconType.ICON_CIRCLE)
         marker.setPenWidth(2)
         self.vertex_markers.append(marker)
 
@@ -377,7 +377,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         if self.rubber_band:
             return
 
-        self.rubber_band = QgsRubberBand(self.canvas, QgsWkbTypes.LineGeometry)
+        self.rubber_band = QgsRubberBand(self.canvas, QgsWkbTypes.GeometryType.LineGeometry)
         self.rubber_band.setColor(QColor(255, 0, 0))
         self.rubber_band.setWidth(2)
 
@@ -386,7 +386,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         if not self.rubber_band or len(self.points) == 0:
             return
 
-        self.rubber_band.reset(QgsWkbTypes.LineGeometry)
+        self.rubber_band.reset(QgsWkbTypes.GeometryType.LineGeometry)
 
         # Add all existing points
         for point in self.points:

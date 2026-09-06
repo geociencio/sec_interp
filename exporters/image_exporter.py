@@ -47,8 +47,8 @@ class ImageExporter(BaseExporter):
 
             # Setup painter
             painter = QPainter(image)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setRenderHint(QPainter.SmoothPixmapTransform)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
 
             # Render map
             job = QgsMapRendererCustomPainterJob(map_settings, painter)

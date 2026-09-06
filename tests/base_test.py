@@ -293,6 +293,10 @@ def restore_mocks():
     # Mock QgsVectorFileWriter.create for tests that need physical file creation
     writer = getattr(mock_core, "QgsVectorFileWriter")
     writer.NoError = 0
+    writer.WriterError.NoError = 0
+    writer.SymbologyExport.NoSymbology = 0
+    writer.ActionOnExistingFile.CreateOrOverwriteLayer = 0
+    writer.ActionOnExistingFile.AppendToLayerAddFields = 1
 
     def create_real_writer(
         output_path, fields, geometry_type, crs, transform_context, options

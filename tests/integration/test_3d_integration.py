@@ -89,7 +89,7 @@ class Test3DIntegration(BaseIntegrationTest):
         self.assertTrue(layer.isValid())
         # Shapefiles often report MultiLineStringZ even for single part geometries
         self.assertIn(
-            layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ]
+            layer.wkbType(), [QgsWkbTypes.Type.LineStringZ, QgsWkbTypes.Type.MultiLineStringZ]
         )
 
         # Check coordinates
@@ -119,7 +119,7 @@ class Test3DIntegration(BaseIntegrationTest):
         layer = QgsVectorLayer(output_path, "trace_proj", "ogr")
         self.assertTrue(layer.isValid())
         self.assertIn(
-            layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ]
+            layer.wkbType(), [QgsWkbTypes.Type.LineStringZ, QgsWkbTypes.Type.MultiLineStringZ]
         )
 
         geom = next(layer.getFeatures()).geometry()
@@ -145,7 +145,7 @@ class Test3DIntegration(BaseIntegrationTest):
         layer = QgsVectorLayer(output_path, "intervals", "ogr")
         self.assertTrue(layer.isValid())
         self.assertIn(
-            layer.wkbType(), [QgsWkbTypes.LineStringZ, QgsWkbTypes.MultiLineStringZ]
+            layer.wkbType(), [QgsWkbTypes.Type.LineStringZ, QgsWkbTypes.Type.MultiLineStringZ]
         )
 
         features = list(layer.getFeatures())
@@ -190,7 +190,7 @@ class Test3DIntegration(BaseIntegrationTest):
         self.assertTrue(layer.isValid(), "Layer is not valid")
         # PolygonZ = 1003, MultiPolygonZ = 1006
         self.assertIn(
-            layer.wkbType(), [QgsWkbTypes.PolygonZ, QgsWkbTypes.MultiPolygonZ]
+            layer.wkbType(), [QgsWkbTypes.Type.PolygonZ, QgsWkbTypes.Type.MultiPolygonZ]
         )
 
         feat = next(layer.getFeatures())

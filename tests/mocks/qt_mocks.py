@@ -101,6 +101,10 @@ class MockQPainter(MagicMock):
     Antialiasing = 1
     SmoothPixmapTransform = 2
 
+    class RenderHint:
+        Antialiasing = 1
+        SmoothPixmapTransform = 2
+
     def __init__(self, *args, **kwargs):
         """Initialize the mock painter."""
         super().__init__(**kwargs)
@@ -289,6 +293,12 @@ class MockQFrame:
     Panel = 0x0002
     Box = 0x0003
     NoFrame = 0x0000
+
+    class Shape:
+        StyledPanel = 0x0001
+        Panel = 0x0002
+        Box = 0x0003
+        NoFrame = 0x0000
 
     def __init__(self, parent=None):
         self._frame_shape = 0

@@ -64,7 +64,7 @@ class DrillholeTrace3DExporter(BaseExporter):
                 str(output_path),
                 crs,
                 fields,
-                QgsWkbTypes.LineStringZ,
+                QgsWkbTypes.Type.LineStringZ,
                 layer_name=layer_name,
             )
 
@@ -174,7 +174,7 @@ class DrillholeInterval3DExporter(BaseExporter):
                 str(output_path),
                 crs,
                 fields,
-                QgsWkbTypes.LineStringZ,
+                QgsWkbTypes.Type.LineStringZ,
                 layer_name=layer_name,
             )
 

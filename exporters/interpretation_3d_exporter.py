@@ -72,7 +72,7 @@ class Interpretation3DExporter(BaseExporter):
             output_path,
             features,
             fields,
-            QgsWkbTypes.PolygonZ,
+            QgsWkbTypes.Type.PolygonZ,
             src_crs,
             layer_name=layer_name,
         )
@@ -292,7 +292,7 @@ class Interpretation3DExporter(BaseExporter):
             str(path), crs, qgs_fields, wkb_type, layer_name=layer_name
         )
 
-        if writer.hasError() != QgsVectorFileWriter.NoError:
+        if writer.hasError() != QgsVectorFileWriter.WriterError.NoError:
             raise ExportError(writer.errorMessage())
 
         for feat in features:

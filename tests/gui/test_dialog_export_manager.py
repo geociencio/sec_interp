@@ -43,7 +43,7 @@ class TestDialogExportManager(BaseTestCase):
         self.dialog.push_message.assert_called_with(
             "Export Error",
             "No preview available to export. Generate a preview first.",
-            level=Qgis.Warning,
+            level=Qgis.MessageLevel.Warning,
         )
 
     def test_export_preview_no_layers(self):
@@ -52,7 +52,7 @@ class TestDialogExportManager(BaseTestCase):
         result = self.manager.export_preview()
         self.assertFalse(result)
         self.dialog.push_message.assert_called_with(
-            "Export Error", "No layers to export.", level=Qgis.Warning
+            "Export Error", "No layers to export.", level=Qgis.MessageLevel.Warning
         )
 
     @patch("sec_interp.gui.dialog_export_manager.QFileDialog.getSaveFileName")
@@ -84,7 +84,7 @@ class TestDialogExportManager(BaseTestCase):
         self.dialog.handle_error.assert_not_called()
         self.assertTrue(result)
         self.dialog.push_message.assert_called_with(
-            "Success", f"Preview exported to {output_path.name}", level=Qgis.Success
+            "Success", f"Preview exported to {output_path.name}", level=Qgis.MessageLevel.Success
         )
         # Verify settings update
         settings = QgsSettings()
@@ -151,7 +151,7 @@ class TestDialogExportManager(BaseTestCase):
         result = self.manager.export_data()
         self.assertFalse(result)
         self.dialog.push_message.assert_called_with(
-            "Error", "No profile data generated.", level=Qgis.Critical
+            "Error", "No profile data generated.", level=Qgis.MessageLevel.Critical
         )
 
     def test_export_data_success(self):

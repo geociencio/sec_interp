@@ -49,7 +49,7 @@ class GeologyPage(BasePage):
 
             self.layer_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.PolygonLayer))
         except (ImportError, AttributeError, TypeError):
-            self.layer_combo.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+            self.layer_combo.setFilters(QgsMapLayerProxyModel.Filter.PolygonLayer)
 
         self.layer_combo.setAllowEmptyLayer(True)
         self.layer_combo.setToolTip(self.tr("Select the polygon layer with geological outcrops"))

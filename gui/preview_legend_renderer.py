@@ -120,10 +120,10 @@ class PreviewLegendRenderer:
         """Draw the legend box background and border."""
         rect = QRectF(x, y, width, height)
         painter.setBrush(QColor(255, 255, 255, 200))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRect(rect)
 
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setPen(QColor(100, 100, 100))
         painter.drawRect(rect)
 
@@ -147,7 +147,9 @@ class PreviewLegendRenderer:
 
         painter.setPen(QColor(0, 0, 0))
         text_rect = QRectF(x + p * 2 + ss, y, max_width, ih)
-        painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, label)
+        painter.drawText(
+            text_rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, label
+        )
 
     @staticmethod
     def _draw_geology_items(
@@ -165,10 +167,12 @@ class PreviewLegendRenderer:
 
         for name, color in units.items():
             painter.setBrush(color)
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
             painter.drawRect(QRectF(x + p, y + (ih - ss) / 2, ss, ss))
 
             painter.setPen(QColor(0, 0, 0))
             text_rect = QRectF(x + p * 2 + ss, y, max_width, ih)
-            painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, name)
+            painter.drawText(
+                text_rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, name
+            )
             y += ih

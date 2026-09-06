@@ -59,3 +59,23 @@ Recompile `resources.qrc` using tools that support Qt abstraction, or ensure the
 - [ ] No use of methods marked as `@deprecated` in QGIS 3.34+ documentation.
 - [ ] Integration tests run without emitting `DeprecationWarning`.
 - [ ] The UI is responsive and does not block the main thread.
+
+## 5. Qt6 Enum Check (pyqgis4-checker)
+
+The official QGIS plugin repository (plugins.qgis.org) runs `pyqt5_to_pyqt6.py` (from the `pyqgis4-checker` project) on every uploaded ZIP to detect Qt6/PyQt6 enum incompatibilities. Run the same checker locally before uploading:
+
+```bash
+# Report only (no modification) — same output the portal uses
+make qt6-check
+
+# Auto-migrate enums to scoped form (edits files in place — commit first)
+make qt6-fix
+```
+
+These targets use the Docker image `ghcr.io/qgis/pyqgis4-checker:main-ubuntu`.
+
+### Scoped Enum Migration
+- Use scoped enums (`Qgis.MessageLevel.Critical`, `QgsWkbTypes.Type.LineString`, `Qt.PenStyle.NoPen`) — not flat (`Qgis.Critical`, `QgsWkbTypes.LineString`, `Qt.NoPen`).
+- Scoped enums work in QGIS 3.22+ (LTR) AND QGIS 4.x. The project's `qgisMinimumVersion` is `3.28`.
+- After a migration, update the test mocks in `tests/mocks/` to expose the scoped enum nested classes (the auto-fix tool does NOT update mocks).
+- `make qt6-check` is wired into `make pre-release` (blocks release on enum errors).

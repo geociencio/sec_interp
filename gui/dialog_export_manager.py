@@ -70,7 +70,7 @@ class ExportManager:
                     self.dialog.push_message(
                         self.dialog.tr("Success"),
                         self.dialog.tr("Preview exported to {}").format(output_path.name),
-                        level=Qgis.Success,
+                        level=Qgis.MessageLevel.Success,
                     )
                 return success
 
@@ -80,7 +80,9 @@ class ExportManager:
 
     def _show_export_error(self, message: str) -> None:
         """Show a standardization export error message."""
-        self.dialog.push_message(self.dialog.tr("Export Error"), message, level=Qgis.Warning)
+        self.dialog.push_message(
+            self.dialog.tr("Export Error"), message, level=Qgis.MessageLevel.Warning
+        )
 
     def _get_save_path(self) -> Path | None:
         """Prompt user for save location and update settings."""
@@ -174,7 +176,7 @@ class ExportManager:
                 self.dialog.push_message(
                     self.dialog.tr("Error"),
                     self.dialog.tr("No profile data generated."),
-                    level=Qgis.Critical,
+                    level=Qgis.MessageLevel.Critical,
                 )
                 return False
 

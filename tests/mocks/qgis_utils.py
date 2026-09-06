@@ -25,6 +25,12 @@ class MockQgsWkbTypes:
     UnknownGeometry = 3
     NullGeometry = 4
 
+    class Type:
+        Point, LineString, Polygon = 1, 2, 3
+        PointZ, LineStringZ, PolygonZ = 1001, 1002, 1003
+        MultiPoint, MultiLineString, MultiPolygon = 4, 5, 6
+        MultiPointZ, MultiLineStringZ, MultiPolygonZ = 1004, 1005, 1006
+
     class GeometryType:
         PointGeometry, LineGeometry, PolygonGeometry = 0, 1, 2
         UnknownGeometry, NullGeometry = 3, 4
@@ -42,6 +48,9 @@ class MockQgis:
     Info, Success, Warning, Critical, NoLevel = 0, 1, 2, 3, 4
     LayerFilters = lambda x: x
 
+    class MessageLevel:
+        Info, Success, Warning, Critical, NoLevel = 0, 1, 2, 3, 4
+
     class LayerFilter:
         RasterLayer, PointLayer, LineLayer, PolygonLayer = 1, 2, 4, 8
         All = 15
@@ -49,6 +58,9 @@ class MockQgis:
 
 class MockQgsTask:
     CanCancel = 1
+
+    class Flag:
+        CanCancel = 1
 
     def __init__(self, description="", flags=0, **kwargs):
         self._description = description

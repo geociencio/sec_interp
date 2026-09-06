@@ -61,7 +61,7 @@ class TestGeometryExtraction(BaseTestCase):
 
         # No vertices
         geom_empty = QgsGeometry()
-        geom_empty._wkb_type = QgsWkbTypes.LineGeometry
+        geom_empty._wkb_type = QgsWkbTypes.GeometryType.LineGeometry
         geom_empty._polyline = []
         with self.assertRaises(ValueError):
             get_line_vertices(geom_empty)

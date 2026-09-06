@@ -43,5 +43,7 @@ def show_user_message(parent: Any, title: str, message: str, level: str = "warni
     elif level in {"error", "critical"}:
         return QMessageBox.critical(parent, title, message)
     elif level == "question":
-        return QMessageBox.question(parent, title, message, QMessageBox.Yes | QMessageBox.No)
+        return QMessageBox.question(
+            parent, title, message, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
     return None

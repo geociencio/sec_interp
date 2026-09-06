@@ -20,10 +20,10 @@ def create_vector_writer(
     output_path: str | Path,
     crs: QgsCoordinateReferenceSystem,
     fields: QgsFields,
-    geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.LineString,
+    geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.Type.LineString,
     layer_name: str | None = None,
     overwrite_layer: bool = True,
-    symbology_export: QgsVectorFileWriter.SymbologyExport = QgsVectorFileWriter.NoSymbology,
+    symbology_export: QgsVectorFileWriter.SymbologyExport = QgsVectorFileWriter.SymbologyExport.NoSymbology,
 ) -> QgsVectorFileWriter:
     """Create and initialize a QgsVectorFileWriter for various vector formats.
 
@@ -65,9 +65,13 @@ def create_vector_writer(
     # Specific handling for GeoPackage appending
     if ext == ".gpkg" and path.exists() and layer_name:
         if overwrite_layer:
-            options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+            options.actionOnExistingFile = (
+                QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteLayer
+            )
         else:
-            options.actionOnExistingFile = QgsVectorFileWriter.AppendToLayerAddFields
+            options.actionOnExistingFile = (
+                QgsVectorFileWriter.ActionOnExistingFile.AppendToLayerAddFields
+            )
 
     # Specific handling for DXF (CAD)
     effective_fields = fields
@@ -86,7 +90,7 @@ def create_vector_writer(
         options,
     )
 
-    if writer.hasError() != QgsVectorFileWriter.NoError:
+    if writer.hasError() != QgsVectorFileWriter.WriterError.NoError:
         raise OSError(f"Error creating vector file {path}: {writer.errorMessage()}")
 
     return writer

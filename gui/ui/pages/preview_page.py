@@ -40,7 +40,7 @@ class PreviewWidget(QWidget):
 
         # Frame for preview (optional visual container)
         self.frame = QFrame()
-        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_layout = QVBoxLayout(self.frame)
 
         self._setup_canvas_area()

@@ -116,6 +116,9 @@ class MockQgsRubberBand:
 class MockQgsVertexMarker:
     ICON_CIRCLE, ICON_CROSS, ICON_X = 0, 1, 2
 
+    class IconType:
+        ICON_CIRCLE, ICON_CROSS, ICON_X = 0, 1, 2
+
     def __init__(self, canvas):
         pass
 
@@ -163,6 +166,11 @@ class MockQgsFileWidget(MockQWidget):
     GetDirectory = 0
     SaveFile = 1
     OpenFile = 2
+
+    class StorageMode:
+        GetDirectory = 0
+        SaveFile = 1
+        OpenFile = 2
 
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)

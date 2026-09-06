@@ -71,11 +71,11 @@ class Interpretation2DExporter(BaseExporter):
                 str(output_path),
                 crs,
                 fields,
-                geometry_type=QgsWkbTypes.Polygon,
+                geometry_type=QgsWkbTypes.Type.Polygon,
                 layer_name=layer_name,
             )
 
-            if writer.hasError() != QgsVectorFileWriter.NoError:
+            if writer.hasError() != QgsVectorFileWriter.WriterError.NoError:
                 logger.error(f"Failed to create writer for {output_path}: {writer.errorMessage()}")
                 return False
 

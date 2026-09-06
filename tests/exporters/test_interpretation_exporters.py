@@ -60,7 +60,7 @@ class TestInterpretation2DExporter(BaseTestCase):
         """Test successful export of interpretation polygons."""
         # 1. Setup mock writer
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
 
         output_path = Path("/tmp/interpretations.shp")
@@ -84,7 +84,7 @@ class TestInterpretation2DExporter(BaseTestCase):
 
         # Mock the Writer with an Error state
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.ErrCreateDataSource
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.ErrCreateDataSource
         mock_writer.errorMessage.return_value = "Permission Denied"
         mock_writer_factory.return_value = mock_writer
 

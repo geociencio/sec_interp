@@ -29,7 +29,7 @@ class TestMainDialogCore(BaseTestCase):
 
     def test_push_message_levels(self):
         """Test push_message with different Qgis levels and HTML formatting."""
-        levels = [Qgis.Info, Qgis.Success, Qgis.Warning, Qgis.Critical]
+        levels = [Qgis.MessageLevel.Info, Qgis.MessageLevel.Success, Qgis.MessageLevel.Warning, Qgis.MessageLevel.Critical]
         titles = ["Info", "Success", "Warning", "Critical"]
 
         for level, title in zip(levels, titles):
@@ -88,7 +88,7 @@ class TestMainDialogCore(BaseTestCase):
         self.dialog.preview_manager.generate_preview.return_value = (False, "Error")
         with patch.object(self.dialog, "push_message") as mock_push:
             self.dialog.preview_profile_handler()
-            mock_push.assert_called_with("Preview Error", "Error", level=Qgis.Warning)
+            mock_push.assert_called_with("Preview Error", "Error", level=Qgis.MessageLevel.Warning)
 
     def test_accept_handler_no_iface(self):
         """Test accept_handler in test environment (no iface)."""

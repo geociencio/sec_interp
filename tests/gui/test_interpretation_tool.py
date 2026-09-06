@@ -101,7 +101,7 @@ class TestInterpretationTool(BaseTestCase):
         self.tool._remove_last_point = MagicMock()
 
         event = MagicMock()
-        event.button.return_value = Qt.RightButton
+        event.button.return_value = Qt.MouseButton.RightButton
         self.tool.canvasReleaseEvent(event)
         self.tool._remove_last_point.assert_called_once()
 
@@ -153,13 +153,13 @@ class TestInterpretationTool(BaseTestCase):
 
         # Enter to finalize
         event = MagicMock()
-        event.key.return_value = Qt.Key_Return
+        event.key.return_value = Qt.Key.Key_Return
         self.tool.keyPressEvent(event)
         self.tool.finalize_polygon.assert_called_once()
 
         # Escape to reset
         self.tool.reset = MagicMock()
-        event.key.return_value = Qt.Key_Escape
+        event.key.return_value = Qt.Key.Key_Escape
         self.tool.keyPressEvent(event)
         self.tool.reset.assert_called_once()
 
@@ -281,7 +281,7 @@ class TestInterpretationTool(BaseTestCase):
     def test_canvas_release_left_click(self):
         """Test left click adding a point."""
         event = MagicMock()
-        event.button.return_value = Qt.LeftButton
+        event.button.return_value = Qt.MouseButton.LeftButton
         event.pos.return_value = QPoint(50, 50)
 
         self.tool.canvasReleaseEvent(event)

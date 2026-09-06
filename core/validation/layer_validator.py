@@ -105,11 +105,11 @@ def validate_layer_geometry(
 
     if actual_type != expected_type:
         type_names = {
-            QgsWkbTypes.PointGeometry: "Point",
-            QgsWkbTypes.LineGeometry: "Line",
-            QgsWkbTypes.PolygonGeometry: "Polygon",
-            QgsWkbTypes.UnknownGeometry: "Unknown",
-            QgsWkbTypes.NullGeometry: "Null",
+            QgsWkbTypes.GeometryType.PointGeometry: "Point",
+            QgsWkbTypes.GeometryType.LineGeometry: "Line",
+            QgsWkbTypes.GeometryType.PolygonGeometry: "Polygon",
+            QgsWkbTypes.GeometryType.UnknownGeometry: "Unknown",
+            QgsWkbTypes.GeometryType.NullGeometry: "Null",
         }
         expected_name = type_names.get(expected_type, f"Type {expected_type}")
         actual_name = type_names.get(actual_type, f"Type {actual_type}")
@@ -183,7 +183,7 @@ def _check_struct_layer_validity(layer: QgsVectorLayer, layer_name: str) -> tupl
     if not layer.isValid():
         return False, f"Structural layer '{layer_name}' is not valid."
 
-    if QgsWkbTypes.geometryType(layer.wkbType()) != QgsWkbTypes.PointGeometry:
+    if QgsWkbTypes.geometryType(layer.wkbType()) != QgsWkbTypes.GeometryType.PointGeometry:
         return False, "Structural layer must be a point layer."
     return True, ""
 
@@ -221,7 +221,7 @@ def _check_geology_layer_validity(layer: QgsVectorLayer) -> tuple[bool, str]:
     if not layer.isValid():
         return False, f"Geology layer '{layer.name()}' is not valid."
 
-    is_valid, error = validate_layer_geometry(layer, QgsWkbTypes.PolygonGeometry)
+    is_valid, error = validate_layer_geometry(layer, QgsWkbTypes.GeometryType.PolygonGeometry)
     if not is_valid:
         return False, error
 

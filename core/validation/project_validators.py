@@ -41,7 +41,7 @@ class SectionValidator(IValidator):
             return
 
         # Check geometry
-        is_valid, error = validate_layer_geometry(layer, QgsWkbTypes.LineGeometry)
+        is_valid, error = validate_layer_geometry(layer, QgsWkbTypes.GeometryType.LineGeometry)
         if not is_valid:
             context.add_error(error, "line_layer")
 

@@ -53,7 +53,7 @@ class StructurePage(BasePage):
 
             self.layer_combo.setFilters(Qgis.LayerFilters(Qgis.LayerFilter.PointLayer))
         except (ImportError, AttributeError, TypeError):
-            self.layer_combo.setFilters(QgsMapLayerProxyModel.PointLayer)
+            self.layer_combo.setFilters(QgsMapLayerProxyModel.Filter.PointLayer)
 
         self.layer_combo.setAllowEmptyLayer(True)
         self.layer_combo.setToolTip(self.tr("Select the point layer with structural measurements"))

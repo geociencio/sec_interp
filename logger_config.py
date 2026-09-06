@@ -57,13 +57,13 @@ class QgsLogHandler(logging.Handler):
 
             # Map Python logging levels to QGIS levels
             if record.levelno >= logging.ERROR:
-                level = Qgis.Critical
+                level = Qgis.MessageLevel.Critical
             elif record.levelno >= logging.WARNING:
-                level = Qgis.Warning
+                level = Qgis.MessageLevel.Warning
             elif record.levelno >= logging.INFO:
-                level = Qgis.Info
+                level = Qgis.MessageLevel.Info
             else:
-                level = Qgis.Info
+                level = Qgis.MessageLevel.Info
 
             # Critical: UI updates from background threads cause segfaults in QGIS
             instance = QCoreApplication.instance()
@@ -149,7 +149,7 @@ def setup_logging(level: int = logging.DEBUG) -> logging.Logger:
             QgsMessageLog.logMessage(
                 f"Warning: Could not initialize file logging: {e}",
                 ROOT_LOGGER_NAME,
-                Qgis.Warning,
+                Qgis.MessageLevel.Warning,
             )
 
         # Ensure propagation is enabled for children

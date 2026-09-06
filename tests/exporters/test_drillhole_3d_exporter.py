@@ -57,7 +57,7 @@ class TestDrillhole3DExporters(BaseTestCase):
     def test_trace_exporter_real(self, mock_writer_factory):
         # 1. Setup
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         """Test DrillholeTrace3DExporter using real coordinates."""
         exporter = DrillholeTrace3DExporter(self.settings)
@@ -73,7 +73,7 @@ class TestDrillhole3DExporters(BaseTestCase):
         # Verify writer call
         mock_writer_factory.assert_called_once()
         args, _ = mock_writer_factory.call_args
-        self.assertEqual(args[3], QgsWkbTypes.LineStringZ)
+        self.assertEqual(args[3], QgsWkbTypes.Type.LineStringZ)
 
         # Verify feature addition
         writer = mock_writer
@@ -87,7 +87,7 @@ class TestDrillhole3DExporters(BaseTestCase):
     def test_trace_exporter_projected(self, mock_writer_factory):
         # 1. Setup
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         """Test DrillholeTrace3DExporter using projected coordinates."""
         exporter = DrillholeTrace3DExporter(self.settings)
@@ -112,7 +112,7 @@ class TestDrillhole3DExporters(BaseTestCase):
     def test_interval_exporter_real(self, mock_writer_factory):
         # 1. Setup
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         """Test DrillholeInterval3DExporter using real coordinates."""
         exporter = DrillholeInterval3DExporter(self.settings)
@@ -127,7 +127,7 @@ class TestDrillhole3DExporters(BaseTestCase):
 
         mock_writer_factory.assert_called_once()
         args, _ = mock_writer_factory.call_args
-        self.assertEqual(args[3], QgsWkbTypes.LineStringZ)
+        self.assertEqual(args[3], QgsWkbTypes.Type.LineStringZ)
 
         mock_writer.addFeature.assert_called_once()
         feat = mock_writer.addFeature.call_args[0][0]
@@ -139,7 +139,7 @@ class TestDrillhole3DExporters(BaseTestCase):
     def test_interval_exporter_projected(self, mock_writer_factory):
         # 1. Setup
         mock_writer = MagicMock()
-        mock_writer.hasError.return_value = QgsVectorFileWriter.NoError
+        mock_writer.hasError.return_value = QgsVectorFileWriter.WriterError.NoError
         mock_writer_factory.return_value = mock_writer
         """Test DrillholeInterval3DExporter using projected coordinates."""
         exporter = DrillholeInterval3DExporter(self.settings)

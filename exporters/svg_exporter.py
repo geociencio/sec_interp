@@ -62,7 +62,7 @@ class SVGExporter(BaseExporter):
                 return False
 
             try:
-                painter.setRenderHint(QPainter.Antialiasing)
+                painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
                 # Render map
                 job = QgsMapRendererCustomPainterJob(map_settings, painter)

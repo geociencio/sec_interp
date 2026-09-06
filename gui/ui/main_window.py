@@ -50,8 +50,8 @@ class SecInterpMainWindow(QDialog):
         self.preview_widget = PreviewWidget()
         self.output_widget = QgsFileWidget()
 
-        flags = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
-        flags |= QDialogButtonBox.Save | QDialogButtonBox.Help
+        flags = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        flags |= QDialogButtonBox.StandardButton.Save | QDialogButtonBox.StandardButton.Help
         self.button_box = QDialogButtonBox(flags)
 
         # Initialize Pages
@@ -73,7 +73,7 @@ class SecInterpMainWindow(QDialog):
         main_layout.setSpacing(5)
 
         # -- Main Content Area: Splitter [Sidebar | Settings | Preview] --
-        splitter = QSplitter(Qt.Horizontal)
+        splitter = QSplitter(Qt.Orientation.Horizontal)
         splitter.setHandleWidth(6)  # Nominal width
         splitter.setChildrenCollapsible(True)
 
@@ -129,7 +129,7 @@ class SecInterpMainWindow(QDialog):
         out_layout = QHBoxLayout()
         out_layout.addWidget(QLabel(self.tr("Output Folder")))
 
-        self.output_widget.setStorageMode(QgsFileWidget.GetDirectory)
+        self.output_widget.setStorageMode(QgsFileWidget.StorageMode.GetDirectory)
         out_layout.addWidget(self.output_widget)
 
         main_layout.addLayout(out_layout)

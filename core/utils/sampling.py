@@ -186,7 +186,9 @@ def sample_point_elevation(
         # for single point access when speed is not the primary constraint.
         from qgis.core import QgsRaster
 
-        ident = raster_layer.dataProvider().identify(point, QgsRaster.IdentifyFormatValue)
+        ident = raster_layer.dataProvider().identify(
+            point, QgsRaster.IdentifyFormat.IdentifyFormatValue
+        )
         if ident.isValid():
             val = ident.results().get(band_number)
             if val is not None:

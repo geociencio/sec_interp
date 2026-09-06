@@ -53,9 +53,11 @@ class VectorExporter(BaseExporter):
             return False
 
         try:
-            geometry_type = self.get_setting("geometry_type", QgsWkbTypes.LineString)
+            geometry_type = self.get_setting("geometry_type", QgsWkbTypes.Type.LineString)
             crs = self.get_setting("crs", QgsCoordinateReferenceSystem("EPSG:4326"))
-            symb_mode = self.get_setting("symbology_export", QgsVectorFileWriter.NoSymbology)
+            symb_mode = self.get_setting(
+                "symbology_export", QgsVectorFileWriter.SymbologyExport.NoSymbology
+            )
 
             fields = self._prepare_fields(features_data)
             writer = scu_io.create_vector_writer(
@@ -67,7 +69,7 @@ class VectorExporter(BaseExporter):
                 symbology_export=symb_mode,
             )
 
-            if writer.hasError() != QgsVectorFileWriter.NoError:
+            if writer.hasError() != QgsVectorFileWriter.WriterError.NoError:
                 logger.error(f"Failed to create writer: {writer.errorMessage()}")
                 return False
 

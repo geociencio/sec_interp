@@ -28,7 +28,7 @@ class TestVectorDriversIntegration(BaseTestCase):
         super().setUp()
         self.crs = QgsCoordinateReferenceSystem("EPSG:4326")
         self.exporter = VectorExporter(
-            {"crs": self.crs, "geometry_type": QgsWkbTypes.Point}
+            {"crs": self.crs, "geometry_type": QgsWkbTypes.Type.Point}
         )
 
         # Create some real test data with geometries

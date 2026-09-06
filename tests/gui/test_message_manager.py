@@ -29,9 +29,9 @@ class TestMessageMethods(BaseTestCase):
 
     def test_push_message(self):
         """Test pushing a message to the message bar."""
-        self.dialog.push_message("Title", "Message", level=Qgis.Info)
+        self.dialog.push_message("Title", "Message", level=Qgis.MessageLevel.Info)
         self.dialog.messagebar.pushMessage.assert_called_once_with(
-            "Title", "Message", level=Qgis.Info, duration=5
+            "Title", "Message", level=Qgis.MessageLevel.Info, duration=5
         )
 
     def test_push_message_no_bar(self):

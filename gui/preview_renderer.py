@@ -264,7 +264,7 @@ class PreviewRenderer:
             image.fill(QColor(255, 255, 255))
 
             painter = QPainter(image)
-            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
             job = QgsMapRendererCustomPainterJob(settings, painter)
             job.start()
@@ -329,7 +329,7 @@ class PreviewRenderer:
                 continue
             try:
                 rb.hide()
-                rb.reset(QgsWkbTypes.PolygonGeometry)
+                rb.reset(QgsWkbTypes.GeometryType.PolygonGeometry)
                 scene.removeItem(rb)
             except Exception as e:
                 logger.warning(f"Failed to remove rubber band: {e}")

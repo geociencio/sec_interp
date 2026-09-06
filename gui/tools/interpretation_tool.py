@@ -118,7 +118,7 @@ class ProfileSnapper:
 
     def _is_snappable(self, layer: QgsMapLayer) -> bool:
         """Check if a layer is valid for snapping."""
-        return bool(layer and layer.type() == QgsMapLayer.VectorLayer)
+        return bool(layer and layer.type() == QgsMapLayer.LayerType.VectorLayer)
 
     def _get_locator(self, layer: QgsVectorLayer, crs, context) -> QgsPointLocator | None:
         """Retrieve or create a locator for a layer."""
@@ -156,7 +156,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         self.rubber_band: QgsRubberBand | None = None
         self.vertex_markers: list[QgsVertexMarker] = []
         self.snapper = ProfileSnapper(canvas)
-        self.cursor = Qt.CrossCursor
+        self.cursor = Qt.CursorShape.CrossCursor
 
     def activate(self) -> None:
         """Activate the interpretation tool."""
@@ -194,7 +194,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         # Rubber band cleanup
         if self.rubber_band:
             with contextlib.suppress(Exception):
-                self.rubber_band.reset(QgsWkbTypes.PolygonGeometry)
+                self.rubber_band.reset(QgsWkbTypes.GeometryType.PolygonGeometry)
                 self.canvas.scene().removeItem(self.rubber_band)
             self.rubber_band = None
 
@@ -217,7 +217,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             event: Map tool event from QGIS
 
         """
-        if event.button() == Qt.RightButton:
+        if event.button() == Qt.MouseButton.RightButton:
             if self.points:
                 self._remove_last_point()
             return
@@ -255,13 +255,13 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
             event: Key event from QGIS
 
         """
-        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+        if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
             MIN_POLYGON_POINTS = 3
             if len(self.points) >= MIN_POLYGON_POINTS:
                 self.finalize_polygon()
                 event.accept()
             return
-        if event.key() == Qt.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape:
             self.reset()
             event.accept()
             return
@@ -292,7 +292,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
                 self.canvas.scene().removeItem(self.rubber_band)
                 self.rubber_band = None
         else:
-            self.rubber_band.reset(QgsWkbTypes.PolygonGeometry)
+            self.rubber_band.reset(QgsWkbTypes.GeometryType.PolygonGeometry)
             for p in self.points:
                 self.rubber_band.addPoint(p, False)
 
@@ -302,7 +302,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         marker.setCenter(point)
         marker.setColor(QColor(255, 165, 0))  # Orange
         marker.setIconSize(10)
-        marker.setIconType(QgsVertexMarker.ICON_X)
+        marker.setIconType(QgsVertexMarker.IconType.ICON_X)
         marker.setPenWidth(2)
         self.vertex_markers.append(marker)
 
@@ -310,7 +310,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         """Ensure the rubber band exists."""
         if self.rubber_band:
             return
-        self.rubber_band = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
+        self.rubber_band = QgsRubberBand(self.canvas, QgsWkbTypes.GeometryType.PolygonGeometry)
         color = QColor(255, 0, 0, 100)  # Semi-transparent red
         self.rubber_band.setColor(color)
         self.rubber_band.setFillColor(color)
@@ -320,7 +320,7 @@ class ProfileInterpretationTool(QgsMapToolEmitPoint):
         """Update rubber band geometry."""
         if not self.rubber_band or not self.points:
             return
-        self.rubber_band.reset(QgsWkbTypes.PolygonGeometry)
+        self.rubber_band.reset(QgsWkbTypes.GeometryType.PolygonGeometry)
         for p in self.points:
             self.rubber_band.addPoint(p, False)
         self.rubber_band.addPoint(current_point, True)

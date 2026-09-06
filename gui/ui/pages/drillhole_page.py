@@ -175,7 +175,7 @@ class DrillholePage(BasePage):
             )
         except (AttributeError, TypeError):
             self.s_layer.setFilters(
-                QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.NoGeometry
+                QgsMapLayerProxyModel.Filter.PointLayer | QgsMapLayerProxyModel.Filter.NoGeometry
             )
 
         self.s_layer.setAllowEmptyLayer(True)
@@ -217,7 +217,7 @@ class DrillholePage(BasePage):
             )
         except (AttributeError, TypeError):
             self.i_layer.setFilters(
-                QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.NoGeometry
+                QgsMapLayerProxyModel.Filter.PointLayer | QgsMapLayerProxyModel.Filter.NoGeometry
             )
 
         self.i_layer.setAllowEmptyLayer(True)

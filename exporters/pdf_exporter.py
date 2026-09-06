@@ -52,7 +52,7 @@ class PDFExporter(BaseExporter):
                 return False
 
             try:
-                painter.setRenderHint(QPainter.Antialiasing)
+                painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
                 # Update map settings with actual writer device dimensions and DPI
                 dev = painter.device()

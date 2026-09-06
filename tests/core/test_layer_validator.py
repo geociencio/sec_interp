@@ -85,13 +85,13 @@ class TestLayerValidator(BaseTestCase):
         """Test geometry type validation."""
         layer = QgsVectorLayer()
         # PointGeometry = 0
-        layer.wkbType = MagicMock(return_value=QgsWkbTypes.Point)
+        layer.wkbType = MagicMock(return_value=QgsWkbTypes.Type.Point)
 
-        is_valid, msg = validate_layer_geometry(layer, QgsWkbTypes.PointGeometry)
+        is_valid, msg = validate_layer_geometry(layer, QgsWkbTypes.GeometryType.PointGeometry)
         self.assertTrue(is_valid)
 
         # Mismatch
-        is_valid, msg = validate_layer_geometry(layer, QgsWkbTypes.LineGeometry)
+        is_valid, msg = validate_layer_geometry(layer, QgsWkbTypes.GeometryType.LineGeometry)
         self.assertFalse(is_valid)
         self.assertIn("Found Point, but expected Line", msg)
 
@@ -111,7 +111,7 @@ class TestLayerValidator(BaseTestCase):
         """Test structural layer requirements."""
         layer = QgsVectorLayer()
         layer.isValid = MagicMock(return_value=True)
-        layer.wkbType = MagicMock(return_value=QgsWkbTypes.Point)
+        layer.wkbType = MagicMock(return_value=QgsWkbTypes.Type.Point)
 
         # Mock field validation
         with (

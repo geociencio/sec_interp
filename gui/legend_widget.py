@@ -73,7 +73,7 @@ class LegendWidget(QWidget):
                 return
 
             painter = QPainter(self)
-            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
             # Draw legend using the shared method
             self.renderer.draw_legend(painter, QRectF(self.rect()))
