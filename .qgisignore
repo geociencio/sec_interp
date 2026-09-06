@@ -96,6 +96,7 @@ logs/
 _archive/
 artifacts/
 bandit_report.json
+flake8_report.json
 detailed_report.json
 quality_details.json
 quality_report.txt
