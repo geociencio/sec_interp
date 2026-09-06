@@ -18,12 +18,16 @@ Este tablero de tareas activas registra el progreso de la sesión actual de desa
 
 ## 🛠️ Prioritized Technical Debt & Quality Gates
 - [x] Resolve false-positive `MISSING_I18N` linting warnings <!-- id: 3.1 -->
-- [ ] Add a strict check in pre-commit hooks to validate `qt6_compat` import hygiene across all GUI pages <!-- id: 3.2 -->
+- [x] Migrate to scoped enums for Qt6/QGIS 4 (pyqgis4-checker) — 114 enum errors resolved <!-- id: 3.3 -->
+- [x] Wire full security scan (Bandit) into release workflow <!-- id: 3.4 -->
+- [x] Add Qt6 enum check gate (make qt6-check / CI job) <!-- id: 3.5 -->
+- [ ] Retire core/utils/qt6_compat.py monkeypatch (harmless fallback, now unused) <!-- id: 3.6 -->
 
 ## 🧪 Operational Status
-- **Active Task**: [collapsible_preview_controls] Separated preview canvas from collapsible controls/results. Next: Fase 1 — VerticalExaggerationService.
+- **Active Task**: [qt6_scoped_enum_migration] Migrated 114 flat enums to scoped form. Next: Goal 2.1 (symbology) o Fase 1 adaptive VE.
 - **Current Metrics**:
-  - Tests Passing: 620/620 (100%) (v3.7.0 Verified)
-  - Quality Score: 52.3/100 (v3.7.0 Verified)
+  - Tests Passing: 620/620 (100%)
+  - Quality Score: 52.3/100
   - AST i18n Gate: PASS (0 violations)
-  - qgis-analyzer MISSING_I18N: 70 remaining (all false positives)
+  - qgis-analyzer MISSING_I18N: 72 (all false positives)
+  - pyqgis4-checker: 0 enum incompatibilities

@@ -1,3 +1,18 @@
+## [2026-09-06] Session: Qt6 Scoped Enum Migration
+- **Achievement**: Migrados 114 enums planos a forma scoped para compatibilidad QGIS 4 / Qt6.
+- **Root Cause/Context**: El repositorio de plugins de QGIS ejecuta `pyqt5_to_pyqt6.py` (pyqgis4-checker) al subir el ZIP, que reporta enums no calificados (Qgis.Critical vs Qgis.MessageLevel.Critical).
+- **Actions Taken**:
+    - Auto-fix con `pyqt5_to_pyqt6.py` (57 archivos fuente migrados).
+    - Actualizados los mocks de tests para exponer enums scoped (Type, MessageLevel, Flag, RenderHint, Shape, IconType, StorageMode).
+    - Bump `qgisMinimumVersion` 3.0 -> 3.28.
+    - Gate: `make qt6-check`/`make qt6-fix` + job CI `qt6` + wiring en `pre-release`.
+- **Operational Metrics**:
+    - Tests: 620/620 (100%)
+    - pyqgis4-checker: 0 incompatibilidades
+    - CC <= 10: PASS
+- **Status**: Migracion Qt6 completada. Pendiente retirar qt6_compat.py y Goals 2.x.
+- **Maintenance**: [session_2026-09-06_qt6_scoped_enum_migration.md](maintenance/session_2026-09-06_qt6_scoped_enum_migration.md)
+
 ## [2026-09-06] MILESTONE: Release v3.7.1 — Security Patch
 - **Achievement**: Publicacion de SecInterp v3.7.1 (parche de seguridad).
 - **Release Content**:

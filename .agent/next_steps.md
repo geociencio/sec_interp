@@ -56,34 +56,20 @@ A full metric re-scan was performed. Key findings:
   - [x] Updated memory_policy.md: pruning quarterly → monthly <!-- id: 3.18 -->
 
 ## 🛠️ Prioritized Technical Debt
-- [ ] Add a strict check in pre-commit hooks to validate `qt6_compat` import hygiene across all GUI pages. <!-- id: 4.1 -->
+- [x] Migrate to scoped enums for Qt6/QGIS 4 (114 enum errors resolved via pyqt5_to_pyqt6.py). Mocks updated. Gate wired into pre-release + CI. <!-- id: 4.1 -->
+- [ ] Retire `core/utils/qt6_compat.py` monkeypatch (harmless fallback, now unused) <!-- id: 4.1b -->
 - [ ] Fix 2 NON_PYTHONIC_LOOP issues flagged by qgis-analyzer <!-- id: 4.2 -->
 - [ ] Investigate 1 SPATIAL_INDEX warning in `dialog_interpretation_manager.py` <!-- id: 4.3 -->
 
-## 📋 Sessions Closed 2026-05-26/27 — Agentic System Gen 7 Completion
+## 📋 Session Closed 2026-09-06 — Qt6 Scoped Enum Migration + Releases v3.7.0/v3.7.1
 
-The `.agent/` system reached operational maturity with 12 new automation scripts and 4 enhanced workflows:
-
-**Gen 7 Scripts (12 total):**
-- `sync_metrics.py` — unified ground-truth extraction
-- `validate_agent_metrics.py` — cross-file consistency checker
-- `workflow_graph.py` — dependency graph & broken ref detector
-- `workflow_executor.py` — runtime-agnostic translator
-- `lesson_extractor.py` — auto-propose AGENT_LESSONS candidates
-- `session_index.py` — chronological maintenance log index
-- `validate_agent_system.py` — .agent/ structure integrity validator
-- `metrics_report.py` — enhanced with sparklines, bar charts, delta
-- `memory_prune.py` — monthly lesson pruning (cadence shortened)
-- `context_selector.py` — semantic skill injection
-- `check_cc.py` — CC ≤ 10 gate
-- `verify_i18n_hygiene.py` — AST-based i18n gate
-
-**Session metrics:**
-- 2 commits: `e8f3dbc`, `f796f0e`
-- 12 new/8 modified files in `.agent/` + 6 new scripts
-- Tests: 620 passing (Docker confirmed)
-- All quality gates PASS
+Achieved in this session:
+- **Releases**: v3.7.0 (i18n gate + collapsible controls) and v3.7.1 (security patch).
+- **Security**: fixed silent `try/except/pass` (Bandit B110); wired full Bandit scan into release workflow.
+- **Qt6 migration**: resolved all 114 `pyqgis4-checker` enum errors via `pyqt5_to_pyqt6.py` auto-fix; updated test mocks; bumped `qgisMinimumVersion` 3.0 → 3.28.
+- **Gate**: added `make qt6-check`/`make qt6-fix` + GitHub Actions `qt6` job + `pre-release` wiring.
+- **Packaging**: excluded `.codewhale`/`.continue`/`.deepseek`/`artifacts`/`.doctrees`/fonts from ZIP (25MB → 3.3MB).
 
 ## 🚀 How to Resume
-1. Run `/start-session` — now includes automatic metric validation and delta check
-2. Continue with Goal 1.4 (i18n triage of 79 analyzer flags) or Goal 2.1 (symbology preview)
+1. Run `/start-session`.
+2. Continue with Goal 2.1 (symbology preview), Fase 1 adaptive VE, or tech debt 4.1b/4.2/4.3.
