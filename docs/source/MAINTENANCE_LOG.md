@@ -1,6 +1,11 @@
 # SecInterp - Maintenance & Release Log
 
 
+## [2026-09-12] PHASE CLOSURE v3.7.0 (I18N QUALITY GATE, UX & QT6/QGIS 4 ENUM MIGRATION)
+- **Achievements**: Two releases (v3.7.0 / v3.7.1). AST i18n hygiene gate (0 violations), 9 dialog titles wrapped in `self.tr()`, 79 analyzer flags triaged to 72 false positives. 114 flat enums migrated to scoped form for QGIS 4 (pyqgis4-checker 0 errors). Collapsible preview controls. Security patch (Bandit B110). ZIP reduced 25MB → 3.3MB.
+- **Reference**: [Phase Closure Document](../maintenance/phase_closure_v3.7.0.md)
+- **Metrics**: 620 tests Green, Maintainability 99.9/100, Security 100/100, CC <= 10, i18n AST Gate PASS.
+
 ## [2026-05-18] PHASE CLOSURE v3.6.0 (NEXT-GEN STABILITY & SPATIAL OPTIMIZATION)
 - **Achievements**: Extreme stability and full compatibility with QGIS 4.x/Qt6. Spatial performance optimization via QgsSpatialIndex, achieving sub-second query times. 100% translation coverage and 572 successful tests.
 - **Reference**: [Phase Closure Document](../maintenance/phase_closure_v3.6.0.md)

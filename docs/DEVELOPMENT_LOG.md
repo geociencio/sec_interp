@@ -1,3 +1,9 @@
+## [2026-09-12] PHASE CLOSURE v3.7.0
+- **Achievement**: Cierre formal de la fase v3.7.0 (i18n Quality Gate, UX, Qt6/QGIS 4 enum migration).
+- **Summary**: Releases v3.7.0 y v3.7.1. Gate i18n AST (0 violaciones), 9 titulos envueltos en `self.tr()`, 114 enums migrados a forma scoped, patch de seguridad (Bandit B110), ZIP 25MB → 3.3MB.
+- **Operational Metrics**: 620/620 tests, Maintainability 99.9/100, Security 100/100, CC <= 10 PASS, i18n AST PASS.
+- **Reference**: [phase_closure_v3.7.0.md](maintenance/phase_closure_v3.7.0.md)
+
 ## [2026-09-06] Session: Qt6 Scoped Enum Migration
 - **Achievement**: Migrados 114 enums planos a forma scoped para compatibilidad QGIS 4 / Qt6.
 - **Root Cause/Context**: El repositorio de plugins de QGIS ejecuta `pyqt5_to_pyqt6.py` (pyqgis4-checker) al subir el ZIP, que reporta enums no calificados (Qgis.Critical vs Qgis.MessageLevel.Critical).
