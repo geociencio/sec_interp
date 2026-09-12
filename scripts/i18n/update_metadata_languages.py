@@ -51,12 +51,7 @@ def get_supported_languages():
 
 
 def escape_percent(text):
-    """
-    Escape % as %% for QGIS metadata.txt (configparser compatibility).
-    Wait, the rule says escape % as %%%% if it's already a percentage or just %%?
-    Actually, configparser needs doubling. If it's used in metadata, QGIS handles it.
-    Reference from update_metadata_rule.py says escape %% as %%%%.
-    """
+    """Escape % as %% for QGIS metadata.txt (configparser compatibility)."""
     return text.replace("%", "%%")
 
 
