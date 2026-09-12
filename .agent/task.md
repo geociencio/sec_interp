@@ -2,6 +2,13 @@
 
 Tablero de tareas activas basado en `.agent/next_steps.md`.
 
+## 🚀 Release v3.7.2 — Qt6/QGIS 4 Compatibility Patch (COMPLETADO)
+- [x] Diagnosticar 114 "Enum error" del portal (reporte pre-migración vs ZIP v3.7.1) <!-- id: 3.1 -->
+- [x] Bump versión 3.7.1 → 3.7.2 (metadata, pyproject, uv.lock, README, CHANGELOG) <!-- id: 3.2 -->
+- [x] Gates: qt6-check (0), CC PASS, security-scan PASS, docker-test 645/645 <!-- id: 3.3 -->
+- [x] Commit `278058e` + tag `v3.7.2` + push + ZIP 3.9MB + draft release <!-- id: 3.4 -->
+- [ ] PENDIENTE manual: publicar draft + subir ZIP a plugins.qgis.org <!-- id: 3.5 -->
+
 ## 🛠️ Agentic System Hardening (COMPLETADO)
 - [x] Cierre de fase v3.7.0 (documento + logs + archivo de tasks) <!-- id: 0.1 -->
 - [x] Reconciliación de métricas + validación interna (`validate_agent_metrics.py`) <!-- id: 0.2 -->
@@ -24,5 +31,5 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [ ] Resolver `module_size_gate` FAIL (7 módulos > 400 líneas) <!-- id: 2.4 -->
 
 ## 🧪 Operational Status
-- **Active Task**: [agentic_system_hardening] completado. Next: Goal 1.1 (symbology) o Fase 1 adaptive VE.
-- **Metrics**: 645/645 tests, Quality 52.3/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n AST PASS.
+- **Active Task**: [release_v3.7.2_qt6_compat] completado. Next: Goal 1.1 (symbology) o Fase 1 adaptive VE.
+- **Metrics**: 645/645 tests, Quality 52.3/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n AST PASS, qt6-check PASS.

@@ -17,6 +17,16 @@ lessons:
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-12'
     category: AGENTIC_SYSTEM
+    topic: Release Timing vs Build/Upload Order
+    lesson: The scoped-enum migration (commit 7ae8ac96) was committed AFTER the v3.7.1
+      ZIP was built and uploaded, so the portal's Qt6 checker kept reporting 114 enum
+      findings even though HEAD was clean. A fix that lives in git but never in a
+      released artifact is invisible to the portal.
+    action: When a compatibility fix lands, verify the built ZIP actually contains it
+      (unzip -p on the artifact) and ship a patch release before declaring the portal
+      issue resolved.
+  - date: '2026-09-12'
+    category: AGENTIC_SYSTEM
     topic: Metric Sync Must Update All Derived Fields
     lesson: sync_metrics.py only refreshed the summary scores, leaving last_session
       stale (2026-05-23) and i18n_issues_qgis_analyzer (254) contradicting

@@ -122,7 +122,7 @@
     },
     "last_session": {
         "date": "2026-09-12",
-        "topic": "agentic_system_hardening",
+        "topic": "release_v3.7.2_qt6_compat",
         "tests_ok": 645,
         "quality_score": 52.3,
         "task_completion_rate": null,
@@ -132,6 +132,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-09-12",
+            "tests_ok": 645,
+            "quality_score": 52.3,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "agentic_system_hardening"
+        },
         {
             "date": "2026-09-06",
             "session": "qt6_scoped_enum_migration",
