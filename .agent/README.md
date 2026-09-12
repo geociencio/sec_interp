@@ -2,6 +2,8 @@
 
 Welcome to the **SecInterp Agentic Intelligence Core**. This directory contains the complete brain, tools, and protocols that empower the AI agent to act as a Senior Architect, QA Engineer, and Auditor for the SecInterp QGIS plugin.
 
+> **⚠️ Obsolete**: The `antigravity-framerepo/` directory (former Antigravity framework starter kit, Gen 2/3) is **deprecated**. It is superseded by this `.agent/` system and is no longer tracked by git (see `.gitignore`). Do not sync or update it — use the skills and workflows in `.agent/` instead.
+
 ## 🚀 Overview: The Generation 6 Architecture
 
 SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simple script execution into a state-governed, self-pruning, and metric-aware cognitive architecture.

@@ -29,3 +29,6 @@ help/html/
 
 # Archive
 _archive/
+
+# Obsolete (superseded by .agent/ — Antigravity framework starter kit)
+antigravity-framerepo/
