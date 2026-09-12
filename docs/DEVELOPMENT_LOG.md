@@ -1,3 +1,21 @@
+## [2026-09-12] Session: Agentic System Hardening
+- **Achievement**: Hardening integral del sistema `.agent/` (6 recomendaciones de auditoria + plan A+B+C completados).
+- **Actions Taken**:
+    - Cierre de fase v3.7.0 (documento formal + logs + archivo de tasks).
+    - Metric coherence: reconciliado `agent_metrics.json` (i18n 254→72, maintainability 90.7→99.9) + `validate_agent_metrics.py` con chequeos de consistencia interna.
+    - History pruning: 44 snapshots `next_steps/` eliminados (retencion 90 dias) + unificacion de naming en `history/tasks/`.
+    - Script audit: 9 scripts legacy eliminados + `scripts/README.md` creado.
+    - `antigravity-framerepo/` marcado obsoleto (gitlink desvinculado + gitignored).
+    - Gen 7 tooling: rotacion de `last_session` en `sync_metrics.py`, tabla de workflows auto-sync en ambos `AGENTS.md`, `check_skill_conflicts.py`, `context_selector.py` corregido.
+    - 25 tests unitarios nuevos en `tests/agentic/`.
+- **Operational Metrics**:
+    - Tests: 645/645 (100%) — 620 plugin + 25 agentic tooling
+    - CC <= 10: PASS
+    - i18n AST Gate: PASS
+    - Validators: validate_agent_system / validate_agent_metrics / workflow_graph / check_skill_conflicts: PASS
+- **Status**: Sistema agéntico endurecido y testeado. Siguiente: metas v3.8.0 (Goal 1 symbology/VE).
+- **Maintenance**: [session_2026-09-12_agentic_system_hardening.md](maintenance/session_2026-09-12_agentic_system_hardening.md)
+
 ## [2026-09-12] PHASE CLOSURE v3.7.0
 - **Achievement**: Cierre formal de la fase v3.7.0 (i18n Quality Gate, UX, Qt6/QGIS 4 enum migration).
 - **Summary**: Releases v3.7.0 y v3.7.1. Gate i18n AST (0 violaciones), 9 titulos envueltos en `self.tr()`, 114 enums migrados a forma scoped, patch de seguridad (Bandit B110), ZIP 25MB → 3.3MB.

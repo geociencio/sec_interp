@@ -15,6 +15,30 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-12'
+    category: AGENTIC_SYSTEM
+    topic: Metric Sync Must Update All Derived Fields
+    lesson: sync_metrics.py only refreshed the summary scores, leaving last_session
+      stale (2026-05-23) and i18n_issues_qgis_analyzer (254) contradicting
+      issue_breakdown.MISSING_I18N (72). Partial field updates silently recreate drift.
+    action: Every metric sync must also refresh i18n_issues_qgis_analyzer and rotate
+      last_session into history (sync_metrics.py --close-session). validate_agent_metrics.py
+      now checks internal consistency to catch this class of drift.
+  - date: '2026-09-12'
+    category: TOOLING
+    topic: Verify YAML Frontmatter After Bulk Edits
+    lesson: A bulk Python script to standardize the runtimes frontmatter field across
+      13 workflows merged the closing --- with the last frontmatter line, silently
+      corrupting YAML.
+    action: After any mechanical multi-file edit, re-parse frontmatter (or run
+      validate_agent_system.py / workflow_graph.py --validate) before committing.
+  - date: '2026-09-12'
+    category: AGENTIC_SYSTEM
+    topic: Single Source of Truth for Workflow Tables
+    lesson: Root AGENTS.md and .agent/AGENTS.md each had a manually-maintained workflow
+      table that drifted (5 vs 15 workflows). Duplicated tables inevitably diverge.
+    action: skill_sync.py now regenerates both tables from workflow frontmatter. Do not
+      hand-edit these tables; run skill_sync.py after adding/renaming a workflow.
   - date: '2026-05-24'
     category: TECHNICAL
     topic: qgis-analyzer i18n False Positives

@@ -121,22 +121,14 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-09-06",
-        "topic": "qt6_scoped_enum_migration",
-        "tests_ok": 620,
+        "date": "2026-09-12",
+        "topic": "agentic_system_hardening",
+        "tests_ok": 645,
         "quality_score": 52.3,
-        "task_completion_rate": 1.0,
+        "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
-        "tasks": [
-            "Migrate 114 flat QGIS enums to scoped form via pyqt5_to_pyqt6.py (57 source files)",
-            "Update test mocks to expose scoped enums (Type, MessageLevel, Flag, RenderHint, Shape, IconType, StorageMode)",
-            "Bump qgisMinimumVersion from 3.0 to 3.28",
-            "Add Qt6 enum check gate (make qt6-check / make qt6-fix + CI job + pre-release wiring)",
-            "Release v3.7.0 (i18n quality gate + collapsible preview controls)",
-            "Release v3.7.1 (security patch: silent try/except/pass -> logger.warning, Bandit B110)",
-            "Exclude agent tooling (.codewhale/.continue/.deepseek/artifacts/fonts) from ZIP (25MB -> 3.3MB)"
-        ],
+        "tasks": [],
         "status": "SUCCESS"
     },
     "history": [
