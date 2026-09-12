@@ -12,7 +12,7 @@ The system uses a **3-tier cognitive architecture** aligned with 2025/2026 agent
 | Tier | File | Purpose | Retention |
 |---|---|---|---|
 | **Short-term** (Working) | `AI_CONTEXT.md` | Current session state, active tasks, decisions in progress | Per session (reset on start) |
-| **Episodic** (Event History) | `docs/maintenance/` (100+ session logs), `history/tasks/`, `next_steps.md` | Records of past sessions, outcomes, and decisions | 6 months → archived |
+| **Episodic** (Event History) | `docs/maintenance/` (100+ session logs), `history/tasks/`, `history/next_steps/`, `next_steps.md` | Records of past sessions, outcomes, and decisions | Session logs: 6 months → archived; next_steps snapshots: 90 days → pruned |
 | **Semantic** (Long-term) | `AGENT_LESSONS.md`, `SKILL.md` files | Distilled patterns, user preferences, reusable procedures | Permanent (with pruning) |
 
 ---
@@ -101,6 +101,27 @@ The following must **never** appear in `AGENT_LESSONS.md`:
 | **Memory Pruning** | Monthly (at session close) | Agent (auto) | `/close-session` workflow |
 | **Skill Promotion** | On demand | Agent | Pattern repeats 2+ times |
 | **Policy Review** | Biannually | Human | Major framework version upgrade |
+
+---
+
+## 9. History Archive Conventions & Pruning
+
+### 9.1 Task Board Naming (`history/tasks/`)
+
+All archived task boards follow a single naming scheme:
+
+- **Phase/release boards**: `tasks_vX.Y.Z.md` (e.g., `tasks_v3.7.0.md`, `tasks_v3.0.1.md`).
+- **Session snapshots without a release**: `tasks_YYYY-MM-DD_topic.md` (e.g., `tasks_2026-02-18_optimization.md`).
+
+The plural `tasks_` prefix is mandatory. Legacy variants (`task_*`, `tasks_*_closure`, `*_stale`) are not permitted for new archives.
+
+### 9.2 next_steps Snapshot Pruning (`history/next_steps/`)
+
+`history/next_steps/` stores per-session handoff snapshots (`next_steps_YYYY-MM-DD[_topic].md`). These are ephemeral working states, redundant with the session logs in `docs/maintenance/` and the git history.
+
+- **Retention**: 90 days from the date encoded in the filename.
+- **Action**: Snapshots older than 90 days are deleted by `scripts/memory_prune.py` (recoverable via git).
+- **Cadence**: Run monthly at session close, together with lesson pruning (`/close-session`).
 
 ---
 

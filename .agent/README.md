@@ -38,8 +38,8 @@ SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simp
 │   ├── close-session.md    # Closing with metric sync + memory prune
 │   └── ... (see QUICK_REFERENCE.md)
 └── history/                # 📜 Archived task boards and next_steps snapshots
-    ├── tasks/              # Phase task archives (9 files)
-    └── next_steps/         # Session handoff snapshots (43 files)
+    ├── tasks/              # Phase task archives (tasks_vX.Y.Z.md)
+    └── next_steps/         # Session handoff snapshots (90-day retention, pruned monthly)
 ```
 
 ---
