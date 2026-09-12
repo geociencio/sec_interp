@@ -100,12 +100,29 @@ This project enforces:
 | Module Stability | 52.3/100 |
 | Maintainability | 99.9/100 |
 | Security (Bandit) | 100.0/100 |
-| Tests | 620 passing |
+| Tests | 645 passing |
 | CC Gate | PASS (all ≤ 10) |
 | i18n AST Gate | PASS (0 violations) |
 
+### Canonical Metric Sources
+
+Multiple analyzers produce overlapping numbers. To avoid metric staleness, each dimension has a **single authoritative source**:
+
+| Metric | Authoritative tool | Stored in |
+| :--- | :--- | :--- |
+| Module Stability | `qgis-analyzer` (`qgis-analyzer analyze .`) | `agent_metrics.json` → `quality_score_latest` |
+| Maintainability | `qgis-analyzer` | `agent_metrics.json` → `maintainability_score` |
+| Security | `qgis-analyzer` (Bandit) | `agent_metrics.json` → `security_score` |
+| Cyclomatic Complexity | `scripts/check_cc.py` (max CC ≤ 10) | `agent_metrics.json` → `cyclomatic_complexity_gate` |
+| i18n AST hygiene | `scripts/verify_i18n_hygiene.py` | `agent_metrics.json` → `i18n_hygiene_gate` |
+| i18n analyzer scope | `qgis-analyzer` MISSING_I18N | `agent_metrics.json` → `i18n_issues_qgis_analyzer` |
+| Test count | `make docker-test` → `update_testing_status.py` | `agent_metrics.json` → `tests_ok` |
+| Type hints / Docstrings | `qgis-analyzer` research metrics | `agent_metrics.json` summary |
+
+> `ai-ctx` (`AI_CONTEXT.md`, `PROJECT_SUMMARY.md`) measures a **different** "quality score" (aggregate heuristic) and is **not** canonical. Ignore it when reporting project metrics.
+
 ---
 
-**System Version**: 1.7 (Gen 6 — Phase 1 Complete)
-**Last Audit**: 2026-09-12 (metric reconciliation + close-phase v3.7.0)
+**System Version**: 1.8 (Gen 6 — Phase 1 complete, Gen 7 tooling wired + tested)
+**Last Audit**: 2026-09-12 (metric reconciliation, phase v3.7.0 closure, agentic tooling hardening)
 **Status**: 🟢 Operational — Metric Integrity Verified

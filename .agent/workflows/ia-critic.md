@@ -2,6 +2,7 @@
 description: Workflow for critical review of implementation plans by the Agent Auditor
 agent: Agent Auditor
 skills: [coding-standards, project-context, agentic-memory]
+runtimes: [antigravity, codewhale]
 validation: |
   - Verify that the plan complies with Core/GUI separation
   - Validate that no obvious technical debt is introduced

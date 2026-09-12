@@ -82,39 +82,57 @@ def sync_skills():
     print(f"✅ Successfully synchronized {len(skills)} skills into AGENTS.md")
 
 
+def _write_table_between_markers(content, start_marker, end_marker, table_content):
+    """Replace the region between markers with table_content."""
+    pattern = re.compile(
+        f"{re.escape(start_marker)}.*?{re.escape(end_marker)}", re.DOTALL
+    )
+    replacement = f"{start_marker}\n{table_content}\n{end_marker}"
+    if pattern.search(content):
+        return pattern.sub(replacement, content)
+    return content + f"\n{start_marker}\n{table_content}\n{end_marker}\n"
+
+
+def load_workflows(base_path, workflows_dir):
+    """Load workflow metadata from frontmatter."""
+    workflows = []
+    for workflow_path in sorted(workflows_dir.glob("*.md")):
+        if workflow_path.name == "index.md":
+            continue
+        with open(workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
+            if not match:
+                continue
+            try:
+                metadata = yaml.safe_load(match.group(1)) or {}
+            except Exception as e:
+                print(f"Error parsing metadata for {workflow_path}: {e}")
+                continue
+            metadata["name"] = workflow_path.stem
+            metadata["path"] = str(workflow_path.relative_to(base_path))
+            if "agent" in metadata and "skills" in metadata:
+                workflows.append(metadata)
+            else:
+                print(
+                    f"⚠️  Skipping {workflow_path.name}: missing 'agent' or 'skills' metadata"
+                )
+    return workflows
+
+
 def sync_workflows():
-    """Sync workflows metadata into AGENTS.md workflow table."""
+    """Sync workflow metadata into the root and .agent/ AGENTS.md tables."""
     base_path = Path(__file__).parent.parent
     workflows_dir = base_path / ".agent" / "workflows"
-    agents_file = base_path / ".agent" / "AGENTS.md"  # noqa: F841
+    root_agents_file = base_path / "AGENTS.md"
+    agent_agents_file = base_path / ".agent" / "AGENTS.md"
 
     if not workflows_dir.exists():
         print(f"Error: {workflows_dir} not found.")
         return
 
-    workflows = []
     print(f"Scanning workflows in {workflows_dir}...")
-
-    for workflow_path in workflows_dir.glob("*.md"):
-        with open(workflow_path, "r", encoding="utf-8") as f:
-            content = f.read()
-            # Extract YAML frontmatter
-            match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
-            if match:
-                try:
-                    metadata = yaml.safe_load(match.group(1))
-                    metadata["name"] = workflow_path.stem
-                    metadata["path"] = str(workflow_path.relative_to(base_path))
-
-                    # Validate required fields
-                    if "agent" in metadata and "skills" in metadata:
-                        workflows.append(metadata)
-                    else:
-                        print(
-                            f"⚠️  Skipping {workflow_path.name}: missing 'agent' or 'skills' metadata"
-                        )
-                except Exception as e:
-                    print(f"Error parsing metadata for {workflow_path}: {e}")
+    workflows = load_workflows(base_path, workflows_dir)
 
     if not workflows:
         print("No workflows with metadata found.")
@@ -131,7 +149,49 @@ def sync_workflows():
                     f"⚠️  Warning: Workflow '{wf['name']}' references non-existent skill '{skill}'"
                 )
 
-    print(f"✅ Validated {len(workflows)} workflows")
+    # Root AGENTS.md table: Command | Workflow file | Purpose
+    root_lines = [
+        "| Command | Workflow file | Purpose |",
+        "| :--- | :--- | :--- |",
+    ]
+    for wf in workflows:
+        name = wf["name"]
+        root_lines.append(
+            f"| `/{name}` | `.agent/workflows/{name}.md` | {wf.get('description', 'N/A')} |"
+        )
+    root_table = "\n".join(root_lines)
+
+    # .agent/AGENTS.md table: Workflow | Agent | Skills | Purpose
+    agent_lines = [
+        "| Workflow | Agent | Skills | Purpose |",
+        "| :--- | :--- | :--- | :--- |",
+    ]
+    for wf in workflows:
+        name = wf["name"]
+        skills = ", ".join(wf.get("skills", []))
+        agent_lines.append(
+            f"| [/{name}](file://./workflows/{name}.md) | {wf.get('agent', 'N/A')} "
+            f"| {skills} | {wf.get('description', 'N/A')} |"
+        )
+    agent_table = "\n".join(agent_lines)
+
+    start_marker = "<!-- WORKFLOWS_TABLE_START -->"
+    end_marker = "<!-- WORKFLOWS_TABLE_END -->"
+
+    for agents_file, table_content in [
+        (root_agents_file, root_table),
+        (agent_agents_file, agent_table),
+    ]:
+        if not agents_file.exists():
+            print(f"Error: {agents_file} not found.")
+            continue
+        content = agents_file.read_text(encoding="utf-8")
+        new_content = _write_table_between_markers(
+            content, start_marker, end_marker, table_content
+        )
+        agents_file.write_text(new_content, encoding="utf-8")
+
+    print(f"✅ Synced {len(workflows)} workflows into AGENTS.md and .agent/AGENTS.md")
     print(f"   All referenced skills exist: {existing_skills}")
 
 

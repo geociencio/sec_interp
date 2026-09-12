@@ -51,6 +51,7 @@ def main():
 
     # 1. Count tests by category
     categories = {
+        "AGENT_COUNT": test_dir / "agentic",
         "CORE_COUNT": test_dir / "core",
         "GUI_COUNT": test_dir / "gui",
         "EXP_COUNT": test_dir / "exporters",

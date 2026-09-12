@@ -4,6 +4,34 @@ This document provides essential guidelines for agentic coding agents working on
 
 ---
 
+## 🧭 Workflow Commands (slash commands)
+
+When the user types `/name` (e.g. `/start-session`), read the corresponding `.agent/workflows/name.md` file and execute its steps. Do NOT treat them as unknown commands.
+
+<!-- WORKFLOWS_TABLE_START -->
+| Command | Workflow file | Purpose |
+| :--- | :--- | :--- |
+| `/audit-plugin` | `.agent/workflows/audit-plugin.md` | Perform a full or partial plugin audit using qgis-plugin-analyzer v1.9.0+. |
+| `/build-feature` | `.agent/workflows/build-feature.md` | Start the Autonomous AI Developer Pipeline sequence for a new feature. |
+| `/close-phase` | `.agent/workflows/close-phase.md` | Formal procedure for closing a major development phase |
+| `/close-session` | `.agent/workflows/close-session.md` | Procedure to end a work session, update logs, and archive results |
+| `/create-commit` | `.agent/workflows/create-commit.md` | How to commit changes cleanly (handling hooks) |
+| `/fix-linting` | `.agent/workflows/fix-linting.md` | Workflow to automatically correct linting and formatting issues |
+| `/i18n-maintenance` | `.agent/workflows/i18n-maintenance.md` | Procedure for i18n maintenance and expansion (Translations) |
+| `/ia-critic` | `.agent/workflows/ia-critic.md` | Workflow for critical review of implementation plans by the Agent Auditor |
+| `/refactor-code` | `.agent/workflows/refactor-code.md` | Guided workflow for code refactoring with complexity validation |
+| `/release-plugin` | `.agent/workflows/release-plugin.md` | Unified Release Workflow (QGIS Release Flow) - Generation 6 Standard |
+| `/run-tests-in-qgis` | `.agent/workflows/run-tests-in-qgis.md` | How to run tests inside QGIS (integration testing) |
+| `/run-tests` | `.agent/workflows/run-tests.md` | How to run unit tests reliably |
+| `/start-phase` | `.agent/workflows/start-phase.md` | Formal procedure for starting a new major development phase |
+| `/start-session` | `.agent/workflows/start-session.md` | Standard and robust procedure for starting a "Local First" development session |
+| `/verify-standards` | `.agent/workflows/verify-standards.md` | Audits the consistency of the agentic system (Skills and Workflows) against the master standard. |
+<!-- WORKFLOWS_TABLE_END -->
+
+Full index: `.agent/workflows/index.md`
+
+---
+
 ## 🚀 Build/Lint/Test Commands
 
 ### Core Commands

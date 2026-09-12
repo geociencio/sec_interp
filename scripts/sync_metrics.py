@@ -8,9 +8,12 @@ workflows so the agentic system never operates on stale data.
 
 Usage:
     uv run python scripts/sync_metrics.py [--json] [--quiet]
+    uv run python scripts/sync_metrics.py --close-session [--topic NAME]
 
 Output:
     - Updates .agent/memory/agent_metrics.json summary section
+    - With --close-session: rotates last_session into history and starts a
+      fresh session entry (prevents last_session staleness between sessions)
     - Prints a compact status report to stdout
     - With --json: prints the summary as JSON (for programmatic use)
 """
@@ -246,6 +249,8 @@ def update_metrics_json(metrics: dict) -> bool:
     issues = analyzer.get("issues", {})
     if issues:
         summary["issue_breakdown"] = issues
+        if "MISSING_I18N" in issues:
+            summary["i18n_issues_qgis_analyzer"] = issues["MISSING_I18N"]
 
     # Add sync metadata
     ground_truth = data.setdefault("ground_truth_sources", {})
@@ -262,9 +267,72 @@ def update_metrics_json(metrics: dict) -> bool:
     return True
 
 
+def rotate_session_history(topic: Optional[str] = None, metrics_file: Path = METRICS_FILE) -> bool:
+    """Rotate the current last_session into history and start a fresh one.
+
+    Prevents `last_session` from going stale across sessions by always
+    advancing its date to today. The previous session is preserved in the
+    `history` array (deduplicated by date+topic).
+    """
+    if not metrics_file.exists():
+        print(f"❌ {metrics_file} not found", file=sys.stderr)
+        return False
+
+    try:
+        data = json.loads(metrics_file.read_text())
+    except json.JSONDecodeError as e:
+        print(f"❌ Invalid JSON in {metrics_file}: {e}", file=sys.stderr)
+        return False
+
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    summary = data.get("summary", {})
+
+    previous = data.get("last_session") or {}
+    history = data.get("history", []) or []
+
+    # Preserve the previous session in history (dedup by date+topic)
+    if previous.get("date"):
+        prev_topic = previous.get("topic") or previous.get("session") or ""
+        prev_key = (previous["date"], prev_topic)
+        existing_keys = {
+            (h.get("date"), h.get("session") or h.get("topic") or "")
+            for h in history
+            if isinstance(h, dict)
+        }
+        if prev_key not in existing_keys:
+            archived = dict(previous)
+            if "topic" in archived and "session" not in archived:
+                archived["session"] = archived.pop("topic")
+            history.insert(0, archived)
+
+    data["last_session"] = {
+        "date": today,
+        "topic": topic or "session",
+        "tests_ok": summary.get("tests_ok", summary.get("test_count")),
+        "quality_score": summary.get("quality_score_latest"),
+        "task_completion_rate": None,
+        "retries": 0,
+        "stop_conditions_triggered": 0,
+        "tasks": [],
+        "status": "SUCCESS",
+    }
+    data["history"] = history
+
+    metrics_file.write_text(json.dumps(data, indent=4, ensure_ascii=False) + "\n")
+    return True
+
+
 def main():
     quiet = "--quiet" in sys.argv
     json_output = "--json" in sys.argv
+    close_session = "--close-session" in sys.argv
+
+    topic = None
+    if "--topic" in sys.argv:
+        try:
+            topic = sys.argv[sys.argv.index("--topic") + 1]
+        except IndexError:
+            topic = None
 
     if not quiet:
         print("🔄 Syncing ground-truth metrics...")
@@ -292,6 +360,9 @@ def main():
     }
 
     updated = update_metrics_json(metrics)
+
+    if close_session and not rotate_session_history(topic):
+        updated = False
 
     if json_output:
         summary = {

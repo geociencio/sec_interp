@@ -2,13 +2,14 @@
 description: Unified Release Workflow (QGIS Release Flow) - Generation 6 Standard
 agent: QA Engineer
 skills: [release-management, qa-docker, commit-standards, i18n-standards, changelog-generator]
+runtimes: [antigravity, codewhale]
 stop_conditions:
   - "Any function exceeds CC > 10 → Block release and refactor"
   - "Docstring coverage < 100% → Block release and fix documentation"
   - "Forbidden files (.agent, scripts, tests) found in ZIP → Abort and fix .qgisignore"
   - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
-  - Verify that 620+ tests pass in Docker
+  - Verify that 645+ tests pass in Docker
   - Confirm CC <= 10 for all methods (scripts/check_cc.py)
   - Ensure Zero High-Severity Security Findings
   - Validate ZIP contents (Plugin-only, no agentic system)
@@ -84,7 +85,7 @@ uv run python scripts/context_selector.py "release preparation and packaging" --
    ```bash
    make docker-test
    ```
-   🤖 **Agent Action**: 100% pass rate required (620 tests).
+   🤖 **Agent Action**: 100% pass rate required (645 tests).
 
 ### Phase 4: Git and Tagging
 

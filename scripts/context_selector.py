@@ -73,18 +73,19 @@ def main():
     # Source text can come from arguments or files
     source_text = " ".join(sys.argv[1:])
 
+    project_root = Path(__file__).resolve().parent.parent
+
     if not source_text:
-        # Try to read from task.md
-        task_file = Path(".agent/task.md")
-        if task_file.exists():
-            # Only read the active (unchecked) tasks
-            task_content = task_file.read_text()
+        # Try to read the active (unchecked) tasks from next_steps.md
+        next_steps_file = project_root / ".agent" / "next_steps.md"
+        if next_steps_file.exists():
+            task_content = next_steps_file.read_text()
             active_tasks = re.findall(r"- \[ \] (.*)", task_content)
             source_text = " ".join(active_tasks)
 
     if not source_text:
         # Fallback to AI_CONTEXT.md keywords
-        context_file = Path("AI_CONTEXT.md")
+        context_file = project_root / "AI_CONTEXT.md"
         if context_file.exists():
             source_text = context_file.read_text()
 

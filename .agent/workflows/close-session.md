@@ -91,9 +91,9 @@ uv run python scripts/skill_sync.py
 
 🤖 **Agent Action (Metrics Sync — CRITICAL)**: Run unified ground-truth metric extraction before closing.
 ```bash
-uv run python scripts/sync_metrics.py
+uv run python scripts/sync_metrics.py --close-session --topic [TOPIC]
 ```
-This updates `agent_metrics.json` with live scores from qgis-analyzer + check_cc.py + verify_i18n_hygiene.py.
+This updates `agent_metrics.json` with live scores from qgis-analyzer + check_cc.py + verify_i18n_hygiene.py, and rotates `last_session` into `history` (preventing stale session records). Replace `[TOPIC]` with the short session name defined in step 1.
 
 🤖 **Agent Action (Metric Validation — CRITICAL)**: Verify that all .agent/ documentation files are consistent with the ground truth.
 ```bash
@@ -136,7 +136,7 @@ git commit -m "chore(docs): close session [TOPIC]"
 
 Generate a final message listing:
 *   Updated log files.
-*   Test status (e.g., 620 tests OK).
+*   Test status (e.g., 645 tests OK).
 *   Content of `.agent/next_steps.md`.
 *   Suggestion for the next session (command `/start-session`).
 

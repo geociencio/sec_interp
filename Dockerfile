@@ -43,4 +43,4 @@ ENV PYTHONPATH="/app:${PYTHONPATH}"
 ENV QT_QPA_PLATFORM=offscreen
 
 # 6. Comando por defecto: Ejecutar tests en grupos separados para evitar contaminación de Mocks vs Real API
-CMD ["/bin/bash", "-c", "python3 -m unittest discover tests/core && python3 -m unittest discover tests/exporters && python3 -m unittest discover tests/gui && FORCE_MOCKS=0 python3 -m unittest discover tests/integration"]
+CMD ["/bin/bash", "-c", "python3 -m unittest discover tests/agentic && python3 -m unittest discover tests/core && python3 -m unittest discover tests/exporters && python3 -m unittest discover tests/gui && FORCE_MOCKS=0 python3 -m unittest discover tests/integration"]

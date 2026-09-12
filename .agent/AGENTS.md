@@ -60,13 +60,27 @@ Foundational workflows in `.agent/workflows/` are designed to orchestrate the ge
 
 ### Available Core Workflows
 
+<!-- WORKFLOWS_TABLE_START -->
 | Workflow | Agent | Skills | Purpose |
 | :--- | :--- | :--- | :--- |
-| [/start-session](file://./workflows/start-session.md) | Senior Architect | project-context | Start session with sync context |
-| [/close-session](file:///./workflows/close-session.md) | QA Engineer | commit-standards | Close session and update memory |
-| [/create-commit](file://./workflows/create-commit.md) | QA Engineer | commit-standards | Commit with quality validation |
-| [/refactor-code](file://./workflows/refactor-code.md) | Senior Architect | coding-standards | Refactor with complexity audit |
-| [/verify-standards](file://./workflows/verify-standards.md) | Senior Architect | coding-standards | Audit agent system integrity |
+| [/audit-plugin](file://./workflows/audit-plugin.md) | Agent Auditor | project-context, coding-standards, i18n-standards | Perform a full or partial plugin audit using qgis-plugin-analyzer v1.9.0+. |
+| [/build-feature](file://./workflows/build-feature.md) | Architect | qgis-core, qa-docker | Start the Autonomous AI Developer Pipeline sequence for a new feature. |
+| [/close-phase](file://./workflows/close-phase.md) | Senior Architect | qgis-core, qa-docker, changelog-generator | Formal procedure for closing a major development phase |
+| [/close-session](file://./workflows/close-session.md) | QA Engineer | qa-docker, commit-standards, agentic-memory, documentation-standards, changelog-generator | Procedure to end a work session, update logs, and archive results |
+| [/create-commit](file://./workflows/create-commit.md) | QA Engineer | qa-docker, commit-standards, agentic-memory | How to commit changes cleanly (handling hooks) |
+| [/fix-linting](file://./workflows/fix-linting.md) | QA Engineer | coding-standards, qa-docker | Workflow to automatically correct linting and formatting issues |
+| [/i18n-maintenance](file://./workflows/i18n-maintenance.md) | QA Engineer | i18n-standards, project-context | Procedure for i18n maintenance and expansion (Translations) |
+| [/ia-critic](file://./workflows/ia-critic.md) | Agent Auditor | coding-standards, project-context, agentic-memory | Workflow for critical review of implementation plans by the Agent Auditor |
+| [/refactor-code](file://./workflows/refactor-code.md) | Senior Architect | coding-standards, ui-framework, qa-docker | Guided workflow for code refactoring with complexity validation |
+| [/release-plugin](file://./workflows/release-plugin.md) | QA Engineer | release-management, qa-docker, commit-standards, i18n-standards, changelog-generator | Unified Release Workflow (QGIS Release Flow) - Generation 6 Standard |
+| [/run-tests-in-qgis](file://./workflows/run-tests-in-qgis.md) | QA Engineer | qa-docker | How to run tests inside QGIS (integration testing) |
+| [/run-tests](file://./workflows/run-tests.md) | QA Engineer | qa-docker | How to run unit tests reliably |
+| [/start-phase](file://./workflows/start-phase.md) | Senior Architect | qgis-core, geological-logic, qa-docker | Formal procedure for starting a new major development phase |
+| [/start-session](file://./workflows/start-session.md) | Senior Architect | qgis-core, qa-docker, agentic-memory | Standard and robust procedure for starting a "Local First" development session |
+| [/verify-standards](file://./workflows/verify-standards.md) | Senior Architect | coding-standards, commit-standards, documentation-standards | Audits the consistency of the agentic system (Skills and Workflows) against the master standard. |
+<!-- WORKFLOWS_TABLE_END -->
+
+Full workflow list: [`.agent/workflows/index.md`](file://./workflows/index.md)
 
 ---
 

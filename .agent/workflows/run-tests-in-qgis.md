@@ -2,6 +2,7 @@
 description: How to run tests inside QGIS (integration testing)
 agent: QA Engineer
 skills: [qa-docker]
+runtimes: [antigravity, codewhale]
 validation: |
   - Verify that QGIS is installed correctly
   - Confirm that tests are discovered and executed
@@ -58,7 +59,7 @@ For standard unit tests, use the `run-tests.md` workflow instead (faster, better
 test_example (tests.test_module.TestClass) ... ok
 ...
 ----------------------------------------------------------------------
-Ran 620 tests in Y.ZZZs
+Ran 645 tests in Y.ZZZs
 
 ✅ SUCCESS: All tests passed!
 ```

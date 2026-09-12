@@ -2,6 +2,7 @@
 description: Procedure for i18n maintenance and expansion (Translations)
 agent: QA Engineer
 skills: [i18n-standards, project-context]
+runtimes: [antigravity, codewhale]
 ---
 
 # Workflow: i18n Maintenance

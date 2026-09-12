@@ -185,17 +185,17 @@ def _check_session_date(data: dict, issues: list[str]) -> None:
         )
 
 
-def check_internal_consistency() -> list[str]:
+def check_internal_consistency(metrics_file: Path = METRICS_FILE) -> list[str]:
     """Validate that agent_metrics.json is internally coherent.
 
     Returns a list of human-readable inconsistency descriptions. An empty
     list means the file is internally consistent.
     """
-    if not METRICS_FILE.exists():
+    if not metrics_file.exists():
         return ["agent_metrics.json not found"]
 
     try:
-        data = json.loads(METRICS_FILE.read_text(encoding="utf-8"))
+        data = json.loads(metrics_file.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as exc:
         return [f"agent_metrics.json is not valid JSON: {exc}"]
 

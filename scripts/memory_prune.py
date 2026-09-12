@@ -12,8 +12,9 @@ from pathlib import Path
 import yaml
 
 # Configuration
-LESSONS_FILE = Path(".agent/memory/AGENT_LESSONS.md")
-NEXT_STEPS_DIR = Path(".agent/history/next_steps")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+LESSONS_FILE = PROJECT_ROOT / ".agent" / "memory" / "AGENT_LESSONS.md"
+NEXT_STEPS_DIR = PROJECT_ROOT / ".agent" / "history" / "next_steps"
 PRUNE_DAYS = 90
 NEXT_STEPS_RETENTION_DAYS = 90
 
@@ -141,17 +142,17 @@ def prune_lessons() -> int:
     return pruned_count
 
 
-def prune_next_steps_snapshots() -> int:
+def prune_next_steps_snapshots(directory: Path = NEXT_STEPS_DIR) -> int:
     """Prune next_steps snapshots older than NEXT_STEPS_RETENTION_DAYS."""
-    if not NEXT_STEPS_DIR.exists():
-        print(f"Info: {NEXT_STEPS_DIR} not found. Nothing to prune.")
+    if not directory.exists():
+        print(f"Info: {directory} not found. Nothing to prune.")
         return 0
 
     threshold = datetime.now() - timedelta(days=NEXT_STEPS_RETENTION_DAYS)
     filename_pattern = re.compile(r"next_steps_(\d{4}-\d{2}-\d{2})")
     removed = 0
 
-    for path in sorted(NEXT_STEPS_DIR.glob("next_steps_*.md")):
+    for path in sorted(directory.glob("next_steps_*.md")):
         match = filename_pattern.search(path.name)
         if match:
             try:
@@ -166,7 +167,7 @@ def prune_next_steps_snapshots() -> int:
             removed += 1
 
     if removed:
-        print(f"Successfully pruned {removed} next_steps snapshots from {NEXT_STEPS_DIR}")
+        print(f"Successfully pruned {removed} next_steps snapshots from {directory}")
     else:
         print("No next_steps snapshots meet the pruning criteria (> 90 days).")
     return removed

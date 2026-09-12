@@ -2,6 +2,7 @@
 description: Formal procedure for starting a new major development phase
 agent: Senior Architect
 skills: [qgis-core, geological-logic, qa-docker]
+runtimes: [antigravity, codewhale]
 validation: |
   - Verify that implementation_plan is created and complete
   - Confirm that tests pass before starting

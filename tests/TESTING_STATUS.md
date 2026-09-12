@@ -3,16 +3,17 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->620<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->645<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
-| **Last Updated** | <!-- LAST_UPDATE -->2026-09-06<!-- /LAST_UPDATE --> | 🕒 Auto |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-09-12<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 
 ## 🏗️ Test Coverage Breakdown
 
 | Category | Tests | Progress | Status |
-| :--- | :---: | :--- | :---: |
+| :--- | :---: | :--- | :--- |
+| **Agentic Tooling** | <!-- AGENT_COUNT -->25<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->287<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->218<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
@@ -117,6 +118,11 @@
 - **tests/benchmarks/test_geometry_benchmarks.py**: 4 tests
 - **tests/benchmarks/test_spatial_index_benchmark.py**: 1 tests
 - **tests/mcp/test_mcp_tools.py**: 3 tests
+- **tests/agentic/test_check_skill_conflicts.py**: 6 tests
+- **tests/agentic/test_memory_prune.py**: 3 tests
+- **tests/agentic/test_skill_sync.py**: 3 tests
+- **tests/agentic/test_sync_metrics.py**: 3 tests
+- **tests/agentic/test_validate_agent_metrics.py**: 10 tests
 <!-- END_INVENTORY -->
 
 ---

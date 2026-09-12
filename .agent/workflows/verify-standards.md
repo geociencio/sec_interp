@@ -2,6 +2,7 @@
 description: Audits the consistency of the agentic system (Skills and Workflows) against the master standard.
 agent: Senior Architect
 skills: [coding-standards, commit-standards, documentation-standards]
+runtimes: [antigravity, codewhale]
 validation:
   - Do all Skills have a Quality Checklist?
   - Is all Skill and Workflow documentation in English?
@@ -42,9 +43,10 @@ Verify the integrity of the `.agent/` system: YAML frontmatter, skill/script ref
 ```bash
 uv run python scripts/validate_agent_system.py
 uv run python scripts/workflow_graph.py --validate
+uv run python scripts/check_skill_conflicts.py
 ```
 
-🤖 **Agent Action**: `workflow_graph.py --validate` exits with code 1 if any workflow references a missing skill or script. Fix any broken reference before proceeding.
+🤖 **Agent Action**: `workflow_graph.py --validate` exits with code 1 if any workflow references a missing skill or script. `check_skill_conflicts.py` reports skills that share the same trigger (potential contradictory guidance). Fix any broken reference or conflict before proceeding.
 
 ## Expected Result
 - Detailed report of deviations from the standard.

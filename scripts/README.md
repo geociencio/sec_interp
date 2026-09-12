@@ -28,6 +28,7 @@ Special-purpose utilities, some wired into workflows, others invoked manually or
 | :--- | :--- | :--- |
 | `validate_agent_system.py` | Validate `.agent/` structure (frontmatter, skill/script references) | `/verify-standards` |
 | `workflow_graph.py` | Dependency graph + broken-reference detector for workflows | `/verify-standards` |
+| `check_skill_conflicts.py` | Detect overlapping/duplicate skill triggers and metadata | `/verify-standards` |
 | `workflow_executor.py` | Runtime-agnostic workflow translator (antigravity/codewhale) | manual |
 | `session_index.py` | Chronological index of `docs/maintenance/` session logs | `/close-session` |
 | `lesson_extractor.py` | Propose `AGENT_LESSONS.md` candidates from a session | `/close-session` |
@@ -41,6 +42,10 @@ Special-purpose utilities, some wired into workflows, others invoked manually or
 | :--- | :--- |
 | `scripts/i18n/` | Translation pipeline: `apply_full.py`, `update_metadata_languages.py`, `translate_docs.py`, `master_data/` |
 | `scripts/research/` | Plugin statistics fetcher (`fetch_stats.py`) |
+
+## Tests
+
+Unit tests for the agentic tooling live in `tests/agentic/` (25 tests, plain `unittest`, no QGIS required). They are discovered by `make docker-test` and the Docker CMD alongside `core/`, `gui/`, `exporters/`, and `integration/`.
 
 ## Notes
 
