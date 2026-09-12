@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.2] - 2026-09-12
+
+### Fixed
+- **Qt6 / QGIS 4 Enum Compatibility**: Migrated 114 flat enum usages to their scoped form (`Qgis.Critical` → `Qgis.MessageLevel.Critical`, `Qt.NoPen` → `Qt.PenStyle.NoPen`, `QgsWkbTypes.LineString` → `QgsWkbTypes.Type.LineString`, etc.). This resolves all 114 "Enum error" findings reported by the QGIS plugin repository Qt6 checker.
+
 ## [3.7.1] - 2026-09-06
 
 ### Fixed

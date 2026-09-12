@@ -1,3 +1,15 @@
+## [2026-09-12] MILESTONE: Release v3.7.2 — Qt6 / QGIS 4 Compatibility Patch
+- **Achievement**: Publicacion de SecInterp v3.7.2, parche que resuelve los 114 hallazgos de compatibilidad Qt6 reportados por el repositorio de plugins de QGIS.
+- **Release Content**:
+    - **Compatibility**: Migracion de 114 enums planos a forma scoped ya existente en `HEAD` (commit `7ae8ac96`) que no habia sido publicada; la v3.7.1 en el portal aun contenia enums planos (`Qgis.Critical`, `Qt.NoPen`).
+    - **Gate**: `make qt6-check` corre `pyqgis4-checker` (dry-run) → 0 incompatibilidades.
+- **Operational Metrics**:
+    - pyqgis4-checker: 0 incompatibilidades
+    - Tests: 645/645 (Docker)
+    - CC <= 10: PASS
+- **Status**: Release v3.7.2 completado.
+- **Release Notes**: [notes/v3.7.2.md](releases/notes/v3.7.2.md)
+
 ## [2026-09-12] Session: Agentic System Hardening
 - **Achievement**: Hardening integral del sistema `.agent/` (6 recomendaciones de auditoria + plan A+B+C completados).
 - **Actions Taken**:

@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.7.1-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.7.2-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-52.6%2F100-yellow)
@@ -18,6 +18,13 @@
 *SecInterp v3.7.0: i18n Quality Gate & UX Improvements.*
 
 ---
+
+## 🆕 What's New in v3.7.2
+**Patch: Qt6 / QGIS 4 Enum Compatibility**
+
+### 🔧 Scoped Enum Migration
+- **114 findings resolved**: Migrated all flat enum usages to their fully scoped form (`Qgis.Critical` → `Qgis.MessageLevel.Critical`, `Qt.NoPen` → `Qt.PenStyle.NoPen`, `QgsWkbTypes.LineString` → `QgsWkbTypes.Type.LineString`, and more), clearing every Qt6 compatibility finding reported by the QGIS plugin repository.
+- **CI gate**: Wired `make qt6-check` (the same `pyqgis4-checker` tool used on upload) into the release pipeline to prevent regressions.
 
 ## 🆕 What's New in v3.7.0
 **Phase: Internationalization Quality Gate & Preview UX**

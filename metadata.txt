@@ -4,7 +4,7 @@ qgisMinimumVersion=3.28
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.7.1
+version=3.7.2
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,10 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.7.2 (2026-09-12)
+	* QGIS 4 / Qt6 Compatibility:
+	- Compatibility: Migrated 114 flat enum usages to scoped form (Qgis.Critical -> Qgis.MessageLevel.Critical, Qt.NoPen -> Qt.PenStyle.NoPen, etc.).
+	- Compatibility: Resolved all Enum error findings reported by the QGIS plugin repository Qt6 checker.
 	3.7.1 (2026-09-06)
 	* Security Patch:
 	- Security: Replaced a silent exception swallow (try/except/pass) in settings persistence with a logged warning.
