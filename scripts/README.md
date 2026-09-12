@@ -22,18 +22,18 @@ Wired into workflows (`.agent/workflows/`), the Makefile, or the pre-push hook.
 
 ## Agentic System Tooling (Gen 7)
 
-Special-purpose utilities, typically invoked manually or by other scripts.
+Special-purpose utilities, some wired into workflows, others invoked manually or by other scripts.
 
-| Script | Purpose |
-| :--- | :--- |
-| `validate_agent_system.py` | Validate `.agent/` structure (frontmatter, skill/script references) |
-| `workflow_graph.py` | Dependency graph + broken-reference detector for workflows |
-| `workflow_executor.py` | Runtime-agnostic workflow translator (antigravity/codewhale) |
-| `session_index.py` | Chronological index of `docs/maintenance/` session logs |
-| `lesson_extractor.py` | Propose `AGENT_LESSONS.md` candidates from a session |
-| `mcp_server.py` | Lightweight MCP server for skill orchestration (see `tests/mcp/`) |
-| `run_benchmarks.py` | In-process benchmarks (run via `qgis --code`) |
-| `i18n_diagnostic.py` | Diagnostic for i18n analyzer scope (false positives) |
+| Script | Purpose | Wired via |
+| :--- | :--- | :--- |
+| `validate_agent_system.py` | Validate `.agent/` structure (frontmatter, skill/script references) | `/verify-standards` |
+| `workflow_graph.py` | Dependency graph + broken-reference detector for workflows | `/verify-standards` |
+| `workflow_executor.py` | Runtime-agnostic workflow translator (antigravity/codewhale) | manual |
+| `session_index.py` | Chronological index of `docs/maintenance/` session logs | `/close-session` |
+| `lesson_extractor.py` | Propose `AGENT_LESSONS.md` candidates from a session | `/close-session` |
+| `mcp_server.py` | Lightweight MCP server for skill orchestration (see `tests/mcp/`) | manual |
+| `run_benchmarks.py` | In-process benchmarks (run via `qgis --code`) | manual |
+| `i18n_diagnostic.py` | Diagnostic for i18n analyzer scope (false positives) | `/i18n-maintenance` |
 
 ## Subdirectories
 

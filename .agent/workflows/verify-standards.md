@@ -34,7 +34,20 @@ Run synchronization to ensure `AGENTS.md` is up to date.
 uv run python scripts/skill_sync.py
 ```
 
+## 4. Structural Validation (Gen 7)
+
+Verify the integrity of the `.agent/` system: YAML frontmatter, skill/script references, and workflow dependency graph.
+
+// turbo
+```bash
+uv run python scripts/validate_agent_system.py
+uv run python scripts/workflow_graph.py --validate
+```
+
+🤖 **Agent Action**: `workflow_graph.py --validate` exits with code 1 if any workflow references a missing skill or script. Fix any broken reference before proceeding.
+
 ## Expected Result
 - Detailed report of deviations from the standard.
 - Immediate correction proposal for obsolete components.
 - Guaranteed synchronization of the skills matrix.
+- Validated `.agent/` structure (frontmatter + references) with no broken dependencies.

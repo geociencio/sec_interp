@@ -104,6 +104,7 @@ This scans all .agent/ files for stale metric references (test counts, quality s
 *   Run `uv run python scripts/memory_prune.py` to auto-prune old consolidated lessons.
 *   Run `uv run python scripts/lesson_extractor.py --since HEAD~1 --propose` to generate candidate lessons from session diff.
 *   Generate metrics report: `uv run python scripts/metrics_report.py`.
+*   Generate session index: `uv run python scripts/session_index.py --recent 5` to refresh the chronological log summary.
 
 🤖 **Agent Action**: Update AI_CONTEXT.md and validate that next_steps.md is clear.
 Ensure the AI "Brain" is up to date with the final changes.
