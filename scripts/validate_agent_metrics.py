@@ -123,6 +123,92 @@ def load_ground_truth() -> dict:
     return truth
 
 
+def _check_i18n_consistency(summary: dict, issues: list[str]) -> None:
+    """Validate that the i18n analyzer count matches the issue breakdown."""
+    breakdown = summary.get("issue_breakdown", {})
+    i18n_analyzer = summary.get("i18n_issues_qgis_analyzer")
+    i18n_breakdown = breakdown.get("MISSING_I18N")
+    if i18n_analyzer is not None and i18n_breakdown is not None and i18n_analyzer != i18n_breakdown:
+        issues.append(
+            f"summary.i18n_issues_qgis_analyzer ({i18n_analyzer}) != "
+            f"summary.issue_breakdown.MISSING_I18N ({i18n_breakdown})"
+        )
+
+
+def _check_issue_total(summary: dict, issues: list[str]) -> None:
+    """Validate that total_issues equals the sum of the issue breakdown."""
+    breakdown = summary.get("issue_breakdown", {})
+    total_issues = summary.get("total_issues")
+    if total_issues is None or not breakdown:
+        return
+    breakdown_sum = sum(v for v in breakdown.values() if isinstance(v, int))
+    if total_issues != breakdown_sum:
+        issues.append(
+            f"summary.total_issues ({total_issues}) != sum(issue_breakdown) ({breakdown_sum})"
+        )
+
+
+def _check_test_count(summary: dict, issues: list[str]) -> None:
+    """Validate that test_count and tests_ok agree."""
+    test_count = summary.get("test_count")
+    tests_ok = summary.get("tests_ok")
+    if test_count is not None and tests_ok is not None and test_count != tests_ok:
+        issues.append(f"summary.test_count ({test_count}) != summary.tests_ok ({tests_ok})")
+
+
+def _check_score_sources(summary: dict, data: dict, issues: list[str]) -> None:
+    """Validate that summary scores match the qgis-analyzer ground-truth source."""
+    gt = data.get("ground_truth_sources", {}).get("qgis_analyzer", {}).get("scores", {})
+    score_checks = [
+        ("quality_score_latest", "module_stability"),
+        ("maintainability_score", "maintainability"),
+        ("security_score", "security"),
+    ]
+    for summary_key, gt_key in score_checks:
+        summary_val = summary.get(summary_key)
+        gt_val = gt.get(gt_key)
+        if summary_val is not None and gt_val is not None and summary_val != gt_val:
+            issues.append(
+                f"summary.{summary_key} ({summary_val}) != "
+                f"ground_truth_sources.qgis_analyzer.scores.{gt_key} ({gt_val})"
+            )
+
+
+def _check_session_date(data: dict, issues: list[str]) -> None:
+    """Validate that last_session.date is not older than the newest history entry."""
+    last_date = data.get("last_session", {}).get("date")
+    history = data.get("history", [])
+    dates = [h.get("date") for h in history if h.get("date")]
+    if last_date and dates and max(dates) > last_date:
+        issues.append(
+            f"last_session.date ({last_date}) is older than newest history entry ({max(dates)})"
+        )
+
+
+def check_internal_consistency() -> list[str]:
+    """Validate that agent_metrics.json is internally coherent.
+
+    Returns a list of human-readable inconsistency descriptions. An empty
+    list means the file is internally consistent.
+    """
+    if not METRICS_FILE.exists():
+        return ["agent_metrics.json not found"]
+
+    try:
+        data = json.loads(METRICS_FILE.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as exc:
+        return [f"agent_metrics.json is not valid JSON: {exc}"]
+
+    issues: list[str] = []
+    summary = data.get("summary", {})
+    _check_i18n_consistency(summary, issues)
+    _check_issue_total(summary, issues)
+    _check_test_count(summary, issues)
+    _check_score_sources(summary, data, issues)
+    _check_session_date(data, issues)
+    return issues
+
+
 def should_skip_file(filepath: Path) -> bool:
     """Skip history archives and non-markdown/json files."""
     if filepath.suffix not in (".md", ".json"):
@@ -299,6 +385,14 @@ def main():
     quiet = "--quiet" in sys.argv
     fix_mode = "--fix" in sys.argv
 
+    internal_issues = check_internal_consistency()
+    if internal_issues:
+        if not quiet:
+            print("❌ agent_metrics.json internal inconsistencies:")
+            for issue in internal_issues:
+                print(f"  - {issue}")
+            print()
+
     ground_truth = load_ground_truth()
     if not ground_truth:
         print("❌ Cannot load ground truth from agent_metrics.json", file=sys.stderr)
@@ -313,29 +407,30 @@ def main():
               f"quality={ground_truth.get('quality_score', '?')}, "
               f"CC≤{ground_truth.get('cc_threshold', '?')}")
 
-    if report.clean:
+    if report.clean and not internal_issues:
         if not quiet:
             print("✅ All .agent/ files are metric-consistent with agent_metrics.json")
         sys.exit(0)
 
-    if not quiet:
-        print(f"❌ Found {len(report.violations)} metric inconsistencies:\n")
-
-    fixes_applied = 0
-    for v in report.violations:
+    if report.violations:
         if not quiet:
-            print(str(v))
+            print(f"❌ Found {len(report.violations)} metric inconsistencies:\n")
 
-        if fix_mode:
-            filepath = PROJECT_ROOT / v.file
-            if auto_fix(filepath, [v]):
-                fixes_applied += 1
+        fixes_applied = 0
+        for v in report.violations:
+            if not quiet:
+                print(str(v))
 
-    if fix_mode and fixes_applied > 0:
-        if not quiet:
-            print(f"\n🔧 Auto-fixed {fixes_applied} stale values. "
-                  f"Run again to verify: uv run python scripts/validate_agent_metrics.py")
-        sys.exit(0)
+            if fix_mode:
+                filepath = PROJECT_ROOT / v.file
+                if auto_fix(filepath, [v]):
+                    fixes_applied += 1
+
+        if fix_mode and fixes_applied > 0:
+            if not quiet:
+                print(f"\n🔧 Auto-fixed {fixes_applied} stale values. "
+                      f"Run again to verify: uv run python scripts/validate_agent_metrics.py")
+            sys.exit(0)
 
     sys.exit(1)
 

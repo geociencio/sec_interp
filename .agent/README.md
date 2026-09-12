@@ -22,15 +22,12 @@ SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simp
 ├── AGENTS.md               # 🧠 Primary role definitions & skill mappings
 ├── QUICK_REFERENCE.md      # 📋 Fast lookup for skills and workflows
 ├── next_steps.md           # 🎯 Active goals and handoff state
-├── task.md                 # 📋 Active task board
 ├── architecture/           # 🏗️ System design and optimization plans
-│   ├── OPTIMIZATION_PLAN.md # Gen 5→6 roadmap
-│   ├── IMPROVEMENT_PLAN.md  # Gen 6→7 improvement plan (2026-05-24)
-│   └── memory_policy.md     # 3-tier memory management rules
+│   └── IMPROVEMENT_PLAN.md  # Gen 6→7 improvement plan (2026-05-24)
 ├── memory/                 # 🧠 Cognitive history and lessons
 │   ├── AGENT_LESSONS.md    # Structured technical lessons (YAML)
 │   ├── agent_metrics.json  # Operational metrics (schema v2.0)
-│   └── memory_policy.md    # Memory lifecycle policy
+│   └── memory_policy.md    # Memory lifecycle policy (3-tier rules)
 ├── skills/                 # 🛠️ On-demand capabilities (13)
 │   ├── geological-logic/   # Specialized geological processing
 │   ├── qgis-core/          # PyQGIS and async tasks expertise
@@ -41,7 +38,7 @@ SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simp
 │   ├── close-session.md    # Closing with metric sync + memory prune
 │   └── ... (see QUICK_REFERENCE.md)
 └── history/                # 📜 Archived task boards and next_steps snapshots
-    ├── tasks/              # Phase task archives (8 files)
+    ├── tasks/              # Phase task archives (9 files)
     └── next_steps/         # Session handoff snapshots (43 files)
 ```
 
@@ -95,11 +92,11 @@ This project enforces:
 -   **Mock-First Testing**: Isolated unit tests that do not require a live QGIS instance.
 -   **Dual-Scope i18n**: AST gate (`verify_i18n_hygiene.py`) + qgis-analyzer i18n check.
 
-### Current Scores (2026-05-24)
+### Current Scores (2026-09-12)
 | Metric | Score |
 |--------|-------|
 | Module Stability | 52.3/100 |
-| Maintainability | 90.7/100 |
+| Maintainability | 99.9/100 |
 | Security (Bandit) | 100.0/100 |
 | Tests | 620 passing |
 | CC Gate | PASS (all ≤ 10) |
@@ -107,6 +104,6 @@ This project enforces:
 
 ---
 
-**System Version**: 1.6 (Gen 6 — Phase 1 Complete)
-**Last Audit**: 2026-05-24 (ground-truth audit)
+**System Version**: 1.7 (Gen 6 — Phase 1 Complete)
+**Last Audit**: 2026-09-12 (metric reconciliation + close-phase v3.7.0)
 **Status**: 🟢 Operational — Metric Integrity Verified

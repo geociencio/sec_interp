@@ -3,8 +3,8 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent/memory/memory_policy.md",
-        "last_updated": "2026-09-06",
-        "last_updated_by": "CodeWhale ground-truth audit (Phase 0)"
+        "last_updated": "2026-09-12",
+        "last_updated_by": "close-phase v3.7.0 metric reconciliation"
     },
     "summary": {
         "total_sessions": 18,
@@ -16,15 +16,15 @@
         "tests_ok_note": "Verified 2026-05-24 via Docker (make docker-test).",
         "quality_score_latest": 52.3,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
-        "maintainability_score": 90.7,
+        "maintainability_score": 99.9,
         "security_score": 100.0,
         "type_hint_coverage_params": 94.3,
         "type_hint_coverage_returns": 100.0,
         "docstring_coverage": 100.0,
         "cyclomatic_complexity_gate": "PASS",
-        "i18n_issues_qgis_analyzer": 254,
+        "i18n_issues_qgis_analyzer": 72,
         "i18n_issues_i18n_hygiene": 0,
-        "i18n_note": "AST hygiene checker reports 0 violations (self.tr() wrapping). qgis-analyzer reports 254 MISSING_I18N (broader scope). Discrepancy under investigation.",
+        "i18n_note": "AST hygiene checker reports 0 violations (self.tr() wrapping). qgis-analyzer reports 72 MISSING_I18N, all triaged as false positives (dict keys, CSS, logging, HTML markup).",
         "total_issues": 75,
         "i18n_hygiene_gate": "PASS",
         "issue_breakdown": {
@@ -67,19 +67,19 @@
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
-            "date": "2026-05-24",
-            "command": "uv run qgis-analyzer analyze .",
+            "date": "2026-09-12",
+            "command": "uv run qgis-analyzer summary",
             "output": "analysis_results/",
             "scores": {
                 "module_stability": 52.3,
-                "maintainability": 90.7,
+                "maintainability": 99.9,
                 "security": 100.0
             },
             "issues": {
-                "MISSING_I18N": 254,
+                "MISSING_I18N": 72,
                 "NON_PYTHONIC_LOOP": 2,
                 "SPATIAL_INDEX": 1,
-                "total": 257
+                "total": 75
             }
         },
         "check_cc": {
@@ -107,7 +107,7 @@
             "note": "ai-ctx measures different dimensions than qgis-analyzer. Both are valid."
         },
         "sync_metrics": {
-            "date": "2026-09-06",
+            "date": "2026-09-12",
             "command": "uv run python scripts/sync_metrics.py",
             "cc_gate": "PASS",
             "i18n_ast_gate": "PASS"
@@ -121,27 +121,39 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-05-23",
-        "topic": "i18n_hygiene_and_quality_gate",
+        "date": "2026-09-06",
+        "topic": "qt6_scoped_enum_migration",
         "tests_ok": 620,
         "quality_score": 52.3,
-        "files_modified": 8,
-        "lines_added": 480,
-        "lines_removed": 30,
         "task_completion_rate": 1.0,
         "retries": 0,
         "stop_conditions_triggered": 0,
         "tasks": [
-            "Implement AST-based static translation checker script verify_i18n_hygiene.py",
-            "Translate dialog title Export Preview in dialog_export_manager.py using self.dialog.tr",
-            "Translate dynamic layer legend names in preview_layer_factory.py using QCoreApplication.translate",
-            "Exclude developer logging, task description strings, and metric timing keys from i18n using no-i18n tags",
-            "Verify complete codebase stability with all 620 unit tests passing",
-            "Audit translation quality gate scanning 53 GUI files with 0 violations"
+            "Migrate 114 flat QGIS enums to scoped form via pyqt5_to_pyqt6.py (57 source files)",
+            "Update test mocks to expose scoped enums (Type, MessageLevel, Flag, RenderHint, Shape, IconType, StorageMode)",
+            "Bump qgisMinimumVersion from 3.0 to 3.28",
+            "Add Qt6 enum check gate (make qt6-check / make qt6-fix + CI job + pre-release wiring)",
+            "Release v3.7.0 (i18n quality gate + collapsible preview controls)",
+            "Release v3.7.1 (security patch: silent try/except/pass -> logger.warning, Bandit B110)",
+            "Exclude agent tooling (.codewhale/.continue/.deepseek/artifacts/fonts) from ZIP (25MB -> 3.3MB)"
         ],
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-09-06",
+            "session": "qt6_scoped_enum_migration",
+            "tasks": [
+                "Migrate 114 flat QGIS enums to scoped form via pyqt5_to_pyqt6.py",
+                "Update test mocks to expose scoped enums",
+                "Bump qgisMinimumVersion from 3.0 to 3.28",
+                "Add Qt6 enum check gate (make qt6-check / CI / pre-release)",
+                "Release v3.7.0 and v3.7.1"
+            ],
+            "task_completion_rate": 1.0,
+            "retries": 0,
+            "status": "SUCCESS"
+        },
         {
             "date": "2026-05-23",
             "session": "i18n_hygiene_and_quality_gate",

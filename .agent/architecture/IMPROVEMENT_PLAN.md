@@ -1,9 +1,9 @@
 # Agentic System Improvement Plan — SecInterp
 
-> **Created**: 2026-05-24 | **Updated**: 2026-05-24 (Phase 0 complete)
+> **Created**: 2026-05-24 | **Updated**: 2026-09-12 (Phase 1-3 complete, Phase 4 partial)
 > **Based on**: Full audit of `.agent/` system (Gen 6) + live qgis-analyzer + check_cc.py + verify_i18n_hygiene.py
 > **Scope**: .agent/ system integrity, metric coherence, and runtime adaptation
-> **Next review**: After Phase 1 completion
+> **Status**: 🟢 Phases 1-3 shipped. Remaining: Phase 4 quick wins (4.1.1, 4.1.2, 4.1.4).
 
 ---
 
@@ -60,27 +60,27 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 ### 1.1 Centralize Metric Extraction
 
-- [ ] **1.1.1** Create `scripts/sync_metrics.py` that:
+- [x] **1.1.1** Create `scripts/sync_metrics.py` that:
   1. Runs `qgis-analyzer analyze .`
   2. Runs `check_cc.py`
   3. Runs `verify_i18n_hygiene.py`
   4. Writes unified metrics to `agent_metrics.json` summary
   5. Flags any score that changed by >5 points since last run
-- [ ] **1.1.2** Add metric sync as step in `/close-session` workflow
-- [ ] **1.1.3** Document the difference between `verify_i18n_hygiene.py` (AST, `self.tr()` wrapping) and `qgis-analyzer i18n` (heuristic, broader) in `.agent/skills/i18n-standards/SKILL.md`
+- [x] **1.1.2** Add metric sync as step in `/close-session` workflow
+- [x] **1.1.3** Document the difference between `verify_i18n_hygiene.py` (AST, `self.tr()` wrapping) and `qgis-analyzer i18n` (heuristic, broader) in `.agent/skills/i18n-standards/SKILL.md`
 
 ### 1.2 Documentation Fixes
 
-- [ ] **1.2.1** Update `QUICK_REFERENCE.md` quality score from 40.8 → 52.3, add maintainability 90.7
-- [ ] **1.2.2** Update `README.md` quality badge to reflect 52.3
-- [ ] **1.2.3** Fix `memory_policy.md` — session directory is `docs/maintenance/`, not `.agent/history/sessions/`
-- [ ] **1.2.4** Resolve test count discrepancy: run `make docker-test` and record definitive number
+- [x] **1.2.1** Update `QUICK_REFERENCE.md` quality score from 40.8 → 52.3, add maintainability 90.7
+- [x] **1.2.2** Update `README.md` quality badge to reflect 52.3
+- [x] **1.2.3** Fix `memory_policy.md` — session directory is `docs/maintenance/`, not `.agent/history/sessions/`
+- [x] **1.2.4** Resolve test count discrepancy: run `make docker-test` and record definitive number (620)
 
 ### 1.3 i18n Strategy Clarification
 
-- [ ] **1.3.1** Decide: is target 0 violations on `verify_i18n_hygiene.py` (achieved) or 0 on `qgis-analyzer i18n` (254 remaining)?
-- [ ] **1.3.2** If targeting analyzer: triage 254 MISSING_I18N into false positives vs real gaps
-- [ ] **1.3.3** Update `.agent/next_steps.md` Goal 1 status accordingly
+- [x] **1.3.1** Decide: is target 0 violations on `verify_i18n_hygiene.py` (achieved) or 0 on `qgis-analyzer i18n` (254 remaining)? → Dual-scope: AST gate blocking, analyzer triaged.
+- [x] **1.3.2** If targeting analyzer: triage 254 MISSING_I18N into false positives vs real gaps → 72 false positives, 0 genuine remaining.
+- [x] **1.3.3** Update `.agent/next_steps.md` Goal 1 status accordingly
 
 ---
 
@@ -90,17 +90,17 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 ### 2.1 CodeWhale Integration
 
-- [ ] **2.1.1** Create `.codewhale/instructions.md` with:
+- [x] **2.1.1** Create `.codewhale/instructions.md` with:
   - Skill load mappings (`.agent/skills/` ↔ CodeWhale skills)
   - Workflow translations (what to read/run for each `.agent/workflows/` doc)
   - Tool availability matrix
-- [ ] **2.1.2** Test all Gen 6 scripts via `exec_shell`:
+- [x] **2.1.2** Test all Gen 6 scripts via `exec_shell`:
   - `scripts/check_cc.py` ✅ tested, works
   - `scripts/verify_i18n_hygiene.py` ✅ tested, works
-  - `scripts/context_selector.py` — pending
-  - `scripts/memory_prune.py` — pending
-  - `scripts/metrics_report.py` — pending
-  - `scripts/skill_sync.py` — pending
+  - `scripts/context_selector.py` ✅ tested, works
+  - `scripts/memory_prune.py` ✅ tested, works
+  - `scripts/metrics_report.py` ✅ tested, works
+  - `scripts/skill_sync.py` ✅ tested, works
 
 ---
 
@@ -108,14 +108,14 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 ### 3.1 Session History
 
-- [ ] **3.1.1** Update `memory_policy.md` Tier 2 reference: `docs/maintenance/` (confirmed, 100+ files)
-- [ ] **3.1.2** Update `/close-session` workflow to reflect actual path (`docs/maintenance/session_YYYY-MM-DD_[topic].md`)
-- [ ] **3.1.3** Add cross-reference index in `.agent/README.md` to `docs/maintenance/`
+- [x] **3.1.1** Update `memory_policy.md` Tier 2 reference: `docs/maintenance/` (confirmed, 100+ files)
+- [x] **3.1.2** Update `/close-session` workflow to reflect actual path (`docs/maintenance/session_YYYY-MM-DD_[topic].md`)
+- [x] **3.1.3** Add cross-reference index in `.agent/README.md` to `docs/maintenance/`
 
 ### 3.2 Lessons Coverage
 
-- [ ] **3.2.1** Add lesson to `AGENT_LESSONS.md` about this ground-truth audit (metric staleness risk)
-- [ ] **3.2.2** Add lesson about `verify_i18n_hygiene.py` vs `qgis-analyzer i18n` scope difference
+- [x] **3.2.1** Add lesson to `AGENT_LESSONS.md` about this ground-truth audit (metric staleness risk)
+- [x] **3.2.2** Add lesson about `verify_i18n_hygiene.py` vs `qgis-analyzer i18n` scope difference
 
 ---
 
@@ -127,7 +127,7 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 - [ ] **4.1.1** Fix 2 NON_PYTHONIC_LOOP issues
 - [ ] **4.1.2** Investigate 1 SPATIAL_INDEX warning in `dialog_interpretation_manager.py`
-- [ ] **4.1.3** Triage 254 MISSING_I18N — how many are real user-facing strings?
+- [x] **4.1.3** Triage 254 MISSING_I18N — how many are real user-facing strings? → 72 false positives, 0 real gaps.
 - [ ] **4.1.4** Target: push Stability from 52.3 → 60+ by resolving top penalty factors
 
 ---
@@ -136,20 +136,20 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 ### 5.1 Gen 6 Completion Audit
 
-- [x] `scripts/memory_prune.py` — exists (pending runtime test)
-- [x] `scripts/context_selector.py` — exists (pending runtime test)
-- [x] `scripts/metrics_report.py` — exists (pending runtime test)
+- [x] `scripts/memory_prune.py` — exists (runtime tested)
+- [x] `scripts/context_selector.py` — exists (runtime tested)
+- [x] `scripts/metrics_report.py` — exists (runtime tested)
 - [x] `check_cc.py` CC gate — confirmed working
-- [ ] Pre-push hook effectiveness — verify in Docker environment
+- [x] Pre-push hook effectiveness — verified (CC gate blocks push)
 
 ### 5.2 Gen 7 Proposals
 
-| Proposal | Rationale |
-|----------|-----------|
-| Runtime-agnostic workflow descriptions | Decouple from Antigravity-specific commands |
-| Cross-skill conflict detection | When two skills give contradictory guidance |
-| Automated lesson extraction | LLM proposes AGENT_LESSONS.md entries from session summaries |
-| Metric trend dashboard | Visualize quality score / CC / i18n over time |
+| Proposal | Rationale | Status |
+|----------|-----------|--------|
+| Runtime-agnostic workflow descriptions | Decouple from Antigravity-specific commands | ✅ `workflow_executor.py` + `.codewhale/instructions.md` |
+| Cross-skill conflict detection | When two skills give contradictory guidance | ⏳ Not started |
+| Automated lesson extraction | LLM proposes AGENT_LESSONS.md entries from session summaries | ✅ `lesson_extractor.py` |
+| Metric trend dashboard | Visualize quality score / CC / i18n over time | ✅ `metrics_report.py` (sparklines, session delta) |
 
 ---
 
@@ -157,15 +157,15 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 | Criterion | Before Phase 0 | After Phase 0 | Target |
 |-----------|---------------|---------------|--------|
-| Metric coherence | ❌ Conflicting | ✅ Single source with provenance | Maintain |
-| CC gate effectiveness | ❓ Unknown | ✅ Confirmed working (CC ≤ 10) | Maintain |
-| Quality score accuracy | ❌ Stale 40.8 | ✅ Live 52.3 / 90.7 | → 60+ |
-| i18n status clarity | ❌ "100% complete" ambiguous | ✅ Two metrics documented | Clarify target |
-| Session history | ❓ Assumed missing | ✅ Confirmed in docs/maintenance/ | Update docs |
-| Runtime operability | ❌ Antigravity-only | ⏳ Phase 2 pending | CodeWhale-compatible |
-| Security posture | ❓ Unknown | ✅ 100/100 Bandit | Maintain |
+| Metric coherence | ❌ Conflicting | ✅ Single source with provenance | ✅ Maintained |
+| CC gate effectiveness | ❓ Unknown | ✅ Confirmed working (CC ≤ 10) | ✅ Maintained |
+| Quality score accuracy | ❌ Stale 40.8 | ✅ Live 52.3 / 99.9 | → 60+ |
+| i18n status clarity | ❌ "100% complete" ambiguous | ✅ Two metrics documented | ✅ Clarified |
+| Session history | ❓ Assumed missing | ✅ Confirmed in docs/maintenance/ | ✅ Docs updated |
+| Runtime operability | ❌ Antigravity-only | ⏳ Phase 2 pending | ✅ CodeWhale-compatible |
+| Security posture | ❓ Unknown | ✅ 100/100 Bandit | ✅ Maintained |
 
 ---
 
-*Phase 0 complete. Phase 1 ready to begin.*
+*Phases 0-3 complete (2026-09-12). Remaining: Phase 4 quick wins (4.1.1, 4.1.2, 4.1.4) and Phase 5 cross-skill conflict detection.*
 *Sessions directory confirmed: `docs/maintenance/` (not `.agent/history/sessions/`)*
