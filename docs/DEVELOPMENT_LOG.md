@@ -1,3 +1,13 @@
+## [2026-09-13] Session: v3.7.2 Portal Publication Closure
+- **Achievement**: Confirmada la publicacion de SecInterp v3.7.2 en plugins.qgis.org y como latest release en GitHub (paso manual del release, task 3.5).
+- **Actions Taken**:
+    - `/start-session`: entorno en verde (docker-test OK, metricas coherentes, `uv sync` limpio).
+    - Marcado task `3.5` como completado en `.agent/task.md`.
+    - Actualizado `.agent/next_steps.md`: removido follow-up manual pendiente.
+- **Operational Metrics**: 645/645 tests, Quality 52.3/100, CC PASS, i18n AST PASS, qt6-check 0.
+- **Status**: Release v3.7.2 cerrado al 100%. Siguiente: Goal 1.1 (symbology) / Fase 1 adaptive VE / tech debt 2.1-2.3.
+- **Maintenance**: [session_2026-09-13_v3.7.2_portal_published.md](maintenance/session_2026-09-13_v3.7.2_portal_published.md)
+
 ## [2026-09-12] MILESTONE: Release v3.7.2 — Qt6 / QGIS 4 Compatibility Patch
 - **Achievement**: Publicacion de SecInterp v3.7.2, parche que resuelve los 114 hallazgos de compatibilidad Qt6 reportados por el repositorio de plugins de QGIS.
 - **Release Content**:
