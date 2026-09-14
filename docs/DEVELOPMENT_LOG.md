@@ -1,3 +1,18 @@
+## [2026-09-13] Session: Gen 8 Agentic System Evolution
+- **Achievement**: Executed the Gen 7 → Gen 8 improvement plan (Phases A–E), consolidating the agentic tooling long-tail and aligning the system to opencode-native mechanisms.
+- **Actions Taken**:
+    - Phase A: root `AGENTS.md` as single source of truth; retired `skill_sync.py` + `context_selector.py`.
+    - Phase B: folded 5 scripts into `sync_metrics.py` / `validate_agent_system.py` subcommands; fused test-runners into `run_in_qgis.py`; retired the CodeWhale bridge and redundant i18n shell scripts (`scripts/` 27 → 15).
+    - Phase C: externalized CC/module-size thresholds (`check_cc.py --threshold`); recorded analyzer versions in `agent_metrics.json`.
+    - Phase D: registered native subagents (`architect`/`qa_engineer`/`auditor`) in `opencode.json`; normalized workflow frontmatter; removed `runtimes:`.
+    - Phase E: standardized skills to `name`+`description` (dropped `trigger`); registered `.agent/skills` via `skills.paths`.
+- **Operational Metrics**:
+    - Tests: 640/640 — 620 plugin + 20 agentic tooling
+    - CC <= 10: PASS · i18n AST gate: PASS
+    - validate_agent_system (default + --graph + --conflicts): PASS · sync_metrics --validate: PASS
+- **Status**: Gen 8 Phases A–E complete. Phase F (session-as-durable-object) documented as a separate proposal. Restart opencode to load `opencode.json`.
+- **Maintenance**: [session_2026-09-13_gen8_agentic_system_evolution.md](maintenance/session_2026-09-13_gen8_agentic_system_evolution.md)
+
 ## [2026-09-13] Session: v3.7.2 Portal Publication Closure
 - **Achievement**: Confirmada la publicacion de SecInterp v3.7.2 en plugins.qgis.org y como latest release en GitHub (paso manual del release, task 3.5).
 - **Actions Taken**:

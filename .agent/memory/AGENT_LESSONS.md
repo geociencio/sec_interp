@@ -15,6 +15,23 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-13'
+    category: AGENTIC_SYSTEM
+    topic: Harness assumptions go stale (the Bitter Lesson)
+    lesson: The agentic system assumed a dual Antigravity/CodeWhale runtime, with a
+      bridge (workflow_executor.py + .codewhale/) to translate between them. The real
+      runtime had already moved to opencode, leaving the bridge as dead weight.
+    action: Prefer runtime-native mechanisms (AGENTS.md, SKILL.md name+description,
+      opencode.json subagents) over bespoke bridges. Any script that exists only to
+      translate between runtimes is a liability.
+  - date: '2026-09-13'
+    category: TOOLING
+    topic: Consolidate overlapping scripts into subcommand entry points
+    lesson: Five metrics/consistency scripts overlapped in responsibility, each a
+      separate assumption to keep synchronized. Folding them into sync_metrics.py and
+      validate_agent_system.py subcommands reduced the long-tail and centralised drift.
+    action: When two scripts share a domain (metrics, validation), fold the smaller into
+      the larger as a subcommand rather than adding a new file.
   - date: '2026-09-12'
     category: AGENTIC_SYSTEM
     topic: Release Timing vs Build/Upload Order

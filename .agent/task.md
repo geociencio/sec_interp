@@ -17,6 +17,14 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [x] `antigravity-framerepo/` marcado obsoleto <!-- id: 0.5 -->
 - [x] Gen 7 tooling cableado + 25 tests en `tests/agentic/` <!-- id: 0.6 -->
 
+## 🧠 Gen 8 Agentic System Evolution (COMPLETED 2026-09-13)
+- [x] Phase A: root `AGENTS.md` SSoT; retired `skill_sync.py` + `context_selector.py` <!-- id: 8.1 -->
+- [x] Phase B: fold 5 scripts into `sync_metrics.py` / `validate_agent_system.py`; fuse test-runners; retire CodeWhale bridge <!-- id: 8.2 -->
+- [x] Phase C: externalize thresholds (`check_cc.py --threshold`) <!-- id: 8.3 -->
+- [x] Phase D: native subagents in `opencode.json`; remove `runtimes:` <!-- id: 8.4 -->
+- [x] Phase E: standard `SKILL.md` format + `skills.paths` discovery <!-- id: 8.5 -->
+- [ ] Phase F: session-as-durable-object (proposal only — not scheduled) <!-- id: 8.6 -->
+
 ## 🎯 Goal 1: 3D Interpretation & Symbology Enhancements
 - [ ] Implement live symbology/legend styling preview under Settings sidebar <!-- id: 1.1 -->
 - [ ] Fase 1: `core/services/vertical_exaggeration_service.py` + unit tests <!-- id: 1.2 -->
@@ -31,5 +39,5 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [ ] Resolver `module_size_gate` FAIL (7 módulos > 400 líneas) <!-- id: 2.4 -->
 
 ## 🧪 Operational Status
-- **Active Task**: [release_v3.7.2_qt6_compat] COMPLETADO (publicado en plugins.qgis.org + latest release en GitHub). Next: Goal 1.1 (symbology) o Fase 1 adaptive VE.
-- **Metrics**: 645/645 tests, Quality 52.3/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n AST PASS, qt6-check PASS.
+- **Active Task**: [Gen 8 agentic system evolution] COMPLETED (Phases A–E). Next: Goal 1.1 (symbology) or Fase 1 adaptive VE.
+- **Metrics**: 640/640 tests, Quality 52.3/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n AST PASS, qt6-check PASS.
