@@ -126,7 +126,7 @@
     },
     "last_session": {
         "date": "2026-09-14",
-        "topic": "gen8_agentic_system_evolution",
+        "topic": "root_dir_cleanup",
         "tests_ok": 640,
         "quality_score": 52.3,
         "task_completion_rate": null,
@@ -136,6 +136,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-09-14",
+            "tests_ok": 640,
+            "quality_score": 52.3,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "gen8_agentic_system_evolution"
+        },
         {
             "date": "2026-09-13",
             "tests_ok": 645,

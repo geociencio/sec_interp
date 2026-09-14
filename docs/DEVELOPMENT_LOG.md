@@ -1,3 +1,15 @@
+## [2026-09-13] Session: Root Directory Cleanup
+- **Achievement**: Reclaimed the repository root (~90 MB) from generated artifacts and stale editor configs; untracked 30 files from git and expanded `.gitignore`.
+- **Actions Taken**:
+    - Removed untracked build/analysis clutter (logs, caches, `analysis_results_*`, `_archive/`, `artifacts/`, `json/`, `quality_report*`, `sec_interp.egg-info/`, stray logs).
+    - `git rm --cached` 26 generated artifacts (analyzer/coverage reports, empty placeholders, `dummy.qml`, `test_patch.py`, `symbology-style.db`, `.coverage`).
+    - Untracked `.idea/`, `.vscode/`, `.continue/` (no longer used).
+    - Expanded `.gitignore` with caches, IDE dirs, and generated artifact patterns.
+    - Regenerated `.secrets.baseline` (dropped stale `.continue/` entry).
+- **Operational Metrics**: 592 tests OK (local) · `ruff check` PASS · `sync_metrics --validate` PASS · `dist/` preserved.
+- **Status**: `chore: clean root directory` committed (`69b75c15`). Pending: root `__pycache__` (root-owned), `skills-lock.json` legacy cleanup, unrelated `MURALLA.qgs`/`resources.py` edits.
+- **Maintenance**: [session_2026-09-13_root_dir_cleanup.md](maintenance/session_2026-09-13_root_dir_cleanup.md)
+
 ## [2026-09-13] Session: Gen 8 Agentic System Evolution
 - **Achievement**: Executed the Gen 7 → Gen 8 improvement plan (Phases A–E), consolidating the agentic tooling long-tail and aligning the system to opencode-native mechanisms.
 - **Actions Taken**:

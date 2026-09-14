@@ -2,6 +2,12 @@
 
 Tablero de tareas activas basado en `.agent/next_steps.md`.
 
+## 🧹 Root Directory Cleanup (COMPLETADO 2026-09-13)
+- [x] Borrar ~90 MB de artefactos no rastreados (logs, caches, `analysis_results_*`) <!-- id: 9.1 -->
+- [x] `git rm --cached` 26 artefactos generados + borrado de disco <!-- id: 9.2 -->
+- [x] Untrack `.idea/`, `.vscode/`, `.continue/` + ampliar `.gitignore` <!-- id: 9.3 -->
+- [x] Regenerar `.secrets.baseline` (eliminar entrada `.continue/` obsoleta) <!-- id: 9.4 -->
+
 ## 🚀 Release v3.7.2 — Qt6/QGIS 4 Compatibility Patch (COMPLETADO)
 - [x] Diagnosticar 114 "Enum error" del portal (reporte pre-migración vs ZIP v3.7.1) <!-- id: 3.1 -->
 - [x] Bump versión 3.7.1 → 3.7.2 (metadata, pyproject, uv.lock, README, CHANGELOG) <!-- id: 3.2 -->
