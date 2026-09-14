@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->645<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->642<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-09-13<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -120,7 +120,6 @@
 - **tests/mcp/test_mcp_tools.py**: 3 tests
 - **tests/agentic/test_check_skill_conflicts.py**: 6 tests
 - **tests/agentic/test_memory_prune.py**: 3 tests
-- **tests/agentic/test_skill_sync.py**: 3 tests
 - **tests/agentic/test_sync_metrics.py**: 3 tests
 - **tests/agentic/test_validate_agent_metrics.py**: 10 tests
 <!-- END_INVENTORY -->

@@ -39,7 +39,7 @@ This workflow guides code refactoring following project standards and using spec
 
 3. **Load Specialized Context**:
 
-   🤖 **Agent Action**: Optimize context using `uv run python scripts/context_selector.py --shell` and load the suggested skills.
+   🤖 **Agent Action**: Identify relevant skills from the root `AGENTS.md` "Agent Skills" table and read the matching `SKILL.md` files on demand.
 
 4. **Apply Refactoring**:
 

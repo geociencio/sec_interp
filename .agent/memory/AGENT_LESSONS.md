@@ -47,8 +47,9 @@ lessons:
     topic: Single Source of Truth for Workflow Tables
     lesson: Root AGENTS.md and .agent/AGENTS.md each had a manually-maintained workflow
       table that drifted (5 vs 15 workflows). Duplicated tables inevitably diverge.
-    action: skill_sync.py now regenerates both tables from workflow frontmatter. Do not
-      hand-edit these tables; run skill_sync.py after adding/renaming a workflow.
+    action: The workflow/skills tables now live only in the root AGENTS.md (single source
+      of truth); .agent/AGENTS.md is a pointer. Update root AGENTS.md manually when
+      adding/renaming a workflow or skill (skill_sync.py retired in Gen 8).
   - date: '2026-05-24'
     category: TECHNICAL
     topic: qgis-analyzer i18n False Positives

@@ -23,12 +23,12 @@ cp -r antigravity-framerepo/scaffold/qgis/workflows/* .agent/workflows/
 When customizing a generic skill (e.g., `domain-logic`):
 1. **Inherit**: Maintain the generic 3-level validation structure.
 2. **Document**: Clearly mark project-specific triggers in `SKILL.md`.
-3. **Validate**: Always run `python3 scripts/skill_sync.py` to ensure the agentic system is intact.
+3. **Validate**: Always run `python3 scripts/validate_agent_system.py` to ensure the agentic system is intact.
 
 ## 🧪 Daily Health Checks
 - **Automated Sync**: Before starting any feature, verify standards:
   ```bash
-  python3 scripts/skill_sync.py
+  python3 scripts/validate_agent_system.py
   ```
 - **MCP Server**: Ensure `scripts/mcp_server.py` is running for optimal AI tool orchestration.
 

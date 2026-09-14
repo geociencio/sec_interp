@@ -59,7 +59,7 @@ For standard unit tests, use the `run-tests.md` workflow instead (faster, better
 test_example (tests.test_module.TestClass) ... ok
 ...
 ----------------------------------------------------------------------
-Ran 645 tests in Y.ZZZs
+Ran 642 tests in Y.ZZZs
 
 ✅ SUCCESS: All tests passed!
 ```

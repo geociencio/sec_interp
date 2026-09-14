@@ -13,10 +13,8 @@ Wired into workflows (`.agent/workflows/`), the Makefile, or the pre-push hook.
 | `security_scan.py` | Security scan (Bandit + detect-secrets + Flake8) | `make release` |
 | `sync_metrics.py` | Unified metric extraction → `agent_metrics.json` | `/start-session`, `/close-session` |
 | `validate_agent_metrics.py` | Cross-file + internal metric consistency validator | `/start-session`, `/close-session` |
-| `skill_sync.py` | Sync skills/workflows metadata into `AGENTS.md` | `/close-session`, `/verify-standards` |
 | `memory_prune.py` | Prune consolidated lessons + next_steps snapshots (90 days) | `/close-session` |
 | `metrics_report.py` | Markdown trend report from `agent_metrics.json` | `/release-plugin` |
-| `context_selector.py` | Semantic skill injection for the active task | `/start-session` |
 | `update_testing_status.py` | Update `TESTING_STATUS.md` test counts | `make docker-test` |
 | `run_tests_in_qgis.py` | Integration test runner inside real QGIS | `/run-tests-in-qgis` |
 
@@ -45,7 +43,7 @@ Special-purpose utilities, some wired into workflows, others invoked manually or
 
 ## Tests
 
-Unit tests for the agentic tooling live in `tests/agentic/` (25 tests, plain `unittest`, no QGIS required). They are discovered by `make docker-test` and the Docker CMD alongside `core/`, `gui/`, `exporters/`, and `integration/`.
+Unit tests for the agentic tooling live in `tests/agentic/` (22 tests, plain `unittest`, no QGIS required). They are discovered by `make docker-test` and the Docker CMD alongside `core/`, `gui/`, `exporters/`, and `integration/`.
 
 ## Notes
 

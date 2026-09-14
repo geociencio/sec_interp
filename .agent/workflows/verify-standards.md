@@ -27,15 +27,7 @@ Review each file in `.agent/workflows/` looking for:
 2.  **Structure**: Numbered steps and use of `// turbo` where applicable.
 3.  **Expected Result**: Presence of success metrics at the end of the document.
 
-## 3. Automatic Synchronization
-
-Run synchronization to ensure `AGENTS.md` is up to date.
-// turbo
-```bash
-uv run python scripts/skill_sync.py
-```
-
-## 4. Structural Validation (Gen 7)
+## 3. Structural Validation (Gen 7)
 
 Verify the integrity of the `.agent/` system: YAML frontmatter, skill/script references, and workflow dependency graph.
 
@@ -51,5 +43,5 @@ uv run python scripts/check_skill_conflicts.py
 ## Expected Result
 - Detailed report of deviations from the standard.
 - Immediate correction proposal for obsolete components.
-- Guaranteed synchronization of the skills matrix.
 - Validated `.agent/` structure (frontmatter + references) with no broken dependencies.
+- Agent configuration maintained in a single source of truth (root `AGENTS.md`).

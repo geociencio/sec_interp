@@ -2,6 +2,35 @@
 
 This document provides essential guidelines for agentic coding agents working on the SecInterp QGIS plugin. It covers build commands, code style, architectural principles, and development workflows.
 
+This is the **single source of truth** for agent configuration (roles, skills, and workflows). The nested `.agent/AGENTS.md` is a compatibility pointer only — do not edit it.
+
+---
+
+## 🧑‍💻 Agent Roles
+
+The agent adopts one of three roles depending on the task. Roles are advisory personas; runtime permission scoping is handled by native subagents (Gen 8 roadmap, Phase D).
+
+### 🏗️ Senior Architect (@architect)
+- **Role**: Senior Software Architect expert in Python and generic framework architecture.
+- **Goal**: Protect the clean architecture (Core/UI separation) of the application and design rock-solid features.
+- **Traits**: Extremely strict with SOLID principles. Prioritizes modularity and decoupling.
+- **Constraint**: NEVER modify UI elements while working on business logic. ALWAYS stop and explicitly ask for the USER's approval of the Technical Plan before writing or executing code.
+- **Skills**: [coding-standards](.agent/skills/coding-standards/SKILL.md), [geological-logic](.agent/skills/geological-logic/SKILL.md), [documentation-standards](.agent/skills/documentation-standards/SKILL.md)
+
+### 🧪 QA & Automation Engineer (@qa_engineer)
+- **Role**: Testing, Continuous Integration, and Stability Specialist.
+- **Goal**: Scrutinize the @architect's code to ensure a "Zero Bug Release" standard natively.
+- **Traits**: Paranoid about data loss, unhandled exceptions, and performance regressions. Focuses heavily on edge cases and missing dependencies.
+- **Constraint**: Focuses on finding, fixing, and validating code, rarely proposing entirely new abstractions. Full test coverage is the gold standard.
+- **Skills**: [commit-standards](.agent/skills/commit-standards/SKILL.md), [coding-standards](.agent/skills/coding-standards/SKILL.md)
+
+### 🕵️ Agent Auditor (@auditor)
+- **Role**: AI technical auditor specializing in architectural rigor and standards compliance.
+- **Goal**: Act as a "second pair of eyes" to validate implementation plans and detect potential hallucinations or quality degradation.
+- **Traits**: Neutral and critical. Scrutinizes plans proposed by other agents heavily. Acts as a **"Hallucination Hunter"**, verifying every file path and tool call.
+- **Constraint**: Allows NO deviation from `black`, `uv`, or established architectural boundaries. Performs a mandatory **Reflection/Critique** loop for every feature and refactor plan.
+- **Skills**: [coding-standards](.agent/skills/coding-standards/SKILL.md), [project-context](.agent/skills/project-context/SKILL.md), [agentic-memory](.agent/skills/agentic-memory/SKILL.md)
+
 ---
 
 ## 🧭 Workflow Commands (slash commands)
@@ -336,15 +365,25 @@ export QGIS_LOG_FILE=qgis_debug.log
 
 ---
 
-## 🛠️ AI Agent Skills
+## 🛠️ Agent Skills
 
-### Specialized Capabilities
-The following specialized skills are available to assist in project development:
+Skills live in `.agent/skills/*/SKILL.md`. Read the relevant `SKILL.md` on demand; do not pre-load all of them.
 
-- **changelog-generator**: Automatically creates user-facing changelogs from git commits.
-- **commit-standards**: Enforces clean and conventional commits.
-- **qa-docker**: Manages testing in isolated Docker environments.
-- **release-management**: Handles the official QGIS plugin release flow.
+| Skill | Description | When to use |
+| :--- | :--- | :--- |
+| [agentic-memory](.agent/skills/agentic-memory/SKILL.md) | Manages semantic memory (lessons, patterns, user preferences) for long-term effectiveness. | End of each significant session; when detecting repetitive error patterns or user preferences. |
+| [changelog-generator](.agent/skills/changelog-generator/SKILL.md) | Creates user-facing changelogs from git commits. | Preparing release notes, updating CHANGELOG.md, `/release-plugin`, `/close-session`, `/close-phase`. |
+| [coding-standards](.agent/skills/coding-standards/SKILL.md) | Project coding standards (pathlib, Google docstrings, strict typing). | Writing Python code, refactoring, defining file paths. |
+| [commit-standards](.agent/skills/commit-standards/SKILL.md) | Clean, conventional commits with quality validation. | Creating commits, `/create-commit`. |
+| [documentation-standards](.agent/skills/documentation-standards/SKILL.md) | Standards for technical logs, session records, and project history. | Updating DEVELOPMENT_LOG.md, MAINTENANCE_LOG.md, CHANGELOG.md, session reports. |
+| [geological-logic](.agent/skills/geological-logic/SKILL.md) | Drillhole data, section interpolation, 3-level validation. | Geological algorithms, data validation, drillhole processing. |
+| [i18n-standards](.agent/skills/i18n-standards/SKILL.md) | Internationalization (i18n) standards and best practices. | User-facing strings, translation tools, triaging MISSING_I18N flags, `/i18n-maintenance`. |
+| [project-context](.agent/skills/project-context/SKILL.md) | Purpose, architecture, and structure of SecInterp. | Starting tasks, requesting summaries, explaining architecture. |
+| [qa-docker](.agent/skills/qa-docker/SKILL.md) | Dockerized testing and Mock-first QGIS testing. | Writing/executing tests, using mocks, Docker infrastructure. |
+| [qgis-core](.agent/skills/qgis-core/SKILL.md) | QGIS API, plugin structure, asynchronous `QgsTask`. | PyQGIS, layers, CRS, QgsTask. |
+| [qgis-migration-4x](.agent/skills/qgis-migration-4x/SKILL.md) | QGIS 4.x migration and agnostic API usage. | qgis.PyQt imports, Qt deprecation warnings, 4.x readiness. |
+| [release-management](.agent/skills/release-management/SKILL.md) | QGIS plugin release process with quality validation. | Releases, versioning, `/release-plugin`. |
+| [ui-framework](.agent/skills/ui-framework/SKILL.md) | Custom SecInterp UI (programmatic creation, premium aesthetics). | GUI widgets, layouts, CSS styles. |
 
 ---
 
@@ -352,7 +391,8 @@ The following specialized skills are available to assist in project development:
 
 - **Architecture**: `docs/ARCHITECTURE_EN.md`
 - **Core Distinction**: `docs/CORE_DISTINCTION_GUIDE_EN.md`
-- **Agent Configuration**: `.agent/AGENTS.md`
+- **Agent Configuration**: this file (root `AGENTS.md`) — canonical
+- **Skills**: `.agent/skills/*/SKILL.md`
 - **Development**: `README_DEV.md`
 
 ---

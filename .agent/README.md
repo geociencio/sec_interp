@@ -9,7 +9,7 @@ Welcome to the **SecInterp Agentic Intelligence Core**. This directory contains 
 SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simple script execution into a state-governed, self-pruning, and metric-aware cognitive architecture.
 
 ### Key Innovations in Gen 6:
-1.  **Semantic Context Injection**: No more token bloat. The system uses `context_selector.py` to pre-load only the most relevant skills for the current task.
+1.  **Semantic Context Injection**: No more token bloat. The root `AGENTS.md` skills table lists each skill with a "when to use" description; the agent reads only the relevant `SKILL.md` files on demand.
 2.  **Autonomous Memory Pruning**: The `memory_prune.py` utility automatically maintains the lesson log, moving consolidated knowledge to long-term archives.
 3.  **Zero-Regression Quality Gates**: A mandatory `pre-push` hook enforces Cyclomatic Complexity (CC <= 10) and quality standards before any code reaches the repository.
 4.  **Observability Engine**: `metrics_report.py` provides visual Markdown trends of the agent's effectiveness and technical debt evolution.
@@ -21,7 +21,7 @@ SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simp
 
 ```bash
 .agent/
-├── AGENTS.md               # 🧠 Primary role definitions & skill mappings
+├── AGENTS.md               # ➡️ Compatibility pointer (canonical config is root AGENTS.md)
 ├── QUICK_REFERENCE.md      # 📋 Fast lookup for skills and workflows
 ├── next_steps.md           # 🎯 Active goals and handoff state
 ├── architecture/           # 🏗️ System design and optimization plans
@@ -100,7 +100,7 @@ This project enforces:
 | Module Stability | 52.3/100 |
 | Maintainability | 99.9/100 |
 | Security (Bandit) | 100.0/100 |
-| Tests | 645 passing |
+| Tests | 642 passing |
 | CC Gate | PASS (all ≤ 10) |
 | i18n AST Gate | PASS (0 violations) |
 

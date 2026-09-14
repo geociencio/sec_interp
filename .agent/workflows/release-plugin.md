@@ -9,7 +9,7 @@ stop_conditions:
   - "Forbidden files (.agent, scripts, tests) found in ZIP → Abort and fix .qgisignore"
   - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
-  - Verify that 645+ tests pass in Docker
+  - Verify that 642+ tests pass in Docker
   - Confirm CC <= 10 for all methods (scripts/check_cc.py)
   - Ensure Zero High-Severity Security Findings
   - Validate ZIP contents (Plugin-only, no agentic system)
@@ -18,13 +18,6 @@ validation: |
 # Workflow: Release Plugin (Gen 6)
 
 Follow this 5-phase workflow to perform an official release of the SecInterp plugin.
-
-### Fase 0: Semantic Injection
-Optimize the current context for release operations.
-// turbo
-```bash
-uv run python scripts/context_selector.py "release preparation and packaging" --shell
-```
 
 ### Phase 1: Quality and Preparation
 
@@ -85,7 +78,7 @@ uv run python scripts/context_selector.py "release preparation and packaging" --
    ```bash
    make docker-test
    ```
-   🤖 **Agent Action**: 100% pass rate required (645 tests).
+   🤖 **Agent Action**: 100% pass rate required (642 tests).
 
 ### Phase 4: Git and Tagging
 

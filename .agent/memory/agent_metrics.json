@@ -12,8 +12,8 @@
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
         "avg_retries_per_session": 1.18,
-        "tests_ok": 645,
-        "tests_ok_note": "645 = 620 plugin + 25 agentic tooling (verified 2026-09-12 via make docker-test).",
+        "tests_ok": 642,
+        "tests_ok_note": "642 = 620 plugin + 22 agentic tooling (skill_sync tests retired in Gen 8, 2026-09-13).",
         "quality_score_latest": 52.3,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
         "maintainability_score": 99.9,
@@ -63,7 +63,7 @@
                 "lines": 417
             }
         ],
-        "test_count": 645
+        "test_count": 642
     },
     "ground_truth_sources": {
         "qgis_analyzer": {

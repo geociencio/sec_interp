@@ -13,14 +13,14 @@ validation: |
 
 This workflow optimizes the start of development by ensuring a synchronized, **contextualized**, and validated environment using Generation 6 semantic injection.
 
-### 0. Semantic Skill Injection (Gen 6)
-Optimize the current context by pre-loading only the necessary skills for the active tasks.
+### 0. Skill Discovery (Gen 8)
+Identify the skills relevant to the active tasks from the root `AGENTS.md` "Agent Skills" table.
 // turbo
 ```bash
-uv run python scripts/context_selector.py --shell
+cat AGENTS.md
 ```
 
-🤖 **Agent Action**: Based on the output, prioritize the suggested skills and restrict loading of irrelevant modules to optimize token usage.
+🤖 **Agent Action**: Read only the matching `SKILL.md` files on demand; do not pre-load all 13 skills (avoids token bloat).
 
 ### 1. Context Tuning (CRITICAL)
 Updates and reads the context to understand "where we left off".
@@ -102,7 +102,7 @@ session_init: success
 context_sync: complete
 active_task: [task_name]
 current_metrics:
-  tests: 645
+  tests: 642
   quality_score: X
   cc_gate: PASS|FAIL
   i18n_gate: PASS|FAIL

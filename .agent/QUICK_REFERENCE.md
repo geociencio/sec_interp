@@ -75,7 +75,6 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 | Script | Purpose | Command |
 |:-------|:--------|:--------|
 | **Memory Pruning** | Auto-prune consolidated lessons | `uv run python scripts/memory_prune.py` |
-| **Context Selector**| Semantic skill selection | `uv run python scripts/context_selector.py` |
 | **Metrics Report** | Markdown trend report | `uv run python scripts/metrics_report.py` |
 | **CC Checker** | Validate complexity thresholds | `uv run python scripts/check_cc.py` |
 | **Metrics Sync** | Unified ground-truth metric extraction | `uv run python scripts/sync_metrics.py` |
@@ -102,7 +101,7 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 - ✅ **Complexity Gate**: **CC <= 10** (verified 2026-05-24 by check_cc.py).
 - ✅ **i18n Hygiene Gate**: **0 violations** (verified by verify_i18n_hygiene.py).
 - ⚠️ **qgis-analyzer i18n**: 72 MISSING_I18N flagged (all false positives after triage).
-- ✅ **Tests**: **645 passing** (confirmed 2026-05-24 via `make docker-test`).
+- ✅ **Tests**: **642 passing** (confirmed 2026-05-24 via `make docker-test`).
 
 ---
 
@@ -116,11 +115,6 @@ The system includes a mandatory `.git/hooks/pre-push` gate that blocks any push 
 
 ## 🔧 Maintenance
 
-### Sync Skills and Workflows
-```bash
-uv run python scripts/skill_sync.py
-```
-
 ### Run Metrics Report
 ```bash
 uv run python scripts/metrics_report.py
@@ -131,7 +125,7 @@ uv run python scripts/metrics_report.py
 ## 📚 References
 
 - [.agent/README.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/README.md) - **Full System Documentation**
-- [AGENTS.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/AGENTS.md) - Full agents and skills definition
+- [AGENTS.md](file:///home/jmbernales/qgispluginsdev/sec_interp/AGENTS.md) - Canonical agents and skills definition
 - [.codewhale/instructions.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.codewhale/instructions.md) - **CodeWhale Runtime Bridge**
 - [workflows/index.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/index.md) - **Workflow Quick Reference**
 - [DEVELOPMENT_LOG.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/DEVELOPMENT_LOG.md) - Project history

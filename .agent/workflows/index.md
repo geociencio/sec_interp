@@ -99,7 +99,6 @@ git add . && git commit -m "[msg]"
 ```
 uv run python scripts/check_cc.py
 uv run python scripts/verify_i18n_hygiene.py
-uv run python scripts/skill_sync.py
 uv run python scripts/validate_agent_system.py
 uv run python scripts/workflow_graph.py --validate
 ```
@@ -116,8 +115,6 @@ uv run python scripts/workflow_graph.py --validate
 | i18n hygiene | `uv run python scripts/verify_i18n_hygiene.py` |
 | Memory prune | `uv run python scripts/memory_prune.py` |
 | Metrics report | `uv run python scripts/metrics_report.py` |
-| Skill sync | `uv run python scripts/skill_sync.py` |
-| Context selector | `uv run python scripts/context_selector.py` |
 | Agent system validation | `uv run python scripts/validate_agent_system.py` |
 | Workflow graph validation | `uv run python scripts/workflow_graph.py --validate` |
 

@@ -60,13 +60,6 @@ Verify that `.agent/task.md` exists and is updated before committing.
 
 ### 3. Final Memory Synchronization (AI)
 
-🤖 **Agent Action (Skill Sync)**: Run skill synchronization and update AGENTS.md.
-// turbo
-```bash
-uv run python scripts/skill_sync.py
-```
-
-
 🚀 **Agent Action (Lesson Extraction — Gen 7)**: Run the structured lesson extraction protocol:
 
 1. **Scan for candidates** — check these signals:
@@ -136,7 +129,7 @@ git commit -m "chore(docs): close session [TOPIC]"
 
 Generate a final message listing:
 *   Updated log files.
-*   Test status (e.g., 645 tests OK).
+*   Test status (e.g., 642 tests OK).
 *   Content of `.agent/next_steps.md`.
 *   Suggestion for the next session (command `/start-session`).
 

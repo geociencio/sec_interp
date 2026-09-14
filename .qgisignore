@@ -53,6 +53,9 @@ ENV/
 
 # AI, Agents, and Contexts
 .agent/
+.opencode/
+opencode.json
+opencode.jsonc
 .gemini-temp/
 .ai-context/
 .codewhale/

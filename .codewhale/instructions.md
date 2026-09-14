@@ -45,7 +45,7 @@ knowledge** — the agent reads them on demand via `read_file`.
 
 **CodeWhale-native skills** (from `~/.codewhale/skills/`) that overlap:
 - `delegate` → replaces sub-agent spawning in build-feature workflow
-- `v4-best-practices` → replaces context_selector.py semantic injection
+- `v4-best-practices` → complements skill discovery via root AGENTS.md
 - `pdf`, `spreadsheets`, `documents`, `presentations` → for exporters work
 
 ---
@@ -84,7 +84,7 @@ knowledge** — the agent reads them on demand via `read_file`.
 | `/release-plugin` | 1. `read_file .agent/skills/release-management/SKILL.md` 2. `make zip` 3. Verify with `unzip -l` |
 | `/start-phase` | 1. `read_file .agent/next_steps.md` 2. Create implementation plan 3. `/ia-critic` |
 | `/close-phase` | 1. Update docs/maintenance/phase_closure 2. Update DEVELOPMENT_LOG.md 3. `uv run python scripts/sync_metrics.py` |
-| `/verify-standards` | 1. `uv run python scripts/check_cc.py` 2. `uv run python scripts/verify_i18n_hygiene.py` 3. `uv run python scripts/skill_sync.py` |
+| `/verify-standards` | 1. `uv run python scripts/check_cc.py` 2. `uv run python scripts/verify_i18n_hygiene.py` 3. `uv run python scripts/validate_agent_system.py` |
 
 ---
 
@@ -99,8 +99,6 @@ All scripts tested and working in this runtime (2026-05-24):
 | `verify_i18n_hygiene.py` | `uv run python scripts/verify_i18n_hygiene.py` | ✅ |
 | `memory_prune.py` | `uv run python scripts/memory_prune.py` | ✅ |
 | `metrics_report.py` | `uv run python scripts/metrics_report.py` | ✅ |
-| `context_selector.py` | `uv run python scripts/context_selector.py` | ✅ |
-| `skill_sync.py` | `uv run python scripts/skill_sync.py` | ✅ |
 
 ---
 
