@@ -23,7 +23,7 @@ SKILLS_DIR = AGENT_DIR / "skills"
 WORKFLOW_DIR = AGENT_DIR / "workflows"
 SCRIPTS_DIR = PROJECT_ROOT / "scripts"
 
-REQUIRED_SKILL_FIELDS = ["name", "description", "trigger"]
+REQUIRED_SKILL_FIELDS = ["name", "description"]
 REQUIRED_WORKFLOW_FIELDS = ["description", "agent", "skills"]
 
 
@@ -116,7 +116,7 @@ def validate_skills() -> tuple[list[ValidationIssue], set[str]]:
             if field not in yaml_data:
                 issues.append(ValidationIssue(
                     str(skill_file.relative_to(AGENT_DIR)),
-                    "WARNING" if field == "trigger" else "ERROR",
+                    "ERROR",
                     f"Missing '{field}' field",
                 ))
 
@@ -479,12 +479,6 @@ def graph_main():
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = PROJECT_ROOT / ".agent" / "skills"
 
-# A workflow referenced by more than this many skill triggers is a potential
-# overlap (too many skills competing for the same trigger).
-TRIGGER_OVERLAP_THRESHOLD = 3
-
-WORKFLOW_REF = re.compile(r"/([a-z][a-z0-9-]+)")
-
 
 def _parse_frontmatter(content: str) -> dict:
     """Extract frontmatter fields from a SKILL.md file."""
@@ -516,7 +510,7 @@ def load_skills(skills_dir: Path) -> list[dict]:
 def check_completeness(skills: list[dict]) -> list[str]:
     """Report skills missing required frontmatter fields."""
     issues = []
-    required = ("name", "description", "trigger")
+    required = ("name", "description")
     for skill in skills:
         for field in required:
             if not skill.get(field):
@@ -541,29 +535,11 @@ def check_duplicates(skills: list[dict]) -> list[str]:
     return issues
 
 
-def check_trigger_overlap(skills: list[dict]) -> list[str]:
-    """Report workflows referenced by an excessive number of skill triggers."""
-    issues = []
-    workflow_skills: dict[str, list[str]] = {}
-    for skill in skills:
-        trigger = skill.get("trigger", "") or ""
-        for match in WORKFLOW_REF.findall(trigger):
-            workflow_skills.setdefault(match, []).append(skill.get("name", "?"))
-    for workflow, names in sorted(workflow_skills.items()):
-        if len(names) > TRIGGER_OVERLAP_THRESHOLD:
-            issues.append(
-                f"workflow '/{workflow}' triggers {len(names)} skills "
-                f"({', '.join(names)}) — potential overlap"
-            )
-    return issues
-
-
 def find_conflicts(skills: list[dict]) -> list[str]:
     """Aggregate all conflict detections into a single issue list."""
     issues = []
     issues.extend(check_completeness(skills))
     issues.extend(check_duplicates(skills))
-    issues.extend(check_trigger_overlap(skills))
     return issues
 
 

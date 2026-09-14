@@ -8,7 +8,7 @@ stop_conditions:
   - "Forbidden files (.agent, scripts, tests) found in ZIP → Abort and fix .qgisignore"
   - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
-  - Verify that 642+ tests pass in Docker
+  - Verify that 640+ tests pass in Docker
   - Confirm CC <= 10 for all methods (scripts/check_cc.py)
   - Ensure Zero High-Severity Security Findings
   - Validate ZIP contents (Plugin-only, no agentic system)
@@ -77,7 +77,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    ```bash
    make docker-test
    ```
-   🤖 **Agent Action**: 100% pass rate required (642 tests).
+   🤖 **Agent Action**: 100% pass rate required (640 tests).
 
 ### Phase 4: Git and Tagging
 

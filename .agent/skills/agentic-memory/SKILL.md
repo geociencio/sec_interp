@@ -1,7 +1,6 @@
 ---
 name: agentic-memory
-description: This skill allows the agent to manage its own semantic memory, extracting lessons, patterns, and user preferences to improve long-term effectiveness.
-trigger: at the end of each significant session, when detecting repetitive error patterns or user preferences.
+description: This skill allows the agent to manage its own semantic memory, extracting lessons, patterns, and user preferences to improve long-term effectiveness. Use at the end of each significant session, when detecting repetitive error patterns or user preferences.
 ---
 
 # Skill: Agentic Memory (Brain)

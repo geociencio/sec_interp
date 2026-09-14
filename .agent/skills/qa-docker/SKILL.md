@@ -1,7 +1,6 @@
 ---
 name: qa-docker
-description: Standards for testing in a Dockerized environment and use of Mocks for QGIS.
-trigger: when writing or executing tests, using mocks, or managing Docker infrastructure.
+description: Standards for testing in a Dockerized environment and use of Mocks for QGIS. Use when writing or executing tests, using mocks, or managing Docker infrastructure.
 ---
 
 # QA and Docker Automation

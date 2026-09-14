@@ -45,7 +45,7 @@ Special-purpose utilities, some wired into workflows, others invoked manually or
 
 ## Tests
 
-Unit tests for the agentic tooling live in `tests/agentic/` (22 tests, plain `unittest`, no QGIS required). They are discovered by `make docker-test` and the Docker CMD alongside `core/`, `gui/`, `exporters/`, and `integration/`.
+Unit tests for the agentic tooling live in `tests/agentic/` (20 tests, plain `unittest`, no QGIS required). They are discovered by `make docker-test` and the Docker CMD alongside `core/`, `gui/`, `exporters/`, and `integration/`.
 
 ## Notes
 

@@ -1,7 +1,6 @@
 ---
 name: qgis-migration-4x
-description: Expert guide for QGIS 4.x migration and agnostic API usage
-trigger: when importing from qgis.PyQt, updating Qt dependencies, encountering QGIS API deprecation warnings, or running /audit-plugin for 4.x readiness checks.
+description: Expert guide for QGIS 4.x migration and agnostic API usage. Use when importing from qgis.PyQt, updating Qt dependencies, encountering QGIS API deprecation warnings, or running /audit-plugin for 4.x readiness checks.
 ---
 
 # Skill: QGIS Migration & Future-Proofing (4.x)

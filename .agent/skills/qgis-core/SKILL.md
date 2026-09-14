@@ -1,7 +1,6 @@
 ---
 name: qgis-core
-description: Knowledge about the QGIS API, plugin structure, and asynchronous processing with QgsTask.
-trigger: when working with PyQGIS, layers, CRS, or QgsTask.
+description: Knowledge about the QGIS API, plugin structure, and asynchronous processing with QgsTask. Use when working with PyQGIS, layers, CRS, or QgsTask.
 ---
 
 # QGIS Core Development

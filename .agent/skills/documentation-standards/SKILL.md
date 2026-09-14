@@ -1,7 +1,6 @@
 ---
 name: documentation-standards
-description: Standards for maintaining technical logs, session records, and project history.
-trigger: when updating DEVELOPMENT_LOG.md, MAINTENANCE_LOG.md, CHANGELOG.md or creating session reports in docs/maintenance/.
+description: Standards for maintaining technical logs, session records, and project history. Use when updating DEVELOPMENT_LOG.md, MAINTENANCE_LOG.md, CHANGELOG.md or creating session reports in docs/maintenance/.
 ---
 
 # Skill: Documentation Standards
@@ -20,7 +19,7 @@ This file is the reverse chronological record of **daily activity**.
 - **Changes**:
     - Relevant technical detail 1 (mention modules if applicable).
     - Relevant technical detail 2.
-- **Quality**: Test status (e.g., 642/642 OK) and ruff/black metrics.
+- **Quality**: Test status (e.g., 640/640 OK) and ruff/black metrics.
 - **Maintenance**: Link to the maintenance log [session_YYYY-MM-DD_topic.md](maintenance/session_YYYY-MM-DD_topic.md).
 ```
 

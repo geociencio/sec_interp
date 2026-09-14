@@ -1,7 +1,6 @@
 ---
 name: commit-standards
-description: Standards for creating clean and conventional commits with quality validation.
-trigger: when creating commits, writing commit messages, or using the /create-commit workflow.
+description: Standards for creating clean and conventional commits with quality validation. Use when creating commits, writing commit messages, or using the /create-commit workflow.
 ---
 
 # Commit Standards

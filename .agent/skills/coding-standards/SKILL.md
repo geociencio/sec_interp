@@ -1,7 +1,6 @@
 ---
 name: coding-standards
-description: Project coding standards, focused on the use of pathlib, Google docstrings, and strict typing.
-trigger: when writing Python code, performing refactors, or defining file paths.
+description: Project coding standards, focused on the use of pathlib, Google docstrings, and strict typing. Use when writing Python code, performing refactors, or defining file paths.
 ---
 
 # Coding Standards

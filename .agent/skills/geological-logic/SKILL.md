@@ -1,7 +1,6 @@
 ---
 name: geological-logic
-description: Standards for handling drillhole data, section interpolation, and 3-level validation.
-trigger: when implementing geological algorithms, data validation, or drillhole processing logic.
+description: Standards for handling drillhole data, section interpolation, and 3-level validation. Use when implementing geological algorithms, data validation, or drillhole processing logic.
 ---
 
 # Geological and Domain Logic

@@ -1,7 +1,6 @@
 ---
 name: project-context
-description: Summary of the purpose, architecture, and structure of the SecInterp project.
-trigger: when starting new tasks, requesting summaries, or explaining the plugin architecture.
+description: Summary of the purpose, architecture, and structure of the SecInterp project. Use when starting new tasks, requesting summaries, or explaining the plugin architecture.
 ---
 
 # SecInterp Project Context

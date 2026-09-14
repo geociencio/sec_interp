@@ -1,7 +1,6 @@
 ---
 name: release-management
-description: Standards for the QGIS plugin release process with quality validation.
-trigger: when preparing releases, updating versions, or using the /release-plugin workflow.
+description: Standards for the QGIS plugin release process with quality validation. Use when preparing releases, updating versions, or using the /release-plugin workflow.
 ---
 
 # Release Management (Full Version)
@@ -58,7 +57,7 @@ Controls the plugin's version lifecycle, ensuring that each delivery meets the s
 3. **Release Notes**: Generate detailed release notes in `docs/releases/RELEASE_NOTES_vX.Y.Z.md`.
 
 ### Phase 3: Technical Verification
-1. Achieve 642+ passing tests.
+1. Achieve 640+ passing tests.
 2. Run `make docker-test` for an isolated environment.
 3. Update `AI_CONTEXT.md` via `uv run ai-ctx analyze`.
 
@@ -92,4 +91,4 @@ Published Artifacts: `sec_interp.X.Y.Z.zip`
 - [ ] Have all version references been updated?
 - [ ] Has the ZIP file been verified (no technical garbage)?
 - [ ] Have Git Tagging rules been followed?
-- [ ] Did the 642+ tests pass successfully?
+- [ ] Did the 640+ tests pass successfully?

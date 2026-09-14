@@ -1,7 +1,6 @@
 ---
 name: changelog-generator
-description: Automatically creates user-facing changelogs from git commits by analyzing commit history, categorizing changes, and transforming technical commits into clear, customer-friendly release notes. Turns hours of manual changelog writing into minutes of automated generation.
-trigger: when preparing release notes, updating CHANGELOG.md, or using the /release-plugin, /close-session, or /close-phase workflows.
+description: Automatically creates user-facing changelogs from git commits by analyzing commit history, categorizing changes, and transforming technical commits into clear, customer-friendly release notes. Turns hours of manual changelog writing into minutes of automated generation. Use when preparing release notes, updating CHANGELOG.md, or using the /release-plugin, /close-session, or /close-phase workflows.
 ---
 
 # Changelog Generator

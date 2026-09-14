@@ -1,7 +1,6 @@
 ---
 name: ui-framework
-description: Standards for the custom SecInterp interface, focused on programmatic creation and premium aesthetics.
-trigger: when modifying or creating GUI widgets, layouts, or CSS styles.
+description: Standards for the custom SecInterp interface, focused on programmatic creation and premium aesthetics. Use when modifying or creating GUI widgets, layouts, or CSS styles.
 ---
 
 # UI and UX Framework
