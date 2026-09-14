@@ -37,7 +37,7 @@ For standard unit tests, use the `run-tests.md` workflow instead (faster, better
 
 4. Open the test runner script:
    ```
-   scripts/run_tests_in_qgis.py
+   scripts/run_in_qgis.py
    ```
 
 5. Click the **Run Script** button (Play icon ▶️).
@@ -69,7 +69,7 @@ Ran 642 tests in Y.ZZZs
 For automated testing without GUI:
 
 ```bash
-qgis --nologo --code scripts/run_tests_in_qgis.py
+qgis --nologo --code scripts/run_in_qgis.py --suite integration
 ```
 
 **Note**: Requires proper QGIS installation and may need Xvfb on Linux.

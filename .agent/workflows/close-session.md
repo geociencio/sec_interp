@@ -90,13 +90,13 @@ This updates `agent_metrics.json` with live scores from qgis-analyzer + check_cc
 
 🤖 **Agent Action (Metric Validation — CRITICAL)**: Verify that all .agent/ documentation files are consistent with the ground truth.
 ```bash
-uv run python scripts/validate_agent_metrics.py
+uv run python scripts/sync_metrics.py --validate
 ```
 This scans all .agent/ files for stale metric references (test counts, quality scores, CC thresholds) and reports any drift from `agent_metrics.json`. Fix any reported inconsistencies before proceeding.
 
 *   Run `uv run python scripts/memory_prune.py` to auto-prune old consolidated lessons.
 *   Run `uv run python scripts/lesson_extractor.py --since HEAD~1 --propose` to generate candidate lessons from session diff.
-*   Generate metrics report: `uv run python scripts/metrics_report.py`.
+*   Generate metrics report: `uv run python scripts/sync_metrics.py --report`.
 *   Generate session index: `uv run python scripts/session_index.py --recent 5` to refresh the chronological log summary.
 
 🤖 **Agent Action**: Update AI_CONTEXT.md and validate that next_steps.md is clear.

@@ -1,6 +1,6 @@
-# Workflow Index — CodeWhale Runtime
+# Workflow Quick Reference
 
-> Maps each `.agent/workflows/*.md` to concrete CodeWhale actions.
+> Maps each `.agent/workflows/*.md` to concrete actions.
 > For humans: "I want to run X, what do I tell the agent?"
 > For agents: "User said /X, what do I actually do?"
 
@@ -27,7 +27,7 @@ uv sync
 uv run python scripts/sync_metrics.py --close-session --topic [name]
 # Update AGENT_LESSONS.md with 3 lessons
 uv run python scripts/memory_prune.py
-uv run python scripts/metrics_report.py
+uv run python scripts/sync_metrics.py --report
 # Update next_steps.md
 git add . && git commit -m "chore(docs): close session [topic]"
 ```
@@ -100,7 +100,7 @@ git add . && git commit -m "[msg]"
 uv run python scripts/check_cc.py
 uv run python scripts/verify_i18n_hygiene.py
 uv run python scripts/validate_agent_system.py
-uv run python scripts/workflow_graph.py --validate
+uv run python scripts/validate_agent_system.py --graph
 ```
 
 ---
@@ -114,9 +114,9 @@ uv run python scripts/workflow_graph.py --validate
 | CC validation | `uv run python scripts/check_cc.py` |
 | i18n hygiene | `uv run python scripts/verify_i18n_hygiene.py` |
 | Memory prune | `uv run python scripts/memory_prune.py` |
-| Metrics report | `uv run python scripts/metrics_report.py` |
+| Metrics report | `uv run python scripts/sync_metrics.py --report` |
 | Agent system validation | `uv run python scripts/validate_agent_system.py` |
-| Workflow graph validation | `uv run python scripts/workflow_graph.py --validate` |
+| Workflow graph validation | `uv run python scripts/validate_agent_system.py --graph` |
 
 ---
 

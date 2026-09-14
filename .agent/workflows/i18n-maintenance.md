@@ -16,7 +16,7 @@ This workflow ensures that translations are synchronized with the code and expan
    Run `./scripts/update-strings.sh "<locales>"` to extract the latest strings from the source code.
 
 2. **Validate Untranslated Strings**:
-   Run `python3 scripts/i18n_diagnostic.py` to see which files have the most pending strings.
+   Run `uv run qgis-analyzer analyze i18n .` to see which files have the most pending strings.
 
 3. **Update Master Data (JSON)**:
    - If it's a new language: Create `scripts/i18n/master_data/<lang>.json`.

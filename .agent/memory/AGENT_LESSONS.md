@@ -32,8 +32,8 @@ lessons:
       stale (2026-05-23) and i18n_issues_qgis_analyzer (254) contradicting
       issue_breakdown.MISSING_I18N (72). Partial field updates silently recreate drift.
     action: Every metric sync must also refresh i18n_issues_qgis_analyzer and rotate
-      last_session into history (sync_metrics.py --close-session). validate_agent_metrics.py
-      now checks internal consistency to catch this class of drift.
+      last_session into history (sync_metrics.py --close-session). sync_metrics.py
+      --validate now checks internal consistency to catch this class of drift.
   - date: '2026-09-12'
     category: TOOLING
     topic: Verify YAML Frontmatter After Bulk Edits
@@ -41,7 +41,7 @@ lessons:
       13 workflows merged the closing --- with the last frontmatter line, silently
       corrupting YAML.
     action: After any mechanical multi-file edit, re-parse frontmatter (or run
-      validate_agent_system.py / workflow_graph.py --validate) before committing.
+      validate_agent_system.py --graph) before committing.
   - date: '2026-09-12'
     category: AGENTIC_SYSTEM
     topic: Single Source of Truth for Workflow Tables

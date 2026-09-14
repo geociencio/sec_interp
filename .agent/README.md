@@ -12,7 +12,7 @@ SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simp
 1.  **Semantic Context Injection**: No more token bloat. The root `AGENTS.md` skills table lists each skill with a "when to use" description; the agent reads only the relevant `SKILL.md` files on demand.
 2.  **Autonomous Memory Pruning**: The `memory_prune.py` utility automatically maintains the lesson log, moving consolidated knowledge to long-term archives.
 3.  **Zero-Regression Quality Gates**: A mandatory `pre-push` hook enforces Cyclomatic Complexity (CC <= 10) and quality standards before any code reaches the repository.
-4.  **Observability Engine**: `metrics_report.py` provides visual Markdown trends of the agent's effectiveness and technical debt evolution.
+4.  **Observability Engine**: `sync_metrics.py --report` provides visual Markdown trends of the agent's effectiveness and technical debt evolution.
 5.  **Unified Metric Sync**: `sync_metrics.py` runs all quality gates (qgis-analyzer + check_cc + verify_i18n) and writes a single coherent snapshot to `agent_metrics.json`.
 
 ---
@@ -35,7 +35,7 @@ SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simp
 │   ├── qgis-core/          # PyQGIS and async tasks expertise
 │   └── ... (see QUICK_REFERENCE.md)
 ├── workflows/              # 🔄 Standardized operational procedures (15)
-│   ├── index.md            # CodeWhale runtime quick reference
+│   ├── index.md            # Workflow quick reference
 │   ├── start-session.md    # Initializing with context
 │   ├── close-session.md    # Closing with metric sync + memory prune
 │   └── ... (see QUICK_REFERENCE.md)
@@ -58,7 +58,7 @@ Full session summaries are stored in **`docs/maintenance/`** with the naming con
 
 ### Observability Tools:
 -   **`uv run python scripts/sync_metrics.py`**: Unified ground-truth extraction (qgis-analyzer + CC + i18n)
--   **`uv run python scripts/metrics_report.py`**: Generates a Markdown performance report.
+-   **`uv run python scripts/sync_metrics.py --report`**: Generates a Markdown performance report.
 -   **`uv run python scripts/memory_prune.py`**: Prunes old consolidated lessons.
 -   **`uv run python scripts/check_cc.py`**: Validates complexity thresholds.
 -   **`uv run python scripts/verify_i18n_hygiene.py`**: AST-based i18n hygiene scanner.
@@ -80,7 +80,7 @@ Use `/create-commit`. The system will validate your message, check the quality m
 Always use `/close-session`. This runs `sync_metrics.py`, updates `AGENT_LESSONS.md`, prunes memory, generates metrics report, updates `next_steps.md`, and commits.
 
 ### Runtime Adaptation
-This system was designed for Antigravity/Gemini but is fully operational in CodeWhale/DeepSeek V4. See **`.codewhale/instructions.md`** for the runtime bridge and **`workflows/index.md`** for workflow quick reference.
+This system is runtime-agnostic and currently operates under opencode. See **`workflows/index.md`** for the workflow quick reference.
 
 ---
 
@@ -116,7 +116,7 @@ Multiple analyzers produce overlapping numbers. To avoid metric staleness, each 
 | Cyclomatic Complexity | `scripts/check_cc.py` (max CC ≤ 10) | `agent_metrics.json` → `cyclomatic_complexity_gate` |
 | i18n AST hygiene | `scripts/verify_i18n_hygiene.py` | `agent_metrics.json` → `i18n_hygiene_gate` |
 | i18n analyzer scope | `qgis-analyzer` MISSING_I18N | `agent_metrics.json` → `i18n_issues_qgis_analyzer` |
-| Test count | `make docker-test` → `update_testing_status.py` | `agent_metrics.json` → `tests_ok` |
+| Test count | `make docker-test` → `sync_metrics.py --testing-status` | `agent_metrics.json` → `tests_ok` |
 | Type hints / Docstrings | `qgis-analyzer` research metrics | `agent_metrics.json` summary |
 
 > `ai-ctx` (`AI_CONTEXT.md`, `PROJECT_SUMMARY.md`) measures a **different** "quality score" (aggregate heuristic) and is **not** canonical. Ignore it when reporting project metrics.

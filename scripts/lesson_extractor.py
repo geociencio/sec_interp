@@ -128,7 +128,7 @@ def propose_lessons(signals: list[dict], diff_text: str) -> list[dict]:
             "topic": "New automation scripts added",
             "lesson": "New scripts were created to extend the agentic system. "
                        "Document their purpose in QUICK_REFERENCE.md and add to relevant workflows.",
-            "action": "Run `uv run python scripts/workflow_graph.py --validate` to confirm integration.",
+            "action": "Run `uv run python scripts/validate_agent_system.py --graph` to confirm integration.",
         })
 
     # Propose based on metric corrections
@@ -138,9 +138,9 @@ def propose_lessons(signals: list[dict], diff_text: str) -> list[dict]:
             "category": "AGENTIC_SYSTEM",
             "topic": "Metric drift detected and corrected",
             "lesson": "Stale metric references (test counts, quality scores) were found across "
-                       "multiple .agent/ files. Always run `validate_agent_metrics.py` at session "
+                       "multiple .agent/ files. Always run `sync_metrics.py --validate` at session "
                        "start/close to catch drift early.",
-            "action": "Run `uv run python scripts/validate_agent_metrics.py` in /start-session and /close-session.",
+            "action": "Run `uv run python scripts/sync_metrics.py --validate` in /start-session and /close-session.",
         })
 
     # Propose based on i18n patterns

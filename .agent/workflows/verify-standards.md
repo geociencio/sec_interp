@@ -27,18 +27,18 @@ Review each file in `.agent/workflows/` looking for:
 2.  **Structure**: Numbered steps and use of `// turbo` where applicable.
 3.  **Expected Result**: Presence of success metrics at the end of the document.
 
-## 3. Structural Validation (Gen 7)
+## 3. Structural Validation (Gen 8)
 
-Verify the integrity of the `.agent/` system: YAML frontmatter, skill/script references, and workflow dependency graph.
+Verify the integrity of the `.agent/` system: YAML frontmatter, skill/script references, workflow dependency graph, and skill-conflict detection.
 
 // turbo
 ```bash
 uv run python scripts/validate_agent_system.py
-uv run python scripts/workflow_graph.py --validate
-uv run python scripts/check_skill_conflicts.py
+uv run python scripts/validate_agent_system.py --graph
+uv run python scripts/validate_agent_system.py --conflicts
 ```
 
-🤖 **Agent Action**: `workflow_graph.py --validate` exits with code 1 if any workflow references a missing skill or script. `check_skill_conflicts.py` reports skills that share the same trigger (potential contradictory guidance). Fix any broken reference or conflict before proceeding.
+🤖 **Agent Action**: `--graph` exits with code 1 if any workflow references a missing skill or script. `--conflicts` reports skills that share the same trigger (potential contradictory guidance). Fix any broken reference or conflict before proceeding.
 
 ## Expected Result
 - Detailed report of deviations from the standard.

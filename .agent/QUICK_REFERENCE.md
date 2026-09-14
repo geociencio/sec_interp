@@ -75,15 +75,14 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 | Script | Purpose | Command |
 |:-------|:--------|:--------|
 | **Memory Pruning** | Auto-prune consolidated lessons | `uv run python scripts/memory_prune.py` |
-| **Metrics Report** | Markdown trend report | `uv run python scripts/metrics_report.py` |
+| **Metrics Report** | Markdown trend report | `uv run python scripts/sync_metrics.py --report` |
 | **CC Checker** | Validate complexity thresholds | `uv run python scripts/check_cc.py` |
 | **Metrics Sync** | Unified ground-truth metric extraction | `uv run python scripts/sync_metrics.py` |
-| **Metric Validator** | Cross-file consistency check | `uv run python scripts/validate_agent_metrics.py` |
-| **Workflow Graph** | Dependency graph & ref validator | `uv run python scripts/workflow_graph.py` |
-| **Metrics Trends** | Trend report with ASCII sparklines | `uv run python scripts/metrics_report.py` |
+| **Metric Validator** | Cross-file consistency check | `uv run python scripts/sync_metrics.py --validate` |
+| **Workflow Graph** | Dependency graph & ref validator | `uv run python scripts/validate_agent_system.py --graph` |
+| **Metrics Trends** | Trend report with ASCII sparklines | `uv run python scripts/sync_metrics.py --report` |
 | **Lesson Extractor** | Auto-propose AGENT_LESSONS candidates | `uv run python scripts/lesson_extractor.py --propose` |
 | **Session Index** | Chronological index of maintenance logs | `uv run python scripts/session_index.py` |
-| **Workflow Executor** | Runtime-agnostic workflow translator | `uv run python scripts/workflow_executor.py <name>` |
 | **System Validator** | Validate .agent/ structure integrity | `uv run python scripts/validate_agent_system.py` |
 
 ---
@@ -117,7 +116,7 @@ The system includes a mandatory `.git/hooks/pre-push` gate that blocks any push 
 
 ### Run Metrics Report
 ```bash
-uv run python scripts/metrics_report.py
+uv run python scripts/sync_metrics.py --report
 ```
 
 ---
@@ -126,7 +125,6 @@ uv run python scripts/metrics_report.py
 
 - [.agent/README.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/README.md) - **Full System Documentation**
 - [AGENTS.md](file:///home/jmbernales/qgispluginsdev/sec_interp/AGENTS.md) - Canonical agents and skills definition
-- [.codewhale/instructions.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.codewhale/instructions.md) - **CodeWhale Runtime Bridge**
 - [workflows/index.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/index.md) - **Workflow Quick Reference**
 - [DEVELOPMENT_LOG.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/DEVELOPMENT_LOG.md) - Project history
 

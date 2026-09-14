@@ -11,28 +11,20 @@ Wired into workflows (`.agent/workflows/`), the Makefile, or the pre-push hook.
 | `check_cc.py` | Cyclomatic complexity gate (CC ≤ 10) | pre-push hook, `/refactor-code`, `/release-plugin` |
 | `verify_i18n_hygiene.py` | AST-based i18n hygiene gate (`self.tr()` wrapping) | `/i18n-maintenance`, `/verify-standards` |
 | `security_scan.py` | Security scan (Bandit + detect-secrets + Flake8) | `make release` |
-| `sync_metrics.py` | Unified metric extraction → `agent_metrics.json` | `/start-session`, `/close-session` |
-| `validate_agent_metrics.py` | Cross-file + internal metric consistency validator | `/start-session`, `/close-session` |
+| `sync_metrics.py` | Unified metrics CLI: sync, `--report`, `--validate`, `--testing-status` | `/start-session`, `/close-session`, `/release-plugin` |
 | `memory_prune.py` | Prune consolidated lessons + next_steps snapshots (90 days) | `/close-session` |
-| `metrics_report.py` | Markdown trend report from `agent_metrics.json` | `/release-plugin` |
-| `update_testing_status.py` | Update `TESTING_STATUS.md` test counts | `make docker-test` |
-| `run_tests_in_qgis.py` | Integration test runner inside real QGIS | `/run-tests-in-qgis` |
+| `run_in_qgis.py` | In-process test runner for `integration` / `benchmarks` suites | `/run-tests-in-qgis` |
 
-## Agentic System Tooling (Gen 7)
+## Agentic System Tooling (Gen 8)
 
 Special-purpose utilities, some wired into workflows, others invoked manually or by other scripts.
 
 | Script | Purpose | Wired via |
 | :--- | :--- | :--- |
-| `validate_agent_system.py` | Validate `.agent/` structure (frontmatter, skill/script references) | `/verify-standards` |
-| `workflow_graph.py` | Dependency graph + broken-reference detector for workflows | `/verify-standards` |
-| `check_skill_conflicts.py` | Detect overlapping/duplicate skill triggers and metadata | `/verify-standards` |
-| `workflow_executor.py` | Runtime-agnostic workflow translator (antigravity/codewhale) | manual |
+| `validate_agent_system.py` | Validate `.agent/` structure, workflow dependency graph (`--graph`), and skill-conflict detection (`--conflicts`) | `/verify-standards` |
 | `session_index.py` | Chronological index of `docs/maintenance/` session logs | `/close-session` |
 | `lesson_extractor.py` | Propose `AGENT_LESSONS.md` candidates from a session | `/close-session` |
 | `mcp_server.py` | Lightweight MCP server for skill orchestration (see `tests/mcp/`) | manual |
-| `run_benchmarks.py` | In-process benchmarks (run via `qgis --code`) | manual |
-| `i18n_diagnostic.py` | Diagnostic for i18n analyzer scope (false positives) | `/i18n-maintenance` |
 
 ## Subdirectories
 
@@ -40,6 +32,16 @@ Special-purpose utilities, some wired into workflows, others invoked manually or
 | :--- | :--- |
 | `scripts/i18n/` | Translation pipeline: `apply_full.py`, `update_metadata_languages.py`, `translate_docs.py`, `master_data/` |
 | `scripts/research/` | Plugin statistics fetcher (`fetch_stats.py`) |
+
+## Shell Scripts
+
+| Script | Purpose |
+| :--- | :--- |
+| `update-strings.sh` | Extract strings from source into `.ts` files (`pylupdate5`) |
+| `build_docs.sh` | Build Sphinx documentation |
+| `package-for-qgis.sh` | Package the plugin for distribution |
+| `setup_venv.sh` | Bootstrap the virtual environment |
+| `fix-ui-syntax.sh` | Repair UI syntax issues |
 
 ## Tests
 

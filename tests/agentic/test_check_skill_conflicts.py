@@ -1,4 +1,4 @@
-"""Unit tests for check_skill_conflicts.py."""
+"""Unit tests for the skill-conflict detector (now in validate_agent_system.py)."""
 
 import sys
 import unittest
@@ -7,7 +7,7 @@ from pathlib import Path
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-import check_skill_conflicts as csc  # noqa: E402
+import validate_agent_system as csc  # noqa: E402
 
 
 def _skill(name, description="a description", trigger="a trigger"):

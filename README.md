@@ -37,7 +37,7 @@
 - **Decluttered Workspace**: Grouped the preview action buttons, LOD controls, and layer checkboxes into a collapsible `QgsCollapsibleGroupBox("Controls")`, keeping the map canvas and status bar always visible for a cleaner interpretation experience.
 
 ### 📦 Cleaner Packaging
-- **Lean Distribution**: Excluded AI/agent tooling directories (`.codewhale`, `.continue`, `.deepseek`, `artifacts`) from the distributable ZIP, ensuring a plugin-only package.
+- **Lean Distribution**: Excluded AI/agent tooling directories (`.agent`, `.opencode`, `.continue`, `.deepseek`, `artifacts`) from the distributable ZIP, ensuring a plugin-only package.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 

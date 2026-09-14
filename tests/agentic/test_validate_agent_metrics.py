@@ -1,4 +1,4 @@
-"""Unit tests for validate_agent_metrics.py internal-consistency checks."""
+"""Unit tests for the metrics-consistency checks (now in sync_metrics.py)."""
 
 import json
 import sys
@@ -9,7 +9,7 @@ from pathlib import Path
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-import validate_agent_metrics as vam  # noqa: E402
+import sync_metrics as vam  # noqa: E402
 
 
 class TestInternalConsistencyHelpers(unittest.TestCase):

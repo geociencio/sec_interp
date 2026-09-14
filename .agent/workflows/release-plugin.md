@@ -24,7 +24,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 1. **Operational Audit**:
    // turbo
    ```bash
-   uv run python scripts/metrics_report.py
+   uv run python scripts/sync_metrics.py --report
    uv run python scripts/check_cc.py
    ```
    🤖 **Agent Action**: Verify CC <= 10 and 100% docstring/return-type coverage.

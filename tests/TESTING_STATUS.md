@@ -13,7 +13,7 @@
 
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
-| **Agentic Tooling** | <!-- AGENT_COUNT -->25<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
+| **Agentic Tooling** | <!-- AGENT_COUNT -->22<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->287<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->218<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |

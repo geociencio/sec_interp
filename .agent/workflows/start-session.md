@@ -54,7 +54,7 @@ Before starting work, verify that all .agent/ documentation files are consistent
 
 // turbo
 ```bash
-uv run python scripts/sync_metrics.py --quiet && uv run python scripts/validate_agent_metrics.py
+uv run python scripts/sync_metrics.py --quiet && uv run python scripts/sync_metrics.py --validate
 ```
 
 🤖 **Agent Action**: If the validator reports inconsistencies, fix them before proceeding. Stale metrics in documentation lead to incorrect decisions.
