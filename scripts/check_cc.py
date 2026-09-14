@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 # Configuration
-CONTEXT_FILE = Path("json/project_context.json")
+CONTEXT_FILE = Path("analysis_results/project_context.json")
 DEFAULT_CC_THRESHOLD = 10
 
 
