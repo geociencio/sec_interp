@@ -5,6 +5,12 @@
 __pycache__/
 *.py[cod]
 
+# Type-checker and test caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
 # Distribution / packaging
 dist/
 build/
@@ -19,9 +25,41 @@ AI_CONTEXT.md
 PROJECT_SUMMARY.md
 project_context.json
 analysis_results/
+analysis_results_final/
+analysis_results_linting/
+analysis_results_v320/
+final_analysis/
+final_standard_analysis/
+quality_report/
+quality_report_debug/
+artifacts/
+json/
+bandit_report.json
+flake8_report.json
+gui_analysis.json
+gui_coverage_final.txt
+gui_coverage_report.txt
+quality_report.txt
+quality_details.json
+report.md
+latest_quality_report.md
+detailed_report.json
+missing_tests.txt
+test_coverage_analysis.txt
+core_files.txt
+test_files.txt
+dummy.qml
+test_patch.py
+symbology-style.db
+
 # Logs
 logs/
 *.log
+
+# IDE configurations
+.idea/
+.vscode/
+.continue/
 
 # Documentation
 docs/build/
