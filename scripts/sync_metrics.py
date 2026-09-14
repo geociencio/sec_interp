@@ -35,6 +35,10 @@ CC_SCRIPT = PROJECT_ROOT / "scripts" / "check_cc.py"
 I18N_SCRIPT = PROJECT_ROOT / "scripts" / "verify_i18n_hygiene.py"
 ANALYZER_RESULTS = PROJECT_ROOT / "analysis_results" / "project_context.json"
 
+# ── Thresholds (single source of truth — consumed by sync_metrics.py) ─────
+CC_THRESHOLD = 10
+MODULE_SIZE_LIMIT = 400
+
 
 def run_qgis_analyzer() -> dict:
     """Run qgis-analyzer and extract scores + issue counts."""
@@ -136,7 +140,7 @@ def run_check_cc() -> dict:
     """Run the CC gate script."""
     try:
         result = subprocess.run(
-            ["uv", "run", "python", str(CC_SCRIPT)],
+            ["uv", "run", "python", str(CC_SCRIPT), "--threshold", str(CC_THRESHOLD)],
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
@@ -186,7 +190,7 @@ def check_module_sizes() -> dict:
     for mod in modules:
         path = mod.get("path", "?")
         lines = mod.get("lines", mod.get("total_lines", 0))
-        if lines > 400:
+        if lines > MODULE_SIZE_LIMIT:
             large_modules.append({"path": path, "lines": lines})
 
     return {
@@ -232,7 +236,7 @@ def update_metrics_json(metrics: dict) -> bool:
     if module_sizes:
         summary["module_size_gate"] = (
             "PASS" if module_sizes.get("passed") else
-            f"FAIL ({module_sizes.get('count', 0)} modules > 400 lines)"
+            f"FAIL ({module_sizes.get('count', 0)} modules > {MODULE_SIZE_LIMIT} lines)"
         )
         large = module_sizes.get("large_modules", [])
         if large:
@@ -395,7 +399,7 @@ def sync_main():
         print(f"🌐 i18n (AST):   {'✅ PASS' if i18n.get('passed') else '❌ FAIL'}")
         size_passed = module_sizes.get("passed")
         if size_passed is False:
-            print(f"📦 Module Size:  ⚠️ {module_sizes.get('count', 0)} modules > 400 lines")
+            print(f"📦 Module Size:  ⚠️ {module_sizes.get('count', 0)} modules > {MODULE_SIZE_LIMIT} lines")
             for m in module_sizes.get("large_modules", []):
                 print(f"   {m['path']}: {m['lines']} lines")
         elif size_passed is True:
@@ -701,8 +705,8 @@ def load_ground_truth() -> dict:
     truth["maintainability_score"] = summary.get("maintainability_score")
     truth["security_score"] = summary.get("security_score")
 
-    # CC gate: always 10 in this project
-    truth["cc_threshold"] = 10
+    # CC gate threshold: single source of truth in CC_THRESHOLD
+    truth["cc_threshold"] = CC_THRESHOLD
 
     return truth
 

@@ -4,7 +4,11 @@
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent/memory/memory_policy.md",
         "last_updated": "2026-09-13",
-        "last_updated_by": "close-phase v3.7.0 metric reconciliation"
+        "last_updated_by": "close-phase v3.7.0 metric reconciliation",
+        "tools": {
+            "qgis-plugin-analyzer": "1.13.2",
+            "ai-context-core": "3.3.0"
+        }
     },
     "summary": {
         "total_sessions": 18,
