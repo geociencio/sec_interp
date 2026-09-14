@@ -1,8 +1,7 @@
 ---
 description: Perform a full or partial plugin audit using qgis-plugin-analyzer v1.9.0+.
-agent: Agent Auditor
+agent: auditor
 skills: [project-context, coding-standards, i18n-standards]
-runtimes: [antigravity, codewhale]
 ---
 
 # Workflow: Plugin Audit

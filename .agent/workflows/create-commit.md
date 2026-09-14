@@ -1,8 +1,7 @@
 ---
 description: How to commit changes cleanly (handling hooks)
-agent: QA Engineer
+agent: qa_engineer
 skills: [qa-docker, commit-standards, agentic-memory]
-runtimes: [antigravity, codewhale]
 validation: |
   - Verify that ruff and black pass without errors
   - Confirm that ai-ctx analyze runs successfully

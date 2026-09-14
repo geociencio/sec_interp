@@ -1,8 +1,7 @@
 ---
 description: Guided workflow for code refactoring with complexity validation
-agent: Senior Architect
+agent: architect
 skills: [coding-standards, ui-framework, qa-docker]
-runtimes: [antigravity, codewhale]
 validation: |
   - Verify that cyclomatic complexity decreased (CC <= 10)
   - Confirm that tests still pass after refactoring

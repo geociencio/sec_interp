@@ -1,8 +1,7 @@
 ---
 description: Formal procedure for closing a major development phase
-agent: Senior Architect
+agent: architect
 skills: [qgis-core, qa-docker, changelog-generator]
-runtimes: [antigravity, codewhale]
 validation: |
   - Verify that 642 tests pass in Docker
   - Confirm that closure document is complete

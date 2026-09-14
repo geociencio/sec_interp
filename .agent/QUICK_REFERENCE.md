@@ -37,36 +37,36 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/start-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-session.md) | Senior Architect | qgis-core, qa-docker | Start session with semantic skill injection |
-| [/create-commit](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/create-commit.md) | QA Engineer | qa-docker, commit-standards | Commit with quality validation |
-| [/run-tests](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests.md) | QA Engineer | qa-docker | Run tests with intelligent interpretation |
-| [/close-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-session.md) | QA Engineer | qa-docker, commit-standards | Close session with auto-metrics and pruning |
+| [/start-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-session.md) | architect | qgis-core, qa-docker | Start session with semantic skill injection |
+| [/create-commit](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/create-commit.md) | qa_engineer | qa-docker, commit-standards | Commit with quality validation |
+| [/run-tests](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests.md) | qa_engineer | qa-docker | Run tests with intelligent interpretation |
+| [/close-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-session.md) | qa_engineer | qa-docker, commit-standards | Close session with auto-metrics and pruning |
 
 ### Refactoring and Quality
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/refactor-code](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/refactor-code.md) | Senior Architect | qgis-core, geological-logic | Refactor code with CC validation |
-| [/run-tests-in-qgis](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests-in-qgis.md) | QA Engineer | qa-docker | Integration tests in real QGIS |
-| [/audit-plugin](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/audit-plugin.md) | Agent Auditor | project-context, i18n-standards | Full quality and security audit |
-| [/fix-linting](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/fix-linting.md) | QA Engineer | coding-standards | Automatically fix style issues |
+| [/refactor-code](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/refactor-code.md) | architect | qgis-core, geological-logic | Refactor code with CC validation |
+| [/run-tests-in-qgis](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests-in-qgis.md) | qa_engineer | qa-docker | Integration tests in real QGIS |
+| [/audit-plugin](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/audit-plugin.md) | auditor | project-context, i18n-standards | Full quality and security audit |
+| [/fix-linting](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/fix-linting.md) | qa_engineer | coding-standards | Automatically fix style issues |
 
 ### Features and i18n
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/build-feature](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/build-feature.md) | Architect | qgis-core, qa-docker | Autonomous pipeline for new features |
-| [/i18n-maintenance](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/i18n-maintenance.md) | QA Engineer | i18n-standards | Add or update translations |
+| [/build-feature](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/build-feature.md) | architect | qgis-core, qa-docker | Autonomous pipeline for new features |
+| [/i18n-maintenance](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/i18n-maintenance.md) | qa_engineer | i18n-standards | Add or update translations |
 
 ### Release and Planning
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/release-plugin](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/release-plugin.md) | QA Engineer | release-management | Full release process |
-| [/start-phase](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-phase.md) | Senior Architect | project-context | Start major phase with planning |
-| [/close-phase](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-phase.md) | Senior Architect | project-context | Close phase with metrics and retro |
-| [/ia-critic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/ia-critic.md) | Agent Auditor | project-context | Implementation plan audit |
-| [/verify-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/verify-standards.md) | Senior Architect | coding-standards | Audit agent system consistency |
+| [/release-plugin](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/release-plugin.md) | qa_engineer | release-management | Full release process |
+| [/start-phase](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-phase.md) | architect | project-context | Start major phase with planning |
+| [/close-phase](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-phase.md) | architect | project-context | Close phase with metrics and retro |
+| [/ia-critic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/ia-critic.md) | auditor | project-context | Implementation plan audit |
+| [/verify-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/verify-standards.md) | architect | coding-standards | Audit agent system consistency |
 
 ---
 

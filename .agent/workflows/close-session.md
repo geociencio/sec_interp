@@ -1,8 +1,7 @@
 ---
 description: Procedure to end a work session, update logs, and archive results
-agent: QA Engineer
+agent: qa_engineer
 skills: [qa-docker, commit-standards, agentic-memory, documentation-standards, changelog-generator]
-runtimes: [antigravity, codewhale]
 stop_conditions:
   - "Tests fail during final verification → report failures, do NOT commit, escalate to user"
   - "Pre-commit hook fails 3+ times on same file → skip that file, report issue"

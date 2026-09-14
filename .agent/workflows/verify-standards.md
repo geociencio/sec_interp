@@ -1,8 +1,7 @@
 ---
 description: Audits the consistency of the agentic system (Skills and Workflows) against the master standard.
-agent: Senior Architect
+agent: architect
 skills: [coding-standards, commit-standards, documentation-standards]
-runtimes: [antigravity, codewhale]
 validation:
   - Do all Skills have a Quality Checklist?
   - Is all Skill and Workflow documentation in English?

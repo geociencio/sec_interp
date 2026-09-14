@@ -1,8 +1,7 @@
 ---
 description: How to run tests inside QGIS (integration testing)
-agent: QA Engineer
+agent: qa_engineer
 skills: [qa-docker]
-runtimes: [antigravity, codewhale]
 validation: |
   - Verify that QGIS is installed correctly
   - Confirm that tests are discovered and executed

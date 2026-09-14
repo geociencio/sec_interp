@@ -1,8 +1,7 @@
 ---
 description: How to run unit tests reliably
-agent: QA Engineer
+agent: qa_engineer
 skills: [qa-docker]
-runtimes: [antigravity, codewhale]
 validation: |
   - Verify that all tests pass (642 tests OK)
   - Confirm that there are no mocking errors

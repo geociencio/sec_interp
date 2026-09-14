@@ -1,8 +1,7 @@
 ---
 description: Unified Release Workflow (QGIS Release Flow) - Generation 6 Standard
-agent: QA Engineer
+agent: qa_engineer
 skills: [release-management, qa-docker, commit-standards, i18n-standards, changelog-generator]
-runtimes: [antigravity, codewhale]
 stop_conditions:
   - "Any function exceeds CC > 10 → Block release and refactor"
   - "Docstring coverage < 100% → Block release and fix documentation"

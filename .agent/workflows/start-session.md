@@ -1,8 +1,7 @@
 ---
 description: Standard and robust procedure for starting a "Local First" development session
-agent: Senior Architect
+agent: architect
 skills: [qgis-core, qa-docker, agentic-memory]
-runtimes: [antigravity, codewhale]
 validation: |
   - Verify that all tests pass in Docker
   - Confirm that AI_CONTEXT.md is updated with recent metrics

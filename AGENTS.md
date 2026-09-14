@@ -8,7 +8,7 @@ This is the **single source of truth** for agent configuration (roles, skills, a
 
 ## 🧑‍💻 Agent Roles
 
-The agent adopts one of three roles depending on the task. Roles are advisory personas; runtime permission scoping is handled by native subagents (Gen 8 roadmap, Phase D).
+The agent adopts one of three roles depending on the task. Roles are registered as native subagents in `opencode.json` with a permission gradient: `architect` (`edit: allow`), `qa_engineer` (`edit: ask`), `auditor` (`edit: deny`).
 
 ### 🏗️ Senior Architect (@architect)
 - **Role**: Senior Software Architect expert in Python and generic framework architecture.

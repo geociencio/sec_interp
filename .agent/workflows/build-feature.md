@@ -1,8 +1,7 @@
 ---
 description: Start the Autonomous AI Developer Pipeline sequence for a new feature.
-agent: Architect
+agent: architect
 skills: [qgis-core, qa-docker]
-runtimes: [antigravity, codewhale]
 stop_conditions:
   - "Tests fail after 3 consecutive fix attempts → escalate to user"
   - "Architectural conflict detected between Core and GUI layers → stop and request review"
