@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Repository Housekeeping**: Removed generated analyzer/coverage reports, build logs, and stale editor configurations (`.idea/`, `.vscode/`, `.continue/`) from the repository root and expanded `.gitignore` to prevent their re-introduction. No functional impact on the plugin.
+- **Tooling**: Upgraded `qgis-plugin-analyzer` 1.13.2 → 1.14.0 and refreshed static-analysis metrics. The new i18n heuristic reduced `MISSING_I18N` findings from 72 → 2 (remaining two are developer-facing `PerformanceTimer` timing labels). No functional impact on the plugin.
 
 ## [3.7.2] - 2026-09-12
 

@@ -44,6 +44,11 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [ ] Investigar 1 `SPATIAL_INDEX` en `dialog_interpretation_manager.py` <!-- id: 2.3 -->
 - [ ] Resolver `module_size_gate` FAIL (7 módulos > 400 líneas) <!-- id: 2.4 -->
 
+## 🔧 qgis-plugin-analyzer 1.14.0 Upgrade (COMPLETADO 2026-09-14)
+- [x] Bump `qgis-plugin-analyzer` 1.13.2 → 1.14.0 (`pyproject.toml` + `uv.lock`) <!-- id: 10.1 -->
+- [x] Re-run `qgis-analyzer analyze .`; refresh `agent_metrics.json` (i18n 72 → 2, issues 75 → 5) <!-- id: 10.2 -->
+- [x] `sync_metrics --validate` PASS <!-- id: 10.3 -->
+
 ## 🧪 Operational Status
-- **Active Task**: [Gen 8 agentic system evolution] COMPLETED (Phases A–E). Next: Goal 1.1 (symbology) or Fase 1 adaptive VE.
-- **Metrics**: 640/640 tests, Quality 52.3/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n AST PASS, qt6-check PASS.
+- **Active Task**: [qgis-plugin-analyzer 1.14.0 upgrade] COMPLETED. Next: Goal 1.1 (symbology), Fase 1 adaptive VE (1.2), or tech debt 2.1/2.2/2.3.
+- **Metrics**: 640/640 tests, Quality 52.3/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n AST PASS, qt6-check PASS. Analyzer 1.14.0: 5 issues (2 MISSING_I18N FP, 2 NON_PYTHONIC_LOOP, 1 SPATIAL_INDEX).

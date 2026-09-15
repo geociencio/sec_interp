@@ -1,3 +1,13 @@
+## [2026-09-14] Session: qgis-plugin-analyzer 1.14.0 Upgrade
+- **Achievement**: Adopted `qgis-plugin-analyzer` 1.14.0 and refreshed ground-truth metrics in `agent_metrics.json`.
+- **Actions Taken**:
+    - Bumped `qgis-plugin-analyzer` `>=1.13.2` → `>=1.14.0` in `pyproject.toml` (deps + dev group); regenerated `uv.lock`.
+    - Re-ran `qgis-analyzer analyze .` (38 modules). 1.14.0's narrower i18n heuristic cut `MISSING_I18N` 72 → 2 (remaining are `PerformanceTimer` labels) and recomputed type-hint params 94.3% → 90.4%.
+    - Updated `agent_metrics.json` summary + `ground_truth_sources.qgis_analyzer` (total issues 75 → 5); `sync_metrics --validate` PASS.
+- **Operational Metrics**: 640/640 tests (Docker) · Stability 52.3 · Maintainability 99.9 · Security 100.0 · 5 analyzer issues.
+- **Status**: Ready. Remaining debt: 2 `NON_PYTHONIC_LOOP` (2.2), 1 `SPATIAL_INDEX` (2.3), `module_size_gate` FAIL (2.4).
+- **Maintenance**: [session_2026-09-14_qgis_analyzer_1_14_0.md](maintenance/session_2026-09-14_qgis_analyzer_1_14_0.md)
+
 ## [2026-09-13] Session: Root Directory Cleanup
 - **Achievement**: Reclaimed the repository root (~90 MB) from generated artifacts and stale editor configs; untracked 30 files from git and expanded `.gitignore`.
 - **Actions Taken**:

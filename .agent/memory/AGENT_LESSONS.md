@@ -15,6 +15,16 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-14'
+    category: TOOLING
+    topic: Analyzer version bumps shift metrics more than code changes
+    lesson: qgis-plugin-analyzer 1.14.0 cut MISSING_I18N from 72 to 2 (a narrower
+      i18n heuristic) and recomputed type-hint param coverage 94.3 → 90.4 with zero
+      code changes. The `summary` command reads stale cached results and warned
+      about drift until `analyze .` was re-run.
+    action: After any analyzer tool version bump, re-run `analyze .` (never just
+      `summary`) and reconcile agent_metrics.json against the fresh output before
+      trusting metric deltas.
   - date: '2026-09-13'
     category: TOOLING
     topic: detect-secrets baseline goes stale when files are deleted

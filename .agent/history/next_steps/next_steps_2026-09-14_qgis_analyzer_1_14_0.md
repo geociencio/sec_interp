@@ -1,11 +1,4 @@
-# Next Steps - Phase v3.8.0 (Updated 2026-09-14)
-
-## 🔧 Tooling Upgrade 2026-09-14 — qgis-plugin-analyzer 1.14.0
-
-- Bumped `qgis-plugin-analyzer` 1.13.2 → 1.14.0 (`pyproject.toml`, `uv.lock`); re-ran `qgis-analyzer analyze .`.
-- Analyzer metrics refreshed: `MISSING_I18N` 72 → 2 (false positives), total issues 75 → 5, type-hint params 94.3% → 90.4%.
-- Remaining real debt unchanged: 2 `NON_PYTHONIC_LOOP` (2.2), 1 `SPATIAL_INDEX` (2.3), `module_size_gate` FAIL (2.4).
-- **Reference**: `docs/maintenance/session_2026-09-14_qgis_analyzer_1_14_0.md`
+# Next Steps - Phase v3.8.0 (Updated 2026-09-13)
 
 ## 🎯 Phase v3.8.0 Goals
 
