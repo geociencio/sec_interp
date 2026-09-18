@@ -65,18 +65,23 @@ The `i18n/sec_interp.pro` file controls which files are scanned.
 The `qgis-plugin-ci` tool may report false positives for "Partial Translation" if it detects docstrings as translatable strings.
 *   **Rule**: If real UI coverage is 100%, warnings about untranslated docstrings or internal classes can be ignored.
 
-### 3.4. Dual-Scope i18n Checking (Gen 6+)
-SecInterp uses **two complementary i18n tools** with different scopes:
+### 3.4. i18n Checking (Gen 8+)
+SecInterp enforces i18n hygiene through a **single AST-based rule** in qgis-plugin-analyzer:
 
 | Tool | Method | Scope | False Positives |
 |------|--------|-------|-----------------|
-| `verify_i18n_hygiene.py` | AST parsing | Validates `self.tr()` wrapping in GUI files | Near-zero |
-| `qgis-analyzer i18n` | Heuristic string detection | Detects *any* user-facing string without translation context | Higher (flags format strings, CSS, etc.) |
+| `qgis-analyzer` `MISSING_I18N` | AST parsing | Detects hardcoded user-facing strings not wrapped in `tr()`/`translate()` | Near-zero (config-driven) |
 
-**Key distinction**: A `PASS` on `verify_i18n_hygiene.py` (0 violations) does **not** mean 0 `MISSING_I18N` on `qgis-analyzer`. The AST checker validates that translatable strings are *wrapped*; the analyzer detects strings that may need translation regardless of wrapping. Both metrics must be tracked separately in `agent_metrics.json`.
+The former `verify_i18n_hygiene.py` script was retired; its AST logic was ported
+into the analyzer's `MISSING_I18N` rule (`visitors/i18n_visitor.py`). Project-specific
+exclusions are configured in `pyproject.toml` under
+`[tool.qgis-analyzer.profiles.default.rules.MISSING_I18N]` (e.g.
+`extra_ignore_calls = ["PerformanceTimer"]`).
 
-*   **AST checker target**: 0 violations (blocking gate)
-*   **qgis-analyzer i18n target**: Triage false positives, reduce true violations to < 20
+**Key distinction**: `MISSING_I18N` detects strings that may need translation.
+Inline `# no-i18n` / `# noqa` tags exclude developer-facing strings.
+
+*   **Target**: 0 `MISSING_I18N` (blocking gate via `qgis-analyzer analyze .`).
 
 ## 4. Directory Structure
 

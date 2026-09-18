@@ -76,7 +76,7 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 |:-------|:--------|:--------|
 | **Memory Pruning** | Auto-prune consolidated lessons | `uv run python scripts/memory_prune.py` |
 | **Metrics Report** | Markdown trend report | `uv run python scripts/sync_metrics.py --report` |
-| **CC Checker** | Validate complexity thresholds | `uv run python scripts/check_cc.py` |
+| **CC Checker** | Validate complexity thresholds | `uv run qgis-analyzer analyze . --max-cc 10` |
 | **Metrics Sync** | Unified ground-truth metric extraction | `uv run python scripts/sync_metrics.py` |
 | **Metric Validator** | Cross-file consistency check | `uv run python scripts/sync_metrics.py --validate` |
 | **Workflow Graph** | Dependency graph & ref validator | `uv run python scripts/validate_agent_system.py --graph` |
@@ -97,9 +97,8 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 - ✅ **Docstring Coverage**: **100.0%** (Project-wide compliance).
 - ✅ **Return Type Coverage**: **100.0%**.
 - ✅ **Param Type Coverage**: **94.2%**.
-- ✅ **Complexity Gate**: **CC <= 10** (verified 2026-05-24 by check_cc.py).
-- ✅ **i18n Hygiene Gate**: **0 violations** (verified by verify_i18n_hygiene.py).
-- ⚠️ **qgis-analyzer i18n**: 72 MISSING_I18N flagged (all false positives after triage).
+- ✅ **Complexity Gate**: **CC <= 10** (verified by `qgis-analyzer --max-cc 10`).
+- ✅ **i18n Hygiene Gate**: **0 violations** (verified by `qgis-analyzer` `MISSING_I18N` rule).
 - ✅ **Tests**: **640 passing** (confirmed 2026-05-24 via `make docker-test`).
 
 ---

@@ -9,7 +9,7 @@ stop_conditions:
   - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
   - Verify that 640+ tests pass in Docker
-  - Confirm CC <= 10 for all methods (scripts/check_cc.py)
+  - Confirm CC <= 10 for all methods (qgis-analyzer --max-cc 10)
   - Ensure Zero High-Severity Security Findings
   - Validate ZIP contents (Plugin-only, no agentic system)
 ---
@@ -24,7 +24,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    // turbo
    ```bash
    uv run python scripts/sync_metrics.py --report
-   uv run python scripts/check_cc.py
+   uv run qgis-analyzer analyze . --max-cc 10
    ```
    🤖 **Agent Action**: Verify CC <= 10 and 100% docstring/return-type coverage.
 

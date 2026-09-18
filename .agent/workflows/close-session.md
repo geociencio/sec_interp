@@ -85,7 +85,7 @@ Verify that `.agent/task.md` exists and is updated before committing.
 ```bash
 uv run python scripts/sync_metrics.py --close-session --topic [TOPIC]
 ```
-This updates `agent_metrics.json` with live scores from qgis-analyzer + check_cc.py + verify_i18n_hygiene.py, and rotates `last_session` into `history` (preventing stale session records). Replace `[TOPIC]` with the short session name defined in step 1.
+This updates `agent_metrics.json` with live scores from qgis-analyzer (CC gate via `--max-cc` and i18n gate via `MISSING_I18N`), and rotates `last_session` into `history` (preventing stale session records). Replace `[TOPIC]` with the short session name defined in step 1.
 
 🤖 **Agent Action (Metric Validation — CRITICAL)**: Verify that all .agent/ documentation files are consistent with the ground truth.
 ```bash

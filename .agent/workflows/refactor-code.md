@@ -34,7 +34,7 @@ This workflow guides code refactoring following project standards and using spec
    uv run qgis-analyzer fix --dry-run .
    ```
    🤖 **Agent Action**: If safe auto-corrections are available, apply them using `fix --apply` before proceeding with manual refactoring.
-   Verify improvement with `uv run python scripts/check_cc.py`.
+   Verify improvement with `uv run qgis-analyzer analyze . --max-cc 10`.
 
 3. **Load Specialized Context**:
 
@@ -55,7 +55,7 @@ This workflow guides code refactoring following project standards and using spec
 6. **Verify Quality Metrics**:
    // turbo
    ```bash
-   uv run ai-ctx analyze . && uv run python scripts/check_cc.py
+   uv run ai-ctx analyze . && uv run qgis-analyzer analyze . --max-cc 10
    ```
 
    🤖 **Agent Action**: Confirm improvement in Quality Score and reduction in Cyclomatic Complexity (CC).

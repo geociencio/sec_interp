@@ -37,7 +37,7 @@ git add . && git commit -m "chore(docs): close session [topic]"
 **What happens**:
 ```
 uv run ruff check --fix . && uv run ruff format .
-uv run python scripts/check_cc.py
+uv run qgis-analyzer analyze . --max-cc 10
 git add . && git commit -m "[msg]"
 ```
 
@@ -71,7 +71,7 @@ git add . && git commit -m "[msg]"
 
 ### `/i18n-maintenance`
 **Tell the agent**: "Run /i18n-maintenance [language]"
-**What happens**: Reads i18n-standards skill → edit JSON/TS → `verify_i18n_hygiene.py`
+**What happens**: Reads i18n-standards skill → edit JSON/TS → `qgis-analyzer analyze .`
 
 ### `/ia-critic`
 **Tell the agent**: "Run /ia-critic on [plan]"
@@ -97,8 +97,7 @@ git add . && git commit -m "[msg]"
 **Tell the agent**: "Run /verify-standards"
 **What happens**:
 ```
-uv run python scripts/check_cc.py
-uv run python scripts/verify_i18n_hygiene.py
+uv run qgis-analyzer analyze . --max-cc 10
 uv run python scripts/validate_agent_system.py
 uv run python scripts/validate_agent_system.py --graph
 ```
@@ -111,8 +110,8 @@ uv run python scripts/validate_agent_system.py --graph
 |--------|---------|
 | Full metric sync | `uv run python scripts/sync_metrics.py` |
 | AI Context | `uv run ai-ctx analyze --path .` |
-| CC validation | `uv run python scripts/check_cc.py` |
-| i18n hygiene | `uv run python scripts/verify_i18n_hygiene.py` |
+| CC validation | `uv run qgis-analyzer analyze . --max-cc 10` |
+| i18n hygiene | `uv run qgis-analyzer analyze .` (MISSING_I18N rule) |
 | Memory prune | `uv run python scripts/memory_prune.py` |
 | Metrics report | `uv run python scripts/sync_metrics.py --report` |
 | Agent system validation | `uv run python scripts/validate_agent_system.py` |

@@ -151,9 +151,8 @@ def propose_lessons(signals: list[dict], diff_text: str) -> list[dict]:
                 "category": "i18n",
                 "topic": "Translation markers added/modified",
                 "lesson": "User-facing strings were wrapped with self.tr() or tagged with # no-i18n. "
-                           "Remember the dual-scope i18n strategy: verify_i18n_hygiene.py for AST gate, "
-                           "qgis-analyzer for broader heuristic detection.",
-                "action": "Run `uv run python scripts/verify_i18n_hygiene.py` before committing GUI changes.",
+                           "i18n hygiene is enforced by qgis-analyzer's MISSING_I18N rule (AST-based).",
+                "action": "Run `uv run qgis-analyzer analyze .` before committing GUI changes.",
             })
             break
 

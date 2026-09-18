@@ -31,8 +31,6 @@ from typing import Optional
 # ── Configuration ──────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 METRICS_FILE = PROJECT_ROOT / ".agent" / "memory" / "agent_metrics.json"
-CC_SCRIPT = PROJECT_ROOT / "scripts" / "check_cc.py"
-I18N_SCRIPT = PROJECT_ROOT / "scripts" / "verify_i18n_hygiene.py"
 ANALYZER_RESULTS = PROJECT_ROOT / "analysis_results" / "project_context.json"
 
 # ── Thresholds (single source of truth — consumed by sync_metrics.py) ─────
@@ -41,16 +39,21 @@ MODULE_SIZE_LIMIT = 400
 
 
 def run_qgis_analyzer() -> dict:
-    """Run qgis-analyzer and extract scores + issue counts."""
+    """Run qgis-analyzer and extract scores + issue counts + CC gate.
+
+    The ``--max-cc`` flag makes the analyzer exit non-zero when any function
+    exceeds the threshold, which is exposed here as the ``cc_gate`` field.
+    """
     try:
         result = subprocess.run(
-            ["uv", "run", "qgis-analyzer", "analyze", "."],
+            ["uv", "run", "qgis-analyzer", "analyze", ".", "--max-cc", str(CC_THRESHOLD)],
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
             timeout=120,
         )
         output = result.stdout + result.stderr
+        cc_gate = result.returncode == 0
     except FileNotFoundError:
         return {"error": "qgis-analyzer not found in environment"}
     except subprocess.TimeoutExpired:
@@ -133,45 +136,8 @@ def run_qgis_analyzer() -> dict:
         "issues": issues,
         "total_issues": total_issues,
         "research": research,
+        "cc_gate": cc_gate,
     }
-
-
-def run_check_cc() -> dict:
-    """Run the CC gate script."""
-    try:
-        result = subprocess.run(
-            ["uv", "run", "python", str(CC_SCRIPT), "--threshold", str(CC_THRESHOLD)],
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
-        passed = result.returncode == 0
-        return {
-            "passed": passed,
-            "output": result.stdout.strip().split("\n")[0] if result.stdout else "",
-        }
-    except Exception as e:
-        return {"passed": None, "error": str(e)}
-
-
-def run_verify_i18n() -> dict:
-    """Run the AST-based i18n hygiene checker."""
-    try:
-        result = subprocess.run(
-            ["uv", "run", "python", str(I18N_SCRIPT)],
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
-        passed = result.returncode == 0
-        return {
-            "passed": passed,
-            "output": result.stdout.strip().split("\n")[-1] if result.stdout else "",
-        }
-    except Exception as e:
-        return {"passed": None, "error": str(e)}
 
 
 def check_module_sizes() -> dict:
@@ -213,8 +179,8 @@ def update_metrics_json(metrics: dict) -> bool:
         return False
 
     analyzer = metrics.get("qgis_analyzer", {})
-    cc = metrics.get("check_cc", {})
-    i18n_ast = metrics.get("verify_i18n_hygiene", {})
+    cc = metrics.get("cc", {})
+    i18n_ast = metrics.get("i18n", {})
 
     summary = data.setdefault("summary", {})
     summary["quality_score_latest"] = analyzer.get("scores", {}).get(
@@ -263,7 +229,7 @@ def update_metrics_json(metrics: dict) -> bool:
         "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "command": "uv run python scripts/sync_metrics.py",
         "cc_gate": "PASS" if cc.get("passed") else "FAIL",
-        "i18n_ast_gate": "PASS" if i18n_ast.get("passed") else "FAIL",
+        "i18n_gate": "PASS" if i18n_ast.get("passed") else "FAIL",
     }
 
     data["meta"]["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -341,26 +307,22 @@ def sync_main():
 
     if not quiet:
         print("🔄 Syncing ground-truth metrics...")
-        print("   → qgis-analyzer analyze .")
+        print("   → qgis-analyzer analyze . --max-cc " + str(CC_THRESHOLD))
 
     analyzer = run_qgis_analyzer()
-
-    if not quiet:
-        print("   → check_cc.py")
-    cc = run_check_cc()
-
-    if not quiet:
-        print("   → verify_i18n_hygiene.py")
-    i18n = run_verify_i18n()
 
     if not quiet:
         print("   → check_module_sizes")
     module_sizes = check_module_sizes()
 
+    issues = analyzer.get("issues", {})
+    cc = {"passed": analyzer.get("cc_gate")}
+    i18n = {"passed": issues.get("MISSING_I18N", 0) == 0}
+
     metrics = {
         "qgis_analyzer": analyzer,
-        "check_cc": cc,
-        "verify_i18n_hygiene": i18n,
+        "cc": cc,
+        "i18n": i18n,
         "module_sizes": module_sizes,
     }
 
@@ -375,7 +337,7 @@ def sync_main():
             "maintainability": analyzer.get("scores", {}).get("maintainability"),
             "security": analyzer.get("scores", {}).get("security"),
             "cc_gate": "PASS" if cc.get("passed") else "FAIL",
-            "i18n_ast_gate": "PASS" if i18n.get("passed") else "FAIL",
+            "i18n_gate": "PASS" if i18n.get("passed") else "FAIL",
             "total_issues": analyzer.get("total_issues"),
             "updated": updated,
         }
@@ -396,7 +358,7 @@ def sync_main():
             for k, v in issues.items():
                 print(f"   {k}: {v}")
         print(f"🔒 CC Gate:     {'✅ PASS' if cc.get('passed') else '❌ FAIL'}")
-        print(f"🌐 i18n (AST):   {'✅ PASS' if i18n.get('passed') else '❌ FAIL'}")
+        print(f"🌐 i18n Gate:    {'✅ PASS' if i18n.get('passed') else '❌ FAIL'}")
         size_passed = module_sizes.get("passed")
         if size_passed is False:
             print(f"📦 Module Size:  ⚠️ {module_sizes.get('count', 0)} modules > {MODULE_SIZE_LIMIT} lines")
@@ -547,15 +509,13 @@ def generate_report(compact: bool = False):
         print(bar_chart("Security", float(sec) if sec != "?" else 0))
         print("```")
 
-    # ── i18n Issue Trend ─────────────────────────────────────────────
+    # ── i18n Status ──────────────────────────────────────────────────
     analyzer_i18n = summary.get("i18n_issues_qgis_analyzer")
-    ast_i18n = summary.get("i18n_issues_i18n_hygiene")
-    if analyzer_i18n is not None or ast_i18n is not None:
+    if analyzer_i18n is not None:
         print("\n## i18n Status\n")
         print("| Metric | Value |")
         print("| :--- | :--- |")
-        print(f"| qgis-analyzer MISSING_I18N | {analyzer_i18n if analyzer_i18n is not None else '?'} |")
-        print(f"| verify_i18n_hygiene violations | {ast_i18n if ast_i18n is not None else '?'} |")
+        print(f"| qgis-analyzer MISSING_I18N | {analyzer_i18n} |")
 
     # ── Issue Breakdown ──────────────────────────────────────────────
     breakdown = summary.get("issue_breakdown", {})

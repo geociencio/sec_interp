@@ -23,6 +23,9 @@ Tracker = "https://github.com/geociencio/sec_interp/issues"
 [tool.setuptools]
 packages = ["core", "gui", "resources", "exporters", "i18n"]
 
+[tool.qgis-analyzer.profiles.default.rules.MISSING_I18N]
+extra_ignore_calls = ["PerformanceTimer"]
+
 [dependency-groups]
 dev = [
     "ruff>=0.15.0",

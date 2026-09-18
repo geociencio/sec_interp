@@ -13,7 +13,7 @@ SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simp
 2.  **Autonomous Memory Pruning**: The `memory_prune.py` utility automatically maintains the lesson log, moving consolidated knowledge to long-term archives.
 3.  **Zero-Regression Quality Gates**: A mandatory `pre-push` hook enforces Cyclomatic Complexity (CC <= 10) and quality standards before any code reaches the repository.
 4.  **Observability Engine**: `sync_metrics.py --report` provides visual Markdown trends of the agent's effectiveness and technical debt evolution.
-5.  **Unified Metric Sync**: `sync_metrics.py` runs all quality gates (qgis-analyzer + check_cc + verify_i18n) and writes a single coherent snapshot to `agent_metrics.json`.
+5.  **Unified Metric Sync**: `sync_metrics.py` runs the qgis-analyzer quality gates (CC via `--max-cc`, i18n via `MISSING_I18N`) and writes a single coherent snapshot to `agent_metrics.json`.
 
 ---
 
@@ -60,8 +60,8 @@ Full session summaries are stored in **`docs/maintenance/`** with the naming con
 -   **`uv run python scripts/sync_metrics.py`**: Unified ground-truth extraction (qgis-analyzer + CC + i18n)
 -   **`uv run python scripts/sync_metrics.py --report`**: Generates a Markdown performance report.
 -   **`uv run python scripts/memory_prune.py`**: Prunes old consolidated lessons.
--   **`uv run python scripts/check_cc.py`**: Validates complexity thresholds.
--   **`uv run python scripts/verify_i18n_hygiene.py`**: AST-based i18n hygiene scanner.
+-   **`uv run qgis-analyzer analyze . --max-cc 10`**: Validates complexity thresholds.
+-   **`uv run qgis-analyzer analyze .`**: AST-based i18n hygiene scanner (`MISSING_I18N` rule).
 
 ---
 
@@ -87,12 +87,12 @@ This system is runtime-agnostic and currently operates under opencode. See **`wo
 ## 🛡️ Quality Standards
 
 This project enforces:
--   **CC <= 10**: No function should be overly complex (verified by `check_cc.py`).
+-   **CC <= 10**: No function should be overly complex (verified by `qgis-analyzer --max-cc 10`).
 -   **100% Docstrings**: All public APIs must follow Google Style (verified by qgis-analyzer).
 -   **100% Return Types**: Strict typing for all function returns.
 -   **94.2% Param Types**: Type hints on all function parameters.
 -   **Mock-First Testing**: Isolated unit tests that do not require a live QGIS instance.
--   **Dual-Scope i18n**: AST gate (`verify_i18n_hygiene.py`) + qgis-analyzer i18n check.
+-   **i18n hygiene**: AST-based `MISSING_I18N` rule in qgis-analyzer.
 
 ### Current Scores (2026-09-12)
 | Metric | Score |
@@ -113,8 +113,8 @@ Multiple analyzers produce overlapping numbers. To avoid metric staleness, each 
 | Module Stability | `qgis-analyzer` (`qgis-analyzer analyze .`) | `agent_metrics.json` → `quality_score_latest` |
 | Maintainability | `qgis-analyzer` | `agent_metrics.json` → `maintainability_score` |
 | Security | `qgis-analyzer` (Bandit) | `agent_metrics.json` → `security_score` |
-| Cyclomatic Complexity | `scripts/check_cc.py` (max CC ≤ 10) | `agent_metrics.json` → `cyclomatic_complexity_gate` |
-| i18n AST hygiene | `scripts/verify_i18n_hygiene.py` | `agent_metrics.json` → `i18n_hygiene_gate` |
+| Cyclomatic Complexity | `qgis-analyzer analyze . --max-cc 10` | `agent_metrics.json` → `cyclomatic_complexity_gate` |
+| i18n hygiene | `qgis-analyzer` `MISSING_I18N` rule (AST) | `agent_metrics.json` → `i18n_hygiene_gate` |
 | i18n analyzer scope | `qgis-analyzer` MISSING_I18N | `agent_metrics.json` → `i18n_issues_qgis_analyzer` |
 | Test count | `make docker-test` → `sync_metrics.py --testing-status` | `agent_metrics.json` → `tests_ok` |
 | Type hints / Docstrings | `qgis-analyzer` research metrics | `agent_metrics.json` summary |
