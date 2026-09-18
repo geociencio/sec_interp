@@ -49,6 +49,14 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [x] Re-run `qgis-analyzer analyze .`; refresh `agent_metrics.json` (i18n 72 → 2, issues 75 → 5) <!-- id: 10.2 -->
 - [x] `sync_metrics --validate` PASS <!-- id: 10.3 -->
 
+## 🔄 Upstreaming Migration: SecInterp scripts → qgis-plugin-analyzer (COMPLETADO 2026-09-17)
+- [x] Confirmar upstreaming implementado en analyzer 1.14.0 (regla `MISSING_I18N` AST + `--max-cc`) <!-- id: 11.1 -->
+- [x] Retirar `scripts/check_cc.py` y `scripts/verify_i18n_hygiene.py` <!-- id: 11.2 -->
+- [x] Refactor `sync_metrics.py` (CC gate vía `--max-cc`, i18n gate vía `MISSING_I18N == 0`) <!-- id: 11.3 -->
+- [x] Suprimir 2 FP de `PerformanceTimer` vía `pyproject.toml` (`MISSING_I18N` 2 → 0) <!-- id: 11.4 -->
+- [x] Arreglar pre-push hook (`--output json` → `--max-cc 10`) <!-- id: 11.5 -->
+- [x] Reescribir `docs/plans/upstreaming_qgis_analyzer.md` + actualizar refs (workflows/skills/metrics) <!-- id: 11.6 -->
+
 ## 🧪 Operational Status
-- **Active Task**: [qgis-plugin-analyzer 1.14.0 upgrade] COMPLETED. Next: Goal 1.1 (symbology), Fase 1 adaptive VE (1.2), or tech debt 2.1/2.2/2.3.
-- **Metrics**: 640/640 tests, Quality 52.3/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n AST PASS, qt6-check PASS. Analyzer 1.14.0: 5 issues (2 MISSING_I18N FP, 2 NON_PYTHONIC_LOOP, 1 SPATIAL_INDEX).
+- **Active Task**: [Upstreaming Migration] COMPLETADO. Next: Goal 1.1 (symbology), Fase 1 adaptive VE (1.2), or tech debt 2.1/2.2/2.3/2.4.
+- **Metrics**: 640/640 tests, Quality 52.3/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n gate PASS. Analyzer 1.14.0: 3 issues (2 NON_PYTHONIC_LOOP, 1 SPATIAL_INDEX).

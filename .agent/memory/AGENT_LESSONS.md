@@ -15,6 +15,26 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-17'
+    category: TOOLING
+    topic: Verify installed dependency source before writing an upstreaming plan
+    lesson: A plan to upstream SecInterp's i18n AST + CC gate into qgis-plugin-analyzer
+      turned out to be already fully implemented in 1.14.0 (verified by reading the
+      installed `analyzer/` package). The remaining work was a migration on the
+      SecInterp side, not new analyzer code.
+    action: Before planning to port/upstream logic into a dependency, inspect the
+      installed package source and CLI surface first; what looks like a gap may be a
+      version bump away from shipped.
+  - date: '2026-09-17'
+    category: TOOLING
+    topic: Untracked git hooks drift when a CLI flag contract changes
+    lesson: The pre-push hook used the legacy `qgis-analyzer analyze . --output json`,
+      where `--output` was a filename. In 1.14.0 `--output` became a directory, so the
+      hook silently wrote to `json/` while `check_cc.py` read `analysis_results/`,
+      breaking the CC gate on every push. Hooks in `.git/hooks/` are untracked and
+      invisible to normal diffs.
+    action: When bumping a CLI tool, grep `.git/hooks/*` for its invocations and
+      verify flag semantics; treat untracked hooks as part of the migration checklist.
   - date: '2026-09-14'
     category: TOOLING
     topic: Analyzer version bumps shift metrics more than code changes

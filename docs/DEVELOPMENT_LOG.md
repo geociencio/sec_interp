@@ -1,3 +1,15 @@
+## [2026-09-17] Session: Analyzer Upstream Migration
+- **Achievement**: Retired the redundant SecInterp scripts (`check_cc.py`, `verify_i18n_hygiene.py`) now that qgis-plugin-analyzer 1.14.0 natively ships the AST `MISSING_I18N` rule and the `--max-cc` gate; both quality gates are now driven directly from the analyzer.
+- **Actions Taken**:
+    - Confirmed the upstreaming plan was already fully implemented in analyzer 1.14.0 (verified against installed `analyzer/` source).
+    - `pyproject.toml`: added `[tool.qgis-analyzer.profiles.default.rules.MISSING_I18N]` with `extra_ignore_calls = ["PerformanceTimer"]` → `MISSING_I18N` 2 → 0.
+    - Refactored `scripts/sync_metrics.py`: CC gate from `analyze --max-cc 10` exit code, i18n gate from `MISSING_I18N == 0`; removed `run_check_cc`/`run_verify_i18n`.
+    - Fixed the pre-push hook (legacy `--output json` → `--max-cc 10`).
+    - Rewrote `docs/plans/upstreaming_qgis_analyzer.md` and updated workflows/skills/metrics references.
+- **Operational Metrics**: 640/640 tests (Docker) · `--max-cc 10` PASS · `MISSING_I18N` 0 (issues 5 → 3) · `sync_metrics --validate` PASS · `ruff check` PASS.
+- **Status**: Commit `61de59f2` pushed to `origin/main`. Remaining debt: 2 `NON_PYTHONIC_LOOP` (2.2), 1 `SPATIAL_INDEX` (2.3), `module_size_gate` FAIL (2.4).
+- **Maintenance**: [session_2026-09-17_analyzer_upstream_migration.md](maintenance/session_2026-09-17_analyzer_upstream_migration.md)
+
 ## [2026-09-14] Session: qgis-plugin-analyzer 1.14.0 Upgrade
 - **Achievement**: Adopted `qgis-plugin-analyzer` 1.14.0 and refreshed ground-truth metrics in `agent_metrics.json`.
 - **Actions Taken**:
