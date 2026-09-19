@@ -2,36 +2,29 @@
 
 from __future__ import annotations
 
-from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
+import math
+
+from sec_interp.core.utils.geometry_utils.measurement import project_point_onto_polyline
 
 
 class ProjectionEngine:
-    """Encapsulates geometric projection logic."""
+    """Encapsulates geometric projection logic (pure math)."""
 
     @staticmethod
     def project_point_to_line(
-        pt: QgsPointXY,
-        line_geom: QgsGeometry,
-        line_start: QgsPointXY,
-        da: QgsDistanceArea,
+        pt: tuple[float, float],
+        line_points: list[tuple[float, float]],
     ) -> tuple[float, float]:
         """Project point to line and return (dist_along, offset).
 
         Args:
-            pt: The point to project.
-            line_geom: The profile line geometry.
-            line_start: The start point of the profile (dist=0).
-            da: Distance area object for measurements.
+            pt: The (x, y) point to project.
+            line_points: Section line vertices as ``(x, y)`` tuples.
 
         Returns:
             Tuple of (distance_along_line, offset_from_line).
 
         """
-        collar_geom_pt = QgsGeometry.fromPointXY(pt)
-        nearest_point_geom = line_geom.nearestPoint(collar_geom_pt)
-        nearest_point = nearest_point_geom.asPoint()
-        nearest_point_xy = QgsPointXY(nearest_point.x(), nearest_point.y())
-
-        dist_along = da.measureLine(line_start, nearest_point_xy)
-        offset = da.measureLine(pt, nearest_point_xy)
+        dist_along, nearest = project_point_onto_polyline(pt, line_points)
+        offset = math.hypot(pt[0] - nearest[0], pt[1] - nearest[1])
         return dist_along, offset

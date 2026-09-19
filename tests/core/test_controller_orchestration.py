@@ -14,12 +14,12 @@ class TestControllerOrchestration(BaseTestCase):
         self.controller = ProfileController()
         # Mock the actual service objects already in the controller
         self.controller.drillhole_service = MagicMock()
-        self.controller.drillhole_orchestrator = MagicMock()
         self.controller.geology_service = MagicMock()
         self.controller.structure_service = MagicMock()
         self.controller.profile_extractor = MagicMock()
         self.controller.geology_extractor = MagicMock()
         self.controller.structure_extractor = MagicMock()
+        self.controller.drillhole_extractor = MagicMock()
 
     def test_process_topography_delegation(self):
         """Verify that _process_topography calls the profile extractor."""
@@ -41,16 +41,15 @@ class TestControllerOrchestration(BaseTestCase):
         self.controller.geology_service.build_segments.assert_called_once()
 
     def test_process_drillholes_delegation(self):
-        """Verify that _process_drillholes calls the drillhole orchestrator."""
+        """Verify that _process_drillholes calls the drillhole service."""
         params = MagicMock()
         params.collar_layer = MagicMock()
         messages = []
+        self.controller.drillhole_service.process_context.return_value = ([], [])
 
         self.controller._process_drillholes(params, {}, messages)
 
-        self.controller.drillhole_orchestrator.run_preview.assert_called_once_with(
-            params
-        )
+        self.controller.drillhole_service.process_context.assert_called_once()
 
 
 if __name__ == "__main__":

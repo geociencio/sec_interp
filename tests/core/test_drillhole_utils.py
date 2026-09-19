@@ -189,15 +189,8 @@ class TestProjectTrajectoryToSection(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        # Create a simple East-West section line
-        self.line_start = QgsPointXY(0.0, 0.0)
-        self.line_end = QgsPointXY(100.0, 0.0)
-        self.line_geom = QgsGeometry.fromPolylineXY([self.line_start, self.line_end])
-
-        # Setup distance area
-        self.distance_area = QgsDistanceArea()
-        crs = QgsCoordinateReferenceSystem("EPSG:32633")  # UTM zone 33N
-        self.distance_area.setSourceCrs(crs, QgsCoordinateTransformContext())
+        # Simple East-West section line as (x, y) tuples
+        self.line_points = [(0.0, 0.0), (100.0, 0.0)]
 
     def test_project_single_point_on_line(self):
         """Test projecting a single point that lies on the section line."""
@@ -205,12 +198,7 @@ class TestProjectTrajectoryToSection(BaseTestCase):
             (0.0, 50.0, 0.0, 100.0, 0.0, 0.0),  # Point at (50, 0) on the line
         ]
 
-        projected = project_trajectory_to_section(
-            trajectory,
-            self.line_geom,
-            self.line_start,
-            self.distance_area,
-        )
+        projected = project_trajectory_to_section(trajectory, self.line_points)
 
         self.assertEqual(len(projected), 1)
         depth, x, y, z, dist_along, offset, nx, ny = projected[0]
@@ -226,12 +214,7 @@ class TestProjectTrajectoryToSection(BaseTestCase):
             (0.0, 50.0, 10.0, 100.0, 0.0, 0.0),  # Point at (50, 10), 10m North of line
         ]
 
-        projected = project_trajectory_to_section(
-            trajectory,
-            self.line_geom,
-            self.line_start,
-            self.distance_area,
-        )
+        projected = project_trajectory_to_section(trajectory, self.line_points)
 
         self.assertEqual(len(projected), 1)
         depth, x, y, z, dist_along, offset, nx, ny = projected[0]
@@ -250,12 +233,7 @@ class TestProjectTrajectoryToSection(BaseTestCase):
             (30.0, 75.0, -5.0, 70.0, 0.0, 0.0),
         ]
 
-        projected = project_trajectory_to_section(
-            trajectory,
-            self.line_geom,
-            self.line_start,
-            self.distance_area,
-        )
+        projected = project_trajectory_to_section(trajectory, self.line_points)
 
         self.assertEqual(len(projected), 4)
 

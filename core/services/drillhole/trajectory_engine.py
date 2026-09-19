@@ -1,10 +1,8 @@
-"""Engine for calculating and projecting drillhole trajectories."""
+"""Engine for calculating and projecting drillhole trajectories (pure)."""
 
 from __future__ import annotations
 
 from typing import Any
-
-from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 
 from sec_interp.core import utils as scu
 from sec_interp.core.domain import DrillholeProjection, GeologySegment, SpatialMeta
@@ -23,14 +21,12 @@ class TrajectoryEngine:
     def process_single_hole(
         self,
         hole_id: Any,
-        collar_point: QgsPointXY,
+        collar_point: tuple[float, float],
         collar_z: float,
         given_depth: float,
         survey_data: list[tuple[float, float, float]],
         intervals: list[tuple[float, float, str]],
-        line_geom: QgsGeometry,
-        line_start: QgsPointXY,
-        distance_area: QgsDistanceArea,
+        line_points: list[tuple[float, float]],
         buffer_width: float,
         section_azimuth: float,
     ) -> tuple[list[GeologySegment], DrillholeProjection]:
@@ -50,9 +46,7 @@ class TrajectoryEngine:
         )
         projected_traj = [
             p
-            for p in scu.project_trajectory_to_section(
-                trajectory, line_geom, line_start, distance_area
-            )
+            for p in scu.project_trajectory_to_section(trajectory, line_points)
             if p[5] <= buffer_width
         ]
 
@@ -89,8 +83,6 @@ class TrajectoryEngine:
                 )
             )
 
-        # Basic projection info
-
         # Basic projection info from collar_proj or first point
         if collar_proj:
             dist = collar_proj.distance
@@ -101,9 +93,8 @@ class TrajectoryEngine:
             dist = spatial_points[0].dist_along
             elev = spatial_points[0].z
             offset = spatial_points[0].offset
-            depth = 0.0  # Or infer from points if available
+            depth = 0.0
         else:
-            # Fallback for completely empty trajectory and no collar projection
             dist = 0.0
             elev = 0.0
             offset = 0.0

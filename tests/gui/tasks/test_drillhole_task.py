@@ -12,38 +12,38 @@ class TestDrillholeGenerationTask(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mock_orchestrator = MagicMock()
+        self.mock_service = MagicMock()
         self.mock_input = MagicMock()
         self.params = MagicMock()
         self.task = DrillholeGenerationTask(
-            "Test Task", self.mock_input, self.mock_orchestrator, self.params
+            "Test Task", self.mock_input, self.mock_service, self.params
         )
 
     def test_initialization(self):
         """Test task initialization."""
         self.assertEqual(self.task.description(), "Test Task")
-        self.assertEqual(self.task.task_input, self.mock_input)
-        self.assertEqual(self.task.orchestrator, self.mock_orchestrator)
+        self.assertEqual(self.task.context, self.mock_input)
+        self.assertEqual(self.task.service, self.mock_service)
         self.assertIsNone(self.task.result)
         self.assertIsNone(self.task.exception)
 
     def test_run_success(self):
         """Test successful task execution."""
         expected_result = (["geol"], ["hole1", "hole2"])
-        self.mock_orchestrator.process_task_data.return_value = expected_result
+        self.mock_service.process_context.return_value = expected_result
 
         success = self.task.run()
 
         self.assertTrue(success)
         self.assertEqual(self.task.result, expected_result)
-        self.mock_orchestrator.process_task_data.assert_called_once_with(
+        self.mock_service.process_context.assert_called_once_with(
             self.mock_input, feedback=self.task
         )
 
     def test_run_error(self):
         """Test task execution with error."""
         error = ValueError("Something went wrong")
-        self.mock_orchestrator.process_task_data.side_effect = error
+        self.mock_service.process_context.side_effect = error
 
         success = self.task.run()
 

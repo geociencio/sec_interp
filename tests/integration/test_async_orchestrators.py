@@ -19,12 +19,9 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
-from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import ValidationError
-from sec_interp.core.services.drillhole.drillhole_orchestrator import (
-    DrillholeTaskOrchestrator,
-)
-from sec_interp.core.services.drillhole_service import DrillholeService
+from sec_interp.gui.adapters.drillhole_extractor import DrillholeExtractor
+from sec_interp.gui.adapters.feature_fetcher import DataFetcher
 from sec_interp.gui.preview_task_orchestrator import PreviewTaskOrchestrator
 from tests.integration.base_integration import BaseIntegrationTest
 
@@ -54,48 +51,19 @@ def _make_collar_layer() -> QgsVectorLayer:
     return layer
 
 
-class TestDrillholeTaskOrchestrator(BaseIntegrationTest):
-    """Integration tests for DrillholeTaskOrchestrator."""
+class TestDrillholeExtractor(BaseIntegrationTest):
+    """Integration tests for DrillholeExtractor."""
 
     def setUp(self) -> None:
         super().setUp()
-        self.service = DrillholeService()
-        self.orchestrator = DrillholeTaskOrchestrator(self.service)
+        self.extractor = DrillholeExtractor(data_fetcher=DataFetcher())
 
-    def test_run_preview_returns_none_if_missing_layers(self) -> None:
-        """run_preview should return None if essential layers are missing."""
-        params = PreviewParams(
-            line_layer="invalid_layer",
-            collar_layer="",
-            raster_layer="",
-            survey_layer="",
-            interval_layer="",
-            buffer_dist=100.0,
-            collar_id_field="hole_id",
-            collar_use_geometry=True,
-            collar_x_field="",
-            collar_y_field="",
-            collar_z_field="",
-            collar_depth_field="depth",
-            survey_id_field="",
-            survey_depth_field="",
-            survey_azim_field="",
-            survey_incl_field="",
-            interval_id_field="",
-            interval_from_field="",
-            interval_to_field="",
-            interval_lith_field="",
-            band_num=1,
-        )
-        result = self.orchestrator.run_preview(params)
-        self.assertIsNone(result)
-
-    def test_prepare_task_input_validates_and_extracts(self) -> None:
-        """prepare_task_input should validate input and return a DrillholeTaskInput."""
+    def test_extract_context_validates_and_extracts(self) -> None:
+        """extract_context should validate input and return a DrillholeContext."""
         line_lyr = _make_line_layer()
         collar_lyr = _make_collar_layer()
 
-        task_input = self.orchestrator.prepare_task_input(
+        context = self.extractor.extract_context(
             line_layer=line_lyr,
             buffer_width=100.0,
             collar_layer=collar_lyr,
@@ -113,19 +81,19 @@ class TestDrillholeTaskOrchestrator(BaseIntegrationTest):
             band_num=1,
         )
 
-        self.assertIsNotNone(task_input)
-        self.assertEqual(task_input.buffer_width, 100.0)
-        self.assertEqual(task_input.collar_id_field, "hole_id")
-        self.assertEqual(len(task_input.collar_data), 1)
-        self.assertEqual(task_input.collar_data[0]["attributes"]["hole_id"], "DH-01")
+        self.assertIsNotNone(context)
+        self.assertEqual(context.buffer_width, 100.0)
+        self.assertEqual(context.collar_id_field, "hole_id")
+        self.assertEqual(len(context.collar_data), 1)
+        self.assertEqual(context.collar_data[0]["attributes"]["hole_id"], "DH-01")
 
-    def test_prepare_task_input_raises_validation_error_on_invalid_field(self) -> None:
+    def test_extract_context_raises_validation_error_on_invalid_field(self) -> None:
         """Should raise ValidationError if a specified collar field does not exist."""
         line_lyr = _make_line_layer()
         collar_lyr = _make_collar_layer()
 
         with self.assertRaises(ValidationError):
-            self.orchestrator.prepare_task_input(
+            self.extractor.extract_context(
                 line_layer=line_lyr,
                 buffer_width=100.0,
                 collar_layer=collar_lyr,

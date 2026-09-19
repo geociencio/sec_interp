@@ -36,9 +36,9 @@ class PreviewService:
         self.controller = controller
 
     @property
-    def drillhole_orchestrator(self) -> Any:
-        """Expose drillhole orchestrator from controller."""
-        return self.controller.drillhole_orchestrator
+    def drillhole_service(self) -> Any:
+        """Expose drillhole service from controller."""
+        return self.controller.drillhole_service
 
     @property
     def geology_service(self) -> Any:

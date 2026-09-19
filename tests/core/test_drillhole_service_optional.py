@@ -1,44 +1,28 @@
 import unittest
-from unittest.mock import MagicMock, patch
-from sec_interp.core.services.drillhole_service import DrillholeService
-from sec_interp.core.services.drillhole.drillhole_orchestrator import (
-    DrillholeTaskOrchestrator,
-)
-from sec_interp.core.exceptions import ValidationError
+from unittest.mock import MagicMock
+
+from qgis.core import QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry, QgsPointXY
+
+from sec_interp.gui.adapters.drillhole_extractor import DrillholeExtractor
 
 
-class TestDrillholeServiceOptionalLayer(unittest.TestCase):
+class TestDrillholeExtractorOptionalLayer(unittest.TestCase):
+    """Test that the DrillholeExtractor tolerates an optional collar layer."""
+
     def setUp(self):
-        self.service = DrillholeService()
-        self.orchestrator = DrillholeTaskOrchestrator(self.service)
+        self.extractor = DrillholeExtractor()
 
-    def test_prepare_task_input_without_collar_layer(self):
-        """Test that prepare_task_input handles missing collar_layer gracefully or raises correct error."""
-
-        # Create mocks
+    def test_extract_context_without_collar_layer(self):
+        """extract_context should handle a missing collar layer gracefully."""
         mock_line = MagicMock()
-        mock_line.isValid.return_value = True
-        mock_feat = MagicMock()
-        mock_geom = MagicMock()
-        mock_geom.isMultipart.return_value = False  # Force polyline branch
-        mock_geom.asPolyline.return_value = [MagicMock(), MagicMock()]
-        mock_geom.vertexAt.return_value = MagicMock()
+        mock_line.crs.return_value = QgsCoordinateReferenceSystem("EPSG:32719")
+        line_feat = QgsFeature()
+        line_feat.setGeometry(
+            QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
+        )
+        mock_line.getFeatures.return_value = iter([line_feat])
 
-        # Mock point behavior for azimuth
-        mock_start_pt = MagicMock()
-        mock_start_pt.azimuth.return_value = 45.0  # Safe float for comparison
-        mock_geom.asPolyline.return_value = [mock_start_pt, MagicMock()]
-
-        mock_feat.geometry.return_value = mock_geom
-        mock_line.getFeatures.return_value = iter([mock_feat])
-
-        # If collar_layer is None, we expect validation to theoretically handle it
-        # OR fail gracefully if it's mandatory but not provided.
-        # However, purely optional layers should not crash with AttributeError.
-
-        # This SHOULD fail with AttributeError: 'NoneType' object has no attribute 'fields'
-        # if the bug is present.
-        self.orchestrator.prepare_task_input(
+        context = self.extractor.extract_context(
             line_layer=mock_line,
             buffer_width=100.0,
             collar_layer=None,
@@ -53,6 +37,9 @@ class TestDrillholeServiceOptionalLayer(unittest.TestCase):
             interval_layer=None,
             interval_fields={},
         )
+
+        self.assertIsNotNone(context)
+        self.assertEqual(context.collar_data, [])
 
 
 if __name__ == "__main__":

@@ -97,7 +97,7 @@ class PreviewTaskOrchestrator:
         logger.debug(f"Adding Geology task to manager: {self.geology_task}")
         QgsApplication.taskManager().addTask(self.geology_task)
 
-    def start_drillhole_task(self, params: Any, service: Any) -> None:
+    def start_drillhole_task(self, params: Any, service: Any, extractor: Any) -> None:
         """Launch background drillhole generation."""
         if self.drillhole_task:
             self.drillhole_task.cancel()
@@ -122,7 +122,7 @@ class PreviewTaskOrchestrator:
             "lith": params.interval_lith_field,
         }
 
-        task_input = service.prepare_task_input(
+        context = extractor.extract_context(
             line_lyr,
             params.buffer_dist,
             collar_lyr,
@@ -142,7 +142,7 @@ class PreviewTaskOrchestrator:
 
         self.drillhole_task = DrillholeGenerationTask(
             "Drillhole Preview (Async)",  # no-i18n: QgsTask identifier for task manager
-            task_input,
+            context,
             service,
             params,
         )

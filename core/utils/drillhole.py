@@ -8,7 +8,7 @@ from __future__ import annotations
 import math
 from typing import Any
 
-from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
+from sec_interp.core.utils.geometry_utils.measurement import project_point_onto_polyline
 
 # Constants for tolerance and validation
 DEPTH_TOLERANCE = 1e-5
@@ -173,20 +173,17 @@ def _extrapolate_trajectory(
 
 def project_trajectory_to_section(
     trajectory: list[tuple],
-    line_geom: QgsGeometry,
-    line_start: Any,  # Point2D or QgsPointXY
-    distance_area: QgsDistanceArea,
+    line_points: list[tuple[float, float]],
 ) -> list[tuple[float, float, float, float, float, float, float, float]]:
     """Project drillhole trajectory points onto the section line.
 
     Calculates the 2D projection (distance along section) and the offset
-    (distance from section) for each point in a 3D trajectory.
+    (distance from section) for each point in a 3D trajectory using planar
+    math.
 
     Args:
         trajectory: List of 3D trajectory points (depth, x, y, z, ...).
-        line_geom: Section line geometry.
-        line_start: Reference start point for distance calculation.
-        distance_area: Distance calculation utility.
+        line_points: Section line vertices as ``(x, y)`` tuples.
 
     Returns:
         List of (depth, x, y, z, dist_along, offset, proj_x, proj_y) tuples.
@@ -194,24 +191,11 @@ def project_trajectory_to_section(
     """
     projected = []
 
-    # Ensure line_start is QgsPointXY
-    start_pt = line_start if hasattr(line_start, "x") else QgsPointXY(line_start[0], line_start[1])
-
     for depth, x, y, z, _, _ in trajectory:
-        point = QgsPointXY(x, y)
-        point_geom = QgsGeometry.fromPointXY(point)
+        dist_along, nearest = project_point_onto_polyline((x, y), line_points)
+        offset = math.hypot(x - nearest[0], y - nearest[1])
 
-        # Find nearest point on line
-        nearest_point = line_geom.nearestPoint(point_geom)
-        nearest_pt_xy = nearest_point.asPoint()
-
-        # Calculate distance along section
-        dist_along = distance_area.measureLine(start_pt, nearest_pt_xy)
-
-        # Calculate offset from section
-        offset = distance_area.measureLine(point, nearest_pt_xy)
-
-        projected.append((depth, x, y, z, dist_along, offset, nearest_pt_xy.x(), nearest_pt_xy.y()))
+        projected.append((depth, x, y, z, dist_along, offset, nearest[0], nearest[1]))
 
     return projected
 

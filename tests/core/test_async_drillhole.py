@@ -1,103 +1,33 @@
 """Tests for Async Drillhole Processing."""
 
-from unittest.mock import MagicMock
 from tests.base_test import BaseTestCase
-from qgis.core import (
-    QgsPointXY,
-    QgsGeometry,
-    QgsFields,
-    QgsField,
-    QgsFeature,
-    QgsCoordinateReferenceSystem,
-)
-from qgis.PyQt.QtCore import QWaitCondition, QMutex
 
+from sec_interp.core.domain.task_inputs import DrillholeContext
 from sec_interp.core.services.drillhole_service import DrillholeService
-from sec_interp.core.services.drillhole.drillhole_orchestrator import (
-    DrillholeTaskOrchestrator,
-)
-from sec_interp.core.domain import DrillholeTaskInput
 
 
 class TestAsyncDrillhole(BaseTestCase):
-    """Tests for asynchronous drillhole processing logic."""
+    """Tests for drillhole processing logic over a detached context."""
 
     def setUp(self):
         super().setUp()
         self.service = DrillholeService()
-        self.orchestrator = DrillholeTaskOrchestrator(self.service)
-        self.line_geom = QgsGeometry.fromPolylineXY(
-            [QgsPointXY(0, 0), QgsPointXY(100, 0)]
-        )
-        self.line_start = QgsPointXY(0, 0)
-        self.crs = QgsCoordinateReferenceSystem("EPSG:32719")
+        self.line_points = [(0.0, 0.0), (100.0, 0.0)]
 
-    def test_prepare_task_input(self):
-        """Test gathering detached data."""
-        # Setup layers
-        collar_layer = MagicMock()
-        fields = QgsFields()
-        fields.append(QgsField("id"))
-        fields.append(QgsField("z"))
-        fields.append(QgsField("depth"))
-        collar_layer.fields.return_value = fields
-        collar_layer.getFeatures.return_value = []
-
-        survey_layer = MagicMock()
-        survey_layer.fields.return_value = QgsFields()
-        interval_layer = MagicMock()
-        interval_layer.fields.return_value = QgsFields()
-
-        # Test basic preparation
-        mock_line_layer = MagicMock()
-        line_feat = QgsFeature()
-        line_feat.setGeometry(
-            QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 0)])
-        )
-        mock_line_layer.getFeatures.return_value = iter([line_feat])
-        mock_line_layer.crs.return_value = self.crs
-
-        task_input = self.orchestrator.prepare_task_input(
-            line_layer=mock_line_layer,
-            buffer_width=50.0,
-            collar_layer=collar_layer,
-            collar_id_field="id",
-            use_geometry=True,
-            collar_x_field="",
-            collar_y_field="",
-            collar_z_field="z",
-            collar_depth_field="depth",
-            survey_layer=survey_layer,
-            survey_fields={},
-            interval_layer=interval_layer,
-            interval_fields={},
-        )
-
-        self.assertIsInstance(task_input, DrillholeTaskInput)
-        self.assertEqual(task_input.section_azimuth, 90.0)
-        self.assertEqual(task_input.buffer_width, 50.0)
-
-    def test_process_task_data(self):
-        """Test processing detached data."""
-        # Create detached input manually
-        task_input = DrillholeTaskInput(
-            line_geometry_wkt=self.line_geom.asWkt(),
-            line_start_x=self.line_start.x(),
-            line_start_y=self.line_start.y(),
-            line_crs_authid=self.crs.authid(),
+    def test_process_context(self):
+        """Test processing a detached context into geol + drillhole data."""
+        context = DrillholeContext(
+            line_points=self.line_points,
             section_azimuth=90.0,
             buffer_width=50.0,
             collar_id_field="id",
-            use_geometry=True,
-            collar_x_field="",
-            collar_y_field="",
-            collar_z_field="",
-            collar_depth_field="",
+            collar_z_field="z",
+            collar_depth_field="depth",
             collar_data=[
                 {
                     "id": "DH01",
+                    "point": (50.0, 10.0),
                     "attributes": {"id": "DH01", "z": 100.0, "depth": 200.0},
-                    "wkt": QgsGeometry.fromPointXY(QgsPointXY(50, 10)).asWkt(),
                 }
             ],
             survey_data={"DH01": [(0.0, 0.0, -90.0), (200.0, 0.0, -90.0)]},
@@ -105,12 +35,10 @@ class TestAsyncDrillhole(BaseTestCase):
             pre_sampled_z={},
         )
 
-        results = self.orchestrator.process_task_data(task_input)
+        results = self.service.process_context(context)
 
         self.assertIsNotNone(results)
-        self.assertEqual(len(results), 2)
         geol_data, drill_data = results
-
         self.assertEqual(len(drill_data), 1)
         proj = drill_data[0]
         self.assertEqual(proj.hole_id, "DH01")

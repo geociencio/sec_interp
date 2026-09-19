@@ -186,7 +186,11 @@ class PreviewManager(TranslatableMixin):
     def _trigger_async_updates(self, params: PreviewParams) -> None:
         """Launch background tasks via orchestrator."""
         self.orchestrator.start_geology_task(params, self.preview_service.geology_service)
-        self.orchestrator.start_drillhole_task(params, self.preview_service.drillhole_orchestrator)
+        self.orchestrator.start_drillhole_task(
+            params,
+            self.preview_service.drillhole_service,
+            self.preview_service.controller.drillhole_extractor,
+        )
 
     def _is_data_unchanged(self, params: PreviewParams) -> bool:
         """Check if parameters haven't changed since last generation."""

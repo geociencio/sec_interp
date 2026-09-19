@@ -4,16 +4,13 @@
 import unittest
 
 from tests.base_test import BaseTestCase
-from qgis.core import QgsDistanceArea, QgsGeometry, QgsPointXY
 from sec_interp.core.services.drillhole.trajectory_engine import TrajectoryEngine
 
 
 class TestDrillholeEngineCrash(BaseTestCase):
     def setUp(self):
         self.engine = TrajectoryEngine()
-        self.line_geom = QgsGeometry.fromWkt("LINESTRING(0 0, 100 0)")
-        self.line_start = QgsPointXY(0, 0)
-        self.da = QgsDistanceArea()
+        self.line_points = [(0.0, 0.0), (100.0, 0.0)]
 
     def test_create_result_with_empty_traj(self):
         """Test that create_drillhole_result handles empty trajectories without crashing."""
@@ -33,22 +30,14 @@ class TestDrillholeEngineCrash(BaseTestCase):
 
     def test_process_empty_traj(self):
         """Test processing a hole that results in no projected points (e.g. out of buffer)."""
-        # We mock calculate_drillhole_trajectory or project_trajectory_to_section
-        # but here we can just test the engine logic if we can force an empty traj.
-
-        # If we use a hole ID that has no survey or intervals, it might still have a collar point
-        # but let's test the specific case where it produces no projected points.
-
-        # Forcing empty projected_traj by using a buffer of 0 or far distance
         hole_id = "BH-01"
-        collar_point = QgsPointXY(0, 500)  # Far from line
+        collar_point = (0.0, 500.0)  # Far from line
         collar_z = 100.0
         depth = 50.0
         survey = []
         intervals = []
 
-        # This will likely call create_drillhole_result with empty projected_traj
-        # since the hole is 500m away from the line and we'll use a 10m buffer.
+        # The hole is 500m away from the line with a 10m buffer.
         try:
             geol, proj = self.engine.process_single_hole(
                 hole_id,
@@ -57,9 +46,7 @@ class TestDrillholeEngineCrash(BaseTestCase):
                 depth,
                 survey,
                 intervals,
-                self.line_geom,
-                self.line_start,
-                self.da,
+                self.line_points,
                 10.0,
                 0.0,
             )

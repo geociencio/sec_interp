@@ -59,9 +59,11 @@ class TestPreviewTaskOrchestrator(BaseTestCase):
         """Test starting a drillhole generation task."""
         params = MagicMock()
         service = MagicMock()
+        extractor = MagicMock()
+        extractor.extract_context.return_value = MagicMock()
         mock_resolve.return_value = MagicMock()
 
-        self.orchestrator.start_drillhole_task(params, service)
+        self.orchestrator.start_drillhole_task(params, service, extractor)
 
         mock_task_class.assert_called_once()
         mock_qgs_tm.return_value.addTask.assert_called_once()
@@ -105,7 +107,7 @@ class TestPreviewTaskOrchestrator(BaseTestCase):
 
         with patch("sec_interp.gui.preview_task_orchestrator.DrillholeGenerationTask"):
             with patch("qgis.core.QgsApplication.taskManager"):
-                self.orchestrator.start_drillhole_task(params, service)
+                self.orchestrator.start_drillhole_task(params, service, MagicMock())
                 old_task.cancel.assert_called_once()
 
 

@@ -93,6 +93,11 @@ class SecInterp(TranslatableMixin):
         profile_extractor = SafeLoader.lazy_load(
             "sec_interp.gui.adapters.profile_extractor", "ProfileExtractor"
         )
+        drillhole_extractor = SafeLoader.lazy_load(
+            "sec_interp.gui.adapters.drillhole_extractor",
+            "DrillholeExtractor",
+            data_fetcher=data_fetcher,
+        )
         self.controller = SafeLoader.lazy_load(
             "sec_interp.core.controller",
             "ProfileController",
@@ -100,6 +105,7 @@ class SecInterp(TranslatableMixin):
             structure_extractor=structure_extractor,
             geology_extractor=geology_extractor,
             profile_extractor=profile_extractor,
+            drillhole_extractor=drillhole_extractor,
         )
 
         # 3. Layer Notification Manager (GUI-side signal wiring)

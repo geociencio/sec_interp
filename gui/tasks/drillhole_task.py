@@ -7,13 +7,11 @@ from typing import TYPE_CHECKING, Any
 from qgis.core import Qgis, QgsMessageLog, QgsTask
 from qgis.PyQt.QtCore import QTimer, pyqtSignal
 
-from sec_interp.core.domain import DrillholeTaskInput
+from sec_interp.core.domain import DrillholeContext
 from sec_interp.logger_config import get_logger
 
 if TYPE_CHECKING:
-    from sec_interp.core.services.drillhole.drillhole_orchestrator import (
-        DrillholeTaskOrchestrator,
-    )
+    from sec_interp.core.services.drillhole_service import DrillholeService
 
 logger = get_logger(__name__)
 
@@ -33,22 +31,22 @@ class DrillholeGenerationTask(QgsTask):
     def __init__(
         self,
         description: str,
-        task_input: DrillholeTaskInput,
-        orchestrator: DrillholeTaskOrchestrator,
+        context: DrillholeContext,
+        service: DrillholeService,
         params: Any,
     ) -> None:
         """Initialize the task.
 
         Args:
             description: Description of the task.
-            task_input: The detached data input DTO.
-            orchestrator: The DrillholeTaskOrchestrator instance.
+            context: The detached drillhole context DTO.
+            service: The DrillholeService instance (stateless logic).
             params: Original params for context (backward compatibility).
 
         """
         super().__init__(description, QgsTask.Flag.CanCancel)
-        self.orchestrator = orchestrator
-        self.task_input = task_input
+        self.service = service
+        self.context = context
         self.params = params
 
         # Result is tuple (geol_data_all, drillhole_data_all)
@@ -59,7 +57,7 @@ class DrillholeGenerationTask(QgsTask):
         """Execute the task in background thread."""
         try:
             logger.info("DrillholeGenerationTask started (Background Thread)")
-            self.result = self.orchestrator.process_task_data(self.task_input, feedback=self)
+            self.result = self.service.process_context(self.context, feedback=self)
 
             count = 0
             if self.result and len(self.result) > 1:

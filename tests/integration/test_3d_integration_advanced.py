@@ -15,9 +15,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QMetaType
 from tests.integration.base_integration import BaseIntegrationTest
 from sec_interp.core.services.drillhole_service import DrillholeService
-from sec_interp.core.services.drillhole.drillhole_orchestrator import (
-    DrillholeTaskOrchestrator,
-)
+from sec_interp.gui.adapters.drillhole_extractor import DrillholeExtractor
 from sec_interp.gui.adapters.feature_fetcher import DataFetcher
 
 
@@ -25,8 +23,8 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
 
     def setUp(self):
         super().setUp()
+        self.extractor = DrillholeExtractor(data_fetcher=DataFetcher())
         self.service = DrillholeService(data_fetcher=DataFetcher())
-        self.orchestrator = DrillholeTaskOrchestrator(self.service)
 
         # Define CRS
         self.crs_wgs84 = QgsCoordinateReferenceSystem("EPSG:4326")
@@ -110,7 +108,7 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
         interval_layer.dataProvider().addFeatures([i_feat])
 
         # 4. Prepare Task Input
-        task_input = self.orchestrator.prepare_task_input(
+        context = self.extractor.extract_context(
             line_layer=section_layer,
             buffer_width=50.0,
             collar_layer=collar_layer,
@@ -137,7 +135,7 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
         )
 
         # 5. Process
-        geol, drill = self.orchestrator.process_task_data(task_input)
+        geol, drill = self.service.process_context(context)
 
         # 6. Verify
         # Should have found 1 hole
@@ -217,7 +215,7 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
         interval_layer.dataProvider().addFeatures([i_feat])
 
         # 4. Prepare & Process
-        task_input = self.orchestrator.prepare_task_input(
+        context = self.extractor.extract_context(
             line_layer=section_layer,
             buffer_width=200.0,  # Wide buffer to catch deviation
             collar_layer=collar_layer,
@@ -243,7 +241,7 @@ class Test3DIntegrationAdvanced(BaseIntegrationTest):
             },
         )
 
-        geol, drill = self.orchestrator.process_task_data(task_input)
+        geol, drill = self.service.process_context(context)
 
         # 5. Verify 3D projection logic
         h_id = drill[0].hole_id

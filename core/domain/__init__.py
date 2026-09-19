@@ -35,15 +35,15 @@ from .entities import (
 from .enums import FieldType
 from .spatial_meta import SpatialMeta
 from .task_inputs import (
-    DrillholeTaskInput,
+    DrillholeContext,
     GeologyContext,
     OutcropSegments,
 )
 
 __all__ = [
     "DomainGeometry",
+    "DrillholeContext",
     "DrillholeProjection",
-    "DrillholeTaskInput",
     "ExportSettings",
     "FieldType",
     "GeologyContext",

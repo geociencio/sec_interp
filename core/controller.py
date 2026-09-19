@@ -35,6 +35,7 @@ class ProfileController(TranslatableMixin):
         structure_extractor: Any | None = None,
         geology_extractor: Any | None = None,
         profile_extractor: Any | None = None,
+        drillhole_extractor: Any | None = None,
     ) -> None:
         """Initialize services and the data cache using Dependency Injection.
 
@@ -47,6 +48,8 @@ class ProfileController(TranslatableMixin):
                 provided by the GUI composition root.
             profile_extractor: Optional profile extractor (Extract adapter),
                 provided by the GUI composition root.
+            drillhole_extractor: Optional drillhole extractor (Extract adapter),
+                provided by the GUI composition root.
 
         """
         self.config_service = ConfigService()
@@ -56,6 +59,7 @@ class ProfileController(TranslatableMixin):
         self.structure_extractor = structure_extractor
         self.geology_extractor = geology_extractor
         self.profile_extractor = profile_extractor
+        self.drillhole_extractor = drillhole_extractor
 
         # 1. Component Factories (Loaded safely)
         # Processors
@@ -82,7 +86,7 @@ class ProfileController(TranslatableMixin):
             "sec_interp.core.services.structure_service", "StructureService"
         )
 
-        # Drillhole Service (Using the new lazy_load with DI)
+        # Drillhole Service (QGIS-agnostic; extraction is delegated to the adapter)
         self.drillhole_service = SafeLoader.lazy_load(
             "sec_interp.core.services.drillhole_service",
             "DrillholeService",
@@ -91,13 +95,6 @@ class ProfileController(TranslatableMixin):
             interval_processor=self.interval_processor,
             data_fetcher=self.data_fetcher,
             trajectory_engine=self.trajectory_engine,
-        )
-
-        # Orchestrator
-        self.drillhole_orchestrator = SafeLoader.lazy_load(
-            "sec_interp.core.services.drillhole.drillhole_orchestrator",
-            "DrillholeTaskOrchestrator",
-            service=self.drillhole_service,
         )
 
         logger.debug("ProfileController initialized with DI")
@@ -383,11 +380,44 @@ class ProfileController(TranslatableMixin):
         if not collar_lyr:
             return None
 
-        if not self.drillhole_orchestrator:
-            messages.append(self.tr("Drillholes: Orchestrator failed to load"))
+        if not self.drillhole_service or not self.drillhole_extractor:
+            messages.append(self.tr("Drillholes: Service failed to load"))
             return None
 
-        drillhole_data = self.drillhole_orchestrator.run_preview(params)
+        survey_fields = {
+            "id": params.survey_id_field,
+            "depth": params.survey_depth_field,
+            "azim": params.survey_azim_field,
+            "incl": params.survey_incl_field,
+        }
+        interval_fields = {
+            "id": params.interval_id_field,
+            "from": params.interval_from_field,
+            "to": params.interval_to_field,
+            "lith": params.interval_lith_field,
+        }
+
+        context = self.drillhole_extractor.extract_context(
+            params.line_layer,
+            params.buffer_dist,
+            params.collar_layer,
+            params.collar_id_field,
+            params.collar_use_geometry,
+            params.collar_x_field,
+            params.collar_y_field,
+            params.collar_z_field,
+            params.collar_depth_field,
+            params.survey_layer,
+            survey_fields,
+            params.interval_layer,
+            interval_fields,
+            params.raster_layer,
+            params.band_num,
+        )
+        if context is None:
+            return None
+
+        _, drillhole_data = self.drillhole_service.process_context(context)
 
         if drillhole_data:
             self.data_cache.set("drill", drill_key, drillhole_data, cache_meta)
