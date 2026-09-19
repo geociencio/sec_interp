@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.0] - 2026-09-19
+
+### Changed
+- **Arquitectura (interno, sin impacto para el usuario)**: Aplicado el patrón Extract-then-Compute. Los servicios de negocio migraron a un núcleo agnóstico de QGIS y se introdujo una capa `gui/adapters/` para la lectura de features, buffers, muestreo ráster y resolución de capas. La decimación, métricas de polilínea, azimut, proyección y densificación se reimplementaron en matemática pura. Nuevo gate de arquitectura (allowlist 36 → 6 módulos).
+- **Tooling**: El gate de complejidad ciclomática (CC ≤ 10) y la regla AST de i18n pasan a ser nativos de `qgis-plugin-analyzer` 1.14.0; se retiraron los scripts internos `check_cc.py` y `verify_i18n_hygiene.py`.
+
+### Fixed
+- **Qt6 / QGIS 4 (Leyenda)**: Reemplazado el enum plano `QEvent.Resize` por la forma con scope `QEvent.Type.Resize`, resolviendo un `AttributeError` en tiempo de ejecución en QGIS 4.
+- **Exportación 3D**: La exportación de interpretaciones 3D ahora está habilitada por defecto.
+
+## [3.7.2] - 2026-09-12
+
+### Fixed
+- **Compatibilidad de enums Qt6 / QGIS 4**: Migrados 114 usos de enums planos a su forma con scope (`Qgis.Critical` → `Qgis.MessageLevel.Critical`, `Qt.NoPen` → `Qt.PenStyle.NoPen`, etc.), resolviendo los 114 hallazgos "Enum error" del verificador Qt6 del repositorio de plugins de QGIS.
+
+## [3.7.1] - 2026-09-06
+
+### Fixed
+- **Persistencia de Ajustes**: Reemplazado un `try/except/pass` silencioso en `_get_setting` por un `logger.warning`, de modo que los fallos de restauración de configuración sean visibles (Bandit `B110`).
+
 ## [3.7.0] - 2026-09-06
 
 ### Added

@@ -25,7 +25,7 @@ copyright = "2026, Juan M Bernales"
 author = "Juan M Bernales"
 
 # The full version, including alpha/beta/rc tags
-release = "3.4.0"
+release = "3.8.0"
 
 
 # -- General configuration ---------------------------------------------------

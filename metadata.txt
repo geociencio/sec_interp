@@ -4,7 +4,7 @@ qgisMinimumVersion=3.28
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.7.2
+version=3.8.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,12 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.8.0 (2026-09-19)
+	* Core/GUI Decoupling & Reliability:
+	- Architecture: Enforced the Extract-then-Compute pattern; business services migrated to a QGIS-agnostic core with a new gui/adapters layer (architecture allowlist 36 -> 6). No user-facing change.
+	- Compatibility: Fixed a QGIS 4 crash by scoping QEvent.Type.Resize in the legend widget.
+	- Export: 3D interpretation export is now enabled by default.
+	- Tooling: CC <= 10 and i18n gates are now provided natively by qgis-plugin-analyzer 1.14.0.
 	3.7.2 (2026-09-12)
 	* QGIS 4 / Qt6 Compatibility:
 	- Compatibility: Migrated 114 flat enum usages to scoped form (Qgis.Critical -> Qgis.MessageLevel.Critical, Qt.NoPen -> Qt.PenStyle.NoPen, etc.).

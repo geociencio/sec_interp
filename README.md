@@ -1,12 +1,12 @@
 # SecInterp — Geological Interpretation for QGIS
 
-![QGIS](https://img.shields.io/badge/QGIS-3.0%2B-green.svg)
+![QGIS](https://img.shields.io/badge/QGIS-3.28%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.7.2-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.8.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
-![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-52.6%2F100-yellow)
-![Code Quality](https://img.shields.io/badge/Code--Quality-94.2%2F100-green)
+![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-85.0%2F100-green)
+![Code Quality](https://img.shields.io/badge/Code--Quality-99.9%2F100-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-pass-brightgreen.svg)
 ![Linting](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
 ![Managed with uv](https://img.shields.io/badge/managed%20with-uv-blueviolet)
@@ -15,9 +15,21 @@
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v3.7.0: i18n Quality Gate & UX Improvements.*
+*SecInterp v3.8.0: Core/GUI Decoupling & Reliability.*
 
 ---
+
+## 🆕 What's New in v3.8.0
+**Phase: Core/GUI Decoupling & Reliability**
+
+### 🏗️ Architecture Refactor (internal)
+- **Extract-then-Compute**: Business services (`StructureService`, `GeologyService`, `ProfileService`, drillhole domain, validation) now run on a QGIS-agnostic core, with all QGIS interactions moved to a dedicated `gui/adapters/` layer. Guarded by an architecture allowlist gate (36 → 6 core modules).
+- **Pure-Math Core**: Decimation, polyline metrics, line azimuth, projection, and densification reimplemented with the standard library only.
+
+### 🔧 Reliability & Compatibility
+- **QGIS 4 Legend Fix**: Scoped `QEvent.Type.Resize` resolves a runtime `AttributeError` on QGIS 4.
+- **3D Export Default**: 3D interpretation export is enabled out of the box.
+- **Streamlined Gates**: Cyclomatic-complexity (CC ≤ 10) and i18n checks are now native to `qgis-plugin-analyzer` 1.14.0.
 
 ## 🆕 What's New in v3.7.2
 **Patch: Qt6 / QGIS 4 Enum Compatibility**

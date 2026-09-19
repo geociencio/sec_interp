@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.8.0] - 2026-09-19
 
 ### Changed
 - **Architecture (internal, no user-facing impact)**: Enforced the Core/GUI Extract-then-Compute boundary. Migrated `StructureService`, `GeologyService`, `ProfileService`, the drillhole domain, and the validation layer to a QGIS-agnostic core; moved QGIS feature-reading, buffering, raster sampling, and layer resolution into a new `gui/adapters/` layer; and reimplemented decimation, polyline metrics, line azimuth, projection, and densification in pure standard-library math. Guarded by a new architecture allowlist gate (36 → 6 `core/` modules).

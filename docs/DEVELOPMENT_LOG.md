@@ -1,3 +1,17 @@
+## [2026-09-19] MILESTONE: Release v3.8.0 — Core/GUI Decoupling & Reliability
+- **Achievement**: Publicación de SecInterp v3.8.0, release que consolida el refactor Core/GUI y dos correcciones de fiabilidad.
+- **Release Content**:
+    - **Architecture**: Extract-then-Compute con núcleo agnóstico de QGIS y capa `gui/adapters/`; allowlist 36 → 6.
+    - **Compatibility**: Fix de `QEvent.Type.Resize` en la leyenda para QGIS 4.
+    - **Export**: Exportación 3D de interpretaciones habilitada por defecto.
+    - **Tooling**: Gates de CC e i18n nativos de `qgis-plugin-analyzer` 1.14.0.
+- **Operational Metrics**:
+    - Tests: 606/606 (Docker)
+    - Quality: 52.4/100 · Maintainability 99.9/100 · Security 100/100
+    - CC ≤ 10: PASS · i18n AST: PASS · Docstring: 100%
+- **Status**: Release v3.8.0 completado.
+- **Release Notes**: [notes/v3.8.0.md](releases/notes/v3.8.0.md)
+
 ## [2026-09-19] Session: Core/GUI Decoupling Refactor — Completion & Merge
 - **Achievement**: Completed the Extract-then-Compute refactor and fast-forward merged it to `main`. Migrated all business services (`StructureService`, `GeologyService`, `ProfileService`, the drillhole domain, and the validation layer) to a QGIS-agnostic core, shrinking the architecture allowlist 36 → 6.
 - **Changes**:
