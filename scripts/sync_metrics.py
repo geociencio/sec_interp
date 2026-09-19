@@ -166,6 +166,31 @@ def check_module_sizes() -> dict:
     }
 
 
+def count_total_tests() -> int:
+    """Count test methods (``def test_``) across the CI test categories.
+
+    Matches the categories counted by ``--testing-status`` (agentic, core, gui,
+    exporters, integration) so ``agent_metrics.json`` and ``TESTING_STATUS.md``
+    stay in sync.
+    """
+    test_dir = PROJECT_ROOT / "tests"
+    categories = ["agentic", "core", "gui", "exporters", "integration"]
+    total = 0
+    for cat in categories:
+        cat_dir = test_dir / cat
+        if not cat_dir.is_dir():
+            continue
+        for root, _, files in os.walk(cat_dir):
+            for file in files:
+                if file.startswith("test_") and file.endswith(".py"):
+                    try:
+                        content = (Path(root) / file).read_text(encoding="utf-8")
+                    except OSError:
+                        continue
+                    total += len(re.findall(r"def\s+test_", content))
+    return total
+
+
 def update_metrics_json(metrics: dict) -> bool:
     """Update the summary section of agent_metrics.json."""
     if not METRICS_FILE.exists():
@@ -195,7 +220,8 @@ def update_metrics_json(metrics: dict) -> bool:
     summary["i18n_hygiene_gate"] = (
         "PASS" if i18n_ast.get("passed") else ("FAIL" if i18n_ast.get("passed") is False else "UNKNOWN")
     )
-    summary["test_count"] = summary.get("tests_ok", summary.get("test_count", "?"))
+    summary["test_count"] = count_total_tests()
+    summary["tests_ok"] = summary["test_count"]
     summary["total_issues"] = analyzer.get("total_issues", summary.get("total_issues", "?"))
 
     module_sizes = metrics.get("module_sizes", {})

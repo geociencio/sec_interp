@@ -16,8 +16,8 @@
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
         "avg_retries_per_session": 1.18,
-        "tests_ok": 640,
-        "tests_ok_note": "640 = 620 plugin + 20 agentic tooling (Gen 8 Phases A-E).",
+        "tests_ok": 606,
+        "tests_ok_note": "606 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
         "quality_score_latest": 52.3,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
         "maintainability_score": 99.9,
@@ -61,7 +61,7 @@
                 "lines": 417
             }
         ],
-        "test_count": 640
+        "test_count": 606
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
