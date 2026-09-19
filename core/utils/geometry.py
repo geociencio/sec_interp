@@ -15,17 +15,13 @@ from .geometry_utils.filtering import (
 )
 from .geometry_utils.processing import (
     create_buffer_geometry,
-    create_memory_layer,
     densify_line_by_interval,
-    run_geometry_operation,
 )
 
 __all__ = [
     "create_buffer_geometry",
-    "create_memory_layer",
     "densify_line_by_interval",
     "extract_all_vertices",
     "filter_features_by_buffer",
     "get_line_vertices",
-    "run_geometry_operation",
 ]

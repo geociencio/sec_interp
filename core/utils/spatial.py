@@ -6,7 +6,6 @@ Distance calculations, azimuth, and basic spatial operations.
 from __future__ import annotations
 
 import math
-from typing import Any
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -61,50 +60,6 @@ def calculate_line_azimuth(points: list[tuple[float, float]]) -> float:
     if azimuth < 0:
         azimuth += 360
     return azimuth
-
-
-def calculate_step_size(geom: QgsGeometry, raster_lyr: Any) -> float:
-    """Calculate step size based on slope and raster resolution.
-
-    .. deprecated::
-        Use densify_line_by_interval() instead for better precision and simpler code.
-        This function is kept for backward compatibility but may be removed in future versions.
-
-    Ensures that sampling occurs at approximately one pixel intervals,
-    accounting for the slope of the line relative to the raster grid.
-
-    Args:
-        geom: The geometry to sample along.
-        raster_lyr: The raster layer being sampled.
-
-    Returns:
-        Calculated step size in map units.
-
-    """
-    # Get raster resolution
-    res = raster_lyr.rasterUnitsPerPixelX()
-
-    # Calculate step size based on slope to ensure 1 pixel sampling
-    dist_step = res
-    try:
-        if geom.isMultipart():
-            parts = geom.asMultiPolyline()
-            line_pts = parts[0] if parts else []
-        else:
-            line_pts = geom.asPolyline()
-
-        MIN_REQUIRED_POINTS = 2
-        if line_pts and len(line_pts) >= MIN_REQUIRED_POINTS:
-            p1 = line_pts[0]
-            p2 = line_pts[-1]
-            dx = abs(p2.x() - p1.x())
-            dy = abs(p2.y() - p1.y())
-            if max(dx, dy) > 0:
-                dist_step = geom.length() * res / max(dx, dy)
-    except (ValueError, TypeError):
-        # Fallback to simple resolution if geometry parsing fails
-        pass
-    return dist_step  # type: ignore[no-any-return]
 
 
 def get_line_start_point(geometry: QgsGeometry) -> QgsPointXY:

@@ -8,10 +8,8 @@ from typing import Any
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDistanceArea,
-    QgsField,
     QgsGeometry,
     QgsPointXY,
-    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -44,36 +42,6 @@ def create_buffer_geometry(
             QCoreApplication.translate("GeometryProcessing", "Geometry is null or invalid")
         )
     return geometry.buffer(distance, segments)
-
-
-def create_memory_layer(
-    layer_name: str,
-    layer_type: str,
-    crs: QgsCoordinateReferenceSystem,
-    fields: list[QgsField],
-) -> QgsVectorLayer:
-    """Create a temporary memory (scratch) layer.
-
-    Args:
-        layer_name: Name for the layer.
-        layer_type: QGIS geometry type string (e.g., 'Point', 'LineString').
-        crs: Coordinate reference system.
-        fields: List of fields for the layer.
-
-    Returns:
-        The created memory layer.
-
-    """
-    uri = f"{layer_type}?crs={crs.authid()}"
-    layer = QgsVectorLayer(uri, layer_name, "memory")
-    if not layer.isValid():
-        logger.error(f"Failed to create memory layer: {layer_name}")
-        return None
-
-    pr = layer.dataProvider()
-    pr.addAttributes(fields)
-    layer.updateFields()
-    return layer
 
 
 def densify_line_points(
@@ -133,24 +101,6 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
     points = [(p.x(), p.y()) for p in verts]
     densified = densify_line_points(points, interval)
     return QgsGeometry.fromPolylineXY([QgsPointXY(x, y) for x, y in densified])
-
-
-def run_geometry_operation(operation: str, *args: Any, **kwargs: Any) -> Any:
-    """Wrap generic geometry operations.
-
-    Args:
-        operation: Name of the operation to perform.
-        *args: Positional arguments for the operation.
-        **kwargs: Keyword arguments for the operation.
-
-    Returns:
-        Result of the operation.
-
-    """
-    # This is a placeholder for more complex logic if needed
-    # For now it just logs and performs the op if possible
-    logger.debug(f"Running geometry operation: {operation}")
-    return None
 
 
 def calculate_segment_range(

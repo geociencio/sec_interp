@@ -27,7 +27,6 @@ from .geology import (
 # Geometry operations and helpers
 from .geometry import (
     create_buffer_geometry,
-    create_memory_layer,
     densify_line_by_interval,
     filter_features_by_buffer,
     get_line_vertices,
@@ -64,7 +63,6 @@ from .sampling import (
 # Spatial calculations
 from .spatial import (
     calculate_line_azimuth,
-    calculate_step_size,
     create_distance_area,
     extract_line_points,
     get_line_start_point,
@@ -80,14 +78,12 @@ __all__ = [
     "calculate_interval",
     # Spatial
     "calculate_line_azimuth",
-    "calculate_step_size",
     # Parsing
     "cardinal_to_azimuth",
     # Geometry
     "create_buffer_geometry",
     "create_coordinate_transform",
     "create_distance_area",
-    "create_memory_layer",
     # I/O
     "create_shapefile_writer",
     "densify_line_by_interval",

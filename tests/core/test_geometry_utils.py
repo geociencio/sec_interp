@@ -8,7 +8,6 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFeature,
     QgsCoordinateReferenceSystem,
-    QgsField,
 )
 
 from sec_interp.core.utils.geometry_utils.extraction import (
@@ -20,10 +19,8 @@ from sec_interp.core.utils.geometry_utils.measurement import calculate_polyline_
 from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
 from sec_interp.core.utils.geometry_utils.processing import (
     create_buffer_geometry,
-    create_memory_layer,
     densify_line_by_interval,
     densify_line_points,
-    run_geometry_operation,
 )
 
 
@@ -200,14 +197,6 @@ class TestGeometryProcessing(BaseTestCase):
         buffer = create_buffer_geometry(geom, QgsCoordinateReferenceSystem(), 10.0)
         self.assertIsNotNone(buffer)
 
-    def test_create_memory_layer(self):
-        """Test memory layer creation."""
-        crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        field1 = MagicMock()  # QgsField is also mocked if needed
-        layer = create_memory_layer("test", "Point", crs, [field1])
-        # QgsVectorLayer mock returns isValid=True by default in base_test
-        self.assertIsNotNone(layer)
-
     def test_densify_line(self):
         """Test line densification."""
         geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(10, 0)])
@@ -231,7 +220,3 @@ class TestGeometryProcessing(BaseTestCase):
         # Empty and single-point inputs return unchanged
         self.assertEqual(densify_line_points([], 1.0), [])
         self.assertEqual(densify_line_points([(0, 0)], 1.0), [(0, 0)])
-
-    def test_run_geometry_operation(self):
-        """Test placeholder operation executor."""
-        self.assertIsNone(run_geometry_operation("test"))

@@ -1,13 +1,11 @@
 """Tests for spatial utilities."""
 
-import math
 from unittest.mock import MagicMock
 from tests.base_test import BaseTestCase
 from qgis.core import QgsPointXY, QgsGeometry, QgsCoordinateReferenceSystem
 
 from sec_interp.core.utils.spatial import (
     calculate_line_azimuth,
-    calculate_step_size,
     get_line_start_point,
     create_distance_area,
 )
@@ -41,46 +39,6 @@ class TestSpatialUtils(BaseTestCase):
     def test_calculate_line_azimuth_short_line(self):
         """Test azimuth for line with less than 2 points."""
         self.assertEqual(calculate_line_azimuth([(1, 1)]), 0)
-
-    def test_calculate_step_size_exception(self):
-        """Test step size calculation when an exception occurs."""
-        raster_lyr = MagicMock()
-        raster_lyr.rasterUnitsPerPixelX.return_value = 2.0
-
-        # Geometry that causes error in asPolyline
-        geom = QgsGeometry()
-        geom.asPolyline = MagicMock(side_effect=ValueError("Test error"))
-
-        # Should fallback to resolution
-        self.assertEqual(calculate_step_size(geom, raster_lyr), 2.0)
-
-    def test_calculate_step_size(self):
-        """Test step size calculation based on raster resolution."""
-        raster_lyr = MagicMock()
-        raster_lyr.rasterUnitsPerPixelX.return_value = 2.0
-
-        # Horizontal line: dx=10, dy=0, length=10 -> step = 10 * 2 / 10 = 2
-        line = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(10, 0)])
-        self.assertAlmostEqual(calculate_step_size(line, raster_lyr), 2.0)
-
-        # Diagonal line: dx=10, dy=10, length=sqrt(200)~14.14 -> step = 14.14 * 2 / 10 = 2.828
-        line_diag = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(10, 10)])
-        expected = math.sqrt(200) * 2 / 10
-        self.assertAlmostEqual(calculate_step_size(line_diag, raster_lyr), expected)
-
-    def test_calculate_step_size_multipart(self):
-        """Test step size for multipart geometries."""
-        raster_lyr = MagicMock()
-        raster_lyr.rasterUnitsPerPixelX.return_value = 2.0
-
-        line = QgsGeometry()
-        line.isMultipart = MagicMock(return_value=True)
-        line.asMultiPolyline = MagicMock(
-            return_value=[[QgsPointXY(0, 0), QgsPointXY(10, 0)]]
-        )
-        line.length = MagicMock(return_value=10.0)
-
-        self.assertAlmostEqual(calculate_step_size(line, raster_lyr), 2.0)
 
     def test_get_line_start_point(self):
         """Test getting start point from single and multipart lines."""
