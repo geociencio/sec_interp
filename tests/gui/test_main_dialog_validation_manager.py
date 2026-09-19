@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 
 from sec_interp.gui.dialog_input_manager import InputManager
+from sec_interp.gui.dialog_dependencies import Pages
 from sec_interp.core.exceptions import ValidationError
 
 
@@ -14,18 +15,15 @@ class TestInputManager(BaseTestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        # Create mock dialog with all required page attributes
-        self.mock_dialog = MagicMock()
-        # Mock translate function
-        self.mock_dialog.tr = lambda x: x
-
-        # Mock pages and their data
-        self.mock_dialog.page_dem = MagicMock()
-        self.mock_dialog.page_section = MagicMock()
-        self.mock_dialog.page_geology = MagicMock()
-        self.mock_dialog.page_struct = MagicMock()
-        self.mock_dialog.page_drillhole = MagicMock()
-        self.mock_dialog.output_widget = MagicMock()
+        # Create page container with all required page attributes
+        self.pages = Pages(
+            dem=MagicMock(),
+            section=MagicMock(),
+            geology=MagicMock(),
+            structure=MagicMock(),
+            drillhole=MagicMock(),
+        )
+        self.output_widget = MagicMock()
 
         # Default empty data
         self.default_data = {
@@ -60,14 +58,14 @@ class TestInputManager(BaseTestCase):
             "interval_lith": None,
         }
 
-        self.mock_dialog.page_dem.get_data.return_value = self.default_data.copy()
-        self.mock_dialog.page_section.get_data.return_value = self.default_data.copy()
-        self.mock_dialog.page_geology.get_data.return_value = self.default_data.copy()
-        self.mock_dialog.page_struct.get_data.return_value = self.default_data.copy()
-        self.mock_dialog.page_drillhole.get_data.return_value = self.default_data.copy()
-        self.mock_dialog.output_widget.filePath.return_value = ""
+        self.pages.dem.get_data.return_value = self.default_data.copy()
+        self.pages.section.get_data.return_value = self.default_data.copy()
+        self.pages.geology.get_data.return_value = self.default_data.copy()
+        self.pages.structure.get_data.return_value = self.default_data.copy()
+        self.pages.drillhole.get_data.return_value = self.default_data.copy()
+        self.output_widget.filePath.return_value = ""
 
-        self.manager = InputManager(self.mock_dialog)
+        self.manager = InputManager(self.pages, self.output_widget, lambda x: x)
 
     def test_validate_inputs_success(self):
         """Test successful validation."""
@@ -104,11 +102,11 @@ class TestInputManager(BaseTestCase):
         # Setup mock page data
         dem_data = self.default_data.copy()
         dem_data.update({"raster_layer": "SomeLayer"})
-        self.mock_dialog.page_dem.get_data.return_value = dem_data
+        self.pages.dem.get_data.return_value = dem_data
 
         sect_data = self.default_data.copy()
         sect_data.update({"crossline_layer": None})
-        self.mock_dialog.page_section.get_data.return_value = sect_data
+        self.pages.section.get_data.return_value = sect_data
 
         self.assertTrue(self.manager.is_section_valid("dem"))
         self.assertFalse(self.manager.is_section_valid("section"))
@@ -118,22 +116,22 @@ class TestInputManager(BaseTestCase):
         # Case 1: Valid
         dem_data = self.default_data.copy()
         dem_data.update({"raster_layer": "SomeLayer"})
-        self.mock_dialog.page_dem.get_data.return_value = dem_data
+        self.pages.dem.get_data.return_value = dem_data
 
         sect_data = self.default_data.copy()
         sect_data.update({"crossline_layer": "LineLayer"})
-        self.mock_dialog.page_section.get_data.return_value = sect_data
+        self.pages.section.get_data.return_value = sect_data
 
         self.assertTrue(self.manager.can_preview())
 
         # Case 2: Invalid
         dem_data_invalid = self.default_data.copy()
         dem_data_invalid.update({"raster_layer": None})
-        self.mock_dialog.page_dem.get_data.return_value = dem_data_invalid
+        self.pages.dem.get_data.return_value = dem_data_invalid
 
         sect_data_invalid = self.default_data.copy()
         sect_data_invalid.update({"crossline_layer": None})
-        self.mock_dialog.page_section.get_data.return_value = sect_data_invalid
+        self.pages.section.get_data.return_value = sect_data_invalid
 
         self.assertFalse(self.manager.can_preview())
 
@@ -142,7 +140,7 @@ class TestInputManager(BaseTestCase):
         # Case 1: Error
         dem_data = self.default_data.copy()
         dem_data.update({"raster_layer": None})
-        self.mock_dialog.page_dem.get_data.return_value = dem_data
+        self.pages.dem.get_data.return_value = dem_data
 
         error = self.manager.get_section_error("dem")
         self.assertEqual(error, "Raster DEM layer is required")
@@ -150,7 +148,7 @@ class TestInputManager(BaseTestCase):
         # Case 2: No Error
         dem_data_valid = self.default_data.copy()
         dem_data_valid.update({"raster_layer": "Layer"})
-        self.mock_dialog.page_dem.get_data.return_value = dem_data_valid
+        self.pages.dem.get_data.return_value = dem_data_valid
 
         error = self.manager.get_section_error("dem")
         self.assertEqual(error, "")

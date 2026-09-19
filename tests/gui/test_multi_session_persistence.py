@@ -34,7 +34,13 @@ class TestMultiSessionPersistence(BaseTestCase):
             # Setup real ToolManager with mocked tools
             from sec_interp.gui.dialog_tool_manager import ToolManager
 
-            self.dialog.tool_manager = ToolManager(self.dialog)
+            self.dialog.tool_manager = ToolManager(
+                self.dialog.preview_widget.canvas,
+                self.dialog.preview_widget,
+                self.dialog.tr,
+                self.dialog.on_interpretation_finished,
+                self.dialog.update_measurement_display,
+            )
             self.dialog.tool_manager.measure_tool = MagicMock()
             self.dialog.tool_manager.interpretation_tool = MagicMock()
 

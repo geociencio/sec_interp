@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from sec_interp.gui.dialog_input_manager import InputManager
+from sec_interp.gui.dialog_dependencies import Pages
 from sec_interp.core.exceptions import ValidationError
 
 
@@ -12,55 +13,41 @@ class TestInputManager(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mock_dialog = MagicMock()
-        self.mock_dialog.tr = lambda x: x
+        self.pages = Pages(
+            dem=MagicMock(),
+            section=MagicMock(),
+            geology=MagicMock(),
+            structure=MagicMock(),
+            drillhole=MagicMock(),
+            settings=MagicMock(),
+        )
+        self.output_widget = MagicMock()
 
-        # Mock pages
-        self.mock_dialog.page_section = MagicMock()
-        self.mock_dialog.page_dem = MagicMock()
-        self.mock_dialog.page_geology = MagicMock()
-        self.mock_dialog.page_drillhole = MagicMock()
-        self.mock_dialog.page_struct = MagicMock()
-        self.mock_dialog.page_interpretation = MagicMock()
-        self.mock_dialog.output_widget = MagicMock()
-
-        self.manager = InputManager(self.mock_dialog)
+        self.manager = InputManager(self.pages, self.output_widget, lambda x: x)
 
     def test_get_all_values_collects_from_all_pages(self):
         """Verify that get_all_values calls gathering methods on all pages."""
-        # Setup returns for the mocked pages to avoid KeyErrors
-        empty_data = MagicMock(return_value={})
-        for page in [
-            "page_section",
-            "page_dem",
-            "page_geology",
-            "page_drillhole",
-            "page_struct",
-        ]:
-            getattr(self.mock_dialog, page).get_data.return_value = {}
-
-        # Specific keys needed for Dict packing
-        self.mock_dialog.page_dem.get_data.return_value = {
+        self.pages.dem.get_data.return_value = {
             "raster_layer": None,
             "selected_band": 1,
             "scale": 1,
             "vertexag": 1,
         }
-        self.mock_dialog.page_section.get_data.return_value = {
+        self.pages.section.get_data.return_value = {
             "crossline_layer": None,
             "buffer_distance": 50,
         }
-        self.mock_dialog.page_geology.get_data.return_value = {
+        self.pages.geology.get_data.return_value = {
             "outcrop_layer": None,
             "outcrop_name_field": "",
         }
-        self.mock_dialog.page_struct.get_data.return_value = {
+        self.pages.structure.get_data.return_value = {
             "structural_layer": None,
             "dip_field": "",
             "strike_field": "",
             "dip_scale_factor": 1,
         }
-        self.mock_dialog.page_drillhole.get_data.return_value = {
+        self.pages.drillhole.get_data.return_value = {
             "collar_layer": None,
             "collar_id": "",
             "use_geometry": True,
@@ -82,11 +69,11 @@ class TestInputManager(BaseTestCase):
 
         self.manager.get_all_values()
 
-        self.mock_dialog.page_section.get_data.assert_called_once()
-        self.mock_dialog.page_dem.get_data.assert_called_once()
-        self.mock_dialog.page_geology.get_data.assert_called_once()
-        self.mock_dialog.page_drillhole.get_data.assert_called_once()
-        self.mock_dialog.page_struct.get_data.assert_called_once()
+        self.pages.section.get_data.assert_called_once()
+        self.pages.dem.get_data.assert_called_once()
+        self.pages.geology.get_data.assert_called_once()
+        self.pages.drillhole.get_data.assert_called_once()
+        self.pages.structure.get_data.assert_called_once()
 
     @patch("sec_interp.gui.dialog_input_manager.ProjectValidator.validate_all")
     def test_validate_inputs_success(self, mock_validate):

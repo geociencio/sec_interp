@@ -5,7 +5,8 @@ Handles data aggregation and validation for the dialog UI.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from collections.abc import Callable
+from typing import Any
 
 from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.validation.project_validator import (
@@ -13,21 +14,29 @@ from sec_interp.core.validation.project_validator import (
     ValidationParams,
 )
 
-if TYPE_CHECKING:
-    from sec_interp.gui.main_dialog import SecInterpDialog
+from .dialog_dependencies import Pages
 
 
 class InputManager:
     """Manages dialog inputs, including data collection and validation."""
 
-    def __init__(self, dialog: SecInterpDialog) -> None:
+    def __init__(
+        self,
+        pages: Pages,
+        output_widget: Any,
+        translate: Callable[[str], str],
+    ) -> None:
         """Initialize input manager.
 
         Args:
-            dialog: The main dialog instance.
+            pages: The configuration pages to collect data from.
+            output_widget: The output path widget.
+            translate: Translation function (dialog ``tr``).
 
         """
-        self.dialog = dialog
+        self.pages = pages
+        self.output_widget = output_widget
+        self.tr = translate
         self._setup_validation_rules()
 
     def _setup_validation_rules(self) -> None:
@@ -35,33 +44,33 @@ class InputManager:
         self.rules = {
             "dem": {
                 "check": lambda p: bool(p.raster_layer),
-                "message": self.dialog.tr("Raster DEM layer is required"),
+                "message": self.tr("Raster DEM layer is required"),
             },
             "section": {
                 "check": lambda p: bool(p.line_layer),
-                "message": self.dialog.tr("Cross-section line layer is required"),
+                "message": self.tr("Cross-section line layer is required"),
             },
             "output": {
                 "check": lambda p: bool(p.output_path),
-                "message": self.dialog.tr("Output directory path is required"),
+                "message": self.tr("Output directory path is required"),
             },
             "geology": {
                 "check": lambda p: (
                     ProjectValidator.is_geology_complete(p) if p.outcrop_layer else True
                 ),
-                "message": self.dialog.tr("Geology configuration is incomplete"),
+                "message": self.tr("Geology configuration is incomplete"),
             },
             "structure": {
                 "check": lambda p: (
                     ProjectValidator.is_structure_complete(p) if p.struct_layer else True
                 ),
-                "message": self.dialog.tr("Structure configuration is incomplete"),
+                "message": self.tr("Structure configuration is incomplete"),
             },
             "drillhole": {
                 "check": lambda p: (
                     ProjectValidator.is_drillhole_complete(p) if p.collar_layer else True
                 ),
-                "message": self.dialog.tr("Drillhole configuration is incomplete"),
+                "message": self.tr("Drillhole configuration is incomplete"),
             },
         }
 
@@ -69,11 +78,11 @@ class InputManager:
 
     def get_all_values(self) -> dict[str, Any]:
         """Get all UI values as a flat dictionary."""
-        dem = self.dialog.page_dem.get_data()
-        sect = self.dialog.page_section.get_data()
-        geol = self.dialog.page_geology.get_data()
-        stru = self.dialog.page_struct.get_data()
-        dh = self.dialog.page_drillhole.get_data()
+        dem = self.pages.dem.get_data()
+        sect = self.pages.section.get_data()
+        geol = self.pages.geology.get_data()
+        stru = self.pages.structure.get_data()
+        dh = self.pages.drillhole.get_data()
 
         return {
             "raster_layer": dem["raster_layer"],
@@ -105,27 +114,23 @@ class InputManager:
             "interval_from_field": dh["interval_from"],
             "interval_to_field": dh["interval_to"],
             "interval_lith_field": dh["interval_lith"],
-            "output_path": self.dialog.output_widget.filePath(),
-            **(
-                self.dialog.page_settings.get_data()
-                if hasattr(self.dialog, "page_settings")
-                else {}
-            ),
+            "output_path": self.output_widget.filePath(),
+            **(self.pages.settings.get_data() if self.pages.settings is not None else {}),
         }
 
     def get_validation_params(self) -> ValidationParams:
         """Collect current UI state into ValidationParams."""
-        dem = self.dialog.page_dem.get_data()
-        sect = self.dialog.page_section.get_data()
-        geol = self.dialog.page_geology.get_data()
-        stru = self.dialog.page_struct.get_data()
-        dh = self.dialog.page_drillhole.get_data()
+        dem = self.pages.dem.get_data()
+        sect = self.pages.section.get_data()
+        geol = self.pages.geology.get_data()
+        stru = self.pages.structure.get_data()
+        dh = self.pages.drillhole.get_data()
 
         return ValidationParams(
             raster_layer=dem["raster_layer"],
             band_number=dem["selected_band"],
             line_layer=sect["crossline_layer"],
-            output_path=self.dialog.output_widget.filePath(),
+            output_path=self.output_widget.filePath(),
             scale=dem["scale"],
             vert_exag=dem["vertexag"],
             buffer_dist=sect["buffer_distance"],

@@ -13,16 +13,21 @@ class TestToolManager(BaseTestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        # Create mock dialog with preview_widget
-        self.mock_dialog = MagicMock()
         self.mock_canvas = MagicMock()
-        self.mock_dialog.preview_widget.canvas = self.mock_canvas
-        self.mock_dialog.preview_widget.btn_finalize = MagicMock()
-        self.mock_dialog.preview_widget.btn_measure = MagicMock()
-        self.mock_dialog.preview_widget.results_text = MagicMock()
-        self.mock_dialog.preview_widget.results_group = MagicMock()
+        self.preview_widget = MagicMock()
+        self.preview_widget.canvas = self.mock_canvas
+        self.preview_widget.btn_finalize = MagicMock()
+        self.preview_widget.btn_measure = MagicMock()
+        self.preview_widget.results_text = MagicMock()
+        self.preview_widget.results_group = MagicMock()
 
-        self.manager = ToolManager(self.mock_dialog)
+        self.manager = ToolManager(
+            self.mock_canvas,
+            self.preview_widget,
+            lambda x: x,
+            MagicMock(),
+            MagicMock(),
+        )
 
     def test_initialize_tools_creates_default_tools(self):
         """Test that initialize_tools creates tools if not provided."""
@@ -56,7 +61,11 @@ class TestToolManager(BaseTestCase):
         mock_interp = MagicMock()
 
         manager = ToolManager(
-            self.mock_dialog,
+            self.mock_canvas,
+            self.preview_widget,
+            lambda x: x,
+            MagicMock(),
+            MagicMock(),
             pan_tool=mock_pan,
             measure_tool=mock_measure,
             interpretation_tool=mock_interp,
@@ -86,7 +95,7 @@ class TestToolManager(BaseTestCase):
         self.manager.measure_tool.activate.assert_called_once()
 
         # Verify finalize button shown
-        self.mock_dialog.preview_widget.btn_finalize.setVisible.assert_called_with(True)
+        self.preview_widget.btn_finalize.setVisible.assert_called_with(True)
 
     def test_toggle_measure_tool_deactivate(self):
         """Test deactivating measure tool."""
@@ -100,9 +109,7 @@ class TestToolManager(BaseTestCase):
         self.manager.pan_tool.activate.assert_called_once()
 
         # Verify finalize button hidden
-        self.mock_dialog.preview_widget.btn_finalize.setVisible.assert_called_with(
-            False
-        )
+        self.preview_widget.btn_finalize.setVisible.assert_called_with(False)
 
     def test_activate_default_tool(self):
         """Test activating default (pan) tool."""
@@ -121,7 +128,7 @@ class TestToolManager(BaseTestCase):
         self.manager.toggle_interpretation_tool(True)
 
         # Verify measure button deactivated
-        self.mock_dialog.preview_widget.btn_measure.setChecked.assert_called_with(False)
+        self.preview_widget.btn_measure.setChecked.assert_called_with(False)
 
         # Verify interpretation tool activated
         self.manager.interpretation_tool.reset.assert_called_once()
@@ -153,10 +160,8 @@ class TestToolManager(BaseTestCase):
         self.manager.update_measurement_display(metrics)
 
         # Verify HTML was set
-        self.mock_dialog.preview_widget.results_text.setHtml.assert_called_once()
-        html_content = self.mock_dialog.preview_widget.results_text.setHtml.call_args[
-            0
-        ][0]
+        self.preview_widget.results_text.setHtml.assert_called_once()
+        html_content = self.preview_widget.results_text.setHtml.call_args[0][0]
 
         # Verify content includes key metrics
         self.assertIn("150.50", html_content)
@@ -165,9 +170,7 @@ class TestToolManager(BaseTestCase):
         self.assertIn("10.5", html_content)
 
         # Verify results group expanded
-        self.mock_dialog.preview_widget.results_group.setCollapsed.assert_called_with(
-            False
-        )
+        self.preview_widget.results_group.setCollapsed.assert_called_with(False)
 
     def test_update_measurement_display_insufficient_points(self):
         """Test that display is not updated with insufficient points."""
@@ -176,32 +179,30 @@ class TestToolManager(BaseTestCase):
         self.manager.update_measurement_display(metrics)
 
         # Verify no updates made
-        self.mock_dialog.preview_widget.results_text.setHtml.assert_not_called()
+        self.preview_widget.results_text.setHtml.assert_not_called()
 
     def test_update_measurement_display_empty_metrics(self):
         """Test that display is not updated with empty metrics."""
         self.manager.update_measurement_display({})
 
         # Verify no updates made
-        self.mock_dialog.preview_widget.results_text.setHtml.assert_not_called()
+        self.preview_widget.results_text.setHtml.assert_not_called()
 
     def test_update_measurement_display_none_metrics(self):
         """Test that display is not updated with None metrics."""
         self.manager.update_measurement_display(None)
 
         # Verify no updates made
-        self.mock_dialog.preview_widget.results_text.setHtml.assert_not_called()
+        self.preview_widget.results_text.setHtml.assert_not_called()
 
 
 class TestNavigationManager(BaseTestCase):
 
     def setUp(self):
         """Set up test fixtures."""
-        self.mock_dialog = MagicMock()
         self.mock_canvas = MagicMock()
-        self.mock_dialog.preview_widget.canvas = self.mock_canvas
 
-        self.manager = NavigationManager(self.mock_dialog)
+        self.manager = NavigationManager(self.mock_canvas)
 
     def test_handle_wheel_event_zoom_in(self):
         """Test zoom in via mouse wheel."""
@@ -238,3 +239,7 @@ class TestNavigationManager(BaseTestCase):
         self.mock_canvas.zoomIn.assert_not_called()
         self.mock_canvas.zoomOut.assert_not_called()
         mock_event.accept.assert_not_called()
+
+
+if __name__ == "__main__":
+    unittest.main()

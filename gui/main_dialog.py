@@ -112,9 +112,19 @@ class SecInterpDialog(SecInterpMainWindow):
         """Initialize all manager instances."""
         from sec_interp.core.services.preview_service import PreviewService
 
-        preview_cache = PreviewCache()
+        from .dialog_dependencies import Pages
 
-        self.input_manager = InputManager(self)
+        preview_cache = PreviewCache()
+        pages = Pages(
+            dem=self.page_dem,
+            section=self.page_section,
+            geology=self.page_geology,
+            structure=self.page_struct,
+            drillhole=self.page_drillhole,
+            settings=self.page_settings,
+        )
+
+        self.input_manager = InputManager(pages, self.output_widget, self.tr)
         self.state_manager = StateManager(self)
         self.preview_manager = PreviewManager(
             self, PreviewService(self.plugin_instance.controller), cache=preview_cache
@@ -123,8 +133,14 @@ class SecInterpDialog(SecInterpMainWindow):
         self.state_manager.setup_indicators()
         self.interpretation_manager = InterpretationManager(self, cache=preview_cache)
         self.interpretation_manager.load_interpretations()
-        self.tool_manager = ToolManager(self)
-        self.navigation_manager = NavigationManager(self)
+        self.tool_manager = ToolManager(
+            self.preview_widget.canvas,
+            self.preview_widget,
+            self.tr,
+            self.on_interpretation_finished,
+            self.update_measurement_display,
+        )
+        self.navigation_manager = NavigationManager(self.preview_widget.canvas)
         self.layer_factory = PreviewLayerFactory()
 
         # Wire decoupled cross-manager callbacks (composition root)
