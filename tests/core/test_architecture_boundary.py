@@ -55,7 +55,7 @@ CORE_VIOLATIONS: dict[str, frozenset[str]] = {
     "services/drillhole/projection_engine.py": frozenset({"qgis.core"}),
     "services/drillhole/trajectory_engine.py": frozenset({"qgis.core"}),
     "services/drillhole_service.py": frozenset({"qgis.core", "qgis.PyQt"}),
-    "services/export_service.py": frozenset({"qgis.core", "qgis.PyQt", "QgsProject.instance()"}),
+    "services/export_service.py": frozenset({"qgis.core", "qgis.PyQt"}),
     "services/geology/outcrop_processor.py": frozenset({"qgis.core"}),
     "services/geology/profile_sampler.py": frozenset({"qgis.core"}),
     "services/geology_service.py": frozenset({"qgis.core", "qgis.PyQt"}),

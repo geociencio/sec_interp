@@ -101,11 +101,10 @@ class ExportService:
         return result_msg
 
     def _resolve_layers(self, params: PreviewParams) -> tuple[Any, Any]:
-        """Resolve layer IDs to QgsMapLayer objects.
+        """Return the resolved line and raster layer objects.
 
         Args:
-            params: Preview parameters containing optional layer references
-                (either QgsMapLayer objects or string IDs).
+            params: Preview parameters holding resolved layer objects.
 
         Returns:
             Tuple of (line_layer, raster_layer). Raises DataMissingError if
@@ -115,31 +114,11 @@ class ExportService:
             DataMissingError: If the section line layer is not found or invalid.
 
         """
-        from qgis.core import (
-            QgsProject,
-        )  # noqa: PLC0415 (lazy: avoids IDE false positives)
-
-        project = QgsProject.instance()
-
-        line_layer = None
-        if params.line_layer:
-            line_layer = (
-                project.mapLayer(params.line_layer)
-                if isinstance(params.line_layer, str)
-                else params.line_layer
-            )
-
+        line_layer = params.line_layer
         if not line_layer or not line_layer.isValid():
             raise DataMissingError(self.tr("Section line layer not found or invalid"))
 
-        raster_layer = None
-        if params.raster_layer:
-            raster_layer = (
-                project.mapLayer(params.raster_layer)
-                if isinstance(params.raster_layer, str)
-                else params.raster_layer
-            )
-
+        raster_layer = params.raster_layer
         return line_layer, raster_layer
 
     def _orchestrate_exports(

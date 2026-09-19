@@ -64,42 +64,35 @@ class Test3DProjections(BaseTestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             output_folder = Path(tmpdir)
 
-            # Mock a layer for the params
+            # Mock resolved layer objects for the params (Extract-then-Compute)
             mock_layer = MagicMock()
             mock_layer.isValid.return_value = True
             mock_layer.crs.return_value = self.crs
 
-            # Mock QgsProject.instance().mapLayer
-            with unittest.mock.patch("qgis.core.QgsProject.instance") as mock_instance:
-                mock_proj = MagicMock()
-                mock_instance.return_value = mock_proj
-                mock_proj.mapLayer.return_value = mock_layer
-                mock_proj.crs.return_value = self.crs
+            # Create minimal params with resolved layer objects
+            params_obj = PreviewParams(
+                raster_layer=mock_layer,
+                line_layer=mock_layer,
+                band_num=1,
+                buffer_dist=10.0,
+            )
 
-                # Create minimal params
-                params_obj = PreviewParams(
-                    raster_layer="mock_raster",
-                    line_layer="mock_line",
-                    band_num=1,
-                    buffer_dist=10.0,
+            try:
+                results = self.export_service.export_data(
+                    output_folder,
+                    params_obj,
+                    topo_data,
+                    geol_data,
+                    [],  # struct_data
+                    export_options={"exp_geol": True, "drill_3d_traces": True},
                 )
+                self.assertIsNotNone(results)
+            except Exception as e:
+                import traceback
 
-                try:
-                    results = self.export_service.export_data(
-                        output_folder,
-                        params_obj,
-                        topo_data,
-                        geol_data,
-                        [],  # struct_data
-                        export_options={"exp_geol": True, "drill_3d_traces": True},
-                    )
-                    self.assertIsNotNone(results)
-                except Exception as e:
-                    import traceback
-
-                    self.fail(
-                        f"3D Export failed with error: {e}\n{traceback.format_exc()}"
-                    )
+                self.fail(
+                    f"3D Export failed with error: {e}\n{traceback.format_exc()}"
+                )
 
 
 if __name__ == "__main__":
