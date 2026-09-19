@@ -17,7 +17,6 @@ from sec_interp.core.domain import (
 )
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.performance_metrics import PerformanceTimer
-from sec_interp.core.utils.qgis import LayerResolver
 from sec_interp.core.utils.sampling import prepare_profile_context
 from sec_interp.core.utils.spatial import calculate_line_azimuth, extract_line_points
 from sec_interp.logger_config import get_logger
@@ -124,8 +123,8 @@ class PreviewService:
     ) -> tuple[Any, Any, Any]:
         """Step 1: Topography & Context Extraction."""
         with PerformanceTimer("Topography Generation", result.metrics):
-            line_lyr = LayerResolver.resolve(params.line_layer)
-            raster_lyr = LayerResolver.resolve(params.raster_layer)
+            line_lyr = params.line_layer
+            raster_lyr = params.raster_layer
 
             if not line_lyr or not raster_lyr:
                 raise ProcessingError("Required layers for topography are missing.")
@@ -161,7 +160,7 @@ class PreviewService:
         """Step 2: Structures (Now using detached flow)."""
         if params.struct_layer and params.dip_field and params.strike_field:
             with PerformanceTimer("Structure Generation", result.metrics):
-                struct_lyr = LayerResolver.resolve(params.struct_layer)
+                struct_lyr = params.struct_layer
                 if not struct_lyr:
                     return
 

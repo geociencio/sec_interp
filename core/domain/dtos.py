@@ -19,29 +19,29 @@ class PreviewParams:
     """Consolidated parameters for profile generation and preview.
 
     Attributes:
-        raster_layer: QGIS layer ID for DEM sampling.
-        line_layer: QGIS layer ID for the section orientation.
+        raster_layer: Resolved DEM raster layer object for sampling.
+        line_layer: Resolved section line layer object.
         band_num: Raster band number to use for elevation.
         buffer_dist: Search buffer for projecting data onto the section.
-        outcrop_layer: Optional layer ID with geological outcrops.
+        outcrop_layer: Optional resolved geological outcrop layer object.
         outcrop_name_field: Field name for geological unit names.
-        struct_layer: Optional layer ID with structural measurements.
+        struct_layer: Optional resolved structural measurements layer object.
         dip_field: Field name for dip values.
         strike_field: Field name for strike/azimuth values.
         dip_scale_factor: Visual scale factor for dip lines.
-        collar_layer: Optional layer ID with drillhole collars.
+        collar_layer: Optional resolved drillhole collar layer object.
         collar_id_field: Field name for drillhole IDs in collar layer.
         collar_use_geometry: Whether to use layer geometry for collar coordinates.
         collar_x_field: Field name for X coordinate.
         collar_y_field: Field name for Y coordinate.
         collar_z_field: Field name for Z coordinate.
         collar_depth_field: Field name for total hole depth.
-        survey_layer: Optional layer ID with drillhole surveys.
+        survey_layer: Optional resolved drillhole survey layer object.
         survey_id_field: Field name for drillhole IDs in survey layer.
         survey_depth_field: Field name for downhole depth in survey.
         survey_azim_field: Field name for azimuth in survey.
         survey_incl_field: Field name for inclination in survey.
-        interval_layer: Optional layer ID with drillhole intervals.
+        interval_layer: Optional resolved drillhole interval layer object.
         interval_id_field: Field name for drillhole IDs in interval layer.
         interval_from_field: Field name for 'from' depth.
         interval_to_field: Field name for 'to' depth.
@@ -52,35 +52,35 @@ class PreviewParams:
 
     """
 
-    raster_layer: str
-    line_layer: str
+    raster_layer: Any
+    line_layer: Any
     band_num: int
     buffer_dist: float = 100.0
 
     # Geology params
-    outcrop_layer: str | None = None
+    outcrop_layer: Any | None = None
     outcrop_name_field: str | None = None
 
     # Structure params
-    struct_layer: str | None = None
+    struct_layer: Any | None = None
     dip_field: str | None = None
     strike_field: str | None = None
     dip_scale_factor: float = 1.0
 
     # Drillhole params
-    collar_layer: str | None = None
+    collar_layer: Any | None = None
     collar_id_field: str | None = None
     collar_use_geometry: bool = True
     collar_x_field: str | None = None
     collar_y_field: str | None = None
     collar_z_field: str | None = None
     collar_depth_field: str | None = None
-    survey_layer: str | None = None
+    survey_layer: Any | None = None
     survey_id_field: str | None = None
     survey_depth_field: str | None = None
     survey_azim_field: str | None = None
     survey_incl_field: str | None = None
-    interval_layer: str | None = None
+    interval_layer: Any | None = None
     interval_id_field: str | None = None
     interval_from_field: str | None = None
     interval_to_field: str | None = None

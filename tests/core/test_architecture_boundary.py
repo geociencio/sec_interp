@@ -69,7 +69,6 @@ CORE_VIOLATIONS: dict[str, frozenset[str]] = {
     "utils/geometry_utils/processing.py": frozenset({"qgis.core", "qgis.PyQt"}),
     "utils/i18n.py": frozenset({"qgis.PyQt"}),
     "utils/io.py": frozenset({"qgis.core", "QgsProject.instance()"}),
-    "utils/qgis.py": frozenset({"qgis.core", "QgsProject.instance()"}),
     "utils/qt6_compat.py": frozenset({"qgis.core", "qgis.PyQt"}),
     "utils/sampling.py": frozenset({"qgis.core"}),
     "utils/spatial.py": frozenset({"qgis.core", "QgsProject.instance()"}),

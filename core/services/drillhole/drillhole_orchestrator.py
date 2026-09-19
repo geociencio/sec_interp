@@ -25,7 +25,6 @@ from sec_interp.core.domain import (
     PreviewParams,
 )
 from sec_interp.core.exceptions import DataMissingError
-from sec_interp.core.utils.qgis import LayerResolver
 
 if TYPE_CHECKING:
     from sec_interp.core.services.drillhole_service import DrillholeService
@@ -187,11 +186,11 @@ class DrillholeTaskOrchestrator:
     def _resolve_preview_layers(self, params: PreviewParams) -> dict[str, Any]:
         """Resolve all required layers for drillhole preview."""
         return {
-            "line": LayerResolver.resolve(params.line_layer),
-            "collar": LayerResolver.resolve(params.collar_layer),
-            "raster": LayerResolver.resolve(params.raster_layer),
-            "survey": LayerResolver.resolve(params.survey_layer),
-            "interval": LayerResolver.resolve(params.interval_layer),
+            "line": params.line_layer,
+            "collar": params.collar_layer,
+            "raster": params.raster_layer,
+            "survey": params.survey_layer,
+            "interval": params.interval_layer,
         }
 
     def _prepare_preview_context(self, line_lyr: Any) -> tuple[Any, Any, Any] | None:

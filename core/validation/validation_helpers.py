@@ -13,11 +13,9 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from sec_interp.core.exceptions import ValidationError
-from sec_interp.core.utils.qgis import LayerResolver
 
 __all__ = [
     "DependencyRule",
-    "LayerResolver",
     "RichValidationError",
     "ValidationContext",
     "validate_dependencies",

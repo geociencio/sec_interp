@@ -282,49 +282,31 @@ class SecInterp(TranslatableMixin):
         values = self.dlg.get_selected_values()
         preview_options = self.dlg.get_preview_options()
 
-        # 1. Get Layer IDs (PreviewParams now expects str)
-        def get_id(val: Any) -> str | None:
-            """Extract ID from a layer object or value.
-
-            Args:
-                val: QgsMapLayer object or other value.
-
-            Returns:
-                Layer ID string or None.
-
-            """
-            if isinstance(val, QgsMapLayer):
-                return val.id()
-            return str(val) if val else None
-
-        raster_id = get_id(values.get("raster_layer"))
-        line_id = get_id(values.get("crossline_layer"))
-
         try:
             params = PreviewParams(
-                raster_layer=raster_id,
-                line_layer=line_id,
+                raster_layer=values.get("raster_layer"),
+                line_layer=values.get("crossline_layer"),
                 band_num=values.get("selected_band", 1),
                 buffer_dist=values.get("buffer_distance", 100.0),
-                outcrop_layer=get_id(values.get("outcrop_layer")),
+                outcrop_layer=values.get("outcrop_layer"),
                 outcrop_name_field=values.get("outcrop_name_field"),
-                struct_layer=get_id(values.get("structural_layer")),
+                struct_layer=values.get("structural_layer"),
                 dip_field=values.get("dip_field"),
                 strike_field=values.get("strike_field"),
                 dip_scale_factor=values.get("dip_scale_factor", 1.0),
-                collar_layer=get_id(values.get("collar_layer_obj")),
+                collar_layer=values.get("collar_layer_obj"),
                 collar_id_field=values.get("collar_id_field"),
                 collar_use_geometry=values.get("collar_use_geometry", True),
                 collar_x_field=values.get("collar_x_field"),
                 collar_y_field=values.get("collar_y_field"),
                 collar_z_field=values.get("collar_z_field"),
                 collar_depth_field=values.get("collar_depth_field"),
-                survey_layer=get_id(values.get("survey_layer_obj")),
+                survey_layer=values.get("survey_layer_obj"),
                 survey_id_field=values.get("survey_id_field"),
                 survey_depth_field=values.get("survey_depth_field"),
                 survey_azim_field=values.get("survey_azim_field"),
                 survey_incl_field=values.get("survey_incl_field"),
-                interval_layer=get_id(values.get("interval_layer_obj")),
+                interval_layer=values.get("interval_layer_obj"),
                 interval_id_field=values.get("interval_id_field"),
                 interval_from_field=values.get("interval_from_field"),
                 interval_to_field=values.get("interval_to_field"),

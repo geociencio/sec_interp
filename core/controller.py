@@ -21,7 +21,6 @@ from sec_interp.core.domain import (
 )
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.utils.i18n import TranslatableMixin
-from sec_interp.core.utils.qgis import LayerResolver
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger
 
@@ -204,8 +203,8 @@ class ProfileController(TranslatableMixin):
         if profile_data:
             logger.debug("Cache hit: Topography")
         else:
-            line_lyr = LayerResolver.resolve(params.line_layer)
-            raster_lyr = LayerResolver.resolve(params.raster_layer)
+            line_lyr = params.line_layer
+            raster_lyr = params.raster_layer
 
             if not line_lyr or not raster_lyr:
                 raise ProcessingError(self.tr("Required layers for topography are missing."))
@@ -251,9 +250,9 @@ class ProfileController(TranslatableMixin):
             logger.debug("Cache hit: Geology")
             messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))
         else:
-            line_lyr = LayerResolver.resolve(params.line_layer)
-            raster_lyr = LayerResolver.resolve(params.raster_layer)
-            outcrop_lyr = LayerResolver.resolve(params.outcrop_layer)
+            line_lyr = params.line_layer
+            raster_lyr = params.raster_layer
+            outcrop_lyr = params.outcrop_layer
 
             if not all([line_lyr, raster_lyr, outcrop_lyr]):
                 return None
@@ -307,7 +306,7 @@ class ProfileController(TranslatableMixin):
             logger.debug("Cache hit: Structure")
             messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
         else:
-            line_lyr = LayerResolver.resolve(params.line_layer)
+            line_lyr = params.line_layer
             if not line_lyr:
                 return None
 
@@ -318,8 +317,8 @@ class ProfileController(TranslatableMixin):
                     line_start = scu.get_line_start_point(line_geom)
                     line_azimuth = scu.calculate_line_azimuth(scu.extract_line_points(line_geom))
 
-                    struct_lyr = LayerResolver.resolve(params.struct_layer)
-                    raster_lyr = LayerResolver.resolve(params.raster_layer)
+                    struct_lyr = params.struct_layer
+                    raster_lyr = params.raster_layer
 
                     if not struct_lyr:
                         return None
@@ -388,7 +387,7 @@ class ProfileController(TranslatableMixin):
             logger.debug("Cache hit: Drillholes")
             return drillhole_data  # type: ignore[no-any-return]
 
-        collar_lyr = LayerResolver.resolve(params.collar_layer)
+        collar_lyr = params.collar_layer
         if not collar_lyr:
             return None
 
