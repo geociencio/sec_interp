@@ -2,6 +2,15 @@
 
 Tablero de tareas activas basado en `.agent/next_steps.md`.
 
+## 🔄 Core/GUI Decoupling Refactor (Fases 0-4 COMPLETADAS 2026-09-19; rama `refactor/core-gui-decoupling`)
+- [x] Fase 0: baseline + `tests/core/test_architecture_boundary.py` (gate allowlist) + corregir comando de test <!-- id: 12.1 -->
+- [x] Fase 1: limpieza de código muerto + consolidaciones (LOD, styling, memory-layer, ProfileSnapper) <!-- id: 12.2 -->
+- [x] Fase 2: desacoplar God Object (PreviewCache, RenderState, protocolo de páginas, DI, event bus) <!-- id: 12.3 -->
+- [x] Fase 3: consolidar pipeline de preview (render + filtrado únicos) <!-- id: 12.4 -->
+- [x] Fase 4 (parcial): LayerNotificationManager/DataFetcher → gui/adapters; controller agnostic; geometría pura (decimate/metrics/azimuth/densify); gate 36 → 31 archivos <!-- id: 12.5 -->
+- [ ] Fase 4 (resto): migrar LayerResolver real + servicios QGIS-coupled (structure/geology/profile/drillhole/export) <!-- id: 12.6 -->
+- [ ] Fase 5: validación DTO; Fase 6: docs + release <!-- id: 12.7 -->
+
 ## 🧹 Root Directory Cleanup (COMPLETADO 2026-09-13)
 - [x] Borrar ~90 MB de artefactos no rastreados (logs, caches, `analysis_results_*`) <!-- id: 9.1 -->
 - [x] `git rm --cached` 26 artefactos generados + borrado de disco <!-- id: 9.2 -->

@@ -3,7 +3,7 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent/memory/memory_policy.md",
-        "last_updated": "2026-09-18",
+        "last_updated": "2026-09-19",
         "last_updated_by": "close-phase v3.7.0 metric reconciliation",
         "tools": {
             "qgis-plugin-analyzer": "1.14.0",
@@ -22,8 +22,8 @@
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
         "maintainability_score": 99.9,
         "security_score": 100.0,
-        "type_hint_coverage_params": 90.4,
-        "type_hint_coverage_returns": 100.0,
+        "type_hint_coverage_params": 92.2,
+        "type_hint_coverage_returns": 99.7,
         "docstring_coverage": 100.0,
         "cyclomatic_complexity_gate": "PASS",
         "i18n_issues_qgis_analyzer": 0,
@@ -34,31 +34,27 @@
             "NON_PYTHONIC_LOOP": 2,
             "SPATIAL_INDEX": 1
         },
-        "module_size_gate": "FAIL (7 modules > 400 lines)",
+        "module_size_gate": "FAIL (6 modules > 400 lines)",
         "large_modules": [
             {
                 "path": "sec_interp_plugin.py",
-                "lines": 505
+                "lines": 497
             },
             {
                 "path": "gui/dialog_preview_manager.py",
-                "lines": 484
+                "lines": 431
             },
             {
                 "path": "gui/main_dialog.py",
-                "lines": 450
-            },
-            {
-                "path": "gui/dialog_settings_persistence.py",
-                "lines": 402
+                "lines": 481
             },
             {
                 "path": "gui/dialog_interpretation_manager.py",
-                "lines": 424
+                "lines": 445
             },
             {
-                "path": "gui/tools/measure_tool.py",
-                "lines": 407
+                "path": "gui/ui/pages/drillhole_page.py",
+                "lines": 451
             },
             {
                 "path": "gui/ui/pages/settings_page.py",
@@ -98,7 +94,7 @@
             "note": "ai-ctx measures different dimensions than qgis-analyzer. Both are valid."
         },
         "sync_metrics": {
-            "date": "2026-09-18",
+            "date": "2026-09-19",
             "command": "uv run python scripts/sync_metrics.py",
             "cc_gate": "PASS",
             "i18n_gate": "PASS"
@@ -112,8 +108,8 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-09-18",
-        "topic": "analyzer_upstream_migration",
+        "date": "2026-09-19",
+        "topic": "core_gui_decoupling",
         "tests_ok": 640,
         "quality_score": 52.3,
         "task_completion_rate": null,
@@ -123,6 +119,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-09-18",
+            "tests_ok": 640,
+            "quality_score": 52.3,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "analyzer_upstream_migration"
+        },
         {
             "date": "2026-09-15",
             "tests_ok": 640,

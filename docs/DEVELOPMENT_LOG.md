@@ -1,3 +1,12 @@
+## [2026-09-19] Session: Core/GUI Decoupling Refactor
+- **Achievement**: Enforced the Extract-then-Compute boundary across `core/`/`gui/` on the `refactor/core-gui-decoupling` branch: added an architecture allowlist gate, decomposed the GUI God Object, consolidated the preview pipeline, and started migrating `core/` to QGIS-agnostic pure math.
+- **Changes**:
+    - `tests/core/test_architecture_boundary.py` gate (forbidden-QGIS-coupling allowlist, 36 → 31 files).
+    - Fase 1-3: dead code removal, `PreviewCache`/`RenderState`, page `dump/load/reset` protocol, `SignalManager` event bus, single preview render path.
+    - Fase 4: `LayerNotificationManager` and `DataFetcher` → `gui/adapters/`; `controller.py` QGIS-agnostic; Douglas-Peucker/metrics/azimuth/densify reimplemented in stdlib `math`.
+- **Quality**: 576/576 tests OK · gate 3/3 · `ruff check` + `ruff format` PASS · manual QGIS 4 validation green.
+- **Maintenance**: [session_2026-09-19_core_gui_decoupling.md](maintenance/session_2026-09-19_core_gui_decoupling.md)
+
 ## [2026-09-17] Session: Analyzer Upstream Migration
 - **Achievement**: Retired the redundant SecInterp scripts (`check_cc.py`, `verify_i18n_hygiene.py`) now that qgis-plugin-analyzer 1.14.0 natively ships the AST `MISSING_I18N` rule and the `--max-cc` gate; both quality gates are now driven directly from the analyzer.
 - **Actions Taken**:

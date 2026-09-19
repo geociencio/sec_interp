@@ -15,6 +15,39 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-19'
+    category: TOOLING
+    topic: pre-commit pins its own ruff, which can disagree with the installed one
+    lesson: isinstance(value, (dict, list)) passed the project ruff (>=0.15.0) but
+      the pre-commit hook (ruff v0.8.4) rejected it with UP038 and blocked the commit.
+      The hook runs its own pinned ruff version, so lint must be checked against it,
+      not just the project interpreter.
+    action: Before committing, remember the pre-commit ruff rev (v0.8.4) may flag rules
+      the installed ruff does not; fix to satisfy the hook (e.g. dict | list).
+  - date: '2026-09-19'
+    category: TOOLING
+    topic: canonical formatter is ruff format, not black
+    lesson: Running black reformats to 88 cols while the repo standard (pre-commit
+      ruff-format) uses 100 cols, causing churn. black is in dev deps but not wired
+      into the hook config.
+    action: Use ruff format (never black) for this repository.
+  - date: '2026-09-19'
+    category: ARCHITECTURE
+    topic: assess type propagation before migrating a geometry signature to tuples
+    lesson: The get_line_start_point helper returns QgsPointXY whose value flows into ~20
+      QGIS-coupled service methods (measureLine, .x()/.y()). Converting it to tuples
+      is not an isolated change; it drags the whole service layer.
+    action: When reimplementing a core helper in pure math, first grep how its return
+      type propagates; if it fans out into QGIS-coupled services, defer it to the
+      service-migration phase and pick a function with a primitive return instead.
+  - date: '2026-09-19'
+    category: ARCHITECTURE
+    topic: allowlist ratchet as an incremental migration driver
+    lesson: A test that fails both on new violations and on stale allowlist entries
+      turns a large decoupling effort into small, verifiable increments, forcing the
+      list to shrink as files migrate.
+    action: Use a bidirectional allowlist gate for gradual Extract-then-Compute
+      migrations; each migrated file produces an immediate, testable gate shrink.
   - date: '2026-09-17'
     category: TOOLING
     topic: Verify installed dependency source before writing an upstreaming plan
@@ -57,11 +90,11 @@ lessons:
   - date: '2026-09-13'
     category: TOOLING
     topic: git rm --cached only touches the index, not disk
-    lesson: `git rm --cached` untracks a file but leaves it on disk; a separate `rm` is
-      needed. Docker-created artifacts are often `root`-owned and additionally require
-      `sudo` to delete, so they can linger after a cleanup.
-    action: Follow `git rm --cached` with an explicit disk `rm`; expect root-owned
-      (Docker) leftovers to need `sudo`.
+    lesson: The git rm --cached command untracks a file but leaves it on disk; a
+      separate rm is needed. Docker-created artifacts are often root-owned and
+      additionally require sudo to delete, so they can linger after a cleanup.
+    action: Follow git rm --cached with an explicit disk rm; expect root-owned
+      (Docker) leftovers to need sudo.
   - date: '2026-09-13'
     category: AGENTIC_SYSTEM
     topic: Harness assumptions go stale (the Bitter Lesson)

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Architecture (internal, no user-facing impact)**: Enforced the Core/GUI Extract-then-Compute boundary on a feature branch. Decomposed the `SecInterpDialog` God Object into narrow, dependency-injected managers; consolidated the preview render pipeline; moved QGIS feature-reading and layer-notification wiring into a new `gui/adapters/` layer; and reimplemented decimation, polyline metrics, line azimuth, and densification in pure standard-library math. Guarded by a new architecture allowlist gate (36 → 31 `core/` modules).
 - **Repository Housekeeping**: Removed generated analyzer/coverage reports, build logs, and stale editor configurations (`.idea/`, `.vscode/`, `.continue/`) from the repository root and expanded `.gitignore` to prevent their re-introduction. No functional impact on the plugin.
 - **Tooling**: Upgraded `qgis-plugin-analyzer` 1.13.2 → 1.14.0 and refreshed static-analysis metrics. The new i18n heuristic reduced `MISSING_I18N` findings from 72 → 2 (remaining two are developer-facing `PerformanceTimer` timing labels). No functional impact on the plugin.
 - **Tooling**: Retired the internal `scripts/check_cc.py` and `scripts/verify_i18n_hygiene.py` scripts now that the cyclomatic-complexity gate (`analyze --max-cc 10`) and the AST-based `MISSING_I18N` rule are natively provided by `qgis-plugin-analyzer` 1.14.0. Both quality gates are now driven directly from the analyzer. No functional impact on the plugin.
