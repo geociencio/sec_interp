@@ -25,16 +25,34 @@ class SignalManager:
 
     This class organizes signal connections into logical groups,
     making the dialog initialization cleaner and more maintainable.
+    It wires widgets directly to the injected managers (event-bus style),
+    using the dialog only for the widgets themselves and orchestration
+    handlers.
     """
 
-    def __init__(self, dialog: SecInterpDialog) -> None:
+    def __init__(
+        self,
+        dialog: SecInterpDialog,
+        preview_manager: Any,
+        export_manager: Any,
+        tool_manager: Any,
+        state_manager: Any,
+    ) -> None:
         """Initialize signal manager.
 
         Args:
-            dialog: The :class:`sec_interp.gui.main_dialog.SecInterpDialog` instance
+            dialog: The dialog providing widgets and orchestration handlers.
+            preview_manager: Handles preview generation/rendering.
+            export_manager: Handles export operations.
+            tool_manager: Handles map tools.
+            state_manager: Handles UI state and settings.
 
         """
         self.dialog = dialog
+        self.preview_manager = preview_manager
+        self.export_manager = export_manager
+        self.tool_manager = tool_manager
+        self.state_manager = state_manager
 
     def connect_all(self) -> None:
         """Connect all signals in organized groups.
@@ -169,7 +187,7 @@ class SignalManager:
             self.dialog.page_drillhole,
             self.dialog.page_interpretation,
             self.dialog.preview_widget,
-            self.dialog.preview_manager,
+            self.preview_manager,
             self.dialog.page_settings,
         ]
 
@@ -212,9 +230,9 @@ class SignalManager:
 
     def _disconnect_tool_signals(self) -> None:
         """Disconnect map tool signals and window signals."""
-        if hasattr(self.dialog, "tool_manager") and self.dialog.tool_manager:
+        if self.tool_manager:
             with contextlib.suppress(AttributeError, TypeError, RuntimeError):
-                self.dialog.tool_manager.disconnect_signals()
+                self.tool_manager.disconnect_signals()
 
     def _connect_button_signals(self) -> None:
         """Connect dialog button signals."""
@@ -228,7 +246,7 @@ class SignalManager:
 
         save_btn = self.dialog.button_box.button(QDialogButtonBox.StandardButton.Save)
         if save_btn:
-            save_btn.clicked.connect(self.dialog.export_manager.export_data)
+            save_btn.clicked.connect(self.export_manager.export_data)
 
         self.dialog.button_box.helpRequested.connect(self.dialog.open_help)
         self.dialog.clear_cache_btn.clicked.connect(self.dialog.clear_cache_handler)
@@ -237,60 +255,70 @@ class SignalManager:
     def _connect_preview_signals(self) -> None:
         """Connect preview-related signals."""
         self.dialog.preview_widget.btn_preview.clicked.connect(self.dialog.preview_profile_handler)
-        self.dialog.preview_widget.btn_export.clicked.connect(self.dialog.export_preview)
+        self.dialog.preview_widget.btn_export.clicked.connect(self.export_manager.export_preview)
 
         # Preview layer checkboxes
         self.dialog.preview_widget.chk_topo.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
         self.dialog.preview_widget.chk_geol.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
         self.dialog.preview_widget.chk_struct.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
         self.dialog.preview_widget.chk_drillholes.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
         self.dialog.preview_widget.chk_interpretations.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
         self.dialog.preview_widget.chk_legend.stateChanged.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
 
         # Preview settings
         self.dialog.preview_widget.spin_max_points.valueChanged.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
         self.dialog.preview_widget.chk_auto_lod.toggled.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
         self.dialog.preview_widget.chk_adaptive_sampling.toggled.connect(
-            self.dialog.update_preview_from_checkboxes
+            self.preview_manager.update_from_checkboxes
         )
 
     def _connect_page_signals(self) -> None:
         """Connect page-specific signals for state updates."""
         # Output path changes
-        self.dialog.output_widget.fileChanged.connect(self.dialog.update_button_state)
+        self.dialog.output_widget.fileChanged.connect(self.state_manager.update_button_state)
 
         # DEM page
-        self.dialog.page_dem.raster_combo.layerChanged.connect(self.dialog.update_button_state)
         self.dialog.page_dem.raster_combo.layerChanged.connect(
-            self.dialog.update_preview_checkbox_states
+            self.state_manager.update_button_state
+        )
+        self.dialog.page_dem.raster_combo.layerChanged.connect(
+            self.state_manager.update_preview_checkbox_states
         )
 
         # Section page
-        self.dialog.page_section.line_combo.layerChanged.connect(self.dialog.update_button_state)
         self.dialog.page_section.line_combo.layerChanged.connect(
-            self.dialog.update_preview_checkbox_states
+            self.state_manager.update_button_state
+        )
+        self.dialog.page_section.line_combo.layerChanged.connect(
+            self.state_manager.update_preview_checkbox_states
         )
 
         # Data pages
-        self.dialog.page_geology.dataChanged.connect(self.dialog.update_preview_checkbox_states)
-        self.dialog.page_struct.dataChanged.connect(self.dialog.update_preview_checkbox_states)
-        self.dialog.page_drillhole.dataChanged.connect(self.dialog.update_preview_checkbox_states)
+        self.dialog.page_geology.dataChanged.connect(
+            self.state_manager.update_preview_checkbox_states
+        )
+        self.dialog.page_struct.dataChanged.connect(
+            self.state_manager.update_preview_checkbox_states
+        )
+        self.dialog.page_drillhole.dataChanged.connect(
+            self.state_manager.update_preview_checkbox_states
+        )
 
         # Reconnect internal signals for all pages
         pages = [
@@ -301,7 +329,7 @@ class SignalManager:
             self.dialog.page_drillhole,
             self.dialog.page_interpretation,
             self.dialog.preview_widget,
-            self.dialog.preview_manager,
+            self.preview_manager,
             self.dialog.page_settings,
         ]
         for page in pages:
@@ -311,14 +339,16 @@ class SignalManager:
 
     def _connect_tool_signals(self) -> None:
         """Connect map tool signals."""
-        self.dialog.preview_widget.btn_measure.toggled.connect(self.dialog.toggle_measure_tool)
+        self.dialog.preview_widget.btn_measure.toggled.connect(
+            self.tool_manager.toggle_measure_tool
+        )
         self.dialog.preview_widget.btn_interpret.toggled.connect(
-            self.dialog.toggle_interpretation_tool
+            self.tool_manager.toggle_interpretation_tool
         )
         self.dialog.preview_widget.btn_finalize.clicked.connect(
-            self.dialog.tool_manager.measure_tool.finalize_measurement
+            self.tool_manager.measure_tool.finalize_measurement
         )
 
         # IMPORTANT: Restore tool-internal signal connections (measurementChanged, polygonFinished, etc)
-        if hasattr(self.dialog, "tool_manager") and self.dialog.tool_manager:
-            self.dialog.tool_manager.connect_signals()
+        if self.tool_manager:
+            self.tool_manager.connect_signals()

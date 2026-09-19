@@ -28,8 +28,6 @@ class TestMultiSessionPersistence(BaseTestCase):
             patch("sec_interp.gui.main_dialog.LegendWidget"),
         ):
             self.dialog = SecInterpDialog(plugin_instance=self.mock_plugin)
-            # Ensure signal_manager is real for testing
-            self.dialog.signal_manager = SignalManager(self.dialog)
 
             # Setup real ToolManager with mocked tools
             from sec_interp.gui.dialog_tool_manager import ToolManager
@@ -44,11 +42,20 @@ class TestMultiSessionPersistence(BaseTestCase):
             self.dialog.tool_manager.measure_tool = MagicMock()
             self.dialog.tool_manager.interpretation_tool = MagicMock()
 
+            # Ensure signal_manager is real for testing
+            self.dialog.signal_manager = SignalManager(
+                self.dialog,
+                self.dialog.preview_manager,
+                self.dialog.export_manager,
+                self.dialog.tool_manager,
+                self.dialog.state_manager,
+            )
+
     @patch("sec_interp.gui.main_dialog.logger")
     def test_signals_restored_after_close_and_reopen(self, mock_logger):
         """Verify that signals are working after a close and reconnect cycle."""
-        # Mock some handlers in the dialog
-        self.dialog.update_button_state = MagicMock()
+        # Reset the manager method the section-line signal is wired to
+        self.dialog.state_manager.update_button_state.reset_mock()
 
         # 1. Simulate Close (Disconnection)
         # We use a real event mock
@@ -62,7 +69,7 @@ class TestMultiSessionPersistence(BaseTestCase):
         # Trigger line_combo change in section page
         self.dialog.page_section.line_combo.layerChanged.emit(MagicMock())
 
-        self.dialog.update_button_state.assert_called()
+        self.dialog.state_manager.update_button_state.assert_called()
 
     def test_tool_internal_signals_restored(self):
         """Verify that tools' internal signals are re-connected after connect_all."""

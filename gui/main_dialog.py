@@ -98,7 +98,13 @@ class SecInterpDialog(SecInterpMainWindow):
         self.tool_manager.initialize_tools()
 
         # Connect all signals
-        self.signal_manager = SignalManager(self)
+        self.signal_manager = SignalManager(
+            self,
+            self.preview_manager,
+            self.export_manager,
+            self.tool_manager,
+            self.state_manager,
+        )
         self.signal_manager.connect_all()
 
         # Initial state update
