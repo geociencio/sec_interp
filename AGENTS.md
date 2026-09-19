@@ -75,13 +75,12 @@ make deploy                  # Deploy to QGIS plugins directory
 make zip                     # Create distributable package
 
 # Testing
-make test                    # Run full test suite (unittest discovery)
-uv run pytest tests/         # Alternative pytest runner
+PYTHONPATH=.. uv run python3 -m unittest discover tests   # Run full test suite (unittest discovery)
 make docker-test             # Run 361+ tests in Docker environment
 
 # Single test execution
-uv run pytest tests/core/test_algorithms.py::test_intersection -v
-uv run python -m unittest tests.test_geology_service.TestGeologyService.test_method
+PYTHONPATH=.. uv run python3 -m unittest tests.core.test_algorithms.TestAlgorithms.test_intersection -v
+PYTHONPATH=.. uv run python3 -m unittest tests.core.test_geology_service.TestGeologyService -v
 ```
 
 ### Code Quality
@@ -226,26 +225,30 @@ uv run ruff format .
 make pylint
 
 # 4. Run tests
-uv run pytest tests/core/test_new_feature.py -v
+PYTHONPATH=.. uv run python3 -m unittest discover tests
 make docker-test  # Full integration test
 ```
 
 ### 2. Testing Strategy
 ```bash
 # Core logic tests (standalone, no QGIS required)
-uv run pytest tests/core/ -v
+PYTHONPATH=.. uv run python3 -m unittest discover tests/core
 
-# Integration tests (require QGIS)
-uv run pytest tests/integration/ -v
+# Integration tests (module path triggers the QGIS mocks)
+PYTHONPATH=.. uv run python3 -m unittest tests.integration.test_export_workflow
 
 # Run with unittest (standard discovery)
-uv run python -m unittest discover tests/ -p "test_*.py"
+PYTHONPATH=.. uv run python3 -m unittest discover tests
 
-# Performance benchmarks
-uv run pytest tests/benchmarks/ -v
+# Performance benchmarks (module path triggers the QGIS mocks)
+PYTHONPATH=.. uv run python3 -m unittest tests.benchmarks.test_geometry_benchmarks
+
+# Single test
+PYTHONPATH=.. uv run python3 -m unittest tests.core.test_algorithms.TestAlgorithms.test_intersection -v
 
 # Single test with coverage
-uv run pytest tests/core/test_algorithms.py::test_intersection -v --cov=core.algorithms
+PYTHONPATH=.. uv run coverage run -m unittest discover tests
+uv run coverage report
 ```
 
 ### 3. Testing Standards (unittest)
