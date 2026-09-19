@@ -31,6 +31,11 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 
+def _points_to_xy(points: list[QgsPointXY]) -> list[tuple[float, float]]:
+    """Extract (x, y) tuples from QgsPointXY points for pure-math processing."""
+    return [(p.x(), p.y()) for p in points]
+
+
 class ProfileMeasureTool(QgsMapToolEmitPoint):
     """Map tool for measuring distances in profile view.
 
@@ -233,7 +238,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         # Emit measurement update if we have at least 2 points
         MIN_RELEVANT_POINTS = 2
         if len(self.points) >= MIN_RELEVANT_POINTS:
-            metrics = calculate_polyline_metrics(self.points)
+            metrics = calculate_polyline_metrics(_points_to_xy(self.points))
             self.measurementChanged.emit(metrics)
 
     def finalize_measurement(self) -> None:
@@ -255,7 +260,7 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
         self.finalized = True
         logger.info("Setting finalized = True")
 
-        metrics = calculate_polyline_metrics(self.points)
+        metrics = calculate_polyline_metrics(_points_to_xy(self.points))
         self.measurementChanged.emit(metrics)
 
         logger.info(
@@ -321,5 +326,5 @@ class ProfileMeasureTool(QgsMapToolEmitPoint):
 
         # Create temporary points list including cursor position
         temp_points = [*self.points, target_point]
-        metrics = calculate_polyline_metrics(temp_points)
+        metrics = calculate_polyline_metrics(_points_to_xy(temp_points))
         self.measurementChanged.emit(metrics)

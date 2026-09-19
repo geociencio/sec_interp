@@ -122,12 +122,12 @@ class TestGeometryMeasurement(BaseTestCase):
         """Test metrics for empty or short list of points."""
         self.assertEqual(calculate_polyline_metrics([])["point_count"], 0)
         self.assertEqual(
-            calculate_polyline_metrics([QgsPointXY(0, 0)])["point_count"], 1
+            calculate_polyline_metrics([(0, 0)])["point_count"], 1
         )
 
     def test_calculate_polyline_metrics_valid(self):
         """Test metrics calculation for a valid polyline."""
-        points = [QgsPointXY(0, 0), QgsPointXY(3, 4)]  # 3-4-5 triangle
+        points = [(0, 0), (3, 4)]  # 3-4-5 triangle
         metrics = calculate_polyline_metrics(points)
 
         self.assertAlmostEqual(metrics["total_distance"], 5.0)

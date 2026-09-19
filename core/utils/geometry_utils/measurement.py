@@ -1,20 +1,16 @@
-"""Geometric measurement utilities for 1D, 2D and 3D."""
+"""Geometric measurement utilities for profile viewing."""
 
 from __future__ import annotations
 
-"""Measurement calculation utilities for profile viewing."""
-
-import math  # noqa: E402
-from typing import Any  # noqa: E402
-
-from qgis.core import QgsPointXY  # noqa: E402
+import math
+from typing import Any
 
 
-def calculate_polyline_metrics(points: list[QgsPointXY]) -> dict[str, Any]:
+def calculate_polyline_metrics(points: list[tuple[float, float]]) -> dict[str, Any]:
     """Calculate comprehensive measurement metrics from a list of points.
 
     Args:
-        points: List of QgsPointXY points defining the polyline on the profile plane.
+        points: List of (x, y) tuples defining the polyline on the profile plane.
 
     Returns:
         Dictionary containing:
@@ -47,8 +43,8 @@ def calculate_polyline_metrics(points: list[QgsPointXY]) -> dict[str, Any]:
         p1 = points[i]
         p2 = points[i + 1]
 
-        dx = abs(p2.x() - p1.x())
-        dy = p2.y() - p1.y()
+        dx = abs(p2[0] - p1[0])
+        dy = p2[1] - p1[1]
         seg_dist = math.sqrt(dx * dx + dy * dy)
 
         total_dist += seg_dist
@@ -59,13 +55,13 @@ def calculate_polyline_metrics(points: list[QgsPointXY]) -> dict[str, Any]:
                 "distance": seg_dist,
                 "dx": dx,
                 "dy": dy,
-                "start": (p1.x(), p1.y()),
-                "end": (p2.x(), p2.y()),
+                "start": (p1[0], p1[1]),
+                "end": (p2[0], p2[1]),
             }
         )
 
     # Total elevation change (first to last point)
-    elevation_change = points[-1].y() - points[0].y()
+    elevation_change = points[-1][1] - points[0][1]
 
     # Average slope
     avg_slope = 0.0
