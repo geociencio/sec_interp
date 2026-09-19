@@ -151,11 +151,14 @@ class TestDialogPreviewManager(BaseTestCase):
             mock_update.assert_called_once()
 
     def test_handle_geometric_changes(self):
-        """Test that interpretations are cleared when section geometry changes."""
+        """Test that the cleared handler fires when section geometry changes."""
         params = MagicMock(spec=PreviewParams)
         params.line_layer = "lyr_id"
         params.raster_layer = "raster_id"
         params.buffer_dist = 50.0
+
+        cleared_handler = MagicMock()
+        self.manager.set_interpretations_cleared_handler(cleared_handler)
 
         # Mock resolve_layer and feature geometry
         with patch(
@@ -169,17 +172,15 @@ class TestDialogPreviewManager(BaseTestCase):
 
             # First call to set initial state
             self.manager._handle_geometric_changes(params)
+            cleared_handler.assert_not_called()
 
             # Change geometry
             mock_feat.geometry().asWkt.return_value = "LINESTRING(1 1, 11 11)"
             mock_layer.getFeatures.return_value = iter([mock_feat])
 
-            # Second call should trigger clear
-            self.dialog.interpretation_manager = MagicMock()
+            # Second call should trigger the cleared callback
             self.manager._handle_geometric_changes(params)
-
-            self.assertEqual(self.dialog.interpretation_manager.interpretations, [])
-            self.dialog.interpretation_manager.save_interpretations.assert_called_once()
+            cleared_handler.assert_called_once()
 
     def test_cleanup(self):
         """Test cleanup of resources and background tasks."""

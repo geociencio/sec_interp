@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
 from qgis.core import QgsPointXY, QgsApplication
 from sec_interp.gui.dialog_interpretation_manager import InterpretationManager
+from sec_interp.gui.preview_state import PreviewCache
 from sec_interp.core.domain import InterpretationPolygon, GeologySegment
 
 
@@ -30,7 +31,6 @@ class TestAttributeInheritance(BaseTestCase):
         mock_dialog.layer_factory.get_color_for_unit.return_value = MagicMock(
             name=lambda: "#FF0000"
         )
-        mock_dialog.preview_manager = MagicMock()
 
         # Mock cached data
         # geology segment: long line from x=10 to x=100. Midpoint x=55.
@@ -64,13 +64,12 @@ class TestAttributeInheritance(BaseTestCase):
         dh_obj = MagicMock()
         dh_obj.intervals = [dh_int_obj]
 
-        mock_dialog.preview_manager.cached_data = {
-            "geol": [geol_seg],
-            "drillhole": [dh_tuple, dh_obj],
-        }
+        cache = PreviewCache()
+        cache["geol"] = [geol_seg]
+        cache["drillhole"] = [dh_tuple, dh_obj]
 
         # Create InterpretationManager
-        interp_manager = InterpretationManager(mock_dialog)
+        interp_manager = InterpretationManager(mock_dialog, cache=cache)
 
         # 2. Setup Polygon at x=12, y=0
         poly = InterpretationPolygon(

@@ -7,6 +7,7 @@ separating preview logic from the main dialog class.
 from __future__ import annotations
 
 import contextlib
+from collections.abc import Callable
 from typing import Any
 
 from qgis.core import QgsVectorLayer
@@ -30,6 +31,7 @@ from sec_interp.logger_config import get_logger
 from .main_dialog_config import DialogConfig
 from .preview_param_hasher import PreviewParamHasher
 from .preview_reporter import PreviewReporter
+from .preview_state import PreviewCache
 from .preview_task_orchestrator import PreviewTaskOrchestrator
 
 logger = get_logger(__name__)
@@ -46,6 +48,7 @@ class PreviewManager(TranslatableMixin):
         self,
         dialog: Any,
         preview_service: IPreviewService | None = None,
+        cache: PreviewCache | None = None,
     ) -> None:
         """Initialize preview manager with specialized components."""
         self.dialog = dialog
@@ -59,14 +62,12 @@ class PreviewManager(TranslatableMixin):
         self.hasher = PreviewParamHasher()
 
         # Cache & State
-        self.cached_data: dict[str, Any] = {
-            "topo": None,
-            "geol": None,
-            "struct": None,
-            "drillhole": None,
-        }
+        self.cached_data = cache if cache is not None else PreviewCache()
         self.last_params_hash: str | None = None
         self.last_result: PreviewResult | None = None
+
+        # Decoupled callback invoked when section geometry changes
+        self._on_interpretations_cleared: Callable[[], None] | None = None
 
         # Initialize zoom debounce timer
         self.debounce_timer = QTimer()
@@ -74,6 +75,15 @@ class PreviewManager(TranslatableMixin):
 
         # Connect all signals
         self.connect_signals()
+
+    def set_interpretations_cleared_handler(self, handler: Callable[[], None]) -> None:
+        """Register the callback invoked when section geometry changes.
+
+        Args:
+            handler: Callable that clears persisted interpretations.
+
+        """
+        self._on_interpretations_cleared = handler
 
     def connect_signals(self) -> None:
         """Connect all signals for the preview manager."""
@@ -200,10 +210,9 @@ class PreviewManager(TranslatableMixin):
         self._last_geo_params = new_geo_params
 
         if old_geo_params and old_geo_params != new_geo_params:
-            if hasattr(self.dialog, "interpretation_manager"):
-                logger.info("Geometric change detected: Clearing interpretations.")
-                self.dialog.interpretation_manager.interpretations = []
-                self.dialog.interpretation_manager.save_interpretations()
+            logger.info("Geometric change detected: Clearing interpretations.")
+            if self._on_interpretations_cleared:
+                self._on_interpretations_cleared()
 
     def _cancel_active_tasks(self) -> None:
         """Cancel any existing async work via orchestrator."""

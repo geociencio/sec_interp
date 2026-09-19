@@ -7,12 +7,15 @@ decoupling this logic from the main dialog class.
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsGeometry, QgsPointXY
 
 from sec_interp.core.domain import InterpretationPolygon
 from sec_interp.logger_config import get_logger, log_critical_operation
+
+from .preview_state import PreviewCache
 
 if TYPE_CHECKING:
     from .main_dialog import SecInterpDialog
@@ -23,15 +26,32 @@ logger = get_logger(__name__)
 class InterpretationManager:
     """Manages interpretation polygons and their business logic."""
 
-    def __init__(self, dialog: SecInterpDialog) -> None:
+    def __init__(self, dialog: SecInterpDialog, cache: PreviewCache | None = None) -> None:
         """Initialize interpretation manager.
 
         Args:
             dialog: The main dialog instance.
+            cache: Shared preview data cache (owned by the dialog).
 
         """
         self.dialog = dialog
         self.interpretations: list[InterpretationPolygon] = []
+        self._preview_cache = cache if cache is not None else PreviewCache()
+        self._on_preview_update: Callable[[], None] | None = None
+
+    def set_preview_update_handler(self, handler: Callable[[], None]) -> None:
+        """Register the callback invoked after an interpretation is added.
+
+        Args:
+            handler: Callable that re-renders the preview.
+
+        """
+        self._on_preview_update = handler
+
+    def clear_interpretations(self) -> None:
+        """Clear all interpretations and persist the change."""
+        self.interpretations = []
+        self.save_interpretations()
 
     def load_interpretations(self) -> None:
         """Load interpretations from the elected source (Project JSON or Vector Layer)."""
@@ -250,7 +270,8 @@ class InterpretationManager:
         self.dialog.preview_widget.btn_interpret.setChecked(False)
 
         # Update preview to show the new polygon
-        self.dialog.update_preview_from_checkboxes()
+        if self._on_preview_update:
+            self._on_preview_update()
 
     def apply_attribute_inheritance(
         self, interpretation: InterpretationPolygon, config: dict[str, Any]
@@ -299,7 +320,7 @@ class InterpretationManager:
             Tuple of (new best match dictionary, new minimum distance).
 
         """
-        geol_data = self.dialog.preview_manager.cached_data.get("geol")
+        geol_data = self._preview_cache.get("geol")
         if not geol_data:
             return best_match, min_dist
 
@@ -351,7 +372,7 @@ class InterpretationManager:
             Tuple of (new best match dictionary, new minimum distance).
 
         """
-        dh_data = self.dialog.preview_manager.cached_data.get("drillhole")
+        dh_data = self._preview_cache.get("drillhole")
         if not dh_data:
             return best_match, min_dist
 

@@ -63,7 +63,7 @@ class TestInterpretationManager(BaseTestCase):
         mock_segment.points = [(0, 0)]
         mock_segment.attributes = {"lithology": "LST"}
 
-        self.dialog.preview_manager.cached_data = {"geol": [mock_segment]}
+        self.manager._preview_cache["geol"] = [mock_segment]
         self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = (
             "#FF0000"
         )

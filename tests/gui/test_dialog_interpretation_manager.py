@@ -69,6 +69,8 @@ class TestDialogInterpretationManager(BaseTestCase):
         self.dialog.page_interpretation.get_data.return_value = {
             "inherit_geology": False
         }
+        preview_update_handler = MagicMock()
+        self.manager.set_preview_update_handler(preview_update_handler)
 
         target = "sec_interp.gui.dialogs.interpretation_properties_dialog.InterpretationPropertiesDialog"
         with patch(target, create=True) as mock_dlg_class:
@@ -80,7 +82,7 @@ class TestDialogInterpretationManager(BaseTestCase):
             self.manager.handle_interpretation_finished(interp)
 
             self.assertIn(interp, self.manager.interpretations)
-            self.dialog.update_preview_from_checkboxes.assert_called_once()
+            preview_update_handler.assert_called_once()
 
     def test_handle_interpretation_finished_rejected(self):
         """Test processing a finished interpretation flow (Rejected/Canceled)."""
@@ -112,7 +114,7 @@ class TestDialogInterpretationManager(BaseTestCase):
         mock_segment.unit_name = "Inherited Unit"
         mock_segment.points = [(0, 0)]  # Centroid is near 0,0
         mock_segment.attributes = {"key": "val"}
-        self.dialog.preview_manager.cached_data = {"geol": [mock_segment]}
+        self.manager._preview_cache["geol"] = [mock_segment]
         self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = (
             "#0000FF"
         )
@@ -139,7 +141,7 @@ class TestDialogInterpretationManager(BaseTestCase):
         # dh = (id, collar, survey, intervals_legacy, intervals) or something like that
         # _extract_intervals_from_dh_data returns dh[4] for legacy or dh[2] or dh.intervals
         dh_data = (None, None, [mock_interval])  # dh[2] flow
-        self.dialog.preview_manager.cached_data = {"drillhole": [dh_data]}
+        self.manager._preview_cache["drillhole"] = [dh_data]
         self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = (
             "#00FF00"
         )
@@ -184,7 +186,6 @@ class TestDialogInterpretationManager(BaseTestCase):
         """Test inheritance when no cached data is available."""
         interp = InterpretationPolygon(id="1", name="T", type="L", vertices_2d=[(0, 0)])
         config = {"inherit_geology": True, "inherit_drillholes": True}
-        self.dialog.preview_manager.cached_data = {}
 
         self.manager.apply_attribute_inheritance(interp, config)
         self.assertEqual(interp.name, "T")  # Unchanged

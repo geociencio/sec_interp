@@ -115,16 +115,30 @@ class SecInterpDialog(SecInterpMainWindow):
         """Initialize all manager instances."""
         from sec_interp.core.services.preview_service import PreviewService
 
+        from .preview_state import PreviewCache
+
+        preview_cache = PreviewCache()
+
         self.input_manager = InputManager(self)
         self.state_manager = StateManager(self)
-        self.preview_manager = PreviewManager(self, PreviewService(self.plugin_instance.controller))
+        self.preview_manager = PreviewManager(
+            self, PreviewService(self.plugin_instance.controller), cache=preview_cache
+        )
         self.export_manager = ExportManager(self)
         self.state_manager.setup_indicators()
-        self.interpretation_manager = InterpretationManager(self)
+        self.interpretation_manager = InterpretationManager(self, cache=preview_cache)
         self.interpretation_manager.load_interpretations()
         self.tool_manager = ToolManager(self)
         self.navigation_manager = NavigationManager(self)
         self.layer_factory = PreviewLayerFactory()
+
+        # Wire decoupled cross-manager callbacks (composition root)
+        self.preview_manager.set_interpretations_cleared_handler(
+            self.interpretation_manager.clear_interpretations
+        )
+        self.interpretation_manager.set_preview_update_handler(
+            self.preview_manager.update_from_checkboxes
+        )
 
     def push_message(
         self,
