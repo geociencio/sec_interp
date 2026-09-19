@@ -3,7 +3,7 @@
 import math
 from unittest.mock import MagicMock
 from tests.base_test import BaseTestCase
-from qgis.core import QgsPointXY, QgsGeometry, QgsWkbTypes, QgsCoordinateReferenceSystem
+from qgis.core import QgsPointXY, QgsGeometry, QgsCoordinateReferenceSystem
 
 from sec_interp.core.utils.spatial import (
     calculate_line_azimuth,
@@ -18,39 +18,29 @@ class TestSpatialUtils(BaseTestCase):
 
     def test_calculate_line_azimuth_point(self):
         """Test azimuth calculation for a point (should return 0)."""
-        geom = QgsGeometry.fromPointXY(QgsPointXY(0, 0))
-        self.assertEqual(calculate_line_azimuth(geom), 0)
+        self.assertEqual(calculate_line_azimuth([(0, 0)]), 0)
 
     def test_calculate_line_azimuth_line(self):
         """Test azimuth calculation for valid lines."""
         # North: (0,0) to (0,10) -> 0 degrees
-        line_n = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(0, 10)])
-        self.assertAlmostEqual(calculate_line_azimuth(line_n), 0)
+        self.assertAlmostEqual(calculate_line_azimuth([(0, 0), (0, 10)]), 0)
 
         # East: (0,0) to (10,0) -> 90 degrees
-        line_e = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(10, 0)])
-        self.assertAlmostEqual(calculate_line_azimuth(line_e), 90)
+        self.assertAlmostEqual(calculate_line_azimuth([(0, 0), (10, 0)]), 90)
 
         # South: (0,0) to (0,-10) -> 180 degrees
-        line_s = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(0, -10)])
-        self.assertAlmostEqual(calculate_line_azimuth(line_s), 180)
+        self.assertAlmostEqual(calculate_line_azimuth([(0, 0), (0, -10)]), 180)
 
         # West: (0,0) to (-10,0) -> 270 degrees
-        line_w = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(-10, 0)])
-        self.assertAlmostEqual(calculate_line_azimuth(line_w), 270)
+        self.assertAlmostEqual(calculate_line_azimuth([(0, 0), (-10, 0)]), 270)
 
     def test_calculate_line_azimuth_unsupported(self):
-        """Test azimuth for unsupported geometry types."""
-        geom = QgsGeometry()
-        geom._wkb_type = QgsWkbTypes.GeometryType.PolygonGeometry
-        self.assertEqual(calculate_line_azimuth(geom), 0)
+        """Test azimuth for unsupported geometry types (empty points)."""
+        self.assertEqual(calculate_line_azimuth([]), 0)
 
     def test_calculate_line_azimuth_short_line(self):
         """Test azimuth for line with less than 2 points."""
-        geom = QgsGeometry()
-        geom._wkb_type = QgsWkbTypes.Type.LineString
-        geom._polyline = [QgsPointXY(1, 1)]
-        self.assertEqual(calculate_line_azimuth(geom), 0)
+        self.assertEqual(calculate_line_azimuth([(1, 1)]), 0)
 
     def test_calculate_step_size_exception(self):
         """Test step size calculation when an exception occurs."""

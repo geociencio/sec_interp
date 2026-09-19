@@ -312,7 +312,7 @@ class ProfileController(TranslatableMixin):
                 line_geom = line_feat.geometry()
                 if line_geom and not line_geom.isNull():
                     line_start = scu.get_line_start_point(line_geom)
-                    line_azimuth = scu.calculate_line_azimuth(line_geom)
+                    line_azimuth = scu.calculate_line_azimuth(scu.extract_line_points(line_geom))
 
                     struct_lyr = LayerResolver.resolve(params.struct_layer)
                     raster_lyr = LayerResolver.resolve(params.raster_layer)

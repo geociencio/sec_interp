@@ -66,6 +66,7 @@ from .spatial import (
     calculate_line_azimuth,
     calculate_step_size,
     create_distance_area,
+    extract_line_points,
     get_line_start_point,
 )
 
@@ -91,6 +92,7 @@ __all__ = [
     "create_shapefile_writer",
     "densify_line_by_interval",
     "extract_feature_attributes",
+    "extract_line_points",
     "filter_features_by_buffer",
     "get_line_start_point",
     "get_line_vertices",

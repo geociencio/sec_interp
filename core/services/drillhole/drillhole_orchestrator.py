@@ -164,7 +164,7 @@ class DrillholeTaskOrchestrator:
         params: PreviewParams,
     ) -> Any:
         """Step 4: Process Intervals (Detached)."""
-        section_azimuth = scu.calculate_line_azimuth(section_geom)
+        section_azimuth = scu.calculate_line_azimuth(scu.extract_line_points(section_geom))
         _, drillhole_data = self.service.process_intervals(
             collar_points=collars_projected,
             collar_data=collar_data,

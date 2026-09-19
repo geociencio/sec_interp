@@ -14,42 +14,53 @@ from qgis.core import (
     QgsGeometry,
     QgsPointXY,
     QgsProject,
-    QgsWkbTypes,
 )
 
 
-def calculate_line_azimuth(line_geom: QgsGeometry) -> float:
-    """Calculate the azimuth (compass bearing) of a line geometry.
+def extract_line_points(geometry: QgsGeometry) -> list[tuple[float, float]]:
+    """Extract (x, y) tuples from a line geometry.
 
-    Calculates the azimuth based on the first two vertices of the line.
+    Handles singlepart and multipart lines. Returns an empty list for
+    non-line geometries or geometries without vertices.
+
+    Args:
+        geometry: The QGIS line geometry.
+
+    Returns:
+        List of (x, y) tuples.
+
+    """
+    if geometry.isMultipart():
+        parts = geometry.asMultiPolyline()
+        polyline = parts[0] if parts else []
+    else:
+        polyline = geometry.asPolyline()
+    return [(p.x(), p.y()) for p in polyline]
+
+
+def calculate_line_azimuth(points: list[tuple[float, float]]) -> float:
+    """Calculate the azimuth (compass bearing) of a line.
+
+    Calculates the azimuth based on the first two points of the line.
     Returns 0 for points or single-vertex lines.
 
     Args:
-        line_geom: The QGIS line geometry.
+        points: List of (x, y) tuples defining the line.
 
     Returns:
         Azimuth in degrees (0-360).
 
     """
-    if line_geom.wkbType() == QgsWkbTypes.Type.Point:
-        return 0  # Points have no azimuth
-
-    line = line_geom.asMultiPolyline()[0] if line_geom.isMultipart() else line_geom.asPolyline()
-
     MIN_REQUIRED_POINTS = 2
-    if len(line) < MIN_REQUIRED_POINTS:
+    if len(points) < MIN_REQUIRED_POINTS:
         return 0
-    # Calculate azimuth of first segment (from first to second point)
-    p1 = line[0]
-    p2 = line[1]
-    azimuth = math.degrees(math.atan2(p2.x() - p1.x(), p2.y() - p1.y()))
-    # Convert to compass bearing (0-360)
+
+    p1 = points[0]
+    p2 = points[1]
+    azimuth = math.degrees(math.atan2(p2[0] - p1[0], p2[1] - p1[1]))
     if azimuth < 0:
         azimuth += 360
     return azimuth
-
-    # For other geometry types, return a default value
-    return 0
 
 
 def calculate_step_size(geom: QgsGeometry, raster_lyr: Any) -> float:
