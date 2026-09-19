@@ -8,7 +8,7 @@ stop_conditions:
   - "Forbidden files (.agent, scripts, tests) found in ZIP → Abort and fix .qgisignore"
   - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
-  - Verify that 640+ tests pass in Docker
+  - Verify that 606+ tests pass in Docker
   - Confirm CC <= 10 for all methods (qgis-analyzer --max-cc 10)
   - Ensure Zero High-Severity Security Findings
   - Validate ZIP contents (Plugin-only, no agentic system)
@@ -37,12 +37,22 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
 ### Phase 2: Versioning and Documentation
 
-1. **Synchronize Version (vX.Y.Z)**:
-   - Update `metadata.txt`: `version` and `changelog` (Escape `%` as `%%`).
-   - Update `pyproject.toml`: `version`.
-   - **README Update**: Update metrics badges (Module Stability, Maintainability, Test counts) and the "What's New" section in `README.md`.
+1. **Synchronize Version (vX.Y.Z)** — full checklist:
 
-   🤖 **Agent Action**: Validate that all 3 versions match exactly.
+   | # | File | What to update |
+   |:--|:-----|:--------------|
+   | 1 | `metadata.txt` | `version` + `changelog` (escape `%` as `%%`) |
+   | 2 | `pyproject.toml` | `version` |
+   | 3 | `README.md` | badges (Version, Quality, Tests) + "What's New" |
+   | 4 | `docs/CHANGELOG.md` | move `[Unreleased]` → `[X.Y.Z]` + date |
+   | 5 | `docs/docsec/CHANGELOG.md` | same (Spanish changelog) |
+   | 6 | `docs/source/conf.py` | `release = "X.Y.Z"` |
+   | 7 | `docs/releases/notes/v[X.Y.Z].md` | new release note |
+   | 8 | `docs/DEVELOPMENT_LOG.md` | milestone entry |
+   | 9 | `.agent/QUICK_REFERENCE.md` | test count + metrics |
+
+   🤖 **Agent Action**: Validate that `metadata.txt`, `pyproject.toml`, and
+   `docs/source/conf.py` versions match exactly.
 
 2. **Changelog Update**:
    - Use **changelog-generator** to move `[Unreleased]` to the new version in `docs/CHANGELOG.md`.
@@ -56,7 +66,9 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    - Add a milestone entry in `docs/DEVELOPMENT_LOG.md` summarizing the phase closure.
 
 5. **Documentation Audit**:
-   - Ensure `AGENT_RULES.md`, `AGENTS.md` and other core docs reflect the latest architectural changes or standards.
+   - Ensure `AGENTS.md` (root SSoT), `.agent/QUICK_REFERENCE.md`, and other core
+     docs reflect the latest architectural changes or standards.
+   - Regenerate `AI_CONTEXT.md` via `uv run ai-ctx analyze`.
 
 ### Phase 3: Final Verification (Safety Net)
 
@@ -77,7 +89,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    ```bash
    make docker-test
    ```
-   🤖 **Agent Action**: 100% pass rate required (640 tests).
+   🤖 **Agent Action**: 100% pass rate required (606 tests).
 
 ### Phase 4: Git and Tagging
 

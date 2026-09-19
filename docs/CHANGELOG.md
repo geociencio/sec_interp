@@ -8,10 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- **Architecture (internal, no user-facing impact)**: Enforced the Core/GUI Extract-then-Compute boundary on a feature branch. Decomposed the `SecInterpDialog` God Object into narrow, dependency-injected managers; consolidated the preview render pipeline; moved QGIS feature-reading and layer-notification wiring into a new `gui/adapters/` layer; and reimplemented decimation, polyline metrics, line azimuth, and densification in pure standard-library math. Guarded by a new architecture allowlist gate (36 → 31 `core/` modules).
+- **Architecture (internal, no user-facing impact)**: Enforced the Core/GUI Extract-then-Compute boundary. Migrated `StructureService`, `GeologyService`, `ProfileService`, the drillhole domain, and the validation layer to a QGIS-agnostic core; moved QGIS feature-reading, buffering, raster sampling, and layer resolution into a new `gui/adapters/` layer; and reimplemented decimation, polyline metrics, line azimuth, projection, and densification in pure standard-library math. Guarded by a new architecture allowlist gate (36 → 6 `core/` modules).
 - **Repository Housekeeping**: Removed generated analyzer/coverage reports, build logs, and stale editor configurations (`.idea/`, `.vscode/`, `.continue/`) from the repository root and expanded `.gitignore` to prevent their re-introduction. No functional impact on the plugin.
 - **Tooling**: Upgraded `qgis-plugin-analyzer` 1.13.2 → 1.14.0 and refreshed static-analysis metrics. The new i18n heuristic reduced `MISSING_I18N` findings from 72 → 2 (remaining two are developer-facing `PerformanceTimer` timing labels). No functional impact on the plugin.
 - **Tooling**: Retired the internal `scripts/check_cc.py` and `scripts/verify_i18n_hygiene.py` scripts now that the cyclomatic-complexity gate (`analyze --max-cc 10`) and the AST-based `MISSING_I18N` rule are natively provided by `qgis-plugin-analyzer` 1.14.0. Both quality gates are now driven directly from the analyzer. No functional impact on the plugin.
+
+### Fixed
+- **Qt6 / QGIS 4 Legend Resize**: Replaced the flat `QEvent.Resize` enum with the scoped `QEvent.Type.Resize` in the legend widget, resolving a runtime `AttributeError` on QGIS 4.
+- **3D Interpretation Export**: Enabled the 3D interpretation export by default (the `SecInterp/enable_3d` setting previously defaulted to restricted).
 
 ## [3.7.2] - 2026-09-12
 

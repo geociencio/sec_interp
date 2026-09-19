@@ -41,9 +41,11 @@ Controls the plugin's version lifecycle, ensuring that each delivery meets the s
 > | 3 | `README.md` | Badges: `Version`, `Code Quality`, `QGIS Compliance`, `i18n`, "What's New" section |
 > | 4 | `docs/CHANGELOG.md` | Move `[Unreleased]` to `[X.Y.Z]` with date |
 > | 5 | `docs/docsec/CHANGELOG.md` | Same for Spanish documentation |
-> | 6 | `docs/releases/RELEASE_NOTES_vX.Y.Z.md` | Create new file with highlights |
-> | 7 | `docs/DEVELOPMENT_LOG.md` | Add version closing entry |
-> | 8 | `.agent/QUICK_REFERENCE.md` | Update test count and metrics |
+> | 6 | `docs/source/conf.py` | `release = "X.Y.Z"` |
+> | 7 | `docs/releases/notes/vX.Y.Z.md` | Create new file with highlights |
+> | 8 | `docs/DEVELOPMENT_LOG.md` | Add version closing entry |
+> | 9 | `.agent/QUICK_REFERENCE.md` | Update test count and metrics |
+> | 10 | `AI_CONTEXT.md` | Regenerate via `uv run ai-ctx analyze` |
 
 1. **Synchronization**: Update `metadata.txt` (including changelog), `pyproject.toml`, and `README.md`.
 2. **Versioning and Registration Standards (CRITICAL)**:
@@ -54,10 +56,10 @@ Controls the plugin's version lifecycle, ensuring that each delivery meets the s
    - **[Keep a Changelog](https://keepachangelog.com/en/1.0.0/)**:
      - Keep `docs/CHANGELOG.md` and `docs/docsec/CHANGELOG.md` strictly aligned with this standard.
      - Group changes logically (`Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`).
-3. **Release Notes**: Generate detailed release notes in `docs/releases/RELEASE_NOTES_vX.Y.Z.md`.
+3. **Release Notes**: Generate detailed release notes in `docs/releases/notes/vX.Y.Z.md`.
 
 ### Phase 3: Technical Verification
-1. Achieve 640+ passing tests.
+1. Achieve 606+ passing tests.
 2. Run `make docker-test` for an isolated environment.
 3. Update `AI_CONTEXT.md` via `uv run ai-ctx analyze`.
 
@@ -91,4 +93,4 @@ Published Artifacts: `sec_interp.X.Y.Z.zip`
 - [ ] Have all version references been updated?
 - [ ] Has the ZIP file been verified (no technical garbage)?
 - [ ] Have Git Tagging rules been followed?
-- [ ] Did the 640+ tests pass successfully?
+- [ ] Did the 606+ tests pass successfully?
