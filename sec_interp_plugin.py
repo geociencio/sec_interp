@@ -81,7 +81,12 @@ class SecInterp(TranslatableMixin):
             "sec_interp.gui.preview_renderer", "PreviewRenderer"
         )
         # 2. Controller (Business Logic orchestrator)
-        self.controller = SafeLoader.lazy_load("sec_interp.core.controller", "ProfileController")
+        data_fetcher = SafeLoader.lazy_load(
+            "sec_interp.gui.adapters.feature_fetcher", "DataFetcher"
+        )
+        self.controller = SafeLoader.lazy_load(
+            "sec_interp.core.controller", "ProfileController", data_fetcher=data_fetcher
+        )
 
         # 3. Layer Notification Manager (GUI-side signal wiring)
         self.layer_notification_manager = SafeLoader.lazy_load(

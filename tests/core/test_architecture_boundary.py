@@ -51,7 +51,6 @@ CORE_VIOLATIONS: dict[str, frozenset[str]] = {
     "interfaces/structure_interface.py": frozenset({"qgis.core"}),
     "services/access_control_service.py": frozenset({"qgis.core"}),
     "services/drillhole/collar_processor.py": frozenset({"qgis.core", "QgsProject.instance()"}),
-    "services/drillhole/data_fetcher.py": frozenset({"qgis.core"}),
     "services/drillhole/drillhole_orchestrator.py": frozenset({"qgis.core"}),
     "services/drillhole/projection_engine.py": frozenset({"qgis.core"}),
     "services/drillhole/trajectory_engine.py": frozenset({"qgis.core"}),

@@ -31,11 +31,18 @@ logger = get_logger(__name__)
 class ProfileController(TranslatableMixin):
     """Orchestrates data generation services for SecInterp profile creation."""
 
-    def __init__(self) -> None:
-        """Initialize services and the data cache using Dependency Injection."""
+    def __init__(self, data_fetcher: Any | None = None) -> None:
+        """Initialize services and the data cache using Dependency Injection.
+
+        Args:
+            data_fetcher: Optional feature fetcher (Extract adapter), provided
+                by the GUI composition root.
+
+        """
         self.config_service = ConfigService()
         self.data_cache = DataCache()
         self.settings = self.config_service.get_all_settings()
+        self.data_fetcher = data_fetcher
 
         # 1. Component Factories (Loaded safely)
         # Processors
@@ -56,9 +63,6 @@ class ProfileController(TranslatableMixin):
         )
         self.outcrop_processor = SafeLoader.lazy_load(
             "sec_interp.core.services.geology.outcrop_processor", "OutcropProcessor"
-        )
-        self.data_fetcher = SafeLoader.lazy_load(
-            "sec_interp.core.services.drillhole.data_fetcher", "DataFetcher"
         )
 
         # 3. Services (Safely instantiated)

@@ -23,7 +23,6 @@ from sec_interp.core.exceptions import (
 )
 from sec_interp.core.interfaces.drillhole_interface import IDrillholeService
 from sec_interp.core.services.drillhole.collar_processor import CollarProcessor
-from sec_interp.core.services.drillhole.data_fetcher import DataFetcher
 from sec_interp.core.services.drillhole.interval_processor import IntervalProcessor
 from sec_interp.core.services.drillhole.survey_processor import SurveyProcessor
 from sec_interp.core.services.drillhole.trajectory_engine import TrajectoryEngine
@@ -46,7 +45,7 @@ class DrillholeService(IDrillholeService):
         collar_processor: CollarProcessor | None = None,
         survey_processor: SurveyProcessor | None = None,
         interval_processor: IntervalProcessor | None = None,
-        data_fetcher: DataFetcher | None = None,
+        data_fetcher: Any | None = None,
         trajectory_engine: TrajectoryEngine | None = None,
     ) -> None:
         """Initialize the service with specialized processors.
@@ -55,14 +54,14 @@ class DrillholeService(IDrillholeService):
             collar_processor: Optional collar processor.
             survey_processor: Optional survey processor.
             interval_processor: Optional interval processor.
-            data_fetcher: Optional data fetcher.
+            data_fetcher: Optional data fetcher (Extract adapter).
             trajectory_engine: Optional trajectory engine.
 
         """
         self.collar_processor = collar_processor or CollarProcessor()
         self.survey_processor = survey_processor or SurveyProcessor()
         self.interval_processor = interval_processor or IntervalProcessor()
-        self.data_fetcher = data_fetcher or DataFetcher()
+        self.data_fetcher = data_fetcher
         self.trajectory_engine = trajectory_engine or TrajectoryEngine()
 
     def tr(self, message: str) -> str:

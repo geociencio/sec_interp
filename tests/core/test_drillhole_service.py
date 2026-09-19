@@ -82,6 +82,9 @@ class TestDrillholeService(BaseTestCase):
 
     def test_fetch_bulk_data_survey(self):
         """Test bulk fetching survey data."""
+        from sec_interp.gui.adapters.feature_fetcher import DataFetcher
+
+        fetcher = DataFetcher()
         survey_layer = MagicMock()
         survey_layer.isValid.return_value = True
 
@@ -102,7 +105,7 @@ class TestDrillholeService(BaseTestCase):
         survey_layer.getFeatures.return_value = [feat]
 
         fields = {"id": "hole_id", "depth": "depth", "azim": "azim", "incl": "incl"}
-        res = self.service.data_fetcher.fetch_bulk_data(survey_layer, {"DH01"}, fields)
+        res = fetcher.fetch_bulk_data(survey_layer, {"DH01"}, fields)
 
         self.assertIn("DH01", res)
         self.assertEqual(len(res["DH01"]), 1)

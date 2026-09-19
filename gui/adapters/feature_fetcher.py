@@ -1,4 +1,8 @@
-"""Data Fetching logic for Drillhole child layers."""
+"""Feature-fetching adapter for drillhole child layers (Extract phase).
+
+Reads survey and interval data from QGIS vector layers and returns plain
+tuples, so the core layer never has to touch QgsFeatureRequest.
+"""
 
 from __future__ import annotations
 

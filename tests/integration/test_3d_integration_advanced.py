@@ -18,13 +18,14 @@ from sec_interp.core.services.drillhole_service import DrillholeService
 from sec_interp.core.services.drillhole.drillhole_orchestrator import (
     DrillholeTaskOrchestrator,
 )
+from sec_interp.gui.adapters.feature_fetcher import DataFetcher
 
 
 class Test3DIntegrationAdvanced(BaseIntegrationTest):
 
     def setUp(self):
         super().setUp()
-        self.service = DrillholeService()
+        self.service = DrillholeService(data_fetcher=DataFetcher())
         self.orchestrator = DrillholeTaskOrchestrator(self.service)
 
         # Define CRS

@@ -12,7 +12,8 @@ class TestControllerDI(unittest.TestCase):
 
     def test_controller_initialization_injects_dependencies(self):
         """Verify that services in Controller have the expected processors."""
-        controller = ProfileController()
+        mock_data_fetcher = MagicMock()
+        controller = ProfileController(data_fetcher=mock_data_fetcher)
 
         # Verify DrillholeService injection
         self.assertIs(
@@ -28,6 +29,7 @@ class TestControllerDI(unittest.TestCase):
         self.assertIs(
             controller.drillhole_service.data_fetcher, controller.data_fetcher
         )
+        self.assertIs(controller.data_fetcher, mock_data_fetcher)
         self.assertIs(
             controller.drillhole_service.trajectory_engine, controller.trajectory_engine
         )
