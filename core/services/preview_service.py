@@ -17,7 +17,6 @@ from sec_interp.core.domain import (
 )
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.performance_metrics import PerformanceTimer
-from sec_interp.core.utils.sampling import prepare_profile_context
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -105,17 +104,15 @@ class PreviewService:
         self.transform_context = transform_context
 
         # 1. Topography & Context Extraction
-        line_geom, line_start, raster_lyr = self._generate_topography_step(params, result)
+        self._generate_topography_step(params, result)
 
         # 2. Structures (Now using detached flow)
-        self._generate_structures_step(params, result, line_geom, line_start, raster_lyr)
+        self._generate_structures_step(params, result)
 
         return result
 
-    def _generate_topography_step(
-        self, params: PreviewParams, result: PreviewResult
-    ) -> tuple[Any, Any, Any]:
-        """Step 1: Topography & Context Extraction."""
+    def _generate_topography_step(self, params: PreviewParams, result: PreviewResult) -> None:
+        """Step 1: Topography."""
         with PerformanceTimer("Topography Generation", result.metrics):
             line_lyr = params.line_layer
             raster_lyr = params.raster_layer
@@ -123,15 +120,11 @@ class PreviewService:
             if not line_lyr or not raster_lyr:
                 raise ProcessingError("Required layers for topography are missing.")
 
-            line_geom, line_start, distance_area = prepare_profile_context(line_lyr)
-            self.distance_area = distance_area  # Store for other layers
-
-            # Calculate LOD interval
             interval = None
             if params.auto_lod:
-                line_len = line_geom.length()
-                max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
-                interval = line_len / max_pts if max_pts > 0 else None
+                interval = self.controller.profile_extractor.calculate_lod_interval(
+                    line_lyr, params.canvas_width
+                )
 
             result.topo = self.controller.profile_extractor.extract_profile(
                 line_lyr,
@@ -141,15 +134,11 @@ class PreviewService:
             )
             if result.topo:
                 result.metrics.record_count("Topography Points", len(result.topo))
-        return line_geom, line_start, raster_lyr
 
     def _generate_structures_step(
         self,
         params: PreviewParams,
         result: PreviewResult,
-        line_geom: Any,
-        line_start: Any,
-        raster_lyr: Any,
     ) -> None:
         """Step 2: Structures (Now using detached flow)."""
         if params.struct_layer and params.dip_field and params.strike_field:
@@ -162,20 +151,23 @@ class PreviewService:
                 if not extractor:
                     return
 
-                line_points, _, line_azimuth = extractor.extract_line(line_geom)
+                ctx = extractor.extract_section_and_structures(
+                    params.line_layer, struct_lyr, params.buffer_dist
+                )
+                if ctx is None:
+                    return
 
-                # Detach
-                struct_data = extractor.detach_structures(struct_lyr, line_geom, params.buffer_dist)
+                raster_lyr = params.raster_layer
 
                 def elevation_sampler(x: float, y: float) -> float:
                     return extractor.sample_elevation(raster_lyr, x, y, params.band_num)
 
                 # Project
                 result.struct = self.controller.structure_service.project_structures(
-                    line_points=line_points,
-                    struct_data=struct_data,
+                    line_points=ctx.line_points,
+                    struct_data=ctx.structures,
                     elevation_sampler=elevation_sampler,
-                    line_az=line_azimuth,
+                    line_az=ctx.line_azimuth,
                     dip_field=params.dip_field,
                     strike_field=params.strike_field,
                 )

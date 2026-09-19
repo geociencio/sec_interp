@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from sec_interp.core import utils as scu
 from sec_interp.core.domain.task_inputs import DrillholeContext
 from sec_interp.core.exceptions import DataMissingError, ValidationError
+from sec_interp.gui.adapters import geometry
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -365,4 +366,4 @@ class DrillholeExtractor:
         """Sample a single elevation value from a raster layer."""
         if not dem_layer or not dem_layer.isValid():
             return 0.0
-        return scu.sample_point_elevation(dem_layer, point)
+        return geometry.sample_point_elevation(dem_layer, point)

@@ -6,8 +6,6 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from qgis.core import QgsVectorLayer  # noqa: F401
-
     from .spatial_meta import SpatialMeta
 
 # --- Aliases ---
@@ -16,10 +14,6 @@ if TYPE_CHECKING:
 ProfilePoints = list[tuple[float, float]]
 GeologyPoints = list[tuple[float, float, str]]
 StructurePoints = list[tuple[float, float]]
-
-# Layer collections
-LayerDict = dict[str, "QgsVectorLayer"]
-"""Dictionary mapping layer names to QgsVectorLayer objects."""
 
 # Settings and configuration
 SettingsDict = dict[str, Any]

@@ -46,19 +46,10 @@ _FORBIDDEN_PATTERNS: dict[str, re.Pattern[str]] = {
 CORE_VIOLATIONS: dict[str, frozenset[str]] = {
     "config.py": frozenset({"qgis.core", "qgis.PyQt"}),
     "data_cache.py": frozenset({"qgis.PyQt"}),
-    "domain/entities.py": frozenset({"qgis.core"}),
     "services/access_control_service.py": frozenset({"qgis.core"}),
     "services/export_service.py": frozenset({"qgis.core", "qgis.PyQt"}),
-    "utils/geometry_utils/extraction.py": frozenset({"qgis.core", "qgis.PyQt"}),
-    "utils/geometry_utils/filtering.py": frozenset(
-        {"qgis.core", "qgis.PyQt", "QgsProject.instance()"}
-    ),
-    "utils/geometry_utils/processing.py": frozenset({"qgis.core", "qgis.PyQt"}),
     "utils/i18n.py": frozenset({"qgis.PyQt"}),
     "utils/io.py": frozenset({"qgis.core", "QgsProject.instance()"}),
-    "utils/qt6_compat.py": frozenset({"qgis.core", "qgis.PyQt"}),
-    "utils/sampling.py": frozenset({"qgis.core"}),
-    "utils/spatial.py": frozenset({"qgis.core", "QgsProject.instance()"}),
     "validation/field_validator.py": frozenset({"qgis.core"}),
     "validation/layer_validator.py": frozenset({"qgis.core", "QgsProject.instance()"}),
     "validation/project_validator.py": frozenset({"qgis.core"}),

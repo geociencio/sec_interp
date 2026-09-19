@@ -3,16 +3,16 @@ from __future__ import annotations
 """Core Utilities Package.
 
 Organized by functionality:
-- geometry: Spatial geometry operations
-- spatial: Distance and azimuth calculations
-- sampling: Elevation sampling and profiling
-- parsing: Structural data parsing
-- rendering: Visualization utilities
-- io: File I/O and user messages
-- geology: Geological calculations
+- drillhole: Trajectory and projection calculations (pure)
+- geology: Geological calculations (pure)
+- io: File I/O and vector writing
+- parsing: Structural data parsing (pure)
+- rendering: Visualization utilities (pure)
+- sampling: Elevation interpolation (pure)
+- spatial: Distance and azimuth calculations (pure)
 """
 
-# Drillhole trajetory and projection
+# Drillhole trajectory and projection
 from .drillhole import (
     calculate_drillhole_trajectory,
     interpolate_intervals_on_trajectory,
@@ -22,14 +22,6 @@ from .drillhole import (
 # Geological calculations
 from .geology import (
     calculate_apparent_dip,
-)
-
-# Geometry operations and helpers
-from .geometry import (
-    create_buffer_geometry,
-    densify_line_by_interval,
-    filter_features_by_buffer,
-    get_line_vertices,
 )
 
 # I/O utilities
@@ -52,20 +44,14 @@ from .rendering import (
     create_coordinate_transform,
 )
 
-# Elevation Sampling and profiling
+# Elevation interpolation (pure)
 from .sampling import (
     interpolate_elevation,
-    prepare_profile_context,
-    sample_elevation_along_line,
-    sample_point_elevation,
 )
 
-# Spatial calculations
+# Spatial calculations (pure)
 from .spatial import (
     calculate_line_azimuth,
-    create_distance_area,
-    extract_line_points,
-    get_line_start_point,
 )
 
 __all__ = [
@@ -80,25 +66,17 @@ __all__ = [
     "calculate_line_azimuth",
     # Parsing
     "cardinal_to_azimuth",
-    # Geometry
-    "create_buffer_geometry",
+    # Rendering
     "create_coordinate_transform",
-    "create_distance_area",
     # I/O
     "create_shapefile_writer",
-    "densify_line_by_interval",
+    # Parsing
     "extract_feature_attributes",
-    "extract_line_points",
-    "filter_features_by_buffer",
-    "get_line_start_point",
-    "get_line_vertices",
     # Sampling
     "interpolate_elevation",
+    # Drillhole
     "interpolate_intervals_on_trajectory",
     "parse_dip",
     "parse_strike",
-    "prepare_profile_context",
     "project_trajectory_to_section",
-    "sample_elevation_along_line",
-    "sample_point_elevation",
 ]

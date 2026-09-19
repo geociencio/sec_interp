@@ -25,8 +25,7 @@ from sec_interp.core import utils as scu
 from sec_interp.core.domain import DomainGeometry
 from sec_interp.core.domain.task_inputs import GeologyContext, OutcropSegments
 from sec_interp.core.exceptions import DataMissingError, GeometryError, ValidationError
-from sec_interp.core.utils.geometry_utils.extraction import extract_lines_from_geometry
-from sec_interp.core.utils.geometry_utils.processing import calculate_segment_range
+from sec_interp.gui.adapters import geometry
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -64,7 +63,7 @@ class GeologyExtractor:
 
         line_geom, line_start = self._extract_line_info(line_lyr)
         crs = line_lyr.crs()
-        da = scu.create_distance_area(crs)
+        da = geometry.create_distance_area(crs)
 
         master_profile_data, master_grid_dists_raw = self._generate_master_profile(
             line_geom, raster_lyr, band_number, da, line_start
@@ -159,11 +158,11 @@ class GeologyExtractor:
         """Densify the line and sample elevations from the raster."""
         try:
             interval = raster_lyr.rasterUnitsPerPixelX()
-            master_densified = scu.densify_line_by_interval(line_geom, interval)
-            grid_points = scu.get_line_vertices(master_densified)
+            master_densified = geometry.densify_line_by_interval(line_geom, interval)
+            grid_points = geometry.get_line_vertices(master_densified)
         except (AttributeError, ValueError, TypeError) as e:
             logger.warning(f"Failed to densify line, using original vertices: {e}")
-            grid_points = scu.get_line_vertices(line_geom)
+            grid_points = geometry.get_line_vertices(line_geom)
 
         master_profile_data: list[tuple[float, float]] = []
         master_grid_dists: list[tuple[float, QgsPointXY, float]] = []
@@ -226,8 +225,8 @@ class GeologyExtractor:
             return []
 
         segments: list[tuple[float, float, DomainGeometry]] = []
-        for seg_geom in extract_lines_from_geometry(intersection):
-            rng = calculate_segment_range(seg_geom, line_start, da)
+        for seg_geom in geometry.extract_lines_from_geometry(intersection):
+            rng = geometry.calculate_segment_range(seg_geom, line_start, da)
             if not rng:
                 continue
             dist_start, dist_end = rng

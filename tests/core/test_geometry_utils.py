@@ -1,116 +1,13 @@
-"""Tests for geometry utilities sub-modules."""
+"""Tests for geometry utilities sub-modules (pure math)."""
 
-from unittest.mock import MagicMock
 from tests.base_test import BaseTestCase
-from qgis.core import (
-    QgsPointXY,
-    QgsGeometry,
-    QgsWkbTypes,
-    QgsFeature,
-    QgsCoordinateReferenceSystem,
-)
 
-from sec_interp.core.utils.geometry_utils.extraction import (
-    extract_all_vertices,
-    get_line_vertices,
-)
-from sec_interp.core.utils.geometry_utils.filtering import filter_features_by_buffer
 from sec_interp.core.utils.geometry_utils.measurement import calculate_polyline_metrics
 from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
 from sec_interp.core.utils.geometry_utils.processing import (
-    create_buffer_geometry,
-    densify_line_by_interval,
     densify_line_points,
+    interpolate_segment_points,
 )
-
-
-class TestGeometryExtraction(BaseTestCase):
-    """Tests for extraction.py"""
-
-    def test_extract_all_vertices(self):
-        """Test vertex extraction from geometry."""
-        # Null geometry
-        self.assertEqual(extract_all_vertices(None), [])
-
-        # Valid geometry
-        points = [QgsPointXY(0, 0), QgsPointXY(10, 10)]
-        geom = QgsGeometry.fromPolylineXY(points)
-        vertices = extract_all_vertices(geom)
-        self.assertEqual(len(vertices), 2)
-        self.assertEqual(vertices[0].x(), 0)
-
-    def test_get_line_vertices_valid(self):
-        """Test valid line vertex extraction."""
-        points = [QgsPointXY(0, 0), QgsPointXY(10, 10)]
-        geom = QgsGeometry.fromPolylineXY(points)
-        vertices = get_line_vertices(geom)
-        self.assertEqual(len(vertices), 2)
-
-    def test_get_line_vertices_invalid(self):
-        """Test error cases for get_line_vertices."""
-        # Null
-        with self.assertRaises(ValueError):
-            get_line_vertices(None)
-
-        # Wrong type
-        geom = QgsGeometry.fromPointXY(QgsPointXY(0, 0))
-        with self.assertRaises(ValueError):
-            get_line_vertices(geom)
-
-        # No vertices
-        geom_empty = QgsGeometry()
-        geom_empty._wkb_type = QgsWkbTypes.GeometryType.LineGeometry
-        geom_empty._polyline = []
-        with self.assertRaises(ValueError):
-            get_line_vertices(geom_empty)
-
-
-class TestGeometryFiltering(BaseTestCase):
-    """Tests for filtering.py"""
-
-    def test_filter_features_by_buffer(self):
-        """Test spatial filtering of features."""
-        layer = MagicMock()
-        layer.isValid.return_value = True
-        layer.crs.return_value = QgsCoordinateReferenceSystem("EPSG:4326")
-
-        # Mock features
-        feat1 = QgsFeature()
-        feat1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 1)))
-
-        layer.getFeatures.return_value = [feat1]
-
-        buffer_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(2, 2)])
-
-        results = filter_features_by_buffer(layer, buffer_geom)
-        self.assertEqual(len(results), 1)
-
-    def test_filter_features_by_buffer_crs_transform(self):
-        """Test spatial filtering with CRS transformation."""
-        layer = MagicMock()
-        layer.isValid.return_value = True
-        layer.crs.return_value = QgsCoordinateReferenceSystem("EPSG:32633")
-
-        feat1 = QgsFeature()
-        feat1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 1)))
-        layer.getFeatures.return_value = [feat1]
-
-        buffer_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(2, 2)])
-        buffer_crs = QgsCoordinateReferenceSystem("EPSG:4326")
-
-        # This will trigger lines 46-48 in filtering.py
-        results = filter_features_by_buffer(layer, buffer_geom, buffer_crs=buffer_crs)
-        self.assertEqual(len(results), 1)
-
-    def test_filter_features_invalid_input(self):
-        """Test error cases for filtering."""
-        with self.assertRaises(ValueError):
-            filter_features_by_buffer(None, QgsGeometry())
-
-        layer = MagicMock()
-        layer.isValid.return_value = True
-        with self.assertRaises(ValueError):
-            filter_features_by_buffer(layer, None)
 
 
 class TestGeometryMeasurement(BaseTestCase):
@@ -119,9 +16,7 @@ class TestGeometryMeasurement(BaseTestCase):
     def test_calculate_polyline_metrics_empty(self):
         """Test metrics for empty or short list of points."""
         self.assertEqual(calculate_polyline_metrics([])["point_count"], 0)
-        self.assertEqual(
-            calculate_polyline_metrics([(0, 0)])["point_count"], 1
-        )
+        self.assertEqual(calculate_polyline_metrics([(0, 0)])["point_count"], 1)
 
     def test_calculate_polyline_metrics_valid(self):
         """Test metrics calculation for a valid polyline."""
@@ -144,29 +39,9 @@ class TestGeometryOptimization(BaseTestCase):
         # Should return original if points <= max_points
         self.assertEqual(PreviewOptimizer.decimate(data, max_points=10), data)
 
-        # Test decimation logic (mock simplify just returns self)
+        # Test decimation logic
         result = PreviewOptimizer.decimate(data, max_points=1)
         self.assertIsInstance(result, list)
-
-    def test_preview_optimizer_decimate_multipart(self):
-        """Test decimation with multipart geometry returned by simplify."""
-        data = [(i, 0) for i in range(100)]
-        # Force a geometry that is multipart
-        # Mock simplify is on MockQgsGeometry, which is in base_test.py
-        # I'll use MagicMock for the specific geometry used in decimate
-        # Wait, decimate creates geom from data. I should mock QgsGeometry.fromPolylineXY
-        pass
-
-    def test_preview_optimizer_exception(self):
-        """Test exception handling in decimate."""
-        data = [(0, 0), (1, 1)]
-        from sec_interp.core.utils.geometry_utils.optimization import (
-            logger as opt_logger,
-        )
-
-        with MagicMock() as mock_log:
-            # This is hard to trigger without patching.
-            pass
 
     def test_calculate_curvature(self):
         """Test curvature calculation."""
@@ -178,7 +53,6 @@ class TestGeometryOptimization(BaseTestCase):
         # 90 degree turn
         data_turn = [(0, 0), (10, 0), (10, 10)]
         curvatures_turn = PreviewOptimizer.calculate_curvature(data_turn)
-        # angle deviation from 180 (straight) is 180 - 90 = 90
         self.assertAlmostEqual(curvatures_turn[1], 90.0)
 
     def test_adaptive_sample(self):
@@ -189,34 +63,29 @@ class TestGeometryOptimization(BaseTestCase):
 
 
 class TestGeometryProcessing(BaseTestCase):
-    """Tests for processing.py"""
-
-    def test_create_buffer_geometry(self):
-        """Test buffer creation."""
-        geom = QgsGeometry.fromPointXY(QgsPointXY(0, 0))
-        buffer = create_buffer_geometry(geom, QgsCoordinateReferenceSystem(), 10.0)
-        self.assertIsNotNone(buffer)
-
-    def test_densify_line(self):
-        """Test line densification."""
-        geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(10, 0)])
-        densified = densify_line_by_interval(geom, 1.0)
-        self.assertIsNotNone(densified)
+    """Tests for processing.py (pure math)."""
 
     def test_densify_line_points(self):
         """Test pure-math polyline densification."""
-        # Straight horizontal line densified at interval 2.0
         result = densify_line_points([(0, 0), (10, 0)], 2.0)
         self.assertEqual(len(result), 6)  # 5 segments of length 2.0
         self.assertEqual(result[0], (0, 0))
         self.assertEqual(result[-1], (10, 0))
 
-        # Segment shorter than interval stays intact
         self.assertEqual(densify_line_points([(0, 0), (1, 0)], 2.0), [(0, 0), (1, 0)])
-
-        # Non-positive interval returns input unchanged
         self.assertEqual(densify_line_points([(0, 0), (10, 0)], 0.0), [(0, 0), (10, 0)])
-
-        # Empty and single-point inputs return unchanged
         self.assertEqual(densify_line_points([], 1.0), [])
         self.assertEqual(densify_line_points([(0, 0)], 1.0), [(0, 0)])
+
+    def test_interpolate_segment_points(self):
+        """Test distance-to-point conversion with interpolation."""
+        grid = [(0.0, None, 100.0), (10.0, None, 110.0), (20.0, None, 120.0)]
+        profile = [(0.0, 100.0), (10.0, 110.0), (20.0, 120.0)]
+
+        points = interpolate_segment_points(5.0, 15.0, grid, profile, 0.001)
+
+        self.assertEqual(len(points), 3)
+        self.assertAlmostEqual(points[0][0], 5.0)
+        self.assertAlmostEqual(points[0][1], 105.0)
+        self.assertAlmostEqual(points[2][0], 15.0)
+        self.assertAlmostEqual(points[2][1], 115.0)

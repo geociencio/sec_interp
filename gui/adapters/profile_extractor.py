@@ -10,9 +10,9 @@ from __future__ import annotations
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.PyQt.QtCore import QCoreApplication
 
-from sec_interp.core import utils as scu
 from sec_interp.core.domain import ProfileData
 from sec_interp.core.exceptions import DataMissingError, GeometryError
+from sec_interp.gui.adapters import geometry
 
 
 class ProfileExtractor:
@@ -21,6 +21,28 @@ class ProfileExtractor:
     def tr(self, message: str) -> str:
         """Translate a message using QCoreApplication."""
         return QCoreApplication.translate("ProfileExtractor", message)  # type: ignore[no-any-return]
+
+    def calculate_lod_interval(self, line_lyr: QgsVectorLayer, canvas_width: int) -> float | None:
+        """Compute the LOD sampling interval from the section line length.
+
+        Args:
+            line_lyr: The cross-section line layer.
+            canvas_width: Current width of the preview canvas in pixels.
+
+        Returns:
+            The sampling interval, or None if the line length is unavailable.
+
+        """
+        line_feat = next(line_lyr.getFeatures(), None)
+        if not line_feat:
+            return None
+        line_geom = line_feat.geometry()
+        if not line_geom or line_geom.isNull():
+            return None
+
+        line_len = line_geom.length()
+        max_pts = max(200, int(canvas_width * 2))
+        return line_len / max_pts if max_pts > 0 else None
 
     def extract_profile(
         self,
@@ -55,9 +77,9 @@ class ProfileExtractor:
         if not geom or geom.isNull():
             raise GeometryError(self.tr("Line geometry is not valid"), {"layer": line_lyr.name()})
 
-        da = scu.create_distance_area(line_lyr.crs())
+        da = geometry.create_distance_area(line_lyr.crs())
 
-        points = scu.sample_elevation_along_line(
+        points = geometry.sample_elevation_along_line(
             geom, raster_lyr, band_number, da, interval=interval
         )
 
