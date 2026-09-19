@@ -26,9 +26,9 @@ class AccessControlService:
             bool: True if authorized, False otherwise.
 
         """
-        # For now, we link it to the UI toggle in Settings persisted via QgsSettings.
-        # Default to False to demonstrate the "locked" feel or restricted nature.
-        allowed = self.settings.value("SecInterp/enable_3d", False, type=bool)
+        # Linked to the UI toggle in Settings persisted via QgsSettings.
+        # Defaults to enabled (True); users can opt out via the toggle.
+        allowed = self.settings.value("SecInterp/enable_3d", True, type=bool)
 
         if not allowed:
             logger.info("Access denied for restricted feature: 3D Export")

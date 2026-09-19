@@ -416,21 +416,25 @@ class TestExportServiceInterpretationE2E(BaseIntegrationTest):
         a fallback before asserting the canonical name.
         """
         params = self._make_params()
-        msgs = self.service.export_data(
-            output_folder=self.output_dir,
-            params=params,
-            profile_data=self.profile_data,
-            geol_data=None,
-            struct_data=None,
-            interp_data=self.interp_data,
-            export_options={
-                "exp_topo": False,
-                "exp_geol": False,
-                "exp_struct": False,
-                "exp_drill": False,
-                "exp_interp": True,
-            },
-        )
+        from unittest.mock import patch
+
+        # Keep this test focused on the 2D interpretation export.
+        with patch.object(self.service.access_control, "can_export_3d", return_value=False):
+            msgs = self.service.export_data(
+                output_folder=self.output_dir,
+                params=params,
+                profile_data=self.profile_data,
+                geol_data=None,
+                struct_data=None,
+                interp_data=self.interp_data,
+                export_options={
+                    "exp_topo": False,
+                    "exp_geol": False,
+                    "exp_struct": False,
+                    "exp_drill": False,
+                    "exp_interp": True,
+                },
+            )
 
         # The exporter logs the path it wrote to; accept any .shp in the output dir
         shp_files = list(self.output_dir.rglob("*.shp"))

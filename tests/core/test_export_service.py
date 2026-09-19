@@ -100,15 +100,20 @@ class TestExportService(BaseTestCase):
         drillhole_data = [{"id": "BH1"}]
         interp_data = [{"id": 1}]
 
-        result = self.service.export_data(
-            self.output_folder,
-            self.params,
-            profile_data=profile_data,
-            geol_data=geol_data,
-            struct_data=struct_data,
-            drillhole_data=drillhole_data,
-            interp_data=interp_data,
-        )
+        # Interpretation3DExporter depends on can_export_3d() settings; keep
+        # this test focused on the 2D path (3D is covered separately).
+        with patch.object(
+            self.service.access_control, "can_export_3d", return_value=False
+        ):
+            result = self.service.export_data(
+                self.output_folder,
+                self.params,
+                profile_data=profile_data,
+                geol_data=geol_data,
+                struct_data=struct_data,
+                drillhole_data=drillhole_data,
+                interp_data=interp_data,
+            )
 
         # Verify all exporters were called
         mock_csv.return_value.export.assert_called()
@@ -117,7 +122,6 @@ class TestExportService(BaseTestCase):
         mock_dh_trace.return_value.export.assert_called()
         mock_dh_int.return_value.export.assert_called()
         mock_interp2d.return_value.export.assert_called()
-        # Interpretation3DExporter depends on can_export_3d() settings
 
     @patch("sec_interp.exporters.CSVExporter")
     @patch("sec_interp.exporters.ProfileLineVectorExporter")

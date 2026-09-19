@@ -184,7 +184,7 @@ class SettingsPage(BasePage):
     def _load_settings(self) -> None:
         """Load current state from QgsSettings."""
         # Advanced
-        enabled_3d = self.settings.value("SecInterp/enable_3d", False, type=bool)
+        enabled_3d = self.settings.value("SecInterp/enable_3d", True, type=bool)
         if self.chk_enable_3d:
             self.chk_enable_3d.setChecked(enabled_3d)
 
@@ -236,7 +236,7 @@ class SettingsPage(BasePage):
             "chk_exp_struct": True,
             "chk_exp_drill": True,
             "chk_exp_interp": True,
-            "chk_enable_3d": False,
+            "chk_enable_3d": True,
             "chk_3d_traces": True,
             "chk_3d_intervals": True,
             "chk_3d_original": True,

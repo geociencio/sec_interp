@@ -14,11 +14,11 @@ class TestAccessControlService(BaseTestCase):
         self.service = AccessControlService()
         self.settings = QgsSettings()
 
-    def test_can_export_3d_default_false(self):
-        """Test that by default 3D export is denied."""
+    def test_can_export_3d_default_true(self):
+        """Test that by default 3D export is enabled."""
         # Ensure setting is not present
         self.settings.remove("SecInterp/enable_3d")
-        self.assertFalse(self.service.can_export_3d())
+        self.assertTrue(self.service.can_export_3d())
 
     def test_can_export_3d_allowed(self):
         """Test that setting enable_3d allows export."""

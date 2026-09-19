@@ -57,7 +57,7 @@ class TestSignalRestoration(unittest.TestCase):
         # Verify they've been reset to defaults
         self.assertTrue(settings_page.chk_exp_topo.isChecked())
         self.assertTrue(settings_page.chk_exp_drill.isChecked())
-        self.assertFalse(settings_page.chk_enable_3d.isChecked())
+        self.assertTrue(settings_page.chk_enable_3d.isChecked())
         self.assertTrue(settings_page.chk_3d_traces.isChecked())
         self.assertFalse(settings_page.chk_3d_projected.isChecked())
 
