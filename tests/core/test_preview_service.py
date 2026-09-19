@@ -56,8 +56,8 @@ class TestPreviewService(BaseTestCase):
         line_feat.geometry.return_value = line_geom
         self.mock_line_lyr.getFeatures = MagicMock(side_effect=lambda: iter([line_feat]))
 
-        # Mock profile service
-        self.mock_controller.profile_service.generate_topographic_profile.return_value = [
+        # Mock profile extractor
+        self.mock_controller.profile_extractor.extract_profile.return_value = [
             (0.0, 10.0),
             (100.0, 15.0),
         ]
@@ -66,7 +66,7 @@ class TestPreviewService(BaseTestCase):
 
         self.assertIsInstance(result, PreviewResult)
         self.assertEqual(len(result.topo), 2)
-        self.mock_controller.profile_service.generate_topographic_profile.assert_called_once()
+        self.mock_controller.profile_extractor.extract_profile.assert_called_once()
 
     def test_generate_all_with_structures(self):
         """Test generating topo and structures."""
@@ -75,7 +75,7 @@ class TestPreviewService(BaseTestCase):
         line_feat = MagicMock()
         line_feat.geometry.return_value = line_geom
         self.mock_line_lyr.getFeatures = MagicMock(side_effect=lambda: iter([line_feat]))
-        self.mock_controller.profile_service.generate_topographic_profile.return_value = []
+        self.mock_controller.profile_extractor.extract_profile.return_value = []
 
         # Setup structure params
         self.params.struct_layer = QgsVectorLayer()

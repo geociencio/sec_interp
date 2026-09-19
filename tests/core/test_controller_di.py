@@ -15,10 +15,12 @@ class TestControllerDI(unittest.TestCase):
         mock_data_fetcher = MagicMock()
         mock_structure_extractor = MagicMock()
         mock_geology_extractor = MagicMock()
+        mock_profile_extractor = MagicMock()
         controller = ProfileController(
             data_fetcher=mock_data_fetcher,
             structure_extractor=mock_structure_extractor,
             geology_extractor=mock_geology_extractor,
+            profile_extractor=mock_profile_extractor,
         )
 
         # Verify DrillholeService injection
@@ -43,6 +45,7 @@ class TestControllerDI(unittest.TestCase):
         # Verify Extract adapter injection
         self.assertIs(controller.structure_extractor, mock_structure_extractor)
         self.assertIs(controller.geology_extractor, mock_geology_extractor)
+        self.assertIs(controller.profile_extractor, mock_profile_extractor)
 
     def test_manual_injection_into_services(self):
         """Verify that we can manually inject mocks into services."""

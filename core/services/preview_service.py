@@ -50,11 +50,6 @@ class PreviewService:
         """Expose structure service from controller."""
         return self.controller.structure_service
 
-    @property
-    def profile_service(self) -> Any:
-        """Expose profile service from controller."""
-        return self.controller.profile_service
-
     @staticmethod
     def calculate_max_points(
         canvas_width: int,
@@ -138,7 +133,7 @@ class PreviewService:
                 max_pts = self.calculate_max_points(params.canvas_width, params.max_points, True)
                 interval = line_len / max_pts if max_pts > 0 else None
 
-            result.topo = self.controller.profile_service.generate_topographic_profile(
+            result.topo = self.controller.profile_extractor.extract_profile(
                 line_lyr,
                 raster_lyr,
                 params.band_num,

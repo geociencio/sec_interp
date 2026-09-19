@@ -34,6 +34,7 @@ class ProfileController(TranslatableMixin):
         data_fetcher: Any | None = None,
         structure_extractor: Any | None = None,
         geology_extractor: Any | None = None,
+        profile_extractor: Any | None = None,
     ) -> None:
         """Initialize services and the data cache using Dependency Injection.
 
@@ -44,6 +45,8 @@ class ProfileController(TranslatableMixin):
                 provided by the GUI composition root.
             geology_extractor: Optional geology extractor (Extract adapter),
                 provided by the GUI composition root.
+            profile_extractor: Optional profile extractor (Extract adapter),
+                provided by the GUI composition root.
 
         """
         self.config_service = ConfigService()
@@ -52,6 +55,7 @@ class ProfileController(TranslatableMixin):
         self.data_fetcher = data_fetcher
         self.structure_extractor = structure_extractor
         self.geology_extractor = geology_extractor
+        self.profile_extractor = profile_extractor
 
         # 1. Component Factories (Loaded safely)
         # Processors
@@ -69,10 +73,6 @@ class ProfileController(TranslatableMixin):
         )
 
         # 3. Services (Safely instantiated)
-        self.profile_service = SafeLoader.lazy_load(
-            "sec_interp.core.services.profile_service", "ProfileService"
-        )
-
         # Geology Service (QGIS-agnostic; extraction is delegated to the adapter)
         self.geology_service = SafeLoader.lazy_load(
             "sec_interp.core.services.geology_service", "GeologyService"
@@ -210,10 +210,10 @@ class ProfileController(TranslatableMixin):
             if not line_lyr or not raster_lyr:
                 raise ProcessingError(self.tr("Required layers for topography are missing."))
 
-            if not self.profile_service:
+            if not self.profile_extractor:
                 raise ProcessingError(self.tr("Topography service failed to load."))
 
-            profile_data = self.profile_service.generate_topographic_profile(
+            profile_data = self.profile_extractor.extract_profile(
                 line_lyr, raster_lyr, params.band_num
             )
             if not profile_data:
