@@ -14,6 +14,7 @@ Submodules
 
    sec_interp.core.validation.base_validator
    sec_interp.core.validation.field_validator
+   sec_interp.core.validation.layer_metadata
    sec_interp.core.validation.layer_validator
    sec_interp.core.validation.path_validator
    sec_interp.core.validation.pipeline

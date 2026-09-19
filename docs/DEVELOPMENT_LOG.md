@@ -9,8 +9,9 @@
     - Tests: 606/606 (Docker)
     - Quality: 52.4/100 · Maintainability 99.9/100 · Security 100/100
     - CC ≤ 10: PASS · i18n AST: PASS · Docstring: 100%
-- **Status**: Release v3.8.0 completado.
+- **Status**: Release v3.8.0 completado y publicado en GitHub (latest).
 - **Release Notes**: [notes/v3.8.0.md](releases/notes/v3.8.0.md)
+- **Maintenance**: [session_2026-09-19_release_v3.8.0.md](maintenance/session_2026-09-19_release_v3.8.0.md)
 
 ## [2026-09-19] Session: Core/GUI Decoupling Refactor — Completion & Merge
 - **Achievement**: Completed the Extract-then-Compute refactor and fast-forward merged it to `main`. Migrated all business services (`StructureService`, `GeologyService`, `ProfileService`, the drillhole domain, and the validation layer) to a QGIS-agnostic core, shrinking the architecture allowlist 36 → 6.

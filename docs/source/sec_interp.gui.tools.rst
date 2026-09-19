@@ -14,3 +14,4 @@ Submodules
 
    sec_interp.gui.tools.interpretation_tool
    sec_interp.gui.tools.measure_tool
+   sec_interp.gui.tools.snapper

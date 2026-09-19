@@ -16,6 +16,30 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-19'
+    category: TOOLING
+    topic: make package regenerates tracked Sphinx stubs and pushes the external docs repo
+    lesson: The release `make package` target depends on `docs compile`, so it builds
+      Sphinx and pushes to the separate `sec_interp_docs` GitHub Pages repo, while also
+      rewriting tracked `docs/source/*.rst` autodoc stubs. The working tree is dirty
+      immediately after a release.
+    action: After `make package`, review and commit the regenerated `docs/source/*.rst`
+      stubs; treat the external docs push as a real remote side effect of the release.
+  - date: '2026-09-19'
+    category: AGENTIC_SYSTEM
+    topic: release workflow zips/audits use dist/*.zip which matches all historical releases
+    lesson: The `/release-plugin` Phase 5 commands use `dist/*.zip`; since `dist/` keeps
+      every historical ZIP, the glob would audit and attach all old releases.
+    action: Always target the versioned artifact explicitly (`dist/sec_interp.X.Y.Z.zip`)
+      in the ZIP audit and in `gh release create`.
+  - date: '2026-09-19'
+    category: AGENTIC_SYSTEM
+    topic: a phase can ship unfulfilled goals under a fresh minor version
+    lesson: v3.8.0 was released after only the Core/GUI refactor, while the documented
+      v3.8.0 goals (symbology preview, adaptive VE, tech debt) remain pending. Bumping a
+      minor for an internal refactor while renaming the goals is easy to lose track of.
+    action: When releasing without completing the phase goals, either ship a patch version
+      or explicitly move the unmet goals to the next phase in `next_steps.md`.
+  - date: '2026-09-19'
     category: ARCHITECTURE
     topic: retiring a Qt/QGIS compat shim needs a full flat-enum scan, not just a grep
     lesson: Retiring qt6_compat.py after the scoped-enum migration seemed safe (no flat

@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   sec_interp.gui.adapters
    sec_interp.gui.renderers
    sec_interp.gui.services
    sec_interp.gui.tasks
@@ -24,6 +25,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   sec_interp.gui.dialog_dependencies
    sec_interp.gui.dialog_export_manager
    sec_interp.gui.dialog_input_manager
    sec_interp.gui.dialog_interpretation_manager
@@ -32,8 +34,8 @@ Submodules
    sec_interp.gui.dialog_signal_manager
    sec_interp.gui.dialog_state_manager
    sec_interp.gui.dialog_tool_manager
+   sec_interp.gui.layer_notification_manager
    sec_interp.gui.legend_widget
-   sec_interp.gui.lod_calculator
    sec_interp.gui.main_dialog
    sec_interp.gui.main_dialog_config
    sec_interp.gui.main_dialog_utils
@@ -43,6 +45,7 @@ Submodules
    sec_interp.gui.preview_param_hasher
    sec_interp.gui.preview_renderer
    sec_interp.gui.preview_reporter
+   sec_interp.gui.preview_state
    sec_interp.gui.preview_task_orchestrator
    sec_interp.gui.ui_status_manager
    sec_interp.gui.utils

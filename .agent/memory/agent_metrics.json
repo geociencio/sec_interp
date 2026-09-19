@@ -109,8 +109,8 @@
     },
     "last_session": {
         "date": "2026-09-19",
-        "topic": "core_gui_decoupling",
-        "tests_ok": 640,
+        "topic": "release_v3.8.0",
+        "tests_ok": 606,
         "quality_score": 52.3,
         "task_completion_rate": null,
         "retries": 0,

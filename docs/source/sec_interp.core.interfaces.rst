@@ -17,5 +17,4 @@ Submodules
    sec_interp.core.interfaces.geology_interface
    sec_interp.core.interfaces.i_renderer_3d
    sec_interp.core.interfaces.preview_interface
-   sec_interp.core.interfaces.profile_interface
    sec_interp.core.interfaces.structure_interface
