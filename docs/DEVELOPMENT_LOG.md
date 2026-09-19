@@ -1,3 +1,14 @@
+## [2026-09-19] Session: Core/GUI Decoupling Refactor — Completion & Merge
+- **Achievement**: Completed the Extract-then-Compute refactor and fast-forward merged it to `main`. Migrated all business services (`StructureService`, `GeologyService`, `ProfileService`, the drillhole domain, and the validation layer) to a QGIS-agnostic core, shrinking the architecture allowlist 36 → 6.
+- **Changes**:
+    - Services migrated to pure math + `gui/adapters/` extractors (structure, geology, profile, drillhole) and a `LayerMetadata` validation DTO.
+    - Geometry Extract helpers moved to `gui/adapters/geometry.py`; `qt6_compat.py` retired; 12 dead modules removed.
+    - Fixed Qt6 `QEvent.Type.Resize` (legend widget) and enabled 3D interpretation export by default.
+    - Added missing `type()` to QGIS layer mocks (docker-test 606 OK).
+    - Aligned the release workflow/skill checklist and fixed stale metrics (test count, changelog allowlist).
+- **Quality**: 606/606 tests (Docker) OK · `qt6-check` 0 incompatibilities · gate 3/3 · `ruff` PASS.
+- **Maintenance**: [session_2026-09-19_architecture_refactor_complete.md](maintenance/session_2026-09-19_architecture_refactor_complete.md)
+
 ## [2026-09-19] Session: Core/GUI Decoupling Refactor
 - **Achievement**: Enforced the Extract-then-Compute boundary across `core/`/`gui/` on the `refactor/core-gui-decoupling` branch: added an architecture allowlist gate, decomposed the GUI God Object, consolidated the preview pipeline, and started migrating `core/` to QGIS-agnostic pure math.
 - **Changes**:

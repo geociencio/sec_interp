@@ -22,7 +22,7 @@
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
         "maintainability_score": 99.9,
         "security_score": 100.0,
-        "type_hint_coverage_params": 92.2,
+        "type_hint_coverage_params": 93.3,
         "type_hint_coverage_returns": 99.7,
         "docstring_coverage": 100.0,
         "cyclomatic_complexity_gate": "PASS",
@@ -38,23 +38,23 @@
         "large_modules": [
             {
                 "path": "sec_interp_plugin.py",
-                "lines": 497
-            },
-            {
-                "path": "gui/dialog_preview_manager.py",
-                "lines": 431
-            },
-            {
-                "path": "gui/main_dialog.py",
-                "lines": 481
+                "lines": 508
             },
             {
                 "path": "gui/dialog_interpretation_manager.py",
                 "lines": 445
             },
             {
+                "path": "gui/dialog_preview_manager.py",
+                "lines": 435
+            },
+            {
+                "path": "gui/main_dialog.py",
+                "lines": 481
+            },
+            {
                 "path": "gui/ui/pages/drillhole_page.py",
-                "lines": 451
+                "lines": 452
             },
             {
                 "path": "gui/ui/pages/settings_page.py",
@@ -119,6 +119,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-09-19",
+            "tests_ok": 640,
+            "quality_score": 52.3,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "core_gui_decoupling"
+        },
         {
             "date": "2026-09-18",
             "tests_ok": 640,

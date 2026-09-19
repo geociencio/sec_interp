@@ -16,6 +16,23 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-19'
+    category: ARCHITECTURE
+    topic: retiring a Qt/QGIS compat shim needs a full flat-enum scan, not just a grep
+    lesson: Retiring qt6_compat.py after the scoped-enum migration seemed safe (no flat
+      enums found), but QEvent.Resize still slipped through and only failed at runtime
+      on QGIS 4, because the mock test env and pyqgis4-checker did not cover that path.
+    action: Before removing any compat shim, enumerate every enum family the shim
+      patches and grep for each; then validate at runtime (real QGIS 4), not only
+      via unit tests or the enum checker.
+  - date: '2026-09-19'
+    category: AGENTIC_SYSTEM
+    topic: agent workflows/skills drift from repo reality (stale metrics and checklists)
+    lesson: The /release-plugin workflow still required "640 tests" and missed
+      docs/docsec/CHANGELOG.md and docs/source/conf.py; the skill used a stale release
+      notes path. This drift hid real release gaps.
+    action: When touching a workflow/skill, reconcile its numbers (test counts, scores)
+      and file lists against the actual repo (grep the current version references).
+  - date: '2026-09-19'
     category: TOOLING
     topic: pre-commit pins its own ruff, which can disagree with the installed one
     lesson: isinstance(value, (dict, list)) passed the project ruff (>=0.15.0) but
