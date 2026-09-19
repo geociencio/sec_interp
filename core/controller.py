@@ -10,7 +10,6 @@ import hashlib
 import time
 from typing import Any
 
-from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
 from sec_interp.core.domain import (
@@ -30,18 +29,23 @@ logger = get_logger(__name__)
 class ProfileController(TranslatableMixin):
     """Orchestrates data generation services for SecInterp profile creation."""
 
-    def __init__(self, data_fetcher: Any | None = None) -> None:
+    def __init__(
+        self, data_fetcher: Any | None = None, structure_extractor: Any | None = None
+    ) -> None:
         """Initialize services and the data cache using Dependency Injection.
 
         Args:
             data_fetcher: Optional feature fetcher (Extract adapter), provided
                 by the GUI composition root.
+            structure_extractor: Optional structure extractor (Extract adapter),
+                provided by the GUI composition root.
 
         """
         self.config_service = ConfigService()
         self.data_cache = DataCache()
         self.settings = self.config_service.get_all_settings()
         self.data_fetcher = data_fetcher
+        self.structure_extractor = structure_extractor
 
         # 1. Component Factories (Loaded safely)
         # Processors
@@ -307,53 +311,42 @@ class ProfileController(TranslatableMixin):
             messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
         else:
             line_lyr = params.line_layer
-            if not line_lyr:
+            struct_lyr = params.struct_layer
+            raster_lyr = params.raster_layer
+
+            if not line_lyr or not struct_lyr:
                 return None
 
-            line_feat = next(line_lyr.getFeatures(), None)
-            if line_feat:
-                line_geom = line_feat.geometry()
-                if line_geom and not line_geom.isNull():
-                    line_start = scu.get_line_start_point(line_geom)
-                    line_azimuth = scu.calculate_line_azimuth(scu.extract_line_points(line_geom))
+            if not self.structure_service or not self.structure_extractor:
+                messages.append(self.tr("Structures: Service failed to load"))
+                return None
 
-                    struct_lyr = params.struct_layer
-                    raster_lyr = params.raster_layer
+            ctx = self.structure_extractor.extract_section_and_structures(
+                line_lyr, struct_lyr, params.buffer_dist
+            )
+            if ctx is None:
+                return None
 
-                    if not struct_lyr:
-                        return None
+            def elevation_sampler(x: float, y: float) -> float:
+                return self.structure_extractor.sample_elevation(raster_lyr, x, y, params.band_num)
 
-                    if not self.structure_service:
-                        messages.append(self.tr("Structures: Service failed to load"))
-                        return None
+            # 1+2. Detach and project structures
+            struct_data = self.structure_service.project_structures(
+                line_points=ctx.line_points,
+                struct_data=ctx.structures,
+                elevation_sampler=elevation_sampler,
+                line_az=ctx.line_azimuth,
+                dip_field=params.dip_field,
+                strike_field=params.strike_field,
+            )
 
-                    da = scu.create_distance_area(line_lyr.crs())
-
-                    # 1. Detach structures
-                    detached_structs = self.structure_service.detach_structures(
-                        struct_lyr, line_geom, params.buffer_dist
-                    )
-
-                    # 2. Project structures
-                    struct_data = self.structure_service.project_structures(
-                        line_geom=line_geom,
-                        line_start=line_start,
-                        da=da,
-                        raster_lyr=raster_lyr,
-                        struct_data=detached_structs,
-                        buffer_m=params.buffer_dist,
-                        line_az=line_azimuth,
-                        dip_field=params.dip_field,
-                        strike_field=params.strike_field,
-                        band_number=params.band_num,
-                    )
-                    if struct_data:
-                        self.data_cache.set("struct", struct_key, struct_data, cache_meta)
-                        messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
-                    else:
-                        messages.append(
-                            self.tr("Structures: None in {0}m buffer").format(params.buffer_dist)
-                        )
+            if struct_data:
+                self.data_cache.set("struct", struct_key, struct_data, cache_meta)
+                messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
+            else:
+                messages.append(
+                    self.tr("Structures: None in {0}m buffer").format(params.buffer_dist)
+                )
         return struct_data  # type: ignore[no-any-return]
 
     def _process_drillholes(

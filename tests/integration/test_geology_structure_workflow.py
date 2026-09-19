@@ -26,6 +26,7 @@ from sec_interp.core.domain.task_inputs import GeologyTaskInput
 from sec_interp.core.exceptions import DataMissingError, ValidationError
 from sec_interp.core.services.geology_service import GeologyService
 from sec_interp.core.services.structure_service import StructureService
+from sec_interp.gui.adapters.structure_extractor import StructureExtractor
 from tests.integration.base_integration import BaseIntegrationTest
 
 # ---------------------------------------------------------------------------
@@ -312,17 +313,15 @@ class TestStructureServiceParseData(BaseIntegrationTest):
         self.assertIsNone(result)
 
 
-class TestStructureServiceDetach(BaseIntegrationTest):
-    """Integration tests for StructureService.detach_structures with real QGIS layers."""
+class TestStructureExtractorDetach(BaseIntegrationTest):
+    """Integration tests for StructureExtractor with real QGIS layers."""
 
     def setUp(self) -> None:
         super().setUp()
-        self.service = StructureService()
+        self.extractor = StructureExtractor()
 
         # 1 km E–W section line at Northing 6_000_000
-        self.line_geom = QgsGeometry.fromPolylineXY(
-            [QgsPointXY(0, 6_000_000), QgsPointXY(1000, 6_000_000)]
-        )
+        self.line_layer = _make_line_layer(0.0, 6_000_000.0, 1000.0, 6_000_000.0)
 
     def test_points_inside_buffer_are_detached(self) -> None:
         """Points within the buffer zone should appear in the detached list."""
@@ -333,11 +332,14 @@ class TestStructureServiceDetach(BaseIntegrationTest):
             extra_fields=[("strike", "double"), ("dip", "double")],
         )
 
-        result = self.service.detach_structures(struct_layer, self.line_geom, 500.0)
+        ctx = self.extractor.extract_section_and_structures(
+            self.line_layer, struct_layer, 500.0
+        )
 
-        self.assertEqual(len(result), 1)
-        self.assertIn("wkt", result[0])
-        self.assertIn("attributes", result[0])
+        self.assertIsNotNone(ctx)
+        self.assertEqual(len(ctx.structures), 1)
+        self.assertIn("point", ctx.structures[0])
+        self.assertIn("attributes", ctx.structures[0])
 
     def test_multiple_points_on_line_all_detached(self) -> None:
         """Multiple points within the buffer should all appear in the detached list."""
@@ -350,12 +352,15 @@ class TestStructureServiceDetach(BaseIntegrationTest):
             extra_fields=[("strike", "double"), ("dip", "double")],
         )
 
-        result = self.service.detach_structures(struct_layer, self.line_geom, 500.0)
+        ctx = self.extractor.extract_section_and_structures(
+            self.line_layer, struct_layer, 500.0
+        )
 
-        self.assertEqual(len(result), 3)
-        # Each item should carry wkt and attributes
-        for item in result:
-            self.assertIn("wkt", item)
+        self.assertIsNotNone(ctx)
+        self.assertEqual(len(ctx.structures), 3)
+        # Each item should carry point and attributes
+        for item in ctx.structures:
+            self.assertIn("point", item)
             self.assertIn("attributes", item)
 
     def test_empty_layer_returns_empty_list(self) -> None:
@@ -365,5 +370,8 @@ class TestStructureServiceDetach(BaseIntegrationTest):
             "empty_structs",
             "memory",
         )
-        result = self.service.detach_structures(empty_layer, self.line_geom, 500.0)
-        self.assertEqual(result, [])
+        ctx = self.extractor.extract_section_and_structures(
+            self.line_layer, empty_layer, 500.0
+        )
+        self.assertIsNotNone(ctx)
+        self.assertEqual(ctx.structures, [])

@@ -6,6 +6,63 @@ import math
 from typing import Any
 
 
+def project_point_onto_polyline(
+    point: tuple[float, float],
+    polyline: list[tuple[float, float]],
+) -> tuple[float, tuple[float, float]]:
+    """Project a point onto a polyline.
+
+    Computes the nearest point on the polyline to ``point`` and the distance
+    along the polyline (from its first vertex) to that nearest point. Uses only
+    planar math, which is a valid approximation for projected (planar) CRS.
+
+    Args:
+        point: The (x, y) point to project.
+        polyline: List of (x, y) vertices defining the line.
+
+    Returns:
+        A tuple ``(distance_along_line, nearest_point)``. Returns ``(0.0,
+        point)`` for an empty polyline and ``(0.0, polyline[0])`` for a
+        single-vertex polyline.
+
+    """
+    if not polyline:
+        return 0.0, point
+    if len(polyline) == 1:
+        return 0.0, polyline[0]
+
+    px, py = point
+    best_dist_along = 0.0
+    best_point = polyline[0]
+    best_sq = float("inf")
+    cumulative = 0.0
+
+    for i in range(len(polyline) - 1):
+        x1, y1 = polyline[i]
+        x2, y2 = polyline[i + 1]
+        dx = x2 - x1
+        dy = y2 - y1
+        seg_len = math.hypot(dx, dy)
+
+        if seg_len == 0:
+            nearest = (x1, y1)
+            t = 0.0
+        else:
+            t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)
+            t = max(0.0, min(1.0, t))
+            nearest = (x1 + t * dx, y1 + t * dy)
+
+        sq = (px - nearest[0]) ** 2 + (py - nearest[1]) ** 2
+        if sq < best_sq:
+            best_sq = sq
+            best_dist_along = cumulative + t * seg_len
+            best_point = nearest
+
+        cumulative += seg_len
+
+    return best_dist_along, best_point
+
+
 def calculate_polyline_metrics(points: list[tuple[float, float]]) -> dict[str, Any]:
     """Calculate comprehensive measurement metrics from a list of points.
 

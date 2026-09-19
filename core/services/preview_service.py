@@ -18,7 +18,6 @@ from sec_interp.core.domain import (
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.performance_metrics import PerformanceTimer
 from sec_interp.core.utils.sampling import prepare_profile_context
-from sec_interp.core.utils.spatial import calculate_line_azimuth, extract_line_points
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -164,25 +163,26 @@ class PreviewService:
                 if not struct_lyr:
                     return
 
-                line_azimuth = calculate_line_azimuth(extract_line_points(line_geom))
+                extractor = self.controller.structure_extractor
+                if not extractor:
+                    return
+
+                line_points, _, line_azimuth = extractor.extract_line(line_geom)
 
                 # Detach
-                struct_data = self.controller.structure_service.detach_structures(
-                    struct_lyr, line_geom, params.buffer_dist
-                )
+                struct_data = extractor.detach_structures(struct_lyr, line_geom, params.buffer_dist)
+
+                def elevation_sampler(x: float, y: float) -> float:
+                    return extractor.sample_elevation(raster_lyr, x, y, params.band_num)
 
                 # Project
                 result.struct = self.controller.structure_service.project_structures(
-                    line_geom=line_geom,
-                    line_start=line_start,
-                    da=self.distance_area,
-                    raster_lyr=raster_lyr,  # Already resolved above
+                    line_points=line_points,
                     struct_data=struct_data,
-                    buffer_m=params.buffer_dist,
+                    elevation_sampler=elevation_sampler,
                     line_az=line_azimuth,
                     dip_field=params.dip_field,
                     strike_field=params.strike_field,
-                    band_number=params.band_num,
                 )
                 if result.struct:
                     result.metrics.record_count("Structure Points", len(result.struct))

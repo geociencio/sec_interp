@@ -91,6 +91,14 @@ class TestPreviewService(BaseTestCase):
         # Mock structure service
         self.mock_controller.structure_service.project_structures.return_value = [{"id": 1}]
 
+        # Mock structure extractor (Extract adapter)
+        self.mock_controller.structure_extractor.extract_line.return_value = (
+            [(0.0, 0.0), (100.0, 0.0)],
+            (0.0, 0.0),
+            90.0,
+        )
+        self.mock_controller.structure_extractor.detach_structures.return_value = []
+
         result = self.service.generate_all(self.params, MagicMock())
 
         self.assertIsNotNone(result.struct)

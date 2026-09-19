@@ -84,8 +84,14 @@ class SecInterp(TranslatableMixin):
         data_fetcher = SafeLoader.lazy_load(
             "sec_interp.gui.adapters.feature_fetcher", "DataFetcher"
         )
+        structure_extractor = SafeLoader.lazy_load(
+            "sec_interp.gui.adapters.structure_extractor", "StructureExtractor"
+        )
         self.controller = SafeLoader.lazy_load(
-            "sec_interp.core.controller", "ProfileController", data_fetcher=data_fetcher
+            "sec_interp.core.controller",
+            "ProfileController",
+            data_fetcher=data_fetcher,
+            structure_extractor=structure_extractor,
         )
 
         # 3. Layer Notification Manager (GUI-side signal wiring)
