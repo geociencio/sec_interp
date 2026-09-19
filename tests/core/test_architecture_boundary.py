@@ -45,7 +45,6 @@ _FORBIDDEN_PATTERNS: dict[str, re.Pattern[str]] = {
 # Each entry MUST be removed once the file is migrated to be QGIS-agnostic.
 CORE_VIOLATIONS: dict[str, frozenset[str]] = {
     "config.py": frozenset({"qgis.core", "qgis.PyQt"}),
-    "controller.py": frozenset({"qgis.core", "QgsProject.instance()"}),
     "data_cache.py": frozenset({"qgis.PyQt"}),
     "domain/entities.py": frozenset({"qgis.core"}),
     "interfaces/profile_interface.py": frozenset({"qgis.core"}),

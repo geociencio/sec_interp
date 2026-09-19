@@ -10,8 +10,6 @@ import hashlib
 import time
 from typing import Any
 
-from qgis.core import QgsDistanceArea, QgsProject
-
 from sec_interp.core import utils as scu
 from sec_interp.core.config import ConfigService
 from sec_interp.core.data_cache import DataCache
@@ -326,12 +324,7 @@ class ProfileController(TranslatableMixin):
                         messages.append(self.tr("Structures: Service failed to load"))
                         return None
 
-                    da = QgsDistanceArea()
-                    da.setSourceCrs(
-                        line_lyr.crs(),
-                        QgsProject.instance().transformContext(),
-                    )
-                    da.setEllipsoid(QgsProject.instance().ellipsoid())
+                    da = scu.create_distance_area(line_lyr.crs())
 
                     # 1. Detach structures
                     detached_structs = self.structure_service.detach_structures(
