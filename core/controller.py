@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import hashlib
 import time
-from collections.abc import Callable
 from typing import Any
 
 from qgis.core import QgsDistanceArea, QgsProject
@@ -99,7 +98,6 @@ class ProfileController(TranslatableMixin):
             service=self.drillhole_service,
         )
 
-        self._connected_layers: list[Any] = []
         logger.debug("ProfileController initialized with DI")
         self.reload_settings()
 
@@ -107,59 +105,6 @@ class ProfileController(TranslatableMixin):
         """Force reload of settings from ConfigService."""
         self.settings = self.config_service.get_all_settings(reload=True)
         logger.debug("ProfileController settings reloaded")
-
-    def connect_layer_notifications(self, layers: dict[str, Any]) -> None:
-        """Connect to layer signals for automatic cache invalidation on data changes.
-
-        Args:
-            layers: Dictionary mapping bucket names to QgsMapLayer objects.
-
-        """
-        self.disconnect_layer_notifications()
-        for bucket, layer in layers.items():
-            if not layer:
-                continue
-
-            # Map specific internal layer buckets to cache buckets
-            cache_bucket = bucket
-            if bucket in ["drill_collar", "drill_survey", "drill_interval"]:
-                cache_bucket = "drill"
-
-            # Special case for 'section': invalidates ALL buckets as it's the base geometry
-            if bucket == "section":
-
-                def callback() -> None:
-                    """Invalidate all cache buckets."""
-                    return self.data_cache.invalidate()
-
-            else:
-                # Use a closure to capture the bucket name
-                callback = self._create_invalidation_callback(cache_bucket)
-
-            layer.dataChanged.connect(callback)
-            self._connected_layers.append((layer, callback))
-            logger.debug(
-                f"Connected cache invalidation to layer: {layer.name()} -> bucket: {cache_bucket}"
-            )
-
-    def _create_invalidation_callback(self, bucket: str) -> Callable[[], None]:
-        """Create a callback for specific bucket invalidation."""
-
-        def callback() -> None:
-            """Invalidate specific cache bucket."""
-            return self.data_cache.invalidate(bucket)
-
-        return callback
-
-    def disconnect_layer_notifications(self) -> None:
-        """Disconnect from all previously connected layer signals."""
-        for layer, callback in self._connected_layers:
-            try:
-                layer.dataChanged.disconnect(callback)
-            except (TypeError, RuntimeError, Exception) as e:
-                logger.debug(f"Layer disconnection failed (expected on close): {e}")
-        self._connected_layers.clear()
-        logger.debug("Layer signals disconnected")
 
     def get_cached_data(self, inputs: dict[str, Any]) -> dict[str, Any] | None:
         """Retrieve data from cache if available for the given inputs.
@@ -229,14 +174,10 @@ class ProfileController(TranslatableMixin):
         """
         hasher = hashlib.md5()  # nosec B324
         for val in param_values:
-            from qgis.core import QgsMapLayer
-
-            if isinstance(val, QgsMapLayer | str):
-                # If it's a layer object, use its ID. If it's already an ID, use it directly.
-                layer_id = val.id() if hasattr(val, "id") else str(val)
-                hasher.update(layer_id.encode("utf-8"))
-            else:
-                hasher.update(str(val).encode("utf-8"))
+            # If it's a layer object, use its ID. Otherwise use the plain value.
+            if hasattr(val, "id"):
+                val = val.id()
+            hasher.update(str(val).encode("utf-8"))
         return hasher.hexdigest()
 
     def _process_topography(

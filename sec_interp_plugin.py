@@ -83,6 +83,13 @@ class SecInterp(TranslatableMixin):
         # 2. Controller (Business Logic orchestrator)
         self.controller = SafeLoader.lazy_load("sec_interp.core.controller", "ProfileController")
 
+        # 3. Layer Notification Manager (GUI-side signal wiring)
+        self.layer_notification_manager = SafeLoader.lazy_load(
+            "sec_interp.gui.layer_notification_manager",
+            "LayerNotificationManager",
+            data_cache=self.controller.data_cache,
+        )
+
         # 3. Export Service
         # We need the controller to instantiate ExportService
         export_mod = SafeLoader.safe_import("sec_interp.core.services.export_service")
@@ -331,7 +338,7 @@ class SecInterp(TranslatableMixin):
             return None
 
         # 3. Connect Layer Notifications
-        self.controller.connect_layer_notifications(self._collect_active_layers(params))
+        self.layer_notification_manager.connect(self._collect_active_layers(params))
         return params
 
     def _collect_active_layers(self, params: PreviewParams) -> dict[str, QgsMapLayer]:
