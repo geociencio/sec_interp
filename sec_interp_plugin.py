@@ -332,6 +332,12 @@ class SecInterp(TranslatableMixin):
                 canvas_width=self.dlg.preview_widget.canvas.width(),
             )
             params.validate()
+
+            # Layer validation using detached metadata
+            from sec_interp.core.validation.project_validator import ProjectValidator
+            from sec_interp.gui.adapters.validation_extractor import build_validation_params
+
+            ProjectValidator.validate_all(build_validation_params(params))
         except SecInterpError as e:
             self.dlg.handle_error(e, self.tr("Configuration Error"))
             return None

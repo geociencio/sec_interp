@@ -9,6 +9,7 @@ from tests.base_test import BaseTestCase
 from sec_interp.gui.dialog_input_manager import InputManager
 from sec_interp.gui.dialog_dependencies import Pages
 from sec_interp.core.exceptions import ValidationError
+from sec_interp.core.validation.layer_metadata import LayerMetadata
 
 
 class TestInputManager(BaseTestCase):
@@ -24,6 +25,14 @@ class TestInputManager(BaseTestCase):
             drillhole=MagicMock(),
         )
         self.output_widget = MagicMock()
+
+        # Stub layer resolution so string layer names map to metadata
+        self._resolver = patch(
+            "sec_interp.gui.dialog_input_manager.resolve_layer_metadata",
+            side_effect=lambda ref: LayerMetadata(is_valid=True) if ref else None,
+        )
+        self._resolver.start()
+        self.addCleanup(self._resolver.stop)
 
         # Default empty data
         self.default_data = {

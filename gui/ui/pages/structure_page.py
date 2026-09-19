@@ -14,6 +14,7 @@ from sec_interp.core.validation.project_validator import (
     ProjectValidator,
     ValidationParams,
 )
+from sec_interp.gui.adapters.validation_extractor import resolve_layer_metadata
 from sec_interp.gui.main_dialog_config import DialogDefaults
 
 from .base_page import BasePage, set_combo_layer
@@ -144,7 +145,7 @@ class StructurePage(BasePage):
         """Check if required fields are filled if a layer is selected."""
         data = self.get_data()
         params = ValidationParams(
-            struct_layer=data["structural_layer"],
+            struct_layer=resolve_layer_metadata(data["structural_layer"]),
             struct_dip_field=data["dip_field"],
             struct_strike_field=data["strike_field"],
         )

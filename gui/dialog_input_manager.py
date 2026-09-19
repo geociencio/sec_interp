@@ -13,6 +13,7 @@ from sec_interp.core.validation.project_validator import (
     ProjectValidator,
     ValidationParams,
 )
+from sec_interp.gui.adapters.validation_extractor import resolve_layer_metadata
 
 from .dialog_dependencies import Pages
 
@@ -127,30 +128,30 @@ class InputManager:
         dh = self.pages.drillhole.get_data()
 
         return ValidationParams(
-            raster_layer=dem["raster_layer"],
+            raster_layer=resolve_layer_metadata(dem["raster_layer"]),
             band_number=dem["selected_band"],
-            line_layer=sect["crossline_layer"],
+            line_layer=resolve_layer_metadata(sect["crossline_layer"]),
             output_path=self.output_widget.filePath(),
             scale=dem["scale"],
             vert_exag=dem["vertexag"],
             buffer_dist=sect["buffer_distance"],
-            outcrop_layer=geol["outcrop_layer"],
+            outcrop_layer=resolve_layer_metadata(geol["outcrop_layer"]),
             outcrop_field=geol["outcrop_name_field"],
-            struct_layer=stru["structural_layer"],
+            struct_layer=resolve_layer_metadata(stru["structural_layer"]),
             struct_dip_field=stru["dip_field"],
             struct_strike_field=stru["strike_field"],
             dip_scale_factor=stru["dip_scale_factor"],
-            collar_layer=dh["collar_layer"],
+            collar_layer=resolve_layer_metadata(dh["collar_layer"]),
             collar_id=dh["collar_id"],
             collar_use_geom=dh["use_geometry"],
             collar_x=dh["collar_x"],
             collar_y=dh["collar_y"],
-            survey_layer=dh["survey_layer"],
+            survey_layer=resolve_layer_metadata(dh["survey_layer"]),
             survey_id=dh["survey_id"],
             survey_depth=dh["survey_depth"],
             survey_azim=dh["survey_azim"],
             survey_incl=dh["survey_incl"],
-            interval_layer=dh["interval_layer"],
+            interval_layer=resolve_layer_metadata(dh["interval_layer"]),
             interval_id=dh["interval_id"],
             interval_from=dh["interval_from"],
             interval_to=dh["interval_to"],

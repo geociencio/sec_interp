@@ -1,11 +1,11 @@
-"""Specialized validators for project components."""
+"""Specialized validators for project components (QGIS-agnostic)."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from qgis.core import QgsRasterLayer, QgsWkbTypes
-from qgis.PyQt.QtCore import QCoreApplication
+from sec_interp.core.utils.i18n import TranslatableMixin
+from sec_interp.core.validation.layer_metadata import GEOMETRY_LINE, KIND_RASTER
 
 from .base_validator import IValidator
 from .layer_validator import (
@@ -34,18 +34,16 @@ class SectionValidator(IValidator):
             context.add_error("Cross-section line layer is required", "line_layer")
             return
 
-        layer = params.line_layer
-        if not layer:
+        metadata = params.line_layer
+        if not metadata.is_valid:
             context.add_error("Cross-section line layer not found in project", "line_layer")
             return
 
-        # Check geometry
-        is_valid, error = validate_layer_geometry(layer, QgsWkbTypes.GeometryType.LineGeometry)
+        is_valid, error = validate_layer_geometry(metadata, GEOMETRY_LINE)
         if not is_valid:
             context.add_error(error, "line_layer")
 
-        # Check features
-        is_valid, error = validate_layer_has_features(layer)
+        is_valid, error = validate_layer_has_features(metadata)
         if not is_valid:
             context.add_error(error, "line_layer")
 
@@ -59,17 +57,17 @@ class DEMValidator(IValidator):
             context.add_error("Raster DEM layer is required", "raster_layer")
             return
 
-        layer = params.raster_layer
-        if not layer:
+        metadata = params.raster_layer
+        if not metadata.is_valid:
             context.add_error("Raster DEM layer not found in project", "raster_layer")
             return
 
-        if not isinstance(layer, QgsRasterLayer):
+        if metadata.kind != KIND_RASTER:
             context.add_error("Raster DEM layer must be a raster layer", "raster_layer")
             return
 
         if params.band_number is not None:
-            is_valid, error = validate_raster_band(layer, params.band_number)
+            is_valid, error = validate_raster_band(metadata, params.band_number)
             if not is_valid:
                 context.add_error(error, "band_number")
 
@@ -82,14 +80,14 @@ class GeologyValidator(IValidator):
         if not params.outcrop_layer:
             return
 
-        layer = params.outcrop_layer
-        if not layer:
+        metadata = params.outcrop_layer
+        if not metadata.is_valid:
             context.add_error("Geology layer not found in project", "outcrop_layer")
             return
 
         from .layer_validator import validate_geology_requirements
 
-        validate_geology_requirements(layer, params.outcrop_field, context)
+        validate_geology_requirements(metadata, params.outcrop_field, context)
 
 
 class StructureValidator(IValidator):
@@ -100,15 +98,13 @@ class StructureValidator(IValidator):
         if not params.struct_layer:
             return
 
-        layer = params.struct_layer
-        if not layer:
+        metadata = params.struct_layer
+        if not metadata.is_valid:
             context.add_error("Structural layer not found in project", "struct_layer")
             return
 
-        # Note: Original ProjectValidator passed layer.name() which might be redundant if we have the layer
         validate_structural_requirements(
-            layer,
-            layer.name(),
+            metadata,
             params.struct_dip_field,
             params.struct_strike_field,
             context,
@@ -204,7 +200,7 @@ class DrillholeValidator(IValidator):
             validate_dependencies(rules, context)
 
 
-class OutputValidator(IValidator):
+class OutputValidator(IValidator, TranslatableMixin):
     """Validates output path and range requirements."""
 
     def validate(self, params: ValidationParams, context: ValidationContext) -> None:
@@ -216,7 +212,6 @@ class OutputValidator(IValidator):
             if not is_valid:
                 context.add_error(error, "output_path")
 
-        # Re-use global numeric validation
         warnings = validate_reasonable_ranges(
             {
                 "vert_exag": params.vert_exag,
@@ -230,24 +225,16 @@ class OutputValidator(IValidator):
 
         MIN_FLOAT_THRESHOLD = 0.1
         if params.scale < 1:
-            context.add_error(
-                QCoreApplication.translate("ProjectValidator", "Scale must be >= 1"),
-                "scale",
-            )
+            context.add_error(self.tr("Scale must be >= 1"), "scale")
         if params.vert_exag < MIN_FLOAT_THRESHOLD:
             context.add_error(
-                QCoreApplication.translate(
-                    "ProjectValidator", "Vertical exaggeration must be >= 0.1"
-                ),
+                self.tr("Vertical exaggeration must be >= 0.1"),
                 "vert_exag",
             )
         if params.buffer_dist < 0:
-            context.add_error(
-                QCoreApplication.translate("ProjectValidator", "Buffer distance must be >= 0"),
-                "buffer_dist",
-            )
+            context.add_error(self.tr("Buffer distance must be >= 0"), "buffer_dist")
         if params.dip_scale_factor < MIN_FLOAT_THRESHOLD:
             context.add_error(
-                QCoreApplication.translate("ProjectValidator", "Dip scale factor must be >= 0.1"),
+                self.tr("Dip scale factor must be >= 0.1"),
                 "dip_scale_factor",
             )

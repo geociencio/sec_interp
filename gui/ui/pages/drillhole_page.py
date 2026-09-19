@@ -21,6 +21,7 @@ from sec_interp.core.validation.project_validator import (
     ProjectValidator,
     ValidationParams,
 )
+from sec_interp.gui.adapters.validation_extractor import resolve_layer_metadata
 from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage, set_combo_layer
@@ -354,17 +355,17 @@ class DrillholePage(BasePage):
         """Check if required fields are filled if layers are selected."""
         data = self.get_data()
         params = ValidationParams(
-            collar_layer=data["collar_layer"],
+            collar_layer=resolve_layer_metadata(data["collar_layer"]),
             collar_id=data["collar_id"],
             collar_use_geom=data["use_geometry"],
             collar_x=data["collar_x"],
             collar_y=data["collar_y"],
-            survey_layer=data["survey_layer"],
+            survey_layer=resolve_layer_metadata(data["survey_layer"]),
             survey_id=data["survey_id"],
             survey_depth=data["survey_depth"],
             survey_azim=data["survey_azim"],
             survey_incl=data["survey_incl"],
-            interval_layer=data["interval_layer"],
+            interval_layer=resolve_layer_metadata(data["interval_layer"]),
             interval_id=data["interval_id"],
             interval_from=data["interval_from"],
             interval_to=data["interval_to"],

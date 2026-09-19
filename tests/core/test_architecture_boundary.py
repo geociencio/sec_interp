@@ -50,10 +50,6 @@ CORE_VIOLATIONS: dict[str, frozenset[str]] = {
     "services/export_service.py": frozenset({"qgis.core", "qgis.PyQt"}),
     "utils/i18n.py": frozenset({"qgis.PyQt"}),
     "utils/io.py": frozenset({"qgis.core", "QgsProject.instance()"}),
-    "validation/field_validator.py": frozenset({"qgis.core"}),
-    "validation/layer_validator.py": frozenset({"qgis.core", "QgsProject.instance()"}),
-    "validation/project_validator.py": frozenset({"qgis.core"}),
-    "validation/project_validators.py": frozenset({"qgis.core", "qgis.PyQt"}),
 }
 
 

@@ -1,10 +1,9 @@
-"""Validation logic for QGIS layer fields and attributes."""
+"""Validation logic for layer fields and attributes (QGIS-agnostic)."""
 
 from __future__ import annotations
 
-from qgis.core import QgsVectorLayer
-
 from sec_interp.core.domain import FieldType
+from sec_interp.core.validation.layer_metadata import LayerMetadata
 
 
 def validate_numeric_input(
@@ -25,9 +24,6 @@ def validate_numeric_input(
 
     Returns:
         tuple: (is_valid, error_message, float_value)
-            - is_valid: True if validation passed.
-            - error_message: Error details if validation failed.
-            - float_value: The parsed numeric value if valid, else None.
 
     """
     if not value or value.strip() == "":
@@ -67,9 +63,6 @@ def validate_integer_input(
 
     Returns:
         tuple: (is_valid, error_message, int_value)
-            - is_valid: True if validation passed.
-            - error_message: Error details if validation failed.
-            - int_value: The parsed integer value if valid, else None.
 
     """
     if not value or value.strip() == "":
@@ -104,8 +97,6 @@ def validate_angle_range(
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid: True if validation passed.
-            - error_message: Error details if validation failed.
 
     """
     if value < min_angle or value > max_angle:
@@ -117,75 +108,62 @@ def validate_angle_range(
     return True, ""
 
 
-def validate_field_exists(layer: QgsVectorLayer, field_name: str | None) -> tuple[bool, str]:
-    """Validate that a specific field exists in a vector layer.
+def validate_field_exists(metadata: LayerMetadata, field_name: str | None) -> tuple[bool, str]:
+    """Validate that a specific field exists in a layer.
 
     Args:
-        layer: The QGIS vector layer to check.
+        metadata: The detached layer metadata.
         field_name: The name of the field to search for.
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid: True if validation passed.
-            - error_message: Error details if validation failed.
 
     """
-    if not layer:
-        return False, "Layer is None"
+    if not metadata or not metadata.is_valid:
+        return False, "Layer is not valid"
 
     if not field_name:
         return False, "Field name is required"
 
-    if not isinstance(layer, QgsVectorLayer):
-        return (
-            False,
-            f"Layer '{layer.name() if hasattr(layer, 'name') else 'Unknown'}' is not a vector layer",
-        )
+    if metadata.kind != "vector":
+        return False, f"Layer '{metadata.name}' is not a vector layer"
 
-    field_names = [field.name() for field in layer.fields()]
-
-    if field_name not in field_names:
+    if field_name not in metadata.field_names:
         MAX_FIELDS_TO_SHOW = 5
         return False, (
-            f"Field '{field_name}' not found in layer '{layer.name()}'. "
-            f"Available fields: {', '.join(field_names[:MAX_FIELDS_TO_SHOW])}"
-            f"{', ...' if len(field_names) > MAX_FIELDS_TO_SHOW else ''}"
+            f"Field '{field_name}' not found in layer '{metadata.name}'. "
+            f"Available fields: {', '.join(metadata.field_names[:MAX_FIELDS_TO_SHOW])}"
+            f"{', ...' if len(metadata.field_names) > MAX_FIELDS_TO_SHOW else ''}"
         )
 
     return True, ""
 
 
 def validate_field_type(
-    layer: QgsVectorLayer, field_name: str, expected_types: list[FieldType]
+    metadata: LayerMetadata, field_name: str, expected_types: list[FieldType]
 ) -> tuple[bool, str]:
     """Validate that a field in a layer has one of the expected data types.
 
     Args:
-        layer: The QGIS vector layer containing the field.
+        metadata: The detached layer metadata.
         field_name: The name of the field to check.
         expected_types: List of allowed FieldType values.
 
     Returns:
         tuple: (is_valid, error_message)
-            - is_valid: True if validation passed.
-            - error_message: Error details if validation failed.
 
     """
-    if not layer:
-        return False, "Layer is None"
+    if not metadata or not metadata.is_valid:
+        return False, "Layer is not valid"
 
-    if not isinstance(layer, QgsVectorLayer):
-        return (
-            False,
-            f"Layer '{layer.name() if hasattr(layer, 'name') else 'Unknown'}' is not a vector layer",
-        )
+    if metadata.kind != "vector":
+        return False, f"Layer '{metadata.name}' is not a vector layer"
 
-    field = layer.fields().field(field_name)
+    if field_name not in metadata.field_types:
+        return False, f"Field '{field_name}' not found in layer '{metadata.name}'"
 
-    if not field:
-        return False, f"Field '{field_name}' not found in layer '{layer.name()}'"
-
-    if field.type() not in expected_types:
+    actual = metadata.field_types[field_name]
+    if actual not in expected_types:
         type_names = {
             FieldType.INT: "Integer",
             FieldType.DOUBLE: "Double",
@@ -195,10 +173,10 @@ def validate_field_type(
             FieldType.DATE_TIME: "DateTime",
         }
         expected_names = [type_names.get(t, str(t)) for t in expected_types]
-        actual_name = type_names.get(field.type(), f"Type ID {field.type()}")
+        actual_name = type_names.get(actual, f"Type ID {actual}")
 
         return False, (
-            "Invalid data type for field '{field_name}' in layer '{layer.name()}'. "
+            f"Invalid data type for field '{field_name}' in layer '{metadata.name}'. "
             f"Found: {actual_name}. Expected one of: {', '.join(expected_names)}. "
             f"Please check your attribute table."
         )

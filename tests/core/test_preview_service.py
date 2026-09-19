@@ -106,11 +106,12 @@ class TestPreviewService(BaseTestCase):
         self.mock_controller.structure_service.project_structures.assert_called_once()
 
     def test_generate_all_no_features(self):
-        """Test error when no features in line layer."""
-        self.mock_line_lyr.getFeatures = MagicMock(return_value=iter([]))
-        self.mock_line_lyr.featureCount = MagicMock(return_value=0)
+        """Test that extractor errors propagate when the line layer is empty."""
+        from sec_interp.core.exceptions import DataMissingError
 
-        from sec_interp.core.exceptions import ValidationError
+        self.mock_controller.profile_extractor.extract_profile.side_effect = (
+            DataMissingError("Line layer has no features")
+        )
 
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(DataMissingError):
             self.service.generate_all(self.params, MagicMock())

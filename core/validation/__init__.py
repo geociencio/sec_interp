@@ -11,7 +11,6 @@ from .field_validator import (
 )
 from .layer_validator import (
     validate_crs_compatibility,
-    validate_layer_exists,
     validate_layer_geometry,
     validate_layer_has_features,
     validate_raster_band,
@@ -35,7 +34,6 @@ __all__ = [
     "validate_field_exists",
     "validate_field_type",
     "validate_integer_input",
-    "validate_layer_exists",
     "validate_layer_geometry",
     "validate_layer_has_features",
     "validate_numeric_input",

@@ -92,52 +92,21 @@ class PreviewParams:
     auto_lod: bool = True
 
     def validate(self) -> None:
-        """Perform native validation using ProjectValidator to avoid duplication.
+        """Perform native validation of primitive parameters.
+
+        Layer validation is performed separately by the GUI via
+        ``ProjectValidator`` using detached ``LayerMetadata``.
 
         Raises:
-            ValidationError: If critical parameters are missing or invalid.
+            ValueError: If primitive parameters are missing or invalid.
 
         """
-        from sec_interp.core.validation.project_validator import (
-            ProjectValidator,
-            ValidationParams,
-        )
-
-        # Basic type and range validation before calling ProjectValidator
+        # Basic type and range validation
         if not isinstance(self.buffer_dist, int | float) or self.buffer_dist < 0:
             raise ValueError("Buffer distance must be a non-negative number")
 
         if not isinstance(self.band_num, int) or self.band_num < 1:
             raise ValueError("Band number must be a positive integer")
-
-        val_params = ValidationParams(
-            raster_layer=self.raster_layer,
-            band_number=self.band_num,
-            line_layer=self.line_layer,
-            buffer_dist=float(self.buffer_dist),
-            outcrop_layer=self.outcrop_layer,
-            outcrop_field=self.outcrop_name_field,
-            struct_layer=self.struct_layer,
-            struct_dip_field=self.dip_field,
-            struct_strike_field=self.strike_field,
-            dip_scale_factor=self.dip_scale_factor,
-            collar_layer=self.collar_layer,
-            collar_id=self.collar_id_field,
-            collar_use_geom=self.collar_use_geometry,
-            collar_x=self.collar_x_field,
-            collar_y=self.collar_y_field,
-            survey_layer=self.survey_layer,
-            survey_id=self.survey_id_field,
-            survey_depth=self.survey_depth_field,
-            survey_azim=self.survey_azim_field,
-            survey_incl=self.survey_incl_field,
-            interval_layer=self.interval_layer,
-            interval_id=self.interval_id_field,
-            interval_from=self.interval_from_field,
-            interval_to=self.interval_to_field,
-            interval_lith=self.interval_lith_field,
-        )
-        ProjectValidator.validate_all(val_params)
 
 
 @dataclass

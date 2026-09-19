@@ -1,12 +1,10 @@
-"""Validation for QGIS project state and layer presence."""
+"""Validation for project state and layer presence (QGIS-agnostic)."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from qgis.core import QgsRasterLayer, QgsVectorLayer
-
-from sec_interp.core.utils.i18n import TranslatableMixin
+from sec_interp.core.validation.layer_metadata import LayerMetadata
 
 from .validation_helpers import ValidationContext
 
@@ -16,41 +14,45 @@ MIN_FLOAT_THRESHOLD = 0.1
 
 @dataclass
 class ValidationParams:
-    """Data container for all parameters that need cross-layer validation."""
+    """Data container for all parameters that need cross-layer validation.
 
-    raster_layer: QgsRasterLayer | None = None
+    Layers are held as detached :class:`LayerMetadata` produced by the GUI
+    ``ValidationExtractor`` adapter.
+    """
+
+    raster_layer: LayerMetadata | None = None
     band_number: int | None = None
-    line_layer: QgsVectorLayer | None = None
+    line_layer: LayerMetadata | None = None
     output_path: str = ""
     scale: float = 1.0
     vert_exag: float = 1.0
     buffer_dist: float = 0.0
-    outcrop_layer: QgsVectorLayer | None = None
+    outcrop_layer: LayerMetadata | None = None
     outcrop_field: str | None = None
-    struct_layer: QgsVectorLayer | None = None
+    struct_layer: LayerMetadata | None = None
     struct_dip_field: str | None = None
     struct_strike_field: str | None = None
     dip_scale_factor: float = 1.0
 
     # Drillhole params
-    collar_layer: QgsVectorLayer | None = None
+    collar_layer: LayerMetadata | None = None
     collar_id: str | None = None
     collar_use_geom: bool = True
     collar_x: str | None = None
     collar_y: str | None = None
-    survey_layer: QgsVectorLayer | None = None
+    survey_layer: LayerMetadata | None = None
     survey_id: str | None = None
     survey_depth: str | None = None
     survey_azim: str | None = None
     survey_incl: str | None = None
-    interval_layer: QgsVectorLayer | None = None
+    interval_layer: LayerMetadata | None = None
     interval_id: str | None = None
     interval_from: str | None = None
     interval_to: str | None = None
     interval_lith: str | None = None
 
 
-class ProjectValidator(TranslatableMixin):
+class ProjectValidator:
     """Orchestrates validation of project parameters independent of the GUI.
 
     Level 2: Business Logic Validation.

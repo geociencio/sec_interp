@@ -2,14 +2,26 @@
 
 from unittest.mock import MagicMock, patch
 from tests.base_test import BaseTestCase
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsWkbTypes
 
 from sec_interp.core.validation.project_validator import (
     ValidationParams,
     ProjectValidator,
 )
 from sec_interp.core.validation.validation_helpers import validate_reasonable_ranges
+from sec_interp.core.validation.layer_metadata import (
+    KIND_RASTER,
+    KIND_VECTOR,
+    LayerMetadata,
+)
 from sec_interp.core.exceptions import ValidationError
+
+
+def _raster_metadata():
+    return LayerMetadata(name="DEM", is_valid=True, kind=KIND_RASTER, band_count=1)
+
+
+def _vector_metadata():
+    return LayerMetadata(name="Line", is_valid=True, kind=KIND_VECTOR)
 
 
 class TestProjectValidator(BaseTestCase):
@@ -17,16 +29,13 @@ class TestProjectValidator(BaseTestCase):
 
     def test_validate_reasonable_ranges(self):
         """Test detection of extreme/erroneous values."""
-        # Normal values
         warnings = validate_reasonable_ranges({"vert_exag": 2.0, "buffer": 100})
         self.assertEqual(len(warnings), 0)
 
-        # High vertical exaggeration
         warnings = validate_reasonable_ranges({"vert_exag": 15.0})
         self.assertEqual(len(warnings), 1)
         self.assertIn("very high", warnings[0])
 
-        # Negative buffer
         warnings = validate_reasonable_ranges({"buffer": -10})
         self.assertEqual(len(warnings), 1)
         self.assertIn("cannot be negative", warnings[0])
@@ -50,8 +59,8 @@ class TestProjectValidator(BaseTestCase):
                 ProjectValidator.validate_preview_requirements(params)
 
             # Valid setup
-            params.raster_layer = MagicMock(spec=QgsRasterLayer)
-            params.line_layer = MagicMock(spec=QgsVectorLayer)
+            params.raster_layer = _raster_metadata()
+            params.line_layer = _vector_metadata()
             self.assertTrue(ProjectValidator.validate_preview_requirements(params))
 
     @patch("sec_interp.core.validation.path_validator.validate_output_path")
@@ -61,8 +70,8 @@ class TestProjectValidator(BaseTestCase):
         mock_output.return_value = (True, "", None)
 
         params = ValidationParams(
-            raster_layer=MagicMock(spec=QgsRasterLayer),
-            line_layer=MagicMock(spec=QgsVectorLayer),
+            raster_layer=_raster_metadata(),
+            line_layer=_vector_metadata(),
             output_path="/tmp/test",
             scale=1000,
             vert_exag=1.0,
@@ -83,14 +92,13 @@ class TestProjectValidator(BaseTestCase):
     def test_validate_all_numeric_failures(self):
         """Test numeric range failures in validate_all."""
         params = ValidationParams(
-            raster_layer=QgsRasterLayer(),
-            line_layer=QgsVectorLayer(),
+            raster_layer=_raster_metadata(),
+            line_layer=_vector_metadata(),
             output_path="/tmp/test",
             scale=0.5,  # < 1
             vert_exag=0.05,  # < 0.1
         )
 
-        # Mock other validators to not fail
         with (
             patch(
                 "sec_interp.core.validation.project_validators.validate_layer_geometry",
@@ -105,7 +113,6 @@ class TestProjectValidator(BaseTestCase):
                 return_value=(True, "", None),
             ),
         ):
-
             with self.assertRaises(ValidationError) as cm:
                 ProjectValidator.validate_all(params)
 
@@ -117,17 +124,14 @@ class TestProjectValidator(BaseTestCase):
         params = ValidationParams()
         self.assertFalse(ProjectValidator.is_drillhole_complete(params))
 
-        # Collar ok
-        params.collar_layer = MagicMock()
+        params.collar_layer = LayerMetadata(is_valid=True)
         params.collar_id = "HOLEID"
         params.collar_use_geom = True
         self.assertTrue(ProjectValidator.is_drillhole_complete(params))
 
-        # Survey layer provided but fields missing
-        params.survey_layer = MagicMock()
+        params.survey_layer = LayerMetadata(is_valid=True)
         self.assertFalse(ProjectValidator.is_drillhole_complete(params))
 
-        # Survey layer fields ok
         params.survey_id = "ID"
         params.survey_depth = "DEPTH"
         params.survey_azim = "AZIM"
@@ -146,11 +150,7 @@ class TestProjectValidator(BaseTestCase):
         params = ValidationParams()
         self.assertFalse(ProjectValidator.is_geology_complete(params))
 
-        # Setup success
-        layer = MagicMock()
-        layer.isValid.return_value = True
-        layer.name.return_value = "geology"
-        params.outcrop_layer = layer
+        params.outcrop_layer = LayerMetadata(is_valid=True)
         params.outcrop_field = "UNIT"
 
         self.assertTrue(ProjectValidator.is_geology_complete(params))
@@ -165,10 +165,7 @@ class TestProjectValidator(BaseTestCase):
         params = ValidationParams()
         self.assertFalse(ProjectValidator.is_structure_complete(params))
 
-        layer = MagicMock()
-        layer.isValid.return_value = True
-        layer.name.return_value = "struct"
-        params.struct_layer = layer
+        params.struct_layer = LayerMetadata(is_valid=True)
         params.struct_dip_field = "DIP"
         params.struct_strike_field = "STRIKE"
 

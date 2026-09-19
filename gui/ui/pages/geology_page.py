@@ -14,6 +14,7 @@ from sec_interp.core.validation.project_validator import (
     ProjectValidator,
     ValidationParams,
 )
+from sec_interp.gui.adapters.validation_extractor import resolve_layer_metadata
 
 from .base_page import BasePage, set_combo_layer
 
@@ -99,7 +100,7 @@ class GeologyPage(BasePage):
         """Check if required fields are filled if a layer is selected."""
         data = self.get_data()
         params = ValidationParams(
-            outcrop_layer=data["outcrop_layer"],
+            outcrop_layer=resolve_layer_metadata(data["outcrop_layer"]),
             outcrop_field=data["outcrop_name_field"],
         )
         return ProjectValidator.is_geology_complete(params)

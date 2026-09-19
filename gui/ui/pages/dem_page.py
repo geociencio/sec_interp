@@ -16,6 +16,7 @@ from sec_interp.core.validation.project_validator import (
     ProjectValidator,
     ValidationParams,
 )
+from sec_interp.gui.adapters.validation_extractor import resolve_layer_metadata
 from sec_interp.gui.main_dialog_config import DialogDefaults
 
 from .base_page import BasePage, set_combo_layer
@@ -204,7 +205,7 @@ class DemPage(BasePage):
     def is_complete(self) -> bool:
         """Check if required fields are filled if a layer is selected."""
         data = self.get_data()
-        params = ValidationParams(raster_layer=data["raster_layer"])
+        params = ValidationParams(raster_layer=resolve_layer_metadata(data["raster_layer"]))
         return ProjectValidator.is_dem_complete(params)
 
     def connect_signals(self) -> None:
