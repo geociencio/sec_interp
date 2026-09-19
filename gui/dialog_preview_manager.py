@@ -231,23 +231,7 @@ class PreviewManager(TranslatableMixin):
 
         try:
             with PerformanceTimer("Rendering", self.metrics):
-                opts = self.dialog.get_preview_options()
-
-                # Calculate max_points via PreviewService
-                max_points = PreviewService.calculate_max_points(
-                    canvas_width=self.dialog.preview_widget.canvas.width(),
-                    manual_max=opts["max_points"],
-                    auto_lod=opts["auto_lod"],
-                )
-
-                self.dialog.plugin_instance.draw_preview(
-                    self.cached_data["topo"],
-                    self.cached_data.get("geol"),
-                    self.cached_data["struct"],
-                    drillhole_data=self.cached_data["drillhole"],
-                    max_points=max_points,
-                    use_adaptive_sampling=opts["use_adaptive_sampling"],
-                )
+                self._render_cached_data()
         except (AttributeError, TypeError, ValueError) as e:
             logger.exception(f"Rendering error: {e}")
             raise ValueError(f"Failed to render preview: {e!s}") from e
@@ -255,54 +239,44 @@ class PreviewManager(TranslatableMixin):
             logger.exception("Unexpected rendering pipeline error")
             raise ValueError(f"Critical rendering error: {e!s}") from e
 
+    def _render_cached_data(self, preserve_extent: bool = False) -> None:
+        """Re-render the cached preview data using the current options.
+
+        Args:
+            preserve_extent: Keep the current canvas extent instead of zooming.
+
+        """
+        if not self.dialog.plugin_instance:
+            return
+
+        opts = self.dialog.get_preview_options()
+        max_points = PreviewService.calculate_max_points(
+            canvas_width=self.dialog.preview_widget.canvas.width(),
+            manual_max=opts["max_points"],
+            auto_lod=opts["auto_lod"],
+        )
+
+        self.dialog.plugin_instance.draw_preview(
+            self.cached_data["topo"],
+            self.cached_data.get("geol"),
+            self.cached_data["struct"],
+            drillhole_data=self.cached_data["drillhole"],
+            max_points=max_points,
+            preserve_extent=preserve_extent,
+            use_adaptive_sampling=opts["use_adaptive_sampling"],
+        )
+
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.
 
-        This method re-renders the preview using cached data and
-        current checkbox states without regenerating data.
+        This method re-renders the preview using cached data. Visibility
+        filtering is handled by the plugin's draw_preview.
         """
         if not self.last_result:
             return  # No data to display
 
-        # Get checkbox states
-        show_topo = self.dialog.preview_widget.chk_topo.isChecked()
-        show_geol = self.dialog.preview_widget.chk_geol.isChecked()
-        show_struct = self.dialog.preview_widget.chk_struct.isChecked()
-        show_drill = self.dialog.preview_widget.chk_drillholes.isChecked()
-
-        # Prepare data based on checkboxes
-        topo_data = self.cached_data["topo"] if show_topo else None
-        geol_data = self.cached_data["geol"] if show_geol else None
-        struct_data = self.cached_data["struct"] if show_struct else None
-        drillhole_data = self.cached_data["drillhole"] if show_drill else None
-
-        # Re-render
         try:
-            if not self.dialog.plugin_instance or not hasattr(
-                self.dialog.plugin_instance, "draw_preview"
-            ):
-                logger.warning("Plugin instance not available for preview update")
-                return
-
-            preview_options = self.dialog.get_preview_options()
-            auto_lod_enabled = preview_options["auto_lod"]
-            use_adaptive_sampling = preview_options["use_adaptive_sampling"]
-
-            # Calculate max_points via PreviewService
-            max_points_for_render = PreviewService.calculate_max_points(
-                canvas_width=self.dialog.preview_widget.canvas.width(),
-                manual_max=preview_options["max_points"],
-                auto_lod=auto_lod_enabled,
-            )
-
-            self.dialog.plugin_instance.draw_preview(
-                topo_data,
-                geol_data,
-                struct_data,
-                drillhole_data=drillhole_data,
-                max_points=max_points_for_render,
-                use_adaptive_sampling=use_adaptive_sampling,
-            )
+            self._render_cached_data()
         except (AttributeError, TypeError, ValueError) as e:
             logger.exception(f"UI Sync error in preview: {e}")
         except Exception:
@@ -331,36 +305,10 @@ class PreviewManager(TranslatableMixin):
 
     def _update_lod_for_zoom(self) -> None:
         """Update preview detail based on current zoom level."""
-        canvas = self.dialog.preview_widget.canvas
-        if not canvas:
+        if not self.dialog.preview_widget.canvas:
             return
-
-        # Simple zoom ratio estimation: (canvas_width in pixels / extent width)
-        # For simplicity, we use the method from PreviewService if ratio is not stored
-        ratio = 1.0  # Default fallback
-
-        new_max_points = PreviewService.calculate_max_points(
-            canvas_width=canvas.width(), ratio=ratio, auto_lod=True
-        )
-
-        logger.debug(f"Zoom LOD update: ratio={ratio:.2f}, new_max_points={new_max_points}")
-
-        if not self.dialog.plugin_instance:
-            return
-
-        preview_options = self.dialog.get_preview_options()
-        use_adaptive_sampling = preview_options["use_adaptive_sampling"]
-
         # Re-render with preserve_extent=True
-        self.dialog.plugin_instance.draw_preview(
-            self.cached_data["topo"],
-            self.cached_data["geol"],
-            self.cached_data["struct"],
-            drillhole_data=self.cached_data["drillhole"],
-            max_points=new_max_points,
-            preserve_extent=True,
-            use_adaptive_sampling=use_adaptive_sampling,
-        )
+        self._render_cached_data(preserve_extent=True)
 
     def _on_geology_finished(self, results: Any) -> None:
         """Handle completion of geology generation task."""

@@ -104,13 +104,15 @@ class TestDialogPreviewManager(BaseTestCase):
 
         self.manager.update_from_checkboxes()
 
-        # Verify draw_preview was called with correct data (geol should be None)
+        # Verify draw_preview was called with the full cached data (filtering is
+        # delegated to draw_preview, which is mocked here).
         self.plugin_instance.draw_preview.assert_called_with(
             "topo_data",
-            None,
+            "geol_data",
             "struct_data",
             drillhole_data="drill_data",
             max_points=1000,
+            preserve_extent=False,
             use_adaptive_sampling=True,
         )
 
@@ -231,7 +233,11 @@ class TestDialogPreviewManager(BaseTestCase):
         self.manager.cached_data["struct"] = MagicMock()
         self.manager.cached_data["drillhole"] = MagicMock()
 
-        self.dialog.get_preview_options.return_value = {"use_adaptive_sampling": True}
+        self.dialog.get_preview_options.return_value = {
+            "max_points": 1000,
+            "auto_lod": True,
+            "use_adaptive_sampling": True,
+        }
 
         self.manager._update_lod_for_zoom()
         self.plugin_instance.draw_preview.assert_called()
