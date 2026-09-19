@@ -217,6 +217,7 @@ class SecInterp(TranslatableMixin):
         """Disconnect all signals to prevent memory leaks."""
         self._disconnect_actions()
         self._disconnect_dialog()
+        self._disconnect_layer_notifications()
 
     def _disconnect_actions(self) -> None:
         """Disconnect plugin actions."""
@@ -224,6 +225,12 @@ class SecInterp(TranslatableMixin):
             if action:
                 with contextlib.suppress(TypeError, RuntimeError):
                     action.triggered.disconnect()
+
+    def _disconnect_layer_notifications(self) -> None:
+        """Disconnect the layer-change notification manager."""
+        if getattr(self, "layer_notification_manager", None):
+            with contextlib.suppress(Exception):
+                self.layer_notification_manager.disconnect()
 
     def _disconnect_dialog(self) -> None:
         """Disconnect dialog connections."""
