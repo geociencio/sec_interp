@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QEvent, QObject, QRectF, Qt
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtWidgets import QWidget
@@ -50,7 +49,7 @@ class LegendWidget(QWidget):
 
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         """Handle parent resize events."""
-        if obj == self.dialog and event.type() == QtCore.QEvent.Resize:
+        if obj == self.dialog and event.type() == QEvent.Type.Resize:
             self.resize(event.size())
         return super().eventFilter(obj, event)
 
