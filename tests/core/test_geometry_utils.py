@@ -22,6 +22,7 @@ from sec_interp.core.utils.geometry_utils.processing import (
     create_buffer_geometry,
     create_memory_layer,
     densify_line_by_interval,
+    densify_line_points,
     run_geometry_operation,
 )
 
@@ -212,6 +213,24 @@ class TestGeometryProcessing(BaseTestCase):
         geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(10, 0)])
         densified = densify_line_by_interval(geom, 1.0)
         self.assertIsNotNone(densified)
+
+    def test_densify_line_points(self):
+        """Test pure-math polyline densification."""
+        # Straight horizontal line densified at interval 2.0
+        result = densify_line_points([(0, 0), (10, 0)], 2.0)
+        self.assertEqual(len(result), 6)  # 5 segments of length 2.0
+        self.assertEqual(result[0], (0, 0))
+        self.assertEqual(result[-1], (10, 0))
+
+        # Segment shorter than interval stays intact
+        self.assertEqual(densify_line_points([(0, 0), (1, 0)], 2.0), [(0, 0), (1, 0)])
+
+        # Non-positive interval returns input unchanged
+        self.assertEqual(densify_line_points([(0, 0), (10, 0)], 0.0), [(0, 0), (10, 0)])
+
+        # Empty and single-point inputs return unchanged
+        self.assertEqual(densify_line_points([], 1.0), [])
+        self.assertEqual(densify_line_points([(0, 0)], 1.0), [(0, 0)])
 
     def test_run_geometry_operation(self):
         """Test placeholder operation executor."""

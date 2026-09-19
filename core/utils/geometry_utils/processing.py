@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 from qgis.core import (
@@ -14,6 +15,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from sec_interp.core.utils.geometry_utils.extraction import get_line_vertices
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -74,6 +76,43 @@ def create_memory_layer(
     return layer
 
 
+def densify_line_points(
+    points: list[tuple[float, float]], interval: float
+) -> list[tuple[float, float]]:
+    """Densify a polyline by inserting intermediate vertices.
+
+    Ensures no segment is longer than ``interval``. Returns the input unchanged
+    if it has fewer than two points or the interval is non-positive.
+
+    Args:
+        points: List of (x, y) tuples.
+        interval: Maximum segment length (in the same units as the points).
+
+    Returns:
+        Densified list of (x, y) tuples.
+
+    """
+    if not points or interval <= 0:
+        return points
+
+    result = [points[0]]
+    for i in range(len(points) - 1):
+        p1 = points[i]
+        p2 = points[i + 1]
+
+        seg_len = math.hypot(p2[0] - p1[0], p2[1] - p1[1])
+        if seg_len == 0:
+            continue
+
+        num_segments = max(1, math.ceil(seg_len / interval))
+        for j in range(1, num_segments):
+            t = j / num_segments
+            result.append((p1[0] + t * (p2[0] - p1[0]), p1[1] + t * (p2[1] - p1[1])))
+        result.append(p2)
+
+    return result
+
+
 def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeometry:
     """Densify a line geometry by a specific distance interval.
 
@@ -89,7 +128,11 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
     """
     if not geometry or geometry.isNull():
         return QgsGeometry()
-    return geometry.densifyByDistance(interval)
+
+    verts = get_line_vertices(geometry)
+    points = [(p.x(), p.y()) for p in verts]
+    densified = densify_line_points(points, interval)
+    return QgsGeometry.fromPolylineXY([QgsPointXY(x, y) for x, y in densified])
 
 
 def run_geometry_operation(operation: str, *args: Any, **kwargs: Any) -> Any:
@@ -126,8 +169,6 @@ def calculate_segment_range(
         Tuple of (dist_start, dist_end) or None if invalid.
 
     """
-    from sec_interp.core.utils.geometry_utils.extraction import get_line_vertices
-
     try:
         verts = get_line_vertices(seg_geom)
         if not verts:
