@@ -18,32 +18,32 @@ MIN_FLOAT_THRESHOLD = 0.1
 class ValidationParams:
     """Data container for all parameters that need cross-layer validation."""
 
-    raster_layer: str | QgsRasterLayer | None = None
+    raster_layer: QgsRasterLayer | None = None
     band_number: int | None = None
-    line_layer: str | QgsVectorLayer | None = None
+    line_layer: QgsVectorLayer | None = None
     output_path: str = ""
     scale: float = 1.0
     vert_exag: float = 1.0
     buffer_dist: float = 0.0
-    outcrop_layer: str | QgsVectorLayer | None = None
+    outcrop_layer: QgsVectorLayer | None = None
     outcrop_field: str | None = None
-    struct_layer: str | QgsVectorLayer | None = None
+    struct_layer: QgsVectorLayer | None = None
     struct_dip_field: str | None = None
     struct_strike_field: str | None = None
     dip_scale_factor: float = 1.0
 
     # Drillhole params
-    collar_layer: str | QgsVectorLayer | None = None
+    collar_layer: QgsVectorLayer | None = None
     collar_id: str | None = None
     collar_use_geom: bool = True
     collar_x: str | None = None
     collar_y: str | None = None
-    survey_layer: str | QgsVectorLayer | None = None
+    survey_layer: QgsVectorLayer | None = None
     survey_id: str | None = None
     survey_depth: str | None = None
     survey_azim: str | None = None
     survey_incl: str | None = None
-    interval_layer: str | QgsVectorLayer | None = None
+    interval_layer: QgsVectorLayer | None = None
     interval_id: str | None = None
     interval_from: str | None = None
     interval_to: str | None = None
