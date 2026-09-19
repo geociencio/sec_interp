@@ -137,7 +137,8 @@ class TestProjectValidator(BaseTestCase):
     @patch("sec_interp.core.validation.layer_validator.validate_field_exists")
     @patch("sec_interp.core.validation.layer_validator.validate_layer_has_features")
     @patch("sec_interp.core.validation.layer_validator.validate_layer_geometry")
-    def test_is_geology_complete(self, mock_geom, mock_feat, mock_field):
+    @patch("qgis.core.QgsProject.instance")
+    def test_is_geology_complete(self, mock_project, mock_geom, mock_feat, mock_field):
         """Test geology completion check."""
         mock_geom.return_value = (True, "")
         mock_feat.return_value = (True, "")
@@ -147,29 +148,32 @@ class TestProjectValidator(BaseTestCase):
         self.assertFalse(ProjectValidator.is_geology_complete(params))
 
         # Setup success
+        params.outcrop_layer = "layer"
+        params.outcrop_field = "UNIT"
         layer = MagicMock()
         layer.isValid.return_value = True
         layer.name.return_value = "geology"
-        params.outcrop_layer = layer
-        params.outcrop_field = "UNIT"
+        mock_project.return_value.mapLayer.return_value = layer
 
         self.assertTrue(ProjectValidator.is_geology_complete(params))
 
     @patch(
         "sec_interp.core.validation.project_validators.validate_structural_requirements"
     )
-    def test_is_structure_complete(self, mock_struct):
+    @patch("qgis.core.QgsProject.instance")
+    def test_is_structure_complete(self, mock_project, mock_struct):
         """Test structure completion check."""
         mock_struct.return_value = (True, "")
 
         params = ValidationParams()
         self.assertFalse(ProjectValidator.is_structure_complete(params))
 
+        params.struct_layer = "layer"
+        params.struct_dip_field = "DIP"
+        params.struct_strike_field = "STRIKE"
         layer = MagicMock()
         layer.isValid.return_value = True
         layer.name.return_value = "struct"
-        params.struct_layer = layer
-        params.struct_dip_field = "DIP"
-        params.struct_strike_field = "STRIKE"
+        mock_project.return_value.mapLayer.return_value = layer
 
         self.assertTrue(ProjectValidator.is_structure_complete(params))
