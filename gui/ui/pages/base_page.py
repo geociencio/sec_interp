@@ -7,6 +7,19 @@ from typing import Any
 from qgis.PyQt.QtWidgets import QGroupBox, QVBoxLayout, QWidget
 
 
+def set_combo_layer(combo: Any, layer: Any) -> None:
+    """Set a layer on a map-layer combo without emitting its signals.
+
+    Args:
+        combo: A ``QgsMapLayerComboBox`` (or compatible mock).
+        layer: The layer to select, or ``None`` to clear.
+
+    """
+    combo.blockSignals(True)
+    combo.setLayer(layer)
+    combo.blockSignals(False)
+
+
 class BasePage(QWidget):
     """Abstract base class for configuration pages.
 
@@ -47,6 +60,32 @@ class BasePage(QWidget):
 
         """
         raise NotImplementedError("Subclasses must implement get_data()")
+
+    def dump(self) -> dict[str, Any]:
+        """Return the page's persistable state as a plain dict.
+
+        Layer values are returned as ``QgsMapLayer`` objects (or ``None``);
+        every other value is a primitive (str, bool, int, float).
+
+        Returns:
+            dict: Mapping of persistent keys to current values.
+
+        """
+        return {}
+
+    def load(self, data: dict[str, Any]) -> None:
+        """Apply persistable state to the page's widgets.
+
+        Args:
+            data: Mapping of persistent keys to values. Layer values are
+                expected as ``QgsMapLayer`` objects (already resolved).
+
+        """
+        pass
+
+    def reset(self) -> None:
+        """Reset the page's widgets to their default values."""
+        pass
 
     def validate(self) -> tuple[bool, str]:
         """Validate the current configuration.

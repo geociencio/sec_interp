@@ -23,7 +23,7 @@ from sec_interp.core.validation.project_validator import (
 )
 from sec_interp.logger_config import get_logger
 
-from .base_page import BasePage
+from .base_page import BasePage, set_combo_layer
 
 logger = get_logger(__name__)
 
@@ -32,6 +32,7 @@ class DrillholePage(BasePage):
     """Configuration page for Drillhole data (Collar, Survey, Intervals)."""
 
     dataChanged = pyqtSignal()
+    layer_keys = frozenset({"dh_collar_layer", "dh_survey_layer", "dh_interval_layer"})
 
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the drillhole page.
@@ -277,6 +278,77 @@ class DrillholePage(BasePage):
             "interval_to": self.i_to.currentField(),
             "interval_lith": self.i_lith.currentField(),
         }
+
+    def dump(self) -> dict[str, Any]:
+        """Return the persistable drillhole state."""
+        return {
+            "dh_collar_layer": self.c_layer.currentLayer(),
+            "dh_collar_id": self.c_id.currentField(),
+            "dh_use_geom": self.chk_use_geom.isChecked(),
+            "dh_collar_x": self.c_x.currentField(),
+            "dh_collar_y": self.c_y.currentField(),
+            "dh_collar_z": self.c_z.currentField(),
+            "dh_collar_depth": self.c_depth.currentField(),
+            "dh_survey_layer": self.s_layer.currentLayer(),
+            "dh_survey_id": self.s_id.currentField(),
+            "dh_survey_depth": self.s_depth.currentField(),
+            "dh_survey_azim": self.s_azim.currentField(),
+            "dh_survey_incl": self.s_incl.currentField(),
+            "dh_interval_layer": self.i_layer.currentLayer(),
+            "dh_interval_id": self.i_id.currentField(),
+            "dh_interval_from": self.i_from.currentField(),
+            "dh_interval_to": self.i_to.currentField(),
+            "dh_interval_lith": self.i_lith.currentField(),
+        }
+
+    def load(self, data: dict[str, Any]) -> None:
+        """Apply persisted drillhole state."""
+        c_layer = data.get("dh_collar_layer")
+        if c_layer is not None:
+            set_combo_layer(self.c_layer, c_layer)
+            for w in (self.c_id, self.c_x, self.c_y, self.c_z, self.c_depth):
+                w.setLayer(c_layer)
+
+        s_layer = data.get("dh_survey_layer")
+        if s_layer is not None:
+            set_combo_layer(self.s_layer, s_layer)
+            for w in (self.s_id, self.s_depth, self.s_azim, self.s_incl):
+                w.setLayer(s_layer)
+
+        i_layer = data.get("dh_interval_layer")
+        if i_layer is not None:
+            set_combo_layer(self.i_layer, i_layer)
+            for w in (self.i_id, self.i_from, self.i_to, self.i_lith):
+                w.setLayer(i_layer)
+
+        for key, combo in [
+            ("dh_collar_id", self.c_id),
+            ("dh_collar_x", self.c_x),
+            ("dh_collar_y", self.c_y),
+            ("dh_collar_z", self.c_z),
+            ("dh_collar_depth", self.c_depth),
+            ("dh_survey_id", self.s_id),
+            ("dh_survey_depth", self.s_depth),
+            ("dh_survey_azim", self.s_azim),
+            ("dh_survey_incl", self.s_incl),
+            ("dh_interval_id", self.i_id),
+            ("dh_interval_from", self.i_from),
+            ("dh_interval_to", self.i_to),
+            ("dh_interval_lith", self.i_lith),
+        ]:
+            field = data.get(key)
+            if field:
+                combo.setField(field)
+
+        use_geom = data.get("dh_use_geom")
+        if use_geom is not None:
+            self.chk_use_geom.setChecked(bool(use_geom))
+
+    def reset(self) -> None:
+        """Reset drillhole inputs to defaults."""
+        for combo in (self.c_layer, self.s_layer, self.i_layer):
+            combo.setLayer(None)
+        self.chk_use_geom.setChecked(True)
 
     def is_complete(self) -> bool:
         """Check if required fields are filled if layers are selected."""

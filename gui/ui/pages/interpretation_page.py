@@ -25,6 +25,8 @@ from .base_page import BasePage
 class InterpretationPage(BasePage):
     """Page for managing interpretation attributes and custom fields."""
 
+    layer_keys = frozenset()
+
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the interpretation page."""
         super().__init__(
@@ -163,6 +165,39 @@ class InterpretationPage(BasePage):
             "inherit_geology": self.chk_inherit_geol.isChecked(),
             "inherit_drillholes": self.chk_inherit_drill.isChecked(),
         }
+
+    def dump(self) -> dict[str, Any]:
+        """Return the persistable interpretation state."""
+        return {
+            "interp_inherit_geol": self.chk_inherit_geol.isChecked(),
+            "interp_inherit_drill": self.chk_inherit_drill.isChecked(),
+            "interp_custom_fields": self.get_data()["custom_fields"],
+        }
+
+    def load(self, data: dict[str, Any]) -> None:
+        """Apply persisted interpretation state."""
+        inherit_geol = data.get("interp_inherit_geol")
+        if inherit_geol is not None:
+            self.chk_inherit_geol.setChecked(bool(inherit_geol))
+        inherit_drill = data.get("interp_inherit_drill")
+        if inherit_drill is not None:
+            self.chk_inherit_drill.setChecked(bool(inherit_drill))
+
+        fields = data.get("interp_custom_fields")
+        if isinstance(fields, list):
+            self.fields_table.setRowCount(0)
+            for f in fields:
+                self._add_field_row()
+                row = self.fields_table.rowCount() - 1
+                self.fields_table.item(row, 0).setText(f.get("name", ""))
+                self.fields_table.cellWidget(row, 1).setCurrentText(f.get("type", "String"))
+                self.fields_table.item(row, 2).setText(f.get("default", ""))
+
+    def reset(self) -> None:
+        """Reset interpretation inputs to defaults."""
+        self.fields_table.setRowCount(0)
+        self.chk_inherit_geol.setChecked(True)
+        self.chk_inherit_drill.setChecked(True)
 
     def validate(self) -> tuple[bool, str]:
         """Validate fields."""

@@ -16,13 +16,14 @@ from sec_interp.core.validation.project_validator import (
 )
 from sec_interp.gui.main_dialog_config import DialogDefaults
 
-from .base_page import BasePage
+from .base_page import BasePage, set_combo_layer
 
 
 class StructurePage(BasePage):
     """Configuration page for Structural Measurements."""
 
     dataChanged = pyqtSignal()
+    layer_keys = frozenset({"struct_layer"})
 
     def __init__(self, parent: Any = None) -> None:
         """Initialize the structure configuration page.
@@ -105,6 +106,39 @@ class StructurePage(BasePage):
             "strike_field": self.strike_combo.currentField(),
             "dip_scale_factor": self.scale_spin.value(),
         }
+
+    def dump(self) -> dict[str, Any]:
+        """Return the persistable structure state."""
+        return {
+            "struct_layer": self.layer_combo.currentLayer(),
+            "struct_dip_field": self.dip_combo.currentField(),
+            "struct_strike_field": self.strike_combo.currentField(),
+            "dip_scale_factor": self.scale_spin.value(),
+        }
+
+    def load(self, data: dict[str, Any]) -> None:
+        """Apply persisted structure state."""
+        struct_layer = data.get("struct_layer")
+        if struct_layer is not None:
+            set_combo_layer(self.layer_combo, struct_layer)
+            self.dip_combo.setLayer(struct_layer)
+            self.strike_combo.setLayer(struct_layer)
+        dip = data.get("struct_dip_field")
+        if dip:
+            self.dip_combo.setField(dip)
+        strike = data.get("struct_strike_field")
+        if strike:
+            self.strike_combo.setField(strike)
+        dip_scale = data.get("dip_scale_factor")
+        if dip_scale is not None:
+            self.scale_spin.setValue(float(dip_scale))
+
+    def reset(self) -> None:
+        """Reset structure inputs to defaults."""
+        self.layer_combo.setLayer(None)
+        self.dip_combo.setField("")
+        self.strike_combo.setField("")
+        self.scale_spin.setValue(float(DialogDefaults.DIP_SCALE_FACTOR))
 
     def is_complete(self) -> bool:
         """Check if required fields are filled if a layer is selected."""

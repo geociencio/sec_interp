@@ -18,11 +18,13 @@ from sec_interp.core.validation.project_validator import (
 )
 from sec_interp.gui.main_dialog_config import DialogDefaults
 
-from .base_page import BasePage
+from .base_page import BasePage, set_combo_layer
 
 
 class DemPage(BasePage):
     """Configuration page for DEM/Raster settings."""
+
+    layer_keys = frozenset({"dem_layer"})
 
     def __init__(self, iface: Any = None, parent: Any = None) -> None:
         """Initialize DEM page.
@@ -147,6 +149,46 @@ class DemPage(BasePage):
             "scale": self.scale_spin.value(),
             "vertexag": self.vertexag_spin.value(),
         }
+
+    def dump(self) -> dict[str, Any]:
+        """Return the persistable DEM state."""
+        return {
+            "dem_layer": self.raster_combo.currentLayer(),
+            "dem_band": self.band_combo.currentBand(),
+            "scale": self.scale_spin.value(),
+            "vert_exag": self.vertexag_spin.value(),
+        }
+
+    def load(self, data: dict[str, Any]) -> None:
+        """Apply persisted DEM state."""
+        raster_layer = data.get("dem_layer")
+        if raster_layer is not None:
+            set_combo_layer(self.raster_combo, raster_layer)
+            self.band_combo.setLayer(raster_layer)
+
+        band_idx = data.get("dem_band")
+        if band_idx is not None:
+            self.band_combo.setBand(int(band_idx))
+        scale = data.get("scale")
+        if scale is not None:
+            self.scale_spin.setValue(float(scale))
+        vert_exag = data.get("vert_exag")
+        if vert_exag is not None:
+            self.vertexag_spin.setValue(float(vert_exag))
+
+        if raster_layer is not None:
+            self.scale_spin.blockSignals(True)
+            self._update_resolution()
+            self.scale_spin.blockSignals(False)
+            if scale is not None:
+                self.scale_spin.setValue(float(scale))
+
+    def reset(self) -> None:
+        """Reset DEM inputs to defaults."""
+        self.raster_combo.setLayer(None)
+        self.band_combo.setBand(DialogDefaults.DEFAULT_BAND)
+        self.scale_spin.setValue(float(DialogDefaults.SCALE))
+        self.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
 
     def validate(self) -> tuple[bool, str]:
         """Validate page settings.

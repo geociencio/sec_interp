@@ -53,10 +53,7 @@ class TestMainDialogSettings(BaseTestCase):
         mock_layer.id.return_value = "id_123"
         mock_layer.name.return_value = "RealName"
 
-        combo = MagicMock()
-        combo.currentLayer.return_value = mock_layer
-
-        self.manager.persistence._save_layer(combo, "test_layer")
+        self.manager.persistence._save_layer_value("test_layer", mock_layer)
 
         # Check that both ID and Name were stored (in project mock)
         self.assertEqual(
@@ -72,11 +69,10 @@ class TestMainDialogSettings(BaseTestCase):
         # Add layer to project by name
         self.dialog.project._layers["some_other_id"] = mock_layer
 
-        restore_combo = MagicMock()
-        self.manager.persistence._restore_layer(restore_combo, "test_layer")
+        resolved = self.manager.persistence._resolve_layer_value("test_layer")
 
         # Should have found it by name fallback
-        restore_combo.setLayer.assert_called_with(mock_layer)
+        self.assertEqual(resolved, mock_layer)
 
     def test_load_settings_fallback_to_global_with_parsing(self):
         """Test that global values are correctly parsed when falling back."""

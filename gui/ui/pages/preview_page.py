@@ -212,3 +212,51 @@ class PreviewWidget(QWidget):
             self.canvas.scaleChanged.disconnect()
         with contextlib.suppress(TypeError, RuntimeError):
             self.chk_auto_lod.toggled.disconnect()
+
+    def dump(self) -> dict[str, Any]:
+        """Return the persistable preview-control state."""
+        return {
+            "show_topo": self.chk_topo.isChecked(),
+            "show_geol": self.chk_geol.isChecked(),
+            "show_struct": self.chk_struct.isChecked(),
+            "show_drillholes": self.chk_drillholes.isChecked(),
+            "show_interpretations": self.chk_interpretations.isChecked(),
+            "show_legend": self.chk_legend.isChecked(),
+            "auto_lod": self.chk_auto_lod.isChecked(),
+            "adaptive_sampling": self.chk_adaptive_sampling.isChecked(),
+            "max_points": self.spin_max_points.value(),
+        }
+
+    def load(self, data: dict[str, Any]) -> None:
+        """Apply persisted preview-control state."""
+        for chk, key in [
+            (self.chk_topo, "show_topo"),
+            (self.chk_geol, "show_geol"),
+            (self.chk_struct, "show_struct"),
+            (self.chk_drillholes, "show_drillholes"),
+            (self.chk_interpretations, "show_interpretations"),
+            (self.chk_legend, "show_legend"),
+            (self.chk_auto_lod, "auto_lod"),
+            (self.chk_adaptive_sampling, "adaptive_sampling"),
+        ]:
+            checked = data.get(key)
+            if checked is not None:
+                chk.setChecked(bool(checked))
+        max_points = data.get("max_points")
+        if max_points is not None:
+            self.spin_max_points.setValue(int(max_points))
+
+    def reset(self) -> None:
+        """Reset preview controls to defaults."""
+        for chk in [
+            self.chk_topo,
+            self.chk_geol,
+            self.chk_struct,
+            self.chk_drillholes,
+            self.chk_interpretations,
+            self.chk_legend,
+            self.chk_adaptive_sampling,
+        ]:
+            chk.setChecked(True)
+        self.chk_auto_lod.setChecked(False)
+        self.spin_max_points.setValue(1000)

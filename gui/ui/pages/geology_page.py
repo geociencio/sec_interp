@@ -15,13 +15,14 @@ from sec_interp.core.validation.project_validator import (
     ValidationParams,
 )
 
-from .base_page import BasePage
+from .base_page import BasePage, set_combo_layer
 
 
 class GeologyPage(BasePage):
     """Configuration page for Geology/Outcrop settings."""
 
     dataChanged = pyqtSignal()
+    layer_keys = frozenset({"geol_layer"})
 
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the geology page.
@@ -71,6 +72,28 @@ class GeologyPage(BasePage):
             "outcrop_layer": self.layer_combo.currentLayer(),
             "outcrop_name_field": self.field_combo.currentField(),
         }
+
+    def dump(self) -> dict[str, Any]:
+        """Return the persistable geology state."""
+        return {
+            "geol_layer": self.layer_combo.currentLayer(),
+            "geol_field": self.field_combo.currentField(),
+        }
+
+    def load(self, data: dict[str, Any]) -> None:
+        """Apply persisted geology state."""
+        geol_layer = data.get("geol_layer")
+        if geol_layer is not None:
+            set_combo_layer(self.layer_combo, geol_layer)
+            self.field_combo.setLayer(geol_layer)
+        field = data.get("geol_field")
+        if field:
+            self.field_combo.setField(field)
+
+    def reset(self) -> None:
+        """Reset geology inputs to defaults."""
+        self.layer_combo.setLayer(None)
+        self.field_combo.setField("")
 
     def is_complete(self) -> bool:
         """Check if required fields are filled if a layer is selected."""

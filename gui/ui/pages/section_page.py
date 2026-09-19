@@ -10,11 +10,15 @@ from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QGridLayout, QLabel
 
-from .base_page import BasePage
+from sec_interp.gui.main_dialog_config import DialogDefaults
+
+from .base_page import BasePage, set_combo_layer
 
 
 class SectionPage(BasePage):
     """Configuration page for Cross Section settings."""
+
+    layer_keys = frozenset({"section_layer"})
 
     def __init__(self, parent: Any = None) -> None:
         """Initialize the section configuration page.
@@ -71,6 +75,26 @@ class SectionPage(BasePage):
             "crossline_layer": self.line_combo.currentLayer(),
             "buffer_distance": self.buffer_spin.value(),
         }
+
+    def dump(self) -> dict[str, Any]:
+        """Return the persistable section state."""
+        return {
+            "section_layer": self.line_combo.currentLayer(),
+            "buffer_dist": self.buffer_spin.value(),
+        }
+
+    def load(self, data: dict[str, Any]) -> None:
+        """Apply persisted section state."""
+        if "section_layer" in data and data["section_layer"] is not None:
+            set_combo_layer(self.line_combo, data["section_layer"])
+        buffer_dist = data.get("buffer_dist")
+        if buffer_dist is not None:
+            self.buffer_spin.setValue(float(buffer_dist))
+
+    def reset(self) -> None:
+        """Reset section inputs to defaults."""
+        self.line_combo.setLayer(None)
+        self.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
 
     def validate(self) -> tuple[bool, str]:
         """Validate page settings.

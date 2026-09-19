@@ -38,9 +38,10 @@ class TestStateManager(BaseTestCase):
         """Verify that reset_to_defaults interacts with major UI components."""
         self.manager.reset_to_defaults()
 
-        # Checking some key direct widget interactions in _reset_pages
-        self.dialog.page_section.line_combo.setLayer.assert_called()
-        self.dialog.page_dem.raster_combo.setLayer.assert_called()
+        # Pages are reset via the dump/load/reset protocol
+        self.dialog.page_section.reset.assert_called()
+        self.dialog.page_dem.reset.assert_called()
+        self.dialog.preview_widget.reset.assert_called()
         self.dialog.output_widget.setFilePath.assert_called_with("")
 
     def test_update_button_state_enabled(self):
