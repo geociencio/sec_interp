@@ -51,17 +51,13 @@ CORE_VIOLATIONS: dict[str, frozenset[str]] = {
     "interfaces/profile_interface.py": frozenset({"qgis.core"}),
     "interfaces/structure_interface.py": frozenset({"qgis.core"}),
     "services/access_control_service.py": frozenset({"qgis.core"}),
-    "services/drillhole/collar_processor.py": frozenset(
-        {"qgis.core", "QgsProject.instance()"}
-    ),
+    "services/drillhole/collar_processor.py": frozenset({"qgis.core", "QgsProject.instance()"}),
     "services/drillhole/data_fetcher.py": frozenset({"qgis.core"}),
     "services/drillhole/drillhole_orchestrator.py": frozenset({"qgis.core"}),
     "services/drillhole/projection_engine.py": frozenset({"qgis.core"}),
     "services/drillhole/trajectory_engine.py": frozenset({"qgis.core"}),
     "services/drillhole_service.py": frozenset({"qgis.core", "qgis.PyQt"}),
-    "services/export_service.py": frozenset(
-        {"qgis.core", "qgis.PyQt", "QgsProject.instance()"}
-    ),
+    "services/export_service.py": frozenset({"qgis.core", "qgis.PyQt", "QgsProject.instance()"}),
     "services/geology/outcrop_processor.py": frozenset({"qgis.core"}),
     "services/geology/profile_sampler.py": frozenset({"qgis.core"}),
     "services/geology_service.py": frozenset({"qgis.core", "qgis.PyQt"}),
@@ -96,9 +92,7 @@ def _scan_core() -> dict[str, frozenset[str]]:
         rel = file_path.relative_to(_CORE_DIR).as_posix()
         text = file_path.read_text(encoding="utf-8")
         hits = frozenset(
-            name
-            for name, pattern in _FORBIDDEN_PATTERNS.items()
-            if pattern.search(text)
+            name for name, pattern in _FORBIDDEN_PATTERNS.items() if pattern.search(text)
         )
         if hits:
             violations[rel] = hits

@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 from qgis.core import (
-    QgsCategorizedSymbolRenderer,
     QgsLineSymbol,
     QgsPalLayerSettings,
-    QgsRendererCategory,
     QgsSingleSymbolRenderer,
     QgsTextFormat,
     QgsVectorLayer,
@@ -14,7 +12,10 @@ from qgis.core import (
 )
 from qgis.PyQt.QtGui import QColor
 
-from sec_interp.gui.renderers.base_renderer import BasePreviewRenderer
+from sec_interp.gui.renderers.base_renderer import (
+    BasePreviewRenderer,
+    build_categorized_line_style,
+)
 from sec_interp.gui.renderers.color_manager import ColorManager
 
 
@@ -59,17 +60,12 @@ class DrillholeRenderer(BasePreviewRenderer):
 
     def _apply_interval_style(self, layer: QgsVectorLayer, unique_units: set[str]) -> None:
         """Styling for lithological intervals."""
-        categories = []
-        for unit_name in unique_units:
-            color = self.color_manager.get_color(unit_name)
-            symbol = QgsLineSymbol.createSimple(
-                {
-                    "color": f"{color.red()},{color.green()},{color.blue()}",
-                    "width": "2.0",
-                    "capstyle": "flat",
-                    "joinstyle": "bevel",
-                }
+        layer.setRenderer(
+            build_categorized_line_style(
+                self.color_manager,
+                unique_units,
+                width="2.0",
+                capstyle="flat",
+                joinstyle="bevel",
             )
-            categories.append(QgsRendererCategory(unit_name, symbol, unit_name))
-
-        layer.setRenderer(QgsCategorizedSymbolRenderer("unit", categories))
+        )

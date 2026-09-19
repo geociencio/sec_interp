@@ -10,14 +10,12 @@ import contextlib
 from typing import Any
 
 from qgis.core import (
-    QgsMapRendererCustomPainterJob,
-    QgsMapSettings,
     QgsProject,
     QgsWkbTypes,
 )
 from qgis.gui import QgsMapCanvas
-from qgis.PyQt.QtCore import QRectF, QSize
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtGui import QPainter
 
 from sec_interp.core.domain import (
     GeologyData,
@@ -82,8 +80,6 @@ class PreviewRenderer:
         use_adaptive_sampling: bool = False,
         drillhole_data: list | None = None,
         interp_data: list[InterpretationPolygon] | None = None,
-        show_legend: bool = True,
-        **kwargs,
     ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
         if self.is_rendering:
@@ -240,46 +236,6 @@ class PreviewRenderer:
         self.legend_renderer.draw_legend(
             painter, rect, self.active_units, self.has_topography, self.has_structures
         )
-
-    def export_to_image(
-        self,
-        layers: list,
-        extent,
-        width: int,
-        height: int,
-        output_path: str,
-        dpi: int = 300,
-        show_legend: bool = True,
-    ) -> bool:
-        """Export preview to image file. Maintains same logic but orchestrated."""
-        try:
-            settings = QgsMapSettings()
-            settings.setLayers(layers)
-            settings.setExtent(extent)
-            settings.setOutputSize(QSize(width, height))
-            settings.setOutputDpi(dpi)
-
-            img_format = getattr(QImage, "Format", QImage).Format_ARGB32
-            image = QImage(QSize(width, height), img_format)
-            image.fill(QColor(255, 255, 255))
-
-            painter = QPainter(image)
-            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-
-            job = QgsMapRendererCustomPainterJob(settings, painter)
-            job.start()
-            job.waitForFinished()
-
-            # Delegate legend drawing
-            if show_legend:
-                self.draw_legend(painter, QRectF(0, 0, width, height))
-            painter.end()
-
-            return image.save(output_path)
-
-        except Exception:
-            logger.exception("Error exporting preview")
-            return False
 
     def _cleanup_layers(self, layers: list | None = None) -> None:
         """Safely remove transient layers from the project."""

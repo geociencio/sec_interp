@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-from qgis.core import (
-    QgsCategorizedSymbolRenderer,
-    QgsLineSymbol,
-    QgsRendererCategory,
-    QgsVectorLayer,
-)
+from qgis.core import QgsVectorLayer
 
-from sec_interp.gui.renderers.base_renderer import BasePreviewRenderer
+from sec_interp.gui.renderers.base_renderer import (
+    BasePreviewRenderer,
+    build_categorized_line_style,
+)
 from sec_interp.gui.renderers.color_manager import ColorManager
 
 
@@ -28,18 +26,4 @@ class GeologyRenderer(BasePreviewRenderer):
     def apply_style(self, layer: QgsVectorLayer, **kwargs) -> None:
         """Apply categorized styling based on unit names."""
         unique_units = kwargs.get("unique_units", set())
-        categories = []
-
-        for unit_name in unique_units:
-            color = self.color_manager.get_color(unit_name)
-            symbol = QgsLineSymbol.createSimple(
-                {
-                    "color": f"{color.red()},{color.green()},{color.blue()}",
-                    "width": "0.7",
-                    "capstyle": "round",
-                    "joinstyle": "round",
-                }
-            )
-            categories.append(QgsRendererCategory(unit_name, symbol, unit_name))
-
-        layer.setRenderer(QgsCategorizedSymbolRenderer("unit", categories))
+        layer.setRenderer(build_categorized_line_style(self.color_manager, unique_units))

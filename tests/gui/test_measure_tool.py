@@ -46,7 +46,7 @@ class TestMeasureTool(BaseTestCase):
         self.assertEqual(snapped.x(), 10)
         self.assertEqual(snapped.y(), 20)
 
-    @patch("sec_interp.gui.tools.measure_tool.QgsPointLocator")
+    @patch("sec_interp.gui.tools.snapper.QgsPointLocator")
     def test_snapper_with_layer(self, mock_locator_cls):
         """Test snapping with a vector layer."""
         layer = QgsVectorLayer()
@@ -203,9 +203,7 @@ class TestMeasureTool(BaseTestCase):
         layer.type = MagicMock(return_value=0)
         self.canvas.layers.return_value = [layer]
 
-        with patch(
-            "sec_interp.gui.tools.measure_tool.QgsPointLocator"
-        ) as mock_locator_cls:
+        with patch("sec_interp.gui.tools.snapper.QgsPointLocator") as mock_locator_cls:
             mock_locator = mock_locator_cls.return_value
             # Vertex snap invalid
             v_match = MagicMock()
@@ -249,7 +247,7 @@ class TestMeasureTool(BaseTestCase):
         layer.name.return_value = "layer1"
 
         with patch(
-            "sec_interp.gui.tools.measure_tool.QgsPointLocator",
+            "sec_interp.gui.tools.snapper.QgsPointLocator",
             side_effect=Exception("mock error"),
         ):
             locator = snapper._get_locator(layer, MagicMock(), MagicMock())
@@ -300,9 +298,7 @@ class TestMeasureTool(BaseTestCase):
 
         self.canvas.layers.return_value = [l1, l2, l3]
 
-        with patch(
-            "sec_interp.gui.tools.measure_tool.QgsPointLocator"
-        ) as mock_locator_cls:
+        with patch("sec_interp.gui.tools.snapper.QgsPointLocator") as mock_locator_cls:
             # l2 fails to get locator
             def get_locator_side_effect(layer, crs, context):
                 if layer.id() == "l2":

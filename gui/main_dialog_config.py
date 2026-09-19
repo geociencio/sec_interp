@@ -43,38 +43,13 @@ class DialogDefaults:
 class DialogConfig:
     """Configuration for dialog behavior and features."""
 
-    # Caching
-    ENABLE_CACHE = True
-    CACHE_EXPIRY_SECONDS = 3600  # 1 hour
-
     # Performance metrics
     ENABLE_PERFORMANCE_METRICS: bool = True
     SHOW_METRICS_IN_RESULTS: bool = True
     LOG_DETAILED_METRICS: bool = False
 
     # UI behavior
-    AUTO_SAVE_SETTINGS = True
-    SHOW_HELP_ON_START = False
-    ENABLE_TOOLTIPS = True
-
-    # Validation
-    STRICT_VALIDATION = True
-    ALLOW_EMPTY_GEOLOGY = True
-    ALLOW_EMPTY_STRUCTURES = True
-
-    # Preview
-    AUTO_REFRESH_PREVIEW = False
-    SHOW_LEGEND = True
-    ENABLE_ZOOM = True
     ZOOM_DEBOUNCE_MS = 200  # Milliseconds
-
-    # Performance
-    MAX_PREVIEW_POINTS = 10000
-    ENABLE_LOD = False  # Level of Detail optimization
-
-    # Logging
-    VERBOSE_LOGGING = False
-    LOG_PERFORMANCE = False
 
 
 class ValidationMessages:

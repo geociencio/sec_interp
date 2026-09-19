@@ -46,9 +46,7 @@ class TestInterpretationTool(BaseTestCase):
 
         self.canvas.layers.return_value = [l1, l2]
 
-        with patch(
-            "sec_interp.gui.tools.interpretation_tool.QgsPointLocator"
-        ) as mock_locator_cls:
+        with patch("sec_interp.gui.tools.snapper.QgsPointLocator") as mock_locator_cls:
             mock_locator = MagicMock()
             match = MagicMock()
             match.isValid.return_value = False
@@ -171,7 +169,7 @@ class TestInterpretationTool(BaseTestCase):
         layer.name.return_value = "layer1"
 
         with patch(
-            "sec_interp.gui.tools.interpretation_tool.QgsPointLocator",
+            "sec_interp.gui.tools.snapper.QgsPointLocator",
             side_effect=Exception("mock error"),
         ):
             locator = snapper._get_locator(layer, MagicMock(), MagicMock())
@@ -196,9 +194,7 @@ class TestInterpretationTool(BaseTestCase):
         layer.type = MagicMock(return_value=0)
         self.canvas.layers.return_value = [layer]
 
-        with patch(
-            "sec_interp.gui.tools.interpretation_tool.QgsPointLocator"
-        ) as mock_locator_cls:
+        with patch("sec_interp.gui.tools.snapper.QgsPointLocator") as mock_locator_cls:
             mock_locator = mock_locator_cls.return_value
             # Vertex snap invalid
             v_match = MagicMock()
@@ -223,9 +219,7 @@ class TestInterpretationTool(BaseTestCase):
         layer.type = MagicMock(return_value=0)
         self.canvas.layers.return_value = [layer]
 
-        with patch.object(
-            ProfileSnapper, "_get_locator", side_effect=Exception("loop fail")
-        ):
+        with patch.object(ProfileSnapper, "_get_locator", side_effect=Exception("loop fail")):
             snapper = ProfileSnapper(self.canvas)
             snapper.snap(QPoint(0, 0))  # Should hit line 88
 
@@ -247,9 +241,7 @@ class TestInterpretationTool(BaseTestCase):
         layer.type = MagicMock(return_value=0)
         self.canvas.layers.return_value = [layer]
 
-        with patch(
-            "sec_interp.gui.tools.interpretation_tool.QgsPointLocator"
-        ) as mock_locator_cls:
+        with patch("sec_interp.gui.tools.snapper.QgsPointLocator") as mock_locator_cls:
             mock_locator = mock_locator_cls.return_value
             # Vertex snap valid
             v_match = MagicMock()

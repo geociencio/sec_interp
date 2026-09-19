@@ -7,7 +7,7 @@ separating preview logic from the main dialog class.
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtCore import QTimer
@@ -27,14 +27,10 @@ from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.core.utils.qgis import resolve_layer
 from sec_interp.logger_config import get_logger
 
-from .lod_calculator import LODCalculator
 from .main_dialog_config import DialogConfig
 from .preview_param_hasher import PreviewParamHasher
 from .preview_reporter import PreviewReporter
 from .preview_task_orchestrator import PreviewTaskOrchestrator
-
-if TYPE_CHECKING:
-    pass
 
 logger = get_logger(__name__)
 
@@ -61,7 +57,6 @@ class PreviewManager(TranslatableMixin):
         # Specialized components
         self.orchestrator = PreviewTaskOrchestrator(self)
         self.hasher = PreviewParamHasher()
-        self.lod_calculator = LODCalculator(self.dialog.preview_widget.canvas)
 
         # Cache & State
         self.cached_data: dict[str, Any] = {
@@ -149,12 +144,8 @@ class PreviewManager(TranslatableMixin):
         self._handle_geometric_changes(params)
         transform_context = self._get_transform_context()
 
-        # Skip drillholes in sync generation
-        result = self.preview_service.generate_all(
-            params,
-            transform_context,
-            skip_drillholes=True,
-        )
+        # Drillholes are generated asynchronously (see _trigger_async_updates)
+        result = self.preview_service.generate_all(params, transform_context)
 
         self._update_cache_and_metrics(result)
         self._cancel_active_tasks()
@@ -433,7 +424,6 @@ class PreviewManager(TranslatableMixin):
 
     def _on_drillhole_finished(self, result: Any) -> None:
         """Handle completion of drillhole task."""
-        self.active_drill_task = None
         logger.debug(f"_on_drillhole_finished called with result type: {type(result)}")
 
         if not result:

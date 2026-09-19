@@ -422,7 +422,6 @@ class SecInterp(TranslatableMixin):
             preserve_extent=kwargs.get("preserve_extent", False),
             drillhole_data=filtered["drill"],
             interp_data=filtered["interp"],
-            show_legend=options.get("show_legend", True),
         )
 
         if canvas is None:

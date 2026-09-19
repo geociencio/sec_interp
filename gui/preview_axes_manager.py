@@ -15,7 +15,6 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsPalLayerSettings,
     QgsPointXY,
-    QgsProject,
     QgsProperty,
     QgsPropertyCollection,
     QgsSingleSymbolRenderer,
@@ -25,6 +24,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtGui import QColor
 
+from sec_interp.gui.utils import create_memory_layer as make_memory_layer
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -61,20 +61,17 @@ class PreviewAxesManager:
         return nice_fraction * (10**exponent)
 
     @classmethod
-    def create_axes_layer(cls, extent, vert_exag: float = 1.0) -> QgsVectorLayer | None:
-        """Create temporary layer for axes and grid."""
-        if not extent:
-            return None
+    def _compute_grid(cls, extent, vert_exag: float) -> tuple[float, float, float, float, float]:
+        """Compute grid intervals and origin offsets for the given extent.
 
-        layer = QgsVectorLayer("LineString", "Axes", "memory")
+        Args:
+            extent: The bounding box extent of the profile.
+            vert_exag: Vertical exaggeration factor.
 
-        # Ensure layer has a valid CRS (Project CRS)
-        project_crs = QgsProject.instance().crs()
-        if project_crs.isValid():
-            layer.setCrs(project_crs)
+        Returns:
+            Tuple of (x_interval, y_interval, x_start, y_start, y_max_orig).
 
-        provider = layer.dataProvider()
-
+        """
         width = extent.width()
         height = extent.height()
 
@@ -86,12 +83,28 @@ class PreviewAxesManager:
         y_max_orig = extent.yMaximum() / vert_exag
         y_start = math.floor(y_min_orig / y_interval) * y_interval
 
-        features = []
+        return x_interval, y_interval, x_start, y_start, y_max_orig
 
-        # Vertical grid lines
+    @classmethod
+    def create_axes_layer(cls, extent, vert_exag: float = 1.0) -> QgsVectorLayer | None:
+        """Create temporary layer for axes and grid."""
+        if not extent:
+            return None
+
+        layer = make_memory_layer("LineString", "Axes")
+        if layer is None:
+            return None
+
+        provider = layer.dataProvider()
+
+        x_interval, y_interval, x_start, y_start, y_max_orig = cls._compute_grid(extent, vert_exag)
+
         y_floor = y_start * vert_exag
         y_ceil = (math.ceil(y_max_orig / y_interval) * y_interval) * vert_exag
 
+        features = []
+
+        # Vertical grid lines
         x = x_start
         last_x = x_start
         while x <= extent.xMaximum() + 0.1:  # Small epsilon
@@ -128,29 +141,13 @@ class PreviewAxesManager:
         if not extent:
             return None
 
-        layer = QgsVectorLayer(
-            "Point?field=label:string&field=quadrant:integer",
-            "Axes Labels",
-            "memory",
-        )
-
-        # Ensure layer has a valid CRS (Project CRS)
-        project_crs = QgsProject.instance().crs()
-        if project_crs.isValid():
-            layer.setCrs(project_crs)
+        layer = make_memory_layer("Point?field=label:string&field=quadrant:integer", "Axes Labels")
+        if layer is None:
+            return None
 
         provider = layer.dataProvider()
 
-        width = extent.width()
-        height = extent.height()
-
-        x_interval = cls.get_nice_interval(width / 5)
-        y_interval = cls.get_nice_interval((height / vert_exag) / 5)
-
-        x_start = math.floor(extent.xMinimum() / x_interval) * x_interval
-        y_min_orig = extent.yMinimum() / vert_exag
-        y_max_orig = extent.yMaximum() / vert_exag
-        y_start = math.floor(y_min_orig / y_interval) * y_interval
+        x_interval, y_interval, x_start, y_start, y_max_orig = cls._compute_grid(extent, vert_exag)
         y_floor = y_start * vert_exag
 
         features = []

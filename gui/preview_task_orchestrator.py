@@ -15,7 +15,7 @@ from .tasks.drillhole_task import DrillholeGenerationTask  # noqa: E402
 from .tasks.geology_task import GeologyGenerationTask  # noqa: E402
 
 if TYPE_CHECKING:
-    from .main_dialog_preview import PreviewManager
+    from .dialog_preview_manager import PreviewManager
 
 
 class PreviewTaskOrchestrator:

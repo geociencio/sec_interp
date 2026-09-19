@@ -9,7 +9,6 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
     QgsPointXY,
-    QgsProject,
     QgsVectorLayer,
 )
 from qgis.PyQt.QtGui import QColor
@@ -22,6 +21,7 @@ from sec_interp.core.domain import (
 )
 from sec_interp.core.domain.entities import InterpretationPolygon
 from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
+from sec_interp.gui.utils import create_memory_layer as make_memory_layer
 from sec_interp.logger_config import get_logger
 
 if TYPE_CHECKING:
@@ -113,17 +113,9 @@ class PreviewLayerFactory:
         if fields:
             uri += f"?{fields}"
 
-        layer = QgsVectorLayer(uri, name, "memory")
-
-        if not layer.isValid():
-            logger.error(f"Failed to create memory layer: {name}")
+        layer = make_memory_layer(uri, name)
+        if layer is None:
             return None, None
-
-        # Ensure layer has a valid CRS (Project CRS) to allow rendering
-        # independent of On-The-Fly transformation settings
-        project_crs = QgsProject.instance().crs()
-        if project_crs.isValid():
-            layer.setCrs(project_crs)
 
         return layer, layer.dataProvider()
 
@@ -477,19 +469,3 @@ class PreviewLayerFactory:
         self.interp_renderer.apply_style(layer, interp_data=interp_data)
         layer.updateExtents()
         return layer
-
-    def interpolate_elevation(self, reference_data: ProfileData, target_dist: float) -> float:
-        """Interpolate elevation at a given distance."""
-        if not reference_data:
-            return 0
-        for i in range(len(reference_data) - 1):
-            d1, e1 = reference_data[i]
-            d2, e2 = reference_data[i + 1]
-            if d1 <= target_dist <= d2:
-                if d2 == d1:
-                    return e1
-                t = (target_dist - d1) / (d2 - d1)
-                return e1 + t * (e2 - e1)
-        if target_dist < reference_data[0][0]:
-            return reference_data[0][1]
-        return reference_data[-1][1]
