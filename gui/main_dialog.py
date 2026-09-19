@@ -30,6 +30,7 @@ from .dialog_tool_manager import NavigationManager, ToolManager
 from .legend_widget import LegendWidget
 from .main_dialog_utils import DialogEntityManager
 from .preview_layer_factory import PreviewLayerFactory
+from .preview_state import PreviewCache, RenderState
 from .ui.main_window import SecInterpMainWindow
 
 logger = get_logger(__name__)
@@ -79,12 +80,8 @@ class SecInterpDialog(SecInterpMainWindow):
         # Create legend widget
         self.legend_widget = LegendWidget(self.preview_widget.canvas)
 
-        # Store current preview data
-        self.current_topo_data = None
-        self.current_geol_data = None
-        self.current_struct_data = None
-        self.current_canvas = None
-        self.current_layers = []
+        # Store current render output (canvas + layers) for the export path
+        self.render_state = RenderState()
         # Interpretations list is now managed by interpretation_manager
         # Note: interpretation_manager is initialized later in _init_managers
 
@@ -114,8 +111,6 @@ class SecInterpDialog(SecInterpMainWindow):
     def _init_managers(self) -> None:
         """Initialize all manager instances."""
         from sec_interp.core.services.preview_service import PreviewService
-
-        from .preview_state import PreviewCache
 
         preview_cache = PreviewCache()
 

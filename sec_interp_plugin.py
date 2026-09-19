@@ -398,10 +398,7 @@ class SecInterp(TranslatableMixin):
             logger.warning("Cannot draw preview: dialog or renderer missing.")
             return
 
-        # 1. State Persistence
-        self._store_preview_data(topo_data, geol_data, struct_data, drillhole_data)
-
-        # 2. Parameter Calculation
+        # 1. Parameter Calculation
         options = self.dlg.get_preview_options()
         vert_exag = self.dlg.page_dem.vertexag_spin.value()
         dip_length = self._calculate_dip_length(struct_data)
@@ -429,28 +426,12 @@ class SecInterp(TranslatableMixin):
             return
 
         # 5. UI Updates
-        self.dlg.current_canvas = canvas
-        self.dlg.current_layers = layers
+        self.dlg.render_state.update(canvas, layers)
 
         if hasattr(self.dlg, "legend_widget"):
             self.dlg.legend_widget.update_legend(
                 self.preview_renderer, options.get("show_legend", True)
             )
-
-    def _store_preview_data(self, topo: Any, geol: Any, struct: Any, drill: Any) -> None:
-        """Store current data in dialog for re-rendering.
-
-        Args:
-            topo: Topographic profile data.
-            geol: Geological profile data.
-            struct: Structural profile data.
-            drill: Drillhole profile data.
-
-        """
-        self.dlg.current_topo_data = topo
-        self.dlg.current_geol_data = geol
-        self.dlg.current_struct_data = struct
-        self.dlg.current_drillhole_data = drill
 
     def _get_filtered_preview_data(
         self, topo: Any, geol: Any, struct: Any, drill: Any, options: dict

@@ -7,6 +7,7 @@ from tests.base_test import BaseTestCase
 from qgis.core import Qgis, QgsSettings, QgsRectangle, QgsMapSettings
 from qgis.PyQt.QtCore import QSize
 from sec_interp.gui.dialog_export_manager import ExportManager
+from sec_interp.gui.preview_state import RenderState
 from sec_interp.core.exceptions import SecInterpError
 
 
@@ -29,7 +30,8 @@ class TestDialogExportManager(BaseTestCase):
         self.dialog.preview_widget = MagicMock()
         self.canvas = MagicMock()
         self.dialog.preview_widget.canvas = self.canvas
-        self.dialog.current_canvas = self.canvas
+        self.dialog.render_state = RenderState()
+        self.dialog.render_state.canvas = self.canvas
 
         # Initialize manager
         self.manager = ExportManager(self.dialog)
@@ -37,7 +39,7 @@ class TestDialogExportManager(BaseTestCase):
 
     def test_export_preview_no_canvas(self):
         """Test export_preview when no canvas is available."""
-        self.dialog.current_canvas = None
+        self.dialog.render_state.canvas = None
         result = self.manager.export_preview()
         self.assertFalse(result)
         self.dialog.push_message.assert_called_with(
@@ -88,9 +90,7 @@ class TestDialogExportManager(BaseTestCase):
         )
         # Verify settings update
         settings = QgsSettings()
-        self.assertEqual(
-            settings.value("SecInterp/lastExportDir"), str(output_path.parent)
-        )
+        self.assertEqual(settings.value("SecInterp/lastExportDir"), str(output_path.parent))
 
     @patch("sec_interp.gui.dialog_export_manager.QFileDialog.getSaveFileName")
     def test_export_preview_canceled(self, mock_get_save):
@@ -182,17 +182,13 @@ class TestDialogExportManager(BaseTestCase):
         result = self.manager.export_data()
 
         self.assertTrue(result)
-        self.dialog.preview_widget.results_text.setPlainText.assert_called_with(
-            "Export successful"
-        )
+        self.dialog.preview_widget.results_text.setPlainText.assert_called_with("Export successful")
 
     def test_export_data_sec_interp_error(self):
         """Test export_data handling SecInterpError."""
         params = MagicMock()
         self.plugin_instance._get_and_validate_inputs.return_value = params
-        self.controller.generate_profile_data.side_effect = SecInterpError(
-            "Expected error"
-        )
+        self.controller.generate_profile_data.side_effect = SecInterpError("Expected error")
 
         result = self.manager.export_data()
         self.assertFalse(result)
