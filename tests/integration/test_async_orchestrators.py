@@ -177,7 +177,12 @@ class TestPreviewTaskOrchestrator(BaseIntegrationTest):
             mock_resolve.return_value = mock_lyr
 
             mock_service = MagicMock()
-            mock_service.prepare_task_input.return_value = MagicMock()
+
+            # Mock the geology extractor accessed via the manager chain
+            self.mock_manager.preview_service.controller.geology_extractor = MagicMock()
+            self.mock_manager.preview_service.controller.geology_extractor.extract_context.return_value = (
+                MagicMock()
+            )
 
             self.orchestrator.start_geology_task(params, mock_service)
 

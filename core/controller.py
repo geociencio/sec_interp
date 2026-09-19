@@ -30,7 +30,10 @@ class ProfileController(TranslatableMixin):
     """Orchestrates data generation services for SecInterp profile creation."""
 
     def __init__(
-        self, data_fetcher: Any | None = None, structure_extractor: Any | None = None
+        self,
+        data_fetcher: Any | None = None,
+        structure_extractor: Any | None = None,
+        geology_extractor: Any | None = None,
     ) -> None:
         """Initialize services and the data cache using Dependency Injection.
 
@@ -39,6 +42,8 @@ class ProfileController(TranslatableMixin):
                 by the GUI composition root.
             structure_extractor: Optional structure extractor (Extract adapter),
                 provided by the GUI composition root.
+            geology_extractor: Optional geology extractor (Extract adapter),
+                provided by the GUI composition root.
 
         """
         self.config_service = ConfigService()
@@ -46,6 +51,7 @@ class ProfileController(TranslatableMixin):
         self.settings = self.config_service.get_all_settings()
         self.data_fetcher = data_fetcher
         self.structure_extractor = structure_extractor
+        self.geology_extractor = geology_extractor
 
         # 1. Component Factories (Loaded safely)
         # Processors
@@ -61,24 +67,15 @@ class ProfileController(TranslatableMixin):
         self.trajectory_engine = SafeLoader.lazy_load(
             "sec_interp.core.services.drillhole.trajectory_engine", "TrajectoryEngine"
         )
-        self.profile_sampler = SafeLoader.lazy_load(
-            "sec_interp.core.services.geology.profile_sampler", "ProfileSampler"
-        )
-        self.outcrop_processor = SafeLoader.lazy_load(
-            "sec_interp.core.services.geology.outcrop_processor", "OutcropProcessor"
-        )
 
         # 3. Services (Safely instantiated)
         self.profile_service = SafeLoader.lazy_load(
             "sec_interp.core.services.profile_service", "ProfileService"
         )
 
-        # Geology Service (Using the new lazy_load with DI)
+        # Geology Service (QGIS-agnostic; extraction is delegated to the adapter)
         self.geology_service = SafeLoader.lazy_load(
-            "sec_interp.core.services.geology_service",
-            "GeologyService",
-            profile_sampler=self.profile_sampler,
-            outcrop_processor=self.outcrop_processor,
+            "sec_interp.core.services.geology_service", "GeologyService"
         )
 
         self.structure_service = SafeLoader.lazy_load(
@@ -261,17 +258,19 @@ class ProfileController(TranslatableMixin):
             if not all([line_lyr, raster_lyr, outcrop_lyr]):
                 return None
 
-            if not self.geology_service:
+            if not self.geology_service or not self.geology_extractor:
                 messages.append(self.tr("Geology: Service failed to load"))
                 return None
 
-            geol_data = self.geology_service.generate_geological_profile(
+            context = self.geology_extractor.extract_context(
                 line_lyr,
                 raster_lyr,
                 outcrop_lyr,
                 params.outcrop_name_field,
                 params.band_num,
             )
+            geol_data = self.geology_service.build_segments(context)
+
             if geol_data:
                 self.data_cache.set("geol", geol_key, geol_data, cache_meta)
                 messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))

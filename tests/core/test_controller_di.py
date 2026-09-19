@@ -11,9 +11,15 @@ class TestControllerDI(unittest.TestCase):
     """Test that ProfileController correctly injects dependencies."""
 
     def test_controller_initialization_injects_dependencies(self):
-        """Verify that services in Controller have the expected processors."""
+        """Verify that services in Controller have the expected dependencies."""
         mock_data_fetcher = MagicMock()
-        controller = ProfileController(data_fetcher=mock_data_fetcher)
+        mock_structure_extractor = MagicMock()
+        mock_geology_extractor = MagicMock()
+        controller = ProfileController(
+            data_fetcher=mock_data_fetcher,
+            structure_extractor=mock_structure_extractor,
+            geology_extractor=mock_geology_extractor,
+        )
 
         # Verify DrillholeService injection
         self.assertIs(
@@ -34,28 +40,22 @@ class TestControllerDI(unittest.TestCase):
             controller.drillhole_service.trajectory_engine, controller.trajectory_engine
         )
 
-        # Verify GeologyService injection
-        self.assertIs(
-            controller.geology_service.profile_sampler, controller.profile_sampler
-        )
-        self.assertIs(
-            controller.geology_service.outcrop_processor, controller.outcrop_processor
-        )
+        # Verify Extract adapter injection
+        self.assertIs(controller.structure_extractor, mock_structure_extractor)
+        self.assertIs(controller.geology_extractor, mock_geology_extractor)
 
     def test_manual_injection_into_services(self):
         """Verify that we can manually inject mocks into services."""
         mock_collar = MagicMock()
-        mock_sampler = MagicMock()
 
         dh_service = DrillholeService(collar_processor=mock_collar)
-        geol_service = GeologyService(profile_sampler=mock_sampler)
+        geol_service = GeologyService()
 
         self.assertIs(dh_service.collar_processor, mock_collar)
-        self.assertIs(geol_service.profile_sampler, mock_sampler)
+        self.assertIsNotNone(geol_service)
 
-        # Default others should still be instantiated
+        # Default processors should still be instantiated
         self.assertIsNotNone(dh_service.survey_processor)
-        self.assertIsNotNone(geol_service.outcrop_processor)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ real file-based datasets.
 from __future__ import annotations
 
 import os
+from unittest.mock import MagicMock
 
 os.environ["FORCE_MOCKS"] = "0"
 
@@ -22,10 +23,11 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QMetaType
 
 from sec_interp.core import utils as scu
-from sec_interp.core.domain.task_inputs import GeologyTaskInput
+from sec_interp.core.domain.task_inputs import GeologyContext, OutcropSegments
 from sec_interp.core.exceptions import DataMissingError, ValidationError
 from sec_interp.core.services.geology_service import GeologyService
 from sec_interp.core.services.structure_service import StructureService
+from sec_interp.gui.adapters.geology_extractor import GeologyExtractor
 from sec_interp.gui.adapters.structure_extractor import StructureExtractor
 from tests.integration.base_integration import BaseIntegrationTest
 
@@ -97,155 +99,136 @@ def _make_point_layer(
 # ---------------------------------------------------------------------------
 
 
-class TestGeologyServiceProcessTaskData(BaseIntegrationTest):
-    """Tests for GeologyService.process_task_data (pure domain logic)."""
-
-    def setUp(self) -> None:
-        """Initialise service and reusable base geometry."""
-        super().setUp()
-        self.service = GeologyService()
-
-        # 1 km horizontal line along E–W at Northing 6_000_000
-        self.line_wkt = "LINESTRING(0 6000000, 1000 6000000)"
-        self.line_start = QgsPointXY(0.0, 6_000_000.0)
-
-        # Flat master profile: every 100 m at constant elevation 500 m
-        self.master_profile: list[tuple[float, float]] = [
-            (float(d), 500.0) for d in range(0, 1001, 100)
-        ]
-        # Grid dists: (dist_along, (x, y), elevation)
-        self.master_grid_dists: list[tuple[float, tuple[float, float], float]] = [
-            (float(d), (float(d), 6_000_000.0), 500.0) for d in range(0, 1001, 100)
-        ]
-        self.crs = "EPSG:32719"
-
-    def _build_input(self, outcrop_data: list) -> GeologyTaskInput:
-        return GeologyTaskInput(
-            line_geometry_wkt=self.line_wkt,
-            line_start_x=self.line_start.x(),
-            line_start_y=self.line_start.y(),
-            crs_authid=self.crs,
-            master_profile_data=self.master_profile,
-            master_grid_dists=self.master_grid_dists,
-            outcrop_data=outcrop_data,
-            outcrop_name_field="unit",
-        )
-
-    def test_empty_outcrop_data_returns_empty_list(self) -> None:
-        """process_task_data with no outcrops should return an empty list."""
-        task_input = self._build_input([])
-        result = self.service.process_task_data(task_input)
-        self.assertEqual(result, [])
-
-    def test_single_outcrop_crossing_line_produces_segment(self) -> None:
-        """An outcrop polygon crossing the section line should produce ≥1 segment."""
-        # Wide polygon straddling the whole line
-        poly_wkt = (
-            "POLYGON((100 5999800, 400 5999800, 400 6000200, 100 6000200, 100 5999800))"
-        )
-        outcrop_data = [
-            {
-                "wkt": poly_wkt,
-                "attrs": {"unit": "Andesite"},
-                "unit_name": "Andesite",
-            }
-        ]
-        task_input = self._build_input(outcrop_data)
-        result = self.service.process_task_data(task_input)
-
-        self.assertGreater(len(result), 0, "Expected at least one geology segment")
-        self.assertEqual(result[0].unit_name, "Andesite")
-
-    def test_two_outcrops_produce_two_segments(self) -> None:
-        """Two non-overlapping outcrops should yield (at least) two segments, one per unit."""
-        poly_a = (
-            "POLYGON((50 5999800, 350 5999800, 350 6000200, 50 6000200, 50 5999800))"
-        )
-        poly_b = (
-            "POLYGON((600 5999800, 900 5999800, 900 6000200, 600 6000200, 600 5999800))"
-        )
-        outcrop_data = [
-            {"wkt": poly_a, "attrs": {"unit": "Andesite"}, "unit_name": "Andesite"},
-            {"wkt": poly_b, "attrs": {"unit": "Granite"}, "unit_name": "Granite"},
-        ]
-        task_input = self._build_input(outcrop_data)
-        result = self.service.process_task_data(task_input)
-
-        unit_names = {seg.unit_name for seg in result}
-        self.assertIn("Andesite", unit_names)
-        self.assertIn("Granite", unit_names)
-
-    def test_outcrop_attributes_preserved_in_segment(self) -> None:
-        """Attribute dict from the outcrop data should be preserved in the segment."""
-        poly_wkt = (
-            "POLYGON((100 5999800, 400 5999800, 400 6000200, 100 6000200, 100 5999800))"
-        )
-        outcrop_data = [
-            {
-                "wkt": poly_wkt,
-                "attrs": {"unit": "Rhyolite", "age": "Miocene"},
-                "unit_name": "Rhyolite",
-            }
-        ]
-        task_input = self._build_input(outcrop_data)
-        result = self.service.process_task_data(task_input)
-
-        self.assertGreater(len(result), 0)
-        self.assertEqual(result[0].unit_name, "Rhyolite")
-        self.assertIn("age", result[0].attributes)
-        self.assertEqual(result[0].attributes["age"], "Miocene")
-
-    def test_result_segments_are_sorted_by_distance(self) -> None:
-        """Segments should be sorted by their first point's distance along the section."""
-        # Granite comes first (x=50–350), Andesite second (x=600–900)
-        poly_a = (
-            "POLYGON((50 5999800, 350 5999800, 350 6000200, 50 6000200, 50 5999800))"
-        )
-        poly_b = (
-            "POLYGON((600 5999800, 900 5999800, 900 6000200, 600 6000200, 600 5999800))"
-        )
-        outcrop_data = [
-            # Deliberately reversed order
-            {"wkt": poly_b, "attrs": {"unit": "Andesite"}, "unit_name": "Andesite"},
-            {"wkt": poly_a, "attrs": {"unit": "Granite"}, "unit_name": "Granite"},
-        ]
-        task_input = self._build_input(outcrop_data)
-        result = self.service.process_task_data(task_input)
-
-        if len(result) >= 2:
-            dists = [seg.points[0][0] for seg in result]
-            self.assertEqual(dists, sorted(dists))
-
-
-class TestGeologyServiceValidation(BaseIntegrationTest):
-    """Tests for GeologyService input validation (integration with real layers)."""
+class TestGeologyExtractorContext(BaseIntegrationTest):
+    """Integration tests for GeologyExtractor (Extract + intersection)."""
 
     def setUp(self) -> None:
         super().setUp()
-        self.service = GeologyService()
+        self.extractor = GeologyExtractor()
+
+        # 1 km E-W section line at Northing 6_000_000
+        self.line_layer = _make_line_layer(0.0, 6_000_000.0, 1000.0, 6_000_000.0)
+
+        # Mock DEM raster (valid, single band, 100 m pixel)
+        self.raster = MagicMock()
+        self.raster.isValid.return_value = True
+        self.raster.bandCount.return_value = 1
+        self.raster.rasterUnitsPerPixelX.return_value = 100.0
+        self.raster.dataProvider.return_value.sample.return_value = (500.0, True)
+
+    def _make_outcrop_layer(self) -> QgsVectorLayer:
+        return _make_polygon_layer(
+            [
+                (
+                    "Andesite",
+                    [
+                        QgsPointXY(100, 5_999_800),
+                        QgsPointXY(400, 5_999_800),
+                        QgsPointXY(400, 6_000_200),
+                        QgsPointXY(100, 6_000_200),
+                    ],
+                )
+            ]
+        )
+
+    def test_extract_context_produces_segments(self) -> None:
+        """An outcrop crossing the section line should produce intersection segments."""
+        context = self.extractor.extract_context(
+            self.line_layer, self.raster, self._make_outcrop_layer(), "unit", 1
+        )
+
+        self.assertGreater(len(context.outcrops), 0)
+        self.assertEqual(context.outcrops[0].unit_name, "Andesite")
+        self.assertGreater(len(context.outcrops[0].segments), 0)
+        self.assertGreater(len(context.master_profile_data), 0)
+
+    def test_extract_context_no_outcrop_features_returns_empty(self) -> None:
+        """A polygon layer with no features should yield no outcrops."""
+        empty = QgsVectorLayer(
+            "Polygon?crs=EPSG:32719&field=unit:string(50)", "empty", "memory"
+        )
+        context = self.extractor.extract_context(
+            self.line_layer, self.raster, empty, "unit", 1
+        )
+        self.assertEqual(context.outcrops, [])
 
     def test_invalid_line_layer_raises_data_missing_error(self) -> None:
         """_validate_inputs should raise DataMissingError for an invalid line layer."""
         invalid_layer = QgsVectorLayer("invalid_uri", "bad", "ogr")
-        raster_layer = None  # will fail on line_lyr check first
-
         with self.assertRaises(DataMissingError):
-            self.service._validate_inputs(invalid_layer, raster_layer, None, "unit", 1)
+            self.extractor._validate_inputs(invalid_layer, None, None, "unit", 1)
 
     def test_extract_line_info_raises_when_layer_empty(self) -> None:
         """_extract_line_info should raise DataMissingError for empty layer."""
         empty_layer = QgsVectorLayer("LineString?crs=EPSG:32719", "empty", "memory")
         with self.assertRaises(DataMissingError):
-            self.service._extract_line_info(empty_layer)
+            self.extractor._extract_line_info(empty_layer)
 
     def test_extract_line_info_returns_geometry_and_start(self) -> None:
-        """_extract_line_info should return valid geometry and start point for real layer."""
-        line_lyr = _make_line_layer()
-        geom, start = self.service._extract_line_info(line_lyr)
-
+        """_extract_line_info should return valid geometry and start point."""
+        geom, start = self.extractor._extract_line_info(self.line_layer)
         self.assertFalse(geom.isNull())
         self.assertAlmostEqual(start.x(), 0.0, places=3)
-        self.assertAlmostEqual(start.y(), 0.0, places=3)
+        self.assertAlmostEqual(start.y(), 6_000_000.0, places=3)
+
+
+class TestGeologyServiceBuildSegments(BaseIntegrationTest):
+    """Tests for GeologyService.build_segments (pure computation)."""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.service = GeologyService()
+
+    def _build_context(self, outcrops: list[OutcropSegments]) -> GeologyContext:
+        master_profile = [(float(d), 500.0) for d in range(0, 1001, 100)]
+        master_grid = [
+            (float(d), (float(d), 6_000_000.0), 500.0) for d in range(0, 1001, 100)
+        ]
+        return GeologyContext(
+            master_profile_data=master_profile,
+            master_grid_dists=master_grid,
+            outcrops=outcrops,
+        )
+
+    def test_empty_outcrop_data_returns_empty_list(self) -> None:
+        """build_segments with no outcrops should return an empty list."""
+        result = self.service.build_segments(self._build_context([]))
+        self.assertEqual(result, [])
+
+    def test_single_outcrop_produces_segment(self) -> None:
+        """A single outcrop segment should produce a GeologySegment."""
+        outcrops = [
+            OutcropSegments(
+                "Andesite",
+                {"unit": "Andesite"},
+                [(200.0, 400.0, "LINESTRING(200 6000000, 400 6000000)")],
+            )
+        ]
+        result = self.service.build_segments(self._build_context(outcrops))
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].unit_name, "Andesite")
+
+    def test_outcrop_attributes_preserved_in_segment(self) -> None:
+        """Attribute dict should be preserved in the segment."""
+        outcrops = [
+            OutcropSegments("Rhyolite", {"age": "Miocene"}, [(200.0, 400.0, "wkt")])
+        ]
+        result = self.service.build_segments(self._build_context(outcrops))
+
+        self.assertEqual(result[0].unit_name, "Rhyolite")
+        self.assertEqual(result[0].attributes["age"], "Miocene")
+
+    def test_result_segments_are_sorted_by_distance(self) -> None:
+        """Segments should be sorted by their first point's distance."""
+        outcrops = [
+            OutcropSegments("Andesite", {}, [(600.0, 900.0, "wkt")]),
+            OutcropSegments("Granite", {}, [(50.0, 350.0, "wkt")]),
+        ]
+        result = self.service.build_segments(self._build_context(outcrops))
+
+        dists = [seg.points[0][0] for seg in result]
+        self.assertEqual(dists, sorted(dists))
 
 
 # ---------------------------------------------------------------------------

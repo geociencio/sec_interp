@@ -70,7 +70,8 @@ class PreviewTaskOrchestrator:
         raster_lyr = resolve_layer(params.raster_layer)
         outcrop_lyr = resolve_layer(params.outcrop_layer)
 
-        task_input = service.prepare_task_input(
+        extractor = self.manager.preview_service.controller.geology_extractor
+        context = extractor.extract_context(
             line_lyr,
             raster_lyr,
             outcrop_lyr,
@@ -80,7 +81,7 @@ class PreviewTaskOrchestrator:
 
         self.geology_task = GeologyGenerationTask(
             "Geology Preview (Async)",  # no-i18n: QgsTask identifier for task manager
-            task_input,
+            context,
             service,
             params,
         )

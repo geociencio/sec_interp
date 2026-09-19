@@ -18,6 +18,8 @@ class TestControllerOrchestration(BaseTestCase):
         self.controller.geology_service = MagicMock()
         self.controller.structure_service = MagicMock()
         self.controller.profile_service = MagicMock()
+        self.controller.geology_extractor = MagicMock()
+        self.controller.structure_extractor = MagicMock()
 
     def test_process_topography_delegation(self):
         """Verify that _process_topography calls the profile service."""
@@ -36,7 +38,7 @@ class TestControllerOrchestration(BaseTestCase):
 
         self.controller._process_geology(params, {}, messages)
 
-        self.controller.geology_service.generate_geological_profile.assert_called_once()
+        self.controller.geology_service.build_segments.assert_called_once()
 
     def test_process_drillholes_delegation(self):
         """Verify that _process_drillholes calls the drillhole orchestrator."""

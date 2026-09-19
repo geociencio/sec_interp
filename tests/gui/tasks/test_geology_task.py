@@ -22,7 +22,7 @@ class TestGeologyGenerationTask(BaseTestCase):
     def test_initialization(self):
         """Test task initialization."""
         self.assertEqual(self.task.description(), "Test Geology Task")
-        self.assertEqual(self.task.task_input, self.mock_input)
+        self.assertEqual(self.task.context, self.mock_input)
         self.assertEqual(self.task.service, self.mock_service)
         self.assertIsNone(self.task.result)
         self.assertIsNone(self.task.exception)
@@ -30,20 +30,20 @@ class TestGeologyGenerationTask(BaseTestCase):
     def test_run_success(self):
         """Test successful task execution."""
         expected_result = ["segment1", "segment2"]
-        self.mock_service.process_task_data.return_value = expected_result
+        self.mock_service.build_segments.return_value = expected_result
 
         success = self.task.run()
 
         self.assertTrue(success)
         self.assertEqual(self.task.result, expected_result)
-        self.mock_service.process_task_data.assert_called_once_with(
+        self.mock_service.build_segments.assert_called_once_with(
             self.mock_input, feedback=self.task
         )
 
     def test_run_error(self):
         """Test task execution with error."""
         error = RuntimeError("Database connection failed")
-        self.mock_service.process_task_data.side_effect = error
+        self.mock_service.build_segments.side_effect = error
 
         success = self.task.run()
 

@@ -36,7 +36,8 @@ from .enums import FieldType
 from .spatial_meta import SpatialMeta
 from .task_inputs import (
     DrillholeTaskInput,
-    GeologyTaskInput,
+    GeologyContext,
+    OutcropSegments,
 )
 
 __all__ = [
@@ -45,13 +46,14 @@ __all__ = [
     "DrillholeTaskInput",
     "ExportSettings",
     "FieldType",
+    "GeologyContext",
     "GeologyData",
     "GeologyPoints",
     "GeologySegment",
-    "GeologyTaskInput",
     "InterpretationPolygon",
     "InterpretationPolygon25D",
     "LayerDict",
+    "OutcropSegments",
     "Point2D",
     "Point3D",
     "PointList",

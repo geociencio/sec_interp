@@ -9,33 +9,40 @@ from .entities import DomainGeometry, Point2D
 
 
 @dataclass
-class GeologyTaskInput:
-    """Data Transfer Object for GeologyGenerationTask.
-
-    Contains all necessary data to process geological profiles
-    without accessing QGIS layers directly.
+class OutcropSegments:
+    """Detached intersection segments for a single outcrop feature.
 
     Attributes:
-        line_geometry_wkt: Section geometry in WKT format.
-        line_start_x: X coordinate of section start vertex.
-        line_start_y: Y coordinate of section start vertex.
-        crs_authid: Authority ID for the CRS (e.g., 'EPSG:4326').
-        master_profile_data: Sampled topography elevations.
-        master_grid_dists: Grid distances for point sampling.
-        outcrop_data: Detached outcrop features (geometries and attrs).
-        outcrop_name_field: Name of the field containing unit info.
+        unit_name: Geological unit name.
+        attributes: Original feature attributes.
+        segments: List of ``(dist_start, dist_end, wkt)`` tuples, one per
+            intersection segment along the section line.
+
+    """
+
+    unit_name: str
+    attributes: dict[str, Any]
+    segments: list[tuple[float, float, DomainGeometry]]
+
+
+@dataclass
+class GeologyContext:
+    """Fully-detached geology data (Extract output) for pure computation.
+
+    Produced by the GUI ``GeologyExtractor`` adapter and consumed by the
+    QGIS-agnostic ``GeologyService``. Contains no live QGIS objects.
+
+    Attributes:
+        master_profile_data: Sampled topography elevations ``(dist, elev)``.
+        master_grid_dists: Grid ``(dist, (x, y), elev)`` for interpolation.
+        outcrops: Detached outcrop intersection segments.
         tolerance: Distance tolerance for intersection sampling.
 
     """
 
-    line_geometry_wkt: DomainGeometry
-    line_start_x: float
-    line_start_y: float
-    crs_authid: str
     master_profile_data: list[Point2D]
     master_grid_dists: list[tuple[float, Point2D, float]]
-    outcrop_data: list[dict[str, Any]]  # List of dicts with 'wkt', 'attrs', 'unit_name'
-    outcrop_name_field: str
+    outcrops: list[OutcropSegments]
     tolerance: float = 0.001
 
 

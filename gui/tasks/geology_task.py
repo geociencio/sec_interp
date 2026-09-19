@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 from qgis.core import Qgis, QgsMessageLog, QgsTask
 from qgis.PyQt.QtCore import QTimer, pyqtSignal
 
-from sec_interp.core.domain import GeologyData, GeologyTaskInput
+from sec_interp.core.domain import GeologyContext, GeologyData
 from sec_interp.logger_config import get_logger
 
 if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class GeologyGenerationTask(QgsTask):
     def __init__(
         self,
         description: str,
-        task_input: GeologyTaskInput,
+        context: GeologyContext,
         service: GeologyService,
         params: Any,
     ) -> None:
@@ -39,14 +39,14 @@ class GeologyGenerationTask(QgsTask):
 
         Args:
             description: Description of the task.
-            task_input: The detached data input DTO.
+            context: The detached geology context DTO.
             service: The GeologyService instance (stateless logic).
             params: Original params for context (backward compatibility).
 
         """
         super().__init__(description, QgsTask.Flag.CanCancel)
         self.service = service
-        self.task_input = task_input
+        self.context = context
         self.params = params
 
         self.result: GeologyData | None = None
@@ -57,7 +57,7 @@ class GeologyGenerationTask(QgsTask):
         try:
             logger.info("GeologyGenerationTask started (Background Thread)")
             # Passing self as feedback object (has isCanceled and setProgress)
-            self.result = self.service.process_task_data(self.task_input, feedback=self)
+            self.result = self.service.build_segments(self.context, feedback=self)
             logger.info(f"GeologyGenerationTask finished with {len(self.result)} segments")
             return True
 

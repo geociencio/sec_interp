@@ -14,12 +14,12 @@ from qgis.core import (
     QMetaType,
 )
 
-from sec_interp.core.services.geology_service import GeologyService
 from sec_interp.core.services.drillhole_service import DrillholeService
 from sec_interp.core.services.drillhole.drillhole_orchestrator import (
     DrillholeTaskOrchestrator,
 )
 from sec_interp.core.exceptions import ValidationError, DataMissingError
+from sec_interp.gui.adapters.geology_extractor import GeologyExtractor
 
 
 class TestServiceValidation(BaseTestCase):
@@ -27,7 +27,7 @@ class TestServiceValidation(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.geology_service = GeologyService()
+        self.geology_extractor = GeologyExtractor()
         self.drillhole_service = DrillholeService()
         self.orchestrator = DrillholeTaskOrchestrator(self.drillhole_service)
 
@@ -57,10 +57,10 @@ class TestServiceValidation(BaseTestCase):
         self.mock_outcrop_lyr.fields.return_value = fields
 
     def test_geology_service_validates_band_number(self):
-        """GeologyService should reject invalid band numbers."""
+        """GeologyExtractor should reject invalid band numbers."""
         # Case 0: Band <= 0
         with self.assertRaises(ValidationError) as cm:
-            self.geology_service.generate_geological_profile(
+            self.geology_extractor.extract_context(
                 self.mock_line_lyr,
                 self.mock_raster_lyr,
                 self.mock_outcrop_lyr,
@@ -72,7 +72,7 @@ class TestServiceValidation(BaseTestCase):
         # Case 2: Band > bandCount
         self.mock_raster_lyr.bandCount.return_value = 1
         with self.assertRaises(ValidationError) as cm:
-            self.geology_service.generate_geological_profile(
+            self.geology_extractor.extract_context(
                 self.mock_line_lyr,
                 self.mock_raster_lyr,
                 self.mock_outcrop_lyr,
@@ -82,10 +82,10 @@ class TestServiceValidation(BaseTestCase):
         self.assertIn("exceeds raster band count", str(cm.exception))
 
     def test_geology_service_validates_outcrop_field(self):
-        """GeologyService should reject non-existent outcrop field."""
+        """GeologyExtractor should reject non-existent outcrop field."""
         # Field 'not_exist' is not in fields list
         with self.assertRaises(ValidationError) as cm:
-            self.geology_service.generate_geological_profile(
+            self.geology_extractor.extract_context(
                 self.mock_line_lyr,
                 self.mock_raster_lyr,
                 self.mock_outcrop_lyr,
@@ -95,13 +95,13 @@ class TestServiceValidation(BaseTestCase):
         self.assertIn("Field 'not_exist' not found", str(cm.exception))
 
     def test_geology_service_validates_layer_validity(self):
-        """GeologyService should check if layers are valid."""
+        """GeologyExtractor should check if layers are valid."""
         invalid_layer = MagicMock()
         invalid_layer.isValid.return_value = False
         invalid_layer.name.return_value = "Invalid Layer"
 
         with self.assertRaises(DataMissingError) as cm:
-            self.geology_service.generate_geological_profile(
+            self.geology_extractor.extract_context(
                 invalid_layer, self.mock_raster_lyr, self.mock_outcrop_lyr, "unit"
             )
         self.assertIn("Invalid layer", str(cm.exception))

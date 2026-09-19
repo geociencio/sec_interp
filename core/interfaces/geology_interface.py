@@ -5,27 +5,19 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
+from sec_interp.core.domain.task_inputs import GeologyContext
+
 
 class IGeologyService(ABC):
     """Abstract interface for the Geological Profiling Service."""
 
     @abstractmethod
-    def generate_geological_profile(
-        self,
-        line_data: Any,  # Will be refined to a DTO or specific params
-        raster_data: Any,
-        outcrop_data: list[dict[str, Any]],
-        outcrop_name_field: str,
-        band_number: int = 1,
-    ) -> Any:
-        """Generate geological profile data using detached structures.
+    def build_segments(self, context: GeologyContext, feedback: Any | None = None) -> Any:
+        """Build geological segments from a detached context.
 
         Args:
-            line_data: Section line orientation data.
-            raster_data: DEM elevation data.
-            outcrop_data: List of detached outcrop entities.
-            outcrop_name_field: Field name for unit names.
-            band_number: Raster band to use.
+            context: Fully-detached geology data (Extract output).
+            feedback: Optional feedback object for progress/cancellation.
 
         Returns:
             GeologyData: List of GeologySegment objects.
