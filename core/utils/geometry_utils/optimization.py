@@ -2,18 +2,57 @@
 
 from __future__ import annotations
 
-"""Geometry optimization utilities for SecInterp preview.
+import math
 
-Handles simplification and sampling of geometric data to improve rendering performance.
-"""
-
-import math  # noqa: E402
-
-from qgis.core import QgsGeometry, QgsPointXY  # noqa: E402
-
-from sec_interp.logger_config import get_logger  # noqa: E402
+from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
+
+
+def _perpendicular_distance(
+    point: tuple[float, float],
+    line_start: tuple[float, float],
+    line_end: tuple[float, float],
+) -> float:
+    """Compute the perpendicular distance from ``point`` to a segment."""
+    px, py = point
+    x1, y1 = line_start
+    x2, y2 = line_end
+
+    dx = x2 - x1
+    dy = y2 - y1
+    if dx == 0 and dy == 0:
+        return math.hypot(px - x1, py - y1)
+
+    t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)
+    t = max(0.0, min(1.0, t))
+    return math.hypot(px - (x1 + t * dx), py - (y1 + t * dy))
+
+
+def _douglas_peucker(
+    points: list[tuple[float, float]], tolerance: float
+) -> list[tuple[float, float]]:
+    """Simplify a polyline using the Douglas-Peucker algorithm."""
+    MIN_POINTS_REQUIRED = 3
+    if len(points) < MIN_POINTS_REQUIRED:
+        return points
+
+    start = points[0]
+    end = points[-1]
+
+    max_dist = 0.0
+    index = 0
+    for i in range(1, len(points) - 1):
+        dist = _perpendicular_distance(points[i], start, end)
+        if dist > max_dist:
+            max_dist = dist
+            index = i
+
+    if max_dist > tolerance:
+        left = _douglas_peucker(points[: index + 1], tolerance)
+        right = _douglas_peucker(points[index:], tolerance)
+        return left[:-1] + right
+    return [start, end]
 
 
 class PreviewOptimizer:
@@ -40,33 +79,19 @@ class PreviewOptimizer:
             return data
 
         try:
-            # Create QgsGeometry from points
-            points = [QgsPointXY(x, y) for x, y in data]
-            line = QgsGeometry.fromPolylineXY(points)
-
             # Determine tolerance
             if tolerance is None:
                 # Auto-calculate tolerance based on max_points heuristic
-                extent = line.boundingBox()
-                diag = math.sqrt(extent.width() ** 2 + extent.height() ** 2)
-                calculated_tolerance = diag / max_points
-            else:
-                calculated_tolerance = tolerance
+                xs = [p[0] for p in data]
+                ys = [p[1] for p in data]
+                width = max(xs) - min(xs)
+                height = max(ys) - min(ys)
+                tolerance = math.hypot(width, height) / max_points
 
-            # Simplify
-            simplified = line.simplify(calculated_tolerance)
-
-            # Extract points
-            if simplified.isMultipart():
-                result_points = simplified.asMultiPolyline()[0]
-            else:
-                result_points = simplified.asPolyline()
-
-            result = [(p.x(), p.y()) for p in result_points]
+            result = _douglas_peucker(data, tolerance)
 
             logger.debug(
-                f"LOD Decimation: {len(data)} -> {len(result)} points "
-                f"(tol={calculated_tolerance:.2f})"
+                f"LOD Decimation: {len(data)} -> {len(result)} points (tol={tolerance:.2f})"
             )
         except Exception as e:
             logger.warning(f"LOD decimation failed: {e}")
