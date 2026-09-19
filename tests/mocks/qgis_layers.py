@@ -176,6 +176,10 @@ class MockQgsMapLayer(MockQObject):
 
         return mock_geometry_type(self._wkb_type)
 
+    def type(self):
+        """Get the layer type (LayerType enum)."""
+        return self.LayerType.VectorLayer
+
     def setGeometryType(self, geom_type):
         """Helper to set geometry type for mocks."""
         self._geometry_type_override = geom_type
@@ -219,6 +223,10 @@ class MockQgsVectorLayer(MockQgsMapLayer):
 
 class MockQgsRasterLayer(MockQgsMapLayer):
     """Mock implementation for QgsRasterLayer."""
+
+    def type(self):
+        """Get the layer type (RasterLayer)."""
+        return self.LayerType.RasterLayer
 
     def bandCount(self):
         """Mock returning 1 band."""
