@@ -25,7 +25,7 @@ from sec_interp.core.performance_metrics import (
 )
 from sec_interp.core.services.preview_service import PreviewService
 from sec_interp.core.utils.i18n import TranslatableMixin
-from sec_interp.core.utils.qgis import resolve_layer
+from sec_interp.gui.adapters.layer_resolver import resolve_layer
 from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig

@@ -23,9 +23,9 @@ from qgis.PyQt.QtWidgets import QAction
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.utils.i18n import TranslatableMixin
-from sec_interp.core.utils.qgis import resolve_layer
 from sec_interp.core.utils.qt6_compat import apply_qt6_patches
 from sec_interp.core.utils.safe_loader import SafeLoader
+from sec_interp.gui.adapters.layer_resolver import resolve_layer
 from sec_interp.logger_config import get_logger, setup_logging
 
 # Apply Qt6 compatibility patches before any other UI imports
