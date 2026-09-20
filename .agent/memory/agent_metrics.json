@@ -34,7 +34,7 @@
             "NON_PYTHONIC_LOOP": 2,
             "SPATIAL_INDEX": 1
         },
-        "module_size_gate": "FAIL (3 modules > 400 lines)",
+        "module_size_gate": "FAIL (2 modules > 400 lines)",
         "large_modules": [
             {
                 "path": "gui/dialog_interpretation_manager.py",
@@ -43,10 +43,6 @@
             {
                 "path": "gui/dialog_preview_manager.py",
                 "lines": 435
-            },
-            {
-                "path": "gui/main_dialog.py",
-                "lines": 481
             }
         ],
         "test_count": 612
