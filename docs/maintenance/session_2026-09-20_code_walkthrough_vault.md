@@ -1,0 +1,31 @@
+# Session 2026-09-20 — Code Walkthrough Vault (Bilingual) + Architecture Docs Refresh
+
+- **Achievement**: Built a bilingual Obsidian code-walkthrough vault (ES/EN) covering the full SecInterp architecture — from entry point through core/domain/validation to GUI managers/renderers/tasks/adapters and exporters — and refreshed the canonical architecture documentation (diagrams, directory structure, QA section) plus competitive analysis docs.
+- **Scope**:
+  - **Architecture docs**: Expanded `ARCHITECTURE.mmd` from a minimal Core graph (34 lines) to the full three-layer diagram (260 lines, color-coded by manager/service/interface/exporter/task/renderer). Expanded `docs/ARCHITECTURE_EN.md` directory structure (130 → 280 lines), replaced the system diagram with the full Mermaid graph (with `GUI/Core/Exporters` + drillhole/geometry sub-systems), and added a **Quality Assurance & Security Scanning** section (Bandit/detect-secrets/Flake8, qgis-analyzer, Qt6 checker, pre-release pipeline). Fixed `docs/architecture.mmd` export-cycle bug (`DRILL_3D`/`INTERP_3D` subgraphs → `_SUB` suffix) and exported a standalone `docs/architecture.mmd` (11 KB) for Obsidian/mermaid.live.
+  - **Architecture analysis docs**: Added `docs/ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` (monolithic vs Clean Architecture) and `docs/PLUGIN_REPORT_AND_COMPARISON_EN.md` (feature inventory + 7-plugin competitive matrix). Fixed positioning map in the latter (SecInterp moved to top-right quadrant).
+  - **Code walkthrough vaults**: Created `docs/code_walkthrough/` (ES) and `docs/code_walkthrough_en/` (EN), each with a Map-of-Content `00 - Index.md`, 20 walkthrough notes (00, 01, 02, 03, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 30, 31) and 3 mirror copies of the architecture/report docs for Obsidian resolution. Established short-name convention (`13 - profile_service` vs `core_services_profile_service`), normalized all `[[...]]` wikilinks, corrected anchor links (`#🔐 Signal management`), and documented `.obsidian/` gitignore hygiene (`chore: ignore Obsidian vault configuration`).
+  - **Notes detail (selection)**:
+    - `01 sec_interp_plugin.py` — Composition Root, DI via `SafeLoader`, i18n fallback, signal wiring.
+    - `10 controller.py` — `ProfileController` Extract-then-Compute orchestrator, granular `topo/geol/struct/drill` cache with MD5 keys.
+    - `11 domain/` — `DomainGeometry=WKT`, `FieldType` enum bridge, `SpatialMeta(frozen)`, `GeologyContext`/`DrillholeContext`.
+    - `12 exceptions` — `SecInterpError(message, details)` hierarchy with `ProcessingError/GeometryError/DataMissingError` etc.
+    - `13 profile_service` — documents `gui/adapters/profile_extractor.py` (migration note: ProfileService → adapter).
+    - `14 geology_service` / `15 drillhole_service` / `19 structure_service` — pure *Compute* services with `feedback` cancellation.
+    - `16 validation/` — `LayerMetadata` + `ValidationPipeline`/`ValidationContext` accumulator.
+    - `17 safe_loader` / `18 i18n` — fault-tolerant `lazy_load` + `TranslatableMixin`.
+    - `20 main_dialog` → `25 adapters` — thin dialog + 7 managers + renderers + QgsTask orchestrator.
+    - `30 base_exporter` / `31 vector_exporter` — Template Method + `get_exporter` Factory + `QgsVectorFileWriter`.
+- **Repository hygiene**:
+  - Reverted accidental `black` vs `ruff format` churn (100 Python files) in early commits.
+  - Excluded Obsidian editor state (`docs/**/ .obsidian/`) from tracking; committed `.gitignore` update.
+  - All commits follow Conventional Commits; hooks (ruff, trim, end-of-file-fixer, Conventional Commit) pass.
+- **Commits in session** (since `v3.8.0`):
+  - `bb511748` `docs(architecture): expand architecture docs and add bilingual code walkthroughs`
+  - `89b41565` `chore: ignore Obsidian vault configuration`
+  - `75978374` `docs(code-walkthrough): add notes 10/11/17 and mirror architecture docs`
+  - `29e1adff` `docs(code-walkthrough): complete vault with notes 12-31`
+  - `2161b77`  `docs(code-walkthrough): add note 19 structure_service`
+- **Operational Metrics**: Docs-only session; Python code unchanged. Prior ground truth still holds: 606/606 tests (Docker), CC ≤ 10 PASS, i18n AST 0, Security 100/100.
+- **Status**: Bóvedas completas (20 notas + 3 espejos por idioma). Sin notas vacías. Índices con wikilinks y estados ✅.
+- **Next**: Goal 1.1 (live symbology preview) / Fase 1 adaptive VE (vertical_exaggeration_service) / tech debt 2.1–2.4; o expandir la bóveda con nuevos archivos.

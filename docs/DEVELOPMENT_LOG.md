@@ -1,3 +1,18 @@
+## [2026-09-20] Session: Code Walkthrough Vault (Bilingual) + Architecture Docs Refresh
+- **Achievement**: Built bilingual Obsidian code-walkthrough vaults (ES/EN) documenting the full SecInterp architecture file-by-file, and refreshed the canonical architecture docs (diagrams, directory structure, QA section) plus competitive analysis.
+- **Architecture Docs**:
+  - `ARCHITECTURE.mmd` 34 → 260 lines (full GUI/Core/Exporters, color-coded).
+  - `docs/ARCHITECTURE_EN.md` directory structure 130 → 280 lines + full Mermaid graph + Quality Assurance & Security Scanning section (Bandit/detect-secrets/Flake8, qgis-analyzer, Qt6 checker).
+  - Added `docs/ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` (monolithic vs Clean) and `docs/PLUGIN_REPORT_AND_COMPARISON_EN.md` (feature + 7-plugin matrix; positioning map fixed).
+  - Exported standalone `docs/architecture.mmd` (11 KB) for Obsidian/mermaid.live; fixed cycle bug in export subgraphs.
+- **Code Walkthrough Vaults** (`docs/code_walkthrough/` ES + `code_walkthrough_en/` EN):
+  - MOC `00 - Index.md` + 20 notes (00, 01, 02, 03, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 30, 31) + 3 mirror docs per vault; short-name convention; all wikilinks normalized.
+  - Completed: `sec_interp_plugin`, `__init__`, `logger_config`, `controller`, `domain`, `exceptions`, `profile_service` (adapter), `geology/drillhole/structure_services`, `validation`, `safe_loader`, `i18n`, `main_dialog`, `dialog_preview/export_manager`, `renderers`, `tasks`, `adapters`, `base/vector_exporter`.
+  - Added mirror-docs notice to indexes; excluded Obsidian editor state (`chore: ignore Obsidian vault configuration`).
+- **Commits**: `bb511748`, `89b41565`, `75978374`, `29e1adff`, `2161b77`.
+- **Operational Metrics**: Docs-only session; Python code unchanged. Ground truth: 606/606 tests, CC ≤ 10 PASS, i18n 0, Security 100/100.
+- **Maintenance**: [session_2026-09-20_code_walkthrough_vault.md](maintenance/session_2026-09-20_code_walkthrough_vault.md)
+
 ## [2026-09-19] MILESTONE: Release v3.8.0 — Core/GUI Decoupling & Reliability
 - **Achievement**: Publicación de SecInterp v3.8.0, release que consolida el refactor Core/GUI y dos correcciones de fiabilidad.
 - **Release Content**:
