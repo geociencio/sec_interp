@@ -49,6 +49,14 @@ cssclass: secinterp-moc
 | [[config]] | ✅ | Servicio de configuración (QgsSettings) |
 | [[data_cache]] | ✅ | Caché por buckets (SHA256 + TTL) |
 | [[performance_metrics]] | ✅ | Timings, conteos y memoria |
+| [[export_service]] | ✅ | Orquestación de exportación |
+| [[preview_service]] | ✅ | Generación de preview |
+| [[access_control_service]] | ✅ | Control de acceso |
+| [[trajectory_engine]] | ✅ | Trayectoria de sondajes |
+| [[collar_processor]] | ✅ | Procesador de collares |
+| [[survey_processor]] | ✅ | Procesador de surveys |
+| [[interval_processor]] | ✅ | Procesador de intervalos |
+| [[projection_engine]] | ✅ | Proyección 3D→2D |
 
 ### Capa GUI (`gui/`)
 | Archivo | Estado | Descripción breve |
@@ -71,12 +79,30 @@ cssclass: secinterp-moc
 | [[preview_layer_factory]] | ✅ | Factory de capas de memoria |
 | [[preview_renderer]] | ✅ | Orquestador de render |
 | [[preview_axes_manager]] | ✅ | Rejilla + ejes (nice 1-2-5) |
+| [[drillhole_extractor]] | ✅ | Extract de sondajes |
+| [[structure_extractor]] | ✅ | Extract de estructuras |
+| [[geology_extractor]] | ✅ | Extract de geología |
+| [[validation_extractor]] | ✅ | Extract de validación |
+| [[measure_tool]] | ✅ | Herramienta de medición |
+| [[interpretation_tool]] | ✅ | Herramienta de interpretación |
+| [[drillhole_page]] | ✅ | Página de sondajes |
+| [[settings_page]] | ✅ | Página de configuración |
 
 ### Capa Exporters (`exporters/`)
 | Archivo | Estado | Descripción breve |
 |---|:------:|------------------|
 | [[base_exporter]] | ✅ | Contrato `BaseExporter` |
 | [[vector_exporter]] | ✅ | GPKG/SHP/DXF |
+| [[csv_exporter]] | ✅ | CSV tabular |
+| [[interpretation_3d_exporter]] | ✅ | Export 3D interpretaciones |
+| [[drillhole_3d_exporter]] | ✅ | Export 3D sondajes |
+| [[pdf_exporter]] | ✅ | PDF |
+| [[svg_exporter]] | ✅ | SVG |
+| [[image_exporter]] | ✅ | Imagen raster |
+| [[profile_exporters]] | ✅ | Export de perfil |
+| [[dxf_exporter]] | ✅ | DXF |
+| [[interpretation_exporters]] | ✅ | Export 2D interpretaciones |
+| [[drillhole_exporters]] | ✅ | Export vectorial sondajes |
 
 > [!tip] Leyenda
 > ✅ documentado · ⏳ pendiente · 🔄 en revisión

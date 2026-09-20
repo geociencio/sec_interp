@@ -48,6 +48,14 @@ cssclass: secinterp-moc
 | [[config]] | ✅ | Configuration service |
 | [[data_cache]] | ✅ | Per-bucket cache (SHA256 + TTL) |
 | [[performance_metrics]] | ✅ | Timings, counts and memory |
+| [[export_service]] | ✅ | Export orchestration |
+| [[preview_service]] | ✅ | Preview generation |
+| [[access_control_service]] | ✅ | Access control |
+| [[trajectory_engine]] | ✅ | Drillhole trajectory |
+| [[collar_processor]] | ✅ | Collar processor |
+| [[survey_processor]] | ✅ | Survey processor |
+| [[interval_processor]] | ✅ | Interval processor |
+| [[projection_engine]] | ✅ | 3D→2D projection |
 
 ### GUI layer (`gui/`)
 | File | Status | Short description |
@@ -70,12 +78,30 @@ cssclass: secinterp-moc
 | [[preview_layer_factory]] | ✅ | Memory layer factory |
 | [[preview_renderer]] | ✅ | Render orchestrator |
 | [[preview_axes_manager]] | ✅ | Grid + axes (nice 1-2-5) |
+| [[drillhole_extractor]] | ✅ | Drillhole extract |
+| [[structure_extractor]] | ✅ | Structure extract |
+| [[geology_extractor]] | ✅ | Geology extract |
+| [[validation_extractor]] | ✅ | Validation extract |
+| [[measure_tool]] | ✅ | Measure tool |
+| [[interpretation_tool]] | ✅ | Interpretation tool |
+| [[drillhole_page]] | ✅ | Drillhole page |
+| [[settings_page]] | ✅ | Settings page |
 
 ### Exporters layer (`exporters/`)
 | File | Status | Short description |
 |---|:------:|------------------|
 | [[base_exporter]] | ✅ | `BaseExporter` contract |
 | [[vector_exporter]] | ✅ | GPKG/SHP/DXF |
+| [[csv_exporter]] | ✅ | CSV tabular |
+| [[interpretation_3d_exporter]] | ✅ | 3D interpretation export |
+| [[drillhole_3d_exporter]] | ✅ | 3D drillhole export |
+| [[pdf_exporter]] | ✅ | PDF |
+| [[svg_exporter]] | ✅ | SVG |
+| [[image_exporter]] | ✅ | Raster image |
+| [[profile_exporters]] | ✅ | Profile export |
+| [[dxf_exporter]] | ✅ | DXF |
+| [[interpretation_exporters]] | ✅ | 2D interpretation export |
+| [[drillhole_exporters]] | ✅ | Drillhole vector export |
 
 > [!tip] Legend
 > ✅ documented · ⏳ pending · 🔄 under review
