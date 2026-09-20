@@ -10,9 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Documentation — Architecture**: Expanded `ARCHITECTURE.mmd` (34 → 260 lines) and `docs/ARCHITECTURE_EN.md` (directory structure, full Mermaid diagram, Quality Assurance & Security Scanning section with Bandit/detect-secrets/Flake8, qgis-analyzer, Qt6 checker, and pre-release pipeline).
 - **Documentation — Analysis**: Added `docs/ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` (monolithic vs Clean Architecture comparison) and `docs/PLUGIN_REPORT_AND_COMPARISON_EN.md` (feature inventory and 7-plugin competitive matrix).
-- **Documentation — Code Walkthrough Vault**: Added a bilingual Obsidian vault (`docs/code_walkthrough/` ES + `docs/code_walkthrough_en/` EN, 20 notes from `00 - Index` through `31 - vector_exporter`, plus 3 mirror architecture/report docs per vault). Covers entry point, logger, controller, domain, exceptions, profile/geology/drillhole/structure services, validation, safe_loader, i18n, main_dialog, preview/export managers, renderers, tasks, adapters, and base/vector exporters.
+- **Documentation — Code Walkthrough Vault**: Added a bilingual Obsidian vault (`docs/code_walkthrough/` ES + `docs/code_walkthrough_en/` EN, initially 20 notes plus 3 mirror docs per vault). Covers entry point, logger, controller, domain, exceptions, profile/geology/drillhole/structure services, validation, safe_loader, i18n, main_dialog, preview/export managers, renderers, tasks, adapters, and base/vector exporters. Expanded with number-free templates and `scripts/sync_vault_mirrors.sh` (mirror sync), then enriched with `config`, `data_cache`, `performance_metrics`, `state/input/signal/interpretation/tool` managers, `preview_state/layer_factory/renderer/axes_manager`, and `export_service` + 9 exporters (csv/pdf/svg/image/profile/dxf/interpretation/drillhole 3D).
 
 ### Changed
+- **Documentation — Vault Numbering**: Removed numeric prefixes from all 68 vault notes (`NN - slug.md` → `slug.md`) and updated all wikilinks and index tables (`#` column removed); navigation is now by sections/tags.
 - **Repository**: Ignored Obsidian vault editor state (`.obsidian/`) via `.gitignore`.
 
 ## [3.8.0] - 2026-09-19

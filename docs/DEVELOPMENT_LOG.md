@@ -1,3 +1,9 @@
+## [2026-09-20] Session: Vault Completion — Numbering Removal & Remaining Modules
+- **Achievement**: Removed numeric prefixes from all 68 vault notes (`NN - slug.md` → `slug.md`), updated 80 wikilinks and index tables (`#` column removed, callout added), and enriched the remaining 12 skeleton notes (export_service, preview_service, trajectory/collar/survey/interval/projection/access_control, drillhole/geology/structure/validation extractors, measure/interpretation tools, drillhole/settings pages, and 7 exporters 3D/PDF/SVG/image/profile/dxf/interpretation/drillhole).
+- **Templates & Tooling**: Added number-free `_template.md` (ES+EN) and `scripts/sync_vault_mirrors.sh` (`--check` for CI); vault now navigates by sections/tags, not by number.
+- **Commits**: `90247850`, `13db9a88`, `1bcdc661` (plus `165c93b`, `45fcf3b`). Pushed `4b7906cc..1bcdc661` to `origin/main` (12 commits, pre-push gate PASSED).
+- **Maintenance**: [session_2026-09-20_vault_completion.md](maintenance/session_2026-09-20_vault_completion.md)
+
 ## [2026-09-20] Session: Code Walkthrough Vault (Bilingual) + Architecture Docs Refresh
 - **Achievement**: Built bilingual Obsidian code-walkthrough vaults (ES/EN) documenting the full SecInterp architecture file-by-file, and refreshed the canonical architecture docs (diagrams, directory structure, QA section) plus competitive analysis.
 - **Architecture Docs**:
