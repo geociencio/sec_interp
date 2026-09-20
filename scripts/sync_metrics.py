@@ -136,7 +136,7 @@ def run_qgis_analyzer() -> dict:
             except (ValueError, IndexError):
                 pass
 
-    total_issues = sum(issues.values()) if issues else None
+    total_issues = sum(issues.values())
 
     return {
         "scores": scores,
@@ -247,12 +247,10 @@ def update_metrics_json(metrics: dict) -> bool:
     if "docstring_coverage" in research:
         summary["docstring_coverage"] = research["docstring_coverage"]
 
-    # Record issue breakdown
+    # Record issue breakdown (empty dict when the analyzer is clean)
     issues = analyzer.get("issues", {})
-    if issues:
-        summary["issue_breakdown"] = issues
-        if "MISSING_I18N" in issues:
-            summary["i18n_issues_qgis_analyzer"] = issues["MISSING_I18N"]
+    summary["issue_breakdown"] = issues
+    summary["i18n_issues_qgis_analyzer"] = issues.get("MISSING_I18N", 0)
 
     # Refresh the qgis-analyzer ground-truth source so it stays coherent with
     # the summary scores (the internal consistency check compares them).
@@ -268,12 +266,11 @@ def update_metrics_json(metrics: dict) -> bool:
             "maintainability": analyzer["scores"].get("maintainability"),
             "security": analyzer["scores"].get("security"),
         }
-    if issues:
-        gt_analyzer["issues"] = {
-            **issues,
-            "MISSING_I18N": issues.get("MISSING_I18N", 0),
-            "total": sum(issues.values()),
-        }
+    gt_analyzer["issues"] = {
+        **issues,
+        "MISSING_I18N": issues.get("MISSING_I18N", 0),
+        "total": sum(issues.values()),
+    }
 
     ground_truth["sync_metrics"] = {
         "date": today,

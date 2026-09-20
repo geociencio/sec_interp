@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->615<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->616<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-09-20<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -15,7 +15,7 @@
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->23<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->260<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->217<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **GUI Components** | <!-- GUI_COUNT -->218<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->75<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
@@ -66,7 +66,7 @@
 - **tests/gui/test_cache_fix.py**: 1 tests
 - **tests/gui/test_dialog_export_manager.py**: 10 tests
 - **tests/gui/test_dialog_input_manager.py**: 5 tests
-- **tests/gui/test_dialog_interpretation_manager.py**: 10 tests
+- **tests/gui/test_dialog_interpretation_manager.py**: 11 tests
 - **tests/gui/test_dialog_preview_manager.py**: 18 tests
 - **tests/gui/test_dialog_settings_persistence.py**: 6 tests
 - **tests/gui/test_dialog_state_manager.py**: 4 tests
