@@ -202,7 +202,7 @@ Ver [[01 - sec_interp_plugin]] para el ciclo de vida completo.
 - [[00 - Index]] — índice de la bóveda
 - [[01 - sec_interp_plugin]] — clase `SecInterp` y ciclo de vida
 - [[03 - logger_config]] — logging centralizado
-- [[17 - core_utils_safe_loader]] — carga tolerante a fallos (contraste con este import estricto)
+- [[17 - safe_loader]] — carga tolerante a fallos (contraste con este import estricto)
 
 ---
 

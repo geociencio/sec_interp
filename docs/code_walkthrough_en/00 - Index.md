@@ -35,34 +35,37 @@ cssclass: secinterp-moc
 ### Core layer (`core/`)
 | # | Module | Status | Short description |
 |---|--------|:------:|-------------------|
-| 10 | `core/controller.py` | ⏳ | `ProfileController` — service orchestrator |
-| 11 | `core/domain/` | ⏳ | DTOs: `PreviewParams`, `ProfileData`, `GeologySegment`… |
-| 12 | `core/exceptions.py` | ⏳ | `SecInterpError` hierarchy |
-| 13 | `core/services/profile_service.py` | ⏳ | Topography extraction |
-| 14 | `core/services/geology_service.py` | ⏳ | Geological intersections |
-| 15 | `core/services/drillhole_service.py` | ⏳ | Drillhole projection |
-| 16 | `core/validation/` | ⏳ | Validation pipeline |
-| 17 | `core/utils/safe_loader.py` | ⏳ | Fault-tolerant lazy loading |
-| 18 | `core/utils/i18n.py` | ⏳ | `TranslatableMixin` |
+| 10 | [[10 - controller]] | ✅ | `ProfileController` — service orchestrator |
+| 11 | [[11 - domain]] | ✅ | DTOs: `PreviewParams`, `ProfileData`, `GeologySegment`… |
+| 12 | [[12 - exceptions]] | ⏳ | `SecInterpError` hierarchy |
+| 13 | [[13 - profile_service]] | ⏳ | Topography extraction |
+| 14 | [[14 - geology_service]] | ⏳ | Geological intersections |
+| 15 | [[15 - drillhole_service]] | ⏳ | Drillhole projection |
+| 16 | [[16 - validation]] | ⏳ | Validation pipeline |
+| 17 | [[17 - safe_loader]] | ✅ | Fault-tolerant lazy loading |
+| 18 | [[18 - i18n]] | ⏳ | `TranslatableMixin` |
 
 ### GUI layer (`gui/`)
 | # | Module | Status | Short description |
 |---|--------|:------:|-------------------|
-| 20 | `gui/main_dialog.py` | ⏳ | `SecInterpDialog` — manager orchestrator |
-| 21 | `gui/dialog_preview_manager.py` | ⏳ | Preview and canvas lifecycle |
-| 22 | `gui/dialog_export_manager.py` | ⏳ | Export UI logic |
-| 23 | `gui/renderers/` | ⏳ | Specialized renderers |
-| 24 | `gui/tasks/` | ⏳ | Background `QgsTask` |
-| 25 | `gui/adapters/` | ⏳ | "Extract" phase (QGIS → DTOs) |
+| 20 | [[20 - main_dialog]] | ⏳ | `SecInterpDialog` — manager orchestrator |
+| 21 | [[21 - dialog_preview_manager]] | ⏳ | Preview and canvas lifecycle |
+| 22 | [[22 - dialog_export_manager]] | ⏳ | Export UI logic |
+| 23 | [[23 - renderers]] | ⏳ | Specialized renderers |
+| 24 | [[24 - tasks]] | ⏳ | Background `QgsTask` |
+| 25 | [[25 - adapters]] | ⏳ | "Extract" phase (QGIS → DTOs) |
 
 ### Exporters layer (`exporters/`)
 | # | Module | Status | Short description |
 |---|--------|:------:|-------------------|
-| 30 | `exporters/base_exporter.py` | ⏳ | `BaseExporter` contract |
-| 31 | `exporters/vector_exporter.py` | ⏳ | GPKG/SHP/DXF |
+| 30 | [[30 - base_exporter]] | ⏳ | `BaseExporter` contract |
+| 31 | [[31 - vector_exporter]] | ⏳ | GPKG/SHP/DXF |
 
 > [!tip] Legend
 > ✅ documented · ⏳ pending · 🔄 under review
+
+> [!note] Mirror documents
+> The files `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md`, and `PLUGIN_REPORT_AND_COMPARISON_EN.md` inside this vault are **mirror copies** of `docs/` (source of truth). They are kept here so wikilinks resolve in Obsidian. If you update the original in `docs/`, re-sync these copies.
 
 ---
 

@@ -202,7 +202,7 @@ See [[01 - sec_interp_plugin]] for the full lifecycle.
 - [[00 - Index]] — vault index
 - [[01 - sec_interp_plugin]] — `SecInterp` class and lifecycle
 - [[03 - logger_config]] — centralized logging
-- [[17 - core_utils_safe_loader]] — fault-tolerant loading (contrast with this strict import)
+- [[17 - safe_loader]] — fault-tolerant loading (contrast with this strict import)
 
 ---
 

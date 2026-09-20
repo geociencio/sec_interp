@@ -186,7 +186,7 @@ self.controller = SafeLoader.lazy_load(
 > [!important] Por qué `SafeLoader` y no `import` directo
 > - **Tolerancia a fallos**: si un módulo opcional no carga, el plugin **no crashea**; registra el error y sigue.
 > - **Lazy loading**: los imports pesados se resuelven en runtime, acelerando el arranque.
-> - Ver [[17 - core_utils_safe_loader]] para el detalle del helper.
+> - Ver [[17 - safe_loader]] para el detalle del helper.
 
 > [!warning] Acoplamiento observado
 > `ProfileController` recibe adapters **de la capa GUI** (`gui/adapters/*`) por constructor.
@@ -306,7 +306,7 @@ def unload(self):
 ```
 
 > [!warning] Prevención de memory leaks
-> Desconectar señales antes de destruir objetos es **crítico** en PyQt. Ver [[01 - sec_interp_plugin#6. Gestión de señales]] más abajo.
+> Desconectar señales antes de destruir objetos es **crítico** en PyQt. Ver [[01 - sec_interp_plugin#🔐 Gestión de señales]] más abajo.
 
 ---
 
@@ -444,7 +444,7 @@ class SecInterp(TranslatableMixin):
     self.menu = self.tr("&Sec Interp")
 ```
 
-`TranslatableMixin` (en [[18 - core_utils_i18n]]) define:
+`TranslatableMixin` (en [[18 - i18n]]) define:
 ```python
 def tr(self, message: str) -> str:
     return QCoreApplication.translate(self.__class__.__name__, message)
@@ -498,13 +498,13 @@ def tr(self, message: str) -> str:
 ## 🔗 Notas relacionadas
 
 - [[00 - Index]] — índice de la bóveda
-- [[17 - core_utils_safe_loader]] — `SafeLoader` (DI tolerante)
-- [[18 - core_utils_i18n]] — `TranslatableMixin`
-- [[10 - core_controller]] — `ProfileController`
-- [[20 - gui_main_dialog]] — `SecInterpDialog`
-- [[21 - gui_dialog_preview_manager]] — `PreviewManager`
-- [[22 - gui_dialog_export_manager]] — `ExportManager`
-- [[25 - gui_adapters]] — adapters de la fase Extract
+- [[17 - safe_loader]] — `SafeLoader` (DI tolerante)
+- [[18 - i18n]] — `TranslatableMixin`
+- [[10 - controller]] — `ProfileController`
+- [[20 - main_dialog]] — `SecInterpDialog`
+- [[21 - dialog_preview_manager]] — `PreviewManager`
+- [[22 - dialog_export_manager]] — `ExportManager`
+- [[25 - adapters]] — adapters de la fase Extract
 - [[ARCHITECTURE_EN]] — arquitectura general
 
 ---

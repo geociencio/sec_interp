@@ -357,7 +357,7 @@ def log_critical_operation(logger: logging.Logger, operation_name: str, **contex
 - [[00 - Index]] — vault index
 - [[01 - sec_interp_plugin]] — where `setup_logging()` is called
 - [[02 - __init__]] — entry point preceding initialization
-- [[17 - core_utils_safe_loader]] — another fault-tolerance pattern
+- [[17 - safe_loader]] — another fault-tolerance pattern
 
 ---
 

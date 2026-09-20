@@ -358,7 +358,7 @@ def log_critical_operation(logger: logging.Logger, operation_name: str, **contex
 - [[00 - Index]] — índice de la bóveda
 - [[01 - sec_interp_plugin]] — donde se llama `setup_logging()`
 - [[02 - __init__]] — entry point que precede a la inicialización
-- [[17 - core_utils_safe_loader]] — otro patrón de tolerancia a fallos
+- [[17 - safe_loader]] — otro patrón de tolerancia a fallos
 
 ---
 

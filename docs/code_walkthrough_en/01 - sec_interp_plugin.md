@@ -185,7 +185,7 @@ self.controller = SafeLoader.lazy_load(
 > [!important] Why `SafeLoader` instead of a direct `import`
 > - **Fault tolerance**: if an optional module fails to load, the plugin **does not crash**; it logs the error and continues.
 > - **Lazy loading**: heavy imports are resolved at runtime, speeding up startup.
-> - See [[17 - core_utils_safe_loader]] for the helper details.
+> - See [[17 - safe_loader]] for the helper details.
 
 > [!warning] Observed coupling
 > `ProfileController` receives **GUI-layer** adapters (`gui/adapters/*`) via constructor.
@@ -305,7 +305,7 @@ def unload(self):
 ```
 
 > [!warning] Memory-leak prevention
-> Disconnecting signals before destroying objects is **critical** in PyQt. See [[01 - sec_interp_plugin#6. Signal management]] below.
+> Disconnecting signals before destroying objects is **critical** in PyQt. See [[01 - sec_interp_plugin#🔐 Signal management]] below.
 
 ---
 
@@ -443,7 +443,7 @@ class SecInterp(TranslatableMixin):
     self.menu = self.tr("&Sec Interp")
 ```
 
-`TranslatableMixin` (in [[18 - core_utils_i18n]]) defines:
+`TranslatableMixin` (in [[18 - i18n]]) defines:
 ```python
 def tr(self, message: str) -> str:
     return QCoreApplication.translate(self.__class__.__name__, message)
@@ -497,13 +497,13 @@ def tr(self, message: str) -> str:
 ## 🔗 Related notes
 
 - [[00 - Index]] — vault index
-- [[17 - core_utils_safe_loader]] — `SafeLoader` (tolerant DI)
-- [[18 - core_utils_i18n]] — `TranslatableMixin`
-- [[10 - core_controller]] — `ProfileController`
-- [[20 - gui_main_dialog]] — `SecInterpDialog`
-- [[21 - gui_dialog_preview_manager]] — `PreviewManager`
-- [[22 - gui_dialog_export_manager]] — `ExportManager`
-- [[25 - gui_adapters]] — Extract-phase adapters
+- [[17 - safe_loader]] — `SafeLoader` (tolerant DI)
+- [[18 - i18n]] — `TranslatableMixin`
+- [[10 - controller]] — `ProfileController`
+- [[20 - main_dialog]] — `SecInterpDialog`
+- [[21 - dialog_preview_manager]] — `PreviewManager`
+- [[22 - dialog_export_manager]] — `ExportManager`
+- [[25 - adapters]] — Extract-phase adapters
 - [[ARCHITECTURE_EN]] — general architecture
 
 ---
