@@ -34,12 +34,8 @@
             "NON_PYTHONIC_LOOP": 2,
             "SPATIAL_INDEX": 1
         },
-        "module_size_gate": "FAIL (4 modules > 400 lines)",
+        "module_size_gate": "FAIL (3 modules > 400 lines)",
         "large_modules": [
-            {
-                "path": "sec_interp_plugin.py",
-                "lines": 508
-            },
             {
                 "path": "gui/dialog_interpretation_manager.py",
                 "lines": 445
