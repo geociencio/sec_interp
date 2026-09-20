@@ -56,8 +56,8 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 
 ## 🎯 Goal 2: Technical Debt Reduction
 - [x] Retirar `core/utils/qt6_compat.py` — ya no existe (retirado en refactor Core/GUI) <!-- id: 2.1 -->
-- [ ] Fix 2 `NON_PYTHONIC_LOOP` en `gui/interpretation_inheritance_mixin.py` <!-- id: 2.2 -->
-- [ ] Investigar 1 `SPATIAL_INDEX` en `gui/interpretation_persistence_mixin.py` <!-- id: 2.3 -->
+- [x] Fix 2 `NON_PYTHONIC_LOOP` — `enumerate` sobre generador (`interpretation_inheritance_mixin.py`) <!-- id: 2.2 -->
+- [x] Fix 1 `SPATIAL_INDEX` — `QgsFeatureRequest().setFilterRect()` (`interpretation_persistence_mixin.py`) <!-- id: 2.3 -->
 - [x] Resolver `module_size_gate` FAIL — 7 módulos descompuestos a <300 (PASS) <!-- id: 2.4 -->
 
 ## 🔧 qgis-plugin-analyzer 1.14.0 Upgrade (COMPLETADO 2026-09-14)
@@ -75,4 +75,4 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 
 ## 🧪 Operational Status
 - **Active Task**: Module Size Gate Remediation COMPLETADO y mergeado a `main` (`99138c05`). Next: Goal 1.1 (symbology), Fase 1 adaptive VE (1.2), or tech debt 2.2/2.3.
-- **Metrics**: 615 tests (Docker 5/5 suites OK), Quality 54.0/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n gate PASS, module_size gate PASS. Analyzer 1.14.0: 3 issues (2 NON_PYTHONIC_LOOP, 1 SPATIAL_INDEX).
+- **Metrics**: 616 tests (Docker 5/5 suites OK), Quality 54.0/100, Maintainability 100.0/100, Security 100/100, CC PASS, i18n gate PASS, module_size gate PASS. Analyzer 1.14.0: **0 issues**. Goal 2 (tech debt) cerrado.

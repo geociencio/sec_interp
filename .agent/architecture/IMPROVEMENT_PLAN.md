@@ -125,8 +125,8 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 ### 4.1 Quick Wins
 
-- [ ] **4.1.1** Fix 2 NON_PYTHONIC_LOOP issues (now in `gui/interpretation_inheritance_mixin.py`)
-- [ ] **4.1.2** Investigate 1 SPATIAL_INDEX warning (now in `gui/interpretation_persistence_mixin.py`)
+- [x] **4.1.1** Fix 2 NON_PYTHONIC_LOOP issues → `enumerate` over a generator.
+- [x] **4.1.2** Fix 1 SPATIAL_INDEX warning → `QgsFeatureRequest().setFilterRect()`.
 - [x] **4.1.3** Triage 254 MISSING_I18N — how many are real user-facing strings? → 72 false positives, 0 real gaps.
 - [x] **4.1.5** Resolve `module_size_gate` (7 modules > 400 lines → all < 300) — 52.4 → 54.0.
 - [ ] **4.1.4** Target: push Stability from 54.0 → 60+ by resolving top penalty factors
