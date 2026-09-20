@@ -47,7 +47,8 @@ CORE_VIOLATIONS: dict[str, frozenset[str]] = {
     "config.py": frozenset({"qgis.core", "qgis.PyQt"}),
     "data_cache.py": frozenset({"qgis.PyQt"}),
     "services/access_control_service.py": frozenset({"qgis.core"}),
-    "services/export_service.py": frozenset({"qgis.core", "qgis.PyQt"}),
+    "services/export/map_settings_factory.py": frozenset({"qgis.core"}),
+    "services/export/orchestrator.py": frozenset({"qgis.PyQt"}),
     "utils/i18n.py": frozenset({"qgis.PyQt"}),
     "utils/io.py": frozenset({"qgis.core", "QgsProject.instance()"}),
 }
