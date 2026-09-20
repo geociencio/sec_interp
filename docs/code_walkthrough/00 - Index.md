@@ -38,29 +38,29 @@ cssclass: secinterp-moc
 |---|--------|:------:|-------------------|
 | 10 | [[10 - controller]] | ✅ | `ProfileController` — orquestador de servicios |
 | 11 | [[11 - domain]] | ✅ | DTOs: `PreviewParams`, `ProfileData`, `GeologySegment`… |
-| 12 | [[12 - exceptions]] | ⏳ | Jerarquía `SecInterpError` |
-| 13 | [[13 - profile_service]] | ⏳ | Extracción de topografía |
-| 14 | [[14 - geology_service]] | ⏳ | Intersecciones geológicas |
-| 15 | [[15 - drillhole_service]] | ⏳ | Proyección de sondajes |
-| 16 | [[16 - validation]] | ⏳ | Pipeline de validación |
+| 12 | [[12 - exceptions]] | ✅ | Jerarquía `SecInterpError` |
+| 13 | [[13 - profile_service]] | ✅ | Extracción de topografía |
+| 14 | [[14 - geology_service]] | ✅ | Intersecciones geológicas |
+| 15 | [[15 - drillhole_service]] | ✅ | Proyección de sondajes |
+| 16 | [[16 - validation]] | ✅ | Pipeline de validación |
 | 17 | [[17 - safe_loader]] | ✅ | Carga lazy y tolerante a fallos |
-| 18 | [[18 - i18n]] | ⏳ | `TranslatableMixin` |
+| 18 | [[18 - i18n]] | ✅ | `TranslatableMixin` |
 
 ### Capa GUI (`gui/`)
 | # | Módulo | Estado | Descripción breve |
 |---|--------|:------:|-------------------|
-| 20 | [[20 - main_dialog]] | ⏳ | `SecInterpDialog` — orquestador de managers |
-| 21 | [[21 - dialog_preview_manager]] | ⏳ | Ciclo de preview y canvas |
-| 22 | [[22 - dialog_export_manager]] | ⏳ | UI de exportación |
-| 23 | [[23 - renderers]] | ⏳ | Renderers especializados |
-| 24 | [[24 - tasks]] | ⏳ | `QgsTask` en background |
-| 25 | [[25 - adapters]] | ⏳ | Fase "Extract" (QGIS → DTOs) |
+| 20 | [[20 - main_dialog]] | ✅ | `SecInterpDialog` — orquestador de managers |
+| 21 | [[21 - dialog_preview_manager]] | ✅ | Ciclo de preview y canvas |
+| 22 | [[22 - dialog_export_manager]] | ✅ | UI de exportación |
+| 23 | [[23 - renderers]] | ✅ | Renderers especializados |
+| 24 | [[24 - tasks]] | ✅ | `QgsTask` en background |
+| 25 | [[25 - adapters]] | ✅ | Fase "Extract" (QGIS → DTOs) |
 
 ### Capa Exporters (`exporters/`)
 | # | Módulo | Estado | Descripción breve |
 |---|--------|:------:|-------------------|
-| 30 | [[30 - base_exporter]] | ⏳ | Contrato `BaseExporter` |
-| 31 | [[31 - vector_exporter]] | ⏳ | GPKG/SHP/DXF |
+| 30 | [[30 - base_exporter]] | ✅ | Contrato `BaseExporter` |
+| 31 | [[31 - vector_exporter]] | ✅ | GPKG/SHP/DXF |
 
 > [!tip] Leyenda
 > ✅ documentado · ⏳ pendiente · 🔄 en revisión

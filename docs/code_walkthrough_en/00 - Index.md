@@ -37,29 +37,29 @@ cssclass: secinterp-moc
 |---|--------|:------:|-------------------|
 | 10 | [[10 - controller]] | ✅ | `ProfileController` — service orchestrator |
 | 11 | [[11 - domain]] | ✅ | DTOs: `PreviewParams`, `ProfileData`, `GeologySegment`… |
-| 12 | [[12 - exceptions]] | ⏳ | `SecInterpError` hierarchy |
-| 13 | [[13 - profile_service]] | ⏳ | Topography extraction |
-| 14 | [[14 - geology_service]] | ⏳ | Geological intersections |
-| 15 | [[15 - drillhole_service]] | ⏳ | Drillhole projection |
-| 16 | [[16 - validation]] | ⏳ | Validation pipeline |
+| 12 | [[12 - exceptions]] | ✅ | `SecInterpError` hierarchy |
+| 13 | [[13 - profile_service]] | ✅ | Topography extraction |
+| 14 | [[14 - geology_service]] | ✅ | Geological intersections |
+| 15 | [[15 - drillhole_service]] | ✅ | Drillhole projection |
+| 16 | [[16 - validation]] | ✅ | Validation pipeline |
 | 17 | [[17 - safe_loader]] | ✅ | Fault-tolerant lazy loading |
-| 18 | [[18 - i18n]] | ⏳ | `TranslatableMixin` |
+| 18 | [[18 - i18n]] | ✅ | `TranslatableMixin` |
 
 ### GUI layer (`gui/`)
 | # | Module | Status | Short description |
 |---|--------|:------:|-------------------|
-| 20 | [[20 - main_dialog]] | ⏳ | `SecInterpDialog` — manager orchestrator |
-| 21 | [[21 - dialog_preview_manager]] | ⏳ | Preview and canvas lifecycle |
-| 22 | [[22 - dialog_export_manager]] | ⏳ | Export UI logic |
-| 23 | [[23 - renderers]] | ⏳ | Specialized renderers |
-| 24 | [[24 - tasks]] | ⏳ | Background `QgsTask` |
-| 25 | [[25 - adapters]] | ⏳ | "Extract" phase (QGIS → DTOs) |
+| 20 | [[20 - main_dialog]] | ✅ | `SecInterpDialog` — manager orchestrator |
+| 21 | [[21 - dialog_preview_manager]] | ✅ | Preview and canvas lifecycle |
+| 22 | [[22 - dialog_export_manager]] | ✅ | Export UI logic |
+| 23 | [[23 - renderers]] | ✅ | Specialized renderers |
+| 24 | [[24 - tasks]] | ✅ | Background `QgsTask` |
+| 25 | [[25 - adapters]] | ✅ | "Extract" phase (QGIS → DTOs) |
 
 ### Exporters layer (`exporters/`)
 | # | Module | Status | Short description |
 |---|--------|:------:|-------------------|
-| 30 | [[30 - base_exporter]] | ⏳ | `BaseExporter` contract |
-| 31 | [[31 - vector_exporter]] | ⏳ | GPKG/SHP/DXF |
+| 30 | [[30 - base_exporter]] | ✅ | `BaseExporter` contract |
+| 31 | [[31 - vector_exporter]] | ✅ | GPKG/SHP/DXF |
 
 > [!tip] Legend
 > ✅ documented · ⏳ pending · 🔄 under review
