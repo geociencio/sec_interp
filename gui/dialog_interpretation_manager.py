@@ -1,18 +1,18 @@
 """Interpretation management module for SecInterp main dialog.
 
-This module handles interpretation polygons, their persistence, and attribute inheritance,
-decoupling this logic from the main dialog class.
+This module handles interpretation polygons, their persistence, and attribute
+inheritance, decoupling this logic from the main dialog class. Persistence and
+inheritance live in dedicated mixins.
 """
 
 from __future__ import annotations
 
-import json
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
-
-from qgis.core import QgsGeometry, QgsPointXY
+from typing import TYPE_CHECKING
 
 from sec_interp.core.domain import InterpretationPolygon
+from sec_interp.gui.interpretation_inheritance_mixin import InterpretationInheritanceMixin
+from sec_interp.gui.interpretation_persistence_mixin import InterpretationPersistenceMixin
 from sec_interp.logger_config import get_logger, log_critical_operation
 
 from .preview_state import PreviewCache
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class InterpretationManager:
+class InterpretationManager(InterpretationPersistenceMixin, InterpretationInheritanceMixin):
     """Manages interpretation polygons and their business logic."""
 
     def __init__(self, dialog: SecInterpDialog, cache: PreviewCache | None = None) -> None:
@@ -53,165 +53,6 @@ class InterpretationManager:
         self.interpretations = []
         self.save_interpretations()
 
-    def load_interpretations(self) -> None:
-        """Load interpretations from the elected source (Project JSON or Vector Layer)."""
-        interp_config = self.dialog.page_interpretation.get_data()
-
-        if interp_config.get("source_type") == "layer":
-            target_layer_id = interp_config.get("target_layer_id")
-            if target_layer_id:
-                from qgis.core import QgsProject
-
-                target_layer = QgsProject.instance().mapLayer(target_layer_id)
-                if target_layer and target_layer.isValid():
-                    self.sync_from_layer(target_layer)
-                    return
-
-        if not self.dialog.project:
-            return
-
-        json_data, ok = self.dialog.project.readEntry("SecInterp", "interpretations", "[]")
-        if not ok or not json_data:
-            return
-
-        try:
-            data = json.loads(json_data)
-            self.interpretations = []
-            for item in data:
-                interp = InterpretationPolygon(
-                    id=item.get("id", ""),
-                    name=item.get("name", ""),
-                    type=item.get("type", "lithology"),
-                    vertices_2d=[tuple(v) for v in item.get("vertices_2d", [])],
-                    attributes=item.get("attributes", {}),
-                    color=item.get("color", "#FF0000"),
-                    created_at=item.get("created_at", ""),
-                )
-                self.interpretations.append(interp)
-            logger.info(f"Loaded {len(self.interpretations)} interpretations from project")
-        except Exception:
-            logger.exception("Failed to load interpretations")
-
-    def save_interpretations(self) -> None:
-        """Save interpretations to the elected source (Project JSON or Vector Layer)."""
-        interp_config = self.dialog.page_interpretation.get_data()
-
-        if interp_config.get("source_type") == "layer":
-            target_layer_id = interp_config.get("target_layer_id")
-            if target_layer_id:
-                from qgis.core import QgsProject
-
-                target_layer = QgsProject.instance().mapLayer(target_layer_id)
-                if target_layer and target_layer.isValid():
-                    self.save_to_layer(target_layer)
-                    return
-
-        if not self.dialog.project:
-            return
-
-        data = []
-        for interp in self.interpretations:
-            data.append(
-                {
-                    "id": interp.id,
-                    "name": interp.name,
-                    "type": interp.type,
-                    "vertices_2d": interp.vertices_2d,
-                    "attributes": interp.attributes,
-                    "color": interp.color,
-                    "created_at": interp.created_at,
-                }
-            )
-
-        def json_serial(obj: Any) -> Any:
-            """JSON serializer for objects not serializable by default json code."""
-            if hasattr(obj, "isNull"):  # Handle QVariant (qgis.PyQt/PyQGIS)
-                if obj.isNull():
-                    return None
-                return obj.value()
-            return str(obj)
-
-        json_data = json.dumps(data, default=json_serial)
-        self.dialog.project.writeEntry("SecInterp", "interpretations", json_data)
-        logger.debug(f"Saved {len(data)} interpretations to project json")
-
-    def sync_from_layer(self, layer: Any) -> None:
-        """Synchronize interpretation polygons from an external vector layer."""
-        from qgis.core import QgsWkbTypes
-
-        self.interpretations = []
-        for feature in layer.getFeatures():  # noqa: SPATIAL_INDEX — full sync, no filter needed
-            geom = feature.geometry()
-            if geom.isNull() or geom.type() != QgsWkbTypes.GeometryType.PolygonGeometry:
-                continue
-
-            vertices = []
-            polygon = geom.asPolygon()
-            if polygon:
-                for pt in polygon[0]:
-                    vertices.append((pt.x(), pt.y()))
-
-            attrs = feature.attributes()
-            fields = layer.fields()
-
-            def get_field_val(name: str, default: Any = "", _attrs=attrs, _fields=fields) -> Any:
-                """Get attribute value by field name."""
-                idx = _fields.indexOf(name)
-                return (
-                    _attrs[idx]
-                    if idx != -1 and not isinstance(_attrs[idx], type(None))
-                    else default
-                )
-
-            interp = InterpretationPolygon(
-                id=str(get_field_val("id", feature.id())),
-                name=str(get_field_val("name", f"Interp_{feature.id()}")),
-                type=str(get_field_val("type", "lithology")),
-                vertices_2d=vertices,
-                attributes={},  # Add custom attribute sync here if wanted
-                color=str(get_field_val("color", "#FF0000")),
-                created_at=str(get_field_val("created_at", "")),
-            )
-            self.interpretations.append(interp)
-        logger.info(
-            f"Synchronized {len(self.interpretations)} interpretations from layer {layer.name()}"
-        )
-
-    def save_to_layer(self, layer: Any) -> None:
-        """Save interpretation polygons to an external vector layer."""
-        from qgis.core import QgsFeature, QgsGeometry, QgsPointXY
-
-        if not layer.isEditable():
-            layer.startEditing()
-
-        layer.deleteFeatures([f.id() for f in layer.getFeatures()])
-
-        features_to_add = []
-        fields = layer.fields()
-
-        for interp in self.interpretations:
-            feat = QgsFeature(fields)
-            qgs_pts = [QgsPointXY(x, y) for x, y in interp.vertices_2d]
-            feat.setGeometry(QgsGeometry.fromPolygonXY([qgs_pts]))
-
-            def set_field(name: str, value: Any, _feat=feat, _fields=fields) -> None:
-                """Set feature attribute by field name."""
-                idx = _fields.indexOf(name)
-                if idx != -1:
-                    _feat.setAttribute(idx, value)
-
-            set_field("id", interp.id)
-            set_field("name", interp.name)
-            set_field("type", interp.type)
-            set_field("color", interp.color)
-            set_field("created_at", interp.created_at)
-
-            features_to_add.append(feat)
-
-        layer.addFeatures(features_to_add)
-        layer.commitChanges()
-        logger.info(f"Saved {len(features_to_add)} interpretations to layer {layer.name()}")
-
     def handle_interpretation_finished(self, interpretation: InterpretationPolygon) -> None:
         """Process a finished interpretation polygon.
 
@@ -230,25 +71,20 @@ class InterpretationManager:
             vertices=len(interpretation.vertices_2d),
         )
 
-        # 1. Prepare for inheritance
         interp_config = self.dialog.page_interpretation.get_data()
 
-        # Try to inherit attributes if enabled
         if interp_config.get("inherit_geology") or interp_config.get("inherit_drillholes"):
             self.apply_attribute_inheritance(interpretation, interp_config)
 
-        # 2. Show properties dialog
         dlg = InterpretationPropertiesDialog(
             interpretation, interp_config.get("custom_fields"), self.dialog
         )
 
         if dlg.exec() != 1:
             logger.info(f"Interpretation canceled by user: {interpretation.id}")
-            # Deactivate interpretation tool anyway
             self.dialog.preview_widget.btn_interpret.setChecked(False)
             return
 
-        # Store interpretation
         self.interpretations.append(interpretation)
         self.save_interpretations()
         logger.info(
@@ -256,7 +92,6 @@ class InterpretationManager:
             f"({len(interpretation.vertices_2d)} vertices)"
         )
 
-        # Display feedback in results area
         msg = (
             f"<b>{self.dialog.tr('Interpretation Finished')}</b><br>"
             f"<b>{self.dialog.tr('Name')}:</b> {interpretation.name}<br>"
@@ -266,179 +101,7 @@ class InterpretationManager:
         self.dialog.preview_widget.results_text.setHtml(msg)
         self.dialog.preview_widget.results_group.setCollapsed(False)
 
-        # Deactivate interpretation tool
         self.dialog.preview_widget.btn_interpret.setChecked(False)
 
-        # Update preview to show the new polygon
         if self._on_preview_update:
             self._on_preview_update()
-
-    def apply_attribute_inheritance(
-        self, interpretation: InterpretationPolygon, config: dict[str, Any]
-    ) -> None:
-        """Inherit attributes from nearest geology or drillhole data."""
-        # Use centroid or first vertex as reference point
-        poly_geom = QgsGeometry.fromPolygonXY(
-            [[QgsPointXY(x, y) for x, y in interpretation.vertices_2d]]
-        )
-        ref_point = poly_geom.centroid().asPoint()
-
-        best_match = None
-        min_dist = float("inf")
-
-        # 1. Check Geology Data
-        if config.get("inherit_geology"):
-            best_match, min_dist = self._check_geology_inheritance(ref_point, min_dist, best_match)
-
-        # 2. Check Drillhole Data (Intervals)
-        if config.get("inherit_drillholes"):
-            best_match, min_dist = self._check_drillhole_inheritance(
-                ref_point, min_dist, best_match
-            )
-
-        if best_match:
-            logger.info(f"Inherited attributes from {best_match['type']}: {best_match['name']}")
-            interpretation.name = best_match["name"]
-            interpretation.type = best_match["type"]
-            if best_match["attrs"]:
-                interpretation.attributes.update(best_match["attrs"])
-            interpretation.color = self.dialog.layer_factory.get_color_for_unit(
-                best_match["name"]
-            ).name()
-
-    def _check_geology_inheritance(
-        self, ref_point: QgsPointXY, min_dist: float, best_match: dict[str, Any] | None
-    ) -> tuple[dict[str, Any] | None, float]:
-        """Search for nearest geological segment using QgsSpatialIndex.
-
-        Args:
-            ref_point: Reference point for distance calculation.
-            min_dist: Current minimum distance found.
-            best_match: Current best match found.
-
-        Returns:
-            Tuple of (new best match dictionary, new minimum distance).
-
-        """
-        geol_data = self._preview_cache.get("geol")
-        if not geol_data:
-            return best_match, min_dist
-
-        from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsSpatialIndex
-
-        index = QgsSpatialIndex()
-        feature_dict = {}
-        for i, segment in enumerate(geol_data):
-            if not segment.points:
-                continue
-
-            feat = QgsFeature(i)
-            pts = [QgsPointXY(x, y) for x, y in segment.points]
-
-            if len(pts) == 1:
-                geom = QgsGeometry.fromPointXY(pts[0])
-            else:
-                geom = QgsGeometry.fromPolylineXY(pts)
-
-            feat.setGeometry(geom)
-            index.addFeature(feat)
-            feature_dict[i] = (segment, geom)
-
-        nearest_ids = index.nearestNeighbor(ref_point, 1)
-        if nearest_ids:
-            segment, geom = feature_dict[nearest_ids[0]]
-            d = geom.distance(QgsGeometry.fromPointXY(ref_point))
-            if d < min_dist:
-                min_dist = d
-                best_match = {
-                    "name": segment.unit_name,
-                    "type": "geology",
-                    "attrs": segment.attributes,
-                }
-
-        return best_match, min_dist
-
-    def _check_drillhole_inheritance(
-        self, ref_point: QgsPointXY, min_dist: float, best_match: dict[str, Any] | None
-    ) -> tuple[dict[str, Any] | None, float]:
-        """Search for nearest drillhole interval using QgsSpatialIndex.
-
-        Args:
-            ref_point: Reference point for distance calculation.
-            min_dist: Current minimum distance found.
-            best_match: Current best match found.
-
-        Returns:
-            Tuple of (new best match dictionary, new minimum distance).
-
-        """
-        dh_data = self._preview_cache.get("drillhole")
-        if not dh_data:
-            return best_match, min_dist
-
-        from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsSpatialIndex
-
-        index = QgsSpatialIndex()
-        feature_dict = {}
-        feat_id = 0
-
-        for dh in dh_data:
-            intervals = self._extract_intervals_from_dh_data(dh)
-            if not intervals:
-                continue
-
-            for interval in intervals:
-                points = getattr(interval, "points", None)
-                if not points:
-                    continue
-
-                feat = QgsFeature(feat_id)
-                pts = [QgsPointXY(x, y) for x, y in points]
-
-                if len(pts) == 1:
-                    geom = QgsGeometry.fromPointXY(pts[0])
-                else:
-                    geom = QgsGeometry.fromPolylineXY(pts)
-
-                feat.setGeometry(geom)
-                index.addFeature(feat)
-                feature_dict[feat_id] = (interval, geom)
-                feat_id += 1  # noqa: NON_PYTHONIC_LOOP — enumerate not practical with nested skip logic
-
-        nearest_ids = index.nearestNeighbor(ref_point, 1)
-        if nearest_ids:
-            interval, geom = feature_dict[nearest_ids[0]]
-            d = geom.distance(QgsGeometry.fromPointXY(ref_point))
-            if d < min_dist:
-                min_dist = d
-                best_match = {
-                    "name": getattr(
-                        interval,
-                        "rock_unit",
-                        getattr(interval, "unit_name", "Unknown"),
-                    ),
-                    "type": "drillhole",
-                    "attrs": interval.attributes,
-                }
-
-        return best_match, min_dist
-
-    def _extract_intervals_from_dh_data(self, dh: Any) -> list[Any]:
-        """Safely extract intervals from various drillhole data formats.
-
-        Args:
-            dh: Drillhole data (tuple or object).
-
-        Returns:
-            List of interval objects.
-
-        """
-        if isinstance(dh, tuple):
-            LEGACY_HOLE_SIZE = 5
-            INTERVALS_INDEX_LEGACY = 4
-            if len(dh) == LEGACY_HOLE_SIZE:
-                return dh[INTERVALS_INDEX_LEGACY]
-            MIN_COMPONENTS = 3
-            if len(dh) >= MIN_COMPONENTS:
-                return dh[2]
-        return getattr(dh, "intervals", [])
