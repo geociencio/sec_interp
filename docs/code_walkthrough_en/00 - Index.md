@@ -44,6 +44,7 @@ cssclass: secinterp-moc
 | 16 | [[16 - validation]] | ✅ | Validation pipeline |
 | 17 | [[17 - safe_loader]] | ✅ | Fault-tolerant lazy loading |
 | 18 | [[18 - i18n]] | ✅ | `TranslatableMixin` |
+| 19 | [[19 - structure_service]] | ✅ | Structural projection |
 
 ### GUI layer (`gui/`)
 | # | Module | Status | Short description |
