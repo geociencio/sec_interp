@@ -42,12 +42,24 @@
 - **Referencia**: `docs/maintenance/session_2026-09-19_architecture_refactor_complete.md`
   y `docs/maintenance/phase_report_v3.8.0.md`.
 
+## ✅ Session 2026-09-20 — Module Size Gate Remediation (COMPLETADO)
+
+- **Done**: Rama `refactor/module-size-gate`; descompuestos los 7 módulos >400 líneas a <300
+  (`export_service` 645→13 shim + paquete `core/services/export/`; `drillhole_page` 451→130;
+  `settings_page` 417→124; `sec_interp_plugin` 508→129; `main_dialog` 481→193;
+  `dialog_interpretation_manager` 445→107; `dialog_preview_manager` 435→231).
+- **Pattern**: fachada + handlers/mixins; `connect`/`disconnect` y slots co-localizados por
+  archivo para el analyzer; patch targets de tests preservados.
+- **Gates**: `module_size_gate` **PASS**, CC PASS, i18n PASS, security 100/100; tests 564 OK (612 static).
+- **Commits**: `c3116a6`, `39e1168`, `78bcb45`, `900afb8`, `ac58143`, `85cbbb5`, `77f193d`.
+- **Referencia**: `docs/plans/Technical_Specification_module_size_gate.md`.
+
 ## 🧾 Deuda restante (documentada, no bloqueante)
 
 - **6 áreas grises** (integración QGIS genuina): `i18n.py`, `config.py`, `data_cache.py`,
-  `access_control_service.py`, `export_service.py`, `io.py` (`tr()`/`QgsSettings`/`QgsVectorFileWriter`).
-- **Deuda analyzer**: `module_size_gate` (7 módulos >400 líneas), 2 `NON_PYTHONIC_LOOP`,
-  1 `SPATIAL_INDEX`.
+  `access_control_service.py`, `export/map_settings_factory.py`, `export/orchestrator.py`, `io.py`.
+- **Deuda analyzer**: 2 `NON_PYTHONIC_LOOP` + 1 `SPATIAL_INDEX` en
+  `gui/interpretation_inheritance_mixin.py` / `gui/interpretation_persistence_mixin.py`.
 - **Goal 1 (3D/simbología)**: live symbology preview, `VerticalExaggerationService`,
   toggle Auto/Manual, tests de proyección cartesiana.
 

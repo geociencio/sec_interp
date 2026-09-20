@@ -58,7 +58,7 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [ ] Retirar `core/utils/qt6_compat.py` <!-- id: 2.1 -->
 - [ ] Fix 2 `NON_PYTHONIC_LOOP` <!-- id: 2.2 -->
 - [ ] Investigar 1 `SPATIAL_INDEX` en `dialog_interpretation_manager.py` <!-- id: 2.3 -->
-- [ ] Resolver `module_size_gate` FAIL (7 módulos > 400 líneas) <!-- id: 2.4 -->
+- [x] Resolver `module_size_gate` FAIL — 7 módulos descompuestos a <300 (PASS) <!-- id: 2.4 -->
 
 ## 🔧 qgis-plugin-analyzer 1.14.0 Upgrade (COMPLETADO 2026-09-14)
 - [x] Bump `qgis-plugin-analyzer` 1.13.2 → 1.14.0 (`pyproject.toml` + `uv.lock`) <!-- id: 10.1 -->

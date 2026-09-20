@@ -1,10 +1,35 @@
 # Technical Specification — Module Size Gate Remediation (<300 lines)
 
 **Branch:** `refactor/module-size-gate`
-**Goal:** `module_size_gate FAIL (6 modules >400l) → PASS (<300l cada uno)`
+**Goal:** `module_size_gate FAIL (6 modules >400l) → PASS (<300l cada uno)` ✅ **COMPLETADO**
 **Priority:** `export_service.py:645` primero, luego descomposición lógica incremental
 **Author:** @architect · 2026-09-20 · Aprobado por usuario
 **Skills:** `coding-standards`, `qgis-core`, `project-context`
+
+---
+
+## ✅ Resultado final (2026-09-20)
+
+`module_size_gate: PASS` · CC gate PASS · i18n PASS · 564 tests OK (612 static) · analyzer issues 3 (sin cambios).
+
+| Módulo original | Antes | Después | Commit |
+|---|---|---|---|
+| `core/services/export_service.py` | 645 | **13** (shim) | `c3116a6` |
+| `gui/ui/pages/drillhole_page.py` | 451 | **130** | `39e1168` |
+| `gui/ui/pages/settings_page.py` | 417 | **124** | `78bcb45` |
+| `sec_interp_plugin.py` | 508 | **129** | `900afb8` |
+| `gui/main_dialog.py` | 481 | **193** | `ac58143` |
+| `gui/dialog_interpretation_manager.py` | 445 | **107** | `85cbbb5` |
+| `gui/dialog_preview_manager.py` | 435 | **231** | `77f193d` |
+
+Nuevos módulos por fase: `core/services/export/` (orchestrator + 7 handlers + 2 factories + compat),
+`plugin/` (lifecycle/input_validator/render_pipeline), `gui/ui/pages/drillhole/` (3 tabs),
+`gui/ui/pages/settings/` (3 tabs + persistence), mixins `gui/dialog_*_mixin.py`,
+`gui/interpretation_*_mixin.py`, `gui/preview_*_mixin.py`.
+
+**Patrón aplicado:** fachada + mixins/handlers, con `connect`/`disconnect` y slots co-localizados
+por archivo para satisfacer las reglas del analyzer (signal leaks / missing slot), y patch targets
+de tests preservados moviendo sólo lo no parcheado a nivel de módulo.
 
 ---
 
