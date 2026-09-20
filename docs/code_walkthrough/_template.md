@@ -105,7 +105,7 @@ graph TD
 
 ## 🔗 Notas relacionadas
 
-- [[00 - Index]] — índice de la bóveda
+- [[Index]] — índice de la bóveda
 - [[{{RELATED_1}}]] — {{WHY_1}}
 - [[{{RELATED_2}}]] — {{WHY_2}}
 

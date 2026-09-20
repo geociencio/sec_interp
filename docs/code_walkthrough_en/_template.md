@@ -105,7 +105,7 @@ graph TD
 
 ## 🔗 Related notes
 
-- [[00 - Index]] — vault index
+- [[Index]] — vault index
 - [[{{RELATED_1}}]] — {{WHY_1}}
 - [[{{RELATED_2}}]] — {{WHY_2}}
 
