@@ -16,14 +16,14 @@
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
         "avg_retries_per_session": 1.18,
-        "tests_ok": 606,
+        "tests_ok": 612,
         "tests_ok_note": "606 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
         "quality_score_latest": 52.3,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
         "maintainability_score": 99.9,
         "security_score": 100.0,
         "type_hint_coverage_params": 93.3,
-        "type_hint_coverage_returns": 99.7,
+        "type_hint_coverage_returns": 99.8,
         "docstring_coverage": 100.0,
         "cyclomatic_complexity_gate": "PASS",
         "i18n_issues_qgis_analyzer": 0,
@@ -34,7 +34,7 @@
             "NON_PYTHONIC_LOOP": 2,
             "SPATIAL_INDEX": 1
         },
-        "module_size_gate": "FAIL (6 modules > 400 lines)",
+        "module_size_gate": "FAIL (5 modules > 400 lines)",
         "large_modules": [
             {
                 "path": "sec_interp_plugin.py",
@@ -53,15 +53,11 @@
                 "lines": 481
             },
             {
-                "path": "gui/ui/pages/drillhole_page.py",
-                "lines": 452
-            },
-            {
                 "path": "gui/ui/pages/settings_page.py",
                 "lines": 417
             }
         ],
-        "test_count": 606
+        "test_count": 612
     },
     "ground_truth_sources": {
         "qgis_analyzer": {

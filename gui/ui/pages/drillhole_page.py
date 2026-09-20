@@ -1,21 +1,16 @@
-"""UI page for drillhole data configuration."""
+"""UI page for drillhole data configuration.
+
+This page is a thin coordinator: it owns the tab container and delegates the
+collar, survey and interval forms to :mod:`gui.ui.pages.drillhole`.
+"""
 
 from __future__ import annotations
 
 import contextlib
 from typing import Any
 
-from qgis.core import Qgis, QgsMapLayerProxyModel
-from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
-from qgis.PyQt.QtWidgets import (
-    QCheckBox,
-    QGridLayout,
-    QLabel,
-    QTabWidget,
-    QVBoxLayout,
-    QWidget,
-)
+from qgis.PyQt.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 
 from sec_interp.core.validation.project_validator import (
     ProjectValidator,
@@ -24,7 +19,8 @@ from sec_interp.core.validation.project_validator import (
 from sec_interp.gui.adapters.validation_extractor import resolve_layer_metadata
 from sec_interp.logger_config import get_logger
 
-from .base_page import BasePage, set_combo_layer
+from .base_page import BasePage
+from .drillhole import CollarTab, IntervalTab, SurveyTab
 
 logger = get_logger(__name__)
 
@@ -45,311 +41,55 @@ class DrillholePage(BasePage):
         super().__init__(QCoreApplication.translate("DrillholePage", "Drillhole Data"), parent)
 
     def _setup_ui(self) -> None:
-        # Override BasePage layout slightly to allow for Tabs or multiple Groups
-        # BasePage expects self.group_box in a main_layout.
-        # We will hide the default group box and use our own layout in the main widget area if
-        # possible,
-        # OR we use the default group box as a container for a TabWidget.
-
-        # Let's use the BasePage structure but put a TabWidget inside the main group box
+        """Build the tabbed drillhole interface."""
         super()._setup_ui()
 
-        # Clear any default layout in group_box if BasePage added any (it creates an empty
-        # QVBoxLayout usually)
-        if self.group_box.layout():
-            QWidget().setLayout(self.group_box.layout())  # Hack to delete layout? No, just use it.
-            layout = self.group_box.layout()
-        else:
+        layout = self.group_box.layout()
+        if layout is None:
             layout = QVBoxLayout(self.group_box)
             self.group_box.setLayout(layout)
 
         self.tab_widget = QTabWidget()
         layout.addWidget(self.tab_widget)
 
-        # -- Tab 1: Collars --
-        self.collar_tab = QWidget()
-        self._setup_collar_tab(self.collar_tab)
+        self.collar_tab = CollarTab()
         self.tab_widget.addTab(self.collar_tab, self.tr("Collars"))
 
-        # -- Tab 2: Survey --
-        self.survey_tab = QWidget()
-        self._setup_survey_tab(self.survey_tab)
+        self.survey_tab = SurveyTab()
         self.tab_widget.addTab(self.survey_tab, self.tr("Survey"))
 
-        # -- Tab 3: Intervals --
-        self.interval_tab = QWidget()
-        self._setup_interval_tab(self.interval_tab)
+        self.interval_tab = IntervalTab()
         self.tab_widget.addTab(self.interval_tab, self.tr("Intervals"))
 
-        # Add spacer to bottom of page
         layout.addStretch()
 
-    def _setup_collar_tab(self, parent_widget: QWidget) -> None:
-        layout = QGridLayout(parent_widget)
-        layout.setSpacing(6)
-
-        self._add_collar_layer_widgets(layout)
-        self._add_collar_coordinate_widgets(layout)
-        self._add_collar_depth_widgets(layout)
-
-    def _add_collar_layer_widgets(self, layout: QGridLayout) -> None:
-        """Add layer and ID selection widgets to collar tab."""
-        # Layer
-        layout.addWidget(QLabel(self.tr("Collar Layer:")), 0, 0)
-        self.c_layer = QgsMapLayerComboBox()
-        self.c_layer.setFilters(Qgis.LayerFilter.PointLayer)
-        self.c_layer.setAllowEmptyLayer(True)
-        self.c_layer.setCurrentIndex(0)
-        layout.addWidget(self.c_layer, 0, 1)
-
-        # ID Field
-        layout.addWidget(QLabel(self.tr("Hole ID:")), 2, 0)
-        self.c_id = QgsFieldComboBox()
-        layout.addWidget(self.c_id, 2, 1)
-
-    def _add_collar_coordinate_widgets(self, layout: QGridLayout) -> None:
-        """Add coordinate selection widgets to collar tab."""
-        # Use Geometry Checkbox
-        self.chk_use_geom = QCheckBox(self.tr("Use Layer Geometry for Coordinates"))
-        self.chk_use_geom.setChecked(True)
-        layout.addWidget(self.chk_use_geom, 1, 0, 1, 2)
-
-        # X / Y Fields (Hidden if geometry used)
-        self.lbl_x = QLabel(self.tr("East (X):"))
-        layout.addWidget(self.lbl_x, 3, 0)
-        self.c_x = QgsFieldComboBox()
-        self.c_x.setAllowEmptyFieldName(True)
-        layout.addWidget(self.c_x, 3, 1)
-
-        self.lbl_y = QLabel(self.tr("North (Y):"))
-        layout.addWidget(self.lbl_y, 4, 0)
-        self.c_y = QgsFieldComboBox()
-        self.c_y.setAllowEmptyFieldName(True)
-        layout.addWidget(self.c_y, 4, 1)
-
-        # Z Field (Optional)
-        layout.addWidget(QLabel(self.tr("Elevation (Z):")), 5, 0)
-        self.c_z = QgsFieldComboBox()
-        self.c_z.setAllowEmptyFieldName(True)
-        self.c_z.setToolTip(self.tr("Leave empty to use DEM elevation"))
-        layout.addWidget(self.c_z, 5, 1)
-
-    def _add_collar_depth_widgets(self, layout: QGridLayout) -> None:
-        """Add depth widget to collar tab."""
-        # Depth Field (Optional but recommended)
-        layout.addWidget(QLabel(self.tr("Total Depth:")), 6, 0)
-        self.c_depth = QgsFieldComboBox()
-        self.c_depth.setAllowEmptyFieldName(True)
-        layout.addWidget(self.c_depth, 6, 1)
-
-        layout.setRowStretch(7, 1)
-
-    def _connect_collar_signals(self) -> None:
-        """Connect collar tab signals."""
-        self.c_layer.layerChanged.connect(self.c_id.setLayer)
-        self.c_layer.layerChanged.connect(self.c_x.setLayer)
-        self.c_layer.layerChanged.connect(self.c_y.setLayer)
-        self.c_layer.layerChanged.connect(self.c_z.setLayer)
-        self.c_layer.layerChanged.connect(self.c_depth.setLayer)
-        self.c_layer.layerChanged.connect(self.dataChanged.emit)
-
-        self.chk_use_geom.toggled.connect(self._toggle_xy_fields)
-        self._toggle_xy_fields(True)
-
-        self.c_id.fieldChanged.connect(self.dataChanged.emit)
-        self.c_x.fieldChanged.connect(self.dataChanged.emit)
-        self.c_y.fieldChanged.connect(self.dataChanged.emit)
-        self.c_z.fieldChanged.connect(self.dataChanged.emit)
-        self.c_depth.fieldChanged.connect(self.dataChanged.emit)
-        self.chk_use_geom.toggled.connect(self.dataChanged.emit)
-
-    def _setup_survey_tab(self, parent_widget: QWidget) -> None:
-        layout = QGridLayout(parent_widget)
-        row = 0
-
-        layout.addWidget(QLabel(self.tr("Survey Layer:")), row, 0)
-        self.s_layer = QgsMapLayerComboBox()
-
-        # Use modern flags if available (QGIS 3.32+)
-        try:
-            self.s_layer.setFilters(
-                Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
-            )
-        except (AttributeError, TypeError):
-            self.s_layer.setFilters(
-                QgsMapLayerProxyModel.Filter.PointLayer | QgsMapLayerProxyModel.Filter.NoGeometry
-            )
-
-        self.s_layer.setAllowEmptyLayer(True)
-        self.s_layer.setCurrentIndex(0)
-        layout.addWidget(self.s_layer, row, 1)
-        row += 1
-
-        layout.addWidget(QLabel(self.tr("Hole ID:")), row, 0)
-        self.s_id = QgsFieldComboBox()
-        layout.addWidget(self.s_id, row, 1)
-        row += 1
-
-        layout.addWidget(QLabel(self.tr("Depth:")), row, 0)
-        self.s_depth = QgsFieldComboBox()
-        layout.addWidget(self.s_depth, row, 1)
-        row += 1
-
-        layout.addWidget(QLabel(self.tr("Azimuth:")), row, 0)
-        self.s_azim = QgsFieldComboBox()
-        layout.addWidget(self.s_azim, row, 1)
-        row += 1
-
-        layout.addWidget(QLabel(self.tr("Inclination:")), row, 0)
-        self.s_incl = QgsFieldComboBox()
-        layout.addWidget(self.s_incl, row, 1)
-        layout.setRowStretch(row, 1)
-
-    def _setup_interval_tab(self, parent_widget: QWidget) -> None:
-        layout = QGridLayout(parent_widget)
-        row = 0
-
-        layout.addWidget(QLabel(self.tr("Interval Layer:")), row, 0)
-        self.i_layer = QgsMapLayerComboBox()
-        # Intervals can be tables or vector layers
-        # Use modern flags if available (QGIS 3.32+)
-        try:
-            self.i_layer.setFilters(
-                Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.NoGeometry)
-            )
-        except (AttributeError, TypeError):
-            self.i_layer.setFilters(
-                QgsMapLayerProxyModel.Filter.PointLayer | QgsMapLayerProxyModel.Filter.NoGeometry
-            )
-
-        self.i_layer.setAllowEmptyLayer(True)
-        self.i_layer.setCurrentIndex(0)
-        layout.addWidget(self.i_layer, row, 1)
-        row += 1
-
-        layout.addWidget(QLabel(self.tr("Hole ID:")), row, 0)
-        self.i_id = QgsFieldComboBox()
-        layout.addWidget(self.i_id, row, 1)
-        row += 1
-
-        layout.addWidget(QLabel(self.tr("From Depth:")), row, 0)
-        self.i_from = QgsFieldComboBox()
-        layout.addWidget(self.i_from, row, 1)
-        row += 1
-
-        layout.addWidget(QLabel(self.tr("To Depth:")), row, 0)
-        self.i_to = QgsFieldComboBox()
-        layout.addWidget(self.i_to, row, 1)
-        row += 1
-
-        layout.addWidget(QLabel(self.tr("Lithology/Attribute:")), row, 0)
-        self.i_lith = QgsFieldComboBox()
-        layout.addWidget(self.i_lith, row, 1)
-        layout.setRowStretch(row, 1)
-
-    def _toggle_xy_fields(self, checked: bool) -> None:
-        """Enable/disable Easting/Northing fields based on geometry checkbox."""
-        enabled = not checked
-        self.lbl_x.setEnabled(enabled)
-        self.c_x.setEnabled(enabled)
-        self.lbl_y.setEnabled(enabled)
-        self.c_y.setEnabled(enabled)
-
     def get_data(self) -> dict[str, Any]:
-        """Get drillhole configuration."""
-        return {
-            # Collars
-            "collar_layer": self.c_layer.currentLayer(),
-            "use_geometry": self.chk_use_geom.isChecked(),
-            "collar_id": self.c_id.currentField(),
-            "collar_x": self.c_x.currentField(),
-            "collar_y": self.c_y.currentField(),
-            "collar_z": self.c_z.currentField(),
-            "collar_depth": self.c_depth.currentField(),
-            # Survey
-            "survey_layer": self.s_layer.currentLayer(),
-            "survey_id": self.s_id.currentField(),
-            "survey_depth": self.s_depth.currentField(),
-            "survey_azim": self.s_azim.currentField(),
-            "survey_incl": self.s_incl.currentField(),
-            # Interval
-            "interval_layer": self.i_layer.currentLayer(),
-            "interval_id": self.i_id.currentField(),
-            "interval_from": self.i_from.currentField(),
-            "interval_to": self.i_to.currentField(),
-            "interval_lith": self.i_lith.currentField(),
-        }
+        """Get drillhole configuration from all tabs."""
+        data: dict[str, Any] = {}
+        data.update(self.collar_tab.get_data())
+        data.update(self.survey_tab.get_data())
+        data.update(self.interval_tab.get_data())
+        return data
 
     def dump(self) -> dict[str, Any]:
         """Return the persistable drillhole state."""
-        return {
-            "dh_collar_layer": self.c_layer.currentLayer(),
-            "dh_collar_id": self.c_id.currentField(),
-            "dh_use_geom": self.chk_use_geom.isChecked(),
-            "dh_collar_x": self.c_x.currentField(),
-            "dh_collar_y": self.c_y.currentField(),
-            "dh_collar_z": self.c_z.currentField(),
-            "dh_collar_depth": self.c_depth.currentField(),
-            "dh_survey_layer": self.s_layer.currentLayer(),
-            "dh_survey_id": self.s_id.currentField(),
-            "dh_survey_depth": self.s_depth.currentField(),
-            "dh_survey_azim": self.s_azim.currentField(),
-            "dh_survey_incl": self.s_incl.currentField(),
-            "dh_interval_layer": self.i_layer.currentLayer(),
-            "dh_interval_id": self.i_id.currentField(),
-            "dh_interval_from": self.i_from.currentField(),
-            "dh_interval_to": self.i_to.currentField(),
-            "dh_interval_lith": self.i_lith.currentField(),
-        }
+        data: dict[str, Any] = {}
+        data.update(self.collar_tab.dump())
+        data.update(self.survey_tab.dump())
+        data.update(self.interval_tab.dump())
+        return data
 
     def load(self, data: dict[str, Any]) -> None:
         """Apply persisted drillhole state."""
-        c_layer = data.get("dh_collar_layer")
-        if c_layer is not None:
-            set_combo_layer(self.c_layer, c_layer)
-            for w in (self.c_id, self.c_x, self.c_y, self.c_z, self.c_depth):
-                w.setLayer(c_layer)
-
-        s_layer = data.get("dh_survey_layer")
-        if s_layer is not None:
-            set_combo_layer(self.s_layer, s_layer)
-            for w in (self.s_id, self.s_depth, self.s_azim, self.s_incl):
-                w.setLayer(s_layer)
-
-        i_layer = data.get("dh_interval_layer")
-        if i_layer is not None:
-            set_combo_layer(self.i_layer, i_layer)
-            for w in (self.i_id, self.i_from, self.i_to, self.i_lith):
-                w.setLayer(i_layer)
-
-        for key, combo in [
-            ("dh_collar_id", self.c_id),
-            ("dh_collar_x", self.c_x),
-            ("dh_collar_y", self.c_y),
-            ("dh_collar_z", self.c_z),
-            ("dh_collar_depth", self.c_depth),
-            ("dh_survey_id", self.s_id),
-            ("dh_survey_depth", self.s_depth),
-            ("dh_survey_azim", self.s_azim),
-            ("dh_survey_incl", self.s_incl),
-            ("dh_interval_id", self.i_id),
-            ("dh_interval_from", self.i_from),
-            ("dh_interval_to", self.i_to),
-            ("dh_interval_lith", self.i_lith),
-        ]:
-            field = data.get(key)
-            if field:
-                combo.setField(field)
-
-        use_geom = data.get("dh_use_geom")
-        if use_geom is not None:
-            self.chk_use_geom.setChecked(bool(use_geom))
+        self.collar_tab.load(data)
+        self.survey_tab.load(data)
+        self.interval_tab.load(data)
 
     def reset(self) -> None:
         """Reset drillhole inputs to defaults."""
-        for combo in (self.c_layer, self.s_layer, self.i_layer):
-            combo.setLayer(None)
-        self.chk_use_geom.setChecked(True)
+        self.collar_tab.reset()
+        self.survey_tab.reset()
+        self.interval_tab.reset()
 
     def is_complete(self) -> bool:
         """Check if required fields are filled if layers are selected."""
@@ -375,77 +115,16 @@ class DrillholePage(BasePage):
 
     def connect_signals(self) -> None:
         """Connect internal signals for the drillhole page."""
-        self._connect_collar_signals()
-
-        self.s_layer.layerChanged.connect(self.s_id.setLayer)
-        self.s_layer.layerChanged.connect(self.s_depth.setLayer)
-        self.s_layer.layerChanged.connect(self.s_azim.setLayer)
-        self.s_layer.layerChanged.connect(self.s_incl.setLayer)
-        self.s_layer.layerChanged.connect(self.dataChanged.emit)
-
-        for w in [self.s_id, self.s_depth, self.s_azim, self.s_incl]:
-            w.fieldChanged.connect(self.dataChanged.emit)
-
-        self.i_layer.layerChanged.connect(self.i_id.setLayer)
-        self.i_layer.layerChanged.connect(self.i_from.setLayer)
-        self.i_layer.layerChanged.connect(self.i_to.setLayer)
-        self.i_layer.layerChanged.connect(self.i_lith.setLayer)
-        self.i_layer.layerChanged.connect(self.dataChanged.emit)
-
-        for w in [self.i_id, self.i_from, self.i_to, self.i_lith]:
-            w.fieldChanged.connect(self.dataChanged.emit)
+        for tab in (self.collar_tab, self.survey_tab, self.interval_tab):
+            tab.dataChanged.connect(self.dataChanged.emit)
+            tab.connect_signals()
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
-        # Collar signals
-        try:
-            self.c_layer.layerChanged.disconnect(self.c_id.setLayer)
-            self.c_layer.layerChanged.disconnect(self.c_x.setLayer)
-            self.c_layer.layerChanged.disconnect(self.c_y.setLayer)
-            self.c_layer.layerChanged.disconnect(self.c_z.setLayer)
-            self.c_layer.layerChanged.disconnect(self.c_depth.setLayer)
-            self.c_layer.layerChanged.disconnect(self.dataChanged.emit)
-        except (TypeError, RuntimeError):
-            pass
-        try:
-            self.chk_use_geom.toggled.disconnect(self._toggle_xy_fields)
-            self.chk_use_geom.toggled.disconnect(self.dataChanged.emit)
-        except (TypeError, RuntimeError):
-            pass
-
-        self.c_id.fieldChanged.disconnect(self.dataChanged.emit)
-        self.c_x.fieldChanged.disconnect(self.dataChanged.emit)
-        self.c_y.fieldChanged.disconnect(self.dataChanged.emit)
-        self.c_z.fieldChanged.disconnect(self.dataChanged.emit)
-        self.c_depth.fieldChanged.disconnect(self.dataChanged.emit)
-
-        # Survey signals
-        try:
-            self.s_layer.layerChanged.disconnect(self.s_id.setLayer)
-            self.s_layer.layerChanged.disconnect(self.s_depth.setLayer)
-            self.s_layer.layerChanged.disconnect(self.s_azim.setLayer)
-            self.s_layer.layerChanged.disconnect(self.s_incl.setLayer)
-            self.s_layer.layerChanged.disconnect(self.dataChanged.emit)
-        except (TypeError, RuntimeError):
-            pass
-        survey_combos = [self.s_id, self.s_depth, self.s_azim, self.s_incl]
-        for w in survey_combos:
-            with contextlib.suppress(TypeError, RuntimeError, AttributeError):
-                w.fieldChanged.disconnect(self.dataChanged.emit)
-
-        # Interval signals
-        try:
-            self.i_layer.layerChanged.disconnect(self.i_id.setLayer)
-            self.i_layer.layerChanged.disconnect(self.i_from.setLayer)
-            self.i_layer.layerChanged.disconnect(self.i_to.setLayer)
-            self.i_layer.layerChanged.disconnect(self.i_lith.setLayer)
-            self.i_layer.layerChanged.disconnect(self.dataChanged.emit)
-        except (TypeError, RuntimeError):
-            pass
-        interval_combos = [self.i_id, self.i_from, self.i_to, self.i_lith]
-        for w in interval_combos:
-            with contextlib.suppress(TypeError, RuntimeError, AttributeError):
-                w.fieldChanged.disconnect(self.dataChanged.emit)
+        for tab in (self.collar_tab, self.survey_tab, self.interval_tab):
+            tab.disconnect_signals()
+            with contextlib.suppress(TypeError, RuntimeError):
+                tab.dataChanged.disconnect(self.dataChanged.emit)
 
         with contextlib.suppress(TypeError, RuntimeError):
             self.dataChanged.disconnect()
