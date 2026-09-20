@@ -15,7 +15,10 @@ cssclass: secinterp-note
 > [!abstract] One-line summary
 > **Drillhole** configuration page (Collar / Survey / Interval) with 3 tabs and validation.
 
-**Path**: `gui/ui/pages/drillhole_page.py` (451 lines)
+> [!info] Refactor 2026-09-20
+> This 451-line page was decomposed into tabs ([[drillhole_tabs]]); `DrillholePage` is now a **130-line coordinator**.
+
+**Path**: `gui/ui/pages/drillhole_page.py` (130 lines; formerly 451)
 **Class**: `DrillholePage(BasePage)`
 **Layer**: GUI · UI Pages
 **Tags**: #secinterp #gui #ui-pages

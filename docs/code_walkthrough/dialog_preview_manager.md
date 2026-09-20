@@ -16,7 +16,10 @@ cssclass: secinterp-note
 > [!abstract] Resumen en una línea
 > Es el **orquestador del preview**: genera datos síncronos, lanza tareas asíncronas, gestiona caché, LOD y render — todo lo que ocurre tras pulsar *Generate Preview*.
 
-**Ruta**: `gui/dialog_preview_manager.py` (434 líneas)
+> [!info] Refactor 2026-09-20
+> Este manager de 434 líneas se descompuso en mixins ([[preview_mixins]]); `PreviewManager` es ahora una clase de **231 líneas**.
+
+**Ruta**: `gui/dialog_preview_manager.py` (231 líneas; antes 434)
 **Clase**: `PreviewManager(TranslatableMixin)`
 **Capa**: GUI · Managers
 **Tags**: #secinterp #gui #preview-manager #orchestrator

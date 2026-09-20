@@ -30,6 +30,7 @@ cssclass: secinterp-moc
 | Archivo | Estado | Descripción breve |
 |---|:------:|------------------|
 | [[sec_interp_plugin]] | ✅ | Clase raíz `SecInterp`: ciclo de vida del plugin, toolbar, DI |
+| [[plugin_mixins]] | ✅ | Mixins `plugin/` (lifecycle, input, render) |
 | [[__init__]] | ✅ | Factory `classFactory` que QGIS invoca |
 | [[logger_config]] | ✅ | Logging centralizado + handler QGIS |
 
@@ -49,7 +50,8 @@ cssclass: secinterp-moc
 | [[config]] | ✅ | Servicio de configuración (QgsSettings) |
 | [[data_cache]] | ✅ | Caché por buckets (SHA256 + TTL) |
 | [[performance_metrics]] | ✅ | Timings, conteos y memoria |
-| [[export_service]] | ✅ | Orquestación de exportación |
+| [[export_service]] | ✅ | Shim de compatibilidad (13 líneas) |
+| [[export_package]] | ✅ | Paquete `export/`: orquestador + handlers |
 | [[preview_service]] | ✅ | Generación de preview |
 | [[access_control_service]] | ✅ | Control de acceso |
 | [[trajectory_engine]] | ✅ | Trayectoria de sondajes |
@@ -62,7 +64,9 @@ cssclass: secinterp-moc
 | Archivo | Estado | Descripción breve |
 |---|:------:|------------------|
 | [[main_dialog]] | ✅ | `SecInterpDialog` — orquestador de managers |
+| [[dialog_mixins]] | ✅ | Mixins de `main_dialog` (message/lifecycle/facade) |
 | [[dialog_preview_manager]] | ✅ | Ciclo de preview y canvas |
+| [[preview_mixins]] | ✅ | Mixins de preview (callbacks/render) |
 | [[dialog_export_manager]] | ✅ | UI de exportación |
 | [[renderers]] | ✅ | Renderers especializados |
 | [[tasks]] | ✅ | `QgsTask` en background |
@@ -72,6 +76,7 @@ cssclass: secinterp-moc
 | [[input_manager]] | ✅ | Agregación de entradas + validación |
 | [[signal_manager]] | ✅ | Centralización idempotente de signals |
 | [[interpretation_manager]] | ✅ | Polígonos + herencia + persistencia dual |
+| [[interpretation_mixins]] | ✅ | Mixins de interpretación (persistence/inheritance) |
 | [[tool_manager]] | ✅ | Pan + Measure + Interpretation tools |
 | [[layer_notification_manager]] | ✅ | dataChanged → invalidate(bucket) |
 | [[ui_status_manager]] | ✅ | Indicadores + enable/disable |
@@ -85,8 +90,10 @@ cssclass: secinterp-moc
 | [[validation_extractor]] | ✅ | Extract de validación |
 | [[measure_tool]] | ✅ | Herramienta de medición |
 | [[interpretation_tool]] | ✅ | Herramienta de interpretación |
-| [[drillhole_page]] | ✅ | Página de sondajes |
-| [[settings_page]] | ✅ | Página de configuración |
+| [[drillhole_page]] | ✅ | Página de sondajes (coordinador) |
+| [[drillhole_tabs]] | ✅ | Tabs Collar/Survey/Interval |
+| [[settings_page]] | ✅ | Página de configuración (coordinador) |
+| [[settings_tabs]] | ✅ | Tabs Default/Advanced/Info + persistencia |
 
 ### Capa Exporters (`exporters/`)
 | Archivo | Estado | Descripción breve |
@@ -112,6 +119,9 @@ cssclass: secinterp-moc
 
 > [!info] Convención de nombres
 > **Actualizado 2026-09-20**: se eliminaron los prefijos `NN -` de todas las notas. Los nombres son ahora el slug del archivo (p. ej. `preview_renderer.md`). La navegación es por secciones/tags, no por número.
+
+> [!info] Refactor 2026-09-20 — Module Size Gate
+> Se descompusieron los 7 módulos >400 líneas. Nuevas notas: [[export_package]], [[plugin_mixins]], [[dialog_mixins]], [[preview_mixins]], [[interpretation_mixins]], [[drillhole_tabs]] y [[settings_tabs]]. Las notas antiguas ([[export_service]], [[sec_interp_plugin]], [[main_dialog]], [[dialog_preview_manager]], [[interpretation_manager]], [[drillhole_page]], [[settings_page]]) se conservan como contexto histórico y enlazan a las nuevas.
 
 ---
 

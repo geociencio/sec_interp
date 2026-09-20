@@ -15,7 +15,10 @@ cssclass: secinterp-note
 > [!abstract] One-line summary
 > Orchestrates **all exports** (SHP, GPKG, DXF, CSV + preview PNG/PDF/SVG): decides what to export per `export_options` and delegates to exporters.
 
-**Path**: `core/services/export_service.py` (645 lines)
+> [!info] Refactor 2026-09-20
+> This 645-line monolith was split into the [[export_package]]; this file is now a **13-line shim** that re-exports `ExportService`.
+
+**Path**: `core/services/export_service.py` (13 lines; formerly 645)
 **Class**: `ExportService`
 **Layer**: Core · Services
 **Tags**: #secinterp #core #export-service

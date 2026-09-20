@@ -15,7 +15,10 @@ cssclass: secinterp-note
 > [!abstract] Resumen en una línea
 > Página de configuración de **sondajes** (Collar / Survey / Interval) con 3 tabs y validación.
 
-**Ruta**: `gui/ui/pages/drillhole_page.py` (451 líneas)
+> [!info] Refactor 2026-09-20
+> Esta página de 451 líneas se descompuso en tabs ([[drillhole_tabs]]); `DrillholePage` es ahora un **coordinador de 130 líneas**.
+
+**Ruta**: `gui/ui/pages/drillhole_page.py` (130 líneas; antes 451)
 **Clase**: `DrillholePage(BasePage)`
 **Capa**: GUI · UI Pages
 **Tags**: #secinterp #gui #ui-pages

@@ -15,7 +15,10 @@ cssclass: secinterp-note
 > [!abstract] Resumen en una línea
 > Gestiona **polígonos de interpretación**: digitización, herencia de atributos geológicos, y persistencia (JSON de proyecto o capa vectorial).
 
-**Ruta**: `gui/dialog_interpretation_manager.py` (444 líneas)
+> [!info] Refactor 2026-09-20
+> Este manager de 444 líneas se descompuso en mixins ([[interpretation_mixins]]); `InterpretationManager` es ahora una clase de **107 líneas**.
+
+**Ruta**: `gui/dialog_interpretation_manager.py` (107 líneas; antes 444)
 **Clase**: `InterpretationManager`
 **Capa**: GUI · Managers
 **Tags**: #secinterp #gui #interpretation

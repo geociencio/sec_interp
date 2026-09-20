@@ -15,7 +15,10 @@ cssclass: secinterp-note
 > [!abstract] One-line summary
 > **Settings** page (Default/Advanced/Info) with `QgsSettings` and 3D/LOD toggles.
 
-**Path**: `gui/ui/pages/settings_page.py` (416 lines)
+> [!info] Refactor 2026-09-20
+> This 416-line page was decomposed into tabs ([[settings_tabs]]); `SettingsPage` is now a **124-line coordinator**.
+
+**Path**: `gui/ui/pages/settings_page.py` (124 lines; formerly 416)
 **Class**: `SettingsPage(BasePage)`
 **Layer**: GUI · UI Pages
 **Tags**: #secinterp #gui #ui-pages

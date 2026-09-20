@@ -16,7 +16,10 @@ cssclass: secinterp-note
 > [!abstract] Resumen en una línea
 > Es el **diálogo principal** (thin orchestrator): compone la UI de `SecInterpMainWindow` y **delega** en 7 managers especializados — no contiene lógica de negocio.
 
-**Ruta**: `gui/main_dialog.py` (480 líneas)
+> [!info] Refactor 2026-09-20
+> Este archivo de 480 líneas se descompuso en mixins ([[dialog_mixins]]); `SecInterpDialog` es ahora una **raíz de composición de 193 líneas**.
+
+**Ruta**: `gui/main_dialog.py` (193 líneas; antes 480)
 **Clase**: `SecInterpDialog(SecInterpMainWindow)`
 **Capa**: GUI
 **Tags**: #secinterp #gui #main-dialog #orchestrator

@@ -15,7 +15,10 @@ cssclass: secinterp-note
 > [!abstract] One-line summary
 > Manages **interpretation polygons**: digitization, geological attribute inheritance, and dual persistence (project JSON or vector layer).
 
-**Path**: `gui/dialog_interpretation_manager.py` (444 lines)
+> [!info] Refactor 2026-09-20
+> This 444-line manager was decomposed into mixins ([[interpretation_mixins]]); `InterpretationManager` is now a **107-line class**.
+
+**Path**: `gui/dialog_interpretation_manager.py` (107 lines; formerly 444)
 **Class**: `InterpretationManager`
 **Layer**: GUI · Managers
 **Tags**: #secinterp #gui #interpretation

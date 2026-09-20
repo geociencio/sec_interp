@@ -1,3 +1,11 @@
+## [2026-09-20] Session: Code Walkthrough Vaults — Module Size Refactor Sync
+- **Achievement**: Updated both bilingual Obsidian vaults (`docs/code_walkthrough/` ES + `docs/code_walkthrough_en/` EN) to reflect the 2026-09-20 module-size refactor. Each vault grew from 67 to **74 notes**.
+- **New notes (ES+EN)**: `export_package`, `plugin_mixins`, `dialog_mixins`, `preview_mixins`, `interpretation_mixins`, `drillhole_tabs`, `settings_tabs`.
+- **Updated notes (ES+EN)**: added a "Refactor 2026-09-20" callout and the new line counts to `export_service` (645→13 shim), `sec_interp_plugin` (507→129), `main_dialog` (480→193), `drillhole_page` (451→130), `settings_page` (416→124), `interpretation_manager` (444→107), `dialog_preview_manager` (434→231).
+- **Indexes**: both `Index.md` list the new notes and a refactor callout.
+- **Validation**: all wikilinks in new/modified notes resolve; `scripts/sync_vault_mirrors.sh --check` PASS.
+- **Docs-only**: no Python changes.
+
 ## [2026-09-20] Session: Analyzer Debt Cleared — NON_PYTHONIC_LOOP & SPATIAL_INDEX
 - **Achievement**: `qgis-analyzer` now reports **0 issues** (was 3). Maintainability 99.9 → 100.0/100. Goal 2 (technical debt) fully closed.
 - **Changes**:

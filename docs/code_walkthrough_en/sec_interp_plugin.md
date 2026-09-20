@@ -16,7 +16,10 @@ cssclass: secinterp-note
 > [!abstract] One-line summary
 > This is the plugin **entry point**: it defines the `SecInterp` class, which QGIS instantiates on load, and orchestrates its entire **lifecycle** (initialization, GUI, execution, unload).
 
-**Path**: `sec_interp_plugin.py` (507 lines)
+> [!info] Refactor 2026-09-20
+> This 507-line file was decomposed into the `plugin/` package ([[plugin_mixins]]); `SecInterp` is now a **129-line facade** composing the mixins.
+
+**Path**: `sec_interp_plugin.py` (129 lines; formerly 507)
 **Main class**: `SecInterp(TranslatableMixin)`
 **Layer**: Entry point / Root
 **Tags**: #secinterp #entry-point #di #i18n

@@ -16,7 +16,10 @@ cssclass: secinterp-note
 > [!abstract] Resumen en una línea
 > Orquesta **toda la exportación** (SHP, GPKG, DXF, CSV + preview PNG/PDF/SVG): decide qué exportar según `export_options` y delega en los exporters.
 
-**Ruta**: `core/services/export_service.py` (645 líneas)
+> [!info] Refactor 2026-09-20
+> Este monolito de 645 líneas se dividió en el paquete [[export_package]]; este archivo es ahora un **shim de 13 líneas** que re-exporta `ExportService`.
+
+**Ruta**: `core/services/export_service.py` (13 líneas; antes 645)
 **Clase**: `ExportService`
 **Capa**: Core · Services
 **Tags**: #secinterp #core #export-service #orchestrator
