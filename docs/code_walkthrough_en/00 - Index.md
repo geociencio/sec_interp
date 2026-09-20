@@ -55,6 +55,7 @@ cssclass: secinterp-moc
 | 23 | [[23 - renderers]] | ✅ | Specialized renderers |
 | 24 | [[24 - tasks]] | ✅ | Background `QgsTask` |
 | 25 | [[25 - adapters]] | ✅ | "Extract" phase (QGIS → DTOs) |
+| 26 | [[26 - ui_pages]] | ✅ | Window + pages (Sidebar/Stack) |
 
 ### Exporters layer (`exporters/`)
 | # | Module | Status | Short description |
