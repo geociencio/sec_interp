@@ -16,10 +16,10 @@
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
         "avg_retries_per_session": 1.18,
-        "tests_ok": 612,
-        "tests_ok_note": "606 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
-        "quality_score_latest": 52.3,
-        "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
+        "tests_ok": 615,
+        "tests_ok_note": "615 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
+        "quality_score_latest": 54.0,
+        "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
         "type_hint_coverage_params": 93.1,
@@ -35,32 +35,23 @@
             "SPATIAL_INDEX": 1
         },
         "module_size_gate": "PASS",
-        "large_modules": [
-            {
-                "path": "gui/dialog_interpretation_manager.py",
-                "lines": 445
-            },
-            {
-                "path": "gui/dialog_preview_manager.py",
-                "lines": 435
-            }
-        ],
-        "test_count": 612
+        "large_modules": [],
+        "test_count": 615
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
-            "date": "2026-09-17",
+            "date": "2026-09-20",
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
-                "module_stability": 52.3,
+                "module_stability": 54.0,
                 "maintainability": 99.9,
                 "security": 100.0
             },
             "issues": {
-                "MISSING_I18N": 0,
                 "NON_PYTHONIC_LOOP": 2,
                 "SPATIAL_INDEX": 1,
+                "MISSING_I18N": 0,
                 "total": 3
             }
         },

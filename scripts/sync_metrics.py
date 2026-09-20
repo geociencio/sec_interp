@@ -37,6 +37,13 @@ ANALYZER_RESULTS = PROJECT_ROOT / "analysis_results" / "project_context.json"
 CC_THRESHOLD = 10
 MODULE_SIZE_LIMIT = 400
 
+_ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _strip_ansi(text: str) -> str:
+    """Remove ANSI color escape sequences from analyzer output."""
+    return _ANSI_RE.sub("", text)
+
 
 def run_qgis_analyzer() -> dict:
     """Run qgis-analyzer and extract scores + issue counts + CC gate.
@@ -52,7 +59,7 @@ def run_qgis_analyzer() -> dict:
             text=True,
             timeout=120,
         )
-        output = result.stdout + result.stderr
+        output = _strip_ansi(result.stdout + result.stderr)
         cc_gate = result.returncode == 0
     except FileNotFoundError:
         return {"error": "qgis-analyzer not found in environment"}
@@ -230,9 +237,7 @@ def update_metrics_json(metrics: dict) -> bool:
             "PASS" if module_sizes.get("passed") else
             f"FAIL ({module_sizes.get('count', 0)} modules > {MODULE_SIZE_LIMIT} lines)"
         )
-        large = module_sizes.get("large_modules", [])
-        if large:
-            summary["large_modules"] = large
+        summary["large_modules"] = module_sizes.get("large_modules", [])
 
     research = analyzer.get("research", {})
     if "type_hint_params" in research:
@@ -249,10 +254,29 @@ def update_metrics_json(metrics: dict) -> bool:
         if "MISSING_I18N" in issues:
             summary["i18n_issues_qgis_analyzer"] = issues["MISSING_I18N"]
 
-    # Add sync metadata
+    # Refresh the qgis-analyzer ground-truth source so it stays coherent with
+    # the summary scores (the internal consistency check compares them).
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     ground_truth = data.setdefault("ground_truth_sources", {})
+    gt_analyzer = ground_truth.setdefault("qgis_analyzer", {})
+    gt_analyzer["date"] = today
+    gt_analyzer["command"] = "uv run qgis-analyzer analyze . --max-cc 10"
+    gt_analyzer["output"] = "analysis_results/"
+    if analyzer.get("scores"):
+        gt_analyzer["scores"] = {
+            "module_stability": analyzer["scores"].get("module_stability"),
+            "maintainability": analyzer["scores"].get("maintainability"),
+            "security": analyzer["scores"].get("security"),
+        }
+    if issues:
+        gt_analyzer["issues"] = {
+            **issues,
+            "MISSING_I18N": issues.get("MISSING_I18N", 0),
+            "total": sum(issues.values()),
+        }
+
     ground_truth["sync_metrics"] = {
-        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "date": today,
         "command": "uv run python scripts/sync_metrics.py",
         "cc_gate": "PASS" if cc.get("passed") else "FAIL",
         "i18n_gate": "PASS" if i18n_ast.get("passed") else "FAIL",

@@ -61,10 +61,26 @@ class TestRotateSessionHistory(unittest.TestCase):
             self.assertEqual(len(result["history"]), 1)
 
     def test_missing_file_returns_false(self):
-        ok = sync_metrics.rotate_session_history(
-            "topic", Path("/nonexistent/agent_metrics.json")
-        )
+        ok = sync_metrics.rotate_session_history("topic", Path("/nonexistent/agent_metrics.json"))
         self.assertFalse(ok)
+
+
+class TestStripAnsi(unittest.TestCase):
+    """The analyzer emits ANSI colors; the parser must strip them."""
+
+    def test_strips_color_sequences(self):
+        colored = "\x1b[93m- Module Stability Score: \x1b[93m54.0/100\x1b[0m"
+        self.assertEqual(
+            sync_metrics._strip_ansi(colored),
+            "- Module Stability Score: 54.0/100",
+        )
+
+    def test_plain_text_unchanged(self):
+        self.assertEqual(sync_metrics._strip_ansi("plain 52.3/100"), "plain 52.3/100")
+
+    def test_parses_score_from_colored_line(self):
+        line = sync_metrics._strip_ansi("Module Stability Score: \x1b[93m54.0/100\x1b[0m")
+        self.assertEqual(float(line.split(":")[-1].strip().split("/")[0]), 54.0)
 
 
 if __name__ == "__main__":
