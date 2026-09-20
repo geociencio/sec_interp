@@ -66,13 +66,13 @@ class TestDialogInterpretationManager(BaseTestCase):
         interp = InterpretationPolygon(
             id="1", name="New", type="lithology", vertices_2d=[(0, 0), (1, 0), (1, 1)]
         )
-        self.dialog.page_interpretation.get_data.return_value = {
-            "inherit_geology": False
-        }
+        self.dialog.page_interpretation.get_data.return_value = {"inherit_geology": False}
         preview_update_handler = MagicMock()
         self.manager.set_preview_update_handler(preview_update_handler)
 
-        target = "sec_interp.gui.dialogs.interpretation_properties_dialog.InterpretationPropertiesDialog"
+        target = (
+            "sec_interp.gui.dialogs.interpretation_properties_dialog.InterpretationPropertiesDialog"
+        )
         with patch(target, create=True) as mock_dlg_class:
             mock_dlg = mock_dlg_class.return_value
             from qgis.PyQt.QtWidgets import QDialog
@@ -91,7 +91,9 @@ class TestDialogInterpretationManager(BaseTestCase):
         )
         self.dialog.page_interpretation.get_data.return_value = {}
 
-        target = "sec_interp.gui.dialogs.interpretation_properties_dialog.InterpretationPropertiesDialog"
+        target = (
+            "sec_interp.gui.dialogs.interpretation_properties_dialog.InterpretationPropertiesDialog"
+        )
         with patch(target, create=True) as mock_dlg_class:
             mock_dlg = mock_dlg_class.return_value
             from qgis.PyQt.QtWidgets import QDialog
@@ -115,9 +117,7 @@ class TestDialogInterpretationManager(BaseTestCase):
         mock_segment.points = [(0, 0)]  # Centroid is near 0,0
         mock_segment.attributes = {"key": "val"}
         self.manager._preview_cache["geol"] = [mock_segment]
-        self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = (
-            "#0000FF"
-        )
+        self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = "#0000FF"
 
         self.manager.apply_attribute_inheritance(interp, config)
 
@@ -142,9 +142,7 @@ class TestDialogInterpretationManager(BaseTestCase):
         # _extract_intervals_from_dh_data returns dh[4] for legacy or dh[2] or dh.intervals
         dh_data = (None, None, [mock_interval])  # dh[2] flow
         self.manager._preview_cache["drillhole"] = [dh_data]
-        self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = (
-            "#00FF00"
-        )
+        self.dialog.layer_factory.get_color_for_unit.return_value.name.return_value = "#00FF00"
 
         self.manager.apply_attribute_inheritance(interp, config)
 
@@ -189,6 +187,20 @@ class TestDialogInterpretationManager(BaseTestCase):
 
         self.manager.apply_attribute_inheritance(interp, config)
         self.assertEqual(interp.name, "T")  # Unchanged
+
+    def test_sync_from_layer_uses_filtered_request(self):
+        """sync_from_layer must request features through a configured request."""
+        from qgis.core import QgsFeatureRequest
+
+        layer = MagicMock()
+        layer.extent.return_value = MagicMock()
+        layer.getFeatures.return_value = iter([])
+
+        self.manager.sync_from_layer(layer)
+
+        layer.getFeatures.assert_called_once()
+        request = layer.getFeatures.call_args.args[0]
+        self.assertIsInstance(request, QgsFeatureRequest)
 
 
 if __name__ == "__main__":

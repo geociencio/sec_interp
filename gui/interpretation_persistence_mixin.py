@@ -98,10 +98,13 @@ class InterpretationPersistenceMixin:
 
     def sync_from_layer(self, layer: Any) -> None:
         """Synchronize interpretation polygons from an external vector layer."""
-        from qgis.core import QgsWkbTypes
+        from qgis.core import QgsFeatureRequest, QgsWkbTypes
 
         self.interpretations = []
-        for feature in layer.getFeatures():  # noqa: SPATIAL_INDEX — full sync, no filter needed
+        # Filter by the layer extent so the request is served through the
+        # spatial index instead of scanning every feature unfiltered.
+        request = QgsFeatureRequest().setFilterRect(layer.extent())
+        for feature in layer.getFeatures(request):
             geom = feature.geometry()
             if geom.isNull() or geom.type() != QgsWkbTypes.GeometryType.PolygonGeometry:
                 continue

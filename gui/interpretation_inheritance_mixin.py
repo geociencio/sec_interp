@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from typing import Any
 
 from qgis.core import QgsGeometry, QgsPointXY
@@ -115,34 +116,15 @@ class InterpretationInheritanceMixin:
         if not dh_data:
             return best_match, min_dist
 
-        from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsSpatialIndex
+        from qgis.core import QgsFeature, QgsSpatialIndex
 
         index = QgsSpatialIndex()
         feature_dict = {}
-        feat_id = 0
-
-        for dh in dh_data:
-            intervals = self._extract_intervals_from_dh_data(dh)
-            if not intervals:
-                continue
-
-            for interval in intervals:
-                points = getattr(interval, "points", None)
-                if not points:
-                    continue
-
-                feat = QgsFeature(feat_id)
-                pts = [QgsPointXY(x, y) for x, y in points]
-
-                if len(pts) == 1:
-                    geom = QgsGeometry.fromPointXY(pts[0])
-                else:
-                    geom = QgsGeometry.fromPolylineXY(pts)
-
-                feat.setGeometry(geom)
-                index.addFeature(feat)
-                feature_dict[feat_id] = (interval, geom)
-                feat_id += 1  # noqa: NON_PYTHONIC_LOOP — enumerate not practical with nested skip logic
+        for feat_id, (interval, geom) in enumerate(self._iter_drillhole_interval_geoms(dh_data)):
+            feat = QgsFeature(feat_id)
+            feat.setGeometry(geom)
+            index.addFeature(feat)
+            feature_dict[feat_id] = (interval, geom)
 
         nearest_ids = index.nearestNeighbor(ref_point, 1)
         if nearest_ids:
@@ -161,6 +143,31 @@ class InterpretationInheritanceMixin:
                 }
 
         return best_match, min_dist
+
+    def _iter_drillhole_interval_geoms(
+        self, dh_data: list[Any]
+    ) -> Iterator[tuple[Any, QgsGeometry]]:
+        """Yield ``(interval, geometry)`` for every drillhole interval with points.
+
+        Args:
+            dh_data: List of drillhole records (tuples or objects).
+
+        Yields:
+            Tuples of (interval, QgsGeometry) ready to be added to a spatial index.
+
+        """
+        for dh in dh_data:
+            for interval in self._extract_intervals_from_dh_data(dh):
+                points = getattr(interval, "points", None)
+                if not points:
+                    continue
+
+                pts = [QgsPointXY(x, y) for x, y in points]
+                if len(pts) == 1:
+                    geom = QgsGeometry.fromPointXY(pts[0])
+                else:
+                    geom = QgsGeometry.fromPolylineXY(pts)
+                yield interval, geom
 
     def _extract_intervals_from_dh_data(self, dh: Any) -> list[Any]:
         """Safely extract intervals from various drillhole data formats.
