@@ -45,6 +45,9 @@ cssclass: secinterp-moc
 | 17 | [[17 - safe_loader]] | ✅ | Fault-tolerant lazy loading |
 | 18 | [[18 - i18n]] | ✅ | `TranslatableMixin` |
 | 19 | [[19 - structure_service]] | ✅ | Structural projection |
+| 27 | [[27 - config]] | ✅ | Configuration service |
+| 28 | [[28 - data_cache]] | ✅ | Per-bucket cache (SHA256 + TTL) |
+| 29 | [[29 - performance_metrics]] | ✅ | Timings, counts and memory |
 
 ### GUI layer (`gui/`)
 | # | Module | Status | Short description |
@@ -56,6 +59,15 @@ cssclass: secinterp-moc
 | 24 | [[24 - tasks]] | ✅ | Background `QgsTask` |
 | 25 | [[25 - adapters]] | ✅ | "Extract" phase (QGIS → DTOs) |
 | 26 | [[26 - ui_pages]] | ✅ | Window + pages (Sidebar/Stack) |
+| 32 | [[32 - state_manager]] | ✅ | Visual state + persistence delegation |
+| 33 | [[33 - input_manager]] | ✅ | Input aggregation + validation |
+| 34 | [[34 - signal_manager]] | ✅ | Idempotent signal wiring |
+| 35 | [[35 - interpretation_manager]] | ✅ | Polygons + inheritance + dual persistence |
+| 36 | [[36 - tool_manager]] | ✅ | Pan + Measure + Interpretation tools |
+| 37 | [[37 - layer_notification_manager]] | ✅ | dataChanged → invalidate(bucket) |
+| 38 | [[38 - ui_status_manager]] | ✅ | Indicators + enable/disable |
+| 39 | [[39 - preview_state]] | ✅ | PreviewCache + RenderState |
+| 40 | [[40 - preview_layer_factory]] | ✅ | Memory layer factory |
 
 ### Exporters layer (`exporters/`)
 | # | Module | Status | Short description |
@@ -68,6 +80,9 @@ cssclass: secinterp-moc
 
 > [!note] Mirror documents
 > The files `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md`, and `PLUGIN_REPORT_AND_COMPARISON_EN.md` inside this vault are **mirror copies** of `docs/` (source of truth). They are kept here so wikilinks resolve in Obsidian. If you update the original in `docs/`, re-sync these copies.
+
+> [!info] Naming convention
+> Existing notes with `NN -` prefix are kept as legacy. New notes use **number-free names** (e.g. `preview_renderer.md`), navigable by sections/tags. The number is just a historic ID, not reading order.
 
 ---
 

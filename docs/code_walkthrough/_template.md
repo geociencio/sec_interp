@@ -10,7 +10,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# {{NUM}} — `{{REL_PATH}}`
+# `{{REL_PATH}}`
 
 > [!abstract] Resumen en una línea
 > {{ONE_LINE_SUMMARY}} — qué hace este módulo en una frase, sin tocar QGIS si es core.
@@ -111,4 +111,4 @@ graph TD
 
 ---
 
-*Nota {{NUM}} de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

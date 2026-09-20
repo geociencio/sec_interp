@@ -46,6 +46,9 @@ cssclass: secinterp-moc
 | 17 | [[17 - safe_loader]] | ✅ | Carga lazy y tolerante a fallos |
 | 18 | [[18 - i18n]] | ✅ | `TranslatableMixin` |
 | 19 | [[19 - structure_service]] | ✅ | Proyección estructural |
+| 27 | [[27 - config]] | ✅ | Servicio de configuración (QgsSettings) |
+| 28 | [[28 - data_cache]] | ✅ | Caché por buckets (SHA256 + TTL) |
+| 29 | [[29 - performance_metrics]] | ✅ | Timings, conteos y memoria |
 
 ### Capa GUI (`gui/`)
 | # | Módulo | Estado | Descripción breve |
@@ -57,6 +60,15 @@ cssclass: secinterp-moc
 | 24 | [[24 - tasks]] | ✅ | `QgsTask` en background |
 | 25 | [[25 - adapters]] | ✅ | Fase "Extract" (QGIS → DTOs) |
 | 26 | [[26 - ui_pages]] | ✅ | Ventana + páginas (Sidebar/Stack) |
+| 32 | [[32 - state_manager]] | ✅ | Delegación estado visual + persistencia |
+| 33 | [[33 - input_manager]] | ✅ | Agregación de entradas + validación |
+| 34 | [[34 - signal_manager]] | ✅ | Centralización idempotente de signals |
+| 35 | [[35 - interpretation_manager]] | ✅ | Polígonos + herencia + persistencia dual |
+| 36 | [[36 - tool_manager]] | ✅ | Pan + Measure + Interpretation tools |
+| 37 | [[37 - layer_notification_manager]] | ✅ | dataChanged → invalidate(bucket) |
+| 38 | [[38 - ui_status_manager]] | ✅ | Indicadores + enable/disable |
+| 39 | [[39 - preview_state]] | ✅ | PreviewCache + RenderState |
+| 40 | [[40 - preview_layer_factory]] | ✅ | Factory de capas de memoria |
 
 ### Capa Exporters (`exporters/`)
 | # | Módulo | Estado | Descripción breve |
@@ -69,6 +81,9 @@ cssclass: secinterp-moc
 
 > [!note] Documentos espejo
 > Los archivos `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` y `PLUGIN_REPORT_AND_COMPARISON_EN.md` dentro de esta bóveda son **copias espejo** de `docs/` (fuente de verdad). Se mantienen aquí para que los wikilinks resuelvan en Obsidian. Si actualizas el original en `docs/`, re-sincroniza estas copias.
+
+> [!info] Convención de nombres
+> Las notas existentes con prefijo `NN -` se mantienen como legado. Las notas nuevas usan **nombres sin número** (p. ej. `preview_renderer.md`), navegables por secciones/tags. El número es solo ID histórico, no orden de lectura.
 
 ---
 
