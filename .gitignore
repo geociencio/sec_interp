@@ -61,6 +61,9 @@ logs/
 .vscode/
 .continue/
 
+# Obsidian vault configuration (editor state)
+.obsidian/
+
 # Documentation
 docs/build/
 help/html/
