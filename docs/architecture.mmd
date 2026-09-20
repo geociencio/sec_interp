@@ -192,31 +192,31 @@ graph TD
 
         BASE_EXPORT[exporters/base_exporter.py<br/>BaseExporter]:::exporter
 
-        subgraph VECTOR["Vector Exporters"]
+        subgraph VECTOR_SUB["Vector Exporters"]
             direction TB
             VEC_EXPORT[exporters/vector_exporter.py<br/>VectorExporter<br/>GPKG/SHP/DXF]:::exporter
             DXF_EXPORT[exporters/dxf_exporter.py<br/>DxfExporter]:::exporter
         end
 
-        subgraph PROFILE["Profile Exporters"]
+        subgraph PROFILE_SUB["Profile Exporters"]
             direction TB
             PROF_EXPORT[exporters/profile_exporters.py<br/>ProfileExporters]:::exporter
             CSV_EXPORT[exporters/csv_exporter.py<br/>CsvExporter]:::exporter
         end
 
-        subgraph INTERP_3D["3D Geologic Export"]
+        subgraph INTERP_3D_SUB["3D Geologic Export"]
             direction TB
             INTERP_3D[exporters/interpretation_3d_exporter.py<br/>Interpretation3DExporter]:::exporter
             INTERP_EXP[exporters/interpretation_exporters.py<br/>InterpretationExporters]:::exporter
         end
 
-        subgraph DRILL_3D["3D Drillhole Export"]
+        subgraph DRILL_3D_SUB["3D Drillhole Export"]
             direction TB
             DRILL_3D[exporters/drillhole_3d_exporter.py<br/>Drillhole3DExporter]:::exporter
             DRILL_EXP[exporters/drillhole_exporters.py<br/>DrillholeExporters]:::exporter
         end
 
-        subgraph DOCUMENT["Document Exporters"]
+        subgraph DOCUMENT_SUB["Document Exporters"]
             direction TB
             PDF_EXPORT[exporters/pdf_exporter.py<br/>PdfExporter]:::exporter
             SVG_EXPORT[exporters/svg_exporter.py<br/>SvgExporter]:::exporter
