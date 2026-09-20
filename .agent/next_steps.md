@@ -11,7 +11,7 @@
 - **Artifact**: `dist/sec_interp.3.8.0.zip` (3.8M, 460 archivos, SHA256 `cc7bb99…a784d`);
   auditoría estricta de contenido limpia (sin `.agent`/`scripts`/`tests`/`docs`/`__pycache__`).
 - **GitHub**: release `v3.8.0` PUBLICADO como *latest* con el ZIP adjunto.
-- **Pendiente (manual)**: subir el ZIP a plugins.qgis.org.
+- **Publicado (manual)**: ZIP subido a plugins.qgis.org — aprobado y live.
 - **Referencia**: `docs/maintenance/session_2026-09-19_release_v3.8.0.md`.
 
 ## ✅ Session 2026-09-20 — Code Walkthrough Vault (COMPLETADO)
@@ -142,5 +142,5 @@ Shipped `v3.7.2` to clear the 114 "Enum error" findings from the QGIS portal. Th
 ## 🚀 How to Resume
 1. Run `/start-session`.
 2. Continue with Goal 1.1 (symbology preview), Fase 1 adaptive VE (1.2), or tech debt 2.1/2.2/2.3/2.4.
-3. (Manual) Upload `dist/sec_interp.3.8.0.zip` to plugins.qgis.org — GitHub release v3.8.0 is already published/latest.
+3. Release v3.8.0 live en plugins.qgis.org y GitHub (latest) — sin pendientes manuales.
 4. Restart opencode to load `opencode.json` (native subagents `architect`/`qa_engineer`/`auditor` + `skills.paths`).

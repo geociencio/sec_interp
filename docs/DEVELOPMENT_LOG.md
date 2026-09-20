@@ -1,3 +1,8 @@
+## [2026-09-20] Session: Vault Architecture Links — Directory Structure Linkify
+- **Achievement**: Linkified `docs/ARCHITECTURE_EN.md` Directory Structure so every module resolves to its vault note — dual-link `[[slug]]` (Obsidian) + `[doc](code_walkthrough/slug.md)` (GitHub/Sphinx). Replaced the fenced tree with a Markdown nested list, covering core/gui/exporters (67 notes/vault).
+- **Scope**: Synced mirrors `docs/code_walkthrough*/ARCHITECTURE_EN.md` via `scripts/sync_vault_mirrors.sh` (`--check` PASS); marked v3.8.0 as PUBLICADO en plugins.qgis.org (`.agent/task.md` 13.5, `.agent/next_steps.md`).
+- **Maintenance**: [session_2026-09-20_vault_architecture_links.md](maintenance/session_2026-09-20_vault_architecture_links.md)
+
 ## [2026-09-20] Session: Vault Completion — Numbering Removal & Remaining Modules
 - **Achievement**: Removed numeric prefixes from all 68 vault notes (`NN - slug.md` → `slug.md`), updated 80 wikilinks and index tables (`#` column removed, callout added), and enriched the remaining 12 skeleton notes (export_service, preview_service, trajectory/collar/survey/interval/projection/access_control, drillhole/geology/structure/validation extractors, measure/interpretation tools, drillhole/settings pages, and 7 exporters 3D/PDF/SVG/image/profile/dxf/interpretation/drillhole).
 - **Templates & Tooling**: Added number-free `_template.md` (ES+EN) and `scripts/sync_vault_mirrors.sh` (`--check` for CI); vault now navigates by sections/tags, not by number.

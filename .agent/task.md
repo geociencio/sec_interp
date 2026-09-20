@@ -7,7 +7,7 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [x] Phase 1-3: auditoría de calidad, versionado/docs, verificación (CC/security/tests) <!-- id: 13.2 -->
 - [x] Phase 4: commit `4b7906cc` + tag `v3.8.0` + push a `origin/main` <!-- id: 13.3 -->
 - [x] Phase 5: ZIP `sec_interp.3.8.0.zip` auditado + release GitHub publicado (latest) <!-- id: 13.4 -->
-- [ ] (Manual) Subir ZIP a plugins.qgis.org <!-- id: 13.5 -->
+- [x] (Manual) Subir ZIP a plugins.qgis.org — PUBLICADO <!-- id: 13.5 -->
 
 ## 🔄 Core/GUI Decoupling Refactor (COMPLETADO 2026-09-19; mergeado a `main`)
 - [x] Fase 0: baseline + `tests/core/test_architecture_boundary.py` (gate allowlist) + corregir comando de test <!-- id: 12.1 -->
@@ -74,5 +74,5 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [x] Reescribir `docs/plans/upstreaming_qgis_analyzer.md` + actualizar refs (workflows/skills/metrics) <!-- id: 11.6 -->
 
 ## 🧪 Operational Status
-- **Active Task**: Release v3.8.0 COMPLETADO y publicado en GitHub. Pendiente manual: subir `dist/sec_interp.3.8.0.zip` a plugins.qgis.org. Next: Goal 1.1 (symbology), Fase 1 adaptive VE (1.2), or tech debt 2.1/2.2/2.3/2.4.
+- **Active Task**: Release v3.8.0 COMPLETADO y PUBLICADO en GitHub + plugins.qgis.org. Next: Goal 1.1 (symbology), Fase 1 adaptive VE (1.2), or tech debt 2.1/2.2/2.3/2.4.
 - **Metrics**: 606/606 tests, Quality 52.4/100, Maintainability 99.9/100, Security 100/100, CC PASS, i18n gate PASS. Analyzer 1.14.0: 3 issues (2 NON_PYTHONIC_LOOP, 1 SPATIAL_INDEX).
