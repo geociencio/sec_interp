@@ -1,3 +1,18 @@
+## [2026-09-20] Session: Module Size Gate Remediation — Decompose Oversized Modules
+- **Achievement**: Removed the `module_size_gate` FAIL by decomposing all 7 modules > 400 lines to < 300, then merged the branch to `main` (fast-forward, pushed `1bcdc661..99138c05`). `module_size_gate` is now **PASS** and Module Stability rose 52.4 → 54.0.
+- **Changes**:
+    - `core/services/export_service.py` 645 → 13 (shim) + new `core/services/export/` package (orchestrator, path resolver, map-settings factory, 7 handlers, compat).
+    - `gui/ui/pages/drillhole_page.py` 451 → 130 + `drillhole/{collar,survey,interval}_tab.py`.
+    - `gui/ui/pages/settings_page.py` 417 → 124 + `settings/{default,advanced,info}_tab.py` + persistence.
+    - `sec_interp_plugin.py` 508 → 129 + `plugin/{lifecycle,input_validator,render_pipeline}.py`.
+    - `gui/main_dialog.py` 481 → 193 + `dialog_{message,lifecycle,facade}_mixin.py`.
+    - `gui/dialog_interpretation_manager.py` 445 → 107 + `interpretation_{persistence,inheritance}_mixin.py`.
+    - `gui/dialog_preview_manager.py` 435 → 231 + `preview_{callbacks,render}_mixin.py`.
+    - Fixed `sync_metrics.py` to strip ANSI escapes so analyzer scores sync correctly (quality was stuck at 52.3), and refreshed the qgis-analyzer ground-truth block.
+- **Quality**: 615 tests (Docker: agentic 23 + core 197 + exporters 40 + gui 217 + integration 75, all OK) · Quality 54.0/100 · Maintainability 99.9/100 · Security 100/100 · CC PASS · i18n PASS · module size PASS · `ruff` PASS.
+- **Commits**: `c3116a6`, `39e1168`, `78bcb45`, `900afb8`, `ac58143`, `85cbbb5`, `77f193d`, `f8cb60e`, `99138c0`.
+- **Spec**: [plans/Technical_Specification_module_size_gate.md](plans/Technical_Specification_module_size_gate.md)
+
 ## [2026-09-20] Session: Vault Architecture Links — Directory Structure Linkify
 - **Achievement**: Linkified `docs/ARCHITECTURE_EN.md` Directory Structure so every module resolves to its vault note — dual-link `[[slug]]` (Obsidian) + `[doc](code_walkthrough/slug.md)` (GitHub/Sphinx). Replaced the fenced tree with a Markdown nested list, covering core/gui/exporters (67 notes/vault).
 - **Scope**: Synced mirrors `docs/code_walkthrough*/ARCHITECTURE_EN.md` via `scripts/sync_vault_mirrors.sh` (`--check` PASS); marked v3.8.0 as PUBLICADO en plugins.qgis.org (`.agent/task.md` 13.5, `.agent/next_steps.md`).

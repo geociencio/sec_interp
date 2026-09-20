@@ -50,7 +50,7 @@
   `dialog_interpretation_manager` 445→107; `dialog_preview_manager` 435→231).
 - **Pattern**: fachada + handlers/mixins; `connect`/`disconnect` y slots co-localizados por
   archivo para el analyzer; patch targets de tests preservados.
-- **Gates**: `module_size_gate` **PASS**, CC PASS, i18n PASS, security 100/100; tests 564 OK (612 static).
+- **Gates**: `module_size_gate` **PASS**, CC PASS, i18n PASS, security 100/100; tests 564 OK (615 static).
 - **Commits**: `c3116a6`, `39e1168`, `78bcb45`, `900afb8`, `ac58143`, `85cbbb5`, `77f193d`.
 - **Referencia**: `docs/plans/Technical_Specification_module_size_gate.md`.
 
@@ -92,11 +92,10 @@
   - _Reference plan_: `docs/plans/implementation_plan_adaptive_ve_v3.7.0.md` (5-fase plan)
 
 ### Goal 2: Technical Debt Reduction
-- [ ] Retire `core/utils/qt6_compat.py` monkeypatch (harmless fallback, now unused) <!-- id: 2.1 -->
-- [ ] Fix 2 `NON_PYTHONIC_LOOP` issues flagged by qgis-analyzer <!-- id: 2.2 -->
-- [ ] Investigate 1 `SPATIAL_INDEX` warning in `dialog_interpretation_manager.py` <!-- id: 2.3 -->
-- [ ] Resolve `module_size_gate` FAIL (7 modules > 400 lines):
-  `sec_interp_plugin.py`, `dialog_preview_manager.py`, `dialog_settings_persistence.py`, `main_dialog.py`, `dialog_interpretation_manager.py`, `measure_tool.py`, `settings_page.py` <!-- id: 2.4 -->
+- [x] Retire `core/utils/qt6_compat.py` monkeypatch — file no longer exists (retired during the Core/GUI refactor) <!-- id: 2.1 -->
+- [ ] Fix 2 `NON_PYTHONIC_LOOP` issues flagged by qgis-analyzer (now in `gui/interpretation_inheritance_mixin.py`) <!-- id: 2.2 -->
+- [ ] Investigate 1 `SPATIAL_INDEX` warning (now in `gui/interpretation_persistence_mixin.py`) <!-- id: 2.3 -->
+- [x] Resolve `module_size_gate` FAIL — all 7 modules decomposed below 300 lines <!-- id: 2.4 -->
 
 ## 📋 Phase Closure 2026-09-12 — v3.7.0
 
@@ -153,6 +152,6 @@ Shipped `v3.7.2` to clear the 114 "Enum error" findings from the QGIS portal. Th
 
 ## 🚀 How to Resume
 1. Run `/start-session`.
-2. Continue with Goal 1.1 (symbology preview), Fase 1 adaptive VE (1.2), or tech debt 2.1/2.2/2.3/2.4.
+2. Continue with Goal 1.1 (symbology preview), Fase 1 adaptive VE (1.2), or tech debt 2.2/2.3 (the 3 remaining analyzer issues).
 3. Release v3.8.0 live en plugins.qgis.org y GitHub (latest) — sin pendientes manuales.
-4. Restart opencode to load `opencode.json` (native subagents `architect`/`qa_engineer`/`auditor` + `skills.paths`).
+4. Module Size Gate Remediation mergeado a `main` (`99138c05`) — deuda 2.4 cerrada, 2.1 efectivamente cerrada.

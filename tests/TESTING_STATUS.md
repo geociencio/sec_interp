@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->612<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->615<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-09-20<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -13,7 +13,7 @@
 
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
-| **Agentic Tooling** | <!-- AGENT_COUNT -->20<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
+| **Agentic Tooling** | <!-- AGENT_COUNT -->23<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->260<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->217<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
@@ -121,7 +121,7 @@
 - **tests/mcp/test_mcp_tools.py**: 3 tests
 - **tests/agentic/test_check_skill_conflicts.py**: 4 tests
 - **tests/agentic/test_memory_prune.py**: 3 tests
-- **tests/agentic/test_sync_metrics.py**: 3 tests
+- **tests/agentic/test_sync_metrics.py**: 6 tests
 - **tests/agentic/test_validate_agent_metrics.py**: 10 tests
 <!-- END_INVENTORY -->
 

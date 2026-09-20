@@ -90,19 +90,21 @@ This project enforces:
 -   **CC <= 10**: No function should be overly complex (verified by `qgis-analyzer --max-cc 10`).
 -   **100% Docstrings**: All public APIs must follow Google Style (verified by qgis-analyzer).
 -   **100% Return Types**: Strict typing for all function returns.
--   **94.2% Param Types**: Type hints on all function parameters.
+-   **93.1% Param Types**: Type hints on all function parameters.
 -   **Mock-First Testing**: Isolated unit tests that do not require a live QGIS instance.
 -   **i18n hygiene**: AST-based `MISSING_I18N` rule in qgis-analyzer.
+-   **Module Size**: No source module exceeds 400 lines (verified by qgis-analyzer).
 
-### Current Scores (2026-09-12)
+### Current Scores (2026-09-20)
 | Metric | Score |
 |--------|-------|
-| Module Stability | 52.3/100 |
+| Module Stability | 54.0/100 |
 | Maintainability | 99.9/100 |
 | Security (Bandit) | 100.0/100 |
-| Tests | 640 passing |
+| Tests | 615 passing |
 | CC Gate | PASS (all ≤ 10) |
 | i18n AST Gate | PASS (0 violations) |
+| Module Size Gate | PASS |
 
 ### Canonical Metric Sources
 

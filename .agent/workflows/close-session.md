@@ -128,7 +128,7 @@ git commit -m "chore(docs): close session [TOPIC]"
 
 Generate a final message listing:
 *   Updated log files.
-*   Test status (e.g., 612 tests OK).
+*   Test status (e.g., 615 tests OK).
 *   Content of `.agent/next_steps.md`.
 *   Suggestion for the next session (command `/start-session`).
 

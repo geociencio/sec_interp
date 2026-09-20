@@ -3,7 +3,7 @@ description: Formal procedure for closing a major development phase
 agent: architect
 skills: [qgis-core, qa-docker, changelog-generator]
 validation: |
-  - Verify that 612 tests pass in Docker
+  - Verify that 615 tests pass in Docker
   - Confirm that closure document is complete
   - Validate that metrics are documented
   - Verify that technical debt is classified
@@ -50,10 +50,10 @@ Verify that all tests pass:
 make docker-test
 ```
 
-🤖 **Agent Action**: Use **qa-docker** skill to validate that 612 tests pass.
+🤖 **Agent Action**: Use **qa-docker** skill to validate that 615 tests pass.
 
 Document key metrics:
-- Total tests and status (612 tests)
+- Total tests and status (615 tests)
 - Pylint/Ruff score
 - Maximum cyclomatic complexity
 - Type hint coverage

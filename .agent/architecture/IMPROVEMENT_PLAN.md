@@ -121,14 +121,15 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 ## Phase 4: Quality Score Elevation 🟢 LOW
 
-**Current**: Module Stability 52.3/100, Maintainability 90.7/100, Security 100/100
+**Current**: Module Stability 54.0/100, Maintainability 99.9/100, Security 100/100
 
 ### 4.1 Quick Wins
 
-- [ ] **4.1.1** Fix 2 NON_PYTHONIC_LOOP issues
-- [ ] **4.1.2** Investigate 1 SPATIAL_INDEX warning in `dialog_interpretation_manager.py`
+- [ ] **4.1.1** Fix 2 NON_PYTHONIC_LOOP issues (now in `gui/interpretation_inheritance_mixin.py`)
+- [ ] **4.1.2** Investigate 1 SPATIAL_INDEX warning (now in `gui/interpretation_persistence_mixin.py`)
 - [x] **4.1.3** Triage 254 MISSING_I18N — how many are real user-facing strings? → 72 false positives, 0 real gaps.
-- [ ] **4.1.4** Target: push Stability from 52.3 → 60+ by resolving top penalty factors
+- [x] **4.1.5** Resolve `module_size_gate` (7 modules > 400 lines → all < 300) — 52.4 → 54.0.
+- [ ] **4.1.4** Target: push Stability from 54.0 → 60+ by resolving top penalty factors
 
 ---
 
@@ -159,7 +160,7 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 |-----------|---------------|---------------|--------|
 | Metric coherence | ❌ Conflicting | ✅ Single source with provenance | ✅ Maintained |
 | CC gate effectiveness | ❓ Unknown | ✅ Confirmed working (CC ≤ 10) | ✅ Maintained |
-| Quality score accuracy | ❌ Stale 40.8 | ✅ Live 52.3 / 99.9 | → 60+ |
+| Quality score accuracy | ❌ Stale 40.8 | ✅ Live 54.0 / 99.9 | → 60+ |
 | i18n status clarity | ❌ "100% complete" ambiguous | ✅ Two metrics documented | ✅ Clarified |
 | Session history | ❓ Assumed missing | ✅ Confirmed in docs/maintenance/ | ✅ Docs updated |
 | Runtime operability | ❌ Antigravity-only | ⏳ Phase 2 pending | ✅ CodeWhale-compatible |
