@@ -22,7 +22,7 @@
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (2026-05-24). Replaces stale 40.8.",
         "maintainability_score": 99.9,
         "security_score": 100.0,
-        "type_hint_coverage_params": 93.4,
+        "type_hint_coverage_params": 93.1,
         "type_hint_coverage_returns": 99.8,
         "docstring_coverage": 100.0,
         "cyclomatic_complexity_gate": "PASS",
@@ -34,7 +34,7 @@
             "NON_PYTHONIC_LOOP": 2,
             "SPATIAL_INDEX": 1
         },
-        "module_size_gate": "FAIL (2 modules > 400 lines)",
+        "module_size_gate": "PASS",
         "large_modules": [
             {
                 "path": "gui/dialog_interpretation_manager.py",
