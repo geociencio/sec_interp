@@ -1,0 +1,235 @@
+# SecInterp - Plugin directory structure (plugin-owned files only)
+# Excludes: tests/, scripts/, docs/, examples/, help/, .agent/ and analysis artifacts.
+
+sec_interp/
+├── __init__.py
+├── sec_interp_plugin.py
+├── logger_config.py
+├── metadata.txt
+├── core/
+│   ├── domain/
+│   │   ├── __init__.py
+│   │   ├── dtos.py
+│   │   ├── entities.py
+│   │   ├── enums.py
+│   │   ├── spatial_meta.py
+│   │   └── task_inputs.py
+│   ├── interfaces/
+│   │   ├── __init__.py
+│   │   ├── cache_interface.py
+│   │   ├── drillhole_interface.py
+│   │   ├── geology_interface.py
+│   │   ├── i_renderer_3d.py
+│   │   ├── preview_interface.py
+│   │   └── structure_interface.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── settings_model.py
+│   ├── services/
+│   │   ├── drillhole/
+│   │   │   ├── __init__.py
+│   │   │   ├── collar_processor.py
+│   │   │   ├── interval_processor.py
+│   │   │   ├── projection_engine.py
+│   │   │   ├── survey_processor.py
+│   │   │   └── trajectory_engine.py
+│   │   ├── export/
+│   │   │   ├── handlers/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── axes.py
+│   │   │   │   ├── drillholes.py
+│   │   │   │   ├── drillholes_3d.py
+│   │   │   │   ├── geology.py
+│   │   │   │   ├── interpretations.py
+│   │   │   │   ├── structures.py
+│   │   │   │   └── topography.py
+│   │   │   ├── __init__.py
+│   │   │   ├── compat.py
+│   │   │   ├── map_settings_factory.py
+│   │   │   ├── orchestrator.py
+│   │   │   └── path_resolver.py
+│   │   ├── __init__.py
+│   │   ├── access_control_service.py
+│   │   ├── drillhole_service.py
+│   │   ├── export_service.py
+│   │   ├── geology_service.py
+│   │   ├── preview_service.py
+│   │   └── structure_service.py
+│   ├── utils/
+│   │   ├── geometry_utils/
+│   │   │   ├── __init__.py
+│   │   │   ├── measurement.py
+│   │   │   ├── optimization.py
+│   │   │   └── processing.py
+│   │   ├── __init__.py
+│   │   ├── drillhole.py
+│   │   ├── geology.py
+│   │   ├── i18n.py
+│   │   ├── io.py
+│   │   ├── metadata_reader.py
+│   │   ├── parsing.py
+│   │   ├── rendering.py
+│   │   ├── safe_loader.py
+│   │   ├── sampling.py
+│   │   └── spatial.py
+│   ├── validation/
+│   │   ├── __init__.py
+│   │   ├── base_validator.py
+│   │   ├── field_validator.py
+│   │   ├── layer_metadata.py
+│   │   ├── layer_validator.py
+│   │   ├── path_validator.py
+│   │   ├── pipeline.py
+│   │   ├── project_validator.py
+│   │   ├── project_validators.py
+│   │   ├── validation_helpers.py
+│   │   └── validators.py
+│   ├── __init__.py
+│   ├── algorithms.py
+│   ├── config.py
+│   ├── controller.py
+│   ├── data_cache.py
+│   ├── exceptions.py
+│   └── performance_metrics.py
+├── gui/
+│   ├── adapters/
+│   │   ├── __init__.py
+│   │   ├── drillhole_extractor.py
+│   │   ├── feature_fetcher.py
+│   │   ├── geology_extractor.py
+│   │   ├── geometry.py
+│   │   ├── layer_resolver.py
+│   │   ├── profile_extractor.py
+│   │   ├── structure_extractor.py
+│   │   └── validation_extractor.py
+│   ├── dialogs/
+│   │   └── interpretation_properties_dialog.py
+│   ├── renderers/
+│   │   ├── __init__.py
+│   │   ├── base_renderer.py
+│   │   ├── color_manager.py
+│   │   ├── drillhole_renderer.py
+│   │   ├── geology_renderer.py
+│   │   ├── interpretation_renderer.py
+│   │   ├── structure_renderer.py
+│   │   └── topo_renderer.py
+│   ├── services/
+│   │   └── __init__.py
+│   ├── tasks/
+│   │   ├── __init__.py
+│   │   ├── drillhole_task.py
+│   │   └── geology_task.py
+│   ├── tools/
+│   │   ├── __init__.py
+│   │   ├── interpretation_tool.py
+│   │   ├── measure_tool.py
+│   │   └── snapper.py
+│   ├── ui/
+│   │   ├── pages/
+│   │   │   ├── drillhole/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── collar_tab.py
+│   │   │   │   ├── interval_tab.py
+│   │   │   │   └── survey_tab.py
+│   │   │   ├── settings/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── advanced_tab.py
+│   │   │   │   ├── default_tab.py
+│   │   │   │   ├── info_tab.py
+│   │   │   │   └── settings_persistence.py
+│   │   │   ├── __init__.py
+│   │   │   ├── base_page.py
+│   │   │   ├── dem_page.py
+│   │   │   ├── drillhole_page.py
+│   │   │   ├── geology_page.py
+│   │   │   ├── interpretation_page.py
+│   │   │   ├── preview_page.py
+│   │   │   ├── section_page.py
+│   │   │   ├── settings_page.py
+│   │   │   └── structure_page.py
+│   │   ├── __init__.py
+│   │   ├── main_window.py
+│   │   └── sidebar.py
+│   ├── __init__.py
+│   ├── dialog_dependencies.py
+│   ├── dialog_export_manager.py
+│   ├── dialog_facade_mixin.py
+│   ├── dialog_input_manager.py
+│   ├── dialog_interpretation_manager.py
+│   ├── dialog_lifecycle_mixin.py
+│   ├── dialog_message_mixin.py
+│   ├── dialog_preview_manager.py
+│   ├── dialog_settings_persistence.py
+│   ├── dialog_signal_manager.py
+│   ├── dialog_state_manager.py
+│   ├── dialog_tool_manager.py
+│   ├── interpretation_inheritance_mixin.py
+│   ├── interpretation_persistence_mixin.py
+│   ├── layer_notification_manager.py
+│   ├── legend_widget.py
+│   ├── main_dialog.py
+│   ├── main_dialog_config.py
+│   ├── main_dialog_utils.py
+│   ├── preview_axes_manager.py
+│   ├── preview_callbacks_mixin.py
+│   ├── preview_layer_factory.py
+│   ├── preview_legend_renderer.py
+│   ├── preview_param_hasher.py
+│   ├── preview_render_mixin.py
+│   ├── preview_renderer.py
+│   ├── preview_reporter.py
+│   ├── preview_state.py
+│   ├── preview_task_orchestrator.py
+│   ├── ui_status_manager.py
+│   └── utils.py
+├── exporters/
+│   ├── __init__.py
+│   ├── base_exporter.py
+│   ├── csv_exporter.py
+│   ├── drillhole_3d_exporter.py
+│   ├── drillhole_exporters.py
+│   ├── dxf_exporter.py
+│   ├── image_exporter.py
+│   ├── interpretation_3d_exporter.py
+│   ├── interpretation_exporters.py
+│   ├── pdf_exporter.py
+│   ├── profile_exporters.py
+│   ├── svg_exporter.py
+│   └── vector_exporter.py
+├── plugin/
+│   ├── __init__.py
+│   ├── input_validator.py
+│   ├── lifecycle.py
+│   └── render_pipeline.py
+├── resources/
+│   ├── __init__.py
+│   ├── resources.py
+│   ├── resources.qrc
+│   └── symbology-style.db
+├── i18n/
+│   ├── SecInterp_de.qm
+│   ├── SecInterp_de.ts
+│   ├── SecInterp_es.qm
+│   ├── SecInterp_es.ts
+│   ├── SecInterp_fi.qm
+│   ├── SecInterp_fi.ts
+│   ├── SecInterp_fr.qm
+│   ├── SecInterp_fr.ts
+│   ├── SecInterp_hi.qm
+│   ├── SecInterp_hi.ts
+│   ├── SecInterp_id.qm
+│   ├── SecInterp_id.ts
+│   ├── SecInterp_it.qm
+│   ├── SecInterp_it.ts
+│   ├── SecInterp_ja.qm
+│   ├── SecInterp_ja.ts
+│   ├── SecInterp_nl.qm
+│   ├── SecInterp_nl.ts
+│   ├── SecInterp_pl.qm
+│   ├── SecInterp_pl.ts
+│   ├── SecInterp_pt_BR.qm
+│   ├── SecInterp_pt_BR.ts
+│   ├── SecInterp_ru.qm
+│   ├── SecInterp_ru.ts
+│   ├── SecInterp_zh_CN.qm
+│   └── SecInterp_zh_CN.ts
