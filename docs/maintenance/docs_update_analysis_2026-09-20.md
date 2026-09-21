@@ -84,6 +84,15 @@ staleness audit for details.
 - Test-count numbers (`620`, `572`, `361`, `124`) live in **logs** (`source/MAINTENANCE_LOG`,
   `docsec/CHANGELOG`, `logs/session_*`) — historical, leave.
 
+## Status of the fixes
+
+> [!success] Resolved in this session (same day)
+> - **§1 Version headers**: `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` and `source/ARCHITECTURE.md` → `3.8.0`.
+> - **§2 Content drift**: `source/ARCHITECTURE.md` managers/diagram/export-service/parallel-geology/PyQt5 sections refreshed to the refactor; `USER_GUIDE` Advanced Features de-versioned + collapsible-controls note + 3D default note; `TECHNICAL_COMPENDIUM` API reference updated (`build_segments`/`project_structures`/`process_context`, `PreviewService`, `AccessControlService`, `export/`, `GeologySegment.geometry_wkt`).
+> - **§3 Broken links**: fixed in `docsec/DEVELOPMENT_GUIDE.md` / `_EN.md`.
+>
+> **Still pending:** §4 duplication/canonical sources, §5 Sphinx archive section, §6 CI `docs.yml`.
+
 ## 8. Recommendations (priority)
 
 1. **P1** — Fix version headers (`ARCHITECTURE_EN`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN`,

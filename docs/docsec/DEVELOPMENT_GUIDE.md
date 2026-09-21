@@ -54,9 +54,9 @@ To avoid conflicts with pre-commit hooks (which may reformat code and cause the 
 - **Linting**: Run `uv run ruff check .` to validate standards.
 - **Metrics Analysis**: Run `uv run ai-ctx analyze .` regularly to monitor complexity.
 - **QGIS Audit**: Use `uv run qgis-analyzer analyze .` for QGIS regulatory validations.
-- Follow the conventions in [COMMIT_GUIDELINES.md](../standards/COMMIT_GUIDELINES.md) (Conventional Commits).
+- Follow the conventions in [COMMIT_GUIDELINES.md](COMMIT_GUIDELINES.md) (Conventional Commits).
 - **Important**: Try to fix pre-commit errors instead of skipping them. Use `--no-verify` only if absolutely necessary and temporary.
 - Keep cyclomatic complexity per function below 15 whenever possible.
 
 ---
-**Version**: 2.9.0 | **Ref**: [README_DEV.md](README_DEV.md)
+**Version**: 3.8.0 | **Ref**: [README_DEV.md](../../README_DEV.md)

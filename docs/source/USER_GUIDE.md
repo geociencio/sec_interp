@@ -122,7 +122,7 @@ Configures geological or attribute intervals.
 ![Section Preview with all panels collapsed](images/preview_panels_collapsed.png)
 *Section Preview with all panels collapsed.*
 
-## 4. Advanced Features (v3.0.0)
+## 4. Advanced Features
 
 ### 4.1 Interpretation Tool (Drawing)
 The new **Interpretation Tool** allows you to draw geological polygons directly on the profile section.
@@ -156,13 +156,13 @@ When you digitize a new interpretation polygon, SecInterp attempts to automatica
 SecInterp now bridges the gap between 2D sections and 3D modeling. This feature allows you to export your 2D interpretations as real 3D objects.
 
 **Workflow:**
-1.  Go to the **Advanced** tab in the **Settings** tab and check **"Enable 3D Interpretation Export"**.
+1.  Go to the **Advanced** tab in the **Settings** tab and check **"Enable 3D Interpretation Export"** (enabled by default since v3.8.0).
 2.  Use the **Save** button (not Export) to generate your data.
 3.  The plugin will create a **PolygonZ** Shapefile in your output folder.
 4.  Every vertex of your interpretation is projected into real-world 3D coordinates based on the section plane and surface elevation.
 5.  **Note**: This feature is now standard and available to all users.
 
-### 4.3 Settings Page
+### 4.4 Settings Page
 The **Settings** page manages export configurations and advanced features. It is organized into three sub-tabs:
 
 #### 1. Default Tab (Export Selection)
@@ -198,6 +198,11 @@ Located at the top of the preview panel:
 - **Measure**: Activates the interactive ruler. Click on the canvas to measure distances and gradients.
 - **Interpret**: Activates the digitization tool for drawing geological polygons completely.
 - **Export (Image)**: Saves the **current view** as an image file (PNG, JPG, PDF, SVG). *Note: To export SHP/CSV data, use the main SAVE button.*
+
+> [!note] Collapsible controls (v3.7.0+)
+> The preview action buttons, the LOD controls and the layer checkboxes are grouped in a
+> collapsible **Controls** box, so the map canvas and status bar stay visible while you
+> interpret the section.
 
 ### 5.2 Visualization Controls (LOD)
 These settings optimize performance for high-resolution datasets:

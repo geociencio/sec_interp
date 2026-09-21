@@ -25,22 +25,29 @@ The plugin is prepared for future integration of deep geophysical data:
 
 ### Core Services (`core/services/`)
 
-#### `ProfileService`
-- **`generate_topographic_profile(line_lyr, raster_lyr, band)`**: Samples raster data along a line.
-- **Returns**: `List[Tuple[float, float]]` (distance, elevation).
-
 #### `GeologyService`
-- **`generate_geological_profile(...)`**: Intersects section lines with geological geometry.
+- **`build_segments(context, feedback=None)`**: Intersects section lines with geological geometry.
 - **Returns**: `List[GeologySegment]`.
 
 #### `StructureService`
-- **`project_structures(...)`**: Projects 3D structural data and calculates apparent dip.
+- **`project_structures(context, feedback=None)`**: Projects 3D structural data and calculates apparent dip.
 - **Formula**: `tan(beta) = tan(alpha) * |cos(strike - azimuth)|`.
 
 #### `DrillholeService`
-- **Architecture**: Decomposed into specialized processors (`CollarProcessor`, `SurveyProcessor`, `IntervalProcessor`).
-- **`project_collars()`**: Projects collar points 3D->2D.
-- **`process_intervals()`**: Handles full pipeline for trace and interval generation.
+- **`process_context(context, feedback=None)`**: Full drillhole pipeline.
+- **Architecture**: Decomposed into `CollarProcessor`, `SurveyProcessor`, `IntervalProcessor`, `TrajectoryEngine`, `ProjectionEngine`.
+
+#### `PreviewService`
+- **`generate_all(params, transform_context)`**: Orchestrates topography + structures for the preview.
+- **`calculate_max_points(canvas_width, manual_max, auto_lod)`**: Adaptive LOD.
+
+#### `AccessControlService`
+- **`can_export_3d()`**: Gates 3D export via `QgsSettings` (`SecInterp/enable_3d`).
+
+#### Export package (`core/services/export/`)
+- **`ExportService.export_data(output_folder, params, ...)`**: facade over `handlers/` (one per data type).
+- **Note**: topography extraction lives in the GUI adapter `gui/adapters/profile_extractor.py`
+  (`ProfileExtractor.extract_profile`), not in `core/services/`.
 
 ---
 
@@ -48,7 +55,7 @@ The plugin is prepared for future integration of deep geophysical data:
 
 Modularized in `core/validation/`:
 - **FieldValidator**: Numeric and existence checks.
-- **LayerValidator**: CS, geometry, and feature count validation.
+- **LayerValidator**: CRS, geometry, and feature count validation.
 - **PathValidator**: Security and permission handling.
 - **ProjectValidator**: High-level orchestration.
 
@@ -57,14 +64,14 @@ Modularized in `core/validation/`:
 ## 🧬 Key Data Structures
 
 ### `GeologySegment`
-Used to represent both surface outcrops and drillhole intervals.
+Used to represent both surface outcrops and drillhole intervals (QGIS-agnostic: WKT, not `QgsGeometry`).
 ```python
 @dataclass
 class GeologySegment:
     unit_name: str
-    points: List[Tuple[float, float]]
-    geometry: QgsGeometry
-    attributes: Dict[str, Any]
+    geometry_wkt: DomainGeometry | None
+    attributes: dict[str, Any]
+    points: list[tuple[float, float]]
 ```
 
 ### `StructureMeasurement`
@@ -76,4 +83,5 @@ class StructureMeasurement:
     apparent_dip: float
     original_dip: float
     original_strike: float
+    attributes: dict[str, Any]
 ```

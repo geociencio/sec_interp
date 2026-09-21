@@ -1,7 +1,9 @@
 # SecInterp - Detailed Project Architecture
 
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 2.9.0 | Last update: 2026-02-01
+> Version 3.8.0 | Last update: 2026-09-20
+>
+> ⚠️ **Version note**: This document was originally written for v2.9.0 and is being progressively updated. For the current architecture (Extract-then-Compute, `core/services/export/`, `plugin/` mixins, `dialog_*_mixin`, drillhole/settings tabs) see the repository document `docs/ARCHITECTURE_EN.md`.
 >
 > ⚠️ **Important Note**: See the [Core Components Distinction Guide (EN)](CORE_DISTINCTION_GUIDE_EN.md) or [Core Distinction Guide](CORE_DISTINCTION_GUIDE.md) to differentiate between the `SecInterp Core` and the `qgis.core` API.
 
@@ -111,17 +113,17 @@ graph TB
     subgraph GUI["🖥️ GUI Layer - User Interface"]
         direction TB
 
-        MAIN[main_dialog.py<br/>SecInterpDialog<br/>~350 lines]
+        MAIN[main_dialog.py<br/>SecInterpDialog<br/>~190 lines]
 
         subgraph MANAGERS["Managers"]
-            SIGNALS_MGR[main_dialog_signals.py<br/>SignalManager]
-            DATA_MGR[main_dialog_data.py<br/>DataAggregator]
-            PREVIEW_MGR[main_dialog_preview.py<br/>PreviewManager]
-            EXPORT_MGR[main_dialog_export.py<br/>ExportManager]
-            VALIDATION_MGR[main_dialog_validation.py<br/>DialogValidator]
-            INTERP_MGR[interpretation_manager.py<br/>InterpretationManager]
-            MSG_MGR[message_manager.py<br/>MessageManager]
-            CONFIG_MGR[main_dialog_config.py<br/>DialogDefaults]
+            SIGNALS_MGR[dialog_signal_manager.py<br/>SignalManager]
+            DATA_MGR[dialog_input_manager.py<br/>InputManager]
+            PREVIEW_MGR[dialog_preview_manager.py<br/>PreviewManager]
+            EXPORT_MGR[dialog_export_manager.py<br/>ExportManager]
+            VALIDATION_MGR[dialog_input_manager.py + core/validation/<br/>Validation]
+            INTERP_MGR[dialog_interpretation_manager.py<br/>InterpretationManager]
+            MSG_MGR[dialog_message_mixin.py<br/>DialogMessageMixin]
+            CONFIG_MGR[main_dialog_config.py<br/>DialogConfig]
         end
 
         RENDERER[preview_renderer.py<br/>PreviewRenderer<br/>~280 lines]
@@ -185,7 +187,7 @@ graph TB
     subgraph EXPORTERS["📤 Exporters Layer - Export"]
         direction TB
 
-        ORCHESTRATOR[orchestrator.py<br/>DataExportOrchestrator]
+        ORCHESTRATOR[core/services/export/orchestrator.py<br/>ExportService]
         BASE_EXP[base_exporter.py<br/>BaseExporter]
 
         subgraph EXPORT_FORMATS["Export Formats"]
@@ -269,34 +271,39 @@ graph LR
 ### 1. SecInterpDialog (main_dialog.py)
 
 **Main Class**: `SecInterpDialog`
-**Inherits from**: `SecInterpMainWindow`
-**Lines of code**: ~350 (Unified logic handled by Managers)
-**Responsibility**: Simplified main dialog that coordinates components via Managers
+**Inherits from**: `DialogLifecycleMixin, DialogMessageMixin, DialogFacadeMixin, SecInterpMainWindow`
+**Lines of code**: ~190 (logic handled by managers + mixins)
+**Responsibility**: Composition root that coordinates components via Managers and mixins
 
 #### Key Components
 
 ```python
-class SecInterpDialog(SecInterpMainWindow):
+class SecInterpDialog(
+    DialogLifecycleMixin, DialogMessageMixin, DialogFacadeMixin, SecInterpMainWindow
+):
     """Dialog for the SecInterp QGIS plugin."""
 
     def __init__(self, iface=None, plugin_instance=None, parent=None):
-        # Logic Managers
-        self.signal_manager = DialogSignalManager(self)
-        self.data_aggregator = DialogDataAggregator(self)
-
-        # Operation Managers
-        self.validator = DialogValidator(self)
-        self.preview_manager = PreviewManager(self)
-        self.export_manager = ExportManager(self)
-        self.status_manager = DialogStatusManager(self)
-        self.settings_manager = DialogSettingsManager(self)
-        self.interpretation_manager = InterpretationManager(self)
-        self.message_manager = MessageManager(self)
-
-        # Widgets
+        super().__init__(iface, parent)
+        self.iface = iface
+        self.plugin_instance = plugin_instance
+        self.project = QgsProject.instance()
+        self._init_managers()
         self.legend_widget = LegendWidget(self.preview_widget.canvas)
-        self.pan_tool = QgsMapToolPan(self.preview_widget.canvas)
-        self.measure_tool = ProfileMeasureTool(self.preview_widget.canvas)
+        self.signal_manager = SignalManager(self, self.preview_manager,
+                                            self.export_manager, self.tool_manager,
+                                            self.state_manager)
+        self.signal_manager.connect_all()
+
+    def _init_managers(self):
+        self.input_manager = InputManager(pages, self.output_widget, self.tr)
+        self.state_manager = StateManager(self)
+        self.preview_manager = PreviewManager(self, PreviewService(controller), cache=preview_cache)
+        self.export_manager = ExportManager(self)
+        self.interpretation_manager = InterpretationManager(self, cache=preview_cache)
+        self.tool_manager = ToolManager(...)
+        self.navigation_manager = NavigationManager(self.preview_widget.canvas)
+        self.layer_factory = PreviewLayerFactory()
 ```
 
 #### Main Methods
@@ -304,7 +311,7 @@ class SecInterpDialog(SecInterpMainWindow):
 | Method | Description | Location |
 |--------|-------------|-----------|
 | `_init_managers()` | Initializes dedicated managers | `main_dialog.py` |
-| `get_selected_values()` | Facade for the DataAggregator | `main_dialog.py` |
+| `get_selected_values()` | Facade for the InputManager | `main_dialog.py` |
 | `get_all_values()` | Actual data aggregation from pages | `dialog_input_manager.py` |
 | `connect_all()` | Bulk signal connection | `dialog_signal_manager.py` |
 | `preview_profile_handler()` | Delegated to PreviewManager | `main_dialog.py` |
@@ -332,7 +339,7 @@ self.page_section.line_combo.layerChanged.connect(self.update_button_state)
 
 ---
 
-### 2. PreviewManager (main_dialog_preview.py)
+### 2. PreviewManager (dialog_preview_manager.py)
 
 **Class**: `PreviewManager`
 **Lines of code**: ~250
@@ -743,10 +750,10 @@ class DataCache:
 (exporters-layer---data-export)=
 ## 📤 Exporters Layer - Data Export
 
-### 1. DataExportOrchestrator (orchestrator.py)
+### 1. ExportService (core/services/export/orchestrator.py)
 
-**Class**: `DataExportOrchestrator`
-**Lines of code**: 148
+**Class**: `ExportService`
+**Lines of code**: ~207
 **Responsibility**: Coordinates exports to multiple formats
 
 #### Main Method
@@ -939,32 +946,25 @@ sequenceDiagram
 
 ---
 
-### Flow 3: Parallel Geological Processing
+### Flow 3: Background Geological Processing (QgsTask)
 
 ```mermaid
 sequenceDiagram
     participant Main as Main Thread
-    participant GeoService as GeologyService
-    participant ParallelGeo as ParallelGeologyService
-    participant Worker as GeologyProcessingThread
+    participant PM as PreviewManager
+    participant Orch as PreviewTaskOrchestrator
+    participant Task as GeologyGenerationTask (QgsTask)
+    participant Svc as GeologyService
 
-    Main->>GeoService: generate_geological_profile()
-    GeoService->>ParallelGeo: process_async(line, raster, outcrop, field, band)
+    Main->>PM: generate_preview()
+    PM->>Orch: start_geology_task(params, geology_service)
+    Orch->>Task: create + run
+    Note over Task: QgsTask (background thread)
 
-    ParallelGeo->>Worker: start()
-    Note over Worker: QThread Worker
-
-    Worker->>Worker: run()
-    Worker->>Worker: _generate_master_profile_data()
-    Worker->>Worker: _perform_intersection()
-
-    loop For each feature
-        Worker->>Worker: _process_intersection_feature()
-    end
-
-    Worker->>ParallelGeo: finished.emit(results)
-    ParallelGeo->>GeoService: return results
-    GeoService-->>Main: List[GeologySegment]
+    Task->>Svc: build_segments(context, feedback=self)
+    Svc-->>Task: List[GeologySegment]
+    Task-->>PM: finished_with_results(results)
+    PM-->>Main: re-render preview
 ```
 
 ---
@@ -1107,17 +1107,17 @@ from qgis.gui import (
 
 **Main use**: User interface, interactive tools, specialized widgets.
 
-### PyQt5
+### qgis.PyQt (Qt5/Qt6 agnostic)
 
 ```python
-from PyQt5.QtCore import (
+from qgis.PyQt.QtCore import (
     Qt,                    # Qt constants
     QVariant,              # Data types
     pyqtSignal,            # Signals
     pyqtSlot,              # Slots
 )
 
-from PyQt5.QtWidgets import (
+from qgis.PyQt.QtWidgets import (
     QDialog,               # Dialogs
     QWidget,               # Base widgets
     QPushButton,           # Buttons
@@ -1130,7 +1130,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,           # Horizontal layouts
 )
 
-from PyQt5.QtGui import (
+from qgis.PyQt.QtGui import (
     QColor,                # Colors
     QFont,                 # Fonts
     QPen,                  # Drawing pens
@@ -1190,24 +1190,23 @@ def _adaptive_sample(self, data, min_tolerance=0.1, max_tolerance=10.0, max_poin
 
 **Benefit**: Preserves important details (tight curves) while simplifying straight areas.
 
-### 3. Parallel Geological Processing
+### 3. Background Geological Processing (QgsTask)
 
-**Implemented in**: `ParallelGeologyService`
+**Implemented in**: `gui/tasks/geology_task.py` (`GeologyGenerationTask`) + `gui/preview_task_orchestrator.py`
 
 ```python
-class ParallelGeologyService(QObject):
-    finished = pyqtSignal(list)
-    progress = pyqtSignal(int)
-    error = pyqtSignal(str)
+class GeologyGenerationTask(QgsTask):
+    finished_with_results = pyqtSignal(object)
+    progress_changed = pyqtSignal(float)
+    error_occurred = pyqtSignal(str)
 
-    def process_async(self, line_lyr, raster_lyr, outcrop_lyr, field, band):
-        """Processes geology in a separate thread."""
-        self.worker = GeologyProcessingThread(...)
-        self.worker.finished.connect(self.finished.emit)
-        self.worker.start()
+    def run(self) -> bool:
+        self.result = self.service.build_segments(self.context, feedback=self)
+        return True
 ```
 
-**Benefit**: UI remains responsive during heavy processing.
+**Benefit**: UI remains responsive during heavy processing; the task receives a detached
+`GeologyContext` (no live QGIS objects cross the thread boundary).
 
 ### 4. Processed Data Cache
 
