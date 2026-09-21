@@ -80,6 +80,12 @@ make docs                       # equivale a: ./scripts/build_docs.sh
 5. Sincroniza el manual offline `help/html/<lang>` (dedup de imágenes; sin search/API/fuentes).
 6. Si `../sec_interp_docs/.git` existe → `git add/commit` (`docs: auto-build from sec_interp@<hash>`) y `git push origin main`.
 
+**Espejos docs ↔ source**: algunos documentos existen en `docs/` (canónico) y en `docs/source/` (Sphinx). Sincronízalos con:
+```bash
+bash scripts/sync_docs_mirrors.sh          # copia docs/ → docs/source/
+bash scripts/sync_docs_mirrors.sh --check  # CI: falla si están desincronizados
+```
+
 **Repositorio de docs**:
 
 | Elemento | Valor |

@@ -14,7 +14,6 @@ Welcome to the SecInterp plugin technical documentation.
    CORE_DISTINCTION_GUIDE
    CORE_DISTINCTION_GUIDE_EN
    MAINTENANCE_LOG
-   v2.9.0_technical_analysis
    modules
 
 .. toctree::
@@ -22,6 +21,7 @@ Welcome to the SecInterp plugin technical documentation.
    :caption: Project Archive
    :hidden:
 
+   v2.9.0_technical_analysis
    phase_closure_v2.7.0
    phase_closure_v2.8.0
    phase_closure_v2.9.0

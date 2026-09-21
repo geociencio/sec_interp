@@ -91,7 +91,10 @@ staleness audit for details.
 > - **§2 Content drift**: `source/ARCHITECTURE.md` managers/diagram/export-service/parallel-geology/PyQt5 sections refreshed to the refactor; `USER_GUIDE` Advanced Features de-versioned + collapsible-controls note + 3D default note; `TECHNICAL_COMPENDIUM` API reference updated (`build_segments`/`project_structures`/`process_context`, `PreviewService`, `AccessControlService`, `export/`, `GeologySegment.geometry_wkt`).
 > - **§3 Broken links**: fixed in `docsec/DEVELOPMENT_GUIDE.md` / `_EN.md`.
 >
-> **Still pending:** §4 duplication/canonical sources, §5 Sphinx archive section, §6 CI `docs.yml`.
+> - **§4 Duplication/canonical**: added `scripts/sync_docs_mirrors.sh` (+`--check`) keeping `docs/source/CORE_DISTINCTION_GUIDE*.md` in sync with `docs/`; the Sphinx `CORE_DISTINCTION_GUIDE.md` was actually an EN duplicate and is now the ES guide. Marked `docsec/CHANGELOG*.md` as non-canonical (canonical: `docs/CHANGELOG.md`) and cross-referenced the two DEVELOPMENT_GUIDE copies.
+> - **§5 Toctree**: moved `v2.9.0_technical_analysis` into the hidden "Project Archive" section of `docs/source/index.rst`.
+>
+> **Still pending:** §6 CI `docs.yml`.
 
 ## 8. Recommendations (priority)
 

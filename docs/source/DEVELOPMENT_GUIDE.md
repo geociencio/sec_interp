@@ -1,5 +1,9 @@
 # SecInterp - Development Guide
 
+> [!note] Related guide
+> A repo-facing companion guide (decoupled architecture + commit workflow) lives in
+> `docs/docsec/DEVELOPMENT_GUIDE.md`.
+
 Welcome to the **SecInterp** development guide. This document outlines the standards, best practices, and workflows for contributing to the project.
 
 ---

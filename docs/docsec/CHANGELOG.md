@@ -1,5 +1,9 @@
 # Changelog
 
+> [!warning] Non-canonical (legacy)
+> The canonical changelog is [`docs/CHANGELOG.md`](../CHANGELOG.md). This file is kept for
+> historical reference and may lag behind.
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

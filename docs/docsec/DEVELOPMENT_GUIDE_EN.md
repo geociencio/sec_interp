@@ -1,5 +1,9 @@
 # SecInterp Development Guide
 
+> [!note] Related guide
+> The Sphinx-published developer guide is [`docs/source/DEVELOPMENT_GUIDE.md`](../source/DEVELOPMENT_GUIDE.md).
+> This repo-facing copy focuses on the decoupled architecture and commit workflow.
+
 This document provides guidelines for extending and maintaining the SecInterp plugin following the new decoupled architecture.
 
 ## 🛠️ Development Environment
