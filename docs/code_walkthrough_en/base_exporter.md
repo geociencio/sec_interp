@@ -9,7 +9,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 30 — `exporters/base_exporter.py`
+# `exporters/base_exporter.py`
 
 > [!abstract] One-line summary
 > The **abstract base exporter**: defines the `export()` contract and provides secure path validation and settings access.
@@ -160,4 +160,4 @@ def get_exporter(extension: str, settings: dict) -> BaseExporter:
 
 ---
 
-*Note 30 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

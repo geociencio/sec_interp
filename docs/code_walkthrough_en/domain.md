@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 11 — `core/domain/`
+# `core/domain/`
 
 > [!abstract] One-line summary
 > This is the **domain layer**: it defines the DTOs, entities, enums, and types that act as the **data contract** between GUI, core, and exporters.
@@ -370,4 +370,4 @@ __all__ = [...]
 
 ---
 
-*Note 11 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

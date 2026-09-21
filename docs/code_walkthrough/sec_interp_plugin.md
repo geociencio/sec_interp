@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 01 — `sec_interp_plugin.py`
+# `sec_interp_plugin.py`
 
 > [!abstract] Resumen en una línea
 > Es el **punto de entrada** del plugin: define la clase `SecInterp`, que QGIS instancia al cargar, y orquesta todo su **ciclo de vida** (inicialización, GUI, ejecución, descarga).
@@ -512,4 +512,4 @@ def tr(self, message: str) -> str:
 
 ---
 
-*Nota 01 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

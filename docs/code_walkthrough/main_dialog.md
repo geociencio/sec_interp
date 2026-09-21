@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 20 — `gui/main_dialog.py`
+# `gui/main_dialog.py`
 
 > [!abstract] Resumen en una línea
 > Es el **diálogo principal** (thin orchestrator): compone la UI de `SecInterpMainWindow` y **delega** en 7 managers especializados — no contiene lógica de negocio.
@@ -253,4 +253,4 @@ def update_preview_checkbox_states(self):            self.state_manager.update_p
 
 ---
 
-*Nota 20 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

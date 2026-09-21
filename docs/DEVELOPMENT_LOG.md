@@ -4,6 +4,7 @@
 - **Updated notes (ES+EN)**: added a "Refactor 2026-09-20" callout and the new line counts to `export_service` (645→13 shim), `sec_interp_plugin` (507→129), `main_dialog` (480→193), `drillhole_page` (451→130), `settings_page` (416→124), `interpretation_manager` (444→107), `dialog_preview_manager` (434→231).
 - **Indexes**: both `Index.md` list the new notes and a refactor callout.
 - **Layer notes**: added 23 `layer_*` notes per vault documenting the 4 root layers (`core`, `gui`, `exporters`, `plugin`) and 19 sub-layers (`core/{domain,interfaces,models,services,services/drillhole,services/export,services/export/handlers,utils,utils/geometry_utils,validation}`, `gui/{adapters,dialogs,renderers,tasks,tools,ui,ui/pages,ui/pages/drillhole,ui/pages/settings}`), each with its layer rules, sub-layer map, module inventory and patterns. Each vault now has **97 notes**.
+- **Depth pass**: enriched the 41 thinnest file notes per vault (exporters, core drillhole/services/utils, preview, GUI managers, adapters/tools/pages) to the full template — problem/solution, Mermaid diagram, imports reading, method-by-method walkthrough with real snippets, patterns, API table and observations. Removed the remaining `NN —` H1 prefixes and `Nota NN`/`Note NN` footers.
 - **Validation**: all wikilinks in new/modified notes resolve; `scripts/sync_vault_mirrors.sh --check` PASS.
 - **Docs-only**: no Python changes.
 

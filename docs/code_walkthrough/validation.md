@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 16 — `core/validation/`
+# `core/validation/`
 
 > [!abstract] Resumen en una línea
 > Es el **pipeline de validación** QGIS-agnóstico: acumula errores por dominio y valida capas, campos, CRS, bandas y rangos sin tocar QGIS.
@@ -225,4 +225,4 @@ class ValidationContext:
 
 ---
 
-*Nota 16 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

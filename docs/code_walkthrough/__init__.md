@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 02 — `__init__.py`
+# `__init__.py`
 
 > [!abstract] Resumen en una línea
 > Es el **entry point oficial** del plugin: QGIS importa este paquete y llama a `classFactory(iface)` para obtener la instancia de `SecInterp`.
@@ -206,4 +206,4 @@ Ver [[sec_interp_plugin]] para el ciclo de vida completo.
 
 ---
 
-*Nota 02 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

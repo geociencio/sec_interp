@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 15 — `core/services/drillhole_service.py`
+# `core/services/drillhole_service.py`
 
 > [!abstract] Resumen en una línea
 > Es el **orquestador de sondajes** (fase *Compute*): a partir de un `DrillholeContext` desacoplado, proyecta collares, calcula trayectorias e interpola intervalos — **sin tocar QGIS**.
@@ -212,4 +212,4 @@ def process_context(self, context: DrillholeContext, feedback=None):
 
 ---
 
-*Nota 15 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

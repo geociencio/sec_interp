@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 23 — `gui/renderers/`
+# `gui/renderers/`
 
 > [!abstract] Resumen en una línea
 > Es el **kit de estilado del preview**: 6 renderers especializados + `ColorManager` y helpers sybólicos — cada uno viste un tipo de capa.
@@ -138,4 +138,4 @@ class ColorManager:
 
 ---
 
-*Nota 23 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

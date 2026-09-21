@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 15 — `core/services/drillhole_service.py`
+# `core/services/drillhole_service.py`
 
 > [!abstract] One-line summary
 > The **drillhole orchestrator** (Compute phase): from a detached `DrillholeContext` it projects collars, computes trajectories, and interpolates intervals — **without touching QGIS**.
@@ -212,4 +212,4 @@ def process_context(self, context: DrillholeContext, feedback=None):
 
 ---
 
-*Note 15 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 19 — `core/services/structure_service.py`
+# `core/services/structure_service.py`
 
 > [!abstract] Resumen en una línea
 > Es el **servicio puro de estructuras**: proyecta puntos estructurales a la línea de sección, muestrea elevación y calcula **buzamiento aparente** — sin tocar QGIS.
@@ -182,4 +182,4 @@ def _parse_structural_data(self, attributes, strike_field, dip_field, line_az):
 
 ---
 
-*Nota 19 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

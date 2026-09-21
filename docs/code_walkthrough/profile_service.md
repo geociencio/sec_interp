@@ -13,7 +13,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 13 — `profile_extractor.py` / `ProfileService`
+# `profile_extractor.py` / `ProfileService`
 
 > [!abstract] Resumen en una línea
 > Es el **adapter de extracción topográfica** (fase *Extract*): lee la línea de sección y muestrea el DEM, devolviendo un `ProfileData` puro — sin tocar el core.
@@ -204,4 +204,4 @@ def tr(self, message: str) -> str:
 
 ---
 
-*Nota 13 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

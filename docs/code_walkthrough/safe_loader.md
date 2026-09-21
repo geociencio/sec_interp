@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 17 — `core/utils/safe_loader.py`
+# `core/utils/safe_loader.py`
 
 > [!abstract] Resumen en una línea
 > Helper de **carga tolerante a fallos**: importa módulos y clases de forma segura y diferida, de modo que un componente roto **no tumba** el plugin.
@@ -227,4 +227,4 @@ self.collar_processor = SafeLoader.lazy_load(
 
 ---
 
-*Nota 17 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 14 — `core/services/geology_service.py`
+# `core/services/geology_service.py`
 
 > [!abstract] Resumen en una línea
 > Es el **servicio puro de geología** (fase *Compute*): a partir de un `GeologyContext` desacoplado, interpola elevaciones y construye `GeologySegment`s ordenados — **sin tocar QGIS**.
@@ -208,4 +208,4 @@ def interpolate_segment_points(
 
 ---
 
-*Nota 14 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 30 — `exporters/base_exporter.py`
+# `exporters/base_exporter.py`
 
 > [!abstract] Resumen en una línea
 > Es la **clase base abstracta** de todos los exporters: define el contrato `export()` y provee validación segura de rutas y acceso a settings.
@@ -162,4 +162,4 @@ def get_exporter(extension: str, settings: dict) -> BaseExporter:
 
 ---
 
-*Nota 30 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

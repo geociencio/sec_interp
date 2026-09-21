@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 12 — `core/exceptions.py`
+# `core/exceptions.py`
 
 > [!abstract] Resumen en una línea
 > Define la **jerarquía de excepciones** del plugin: una raíz `SecInterpError` con mensaje + detalles y 7 subclases tipadas para distinguir validación, procesamiento, geometría, datos y configuración.
@@ -209,4 +209,4 @@ sequenceDiagram
 
 ---
 
-*Nota 12 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

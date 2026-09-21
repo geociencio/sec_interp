@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 13 — `profile_extractor.py` / `ProfileService`
+# `profile_extractor.py` / `ProfileService`
 
 > [!abstract] One-line summary
 > The **topography extraction adapter** (Extract phase): reads the section line and samples the DEM, returning a pure `ProfileData`.
@@ -203,4 +203,4 @@ def tr(self, message: str) -> str:
 
 ---
 
-*Note 13 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

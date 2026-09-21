@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 10 — `core/controller.py`
+# `core/controller.py`
 
 > [!abstract] One-line summary
 > This is the core's **central orchestrator**: it coordinates the services (topography, geology, structures, drillholes) through **injected adapters** and manages a **granular per-component cache**.
@@ -439,4 +439,4 @@ _, drillhole_data = self.drillhole_service.process_context(context)   # COMPUTE
 
 ---
 
-*Note 10 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

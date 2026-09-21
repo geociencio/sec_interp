@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 21 — `gui/dialog_preview_manager.py`
+# `gui/dialog_preview_manager.py`
 
 > [!abstract] One-line summary
 > The **preview orchestrator**: handles synchronous generation, async tasks, cache, LOD, and rendering — everything after *Generate Preview* is clicked.
@@ -272,4 +272,4 @@ def _on_geology_finished(self, results):
 
 ---
 
-*Note 21 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

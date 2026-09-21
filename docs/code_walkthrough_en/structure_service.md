@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 19 — `core/services/structure_service.py`
+# `core/services/structure_service.py`
 
 > [!abstract] One-line summary
 > The **pure structure service**: projects structural points onto the section line, samples elevation, and computes **apparent dip** — without touching QGIS.
@@ -182,4 +182,4 @@ def _parse_structural_data(self, attributes, strike_field, dip_field, line_az):
 
 ---
 
-*Note 19 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

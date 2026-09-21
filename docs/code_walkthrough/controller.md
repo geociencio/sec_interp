@@ -13,7 +13,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 10 — `core/controller.py`
+# `core/controller.py`
 
 > [!abstract] Resumen en una línea
 > Es el **orquestador central** del core: coordina los servicios (topografía, geología, estructuras, sondajes) a través de **adapters inyectados** y gestiona un **caché granular** por componente.
@@ -440,4 +440,4 @@ _, drillhole_data = self.drillhole_service.process_context(context)   # COMPUTE
 
 ---
 
-*Nota 10 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

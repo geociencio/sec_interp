@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 21 — `gui/dialog_preview_manager.py`
+# `gui/dialog_preview_manager.py`
 
 > [!abstract] Resumen en una línea
 > Es el **orquestador del preview**: genera datos síncronos, lanza tareas asíncronas, gestiona caché, LOD y render — todo lo que ocurre tras pulsar *Generate Preview*.
@@ -272,4 +272,4 @@ def _on_geology_finished(self, results):
 
 ---
 
-*Nota 21 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

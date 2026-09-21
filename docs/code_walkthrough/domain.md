@@ -13,7 +13,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 11 — `core/domain/`
+# `core/domain/`
 
 > [!abstract] Resumen en una línea
 > Es la **capa de dominio**: define los DTOs, entidades, enums y tipos que sirven de **contrato de datos** entre GUI, core y exporters.
@@ -371,4 +371,4 @@ __all__ = [...]
 
 ---
 
-*Nota 11 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

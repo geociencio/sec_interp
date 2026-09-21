@@ -12,7 +12,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 17 — `core/utils/safe_loader.py`
+# `core/utils/safe_loader.py`
 
 > [!abstract] One-line summary
 > A **fault-tolerant loading** helper: it imports modules and classes safely and lazily, so a broken component **does not bring down** the plugin.
@@ -227,4 +227,4 @@ self.collar_processor = SafeLoader.lazy_load(
 
 ---
 
-*Note 17 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

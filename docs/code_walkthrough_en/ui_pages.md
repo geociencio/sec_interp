@@ -10,7 +10,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 26 — `gui/ui/main_window.py` + `pages/`
+# `gui/ui/main_window.py` + `pages/`
 
 > [!abstract] One-line summary
 > The **programmatic UI** of the plugin: `SecInterpMainWindow` assembles `Sidebar` + `QStackedWidget` (7 pages) + `PreviewWidget` and exposes the pages to the dialog.
@@ -126,4 +126,4 @@ class SecInterpMainWindow(QDialog):
 
 ---
 
-*Note 26 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 22 — `gui/dialog_export_manager.py`
+# `gui/dialog_export_manager.py`
 
 > [!abstract] Resumen en una línea
 > Es el **orquestador de exportación**: decide qué y cómo exportar (preview PNG/PDF/SVG o datos SHP/CSV/3D) y delega en `ExportService` + `get_exporter`.
@@ -232,4 +232,4 @@ def export_data(self) -> bool:
 
 ---
 
-*Nota 22 de la bóveda SecInterp Code Walkthrough — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough — v3.8.0*

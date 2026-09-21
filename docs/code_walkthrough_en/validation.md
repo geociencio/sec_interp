@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 16 — `core/validation/`
+# `core/validation/`
 
 > [!abstract] One-line summary
 > The **validation pipeline** — QGIS-agnostic, domain-based, and accumulative: it validates layers, fields, CRS, bands, and ranges without touching QGIS.
@@ -224,4 +224,4 @@ class ValidationContext:
 
 ---
 
-*Note 16 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

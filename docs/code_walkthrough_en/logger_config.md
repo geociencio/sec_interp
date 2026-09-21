@@ -11,7 +11,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 03 — `logger_config.py`
+# `logger_config.py`
 
 > [!abstract] One-line summary
 > Configures the plugin's **centralized logging**: three handlers (QGIS, rotating file, stderr), the `SecInterp.*` hierarchy, and utilities to survive QGIS crashes.
@@ -361,4 +361,4 @@ def log_critical_operation(logger: logging.Logger, operation_name: str, **contex
 
 ---
 
-*Note 03 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

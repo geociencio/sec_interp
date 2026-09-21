@@ -9,7 +9,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 31 — `exporters/vector_exporter.py`
+# `exporters/vector_exporter.py`
 
 > [!abstract] One-line summary
 > The **generic vector exporter** for SHP, GPKG and DXF: prepares fields, creates the `QgsVectorFileWriter`, and writes `QgsFeature`s.
@@ -150,4 +150,4 @@ def _write_features(self, writer, features_data, fields):
 
 ---
 
-*Note 31 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*

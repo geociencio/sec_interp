@@ -9,7 +9,7 @@ aliases:
 cssclass: secinterp-note
 ---
 
-# 23 — `gui/renderers/`
+# `gui/renderers/`
 
 > [!abstract] One-line summary
 > The **preview styling kit**: 6 specialized renderers + `ColorManager` and symbolic helpers — each dresses one layer type.
@@ -136,4 +136,4 @@ class ColorManager:
 
 ---
 
-*Note 23 of the SecInterp Code Walkthrough vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough vault — v3.8.0*
