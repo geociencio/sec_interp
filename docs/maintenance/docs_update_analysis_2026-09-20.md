@@ -111,10 +111,16 @@ staleness audit for details.
 | pl | 0.2% |
 | fi/hi/id/nl | 0.1% |
 
-**Finding:** the documentation translations are essentially empty (≈1%). The
-14-language build currently publishes near-English content. Options: complete the
-`.po` catalogs (`sphinx-intl update` + translation), or reduce the published
-language set until coverage improves.
+**Finding:** the documentation translations are essentially empty (≈1%) while the
+plugin **UI is ~99–100% translated** in 13 languages. The 14-language build was
+publishing near-English content.
+
+**Resolution (policy implemented):**
+- Published website = `DOCS_LOCALES` (default `en es`); a language joins only when its
+  `USER_GUIDE.po` reaches ≥ 80%.
+- Offline in-plugin help = `DOCS_HELP_LOCALES` (default: all UI languages), unchanged.
+- `translate_docs.py update` (`make docs-i18n-update`) extracts `.pot` and runs
+  `sphinx-intl update` to prune obsolete entries and add new msgids (previously missing).
 
 ## Docs tooling added
 

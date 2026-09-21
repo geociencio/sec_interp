@@ -38,6 +38,7 @@
 | `make docs-check` | Fail on stale module refs, broken links, mirror drift |
 | `make docs-version` | Sync version/date headers from `metadata.txt` |
 | `make docs-i18n` | Report per-language translation coverage |
+| `make docs-i18n-update` | Extract `.pot` + `sphinx-intl update` (sync catalogs) |
 | `bash scripts/sync_docs_mirrors.sh --check` | `docs/` ↔ `docs/source/` mirror drift |
 | `bash scripts/sync_vault_mirrors.sh --check` | vault mirror drift |
 
@@ -46,6 +47,12 @@
 `metadata.txt` is the **single source of truth** for the version. `docs/source/conf.py`
 reads it automatically, and `scripts/sync_docs_version.py` updates the hand-maintained
 `Version … | Last Updated` headers.
+
+## Published languages
+
+- `DOCS_LOCALES` (default `en es`) controls the **published website**; a language joins
+  only when its `USER_GUIDE.po` reaches ≥ 80%.
+- `DOCS_HELP_LOCALES` (default: all UI languages) controls the **offline in-plugin help**.
 
 ## Historical records
 

@@ -40,6 +40,25 @@
 - Historical material stays in `plans/`, `docsec/archive/`, `releases/`, `maintenance/`,
   `walkthroughs/`, `adr/`, `maintainer/`, `qa/`, `research/` and is **not** rewritten.
 
+## Internationalization (docs)
+
+The plugin **UI** is translated (~99–100% in 13 languages), but the **documentation**
+catalogs (`docs/locales/*/LC_MESSAGES/*.po`) are largely empty. Policy:
+
+- **Published website** = `DOCS_LOCALES` (default `en es`). A language joins the
+  published set only when its `USER_GUIDE.po` reaches **≥ 80%** coverage.
+- **Offline in-plugin help** = `DOCS_HELP_LOCALES` (default: all UI languages), so the
+  plugin keeps its per-language manual.
+- Translate only the user-facing pages (`USER_GUIDE`, `ARCHITECTURE`,
+  `DEVELOPMENT_GUIDE`, `CORE_DISTINCTION_GUIDE`); the autodoc pages stay in English.
+
+Workflow:
+
+```bash
+make docs-i18n-update   # extract .pot + sphinx-intl update (prune obsolete, add new)
+make docs-i18n          # coverage report per language
+```
+
 ## Quality gates
 
 - `make docs-check` must pass: no stale `.py` references, no broken relative links,

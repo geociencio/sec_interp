@@ -52,13 +52,31 @@ uv run python scripts/sync_docs_version.py || true
 echo "🌐 Compiling translation catalogs..."
 python3 scripts/i18n/translate_docs.py compile
 
-# 3. Run sphinx-build to generate HTML for each language
-# Supported locales (Web and Plugin)
-LOCALES="en es fr pt_BR de ru zh_CN id it pl nl fi hi ja"
-PLUGIN_LOCALES="$LOCALES"
+# 3. Run sphinx-build to generate HTML for each language.
+#
+# Two independent sets:
+#   * WEB_LOCALES  -> published website (only languages with meaningful coverage).
+#   * HELP_LOCALES -> in-plugin offline manual (all UI-supported languages).
+#
+# Policy: a language joins WEB_LOCALES only when its USER_GUIDE.po reaches >= 80%
+# (see docs/DOCS_STYLE_GUIDE.md). Full UI-supported set:
+#   en es fr pt_BR de ru zh_CN id it pl nl fi hi ja
+WEB_LOCALES="${DOCS_LOCALES:-en es}"
+HELP_LOCALES="${DOCS_HELP_LOCALES:-en es fr pt_BR de ru zh_CN id it pl nl fi hi ja}"
 
-echo "🛠️  Building HTML documentation for multiple languages..."
-for lang in $LOCALES; do
+# Build the union of both sets (avoid building the same language twice).
+ALL_LOCALES="$WEB_LOCALES"
+for lang in $HELP_LOCALES; do
+    case " $ALL_LOCALES " in
+        *" $lang "*) ;;
+        *) ALL_LOCALES="$ALL_LOCALES $lang" ;;
+    esac
+done
+
+echo "🛠️  Building HTML documentation..."
+echo "    Web (published): $WEB_LOCALES"
+echo "    Offline help:    $HELP_LOCALES"
+for lang in $ALL_LOCALES; do
     echo "  - Language: $lang"
     if [ "$lang" == "en" ]; then
         # Default language (English)
@@ -69,9 +87,11 @@ for lang in $LOCALES; do
     fi
 done
 
-# 4. Move/Copy output to external directory (Full Web Version)
-echo "📤 Exporting documentation to $OUTPUT_DIR..."
-for lang in $LOCALES; do
+# 4. Move/Copy output to external directory (published website).
+# Only WEB_LOCALES are published; other languages are built for the offline help only.
+echo "📤 Exporting documentation to $OUTPUT_DIR (web locales: $WEB_LOCALES)..."
+for lang in $WEB_LOCALES; do
+    rm -rf "$OUTPUT_DIR/$lang"
     mkdir -p "$OUTPUT_DIR/$lang"
     cp -r "$BUILD_DIR/$lang/html/"* "$OUTPUT_DIR/$lang/"
 done
@@ -84,7 +104,7 @@ if [ -d "help" ]; then
     mkdir -p "$INTERNAL_HELP_DIR"
 
     # A. Sync all languages
-    for lang in $PLUGIN_LOCALES; do
+    for lang in $HELP_LOCALES; do
         if [ -d "$BUILD_DIR/$lang/html" ]; then
             echo "    - Syncing $lang..."
             mkdir -p "$INTERNAL_HELP_DIR/$lang"
