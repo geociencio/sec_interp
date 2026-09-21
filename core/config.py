@@ -70,6 +70,7 @@ class ConfigService:
             "band": self.get("dem_band", self.DEFAULT_DEM_BAND),
             "scale": self.get("scale", self.DEFAULT_SCALE),
             "vert_exag": self.get("vert_exag", self.DEFAULT_VERT_EXAG),
+            "auto_vert_exag": self.get("auto_vert_exag", True),
         }
 
         # Geology
@@ -176,6 +177,7 @@ class ConfigService:
         static_defaults = {
             "scale": self.DEFAULT_SCALE,
             "vert_exag": self.DEFAULT_VERT_EXAG,
+            "auto_vert_exag": True,
             "buffer_dist": self.DEFAULT_BUFFER_DIST,
             "dip_scale_factor": 1.0,
             "last_output_dir": "",
@@ -235,6 +237,7 @@ class ConfigService:
         logger.info(self.tr("Configuration reset to defaults initiated"))
         self.set("scale", self.DEFAULT_SCALE)
         self.set("vert_exag", self.DEFAULT_VERT_EXAG)
+        self.set("auto_vert_exag", True)
         self.set("buffer_dist", self.DEFAULT_BUFFER_DIST)
         self.set("show_topo", True)
         self.set("show_geol", True)

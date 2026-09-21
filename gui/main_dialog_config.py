@@ -14,6 +14,7 @@ class DialogDefaults:
     # Scale and exaggeration
     SCALE = "50000"
     VERTICAL_EXAGGERATION = "1.0"
+    AUTO_VERTICAL_EXAGGERATION: bool = True
     DIP_SCALE = "4"
     DIP_SCALE_FACTOR = "4"
 

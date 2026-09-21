@@ -35,6 +35,7 @@ class DemSettings:
     band: int = 1
     scale: float = 50000.0
     vert_exag: float = 1.0
+    auto_vert_exag: bool = True
 
     def __post_init__(self) -> None:
         """Validate settings after initialization."""

@@ -10,7 +10,14 @@ from qgis.core import (
 )
 from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox, QgsRasterBandComboBox
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+)
 
 from sec_interp.core.validation.project_validator import (
     ProjectValidator,
@@ -112,9 +119,25 @@ class DemPage(BasePage):
         self.vertexag_spin.setDecimals(1)
         settings_layout.addWidget(self.vertexag_spin, 1, 1)
 
+        self.auto_ve_check = QCheckBox(self.tr("Auto"))
+        self.auto_ve_check.setToolTip(self.tr("Calculated automatically"))
+        self.auto_ve_check.setChecked(bool(DialogDefaults.AUTO_VERTICAL_EXAGGERATION))
+        settings_layout.addWidget(self.auto_ve_check, 1, 2)
+
+        self._on_auto_ve_toggled(self.auto_ve_check.isChecked())
+
         # Insert before the stretch (which is the last item)
         count = self.main_layout.count()
         self.main_layout.insertWidget(count - 1, self.settings_group)
+
+    def _on_auto_ve_toggled(self, checked: bool) -> None:
+        """Enable/disable the manual spinbox based on the Auto toggle.
+
+        Args:
+            checked: True if Auto mode is selected (manual spin disabled).
+
+        """
+        self.vertexag_spin.setEnabled(not checked)
 
     def _update_resolution(self) -> None:
         """Calculate and update resolution and suggested scale."""
@@ -149,6 +172,7 @@ class DemPage(BasePage):
             "selected_band": self.band_combo.currentBand(),
             "scale": self.scale_spin.value(),
             "vertexag": self.vertexag_spin.value(),
+            "auto_vert_exag": self.auto_ve_check.isChecked(),
         }
 
     def dump(self) -> dict[str, Any]:
@@ -158,6 +182,7 @@ class DemPage(BasePage):
             "dem_band": self.band_combo.currentBand(),
             "scale": self.scale_spin.value(),
             "vert_exag": self.vertexag_spin.value(),
+            "auto_vert_exag": self.auto_ve_check.isChecked(),
         }
 
     def load(self, data: dict[str, Any]) -> None:
@@ -176,6 +201,10 @@ class DemPage(BasePage):
         vert_exag = data.get("vert_exag")
         if vert_exag is not None:
             self.vertexag_spin.setValue(float(vert_exag))
+        auto_vert_exag = data.get("auto_vert_exag")
+        if auto_vert_exag is not None:
+            self.auto_ve_check.setChecked(bool(auto_vert_exag))
+        self._on_auto_ve_toggled(self.auto_ve_check.isChecked())
 
         if raster_layer is not None:
             self.scale_spin.blockSignals(True)
@@ -190,6 +219,8 @@ class DemPage(BasePage):
         self.band_combo.setBand(DialogDefaults.DEFAULT_BAND)
         self.scale_spin.setValue(float(DialogDefaults.SCALE))
         self.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
+        self.auto_ve_check.setChecked(bool(DialogDefaults.AUTO_VERTICAL_EXAGGERATION))
+        self._on_auto_ve_toggled(self.auto_ve_check.isChecked())
 
     def validate(self) -> tuple[bool, str]:
         """Validate page settings.
@@ -212,11 +243,13 @@ class DemPage(BasePage):
         """Connect internal signals for the DEM page."""
         self.raster_combo.layerChanged.connect(self.band_combo.setLayer)
         self.raster_combo.layerChanged.connect(self._update_resolution)
+        self.auto_ve_check.toggled.connect(self._on_auto_ve_toggled)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         try:
             self.raster_combo.layerChanged.disconnect(self.band_combo.setLayer)
             self.raster_combo.layerChanged.disconnect(self._update_resolution)
+            self.auto_ve_check.toggled.disconnect(self._on_auto_ve_toggled)
         except (TypeError, RuntimeError):
             pass
