@@ -66,7 +66,6 @@ The project organization follows a highly modular architecture based on the **Se
     - `utils/i18n.py` → [[i18n]] · [doc](code_walkthrough/i18n.md)
     - `utils/geometry_utils/` (`measurement.py`, `optimization.py`, `processing.py`) → [[layer_core_utils_geometry_utils]]
   - `services/` — Concrete implementations → [[layer_core_services]]
-    - `services/profile_service.py` → [[profile_service]] · [doc](code_walkthrough/profile_service.md)
     - `services/geology_service.py` → [[geology_service]] · [doc](code_walkthrough/geology_service.md)
     - `services/structure_service.py` → [[structure_service]] · [doc](code_walkthrough/structure_service.md)
     - `services/drillhole_service.py` → [[drillhole_service]] · [doc](code_walkthrough/drillhole_service.md)
@@ -90,7 +89,8 @@ The project organization follows a highly modular architecture based on the **Se
     - `adapters/geology_extractor.py` → [[geology_extractor]] · [doc](code_walkthrough/geology_extractor.md)
     - `adapters/structure_extractor.py` → [[structure_extractor]] · [doc](code_walkthrough/structure_extractor.md)
     - `adapters/validation_extractor.py` → [[validation_extractor]] · [doc](code_walkthrough/validation_extractor.md)
-    - `adapters/profile_extractor.py`, `feature_fetcher.py`, `layer_resolver.py`, `geometry.py` → [[adapters]]
+    - `adapters/profile_extractor.py` → [[profile_service]] · [doc](code_walkthrough/profile_service.md)
+    - `adapters/feature_fetcher.py`, `layer_resolver.py`, `geometry.py` → [[adapters]]
   - Managers (orchestration)
     - `dialog_signal_manager.py` → [[signal_manager]] · [doc](code_walkthrough/signal_manager.md)
     - `dialog_input_manager.py` → [[input_manager]] · [doc](code_walkthrough/input_manager.md)
@@ -260,7 +260,6 @@ graph TD
 
         subgraph SERVICES["Concrete Services - services/"]
             direction TB
-            PROF_SVC[services/profile_service.py<br/>ProfileService]:::service
             GEOL_SVC[services/geology_service.py<br/>GeologyService]:::service
             STRUCT_SVC[services/structure_service.py<br/>StructureService]:::service
             DRILL_SVC[services/drillhole_service.py<br/>DrillholeService]:::service
@@ -518,11 +517,10 @@ class IGeologyService(ABC):
 
 **Responsibility**: Central orchestrator coordinating all services through their interfaces.
 
-#### Concrete Services (7 Services)
+#### Concrete Services (6 Services)
 
 | Service | File | Responsibility |
 |---------|------|----------------|
-| `ProfileService` | `services/profile_service.py` → [[profile_service]] | Topography extraction, sampling logic, profile generation. |
 | `GeologyService` | `services/geology_service.py` → [[geology_service]] | Core intersection algorithms (outcrops, polygons, units). |
 | `StructureService` | `services/structure_service.py` → [[structure_service]] | Structural data processing, validation, stereonets. |
 | `DrillholeService` | `services/drillhole_service.py` → [[drillhole_service]] | 3D trajectory calculation, 2D section projection, interval management. |

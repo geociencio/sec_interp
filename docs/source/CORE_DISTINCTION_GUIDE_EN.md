@@ -38,7 +38,7 @@ If asked to "review the core", it almost exclusively refers to the `/core` direc
 To avoid future complications, the data flow **MUST** follow this pattern:
 1.  **GUI/Task Interface Layer**: Receives QGIS objects (`QgsVectorLayer`, `QgsFeature`). Extracts what is necessary (WKT geometry, attribute dictionaries).
 2.  **Core Layer**: Receives only the extracted data (strings, dicts, floats). Performs heavy geometric calculations.
-3.  **Result**: The Core returns DTOs (Data Transfer Objects) defined in `core/types.py`. The GUI layer is responsible for converting these back to QGIS layers if necessary.
+3.  **Result**: The Core returns DTOs (Data Transfer Objects) defined in `core/domain/` (`dtos.py`, `entities.py`, `task_inputs.py`). The GUI layer is responsible for converting these back to QGIS layers if necessary.
 
 ### 5. Golden Rules for Thread-Safety
 *   **Prohibited**: Importing `qgis.gui` inside `core/`. Background threads will crash if they attempt to touch any widget or window.

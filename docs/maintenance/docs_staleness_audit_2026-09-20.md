@@ -12,6 +12,21 @@
   `CHANGELOG`, ADRs, `maintenance/`) were **excluded** on purpose: they are records of
   past states and should not be rewritten.
 
+## Status of the fixes
+
+> [!success] Resolved in this session (same day)
+> - `docs/ARCHITECTURE_EN.md`: removed `services/profile_service.py` (tree + Concrete Services 7→6, Mermaid node) and linked `adapters/profile_extractor.py` → `[[profile_service]]`.
+> - `docs/CORE_DISTINCTION_GUIDE.md` / `_EN.md` and `docs/source/CORE_DISTINCTION_GUIDE*.md`: `core/types.py` → `core/domain/`.
+> - `docs/docsec/ARCHITECTURE.md`: `main_dialog_preview.py` → `dialog_preview_manager.py`; `core/types.py` → `core/domain/`.
+> - `docs/source/ARCHITECTURE.md`: `main_dialog_data.py`/`main_dialog_signals.py` → `dialog_input_manager.py`/`dialog_signal_manager.py`; `seismic_service.py` example → `preview_service.py`.
+> - `docs/docsec/PROJECT_STRUCTURE.md` / `_EN.md`: rewritten to v3.8.0 with the current architecture.
+> - `docs/maintainer/*`: historical notices added (`TECHNICAL_COMPENDIUM`, `TEST_TASK_LOG`, `CODE_ANALYSIS`, `TECHNICAL_ANALYSIS_REPORT`).
+>
+> **Still pending (out of scope this pass):** `docs/qa/CONSOLIDATED_DIAGNOSIS.md` and
+> `docs/qa/MANUAL_CODE_ANALYSIS.md`; historical sections inside `README.md`
+> ("What's New in v3.7.0"), `docs/LOGGING_GUIDELINES.md` and `docs/source/MAINTENANCE_LOG.md`;
+> and the `.github/workflows/docs.yml` CI inconsistency.
+
 ## Outdated references by file
 
 | File | Line | Stale reference | Context |

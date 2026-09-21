@@ -38,7 +38,7 @@ Si se le pide "revisar el core", se refiere casi exclusivamente al directorio `/
 Para evitar complicaciones futuras, el flujo de datos **DEBE** seguir este patrón:
 1.  **Capa GUI/Task Interface**: Recibe objetos de QGIS (`QgsVectorLayer`, `QgsFeature`). Extrae lo necesario (geometría en WKT, diccionarios de atributos).
 2.  **Capa Core**: Recibe únicamente los datos extraídos (strings, dicts, floats). Realiza los cálculos geométricos pesados.
-3.  **Resultado**: El Core devuelve DTOs (Data Transfer Objects) definidos en `core/types.py`. La capa GUI se encarga de convertir esto de nuevo a capas de QGIS si es necesario.
+3.  **Resultado**: El Core devuelve DTOs (Data Transfer Objects) definidos en `core/domain/` (`dtos.py`, `entities.py`, `task_inputs.py`). La capa GUI se encarga de convertir esto de nuevo a capas de QGIS si es necesario.
 
 ### 5. Reglas de Oro de Hilo-Seguridad (Thread-Safety)
 *   **Prohibido**: Importar `qgis.gui` dentro de `core/`. Los hilos de fondo morirán si intentan tocar cualquier widget o ventana.

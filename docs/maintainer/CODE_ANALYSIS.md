@@ -1,5 +1,8 @@
 # Análisis de Código - SecInterp Plugin QGIS
 
+> [!warning] Documento histórico (28-feb-2026)
+> Algunas referencias han cambiado desde el análisis: `gui/lod_calculator.py` fue retirado (el LOD vive ahora en `core/services/preview_service.py` + `gui/renderers/`), y `core/types.py` pasó a `core/domain/`.
+
 **Fecha de análisis:** 28 de febrero 2026
 **Alcance:** Revisión exhaustiva de código completo del plugin
 **Propósito:** Identificar errores, redundancias y áreas de mejora

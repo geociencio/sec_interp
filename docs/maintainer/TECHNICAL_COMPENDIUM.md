@@ -1,5 +1,8 @@
 # 📖 Technical Compendium: Annals of the SecInterp Modernization
 
+> [!warning] Historical document
+> This compendium describes the test-coverage modernization **at the time it was written**. Some referenced modules have since been refactored: `gui/services/parallel_geology_service.py` → `gui/tasks/geology_task.py` (+ `gui/preview_task_orchestrator.py`), `gui/main_dialog_validation.py` → `gui/dialog_input_manager.py` + `core/validation/`, and `gui/main_dialog_tools.py` → `gui/dialog_tool_manager.py`.
+
 This document constitutes the perpetual and detailed record of the technical endeavor undertaken to harden and modernize the SecInterp plugin, ensuring its stability and precision for ages to come.
 
 ## 🏛️ Executive Summary of the Work

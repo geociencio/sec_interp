@@ -1,4 +1,8 @@
 # Reporte de Análisis Técnico y Recomendaciones Arquitectónicas
+
+> [!warning] Documento histórico (v3.1.0, 25-feb-2026)
+> Varias recomendaciones ya se implementaron: la resolución de capas vive en `gui/adapters/geometry.py` + `gui/adapters/layer_resolver.py` (no en `core/utils/qgis.py`), `TranslatableMixin` existe en `core/utils/i18n.py`, y las entidades están en `core/domain/`.
+
 **Proyecto:** SecInterp (QGIS Plugin)
 **Versión Analizada:** 3.1.0
 **Fecha:** 25 de febrero de 2026

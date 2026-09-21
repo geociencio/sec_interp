@@ -21,7 +21,7 @@ graph TD
 ### 🎨 UI Layer (gui/)
 Responsible for user interaction and orchestration.
 - **`main_dialog.py`**: Main window controller.
-- **`main_dialog_preview.py` (PreviewManager)**: Manages preview state, hash-based caching, and task launching.
+- **`dialog_preview_manager.py` (PreviewManager)**: Manages preview state, hash-based caching, and task launching.
 - **`tasks/`**: Contains `QgsTask` implementations (e.g., `GeologyGenerationTask`) for background processing.
 
 ### ⚙️ Business Layer (core/)
@@ -32,9 +32,9 @@ Pure logic, decoupled from the GUI and thread-safe.
 - **`drillhole_service.py`**: Drillhole processing and 3D desurvey.
 - **`structure_service.py`**: Structural measurement projection.
 
-#### Types and DTOs (`core/types.py`)
+#### Types and DTOs (`core/domain/`)
 Data exchange between the UI and background threads is performed exclusively through **Data Transfer Objects (DTOs)**.
-- **`GeologyTaskInput`**: Encapsulates copied geometries and simple parameters. Prevents passing live `QgsVectorLayer` objects to secondary threads, avoiding C++ API crashes.
+- **`GeologyContext` / `DrillholeContext`** (`task_inputs.py`): Encapsulate copied geometries and simple parameters. Prevent passing live `QgsVectorLayer` objects to secondary threads, avoiding C++ API crashes.
 - **`PreviewParams`**: Validated object containing all configuration needed to generate a section.
 
 ### 🛠️ Interfaces and Decoupling

@@ -1,5 +1,8 @@
 # Task Log: Improve Test Coverage Journey
 
+> [!warning] Historical document
+> This log preserves the task structure of the coverage initiative. Some referenced modules have since been refactored (`parallel_geology_service.py`, `main_dialog_tools.py`, `main_dialog_validation.py`) or retired (`qt6_compat.py`).
+
 This log preserves the task structure and progress of the test coverage improvement initiative.
 
 ## Priority Components (Low Coverage)

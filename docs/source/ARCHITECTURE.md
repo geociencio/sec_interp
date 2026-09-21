@@ -305,8 +305,8 @@ class SecInterpDialog(SecInterpMainWindow):
 |--------|-------------|-----------|
 | `_init_managers()` | Initializes dedicated managers | `main_dialog.py` |
 | `get_selected_values()` | Facade for the DataAggregator | `main_dialog.py` |
-| `get_all_values()` | Actual data aggregation from pages | `main_dialog_data.py` |
-| `connect_all()` | Bulk signal connection | `main_dialog_signals.py` |
+| `get_all_values()` | Actual data aggregation from pages | `dialog_input_manager.py` |
+| `connect_all()` | Bulk signal connection | `dialog_signal_manager.py` |
 | `preview_profile_handler()` | Delegated to PreviewManager | `main_dialog.py` |
 | `export_preview()` | Delegated to ExportManager | `main_dialog.py` |
 | `update_button_state()` | Delegated to StatusManager | `main_dialog.py` |
@@ -1283,10 +1283,10 @@ pie title Code Distribution by Layer
 
 | Module | Lines | Classes | Methods | Complexity |
 |--------|--------|--------|---------|-------------|
-| `sec_interp_plugin.py`| ~600 | 1 | 15 | Medium |
-| `main_dialog.py` | ~340 | 1 | 12 | Low/Medium |
-| `main_dialog_signals.py`| ~200 | 1 | 10 | Medium |
-| `main_dialog_data.py` | ~150 | 1 | 8 | Medium |
+| `sec_interp_plugin.py`| ~130 | 1 | 4 | Low |
+| `main_dialog.py` | ~190 | 1 | 12 | Low/Medium |
+| `dialog_signal_manager.py`| ~350 | 1 | 10 | Medium |
+| `dialog_input_manager.py` | ~200 | 1 | 8 | Medium |
 | `preview_renderer.py` | 1,190 | 1 | 20 | High |
 | `controller.py` | 192 | 1 | 4 | Low |
 | `core/validation/` | ~800 | 0 | 25 | Medium |
@@ -1370,7 +1370,7 @@ The SecInterp plugin has been designed following robust software engineering pri
 Quick guide for developers wishing to expand the plugin.
 
 ### Adding a New Service
-1. Create the new file in `core/services/` (e.g., `seismic_service.py`).
+1. Create the new file in `core/services/` (e.g., `preview_service.py`).
 2. Implement the service logic following the pattern of other services.
 3. Register the service in `controller.py` within the `ProfileController` constructor.
 4. Add the orchestrator method in the controller and connect it to `PreviewManager`.
