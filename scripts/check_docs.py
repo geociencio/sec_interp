@@ -102,12 +102,16 @@ def check_py_refs(docs: list[Path], paths: set[str], basenames: set[str]) -> lis
     return issues
 
 
+_FENCED_CODE = re.compile(r"```.*?```", re.S)
+
+
 def check_links(docs: list[Path]) -> list[str]:
-    """Flag broken relative markdown links."""
+    """Flag broken relative markdown links (fenced code blocks are ignored)."""
     issues: list[str] = []
     for d in docs:
         base = d.parent
-        for match in _MD_LINK.finditer(d.read_text(encoding="utf-8", errors="ignore")):
+        text = _FENCED_CODE.sub("", d.read_text(encoding="utf-8", errors="ignore"))
+        for match in _MD_LINK.finditer(text):
             target = match.group(1)
             if target.startswith(("http", "#", "mailto:", "file:")):
                 continue

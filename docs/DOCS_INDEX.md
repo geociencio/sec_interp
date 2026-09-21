@@ -13,6 +13,8 @@
 | Changelog | [CHANGELOG.md](CHANGELOG.md) | canonical; `docsec/CHANGELOG*` are legacy |
 | Core distinction | [CORE_DISTINCTION_GUIDE.md](CORE_DISTINCTION_GUIDE.md) (ES) · [\_EN](CORE_DISTINCTION_GUIDE_EN.md) | synced to `source/` |
 | User guide | [source/USER_GUIDE.md](source/USER_GUIDE.md) | Sphinx |
+| User guide conventions | [USER_GUIDE_CONVENTIONS.md](USER_GUIDE_CONVENTIONS.md) | images, naming, translation |
+| Docs style guide | [DOCS_STYLE_GUIDE.md](DOCS_STYLE_GUIDE.md) | MyST, links, duplicates |
 | Development guide (published) | [source/DEVELOPMENT_GUIDE.md](source/DEVELOPMENT_GUIDE.md) | Sphinx |
 | Development guide (repo) | [docsec/DEVELOPMENT_GUIDE.md](docsec/DEVELOPMENT_GUIDE.md) | |
 | Commit guidelines | [docsec/COMMIT_GUIDELINES.md](docsec/COMMIT_GUIDELINES.md) | |
