@@ -62,29 +62,38 @@ uv run qgis-manage deploy --qgis-version 4
 
 ## 📚 Generación de Documentación
 
-La documentación se genera con **Sphinx** y se publica en un **repositorio separado** (GitHub Pages).
+La documentación se genera con **Sphinx** (MyST Markdown) y se publica en un **repositorio separado** (GitHub Pages). El proceso completo está en **[`docs/DOCUMENTATION_PROCESS.md`](docs/DOCUMENTATION_PROCESS.md)**.
 
-**Requisitos**: `sphinx-build` / `sphinx-apidoc` (dev deps) y las extensiones `myst_parser` + `sphinxcontrib.mermaid`.
+**Requisitos**: `uv sync` (dev deps: `sphinx`, `sphinx-rtd-theme`, `sphinxcontrib-mermaid`, `myst-parser`, `sphinx-intl`) y `gettext` (`msgfmt`).
 
 **Comando**:
 ```bash
-make docs                       # equivale a: ./scripts/build_docs.sh
+make docs                       # build + export + publicar (equivale a ./scripts/build_docs.sh)
 ./scripts/build_docs.sh [DIR]   # DIR por defecto: ../sec_interp_docs
 ```
 
 **Pipeline (`scripts/build_docs.sh`)**:
 1. `sphinx-apidoc` regenera los stubs autodoc en `docs/source/` — **una página por módulo `.py`** del plugin (`core/`, `gui/`, `exporters/`, `plugin/`, `resources/` y raíz). Excluye `tests/`, `scripts/`, `docs/`, `help/` y `build/`.
-2. `scripts/i18n/translate_docs.py compile` compila los catálogos `.po` → `.mo`.
-3. `sphinx-build` genera HTML para **14 idiomas** (`en es fr pt_BR de ru zh_CN id it pl nl fi hi ja`).
-4. Copia el HTML a **`../sec_interp_docs/<lang>/`**.
-5. Sincroniza el manual offline `help/html/<lang>` (dedup de imágenes; sin search/API/fuentes).
-6. Si `../sec_interp_docs/.git` existe → `git add/commit` (`docs: auto-build from sec_interp@<hash>`) y `git push origin main`.
+2. Sincroniza versión/fecha de los headers (`scripts/sync_docs_version.py`, desde `metadata.txt`).
+3. Compila los catálogos `.po` → `.mo` (`scripts/i18n/translate_docs.py compile`).
+4. `sphinx-build -j auto` genera HTML para la unión de idiomas.
+5. Publica solo `DOCS_LOCALES` (default **`en es`**) en `../sec_interp_docs/<lang>/`.
+6. Sincroniza el manual offline `help/html/<lang>` para `DOCS_HELP_LOCALES` (todos los idiomas de la UI).
+7. Si `../sec_interp_docs/.git` existe → `git commit` (`docs: auto-build from sec_interp@<hash>`) + `git push origin main`.
 
-**Espejos docs ↔ source**: algunos documentos existen en `docs/` (canónico) y en `docs/source/` (Sphinx). Sincronízalos con:
-```bash
-bash scripts/sync_docs_mirrors.sh          # copia docs/ → docs/source/
-bash scripts/sync_docs_mirrors.sh --check  # CI: falla si están desincronizados
-```
+**Política de idiomas**: un idioma entra al sitio web solo cuando su `USER_GUIDE.po` alcanza **≥80%** (ver [`docs/DOCS_STYLE_GUIDE.md`](docs/DOCS_STYLE_GUIDE.md)). La ayuda offline mantiene todos los idiomas de la UI.
+
+**Comandos de documentación**:
+
+| Comando | Propósito |
+|---|---|
+| `make docs` | Build + export + publicar |
+| `make docs-check` | Falla ante refs a módulos inexistentes, enlaces roto o espejos desincronizados |
+| `make docs-version` | Sincroniza versión/fecha desde `metadata.txt` |
+| `make docs-i18n` | Cobertura de traducción por idioma (`--min N` para exigir umbral) |
+| `make docs-i18n-update` | Extrae `.pot` + `sphinx-intl update` (catálogos user-facing) |
+| `bash scripts/sync_docs_mirrors.sh [--check]` | Espejos `docs/` ↔ `docs/source/` |
+| `bash scripts/sync_vault_mirrors.sh [--check]` | Espejos de las bóvedas Obsidian |
 
 **Repositorio de docs**:
 
@@ -96,7 +105,7 @@ bash scripts/sync_docs_mirrors.sh --check  # CI: falla si están desincronizados
 
 > [!warning] Efectos secundarios
 > - `make docs` regenera los stubs `.rst` **rastreados** en `docs/source/` (deja el árbol sucio; revísalos/commitéalos).
-> - El paso 6 **hace `git push`** al repo externo de docs; no hay flag para omitirlo. Para construir sin publicar, ejecuta los pasos 1-5 manualmente.
+> - El paso 7 **hace `git push`** al repo externo de docs; no hay flag para omitirlo. Para construir sin publicar, ejecuta los pasos 1-6 manualmente.
 > - `sphinx-apidoc --force` **no borra** stubs de módulos eliminados: si hay warnings de módulos inexistentes, elimina los `.rst` huérfanos en `docs/source/`.
 
 > [!tip] Nota de shell (zsh)
@@ -108,6 +117,10 @@ bash scripts/sync_docs_mirrors.sh --check  # CI: falla si están desincronizados
 3. **Documentación**: Usa docstrings estilo Google (Sphinx compatible).
 
 ## Documentación de Referencia
+- [docs/DOCS_INDEX.md](docs/DOCS_INDEX.md) — Índice (mapa de canónicos y tooling).
+- [docs/DOCUMENTATION_PROCESS.md](docs/DOCUMENTATION_PROCESS.md) — Proceso de generación/publicación.
+- [docs/DOCS_STYLE_GUIDE.md](docs/DOCS_STYLE_GUIDE.md) — Guía de estilo (MyST, enlaces, duplicados, i18n).
+- [docs/USER_GUIDE_CONVENTIONS.md](docs/USER_GUIDE_CONVENTIONS.md) — Convenciones e imágenes del User Guide.
 - [docs/ARCHITECTURE_EN.md](docs/ARCHITECTURE_EN.md) — Arquitectura técnica unificada.
 - [docs/docsec/DEVELOPMENT_GUIDE.md](docs/docsec/DEVELOPMENT_GUIDE.md) — Guía para desarrolladores.
 - [docs/CHANGELOG.md](docs/CHANGELOG.md) — Historial de versiones.
@@ -117,4 +130,4 @@ bash scripts/sync_docs_mirrors.sh --check  # CI: falla si están desincronizados
 - Docs publicados: https://geociencio.github.io/sec_interp_docs/
 
 ---
-**Plugin Version**: 3.8.0 | **Last Update**: 2026-09-20
+**Plugin Version**: 3.8.0 | **Last Update**: 2026-09-21
