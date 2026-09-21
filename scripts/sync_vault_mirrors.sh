@@ -24,6 +24,14 @@ if [[ "${1:-}" == "--check" ]]; then
   check_mode=true
 fi
 
+# The source docs live in docs/ and link vault notes as
+# `[doc](code_walkthrough/<slug>.md)`. Inside a vault the note is a sibling,
+# so the `code_walkthrough/` prefix must be stripped or the link resolves to a
+# non-existent nested `code_walkthrough/code_walkthrough/` directory.
+transform() {
+  sed 's#](code_walkthrough/#](#g' "$1"
+}
+
 stale=0
 for doc in "${DOCS[@]}"; do
   src="$ROOT/docs/$doc"
@@ -33,12 +41,12 @@ for doc in "${DOCS[@]}"; do
       echo "⚠️  source missing: docs/$doc"
       continue
     fi
-    if [[ ! -f "$dst" ]] || ! cmp -s "$src" "$dst"; then
+    if [[ ! -f "$dst" ]] || ! diff -q <(transform "$src") "$dst" >/dev/null; then
       if $check_mode; then
         echo "❌ stale mirror: $vault/$doc"
         stale=1
       else
-        cp "$src" "$dst"
+        transform "$src" > "$dst"
         echo "✓ synced $vault/$doc"
       fi
     else

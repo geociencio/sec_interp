@@ -64,6 +64,10 @@ logs/
 # Obsidian vault configuration (editor state)
 .obsidian/
 
+# Phantom dir Obsidian creates when a vault-relative link is unresolved
+docs/code_walkthrough/code_walkthrough/
+docs/code_walkthrough_en/code_walkthrough_en/
+
 # Documentation
 docs/build/
 help/html/

@@ -141,7 +141,8 @@ cssclass: secinterp-moc
 > ✅ documented · ⏳ pending · 🔄 under review
 
 > [!note] Mirror documents
-> The files `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md`, and `PLUGIN_REPORT_AND_COMPARISON_EN.md` inside this vault are **mirror copies** of `docs/` (source of truth). They are kept here so wikilinks resolve in Obsidian. If you update the original in `docs/`, re-sync these copies.
+> The files `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md`, and `PLUGIN_REPORT_AND_COMPARISON_EN.md` inside this vault are **mirror copies** of `docs/` (source of truth). They are kept here so wikilinks resolve in Obsidian. If you update the original in `docs/`, re-sync these copies with `bash scripts/sync_vault_mirrors.sh`.
+> The script rewrites `[doc](code_walkthrough/<slug>.md)` links to `[doc](<slug>.md)` when copying, so they resolve as sibling notes inside the vault (avoiding the phantom `code_walkthrough/code_walkthrough/` directory).
 
 > [!info] Naming convention
 > **Updated 2026-09-20**: `NN -` prefixes were removed from all notes. Names are now the file slug (e.g. `preview_renderer.md`). Navigation is by sections/tags, not by number.

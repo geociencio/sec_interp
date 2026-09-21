@@ -142,7 +142,8 @@ cssclass: secinterp-moc
 > ✅ documentado · ⏳ pendiente · 🔄 en revisión
 
 > [!note] Documentos espejo
-> Los archivos `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` y `PLUGIN_REPORT_AND_COMPARISON_EN.md` dentro de esta bóveda son **copias espejo** de `docs/` (fuente de verdad). Se mantienen aquí para que los wikilinks resuelvan en Obsidian. Si actualizas el original en `docs/`, re-sincroniza estas copias.
+> Los archivos `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` y `PLUGIN_REPORT_AND_COMPARISON_EN.md` dentro de esta bóveda son **copias espejo** de `docs/` (fuente de verdad). Se mantienen aquí para que los wikilinks resuelvan en Obsidian. Si actualizas el original en `docs/`, re-sincroniza estas copias con `bash scripts/sync_vault_mirrors.sh`.
+> El script reescribe los enlaces `[doc](code_walkthrough/<slug>.md)` a `[doc](<slug>.md)` al copiarlos, para que resuelvan como nota hermana dentro de la bóveda (evita el directorio fantasma `code_walkthrough/code_walkthrough/`).
 
 > [!info] Convención de nombres
 > **Actualizado 2026-09-20**: se eliminaron los prefijos `NN -` de todas las notas. Los nombres son ahora el slug del archivo (p. ej. `preview_renderer.md`). La navegación es por secciones/tags, no por número.
