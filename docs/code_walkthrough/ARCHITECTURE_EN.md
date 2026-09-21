@@ -428,16 +428,16 @@ graph TD
 
 | Manager | File | Responsibility |
 |---------|------|----------------|
-| `DialogSignalManager` | `dialog_signal_manager.py` | Centralizes all signal/slot connections to avoid spaghetti code. |
-| `DialogInputManager` | `dialog_input_manager.py` | Manages input layer selection, schema validation, and layer compatibility. |
-| `PreviewManager` | `dialog_preview_manager.py` | Coordinates the preview canvas, axes, LOD calculation, and render triggering. |
-| `ExportManager` | `dialog_export_manager.py` | Maps UI selections to the `ExportService` in the Core layer. |
-| `InterpretationManager` | `dialog_interpretation_manager.py` | Handles 2D/3D geological interpretation state and user interactions. |
-| `DialogStateManager` | `dialog_state_manager.py` | Manages session persistence and UI defaults restoration. |
-| `SettingsPersistence` | `dialog_settings_persistence.py` | Handles QSettings-based persistence for plugin configuration. |
-| `ToolManager` | `dialog_tool_manager.py` | Manages `QgsMapTool` lifecycle (pan, measure, interpret tools). |
-| `LayerNotificationManager` | `layer_notification_manager.py` | Listens to QGIS layer tree changes and updates UI accordingly. |
-| `UIStatusManager` | `ui_status_manager.py` | Manages status bar messages, progress indicators, and user notifications. |
+| `DialogSignalManager` | `dialog_signal_manager.py` → [[signal_manager]] | Centralizes all signal/slot connections to avoid spaghetti code. |
+| `DialogInputManager` | `dialog_input_manager.py` → [[input_manager]] | Manages input layer selection, schema validation, and layer compatibility. |
+| `PreviewManager` | `dialog_preview_manager.py` → [[dialog_preview_manager]] | Coordinates the preview canvas, axes, LOD calculation, and render triggering. |
+| `ExportManager` | `dialog_export_manager.py` → [[dialog_export_manager]] | Maps UI selections to the `ExportService` in the Core layer. |
+| `InterpretationManager` | `dialog_interpretation_manager.py` → [[interpretation_manager]] | Handles 2D/3D geological interpretation state and user interactions. |
+| `DialogStateManager` | `dialog_state_manager.py` → [[state_manager]] | Manages session persistence and UI defaults restoration. |
+| `SettingsPersistence` | `dialog_settings_persistence.py` → [[state_manager]] | Handles QSettings-based persistence for plugin configuration. |
+| `ToolManager` | `dialog_tool_manager.py` → [[tool_manager]] | Manages `QgsMapTool` lifecycle (pan, measure, interpret tools). |
+| `LayerNotificationManager` | `layer_notification_manager.py` → [[layer_notification_manager]] | Listens to QGIS layer tree changes and updates UI accordingly. |
+| `UIStatusManager` | `ui_status_manager.py` → [[ui_status_manager]] | Manages status bar messages, progress indicators, and user notifications. |
 
 ### 2. Rendering Engine
 
@@ -447,24 +447,24 @@ graph TD
 
 | Component | File | Responsibility |
 |---------|------|----------------|
-| `PreviewRenderer` | `preview_renderer.py` | Main canvas renderer orchestrating specialized renderers. |
-| `PreviewLayerFactory` | `preview_layer_factory.py` | Creates temporary memory layers for preview visualization. |
-| `PreviewAxesManager` | `preview_axes_manager.py` | Manages coordinate axes, grids, and scale annotations. |
-| `PreviewReporter` | `preview_reporter.py` | Generates textual/tabular reports from preview data. |
-| `PreviewParamHasher` | `preview_param_hasher.py` | Hashes render parameters for LOD cache invalidation. |
-| `PreviewState` | `preview_state.py` | Encapsulates preview viewport, scale, and visibility state. |
+| `PreviewRenderer` | `preview_renderer.py` → [[preview_renderer]] | Main canvas renderer orchestrating specialized renderers. |
+| `PreviewLayerFactory` | `preview_layer_factory.py` → [[preview_layer_factory]] | Creates temporary memory layers for preview visualization. |
+| `PreviewAxesManager` | `preview_axes_manager.py` → [[preview_axes_manager]] | Manages coordinate axes, grids, and scale annotations. |
+| `PreviewReporter` | `preview_reporter.py` → [[preview_state]] | Generates textual/tabular reports from preview data. |
+| `PreviewParamHasher` | `preview_param_hasher.py` → [[dialog_preview_manager]] | Hashes render parameters for LOD cache invalidation. |
+| `PreviewState` | `preview_state.py` → [[preview_state]] | Encapsulates preview viewport, scale, and visibility state. |
 
 #### Specialized Renderers (Renderer Pattern)
 
 | Renderer | File | Responsibility |
 |----------|------|----------------|
-| `BaseRenderer` | `renderers/base_renderer.py` | Abstract base with common rendering utilities. |
-| `TopoRenderer` | `renderers/topo_renderer.py` | Renders topography profiles with elevation data. |
-| `GeologyRenderer` | `renderers/geology_renderer.py` | Renders geological units, contacts, and structures. |
-| `DrillholeRenderer` | `renderers/drillhole_renderer.py` | Renders drillhole traces, intervals, and projections. |
-| `StructureRenderer` | `renderers/structure_renderer.py` | Renders structural measurements (strike/dip, foliations). |
-| `InterpretationRenderer` | `renderers/interpretation_renderer.py` | Renders user-drawn geological interpretations. |
-| `ColorManager` | `renderers/color_manager.py` | Centralized color palette and legend management. |
+| `BaseRenderer` | `renderers/base_renderer.py` → [[renderers]] | Abstract base with common rendering utilities. |
+| `TopoRenderer` | `renderers/topo_renderer.py` → [[renderers]] | Renders topography profiles with elevation data. |
+| `GeologyRenderer` | `renderers/geology_renderer.py` → [[renderers]] | Renders geological units, contacts, and structures. |
+| `DrillholeRenderer` | `renderers/drillhole_renderer.py` → [[renderers]] | Renders drillhole traces, intervals, and projections. |
+| `StructureRenderer` | `renderers/structure_renderer.py` → [[renderers]] | Renders structural measurements (strike/dip, foliations). |
+| `InterpretationRenderer` | `renderers/interpretation_renderer.py` → [[renderers]] | Renders user-drawn geological interpretations. |
+| `ColorManager` | `renderers/color_manager.py` → [[renderers]] | Centralized color palette and legend management. |
 
 **LOD Optimization Methods** (in `PreviewRenderer`):
 
@@ -480,9 +480,9 @@ graph TD
 
 | Task | File | Responsibility |
 |------|------|----------------|
-| `PreviewTaskOrchestrator` | `preview_task_orchestrator.py` | Queues, prioritizes, and monitors background tasks. |
-| `GeologyTask` | `tasks/geology_task.py` | Background geological intersection calculations. |
-| `DrillholeTask` | `tasks/drillhole_task.py` | Background drillhole trajectory processing. |
+| `PreviewTaskOrchestrator` | `preview_task_orchestrator.py` → [[tasks]] | Queues, prioritizes, and monitors background tasks. |
+| `GeologyTask` | `tasks/geology_task.py` → [[tasks]] | Background geological intersection calculations. |
+| `DrillholeTask` | `tasks/drillhole_task.py` → [[tasks]] | Background drillhole trajectory processing. |
 
 ### 4. Map Tools & UI Components
 
@@ -509,14 +509,14 @@ class IGeologyService(abc.ABC):
 
 | Interface | File | Purpose |
 |-----------|------|---------|
-| `IProfileService` | `interfaces/profile_interface.py` | Topography extraction, sampling, profile generation. |
-| `IGeologyService` | `interfaces/geology_interface.py` | Geological intersection algorithms, unit processing. |
-| `IDrillholeService` | `interfaces/drillhole_interface.py` | Drillhole data processing, 3D→2D projection. |
-| `IStructureService` | `interfaces/structure_interface.py` | Structural data validation and processing. |
-| `IPreviewService` | `interfaces/preview_interface.py` | Preview orchestration, LOD calculation, render data prep. |
-| `IExportService` | `interfaces/export_interface.py` | Export orchestration, format registry, DTO conversion. |
-| `ICacheService` | `interfaces/cache_interface.py` | Caching strategy for expensive computations. |
-| `IRenderer3D` | `interfaces/i_renderer_3d.py` | 3D visualization abstraction for drillholes/geology. |
+| `IProfileService` | `interfaces/profile_interface.py` → [[layer_core_interfaces]] | Topography extraction, sampling, profile generation. |
+| `IGeologyService` | `interfaces/geology_interface.py` → [[layer_core_interfaces]] | Geological intersection algorithms, unit processing. |
+| `IDrillholeService` | `interfaces/drillhole_interface.py` → [[layer_core_interfaces]] | Drillhole data processing, 3D→2D projection. |
+| `IStructureService` | `interfaces/structure_interface.py` → [[layer_core_interfaces]] | Structural data validation and processing. |
+| `IPreviewService` | `interfaces/preview_interface.py` → [[layer_core_interfaces]] | Preview orchestration, LOD calculation, render data prep. |
+| `IExportService` | `interfaces/export_interface.py` → [[layer_core_interfaces]] | Export orchestration, format registry, DTO conversion. |
+| `ICacheService` | `interfaces/cache_interface.py` → [[layer_core_interfaces]] | Caching strategy for expensive computations. |
+| `IRenderer3D` | `interfaces/i_renderer_3d.py` → [[layer_core_interfaces]] | 3D visualization abstraction for drillholes/geology. |
 
 ### 2. ProfileController (controller.py)
 
@@ -526,23 +526,23 @@ class IGeologyService(abc.ABC):
 
 | Service | File | Responsibility |
 |---------|------|----------------|
-| `ProfileService` | `services/profile_service.py` | Topography extraction, sampling logic, profile generation. |
-| `GeologyService` | `services/geology_service.py` | Core intersection algorithms (outcrops, polygons, units). |
-| `StructureService` | `services/structure_service.py` | Structural data processing, validation, stereonets. |
-| `DrillholeService` | `services/drillhole_service.py` | 3D trajectory calculation, 2D section projection, interval management. |
-| `ExportService` | `services/export_service.py` | Central orchestrator for Exporters layer, format registry. |
-| `PreviewService` | `services/preview_service.py` | Preview data preparation, LOD computation, render DTOs. |
-| `AccessControlService` | `services/access_control_service.py` | License validation, feature gating, user permissions. |
+| `ProfileService` | `services/profile_service.py` → [[profile_service]] | Topography extraction, sampling logic, profile generation. |
+| `GeologyService` | `services/geology_service.py` → [[geology_service]] | Core intersection algorithms (outcrops, polygons, units). |
+| `StructureService` | `services/structure_service.py` → [[structure_service]] | Structural data processing, validation, stereonets. |
+| `DrillholeService` | `services/drillhole_service.py` → [[drillhole_service]] | 3D trajectory calculation, 2D section projection, interval management. |
+| `ExportService` | `services/export_service.py` → [[export_service]] | Central orchestrator for Exporters layer, format registry. |
+| `PreviewService` | `services/preview_service.py` → [[preview_service]] | Preview data preparation, LOD computation, render DTOs. |
+| `AccessControlService` | `services/access_control_service.py` → [[access_control_service]] | License validation, feature gating, user permissions. |
 
 #### Drillhole Sub-system (5 Components)
 
 | Component | File | Responsibility |
 |-----------|------|----------------|
-| `CollarProcessor` | `drillhole/collar_processor.py` | Collar data validation, coordinate transformation. |
-| `SurveyProcessor` | `drillhole/survey_processor.py` | Survey data (azimuth/dip) processing, interpolation. |
-| `IntervalProcessor` | `drillhole/interval_processor.py` | Lithology/assay interval management, merging. |
-| `TrajectoryEngine` | `drillhole/trajectory_engine.py` | 3D trajectory calculation (minimum curvature, etc.). |
-| `ProjectionEngine` | `drillhole/projection_engine.py` | 3D→2D projection onto section plane. |
+| `CollarProcessor` | `drillhole/collar_processor.py` → [[collar_processor]] | Collar data validation, coordinate transformation. |
+| `SurveyProcessor` | `drillhole/survey_processor.py` → [[survey_processor]] | Survey data (azimuth/dip) processing, interpolation. |
+| `IntervalProcessor` | `drillhole/interval_processor.py` → [[interval_processor]] | Lithology/assay interval management, merging. |
+| `TrajectoryEngine` | `drillhole/trajectory_engine.py` → [[trajectory_engine]] | 3D trajectory calculation (minimum curvature, etc.). |
+| `ProjectionEngine` | `drillhole/projection_engine.py` → [[projection_engine]] | 3D→2D projection onto section plane. |
 
 #### Geology Sub-system
 - Modular geology processing in `services/geology/` (separate package).
@@ -558,15 +558,15 @@ Modular validation framework with 8 validators coordinated by `ValidationPipelin
 
 | Validator | File | Scope |
 |-----------|------|-------|
-| `BaseValidator` | `base_validator.py` | Abstract base with common validation utilities. |
-| `ValidationPipeline` | `pipeline.py` | Orchestrates validators, aggregates results. |
-| `LayerValidator` | `layer_validator.py` | QGIS layer structure, CRS, geometry type validation. |
-| `FieldValidator` | `field_validator.py` | Attribute field names, types, required fields. |
-| `PathValidator` | `path_validator.py` | File/directory paths, permissions, existence. |
-| `ProjectValidator` | `project_validator.py` | Project-level consistency (layers, settings). |
-| `ProjectValidators` | `project_validators.py` | Composite project validation rules. |
-| `ValidationHelpers` | `validation_helpers.py` | Shared validation utilities, error formatting. |
-| `Validators` | `validators.py` | Convenience functions for common validations. |
+| `BaseValidator` | `base_validator.py` → [[validation]] | Abstract base with common validation utilities. |
+| `ValidationPipeline` | `pipeline.py` → [[validation]] | Orchestrates validators, aggregates results. |
+| `LayerValidator` | `layer_validator.py` → [[validation]] | QGIS layer structure, CRS, geometry type validation. |
+| `FieldValidator` | `field_validator.py` → [[validation]] | Attribute field names, types, required fields. |
+| `PathValidator` | `path_validator.py` → [[validation]] | File/directory paths, permissions, existence. |
+| `ProjectValidator` | `project_validator.py` → [[validation]] | Project-level consistency (layers, settings). |
+| `ProjectValidators` | `project_validators.py` → [[validation]] | Composite project validation rules. |
+| `ValidationHelpers` | `validation_helpers.py` → [[validation]] | Shared validation utilities, error formatting. |
+| `Validators` | `validators.py` → [[validation]] | Convenience functions for common validations. |
 
 ### 5. Utilities (utils/)
 
@@ -574,17 +574,17 @@ Modular validation framework with 8 validators coordinated by `ValidationPipelin
 
 | Utility | File | Purpose |
 |---------|------|---------|
-| Drillhole Utils | `drillhole.py` | Drillhole-specific calculations, transformations. |
-| Geology Utils | `geology.py` | Geological computations, unit conversions. |
-| Geometry Utils | `geometry_utils/` | Advanced geometry operations (intersections, buffers). |
-| i18n Utils | `i18n.py` | Translation helpers, locale management. |
-| IO Utils | `io.py` | File I/O, serialization, format handling. |
-| Metadata Reader | `metadata_reader.py` | QGIS layer metadata extraction. |
-| Parsing Utils | `parsing.py` | Text/CSV/XML parsing with error recovery. |
-| Rendering Utils | `rendering.py` | Render-ready data preparation. |
-| Safe Loader | `safe_loader.py` | Safe YAML/JSON loading with schema validation. |
-| Sampling Utils | `sampling.py` | Statistical sampling, profile point generation. |
-| Spatial Utils | `spatial.py` | Spatial queries, indexing, CRS operations. |
+| Drillhole Utils | `drillhole.py` → [[layer_core_utils]] | Drillhole-specific calculations, transformations. |
+| Geology Utils | `geology.py` → [[layer_core_utils]] | Geological computations, unit conversions. |
+| Geometry Utils | `geometry_utils/` → [[layer_core_utils_geometry_utils]] | Advanced geometry operations (intersections, buffers). |
+| i18n Utils | `i18n.py` → [[i18n]] | Translation helpers, locale management. |
+| IO Utils | `io.py` → [[layer_core_utils]] | File I/O, serialization, format handling. |
+| Metadata Reader | `metadata_reader.py` → [[layer_core_utils]] | QGIS layer metadata extraction. |
+| Parsing Utils | `parsing.py` → [[layer_core_utils]] | Text/CSV/XML parsing with error recovery. |
+| Rendering Utils | `rendering.py` → [[layer_core_utils]] | Render-ready data preparation. |
+| Safe Loader | `safe_loader.py` → [[safe_loader]] | Safe YAML/JSON loading with schema validation. |
+| Sampling Utils | `sampling.py` → [[layer_core_utils]] | Statistical sampling, profile point generation. |
+| Spatial Utils | `spatial.py` → [[layer_core_utils]] | Spatial queries, indexing, CRS operations. |
 
 ## 📤 Exporters Layer
 
@@ -621,17 +621,17 @@ BaseExporter (ABC)
 
 | Exporter | File | Formats | Purpose |
 |----------|------|---------|---------|
-| `VectorExporter` | `vector_exporter.py` | GPKG, SHP, DXF | Unified vector export for sections. |
-| `DxfExporter` | `dxf_exporter.py` | DXF | CAD-compatible export. |
-| `ProfileExporters` | `profile_exporters.py` | CSV, XLSX | Profile data tables, sampling results. |
-| `CsvExporter` | `csv_exporter.py` | CSV | Raw data export. |
-| `Interpretation3DExporter` | `interpretation_3d_exporter.py` | GPKG 3D, CityJSON | 3D geological interpretations. |
-| `InterpretationExporters` | `interpretation_exporters.py` | Multiple | Interpretation-specific formats. |
-| `Drillhole3DExporter` | `drillhole_3d_exporter.py` | GPKG 3D, WellKnown Text | 3D drillhole traces & intervals. |
-| `DrillholeExporters` | `drillhole_exporters.py` | Multiple | Drillhole-specific formats. |
-| `PdfExporter` | `pdf_exporter.py` | PDF | Professional section layouts. |
-| `SvgExporter` | `svg_exporter.py` | SVG | Vector graphics for reports. |
-| `ImageExporter` | `image_exporter.py` | PNG, JPG | Raster images for presentations. |
+| `VectorExporter` | `vector_exporter.py` → [[vector_exporter]] | GPKG, SHP, DXF | Unified vector export for sections. |
+| `DxfExporter` | `dxf_exporter.py` → [[dxf_exporter]] | DXF | CAD-compatible export. |
+| `ProfileExporters` | `profile_exporters.py` → [[profile_exporters]] | CSV, XLSX | Profile data tables, sampling results. |
+| `CsvExporter` | `csv_exporter.py` → [[csv_exporter]] | CSV | Raw data export. |
+| `Interpretation3DExporter` | `interpretation_3d_exporter.py` → [[interpretation_3d_exporter]] | GPKG 3D, CityJSON | 3D geological interpretations. |
+| `InterpretationExporters` | `interpretation_exporters.py` → [[interpretation_exporters]] | Multiple | Interpretation-specific formats. |
+| `Drillhole3DExporter` | `drillhole_3d_exporter.py` → [[drillhole_3d_exporter]] | GPKG 3D, WellKnown Text | 3D drillhole traces & intervals. |
+| `DrillholeExporters` | `drillhole_exporters.py` → [[drillhole_exporters]] | Multiple | Drillhole-specific formats. |
+| `PdfExporter` | `pdf_exporter.py` → [[pdf_exporter]] | PDF | Professional section layouts. |
+| `SvgExporter` | `svg_exporter.py` → [[svg_exporter]] | SVG | Vector graphics for reports. |
+| `ImageExporter` | `image_exporter.py` → [[image_exporter]] | PNG, JPG | Raster images for presentations. |
 
 ### Format Decoupling
 
