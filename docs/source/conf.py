@@ -12,10 +12,26 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
+import re
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath("../../../"))
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+# autodoc must import the plugin as the top-level package `sec_interp`, whose
+# parent directory is the repository root's parent.
+sys.path.insert(0, str(_REPO_ROOT.parent))
+
+
+def _read_version() -> str:
+    """Read the plugin version from ``metadata.txt`` (single source of truth)."""
+    metadata = _REPO_ROOT / "metadata.txt"
+    try:
+        match = re.search(r"^version\s*=\s*(.+)$", metadata.read_text(encoding="utf-8"), re.M)
+        if match:
+            return match.group(1).strip()
+    except OSError:
+        pass
+    return "0.0.0"
 
 
 # -- Project information -----------------------------------------------------
@@ -24,8 +40,9 @@ project = "SecInterp"
 copyright = "2026, Juan M Bernales"
 author = "Juan M Bernales"
 
-# The full version, including alpha/beta/rc tags
-release = "3.8.0"
+# The full version, including alpha/beta/rc tags (auto-synced from metadata.txt)
+release = _read_version()
+version = release
 
 
 # -- General configuration ---------------------------------------------------

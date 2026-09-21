@@ -29,7 +29,7 @@ Utilizar tres guiones `---` entre sesiones para una separación visual clara.
 Sesión para corregir el error de desempaquetado en sondajes.
 
 ### Logros
-- Corregido `ValueError` en `core/types.py`.
+- Corregido `ValueError` en `core/domain/`.
 - Actualizado test de regresión.
 
 ---

@@ -94,7 +94,9 @@ staleness audit for details.
 > - **§4 Duplication/canonical**: added `scripts/sync_docs_mirrors.sh` (+`--check`) keeping `docs/source/CORE_DISTINCTION_GUIDE*.md` in sync with `docs/`; the Sphinx `CORE_DISTINCTION_GUIDE.md` was actually an EN duplicate and is now the ES guide. Marked `docsec/CHANGELOG*.md` as non-canonical (canonical: `docs/CHANGELOG.md`) and cross-referenced the two DEVELOPMENT_GUIDE copies.
 > - **§5 Toctree**: moved `v2.9.0_technical_analysis` into the hidden "Project Archive" section of `docs/source/index.rst`.
 >
-> **Still pending:** §6 CI `docs.yml`.
+> - **§6 CI**: `.github/workflows/docs.yml` rewritten to build all languages with `scripts/build_docs.sh` and publish to `geociencio/sec_interp_docs` (needs `DOCS_DEPLOY_TOKEN`).
+>
+> **Also added:** `scripts/check_docs.py` + `make docs-check` (stale module refs, broken links, mirror sync); `docs/source/conf.py` now auto-reads the version from `metadata.txt` and inserts the correct `sys.path` (autodoc previously failed to import `sec_interp`, leaving API pages empty).
 
 ## 8. Recommendations (priority)
 

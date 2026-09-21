@@ -42,7 +42,7 @@
 **Phase: Internationalization Quality Gate & Preview UX**
 
 ### 🌐 i18n Quality Gate
-- **AST-Based Translation Hygiene**: Developed `verify_i18n_hygiene.py`, a static analyzer that scans UI components for untranslated strings and enforces `self.tr()` wrapping with near-zero false positives.
+- **AST-Based Translation Hygiene**: Developed an AST-based translation-hygiene analyzer (since upstreamed into `qgis-plugin-analyzer`) that scans UI components for untranslated strings and enforces `self.tr()` wrapping with near-zero false positives.
 - **Dialog Title Coverage**: Wrapped 9 untranslated error dialog titles (`Export Error`, `Preview Error`, `Geology Error`, `Drillhole Error`) and the results `"ID:"` label in `self.dialog.tr()`.
 
 ### 🎛️ Collapsible Preview Controls

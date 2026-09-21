@@ -5,16 +5,36 @@ on:
     branches: [ main ]
     paths:
       - 'docs/**'
-      - 'sec_interp/**'
+      - 'core/**'
+      - 'gui/**'
+      - 'exporters/**'
+      - 'plugin/**'
+      - 'resources/**'
+      - 'metadata.txt'
+      - 'scripts/build_docs.sh'
+      - 'scripts/i18n/**'
+      - 'scripts/sync_docs_mirrors.sh'
+      - 'scripts/sync_vault_mirrors.sh'
       - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+# Never run two doc deployments at once.
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: true
 
 jobs:
   docs:
     name: Build & Deploy Docs
     runs-on: ubuntu-latest
-
+    env:
+      DOCS_REPO: geociencio/sec_interp_docs
+      DOCS_DIR: ../sec_interp_docs
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y gettext
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -22,17 +42,23 @@ jobs:
           enable-cache: true
 
       - name: Set up Python
-        run: uv python install 3.10
+        run: uv python install 3.12
 
       - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Configure git identity
         run: |
-          uv pip install sphinx myst-parser sphinxcontrib-mermaid
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Build HTML Documentation
-        run: make apidocs-html
+      - name: Clone docs repository
+        env:
+          DOCS_TOKEN: ${{ secrets.DOCS_DEPLOY_TOKEN }}
+        run: |
+          git clone "https://x-access-token:${DOCS_TOKEN}@github.com/${DOCS_REPO}.git" "$DOCS_DIR"
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs/build/html
-          branch: gh-pages
+      # scripts/build_docs.sh builds all languages into $DOCS_DIR and pushes it
+      # to the external sec_interp_docs repository (branch main).
+      - name: Build and publish documentation
+        run: bash scripts/build_docs.sh "$DOCS_DIR"
