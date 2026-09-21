@@ -54,13 +54,13 @@ graph TD
 | Módulo | Rol |
 |--------|-----|
 | `__init__.py` | Paquete de renderizadores |
-| `base_renderer.py` | `BasePreviewRenderer` (ABC) + `build_categorized_line_style` |
-| `color_manager.py` | `ColorManager`: color estable por nombre de unidad |
-| `topo_renderer.py` | `TopoRenderer`: polícromía de elevación graduada |
-| `geology_renderer.py` | `GeologyRenderer`: líneas categorizadas por unidad |
-| `structure_renderer.py` | `StructureRenderer`: línea roja simple para dips |
-| `drillhole_renderer.py` | `DrillholeRenderer`: traza vs intervalo + etiquetas |
-| `interpretation_renderer.py` | `InterpretationRenderer`: rellenos por color de interpretación |
+| `base_renderer.py` → [[renderers]] | `BasePreviewRenderer` (ABC) + `build_categorized_line_style` |
+| `color_manager.py` → [[renderers]] | `ColorManager`: color estable por nombre de unidad |
+| `topo_renderer.py` → [[renderers]] | `TopoRenderer`: polícromía de elevación graduada |
+| `geology_renderer.py` → [[renderers]] | `GeologyRenderer`: líneas categorizadas por unidad |
+| `structure_renderer.py` → [[renderers]] | `StructureRenderer`: línea roja simple para dips |
+| `drillhole_renderer.py` → [[renderers]] | `DrillholeRenderer`: traza vs intervalo + etiquetas |
+| `interpretation_renderer.py` → [[renderers]] | `InterpretationRenderer`: rellenos por color de interpretación |
 
 ## 🏛️ Patrones de diseño presentes
 

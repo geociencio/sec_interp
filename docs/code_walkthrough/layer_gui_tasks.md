@@ -48,8 +48,8 @@ graph TD
 | Módulo | Rol |
 |--------|-----|
 | `__init__.py` | Paquete de tareas |
-| `drillhole_task.py` | `DrillholeGenerationTask`: proyecta e intersecta sondajes |
-| `geology_task.py` | `GeologyGenerationTask`: construye segmentos geológicos |
+| `drillhole_task.py` → [[tasks]] | `DrillholeGenerationTask`: proyecta e intersecta sondajes |
+| `geology_task.py` → [[tasks]] | `GeologyGenerationTask`: construye segmentos geológicos |
 
 ## 🏛️ Patrones de diseño presentes
 

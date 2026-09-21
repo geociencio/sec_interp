@@ -59,13 +59,13 @@ graph TD
 | Módulo | Rol |
 |--------|-----|
 | `__init__.py` | Vacío: paquete namespace sin re-exports |
-| `topography.py` | `export_topography` → CSV + `ProfileLineVectorExporter` |
-| `geology.py` | `export_geology` → CSV + `GeologyVectorExporter` |
-| `structures.py` | `export_structures` → CSV + `StructureVectorExporter` (usa `rasterUnitsPerPixelX`) |
-| `drillholes.py` | `export_drillholes` → trazas e intervalos 2D |
-| `drillholes_3d.py` | `export_drillholes_3d` → tabla declarativa de 4 tareas |
-| `interpretations.py` | `export_interpretations` → 2D + 3D gateado por `AccessControlService` |
-| `axes.py` | `export_axes` → `AxesVectorExporter` |
+| `topography.py` → [[export_package]] | `export_topography` → CSV + `ProfileLineVectorExporter` |
+| `geology.py` → [[export_package]] | `export_geology` → CSV + `GeologyVectorExporter` |
+| `structures.py` → [[export_package]] | `export_structures` → CSV + `StructureVectorExporter` (usa `rasterUnitsPerPixelX`) |
+| `drillholes.py` → [[export_package]] | `export_drillholes` → trazas e intervalos 2D |
+| `drillholes_3d.py` → [[export_package]] | `export_drillholes_3d` → tabla declarativa de 4 tareas |
+| `interpretations.py` → [[export_package]] | `export_interpretations` → 2D + 3D gateado por `AccessControlService` |
+| `axes.py` → [[export_package]] | `export_axes` → `AxesVectorExporter` |
 
 ## 🏛️ Patrones de diseño presentes
 

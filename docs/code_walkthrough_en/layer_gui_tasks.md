@@ -48,8 +48,8 @@ graph TD
 | Module | Role |
 |--------|------|
 | `__init__.py` | Task package |
-| `drillhole_task.py` | `DrillholeGenerationTask`: projects and intersects drillholes |
-| `geology_task.py` | `GeologyGenerationTask`: builds geological segments |
+| `drillhole_task.py` → [[tasks]] | `DrillholeGenerationTask`: projects and intersects drillholes |
+| `geology_task.py` → [[tasks]] | `GeologyGenerationTask`: builds geological segments |
 
 ## 🏛️ Design patterns present
 

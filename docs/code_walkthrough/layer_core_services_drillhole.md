@@ -54,11 +54,11 @@ graph TD
 | Módulo | Rol |
 |--------|-----|
 | `__init__.py` | Marcador de paquete (docstring + `from __future__`) |
-| `collar_processor.py` | Proyecta el collar al perfil y filtra por `buffer_width` |
-| `survey_processor.py` | `determine_final_depth()`: máxima profundidad survey/intervalo |
-| `interval_processor.py` | Interpola intervalos sobre la trayectoria → `GeologySegment` |
-| `trajectory_engine.py` | Orquesta trayectoria, proyección e intervalos por sondaje |
-| `projection_engine.py` | `project_point_to_line()`: proyección geométrica pura |
+| `collar_processor.py` → [[collar_processor]] | Proyecta el collar al perfil y filtra por `buffer_width` |
+| `survey_processor.py` → [[survey_processor]] | `determine_final_depth()`: máxima profundidad survey/intervalo |
+| `interval_processor.py` → [[interval_processor]] | Interpola intervalos sobre la trayectoria → `GeologySegment` |
+| `trajectory_engine.py` → [[trajectory_engine]] | Orquesta trayectoria, proyección e intervalos por sondaje |
+| `projection_engine.py` → [[projection_engine]] | `project_point_to_line()`: proyección geométrica pura |
 
 ---
 

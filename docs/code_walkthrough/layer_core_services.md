@@ -54,11 +54,11 @@ graph TD
 | Módulo | Rol |
 |--------|-----|
 | `__init__.py` | Re-exporta `DrillholeService`, `GeologyService`, `StructureService` |
-| `access_control_service.py` | Gate de features restringidas vía `QgsSettings` (`can_export_3d`) |
-| `geology_service.py` | `build_segments()`: interpola y ordena segmentos geológicos |
-| `structure_service.py` | `project_structures()`: proyecta y calcula dip aparente |
-| `drillhole_service.py` | `process_context()`: orquesta el pipeline de sondajes |
-| `preview_service.py` | `generate_all()`: orquesta topografía y estructuras del preview |
+| `access_control_service.py` → [[access_control_service]] | Gate de features restringidas vía `QgsSettings` (`can_export_3d`) |
+| `geology_service.py` → [[geology_service]] | `build_segments()`: interpola y ordena segmentos geológicos |
+| `structure_service.py` → [[structure_service]] | `project_structures()`: proyecta y calcula dip aparente |
+| `drillhole_service.py` → [[drillhole_service]] | `process_context()`: orquesta el pipeline de sondajes |
+| `preview_service.py` → [[preview_service]] | `generate_all()`: orquesta topografía y estructuras del preview |
 | `export_service.py` | **Shim de 13 líneas** que re-exporta `ExportService` desde [[layer_core_services_export]] |
 
 ---

@@ -64,13 +64,13 @@ graph TD
 
 | Module | Role |
 |--------|------|
-| `main_dialog.py` | `SecInterpDialog`: composes managers, mixins, and the window |
+| `main_dialog.py` → [[main_dialog]] | `SecInterpDialog`: composes managers, mixins, and the window |
 | `dialog_*_manager.py` | `PreviewManager`, `ExportManager`, `InputManager`, `InterpretationManager`, `SignalManager`, `StateManager`, `ToolManager` |
 | `dialog_*_mixin.py` | Dialog lifecycle, messages, and facade |
 | `preview_*.py` | Rendering, state, hashing, task orchestration, and legend |
 | `interpretation_*_mixin.py` | Persistence (project/layer) and attribute inheritance |
-| `layer_notification_manager.py` | Invalidates the core cache when layers change |
-| `ui_status_manager.py` | Indicators and button enablement |
+| `layer_notification_manager.py` → [[layer_notification_manager]] | Invalidates the core cache when layers change |
+| `ui_status_manager.py` → [[ui_status_manager]] | Indicators and button enablement |
 | `adapters/` (9) | `[[layer_gui_adapters]]`: extraction from QGIS into DTOs |
 | `dialogs/` (1) | `[[layer_gui_dialogs]]`: interpretation properties dialog |
 | `renderers/` (8) | `[[layer_gui_renderers]]`: domain-specific rendering |

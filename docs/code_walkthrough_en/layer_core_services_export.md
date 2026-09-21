@@ -48,10 +48,10 @@ graph TD
 | Module | Role |
 |--------|------|
 | `__init__.py` | Re-exports `ExportService`, `create_map_settings`, `get_profile_name`, `resolve_export_path` |
-| `orchestrator.py` | `ExportService`: validates options, derives format and dispatches via the `exp_*` routing dict |
-| `path_resolver.py` | `get_profile_name()` sanitizes `/` and `\`; `resolve_export_path()` applies `naming_pattern` and chooses GPKG vs folder |
-| `map_settings_factory.py` | Only import of `QgsMapSettings`; `create_map_settings()` |
-| `compat.py` | Mixin with legacy `_export_*` and `_get_export_path` wrappers for tests |
+| `orchestrator.py` → [[export_package]] | `ExportService`: validates options, derives format and dispatches via the `exp_*` routing dict |
+| `path_resolver.py` → [[export_package]] | `get_profile_name()` sanitizes `/` and `\`; `resolve_export_path()` applies `naming_pattern` and chooses GPKG vs folder |
+| `map_settings_factory.py` → [[export_package]] | Only import of `QgsMapSettings`; `create_map_settings()` |
+| `compat.py` → [[export_package]] | Mixin with legacy `_export_*` and `_get_export_path` wrappers for tests |
 
 ## 🏛️ Design patterns present
 

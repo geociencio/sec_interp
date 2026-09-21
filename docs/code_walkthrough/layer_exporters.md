@@ -67,18 +67,18 @@ graph TD
 
 | Módulo | Rol |
 |--------|-----|
-| `base_exporter.py` | ABC con `export()`, `validate_export_path()` y `validate_path()` |
-| `vector_exporter.py` | Genérico SHP/GPKG/DXF a partir de `features_data` |
-| `csv_exporter.py` | Tablas `headers`/`rows` a CSV |
-| `dxf_exporter.py` | Escritura DXF dedicada |
-| `image_exporter.py` | Render a PNG/JPG con `QgsMapRendererCustomPainterJob` |
-| `pdf_exporter.py` | Render a PDF con `QPdfWriter` |
-| `svg_exporter.py` | Render a SVG con `QSvgGenerator` |
-| `profile_exporters.py` | `ProfileLine`, `Geology`, `Structure` y `Axes` (4 clases) |
-| `drillhole_exporters.py` | Trazas e intervalos 2D de sondajes |
-| `drillhole_3d_exporter.py` | Trazas e intervalos 3D (`LineStringZ`) |
-| `interpretation_exporters.py` | Polígonos de interpretación 2D |
-| `interpretation_3d_exporter.py` | Polígonos 3D (`PolygonZ`) + estilo QML |
+| `base_exporter.py` → [[base_exporter]] | ABC con `export()`, `validate_export_path()` y `validate_path()` |
+| `vector_exporter.py` → [[vector_exporter]] | Genérico SHP/GPKG/DXF a partir de `features_data` |
+| `csv_exporter.py` → [[csv_exporter]] | Tablas `headers`/`rows` a CSV |
+| `dxf_exporter.py` → [[dxf_exporter]] | Escritura DXF dedicada |
+| `image_exporter.py` → [[image_exporter]] | Render a PNG/JPG con `QgsMapRendererCustomPainterJob` |
+| `pdf_exporter.py` → [[pdf_exporter]] | Render a PDF con `QPdfWriter` |
+| `svg_exporter.py` → [[svg_exporter]] | Render a SVG con `QSvgGenerator` |
+| `profile_exporters.py` → [[profile_exporters]] | `ProfileLine`, `Geology`, `Structure` y `Axes` (4 clases) |
+| `drillhole_exporters.py` → [[drillhole_exporters]] | Trazas e intervalos 2D de sondajes |
+| `drillhole_3d_exporter.py` → [[drillhole_3d_exporter]] | Trazas e intervalos 3D (`LineStringZ`) |
+| `interpretation_exporters.py` → [[interpretation_exporters]] | Polígonos de interpretación 2D |
+| `interpretation_3d_exporter.py` → [[interpretation_3d_exporter]] | Polígonos 3D (`PolygonZ`) + estilo QML |
 | `__init__.py` | Fachada y factory `get_exporter(extension, settings)` |
 
 ---

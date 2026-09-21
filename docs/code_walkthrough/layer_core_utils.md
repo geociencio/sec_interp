@@ -59,8 +59,8 @@ graph TD
 | `metadata_reader.py` | `read_plugin_metadata()` desde `metadata.txt` con caché |
 | `rendering.py` | `calculate_bounds`, `create_coordinate_transform`, `calculate_interval` |
 | `parsing.py` | `parse_strike`, `parse_dip`, `cardinal_to_azimuth`, `extract_feature_attributes` |
-| `safe_loader.py` | `SafeLoader`: import diferido y tolerante a fallos |
-| `i18n.py` | `TranslatableMixin`: `tr()` sin heredar de `QObject` |
+| `safe_loader.py` → [[safe_loader]] | `SafeLoader`: import diferido y tolerante a fallos |
+| `i18n.py` → [[i18n]] | `TranslatableMixin`: `tr()` sin heredar de `QObject` |
 | `io.py` | `create_vector_writer` para SHP/GPKG/DXF |
 | `spatial.py` | `calculate_line_azimuth` (matemática pura) |
 | `drillhole.py` | Trayectorias, proyección a sección e interpolación de intervalos |

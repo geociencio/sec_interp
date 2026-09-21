@@ -54,14 +54,14 @@ graph TD
 | Module | Role |
 |--------|------|
 | `__init__.py` | Documents the Extract-phase contract |
-| `feature_fetcher.py` | `DataFetcher`: bulk survey/interval read in one pass |
-| `layer_resolver.py` | `LayerResolver`: resolves and caches layers; `resolve_layer` wrapper |
-| `validation_extractor.py` | Detached `LayerMetadata` and `build_validation_params` |
-| `drillhole_extractor.py` | `DrillholeExtractor` → `DrillholeContext` |
-| `geology_extractor.py` | `GeologyExtractor` → `GeologyContext` |
-| `geometry.py` | QGIS geometry and raster-sampling helpers |
-| `profile_extractor.py` | `ProfileExtractor` → topographic `ProfileData` |
-| `structure_extractor.py` | `StructureExtractor` → `SectionContext` |
+| `feature_fetcher.py` → [[adapters]] | `DataFetcher`: bulk survey/interval read in one pass |
+| `layer_resolver.py` → [[adapters]] | `LayerResolver`: resolves and caches layers; `resolve_layer` wrapper |
+| `validation_extractor.py` → [[validation_extractor]] | Detached `LayerMetadata` and `build_validation_params` |
+| `drillhole_extractor.py` → [[drillhole_extractor]] | `DrillholeExtractor` → `DrillholeContext` |
+| `geology_extractor.py` → [[geology_extractor]] | `GeologyExtractor` → `GeologyContext` |
+| `geometry.py` → [[adapters]] | QGIS geometry and raster-sampling helpers |
+| `profile_extractor.py` → [[adapters]] | `ProfileExtractor` → topographic `ProfileData` |
+| `structure_extractor.py` → [[structure_extractor]] | `StructureExtractor` → `SectionContext` |
 
 ## 🏛️ Design patterns present
 

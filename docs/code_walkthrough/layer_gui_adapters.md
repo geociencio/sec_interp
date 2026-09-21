@@ -54,14 +54,14 @@ graph TD
 | Módulo | Rol |
 |--------|-----|
 | `__init__.py` | Documenta el contrato de la fase Extract |
-| `feature_fetcher.py` | `DataFetcher`: lectura masiva de survey/interval en una pasada |
-| `layer_resolver.py` | `LayerResolver`: resuelve y cachea capas; wrapper `resolve_layer` |
-| `validation_extractor.py` | `LayerMetadata` detachado y `build_validation_params` |
-| `drillhole_extractor.py` | `DrillholeExtractor` → `DrillholeContext` |
-| `geology_extractor.py` | `GeologyExtractor` → `GeologyContext` |
-| `geometry.py` | Helpers QGIS de geometría y muestreo ráster |
-| `profile_extractor.py` | `ProfileExtractor` → `ProfileData` topográfico |
-| `structure_extractor.py` | `StructureExtractor` → `SectionContext` |
+| `feature_fetcher.py` → [[adapters]] | `DataFetcher`: lectura masiva de survey/interval en una pasada |
+| `layer_resolver.py` → [[adapters]] | `LayerResolver`: resuelve y cachea capas; wrapper `resolve_layer` |
+| `validation_extractor.py` → [[validation_extractor]] | `LayerMetadata` detachado y `build_validation_params` |
+| `drillhole_extractor.py` → [[drillhole_extractor]] | `DrillholeExtractor` → `DrillholeContext` |
+| `geology_extractor.py` → [[geology_extractor]] | `GeologyExtractor` → `GeologyContext` |
+| `geometry.py` → [[adapters]] | Helpers QGIS de geometría y muestreo ráster |
+| `profile_extractor.py` → [[adapters]] | `ProfileExtractor` → `ProfileData` topográfico |
+| `structure_extractor.py` → [[structure_extractor]] | `StructureExtractor` → `SectionContext` |
 
 ## 🏛️ Patrones de diseño presentes
 

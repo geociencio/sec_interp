@@ -47,8 +47,8 @@ graph TD
 | Module | Role |
 |--------|------|
 | `__init__.py` | Map-tool package |
-| `interpretation_tool.py` | `ProfileInterpretationTool`: draws interpretation polygons |
-| `measure_tool.py` | `ProfileMeasureTool`: measures distance, elevation and slope |
+| `interpretation_tool.py` → [[interpretation_tool]] | `ProfileInterpretationTool`: draws interpretation polygons |
+| `measure_tool.py` → [[measure_tool]] | `ProfileMeasureTool`: measures distance, elevation and slope |
 | `snapper.py` | `ProfileSnapper`: shared vertex/edge snapping |
 
 ## 🏛️ Design patterns present

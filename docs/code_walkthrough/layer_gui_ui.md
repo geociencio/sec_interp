@@ -54,8 +54,8 @@ graph TD
 | Módulo | Rol |
 |--------|-----|
 | `__init__.py` (7) | Docstring del paquete UI |
-| `main_window.py` (158) | `SecInterpMainWindow`: splitter, stack, preview y botones |
-| `sidebar.py` (63) | `Sidebar`: navegación con iconos de tema QGIS vía `add_item()` |
+| `main_window.py` → [[ui_pages]] (158) | `SecInterpMainWindow`: splitter, stack, preview y botones |
+| `sidebar.py` → [[ui_pages]] (63) | `Sidebar`: navegación con iconos de tema QGIS vía `add_item()` |
 
 ---
 

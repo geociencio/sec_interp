@@ -58,15 +58,15 @@ graph TD
 | Module | Role |
 |--------|------|
 | `__init__.py` (7) | Re-exports `SettingsPage` |
-| `base_page.py` (105) | `BasePage` + `set_combo_layer()` helper |
-| `dem_page.py` (222) | `DemPage` — DEM/raster and band |
-| `section_page.py` (117) | `SectionPage` — section line and buffer |
-| `geology_page.py` (120) | `GeologyPage` — contacts/outcrops |
-| `structure_page.py` (166) | `StructurePage` — structural measurements |
-| `drillhole_page.py` (130) | `DrillholePage` — tab coordinator |
-| `interpretation_page.py` (230) | `InterpretationPage` — interpretation attributes |
-| `settings_page.py` (124) | `SettingsPage` — settings coordinator |
-| `preview_page.py` (262) | `PreviewWidget` — canvas, results and LOD |
+| `base_page.py` → [[ui_pages]] (105) | `BasePage` + `set_combo_layer()` helper |
+| `dem_page.py` → [[ui_pages]] (222) | `DemPage` — DEM/raster and band |
+| `section_page.py` → [[ui_pages]] (117) | `SectionPage` — section line and buffer |
+| `geology_page.py` → [[ui_pages]] (120) | `GeologyPage` — contacts/outcrops |
+| `structure_page.py` → [[ui_pages]] (166) | `StructurePage` — structural measurements |
+| `drillhole_page.py` → [[drillhole_page]] (130) | `DrillholePage` — tab coordinator |
+| `interpretation_page.py` → [[ui_pages]] (230) | `InterpretationPage` — interpretation attributes |
+| `settings_page.py` → [[settings_page]] (124) | `SettingsPage` — settings coordinator |
+| `preview_page.py` → [[ui_pages]] (262) | `PreviewWidget` — canvas, results and LOD |
 
 ---
 

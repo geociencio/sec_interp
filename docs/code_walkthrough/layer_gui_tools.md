@@ -47,8 +47,8 @@ graph TD
 | Módulo | Rol |
 |--------|-----|
 | `__init__.py` | Paquete de herramientas de mapa |
-| `interpretation_tool.py` | `ProfileInterpretationTool`: dibuja polígonos de interpretación |
-| `measure_tool.py` | `ProfileMeasureTool`: mide distancia, desnivel y pendiente |
+| `interpretation_tool.py` → [[interpretation_tool]] | `ProfileInterpretationTool`: dibuja polígonos de interpretación |
+| `measure_tool.py` → [[measure_tool]] | `ProfileMeasureTool`: mide distancia, desnivel y pendiente |
 | `snapper.py` | `ProfileSnapper`: snapping compartido a vértice/borde |
 
 ## 🏛️ Patrones de diseño presentes

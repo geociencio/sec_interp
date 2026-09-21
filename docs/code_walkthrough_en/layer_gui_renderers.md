@@ -54,13 +54,13 @@ graph TD
 | Module | Role |
 |--------|------|
 | `__init__.py` | Renderer package |
-| `base_renderer.py` | `BasePreviewRenderer` (ABC) + `build_categorized_line_style` |
-| `color_manager.py` | `ColorManager`: stable color per unit name |
-| `topo_renderer.py` | `TopoRenderer`: graduated elevation polychromy |
-| `geology_renderer.py` | `GeologyRenderer`: lines categorized by unit |
-| `structure_renderer.py` | `StructureRenderer`: simple red line for dips |
-| `drillhole_renderer.py` | `DrillholeRenderer`: trace vs interval + labels |
-| `interpretation_renderer.py` | `InterpretationRenderer`: fills by interpretation color |
+| `base_renderer.py` → [[renderers]] | `BasePreviewRenderer` (ABC) + `build_categorized_line_style` |
+| `color_manager.py` → [[renderers]] | `ColorManager`: stable color per unit name |
+| `topo_renderer.py` → [[renderers]] | `TopoRenderer`: graduated elevation polychromy |
+| `geology_renderer.py` → [[renderers]] | `GeologyRenderer`: lines categorized by unit |
+| `structure_renderer.py` → [[renderers]] | `StructureRenderer`: simple red line for dips |
+| `drillhole_renderer.py` → [[renderers]] | `DrillholeRenderer`: trace vs interval + labels |
+| `interpretation_renderer.py` → [[renderers]] | `InterpretationRenderer`: fills by interpretation color |
 
 ## 🏛️ Design patterns present
 

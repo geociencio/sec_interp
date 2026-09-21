@@ -65,11 +65,11 @@ graph TD
 
 | Module | Role |
 |--------|------|
-| `controller.py` | `ProfileController`: orchestrates topo, geology, structures, and drillholes with granular caching |
-| `config.py` | `ConfigService`: loads/persists settings into `PluginSettings` |
-| `data_cache.py` | `DataCache`: in-memory cache by bucket (`topo`/`geol`/`struct`/`drill`) with TTL |
-| `exceptions.py` | `SecInterpError` base → `ValidationError`, `ProcessingError`, `ExportError` |
-| `performance_metrics.py` | `MetricsCollector`, `PerformanceTimer`, and the `@performance_monitor` decorator |
+| `controller.py` → [[controller]] | `ProfileController`: orchestrates topo, geology, structures, and drillholes with granular caching |
+| `config.py` → [[config]] | `ConfigService`: loads/persists settings into `PluginSettings` |
+| `data_cache.py` → [[data_cache]] | `DataCache`: in-memory cache by bucket (`topo`/`geol`/`struct`/`drill`) with TTL |
+| `exceptions.py` → [[exceptions]] | `SecInterpError` base → `ValidationError`, `ProcessingError`, `ExportError` |
+| `performance_metrics.py` → [[performance_metrics]] | `MetricsCollector`, `PerformanceTimer`, and the `@performance_monitor` decorator |
 | `algorithms.py` | Reserved for pure algorithms (the plugin lives in `sec_interp_plugin.py`) |
 | `__init__.py` | Core package docstring |
 | `domain/` (6) | `[[layer_core_domain]]`: DTOs, entities, enums, and contexts |

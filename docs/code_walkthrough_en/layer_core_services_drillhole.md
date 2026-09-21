@@ -54,11 +54,11 @@ graph TD
 | Module | Role |
 |--------|------|
 | `__init__.py` | Package marker (docstring + `from __future__`) |
-| `collar_processor.py` | Projects the collar onto the profile and filters by `buffer_width` |
-| `survey_processor.py` | `determine_final_depth()`: max survey/interval depth |
-| `interval_processor.py` | Interpolates intervals along the trajectory → `GeologySegment` |
-| `trajectory_engine.py` | Orchestrates trajectory, projection, and intervals per hole |
-| `projection_engine.py` | `project_point_to_line()`: pure geometric projection |
+| `collar_processor.py` → [[collar_processor]] | Projects the collar onto the profile and filters by `buffer_width` |
+| `survey_processor.py` → [[survey_processor]] | `determine_final_depth()`: max survey/interval depth |
+| `interval_processor.py` → [[interval_processor]] | Interpolates intervals along the trajectory → `GeologySegment` |
+| `trajectory_engine.py` → [[trajectory_engine]] | Orchestrates trajectory, projection, and intervals per hole |
+| `projection_engine.py` → [[projection_engine]] | `project_point_to_line()`: pure geometric projection |
 
 ---
 

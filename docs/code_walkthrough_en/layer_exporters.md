@@ -67,18 +67,18 @@ graph TD
 
 | Module | Role |
 |--------|------|
-| `base_exporter.py` | ABC with `export()`, `validate_export_path()`, and `validate_path()` |
-| `vector_exporter.py` | Generic SHP/GPKG/DXF from `features_data` |
-| `csv_exporter.py` | `headers`/`rows` tables to CSV |
-| `dxf_exporter.py` | Dedicated DXF writing |
-| `image_exporter.py` | Render to PNG/JPG via `QgsMapRendererCustomPainterJob` |
-| `pdf_exporter.py` | Render to PDF via `QPdfWriter` |
-| `svg_exporter.py` | Render to SVG via `QSvgGenerator` |
-| `profile_exporters.py` | `ProfileLine`, `Geology`, `Structure`, and `Axes` (4 classes) |
-| `drillhole_exporters.py` | 2D drillhole traces and intervals |
-| `drillhole_3d_exporter.py` | 3D traces and intervals (`LineStringZ`) |
-| `interpretation_exporters.py` | 2D interpretation polygons |
-| `interpretation_3d_exporter.py` | 3D polygons (`PolygonZ`) + QML style |
+| `base_exporter.py` → [[base_exporter]] | ABC with `export()`, `validate_export_path()`, and `validate_path()` |
+| `vector_exporter.py` → [[vector_exporter]] | Generic SHP/GPKG/DXF from `features_data` |
+| `csv_exporter.py` → [[csv_exporter]] | `headers`/`rows` tables to CSV |
+| `dxf_exporter.py` → [[dxf_exporter]] | Dedicated DXF writing |
+| `image_exporter.py` → [[image_exporter]] | Render to PNG/JPG via `QgsMapRendererCustomPainterJob` |
+| `pdf_exporter.py` → [[pdf_exporter]] | Render to PDF via `QPdfWriter` |
+| `svg_exporter.py` → [[svg_exporter]] | Render to SVG via `QSvgGenerator` |
+| `profile_exporters.py` → [[profile_exporters]] | `ProfileLine`, `Geology`, `Structure`, and `Axes` (4 classes) |
+| `drillhole_exporters.py` → [[drillhole_exporters]] | 2D drillhole traces and intervals |
+| `drillhole_3d_exporter.py` → [[drillhole_3d_exporter]] | 3D traces and intervals (`LineStringZ`) |
+| `interpretation_exporters.py` → [[interpretation_exporters]] | 2D interpretation polygons |
+| `interpretation_3d_exporter.py` → [[interpretation_3d_exporter]] | 3D polygons (`PolygonZ`) + QML style |
 | `__init__.py` | Facade and `get_exporter(extension, settings)` factory |
 
 ---
