@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SecInterp \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"POT-Creation-Date: 2026-09-20 23:39-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hi\n"
@@ -19,699 +19,957 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../../source/MAINTENANCE_LOG.md:1
+#: ../../source/MAINTENANCE_LOG.md:1
 msgid "SecInterp - Maintenance & Release Log"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:3
+#: ../../source/MAINTENANCE_LOG.md:4
 msgid ""
-"This document serves as the central record for project history, release "
-"procedures, and past refactoring analysis."
+"[2026-09-12] PHASE CLOSURE v3.7.0 (I18N QUALITY GATE, UX & QT6/QGIS 4 "
+"ENUM MIGRATION)"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:5
-msgid "[2026-02-18] EXPANSIÓN I18N (MARKET GAP)"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:6
+#: ../../source/MAINTENANCE_LOG.md:5
 msgid ""
-"**Cambios**: Añadido soporte para **pl**, **nl**, **fi** (14 idiomas "
-"ahora). Implementado motor de Master Data JSON y workflow de "
-"mantenimiento."
+"**Achievements**: Two releases (v3.7.0 / v3.7.1). AST i18n hygiene gate "
+"(0 violations), 9 dialog titles wrapped in `self.tr()`, 79 analyzer flags"
+" triaged to 72 false positives. 114 flat enums migrated to scoped form "
+"for QGIS 4 (pyqgis4-checker 0 errors). Collapsible preview controls. "
+"Security patch (Bandit B110). ZIP reduced 25MB → 3.3MB."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:7
+#: ../../source/MAINTENANCE_LOG.md:6
+msgid ""
+"**Reference**: [Phase Closure "
+"Document](../maintenance/phase_closure_v3.7.0.md)"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:7
+msgid ""
+"**Metrics**: 620 tests Green, Maintainability 99.9/100, Security 100/100,"
+" CC <= 10, i18n AST Gate PASS."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:9
+msgid ""
+"[2026-05-18] PHASE CLOSURE v3.6.0 (NEXT-GEN STABILITY & SPATIAL "
+"OPTIMIZATION)"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:10
+msgid ""
+"**Achievements**: Extreme stability and full compatibility with QGIS "
+"4.x/Qt6. Spatial performance optimization via QgsSpatialIndex, achieving "
+"sub-second query times. 100% translation coverage and 572 successful "
+"tests."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:11
+msgid ""
+"**Reference**: [Phase Closure "
+"Document](../maintenance/phase_closure_v3.6.0.md)"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:12
+msgid ""
+"**Metrics**: 572 tests Green, Code Maintainability 94.2/100, Type Hint "
+"Params 97.3%, CC <= 10."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:14
+msgid ""
+"[2026-04-28] PHASE CLOSURE v3.5.0 (OPERATIONAL EXCELLENCE & AGENTIC "
+"AUTONOMY)"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:15
 #, python-format
 msgid ""
-"**Métricas/Impacto**: 100% de cobertura core en nuevas lenguas. Skill "
-"`i18n-standards` actualizada."
+"**Achievements**: Modernization of the development cycle with the Gen 6 "
+"Agent framework, memory pruning automation, and observability metrics. "
+"Strict quality gate (CC <= 10) and 100% docstrings."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:9
-msgid "[2026-02-18] ESTÁNDARES DE DOCUMENTACIÓN"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:10
+#: ../../source/MAINTENANCE_LOG.md:16
 msgid ""
-"**Cambios**: Formalizado skill `documentation-standards` y actualizado "
-"workflow `/cierra-sesion`."
+"**Reference**: [Phase Closure "
+"Document](../maintenance/phase_closure_v3.5.0.md)"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:11
+#: ../../source/MAINTENANCE_LOG.md:17
 msgid ""
-"**Métricas/Impacto**: Reducción de inconsistencias en logs generados por "
-"diferentes agentes."
+"**Metrics**: 620 tests Green, Code Maintainability 94.1/100, Docstring "
+"Coverage 100.0%."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:13
-msgid "[2026-02-17] SIGNAL MANAGEMENT & I18N INFRASTRUCTURE"
+#: ../../source/MAINTENANCE_LOG.md:19
+msgid "[2026-03-29] PHASE CLOSURE v3.4.0 (INTEGRATION & TRANSLATION)"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:14
+#: ../../source/MAINTENANCE_LOG.md:20
 msgid ""
-"**Cambios**: Transición a conexiones explícitas en `SignalManager` y "
-"migración a Master Data JSON (11 idiomas)."
+"**Achievements**: Achieved 100% translation coverage in 13 languages and "
+"620 successful tests in Docker. Comprehensive testing for vector "
+"structural integration."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:15
+#: ../../source/MAINTENANCE_LOG.md:21
 msgid ""
-"**Métricas/Impacto**: Estabilización de señales para evitar memory leaks "
-"y preparación para escalado."
+"**Reference**: [Phase Closure "
+"Document](../maintenance/phase_closure_v3.4.0.md)"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:17
-msgid "[v3.0.0 Release] - i18n Expansion & Drillhole Refactor"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:18
-msgid "**Date**: 2026-02-16"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:19
+#: ../../source/MAINTENANCE_LOG.md:22
 msgid ""
-"**Focus**: Global i18n (10 languages), Facade Removal, Drillhole Service "
-"Decomposition."
+"**Metrics**: 620 tests Green, Code Maintainability 100.0/100, Type Hint "
+"Params 96.0%."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:20
+#: ../../source/MAINTENANCE_LOG.md:24
+msgid "[2026-03-14] PHASE CLOSURE v3.3.0 (STABILITY & QGIS 4.x)"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:25
 msgid ""
-"**Outcome**: Added Hindi/Japanese support. Verified 3D Export stability. "
-"Updated Architecture documentation."
+"**Achievements**: Industrial resource stability, 100% QGIS 4.x Readiness,"
+" and 607 successful tests."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:21
+#: ../../source/MAINTENANCE_LOG.md:26
 msgid ""
-"**Reference**: [Task "
-"Log](/home/jmbernales/.gemini/antigravity/brain/ad157467-1590-4579-b78f-"
-"b53dc0c8b054/task.md)"
+"**Reference**: [Phase Closure "
+"Document](../maintenance/phase_closure_v3.3.0.md) | [Refactoring "
+"Analysis](../maintenance/analysis_v3.3.0_refactoring.md)"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:25
-msgid "[v2.10.0 Plan - Phase 1] - 2026-02-01"
+#: ../../source/MAINTENANCE_LOG.md:27
+#, python-format
+msgid "**Metrics**: 607 tests Green, 100% API compliance, 91% GUI Coverage."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:26
+#: ../../source/MAINTENANCE_LOG.md:29
+msgid "[2026-03-03] PHASE START v3.3.0 (STRICT QUALITY)"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:30
 msgid ""
-"**Focus**: Quality Score > 60, QGIS 4.x Prep (PyQt5 cleanup), "
-"ExportService Refactor."
+"**Changes**: Phase initialization, implementation plan v3.3.0 creation, "
+"and environment sync."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:27
+#: ../../source/MAINTENANCE_LOG.md:31
 msgid ""
-"**Goals**: Eliminate technical debt in resources.py and reduce cyclomatic"
-" complexity in 3D exporters."
+"**Metrics/Impact**: Established 450 tests baseline. Targeted return type "
+"hints (44.9%) and i18n (895 gaps)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:29
-msgid "[Estabilización v3.0.x] - GUI & EXPORTACION"
+#: ../../source/MAINTENANCE_LOG.md:33
+msgid "[2026-03-01] TESTING EXPANSION & DaC AUTOMATION"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:30
-msgid "**Date**: 2026-02-15"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:31
-msgid "**Focus**: ExportService Layer Resolution, Facade Removal."
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:32
-msgid "**Outcome**: 100% Tests Passing, Export functionality restored."
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:33
+#: ../../source/MAINTENANCE_LOG.md:34
 msgid ""
-"**Reference**: [Session "
-"Log](sesion_2026-02-15_stabilization_gui_export.md)"
+"**Changes**: Massive test expansion (450 OK) and automation of "
+"`TESTING_STATUS.md`."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:37
-msgid "[Phase Closure v2.9.0] - ARCHITECTURAL CONSOLIDATION"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:38
-msgid "**Date**: 2026-02-01"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:39
+#: ../../source/MAINTENANCE_LOG.md:35
 msgid ""
-"**Focus**: Core Domain Migration, Drillhole Service Decomposition, v2.9.0"
-" Release Stabilization."
+"**Metrics/Impact**: Increased coverage in critical areas (GUI Tasks, "
+"Core). Trajectory engine stabilization."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:40
+#: ../../source/MAINTENANCE_LOG.md:37
+msgid "[2026-02-28] REFACTOR LAYER RESOLUTION & UX FEEDBACK"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:38
 msgid ""
-"**Outcome**: 199 Tests Passing (100%). Quality Score: 54.3/100 (+9 pts). "
-"Official release published."
+"**Changes**: Implemented `LayerResolver` with cache, unified validations "
+"in `ProjectValidator`, and progress feedback in UI."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:41
+#: ../../source/MAINTENANCE_LOG.md:39
 msgid ""
-"**Reference**: [Phase Closure Document](phase_closure_v2.9.0.md) | "
-"[Technical Analysis](v2.9.0_technical_analysis.md)"
+"**Metrics/Impact**: 229 tests executed successfully. Optimized layer "
+"access and improved user perception of performance."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:45
-msgid "[Phase Closure v2.8.0] - DEBT REDUCTION & UI IMPROVEMENTS"
+#: ../../source/MAINTENANCE_LOG.md:41
+msgid "[2026-02-25] STABILIZATION HOTFIXES (DRILLHOLES & RENDERING)"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:46
-msgid "**Date**: 2026-01-25"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:47
-msgid "**Focus**: Core Decoupling, Async Safety, Legend Visibility."
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:48
+#: ../../source/MAINTENANCE_LOG.md:42
 msgid ""
-"**Outcome**: 359 Tests Passing, Core-QGIS Decoupling finalized with "
-"WKT/DTO pattern."
+"**Changes**: Fixed DI mismatch (`ProfileController`), index error in "
+"empty drillholes (`TrajectoryEngine`), and subscription error in "
+"rendering (`PreviewLayerFactory`)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:49
-msgid "**Reference**: [Phase Closure Document](phase_closure_v2.8.0.md)"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:53
-msgid "[v2.8.0 Plan - Phase 2] - 2026-01-24"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:55
-msgid "[v2.7.0 Plan - Phase 1] - 2026-01-15"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:56
+#: ../../source/MAINTENANCE_LOG.md:43
+#, python-format
 msgid ""
-"**Mock Infrastructure Overhaul**: Implemented `ModuleProxy` and "
-"`MockSignal` to stabilize the QGIS test environment. Resolved attribute "
-"errors and reference loss during mock resets. Added `indexFromName` to "
-"`MockQgsFields` for better API parity."
+"**Metrics/Impact**: 100% stability restored for Phase 3. Drillhole "
+"rendering functional with polymorphism."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:57
+#: ../../source/MAINTENANCE_LOG.md:45
+msgid "[2026-02-18] I18N ASIA EXPANSION & INFRASTRUCTURE AUDIT"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:46
 msgid ""
-"**Config Fix**: Completed missing `reset_defaults()` logic in "
-"`ConfigService`."
+"**Changes**: Localization to Hindi and Indonesian. Technical audit of "
+"`qgis-manage` with modernization roadmap."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:58
+#: ../../source/MAINTENANCE_LOG.md:47
 msgid ""
-"**Workflow Update**: Simplified `inicia-sesion` by removing `make deploy`"
-" and standardizing the test execution command."
+"**Metrics/Impact**: 100% translation coverage in new languages. "
+"Established roadmap to resolve resource compilation technical debt."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:60
-msgid "🚀 Release Process"
+#: ../../source/MAINTENANCE_LOG.md:49
+msgid "[2026-02-18] DEEP TRANSLATION (USER GUIDE)"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:62
-msgid "[Unreleased]"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:63
-msgid "Process"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:65
-msgid "Follow these steps to prepare and release a new version of **SecInterp**."
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:67
-msgid "1. Preparation"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:68
-msgid "**Update Metadata**: Increment `version` in `metadata.txt`."
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:69
-msgid "**Sync AI Context**: Update `AI_CONTEXT.md` and `project_context.json`."
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:71
+#: ../../source/MAINTENANCE_LOG.md:50
 msgid ""
-"**Update Changelog**: Add the new version to the top of the [Project "
-"History](#-project-history) section below."
+"**Changes**: Completed user guide localization in 7 priority languages. "
+"Fixed catalog integrity in Italian and Portuguese."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:72
+#: ../../source/MAINTENANCE_LOG.md:51
+#, python-format
 msgid ""
-"**Update User Guide**: Ensure screenshots and feature descriptions in "
-"`docs/USER_GUIDE.md` are current."
+"**Metrics/Impact**: 100% coverage in tutorial sections. Established SSoT "
+"principle for master data."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:74
-msgid "2. Packaging (Clean Build)"
+#: ../../source/MAINTENANCE_LOG.md:53
+msgid "[2026-02-17] PLUGIN RELEASE v3.0.1"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:75
+#: ../../source/MAINTENANCE_LOG.md:54
 msgid ""
-"To ensure no development files (like tests or .git) are included in the "
-"distribution zip, use the `git archive` method:"
+"**Changes**: Plugin officially published to the QGIS Repository. Fixed "
+"critical crash in `GeometryEngine` and restoration of old layers."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:84
-msgid "3. Distribution & QGIS Repository"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:85
-msgid "**Tagging**: `git tag vX.Y.Z -m \"Release description\"`"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:86
-msgid "**GitHub**: Create a new Release and attach the ZIP."
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:87
+#: ../../source/MAINTENANCE_LOG.md:55
 msgid ""
-"**QGIS Repo**: Upload the ZIP to "
-"[plugins.qgis.org](https://plugins.qgis.org/)."
+"**Metrics/Impact**: First community release. 320 tests verified against "
+"real API."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:88
+#: ../../source/MAINTENANCE_LOG.md:57
+msgid "[2026-02-16] AGENTIC CONTINUITY (SESSION MANAGEMENT)"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:58
 msgid ""
-"⚠️ **CRITICAL**: The ZIP MUST contain a `LICENSE` file and NO "
-"`__pycache__` folders."
+"**Changes**: Restored state from previous sessions. Optimized long "
+"session handling."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:89
+#: ../../source/MAINTENANCE_LOG.md:59
+msgid "**Metrics/Impact**: Context restored. Prepared for v3.0.1 hotfixes."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:61
+msgid "[2026-02-16] PLUGIN RELEASE v3.0.0 — MULTILINGUAL & INTEGRATION"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:62
 msgid ""
-"The repository will reject any package with `.pyc` files for security "
-"reasons."
+"**Changes**: Official release with 10 complete translations, new "
+"`SettingsPage`, native integration with `QgsTask`."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:90
-msgid "Verified ZIP structure with `unzip -t sec_interp.zip`."
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:94
-msgid "📜 Project History"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:96
-msgid "[2.7.0] - 2026-01-18"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:97
-msgid "**Operational Excellence & Documentation Overhaul**:"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:98
+#: ../../source/MAINTENANCE_LOG.md:63
 msgid ""
-"**Sphinx Integration**: Automated documentation generation with `conf.py`"
-" (autodoc/napoleon) and `build_docs.sh`."
+"**Metrics/Impact**: 361 tests Green. Quality Score 83.5. Deployment to "
+"QGIS Python Plugins."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:99
+#: ../../source/MAINTENANCE_LOG.md:65
+msgid "[2026-02-15] PLUGIN RELEASE v3.0.0"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:66
 msgid ""
-"**Link Recovery**: Fixed 50+ broken links in `README.md` and aligned "
-"terminology with the new Sidebar-driven UI."
+"**Changes**: Full `.qgisignore` integration. Final i18n validations. New "
+"Settings UI."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:100
+#: ../../source/MAINTENANCE_LOG.md:67
+msgid "**Metrics/Impact**: 361 tests Green."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:69
+msgid "[2026-02-14] BUILD SYSTEM & I18N REFINEMENT"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:70
 msgid ""
-"**Architecture Documentation**: Added detailed records for the **3-Level "
-"Validation Architecture** and `DialogInterpretationManager`."
+"**Changes**: Fixed `qgis-manage` linking and unicode conflicts. Applied "
+"`make compile` with 13 languages."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:101
+#: ../../source/MAINTENANCE_LOG.md:71
+msgid "**Metrics/Impact**: 316 tests Green. 13 locales verified."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:73
+msgid "[2026-02-12] INTERNATIONALIZATION (i18n) & QGIS 4 PREPARATION"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:74
 msgid ""
-"**i18n Cleanup**: Wrapped all user-facing strings in `tr()` and audited "
-"English/Spanish source."
+"**Changes**: Automatic extraction of 1451 translatable strings (13 "
+"languages). Migration to `qgis.PyQt` for QGIS 4.x."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:102
-msgid "**Refactorización de Interfaz (Fase 2)**:"
-msgstr ""
-
-#: ../../../source/MAINTENANCE_LOG.md:103
+#: ../../source/MAINTENANCE_LOG.md:75
 msgid ""
-"Introducción de `MessageManager`, `CacheHandler`, y `SettingsManager` "
-"para fragmentar el diálogo principal (Reducción de ~700 líneas de código "
-"boilerplate)."
+"**Metrics/Impact**: 317 tests Green. Master data engine fully "
+"operational. 507 metadata fields synchronized."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:104
+#: ../../source/MAINTENANCE_LOG.md:77
+msgid "[2026-02-03] STABILIZATION v2.9.0"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:78
 msgid ""
-"**Bug Fix**: Restaurados métodos proxy `_load_interpretations` y "
-"`_load_user_settings` para retrocompatibilidad."
+"**Changes**: Fixed `GeologyService` DI and `TrajectoryEngine` index "
+"error. Migrated to `unittest` exclusively. Stabilized 255 tests."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:105
-msgid "**Testing Infrastructure (Dockerization)**:"
+#: ../../source/MAINTENANCE_LOG.md:79
+#, python-format
+msgid "**Metrics/Impact**: 100% regression tests Green."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:106
-msgid "Implemented `Dockerfile` optimized for QGIS headless testing."
+#: ../../source/MAINTENANCE_LOG.md:81
+msgid "[2026-02-02] RIGOROUS TESTING & QGIS STANDARDS"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:107
+#: ../../source/MAINTENANCE_LOG.md:82
 msgid ""
-"Added `make docker-build` and `make docker-test` for reproducible CI/CD "
-"environments."
+"**Changes**: QGIS Compliance Analysis. Whitelisted plugins for real API "
+"integration. 245/245 unit tests passing."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:108
+#: ../../source/MAINTENANCE_LOG.md:83
+msgid "**Metrics/Impact**: 100% pass rate. Deep fixes in mock infrastructure."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:85
+msgid "[2026-02-01] ADVANCED TESTING & QGIS INTEGRATION"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:86
+msgid ""
+"**Changes**: Implemented `QgsCoordinateReferenceSystem` integration "
+"tests. 10 new headless QGIS tests."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:87
+msgid ""
+"**Metrics/Impact**: 171 tests Green in mock environment, 37 native QGIS "
+"tests stable."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:89
+msgid "[2026-01-31] UNIT TESTING & QGIS COMPLIANCE"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:90
+msgid ""
+"**Changes**: Created `BaseIntegrationTest` class. 27 new tests for "
+"`GeologyService`, `StructureService`, `ExportService`."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:91
+msgid "**Metrics/Impact**: 155 unit tests + 37 native QGIS tests Green."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:93
+msgid "[2026-01-30] GUI MODULE TESTING"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:94
+msgid ""
+"**Changes**: Test suite for GUI modules (`PreviewRenderer`, "
+"`LODCalculator`, `PreviewParamHasher`)."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:95
+msgid ""
+"**Metrics/Impact**: 155 unit tests Green. GUI-related mock coverage "
+"increased."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:97
+msgid "[2026-01-29] CORE MODULE TESTING"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:98
+msgid ""
+"**Changes**: 62 tests for Core module (`DrillholeService`, "
+"`TrajectoryEngine`, `PreviewService`)."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:99
+msgid ""
+"**Metrics/Impact**: 135 unit tests Green. Core coverage at highest "
+"historical level."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:101
+msgid "[2026-01-28] SOLID REFACTORING & MOCK STABILIZATION"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:102
+msgid ""
+"**Changes**: Deep refactoring of `main_dialog` applying SOLID principles."
+" `preview_task_orchestrator.py` extraction."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:103
+#, python-format
+msgid ""
+"**Metrics/Impact**: 169 unit tests Green. Mock environment 100% stable "
+"for headless testing."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:105
+msgid "[2026-01-24] GUI TESTING EXPANSION"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:106
+msgid ""
+"**Changes**: 38 tests for `main_dialog_validation.py`, `legend_renderer`,"
+" and `lod_calculator`."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:107
+msgid "**Metrics/Impact**: 106 unit tests Green."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:109
+msgid "[2026-01-18] PHASE v2.7.0 COMPLETION (OPERATIONAL EXCELLENCE)"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:110
+msgid ""
+"**Changes**: Formal closure of validation/documentation phase. Modular "
+"architecture validated."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:111
+msgid "**Reference**: phase_closure_v2.7.0.md"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:112
+msgid "**Metrics/Impact**: 73 unit tests Green. Technical debt under control."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:114
+msgid "[2026-01-13] MAJOR ARCHITECTURAL REFACTORING"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:115
+msgid ""
+"**Changes**: Fragmentation of `SecInterpDialog` into specialized "
+"managers. Modularization of `core/utils/`."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:116
+msgid ""
+"**Metrics/Impact**: 52 unit tests Green. Cyclomatic complexity reduced by"
+" 60%."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:118
+msgid "[2026-01-09] QA MILESTONE v2.6.1"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:119
+msgid ""
+"**Changes**: Full stabilization of test suite. Mock pollution resolved in"
+" `QListWidget` tests."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:120
+msgid "**Metrics/Impact**: 312 tests Green."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:122
+msgid "[2026-01-04] QUALITY & DOCKERIZATION"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:123
+msgid ""
+"**Changes**: Complete dockerization of the test environment. Consolidated"
+" `make docker-test` integration."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:124
+#, python-format
+msgid ""
+"**Metrics/Impact**: Containerized environment with 45% improved execution"
+" times."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:126
+msgid "[2026-01-02] EXPANSION PHASE"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:127
+msgid ""
+"**Changes**: Implementation of drillhole 3D services. GUI testing "
+"expansion with native mocks."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:128
+msgid "**Metrics/Impact**: 86 unit tests Green."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:130
+msgid "[2025-12-28] ARCHITECTURAL REFINEMENT"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:131
+msgid ""
+"**Changes**: Extraction of `DrillholeService`, `Controllers`, and `utils`"
+" modules. Validation framework unification."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:132
+msgid "**Metrics/Impact**: 23 unit tests Green."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:134
+msgid "[2025-12-26] STRUCTURAL FOUNDATION"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:135
+msgid ""
+"**Changes**: Solid foundation for drillhole implementations. "
+"Establishment of architectural dependencies."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:136
+msgid "**Metrics/Impact**: 21 unit tests Green."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:138
+msgid "[2025-12-25] ARCHITECTURAL RESTRUCTURING"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:139
+msgid ""
+"**Changes**: Reorganized `core/` and `gui/`. Implemented preview caching "
+"system."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:140
+msgid "**Metrics/Impact**: 12 unit tests Green."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:142
+msgid "[2025-12-23] MASSIVE ARCHITECTURAL REFACTORING"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:143
+msgid ""
+"**Changes**: Complete restructuring of codebase into modular packages "
+"(`core/`, `gui/`, `exporters/`)."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:144
+msgid "**Metrics/Impact**: 0 tests, phase focused on structural integrity."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:148
+msgid "📊 Cumulative Development Summary"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:150
+msgid "Key Quantitative Milestones"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:151
+msgid "**Full Testing**: From 0 to 361+ stable unit tests."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:152
+#, python-format
+msgid "**Dockerization**: Complete test environment with 100% reproducibility."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:153
+msgid ""
+"**Internationalization**: 14 languages supported with automated "
+"maintenance."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:154
+msgid ""
+"**Architectural Decoupling**: Clean separation between QGIS API and "
+"business logic."
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:156
+msgid "Major Architectural Contributions"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:158
+msgid "[2.8.0] - 2026-01-19 to 2026-01-20"
+msgstr ""
+
+#: ../../source/MAINTENANCE_LOG.md:159
 msgid "**Data Integrity & Core**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:109
+#: ../../source/MAINTENANCE_LOG.md:160
 msgid ""
 "**3-Level Validation**: Hierarchical system (Type/Logic/Domain) ensuring "
 "data safety across all layers."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:110
+#: ../../source/MAINTENANCE_LOG.md:161
 msgid ""
 "**Centralized Logging**: Refactored `logger_config.py` for hierarchical "
 "propagation."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:111
-#: ../../../source/MAINTENANCE_LOG.md:119
+#: ../../source/MAINTENANCE_LOG.md:162 ../../source/MAINTENANCE_LOG.md:170
 msgid "**Enhanced 3D Export**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:112
+#: ../../source/MAINTENANCE_LOG.md:163
 msgid ""
 "Implemented high-fidelity 3D output for drillhole traces and geological "
 "intervals (PolygonZ/LineStringZ)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:114
+#: ../../source/MAINTENANCE_LOG.md:165
 msgid "[2.7.0] - (Planning) 2026-01-09"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:115
+#: ../../source/MAINTENANCE_LOG.md:166
 msgid "**Infrastructure Planning**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:116
+#: ../../source/MAINTENANCE_LOG.md:167
 msgid ""
 "**Native Validation**: Transition to `dataclasses` based models "
 "(replacing Pydantic proposal)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:117
+#: ../../source/MAINTENANCE_LOG.md:168
 msgid ""
 "**External Sphinx**: Strategy for out-of-repo documentation build and "
 "repository HTML cleanup."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:118
+#: ../../source/MAINTENANCE_LOG.md:169
 msgid "**Docker Consolidation**: Planned `make docker-test` integration."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:120
+#: ../../source/MAINTENANCE_LOG.md:171
 msgid ""
 "Design for Original and Projected 3D exports for Drillhole Traces and "
 "Intervals."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:121
+#: ../../source/MAINTENANCE_LOG.md:172
 msgid "Planned UI integration in Settings/Advanced."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:123
+#: ../../source/MAINTENANCE_LOG.md:174
 msgid "[2.6.1] - 2026-01-09"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:124
+#: ../../source/MAINTENANCE_LOG.md:175
 msgid "**Stabilization**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:125
+#: ../../source/MAINTENANCE_LOG.md:176
 msgid ""
 "**Test Suite**: Resolved major mock pollution issues and finalized 312 "
 "stable tests."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:126
+#: ../../source/MAINTENANCE_LOG.md:177
 msgid ""
 "**Mock Infrastructure**: Implemented explicit `MockQListWidget` for "
 "stable GUI inheritance."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:127
+#: ../../source/MAINTENANCE_LOG.md:178
 msgid "**Internationalization**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:128
+#: ../../source/MAINTENANCE_LOG.md:179
 msgid "Translated Measure tool results and default interpretation naming."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:130
+#: ../../source/MAINTENANCE_LOG.md:181
 msgid "[2.6.0] - 2026-01-05"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:131
+#: ../../source/MAINTENANCE_LOG.md:182
 msgid "**Quality Assurance**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:132
+#: ../../source/MAINTENANCE_LOG.md:183
 msgid ""
 "**Native Integration Tests**: Implementation of `BaseIntegrationTest` for"
 " headless QGIS execution."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:133
+#: ../../source/MAINTENANCE_LOG.md:184
 msgid ""
 "**Workflow Validation**: New automated tests for Interpretation, "
 "Measurement, and 3D Export using real QGIS API."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:134
+#: ../../source/MAINTENANCE_LOG.md:185
 msgid "**Docker Integration**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:135
+#: ../../source/MAINTENANCE_LOG.md:186
 msgid "Full containerization of the test environment for CI/CD readiness."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:136
+#: ../../source/MAINTENANCE_LOG.md:187
 msgid "Automated dependency management via `uv` within Docker."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:137
+#: ../../source/MAINTENANCE_LOG.md:188
 msgid "Optimized build workflows with `.dockerignore` and permission handling."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:138
+#: ../../source/MAINTENANCE_LOG.md:189
 msgid "**Performance**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:139
+#: ../../source/MAINTENANCE_LOG.md:190
 msgid ""
 "**Benchmarks Suite**: Implementation of performance tests for Geometry "
 "and Exports using `unittest`."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:140
+#: ../../source/MAINTENANCE_LOG.md:191
 msgid ""
 "**SLA Verification**: Established baseline metrics for critical "
 "operations (Shapefile Write < 5s, Projection < 0.1s)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:141
+#: ../../source/MAINTENANCE_LOG.md:192
 msgid "**Architecture & Refactoring (2026-01-08)**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:142
+#: ../../source/MAINTENANCE_LOG.md:193
 msgid ""
 "**Async Evolution**: Refactored threading model to use `QgsTask` for "
 "background geology generation, improving stability and preventing UI "
 "freezes."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:143
+#: ../../source/MAINTENANCE_LOG.md:194
 msgid ""
 "**Exporter Modularization**: Deep refactoring of all vector exporters "
 "(`shp`, `drillhole`, `profile`, `interpretation_3d`) to reduce complexity"
 " (mccabe < 7) and improve modularity."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:144
+#: ../../source/MAINTENANCE_LOG.md:195
 msgid ""
 "**Quality & Debt Cleanup**: Significant improvement in type hint coverage"
 " (Params: 62.1% -> 76.4%) and documentation style across core services, "
 "tools, and UI pages."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:145
+#: ../../source/MAINTENANCE_LOG.md:196
 msgid ""
 "**Workflow Security**: Implemented `conventional-pre-commit` and restored"
 " `COMMIT_GUIDELINES.md` to guarantee high-quality, parsable commits."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:146
+#: ../../source/MAINTENANCE_LOG.md:197
 msgid ""
 "**Test Stability**: Enhanced mocking infrastructure for asynchronous "
 "tasks and QGIS ecosystem components."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:148
+#: ../../source/MAINTENANCE_LOG.md:199
 msgid "[2.5.0] - 2026-01-03"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:149
+#: ../../source/MAINTENANCE_LOG.md:200
 msgid "**Major Features**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:150
+#: ../../source/MAINTENANCE_LOG.md:201
 msgid "**3D Export**: Interpretation export as real 3D Shapefiles (PolygonZ)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:151
+#: ../../source/MAINTENANCE_LOG.md:202
 msgid "**Settings Hub**: New sidebar page for plugin configuration management."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:152
+#: ../../source/MAINTENANCE_LOG.md:203
 msgid "**Documentation**: User Guide fully integrated with screenshots."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:153
+#: ../../source/MAINTENANCE_LOG.md:204
 msgid "**Critical Fixes (Hotfixes)**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:154
+#: ../../source/MAINTENANCE_LOG.md:205
 msgid ""
 "**Attribute Inheritance**: Resolved regression in drillhole processing "
 "(tuple handling) and `GeologySegment` polymorphism."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:155
+#: ../../source/MAINTENANCE_LOG.md:206
 msgid "**Serialization**: Fixed `QVariant` JSON serialization error."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:156
+#: ../../source/MAINTENANCE_LOG.md:207
 msgid "**Workflow Optimization**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:157
+#: ../../source/MAINTENANCE_LOG.md:208
 msgid ""
 "**Context Awareness**: Enhanced `.agent/workflows/` (start/close) to "
 "mandate context analysis and logging, ensuring continuity."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:158
+#: ../../source/MAINTENANCE_LOG.md:209
 msgid ""
 "**Data Persistence**: Overhauled `DialogSettingsManager` for robust "
 "restoration with multi-scope support (`SecInterp`/`SecInterpUI`) and "
 "layer name fallback."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:159
+#: ../../source/MAINTENANCE_LOG.md:210
 msgid "**Stability & QA**:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:160
+#: ../../source/MAINTENANCE_LOG.md:211
 msgid "Enabled project-wide Ruff rules (`F401`, `F841`, `I001`)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:161
+#: ../../source/MAINTENANCE_LOG.md:212
 msgid "Implemented proactive auto-save on Preview and Dialog Accept."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:162
+#: ../../source/MAINTENANCE_LOG.md:213
 msgid ""
 "Resolved critical `AttributeError` in validation logic and Geology "
 "Rendering."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:163
+#: ../../source/MAINTENANCE_LOG.md:214
 msgid "Forced disk synchronization for configs (`sync()`)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:164
+#: ../../source/MAINTENANCE_LOG.md:215
 msgid ""
 "**Test Infrastructure**: Enhanced `MockQgsProject` and `MockQWidget` to "
 "support persistence and modern Qt patterns."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:166
+#: ../../source/MAINTENANCE_LOG.md:217
 msgid "[2.2.0] - 2025-12-22"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:167
+#: ../../source/MAINTENANCE_LOG.md:218
 #, python-format
 msgid ""
 "**Documentation Globalization**: 100% of documentation (including "
 "Architecture) translated to English."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:168
+#: ../../source/MAINTENANCE_LOG.md:219
 msgid ""
 "**Build Optimization**: Slimmed final ZIP package and removed redundant "
 "source code views from help."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:169
+#: ../../source/MAINTENANCE_LOG.md:220
 msgid ""
 "**Architectural Evolution**: Moved main `SecInterp` class to "
 "`sec_interp_plugin.py`."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:170
+#: ../../source/MAINTENANCE_LOG.md:221
 msgid "**Validation Refactor**: Modularized `core/validation/` package."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:171
+#: ../../source/MAINTENANCE_LOG.md:222
 msgid ""
 "**GUI Decoupling**: Fragmented `SecInterpDialog` into specialized "
 "managers."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:172
+#: ../../source/MAINTENANCE_LOG.md:223
 msgid "**LOD Optimization**: Implemented adaptive Level of Detail for previews."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:174
+#: ../../source/MAINTENANCE_LOG.md:225
 msgid "[2.1.0] - 2025-12-17"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:175
+#: ../../source/MAINTENANCE_LOG.md:226
 msgid "**Feature**: Snap-Enabled Measurement Tool."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:176
+#: ../../source/MAINTENANCE_LOG.md:227
 msgid "**Fix**: Resolved Snapping configuration attribute errors."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:178
+#: ../../source/MAINTENANCE_LOG.md:229
 msgid "[2.0.0] - 2025-12-14"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:179
+#: ../../source/MAINTENANCE_LOG.md:230
 msgid "**Feature**: Full Drillhole Integration (Projection & Intervals)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:180
+#: ../../source/MAINTENANCE_LOG.md:231
 msgid "**Export**: Added drillhole trace and interval Shapefile exporters."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:182
+#: ../../source/MAINTENANCE_LOG.md:233
 msgid "[1.1.0] - 2025-12-12"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:183
+#: ../../source/MAINTENANCE_LOG.md:234
 msgid "**Performance**: Asynchronous parallel processing for geology."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:184
+#: ../../source/MAINTENANCE_LOG.md:235
 msgid "**Feature**: Adaptive Sampling and Measurement Tool."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:188
+#: ../../source/MAINTENANCE_LOG.md:239
 msgid "📁 Historical Refactoring Notes"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:190
+#: ../../source/MAINTENANCE_LOG.md:241
 msgid ""
 "For detailed information on past major refactoring sessions, refer to the"
 " following summaries:"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:192
+#: ../../source/MAINTENANCE_LOG.md:243
 msgid ""
 "**Refactoring 2025-12-21**: Significant reduction of `main_dialog.py` "
 "size (from 1k to ~300 lines) by moving logic to managers and core "
@@ -719,50 +977,363 @@ msgid ""
 "historical context is needed."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:195
+#: ../../source/MAINTENANCE_LOG.md:246
 msgid "[Phase Closure v3.0.0] - RELEASE & INTERNATIONALIZATION"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:196
+#: ../../source/MAINTENANCE_LOG.md:247
 msgid "**Date**: 2026-02-14"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:197
+#: ../../source/MAINTENANCE_LOG.md:248
 msgid ""
 "**Focus**: Internationalization (i18n), Modular Services, Release "
 "Optimization."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:198
+#: ../../source/MAINTENANCE_LOG.md:249
 msgid ""
 "**Outcome**: 8 Languages Supported, Package Size Reduced 99.6% (218KB), "
 "361 Tests Passing."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:199
+#: ../../source/MAINTENANCE_LOG.md:250
 msgid "**Key Infra**: `.qgisignore`, GitHub Actions Security Scan (100/100)."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:200
+#: ../../source/MAINTENANCE_LOG.md:251
 msgid "**Reference**: [Phase Closure Document](phase_closure_v3.0.0.md)"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:202
+#: ../../source/MAINTENANCE_LOG.md:253
 msgid "[Phase Closure v2.7.0] - REFACTOR & STABILIZATION"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:203
+#: ../../source/MAINTENANCE_LOG.md:254
 msgid "**Date**: 2026-01-18"
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:204
+#: ../../source/MAINTENANCE_LOG.md:255
 msgid "**Focus**: Validation Architecture, Docker Infrastructure, Sphinx Docs."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:205
+#: ../../source/MAINTENANCE_LOG.md:256
 msgid "**Outcome**: 361 Tests Passing, 100% Mock Stability."
 msgstr ""
 
-#: ../../../source/MAINTENANCE_LOG.md:206
+#: ../../source/MAINTENANCE_LOG.md:257
 msgid "**Reference**: [Phase Closure Document](phase_closure_v2.7.0.md)"
 msgstr ""
+
+#~ msgid ""
+#~ "This document serves as the central "
+#~ "record for project history, release "
+#~ "procedures, and past refactoring analysis."
+#~ msgstr ""
+
+#~ msgid "[2026-02-18] EXPANSIÓN I18N (MARKET GAP)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Cambios**: Añadido soporte para **pl**, "
+#~ "**nl**, **fi** (14 idiomas ahora). "
+#~ "Implementado motor de Master Data JSON"
+#~ " y workflow de mantenimiento."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Métricas/Impacto**: 100% de cobertura core"
+#~ " en nuevas lenguas. Skill `i18n-"
+#~ "standards` actualizada."
+#~ msgstr ""
+
+#~ msgid "[2026-02-18] ESTÁNDARES DE DOCUMENTACIÓN"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Cambios**: Formalizado skill `documentation-"
+#~ "standards` y actualizado workflow `/cierra-"
+#~ "sesion`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Métricas/Impacto**: Reducción de inconsistencias"
+#~ " en logs generados por diferentes "
+#~ "agentes."
+#~ msgstr ""
+
+#~ msgid "[2026-02-17] SIGNAL MANAGEMENT & I18N INFRASTRUCTURE"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Cambios**: Transición a conexiones "
+#~ "explícitas en `SignalManager` y migración "
+#~ "a Master Data JSON (11 idiomas)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Métricas/Impacto**: Estabilización de señales "
+#~ "para evitar memory leaks y preparación"
+#~ " para escalado."
+#~ msgstr ""
+
+#~ msgid "[v3.0.0 Release] - i18n Expansion & Drillhole Refactor"
+#~ msgstr ""
+
+#~ msgid "**Date**: 2026-02-16"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Focus**: Global i18n (10 languages), "
+#~ "Facade Removal, Drillhole Service "
+#~ "Decomposition."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Outcome**: Added Hindi/Japanese support. "
+#~ "Verified 3D Export stability. Updated "
+#~ "Architecture documentation."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Reference**: [Task "
+#~ "Log](/home/jmbernales/.gemini/antigravity/brain/ad157467-1590-4579"
+#~ "-b78f-b53dc0c8b054/task.md)"
+#~ msgstr ""
+
+#~ msgid "[v2.10.0 Plan - Phase 1] - 2026-02-01"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Focus**: Quality Score > 60, QGIS "
+#~ "4.x Prep (PyQt5 cleanup), ExportService "
+#~ "Refactor."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Goals**: Eliminate technical debt in "
+#~ "resources.py and reduce cyclomatic complexity"
+#~ " in 3D exporters."
+#~ msgstr ""
+
+#~ msgid "[Estabilización v3.0.x] - GUI & EXPORTACION"
+#~ msgstr ""
+
+#~ msgid "**Date**: 2026-02-15"
+#~ msgstr ""
+
+#~ msgid "**Focus**: ExportService Layer Resolution, Facade Removal."
+#~ msgstr ""
+
+#~ msgid "**Outcome**: 100% Tests Passing, Export functionality restored."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Reference**: [Session "
+#~ "Log](sesion_2026-02-15_stabilization_gui_export.md)"
+#~ msgstr ""
+
+#~ msgid "[Phase Closure v2.9.0] - ARCHITECTURAL CONSOLIDATION"
+#~ msgstr ""
+
+#~ msgid "**Date**: 2026-02-01"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Focus**: Core Domain Migration, Drillhole"
+#~ " Service Decomposition, v2.9.0 Release "
+#~ "Stabilization."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Outcome**: 199 Tests Passing (100%). "
+#~ "Quality Score: 54.3/100 (+9 pts). "
+#~ "Official release published."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Reference**: [Phase Closure "
+#~ "Document](phase_closure_v2.9.0.md) | [Technical "
+#~ "Analysis](v2.9.0_technical_analysis.md)"
+#~ msgstr ""
+
+#~ msgid "[Phase Closure v2.8.0] - DEBT REDUCTION & UI IMPROVEMENTS"
+#~ msgstr ""
+
+#~ msgid "**Date**: 2026-01-25"
+#~ msgstr ""
+
+#~ msgid "**Focus**: Core Decoupling, Async Safety, Legend Visibility."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Outcome**: 359 Tests Passing, Core-"
+#~ "QGIS Decoupling finalized with WKT/DTO "
+#~ "pattern."
+#~ msgstr ""
+
+#~ msgid "**Reference**: [Phase Closure Document](phase_closure_v2.8.0.md)"
+#~ msgstr ""
+
+#~ msgid "[v2.8.0 Plan - Phase 2] - 2026-01-24"
+#~ msgstr ""
+
+#~ msgid "[v2.7.0 Plan - Phase 1] - 2026-01-15"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Mock Infrastructure Overhaul**: Implemented "
+#~ "`ModuleProxy` and `MockSignal` to stabilize"
+#~ " the QGIS test environment. Resolved "
+#~ "attribute errors and reference loss "
+#~ "during mock resets. Added `indexFromName` "
+#~ "to `MockQgsFields` for better API "
+#~ "parity."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Config Fix**: Completed missing "
+#~ "`reset_defaults()` logic in `ConfigService`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Workflow Update**: Simplified `inicia-"
+#~ "sesion` by removing `make deploy` and"
+#~ " standardizing the test execution command."
+#~ msgstr ""
+
+#~ msgid "🚀 Release Process"
+#~ msgstr ""
+
+#~ msgid "[Unreleased]"
+#~ msgstr ""
+
+#~ msgid "Process"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Follow these steps to prepare and "
+#~ "release a new version of **SecInterp**."
+#~ msgstr ""
+
+#~ msgid "1. Preparation"
+#~ msgstr ""
+
+#~ msgid "**Update Metadata**: Increment `version` in `metadata.txt`."
+#~ msgstr ""
+
+#~ msgid "**Sync AI Context**: Update `AI_CONTEXT.md` and `project_context.json`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Update Changelog**: Add the new "
+#~ "version to the top of the [Project"
+#~ " History](#-project-history) section below."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Update User Guide**: Ensure screenshots "
+#~ "and feature descriptions in "
+#~ "`docs/USER_GUIDE.md` are current."
+#~ msgstr ""
+
+#~ msgid "2. Packaging (Clean Build)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To ensure no development files (like "
+#~ "tests or .git) are included in the"
+#~ " distribution zip, use the `git "
+#~ "archive` method:"
+#~ msgstr ""
+
+#~ msgid "3. Distribution & QGIS Repository"
+#~ msgstr ""
+
+#~ msgid "**Tagging**: `git tag vX.Y.Z -m \"Release description\"`"
+#~ msgstr ""
+
+#~ msgid "**GitHub**: Create a new Release and attach the ZIP."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**QGIS Repo**: Upload the ZIP to "
+#~ "[plugins.qgis.org](https://plugins.qgis.org/)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "⚠️ **CRITICAL**: The ZIP MUST contain"
+#~ " a `LICENSE` file and NO "
+#~ "`__pycache__` folders."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The repository will reject any package"
+#~ " with `.pyc` files for security "
+#~ "reasons."
+#~ msgstr ""
+
+#~ msgid "Verified ZIP structure with `unzip -t sec_interp.zip`."
+#~ msgstr ""
+
+#~ msgid "📜 Project History"
+#~ msgstr ""
+
+#~ msgid "[2.7.0] - 2026-01-18"
+#~ msgstr ""
+
+#~ msgid "**Operational Excellence & Documentation Overhaul**:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Sphinx Integration**: Automated documentation "
+#~ "generation with `conf.py` (autodoc/napoleon) "
+#~ "and `build_docs.sh`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Link Recovery**: Fixed 50+ broken "
+#~ "links in `README.md` and aligned "
+#~ "terminology with the new Sidebar-driven"
+#~ " UI."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Architecture Documentation**: Added detailed "
+#~ "records for the **3-Level Validation "
+#~ "Architecture** and `DialogInterpretationManager`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**i18n Cleanup**: Wrapped all user-"
+#~ "facing strings in `tr()` and audited "
+#~ "English/Spanish source."
+#~ msgstr ""
+
+#~ msgid "**Refactorización de Interfaz (Fase 2)**:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Introducción de `MessageManager`, `CacheHandler`,"
+#~ " y `SettingsManager` para fragmentar el "
+#~ "diálogo principal (Reducción de ~700 "
+#~ "líneas de código boilerplate)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Bug Fix**: Restaurados métodos proxy "
+#~ "`_load_interpretations` y `_load_user_settings` para"
+#~ " retrocompatibilidad."
+#~ msgstr ""
+
+#~ msgid "**Testing Infrastructure (Dockerization)**:"
+#~ msgstr ""
+
+#~ msgid "Implemented `Dockerfile` optimized for QGIS headless testing."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Added `make docker-build` and `make "
+#~ "docker-test` for reproducible CI/CD "
+#~ "environments."
+#~ msgstr ""

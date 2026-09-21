@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SecInterp \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"POT-Creation-Date: 2026-09-20 23:39-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -19,36 +19,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:1
+#: ../../source/TECHNICAL_COMPENDIUM.md:1
 msgid "SecInterp - Technical Compendium"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:3
+#: ../../source/TECHNICAL_COMPENDIUM.md:3
 msgid ""
 "This document consolidates technical research, geophysical algorithms, "
 "and API references for the **SecInterp** plugin."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:7
+#: ../../source/TECHNICAL_COMPENDIUM.md:7
 msgid "🔬 Scientific & Geophysical Research"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:9
+#: ../../source/TECHNICAL_COMPENDIUM.md:9
 msgid "1. Integration of Geophysics"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:10
+#: ../../source/TECHNICAL_COMPENDIUM.md:10
 msgid "The plugin is prepared for future integration of deep geophysical data:"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:11
+#: ../../source/TECHNICAL_COMPENDIUM.md:11
 #, python-brace-format
 msgid ""
 "**Potential (SP)**: Projections use normalized dot product for section "
 "alignment and absolute elevation calculation ($Z_{collar} - Depth$)."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:12
+#: ../../source/TECHNICAL_COMPENDIUM.md:12
 #, python-brace-format
 msgid ""
 "**VES (SEV)**: Resistivity models are visualized as blocks on a "
@@ -56,146 +56,214 @@ msgid ""
 "conversion."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:14
+#: ../../source/TECHNICAL_COMPENDIUM.md:14
 msgid "2. Drillhole Modeling"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:15
+#: ../../source/TECHNICAL_COMPENDIUM.md:15
 msgid ""
 "**Desurveying**: Trayectories are calculated using the **Average Angle "
 "Method** (Tangential tracking)."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:16
+#: ../../source/TECHNICAL_COMPENDIUM.md:16
 msgid ""
 "**Projection**: 3D trajectories are mapped to the 2D plane by calculating"
 " distance along the section line while preserving absolute Z."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:18
+#: ../../source/TECHNICAL_COMPENDIUM.md:18
 msgid "3. Core Algorithms"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:19
+#: ../../source/TECHNICAL_COMPENDIUM.md:19
 msgid ""
 "**Distance & Sampling**: We use `QgsDistanceArea.measureLine()` and "
 "direct `dataProvider()` access for DEM sampling, yielding a ~30% "
 "performance boost over high-level processing algorithms."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:20
+#: ../../source/TECHNICAL_COMPENDIUM.md:20
 msgid ""
 "**Adaptive LOD**: Uses the **Douglas-Peucker (RDP)** algorithm for line "
 "simplification and a curvature-based hysteresis logic to adjust sampling "
 "density dynamically during zoom."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:24
+#: ../../source/TECHNICAL_COMPENDIUM.md:24
 msgid "🔧 API Reference"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:26
+#: ../../source/TECHNICAL_COMPENDIUM.md:26
 msgid "Core Services (`core/services/`)"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:28
-msgid "`ProfileService`"
-msgstr ""
-
-#: ../../../source/TECHNICAL_COMPENDIUM.md:29
-msgid ""
-"**`generate_topographic_profile(line_lyr, raster_lyr, band)`**: Samples "
-"raster data along a line."
-msgstr ""
-
-#: ../../../source/TECHNICAL_COMPENDIUM.md:30
-msgid "**Returns**: `List[Tuple[float, float]]` (distance, elevation)."
-msgstr ""
-
-#: ../../../source/TECHNICAL_COMPENDIUM.md:32
+#: ../../source/TECHNICAL_COMPENDIUM.md:28
 msgid "`GeologyService`"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:33
+#: ../../source/TECHNICAL_COMPENDIUM.md:29
 msgid ""
-"**`generate_geological_profile(...)`**: Intersects section lines with "
-"geological geometry."
+"**`build_segments(context, feedback=None)`**: Intersects section lines "
+"with geological geometry."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:34
+#: ../../source/TECHNICAL_COMPENDIUM.md:30
 msgid "**Returns**: `List[GeologySegment]`."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:36
+#: ../../source/TECHNICAL_COMPENDIUM.md:32
 msgid "`StructureService`"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:37
+#: ../../source/TECHNICAL_COMPENDIUM.md:33
 msgid ""
-"**`project_structures(...)`**: Projects 3D structural data and calculates"
-" apparent dip."
+"**`project_structures(context, feedback=None)`**: Projects 3D structural "
+"data and calculates apparent dip."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:38
+#: ../../source/TECHNICAL_COMPENDIUM.md:34
 msgid "**Formula**: `tan(beta) = tan(alpha) * |cos(strike - azimuth)|`."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:40
+#: ../../source/TECHNICAL_COMPENDIUM.md:36
 msgid "`DrillholeService`"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:41
+#: ../../source/TECHNICAL_COMPENDIUM.md:37
+msgid "**`process_context(context, feedback=None)`**: Full drillhole pipeline."
+msgstr ""
+
+#: ../../source/TECHNICAL_COMPENDIUM.md:38
 msgid ""
-"**Architecture**: Decomposed into specialized processors "
-"(`CollarProcessor`, `SurveyProcessor`, `IntervalProcessor`)."
+"**Architecture**: Decomposed into `CollarProcessor`, `SurveyProcessor`, "
+"`IntervalProcessor`, `TrajectoryEngine`, `ProjectionEngine`."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:42
-msgid "**`project_collars()`**: Projects collar points 3D->2D."
+#: ../../source/TECHNICAL_COMPENDIUM.md:40
+msgid "`PreviewService`"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:43
+#: ../../source/TECHNICAL_COMPENDIUM.md:41
 msgid ""
-"**`process_intervals()`**: Handles full pipeline for trace and interval "
-"generation."
+"**`generate_all(params, transform_context)`**: Orchestrates topography + "
+"structures for the preview."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:47
+#: ../../source/TECHNICAL_COMPENDIUM.md:42
+msgid ""
+"**`calculate_max_points(canvas_width, manual_max, auto_lod)`**: Adaptive "
+"LOD."
+msgstr ""
+
+#: ../../source/TECHNICAL_COMPENDIUM.md:44
+msgid "`AccessControlService`"
+msgstr ""
+
+#: ../../source/TECHNICAL_COMPENDIUM.md:45
+msgid ""
+"**`can_export_3d()`**: Gates 3D export via `QgsSettings` "
+"(`SecInterp/enable_3d`)."
+msgstr ""
+
+#: ../../source/TECHNICAL_COMPENDIUM.md:47
+msgid "Export package (`core/services/export/`)"
+msgstr ""
+
+#: ../../source/TECHNICAL_COMPENDIUM.md:48
+msgid ""
+"**`ExportService.export_data(output_folder, params, ...)`**: facade over "
+"`handlers/` (one per data type)."
+msgstr ""
+
+#: ../../source/TECHNICAL_COMPENDIUM.md:49
+msgid ""
+"**Note**: topography extraction lives in the GUI adapter "
+"`gui/adapters/profile_extractor.py` (`ProfileExtractor.extract_profile`),"
+" not in `core/services/`."
+msgstr ""
+
+#: ../../source/TECHNICAL_COMPENDIUM.md:54
 msgid "🛡️ Validation Framework"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:49
+#: ../../source/TECHNICAL_COMPENDIUM.md:56
 msgid "Modularized in `core/validation/`:"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:50
+#: ../../source/TECHNICAL_COMPENDIUM.md:57
 msgid "**FieldValidator**: Numeric and existence checks."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:51
-msgid "**LayerValidator**: CS, geometry, and feature count validation."
+#: ../../source/TECHNICAL_COMPENDIUM.md:58
+msgid "**LayerValidator**: CRS, geometry, and feature count validation."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:52
+#: ../../source/TECHNICAL_COMPENDIUM.md:59
 msgid "**PathValidator**: Security and permission handling."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:53
+#: ../../source/TECHNICAL_COMPENDIUM.md:60
 msgid "**ProjectValidator**: High-level orchestration."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:57
+#: ../../source/TECHNICAL_COMPENDIUM.md:64
 msgid "🧬 Key Data Structures"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:59
+#: ../../source/TECHNICAL_COMPENDIUM.md:66
 msgid "`GeologySegment`"
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:60
-msgid "Used to represent both surface outcrops and drillhole intervals."
+#: ../../source/TECHNICAL_COMPENDIUM.md:67
+msgid ""
+"Used to represent both surface outcrops and drillhole intervals (QGIS-"
+"agnostic: WKT, not `QgsGeometry`)."
 msgstr ""
 
-#: ../../../source/TECHNICAL_COMPENDIUM.md:70
+#: ../../source/TECHNICAL_COMPENDIUM.md:77
 msgid "`StructureMeasurement`"
 msgstr ""
+
+#~ msgid "`ProfileService`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**`generate_topographic_profile(line_lyr, raster_lyr, "
+#~ "band)`**: Samples raster data along a"
+#~ " line."
+#~ msgstr ""
+
+#~ msgid "**Returns**: `List[Tuple[float, float]]` (distance, elevation)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**`generate_geological_profile(...)`**: Intersects section"
+#~ " lines with geological geometry."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**`project_structures(...)`**: Projects 3D "
+#~ "structural data and calculates apparent "
+#~ "dip."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Architecture**: Decomposed into specialized "
+#~ "processors (`CollarProcessor`, `SurveyProcessor`, "
+#~ "`IntervalProcessor`)."
+#~ msgstr ""
+
+#~ msgid "**`project_collars()`**: Projects collar points 3D->2D."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**`process_intervals()`**: Handles full pipeline "
+#~ "for trace and interval generation."
+#~ msgstr ""
+
+#~ msgid "**LayerValidator**: CS, geometry, and feature count validation."
+#~ msgstr ""
+
+#~ msgid "Used to represent both surface outcrops and drillhole intervals."
+#~ msgstr ""

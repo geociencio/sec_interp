@@ -19,6 +19,18 @@ SOURCE_DIR = "docs/source"
 POT_DIR = "docs/build/gettext"
 LOCALES_DIR = "docs/locales"
 
+# Only user-facing pages are translated; the autodoc pages (sec_interp.*) and
+# historical docs stay in English.
+USER_FACING = {
+    "USER_GUIDE",
+    "ARCHITECTURE",
+    "DEVELOPMENT_GUIDE",
+    "CORE_DISTINCTION_GUIDE",
+    "CORE_DISTINCTION_GUIDE_EN",
+    "TECHNICAL_COMPENDIUM",
+    "MAINTENANCE_LOG",
+}
+
 
 def compile_catalogs() -> None:
     """Compile .po files to .mo files."""
@@ -48,8 +60,16 @@ def update_catalogs(locales: list[str] | None = None) -> None:
         check=True,
     )
 
+    # Keep only the user-facing catalogs so we don't create thousands of empty
+    # entries for the autodoc pages.
+    pot_dir = Path(POT_DIR)
+    for pot in pot_dir.glob("*.pot"):
+        if pot.stem not in USER_FACING:
+            pot.unlink()
+    print(f"    Kept user-facing catalogs: {', '.join(sorted(USER_FACING))}")
+
     print(f"🔄 Updating catalogs for: {' '.join(locales)}")
-    cmd = ["uv", "run", "sphinx-intl", "update", "-p", POT_DIR]
+    cmd = ["uv", "run", "sphinx-intl", "update", "-p", POT_DIR, "-d", LOCALES_DIR]
     for lang in locales:
         cmd += ["-l", lang]
     subprocess.run(cmd, check=True)

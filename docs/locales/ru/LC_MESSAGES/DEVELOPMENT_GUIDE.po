@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SecInterp \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-18 08:18-0500\n"
+"POT-Creation-Date: 2026-09-20 23:39-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -20,342 +20,461 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:1
+#: ../../source/DEVELOPMENT_GUIDE.md:1
 msgid "SecInterp - Development Guide"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:3
+#: ../../source/DEVELOPMENT_GUIDE.md:3
+msgid ""
+"[!note] Related guide A repo-facing companion guide (decoupled "
+"architecture + commit workflow) lives in "
+"`docs/docsec/DEVELOPMENT_GUIDE.md`."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:7
 msgid ""
 "Welcome to the **SecInterp** development guide. This document outlines "
 "the standards, best practices, and workflows for contributing to the "
 "project."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:7
+#: ../../source/DEVELOPMENT_GUIDE.md:11
 msgid "🏗️ Technical Stack"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:9
+#: ../../source/DEVELOPMENT_GUIDE.md:13
 msgid "**Language**: Python 3.10+ (QGIS 3.x compatible)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:10
+#: ../../source/DEVELOPMENT_GUIDE.md:14
 msgid "**GUI Framework**: PyQt5 (Native QGIS integration)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:11
+#: ../../source/DEVELOPMENT_GUIDE.md:15
 msgid "**Geospatial Engine**: PyQGIS API (`qgis.core`, `qgis.gui`)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:12
+#: ../../source/DEVELOPMENT_GUIDE.md:16
 msgid "**Package Manager**: `uv` (recommended) or `pip`"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:13
+#: ../../source/DEVELOPMENT_GUIDE.md:17
 msgid "**Linter & Formatter**: `Ruff`"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:14
+#: ../../source/DEVELOPMENT_GUIDE.md:18
 msgid "**Testing**: `unittest` (Standard Library)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:18
+#: ../../source/DEVELOPMENT_GUIDE.md:22
 msgid "🎨 Coding Standards"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:20
+#: ../../source/DEVELOPMENT_GUIDE.md:24
 msgid "🧬 Design Principles"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:21
+#: ../../source/DEVELOPMENT_GUIDE.md:25
 msgid "**SOLID**: Follow SRP, OCP, and DIP strictly."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:22
+#: ../../source/DEVELOPMENT_GUIDE.md:26
 msgid ""
 "**Separation of Concerns**: GUI code (Managers/UI) MUST NOT contain "
 "business logic. Delegating to `Core/Services` is mandatory."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:23
+#: ../../source/DEVELOPMENT_GUIDE.md:27
 msgid ""
 "**DRY (Don't Repeat Yourself)**: If a calculation or check is used twice,"
 " move it to a `core/utils` module."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:25
+#: ../../source/DEVELOPMENT_GUIDE.md:29
 msgid "📝 Naming Conventions"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:26
+#: ../../source/DEVELOPMENT_GUIDE.md:30
 msgid "**Classes**: `CapWords` (e.g., `ProfileService`)."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:27
+#: ../../source/DEVELOPMENT_GUIDE.md:31
 msgid "**Variables/Functions**: `snake_case` (e.g., `calculate_apparent_dip`)."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:28
+#: ../../source/DEVELOPMENT_GUIDE.md:32
 msgid ""
 "**Qt Overrides**: `camelCase` (MUST match the original C++ signature, "
 "e.g., `showEvent`)."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:29
+#: ../../source/DEVELOPMENT_GUIDE.md:33
 msgid "**Signals**: `camelCase` (PyQt style, e.g., `dataChanged`)."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:31
+#: ../../source/DEVELOPMENT_GUIDE.md:35
 msgid "🐍 Imports Ordering"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:32
+#: ../../source/DEVELOPMENT_GUIDE.md:36
 msgid "**Standard Library**: `os`, `sys`, `math`, etc."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:33
+#: ../../source/DEVELOPMENT_GUIDE.md:37
 msgid "**Third-Party**: `numpy`, `pandas`, etc."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:34
+#: ../../source/DEVELOPMENT_GUIDE.md:38
 msgid "**QGIS Core**: `from qgis.core import ...`"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:35
+#: ../../source/DEVELOPMENT_GUIDE.md:39
 msgid "**QGIS GUI**: `from qgis.gui import ...`"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:36
+#: ../../source/DEVELOPMENT_GUIDE.md:40
 msgid ""
 "**PyQt**: `from qgis.PyQt.QtWidgets import ...` (Always use `qgis.PyQt` "
 "shim)."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:37
+#: ../../source/DEVELOPMENT_GUIDE.md:41
 msgid "**Local Modules**: `from sec_interp.core import ...`"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:41
+#: ../../source/DEVELOPMENT_GUIDE.md:45
 msgid "⚡ Git Workflow"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:43
+#: ../../source/DEVELOPMENT_GUIDE.md:47
 msgid "Conventional Commits"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:44
+#: ../../source/DEVELOPMENT_GUIDE.md:48
 msgid ""
 "All commits MUST follow the [Conventional "
 "Commits](https://www.conventionalcommits.org/) specification:"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:46
+#: ../../source/DEVELOPMENT_GUIDE.md:50
 msgid "**Format**: `<type>(<scope>): <description>`"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:48
+#: ../../source/DEVELOPMENT_GUIDE.md:52
 msgid "`feat`: A new feature (e.g., `feat(drill): add 3d projection`)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:49
+#: ../../source/DEVELOPMENT_GUIDE.md:53
 msgid "`fix`: A bug fix (e.g., `fix(gui): resolve range attribute error`)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:50
+#: ../../source/DEVELOPMENT_GUIDE.md:54
 msgid "`refactor`: Code change that neither fixes a bug nor adds a feature."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:51
+#: ../../source/DEVELOPMENT_GUIDE.md:55
 msgid "`docs`: Documentation changes."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:52
+#: ../../source/DEVELOPMENT_GUIDE.md:56
 msgid "`test`: Adding or correcting tests."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:53
+#: ../../source/DEVELOPMENT_GUIDE.md:57
 msgid "`chore`: Build process or auxiliary tool changes."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:55
+#: ../../source/DEVELOPMENT_GUIDE.md:59
 msgid "**Language**: All commit messages must be in **English**."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:59
+#: ../../source/DEVELOPMENT_GUIDE.md:63
 msgid "🛠️ Tooling (Ruff)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:61
+#: ../../source/DEVELOPMENT_GUIDE.md:65
 msgid ""
 "We use **Ruff** for linting and formatting. It replaces Black, isort, and"
 " Flake8."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:63
+#: ../../source/DEVELOPMENT_GUIDE.md:67
 msgid "Basic Commands"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:75
+#: ../../source/DEVELOPMENT_GUIDE.md:79
 msgid "IDE Integration"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:76
+#: ../../source/DEVELOPMENT_GUIDE.md:80
 msgid ""
 "It is highly recommended to install the **Ruff extension** in VS Code and"
 " enable \"Format on Save\"."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:80
+#: ../../source/DEVELOPMENT_GUIDE.md:84
 msgid "🧪 Testing"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:82
+#: ../../source/DEVELOPMENT_GUIDE.md:86
 msgid "Running Tests (Local)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:88
+#: ../../source/DEVELOPMENT_GUIDE.md:92
 msgid "Running Tests (Docker - Recommended)"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:89
+#: ../../source/DEVELOPMENT_GUIDE.md:93
 msgid "To avoid dependency issues with QGIS, use the containerized environment:"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:95
+#: ../../source/DEVELOPMENT_GUIDE.md:99
 msgid "Mocking QGIS"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:96
+#: ../../source/DEVELOPMENT_GUIDE.md:100
 msgid ""
 "When testing core services, use `unittest.mock` to avoid requiring a "
 "running QGIS instance. For integration tests in a headless environment, "
 "the project is configured to use `QT_QPA_PLATFORM=offscreen`."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:100
+#: ../../source/DEVELOPMENT_GUIDE.md:104
 msgid "📝 Documentation Standards"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:102
+#: ../../source/DEVELOPMENT_GUIDE.md:106
 msgid "Docstrings"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:103
+#: ../../source/DEVELOPMENT_GUIDE.md:107
 msgid "All public functions and methods MUST have docstrings in **Google Style**:"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:119
+#: ../../source/DEVELOPMENT_GUIDE.md:123
 msgid "Documentation Workflow"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:120
+#: ../../source/DEVELOPMENT_GUIDE.md:125
 msgid ""
-"The project uses Sphinx to generate documentation. The build process is "
-"automated to publish results to a separate GitHub repository "
-"(`sec_interp_docs`) which serves as the source for GitHub Pages."
+"The project uses **Sphinx** to generate documentation. The build is "
+"automated and publishes the result to a separate GitHub repository "
+"(`sec_interp_docs`), which serves as the source for GitHub Pages."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:122
+#: ../../source/DEVELOPMENT_GUIDE.md:127
 msgid "**Building and Publishing**"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:124
+#: ../../source/DEVELOPMENT_GUIDE.md:134
+msgid "The script performs:"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:136
 msgid ""
-"To build the documentation and automatically push changes to the docs "
-"repository:"
+"`sphinx-apidoc -o docs/source . docs/ tests/ scripts/ help/ build/ "
+"--force --separate --module-first` — regenerates one autodoc page **per "
+"Python module** of the plugin (`core/`, `gui/`, `exporters/`, `plugin/`, "
+"`resources/` and the root entry points). It excludes `tests/`, "
+"`scripts/`, `docs/`, `help/` and `build/`."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:128
-msgid "This script will:"
-msgstr ""
-
-#: ../../../source/DEVELOPMENT_GUIDE.md:129
-msgid "Build HTML from `docs/source`."
-msgstr ""
-
-#: ../../../source/DEVELOPMENT_GUIDE.md:130
-msgid "Output to `../sec_interp_docs`."
-msgstr ""
-
-#: ../../../source/DEVELOPMENT_GUIDE.md:131
-msgid "Check for changes in the output directory."
-msgstr ""
-
-#: ../../../source/DEVELOPMENT_GUIDE.md:132
-msgid "If changed, commit and push to `geociencio/sec_interp_docs`."
-msgstr ""
-
-#: ../../../source/DEVELOPMENT_GUIDE.md:134
+#: ../../source/DEVELOPMENT_GUIDE.md:137
 msgid ""
-"**Note:** You must have write access to the `sec_interp_docs` repository "
-"and have `../sec_interp_docs` initialized as a git repo (which is done "
-"automatically if you follow setup)."
+"`scripts/i18n/translate_docs.py compile` — compiles the `.po` message "
+"catalogs to `.mo`."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:136
+#: ../../source/DEVELOPMENT_GUIDE.md:138
+msgid ""
+"`sphinx-build` — builds HTML for **14 languages** (`en es fr pt_BR de ru "
+"zh_CN id it pl nl fi hi ja`)."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:139
+msgid "Copies the HTML to **`../sec_interp_docs/<lang>/`**."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:140
+msgid ""
+"Syncs the offline manual into `help/html/<lang>` (image dedup; "
+"search/API/sources stripped)."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:141
+msgid ""
+"If `../sec_interp_docs/.git` exists, commits (`docs: auto-build from "
+"sec_interp@<hash>`) and pushes to `geociencio/sec_interp_docs` (`main`)."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:143
+msgid "**Output repository**"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md
+msgid "Item"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md
+msgid "Value"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md
+msgid "Local output"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md
+msgid "`../sec_interp_docs` (`/home/jmbernales/qgispluginsdev/sec_interp_docs/`)"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md
+msgid "Remote"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md
+msgid "`https://github.com/geociencio/sec_interp_docs.git` (branch `main`)"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md
+msgid "GitHub Pages"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md
+msgid "https://geociencio.github.io/sec_interp_docs/"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:151
+msgid "[!warning] Side effects"
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:152
+msgid ""
+"`make docs` regenerates the **tracked** `.rst` stubs in `docs/source/`, "
+"leaving the working tree dirty — review and commit them."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:153
+msgid ""
+"Step 6 performs a real `git push` to the external docs repo (there is no "
+"flag to skip it). To build without publishing, run steps 1–5 manually."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:154
+msgid ""
+"`sphinx-apidoc --force` does **not** delete stubs for removed modules; "
+"delete orphan `.rst` files in `docs/source/` if the build warns about "
+"missing modules."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:156
+msgid ""
+"[!note] Shell note The language loop in the script assumes `bash`. When "
+"replicating it in **zsh**, use an array (`LOCALES=(en es fr …)`) or `bash"
+" -c`, since zsh does not word-split a scalar variable."
+msgstr ""
+
+#: ../../source/DEVELOPMENT_GUIDE.md:159
 msgid "Image Assets"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:137
+#: ../../source/DEVELOPMENT_GUIDE.md:160
 msgid ""
 "Save all documentation images in `docs/images/` using the following "
 "convention:"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:138
+#: ../../source/DEVELOPMENT_GUIDE.md:161
 msgid "`workflow_DESC.png`: Step-by-step guides."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:139
+#: ../../source/DEVELOPMENT_GUIDE.md:162
 msgid "`ui_DESC.png`: General interface screenshots."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:140
+#: ../../source/DEVELOPMENT_GUIDE.md:163
 msgid "`feature_DESC.png`: Specific highlighted features."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:144
+#: ../../source/DEVELOPMENT_GUIDE.md:167
 msgid "📦 Deployment & Makefile"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:146
+#: ../../source/DEVELOPMENT_GUIDE.md:169
 msgid "Use the `Makefile` for common development tasks:"
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:148
+#: ../../source/DEVELOPMENT_GUIDE.md:171
 msgid "`make deploy`: Installs the plugin into your local QGIS plugins folder."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:149
+#: ../../source/DEVELOPMENT_GUIDE.md:172
 msgid "`make zip`: Creates a release-ready ZIP file."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:150
+#: ../../source/DEVELOPMENT_GUIDE.md:173
 msgid "`make test`: Runs all unit and integration tests locally."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:151
+#: ../../source/DEVELOPMENT_GUIDE.md:174
 msgid "`make docker-build`: Builds the testing Docker image."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:152
+#: ../../source/DEVELOPMENT_GUIDE.md:175
 msgid "`make docker-test`: Builds and runs tests within a QGIS Docker container."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:153
+#: ../../source/DEVELOPMENT_GUIDE.md:176
 msgid "`make docus`: Builds the Sphinx documentation."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:154
+#: ../../source/DEVELOPMENT_GUIDE.md:177
 msgid "`make clean`: Removes temporary and compiled files."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:155
+#: ../../source/DEVELOPMENT_GUIDE.md:178
 msgid ""
 "`make transup`: Updates `.ts` files and applies master data using "
 "`apply_full.py`."
 msgstr ""
 
-#: ../../../source/DEVELOPMENT_GUIDE.md:156
+#: ../../source/DEVELOPMENT_GUIDE.md:179
 msgid "`make transcompile`: Compiles `.qm` files."
 msgstr ""
+
+#~ msgid ""
+#~ "The project uses Sphinx to generate "
+#~ "documentation. The build process is "
+#~ "automated to publish results to a "
+#~ "separate GitHub repository (`sec_interp_docs`) "
+#~ "which serves as the source for "
+#~ "GitHub Pages."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To build the documentation and "
+#~ "automatically push changes to the docs"
+#~ " repository:"
+#~ msgstr ""
+
+#~ msgid "This script will:"
+#~ msgstr ""
+
+#~ msgid "Build HTML from `docs/source`."
+#~ msgstr ""
+
+#~ msgid "Output to `../sec_interp_docs`."
+#~ msgstr ""
+
+#~ msgid "Check for changes in the output directory."
+#~ msgstr ""
+
+#~ msgid "If changed, commit and push to `geociencio/sec_interp_docs`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Note:** You must have write access "
+#~ "to the `sec_interp_docs` repository and "
+#~ "have `../sec_interp_docs` initialized as a "
+#~ "git repo (which is done automatically"
+#~ " if you follow setup)."
+#~ msgstr ""

@@ -6,13 +6,13 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: SecInterp \n"
+"Project-Id-Version: SecInterp 3.8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-20 23:39-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: fi\n"
-"Language-Team: fi <LL@li.org>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -224,46 +224,3 @@ msgstr ""
 #: ../../source/TECHNICAL_COMPENDIUM.md:77
 msgid "`StructureMeasurement`"
 msgstr ""
-
-#~ msgid "`ProfileService`"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "**`generate_topographic_profile(line_lyr, raster_lyr, "
-#~ "band)`**: Samples raster data along a"
-#~ " line."
-#~ msgstr ""
-
-#~ msgid "**Returns**: `List[Tuple[float, float]]` (distance, elevation)."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "**`generate_geological_profile(...)`**: Intersects section"
-#~ " lines with geological geometry."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "**`project_structures(...)`**: Projects 3D "
-#~ "structural data and calculates apparent "
-#~ "dip."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "**Architecture**: Decomposed into specialized "
-#~ "processors (`CollarProcessor`, `SurveyProcessor`, "
-#~ "`IntervalProcessor`)."
-#~ msgstr ""
-
-#~ msgid "**`project_collars()`**: Projects collar points 3D->2D."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "**`process_intervals()`**: Handles full pipeline "
-#~ "for trace and interval generation."
-#~ msgstr ""
-
-#~ msgid "**LayerValidator**: CS, geometry, and feature count validation."
-#~ msgstr ""
-
-#~ msgid "Used to represent both surface outcrops and drillhole intervals."
-#~ msgstr ""

@@ -76,6 +76,9 @@ docs/code_walkthrough_en/*.py.md
 docs/build/
 help/html/
 
+# Generated Sphinx translation catalogs (compiled from .po by build_docs.sh)
+docs/locales/**/*.mo
+
 # Archive
 _archive/
 
