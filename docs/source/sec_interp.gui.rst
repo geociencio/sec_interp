@@ -27,22 +27,29 @@ Submodules
 
    sec_interp.gui.dialog_dependencies
    sec_interp.gui.dialog_export_manager
+   sec_interp.gui.dialog_facade_mixin
    sec_interp.gui.dialog_input_manager
    sec_interp.gui.dialog_interpretation_manager
+   sec_interp.gui.dialog_lifecycle_mixin
+   sec_interp.gui.dialog_message_mixin
    sec_interp.gui.dialog_preview_manager
    sec_interp.gui.dialog_settings_persistence
    sec_interp.gui.dialog_signal_manager
    sec_interp.gui.dialog_state_manager
    sec_interp.gui.dialog_tool_manager
+   sec_interp.gui.interpretation_inheritance_mixin
+   sec_interp.gui.interpretation_persistence_mixin
    sec_interp.gui.layer_notification_manager
    sec_interp.gui.legend_widget
    sec_interp.gui.main_dialog
    sec_interp.gui.main_dialog_config
    sec_interp.gui.main_dialog_utils
    sec_interp.gui.preview_axes_manager
+   sec_interp.gui.preview_callbacks_mixin
    sec_interp.gui.preview_layer_factory
    sec_interp.gui.preview_legend_renderer
    sec_interp.gui.preview_param_hasher
+   sec_interp.gui.preview_render_mixin
    sec_interp.gui.preview_renderer
    sec_interp.gui.preview_reporter
    sec_interp.gui.preview_state

@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    sec_interp.core.services.drillhole
+   sec_interp.core.services.export
 
 Submodules
 ----------

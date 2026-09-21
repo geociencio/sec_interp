@@ -6,6 +6,15 @@ sec\_interp.gui.ui.pages package
    :show-inheritance:
    :undoc-members:
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   sec_interp.gui.ui.pages.drillhole
+   sec_interp.gui.ui.pages.settings
+
 Submodules
 ----------
 

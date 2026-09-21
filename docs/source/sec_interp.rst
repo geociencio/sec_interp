@@ -15,6 +15,7 @@ Subpackages
    sec_interp.core
    sec_interp.exporters
    sec_interp.gui
+   sec_interp.plugin
    sec_interp.resources
 
 Submodules
