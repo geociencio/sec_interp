@@ -57,7 +57,7 @@ The project organization follows a highly modular architecture based on the **Se
   - `exceptions.py` → [[exceptions]] · [doc](code_walkthrough/exceptions.md)
   - `performance_metrics.py` → [[performance_metrics]] · [doc](code_walkthrough/performance_metrics.md)
   - `domain/` — DTOs `ProfileData`, `GeologySegment` → [[domain]] · [[layer_core_domain]] · [doc](code_walkthrough/domain.md)
-  - `interfaces/` — ABCs for DI (`IProfileService`, `IGeologyService`, …) → [[layer_core_interfaces]]
+  - `interfaces/` — ABCs for DI (`IGeologyService`, `IDrillholeService`, `IPreviewService`, …) → [[layer_core_interfaces]]
   - `models/settings_model.py` — Typed settings → [[layer_core_models]]
   - `validation/` — Modular pipeline → [[validation]] · [[layer_core_validation]] · [doc](code_walkthrough/validation.md)
     - `validation/pipeline.py`, `layer_validator.py`, `field_validator.py`, `path_validator.py`, `project_validator.py` → [[validation]]
@@ -250,12 +250,10 @@ graph TD
 
         subgraph INTERFACES["Abstractions (DI) - interfaces/"]
             direction TB
-            I_PROF[interfaces/profile_interface.py<br/>IProfileService]:::interface
             I_GEOL[interfaces/geology_interface.py<br/>IGeologyService]:::interface
             I_DRILL[interfaces/drillhole_interface.py<br/>IDrillholeService]:::interface
             I_STRUCT[interfaces/structure_interface.py<br/>IStructureService]:::interface
             I_PREVIEW[interfaces/preview_interface.py<br/>IPreviewService]:::interface
-            I_EXPORT[interfaces/export_interface.py<br/>IExportService]:::interface
             I_CACHE[interfaces/cache_interface.py<br/>ICacheService]:::interface
             I_RENDER3D[interfaces/i_renderer_3d.py<br/>IRenderer3D]:::interface
         end
@@ -499,24 +497,22 @@ graph TD
 **Responsibility**: All services are defined as interfaces. The `ProfileController` consumes interfaces, allowing for easy mocking during testing and replacement of logic without affecting the GUI.
 
 ```python
-class IGeologyService(abc.ABC):
-    @abc.abstractmethod
-    def calculate_intersections(self, profile: ProfileData) -> List[GeologySegment]:
-        pass
+class IGeologyService(ABC):
+    @abstractmethod
+    def build_segments(self, context: GeologyContext, feedback: Any | None = None) -> Any:
+        """Build geological segments from a detached context."""
 ```
 
-#### Core Interfaces (8 Interfaces)
+#### Core Interfaces (6 Interfaces)
 
 | Interface | File | Purpose |
 |-----------|------|---------|
-| `IProfileService` | `interfaces/profile_interface.py` → [[layer_core_interfaces]] | Topography extraction, sampling, profile generation. |
-| `IGeologyService` | `interfaces/geology_interface.py` → [[layer_core_interfaces]] | Geological intersection algorithms, unit processing. |
-| `IDrillholeService` | `interfaces/drillhole_interface.py` → [[layer_core_interfaces]] | Drillhole data processing, 3D→2D projection. |
-| `IStructureService` | `interfaces/structure_interface.py` → [[layer_core_interfaces]] | Structural data validation and processing. |
-| `IPreviewService` | `interfaces/preview_interface.py` → [[layer_core_interfaces]] | Preview orchestration, LOD calculation, render data prep. |
-| `IExportService` | `interfaces/export_interface.py` → [[layer_core_interfaces]] | Export orchestration, format registry, DTO conversion. |
-| `ICacheService` | `interfaces/cache_interface.py` → [[layer_core_interfaces]] | Caching strategy for expensive computations. |
-| `IRenderer3D` | `interfaces/i_renderer_3d.py` → [[layer_core_interfaces]] | 3D visualization abstraction for drillholes/geology. |
+| `IGeologyService` | `interfaces/geology_interface.py` → [[layer_core_interfaces]] | `build_segments()` — geological segments from a detached context. |
+| `IDrillholeService` | `interfaces/drillhole_interface.py` → [[layer_core_interfaces]] | `process_context()` — drillhole data processing, 3D→2D projection. |
+| `IStructureService` | `interfaces/structure_interface.py` → [[layer_core_interfaces]] | `project_structures()` — structural data validation and projection. |
+| `IPreviewService` | `interfaces/preview_interface.py` → [[layer_core_interfaces]] | `generate_all()` — preview orchestration and render data prep. |
+| `ICacheService` | `interfaces/cache_interface.py` → [[layer_core_interfaces]] | `get/set/invalidate/clear` — caching strategy (typing `Protocol`). |
+| `IRenderer3D` | `interfaces/i_renderer_3d.py` → [[layer_core_interfaces]] | `render_3d()`/`clear()` — 3D visualization abstraction. |
 
 ### 2. ProfileController (controller.py)
 

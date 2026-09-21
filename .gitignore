@@ -68,6 +68,10 @@ logs/
 docs/code_walkthrough/code_walkthrough/
 docs/code_walkthrough_en/code_walkthrough_en/
 
+# Phantom notes Obsidian creates from unresolved [[file.py]] links
+docs/code_walkthrough/*.py.md
+docs/code_walkthrough_en/*.py.md
+
 # Documentation
 docs/build/
 help/html/

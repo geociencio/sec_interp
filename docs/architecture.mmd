@@ -95,12 +95,10 @@ graph TD
 
         subgraph INTERFACES["Abstractions (DI) - interfaces/"]
             direction TB
-            I_PROF[interfaces/profile_interface.py<br/>IProfileService]:::interface
             I_GEOL[interfaces/geology_interface.py<br/>IGeologyService]:::interface
             I_DRILL[interfaces/drillhole_interface.py<br/>IDrillholeService]:::interface
             I_STRUCT[interfaces/structure_interface.py<br/>IStructureService]:::interface
             I_PREVIEW[interfaces/preview_interface.py<br/>IPreviewService]:::interface
-            I_EXPORT[interfaces/export_interface.py<br/>IExportService]:::interface
             I_CACHE[interfaces/cache_interface.py<br/>ICacheService]:::interface
             I_RENDER3D[interfaces/i_renderer_3d.py<br/>IRenderer3D]:::interface
         end
