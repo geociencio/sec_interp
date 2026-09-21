@@ -48,18 +48,25 @@ def read_version() -> str:
     return match.group(1).strip() if match else "0.0.0"
 
 
-def sync_text(text: str, version: str, today: str) -> str:
-    """Return ``text`` with version/date headers synced."""
-    text = re.sub(
-        r"(> Version )\d+\.\d+\.\d+( \| Last Updated: )\d{4}-\d{2}-\d{2}",
-        rf"\g<1>{version}\g<2>{today}",
-        text,
-    )
-    text = re.sub(
-        r"(> Version )\d+\.\d+\.\d+( \| Last update: )\d{4}-\d{2}-\d{2}",
-        rf"\g<1>{version}\g<2>{today}",
-        text,
-    )
+def sync_text(text: str, version: str, today: str, refresh_date: bool = True) -> str:
+    """Return ``text`` with version (and optionally date) headers synced.
+
+    ``refresh_date=False`` (used by ``--check``) only compares the version, so
+    the informational "Last Updated" date does not fail the gate every day.
+    """
+    for sep in ("Last Updated: ", "Last update: "):
+        if refresh_date:
+            text = re.sub(
+                rf"(> Version )\d+\.\d+\.\d+( \| {sep})(\d{{4}}-\d{{2}}-\d{{2}})",
+                rf"\g<1>{version}\g<2>{today}",
+                text,
+            )
+        else:
+            text = re.sub(
+                rf"(> Version )\d+\.\d+\.\d+( \| {sep})(\d{{4}}-\d{{2}}-\d{{2}})",
+                rf"\g<1>{version}\g<2>\g<3>",
+                text,
+            )
     text = re.sub(r"(\*\*Plugin Version\*\*: )\d+\.\d+\.\d+", rf"\g<1>{version}", text)
     text = re.sub(r"(\*\*Version\*\*: )\d+\.\d+\.\d+", rf"\g<1>{version}", text)
     return text
@@ -85,7 +92,7 @@ def main() -> int:
 
     for doc in active_docs():
         text = doc.read_text(encoding="utf-8")
-        updated = sync_text(text, version, today)
+        updated = sync_text(text, version, today, refresh_date=not check)
         if updated != text:
             stale.append(doc)
             if not check:

@@ -1,7 +1,7 @@
 # SecInterp Architecture: Monolithic vs Clean Architecture Comparison
 
 > **Technical Analysis: Why SecInterp Moved Away from Traditional QGIS Plugin Patterns**
-> Version 3.8.0 | Last Updated: 2026-09-20
+> Version 3.8.0 | Last Updated: 2026-09-21
 
 ---
 

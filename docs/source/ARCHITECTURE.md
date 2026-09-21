@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.8.0 | Last update: 2026-09-20
+> Version 3.8.0 | Last update: 2026-09-21
 >
 > ⚠️ **Version note**: This document was originally written for v2.9.0 and is being progressively updated. For the current architecture (Extract-then-Compute, `core/services/export/`, `plugin/` mixins, `dialog_*_mixin`, drillhole/settings tabs) see the repository document `docs/ARCHITECTURE_EN.md`.
 >

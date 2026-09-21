@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.8.0 | Last Updated: 2026-09-20
+> Version 3.8.0 | Last Updated: 2026-09-21
 
 ---
 
