@@ -240,6 +240,9 @@ msgid ""
 "![Profile DEM Section Preview](images/dem_section_preview.png) *Profile "
 "DEM Section Preview.*"
 msgstr ""
+"![Vista previa de la sección DEM del "
+"perfil](images/dem_section_preview.png) *Vista previa de la sección DEM "
+"del perfil.*"
 
 #: ../../source/USER_GUIDE.md:50
 msgid "Profile DEM Section Preview"
@@ -337,6 +340,8 @@ msgid ""
 "![Structural configuration](images/guide_structure_setup.png) *Structural"
 " configuration.*"
 msgstr ""
+"![Configuración estructural](images/guide_structure_setup.png) "
+"*Configuración estructural.*"
 
 #: ../../source/USER_GUIDE.md:71
 msgid "Structural configuration"
@@ -347,6 +352,9 @@ msgid ""
 "![Structural Section Preview](images/structure_section_preview.png) "
 "*Structural Section Preview.*"
 msgstr ""
+"![Vista previa de la sección "
+"estructural](images/structure_section_preview.png) *Vista previa de la "
+"sección estructural.*"
 
 #: ../../source/USER_GUIDE.md:74
 msgid "Structural Section Preview"
@@ -366,7 +374,7 @@ msgstr ""
 
 #: ../../source/USER_GUIDE.md:80
 msgid "1. Collars Tab"
-msgstr ""
+msgstr "1. Pestaña Collars (collares)"
 
 #: ../../source/USER_GUIDE.md:81
 msgid "Configures the location of drillhole collars (start points)."
@@ -401,26 +409,35 @@ msgid ""
 "**East (X)**: Optional field for collar X coordinate (if not using point "
 "layer geometry)."
 msgstr ""
+"**Este (X)**: Campo opcional para la coordenada X del collar (si no se "
+"usa la geometría de la capa de puntos)."
 
 #: ../../source/USER_GUIDE.md:86
 msgid ""
 "**North (Y)**: Optional field for collar Y coordinate (if not using point"
 " layer geometry)."
 msgstr ""
+"**Norte (Y)**: Campo opcional para la coordenada Y del collar (si no se "
+"usa la geometría de la capa de puntos)."
 
 #: ../../source/USER_GUIDE.md:87
 msgid "**Elevation (Z)**: Optional field for collar elevation (if not using DEM)."
 msgstr ""
+"**Elevación (Z)**: Campo opcional para la elevación del collar (si no se "
+"usa el DEM)."
 
 #: ../../source/USER_GUIDE.md:88
 msgid "**Total Depth**: Optional field for maximum depth."
-msgstr ""
+msgstr "**Profundidad total**: Campo opcional para la profundidad máxima."
 
 #: ../../source/USER_GUIDE.md:90
 msgid ""
 "![Drillhole Collars configuration](images/guide_drillhole_collars.png) "
 "*Drillhole Collars configuration.*"
 msgstr ""
+"![Configuración de collares de "
+"sondajes](images/guide_drillhole_collars.png) *Configuración de collares "
+"de sondajes.*"
 
 #: ../../source/USER_GUIDE.md:90
 msgid "Drillhole Collars configuration"
@@ -439,30 +456,42 @@ msgid ""
 "**Survey Layer**: Table or layer with survey measurements (Mandatory if "
 "Collar Layer is selected)."
 msgstr ""
+"**Capa de survey**: Tabla o capa con medidas de survey (obligatoria si se"
+" selecciona la capa de collares)."
 
 #: ../../source/USER_GUIDE.md:96
 msgid ""
 "**Hole ID**: Field linking to the Collar ID (Mandatory if Survey Layer is"
 " selected)."
 msgstr ""
+"**ID de sondeo**: Campo que enlaza con el ID del collar (obligatorio si "
+"se selecciona la capa de survey)."
 
 #: ../../source/USER_GUIDE.md:97
 msgid "**Depth**: Distance down the hole (Mandatory if Survey Layer is selected)."
 msgstr ""
+"**Profundidad**: Distancia a lo largo del sondeo (obligatorio si se "
+"selecciona la capa de survey)."
 
 #: ../../source/USER_GUIDE.md:98
 msgid "**Azimuth**: Direction (0-360) (Mandatory if Survey Layer is selected)."
 msgstr ""
+"**Azimut**: Dirección (0-360) (obligatorio si se selecciona la capa de "
+"survey)."
 
 #: ../../source/USER_GUIDE.md:99
 msgid "**Inclination**: Dip (-90 to 90) (Mandatory if Survey Layer is selected)."
 msgstr ""
+"**Inclinación**: Buzamiento (-90 a 90) (obligatorio si se selecciona la "
+"capa de survey)."
 
 #: ../../source/USER_GUIDE.md:101
 msgid ""
 "![Drillhole Survey configuration](images/guide_drillhole_survey.png) "
 "*Drillhole Survey configuration.*"
 msgstr ""
+"![Configuración de survey de sondajes](images/guide_drillhole_survey.png)"
+" *Configuración de survey de sondajes.*"
 
 #: ../../source/USER_GUIDE.md:101
 msgid "Drillhole Survey configuration"
@@ -478,25 +507,31 @@ msgstr "Configura los intervalos geológicos o de atributos."
 
 #: ../../source/USER_GUIDE.md:106
 msgid "**Interval Layer**: Table or layer with logging data (optional)."
-msgstr ""
+msgstr "**Capa de intervalos**: Tabla o capa con datos de logging (opcional)."
 
 #: ../../source/USER_GUIDE.md:107
 msgid ""
 "**Hole ID**: Field linking to the Collar ID (Mandatory if Interval Layer "
 "is selected)."
 msgstr ""
+"**ID de sondeo**: Campo que enlaza con el ID del collar (obligatorio si "
+"se selecciona la capa de intervalos)."
 
 #: ../../source/USER_GUIDE.md:108
 msgid ""
 "**From / To**: Depth ranges for each interval (Mandatory if Interval "
 "Layer is selected)."
 msgstr ""
+"**Desde / Hasta**: Rangos de profundidad de cada intervalo (obligatorio "
+"si se selecciona la capa de intervalos)."
 
 #: ../../source/USER_GUIDE.md:109
 msgid ""
 "**Lithology**: Field containing the rock type or attribute to visualize "
 "(Mandatory if Interval Layer is selected)."
 msgstr ""
+"**Litología**: Campo con el tipo de roca o atributo a visualizar "
+"(obligatorio si se selecciona la capa de intervalos)."
 
 #: ../../source/USER_GUIDE.md:111
 msgid ""
@@ -504,6 +539,9 @@ msgid ""
 "configuration](images/guide_drillhole_intervals.png) *Drillhole Intervals"
 " configuration.*"
 msgstr ""
+"![Configuración de intervalos de "
+"sondajes](images/guide_drillhole_intervals.png) *Configuración de "
+"intervalos de sondajes.*"
 
 #: ../../source/USER_GUIDE.md:111
 msgid "Drillhole Intervals configuration"
@@ -515,7 +553,7 @@ msgstr "Paso 6: Generar Previsualización"
 
 #: ../../source/USER_GUIDE.md:115
 msgid "Click the **Preview** button (bottom right)."
-msgstr ""
+msgstr "Haz clic en el botón **Preview** (abajo a la derecha)."
 
 #: ../../source/USER_GUIDE.md:116
 msgid ""
@@ -539,6 +577,9 @@ msgid ""
 "![Section Preview with all layers enabled](images/preview_all.png) "
 "*Section Preview with all layers enabled.*"
 msgstr ""
+"![Vista previa de la sección con todas las capas "
+"activadas](images/preview_all.png) *Vista previa de la sección con todas "
+"las capas activadas.*"
 
 #: ../../source/USER_GUIDE.md:119
 msgid "Section Preview with all layers enabled"
@@ -550,6 +591,9 @@ msgid ""
 "collapsed](images/preview_panels_collapsed.png) *Section Preview with all"
 " panels collapsed.*"
 msgstr ""
+"![Vista previa de la sección con todos los paneles "
+"contraídos](images/preview_panels_collapsed.png) *Vista previa de la "
+"sección con todos los paneles contraídos.*"
 
 #: ../../source/USER_GUIDE.md:122
 msgid "Section Preview with all panels collapsed"
@@ -582,7 +626,7 @@ msgstr ""
 
 #: ../../source/USER_GUIDE.md:131
 msgid "**Drawing**: Left-click to add vertices."
-msgstr ""
+msgstr "**Dibujo**: Clic izquierdo para añadir vértices."
 
 #: ../../source/USER_GUIDE.md:132
 msgid "**Snapping**: The cursor will automatically snap to:"
@@ -590,29 +634,31 @@ msgstr "**Snapping**: El cursor se ajustará automáticamente a:"
 
 #: ../../source/USER_GUIDE.md:133
 msgid "Topography surface."
-msgstr ""
+msgstr "Superficie topográfica."
 
 #: ../../source/USER_GUIDE.md:134
 msgid "Drillhole contacts."
-msgstr ""
+msgstr "Contactos de sondajes."
 
 #: ../../source/USER_GUIDE.md:135
 msgid "Existing interpretation vertices."
-msgstr ""
+msgstr "Vértices de interpretación existentes."
 
 #: ../../source/USER_GUIDE.md:136
 msgid "**Undo**: Right-click to remove the last vertex."
-msgstr ""
+msgstr "**Deshacer**: Clic derecho para eliminar el último vértice."
 
 #: ../../source/USER_GUIDE.md:137
 msgid "**Finalize**: Double-click (or press Enter) to close the polygon."
-msgstr ""
+msgstr "**Finalizar**: Doble clic (o Enter) para cerrar el polígono."
 
 #: ../../source/USER_GUIDE.md:138
 msgid ""
 "**Properties**: A dialog will appear to set the **Lithology**, "
 "**Formation**, and **Color** of the new polygon."
 msgstr ""
+"**Propiedades**: Aparecerá un diálogo para definir la **Litología**, "
+"**Formación** y **Color** del nuevo polígono."
 
 #: ../../source/USER_GUIDE.md:140
 msgid ""
@@ -620,10 +666,16 @@ msgid ""
 "1](images/guide_interpretation_tool_1.png) *Digitizing a new geological "
 "unit using the Interpretation Tool.*"
 msgstr ""
+"![Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación - Paso 1](images/guide_interpretation_tool_1.png) "
+"*Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación.*"
 
 #: ../../source/USER_GUIDE.md:140
 msgid "Digitizing a new geological unit using the Interpretation Tool - Step 1"
 msgstr ""
+"Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación - Paso 1"
 
 #: ../../source/USER_GUIDE.md:143
 msgid ""
@@ -631,10 +683,16 @@ msgid ""
 "2](images/guide_interpretation_tool_2.png) *Digitizing a new geological "
 "unit using the Interpretation Tool.*"
 msgstr ""
+"![Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación - Paso 2](images/guide_interpretation_tool_2.png) "
+"*Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación.*"
 
 #: ../../source/USER_GUIDE.md:143
 msgid "Digitizing a new geological unit using the Interpretation Tool - Step 2"
 msgstr ""
+"Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación - Paso 2"
 
 #: ../../source/USER_GUIDE.md:146
 msgid ""
@@ -642,26 +700,37 @@ msgid ""
 "3](images/guide_interpretation_tool_3.png) *Digitizing a new geological "
 "unit using the Interpretation Tool.*"
 msgstr ""
+"![Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación - Paso 3](images/guide_interpretation_tool_3.png) "
+"*Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación.*"
 
 #: ../../source/USER_GUIDE.md:146
 msgid "Digitizing a new geological unit using the Interpretation Tool - Step 3"
 msgstr ""
+"Digitalizando una nueva unidad geológica con la herramienta de "
+"interpretación - Paso 3"
 
 #: ../../source/USER_GUIDE.md:149
 msgid "4.2 Attribute Inheritance"
-msgstr ""
+msgstr "4.2 Herencia de atributos"
 
 #: ../../source/USER_GUIDE.md:150
 msgid ""
 "When you digitize a new interpretation polygon, SecInterp attempts to "
 "automatically inherit attributes from underlying data:"
 msgstr ""
+"Al digitalizar un nuevo polígono de interpretación, SecInterp intenta "
+"heredar automáticamente atributos de los datos subyacentes:"
 
 #: ../../source/USER_GUIDE.md:151
 msgid ""
 "**Geology Overlap**: If the new polygon overlaps with a projected "
 "geological outcrop, it will pre-fill the name and units."
 msgstr ""
+"**Solape con geología**: Si el nuevo polígono se solapa con un "
+"afloramiento geológico proyectado, se rellenarán previamente el nombre y "
+"las unidades."
 
 #: ../../source/USER_GUIDE.md:152
 msgid ""
@@ -669,12 +738,17 @@ msgid ""
 "interval, it will inherit the lithology/rock unit from that interval "
 "(e.g., \"Andesite\", \"Tuff\")."
 msgstr ""
+"**Proximidad a sondajes**: Si el polígono empieza o termina cerca de un "
+"intervalo de sondaje, heredará la litología/unidad de roca de ese "
+"intervalo (p. ej., \"Andesita\", \"Toba\")."
 
 #: ../../source/USER_GUIDE.md:153
 msgid ""
 "**Manual override**: You can always manualy change the inherited color or"
 " name in the properties dialog."
 msgstr ""
+"**Anulación manual**: Siempre puedes cambiar manualmente el color o el "
+"nombre heredados en el diálogo de propiedades."
 
 #: ../../source/USER_GUIDE.md:155
 msgid "4.3 Exporting to 3D (PolygonZ)"
@@ -691,71 +765,83 @@ msgstr ""
 
 #: ../../source/USER_GUIDE.md:158
 msgid "**Workflow:**"
-msgstr ""
+msgstr "**Flujo de trabajo:**"
 
 #: ../../source/USER_GUIDE.md:159
 msgid ""
 "Go to the **Advanced** tab in the **Settings** tab and check **\"Enable "
 "3D Interpretation Export\"** (enabled by default since v3.8.0)."
 msgstr ""
+"Ve a la pestaña **Advanced** dentro de **Settings** y marca **\"Enable 3D"
+" Interpretation Export\"** (activado por defecto desde la v3.8.0)."
 
 #: ../../source/USER_GUIDE.md:160
 msgid "Use the **Save** button (not Export) to generate your data."
-msgstr ""
+msgstr "Usa el botón **Save** (no Export) para generar tus datos."
 
 #: ../../source/USER_GUIDE.md:161
 msgid "The plugin will create a **PolygonZ** Shapefile in your output folder."
-msgstr ""
+msgstr "El plugin creará un Shapefile **PolygonZ** en tu carpeta de salida."
 
 #: ../../source/USER_GUIDE.md:162
 msgid ""
 "Every vertex of your interpretation is projected into real-world 3D "
 "coordinates based on the section plane and surface elevation."
 msgstr ""
+"Cada vértice de tu interpretación se proyecta a coordenadas 3D reales "
+"según el plano de sección y la elevación de la superficie."
 
 #: ../../source/USER_GUIDE.md:163
 msgid "**Note**: This feature is now standard and available to all users."
 msgstr ""
+"**Nota**: Esta función ya es estándar y está disponible para todos los "
+"usuarios."
 
 #: ../../source/USER_GUIDE.md:165
 msgid "4.4 Settings Page"
-msgstr ""
+msgstr "4.4 Página de configuración"
 
 #: ../../source/USER_GUIDE.md:166
 msgid ""
 "The **Settings** page manages export configurations and advanced "
 "features. It is organized into three sub-tabs:"
 msgstr ""
+"La página **Settings** gestiona la configuración de exportación y las "
+"funciones avanzadas. Está organizada en tres subpestañas:"
 
 #: ../../source/USER_GUIDE.md:168
 msgid "1. Default Tab (Export Selection)"
-msgstr ""
+msgstr "1. Pestaña Default (selección de exportación)"
 
 #: ../../source/USER_GUIDE.md:169
 msgid "Control exactly what gets generated when you click **Save**."
-msgstr ""
+msgstr "Controla exactamente qué se genera al hacer clic en **Save**."
 
 #: ../../source/USER_GUIDE.md:170
 msgid "**Topographic Profile**: Exports the surface line (CSV/SHP)."
-msgstr ""
+msgstr "**Perfil topográfico**: Exporta la línea de superficie (CSV/SHP)."
 
 #: ../../source/USER_GUIDE.md:171
 msgid "**Geological Profile**: Exports projected contacts (CSV/SHP)."
-msgstr ""
+msgstr "**Perfil geológico**: Exporta los contactos proyectados (CSV/SHP)."
 
 #: ../../source/USER_GUIDE.md:172
 msgid "**Structural Data**: Exports projected structural measurements (CSV/SHP)."
 msgstr ""
+"**Datos estructurales**: Exporta las medidas estructurales proyectadas "
+"(CSV/SHP)."
 
 #: ../../source/USER_GUIDE.md:173
 msgid ""
 "**Drillhole Data**: Exports traces (`LineStringZ`) and interval cylinders"
 " (`PolygonZ`) as 3D Shapefiles."
 msgstr ""
+"**Datos de sondajes**: Exporta trazas (`LineStringZ`) e intervalos "
+"(`PolygonZ`) como Shapefiles 3D."
 
 #: ../../source/USER_GUIDE.md:174
 msgid "**Interpretations (2D)**: Exports your drawn polygons (SHP)."
-msgstr ""
+msgstr "**Interpretaciones (2D)**: Exporta los polígonos dibujados (SHP)."
 
 #: ../../source/USER_GUIDE.md:176
 msgid ""
@@ -763,14 +849,17 @@ msgid ""
 "Selection](images/guide_settings_default.png) *Default settings showing "
 "Export Selection.*"
 msgstr ""
+"![Configuración por defecto mostrando la selección de "
+"exportación](images/guide_settings_default.png) *Configuración por "
+"defecto mostrando la selección de exportación.*"
 
 #: ../../source/USER_GUIDE.md:176
 msgid "Default settings showing Export Selection"
-msgstr ""
+msgstr "Configuración por defecto mostrando la selección de exportación"
 
 #: ../../source/USER_GUIDE.md:179
 msgid "2. Advanced Tab"
-msgstr ""
+msgstr "2. Pestaña Advanced"
 
 #: ../../source/USER_GUIDE.md:180
 msgid ""
@@ -778,6 +867,9 @@ msgid ""
 "**PolygonZ** Shapefiles for your interpretations. This creates true 3D "
 "geometries based on the section plane."
 msgstr ""
+"**Enable 3D Interpretation Export**: Activa la generación de Shapefiles "
+"**PolygonZ** para tus interpretaciones. Crea geometrías 3D reales según "
+"el plano de sección."
 
 #: ../../source/USER_GUIDE.md:182
 msgid ""
@@ -785,28 +877,33 @@ msgid ""
 "feature](images/guide_settings_advanced.png) *Advanced settings with 3D "
 "Export feature.*"
 msgstr ""
+"![Configuración avanzada con la función de exportación "
+"3D](images/guide_settings_advanced.png) *Configuración avanzada con la "
+"función de exportación 3D.*"
 
 #: ../../source/USER_GUIDE.md:182
 msgid "Advanced settings with 3D Export feature"
-msgstr ""
+msgstr "Configuración avanzada con la función de exportación 3D"
 
 #: ../../source/USER_GUIDE.md:185
 msgid "3. Plugin Information Tab"
-msgstr ""
+msgstr "3. Pestaña de información del plugin"
 
 #: ../../source/USER_GUIDE.md:186
 msgid "Displays version information, credits, and contact details for SecInterp."
-msgstr ""
+msgstr "Muestra la versión, los créditos y los datos de contacto de SecInterp."
 
 #: ../../source/USER_GUIDE.md:188
 msgid ""
 "![Plugin Information](images/guide_settings_info.png) *Plugin "
 "Information.*"
 msgstr ""
+"![Información del plugin](images/guide_settings_info.png) *Información "
+"del plugin.*"
 
 #: ../../source/USER_GUIDE.md:188
 msgid "Plugin Information"
-msgstr ""
+msgstr "Información del plugin"
 
 #: ../../source/USER_GUIDE.md:191
 msgid "5. Preview Panel & Tools"
@@ -818,38 +915,50 @@ msgid ""
 "section. It includes a toolbar and specific controls to manage "
 "visualization and performance."
 msgstr ""
+"El panel derecho actúa como lienzo interactivo de tu sección. Incluye una"
+" barra de herramientas y controles específicos para gestionar la "
+"visualización y el rendimiento."
 
 #: ../../source/USER_GUIDE.md:194
 msgid "5.1 Toolbar Buttons"
-msgstr ""
+msgstr "5.1 Botones de la barra de herramientas"
 
 #: ../../source/USER_GUIDE.md:195
 msgid "Located at the top of the preview panel:"
-msgstr ""
+msgstr "Situados en la parte superior del panel de vista previa:"
 
 #: ../../source/USER_GUIDE.md:197
 msgid ""
 "**Preview**: Triggers a refresh of the rendering based on the current "
 "configuration in the Settings/Data tabs."
 msgstr ""
+"**Preview**: Actualiza el renderizado según la configuración actual de "
+"las pestañas Settings/Data."
 
 #: ../../source/USER_GUIDE.md:198
 msgid ""
 "**Measure**: Activates the interactive ruler. Click on the canvas to "
 "measure distances and gradients."
 msgstr ""
+"**Measure**: Activa la regla interactiva. Haz clic en el lienzo para "
+"medir distancias y pendientes."
 
 #: ../../source/USER_GUIDE.md:199
 msgid ""
 "**Interpret**: Activates the digitization tool for drawing geological "
 "polygons completely."
 msgstr ""
+"**Interpret**: Activa la herramienta de digitalización para dibujar "
+"polígonos geológicos."
 
 #: ../../source/USER_GUIDE.md:200
 msgid ""
 "**Export (Image)**: Saves the **current view** as an image file (PNG, "
 "JPG, PDF, SVG). *Note: To export SHP/CSV data, use the main SAVE button.*"
 msgstr ""
+"**Export (Image)**: Guarda la **vista actual** como imagen (PNG, JPG, "
+"PDF, SVG). *Nota: para exportar datos SHP/CSV usa el botón SAVE "
+"principal.*"
 
 #: ../../source/USER_GUIDE.md:202
 msgid ""
@@ -858,26 +967,37 @@ msgid ""
 "**Controls** box, so the map canvas and status bar stay visible while you"
 " interpret the section."
 msgstr ""
+"[!note] Controles contraíbles (v3.7.0+) Los botones de acción del "
+"preview, los controles de LOD y las casillas de capas se agrupan en un "
+"cuadro **Controls** contraíble, para que el lienzo y la barra de estado "
+"permanezcan visibles mientras interpretas la sección."
 
 #: ../../source/USER_GUIDE.md:207
 msgid "5.2 Visualization Controls (LOD)"
-msgstr ""
+msgstr "5.2 Controles de visualización (LOD)"
 
 #: ../../source/USER_GUIDE.md:208
 msgid "These settings optimize performance for high-resolution datasets:"
 msgstr ""
+"Estos ajustes optimizan el rendimiento con conjuntos de datos de alta "
+"resolución:"
 
 #: ../../source/USER_GUIDE.md:210
 msgid ""
 "**Max Points**: Manually limits the number of vertices rendered for "
 "profile lines. Lower values improve zoom/pan speed."
 msgstr ""
+"**Max Points**: Limita manualmente el número de vértices dibujados en las"
+" líneas del perfil. Valores bajos mejoran la velocidad de "
+"zoom/desplazamiento."
 
 #: ../../source/USER_GUIDE.md:211
 msgid ""
 "**Auto**: When checked, the plugin automatically calculates the optimal "
 "`Max Points` based on your current window size and resolution."
 msgstr ""
+"**Auto**: Cuando está marcado, el plugin calcula automáticamente los `Max"
+" Points` óptimos según el tamaño de ventana y la resolución actuales."
 
 #: ../../source/USER_GUIDE.md:212
 msgid ""
@@ -885,62 +1005,77 @@ msgid ""
 "details in complex areas (steep topography, folds) while simplifying flat"
 " or linear sections."
 msgstr ""
+"**Adaptive**: Activa un algoritmo de muestreo inteligente. Conserva los "
+"detalles clave en zonas complejas (relieve abrupto, pliegues) y "
+"simplifica las secciones planas o lineales."
 
 #: ../../source/USER_GUIDE.md:214
 msgid "5.3 Layer Visibility"
-msgstr ""
+msgstr "5.3 Visibilidad de capas"
 
 #: ../../source/USER_GUIDE.md:215
 msgid ""
 "Use the `Show **` checkboxes to toggle specific data layers on or off "
 "without reloading data:"
 msgstr ""
+"Usa las casillas `Show **` para activar o desactivar capas concretas sin "
+"recargar los datos:"
 
 #: ../../source/USER_GUIDE.md:217
 msgid "**Show Topography**: The topographic profile line derived from the DEM."
-msgstr ""
+msgstr "**Show Topography**: La línea del perfil topográfico derivada del DEM."
 
 #: ../../source/USER_GUIDE.md:218
 msgid "**Show Geology**: Projected geological contacts from surface mapping."
 msgstr ""
+"**Show Geology**: Contactos geológicos proyectados desde la cartografía "
+"de superficie."
 
 #: ../../source/USER_GUIDE.md:219
 msgid ""
 "**Show Structures**: Structural measurements (dip/strike) projected onto "
 "the plane."
 msgstr ""
+"**Show Structures**: Medidas estructurales (buzamiento/dirección) "
+"proyectadas sobre el plano."
 
 #: ../../source/USER_GUIDE.md:220
 msgid "**Show Drillholes**: Borehole traces and geological interval cylinders."
-msgstr ""
+msgstr "**Show Drillholes**: Trazas de sondeos e intervalos geológicos."
 
 #: ../../source/USER_GUIDE.md:221
 msgid "**Show Interpretations**: Polygons and units digitized by the user."
 msgstr ""
+"**Show Interpretations**: Polígonos y unidades digitalizados por el "
+"usuario."
 
 #: ../../source/USER_GUIDE.md:223
 msgid "5.4 Using the Tools"
-msgstr ""
+msgstr "5.4 Uso de las herramientas"
 
 #: ../../source/USER_GUIDE.md:225
 msgid "Measure Tool"
-msgstr ""
+msgstr "Herramienta de medición"
 
 #: ../../source/USER_GUIDE.md:226
 msgid ""
 "**Snap-to-Vertex**: Measurements automatically anchor to real data points"
 " (DEM or Drillholes)."
 msgstr ""
+"**Snap-to-Vertex**: Las mediciones se anclan automáticamente a puntos de "
+"datos reales (DEM o sondajes)."
 
 #: ../../source/USER_GUIDE.md:227
 msgid "**Multi-Segment**: Click multiple times to measure a polyline path."
-msgstr ""
+msgstr "**Multi-Segment**: Haz clic varias veces para medir una polilínea."
 
 #: ../../source/USER_GUIDE.md:228
 msgid ""
 "**Result Panel**: Displays Total Distance (3D), Horizontal Distance, and "
 "Vertical Delta."
 msgstr ""
+"**Panel de resultados**: Muestra la distancia total (3D), la distancia "
+"horizontal y el desnivel vertical."
 
 #: ../../source/USER_GUIDE.md:230
 msgid ""
@@ -948,30 +1083,39 @@ msgid ""
 "trace](images/guide_measure_tool.png) *Figure 7: Measuring distance along"
 " a drillhole trace.*"
 msgstr ""
+"![Midiendo la distancia a lo largo de una traza de "
+"sondeo](images/guide_measure_tool.png) *Figura 7: medición de la "
+"distancia a lo largo de una traza de sondeo.*"
 
 #: ../../source/USER_GUIDE.md:230
 msgid "Measuring distance along a drillhole trace"
-msgstr ""
+msgstr "Midiendo la distancia a lo largo de una traza de sondeo"
 
 #: ../../source/USER_GUIDE.md:233
 msgid "Interpretation Tool"
-msgstr ""
+msgstr "Herramienta de interpretación"
 
 #: ../../source/USER_GUIDE.md:234
 msgid "**Draw**: Left-click to add vertices for a new geological unit."
 msgstr ""
+"**Draw**: Clic izquierdo para añadir vértices de una nueva unidad "
+"geológica."
 
 #: ../../source/USER_GUIDE.md:235
 msgid ""
 "**Edit**: Vertices snap to existing lines to ensure topological "
 "consistency."
 msgstr ""
+"**Edit**: Los vértices se ajustan a las líneas existentes para garantizar"
+" la consistencia topológica."
 
 #: ../../source/USER_GUIDE.md:236
 msgid ""
 "**Finish**: Double-click to close the polygon and assign attributes "
 "(Lithology, Formation)."
 msgstr ""
+"**Finish**: Doble clic para cerrar el polígono y asignar atributos "
+"(Litología, Formación)."
 
 #: ../../source/USER_GUIDE.md:238
 msgid "6. Closing & Saving"
@@ -983,7 +1127,7 @@ msgstr "Es importante entender la diferencia entre **Guardar** y **Aceptar**:"
 
 #: ../../source/USER_GUIDE.md:242
 msgid "**\"Save\" Button (Export to Disk)**"
-msgstr ""
+msgstr "**Botón \"Save\" (exportar a disco)**"
 
 #: ../../source/USER_GUIDE.md:243
 msgid "Use this when you want to **share** your data or use it in other software."
@@ -996,6 +1140,8 @@ msgid ""
 "Generates physical files (Shapefiles, CSV) in your select **Output "
 "Folder**."
 msgstr ""
+"Genera archivos físicos (Shapefiles, CSV) en la **carpeta de salida** "
+"seleccionada."
 
 #: ../../source/USER_GUIDE.md:245
 msgid "Exports:"
@@ -1038,12 +1184,16 @@ msgid ""
 "Saves the **current state of the plugin** (selected layers, parameters, "
 "window size) into the QGIS Project configuration."
 msgstr ""
+"Guarda el **estado actual del plugin** (capas seleccionadas, parámetros, "
+"tamaño de ventana) en la configuración del proyecto QGIS."
 
 #: ../../source/USER_GUIDE.md:255
 msgid ""
 "Saves your **drawn interpretations** internally in the `.qgs` project "
 "file so they reappear when you reopen the plugin."
 msgstr ""
+"Guarda tus **interpretaciones dibujadas** en el archivo de proyecto "
+"`.qgs` para que reaparezcan al reabrir el plugin."
 
 #: ../../source/USER_GUIDE.md:256 ../../source/USER_GUIDE.md:260
 msgid "Closes the window."
