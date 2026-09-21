@@ -26,6 +26,33 @@ cssclass: secinterp-moc
 
 ## 📚 Índice de notas
 
+### 🏛️ Capas y subcapas
+| Capa / Subcapa | Estado | Descripción |
+|---|:------:|------------------|
+| [[layer_core]] | ✅ | Capa Core (QGIS-agnóstico) |
+| [[layer_core_domain]] | ✅ | DTOs, entidades y contextos |
+| [[layer_core_interfaces]] | ✅ | Contratos/puertos (ABCs) |
+| [[layer_core_models]] | ✅ | Modelo de settings |
+| [[layer_core_services]] | ✅ | Servicios de negocio |
+| [[layer_core_services_drillhole]] | ✅ | Pipeline de sondajes |
+| [[layer_core_services_export]] | ✅ | Paquete de exportación |
+| [[layer_core_services_export_handlers]] | ✅ | Handlers por tipo de dato |
+| [[layer_core_utils]] | ✅ | Utilidades puras |
+| [[layer_core_utils_geometry_utils]] | ✅ | Geometría pura |
+| [[layer_core_validation]] | ✅ | Framework de validación |
+| [[layer_gui]] | ✅ | Capa GUI (Extract/Present) |
+| [[layer_gui_adapters]] | ✅ | Fase "Extract" (QGIS → DTOs) |
+| [[layer_gui_dialogs]] | ✅ | Diálogos modales |
+| [[layer_gui_renderers]] | ✅ | Renderers de preview |
+| [[layer_gui_tasks]] | ✅ | `QgsTask` en background |
+| [[layer_gui_tools]] | ✅ | Herramientas de mapa |
+| [[layer_gui_ui]] | ✅ | Ventana + sidebar |
+| [[layer_gui_ui_pages]] | ✅ | Páginas de configuración |
+| [[layer_gui_ui_pages_drillhole]] | ✅ | Tabs de sondajes |
+| [[layer_gui_ui_pages_settings]] | ✅ | Tabs de configuración |
+| [[layer_exporters]] | ✅ | Exporters (Strategy por formato) |
+| [[layer_plugin]] | ✅ | Mixins del plugin |
+
 ### Nivel raíz (entry point)
 | Archivo | Estado | Descripción breve |
 |---|:------:|------------------|
@@ -145,7 +172,7 @@ Cada nota sigue la misma plantilla:
 
 ## 🔖 Tags usados
 
-`#secinterp` · `#code-walkthrough` · `#moc` · `#core` · `#gui` · `#exporters` · `#entry-point` · `#di` · `#i18n` · `#qgstask`
+`#secinterp` · `#code-walkthrough` · `#moc` · `#layer` · `#core` · `#gui` · `#exporters` · `#entry-point` · `#di` · `#i18n` · `#qgstask`
 
 ---
 

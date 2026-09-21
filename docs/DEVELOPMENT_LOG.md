@@ -1,8 +1,9 @@
 ## [2026-09-20] Session: Code Walkthrough Vaults — Module Size Refactor Sync
-- **Achievement**: Updated both bilingual Obsidian vaults (`docs/code_walkthrough/` ES + `docs/code_walkthrough_en/` EN) to reflect the 2026-09-20 module-size refactor. Each vault grew from 67 to **74 notes**.
+- **Achievement**: Updated both bilingual Obsidian vaults (`docs/code_walkthrough/` ES + `docs/code_walkthrough_en/` EN) to reflect the 2026-09-20 module-size refactor, then added layer/sub-layer notes. Each vault grew from 67 to **97 notes**.
 - **New notes (ES+EN)**: `export_package`, `plugin_mixins`, `dialog_mixins`, `preview_mixins`, `interpretation_mixins`, `drillhole_tabs`, `settings_tabs`.
 - **Updated notes (ES+EN)**: added a "Refactor 2026-09-20" callout and the new line counts to `export_service` (645→13 shim), `sec_interp_plugin` (507→129), `main_dialog` (480→193), `drillhole_page` (451→130), `settings_page` (416→124), `interpretation_manager` (444→107), `dialog_preview_manager` (434→231).
 - **Indexes**: both `Index.md` list the new notes and a refactor callout.
+- **Layer notes**: added 23 `layer_*` notes per vault documenting the 4 root layers (`core`, `gui`, `exporters`, `plugin`) and 19 sub-layers (`core/{domain,interfaces,models,services,services/drillhole,services/export,services/export/handlers,utils,utils/geometry_utils,validation}`, `gui/{adapters,dialogs,renderers,tasks,tools,ui,ui/pages,ui/pages/drillhole,ui/pages/settings}`), each with its layer rules, sub-layer map, module inventory and patterns. Each vault now has **97 notes**.
 - **Validation**: all wikilinks in new/modified notes resolve; `scripts/sync_vault_mirrors.sh --check` PASS.
 - **Docs-only**: no Python changes.
 

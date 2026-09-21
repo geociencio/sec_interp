@@ -25,6 +25,33 @@ cssclass: secinterp-moc
 
 ## 📚 Note index
 
+### 🏛️ Layers and sub-layers
+| Layer / Sub-layer | Status | Short description |
+|---|:------:|------------------|
+| [[layer_core]] | ✅ | Core layer (QGIS-agnostic) |
+| [[layer_core_domain]] | ✅ | DTOs, entities and contexts |
+| [[layer_core_interfaces]] | ✅ | Contracts/ports (ABCs) |
+| [[layer_core_models]] | ✅ | Settings model |
+| [[layer_core_services]] | ✅ | Business services |
+| [[layer_core_services_drillhole]] | ✅ | Drillhole pipeline |
+| [[layer_core_services_export]] | ✅ | Export package |
+| [[layer_core_services_export_handlers]] | ✅ | Handlers per data type |
+| [[layer_core_utils]] | ✅ | Pure helpers |
+| [[layer_core_utils_geometry_utils]] | ✅ | Pure geometry |
+| [[layer_core_validation]] | ✅ | Validation framework |
+| [[layer_gui]] | ✅ | GUI layer (Extract/Present) |
+| [[layer_gui_adapters]] | ✅ | "Extract" phase (QGIS → DTOs) |
+| [[layer_gui_dialogs]] | ✅ | Modal dialogs |
+| [[layer_gui_renderers]] | ✅ | Preview renderers |
+| [[layer_gui_tasks]] | ✅ | Background `QgsTask` |
+| [[layer_gui_tools]] | ✅ | Map tools |
+| [[layer_gui_ui]] | ✅ | Window + sidebar |
+| [[layer_gui_ui_pages]] | ✅ | Configuration pages |
+| [[layer_gui_ui_pages_drillhole]] | ✅ | Drillhole tabs |
+| [[layer_gui_ui_pages_settings]] | ✅ | Settings tabs |
+| [[layer_exporters]] | ✅ | Exporters (Strategy per format) |
+| [[layer_plugin]] | ✅ | Plugin mixins |
+
 ### Root level (entry point)
 | File | Status | Short description |
 |---|:------:|------------------|
@@ -144,7 +171,7 @@ Every note follows the same template:
 
 ## 🔖 Tags used
 
-`#secinterp` · `#code-walkthrough` · `#moc` · `#core` · `#gui` · `#exporters` · `#entry-point` · `#di` · `#i18n` · `#qgstask`
+`#secinterp` · `#code-walkthrough` · `#moc` · `#layer` · `#core` · `#gui` · `#exporters` · `#entry-point` · `#di` · `#i18n` · `#qgstask`
 
 ---
 
