@@ -1398,5 +1398,5 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 This document provides a detailed view of the SecInterp plugin architecture. For development information, see [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
 **Last update**: 2026-01-18
-**Plugin Version**: 2.7.0
+**Plugin Version**: 3.8.0
 **Author**: Juan M. Bernales

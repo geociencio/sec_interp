@@ -129,6 +129,7 @@ def check_sync() -> list[str]:
             ["bash", str(ROOT / "scripts" / script), "--check"],
             capture_output=True,
             text=True,
+            check=False,
         )
         if proc.returncode != 0:
             issues.append(f"{script}: mirrors out of sync\n{proc.stdout.strip()}")

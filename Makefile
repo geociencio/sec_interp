@@ -178,7 +178,7 @@ docker-test: docker-build
 	docker run --rm -v $(CURDIR):/app/sec_interp sec_interp_test
 	python3 scripts/sync_metrics.py --testing-status
 
-.PHONY: apidoc docs docs-check docs-clean
+.PHONY: apidoc docs docs-check docs-version docs-i18n docs-clean
 apidoc:
 	@chmod +x scripts/build_docs.sh
 	./scripts/build_docs.sh
@@ -187,6 +187,12 @@ docs: apidoc
 
 docs-check:
 	uv run python scripts/check_docs.py
+
+docs-version:
+	uv run python scripts/sync_docs_version.py
+
+docs-i18n:
+	uv run python scripts/docs_i18n_status.py
 
 docs-clean:
 	rm -rf docs/build

@@ -53,4 +53,4 @@ To ensure the QGIS interface does not freeze during complex calculations, SecInt
 - **ADR**: Important architectural decisions are recorded in `docs/adr/`.
 
 ---
-**Version**: 2.9.1 | **Updated**: 2026-02-07
+**Version**: 3.8.0 | **Updated**: 2026-02-07

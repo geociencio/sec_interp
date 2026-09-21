@@ -98,6 +98,32 @@ staleness audit for details.
 >
 > **Also added:** `scripts/check_docs.py` + `make docs-check` (stale module refs, broken links, mirror sync); `docs/source/conf.py` now auto-reads the version from `metadata.txt` and inserts the correct `sys.path` (autodoc previously failed to import `sec_interp`, leaving API pages empty).
 
+## Documentation i18n status
+
+`make docs-i18n` (`scripts/docs_i18n_status.py`) reports per-language coverage of
+`docs/locales/*/LC_MESSAGES/*.po`. Current state (13 languages × 147 files):
+
+| lang | coverage |
+|------|---------:|
+| es | 1.6% |
+| de/fr/ja/ru/zh_CN | 0.6–0.9% |
+| it/pt_BR | 0.5% |
+| pl | 0.2% |
+| fi/hi/id/nl | 0.1% |
+
+**Finding:** the documentation translations are essentially empty (≈1%). The
+14-language build currently publishes near-English content. Options: complete the
+`.po` catalogs (`sphinx-intl update` + translation), or reduce the published
+language set until coverage improves.
+
+## Docs tooling added
+
+- `scripts/check_docs.py` + `make docs-check` (wired into CI `test.yml` and the local pre-push hook).
+- `scripts/sync_docs_version.py` + `make docs-version` (headers from `metadata.txt`; also run by `build_docs.sh`).
+- `scripts/docs_i18n_status.py` + `make docs-i18n`.
+- `docs/DOCS_INDEX.md` (canonical map) and `docs/DOCS_STYLE_GUIDE.md`.
+- `build_docs.sh` now uses `sphinx-build -j auto` (parallel) and syncs version headers.
+
 ## 8. Recommendations (priority)
 
 1. **P1** — Fix version headers (`ARCHITECTURE_EN`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN`,

@@ -24,6 +24,15 @@ jobs:
       - name: Run Ruff
         run: uvx ruff check .
 
+  docs:
+    name: Docs Consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run documentation checks
+        run: python3 scripts/check_docs.py
+
   qt6:
     name: Qt6 / QGIS 4 Enum Check
     runs-on: ubuntu-latest

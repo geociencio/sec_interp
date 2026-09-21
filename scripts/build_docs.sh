@@ -44,6 +44,10 @@ uv run sphinx-apidoc -o "$SOURCE_DIR" . \
     build/ \
     --force --separate --module-first
 
+# 2.4 Sync version/date headers from metadata.txt
+echo "🔢 Syncing documentation version headers..."
+uv run python scripts/sync_docs_version.py || true
+
 # 2.5 Compile translation catalogs (.po -> .mo)
 echo "🌐 Compiling translation catalogs..."
 python3 scripts/i18n/translate_docs.py compile
@@ -58,10 +62,10 @@ for lang in $LOCALES; do
     echo "  - Language: $lang"
     if [ "$lang" == "en" ]; then
         # Default language (English)
-        uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/en" -D language=en
+        uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/en" -D language=en -j auto
     else
         # Translated languages
-        uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/$lang" -D language="$lang"
+        uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/$lang" -D language="$lang" -j auto
     fi
 done
 
