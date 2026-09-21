@@ -46,7 +46,8 @@ Los hooks ejecutarán automáticamente:
   - Específico para validar estándares de la comunidad QGIS (i18n, threading, metadatos).
 - **Linting Manual**: `uv run ruff check .`
 - **Formateo Manual**: `uv run ruff format .`
-- **Tests**: `uv run pytest`
+- **Tests (unittest)**: `PYTHONPATH=.. uv run python3 -m unittest discover tests`
+- **Tests (Docker, QGIS real)**: `make docker-test`
 
 ## Despliegue Local (`qgis-manage`)
 Usa la herramienta CLI para desplegar tus cambios en QGIS (soporta QGIS 3 y 4):
@@ -59,17 +60,55 @@ uv run qgis-manage deploy --qgis-version 4
 ```
 *Tip: El comando detecta automáticamente tu sistema operativo, gestiona perfiles y realiza backups de seguridad.*
 
+## 📚 Generación de Documentación
+
+La documentación se genera con **Sphinx** y se publica en un **repositorio separado** (GitHub Pages).
+
+**Requisitos**: `sphinx-build` / `sphinx-apidoc` (dev deps) y las extensiones `myst_parser` + `sphinxcontrib.mermaid`.
+
+**Comando**:
+```bash
+make docs                       # equivale a: ./scripts/build_docs.sh
+./scripts/build_docs.sh [DIR]   # DIR por defecto: ../sec_interp_docs
+```
+
+**Pipeline (`scripts/build_docs.sh`)**:
+1. `sphinx-apidoc` regenera los stubs autodoc en `docs/source/` — **una página por módulo `.py`** del plugin (`core/`, `gui/`, `exporters/`, `plugin/`, `resources/` y raíz). Excluye `tests/`, `scripts/`, `docs/`, `help/` y `build/`.
+2. `scripts/i18n/translate_docs.py compile` compila los catálogos `.po` → `.mo`.
+3. `sphinx-build` genera HTML para **14 idiomas** (`en es fr pt_BR de ru zh_CN id it pl nl fi hi ja`).
+4. Copia el HTML a **`../sec_interp_docs/<lang>/`**.
+5. Sincroniza el manual offline `help/html/<lang>` (dedup de imágenes; sin search/API/fuentes).
+6. Si `../sec_interp_docs/.git` existe → `git add/commit` (`docs: auto-build from sec_interp@<hash>`) y `git push origin main`.
+
+**Repositorio de docs**:
+
+| Elemento | Valor |
+|---|---|
+| Salida local | `../sec_interp_docs` → `/home/jmbernales/qgispluginsdev/sec_interp_docs/` |
+| Remoto | `https://github.com/geociencio/sec_interp_docs.git` (branch `main`) |
+| GitHub Pages | https://geociencio.github.io/sec_interp_docs/ |
+
+> [!warning] Efectos secundarios
+> - `make docs` regenera los stubs `.rst` **rastreados** en `docs/source/` (deja el árbol sucio; revísalos/commitéalos).
+> - El paso 6 **hace `git push`** al repo externo de docs; no hay flag para omitirlo. Para construir sin publicar, ejecuta los pasos 1-5 manualmente.
+> - `sphinx-apidoc --force` **no borra** stubs de módulos eliminados: si hay warnings de módulos inexistentes, elimina los `.rst` huérfanos en `docs/source/`.
+
+> [!tip] Nota de shell (zsh)
+> El bucle de idiomas del script asume `bash`. Si lo replicas por partes en **zsh**, usa un array (`LOCALES=(en es fr …)`) o `bash -c`, porque zsh no divide por espacios una variable escalar.
+
 ## Estándares de Código
 1. **Conventional Commits**: Sigue el estándar definido en `docs/docsec/COMMIT_GUIDELINES.md`.
 2. **Arquitectura Desacoplada**: No importes GUI en módulos de `core/`.
 3. **Documentación**: Usa docstrings estilo Google (Sphinx compatible).
 
 ## Documentación de Referencia
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Arquitectura técnica unificada.
-- [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) - Guía detallada para desarrolladores.
-- [CHANGELOG.md](docs/CHANGELOG.md) - Historial de versiones y cambios críticos.
-- [FEATURE_INTERPRETATION_25D.md](FEATURE_INTERPRETATION_25D.md) - Plan para v2.5.0.
-- [UV_MODERNIZATION_GUIDE.md](docs/maintainer/uv_modernization_guide.md) - Guía de modernización de plugins con `uv`.
+- [docs/ARCHITECTURE_EN.md](docs/ARCHITECTURE_EN.md) — Arquitectura técnica unificada.
+- [docs/docsec/DEVELOPMENT_GUIDE.md](docs/docsec/DEVELOPMENT_GUIDE.md) — Guía para desarrolladores.
+- [docs/CHANGELOG.md](docs/CHANGELOG.md) — Historial de versiones.
+- [docs/structure/project_structure.md](docs/structure/project_structure.md) — Árbol de directorios del plugin.
+- [docs/code_walkthrough/Index.md](docs/code_walkthrough/Index.md) — Bóveda de code walkthrough (ES/EN).
+- [docs/maintainer/uv_modernization_guide.md](docs/maintainer/uv_modernization_guide.md) — Modernización con `uv`.
+- Docs publicados: https://geociencio.github.io/sec_interp_docs/
 
 ---
-**Plugin Version**: 2.9.0 | **Last Update**: 2026-02-01
+**Plugin Version**: 3.8.0 | **Last Update**: 2026-09-20

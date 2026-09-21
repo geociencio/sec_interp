@@ -117,21 +117,40 @@ def process_data(self, layer: QgsVectorLayer, factor: float) -> Optional[list]:
 ```
 
 ### Documentation Workflow
-The project uses Sphinx to generate documentation. The build process is automated to publish results to a separate GitHub repository (`sec_interp_docs`) which serves as the source for GitHub Pages.
+
+The project uses **Sphinx** to generate documentation. The build is automated and publishes the result to a separate GitHub repository (`sec_interp_docs`), which serves as the source for GitHub Pages.
 
 **Building and Publishing**
 
-To build the documentation and automatically push changes to the docs repository:
 ```bash
-./scripts/build_docs.sh
+make docs                       # → ./scripts/build_docs.sh
+./scripts/build_docs.sh [DIR]   # DIR defaults to ../sec_interp_docs
 ```
-This script will:
-1. Build HTML from `docs/source`.
-2. Output to `../sec_interp_docs`.
-3. Check for changes in the output directory.
-4. If changed, commit and push to `geociencio/sec_interp_docs`.
 
-**Note:** You must have write access to the `sec_interp_docs` repository and have `../sec_interp_docs` initialized as a git repo (which is done automatically if you follow setup).
+The script performs:
+
+1. `sphinx-apidoc -o docs/source . docs/ tests/ scripts/ help/ build/ --force --separate --module-first` — regenerates one autodoc page **per Python module** of the plugin (`core/`, `gui/`, `exporters/`, `plugin/`, `resources/` and the root entry points). It excludes `tests/`, `scripts/`, `docs/`, `help/` and `build/`.
+2. `scripts/i18n/translate_docs.py compile` — compiles the `.po` message catalogs to `.mo`.
+3. `sphinx-build` — builds HTML for **14 languages** (`en es fr pt_BR de ru zh_CN id it pl nl fi hi ja`).
+4. Copies the HTML to **`../sec_interp_docs/<lang>/`**.
+5. Syncs the offline manual into `help/html/<lang>` (image dedup; search/API/sources stripped).
+6. If `../sec_interp_docs/.git` exists, commits (`docs: auto-build from sec_interp@<hash>`) and pushes to `geociencio/sec_interp_docs` (`main`).
+
+**Output repository**
+
+| Item | Value |
+|------|-------|
+| Local output | `../sec_interp_docs` (`/home/jmbernales/qgispluginsdev/sec_interp_docs/`) |
+| Remote | `https://github.com/geociencio/sec_interp_docs.git` (branch `main`) |
+| GitHub Pages | https://geociencio.github.io/sec_interp_docs/ |
+
+> [!warning] Side effects
+> - `make docs` regenerates the **tracked** `.rst` stubs in `docs/source/`, leaving the working tree dirty — review and commit them.
+> - Step 6 performs a real `git push` to the external docs repo (there is no flag to skip it). To build without publishing, run steps 1–5 manually.
+> - `sphinx-apidoc --force` does **not** delete stubs for removed modules; delete orphan `.rst` files in `docs/source/` if the build warns about missing modules.
+
+> [!note] Shell note
+> The language loop in the script assumes `bash`. When replicating it in **zsh**, use an array (`LOCALES=(en es fr …)`) or `bash -c`, since zsh does not word-split a scalar variable.
 
 ### Image Assets
 Save all documentation images in `docs/images/` using the following convention:
