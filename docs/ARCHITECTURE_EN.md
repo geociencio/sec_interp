@@ -40,61 +40,70 @@
 The project organization follows a highly modular architecture based on the **Separation of Concerns** (SoC) principle, decoupling the interface, business logic, and export formats. Each layer has a distinct responsibility and communicates through well-defined interfaces.
 
 <!-- Directory tree is linkified: each Python module links to its vault note (Obsidian [[slug]] + GitHub Markdown). See docs/code_walkthrough/Index.md -->
-- `sec_interp/` — plugin root
+- `sec_interp/` — plugin root → [[layer_plugin]] · [[plugin_mixins]]
   - `__init__.py` — Plugin entry point (registers with QGIS) → [[__init__]] · [doc](code_walkthrough/__init__.md)
-  - `sec_interp_plugin.py` — Root class `SecInterp` → [[sec_interp_plugin]] · [doc](code_walkthrough/sec_interp_plugin.md)
+  - `sec_interp_plugin.py` — Root class `SecInterp` (facade) → [[sec_interp_plugin]] · [doc](code_walkthrough/sec_interp_plugin.md)
+  - `plugin/` — Plugin mixins composed by `SecInterp` → [[plugin_mixins]] · [doc](code_walkthrough/plugin_mixins.md)
+    - `plugin/lifecycle.py` — `PluginLifecycleMixin` (`add_action`, `initGui`, `run`, `unload`) → [[plugin_mixins]]
+    - `plugin/input_validator.py` — `InputValidationMixin` (`_get_and_validate_inputs`) → [[plugin_mixins]]
+    - `plugin/render_pipeline.py` — `RenderPipelineMixin` (`draw_preview`) → [[plugin_mixins]]
   - `metadata.txt` — QGIS plugin metadata
   - `Makefile` — Automation (deploy, tests, docs)
   - `logger_config.py` → [[logger_config]] · [doc](code_walkthrough/logger_config.md)
-- `core/` ⚙️ — Business Logic (QGIS-agnostic, thread-safe)
+- `core/` ⚙️ — Business Logic (QGIS-agnostic, thread-safe) → [[layer_core]]
   - `controller.py` — Orchestrator `ProfileController` → [[controller]] · [doc](code_walkthrough/controller.md)
   - `config.py` → [[config]] · [doc](code_walkthrough/config.md)
   - `data_cache.py` → [[data_cache]] · [doc](code_walkthrough/data_cache.md)
   - `exceptions.py` → [[exceptions]] · [doc](code_walkthrough/exceptions.md)
   - `performance_metrics.py` → [[performance_metrics]] · [doc](code_walkthrough/performance_metrics.md)
-  - `domain/` — DTOs `ProfileData`, `GeologySegment` → [[domain]] · [doc](code_walkthrough/domain.md)
-  - `validation/` — Modular pipeline → [[validation]] · [doc](code_walkthrough/validation.md)
+  - `domain/` — DTOs `ProfileData`, `GeologySegment` → [[domain]] · [[layer_core_domain]] · [doc](code_walkthrough/domain.md)
+  - `interfaces/` — ABCs for DI (`IProfileService`, `IGeologyService`, …) → [[layer_core_interfaces]]
+  - `models/settings_model.py` — Typed settings → [[layer_core_models]]
+  - `validation/` — Modular pipeline → [[validation]] · [[layer_core_validation]] · [doc](code_walkthrough/validation.md)
     - `validation/pipeline.py`, `layer_validator.py`, `field_validator.py`, `path_validator.py`, `project_validator.py` → [[validation]]
-    - `validation/validation_extractor.py` (adapter) → [[validation_extractor]] · [doc](code_walkthrough/validation_extractor.md)
-  - `utils/` — Helpers (pure Python)
+  - `utils/` — Helpers (pure Python) → [[layer_core_utils]]
     - `utils/safe_loader.py` → [[safe_loader]] · [doc](code_walkthrough/safe_loader.md)
     - `utils/i18n.py` → [[i18n]] · [doc](code_walkthrough/i18n.md)
-  - `interfaces/` — ABCs for DI (`IProfileService`, `IGeologyService`, …)
-  - `models/settings_model.py` — Typed settings
-  - `services/` — Concrete implementations
+    - `utils/geometry_utils/` (`measurement.py`, `optimization.py`, `processing.py`) → [[layer_core_utils_geometry_utils]]
+  - `services/` — Concrete implementations → [[layer_core_services]]
     - `services/profile_service.py` → [[profile_service]] · [doc](code_walkthrough/profile_service.md)
     - `services/geology_service.py` → [[geology_service]] · [doc](code_walkthrough/geology_service.md)
     - `services/structure_service.py` → [[structure_service]] · [doc](code_walkthrough/structure_service.md)
     - `services/drillhole_service.py` → [[drillhole_service]] · [doc](code_walkthrough/drillhole_service.md)
-    - `services/export_service.py` → [[export_service]] · [doc](code_walkthrough/export_service.md)
+    - `services/export_service.py` — 13-line compatibility shim → [[export_service]] · [doc](code_walkthrough/export_service.md)
+    - `services/export/` — Export package (orchestrator + handlers) → [[export_package]] · [[layer_core_services_export]] · [doc](code_walkthrough/export_package.md)
+      - `services/export/orchestrator.py`, `path_resolver.py`, `map_settings_factory.py`, `compat.py`
+      - `services/export/handlers/` (topography, geology, structures, drillholes, drillholes_3d, interpretations, axes) → [[layer_core_services_export_handlers]]
     - `services/preview_service.py` → [[preview_service]] · [doc](code_walkthrough/preview_service.md)
     - `services/access_control_service.py` → [[access_control_service]] · [doc](code_walkthrough/access_control_service.md)
-    - `services/drillhole/collar_processor.py` → [[collar_processor]] · [doc](code_walkthrough/collar_processor.md)
-    - `services/drillhole/survey_processor.py` → [[survey_processor]] · [doc](code_walkthrough/survey_processor.md)
-    - `services/drillhole/interval_processor.py` → [[interval_processor]] · [doc](code_walkthrough/interval_processor.md)
-    - `services/drillhole/projection_engine.py` → [[projection_engine]] · [doc](code_walkthrough/projection_engine.md)
-    - `services/drillhole/trajectory_engine.py` → [[trajectory_engine]] · [doc](code_walkthrough/trajectory_engine.md)
-    - `services/geology/` — extensible geology sub-package
-- `gui/` 🖥️ — UI Layer (QGIS-dependent)
+    - `services/drillhole/` — Drillhole pipeline → [[layer_core_services_drillhole]]
+      - `services/drillhole/collar_processor.py` → [[collar_processor]] · [doc](code_walkthrough/collar_processor.md)
+      - `services/drillhole/survey_processor.py` → [[survey_processor]] · [doc](code_walkthrough/survey_processor.md)
+      - `services/drillhole/interval_processor.py` → [[interval_processor]] · [doc](code_walkthrough/interval_processor.md)
+      - `services/drillhole/projection_engine.py` → [[projection_engine]] · [doc](code_walkthrough/projection_engine.md)
+      - `services/drillhole/trajectory_engine.py` → [[trajectory_engine]] · [doc](code_walkthrough/trajectory_engine.md)
+- `gui/` 🖥️ — UI Layer (QGIS-dependent) → [[layer_gui]]
   - `gui/main_dialog.py` — `SecInterpDialog` orchestrator → [[main_dialog]] · [doc](code_walkthrough/main_dialog.md)
-  - `gui/adapters/` — Extract phase (QGIS → DTOs) → [[adapters]] · [doc](code_walkthrough/adapters.md)
+  - `gui/dialog_*_mixin.py` — Message / lifecycle / facade mixins → [[dialog_mixins]] · [doc](code_walkthrough/dialog_mixins.md)
+  - `gui/adapters/` — Extract phase (QGIS → DTOs) → [[adapters]] · [[layer_gui_adapters]] · [doc](code_walkthrough/adapters.md)
     - `adapters/drillhole_extractor.py` → [[drillhole_extractor]] · [doc](code_walkthrough/drillhole_extractor.md)
     - `adapters/geology_extractor.py` → [[geology_extractor]] · [doc](code_walkthrough/geology_extractor.md)
     - `adapters/structure_extractor.py` → [[structure_extractor]] · [doc](code_walkthrough/structure_extractor.md)
     - `adapters/validation_extractor.py` → [[validation_extractor]] · [doc](code_walkthrough/validation_extractor.md)
+    - `adapters/profile_extractor.py`, `feature_fetcher.py`, `layer_resolver.py`, `geometry.py` → [[adapters]]
   - Managers (orchestration)
     - `dialog_signal_manager.py` → [[signal_manager]] · [doc](code_walkthrough/signal_manager.md)
     - `dialog_input_manager.py` → [[input_manager]] · [doc](code_walkthrough/input_manager.md)
-    - `dialog_preview_manager.py` → [[dialog_preview_manager]] · [doc](code_walkthrough/dialog_preview_manager.md)
+    - `dialog_preview_manager.py` → [[dialog_preview_manager]] · [[preview_mixins]] · [doc](code_walkthrough/dialog_preview_manager.md)
     - `dialog_export_manager.py` → [[dialog_export_manager]] · [doc](code_walkthrough/dialog_export_manager.md)
-    - `dialog_interpretation_manager.py` → [[interpretation_manager]] · [doc](code_walkthrough/interpretation_manager.md)
+    - `dialog_interpretation_manager.py` → [[interpretation_manager]] · [[interpretation_mixins]] · [doc](code_walkthrough/interpretation_manager.md)
     - `dialog_state_manager.py` → [[state_manager]] · [doc](code_walkthrough/state_manager.md)
     - `dialog_settings_persistence.py` → [[state_manager]] · [doc](code_walkthrough/state_manager.md)
     - `dialog_tool_manager.py` → [[tool_manager]] · [doc](code_walkthrough/tool_manager.md)
     - `layer_notification_manager.py` → [[layer_notification_manager]] · [doc](code_walkthrough/layer_notification_manager.md)
     - `ui_status_manager.py` → [[ui_status_manager]] · [doc](code_walkthrough/ui_status_manager.md)
-    - `ui/pages/drillhole_page.py` → [[drillhole_page]] · [doc](code_walkthrough/drillhole_page.md)
-    - `ui/pages/settings_page.py` → [[settings_page]] · [doc](code_walkthrough/settings_page.md)
+  - `dialogs/` — Modal dialogs → [[layer_gui_dialogs]]
+    - `dialogs/interpretation_properties_dialog.py` → [[layer_gui_dialogs]]
   - Rendering Engine
     - `preview_renderer.py` → [[preview_renderer]] · [doc](code_walkthrough/preview_renderer.md)
     - `preview_layer_factory.py` → [[preview_layer_factory]] · [doc](code_walkthrough/preview_layer_factory.md)
@@ -102,12 +111,22 @@ The project organization follows a highly modular architecture based on the **Se
     - `preview_reporter.py` → [[preview_state]] · [doc](code_walkthrough/preview_state.md)
     - `preview_state.py` → [[preview_state]] · [doc](code_walkthrough/preview_state.md)
     - `legend_widget.py` — dynamic legend
-  - `renderers/` → [[renderers]] · [doc](code_walkthrough/renderers.md)
-    - `renderers/base_renderer.py`, `topo/geology/drillhole/structure/interpretation_renderer.py`
-  - `tasks/` (`geology_task.py`, `drillhole_task.py`) → [[tasks]] · [doc](code_walkthrough/tasks.md)
-  - `tools/measure_tool.py` → [[measure_tool]] · [doc](code_walkthrough/measure_tool.md)
-  - `tools/interpretation_tool.py` → [[interpretation_tool]] · [doc](code_walkthrough/interpretation_tool.md)
-- `exporters/` 📤 — Factory `BaseExporter`
+  - `renderers/` → [[renderers]] · [[layer_gui_renderers]] · [doc](code_walkthrough/renderers.md)
+    - `renderers/base_renderer.py`, `topo/geology/drillhole/structure/interpretation_renderer.py`, `color_manager.py`
+  - `tasks/` (`geology_task.py`, `drillhole_task.py`) → [[tasks]] · [[layer_gui_tasks]] · [doc](code_walkthrough/tasks.md)
+  - `tools/` — Interactive map tools → [[layer_gui_tools]]
+    - `tools/measure_tool.py` → [[measure_tool]] · [doc](code_walkthrough/measure_tool.md)
+    - `tools/interpretation_tool.py` → [[interpretation_tool]] · [doc](code_walkthrough/interpretation_tool.md)
+    - `tools/snapper.py`
+  - `ui/` — Programmatic window + sidebar → [[layer_gui_ui]]
+    - `ui/main_window.py`, `ui/sidebar.py` → [[ui_pages]] · [doc](code_walkthrough/ui_pages.md)
+    - `ui/pages/` — Tab-based pages → [[layer_gui_ui_pages]]
+      - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `interpretation_page.py`, `preview_page.py` → [[ui_pages]]
+      - `ui/pages/drillhole_page.py` → [[drillhole_page]] · [doc](code_walkthrough/drillhole_page.md)
+      - `ui/pages/drillhole/` (collar / survey / interval tabs) → [[drillhole_tabs]] · [[layer_gui_ui_pages_drillhole]] · [doc](code_walkthrough/drillhole_tabs.md)
+      - `ui/pages/settings_page.py` → [[settings_page]] · [doc](code_walkthrough/settings_page.md)
+      - `ui/pages/settings/` (default / advanced / info tabs + persistence) → [[settings_tabs]] · [[layer_gui_ui_pages_settings]] · [doc](code_walkthrough/settings_tabs.md)
+- `exporters/` 📤 — Factory `BaseExporter` → [[layer_exporters]]
   - `base_exporter.py` → [[base_exporter]] · [doc](code_walkthrough/base_exporter.md)
   - `vector_exporter.py` → [[vector_exporter]] · [doc](code_walkthrough/vector_exporter.md)
   - `dxf_exporter.py` → [[dxf_exporter]] · [doc](code_walkthrough/dxf_exporter.md)
