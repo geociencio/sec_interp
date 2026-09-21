@@ -1,3 +1,13 @@
+## [2026-09-21] MILESTONE: Module Size Gate + Documentation Overhaul
+- **Achievement**: Closed `module_size_gate` (7 modules >400l → <300l) and cleared the last analyzer debt (0 issues), then overhauled the documentation system (gates, tooling, i18n, guides). 40 commits pushed to `origin/main` (`f6a17262..ffd1720e`).
+- **Module Size**: `export_service` 645→13 shim + `core/services/export/`; `drillhole_page` 451→130; `settings_page` 417→124; `sec_interp_plugin` 508→129; `main_dialog` 481→193; `interpretation_manager` 445→107; `preview_manager` 435→231. New `plugin/` mixins, tab sub-packages and `dialog_*_mixin`/`interpretation_*_mixin`/`preview_*_mixin`.
+- **Tech Debt (Goal 2 closed)**: `NON_PYTHONIC_LOOP` → `enumerate`; `SPATIAL_INDEX` → `QgsFeatureRequest().setFilterRect()`; analyzer **0 issues**, maintainability 100.0.
+- **Vaults**: 23 `layer_*` notes per vault, 41 thin notes enriched, numbering cleanup, table/tree links, mirrors re-synced.
+- **Docs Overhaul**: P1 (versions/drift/broken links), P2 (dedup via `sync_docs_mirrors.sh`, Archive toctree), P3 (`docs.yml` → `sec_interp_docs`); new gate `check_docs.py` (`make docs-check`, CI + pre-push), auto-version in `conf.py`, `sphinx-build -j auto`, and new guides (`DOCS_INDEX`, `DOCS_STYLE_GUIDE`, `DOCUMENTATION_PROCESS`, `USER_GUIDE_CONVENTIONS`).
+- **i18n**: fixed `translate_docs.py update`; pruned catalogs (20 MB → 2.4 MB); published-language policy `en es` (≥80% USER_GUIDE); **USER_GUIDE español 100%**.
+- **Operational Metrics**: 568 local tests OK (616 static) · Quality 54.0/100 · Maintainability 100.0/100 · Security 100/100 · CC PASS · module size PASS · `make docs-check` PASS.
+- **Maintenance**: [session_2026-09-21_module_size_and_docs.md](maintenance/session_2026-09-21_module_size_and_docs.md)
+
 ## [2026-09-20] Session: Code Walkthrough Vaults — Module Size Refactor Sync
 - **Achievement**: Updated both bilingual Obsidian vaults (`docs/code_walkthrough/` ES + `docs/code_walkthrough_en/` EN) to reflect the 2026-09-20 module-size refactor, then added layer/sub-layer notes. Each vault grew from 67 to **97 notes**.
 - **New notes (ES+EN)**: `export_package`, `plugin_mixins`, `dialog_mixins`, `preview_mixins`, `interpretation_mixins`, `drillhole_tabs`, `settings_tabs`.

@@ -15,6 +15,31 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-21'
+    category: TOOLING
+    topic: Sphinx autodoc can build green while producing empty API pages
+    lesson: conf.py inserted the repository root (not its parent) into sys.path, so
+      autodoc could not import the top-level package `sec_interp`; sphinx-build still
+      exited 0 and only logged "No module named 'sec_interp'" as warnings, leaving the
+      177 API pages empty.
+    action: After touching Sphinx conf.py/sys.path, grep the build log for import
+      warnings (or spot-check a generated module HTML) before trusting a green build.
+  - date: '2026-09-21'
+    category: TOOLING
+    topic: sphinx-apidoc --force does not prune orphan stubs; sphinx-intl needs -d
+    lesson: After decomposing modules, docs/source kept .rst stubs for deleted modules
+      (profile_interface, qt6_compat, lod_calculator, ...) that produced warnings, and
+      sphinx-intl update failed with "expected str ... not NoneType" without -d docs/locales.
+    action: After a refactor, delete orphan .rst stubs; always pass -d <locale dir> to
+      sphinx-intl update (translate_docs.py update now does).
+  - date: '2026-09-21'
+    category: AGENTIC_SYSTEM
+    topic: Do not publish multilingual docs at ~0% translation coverage
+    lesson: The plugin UI is ~99-100% translated in 13 languages, but the documentation
+      .po catalogs were ~1% and the build published 14 near-English sites; tracked .mo
+      files were generated artifacts.
+    action: Publish only languages whose USER_GUIDE.po >= 80%, keep catalogs to
+      user-facing pages, and gitignore generated .mo.
   - date: '2026-09-19'
     category: TOOLING
     topic: make package regenerates tracked Sphinx stubs and pushes the external docs repo

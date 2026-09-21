@@ -73,6 +73,17 @@ Tablero de tareas activas basado en `.agent/next_steps.md`.
 - [x] Arreglar pre-push hook (`--output json` → `--max-cc 10`) <!-- id: 11.5 -->
 - [x] Reescribir `docs/plans/upstreaming_qgis_analyzer.md` + actualizar refs (workflows/skills/metrics) <!-- id: 11.6 -->
 
+## 📚 Module Size + Documentation Overhaul (COMPLETADO 2026-09-21; pusheado `ffd1720e`)
+- [x] Module Size Gate: 7 módulos >400l → <300l; gate PASS <!-- id: 14.1 -->
+- [x] Analyzer debt 2.2/2.3 (NON_PYTHONIC_LOOP, SPATIAL_INDEX) → **0 issues** <!-- id: 14.2 -->
+- [x] Vaults Obsidian: 23 notas de capa/sublayer + enriquecido de 41 notas + enlaces en tablas <!-- id: 14.3 -->
+- [x] Auditoría de staleness + análisis de actualización (informes en `docs/maintenance/`) <!-- id: 14.4 -->
+- [x] P1: versiones, contenido obsoleto y enlaces roto corregidos <!-- id: 14.5 -->
+- [x] P2: consolidación de duplicados (`sync_docs_mirrors.sh`) + toctree Archive <!-- id: 14.6 -->
+- [x] P3: `docs.yml` publica en `sec_interp_docs`; gate `check_docs.py`; auto-versión; `-j auto` <!-- id: 14.7 -->
+- [x] i18n docs: pipeline arreglado, catálogos podados (20→2.4 MB), política `en es`, USER_GUIDE es 100% <!-- id: 14.8 -->
+- [x] Docs nuevos: `DOCS_INDEX`, `DOCS_STYLE_GUIDE`, `DOCUMENTATION_PROCESS`, `USER_GUIDE_CONVENTIONS` <!-- id: 14.9 -->
+
 ## 🧪 Operational Status
-- **Active Task**: Module Size Gate Remediation COMPLETADO y mergeado a `main` (`99138c05`). Next: Goal 1.1 (symbology), Fase 1 adaptive VE (1.2), or tech debt 2.2/2.3.
-- **Metrics**: 616 tests (Docker 5/5 suites OK), Quality 54.0/100, Maintainability 100.0/100, Security 100/100, CC PASS, i18n gate PASS, module_size gate PASS. Analyzer 1.14.0: **0 issues**. Goal 2 (tech debt) cerrado.
+- **Active Task**: Module Size + Documentation Overhaul COMPLETADO y pusheado (`ffd1720e`). Next: Goal 1.1 (symbology), Fase 1 adaptive VE (1.2), o ampliar traducciones de docs (fr/de…).
+- **Metrics**: 616 tests (static; 568 local OK), Quality 54.0/100, Maintainability 100.0/100, Security 100/100, CC PASS, i18n gate PASS, module_size gate PASS. Analyzer 1.14.0: **0 issues**. Docs: `make docs-check` PASS.

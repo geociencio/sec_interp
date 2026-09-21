@@ -12,9 +12,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation — Analysis**: Added `docs/ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` (monolithic vs Clean Architecture comparison) and `docs/PLUGIN_REPORT_AND_COMPARISON_EN.md` (feature inventory and 7-plugin competitive matrix).
 - **Documentation — Code Walkthrough Vault**: Added a bilingual Obsidian vault (`docs/code_walkthrough/` ES + `docs/code_walkthrough_en/` EN, initially 20 notes plus 3 mirror docs per vault). Covers entry point, logger, controller, domain, exceptions, profile/geology/drillhole/structure services, validation, safe_loader, i18n, main_dialog, preview/export managers, renderers, tasks, adapters, and base/vector exporters. Expanded with number-free templates and `scripts/sync_vault_mirrors.sh` (mirror sync), then enriched with `config`, `data_cache`, `performance_metrics`, `state/input/signal/interpretation/tool` managers, `preview_state/layer_factory/renderer/axes_manager`, and `export_service` + 9 exporters (csv/pdf/svg/image/profile/dxf/interpretation/drillhole 3D).
 
+- **Documentation — Guides**: Added `docs/DOCS_INDEX.md` (canonical map), `DOCS_STYLE_GUIDE.md`, `DOCUMENTATION_PROCESS.md`, `USER_GUIDE_CONVENTIONS.md` and a generated `docs/structure/` tree.
+- **Documentation — Tooling**: Added `scripts/check_docs.py` (`make docs-check`), `scripts/sync_docs_version.py` (`make docs-version`), `scripts/docs_i18n_status.py` (`make docs-i18n`) and `scripts/sync_docs_mirrors.sh`.
+- **Documentation — Vault Layers**: Added per-vault `layer_*` notes (root layers + sub-layers) and enriched the thinnest file notes (ES + EN).
+
 ### Changed
 - **Documentation — Vault Numbering**: Removed numeric prefixes from all 68 vault notes (`NN - slug.md` → `slug.md`) and updated all wikilinks and index tables (`#` column removed); navigation is now by sections/tags.
 - **Repository**: Ignored Obsidian vault editor state (`.obsidian/`) via `.gitignore`.
+- **Documentation — Website**: the published site now builds `en` + `es` (was 14 near-English languages); a language is published once its `USER_GUIDE` reaches ≥80%. The in-plugin offline help keeps all UI languages.
+- **Documentation — Sphinx**: `conf.py` reads the version from `metadata.txt`; the autodoc API pages now populate (fixed `sys.path`); the build runs with `-j auto`.
+- **Documentation — i18n**: Spanish `USER_GUIDE` translated to 100%; catalogs pruned to user-facing pages (`docs/locales` 20 MB → 2.4 MB).
+- **CI**: `.github/workflows/docs.yml` builds all languages and publishes to `geociencio/sec_interp_docs`; `test.yml` runs the docs consistency check.
+
+### Fixed
+- **Documentation**: corrected stale module references, broken links, version headers and phantom interfaces across the active docs.
+- **Code quality**: `module_size_gate` PASS (7 modules decomposed to <300 lines) and `qgis-analyzer` reports **0 issues**.
 
 ## [3.8.0] - 2026-09-19
 
