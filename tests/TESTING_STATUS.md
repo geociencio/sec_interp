@@ -3,9 +3,9 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->616<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->625<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
-| **Last Updated** | <!-- LAST_UPDATE -->2026-09-20<!-- /LAST_UPDATE --> | 🕒 Auto |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-09-21<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 
@@ -14,7 +14,7 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->23<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
-| **Core Services** | <!-- CORE_COUNT -->260<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **Core Services** | <!-- CORE_COUNT -->269<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->218<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->75<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
@@ -54,6 +54,7 @@
 - **tests/core/test_utils_standalone.py**: 23 tests
 - **tests/core/test_validation.py**: 10 tests
 - **tests/core/test_validation_refactor.py**: 4 tests
+- **tests/core/test_vertical_exaggeration_service.py**: 9 tests
 - **tests/core/validation/test_service_validation.py**: 6 tests
 - **tests/core/validation/test_validation_helpers.py**: 9 tests
 - **tests/core/validation/test_validators.py**: 28 tests
