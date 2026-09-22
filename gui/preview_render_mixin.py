@@ -77,7 +77,23 @@ class PreviewRenderMixin:
             max_points=max_points,
             preserve_extent=preserve_extent,
             use_adaptive_sampling=opts["use_adaptive_sampling"],
+            vert_exag=self._resolve_vertical_exaggeration(),
         )
+
+    def _resolve_vertical_exaggeration(self) -> float:
+        """Resolve the VE for the current render.
+
+        In Auto mode, the VE is derived adaptively from the cached (synchronous)
+        preview result; otherwise the manual spinbox value is used.
+
+        Returns:
+            Vertical exaggeration factor to apply.
+
+        """
+        auto = self.dialog.page_dem.auto_ve_check.isChecked()
+        if auto and self.last_result is not None:
+            return self.ve_service.calculate_from_result(self.last_result)
+        return self.dialog.page_dem.vertexag_spin.value()
 
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.

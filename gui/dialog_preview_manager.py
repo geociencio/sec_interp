@@ -24,6 +24,9 @@ from sec_interp.core.performance_metrics import (
     PerformanceTimer,
 )
 from sec_interp.core.services.preview_service import PreviewService
+from sec_interp.core.services.vertical_exaggeration_service import (
+    VerticalExaggerationService,
+)
 from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.gui.adapters.layer_resolver import resolve_layer
 from sec_interp.gui.preview_callbacks_mixin import PreviewCallbacksMixin
@@ -51,6 +54,7 @@ class PreviewManager(TranslatableMixin, PreviewCallbacksMixin, PreviewRenderMixi
         dialog: Any,
         preview_service: IPreviewService | None = None,
         cache: PreviewCache | None = None,
+        ve_service: VerticalExaggerationService | None = None,
     ) -> None:
         """Initialize preview manager with specialized components."""
         self.dialog = dialog
@@ -58,6 +62,7 @@ class PreviewManager(TranslatableMixin, PreviewCallbacksMixin, PreviewRenderMixi
             self.dialog.plugin_instance.controller
         )
         self.metrics = MetricsCollector()
+        self.ve_service = ve_service or VerticalExaggerationService()
 
         self.orchestrator = PreviewTaskOrchestrator(self)
         self.hasher = PreviewParamHasher()

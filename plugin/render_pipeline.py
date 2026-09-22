@@ -19,6 +19,7 @@ class RenderPipelineMixin:
         struct_data: list | None = None,
         drillhole_data: list | None = None,
         max_points: int = 1000,
+        vert_exag: float | None = None,
         **kwargs,
     ) -> None:
         """Draw enhanced interactive preview using native PyQGIS renderer."""
@@ -27,7 +28,8 @@ class RenderPipelineMixin:
             return
 
         options = self.dlg.get_preview_options()
-        vert_exag = self.dlg.page_dem.vertexag_spin.value()
+        if vert_exag is None:
+            vert_exag = self.dlg.page_dem.vertexag_spin.value()
         dip_length = self._calculate_dip_length(struct_data)
 
         filtered = self._get_filtered_preview_data(

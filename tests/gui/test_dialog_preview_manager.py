@@ -1,14 +1,13 @@
 """Tests for DialogPreviewManager."""
 
 import unittest
-from unittest.mock import MagicMock, patch, PropertyMock
-from tests.base_test import BaseTestCase
-from qgis.core import QgsRectangle
-from qgis.PyQt.QtCore import QSize
-from sec_interp.gui.dialog_preview_manager import PreviewManager
+from unittest.mock import MagicMock, patch
+
 from sec_interp.core.domain import PreviewParams, PreviewResult
-from sec_interp.core.performance_metrics import MetricsCollector
 from sec_interp.core.exceptions import SecInterpError
+from sec_interp.core.performance_metrics import MetricsCollector
+from sec_interp.gui.dialog_preview_manager import PreviewManager
+from tests.base_test import BaseTestCase
 
 
 class TestDialogPreviewManager(BaseTestCase):
@@ -54,15 +53,11 @@ class TestDialogPreviewManager(BaseTestCase):
         )
         self.plugin_instance._get_and_validate_inputs.return_value = params
 
-        result = PreviewResult(
-            topo=[(0.0, 100.0), (100.0, 100.0)], metrics=MetricsCollector()
-        )
+        result = PreviewResult(topo=[(0.0, 100.0), (100.0, 100.0)], metrics=MetricsCollector())
         self.manager.preview_service.generate_all.return_value = result
 
         # Mock resolve_layer
-        with patch(
-            "sec_interp.gui.dialog_preview_manager.resolve_layer"
-        ) as mock_resolve:
+        with patch("sec_interp.gui.dialog_preview_manager.resolve_layer") as mock_resolve:
             mock_layer = MagicMock()
             mock_layer.isValid.return_value = True
             mock_resolve.return_value = mock_layer
@@ -101,6 +96,8 @@ class TestDialogPreviewManager(BaseTestCase):
             "auto_lod": False,
             "use_adaptive_sampling": True,
         }
+        self.dialog.page_dem.auto_ve_check.isChecked.return_value = False
+        self.dialog.page_dem.vertexag_spin.value.return_value = 1.0
 
         self.manager.update_from_checkboxes()
 
@@ -114,6 +111,7 @@ class TestDialogPreviewManager(BaseTestCase):
             max_points=1000,
             preserve_extent=False,
             use_adaptive_sampling=True,
+            vert_exag=1.0,
         )
 
     def test_on_extents_changed_auto_lod_disabled(self):
@@ -163,9 +161,7 @@ class TestDialogPreviewManager(BaseTestCase):
         self.manager.set_interpretations_cleared_handler(cleared_handler)
 
         # Mock resolve_layer and feature geometry
-        with patch(
-            "sec_interp.gui.dialog_preview_manager.resolve_layer"
-        ) as mock_resolve:
+        with patch("sec_interp.gui.dialog_preview_manager.resolve_layer") as mock_resolve:
             mock_layer = MagicMock()
             mock_feat = MagicMock()
             mock_feat.geometry().asWkt.return_value = "LINESTRING(0 0, 10 10)"
@@ -242,15 +238,11 @@ class TestDialogPreviewManager(BaseTestCase):
         self.manager._update_lod_for_zoom()
         self.plugin_instance.draw_preview.assert_called()
         # Verify it was called with preserve_extent=True
-        self.assertTrue(
-            self.plugin_instance.draw_preview.call_args.kwargs.get("preserve_extent")
-        )
+        self.assertTrue(self.plugin_instance.draw_preview.call_args.kwargs.get("preserve_extent"))
 
     def test_generate_preview_sec_interp_error(self):
         """Test generate_preview with SecInterpError."""
-        self.plugin_instance._get_and_validate_inputs.side_effect = SecInterpError(
-            "Expected"
-        )
+        self.plugin_instance._get_and_validate_inputs.side_effect = SecInterpError("Expected")
         success, msg = self.manager.generate_preview()
         self.assertFalse(success)
         self.assertEqual(msg, "Expected")
@@ -271,6 +263,32 @@ class TestDialogPreviewManager(BaseTestCase):
         mock_layer.isValid.side_effect = AttributeError("Crash")
         self.manager._update_crs_label(mock_layer)
         self.dialog.preview_widget.lbl_crs.setText.assert_called_with("CRS: Unknown")
+
+    def test_resolve_vertical_exaggeration_auto(self):
+        """Auto mode derives the VE from the cached preview result."""
+        result = PreviewResult(topo=[(0.0, 100.0), (1000.0, 110.0)], struct=None)
+        self.manager.last_result = result
+        self.dialog.page_dem.auto_ve_check.isChecked.return_value = True
+
+        ve = self.manager._resolve_vertical_exaggeration()
+
+        self.assertEqual(ve, self.manager.ve_service.calculate_from_result(result))
+
+    def test_resolve_vertical_exaggeration_manual(self):
+        """Manual mode returns the spinbox value, ignoring the service."""
+        self.manager.last_result = PreviewResult(topo=[(0.0, 100.0)])
+        self.dialog.page_dem.auto_ve_check.isChecked.return_value = False
+        self.dialog.page_dem.vertexag_spin.value.return_value = 3.5
+
+        self.assertEqual(self.manager._resolve_vertical_exaggeration(), 3.5)
+
+    def test_resolve_vertical_exaggeration_auto_without_result(self):
+        """Auto mode without a cached result falls back to the manual spin."""
+        self.manager.last_result = None
+        self.dialog.page_dem.auto_ve_check.isChecked.return_value = True
+        self.dialog.page_dem.vertexag_spin.value.return_value = 2.0
+
+        self.assertEqual(self.manager._resolve_vertical_exaggeration(), 2.0)
 
 
 if __name__ == "__main__":

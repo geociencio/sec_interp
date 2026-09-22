@@ -10,7 +10,7 @@
 - [ ] **1.1** Implement a live symbology/legend styling preview under the Settings sidebar
 - [x] **1.2** Fase 1: Implement `core/services/vertical_exaggeration_service.py` + unit tests ✅ 2026-09-21 (9/9 tests, gates PASS)
 - [x] **1.3** Fase 2: Add Auto/Manual toggle to `dem_page.py` (`auto_vert_exag` default True) ✅ 2026-09-21 (7/7 tests, gates PASS)
-- [ ] **1.4** Fase 3: Integrate into `dialog_preview_manager`/`render_pipeline` (§5.1: topo+struct only — decidido)
+- [x] **1.4** Fase 3: Integrate into `dialog_preview_manager`/`render_pipeline` (§5.1: topo+struct only) ✅ 2026-09-21 (3/3 tests, gates PASS)
 - [ ] **1.5** Expand Cartesian vertical projection integration tests (highly deviated drillhole surveys)
 
 ### Resume Point

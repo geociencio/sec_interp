@@ -3,7 +3,7 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent/memory/memory_policy.md",
-        "last_updated": "2026-09-21",
+        "last_updated": "2026-09-22",
         "last_updated_by": "close-phase v3.7.0 metric reconciliation",
         "tools": {
             "qgis-plugin-analyzer": "1.14.0",
@@ -16,7 +16,7 @@
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
         "avg_retries_per_session": 1.18,
-        "tests_ok": 632,
+        "tests_ok": 635,
         "tests_ok_note": "615 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
         "quality_score_latest": 54.0,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
@@ -33,11 +33,11 @@
         "issue_breakdown": {},
         "module_size_gate": "PASS",
         "large_modules": [],
-        "test_count": 632
+        "test_count": 635
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
-            "date": "2026-09-21",
+            "date": "2026-09-22",
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
@@ -64,7 +64,7 @@
             "note": "ai-ctx measures different dimensions than qgis-analyzer. Both are valid."
         },
         "sync_metrics": {
-            "date": "2026-09-21",
+            "date": "2026-09-22",
             "command": "uv run python scripts/sync_metrics.py",
             "cc_gate": "PASS",
             "i18n_gate": "PASS"
