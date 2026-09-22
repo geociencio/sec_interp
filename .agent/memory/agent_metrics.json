@@ -78,10 +78,10 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-09-21",
-        "topic": "module_size_and_docs",
-        "tests_ok": 616,
-        "quality_score": 54.0,
+        "date": "2026-09-22",
+        "topic": "adaptive_ve_and_preview_fixes",
+        "tests_ok": 643,
+        "quality_score": 53.8,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
@@ -89,6 +89,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-09-21",
+            "tests_ok": 616,
+            "quality_score": 54.0,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "module_size_and_docs"
+        },
         {
             "date": "2026-09-20",
             "tests_ok": 606,

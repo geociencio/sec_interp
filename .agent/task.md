@@ -2,21 +2,23 @@
 
 ## 🎯 Current Focus: Goal 1 — 3D Interpretation & Symbology Enhancements
 
-**Status**: PENDING (post v3.8.0)
-**Reference plan**: `docs/plans/implementation_plan_adaptive_ve_v3.7.0.md` (5-phase plan)
+**Status**: IN PROGRESS — Adaptive VE (Goal 1.2 umbrella) COMPLETE ✅
+**Reference plan**: `docs/plans/implementation_plan_adaptive_ve_v3.8.0.md` (COMPLETADO)
 
 ### Pending Tasks
 
 - [ ] **1.1** Implement a live symbology/legend styling preview under the Settings sidebar
-- [x] **1.2** Fase 1: Implement `core/services/vertical_exaggeration_service.py` + unit tests ✅ 2026-09-21 (9/9 tests, gates PASS)
-- [x] **1.3** Fase 2: Add Auto/Manual toggle to `dem_page.py` (`auto_vert_exag` default True) ✅ 2026-09-21 (7/7 tests, gates PASS)
-- [x] **1.4** Fase 3: Integrate into `dialog_preview_manager`/`render_pipeline` (§5.1: topo+struct only) ✅ 2026-09-21 (3/3 tests, gates PASS)
+- [x] **1.2** Adaptive VE — Fases 1-4 COMPLETE ✅ 2026-09-21 (service + toggle + integration + persistence; 24 tests; VE visible en Results + etiqueta junto al checkbox)
 - [ ] **1.5** Expand Cartesian vertical projection integration tests (highly deviated drillhole surveys)
+
+### Also completed this session (beyond the plan)
+
+- [x] VE visible en el panel Results (`2.6× (auto)` / `3.5× (manual)`) + etiqueta de solo lectura junto al checkbox Auto
+- [x] Fix: layers temporales de preview ya no persisten al cerrar (OK/Save, Cancel/X y unload)
 
 ### Resume Point
 
-Per `next_steps.md` → "How to Resume": continue with **Goal 1.1** (symbology preview)
-or **Fase 1 adaptive VE** (1.2).
+Continuar con **Goal 1.1** (symbology preview) o **1.5** (tests proyección cartesiana).
 
 ### Non-blocking Documented Debt
 
@@ -27,3 +29,4 @@ or **Fase 1 adaptive VE** (1.2).
 ### Closed
 
 - Goal 2 (tech debt): analyzer 0 issues, module_size PASS, CC PASS, i18n PASS ✅
+- Adaptive VE (Goal 1.2): full end-to-end ✅

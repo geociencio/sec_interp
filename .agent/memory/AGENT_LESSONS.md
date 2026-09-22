@@ -17,6 +17,34 @@ lessons:
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-21'
     category: TOOLING
+    topic: Never run qgis-analyzer analyze and sync_metrics.py in parallel
+    lesson: Both `qgis-analyzer analyze .` and `scripts/sync_metrics.py` write the
+      same `analysis_results/project_context.json`. Running them concurrently (two
+      bash calls in one message) made one process read a half-written file and fail
+      with a JSON decode error, even though the file was valid afterwards.
+    action: Run the analyzer and sync_metrics sequentially; treat their shared
+      analysis_results/ output as a mutual-exclusion region.
+  - date: '2026-09-21'
+    category: ARCHITECTURE
+    topic: QDialog.accept() does not fire closeEvent — cleanup must cover it too
+    lesson: A cleanup placed only in `closeEvent` (or a `close()` handler) is skipped
+      when the dialog is closed via `accept()`, because Qt calls `done()` directly and
+      never invokes `closeEvent`. SecInterp's OK/Save button routed through
+      `accept_handler` → `self.accept()`, so preview memory layers leaked and triggered
+      QGIS's "temporary scratch layers" warning on exit.
+    action: For any QDialog resource that must be released on close, also hook the
+      `accept()`/`accept_handler` path (or override `done()`), not just `closeEvent`.
+  - date: '2026-09-21'
+    category: ARCHITECTURE
+    topic: derived values can't be shown "in advance" — surface the last computed value
+    lesson: Adaptive VE is computed from profile geometry (topo+struct) that only exists
+      after the first preview, so the user cannot see it before any preview. The
+      requirement was satisfied by a read-only label showing the last computed VE,
+      updated after each generation.
+    action: When a value depends on data produced downstream, don't try to predict it;
+      show the last-known value near the control and update it reactively.
+  - date: '2026-09-21'
+    category: TOOLING
     topic: Sphinx autodoc can build green while producing empty API pages
     lesson: conf.py inserted the repository root (not its parent) into sys.path, so
       autodoc could not import the top-level package `sec_interp`; sphinx-build still

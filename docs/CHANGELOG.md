@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Adaptive Vertical Exaggeration**: the DEM page now has an `Auto` toggle (default on) that computes the vertical exaggeration automatically from the profile aspect ratio and structural density (clamped `0.5×–20×`), with the manual spin preserved as an override. A read-only value is shown next to the toggle and in the results panel (`Vertical exaggeration: 2.6× (auto)`).
 - **Documentation — Architecture**: Expanded `ARCHITECTURE.mmd` (34 → 260 lines) and `docs/ARCHITECTURE_EN.md` (directory structure, full Mermaid diagram, Quality Assurance & Security Scanning section with Bandit/detect-secrets/Flake8, qgis-analyzer, Qt6 checker, and pre-release pipeline).
 - **Documentation — Analysis**: Added `docs/ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` (monolithic vs Clean Architecture comparison) and `docs/PLUGIN_REPORT_AND_COMPARISON_EN.md` (feature inventory and 7-plugin competitive matrix).
 - **Documentation — Code Walkthrough Vault**: Added a bilingual Obsidian vault (`docs/code_walkthrough/` ES + `docs/code_walkthrough_en/` EN, initially 20 notes plus 3 mirror docs per vault). Covers entry point, logger, controller, domain, exceptions, profile/geology/drillhole/structure services, validation, safe_loader, i18n, main_dialog, preview/export managers, renderers, tasks, adapters, and base/vector exporters. Expanded with number-free templates and `scripts/sync_vault_mirrors.sh` (mirror sync), then enriched with `config`, `data_cache`, `performance_metrics`, `state/input/signal/interpretation/tool` managers, `preview_state/layer_factory/renderer/axes_manager`, and `export_service` + 9 exporters (csv/pdf/svg/image/profile/dxf/interpretation/drillhole 3D).
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Documentation**: corrected stale module references, broken links, version headers and phantom interfaces across the active docs.
 - **Code quality**: `module_size_gate` PASS (7 modules decomposed to <300 lines) and `qgis-analyzer` reports **0 issues**.
+- **Temporary scratch layers**: closing the dialog no longer leaves preview memory layers in the project (removed on OK/Save, Cancel/X and plugin unload), eliminating the "temporary scratch layers" warning on QGIS exit.
 
 ## [3.8.0] - 2026-09-19
 

@@ -1,3 +1,14 @@
+## [2026-09-21] Session: Adaptive Vertical Exaggeration + Preview Fixes
+- **Achievement**: Implemented adaptive vertical exaggeration end-to-end (Goal 1.2) and fixed two preview defects (invisible VE, leaked scratch layers). 7 commits (`38c1c651..8f50994a`).
+- **Adaptive VE**:
+    - `core/services/vertical_exaggeration_service.py` (new, stdlib-only): base by aspect-ratio (elev/dist → 1/2/5/10) × structural density (×0.7/1.0/1.3), clamp `[0.5, 20.0]`. `calculate_from_result` uses topo+struct only (§5.1: excludes async geol/drillhole to avoid flicker).
+    - `dem_page.py`: `Auto` toggle (default on) + read-only `auto_ve_value` label; `DialogDefaults.AUTO_VERTICAL_EXAGGERATION`, `DemSettings.auto_vert_exag`, `ConfigService`.
+    - `PreviewRenderMixin._resolve_vertical_exaggeration()`, `draw_preview(vert_exag=...)`, DI of the service into `PreviewManager`; VE excluded from `PreviewParams`/hasher.
+    - `PreviewReporter` shows `Vertical exaggeration: 2.6× (auto)/(manual)` + conditional footer.
+- **Scratch-layer fix**: preview memory layers leaked because OK/Save uses `accept_handler` → `accept()` (no `closeEvent`). Added `PreviewRenderer.cleanup()` and wired it into `closeEvent`, `accept_handler`, and `unload()`.
+- **Quality**: 643 tests (594 local + Docker 5/5 OK) · Quality 53.8/100 · Maintainability 100.0 · Security 100 · CC PASS · i18n PASS · analyzer 0 issues.
+- **Maintenance**: [session_2026-09-21_adaptive_ve_and_preview_fixes.md](maintenance/session_2026-09-21_adaptive_ve_and_preview_fixes.md)
+
 ## [2026-09-21] MILESTONE: Module Size Gate + Documentation Overhaul
 - **Achievement**: Closed `module_size_gate` (7 modules >400l → <300l) and cleared the last analyzer debt (0 issues), then overhauled the documentation system (gates, tooling, i18n, guides). 40 commits pushed to `origin/main` (`f6a17262..ffd1720e`).
 - **Module Size**: `export_service` 645→13 shim + `core/services/export/`; `drillhole_page` 451→130; `settings_page` 417→124; `sec_interp_plugin` 508→129; `main_dialog` 481→193; `interpretation_manager` 445→107; `preview_manager` 435→231. New `plugin/` mixins, tab sub-packages and `dialog_*_mixin`/`interpretation_*_mixin`/`preview_*_mixin`.
