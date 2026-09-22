@@ -15,6 +15,7 @@
 
 - [x] VE visible en el panel Results (`2.6× (auto)` / `3.5× (manual)`) + etiqueta de solo lectura junto al checkbox Auto
 - [x] Fix: layers temporales de preview ya no persisten al cerrar (OK/Save, Cancel/X y unload)
+- [~] **Code Walkthrough Vault v2** (docs-only, 2026-09-22): nueva bóveda bilingüe completa en progreso (`code_walkthrough_v2` ES/EN). Tooling (`generate_vault_v2.py`, `check_notes.py`), `project_structure_table.md`, 56 esqueletos Core + 7 notas enriquecidas. Ver `.agent/next_steps.md`.
 
 ### Resume Point
 

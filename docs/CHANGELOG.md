@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation — Guides**: Added `docs/DOCS_INDEX.md` (canonical map), `DOCS_STYLE_GUIDE.md`, `DOCUMENTATION_PROCESS.md`, `USER_GUIDE_CONVENTIONS.md` and a generated `docs/structure/` tree.
 - **Documentation — Tooling**: Added `scripts/check_docs.py` (`make docs-check`), `scripts/sync_docs_version.py` (`make docs-version`), `scripts/docs_i18n_status.py` (`make docs-i18n`) and `scripts/sync_docs_mirrors.sh`.
 - **Documentation — Vault Layers**: Added per-vault `layer_*` notes (root layers + sub-layers) and enriched the thinnest file notes (ES + EN).
+- **Documentation — Code Walkthrough Vault v2**: Added a new self-contained bilingual vault (`docs/code_walkthrough_v2/` ES + `docs/code_walkthrough_en_v2/` EN) with a 400–500-line depth standard, backed by new tooling — `scripts/generate_vault_v2.py` (AST tiering A/B/C, collision-safe slugs, package file enumeration, high-importance `note_lines` ceiling) and `scripts/check_notes.py` (size/completeness gate with placeholder detection and ES↔EN slug parity). The existing v1 vaults are left untouched.
+- **Documentation — Structure**: Added `docs/structure/project_structure_table.md`, a tabular Depth 1–5 view of the plugin directory tree.
 
 ### Changed
 - **Documentation — Vault Numbering**: Removed numeric prefixes from all 68 vault notes (`NN - slug.md` → `slug.md`) and updated all wikilinks and index tables (`#` column removed); navigation is now by sections/tags.

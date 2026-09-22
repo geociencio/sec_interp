@@ -1,3 +1,13 @@
+## [2026-09-22] Session: Code Walkthrough Vault v2 (Complete Bilingual Vault)
+- **Achievement**: Started a new self-contained bilingual code-walkthrough vault v2 (`docs/code_walkthrough_v2/` ES + `docs/code_walkthrough_en_v2/` EN), leaving v1 untouched, with a 400–500-line depth standard and tooling to generate and gate the notes. 2 commits (`46fd3b45`, `59f3984`).
+- **Tooling**:
+    - `scripts/generate_vault_v2.py`: AST tiering (A/B/C), collision-safe slugs, package file enumeration, `HIGH_IMPORTANCE` → `note_lines: 700`, `--layer` filter, and a `_is_skeleton` guard so `--write` refreshes skeletons but never clobbers enriched notes.
+    - `scripts/check_notes.py`: 400–500 line gate (tiered minimums A/C 400, B 300; ceiling 500 or `note_lines` up to 700), placeholder detection (`--strict`), ES↔EN slug parity.
+    - `scripts/check_docs.py` (+v2 exclusions) and `scripts/sync_vault_mirrors.sh` (structure docs → v2 vaults).
+- **Docs**: added `docs/structure/project_structure_table.md` (tabular Depth 1–5 view); 56 Core skeletons generated; 7 Core notes enriched (controller 500, drillhole 408, path_resolver 306, core_interfaces 423, dtos 407, entities 401, exceptions 307).
+- **Quality**: docs-only (Python unchanged). `check_notes.py` PASS (112 notes / 98 skeletons) · `check_docs.py` PASS · `sync_vault_mirrors.sh --check` PASS · `ruff` PASS.
+- **Maintenance**: [session_2026-09-22_code_walkthrough_v2.md](maintenance/session_2026-09-22_code_walkthrough_v2.md)
+
 ## [2026-09-21] Session: Adaptive Vertical Exaggeration + Preview Fixes
 - **Achievement**: Implemented adaptive vertical exaggeration end-to-end (Goal 1.2) and fixed two preview defects (invisible VE, leaked scratch layers). 7 commits (`38c1c651..8f50994a`).
 - **Adaptive VE**:

@@ -15,6 +15,25 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-22'
+    category: TOOLING
+    topic: A docs generator --write must skip enriched notes, not just existing files
+    lesson: generate_vault_v2.py originally wrote unconditionally and overwrote
+      hand-enriched pilot notes when generating skeletons for a layer. Guarding only on
+      `dst.exists()` is insufficient because skeletons and enriched notes share the same
+      filename. A skeleton-detection guard (regex on placeholder markers) is required to
+      let --write refresh skeletons while protecting completed notes.
+    action: In any generator that emits skeletons later enriched by hand, overwrite only
+      if the target is still a skeleton (contains placeholders), never if completed.
+  - date: '2026-09-22'
+    category: TOOLING
+    topic: Per-note size ceiling via frontmatter note_lines
+    lesson: A fixed 500-line cap was too rigid for high-importance orchestrator notes
+      that legitimately document to ~500-650 lines. The gate now reads an optional
+      frontmatter field `note_lines` (max 700) as the per-note ceiling, so exceptions are
+      self-documenting, auditable and travel with the note instead of a separate allowlist.
+    action: For bounded-but-flexible limits, encode the exception in the artifact's
+      frontmatter and have the validator enforce a hard absolute maximum.
   - date: '2026-09-21'
     category: TOOLING
     topic: Never run qgis-analyzer analyze and sync_metrics.py in parallel
