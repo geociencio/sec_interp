@@ -95,7 +95,27 @@ def slug_for(src: Path) -> str:
 def package_slug_for(src: Path) -> str:
     """Unambiguous slug for a Tier C package group note."""
     rel = src.parent.relative_to(ROOT).as_posix()
+    if rel == ".":
+        return "root"
     return rel.replace("/", "_").replace(".", "_")
+
+
+def resolve_group_slugs(individual_slugs: set[str], packages: list[str]) -> dict[str, str]:
+    """Map package rel path -> unique group-note slug.
+
+    A package slug that collides with an individual note slug gets a ``_pkg``
+    suffix (e.g. ``resources`` -> ``resources_pkg``), so a group note never
+    overwrites an individual file note. The repository-root package (``.``)
+    maps to ``root`` instead of the unreadable ``_``.
+    """
+    mapping: dict[str, str] = {}
+    used = set(individual_slugs)
+    for pkg in sorted(packages):
+        base = "root" if pkg == "." else pkg.replace("/", "_").replace(".", "_")
+        slug = base if base not in used else f"{base}_pkg"
+        used.add(slug)
+        mapping[pkg] = slug
+    return mapping
 
 
 def resolve_individual_slugs(sources: list[tuple[Path, int]]) -> dict[str, str]:
@@ -383,13 +403,14 @@ def main() -> None:
                     continue
                 dst.write_text(render_skeleton(tmpl, src, meta, tier, lang), encoding="utf-8")
             written += 1
-    # Tier C -> one note per package
+    # Tier C -> one note per package (collision-safe slugs)
+    group_slugs = resolve_group_slugs(set(slug_map.values()), list(groups))
     for pkg, files in sorted(groups.items()):
         src = files[0][0]
         meta = extract_metadata(src)
         names = ", ".join(f"`{f.stem}`" for f, _ in sorted(files))
         for lang, vault, tmpl in (("es", VAULTS["es"], tmpl_es), ("en", VAULTS["en"], tmpl_en)):
-            dst = vault / f"{package_slug_for(src)}.md"
+            dst = vault / f"{group_slugs[pkg]}.md"
             if dst.exists() and not _is_skeleton(dst):
                 continue
             inventory = file_inventory_table(files, lang)

@@ -82,8 +82,9 @@ def build_expectations() -> dict[str, str]:
         for src, _lines in tiers[tier]:
             slug_tier[slug_map[src.as_posix()]] = tier
 
-    groups: set[str] = {g.package_slug_for(src) for src, _ in tiers["C"]}
-    for slug in groups:
+    groups: set[str] = {src.parent.relative_to(g.ROOT).as_posix() for src, _ in tiers["C"]}
+    group_slugs = g.resolve_group_slugs(set(slug_map.values()), sorted(groups))
+    for slug in group_slugs.values():
         slug_tier[slug] = "C"
     return slug_tier
 
