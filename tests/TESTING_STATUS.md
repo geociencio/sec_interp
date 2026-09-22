@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->640<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->643<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-09-21<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -15,9 +15,9 @@
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->23<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->274<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->228<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **GUI Components** | <!-- GUI_COUNT -->230<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
-| **Integration** | <!-- INT_COUNT -->75<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
+| **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
 ---
 
@@ -65,7 +65,7 @@
 - **tests/core/services/drillhole/test_processors.py**: 6 tests
 - **tests/gui/test_attribute_inheritance.py**: 1 tests
 - **tests/gui/test_cache_fix.py**: 1 tests
-- **tests/gui/test_dem_page.py**: 7 tests
+- **tests/gui/test_dem_page.py**: 8 tests
 - **tests/gui/test_dialog_export_manager.py**: 10 tests
 - **tests/gui/test_dialog_input_manager.py**: 5 tests
 - **tests/gui/test_dialog_interpretation_manager.py**: 11 tests
@@ -77,7 +77,7 @@
 - **tests/gui/test_gui_utils.py**: 3 tests
 - **tests/gui/test_interpretation_export.py**: 1 tests
 - **tests/gui/test_interpretation_tool.py**: 22 tests
-- **tests/gui/test_main_dialog_core.py**: 15 tests
+- **tests/gui/test_main_dialog_core.py**: 16 tests
 - **tests/gui/test_main_dialog_interpretation.py**: 4 tests
 - **tests/gui/test_main_dialog_settings.py**: 3 tests
 - **tests/gui/test_main_dialog_signals_wiring.py**: 3 tests
@@ -114,7 +114,7 @@
 - **tests/integration/test_geology_structure_workflow.py**: 19 tests
 - **tests/integration/test_interpretation_workflow.py**: 3 tests
 - **tests/integration/test_measurement_workflow.py**: 2 tests
-- **tests/integration/test_preview_pipeline.py**: 23 tests
+- **tests/integration/test_preview_pipeline.py**: 24 tests
 - **tests/integration/test_qgis_smoke.py**: 3 tests
 - **tests/integration/test_vector_drivers_integration.py**: 3 tests
 - **tests/benchmarks/test_export_benchmarks.py**: 2 tests

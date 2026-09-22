@@ -100,6 +100,7 @@ class DialogFacadeMixin:
         self.state_manager.save_settings()
 
         if self.iface is None:
+            self._cleanup_preview_renderer()
             self.accept()
             return
 
@@ -107,6 +108,7 @@ class DialogFacadeMixin:
             return
 
         self.interpretation_manager.save_interpretations()
+        self._cleanup_preview_renderer()
         self.accept()
 
     def reject_handler(self) -> None:

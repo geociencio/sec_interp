@@ -2,10 +2,12 @@
 
 import unittest
 from unittest.mock import MagicMock, patch
-from tests.base_test import BaseTestCase
+
 from qgis.core import Qgis
-from sec_interp.gui.main_dialog import SecInterpDialog
+
 from sec_interp.core.exceptions import SecInterpError
+from sec_interp.gui.main_dialog import SecInterpDialog
+from tests.base_test import BaseTestCase
 
 
 class TestMainDialogCore(BaseTestCase):
@@ -96,6 +98,13 @@ class TestMainDialogCore(BaseTestCase):
         with patch.object(self.dialog, "accept") as mock_accept:
             self.dialog.accept_handler()
             mock_accept.assert_called_once()
+
+    def test_accept_handler_cleans_preview_renderer(self):
+        """accept_handler removes transient preview layers before closing."""
+        self.dialog.iface = None
+        with patch.object(self.dialog, "accept"):
+            self.dialog.accept_handler()
+            self.plugin_instance.preview_renderer.cleanup.assert_called_once()
 
     def test_proxy_methods(self):
         """Test simple delegation proxy methods."""
