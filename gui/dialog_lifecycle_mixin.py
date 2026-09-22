@@ -35,6 +35,7 @@ class DialogLifecycleMixin:
         self._cleanup_map_tools()
         self._cleanup_managers()
         self._cleanup_signals_and_components()
+        self._cleanup_preview_renderer()
 
     def _cleanup_map_tools(self) -> None:
         """Clean up active map tools and reset their states."""
@@ -62,3 +63,15 @@ class DialogLifecycleMixin:
         if hasattr(self, "legend_widget") and self.legend_widget:
             with contextlib.suppress(Exception):
                 self.legend_widget.cleanup()
+
+    def _cleanup_preview_renderer(self) -> None:
+        """Remove transient preview layers from the project.
+
+        The renderer registers memory layers in ``QgsProject`` for stable
+        rendering; they must be removed here, otherwise they leak and trigger
+        QGIS's "temporary scratch layers" warning on exit.
+        """
+        renderer = getattr(self.plugin_instance, "preview_renderer", None)
+        if renderer and hasattr(renderer, "cleanup"):
+            with contextlib.suppress(Exception):
+                renderer.cleanup()

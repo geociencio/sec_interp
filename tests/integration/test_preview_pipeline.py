@@ -176,9 +176,7 @@ class TestPreviewLayerFactory(BaseIntegrationTest):
 
     def test_create_struct_layer_returns_none_when_no_data(self) -> None:
         """create_struct_layer should return None when structural data is absent."""
-        self.assertIsNone(
-            self.factory.create_struct_layer(None, reference_data=_simple_topo())
-        )
+        self.assertIsNone(self.factory.create_struct_layer(None, reference_data=_simple_topo()))
 
     # --- Memory layer helper ---
 
@@ -285,6 +283,18 @@ class TestPreviewRenderer(BaseIntegrationTest):
         # active_units (geology color map) must also be reset
         self.assertEqual(self.renderer.active_units, {})
 
+    def test_cleanup_removes_layers_and_is_idempotent(self) -> None:
+        """Public cleanup() removes transient layers and is safe to call twice."""
+        self.renderer.render(topo_data=_simple_topo())
+        self.assertGreater(len(self.renderer.layers), 0)
+
+        self.renderer.cleanup()
+        self.assertEqual(len(self.renderer.layers), 0)
+        self.assertEqual(self.renderer.active_units, {})
+
+        # A second call must not raise (idempotent for dialog close + unload)
+        self.renderer.cleanup()
+
 
 # ---------------------------------------------------------------------------
 # PreviewService pure-logic tests
@@ -321,7 +331,5 @@ class TestPreviewServiceCalculateMaxPoints(BaseIntegrationTest):
 
     def test_very_small_canvas_uses_minimum(self) -> None:
         """Very small canvas_width should still return at least 200 points."""
-        result = PreviewService.calculate_max_points(
-            canvas_width=10, manual_max=500, auto_lod=True
-        )
+        result = PreviewService.calculate_max_points(canvas_width=10, manual_max=500, auto_lod=True)
         self.assertGreaterEqual(result, 200)

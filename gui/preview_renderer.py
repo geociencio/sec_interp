@@ -68,6 +68,15 @@ class PreviewRenderer:
         """Expose active units from factory for legend compatibility."""
         return self.layer_factory.active_units
 
+    def cleanup(self) -> None:
+        """Remove transient layers from the project and release resources.
+
+        Idempotent; safe to call on dialog close and plugin unload to avoid
+        leaking temporary (memory) layers that trigger QGIS's
+        "scratch layers" warning on exit.
+        """
+        self._cleanup_layers()
+
     def render(
         self,
         topo_data: ProfileData,

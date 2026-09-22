@@ -129,6 +129,10 @@ class PluginLifecycleMixin:
         """Remove the plugin menu item and icon from QGIS GUI."""
         self.disconnect_signals()
 
+        if self.preview_renderer:
+            with contextlib.suppress(Exception):
+                self.preview_renderer.cleanup()
+
         for action in self.actions:
             self.iface.removePluginMenu(self.tr("&Sec Interp"), action)
             self.iface.removeToolBarIcon(action)
