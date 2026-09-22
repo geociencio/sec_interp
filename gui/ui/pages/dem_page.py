@@ -124,6 +124,12 @@ class DemPage(BasePage):
         self.auto_ve_check.setChecked(bool(DialogDefaults.AUTO_VERTICAL_EXAGGERATION))
         settings_layout.addWidget(self.auto_ve_check, 1, 2)
 
+        self.auto_ve_value = QLabel("—")
+        self.auto_ve_value.setToolTip(
+            self.tr("Adaptive vertical exaggeration (updated on preview)")
+        )
+        settings_layout.addWidget(self.auto_ve_value, 1, 3)
+
         self._on_auto_ve_toggled(self.auto_ve_check.isChecked())
 
         # Insert before the stretch (which is the last item)
@@ -138,6 +144,16 @@ class DemPage(BasePage):
 
         """
         self.vertexag_spin.setEnabled(not checked)
+        self.auto_ve_value.setVisible(checked)
+
+    def set_auto_ve(self, value: float | None) -> None:
+        """Display the adaptive VE value next to the Auto toggle.
+
+        Args:
+            value: The computed VE factor, or None when not yet available.
+
+        """
+        self.auto_ve_value.setText("—" if value is None else f"{value:.1f}×")
 
     def _update_resolution(self) -> None:
         """Calculate and update resolution and suggested scale."""

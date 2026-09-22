@@ -58,7 +58,15 @@ class PreviewCallbacksMixin:
             drillhole=self.cached_data.get("drillhole"),
             buffer_dist=self._get_buffer_distance(),
         )
-        msg = PreviewReporter.format_results_message(result, self.metrics)
+        auto_vert_exag = self.dialog.page_dem.auto_ve_check.isChecked()
+        vert_exag = self._resolve_vertical_exaggeration()
+        self.dialog.page_dem.set_auto_ve(vert_exag if auto_vert_exag else None)
+        msg = PreviewReporter.format_results_message(
+            result,
+            self.metrics,
+            vert_exag=vert_exag,
+            auto_vert_exag=auto_vert_exag,
+        )
         self.dialog.preview_widget.results_text.setPlainText(msg)
 
         self.last_result = result

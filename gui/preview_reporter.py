@@ -24,12 +24,19 @@ class PreviewReporter:
     """Formatter for preview generation results and status messages."""
 
     @staticmethod
-    def format_results_message(result: PreviewResult, metrics: MetricsCollector) -> str:
+    def format_results_message(
+        result: PreviewResult,
+        metrics: MetricsCollector,
+        vert_exag: float | None = None,
+        auto_vert_exag: bool = False,
+    ) -> str:
         """Format results message for display using core result objects.
 
         Args:
             result: The preview result object containing data and metadata.
             metrics: Performance metrics collector.
+            vert_exag: The applied vertical exaggeration factor, if known.
+            auto_vert_exag: Whether the exaggeration was set automatically.
 
         Returns:
             A formatted string ready for display in the UI.
@@ -50,20 +57,22 @@ class PreviewReporter:
 
         # Add ranges
         lines.extend(PreviewReporter.format_result_metrics(result))
+        lines.extend(PreviewReporter.format_vertical_exaggeration(vert_exag, auto_vert_exag))
 
         # Add performance metrics if enabled
         if DialogConfig.ENABLE_PERFORMANCE_METRICS and DialogConfig.SHOW_METRICS_IN_RESULTS:
             lines.extend(PreviewReporter.format_performance_metrics(metrics, result))
 
-        lines.extend(
-            [
-                "",
-                QCoreApplication.translate(
-                    "PreviewReporter",
-                    "Adjust 'Vert. Exag.' and click Preview to update.",
-                ),
-            ]
+        footer = (
+            QCoreApplication.translate(
+                "PreviewReporter", "Vertical exaggeration is set automatically."
+            )
+            if auto_vert_exag
+            else QCoreApplication.translate(
+                "PreviewReporter", "Adjust 'Vert. Exag.' and click Preview to update."
+            )
         )
+        lines.extend(["", footer])
 
         return "\n".join(lines)
 
@@ -110,6 +119,33 @@ class PreviewReporter:
                 round(min_dist, 1), round(max_dist, 1)
             ),
         ]
+
+    @staticmethod
+    def format_vertical_exaggeration(
+        vert_exag: float | None,
+        auto_vert_exag: bool,
+    ) -> list[str]:
+        """Format the applied vertical exaggeration factor, if known.
+
+        Args:
+            vert_exag: The applied VE factor, or None when unavailable.
+            auto_vert_exag: Whether the factor was set automatically.
+
+        Returns:
+            A list of message lines (empty when no factor is known).
+
+        """
+        if vert_exag is None:
+            return []
+        if auto_vert_exag:
+            line = QCoreApplication.translate(
+                "PreviewReporter", "Vertical exaggeration: {}× (auto)"
+            ).format(round(vert_exag, 1))
+        else:
+            line = QCoreApplication.translate(
+                "PreviewReporter", "Vertical exaggeration: {}× (manual)"
+            ).format(round(vert_exag, 1))
+        return ["", line]
 
     @staticmethod
     def format_performance_metrics(metrics: MetricsCollector, result: PreviewResult) -> list[str]:

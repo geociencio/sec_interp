@@ -59,6 +59,14 @@ class TestDemPage(BaseTestCase):
         self.page._on_auto_ve_toggled(False)
         self.page.vertexag_spin.setEnabled.assert_called_with(True)
 
+    def test_set_auto_ve_updates_label(self) -> None:
+        """The adaptive VE value is shown next to the Auto toggle."""
+        self.page.set_auto_ve(2.6)
+        self.assertEqual(self.page.auto_ve_value.text(), "2.6×")
+
+        self.page.set_auto_ve(None)
+        self.assertEqual(self.page.auto_ve_value.text(), "—")
+
     def test_dump_load_auto_roundtrip(self) -> None:
         """The Auto toggle is persisted and restored, syncing the spin state."""
         self.page.auto_ve_check.setChecked(False)

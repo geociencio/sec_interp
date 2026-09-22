@@ -126,7 +126,15 @@ class PreviewManager(TranslatableMixin, PreviewCallbacksMixin, PreviewRenderMixi
         self._update_crs_label(line_lyr)
         self._run_render_pipeline(result)
 
-        result_msg = PreviewReporter.format_results_message(result, self.metrics)
+        auto_vert_exag = self.dialog.page_dem.auto_ve_check.isChecked()
+        vert_exag = self._resolve_vertical_exaggeration()
+        self.dialog.page_dem.set_auto_ve(vert_exag if auto_vert_exag else None)
+        result_msg = PreviewReporter.format_results_message(
+            result,
+            self.metrics,
+            vert_exag=vert_exag,
+            auto_vert_exag=auto_vert_exag,
+        )
         self.dialog.preview_widget.results_text.setPlainText(result_msg)
 
         if DialogConfig.LOG_DETAILED_METRICS:

@@ -92,8 +92,12 @@ class PreviewRenderMixin:
         """
         auto = self.dialog.page_dem.auto_ve_check.isChecked()
         if auto and self.last_result is not None:
-            return self.ve_service.calculate_from_result(self.last_result)
-        return self.dialog.page_dem.vertexag_spin.value()
+            ve = self.ve_service.calculate_from_result(self.last_result)
+            logger.info("Vertical exaggeration: %.1f× (auto)", ve)
+            return ve
+        ve = self.dialog.page_dem.vertexag_spin.value()
+        logger.info("Vertical exaggeration: %.1f× (manual)", ve)
+        return ve
 
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.
