@@ -37,6 +37,8 @@ EXCLUDE_PARTS = {
     "locales",
     "code_walkthrough",
     "code_walkthrough_en",
+    "code_walkthrough_v2",
+    "code_walkthrough_en_v2",
     "history",
     "logs",
     "node_modules",
