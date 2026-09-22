@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->635<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->640<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-09-21<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -14,7 +14,7 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->23<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
-| **Core Services** | <!-- CORE_COUNT -->269<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **Core Services** | <!-- CORE_COUNT -->274<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->228<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->75<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
@@ -27,8 +27,8 @@
 - **tests/core/test_algorithms.py**: 3 tests
 - **tests/core/test_architecture_boundary.py**: 3 tests
 - **tests/core/test_async_drillhole.py**: 1 tests
-- **tests/core/test_config.py**: 4 tests
-- **tests/core/test_config_integration.py**: 2 tests
+- **tests/core/test_config.py**: 6 tests
+- **tests/core/test_config_integration.py**: 3 tests
 - **tests/core/test_controller_di.py**: 2 tests
 - **tests/core/test_controller_orchestration.py**: 3 tests
 - **tests/core/test_data_cache_fix.py**: 3 tests
@@ -46,7 +46,7 @@
 - **tests/core/test_profile_exporters.py**: 14 tests
 - **tests/core/test_project_validator.py**: 7 tests
 - **tests/core/test_rendering_utils.py**: 6 tests
-- **tests/core/test_settings_model.py**: 6 tests
+- **tests/core/test_settings_model.py**: 7 tests
 - **tests/core/test_spatial_utils.py**: 4 tests
 - **tests/core/test_structural_parsing_advanced.py**: 9 tests
 - **tests/core/test_structure_service.py**: 5 tests
@@ -56,7 +56,7 @@
 - **tests/core/test_validation_refactor.py**: 4 tests
 - **tests/core/test_vertical_exaggeration_service.py**: 9 tests
 - **tests/core/validation/test_service_validation.py**: 6 tests
-- **tests/core/validation/test_validation_helpers.py**: 9 tests
+- **tests/core/validation/test_validation_helpers.py**: 10 tests
 - **tests/core/validation/test_validators.py**: 28 tests
 - **tests/core/utils/test_metadata_reader.py**: 4 tests
 - **tests/core/utils/test_safe_loader_di.py**: 5 tests

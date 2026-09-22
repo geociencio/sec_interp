@@ -74,6 +74,7 @@ The project organization follows a highly modular architecture based on the **Se
       - `services/export/orchestrator.py`, `path_resolver.py`, `map_settings_factory.py`, `compat.py`
       - `services/export/handlers/` (topography, geology, structures, drillholes, drillholes_3d, interpretations, axes) → [[layer_core_services_export_handlers]]
     - `services/preview_service.py` → [[preview_service]] · [doc](preview_service.md)
+    - `services/vertical_exaggeration_service.py` → [[vertical_exaggeration_service]] · [doc](vertical_exaggeration_service.md)
     - `services/access_control_service.py` → [[access_control_service]] · [doc](access_control_service.md)
     - `services/drillhole/` — Drillhole pipeline → [[layer_core_services_drillhole]]
       - `services/drillhole/collar_processor.py` → [[collar_processor]] · [doc](collar_processor.md)
@@ -265,6 +266,7 @@ graph TD
             DRILL_SVC[services/drillhole_service.py<br/>DrillholeService]:::service
             EXPORT_SVC[services/export_service.py<br/>ExportService]:::service
             PREVIEW_SVC[services/preview_service.py<br/>PreviewService]:::service
+            VE_SVC[services/vertical_exaggeration_service.py<br/>VerticalExaggerationService]:::service
             ACCESS_SVC[services/access_control_service.py<br/>AccessControlService]:::service
 
             subgraph DRILLHOLE_PKG["Drillhole Sub-system"]

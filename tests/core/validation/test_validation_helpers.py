@@ -1,12 +1,11 @@
 """Tests for validation_helpers module."""
 
 import unittest
+
 from sec_interp.core.exceptions import ValidationError
 from sec_interp.core.validation.validation_helpers import (
     DependencyRule,
-    RichValidationError,
     ValidationContext,
-    validate_dependencies,
     validate_reasonable_ranges,
 )
 
@@ -113,6 +112,25 @@ class TestValidateReasonableRanges(unittest.TestCase):
         self.assertTrue(len(warnings) >= 2)
         self.assertTrue(any("Vertical exaggeration" in w for w in warnings))
         self.assertTrue(any("Buffer distance" in w for w in warnings))
+
+    def test_manual_ve_above_auto_clamp_still_warns(self):
+        """Manual VE is allowed up to 100 but warns beyond the adaptive cap.
+
+        The adaptive service clamps to [0.5, 20], while the manual spin
+        accepts [0.1, 100]; both ranges must remain independent (plan v3.8.0
+        section 5.2).
+        """
+        from sec_interp.core.services.vertical_exaggeration_service import (
+            VerticalExaggerationService,
+        )
+
+        # A manual VE of 30 is valid (<=100) but should warn (>10).
+        warnings = validate_reasonable_ranges({"vert_exag": 30.0})
+        self.assertTrue(any("Vertical exaggeration" in w for w in warnings))
+
+        # The adaptive clamp stays within [MIN, MAX].
+        self.assertEqual(VerticalExaggerationService.MIN_VERT_EXAG, 0.5)
+        self.assertEqual(VerticalExaggerationService.MAX_VERT_EXAG, 20.0)
 
 
 if __name__ == "__main__":

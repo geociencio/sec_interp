@@ -1,8 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from tests.base_test import BaseTestCase
+
 from sec_interp.core.config import ConfigService
 from sec_interp.core.models.settings_model import PluginSettings
+from tests.base_test import BaseTestCase
 
 
 class TestConfigServiceIntegration(BaseTestCase):
@@ -55,6 +56,20 @@ class TestConfigServiceIntegration(BaseTestCase):
 
         self.config.set("scale", 20000.0)
         self.assertIsNone(self.config._current_settings)
+
+    def test_auto_vert_exag_roundtrip(self):
+        """The Auto VE toggle persists as a string-bool through QgsSettings."""
+
+        def mock_value(key, default):
+            if "auto_vert_exag" in key:
+                return "false"
+            return default
+
+        self.mock_qgs_settings.value.side_effect = mock_value
+
+        settings = self.config.get_all_settings()
+
+        self.assertFalse(settings.dem.auto_vert_exag)
 
 
 if __name__ == "__main__":

@@ -80,6 +80,7 @@ cssclass: secinterp-moc
 | [[export_service]] | ✅ | Shim de compatibilidad (13 líneas) |
 | [[export_package]] | ✅ | Paquete `export/`: orquestador + handlers |
 | [[preview_service]] | ✅ | Generación de preview |
+| [[vertical_exaggeration_service]] | ✅ | Exageración vertical adaptativa |
 | [[access_control_service]] | ✅ | Control de acceso |
 | [[trajectory_engine]] | ✅ | Trayectoria de sondajes |
 | [[collar_processor]] | ✅ | Procesador de collares |

@@ -1,7 +1,7 @@
 # Implementation Plan: Adaptive Vertical Exaggeration (Revisado Post-Refactor)
 
 **Phase**: v3.8.0+ — Goal 1 (3D/simbología) Fase 1-3 (hereda v3.7.0 Goal 2.2)
-**Status**: En ejecución — Fase 1 (Core) ✅ · Fase 2 (GUI) ✅ · Fase 3 (Integración) ✅ 2026-09-21 · Fase 4 pendiente
+**Status**: ✅ COMPLETADO 2026-09-21 — Fases 1-4 implementadas (adaptive VE end-to-end)
 **Created**: 2026-07-20 · **Revisado**: 2026-09-20
 **Supersedes**: `implementation_plan_adaptive_ve_v3.7.0.md` (mantiene algoritmo, reubica integración)
 **Referencias**: `phase_report_v3.8.0.md:122` (Goal 1 no iniciado), `session_2026-07-20b_adaptive_ve_plan.md` (15 archivos trazados), `AGENTS.md` Extract-then-Compute, `tests/core/test_architecture_boundary.py:46` (allowlist 6)
@@ -209,7 +209,7 @@ No-Fase 5 separada (verificación integrada); bloque `pre-release` (`qt6-check` 
 - [x] Fase1 PASS (2026-09-21): `core/services/vertical_exaggeration_service.py` sin `qgis`, `tests/core/test_vertical_exaggeration_service.py` 9/9, `make pep8` PASS
 - [x] Fase2 PASS (2026-09-21): `DemPage` toggle funciona, `dump/load/reset` round-trip, `i18n` 0
 - [x] Fase3 PASS (2026-09-21): `draw_preview` recibe `vert_exag` calculado, preview re-renderiza en Auto y Manual, async geol no rompe
-- [ ] Fase4 PASS: settings persisten tras reinicio QGIS, `docker-test` 613/613, `agent_metrics.json` + `ARCHITECTURE_EN.md` + vault sync
+- [x] Fase4 PASS (2026-09-21): settings persisten tras reinicio QGIS, `docker-test` OK, `agent_metrics.json` + `ARCHITECTURE_EN.md` + vault sync
 
 ---
 

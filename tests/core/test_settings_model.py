@@ -1,10 +1,11 @@
 import unittest
+
 from sec_interp.core.models.settings_model import (
-    PluginSettings,
-    SectionSettings,
     DemSettings,
-    StructureSettings,
+    PluginSettings,
     PreviewSettings,
+    SectionSettings,
+    StructureSettings,
 )
 
 
@@ -38,6 +39,13 @@ class TestSettingsModel(unittest.TestCase):
         # Band < 1 -> capped at 1
         d = DemSettings(band=0)
         self.assertEqual(d.band, 1)
+
+    def test_dem_auto_vert_exag(self):
+        """Auto VE toggle defaults to True and round-trips through from_dict."""
+        self.assertTrue(DemSettings().auto_vert_exag)
+
+        settings = PluginSettings.from_dict({"dem": {"auto_vert_exag": False}})
+        self.assertFalse(settings.dem.auto_vert_exag)
 
     def test_structure_validation(self):
         """Test validation of structure settings."""

@@ -1,8 +1,9 @@
 """Tests for ConfigService."""
 
-from unittest.mock import MagicMock, patch
-from tests.base_test import BaseTestCase
+from unittest.mock import patch
+
 from sec_interp.core.config import ConfigService
+from tests.base_test import BaseTestCase
 
 
 class TestConfigService(BaseTestCase):
@@ -50,3 +51,13 @@ class TestConfigService(BaseTestCase):
         # Verify at least some defaults are set
         self.mock_settings.setValue.assert_any_call("SecInterp/scale", 50000.0)
         self.mock_settings.setValue.assert_any_call("SecInterp/vert_exag", 1.0)
+
+    def test_auto_vert_exag_default(self):
+        """Auto VE toggle defaults to True when not persisted."""
+        self.mock_settings.value.side_effect = lambda k, d: d
+        self.assertEqual(self.service.get("auto_vert_exag"), True)
+
+    def test_reset_auto_vert_exag(self):
+        """reset_defaults restores the Auto VE toggle to True."""
+        self.service.reset_defaults()
+        self.mock_settings.setValue.assert_any_call("SecInterp/auto_vert_exag", True)
