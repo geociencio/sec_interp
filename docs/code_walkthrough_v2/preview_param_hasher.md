@@ -86,7 +86,7 @@ from typing import Any
 
 > [!note] `from __future__ import annotations` presente
 > Aunque no hay anotaciones compuestas, la cabecera futura mantiene el estándar del
-> proyecto (ver [[coding-standards]] si existiera la nota; estándar de `AGENTS.md`).
+> proyecto (ver `coding-standards` en skill dedicada; estándar de `AGENTS.md`).
 
 ---
 

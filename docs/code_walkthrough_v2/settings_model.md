@@ -430,7 +430,7 @@ Casos puros mapeados a `tests/core/test_settings_model.py`:
 - [[Index]] — índice de la bóveda
 - [[config]] — `ConfigService` (productor de `PluginSettings` vía `from_dict`)
 - [[core_models]] — namespace `core/models/`
-- [[validation]] / [[validators]] — `validate_and_clamp` (clamp sin excepción)
+- [[core_validation]] / [[validators]] — `validate_and_clamp` (clamp sin excepción)
 - [[exceptions]] — jerarquía (aquí se evita lanzar, se normaliza)
 - [[dtos]] — otro modelo del dominio (`PreviewParams`/`PreviewResult`)
 

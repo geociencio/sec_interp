@@ -298,7 +298,7 @@ Casos puros mapeados a `tests/core/test_exceptions.py`:
 
 - [[Index]] — índice de la bóveda
 - [[controller]] — lanza `ProcessingError` en topografía
-- [[validation]] — `ValidationError` desde el framework de validación
+- [[core_validation]] — `ValidationError` desde el framework de validación
 - [[geology_service]] / [[drillhole_service]] — consumen/lanzan estas excepciones
 - [[dtos]] — `PreviewParams.validate()` (usa `ValueError` por ahora)
 

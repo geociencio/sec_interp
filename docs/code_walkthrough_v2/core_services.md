@@ -347,7 +347,7 @@ Los 3 servicios re-exportados ilustran tres estilos distintos de servicio core:
 
 > [!note] `QgsSettings` es estable
 > `QgsSettings` persiste settings con Qt; su API es poco probable que cambie, pero al ser
-> el único acoplamiento conviene vigilarlo en la migración a 4.x (ver [[qgis-migration-4x]]).
+> el único acoplamiento conviene vigilarlo en la migración a 4.x (ver `qgis-migration-4x`).
 
 ## 🌐 Notas de i18n
 

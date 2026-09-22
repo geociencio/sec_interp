@@ -298,8 +298,8 @@ path, layer_name = resolve_export_path(folder, "topo_profile", profile_name, pat
 - [[Index]] — índice de la bóveda
 - [[layer_core_services_export]] — paquete `export/` al que pertenece
 - [[orchestrator]] — consumidor principal de `resolve_export_path`
-- [[map_settings_factory]] — hermano en el paquete `export/`
-- [[export_service]] — shim que re-exporta la API pública
+- [[core_services_export]] — hermano en el paquete `export/`
+- [[core_services]] — shim que re-exporta la API pública
 
 ---
 

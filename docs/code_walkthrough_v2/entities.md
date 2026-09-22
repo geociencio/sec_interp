@@ -391,7 +391,7 @@ Casos puros mapeados a `tests/core/test_entities.py`:
 ## 🔗 Notas relacionadas
 
 - [[Index]] — índice de la bóveda
-- [[spatial_meta]] — `SpatialMeta` (referencia en `DrillholeProjection`)
+- [[core_domain]] — `SpatialMeta` (referencia en `DrillholeProjection`)
 - [[dtos]] — importa los alias (`ProfileData`, `GeologyData`, …)
 - [[domain]] — índice del paquete `domain/`
 - [[geology_service]] / [[structure_service]] / [[drillhole_service]] — producen estas entidades

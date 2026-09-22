@@ -297,8 +297,8 @@ path, layer_name = resolve_export_path(folder, "topo_profile", profile_name, pat
 - [[Index]] — vault index
 - [[layer_core_services_export]] — the `export/` package it belongs to
 - [[orchestrator]] — main consumer of `resolve_export_path`
-- [[map_settings_factory]] — sibling in the `export/` package
-- [[export_service]] — shim re-exporting the public API
+- [[core_services_export]] — sibling in the `export/` package
+- [[core_services]] — shim re-exporting the public API
 
 ---
 

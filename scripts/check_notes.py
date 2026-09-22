@@ -42,6 +42,32 @@ SKIP_STEMS = {
     "PLUGIN_REPORT_AND_COMPARISON_EN",
     "project_structure",
     "project_structure_table",
+    # Phase 4 hand-written layer hub notes (navigation, not generator outputs).
+    # NOTE: layer_notification_manager / layer_resolver / layer_validator are
+    # real file notes and must NOT be added here.
+    "layer_core",
+    "layer_core_domain",
+    "layer_core_models",
+    "layer_core_services",
+    "layer_core_services_drillhole",
+    "layer_core_services_export",
+    "layer_core_services_export_handlers",
+    "layer_core_utils",
+    "layer_core_utils_geometry_utils",
+    "layer_core_validation",
+    "layer_core_interfaces",
+    "layer_gui",
+    "layer_gui_adapters",
+    "layer_gui_renderers",
+    "layer_gui_tasks",
+    "layer_gui_tools",
+    "layer_gui_ui",
+    "layer_gui_ui_pages",
+    "layer_gui_ui_pages_drillhole",
+    "layer_gui_ui_pages_settings",
+    "layer_gui_dialogs",
+    "layer_exporters",
+    "layer_plugin",
 }
 
 MAX_LINES = 500

@@ -489,8 +489,8 @@ Mapped to `tests/core/test_controller.py` (mock-first, no QGIS):
 - [[sec_interp_plugin]] — composition root injecting the adapters
 - [[domain]] — DTOs (`PreviewParams`, `GeologySegment`…)
 - [[exceptions]] — `ProcessingError`
-- [[profile_service]] / [[geology_service]] / [[drillhole_service]] / [[structure_service]]
-- [[adapters]] — Extract-phase extractors
+- [[preview_service]] / [[geology_service]] / [[drillhole_service]] / [[structure_service]]
+- [[gui_adapters]] — Extract-phase extractors
 - [[data_cache]] — bucket-based cache
 - [[ARCHITECTURE_EN]] — general architecture
 

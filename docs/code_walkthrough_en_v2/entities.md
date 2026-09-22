@@ -391,7 +391,7 @@ Pure cases mapped to `tests/core/test_entities.py`:
 ## 🔗 Related notes
 
 - [[Index]] — vault index
-- [[spatial_meta]] — `SpatialMeta` (referenced by `DrillholeProjection`)
+- [[core_domain]] — `SpatialMeta` (referenced by `DrillholeProjection`)
 - [[dtos]] — imports the aliases (`ProfileData`, `GeologyData`, …)
 - [[domain]] — `domain/` package index
 - [[geology_service]] / [[structure_service]] / [[drillhole_service]] — produce these entities

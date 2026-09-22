@@ -430,7 +430,7 @@ Pure cases mapped to `tests/core/test_settings_model.py`:
 - [[Index]] — vault index
 - [[config]] — `ConfigService` (producer of `PluginSettings` via `from_dict`)
 - [[core_models]] — the `core/models/` namespace
-- [[validation]] / [[validators]] — `validate_and_clamp` (clamp without exception)
+- [[core_validation]] / [[validators]] — `validate_and_clamp` (clamp without exception)
 - [[exceptions]] — hierarchy (here normalization is preferred over raising)
 - [[dtos]] — another domain model (`PreviewParams`/`PreviewResult`)
 

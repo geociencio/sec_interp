@@ -147,7 +147,7 @@ from .ui.main_window import SecInterpMainWindow
 
 | Module | Role | Note |
 |---|---|---|
-| `dialog_dependencies.py` | `Pages` container (dataclass) | [[dialog_dependencies]] |
+| `dialog_dependencies.py` | `Pages` container (dataclass) | `dialog_dependencies` |
 | `dialog_lifecycle_mixin.py` | `closeEvent`, `wheelEvent`, `_cleanup_*` | [[dialog_lifecycle_mixin]] |
 | `dialog_message_mixin.py` | `push_message`, `handle_error` | [[dialog_message_mixin]] |
 | `dialog_facade_mixin.py` | Proxies to managers | [[dialog_facade_mixin]] |
@@ -294,7 +294,7 @@ def _init_managers(self) -> None:
 
 Three decisions stand out:
 
-- **`Pages` narrows the surface**: `InputManager` never receives the whole dialog, only the `Pages` dataclass + `output_widget` + `self.tr` as an injected translate function. See [[dialog_dependencies]].
+- **`Pages` narrows the surface**: `InputManager` never receives the whole dialog, only the `Pages` dataclass + `output_widget` + `self.tr` as an injected translate function. See `dialog_dependencies`.
 - **Shared `PreviewCache`**: the same `preview_cache` object is injected into `PreviewManager` and `InterpretationManager`, so clearing interpretations invalidates the preview without coupling them directly.
 - **Cross handlers**: `set_interpretations_cleared_handler` / `set_preview_update_handler` break the preview ↔ interpretation circular dependency with callbacks, not direct references.
 
@@ -459,7 +459,7 @@ There is no single `test_main_dialog.py`; coverage is split by responsibility (m
 - [[dialog_lifecycle_mixin]] — `closeEvent` and cleanup (scratch-layer fix)
 - [[dialog_facade_mixin]] — `accept_handler`, `reject_handler`, proxies
 - [[dialog_message_mixin]] — `push_message` and `handle_error`
-- [[dialog_dependencies]] — `Pages` dataclass for `InputManager`
+- `dialog_dependencies` — `Pages` dataclass for `InputManager`
 - [[dialog_preview_manager]] — preview with `PreviewService` and shared cache
 - [[dialog_state_manager]] — `update_all`, `load_settings`, `setup_indicators`
 - [[preview_page]] — preview widget and `results_text`

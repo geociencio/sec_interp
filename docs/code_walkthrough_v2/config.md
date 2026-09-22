@@ -437,7 +437,7 @@ Casos puros (mock de `QgsSettings`), mapeados a `tests/core/test_config.py` y
 - [[core_models]] — namespace `core/models/`
 - [[data_cache]] — otro servicio core con `tr()` vía `QCoreApplication`
 - [[controller]] — consumidor de `get_all_settings()`
-- [[validation]] / [[validators]] — `validate_and_clamp` usado por `PluginSettings`
+- [[core_validation]] / [[validators]] — `validate_and_clamp` usado por `PluginSettings`
 - [[exceptions]] — jerarquía de errores (aquí se degrada a defaults en vez de lanzar)
 
 ---

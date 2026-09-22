@@ -396,9 +396,9 @@ Mapped to `tests/core/` (tests consume these utilities indirectly via
 
 - [[Index]] — vault index
 - [[trajectory_engine]] — main consumer of `calculate_drillhole_trajectory`
-- [[projection_engine]] — consumes `project_trajectory_to_section`
+- [[core_services_drillhole]] — consumes `project_trajectory_to_section`
 - [[drillhole_service]] — orchestrates the drillhole pipeline
-- [[geometry_utils]] — sub-layer providing `project_point_onto_polyline`
+- [[core_utils_geometry_utils]] — sub-layer providing `project_point_onto_polyline`
 
 ---
 

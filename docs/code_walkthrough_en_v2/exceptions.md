@@ -298,7 +298,7 @@ Pure cases mapped to `tests/core/test_exceptions.py`:
 
 - [[Index]] — vault index
 - [[controller]] — raises `ProcessingError` in topography
-- [[validation]] — `ValidationError` from the validation framework
+- [[core_validation]] — `ValidationError` from the validation framework
 - [[geology_service]] / [[drillhole_service]] — consume/raise these exceptions
 - [[dtos]] — `PreviewParams.validate()` (uses `ValueError` for now)
 

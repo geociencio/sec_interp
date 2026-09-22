@@ -490,8 +490,8 @@ Mapeo a `tests/core/test_controller.py` (mock-first, sin QGIS):
 - [[sec_interp_plugin]] — composition root que inyecta los adapters
 - [[domain]] — DTOs (`PreviewParams`, `GeologySegment`…)
 - [[exceptions]] — `ProcessingError`
-- [[profile_service]] / [[geology_service]] / [[drillhole_service]] / [[structure_service]]
-- [[adapters]] — extractors de la fase Extract
+- [[preview_service]] / [[geology_service]] / [[drillhole_service]] / [[structure_service]]
+- [[gui_adapters]] — extractors de la fase Extract
 - [[data_cache]] — caché por buckets
 - [[ARCHITECTURE_EN]] — arquitectura general
 

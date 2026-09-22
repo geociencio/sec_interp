@@ -147,7 +147,7 @@ from .ui.main_window import SecInterpMainWindow
 
 | Módulo | Rol | Nota |
 |---|---|---|
-| `dialog_dependencies.py` | Contenedor `Pages` (dataclass) | [[dialog_dependencies]] |
+| `dialog_dependencies.py` | Contenedor `Pages` (dataclass) | `dialog_dependencies` |
 | `dialog_lifecycle_mixin.py` | `closeEvent`, `wheelEvent`, `_cleanup_*` | [[dialog_lifecycle_mixin]] |
 | `dialog_message_mixin.py` | `push_message`, `handle_error` | [[dialog_message_mixin]] |
 | `dialog_facade_mixin.py` | Proxies hacia managers | [[dialog_facade_mixin]] |
@@ -294,7 +294,7 @@ def _init_managers(self) -> None:
 
 Tres decisiones destacan:
 
-- **`Pages` estrecha la superficie**: `InputManager` no recibe el diálogo entero, sino el dataclass `Pages` + `output_widget` + `self.tr` como función de traducción inyectada. Ver [[dialog_dependencies]].
+- **`Pages` estrecha la superficie**: `InputManager` no recibe el diálogo entero, sino el dataclass `Pages` + `output_widget` + `self.tr` como función de traducción inyectada. Ver `dialog_dependencies`.
 - **`PreviewCache` compartido**: el mismo objeto `preview_cache` se inyecta en `PreviewManager` e `InterpretationManager`, de modo que limpiar interpretaciones invalida el preview sin acoplarlos directamente.
 - **Handlers cruzados**: `set_interpretations_cleared_handler` / `set_preview_update_handler` rompen la dependencia circular preview ↔ interpretación con callbacks, no con referencias directas.
 
@@ -459,7 +459,7 @@ No existe un `test_main_dialog.py` único; la cobertura se reparte por responsab
 - [[dialog_lifecycle_mixin]] — `closeEvent` y limpieza (fix scratch layers)
 - [[dialog_facade_mixin]] — `accept_handler`, `reject_handler`, proxies
 - [[dialog_message_mixin]] — `push_message` y `handle_error`
-- [[dialog_dependencies]] — dataclass `Pages` para `InputManager`
+- `dialog_dependencies` — dataclass `Pages` para `InputManager`
 - [[dialog_preview_manager]] — preview con `PreviewService` y caché compartido
 - [[dialog_state_manager]] — `update_all`, `load_settings`, `setup_indicators`
 - [[preview_page]] — widget de preview y `results_text`

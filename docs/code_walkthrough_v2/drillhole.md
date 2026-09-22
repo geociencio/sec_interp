@@ -399,9 +399,9 @@ Mapeo a `tests/core/` (los tests consumen estas utilidades de forma indirecta v�
 
 - [[Index]] — índice de la bóveda
 - [[trajectory_engine]] — consumidor principal de `calculate_drillhole_trajectory`
-- [[projection_engine]] — consume `project_trajectory_to_section`
+- [[core_services_drillhole]] — consume `project_trajectory_to_section`
 - [[drillhole_service]] — orquesta el pipeline de sondajes
-- [[geometry_utils]] — subcapa de la que importa `project_point_onto_polyline`
+- [[core_utils_geometry_utils]] — subcapa de la que importa `project_point_onto_polyline`
 
 ---
 

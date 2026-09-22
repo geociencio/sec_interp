@@ -235,7 +235,7 @@ que los consumen, con mocks de los contextos (Mock-first):
 
 > [!note] Mock-first
 > Al ser dataclasses puras, construir un `GeologyContext`/`DrillholeContext` en un test no
-> requiere QGIS: basta con tuplas y dicts. Ver [[qa-docker]] y `tests/base_test.py`.
+> requiere QGIS: basta con tuplas y dicts. Ver `qa-docker` y `tests/base_test.py`.
 
 ---
 
