@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import contextlib
+import math
 from typing import Any
 
 from qgis.core import (
     Qgis,
+    QgsRasterBandStats,
+    QgsRectangle,
     QgsUnitTypes,
 )
 from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox, QgsRasterBandComboBox
@@ -25,8 +29,14 @@ from sec_interp.core.validation.project_validator import (
 )
 from sec_interp.gui.adapters.validation_extractor import resolve_layer_metadata
 from sec_interp.gui.main_dialog_config import DialogDefaults
+from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage, set_combo_layer
+
+logger = get_logger(__name__)
+
+STATS_SAMPLE_SIZE = 250_000
+"""Bounded sample size for band statistics (avoids blocking on huge/remote DEMs)."""
 
 
 class DemPage(BasePage):
@@ -56,6 +66,7 @@ class DemPage(BasePage):
 
         self._setup_raster_selection()
         self._setup_band_and_resolution()
+        self._setup_raster_stats()
         self._setup_profile_settings()
 
     def _setup_raster_selection(self) -> None:
@@ -98,6 +109,93 @@ class DemPage(BasePage):
         res_layout.addWidget(self.res_edit)
         res_layout.addWidget(self.units_edit)
         self.group_layout.addLayout(res_layout, 1, 3)
+
+    def _setup_raster_stats(self) -> None:
+        """Set up read-only band statistics rows (min/max/mean/nodata)."""
+        self.min_edit = self._stats_edit("Minimum elevation of the selected band")
+        self.max_edit = self._stats_edit("Maximum elevation of the selected band")
+        self.mean_edit = self._stats_edit("Mean elevation of the selected band")
+        self.nodata_edit = self._stats_edit("NoData value of the selected band")
+
+        self.group_layout.addWidget(QLabel(self.tr("Min")), 2, 0)
+        self.group_layout.addWidget(self.min_edit, 2, 1)
+        self.group_layout.addWidget(QLabel(self.tr("Max")), 2, 2)
+        self.group_layout.addWidget(self.max_edit, 2, 3)
+
+        self.group_layout.addWidget(QLabel(self.tr("Mean")), 3, 0)
+        self.group_layout.addWidget(self.mean_edit, 3, 1)
+        self.group_layout.addWidget(QLabel(self.tr("No data")), 3, 2)
+        self.group_layout.addWidget(self.nodata_edit, 3, 3)
+
+    def _stats_edit(self, tooltip: str) -> QLineEdit:
+        """Create a read-only line edit for a statistic value."""
+        edit = QLineEdit()
+        edit.setReadOnly(True)
+        edit.setToolTip(self.tr(tooltip))
+        return edit
+
+    def _update_raster_stats(self) -> None:
+        """Refresh the read-only band statistics for the current DEM and band.
+
+        ``bandStatistics`` is synchronous; a bounded ``sampleSize`` keeps it
+        cheap and the call is defensive (remote/odd providers may fail).
+        """
+        layer = self.raster_combo.currentLayer()
+        if not layer or not layer.isValid():
+            self._clear_raster_stats()
+            return
+
+        band = self.band_combo.currentBand()
+        if not isinstance(band, int) or band < 1:
+            band = 1
+
+        provider = layer.dataProvider()
+        try:
+            stats = provider.bandStatistics(
+                band, QgsRasterBandStats.All, QgsRectangle(), STATS_SAMPLE_SIZE
+            )
+        except (AttributeError, TypeError, ValueError, RuntimeError):
+            logger.warning("Could not compute DEM band statistics (band %s)", band, exc_info=True)
+            self._clear_raster_stats()
+            return
+
+        self.min_edit.setText(self._format_stat(stats.minimumValue))
+        self.max_edit.setText(self._format_stat(stats.maximumValue))
+        self.mean_edit.setText(self._format_stat(stats.mean))
+        self.nodata_edit.setText(self._format_nodata(provider, band))
+
+    @staticmethod
+    def _format_stat(value: Any) -> str:
+        """Format a statistic, rendering non-finite values as an em dash."""
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):
+            return "—"
+        if not math.isfinite(numeric):
+            return "—"
+        return f"{numeric:.2f}"
+
+    @staticmethod
+    def _format_nodata(provider: Any, band: int) -> str:
+        """Return a display string for the band's NoData value."""
+        try:
+            value = provider.sourceNoDataValue(band)
+        except (AttributeError, TypeError, ValueError, RuntimeError):
+            return "—"
+        if value is None:
+            return "—"
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):
+            return "—"
+        if math.isnan(numeric):
+            return "—"
+        return f"{numeric:g}"
+
+    def _clear_raster_stats(self) -> None:
+        """Blank the statistics fields (no raster or unavailable stats)."""
+        for edit in (self.min_edit, self.max_edit, self.mean_edit, self.nodata_edit):
+            edit.setText("")
 
     def _setup_profile_settings(self) -> None:
         """Set up scale and exaggeration settings."""
@@ -239,6 +337,7 @@ class DemPage(BasePage):
         self.vertexag_spin.setValue(float(DialogDefaults.VERTICAL_EXAGGERATION))
         self.auto_ve_check.setChecked(bool(DialogDefaults.AUTO_VERTICAL_EXAGGERATION))
         self._on_auto_ve_toggled(self.auto_ve_check.isChecked())
+        self._clear_raster_stats()
 
     def validate(self) -> tuple[bool, str]:
         """Validate page settings.
@@ -261,13 +360,18 @@ class DemPage(BasePage):
         """Connect internal signals for the DEM page."""
         self.raster_combo.layerChanged.connect(self.band_combo.setLayer)
         self.raster_combo.layerChanged.connect(self._update_resolution)
+        self.raster_combo.layerChanged.connect(self._update_raster_stats)
+        self.band_combo.bandChanged.connect(self._update_raster_stats)
         self.auto_ve_check.toggled.connect(self._on_auto_ve_toggled)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
-        try:
-            self.raster_combo.layerChanged.disconnect(self.band_combo.setLayer)
-            self.raster_combo.layerChanged.disconnect(self._update_resolution)
-            self.auto_ve_check.toggled.disconnect(self._on_auto_ve_toggled)
-        except (TypeError, RuntimeError):
-            pass
+        for signal, slot in (
+            (self.raster_combo.layerChanged, self.band_combo.setLayer),
+            (self.raster_combo.layerChanged, self._update_resolution),
+            (self.raster_combo.layerChanged, self._update_raster_stats),
+            (self.band_combo.bandChanged, self._update_raster_stats),
+            (self.auto_ve_check.toggled, self._on_auto_ve_toggled),
+        ):
+            with contextlib.suppress(TypeError, RuntimeError):
+                signal.disconnect(slot)

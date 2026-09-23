@@ -167,6 +167,24 @@ Prepara el selector multi-línea y elimina duplicación (`line_start`, lectura d
 geometría nula, `section_line_start_point` simple/multipart, métricas con fid); suite completa;
 `ruff`/`format`; `qgis-analyzer --max-cc 10`; smoke manual QGIS 4 (comportamiento idéntico).
 
+## Fase 1.6 — Stats del ráster DEM (solo lectura)
+
+**Status**: ✅ IMPLEMENTADO 2026-09-23 (rama `feature/dem-section-v3.9.0`; 4 tests nuevos en
+`tests/gui/test_dem_page.py`; suite 670 OK).
+
+**Archivos**: `gui/ui/pages/dem_page.py`, `tests/gui/test_dem_page.py`.
+
+- `DemPage` muestra **Min / Max / Mean / NoData** de la banda seleccionada (campos read-only).
+- `dataProvider().bandStatistics(band, QgsRasterBandStats.All, QgsRectangle(), 250_000)` con
+  `sampleSize` acotado y `try/except` → rásteres remotos/raros muestran "—" sin bloquear.
+- `sourceNoDataValue(band)` (None/NaN → "—").
+- Refresco en `raster_combo.layerChanged` y `band_combo.bandChanged` (desconexión simétrica);
+  `reset()` limpia.
+- Sin caché persistente; no se modifica la capa origen.
+
+**Criterios**: valores correctos vs mock; sin capa o fallo → guiones; unidades coherentes con
+`Resolution`; suite verde. (Pendiente: smoke manual QGIS 4.)
+
 ## Fase 2 — Modo de color del perfil (solo Present, sin core)
 
 **Archivos**: `section_page.py`, `gui/main_dialog_config.py` (`DialogDefaults`),
