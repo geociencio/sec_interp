@@ -101,6 +101,8 @@
 1. Run `/start-session`.
 2. `docs/plans/implementation_plan_dem_section_v3.9.0.md`: **completo** (Fase 0 ✅,
    1 ✅, 1.5 ✅, 1.6 ✅, 2 ✅, 3 ✅) + **perfil suavizado** ✅ (extra). Opciones:
+   - **Geología sobre el perfil suavizado (v3.9.1)** → plan aprobado (Opción A),
+     pendiente: `docs/plans/implementation_plan_smoothed_geology_v3.9.1.md`.
    - **Selector multi-línea** (deuda; resolver + `section_feature_id` ya listos).
    - **Goal 1.1** (symbology/legend preview) o **Goal 1.5** (tests proyección).
-   - Preparar **release v3.9.0** (`/release-plugin`) si se cierra el alcance.
+   - Preparar **release v3.9.0/v3.9.1** (`/release-plugin`).
