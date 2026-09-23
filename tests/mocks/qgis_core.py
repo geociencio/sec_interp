@@ -24,6 +24,16 @@ class MockQgsCoordinateReferenceSystem(MockQgsBase):
         """Check if the CRS is valid."""
         return True
 
+    def __eq__(self, other):
+        """Compare CRS by authority id (mirrors QGIS operator==)."""
+        if isinstance(other, MockQgsCoordinateReferenceSystem):
+            return self._authid == other._authid
+        return NotImplemented
+
+    def __hash__(self):
+        """Hash by authority id."""
+        return hash(self._authid)
+
 
 class MockQgsCoordinateTransform(MockQgsBase):
     """Mock implementation for QgsCoordinateTransform."""
@@ -142,6 +152,15 @@ class MockQgsRectangle(MockQgsBase):
     def height(self):
         """Get rectangle height."""
         return self._ymax - self._ymin
+
+    def center(self):
+        """Get the rectangle center as a point."""
+        from .qgis_geometry import MockQgsPointXY
+
+        return MockQgsPointXY(
+            (self._xmin + self._xmax) / 2.0,
+            (self._ymin + self._ymax) / 2.0,
+        )
 
     def combineExtentWith(self, other):
         """Combine this extent with another extent."""
@@ -270,6 +289,15 @@ class MockQgsDistanceArea(MockQgsBase):
         """Initialize the mock distance area."""
         super().__init__()
         self._ellipsoid = "WGS84"
+        self._source_crs = None
+
+    def setSourceCrs(self, crs, context=None):
+        """Set source CRS."""
+        self._source_crs = crs
+
+    def sourceCrs(self):
+        """Get the source CRS."""
+        return self._source_crs
 
     def setEllipsoid(self, ellipsoid):
         """Set ellipsoid."""

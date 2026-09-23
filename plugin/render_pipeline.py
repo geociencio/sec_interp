@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from sec_interp.gui.adapters.geometry import raster_resolution_in_crs
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -103,8 +104,12 @@ class RenderPipelineMixin:
             return None
 
         raster_layer = self.dlg.page_dem.raster_combo.currentLayer()
-        if raster_layer and raster_layer.isValid():
-            res = raster_layer.rasterUnitsPerPixelX()
-            if res > 0:
-                return res * dip_scale
+        if not raster_layer or not raster_layer.isValid():
+            return None
+
+        line_layer = self.dlg.page_section.line_combo.currentLayer()
+        line_crs = line_layer.crs() if line_layer else None
+        res = raster_resolution_in_crs(raster_layer, line_crs)
+        if res and res > 0:
+            return res * dip_scale
         return None

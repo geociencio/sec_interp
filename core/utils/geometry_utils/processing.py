@@ -5,6 +5,14 @@ from __future__ import annotations
 import math
 from typing import Any
 
+MAX_DENSIFY_POINTS = 50_000
+"""Hard cap on generated vertices to prevent pathological densification.
+
+A tiny ``interval`` relative to the polyline extent (a common symptom of mixing
+a DEM pixel size expressed in a different CRS than the section line) would
+otherwise allocate millions of vertices and freeze the application.
+"""
+
 
 def densify_line_points(
     points: list[tuple[float, float]], interval: float
@@ -12,7 +20,9 @@ def densify_line_points(
     """Densify a polyline by inserting intermediate vertices.
 
     Ensures no segment is longer than ``interval``. Returns the input unchanged
-    if it has fewer than two points or the interval is non-positive.
+    if it has fewer than two points or the interval is non-positive. The number
+    of inserted vertices is capped at :data:`MAX_DENSIFY_POINTS`; the interval is
+    grown if needed to honour the cap.
 
     Args:
         points: List of (x, y) tuples.
@@ -24,6 +34,13 @@ def densify_line_points(
     """
     if not points or interval <= 0:
         return points
+
+    total_length = 0.0
+    for i in range(len(points) - 1):
+        total_length += math.hypot(points[i + 1][0] - points[i][0], points[i + 1][1] - points[i][1])
+    if total_length > 0:
+        minimum_interval = total_length / MAX_DENSIFY_POINTS
+        interval = max(interval, minimum_interval)
 
     result = [points[0]]
     for i in range(len(points) - 1):

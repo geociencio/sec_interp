@@ -14,6 +14,7 @@ from typing import Any
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsDistanceArea,
     QgsGeometry,
     QgsPointXY,
@@ -26,6 +27,16 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.exceptions import GeometryError
+from sec_interp.core.utils.geometry_utils.processing import (
+    MAX_DENSIFY_POINTS,
+    densify_line_points,
+)
+from sec_interp.logger_config import get_logger
+
+logger = get_logger(__name__)
+
+_DEFAULT_MAX_SAMPLES = 5_000
+"""Fallback number of samples when the DEM resolution cannot be resolved."""
 
 
 def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
@@ -34,6 +45,121 @@ def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
     da.setSourceCrs(crs, QgsProject.instance().transformContext())
     da.setEllipsoid(crs.ellipsoidAcronym())
     return da
+
+
+def _crs_equal(crs_a: Any, crs_b: Any) -> bool:
+    """Compare two CRS objects defensively (mock/QGIS safe)."""
+    if crs_a is None or crs_b is None:
+        return False
+    try:
+        return bool(crs_a == crs_b)
+    except (AttributeError, RuntimeError, TypeError):
+        return False
+
+
+def build_sampling_transform(
+    line_crs: QgsCoordinateReferenceSystem | None,
+    raster_layer: QgsRasterLayer,
+) -> QgsCoordinateTransform | None:
+    """Build a transform from the line CRS to the raster CRS, or ``None``.
+
+    A transform is only needed when both CRSs are known and differ. Across
+    different CRSs, sampling with raw layer coordinates reads the wrong pixels.
+
+    Args:
+        line_crs: CRS of the section line (``None`` if unknown).
+        raster_layer: The DEM/raster layer being sampled.
+
+    Returns:
+        A ``QgsCoordinateTransform`` (line -> raster) or ``None`` when the CRSs
+        match, are unknown, or the transform cannot be created.
+
+    """
+    if line_crs is None:
+        return None
+    try:
+        raster_crs = raster_layer.crs()
+    except (AttributeError, RuntimeError):
+        return None
+    if raster_crs is None or _crs_equal(line_crs, raster_crs):
+        return None
+    try:
+        return QgsCoordinateTransform(
+            line_crs, raster_crs, QgsProject.instance().transformContext()
+        )
+    except (AttributeError, RuntimeError, TypeError, ValueError):
+        logger.warning(
+            "Could not build line->raster CRS transform; sampling in line CRS.",
+            exc_info=True,
+        )
+        return None
+
+
+def raster_resolution_in_crs(
+    raster_layer: QgsRasterLayer,
+    target_crs: QgsCoordinateReferenceSystem | None,
+) -> float | None:
+    """Return the raster pixel size expressed in ``target_crs`` units.
+
+    ``rasterUnitsPerPixelX()`` is expressed in the raster's own CRS. When the
+    section line lives in a different CRS (on-the-fly reprojection), using that
+    value directly as a sampling interval is meaningless and can densify the
+    line into millions of vertices. This transforms a one-pixel-long segment
+    from the raster CRS into ``target_crs`` to recover a usable interval.
+
+    Args:
+        raster_layer: The DEM/raster layer.
+        target_crs: CRS in which to express the resolution (``None`` to return
+            the raw value).
+
+    Returns:
+        Pixel size in ``target_crs`` units, or ``None`` if it cannot be
+        determined.
+
+    """
+    try:
+        res = raster_layer.rasterUnitsPerPixelX()
+    except (AttributeError, RuntimeError):
+        return None
+    if res is None or res <= 0:
+        return None
+
+    if target_crs is None:
+        return res
+
+    try:
+        raster_crs = raster_layer.crs()
+    except (AttributeError, RuntimeError):
+        return res
+    if raster_crs is None or _crs_equal(raster_crs, target_crs):
+        return res
+
+    try:
+        xform = QgsCoordinateTransform(
+            raster_crs, target_crs, QgsProject.instance().transformContext()
+        )
+        center = raster_layer.extent().center()
+        p_start = xform.transform(QgsPointXY(center.x(), center.y()))
+        p_end = xform.transform(QgsPointXY(center.x() + res, center.y()))
+        size = math.hypot(p_end.x() - p_start.x(), p_end.y() - p_start.y())
+        return size if size > 0 else None
+    except (AttributeError, RuntimeError, TypeError, ValueError):
+        logger.warning(
+            "Could not express raster resolution in the target CRS.",
+            exc_info=True,
+        )
+        return None
+
+
+def _fallback_interval(geometry: QgsGeometry) -> float | None:
+    """Derive a bounded sampling interval from the geometry's own length."""
+    try:
+        length = float(geometry.length())
+    except (AttributeError, RuntimeError, TypeError):
+        return None
+    if length <= 0:
+        return None
+    return length / _DEFAULT_MAX_SAMPLES
 
 
 def extract_all_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
@@ -82,6 +208,24 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
 
     verts = get_line_vertices(geometry)
     points = [(p.x(), p.y()) for p in verts]
+
+    total_length = sum(
+        math.hypot(points[i + 1][0] - points[i][0], points[i + 1][1] - points[i][1])
+        for i in range(len(points) - 1)
+    )
+    if interval > 0 and total_length > 0:
+        estimated = total_length / interval
+        if estimated > MAX_DENSIFY_POINTS:
+            logger.warning(
+                "Densification capped: interval %.6g is too small for a %.3f-long "
+                "line (requested ~%s points, cap %d). Check that the DEM and "
+                "section line share a CRS.",
+                interval,
+                total_length,
+                f"{estimated:.3g}",
+                MAX_DENSIFY_POINTS,
+            )
+
     densified = _densify_line_points(points, interval)
     return QgsGeometry.fromPolylineXY([QgsPointXY(x, y) for x, y in densified])
 
@@ -89,23 +233,13 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
 def _densify_line_points(
     points: list[tuple[float, float]], interval: float
 ) -> list[tuple[float, float]]:
-    """Densify a polyline by inserting intermediate vertices (pure math)."""
-    if not points or interval <= 0:
-        return points
+    """Densify a polyline by inserting intermediate vertices (pure math).
 
-    result = [points[0]]
-    for i in range(len(points) - 1):
-        p1 = points[i]
-        p2 = points[i + 1]
-        seg_len = math.hypot(p2[0] - p1[0], p2[1] - p1[1])
-        if seg_len == 0:
-            continue
-        num_segments = max(1, math.ceil(seg_len / interval))
-        for j in range(1, num_segments):
-            t = j / num_segments
-            result.append((p1[0] + t * (p2[0] - p1[0]), p1[1] + t * (p2[1] - p1[1])))
-        result.append(p2)
-    return result
+    Delegates to the core implementation, which caps the number of generated
+    vertices to protect against pathological intervals (e.g. a DEM pixel size
+    expressed in a different CRS than the section line).
+    """
+    return densify_line_points(points, interval)
 
 
 def calculate_segment_range(
@@ -161,9 +295,28 @@ def sample_elevation_along_line(
     reference_point: QgsPointXY | None = None,
     interval: float | None = None,
 ) -> list[QgsPointXY]:
-    """Sample elevation values along a line geometry from a raster layer."""
-    if interval is None:
-        interval = raster_layer.rasterUnitsPerPixelX()
+    """Sample elevation values along a line geometry from a raster layer.
+
+    The sampling interval is the raster pixel size expressed in the section
+    line's CRS. When the line and raster CRSs differ (on-the-fly reprojection),
+    the pixel size is transformed before use and each sample point is
+    reprojected into the raster CRS.
+    """
+    line_crs: QgsCoordinateReferenceSystem | None
+    try:
+        line_crs = distance_area.sourceCrs()
+    except (AttributeError, RuntimeError):
+        line_crs = None
+
+    to_raster = build_sampling_transform(line_crs, raster_layer)
+
+    if interval is None or interval <= 0:
+        interval = raster_resolution_in_crs(raster_layer, line_crs)
+    if interval is None or interval <= 0:
+        interval = _fallback_interval(geometry)
+    if interval is None or interval <= 0:
+        interval = 1.0
+
     try:
         densified_geom = densify_line_by_interval(geometry, interval)
     except (ValueError, RuntimeError):
@@ -180,7 +333,8 @@ def sample_elevation_along_line(
         if i > 0:
             current_dist += distance_area.measureLine(vertices[i - 1], pt)
 
-        val, ok = raster_layer.dataProvider().sample(pt, band_number)
+        sample_pt = to_raster.transform(pt) if to_raster else pt
+        val, ok = raster_layer.dataProvider().sample(sample_pt, band_number)
         elev = val if ok else 0.0
         points.append(QgsPointXY(current_dist, elev))
 

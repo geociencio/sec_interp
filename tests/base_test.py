@@ -70,10 +70,15 @@ class MockQgsDistanceArea(MockQgsBase):
     def __init__(self):
         """Initialize the mock distance area."""
         super().__init__()
+        self._source_crs = None
 
     def setSourceCrs(self, crs, context=None):
         """Set source CRS."""
-        pass
+        self._source_crs = crs
+
+    def sourceCrs(self):
+        """Get the source CRS."""
+        return self._source_crs
 
     def setEllipsoid(self, ellipsoid):
         """Set ellipsoid."""
