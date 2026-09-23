@@ -1,3 +1,13 @@
+## [2026-09-23] Session: Optional Smoothed Topography Profile
+- **Achievement**: Added an optional smoothed topography profile — a Smooth control in the preview Controls overlays a soft-red smoothed line on the colored profile and the export writes extra smoothed CSV/vector files. 2 commits (`3094a1f1`, `76fc6206`).
+- **Changes**:
+    - **Core**: `smooth_profile_by_distance` (centered moving average over a distance window, endpoints preserved; stdlib only).
+    - **Controls**: Smooth checkbox + Window (m) spin (10–500, off by default), persisted; re-render from cache without invalidating S2. Preview misc signal wiring refactored to loops to stay under the 400-line gate.
+    - **Preview**: new "Smoothed Topography" soft-red layer above the profile; both listed in the legend.
+    - **Export**: adds `topo_profile_smoothed.csv` and `profile_line_smoothed.<ext>` when enabled (raw unchanged).
+- **Quality**: 710/710 tests OK · `ruff`/format clean · analyzer 0 issues · gates CC/Module Size/i18n PASS · smoke QGIS 4 OK.
+- **Maintenance**: [session_2026-09-23_smoothed_profile.md](maintenance/session_2026-09-23_smoothed_profile.md)
+
 ## [2026-09-23] Session: DEM/Section v3.9.0 Phases (1.5, 1.6, 2, 3)
 - **Achievement**: Completed the v3.9.0 DEM/Section plan — band statistics on the DEM page, a central section-feature resolver (prep multi-line), topographic profile color mode (gradient/single) and profile-vs-DEM statistics. 6 commits (`2a14767b..6d342189`).
 - **Changes**:

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Smoothed topography profile**: a **Smooth** control in the preview Controls (with a **Window** in metres, 10–500, off by default) overlays a smoothed line on the topographic profile and, on export, also writes `topo_profile_smoothed.csv` and `profile_line_smoothed.<ext>` alongside the raw outputs. Smoothing is a distance-window moving average; the sampled data is unchanged.
 - **Topographic profile color mode**: choose **Gradient** (with a color ramp, e.g. *Spectral* or *Terrain*) or **Simple** (a single color) for the profile from the Section Line page. The change only affects the preview/export styling, never the source layer.
 - **Profile-vs-DEM statistics**: the Section Line page now shows the section's **Minimum**, **Maximum**, **Mean** elevation and the number of samples at the DEM resolution, refreshed when the line, DEM or band changes.
 - **DEM page — band statistics**: the DEM/Raster page now shows read-only **Minimum**, **Maximum**, **Mean** and **NoData** for the selected band, computed with a bounded sample size so large or remote rasters do not block the UI.
