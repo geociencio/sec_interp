@@ -28,7 +28,6 @@ from .dialog_preview_manager import PreviewManager
 from .dialog_signal_manager import SignalManager
 from .dialog_state_manager import StateManager
 from .dialog_tool_manager import NavigationManager, ToolManager
-from .legend_widget import LegendWidget
 from .preview_layer_factory import PreviewLayerFactory
 from .preview_state import PreviewCache, RenderState
 from .ui.main_window import SecInterpMainWindow
@@ -78,8 +77,6 @@ class SecInterpDialog(
             self.messagebar = self.iface.messageBar()
 
         self._init_managers()
-
-        self.legend_widget = LegendWidget(self.preview_widget.canvas)
 
         self.render_state = RenderState()
 
@@ -133,6 +130,9 @@ class SecInterpDialog(
         self.state_manager.setup_indicators()
         self.interpretation_manager = InterpretationManager(self, cache=preview_cache)
         self.interpretation_manager.load_interpretations()
+        self.preview_widget.side_panel.update_interpretations(
+            self.interpretation_manager.interpretations
+        )
         self.tool_manager = ToolManager(
             self.preview_widget.canvas,
             self.preview_widget,

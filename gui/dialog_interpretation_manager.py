@@ -52,6 +52,13 @@ class InterpretationManager(InterpretationPersistenceMixin, InterpretationInheri
         """Clear all interpretations and persist the change."""
         self.interpretations = []
         self.save_interpretations()
+        self._refresh_side_panel()
+
+    def _refresh_side_panel(self) -> None:
+        """Sync the side panel's interpretations list, if present."""
+        panel = getattr(self.dialog.preview_widget, "side_panel", None)
+        if panel is not None:
+            panel.update_interpretations(self.interpretations)
 
     def handle_interpretation_finished(self, interpretation: InterpretationPolygon) -> None:
         """Process a finished interpretation polygon.
@@ -87,6 +94,7 @@ class InterpretationManager(InterpretationPersistenceMixin, InterpretationInheri
 
         self.interpretations.append(interpretation)
         self.save_interpretations()
+        self._refresh_side_panel()
         logger.info(
             f"Interpretation polygon added: {interpretation.id} "
             f"({len(interpretation.vertices_2d)} vertices)"

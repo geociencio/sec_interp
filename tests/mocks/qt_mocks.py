@@ -588,6 +588,30 @@ class MockQListWidget(MockQWidget):
         """Add item to list."""
         self._items.append(item)
 
+    def clear(self):
+        """Remove all items."""
+        self._items = []
+
+    def count(self):
+        """Return the number of items."""
+        return len(self._items)
+
+    def item(self, row):
+        """Return the item at the given row."""
+        return self._items[row]
+
+    def setTextElideMode(self, mode):
+        """Set text elide mode."""
+        pass
+
+    def setWordWrap(self, enabled):
+        """Set word wrap."""
+        pass
+
+    def setUniformItemSizes(self, enabled):
+        """Set uniform item sizes."""
+        pass
+
     def setCurrentRow(self, row):
         """Set current row."""
         self._current_row = row
@@ -639,6 +663,14 @@ class MockQListWidgetItem:
     def setIcon(self, icon):
         """Set item icon."""
         self._icon = icon
+
+    def setToolTip(self, tip):
+        """Set item tooltip."""
+        self._tooltip = tip
+
+    def toolTip(self):
+        """Get item tooltip."""
+        return getattr(self, "_tooltip", "")
 
     def setTextAlignment(self, alignment):
         """Set text alignment."""

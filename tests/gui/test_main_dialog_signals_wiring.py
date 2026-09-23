@@ -24,7 +24,6 @@ class TestMainDialogWiring(BaseTestCase):
             patch("sec_interp.gui.main_dialog.PreviewManager"),
             patch("sec_interp.gui.main_dialog.InterpretationManager"),
             patch("sec_interp.gui.main_dialog.ToolManager"),
-            patch("sec_interp.gui.main_dialog.LegendWidget"),
         ):
             self.dialog = SecInterpDialog(plugin_instance=mock_plugin)
 
