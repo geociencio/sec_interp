@@ -86,10 +86,14 @@ class StructurePage(BasePage):
         self.scale_spin.setToolTip(self.tr("Length factor for drawing dip lines"))
         self.group_layout.addWidget(self.scale_spin, 3, 1)
 
-        # Connections: update fields when layer changes
-        self.layer_combo.layerChanged.connect(self._on_layer_changed)
+    def connect_signals(self) -> None:
+        """Connect internal signals for the structure page.
 
-        # Emit dataChanged when selections change
+        Kept out of ``_setup_ui`` because ``SignalManager.connect_all`` calls
+        ``disconnect_signals`` first and then re-invokes this method; wiring in
+        ``_setup_ui`` would be lost after the first reconnection.
+        """
+        self.layer_combo.layerChanged.connect(self._on_layer_changed)
         self.layer_combo.layerChanged.connect(self.dataChanged.emit)
         self.dip_combo.fieldChanged.connect(self.dataChanged.emit)
         self.strike_combo.fieldChanged.connect(self.dataChanged.emit)
