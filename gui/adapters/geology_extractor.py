@@ -155,9 +155,22 @@ class GeologyExtractor:
         da: QgsDistanceArea,
         line_start: QgsPointXY,
     ) -> tuple[list[tuple[float, float]], list[tuple[float, QgsPointXY, float]]]:
-        """Densify the line and sample elevations from the raster."""
+        """Densify the line and sample elevations from the raster.
+
+        The sampling interval is the raster pixel size expressed in the section
+        line CRS, and sample points are reprojected into the raster CRS when
+        they differ (on-the-fly reprojection).
+        """
+        line_crs = None
         try:
-            interval = raster_lyr.rasterUnitsPerPixelX()
+            line_crs = da.sourceCrs()
+        except (AttributeError, RuntimeError):
+            line_crs = None
+
+        to_raster = geometry.build_sampling_transform(line_crs, raster_lyr)
+        interval = geometry.resolve_sampling_interval(line_geom, raster_lyr, line_crs)
+
+        try:
             master_densified = geometry.densify_line_by_interval(line_geom, interval)
             grid_points = geometry.get_line_vertices(master_densified)
         except (AttributeError, ValueError, TypeError) as e:
@@ -172,7 +185,8 @@ class GeologyExtractor:
             if i > 0:
                 current_dist += da.measureLine(grid_points[i - 1], pt)
 
-            val, ok = raster_lyr.dataProvider().sample(pt, band_number)
+            sample_pt = to_raster.transform(pt) if to_raster else pt
+            val, ok = raster_lyr.dataProvider().sample(sample_pt, band_number)
             elev = val if ok else 0.0
 
             master_profile_data.append((current_dist, elev))

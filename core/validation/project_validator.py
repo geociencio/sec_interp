@@ -105,6 +105,29 @@ class ProjectValidator:
     # --- Compatibility Helpers / Legacy Proxies ---
 
     @classmethod
+    def crs_compatibility_warning(cls, params: ValidationParams) -> str:
+        """Return a CRS-mismatch warning for the configured layers, or ``""``.
+
+        Non-blocking: QGIS reprojects on the fly, but a mismatch can degrade
+        accuracy (and, for rasters, sampling intervals expressed in the wrong
+        CRS). The first valid configured layer is used as reference, so the DEM
+        (if present) leads the comparison.
+        """
+        from .layer_validator import validate_crs_compatibility
+
+        metadata = [
+            params.raster_layer,
+            params.line_layer,
+            params.outcrop_layer,
+            params.struct_layer,
+            params.collar_layer,
+            params.survey_layer,
+            params.interval_layer,
+        ]
+        is_compatible, message = validate_crs_compatibility([m for m in metadata if m is not None])
+        return "" if is_compatible else message
+
+    @classmethod
     def is_drillhole_complete(cls, params: ValidationParams) -> bool:
         """Check if required fields are filled if drillhole layers are selected."""
         if not params.collar_layer or not params.collar_id:

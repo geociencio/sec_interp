@@ -58,6 +58,28 @@ class TestRasterResolutionInCrs(BaseTestCase):
         self.assertIsNone(geometry.raster_resolution_in_crs(raster, target))
 
 
+class TestResolveSamplingInterval(BaseTestCase):
+    """Fallbacks keep the interval positive when the resolution is unusable."""
+
+    def test_uses_raster_resolution_when_available(self):
+        raster = MagicMock()
+        raster.rasterUnitsPerPixelX.return_value = 5.0
+
+        result = geometry.resolve_sampling_interval(MagicMock(), raster, None)
+
+        self.assertEqual(result, 5.0)
+
+    def test_falls_back_to_geometry_length(self):
+        raster = MagicMock()
+        raster.rasterUnitsPerPixelX.return_value = 0.0
+        line = MagicMock()
+        line.length.return_value = 10_000.0
+
+        result = geometry.resolve_sampling_interval(line, raster, None)
+
+        self.assertAlmostEqual(result, 2.0)
+
+
 class TestBuildSamplingTransform(BaseTestCase):
     """Sampling points must be reprojected when line and raster CRSs differ."""
 

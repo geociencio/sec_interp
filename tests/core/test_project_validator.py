@@ -57,6 +57,30 @@ class TestProjectValidator(BaseTestCase):
         self.assertEqual(len(warnings), 1)
         self.assertIn("cannot be negative", warnings[0])
 
+    def test_crs_compatibility_warning(self):
+        """Mismatched CRSs warn; matching CRSs stay silent."""
+        same = ValidationParams(
+            raster_layer=LayerMetadata(
+                name="DEM", is_valid=True, kind=KIND_RASTER, crs_authid="EPSG:3857"
+            ),
+            line_layer=LayerMetadata(
+                name="Line", is_valid=True, kind=KIND_VECTOR, crs_authid="EPSG:3857"
+            ),
+        )
+        self.assertEqual(ProjectValidator.crs_compatibility_warning(same), "")
+
+        mismatch = ValidationParams(
+            raster_layer=LayerMetadata(
+                name="DEM", is_valid=True, kind=KIND_RASTER, crs_authid="EPSG:4326"
+            ),
+            line_layer=LayerMetadata(
+                name="Line", is_valid=True, kind=KIND_VECTOR, crs_authid="EPSG:3857"
+            ),
+        )
+        warning = ProjectValidator.crs_compatibility_warning(mismatch)
+        self.assertIn("CRS mismatch", warning)
+        self.assertIn("EPSG:3857", warning)
+
     @patch("qgis.core.QgsProject.instance")
     def test_validate_preview_requirements(self, mock_project):
         """Test minimal requirements for preview."""

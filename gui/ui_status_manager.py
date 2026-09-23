@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from qgis.core import Qgis
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 # Generic traffic-light styles: no dependency on theme icon names or Qt style.
 _STATUS_OK_STYLE = "background-color: #2e7d32; border-radius: 8px;"
 _STATUS_ERROR_STYLE = "background-color: #c62828; border-radius: 8px;"
+_STATUS_WARNING_STYLE = "background-color: #f9a825; border-radius: 8px;"
 
 
 class UIStatusManager:
@@ -27,15 +29,30 @@ class UIStatusManager:
         self.update_raster_status()
         self.update_section_status()
 
-    def _apply_status(self, label: Any, ok: bool, ok_tooltip: str, error_tooltip: str) -> None:
+    def _apply_status(
+        self,
+        label: Any,
+        ok: bool,
+        ok_tooltip: str,
+        error_tooltip: str,
+        warning_tooltip: str = "",
+    ) -> None:
         """Paint a status indicator as a colored dot.
 
         Uses a stylesheet dot (``background-color`` + ``border-radius``) so the
         state is always visible regardless of the active QGIS theme or Qt style.
+        A non-empty ``warning_tooltip`` paints amber (valid but degraded).
         """
         label.clear()
-        label.setStyleSheet(_STATUS_OK_STYLE if ok else _STATUS_ERROR_STYLE)
-        label.setToolTip(ok_tooltip if ok else error_tooltip)
+        if not ok:
+            label.setStyleSheet(_STATUS_ERROR_STYLE)
+            label.setToolTip(error_tooltip)
+        elif warning_tooltip:
+            label.setStyleSheet(_STATUS_WARNING_STYLE)
+            label.setToolTip(warning_tooltip)
+        else:
+            label.setStyleSheet(_STATUS_OK_STYLE)
+            label.setToolTip(ok_tooltip)
 
     def update_all(self) -> None:
         """Update all visual status components."""
@@ -44,6 +61,25 @@ class UIStatusManager:
         self.update_preview_checkbox_states()
         self.update_raster_status()
         self.update_section_status()
+        self._announce_crs_mismatch()
+
+    def _announce_crs_mismatch(self) -> None:
+        """Warn once per distinct CRS-mismatch message.
+
+        ``update_all`` runs on many signals, so the message is only pushed when
+        the warning text actually changes (including clearing it).
+        """
+        warning = self.dialog.input_manager.get_crs_warning()
+        if warning == getattr(self, "_last_crs_warning", None):
+            return
+        self._last_crs_warning = warning
+        if warning:
+            self.dialog.push_message(
+                self.dialog.tr("CRS mismatch"),
+                warning,
+                level=Qgis.MessageLevel.Warning,
+                duration=10,
+            )
 
     def update_page_states(self) -> None:
         """Enable dependent pages only when DEM and Section are valid.
@@ -140,14 +176,16 @@ class UIStatusManager:
             return False
 
     def update_raster_status(self) -> None:
-        """Update raster layer status icon."""
+        """Update raster layer status icon (amber on CRS mismatch)."""
         im = self.dialog.input_manager
         ok = im.is_section_valid("dem")
+        warning = im.get_crs_warning() if ok else ""
         self._apply_status(
             self.dialog.page_dem.lbl_raster_status,
             ok,
             self.dialog.tr("Raster layer selected"),
             im.get_section_error("dem"),
+            warning_tooltip=warning,
         )
 
     def update_section_status(self) -> None:

@@ -28,6 +28,7 @@ def _mock_dialog() -> MagicMock:
     dialog.nav_struct = MockQListWidgetItem()
     dialog.nav_drillhole = MockQListWidgetItem()
     dialog.input_manager = MagicMock()
+    dialog.input_manager.get_crs_warning.return_value = ""
     dialog.preview_manager = MagicMock()
     return dialog
 
@@ -238,6 +239,48 @@ class TestStatusIndicatorFallback(BaseTestCase):
         label.setStyleSheet.assert_called_with(
             "background-color: #2e7d32; border-radius: 8px;"
         )
+
+
+class TestCrsMismatchWarning(BaseTestCase):
+    """CRS mismatch paints an amber DEM dot and warns only once."""
+
+    def test_raster_status_is_amber_on_crs_mismatch(self) -> None:
+        dialog = _mock_dialog()
+        dialog.input_manager.is_section_valid.return_value = True
+        dialog.input_manager.get_crs_warning.return_value = "⚠ CRS mismatch detected!"
+        manager = UIStatusManager(dialog)
+
+        manager.update_raster_status()
+
+        label = dialog.page_dem.lbl_raster_status
+        label.setStyleSheet.assert_called_with(
+            "background-color: #f9a825; border-radius: 8px;"
+        )
+        label.setToolTip.assert_called_with("⚠ CRS mismatch detected!")
+
+    def test_announce_crs_mismatch_only_once(self) -> None:
+        dialog = _mock_dialog()
+        dialog.input_manager.get_crs_warning.return_value = "⚠ CRS mismatch detected!"
+        manager = UIStatusManager(dialog)
+
+        manager._announce_crs_mismatch()
+        manager._announce_crs_mismatch()
+
+        dialog.push_message.assert_called_once()
+        self.assertEqual(dialog.push_message.call_args.args[0], "CRS mismatch")
+
+    def test_reannounce_when_warning_changes(self) -> None:
+        dialog = _mock_dialog()
+        manager = UIStatusManager(dialog)
+
+        dialog.input_manager.get_crs_warning.return_value = "A"
+        manager._announce_crs_mismatch()
+        dialog.input_manager.get_crs_warning.return_value = ""
+        manager._announce_crs_mismatch()
+        dialog.input_manager.get_crs_warning.return_value = "B"
+        manager._announce_crs_mismatch()
+
+        self.assertEqual(dialog.push_message.call_count, 2)
 
 
 class TestAssemblePreviewParams(BaseTestCase):

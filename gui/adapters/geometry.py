@@ -162,6 +162,34 @@ def _fallback_interval(geometry: QgsGeometry) -> float | None:
     return length / _DEFAULT_MAX_SAMPLES
 
 
+def resolve_sampling_interval(
+    geometry: QgsGeometry,
+    raster_layer: QgsRasterLayer,
+    line_crs: QgsCoordinateReferenceSystem | None,
+) -> float:
+    """Resolve a safe sampling interval for a raster profile.
+
+    Prefers the DEM pixel size expressed in the line's CRS. Falls back to a
+    length-derived interval when the resolution cannot be resolved, and always
+    returns a strictly positive value.
+
+    Args:
+        geometry: The section line geometry (in ``line_crs`` units).
+        raster_layer: The DEM/raster layer.
+        line_crs: CRS of the section line (``None`` if unknown).
+
+    Returns:
+        A positive sampling interval in ``line_crs`` units.
+
+    """
+    interval = raster_resolution_in_crs(raster_layer, line_crs)
+    if interval is None or interval <= 0:
+        interval = _fallback_interval(geometry)
+    if interval is None or interval <= 0:
+        interval = 1.0
+    return interval
+
+
 def extract_all_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
     """Extract all vertices from any QGIS geometry type."""
     if not geometry or geometry.isNull():
@@ -311,11 +339,7 @@ def sample_elevation_along_line(
     to_raster = build_sampling_transform(line_crs, raster_layer)
 
     if interval is None or interval <= 0:
-        interval = raster_resolution_in_crs(raster_layer, line_crs)
-    if interval is None or interval <= 0:
-        interval = _fallback_interval(geometry)
-    if interval is None or interval <= 0:
-        interval = 1.0
+        interval = resolve_sampling_interval(geometry, raster_layer, line_crs)
 
     try:
         densified_geom = densify_line_by_interval(geometry, interval)

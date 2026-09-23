@@ -173,6 +173,10 @@ class InputManager:
 
     # --- Validation ---
 
+    def get_crs_warning(self) -> str:
+        """Return a CRS-mismatch warning for the configured layers, or ``""``."""
+        return ProjectValidator.crs_compatibility_warning(self.get_validation_params())
+
     def validate_inputs(self) -> tuple[bool, str]:
         """Validate all inputs via core ProjectValidator."""
         params = self.get_validation_params()
