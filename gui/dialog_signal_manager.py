@@ -165,23 +165,16 @@ class SignalManager:
 
     def _disconnect_explicit_page_signals(self) -> None:
         """Explicitly disconnect the signals reported as leaking by analyzer."""
-        self._disconnect_signals(
-            (
-                self.dialog.page_dem.raster_combo.layerChanged,
-                self.dialog.page_dem.band_combo.bandChanged,
-                self.dialog.page_section.line_combo.layerChanged,
-                self.dialog.page_section.dataChanged,
-                self.dialog.page_geology.dataChanged,
-                self.dialog.page_struct.dataChanged,
-                self.dialog.page_drillhole.dataChanged,
-                self.dialog.output_widget.fileChanged,
-            )
-        )
-
-    @staticmethod
-    def _disconnect_signals(signals: tuple) -> None:
-        """Disconnect every signal, ignoring signals with no connections."""
-        for signal in signals:
+        for signal in (
+            self.dialog.page_dem.raster_combo.layerChanged,
+            self.dialog.page_dem.band_combo.bandChanged,
+            self.dialog.page_section.line_combo.layerChanged,
+            self.dialog.page_section.dataChanged,
+            self.dialog.page_geology.dataChanged,
+            self.dialog.page_struct.dataChanged,
+            self.dialog.page_drillhole.dataChanged,
+            self.dialog.output_widget.fileChanged,
+        ):
             with contextlib.suppress(Exception):
                 signal.disconnect()
 
