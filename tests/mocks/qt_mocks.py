@@ -516,6 +516,10 @@ class MockQWidget(MockQObject):
         """Set maximum width."""
         pass
 
+    def setMinimumWidth(self, width):
+        """Set minimum width."""
+        pass
+
     def setPlaceholderText(self, text):
         """Set placeholder text."""
         pass

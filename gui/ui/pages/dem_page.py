@@ -79,11 +79,13 @@ class DemPage(BasePage):
         self.raster_combo.setAllowEmptyLayer(True)
         self.raster_combo.setToolTip(self.tr("Select the raster DEM layer"))
         self.raster_combo.setCurrentIndex(0)
-        self.group_layout.addWidget(self.raster_combo, 0, 1)
+        self.raster_combo.setMinimumWidth(220)
+        # Span the value columns so layer names are readable.
+        self.group_layout.addWidget(self.raster_combo, 0, 1, 1, 3)
 
         self.lbl_raster_status = QLabel()
         self.lbl_raster_status.setFixedSize(16, 16)
-        self.group_layout.addWidget(self.lbl_raster_status, 0, 2)
+        self.group_layout.addWidget(self.lbl_raster_status, 0, 4)
 
     def _setup_band_and_resolution(self) -> None:
         """Set up band and resolution display widgets."""
@@ -273,7 +275,7 @@ class DemPage(BasePage):
             self.res_edit.setText(f"{res_val:.2f}")
         except (ValueError, TypeError):
             self.res_edit.setText(str(res))
-        self.units_edit.setText(QgsUnitTypes.toString(units))
+        self.units_edit.setText(QgsUnitTypes.toAbbreviatedString(units))
 
         # Auto-calculate scale estimate (simplified)
         if units == QgsUnitTypes.DistanceUnit.Meters:
