@@ -111,8 +111,9 @@ mini-mapa y cómo encajan. Niveles: Tier A/C 400–500 líneas, Tier B 300–400
 hubs 150–260.
 
 > [!tip] Documentos de estructura
-> Ver [[project_structure]] (árbol) y [[project_structure_table]] (vista tabular por
-> profundidad) para el mapa completo del plugin.
+> Ver [[project_structure]] (árbol), [[project_structure_table]] (vista tabular por
+> profundidad) y [[project_structure_links]] (mapa archivo → nota) para el mapa
+> completo del plugin.
 
 ---
 

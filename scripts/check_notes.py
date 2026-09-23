@@ -42,6 +42,7 @@ SKIP_STEMS = {
     "PLUGIN_REPORT_AND_COMPARISON_EN",
     "project_structure",
     "project_structure_table",
+    "project_structure_links",
     # Phase 4 hand-written layer hub notes (navigation, not generator outputs).
     # NOTE: layer_notification_manager / layer_resolver / layer_validator are
     # real file notes and must NOT be added here.

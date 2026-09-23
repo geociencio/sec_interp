@@ -110,8 +110,9 @@ Each substantive note follows the v2 template (`_template.md`):
 fit. Sizes: Tier A/C 400–500 lines, Tier B 300–400, hubs 150–260.
 
 > [!tip] Structure documents
-> See [[project_structure]] (tree) and [[project_structure_table]] (tabular
-> depth view) for the full plugin map.
+> See [[project_structure]] (tree), [[project_structure_table]] (tabular
+> depth view) and [[project_structure_links]] (file → note map) for the
+> full plugin map.
 
 ---
 
