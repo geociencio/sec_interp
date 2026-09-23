@@ -27,11 +27,18 @@
   etiquetado, sampler CRS-aware (geología/estructuras/collares), fix de combos
   estructurales. Suite verde (unittest 666), smoke QGIS 4 OK. Ver `.agent/next_steps.md`.
 
+### Also completed this session (2026-09-23, DEM/Section v3.9.0)
+
+- [x] **Fases 1.5 + 1.6 + 2 + 3** completadas (`2a14767b..6d342189`): resolver
+  central de la sección, stats de banda del DEM, modo de color topo, stats
+  perfil-vs-DEM. Suite verde, analyzer 0 issues, smoke QGIS 4 OK. Ver
+  `.agent/next_steps.md`.
+
 ### Resume Point
 
-Bóveda v2 completa ✅. DEM/Section: **Fase 0 y Fase 1 ✅** → siguiente **Fase 1.5**
-(resolutor sección) → **Fase 2** (color topo) → **Fase 3** (stats perfil-vs-DEM).
-Alternativa: **Goal 1.1** (symbology preview) o **1.5** (tests proyección cartesiana).
+Bóveda v2 completa ✅. Plan **DEM/Section v3.9.0 completo** ✅ (Fases 0,1,1.5,1.6,2,3).
+Siguiente: **selector multi-línea** (infra lista), **Goal 1.1** (symbology preview)
+o **Goal 1.5** (tests proyección), o preparar **release v3.9.0**.
 
 ### Non-blocking Documented Debt
 

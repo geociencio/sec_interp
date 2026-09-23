@@ -16,6 +16,25 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-23'
+    category: TESTING
+    topic: writing a "new" test file can silently overwrite an existing one
+    lesson: I created tests/gui/test_section_page.py with the Write tool to add
+      style tests, unaware the file already existed, so its validation tests were
+      lost. The drop only surfaced because the discovered test count barely moved.
+    action: Before creating any test/module file, verify the path does not exist
+      (ls/glob) and, when it does, read it and merge/extend instead of writing;
+      after adding tests, sanity-check that the suite count increased as expected.
+  - date: '2026-09-23'
+    category: ARCHITECTURE
+    topic: profile statistics must deduplicate by raster cell, not by Z
+    lesson: Densifying the section at the DEM resolution repeats samples within
+      the same pixel; aggregating them biases min/max/mean. Also, the section mean
+      legitimately differs from the raster's global band mean (a section covers a
+      swath, not the whole DEM).
+    action: Deduplicate consecutive samples by pixel cell (floor((x-xmin)/res))
+      before aggregating; report the section stats as such, and do not expect them
+      to match the DEM band statistics.
+  - date: '2026-09-23'
     category: TECHNICAL
     topic: cross-CRS raster sampling must reproject and bound densification
     lesson: Sampling a DEM from section-line coordinates without honoring CRS

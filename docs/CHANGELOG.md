@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Topographic profile color mode**: choose **Gradient** (with a color ramp, e.g. *Spectral* or *Terrain*) or **Simple** (a single color) for the profile from the Section Line page. The change only affects the preview/export styling, never the source layer.
+- **Profile-vs-DEM statistics**: the Section Line page now shows the section's **Minimum**, **Maximum**, **Mean** elevation and the number of samples at the DEM resolution, refreshed when the line, DEM or band changes.
 - **DEM page — band statistics**: the DEM/Raster page now shows read-only **Minimum**, **Maximum**, **Mean** and **NoData** for the selected band, computed with a bounded sample size so large or remote rasters do not block the UI.
 - **DEM / Section — CRS safety checks**: SecInterp now warns when the section line, DEM and data layers use different coordinate reference systems (amber status) and **blocks** preview/export when a layer's declared CRS contradicts its coordinates (e.g. geographic data declared as projected), explaining how to fix it with *Assign Projection*. Sampling across CRS now reprojects correctly for topography, geology, structures and drillhole collars.
 - **Adaptive Vertical Exaggeration**: the DEM page now has an `Auto` toggle (default on) that computes the vertical exaggeration automatically from the profile aspect ratio and structural density (clamped `0.5×–20×`), with the manual spin preserved as an override. A read-only value is shown next to the toggle and in the results panel (`Vertical exaggeration: 2.6× (auto)`).

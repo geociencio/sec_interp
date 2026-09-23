@@ -101,7 +101,7 @@ session_init: success
 context_sync: complete
 active_task: [task_name]
 current_metrics:
-  tests: 715
+  tests: 745
   quality_score: X
   cc_gate: PASS|FAIL
   i18n_gate: PASS|FAIL

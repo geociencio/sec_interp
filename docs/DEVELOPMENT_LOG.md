@@ -1,3 +1,13 @@
+## [2026-09-23] Session: DEM/Section v3.9.0 Phases (1.5, 1.6, 2, 3)
+- **Achievement**: Completed the v3.9.0 DEM/Section plan — band statistics on the DEM page, a central section-feature resolver (prep multi-line), topographic profile color mode (gradient/single) and profile-vs-DEM statistics. 6 commits (`2a14767b..6d342189`).
+- **Changes**:
+    - **Fase 1.5**: `resolve_section_feature/geometry/start_point` in `gui/adapters/geometry.py`; migrated the 8 extractor/preview sites with `feature_id=None`; threaded `section_feature_id` through `PreviewParams`/hasher/`ValidationParams`/`SectionPage`/`InputManager`; mocks honor `fid`/`limit`.
+    - **Fase 1.6**: read-only DEM band Min/Max/Mean/NoData (bounded sample, NaN-safe); wider raster combo + abbreviated units.
+    - **Fase 2**: "Profile Style" (Gradient/Simple + `QgsColorRampButton`/`QgsColorButton`) persisted and plumbed to `TopoRenderer` (single → `QgsSingleSymbolRenderer`; gradient ramp with `Spectral→RdYlGn` fallback).
+    - **Fase 3**: `ProfileRasterStats` + `profile_raster_statistics` (dedupe per pixel cell); "DEM Profile" group on the Section page fed by an injected DEM provider.
+- **Quality**: 696/696 tests OK · `ruff`/format clean · analyzer **0 issues** · smoke QGIS 4 PASS.
+- **Maintenance**: [session_2026-09-23_dem_section_v390_phases.md](maintenance/session_2026-09-23_dem_section_v390_phases.md)
+
 ## [2026-09-23] Session: CRS Sampling Hardening + Structure/Section UX Fixes
 - **Achievement**: Fixed a machine-freezing failure when sampling a geographic DEM (EPSG:4326, misleadingly named `..._3857.tif`) with a projected section line under on-the-fly reprojection — the densify interval was taken from the raster pixel size and applied as line map units. Also fixed silent zero elevations for structures/collars across CRSs, added a blocking mislabelled-CRS heuristic, and fixed structural field combos. 6 commits (`baf11d8c..eb9ffa20`).
 - **Changes**:
