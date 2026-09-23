@@ -16,6 +16,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsDistanceArea,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
     QgsProject,
@@ -374,11 +376,70 @@ def sample_elevation_along_line(
     return points
 
 
+def resolve_section_feature(
+    line_lyr: QgsVectorLayer | None,
+    feature_id: int | None = None,
+) -> QgsFeature | None:
+    """Return the section feature to use (first by default, or ``feature_id``).
+
+    This is the single resolution point for the section line, so every extractor
+    picks the same feature. ``None`` returns the first feature; a fid filters by
+    it. Defensive: an invalid layer or a missing feature returns ``None``.
+    """
+    if not line_lyr or not line_lyr.isValid():
+        return None
+    try:
+        request = QgsFeatureRequest()
+        if feature_id is not None:
+            request.setFilterFid(int(feature_id))
+        else:
+            request.setLimit(1)
+        return next(line_lyr.getFeatures(request), None)
+    except (AttributeError, TypeError, ValueError, RuntimeError, StopIteration):
+        return None
+
+
+def resolve_section_geometry(
+    line_lyr: QgsVectorLayer | None,
+    feature_id: int | None = None,
+) -> QgsGeometry | None:
+    """Return the section feature geometry, or ``None`` when unavailable."""
+    feature = resolve_section_feature(line_lyr, feature_id)
+    if feature is None:
+        return None
+    try:
+        geometry = feature.geometry()
+    except (AttributeError, RuntimeError):
+        return None
+    if geometry is None or geometry.isNull():
+        return None
+    return geometry
+
+
+def section_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
+    """Return the first vertex of a line geometry (start of the section)."""
+    if not geometry or geometry.isNull():
+        return QgsPointXY(0.0, 0.0)
+    try:
+        if geometry.isMultipart():
+            parts = geometry.asMultiPolyline()
+            if parts and parts[0]:
+                return parts[0][0]
+        else:
+            polyline = geometry.asPolyline()
+            if polyline:
+                return polyline[0]
+    except (AttributeError, RuntimeError):
+        pass
+    return QgsPointXY(0.0, 0.0)
+
+
 def prepare_profile_context(
     line_lyr: QgsVectorLayer,
+    feature_id: int | None = None,
 ) -> tuple[QgsGeometry, QgsPointXY, QgsDistanceArea]:
     """Prepare a common context for profile calculation operations."""
-    line_feat = next(line_lyr.getFeatures(), None)
+    line_feat = resolve_section_feature(line_lyr, feature_id)
     if not line_feat:
         raise GeometryError("Line layer has no features", {"layer": line_lyr.name()})
 
@@ -392,22 +453,14 @@ def prepare_profile_context(
     except ValueError as e:
         raise GeometryError(str(e), {"layer": line_lyr.name()}) from e
 
-    if line_geom.isMultipart():
-        line_start = line_geom.asMultiPolyline()[0][0]
-    else:
-        polyline = line_geom.asPolyline()
-        line_start = polyline[0] if polyline else QgsPointXY(0, 0)
-
+    line_start = section_line_start_point(line_geom)
     da = create_distance_area(line_lyr.crs())
     return line_geom, line_start, da
 
 
-def line_length(line_lyr: QgsVectorLayer) -> float | None:
-    """Return the length of the first feature's geometry in a line layer."""
-    line_feat = next(line_lyr.getFeatures(), None)
-    if not line_feat:
-        return None
-    line_geom = line_feat.geometry()
-    if not line_geom or line_geom.isNull():
+def line_length(line_lyr: QgsVectorLayer, feature_id: int | None = None) -> float | None:
+    """Return the length of the section feature's geometry in a line layer."""
+    line_geom = resolve_section_geometry(line_lyr, feature_id)
+    if line_geom is None:
         return None
     return line_geom.length()

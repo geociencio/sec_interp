@@ -163,8 +163,10 @@ class TestDialogPreviewManager(BaseTestCase):
         # Mock resolve_layer and feature geometry
         with patch("sec_interp.gui.dialog_preview_manager.resolve_layer") as mock_resolve:
             mock_layer = MagicMock()
+            mock_layer.isValid.return_value = True
             mock_feat = MagicMock()
             mock_feat.geometry().asWkt.return_value = "LINESTRING(0 0, 10 10)"
+            mock_feat.geometry().isNull.return_value = False
             mock_layer.getFeatures.return_value = iter([mock_feat])
             mock_resolve.return_value = mock_layer
 

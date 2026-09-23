@@ -73,11 +73,16 @@ class SectionPage(BasePage):
         )
         self.group_layout.addWidget(self.buffer_spin, 1, 1)
 
+        # Wired for the future multi-line selector; the first feature is used
+        # while ``None`` (no widget yet).
+        self.section_feature_id: int | None = None
+
     def get_data(self) -> dict[str, Any]:
         """Get section configuration."""
         return {
             "crossline_layer": self.line_combo.currentLayer(),
             "buffer_distance": self.buffer_spin.value(),
+            "section_feature_id": self.section_feature_id,
         }
 
     def dump(self) -> dict[str, Any]:
@@ -85,6 +90,7 @@ class SectionPage(BasePage):
         return {
             "section_layer": self.line_combo.currentLayer(),
             "buffer_dist": self.buffer_spin.value(),
+            "section_feature_id": self.section_feature_id,
         }
 
     def load(self, data: dict[str, Any]) -> None:
@@ -94,11 +100,14 @@ class SectionPage(BasePage):
         buffer_dist = data.get("buffer_dist")
         if buffer_dist is not None:
             self.buffer_spin.setValue(float(buffer_dist))
+        if "section_feature_id" in data:
+            self.section_feature_id = data.get("section_feature_id")
 
     def reset(self) -> None:
         """Reset section inputs to defaults."""
         self.line_combo.setLayer(None)
         self.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
+        self.section_feature_id = None
 
     def validate(self) -> tuple[bool, str]:
         """Validate page settings.
@@ -120,7 +129,7 @@ class SectionPage(BasePage):
         if self._uses_geographic_crs(layer):
             return False, self.tr("Section line must use a projected CRS (metric units)")
 
-        vertex_count, length = extract_section_line_metrics(layer)
+        vertex_count, length = extract_section_line_metrics(layer, self.section_feature_id)
         if vertex_count is None:
             return False, self.tr("Section line layer has no readable line geometry")
         if vertex_count != SECTION_LINE_VERTEX_COUNT:

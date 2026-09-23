@@ -45,6 +45,7 @@ class GeologyExtractor:
         outcrop_lyr: QgsVectorLayer,
         outcrop_name_field: str,
         band_number: int = 1,
+        feature_id: int | None = None,
     ) -> GeologyContext:
         """Extract all geology data into a detached :class:`GeologyContext`.
 
@@ -54,6 +55,7 @@ class GeologyExtractor:
             outcrop_lyr: The geological outcrop vector layer.
             outcrop_name_field: Attribute field name for unit names.
             band_number: Raster band to use for elevation sampling.
+            feature_id: Section feature id (first feature when ``None``).
 
         Returns:
             A fully-detached :class:`GeologyContext`.
@@ -61,7 +63,7 @@ class GeologyExtractor:
         """
         self._validate_inputs(line_lyr, raster_lyr, outcrop_lyr, outcrop_name_field, band_number)
 
-        line_geom, line_start = self._extract_line_info(line_lyr)
+        line_geom, line_start = self._extract_line_info(line_lyr, feature_id)
         crs = line_lyr.crs()
         da = geometry.create_distance_area(crs)
 
@@ -128,9 +130,11 @@ class GeologyExtractor:
                     self.tr("Field '{0}' not found in outcrop layer.").format(outcrop_name_field)
                 )
 
-    def _extract_line_info(self, line_lyr: QgsVectorLayer) -> tuple[QgsGeometry, QgsPointXY]:
-        """Extract geometry and start point from the line layer."""
-        line_feat = next(line_lyr.getFeatures(), None)
+    def _extract_line_info(
+        self, line_lyr: QgsVectorLayer, feature_id: int | None = None
+    ) -> tuple[QgsGeometry, QgsPointXY]:
+        """Extract geometry and start point from the section line layer."""
+        line_feat = geometry.resolve_section_feature(line_lyr, feature_id)
         if not line_feat:
             raise DataMissingError(
                 self.tr("Line layer has no features"), {"layer": line_lyr.name()}
@@ -140,12 +144,7 @@ class GeologyExtractor:
         if not line_geom or line_geom.isNull():
             raise GeometryError(self.tr("Line geometry is not valid"), {"layer": line_lyr.name()})
 
-        if line_geom.isMultipart():
-            line_start = line_geom.asMultiPolyline()[0][0]
-        else:
-            line_start = line_geom.asPolyline()[0]
-
-        return line_geom, line_start
+        return line_geom, geometry.section_line_start_point(line_geom)
 
     def _generate_master_profile(
         self,

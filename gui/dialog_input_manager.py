@@ -101,6 +101,7 @@ class InputManager:
             "vertexag": dem["vertexag"],
             "crossline_layer": sect["crossline_layer"],
             "buffer_distance": sect["buffer_distance"],
+            "section_feature_id": sect.get("section_feature_id"),
             "outcrop_layer": geol["outcrop_layer"],
             "outcrop_name_field": geol["outcrop_name_field"],
             "structural_layer": stru["structural_layer"],
@@ -136,7 +137,10 @@ class InputManager:
         stru = self.pages.structure.get_data()
         dh = self.pages.drillhole.get_data()
 
-        line_vertex_count, line_length = extract_section_line_metrics(sect["crossline_layer"])
+        section_feature_id = sect.get("section_feature_id")
+        line_vertex_count, line_length = extract_section_line_metrics(
+            sect["crossline_layer"], section_feature_id
+        )
 
         return ValidationParams(
             raster_layer=resolve_layer_metadata(dem["raster_layer"]),
@@ -144,6 +148,7 @@ class InputManager:
             line_layer=resolve_layer_metadata(sect["crossline_layer"]),
             line_vertex_count=line_vertex_count,
             line_length=line_length,
+            section_feature_id=section_feature_id,
             output_path=self.output_widget.filePath(),
             scale=dem["scale"],
             vert_exag=dem["vertexag"],

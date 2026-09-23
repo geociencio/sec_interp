@@ -53,6 +53,7 @@ class StructureExtractor:
         line_lyr: QgsVectorLayer,
         struct_lyr: QgsVectorLayer,
         buffer_m: float,
+        feature_id: int | None = None,
     ) -> SectionContext | None:
         """Extract the section line geometry and structures within the buffer.
 
@@ -60,13 +61,14 @@ class StructureExtractor:
             line_lyr: The cross-section line vector layer.
             struct_lyr: The structural measurements vector layer.
             buffer_m: Buffer distance (in line-layer units).
+            feature_id: Section feature id (first feature when ``None``).
 
         Returns:
             A :class:`SectionContext` of primitives, or None if the line layer
             has no valid geometry.
 
         """
-        line_geom = self._read_line_geometry(line_lyr)
+        line_geom = self._read_line_geometry(line_lyr, feature_id)
         if line_geom is None:
             return None
 
@@ -213,16 +215,11 @@ class StructureExtractor:
             pass
         return 0.0
 
-    def _read_line_geometry(self, line_lyr: QgsVectorLayer) -> QgsGeometry | None:
-        """Read and validate the first feature geometry of the line layer."""
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
-            return None
-
-        line_geom = line_feat.geometry()
-        if not line_geom or line_geom.isNull():
-            return None
-        return line_geom
+    def _read_line_geometry(
+        self, line_lyr: QgsVectorLayer, feature_id: int | None = None
+    ) -> QgsGeometry | None:
+        """Read and validate the section line geometry."""
+        return geometry.resolve_section_geometry(line_lyr, feature_id)
 
     def _extract_line_points(self, geometry: QgsGeometry) -> list[tuple[float, float]]:
         """Extract ``(x, y)`` tuples from a single/multi-part line geometry."""

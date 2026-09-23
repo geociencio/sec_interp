@@ -32,6 +32,7 @@ def assemble_preview_params(
         line_layer=values.get("crossline_layer"),
         band_num=values.get("selected_band", 1),
         buffer_dist=values.get("buffer_distance", 100.0),
+        section_feature_id=values.get("section_feature_id"),
         outcrop_layer=values.get("outcrop_layer"),
         outcrop_name_field=values.get("outcrop_name_field"),
         struct_layer=values.get("structural_layer"),
@@ -103,6 +104,7 @@ class PreviewParamHasher:
         # Core Settings
         hash_parts.append(str(params.band_num))
         hash_parts.append(str(params.buffer_dist))
+        hash_parts.append(str(params.section_feature_id))
 
         # Structure Settings
         hash_parts.append(str(params.dip_field))

@@ -28,6 +28,7 @@ from sec_interp.core.services.vertical_exaggeration_service import (
     VerticalExaggerationService,
 )
 from sec_interp.core.utils.i18n import TranslatableMixin
+from sec_interp.gui.adapters.geometry import resolve_section_geometry
 from sec_interp.gui.adapters.layer_resolver import resolve_layer
 from sec_interp.gui.preview_callbacks_mixin import PreviewCallbacksMixin
 from sec_interp.gui.preview_render_mixin import PreviewRenderMixin
@@ -230,8 +231,10 @@ class PreviewManager(TranslatableMixin, PreviewCallbacksMixin, PreviewRenderMixi
         """Clear interpretations if the section geometry has changed."""
         old_geo_params = getattr(self, "_last_geo_params", None)
         line_lyr = resolve_layer(params.line_layer)
-        line_feat = next(line_lyr.getFeatures(), None) if line_lyr else None
-        line_geom = line_feat.geometry().asWkt() if line_feat else None
+        section_geom = resolve_section_geometry(
+            line_lyr, getattr(params, "section_feature_id", None)
+        )
+        line_geom = section_geom.asWkt() if section_geom else None
 
         new_geo_params = (
             params.line_layer,

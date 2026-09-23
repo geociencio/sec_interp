@@ -82,6 +82,24 @@ class MockQgsFeatureRequest:
         """Set filter FIDs."""
         return self
 
+    def setFilterFid(self, fid):
+        """Set a single filter FID."""
+        self._filter_fid = fid
+        return self
+
+    def filterFid(self):
+        """Get the single filter FID (or -1 when unset)."""
+        return getattr(self, "_filter_fid", -1)
+
+    def setLimit(self, limit):
+        """Set the maximum number of features to return."""
+        self._limit = limit
+        return self
+
+    def limit(self):
+        """Get the feature limit (or -1 when unset)."""
+        return getattr(self, "_limit", -1)
+
     def setFilterExpression(self, expr):
         """Set filter expression."""
         return self

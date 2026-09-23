@@ -22,22 +22,25 @@ class ProfileExtractor:
         """Translate a message using QCoreApplication."""
         return QCoreApplication.translate("ProfileExtractor", message)  # type: ignore[no-any-return]
 
-    def calculate_lod_interval(self, line_lyr: QgsVectorLayer, canvas_width: int) -> float | None:
+    def calculate_lod_interval(
+        self,
+        line_lyr: QgsVectorLayer,
+        canvas_width: int,
+        feature_id: int | None = None,
+    ) -> float | None:
         """Compute the LOD sampling interval from the section line length.
 
         Args:
             line_lyr: The cross-section line layer.
             canvas_width: Current width of the preview canvas in pixels.
+            feature_id: Section feature id (first feature when ``None``).
 
         Returns:
             The sampling interval, or None if the line length is unavailable.
 
         """
-        line_feat = next(line_lyr.getFeatures(), None)
-        if not line_feat:
-            return None
-        line_geom = line_feat.geometry()
-        if not line_geom or line_geom.isNull():
+        line_geom = geometry.resolve_section_geometry(line_lyr, feature_id)
+        if line_geom is None:
             return None
 
         line_len = line_geom.length()
@@ -50,6 +53,7 @@ class ProfileExtractor:
         raster_lyr: QgsRasterLayer,
         band_number: int = 1,
         interval: float | None = None,
+        feature_id: int | None = None,
     ) -> ProfileData:
         """Sample elevation along a section line into a detached profile.
 
@@ -58,6 +62,7 @@ class ProfileExtractor:
             raster_lyr: The DEM/raster layer for elevation.
             band_number: Raster band to sample (default: 1).
             interval: Optional sampling interval. If None, uses raster resolution.
+            feature_id: Section feature id (first feature when ``None``).
 
         Returns:
             A list of ``(distance, elevation)`` tuples representing the profile.
@@ -67,7 +72,7 @@ class ProfileExtractor:
             GeometryError: If the line geometry is invalid.
 
         """
-        line_feat = next(line_lyr.getFeatures(), None)
+        line_feat = geometry.resolve_section_feature(line_lyr, feature_id)
         if not line_feat:
             raise DataMissingError(
                 self.tr("Line layer has no features"), {"layer": line_lyr.name()}

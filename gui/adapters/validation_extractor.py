@@ -10,7 +10,6 @@ from __future__ import annotations
 from typing import Any
 
 from qgis.core import (
-    QgsFeatureRequest,
     QgsMapLayer,
     QgsProject,
     QgsRasterLayer,
@@ -31,7 +30,7 @@ from sec_interp.core.validation.layer_metadata import (
 )
 from sec_interp.logger_config import get_logger
 
-from .geometry import extract_all_vertices
+from .geometry import extract_all_vertices, resolve_section_feature
 
 logger = get_logger(__name__)
 
@@ -148,8 +147,10 @@ def _is_geographic(crs: Any) -> bool | None:
         return None
 
 
-def extract_section_line_metrics(layer_ref: Any) -> tuple[int | None, float | None]:
-    """Return ``(vertex_count, length)`` of the first feature of a line layer.
+def extract_section_line_metrics(
+    layer_ref: Any, feature_id: int | None = None
+) -> tuple[int | None, float | None]:
+    """Return ``(vertex_count, length)`` of the section feature.
 
     Best-effort and defensive (Extract phase): reads the section line geometry
     once so the core 2-point invariant can be validated with primitives.
@@ -158,6 +159,7 @@ def extract_section_line_metrics(layer_ref: Any) -> tuple[int | None, float | No
 
     Args:
         layer_ref: A layer object, ID, or name.
+        feature_id: Section feature id (first feature when ``None``).
 
     Returns:
         Tuple of (vertex count, planar length). Both None when unavailable.
@@ -167,8 +169,7 @@ def extract_section_line_metrics(layer_ref: Any) -> tuple[int | None, float | No
         layer = _resolve_layer(layer_ref)
         if layer is None or not layer.isValid():
             return None, None
-        request = QgsFeatureRequest().setLimit(1)
-        feature = next(layer.getFeatures(request), None)
+        feature = resolve_section_feature(layer, feature_id)
         if feature is None:
             return None, None
         geometry = feature.geometry()
@@ -231,7 +232,10 @@ def build_validation_params(params: Any) -> Any:
     """
     from sec_interp.core.validation.project_validator import ValidationParams
 
-    line_vertex_count, line_length = extract_section_line_metrics(params.line_layer)
+    section_feature_id = getattr(params, "section_feature_id", None)
+    line_vertex_count, line_length = extract_section_line_metrics(
+        params.line_layer, section_feature_id
+    )
 
     return ValidationParams(
         raster_layer=resolve_layer_metadata(params.raster_layer),
@@ -239,6 +243,7 @@ def build_validation_params(params: Any) -> Any:
         line_layer=resolve_layer_metadata(params.line_layer),
         line_vertex_count=line_vertex_count,
         line_length=line_length,
+        section_feature_id=section_feature_id,
         buffer_dist=float(params.buffer_dist),
         outcrop_layer=resolve_layer_metadata(params.outcrop_layer),
         outcrop_field=params.outcrop_name_field,

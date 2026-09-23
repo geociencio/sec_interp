@@ -23,6 +23,7 @@ class PreviewParams:
         line_layer: Resolved section line layer object.
         band_num: Raster band number to use for elevation.
         buffer_dist: Search buffer for projecting data onto the section.
+        section_feature_id: Section feature id to use (first feature when None).
         outcrop_layer: Optional resolved geological outcrop layer object.
         outcrop_name_field: Field name for geological unit names.
         struct_layer: Optional resolved structural measurements layer object.
@@ -56,6 +57,7 @@ class PreviewParams:
     line_layer: Any
     band_num: int
     buffer_dist: float = 100.0
+    section_feature_id: int | None = None
 
     # Geology params
     outcrop_layer: Any | None = None

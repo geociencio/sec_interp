@@ -25,6 +25,7 @@ class ValidationParams:
     line_layer: LayerMetadata | None = None
     line_vertex_count: int | None = None
     line_length: float | None = None
+    section_feature_id: int | None = None
     output_path: str = ""
     scale: float = 1.0
     vert_exag: float = 1.0

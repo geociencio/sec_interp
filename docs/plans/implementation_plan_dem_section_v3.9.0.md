@@ -128,7 +128,8 @@ bloqueado; suite verde. (Pendiente: smoke manual en QGIS 4.)
 
 ## Fase 1.5 — Resolutor central de la línea de sección (prep multi-línea)
 
-**Status**: 📝 PLAN (incremental, **sin cambio de comportamiento**)
+**Status**: ✅ IMPLEMENTADO 2026-09-23 (rama `feature/dem-section-v3.9.0`; Bloque A + B + C;
+10 tests nuevos en `tests/gui/test_section_resolver.py`; suite 681 OK).
 **Objetivo**: un único punto de resolución de la feature de sección, parametrizable por
 `feature_id`, usado por los 8 sitios actuales con `feature_id=None` (primera feature).
 Prepara el selector multi-línea y elimina duplicación (`line_start`, lectura de la 1ª feature).

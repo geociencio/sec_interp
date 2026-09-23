@@ -49,8 +49,24 @@ class MockQgsMapLayer(MockQObject):
             # If return_value was changed from its default MagicMock instance to something else, use it.
             if not isinstance(rv, MagicMock):
                 return rv
-            # Otherwise use our internal features list
-            return iter(self._features)
+            # Honor a single FID filter and a limit; ignore rect/expression so the
+            # spatial-index test keeps seeing every feature.
+            features = list(self._features)
+            request = args[0] if args else kwargs.get("request")
+            if request is not None:
+                try:
+                    fid = request.filterFid()
+                except (AttributeError, TypeError):
+                    fid = -1
+                if fid is not None and fid != -1:
+                    features = [f for f in features if f.id() == fid]
+                try:
+                    limit = request.limit()
+                except (AttributeError, TypeError):
+                    limit = -1
+                if isinstance(limit, int) and limit > 0:
+                    features = features[:limit]
+            return iter(features)
 
         self.getFeatures.side_effect = _get_features_cooperative
 
