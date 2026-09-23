@@ -168,6 +168,8 @@ class SignalManager:
         with contextlib.suppress(Exception):
             self.dialog.page_dem.raster_combo.layerChanged.disconnect()
         with contextlib.suppress(Exception):
+            self.dialog.page_dem.band_combo.bandChanged.disconnect()
+        with contextlib.suppress(Exception):
             self.dialog.page_section.line_combo.layerChanged.disconnect()
         with contextlib.suppress(Exception):
             self.dialog.page_section.dataChanged.disconnect()
@@ -321,6 +323,13 @@ class SignalManager:
             self.state_manager.update_button_state
         )
         self.dialog.page_dem.auto_ve_check.toggled.connect(self.state_manager.update_button_state)
+        # Profile-vs-DEM statistics on the Section page
+        self.dialog.page_dem.raster_combo.layerChanged.connect(
+            self.dialog.page_section.update_dem_stats
+        )
+        self.dialog.page_dem.band_combo.bandChanged.connect(
+            self.dialog.page_section.update_dem_stats
+        )
 
         # Section page
         self.dialog.page_section.line_combo.layerChanged.connect(

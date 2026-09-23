@@ -155,6 +155,10 @@ class MockQgsMapLayer(MockQObject):
         """Get raster units per pixel X."""
         return 1.0
 
+    def rasterUnitsPerPixelY(self):
+        """Get raster units per pixel Y."""
+        return self.rasterUnitsPerPixelX()
+
     def source(self):
         """Get the layer source."""
         return "mock_source"

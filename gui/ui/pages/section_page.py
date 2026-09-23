@@ -19,14 +19,23 @@ from qgis.PyQt.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QRadioButton,
 )
 
 from sec_interp.core.validation.project_validators import SECTION_LINE_VERTEX_COUNT
+from sec_interp.gui.adapters.geometry import (
+    create_distance_area,
+    profile_raster_statistics,
+    resolve_section_geometry,
+)
 from sec_interp.gui.adapters.validation_extractor import extract_section_line_metrics
 from sec_interp.gui.main_dialog_config import DialogDefaults
+from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage, set_combo_layer
+
+logger = get_logger(__name__)
 
 
 class SectionPage(BasePage):
@@ -91,6 +100,7 @@ class SectionPage(BasePage):
         self.section_feature_id: int | None = None
 
         self._setup_profile_style()
+        self._setup_dem_profile()
 
     def _setup_profile_style(self) -> None:
         """Set up the topographic profile color mode controls."""
@@ -130,6 +140,89 @@ class SectionPage(BasePage):
         self.ramp_button.setVisible(not single)
         self.color_button.setVisible(single)
         self.dataChanged.emit()
+
+    def _setup_dem_profile(self) -> None:
+        """Set up the read-only perfil-vs-DEM statistics group."""
+        self.dem_stats_group = QGroupBox(self.tr("DEM Profile"))
+        layout = QGridLayout(self.dem_stats_group)
+
+        self.min_edit = self._stats_edit("Minimum elevation of the section over the DEM")
+        self.max_edit = self._stats_edit("Maximum elevation of the section over the DEM")
+        self.mean_edit = self._stats_edit("Mean elevation of the section over the DEM")
+        self.samples_edit = self._stats_edit("Number of samples at the DEM resolution")
+
+        layout.addWidget(QLabel(self.tr("Min")), 0, 0)
+        layout.addWidget(self.min_edit, 0, 1)
+        layout.addWidget(QLabel(self.tr("Max")), 0, 2)
+        layout.addWidget(self.max_edit, 0, 3)
+        layout.addWidget(QLabel(self.tr("Mean")), 1, 0)
+        layout.addWidget(self.mean_edit, 1, 1)
+        layout.addWidget(QLabel(self.tr("Samples")), 1, 2)
+        layout.addWidget(self.samples_edit, 1, 3)
+
+        count = self.main_layout.count()
+        self.main_layout.insertWidget(count - 1, self.dem_stats_group)
+
+    def _stats_edit(self, tooltip: str) -> QLineEdit:
+        """Create a read-only line edit for a statistic value."""
+        edit = QLineEdit()
+        edit.setReadOnly(True)
+        edit.setToolTip(self.tr(tooltip))
+        return edit
+
+    def set_dem_provider(self, provider: Any) -> None:
+        """Set the callable returning ``(raster_layer, band_number)`` for stats.
+
+        Injected by the dialog so the Section page can read the DEM selection
+        without importing the DEM page (avoids page-to-page coupling).
+        """
+        self._dem_provider = provider
+
+    def _dem_selection(self) -> tuple[Any, int]:
+        """Return the DEM layer and band from the injected provider."""
+        provider = getattr(self, "_dem_provider", None)
+        if not callable(provider):
+            return None, 1
+        try:
+            raster, band = provider()
+        except (TypeError, ValueError):
+            return None, 1
+        return raster, band if isinstance(band, int) and band >= 1 else 1
+
+    def update_dem_stats(self) -> None:
+        """Refresh the read-only perfil-vs-DEM statistics."""
+        raster, band = self._dem_selection()
+        line = self.line_combo.currentLayer()
+        if not raster or not raster.isValid() or not line:
+            self._clear_dem_stats()
+            return
+
+        line_geom = resolve_section_geometry(line, self.section_feature_id)
+        if line_geom is None:
+            self._clear_dem_stats()
+            return
+
+        try:
+            stats = profile_raster_statistics(
+                line_geom, raster, band, create_distance_area(line.crs())
+            )
+        except (AttributeError, TypeError, ValueError, RuntimeError):
+            logger.warning("Could not compute profile-vs-DEM statistics", exc_info=True)
+            stats = None
+
+        if stats is None:
+            self._clear_dem_stats()
+            return
+
+        self.min_edit.setText(f"{stats.minimum:.2f}")
+        self.max_edit.setText(f"{stats.maximum:.2f}")
+        self.mean_edit.setText(f"{stats.mean:.2f}")
+        self.samples_edit.setText(f"{stats.count} @ {stats.resolution:.2f}")
+
+    def _clear_dem_stats(self) -> None:
+        """Blank the statistics fields (no raster, line or samples)."""
+        for edit in (self.min_edit, self.max_edit, self.mean_edit, self.samples_edit):
+            edit.setText("")
 
     def _color_mode(self) -> str:
         """Return the active color mode key (``gradient`` or ``single``)."""
@@ -236,11 +329,13 @@ class SectionPage(BasePage):
         self.radio_single.toggled.connect(self._on_color_mode_changed)
         self.ramp_button.colorRampChanged.connect(self.dataChanged.emit)
         self.color_button.colorChanged.connect(self.dataChanged.emit)
+        self.line_combo.layerChanged.connect(self.update_dem_stats)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         for signal, slot in (
             (self.line_combo.layerChanged, None),
+            (self.line_combo.layerChanged, self.update_dem_stats),
             (self.radio_gradient.toggled, self._on_color_mode_changed),
             (self.radio_single.toggled, self._on_color_mode_changed),
             (self.ramp_button.colorRampChanged, self.dataChanged.emit),

@@ -213,6 +213,11 @@ fallback sin crash; round-trip dump/load; suite verde.
 
 ## Fase 3 — Stats perfil-vs-DEM (solo lectura)
 
+**Status**: ✅ IMPLEMENTADO 2026-09-23 (rama `feature/dem-section-v3.9.0`;
+`profile_raster_statistics` con dedupe por celda + `ProfileRasterStats`; grupo "DEM Profile"
+en `SectionPage` alimentado por `set_dem_provider` y refrescado en señales de línea/ráster/
+banda; 5 tests nuevos; suite 696 OK).
+
 **Archivos**: `section_page.py` (+ acceso al ráster vía `dialog`/`input_manager`, **sin**
 import page→page), `tests/gui/test_section_page.py` (ráster mockeado).
 

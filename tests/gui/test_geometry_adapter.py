@@ -4,7 +4,11 @@ from unittest.mock import MagicMock, patch
 
 from sec_interp.gui.adapters import geometry
 from tests.base_test import BaseTestCase
-from tests.mocks.qgis_core import MockQgsCoordinateReferenceSystem
+from tests.mocks.qgis_core import (
+    MockQgsCoordinateReferenceSystem,
+    MockQgsRectangle,
+)
+from tests.mocks.qgis_geometry import MockQgsGeometry
 
 
 class _ScalingTransform:
@@ -129,3 +133,52 @@ class TestBuildSamplingTransform(BaseTestCase):
         raster.crs.return_value = MockQgsCoordinateReferenceSystem("EPSG:4326")
 
         self.assertIsNone(geometry.build_sampling_transform(None, raster))
+
+
+class TestProfileRasterStatistics(BaseTestCase):
+    """Perfil-vs-DEM statistics sample one value per pixel cell."""
+
+    def _raster(self, res=5.0, sample=None):
+        crs = MockQgsCoordinateReferenceSystem("EPSG:32614")
+        raster = MagicMock()
+        raster.isValid.return_value = True
+        raster.crs.return_value = crs
+        raster.extent.return_value = MockQgsRectangle(0.0, 0.0, 20.0, 1.0)
+        raster.rasterUnitsPerPixelX.return_value = res
+        raster.rasterUnitsPerPixelY.return_value = res
+        provider = MagicMock()
+        provider.sample.side_effect = sample or (lambda pt, band: (10.0, True))
+        raster.dataProvider.return_value = provider
+        return raster, crs
+
+    def _distance_area(self, crs):
+        da = MagicMock()
+        da.sourceCrs.return_value = crs
+        return da
+
+    def test_dedupes_samples_in_same_cell(self):
+        raster, crs = self._raster()
+        line = MockQgsGeometry.fromWkt("LINESTRING(0 0, 2 0)")
+
+        stats = geometry.profile_raster_statistics(
+            line, raster, 1, self._distance_area(crs)
+        )
+
+        self.assertIsNotNone(stats)
+        self.assertEqual(stats.count, 1)
+        self.assertEqual(stats.minimum, 10.0)
+        self.assertEqual(stats.resolution, 5.0)
+
+    def test_min_max_mean_over_unique_cells(self):
+        raster, crs = self._raster(sample=lambda pt, band: (pt.x(), True))
+        line = MockQgsGeometry.fromWkt("LINESTRING(0 0, 15 0)")
+
+        stats = geometry.profile_raster_statistics(
+            line, raster, 1, self._distance_area(crs)
+        )
+
+        self.assertIsNotNone(stats)
+        self.assertEqual(stats.count, 4)
+        self.assertEqual(stats.minimum, 0.0)
+        self.assertEqual(stats.maximum, 15.0)
+        self.assertEqual(stats.mean, 7.5)

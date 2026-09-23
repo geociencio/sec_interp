@@ -8,9 +8,12 @@ from unittest.mock import MagicMock, patch
 from qgis.PyQt.QtWidgets import QApplication
 
 from sec_interp.core.domain import PreviewParams
+from sec_interp.gui.adapters.geometry import ProfileRasterStats
 from sec_interp.gui.preview_param_hasher import PreviewParamHasher
 from sec_interp.gui.ui.pages.section_page import SectionPage
 from tests.base_test import BaseTestCase
+
+_SECTION_PAGE = "sec_interp.gui.ui.pages.section_page"
 
 _METRICS_PATH = "sec_interp.gui.ui.pages.section_page.extract_section_line_metrics"
 _STYLE_KEYS = {"color_mode", "ramp_name", "single_color_hex"}
@@ -187,6 +190,82 @@ class TestTopoStyleHash(BaseTestCase):
 
         self.assertNotEqual(h_base, h_gradient)
         self.assertNotEqual(h_gradient, h_single)
+
+
+class TestSectionPageDemStats(BaseTestCase):
+    """Read-only perfil-vs-DEM statistics via the injected DEM provider."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Ensure a QApplication exists for widget construction."""
+        super().setUpClass()
+        cls.app = QApplication.instance() or QApplication(sys.argv)
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.page = SectionPage()
+
+    def _with_line(self):
+        return (
+            patch.object(self.page.line_combo, "currentLayer", return_value=MagicMock()),
+            patch(f"{_SECTION_PAGE}.resolve_section_geometry", return_value=MagicMock()),
+            patch(f"{_SECTION_PAGE}.create_distance_area", return_value=MagicMock()),
+        )
+
+    def test_update_dem_stats_display(self) -> None:
+        """Stats are formatted into the fields."""
+        raster = MagicMock()
+        raster.isValid.return_value = True
+        self.page.set_dem_provider(lambda: (raster, 1))
+        stats = ProfileRasterStats(
+            count=430,
+            minimum=221.0,
+            maximum=593.0,
+            mean=433.4,
+            resolution=14.24,
+            length=6109.0,
+        )
+
+        line_patch, geom_patch, da_patch = self._with_line()
+        with (
+            line_patch,
+            geom_patch,
+            da_patch,
+            patch(f"{_SECTION_PAGE}.profile_raster_statistics", return_value=stats),
+        ):
+            self.page.update_dem_stats()
+
+        self.assertEqual(self.page.min_edit.text(), "221.00")
+        self.assertEqual(self.page.max_edit.text(), "593.00")
+        self.assertEqual(self.page.mean_edit.text(), "433.40")
+        self.assertEqual(self.page.samples_edit.text(), "430 @ 14.24")
+
+    def test_update_dem_stats_blanks_without_raster(self) -> None:
+        """No DEM selection blanks the fields."""
+        self.page.set_dem_provider(lambda: (None, 1))
+        self.page.min_edit.setText("stale")
+
+        self.page.update_dem_stats()
+
+        self.assertEqual(self.page.min_edit.text(), "")
+
+    def test_update_dem_stats_blanks_when_no_stats(self) -> None:
+        """Unusable sampling blanks the fields without raising."""
+        raster = MagicMock()
+        raster.isValid.return_value = True
+        self.page.set_dem_provider(lambda: (raster, 1))
+        self.page.mean_edit.setText("stale")
+
+        line_patch, geom_patch, da_patch = self._with_line()
+        with (
+            line_patch,
+            geom_patch,
+            da_patch,
+            patch(f"{_SECTION_PAGE}.profile_raster_statistics", return_value=None),
+        ):
+            self.page.update_dem_stats()
+
+        self.assertEqual(self.page.mean_edit.text(), "")
 
 
 if __name__ == "__main__":
