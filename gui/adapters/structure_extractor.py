@@ -144,6 +144,7 @@ class StructureExtractor:
         transform = self._sampling_transform(raster_lyr, line_lyr)
 
         def sampler(x: float, y: float) -> float:
+            """Sample the raster at a section-line coordinate."""
             return self._sample_at(raster_lyr, x, y, band_number, transform)
 
         return sampler
