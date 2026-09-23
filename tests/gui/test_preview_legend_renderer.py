@@ -41,13 +41,22 @@ class TestPreviewLegendRenderer(BaseTestCase):
         # Verify text was drawn (Topography, Structures, Unit A, Unit B)
         self.assertEqual(self.painter.drawText.call_count, 4)
 
+    def test_draw_legend_with_drillholes(self):
+        """Drillholes add a single labeled line item."""
+        rect = QRectF(0, 0, 500, 500)
+
+        PreviewLegendRenderer.draw_legend(self.painter, rect, {}, has_drillholes=True)
+
+        self.painter.save.assert_called_once()
+        self.assertEqual(self.painter.drawText.call_count, 1)
+
     def test_calculate_legend_size(self):
         """Test legend size calculation."""
         config = {"padding": 5, "item_height": 10, "symbol_size": 10}
         active_units = {"A": QColor(0, 0, 0)}
 
         size, max_w = PreviewLegendRenderer._calculate_legend_size(
-            self.painter, active_units, True, True, config
+            self.painter, active_units, True, True, False, config
         )
 
         # 3 items (Topo, Struct, A)

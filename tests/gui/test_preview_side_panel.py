@@ -16,6 +16,7 @@ def _renderer():
     return SimpleNamespace(
         has_topography=True,
         has_structures=True,
+        has_drillholes=True,
         legend_units=lambda: [
             ("UnitA", MagicMock(), False),
             ("UnitB", MagicMock(), True),
@@ -41,7 +42,7 @@ class TestPreviewSidePanel(BaseTestCase):
         self.panel.update_legend(_renderer(), visible=True)
 
         names = [row.unit_name for row in self.panel._legend_rows]
-        self.assertEqual(names, ["Topography", "Structures", "UnitA", "UnitB"])
+        self.assertEqual(names, ["Topography", "Structures", "Drillholes", "UnitA", "UnitB"])
         unit_rows = [r for r in self.panel._legend_rows if r.check is not None]
         self.assertEqual([r.unit_name for r in unit_rows], ["UnitA", "UnitB"])
         self.assertTrue(unit_rows[0].check.isChecked())  # UnitA visible
@@ -62,7 +63,7 @@ class TestPreviewSidePanel(BaseTestCase):
 
         self.panel.update_legend(_renderer(), visible=True)
 
-        self.assertEqual(len(self.panel._legend_rows), 4)
+        self.assertEqual(len(self.panel._legend_rows), 5)
         self.assertTrue(all(getattr(row, "_deleted", False) for row in first_rows))
 
     def test_visibility_toggle_emits(self) -> None:

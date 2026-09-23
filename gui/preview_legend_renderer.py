@@ -26,9 +26,10 @@ class PreviewLegendRenderer:
         active_units: dict[str, QColor],
         has_topography: bool = False,
         has_structures: bool = False,
+        has_drillholes: bool = False,
     ) -> None:
         """Draw legend on the given painter within the rect."""
-        if not active_units and not has_topography and not has_structures:
+        if not active_units and not has_topography and not has_structures and not has_drillholes:
             return
 
         # Configuration
@@ -44,7 +45,7 @@ class PreviewLegendRenderer:
         painter.setFont(QFont("Arial", 8))
 
         legend_size, max_text_width = PreviewLegendRenderer._calculate_legend_size(
-            painter, active_units, has_topography, has_structures, config
+            painter, active_units, has_topography, has_structures, has_drillholes, config
         )
 
         # Position: Top Right
@@ -81,6 +82,18 @@ class PreviewLegendRenderer:
             )
             current_y += config["item_height"]
 
+        if has_drillholes:
+            PreviewLegendRenderer._draw_line_item(
+                painter,
+                x,
+                current_y,
+                QCoreApplication.translate("PreviewLegendRenderer", "Drillholes"),
+                QColor(50, 50, 50),
+                max_text_width,
+                config,
+            )
+            current_y += config["item_height"]
+
         PreviewLegendRenderer._draw_geology_items(
             painter, x, current_y, active_units, max_text_width, config
         )
@@ -93,6 +106,7 @@ class PreviewLegendRenderer:
         active_units: dict[str, QColor],
         has_topo: bool,
         has_struct: bool,
+        has_drill: bool,
         config: dict[str, Any],
     ) -> tuple[QRectF, float]:
         """Calculate dimensions of the legend box."""
@@ -104,6 +118,8 @@ class PreviewLegendRenderer:
             items.append(QCoreApplication.translate("PreviewLegendRenderer", "Topography"))
         if has_struct:
             items.append(QCoreApplication.translate("PreviewLegendRenderer", "Structures"))
+        if has_drill:
+            items.append(QCoreApplication.translate("PreviewLegendRenderer", "Drillholes"))
         items.extend(active_units.keys())
 
         for item in items:

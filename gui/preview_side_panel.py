@@ -152,6 +152,8 @@ class PreviewSidePanel(QWidget):
             self._add_row(self.tr("Topography"), QColor(0, 102, 204), interactive=False)
         if getattr(renderer, "has_structures", False):
             self._add_row(self.tr("Structures"), QColor(204, 0, 0), interactive=False)
+        if getattr(renderer, "has_drillholes", False):
+            self._add_row(self.tr("Drillholes"), QColor(50, 50, 50), interactive=False)
 
         for name, color, hidden in self._unit_entries(renderer):
             self._add_row(name, color, hidden=hidden, interactive=True)
