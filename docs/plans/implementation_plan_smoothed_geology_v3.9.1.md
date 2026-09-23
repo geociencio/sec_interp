@@ -1,7 +1,9 @@
 # Implementation Plan: Geology on the Smoothed Profile (v3.9.1)
 
 **Phase**: v3.9.1 — follow-up to the smoothed topography profile (v3.9.0 extra)
-**Status**: 📝 PLAN — approved in principle (Opción A); pending implementation
+**Status**: ✅ IMPLEMENTADO 2026-09-23 (Opción A; `PreviewParams.smooth/smooth_window` +
+hash; perfil maestro de geología suavizado en `_generate_master_profile`; callers
+controller/orchestrator; Smooth invalida S2). Tests: extractor + hash + assemble.
 **Created**: 2026-09-23
 **Referencias**: `gui/adapters/geology_extractor.py` (`_generate_master_profile`),
 `core/services/geology_service.py` (`build_segments`),

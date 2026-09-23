@@ -27,6 +27,8 @@ class PreviewParams:
         color_mode: Topographic profile color mode ("gradient" or "single").
         ramp_name: Color ramp name used in gradient mode.
         single_color_hex: Hex color used in single-color mode.
+        smooth: Whether to smooth the topographic and geological profile.
+        smooth_window: Smoothing window in metres (when ``smooth`` is True).
         outcrop_layer: Optional resolved geological outcrop layer object.
         outcrop_name_field: Field name for geological unit names.
         struct_layer: Optional resolved structural measurements layer object.
@@ -66,6 +68,10 @@ class PreviewParams:
     color_mode: str = "gradient"
     ramp_name: str | None = None
     single_color_hex: str | None = None
+
+    # Profile smoothing
+    smooth: bool = False
+    smooth_window: int = 30
 
     # Geology params
     outcrop_layer: Any | None = None

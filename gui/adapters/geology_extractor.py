@@ -25,6 +25,7 @@ from sec_interp.core import utils as scu
 from sec_interp.core.domain import DomainGeometry
 from sec_interp.core.domain.task_inputs import GeologyContext, OutcropSegments
 from sec_interp.core.exceptions import DataMissingError, GeometryError, ValidationError
+from sec_interp.core.utils.sampling import smooth_profile_by_distance
 from sec_interp.gui.adapters import geometry
 from sec_interp.logger_config import get_logger
 
@@ -46,6 +47,7 @@ class GeologyExtractor:
         outcrop_name_field: str,
         band_number: int = 1,
         feature_id: int | None = None,
+        smoothing_window_m: float = 0.0,
     ) -> GeologyContext:
         """Extract all geology data into a detached :class:`GeologyContext`.
 
@@ -56,6 +58,8 @@ class GeologyExtractor:
             outcrop_name_field: Attribute field name for unit names.
             band_number: Raster band to use for elevation sampling.
             feature_id: Section feature id (first feature when ``None``).
+            smoothing_window_m: Smoothing window (m) applied to the master
+                profile so the geology follows the smoothed topography.
 
         Returns:
             A fully-detached :class:`GeologyContext`.
@@ -68,7 +72,7 @@ class GeologyExtractor:
         da = geometry.create_distance_area(crs)
 
         master_profile_data, master_grid_dists_raw = self._generate_master_profile(
-            line_geom, raster_lyr, band_number, da, line_start
+            line_geom, raster_lyr, band_number, da, line_start, smoothing_window_m
         )
         master_grid_dists = [(d, (pt.x(), pt.y()), e) for d, pt, e in master_grid_dists_raw]
 
@@ -153,12 +157,15 @@ class GeologyExtractor:
         band_number: int,
         da: QgsDistanceArea,
         line_start: QgsPointXY,
+        smoothing_window_m: float = 0.0,
     ) -> tuple[list[tuple[float, float]], list[tuple[float, QgsPointXY, float]]]:
         """Densify the line and sample elevations from the raster.
 
         The sampling interval is the raster pixel size expressed in the section
         line CRS, and sample points are reprojected into the raster CRS when
-        they differ (on-the-fly reprojection).
+        they differ (on-the-fly reprojection). When ``smoothing_window_m > 0``
+        the master profile is smoothed (moving average) so the geology segments
+        follow the smoothed topography.
         """
         line_crs = None
         try:
@@ -190,6 +197,14 @@ class GeologyExtractor:
 
             master_profile_data.append((current_dist, elev))
             master_grid_dists.append((current_dist, pt, elev))
+
+        if smoothing_window_m > 0:
+            smoothed = smooth_profile_by_distance(master_profile_data, smoothing_window_m)
+            master_profile_data = smoothed
+            master_grid_dists = [
+                (dist, pt, elev)
+                for (dist, pt, _old), (_d, elev) in zip(master_grid_dists, smoothed, strict=True)
+            ]
 
         return master_profile_data, master_grid_dists
 

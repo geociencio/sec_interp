@@ -77,6 +77,7 @@ class PreviewTaskOrchestrator:
             outcrop_lyr,
             params.outcrop_name_field,
             params.band_num,
+            smoothing_window_m=float(params.smooth_window) if params.smooth else 0.0,
         )
 
         self.geology_task = GeologyGenerationTask(

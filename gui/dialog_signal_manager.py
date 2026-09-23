@@ -288,16 +288,18 @@ class SignalManager:
             self.preview_manager.update_from_checkboxes
         )
 
-        # Preview settings (LOD, smoothing)
+        # Preview settings (LOD): re-render from cache
         widget = self.dialog.preview_widget
         for signal in (
             widget.spin_max_points.valueChanged,
             widget.chk_auto_lod.toggled,
             widget.chk_adaptive_sampling.toggled,
-            widget.chk_smooth.toggled,
-            widget.spin_smooth_window.valueChanged,
         ):
             signal.connect(self.preview_manager.update_from_checkboxes)
+
+        # Smoothing affects the geology geometry: invalidate the preview (S2)
+        widget.chk_smooth.toggled.connect(self.state_manager.update_button_state)
+        widget.spin_smooth_window.valueChanged.connect(self.state_manager.update_button_state)
 
     def _connect_page_signals(self) -> None:
         """Connect page-specific signals for state updates."""

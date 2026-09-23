@@ -333,4 +333,4 @@ Preview; el export de geología también sale suavizado).
 
 Detalle completo (archivos, tests, riesgos y alcance) en
 [`implementation_plan_smoothed_geology_v3.9.1.md`](implementation_plan_smoothed_geology_v3.9.1.md).
-Estado: 📝 PLAN (Opción A aprobada; pendiente de implementar).
+Estado: ✅ IMPLEMENTADO 2026-09-23.
