@@ -47,3 +47,4 @@ class LayerMetadata:
     band_count: int = 0
     feature_count: int = 0
     crs_authid: str | None = None
+    crs_is_geographic: bool | None = None

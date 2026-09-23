@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Any
 
 from qgis.core import (
+    QgsFeatureRequest,
     QgsMapLayer,
     QgsProject,
     QgsRasterLayer,
@@ -28,6 +29,8 @@ from sec_interp.core.validation.layer_metadata import (
     KIND_VECTOR,
     LayerMetadata,
 )
+
+from .geometry import extract_all_vertices
 
 _GEOMETRY_MAP = {
     QgsWkbTypes.GeometryType.PointGeometry: GEOMETRY_POINT,
@@ -83,6 +86,7 @@ def extract_vector_metadata(layer: QgsVectorLayer) -> LayerMetadata:
     crs = layer.crs()
     if crs.isValid():
         metadata.crs_authid = crs.authid()
+        metadata.crs_is_geographic = _is_geographic(crs)
 
     return metadata
 
@@ -101,8 +105,48 @@ def extract_raster_metadata(layer: QgsRasterLayer) -> LayerMetadata:
     crs = layer.crs()
     if crs.isValid():
         metadata.crs_authid = crs.authid()
+        metadata.crs_is_geographic = _is_geographic(crs)
 
     return metadata
+
+
+def _is_geographic(crs: Any) -> bool | None:
+    """Return whether a CRS is geographic, or None if it cannot be told."""
+    try:
+        return bool(crs.isGeographic())
+    except (AttributeError, TypeError):
+        return None
+
+
+def extract_section_line_metrics(layer_ref: Any) -> tuple[int | None, float | None]:
+    """Return ``(vertex_count, length)`` of the first feature of a line layer.
+
+    Best-effort and defensive (Extract phase): reads the section line geometry
+    once so the core 2-point invariant can be validated with primitives.
+    Returns ``(None, None)`` when the geometry cannot be read, so the core
+    rule is simply skipped rather than failing the whole validation.
+
+    Args:
+        layer_ref: A layer object, ID, or name.
+
+    Returns:
+        Tuple of (vertex count, planar length). Both None when unavailable.
+
+    """
+    try:
+        layer = _resolve_layer(layer_ref)
+        if layer is None or not layer.isValid():
+            return None, None
+        request = QgsFeatureRequest().setLimit(1)
+        feature = next(layer.getFeatures(request), None)
+        if feature is None:
+            return None, None
+        geometry = feature.geometry()
+        if geometry is None or geometry.isNull():
+            return None, None
+        return len(extract_all_vertices(geometry)), float(geometry.length())
+    except (AttributeError, TypeError, ValueError, RuntimeError, StopIteration):
+        return None, None
 
 
 def _resolve_layer(layer_ref: Any) -> QgsMapLayer | None:
@@ -147,10 +191,14 @@ def build_validation_params(params: Any) -> Any:
     """
     from sec_interp.core.validation.project_validator import ValidationParams
 
+    line_vertex_count, line_length = extract_section_line_metrics(params.line_layer)
+
     return ValidationParams(
         raster_layer=resolve_layer_metadata(params.raster_layer),
         band_number=params.band_num,
         line_layer=resolve_layer_metadata(params.line_layer),
+        line_vertex_count=line_vertex_count,
+        line_length=line_length,
         buffer_dist=float(params.buffer_dist),
         outcrop_layer=resolve_layer_metadata(params.outcrop_layer),
         outcrop_field=params.outcrop_name_field,

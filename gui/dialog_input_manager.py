@@ -13,7 +13,10 @@ from sec_interp.core.validation.project_validator import (
     ProjectValidator,
     ValidationParams,
 )
-from sec_interp.gui.adapters.validation_extractor import resolve_layer_metadata
+from sec_interp.gui.adapters.validation_extractor import (
+    extract_section_line_metrics,
+    resolve_layer_metadata,
+)
 
 from .dialog_dependencies import Pages
 
@@ -48,8 +51,14 @@ class InputManager:
                 "message": self.tr("Raster DEM layer is required"),
             },
             "section": {
-                "check": lambda p: bool(p.line_layer),
+                "check": lambda p: (
+                    bool(p.line_layer) and not ProjectValidator.section_geometry_error(p)
+                ),
                 "message": self.tr("Cross-section line layer is required"),
+                "error": lambda p: (
+                    ProjectValidator.section_geometry_error(p)
+                    or self.tr("Cross-section line layer is required")
+                ),
             },
             "output": {
                 "check": lambda p: bool(p.output_path),
@@ -127,10 +136,14 @@ class InputManager:
         stru = self.pages.structure.get_data()
         dh = self.pages.drillhole.get_data()
 
+        line_vertex_count, line_length = extract_section_line_metrics(sect["crossline_layer"])
+
         return ValidationParams(
             raster_layer=resolve_layer_metadata(dem["raster_layer"]),
             band_number=dem["selected_band"],
             line_layer=resolve_layer_metadata(sect["crossline_layer"]),
+            line_vertex_count=line_vertex_count,
+            line_length=line_length,
             output_path=self.output_widget.filePath(),
             scale=dem["scale"],
             vert_exag=dem["vertexag"],
@@ -189,7 +202,11 @@ class InputManager:
         """Get error message for a section."""
         if self.is_section_valid(section):
             return ""
-        return self.rules[section]["message"]
+        rule = self.rules[section]
+        error_fn = rule.get("error")
+        if error_fn is not None:
+            return error_fn(self.get_validation_params())
+        return rule["message"]
 
     def can_preview(self) -> bool:
         """Check if basic preview requirements are met."""

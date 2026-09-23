@@ -23,6 +23,8 @@ class ValidationParams:
     raster_layer: LayerMetadata | None = None
     band_number: int | None = None
     line_layer: LayerMetadata | None = None
+    line_vertex_count: int | None = None
+    line_length: float | None = None
     output_path: str = ""
     scale: float = 1.0
     vert_exag: float = 1.0
@@ -113,6 +115,17 @@ class ProjectValidator:
         context = ValidationContext()
         DrillholeValidator().validate(params, context)
         return not context.has_errors
+
+    @classmethod
+    def section_geometry_error(cls, params: ValidationParams) -> str:
+        """Return the section-line geometry error, or an empty string.
+
+        Shared by the core pipeline and the GUI gating (semaphore / preview
+        enablement) so both stay on the same rule.
+        """
+        from .project_validators import section_line_geometry_error
+
+        return section_line_geometry_error(params)
 
     @classmethod
     def is_dem_complete(cls, params: ValidationParams) -> bool:

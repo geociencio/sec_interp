@@ -10,6 +10,8 @@ from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QGridLayout, QLabel
 
+from sec_interp.core.validation.project_validators import SECTION_LINE_VERTEX_COUNT
+from sec_interp.gui.adapters.validation_extractor import extract_section_line_metrics
 from sec_interp.gui.main_dialog_config import DialogDefaults
 
 from .base_page import BasePage, set_combo_layer
@@ -101,17 +103,44 @@ class SectionPage(BasePage):
     def validate(self) -> tuple[bool, str]:
         """Validate page settings.
 
+        Enforces the simple 2-point section line invariant: the selected line
+        must be a valid line with exactly two vertices (start and end) in a
+        projected CRS.
+
         Returns:
             Tuple of (success, error message).
 
         """
-        if not self.line_combo.currentLayer():
+        layer = self.line_combo.currentLayer()
+        if not layer:
             return False, self.tr("Section line layer is required")
+        if not layer.isValid():
+            return False, self.tr("Section line layer is not valid")
+
+        if self._uses_geographic_crs(layer):
+            return False, self.tr("Section line must use a projected CRS (metric units)")
+
+        vertex_count, length = extract_section_line_metrics(layer)
+        if vertex_count is None:
+            return False, self.tr("Section line layer has no readable line geometry")
+        if vertex_count != SECTION_LINE_VERTEX_COUNT:
+            return False, self.tr("Section line must have exactly 2 vertices (start and end)")
+        if length is not None and length <= 0:
+            return False, self.tr("Section line has zero length")
         return True, ""
 
+    @staticmethod
+    def _uses_geographic_crs(layer: Any) -> bool:
+        """Return True when the layer's CRS is geographic (degrees)."""
+        try:
+            crs = layer.crs()
+            return bool(crs.isValid() and crs.isGeographic())
+        except (AttributeError, TypeError):
+            return False
+
     def is_complete(self) -> bool:
-        """Check if required fields are filled."""
-        return bool(self.line_combo.currentLayer())
+        """Check if the section line is a valid 2-point line."""
+        return self.validate()[0]
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""

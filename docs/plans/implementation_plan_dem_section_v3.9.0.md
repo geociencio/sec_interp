@@ -20,15 +20,17 @@ Tres mejoras encadenadas sobre las páginas DEM/Raster y Section Line:
 3. **Dedupe de muestras** del mismo píxel antes de agregar stats (los DEM públicos de
    30 m/15 m + el `ceil()` del densificado lo hacen frecuente).
 
-**Diferido explícito** (futuro): selector de feature si la capa trae varias líneas;
+**Diferido explícito** (futuro): selector **UI** de feature si la capa trae varias líneas
+(la infraestructura —resolutor + plomería— se implementa en **Fase 1.5**);
 remuestreo bilineal (hoy `sample()` es vecino más cercano → perfil escalonado aceptado).
 
 **Gating UI incluido**: etiquetas Mandatory en DEM/Section; páginas Geology/Structural/
 Drillholes deshabilitadas hasta DEM+Section; botones en 3 estados (S0 todo bloqueado,
 S1 solo Preview+OK, S2 resto tras preview vigente verificado por hash). Detalle en Fase 0.
 
-**Objetivo cuantitativo**: 6 call sites `next(getFeatures())` intactos (sin selector no hay
-plomería); 0 imports `qgis` nuevos en `core/`; `check_notes` y suite verdes.
+**Objetivo cuantitativo**: 8 sitios `next(getFeatures())` migrados al resolutor (Fase 1.5),
+con comportamiento idéntico (`feature_id=None`); 0 imports `qgis` nuevos en `core/`;
+`check_notes` y suite verdes.
 
 ---
 
@@ -97,6 +99,9 @@ cambio de inputs invalida S2 automáticamente; labels Mandatory visibles; suite 
 
 ## Fase 1 — Invariante 2 puntos (desbloquea el resto)
 
+**Status**: ✅ IMPLEMENTADO 2026-09-23 (rama `feature/dem-section-v3.9.0`; suite 627 OK,
+analyzer 0 issues, CC PASS, ruff/format limpios).
+
 **Archivos**: `gui/ui/pages/section_page.py`, `core/validation/project_validator.py`
 (+ `ValidationParams`/metadata que porte nº de vértices), `tests/gui/test_section_page.py` (nuevo),
 tests de `project_validator` en `tests/core/`.
@@ -108,8 +113,59 @@ tests de `project_validator` en `tests/core/`.
   escala solo tienen sentido proyectados).
 - Con 2 puntos, `calculate_line_azimuth` == azimut de toda la línea: definición única.
 
+**Implementación**:
+- `LayerMetadata.crs_is_geographic` (extractor GUI lo puebla vía `crs.isGeographic()`).
+- `ValidationParams.line_vertex_count` / `line_length` (primitivos), poblados por
+  `extract_section_line_metrics()` (adaptador Extract, `setLimit(1)`, defensivo → `None`).
+- `section_line_geometry_error()` en `project_validators.py` (SSoT de la regla), invocada
+  por `SectionValidator.validate` y expuesta como `ProjectValidator.section_geometry_error`;
+  la usa también la regla `"section"` de `InputManager` (check + mensaje dinámico).
+- `SectionPage.validate()` con mensajes explícitos; `is_complete()` delega en `validate()`.
+- Refactor CC: `_disconnect_vertical_exaggeration_signals()` en `dialog_signal_manager`.
+
 **Criterios**: línea 2-pt OK; 3-pt/multi/vacía rechazadas en page y core; punto rojo + preview
-bloqueado; suite verde.
+bloqueado; suite verde. (Pendiente: smoke manual en QGIS 4.)
+
+## Fase 1.5 — Resolutor central de la línea de sección (prep multi-línea)
+
+**Status**: 📝 PLAN (incremental, **sin cambio de comportamiento**)
+**Objetivo**: un único punto de resolución de la feature de sección, parametrizable por
+`feature_id`, usado por los 8 sitios actuales con `feature_id=None` (primera feature).
+Prepara el selector multi-línea y elimina duplicación (`line_start`, lectura de la 1ª feature).
+
+### Bloque A — Resolutor, migración y firmas
+
+1. `gui/adapters/geometry.py`: `resolve_section_feature(line_lyr, feature_id=None)`,
+   `resolve_section_geometry(line_lyr, feature_id=None)`, `section_line_start_point(geom)`.
+   `None` → `getFeatures(setLimit(1))`; fid → `getFeatures(setFilterFid(fid))`; defensivo.
+2. Migrar los 8 sitios a `feature_id=None` y `line_start` a `section_line_start_point`:
+   `profile_extractor:36,70` · `geometry:194,220` · `geology_extractor:133` ·
+   `structure_extractor:164` · `drillhole_extractor:158` · `dialog_preview_manager:233`.
+3. `extract_section_line_metrics(layer_ref, feature_id=None)` vía resolutor (mantiene el
+   `try/except` defensivo); actualizar `build_validation_params`,
+   `InputManager.get_validation_params`, `SectionPage.validate`.
+4. `feature_id=None` (trailing/keyword) en firmas públicas:
+   `ProfileExtractor.calculate_lod_interval` / `.extract_profile`,
+   `GeologyExtractor.extract_context`, `StructureExtractor.extract_section_and_structures`,
+   `DrillholeExtractor.extract_context`; y privados `_read_line_geometry`/`_extract_line_info`.
+   Callers (`controller`, `preview_service`, `preview_task_orchestrator`) siguen sin pasarlo.
+5. **Fidelidad de mocks** (lección `setDisabled`): `MockQgsFeatureRequest.setFilterFid/filterFid/
+   setLimit/limit`; `MockQgsVectorLayer.getFeatures` honra fid/limit e **ignora** rect/expresión
+   (para no romper el test de índice espacial); verificar `MockQgsFeature.id()`.
+
+### Bloque B — Cadena de datos lista (neutra en comportamiento)
+
+`section_feature_id` (primitivo, default `None`) en: `PreviewParams`, `assemble_preview_params`,
+`PreviewParamHasher.calculate_hash` (invalidación S2 al cambiar la selección), `ValidationParams`
++ `build_validation_params`, `SectionPage.get_data/dump/load/reset`, y
+`InputManager.get_all_values`/`get_validation_params`. El selector futuro solo aporta el widget
++ sus señales; el camino hasta los extractores queda cableado.
+
+### Tests / verificación
+
+`tests/gui/test_section_resolver.py` (default, fid elegido, fid inexistente, capa inválida,
+geometría nula, `section_line_start_point` simple/multipart, métricas con fid); suite completa;
+`ruff`/`format`; `qgis-analyzer --max-cc 10`; smoke manual QGIS 4 (comportamiento idéntico).
 
 ## Fase 2 — Modo de color del perfil (solo Present, sin core)
 
@@ -171,7 +227,7 @@ guiones sin ráster; suite verde.
 - **Mensaje 2-pt explícito**: `"La línea de sección debe tener exactamente 2 vértices
   (inicio y fin)"`.
 
-## Transversales (las 4 fases)
+## Transversales (las fases)
 
 - **i18n**: todo string visible con `self.tr()` (páginas) / `QCoreApplication.translate` (mixins).
 - **Señales**: toda conexión nueva con su `disconnect_signals` simétrico (`contextlib.suppress`).
@@ -189,12 +245,47 @@ guiones sin ráster; suite verde.
   spam de señales (el hash es barato; la validación ya corre en ese flujo);
   renombrar `lbl_*`/items del sidebar rompe `ui_status_manager` (nombres hardcodeados,
   documentado en bóveda) → usar refs guardadas, no índices.
-  `bandStatistics` bloqueante en rásteres remotos → solo banda actual, sin caché persistente;
-  `bandStatistics` bloqueante en rásteres remotos → solo banda actual, sin caché persistente;
-  `colorRampNames()` vacío en estilos mínimos → fallback actual.
 
 ## Fuera de alcance (registrado)
 
-- Selector de feature multi-línea (requiere migrar 6 `next(getFeatures())` a helper central).
+- Selector de feature multi-línea → ver **Deuda técnica** abajo.
 - Remuestreo bilineal / perfil suavizado.
 - Nº de clases del gradiente configurable; editor de estilos por unidad (hacia Goal 1.1).
+
+## Deuda técnica registrada — Selector de feature multi-línea
+
+> **Actualización 2026-09-23**: la parte **estructural** (puntos 1 y 2: resolutor central +
+> plomería de `section_feature_id`) pasa a la **Fase 1.5**. La deuda que permanece aquí es la
+> **cara al usuario**: selector UI, identidad estable entre sesiones, orientación/invertir,
+> elegibilidad y sub-keys de caché.
+
+**Qué**: permitir que la capa de sección tenga varias líneas y que el usuario elija cuál
+usar (hoy se toma siempre la primera feature). Dificultad **media-alta, ancha más que
+profunda**: el core casi no cambia; el 80% es GUI + consistencia.
+
+**Por qué es costoso**:
+
+1. ~~**No hay resolutor central**~~ → **resuelto en Fase 1.5** (`resolve_section_feature` en
+   `geometry.py`), que además evita el drift entre los sitios (p. ej. `buffer(..., 25)` vs
+   `DEFAULT_BUFFER_SEGMENTS = 8`).
+2. ~~**Plomería del dato**~~ → **resuelto en Fase 1.5 (Bloque B)**: `section_feature_id` ya
+   recorre `PreviewParams`/hasher/validación/`InputManager`; el selector solo añade el widget.
+3. **Identidad estable (mayor riesgo)** — `QgsFeature.id()` no es estable entre
+   ediciones/exportaciones. Fid solo para la sesión (fácil) o campo identificador estable +
+   fallback (requiere elegir un "campo etiqueta" → otro parámetro).
+4. **Orientación del perfil (inicio/fin)** — la distancia 0 se ancla al primer vértice
+   (`geometry.py:209`); con selección hay que fijar el orden y probablemente ofrecer invertir.
+   El invariante 2-pt de Fase 1 debe validar el feature **elegido**, no el primero.
+5. **Geometría/elegibilidad** — MultiLineString o features de N vértices; decidir si el
+   selector filtra candidatos a 2 puntos para no romper el invariante.
+6. **Caché** — invalidar `DataCache` por buckets y `LayerResolver` al cambiar la selección;
+   confirmar que los sub-keys de caché del controller incluyan la selección (si no,
+   reutilizaría topo/geol de otra línea).
+7. **UI/UX** — `QgsFeaturePickerWidget`/combo fid+campo etiqueta (selección desde capa),
+   pick en canvas (reusar `measure_tool`/`snapper`) o **dibujar la línea** (esta última evita
+   identidad de feature: elimina los puntos 3 y 5).
+
+**Enfoque recomendado**: Fase 1.5 aporta el resolutor + la plomería; después un selector por
+fid en sesión (sin persistencia entre sesiones) + filtrar candidatos a 2 puntos, y mapear a un
+campo estable en una fase posterior. Estimación restante: ~4-5 archivos GUI (widget + persistencia) +
+tests; 1 sesión.

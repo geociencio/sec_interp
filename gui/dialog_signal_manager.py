@@ -160,16 +160,13 @@ class SignalManager:
     def _disconnect_page_signals(self) -> None:
         """Disconnect page-specific signals with full tracking."""
         self._disconnect_explicit_page_signals()
+        self._disconnect_vertical_exaggeration_signals()
         self._disconnect_sequential_pages()
 
     def _disconnect_explicit_page_signals(self) -> None:
         """Explicitly disconnect the signals reported as leaking by analyzer."""
         with contextlib.suppress(Exception):
             self.dialog.page_dem.raster_combo.layerChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.page_dem.vertexag_spin.valueChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.page_dem.auto_ve_check.toggled.disconnect()
         with contextlib.suppress(Exception):
             self.dialog.page_section.line_combo.layerChanged.disconnect()
         with contextlib.suppress(Exception):
@@ -180,6 +177,13 @@ class SignalManager:
             self.dialog.page_drillhole.dataChanged.disconnect()
         with contextlib.suppress(Exception):
             self.dialog.output_widget.fileChanged.disconnect()
+
+    def _disconnect_vertical_exaggeration_signals(self) -> None:
+        """Disconnect the vertical exaggeration gating signals."""
+        with contextlib.suppress(Exception):
+            self.dialog.page_dem.vertexag_spin.valueChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.page_dem.auto_ve_check.toggled.disconnect()
 
     def _disconnect_sequential_pages(self) -> None:
         """Sequential cleanup for all managed components."""

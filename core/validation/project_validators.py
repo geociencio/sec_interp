@@ -24,6 +24,38 @@ if TYPE_CHECKING:
     from .project_validator import ValidationParams
     from .validation_helpers import ValidationContext
 
+SECTION_TWO_POINT_ERROR = "Section line must have exactly 2 vertices (start and end)"
+SECTION_GEOGRAPHIC_CRS_ERROR = "Section line must use a projected CRS (metric units)"
+SECTION_ZERO_LENGTH_ERROR = "Section line has zero length"
+SECTION_LINE_VERTEX_COUNT = 2
+
+
+def section_line_geometry_error(params: ValidationParams) -> str:
+    """Return the first section-line geometry error, or an empty string.
+
+    Encodes the mandatory 2-point invariant plus the projected-CRS and
+    non-zero-length constraints using only primitive parameters, so the
+    SectionValidator and the GUI gating can share one rule. Missing primitives
+    (``None``) skip their respective check.
+    """
+    metadata = params.line_layer
+    if metadata is None:
+        return ""
+
+    if metadata.crs_is_geographic:
+        return SECTION_GEOGRAPHIC_CRS_ERROR
+
+    if (
+        params.line_vertex_count is not None
+        and params.line_vertex_count != SECTION_LINE_VERTEX_COUNT
+    ):
+        return SECTION_TWO_POINT_ERROR
+
+    if params.line_length is not None and params.line_length <= 0:
+        return SECTION_ZERO_LENGTH_ERROR
+
+    return ""
+
 
 class SectionValidator(IValidator):
     """Validates section line requirements."""
@@ -46,6 +78,10 @@ class SectionValidator(IValidator):
         is_valid, error = validate_layer_has_features(metadata)
         if not is_valid:
             context.add_error(error, "line_layer")
+
+        geometry_error = section_line_geometry_error(params)
+        if geometry_error:
+            context.add_error(geometry_error, "line_layer")
 
 
 class DEMValidator(IValidator):
