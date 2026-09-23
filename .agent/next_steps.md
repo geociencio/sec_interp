@@ -52,4 +52,6 @@
 
 ## 🚀 How to Resume
 1. Run `/start-session`.
-2. Bóveda v2 completa ✅. Siguiente: **Goal 1.1** (symbology preview) o **1.5** (tests proyección).
+2. Implementar `docs/plans/implementation_plan_dem_section_v3.9.0.md` en build mode
+   (Fase 0 gating → Fase 1 → 2 → 3; decisión abierta #1: OK en S1 vs S2).
+   Después: Goal 1.1 (symbology preview) o 1.5 (tests proyección).

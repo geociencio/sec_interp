@@ -1,3 +1,8 @@
+## [2026-09-23] Session: DEM/Section Enhancement Planning (Plan Mode)
+- **Achievement**: Defined the DEM/Raster + Section Line scope (raster stats, 2-point simple-line invariant, profile-vs-DEM stats with same-pixel dedupe, selectable gradient/single topo color, Mandatory labels, S0/S1/S2 button gating, Geology/Structural/Drillholes page blocking) and wrote the phased plan `docs/plans/implementation_plan_dem_section_v3.9.0.md` (Fase 0→3, open decisions, LTR 3.44.14 compat matrix). No code changed; saved for next session (build mode).
+- **Quality**: `ruff` PASS · local suite 594 tests OK · planning only, no CHANGELOG entry (no user-visible changes).
+- **Maintenance**: [session_2026-09-23_dem_section_planning.md](maintenance/session_2026-09-23_dem_section_planning.md)
+
 ## [2026-09-23] Session: Code Walkthrough Vault v2 (Completion)
 - **Achievement**: Completed the bilingual v2 vault: enriched Core 49 + GUI 73 + Exporters/Plugin/Root 22, added 23 `layer_*` hubs, finalized the bilingual `Index.md` MOC, and added a vault-owned file-to-note map (`project_structure_links.md`, 178 files → 151 notes). 5 commits (`1d4af77d`, `d5e8a82b`, `b7d221f7`, `dab9d27e`, `26ada077`).
 - **Tooling**:
