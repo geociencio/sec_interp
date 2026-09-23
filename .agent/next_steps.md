@@ -101,8 +101,10 @@
 1. Run `/start-session`.
 2. `docs/plans/implementation_plan_dem_section_v3.9.0.md`: **completo** (Fase 0 ✅,
    1 ✅, 1.5 ✅, 1.6 ✅, 2 ✅, 3 ✅) + **perfil suavizado** ✅ (extra). Opciones:
-   - **Geología sobre el perfil suavizado (v3.9.1)** → plan aprobado (Opción A),
-     pendiente: `docs/plans/implementation_plan_smoothed_geology_v3.9.1.md`.
+   - **Geología sobre el perfil suavizado (v3.9.1)** → ✅ IMPLEMENTADO 2026-09-23.
+   - **Preview side panel — leyenda + interpretaciones + interacción por unidad
+     (v3.10.0)** → plan aprobado (L-A + L-B), pendiente:
+     `docs/plans/implementation_plan_preview_side_panel_legend_v3.10.0.md`.
    - **Selector multi-línea** (deuda; resolver + `section_feature_id` ya listos).
    - **Goal 1.1** (symbology/legend preview) o **Goal 1.5** (tests proyección).
    - Preparar **release v3.9.0/v3.9.1** (`/release-plugin`).
