@@ -369,6 +369,10 @@ class MockQWidget(MockQObject):
         """Set the widget parent."""
         self._parent = parent
 
+    def deleteLater(self):
+        """Schedule the widget for deletion."""
+        self._deleted = True
+
     def layout(self):
         """Get widget layout."""
         return self._layout
@@ -578,6 +582,10 @@ class MockQLayout(MockQObject):
 
     def insertWidget(self, index, widget):
         """Insert widget at index."""
+        pass
+
+    def removeWidget(self, widget):
+        """Remove a widget from the layout."""
         pass
 
     def addSpacing(self, spacing):

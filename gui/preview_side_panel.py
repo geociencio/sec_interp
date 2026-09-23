@@ -175,10 +175,15 @@ class PreviewSidePanel(QWidget):
         self._legend_rows.append(row)
 
     def _clear_legend_rows(self) -> None:
-        """Remove all legend rows."""
+        """Remove and destroy all legend rows.
+
+        ``deleteLater`` is required: merely reparenting to ``None`` turns a
+        previously visible widget into a top-level window (one orphan window
+        per row on every re-render).
+        """
         for row in self._legend_rows:
             self.legend_layout.removeWidget(row)
-            row.setParent(None)
+            row.deleteLater()
         self._legend_rows = []
 
     def set_legend_visible(self, visible: bool) -> None:

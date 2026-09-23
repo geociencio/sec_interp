@@ -55,6 +55,16 @@ class TestPreviewSidePanel(BaseTestCase):
         self.assertEqual(self.panel._legend_rows, [])
         set_visible.assert_called_with(False)
 
+    def test_rerender_destroys_previous_rows(self) -> None:
+        """Re-rendering replaces rows and destroys the old ones (no orphans)."""
+        self.panel.update_legend(_renderer(), visible=True)
+        first_rows = list(self.panel._legend_rows)
+
+        self.panel.update_legend(_renderer(), visible=True)
+
+        self.assertEqual(len(self.panel._legend_rows), 4)
+        self.assertTrue(all(getattr(row, "_deleted", False) for row in first_rows))
+
     def test_visibility_toggle_emits(self) -> None:
         """Toggling a unit row forwards the visibility change."""
         handler = MagicMock()
