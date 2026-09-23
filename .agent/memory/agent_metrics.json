@@ -16,7 +16,7 @@
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
         "avg_retries_per_session": 1.18,
-        "tests_ok": 745,
+        "tests_ok": 759,
         "tests_ok_note": "615 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
         "quality_score_latest": 53.5,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
@@ -33,7 +33,7 @@
         "issue_breakdown": {},
         "module_size_gate": "PASS",
         "large_modules": [],
-        "test_count": 745
+        "test_count": 759
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
