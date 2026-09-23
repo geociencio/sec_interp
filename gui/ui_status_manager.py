@@ -61,22 +61,33 @@ class UIStatusManager:
         self.update_preview_checkbox_states()
         self.update_raster_status()
         self.update_section_status()
-        self._announce_crs_mismatch()
+        self._announce_crs_warnings()
 
-    def _announce_crs_mismatch(self) -> None:
-        """Warn once per distinct CRS-mismatch message.
+    def _announce_crs_warnings(self) -> None:
+        """Announce once per distinct CRS message.
 
-        ``update_all`` runs on many signals, so the message is only pushed when
-        the warning text actually changes (including clearing it).
+        ``update_all`` runs on many signals, so a message is only pushed when
+        the text actually changes (including clearing it). A mislabelled CRS is
+        blocking (critical); a plain CRS mismatch is a warning.
         """
-        warning = self.dialog.input_manager.get_crs_warning()
-        if warning == getattr(self, "_last_crs_warning", None):
+        im = self.dialog.input_manager
+        plausibility = im.get_crs_plausibility_error()
+        mismatch = im.get_crs_warning()
+        signature = (plausibility, mismatch)
+        if signature == getattr(self, "_last_crs_signature", None):
             return
-        self._last_crs_warning = warning
-        if warning:
+        self._last_crs_signature = signature
+        if plausibility:
+            self.dialog.push_message(
+                self.dialog.tr("Possible CRS mislabel"),
+                plausibility,
+                level=Qgis.MessageLevel.Critical,
+                duration=10,
+            )
+        elif mismatch:
             self.dialog.push_message(
                 self.dialog.tr("CRS mismatch"),
-                warning,
+                mismatch,
                 level=Qgis.MessageLevel.Warning,
                 duration=10,
             )
@@ -157,6 +168,7 @@ class UIStatusManager:
         return (
             im.get_section_error("section")
             or im.get_section_error("dem")
+            or im.get_crs_plausibility_error()
             or self.dialog.tr("Complete the required inputs")
         )
 
@@ -176,9 +188,18 @@ class UIStatusManager:
             return False
 
     def update_raster_status(self) -> None:
-        """Update raster layer status icon (amber on CRS mismatch)."""
+        """Update raster layer status icon (red on mislabel, amber on mismatch)."""
         im = self.dialog.input_manager
         ok = im.is_section_valid("dem")
+        plausibility = im.get_crs_plausibility_error()
+        if plausibility:
+            self._apply_status(
+                self.dialog.page_dem.lbl_raster_status,
+                False,
+                self.dialog.tr("Raster layer selected"),
+                plausibility,
+            )
+            return
         warning = im.get_crs_warning() if ok else ""
         self._apply_status(
             self.dialog.page_dem.lbl_raster_status,

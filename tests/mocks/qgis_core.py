@@ -153,6 +153,10 @@ class MockQgsRectangle(MockQgsBase):
         """Get rectangle height."""
         return self._ymax - self._ymin
 
+    def isEmpty(self):
+        """Check whether the rectangle is empty (mirrors QgsRectangle)."""
+        return self._xmax < self._xmin or self._ymax < self._ymin
+
     def center(self):
         """Get the rectangle center as a point."""
         from .qgis_geometry import MockQgsPointXY

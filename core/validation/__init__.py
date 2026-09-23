@@ -2,6 +2,9 @@ from __future__ import annotations
 
 """Validation package for SecInterp plugin."""
 
+from .crs_plausibility import (
+    implausible_crs_reason,
+)
 from .field_validator import (
     validate_angle_range,
     validate_field_exists,
@@ -29,6 +32,7 @@ from .validation_helpers import validate_reasonable_ranges
 __all__ = [
     "ProjectValidator",
     "ValidationParams",
+    "implausible_crs_reason",
     "validate_angle_range",
     "validate_crs_compatibility",
     "validate_field_exists",

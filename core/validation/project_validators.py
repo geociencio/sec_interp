@@ -8,6 +8,7 @@ from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.core.validation.layer_metadata import GEOMETRY_LINE, KIND_RASTER
 
 from .base_validator import IValidator
+from .crs_plausibility import configured_layer_metadata, implausible_crs_reason
 from .layer_validator import (
     validate_layer_geometry,
     validate_layer_has_features,
@@ -106,6 +107,21 @@ class DEMValidator(IValidator):
             is_valid, error = validate_raster_band(metadata, params.band_number)
             if not is_valid:
                 context.add_error(error, "band_number")
+
+
+class CrsPlausibilityValidator(IValidator):
+    """Blocks when a layer's declared CRS contradicts its coordinate values.
+
+    This is a best-effort guard against mislabelled CRS (e.g. geographic data
+    declared as projected), which otherwise produces silently wrong profiles.
+    """
+
+    def validate(self, params: ValidationParams, context: ValidationContext) -> None:
+        """Add a hard error per layer whose extent looks inconsistent with its CRS."""
+        for metadata in configured_layer_metadata(params):
+            reason = implausible_crs_reason(metadata)
+            if reason:
+                context.add_error(reason)
 
 
 class GeologyValidator(IValidator):

@@ -81,6 +81,42 @@ class TestProjectValidator(BaseTestCase):
         self.assertIn("CRS mismatch", warning)
         self.assertIn("EPSG:3857", warning)
 
+    def test_crs_plausibility_error_blocks_mislabelled_layer(self):
+        """A degree-like extent declared as projected is reported as an error."""
+        params = ValidationParams(
+            raster_layer=LayerMetadata(
+                name="DEM",
+                is_valid=True,
+                kind=KIND_RASTER,
+                crs_is_geographic=False,
+                extent_xmin=-99.0,
+                extent_ymin=22.7,
+                extent_xmax=-98.99,
+                extent_ymax=23.0,
+            ),
+        )
+
+        error = ProjectValidator.crs_plausibility_error(params)
+
+        self.assertIn("DEM", error)
+
+    def test_crs_plausibility_error_silent_for_plausible_layer(self):
+        """Correctly labelled layers produce no error."""
+        params = ValidationParams(
+            raster_layer=LayerMetadata(
+                name="DEM",
+                is_valid=True,
+                kind=KIND_RASTER,
+                crs_is_geographic=True,
+                extent_xmin=-99.0,
+                extent_ymin=22.7,
+                extent_xmax=-98.99,
+                extent_ymax=23.0,
+            ),
+        )
+
+        self.assertEqual(ProjectValidator.crs_plausibility_error(params), "")
+
     @patch("qgis.core.QgsProject.instance")
     def test_validate_preview_requirements(self, mock_project):
         """Test minimal requirements for preview."""

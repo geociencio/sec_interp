@@ -91,6 +91,7 @@ def extract_vector_metadata(layer: QgsVectorLayer) -> LayerMetadata:
         metadata.crs_authid = crs.authid()
         metadata.crs_is_geographic = _is_geographic(crs)
 
+    _populate_extent(metadata, layer)
     return metadata
 
 
@@ -110,7 +111,33 @@ def extract_raster_metadata(layer: QgsRasterLayer) -> LayerMetadata:
         metadata.crs_authid = crs.authid()
         metadata.crs_is_geographic = _is_geographic(crs)
 
+    _populate_extent(metadata, layer)
+    try:
+        metadata.pixel_size_x = float(layer.rasterUnitsPerPixelX())
+    except (AttributeError, TypeError, ValueError, RuntimeError):
+        metadata.pixel_size_x = None
+
     return metadata
+
+
+def _populate_extent(metadata: LayerMetadata, layer: QgsMapLayer) -> None:
+    """Populate extent fields (layer CRS units) when available and non-empty."""
+    try:
+        extent = layer.extent()
+    except (AttributeError, RuntimeError):
+        return
+    if extent is None:
+        return
+    is_empty = getattr(extent, "isEmpty", None)
+    if callable(is_empty) and is_empty():
+        return
+    try:
+        metadata.extent_xmin = float(extent.xMinimum())
+        metadata.extent_ymin = float(extent.yMinimum())
+        metadata.extent_xmax = float(extent.xMaximum())
+        metadata.extent_ymax = float(extent.yMaximum())
+    except (AttributeError, TypeError, ValueError):
+        pass
 
 
 def _is_geographic(crs: Any) -> bool | None:

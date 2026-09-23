@@ -66,6 +66,7 @@ class ProjectValidator:
         """Perform a comprehensive validation of all project parameters."""
         from .pipeline import ValidationPipeline
         from .project_validators import (
+            CrsPlausibilityValidator,
             DEMValidator,
             DrillholeValidator,
             GeologyValidator,
@@ -79,6 +80,7 @@ class ProjectValidator:
             [
                 SectionValidator(),
                 DEMValidator(),
+                CrsPlausibilityValidator(),
                 GeologyValidator(),
                 StructureValidator(),
                 DrillholeValidator(),
@@ -94,10 +96,16 @@ class ProjectValidator:
     def validate_preview_requirements(cls, params: ValidationParams) -> bool:
         """Validate only the minimum requirements needed to generate a preview."""
         from .pipeline import ValidationPipeline
-        from .project_validators import DEMValidator, SectionValidator
+        from .project_validators import (
+            CrsPlausibilityValidator,
+            DEMValidator,
+            SectionValidator,
+        )
 
         context = ValidationContext()
-        pipeline = ValidationPipeline([SectionValidator(), DEMValidator()])
+        pipeline = ValidationPipeline(
+            [SectionValidator(), DEMValidator(), CrsPlausibilityValidator()]
+        )
         pipeline.execute(params, context)
         context.raise_if_errors()
         return True
@@ -126,6 +134,21 @@ class ProjectValidator:
         ]
         is_compatible, message = validate_crs_compatibility([m for m in metadata if m is not None])
         return "" if is_compatible else message
+
+    @classmethod
+    def crs_plausibility_error(cls, params: ValidationParams) -> str:
+        """Return a blocking message for mislabelled-CRS suspects, or ``""``.
+
+        Best-effort heuristic on layer extents (see ``crs_plausibility``). A
+        wrong CRS label produces silently wrong profiles, so it is treated as a
+        hard error rather than a warning.
+        """
+        from .crs_plausibility import configured_layer_metadata, implausible_crs_reason
+
+        reasons = [
+            implausible_crs_reason(metadata) for metadata in configured_layer_metadata(params)
+        ]
+        return "\n".join(reason for reason in reasons if reason)
 
     @classmethod
     def is_drillhole_complete(cls, params: ValidationParams) -> bool:

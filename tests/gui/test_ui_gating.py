@@ -29,6 +29,8 @@ def _mock_dialog() -> MagicMock:
     dialog.nav_drillhole = MockQListWidgetItem()
     dialog.input_manager = MagicMock()
     dialog.input_manager.get_crs_warning.return_value = ""
+    dialog.input_manager.get_crs_plausibility_error.return_value = ""
+    dialog.input_manager.get_section_error.return_value = ""
     dialog.preview_manager = MagicMock()
     return dialog
 
@@ -263,8 +265,8 @@ class TestCrsMismatchWarning(BaseTestCase):
         dialog.input_manager.get_crs_warning.return_value = "⚠ CRS mismatch detected!"
         manager = UIStatusManager(dialog)
 
-        manager._announce_crs_mismatch()
-        manager._announce_crs_mismatch()
+        manager._announce_crs_warnings()
+        manager._announce_crs_warnings()
 
         dialog.push_message.assert_called_once()
         self.assertEqual(dialog.push_message.call_args.args[0], "CRS mismatch")
@@ -274,13 +276,51 @@ class TestCrsMismatchWarning(BaseTestCase):
         manager = UIStatusManager(dialog)
 
         dialog.input_manager.get_crs_warning.return_value = "A"
-        manager._announce_crs_mismatch()
+        manager._announce_crs_warnings()
         dialog.input_manager.get_crs_warning.return_value = ""
-        manager._announce_crs_mismatch()
+        manager._announce_crs_warnings()
         dialog.input_manager.get_crs_warning.return_value = "B"
-        manager._announce_crs_mismatch()
+        manager._announce_crs_warnings()
 
         self.assertEqual(dialog.push_message.call_count, 2)
+
+
+class TestCrsPlausibilityBlocking(BaseTestCase):
+    """A mislabelled CRS paints a red DEM dot and blocks once."""
+
+    def test_raster_status_is_red_on_plausibility_error(self) -> None:
+        dialog = _mock_dialog()
+        dialog.input_manager.is_section_valid.return_value = True
+        dialog.input_manager.get_crs_plausibility_error.return_value = "looks like degrees"
+        manager = UIStatusManager(dialog)
+
+        manager.update_raster_status()
+
+        label = dialog.page_dem.lbl_raster_status
+        label.setStyleSheet.assert_called_with(
+            "background-color: #c62828; border-radius: 8px;"
+        )
+        label.setToolTip.assert_called_with("looks like degrees")
+
+    def test_announce_plausibility_is_critical_and_once(self) -> None:
+        dialog = _mock_dialog()
+        dialog.input_manager.get_crs_plausibility_error.return_value = "looks like degrees"
+        manager = UIStatusManager(dialog)
+
+        manager._announce_crs_warnings()
+        manager._announce_crs_warnings()
+
+        dialog.push_message.assert_called_once()
+        self.assertEqual(dialog.push_message.call_args.args[0], "Possible CRS mislabel")
+
+    def test_preview_blocked_reason_includes_plausibility(self) -> None:
+        dialog = _mock_dialog()
+        dialog.input_manager.is_section_valid.return_value = True
+        dialog.input_manager.can_preview.return_value = False
+        dialog.input_manager.get_crs_plausibility_error.return_value = "looks like degrees"
+        manager = UIStatusManager(dialog)
+
+        self.assertEqual(manager._preview_blocked_reason(), "looks like degrees")
 
 
 class TestAssemblePreviewParams(BaseTestCase):

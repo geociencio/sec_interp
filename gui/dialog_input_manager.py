@@ -177,6 +177,10 @@ class InputManager:
         """Return a CRS-mismatch warning for the configured layers, or ``""``."""
         return ProjectValidator.crs_compatibility_warning(self.get_validation_params())
 
+    def get_crs_plausibility_error(self) -> str:
+        """Return a blocking mislabelled-CRS error for the layers, or ``""``."""
+        return ProjectValidator.crs_plausibility_error(self.get_validation_params())
+
     def validate_inputs(self) -> tuple[bool, str]:
         """Validate all inputs via core ProjectValidator."""
         params = self.get_validation_params()
@@ -214,7 +218,11 @@ class InputManager:
 
     def can_preview(self) -> bool:
         """Check if basic preview requirements are met."""
-        return self.is_section_valid("dem") and self.is_section_valid("section")
+        return (
+            self.is_section_valid("dem")
+            and self.is_section_valid("section")
+            and not self.get_crs_plausibility_error()
+        )
 
     def can_export(self) -> bool:
         """Check if export requirements are met."""
