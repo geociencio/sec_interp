@@ -1,4 +1,4 @@
-"""Tests for the SectionPage 2-point line invariant."""
+"""Tests for the SectionPage 2-point line invariant and profile style."""
 
 from __future__ import annotations
 
@@ -7,10 +7,13 @@ from unittest.mock import MagicMock, patch
 
 from qgis.PyQt.QtWidgets import QApplication
 
+from sec_interp.core.domain import PreviewParams
+from sec_interp.gui.preview_param_hasher import PreviewParamHasher
 from sec_interp.gui.ui.pages.section_page import SectionPage
 from tests.base_test import BaseTestCase
 
 _METRICS_PATH = "sec_interp.gui.ui.pages.section_page.extract_section_line_metrics"
+_STYLE_KEYS = {"color_mode", "ramp_name", "single_color_hex"}
 
 
 def _layer(*, valid: bool = True, geographic: bool = False) -> MagicMock:
@@ -46,18 +49,14 @@ class TestSectionPageValidation(BaseTestCase):
 
     def test_rejects_invalid_layer(self) -> None:
         """An invalid layer fails fast."""
-        self.page.line_combo.currentLayer = MagicMock(
-            return_value=_layer(valid=False)
-        )
+        self.page.line_combo.currentLayer = MagicMock(return_value=_layer(valid=False))
         ok, msg = self.page.validate()
         self.assertFalse(ok)
         self.assertEqual(msg, "Section line layer is not valid")
 
     def test_rejects_geographic_crs(self) -> None:
         """A geographic (degrees) CRS is rejected."""
-        self.page.line_combo.currentLayer = MagicMock(
-            return_value=_layer(geographic=True)
-        )
+        self.page.line_combo.currentLayer = MagicMock(return_value=_layer(geographic=True))
         ok, msg = self.page.validate()
         self.assertFalse(ok)
         self.assertEqual(msg, "Section line must use a projected CRS (metric units)")
@@ -100,6 +99,94 @@ class TestSectionPageValidation(BaseTestCase):
         self.page.line_combo.currentLayer = MagicMock(return_value=_layer())
         with patch(_METRICS_PATH, return_value=(2, 100.0)):
             self.assertTrue(self.page.is_complete())
+
+
+class TestSectionPageStyle(BaseTestCase):
+    """Profile color-mode controls and their data contract."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Ensure a QApplication exists for widget construction."""
+        super().setUpClass()
+        cls.app = QApplication.instance() or QApplication(sys.argv)
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.page = SectionPage()
+        self.page.radio_gradient.isChecked.return_value = True
+        self.page.radio_single.isChecked.return_value = False
+        self.page.ramp_button.colorRampName.return_value = "Spectral"
+        self.page.color_button.color.return_value.name.return_value = "#1f77b4"
+
+    def test_get_data_includes_style_keys(self) -> None:
+        """get_data exposes mode, ramp and color."""
+        data = self.page.get_data()
+
+        self.assertTrue(_STYLE_KEYS.issubset(data))
+        self.assertEqual(data["color_mode"], "gradient")
+        self.assertEqual(data["ramp_name"], "Spectral")
+        self.assertEqual(data["single_color_hex"], "#1f77b4")
+
+    def test_dump_includes_style_keys(self) -> None:
+        """dump carries the style keys for persistence."""
+        self.assertTrue(_STYLE_KEYS.issubset(self.page.dump()))
+
+    def test_load_restores_style(self) -> None:
+        """Loading a single-color dump selects the Simple radio."""
+        self.page.load(
+            {"color_mode": "single", "ramp_name": "RdYlGn", "single_color_hex": "#ff0000"}
+        )
+
+        self.page.radio_single.setChecked.assert_called_with(True)
+        self.page.ramp_button.setColorRampFromName.assert_called_with("RdYlGn")
+
+    def test_mode_toggle_visibility(self) -> None:
+        """Single mode hides the ramp and shows the color button."""
+        self.page.radio_single.isChecked.return_value = True
+
+        self.page._on_color_mode_changed()
+
+        self.page.ramp_button.setVisible.assert_called_with(False)
+        self.page.color_button.setVisible.assert_called_with(True)
+
+    def test_reset_returns_to_gradient(self) -> None:
+        """Reset selects the gradient mode again."""
+        self.page.reset()
+
+        self.page.radio_gradient.setChecked.assert_called_with(True)
+
+    def test_connect_disconnect_signals(self) -> None:
+        """Signal wiring is symmetric and does not raise."""
+        self.page.connect_signals()
+        self.page.disconnect_signals()
+
+
+class TestTopoStyleHash(BaseTestCase):
+    """The preview hash must change when the profile style changes."""
+
+    def test_style_changes_hash(self) -> None:
+        base = PreviewParams(raster_layer="r", line_layer="l", band_num=1)
+        gradient = PreviewParams(
+            raster_layer="r",
+            line_layer="l",
+            band_num=1,
+            color_mode="gradient",
+            ramp_name="Spectral",
+        )
+        single = PreviewParams(
+            raster_layer="r",
+            line_layer="l",
+            band_num=1,
+            color_mode="single",
+            single_color_hex="#ff0000",
+        )
+
+        h_base = PreviewParamHasher.calculate_hash(base)
+        h_gradient = PreviewParamHasher.calculate_hash(gradient)
+        h_single = PreviewParamHasher.calculate_hash(single)
+
+        self.assertNotEqual(h_base, h_gradient)
+        self.assertNotEqual(h_gradient, h_single)
 
 
 if __name__ == "__main__":

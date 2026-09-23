@@ -125,6 +125,9 @@ class PreviewLayerFactory:
         vert_exag: float = 1.0,
         max_points: int = 1000,
         use_adaptive_sampling: bool = False,
+        color_mode: str = "gradient",
+        ramp_name: str | None = None,
+        single_color: str | None = None,
     ) -> QgsVectorLayer | None:
         """Create temporary layer for topographic profile with polychromatic elevation styling."""
         MIN_REQUIRED_POINTS = 2
@@ -163,7 +166,12 @@ class PreviewLayerFactory:
             return None
 
         provider.addFeatures(features)
-        self.topo_renderer.apply_style(layer)
+        self.topo_renderer.apply_style(
+            layer,
+            color_mode=color_mode,
+            ramp_name=ramp_name,
+            single_color=single_color,
+        )
         layer.updateExtents()
         return layer
 

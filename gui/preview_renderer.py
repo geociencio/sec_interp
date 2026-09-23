@@ -89,6 +89,9 @@ class PreviewRenderer:
         use_adaptive_sampling: bool = False,
         drillhole_data: list | None = None,
         interp_data: list[InterpretationPolygon] | None = None,
+        topo_color_mode: str = "gradient",
+        topo_ramp_name: str | None = None,
+        topo_single_color: str | None = None,
     ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
         if self.is_rendering:
@@ -116,6 +119,9 @@ class PreviewRenderer:
                 dip_line_length,
                 drillhole_data,
                 interp_data,
+                topo_color_mode,
+                topo_ramp_name,
+                topo_single_color,
             )
 
             if not data_layers:
@@ -188,11 +194,20 @@ class PreviewRenderer:
         dip_len,
         drill_data,
         interp_data,
+        topo_color_mode: str = "gradient",
+        topo_ramp_name: str | None = None,
+        topo_single_color: str | None = None,
     ) -> list:
         """Collect all data layers in order."""
         # Topography & Geology
         topo_layer = self.layer_factory.create_topo_layer(
-            topo_data, vert_exag, max_points, use_adaptive
+            topo_data,
+            vert_exag,
+            max_points,
+            use_adaptive,
+            topo_color_mode,
+            topo_ramp_name,
+            topo_single_color,
         )
         if topo_layer:
             self.has_topography = True

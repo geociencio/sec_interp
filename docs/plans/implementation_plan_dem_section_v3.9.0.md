@@ -188,6 +188,11 @@ geometría nula, `section_line_start_point` simple/multipart, métricas con fid)
 
 ## Fase 2 — Modo de color del perfil (solo Present, sin core)
 
+**Status**: ✅ IMPLEMENTADO 2026-09-23 (rama `feature/dem-section-v3.9.0`; radios Gradient/
+Simple + `QgsColorRampButton`/`QgsColorButton`; `color_mode/ramp_name/single_color_hex` en
+`PreviewParams` + hasher; `TopoRenderer` single/gradient con fallback; 10 tests nuevos;
+suite 691 OK).
+
 **Archivos**: `section_page.py`, `gui/main_dialog_config.py` (`DialogDefaults`),
 `preview_layer_factory.py` (`create_topo_layer(..., style_kwargs)`),
 `gui/renderers/topo_renderer.py`, `tests/gui/renderers/test_renderers.py`,

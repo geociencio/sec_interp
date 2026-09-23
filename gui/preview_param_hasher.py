@@ -33,6 +33,9 @@ def assemble_preview_params(
         band_num=values.get("selected_band", 1),
         buffer_dist=values.get("buffer_distance", 100.0),
         section_feature_id=values.get("section_feature_id"),
+        color_mode=values.get("color_mode", "gradient"),
+        ramp_name=values.get("ramp_name"),
+        single_color_hex=values.get("single_color_hex"),
         outcrop_layer=values.get("outcrop_layer"),
         outcrop_name_field=values.get("outcrop_name_field"),
         struct_layer=values.get("structural_layer"),
@@ -105,6 +108,11 @@ class PreviewParamHasher:
         hash_parts.append(str(params.band_num))
         hash_parts.append(str(params.buffer_dist))
         hash_parts.append(str(params.section_feature_id))
+
+        # Topography style
+        hash_parts.append(str(params.color_mode))
+        hash_parts.append(str(params.ramp_name))
+        hash_parts.append(str(params.single_color_hex))
 
         # Structure Settings
         hash_parts.append(str(params.dip_field))

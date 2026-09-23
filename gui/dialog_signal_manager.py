@@ -170,6 +170,8 @@ class SignalManager:
         with contextlib.suppress(Exception):
             self.dialog.page_section.line_combo.layerChanged.disconnect()
         with contextlib.suppress(Exception):
+            self.dialog.page_section.dataChanged.disconnect()
+        with contextlib.suppress(Exception):
             self.dialog.page_geology.dataChanged.disconnect()
         with contextlib.suppress(Exception):
             self.dialog.page_struct.dataChanged.disconnect()
@@ -333,6 +335,11 @@ class SignalManager:
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.state_manager.update_section_status
         )
+        # Profile style feeds the preview hash: refresh S2 gating on change
+        self.dialog.page_section.dataChanged.connect(
+            self.state_manager.update_preview_checkbox_states
+        )
+        self.dialog.page_section.dataChanged.connect(self.state_manager.update_button_state)
 
         # Data pages (their layers feed the preview hash: refresh S2 gating too)
         self.dialog.page_geology.dataChanged.connect(

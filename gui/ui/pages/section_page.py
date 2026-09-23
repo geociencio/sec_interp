@@ -6,9 +6,21 @@ import contextlib
 from typing import Any
 
 from qgis.core import QgsMapLayerProxyModel
-from qgis.gui import QgsDoubleSpinBox, QgsMapLayerComboBox
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QGridLayout, QLabel
+from qgis.gui import (
+    QgsColorButton,
+    QgsColorRampButton,
+    QgsDoubleSpinBox,
+    QgsMapLayerComboBox,
+)
+from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import (
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QRadioButton,
+)
 
 from sec_interp.core.validation.project_validators import SECTION_LINE_VERTEX_COUNT
 from sec_interp.gui.adapters.validation_extractor import extract_section_line_metrics
@@ -20,6 +32,7 @@ from .base_page import BasePage, set_combo_layer
 class SectionPage(BasePage):
     """Configuration page for Cross Section settings."""
 
+    dataChanged = pyqtSignal()
     layer_keys = frozenset({"section_layer"})
 
     def __init__(self, parent: Any = None) -> None:
@@ -77,12 +90,60 @@ class SectionPage(BasePage):
         # while ``None`` (no widget yet).
         self.section_feature_id: int | None = None
 
+        self._setup_profile_style()
+
+    def _setup_profile_style(self) -> None:
+        """Set up the topographic profile color mode controls."""
+        self.style_group = QGroupBox(self.tr("Profile Style"))
+        layout = QGridLayout(self.style_group)
+
+        layout.addWidget(QLabel(self.tr("Color mode")), 0, 0)
+        mode_layout = QHBoxLayout()
+        self.radio_gradient = QRadioButton(self.tr("Gradient"))
+        self.radio_single = QRadioButton(self.tr("Simple"))
+        self.radio_gradient.setChecked(True)
+        mode_layout.addWidget(self.radio_gradient)
+        mode_layout.addWidget(self.radio_single)
+        layout.addLayout(mode_layout, 0, 1)
+
+        self.ramp_button = QgsColorRampButton()
+        self.ramp_button.setShowRandomColorRamp(False)
+        self.ramp_button.setColorRampFromName(DialogDefaults.TOPO_RAMP_NAME)
+        self.ramp_button.setColorRampDialogTitle(self.tr("Select a color ramp"))
+        self.ramp_button.setToolTip(self.tr("Color ramp for the elevation gradient"))
+        layout.addWidget(self.ramp_button, 1, 0, 1, 2)
+
+        self.color_button = QgsColorButton()
+        self.color_button.setColor(QColor(DialogDefaults.TOPO_SINGLE_COLOR_HEX))
+        self.color_button.setColorDialogTitle(self.tr("Select the profile color"))
+        self.color_button.setToolTip(self.tr("Single color for the profile"))
+        layout.addWidget(self.color_button, 2, 0, 1, 2)
+
+        count = self.main_layout.count()
+        self.main_layout.insertWidget(count - 1, self.style_group)
+
+        self._on_color_mode_changed()
+
+    def _on_color_mode_changed(self) -> None:
+        """Show the control for the active mode and notify listeners."""
+        single = self.radio_single.isChecked()
+        self.ramp_button.setVisible(not single)
+        self.color_button.setVisible(single)
+        self.dataChanged.emit()
+
+    def _color_mode(self) -> str:
+        """Return the active color mode key (``gradient`` or ``single``)."""
+        return "single" if self.radio_single.isChecked() else "gradient"
+
     def get_data(self) -> dict[str, Any]:
         """Get section configuration."""
         return {
             "crossline_layer": self.line_combo.currentLayer(),
             "buffer_distance": self.buffer_spin.value(),
             "section_feature_id": self.section_feature_id,
+            "color_mode": self._color_mode(),
+            "ramp_name": self.ramp_button.colorRampName(),
+            "single_color_hex": self.color_button.color().name(),
         }
 
     def dump(self) -> dict[str, Any]:
@@ -91,6 +152,9 @@ class SectionPage(BasePage):
             "section_layer": self.line_combo.currentLayer(),
             "buffer_dist": self.buffer_spin.value(),
             "section_feature_id": self.section_feature_id,
+            "color_mode": self._color_mode(),
+            "ramp_name": self.ramp_button.colorRampName(),
+            "single_color_hex": self.color_button.color().name(),
         }
 
     def load(self, data: dict[str, Any]) -> None:
@@ -102,12 +166,27 @@ class SectionPage(BasePage):
             self.buffer_spin.setValue(float(buffer_dist))
         if "section_feature_id" in data:
             self.section_feature_id = data.get("section_feature_id")
+        if data.get("color_mode") == "single":
+            self.radio_single.setChecked(True)
+        elif data.get("color_mode") == "gradient":
+            self.radio_gradient.setChecked(True)
+        ramp_name = data.get("ramp_name")
+        if ramp_name:
+            self.ramp_button.setColorRampFromName(str(ramp_name))
+        color_hex = data.get("single_color_hex")
+        if color_hex:
+            self.color_button.setColor(QColor(str(color_hex)))
+        self._on_color_mode_changed()
 
     def reset(self) -> None:
         """Reset section inputs to defaults."""
         self.line_combo.setLayer(None)
         self.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
         self.section_feature_id = None
+        self.radio_gradient.setChecked(True)
+        self.ramp_button.setColorRampFromName(DialogDefaults.TOPO_RAMP_NAME)
+        self.color_button.setColor(QColor(DialogDefaults.TOPO_SINGLE_COLOR_HEX))
+        self._on_color_mode_changed()
 
     def validate(self) -> tuple[bool, str]:
         """Validate page settings.
@@ -151,7 +230,26 @@ class SectionPage(BasePage):
         """Check if the section line is a valid 2-point line."""
         return self.validate()[0]
 
+    def connect_signals(self) -> None:
+        """Connect internal signals for the section page."""
+        self.radio_gradient.toggled.connect(self._on_color_mode_changed)
+        self.radio_single.toggled.connect(self._on_color_mode_changed)
+        self.ramp_button.colorRampChanged.connect(self.dataChanged.emit)
+        self.color_button.colorChanged.connect(self.dataChanged.emit)
+
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
+        for signal, slot in (
+            (self.line_combo.layerChanged, None),
+            (self.radio_gradient.toggled, self._on_color_mode_changed),
+            (self.radio_single.toggled, self._on_color_mode_changed),
+            (self.ramp_button.colorRampChanged, self.dataChanged.emit),
+            (self.color_button.colorChanged, self.dataChanged.emit),
+        ):
+            with contextlib.suppress(TypeError, RuntimeError):
+                if slot is None:
+                    signal.disconnect()
+                else:
+                    signal.disconnect(slot)
         with contextlib.suppress(TypeError, RuntimeError):
-            self.line_combo.layerChanged.disconnect()
+            self.dataChanged.disconnect()
