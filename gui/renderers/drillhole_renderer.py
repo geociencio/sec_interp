@@ -59,7 +59,7 @@ class DrillholeRenderer(BasePreviewRenderer):
         layer.setLabelsEnabled(True)
 
     def _apply_interval_style(self, layer: QgsVectorLayer, unique_units: set[str]) -> None:
-        """Styling for lithological intervals."""
+        """Styling for lithological intervals (honoring hidden units)."""
         layer.setRenderer(
             build_categorized_line_style(
                 self.color_manager,
@@ -67,5 +67,6 @@ class DrillholeRenderer(BasePreviewRenderer):
                 width="2.0",
                 capstyle="flat",
                 joinstyle="bevel",
+                hidden=self.color_manager.hidden_units(),
             )
         )

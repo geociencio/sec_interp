@@ -433,6 +433,7 @@ class PreviewLayerFactory:
         )
 
         provider.addFeatures(features)
+        self.color_manager.register_units(unique_units)
         self.drill_renderer.apply_style(layer, role="interval", unique_units=unique_units)
         layer.updateExtents()
         return layer
