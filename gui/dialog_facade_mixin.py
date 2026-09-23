@@ -76,6 +76,8 @@ class DialogFacadeMixin:
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
             "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
+            "smooth": bool(self.preview_widget.chk_smooth.isChecked()),
+            "smooth_window": self.preview_widget.spin_smooth_window.value(),
         }
 
     def update_preview_from_checkboxes(self) -> None:

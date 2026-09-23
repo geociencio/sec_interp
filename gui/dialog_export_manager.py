@@ -196,6 +196,10 @@ class ExportManager:
                 "drill_3d_projected": values.get("drill_3d_projected", False),
             }
 
+            preview_options = self.dialog.get_preview_options()
+            export_options["smooth"] = bool(preview_options.get("smooth", False))
+            export_options["smooth_window"] = int(preview_options.get("smooth_window", 0) or 0)
+
             result_msg = self.export_service.export_data(
                 output_folder,
                 params,
