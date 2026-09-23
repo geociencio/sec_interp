@@ -1,8 +1,8 @@
 # Implementation Plan: Preview Side Panel — Legend + Interpretations + Per-Unit Interaction (v3.10.0)
 
 **Phase**: v3.10.0
-**Status**: 🚧 EN PROGRESO — L-A ✅ implementado (panel + lista de interpretaciones;
-overlay retirado); L-B pendiente (interacción por unidad).
+**Status**: ✅ IMPLEMENTADO 2026-09-23 — L-A (panel + interpretaciones; overlay retirado)
+y L-B (ocultar/editar color por unidad, persistido; estructuras/sondeos intactos).
 **Created**: 2026-09-23
 **Referencias**: `gui/legend_widget.py`, `gui/preview_legend_renderer.py`,
 `gui/ui/pages/preview_page.py`, `gui/preview_renderer.py`,

@@ -12,8 +12,19 @@ from sec_interp.gui.preview_side_panel import PreviewSidePanel
 from tests.base_test import BaseTestCase
 
 
+def _renderer():
+    return SimpleNamespace(
+        has_topography=True,
+        has_structures=True,
+        legend_units=lambda: [
+            ("UnitA", MagicMock(), False),
+            ("UnitB", MagicMock(), True),
+        ],
+    )
+
+
 class TestPreviewSidePanel(BaseTestCase):
-    """Legend and interpretations list rendering."""
+    """Legend rows and interpretations list rendering."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -25,31 +36,46 @@ class TestPreviewSidePanel(BaseTestCase):
         super().setUp()
         self.panel = PreviewSidePanel()
 
-    def _renderer(self):
-        renderer = MagicMock()
-        renderer.has_topography = True
-        renderer.has_structures = True
-        renderer.active_units = {"UnitA": MagicMock(), "UnitB": MagicMock()}
-        return renderer
+    def test_update_legend_populates_rows(self) -> None:
+        """Topography, structures and units become rows (units interactive)."""
+        self.panel.update_legend(_renderer(), visible=True)
 
-    def test_update_legend_populates_items(self) -> None:
-        """Topography, structures and units become legend rows."""
-        self.panel.update_legend(self._renderer(), visible=True)
-
-        self.assertEqual(self.panel.legend_list.count(), 4)
-        texts = [self.panel.legend_list.item(i).text() for i in range(4)]
-        self.assertIn("Topography", texts)
-        self.assertIn("Structures", texts)
-        self.assertIn("UnitA", texts)
-        self.assertIn("UnitB", texts)
+        names = [row.unit_name for row in self.panel._legend_rows]
+        self.assertEqual(names, ["Topography", "Structures", "UnitA", "UnitB"])
+        unit_rows = [r for r in self.panel._legend_rows if r.check is not None]
+        self.assertEqual([r.unit_name for r in unit_rows], ["UnitA", "UnitB"])
+        self.assertTrue(unit_rows[0].check.isChecked())  # UnitA visible
+        self.assertFalse(unit_rows[1].check.isChecked())  # UnitB hidden
 
     def test_update_legend_hidden_clears_and_hides(self) -> None:
-        """Hiding the legend clears the list and hides the group."""
+        """Hiding the legend clears the rows and hides the group."""
         with patch.object(self.panel.legend_group, "setVisible") as set_visible:
-            self.panel.update_legend(self._renderer(), visible=False)
+            self.panel.update_legend(_renderer(), visible=False)
 
-        self.assertEqual(self.panel.legend_list.count(), 0)
+        self.assertEqual(self.panel._legend_rows, [])
         set_visible.assert_called_with(False)
+
+    def test_visibility_toggle_emits(self) -> None:
+        """Toggling a unit row forwards the visibility change."""
+        handler = MagicMock()
+        self.panel.unit_visibility_changed.connect(handler)
+        self.panel.update_legend(_renderer(), visible=True)
+        row = next(r for r in self.panel._legend_rows if r.unit_name == "UnitA")
+
+        row.check.setChecked(False)
+
+        handler.assert_called_with("UnitA", False)
+
+    def test_color_request_emits(self) -> None:
+        """Clicking a unit color button forwards the request."""
+        handler = MagicMock()
+        self.panel.unit_color_requested.connect(handler)
+        self.panel.update_legend(_renderer(), visible=True)
+        row = next(r for r in self.panel._legend_rows if r.unit_name == "UnitA")
+
+        row.color_requested.emit("UnitA")
+
+        handler.assert_called_with("UnitA")
 
     def test_update_interpretations(self) -> None:
         """Interpretation polygons become labelled rows."""

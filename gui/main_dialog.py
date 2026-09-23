@@ -12,7 +12,7 @@ from typing import Any
 
 from qgis.core import Qgis, QgsProject
 from qgis.PyQt.QtCore import QSettings, QUrl
-from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtGui import QColorDialog, QDesktopServices
 from qgis.PyQt.QtWidgets import QDialogButtonBox, QPushButton
 
 from sec_interp.gui.dialog_facade_mixin import DialogFacadeMixin
@@ -133,6 +133,10 @@ class SecInterpDialog(
         self.preview_widget.side_panel.update_interpretations(
             self.interpretation_manager.interpretations
         )
+        self.preview_widget.side_panel.unit_visibility_changed.connect(
+            self._on_unit_visibility_changed
+        )
+        self.preview_widget.side_panel.unit_color_requested.connect(self._on_unit_color_requested)
         self.tool_manager = ToolManager(
             self.preview_widget.canvas,
             self.preview_widget,
@@ -156,6 +160,30 @@ class SecInterpDialog(
             self.page_dem.raster_combo.currentLayer(),
             self.page_dem.band_combo.currentBand(),
         )
+
+    def _unit_color_manager(self) -> Any:
+        """Return the ColorManager used by the preview renderer, if any."""
+        renderer = getattr(self.plugin_instance, "preview_renderer", None)
+        factory = getattr(renderer, "layer_factory", None)
+        return getattr(factory, "color_manager", None)
+
+    def _on_unit_visibility_changed(self, name: str, visible: bool) -> None:
+        """Hide/show a geological unit and re-render the cached preview."""
+        manager = self._unit_color_manager()
+        if manager is None:
+            return
+        manager.set_hidden(name, not visible)
+        self.preview_manager.update_from_checkboxes()
+
+    def _on_unit_color_requested(self, name: str) -> None:
+        """Ask for a new unit color and re-render the cached preview."""
+        manager = self._unit_color_manager()
+        if manager is None:
+            return
+        color = QColorDialog.getColor(manager.get_color(name), self, self.tr("Select unit color"))
+        if color is not None and color.isValid():
+            manager.set_color(name, color)
+            self.preview_manager.update_from_checkboxes()
 
     def show_dialog(self, title: str, message: str, level: str = "info") -> Any:
         """Show a message box dialog.

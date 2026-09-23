@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Per-unit legend controls**: in the preview side panel you can **hide/show** and **change the color** of each geological unit; the choice is applied to the preview (and its exported image) and is remembered between sessions. Structures and drillholes are unaffected.
 - **Preview side panel**: the legend moved off the canvas into a collapsible panel beside the preview (no longer covering the profile), together with a list of the drawn interpretations. The exported image/PDF/SVG legend is unchanged.
 - **Geology on the smoothed profile**: with **Smooth** active, the geological profile (and its export) now follow the smoothed topography using the same window. Structures and drillholes keep their raw sampling. Because the geology geometry now depends on it, changing Smooth regenerates the preview on the next **Preview**.
 - **Smoothed topography profile**: a **Smooth** control in the preview Controls (with a **Window** in metres, 10–500, off by default) overlays a smoothed line on the topographic profile and, on export, also writes `topo_profile_smoothed.csv` and `profile_line_smoothed.<ext>` alongside the raw outputs. Smoothing is a distance-window moving average; the sampled data is unchanged.

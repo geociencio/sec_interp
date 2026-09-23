@@ -271,6 +271,7 @@ class PreviewLayerFactory:
             return None
 
         unique_units = {s.unit_name for s in geol_data}
+        self.color_manager.register_units(unique_units)
         features = []
         MIN_REQUIRED_POINTS = 2
         for segment in geol_data:

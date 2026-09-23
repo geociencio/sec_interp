@@ -26,4 +26,10 @@ class GeologyRenderer(BasePreviewRenderer):
     def apply_style(self, layer: QgsVectorLayer, **kwargs) -> None:
         """Apply categorized styling based on unit names."""
         unique_units = kwargs.get("unique_units", set())
-        layer.setRenderer(build_categorized_line_style(self.color_manager, unique_units))
+        layer.setRenderer(
+            build_categorized_line_style(
+                self.color_manager,
+                unique_units,
+                hidden=self.color_manager.hidden_units(),
+            )
+        )

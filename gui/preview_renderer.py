@@ -68,6 +68,14 @@ class PreviewRenderer:
         """Expose active units from factory for legend compatibility."""
         return self.layer_factory.active_units
 
+    def legend_units(self) -> list[tuple[str, Any, bool]]:
+        """Return ``(name, color, hidden)`` for every known geological unit."""
+        manager = self.layer_factory.color_manager
+        return [
+            (name, manager.get_color(name), manager.is_hidden(name))
+            for name in manager.known_units()
+        ]
+
     def cleanup(self) -> None:
         """Remove transient layers from the project and release resources.
 

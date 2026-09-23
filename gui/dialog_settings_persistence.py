@@ -45,6 +45,33 @@ class DialogSettingsPersistence:
             page.load(self._read_page(page))
         self._load_output_settings()
         self.dialog.preview_widget.load(self._read_page(self.dialog.preview_widget))
+        self._load_unit_style()
+
+    def _unit_color_manager(self) -> Any:
+        """Return the preview renderer's ColorManager, if available."""
+        plugin = getattr(self.dialog, "plugin_instance", None)
+        renderer = getattr(plugin, "preview_renderer", None)
+        factory = getattr(renderer, "layer_factory", None)
+        return getattr(factory, "color_manager", None)
+
+    def _save_unit_style(self) -> None:
+        """Persist per-unit color overrides and hidden flags."""
+        manager = self._unit_color_manager()
+        if manager is None:
+            return
+        try:
+            self._set_setting("unit_style", json.dumps(manager.dump()))
+        except (TypeError, ValueError) as e:
+            logger.warning("Could not persist unit style: %s", e)
+
+    def _load_unit_style(self) -> None:
+        """Restore per-unit color overrides and hidden flags."""
+        manager = self._unit_color_manager()
+        if manager is None:
+            return
+        data = self._parse_persisted_value("unit_style")
+        if isinstance(data, dict):
+            manager.load(data)
 
     def save_settings(self) -> None:
         """Save user settings for next session."""
@@ -55,6 +82,7 @@ class DialogSettingsPersistence:
             self._write_page(page, page.dump())
         self._save_output_settings()
         self._write_page(self.dialog.preview_widget, self.dialog.preview_widget.dump())
+        self._save_unit_style()
 
         # Trigger a fresh reload of settings in the controller
         if self.config and hasattr(self.dialog, "plugin_instance"):

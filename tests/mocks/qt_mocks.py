@@ -354,8 +354,20 @@ class MockQWidget(MockQObject):
         return self.Accepted
 
     def setLayout(self, layout):
-        """Set widget layout."""
+        """Set layout."""
         self._layout = layout
+
+    def setWidgetResizable(self, resizable):
+        """Set whether the scroll area resizes its widget."""
+        pass
+
+    def setWidget(self, widget):
+        """Set the scroll area's widget."""
+        self._widget = widget
+
+    def setParent(self, parent):
+        """Set the widget parent."""
+        self._parent = parent
 
     def layout(self):
         """Get widget layout."""
