@@ -288,7 +288,7 @@ class DrillholeExtractor:
 
             collar_data.append({"id": hid, "point": point, "attributes": attrs})
 
-            z = self._pre_sample_z(feat, attrs, hid, z_field, point, dem_layer)
+            z = self._pre_sample_z(feat, attrs, hid, z_field, point, dem_layer, target_crs)
             if z is not None:
                 pre_sampled_z[hid] = z
 
@@ -347,6 +347,7 @@ class DrillholeExtractor:
         z_field: str,
         point: tuple[float, float],
         dem_layer: QgsRasterLayer | None,
+        reference_crs: QgsCoordinateReferenceSystem | None = None,
     ) -> float | None:
         """Sample collar Z from DEM if missing from the attribute field."""
         z_val = 0.0
@@ -357,13 +358,18 @@ class DrillholeExtractor:
                 z_val = 0.0
 
         if z_val == 0.0 and dem_layer:
-            elev = self._sample_elevation(dem_layer, point)
+            elev = self._sample_elevation(dem_layer, point, reference_crs)
             if elev:
                 return elev
         return None
 
-    def _sample_elevation(self, dem_layer: QgsRasterLayer, point: tuple[float, float]) -> float:
-        """Sample a single elevation value from a raster layer."""
+    def _sample_elevation(
+        self,
+        dem_layer: QgsRasterLayer,
+        point: tuple[float, float],
+        source_crs: QgsCoordinateReferenceSystem | None = None,
+    ) -> float:
+        """Sample a single elevation value, reprojecting to the raster CRS."""
         if not dem_layer or not dem_layer.isValid():
             return 0.0
-        return geometry.sample_point_elevation(dem_layer, point)
+        return geometry.sample_point_elevation(dem_layer, point, source_crs=source_crs)

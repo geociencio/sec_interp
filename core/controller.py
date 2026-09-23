@@ -323,8 +323,9 @@ class ProfileController(TranslatableMixin):
             if ctx is None:
                 return None
 
-            def elevation_sampler(x: float, y: float) -> float:
-                return self.structure_extractor.sample_elevation(raster_lyr, x, y, params.band_num)
+            elevation_sampler = self.structure_extractor.make_elevation_sampler(
+                raster_lyr, line_lyr, params.band_num
+            )
 
             # 1+2. Detach and project structures
             struct_data = self.structure_service.project_structures(

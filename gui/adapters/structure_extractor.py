@@ -9,6 +9,7 @@ plain tuples/dicts so ``StructureService`` never touches QGIS objects.
 from __future__ import annotations
 
 import math
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -16,11 +17,14 @@ from qgis.core import (
     QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
+    QgsPointXY,
     QgsRaster,
     QgsRasterLayer,
     QgsVectorLayer,
     QgsWkbTypes,
 )
+
+from sec_interp.gui.adapters import geometry
 
 
 @dataclass
@@ -124,34 +128,81 @@ class StructureExtractor:
             )
         return detached
 
+    def make_elevation_sampler(
+        self,
+        raster_lyr: QgsRasterLayer,
+        line_lyr: QgsVectorLayer | None = None,
+        band_number: int = 1,
+    ) -> Callable[[float, float], float]:
+        """Return an ``(x, y) -> elevation`` sampler reprojecting to the raster CRS.
+
+        Structural points live in the section line CRS. When the DEM uses a
+        different CRS (on-the-fly reprojection) they must be transformed before
+        sampling, otherwise every elevation comes back as 0. The transform is
+        resolved once here and reused for every point.
+        """
+        transform = self._sampling_transform(raster_lyr, line_lyr)
+
+        def sampler(x: float, y: float) -> float:
+            return self._sample_at(raster_lyr, x, y, band_number, transform)
+
+        return sampler
+
     def sample_elevation(
         self,
         raster_lyr: QgsRasterLayer,
         x: float,
         y: float,
         band_number: int = 1,
+        line_lyr: QgsVectorLayer | None = None,
     ) -> float:
         """Sample a single elevation value from a raster layer.
 
         Args:
             raster_lyr: The DEM raster layer.
-            x: X coordinate to sample.
-            y: Y coordinate to sample.
+            x: X coordinate to sample (in the section line CRS).
+            y: Y coordinate to sample (in the section line CRS).
             band_number: Raster band index (default 1).
+            line_lyr: Section line layer, used to reproject the point.
 
         Returns:
             The sampled elevation, or 0.0 if the raster is invalid or the point
             is out of bounds.
 
         """
+        transform = self._sampling_transform(raster_lyr, line_lyr)
+        return self._sample_at(raster_lyr, x, y, band_number, transform)
+
+    def _sampling_transform(
+        self, raster_lyr: QgsRasterLayer, line_lyr: QgsVectorLayer | None
+    ) -> Any | None:
+        """Return the line-CRS -> raster-CRS transform, or None when unneeded."""
+        line_crs = None
+        if line_lyr is not None:
+            try:
+                line_crs = line_lyr.crs()
+            except (AttributeError, RuntimeError):
+                line_crs = None
+        return geometry.build_sampling_transform(line_crs, raster_lyr)
+
+    def _sample_at(
+        self,
+        raster_lyr: QgsRasterLayer,
+        x: float,
+        y: float,
+        band_number: int,
+        transform: Any | None,
+    ) -> float:
+        """Sample one raster value, reprojecting the point when needed."""
         if not raster_lyr or not raster_lyr.isValid():
             return 0.0
 
         try:
-            from qgis.core import QgsPointXY
-
+            point = QgsPointXY(x, y)
+            if transform is not None:
+                point = transform.transform(point)
             ident = raster_lyr.dataProvider().identify(
-                QgsPointXY(x, y), QgsRaster.IdentifyFormat.IdentifyFormatValue
+                point, QgsRaster.IdentifyFormat.IdentifyFormatValue
             )
             if ident.isValid():
                 val = ident.results().get(band_number)

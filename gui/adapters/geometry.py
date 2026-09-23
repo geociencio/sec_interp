@@ -293,16 +293,25 @@ def calculate_segment_range(
         return None
 
 
-def sample_point_elevation(raster_layer: QgsRasterLayer, point: Any, band_number: int = 1) -> float:
+def sample_point_elevation(
+    raster_layer: QgsRasterLayer,
+    point: Any,
+    band_number: int = 1,
+    source_crs: QgsCoordinateReferenceSystem | None = None,
+) -> float:
     """Sample elevation from a raster layer at a 2D coordinate.
 
-    ``point`` may be a ``QgsPointXY`` or a ``(x, y)`` tuple.
+    ``point`` may be a ``QgsPointXY`` or a ``(x, y)`` tuple. When ``source_crs``
+    differs from the raster CRS, the point is reprojected before sampling.
     """
     if not raster_layer or not raster_layer.isValid():
         return 0.0
 
     try:
         pt = point if isinstance(point, QgsPointXY) else QgsPointXY(point[0], point[1])
+        transform = build_sampling_transform(source_crs, raster_layer)
+        if transform is not None:
+            pt = transform.transform(pt)
         ident = raster_layer.dataProvider().identify(
             pt, QgsRaster.IdentifyFormat.IdentifyFormatValue
         )

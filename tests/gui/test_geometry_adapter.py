@@ -80,6 +80,30 @@ class TestResolveSamplingInterval(BaseTestCase):
         self.assertAlmostEqual(result, 2.0)
 
 
+class TestSamplePointElevation(BaseTestCase):
+    """Point sampling reprojects across CRSs via a source CRS."""
+
+    def _raster(self, value=100.0):
+        raster = MagicMock()
+        raster.isValid.return_value = True
+        ident = MagicMock()
+        ident.isValid.return_value = True
+        ident.results.return_value = {1: value}
+        raster.dataProvider.return_value.identify.return_value = ident
+        return raster
+
+    def test_reprojects_point_to_raster_crs(self):
+        raster = self._raster()
+        source = MockQgsCoordinateReferenceSystem("EPSG:32614")
+
+        with patch.object(geometry, "build_sampling_transform", return_value=_ScalingTransform()):
+            result = geometry.sample_point_elevation(raster, (1.0, 2.0), source_crs=source)
+
+        called = raster.dataProvider().identify.call_args.args[0]
+        self.assertEqual((called.x(), called.y()), (1000.0, 2.0))
+        self.assertEqual(result, 100.0)
+
+
 class TestBuildSamplingTransform(BaseTestCase):
     """Sampling points must be reprojected when line and raster CRSs differ."""
 
