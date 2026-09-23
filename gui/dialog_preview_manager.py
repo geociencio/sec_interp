@@ -34,12 +34,14 @@ from sec_interp.gui.preview_render_mixin import PreviewRenderMixin
 from sec_interp.logger_config import get_logger
 
 from .main_dialog_config import DialogConfig
-from .preview_param_hasher import PreviewParamHasher
+from .preview_param_hasher import PreviewParamHasher, assemble_preview_params
 from .preview_reporter import PreviewReporter
 from .preview_state import PreviewCache
 from .preview_task_orchestrator import PreviewTaskOrchestrator
 
 logger = get_logger(__name__)
+
+VE_EPSILON = 1e-6
 
 
 class PreviewManager(TranslatableMixin, PreviewCallbacksMixin, PreviewRenderMixin):
@@ -70,6 +72,8 @@ class PreviewManager(TranslatableMixin, PreviewCallbacksMixin, PreviewRenderMixi
         self.cached_data = cache if cache is not None else PreviewCache()
         self.last_params_hash: str | None = None
         self.last_result: PreviewResult | None = None
+        self.last_success_hash: str | None = None
+        self.last_success_ve: float | None = None
 
         self._on_interpretations_cleared: Callable[[], None] | None = None
 
@@ -91,7 +95,32 @@ class PreviewManager(TranslatableMixin, PreviewCallbacksMixin, PreviewRenderMixi
         """Clean up resources and stop background tasks."""
         self.orchestrator.cancel_active_tasks()
         self.debounce_timer.stop()
+        self.last_success_hash = None
+        self.last_success_ve = None
+        self.last_result = None
         self.disconnect_signals()
+
+    def is_preview_current(self) -> bool:
+        """Check whether the last successful preview matches the current inputs.
+
+        Fail-closed: without a successful generation (or on any assembly
+        failure) the dependent buttons stay disabled. Assembly is
+        side-effect free (no validation dialogs, no notification wiring,
+        no geometry reads).
+        """
+        if self.last_success_hash is None or self.last_result is None:
+            return False
+        try:
+            values = self.dialog.get_selected_values()
+            options = self.dialog.get_preview_options()
+            width = self.dialog.preview_widget.canvas.width()
+            params = assemble_preview_params(values, options, width)
+            current_ve, _mode = self._compute_vertical_exaggeration()
+        except Exception:
+            return False
+        if self.last_success_ve is None or abs(current_ve - self.last_success_ve) > VE_EPSILON:
+            return False
+        return self._calculate_params_hash(params) == self.last_success_hash
 
     def generate_preview(self) -> tuple[bool, str]:
         """Generate complete preview with all available data layers."""
@@ -139,6 +168,10 @@ class PreviewManager(TranslatableMixin, PreviewCallbacksMixin, PreviewRenderMixi
 
         if DialogConfig.LOG_DETAILED_METRICS:
             logger.info(f"Preview Performance: {self.metrics.get_summary()}")
+
+        self.last_success_hash = self._calculate_params_hash(params)
+        self.last_success_ve = vert_exag
+        self.dialog.state_manager.update_button_state()
 
     def _process_preview_data(self, params: PreviewParams) -> PreviewResult:
         """Process or retrieve cached preview data."""

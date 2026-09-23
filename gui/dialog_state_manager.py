@@ -96,6 +96,12 @@ class StateManager:
         self.persistence.reset_preview()
         self._reset_tools()
 
+        preview_manager = getattr(self.dialog, "preview_manager", None)
+        if preview_manager is not None:
+            preview_manager.last_success_hash = None
+            preview_manager.last_success_ve = None
+            preview_manager.last_result = None
+
         self.dialog.preview_widget.results_text.append(
             self.dialog.tr("✓ Form reset to default values")
         )

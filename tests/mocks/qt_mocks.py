@@ -607,13 +607,22 @@ class MockQListWidget(MockQWidget):
 
 
 class MockQListWidgetItem:
-    """Mock implementation for QListWidgetItem."""
+    """Mock implementation for QListWidgetItem.
+
+    Mirrors the real API: interactivity is controlled through ``flags()`` /
+    ``setFlags()`` (there is no ``setDisabled``, which only exists on QWidget).
+    The flag values match Qt's ``Qt.ItemFlag`` bitmask.
+    """
+
+    ITEM_IS_SELECTABLE = 0x1
+    ITEM_IS_ENABLED = 0x20
 
     def __init__(self, text=""):
         """Initialize the mock item."""
         self._text = text
         self._icon = None
         self._alignment = 0
+        self._flags = self.ITEM_IS_ENABLED | self.ITEM_IS_SELECTABLE
 
     def setText(self, text):
         """Set item text."""
@@ -630,3 +639,15 @@ class MockQListWidgetItem:
     def setTextAlignment(self, alignment):
         """Set text alignment."""
         self._alignment = alignment
+
+    def flags(self):
+        """Return the item's flag bitmask."""
+        return self._flags
+
+    def setFlags(self, flags):
+        """Set the item's flag bitmask."""
+        self._flags = int(flags)
+
+    def isEnabled(self):
+        """Check whether the item is enabled."""
+        return bool(self._flags & self.ITEM_IS_ENABLED)

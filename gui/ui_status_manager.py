@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialogButtonBox
 
 if TYPE_CHECKING:
@@ -31,9 +32,44 @@ class UIStatusManager:
     def update_all(self) -> None:
         """Update all visual status components."""
         self.update_button_state()
+        self.update_page_states()
         self.update_preview_checkbox_states()
         self.update_raster_status()
         self.update_section_status()
+
+    def update_page_states(self) -> None:
+        """Enable dependent pages only when DEM and Section are valid.
+
+        Geology/Structural/Drillholes stay disabled until the two mandatory
+        inputs are filled; if the visible page becomes disabled, fall back
+        to the DEM page.
+        """
+        im = self.dialog.input_manager
+        ready = bool(im.is_section_valid("dem") and im.is_section_valid("section"))
+        for attr in ("nav_geology", "nav_struct", "nav_drillhole"):
+            item = getattr(self.dialog, attr, None)
+            if item is None:
+                continue
+            self._set_item_enabled(item, ready)
+        if not ready:
+            sidebar = getattr(self.dialog, "sidebar", None)
+            if sidebar is not None and sidebar.currentRow() in (2, 3, 4):
+                sidebar.setCurrentRow(0)
+
+    @staticmethod
+    def _set_item_enabled(item: Any, enabled: bool) -> None:
+        """Enable or disable a ``QListWidgetItem`` through its flags.
+
+        ``QListWidgetItem`` has no ``setDisabled`` (that is a ``QWidget``
+        method); item interactivity is controlled by the
+        ``Qt.ItemFlag.ItemIsEnabled`` flag.
+        """
+        flags = item.flags()
+        if enabled:
+            flags |= Qt.ItemFlag.ItemIsEnabled
+        else:
+            flags &= ~Qt.ItemFlag.ItemIsEnabled
+        item.setFlags(flags)
 
     def update_preview_checkbox_states(self) -> None:
         """Enable or disable preview checkboxes based on input validity."""
@@ -48,15 +84,40 @@ class UIStatusManager:
         pw.chk_drillholes.setEnabled(im.is_section_valid("drillhole") and has_section)
 
     def update_button_state(self) -> None:
-        """Enable or disable buttons based on input validity."""
+        """Enable or disable buttons (S0/S1/S2 gating).
+
+        S0 (DEM/Section incomplete): everything disabled. S1 (inputs valid,
+        no current preview): only Preview and OK. S2 (preview generated for
+        the current inputs): Export/Measure/Interpret join in.
+        """
         im = self.dialog.input_manager
         can_preview = im.can_preview()
+        preview_current = bool(can_preview) and self._is_preview_current()
 
-        self.dialog.preview_widget.btn_preview.setEnabled(can_preview)
+        pw = self.dialog.preview_widget
+        pw.btn_preview.setEnabled(can_preview)
         self.dialog.button_box.button(QDialogButtonBox.StandardButton.Ok).setEnabled(can_preview)
+        pw.btn_export.setEnabled(preview_current)
+        pw.btn_measure.setEnabled(preview_current)
+        pw.btn_interpret.setEnabled(preview_current)
 
         if hasattr(self.dialog, "btn_save"):
             self.dialog.btn_save.setEnabled(im.can_export())
+
+    def _is_preview_current(self) -> bool:
+        """Check whether a preview was generated for the current inputs.
+
+        Fail-closed: without a preview manager (or on any error) the
+        dependent buttons stay disabled.
+        """
+        pm = getattr(self.dialog, "preview_manager", None)
+        is_current = getattr(pm, "is_preview_current", None)
+        if not callable(is_current):
+            return False
+        try:
+            return bool(is_current())
+        except Exception:
+            return False
 
     def update_raster_status(self) -> None:
         """Update raster layer status icon."""

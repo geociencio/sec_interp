@@ -167,6 +167,10 @@ class SignalManager:
         with contextlib.suppress(Exception):
             self.dialog.page_dem.raster_combo.layerChanged.disconnect()
         with contextlib.suppress(Exception):
+            self.dialog.page_dem.vertexag_spin.valueChanged.disconnect()
+        with contextlib.suppress(Exception):
+            self.dialog.page_dem.auto_ve_check.toggled.disconnect()
+        with contextlib.suppress(Exception):
             self.dialog.page_section.line_combo.layerChanged.disconnect()
         with contextlib.suppress(Exception):
             self.dialog.page_geology.dataChanged.disconnect()
@@ -300,6 +304,14 @@ class SignalManager:
         self.dialog.page_dem.raster_combo.layerChanged.connect(
             self.state_manager.update_preview_checkbox_states
         )
+        self.dialog.page_dem.raster_combo.layerChanged.connect(
+            self.state_manager.status_manager.update_page_states
+        )
+        # Vertical exaggeration changes the rendered preview: refresh S2 gating
+        self.dialog.page_dem.vertexag_spin.valueChanged.connect(
+            self.state_manager.update_button_state
+        )
+        self.dialog.page_dem.auto_ve_check.toggled.connect(self.state_manager.update_button_state)
 
         # Section page
         self.dialog.page_section.line_combo.layerChanged.connect(
@@ -308,17 +320,23 @@ class SignalManager:
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.state_manager.update_preview_checkbox_states
         )
+        self.dialog.page_section.line_combo.layerChanged.connect(
+            self.state_manager.status_manager.update_page_states
+        )
 
-        # Data pages
+        # Data pages (their layers feed the preview hash: refresh S2 gating too)
         self.dialog.page_geology.dataChanged.connect(
             self.state_manager.update_preview_checkbox_states
         )
+        self.dialog.page_geology.dataChanged.connect(self.state_manager.update_button_state)
         self.dialog.page_struct.dataChanged.connect(
             self.state_manager.update_preview_checkbox_states
         )
+        self.dialog.page_struct.dataChanged.connect(self.state_manager.update_button_state)
         self.dialog.page_drillhole.dataChanged.connect(
             self.state_manager.update_preview_checkbox_states
         )
+        self.dialog.page_drillhole.dataChanged.connect(self.state_manager.update_button_state)
 
         # Reconnect internal signals for all pages
         pages = [

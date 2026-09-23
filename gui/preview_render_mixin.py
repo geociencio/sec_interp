@@ -81,23 +81,32 @@ class PreviewRenderMixin:
         )
 
     def _resolve_vertical_exaggeration(self) -> float:
-        """Resolve the VE for the current render.
-
-        In Auto mode, the VE is derived adaptively from the cached (synchronous)
-        preview result; otherwise the manual spinbox value is used.
+        """Resolve the VE for the current render and log it.
 
         Returns:
             Vertical exaggeration factor to apply.
 
         """
+        ve, mode = self._compute_vertical_exaggeration()
+        logger.info("Vertical exaggeration: %.1f× (%s)", ve, mode)
+        return ve
+
+    def _compute_vertical_exaggeration(self) -> tuple[float, str]:
+        """Compute the VE and its mode without logging.
+
+        In Auto mode, the VE is derived adaptively from the cached
+        (synchronous) preview result; otherwise the manual spinbox value is
+        used. Kept log-free so it can be called on every UI state refresh
+        (e.g. preview-currency checks).
+
+        Returns:
+            Tuple of (factor, mode) where mode is "auto" or "manual".
+
+        """
         auto = self.dialog.page_dem.auto_ve_check.isChecked()
         if auto and self.last_result is not None:
-            ve = self.ve_service.calculate_from_result(self.last_result)
-            logger.info("Vertical exaggeration: %.1f× (auto)", ve)
-            return ve
-        ve = self.dialog.page_dem.vertexag_spin.value()
-        logger.info("Vertical exaggeration: %.1f× (manual)", ve)
-        return ve
+            return self.ve_service.calculate_from_result(self.last_result), "auto"
+        return self.dialog.page_dem.vertexag_spin.value(), "manual"
 
     def update_from_checkboxes(self) -> None:
         """Update preview when checkboxes change.

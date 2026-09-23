@@ -43,7 +43,9 @@ class DemPage(BasePage):
 
         """
         self.iface = iface
-        super().__init__(QCoreApplication.translate("DemPage", "Digital Elevation Model"), parent)
+        title = QCoreApplication.translate("DemPage", "Digital Elevation Model")
+        mandatory = QCoreApplication.translate("DemPage", "Mandatory")
+        super().__init__(f"{title} — {mandatory}", parent)
         self.iface = iface
 
     def _setup_ui(self) -> None:

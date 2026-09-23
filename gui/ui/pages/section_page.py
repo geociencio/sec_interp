@@ -27,7 +27,9 @@ class SectionPage(BasePage):
             parent: Optional parent widget.
 
         """
-        super().__init__(QCoreApplication.translate("SectionPage", "Cross Section Line"), parent)
+        title = QCoreApplication.translate("SectionPage", "Cross Section Line")
+        mandatory = QCoreApplication.translate("SectionPage", "Mandatory")
+        super().__init__(f"{title} — {mandatory}", parent)
 
     def _setup_ui(self) -> None:
         super()._setup_ui()

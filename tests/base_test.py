@@ -276,6 +276,8 @@ def restore_mocks():
     mock_qtcore.QPoint = MockQPoint
     mock_qtcore.QRectF = MockQRectF
     mock_qtcore.Qt.LeftButton = 1
+    mock_qtcore.Qt.ItemFlag.ItemIsEnabled = MockQListWidgetItem.ITEM_IS_ENABLED
+    mock_qtcore.Qt.ItemFlag.ItemIsSelectable = MockQListWidgetItem.ITEM_IS_SELECTABLE
     mock_qtcore.pyqtSignal = mock_signal
     mock_qtcore.QObject = MockQObject
     mock_qtcore.QThread = MockQThread

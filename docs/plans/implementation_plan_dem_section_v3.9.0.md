@@ -50,6 +50,15 @@ plomería); 0 imports `qgis` nuevos en `core/`; `check_notes` y suite verdes.
 
 ## Fase 0 — Mandatory + gating de páginas y botones (base UX)
 
+**Status**: ✅ IMPLEMENTADO 2026-09-23 (rama `feature/dem-section-v3.9.0`; 18 tests nuevos
+en `tests/gui/test_ui_gating.py`; suite 612 OK). Ajuste post-prueba QGIS 4:
+`QListWidgetItem` no tiene `setDisabled` — se usa `flags()` ± `Qt.ItemFlag.ItemIsEnabled`
+(helper `UIStatusManager._set_item_enabled`); `MockQListWidgetItem` ahora implementa
+`flags()/setFlags()/isEnabled()` con la máscara real de Qt. Además la **VE entra en la
+firma de vigencia** (`last_success_ve` + `_compute_vertical_exaggeration` sin log) y los
+controles `vertexag_spin.valueChanged` / `auto_ve_check.toggled` refrescan el gating, así
+que cambiar la exageración desactiva el trío hasta regenerar.
+
 **Archivos**: `gui/ui/main_window.py` (`:139-145`, `:147-151`), `gui/ui/sidebar.py`
 (`add_item` devuelve el item), `gui/ui_status_manager.py` (`update_button_state`,
 nuevo `update_page_states` llamado desde `update_all`), `gui/dialog_preview_manager.py`
@@ -111,7 +120,7 @@ bloqueado; suite verde.
 
 - Controles: radio Gradiente/Simple + `QComboBox` con `QgsStyle.defaultStyle().colorRampNames()`
   + `QgsColorButton` (matriz de compatibilidad: mínimo declarado 3.28 + LTR 3.44.14
-  'Solothurn'; verificar ambos en build — el Docker CI usa `qgis/qgis:latest`).
+  'Solothurn' + **test manual en QGIS 4**; el Docker CI usa `qgis/qgis:latest`).
 - Claves nuevas `get_data/dump/load/reset`: `color_mode` (`gradient|single`), `ramp_name`,
   `single_color_hex` (+ defaults). Plomería: page → `input_manager` → params de preview →
   `create_topo_layer` → `apply_style(layer, **kwargs)`.
@@ -139,14 +148,28 @@ guiones sin ráster; suite verde.
 
 ---
 
-## Decisiones abiertas (resolver antes o durante build)
+## Decisiones (resueltas 2026-09-23, ver `1consideraciones*.md`)
 
-| # | Decisión | Propuesta | Estado |
-|---|---|---|---|
-| 1 | ¿Botón OK en S1 o S2? | S1 (OK genera/acepta; no requiere preview previo) | ⏳ pendiente usuario |
-| 2 | Azimut: ¿inicio-fin o util core (2 primeros puntos)? | Util `calculate_line_azimuth` (con líneas 2-pt son idénticos) | ✅ implícito |
-| 3 | CRS geográfico: ¿error o warning? | Error (buffer en m y escala exigen proyectado) | ⏳ confirmar en build |
-| 4 | Nº clases del gradiente configurable (hoy 8 fijas) | No en este alcance (hacia Goal 1.1) | ✅ diferido |
+| # | Decisión | Resolución |
+|---|---|---|
+| 1 | ¿Botón OK en S1 o S2? | ✅ **S1** — exigir preview para aceptar añade fricción en cambios menores (color, VE); Export/Measure sí requieren S2 (operan sobre el resultado) |
+| 2 | Azimut: ¿inicio-fin o util core? | ✅ **`calculate_line_azimuth`** (`core/utils/spatial.py`, SSoT; exacto con 2 puntos) |
+| 3 | CRS geográfico: ¿error o warning? | ✅ **Error** — buffers/azimuts/muestreo en grados carecen de sentido; bloquear en validación previene bugs en render/core |
+| 4 | Nº clases del gradiente configurable | ✅ **Diferido** (hacia Goal 1.1); 8 clases + fallback bastan |
+
+## Recomendaciones técnicas vinculantes (de `1consideraciones*.md`)
+
+- **Hash ligero (Fase 0)**: `is_preview_current()` corre en cada `update_all`; el hash debe
+  basarse estrictamente en `layer.id()` + primitivos de widgets, **nunca** en leer
+  geometrías (`PreviewParamHasher` ya usa `layer.id()` — verificar que
+  `_get_and_validate_inputs()` no extraiga data espacial).
+- **Dedupe por celda, no por Z (Fase 3)**: en terrenos planos (salares) el mismo Z en
+  píxeles distintos es natural; deduplicar por distancia 2D vs `rasterUnitsPerPixelX()`
+  o por coordenadas de celda origen.
+- **`bandStatistics` en remoto (Fase 1 DEM)**: pasar `extent` o limitar sampleo; capturar
+  excepción/timeout (~1-2 s) para no colgar QGIS con WCS/VRT gigantes.
+- **Mensaje 2-pt explícito**: `"La línea de sección debe tener exactamente 2 vértices
+  (inicio y fin)"`.
 
 ## Transversales (las 4 fases)
 
