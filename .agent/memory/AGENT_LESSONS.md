@@ -16,6 +16,39 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-23'
+    category: TECHNICAL
+    topic: cross-CRS raster sampling must reproject and bound densification
+    lesson: Sampling a DEM from section-line coordinates without honoring CRS
+      differences (normal with on-the-fly reprojection) returns 0 (structures and
+      collars drawn at base 0) and, worse, using the raster pixel size as a
+      densify interval explodes a long line into hundreds of millions of vertices
+      and freezes QGIS. Layer names can lie about CRS (a `_3857.tif` was actually
+      EPSG:4326).
+    action: Always build a line->raster QgsCoordinateTransform and transform
+      sample points; derive the sampling interval in the line CRS (or transform
+      the pixel size); cap densification. Verify raster CRS with `gdalinfo`,
+      never trust the filename.
+  - date: '2026-09-23'
+    category: ARCHITECTURE
+    topic: page-internal signals must live in an idempotent connect_signals
+    lesson: StructurePage wired layerChanged -> _on_layer_changed in _setup_ui,
+      but SignalManager.connect_all calls disconnect_all first and then
+      re-invokes each page's connect_signals(); with no connect_signals the
+      wiring was lost, so structural field combos stayed empty.
+    action: Put page-internal wiring only in an idempotent connect_signals()
+      (disconnect specific slots first), never in _setup_ui. Add a regression
+      test that mirrors the disconnect->connect cycle.
+  - date: '2026-09-23'
+    category: TESTING
+    topic: conservative extent heuristic justifies blocking on mislabelled CRS
+    lesson: A wrong CRS label cannot be read from metadata but is often
+      contradicted by the extent (a degree-looking extent declared projected). A
+      conservative rule (within lon/lat bounds AND span < 1 unit or pixel < 1 mm)
+      blocks silently-wrong output with negligible false positives.
+    action: For data-quality heuristics prefer a blocking error with clear
+      remediation over a warning, but keep thresholds conservative; recommend
+      Assign Projection (metadata only), not Reproject.
+  - date: '2026-09-23'
     category: AGENTIC_SYSTEM
     topic: Prefer long, stable-prefix sessions to exploit provider prompt caching
     lesson: DeepSeek discounts already-seen input tokens heavily (up to ~97%), but only

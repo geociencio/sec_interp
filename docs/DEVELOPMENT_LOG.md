@@ -1,3 +1,13 @@
+## [2026-09-23] Session: CRS Sampling Hardening + Structure/Section UX Fixes
+- **Achievement**: Fixed a machine-freezing failure when sampling a geographic DEM (EPSG:4326, misleadingly named `..._3857.tif`) with a projected section line under on-the-fly reprojection — the densify interval was taken from the raster pixel size and applied as line map units. Also fixed silent zero elevations for structures/collars across CRSs, added a blocking mislabelled-CRS heuristic, and fixed structural field combos. 6 commits (`baf11d8c..eb9ffa20`).
+- **Changes**:
+    - **Freeze/CRS sampling**: `MAX_DENSIFY_POINTS` cap in `densify_line_points`; `build_sampling_transform` / `raster_resolution_in_crs` / `resolve_sampling_interval` in `gui/adapters/geometry.py`; CRS-aware interval + point reprojection in profile/geology/structure/drillhole extractors and `render_pipeline`; dip-line resolution guard in `export/handlers/structures.py`.
+    - **Mislabelled CRS (blocking)**: new `core/validation/crs_plausibility.py` + `CrsPlausibilityValidator` in `validate_all`/`validate_preview_requirements`; `LayerMetadata` extent/pixel fields; `InputManager` + `UIStatusManager` surface red dot + one-time remediation message; non-blocking mismatch stays amber.
+    - **Structural UX**: `StructurePage` wiring moved into idempotent `connect_signals()` (was lost after `SignalManager.connect_all` → empty field combos).
+    - **Pending UI gating** from the previous crashed session committed (`98758e92`).
+- **Quality**: 666/666 tests OK · `ruff` + `ruff format` clean · manual QGIS 4 smoke PASS (no freeze; 430 pts/6109 m = 14.24 m; structures on profile; interpretations persist; GPKG/PNG export OK).
+- **Maintenance**: [session_2026-09-23_crs_sampling_hardening.md](maintenance/session_2026-09-23_crs_sampling_hardening.md)
+
 ## [2026-09-23] Session: DEM/Section Enhancement Planning (Plan Mode)
 - **Achievement**: Defined the DEM/Raster + Section Line scope (raster stats, 2-point simple-line invariant, profile-vs-DEM stats with same-pixel dedupe, selectable gradient/single topo color, Mandatory labels, S0/S1/S2 button gating, Geology/Structural/Drillholes page blocking) and wrote the phased plan `docs/plans/implementation_plan_dem_section_v3.9.0.md` (Fase 0→3, open decisions, LTR 3.44.14 compat matrix). No code changed; saved for next session (build mode).
 - **Quality**: `ruff` PASS · local suite 594 tests OK · planning only, no CHANGELOG entry (no user-visible changes).

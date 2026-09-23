@@ -9,8 +9,7 @@
   campo estructurales. Se commitó el gating S0/S1/S2 previo.
 - **Commits**: `baf11d8c`, `98758e92`, `02d9cd65`, `1e44c658`, `ef88acf7`,
   `eb9ffa20` (6).
-- **Calidad**: suite verde (unittest discover 666; tooling ground truth 715) ·
-  ruff/format limpios · smoke manual QGIS 4 completo
+- **Calidad**: 666 tests OK · ruff/format limpios · smoke manual QGIS 4 completo
   (sin cuelgue; 430 pts/6109 m = 14.24 m; estructuras sobre el perfil; collar Z
   correcto; interpretaciones heredadas + persistencia; export GPKG/PNG OK).
 - **Referencia**: `docs/maintenance/session_2026-09-23_crs_sampling_hardening.md`.
