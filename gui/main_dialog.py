@@ -12,8 +12,8 @@ from typing import Any
 
 from qgis.core import Qgis, QgsProject
 from qgis.PyQt.QtCore import QSettings, QUrl
-from qgis.PyQt.QtGui import QColorDialog, QDesktopServices
-from qgis.PyQt.QtWidgets import QDialogButtonBox, QPushButton
+from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtWidgets import QColorDialog, QDialogButtonBox, QPushButton
 
 from sec_interp.gui.dialog_facade_mixin import DialogFacadeMixin
 from sec_interp.gui.dialog_lifecycle_mixin import DialogLifecycleMixin
