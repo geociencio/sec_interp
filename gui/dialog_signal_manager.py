@@ -311,6 +311,9 @@ class SignalManager:
         self.dialog.page_dem.raster_combo.layerChanged.connect(
             self.state_manager.status_manager.update_page_states
         )
+        self.dialog.page_dem.raster_combo.layerChanged.connect(
+            self.state_manager.update_raster_status
+        )
         # Vertical exaggeration changes the rendered preview: refresh S2 gating
         self.dialog.page_dem.vertexag_spin.valueChanged.connect(
             self.state_manager.update_button_state
@@ -326,6 +329,9 @@ class SignalManager:
         )
         self.dialog.page_section.line_combo.layerChanged.connect(
             self.state_manager.status_manager.update_page_states
+        )
+        self.dialog.page_section.line_combo.layerChanged.connect(
+            self.state_manager.update_section_status
         )
 
         # Data pages (their layers feed the preview hash: refresh S2 gating too)

@@ -10,6 +10,10 @@ from qgis.PyQt.QtWidgets import QDialogButtonBox
 if TYPE_CHECKING:
     from sec_interp.gui.main_dialog import SecInterpDialog  # type: ignore
 
+# Generic traffic-light styles: no dependency on theme icon names or Qt style.
+_STATUS_OK_STYLE = "background-color: #2e7d32; border-radius: 8px;"
+_STATUS_ERROR_STYLE = "background-color: #c62828; border-radius: 8px;"
+
 
 class UIStatusManager:
     """Manages visual status (indicators, icons, button enablement) of the dialog."""
@@ -17,17 +21,21 @@ class UIStatusManager:
     def __init__(self, dialog: SecInterpDialog) -> None:
         """Initialize UI status manager."""
         self.dialog = dialog
-        self._warning_icon = None
-        self._success_icon = None
 
     def setup_indicators(self) -> None:
-        """Set up required field indicators with warning icons."""
-        self._warning_icon = self.dialog.getThemeIcon("mMessageLogCritical.svg")
-        self._success_icon = self.dialog.getThemeIcon("mIconSuccess.svg")
-
-        # Initial update
+        """Paint the initial required-field indicators."""
         self.update_raster_status()
         self.update_section_status()
+
+    def _apply_status(self, label: Any, ok: bool, ok_tooltip: str, error_tooltip: str) -> None:
+        """Paint a status indicator as a colored dot.
+
+        Uses a stylesheet dot (``background-color`` + ``border-radius``) so the
+        state is always visible regardless of the active QGIS theme or Qt style.
+        """
+        label.clear()
+        label.setStyleSheet(_STATUS_OK_STYLE if ok else _STATUS_ERROR_STYLE)
+        label.setToolTip(ok_tooltip if ok else error_tooltip)
 
     def update_all(self) -> None:
         """Update all visual status components."""
@@ -96,6 +104,9 @@ class UIStatusManager:
 
         pw = self.dialog.preview_widget
         pw.btn_preview.setEnabled(can_preview)
+        pw.btn_preview.setToolTip(
+            self.dialog.tr("Generate preview") if can_preview else self._preview_blocked_reason()
+        )
         self.dialog.button_box.button(QDialogButtonBox.StandardButton.Ok).setEnabled(can_preview)
         pw.btn_export.setEnabled(preview_current)
         pw.btn_measure.setEnabled(preview_current)
@@ -103,6 +114,15 @@ class UIStatusManager:
 
         if hasattr(self.dialog, "btn_save"):
             self.dialog.btn_save.setEnabled(im.can_export())
+
+    def _preview_blocked_reason(self) -> str:
+        """Return the human-readable reason why Preview is disabled."""
+        im = self.dialog.input_manager
+        return (
+            im.get_section_error("section")
+            or im.get_section_error("dem")
+            or self.dialog.tr("Complete the required inputs")
+        )
 
     def _is_preview_current(self) -> bool:
         """Check whether a preview was generated for the current inputs.
@@ -121,26 +141,22 @@ class UIStatusManager:
 
     def update_raster_status(self) -> None:
         """Update raster layer status icon."""
-        if not self._warning_icon:
-            return
         im = self.dialog.input_manager
-        label = self.dialog.page_dem.lbl_raster_status
-        if im.is_section_valid("dem"):
-            label.setPixmap(self._success_icon.pixmap(16, 16))
-            label.setToolTip(self.dialog.tr("Raster layer selected"))
-        else:
-            label.setPixmap(self._warning_icon.pixmap(16, 16))
-            label.setToolTip(im.get_section_error("dem"))
+        ok = im.is_section_valid("dem")
+        self._apply_status(
+            self.dialog.page_dem.lbl_raster_status,
+            ok,
+            self.dialog.tr("Raster layer selected"),
+            im.get_section_error("dem"),
+        )
 
     def update_section_status(self) -> None:
         """Update section line status icon."""
-        if not self._warning_icon:
-            return
         im = self.dialog.input_manager
-        label = self.dialog.page_section.lbl_section_status
-        if im.is_section_valid("section"):
-            label.setPixmap(self._success_icon.pixmap(16, 16))
-            label.setToolTip(self.dialog.tr("Section line selected"))
-        else:
-            label.setPixmap(self._warning_icon.pixmap(16, 16))
-            label.setToolTip(im.get_section_error("section"))
+        ok = im.is_section_valid("section")
+        self._apply_status(
+            self.dialog.page_section.lbl_section_status,
+            ok,
+            self.dialog.tr("Section line selected"),
+            im.get_section_error("section"),
+        )

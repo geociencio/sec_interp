@@ -49,6 +49,8 @@
   `access_control_service.py`, `export/map_settings_factory.py`, `export/orchestrator.py`, `io.py`.
 - **Analyzer**: 0 issues.
 - **Docs i18n opcional**: traducir `USER_GUIDE` fr (28%) / de (18%); `make docs` para publicar.
+- **QA MCP QGIS 4 (exploración)**: propuesta de un MCP de QA acotado para automatizar el
+  smoke en QGIS 4 → `docs/plans/exploration_qgis4_qa_mcp.md` (no implementado; opción B).
 
 ## 🚀 How to Resume
 1. Run `/start-session`.

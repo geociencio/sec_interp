@@ -20,6 +20,7 @@ from tests.mocks.qt_mocks import MockQListWidgetItem
 def _mock_dialog() -> MagicMock:
     """Build a MagicMock dialog with the widgets gating touches."""
     dialog = MagicMock()
+    dialog.tr.side_effect = lambda text: text
     dialog.preview_widget = MagicMock()
     dialog.button_box = MagicMock()
     dialog.sidebar = MagicMock()
@@ -107,6 +108,32 @@ class TestButtonGating(BaseTestCase):
         measure.setEnabled.assert_called_with(False)
         interpret.setEnabled.assert_called_with(False)
 
+    def test_preview_tooltip_shows_blocked_reason(self) -> None:
+        """A disabled Preview button explains why via its tooltip."""
+        self.dialog.input_manager.can_preview.return_value = False
+        self.dialog.input_manager.get_section_error.side_effect = lambda s: (
+            "Section line must have exactly 2 vertices (start and end)"
+            if s == "section"
+            else ""
+        )
+
+        self.manager.update_button_state()
+
+        self.dialog.preview_widget.btn_preview.setToolTip.assert_called_with(
+            "Section line must have exactly 2 vertices (start and end)"
+        )
+
+    def test_preview_tooltip_restored_when_enabled(self) -> None:
+        """An enabled Preview button shows the normal tooltip."""
+        self.dialog.input_manager.can_preview.return_value = True
+        self.dialog.preview_manager.is_preview_current.return_value = False
+
+        self.manager.update_button_state()
+
+        self.dialog.preview_widget.btn_preview.setToolTip.assert_called_with(
+            "Generate preview"
+        )
+
 
 class TestPageStates(BaseTestCase):
     """Geology/Structural/Drillholes pages blocked until DEM + Section."""
@@ -179,6 +206,38 @@ class TestMandatoryLabels(BaseTestCase):
         self.assertGreaterEqual(len(texts), 2)
         self.assertIn("Mandatory", texts[0])
         self.assertIn("Mandatory", texts[1])
+
+
+class TestStatusIndicatorFallback(BaseTestCase):
+    """Status indicators use a generic stylesheet dot (no theme icons)."""
+
+    def test_error_status_uses_error_dot(self) -> None:
+        """An invalid section paints a red dot with the error tooltip."""
+        dialog = _mock_dialog()
+        dialog.input_manager.is_section_valid.return_value = False
+        dialog.input_manager.get_section_error.return_value = "Section line error"
+        manager = UIStatusManager(dialog)
+
+        manager.update_section_status()
+
+        label = dialog.page_section.lbl_section_status
+        label.setStyleSheet.assert_called_with(
+            "background-color: #c62828; border-radius: 8px;"
+        )
+        label.setToolTip.assert_called_with("Section line error")
+
+    def test_ok_status_uses_ok_dot(self) -> None:
+        """A valid section paints a green dot."""
+        dialog = _mock_dialog()
+        dialog.input_manager.is_section_valid.return_value = True
+        manager = UIStatusManager(dialog)
+
+        manager.update_section_status()
+
+        label = dialog.page_section.lbl_section_status
+        label.setStyleSheet.assert_called_with(
+            "background-color: #2e7d32; border-radius: 8px;"
+        )
 
 
 class TestAssemblePreviewParams(BaseTestCase):

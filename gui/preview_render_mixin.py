@@ -83,12 +83,19 @@ class PreviewRenderMixin:
     def _resolve_vertical_exaggeration(self) -> float:
         """Resolve the VE for the current render and log it.
 
+        Logs at ``info`` only when the resolved value (or mode) changes, so the
+        many re-renders triggered by async tasks and checkbox toggles do not
+        spam the log with the same value.
+
         Returns:
             Vertical exaggeration factor to apply.
 
         """
         ve, mode = self._compute_vertical_exaggeration()
-        logger.info("Vertical exaggeration: %.1f× (%s)", ve, mode)
+        signature = (round(ve, 1), mode)
+        if signature != getattr(self, "_last_logged_ve", None):
+            logger.info("Vertical exaggeration: %.1f× (%s)", ve, mode)
+            self._last_logged_ve = signature
         return ve
 
     def _compute_vertical_exaggeration(self) -> tuple[float, str]:

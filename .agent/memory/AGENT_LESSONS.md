@@ -16,6 +16,29 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-23'
+    category: AGENTIC_SYSTEM
+    topic: Prefer long, stable-prefix sessions to exploit provider prompt caching
+    lesson: DeepSeek discounts already-seen input tokens heavily (up to ~97%), but only
+      with a stable prefix (system prompt, AGENTS.md, tool schemas) inside a long
+      single-thread session. Spawning many fresh subagent contexts (each with no shared
+      cache) and reloading large files or huge tool outputs defeats that discount.
+    action: Prefer one long session per task; keep the system prompt/AGENTS.md stable
+      mid-task; batch corrections into complete upfront prompts; use targeted reads/greps
+      instead of loading whole files; reserve subagents for genuinely parallel work
+      (e.g. enriching dozens of notes), not for 2-3 items the main thread can do directly.
+  - date: '2026-09-23'
+    category: TESTING
+    topic: a fabricated mock method turns a real-QGIS crash into a green suite
+    lesson: To disable a QListWidgetItem I called item.setDisabled() and taught
+      MockQListWidgetItem the same (non-existent) method, so 17 unit tests passed while
+      real QGIS 4 crashed with "QListWidgetItem object has no attribute setDisabled".
+      QListWidgetItem has no setDisabled — that is QWidget API; items use
+      flags()/setFlags() with Qt.ItemFlag.ItemIsEnabled.
+    action: Mocks must mirror the real API surface only; never invent methods to satisfy
+      production code. When adding a widget interaction, verify the method exists on the
+      exact Qt class (and on both Qt5/Qt6) before writing the mock, and smoke-test in
+      real QGIS when the gating touches native widgets.
+  - date: '2026-09-23'
     category: TOOLING
     topic: a package group note can silently overwrite an individual file note
     lesson: generate_vault_v2.py wrote the Tier C group for `resources/` to the same
@@ -584,6 +607,7 @@ lessons:
 
 | Preference | Value |
 |---|---|
+| **Test environment** | Manual testing on **QGIS 4** (`uv run qgis-manage deploy --no-compile --qgis-version 4`); keep 3.28 compat + LTR 3.44 matrix; Docker CI runs `qgis/qgis:latest` |
 | **Language** | Communication: Spanish / Code, Commits, Docs: English |
 | **Formatter** | `black` |
 | **Package manager** | `uv` |

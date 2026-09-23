@@ -29,8 +29,11 @@ from sec_interp.core.validation.layer_metadata import (
     KIND_VECTOR,
     LayerMetadata,
 )
+from sec_interp.logger_config import get_logger
 
 from .geometry import extract_all_vertices
+
+logger = get_logger(__name__)
 
 _GEOMETRY_MAP = {
     QgsWkbTypes.GeometryType.PointGeometry: GEOMETRY_POINT,
@@ -144,7 +147,17 @@ def extract_section_line_metrics(layer_ref: Any) -> tuple[int | None, float | No
         geometry = feature.geometry()
         if geometry is None or geometry.isNull():
             return None, None
-        return len(extract_all_vertices(geometry)), float(geometry.length())
+        vertex_count = len(extract_all_vertices(geometry))
+        length = float(geometry.length())
+        logger.debug(
+            "Section line metrics: layer=%s fid=%s vertices=%d length=%.3f multipart=%s",
+            layer.name(),
+            feature.id(),
+            vertex_count,
+            length,
+            geometry.isMultipart(),
+        )
+        return vertex_count, length
     except (AttributeError, TypeError, ValueError, RuntimeError, StopIteration):
         return None, None
 
