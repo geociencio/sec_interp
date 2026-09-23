@@ -1,3 +1,14 @@
+## [2026-09-23] Session: Code Walkthrough Vault v2 (Completion)
+- **Achievement**: Completed the bilingual v2 vault: enriched Core 49 + GUI 73 + Exporters/Plugin/Root 22, added 23 `layer_*` hubs, finalized the bilingual `Index.md` MOC, and added a vault-owned file-to-note map (`project_structure_links.md`, 178 files → 151 notes). 5 commits (`1d4af77d`, `d5e8a82b`, `b7d221f7`, `dab9d27e`, `26ada077`).
+- **Tooling**:
+    - `scripts/generate_vault_v2.py`: shared `resolve_group_slugs()` — a Tier C package group never overwrites an individual file note (`resources/` → `resources_pkg`) and the repo root maps to `root` instead of `_`.
+    - `scripts/check_notes.py`: same function in `build_expectations()` (single ground truth); SKIP_STEMS extended with the 23 hub slugs + `project_structure_links`.
+    - New `scripts/generate_structure_links.py` (`--write`/`--check`) reusing the canonical slug logic.
+    - Slug fixes: `core/utils/__init__.py` note `utils` → `core_utils___init___py`; `gui/utils.py` → `gui_utils_py` (canonical, zero slug warnings).
+- **Docs**: 302 substantive notes + 46 hubs + final MOC, fully bilingual (ES+EN); fixed ~26 dangling wikilinks from earlier phases; verbatim `project_structure*` mirrors left untouched.
+- **Quality**: docs-only (no plugin Python changed). `check_notes.py --strict` PASS (302 notes / 0 skeletons / 0 dangling links) · `check_docs.py` PASS · `sync_vault_mirrors.sh --check` PASS · `ruff` PASS · local suite 594 tests OK.
+- **Maintenance**: [session_2026-09-23_vault_v2_completion.md](maintenance/session_2026-09-23_vault_v2_completion.md)
+
 ## [2026-09-22] Session: Code Walkthrough Vault v2 (Complete Bilingual Vault)
 - **Achievement**: Started a new self-contained bilingual code-walkthrough vault v2 (`docs/code_walkthrough_v2/` ES + `docs/code_walkthrough_en_v2/` EN), leaving v1 untouched, with a 400–500-line depth standard and tooling to generate and gate the notes. 2 commits (`46fd3b45`, `59f3984`).
 - **Tooling**:

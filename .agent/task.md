@@ -15,11 +15,14 @@
 
 - [x] VE visible en el panel Results (`2.6× (auto)` / `3.5× (manual)`) + etiqueta de solo lectura junto al checkbox Auto
 - [x] Fix: layers temporales de preview ya no persisten al cerrar (OK/Save, Cancel/X y unload)
-- [~] **Code Walkthrough Vault v2** (docs-only, 2026-09-22): nueva bóveda bilingüe completa en progreso (`code_walkthrough_v2` ES/EN). Tooling (`generate_vault_v2.py`, `check_notes.py`), `project_structure_table.md`, 56 esqueletos Core + 7 notas enriquecidas. Ver `.agent/next_steps.md`.
+- [x] **Code Walkthrough Vault v2** (docs-only, 2026-09-22): bóveda bilingüe **COMPLETA** —
+  Core 56/56 + GUI 73/73 + Fase 3 22/22 + Fase 4 (23 hubs `layer_*` + Index final)
+  (302 notas, `check_notes.py --strict` PASS, 0 enlaces rotos). Tooling + `project_structure_table.md`.
+  Ver `.agent/next_steps.md`.
 
 ### Resume Point
 
-Continuar con **Goal 1.1** (symbology preview) o **1.5** (tests proyección cartesiana).
+Bóveda v2 completa ✅. Siguiente: **Goal 1.1** (symbology preview) o **1.5** (tests proyección cartesiana).
 
 ### Non-blocking Documented Debt
 

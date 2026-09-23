@@ -15,6 +15,24 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-23'
+    category: TOOLING
+    topic: a package group note can silently overwrite an individual file note
+    lesson: generate_vault_v2.py wrote the Tier C group for `resources/` to the same
+      `resources.md` path as the Tier A individual note for `resources.py`, destroying
+      the latter. Collisions must be resolved across tiers, not just within individuals.
+    action: Resolve group slugs against the full individual slug set (shared
+      resolve_group_slugs() in generator and checker); colliding groups get a `_pkg`
+      suffix and the repo root maps to `root`.
+  - date: '2026-09-23'
+    category: TOOLING
+    topic: synced mirror docs must stay verbatim — give vault-owned docs new names
+    lesson: project_structure*.md are byte-identical mirrors of docs/structure/
+      enforced by sync_vault_mirrors.sh --check, so wikilinks cannot be added to them.
+      The file-to-note map was created as a new vault-owned project_structure_links.md
+      (skip-listed in check_notes.py) instead of editing the mirrors.
+    action: Never enrich a synced mirror in place; create a vault-owned sibling document
+      and link it from Index.
   - date: '2026-09-22'
     category: TOOLING
     topic: A docs generator --write must skip enriched notes, not just existing files
@@ -34,6 +52,18 @@ lessons:
       self-documenting, auditable and travel with the note instead of a separate allowlist.
     action: For bounded-but-flexible limits, encode the exception in the artifact's
       frontmatter and have the validator enforce a hard absolute maximum.
+  - date: '2026-09-22'
+    category: TOOLING
+    topic: per-layer vault generation resolves slug collisions only within that layer
+    lesson: generate_vault_v2.py --layer core produced slug `utils` for
+      `core/utils/__init__.py` (parent-name slug), but `gui/utils.py` also wants `utils`.
+      check_notes.py's build_expectations() uses ALL sources and the canonical
+      resolve_individual_slugs(), so it expects `core_utils___init___py` and flagged
+      `utils.md` as "not in the expected note set". The per-layer generator and the
+      whole-vault checker disagree on collision-safe slugs.
+    action: Before enriching per-layer generated notes, run check_notes.py and reconcile
+      any "not in the expected note set" slugs against the canonical (all-sources) slug
+      map; rename the note file and update its [[wikilink]] back-references accordingly.
   - date: '2026-09-21'
     category: TOOLING
     topic: Never run qgis-analyzer analyze and sync_metrics.py in parallel
