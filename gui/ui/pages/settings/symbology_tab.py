@@ -11,6 +11,7 @@ from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QColorDialog,
+    QComboBox,
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
@@ -18,9 +19,12 @@ from qgis.PyQt.QtWidgets import (
     QPushButton,
     QRadioButton,
     QScrollArea,
+    QSpinBox,
     QVBoxLayout,
     QWidget,
 )
+
+_LEGEND_POSITIONS = ("top-right", "top-left", "bottom-right", "bottom-left")
 
 from sec_interp.gui.main_dialog_config import DialogDefaults
 from sec_interp.gui.preview_side_panel import UnitStyleEditor
@@ -67,15 +71,43 @@ class SymbologyTab(QWidget):
         layout.addStretch()
 
     def _build_legend_group(self) -> QGroupBox:
-        """Legend options (the preview legend panel is collapsible)."""
+        """Legend options (export toggle, position, font size, item limit)."""
         group = QGroupBox(self.tr("Legend"))
-        layout = QVBoxLayout(group)
+        layout = QGridLayout(group)
+
         self.chk_export_legend = QCheckBox(self.tr("Show legend in the exported image"))
         self.chk_export_legend.setChecked(True)
         self.chk_export_legend.setToolTip(
             self.tr("The preview legend lives in the collapsible side panel.")
         )
-        layout.addWidget(self.chk_export_legend)
+        layout.addWidget(self.chk_export_legend, 0, 0, 1, 2)
+
+        layout.addWidget(QLabel(self.tr("Position")), 1, 0)
+        self.combo_legend_pos = QComboBox()
+        self.combo_legend_pos.addItems(
+            [
+                self.tr("Top right"),
+                self.tr("Top left"),
+                self.tr("Bottom right"),
+                self.tr("Bottom left"),
+            ]
+        )
+        layout.addWidget(self.combo_legend_pos, 1, 1)
+
+        layout.addWidget(QLabel(self.tr("Font size")), 2, 0)
+        self.spin_legend_font = QSpinBox()
+        self.spin_legend_font.setRange(6, 16)
+        self.spin_legend_font.setValue(8)
+        layout.addWidget(self.spin_legend_font, 2, 1)
+
+        layout.addWidget(QLabel(self.tr("Max items (0 = all)")), 3, 0)
+        self.spin_legend_max = QSpinBox()
+        self.spin_legend_max.setRange(0, 200)
+        self.spin_legend_max.setValue(0)
+        self.spin_legend_max.setToolTip(
+            self.tr("Limit legend items; the rest are summarized as '+N more'.")
+        )
+        layout.addWidget(self.spin_legend_max, 3, 1)
         return group
 
     def _build_topography_group(self) -> QGroupBox:
@@ -294,10 +326,20 @@ class SymbologyTab(QWidget):
             "drill_labels": self.chk_drill_labels.isChecked(),
             "interp_color": self.interp_color_button.color().name(),
             "show_legend": self.chk_export_legend.isChecked(),
+            "legend_pos": _LEGEND_POSITIONS[self.combo_legend_pos.currentIndex()],
+            "legend_font_size": self.spin_legend_font.value(),
+            "legend_max_items": self.spin_legend_max.value(),
         }
 
     def load(self, data: dict[str, Any]) -> None:
         """Apply persisted symbology settings."""
+        self._load_topography(data)
+        self._load_layer_styles(data)
+        self._load_legend(data)
+        self._on_topo_mode_changed()
+
+    def _load_topography(self, data: dict[str, Any]) -> None:
+        """Restore topography style settings."""
         mode = data.get("color_mode")
         if mode == "single":
             self.radio_single.setChecked(True)
@@ -309,6 +351,9 @@ class SymbologyTab(QWidget):
             self.topo_color_button.setColor(QColor(str(data["single_color_hex"])))
         if data.get("topo_line_width") is not None:
             self.topo_width_spin.setValue(float(data["topo_line_width"]))
+
+    def _load_layer_styles(self, data: dict[str, Any]) -> None:
+        """Restore structures, drillhole and interpretation styles."""
         self._set_color(self.struct_color_button, data.get("struct_color"))
         if data.get("struct_width") is not None:
             self.struct_width_spin.setValue(float(data["struct_width"]))
@@ -318,9 +363,17 @@ class SymbologyTab(QWidget):
         if data.get("drill_labels") is not None:
             self.chk_drill_labels.setChecked(bool(data["drill_labels"]))
         self._set_color(self.interp_color_button, data.get("interp_color"))
+
+    def _load_legend(self, data: dict[str, Any]) -> None:
+        """Restore legend options."""
         if data.get("show_legend") is not None:
             self.chk_export_legend.setChecked(bool(data["show_legend"]))
-        self._on_topo_mode_changed()
+        if data.get("legend_pos") in _LEGEND_POSITIONS:
+            self.combo_legend_pos.setCurrentIndex(_LEGEND_POSITIONS.index(data["legend_pos"]))
+        if data.get("legend_font_size") is not None:
+            self.spin_legend_font.setValue(int(data["legend_font_size"]))
+        if data.get("legend_max_items") is not None:
+            self.spin_legend_max.setValue(int(data["legend_max_items"]))
 
     @staticmethod
     def _set_color(button: QgsColorButton, value: Any) -> None:
@@ -341,6 +394,9 @@ class SymbologyTab(QWidget):
         self.chk_drill_labels.setChecked(True)
         self.interp_color_button.setColor(QColor("#FF0000"))
         self.chk_export_legend.setChecked(True)
+        self.combo_legend_pos.setCurrentIndex(0)
+        self.spin_legend_font.setValue(8)
+        self.spin_legend_max.setValue(0)
         self._on_topo_mode_changed()
 
     def connect_signals(self) -> None:
@@ -361,6 +417,9 @@ class SymbologyTab(QWidget):
             self.chk_drill_labels.toggled,
             self.interp_color_button.colorChanged,
             self.chk_export_legend.toggled,
+            self.combo_legend_pos.currentIndexChanged,
+            self.spin_legend_font.valueChanged,
+            self.spin_legend_max.valueChanged,
         ):
             signal.connect(self.changed.emit)
 

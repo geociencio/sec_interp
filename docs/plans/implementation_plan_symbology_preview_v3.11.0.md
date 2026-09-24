@@ -2,9 +2,9 @@
 
 **Phase**: v3.11.0 — Goal 1.1 (3D Interpretation & Symbology Enhancements)
 **Status**: 🚧 EN PROGRESO — Fase 0 (decisiones), **Fase 1 ✅** (pestaña Symbology, estilos
-por capa, topo movido desde Section) y **Fase 2 ✅** (editor por unidad compartido:
-color/ocultar/renombrar/reordenar, alias+orden en leyenda del panel y del export,
-persistencia, reset). Pendiente: Fase 3 (opciones de leyenda) y Fase 4 (presets).
+por capa, topo movido desde Section), **Fase 2 ✅** (editor por unidad compartido), **Fase 3 ✅**
+(opciones de leyenda: posición/fuente/máximo de ítems "+N more" en export; fuente en panel).
+Pendiente: Fase 4 (presets).
 Nota: los alias de unidad se reflejan en la leyenda del panel y en la leyenda de la imagen
 exportada; dibujar el alias como **texto sobre el mapa** (p. ej. intervalos de sondeo) queda
 como mejora opcional.

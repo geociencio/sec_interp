@@ -15,7 +15,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsMapCanvas
 from qgis.PyQt.QtCore import QRectF
-from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtGui import QColor, QPainter
 
 from sec_interp.core.domain import (
     GeologyData,
@@ -65,6 +65,7 @@ class PreviewRenderer:
         self.is_rendering = False
         self._interpretations: list = []
         self._hidden_interp_ids: set[str] = set()
+        self._layer_styles: dict = {}
 
     @property
     def active_units(self) -> dict[str, Any]:
@@ -129,6 +130,7 @@ class PreviewRenderer:
 
         self._interpretations = list(interp_data or [])
         self._hidden_interp_ids = {str(i) for i in (hidden_interp_ids or set())}
+        self._layer_styles = dict(layer_styles or {})
 
         try:
             self.is_rendering = True
@@ -325,8 +327,9 @@ class PreviewRenderer:
         return layers
 
     def draw_legend(self, painter: QPainter, rect: QRectF) -> None:
-        """Draw legend on the given painter. Delegates to PreviewLegendRenderer."""
+        """Draw legend on the given painter honoring the configured layout."""
         manager = self.layer_factory.color_manager
+        style = self._layer_styles
         geology_set = set(manager.units_for_source("geology"))
         drill_set = set(manager.units_for_source("drillholes"))
         active = self.active_units
@@ -347,7 +350,24 @@ class PreviewRenderer:
                 if str(getattr(i, "id", "")) not in self._hidden_interp_ids
             ]
             or None,
+            layout={
+                "position": style.get("legend_pos", "top-right"),
+                "font_size": style.get("legend_font_size", 8),
+                "max_items": style.get("legend_max_items", 0),
+            },
+            layer_colors={
+                "topography": self._legend_topo_color(style),
+                "structures": QColor(str(style.get("struct_color") or "#cc0000")),
+                "drillholes": QColor(str(style.get("drill_trace_color") or "#323232")),
+            },
         )
+
+    @staticmethod
+    def _legend_topo_color(style: dict) -> QColor:
+        """Return the topography color to show in the legend."""
+        if style.get("color_mode") == "single":
+            return QColor(str(style.get("single_color_hex") or "#1f77b4"))
+        return QColor("#0066cc")
 
     def _cleanup_layers(self, layers: list | None = None) -> None:
         """Safely remove transient layers from the project."""

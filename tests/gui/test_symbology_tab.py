@@ -21,6 +21,10 @@ _KEYS = {
     "drill_trace_width",
     "drill_labels",
     "interp_color",
+    "show_legend",
+    "legend_pos",
+    "legend_font_size",
+    "legend_max_items",
 }
 
 

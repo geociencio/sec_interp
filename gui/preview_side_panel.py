@@ -206,6 +206,8 @@ class PreviewSidePanel(QWidget):
         if not self._legend_visible or renderer is None:
             return
         style = self._legend_style
+        font_size = int(style.get("legend_font_size") or 0)
+        self.legend_container.setStyleSheet(f"font-size: {font_size}pt;" if font_size else "")
 
         if getattr(renderer, "has_topography", False):
             self._add_row(

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Legend layout options (Settings → Symbology → Legend)**: choose the legend **position** (top/bottom, left/right), **font size** and a **maximum number of items** (the rest are summarized as "+N more") for the exported image; the font size also applies to the preview panel.
 - **Per-unit editor (Settings → Symbology → Units)**: hide, recolor, **rename** and **reorder** geological and drillhole units. Renames (aliases) and order are reflected in the preview legend and the exported image legend, and persist in the project; a "Reset unit styles" button clears the customization.
 - **Live symbology (Settings → Symbology)**: a new tab styles the preview/export live — topography color mode, ramp/color and line width (moved here from the Section page), structures color/width, drillhole trace color/width/labels, and the default interpretation color. Settings are stored in the project.
 - **Drillhole lithologies in the legend**: the drillhole interval units now appear in the preview legend (and the exported image) alongside geology, so subsurface lithologies can be interpreted; hide/color controls apply to them too. A "Drillholes" entry represents the traces.

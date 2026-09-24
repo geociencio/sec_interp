@@ -91,19 +91,28 @@ class TestPreviewLegendRenderer(BaseTestCase):
 
         self.assertGreater(ys["Interpretations"], ys["D2"])
 
-    def test_calculate_legend_size(self):
-        """Test legend size calculation."""
+    def test_measure(self):
+        """Legend size is derived from the row count and the widest label."""
         config = {"padding": 5, "item_height": 10, "symbol_size": 10}
-        active_units = {"A": QColor(0, 0, 0)}
+        rows = [("line", "Topography", QColor(0, 0, 0)), ("swatch", "A", QColor(0, 0, 0))]
 
-        size, max_w = PreviewLegendRenderer._calculate_legend_size(
-            self.painter, active_units, True, True, False, config
+        size, max_w = PreviewLegendRenderer._measure(self.painter, rows, config)
+
+        self.assertEqual(max_w, 50)  # from fm mock
+        self.assertEqual(size.height(), 2 * 10 + 2 * 5)
+        self.assertEqual(size.width(), 50 + 10 + 3 * 5)
+
+    def test_max_items_truncates(self):
+        """A max-items limit adds a '+N more' row."""
+        rect = QRectF(0, 0, 500, 500)
+        units = {f"U{i}": QColor(0, 0, 0) for i in range(5)}
+
+        PreviewLegendRenderer.draw_legend(
+            self.painter, rect, units, layout={"max_items": 2}
         )
 
-        # 3 items (Topo, Struct, A)
-        self.assertEqual(max_w, 50)  # from fm mock
-        self.assertEqual(size.height(), 3 * 10 + 2 * 5)
-        self.assertEqual(size.width(), 50 + 10 + 3 * 5)
+        texts = [call.args[2] for call in self.painter.drawText.call_args_list]
+        self.assertIn("+3 more", texts)
 
 
 if __name__ == "__main__":
