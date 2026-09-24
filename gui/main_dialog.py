@@ -12,7 +12,7 @@ from typing import Any
 
 from qgis.core import Qgis, QgsProject
 from qgis.PyQt.QtCore import QSettings, QUrl
-from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtGui import QColor, QDesktopServices
 from qgis.PyQt.QtWidgets import QColorDialog, QDialogButtonBox, QPushButton
 
 from sec_interp.gui.dialog_facade_mixin import DialogFacadeMixin
@@ -136,10 +136,14 @@ class SecInterpDialog(
         self.export_manager = ExportManager(self)
         self.state_manager.setup_indicators()
         self.interpretation_manager = InterpretationManager(self, cache=preview_cache)
-        self.preview_widget.side_panel.unit_visibility_changed.connect(
-            self._on_unit_visibility_changed
-        )
-        self.preview_widget.side_panel.unit_color_requested.connect(self._on_unit_color_requested)
+        self._hidden_interp_ids: set[str] = set()
+        panel = self.preview_widget.side_panel
+        panel.unit_visibility_changed.connect(self._on_unit_visibility_changed)
+        panel.unit_color_requested.connect(self._on_unit_color_requested)
+        panel.layer_visibility_changed.connect(self._on_layer_visibility_changed)
+        panel.layer_color_requested.connect(self._on_layer_color_requested)
+        panel.interpretation_visibility_changed.connect(self._on_interp_visibility_changed)
+        panel.interpretation_color_requested.connect(self._on_interp_color_requested)
         self.tool_manager = ToolManager(
             self.preview_widget.canvas,
             self.preview_widget,
@@ -186,6 +190,59 @@ class SecInterpDialog(
         color = QColorDialog.getColor(manager.get_color(name), self, self.tr("Select unit color"))
         if color is not None and color.isValid():
             manager.set_color(name, color)
+            self.preview_manager.update_from_checkboxes()
+
+    def _on_layer_visibility_changed(self, layer_key: str, visible: bool) -> None:
+        """Sync a legend layer row with its Show checkbox."""
+        widget = {
+            "topography": self.preview_widget.chk_topo,
+            "structures": self.preview_widget.chk_struct,
+            "drillholes": self.preview_widget.chk_drillholes,
+        }.get(layer_key)
+        if widget is not None:
+            widget.setChecked(bool(visible))
+
+    def _on_layer_color_requested(self, layer_key: str) -> None:
+        """Edit the global style color of a preview layer."""
+        tab = self.page_settings.symbology_tab
+        button = {
+            "topography": tab.topo_color_button,
+            "structures": tab.struct_color_button,
+            "drillholes": tab.drill_color_button,
+        }.get(layer_key)
+        if button is None:
+            return
+        color = QColorDialog.getColor(button.color(), self, self.tr("Select color"))
+        if color is not None and color.isValid():
+            button.setColor(color)
+            if layer_key == "topography":
+                tab.radio_single.setChecked(True)
+            self.preview_manager.update_from_checkboxes()
+
+    def _on_interp_visibility_changed(self, interp_id: str, visible: bool) -> None:
+        """Hide/show a single interpretation polygon."""
+        if visible:
+            self._hidden_interp_ids.discard(interp_id)
+        else:
+            self._hidden_interp_ids.add(interp_id)
+        self.preview_manager.update_from_checkboxes()
+
+    def _on_interp_color_requested(self, interp_id: str) -> None:
+        """Change the color of a single interpretation polygon."""
+        target = next(
+            (
+                item
+                for item in self.interpretation_manager.interpretations
+                if str(item.id) == interp_id
+            ),
+            None,
+        )
+        if target is None:
+            return
+        current = QColor(str(target.color or "#FF0000"))
+        color = QColorDialog.getColor(current, self, self.tr("Select color"))
+        if color is not None and color.isValid():
+            target.color = color.name()
             self.preview_manager.update_from_checkboxes()
 
     def show_dialog(self, title: str, message: str, level: str = "info") -> Any:

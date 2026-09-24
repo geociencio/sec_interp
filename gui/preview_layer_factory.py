@@ -488,10 +488,16 @@ class PreviewLayerFactory:
         interp_data: list[InterpretationPolygon],
         vert_exag: float = 1.0,
         default_color: str | None = None,
+        hidden_ids: set[str] | None = None,
     ) -> QgsVectorLayer | None:
-        """Create a memory layer for interpretation polygons."""
+        """Create a memory layer for interpretation polygons (hidden ones skipped)."""
         if not interp_data:
             return None
+        hidden = {str(i) for i in (hidden_ids or set())}
+        visible = [i for i in interp_data if str(getattr(i, "id", "")) not in hidden]
+        if not visible:
+            return None
+        interp_data = visible
 
         layer, provider = self.create_memory_layer(
             "Polygon", "Interpretations", "field=id:string&field=name:string"

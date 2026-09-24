@@ -64,6 +64,7 @@ class PreviewRenderer:
         self.has_drillholes = False
         self.is_rendering = False
         self._interpretations: list = []
+        self._hidden_interp_ids: set[str] = set()
 
     @property
     def active_units(self) -> dict[str, Any]:
@@ -102,7 +103,7 @@ class PreviewRenderer:
         """
         self._cleanup_layers()
 
-    def render(
+    def render(  # noqa: PLR0913
         self,
         topo_data: ProfileData,
         geol_data: GeologyData | None = None,
@@ -119,6 +120,7 @@ class PreviewRenderer:
         topo_single_color: str | None = None,
         topo_smooth_data: ProfileData | None = None,
         layer_styles: dict | None = None,
+        hidden_interp_ids: set[str] | None = None,
     ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
         if self.is_rendering:
@@ -126,6 +128,7 @@ class PreviewRenderer:
             return None, []
 
         self._interpretations = list(interp_data or [])
+        self._hidden_interp_ids = {str(i) for i in (hidden_interp_ids or set())}
 
         try:
             self.is_rendering = True
@@ -154,6 +157,7 @@ class PreviewRenderer:
                 topo_single_color,
                 topo_smooth_data,
                 layer_styles,
+                hidden_interp_ids,
             )
 
             if not data_layers:
@@ -231,6 +235,7 @@ class PreviewRenderer:
         topo_single_color: str | None = None,
         topo_smooth_data: ProfileData | None = None,
         layer_styles: dict | None = None,
+        hidden_interp_ids: set[str] | None = None,
     ) -> list:
         """Collect all data layers in order."""
         style = layer_styles or {}
@@ -260,7 +265,10 @@ class PreviewRenderer:
         )
         drill_layers = self._add_drillhole_layers(drill_data, vert_exag, style)
         interp_layer = self.layer_factory.create_interp_layer(
-            interp_data, vert_exag, default_color=style.get("interp_color")
+            interp_data,
+            vert_exag,
+            default_color=style.get("interp_color"),
+            hidden_ids=hidden_interp_ids,
         )
 
         # Combine in Z-order (top to bottom)
@@ -333,7 +341,12 @@ class PreviewRenderer:
             self.has_drillholes,
             manager.labels(),
             drill_units or None,
-            self._interpretations or None,
+            [
+                i
+                for i in self._interpretations
+                if str(getattr(i, "id", "")) not in self._hidden_interp_ids
+            ]
+            or None,
         )
 
     def _cleanup_layers(self, layers: list | None = None) -> None:

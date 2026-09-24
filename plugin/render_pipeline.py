@@ -60,6 +60,7 @@ class RenderPipelineMixin:
             topo_single_color=style.get("single_color_hex"),
             topo_smooth_data=smooth_data,
             layer_styles=style,
+            hidden_interp_ids=getattr(self.dlg, "_hidden_interp_ids", None),
         )
 
         if canvas is None:
@@ -71,7 +72,18 @@ class RenderPipelineMixin:
         side_panel = getattr(self.dlg.preview_widget, "side_panel", None)
         if side_panel is not None:
             # Always populate the panel; it is collapsed by the splitter if hidden.
-            side_panel.update_legend(self.preview_renderer, True, style)
+            layer_visibility = {
+                "topography": options.get("show_topo", True),
+                "structures": options.get("show_struct", True),
+                "drillholes": options.get("show_drillholes", True),
+            }
+            side_panel.update_legend(
+                self.preview_renderer,
+                True,
+                style,
+                layer_visibility,
+                getattr(self.dlg, "_hidden_interp_ids", None),
+            )
             side_panel.update_interpretations(getattr(self.dlg, "interpretations", None))
         symbology_tab = getattr(getattr(self.dlg, "page_settings", None), "symbology_tab", None)
         if symbology_tab is not None:

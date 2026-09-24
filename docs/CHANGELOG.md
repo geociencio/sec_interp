@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation — Structure**: Added `docs/structure/project_structure_table.md`, a tabular Depth 1–5 view of the plugin directory tree.
 
 ### Changed
+- **Legend panel editing**: Topography, Structures and Drillhole traces rows in the legend panel now have a **visibility checkbox** (synced with the Show controls) and a **color button** (synced with Settings → Symbology); each **Interpretation** can be hidden and recolored individually from the panel too.
 - **Legend content**: the preview and exported legends now show the actual symbology (topography mode/color, structures color, drillhole trace color), separate **Geology units** from **Drillhole lithologies** under their own headers, and include the **Interpretations** (they no longer live in a separate panel section and now appear in the exported legend too).
 - **Legend controls**: removed the "Show Legend" checkbox from the preview Controls (the legend now lives in the collapsible side panel). Whether the legend is drawn in the exported image is configured from **Settings → Symbology → Legend**.
 - **Documentation — Vault Numbering**: Removed numeric prefixes from all 68 vault notes (`NN - slug.md` → `slug.md`) and updated all wikilinks and index tables (`#` column removed); navigation is now by sections/tags.

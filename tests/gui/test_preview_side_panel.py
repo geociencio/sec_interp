@@ -47,10 +47,14 @@ class TestPreviewSidePanel(BaseTestCase):
             if getattr(row, "unit_name", None)
         ]
         self.assertEqual(
-            names, ["Topography", "Structures", "Drillhole traces", "UnitA", "UnitB"]
+            names, ["topography", "structures", "drillholes", "UnitA", "UnitB"]
         )
-        unit_rows = [r for r in self.panel._legend_rows if getattr(r, "check", None) is not None]
-        self.assertEqual([r.unit_name for r in unit_rows], ["UnitA", "UnitB"])
+        interactive = [r for r in self.panel._legend_rows if getattr(r, "check", None) is not None]
+        self.assertEqual(
+            [r.unit_name for r in interactive],
+            ["topography", "structures", "drillholes", "UnitA", "UnitB"],
+        )
+        unit_rows = [r for r in interactive if r.unit_name in ("UnitA", "UnitB")]
         self.assertTrue(unit_rows[0].check.isChecked())  # UnitA visible
         self.assertFalse(unit_rows[1].check.isChecked())  # UnitB hidden
 
@@ -97,6 +101,35 @@ class TestPreviewSidePanel(BaseTestCase):
         row.color_requested.emit("UnitA")
 
         handler.assert_called_with("UnitA")
+
+    def test_layer_visibility_emits(self) -> None:
+        """A layer row forwards its visibility toggle."""
+        handler = MagicMock()
+        self.panel.layer_visibility_changed.connect(handler)
+        self.panel.update_legend(_renderer(), visible=True)
+        row = next(
+            r for r in self.panel._legend_rows if getattr(r, "unit_name", None) == "topography"
+        )
+
+        row.check.setChecked(False)
+
+        handler.assert_called_with("topography", False)
+
+    def test_interpretation_visibility_emits(self) -> None:
+        """An interpretation row forwards its visibility toggle by id."""
+        handler = MagicMock()
+        self.panel.interpretation_visibility_changed.connect(handler)
+        self.panel.update_legend(_renderer(), visible=True)
+        self.panel.update_interpretations(
+            [SimpleNamespace(id="i-1", name="chito", color="#ff0000", type="lithology")]
+        )
+        row = next(
+            r for r in self.panel._legend_rows if getattr(r, "unit_name", None) == "i-1"
+        )
+
+        row.check.setChecked(False)
+
+        handler.assert_called_with("i-1", False)
 
     def test_unit_editor_rename_emits(self) -> None:
         """Editing the name emits label_changed with the unit identity."""
