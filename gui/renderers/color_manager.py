@@ -36,6 +36,8 @@ class ColorManager:
         self._overrides: dict[str, QColor] = {}
         self._hidden: set[str] = set()
         self._known_units: set[str] = set()
+        self._labels: dict[str, str] = {}
+        self._order: list[str] = []
 
     def register_units(self, names: Iterable[str]) -> None:
         """Register units known to the current data (visible or hidden)."""
@@ -92,15 +94,62 @@ class ColorManager:
         """Return a copy of the current color overrides."""
         return dict(self._overrides)
 
+    # --- Labels and order ---
+
+    def label(self, name: str) -> str:
+        """Return the display label for a unit (alias or the name)."""
+        key = str(name)
+        return self._labels.get(key, key)
+
+    def set_label(self, name: str, text: str) -> None:
+        """Set (or clear) a display alias for a unit."""
+        key = str(name)
+        value = (text or "").strip()
+        if not value or value == key:
+            self._labels.pop(key, None)
+        else:
+            self._labels[str(name)] = value
+
+    def labels(self) -> dict[str, str]:
+        """Return a copy of the unit label aliases."""
+        return dict(self._labels)
+
+    def ordered_units(self) -> list[str]:
+        """Return known units honoring a custom order, then the rest sorted."""
+        known = self._known_units
+        ordered = [name for name in self._order if name in known]
+        seen = set(ordered)
+        ordered.extend(sorted(name for name in known if name not in seen))
+        return ordered
+
+    def set_order(self, names: Iterable[str]) -> None:
+        """Set the custom display order for the given unit names."""
+        self._order = [str(n) for n in names if n]
+
+    def move_unit(self, name: str, delta: int) -> None:
+        """Move a unit up (-1) or down (+1) in the display order."""
+        order = self.ordered_units()
+        key = str(name)
+        if key not in order:
+            return
+        index = order.index(key)
+        target = index + delta
+        if target < 0 or target >= len(order):
+            return
+        order[index], order[target] = order[target], order[index]
+        self._order = order
+
     def dump(self) -> dict[str, Any]:
-        """Serialize user overrides and hidden units."""
+        """Serialize user overrides, hidden units, labels and order."""
         return {
             "overrides": {name: color.name() for name, color in self._overrides.items()},
             "hidden": sorted(self._hidden),
+            "labels": dict(self._labels),
+            "order": list(self._order),
         }
 
     def load(self, data: dict[str, Any] | None) -> None:
-        """Restore user overrides and hidden units."""
+        """Restore user overrides, hidden units, labels and order."""
         if not data:
             return
         for name, hex_color in (data.get("overrides") or {}).items():
@@ -110,3 +159,6 @@ class ColorManager:
                 self._active_units[str(name)] = color
         for name in data.get("hidden") or []:
             self._hidden.add(str(name))
+        for name, label in (data.get("labels") or {}).items():
+            self._labels[str(name)] = str(label)
+        self._order = [str(n) for n in (data.get("order") or []) if n]

@@ -10,16 +10,20 @@ from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
+    QColorDialog,
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QRadioButton,
+    QScrollArea,
     QVBoxLayout,
     QWidget,
 )
 
 from sec_interp.gui.main_dialog_config import DialogDefaults
+from sec_interp.gui.preview_side_panel import UnitStyleEditor
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -33,6 +37,9 @@ class SymbologyTab(QWidget):
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize the symbology tab."""
         super().__init__(parent)
+        self._unit_manager: Any = None
+        self._unit_rows: list[UnitStyleEditor] = []
+        self._unit_signature: list[tuple] | None = None
         self._setup_ui()
 
     def tr(self, message: str) -> str:
@@ -55,6 +62,7 @@ class SymbologyTab(QWidget):
         layout.addWidget(self._build_structures_group())
         layout.addWidget(self._build_drillholes_group())
         layout.addWidget(self._build_interpretations_group())
+        layout.addWidget(self._build_units_group(), stretch=1)
         layout.addStretch()
 
     def _build_topography_group(self) -> QGroupBox:
@@ -141,6 +149,109 @@ class SymbologyTab(QWidget):
         layout.addWidget(self.interp_color_button, 0, 1)
         return group
 
+    def _build_units_group(self) -> QGroupBox:
+        """Build the per-unit editor (color/hide/rename/reorder)."""
+        group = QGroupBox(self.tr("Units"))
+        layout = QVBoxLayout(group)
+        layout.addWidget(
+            QLabel(self.tr("<i>Hide, recolor, rename or reorder the geology/drillhole units.</i>"))
+        )
+
+        self.units_scroll = QScrollArea()
+        self.units_scroll.setWidgetResizable(True)
+        self.units_container = QWidget()
+        self.units_layout = QVBoxLayout(self.units_container)
+        self.units_layout.setContentsMargins(0, 0, 0, 0)
+        self.units_layout.setSpacing(1)
+        self.units_scroll.setWidget(self.units_container)
+        layout.addWidget(self.units_scroll, stretch=1)
+
+        btn_layout = QHBoxLayout()
+        self.btn_reset_units = QPushButton(self.tr("Reset unit styles"))
+        btn_layout.addStretch()
+        btn_layout.addWidget(self.btn_reset_units)
+        layout.addLayout(btn_layout)
+        return group
+
+    def set_unit_manager(self, manager: Any) -> None:
+        """Inject the ColorManager that backs the per-unit editor."""
+        self._unit_manager = manager
+        self.refresh_units(force=True)
+
+    def refresh_units(self, force: bool = False) -> None:
+        """Rebuild the unit rows when the underlying units change."""
+        manager = self._unit_manager
+        if manager is None:
+            return
+        entries = [
+            (name, manager.label(name), manager.get_color(name).name(), manager.is_hidden(name))
+            for name in manager.ordered_units()
+        ]
+        if not force and entries == self._unit_signature:
+            return
+        self._unit_signature = entries
+        self._rebuild_unit_rows(manager, entries)
+
+    def _rebuild_unit_rows(self, manager: Any, entries: list[tuple]) -> None:
+        """Recreate the editable rows for the current units."""
+        for row in self._unit_rows:
+            self.units_layout.removeWidget(row)
+            row.deleteLater()
+        self._unit_rows = []
+
+        for name, label, color_hex, hidden in entries:
+            row = UnitStyleEditor(
+                name,
+                QColor(color_hex),
+                hidden=hidden,
+                label=label,
+                with_rename=True,
+                with_reorder=True,
+            )
+            row.visibility_changed.connect(self._on_unit_visibility)
+            row.color_requested.connect(self._on_unit_color)
+            row.label_changed.connect(self._on_unit_label)
+            row.move_requested.connect(self._on_unit_move)
+            self.units_layout.insertWidget(len(self._unit_rows), row)
+            self._unit_rows.append(row)
+
+    def _on_unit_visibility(self, name: str, visible: bool) -> None:
+        """Hide/show a unit and refresh the preview."""
+        self._unit_manager.set_hidden(name, not visible)
+        self.changed.emit()
+
+    def _on_unit_color(self, name: str) -> None:
+        """Pick a new color for a unit and refresh the preview."""
+        current = self._unit_manager.get_color(name)
+        color = QColorDialog.getColor(current, self, self.tr("Select unit color"))
+        if color is not None and color.isValid():
+            self._unit_manager.set_color(name, color)
+            self.refresh_units(force=True)
+            self.changed.emit()
+
+    def _on_unit_label(self, name: str, text: str) -> None:
+        """Rename a unit and refresh the preview/legend."""
+        self._unit_manager.set_label(name, text)
+        self.changed.emit()
+
+    def _on_unit_move(self, name: str, delta: int) -> None:
+        """Reorder a unit and refresh the preview/legend."""
+        self._unit_manager.move_unit(name, delta)
+        self.refresh_units(force=True)
+        self.changed.emit()
+
+    def reset_units(self) -> None:
+        """Clear all per-unit customization."""
+        manager = self._unit_manager
+        if manager is None:
+            return
+        for name in list(manager.known_units()):
+            manager.set_hidden(name, False)
+            manager.set_label(name, "")
+        manager.set_order([])
+        self.refresh_units(force=True)
+        self.changed.emit()
+
     def _width_spin(self, value: float) -> QgsDoubleSpinBox:
         """Create a line-width spinbox."""
         spin = QgsDoubleSpinBox()
@@ -219,6 +330,7 @@ class SymbologyTab(QWidget):
         """Connect internal signals."""
         self.radio_gradient.toggled.connect(self._on_topo_mode_changed)
         self.radio_single.toggled.connect(self._on_topo_mode_changed)
+        self.btn_reset_units.clicked.connect(self.reset_units)
         for signal in (
             self.radio_gradient.toggled,
             self.radio_single.toggled,

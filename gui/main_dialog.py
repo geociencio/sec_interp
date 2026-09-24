@@ -107,6 +107,7 @@ class SecInterpDialog(
         self.preview_widget.side_panel.update_interpretations(
             self.interpretation_manager.interpretations
         )
+        self.page_settings.symbology_tab.set_unit_manager(self._unit_color_manager())
 
         self._save_on_close = True
 

@@ -1,10 +1,13 @@
 # Implementation Plan: Live Symbology & Legend Styling Preview (Goal 1.1 / v3.11.0)
 
 **Phase**: v3.11.0 — Goal 1.1 (3D Interpretation & Symbology Enhancements)
-**Status**: 🚧 EN PROGRESO — Fase 0 (decisiones) y **Fase 1 ✅ implementada**
-(pestaña Symbology con estilos por capa, modo de color topo movido desde Section, live
-re-render, persistencia en proyecto). Pendiente: Fase 2 (editor por unidad completo),
-Fase 3 (opciones de leyenda), Fase 4 (presets).
+**Status**: 🚧 EN PROGRESO — Fase 0 (decisiones), **Fase 1 ✅** (pestaña Symbology, estilos
+por capa, topo movido desde Section) y **Fase 2 ✅** (editor por unidad compartido:
+color/ocultar/renombrar/reordenar, alias+orden en leyenda del panel y del export,
+persistencia, reset). Pendiente: Fase 3 (opciones de leyenda) y Fase 4 (presets).
+Nota: los alias de unidad se reflejan en la leyenda del panel y en la leyenda de la imagen
+exportada; dibujar el alias como **texto sobre el mapa** (p. ej. intervalos de sondeo) queda
+como mejora opcional.
 **Created**: 2026-09-23
 **Referencias**: `gui/ui/pages/settings_page.py` (+ `settings/{default,advanced,info}_tab.py`),
 `gui/preview_side_panel.py`, `gui/renderers/*` (`color_manager`, `topo_renderer`,

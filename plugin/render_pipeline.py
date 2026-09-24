@@ -72,6 +72,9 @@ class RenderPipelineMixin:
         if side_panel is not None:
             side_panel.update_legend(self.preview_renderer, options.get("show_legend", True))
             side_panel.update_interpretations(getattr(self.dlg, "interpretations", None))
+        symbology_tab = getattr(getattr(self.dlg, "page_settings", None), "symbology_tab", None)
+        if symbology_tab is not None:
+            symbology_tab.refresh_units()
 
     def _get_filtered_preview_data(
         self, topo: Any, geol: Any, struct: Any, drill: Any, options: dict

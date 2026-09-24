@@ -18,8 +18,8 @@ def _renderer():
         has_structures=True,
         has_drillholes=True,
         legend_units=lambda: [
-            ("UnitA", MagicMock(), False),
-            ("UnitB", MagicMock(), True),
+            ("UnitA", "Unit A", MagicMock(), False),
+            ("UnitB", "Unit B", MagicMock(), True),
         ],
     )
 
@@ -87,6 +87,19 @@ class TestPreviewSidePanel(BaseTestCase):
         row.color_requested.emit("UnitA")
 
         handler.assert_called_with("UnitA")
+
+    def test_unit_editor_rename_emits(self) -> None:
+        """Editing the name emits label_changed with the unit identity."""
+        from sec_interp.gui.preview_side_panel import UnitStyleEditor
+
+        row = UnitStyleEditor("A", MagicMock(), with_rename=True, with_reorder=True)
+        handler = MagicMock()
+        row.label_changed.connect(handler)
+
+        row.name_edit.setText("Alias")
+        row.name_edit.editingFinished.emit()
+
+        handler.assert_called_with("A", "Alias")
 
     def test_update_interpretations(self) -> None:
         """Interpretation polygons become labelled rows."""

@@ -69,12 +69,12 @@ class PreviewRenderer:
         """Expose active units from factory for legend compatibility."""
         return self.layer_factory.active_units
 
-    def legend_units(self) -> list[tuple[str, Any, bool]]:
-        """Return ``(name, color, hidden)`` for every known geological unit."""
+    def legend_units(self) -> list[tuple[str, str, Any, bool]]:
+        """Return ``(name, label, color, hidden)`` for every known unit, ordered."""
         manager = self.layer_factory.color_manager
         return [
-            (name, manager.get_color(name), manager.is_hidden(name))
-            for name in manager.known_units()
+            (name, manager.label(name), manager.get_color(name), manager.is_hidden(name))
+            for name in manager.ordered_units()
         ]
 
     def cleanup(self) -> None:
@@ -307,6 +307,7 @@ class PreviewRenderer:
             self.has_topography,
             self.has_structures,
             self.has_drillholes,
+            self.layer_factory.color_manager.labels(),
         )
 
     def _cleanup_layers(self, layers: list | None = None) -> None:

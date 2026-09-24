@@ -94,3 +94,39 @@ class TestSymbologyTab(BaseTestCase):
         """Signal wiring is symmetric."""
         self.tab.connect_signals()
         self.tab.disconnect_signals()
+
+    def test_units_refresh_and_actions(self) -> None:
+        """The per-unit editor reflects and mutates the ColorManager."""
+        from sec_interp.gui.renderers.color_manager import ColorManager
+
+        manager = ColorManager()
+        manager.register_units({"A", "B"})
+
+        self.tab.set_unit_manager(manager)
+
+        self.assertEqual([row.unit_name for row in self.tab._unit_rows], ["A", "B"])
+
+        self.tab._on_unit_visibility("A", False)
+        self.assertTrue(manager.is_hidden("A"))
+
+        self.tab._on_unit_label("A", "Alias")
+        self.assertEqual(manager.label("A"), "Alias")
+
+        self.tab._on_unit_move("B", -1)
+        self.assertEqual(manager.ordered_units(), ["B", "A"])
+
+    def test_reset_units_clears_customization(self) -> None:
+        """Reset clears hidden flags, labels and order."""
+        from sec_interp.gui.renderers.color_manager import ColorManager
+
+        manager = ColorManager()
+        manager.register_units({"A", "B"})
+        manager.set_hidden("A", True)
+        manager.set_label("A", "Alias")
+        self.tab.set_unit_manager(manager)
+
+        self.tab.reset_units()
+
+        self.assertFalse(manager.is_hidden("A"))
+        self.assertEqual(manager.label("A"), "A")
+        self.assertEqual(manager.ordered_units(), ["A", "B"])

@@ -11,6 +11,7 @@ from qgis.PyQt.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QListWidget,
     QListWidgetItem,
     QScrollArea,
@@ -32,27 +33,35 @@ def _swatch_stylesheet(color: QColor) -> str:
     return f"background-color: {color.name()}; {_SWATCH_STYLE}"
 
 
-class LegendRow(QWidget):
-    """A single legend row (optional visibility toggle + color swatch)."""
+class UnitStyleEditor(QWidget):
+    """A unit row: visibility, color and (optionally) rename/reorder controls."""
 
     visibility_changed = pyqtSignal(str, bool)
     color_requested = pyqtSignal(str)
+    label_changed = pyqtSignal(str, str)
+    move_requested = pyqtSignal(str, int)
 
     def __init__(
         self,
         name: str,
         color: QColor,
         hidden: bool = False,
+        label: str | None = None,
         interactive: bool = True,
+        with_rename: bool = False,
+        with_reorder: bool = False,
         parent: QWidget | None = None,
     ) -> None:
-        """Initialize the legend row.
+        """Initialize the unit row.
 
         Args:
-            name: Unit label.
+            name: Unit identity.
             color: Swatch color.
             hidden: Whether the unit is currently hidden.
+            label: Display label (alias) or the name.
             interactive: Whether to show the visibility/color controls.
+            with_rename: Whether to show an editable name.
+            with_reorder: Whether to show up/down buttons.
             parent: Optional parent widget.
 
         """
@@ -60,6 +69,8 @@ class LegendRow(QWidget):
         self.unit_name = name
         self.check: QCheckBox | None = None
         self.color_button: QWidget | None = None
+        self.name_edit: QLineEdit | None = None
+        display = label or name
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(2, 1, 2, 1)
@@ -81,15 +92,30 @@ class LegendRow(QWidget):
             button.clicked.connect(lambda: self.color_requested.emit(self.unit_name))
             self.color_button = button
             layout.addWidget(button)
-        else:
-            swatch = QLabel()
-            swatch.setFixedSize(12, 12)
-            swatch.setStyleSheet(_swatch_stylesheet(color))
-            layout.addWidget(swatch)
 
-        label = QLabel(str(name))
-        label.setToolTip(str(name))
-        layout.addWidget(label, stretch=1)
+        if with_reorder:
+            layout.addWidget(self._reorder_button("▲", -1))
+            layout.addWidget(self._reorder_button("▼", +1))
+
+        if with_rename:
+            self.name_edit = QLineEdit(display)
+            self.name_edit.setToolTip(self.tr("Rename this unit"))
+            self.name_edit.editingFinished.connect(
+                lambda: self.label_changed.emit(self.unit_name, self.name_edit.text())
+            )
+            layout.addWidget(self.name_edit, stretch=1)
+        else:
+            label_widget = QLabel(display)
+            label_widget.setToolTip(display)
+            layout.addWidget(label_widget, stretch=1)
+
+    def _reorder_button(self, text: str, delta: int) -> QToolButton:
+        """Create a reorder button emitting ``move_requested``."""
+        button = QToolButton()
+        button.setText(text)
+        button.setFixedWidth(18)
+        button.clicked.connect(lambda: self.move_requested.emit(self.unit_name, delta))
+        return button
 
 
 class PreviewSidePanel(QWidget):
@@ -106,7 +132,7 @@ class PreviewSidePanel(QWidget):
 
         """
         super().__init__(parent)
-        self._legend_rows: list[LegendRow] = []
+        self._legend_rows: list[UnitStyleEditor] = []
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -155,21 +181,26 @@ class PreviewSidePanel(QWidget):
         if getattr(renderer, "has_drillholes", False):
             self._add_row(self.tr("Drillholes"), QColor(50, 50, 50), interactive=False)
 
-        for name, color, hidden in self._unit_entries(renderer):
-            self._add_row(name, color, hidden=hidden, interactive=True)
+        for name, label, color, hidden in self._unit_entries(renderer):
+            self._add_row(name, color, hidden=hidden, interactive=True, label=label)
 
-    def _unit_entries(self, renderer: Any) -> list[tuple[str, QColor, bool]]:
-        """Return unit entries from the renderer (known units + hidden flag)."""
+    def _unit_entries(self, renderer: Any) -> list[tuple[str, str, Any, bool]]:
+        """Return unit entries (name, label, color, hidden) from the renderer."""
         if hasattr(renderer, "legend_units"):
             return list(renderer.legend_units())
         units = getattr(renderer, "active_units", None) or {}
-        return [(str(name), color, False) for name, color in sorted(units.items())]
+        return [(str(name), str(name), color, False) for name, color in sorted(units.items())]
 
     def _add_row(
-        self, name: str, color: QColor, hidden: bool = False, interactive: bool = True
+        self,
+        name: str,
+        color: QColor,
+        hidden: bool = False,
+        interactive: bool = True,
+        label: str | None = None,
     ) -> None:
         """Create and wire a legend row widget."""
-        row = LegendRow(name, color, hidden=hidden, interactive=interactive)
+        row = UnitStyleEditor(name, color, hidden=hidden, label=label, interactive=interactive)
         if interactive:
             row.visibility_changed.connect(self.unit_visibility_changed.emit)
             row.color_requested.connect(self.unit_color_requested.emit)

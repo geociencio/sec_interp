@@ -27,6 +27,7 @@ class PreviewLegendRenderer:
         has_topography: bool = False,
         has_structures: bool = False,
         has_drillholes: bool = False,
+        labels: dict[str, str] | None = None,
     ) -> None:
         """Draw legend on the given painter within the rect."""
         if not active_units and not has_topography and not has_structures and not has_drillholes:
@@ -45,7 +46,13 @@ class PreviewLegendRenderer:
         painter.setFont(QFont("Arial", 8))
 
         legend_size, max_text_width = PreviewLegendRenderer._calculate_legend_size(
-            painter, active_units, has_topography, has_structures, has_drillholes, config
+            painter,
+            active_units,
+            has_topography,
+            has_structures,
+            has_drillholes,
+            config,
+            labels,
         )
 
         # Position: Top Right
@@ -95,7 +102,7 @@ class PreviewLegendRenderer:
             current_y += config["item_height"]
 
         PreviewLegendRenderer._draw_geology_items(
-            painter, x, current_y, active_units, max_text_width, config
+            painter, x, current_y, active_units, max_text_width, config, labels
         )
 
         painter.restore()
@@ -108,10 +115,12 @@ class PreviewLegendRenderer:
         has_struct: bool,
         has_drill: bool,
         config: dict[str, Any],
+        labels: dict[str, str] | None = None,
     ) -> tuple[QRectF, float]:
         """Calculate dimensions of the legend box."""
         fm = painter.fontMetrics()
         max_text_width = 0
+        labels = labels or {}
 
         items = []
         if has_topo:
@@ -120,7 +129,7 @@ class PreviewLegendRenderer:
             items.append(QCoreApplication.translate("PreviewLegendRenderer", "Structures"))
         if has_drill:
             items.append(QCoreApplication.translate("PreviewLegendRenderer", "Drillholes"))
-        items.extend(active_units.keys())
+        items.extend(labels.get(name, name) for name in active_units)
 
         for item in items:
             max_text_width = max(max_text_width, fm.boundingRect(item).width())
@@ -175,11 +184,13 @@ class PreviewLegendRenderer:
         units: dict[str, QColor],
         max_width: float,
         config: dict[str, Any],
+        labels: dict[str, str] | None = None,
     ) -> None:
         """Draw geological unit legend items."""
         p = config["padding"]
         ih = config["item_height"]
         ss = config["symbol_size"]
+        labels = labels or {}
 
         for name, color in units.items():
             painter.setBrush(color)
@@ -189,6 +200,8 @@ class PreviewLegendRenderer:
             painter.setPen(QColor(0, 0, 0))
             text_rect = QRectF(x + p * 2 + ss, y, max_width, ih)
             painter.drawText(
-                text_rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, name
+                text_rect,
+                Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+                labels.get(name, name),
             )
             y += ih

@@ -332,6 +332,7 @@ class MockQWidget(MockQObject):
         self.textChanged = mock_signal()
         self.stateChanged = mock_signal()
         self.currentIndexChanged = mock_signal()
+        self.editingFinished = mock_signal()
 
     def setVisible(self, visible):
         """Set widget visibility."""
