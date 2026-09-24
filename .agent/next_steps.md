@@ -120,5 +120,8 @@
    - **Preview side panel — leyenda + interpretaciones + interacción por unidad
      (v3.10.0)** → ✅ IMPLEMENTADO 2026-09-23 (incl. litologías de sondeo).
    - **Selector multi-línea** (deuda; resolver + `section_feature_id` ya listos).
-   - **Goal 1.1** (symbology/legend preview) o **Goal 1.5** (tests proyección).
+   - **Goal 1.1** — Live symbology/legend styling preview (v3.11.0): plan propuesto en
+     `docs/plans/implementation_plan_symbology_preview_v3.11.0.md` (núcleo por unidad ya
+     en v3.10.0; pendiente editor por capa + rename/order + opciones de leyenda).
+   - **Goal 1.5** (tests proyección vertical cartesiana).
    - Preparar **release v3.9.0/v3.9.1** (`/release-plugin`).

@@ -7,7 +7,9 @@
 
 ### Pending Tasks
 
-- [ ] **1.1** Implement a live symbology/legend styling preview under the Settings sidebar
+- [ ] **1.1** Live symbology/legend styling preview under Settings — núcleo por unidad ya
+  entregado (v3.10.0: ocultar/color, incluido sondeos). Pendiente: editor por capa +
+  rename/order + opciones de leyenda. Plan: `docs/plans/implementation_plan_symbology_preview_v3.11.0.md`.
 - [x] **1.2** Adaptive VE — Fases 1-4 COMPLETE ✅ 2026-09-21 (service + toggle + integration + persistence; 24 tests; VE visible en Results + etiqueta junto al checkbox)
 - [ ] **1.5** Expand Cartesian vertical projection integration tests (highly deviated drillhole surveys)
 
