@@ -89,6 +89,11 @@ class UnitStyleEditor(QWidget):
             button.clicked.connect(lambda: self.color_requested.emit(self.unit_name))
             self.color_button = button
             layout.addWidget(button)
+        else:
+            swatch = QLabel()
+            swatch.setFixedSize(12, 12)
+            swatch.setStyleSheet(_swatch_stylesheet(color))
+            layout.addWidget(swatch)
 
         if with_reorder:
             layout.addWidget(self._reorder_button("▲", -1))
