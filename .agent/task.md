@@ -7,9 +7,11 @@
 
 ### Pending Tasks
 
-- [ ] **1.1** Live symbology/legend styling preview under Settings — núcleo por unidad ya
-  entregado (v3.10.0: ocultar/color, incluido sondeos). Pendiente: editor por capa +
-  rename/order + opciones de leyenda. Plan: `docs/plans/implementation_plan_symbology_preview_v3.11.0.md`.
+- [~] **1.1** Live symbology/legend styling preview under Settings — Fases 1–3 COMPLETE ✅
+  (v3.11.0: pestaña Symbology con estilos por capa, editor por unidad rename/order,
+  opciones de leyenda posición/fuente/máximo) + fixes de layout del diálogo.
+  **Pendiente: Fase 4 (presets)**. Plan:
+  `docs/plans/implementation_plan_symbology_preview_v3.11.0.md`.
 - [x] **1.2** Adaptive VE — Fases 1-4 COMPLETE ✅ 2026-09-21 (service + toggle + integration + persistence; 24 tests; VE visible en Results + etiqueta junto al checkbox)
 - [ ] **1.5** Expand Cartesian vertical projection integration tests (highly deviated drillhole surveys)
 
@@ -49,11 +51,22 @@
   perfil-vs-DEM. Suite verde, analyzer 0 issues, smoke QGIS 4 OK. Ver
   `.agent/next_steps.md`.
 
+### Also completed this session (2026-09-23, v3.11.0 — Goal 1.1 Fases 1–3)
+
+- [x] **Live Symbology & Legend Styling (v3.11.0)**: pestaña Settings → Symbology con
+  estilos por capa en vivo (`layer_styles`), editor por unidad compartido
+  (ocultar/color/rename/reorder → alias+orden en leyenda), opciones de leyenda
+  (posición/fuente/máximo "+N more"), leyenda con simbología real separando Geología vs
+  Litologías de sondeo e interpretaciones editables, y fixes de layout (Symbology en
+  scroll + secciones colapsables; diálogo acotado a pantalla). 11 commits
+  (`ba62083a..63b47c99`), 743 tests, analyzer 0 issues. Ver `.agent/next_steps.md`.
+
 ### Resume Point
 
-Bóveda v2 completa ✅. Plan **DEM/Section v3.9.0 completo** ✅ (Fases 0,1,1.5,1.6,2,3).
-Siguiente: **selector multi-línea** (infra lista), **Goal 1.1** (symbology preview)
-o **Goal 1.5** (tests proyección), o preparar **release v3.9.0**.
+Bóveda v2 completa ✅. Plan **DEM/Section v3.9.0 completo** ✅.
+**Goal 1.1 / v3.11.0 Fases 1–3 ✅** (symbology preview + leyenda). Siguiente:
+**Fase 4 — presets de simbología**, **selector multi-línea** (infra lista),
+**Goal 1.5** (tests proyección) o preparar **release v3.9.x/v3.11.0**.
 
 ### Non-blocking Documented Debt
 

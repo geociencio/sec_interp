@@ -1,3 +1,14 @@
+## [2026-09-23] Session: Live Symbology & Legend Styling (Goal 1.1 / v3.11.0)
+- **Achievement**: Advanced Goal 1.1 through Fases 1–3 — a Settings → Symbology tab with live per-layer styles, a shared per-unit editor (hide/color/rename/reorder), and configurable legend layout (position/font/max items) — plus real-QGIS UI layout fixes so the dialog no longer covers the screen. 11 commits (`ba62083a..63b47c99`). Fase 4 (presets) pending.
+- **Changes**:
+    - **Fase 1**: Settings → Symbology tab (topo mode moved from Section; structures/drillhole/interp styles); `layer_styles` plumbed through the render pipeline; project persistence.
+    - **Fase 2**: shared `UnitStyleEditor`; `ColorManager` labels/order; aliases/order reflected in panel + exported legend; "Reset unit styles".
+    - **Fase 3**: `PreviewLegendRenderer.draw_rows(layout)` with position (top/bottom × left/right), font size (6–16) and max items ("+N more").
+    - **Legend**: real symbology; Geology vs Drillhole lithologies headers; interpretations included and editable; overlap fix.
+    - **Layout fixes**: Symbology in a `QScrollArea`; `QgsCollapsibleGroupBox` sections (collapsed by default); dialog height bounded to screen; Settings fills its height; Units list 220 → 340 px. Root cause: collapsible groups don't shrink their minimum until shown (dialog min 1007 → 692 px).
+- **Quality**: 743/743 tests OK · `ruff`/format clean · analyzer 0 issues · layout measured on real QGIS 4.2.1 · Qt imports verified.
+- **Maintenance**: [session_2026-09-23_symbology_legend_styling.md](maintenance/session_2026-09-23_symbology_legend_styling.md)
+
 ## [2026-09-23] Session: Smoothed Geology (v3.9.1) + Preview Side Panel (v3.10.0)
 - **Achievement**: Geology now follows the smoothed profile (v3.9.1, Option A), and the preview legend moved off the canvas into a collapsible side panel with an interpretations list and per-unit hide/color controls (v3.10.0, Goal 1.1 core), including drillhole interval lithologies. 10 commits (`1e2a4ea9..471017b`).
 - **Changes**:

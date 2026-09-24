@@ -16,6 +16,34 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-23'
+    category: TOOLING
+    topic: collapsed Qt group boxes still dictate minimum size until shown
+    lesson: A QgsCollapsibleGroupBox collapsed via setCollapsed(True) before show
+      still reports its children's minimumSizeHint, so "collapsed by default"
+      sections forced the plugin dialog to a 1007 px minimum and fill the screen.
+      Collapse is visual, not a layout-size reduction.
+    action: Do not rely on collapse to shrink a layout; bound the content (wrap in a
+      QScrollArea or cap the height) and verify with a real offscreen probe that
+      measures minimumSizeHint, not just by looking at the code.
+  - date: '2026-09-23'
+    category: TOOLING
+    topic: qgis-analyzer module line count is real lines + 1; re-run it to measure
+    lesson: check_module_sizes reads the cached analysis_results/project_context.json
+      written by qgis-analyzer, whose `lines` is one greater than `wc -l` (trailing
+      newline). Keeping a module at awk=400 still failed the >400 gate (reported 401).
+    action: When a module approaches the 400-line gate, target ≤399 physical lines and
+      confirm by re-running `uv run python scripts/sync_metrics.py` (analyzer-backed),
+      never by wc/awk alone.
+  - date: '2026-09-23'
+    category: ARCHITECTURE
+    topic: extracting a connected slot into a mixin trips POTENTIAL_MISSING_SLOT
+    lesson: After moving reset_units into a UnitsEditorMixin, qgis-analyzer flagged
+      `Connected slot 'self.reset_units' not found in class definitions` because it
+      only inspects the class where the connect() call lives, not mixins.
+    action: When splitting GUI code, move the connect() into the same class/mixin that
+      defines the slot (e.g. a connect_unit_signals() helper), or keep a thin override
+      in the class performing the connect.
+  - date: '2026-09-23'
     category: ENVIRONMENT
     topic: Qt module mocks accept any attribute, hiding wrong-module imports
     lesson: The Qt ModuleProxy mocks return an attribute for any name, so importing
