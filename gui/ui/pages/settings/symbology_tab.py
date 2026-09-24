@@ -62,8 +62,21 @@ class SymbologyTab(QWidget):
         layout.addWidget(self._build_structures_group())
         layout.addWidget(self._build_drillholes_group())
         layout.addWidget(self._build_interpretations_group())
+        layout.addWidget(self._build_legend_group())
         layout.addWidget(self._build_units_group(), stretch=1)
         layout.addStretch()
+
+    def _build_legend_group(self) -> QGroupBox:
+        """Legend options (the preview legend panel is collapsible)."""
+        group = QGroupBox(self.tr("Legend"))
+        layout = QVBoxLayout(group)
+        self.chk_export_legend = QCheckBox(self.tr("Show legend in the exported image"))
+        self.chk_export_legend.setChecked(True)
+        self.chk_export_legend.setToolTip(
+            self.tr("The preview legend lives in the collapsible side panel.")
+        )
+        layout.addWidget(self.chk_export_legend)
+        return group
 
     def _build_topography_group(self) -> QGroupBox:
         """Topography color mode and line width."""
@@ -280,6 +293,7 @@ class SymbologyTab(QWidget):
             "drill_trace_width": self.drill_width_spin.value(),
             "drill_labels": self.chk_drill_labels.isChecked(),
             "interp_color": self.interp_color_button.color().name(),
+            "show_legend": self.chk_export_legend.isChecked(),
         }
 
     def load(self, data: dict[str, Any]) -> None:
@@ -304,6 +318,8 @@ class SymbologyTab(QWidget):
         if data.get("drill_labels") is not None:
             self.chk_drill_labels.setChecked(bool(data["drill_labels"]))
         self._set_color(self.interp_color_button, data.get("interp_color"))
+        if data.get("show_legend") is not None:
+            self.chk_export_legend.setChecked(bool(data["show_legend"]))
         self._on_topo_mode_changed()
 
     @staticmethod
@@ -324,6 +340,7 @@ class SymbologyTab(QWidget):
         self.drill_width_spin.setValue(0.3)
         self.chk_drill_labels.setChecked(True)
         self.interp_color_button.setColor(QColor("#FF0000"))
+        self.chk_export_legend.setChecked(True)
         self._on_topo_mode_changed()
 
     def connect_signals(self) -> None:
@@ -343,6 +360,7 @@ class SymbologyTab(QWidget):
             self.drill_width_spin.valueChanged,
             self.chk_drill_labels.toggled,
             self.interp_color_button.colorChanged,
+            self.chk_export_legend.toggled,
         ):
             signal.connect(self.changed.emit)
 

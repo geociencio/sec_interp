@@ -150,7 +150,6 @@ class SignalManager:
         """Disconnect legend, spinboxes, smoothing and adaptive sampling."""
         widget = self.dialog.preview_widget
         for signal in (
-            widget.chk_legend.stateChanged,
             widget.spin_max_points.valueChanged,
             widget.chk_auto_lod.toggled,
             widget.chk_adaptive_sampling.toggled,
@@ -283,9 +282,6 @@ class SignalManager:
             self.preview_manager.update_from_checkboxes
         )
         self.dialog.preview_widget.chk_interpretations.stateChanged.connect(
-            self.preview_manager.update_from_checkboxes
-        )
-        self.dialog.preview_widget.chk_legend.stateChanged.connect(
             self.preview_manager.update_from_checkboxes
         )
 

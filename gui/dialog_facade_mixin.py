@@ -72,7 +72,9 @@ class DialogFacadeMixin:
             "show_struct": bool(self.preview_widget.chk_struct.isChecked()),
             "show_drillholes": bool(self.preview_widget.chk_drillholes.isChecked()),
             "show_interpretations": bool(self.preview_widget.chk_interpretations.isChecked()),
-            "show_legend": bool(self.preview_widget.chk_legend.isChecked()),
+            "show_legend": bool(
+                self.page_settings.symbology_tab.get_data().get("show_legend", True)
+            ),
             "max_points": self.preview_widget.spin_max_points.value(),
             "auto_lod": self.preview_widget.chk_auto_lod.isChecked(),
             "use_adaptive_sampling": bool(self.preview_widget.chk_adaptive_sampling.isChecked()),
