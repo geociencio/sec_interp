@@ -71,7 +71,7 @@ class RenderPipelineMixin:
         side_panel = getattr(self.dlg.preview_widget, "side_panel", None)
         if side_panel is not None:
             # Always populate the panel; it is collapsed by the splitter if hidden.
-            side_panel.update_legend(self.preview_renderer, True)
+            side_panel.update_legend(self.preview_renderer, True, style)
             side_panel.update_interpretations(getattr(self.dlg, "interpretations", None))
         symbology_tab = getattr(getattr(self.dlg, "page_settings", None), "symbology_tab", None)
         if symbology_tab is not None:

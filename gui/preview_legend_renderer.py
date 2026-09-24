@@ -28,9 +28,20 @@ class PreviewLegendRenderer:
         has_structures: bool = False,
         has_drillholes: bool = False,
         labels: dict[str, str] | None = None,
+        drill_units: dict[str, QColor] | None = None,
     ) -> None:
-        """Draw legend on the given painter within the rect."""
-        if not active_units and not has_topography and not has_structures and not has_drillholes:
+        """Draw legend on the given painter within the rect.
+
+        ``active_units`` are the geology units; ``drill_units`` (when given) are
+        the drillhole lithologies, drawn under their own header.
+        """
+        if (
+            not active_units
+            and not drill_units
+            and not has_topography
+            and not has_structures
+            and not has_drillholes
+        ):
             return
 
         # Configuration
@@ -53,6 +64,7 @@ class PreviewLegendRenderer:
             has_drillholes,
             config,
             labels,
+            drill_units,
         )
 
         # Position: Top Right
@@ -101,9 +113,31 @@ class PreviewLegendRenderer:
             )
             current_y += config["item_height"]
 
-        PreviewLegendRenderer._draw_geology_items(
-            painter, x, current_y, active_units, max_text_width, config, labels
-        )
+        if drill_units:
+            current_y = PreviewLegendRenderer._draw_header(
+                painter,
+                x,
+                current_y,
+                QCoreApplication.translate("PreviewLegendRenderer", "Geology"),
+                config,
+            )
+            current_y = PreviewLegendRenderer._draw_geology_items(
+                painter, x, current_y, active_units, max_text_width, config, labels
+            )
+            current_y = PreviewLegendRenderer._draw_header(
+                painter,
+                x,
+                current_y,
+                QCoreApplication.translate("PreviewLegendRenderer", "Drillhole lithologies"),
+                config,
+            )
+            PreviewLegendRenderer._draw_geology_items(
+                painter, x, current_y, drill_units, max_text_width, config, labels
+            )
+        else:
+            PreviewLegendRenderer._draw_geology_items(
+                painter, x, current_y, active_units, max_text_width, config, labels
+            )
 
         painter.restore()
 
@@ -116,6 +150,7 @@ class PreviewLegendRenderer:
         has_drill: bool,
         config: dict[str, Any],
         labels: dict[str, str] | None = None,
+        drill_units: dict[str, QColor] | None = None,
     ) -> tuple[QRectF, float]:
         """Calculate dimensions of the legend box."""
         fm = painter.fontMetrics()
@@ -129,7 +164,14 @@ class PreviewLegendRenderer:
             items.append(QCoreApplication.translate("PreviewLegendRenderer", "Structures"))
         if has_drill:
             items.append(QCoreApplication.translate("PreviewLegendRenderer", "Drillholes"))
+        if drill_units:
+            items.append(QCoreApplication.translate("PreviewLegendRenderer", "Geology"))
         items.extend(labels.get(name, name) for name in active_units)
+        if drill_units:
+            items.append(
+                QCoreApplication.translate("PreviewLegendRenderer", "Drillhole lithologies")
+            )
+            items.extend(labels.get(name, name) for name in drill_units)
 
         for item in items:
             max_text_width = max(max_text_width, fm.boundingRect(item).width())
@@ -177,6 +219,30 @@ class PreviewLegendRenderer:
         )
 
     @staticmethod
+    def _draw_header(
+        painter: QPainter,
+        x: float,
+        y: float,
+        text: str,
+        config: dict[str, Any],
+    ) -> float:
+        """Draw a bold section header and return the next y position."""
+        p = config["padding"]
+        ih = config["item_height"]
+        font = painter.font()
+        font.setBold(True)
+        painter.setFont(font)
+        painter.setPen(QColor(0, 0, 0))
+        painter.drawText(
+            QRectF(x + p, y, 1000, ih),
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+            text,
+        )
+        font.setBold(False)
+        painter.setFont(font)
+        return y + ih
+
+    @staticmethod
     def _draw_geology_items(
         painter: QPainter,
         x: float,
@@ -185,8 +251,8 @@ class PreviewLegendRenderer:
         max_width: float,
         config: dict[str, Any],
         labels: dict[str, str] | None = None,
-    ) -> None:
-        """Draw geological unit legend items."""
+    ) -> float:
+        """Draw geological unit legend items and return the next y position."""
         p = config["padding"]
         ih = config["item_height"]
         ss = config["symbol_size"]
@@ -205,3 +271,5 @@ class PreviewLegendRenderer:
                 labels.get(name, name),
             )
             y += ih
+
+        return y

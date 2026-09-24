@@ -132,7 +132,7 @@ class PreviewSidePanel(QWidget):
 
         """
         super().__init__(parent)
-        self._legend_rows: list[UnitStyleEditor] = []
+        self._legend_rows: list[QWidget] = []
         self._setup_ui()
 
     def _setup_ui(self) -> None:
@@ -167,29 +167,58 @@ class PreviewSidePanel(QWidget):
 
     # --- Legend ---
 
-    def update_legend(self, renderer: Any, visible: bool = True) -> None:
-        """Rebuild the legend rows from a preview renderer."""
+    def update_legend(self, renderer: Any, visible: bool = True, style: dict | None = None) -> None:
+        """Rebuild the legend rows from a preview renderer and the active styles."""
+        style = style or {}
         self.set_legend_visible(visible)
         self._clear_legend_rows()
         if not visible or renderer is None:
             return
 
         if getattr(renderer, "has_topography", False):
-            self._add_row(self.tr("Topography"), QColor(0, 102, 204), interactive=False)
+            self._add_row(self.tr("Topography"), self._topo_color(style), interactive=False)
         if getattr(renderer, "has_structures", False):
-            self._add_row(self.tr("Structures"), QColor(204, 0, 0), interactive=False)
+            self._add_row(
+                self.tr("Structures"),
+                QColor(str(style.get("struct_color") or "#cc0000")),
+                interactive=False,
+            )
         if getattr(renderer, "has_drillholes", False):
-            self._add_row(self.tr("Drillholes"), QColor(50, 50, 50), interactive=False)
+            self._add_row(
+                self.tr("Drillhole traces"),
+                QColor(str(style.get("drill_trace_color") or "#323232")),
+                interactive=False,
+            )
 
-        for name, label, color, hidden in self._unit_entries(renderer):
+        units = self._unit_entries(renderer)
+        self._add_unit_group(self.tr("Geology"), [u for u in units if u[4] == "geology"])
+        self._add_unit_group(
+            self.tr("Drillhole lithologies"), [u for u in units if u[4] == "drillholes"]
+        )
+
+    @staticmethod
+    def _topo_color(style: dict) -> QColor:
+        """Return the color representing the topography in the legend."""
+        if style.get("color_mode") == "single":
+            return QColor(str(style.get("single_color_hex") or "#1f77b4"))
+        return QColor("#0066cc")
+
+    def _add_unit_group(self, title: str, units: list[tuple]) -> None:
+        """Add a section label and its unit rows."""
+        if not units:
+            return
+        self._add_section_label(title)
+        for name, label, color, hidden, _source in units:
             self._add_row(name, color, hidden=hidden, interactive=True, label=label)
 
-    def _unit_entries(self, renderer: Any) -> list[tuple[str, str, Any, bool]]:
-        """Return unit entries (name, label, color, hidden) from the renderer."""
+    def _unit_entries(self, renderer: Any) -> list[tuple[str, str, Any, bool, str]]:
+        """Return unit entries (name, label, color, hidden, source)."""
         if hasattr(renderer, "legend_units"):
             return list(renderer.legend_units())
         units = getattr(renderer, "active_units", None) or {}
-        return [(str(name), str(name), color, False) for name, color in sorted(units.items())]
+        return [
+            (str(name), str(name), color, False, "geology") for name, color in sorted(units.items())
+        ]
 
     def _add_row(
         self,
@@ -206,6 +235,13 @@ class PreviewSidePanel(QWidget):
             row.color_requested.connect(self.unit_color_requested.emit)
         self.legend_layout.insertWidget(len(self._legend_rows), row)
         self._legend_rows.append(row)
+
+    def _add_section_label(self, text: str) -> None:
+        """Add a bold section header to the legend."""
+        label = QLabel(text)
+        label.setStyleSheet("font-weight: bold; padding-top: 4px;")
+        self.legend_layout.insertWidget(len(self._legend_rows), label)
+        self._legend_rows.append(label)
 
     def _clear_legend_rows(self) -> None:
         """Remove and destroy all legend rows.

@@ -38,12 +38,21 @@ class ColorManager:
         self._known_units: set[str] = set()
         self._labels: dict[str, str] = {}
         self._order: list[str] = []
+        self._sources: dict[str, set[str]] = {"geology": set(), "drillholes": set()}
 
-    def register_units(self, names: Iterable[str]) -> None:
+    def register_units(self, names: Iterable[str], source: str = "geology") -> None:
         """Register units known to the current data (visible or hidden)."""
+        bucket = self._sources.setdefault(source, set())
         for name in names:
             if name:
-                self._known_units.add(str(name))
+                key = str(name)
+                self._known_units.add(key)
+                bucket.add(key)
+
+    def units_for_source(self, source: str) -> list[str]:
+        """Return the ordered unit names registered under a source."""
+        bucket = self._sources.get(source, set())
+        return [name for name in self.ordered_units() if name in bucket]
 
     def known_units(self) -> list[str]:
         """Return every registered unit name, sorted."""

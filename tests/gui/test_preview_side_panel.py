@@ -18,8 +18,8 @@ def _renderer():
         has_structures=True,
         has_drillholes=True,
         legend_units=lambda: [
-            ("UnitA", "Unit A", MagicMock(), False),
-            ("UnitB", "Unit B", MagicMock(), True),
+            ("UnitA", "Unit A", MagicMock(), False, "geology"),
+            ("UnitB", "Unit B", MagicMock(), True, "drillholes"),
         ],
     )
 
@@ -41,9 +41,15 @@ class TestPreviewSidePanel(BaseTestCase):
         """Topography, structures and units become rows (units interactive)."""
         self.panel.update_legend(_renderer(), visible=True)
 
-        names = [row.unit_name for row in self.panel._legend_rows]
-        self.assertEqual(names, ["Topography", "Structures", "Drillholes", "UnitA", "UnitB"])
-        unit_rows = [r for r in self.panel._legend_rows if r.check is not None]
+        names = [
+            row.unit_name
+            for row in self.panel._legend_rows
+            if getattr(row, "unit_name", None)
+        ]
+        self.assertEqual(
+            names, ["Topography", "Structures", "Drillhole traces", "UnitA", "UnitB"]
+        )
+        unit_rows = [r for r in self.panel._legend_rows if getattr(r, "check", None) is not None]
         self.assertEqual([r.unit_name for r in unit_rows], ["UnitA", "UnitB"])
         self.assertTrue(unit_rows[0].check.isChecked())  # UnitA visible
         self.assertFalse(unit_rows[1].check.isChecked())  # UnitB hidden
@@ -63,7 +69,7 @@ class TestPreviewSidePanel(BaseTestCase):
 
         self.panel.update_legend(_renderer(), visible=True)
 
-        self.assertEqual(len(self.panel._legend_rows), 5)
+        self.assertEqual(len(self.panel._legend_rows), 7)
         self.assertTrue(all(getattr(row, "_deleted", False) for row in first_rows))
 
     def test_visibility_toggle_emits(self) -> None:
@@ -71,7 +77,9 @@ class TestPreviewSidePanel(BaseTestCase):
         handler = MagicMock()
         self.panel.unit_visibility_changed.connect(handler)
         self.panel.update_legend(_renderer(), visible=True)
-        row = next(r for r in self.panel._legend_rows if r.unit_name == "UnitA")
+        row = next(
+            r for r in self.panel._legend_rows if getattr(r, "unit_name", None) == "UnitA"
+        )
 
         row.check.setChecked(False)
 
@@ -82,7 +90,9 @@ class TestPreviewSidePanel(BaseTestCase):
         handler = MagicMock()
         self.panel.unit_color_requested.connect(handler)
         self.panel.update_legend(_renderer(), visible=True)
-        row = next(r for r in self.panel._legend_rows if r.unit_name == "UnitA")
+        row = next(
+            r for r in self.panel._legend_rows if getattr(r, "unit_name", None) == "UnitA"
+        )
 
         row.color_requested.emit("UnitA")
 

@@ -69,13 +69,28 @@ class PreviewRenderer:
         """Expose active units from factory for legend compatibility."""
         return self.layer_factory.active_units
 
-    def legend_units(self) -> list[tuple[str, str, Any, bool]]:
-        """Return ``(name, label, color, hidden)`` for every known unit, ordered."""
+    def legend_units(self) -> list[tuple[str, str, Any, bool, str]]:
+        """Return ``(name, label, color, hidden, source)`` for known units, ordered.
+
+        ``source`` is ``"geology"`` or ``"drillholes"``; a unit present in both is
+        attributed to geology.
+        """
         manager = self.layer_factory.color_manager
-        return [
-            (name, manager.label(name), manager.get_color(name), manager.is_hidden(name))
-            for name in manager.ordered_units()
-        ]
+        geology = set(manager.units_for_source("geology"))
+        drillholes = set(manager.units_for_source("drillholes"))
+        entries = []
+        for name in manager.ordered_units():
+            source = "drillholes" if name in drillholes and name not in geology else "geology"
+            entries.append(
+                (
+                    name,
+                    manager.label(name),
+                    manager.get_color(name),
+                    manager.is_hidden(name),
+                    source,
+                )
+            )
+        return entries
 
     def cleanup(self) -> None:
         """Remove transient layers from the project and release resources.
@@ -300,14 +315,21 @@ class PreviewRenderer:
 
     def draw_legend(self, painter: QPainter, rect: QRectF) -> None:
         """Draw legend on the given painter. Delegates to PreviewLegendRenderer."""
+        manager = self.layer_factory.color_manager
+        geology_set = set(manager.units_for_source("geology"))
+        drill_set = set(manager.units_for_source("drillholes"))
+        active = self.active_units
+        geology_units = {n: c for n, c in active.items() if n in geology_set or n not in drill_set}
+        drill_units = {n: c for n, c in active.items() if n in drill_set and n not in geology_set}
         self.legend_renderer.draw_legend(
             painter,
             rect,
-            self.active_units,
+            geology_units,
             self.has_topography,
             self.has_structures,
             self.has_drillholes,
-            self.layer_factory.color_manager.labels(),
+            manager.labels(),
+            drill_units or None,
         )
 
     def _cleanup_layers(self, layers: list | None = None) -> None:
