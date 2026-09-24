@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Legend panel editing**: Topography, Structures and Drillhole traces rows in the legend panel now have a **visibility checkbox** (synced with the Show controls) and a **color button** (synced with Settings → Symbology); each **Interpretation** can be hidden and recolored individually from the panel too.
 - **Legend content**: the preview and exported legends now show the actual symbology (topography mode/color, structures color, drillhole trace color), separate **Geology units** from **Drillhole lithologies** under their own headers, and include the **Interpretations** (they no longer live in a separate panel section and now appear in the exported legend too).
 - **Legend controls**: removed the "Show Legend" checkbox from the preview Controls (the legend now lives in the collapsible side panel). Whether the legend is drawn in the exported image is configured from **Settings → Symbology → Legend**.
+- **Settings — Symbology layout**: the sections (Topography, Structures, Drillholes, Interpretations, Legend, Units) are now **collapsible and start collapsed**, and the tab scrolls, so a long list no longer forces the dialog to grow. The **Units** list is roomier (up to 340 px) and the settings panel fills the available height.
 - **Documentation — Vault Numbering**: Removed numeric prefixes from all 68 vault notes (`NN - slug.md` → `slug.md`) and updated all wikilinks and index tables (`#` column removed); navigation is now by sections/tags.
 - **Repository**: Ignored Obsidian vault editor state (`.obsidian/`) via `.gitignore`.
 - **Documentation — Website**: the published site now builds `en` + `es` (was 14 near-English languages); a language is published once its `USER_GUIDE` reaches ≥80%. The in-plugin offline help keeps all UI languages.
@@ -44,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CI**: `.github/workflows/docs.yml` builds all languages and publishes to `geociencio/sec_interp_docs`; `test.yml` runs the docs consistency check.
 
 ### Fixed
+- **Plugin window size**: the dialog no longer opens covering (almost) the whole screen — its height is bounded, the Symbology content scrolls instead of expanding it, and the settings panel no longer leaves empty space below.
 - **DEM / Section — freeze with mixed CRS**: fixed a hang that could freeze QGIS (and force rebooting) when the DEM and section line were in different CRS (common with on-the-fly reprojection). Densification is now bounded and the sampling interval is computed in the section line's units.
 - **Structural measurements**: symbols now sit on the topographic profile (they were drawn at elevation 0), and the Dip/Strike field selectors populate again after choosing the structural layer.
 - **Drillholes**: collar elevation sampled from the DEM now respects the CRS difference.

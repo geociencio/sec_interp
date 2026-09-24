@@ -46,6 +46,10 @@ class SettingsPage(BasePage):
         self.tab_widget = QTabWidget()
         layout.addWidget(self.tab_widget)
 
+        # Let the settings box fill the available page height instead of
+        # leaving empty space below it (the base page adds a trailing stretch).
+        self.main_layout.setStretchFactor(self.group_box, 1)
+
         self.default_tab = DefaultTab()
         self.tab_widget.addTab(self.default_tab, self.tr("Default"))
 

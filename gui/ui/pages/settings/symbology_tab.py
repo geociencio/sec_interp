@@ -5,7 +5,12 @@ from __future__ import annotations
 import contextlib
 from typing import Any
 
-from qgis.gui import QgsColorButton, QgsColorRampButton, QgsDoubleSpinBox
+from qgis.gui import (
+    QgsCollapsibleGroupBox,
+    QgsColorButton,
+    QgsColorRampButton,
+    QgsDoubleSpinBox,
+)
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
@@ -13,12 +18,12 @@ from qgis.PyQt.QtWidgets import (
     QColorDialog,
     QComboBox,
     QGridLayout,
-    QGroupBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
     QRadioButton,
     QScrollArea,
+    QSizePolicy,
     QSpinBox,
     QVBoxLayout,
     QWidget,
@@ -44,6 +49,8 @@ class SymbologyTab(QWidget):
         self._unit_manager: Any = None
         self._unit_rows: list[UnitStyleEditor] = []
         self._unit_signature: list[tuple] | None = None
+        # Do not let the tab's content dictate the dialog size.
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         self._setup_ui()
 
     def tr(self, message: str) -> str:
@@ -51,8 +58,15 @@ class SymbologyTab(QWidget):
         return QCoreApplication.translate("SymbologyTab", message)  # type: ignore[no-any-return]
 
     def _setup_ui(self) -> None:
-        """Build the symbology tab layout."""
-        layout = QVBoxLayout(self)
+        """Build the symbology tab layout inside a scroll area."""
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+
+        # The tab content scrolls so it never forces the dialog to grow.
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        content = QWidget()
+        layout = QVBoxLayout(content)
         layout.addWidget(QLabel(self.tr("<b>Layer Symbology</b>")))
         layout.addWidget(
             QLabel(
@@ -67,12 +81,21 @@ class SymbologyTab(QWidget):
         layout.addWidget(self._build_drillholes_group())
         layout.addWidget(self._build_interpretations_group())
         layout.addWidget(self._build_legend_group())
-        layout.addWidget(self._build_units_group(), stretch=1)
+        layout.addWidget(self._build_units_group())
         layout.addStretch()
 
-    def _build_legend_group(self) -> QGroupBox:
+        self.scroll.setWidget(content)
+        outer.addWidget(self.scroll)
+
+    def _collapsible_group(self, title: str) -> QgsCollapsibleGroupBox:
+        """Create a collapsible section, collapsed by default."""
+        group = QgsCollapsibleGroupBox(title)
+        group.setCollapsed(True)
+        return group
+
+    def _build_legend_group(self) -> QgsCollapsibleGroupBox:
         """Legend options (export toggle, position, font size, item limit)."""
-        group = QGroupBox(self.tr("Legend"))
+        group = self._collapsible_group(self.tr("Legend"))
         layout = QGridLayout(group)
 
         self.chk_export_legend = QCheckBox(self.tr("Show legend in the exported image"))
@@ -110,9 +133,9 @@ class SymbologyTab(QWidget):
         layout.addWidget(self.spin_legend_max, 3, 1)
         return group
 
-    def _build_topography_group(self) -> QGroupBox:
+    def _build_topography_group(self) -> QgsCollapsibleGroupBox:
         """Topography color mode and line width."""
-        group = QGroupBox(self.tr("Topography"))
+        group = self._collapsible_group(self.tr("Topography"))
         layout = QGridLayout(group)
 
         layout.addWidget(QLabel(self.tr("Color mode")), 0, 0)
@@ -144,9 +167,9 @@ class SymbologyTab(QWidget):
         self._on_topo_mode_changed()
         return group
 
-    def _build_structures_group(self) -> QGroupBox:
+    def _build_structures_group(self) -> QgsCollapsibleGroupBox:
         """Structural dip symbol color and width."""
-        group = QGroupBox(self.tr("Structures"))
+        group = self._collapsible_group(self.tr("Structures"))
         layout = QGridLayout(group)
 
         self.struct_color_button = QgsColorButton()
@@ -160,9 +183,9 @@ class SymbologyTab(QWidget):
         layout.addWidget(self.struct_width_spin, 1, 1)
         return group
 
-    def _build_drillholes_group(self) -> QGroupBox:
+    def _build_drillholes_group(self) -> QgsCollapsibleGroupBox:
         """Drillhole trace color, width and labels."""
-        group = QGroupBox(self.tr("Drillholes"))
+        group = self._collapsible_group(self.tr("Drillholes"))
         layout = QGridLayout(group)
 
         self.drill_color_button = QgsColorButton()
@@ -180,9 +203,9 @@ class SymbologyTab(QWidget):
         layout.addWidget(self.chk_drill_labels, 2, 0, 1, 2)
         return group
 
-    def _build_interpretations_group(self) -> QGroupBox:
+    def _build_interpretations_group(self) -> QgsCollapsibleGroupBox:
         """Build the interpretations default-color group."""
-        group = QGroupBox(self.tr("Interpretations"))
+        group = self._collapsible_group(self.tr("Interpretations"))
         layout = QGridLayout(group)
 
         self.interp_color_button = QgsColorButton()
@@ -194,9 +217,9 @@ class SymbologyTab(QWidget):
         layout.addWidget(self.interp_color_button, 0, 1)
         return group
 
-    def _build_units_group(self) -> QGroupBox:
+    def _build_units_group(self) -> QgsCollapsibleGroupBox:
         """Build the per-unit editor (color/hide/rename/reorder)."""
-        group = QGroupBox(self.tr("Units"))
+        group = self._collapsible_group(self.tr("Units"))
         layout = QVBoxLayout(group)
         layout.addWidget(
             QLabel(self.tr("<i>Hide, recolor, rename or reorder the geology/drillhole units.</i>"))
@@ -204,12 +227,16 @@ class SymbologyTab(QWidget):
 
         self.units_scroll = QScrollArea()
         self.units_scroll.setWidgetResizable(True)
+        # Bound the height so a long unit list scrolls instead of forcing the
+        # whole dialog to grow.
+        self.units_scroll.setMinimumHeight(240)
+        self.units_scroll.setMaximumHeight(340)
         self.units_container = QWidget()
         self.units_layout = QVBoxLayout(self.units_container)
         self.units_layout.setContentsMargins(0, 0, 0, 0)
         self.units_layout.setSpacing(1)
         self.units_scroll.setWidget(self.units_container)
-        layout.addWidget(self.units_scroll, stretch=1)
+        layout.addWidget(self.units_scroll)
 
         btn_layout = QHBoxLayout()
         self.btn_reset_units = QPushButton(self.tr("Reset unit styles"))
