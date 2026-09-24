@@ -135,7 +135,7 @@ class PreviewLegendRenderer:
                 QCoreApplication.translate("PreviewLegendRenderer", "Drillhole lithologies"),
                 config,
             )
-            PreviewLegendRenderer._draw_geology_items(
+            current_y = PreviewLegendRenderer._draw_geology_items(
                 painter, x, current_y, drill_units, max_text_width, config, labels
             )
         else:

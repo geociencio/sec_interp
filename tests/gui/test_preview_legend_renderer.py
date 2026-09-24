@@ -69,6 +69,28 @@ class TestPreviewLegendRenderer(BaseTestCase):
         # Header + 2 items
         self.assertEqual(self.painter.drawText.call_count, 3)
 
+    def test_interpretations_header_follows_drill_items(self):
+        """The Interpretations header must be below the last drill item."""
+        rect = QRectF(0, 0, 500, 500)
+        drill = {"D1": QColor(255, 0, 0), "D2": QColor(0, 255, 0)}
+        interpretations = [SimpleNamespace(name="i1", color="#ff0000", type="lith")]
+
+        PreviewLegendRenderer.draw_legend(
+            self.painter,
+            rect,
+            {},
+            drill_units=drill,
+            interpretations=interpretations,
+        )
+
+        ys = {}
+        for call in self.painter.drawText.call_args_list:
+            text_rect = call.args[0]
+            text = call.args[2]
+            ys[text] = text_rect.y()
+
+        self.assertGreater(ys["Interpretations"], ys["D2"])
+
     def test_calculate_legend_size(self):
         """Test legend size calculation."""
         config = {"padding": 5, "item_height": 10, "symbol_size": 10}
