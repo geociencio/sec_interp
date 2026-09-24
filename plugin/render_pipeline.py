@@ -70,6 +70,7 @@ class RenderPipelineMixin:
         side_panel = getattr(self.dlg.preview_widget, "side_panel", None)
         if side_panel is not None:
             side_panel.update_legend(self.preview_renderer, options.get("show_legend", True))
+            side_panel.update_interpretations(getattr(self.dlg, "interpretations", None))
 
     def _get_filtered_preview_data(
         self, topo: Any, geol: Any, struct: Any, drill: Any, options: dict

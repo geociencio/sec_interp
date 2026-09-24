@@ -102,6 +102,12 @@ class SecInterpDialog(
         self.state_manager.update_all()
         self.state_manager.load_settings()
 
+        # Load interpretations after settings so the persisted source is applied.
+        self.interpretation_manager.load_interpretations()
+        self.preview_widget.side_panel.update_interpretations(
+            self.interpretation_manager.interpretations
+        )
+
         self._save_on_close = True
 
     def _init_managers(self) -> None:
@@ -129,10 +135,6 @@ class SecInterpDialog(
         self.export_manager = ExportManager(self)
         self.state_manager.setup_indicators()
         self.interpretation_manager = InterpretationManager(self, cache=preview_cache)
-        self.interpretation_manager.load_interpretations()
-        self.preview_widget.side_panel.update_interpretations(
-            self.interpretation_manager.interpretations
-        )
         self.preview_widget.side_panel.unit_visibility_changed.connect(
             self._on_unit_visibility_changed
         )
