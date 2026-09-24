@@ -1,3 +1,13 @@
+## [2026-09-23] Session: Smoothed Geology (v3.9.1) + Preview Side Panel (v3.10.0)
+- **Achievement**: Geology now follows the smoothed profile (v3.9.1, Option A), and the preview legend moved off the canvas into a collapsible side panel with an interpretations list and per-unit hide/color controls (v3.10.0, Goal 1.1 core), including drillhole interval lithologies. 10 commits (`1e2a4ea9..471017b`).
+- **Changes**:
+    - **v3.9.1**: `PreviewParams.smooth/smooth_window` + hash; `GeologyExtractor.extract_context(smoothing_window_m)` smooths the master profile; controller/orchestrator pass the window; Smooth invalidates S2. Structures/collars/stats stay raw.
+    - **v3.10.0 L-A**: new `gui/preview_side_panel.py` (legend + interpretations); canvas|panel `QSplitter` (persisted); overlay `LegendWidget` removed; export legend unchanged.
+    - **v3.10.0 L-B**: `ColorManager` overrides/hidden/registry (dump/load); `build_categorized_line_style(hidden=…)`; per-unit visibility + color (QColorDialog) and persistence (`DialogSettingsPersistence.unit_style`); drillhole "Drillholes" entry + interval lithologies.
+    - **Fixes**: `QColorDialog` import (QtWidgets); orphan "QGIS4" windows (deleteLater); interpretations list refreshed on load/render.
+- **Quality**: 729/729 tests OK · `ruff`/format clean · analyzer 0 issues · Qt imports verified on real QGIS 4.2.1 · smoke OK.
+- **Maintenance**: [session_2026-09-23_smoothed_geology_and_side_panel.md](maintenance/session_2026-09-23_smoothed_geology_and_side_panel.md)
+
 ## [2026-09-23] Session: Optional Smoothed Topography Profile
 - **Achievement**: Added an optional smoothed topography profile — a Smooth control in the preview Controls overlays a soft-red smoothed line on the colored profile and the export writes extra smoothed CSV/vector files. 2 commits (`3094a1f1`, `76fc6206`).
 - **Changes**:

@@ -27,6 +27,13 @@
   etiquetado, sampler CRS-aware (geología/estructuras/collares), fix de combos
   estructurales. Suite verde (unittest 666), smoke QGIS 4 OK. Ver `.agent/next_steps.md`.
 
+### Also completed this session (2026-09-23, v3.9.1 + v3.10.0)
+
+- [x] **Smoothed geology (v3.9.1)** + **Preview side panel (v3.10.0)**: geology follows
+  the smoothed profile; collapsible legend panel with interpretations list and per-unit
+  hide/color (incl. drillhole lithologies), persisted. 729 tests, analyzer 0 issues.
+  Ver `.agent/next_steps.md`.
+
 ### Also completed this session (2026-09-23, smoothed profile)
 
 - [x] **Optional smoothed topography profile** (`3094a1f1`, `76fc6206`):

@@ -16,6 +16,31 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-23'
+    category: ENVIRONMENT
+    topic: Qt module mocks accept any attribute, hiding wrong-module imports
+    lesson: The Qt ModuleProxy mocks return an attribute for any name, so importing
+      QColorDialog from qgis.PyQt.QtGui passed 700+ tests but broke plugin startup in
+      real QGIS (QColorDialog lives in QtWidgets). Mocks could not catch it.
+    action: For new Qt imports, verify the class exists in the exact real module
+      (introspect the system QGIS python) and import the top-level plugin/module under
+      real QGIS before declaring done.
+  - date: '2026-09-23'
+    category: TECHNICAL
+    topic: setParent(None) on a visible widget makes it a top-level window
+    lesson: Clearing dynamic legend rows with row.setParent(None) promoted each
+      previously visible row to an orphan top-level window ("QGIS4"), one per unit on
+      every re-render.
+    action: When rebuilding dynamic child widgets, remove them from the layout and call
+      deleteLater() (never leave them parentless-but-visible).
+  - date: '2026-09-23'
+    category: ARCHITECTURE
+    topic: load persisted state after settings restore; refresh panels on render
+    lesson: Interpretations were loaded before settings restore, so the persisted source
+      was ignored and the side-panel list stayed empty on reopen; it also only refreshed
+      on explicit events.
+    action: Load persisted data after settings are applied, and refresh UI panels from
+      the canonical state on every render so reopens and indirect changes are covered.
+  - date: '2026-09-23'
     category: TESTING
     topic: Qt widget mocks are mixed fidelity; check each mapping before asserting
     lesson: In tests, QCheckBox/QComboBox map to MockQWidget (real setChecked/isChecked)

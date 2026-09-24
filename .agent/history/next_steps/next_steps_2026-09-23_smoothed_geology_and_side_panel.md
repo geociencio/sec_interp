@@ -8,8 +8,7 @@
   Fixes reales en QGIS 4 (import QColorDialog, ventanas huérfanas, lista de interpretaciones).
 - **Commits**: `1e2a4ea9`, `ccd081b9`, `bc29b4fb`, `1d82db0f`, `99e00a06`, `aa14a45`,
   `1ca3208`, `148cb14`, `ffcb1bb`, `471017b`.
-- **Calidad**: suite verde (unittest 729; ground truth 778) · ruff/format limpios ·
-  analyzer 0 issues · smoke QGIS 4 OK.
+- **Calidad**: 729 tests OK · ruff/format limpios · analyzer 0 issues · smoke QGIS 4 OK.
 - **Referencia**: `docs/maintenance/session_2026-09-23_smoothed_geology_and_side_panel.md`.
 - **Sin bugs abiertos**. Diferidos: selector multi-línea, desacoplar ocultado
   geología/sondeo, opciones de layout de la leyenda en export, remuestreo bilineal,
