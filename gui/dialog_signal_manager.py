@@ -176,6 +176,7 @@ class SignalManager:
             self.dialog.page_geology.dataChanged,
             self.dialog.page_struct.dataChanged,
             self.dialog.page_drillhole.dataChanged,
+            self.dialog.page_settings.symbology_tab.changed,
             self.dialog.output_widget.fileChanged,
         ):
             with contextlib.suppress(Exception):
@@ -300,6 +301,11 @@ class SignalManager:
         # Smoothing affects the geology geometry: invalidate the preview (S2)
         widget.chk_smooth.toggled.connect(self.state_manager.update_button_state)
         widget.spin_smooth_window.valueChanged.connect(self.state_manager.update_button_state)
+
+        # Symbology changes re-render the preview live (presentation only)
+        self.dialog.page_settings.symbology_tab.changed.connect(
+            self.preview_manager.update_from_checkboxes
+        )
 
     def _connect_page_signals(self) -> None:
         """Connect page-specific signals for state updates."""

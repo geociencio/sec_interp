@@ -1,7 +1,10 @@
 # Implementation Plan: Live Symbology & Legend Styling Preview (Goal 1.1 / v3.11.0)
 
 **Phase**: v3.11.0 — Goal 1.1 (3D Interpretation & Symbology Enhancements)
-**Status**: 📝 PLAN — proposed, pending scope confirmation
+**Status**: 🚧 EN PROGRESO — Fase 0 (decisiones) y **Fase 1 ✅ implementada**
+(pestaña Symbology con estilos por capa, modo de color topo movido desde Section, live
+re-render, persistencia en proyecto). Pendiente: Fase 2 (editor por unidad completo),
+Fase 3 (opciones de leyenda), Fase 4 (presets).
 **Created**: 2026-09-23
 **Referencias**: `gui/ui/pages/settings_page.py` (+ `settings/{default,advanced,info}_tab.py`),
 `gui/preview_side_panel.py`, `gui/renderers/*` (`color_manager`, `topo_renderer`,
@@ -136,17 +139,17 @@ Definir la **fuente única de verdad** del estilo y evitar controles duplicados:
 - Editor de simbología de la capa origen en QGIS (solo memory layers del preview).
 - Remuestreo bilineal / suavizado (ya cubierto en v3.9.1).
 
-## 10. Decisiones abiertas (a confirmar antes de implementar)
+## 10. Decisiones (resueltas 2026-09-23)
 
-1. **Ubicación del modo de color topo**: ¿mover de *Section* a *Settings → Symbology*,
-   o reflejar (dos vistas del mismo estado)?
-2. **Editor por unidad**: ¿vive en *Settings → Symbology* (y el panel lateral queda como
-   vista rápida), o al revés?
-3. **Alcance del renombrado/reordenado**: ¿solo visual (leyenda) o también etiquetas en
-   el canvas (traza de sondeo)?
-4. **Persistencia**: ¿todo el estilo en el **proyecto**, o también en **QgsSettings**
-   (global entre proyectos)?
-5. **Presets**: ¿en esta versión o diferidos?
+1. **Modo de color topo** → **se MUEVE** de *Section* a *Settings → Symbology* (SSoT).
+2. **Editor por unidad** → en *Settings → Symbology* la opción **más óptima**: editor
+   completo como SSoT y el **panel lateral** como vista rápida reutilizando el mismo
+   widget (`UnitStyleEditor`) y el mismo `ColorManager`.
+3. **Renombrar/reordenar** → afecta **también a las etiquetas del canvas** (p. ej., traza
+   de sondeo `hole_id` y etiquetas de leyenda).
+4. **Persistencia** → en el **proyecto** (`SecInterp` entries), vía
+   `DialogSettingsPersistence`.
+5. **Presets** → **en esta versión** (guardar/cargar estilos).
 
 ## 11. Fases / entregables (resumen)
 

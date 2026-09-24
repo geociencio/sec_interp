@@ -46,6 +46,29 @@ class DialogSettingsPersistence:
         self._load_output_settings()
         self.dialog.preview_widget.load(self._read_page(self.dialog.preview_widget))
         self._load_unit_style()
+        self._load_symbology()
+
+    def _symbology_tab(self) -> Any:
+        """Return the settings Symbology tab, if available."""
+        return getattr(getattr(self.dialog, "page_settings", None), "symbology_tab", None)
+
+    def _save_symbology(self) -> None:
+        """Persist the per-layer symbology in the project."""
+        tab = self._symbology_tab()
+        if tab is None:
+            return
+        data = tab.get_data()
+        if isinstance(data, dict):
+            self._set_setting("symbology", json.dumps(data))
+
+    def _load_symbology(self) -> None:
+        """Restore the per-layer symbology from the project."""
+        tab = self._symbology_tab()
+        if tab is None:
+            return
+        data = self._parse_persisted_value("symbology")
+        if isinstance(data, dict):
+            tab.load(data)
 
     def _unit_color_manager(self) -> Any:
         """Return the preview renderer's ColorManager, if available."""
@@ -83,6 +106,7 @@ class DialogSettingsPersistence:
         self._save_output_settings()
         self._write_page(self.dialog.preview_widget, self.dialog.preview_widget.dump())
         self._save_unit_style()
+        self._save_symbology()
 
         # Trigger a fresh reload of settings in the controller
         if self.config and hasattr(self.dialog, "plugin_instance"):

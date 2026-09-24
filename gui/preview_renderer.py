@@ -102,6 +102,7 @@ class PreviewRenderer:
         topo_ramp_name: str | None = None,
         topo_single_color: str | None = None,
         topo_smooth_data: ProfileData | None = None,
+        layer_styles: dict | None = None,
     ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
         if self.is_rendering:
@@ -134,6 +135,7 @@ class PreviewRenderer:
                 topo_ramp_name,
                 topo_single_color,
                 topo_smooth_data,
+                layer_styles,
             )
 
             if not data_layers:
@@ -210,8 +212,10 @@ class PreviewRenderer:
         topo_ramp_name: str | None = None,
         topo_single_color: str | None = None,
         topo_smooth_data: ProfileData | None = None,
+        layer_styles: dict | None = None,
     ) -> list:
         """Collect all data layers in order."""
+        style = layer_styles or {}
         # Topography & Geology
         topo_layer = self.layer_factory.create_topo_layer(
             topo_data,
@@ -221,6 +225,7 @@ class PreviewRenderer:
             topo_color_mode,
             topo_ramp_name,
             topo_single_color,
+            line_width=style.get("topo_line_width"),
         )
         if topo_layer:
             self.has_topography = True
@@ -228,14 +233,17 @@ class PreviewRenderer:
         topo_smooth = self.layer_factory.create_smoothed_topo_layer(
             topo_smooth_data, vert_exag, max_points
         )
-
         topo_fill = self.layer_factory.create_topo_fill_layer(topo_data, vert_exag, max_points)
         geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
 
         # Specialized layers
-        struct_layer = self._add_struct_layer(struct_data, topo_data, geol_data, vert_exag, dip_len)
-        drill_layers = self._add_drillhole_layers(drill_data, vert_exag)
-        interp_layer = self.layer_factory.create_interp_layer(interp_data, vert_exag)
+        struct_layer = self._add_struct_layer(
+            struct_data, topo_data, geol_data, vert_exag, dip_len, style
+        )
+        drill_layers = self._add_drillhole_layers(drill_data, vert_exag, style)
+        interp_layer = self.layer_factory.create_interp_layer(
+            interp_data, vert_exag, default_color=style.get("interp_color")
+        )
 
         # Combine in Z-order (top to bottom)
         candidates = [
@@ -249,21 +257,36 @@ class PreviewRenderer:
         ]
         return [L for L in candidates if L is not None]
 
-    def _add_struct_layer(self, data, topo, geol, exag, dip_len) -> Any | None:
+    def _add_struct_layer(self, data, topo, geol, exag, dip_len, style=None) -> Any | None:
         """Create structural layer if data exists."""
         ref = topo if topo else ([p for s in geol for p in s.points] if geol else None)
-        layer = self.layer_factory.create_struct_layer(data, ref, exag, dip_len)
+        style = style or {}
+        layer = self.layer_factory.create_struct_layer(
+            data,
+            ref,
+            exag,
+            dip_len,
+            color=style.get("struct_color"),
+            width=style.get("struct_width"),
+        )
         if layer:
             self.has_structures = True
         return layer
 
-    def _add_drillhole_layers(self, data, exag) -> list:
+    def _add_drillhole_layers(self, data, exag, style=None) -> list:
         """Create drillhole layers if data exists."""
         layers = []
         if not data:
             return layers
 
-        t_layer = self.layer_factory.create_drillhole_trace_layer(data, exag)
+        style = style or {}
+        t_layer = self.layer_factory.create_drillhole_trace_layer(
+            data,
+            exag,
+            color=style.get("drill_trace_color"),
+            width=style.get("drill_trace_width"),
+            labels=style.get("drill_labels", True),
+        )
         if t_layer:
             layers.append(t_layer)
 

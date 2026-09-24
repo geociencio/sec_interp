@@ -20,6 +20,7 @@ from sec_interp.logger_config import get_logger
 from .base_page import BasePage
 from .settings import AdvancedTab, DefaultTab, build_info_tab
 from .settings.settings_persistence import load_settings, save_settings
+from .settings.symbology_tab import SymbologyTab
 
 logger = get_logger(__name__)
 
@@ -50,6 +51,9 @@ class SettingsPage(BasePage):
 
         self.advanced_tab = AdvancedTab()
         self.tab_widget.addTab(self.advanced_tab, self.tr("Advanced"))
+
+        self.symbology_tab = SymbologyTab()
+        self.tab_widget.addTab(self.symbology_tab, self.tr("Symbology"))
 
         self.info_tab = build_info_tab(self.tr)
         self.tab_widget.addTab(self.info_tab, self.tr("Plugin Information"))
@@ -96,6 +100,7 @@ class SettingsPage(BasePage):
         """
         data = self.default_tab.get_data()
         data.update(self.advanced_tab.get_data())
+        data.update(self.symbology_tab.get_data())
         return data
 
     def validate(self) -> tuple[bool, str]:
@@ -111,14 +116,19 @@ class SettingsPage(BasePage):
         """Connect internal signals for the settings page."""
         self.default_tab.changed.connect(self._on_settings_changed)
         self.advanced_tab.changed.connect(self._on_settings_changed)
+        self.symbology_tab.changed.connect(self._on_settings_changed)
         self.default_tab.connect_signals()
         self.advanced_tab.connect_signals()
+        self.symbology_tab.connect_signals()
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         self.default_tab.disconnect_signals()
         self.advanced_tab.disconnect_signals()
+        self.symbology_tab.disconnect_signals()
         with contextlib.suppress(TypeError, RuntimeError):
             self.default_tab.changed.disconnect(self._on_settings_changed)
         with contextlib.suppress(TypeError, RuntimeError):
             self.advanced_tab.changed.disconnect(self._on_settings_changed)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.symbology_tab.changed.disconnect(self._on_settings_changed)

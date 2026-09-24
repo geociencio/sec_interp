@@ -33,7 +33,7 @@ class RenderPipelineMixin:
         if vert_exag is None:
             vert_exag = self.dlg.page_dem.vertexag_spin.value()
         dip_length = self._calculate_dip_length(struct_data)
-        style = self.dlg.page_section.get_data()
+        style = self.dlg.page_settings.symbology_tab.get_data()
 
         filtered = self._get_filtered_preview_data(
             topo_data, geol_data, struct_data, drillhole_data, options
@@ -59,6 +59,7 @@ class RenderPipelineMixin:
             topo_ramp_name=style.get("ramp_name"),
             topo_single_color=style.get("single_color_hex"),
             topo_smooth_data=smooth_data,
+            layer_styles=style,
         )
 
         if canvas is None:
