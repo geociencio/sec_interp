@@ -1,19 +1,17 @@
-"""Side panel shown beside the preview canvas (legend + interpretations)."""
+"""Side panel shown beside the preview canvas (legend with layers and units)."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from qgis.PyQt.QtCore import Qt, pyqtSignal
-from qgis.PyQt.QtGui import QColor, QIcon, QPainter, QPixmap
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QListWidget,
-    QListWidgetItem,
     QScrollArea,
     QToolButton,
     QVBoxLayout,
@@ -24,7 +22,6 @@ from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
-_ICON_SIZE = 12
 _SWATCH_STYLE = "border: 1px solid #888;"
 
 
@@ -34,7 +31,7 @@ def _swatch_stylesheet(color: QColor) -> str:
 
 
 class UnitStyleEditor(QWidget):
-    """A unit row: visibility, color and (optionally) rename/reorder controls."""
+    """A row: visibility, color and (optionally) rename/reorder controls."""
 
     visibility_changed = pyqtSignal(str, bool)
     color_requested = pyqtSignal(str)
@@ -52,12 +49,12 @@ class UnitStyleEditor(QWidget):
         with_reorder: bool = False,
         parent: QWidget | None = None,
     ) -> None:
-        """Initialize the unit row.
+        """Initialize the row.
 
         Args:
-            name: Unit identity.
+            name: Identity (unit name or entry key).
             color: Swatch color.
-            hidden: Whether the unit is currently hidden.
+            hidden: Whether the entry is currently hidden.
             label: Display label (alias) or the name.
             interactive: Whether to show the visibility/color controls.
             with_rename: Whether to show an editable name.
@@ -119,7 +116,7 @@ class UnitStyleEditor(QWidget):
 
 
 class PreviewSidePanel(QWidget):
-    """Legend and interpretations panel docked next to the preview canvas."""
+    """Legend panel (layers, units and interpretations) beside the canvas."""
 
     unit_visibility_changed = pyqtSignal(str, bool)
     unit_color_requested = pyqtSignal(str)
@@ -133,10 +130,14 @@ class PreviewSidePanel(QWidget):
         """
         super().__init__(parent)
         self._legend_rows: list[QWidget] = []
+        self._interpretations: list = []
+        self._renderer: Any = None
+        self._legend_style: dict = {}
+        self._legend_visible = True
         self._setup_ui()
 
     def _setup_ui(self) -> None:
-        """Build the legend and interpretations sections."""
+        """Build the legend section."""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
         layout.setSpacing(6)
@@ -151,29 +152,33 @@ class PreviewSidePanel(QWidget):
         self.legend_layout.setSpacing(1)
         self.legend_scroll.setWidget(self.legend_container)
         legend_layout.addWidget(self.legend_scroll)
-        layout.addWidget(self.legend_group, stretch=2)
-
-        self.interp_group = QGroupBox(self.tr("Interpretations"))
-        interp_layout = QVBoxLayout(self.interp_group)
-        self.interp_list = QListWidget()
-        self.interp_list.setTextElideMode(Qt.TextElideMode.ElideRight)
-        self.interp_list.setWordWrap(False)
-        self.interp_list.setUniformItemSizes(True)
-        self.interp_list.setToolTip(self.tr("Interpretation polygons drawn on the section"))
-        interp_layout.addWidget(self.interp_list)
-        layout.addWidget(self.interp_group, stretch=1)
+        layout.addWidget(self.legend_group)
 
         self.legend_layout.addStretch(1)
 
     # --- Legend ---
 
     def update_legend(self, renderer: Any, visible: bool = True, style: dict | None = None) -> None:
-        """Rebuild the legend rows from a preview renderer and the active styles."""
-        style = style or {}
+        """Rebuild all legend rows from a preview renderer and the active styles."""
+        self._renderer = renderer
+        self._legend_visible = visible
+        self._legend_style = style or {}
         self.set_legend_visible(visible)
+        self._rebuild_rows()
+
+    def update_interpretations(self, interpretations: list | None) -> None:
+        """Update the interpretations shown inside the legend."""
+        self._interpretations = list(interpretations or [])
+        if self._renderer is not None:
+            self._rebuild_rows()
+
+    def _rebuild_rows(self) -> None:
+        """Rebuild the legend rows from the stored renderer/style/interpretations."""
         self._clear_legend_rows()
-        if not visible or renderer is None:
+        renderer = self._renderer
+        if not self._legend_visible or renderer is None:
             return
+        style = self._legend_style
 
         if getattr(renderer, "has_topography", False):
             self._add_row(self.tr("Topography"), self._topo_color(style), interactive=False)
@@ -195,6 +200,7 @@ class PreviewSidePanel(QWidget):
         self._add_unit_group(
             self.tr("Drillhole lithologies"), [u for u in units if u[4] == "drillholes"]
         )
+        self._add_interpretation_group()
 
     @staticmethod
     def _topo_color(style: dict) -> QColor:
@@ -210,6 +216,17 @@ class PreviewSidePanel(QWidget):
         self._add_section_label(title)
         for name, label, color, hidden, _source in units:
             self._add_row(name, color, hidden=hidden, interactive=True, label=label)
+
+    def _add_interpretation_group(self) -> None:
+        """Add the interpretations as a legend section (read-only)."""
+        if not self._interpretations:
+            return
+        self._add_section_label(self.tr("Interpretations"))
+        for interp in self._interpretations:
+            name = getattr(interp, "name", "") or getattr(interp, "type", "")
+            label = str(name) if name else self.tr("(unnamed)")
+            color = QColor(str(getattr(interp, "color", "") or "#FF0000"))
+            self._add_row(label, color, interactive=False, label=label)
 
     def _unit_entries(self, renderer: Any) -> list[tuple[str, str, Any, bool, str]]:
         """Return unit entries (name, label, color, hidden, source)."""
@@ -238,7 +255,8 @@ class PreviewSidePanel(QWidget):
 
     def _add_section_label(self, text: str) -> None:
         """Add a bold section header to the legend."""
-        label = QLabel(text)
+        label = QLabel()
+        label.setText(text)
         label.setStyleSheet("font-weight: bold; padding-top: 4px;")
         self.legend_layout.insertWidget(len(self._legend_rows), label)
         self._legend_rows.append(label)
@@ -258,31 +276,3 @@ class PreviewSidePanel(QWidget):
     def set_legend_visible(self, visible: bool) -> None:
         """Show or hide the legend section."""
         self.legend_group.setVisible(bool(visible))
-
-    # --- Interpretations ---
-
-    def update_interpretations(self, interpretations: list | None) -> None:
-        """Refresh the interpretations list (read-only)."""
-        self.interp_list.clear()
-        for interp in interpretations or []:
-            name = getattr(interp, "name", "") or getattr(interp, "type", "")
-            label = str(name) if name else self.tr("(unnamed)")
-            color = QColor(str(getattr(interp, "color", "") or "#FF0000"))
-            item = QListWidgetItem(label)
-            item.setIcon(self._color_icon(color))
-            item.setToolTip(label)
-            self.interp_list.addItem(item)
-
-    # --- Icon helpers ---
-
-    @staticmethod
-    def _color_icon(color: QColor) -> QIcon:
-        """Return a small filled square icon for a geological unit color."""
-        pixmap = QPixmap(_ICON_SIZE, _ICON_SIZE)
-        pixmap.fill(Qt.GlobalColor.transparent)
-        painter = QPainter(pixmap)
-        painter.setPen(Qt.PenStyle.NoPen)
-        painter.setBrush(color)
-        painter.drawRect(1, 1, _ICON_SIZE - 2, _ICON_SIZE - 2)
-        painter.end()
-        return QIcon(pixmap)

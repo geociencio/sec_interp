@@ -63,6 +63,7 @@ class PreviewRenderer:
         self.has_structures = False
         self.has_drillholes = False
         self.is_rendering = False
+        self._interpretations: list = []
 
     @property
     def active_units(self) -> dict[str, Any]:
@@ -123,6 +124,8 @@ class PreviewRenderer:
         if self.is_rendering:
             logger.warning("Render already in progress, skipping overlapping call.")
             return None, []
+
+        self._interpretations = list(interp_data or [])
 
         try:
             self.is_rendering = True
@@ -330,6 +333,7 @@ class PreviewRenderer:
             self.has_drillholes,
             manager.labels(),
             drill_units or None,
+            self._interpretations or None,
         )
 
     def _cleanup_layers(self, layers: list | None = None) -> None:

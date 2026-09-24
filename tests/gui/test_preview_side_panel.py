@@ -111,20 +111,22 @@ class TestPreviewSidePanel(BaseTestCase):
 
         handler.assert_called_with("A", "Alias")
 
-    def test_update_interpretations(self) -> None:
-        """Interpretation polygons become labelled rows."""
-        items = [
-            SimpleNamespace(name="chito", color="#ff0000", type="lithology"),
-            SimpleNamespace(name="angie", color="#00ff00", type="fault"),
-        ]
+    def test_interpretations_added_to_legend(self) -> None:
+        """Interpretations appear as a section inside the legend."""
+        self.panel.update_legend(_renderer(), visible=True)
+        self.panel.update_interpretations(
+            [SimpleNamespace(name="chito", color="#ff0000", type="lithology")]
+        )
 
-        self.panel.update_interpretations(items)
+        unit_names = [getattr(row, "unit_name", None) for row in self.panel._legend_rows]
+        headers = [row.text() for row in self.panel._legend_rows if hasattr(row, "text")]
+        self.assertIn("chito", unit_names)
+        self.assertIn("Interpretations", headers)
 
-        self.assertEqual(self.panel.interp_list.count(), 2)
-        self.assertEqual(self.panel.interp_list.item(0).text(), "chito")
-
-    def test_update_interpretations_empty(self) -> None:
-        """An empty list leaves the interpretations list empty."""
+    def test_interpretations_empty_not_shown(self) -> None:
+        """No Interpretations section when there are none."""
+        self.panel.update_legend(_renderer(), visible=True)
         self.panel.update_interpretations([])
 
-        self.assertEqual(self.panel.interp_list.count(), 0)
+        headers = [row.text() for row in self.panel._legend_rows if hasattr(row, "text")]
+        self.assertNotIn("Interpretations", headers)

@@ -29,15 +29,18 @@ class PreviewLegendRenderer:
         has_drillholes: bool = False,
         labels: dict[str, str] | None = None,
         drill_units: dict[str, QColor] | None = None,
+        interpretations: list | None = None,
     ) -> None:
         """Draw legend on the given painter within the rect.
 
         ``active_units`` are the geology units; ``drill_units`` (when given) are
-        the drillhole lithologies, drawn under their own header.
+        the drillhole lithologies, drawn under their own header; ``interpretations``
+        adds an Interpretations section.
         """
         if (
             not active_units
             and not drill_units
+            and not interpretations
             and not has_topography
             and not has_structures
             and not has_drillholes
@@ -65,6 +68,7 @@ class PreviewLegendRenderer:
             config,
             labels,
             drill_units,
+            interpretations,
         )
 
         # Position: Top Right
@@ -135,8 +139,20 @@ class PreviewLegendRenderer:
                 painter, x, current_y, drill_units, max_text_width, config, labels
             )
         else:
-            PreviewLegendRenderer._draw_geology_items(
+            current_y = PreviewLegendRenderer._draw_geology_items(
                 painter, x, current_y, active_units, max_text_width, config, labels
+            )
+
+        if interpretations:
+            current_y = PreviewLegendRenderer._draw_header(
+                painter,
+                x,
+                current_y,
+                QCoreApplication.translate("PreviewLegendRenderer", "Interpretations"),
+                config,
+            )
+            current_y = PreviewLegendRenderer._draw_interpretation_items(
+                painter, x, current_y, interpretations, max_text_width, config
             )
 
         painter.restore()
@@ -151,6 +167,7 @@ class PreviewLegendRenderer:
         config: dict[str, Any],
         labels: dict[str, str] | None = None,
         drill_units: dict[str, QColor] | None = None,
+        interpretations: list | None = None,
     ) -> tuple[QRectF, float]:
         """Calculate dimensions of the legend box."""
         fm = painter.fontMetrics()
@@ -172,6 +189,12 @@ class PreviewLegendRenderer:
                 QCoreApplication.translate("PreviewLegendRenderer", "Drillhole lithologies")
             )
             items.extend(labels.get(name, name) for name in drill_units)
+        if interpretations:
+            items.append(QCoreApplication.translate("PreviewLegendRenderer", "Interpretations"))
+            items.extend(
+                str(getattr(i, "name", "") or getattr(i, "type", "") or "?")
+                for i in interpretations
+            )
 
         for item in items:
             max_text_width = max(max_text_width, fm.boundingRect(item).width())
@@ -269,6 +292,36 @@ class PreviewLegendRenderer:
                 text_rect,
                 Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
                 labels.get(name, name),
+            )
+            y += ih
+
+        return y
+
+    @staticmethod
+    def _draw_interpretation_items(
+        painter: QPainter,
+        x: float,
+        y: float,
+        interpretations: list,
+        max_width: float,
+        config: dict[str, Any],
+    ) -> float:
+        """Draw interpretation legend items and return the next y position."""
+        p = config["padding"]
+        ih = config["item_height"]
+        ss = config["symbol_size"]
+
+        for interp in interpretations:
+            name = getattr(interp, "name", "") or getattr(interp, "type", "") or "?"
+            color = QColor(str(getattr(interp, "color", "") or "#FF0000"))
+            painter.setBrush(color)
+            painter.setPen(Qt.PenStyle.NoPen)
+            painter.drawRect(QRectF(x + p, y + (ih - ss) / 2, ss, ss))
+            painter.setPen(QColor(0, 0, 0))
+            painter.drawText(
+                QRectF(x + p * 2 + ss, y, max_width, ih),
+                Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+                str(name),
             )
             y += ih
 

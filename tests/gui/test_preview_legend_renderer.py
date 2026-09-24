@@ -1,11 +1,14 @@
 """Tests for PreviewLegendRenderer."""
 
 import unittest
+from types import SimpleNamespace
 from unittest.mock import MagicMock
-from tests.base_test import BaseTestCase
-from qgis.PyQt.QtCore import QRectF, Qt
-from qgis.PyQt.QtGui import QColor, QFont
+
+from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtGui import QColor
+
 from sec_interp.gui.preview_legend_renderer import PreviewLegendRenderer
+from tests.base_test import BaseTestCase
 
 
 class TestPreviewLegendRenderer(BaseTestCase):
@@ -49,6 +52,22 @@ class TestPreviewLegendRenderer(BaseTestCase):
 
         self.painter.save.assert_called_once()
         self.assertEqual(self.painter.drawText.call_count, 1)
+
+    def test_draw_legend_with_interpretations(self):
+        """Interpretations add a section header plus one item each."""
+        rect = QRectF(0, 0, 500, 500)
+        interpretations = [
+            SimpleNamespace(name="chito", color="#ff0000", type="lithology"),
+            SimpleNamespace(name="angie", color="#00ff00", type="fault"),
+        ]
+
+        PreviewLegendRenderer.draw_legend(
+            self.painter, rect, {}, interpretations=interpretations
+        )
+
+        self.painter.save.assert_called_once()
+        # Header + 2 items
+        self.assertEqual(self.painter.drawText.call_count, 3)
 
     def test_calculate_legend_size(self):
         """Test legend size calculation."""
