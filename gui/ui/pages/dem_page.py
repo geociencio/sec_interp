@@ -154,7 +154,7 @@ class DemPage(BasePage):
         provider = layer.dataProvider()
         try:
             stats = provider.bandStatistics(
-                band, QgsRasterBandStats.All, QgsRectangle(), STATS_SAMPLE_SIZE
+                band, QgsRasterBandStats.Stats.All, QgsRectangle(), STATS_SAMPLE_SIZE
             )
         except (AttributeError, TypeError, ValueError, RuntimeError):
             logger.warning("Could not compute DEM band statistics (band %s)", band, exc_info=True)
