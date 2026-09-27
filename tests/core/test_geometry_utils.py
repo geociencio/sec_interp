@@ -77,6 +77,19 @@ class TestGeometryProcessing(BaseTestCase):
         self.assertEqual(densify_line_points([], 1.0), [])
         self.assertEqual(densify_line_points([(0, 0)], 1.0), [(0, 0)])
 
+    def test_densify_line_points_caps_pathological_interval(self):
+        """A tiny interval on a long line is clamped to a safe vertex count."""
+        from sec_interp.core.utils.geometry_utils.processing import (
+            MAX_DENSIFY_POINTS,
+        )
+
+        # 50 km line with a 0.000138 interval (~362M requested vertices).
+        result = densify_line_points([(0, 0), (50_000, 0)], 0.000138)
+
+        self.assertLessEqual(len(result), MAX_DENSIFY_POINTS + 1)
+        self.assertEqual(result[0], (0, 0))
+        self.assertEqual(result[-1], (50_000, 0))
+
     def test_interpolate_segment_points(self):
         """Test distance-to-point conversion with interpolation."""
         grid = [(0.0, None, 100.0), (10.0, None, 110.0), (20.0, None, 120.0)]

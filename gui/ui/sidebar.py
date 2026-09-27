@@ -45,12 +45,15 @@ class Sidebar(QListWidget):
             }
         """)
 
-    def add_item(self, text: str, icon_name: str | None = None) -> None:
+    def add_item(self, text: str, icon_name: str | None = None) -> QListWidgetItem:
         """Add an item to the sidebar.
 
         Args:
             text (str): Item label.
             icon_name (str): QGIS theme icon name (e.g. 'mIconRaster.svg').
+
+        Returns:
+            The created item (so callers can toggle it later).
 
         """
         item = QListWidgetItem(text)
@@ -61,3 +64,4 @@ class Sidebar(QListWidget):
         # Center text alignment
         item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.addItem(item)
+        return item

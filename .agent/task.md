@@ -1,4 +1,4 @@
-# Active Task Board (Updated 2026-09-21)
+# Active Task Board (Updated 2026-09-23)
 
 ## 🎯 Current Focus: Goal 1 — 3D Interpretation & Symbology Enhancements
 
@@ -20,9 +20,25 @@
   (302 notas, `check_notes.py --strict` PASS, 0 enlaces rotos). Tooling + `project_structure_table.md`.
   Ver `.agent/next_steps.md`.
 
+### Also completed this session (2026-09-23, beyond the plan)
+
+- [x] **CRS Sampling Hardening + Structure/Section fixes** (6 commits
+  `baf11d8c..eb9ffa20`): anti-cuelgue DEM/CRS, detección bloqueante de CRS mal
+  etiquetado, sampler CRS-aware (geología/estructuras/collares), fix de combos
+  estructurales. Suite verde (unittest 666), smoke QGIS 4 OK. Ver `.agent/next_steps.md`.
+
+### Also completed this session (2026-09-23, DEM/Section v3.9.0)
+
+- [x] **Fases 1.5 + 1.6 + 2 + 3** completadas (`2a14767b..6d342189`): resolver
+  central de la sección, stats de banda del DEM, modo de color topo, stats
+  perfil-vs-DEM. Suite verde, analyzer 0 issues, smoke QGIS 4 OK. Ver
+  `.agent/next_steps.md`.
+
 ### Resume Point
 
-Bóveda v2 completa ✅. Siguiente: **Goal 1.1** (symbology preview) o **1.5** (tests proyección cartesiana).
+Bóveda v2 completa ✅. Plan **DEM/Section v3.9.0 completo** ✅ (Fases 0,1,1.5,1.6,2,3).
+Siguiente: **selector multi-línea** (infra lista), **Goal 1.1** (symbology preview)
+o **Goal 1.5** (tests proyección), o preparar **release v3.9.0**.
 
 ### Non-blocking Documented Debt
 

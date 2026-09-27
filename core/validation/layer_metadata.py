@@ -35,6 +35,12 @@ class LayerMetadata:
         band_count: Raster band count (0 for vectors).
         feature_count: Number of features (0 for rasters).
         crs_authid: CRS authority ID (e.g. ``"EPSG:4326"``).
+        crs_is_geographic: Whether the declared CRS is geographic, or None.
+        extent_xmin: Layer extent minimum X (layer CRS units), or None.
+        extent_ymin: Layer extent minimum Y (layer CRS units), or None.
+        extent_xmax: Layer extent maximum X (layer CRS units), or None.
+        extent_ymax: Layer extent maximum Y (layer CRS units), or None.
+        pixel_size_x: Raster pixel size in the raster CRS units, or None.
 
     """
 
@@ -47,3 +53,9 @@ class LayerMetadata:
     band_count: int = 0
     feature_count: int = 0
     crs_authid: str | None = None
+    crs_is_geographic: bool | None = None
+    extent_xmin: float | None = None
+    extent_ymin: float | None = None
+    extent_xmax: float | None = None
+    extent_ymax: float | None = None
+    pixel_size_x: float | None = None

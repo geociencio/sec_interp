@@ -48,7 +48,7 @@ class DrillholeExtractor:
         """Translate a message using QCoreApplication."""
         return QCoreApplication.translate("DrillholeExtractor", message)  # type: ignore[no-any-return]
 
-    def extract_context(
+    def extract_context(  # noqa: PLR0913
         self,
         line_layer: QgsVectorLayer,
         buffer_width: float,
@@ -65,6 +65,7 @@ class DrillholeExtractor:
         interval_fields: dict[str, str],
         dem_layer: QgsRasterLayer | None = None,
         band_num: int = 1,
+        feature_id: int | None = None,
     ) -> DrillholeContext | None:
         """Extract a fully-detached :class:`DrillholeContext`.
 
@@ -84,6 +85,7 @@ class DrillholeExtractor:
             interval_fields: Interval field mapping.
             dem_layer: Optional DEM for fallback collar elevation.
             band_num: Raster band for elevation sampling.
+            feature_id: Section feature id (first feature when ``None``).
 
         Returns:
             A detached :class:`DrillholeContext`, or None if no line geometry.
@@ -106,7 +108,7 @@ class DrillholeExtractor:
             interval_fields,
         )
 
-        line_geom = self._read_line_geometry(line_layer)
+        line_geom = self._read_line_geometry(line_layer, feature_id)
         if line_geom is None:
             return None
 
@@ -155,9 +157,11 @@ class DrillholeExtractor:
             pre_sampled_z=pre_sampled_z,
         )
 
-    def _read_line_geometry(self, line_lyr: QgsVectorLayer) -> QgsGeometry | None:
-        """Read and validate the first feature geometry of the line layer."""
-        line_feat = next(line_lyr.getFeatures(), None)
+    def _read_line_geometry(
+        self, line_lyr: QgsVectorLayer, feature_id: int | None = None
+    ) -> QgsGeometry | None:
+        """Read and validate the section line geometry."""
+        line_feat = geometry.resolve_section_feature(line_lyr, feature_id)
         if not line_feat:
             raise DataMissingError(self.tr("Line layer has no features"))
 
@@ -288,7 +292,7 @@ class DrillholeExtractor:
 
             collar_data.append({"id": hid, "point": point, "attributes": attrs})
 
-            z = self._pre_sample_z(feat, attrs, hid, z_field, point, dem_layer)
+            z = self._pre_sample_z(feat, attrs, hid, z_field, point, dem_layer, target_crs)
             if z is not None:
                 pre_sampled_z[hid] = z
 
@@ -347,6 +351,7 @@ class DrillholeExtractor:
         z_field: str,
         point: tuple[float, float],
         dem_layer: QgsRasterLayer | None,
+        reference_crs: QgsCoordinateReferenceSystem | None = None,
     ) -> float | None:
         """Sample collar Z from DEM if missing from the attribute field."""
         z_val = 0.0
@@ -357,13 +362,18 @@ class DrillholeExtractor:
                 z_val = 0.0
 
         if z_val == 0.0 and dem_layer:
-            elev = self._sample_elevation(dem_layer, point)
+            elev = self._sample_elevation(dem_layer, point, reference_crs)
             if elev:
                 return elev
         return None
 
-    def _sample_elevation(self, dem_layer: QgsRasterLayer, point: tuple[float, float]) -> float:
-        """Sample a single elevation value from a raster layer."""
+    def _sample_elevation(
+        self,
+        dem_layer: QgsRasterLayer,
+        point: tuple[float, float],
+        source_crs: QgsCoordinateReferenceSystem | None = None,
+    ) -> float:
+        """Sample a single elevation value, reprojecting to the raster CRS."""
         if not dem_layer or not dem_layer.isValid():
             return 0.0
-        return geometry.sample_point_elevation(dem_layer, point)
+        return geometry.sample_point_elevation(dem_layer, point, source_crs=source_crs)

@@ -23,6 +23,9 @@ class ValidationParams:
     raster_layer: LayerMetadata | None = None
     band_number: int | None = None
     line_layer: LayerMetadata | None = None
+    line_vertex_count: int | None = None
+    line_length: float | None = None
+    section_feature_id: int | None = None
     output_path: str = ""
     scale: float = 1.0
     vert_exag: float = 1.0
@@ -64,6 +67,7 @@ class ProjectValidator:
         """Perform a comprehensive validation of all project parameters."""
         from .pipeline import ValidationPipeline
         from .project_validators import (
+            CrsPlausibilityValidator,
             DEMValidator,
             DrillholeValidator,
             GeologyValidator,
@@ -77,6 +81,7 @@ class ProjectValidator:
             [
                 SectionValidator(),
                 DEMValidator(),
+                CrsPlausibilityValidator(),
                 GeologyValidator(),
                 StructureValidator(),
                 DrillholeValidator(),
@@ -92,15 +97,59 @@ class ProjectValidator:
     def validate_preview_requirements(cls, params: ValidationParams) -> bool:
         """Validate only the minimum requirements needed to generate a preview."""
         from .pipeline import ValidationPipeline
-        from .project_validators import DEMValidator, SectionValidator
+        from .project_validators import (
+            CrsPlausibilityValidator,
+            DEMValidator,
+            SectionValidator,
+        )
 
         context = ValidationContext()
-        pipeline = ValidationPipeline([SectionValidator(), DEMValidator()])
+        pipeline = ValidationPipeline(
+            [SectionValidator(), DEMValidator(), CrsPlausibilityValidator()]
+        )
         pipeline.execute(params, context)
         context.raise_if_errors()
         return True
 
     # --- Compatibility Helpers / Legacy Proxies ---
+
+    @classmethod
+    def crs_compatibility_warning(cls, params: ValidationParams) -> str:
+        """Return a CRS-mismatch warning for the configured layers, or ``""``.
+
+        Non-blocking: QGIS reprojects on the fly, but a mismatch can degrade
+        accuracy (and, for rasters, sampling intervals expressed in the wrong
+        CRS). The first valid configured layer is used as reference, so the DEM
+        (if present) leads the comparison.
+        """
+        from .layer_validator import validate_crs_compatibility
+
+        metadata = [
+            params.raster_layer,
+            params.line_layer,
+            params.outcrop_layer,
+            params.struct_layer,
+            params.collar_layer,
+            params.survey_layer,
+            params.interval_layer,
+        ]
+        is_compatible, message = validate_crs_compatibility([m for m in metadata if m is not None])
+        return "" if is_compatible else message
+
+    @classmethod
+    def crs_plausibility_error(cls, params: ValidationParams) -> str:
+        """Return a blocking message for mislabelled-CRS suspects, or ``""``.
+
+        Best-effort heuristic on layer extents (see ``crs_plausibility``). A
+        wrong CRS label produces silently wrong profiles, so it is treated as a
+        hard error rather than a warning.
+        """
+        from .crs_plausibility import configured_layer_metadata, implausible_crs_reason
+
+        reasons = [
+            implausible_crs_reason(metadata) for metadata in configured_layer_metadata(params)
+        ]
+        return "\n".join(reason for reason in reasons if reason)
 
     @classmethod
     def is_drillhole_complete(cls, params: ValidationParams) -> bool:
@@ -113,6 +162,17 @@ class ProjectValidator:
         context = ValidationContext()
         DrillholeValidator().validate(params, context)
         return not context.has_errors
+
+    @classmethod
+    def section_geometry_error(cls, params: ValidationParams) -> str:
+        """Return the section-line geometry error, or an empty string.
+
+        Shared by the core pipeline and the GUI gating (semaphore / preview
+        enablement) so both stay on the same rule.
+        """
+        from .project_validators import section_line_geometry_error
+
+        return section_line_geometry_error(params)
 
     @classmethod
     def is_dem_complete(cls, params: ValidationParams) -> bool:

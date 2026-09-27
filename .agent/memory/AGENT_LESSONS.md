@@ -16,6 +16,81 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-23'
+    category: TESTING
+    topic: writing a "new" test file can silently overwrite an existing one
+    lesson: I created tests/gui/test_section_page.py with the Write tool to add
+      style tests, unaware the file already existed, so its validation tests were
+      lost. The drop only surfaced because the discovered test count barely moved.
+    action: Before creating any test/module file, verify the path does not exist
+      (ls/glob) and, when it does, read it and merge/extend instead of writing;
+      after adding tests, sanity-check that the suite count increased as expected.
+  - date: '2026-09-23'
+    category: ARCHITECTURE
+    topic: profile statistics must deduplicate by raster cell, not by Z
+    lesson: Densifying the section at the DEM resolution repeats samples within
+      the same pixel; aggregating them biases min/max/mean. Also, the section mean
+      legitimately differs from the raster's global band mean (a section covers a
+      swath, not the whole DEM).
+    action: Deduplicate consecutive samples by pixel cell (floor((x-xmin)/res))
+      before aggregating; report the section stats as such, and do not expect them
+      to match the DEM band statistics.
+  - date: '2026-09-23'
+    category: TECHNICAL
+    topic: cross-CRS raster sampling must reproject and bound densification
+    lesson: Sampling a DEM from section-line coordinates without honoring CRS
+      differences (normal with on-the-fly reprojection) returns 0 (structures and
+      collars drawn at base 0) and, worse, using the raster pixel size as a
+      densify interval explodes a long line into hundreds of millions of vertices
+      and freezes QGIS. Layer names can lie about CRS (a `_3857.tif` was actually
+      EPSG:4326).
+    action: Always build a line->raster QgsCoordinateTransform and transform
+      sample points; derive the sampling interval in the line CRS (or transform
+      the pixel size); cap densification. Verify raster CRS with `gdalinfo`,
+      never trust the filename.
+  - date: '2026-09-23'
+    category: ARCHITECTURE
+    topic: page-internal signals must live in an idempotent connect_signals
+    lesson: StructurePage wired layerChanged -> _on_layer_changed in _setup_ui,
+      but SignalManager.connect_all calls disconnect_all first and then
+      re-invokes each page's connect_signals(); with no connect_signals the
+      wiring was lost, so structural field combos stayed empty.
+    action: Put page-internal wiring only in an idempotent connect_signals()
+      (disconnect specific slots first), never in _setup_ui. Add a regression
+      test that mirrors the disconnect->connect cycle.
+  - date: '2026-09-23'
+    category: TESTING
+    topic: conservative extent heuristic justifies blocking on mislabelled CRS
+    lesson: A wrong CRS label cannot be read from metadata but is often
+      contradicted by the extent (a degree-looking extent declared projected). A
+      conservative rule (within lon/lat bounds AND span < 1 unit or pixel < 1 mm)
+      blocks silently-wrong output with negligible false positives.
+    action: For data-quality heuristics prefer a blocking error with clear
+      remediation over a warning, but keep thresholds conservative; recommend
+      Assign Projection (metadata only), not Reproject.
+  - date: '2026-09-23'
+    category: AGENTIC_SYSTEM
+    topic: Prefer long, stable-prefix sessions to exploit provider prompt caching
+    lesson: DeepSeek discounts already-seen input tokens heavily (up to ~97%), but only
+      with a stable prefix (system prompt, AGENTS.md, tool schemas) inside a long
+      single-thread session. Spawning many fresh subagent contexts (each with no shared
+      cache) and reloading large files or huge tool outputs defeats that discount.
+    action: Prefer one long session per task; keep the system prompt/AGENTS.md stable
+      mid-task; batch corrections into complete upfront prompts; use targeted reads/greps
+      instead of loading whole files; reserve subagents for genuinely parallel work
+      (e.g. enriching dozens of notes), not for 2-3 items the main thread can do directly.
+  - date: '2026-09-23'
+    category: TESTING
+    topic: a fabricated mock method turns a real-QGIS crash into a green suite
+    lesson: To disable a QListWidgetItem I called item.setDisabled() and taught
+      MockQListWidgetItem the same (non-existent) method, so 17 unit tests passed while
+      real QGIS 4 crashed with "QListWidgetItem object has no attribute setDisabled".
+      QListWidgetItem has no setDisabled — that is QWidget API; items use
+      flags()/setFlags() with Qt.ItemFlag.ItemIsEnabled.
+    action: Mocks must mirror the real API surface only; never invent methods to satisfy
+      production code. When adding a widget interaction, verify the method exists on the
+      exact Qt class (and on both Qt5/Qt6) before writing the mock, and smoke-test in
+      real QGIS when the gating touches native widgets.
+  - date: '2026-09-23'
     category: TOOLING
     topic: a package group note can silently overwrite an individual file note
     lesson: generate_vault_v2.py wrote the Tier C group for `resources/` to the same
@@ -584,6 +659,7 @@ lessons:
 
 | Preference | Value |
 |---|---|
+| **Test environment** | Manual testing on **QGIS 4** (`uv run qgis-manage deploy --no-compile --qgis-version 4`); keep 3.28 compat + LTR 3.44 matrix; Docker CI runs `qgis/qgis:latest` |
 | **Language** | Communication: Spanish / Code, Commits, Docs: English |
 | **Formatter** | `black` |
 | **Package manager** | `uv` |

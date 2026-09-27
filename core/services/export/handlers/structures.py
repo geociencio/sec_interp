@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 from typing import Any
 
@@ -48,7 +49,14 @@ def export_structures(
 
         raster_res = 1.0
         if raster_layer and raster_layer.isValid():
-            raster_res = raster_layer.rasterUnitsPerPixelX()
+            candidate = raster_layer.rasterUnitsPerPixelX()
+            if isinstance(candidate, int | float) and math.isfinite(candidate) and candidate > 0:
+                raster_res = candidate
+            else:
+                logger.warning(
+                    "Invalid raster resolution %r; using 1.0 for dip line length.",
+                    candidate,
+                )
 
         vec_path, vec_layer = resolve_export_path(
             folder, "structural_measurements", profile_name, pattern, ext

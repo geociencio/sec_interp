@@ -10,11 +10,15 @@ depends on QGIS for any of these operations.
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 from typing import Any
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsDistanceArea,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsGeometry,
     QgsPointXY,
     QgsProject,
@@ -26,6 +30,16 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.exceptions import GeometryError
+from sec_interp.core.utils.geometry_utils.processing import (
+    MAX_DENSIFY_POINTS,
+    densify_line_points,
+)
+from sec_interp.logger_config import get_logger
+
+logger = get_logger(__name__)
+
+_DEFAULT_MAX_SAMPLES = 5_000
+"""Fallback number of samples when the DEM resolution cannot be resolved."""
 
 
 def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
@@ -34,6 +48,149 @@ def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
     da.setSourceCrs(crs, QgsProject.instance().transformContext())
     da.setEllipsoid(crs.ellipsoidAcronym())
     return da
+
+
+def _crs_equal(crs_a: Any, crs_b: Any) -> bool:
+    """Compare two CRS objects defensively (mock/QGIS safe)."""
+    if crs_a is None or crs_b is None:
+        return False
+    try:
+        return bool(crs_a == crs_b)
+    except (AttributeError, RuntimeError, TypeError):
+        return False
+
+
+def build_sampling_transform(
+    line_crs: QgsCoordinateReferenceSystem | None,
+    raster_layer: QgsRasterLayer,
+) -> QgsCoordinateTransform | None:
+    """Build a transform from the line CRS to the raster CRS, or ``None``.
+
+    A transform is only needed when both CRSs are known and differ. Across
+    different CRSs, sampling with raw layer coordinates reads the wrong pixels.
+
+    Args:
+        line_crs: CRS of the section line (``None`` if unknown).
+        raster_layer: The DEM/raster layer being sampled.
+
+    Returns:
+        A ``QgsCoordinateTransform`` (line -> raster) or ``None`` when the CRSs
+        match, are unknown, or the transform cannot be created.
+
+    """
+    if line_crs is None:
+        return None
+    try:
+        raster_crs = raster_layer.crs()
+    except (AttributeError, RuntimeError):
+        return None
+    if raster_crs is None or _crs_equal(line_crs, raster_crs):
+        return None
+    try:
+        return QgsCoordinateTransform(
+            line_crs, raster_crs, QgsProject.instance().transformContext()
+        )
+    except (AttributeError, RuntimeError, TypeError, ValueError):
+        logger.warning(
+            "Could not build line->raster CRS transform; sampling in line CRS.",
+            exc_info=True,
+        )
+        return None
+
+
+def raster_resolution_in_crs(
+    raster_layer: QgsRasterLayer,
+    target_crs: QgsCoordinateReferenceSystem | None,
+) -> float | None:
+    """Return the raster pixel size expressed in ``target_crs`` units.
+
+    ``rasterUnitsPerPixelX()`` is expressed in the raster's own CRS. When the
+    section line lives in a different CRS (on-the-fly reprojection), using that
+    value directly as a sampling interval is meaningless and can densify the
+    line into millions of vertices. This transforms a one-pixel-long segment
+    from the raster CRS into ``target_crs`` to recover a usable interval.
+
+    Args:
+        raster_layer: The DEM/raster layer.
+        target_crs: CRS in which to express the resolution (``None`` to return
+            the raw value).
+
+    Returns:
+        Pixel size in ``target_crs`` units, or ``None`` if it cannot be
+        determined.
+
+    """
+    try:
+        res = raster_layer.rasterUnitsPerPixelX()
+    except (AttributeError, RuntimeError):
+        return None
+    if res is None or res <= 0:
+        return None
+
+    if target_crs is None:
+        return res
+
+    try:
+        raster_crs = raster_layer.crs()
+    except (AttributeError, RuntimeError):
+        return res
+    if raster_crs is None or _crs_equal(raster_crs, target_crs):
+        return res
+
+    try:
+        xform = QgsCoordinateTransform(
+            raster_crs, target_crs, QgsProject.instance().transformContext()
+        )
+        center = raster_layer.extent().center()
+        p_start = xform.transform(QgsPointXY(center.x(), center.y()))
+        p_end = xform.transform(QgsPointXY(center.x() + res, center.y()))
+        size = math.hypot(p_end.x() - p_start.x(), p_end.y() - p_start.y())
+        return size if size > 0 else None
+    except (AttributeError, RuntimeError, TypeError, ValueError):
+        logger.warning(
+            "Could not express raster resolution in the target CRS.",
+            exc_info=True,
+        )
+        return None
+
+
+def _fallback_interval(geometry: QgsGeometry) -> float | None:
+    """Derive a bounded sampling interval from the geometry's own length."""
+    try:
+        length = float(geometry.length())
+    except (AttributeError, RuntimeError, TypeError):
+        return None
+    if length <= 0:
+        return None
+    return length / _DEFAULT_MAX_SAMPLES
+
+
+def resolve_sampling_interval(
+    geometry: QgsGeometry,
+    raster_layer: QgsRasterLayer,
+    line_crs: QgsCoordinateReferenceSystem | None,
+) -> float:
+    """Resolve a safe sampling interval for a raster profile.
+
+    Prefers the DEM pixel size expressed in the line's CRS. Falls back to a
+    length-derived interval when the resolution cannot be resolved, and always
+    returns a strictly positive value.
+
+    Args:
+        geometry: The section line geometry (in ``line_crs`` units).
+        raster_layer: The DEM/raster layer.
+        line_crs: CRS of the section line (``None`` if unknown).
+
+    Returns:
+        A positive sampling interval in ``line_crs`` units.
+
+    """
+    interval = raster_resolution_in_crs(raster_layer, line_crs)
+    if interval is None or interval <= 0:
+        interval = _fallback_interval(geometry)
+    if interval is None or interval <= 0:
+        interval = 1.0
+    return interval
 
 
 def extract_all_vertices(geometry: QgsGeometry) -> list[QgsPointXY]:
@@ -82,6 +239,24 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
 
     verts = get_line_vertices(geometry)
     points = [(p.x(), p.y()) for p in verts]
+
+    total_length = sum(
+        math.hypot(points[i + 1][0] - points[i][0], points[i + 1][1] - points[i][1])
+        for i in range(len(points) - 1)
+    )
+    if interval > 0 and total_length > 0:
+        estimated = total_length / interval
+        if estimated > MAX_DENSIFY_POINTS:
+            logger.warning(
+                "Densification capped: interval %.6g is too small for a %.3f-long "
+                "line (requested ~%s points, cap %d). Check that the DEM and "
+                "section line share a CRS.",
+                interval,
+                total_length,
+                f"{estimated:.3g}",
+                MAX_DENSIFY_POINTS,
+            )
+
     densified = _densify_line_points(points, interval)
     return QgsGeometry.fromPolylineXY([QgsPointXY(x, y) for x, y in densified])
 
@@ -89,23 +264,13 @@ def densify_line_by_interval(geometry: QgsGeometry, interval: float) -> QgsGeome
 def _densify_line_points(
     points: list[tuple[float, float]], interval: float
 ) -> list[tuple[float, float]]:
-    """Densify a polyline by inserting intermediate vertices (pure math)."""
-    if not points or interval <= 0:
-        return points
+    """Densify a polyline by inserting intermediate vertices (pure math).
 
-    result = [points[0]]
-    for i in range(len(points) - 1):
-        p1 = points[i]
-        p2 = points[i + 1]
-        seg_len = math.hypot(p2[0] - p1[0], p2[1] - p1[1])
-        if seg_len == 0:
-            continue
-        num_segments = max(1, math.ceil(seg_len / interval))
-        for j in range(1, num_segments):
-            t = j / num_segments
-            result.append((p1[0] + t * (p2[0] - p1[0]), p1[1] + t * (p2[1] - p1[1])))
-        result.append(p2)
-    return result
+    Delegates to the core implementation, which caps the number of generated
+    vertices to protect against pathological intervals (e.g. a DEM pixel size
+    expressed in a different CRS than the section line).
+    """
+    return densify_line_points(points, interval)
 
 
 def calculate_segment_range(
@@ -131,16 +296,25 @@ def calculate_segment_range(
         return None
 
 
-def sample_point_elevation(raster_layer: QgsRasterLayer, point: Any, band_number: int = 1) -> float:
+def sample_point_elevation(
+    raster_layer: QgsRasterLayer,
+    point: Any,
+    band_number: int = 1,
+    source_crs: QgsCoordinateReferenceSystem | None = None,
+) -> float:
     """Sample elevation from a raster layer at a 2D coordinate.
 
-    ``point`` may be a ``QgsPointXY`` or a ``(x, y)`` tuple.
+    ``point`` may be a ``QgsPointXY`` or a ``(x, y)`` tuple. When ``source_crs``
+    differs from the raster CRS, the point is reprojected before sampling.
     """
     if not raster_layer or not raster_layer.isValid():
         return 0.0
 
     try:
         pt = point if isinstance(point, QgsPointXY) else QgsPointXY(point[0], point[1])
+        transform = build_sampling_transform(source_crs, raster_layer)
+        if transform is not None:
+            pt = transform.transform(pt)
         ident = raster_layer.dataProvider().identify(
             pt, QgsRaster.IdentifyFormat.IdentifyFormatValue
         )
@@ -161,9 +335,24 @@ def sample_elevation_along_line(
     reference_point: QgsPointXY | None = None,
     interval: float | None = None,
 ) -> list[QgsPointXY]:
-    """Sample elevation values along a line geometry from a raster layer."""
-    if interval is None:
-        interval = raster_layer.rasterUnitsPerPixelX()
+    """Sample elevation values along a line geometry from a raster layer.
+
+    The sampling interval is the raster pixel size expressed in the section
+    line's CRS. When the line and raster CRSs differ (on-the-fly reprojection),
+    the pixel size is transformed before use and each sample point is
+    reprojected into the raster CRS.
+    """
+    line_crs: QgsCoordinateReferenceSystem | None
+    try:
+        line_crs = distance_area.sourceCrs()
+    except (AttributeError, RuntimeError):
+        line_crs = None
+
+    to_raster = build_sampling_transform(line_crs, raster_layer)
+
+    if interval is None or interval <= 0:
+        interval = resolve_sampling_interval(geometry, raster_layer, line_crs)
+
     try:
         densified_geom = densify_line_by_interval(geometry, interval)
     except (ValueError, RuntimeError):
@@ -180,18 +369,205 @@ def sample_elevation_along_line(
         if i > 0:
             current_dist += distance_area.measureLine(vertices[i - 1], pt)
 
-        val, ok = raster_layer.dataProvider().sample(pt, band_number)
+        sample_pt = to_raster.transform(pt) if to_raster else pt
+        val, ok = raster_layer.dataProvider().sample(sample_pt, band_number)
         elev = val if ok else 0.0
         points.append(QgsPointXY(current_dist, elev))
 
     return points
 
 
+def resolve_section_feature(
+    line_lyr: QgsVectorLayer | None,
+    feature_id: int | None = None,
+) -> QgsFeature | None:
+    """Return the section feature to use (first by default, or ``feature_id``).
+
+    This is the single resolution point for the section line, so every extractor
+    picks the same feature. ``None`` returns the first feature; a fid filters by
+    it. Defensive: an invalid layer or a missing feature returns ``None``.
+    """
+    if not line_lyr or not line_lyr.isValid():
+        return None
+    try:
+        request = QgsFeatureRequest()
+        if feature_id is not None:
+            request.setFilterFid(int(feature_id))
+        else:
+            request.setLimit(1)
+        return next(line_lyr.getFeatures(request), None)
+    except (AttributeError, TypeError, ValueError, RuntimeError, StopIteration):
+        return None
+
+
+def resolve_section_geometry(
+    line_lyr: QgsVectorLayer | None,
+    feature_id: int | None = None,
+) -> QgsGeometry | None:
+    """Return the section feature geometry, or ``None`` when unavailable."""
+    feature = resolve_section_feature(line_lyr, feature_id)
+    if feature is None:
+        return None
+    try:
+        geometry = feature.geometry()
+    except (AttributeError, RuntimeError):
+        return None
+    if geometry is None or geometry.isNull():
+        return None
+    return geometry
+
+
+def section_line_start_point(geometry: QgsGeometry) -> QgsPointXY:
+    """Return the first vertex of a line geometry (start of the section)."""
+    if not geometry or geometry.isNull():
+        return QgsPointXY(0.0, 0.0)
+    try:
+        if geometry.isMultipart():
+            parts = geometry.asMultiPolyline()
+            if parts and parts[0]:
+                return parts[0][0]
+        else:
+            polyline = geometry.asPolyline()
+            if polyline:
+                return polyline[0]
+    except (AttributeError, RuntimeError):
+        pass
+    return QgsPointXY(0.0, 0.0)
+
+
+@dataclass(frozen=True)
+class ProfileRasterStats:
+    """Read-only elevation statistics of the section over the DEM.
+
+    Attributes:
+        count: Number of distinct raster cells sampled.
+        minimum: Minimum elevation (m).
+        maximum: Maximum elevation (m).
+        mean: Mean elevation (m).
+        resolution: Sampling interval in line-CRS units (raster pixel size).
+        length: Total sampled distance along the line (line-CRS units).
+
+    """
+
+    count: int
+    minimum: float
+    maximum: float
+    mean: float
+    resolution: float
+    length: float
+
+
+def _raster_grid(
+    raster_layer: QgsRasterLayer,
+) -> tuple[Any, float, float] | None:
+    """Return ``(extent, pixel_x, pixel_y)`` or None when unavailable."""
+    try:
+        extent = raster_layer.extent()
+        res_x = float(raster_layer.rasterUnitsPerPixelX())
+        res_y = float(raster_layer.rasterUnitsPerPixelY())
+    except (AttributeError, TypeError, RuntimeError):
+        return None
+    if res_x <= 0 or res_y <= 0:
+        return None
+    return extent, res_x, res_y
+
+
+def _sample_unique_cells(
+    vertices: list[QgsPointXY],
+    to_raster: QgsCoordinateTransform | None,
+    provider: Any,
+    band_number: int,
+    grid: tuple[Any, float, float],
+    distance_area: QgsDistanceArea,
+) -> tuple[list[float], float]:
+    """Sample one elevation per raster cell along the densified vertices."""
+    extent, res_x, res_y = grid
+    last_cell: tuple[int, int] | None = None
+    values: list[float] = []
+    current_dist = 0.0
+
+    for i, pt in enumerate(vertices):
+        if i > 0:
+            current_dist += distance_area.measureLine(vertices[i - 1], pt)
+
+        sample_pt = to_raster.transform(pt) if to_raster else pt
+        cell = (
+            math.floor((sample_pt.x() - extent.xMinimum()) / res_x),
+            math.floor((extent.yMaximum() - sample_pt.y()) / res_y),
+        )
+        if cell == last_cell:
+            continue
+        last_cell = cell
+
+        val, ok = provider.sample(sample_pt, band_number)
+        if ok and val is not None:
+            values.append(float(val))
+
+    return values, current_dist
+
+
+def profile_raster_statistics(
+    line_geom: QgsGeometry,
+    raster_layer: QgsRasterLayer,
+    band_number: int,
+    distance_area: QgsDistanceArea,
+) -> ProfileRasterStats | None:
+    """Compute min/max/mean elevation over unique DEM cells along the line.
+
+    Densifies at the CRS-aware raster resolution, reprojects each sample into
+    the raster CRS and collapses samples that fall in the same pixel cell (so
+    repeated cells from the densification do not bias min/max/mean). Returns
+    ``None`` when there is nothing usable to sample.
+    """
+    if not line_geom or not raster_layer or not raster_layer.isValid():
+        return None
+
+    try:
+        line_crs = distance_area.sourceCrs()
+    except (AttributeError, RuntimeError):
+        line_crs = None
+
+    resolution = resolve_sampling_interval(line_geom, raster_layer, line_crs)
+    if resolution <= 0:
+        return None
+
+    grid = _raster_grid(raster_layer)
+    if grid is None:
+        return None
+
+    try:
+        densified = densify_line_by_interval(line_geom, resolution)
+        vertices = get_line_vertices(densified)
+    except (ValueError, RuntimeError):
+        return None
+
+    values, length = _sample_unique_cells(
+        vertices,
+        build_sampling_transform(line_crs, raster_layer),
+        raster_layer.dataProvider(),
+        band_number,
+        grid,
+        distance_area,
+    )
+    if not values:
+        return None
+
+    return ProfileRasterStats(
+        count=len(values),
+        minimum=min(values),
+        maximum=max(values),
+        mean=sum(values) / len(values),
+        resolution=resolution,
+        length=length,
+    )
+
+
 def prepare_profile_context(
     line_lyr: QgsVectorLayer,
+    feature_id: int | None = None,
 ) -> tuple[QgsGeometry, QgsPointXY, QgsDistanceArea]:
     """Prepare a common context for profile calculation operations."""
-    line_feat = next(line_lyr.getFeatures(), None)
+    line_feat = resolve_section_feature(line_lyr, feature_id)
     if not line_feat:
         raise GeometryError("Line layer has no features", {"layer": line_lyr.name()})
 
@@ -205,22 +581,14 @@ def prepare_profile_context(
     except ValueError as e:
         raise GeometryError(str(e), {"layer": line_lyr.name()}) from e
 
-    if line_geom.isMultipart():
-        line_start = line_geom.asMultiPolyline()[0][0]
-    else:
-        polyline = line_geom.asPolyline()
-        line_start = polyline[0] if polyline else QgsPointXY(0, 0)
-
+    line_start = section_line_start_point(line_geom)
     da = create_distance_area(line_lyr.crs())
     return line_geom, line_start, da
 
 
-def line_length(line_lyr: QgsVectorLayer) -> float | None:
-    """Return the length of the first feature's geometry in a line layer."""
-    line_feat = next(line_lyr.getFeatures(), None)
-    if not line_feat:
-        return None
-    line_geom = line_feat.geometry()
-    if not line_geom or line_geom.isNull():
+def line_length(line_lyr: QgsVectorLayer, feature_id: int | None = None) -> float | None:
+    """Return the length of the section feature's geometry in a line layer."""
+    line_geom = resolve_section_geometry(line_lyr, feature_id)
+    if line_geom is None:
         return None
     return line_geom.length()

@@ -24,6 +24,16 @@ class MockQgsCoordinateReferenceSystem(MockQgsBase):
         """Check if the CRS is valid."""
         return True
 
+    def __eq__(self, other):
+        """Compare CRS by authority id (mirrors QGIS operator==)."""
+        if isinstance(other, MockQgsCoordinateReferenceSystem):
+            return self._authid == other._authid
+        return NotImplemented
+
+    def __hash__(self):
+        """Hash by authority id."""
+        return hash(self._authid)
+
 
 class MockQgsCoordinateTransform(MockQgsBase):
     """Mock implementation for QgsCoordinateTransform."""
@@ -71,6 +81,24 @@ class MockQgsFeatureRequest:
     def setFilterFids(self, fids):
         """Set filter FIDs."""
         return self
+
+    def setFilterFid(self, fid):
+        """Set a single filter FID."""
+        self._filter_fid = fid
+        return self
+
+    def filterFid(self):
+        """Get the single filter FID (or -1 when unset)."""
+        return getattr(self, "_filter_fid", -1)
+
+    def setLimit(self, limit):
+        """Set the maximum number of features to return."""
+        self._limit = limit
+        return self
+
+    def limit(self):
+        """Get the feature limit (or -1 when unset)."""
+        return getattr(self, "_limit", -1)
 
     def setFilterExpression(self, expr):
         """Set filter expression."""
@@ -142,6 +170,19 @@ class MockQgsRectangle(MockQgsBase):
     def height(self):
         """Get rectangle height."""
         return self._ymax - self._ymin
+
+    def isEmpty(self):
+        """Check whether the rectangle is empty (mirrors QgsRectangle)."""
+        return self._xmax < self._xmin or self._ymax < self._ymin
+
+    def center(self):
+        """Get the rectangle center as a point."""
+        from .qgis_geometry import MockQgsPointXY
+
+        return MockQgsPointXY(
+            (self._xmin + self._xmax) / 2.0,
+            (self._ymin + self._ymax) / 2.0,
+        )
 
     def combineExtentWith(self, other):
         """Combine this extent with another extent."""
@@ -270,6 +311,15 @@ class MockQgsDistanceArea(MockQgsBase):
         """Initialize the mock distance area."""
         super().__init__()
         self._ellipsoid = "WGS84"
+        self._source_crs = None
+
+    def setSourceCrs(self, crs, context=None):
+        """Set source CRS."""
+        self._source_crs = crs
+
+    def sourceCrs(self):
+        """Get the source CRS."""
+        return self._source_crs
 
     def setEllipsoid(self, ellipsoid):
         """Set ellipsoid."""

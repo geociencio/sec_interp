@@ -16,14 +16,14 @@
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
         "avg_retries_per_session": 1.18,
-        "tests_ok": 643,
+        "tests_ok": 745,
         "tests_ok_note": "615 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
-        "quality_score_latest": 53.8,
+        "quality_score_latest": 53.5,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
         "maintainability_score": 100.0,
         "security_score": 100.0,
-        "type_hint_coverage_params": 93.3,
-        "type_hint_coverage_returns": 99.8,
+        "type_hint_coverage_params": 93.8,
+        "type_hint_coverage_returns": 99.5,
         "docstring_coverage": 100.0,
         "cyclomatic_complexity_gate": "PASS",
         "i18n_issues_qgis_analyzer": 0,
@@ -33,7 +33,7 @@
         "issue_breakdown": {},
         "module_size_gate": "PASS",
         "large_modules": [],
-        "test_count": 643
+        "test_count": 745
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
@@ -41,7 +41,7 @@
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
-                "module_stability": 53.8,
+                "module_stability": 53.5,
                 "maintainability": 100.0,
                 "security": 100.0
             },
@@ -79,9 +79,9 @@
     },
     "last_session": {
         "date": "2026-09-23",
-        "topic": "dem_section_planning",
-        "tests_ok": 643,
-        "quality_score": 53.8,
+        "topic": "dem_section_v390_phases",
+        "tests_ok": 745,
+        "quality_score": 53.5,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
@@ -89,6 +89,39 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-09-23",
+            "tests_ok": 745,
+            "quality_score": 53.5,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "dem_section_v390_phases"
+        },
+        {
+            "date": "2026-09-23",
+            "tests_ok": 715,
+            "quality_score": 53.5,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "crs_sampling_hardening"
+        },
+        {
+            "date": "2026-09-23",
+            "tests_ok": 643,
+            "quality_score": 53.8,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "dem_section_planning"
+        },
         {
             "date": "2026-09-23",
             "tests_ok": 643,

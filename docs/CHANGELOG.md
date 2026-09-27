@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Topographic profile color mode**: choose **Gradient** (with a color ramp, e.g. *Spectral* or *Terrain*) or **Simple** (a single color) for the profile from the Section Line page. The change only affects the preview/export styling, never the source layer.
+- **Profile-vs-DEM statistics**: the Section Line page now shows the section's **Minimum**, **Maximum**, **Mean** elevation and the number of samples at the DEM resolution, refreshed when the line, DEM or band changes.
+- **DEM page — band statistics**: the DEM/Raster page now shows read-only **Minimum**, **Maximum**, **Mean** and **NoData** for the selected band, computed with a bounded sample size so large or remote rasters do not block the UI.
+- **DEM / Section — CRS safety checks**: SecInterp now warns when the section line, DEM and data layers use different coordinate reference systems (amber status) and **blocks** preview/export when a layer's declared CRS contradicts its coordinates (e.g. geographic data declared as projected), explaining how to fix it with *Assign Projection*. Sampling across CRS now reprojects correctly for topography, geology, structures and drillhole collars.
 - **Adaptive Vertical Exaggeration**: the DEM page now has an `Auto` toggle (default on) that computes the vertical exaggeration automatically from the profile aspect ratio and structural density (clamped `0.5×–20×`), with the manual spin preserved as an override. A read-only value is shown next to the toggle and in the results panel (`Vertical exaggeration: 2.6× (auto)`).
 - **Documentation — Architecture**: Expanded `ARCHITECTURE.mmd` (34 → 260 lines) and `docs/ARCHITECTURE_EN.md` (directory structure, full Mermaid diagram, Quality Assurance & Security Scanning section with Bandit/detect-secrets/Flake8, qgis-analyzer, Qt6 checker, and pre-release pipeline).
 - **Documentation — Analysis**: Added `docs/ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md` (monolithic vs Clean Architecture comparison) and `docs/PLUGIN_REPORT_AND_COMPARISON_EN.md` (feature inventory and 7-plugin competitive matrix).
@@ -29,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CI**: `.github/workflows/docs.yml` builds all languages and publishes to `geociencio/sec_interp_docs`; `test.yml` runs the docs consistency check.
 
 ### Fixed
+- **DEM / Section — freeze with mixed CRS**: fixed a hang that could freeze QGIS (and force rebooting) when the DEM and section line were in different CRS (common with on-the-fly reprojection). Densification is now bounded and the sampling interval is computed in the section line's units.
+- **Structural measurements**: symbols now sit on the topographic profile (they were drawn at elevation 0), and the Dip/Strike field selectors populate again after choosing the structural layer.
+- **Drillholes**: collar elevation sampled from the DEM now respects the CRS difference.
 - **Documentation**: corrected stale module references, broken links, version headers and phantom interfaces across the active docs.
 - **Code quality**: `module_size_gate` PASS (7 modules decomposed to <300 lines) and `qgis-analyzer` reports **0 issues**.
 - **Temporary scratch layers**: closing the dialog no longer leaves preview memory layers in the project (removed on OK/Save, Cancel/X and plugin unload), eliminating the "temporary scratch layers" warning on QGIS exit.

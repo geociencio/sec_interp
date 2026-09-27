@@ -135,12 +135,15 @@ class SecInterpMainWindow(QDialog):
         main_layout.addLayout(out_layout)
         main_layout.addWidget(self.button_box)
 
-        # Populate sidebar
-        self.sidebar.add_item(self.tr("DEM / Raster"), "mIconRaster.svg")
-        self.sidebar.add_item(self.tr("Section Line"), "mIconLineLayer.svg")
-        self.sidebar.add_item(self.tr("Geology"), "mIconPolygonLayer.svg")
-        self.sidebar.add_item(self.tr("Structural"), "mIconPointLayer.svg")
-        self.sidebar.add_item(self.tr("Drillholes"), "mActionDataSourceManager.svg")
+        # Populate sidebar (DEM/Section are mandatory inputs for the workflow)
+        mandatory = self.tr("Mandatory")
+        self.sidebar.add_item(f"{self.tr('DEM / Raster')} — {mandatory}", "mIconRaster.svg")
+        self.sidebar.add_item(f"{self.tr('Section Line')} — {mandatory}", "mIconLineLayer.svg")
+        self.nav_geology = self.sidebar.add_item(self.tr("Geology"), "mIconPolygonLayer.svg")
+        self.nav_struct = self.sidebar.add_item(self.tr("Structural"), "mIconPointLayer.svg")
+        self.nav_drillhole = self.sidebar.add_item(
+            self.tr("Drillholes"), "mActionDataSourceManager.svg"
+        )
         self.sidebar.add_item(self.tr("Interpretation"), "mActionEdit.svg")
         self.sidebar.add_item(self.tr("Settings"), "mActionOptions.svg")
 

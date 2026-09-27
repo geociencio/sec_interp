@@ -23,6 +23,10 @@ class PreviewParams:
         line_layer: Resolved section line layer object.
         band_num: Raster band number to use for elevation.
         buffer_dist: Search buffer for projecting data onto the section.
+        section_feature_id: Section feature id to use (first feature when None).
+        color_mode: Topographic profile color mode ("gradient" or "single").
+        ramp_name: Color ramp name used in gradient mode.
+        single_color_hex: Hex color used in single-color mode.
         outcrop_layer: Optional resolved geological outcrop layer object.
         outcrop_name_field: Field name for geological unit names.
         struct_layer: Optional resolved structural measurements layer object.
@@ -56,6 +60,12 @@ class PreviewParams:
     line_layer: Any
     band_num: int
     buffer_dist: float = 100.0
+    section_feature_id: int | None = None
+
+    # Topographic profile style
+    color_mode: str = "gradient"
+    ramp_name: str | None = None
+    single_color_hex: str | None = None
 
     # Geology params
     outcrop_layer: Any | None = None

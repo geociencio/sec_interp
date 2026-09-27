@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from sec_interp.gui.adapters.geometry import raster_resolution_in_crs
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -31,6 +32,7 @@ class RenderPipelineMixin:
         if vert_exag is None:
             vert_exag = self.dlg.page_dem.vertexag_spin.value()
         dip_length = self._calculate_dip_length(struct_data)
+        style = self.dlg.page_section.get_data()
 
         filtered = self._get_filtered_preview_data(
             topo_data, geol_data, struct_data, drillhole_data, options
@@ -46,6 +48,9 @@ class RenderPipelineMixin:
             preserve_extent=kwargs.get("preserve_extent", False),
             drillhole_data=filtered["drill"],
             interp_data=filtered["interp"],
+            topo_color_mode=style.get("color_mode", "gradient"),
+            topo_ramp_name=style.get("ramp_name"),
+            topo_single_color=style.get("single_color_hex"),
         )
 
         if canvas is None:
@@ -103,8 +108,12 @@ class RenderPipelineMixin:
             return None
 
         raster_layer = self.dlg.page_dem.raster_combo.currentLayer()
-        if raster_layer and raster_layer.isValid():
-            res = raster_layer.rasterUnitsPerPixelX()
-            if res > 0:
-                return res * dip_scale
+        if not raster_layer or not raster_layer.isValid():
+            return None
+
+        line_layer = self.dlg.page_section.line_combo.currentLayer()
+        line_crs = line_layer.crs() if line_layer else None
+        res = raster_resolution_in_crs(raster_layer, line_crs)
+        if res and res > 0:
+            return res * dip_scale
         return None

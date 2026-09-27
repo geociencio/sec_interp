@@ -124,6 +124,7 @@ class SecInterpDialog(
         )
 
         self.input_manager = InputManager(pages, self.output_widget, self.tr)
+        self.page_section.set_dem_provider(self._dem_selection)
         self.state_manager = StateManager(self)
         self.preview_manager = PreviewManager(
             self, PreviewService(self.plugin_instance.controller), cache=preview_cache
@@ -147,6 +148,13 @@ class SecInterpDialog(
         )
         self.interpretation_manager.set_preview_update_handler(
             self.preview_manager.update_from_checkboxes
+        )
+
+    def _dem_selection(self) -> tuple[Any, int]:
+        """Return the DEM layer and band selected on the DEM page."""
+        return (
+            self.page_dem.raster_combo.currentLayer(),
+            self.page_dem.band_combo.currentBand(),
         )
 
     def show_dialog(self, title: str, message: str, level: str = "info") -> Any:

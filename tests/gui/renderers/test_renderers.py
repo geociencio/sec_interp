@@ -1,9 +1,10 @@
 """Tests for GUI Renderers."""
 
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from sec_interp.tests.base_test import BaseTestCase
+from sec_interp.gui.renderers import topo_renderer
 from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
 from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 from sec_interp.gui.renderers.color_manager import ColorManager
@@ -56,6 +57,40 @@ class TestTopoRenderer(BaseTestCase):
         self.renderer.apply_style(self.mock_layer)
 
         # Verify renderer was set
+        self.mock_layer.setRenderer.assert_called_once()
+
+    def test_gradient_mode_uses_graduated_renderer(self):
+        """Gradient mode builds a graduated (ramp) renderer."""
+        with (
+            patch.object(topo_renderer, "QgsGraduatedSymbolRenderer") as graduated,
+            patch.object(topo_renderer, "QgsSingleSymbolRenderer") as single,
+        ):
+            self.renderer.apply_style(
+                self.mock_layer, color_mode="gradient", ramp_name="Spectral"
+            )
+
+        graduated.assert_called_once()
+        single.assert_not_called()
+
+    def test_single_mode_uses_single_symbol_renderer(self):
+        """Single mode builds a single-symbol renderer."""
+        with (
+            patch.object(topo_renderer, "QgsSingleSymbolRenderer") as single,
+            patch.object(topo_renderer, "QgsGraduatedSymbolRenderer") as graduated,
+        ):
+            self.renderer.apply_style(
+                self.mock_layer, color_mode="single", single_color="#ff0000"
+            )
+
+        single.assert_called_once()
+        graduated.assert_not_called()
+
+    def test_unknown_ramp_does_not_crash(self):
+        """An unknown ramp name falls back without raising."""
+        self.renderer.apply_style(
+            self.mock_layer, color_mode="gradient", ramp_name="NotARealRamp"
+        )
+
         self.mock_layer.setRenderer.assert_called_once()
 
 

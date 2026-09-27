@@ -1,20 +1,5 @@
 # Next Steps (Updated 2026-09-23)
 
-## ✅ Session 2026-09-23 — DEM/Section v3.9.0 Phases (1.5, 1.6, 2, 3) (COMPLETADO)
-
-- **Qué se hizo**: se completó el plan v3.9.0 — resolver central de la sección
-  (Fase 1.5, neutro), stats de banda del DEM + combo ancho/unidades abreviadas
-  (Fase 1.6), modo de color del perfil gradiente/simple (Fase 2) y stats
-  perfil-vs-DEM (Fase 3).
-- **Commits**: `2a14767b`, `2352f031`, `008b18ad`, `b978e4ee`, `6d342189` (5) +
-  cierre.
-- **Calidad**: suite verde · ruff/format limpios · analyzer 0 issues · smoke QGIS 4
-  OK (stats DEM, colores, stats de perfil, export).
-- **Referencia**: `docs/maintenance/session_2026-09-23_dem_section_v390_phases.md`.
-- **Sin bugs abiertos**. Queda deuda: **selector multi-línea** (infra lista),
-  remuestreo bilineal, editor por unidad (Goal 1.1), leyenda, y reimportar el CSV
-  de geología como UTF-8.
-
 ## ✅ Session 2026-09-23 — CRS Sampling Hardening + Structure/Section Fixes (COMPLETADO)
 
 - **Qué se hizo**: se corrigió un cuelgue del sistema al muestrear un DEM
@@ -24,8 +9,7 @@
   campo estructurales. Se commitó el gating S0/S1/S2 previo.
 - **Commits**: `baf11d8c`, `98758e92`, `02d9cd65`, `1e44c658`, `ef88acf7`,
   `eb9ffa20` (6).
-- **Calidad**: suite verde (unittest discover 666; tooling ground truth 715) ·
-  ruff/format limpios · smoke manual QGIS 4 completo
+- **Calidad**: 666 tests OK · ruff/format limpios · smoke manual QGIS 4 completo
   (sin cuelgue; 430 pts/6109 m = 14.24 m; estructuras sobre el perfil; collar Z
   correcto; interpretaciones heredadas + persistencia; export GPKG/PNG OK).
 - **Referencia**: `docs/maintenance/session_2026-09-23_crs_sampling_hardening.md`.
@@ -87,8 +71,8 @@
 
 ## 🚀 How to Resume
 1. Run `/start-session`.
-2. `docs/plans/implementation_plan_dem_section_v3.9.0.md`: **completo** (Fase 0 ✅,
-   1 ✅, 1.5 ✅, 1.6 ✅, 2 ✅, 3 ✅). Siguiente opciones:
-   - **Selector multi-línea** (deuda; resolver + `section_feature_id` ya listos).
-   - **Goal 1.1** (symbology/legend preview) o **Goal 1.5** (tests proyección).
-   - Preparar **release v3.9.0** (`/release-plugin`) si se cierra el alcance.
+2. Continuar `docs/plans/implementation_plan_dem_section_v3.9.0.md`: **Fase 0 ✅ y
+   Fase 1 ✅**; siguiente **Fase 1.5** (resolutor central de la sección, refactor
+   neutro) y después **Fase 2** (modo de color topo) → **Fase 3** (stats
+   perfil-vs-DEM). Decisión #1 resuelta: OK en S1.
+3. Después: Goal 1.1 (symbology preview) o Goal 1.5 (tests proyección vertical).

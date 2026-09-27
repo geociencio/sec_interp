@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from unittest.mock import MagicMock, patch
 
 from qgis.PyQt.QtWidgets import QApplication
 
@@ -86,3 +87,79 @@ class TestDemPage(BaseTestCase):
         """Signal wiring is symmetric and does not raise."""
         self.page.connect_signals()
         self.page.disconnect_signals()
+
+
+class TestDemPageStats(BaseTestCase):
+    """Read-only band statistics (min/max/mean/NoData)."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Ensure a QApplication exists for widget construction."""
+        super().setUpClass()
+        cls.app = QApplication.instance() or QApplication(sys.argv)
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.page = DemPage()
+
+    def _layer(self, nodata: float = -9999.0) -> MagicMock:
+        layer = MagicMock()
+        layer.isValid.return_value = True
+        stats = MagicMock()
+        stats.minimumValue = 221.0
+        stats.maximumValue = 593.0
+        stats.mean = 433.38
+        provider = MagicMock()
+        provider.bandStatistics.return_value = stats
+        provider.sourceNoDataValue.return_value = nodata
+        layer.dataProvider.return_value = provider
+        return layer
+
+    def _with_layer(self, layer: MagicMock):
+        self.page.band_combo.currentBand.return_value = 1
+        return patch.object(self.page.raster_combo, "currentLayer", return_value=layer)
+
+    def test_display_min_max_mean_nodata(self) -> None:
+        """The four statistics are shown with sensible formatting."""
+        with self._with_layer(self._layer()):
+            self.page._update_raster_stats()
+
+        self.assertEqual(self.page.min_edit.text(), "221.00")
+        self.assertEqual(self.page.max_edit.text(), "593.00")
+        self.assertEqual(self.page.mean_edit.text(), "433.38")
+        self.assertEqual(self.page.nodata_edit.text(), "-9999")
+
+    def test_no_raster_clears_stats(self) -> None:
+        """Without a layer the fields are blanked."""
+        self.page.min_edit.setText("stale")
+        with patch.object(self.page.raster_combo, "currentLayer", return_value=None):
+            self.page._update_raster_stats()
+
+        self.assertEqual(self.page.min_edit.text(), "")
+
+    def test_nan_nodata_shows_dash(self) -> None:
+        """A NaN NoData value is rendered as an em dash."""
+        with self._with_layer(self._layer(nodata=float("nan"))):
+            self.page._update_raster_stats()
+
+        self.assertEqual(self.page.nodata_edit.text(), "—")
+
+    def test_non_finite_stat_shows_dash(self) -> None:
+        """A NaN minimum is rendered as an em dash."""
+        layer = self._layer()
+        layer.dataProvider.return_value.bandStatistics.return_value.minimumValue = float("nan")
+
+        with self._with_layer(layer):
+            self.page._update_raster_stats()
+
+        self.assertEqual(self.page.min_edit.text(), "—")
+
+    def test_provider_failure_clears_stats(self) -> None:
+        """A failing provider does not raise and blanks the fields."""
+        layer = self._layer()
+        layer.dataProvider.return_value.bandStatistics.side_effect = RuntimeError("boom")
+
+        with self._with_layer(layer):
+            self.page._update_raster_stats()
+
+        self.assertEqual(self.page.mean_edit.text(), "")

@@ -28,6 +28,11 @@ from sec_interp.core.validation.layer_metadata import (
     KIND_VECTOR,
     LayerMetadata,
 )
+from sec_interp.logger_config import get_logger
+
+from .geometry import extract_all_vertices, resolve_section_feature
+
+logger = get_logger(__name__)
 
 _GEOMETRY_MAP = {
     QgsWkbTypes.GeometryType.PointGeometry: GEOMETRY_POINT,
@@ -83,7 +88,9 @@ def extract_vector_metadata(layer: QgsVectorLayer) -> LayerMetadata:
     crs = layer.crs()
     if crs.isValid():
         metadata.crs_authid = crs.authid()
+        metadata.crs_is_geographic = _is_geographic(crs)
 
+    _populate_extent(metadata, layer)
     return metadata
 
 
@@ -101,8 +108,86 @@ def extract_raster_metadata(layer: QgsRasterLayer) -> LayerMetadata:
     crs = layer.crs()
     if crs.isValid():
         metadata.crs_authid = crs.authid()
+        metadata.crs_is_geographic = _is_geographic(crs)
+
+    _populate_extent(metadata, layer)
+    try:
+        metadata.pixel_size_x = float(layer.rasterUnitsPerPixelX())
+    except (AttributeError, TypeError, ValueError, RuntimeError):
+        metadata.pixel_size_x = None
 
     return metadata
+
+
+def _populate_extent(metadata: LayerMetadata, layer: QgsMapLayer) -> None:
+    """Populate extent fields (layer CRS units) when available and non-empty."""
+    try:
+        extent = layer.extent()
+    except (AttributeError, RuntimeError):
+        return
+    if extent is None:
+        return
+    is_empty = getattr(extent, "isEmpty", None)
+    if callable(is_empty) and is_empty():
+        return
+    try:
+        metadata.extent_xmin = float(extent.xMinimum())
+        metadata.extent_ymin = float(extent.yMinimum())
+        metadata.extent_xmax = float(extent.xMaximum())
+        metadata.extent_ymax = float(extent.yMaximum())
+    except (AttributeError, TypeError, ValueError):
+        pass
+
+
+def _is_geographic(crs: Any) -> bool | None:
+    """Return whether a CRS is geographic, or None if it cannot be told."""
+    try:
+        return bool(crs.isGeographic())
+    except (AttributeError, TypeError):
+        return None
+
+
+def extract_section_line_metrics(
+    layer_ref: Any, feature_id: int | None = None
+) -> tuple[int | None, float | None]:
+    """Return ``(vertex_count, length)`` of the section feature.
+
+    Best-effort and defensive (Extract phase): reads the section line geometry
+    once so the core 2-point invariant can be validated with primitives.
+    Returns ``(None, None)`` when the geometry cannot be read, so the core
+    rule is simply skipped rather than failing the whole validation.
+
+    Args:
+        layer_ref: A layer object, ID, or name.
+        feature_id: Section feature id (first feature when ``None``).
+
+    Returns:
+        Tuple of (vertex count, planar length). Both None when unavailable.
+
+    """
+    try:
+        layer = _resolve_layer(layer_ref)
+        if layer is None or not layer.isValid():
+            return None, None
+        feature = resolve_section_feature(layer, feature_id)
+        if feature is None:
+            return None, None
+        geometry = feature.geometry()
+        if geometry is None or geometry.isNull():
+            return None, None
+        vertex_count = len(extract_all_vertices(geometry))
+        length = float(geometry.length())
+        logger.debug(
+            "Section line metrics: layer=%s fid=%s vertices=%d length=%.3f multipart=%s",
+            layer.name(),
+            feature.id(),
+            vertex_count,
+            length,
+            geometry.isMultipart(),
+        )
+        return vertex_count, length
+    except (AttributeError, TypeError, ValueError, RuntimeError, StopIteration):
+        return None, None
 
 
 def _resolve_layer(layer_ref: Any) -> QgsMapLayer | None:
@@ -147,10 +232,18 @@ def build_validation_params(params: Any) -> Any:
     """
     from sec_interp.core.validation.project_validator import ValidationParams
 
+    section_feature_id = getattr(params, "section_feature_id", None)
+    line_vertex_count, line_length = extract_section_line_metrics(
+        params.line_layer, section_feature_id
+    )
+
     return ValidationParams(
         raster_layer=resolve_layer_metadata(params.raster_layer),
         band_number=params.band_num,
         line_layer=resolve_layer_metadata(params.line_layer),
+        line_vertex_count=line_vertex_count,
+        line_length=line_length,
+        section_feature_id=section_feature_id,
         buffer_dist=float(params.buffer_dist),
         outcrop_layer=resolve_layer_metadata(params.outcrop_layer),
         outcrop_field=params.outcrop_name_field,

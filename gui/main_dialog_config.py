@@ -22,6 +22,11 @@ class DialogDefaults:
     BUFFER_DISTANCE = 100  # meters
     SAMPLING_INTERVAL = 10  # meters
 
+    # Topographic profile style
+    TOPO_COLOR_MODE = "gradient"  # "gradient" | "single"
+    TOPO_RAMP_NAME = "Spectral"
+    TOPO_SINGLE_COLOR_HEX = "#1f77b4"
+
     # Export settings
     DPI = 300
     PREVIEW_WIDTH = 800

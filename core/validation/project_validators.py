@@ -8,6 +8,7 @@ from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.core.validation.layer_metadata import GEOMETRY_LINE, KIND_RASTER
 
 from .base_validator import IValidator
+from .crs_plausibility import configured_layer_metadata, implausible_crs_reason
 from .layer_validator import (
     validate_layer_geometry,
     validate_layer_has_features,
@@ -23,6 +24,38 @@ from .validation_helpers import (
 if TYPE_CHECKING:
     from .project_validator import ValidationParams
     from .validation_helpers import ValidationContext
+
+SECTION_TWO_POINT_ERROR = "Section line must have exactly 2 vertices (start and end)"
+SECTION_GEOGRAPHIC_CRS_ERROR = "Section line must use a projected CRS (metric units)"
+SECTION_ZERO_LENGTH_ERROR = "Section line has zero length"
+SECTION_LINE_VERTEX_COUNT = 2
+
+
+def section_line_geometry_error(params: ValidationParams) -> str:
+    """Return the first section-line geometry error, or an empty string.
+
+    Encodes the mandatory 2-point invariant plus the projected-CRS and
+    non-zero-length constraints using only primitive parameters, so the
+    SectionValidator and the GUI gating can share one rule. Missing primitives
+    (``None``) skip their respective check.
+    """
+    metadata = params.line_layer
+    if metadata is None:
+        return ""
+
+    if metadata.crs_is_geographic:
+        return SECTION_GEOGRAPHIC_CRS_ERROR
+
+    if (
+        params.line_vertex_count is not None
+        and params.line_vertex_count != SECTION_LINE_VERTEX_COUNT
+    ):
+        return SECTION_TWO_POINT_ERROR
+
+    if params.line_length is not None and params.line_length <= 0:
+        return SECTION_ZERO_LENGTH_ERROR
+
+    return ""
 
 
 class SectionValidator(IValidator):
@@ -47,6 +80,10 @@ class SectionValidator(IValidator):
         if not is_valid:
             context.add_error(error, "line_layer")
 
+        geometry_error = section_line_geometry_error(params)
+        if geometry_error:
+            context.add_error(geometry_error, "line_layer")
+
 
 class DEMValidator(IValidator):
     """Validates Raster DEM requirements."""
@@ -70,6 +107,21 @@ class DEMValidator(IValidator):
             is_valid, error = validate_raster_band(metadata, params.band_number)
             if not is_valid:
                 context.add_error(error, "band_number")
+
+
+class CrsPlausibilityValidator(IValidator):
+    """Blocks when a layer's declared CRS contradicts its coordinate values.
+
+    This is a best-effort guard against mislabelled CRS (e.g. geographic data
+    declared as projected), which otherwise produces silently wrong profiles.
+    """
+
+    def validate(self, params: ValidationParams, context: ValidationContext) -> None:
+        """Add a hard error per layer whose extent looks inconsistent with its CRS."""
+        for metadata in configured_layer_metadata(params):
+            reason = implausible_crs_reason(metadata)
+            if reason:
+                context.add_error(reason)
 
 
 class GeologyValidator(IValidator):

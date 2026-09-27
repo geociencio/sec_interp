@@ -159,8 +159,9 @@ class PreviewService:
 
                 raster_lyr = params.raster_layer
 
-                def elevation_sampler(x: float, y: float) -> float:
-                    return extractor.sample_elevation(raster_lyr, x, y, params.band_num)
+                elevation_sampler = extractor.make_elevation_sampler(
+                    raster_lyr, params.line_layer, params.band_num
+                )
 
                 # Project
                 result.struct = self.controller.structure_service.project_structures(
