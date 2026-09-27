@@ -75,14 +75,12 @@ jobs:
         apt-get update && apt-get install -y git curl ca-certificates libgl1 procps
 
     - name: Install uv
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        echo "/root/.cargo/bin" >> $GITHUB_PATH
+      uses: astral-sh/setup-uv@v5
 
     - name: Setup environment and dependencies
       run: |
         # Use system site packages to access QGIS libraries
-        /root/.cargo/bin/uv venv --system-site-packages .venv
+        uv venv --system-site-packages .venv
         echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
         . .venv/bin/activate
         uv pip install --no-build-isolation -e ".[dev]"
