@@ -15,6 +15,46 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-09-27'
+    category: TOOLING
+    topic: pin CI linters to the project's lock, never run the moving latest
+    lesson: The lint job used `uvx ruff check .` (latest = 0.16.9) while the project pins
+      ruff via uv.lock (0.15.2); the newer ruff added ISC004/PLR0917 and turned `main` red
+      on every push even though the locked linter passed locally and in pre-commit.
+    action: In CI, run the project's locked tool (`uv run --frozen <tool>`) or the exact
+      pinned version; adopt a new linter version deliberately, not implicitly via "latest".
+  - date: '2026-09-27'
+    category: ENVIRONMENT
+    topic: container jobs resolve github.workspace to the host path and need git before checkout
+    lesson: In a QGIS container job, `actions/checkout` ran before git was installed, so it
+      fell back to an API tarball with no `.git`, and `${{ github.workspace }}` expanded to
+      the host path (/home/runner/work/...) that does not exist inside the container, so the
+      package import and branch checkout could not work.
+    action: For QGIS work, run on a standard ubuntu runner and drive QGIS through the project
+      Docker image; in a container job, install git before checkout and export PYTHONPATH from
+      the shell (`$(pwd)/..`), not from the context.
+  - date: '2026-09-27'
+    category: TOOLING
+    topic: a broad try/except can hide a flat-enum QGIS4 error; the checker log always has a header
+    lesson: '`QgsRasterBandStats.All` (flat enum) raises on PyQt6 but was swallowed by the
+      feature''s `try/except (AttributeError, ...)`, silently disabling DEM band statistics on
+      QGIS 4; and the pyqgis4-checker always writes a log header, so `[ -s log ]` fails even
+      with zero findings.'
+    action: Detect Qt6 findings by matching real lines (`grep "Enum error"`), not file size;
+      and remember a caught AttributeError around a QGIS enum can mask a QGIS4 break — verify
+      enums against the checker / real QGIS.
+  - date: '2026-09-27'
+    category: TOOLING
+    topic: the vault gate re-tiers notes from current source size and ignores missing notes
+    lesson: check_notes.py derives each note's tier from the CURRENT source line count, so a
+      module that grew (preview_param_hasher 68→133, ui_status_manager 85→221) crossed tier
+      B→A and its previously-valid note failed the ≥400 minimum; the checker also validates
+      only existing notes, so new modules (crs_plausibility, layer_metadata, topo_renderer)
+      were silently missing.
+    action: After growth-heavy sessions, re-run `check_notes --strict` and diff expected vs
+      present notes (`build_expectations` vs vault stems); enrich grown notes and add missing
+      ones, and consider adding a coverage check to the gate.
+
   - date: '2026-09-23'
     category: TESTING
     topic: writing a "new" test file can silently overwrite an existing one

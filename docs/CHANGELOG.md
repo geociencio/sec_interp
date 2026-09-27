@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **QGIS 4 / DEM band statistics**: scoped the `QgsRasterBandStats` enum and switched to `Qgis.RasterBandStatistic` (with a 3.28–3.39 fallback), fixing an `AttributeError` on PyQt6 and a deprecation warning on QGIS ≥3.40.
+
 ## [3.9.0] - 2026-09-27
 
 ### Added

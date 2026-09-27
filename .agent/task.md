@@ -1,4 +1,17 @@
-# Active Task Board (Updated 2026-09-23)
+# Active Task Board (Updated 2026-09-27)
+
+### Completed this session (2026-09-27 — release train + CI + vault)
+
+- [x] **v3.9.0 released** (tag `v3.9.0`, GitHub release live; portal skipped by decision).
+  Fixed a release-blocking mock-isolation bug in `tests/gui`; gates green (696 local /
+  681 Docker, analyzer 0, security PASS); ZIP audited. Commits `e00604e`, `664d775`.
+- [x] **Release train v3.9.1 / v3.10.0 / v3.11.0** prepared on cumulative branches and
+  **scheduled** (Sundays Oct 4 / 11 / 18) via `.github/workflows/scheduled-release.yml`;
+  validated with a `dry_run`.
+- [x] **CI repaired on `main`** (ruff pin, Qt6 detection, Docker test job, docs token guard,
+  legacy `release.yml` removed) — `main` all green, no more failed-run notifications.
+- [x] **Qt6 / QGIS 4 fixes**: `QgsRasterBandStats` scope + `Qgis.RasterBandStatistic` fallback.
+- [x] **Code Walkthrough v2 vault refreshed to v3.9.0**: 308 notes, `check_notes --strict` PASS.
 
 ## 🎯 Current Focus: Goal 1 — 3D Interpretation & Symbology Enhancements
 
@@ -36,9 +49,10 @@
 
 ### Resume Point
 
-Bóveda v2 completa ✅. Plan **DEM/Section v3.9.0 completo** ✅ (Fases 0,1,1.5,1.6,2,3).
-Siguiente: **selector multi-línea** (infra lista), **Goal 1.1** (symbology preview)
-o **Goal 1.5** (tests proyección), o preparar **release v3.9.0**.
+Tren de releases en marcha (v3.9.0 publicado; v3.9.1 / v3.10.0 / v3.11.0 programados para el
+4 / 11 / 18 oct desde sus ramas). `main` queda en v3.9.0 hasta sincronizar el tren. Siguiente:
+**subir el ZIP al portal** en cada release, **refresco completo de la bóveda a v3.11.0** tras el
+tren, y deuda funcional (**Goal 1.1 Fase 4** presets, **selector multi-línea**, **Goal 1.5**).
 
 ### Non-blocking Documented Debt
 

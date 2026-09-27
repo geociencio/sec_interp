@@ -1,3 +1,13 @@
+## [2026-09-27] Session: Release Train Scheduling, CI Hardening & Vault Refresh
+- **Achievement**: Released **v3.9.0** and prepared the incremental train **v3.9.1 / v3.10.0 / v3.11.0** on cumulative release branches, published automatically on consecutive Sundays (`scheduled-release.yml` + `.release-queue.json`, dry-run validated). Repaired the project **CI** (now green on `main`) and refreshed the bilingual **Code Walkthrough v2 vault to v3.9.0**.
+- **Changes**:
+    - **Release**: v3.9.0 tag + GitHub release (portal upload skipped by decision); fixed a release-blocking `tests/gui` mock-isolation bug (`tests.base_test` import duplication).
+    - **CI**: lint pinned to the locked ruff; real Qt6 finding detection; test job migrated to the project Docker image; docs deploy skipped without `DOCS_DEPLOY_TOKEN`; legacy `release.yml` removed.
+    - **QGIS 4**: `QgsRasterBandStats.Stats.All` + `Qgis.RasterBandStatistic.All` fallback in `dem_page.py` (cherry-picked to all release branches).
+    - **Vault v2**: enriched `preview_param_hasher` / `ui_status_manager`, added `crs_plausibility` / `layer_metadata` / `topo_renderer`, footers to v3.9.0, Index/hubs/map updated (`check_notes --strict` PASS, 308 notes).
+- **Quality**: main 696 tests OK / Docker 681 OK · analyzer 0 issues · security PASS · CI all green.
+- **Maintenance**: [session_2026-09-27_release_train_and_vault_refresh.md](maintenance/session_2026-09-27_release_train_and_vault_refresh.md)
+
 ## [2026-09-27] Release: v3.9.0 — DEM/Section Insights, CRS Safety & Adaptive VE
 - **Milestone**: First release of the incremental train from v3.8.0. Integrates the DEM/Section featureset on top of the unreleased `main` work (Adaptive VE, module-size refactor, documentation vaults).
 - **Highlights**: CRS safety (mixed-CRS warning, mislabelled-CRS block, cross-CRS reprojection, freeze fix); DEM band statistics; profile-vs-DEM statistics; topographic profile color mode; Adaptive Vertical Exaggeration (`Auto`, 0.5×–20×); preview scratch-layer cleanup.
