@@ -21,6 +21,7 @@ def build_categorized_line_style(
     width: str = "0.7",
     capstyle: str = "round",
     joinstyle: str = "round",
+    hidden: Iterable[str] | None = None,
 ) -> QgsCategorizedSymbolRenderer:
     """Build a categorized line symbol renderer for geological units.
 
@@ -31,13 +32,17 @@ def build_categorized_line_style(
         width: Line width for the symbol.
         capstyle: Line cap style.
         joinstyle: Line join style.
+        hidden: Optional unit names to omit (no symbol rendered).
 
     Returns:
         A categorized symbol renderer keyed by ``field``.
 
     """
+    hidden_set = set(hidden) if hidden else set()
     categories = []
     for unit_name in unique_units:
+        if unit_name in hidden_set:
+            continue
         color = color_manager.get_color(unit_name)
         symbol = QgsLineSymbol.createSimple(
             {

@@ -334,3 +334,13 @@ Preview; el export de geología también sale suavizado).
 Detalle completo (archivos, tests, riesgos y alcance) en
 [`implementation_plan_smoothed_geology_v3.9.1.md`](implementation_plan_smoothed_geology_v3.9.1.md).
 Estado: ✅ IMPLEMENTADO 2026-09-23.
+
+---
+
+## Plan complementario — Preview Side Panel: leyenda + interpretaciones + interacción (v3.10.0)
+
+La leyenda (overlay que tapaba el perfil) se mueve a un **panel lateral colapsable** con
+**lista de interpretaciones** y, además, **ocultar/editar color por unidad geológica**
+(núcleo de Goal 1.1). La leyenda del export no cambia. Detalle en
+[`implementation_plan_preview_side_panel_legend_v3.10.0.md`](implementation_plan_preview_side_panel_legend_v3.10.0.md).
+Estado: 📝 PLAN aprobado (L-A + L-B; pendiente de implementar).

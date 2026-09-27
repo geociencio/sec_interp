@@ -61,12 +61,21 @@ class PreviewRenderer:
         # State for legend and rendering control
         self.has_topography = False
         self.has_structures = False
+        self.has_drillholes = False
         self.is_rendering = False
 
     @property
     def active_units(self) -> dict[str, Any]:
         """Expose active units from factory for legend compatibility."""
         return self.layer_factory.active_units
+
+    def legend_units(self) -> list[tuple[str, Any, bool]]:
+        """Return ``(name, color, hidden)`` for every known geological unit."""
+        manager = self.layer_factory.color_manager
+        return [
+            (name, manager.get_color(name), manager.is_hidden(name))
+            for name in manager.known_units()
+        ]
 
     def cleanup(self) -> None:
         """Remove transient layers from the project and release resources.
@@ -107,6 +116,7 @@ class PreviewRenderer:
             self._cleanup_layers()
             self.has_topography = False
             self.has_structures = False
+            self.has_drillholes = False
 
             # 2. Create data layers via internal orchestrator
             logger.debug("render: Collecting data layers...")
@@ -261,12 +271,19 @@ class PreviewRenderer:
         if i_layer:
             layers.append(i_layer)
 
+        if layers:
+            self.has_drillholes = True
         return layers
 
     def draw_legend(self, painter: QPainter, rect: QRectF) -> None:
         """Draw legend on the given painter. Delegates to PreviewLegendRenderer."""
         self.legend_renderer.draw_legend(
-            painter, rect, self.active_units, self.has_topography, self.has_structures
+            painter,
+            rect,
+            self.active_units,
+            self.has_topography,
+            self.has_structures,
+            self.has_drillholes,
         )
 
     def _cleanup_layers(self, layers: list | None = None) -> None:

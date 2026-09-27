@@ -13,7 +13,7 @@ from typing import Any
 from qgis.core import Qgis, QgsProject
 from qgis.PyQt.QtCore import QSettings, QUrl
 from qgis.PyQt.QtGui import QDesktopServices
-from qgis.PyQt.QtWidgets import QDialogButtonBox, QPushButton
+from qgis.PyQt.QtWidgets import QColorDialog, QDialogButtonBox, QPushButton
 
 from sec_interp.gui.dialog_facade_mixin import DialogFacadeMixin
 from sec_interp.gui.dialog_lifecycle_mixin import DialogLifecycleMixin
@@ -28,7 +28,6 @@ from .dialog_preview_manager import PreviewManager
 from .dialog_signal_manager import SignalManager
 from .dialog_state_manager import StateManager
 from .dialog_tool_manager import NavigationManager, ToolManager
-from .legend_widget import LegendWidget
 from .preview_layer_factory import PreviewLayerFactory
 from .preview_state import PreviewCache, RenderState
 from .ui.main_window import SecInterpMainWindow
@@ -79,8 +78,6 @@ class SecInterpDialog(
 
         self._init_managers()
 
-        self.legend_widget = LegendWidget(self.preview_widget.canvas)
-
         self.render_state = RenderState()
 
         self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
@@ -104,6 +101,12 @@ class SecInterpDialog(
 
         self.state_manager.update_all()
         self.state_manager.load_settings()
+
+        # Load interpretations after settings so the persisted source is applied.
+        self.interpretation_manager.load_interpretations()
+        self.preview_widget.side_panel.update_interpretations(
+            self.interpretation_manager.interpretations
+        )
 
         self._save_on_close = True
 
@@ -132,7 +135,10 @@ class SecInterpDialog(
         self.export_manager = ExportManager(self)
         self.state_manager.setup_indicators()
         self.interpretation_manager = InterpretationManager(self, cache=preview_cache)
-        self.interpretation_manager.load_interpretations()
+        self.preview_widget.side_panel.unit_visibility_changed.connect(
+            self._on_unit_visibility_changed
+        )
+        self.preview_widget.side_panel.unit_color_requested.connect(self._on_unit_color_requested)
         self.tool_manager = ToolManager(
             self.preview_widget.canvas,
             self.preview_widget,
@@ -156,6 +162,30 @@ class SecInterpDialog(
             self.page_dem.raster_combo.currentLayer(),
             self.page_dem.band_combo.currentBand(),
         )
+
+    def _unit_color_manager(self) -> Any:
+        """Return the ColorManager used by the preview renderer, if any."""
+        renderer = getattr(self.plugin_instance, "preview_renderer", None)
+        factory = getattr(renderer, "layer_factory", None)
+        return getattr(factory, "color_manager", None)
+
+    def _on_unit_visibility_changed(self, name: str, visible: bool) -> None:
+        """Hide/show a geological unit and re-render the cached preview."""
+        manager = self._unit_color_manager()
+        if manager is None:
+            return
+        manager.set_hidden(name, not visible)
+        self.preview_manager.update_from_checkboxes()
+
+    def _on_unit_color_requested(self, name: str) -> None:
+        """Ask for a new unit color and re-render the cached preview."""
+        manager = self._unit_color_manager()
+        if manager is None:
+            return
+        color = QColorDialog.getColor(manager.get_color(name), self, self.tr("Select unit color"))
+        if color is not None and color.isValid():
+            manager.set_color(name, color)
+            self.preview_manager.update_from_checkboxes()
 
     def show_dialog(self, title: str, message: str, level: str = "info") -> Any:
         """Show a message box dialog.

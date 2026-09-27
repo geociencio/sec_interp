@@ -60,10 +60,6 @@ class DialogLifecycleMixin:
             self.signal_manager.disconnect_all()
         logger.debug("Signals disconnected")
 
-        if hasattr(self, "legend_widget") and self.legend_widget:
-            with contextlib.suppress(Exception):
-                self.legend_widget.cleanup()
-
     def _cleanup_preview_renderer(self) -> None:
         """Remove transient preview layers from the project.
 

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.10.0] - 2026-10-11
+
+### Added
+- **Drillhole lithologies in the legend**: the drillhole interval units now appear in the preview legend (and the exported image) alongside geology, so subsurface lithologies can be interpreted; hide/color controls apply to them too. A "Drillholes" entry represents the traces.
+- **Per-unit legend controls**: in the preview side panel you can **hide/show** and **change the color** of each geological unit; the choice is applied to the preview (and its exported image) and is remembered between sessions. Structures and drillholes are unaffected.
+- **Preview side panel**: the legend moved off the canvas into a collapsible panel beside the preview (no longer covering the profile), together with a list of the drawn interpretations. The exported image/PDF/SVG legend is unchanged.
+
 ## [3.9.1] - 2026-10-04
 
 ### Added

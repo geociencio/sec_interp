@@ -354,8 +354,24 @@ class MockQWidget(MockQObject):
         return self.Accepted
 
     def setLayout(self, layout):
-        """Set widget layout."""
+        """Set layout."""
         self._layout = layout
+
+    def setWidgetResizable(self, resizable):
+        """Set whether the scroll area resizes its widget."""
+        pass
+
+    def setWidget(self, widget):
+        """Set the scroll area's widget."""
+        self._widget = widget
+
+    def setParent(self, parent):
+        """Set the widget parent."""
+        self._parent = parent
+
+    def deleteLater(self):
+        """Schedule the widget for deletion."""
+        self._deleted = True
 
     def layout(self):
         """Get widget layout."""
@@ -568,6 +584,10 @@ class MockQLayout(MockQObject):
         """Insert widget at index."""
         pass
 
+    def removeWidget(self, widget):
+        """Remove a widget from the layout."""
+        pass
+
     def addSpacing(self, spacing):
         """Add spacing to layout."""
         pass
@@ -587,6 +607,30 @@ class MockQListWidget(MockQWidget):
     def addItem(self, item):
         """Add item to list."""
         self._items.append(item)
+
+    def clear(self):
+        """Remove all items."""
+        self._items = []
+
+    def count(self):
+        """Return the number of items."""
+        return len(self._items)
+
+    def item(self, row):
+        """Return the item at the given row."""
+        return self._items[row]
+
+    def setTextElideMode(self, mode):
+        """Set text elide mode."""
+        pass
+
+    def setWordWrap(self, enabled):
+        """Set word wrap."""
+        pass
+
+    def setUniformItemSizes(self, enabled):
+        """Set uniform item sizes."""
+        pass
 
     def setCurrentRow(self, row):
         """Set current row."""
@@ -639,6 +683,14 @@ class MockQListWidgetItem:
     def setIcon(self, icon):
         """Set item icon."""
         self._icon = icon
+
+    def setToolTip(self, tip):
+        """Set item tooltip."""
+        self._tooltip = tip
+
+    def toolTip(self):
+        """Get item tooltip."""
+        return getattr(self, "_tooltip", "")
 
     def setTextAlignment(self, alignment):
         """Set text alignment."""

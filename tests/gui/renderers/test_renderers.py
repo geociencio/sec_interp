@@ -43,6 +43,18 @@ class TestDrillholeRenderer(BaseTestCase):
         # Should have called get_color for each unit
         self.assertEqual(self.mock_color_manager.get_color.call_count, 2)
 
+    def test_interval_style_skips_hidden_units(self):
+        """Hidden lithologies are excluded from the interval renderer."""
+        self.mock_color_manager.get_color.return_value = MagicMock()
+        self.mock_color_manager.hidden_units.return_value = {"LithB"}
+
+        with patch("sec_interp.gui.renderers.base_renderer.QgsRendererCategory") as category:
+            self.renderer.apply_style(
+                self.mock_layer, role="interval", unique_units={"LithA", "LithB"}
+            )
+
+        self.assertEqual(category.call_count, 1)
+
 
 class TestTopoRenderer(BaseTestCase):
     """Test suite for TopoRenderer."""

@@ -271,6 +271,7 @@ class PreviewLayerFactory:
             return None
 
         unique_units = {s.unit_name for s in geol_data}
+        self.color_manager.register_units(unique_units)
         features = []
         MIN_REQUIRED_POINTS = 2
         for segment in geol_data:
@@ -432,6 +433,7 @@ class PreviewLayerFactory:
         )
 
         provider.addFeatures(features)
+        self.color_manager.register_units(unique_units)
         self.drill_renderer.apply_style(layer, role="interval", unique_units=unique_units)
         layer.updateExtents()
         return layer

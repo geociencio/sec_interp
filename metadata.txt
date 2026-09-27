@@ -4,7 +4,7 @@ qgisMinimumVersion=3.28
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.9.1
+version=3.10.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,11 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.10.0 (2026-10-11)
+	* Interactive Preview Legend:
+	- Preview side panel: the legend moved off the canvas into a collapsible side panel beside the preview, with a list of drawn interpretations.
+	- Per-unit legend controls: hide/show and recolor each geological unit; the choice applies to the preview and its exported image and is remembered.
+	- Drillhole lithologies: drillhole interval units now appear in the preview and exported legends alongside geology.
 	3.9.1 (2026-10-04)
 	* Smoothed Profile:
 	- Optional smoothed topography profile: a Smooth control with a distance window (10-500 m) overlays a soft line on the topographic profile and, on export, also writes topo_profile_smoothed.csv and profile_line_smoothed.<ext>.
