@@ -1,9 +1,11 @@
+# ruff: noqa: I001
 """Tests for GeologyGenerationTask."""
 
 import unittest
 from unittest.mock import MagicMock, patch
 
-from sec_interp.tests.base_test import BaseTestCase
+from tests.base_test import BaseTestCase
+
 from sec_interp.gui.tasks.geology_task import GeologyGenerationTask
 
 

@@ -1,9 +1,11 @@
+# ruff: noqa: I001
 """Tests for DrillholeGenerationTask."""
 
 import unittest
 from unittest.mock import MagicMock, patch
 
-from sec_interp.tests.base_test import BaseTestCase
+from tests.base_test import BaseTestCase
+
 from sec_interp.gui.tasks.drillhole_task import DrillholeGenerationTask
 
 
@@ -58,9 +60,7 @@ class TestDrillholeGenerationTask(BaseTestCase):
         expected_result = (["geol"], ["hole1"])
         self.task.result = expected_result
 
-        with patch(
-            "sec_interp.gui.tasks.drillhole_task.QTimer.singleShot"
-        ) as mock_timer:
+        with patch("sec_interp.gui.tasks.drillhole_task.QTimer.singleShot") as mock_timer:
             # Execute the lambda immediately
             mock_timer.side_effect = lambda ms, func: func()
             self.task.finished(True)

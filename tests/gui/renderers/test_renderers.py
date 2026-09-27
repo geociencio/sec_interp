@@ -1,13 +1,15 @@
+# ruff: noqa: I001
 """Tests for GUI Renderers."""
 
 import unittest
 from unittest.mock import MagicMock, patch
 
-from sec_interp.tests.base_test import BaseTestCase
+from tests.base_test import BaseTestCase
+
 from sec_interp.gui.renderers import topo_renderer
+from sec_interp.gui.renderers.color_manager import ColorManager
 from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
 from sec_interp.gui.renderers.topo_renderer import TopoRenderer
-from sec_interp.gui.renderers.color_manager import ColorManager
 
 
 class TestDrillholeRenderer(BaseTestCase):
@@ -34,9 +36,7 @@ class TestDrillholeRenderer(BaseTestCase):
         self.mock_color_manager.get_color.return_value = MagicMock()
         unique_units = {"LithA", "LithB"}
 
-        self.renderer.apply_style(
-            self.mock_layer, role="interval", unique_units=unique_units
-        )
+        self.renderer.apply_style(self.mock_layer, role="interval", unique_units=unique_units)
 
         # Verify renderer was set
         self.mock_layer.setRenderer.assert_called_once()
@@ -65,9 +65,7 @@ class TestTopoRenderer(BaseTestCase):
             patch.object(topo_renderer, "QgsGraduatedSymbolRenderer") as graduated,
             patch.object(topo_renderer, "QgsSingleSymbolRenderer") as single,
         ):
-            self.renderer.apply_style(
-                self.mock_layer, color_mode="gradient", ramp_name="Spectral"
-            )
+            self.renderer.apply_style(self.mock_layer, color_mode="gradient", ramp_name="Spectral")
 
         graduated.assert_called_once()
         single.assert_not_called()
@@ -78,18 +76,14 @@ class TestTopoRenderer(BaseTestCase):
             patch.object(topo_renderer, "QgsSingleSymbolRenderer") as single,
             patch.object(topo_renderer, "QgsGraduatedSymbolRenderer") as graduated,
         ):
-            self.renderer.apply_style(
-                self.mock_layer, color_mode="single", single_color="#ff0000"
-            )
+            self.renderer.apply_style(self.mock_layer, color_mode="single", single_color="#ff0000")
 
         single.assert_called_once()
         graduated.assert_not_called()
 
     def test_unknown_ramp_does_not_crash(self):
         """An unknown ramp name falls back without raising."""
-        self.renderer.apply_style(
-            self.mock_layer, color_mode="gradient", ramp_name="NotARealRamp"
-        )
+        self.renderer.apply_style(self.mock_layer, color_mode="gradient", ramp_name="NotARealRamp")
 
         self.mock_layer.setRenderer.assert_called_once()
 
