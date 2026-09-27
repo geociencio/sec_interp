@@ -265,6 +265,7 @@ class ProfileController(TranslatableMixin):
                 outcrop_lyr,
                 params.outcrop_name_field,
                 params.band_num,
+                smoothing_window_m=float(params.smooth_window) if params.smooth else 0.0,
             )
             geol_data = self.geology_service.build_segments(context)
 

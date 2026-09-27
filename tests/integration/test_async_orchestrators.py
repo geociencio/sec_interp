@@ -134,6 +134,8 @@ class TestPreviewTaskOrchestrator(BaseIntegrationTest):
             outcrop_layer = "dummy_outcrop"
             outcrop_name_field = "unit"
             band_num = 1
+            smooth = False
+            smooth_window = 30
 
         params = DummyParams()
 

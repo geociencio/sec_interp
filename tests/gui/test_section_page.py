@@ -191,6 +191,21 @@ class TestTopoStyleHash(BaseTestCase):
         self.assertNotEqual(h_base, h_gradient)
         self.assertNotEqual(h_gradient, h_single)
 
+    def test_smoothing_changes_hash(self) -> None:
+        base = PreviewParams(raster_layer="r", line_layer="l", band_num=1)
+        smoothed = PreviewParams(
+            raster_layer="r",
+            line_layer="l",
+            band_num=1,
+            smooth=True,
+            smooth_window=50,
+        )
+
+        self.assertNotEqual(
+            PreviewParamHasher.calculate_hash(base),
+            PreviewParamHasher.calculate_hash(smoothed),
+        )
+
 
 class TestSectionPageDemStats(BaseTestCase):
     """Read-only perfil-vs-DEM statistics via the injected DEM provider."""

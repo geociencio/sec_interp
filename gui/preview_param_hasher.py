@@ -36,6 +36,8 @@ def assemble_preview_params(
         color_mode=values.get("color_mode", "gradient"),
         ramp_name=values.get("ramp_name"),
         single_color_hex=values.get("single_color_hex"),
+        smooth=bool(preview_options.get("smooth", False)),
+        smooth_window=int(preview_options.get("smooth_window", 30)),
         outcrop_layer=values.get("outcrop_layer"),
         outcrop_name_field=values.get("outcrop_name_field"),
         struct_layer=values.get("structural_layer"),
@@ -113,6 +115,10 @@ class PreviewParamHasher:
         hash_parts.append(str(params.color_mode))
         hash_parts.append(str(params.ramp_name))
         hash_parts.append(str(params.single_color_hex))
+
+        # Profile smoothing (affects geology geometry)
+        hash_parts.append(str(params.smooth))
+        hash_parts.append(str(params.smooth_window))
 
         # Structure Settings
         hash_parts.append(str(params.dip_field))

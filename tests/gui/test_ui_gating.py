@@ -342,8 +342,18 @@ class TestAssemblePreviewParams(BaseTestCase):
         self.assertTrue(params.auto_lod)
         self.assertEqual(params.canvas_width, 800)
 
+    def test_smoothing_options_mapped(self) -> None:
+        """Smoothed controls map from preview options into PreviewParams."""
+        params = assemble_preview_params(
+            {"raster_layer": "r1", "crossline_layer": "l1"},
+            {"smooth": True, "smooth_window": 45},
+            800,
+        )
+
+        self.assertTrue(params.smooth)
+        self.assertEqual(params.smooth_window, 45)
+
     def test_explicit_values_win(self) -> None:
-        """Explicit values override the defaults."""
         params = assemble_preview_params(
             {"selected_band": 3, "buffer_distance": 50.0},
             {"max_points": 500, "auto_lod": False},

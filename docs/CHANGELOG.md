@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.1] - 2026-10-04
+
+### Added
+- **Geology on the smoothed profile**: with **Smooth** active, the geological profile (and its export) now follow the smoothed topography using the same window. Structures and drillholes keep their raw sampling. Because the geology geometry now depends on it, changing Smooth regenerates the preview on the next **Preview**.
+- **Smoothed topography profile**: a **Smooth** control in the preview Controls (with a **Window** in metres, 10–500, off by default) overlays a smoothed line on the topographic profile and, on export, also writes `topo_profile_smoothed.csv` and `profile_line_smoothed.<ext>` alongside the raw outputs. Smoothing is a distance-window moving average; the sampled data is unchanged.
+
 ## [3.9.0] - 2026-09-27
 
 ### Added

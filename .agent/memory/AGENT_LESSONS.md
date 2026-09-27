@@ -17,6 +17,16 @@ lessons:
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-09-23'
     category: TESTING
+    topic: Qt widget mocks are mixed fidelity; check each mapping before asserting
+    lesson: In tests, QCheckBox/QComboBox map to MockQWidget (real setChecked/isChecked)
+      while QSpinBox/QRadioButton are plain MagicMocks whose setters/getters do not
+      reflect. Asserting state against the wrong assumption fails with
+      "'method' object has no attribute 'return_value'".
+    action: Check tests/base_test.py for the concrete mock of a widget first; for
+      MagicMock widgets configure return_value and assert setter calls, and for
+      MockQWidget ones use the real setter/getter.
+  - date: '2026-09-23'
+    category: TESTING
     topic: writing a "new" test file can silently overwrite an existing one
     lesson: I created tests/gui/test_section_page.py with the Write tool to add
       style tests, unaware the file already existed, so its validation tests were

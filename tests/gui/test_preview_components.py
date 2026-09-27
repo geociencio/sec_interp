@@ -66,6 +66,14 @@ class TestPreviewComponents(BaseTestCase):
         self.assertTrue("Topograph" in layer.name())
         layer.dataProvider().addFeatures.assert_called()
 
+    def test_create_smoothed_topo_layer(self):
+        """Test smoothed topography overlay layer creation."""
+        topo_data = [(0, 100), (100, 200), (200, 150)]
+        layer = self.factory.create_smoothed_topo_layer(topo_data, vert_exag=2.0)
+        self.assertIsNotNone(layer)
+        self.assertIn("Smoothed", layer.name())
+        layer.dataProvider().addFeatures.assert_called()
+
     def test_create_geol_layer(self):
         """Test geology layer creation."""
         seg1 = GeologySegment(

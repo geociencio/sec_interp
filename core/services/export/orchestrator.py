@@ -139,7 +139,15 @@ class ExportService(ExportServiceCompatMixin):
 
         def topo_handler(settings=export_settings, ext=format_ext) -> None:
             topo_h.export_topography(
-                folder, profile_data, line_crs, csv_exporter, msg, self.controller, settings, ext
+                folder,
+                profile_data,
+                line_crs,
+                csv_exporter,
+                msg,
+                self.controller,
+                settings,
+                ext,
+                options,
             )
             axes_h.export_axes(folder, profile_data, line_crs, msg, self.controller, settings, ext)
 

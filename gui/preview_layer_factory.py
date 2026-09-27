@@ -8,7 +8,9 @@ from typing import TYPE_CHECKING, Any
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
+    QgsLineSymbol,
     QgsPointXY,
+    QgsSingleSymbolRenderer,
     QgsVectorLayer,
 )
 from qgis.PyQt.QtGui import QColor
@@ -172,6 +174,35 @@ class PreviewLayerFactory:
             ramp_name=ramp_name,
             single_color=single_color,
         )
+        layer.updateExtents()
+        return layer
+
+    def create_smoothed_topo_layer(
+        self,
+        topo_data: ProfileData,
+        vert_exag: float = 1.0,
+        max_points: int = 1000,
+        color: str = "#e57373",
+    ) -> QgsVectorLayer | None:
+        """Create a smoothed topography overlay line (soft red by default)."""
+        MIN_REQUIRED_POINTS = 2
+        if not topo_data or len(topo_data) < MIN_REQUIRED_POINTS:
+            return None
+
+        render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
+        layer, provider = self.create_memory_layer("LineString", "Smoothed Topography")
+        if not layer:
+            return None
+
+        points = self._to_qgs_points(self._apply_exaggeration(render_data, vert_exag))
+        geometry = QgsGeometry.fromPolylineXY(points)
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(geometry)
+        provider.addFeatures([feature])
+
+        symbol = QgsLineSymbol.createSimple({"width": "1.2", "capstyle": "round"})
+        symbol.setColor(QColor(color))
+        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         layer.updateExtents()
         return layer
 
