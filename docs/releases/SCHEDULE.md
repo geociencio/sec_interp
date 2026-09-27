@@ -16,11 +16,11 @@ published automatically on its Sunday.
 ## How it works
 
 - `.release-queue.json` lists the pending releases with their date and branch.
-- `.github/workflows/scheduled-release.yml` runs **every Sunday at 15:00 UTC**. It picks the
-  first release that is **due** (date reached) and **not yet published** (tag absent on
-  `origin`), then:
+- `.github/workflows/scheduled-release.yml` runs **every Sunday at 15:00 UTC** on a standard
+  runner. It picks the first release that is **due** (date reached) and **not yet published**
+  (tag absent on `origin`), then:
   1. checks out the release branch,
-  2. runs the QGIS headless test suite,
+  2. runs the full test suite in the QGIS Docker image (headless),
   3. builds `sec_interp.<version>.zip`,
   4. publishes the GitHub release with the versioned ZIP and `docs/releases/notes/v<version>.md`.
 - If nothing is due (all published or dates in the future), the workflow does nothing.

@@ -19,21 +19,16 @@ jobs:
   publish:
     name: Publish due release
     runs-on: ubuntu-latest
-    container:
-      image: qgis/qgis:latest
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install system dependencies
-        run: apt-get update && apt-get install -y git curl ca-certificates libgl1
-
       - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "/root/.local/bin" >> "$GITHUB_PATH"
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
 
       - name: Select due release
         id: pick
@@ -48,32 +43,15 @@ jobs:
         if: ${{ steps.pick.outputs.version != '' }}
         run: git checkout "${{ steps.pick.outputs.branch }}"
 
-      - name: Set up environment
+      - name: Run tests (Docker, QGIS headless)
         if: ${{ steps.pick.outputs.version != '' }}
         run: |
-          uv venv --system-site-packages .venv
-          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
-          . .venv/bin/activate
-          uv pip install --no-build-isolation -e ".[dev]"
-
-      - name: Run tests (QGIS headless)
-        if: ${{ steps.pick.outputs.version != '' }}
-        env:
-          QT_QPA_PLATFORM: offscreen
-          PYTHONPATH: ${{ github.workspace }}/..
-          FORCE_MOCKS: "1"
-        run: |
-          . .venv/bin/activate
-          python3 -m unittest discover tests/core
-          python3 -m unittest discover tests/exporters
-          python3 -m unittest discover tests/gui
-          python3 -m unittest discover tests/agentic
+          DOCKER_BUILDKIT=1 docker build -t sec_interp_test .
+          docker run --rm -v "$PWD":/app/sec_interp sec_interp_test
 
       - name: Build package
         if: ${{ steps.pick.outputs.version != '' }}
-        run: |
-          . .venv/bin/activate
-          qgis-manage package --output dist --release-version "${{ steps.pick.outputs.version }}"
+        run: uv run qgis-manage package --output dist --release-version "${{ steps.pick.outputs.version }}"
 
       - name: Publish GitHub release
         if: ${{ steps.pick.outputs.version != '' }}
