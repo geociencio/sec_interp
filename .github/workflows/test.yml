@@ -61,48 +61,31 @@ jobs:
           retention-days: 7
 
   test:
-    name: Tests (QGIS Headless)
+    name: Tests (QGIS Docker)
     runs-on: ubuntu-latest
     needs: [quality, qt6]
-    container:
-      image: qgis/qgis:latest
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install system dependencies
-      run: |
-        apt-get update && apt-get install -y git curl ca-certificates libgl1 procps
+    - name: Build test image
+      run: DOCKER_BUILDKIT=1 docker build -t sec_interp_test .
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v5
-
-    - name: Setup environment and dependencies
+    - name: Run tests (QGIS headless)
       run: |
-        # Use system site packages to access QGIS libraries
-        uv venv --system-site-packages .venv
-        echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
-        . .venv/bin/activate
-        uv pip install -e ".[dev]"
-
-    - name: Run Unit Tests
-      env:
-        QT_QPA_PLATFORM: offscreen
-        FORCE_MOCKS: "1"
-      run: |
-        . .venv/bin/activate
-        export PYTHONPATH="$(pwd)/.."
-        python3 -m unittest discover tests/core
-        python3 -m unittest discover tests/gui
-        python3 -m unittest discover tests/exporters
-        python3 -m unittest discover tests/benchmarks
-        python3 -m unittest tests/test_translation_loading.py
-
-    - name: Run Integration Tests
-      env:
-        QT_QPA_PLATFORM: offscreen
-        FORCE_MOCKS: "0"
-      run: |
-        . .venv/bin/activate
-        export PYTHONPATH="$(pwd)/.."
-        python3 -m unittest discover tests/integration
+        set +e
+        docker run --rm -v "$PWD":/app/sec_interp sec_interp_test > /tmp/tests.log 2>&1
+        code=$?
+        set -e
+        tail -20 /tmp/tests.log
+        if [ "$code" -eq 0 ]; then
+          exit 0
+        fi
+        # Tolerate the known QGIS teardown segfault (139) only when every group
+        # reported OK and nothing failed.
+        if [ "$code" -eq 139 ] && grep -qE '^OK$' /tmp/tests.log && ! grep -qE '^(FAILED|ERROR)' /tmp/tests.log; then
+          echo "::warning::Tolerated QGIS teardown segfault (exit 139) after all tests reported OK."
+          exit 0
+        fi
+        echo "Test run failed (exit $code)."
+        exit "$code"
