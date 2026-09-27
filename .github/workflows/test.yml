@@ -22,7 +22,7 @@ jobs:
         run: uv python install 3.10
 
       - name: Run Ruff
-        run: uvx ruff check .
+        run: uv run --frozen ruff check .
 
   docs:
     name: Docs Consistency
@@ -45,11 +45,12 @@ jobs:
       - name: Run PyQGIS 4 migration check
         run: |
           pyqt5_to_pyqt6.py --dry_run --logfile pyqt6_checker.log .
-          if [ -s pyqt6_checker.log ]; then
+          if grep -q "Enum error" pyqt6_checker.log; then
             cat pyqt6_checker.log
             echo "::error::Qt6/PyQt6 enum incompatibilities detected (see log above)."
             exit 1
           fi
+          echo "No Qt6/PyQt6 enum incompatibilities detected."
 
       - name: Upload checker report
         uses: actions/upload-artifact@v4

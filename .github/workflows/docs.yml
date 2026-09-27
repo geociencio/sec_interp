@@ -30,6 +30,7 @@ jobs:
     env:
       DOCS_REPO: geociencio/sec_interp_docs
       DOCS_DIR: ../sec_interp_docs
+      DOCS_TOKEN: ${{ secrets.DOCS_DEPLOY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -53,12 +54,13 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Clone docs repository
-        env:
-          DOCS_TOKEN: ${{ secrets.DOCS_DEPLOY_TOKEN }}
+        if: ${{ env.DOCS_TOKEN != '' }}
         run: |
           git clone "https://x-access-token:${DOCS_TOKEN}@github.com/${DOCS_REPO}.git" "$DOCS_DIR"
 
       # scripts/build_docs.sh builds all languages into $DOCS_DIR and pushes it
-      # to the external sec_interp_docs repository (branch main).
+      # to the external sec_interp_docs repository (branch main). Skipped when
+      # the DOCS_DEPLOY_TOKEN secret is not configured.
       - name: Build and publish documentation
+        if: ${{ env.DOCS_TOKEN != '' }}
         run: bash scripts/build_docs.sh "$DOCS_DIR"
