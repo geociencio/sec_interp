@@ -11,6 +11,11 @@ on:
         description: "Version to publish now (e.g. 3.9.1). Empty = next due."
         required: false
         default: ""
+      dry_run:
+        description: "Build and test only; do not publish the release."
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -54,7 +59,7 @@ jobs:
         run: uv run qgis-manage package --output dist --release-version "${{ steps.pick.outputs.version }}"
 
       - name: Publish GitHub release
-        if: ${{ steps.pick.outputs.version != '' }}
+        if: ${{ steps.pick.outputs.version != '' && !inputs.dry_run }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.pick.outputs.version }}
