@@ -422,4 +422,4 @@ vec2d = meta.to_vec2_profile()   # -> (15.5, 104.2)
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*

@@ -300,4 +300,4 @@ Sin cobertura en `tests/core/` (módulo GUI con imports `qgis.core`). No hay tes
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

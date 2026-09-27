@@ -19,7 +19,7 @@ cssclass: secinterp-note
 > memory layers (drillhole traces, lithology intervals, geology, structures,
 > topography) without ever touching the Extract phase or the core.
 
-**Scope**: `gui/renderers/` — namespace + Present pieces (3 notes with own note)
+**Scope**: `gui/renderers/` — namespace + Present pieces (4 notes with own note)
 **Layer**: GUI / Present (only symbology `qgis.core`, no geological logic)
 **Sub-hub of**: [[layer_gui]]
 **Tags**: #secinterp #code-walkthrough #layer #gui
@@ -68,6 +68,7 @@ graph TD
 | [[gui_renderers]] | `gui/renderers/` (6 files, 170 lines) | Namespace + the five Present pieces with `ColorManager` |
 | [[base_renderer]] | `gui/renderers/base_renderer.py` (60 lines) | `apply_style()` contract + categorized-line helper |
 | [[drillhole_renderer]] | `gui/renderers/drillhole_renderer.py` (71 lines) | Labeled gray traces + unit-categorized intervals |
+| [[topo_renderer]] | `gui/renderers/topo_renderer.py` (71 lines) | Topographic profile: gradient (ramp) or single color |
 
 ---
 
@@ -152,4 +153,4 @@ To cover a new `PreviewResult` branch without breaking what exists:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*

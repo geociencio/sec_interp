@@ -63,9 +63,9 @@ cssclass: secinterp-moc
 |---|---|
 | **Newcomer** | [[layer_core]] → [[controller]] → [[layer_gui]] → [[main_dialog]] |
 | **Extract-then-Compute flow** | [[layer_gui_adapters]] → [[domain]] → [[layer_core_services]] |
-| **Preview** | [[dialog_preview_manager]] → [[preview_task_orchestrator]] → [[preview_service]] → [[preview_renderer]] |
+| **Preview** | [[dialog_preview_manager]] → [[preview_task_orchestrator]] → [[preview_service]] → [[preview_renderer]] → [[topo_renderer]] |
 | **Export** | [[dialog_export_manager]] → [[orchestrator]] → [[layer_exporters]] |
-| **Validation** | [[layer_core_validation]] → [[project_validator]] → [[layer_validator]] |
+| **Validation** | [[layer_core_validation]] → [[layer_metadata]] → [[crs_plausibility]] → [[project_validator]] → [[layer_validator]] |
 | **Plugin entry** | [[sec_interp_plugin]] → [[lifecycle]] → [[main_dialog]] |
 
 ---
@@ -122,4 +122,4 @@ fit. Sizes: Tier A/C 400–500 lines, Tier B 300–400, hubs 150–260.
 
 ---
 
-*Root note of the v2 vault — complete vault (Phases 1–4), v3.8.0.*
+*Root note of the v2 vault — complete vault (Phases 1–4), v3.9.0.*

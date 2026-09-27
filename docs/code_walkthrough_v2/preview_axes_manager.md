@@ -399,4 +399,4 @@ Perfil de 2400 m de largo, rango de elevación real 180 m, `vert_exag = 2.0`:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

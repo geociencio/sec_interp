@@ -304,4 +304,4 @@ El mixin no declara `__init__`; todo lo que consume debe existir en el huésped:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

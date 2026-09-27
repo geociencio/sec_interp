@@ -303,4 +303,4 @@ The only one of the seven modules with its own dedicated test: proof that 76 pur
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*

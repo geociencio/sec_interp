@@ -410,4 +410,4 @@ El padre trata ambos tabs de forma simétrica: conecta `changed` de los dos a
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

@@ -481,4 +481,4 @@ Ambas clases devuelven `[".shp", ".gpkg", ".dxf"]` en `get_supported_extensions`
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

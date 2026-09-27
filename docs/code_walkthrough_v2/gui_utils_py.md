@@ -303,4 +303,4 @@ Es el único de los siete módulos con test dedicado propio: la prueba de que 76
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

@@ -321,4 +321,4 @@ Los tests no ejercitan este módulo de forma aislada: lo atraviesan a través de
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

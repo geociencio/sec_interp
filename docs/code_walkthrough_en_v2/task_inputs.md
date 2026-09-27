@@ -346,4 +346,4 @@ sequenceDiagram
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*

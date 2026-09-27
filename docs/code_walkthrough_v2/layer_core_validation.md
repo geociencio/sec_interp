@@ -74,9 +74,11 @@ graph TD
 
 | Nota | Fuente | Rol |
 |------|--------|-----|
-| [[core_validation]] | `core/validation/` (4 archivos, ~148 líneas) | `IValidator`, `LayerMetadata`, `ValidationPipeline` y API pública |
+| [[core_validation]] | `core/validation/` (12 archivos, ~1708 líneas) | `IValidator`, `LayerMetadata`, `ValidationPipeline` y API pública |
 | [[field_validator]] | `core/validation/field_validator.py` (184 líneas) | Nivel 1: coerción numérica y existencia/tipo de campos |
 | [[layer_validator]] | `core/validation/layer_validator.py` (200 líneas) | Nivel 1/2 espacial: features, geometría, raster, CRS, requisitos |
+| [[layer_metadata]] | `core/validation/layer_metadata.py` (61 líneas) | DTO de metadatos de capa: puente Extract→Compute para validar sin QGIS |
+| [[crs_plausibility]] | `core/validation/crs_plausibility.py` (99 líneas) | Heurístico de CRS mal etiquetado por extensión (bloqueo de preview/export) |
 | [[path_validator]] | `core/validation/path_validator.py` (111 líneas) | Rutas seguras: traversal, confinamiento, creación y escritura |
 | [[project_validator]] | `core/validation/project_validator.py` (151 líneas) | `ValidationParams` + orquestador `ProjectValidator` por dominio |
 | [[project_validators]] | `core/validation/project_validators.py` (240 líneas) | Validadores por componente (sección, DEM, geología, sondajes, salida) |
@@ -220,4 +222,4 @@ excepción al primer fallo.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

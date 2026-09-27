@@ -397,4 +397,4 @@ Los wrappers se ejercitan de forma indirecta y directa en `tests/core/test_expor
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

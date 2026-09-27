@@ -309,4 +309,4 @@ return [(dist_start, elev_start), *inner_points, (dist_end, elev_end)]
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*

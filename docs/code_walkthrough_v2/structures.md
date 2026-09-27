@@ -327,4 +327,4 @@ flags/ajustes que usa el resto de la orquestación (aquí para leer `dip_scale`)
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

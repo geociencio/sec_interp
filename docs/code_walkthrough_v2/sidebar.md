@@ -298,4 +298,4 @@ Si alguien inserta una página sin su item —o viceversa—,
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

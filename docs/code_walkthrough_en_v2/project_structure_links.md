@@ -4,17 +4,17 @@
 >
 > Tier C files (< 50 lines) share their package note.
 
-## `core/` (75)
+## `core/` (76)
 
 | File | Lines | Tier | Note |
 |---|--:|:---:|---|
 | `core/__init__.py` | 6 | C | [[core]] |
 | `core/algorithms.py` | 14 | C | [[core]] |
 | `core/config.py` | 253 | A | [[config]] |
-| `core/controller.py` | 425 | A | [[controller]] |
+| `core/controller.py` | 426 | A | [[controller]] |
 | `core/data_cache.py` | 169 | A | [[data_cache]] |
 | `core/domain/__init__.py` | 68 | B | [[domain]] |
-| `core/domain/dtos.py` | 199 | A | [[dtos]] |
+| `core/domain/dtos.py` | 209 | A | [[dtos]] |
 | `core/domain/entities.py` | 161 | A | [[entities]] |
 | `core/domain/enums.py` | 22 | C | [[core_domain]] |
 | `core/domain/spatial_meta.py` | 48 | C | [[core_domain]] |
@@ -47,14 +47,14 @@
 | `core/services/export/handlers/drillholes_3d.py` | 82 | B | [[drillholes_3d]] |
 | `core/services/export/handlers/geology.py` | 66 | B | [[geology]] |
 | `core/services/export/handlers/interpretations.py` | 93 | B | [[interpretations]] |
-| `core/services/export/handlers/structures.py` | 77 | B | [[structures]] |
+| `core/services/export/handlers/structures.py` | 85 | B | [[structures]] |
 | `core/services/export/handlers/topography.py` | 63 | B | [[topography]] |
 | `core/services/export/map_settings_factory.py` | 34 | C | [[core_services_export]] |
 | `core/services/export/orchestrator.py` | 207 | A | [[orchestrator]] |
 | `core/services/export/path_resolver.py` | 60 | B | [[path_resolver]] |
 | `core/services/export_service.py` | 13 | C | [[core_services]] |
 | `core/services/geology_service.py` | 87 | B | [[geology_service]] |
-| `core/services/preview_service.py` | 175 | A | [[preview_service]] |
+| `core/services/preview_service.py` | 176 | A | [[preview_service]] |
 | `core/services/structure_service.py` | 187 | A | [[structure_service]] |
 | `core/services/vertical_exaggeration_service.py` | 186 | A | [[vertical_exaggeration_service]] |
 | `core/utils/__init__.py` | 82 | B | [[core_utils___init___py]] |
@@ -63,7 +63,7 @@
 | `core/utils/geometry_utils/__init__.py` | 3 | C | [[core_utils_geometry_utils]] |
 | `core/utils/geometry_utils/measurement.py` | 136 | A | [[measurement]] |
 | `core/utils/geometry_utils/optimization.py` | 197 | A | [[optimization]] |
-| `core/utils/geometry_utils/processing.py` | 80 | B | [[processing]] |
+| `core/utils/geometry_utils/processing.py` | 97 | B | [[processing]] |
 | `core/utils/i18n.py` | 30 | C | [[core_utils]] |
 | `core/utils/io.py` | 101 | A | [[io]] |
 | `core/utils/metadata_reader.py` | 129 | A | [[metadata_reader]] |
@@ -72,15 +72,16 @@
 | `core/utils/safe_loader.py` | 79 | B | [[safe_loader]] |
 | `core/utils/sampling.py` | 43 | C | [[core_utils]] |
 | `core/utils/spatial.py` | 30 | C | [[core_utils]] |
-| `core/validation/__init__.py` | 45 | C | [[core_validation]] |
+| `core/validation/__init__.py` | 49 | C | [[core_validation]] |
 | `core/validation/base_validator.py` | 25 | C | [[core_validation]] |
+| `core/validation/crs_plausibility.py` | 99 | B | [[crs_plausibility]] |
 | `core/validation/field_validator.py` | 184 | A | [[field_validator]] |
-| `core/validation/layer_metadata.py` | 49 | C | [[core_validation]] |
+| `core/validation/layer_metadata.py` | 61 | B | [[layer_metadata]] |
 | `core/validation/layer_validator.py` | 200 | A | [[layer_validator]] |
 | `core/validation/path_validator.py` | 111 | A | [[path_validator]] |
 | `core/validation/pipeline.py` | 29 | C | [[core_validation]] |
-| `core/validation/project_validator.py` | 151 | A | [[project_validator]] |
-| `core/validation/project_validators.py` | 240 | A | [[project_validators]] |
+| `core/validation/project_validator.py` | 211 | A | [[project_validator]] |
+| `core/validation/project_validators.py` | 292 | A | [[project_validators]] |
 | `core/validation/validation_helpers.py` | 195 | A | [[validation_helpers]] |
 | `core/validation/validators.py` | 252 | A | [[validators]] |
 
@@ -90,41 +91,41 @@
 |---|--:|:---:|---|
 | `gui/__init__.py` | 14 | C | [[gui]] |
 | `gui/adapters/__init__.py` | 7 | C | [[gui_adapters]] |
-| `gui/adapters/drillhole_extractor.py` | 369 | A | [[drillhole_extractor]] |
+| `gui/adapters/drillhole_extractor.py` | 379 | A | [[drillhole_extractor]] |
 | `gui/adapters/feature_fetcher.py` | 84 | B | [[feature_fetcher]] |
-| `gui/adapters/geology_extractor.py` | 235 | A | [[geology_extractor]] |
-| `gui/adapters/geometry.py` | 226 | A | [[geometry]] |
+| `gui/adapters/geology_extractor.py` | 248 | A | [[geology_extractor]] |
+| `gui/adapters/geometry.py` | 594 | A | [[geometry]] |
 | `gui/adapters/layer_resolver.py` | 113 | A | [[layer_resolver]] |
-| `gui/adapters/profile_extractor.py` | 86 | B | [[profile_extractor]] |
-| `gui/adapters/structure_extractor.py` | 226 | A | [[structure_extractor]] |
-| `gui/adapters/validation_extractor.py` | 176 | A | [[validation_extractor]] |
+| `gui/adapters/profile_extractor.py` | 91 | B | [[profile_extractor]] |
+| `gui/adapters/structure_extractor.py` | 275 | A | [[structure_extractor]] |
+| `gui/adapters/validation_extractor.py` | 269 | A | [[validation_extractor]] |
 | `gui/dialog_dependencies.py` | 23 | C | [[gui]] |
 | `gui/dialog_export_manager.py` | 218 | A | [[dialog_export_manager]] |
 | `gui/dialog_facade_mixin.py` | 166 | A | [[dialog_facade_mixin]] |
-| `gui/dialog_input_manager.py` | 200 | A | [[dialog_input_manager]] |
+| `gui/dialog_input_manager.py` | 237 | A | [[dialog_input_manager]] |
 | `gui/dialog_interpretation_manager.py` | 107 | A | [[dialog_interpretation_manager]] |
 | `gui/dialog_lifecycle_mixin.py` | 77 | B | [[dialog_lifecycle_mixin]] |
 | `gui/dialog_message_mixin.py` | 78 | B | [[dialog_message_mixin]] |
-| `gui/dialog_preview_manager.py` | 244 | A | [[dialog_preview_manager]] |
+| `gui/dialog_preview_manager.py` | 280 | A | [[dialog_preview_manager]] |
 | `gui/dialog_settings_persistence.py` | 198 | A | [[dialog_settings_persistence]] |
-| `gui/dialog_signal_manager.py` | 354 | A | [[dialog_signal_manager]] |
-| `gui/dialog_state_manager.py` | 117 | A | [[dialog_state_manager]] |
+| `gui/dialog_signal_manager.py` | 394 | A | [[dialog_signal_manager]] |
+| `gui/dialog_state_manager.py` | 123 | A | [[dialog_state_manager]] |
 | `gui/dialog_tool_manager.py` | 203 | A | [[dialog_tool_manager]] |
 | `gui/dialogs/interpretation_properties_dialog.py` | 149 | A | [[interpretation_properties_dialog]] |
 | `gui/interpretation_inheritance_mixin.py` | 190 | A | [[interpretation_inheritance_mixin]] |
 | `gui/interpretation_persistence_mixin.py` | 177 | A | [[interpretation_persistence_mixin]] |
 | `gui/layer_notification_manager.py` | 73 | B | [[layer_notification_manager]] |
 | `gui/legend_widget.py` | 81 | B | [[legend_widget]] |
-| `gui/main_dialog.py` | 193 | A | [[main_dialog]] |
-| `gui/main_dialog_config.py` | 195 | A | [[main_dialog_config]] |
+| `gui/main_dialog.py` | 201 | A | [[main_dialog]] |
+| `gui/main_dialog_config.py` | 200 | A | [[main_dialog_config]] |
 | `gui/main_dialog_utils.py` | 50 | B | [[main_dialog_utils]] |
 | `gui/preview_axes_manager.py` | 204 | A | [[preview_axes_manager]] |
 | `gui/preview_callbacks_mixin.py` | 127 | A | [[preview_callbacks_mixin]] |
-| `gui/preview_layer_factory.py` | 471 | A | [[preview_layer_factory]] |
+| `gui/preview_layer_factory.py` | 479 | A | [[preview_layer_factory]] |
 | `gui/preview_legend_renderer.py` | 178 | A | [[preview_legend_renderer]] |
-| `gui/preview_param_hasher.py` | 68 | B | [[preview_param_hasher]] |
-| `gui/preview_render_mixin.py` | 129 | A | [[preview_render_mixin]] |
-| `gui/preview_renderer.py` | 315 | A | [[preview_renderer]] |
+| `gui/preview_param_hasher.py` | 133 | A | [[preview_param_hasher]] |
+| `gui/preview_render_mixin.py` | 145 | A | [[preview_render_mixin]] |
+| `gui/preview_renderer.py` | 330 | A | [[preview_renderer]] |
 | `gui/preview_reporter.py` | 181 | A | [[preview_reporter]] |
 | `gui/preview_state.py` | 57 | B | [[preview_state]] |
 | `gui/preview_task_orchestrator.py` | 158 | A | [[preview_task_orchestrator]] |
@@ -135,7 +136,7 @@
 | `gui/renderers/geology_renderer.py` | 29 | C | [[gui_renderers]] |
 | `gui/renderers/interpretation_renderer.py` | 43 | C | [[gui_renderers]] |
 | `gui/renderers/structure_renderer.py` | 18 | C | [[gui_renderers]] |
-| `gui/renderers/topo_renderer.py` | 32 | C | [[gui_renderers]] |
+| `gui/renderers/topo_renderer.py` | 71 | B | [[topo_renderer]] |
 | `gui/services/__init__.py` | 7 | C | [[gui_services]] |
 | `gui/tasks/__init__.py` | 0 | C | [[gui_tasks]] |
 | `gui/tasks/drillhole_task.py` | 107 | A | [[drillhole_task]] |
@@ -145,10 +146,10 @@
 | `gui/tools/measure_tool.py` | 330 | A | [[measure_tool]] |
 | `gui/tools/snapper.py` | 112 | A | [[snapper]] |
 | `gui/ui/__init__.py` | 7 | C | [[gui_ui]] |
-| `gui/ui/main_window.py` | 158 | A | [[main_window]] |
+| `gui/ui/main_window.py` | 161 | A | [[main_window]] |
 | `gui/ui/pages/__init__.py` | 7 | C | [[gui_ui_pages]] |
 | `gui/ui/pages/base_page.py` | 105 | A | [[base_page]] |
-| `gui/ui/pages/dem_page.py` | 271 | A | [[dem_page]] |
+| `gui/ui/pages/dem_page.py` | 392 | A | [[dem_page]] |
 | `gui/ui/pages/drillhole/__init__.py` | 9 | C | [[gui_ui_pages_drillhole]] |
 | `gui/ui/pages/drillhole/collar_tab.py` | 180 | A | [[collar_tab]] |
 | `gui/ui/pages/drillhole/interval_tab.py` | 144 | A | [[interval_tab]] |
@@ -157,16 +158,16 @@
 | `gui/ui/pages/geology_page.py` | 120 | A | [[geology_page]] |
 | `gui/ui/pages/interpretation_page.py` | 230 | A | [[interpretation_page]] |
 | `gui/ui/pages/preview_page.py` | 262 | A | [[preview_page]] |
-| `gui/ui/pages/section_page.py` | 117 | A | [[section_page]] |
+| `gui/ui/pages/section_page.py` | 350 | A | [[section_page]] |
 | `gui/ui/pages/settings/__init__.py` | 9 | C | [[gui_ui_pages_settings]] |
 | `gui/ui/pages/settings/advanced_tab.py` | 106 | A | [[advanced_tab]] |
 | `gui/ui/pages/settings/default_tab.py` | 178 | A | [[default_tab]] |
 | `gui/ui/pages/settings/info_tab.py` | 48 | C | [[gui_ui_pages_settings]] |
 | `gui/ui/pages/settings/settings_persistence.py` | 75 | B | [[settings_persistence]] |
 | `gui/ui/pages/settings_page.py` | 124 | A | [[settings_page]] |
-| `gui/ui/pages/structure_page.py` | 166 | A | [[structure_page]] |
-| `gui/ui/sidebar.py` | 63 | B | [[sidebar]] |
-| `gui/ui_status_manager.py` | 85 | B | [[ui_status_manager]] |
+| `gui/ui/pages/structure_page.py` | 170 | A | [[structure_page]] |
+| `gui/ui/sidebar.py` | 67 | B | [[sidebar]] |
+| `gui/ui_status_manager.py` | 221 | A | [[ui_status_manager]] |
 | `gui/utils.py` | 76 | B | [[gui_utils_py]] |
 
 ## `exporters/` (13)
@@ -192,9 +193,9 @@
 | File | Lines | Tier | Note |
 |---|--:|:---:|---|
 | `plugin/__init__.py` | 9 | C | [[plugin]] |
-| `plugin/input_validator.py` | 106 | A | [[input_validator]] |
+| `plugin/input_validator.py` | 80 | B | [[input_validator]] |
 | `plugin/lifecycle.py` | 167 | A | [[lifecycle]] |
-| `plugin/render_pipeline.py` | 110 | A | [[render_pipeline]] |
+| `plugin/render_pipeline.py` | 119 | A | [[render_pipeline]] |
 
 ## `resources/` (2)
 

@@ -75,9 +75,11 @@ graph TD
 
 | Note | Source | Role |
 |------|--------|-----|
-| [[core_validation]] | `core/validation/` (4 files, ~148 lines) | `IValidator`, `LayerMetadata`, `ValidationPipeline` and public API |
+| [[core_validation]] | `core/validation/` (12 files, ~1708 lines) | `IValidator`, `LayerMetadata`, `ValidationPipeline` and public API |
 | [[field_validator]] | `core/validation/field_validator.py` (184 lines) | Level 1: numeric coercion and field existence/type |
 | [[layer_validator]] | `core/validation/layer_validator.py` (200 lines) | Level 1/2 spatial: features, geometry, raster, CRS, requirements |
+| [[layer_metadata]] | `core/validation/layer_metadata.py` (61 lines) | Layer metadata DTO: Extract→Compute bridge for QGIS-free validation |
+| [[crs_plausibility]] | `core/validation/crs_plausibility.py` (99 lines) | Extent-based mislabelled-CRS heuristic (blocks preview/export) |
 | [[path_validator]] | `core/validation/path_validator.py` (111 lines) | Safe paths: traversal, confinement, creation and writing |
 | [[project_validator]] | `core/validation/project_validator.py` (151 lines) | `ValidationParams` + `ProjectValidator` per-domain orchestrator |
 | [[project_validators]] | `core/validation/project_validators.py` (240 lines) | Per-component validators (section, DEM, geology, holes, output) |
@@ -220,4 +222,4 @@ exception at the first failure.
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*

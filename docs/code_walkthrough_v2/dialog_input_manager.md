@@ -435,4 +435,4 @@ Cobertura real en `tests/gui/test_dialog_input_manager.py` (sin QGIS, páginas m
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

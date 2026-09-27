@@ -19,7 +19,7 @@ cssclass: secinterp-note
 > ya extraídas (trazas de sondaje, tramos litológicos, geología, estructuras,
 > topografía) sin tocar nunca la fase Extract ni el core.
 
-**Alcance**: `gui/renderers/` — namespace + piezas Present (3 notas con nota propia)
+**Alcance**: `gui/renderers/` — namespace + piezas Present (4 notas con nota propia)
 **Capa**: GUI / Present (solo `qgis.core` de simbología, sin lógica geológica)
 **Sub-hub de**: [[layer_gui]]
 **Tags**: #secinterp #code-walkthrough #layer #gui
@@ -68,6 +68,7 @@ graph TD
 | [[gui_renderers]] | `gui/renderers/` (6 archivos, 170 líneas) | Namespace + las cinco piezas Present con `ColorManager` |
 | [[base_renderer]] | `gui/renderers/base_renderer.py` (60 líneas) | Contrato `apply_style()` + helper de líneas categorizadas |
 | [[drillhole_renderer]] | `gui/renderers/drillhole_renderer.py` (71 líneas) | Trazas grises etiquetadas + intervalos categorizados por unidad |
+| [[topo_renderer]] | `gui/renderers/topo_renderer.py` (71 líneas) | Perfil topográfico: gradiente (rampa) o color único |
 
 ---
 
@@ -152,4 +153,4 @@ Para cubrir una rama nueva del `PreviewResult` sin romper lo existente:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*

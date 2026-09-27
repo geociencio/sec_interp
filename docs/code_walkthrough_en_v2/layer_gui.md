@@ -108,13 +108,13 @@ graph TD
 | [[preview_callbacks_mixin]] | `gui/preview_callbacks_mixin.py` (127 lines) | Receives async `QgsTask` signals and re-renders |
 | [[preview_layer_factory]] | `gui/preview_layer_factory.py` (471 lines) | Turns each `PreviewResult` branch into styled memory layers |
 | [[preview_legend_renderer]] | `gui/preview_legend_renderer.py` (178 lines) | Paints the legend on a `QPainter`, auto-sized |
-| [[preview_param_hasher]] | `gui/preview_param_hasher.py` (68 lines) | Stable SHA-256 hash of `PreviewParams` for caching |
+| [[preview_param_hasher]] | `gui/preview_param_hasher.py` (133 lines) | Stable SHA-256 hash of `PreviewParams` for caching |
 | [[preview_render_mixin]] | `gui/preview_render_mixin.py` (129 lines) | Render pipeline: LOD + vertical exaggeration + zoom debounce |
 | [[preview_renderer]] | `gui/preview_renderer.py` (315 lines) | Canvas render orchestrator + leak-free cleanup |
 | [[preview_reporter]] | `gui/preview_reporter.py` (181 lines) | Formats the `PreviewResult` into the dialog results text |
 | [[preview_state]] | `gui/preview_state.py` (57 lines) | Shared `PreviewCache` + `RenderState` containers |
 | [[preview_task_orchestrator]] | `gui/preview_task_orchestrator.py` (158 lines) | Owner of the geology and drillhole `QgsTask`s |
-| [[ui_status_manager]] | `gui/ui_status_manager.py` (85 lines) | Visual state: validity icons, buttons, checkboxes |
+| [[ui_status_manager]] | `gui/ui_status_manager.py` (221 lines) | Visual state: validity icons, buttons, checkboxes; CRS warnings |
 | [[gui_utils_py]] | `gui/utils.py` (76 lines) | Cross-cutting `create_memory_layer` + `show_user_message` |
 
 > [!note] A real note among the members
@@ -221,4 +221,4 @@ the core or the background threads; only WKT, dicts and DTOs travel.
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.8.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*

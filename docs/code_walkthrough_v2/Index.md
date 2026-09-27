@@ -63,9 +63,9 @@ cssclass: secinterp-moc
 |---|---|
 | **Recién llegado** | [[layer_core]] → [[controller]] → [[layer_gui]] → [[main_dialog]] |
 | **Flujo Extract-then-Compute** | [[layer_gui_adapters]] → [[domain]] → [[layer_core_services]] |
-| **Preview** | [[dialog_preview_manager]] → [[preview_task_orchestrator]] → [[preview_service]] → [[preview_renderer]] |
+| **Preview** | [[dialog_preview_manager]] → [[preview_task_orchestrator]] → [[preview_service]] → [[preview_renderer]] → [[topo_renderer]] |
 | **Exportación** | [[dialog_export_manager]] → [[orchestrator]] → [[layer_exporters]] |
-| **Validación** | [[layer_core_validation]] → [[project_validator]] → [[layer_validator]] |
+| **Validación** | [[layer_core_validation]] → [[layer_metadata]] → [[crs_plausibility]] → [[project_validator]] → [[layer_validator]] |
 | **Entrada del plugin** | [[sec_interp_plugin]] → [[lifecycle]] → [[main_dialog]] |
 
 ---
@@ -123,4 +123,4 @@ hubs 150–260.
 
 ---
 
-*Nota raíz de la bóveda v2 — bóveda completa (Fases 1–4), v3.8.0.*
+*Nota raíz de la bóveda v2 — bóveda completa (Fases 1–4), v3.9.0.*

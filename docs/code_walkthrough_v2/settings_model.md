@@ -436,4 +436,4 @@ Casos puros mapeados a `tests/core/test_settings_model.py`:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.8.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
