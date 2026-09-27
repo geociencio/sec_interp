@@ -39,6 +39,19 @@ STATS_SAMPLE_SIZE = 250_000
 """Bounded sample size for band statistics (avoids blocking on huge/remote DEMs)."""
 
 
+def _all_band_statistics() -> Any:
+    """Return the "all statistics" flag for the running QGIS version.
+
+    QGIS >= 3.40 deprecates the ``QgsRasterBandStats.Stats`` argument in favour
+    of ``Qgis.RasterBandStatistic``; older versions (3.28+) lack the latter, so
+    fall back to the legacy enum to stay compatible across the supported range.
+    """
+    modern = getattr(Qgis, "RasterBandStatistic", None)
+    if modern is not None and hasattr(modern, "All"):
+        return modern.All
+    return QgsRasterBandStats.Stats.All
+
+
 class DemPage(BasePage):
     """Configuration page for DEM/Raster settings."""
 
@@ -154,7 +167,7 @@ class DemPage(BasePage):
         provider = layer.dataProvider()
         try:
             stats = provider.bandStatistics(
-                band, QgsRasterBandStats.Stats.All, QgsRectangle(), STATS_SAMPLE_SIZE
+                band, _all_band_statistics(), QgsRectangle(), STATS_SAMPLE_SIZE
             )
         except (AttributeError, TypeError, ValueError, RuntimeError):
             logger.warning("Could not compute DEM band statistics (band %s)", band, exc_info=True)
