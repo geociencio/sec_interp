@@ -1,0 +1,90 @@
+name: Scheduled Release
+
+on:
+  # Every Sunday at 15:00 UTC, publish the next release due in .release-queue.json.
+  schedule:
+    - cron: "0 15 * * 0"
+  # Allow publishing a specific release on demand (empty = next due).
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish now (e.g. 3.9.1). Empty = next due."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish due release
+    runs-on: ubuntu-latest
+    container:
+      image: qgis/qgis:latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install system dependencies
+        run: apt-get update && apt-get install -y git curl ca-certificates libgl1
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "/root/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Select due release
+        id: pick
+        run: |
+          python3 scripts/next_scheduled_release.py "${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+
+      - name: Nothing due
+        if: ${{ steps.pick.outputs.version == '' }}
+        run: echo "No scheduled release is due."
+
+      - name: Checkout release branch
+        if: ${{ steps.pick.outputs.version != '' }}
+        run: git checkout "${{ steps.pick.outputs.branch }}"
+
+      - name: Set up environment
+        if: ${{ steps.pick.outputs.version != '' }}
+        run: |
+          uv venv --system-site-packages .venv
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+          . .venv/bin/activate
+          uv pip install --no-build-isolation -e ".[dev]"
+
+      - name: Run tests (QGIS headless)
+        if: ${{ steps.pick.outputs.version != '' }}
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONPATH: ${{ github.workspace }}/..
+          FORCE_MOCKS: "1"
+        run: |
+          . .venv/bin/activate
+          python3 -m unittest discover tests/core
+          python3 -m unittest discover tests/exporters
+          python3 -m unittest discover tests/gui
+          python3 -m unittest discover tests/agentic
+
+      - name: Build package
+        if: ${{ steps.pick.outputs.version != '' }}
+        run: |
+          . .venv/bin/activate
+          qgis-manage package --output dist --release-version "${{ steps.pick.outputs.version }}"
+
+      - name: Publish GitHub release
+        if: ${{ steps.pick.outputs.version != '' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.pick.outputs.version }}
+          target_commitish: ${{ steps.pick.outputs.branch }}
+          name: v${{ steps.pick.outputs.version }}
+          body_path: docs/releases/notes/v${{ steps.pick.outputs.version }}.md
+          files: dist/sec_interp.${{ steps.pick.outputs.version }}.zip
+          draft: false
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
