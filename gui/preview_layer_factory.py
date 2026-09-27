@@ -130,6 +130,7 @@ class PreviewLayerFactory:
         color_mode: str = "gradient",
         ramp_name: str | None = None,
         single_color: str | None = None,
+        line_width: float | None = None,
     ) -> QgsVectorLayer | None:
         """Create temporary layer for topographic profile with polychromatic elevation styling."""
         MIN_REQUIRED_POINTS = 2
@@ -173,6 +174,7 @@ class PreviewLayerFactory:
             color_mode=color_mode,
             ramp_name=ramp_name,
             single_color=single_color,
+            line_width=line_width,
         )
         layer.updateExtents()
         return layer
@@ -298,6 +300,8 @@ class PreviewLayerFactory:
         reference_data: ProfileData,
         vert_exag: float = 1.0,
         dip_line_length: float | None = None,
+        color: str | None = None,
+        width: float | None = None,
     ) -> QgsVectorLayer | None:
         """Create temporary layer for structural dips."""
         if not struct_data:
@@ -339,12 +343,17 @@ class PreviewLayerFactory:
             features.append(feat)
 
         provider.addFeatures(features)
-        self.struct_renderer.apply_style(layer)
+        self.struct_renderer.apply_style(layer, color=color, width=width)
         layer.updateExtents()
         return layer
 
     def create_drillhole_trace_layer(
-        self, drillhole_data: list, vert_exag: float = 1.0
+        self,
+        drillhole_data: list,
+        vert_exag: float = 1.0,
+        color: str | None = None,
+        width: float | None = None,
+        labels: bool = True,
     ) -> QgsVectorLayer | None:
         """Create temporary layer for drillhole traces."""
         logger.debug(
@@ -374,7 +383,9 @@ class PreviewLayerFactory:
         logger.info(f"Adding {len(features)} drillhole trace features to layer")
 
         provider.addFeatures(features)
-        self.drill_renderer.apply_style(layer, role="trace")
+        self.drill_renderer.apply_style(
+            layer, role="trace", color=color, width=width, labels=labels
+        )
         layer.updateExtents()
         return layer
 
@@ -433,7 +444,7 @@ class PreviewLayerFactory:
         )
 
         provider.addFeatures(features)
-        self.color_manager.register_units(unique_units)
+        self.color_manager.register_units(unique_units, source="drillholes")
         self.drill_renderer.apply_style(layer, role="interval", unique_units=unique_units)
         layer.updateExtents()
         return layer
@@ -473,11 +484,20 @@ class PreviewLayerFactory:
         return features
 
     def create_interp_layer(
-        self, interp_data: list[InterpretationPolygon], vert_exag: float = 1.0
+        self,
+        interp_data: list[InterpretationPolygon],
+        vert_exag: float = 1.0,
+        default_color: str | None = None,
+        hidden_ids: set[str] | None = None,
     ) -> QgsVectorLayer | None:
-        """Create a memory layer for interpretation polygons."""
+        """Create a memory layer for interpretation polygons (hidden ones skipped)."""
         if not interp_data:
             return None
+        hidden = {str(i) for i in (hidden_ids or set())}
+        visible = [i for i in interp_data if str(getattr(i, "id", "")) not in hidden]
+        if not visible:
+            return None
+        interp_data = visible
 
         layer, provider = self.create_memory_layer(
             "Polygon", "Interpretations", "field=id:string&field=name:string"
@@ -507,6 +527,8 @@ class PreviewLayerFactory:
             return None
 
         provider.addFeatures(features)
-        self.interp_renderer.apply_style(layer, interp_data=interp_data)
+        self.interp_renderer.apply_style(
+            layer, interp_data=interp_data, default_color=default_color
+        )
         layer.updateExtents()
         return layer

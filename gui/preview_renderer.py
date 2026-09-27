@@ -15,7 +15,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsMapCanvas
 from qgis.PyQt.QtCore import QRectF
-from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtGui import QColor, QPainter
 
 from sec_interp.core.domain import (
     GeologyData,
@@ -63,19 +63,37 @@ class PreviewRenderer:
         self.has_structures = False
         self.has_drillholes = False
         self.is_rendering = False
+        self._interpretations: list = []
+        self._hidden_interp_ids: set[str] = set()
+        self._layer_styles: dict = {}
 
     @property
     def active_units(self) -> dict[str, Any]:
         """Expose active units from factory for legend compatibility."""
         return self.layer_factory.active_units
 
-    def legend_units(self) -> list[tuple[str, Any, bool]]:
-        """Return ``(name, color, hidden)`` for every known geological unit."""
+    def legend_units(self) -> list[tuple[str, str, Any, bool, str]]:
+        """Return ``(name, label, color, hidden, source)`` for known units, ordered.
+
+        ``source`` is ``"geology"`` or ``"drillholes"``; a unit present in both is
+        attributed to geology.
+        """
         manager = self.layer_factory.color_manager
-        return [
-            (name, manager.get_color(name), manager.is_hidden(name))
-            for name in manager.known_units()
-        ]
+        geology = set(manager.units_for_source("geology"))
+        drillholes = set(manager.units_for_source("drillholes"))
+        entries = []
+        for name in manager.ordered_units():
+            source = "drillholes" if name in drillholes and name not in geology else "geology"
+            entries.append(
+                (
+                    name,
+                    manager.label(name),
+                    manager.get_color(name),
+                    manager.is_hidden(name),
+                    source,
+                )
+            )
+        return entries
 
     def cleanup(self) -> None:
         """Remove transient layers from the project and release resources.
@@ -86,7 +104,7 @@ class PreviewRenderer:
         """
         self._cleanup_layers()
 
-    def render(
+    def render(  # noqa: PLR0913
         self,
         topo_data: ProfileData,
         geol_data: GeologyData | None = None,
@@ -102,11 +120,17 @@ class PreviewRenderer:
         topo_ramp_name: str | None = None,
         topo_single_color: str | None = None,
         topo_smooth_data: ProfileData | None = None,
+        layer_styles: dict | None = None,
+        hidden_interp_ids: set[str] | None = None,
     ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
         if self.is_rendering:
             logger.warning("Render already in progress, skipping overlapping call.")
             return None, []
+
+        self._interpretations = list(interp_data or [])
+        self._hidden_interp_ids = {str(i) for i in (hidden_interp_ids or set())}
+        self._layer_styles = dict(layer_styles or {})
 
         try:
             self.is_rendering = True
@@ -134,6 +158,8 @@ class PreviewRenderer:
                 topo_ramp_name,
                 topo_single_color,
                 topo_smooth_data,
+                layer_styles,
+                hidden_interp_ids,
             )
 
             if not data_layers:
@@ -210,8 +236,11 @@ class PreviewRenderer:
         topo_ramp_name: str | None = None,
         topo_single_color: str | None = None,
         topo_smooth_data: ProfileData | None = None,
+        layer_styles: dict | None = None,
+        hidden_interp_ids: set[str] | None = None,
     ) -> list:
         """Collect all data layers in order."""
+        style = layer_styles or {}
         # Topography & Geology
         topo_layer = self.layer_factory.create_topo_layer(
             topo_data,
@@ -221,6 +250,7 @@ class PreviewRenderer:
             topo_color_mode,
             topo_ramp_name,
             topo_single_color,
+            line_width=style.get("topo_line_width"),
         )
         if topo_layer:
             self.has_topography = True
@@ -228,14 +258,20 @@ class PreviewRenderer:
         topo_smooth = self.layer_factory.create_smoothed_topo_layer(
             topo_smooth_data, vert_exag, max_points
         )
-
         topo_fill = self.layer_factory.create_topo_fill_layer(topo_data, vert_exag, max_points)
         geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
 
         # Specialized layers
-        struct_layer = self._add_struct_layer(struct_data, topo_data, geol_data, vert_exag, dip_len)
-        drill_layers = self._add_drillhole_layers(drill_data, vert_exag)
-        interp_layer = self.layer_factory.create_interp_layer(interp_data, vert_exag)
+        struct_layer = self._add_struct_layer(
+            struct_data, topo_data, geol_data, vert_exag, dip_len, style
+        )
+        drill_layers = self._add_drillhole_layers(drill_data, vert_exag, style)
+        interp_layer = self.layer_factory.create_interp_layer(
+            interp_data,
+            vert_exag,
+            default_color=style.get("interp_color"),
+            hidden_ids=hidden_interp_ids,
+        )
 
         # Combine in Z-order (top to bottom)
         candidates = [
@@ -249,21 +285,36 @@ class PreviewRenderer:
         ]
         return [L for L in candidates if L is not None]
 
-    def _add_struct_layer(self, data, topo, geol, exag, dip_len) -> Any | None:
+    def _add_struct_layer(self, data, topo, geol, exag, dip_len, style=None) -> Any | None:
         """Create structural layer if data exists."""
         ref = topo if topo else ([p for s in geol for p in s.points] if geol else None)
-        layer = self.layer_factory.create_struct_layer(data, ref, exag, dip_len)
+        style = style or {}
+        layer = self.layer_factory.create_struct_layer(
+            data,
+            ref,
+            exag,
+            dip_len,
+            color=style.get("struct_color"),
+            width=style.get("struct_width"),
+        )
         if layer:
             self.has_structures = True
         return layer
 
-    def _add_drillhole_layers(self, data, exag) -> list:
+    def _add_drillhole_layers(self, data, exag, style=None) -> list:
         """Create drillhole layers if data exists."""
         layers = []
         if not data:
             return layers
 
-        t_layer = self.layer_factory.create_drillhole_trace_layer(data, exag)
+        style = style or {}
+        t_layer = self.layer_factory.create_drillhole_trace_layer(
+            data,
+            exag,
+            color=style.get("drill_trace_color"),
+            width=style.get("drill_trace_width"),
+            labels=style.get("drill_labels", True),
+        )
         if t_layer:
             layers.append(t_layer)
 
@@ -276,15 +327,47 @@ class PreviewRenderer:
         return layers
 
     def draw_legend(self, painter: QPainter, rect: QRectF) -> None:
-        """Draw legend on the given painter. Delegates to PreviewLegendRenderer."""
+        """Draw legend on the given painter honoring the configured layout."""
+        manager = self.layer_factory.color_manager
+        style = self._layer_styles
+        geology_set = set(manager.units_for_source("geology"))
+        drill_set = set(manager.units_for_source("drillholes"))
+        active = self.active_units
+        geology_units = {n: c for n, c in active.items() if n in geology_set or n not in drill_set}
+        drill_units = {n: c for n, c in active.items() if n in drill_set and n not in geology_set}
         self.legend_renderer.draw_legend(
             painter,
             rect,
-            self.active_units,
+            geology_units,
             self.has_topography,
             self.has_structures,
             self.has_drillholes,
+            manager.labels(),
+            drill_units or None,
+            [
+                i
+                for i in self._interpretations
+                if str(getattr(i, "id", "")) not in self._hidden_interp_ids
+            ]
+            or None,
+            layout={
+                "position": style.get("legend_pos", "top-right"),
+                "font_size": style.get("legend_font_size", 8),
+                "max_items": style.get("legend_max_items", 0),
+            },
+            layer_colors={
+                "topography": self._legend_topo_color(style),
+                "structures": QColor(str(style.get("struct_color") or "#cc0000")),
+                "drillholes": QColor(str(style.get("drill_trace_color") or "#323232")),
+            },
         )
+
+    @staticmethod
+    def _legend_topo_color(style: dict) -> QColor:
+        """Return the topography color to show in the legend."""
+        if style.get("color_mode") == "single":
+            return QColor(str(style.get("single_color_hex") or "#1f77b4"))
+        return QColor("#0066cc")
 
     def _cleanup_layers(self, layers: list | None = None) -> None:
         """Safely remove transient layers from the project."""

@@ -56,6 +56,11 @@ class MockQApplication(MagicMock):
         return text
 
     @staticmethod
+    def primaryScreen():
+        """Return a mock primary screen."""
+        return MagicMock(name="PrimaryScreen")
+
+    @staticmethod
     def installTranslator(translator):
         """Install translator."""
         return True
@@ -332,6 +337,7 @@ class MockQWidget(MockQObject):
         self.textChanged = mock_signal()
         self.stateChanged = mock_signal()
         self.currentIndexChanged = mock_signal()
+        self.editingFinished = mock_signal()
 
     def setVisible(self, visible):
         """Set widget visibility."""
@@ -387,6 +393,18 @@ class MockQWidget(MockQObject):
 
     def setMaximumSize(self, w, h):
         """Set maximum size."""
+        pass
+
+    def setMinimumHeight(self, height):
+        """Set minimum height."""
+        pass
+
+    def setMaximumHeight(self, height):
+        """Set maximum height."""
+        pass
+
+    def setSizePolicy(self, horizontal, vertical):
+        """Set size policy."""
         pass
 
     def setEnabled(self, enabled):
@@ -566,6 +584,14 @@ class MockQLayout(MockQObject):
 
     def addStretch(self, s=0):
         """Add stretch to layout."""
+        pass
+
+    def setStretchFactor(self, widget, stretch):
+        """Set the stretch factor for a widget."""
+        pass
+
+    def setStretch(self, index, stretch):
+        """Set the stretch factor for a layout item."""
         pass
 
     def setContentsMargins(self, l, t, r, b):

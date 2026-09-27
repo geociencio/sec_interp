@@ -9,6 +9,7 @@ from tests.base_test import BaseTestCase
 from sec_interp.gui.renderers import topo_renderer
 from sec_interp.gui.renderers.color_manager import ColorManager
 from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
+from sec_interp.gui.renderers.structure_renderer import StructureRenderer
 from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 
 
@@ -43,6 +44,15 @@ class TestDrillholeRenderer(BaseTestCase):
         # Should have called get_color for each unit
         self.assertEqual(self.mock_color_manager.get_color.call_count, 2)
 
+    def test_trace_style_with_options(self):
+        """Trace color/width/labels are configurable."""
+        self.renderer.apply_style(
+            self.mock_layer, role="trace", color="#ff0000", width=1.5, labels=False
+        )
+
+        self.mock_layer.setRenderer.assert_called_once()
+        self.mock_layer.setLabelsEnabled.assert_called_with(False)
+
     def test_interval_style_skips_hidden_units(self):
         """Hidden lithologies are excluded from the interval renderer."""
         self.mock_color_manager.get_color.return_value = MagicMock()
@@ -54,6 +64,21 @@ class TestDrillholeRenderer(BaseTestCase):
             )
 
         self.assertEqual(category.call_count, 1)
+
+
+class TestStructureRenderer(BaseTestCase):
+    """Test suite for StructureRenderer."""
+
+    def setUp(self):
+        super().setUp()
+        self.renderer = StructureRenderer()
+        self.mock_layer = MagicMock()
+
+    def test_apply_style_with_color_and_width(self):
+        """Structural color/width are configurable."""
+        self.renderer.apply_style(self.mock_layer, color="#00ff00", width=2.0)
+
+        self.mock_layer.setRenderer.assert_called_once()
 
 
 class TestTopoRenderer(BaseTestCase):

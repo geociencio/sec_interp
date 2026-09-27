@@ -1,11 +1,14 @@
 """Tests for PreviewLegendRenderer."""
 
 import unittest
+from types import SimpleNamespace
 from unittest.mock import MagicMock
-from tests.base_test import BaseTestCase
-from qgis.PyQt.QtCore import QRectF, Qt
-from qgis.PyQt.QtGui import QColor, QFont
+
+from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtGui import QColor
+
 from sec_interp.gui.preview_legend_renderer import PreviewLegendRenderer
+from tests.base_test import BaseTestCase
 
 
 class TestPreviewLegendRenderer(BaseTestCase):
@@ -50,19 +53,66 @@ class TestPreviewLegendRenderer(BaseTestCase):
         self.painter.save.assert_called_once()
         self.assertEqual(self.painter.drawText.call_count, 1)
 
-    def test_calculate_legend_size(self):
-        """Test legend size calculation."""
-        config = {"padding": 5, "item_height": 10, "symbol_size": 10}
-        active_units = {"A": QColor(0, 0, 0)}
+    def test_draw_legend_with_interpretations(self):
+        """Interpretations add a section header plus one item each."""
+        rect = QRectF(0, 0, 500, 500)
+        interpretations = [
+            SimpleNamespace(name="chito", color="#ff0000", type="lithology"),
+            SimpleNamespace(name="angie", color="#00ff00", type="fault"),
+        ]
 
-        size, max_w = PreviewLegendRenderer._calculate_legend_size(
-            self.painter, active_units, True, True, False, config
+        PreviewLegendRenderer.draw_legend(
+            self.painter, rect, {}, interpretations=interpretations
         )
 
-        # 3 items (Topo, Struct, A)
+        self.painter.save.assert_called_once()
+        # Header + 2 items
+        self.assertEqual(self.painter.drawText.call_count, 3)
+
+    def test_interpretations_header_follows_drill_items(self):
+        """The Interpretations header must be below the last drill item."""
+        rect = QRectF(0, 0, 500, 500)
+        drill = {"D1": QColor(255, 0, 0), "D2": QColor(0, 255, 0)}
+        interpretations = [SimpleNamespace(name="i1", color="#ff0000", type="lith")]
+
+        PreviewLegendRenderer.draw_legend(
+            self.painter,
+            rect,
+            {},
+            drill_units=drill,
+            interpretations=interpretations,
+        )
+
+        ys = {}
+        for call in self.painter.drawText.call_args_list:
+            text_rect = call.args[0]
+            text = call.args[2]
+            ys[text] = text_rect.y()
+
+        self.assertGreater(ys["Interpretations"], ys["D2"])
+
+    def test_measure(self):
+        """Legend size is derived from the row count and the widest label."""
+        config = {"padding": 5, "item_height": 10, "symbol_size": 10}
+        rows = [("line", "Topography", QColor(0, 0, 0)), ("swatch", "A", QColor(0, 0, 0))]
+
+        size, max_w = PreviewLegendRenderer._measure(self.painter, rows, config)
+
         self.assertEqual(max_w, 50)  # from fm mock
-        self.assertEqual(size.height(), 3 * 10 + 2 * 5)
+        self.assertEqual(size.height(), 2 * 10 + 2 * 5)
         self.assertEqual(size.width(), 50 + 10 + 3 * 5)
+
+    def test_max_items_truncates(self):
+        """A max-items limit adds a '+N more' row."""
+        rect = QRectF(0, 0, 500, 500)
+        units = {f"U{i}": QColor(0, 0, 0) for i in range(5)}
+
+        PreviewLegendRenderer.draw_legend(
+            self.painter, rect, units, layout={"max_items": 2}
+        )
+
+        texts = [call.args[2] for call in self.painter.drawText.call_args_list]
+        self.assertIn("+3 more", texts)
 
 
 if __name__ == "__main__":

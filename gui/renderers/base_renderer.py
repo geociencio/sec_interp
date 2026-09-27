@@ -12,6 +12,19 @@ from qgis.core import (
     QgsRendererCategory,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtGui import QColor
+
+
+def color_to_rgb_string(value: Any, default: str = "0,0,0") -> str:
+    """Return an ``"r,g,b"`` string from a hex/name or existing rgb string."""
+    if not value:
+        return default
+    if isinstance(value, str) and "," in value:
+        return value
+    color = QColor(str(value))
+    if not color.isValid():
+        return default
+    return f"{color.red()},{color.green()},{color.blue()}"
 
 
 def build_categorized_line_style(

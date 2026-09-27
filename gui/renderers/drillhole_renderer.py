@@ -15,6 +15,7 @@ from qgis.PyQt.QtGui import QColor
 from sec_interp.gui.renderers.base_renderer import (
     BasePreviewRenderer,
     build_categorized_line_style,
+    color_to_rgb_string,
 )
 from sec_interp.gui.renderers.color_manager import ColorManager
 
@@ -35,16 +36,35 @@ class DrillholeRenderer(BasePreviewRenderer):
         """Apply styling based on layer role (trace or interval)."""
         role = kwargs.get("role", "trace")
         if role == "trace":
-            self._apply_trace_style(layer)
+            self._apply_trace_style(
+                layer,
+                color=kwargs.get("color"),
+                width=kwargs.get("width"),
+                labels=kwargs.get("labels", True),
+            )
         else:
             self._apply_interval_style(layer, kwargs.get("unique_units", set()))
 
-    def _apply_trace_style(self, layer: QgsVectorLayer) -> None:
-        """Style for drillhole traces with labels."""
+    def _apply_trace_style(
+        self,
+        layer: QgsVectorLayer,
+        color: str | None = None,
+        width: object = None,
+        labels: bool = True,
+    ) -> None:
+        """Style for drillhole traces (color/width/labels configurable)."""
         symbol = QgsLineSymbol.createSimple(
-            {"color": "50,50,50", "width": "0.3", "capstyle": "round"}
+            {
+                "color": color_to_rgb_string(color, "50,50,50"),
+                "width": str(width or "0.3"),
+                "capstyle": "round",
+            }
         )
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+        if not labels:
+            layer.setLabelsEnabled(False)
+            return
 
         settings = QgsPalLayerSettings()
         settings.fieldName = "hole_id"

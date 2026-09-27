@@ -43,6 +43,23 @@ class TestColorManager(BaseTestCase):
         self.manager.set_hidden("A", False)
         self.assertFalse(self.manager.is_hidden("A"))
 
+    def test_label_alias(self) -> None:
+        self.manager.set_label("A", "Alias")
+        self.assertEqual(self.manager.label("A"), "Alias")
+        self.manager.set_label("A", "")
+        self.assertEqual(self.manager.label("A"), "A")
+
+    def test_order_and_move(self) -> None:
+        self.manager.register_units({"A", "B", "C"})
+        self.manager.set_order(["C", "B", "A"])
+        self.assertEqual(self.manager.ordered_units(), ["C", "B", "A"])
+        self.manager.move_unit("C", 1)
+        self.assertEqual(self.manager.ordered_units(), ["B", "C", "A"])
+
+    def test_ordered_units_default_sorted(self) -> None:
+        self.manager.register_units({"B", "A"})
+        self.assertEqual(self.manager.ordered_units(), ["A", "B"])
+
     def test_dump_load_roundtrip(self) -> None:
         self.manager.set_hidden("A", True)
         self.manager.set_color("B", QColor("#0000ff"))
@@ -55,6 +72,18 @@ class TestColorManager(BaseTestCase):
         restored.load(data)
         self.assertTrue(restored.is_hidden("A"))
         self.assertIn("B", restored.overrides())
+
+    def test_dump_load_roundtrip_labels_and_order(self) -> None:
+        self.manager.register_units({"A", "B"})
+        self.manager.set_label("A", "Alias")
+        self.manager.set_order(["B", "A"])
+
+        restored = ColorManager()
+        restored.register_units({"A", "B"})
+        restored.load(self.manager.dump())
+
+        self.assertEqual(restored.label("A"), "Alias")
+        self.assertEqual(restored.ordered_units(), ["B", "A"])
 
 
 class TestCategorizedHiddenUnits(BaseTestCase):

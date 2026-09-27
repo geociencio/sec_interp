@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.0] - 2026-10-18
+
+### Added
+- **Legend layout options (Settings → Symbology → Legend)**: choose the legend **position** (top/bottom, left/right), **font size** and a **maximum number of items** (the rest are summarized as "+N more") for the exported image; the font size also applies to the preview panel.
+- **Per-unit editor (Settings → Symbology → Units)**: hide, recolor, **rename** and **reorder** geological and drillhole units. Renames (aliases) and order are reflected in the preview legend and the exported image legend, and persist in the project; a "Reset unit styles" button clears the customization.
+- **Live symbology (Settings → Symbology)**: a new tab styles the preview/export live — topography color mode, ramp/color and line width (moved here from the Section page), structures color/width, drillhole trace color/width/labels, and the default interpretation color. Settings are stored in the project.
+
+### Changed
+- **Legend panel editing**: Topography, Structures and Drillhole traces rows in the legend panel now have a **visibility checkbox** (synced with the Show controls) and a **color button** (synced with Settings → Symbology); each **Interpretation** can be hidden and recolored individually from the panel too.
+- **Legend content**: the preview and exported legends now show the actual symbology (topography mode/color, structures color, drillhole trace color), separate **Geology units** from **Drillhole lithologies** under their own headers, and include the **Interpretations** (they no longer live in a separate panel section and now appear in the exported legend too).
+- **Legend controls**: removed the "Show Legend" checkbox from the preview Controls (the legend now lives in the collapsible side panel). Whether the legend is drawn in the exported image is configured from **Settings → Symbology → Legend**.
+- **Settings — Symbology layout**: the sections (Topography, Structures, Drillholes, Interpretations, Legend, Units) are now **collapsible and start collapsed**, and the tab scrolls, so a long list no longer forces the dialog to grow. The **Units** list is roomier (up to 340 px) and the settings panel fills the available height.
+
+### Fixed
+- **Plugin window size**: the dialog no longer opens covering (almost) the whole screen — its height is bounded, the Symbology content scrolls instead of expanding it, and the settings panel no longer leaves empty space below.
+
 ## [3.10.0] - 2026-10-11
 
 ### Added

@@ -343,4 +343,14 @@ La leyenda (overlay que tapaba el perfil) se mueve a un **panel lateral colapsab
 **lista de interpretaciones** y, además, **ocultar/editar color por unidad geológica**
 (núcleo de Goal 1.1). La leyenda del export no cambia. Detalle en
 [`implementation_plan_preview_side_panel_legend_v3.10.0.md`](implementation_plan_preview_side_panel_legend_v3.10.0.md).
-Estado: 📝 PLAN aprobado (L-A + L-B; pendiente de implementar).
+Estado: ✅ IMPLEMENTADO 2026-09-23 (L-A + L-B).
+
+---
+
+## Plan relacionado — Goal 1.1: Live Symbology & Legend Styling Preview (v3.11.0)
+
+Editor de simbología con vista previa en vivo bajo Settings (estilos por capa + editor por
+unidad completo: color/ocultar/renombrar/reordenar + opciones de leyenda). El núcleo por
+unidad ya se entregó en v3.10.0. Detalle, fases y decisiones abiertas en
+[`implementation_plan_symbology_preview_v3.11.0.md`](implementation_plan_symbology_preview_v3.11.0.md).
+Estado: 📝 PLAN propuesto (alcance pendiente de confirmar).

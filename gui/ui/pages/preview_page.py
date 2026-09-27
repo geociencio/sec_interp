@@ -211,15 +211,12 @@ class PreviewWidget(QWidget):
         self.chk_drillholes.setChecked(True)
         self.chk_interpretations = QCheckBox(self.tr("Show Interpretations"))
         self.chk_interpretations.setChecked(True)
-        self.chk_legend = QCheckBox(self.tr("Show Legend"))
-        self.chk_legend.setChecked(True)
 
         chk_layout.addWidget(self.chk_topo)
         chk_layout.addWidget(self.chk_geol)
         chk_layout.addWidget(self.chk_struct)
         chk_layout.addWidget(self.chk_drillholes)
         chk_layout.addWidget(self.chk_interpretations)
-        chk_layout.addWidget(self.chk_legend)
         parent_layout.addLayout(chk_layout)
 
     def _setup_results_area(self) -> None:
@@ -267,7 +264,6 @@ class PreviewWidget(QWidget):
             "show_struct": self.chk_struct.isChecked(),
             "show_drillholes": self.chk_drillholes.isChecked(),
             "show_interpretations": self.chk_interpretations.isChecked(),
-            "show_legend": self.chk_legend.isChecked(),
             "auto_lod": self.chk_auto_lod.isChecked(),
             "adaptive_sampling": self.chk_adaptive_sampling.isChecked(),
             "smooth": self.chk_smooth.isChecked(),
@@ -284,7 +280,6 @@ class PreviewWidget(QWidget):
             (self.chk_struct, "show_struct"),
             (self.chk_drillholes, "show_drillholes"),
             (self.chk_interpretations, "show_interpretations"),
-            (self.chk_legend, "show_legend"),
             (self.chk_auto_lod, "auto_lod"),
             (self.chk_adaptive_sampling, "adaptive_sampling"),
             (self.chk_smooth, "smooth"),
@@ -311,7 +306,6 @@ class PreviewWidget(QWidget):
             self.chk_struct,
             self.chk_drillholes,
             self.chk_interpretations,
-            self.chk_legend,
             self.chk_adaptive_sampling,
         ]:
             chk.setChecked(True)

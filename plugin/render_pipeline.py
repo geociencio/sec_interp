@@ -33,7 +33,7 @@ class RenderPipelineMixin:
         if vert_exag is None:
             vert_exag = self.dlg.page_dem.vertexag_spin.value()
         dip_length = self._calculate_dip_length(struct_data)
-        style = self.dlg.page_section.get_data()
+        style = self.dlg.page_settings.symbology_tab.get_data()
 
         filtered = self._get_filtered_preview_data(
             topo_data, geol_data, struct_data, drillhole_data, options
@@ -59,6 +59,8 @@ class RenderPipelineMixin:
             topo_ramp_name=style.get("ramp_name"),
             topo_single_color=style.get("single_color_hex"),
             topo_smooth_data=smooth_data,
+            layer_styles=style,
+            hidden_interp_ids=getattr(self.dlg, "_hidden_interp_ids", None),
         )
 
         if canvas is None:
@@ -69,8 +71,23 @@ class RenderPipelineMixin:
 
         side_panel = getattr(self.dlg.preview_widget, "side_panel", None)
         if side_panel is not None:
-            side_panel.update_legend(self.preview_renderer, options.get("show_legend", True))
+            # Always populate the panel; it is collapsed by the splitter if hidden.
+            layer_visibility = {
+                "topography": options.get("show_topo", True),
+                "structures": options.get("show_struct", True),
+                "drillholes": options.get("show_drillholes", True),
+            }
+            side_panel.update_legend(
+                self.preview_renderer,
+                True,
+                style,
+                layer_visibility,
+                getattr(self.dlg, "_hidden_interp_ids", None),
+            )
             side_panel.update_interpretations(getattr(self.dlg, "interpretations", None))
+        symbology_tab = getattr(getattr(self.dlg, "page_settings", None), "symbology_tab", None)
+        if symbology_tab is not None:
+            symbology_tab.refresh_units()
 
     def _get_filtered_preview_data(
         self, topo: Any, geol: Any, struct: Any, drill: Any, options: dict

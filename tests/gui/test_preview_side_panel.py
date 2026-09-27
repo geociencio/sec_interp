@@ -18,8 +18,8 @@ def _renderer():
         has_structures=True,
         has_drillholes=True,
         legend_units=lambda: [
-            ("UnitA", MagicMock(), False),
-            ("UnitB", MagicMock(), True),
+            ("UnitA", "Unit A", MagicMock(), False, "geology"),
+            ("UnitB", "Unit B", MagicMock(), True, "drillholes"),
         ],
     )
 
@@ -41,10 +41,20 @@ class TestPreviewSidePanel(BaseTestCase):
         """Topography, structures and units become rows (units interactive)."""
         self.panel.update_legend(_renderer(), visible=True)
 
-        names = [row.unit_name for row in self.panel._legend_rows]
-        self.assertEqual(names, ["Topography", "Structures", "Drillholes", "UnitA", "UnitB"])
-        unit_rows = [r for r in self.panel._legend_rows if r.check is not None]
-        self.assertEqual([r.unit_name for r in unit_rows], ["UnitA", "UnitB"])
+        names = [
+            row.unit_name
+            for row in self.panel._legend_rows
+            if getattr(row, "unit_name", None)
+        ]
+        self.assertEqual(
+            names, ["topography", "structures", "drillholes", "UnitA", "UnitB"]
+        )
+        interactive = [r for r in self.panel._legend_rows if getattr(r, "check", None) is not None]
+        self.assertEqual(
+            [r.unit_name for r in interactive],
+            ["topography", "structures", "drillholes", "UnitA", "UnitB"],
+        )
+        unit_rows = [r for r in interactive if r.unit_name in ("UnitA", "UnitB")]
         self.assertTrue(unit_rows[0].check.isChecked())  # UnitA visible
         self.assertFalse(unit_rows[1].check.isChecked())  # UnitB hidden
 
@@ -63,7 +73,7 @@ class TestPreviewSidePanel(BaseTestCase):
 
         self.panel.update_legend(_renderer(), visible=True)
 
-        self.assertEqual(len(self.panel._legend_rows), 5)
+        self.assertEqual(len(self.panel._legend_rows), 7)
         self.assertTrue(all(getattr(row, "_deleted", False) for row in first_rows))
 
     def test_visibility_toggle_emits(self) -> None:
@@ -71,7 +81,9 @@ class TestPreviewSidePanel(BaseTestCase):
         handler = MagicMock()
         self.panel.unit_visibility_changed.connect(handler)
         self.panel.update_legend(_renderer(), visible=True)
-        row = next(r for r in self.panel._legend_rows if r.unit_name == "UnitA")
+        row = next(
+            r for r in self.panel._legend_rows if getattr(r, "unit_name", None) == "UnitA"
+        )
 
         row.check.setChecked(False)
 
@@ -82,26 +94,72 @@ class TestPreviewSidePanel(BaseTestCase):
         handler = MagicMock()
         self.panel.unit_color_requested.connect(handler)
         self.panel.update_legend(_renderer(), visible=True)
-        row = next(r for r in self.panel._legend_rows if r.unit_name == "UnitA")
+        row = next(
+            r for r in self.panel._legend_rows if getattr(r, "unit_name", None) == "UnitA"
+        )
 
         row.color_requested.emit("UnitA")
 
         handler.assert_called_with("UnitA")
 
-    def test_update_interpretations(self) -> None:
-        """Interpretation polygons become labelled rows."""
-        items = [
-            SimpleNamespace(name="chito", color="#ff0000", type="lithology"),
-            SimpleNamespace(name="angie", color="#00ff00", type="fault"),
-        ]
+    def test_layer_visibility_emits(self) -> None:
+        """A layer row forwards its visibility toggle."""
+        handler = MagicMock()
+        self.panel.layer_visibility_changed.connect(handler)
+        self.panel.update_legend(_renderer(), visible=True)
+        row = next(
+            r for r in self.panel._legend_rows if getattr(r, "unit_name", None) == "topography"
+        )
 
-        self.panel.update_interpretations(items)
+        row.check.setChecked(False)
 
-        self.assertEqual(self.panel.interp_list.count(), 2)
-        self.assertEqual(self.panel.interp_list.item(0).text(), "chito")
+        handler.assert_called_with("topography", False)
 
-    def test_update_interpretations_empty(self) -> None:
-        """An empty list leaves the interpretations list empty."""
+    def test_interpretation_visibility_emits(self) -> None:
+        """An interpretation row forwards its visibility toggle by id."""
+        handler = MagicMock()
+        self.panel.interpretation_visibility_changed.connect(handler)
+        self.panel.update_legend(_renderer(), visible=True)
+        self.panel.update_interpretations(
+            [SimpleNamespace(id="i-1", name="chito", color="#ff0000", type="lithology")]
+        )
+        row = next(
+            r for r in self.panel._legend_rows if getattr(r, "unit_name", None) == "i-1"
+        )
+
+        row.check.setChecked(False)
+
+        handler.assert_called_with("i-1", False)
+
+    def test_unit_editor_rename_emits(self) -> None:
+        """Editing the name emits label_changed with the unit identity."""
+        from sec_interp.gui.preview_side_panel import UnitStyleEditor
+
+        row = UnitStyleEditor("A", MagicMock(), with_rename=True, with_reorder=True)
+        handler = MagicMock()
+        row.label_changed.connect(handler)
+
+        row.name_edit.setText("Alias")
+        row.name_edit.editingFinished.emit()
+
+        handler.assert_called_with("A", "Alias")
+
+    def test_interpretations_added_to_legend(self) -> None:
+        """Interpretations appear as a section inside the legend."""
+        self.panel.update_legend(_renderer(), visible=True)
+        self.panel.update_interpretations(
+            [SimpleNamespace(name="chito", color="#ff0000", type="lithology")]
+        )
+
+        unit_names = [getattr(row, "unit_name", None) for row in self.panel._legend_rows]
+        headers = [row.text() for row in self.panel._legend_rows if hasattr(row, "text")]
+        self.assertIn("chito", unit_names)
+        self.assertIn("Interpretations", headers)
+
+    def test_interpretations_empty_not_shown(self) -> None:
+        """No Interpretations section when there are none."""
+        self.panel.update_legend(_renderer(), visible=True)
         self.panel.update_interpretations([])
 
-        self.assertEqual(self.panel.interp_list.count(), 0)
+        headers = [row.text() for row in self.panel._legend_rows if hasattr(row, "text")]
+        self.assertNotIn("Interpretations", headers)

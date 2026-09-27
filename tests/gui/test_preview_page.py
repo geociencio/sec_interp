@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from unittest.mock import MagicMock
 
 from qgis.PyQt.QtWidgets import QApplication
 
@@ -16,6 +17,8 @@ class _Facade(DialogFacadeMixin):
 
     def __init__(self, widget: PreviewWidget) -> None:
         self.preview_widget = widget
+        self.page_settings = MagicMock()
+        self.page_settings.symbology_tab.get_data.return_value = {"show_legend": True}
 
 
 class TestPreviewSmoothingControls(BaseTestCase):
