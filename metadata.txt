@@ -4,7 +4,7 @@ qgisMinimumVersion=3.28
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.8.0
+version=3.9.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,13 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.9.0 (2026-09-27)
+	* DEM/Section Insights, CRS Safety & Adaptive Vertical Exaggeration:
+	- DEM / Section: Added CRS safety checks (warn on mixed CRS, block mislabelled CRS) and fixed a freeze when the DEM and section line use different CRS. Cross-CRS sampling now reprojects correctly for topography, geology, structures and drillhole collars.
+	- DEM page: read-only band statistics (Min / Max / Mean / NoData) computed with a bounded sample so large or remote rasters do not block the UI.
+	- Section Line page: profile-vs-DEM statistics (Min / Max / Mean and sample count) and a topographic profile color mode (gradient ramp or single color).
+	- Adaptive Vertical Exaggeration: an Auto toggle (default on) computes VE from the profile aspect ratio and structural density (clamped 0.5x-20x), keeping the manual override.
+	- Stability: closing the dialog no longer leaves temporary preview scratch layers in the project.
 	3.8.0 (2026-09-19)
 	* Core/GUI Decoupling & Reliability:
 	- Architecture: Enforced the Extract-then-Compute pattern; business services migrated to a QGIS-agnostic core with a new gui/adapters layer (architecture allowlist 36 -> 6). No user-facing change.

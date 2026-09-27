@@ -89,19 +89,19 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 
 ## 📊 System Metrics
 
-**Current Status** *(updated 2026-09-20 — module size refactor merged)*:
+**Current Status** *(updated 2026-09-27 — v3.9.0 release)*:
 - ✅ **Generation 6 Enabled**: Automated memory, context, and quality gates.
 - ✅ **Security Score**: **100.0/100** (Bandit).
-- ✅ **Maintainability**: **99.9/100** (qgis-analyzer).
-- ✅ **Module Stability**: **54.0/100** (qgis-analyzer).
+- ✅ **Maintainability**: **100.0/100** (qgis-analyzer).
+- ✅ **Module Stability**: **53.5/100** (qgis-analyzer).
 - ✅ **Docstring Coverage**: **100.0%** (Project-wide compliance).
-- ✅ **Return Type Coverage**: **99.8%**.
-- ✅ **Param Type Coverage**: **93.1%**.
+- ✅ **Return Type Coverage**: **99.5%**.
+- ✅ **Param Type Coverage**: **93.8%**.
 - ✅ **Complexity Gate**: **CC <= 10** (verified by `qgis-analyzer --max-cc 10`).
 - ✅ **i18n Hygiene Gate**: **0 violations** (verified by `qgis-analyzer` `MISSING_I18N` rule).
 - ✅ **Module Size Gate**: **PASS** (no module > 400 lines).
-- ✅ **Analyzer Issues**: **0** (was 3: 2 `NON_PYTHONIC_LOOP`, 1 `SPATIAL_INDEX`).
-- ✅ **Tests**: **616 passing** (confirmed 2026-09-20 via `make docker-test`).
+- ✅ **Analyzer Issues**: **0**.
+- ✅ **Tests**: **696 passing** (unittest discover; static ground truth 745).
 
 ---
 

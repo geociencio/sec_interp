@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.0] - 2026-09-27
+
 ### Added
 - **Topographic profile color mode**: choose **Gradient** (with a color ramp, e.g. *Spectral* or *Terrain*) or **Simple** (a single color) for the profile from the Section Line page. The change only affects the preview/export styling, never the source layer.
 - **Profile-vs-DEM statistics**: the Section Line page now shows the section's **Minimum**, **Maximum**, **Mean** elevation and the number of samples at the DEM resolution, refreshed when the line, DEM or band changes.

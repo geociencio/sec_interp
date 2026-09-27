@@ -9,6 +9,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.0] - 2026-09-27
+
+### Added
+- **Estadísticas de banda del DEM**: la página DEM muestra de forma solo-lectura Mínimo, Máximo, Media y NoData de la banda seleccionada, con un muestreo acotado para no bloquear la UI con rásters grandes o remotos.
+- **Estadísticas perfil-vs-DEM**: la página Línea de Sección reporta Mínimo, Máximo, Media y número de muestras de la sección a la resolución del DEM.
+- **Modo de color del perfil**: elegir Gradiente (con rampa) o Color único para el perfil topográfico, sin afectar a la capa fuente.
+- **Exageración Vertical Adaptativa**: opción `Auto` (activada por defecto) que calcula la exageración desde la relación de aspecto del perfil y la densidad estructural (acotada `0.5×–20×`), conservando el ajuste manual.
+
+### Changed
+- **Seguridad CRS**: aviso ámbar cuando la línea de sección, el DEM y las capas de datos usan CRS distintos, y **bloqueo** de preview/export cuando el CRS declarado contradice las coordenadas (p. ej. datos geográficos declarados como proyectados), con indicación de corregirlo con *Assign Projection*. El muestreo entre CRS ahora reproyecta correctamente topografía, geología, estructuras y collares de sondeo.
+
+### Fixed
+- **Congelación DEM/Sección con CRS mixto**: corregido un cuelgue que podía congelar QGIS cuando el DEM y la línea de sección usaban CRS distintos; la densificación queda acotada y el intervalo de muestreo se calcula en las unidades de la línea.
+- **Mediciones estructurales**: los símbolos vuelven a situarse sobre el perfil topográfico y los selectores de Dip/Strike se rellenan tras elegir la capa estructural.
+- **Sondeos**: la elevación del collar muestreada del DEM respeta ahora la diferencia de CRS.
+- **Capas temporales**: cerrar el diálogo ya no deja capas temporales de preview en el proyecto.
+
 ## [3.8.0] - 2026-09-19
 
 ### Changed

@@ -3,9 +3,9 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->643<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->745<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
-| **Last Updated** | <!-- LAST_UPDATE -->2026-09-21<!-- /LAST_UPDATE --> | 🕒 Auto |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-09-27<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 
@@ -14,8 +14,8 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->23<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
-| **Core Services** | <!-- CORE_COUNT -->274<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->230<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **Core Services** | <!-- CORE_COUNT -->293<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **GUI Components** | <!-- GUI_COUNT -->313<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
@@ -31,6 +31,7 @@
 - **tests/core/test_config_integration.py**: 3 tests
 - **tests/core/test_controller_di.py**: 2 tests
 - **tests/core/test_controller_orchestration.py**: 3 tests
+- **tests/core/test_crs_plausibility.py**: 8 tests
 - **tests/core/test_data_cache_fix.py**: 3 tests
 - **tests/core/test_drillhole_service.py**: 5 tests
 - **tests/core/test_drillhole_service_optional.py**: 1 tests
@@ -39,12 +40,12 @@
 - **tests/core/test_field_validator.py**: 6 tests
 - **tests/core/test_geology_service.py**: 4 tests
 - **tests/core/test_geology_service_optional.py**: 1 tests
-- **tests/core/test_geometry_utils.py**: 7 tests
+- **tests/core/test_geometry_utils.py**: 8 tests
 - **tests/core/test_layer_validator.py**: 5 tests
 - **tests/core/test_path_validator.py**: 6 tests
 - **tests/core/test_preview_service.py**: 4 tests
 - **tests/core/test_profile_exporters.py**: 14 tests
-- **tests/core/test_project_validator.py**: 7 tests
+- **tests/core/test_project_validator.py**: 17 tests
 - **tests/core/test_rendering_utils.py**: 6 tests
 - **tests/core/test_settings_model.py**: 7 tests
 - **tests/core/test_spatial_utils.py**: 4 tests
@@ -65,7 +66,7 @@
 - **tests/core/services/drillhole/test_processors.py**: 6 tests
 - **tests/gui/test_attribute_inheritance.py**: 1 tests
 - **tests/gui/test_cache_fix.py**: 1 tests
-- **tests/gui/test_dem_page.py**: 8 tests
+- **tests/gui/test_dem_page.py**: 13 tests
 - **tests/gui/test_dialog_export_manager.py**: 10 tests
 - **tests/gui/test_dialog_input_manager.py**: 5 tests
 - **tests/gui/test_dialog_interpretation_manager.py**: 11 tests
@@ -74,6 +75,7 @@
 - **tests/gui/test_dialog_state_manager.py**: 4 tests
 - **tests/gui/test_drillhole_page.py**: 6 tests
 - **tests/gui/test_geology_task.py**: 2 tests
+- **tests/gui/test_geometry_adapter.py**: 11 tests
 - **tests/gui/test_gui_utils.py**: 3 tests
 - **tests/gui/test_interpretation_export.py**: 1 tests
 - **tests/gui/test_interpretation_tool.py**: 22 tests
@@ -90,11 +92,17 @@
 - **tests/gui/test_preview_legend_renderer.py**: 3 tests
 - **tests/gui/test_preview_renderer_custom.py**: 2 tests
 - **tests/gui/test_preview_task_orchestrator.py**: 6 tests
+- **tests/gui/test_section_page.py**: 18 tests
+- **tests/gui/test_section_resolver.py**: 10 tests
 - **tests/gui/test_settings_page.py**: 4 tests
 - **tests/gui/test_signal_restoration.py**: 5 tests
+- **tests/gui/test_structure_extractor.py**: 3 tests
+- **tests/gui/test_structure_page.py**: 3 tests
+- **tests/gui/test_ui_gating.py**: 28 tests
+- **tests/gui/test_validation_extractor.py**: 2 tests
 - **tests/gui/tasks/test_drillhole_task.py**: 6 tests
 - **tests/gui/tasks/test_geology_task.py**: 6 tests
-- **tests/gui/renderers/test_renderers.py**: 3 tests
+- **tests/gui/renderers/test_renderers.py**: 6 tests
 - **tests/exporters/test_drillhole_3d_exporter.py**: 4 tests
 - **tests/exporters/test_drillhole_export_objects.py**: 4 tests
 - **tests/exporters/test_dynamic_attrs.py**: 1 tests

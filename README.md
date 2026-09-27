@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.28%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.8.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.9.0-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-85.0%2F100-green)
@@ -15,9 +15,28 @@
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v3.8.0: Core/GUI Decoupling & Reliability.*
+*SecInterp v3.9.0: DEM/Section Insights, CRS Safety & Adaptive Vertical Exaggeration.*
 
 ---
+
+## 🆕 What's New in v3.9.0
+**Phase: DEM/Section Insights, CRS Safety & Adaptive Vertical Exaggeration**
+
+### 🗺️ Section & DEM Insights
+- **DEM band statistics**: the DEM page shows read-only Minimum, Maximum, Mean and NoData for the selected band, computed with a bounded sample so large or remote rasters never block the UI.
+- **Profile-vs-DEM statistics**: the Section Line page reports the section's Minimum, Maximum, Mean and sample count at the DEM resolution.
+- **Profile color mode**: choose a Gradient (color ramp) or a Single color for the topographic profile, without touching the source layer.
+
+### 🛡️ CRS Safety
+- **Mixed-CRS warning**: amber status when the section line, DEM and data layers use different coordinate reference systems.
+- **Mislabelled-CRS block**: preview/export is blocked when a layer's declared CRS contradicts its coordinates, with a fix hint (*Assign Projection*).
+- **Correct cross-CRS sampling**: topography, geology, structures and drillhole collars now reproject correctly, and a QGIS freeze with mixed CRS was fixed.
+
+### 📐 Adaptive Vertical Exaggeration
+- **Auto VE** (default on) computes the exaggeration from the profile aspect ratio and structural density (clamped `0.5×–20×`), with the manual override preserved.
+
+### 🔧 Stability
+- Closing the dialog no longer leaves temporary preview scratch layers in the project.
 
 ## 🆕 What's New in v3.8.0
 **Phase: Core/GUI Decoupling & Reliability**
