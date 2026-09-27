@@ -83,7 +83,7 @@ jobs:
         uv venv --system-site-packages .venv
         echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
         . .venv/bin/activate
-        uv pip install --no-build-isolation -e ".[dev]"
+        uv pip install -e ".[dev]"
 
     - name: Run Unit Tests
       env:
