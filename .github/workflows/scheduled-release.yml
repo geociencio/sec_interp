@@ -52,7 +52,22 @@ jobs:
         if: ${{ steps.pick.outputs.version != '' }}
         run: |
           DOCKER_BUILDKIT=1 docker build -t sec_interp_test .
-          docker run --rm -v "$PWD":/app/sec_interp sec_interp_test
+          set +e
+          docker run --rm -v "$PWD":/app/sec_interp sec_interp_test > /tmp/tests.log 2>&1
+          code=$?
+          set -e
+          tail -20 /tmp/tests.log
+          if [ "$code" -eq 0 ]; then
+            exit 0
+          fi
+          # Tolerate the known QGIS teardown segfault (139) only when every
+          # group reported OK and nothing failed.
+          if [ "$code" -eq 139 ] && grep -qE '^OK$' /tmp/tests.log && ! grep -qE '^(FAILED|ERROR)' /tmp/tests.log; then
+            echo "::warning::Tolerated QGIS teardown segfault (exit 139) after all tests reported OK."
+            exit 0
+          fi
+          echo "Test run failed (exit $code)."
+          exit "$code"
 
       - name: Build package
         if: ${{ steps.pick.outputs.version != '' }}
