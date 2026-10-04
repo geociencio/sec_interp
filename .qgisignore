@@ -68,6 +68,7 @@ antigravity-framerepo/
 project_context.json
 ARCHITECTURE.mmd
 skills-lock.json
+.release-queue.json
 
 # Testing, linting, and QA tools
 tests/
