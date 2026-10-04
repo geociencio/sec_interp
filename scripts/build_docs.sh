@@ -158,6 +158,89 @@ if [ -d "help" ]; then
     find "$INTERNAL_HELP_DIR" -name "badge_only.css" -delete
     find "$INTERNAL_HELP_DIR" -type d -empty -delete
 
+    # D. Deduplicate shared _static assets across languages (one shared copy).
+    # Sphinx emits an identical theme.css/jquery.js/... per language; only a few
+    # files (documentation_options.js, language_data.js, translations.js) differ.
+    echo "🧩 Deduplicating shared _static assets across languages..."
+    uv run python - <<'PY'
+from collections import defaultdict
+from pathlib import Path
+import hashlib
+import shutil
+
+root = Path("help/html")
+langs = [
+    d for d in sorted(root.iterdir())
+    if d.is_dir() and d.name not in ("_static", "_images")
+]
+shared_root = root / "_static"
+
+digests = defaultdict(dict)
+for lang in langs:
+    static_dir = lang / "_static"
+    if not static_dir.is_dir():
+        continue
+    for f in static_dir.rglob("*"):
+        if f.is_file():
+            rel = f.relative_to(static_dir).as_posix()
+            digests[rel][lang.name] = hashlib.sha256(f.read_bytes()).hexdigest()
+
+# A file is shareable when every language that ships it has identical content.
+shared_rels = [
+    rel
+    for rel, per_lang in digests.items()
+    if len(set(per_lang.values())) == 1
+]
+
+for rel in shared_rels:
+    dst = shared_root / rel
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    first = True
+    for lang in langs:
+        src = lang / "_static" / rel
+        if not src.exists():
+            continue
+        if first:
+            shutil.move(str(src), str(dst))
+            first = False
+        else:
+            src.unlink()
+
+# Point the per-language HTML at the shared assets (keep language-specific ones).
+for lang in langs:
+    for html in lang.glob("*.html"):
+        text = html.read_text(encoding="utf-8")
+        updated = text
+        for rel in shared_rels:
+            updated = updated.replace(f"_static/{rel}", f"../_static/{rel}")
+        if updated != text:
+            html.write_text(updated, encoding="utf-8")
+
+for lang in langs:
+    static_dir = lang / "_static"
+    if static_dir.is_dir() and not any(static_dir.rglob("*")):
+        static_dir.rmdir()
+
+total = sum(f.stat().st_size for f in (root / "_static").rglob("*") if f.is_file())
+print(f"    - shared assets: {len(shared_rels)} files ({total / 1048576:.2f} MiB)")
+PY
+
+    # E. Lossless PNG optimization of the shared images.
+    echo "🖼️  Optimizing PNG images (lossless)..."
+    uv run --with pyoxipng python - <<'PY' || echo "    ⚠️ PNG optimization skipped"
+from pathlib import Path
+import oxipng
+
+count = 0
+for png in sorted(Path("help/html/_images").rglob("*.png")):
+    oxipng.optimize(str(png), level=6)
+    count += 1
+    print(f"    - optimized {count} PNG files")
+PY
+
+    # Remove directories left empty after deduplication.
+    find "$INTERNAL_HELP_DIR" -type d -empty -delete
+
     echo "✅ Optimization complete."
 fi
 
