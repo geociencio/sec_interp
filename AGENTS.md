@@ -2,7 +2,7 @@
 
 This document provides essential guidelines for agentic coding agents working on the SecInterp QGIS plugin. It covers build commands, code style, architectural principles, and development workflows.
 
-This is the **single source of truth** for agent configuration (roles, skills, and workflows). The nested `.agent/AGENTS.md` is a compatibility pointer only — do not edit it.
+This is the **single source of truth** for SecInterp's agent configuration (roles, skills, and workflows). The framework ships a default config at `.agent/AGENTS.md` (from `agentic-forge`); this root file is the canonical override that opencode loads.
 
 ---
 
