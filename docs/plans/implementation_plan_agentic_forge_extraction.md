@@ -104,7 +104,7 @@ keeps working after it is moved under `.agent/tools/`.
 | **F2** | Extract generic content + tooling, publish `agentic-forge` on Codeberg (`git subtree split` preserves history). Source of truth is the evolved `.agent/` (`antigravity-framerepo` is deprecated) | ✅ **DONE 2026-10-04** — published (fresh, no history) at `codeberg.org/geociencio/agentic-forge` |
 | **F3** | Convert `.agent/` to a git submodule; CI with `submodules: recursive`; document cloning | ✅ **DONE 2026-10-04** (submodule @ `1441dca`) |
 | **F4** | Governance: framework issues/PRs on Codeberg; bump the gitlink on updates; update `/start-session` etc. | ✅ **DONE 2026-10-04** (tag `v1.0.0`, bump tool, governance docs) |
-| **F5** | **Tooling extraction** (separate/last): `agentic-forge/tools/forge.py` CLI + `sync_metrics` split; repoint `pre-push`, `Makefile`, workflows | 🟡 **F5a DONE 2026-10-04** (forge CLI + generic tools moved; workflows repointed); F5b pending (`sync_metrics` split) |
+| **F5** | **Tooling extraction** (separate/last): `agentic-forge/tools/forge.py` CLI + `sync_metrics` split; repoint `pre-push`, `Makefile`, workflows | ✅ **DONE 2026-10-04** (F5a forge CLI + tools; F5b `sync_metrics` split) |
 
 **Sequencing rationale**: F1–F4 change structure/content; F5 refactors working tooling.
 Keeping F5 last means every earlier phase is independently verifiable and reversible,
@@ -227,11 +227,17 @@ is **MIT licensed**; its own `tools/` arrive in F5.
 - **Gates green**: `forge validate` (13 skills), `sync_metrics --validate`, `check_docs`,
   `pre-commit`, Docker suite (763 tests), `tests/agentic` (23).
 
-### F5b — `sync_metrics` split (PENDING)
-Split the `scripts/sync_metrics.py` monolith into a generic core (session rotation,
-`agent_metrics.json` schema, `--validate` consistency) shipped in the framework, and a
-project adapter (qgis-analyzer, test discovery, `TESTING_STATUS.md`, thresholds). The
-generic core becomes `forge metrics …`; the project keeps the collector.
+### F5b — `sync_metrics` split (DONE 2026-10-04)
+- Framework: new `.agent/tools/forge_metrics.py` — generic core (session rotation, cross-file
+  consistency validator, trend report, CLI entry points). `forge.py` gained a `metrics`
+  subcommand (`validate`, `report`, `close-session`).
+- Project: `scripts/sync_metrics.py` is now the **collector/adapter** (qgis-analyzer scores,
+  module sizes, test counts, `TESTING_STATUS.md`); it imports the generic core from
+  `.agent/tools/` and re-exports `rotate_session_history` / `check_internal_consistency` /
+  the `_check_*` helpers so the existing tests keep working.
+- Thresholds moved to `forge.toml` (`max_cc`, `module_size_limit`), exposed via `forge_paths`.
+- Verified: `scripts/sync_metrics.py --validate`, `forge metrics validate|report`,
+  `tests/agentic` (23), `check_docs`.
 
 ---
 
