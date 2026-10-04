@@ -1,5 +1,14 @@
 # Active Task Board (Updated 2026-10-04)
 
+### Completed this session (2026-10-04 — Agentic Forge extraction F1–F5)
+
+- [x] **F1–F5**: framework agéntico extraído y publicado en **Codeberg** (`agentic-forge`, MIT),
+  consumido como **submódulo** en `.agent/`; estado del proyecto en `.agent-state/`; CLI
+  `.agent/tools/forge.py`; `sync_metrics` partido (core genérico + colector). Plan:
+  `docs/plans/implementation_plan_agentic_forge_extraction.md`.
+- [x] Commits: `be5baa9f`, `a0241127`, `1a0290e4`, `a5a6a281`, `43a4aa64`, `2e7940c7`, `3ee51a5c`.
+- [ ] Pendiente Codeberg: **description + topics** del repo `agentic-forge` (UI).
+
 ### Completed this session (2026-10-04 — v3.9.1, v2-first docs, ZIP/CI fixes)
 
 - [x] **v3.9.1 published** (the cron never fired → published via `workflow_dispatch`; tag +
@@ -80,12 +89,15 @@ the conflict. (This also blocked the direct `build_docs.sh` backport via the pre
 
 ### Resume Point
 
-Tren de releases en marcha: **v3.9.0 y v3.9.1 publicados** (y **v3.9.1 ya en el portal QGIS**);
-`main` ya tiene v3.9.1 (merge del tren). Quedan **v3.10.0 (11 oct)** y **v3.11.0 (18 oct)**
-programados (publican solos; el workflow usa el `build_docs.sh` optimizado de `main`). Siguiente:
-resolver la **divergencia `legend_widget.py`** al mergear el tren, **refresco completo de la
-bóveda a v3.11.0**, y deuda funcional (**Goal 1.1 Fase 4** presets, **selector multi-línea**,
-**Goal 1.5**).
+**Agentic Forge (F1–F5) COMPLETO**: framework en `codeberg.org/geociencio/agentic-forge`
+(MIT, `main` `a77548b`, tags `v1.0.0`/`v1.1.0`), consumido como submódulo en `.agent/`
+(gobernanza vía `scripts/update_agentic_forge.sh`). Solo queda poner **description + topics**
+en Codeberg.
+
+**Plugin**: v3.9.0 y v3.9.1 publicados (v3.9.1 en el portal QGIS); `main` con v3.9.1. Quedan
+**v3.10.0 (11 oct)** y **v3.11.0 (18 oct)** programados. Siguiente: resolver la **divergencia
+`legend_widget.py`** al mergear el tren, **refresco de la bóveda a v3.11.0**, y deuda funcional
+(**Goal 1.1 Fase 4** presets, **selector multi-línea**, **Goal 1.5**).
 
 ### Non-blocking Documented Debt
 

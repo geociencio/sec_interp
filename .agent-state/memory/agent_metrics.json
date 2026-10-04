@@ -20,7 +20,7 @@
         "tests_ok_note": "615 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
         "quality_score_latest": 53.5,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
-        "maintainability_score": 100.0,
+        "maintainability_score": 99.9,
         "security_score": 100.0,
         "type_hint_coverage_params": 93.8,
         "type_hint_coverage_returns": 99.5,
@@ -42,7 +42,7 @@
             "output": "analysis_results/",
             "scores": {
                 "module_stability": 53.5,
-                "maintainability": 100.0,
+                "maintainability": 99.9,
                 "security": 100.0
             },
             "issues": {
@@ -79,7 +79,7 @@
     },
     "last_session": {
         "date": "2026-10-04",
-        "topic": "v391_docs_v2_zip_fixes",
+        "topic": "agentic_forge_extraction",
         "tests_ok": 763,
         "quality_score": 53.5,
         "task_completion_rate": null,
@@ -89,6 +89,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-10-04",
+            "tests_ok": 763,
+            "quality_score": 53.5,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "v391_docs_v2_zip_fixes"
+        },
         {
             "date": "2026-09-27",
             "tests_ok": 745,

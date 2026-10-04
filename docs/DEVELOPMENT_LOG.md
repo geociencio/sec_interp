@@ -1,3 +1,16 @@
+## [2026-10-04] Session: Agentic Forge Extraction (F1–F5)
+- **Achievement**: Extracted the reusable agentic framework from SecInterp and published it on Codeberg as `agentic-forge` (MIT), consumed as a git submodule at `.agent/`; project state moved to `.agent-state/`; generic tooling exposed via `.agent/tools/forge.py`; `sync_metrics` split into a generic core plus a project collector.
+- **Changes**:
+    - **F1**: state -> `.agent-state/`; `forge.toml` + `scripts/forge_paths.py` path contract; tooling made path-aware.
+    - **F2**: project skills -> `.agent-state/skills/` overlay; genericized `README`/`QUICK_REFERENCE`; **MIT** LICENSE; `export_agentic_forge.sh`; published (no history, public).
+    - **F3**: `.agent/` -> git submodule; CI uses `submodules: recursive`.
+    - **F4**: governance (`update_agentic_forge.sh`, tag `v1.0.0`, `FRAMEWORK_SYNC_GUIDE`).
+    - **F5**: `forge` CLI + generic tools in `.agent/tools/`; split `sync_metrics` (generic `forge_metrics.py` + project collector); thresholds -> `forge.toml`.
+    - **Fix**: framework `AGENTS.md` (was a broken compatibility pointer) -> framework default config.
+- **Quality**: Docker suite green (23/237/40/323/76) - `forge validate` (13 skills) - `sync_metrics --validate` - `check_docs` - pre-commit.
+- **Maintenance**: [session_2026-10-04_agentic_forge_extraction.md](maintenance/session_2026-10-04_agentic_forge_extraction.md).
+- **Note**: framework at `codeberg.org/geociencio/agentic-forge` (`main` a77548b; tags v1.0.0/v1.1.0); pending repo description + topics.
+
 ## [2026-10-04] Session: v3.9.1 Release Follow-up, Docs v2-First & ZIP/CI Fixes
 - **Achievement**: Published the scheduled v3.9.1 release manually, merged `release/v3.9.1` into `main`, froze the v1 docs vault, refreshed the v2 vault/architecture docs to v3.9.1, applied agentic quick wins, and fixed the release pipeline so the ZIP includes the (now optimized) offline help.
 - **Changes**:

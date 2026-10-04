@@ -16,6 +16,34 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-04'
+    category: ARCHITECTURE
+    topic: a subfolder "compatibility pointer" becomes a broken self-reference once exported to its own repo root
+    lesson: The framework's `.agent/AGENTS.md` was a pointer whose content referenced
+      `../AGENTS.md` and `file://./AGENTS.md`; after exporting `.agent/` as the `agentic-forge`
+      repo, the file sat at the repo root so both links escaped it (broken). A subtree meant to be
+      extracted must be self-contained.
+    action: Never rely on paths that escape a framework subtree; when a folder is (or may become)
+      its own repo, keep its files self-referential and repo-relative, and genericize
+      "compatibility pointer" files into real content.
+  - date: '2026-10-04'
+    category: AGENTIC_SYSTEM
+    topic: never publish a subtree with history when the history contains internal state
+    lesson: Before F1 the project kept `memory/`, `history/`, `task.md` and `next_steps.md`
+      inside `.agent/`, so `git subtree split -P .agent` would have exposed ~60 commits of
+      internal lessons and session handoffs in a public repo even though the working tree was clean.
+    action: For a public mirror of a subtree, export with NO history (fresh `git init`) or filter
+      history explicitly; only use `git subtree split` when the target is private. Verify with
+      `git log --all -- <path>` before publishing.
+  - date: '2026-10-04'
+    category: TOOLING
+    topic: extracting modules from a monolith can keep tests green by re-exporting the moved names
+    lesson: Moving the generic metrics core out of `scripts/sync_metrics.py` into the framework
+      would have broken `tests/agentic/*`, which import `rotate_session_history`,
+      `check_internal_consistency` and the `_check_*` helpers from `sync_metrics`.
+    action: When splitting a module, have the remaining adapter `import` and re-export the moved
+      names (and keep thin local helpers); tests and callers keep working without edits, then
+      migrate the imports gradually.
+  - date: '2026-10-04'
     category: TOOLING
     topic: a CI packaging job that skips the docs step ships a plugin ZIP without the offline help
     lesson: The scheduled-release workflow ran only `qgis-manage package`, so the gitignored,
