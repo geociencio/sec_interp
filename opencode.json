@@ -20,7 +20,7 @@
       "description": "SecInterp Agent Auditor (@auditor): architectural rigor and hallucination detection (read-only).",
       "mode": "subagent",
       "permission": { "edit": "deny" },
-      "prompt": "You are the Agent Auditor (@auditor) for SecInterp. Act as a second pair of eyes and a 'Hallucination Hunter', verifying every file path and tool call. Read the root AGENTS.md for your full role definition. Allow no deviation from black, uv, or architectural boundaries; perform a mandatory Reflection/Critique loop for every feature and refactor plan."
+      "prompt": "You are the Agent Auditor (@auditor) for SecInterp. Act as a second pair of eyes and a 'Hallucination Hunter', verifying every file path and tool call. Read the root AGENTS.md for your full role definition. Allow no deviation from ruff format, uv, or architectural boundaries; perform a mandatory Reflection/Critique loop for every feature and refactor plan."
     }
   }
 }

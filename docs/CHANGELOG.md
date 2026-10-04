@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.1] - 2026-10-04
+
+### Added
+- **Optional smoothed topography profile**: a **Smooth** control in the preview Controls (with a **Window** in metres, 10–500, off by default) overlays a soft line on the topographic profile. On export, SecInterp also writes `topo_profile_smoothed.csv` and `profile_line_smoothed.<ext>` alongside the raw outputs; the raw data is never modified.
+- **Geology on the smoothed profile**: with **Smooth** active, the geological profile and its export follow the smoothed topography using the same window; structures and drillholes keep their raw sampling.
+
 ### Fixed
 - **QGIS 4 / DEM band statistics**: scoped the `QgsRasterBandStats` enum and switched to `Qgis.RasterBandStatistic` (with a 3.28–3.39 fallback), fixing an `AttributeError` on PyQt6 and a deprecation warning on QGIS ≥3.40.
 

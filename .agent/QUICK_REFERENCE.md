@@ -1,13 +1,13 @@
 # Quick Reference: Workflows + Skills System
 
 **Created Date**: 2026-03-09
-**Version**: 1.6 (Updated 2026-05-26 — Generation 6)
+**Version**: 1.8 (Updated 2026-10-04 — Generation 8)
 
 ---
 
 ## 📋 Executive Summary
 
-The SecInterp project features a complete system of **13 skills** and **16 workflows** integrated to automate the invocation of specialized agents and contextual knowledge. As of **Phase v3.5.0**, the system has reached **Generation 6** maturity.
+The SecInterp project features a complete system of **13 skills** and **15 workflows** integrated to automate the invocation of specialized agents and contextual knowledge. As of **Phase v3.5.0**, the system has reached **Generation 6** maturity.
 
 ---
 
@@ -31,7 +31,7 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 
 ---
 
-## 🔄 Available Workflows (16)
+## 🔄 Available Workflows (15)
 
 ### Daily Development
 
@@ -70,7 +70,7 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 
 ---
 
-## ⚡ Gen 6 Automation Scripts
+## ⚡ Gen 8 Automation Scripts
 
 | Script | Purpose | Command |
 |:-------|:--------|:--------|
@@ -89,7 +89,7 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 
 ## 📊 System Metrics
 
-**Current Status** *(updated 2026-09-27 — v3.9.0 release)*:
+**Current Status** *(updated 2026-10-04 — v3.9.1 release)*:
 - ✅ **Generation 6 Enabled**: Automated memory, context, and quality gates.
 - ✅ **Security Score**: **100.0/100** (Bandit).
 - ✅ **Maintainability**: **100.0/100** (qgis-analyzer).
@@ -101,7 +101,7 @@ The SecInterp project features a complete system of **13 skills** and **16 workf
 - ✅ **i18n Hygiene Gate**: **0 violations** (verified by `qgis-analyzer` `MISSING_I18N` rule).
 - ✅ **Module Size Gate**: **PASS** (no module > 400 lines).
 - ✅ **Analyzer Issues**: **0**.
-- ✅ **Tests**: **696 passing** (unittest discover; static ground truth 745).
+- ✅ **Tests**: **745 passing** (Docker full suite).
 
 ---
 
@@ -131,5 +131,5 @@ uv run python scripts/sync_metrics.py --report
 
 ---
 
-**Last update**: 2026-05-26
-**System Version**: 1.6 (Generation 6 — Operational Excellence)
+**Last update**: 2026-10-04
+**System Version**: 1.8 (Generation 8 — opencode-native)

@@ -20,8 +20,8 @@ Defines the technical rules to ensure modern, maintainable, and consistent Pytho
 2. **Documentation**: Write docstrings following the Google format.
 3. **Paths**: Replace string manipulations or `os.path` with `pathlib.Path` objects.
 4. **Modeling**: Mandatory use of Dataclasses (DTOs) for all service returns. Avoid using index-based tuples for complex data transfer.
-5. **Validation**: Run `black .` and `ruff check .` to confirm compliance.
-5. **Audit**: Use `qgis-analyzer analyze i18n` for new strings and `security` for sensitive code.
+5. **Validation**: Run `ruff format .` and `ruff check .` to confirm compliance.
+6. **Audit**: Use `qgis-analyzer analyze i18n .` for new strings and `qgis-analyzer security .` for sensitive code.
 
 ## Instructions and Rules
 
@@ -57,4 +57,4 @@ def function(arg1: int) -> str:
 - [ ] Is `pathlib` used for all paths?
 - [ ] Do all functions have Type Hints?
 - [ ] Do docstrings follow the Google format?
-- [ ] Does the code pass `ruff` and `black` checks?
+- [ ] Does the code pass `ruff check` and `ruff format`?

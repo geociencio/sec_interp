@@ -701,11 +701,11 @@ lessons:
 |---|---|
 | **Test environment** | Manual testing on **QGIS 4** (`uv run qgis-manage deploy --no-compile --qgis-version 4`); keep 3.28 compat + LTR 3.44 matrix; Docker CI runs `qgis/qgis:latest` |
 | **Language** | Communication: Spanish / Code, Commits, Docs: English |
-| **Formatter** | `black` |
+| **Formatter** | `ruff format` |
 | **Package manager** | `uv` |
 | **UI approach** | Programmatic (no `.ui` files) |
 | **Testing framework** | `unittest` (Mock-First pattern) |
-| **Commit style** | Conventional Commits (see `docs/COMMIT_GUIDELINES.md`) |
+| **Commit style** | Conventional Commits (see `docs/docsec/COMMIT_GUIDELINES.md`) |
 | **Workflows** | Start with `/start-session`, close with `/close-session` |
 
 ---

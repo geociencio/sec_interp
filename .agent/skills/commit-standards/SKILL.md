@@ -16,7 +16,7 @@ Standardizes the Git history ensuring each change is traceable, readable, and me
 - **Strict**: Conventional Commits format and language rules (EN for the message) must be followed strictly.
 
 ## Workflow
-1. **Pre-Validation**: Run linters (`ruff`, `black`) and metric validation (`ai-ctx analyze`).
+1. **Pre-Validation**: Run linters (`ruff check`, `ruff format`) and metric validation (`ai-ctx analyze`).
 2. **Testing**: Confirm that tests pass (`make docker-test`).
 3. **Formatting**: Write the message following the Conventional Commits specification.
 4. **Review**: Verify that the message uses imperative mood and a lowercase description.
@@ -43,12 +43,12 @@ Standardizes the Git history ensuring each change is traceable, readable, and me
 | `fix` | Bug fix | `fix(drillhole): correct azimuth calculation` |
 | `refactor` | Code change (neither fix nor feat) | `refactor(core): reduce complexity in service` |
 | `docs` | Documentation only | `docs(api): update docstrings` |
-| `style` | Formatting, whitespace | `style: apply black formatting` |
+| `style` | Formatting, whitespace | `style: apply ruff formatting` |
 | `test` | Add/fix tests | `test(integration): add coverage` |
 | `chore` | Maintenance tasks | `chore: update uv dependencies` |
 
 ## Quality Checklist
 - [ ] Is the message in English and imperative?
-- [ ] Have `ruff` and `black` been executed?
+- [ ] Have `ruff check` and `ruff format` been executed?
 - [ ] Do tests pass successfully?
 - [ ] Has the quality score not decreased critically?

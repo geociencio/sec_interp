@@ -3,7 +3,7 @@ description: How to commit changes cleanly (handling hooks)
 agent: qa_engineer
 skills: [qa-docker, commit-standards, agentic-memory]
 validation: |
-  - Verify that ruff and black pass without errors
+  - Verify that ruff (check + format) passes without errors
   - Confirm that ai-ctx analyze runs successfully
   - Validate that the commit message follows Conventional Commits
 ---
@@ -13,12 +13,11 @@ validation: |
 This workflow describes the process for committing changes, ensuring code quality standards are met without getting blocked by pre-commit hook conflicts.
 
 ### 1. Preparation and Cleanup (Automatic)
-Ensures that the code complies with ruff and black standards to avoid hook failures.
+Ensures that the code complies with ruff (check + format) standards to avoid hook failures.
 // turbo
 ```bash
 uv run ruff check --fix .
 uv run ruff format .
-uv run black .
 ```
 
 ### 2. Stage Changes

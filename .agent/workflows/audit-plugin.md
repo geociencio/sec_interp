@@ -1,7 +1,7 @@
 ---
 description: Perform a full or partial plugin audit using qgis-plugin-analyzer v1.9.0+.
 agent: auditor
-skills: [project-context, coding-standards, i18n-standards]
+skills: [project-context, coding-standards, i18n-standards, qgis-migration-4x]
 ---
 
 # Workflow: Plugin Audit
@@ -13,7 +13,7 @@ This workflow executes a series of specialized static checks to ensure the quali
 1. **Security Analysis (Bandit & Secret Scan)**
    Scans the code for known vulnerabilities and hardcoded secrets.
    ```bash
-   uv run qgis-analyzer analyze security .
+   uv run qgis-analyzer security .
    ```
 
 2. **Internationalization Audit (i18n)**

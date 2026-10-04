@@ -38,7 +38,7 @@ This workflow closes the development cycle, converting technical work into histo
 
 Run formatter, linter, and tests to ensure quality.
 ```bash
-uv run ruff check --fix . && uv run ruff format . && uv run black .
+uv run ruff check --fix . && uv run ruff format .
 ```
 
 *Option A (Docker - Recommended):*

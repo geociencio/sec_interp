@@ -63,4 +63,4 @@ To avoid conflicts with pre-commit hooks (which may reformat code and cause the 
 - Keep cyclomatic complexity per function below 15 whenever possible.
 
 ---
-**Version**: 3.8.0 | **Ref**: [README_DEV.md](../../README_DEV.md)
+**Version**: 3.9.1 | **Ref**: [README_DEV.md](../../README_DEV.md)

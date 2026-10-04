@@ -4,7 +4,7 @@ qgisMinimumVersion=3.28
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.9.0
+version=3.9.1
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,11 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
+	3.9.1 (2026-10-04)
+	* Optional Smoothed Topography Profile:
+	- Preview: Added a Smooth control with a Window in metres (10-500, off by default) that overlays a soft line on the topographic profile.
+	- Export: additionally writes topo_profile_smoothed.csv and profile_line_smoothed.<ext> alongside the raw outputs; the raw data is never modified.
+	- Geology: with Smooth active, the geological profile and its export follow the smoothed topography using the same window; structures and drillholes keep their raw sampling.
 	3.9.0 (2026-09-27)
 	* DEM/Section Insights, CRS Safety & Adaptive Vertical Exaggeration:
 	- DEM / Section: Added CRS safety checks (warn on mixed CRS, block mislabelled CRS) and fixed a freeze when the DEM and section line use different CRS. Cross-CRS sampling now reprojects correctly for topography, geology, structures and drillhole collars.

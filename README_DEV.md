@@ -130,4 +130,4 @@ make docs                       # build + export + publicar (equivale a ./script
 - Docs publicados: https://geociencio.github.io/sec_interp_docs/
 
 ---
-**Plugin Version**: 3.8.0 | **Last Update**: 2026-09-21
+**Plugin Version**: 3.9.1 | **Last Update**: 2026-09-21

@@ -4,7 +4,7 @@
 
 **Sec Interp** is a QGIS plugin for extracting and visualizing geological data along cross-section profiles. It creates topographic profiles from DEMs, projects geological outcrops, and visualizes structural measurements (dip/strike) and drillholes in a 2D section view, with multi-format export (SHP, GPKG, DXF, CSV, PDF, SVG).
 
-**Version**: 3.8.0
+**Version**: 3.9.1
 **Author**: Juan M Bernales
 **License**: GPL-2.0 / GPL-3.0
 **Repository**: https://github.com/geociencio/sec_interp

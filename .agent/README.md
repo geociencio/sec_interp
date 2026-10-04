@@ -1,14 +1,14 @@
-# SecInterp Agentic System (Generation 6)
+# SecInterp Agentic System (Generation 8)
 
 Welcome to the **SecInterp Agentic Intelligence Core**. This directory contains the complete brain, tools, and protocols that empower the AI agent to act as a Senior Architect, QA Engineer, and Auditor for the SecInterp QGIS plugin.
 
 > **⚠️ Obsolete**: The `antigravity-framerepo/` directory (former Antigravity framework starter kit, Gen 2/3) is **deprecated**. It is superseded by this `.agent/` system and is no longer tracked by git (see `.gitignore`). Do not sync or update it — use the skills and workflows in `.agent/` instead.
 
-## 🚀 Overview: The Generation 6 Architecture
+## 🚀 Overview: The Generation 8 Architecture
 
-SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simple script execution into a state-governed, self-pruning, and metric-aware cognitive architecture.
+SecInterp has evolved into a **Generation 8 Agentic System**, moving beyond simple script execution into a state-governed, self-pruning, and metric-aware cognitive architecture.
 
-### Key Innovations in Gen 6:
+### Key Innovations:
 1.  **Semantic Context Injection**: No more token bloat. The root `AGENTS.md` skills table lists each skill with a "when to use" description; the agent reads only the relevant `SKILL.md` files on demand.
 2.  **Autonomous Memory Pruning**: The `memory_prune.py` utility automatically maintains the lesson log, moving consolidated knowledge to long-term archives.
 3.  **Zero-Regression Quality Gates**: A mandatory `pre-push` hook enforces Cyclomatic Complexity (CC <= 10) and quality standards before any code reaches the repository.
@@ -25,7 +25,7 @@ SecInterp has evolved into a **Generation 6 Agentic System**, moving beyond simp
 ├── QUICK_REFERENCE.md      # 📋 Fast lookup for skills and workflows
 ├── next_steps.md           # 🎯 Active goals and handoff state
 ├── architecture/           # 🏗️ System design and optimization plans
-│   └── IMPROVEMENT_PLAN.md  # Gen 6→7 improvement plan (2026-05-24)
+│   └── IMPROVEMENT_PLAN_GEN8.md  # Gen 7→8 improvement plan (implemented)
 ├── memory/                 # 🧠 Cognitive history and lessons
 │   ├── AGENT_LESSONS.md    # Structured technical lessons (YAML)
 │   ├── agent_metrics.json  # Operational metrics (schema v2.0)
@@ -90,18 +90,18 @@ This project enforces:
 -   **CC <= 10**: No function should be overly complex (verified by `qgis-analyzer --max-cc 10`).
 -   **100% Docstrings**: All public APIs must follow Google Style (verified by qgis-analyzer).
 -   **100% Return Types**: Strict typing for all function returns.
--   **93.1% Param Types**: Type hints on all function parameters.
+-   **93.8% Param Types**: Type hints on all function parameters.
 -   **Mock-First Testing**: Isolated unit tests that do not require a live QGIS instance.
 -   **i18n hygiene**: AST-based `MISSING_I18N` rule in qgis-analyzer.
 -   **Module Size**: No source module exceeds 400 lines (verified by qgis-analyzer).
 
-### Current Scores (2026-09-20)
+### Current Scores (2026-10-04)
 | Metric | Score |
 |--------|-------|
-| Module Stability | 54.0/100 |
+| Module Stability | 53.5/100 |
 | Maintainability | 99.9/100 |
 | Security (Bandit) | 100.0/100 |
-| Tests | 616 passing |
+| Tests | 745 passing |
 | CC Gate | PASS (all ≤ 10) |
 | i18n AST Gate | PASS (0 violations) |
 | Module Size Gate | PASS |
@@ -125,6 +125,6 @@ Multiple analyzers produce overlapping numbers. To avoid metric staleness, each 
 
 ---
 
-**System Version**: 1.8 (Gen 6 — Phase 1 complete, Gen 7 tooling wired + tested)
-**Last Audit**: 2026-09-12 (metric reconciliation, phase v3.7.0 closure, agentic tooling hardening)
+**System Version**: 1.8 (Gen 8 — opencode-native)
+**Last Audit**: 2026-10-04 (v3.9.1 release, v2-first docs, quick-win cleanup)
 **Status**: 🟢 Operational — Metric Integrity Verified

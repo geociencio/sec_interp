@@ -1,20 +1,20 @@
 ---
-description: Unified Release Workflow (QGIS Release Flow) - Generation 6 Standard
+description: Unified Release Workflow (QGIS Release Flow) - Generation 8 Standard
 agent: qa_engineer
-skills: [release-management, qa-docker, commit-standards, i18n-standards, changelog-generator]
+skills: [release-management, qgis-migration-4x, qa-docker, commit-standards, i18n-standards, changelog-generator]
 stop_conditions:
   - "Any function exceeds CC > 10 → Block release and refactor"
   - "Docstring coverage < 100% → Block release and fix documentation"
   - "Forbidden files (.agent, scripts, tests) found in ZIP → Abort and fix .qgisignore"
   - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
-  - Verify that 616+ tests pass in Docker
+  - Verify that 745 tests pass in Docker
   - Confirm CC <= 10 for all methods (qgis-analyzer --max-cc 10)
   - Ensure Zero High-Severity Security Findings
   - Validate ZIP contents (Plugin-only, no agentic system)
 ---
 
-# Workflow: Release Plugin (Gen 6)
+# Workflow: Release Plugin (Gen 8)
 
 Follow this 5-phase workflow to perform an official release of the SecInterp plugin.
 
@@ -89,7 +89,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    ```bash
    make docker-test
    ```
-   🤖 **Agent Action**: 100% pass rate required (616 tests).
+   🤖 **Agent Action**: 100% pass rate required (745 tests).
 
 ### Phase 4: Git and Tagging
 

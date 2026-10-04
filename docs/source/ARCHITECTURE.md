@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.8.0 | Last update: 2026-09-21
+> Version 3.9.1 | Last update: 2026-10-04
 >
 > ⚠️ **Version note**: This document was originally written for v2.9.0 and is being progressively updated. For the current architecture (Extract-then-Compute, `core/services/export/`, `plugin/` mixins, `dialog_*_mixin`, drillhole/settings tabs) see the repository document `docs/ARCHITECTURE_EN.md`.
 >
@@ -1398,5 +1398,5 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 This document provides a detailed view of the SecInterp plugin architecture. For development information, see [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
 **Last update**: 2026-01-18
-**Plugin Version**: 3.8.0
+**Plugin Version**: 3.9.1
 **Author**: Juan M. Bernales

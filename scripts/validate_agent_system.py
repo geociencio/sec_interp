@@ -196,7 +196,11 @@ def system_main():
 
     all_issues = skill_issues + workflow_issues
     skills_count = len(list(SKILLS_DIR.iterdir())) if SKILLS_DIR.exists() else 0
-    workflows_count = len(list(WORKFLOW_DIR.glob("*.md"))) if WORKFLOW_DIR.exists() else 0
+    workflows_count = (
+        len([f for f in WORKFLOW_DIR.glob("*.md") if f.name != "index.md"])
+        if WORKFLOW_DIR.exists()
+        else 0
+    )
 
     if not quiet:
         print(f"🔍 Validated {skills_count} skills, {workflows_count} workflows\n")
@@ -306,6 +310,8 @@ def get_all_workflows() -> set[str]:
     workflows = set()
     if WORKFLOW_DIR.exists():
         for f in WORKFLOW_DIR.glob("*.md"):
+            if f.name == "index.md":
+                continue
             workflows.add(f.stem)
     return workflows
 
@@ -319,6 +325,8 @@ def scan_workflows() -> tuple[list[WorkflowNode], list[BrokenRef]]:
     all_workflows = get_all_workflows()
 
     for filepath in sorted(WORKFLOW_DIR.glob("*.md")):
+        if filepath.name == "index.md":
+            continue  # index.md is a reference doc, not a workflow
         try:
             content = filepath.read_text(encoding="utf-8")
         except Exception:

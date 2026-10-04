@@ -28,7 +28,7 @@ The agent adopts one of three roles depending on the task. Roles are registered 
 - **Role**: AI technical auditor specializing in architectural rigor and standards compliance.
 - **Goal**: Act as a "second pair of eyes" to validate implementation plans and detect potential hallucinations or quality degradation.
 - **Traits**: Neutral and critical. Scrutinizes plans proposed by other agents heavily. Acts as a **"Hallucination Hunter"**, verifying every file path and tool call.
-- **Constraint**: Allows NO deviation from `black`, `uv`, or established architectural boundaries. Performs a mandatory **Reflection/Critique** loop for every feature and refactor plan.
+- **Constraint**: Allows NO deviation from `ruff format`, `uv`, or established architectural boundaries. Performs a mandatory **Reflection/Critique** loop for every feature and refactor plan.
 - **Skills**: [coding-standards](.agent/skills/coding-standards/SKILL.md), [project-context](.agent/skills/project-context/SKILL.md), [agentic-memory](.agent/skills/agentic-memory/SKILL.md)
 
 ---
@@ -49,7 +49,7 @@ When the user types `/name` (e.g. `/start-session`), read the corresponding `.ag
 | `/i18n-maintenance` | `.agent/workflows/i18n-maintenance.md` | Procedure for i18n maintenance and expansion (Translations) |
 | `/ia-critic` | `.agent/workflows/ia-critic.md` | Workflow for critical review of implementation plans by the Agent Auditor |
 | `/refactor-code` | `.agent/workflows/refactor-code.md` | Guided workflow for code refactoring with complexity validation |
-| `/release-plugin` | `.agent/workflows/release-plugin.md` | Unified Release Workflow (QGIS Release Flow) - Generation 6 Standard |
+| `/release-plugin` | `.agent/workflows/release-plugin.md` | Unified Release Workflow (QGIS Release Flow) - Generation 8 Standard |
 | `/run-tests-in-qgis` | `.agent/workflows/run-tests-in-qgis.md` | How to run tests inside QGIS (integration testing) |
 | `/run-tests` | `.agent/workflows/run-tests.md` | How to run unit tests reliably |
 | `/start-phase` | `.agent/workflows/start-phase.md` | Formal procedure for starting a new major development phase |
@@ -66,7 +66,6 @@ Full index: `.agent/workflows/index.md`
 ### Core Commands
 ```bash
 # Environment setup
-make init                    # Initialize complete dev environment (proposed)
 uv sync                     # Install dependencies
 
 # Building and deployment
@@ -76,7 +75,7 @@ make zip                     # Create distributable package
 
 # Testing
 PYTHONPATH=.. uv run python3 -m unittest discover tests   # Run full test suite (unittest discovery)
-make docker-test             # Run 361+ tests in Docker environment
+make docker-test             # Run the full test suite (745 tests) in Docker
 
 # Single test execution
 PYTHONPATH=.. uv run python3 -m unittest tests.core.test_algorithms.TestAlgorithms.test_intersection -v
