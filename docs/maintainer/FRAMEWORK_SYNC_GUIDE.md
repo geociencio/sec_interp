@@ -14,7 +14,7 @@
   métricas) y el **overlay de skills** de proyecto en `.agent-state/skills/`. Nunca se versiona
   dentro del framework.
 - **Contrato de rutas** — `forge.toml` (raíz) declara `[forge].framework` y `[forge].state`;
-  `scripts/forge_paths.py` las resuelve.
+  `.agent/tools/forge_paths.py` las resuelve.
 
 ## 🚀 Clonar / actualizar el submódulo
 
@@ -31,13 +31,13 @@ git add .agent && git commit -m "chore(agent): bump agentic-forge submodule"
 ```
 
 > `git submodule update --remote .agent` fija el nuevo commit del framework en el `gitlink`.
-> Siempre valida con `uv run python scripts/validate_agent_system.py` tras el bump.
+> Siempre valida con `uv run python .agent/tools/forge.py validate` tras el bump.
 
 ## 🛠️ Especialización (skills del proyecto)
 
 1. Añade la skill en **`.agent-state/skills/<nombre>/SKILL.md`** (overlay), no en `.agent/`.
 2. Documenta sus triggers en el `SKILL.md`.
-3. Valida: `uv run python scripts/validate_agent_system.py`.
+3. Valida: `uv run python .agent/tools/forge.py validate`.
 
 El validador escanea **framework + overlay** (`skill_dirs()`), así que las skills de proyecto
 participan en el grafo de workflows y en la detección de conflictos.
@@ -45,8 +45,8 @@ participan en el grafo de workflows y en la detección de conflictos.
 ## 🧪 Comprobaciones habituales
 
 ```bash
-uv run python scripts/validate_agent_system.py          # estructura + overlay
-uv run python scripts/validate_agent_system.py --graph  # referencias
+uv run python .agent/tools/forge.py validate          # estructura + overlay
+uv run python .agent/tools/forge.py validate --graph  # referencias
 uv run python scripts/sync_metrics.py --validate        # coherencia de métricas
 uv run python scripts/check_docs.py                     # consistencia de docs
 ```

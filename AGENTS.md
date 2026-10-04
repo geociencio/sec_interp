@@ -396,7 +396,7 @@ Skills live in `.agent/skills/*/SKILL.md`. Read the relevant `SKILL.md` on deman
 - **Agent Configuration**: this file (root `AGENTS.md`) — canonical
 - **Skills**: `.agent/skills/*/SKILL.md`
 - **Workflows**: `.agent/workflows/index.md`
-- **Agent State**: `.agent-state/` (memory, task board, `next_steps.md`); paths resolved via `forge.toml` + `scripts/forge_paths.py`
+- **Agent State**: `.agent-state/` (memory, task board, `next_steps.md`); paths resolved via `forge.toml` + `.agent/tools/forge_paths.py`
 - **Development**: `README_DEV.md`
 
 ---

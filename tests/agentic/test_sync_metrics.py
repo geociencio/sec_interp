@@ -6,8 +6,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
-sys.path.insert(0, str(SCRIPTS_DIR))
+_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_ROOT / ".agent" / "tools"))
+sys.path.insert(0, str(_ROOT / "scripts"))
 
 import sync_metrics  # noqa: E402
 

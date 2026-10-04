@@ -46,7 +46,7 @@ echo "📦 Framework $OLD → $NEW"
 git -C .agent log --oneline "$OLD".."$NEW" 2>/dev/null | sed 's/^/   /' || true
 
 echo "🔎 Validating framework + overlay…"
-uv run python scripts/validate_agent_system.py
+uv run python .agent/tools/forge.py validate
 uv run python scripts/sync_metrics.py --validate
 
 if [ "$COMMIT" -eq 1 ]; then

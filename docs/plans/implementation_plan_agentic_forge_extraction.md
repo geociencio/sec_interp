@@ -4,7 +4,7 @@
 **Created**: 2026-10-04
 **Owner**: @architect
 **Framework repo name**: `agentic-forge` (Codeberg)
-**References**: `AGENTS.md`, `scripts/forge_paths.py`, `forge.toml`, `docs/maintainer/FRAMEWORK_SYNC_GUIDE.md`
+**References**: `AGENTS.md`, `.agent/tools/forge_paths.py`, `forge.toml`, `docs/maintainer/FRAMEWORK_SYNC_GUIDE.md`
 
 ---
 
@@ -76,7 +76,7 @@ own directory, and framework updates must never clobber project history/metrics.
 
 ### Path contract
 `forge.toml` (repo root) declares `[forge].framework` and `[forge].state`.
-`scripts/forge_paths.py` resolves them (walks up to find `forge.toml`), so the tooling
+`.agent/tools/forge_paths.py` resolves them (walks up to find `forge.toml`), so the tooling
 keeps working after it is moved under `.agent/tools/`.
 
 ### `sync_metrics.py` split (F5)
@@ -104,7 +104,7 @@ keeps working after it is moved under `.agent/tools/`.
 | **F2** | Extract generic content + tooling, publish `agentic-forge` on Codeberg (`git subtree split` preserves history). Source of truth is the evolved `.agent/` (`antigravity-framerepo` is deprecated) | ✅ **DONE 2026-10-04** — published (fresh, no history) at `codeberg.org/geociencio/agentic-forge` |
 | **F3** | Convert `.agent/` to a git submodule; CI with `submodules: recursive`; document cloning | ✅ **DONE 2026-10-04** (submodule @ `1441dca`) |
 | **F4** | Governance: framework issues/PRs on Codeberg; bump the gitlink on updates; update `/start-session` etc. | ✅ **DONE 2026-10-04** (tag `v1.0.0`, bump tool, governance docs) |
-| **F5** | **Tooling extraction** (separate/last): `agentic-forge/tools/forge.py` CLI + `sync_metrics` split; repoint `pre-push`, `Makefile`, workflows | ⬜ Pending |
+| **F5** | **Tooling extraction** (separate/last): `agentic-forge/tools/forge.py` CLI + `sync_metrics` split; repoint `pre-push`, `Makefile`, workflows | 🟡 **F5a DONE 2026-10-04** (forge CLI + generic tools moved; workflows repointed); F5b pending (`sync_metrics` split) |
 
 **Sequencing rationale**: F1–F4 change structure/content; F5 refactors working tooling.
 Keeping F5 last means every earlier phase is independently verifiable and reversible,
@@ -141,7 +141,7 @@ git submodule add git@codeberg.org:<user>/agentic-forge.git .agent
 
 ## 7. F1 — Change Log (COMPLETED)
 - New `.agent-state/` (moved with `git mv`): `memory/`, `history/`, `task.md`, `next_steps.md`.
-- New `forge.toml` + `scripts/forge_paths.py` (path contract; `forge_paths` exposes
+- New `forge.toml` + `.agent/tools/forge_paths.py` (path contract; `forge_paths` exposes
   `PROJECT_ROOT`, `FRAMEWORK_DIR`, `STATE_DIR`, `*_FILE` constants).
 - Path-aware tooling: `sync_metrics.py`, `validate_agent_system.py`, `lesson_extractor.py`,
   `memory_prune.py`, `mcp_server.py` (consistency scan now covers framework **+** state).
@@ -209,6 +209,29 @@ is **MIT licensed**; its own `tools/` arrive in F5.
 - `docs/maintainer/FRAMEWORK_SYNC_GUIDE.md`: added a **Governance** section (source of truth,
   upstream-vs-project changes, bump tool, tags/pinning, where to file issues/PRs).
 - **Governance loop established**: generic changes upstream → push → bump gitlink in SecInterp.
+
+---
+
+## 11. F5 — Change Log
+
+### F5a — Framework CLI + generic tools (DONE 2026-10-04)
+- Framework repo (`.agent/tools/`, pushed `99dcaed` + `06ae6de`): added `tools/forge.py`
+  CLI (`validate [--graph|--conflicts]`, `memory prune`, `lesson propose`) plus the generic
+  modules `forge_paths.py`, `validate_agent_system.py`, `lesson_extractor.py`, `memory_prune.py`.
+- Project: removed those four modules from `scripts/`; `scripts/sync_metrics.py` and
+  `scripts/mcp_server.py` now load `forge_paths` from `.agent/tools/`; `tests/agentic/*`
+  point at `.agent/tools/`.
+- Workflows + `QUICK_REFERENCE.md` (framework) now call `.agent/tools/forge.py …`.
+- `.agent` gitlink bumped to `06ae6de`. Kept project-side: `sync_metrics.py`, `mcp_server.py`,
+  `session_index.py`, vault/docs/i18n/release tooling.
+- **Gates green**: `forge validate` (13 skills), `sync_metrics --validate`, `check_docs`,
+  `pre-commit`, Docker suite (763 tests), `tests/agentic` (23).
+
+### F5b — `sync_metrics` split (PENDING)
+Split the `scripts/sync_metrics.py` monolith into a generic core (session rotation,
+`agent_metrics.json` schema, `--validate` consistency) shipped in the framework, and a
+project adapter (qgis-analyzer, test discovery, `TESTING_STATUS.md`, thresholds). The
+generic core becomes `forge metrics …`; the project keeps the collector.
 
 ---
 

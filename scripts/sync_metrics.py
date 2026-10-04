@@ -28,7 +28,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-import forge_paths
+_TOOLS_DIR = Path(__file__).resolve().parent.parent / ".agent" / "tools"
+if _TOOLS_DIR.is_dir():
+    sys.path.insert(0, str(_TOOLS_DIR))
+
+import forge_paths  # noqa: E402
 
 # ── Configuration ──────────────────────────────────────────────────────────
 PROJECT_ROOT = forge_paths.PROJECT_ROOT

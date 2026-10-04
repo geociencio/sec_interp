@@ -3,7 +3,12 @@ from __future__ import annotations
 import json
 import sys
 import logging
+from pathlib import Path
 from typing import Any, Dict, List, Optional  # noqa: F401
+
+_TOOLS_DIR = Path(__file__).resolve().parent.parent / ".agent" / "tools"
+if _TOOLS_DIR.is_dir():
+    sys.path.insert(0, str(_TOOLS_DIR))
 
 import forge_paths  # noqa: E402
 
