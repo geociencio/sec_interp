@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.28%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![Version](https://img.shields.io/badge/Version-3.9.0-orange.svg)
+![Version](https://img.shields.io/badge/Version-3.9.1-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-85.0%2F100-green)
@@ -15,60 +15,24 @@
 **SecInterp** (Section Interpreter) is a professional QGIS plugin designed for industrial-grade extraction and visualization of geological data. It empowers geologists to generate high-fidelity topographic profiles, project outcrops with structural integrity, and perform complex 3D drillhole analysis within a unified 2D cross-section environment.
 
 ![Hero Image](file:///home/jmbernales/.gemini/antigravity/brain/570578c0-675f-4359-95d0-61f75ff1cbcf/sec_interp_final_pro_mockup_1768774790346.png)
-*SecInterp v3.9.0: DEM/Section Insights, CRS Safety & Adaptive Vertical Exaggeration.*
+*SecInterp v3.9.1: Optional Smoothed Topography Profile.*
 
 ---
 
-## 🆕 What's New in v3.9.0
-**Phase: DEM/Section Insights, CRS Safety & Adaptive Vertical Exaggeration**
+## 🆕 What's New in v3.9.1
+**Patch: Optional Smoothed Topography Profile**
 
-### 🗺️ Section & DEM Insights
-- **DEM band statistics**: the DEM page shows read-only Minimum, Maximum, Mean and NoData for the selected band, computed with a bounded sample so large or remote rasters never block the UI.
-- **Profile-vs-DEM statistics**: the Section Line page reports the section's Minimum, Maximum, Mean and sample count at the DEM resolution.
-- **Profile color mode**: choose a Gradient (color ramp) or a Single color for the topographic profile, without touching the source layer.
+### 🧵 Smoothed Topography Profile
+- **Smooth control**: a **Smooth** toggle with a **Window** in metres (10–500, off by default) overlays a soft line on the topographic profile.
+- **Smoothed exports**: export additionally writes `topo_profile_smoothed.csv` and `profile_line_smoothed.<ext>` alongside the raw outputs; the raw data is never modified.
+- **Pure-math smoothing**: a distance-window moving average (endpoints preserved), implemented with the standard library only.
 
-### 🛡️ CRS Safety
-- **Mixed-CRS warning**: amber status when the section line, DEM and data layers use different coordinate reference systems.
-- **Mislabelled-CRS block**: preview/export is blocked when a layer's declared CRS contradicts its coordinates, with a fix hint (*Assign Projection*).
-- **Correct cross-CRS sampling**: topography, geology, structures and drillhole collars now reproject correctly, and a QGIS freeze with mixed CRS was fixed.
+### ⛰️ Geology on the Smoothed Profile
+- With **Smooth** active, the geological profile and its export follow the **smoothed** topography using the same window, so the geology tracks the interpretation surface.
+- Structures and drillholes keep their **raw** sampling, since they carry measured positions.
 
-### 📐 Adaptive Vertical Exaggeration
-- **Auto VE** (default on) computes the exaggeration from the profile aspect ratio and structural density (clamped `0.5×–20×`), with the manual override preserved.
-
-### 🔧 Stability
-- Closing the dialog no longer leaves temporary preview scratch layers in the project.
-
-## 🆕 What's New in v3.8.0
-**Phase: Core/GUI Decoupling & Reliability**
-
-### 🏗️ Architecture Refactor (internal)
-- **Extract-then-Compute**: Business services (`StructureService`, `GeologyService`, `ProfileService`, drillhole domain, validation) now run on a QGIS-agnostic core, with all QGIS interactions moved to a dedicated `gui/adapters/` layer. Guarded by an architecture allowlist gate (36 → 6 core modules).
-- **Pure-Math Core**: Decimation, polyline metrics, line azimuth, projection, and densification reimplemented with the standard library only.
-
-### 🔧 Reliability & Compatibility
-- **QGIS 4 Legend Fix**: Scoped `QEvent.Type.Resize` resolves a runtime `AttributeError` on QGIS 4.
-- **3D Export Default**: 3D interpretation export is enabled out of the box.
-- **Streamlined Gates**: Cyclomatic-complexity (CC ≤ 10) and i18n checks are now native to `qgis-plugin-analyzer` 1.14.0.
-
-## 🆕 What's New in v3.7.2
-**Patch: Qt6 / QGIS 4 Enum Compatibility**
-
-### 🔧 Scoped Enum Migration
-- **114 findings resolved**: Migrated all flat enum usages to their fully scoped form (`Qgis.Critical` → `Qgis.MessageLevel.Critical`, `Qt.NoPen` → `Qt.PenStyle.NoPen`, `QgsWkbTypes.LineString` → `QgsWkbTypes.Type.LineString`, and more), clearing every Qt6 compatibility finding reported by the QGIS plugin repository.
-- **CI gate**: Wired `make qt6-check` (the same `pyqgis4-checker` tool used on upload) into the release pipeline to prevent regressions.
-
-## 🆕 What's New in v3.7.0
-**Phase: Internationalization Quality Gate & Preview UX**
-
-### 🌐 i18n Quality Gate
-- **AST-Based Translation Hygiene**: Developed an AST-based translation-hygiene analyzer (since upstreamed into `qgis-plugin-analyzer`) that scans UI components for untranslated strings and enforces `self.tr()` wrapping with near-zero false positives.
-- **Dialog Title Coverage**: Wrapped 9 untranslated error dialog titles (`Export Error`, `Preview Error`, `Geology Error`, `Drillhole Error`) and the results `"ID:"` label in `self.dialog.tr()`.
-
-### 🎛️ Collapsible Preview Controls
-- **Decluttered Workspace**: Grouped the preview action buttons, LOD controls, and layer checkboxes into a collapsible `QgsCollapsibleGroupBox("Controls")`, keeping the map canvas and status bar always visible for a cleaner interpretation experience.
-
-### 📦 Cleaner Packaging
-- **Lean Distribution**: Excluded AI/agent tooling directories (`.agent`, `.opencode`, `.continue`, `.deepseek`, `artifacts`) from the distributable ZIP, ensuring a plugin-only package.
+### 📈 Quality & Reliability
+- Full test suite, the **Cyclomatic Complexity ≤ 10** gate, the i18n gate and the security scan all pass; docstring coverage is **100%** and `qgis-analyzer` reports **0 issues**.
 
 See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 
@@ -122,7 +86,7 @@ Before installing **SecInterp**, ensure your system meets the following requirem
 4. Click **Install Plugin**.
 
 ### From ZIP File
-1. Download the latest `sec_interp_v3.7.0.zip` from releases.
+1. Download the latest `sec_interp.3.9.1.zip` from releases.
 2. Open QGIS.
 3. Go to **Plugins > Manage and Install Plugins > Install from ZIP**.
 4. Select the file and click **Install**.
