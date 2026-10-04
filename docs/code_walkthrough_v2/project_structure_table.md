@@ -6,7 +6,7 @@
 > then following its children in the next column (directories are shown **bold** with a
 > trailing `/`).
 
-**Last updated**: 2026-09-20
+**Last updated**: 2026-10-04
 
 ---
 
@@ -67,6 +67,7 @@
 | | | `geology_service.py` | | |
 | | | `preview_service.py` | | |
 | | | `structure_service.py` | | |
+| | | `vertical_exaggeration_service.py` | | |
 | | **`utils/`** | | | |
 | | | **`geometry_utils/`** | | |
 | | | | `__init__.py` | |
@@ -87,6 +88,7 @@
 | | **`validation/`** | | | |
 | | | `__init__.py` | | |
 | | | `base_validator.py` | | |
+| | | `crs_plausibility.py` | | |
 | | | `field_validator.py` | | |
 | | | `layer_metadata.py` | | |
 | | | `layer_validator.py` | | |

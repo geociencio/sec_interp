@@ -461,4 +461,4 @@ tolerance = min_tol + (max_tol − min_tol) · (1 − avg_curvature/180)
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

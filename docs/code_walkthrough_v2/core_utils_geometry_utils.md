@@ -396,4 +396,4 @@ El paquete no maneja errores (no tiene lógica). A nivel de submódulos:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

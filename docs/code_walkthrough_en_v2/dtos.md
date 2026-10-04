@@ -403,4 +403,4 @@ Pure cases (no QGIS), mapped to `tests/core/test_dtos.py`:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

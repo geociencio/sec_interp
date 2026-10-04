@@ -300,4 +300,4 @@ No coverage in `tests/core/` (GUI module with `qgis.core` imports). No test for 
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

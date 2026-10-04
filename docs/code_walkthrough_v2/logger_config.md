@@ -480,4 +480,4 @@ No hay un `tests/**/test_logger_config.py` dedicado; la cobertura es indirecta p
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

@@ -166,4 +166,4 @@ métodos y señales, de modo que cambiar un widget nunca ripplea al diálogo.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

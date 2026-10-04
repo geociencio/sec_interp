@@ -399,4 +399,4 @@ A 4-vertex `Granite` polygon, first in JSON mode, then switching the page to
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

@@ -435,4 +435,4 @@ Real coverage in `tests/gui/test_dialog_input_manager.py` (no QGIS, mocked pages
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

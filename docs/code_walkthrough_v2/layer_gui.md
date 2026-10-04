@@ -220,4 +220,4 @@ cruza al core ni a los hilos de fondo; solo viajan WKT, dicts y DTOs.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

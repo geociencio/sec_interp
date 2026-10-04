@@ -397,4 +397,4 @@ Pure math is covered in `tests/core/` with no QGIS: `test_geometry_utils.py` / `
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

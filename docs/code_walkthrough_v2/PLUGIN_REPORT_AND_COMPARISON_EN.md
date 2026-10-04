@@ -1,7 +1,7 @@
 # SecInterp — Comprehensive Plugin Report & Competitive Analysis
 
 > **Technical Report: Features, Architecture, and Market Comparison**
-> SecInterp v3.8.0 | Report Date: 2026-09-19
+> SecInterp v3.9.1 | Report Date: 2026-10-04
 
 ---
 
@@ -27,14 +27,14 @@
 
 **SecInterp** (Section Interpreter) is a professional-grade QGIS plugin for geological cross-section interpretation. Unlike most QGIS geological plugins — which are single-purpose profile generators — SecInterp offers an **integrated workflow** spanning topography extraction, geological outcrop projection, structural analysis, **3D drillhole desurveying and projection**, interactive interpretation digitizing, and multi-format CAD-ready export.
 
-Its key technical differentiator is a **Clean Architecture implementation** (rare among QGIS plugins) with strict Core/GUI separation, 620+ automated tests, 14-language i18n coverage, and full QGIS 4.x/Qt6 readiness.
+Its key technical differentiator is a **Clean Architecture implementation** (rare among QGIS plugins) with strict Core/GUI separation, 745 automated tests, 14-language i18n coverage, and full QGIS 4.x/Qt6 readiness.
 
 ### At a Glance
 
 | Attribute | Value |
 |-----------|-------|
 | **Name** | Sec Interp (SecInterp) |
-| **Version** | 3.8.0 |
+| **Version** | 3.9.1 |
 | **Author** | Juan M. Bernales |
 | **License** | GPL v3 |
 | **QGIS Minimum** | 3.28 LTR |
@@ -43,7 +43,7 @@ Its key technical differentiator is a **Clean Architecture implementation** (rar
 | **Documentation** | geociencio.github.io/sec_interp_docs |
 | **Languages** | 14 (EN, ES, FR, DE, IT, PT_BR, RU, ZH_CN, JA, HI, ID, PL, NL, FI) |
 | **Category** | Vector |
-| **Tests** | 620+ (Docker-verified) |
+| **Tests** | 745 (Docker-verified) |
 | **Architecture** | Clean Architecture (Core/GUI separation) |
 
 ---
@@ -138,6 +138,17 @@ SecInterp bridges the gap between **GIS data** (DEMs, geological maps, structura
 - Layer name fallback restoration
 - "Reset to defaults" per section
 
+### 3.8 Insights & Safety (v3.9)
+
+| Feature | Description |
+|---------|-------------|
+| **DEM Band Statistics** | Read-only min/max/mean/NoData for the selected DEM band (bounded sample). |
+| **Profile-vs-DEM Statistics** | Section min/max/mean and sample count at the DEM resolution. |
+| **Profile Color Mode** | Gradient (color ramp) or single-color topographic profile styling. |
+| **Adaptive Vertical Exaggeration** | Auto VE from profile aspect ratio and structural density (`0.5×–20×`), with manual override. |
+| **Smoothed Topography** | Optional distance-window moving-average profile with matching smoothed geology. |
+| **CRS Safety** | Mixed-CRS warning and a blocking check for mislabelled layer CRS. |
+
 ---
 
 ## 4. Technical Architecture
@@ -174,9 +185,9 @@ SecInterp is one of the **few QGIS plugins** implementing Clean Architecture:
 | **GUI Managers (10)** | Signal, Input, Preview, Export, Interpretation, State, Settings, Tool, LayerNotification, UIStatus |
 | **Renderers (7)** | Base, Topo, Geology, Drillhole, Structure, Interpretation, Color |
 | **Async Tasks (3)** | TaskOrchestrator, GeologyTask, DrillholeTask |
-| **Core Services (7)** | Profile, Geology, Structure, Drillhole, Export, Preview, AccessControl |
-| **Interfaces (8)** | IProfile, IGeology, IDrillhole, IStructure, IPreview, IExport, ICache, IRenderer3D |
-| **Validators (9)** | Base, Pipeline, Layer, Field, Path, Project, ProjectValidators, Helpers, Validators |
+| **Core Services (7)** | Geology, Structure, Drillhole, Export, Preview, VerticalExaggeration, AccessControl |
+| **Interfaces (6)** | IGeology, IDrillhole, IStructure, IPreview, ICache, IRenderer3D |
+| **Validators (11)** | Base, Pipeline, Layer, Field, Path, Project, ProjectValidators, Helpers, Validators, LayerMetadata, CrsPlausibility |
 | **Exporters (11)** | Vector, DXF, Profile, CSV, Interpretation3D, Interpretation, Drillhole3D, Drillhole, PDF, SVG, Image |
 
 ### 4.3 Technical Highlights
@@ -193,7 +204,7 @@ SecInterp is one of the **few QGIS plugins** implementing Clean Architecture:
 
 | Metric | Value |
 |--------|-------|
-| **Automated Tests** | 620+ (100% pass in Docker) |
+| **Automated Tests** | 745 (100% pass in Docker) |
 | **Code Quality Score** | 99.9/100 |
 | **QGIS Compliance** | 85.0/100 |
 | **Cyclomatic Complexity** | ≤ 10 (enforced) |
@@ -319,7 +330,7 @@ Legend: ✅ Full · ⚠️ Partial · ❌ None
 | Dimension | **SecInterp** | qProf | Geoscience | GeoProfile | GIS4Geology | Parallel Folds | Profile Interpreter |
 |-----------|:-------------:|:-----:|:----------:|:----------:|:-----------:|:--------------:|:-------------------:|
 | **Architecture** | Clean (Core/GUI) | Monolithic | Monolithic | Monolithic | Monolithic | Monolithic | Minimal |
-| **Automated tests** | 620+ | Few | Some | None | None | Few | Yes (small) |
+| **Automated tests** | 745 | Few | Some | None | None | Few | Yes (small) |
 | **Async processing** | ✅ QgsTask | ❌ | ⚠️ | ❌ | ❌ | ❌ | N/A |
 | **Adaptive LOD** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | N/A |
 | **i18n languages** | 14 | 1-2 | 1 | 1-2 | 1 | 1-2 | 1 |
@@ -355,7 +366,7 @@ Legend: ●●● Full · ●● Good · ● Basic · ○ None
 4. **Clean Architecture**: Only SecInterp uses Core/GUI separation among geological plugins
 5. **Async + LOD**: Only SecInterp offers both background processing and adaptive level-of-detail
 6. **14 Languages**: Widest i18n coverage in the niche
-7. **620+ Tests**: Highest test coverage among competitors
+7. **745 Tests**: Highest test coverage among competitors
 8. **QGIS 4.x Ready**: Ahead of most competitors on Qt6 migration
 9. **Interactive Drawing**: Only SecInterp + Parallel Folds offer in-profile polygon digitizing
 10. **DXF Export**: Unique CAD integration for mining/engineering workflows
@@ -415,7 +426,7 @@ SecInterp occupies the **top-right quadrant**: maximum feature breadth AND highe
 
 - ✅ **Most complete feature set** in the niche
 - ✅ **Best architecture** (Clean, DI, testable)
-- ✅ **Highest quality metrics** (620+ tests, 99.9/100)
+- ✅ **Highest quality metrics** (745 tests, 99.9/100)
 - ✅ **Widest i18n** (14 languages)
 - ✅ **QGIS 4.x ready** ahead of competitors
 - ✅ **Active maintenance** (frequent releases)
@@ -491,7 +502,7 @@ Based on the CHANGELOG trajectory and competitive gaps:
 
 SecInterp is the **most feature-complete and best-engineered** open-source QGIS plugin for geological cross-section interpretation. While competitors like qProf and Geoscience have specific strengths (fold-axis projection, drillhole desurveying respectively), **no single competitor matches SecInterp's integrated breadth** across topography, geology, structure, drillholes, interpretation, and export.
 
-Its Clean Architecture, 620+ tests, 14-language support, and QGIS 4.x readiness position it as a **reference implementation** for professional QGIS plugin development — not just a geological tool.
+Its Clean Architecture, 745 tests, 14-language support, and QGIS 4.x readiness position it as a **reference implementation** for professional QGIS plugin development — not just a geological tool.
 
 ### Final Positioning
 
@@ -534,6 +545,6 @@ Its Clean Architecture, 620+ tests, 14-language support, and QGIS 4.x readiness 
 
 ---
 
-*Report generated: 2026-09-19*
-*SecInterp version analyzed: 3.8.0*
+*Report generated: 2026-10-04*
+*SecInterp version analyzed: 3.9.1*
 *See also: `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md`, `PLUGIN_ANALYSIS.md`*

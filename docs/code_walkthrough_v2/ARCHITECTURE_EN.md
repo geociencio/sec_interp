@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.8.0 | Last Updated: 2026-09-21
+> Version 3.9.1 | Last Updated: 2026-10-04
 
 ---
 
@@ -26,12 +26,15 @@
 
 ### Key Features
 
-- ✅ **Interactive Preview System** with real-time rendering.
+- ✅ **Interactive Preview System** with real-time rendering and adaptive LOD (Level of Detail) based on zoom.
 - ✅ **Parallel Processing** for complex geological intersections.
-- ✅ **Adaptive LOD** (Level of Detail) based on zoom.
+- ✅ **DEM & Profile Insights**: DEM band statistics and profile-vs-DEM min/max/mean, plus gradient/single-color profile styling.
+- ✅ **CRS Safety**: mixed-CRS warnings and a blocking check for mislabelled layer CRS.
+- ✅ **Adaptive Vertical Exaggeration** (auto, clamped `0.5×–20×`) with manual override.
+- ✅ **Optional Smoothed Topography** profile (distance-window moving average) with matching smoothed geology.
 - ✅ **Measurement Tools** with automatic snapping.
 - ✅ **Drillhole Support** with 3D→2D trajectory projection.
-- ✅ **Multi-format Export** (SHP, GPKG, DXF, CSV, PDF, SVG).
+- ✅ **Multi-format Export** (SHP, GPKG, DXF, CSV, PDF, SVG, PNG).
 
 ---
 
@@ -40,13 +43,13 @@
 The project organization follows a highly modular architecture based on the **Separation of Concerns** (SoC) principle, decoupling the interface, business logic, and export formats. Each layer has a distinct responsibility and communicates through well-defined interfaces.
 
 <!-- Directory tree is linkified: each Python module links to its vault note (Obsidian [[slug]] + GitHub Markdown). See docs/code_walkthrough/Index.md -->
-- `sec_interp/` — plugin root → [[layer_plugin]] · [[plugin_mixins]]
-  - `__init__.py` — Plugin entry point (registers with QGIS) → [[__init__]] · [doc](__init__.md)
+- `sec_interp/` — plugin root → [[layer_plugin]] · [[plugin]]
+  - `__init__.py` — Plugin entry point (registers with QGIS) → [[root]] · [doc](layer_plugin.md)
   - `sec_interp_plugin.py` — Root class `SecInterp` (facade) → [[sec_interp_plugin]] · [doc](sec_interp_plugin.md)
-  - `plugin/` — Plugin mixins composed by `SecInterp` → [[plugin_mixins]] · [doc](plugin_mixins.md)
-    - `plugin/lifecycle.py` — `PluginLifecycleMixin` (`add_action`, `initGui`, `run`, `unload`) → [[plugin_mixins]]
-    - `plugin/input_validator.py` — `InputValidationMixin` (`_get_and_validate_inputs`) → [[plugin_mixins]]
-    - `plugin/render_pipeline.py` — `RenderPipelineMixin` (`draw_preview`) → [[plugin_mixins]]
+  - `plugin/` — Plugin mixins composed by `SecInterp` → [[plugin]] · [doc](layer_plugin.md)
+    - `plugin/lifecycle.py` — `PluginLifecycleMixin` (`add_action`, `initGui`, `run`, `unload`) → [[plugin]]
+    - `plugin/input_validator.py` — `InputValidationMixin` (`_get_and_validate_inputs`) → [[plugin]]
+    - `plugin/render_pipeline.py` — `RenderPipelineMixin` (`draw_preview`) → [[plugin]]
   - `metadata.txt` — QGIS plugin metadata
   - `Makefile` — Automation (deploy, tests, docs)
   - `logger_config.py` → [[logger_config]] · [doc](logger_config.md)
@@ -56,51 +59,58 @@ The project organization follows a highly modular architecture based on the **Se
   - `data_cache.py` → [[data_cache]] · [doc](data_cache.md)
   - `exceptions.py` → [[exceptions]] · [doc](exceptions.md)
   - `performance_metrics.py` → [[performance_metrics]] · [doc](performance_metrics.md)
-  - `domain/` — DTOs `ProfileData`, `GeologySegment` → [[domain]] · [[layer_core_domain]] · [doc](domain.md)
+  - `algorithms.py` — Reserved placeholder for pure business-logic algorithms → [[layer_core]]
+  - `domain/` — DTOs `ProfileData`, `GeologySegment`; modules `dtos.py`, `entities.py`, `enums.py`, `spatial_meta.py`, `task_inputs.py` → [[domain]] · [[layer_core_domain]] · [doc](domain.md)
   - `interfaces/` — ABCs for DI (`IGeologyService`, `IDrillholeService`, `IPreviewService`, …) → [[layer_core_interfaces]]
   - `models/settings_model.py` — Typed settings → [[layer_core_models]]
-  - `validation/` — Modular pipeline → [[validation]] · [[layer_core_validation]] · [doc](validation.md)
-    - `validation/pipeline.py`, `layer_validator.py`, `field_validator.py`, `path_validator.py`, `project_validator.py` → [[validation]]
+  - `validation/` — Modular pipeline → [[core_validation]] · [[layer_core_validation]] · [doc](layer_core_validation.md)
+    - `validation/pipeline.py`, `layer_validator.py`, `field_validator.py`, `path_validator.py`, `project_validator.py` → [[core_validation]]
+    - `validation/crs_plausibility.py` — Best-effort mislabelled-CRS detection from extent plausibility → [[crs_plausibility]] · [doc](layer_core_validation.md)
+    - `validation/layer_metadata.py` — QGIS-agnostic layer metadata for validation → [[layer_metadata]] · [doc](layer_core_validation.md)
   - `utils/` — Helpers (pure Python) → [[layer_core_utils]]
     - `utils/safe_loader.py` → [[safe_loader]] · [doc](safe_loader.md)
-    - `utils/i18n.py` → [[i18n]] · [doc](i18n.md)
+    - `utils/i18n.py` → [[core_utils]] · [doc](layer_core_utils.md)
     - `utils/geometry_utils/` (`measurement.py`, `optimization.py`, `processing.py`) → [[layer_core_utils_geometry_utils]]
   - `services/` — Concrete implementations → [[layer_core_services]]
     - `services/geology_service.py` → [[geology_service]] · [doc](geology_service.md)
     - `services/structure_service.py` → [[structure_service]] · [doc](structure_service.md)
     - `services/drillhole_service.py` → [[drillhole_service]] · [doc](drillhole_service.md)
-    - `services/export_service.py` — 13-line compatibility shim → [[export_service]] · [doc](export_service.md)
-    - `services/export/` — Export package (orchestrator + handlers) → [[export_package]] · [[layer_core_services_export]] · [doc](export_package.md)
+    - `services/export_service.py` — 13-line compatibility shim → [[core_services]] · [doc](layer_core_services.md)
+    - `services/export/` — Export package (orchestrator + handlers) → [[core_services_export]] · [[layer_core_services_export]] · [doc](layer_core_services_export.md)
       - `services/export/orchestrator.py`, `path_resolver.py`, `map_settings_factory.py`, `compat.py`
       - `services/export/handlers/` (topography, geology, structures, drillholes, drillholes_3d, interpretations, axes) → [[layer_core_services_export_handlers]]
     - `services/preview_service.py` → [[preview_service]] · [doc](preview_service.md)
     - `services/vertical_exaggeration_service.py` → [[vertical_exaggeration_service]] · [doc](vertical_exaggeration_service.md)
-    - `services/access_control_service.py` → [[access_control_service]] · [doc](access_control_service.md)
+    - `services/access_control_service.py` → [[core_services]] · [doc](layer_core_services.md)
     - `services/drillhole/` — Drillhole pipeline → [[layer_core_services_drillhole]]
       - `services/drillhole/collar_processor.py` → [[collar_processor]] · [doc](collar_processor.md)
-      - `services/drillhole/survey_processor.py` → [[survey_processor]] · [doc](survey_processor.md)
+      - `services/drillhole/survey_processor.py` → [[core_services_drillhole]] · [doc](layer_core_services_drillhole.md)
       - `services/drillhole/interval_processor.py` → [[interval_processor]] · [doc](interval_processor.md)
-      - `services/drillhole/projection_engine.py` → [[projection_engine]] · [doc](projection_engine.md)
+      - `services/drillhole/projection_engine.py` → [[core_services_drillhole]] · [doc](layer_core_services_drillhole.md)
       - `services/drillhole/trajectory_engine.py` → [[trajectory_engine]] · [doc](trajectory_engine.md)
 - `gui/` 🖥️ — UI Layer (QGIS-dependent) → [[layer_gui]]
   - `gui/main_dialog.py` — `SecInterpDialog` orchestrator → [[main_dialog]] · [doc](main_dialog.md)
-  - `gui/dialog_*_mixin.py` — Message / lifecycle / facade mixins → [[dialog_mixins]] · [doc](dialog_mixins.md)
-  - `gui/adapters/` — Extract phase (QGIS → DTOs) → [[adapters]] · [[layer_gui_adapters]] · [doc](adapters.md)
+  - `gui/dialog_dependencies.py` — Narrow dependency containers injected into managers (composition root) → [[layer_gui]]
+  - `gui/dialog_message_mixin.py`, `dialog_lifecycle_mixin.py`, `dialog_facade_mixin.py` — Message / lifecycle / facade mixins → [[main_dialog]]
+  - `gui/interpretation_inheritance_mixin.py`, `interpretation_persistence_mixin.py` — Attribute inheritance (nearest geology/drillhole) + project persistence → [[dialog_interpretation_manager]]
+  - `gui/main_dialog_config.py`, `main_dialog_utils.py` — Dialog configuration, defaults and UI helpers → [[main_dialog]]
+  - `gui/utils.py` — General-purpose UI helpers and user messaging → [[layer_gui]]
+  - `gui/adapters/` — Extract phase (QGIS → DTOs) → [[gui_adapters]] · [[layer_gui_adapters]] · [doc](layer_gui_adapters.md)
     - `adapters/drillhole_extractor.py` → [[drillhole_extractor]] · [doc](drillhole_extractor.md)
     - `adapters/geology_extractor.py` → [[geology_extractor]] · [doc](geology_extractor.md)
     - `adapters/structure_extractor.py` → [[structure_extractor]] · [doc](structure_extractor.md)
     - `adapters/validation_extractor.py` → [[validation_extractor]] · [doc](validation_extractor.md)
-    - `adapters/profile_extractor.py` → [[profile_service]] · [doc](profile_service.md)
-    - `adapters/feature_fetcher.py`, `layer_resolver.py`, `geometry.py` → [[adapters]]
+    - `adapters/profile_extractor.py` → [[profile_extractor]] · [doc](layer_gui_adapters.md)
+    - `adapters/feature_fetcher.py`, `layer_resolver.py`, `geometry.py` → [[gui_adapters]]
   - Managers (orchestration)
-    - `dialog_signal_manager.py` → [[signal_manager]] · [doc](signal_manager.md)
-    - `dialog_input_manager.py` → [[input_manager]] · [doc](input_manager.md)
-    - `dialog_preview_manager.py` → [[dialog_preview_manager]] · [[preview_mixins]] · [doc](dialog_preview_manager.md)
+    - `dialog_signal_manager.py` → [[dialog_signal_manager]] · [doc](layer_gui.md)
+    - `dialog_input_manager.py` → [[dialog_input_manager]] · [doc](layer_gui.md)
+    - `dialog_preview_manager.py` → [[dialog_preview_manager]] · [doc](dialog_preview_manager.md)
     - `dialog_export_manager.py` → [[dialog_export_manager]] · [doc](dialog_export_manager.md)
-    - `dialog_interpretation_manager.py` → [[interpretation_manager]] · [[interpretation_mixins]] · [doc](interpretation_manager.md)
-    - `dialog_state_manager.py` → [[state_manager]] · [doc](state_manager.md)
-    - `dialog_settings_persistence.py` → [[state_manager]] · [doc](state_manager.md)
-    - `dialog_tool_manager.py` → [[tool_manager]] · [doc](tool_manager.md)
+    - `dialog_interpretation_manager.py` → [[dialog_interpretation_manager]] · [doc](layer_gui.md)
+    - `dialog_state_manager.py` → [[dialog_state_manager]] · [doc](layer_gui.md)
+    - `dialog_settings_persistence.py` → [[dialog_state_manager]] · [doc](layer_gui.md)
+    - `dialog_tool_manager.py` → [[dialog_tool_manager]] · [doc](layer_gui.md)
     - `layer_notification_manager.py` → [[layer_notification_manager]] · [doc](layer_notification_manager.md)
     - `ui_status_manager.py` → [[ui_status_manager]] · [doc](ui_status_manager.md)
   - `dialogs/` — Modal dialogs → [[layer_gui_dialogs]]
@@ -109,24 +119,28 @@ The project organization follows a highly modular architecture based on the **Se
     - `preview_renderer.py` → [[preview_renderer]] · [doc](preview_renderer.md)
     - `preview_layer_factory.py` → [[preview_layer_factory]] · [doc](preview_layer_factory.md)
     - `preview_axes_manager.py` → [[preview_axes_manager]] · [doc](preview_axes_manager.md)
+    - `preview_param_hasher.py` — Render-parameter hashing for LOD cache invalidation → [[preview_param_hasher]] · [doc](layer_gui.md)
+    - `preview_render_mixin.py`, `preview_callbacks_mixin.py` — Rendering and async-task callback mixins → [[preview_render_mixin]] · [doc](layer_gui.md)
+    - `preview_task_orchestrator.py` — Queues, prioritizes and monitors background preview tasks → [[preview_task_orchestrator]] · [doc](layer_gui.md)
+    - `preview_legend_renderer.py` — Draws the legend (topography, structures, units) on a `QPainter` → [[preview_legend_renderer]] · [doc](layer_gui.md)
     - `preview_reporter.py` → [[preview_state]] · [doc](preview_state.md)
     - `preview_state.py` → [[preview_state]] · [doc](preview_state.md)
-    - `legend_widget.py` — dynamic legend
-  - `renderers/` → [[renderers]] · [[layer_gui_renderers]] · [doc](renderers.md)
+    - `legend_widget.py` — dynamic legend widget
+  - `renderers/` → [[gui_renderers]] · [[layer_gui_renderers]] · [doc](layer_gui_renderers.md)
     - `renderers/base_renderer.py`, `topo/geology/drillhole/structure/interpretation_renderer.py`, `color_manager.py`
-  - `tasks/` (`geology_task.py`, `drillhole_task.py`) → [[tasks]] · [[layer_gui_tasks]] · [doc](tasks.md)
+  - `tasks/` (`geology_task.py`, `drillhole_task.py`) → [[gui_tasks]] · [[layer_gui_tasks]] · [doc](layer_gui_tasks.md)
   - `tools/` — Interactive map tools → [[layer_gui_tools]]
     - `tools/measure_tool.py` → [[measure_tool]] · [doc](measure_tool.md)
     - `tools/interpretation_tool.py` → [[interpretation_tool]] · [doc](interpretation_tool.md)
     - `tools/snapper.py`
   - `ui/` — Programmatic window + sidebar → [[layer_gui_ui]]
-    - `ui/main_window.py`, `ui/sidebar.py` → [[ui_pages]] · [doc](ui_pages.md)
+    - `ui/main_window.py`, `ui/sidebar.py` → [[gui_ui_pages]] · [doc](layer_gui_ui_pages.md)
     - `ui/pages/` — Tab-based pages → [[layer_gui_ui_pages]]
-      - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `interpretation_page.py`, `preview_page.py` → [[ui_pages]]
+      - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `interpretation_page.py`, `preview_page.py` → [[gui_ui_pages]]
       - `ui/pages/drillhole_page.py` → [[drillhole_page]] · [doc](drillhole_page.md)
-      - `ui/pages/drillhole/` (collar / survey / interval tabs) → [[drillhole_tabs]] · [[layer_gui_ui_pages_drillhole]] · [doc](drillhole_tabs.md)
+      - `ui/pages/drillhole/` (collar / survey / interval tabs) → [[gui_ui_pages_drillhole]] · [[layer_gui_ui_pages_drillhole]] · [doc](layer_gui_ui_pages_drillhole.md)
       - `ui/pages/settings_page.py` → [[settings_page]] · [doc](settings_page.md)
-      - `ui/pages/settings/` (default / advanced / info tabs + persistence) → [[settings_tabs]] · [[layer_gui_ui_pages_settings]] · [doc](settings_tabs.md)
+      - `ui/pages/settings/` (default / advanced / info tabs + persistence) → [[gui_ui_pages_settings]] · [[layer_gui_ui_pages_settings]] · [doc](layer_gui_ui_pages_settings.md)
 - `exporters/` 📤 — Factory `BaseExporter` → [[layer_exporters]]
   - `base_exporter.py` → [[base_exporter]] · [doc](base_exporter.md)
   - `vector_exporter.py` → [[vector_exporter]] · [doc](vector_exporter.md)
@@ -140,7 +154,7 @@ The project organization follows a highly modular architecture based on the **Se
   - `svg_exporter.py` → [[svg_exporter]] · [doc](svg_exporter.md)
   - `image_exporter.py` → [[image_exporter]] · [doc](image_exporter.md)
 - `docs/` 📚 — `ARCHITECTURE_EN.md` (this file) · `ARCHITECTURE.mmd` · `code_walkthrough/` vault
-- `tests/` 🧪 — `base_test.py`, `core/`, `gui/`, `integration/`, `benchmarks/` (Mock-First, `unittest`)
+- `tests/` 🧪 — `base_test.py`, `core/`, `gui/`, `exporters/`, `integration/`, `agentic/`, `mcp/`, `mocks/`, `benchmarks/` (Mock-First, `unittest`)
 - `scripts/` 🔧 — `security_scan.py` · `build_docs.sh` · `i18n/` · `sync_vault_mirrors.sh`
 - `resources/` 🎨 — `icons/`, `styles/`, `resources.qrc` → `resources.py`
 
@@ -285,12 +299,6 @@ graph TD
                 SURVEY_PROC --> TRAJ_ENGINE
                 TRAJ_ENGINE --> PROJ_ENGINE
             end
-
-            subgraph GEOLOGY_PKG["Geology Sub-system"]
-                direction TB
-                GEOLOGY_DIR[services/geology/<br/>Geology Module]
-                GEOL_SVC --> GEOLOGY_DIR
-            end
         end
 
         subgraph MODELS["Domain Models - models/"]
@@ -427,14 +435,14 @@ graph TD
 
 | Manager | File | Responsibility |
 |---------|------|----------------|
-| `DialogSignalManager` | `dialog_signal_manager.py` → [[signal_manager]] | Centralizes all signal/slot connections to avoid spaghetti code. |
-| `DialogInputManager` | `dialog_input_manager.py` → [[input_manager]] | Manages input layer selection, schema validation, and layer compatibility. |
+| `DialogSignalManager` | `dialog_signal_manager.py` → [[dialog_signal_manager]] | Centralizes all signal/slot connections to avoid spaghetti code. |
+| `DialogInputManager` | `dialog_input_manager.py` → [[dialog_input_manager]] | Manages input layer selection, schema validation, and layer compatibility. |
 | `PreviewManager` | `dialog_preview_manager.py` → [[dialog_preview_manager]] | Coordinates the preview canvas, axes, LOD calculation, and render triggering. |
 | `ExportManager` | `dialog_export_manager.py` → [[dialog_export_manager]] | Maps UI selections to the `ExportService` in the Core layer. |
-| `InterpretationManager` | `dialog_interpretation_manager.py` → [[interpretation_manager]] | Handles 2D/3D geological interpretation state and user interactions. |
-| `DialogStateManager` | `dialog_state_manager.py` → [[state_manager]] | Manages session persistence and UI defaults restoration. |
-| `SettingsPersistence` | `dialog_settings_persistence.py` → [[state_manager]] | Handles QSettings-based persistence for plugin configuration. |
-| `ToolManager` | `dialog_tool_manager.py` → [[tool_manager]] | Manages `QgsMapTool` lifecycle (pan, measure, interpret tools). |
+| `InterpretationManager` | `dialog_interpretation_manager.py` → [[dialog_interpretation_manager]] | Handles 2D/3D geological interpretation state and user interactions. |
+| `DialogStateManager` | `dialog_state_manager.py` → [[dialog_state_manager]] | Manages session persistence and UI defaults restoration. |
+| `SettingsPersistence` | `dialog_settings_persistence.py` → [[dialog_state_manager]] | Handles QSettings-based persistence for plugin configuration. |
+| `ToolManager` | `dialog_tool_manager.py` → [[dialog_tool_manager]] | Manages `QgsMapTool` lifecycle (pan, measure, interpret tools). |
 | `LayerNotificationManager` | `layer_notification_manager.py` → [[layer_notification_manager]] | Listens to QGIS layer tree changes and updates UI accordingly. |
 | `UIStatusManager` | `ui_status_manager.py` → [[ui_status_manager]] | Manages status bar messages, progress indicators, and user notifications. |
 
@@ -457,13 +465,13 @@ graph TD
 
 | Renderer | File | Responsibility |
 |----------|------|----------------|
-| `BaseRenderer` | `renderers/base_renderer.py` → [[renderers]] | Abstract base with common rendering utilities. |
-| `TopoRenderer` | `renderers/topo_renderer.py` → [[renderers]] | Renders topography profiles with elevation data. |
-| `GeologyRenderer` | `renderers/geology_renderer.py` → [[renderers]] | Renders geological units, contacts, and structures. |
-| `DrillholeRenderer` | `renderers/drillhole_renderer.py` → [[renderers]] | Renders drillhole traces, intervals, and projections. |
-| `StructureRenderer` | `renderers/structure_renderer.py` → [[renderers]] | Renders structural measurements (strike/dip, foliations). |
-| `InterpretationRenderer` | `renderers/interpretation_renderer.py` → [[renderers]] | Renders user-drawn geological interpretations. |
-| `ColorManager` | `renderers/color_manager.py` → [[renderers]] | Centralized color palette and legend management. |
+| `BaseRenderer` | `renderers/base_renderer.py` → [[gui_renderers]] | Abstract base with common rendering utilities. |
+| `TopoRenderer` | `renderers/topo_renderer.py` → [[gui_renderers]] | Renders topography profiles with elevation data. |
+| `GeologyRenderer` | `renderers/geology_renderer.py` → [[gui_renderers]] | Renders geological units, contacts, and structures. |
+| `DrillholeRenderer` | `renderers/drillhole_renderer.py` → [[gui_renderers]] | Renders drillhole traces, intervals, and projections. |
+| `StructureRenderer` | `renderers/structure_renderer.py` → [[gui_renderers]] | Renders structural measurements (strike/dip, foliations). |
+| `InterpretationRenderer` | `renderers/interpretation_renderer.py` → [[gui_renderers]] | Renders user-drawn geological interpretations. |
+| `ColorManager` | `renderers/color_manager.py` → [[gui_renderers]] | Centralized color palette and legend management. |
 
 **LOD Optimization Methods** (in `PreviewRenderer`):
 
@@ -479,9 +487,9 @@ graph TD
 
 | Task | File | Responsibility |
 |------|------|----------------|
-| `PreviewTaskOrchestrator` | `preview_task_orchestrator.py` → [[tasks]] | Queues, prioritizes, and monitors background tasks. |
-| `GeologyTask` | `tasks/geology_task.py` → [[tasks]] | Background geological intersection calculations. |
-| `DrillholeTask` | `tasks/drillhole_task.py` → [[tasks]] | Background drillhole trajectory processing. |
+| `PreviewTaskOrchestrator` | `preview_task_orchestrator.py` → [[gui_tasks]] | Queues, prioritizes, and monitors background tasks. |
+| `GeologyTask` | `tasks/geology_task.py` → [[gui_tasks]] | Background geological intersection calculations. |
+| `DrillholeTask` | `tasks/drillhole_task.py` → [[gui_tasks]] | Background drillhole trajectory processing. |
 
 ### 4. Map Tools & UI Components
 
@@ -519,29 +527,30 @@ class IGeologyService(ABC):
 
 **Responsibility**: Central orchestrator coordinating all services through their interfaces.
 
-#### Concrete Services (6 Services)
+#### Concrete Services (7 Services)
 
 | Service | File | Responsibility |
 |---------|------|----------------|
 | `GeologyService` | `services/geology_service.py` → [[geology_service]] | Core intersection algorithms (outcrops, polygons, units). |
 | `StructureService` | `services/structure_service.py` → [[structure_service]] | Structural data processing, validation, stereonets. |
 | `DrillholeService` | `services/drillhole_service.py` → [[drillhole_service]] | 3D trajectory calculation, 2D section projection, interval management. |
-| `ExportService` | `services/export_service.py` → [[export_service]] | Central orchestrator for Exporters layer, format registry. |
+| `ExportService` | `services/export_service.py` → [[core_services]] | Central orchestrator for Exporters layer, format registry. |
 | `PreviewService` | `services/preview_service.py` → [[preview_service]] | Preview data preparation, LOD computation, render DTOs. |
-| `AccessControlService` | `services/access_control_service.py` → [[access_control_service]] | License validation, feature gating, user permissions. |
+| `VerticalExaggerationService` | `services/vertical_exaggeration_service.py` → [[vertical_exaggeration_service]] | Adaptive vertical exaggeration from profile aspect ratio and structural density. |
+| `AccessControlService` | `services/access_control_service.py` → [[core_services]] | License validation, feature gating, user permissions. |
 
 #### Drillhole Sub-system (5 Components)
 
 | Component | File | Responsibility |
 |-----------|------|----------------|
 | `CollarProcessor` | `drillhole/collar_processor.py` → [[collar_processor]] | Collar data validation, coordinate transformation. |
-| `SurveyProcessor` | `drillhole/survey_processor.py` → [[survey_processor]] | Survey data (azimuth/dip) processing, interpolation. |
+| `SurveyProcessor` | `drillhole/survey_processor.py` → [[core_services_drillhole]] | Survey data (azimuth/dip) processing, interpolation. |
 | `IntervalProcessor` | `drillhole/interval_processor.py` → [[interval_processor]] | Lithology/assay interval management, merging. |
 | `TrajectoryEngine` | `drillhole/trajectory_engine.py` → [[trajectory_engine]] | 3D trajectory calculation (minimum curvature, etc.). |
-| `ProjectionEngine` | `drillhole/projection_engine.py` → [[projection_engine]] | 3D→2D projection onto section plane. |
+| `ProjectionEngine` | `drillhole/projection_engine.py` → [[core_services_drillhole]] | 3D→2D projection onto section plane. |
 
 #### Geology Sub-system
-- Modular geology processing in `services/geology/` (separate package).
+- Geology processing is consolidated in `services/geology_service.py` (the former `services/geology/` package was removed).
 
 ### 3. Domain Layer
 
@@ -550,30 +559,32 @@ class IGeologyService(ABC):
 
 ### 4. Validation Pipeline (validation/)
 
-Modular validation framework with 8 validators coordinated by `ValidationPipeline`:
+Modular validation framework with 11 validators coordinated by `ValidationPipeline`:
 
 | Validator | File | Scope |
 |-----------|------|-------|
-| `BaseValidator` | `base_validator.py` → [[validation]] | Abstract base with common validation utilities. |
-| `ValidationPipeline` | `pipeline.py` → [[validation]] | Orchestrates validators, aggregates results. |
-| `LayerValidator` | `layer_validator.py` → [[validation]] | QGIS layer structure, CRS, geometry type validation. |
-| `FieldValidator` | `field_validator.py` → [[validation]] | Attribute field names, types, required fields. |
-| `PathValidator` | `path_validator.py` → [[validation]] | File/directory paths, permissions, existence. |
-| `ProjectValidator` | `project_validator.py` → [[validation]] | Project-level consistency (layers, settings). |
-| `ProjectValidators` | `project_validators.py` → [[validation]] | Composite project validation rules. |
-| `ValidationHelpers` | `validation_helpers.py` → [[validation]] | Shared validation utilities, error formatting. |
-| `Validators` | `validators.py` → [[validation]] | Convenience functions for common validations. |
+| `BaseValidator` | `base_validator.py` → [[core_validation]] | Abstract base with common validation utilities. |
+| `ValidationPipeline` | `pipeline.py` → [[core_validation]] | Orchestrates validators, aggregates results. |
+| `LayerValidator` | `layer_validator.py` → [[core_validation]] | QGIS layer structure, CRS, geometry type validation. |
+| `FieldValidator` | `field_validator.py` → [[core_validation]] | Attribute field names, types, required fields. |
+| `PathValidator` | `path_validator.py` → [[core_validation]] | File/directory paths, permissions, existence. |
+| `ProjectValidator` | `project_validator.py` → [[core_validation]] | Project-level consistency (layers, settings). |
+| `ProjectValidators` | `project_validators.py` → [[core_validation]] | Composite project validation rules. |
+| `ValidationHelpers` | `validation_helpers.py` → [[core_validation]] | Shared validation utilities, error formatting. |
+| `Validators` | `validators.py` → [[core_validation]] | Convenience functions for common validations. |
+| `LayerMetadata` | `layer_metadata.py` → [[layer_metadata]] | QGIS-agnostic layer metadata DTO consumed by the pipeline. |
+| `implausible_crs_reason()` | `crs_plausibility.py` → [[crs_plausibility]] | Best-effort mislabelled-CRS detection from extent plausibility. |
 
 ### 5. Utilities (utils/)
 
-12 specialized utility modules:
+11 specialized utility modules:
 
 | Utility | File | Purpose |
 |---------|------|---------|
 | Drillhole Utils | `drillhole.py` → [[layer_core_utils]] | Drillhole-specific calculations, transformations. |
 | Geology Utils | `geology.py` → [[layer_core_utils]] | Geological computations, unit conversions. |
 | Geometry Utils | `geometry_utils/` → [[layer_core_utils_geometry_utils]] | Advanced geometry operations (intersections, buffers). |
-| i18n Utils | `i18n.py` → [[i18n]] | Translation helpers, locale management. |
+| i18n Utils | `i18n.py` → [[core_utils]] | Translation helpers, locale management. |
 | IO Utils | `io.py` → [[layer_core_utils]] | File I/O, serialization, format handling. |
 | Metadata Reader | `metadata_reader.py` → [[layer_core_utils]] | QGIS layer metadata extraction. |
 | Parsing Utils | `parsing.py` → [[layer_core_utils]] | Text/CSV/XML parsing with error recovery. |
@@ -638,13 +649,13 @@ All exporters implement:
 
 ## 🎨 Design Principles
 
-SecInterp v3.4.0 follows industry-standard architectural patterns to ensure high quality and testability.
+SecInterp v3.9.1 follows industry-standard architectural patterns to ensure high quality and testability.
 
 ### Core Architectural Patterns
 - **Manager Pattern (GUI)**: Decouples the main window from individual feature logic (Export, Preview, etc.).
 - **Dependency Injection (Core)**: Uses `core/interfaces` to decouple the `ProfileController` from concrete service implementations.
 - **Factory Pattern (Exporters)**: The `ExportService` dynamically selects the appropriate `BaseExporter` subclass.
-- **Observer Pattern (Signals)**: Extensive use of `PyQt5.QtCore.pyqtSignal` for asynchronous communication between Core and GUI.
+- **Observer Pattern (Signals)**: Extensive use of `qgis.PyQt.QtCore.pyqtSignal` for asynchronous communication between Core and GUI.
 - **DTO Pattern (Data Transfer Objects)**: All data passing between layers is encapsulated in immutable DTOs from `core/domain`.
 
 ### SOLID & Clean Code
@@ -672,11 +683,11 @@ SecInterp v3.4.0 follows industry-standard architectural patterns to ensure high
 
 | Metric | Value |
 |--------|-------|
-| **Python Modules** | 121 |
-| **Source Lines of Code (SLOC)** | ~12,633 |
-| **Core Layer** | ~55% |
-| **GUI Layer** | ~30% |
-| **Export Layer** | ~15% |
+| **Python Modules** | 177 |
+| **Source Lines of Code (SLOC)** | ~17,400 |
+| **Core Layer** | ~43% |
+| **GUI Layer** | ~45% |
+| **Exporters Layer** | ~7% |
 
 ---
 
@@ -690,7 +701,7 @@ The project includes a custom security scanner (`scripts/security_scan.py`) that
 
 | Tool | Severity | Purpose | Configuration |
 |------|----------|---------|---------------|
-| **Bandit** | CRITICAL (Blocking) | Static analysis for Python security vulnerabilities (shell injection, pickle, eval, hardcoded secrets, weak crypto, SQL injection) | `.bandit` (excludes tests/scripts, 78 tests enabled) |
+| **Bandit** | CRITICAL (Blocking) | Static analysis for Python security vulnerabilities (shell injection, pickle, eval, hardcoded secrets, weak crypto, SQL injection) | `.bandit` (excludes tests/scripts, 72 tests enabled) |
 | **detect-secrets** | CRITICAL (Blocking) | Scans for hardcoded credentials, API keys, private keys, high-entropy strings | `.secrets.baseline` (27 detectors, heuristic filters, excludes tests/venv) |
 | **Flake8** | INFO (Non-blocking) | Code quality, PEP 8 style, syntax errors, undefined names | `.flake8` (max-line-length=100, max-complexity=15, JSON output) |
 
@@ -707,7 +718,7 @@ For architectural and deep code quality audits beyond Portal scanning:
 
 ```bash
 # Security (Bandit + detect-secrets)
-uv run qgis-analyzer analyze security .
+uv run qgis-analyzer security .
 
 # Internationalization coverage
 uv run qgis-analyzer analyze i18n .
@@ -741,7 +752,7 @@ Complete validation before any release candidate:
 make pre-release            # Runs: qt6-check + security-scan + docker-test
 ```
 
-**`docker-test`** executes 361+ integration tests in a clean QGIS Docker environment.
+**`docker-test`** executes the full suite (745 tests, including 76 integration tests) in a clean QGIS Docker environment.
 
 ### 5. CI/CD Integration
 
@@ -766,6 +777,6 @@ All tools are configured to run in CI pipelines with:
 
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last Updated**: 2026-09-20
-**Plugin Version**: 3.8.0
+**Last Updated**: 2026-10-04
+**Plugin Version**: 3.9.1
 **Author**: Juan M. Bernales

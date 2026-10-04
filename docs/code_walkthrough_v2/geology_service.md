@@ -307,4 +307,4 @@ return [(dist_start, elev_start), *inner_points, (dist_end, elev_end)]
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

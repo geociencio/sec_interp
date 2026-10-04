@@ -469,4 +469,4 @@ There is no single `test_main_dialog.py`; coverage is split by responsibility (m
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

@@ -372,4 +372,4 @@ píxel `1e-4` se marca; `(0, 0 : 200, 200)` se acepta.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

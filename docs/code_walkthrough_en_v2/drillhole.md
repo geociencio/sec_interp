@@ -402,4 +402,4 @@ Mapped to `tests/core/` (tests consume these utilities indirectly via
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

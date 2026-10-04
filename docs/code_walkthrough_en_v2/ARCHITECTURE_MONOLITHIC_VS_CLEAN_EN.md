@@ -1,7 +1,7 @@
 # SecInterp Architecture: Monolithic vs Clean Architecture Comparison
 
 > **Technical Analysis: Why SecInterp Moved Away from Traditional QGIS Plugin Patterns**
-> Version 3.8.0 | Last Updated: 2026-09-21
+> Version 3.9.1 | Last Updated: 2026-10-04
 
 ---
 
@@ -323,7 +323,7 @@ class ProfileController:
 
 | Dimension | Monolithic Plugin | SecInterp Clean Architecture |
 |-----------|-------------------|------------------------------|
-| **File Organization** | 1-3 large files | 121 focused modules |
+| **File Organization** | 1-3 large files | 177 focused modules |
 | **Max File Size** | 2000-5000 lines | <300 lines (enforced) |
 | **QGIS Imports** | Everywhere | Only in `gui/`, `exporters/` |
 | **Core Logic Location** | Mixed in dialog | `core/services/` |
@@ -507,7 +507,7 @@ class MyPluginDialog(QDialog):
 ## 8. SecInterp-Specific Benefits Realized
 
 ### Performance
-- **361+ tests** run in <30 seconds in Docker
+- **745 tests** run in <30 seconds in Docker
 - **LOD rendering** handles 100k+ features at 60fps
 - **Background processing** keeps UI responsive during 30s+ computations
 

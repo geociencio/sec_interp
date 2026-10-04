@@ -400,4 +400,4 @@ Async branches finish in any order; the design tolerates it:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

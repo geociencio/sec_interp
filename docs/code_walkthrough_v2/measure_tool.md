@@ -397,4 +397,4 @@ El cálculo puro se cubre en `tests/core/` sin QGIS: `test_geometry_utils.py` / 
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

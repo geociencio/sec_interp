@@ -309,4 +309,4 @@ elev(dist) = elev1 + (elev2 − elev1) · (dist − dist1) / (dist2 − dist1)
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

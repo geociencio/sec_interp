@@ -6,7 +6,7 @@
 > and analysis artifacts (`AGENTS.md`, `AI_CONTEXT.md`, `project_context.json`,
 > `PROJECT_SUMMARY.md`).
 
-**Last updated**: 2026-09-20
+**Last updated**: 2026-10-04
 **Plain-text copy**: [`project_structure.txt`](project_structure.txt)
 
 ---
@@ -67,7 +67,8 @@ sec_interp/
 │   │   ├── export_service.py
 │   │   ├── geology_service.py
 │   │   ├── preview_service.py
-│   │   └── structure_service.py
+│   │   ├── structure_service.py
+│   │   └── vertical_exaggeration_service.py
 │   ├── utils/
 │   │   ├── geometry_utils/
 │   │   │   ├── __init__.py
@@ -88,6 +89,7 @@ sec_interp/
 │   ├── validation/
 │   │   ├── __init__.py
 │   │   ├── base_validator.py
+│   │   ├── crs_plausibility.py
 │   │   ├── field_validator.py
 │   │   ├── layer_metadata.py
 │   │   ├── layer_validator.py

@@ -304,4 +304,4 @@ diálogo. `canvas: Any` evita importar `QgsMapCanvas` en un contenedor de datos.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*

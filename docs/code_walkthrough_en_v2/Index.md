@@ -122,4 +122,4 @@ fit. Sizes: Tier A/C 400–500 lines, Tier B 300–400, hubs 150–260.
 
 ---
 
-*Root note of the v2 vault — complete vault (Phases 1–4), v3.9.0.*
+*Root note of the v2 vault — complete vault (Phases 1–4), v3.9.1.*

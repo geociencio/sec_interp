@@ -2,7 +2,7 @@
 # Sync mirror architecture/report docs and structure docs into the code-walkthrough vaults.
 # Keeps wikilinks ([[ARCHITECTURE_EN]], [[project_structure_table]], …) resolvable in Obsidian.
 #
-# - Architecture/report mirrors -> all vaults (v1 + v2, ES + EN).
+# - Architecture/report mirrors -> v2 vaults only (v1 is frozen).
 # - Structure docs (project_structure*.md/txt) -> v2 vaults only (v1 is frozen).
 #
 # Usage:
@@ -19,9 +19,9 @@ DOCS=(
   "ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md"
   "PLUGIN_REPORT_AND_COMPARISON_EN.md"
 )
+# Legacy v1 vaults (docs/code_walkthrough, docs/code_walkthrough_en) are frozen
+# and intentionally excluded: mirrored docs are now v2-first.
 VAULTS=(
-  "docs/code_walkthrough"
-  "docs/code_walkthrough_en"
   "docs/code_walkthrough_v2"
   "docs/code_walkthrough_en_v2"
 )

@@ -123,4 +123,4 @@ hubs 150–260.
 
 ---
 
-*Nota raíz de la bóveda v2 — bóveda completa (Fases 1–4), v3.9.0.*
+*Nota raíz de la bóveda v2 — bóveda completa (Fases 1–4), v3.9.1.*

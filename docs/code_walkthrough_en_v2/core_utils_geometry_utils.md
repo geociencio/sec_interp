@@ -396,4 +396,4 @@ The package handles no errors (it has no logic). At the submodule level:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.0*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*

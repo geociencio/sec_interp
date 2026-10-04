@@ -404,4 +404,4 @@ Relacionados: `tests/gui/test_main_dialog_tools.py` (ciclo vía `ToolManager`), 
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.0*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
