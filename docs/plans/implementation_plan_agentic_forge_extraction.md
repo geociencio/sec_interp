@@ -103,7 +103,7 @@ keeps working after it is moved under `.agent/tools/`.
 | **F1** | Create `.agent-state/`, migrate state, make tooling path-aware via `forge.toml` + `forge_paths.py` (no submodule yet) | ✅ **DONE 2026-10-04** |
 | **F2** | Extract generic content + tooling, publish `agentic-forge` on Codeberg (`git subtree split` preserves history). Source of truth is the evolved `.agent/` (`antigravity-framerepo` is deprecated) | ✅ **DONE 2026-10-04** — published (fresh, no history) at `codeberg.org/geociencio/agentic-forge` |
 | **F3** | Convert `.agent/` to a git submodule; CI with `submodules: recursive`; document cloning | ✅ **DONE 2026-10-04** (submodule @ `1441dca`) |
-| **F4** | Governance: framework issues/PRs on Codeberg; bump the gitlink on updates; update `/start-session` etc. | ⬜ Pending |
+| **F4** | Governance: framework issues/PRs on Codeberg; bump the gitlink on updates; update `/start-session` etc. | ✅ **DONE 2026-10-04** (tag `v1.0.0`, bump tool, governance docs) |
 | **F5** | **Tooling extraction** (separate/last): `agentic-forge/tools/forge.py` CLI + `sync_metrics` split; repoint `pre-push`, `Makefile`, workflows | ⬜ Pending |
 
 **Sequencing rationale**: F1–F4 change structure/content; F5 refactors working tooling.
@@ -197,6 +197,18 @@ is **MIT licensed**; its own `tools/` arrive in F5.
   `.agent` is a submodule.
 - **Gates green**: `validate_agent_system` (13 skills), `sync_metrics --validate`, `check_docs`,
   `tests/agentic` (23).
+
+---
+
+## 10. F4 — Change Log (COMPLETED 2026-10-04)
+- **Framework repo** (upstream, Codeberg): added a submodule check to
+  `workflows/start-session.md` (pushed `bc321d1`); tagged **`v1.0.0`**.
+- `.gitmodules`: `.agent` tracks `branch = main`.
+- `scripts/update_agentic_forge.sh`: safe bump (update → show commits → validate →
+  optional `--commit`).
+- `docs/maintainer/FRAMEWORK_SYNC_GUIDE.md`: added a **Governance** section (source of truth,
+  upstream-vs-project changes, bump tool, tags/pinning, where to file issues/PRs).
+- **Governance loop established**: generic changes upstream → push → bump gitlink in SecInterp.
 
 ---
 

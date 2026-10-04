@@ -51,5 +51,24 @@ uv run python scripts/sync_metrics.py --validate        # coherencia de métrica
 uv run python scripts/check_docs.py                     # consistencia de docs
 ```
 
+## 🏛️ Gobernanza del framework
+
+- **Fuente de verdad**: el repo [`agentic-forge`](https://codeberg.org/geociencio/agentic-forge)
+  (público, MIT). SecInterp solo consume y fija una revisión.
+- **Cambios genéricos** (skills/workflows/tooling del framework): se hacen **en el repo del
+  framework** (o en `.agent/` y se empuja), con su commit/tag, y después se sube el `gitlink`
+  en SecInterp.
+- **Cambios del proyecto** (estado, skills de dominio): viven en `.agent-state/`, no se empujan
+  al framework.
+- **Bump seguro** del submódulo:
+  ```bash
+  scripts/update_agentic_forge.sh            # actualiza + valida
+  scripts/update_agentic_forge.sh --commit   # además commitea el bump del gitlink
+  ```
+- **Versionado**: el framework usa tags (`v1.0.0`, …). Para fijar una versión concreta en
+  SecInterp, haz checkout del tag dentro de `.agent/` y sube el `gitlink`.
+- **Issues / PRs / ideas**: se reportan en el repo del framework en **Codeberg** (seguimiento
+  separado del plugin).
+
 ---
-*Agentic Forge framework — Gen 8. Updated 2026-10-04 (submodule model).*
+*Agentic Forge framework — Gen 8. Updated 2026-10-04 (submodule model + governance).*
