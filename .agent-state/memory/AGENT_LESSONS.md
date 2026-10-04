@@ -5,7 +5,7 @@ It uses a structured format for efficient retrieval by the agent system.
 
 **Memory Policy**: Lessons older than 90 days that are already reflected in a `SKILL.md`
 are marked `[consolidated]` and will be pruned in the next review cycle.
-See `.agent/memory/memory_policy.md` for the full policy.
+See `.agent-state/memory/memory_policy.md` for the full policy.
 
 ---
 

@@ -26,7 +26,8 @@
 - **Calidad**: suite Docker verde (23/237/40/323/76) · ruff PASS · gates docs/vault/agentes PASS ·
   analyzer 0 issues.
 - **Pendiente / cómo reanudar**:
-  1. **Portal QGIS**: subir `dist/sec_interp.3.9.1.zip` (**2.38 MiB**, con ayuda en 14 idiomas).
+  1. **Portal QGIS**: ~~subir `dist/sec_interp.3.9.1.zip`~~ ✅ **HECHO** — v3.9.1
+     (2.38 MiB, con ayuda en 14 idiomas) ya está en el repositorio de plugins de QGIS.
   2. **Tren**: v3.10.0 (11 oct) / v3.11.0 (18 oct) publican solos; el workflow ahora usa el
      `build_docs.sh` optimizado de `main` → incluirán la ayuda optimizada. Verificar cada uno.
   3. **⚠️ Divergencia `legend_widget.py`**: las ramas del tren **eliminaron**
@@ -61,8 +62,8 @@
     Index/hubs/mapa actualizados. `check_notes --strict` PASS (308).
 - **Referencia**: `docs/maintenance/session_2026-09-27_release_train_and_vault_refresh.md`.
 - **Pendiente / cómo reanudar**:
-  1. **Portal QGIS**: subir el ZIP del release que se publique (v3.9.1 el 4 oct). No
-     automatizable (no hay `plugin_upload.py`).
+  1. **Portal QGIS**: ~~subir el ZIP del release que se publique (v3.9.1 el 4 oct)~~ ✅
+     **HECHO** — v3.9.1 ya está en el repositorio de plugins de QGIS.
   2. **v3.9.0**: no se sube al portal (decisión); v3.9.1+ ya traen los fixes de Qt6.
   3. **Tren**: los domingos 4/11/18 oct el workflow publica solo; sincronizar `main`
      manualmente al final (`git merge --ff-only release/v3.11.0`).

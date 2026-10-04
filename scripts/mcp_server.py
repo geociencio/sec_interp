@@ -5,6 +5,8 @@ import sys
 import logging
 from typing import Any, Dict, List, Optional  # noqa: F401
 
+import forge_paths  # noqa: E402
+
 # Configure logging to stderr to keep stdout clean for JSON-RPC
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
 logger = logging.getLogger("sec-interp-mcp")
@@ -199,10 +201,8 @@ class Test{class_name}(BaseTestCase):
         return f"Violations found in {file_path}:\n" + "\n".join(violations)
 
     def _get_lessons(self, limit: int) -> str:
-        import os
-
-        lessons_path = ".agent/memory/AGENT_LESSONS.md"
-        if not os.path.exists(lessons_path):
+        lessons_path = forge_paths.LESSONS_FILE
+        if not lessons_path.exists():
             return "AGENT_LESSONS.md not found."
 
         try:

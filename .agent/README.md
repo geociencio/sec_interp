@@ -20,36 +20,43 @@ SecInterp has evolved into a **Generation 8 Agentic System**, moving beyond simp
 ## 📁 Directory Structure
 
 ```bash
-.agent/
+.agent/                         # Re-usable framework (candidate git submodule)
 ├── AGENTS.md               # ➡️ Compatibility pointer (canonical config is root AGENTS.md)
 ├── QUICK_REFERENCE.md      # 📋 Fast lookup for skills and workflows
-├── next_steps.md           # 🎯 Active goals and handoff state
 ├── architecture/           # 🏗️ System design and optimization plans
 │   └── IMPROVEMENT_PLAN_GEN8.md  # Gen 7→8 improvement plan (implemented)
-├── memory/                 # 🧠 Cognitive history and lessons
-│   ├── AGENT_LESSONS.md    # Structured technical lessons (YAML)
-│   ├── agent_metrics.json  # Operational metrics (schema v2.0)
-│   └── memory_policy.md    # Memory lifecycle policy (3-tier rules)
 ├── skills/                 # 🛠️ On-demand capabilities (13)
 │   ├── geological-logic/   # Specialized geological processing
 │   ├── qgis-core/          # PyQGIS and async tasks expertise
 │   └── ... (see QUICK_REFERENCE.md)
-├── workflows/              # 🔄 Standardized operational procedures (15)
-│   ├── index.md            # Workflow quick reference
-│   ├── start-session.md    # Initializing with context
-│   ├── close-session.md    # Closing with metric sync + memory prune
-│   └── ... (see QUICK_REFERENCE.md)
+└── workflows/              # 🔄 Standardized operational procedures (15)
+    ├── index.md            # Workflow quick reference
+    ├── start-session.md    # Initializing with context
+    ├── close-session.md    # Closing with metric sync + memory prune
+    └── ... (see QUICK_REFERENCE.md)
+
+.agent-state/                   # Project-owned state (never shipped by the framework)
+├── next_steps.md           # 🎯 Active goals and handoff state
+├── task.md                 # 📌 Active task board
+├── memory/                 # 🧠 Cognitive history and lessons
+│   ├── AGENT_LESSONS.md    # Structured technical lessons (YAML)
+│   ├── agent_metrics.json  # Operational metrics (schema v2.0)
+│   └── memory_policy.md    # Memory lifecycle policy (3-tier rules)
 └── history/                # 📜 Archived task boards and next_steps snapshots
     ├── tasks/              # Phase task archives (tasks_vX.Y.Z.md)
     └── next_steps/         # Session handoff snapshots (90-day retention, pruned monthly)
 ```
+
+> **Path resolution**: scripts read `forge.toml` (repo root) via `scripts/forge_paths.py`
+> to locate `.agent` (framework) and `.agent-state` (state). This keeps the tooling
+> project-agnostic and prepares the extraction of generic tooling into `agentic-forge`.
 
 ---
 
 ## 🧠 Memory & Observability
 
 The system maintains a **3-Tier Memory Model**:
--   **Episodic Memory**: Session logs and task records in `docs/maintenance/` (100+ files, dated). Archived task boards and next_steps snapshots in `.agent/history/`.
+-   **Episodic Memory**: Session logs and task records in `docs/maintenance/` (100+ files, dated). Archived task boards and next_steps snapshots in `.agent-state/history/`.
 -   **Semantic Memory**: Distilled lessons in `AGENT_LESSONS.md` (~29 active + 12 pruned index).
 -   **Long-Term Archive**: Pruned lessons moved to the `[PRUNED]` index once consolidated into `SKILL.md` files.
 
@@ -68,7 +75,7 @@ Full session summaries are stored in **`docs/maintenance/`** with the naming con
 ## 🛠️ How to use the System
 
 ### 1. Starting a Session
-Always start with `/start-session`. This runs `sync_metrics.py` + `ai-ctx analyze`, reads `next_steps.md` and `task.md`, and synchronizes the project state.
+Always start with `/start-session`. This runs `sync_metrics.py` + `ai-ctx analyze`, reads `.agent-state/next_steps.md` and `.agent-state/task.md`, and synchronizes the project state.
 
 ### 2. Developing and Testing
 Use specialized workflows like `/build-feature` or `/refactor-code`. These ensure that the **Agent Auditor** reviews your plans before implementation.

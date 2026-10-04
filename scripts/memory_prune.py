@@ -2,7 +2,7 @@
 """
 Memory Pruning Utility (Gen 6)
 Auto-prunes consolidated lessons older than 90 days from AGENT_LESSONS.md
-and next_steps snapshots older than 90 days from .agent/history/next_steps/.
+and next_steps snapshots older than 90 days from .agent-state/history/next_steps/.
 """
 
 import re
@@ -11,10 +11,12 @@ from pathlib import Path
 
 import yaml
 
+import forge_paths
+
 # Configuration
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-LESSONS_FILE = PROJECT_ROOT / ".agent" / "memory" / "AGENT_LESSONS.md"
-NEXT_STEPS_DIR = PROJECT_ROOT / ".agent" / "history" / "next_steps"
+PROJECT_ROOT = forge_paths.PROJECT_ROOT
+LESSONS_FILE = forge_paths.LESSONS_FILE
+NEXT_STEPS_DIR = forge_paths.HISTORY_DIR / "next_steps"
 PRUNE_DAYS = 90
 NEXT_STEPS_RETENTION_DAYS = 90
 

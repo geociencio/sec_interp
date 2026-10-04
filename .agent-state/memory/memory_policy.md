@@ -1,7 +1,7 @@
 # Agent Memory Policy (SecInterp)
 
 > Defines what the agent remembers, when it forgets, and how conflicts are resolved.
-> This is the authoritative document for memory lifecycle management in the `.agent/` system.
+> This is the authoritative document for memory lifecycle management in the `.agent-state/` system.
 
 ---
 
@@ -12,7 +12,7 @@ The system uses a **3-tier cognitive architecture** aligned with 2025/2026 agent
 | Tier | File | Purpose | Retention |
 |---|---|---|---|
 | **Short-term** (Working) | `AI_CONTEXT.md` | Current session state, active tasks, decisions in progress | Per session (reset on start) |
-| **Episodic** (Event History) | `docs/maintenance/` (100+ session logs), `history/tasks/`, `history/next_steps/`, `next_steps.md` | Records of past sessions, outcomes, and decisions | Session logs: 6 months → archived; next_steps snapshots: 90 days → pruned |
+| **Episodic** (Event History) | `docs/maintenance/` (100+ session logs), `.agent-state/history/tasks/`, `.agent-state/history/next_steps/`, `.agent-state/next_steps.md` | Records of past sessions, outcomes, and decisions | Session logs: 6 months → archived; next_steps snapshots: 90 days → pruned |
 | **Semantic** (Long-term) | `AGENT_LESSONS.md`, `SKILL.md` files | Distilled patterns, user preferences, reusable procedures | Permanent (with pruning) |
 
 ---
@@ -106,7 +106,7 @@ The following must **never** appear in `AGENT_LESSONS.md`:
 
 ## 9. History Archive Conventions & Pruning
 
-### 9.1 Task Board Naming (`history/tasks/`)
+### 9.1 Task Board Naming (`.agent-state/history/tasks/`)
 
 All archived task boards follow a single naming scheme:
 
@@ -115,9 +115,9 @@ All archived task boards follow a single naming scheme:
 
 The plural `tasks_` prefix is mandatory. Legacy variants (`task_*`, `tasks_*_closure`, `*_stale`) are not permitted for new archives.
 
-### 9.2 next_steps Snapshot Pruning (`history/next_steps/`)
+### 9.2 next_steps Snapshot Pruning (`.agent-state/history/next_steps/`)
 
-`history/next_steps/` stores per-session handoff snapshots (`next_steps_YYYY-MM-DD[_topic].md`). These are ephemeral working states, redundant with the session logs in `docs/maintenance/` and the git history.
+`.agent-state/history/next_steps/` stores per-session handoff snapshots (`next_steps_YYYY-MM-DD[_topic].md`). These are ephemeral working states, redundant with the session logs in `docs/maintenance/` and the git history.
 
 - **Retention**: 90 days from the date encoded in the filename.
 - **Action**: Snapshots older than 90 days are deleted by `scripts/memory_prune.py` (recoverable via git).

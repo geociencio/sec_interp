@@ -28,9 +28,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+import forge_paths
+
 # ── Configuration ──────────────────────────────────────────────────────────
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-METRICS_FILE = PROJECT_ROOT / ".agent" / "memory" / "agent_metrics.json"
+PROJECT_ROOT = forge_paths.PROJECT_ROOT
+METRICS_FILE = forge_paths.METRICS_FILE
 ANALYZER_RESULTS = PROJECT_ROOT / "analysis_results" / "project_context.json"
 
 # ── Thresholds (single source of truth — consumed by sync_metrics.py) ─────
@@ -423,8 +425,8 @@ def sync_main():
 # Metrics trend report  (was metrics_report.py)
 # =====================================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-METRICS_FILE = PROJECT_ROOT / ".agent" / "memory" / "agent_metrics.json"
+PROJECT_ROOT = forge_paths.PROJECT_ROOT
+METRICS_FILE = forge_paths.METRICS_FILE
 
 CHART_WIDTH = 30
 BLOCKS = "▁▂▃▄▅▆▇█"
@@ -622,10 +624,10 @@ def generate_report(compact: bool = False):
 # Metric consistency validator  (was validate_agent_metrics.py)
 # =====================================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-AGENT_DIR = PROJECT_ROOT / ".agent"
-METRICS_FILE = AGENT_DIR / "memory" / "agent_metrics.json"
-HISTORY_DIR = AGENT_DIR / "history"
+PROJECT_ROOT = forge_paths.PROJECT_ROOT
+FRAMEWORK_DIR = forge_paths.FRAMEWORK_DIR
+METRICS_FILE = forge_paths.METRICS_FILE
+HISTORY_DIR = forge_paths.HISTORY_DIR
 
 # Patterns to extract embedded metrics from documentation files
 TEST_PATTERNS = [
@@ -804,12 +806,22 @@ def check_internal_consistency(metrics_file: Path = METRICS_FILE) -> list[str]:
     return issues
 
 
+def _relative_to_agent_roots(filepath: Path) -> str:
+    """Return ``filepath`` relative to the framework or state root."""
+    for root in (FRAMEWORK_DIR, forge_paths.STATE_DIR):
+        try:
+            return str(filepath.relative_to(root))
+        except ValueError:
+            continue
+    return str(filepath)
+
+
 def should_skip_file(filepath: Path) -> bool:
     """Skip history archives and non-markdown/json files."""
     if filepath.suffix not in (".md", ".json"):
         return True
 
-    rel_path = str(filepath.relative_to(AGENT_DIR))
+    rel_path = _relative_to_agent_roots(filepath)
     if rel_path.startswith("history/"):
         return True
     if rel_path.startswith("architecture/"):
@@ -924,21 +936,19 @@ def validate_file(filepath: Path, ground_truth: dict) -> list[MetricViolation]:
 
 
 def scan_agent_files(ground_truth: dict) -> ValidationReport:
-    """Scan all relevant .agent/ files for metric consistency."""
+    """Scan all relevant agentic files (framework + project state)."""
     report = ValidationReport()
 
-    if not AGENT_DIR.exists():
-        return report
+    for root in forge_paths.state_and_framework_dirs():
+        for filepath in sorted(root.rglob("*")):
+            if not filepath.is_file():
+                continue
+            if should_skip_file(filepath):
+                continue
 
-    for filepath in sorted(AGENT_DIR.rglob("*")):
-        if not filepath.is_file():
-            continue
-        if should_skip_file(filepath):
-            continue
-
-        report.files_scanned += 1
-        violations = validate_file(filepath, ground_truth)
-        report.violations.extend(violations)
+            report.files_scanned += 1
+            violations = validate_file(filepath, ground_truth)
+            report.violations.extend(violations)
 
     return report
 
@@ -997,14 +1007,14 @@ def validate_main():
     report = scan_agent_files(ground_truth)
 
     if not quiet:
-        print(f"🔍 Scanned {report.files_scanned} files in .agent/")
+        print(f"🔍 Scanned {report.files_scanned} agentic files (framework + state)")
         print(f"   Ground truth: tests={ground_truth.get('test_count', '?')}, "
               f"quality={ground_truth.get('quality_score', '?')}, "
               f"CC≤{ground_truth.get('cc_threshold', '?')}")
 
     if report.clean and not internal_issues:
         if not quiet:
-            print("✅ All .agent/ files are metric-consistent with agent_metrics.json")
+            print("✅ All agentic files are metric-consistent with agent_metrics.json")
         sys.exit(0)
 
     if report.violations:

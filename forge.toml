@@ -1,0 +1,17 @@
+# Agentic Forge configuration for the SecInterp project.
+#
+# The re-usable agentic framework (skills, workflows, and later the `forge`
+# CLI) is versioned separately and mounted under `[forge].framework`. Project
+# state that must never be overwritten by a framework update lives under
+# `[forge].state`, which is owned by this repository.
+#
+# All paths are relative to the repository root.
+
+[forge]
+framework = ".agent"        # re-usable framework content (skills/workflows)
+state = ".agent-state"      # project-owned state (memory/task/next_steps)
+
+[project]
+name = "sec_interp"
+test_dirs = ["tests"]
+analyzer_command = "uv run qgis-analyzer analyze . --max-cc 10"

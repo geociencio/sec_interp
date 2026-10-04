@@ -9,7 +9,7 @@ stop_conditions:
 validation: |
   - Verify that all logs are updated
   - Confirm that tests pass before closing
-  - Validate that .agent/next_steps.md exists and has clear content
+  - Validate that .agent-state/next_steps.md exists and has clear content
 ---
 
 # Workflow: Close Session
@@ -23,11 +23,11 @@ This workflow closes the development cycle, converting technical work into histo
 *   **Session Topic**: Define a short name for the session (e.g., `stabilization_mocks`).
 *   **Active Implementation Plan**: Update task status in the current plan.
 *   **Task Persistence**:
-    *   Ensure `.agent/task.md` reflects actual progress.
-    *   If a major phase was completed, archive it in `.agent/history/tasks/`.
+    *   Ensure `.agent-state/task.md` reflects actual progress.
+    *   If a major phase was completed, archive it in `.agent-state/history/tasks/`.
     *   **DO NOT DELETE** this file if the phase continues.
-*   **`.agent/next_steps.md`**: **[CRITICAL]** Create or update this file with the "handover": what's missing, what errors are pending, and what command to resume.
-*   **Next Steps Archiving**: Copy `.agent/next_steps.md` to `.agent/history/next_steps/next_steps_YYYY-MM-DD.md` to maintain a historical record.
+*   **`.agent-state/next_steps.md`**: **[CRITICAL]** Create or update this file with the "handover": what's missing, what errors are pending, and what command to resume.
+*   **Next Steps Archiving**: Copy `.agent-state/next_steps.md` to `.agent-state/history/next_steps/next_steps_YYYY-MM-DD.md` to maintain a historical record.
 *   **`docs/maintenance/session_YYYY-MM-DD_[TOPIC].md`**: **[MANDATORY]** Create this file with the session's technical summary.
 *   **`docs/DEVELOPMENT_LOG.md`**: **[CRITICAL]** Add entry following the `documentation-standards` format.
 *   **`docs/CHANGELOG.md`**: Record user-visible changes in `[Unreleased]` using the **changelog-generator** skill based on session commits. **(NOTE: The `changelog-generator` skill is interpretive [prompt-based]. Do NOT attempt to run any Python script. Instead, use `git log` to read recent session commits, analyze them mentally, and use the file editing tool to write directly into CHANGELOG.md)**.
@@ -55,7 +55,7 @@ PYTHONPATH=.. uv run python3 -m unittest discover tests
 ```
 
 🤖 **Agent Action**: Validate Active Tasks.
-Verify that `.agent/task.md` exists and is updated before committing.
+Verify that `.agent-state/task.md` exists and is updated before committing.
 
 ### 3. Final Memory Synchronization (AI)
 
@@ -77,7 +77,7 @@ Verify that `.agent/task.md` exists and is updated before committing.
      action: Concrete action for future sessions.
    ```
 
-3. **Insert** into `.agent/memory/AGENT_LESSONS.md` at top of ACTIVE LESSONS.
+3. **Insert** into `.agent-state/memory/AGENT_LESSONS.md` at top of ACTIVE LESSONS.
 
 4. **Skip if**: duplicates an existing lesson, already in a SKILL.md, or one-time throwaway.
 
@@ -102,7 +102,7 @@ This scans all .agent/ files for stale metric references (test counts, quality s
 Ensure the AI "Brain" is up to date with the final changes.
 // turbo
 ```bash
-uv run ai-ctx analyze --path . && cat .agent/next_steps.md
+uv run ai-ctx analyze --path . && cat .agent-state/next_steps.md
 ```
 
 ### 4. Local Commit
@@ -129,7 +129,7 @@ git commit -m "chore(docs): close session [TOPIC]"
 Generate a final message listing:
 *   Updated log files.
 *   Test status (e.g., 763 tests OK).
-*   Content of `.agent/next_steps.md`.
+*   Content of `.agent-state/next_steps.md`.
 *   Suggestion for the next session (command `/start-session`).
 
 ## Expected Result

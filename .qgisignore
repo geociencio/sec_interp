@@ -53,6 +53,7 @@ ENV/
 
 # AI, Agents, and Contexts
 .agent/
+.agent-state/
 .opencode/
 opencode.json
 opencode.jsonc

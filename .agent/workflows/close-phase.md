@@ -107,7 +107,7 @@ Update the following files:
 Move the active task file to the history for traceability:
 
 ```bash
-mv .agent/task.md .agent/history/tasks/tasks_vX.Y.Z.md
+mv .agent-state/task.md .agent-state/history/tasks/tasks_vX.Y.Z.md
 ```
 
 ### 6.2 Git Sync
@@ -142,7 +142,7 @@ Prepare a closure message for stakeholders (if applicable):
 
 ## 8. Preparation for Next Phase
 
-Create the `.agent/next_steps.md` file with:
+Create the `.agent-state/next_steps.md` file with:
 
 - Prioritized technical debt
 - Preliminary goals for the next phase

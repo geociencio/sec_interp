@@ -14,7 +14,7 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 - **CC gate**: ✅ CONFIRMED — `check_cc.py` verifies all functions CC ≤ 10. `AI_CONTEXT.md` avg 13.6 is from a different analyzer (ai-ctx) with different measurement.
 - **i18n**: ⚠️ SCOPE MISMATCH — `verify_i18n_hygiene.py` checks `self.tr()` wrapping (0 violations). `qgis-analyzer` finds 254 MISSING_I18N (broader detection). Neither is wrong — they measure different things.
 - **Quality score**: ✅ CORRECTED — was stale 40.8. Real score is 52.3 (Module Stability) / 90.7 (Maintainability) from qgis-analyzer.
-- **Sessions**: ✅ CONFIRMED — 100+ session logs in `docs/maintenance/`, not `.agent/history/sessions/`. Memory policy reference needs update.
+- **Sessions**: ✅ CONFIRMED — 100+ session logs in `docs/maintenance/`, not `.agent-state/history/sessions/`. Memory policy reference needs update.
 
 ---
 
@@ -36,7 +36,7 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 | i18n (analyzer) | Not tracked separately | ⚠️ **254 MISSING_I18N** from qgis-analyzer | SCOPE GAP |
 | Total issues | Not tracked | **257** (254 i18n + 2 loop + 1 spatial) | NEW |
 | Test count | 572/620 conflicting | **620 verified** via Docker (2026-05-24) | RESOLVED |
-| Sessions dir | Assumed `.agent/history/sessions/` | Actually `docs/maintenance/` (100+ files) | DOC FIX NEEDED |
+| Sessions dir | Assumed `.agent-state/history/sessions/` | Actually `docs/maintenance/` (100+ files) | DOC FIX NEEDED |
 
 ### 0.2 Actions Completed
 
@@ -73,14 +73,14 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 
 - [x] **1.2.1** Update `QUICK_REFERENCE.md` quality score from 40.8 → 52.3, add maintainability 90.7
 - [x] **1.2.2** Update `README.md` quality badge to reflect 52.3
-- [x] **1.2.3** Fix `memory_policy.md` — session directory is `docs/maintenance/`, not `.agent/history/sessions/`
+- [x] **1.2.3** Fix `memory_policy.md` — session directory is `docs/maintenance/`, not `.agent-state/history/sessions/`
 - [x] **1.2.4** Resolve test count discrepancy: run `make docker-test` and record definitive number (620)
 
 ### 1.3 i18n Strategy Clarification
 
 - [x] **1.3.1** Decide: is target 0 violations on `verify_i18n_hygiene.py` (achieved) or 0 on `qgis-analyzer i18n` (254 remaining)? → Dual-scope: AST gate blocking, analyzer triaged.
 - [x] **1.3.2** If targeting analyzer: triage 254 MISSING_I18N into false positives vs real gaps → 72 false positives, 0 genuine remaining.
-- [x] **1.3.3** Update `.agent/next_steps.md` Goal 1 status accordingly
+- [x] **1.3.3** Update `.agent-state/next_steps.md` Goal 1 status accordingly
 
 ---
 
@@ -169,4 +169,4 @@ The `.agent/` system is architecturally mature (Gen 6, 18 sessions, 100% task co
 ---
 
 *Phases 0-3 complete (2026-09-12). Remaining: Phase 4 quick wins (4.1.1, 4.1.2, 4.1.4) and Phase 5 cross-skill conflict detection.*
-*Sessions directory confirmed: `docs/maintenance/` (not `.agent/history/sessions/`)*
+*Sessions directory confirmed: `docs/maintenance/` (not `.agent-state/history/sessions/`)*

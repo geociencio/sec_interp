@@ -14,8 +14,8 @@
 ```
 uv run python scripts/sync_metrics.py
 uv run ai-ctx analyze --path .
-cat .agent/next_steps.md
-cat .agent/task.md
+cat .agent-state/next_steps.md
+cat .agent-state/task.md
 uv sync
 ```
 **Expected output**: Updated metrics, visible active tasks, dependencies OK.

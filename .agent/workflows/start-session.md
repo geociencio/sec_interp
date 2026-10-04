@@ -25,13 +25,13 @@ cat AGENTS.md
 Updates and reads the context to understand "where we left off".
 // turbo
 ```bash
-uv run ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/AGENT_LESSONS.md
+uv run ai-ctx analyze --path . && cat .agent-state/next_steps.md && cat .agent-state/memory/AGENT_LESSONS.md
 ```
 
 🤖 **Agent Action**: Validate Active Tasks.
 
 *   **Task Management**:
-    *   Verify if `.agent/task.md` exists.
+    *   Verify if `.agent-state/task.md` exists.
     *   If it exists: Show the content ("Current Status").
     *   If it DOES NOT exist: Create it based on the active Implementation Plan or `next_steps.md`.
 
@@ -41,9 +41,9 @@ uv run ai-ctx analyze --path . && cat .agent/next_steps.md && cat .agent/memory/
 - Architecture violations (UI in Core)
 
 Review the following files in this order:
-*   `.agent/next_steps.md`: **The Witness (Source of Truth)**. Defines the exact starting point and immediate goals.
-*   `.agent/task.md`: **Active Board**. If it exists, it must align with `next_steps.md`. If not, create it based on `next_steps.md`.
-*   `.agent/memory/AGENT_LESSONS.md`: **The Brain**. Error patterns to avoid and preferences.
+*   `.agent-state/next_steps.md`: **The Witness (Source of Truth)**. Defines the exact starting point and immediate goals.
+*   `.agent-state/task.md`: **Active Board**. If it exists, it must align with `next_steps.md`. If not, create it based on `next_steps.md`.
+*   `.agent-state/memory/AGENT_LESSONS.md`: **The Brain**. Error patterns to avoid and preferences.
 *   `AI_CONTEXT.md`: Architectural context and long-term metrics.
 *   `project_context.json`: Structured data on complexity and dependencies.
 *   `docs/DEVELOPMENT_LOG.md`: See summary of the last session (reverse chronological order).

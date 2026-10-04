@@ -13,8 +13,10 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-LESSONS_FILE = PROJECT_ROOT / ".agent" / "memory" / "AGENT_LESSONS.md"
+import forge_paths
+
+PROJECT_ROOT = forge_paths.PROJECT_ROOT
+LESSONS_FILE = forge_paths.LESSONS_FILE
 
 # Patterns that signal a lesson-worthy event
 SIGNAL_PATTERNS = {

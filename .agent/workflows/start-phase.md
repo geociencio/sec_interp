@@ -130,7 +130,7 @@ If there are uncommitted changes, evaluate if they should be part of the previou
 
 ## 6. Tracking Structure Creation
 
-Create the task file in `.agent/task.md` (if using AI artifacts):
+Create the task file in `.agent-state/task.md` (if using AI artifacts):
 
 ```markdown
 # Tasks - Phase vX.Y.Z
@@ -173,7 +173,7 @@ Document the phase start in `docs/DEVELOPMENT_LOG.md`:
 
 ## 9. AI Workflow Configuration (if applicable)
 
-Update `.agent/next_steps.md` with the new phase's context:
+Update `.agent-state/next_steps.md` with the new phase's context:
 
 ```markdown
 # Next Steps - SecInterp vX.Y.Z
@@ -198,7 +198,7 @@ To start a development session:
 Create an initial commit marking the phase start:
 
 ```bash
-git add docs/plans/implementation_plan_vX.Y.Z.md docs/DEVELOPMENT_LOG.md .agent/next_steps.md
+git add docs/plans/implementation_plan_vX.Y.Z.md docs/DEVELOPMENT_LOG.md .agent-state/next_steps.md
 git commit -m "chore: initialize phase vX.Y.Z - [Phase Name]
 
 - Created implementation plan with [N] goals

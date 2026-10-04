@@ -17,10 +17,12 @@ from dataclasses import dataclass as dc
 from dataclasses import field as dc_field
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-AGENT_DIR = PROJECT_ROOT / ".agent"
-SKILLS_DIR = AGENT_DIR / "skills"
-WORKFLOW_DIR = AGENT_DIR / "workflows"
+import forge_paths
+
+PROJECT_ROOT = forge_paths.PROJECT_ROOT
+AGENT_DIR = forge_paths.FRAMEWORK_DIR
+SKILLS_DIR = forge_paths.SKILLS_DIR
+WORKFLOW_DIR = forge_paths.WORKFLOW_DIR
 SCRIPTS_DIR = PROJECT_ROOT / "scripts"
 
 REQUIRED_SKILL_FIELDS = ["name", "description"]
@@ -224,10 +226,10 @@ def system_main():
 # Workflow dependency graph  (was workflow_graph.py)
 # =====================================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-AGENT_DIR = PROJECT_ROOT / ".agent"
-WORKFLOW_DIR = AGENT_DIR / "workflows"
-SKILLS_DIR = AGENT_DIR / "skills"
+PROJECT_ROOT = forge_paths.PROJECT_ROOT
+AGENT_DIR = forge_paths.FRAMEWORK_DIR
+WORKFLOW_DIR = forge_paths.WORKFLOW_DIR
+SKILLS_DIR = forge_paths.SKILLS_DIR
 SCRIPTS_DIR = PROJECT_ROOT / "scripts"
 
 
@@ -484,8 +486,8 @@ def graph_main():
 # Cross-skill conflict detector  (was check_skill_conflicts.py)
 # =====================================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-SKILLS_DIR = PROJECT_ROOT / ".agent" / "skills"
+PROJECT_ROOT = forge_paths.PROJECT_ROOT
+SKILLS_DIR = forge_paths.SKILLS_DIR
 
 
 def _parse_frontmatter(content: str) -> dict:
