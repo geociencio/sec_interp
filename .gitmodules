@@ -1,0 +1,3 @@
+[submodule ".agent"]
+	path = .agent
+	url = https://codeberg.org/geociencio/agentic-forge.git

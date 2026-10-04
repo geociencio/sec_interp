@@ -102,7 +102,7 @@ keeps working after it is moved under `.agent/tools/`.
 | :--- | :--- | :--- |
 | **F1** | Create `.agent-state/`, migrate state, make tooling path-aware via `forge.toml` + `forge_paths.py` (no submodule yet) | ✅ **DONE 2026-10-04** |
 | **F2** | Extract generic content + tooling, publish `agentic-forge` on Codeberg (`git subtree split` preserves history). Source of truth is the evolved `.agent/` (`antigravity-framerepo` is deprecated) | ✅ **DONE 2026-10-04** — published (fresh, no history) at `codeberg.org/geociencio/agentic-forge` |
-| **F3** | Convert `.agent/` to a git submodule; CI with `submodules: recursive`; document cloning | ⬜ Pending |
+| **F3** | Convert `.agent/` to a git submodule; CI with `submodules: recursive`; document cloning | ✅ **DONE 2026-10-04** (submodule @ `1441dca`) |
 | **F4** | Governance: framework issues/PRs on Codeberg; bump the gitlink on updates; update `/start-session` etc. | ⬜ Pending |
 | **F5** | **Tooling extraction** (separate/last): `agentic-forge/tools/forge.py` CLI + `sync_metrics` split; repoint `pre-push`, `Makefile`, workflows | ⬜ Pending |
 
@@ -154,7 +154,6 @@ git submodule add git@codeberg.org:<user>/agentic-forge.git .agent
 ---
 
 ## 8. F2 — Change Log
-
 ### F2a — Content split (DONE 2026-10-04)
 - Moved project-specific skills to the overlay with `git mv`:
   `.agent/skills/project-context` + `.agent/skills/geological-logic` → `.agent-state/skills/`.
@@ -184,7 +183,20 @@ export for **public**; `--with-history` for **private**; safety gate rejects `/h
 
 Residual `SecInterp` mentions inside individual skills/workflows are non-sensitive and can be
 templatized later; `geological-logic` may be promoted to `scaffold/geology`. The framework repo
-still needs a **LICENSE** decision and, in F5, its own `tools/`.
+is **MIT licensed**; its own `tools/` arrive in F5.
+
+---
+
+## 9. F3 — Change Log (COMPLETED 2026-10-04)
+- `.agent/` converted to a **git submodule** of `agentic-forge` (`.gitmodules`, pinned at `1441dca`).
+- `.agent-state/` (state + overlay) remains project-owned; `forge_paths` and all gates unchanged.
+- CI: `actions/checkout@v4` now uses `submodules: recursive` in `test.yml` (quality/docs/test),
+  `docs.yml` and `scheduled-release.yml` (the container-based qt6 job left as-is).
+- `docs/maintainer/FRAMEWORK_SYNC_GUIDE.md` rewritten for the submodule workflow.
+- `export_agentic_forge.sh` notes the submodule era; `--with-history` is rejected when
+  `.agent` is a submodule.
+- **Gates green**: `validate_agent_system` (13 skills), `sync_metrics --validate`, `check_docs`,
+  `tests/agentic` (23).
 
 ---
 

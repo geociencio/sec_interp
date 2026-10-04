@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # Export the agentic framework (.agent/) as a standalone repository for Codeberg.
 #
+# NOTE (F3+): the framework is now consumed as a git submodule of
+# https://codeberg.org/geociencio/agentic-forge. Re-publishing is normally done
+# directly in that repository; this script remains for bootstrapping a fresh
+# copy from the checked-out .agent/ content.
+#
 # Modes:
 #   (default)       Fresh export with NO git history. Use this for a PUBLIC repo,
 #                   because the .agent/ history predates the F1 split and contains
@@ -49,6 +54,11 @@ cd "$REPO_ROOT"
 if [ ! -d "$FRAMEWORK_DIR" ]; then
   echo "❌ Framework directory '$FRAMEWORK_DIR' not found." >&2
   exit 1
+fi
+
+if [ "$WITH_HISTORY" -eq 1 ] && [ -f .gitmodules ] && grep -q '"\.agent"' .gitmodules; then
+  echo "❌ --with-history is unsupported while .agent is a submodule; push to the framework repo directly." >&2
+  exit 2
 fi
 
 # Safety gate: absolute home paths must never leak into a public repository.
