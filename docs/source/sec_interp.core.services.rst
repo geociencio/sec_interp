@@ -27,3 +27,4 @@ Submodules
    sec_interp.core.services.geology_service
    sec_interp.core.services.preview_service
    sec_interp.core.services.structure_service
+   sec_interp.core.services.vertical_exaggeration_service

@@ -69,6 +69,12 @@ jobs:
           echo "Test run failed (exit $code)."
           exit "$code"
 
+      - name: Build offline help
+        if: ${{ steps.pick.outputs.version != '' }}
+        run: |
+          mkdir -p help
+          bash scripts/build_docs.sh /tmp/sec_interp_docs
+
       - name: Build package
         if: ${{ steps.pick.outputs.version != '' }}
         run: uv run qgis-manage package --output dist --release-version "${{ steps.pick.outputs.version }}"

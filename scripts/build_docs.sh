@@ -98,6 +98,7 @@ done
 
 # 5. [OPTIONAL] Sync with internal help directory (for plugin usage - OPTIMIZED)
 INTERNAL_HELP_DIR="help/html"
+mkdir -p help
 if [ -d "help" ]; then
     echo "🔄 Syncing with internal help directory (OPTIMIZED OFFLINE MANUAL)..."
     rm -rf "$INTERNAL_HELP_DIR"

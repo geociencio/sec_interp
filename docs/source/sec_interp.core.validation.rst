@@ -13,6 +13,7 @@ Submodules
    :maxdepth: 4
 
    sec_interp.core.validation.base_validator
+   sec_interp.core.validation.crs_plausibility
    sec_interp.core.validation.field_validator
    sec_interp.core.validation.layer_metadata
    sec_interp.core.validation.layer_validator
