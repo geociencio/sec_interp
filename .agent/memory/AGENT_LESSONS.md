@@ -15,6 +15,43 @@ See `.agent/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-10-04'
+    category: TOOLING
+    topic: a CI packaging job that skips the docs step ships a plugin ZIP without the offline help
+    lesson: The scheduled-release workflow ran only `qgis-manage package`, so the gitignored,
+      build-generated `help/html` (the in-plugin manual, ~14 languages) was absent and the
+      v3.9.1 ZIP came out ~0.4 MiB instead of ~3.9 MiB; `build_docs.sh` also guarded the help
+      sync on `[ -d help ]`, which is false on a fresh checkout, so even running it would skip.
+    action: Any job that packages the plugin must build the docs/help first; make the help
+      generator create `help/` itself (never guard on a pre-existing dir); audit the ZIP against
+      a known-good build size before publishing.
+  - date: '2026-10-04'
+    category: AGENTIC_SYSTEM
+    topic: a GitHub cron schedule can silently never fire; keep a manual dispatch path
+    lesson: The repo's `scheduled-release.yml` had run only via `workflow_dispatch` and never
+      via `schedule` (0 cron runs in history); on the due Sunday it did not fire, so the
+      incremental release would have been missed silently.
+    action: Do not rely on the GitHub scheduler for releases; verify scheduled runs actually
+      occur (`gh run list --event schedule`) and always keep a manual `workflow_dispatch` path
+      with the version pinned.
+  - date: '2026-10-04'
+    category: ARCHITECTURE
+    topic: release-train branches drift from main; check divergence before backporting
+    lesson: The cumulative release branches removed `gui/legend_widget.py` (legend side panel)
+      while `main` kept it, so the branches' docs still referenced the missing module and the
+      pre-push `check_docs` gate blocked a direct `build_docs.sh` backport.
+    action: Before backporting to a release branch, diff it against main and run the local doc
+      gate; when a branch gate fails for pre-existing reasons, fix the branch docs or drive the
+      fix from the default branch instead of skipping the hook.
+  - date: '2026-10-04'
+    category: TOOLING
+    topic: Sphinx emits an identical _static tree per language; dedup and PNG-optimize the help
+    lesson: The offline help shipped 14 byte-identical copies of `theme.css`/`jquery.js`/... (half
+      of the ~7.7 MiB was duplicate content); the build already deduplicated `_images` but not
+      `_static`.
+    action: Extend the help build to share identical `_static` files across languages (rewrite the
+      HTML refs, keep the language-specific `documentation_options`/`language_data`/`translations`)
+      and run a lossless PNG optimizer; this cut the help 8.5 -> 3.7 MiB and the ZIP 3.76 -> 2.38 MiB.
   - date: '2026-09-27'
     category: TOOLING
     topic: pin CI linters to the project's lock, never run the moving latest

@@ -1,3 +1,14 @@
+## [2026-10-04] Session: v3.9.1 Release Follow-up, Docs v2-First & ZIP/CI Fixes
+- **Achievement**: Published the scheduled v3.9.1 release manually, merged `release/v3.9.1` into `main`, froze the v1 docs vault, refreshed the v2 vault/architecture docs to v3.9.1, applied agentic quick wins, and fixed the release pipeline so the ZIP includes the (now optimized) offline help.
+- **Changes**:
+    - **Release**: `workflow_dispatch` publish of v3.9.1; merged `release/v3.9.1` into `main` (tests 745 -> 763); replaced the release asset with the fixed/optimized ZIP.
+    - **Docs**: README + canonical architecture/report docs -> v3.9.1; v1 vault frozen (`sync_vault_mirrors.sh`); v2 vault footers (356) + structure docs updated.
+    - **Agentic**: `black` -> `ruff format`, phantom refs and stale counts fixed, Gen 8 plan marked done, `qgis-migration-4x` referenced.
+    - **Packaging/CI**: scheduled-release builds the offline help; `build_docs.sh` deduplicates shared `_static` and optimizes PNGs; `.release-queue.json` excluded. Offline help 8.5 -> 3.7 MiB; ZIP 3.76 -> 2.38 MiB.
+- **Quality**: Docker suite green (23/237/40/323/76) - ruff/check_docs/check_notes/validate_agent_system PASS - analyzer 0 issues.
+- **Maintenance**: [session_2026-10-04_v391_release_docs_v2_zip_fixes.md](maintenance/session_2026-10-04_v391_release_docs_v2_zip_fixes.md).
+- **Note**: pending divergence `gui/legend_widget.py` (train branches vs `main`) to resolve when merging `v3.11.0`.
+
 ## [2026-10-04] Release: v3.9.1 — Optional Smoothed Topography Profile
 - **Milestone**: Second release of the incremental train from v3.8.0 (scheduled). Adds the optional smoothed topography profile and geology that follows it.
 - **Highlights**: Smooth control (window 10–500 m) overlaying a smoothed profile; extra `*_smoothed` export files; geology follows the smoothed profile while structures/drillholes keep raw sampling.
