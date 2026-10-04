@@ -1,135 +1,135 @@
-# Quick Reference: Workflows + Skills System
+# Agentic Forge — Quick Reference
 
-**Created Date**: 2026-03-09
-**Version**: 1.8 (Updated 2026-10-04 — Generation 8)
+**Version**: 1.0 (extracted from SecInterp Gen 8)
+**Reference implementation**: SecInterp (QGIS plugin)
 
 ---
 
 ## 📋 Executive Summary
 
-The SecInterp project features a complete system of **13 skills** and **15 workflows** integrated to automate the invocation of specialized agents and contextual knowledge. As of **Phase v3.5.0**, the system has reached **Generation 6** maturity.
+Agentic Forge is a **runtime-agnostic** agentic development framework. The core ships
+**11 skills** and **15 workflows**; a project may add its own skills as an **overlay**
+without touching the framework.
+
+The reference implementation is **SecInterp**, which adds 2 project-overlay skills
+(`project-context`, `geological-logic`) under `.agent-state/skills/`.
 
 ---
 
-## 🛠️ Available Skills (13)
+## 🛠️ Core Skills (11)
+
+Paths are relative to this file (framework root).
 
 | Skill | Description | When to Use |
 |:------|:------------|:------------|
-| [agentic-memory](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/agentic-memory/SKILL.md) | Lessons and patterns management | Extracting meta-lessons, preferences |
-| [coding-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/coding-standards/SKILL.md) | Project coding standards | Writing Python code, refactoring |
-| [commit-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/commit-standards/SKILL.md) | Conventional Commits standards | Creating commits, validating messages |
-| [documentation-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/documentation-standards/SKILL.md) | Logs and project history standards | Updating development/maintenance logs |
-| [geological-logic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/geological-logic/SKILL.md) | Geological logic and 3-level validation | Working with drillholes, interpolation |
-| [i18n-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/i18n-standards/SKILL.md) | Internationalization standards | Adding translations, UI strings |
-| [project-context](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/project-context/SKILL.md) | Project purpose and architecture | Starting tasks, requesting overviews |
-| [qa-docker](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qa-docker/SKILL.md) | Docker testing and QGIS mocks | Writing/executing tests, using mocks |
-| [qgis-core](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qgis-core/SKILL.md) | QGIS API and plugin structure | Working with PyQGIS, QgsTask |
-| [qgis-migration-4x](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/qgis-migration-4x/SKILL.md) | QGIS 4.x migration guide | Checking for deprecated APIs |
-| [release-management](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/release-management/SKILL.md) | QGIS release process | Preparing releases, versioning |
-| [ui-framework](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/ui-framework/SKILL.md) | Programmatic UI and premium aesthetics | Modifying GUI, layouts, CSS |
-| [changelog-generator](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/skills/changelog-generator/SKILL.md) | Automated changelog from git commits | Writing release notes, CHANGELOG updates |
+| [agentic-memory](skills/agentic-memory/SKILL.md) | Lessons and patterns management | Extracting meta-lessons, preferences |
+| [coding-standards](skills/coding-standards/SKILL.md) | Project coding standards | Writing Python code, refactoring |
+| [commit-standards](skills/commit-standards/SKILL.md) | Conventional Commits standards | Creating commits, validating messages |
+| [documentation-standards](skills/documentation-standards/SKILL.md) | Logs and project history standards | Updating development/maintenance logs |
+| [i18n-standards](skills/i18n-standards/SKILL.md) | Internationalization standards | Adding translations, UI strings |
+| [qa-docker](skills/qa-docker/SKILL.md) | Docker testing and QGIS mocks | Writing/executing tests, using mocks |
+| [qgis-core](skills/qgis-core/SKILL.md) | QGIS API and plugin structure | Working with PyQGIS, QgsTask |
+| [qgis-migration-4x](skills/qgis-migration-4x/SKILL.md) | QGIS 4.x migration guide | Checking for deprecated APIs |
+| [release-management](skills/release-management/SKILL.md) | QGIS release process | Preparing releases, versioning |
+| [ui-framework](skills/ui-framework/SKILL.md) | Programmatic UI and premium aesthetics | Modifying GUI, layouts, CSS |
+| [changelog-generator](skills/changelog-generator/SKILL.md) | Automated changelog from git commits | Writing release notes, CHANGELOG updates |
+
+> Domain/technology skills (QGIS, UI, release) can be grouped as `scaffold/<domain>/`
+> so the neutral core stays small. The reference project adds `project-context` and
+> `geological-logic` in its overlay.
 
 ---
 
-## 🔄 Available Workflows (15)
+## 🔄 Workflows (15)
 
 ### Daily Development
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/start-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-session.md) | architect | qgis-core, qa-docker | Start session with semantic skill injection |
-| [/create-commit](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/create-commit.md) | qa_engineer | qa-docker, commit-standards | Commit with quality validation |
-| [/run-tests](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests.md) | qa_engineer | qa-docker | Run tests with intelligent interpretation |
-| [/close-session](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-session.md) | qa_engineer | qa-docker, commit-standards | Close session with auto-metrics and pruning |
+| [/start-session](workflows/start-session.md) | architect | qgis-core, qa-docker | Start session with semantic skill injection |
+| [/create-commit](workflows/create-commit.md) | qa_engineer | qa-docker, commit-standards | Commit with quality validation |
+| [/run-tests](workflows/run-tests.md) | qa_engineer | qa-docker | Run tests with intelligent interpretation |
+| [/close-session](workflows/close-session.md) | qa_engineer | qa-docker, commit-standards | Close session with auto-metrics and pruning |
 
 ### Refactoring and Quality
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/refactor-code](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/refactor-code.md) | architect | qgis-core, geological-logic | Refactor code with CC validation |
-| [/run-tests-in-qgis](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/run-tests-in-qgis.md) | qa_engineer | qa-docker | Integration tests in real QGIS |
-| [/audit-plugin](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/audit-plugin.md) | auditor | project-context, i18n-standards | Full quality and security audit |
-| [/fix-linting](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/fix-linting.md) | qa_engineer | coding-standards | Automatically fix style issues |
+| [/refactor-code](workflows/refactor-code.md) | architect | qgis-core, geological-logic | Refactor code with CC validation |
+| [/run-tests-in-qgis](workflows/run-tests-in-qgis.md) | qa_engineer | qa-docker | Integration tests in real QGIS |
+| [/audit-plugin](workflows/audit-plugin.md) | auditor | project-context, i18n-standards | Full quality and security audit |
+| [/fix-linting](workflows/fix-linting.md) | qa_engineer | coding-standards | Automatically fix style issues |
 
 ### Features and i18n
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/build-feature](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/build-feature.md) | architect | qgis-core, qa-docker | Autonomous pipeline for new features |
-| [/i18n-maintenance](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/i18n-maintenance.md) | qa_engineer | i18n-standards | Add or update translations |
+| [/build-feature](workflows/build-feature.md) | architect | qgis-core, qa-docker | Autonomous pipeline for new features |
+| [/i18n-maintenance](workflows/i18n-maintenance.md) | qa_engineer | i18n-standards | Add or update translations |
 
 ### Release and Planning
 
 | Workflow | Agent | Skills | Purpose |
 |:---------|:------|:-------|:----------|
-| [/release-plugin](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/release-plugin.md) | qa_engineer | release-management | Full release process |
-| [/start-phase](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/start-phase.md) | architect | project-context | Start major phase with planning |
-| [/close-phase](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/close-phase.md) | architect | project-context | Close phase with metrics and retro |
-| [/ia-critic](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/ia-critic.md) | auditor | project-context | Implementation plan audit |
-| [/verify-standards](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/verify-standards.md) | architect | coding-standards | Audit agent system consistency |
+| [/release-plugin](workflows/release-plugin.md) | qa_engineer | release-management | Full release process |
+| [/start-phase](workflows/start-phase.md) | architect | project-context | Start major phase with planning |
+| [/close-phase](workflows/close-phase.md) | architect | project-context | Close phase with metrics and retro |
+| [/ia-critic](workflows/ia-critic.md) | auditor | project-context | Implementation plan audit |
+| [/verify-standards](workflows/verify-standards.md) | architect | coding-standards | Audit agent system consistency |
 
 ---
 
-## ⚡ Gen 8 Automation Scripts
+## ⚡ Tooling
 
-| Script | Purpose | Command |
-|:-------|:--------|:--------|
-| **Memory Pruning** | Auto-prune consolidated lessons | `uv run python scripts/memory_prune.py` |
-| **Metrics Report** | Markdown trend report | `uv run python scripts/sync_metrics.py --report` |
-| **CC Checker** | Validate complexity thresholds | `uv run qgis-analyzer analyze . --max-cc 10` |
-| **Metrics Sync** | Unified ground-truth metric extraction | `uv run python scripts/sync_metrics.py` |
+The framework ships generic agentic tooling. In the reference implementation it lives
+in `scripts/` and resolves paths from `forge.toml` via `forge_paths.py`:
+
+| Tool | Purpose | Command |
+|:-----|:--------|:--------|
+| **System Validator** | Validate framework structure + overlay | `uv run python scripts/validate_agent_system.py` |
+| **Workflow Graph** | Dependency graph & broken-reference validator | `uv run python scripts/validate_agent_system.py --graph` |
+| **Skill Conflicts** | Cross-skill overlap detection | `uv run python scripts/validate_agent_system.py --conflicts` |
 | **Metric Validator** | Cross-file consistency check | `uv run python scripts/sync_metrics.py --validate` |
-| **Workflow Graph** | Dependency graph & ref validator | `uv run python scripts/validate_agent_system.py --graph` |
-| **Metrics Trends** | Trend report with ASCII sparklines | `uv run python scripts/sync_metrics.py --report` |
-| **Lesson Extractor** | Auto-propose AGENT_LESSONS candidates | `uv run python scripts/lesson_extractor.py --propose` |
-| **Session Index** | Chronological index of maintenance logs | `uv run python scripts/session_index.py` |
-| **System Validator** | Validate .agent/ structure integrity | `uv run python scripts/validate_agent_system.py` |
+| **Metrics Sync** | Ground-truth metric extraction | `uv run python scripts/sync_metrics.py` |
+| **Memory Pruning** | Auto-prune consolidated lessons | `uv run python scripts/memory_prune.py` |
+| **Lesson Extractor** | Propose `AGENT_LESSONS` candidates | `uv run python scripts/lesson_extractor.py --propose` |
+| **Session Index** | Chronological index of session logs | `uv run python scripts/session_index.py` |
+
+> F5 of the extraction plan consolidates these into a `agentic-forge/tools/forge.py`
+> CLI (`forge validate`, `forge metrics …`).
 
 ---
 
-## 📊 System Metrics
+## 📊 Quality Gates (generic)
 
-**Current Status** *(updated 2026-10-04 — v3.9.1 release)*:
-- ✅ **Generation 6 Enabled**: Automated memory, context, and quality gates.
-- ✅ **Security Score**: **100.0/100** (Bandit).
-- ✅ **Maintainability**: **100.0/100** (qgis-analyzer).
-- ✅ **Module Stability**: **53.5/100** (qgis-analyzer).
-- ✅ **Docstring Coverage**: **100.0%** (Project-wide compliance).
-- ✅ **Return Type Coverage**: **99.5%**.
-- ✅ **Param Type Coverage**: **93.8%**.
-- ✅ **Complexity Gate**: **CC <= 10** (verified by `qgis-analyzer --max-cc 10`).
-- ✅ **i18n Hygiene Gate**: **0 violations** (verified by `qgis-analyzer` `MISSING_I18N` rule).
-- ✅ **Module Size Gate**: **PASS** (no module > 400 lines).
-- ✅ **Analyzer Issues**: **0**.
-- ✅ **Tests**: **763 passing** (Docker full suite).
+The framework enforces these gates; **project values** live in
+`.agent-state/memory/agent_metrics.json`:
+
+- **Cyclomatic complexity** ≤ 10 per function
+- **Docstrings** on public APIs + strict type hints
+- **Mock-first** unit tests (no live service required)
+- **i18n hygiene** (no untranslated user-facing strings)
+- **Module size** limit
+- **Security** scan
 
 ---
 
 ## 🛡️ Pre-push Quality Gate
 
-The system includes a mandatory `.git/hooks/pre-push` gate that blocks any push if:
-1. `qgis-analyzer` analysis fails.
-2. Any function has a **Cyclomatic Complexity > 10**.
-
----
-
-## 🔧 Maintenance
-
-### Run Metrics Report
-```bash
-uv run python scripts/sync_metrics.py --report
-```
+The reference implementation wires a `.git/hooks/pre-push` gate that blocks a push if
+the analyzer fails or any function exceeds **CC > 10**.
 
 ---
 
 ## 📚 References
 
-- [.agent/README.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/README.md) - **Full System Documentation**
-- [AGENTS.md](file:///home/jmbernales/qgispluginsdev/sec_interp/AGENTS.md) - Canonical agents and skills definition
-- [workflows/index.md](file:///home/jmbernales/qgispluginsdev/sec_interp/.agent/workflows/index.md) - **Workflow Quick Reference**
-- [DEVELOPMENT_LOG.md](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/DEVELOPMENT_LOG.md) - Project history
+- [README.md](README.md) — framework overview
+- [AGENTS.md](AGENTS.md) — runtime/role configuration (canonical file lives at repo root in the reference implementation)
+- [workflows/index.md](workflows/index.md) — workflow quick reference
+
+> Project-specific state (memory, task board, `next_steps.md`, metrics) lives in
+> `.agent-state/`, never in the framework.
 
 ---
 
-**Last update**: 2026-10-04
-**System Version**: 1.8 (Generation 8 — opencode-native)
+**System Version**: 1.0 (extracted from SecInterp Gen 8 — opencode-native)

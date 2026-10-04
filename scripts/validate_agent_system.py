@@ -74,61 +74,69 @@ def parse_yaml_frontmatter(content: str) -> dict:
     return result
 
 
+def _agent_relpath(path: Path) -> str:
+    """Render a path relative to its agent root (framework or state)."""
+    for root in forge_paths.agent_roots():
+        try:
+            return str(path.relative_to(root))
+        except ValueError:
+            continue
+    return str(path)
+
+
 def validate_skills() -> tuple[list[ValidationIssue], set[str]]:
     issues = []
     available_skills = set()
 
-    if not SKILLS_DIR.exists():
-        return issues, available_skills
-
-    for skill_dir in sorted(SKILLS_DIR.iterdir()):
-        if not skill_dir.is_dir():
-            continue
-        skill_file = skill_dir / "SKILL.md"
-        if not skill_file.exists():
-            issues.append(ValidationIssue(
-                str(skill_dir.relative_to(AGENT_DIR)),
-                "ERROR",
-                f"Missing SKILL.md in {skill_dir.name}",
-            ))
-            continue
-
-        content = skill_file.read_text(encoding="utf-8")
-        yaml_data = parse_yaml_frontmatter(content)
-
-        if not yaml_data:
-            issues.append(ValidationIssue(
-                str(skill_file.relative_to(AGENT_DIR)),
-                "ERROR",
-                "Missing YAML frontmatter",
-            ))
-            continue
-
-        name = yaml_data.get("name", "")
-        if not name:
-            issues.append(ValidationIssue(
-                str(skill_file.relative_to(AGENT_DIR)),
-                "ERROR",
-                "Missing 'name' field",
-            ))
-        else:
-            available_skills.add(name)
-
-        for field in REQUIRED_SKILL_FIELDS:
-            if field not in yaml_data:
+    for skills_root in forge_paths.skill_dirs():
+        for skill_dir in sorted(skills_root.iterdir()):
+            if not skill_dir.is_dir():
+                continue
+            skill_file = skill_dir / "SKILL.md"
+            if not skill_file.exists():
                 issues.append(ValidationIssue(
-                    str(skill_file.relative_to(AGENT_DIR)),
+                    _agent_relpath(skill_dir),
                     "ERROR",
-                    f"Missing '{field}' field",
+                    f"Missing SKILL.md in {skill_dir.name}",
                 ))
+                continue
 
-        # Check minimum content
-        if len(content) < 100:
-            issues.append(ValidationIssue(
-                str(skill_file.relative_to(AGENT_DIR)),
-                "WARNING",
-                f"Skill content is very short ({len(content)} chars)",
-            ))
+            content = skill_file.read_text(encoding="utf-8")
+            yaml_data = parse_yaml_frontmatter(content)
+
+            if not yaml_data:
+                issues.append(ValidationIssue(
+                    _agent_relpath(skill_file),
+                    "ERROR",
+                    "Missing YAML frontmatter",
+                ))
+                continue
+
+            name = yaml_data.get("name", "")
+            if not name:
+                issues.append(ValidationIssue(
+                    _agent_relpath(skill_file),
+                    "ERROR",
+                    "Missing 'name' field",
+                ))
+            else:
+                available_skills.add(name)
+
+            for field in REQUIRED_SKILL_FIELDS:
+                if field not in yaml_data:
+                    issues.append(ValidationIssue(
+                        _agent_relpath(skill_file),
+                        "ERROR",
+                        f"Missing '{field}' field",
+                    ))
+
+            # Check minimum content
+            if len(content) < 100:
+                issues.append(ValidationIssue(
+                    _agent_relpath(skill_file),
+                    "WARNING",
+                    f"Skill content is very short ({len(content)} chars)",
+                ))
 
     return issues, available_skills
 
@@ -197,7 +205,7 @@ def system_main():
     workflow_issues = validate_workflows(available_skills, available_scripts)
 
     all_issues = skill_issues + workflow_issues
-    skills_count = len(list(SKILLS_DIR.iterdir())) if SKILLS_DIR.exists() else 0
+    skills_count = sum(len(list(d.iterdir())) for d in forge_paths.skill_dirs())
     workflows_count = (
         len([f for f in WORKFLOW_DIR.glob("*.md") if f.name != "index.md"])
         if WORKFLOW_DIR.exists()
@@ -289,10 +297,10 @@ def get_workflow_name(filepath: Path) -> str:
 
 
 def get_all_skills() -> set[str]:
-    """List all available skill names."""
+    """List all available skill names (framework + project overlay)."""
     skills = set()
-    if SKILLS_DIR.exists():
-        for d in SKILLS_DIR.iterdir():
+    for skills_root in forge_paths.skill_dirs():
+        for d in skills_root.iterdir():
             if d.is_dir() and (d / "SKILL.md").exists():
                 skills.add(d.name)
     return skills
@@ -556,11 +564,12 @@ def find_conflicts(skills: list[dict]) -> list[str]:
 def conflicts_main() -> None:
     quiet = "--quiet" in sys.argv
 
-    if not SKILLS_DIR.exists():
-        print(f"❌ {SKILLS_DIR} not found", file=sys.stderr)
+    skill_roots = forge_paths.skill_dirs()
+    if not skill_roots:
+        print("❌ No skills directory found", file=sys.stderr)
         sys.exit(1)
 
-    skills = load_skills(SKILLS_DIR)
+    skills = [s for root in skill_roots for s in load_skills(root)]
     if not quiet:
         print(f"🔍 Scanned {len(skills)} skills for conflicts")
 

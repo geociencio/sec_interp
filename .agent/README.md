@@ -1,137 +1,102 @@
-# SecInterp Agentic System (Generation 8)
+# Agentic Forge
 
-Welcome to the **SecInterp Agentic Intelligence Core**. This directory contains the complete brain, tools, and protocols that empower the AI agent to act as a Senior Architect, QA Engineer, and Auditor for the SecInterp QGIS plugin.
+A **runtime-agnostic** agentic development framework: skills, workflows, roles, memory
+and quality gates that let an AI coding agent operate as a disciplined senior engineer.
 
-> **⚠️ Obsolete**: The `antigravity-framerepo/` directory (former Antigravity framework starter kit, Gen 2/3) is **deprecated**. It is superseded by this `.agent/` system and is no longer tracked by git (see `.gitignore`). Do not sync or update it — use the skills and workflows in `.agent/` instead.
+> **Reference implementation**: **SecInterp** (a QGIS plugin). Project-specific state
+> and skills live **outside** the framework, under `.agent-state/`, so a framework
+> update never overwrites project history or metrics.
 
-## 🚀 Overview: The Generation 8 Architecture
+---
 
-SecInterp has evolved into a **Generation 8 Agentic System**, moving beyond simple script execution into a state-governed, self-pruning, and metric-aware cognitive architecture.
+## 🚀 Principles
 
-### Key Innovations:
-1.  **Semantic Context Injection**: No more token bloat. The root `AGENTS.md` skills table lists each skill with a "when to use" description; the agent reads only the relevant `SKILL.md` files on demand.
-2.  **Autonomous Memory Pruning**: The `memory_prune.py` utility automatically maintains the lesson log, moving consolidated knowledge to long-term archives.
-3.  **Zero-Regression Quality Gates**: A mandatory `pre-push` hook enforces Cyclomatic Complexity (CC <= 10) and quality standards before any code reaches the repository.
-4.  **Observability Engine**: `sync_metrics.py --report` provides visual Markdown trends of the agent's effectiveness and technical debt evolution.
-5.  **Unified Metric Sync**: `sync_metrics.py` runs the qgis-analyzer quality gates (CC via `--max-cc`, i18n via `MISSING_I18N`) and writes a single coherent snapshot to `agent_metrics.json`.
+1. **Semantic context injection** — the root `AGENTS.md` lists each skill with a
+   "when to use" description; the agent loads only the relevant `SKILL.md` on demand.
+2. **Autonomous memory pruning** — consolidated lessons are moved to a `[PRUNED]` index.
+3. **Zero-regression quality gates** — a `pre-push` hook enforces complexity and style
+   standards before code reaches the repository.
+4. **Observability** — metric sync/report tooling tracks quality over time.
+5. **Runtime-agnostic** — verified with opencode; works with any agent that reads
+   `AGENTS.md` + `SKILL.md`.
 
 ---
 
 ## 📁 Directory Structure
 
 ```bash
-.agent/                         # Re-usable framework (candidate git submodule)
-├── AGENTS.md               # ➡️ Compatibility pointer (canonical config is root AGENTS.md)
+# Framework (this repository)
+├── AGENTS.md               # ➡️ Compatibility pointer (canonical config lives at project root)
 ├── QUICK_REFERENCE.md      # 📋 Fast lookup for skills and workflows
 ├── architecture/           # 🏗️ System design and optimization plans
-│   └── IMPROVEMENT_PLAN_GEN8.md  # Gen 7→8 improvement plan (implemented)
-├── skills/                 # 🛠️ On-demand capabilities (13)
-│   ├── geological-logic/   # Specialized geological processing
-│   ├── qgis-core/          # PyQGIS and async tasks expertise
-│   └── ... (see QUICK_REFERENCE.md)
-└── workflows/              # 🔄 Standardized operational procedures (15)
-    ├── index.md            # Workflow quick reference
-    ├── start-session.md    # Initializing with context
-    ├── close-session.md    # Closing with metric sync + memory prune
-    └── ... (see QUICK_REFERENCE.md)
+├── skills/                 # 🛠️ Re-usable capabilities
+├── workflows/              # 🔄 Standardized operational procedures
+└── scaffold/<domain>/      # 🧩 Optional domain packs (qgis, web, ...)
 
-.agent-state/                   # Project-owned state (never shipped by the framework)
+# Project-owned (lives at the project root, NOT in this repository)
+.agent-state/
 ├── next_steps.md           # 🎯 Active goals and handoff state
 ├── task.md                 # 📌 Active task board
-├── memory/                 # 🧠 Cognitive history and lessons
-│   ├── AGENT_LESSONS.md    # Structured technical lessons (YAML)
-│   ├── agent_metrics.json  # Operational metrics (schema v2.0)
-│   └── memory_policy.md    # Memory lifecycle policy (3-tier rules)
+├── skills/                 # 🧩 Project-specific skill overlay
+├── memory/                 # 🧠 Lessons, metrics, memory policy
 └── history/                # 📜 Archived task boards and next_steps snapshots
-    ├── tasks/              # Phase task archives (tasks_vX.Y.Z.md)
-    └── next_steps/         # Session handoff snapshots (90-day retention, pruned monthly)
 ```
 
-> **Path resolution**: scripts read `forge.toml` (repo root) via `scripts/forge_paths.py`
-> to locate `.agent` (framework) and `.agent-state` (state). This keeps the tooling
-> project-agnostic and prepares the extraction of generic tooling into `agentic-forge`.
+---
+
+## 🧩 Path Model
+
+A `forge.toml` at the project root declares two directories:
+
+```toml
+[forge]
+framework = ".agent"        # this framework (candidate git submodule)
+state = ".agent-state"      # project-owned state
+```
+
+The tooling resolves them through a small helper (`forge_paths.py`) that walks up to
+find `forge.toml`, so it keeps working regardless of where the tools live. The skill
+scanner validates the **framework skills plus the project overlay**.
 
 ---
 
-## 🧠 Memory & Observability
+## 🧠 Memory Model (3 tiers)
 
-The system maintains a **3-Tier Memory Model**:
--   **Episodic Memory**: Session logs and task records in `docs/maintenance/` (100+ files, dated). Archived task boards and next_steps snapshots in `.agent-state/history/`.
--   **Semantic Memory**: Distilled lessons in `AGENT_LESSONS.md` (~29 active + 12 pruned index).
--   **Long-Term Archive**: Pruned lessons moved to the `[PRUNED]` index once consolidated into `SKILL.md` files.
+- **Short-term**: current session context (`AI_CONTEXT.md`), reset each session.
+- **Episodic**: session logs + archived task boards / `next_steps` snapshots.
+- **Semantic**: distilled lessons (`AGENT_LESSONS.md`) and `SKILL.md` procedures.
 
-### Session Archive
-Full session summaries are stored in **`docs/maintenance/`** with the naming convention `session_YYYY-MM-DD_[topic].md`. Phase closures use `phase_closure_vX.Y.Z.md`. This is the canonical episodic memory store — see `memory_policy.md` for the full lifecycle policy.
-
-### Observability Tools:
--   **`uv run python scripts/sync_metrics.py`**: Unified ground-truth extraction (qgis-analyzer + CC + i18n)
--   **`uv run python scripts/sync_metrics.py --report`**: Generates a Markdown performance report.
--   **`uv run python scripts/memory_prune.py`**: Prunes old consolidated lessons.
--   **`uv run qgis-analyzer analyze . --max-cc 10`**: Validates complexity thresholds.
--   **`uv run qgis-analyzer analyze .`**: AST-based i18n hygiene scanner (`MISSING_I18N` rule).
+The project owns this state under `.agent-state/`; the framework only defines the rules.
 
 ---
 
-## 🛠️ How to use the System
+## 🛠️ How to Use
 
-### 1. Starting a Session
-Always start with `/start-session`. This runs `sync_metrics.py` + `ai-ctx analyze`, reads `.agent-state/next_steps.md` and `.agent-state/task.md`, and synchronizes the project state.
-
-### 2. Developing and Testing
-Use specialized workflows like `/build-feature` or `/refactor-code`. These ensure that the **Agent Auditor** reviews your plans before implementation.
-
-### 3. Committing and Pushing
-Use `/create-commit`. The system will validate your message, check the quality metrics, and run ruff. The `pre-push` hook will block any push that exceeds CC standards.
-
-### 4. Closing a Session
-Always use `/close-session`. This runs `sync_metrics.py`, updates `AGENT_LESSONS.md`, prunes memory, generates metrics report, updates `next_steps.md`, and commits.
-
-### Runtime Adaptation
-This system is runtime-agnostic and currently operates under opencode. See **`workflows/index.md`** for the workflow quick reference.
+1. Clone this framework at `.agent/` (or add it as a git submodule).
+2. Add a root `AGENTS.md` with your roles + skills table.
+3. Add `forge.toml` declaring `framework` and `state` directories.
+4. Put project state and project-specific skills under `.agent-state/`.
+5. Start a session with `/start-session` and close it with `/close-session`.
 
 ---
 
-## 🛡️ Quality Standards
+## 🛡️ Quality Standards (generic)
 
-This project enforces:
--   **CC <= 10**: No function should be overly complex (verified by `qgis-analyzer --max-cc 10`).
--   **100% Docstrings**: All public APIs must follow Google Style (verified by qgis-analyzer).
--   **100% Return Types**: Strict typing for all function returns.
--   **93.8% Param Types**: Type hints on all function parameters.
--   **Mock-First Testing**: Isolated unit tests that do not require a live QGIS instance.
--   **i18n hygiene**: AST-based `MISSING_I18N` rule in qgis-analyzer.
--   **Module Size**: No source module exceeds 400 lines (verified by qgis-analyzer).
+- **Cyclomatic complexity** ≤ 10 per function.
+- **Docstrings** on public APIs, strict type hints.
+- **Mock-first** unit tests (no live service required).
+- **i18n hygiene**: no untranslated user-facing strings.
+- **Module size** limit and **security** scan.
 
-### Current Scores (2026-10-04)
-| Metric | Score |
-|--------|-------|
-| Module Stability | 53.5/100 |
-| Maintainability | 99.9/100 |
-| Security (Bandit) | 100.0/100 |
-| Tests | 763 passing |
-| CC Gate | PASS (all ≤ 10) |
-| i18n AST Gate | PASS (0 violations) |
-| Module Size Gate | PASS |
-
-### Canonical Metric Sources
-
-Multiple analyzers produce overlapping numbers. To avoid metric staleness, each dimension has a **single authoritative source**:
-
-| Metric | Authoritative tool | Stored in |
-| :--- | :--- | :--- |
-| Module Stability | `qgis-analyzer` (`qgis-analyzer analyze .`) | `agent_metrics.json` → `quality_score_latest` |
-| Maintainability | `qgis-analyzer` | `agent_metrics.json` → `maintainability_score` |
-| Security | `qgis-analyzer` (Bandit) | `agent_metrics.json` → `security_score` |
-| Cyclomatic Complexity | `qgis-analyzer analyze . --max-cc 10` | `agent_metrics.json` → `cyclomatic_complexity_gate` |
-| i18n hygiene | `qgis-analyzer` `MISSING_I18N` rule (AST) | `agent_metrics.json` → `i18n_hygiene_gate` |
-| i18n analyzer scope | `qgis-analyzer` MISSING_I18N | `agent_metrics.json` → `i18n_issues_qgis_analyzer` |
-| Test count | `make docker-test` → `sync_metrics.py --testing-status` | `agent_metrics.json` → `tests_ok` |
-| Type hints / Docstrings | `qgis-analyzer` research metrics | `agent_metrics.json` summary |
-
-> `ai-ctx` (`AI_CONTEXT.md`, `PROJECT_SUMMARY.md`) measures a **different** "quality score" (aggregate heuristic) and is **not** canonical. Ignore it when reporting project metrics.
+Only the **rules** ship here. Each project records its own scores in
+`.agent-state/memory/agent_metrics.json`.
 
 ---
 
-**System Version**: 1.8 (Gen 8 — opencode-native)
-**Last Audit**: 2026-10-04 (v3.9.1 release, v2-first docs, quick-win cleanup)
-**Status**: 🟢 Operational — Metric Integrity Verified
+## 📄 License
+
+Released under the [MIT License](LICENSE).
+
+---
+
+**System Version**: 1.0 (extracted from SecInterp Gen 8 — opencode-native)

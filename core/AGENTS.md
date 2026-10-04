@@ -85,7 +85,7 @@ core/
 | Task | Skill |
 |---|---|
 | Writing algorithms | [coding-standards](../../.agent/skills/coding-standards/SKILL.md) |
-| Geological logic | [geological-logic](../../.agent/skills/geological-logic/SKILL.md) |
+| Geological logic | [geological-logic](../../.agent-state/skills/geological-logic/SKILL.md) |
 | Writing tests | [qa-docker](../../.agent/skills/qa-docker/SKILL.md) |
 | QGIS API gotchas | [qgis-core](../../.agent/skills/qgis-core/SKILL.md) |
 

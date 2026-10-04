@@ -15,7 +15,7 @@ The agent adopts one of three roles depending on the task. Roles are registered 
 - **Goal**: Protect the clean architecture (Core/UI separation) of the application and design rock-solid features.
 - **Traits**: Extremely strict with SOLID principles. Prioritizes modularity and decoupling.
 - **Constraint**: NEVER modify UI elements while working on business logic. ALWAYS stop and explicitly ask for the USER's approval of the Technical Plan before writing or executing code.
-- **Skills**: [coding-standards](.agent/skills/coding-standards/SKILL.md), [geological-logic](.agent/skills/geological-logic/SKILL.md), [documentation-standards](.agent/skills/documentation-standards/SKILL.md)
+- **Skills**: [coding-standards](.agent/skills/coding-standards/SKILL.md), [geological-logic](.agent-state/skills/geological-logic/SKILL.md), [documentation-standards](.agent/skills/documentation-standards/SKILL.md)
 
 ### 🧪 QA & Automation Engineer (@qa_engineer)
 - **Role**: Testing, Continuous Integration, and Stability Specialist.
@@ -29,7 +29,7 @@ The agent adopts one of three roles depending on the task. Roles are registered 
 - **Goal**: Act as a "second pair of eyes" to validate implementation plans and detect potential hallucinations or quality degradation.
 - **Traits**: Neutral and critical. Scrutinizes plans proposed by other agents heavily. Acts as a **"Hallucination Hunter"**, verifying every file path and tool call.
 - **Constraint**: Allows NO deviation from `ruff format`, `uv`, or established architectural boundaries. Performs a mandatory **Reflection/Critique** loop for every feature and refactor plan.
-- **Skills**: [coding-standards](.agent/skills/coding-standards/SKILL.md), [project-context](.agent/skills/project-context/SKILL.md), [agentic-memory](.agent/skills/agentic-memory/SKILL.md)
+- **Skills**: [coding-standards](.agent/skills/coding-standards/SKILL.md), [project-context](.agent-state/skills/project-context/SKILL.md), [agentic-memory](.agent/skills/agentic-memory/SKILL.md)
 
 ---
 
@@ -378,9 +378,9 @@ Skills live in `.agent/skills/*/SKILL.md`. Read the relevant `SKILL.md` on deman
 | [coding-standards](.agent/skills/coding-standards/SKILL.md) | Project coding standards (pathlib, Google docstrings, strict typing). | Writing Python code, refactoring, defining file paths. |
 | [commit-standards](.agent/skills/commit-standards/SKILL.md) | Clean, conventional commits with quality validation. | Creating commits, `/create-commit`. |
 | [documentation-standards](.agent/skills/documentation-standards/SKILL.md) | Standards for technical logs, session records, and project history. | Updating DEVELOPMENT_LOG.md, MAINTENANCE_LOG.md, CHANGELOG.md, session reports. |
-| [geological-logic](.agent/skills/geological-logic/SKILL.md) | Drillhole data, section interpolation, 3-level validation. | Geological algorithms, data validation, drillhole processing. |
+| [geological-logic](.agent-state/skills/geological-logic/SKILL.md) | Drillhole data, section interpolation, 3-level validation. | Geological algorithms, data validation, drillhole processing. |
 | [i18n-standards](.agent/skills/i18n-standards/SKILL.md) | Internationalization (i18n) standards and best practices. | User-facing strings, translation tools, triaging MISSING_I18N flags, `/i18n-maintenance`. |
-| [project-context](.agent/skills/project-context/SKILL.md) | Purpose, architecture, and structure of SecInterp. | Starting tasks, requesting summaries, explaining architecture. |
+| [project-context](.agent-state/skills/project-context/SKILL.md) | Purpose, architecture, and structure of SecInterp. | Starting tasks, requesting summaries, explaining architecture. |
 | [qa-docker](.agent/skills/qa-docker/SKILL.md) | Dockerized testing and Mock-first QGIS testing. | Writing/executing tests, using mocks, Docker infrastructure. |
 | [qgis-core](.agent/skills/qgis-core/SKILL.md) | QGIS API, plugin structure, asynchronous `QgsTask`. | PyQGIS, layers, CRS, QgsTask. |
 | [qgis-migration-4x](.agent/skills/qgis-migration-4x/SKILL.md) | QGIS 4.x migration and agnostic API usage. | qgis.PyQt imports, Qt deprecation warnings, 4.x readiness. |

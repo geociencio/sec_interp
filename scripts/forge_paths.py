@@ -57,7 +57,20 @@ MEMORY_POLICY_FILE = MEMORY_DIR / "memory_policy.md"
 TASK_FILE = STATE_DIR / "task.md"
 NEXT_STEPS_FILE = STATE_DIR / "next_steps.md"
 
+# Project-specific skills (overlay on top of the framework skills).
+OVERLAY_SKILLS_DIR = STATE_DIR / "skills"
+
 
 def state_and_framework_dirs() -> list[Path]:
     """Return the directories that make up the agentic system (existing only)."""
     return [directory for directory in (FRAMEWORK_DIR, STATE_DIR) if directory.exists()]
+
+
+def skill_dirs() -> list[Path]:
+    """Return every skill root (framework + project overlay), existing only."""
+    return [d for d in (SKILLS_DIR, OVERLAY_SKILLS_DIR) if d.is_dir()]
+
+
+def agent_roots() -> list[Path]:
+    """Return the roots used to render agentic paths in reports."""
+    return [d for d in (FRAMEWORK_DIR, STATE_DIR) if d.exists()]

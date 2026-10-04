@@ -101,7 +101,7 @@ keeps working after it is moved under `.agent/tools/`.
 | Phase | Scope | Status |
 | :--- | :--- | :--- |
 | **F1** | Create `.agent-state/`, migrate state, make tooling path-aware via `forge.toml` + `forge_paths.py` (no submodule yet) | ✅ **DONE 2026-10-04** |
-| **F2** | Extract generic content + tooling, reconcile with `antigravity-framerepo`, publish `agentic-forge` on Codeberg (`git subtree split` preserves history) | ⬜ Pending |
+| **F2** | Extract generic content + tooling, publish `agentic-forge` on Codeberg (`git subtree split` preserves history). Source of truth is the evolved `.agent/` (`antigravity-framerepo` is deprecated) | ✅ **DONE 2026-10-04** — published (fresh, no history) at `codeberg.org/geociencio/agentic-forge` |
 | **F3** | Convert `.agent/` to a git submodule; CI with `submodules: recursive`; document cloning | ⬜ Pending |
 | **F4** | Governance: framework issues/PRs on Codeberg; bump the gitlink on updates; update `/start-session` etc. | ⬜ Pending |
 | **F5** | **Tooling extraction** (separate/last): `agentic-forge/tools/forge.py` CLI + `sync_metrics` split; repoint `pre-push`, `Makefile`, workflows | ⬜ Pending |
@@ -140,7 +140,6 @@ git submodule add git@codeberg.org:<user>/agentic-forge.git .agent
 ---
 
 ## 7. F1 — Change Log (COMPLETED)
-
 - New `.agent-state/` (moved with `git mv`): `memory/`, `history/`, `task.md`, `next_steps.md`.
 - New `forge.toml` + `scripts/forge_paths.py` (path contract; `forge_paths` exposes
   `PROJECT_ROOT`, `FRAMEWORK_DIR`, `STATE_DIR`, `*_FILE` constants).
@@ -151,6 +150,41 @@ git submodule add git@codeberg.org:<user>/agentic-forge.git .agent
   `.qgisignore`). Historical docs left untouched.
 - **Gates green**: `sync_metrics --validate`, `validate_agent_system`, `check_docs`,
   `pre-commit`, `make docker-test` (763 tests), `tests/agentic` (23).
+
+---
+
+## 8. F2 — Change Log
+
+### F2a — Content split (DONE 2026-10-04)
+- Moved project-specific skills to the overlay with `git mv`:
+  `.agent/skills/project-context` + `.agent/skills/geological-logic` → `.agent-state/skills/`.
+- `forge_paths.py`: added `OVERLAY_SKILLS_DIR`, `skill_dirs()`, `agent_roots()`.
+- `validate_agent_system.py`: skill validation/conflicts/graph now scan
+  **framework + overlay** (`skill_dirs()`); robust relative-path rendering across roots.
+- References updated (root `AGENTS.md`, `.agent/QUICK_REFERENCE.md`, `.agent/README.md`,
+  `core/AGENTS.md`). Framework now has 11 skills; 2 live in the project overlay (13 total).
+- **Gates green**: `validate_agent_system` (13 skills, 15 workflows; `--conflicts`,
+  `--graph` OK), `sync_metrics --validate`, `check_docs`.
+
+### F2b — Publish on Codeberg (DONE 2026-10-04)
+Published (fresh export, **no history** — public-safe) via `scripts/export_agentic_forge.sh`
+→ **https://codeberg.org/geociencio/agentic-forge** (`main`, 35 files: `skills/`, `workflows/`,
+`resources/`, `architecture/`, `README.md`, `QUICK_REFERENCE.md`). No `.agent-state/`, no
+`/home/*` paths. The repo is **public**.
+
+> **Published repo**: **MIT licensed** (`.agent/LICENSE`, exported). Still pending: set the
+> repository description/topics (UI/API). Tooling (`tools/forge`) arrives in F5.
+
+### F2 follow-up (genericization)
+**Public-ready pass (DONE 2026-10-04)**: `.agent/README.md` and `.agent/QUICK_REFERENCE.md`
+rewritten as framework-neutral docs (Agentic Forge; SecInterp as *reference implementation*);
+absolute `/home/...` paths removed (`QUICK_REFERENCE.md`, `qa-docker/SKILL.md`); project
+metrics moved out of framework docs; `scripts/export_agentic_forge.sh` added (fresh/no-history
+export for **public**; `--with-history` for **private**; safety gate rejects `/home/` leaks).
+
+Residual `SecInterp` mentions inside individual skills/workflows are non-sensitive and can be
+templatized later; `geological-logic` may be promoted to `scaffold/geology`. The framework repo
+still needs a **LICENSE** decision and, in F5, its own `tools/`.
 
 ---
 
