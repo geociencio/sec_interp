@@ -1,4 +1,27 @@
-# Active Task Board (Updated 2026-09-27)
+# Active Task Board (Updated 2026-10-04)
+
+### Completed this session (2026-10-04 — v3.9.1, v2-first docs, ZIP/CI fixes)
+
+- [x] **v3.9.1 published** (the cron never fired → published via `workflow_dispatch`; tag +
+  GitHub release + ZIP). ZIP asset later **replaced** with the corrected/optimized build.
+- [x] **Merged `release/v3.9.1` → `main`** (`11806511`): `main` now has the smoothed profile;
+  4 conflicts resolved (metadata/CHANGELOG/DEVELOPMENT_LOG/agent_metrics); tests 745 → **763**.
+- [x] **Docs v2-first**: README + 3 canonical architecture/report docs → v3.9.1; **v1 vault
+  frozen** (removed from `sync_vault_mirrors.sh`); v2 mirrors + structure docs regenerated;
+  vault footers (356 notes + Index) → v3.9.1.
+- [x] **`.agent/` quick wins**: `black`→`ruff format`, phantom refs, stale counts (763/15),
+  Gen 8 marked done, `qgis-migration-4x` referenced, validator count fixed.
+- [x] **Version bump** `metadata`/`pyproject` → 3.9.1 + `make docs-version` (7 docs) + CHANGELOG.
+- [x] **Offline help / ZIP**: CI shipped the ZIP **without `help/`**; fixed the workflow +
+  `build_docs.sh`; optimized help (dedup `_static` + lossless PNG) → ZIP **3.76 → 2.38 MiB**;
+  excluded `.release-queue.json` from the package.
+
+### ⚠️ Pending — `legend_widget.py` divergence (block for the train merge)
+
+The release-train branches **removed** `gui/legend_widget.py` (`1d82db0f`, legend side panel);
+`main` **keeps** it. When merging the train (`v3.11.0`) into `main`: drop the `legend_widget.py`
+references in `docs/ARCHITECTURE_EN.md` and `docs/structure/project_structure*.md` and resolve
+the conflict. (This also blocked the direct `build_docs.sh` backport via the pre-push doc gate.)
 
 ### Completed this session (2026-09-27 — release train + CI + vault)
 
@@ -55,10 +78,12 @@
 
 ### Resume Point
 
-Tren de releases en marcha (v3.9.0 publicado; v3.9.1 / v3.10.0 / v3.11.0 programados para el
-4 / 11 / 18 oct desde sus ramas). `main` queda en v3.9.0 hasta sincronizar el tren. Siguiente:
-**subir el ZIP al portal** en cada release, **refresco completo de la bóveda a v3.11.0** tras el
-tren, y deuda funcional (**Goal 1.1 Fase 4** presets, **selector multi-línea**, **Goal 1.5**).
+Tren de releases en marcha: **v3.9.0 y v3.9.1 publicados**; `main` ya tiene v3.9.1 (merge del
+tren). Quedan **v3.10.0 (11 oct)** y **v3.11.0 (18 oct)** programados (publican solos; el workflow
+usa el `build_docs.sh` optimizado de `main`). Siguiente: **subir `dist/sec_interp.3.9.1.zip` al
+portal**, resolver la **divergencia `legend_widget.py`** al mergear el tren, **refresco completo
+de la bóveda a v3.11.0**, y deuda funcional (**Goal 1.1 Fase 4** presets, **selector
+multi-línea**, **Goal 1.5**).
 
 ### Non-blocking Documented Debt
 

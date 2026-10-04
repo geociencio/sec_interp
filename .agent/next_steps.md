@@ -1,4 +1,42 @@
-# Next Steps (Updated 2026-09-27)
+# Next Steps (Updated 2026-10-04)
+
+## ✅ Session 2026-10-04 — v3.9.1 Released · Docs/Vault v2-First · ZIP & CI Fixes (COMPLETADO)
+
+- **Qué se hizo**: se publicó **v3.9.1** y se cerró una sesión de saneamiento de docs, release
+  y empaquetado.
+  - **v3.9.1 publicado**: el cron de las 15:00 UTC **no disparó** (tampoco lo había hecho nunca);
+    se publicó por **`workflow_dispatch`** (tag + GitHub release + ZIP). Merge
+    `release/v3.9.1 → main` (`11806511`): `main` ya tiene el **perfil suavizado**.
+  - **Docs v2-first**: `README` + `ARCHITECTURE_EN` / `MONOLITHIC_VS_CLEAN` / `PLUGIN_REPORT`
+    actualizados a **v3.9.1** (módulos 177, tests 745→**763** tras el merge, features v3.9);
+    **v1 congelado** (excluido de `sync_vault_mirrors.sh`); espejos v2 regenerados; bóveda a
+    v3.9.1 (footers 356 notas + Index) y structure docs con `vertical_exaggeration_service` /
+    `crs_plausibility`.
+  - **Quick wins `.agent/`**: `black`→`ruff format`, refs fantasma
+    (`prune_consolidated.py`, `COMMIT_GUIDELINES`), conteos (745/763, 15 workflows), Gen 8
+    marcado implementado, `qgis-migration-4x` referenciado, contador del validador.
+  - **Versión**: `metadata.txt`/`pyproject.toml` → **3.9.1**; `make docs-version` (7 docs);
+    CHANGELOG [3.9.1].
+  - **Ayuda/ZIP**: el CI empaquetaba **sin `help/`** (0.4 vs 3.9 MiB). Arreglado el workflow
+    (`mkdir -p help` + build de docs) y `build_docs.sh`. **Optimización**: dedup de `_static`
+    (22 assets) + PNG lossless (`pyoxipng`) → ayuda 8.5→**3.7 MiB**; ZIP 3.76→**2.38 MiB**.
+    Excluido `.release-queue.json` del paquete. Asset del release v3.9.1 **reemplazado**.
+- **Commits**: `314a4f34`, `654ead62`, `cd6838ab`, `11806511`, `3c31e322`, `fb7918e5`,
+  `48a73ca6`, `b7c52db3`.
+- **Calidad**: suite Docker verde (23/237/40/323/76) · ruff PASS · gates docs/vault/agentes PASS ·
+  analyzer 0 issues.
+- **Pendiente / cómo reanudar**:
+  1. **Portal QGIS**: subir `dist/sec_interp.3.9.1.zip` (**2.38 MiB**, con ayuda en 14 idiomas).
+  2. **Tren**: v3.10.0 (11 oct) / v3.11.0 (18 oct) publican solos; el workflow ahora usa el
+     `build_docs.sh` optimizado de `main` → incluirán la ayuda optimizada. Verificar cada uno.
+  3. **⚠️ Divergencia `legend_widget.py`**: las ramas del tren **eliminaron**
+     `gui/legend_widget.py` (commit `1d82db0f`, panel lateral de leyenda); `main` lo
+     **conserva**. Al mergear el tren en `main` (v3.11.0): eliminar las refs a
+     `legend_widget.py` en `docs/ARCHITECTURE_EN.md`, `docs/structure/project_structure*.md`
+     y resolver el conflicto (por esto el backport directo a las ramas quedó bloqueado por el
+     doc-gate).
+  4. **Bóveda completa v3.11.0**: refresco completo cuando `main` consolide el tren.
+  5. **Deuda funcional**: Goal 1.1 Fase 4 (presets), selector multi-línea, Goal 1.5.
 
 ## ✅ Session 2026-09-27 — Release Train, CI Hardening & Vault Refresh (COMPLETADO)
 
