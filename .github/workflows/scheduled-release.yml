@@ -44,6 +44,12 @@ jobs:
         if: ${{ steps.pick.outputs.version == '' }}
         run: echo "No scheduled release is due."
 
+      # Keep the optimized docs/help tooling from the default branch so release
+      # branches without the latest scripts still build an optimized manual.
+      - name: Cache main build_docs.sh
+        if: ${{ steps.pick.outputs.version != '' }}
+        run: cp scripts/build_docs.sh /tmp/build_docs.sh
+
       - name: Checkout release branch
         if: ${{ steps.pick.outputs.version != '' }}
         run: git checkout "${{ steps.pick.outputs.branch }}"
@@ -73,7 +79,7 @@ jobs:
         if: ${{ steps.pick.outputs.version != '' }}
         run: |
           mkdir -p help
-          bash scripts/build_docs.sh /tmp/sec_interp_docs
+          bash /tmp/build_docs.sh /tmp/sec_interp_docs
 
       - name: Build package
         if: ${{ steps.pick.outputs.version != '' }}
