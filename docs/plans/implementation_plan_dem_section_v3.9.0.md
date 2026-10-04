@@ -278,7 +278,9 @@ guiones sin ráster; suite verde.
 ## Fuera de alcance (registrado)
 
 - Selector de feature multi-línea → ver **Deuda técnica** abajo.
-- Remuestreo bilineal / perfil suavizado.
+- Remuestreo bilineal. **Perfil suavizado ya implementado** (extra v3.9.0); la
+  **geología sobre el perfil suavizado** se planifica en
+  [`implementation_plan_smoothed_geology_v3.9.1.md`](implementation_plan_smoothed_geology_v3.9.1.md).
 - Nº de clases del gradiente configurable; editor de estilos por unidad (hacia Goal 1.1).
 
 ## Deuda técnica registrada — Selector de feature multi-línea
@@ -318,3 +320,17 @@ profunda**: el core casi no cambia; el 80% es GUI + consistencia.
 fid en sesión (sin persistencia entre sesiones) + filtrar candidatos a 2 puntos, y mapear a un
 campo estable en una fase posterior. Estimación restante: ~4-5 archivos GUI (widget + persistencia) +
 tests; 1 sesión.
+
+---
+
+## Plan complementario — Geología sobre el perfil suavizado (v3.9.1)
+
+Tras implementar el **perfil suavizado** (extra v3.9.0), se acordó hacer que la **geología**
+siga la línea suavizada (**Opción A**: suavizar el perfil maestro de geología al extraer;
+estructuras y collares se mantienen crudos por ser datos de interpretación). `Smooth` pasa a
+ser un **dato del perfil** (entra en `PreviewParams`/hash ⇒ invalida S2 y se aplica al pulsar
+Preview; el export de geología también sale suavizado).
+
+Detalle completo (archivos, tests, riesgos y alcance) en
+[`implementation_plan_smoothed_geology_v3.9.1.md`](implementation_plan_smoothed_geology_v3.9.1.md).
+Estado: ✅ IMPLEMENTADO 2026-09-23.

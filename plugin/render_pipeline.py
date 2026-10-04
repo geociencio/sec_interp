@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from sec_interp.core.utils.sampling import smooth_profile_by_distance
 from sec_interp.gui.adapters.geometry import raster_resolution_in_crs
 from sec_interp.logger_config import get_logger
 
@@ -38,6 +39,12 @@ class RenderPipelineMixin:
             topo_data, geol_data, struct_data, drillhole_data, options
         )
 
+        smooth_data = None
+        if options.get("smooth") and topo_data:
+            smooth_data = smooth_profile_by_distance(
+                topo_data, float(options.get("smooth_window", 0) or 0)
+            )
+
         canvas, layers = self.preview_renderer.render(
             topo_data=filtered["topo"],
             geol_data=filtered["geol"],
@@ -51,6 +58,7 @@ class RenderPipelineMixin:
             topo_color_mode=style.get("color_mode", "gradient"),
             topo_ramp_name=style.get("ramp_name"),
             topo_single_color=style.get("single_color_hex"),
+            topo_smooth_data=smooth_data,
         )
 
         if canvas is None:

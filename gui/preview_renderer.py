@@ -92,6 +92,7 @@ class PreviewRenderer:
         topo_color_mode: str = "gradient",
         topo_ramp_name: str | None = None,
         topo_single_color: str | None = None,
+        topo_smooth_data: ProfileData | None = None,
     ) -> tuple[QgsMapCanvas | None, list]:
         """Render preview with all data layers."""
         if self.is_rendering:
@@ -122,6 +123,7 @@ class PreviewRenderer:
                 topo_color_mode,
                 topo_ramp_name,
                 topo_single_color,
+                topo_smooth_data,
             )
 
             if not data_layers:
@@ -197,6 +199,7 @@ class PreviewRenderer:
         topo_color_mode: str = "gradient",
         topo_ramp_name: str | None = None,
         topo_single_color: str | None = None,
+        topo_smooth_data: ProfileData | None = None,
     ) -> list:
         """Collect all data layers in order."""
         # Topography & Geology
@@ -212,6 +215,10 @@ class PreviewRenderer:
         if topo_layer:
             self.has_topography = True
 
+        topo_smooth = self.layer_factory.create_smoothed_topo_layer(
+            topo_smooth_data, vert_exag, max_points
+        )
+
         topo_fill = self.layer_factory.create_topo_fill_layer(topo_data, vert_exag, max_points)
         geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
 
@@ -224,6 +231,7 @@ class PreviewRenderer:
         candidates = [
             struct_layer,
             geol_layer,
+            topo_smooth,
             topo_layer,
             topo_fill,
             *drill_layers,

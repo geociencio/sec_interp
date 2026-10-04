@@ -60,6 +60,7 @@ class PreviewWidget(QWidget):
         self.canvas.xyCoordinates.connect(self._update_coords)
         self.canvas.scaleChanged.connect(self._update_scale)
         self.chk_auto_lod.toggled.connect(self._toggle_lod_spin)
+        self.chk_smooth.toggled.connect(self._toggle_smooth_spin)
 
     def _setup_canvas_area(self) -> None:
         """Set up map canvas and status bar."""
@@ -158,6 +159,23 @@ class PreviewWidget(QWidget):
         lod_layout.addStretch()
         parent_layout.addLayout(lod_layout)
 
+        smooth_layout = QHBoxLayout()
+        self.chk_smooth = QCheckBox(self.tr("Smooth"))
+        self.chk_smooth.setToolTip(self.tr("Show a smoothed topography line over the profile"))
+        smooth_layout.addWidget(self.chk_smooth)
+
+        smooth_layout.addWidget(QLabel(self.tr("Window (m):")))
+        self.spin_smooth_window = QSpinBox()
+        self.spin_smooth_window.setRange(10, 500)
+        self.spin_smooth_window.setValue(30)
+        self.spin_smooth_window.setSingleStep(5)
+        self.spin_smooth_window.setEnabled(False)
+        self.spin_smooth_window.setToolTip(self.tr("Smoothing window in metres"))
+        smooth_layout.addWidget(self.spin_smooth_window)
+
+        smooth_layout.addStretch()
+        parent_layout.addLayout(smooth_layout)
+
     def _setup_layer_checkboxes(self, parent_layout: QVBoxLayout) -> None:
         """Set up checkboxes for layer visibility."""
         chk_layout = QHBoxLayout()
@@ -204,6 +222,10 @@ class PreviewWidget(QWidget):
         """Enable/disable max points spinbox based on auto checkbox."""
         self.spin_max_points.setEnabled(not checked)
 
+    def _toggle_smooth_spin(self, checked: bool) -> None:
+        """Enable/disable the smoothing window based on the Smooth checkbox."""
+        self.spin_smooth_window.setEnabled(checked)
+
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         with contextlib.suppress(TypeError, RuntimeError):
@@ -212,6 +234,8 @@ class PreviewWidget(QWidget):
             self.canvas.scaleChanged.disconnect()
         with contextlib.suppress(TypeError, RuntimeError):
             self.chk_auto_lod.toggled.disconnect()
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_smooth.toggled.disconnect()
 
     def dump(self) -> dict[str, Any]:
         """Return the persistable preview-control state."""
@@ -224,6 +248,8 @@ class PreviewWidget(QWidget):
             "show_legend": self.chk_legend.isChecked(),
             "auto_lod": self.chk_auto_lod.isChecked(),
             "adaptive_sampling": self.chk_adaptive_sampling.isChecked(),
+            "smooth": self.chk_smooth.isChecked(),
+            "smooth_window": self.spin_smooth_window.value(),
             "max_points": self.spin_max_points.value(),
         }
 
@@ -238,6 +264,7 @@ class PreviewWidget(QWidget):
             (self.chk_legend, "show_legend"),
             (self.chk_auto_lod, "auto_lod"),
             (self.chk_adaptive_sampling, "adaptive_sampling"),
+            (self.chk_smooth, "smooth"),
         ]:
             checked = data.get(key)
             if checked is not None:
@@ -245,6 +272,10 @@ class PreviewWidget(QWidget):
         max_points = data.get("max_points")
         if max_points is not None:
             self.spin_max_points.setValue(int(max_points))
+        smooth_window = data.get("smooth_window")
+        if smooth_window is not None:
+            self.spin_smooth_window.setValue(int(smooth_window))
+        self._toggle_smooth_spin(self.chk_smooth.isChecked())
 
     def reset(self) -> None:
         """Reset preview controls to defaults."""
@@ -260,3 +291,6 @@ class PreviewWidget(QWidget):
             chk.setChecked(True)
         self.chk_auto_lod.setChecked(False)
         self.spin_max_points.setValue(1000)
+        self.chk_smooth.setChecked(False)
+        self.spin_smooth_window.setValue(30)
+        self._toggle_smooth_spin(False)

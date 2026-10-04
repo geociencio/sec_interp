@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->745<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->763<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-10-04<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -14,8 +14,8 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->23<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
-| **Core Services** | <!-- CORE_COUNT -->293<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->313<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **Core Services** | <!-- CORE_COUNT -->301<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **GUI Components** | <!-- GUI_COUNT -->323<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
@@ -37,6 +37,7 @@
 - **tests/core/test_drillhole_service_optional.py**: 1 tests
 - **tests/core/test_drillhole_utils.py**: 16 tests
 - **tests/core/test_export_service.py**: 13 tests
+- **tests/core/test_export_topography_handler.py**: 2 tests
 - **tests/core/test_field_validator.py**: 6 tests
 - **tests/core/test_geology_service.py**: 4 tests
 - **tests/core/test_geology_service_optional.py**: 1 tests
@@ -51,7 +52,7 @@
 - **tests/core/test_spatial_utils.py**: 4 tests
 - **tests/core/test_structural_parsing_advanced.py**: 9 tests
 - **tests/core/test_structure_service.py**: 5 tests
-- **tests/core/test_utils.py**: 20 tests
+- **tests/core/test_utils.py**: 26 tests
 - **tests/core/test_utils_standalone.py**: 23 tests
 - **tests/core/test_validation.py**: 10 tests
 - **tests/core/test_validation_refactor.py**: 4 tests
@@ -74,6 +75,7 @@
 - **tests/gui/test_dialog_settings_persistence.py**: 6 tests
 - **tests/gui/test_dialog_state_manager.py**: 4 tests
 - **tests/gui/test_drillhole_page.py**: 6 tests
+- **tests/gui/test_geology_extractor.py**: 2 tests
 - **tests/gui/test_geology_task.py**: 2 tests
 - **tests/gui/test_geometry_adapter.py**: 11 tests
 - **tests/gui/test_gui_utils.py**: 3 tests
@@ -88,17 +90,18 @@
 - **tests/gui/test_measure_tool.py**: 20 tests
 - **tests/gui/test_message_manager.py**: 5 tests
 - **tests/gui/test_multi_session_persistence.py**: 3 tests
-- **tests/gui/test_preview_components.py**: 19 tests
+- **tests/gui/test_preview_components.py**: 20 tests
 - **tests/gui/test_preview_legend_renderer.py**: 3 tests
+- **tests/gui/test_preview_page.py**: 5 tests
 - **tests/gui/test_preview_renderer_custom.py**: 2 tests
 - **tests/gui/test_preview_task_orchestrator.py**: 6 tests
-- **tests/gui/test_section_page.py**: 18 tests
+- **tests/gui/test_section_page.py**: 19 tests
 - **tests/gui/test_section_resolver.py**: 10 tests
 - **tests/gui/test_settings_page.py**: 4 tests
 - **tests/gui/test_signal_restoration.py**: 5 tests
 - **tests/gui/test_structure_extractor.py**: 3 tests
 - **tests/gui/test_structure_page.py**: 3 tests
-- **tests/gui/test_ui_gating.py**: 28 tests
+- **tests/gui/test_ui_gating.py**: 29 tests
 - **tests/gui/test_validation_extractor.py**: 2 tests
 - **tests/gui/tasks/test_drillhole_task.py**: 6 tests
 - **tests/gui/tasks/test_geology_task.py**: 6 tests

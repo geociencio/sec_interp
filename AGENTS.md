@@ -75,7 +75,7 @@ make zip                     # Create distributable package
 
 # Testing
 PYTHONPATH=.. uv run python3 -m unittest discover tests   # Run full test suite (unittest discovery)
-make docker-test             # Run the full test suite (745 tests) in Docker
+make docker-test             # Run the full test suite (763 tests) in Docker
 
 # Single test execution
 PYTHONPATH=.. uv run python3 -m unittest tests.core.test_algorithms.TestAlgorithms.test_intersection -v

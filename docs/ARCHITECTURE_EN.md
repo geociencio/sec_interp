@@ -752,7 +752,7 @@ Complete validation before any release candidate:
 make pre-release            # Runs: qt6-check + security-scan + docker-test
 ```
 
-**`docker-test`** executes the full suite (745 tests, including 76 integration tests) in a clean QGIS Docker environment.
+**`docker-test`** executes the full suite (763 tests, including 76 integration tests) in a clean QGIS Docker environment.
 
 ### 5. CI/CD Integration
 

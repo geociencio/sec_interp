@@ -13,10 +13,9 @@ repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=no
 changelog=
 	3.9.1 (2026-10-04)
-	* Optional Smoothed Topography Profile:
-	- Preview: Added a Smooth control with a Window in metres (10-500, off by default) that overlays a soft line on the topographic profile.
-	- Export: additionally writes topo_profile_smoothed.csv and profile_line_smoothed.<ext> alongside the raw outputs; the raw data is never modified.
-	- Geology: with Smooth active, the geological profile and its export follow the smoothed topography using the same window; structures and drillholes keep their raw sampling.
+	* Smoothed Profile:
+	- Optional smoothed topography profile: a Smooth control with a distance window (10-500 m) overlays a soft line on the topographic profile and, on export, also writes topo_profile_smoothed.csv and profile_line_smoothed.<ext>.
+	- Geology follows the smoothed profile when Smooth is active; structures and drillholes keep their raw sampling.
 	3.9.0 (2026-09-27)
 	* DEM/Section Insights, CRS Safety & Adaptive Vertical Exaggeration:
 	- DEM / Section: Added CRS safety checks (warn on mixed CRS, block mislabelled CRS) and fixed a freeze when the DEM and section line use different CRS. Cross-CRS sampling now reprojects correctly for topography, geology, structures and drillhole collars.

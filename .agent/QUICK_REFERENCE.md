@@ -101,7 +101,7 @@ The SecInterp project features a complete system of **13 skills** and **15 workf
 - ✅ **i18n Hygiene Gate**: **0 violations** (verified by `qgis-analyzer` `MISSING_I18N` rule).
 - ✅ **Module Size Gate**: **PASS** (no module > 400 lines).
 - ✅ **Analyzer Issues**: **0**.
-- ✅ **Tests**: **745 passing** (Docker full suite).
+- ✅ **Tests**: **763 passing** (Docker full suite).
 
 ---
 

@@ -40,6 +40,12 @@
   etiquetado, sampler CRS-aware (geología/estructuras/collares), fix de combos
   estructurales. Suite verde (unittest 666), smoke QGIS 4 OK. Ver `.agent/next_steps.md`.
 
+### Also completed this session (2026-09-23, smoothed profile)
+
+- [x] **Optional smoothed topography profile** (`3094a1f1`, `76fc6206`):
+  Smooth control + window in Controls, soft-red overlay, extra smoothed export
+  files. Suite green, analyzer 0 issues. Ver `.agent/next_steps.md`.
+
 ### Also completed this session (2026-09-23, DEM/Section v3.9.0)
 
 - [x] **Fases 1.5 + 1.6 + 2 + 3** completadas (`2a14767b..6d342189`): resolver

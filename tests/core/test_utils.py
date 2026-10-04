@@ -160,3 +160,45 @@ class TestInterpolation(BaseTestCase):
         """Test interpolation with empty data."""
         result = scu.interpolate_elevation([], 100.0)
         self.assertEqual(result, 0)
+
+
+class TestProfileSmoothing(BaseTestCase):
+    """Tests for distance-window profile smoothing."""
+
+    def test_window_zero_is_noop(self):
+        """A non-positive window returns the input unchanged."""
+        data = [(0.0, 1.0), (10.0, 5.0), (20.0, 2.0)]
+        self.assertEqual(scu.smooth_profile_by_distance(data, 0.0), data)
+
+    def test_flat_profile_stays_flat(self):
+        """A flat profile is unchanged by smoothing."""
+        data = [(i * 10.0, 100.0) for i in range(6)]
+        result = scu.smooth_profile_by_distance(data, 30.0)
+        self.assertEqual([e for _, e in result], [100.0] * 6)
+
+    def test_spike_is_attenuated(self):
+        """A single high sample is averaged down with its neighbours."""
+        data = [(0.0, 0.0), (10.0, 0.0), (20.0, 100.0), (30.0, 0.0), (40.0, 0.0)]
+        result = scu.smooth_profile_by_distance(data, 20.0)
+        peak = max(e for _, e in result)
+        self.assertLess(peak, 100.0)
+        self.assertGreater(peak, 0.0)
+
+    def test_endpoints_are_preserved(self):
+        """First and last elevations are kept so the ends do not drift."""
+        data = [(0.0, 7.0), (10.0, 20.0), (20.0, 3.0), (30.0, 9.0)]
+        result = scu.smooth_profile_by_distance(data, 20.0)
+        self.assertEqual(result[0][1], 7.0)
+        self.assertEqual(result[-1][1], 9.0)
+
+    def test_distance_axis_is_preserved(self):
+        """The distance axis and point count are unchanged."""
+        data = [(i * 10.0, float(i)) for i in range(5)]
+        result = scu.smooth_profile_by_distance(data, 25.0, passes=2)
+        self.assertEqual(len(result), len(data))
+        self.assertEqual([d for d, _ in result], [d for d, _ in data])
+
+    def test_too_few_points_is_noop(self):
+        """Fewer than three points cannot be smoothed."""
+        data = [(0.0, 1.0), (10.0, 5.0)]
+        self.assertEqual(scu.smooth_profile_by_distance(data, 30.0), data)

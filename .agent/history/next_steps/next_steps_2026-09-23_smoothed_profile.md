@@ -1,35 +1,4 @@
-# Next Steps (Updated 2026-09-27)
-
-## ✅ Session 2026-09-27 — Release Train, CI Hardening & Vault Refresh (COMPLETADO)
-
-- **Qué se hizo**: se liberó **v3.9.0** y se preparó el **tren incremental** v3.9.1 /
-  v3.10.0 / v3.11.0 con publicación **programada** (domingos 4 / 11 / 18 oct). Se reparó el
-  **CI** (llevaba rojo en cada push) y se refrescó la **bóveda v2** a v3.9.0.
-  - **v3.9.0**: merge boundary `76908843` en `main`, versión, CHANGELOG, notas de release,
-    dev-log; **bug bloqueante** de aislamiento de mocks en `tests/gui` corregido; gates
-    (696 locales / 681 Docker, analyzer 0, security PASS); ZIP auditado; tag + **GitHub
-    release publicado**. Commits `e00604e`, `664d775`. **Portal: manual, omitido por decisión.**
-  - **Tren v3.9.1/3.10.0/3.11.0**: ramas `release/v3.9.1|v3.10.0|v3.11.0` (acumulativas) con
-    merge + versión + notas (714 / 729 / 743 tests). Workflow programado
-    `.github/workflows/scheduled-release.yml` + `.release-queue.json`; validado con
-    `dry_run` de v3.9.1 (checkout + Docker tests + build, sin publicar).
-  - **CI**: lint fijado al ruff del lock (`ISC004`/`PLR0917` de ruff 0.16); detección real
-    de hallazgos Qt6; job de tests migrado al **Docker** del proyecto; deploy de docs
-    omitido si falta `DOCS_DEPLOY_TOKEN`; eliminado `release.yml` legado. `main` **en verde**.
-  - **Qt6/QGIS4**: `QgsRasterBandStats.All` → `.Stats.All` y `Qgis.RasterBandStatistic.All`
-    (con fallback 3.28–3.39) en `dem_page.py`; aplicado a `main` + las 3 ramas.
-  - **Bóveda v2 → v3.9.0**: notas `preview_param_hasher`/`ui_status_manager` a tier A,
-    nuevas `crs_plausibility`/`layer_metadata`/`topo_renderer`, footers a v3.9.0 (346),
-    Index/hubs/mapa actualizados. `check_notes --strict` PASS (308).
-- **Referencia**: `docs/maintenance/session_2026-09-27_release_train_and_vault_refresh.md`.
-- **Pendiente / cómo reanudar**:
-  1. **Portal QGIS**: subir el ZIP del release que se publique (v3.9.1 el 4 oct). No
-     automatizable (no hay `plugin_upload.py`).
-  2. **v3.9.0**: no se sube al portal (decisión); v3.9.1+ ya traen los fixes de Qt6.
-  3. **Tren**: los domingos 4/11/18 oct el workflow publica solo; sincronizar `main`
-     manualmente al final (`git merge --ff-only release/v3.11.0`).
-  4. **Bóveda completa v3.11.0**: refresco completo cuando `main` consolide el tren.
-  5. **Deuda funcional**: Goal 1.1 Fase 4 (presets), selector multi-línea, Goal 1.5.
+# Next Steps (Updated 2026-09-23)
 
 ## ✅ Session 2026-09-23 — Optional Smoothed Topography Profile (COMPLETADO)
 
@@ -132,8 +101,6 @@
 1. Run `/start-session`.
 2. `docs/plans/implementation_plan_dem_section_v3.9.0.md`: **completo** (Fase 0 ✅,
    1 ✅, 1.5 ✅, 1.6 ✅, 2 ✅, 3 ✅) + **perfil suavizado** ✅ (extra). Opciones:
-   - **Geología sobre el perfil suavizado (v3.9.1)** → plan aprobado (Opción A),
-     pendiente: `docs/plans/implementation_plan_smoothed_geology_v3.9.1.md`.
    - **Selector multi-línea** (deuda; resolver + `section_feature_id` ya listos).
    - **Goal 1.1** (symbology/legend preview) o **Goal 1.5** (tests proyección).
-   - Preparar **release v3.9.0/v3.9.1** (`/release-plugin`).
+   - Preparar **release v3.9.0** (`/release-plugin`) si se cierra el alcance.

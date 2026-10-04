@@ -147,15 +147,18 @@ class SignalManager:
             self.dialog.preview_widget.chk_interpretations.stateChanged.disconnect()
 
     def _disconnect_preview_misc_options(self) -> None:
-        """Disconnect legend, spinboxes, and adaptive sampling."""
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.chk_legend.stateChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.spin_max_points.valueChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.chk_auto_lod.toggled.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.chk_adaptive_sampling.toggled.disconnect()
+        """Disconnect legend, spinboxes, smoothing and adaptive sampling."""
+        widget = self.dialog.preview_widget
+        for signal in (
+            widget.chk_legend.stateChanged,
+            widget.spin_max_points.valueChanged,
+            widget.chk_auto_lod.toggled,
+            widget.chk_adaptive_sampling.toggled,
+            widget.chk_smooth.toggled,
+            widget.spin_smooth_window.valueChanged,
+        ):
+            with contextlib.suppress(Exception):
+                signal.disconnect()
 
     def _disconnect_page_signals(self) -> None:
         """Disconnect page-specific signals with full tracking."""
@@ -285,16 +288,18 @@ class SignalManager:
             self.preview_manager.update_from_checkboxes
         )
 
-        # Preview settings
-        self.dialog.preview_widget.spin_max_points.valueChanged.connect(
-            self.preview_manager.update_from_checkboxes
-        )
-        self.dialog.preview_widget.chk_auto_lod.toggled.connect(
-            self.preview_manager.update_from_checkboxes
-        )
-        self.dialog.preview_widget.chk_adaptive_sampling.toggled.connect(
-            self.preview_manager.update_from_checkboxes
-        )
+        # Preview settings (LOD): re-render from cache
+        widget = self.dialog.preview_widget
+        for signal in (
+            widget.spin_max_points.valueChanged,
+            widget.chk_auto_lod.toggled,
+            widget.chk_adaptive_sampling.toggled,
+        ):
+            signal.connect(self.preview_manager.update_from_checkboxes)
+
+        # Smoothing affects the geology geometry: invalidate the preview (S2)
+        widget.chk_smooth.toggled.connect(self.state_manager.update_button_state)
+        widget.spin_smooth_window.valueChanged.connect(self.state_manager.update_button_state)
 
     def _connect_page_signals(self) -> None:
         """Connect page-specific signals for state updates."""

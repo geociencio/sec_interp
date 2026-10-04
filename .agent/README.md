@@ -101,7 +101,7 @@ This project enforces:
 | Module Stability | 53.5/100 |
 | Maintainability | 99.9/100 |
 | Security (Bandit) | 100.0/100 |
-| Tests | 745 passing |
+| Tests | 763 passing |
 | CC Gate | PASS (all ≤ 10) |
 | i18n AST Gate | PASS (0 violations) |
 | Module Size Gate | PASS |

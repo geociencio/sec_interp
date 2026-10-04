@@ -44,9 +44,10 @@ from .rendering import (
     create_coordinate_transform,
 )
 
-# Elevation interpolation (pure)
+# Elevation interpolation and smoothing (pure)
 from .sampling import (
     interpolate_elevation,
+    smooth_profile_by_distance,
 )
 
 # Spatial calculations (pure)
@@ -79,4 +80,6 @@ __all__ = [
     "parse_dip",
     "parse_strike",
     "project_trajectory_to_section",
+    # Sampling
+    "smooth_profile_by_distance",
 ]

@@ -27,7 +27,7 @@
 
 **SecInterp** (Section Interpreter) is a professional-grade QGIS plugin for geological cross-section interpretation. Unlike most QGIS geological plugins — which are single-purpose profile generators — SecInterp offers an **integrated workflow** spanning topography extraction, geological outcrop projection, structural analysis, **3D drillhole desurveying and projection**, interactive interpretation digitizing, and multi-format CAD-ready export.
 
-Its key technical differentiator is a **Clean Architecture implementation** (rare among QGIS plugins) with strict Core/GUI separation, 745 automated tests, 14-language i18n coverage, and full QGIS 4.x/Qt6 readiness.
+Its key technical differentiator is a **Clean Architecture implementation** (rare among QGIS plugins) with strict Core/GUI separation, 763 automated tests, 14-language i18n coverage, and full QGIS 4.x/Qt6 readiness.
 
 ### At a Glance
 
@@ -43,7 +43,7 @@ Its key technical differentiator is a **Clean Architecture implementation** (rar
 | **Documentation** | geociencio.github.io/sec_interp_docs |
 | **Languages** | 14 (EN, ES, FR, DE, IT, PT_BR, RU, ZH_CN, JA, HI, ID, PL, NL, FI) |
 | **Category** | Vector |
-| **Tests** | 745 (Docker-verified) |
+| **Tests** | 763 (Docker-verified) |
 | **Architecture** | Clean Architecture (Core/GUI separation) |
 
 ---
@@ -204,7 +204,7 @@ SecInterp is one of the **few QGIS plugins** implementing Clean Architecture:
 
 | Metric | Value |
 |--------|-------|
-| **Automated Tests** | 745 (100% pass in Docker) |
+| **Automated Tests** | 763 (100% pass in Docker) |
 | **Code Quality Score** | 99.9/100 |
 | **QGIS Compliance** | 85.0/100 |
 | **Cyclomatic Complexity** | ≤ 10 (enforced) |
@@ -330,7 +330,7 @@ Legend: ✅ Full · ⚠️ Partial · ❌ None
 | Dimension | **SecInterp** | qProf | Geoscience | GeoProfile | GIS4Geology | Parallel Folds | Profile Interpreter |
 |-----------|:-------------:|:-----:|:----------:|:----------:|:-----------:|:--------------:|:-------------------:|
 | **Architecture** | Clean (Core/GUI) | Monolithic | Monolithic | Monolithic | Monolithic | Monolithic | Minimal |
-| **Automated tests** | 745 | Few | Some | None | None | Few | Yes (small) |
+| **Automated tests** | 763 | Few | Some | None | None | Few | Yes (small) |
 | **Async processing** | ✅ QgsTask | ❌ | ⚠️ | ❌ | ❌ | ❌ | N/A |
 | **Adaptive LOD** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | N/A |
 | **i18n languages** | 14 | 1-2 | 1 | 1-2 | 1 | 1-2 | 1 |
@@ -366,7 +366,7 @@ Legend: ●●● Full · ●● Good · ● Basic · ○ None
 4. **Clean Architecture**: Only SecInterp uses Core/GUI separation among geological plugins
 5. **Async + LOD**: Only SecInterp offers both background processing and adaptive level-of-detail
 6. **14 Languages**: Widest i18n coverage in the niche
-7. **745 Tests**: Highest test coverage among competitors
+7. **763 Tests**: Highest test coverage among competitors
 8. **QGIS 4.x Ready**: Ahead of most competitors on Qt6 migration
 9. **Interactive Drawing**: Only SecInterp + Parallel Folds offer in-profile polygon digitizing
 10. **DXF Export**: Unique CAD integration for mining/engineering workflows
@@ -426,7 +426,7 @@ SecInterp occupies the **top-right quadrant**: maximum feature breadth AND highe
 
 - ✅ **Most complete feature set** in the niche
 - ✅ **Best architecture** (Clean, DI, testable)
-- ✅ **Highest quality metrics** (745 tests, 99.9/100)
+- ✅ **Highest quality metrics** (763 tests, 99.9/100)
 - ✅ **Widest i18n** (14 languages)
 - ✅ **QGIS 4.x ready** ahead of competitors
 - ✅ **Active maintenance** (frequent releases)
@@ -502,7 +502,7 @@ Based on the CHANGELOG trajectory and competitive gaps:
 
 SecInterp is the **most feature-complete and best-engineered** open-source QGIS plugin for geological cross-section interpretation. While competitors like qProf and Geoscience have specific strengths (fold-axis projection, drillhole desurveying respectively), **no single competitor matches SecInterp's integrated breadth** across topography, geology, structure, drillholes, interpretation, and export.
 
-Its Clean Architecture, 745 tests, 14-language support, and QGIS 4.x readiness position it as a **reference implementation** for professional QGIS plugin development — not just a geological tool.
+Its Clean Architecture, 763 tests, 14-language support, and QGIS 4.x readiness position it as a **reference implementation** for professional QGIS plugin development — not just a geological tool.
 
 ### Final Positioning
 
