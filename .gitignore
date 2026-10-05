@@ -84,3 +84,6 @@ _archive/
 
 # Obsolete (superseded by .agent/ — Antigravity framework starter kit)
 antigravity-framerepo/
+
+# graphify code graph artifacts
+graphify-out/
