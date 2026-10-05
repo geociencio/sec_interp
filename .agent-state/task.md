@@ -1,5 +1,15 @@
 # Active Task Board (Updated 2026-10-04)
 
+### Completed this session (2026-10-04 — Offline Help: User Guide only)
+
+- [x] **Help button → User Guide only**: offline manual reduced to a single `USER_GUIDE`
+  document in all 14 languages (clean nav), via `docs/source/help_index.rst` + `conf.py`
+  (`SECINTERP_DOCS_HELP=1`) + `build_docs.sh` web/help split (renames `help_index.html` →
+  `index.html`). Plugin code and published website untouched.
+- [x] `.gitignore`: ignore `graphify-out/` (local code graph / Obsidian vault).
+- [ ] Optional: `make docs-i18n-update` to translate the “SecInterp Help” title.
+- Commits: `92e5eabd`, `81d1f39d`. Reference: `docs/maintenance/session_2026-10-04_help_userguide_only.md`.
+
 ### Completed this session (2026-10-04 — Agentic Forge extraction F1–F5)
 
 - [x] **F1–F5**: framework agéntico extraído y publicado en **Codeberg** (`agentic-forge`, MIT),

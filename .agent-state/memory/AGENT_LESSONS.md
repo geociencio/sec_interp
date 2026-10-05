@@ -16,6 +16,24 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-04'
+    category: TOOLING
+    topic: Sphinx `root_doc` alone does not limit a build to a subset of documents
+    lesson: Setting `-D root_doc=help_index` still built every `.rst` in `docs/source`
+      because Sphinx builds unreferenced "orphan" documents too; the offline help was meant
+      to contain only the User Guide. The subset only took effect after `exclude_patterns`
+      listed every other source document (gated by an env var in `conf.py`).
+    action: To ship a Sphinx subset, exclude the unwanted sources via `exclude_patterns`
+      (or a separate source dir); do not rely on `root_doc`/toctree reachability.
+  - date: '2026-10-04'
+    category: USER_PREFERENCE
+    topic: keep the generated entry filename to avoid touching application code
+    lesson: The user asked to change only what the plugin's Help button shows, not the
+      plugin code. Rather than repointing `open_help()` to a new master doc, the build renames
+      `help_index.html` → `index.html` and sed-patches the internal links, so the GUI is untouched.
+    action: When a requirement is scoped to one UI entry point, prefer adapting generated
+      output to the existing contract (same filename) over editing application code.
+
+  - date: '2026-10-04'
     category: ARCHITECTURE
     topic: a subfolder "compatibility pointer" becomes a broken self-reference once exported to its own repo root
     lesson: The framework's `.agent/AGENTS.md` was a pointer whose content referenced

@@ -1,3 +1,12 @@
+## [2026-10-04] Session: Offline Help — User Guide only
+- **Achievement**: The in-plugin **Help** button now opens an offline manual that contains **only the User Guide** (clean navigation, no dead links) in all 14 languages, without changing the plugin code and without affecting the published website. Also evaluated **graphify** (local code graph, git-ignored).
+- **Changes**:
+    - **Help build**: new `docs/source/help_index.rst` (USER_GUIDE-only master doc); `conf.py` excludes the other docs when `SECINTERP_DOCS_HELP=1` and hides `help_index.rst` from the site build; `build_docs.sh` splits **web** (`index.rst`) and **help** (`root_doc=help_index`) passes and renames `help_index.html` → `index.html` (patching links) so the Help button keeps working.
+    - **Hygiene**: `.gitignore` now ignores `graphify-out/`.
+    - **graphify** (dev-only): 192 files / 2929 nodes / 5216 edges; `benchmark` 13.7× token reduction.
+- **Quality**: ruff (check + format) clean · pre-commit PASS · local `unittest discover tests` **714 OK** · full help build exercised for 14 locales (only `index.html` + `USER_GUIDE.html`); website output verified intact.
+- **Maintenance**: [session_2026-10-04_help_userguide_only.md](maintenance/session_2026-10-04_help_userguide_only.md).
+
 ## [2026-10-04] Session: Agentic Forge Extraction (F1–F5)
 - **Achievement**: Extracted the reusable agentic framework from SecInterp and published it on Codeberg as `agentic-forge` (MIT), consumed as a git submodule at `.agent/`; project state moved to `.agent-state/`; generic tooling exposed via `.agent/tools/forge.py`; `sync_metrics` split into a generic core plus a project collector.
 - **Changes**:

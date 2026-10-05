@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **In-plugin offline help**: the manual shipped with the plugin now contains only the **User Guide** — a single document with clean navigation — instead of a landing page plus developer/API pages that linked to content removed from the offline build. The published documentation website is unchanged.
+
 ### Fixed
 - **Release packaging**: the distributed plugin ZIP now includes the in-plugin offline help (it was missing from the v3.9.1 build) and no longer ships the internal release-queue file.
 
