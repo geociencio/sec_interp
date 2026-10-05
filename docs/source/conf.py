@@ -12,6 +12,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import os
 import re
 import sys
 from pathlib import Path
@@ -79,7 +80,17 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+#
+# In help mode (SECINTERP_DOCS_HELP=1) only the User Guide is built, so the
+# in-plugin offline manual ships a single document with a clean navigation.
+if os.environ.get("SECINTERP_DOCS_HELP") == "1":
+    _srcdir = Path(__file__).parent
+    _keep = {"help_index", "USER_GUIDE"}
+    exclude_patterns = [p.name for p in _srcdir.glob("*.rst") if p.stem not in _keep]
+    exclude_patterns += [p.name for p in _srcdir.glob("*.md") if p.stem != "USER_GUIDE"]
+else:
+    # help_index.rst is only the offline-help master document.
+    exclude_patterns = ["help_index.rst"]
 
 # -- Options for i18n --------------------------------------------------------
 

@@ -55,8 +55,10 @@ python3 scripts/i18n/translate_docs.py compile
 # 3. Run sphinx-build to generate HTML for each language.
 #
 # Two independent sets:
-#   * WEB_LOCALES  -> published website (only languages with meaningful coverage).
-#   * HELP_LOCALES -> in-plugin offline manual (all UI-supported languages).
+#   * WEB_LOCALES  -> published website (index.rst, full docs, only languages
+#                     with meaningful coverage).
+#   * HELP_LOCALES -> in-plugin offline manual (help_index.rst, USER_GUIDE only,
+#                     all UI-supported languages).
 #
 # Policy: a language joins WEB_LOCALES only when its USER_GUIDE.po reaches >= 80%
 # (see docs/DOCS_STYLE_GUIDE.md). Full UI-supported set:
@@ -64,27 +66,21 @@ python3 scripts/i18n/translate_docs.py compile
 WEB_LOCALES="${DOCS_LOCALES:-en es}"
 HELP_LOCALES="${DOCS_HELP_LOCALES:-en es fr pt_BR de ru zh_CN id it pl nl fi hi ja}"
 
-# Build the union of both sets (avoid building the same language twice).
-ALL_LOCALES="$WEB_LOCALES"
-for lang in $HELP_LOCALES; do
-    case " $ALL_LOCALES " in
-        *" $lang "*) ;;
-        *) ALL_LOCALES="$ALL_LOCALES $lang" ;;
-    esac
-done
-
 echo "🛠️  Building HTML documentation..."
 echo "    Web (published): $WEB_LOCALES"
-echo "    Offline help:    $HELP_LOCALES"
-for lang in $ALL_LOCALES; do
-    echo "  - Language: $lang"
-    if [ "$lang" == "en" ]; then
-        # Default language (English)
-        uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/en" -D language=en -j auto
-    else
-        # Translated languages
-        uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/$lang" -D language="$lang" -j auto
-    fi
+echo "    Offline help:    $HELP_LOCALES (USER_GUIDE only)"
+
+# A. Website: full documentation set (root_doc = index).
+for lang in $WEB_LOCALES; do
+    echo "  - [web] Language: $lang"
+    uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/$lang" -D language="$lang" -j auto
+done
+
+# B. Offline help: only the User Guide (root_doc = help_index, other docs excluded).
+for lang in $HELP_LOCALES; do
+    echo "  - [help] Language: $lang"
+    SECINTERP_DOCS_HELP=1 uv run sphinx-build -M html "$SOURCE_DIR" "$BUILD_DIR/help/$lang" \
+        -D language="$lang" -D root_doc=help_index -j auto
 done
 
 # 4. Move/Copy output to external directory (published website).
@@ -104,12 +100,19 @@ if [ -d "help" ]; then
     rm -rf "$INTERNAL_HELP_DIR"
     mkdir -p "$INTERNAL_HELP_DIR"
 
-    # A. Sync all languages
+    # A. Sync all languages (from the USER_GUIDE-only help build)
     for lang in $HELP_LOCALES; do
-        if [ -d "$BUILD_DIR/$lang/html" ]; then
+        if [ -d "$BUILD_DIR/help/$lang/html" ]; then
             echo "    - Syncing $lang..."
             mkdir -p "$INTERNAL_HELP_DIR/$lang"
-            cp -r "$BUILD_DIR/$lang/html/"* "$INTERNAL_HELP_DIR/$lang/"
+            cp -r "$BUILD_DIR/help/$lang/html/"* "$INTERNAL_HELP_DIR/$lang/"
+            # Rename the help master doc to index.html so the plugin Help button
+            # keeps opening index.html while only the User Guide is shown.
+            if [ -f "$INTERNAL_HELP_DIR/$lang/help_index.html" ]; then
+                mv "$INTERNAL_HELP_DIR/$lang/help_index.html" "$INTERNAL_HELP_DIR/$lang/index.html"
+                find "$INTERNAL_HELP_DIR/$lang" -name "*.html" -exec \
+                    sed -i 's/help_index\.html/index.html/g' {} +
+            fi
         fi
     done
 
@@ -133,18 +136,10 @@ if [ -d "help" ]; then
     find "$INTERNAL_HELP_DIR" -name "py-modindex.html" -delete
     find "$INTERNAL_HELP_DIR" -name "objects.inv" -delete
 
-    # Remove Developer API docs
-    echo "🧪 Removing API docs and source code..."
+    # Remove bulky raw sources (the offline manual only ships rendered HTML).
+    echo "🧪 Removing raw sources..."
     find "$INTERNAL_HELP_DIR" -type d -name "_modules" -exec rm -rf {} +
     find "$INTERNAL_HELP_DIR" -type d -name "_sources" -exec rm -rf {} +
-    find "$INTERNAL_HELP_DIR" -name "sec_interp*.html" -delete
-    find "$INTERNAL_HELP_DIR" -name "modules.html" -delete
-    find "$INTERNAL_HELP_DIR" -name "ARCHITECTURE.html" -delete
-    find "$INTERNAL_HELP_DIR" -name "DEVELOPMENT_GUIDE.html" -delete
-    find "$INTERNAL_HELP_DIR" -name "MAINTENANCE_LOG.html" -delete
-    find "$INTERNAL_HELP_DIR" -name "CORE_DISTINCTION_GUIDE*.html" -delete
-    find "$INTERNAL_HELP_DIR" -name "phase_closure_*.html" -delete
-    find "$INTERNAL_HELP_DIR" -name "v2.9.0_technical_analysis.html" -delete
 
     # Remove large font sets
     echo "📦 Pruning large fonts..."
