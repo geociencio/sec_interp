@@ -30,7 +30,6 @@ dist/
 *.egg-info/
 logger_config.py
 reproduce_metadata_issue.py
-__init__.py
 PROJECT_SUMMARY.md
 AI_CONTEXT.md
 project_context.json

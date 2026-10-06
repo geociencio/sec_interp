@@ -1,3 +1,13 @@
+## [2026-10-06] Session: ai-context-core v3.5.0 Adoption
+- **Achievement**: Adopted `ai-context-core` **v3.5.0**, resolving all active correctness findings (A1–A5) from the v3.4.0 improvement report and enabling an explainable **Score Breakdown**. Regenerated the project analysis; ai-ctx Quality Score **36.2 → 68.2**.
+- **Changes**:
+    - **Dependency**: `ai-context-core>=3.4.0` → `>=3.5.0` (`pyproject.toml` + `uv.lock`).
+    - **Config**: dropped the global `__init__.py` pattern from `.analyzerignore` so the plugin entry point (`classFactory`) is detected; modules 66 → 76.
+    - **Artifacts**: `AI_CONTEXT.md`, `PROJECT_SUMMARY.md`, `project_context.json` regenerated via `ai-ctx full-scan`.
+    - **Docs**: v3.5.0 verification addendum added to `improvement_report_v3.4.0.md`.
+- **Quality**: `Test Files: 137` (was artificially 0) · QGIS Compliance **85.0/100** · i18n **303/438 (69.2%)** · Maintainability **43.8** · avg CC **13.2**.
+- **Maintenance**: [session_2026-10-06_ai_context_core_v350.md](maintenance/session_2026-10-06_ai_context_core_v350.md).
+
 ## [2026-10-04] Session: Offline Help — User Guide only
 - **Achievement**: The in-plugin **Help** button now opens an offline manual that contains **only the User Guide** (clean navigation, no dead links) in all 14 languages, without changing the plugin code and without affecting the published website. Also evaluated **graphify** (local code graph, git-ignored).
 - **Changes**:
