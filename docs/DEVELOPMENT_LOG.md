@@ -1,3 +1,13 @@
+## [2026-10-08] Session: Unify Agentic Systems on agentic-forge
+- **Achievement**: Unified the agentic systems of the three sibling projects (`qgis-plugin-analyzer`, `ai-context-core`, `qgis-plugin-manager`) onto the **agentic-forge** framework (`v1.2.0`, Codeberg). No SecInterp code changed — this session coordinated the sibling repos.
+- **Changes**:
+    - **Upstream**: genericized `agentic-forge` core (9 skills + 14 workflows), extracted QGIS domain to `scaffold/qgis/`, added `testing-standards` + `release-package`/`audit-package`, tagged `v1.2.0`.
+    - **analyzer**: submodule + `forge.toml` + `.agent-state/` + overlay; removed legacy `.ai-context/`/`scaffold/`/scripts/`ai-context-core` dep.
+    - **ai-context-core**: same pattern; overlay `domain-logic`, `project-context`, `debug-specialist`, `skill-authoring`, `tech-stack`.
+    - **manager**: Gen 5 → Gen 8 (root `AGENTS.md` + `opencode.json` + submodule); removed `skill_sync.py`.
+- **Quality**: `forge validate` green on all three; `pytest` 126 / 299 / 190 passed.
+- **Maintenance**: [session_2026-10-08_unify_agentic_systems.md](maintenance/session_2026-10-08_unify_agentic_systems.md).
+
 ## [2026-10-06] Session: ai-context-core v3.5.0 Adoption
 - **Achievement**: Adopted `ai-context-core` **v3.5.0**, resolving all active correctness findings (A1–A5) from the v3.4.0 improvement report and enabling an explainable **Score Breakdown**. Regenerated the project analysis; ai-ctx Quality Score **36.2 → 68.2**.
 - **Changes**:

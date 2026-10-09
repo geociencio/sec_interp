@@ -1,4 +1,24 @@
-# Next Steps (Updated 2026-10-04)
+# Next Steps (Updated 2026-10-08)
+
+## ✅ Session 2026-10-08 — Unify Agentic Systems on agentic-forge (COMPLETADO)
+
+- **Qué se hizo**: se unificaron los sistemas agénticos de los tres proyectos hermanos
+  (`qgis-plugin-analyzer`, `ai-context-core`, `qgis-plugin-manager`) sobre **`agentic-forge`**
+  `v1.2.0` (Codeberg). Sin cambios en el código de SecInterp; fue una sesión de coordinación
+  entre repos. Plan: `docs/plans/implementation_plan_unify_agentic_systems.md`.
+  - **Upstream (agentic-forge)**: núcleo genericizado (9 skills + 14 workflows), dominio QGIS a
+    `scaffold/qgis/`, añadidas `testing-standards` + `release-package`/`audit-package`, tag `v1.2.0`.
+  - **analyzer** / **ai-context-core** / **manager**: submódulo `.agent/` + `forge.toml` +
+    `.agent-state/` + overlay skills; limpieza de sistemas legacy (`.ai-context/`, `skill_sync.py`).
+- **Commits**: `agentic-forge` `2de22cf` · analyzer `4b10b11`+`fb080db` · ai-context-core `fb70feb`
+  · manager `73586a2` (todos pusheados).
+- **Calidad**: `forge validate` verde en los tres; `pytest` 126 / 299 / 190 OK.
+- **Referencia**: `docs/maintenance/session_2026-10-08_unify_agentic_systems.md`.
+- **Pendiente / cómo reanudar**:
+  1. Gate cross-repo que confirme que los tres pinnean la misma versión del framework.
+  2. Promover `geological-logic` a `scaffold/geology` en agentic-forge.
+  3. Los pendientes propios de SecInterp (tren v3.10.0/v3.11.0, `legend_widget.py`, bóveda)
+     siguen abajo sin cambios.
 
 ## ✅ Session 2026-10-04 — Offline Help (User Guide only) + graphify (COMPLETADO)
 
