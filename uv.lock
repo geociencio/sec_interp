@@ -4,15 +4,15 @@ requires-python = ">=3.12"
 
 [[package]]
 name = "ai-context-core"
-version = "4.1.0"
+version = "4.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/81/4e/06c56ad0c3698e508835bfd7b41b3f62f82cff8dd01435a559045c49b632/ai_context_core-4.1.0.tar.gz", hash = "sha256:6d27a70bcf7c8c506bf609acf31a895527306819cd731c3ca1b45847a64e75a5", size = 177042, upload-time = "2026-10-09T02:32:30.882Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fa/60/611c61885e6a7933fea1c00bdf724994bae7669278a1a19eee3df33a286c/ai_context_core-4.1.1.tar.gz", hash = "sha256:2d1d42d8476e108cff12dc232715adcd53ad991b51fd06bb1711ca17b1a9cbe6", size = 182259, upload-time = "2026-10-09T03:26:24.058Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c7/0c/8bc82bdb5e983eab57968863648cced14b4d8bf1df74d1b525f2cb689860/ai_context_core-4.1.0-py3-none-any.whl", hash = "sha256:41a03ac43ec092f23c02c13cd4b1ff831cf90e0195e20ad2f5c717fb04436f6f", size = 183325, upload-time = "2026-10-09T02:32:29.417Z" },
+    { url = "https://files.pythonhosted.org/packages/22/05/cbea3c63efde3fcaced9a1a34d51ded00de2ecd848df9605eb2b0994f543/ai_context_core-4.1.1-py3-none-any.whl", hash = "sha256:0332e883e16be55a9bc5b218ca75807fdb3fa08f798fd58e382706128bb2f4e4", size = 188872, upload-time = "2026-10-09T03:26:22.818Z" },
 ]
 
 [[package]]
@@ -881,14 +881,14 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ai-context-core", specifier = ">=4.1.0" },
+    { name = "ai-context-core", specifier = ">=4.1.1" },
     { name = "qgis-plugin-analyzer", specifier = ">=1.14.0" },
     { name = "sphinx-intl", specifier = ">=2.3.2" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "ai-context-core", specifier = ">=4.1.0" },
+    { name = "ai-context-core", specifier = ">=4.1.1" },
     { name = "bandit", specifier = ">=1.7.0" },
     { name = "black", specifier = "==26.1.0" },
     { name = "detect-secrets", specifier = ">=1.4.0" },

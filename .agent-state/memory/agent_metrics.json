@@ -7,7 +7,7 @@
         "last_updated_by": "close-phase v3.7.0 metric reconciliation",
         "tools": {
             "qgis-plugin-analyzer": "1.14.0",
-            "ai-context-core": "4.1.0"
+            "ai-context-core": "4.1.1"
         }
     },
     "summary": {

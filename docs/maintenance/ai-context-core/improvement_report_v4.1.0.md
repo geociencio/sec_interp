@@ -261,3 +261,26 @@ Añadir esta secuencia al procedimiento de adopción evita el incidente visto en
   antes del `clean`, ausentes después.
 - **Evidencia F2**: `PROJECT_SUMMARY.md` (`Max: HIGH`) vs `ai-ctx security` (todos `LOW`).
 - **Evidencia F3**: sección `⚠️ UNUSED IMPORTS` en `AI_CONTEXT.md`.
+
+---
+
+## 7. Verificación en v4.1.1 (2026-10-08) — hallazgos resueltos
+
+`ai-context-core` **v4.1.1** ("Report Correctness Fixes", publicada en PyPI) resuelve
+**los cinco defectos (F1–F5)** descritos en este informe. Verificado sobre `sec_interp`
+tras `uv lock --upgrade-package ai-context-core --refresh` + `uv sync` (sin ejecutar
+`ai-ctx clean`, para validar F1):
+
+| ID | Estado | Evidencia en 4.1.1 |
+| :--- | :--- | :--- |
+| F1 | ✅ Resuelto | `.ai_context_cache.json` incluye `_meta = {schema: 1, version: "4.1.1", config_fingerprint: "951b15ac6f51fda2"}` |
+| F2 | ✅ Resuelto | `PROJECT_SUMMARY.md` muestra `Max: LOW` (antes `HIGH` hardcodeado) |
+| F3 | ✅ Resuelto | Sin sección `UNUSED IMPORTS` en `AI_CONTEXT.md` (`__init__.py` exentos por defecto) |
+| F4 | ✅ Resuelto | `Code Churn` acotado: **14,796** (antes 512,693 dominado por docs/artefactos) |
+| F5 | ✅ Resuelto | La recomendación genérica "No Processing Algorithms found" ya no se emite |
+
+**Nota operativa**: el paso `ai-ctx clean` documentado en §4 deja de ser necesario;
+el caché ahora se auto-invalida al cambiar la versión del analizador o del config.
+Score ai-ctx sin cambios: **68.2/100**.
+
+Sesión de adopción: [`session_2026-10-08_ai_context_core_v411.md`](../session_2026-10-08_ai_context_core_v411.md).

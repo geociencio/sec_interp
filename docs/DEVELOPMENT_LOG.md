@@ -1,3 +1,12 @@
+## [2026-10-08] Session: ai-context-core v4.1.1 Adoption
+- **Achievement**: Adopted `ai-context-core` **v4.1.1** ("Report Correctness Fixes"), resolving all five defects (F1–F5) from the v4.1.0 improvement report and removing the manual `ai-ctx clean` workaround. The cache is now versioned (`_meta`), security severities are real, intentional `__init__.py` re-exports are no longer flagged, git churn is code-scoped, and the generic Processing note is conditional. ai-ctx Quality Score unchanged at **68.2**.
+- **Changes**:
+    - **Dependency**: `ai-context-core>=4.1.0` → `>=4.1.1` (`pyproject.toml` + `uv.lock` via `uv lock --upgrade-package ai-context-core --refresh` + `uv sync`).
+    - **Artifacts**: `AI_CONTEXT.md`, `PROJECT_SUMMARY.md`, `project_context.json` regenerated via `ai-ctx full-scan` (no manual cache clean needed).
+    - **Metrics**: `agent_metrics.json` tool version `4.1.0` → `4.1.1`.
+- **Quality**: ai-ctx Quality Score **68.2/100** · QGIS Compliance **85.0/100** · i18n **303/438 (69.2%)** · Edges 60 · Qt6-ready (no `PyQt5` imports) · no `ai_context_core` imports in plugin runtime (CLI-only).
+- **Maintenance**: [session_2026-10-08_ai_context_core_v411.md](maintenance/session_2026-10-08_ai_context_core_v411.md).
+
 ## [2026-10-08] Session: ai-context-core v4.1.0 Adoption
 - **Achievement**: Adopted `ai-context-core` **v4.1.0** ("Context Map & Debt Prioritization"), adding a context-only mode (`ai-ctx context`), configurable `[context].sections`, anti-pattern tuning (`allowlist`/`min_severity`), and fixes for import-graph resolution, realistic churn, and `__future__` unused-import false positives. ai-ctx Quality Score unchanged at **68.2**.
 - **Changes**:
