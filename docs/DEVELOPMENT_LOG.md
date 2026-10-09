@@ -1,3 +1,13 @@
+## [2026-10-08] Session: ai-context-core v4.0.0 Adoption
+- **Achievement**: Adopted `ai-context-core` **v4.0.0**, which removes the deprecated compatibility facades and dead `CheckerRegistry` chain, and surfaces anti-pattern detections (God Object, Spaghetti, Magic Numbers, Dead Code) that were previously computed but never rendered. ai-ctx Quality Score unchanged at **68.2**.
+- **Changes**:
+    - **Dependency**: `ai-context-core>=3.5.0` → `>=4.0.0` (`pyproject.toml` + `uv.lock` via `uv lock --upgrade-package ai-context-core` + `uv sync`).
+    - **Artifacts**: `AI_CONTEXT.md`, `PROJECT_SUMMARY.md`, `project_context.json` regenerated via `ai-ctx full-scan`.
+    - **New output**: `AI_CONTEXT.md` now has a `⚠️ DETECTED ANTI-PATTERNS` section (Magic Number findings in `gui/adapters/*`).
+    - **Metrics**: `agent_metrics.json` tool version `3.3.0` → `4.0.0`.
+- **Quality**: ai-ctx Quality Score **68.2/100** · QGIS Compliance **85.0/100** · i18n **303/438 (69.2%)** · Qt6-ready (no `PyQt5` imports) · no `ai_context_core` imports in plugin runtime (CLI-only).
+- **Maintenance**: [session_2026-10-08_ai_context_core_v400.md](maintenance/session_2026-10-08_ai_context_core_v400.md).
+
 ## [2026-10-08] Session: Unify Agentic Systems on agentic-forge
 - **Achievement**: Unified the agentic systems of the three sibling projects (`qgis-plugin-analyzer`, `ai-context-core`, `qgis-plugin-manager`) onto the **agentic-forge** framework (`v1.2.0`, Codeberg). No SecInterp code changed — this session coordinated the sibling repos.
 - **Changes**:
