@@ -56,7 +56,7 @@ To avoid conflicts with pre-commit hooks (which may reformat code and cause the 
 ## 🧹 Code Quality
 - **Pre-commit**: Install with `uv run pre-commit install`. Checks run on every commit.
 - **Linting**: Run `uv run ruff check .` to validate standards.
-- **Metrics Analysis**: Run `uv run ai-ctx analyze .` regularly to monitor complexity.
+- **Metrics Analysis**: Run `uv run ai-ctx analyze --path .` regularly to monitor complexity.
 - **QGIS Audit**: Use `uv run qgis-analyzer analyze .` for QGIS regulatory validations.
 - Follow the conventions in [COMMIT_GUIDELINES.md](COMMIT_GUIDELINES.md) (Conventional Commits).
 - **Important**: Try to fix pre-commit errors instead of skipping them. Use `--no-verify` only if absolutely necessary and temporary.

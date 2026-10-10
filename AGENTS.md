@@ -2,7 +2,7 @@
 
 This document provides essential guidelines for agentic coding agents working on the SecInterp QGIS plugin. It covers build commands, code style, architectural principles, and development workflows.
 
-This is the **single source of truth** for SecInterp's agent configuration (roles, skills, and workflows). The framework ships a default config at `.agent/AGENTS.md` (from `agentic-forge`); this root file is the canonical override that opencode loads.
+This is the **single source of truth** for SecInterp's agent configuration (roles, skills, and workflows). The re-usable framework (`agentic-forge`) is mounted as a git submodule at `.agent/` and ships a default config at `.agent/AGENTS.md`; this root file is the canonical override that opencode loads. Project-owned state and overlay skills live under `.agent-state/`, including the mounted QGIS domain pack (`scaffold/qgis/` upstream).
 
 ---
 
@@ -22,7 +22,7 @@ The agent adopts one of three roles depending on the task. Roles are registered 
 - **Goal**: Scrutinize the @architect's code to ensure a "Zero Bug Release" standard natively.
 - **Traits**: Paranoid about data loss, unhandled exceptions, and performance regressions. Focuses heavily on edge cases and missing dependencies.
 - **Constraint**: Focuses on finding, fixing, and validating code, rarely proposing entirely new abstractions. Full test coverage is the gold standard.
-- **Skills**: [commit-standards](.agent/skills/commit-standards/SKILL.md), [coding-standards](.agent/skills/coding-standards/SKILL.md)
+- **Skills**: [commit-standards](.agent/skills/commit-standards/SKILL.md), [coding-standards](.agent/skills/coding-standards/SKILL.md), [testing-standards](.agent/skills/testing-standards/SKILL.md)
 
 ### 🕵️ Agent Auditor (@auditor)
 - **Role**: AI technical auditor specializing in architectural rigor and standards compliance.
@@ -35,12 +35,12 @@ The agent adopts one of three roles depending on the task. Roles are registered 
 
 ## 🧭 Workflow Commands (slash commands)
 
-When the user types `/name` (e.g. `/start-session`), read the corresponding `.agent/workflows/name.md` file and execute its steps. Do NOT treat them as unknown commands.
+When the user types `/name` (e.g. `/start-session`), read the corresponding workflow file and execute its steps. Do NOT treat them as unknown commands. Core workflows live in `.agent/workflows/name.md` (generic framework) and QGIS-domain workflows in `.agent-state/workflows/name.md` (mounted domain pack).
 
 <!-- WORKFLOWS_TABLE_START -->
 | Command | Workflow file | Purpose |
 | :--- | :--- | :--- |
-| `/audit-plugin` | `.agent/workflows/audit-plugin.md` | Perform a full or partial plugin audit using qgis-plugin-analyzer v1.9.0+. |
+| `/audit-plugin` | `.agent-state/workflows/audit-plugin.md` | Perform a full or partial plugin audit using qgis-plugin-analyzer v1.9.0+. |
 | `/build-feature` | `.agent/workflows/build-feature.md` | Start the Autonomous AI Developer Pipeline sequence for a new feature. |
 | `/close-phase` | `.agent/workflows/close-phase.md` | Formal procedure for closing a major development phase |
 | `/close-session` | `.agent/workflows/close-session.md` | Procedure to end a work session, update logs, and archive results |
@@ -49,15 +49,15 @@ When the user types `/name` (e.g. `/start-session`), read the corresponding `.ag
 | `/i18n-maintenance` | `.agent/workflows/i18n-maintenance.md` | Procedure for i18n maintenance and expansion (Translations) |
 | `/ia-critic` | `.agent/workflows/ia-critic.md` | Workflow for critical review of implementation plans by the Agent Auditor |
 | `/refactor-code` | `.agent/workflows/refactor-code.md` | Guided workflow for code refactoring with complexity validation |
-| `/release-plugin` | `.agent/workflows/release-plugin.md` | Unified Release Workflow (QGIS Release Flow) - Generation 8 Standard |
-| `/run-tests-in-qgis` | `.agent/workflows/run-tests-in-qgis.md` | How to run tests inside QGIS (integration testing) |
+| `/release-plugin` | `.agent-state/workflows/release-plugin.md` | Unified Release Workflow (QGIS Release Flow) - Generation 8 Standard |
+| `/run-tests-in-qgis` | `.agent-state/workflows/run-tests-in-qgis.md` | How to run tests inside QGIS (integration testing) |
 | `/run-tests` | `.agent/workflows/run-tests.md` | How to run unit tests reliably |
 | `/start-phase` | `.agent/workflows/start-phase.md` | Formal procedure for starting a new major development phase |
 | `/start-session` | `.agent/workflows/start-session.md` | Standard and robust procedure for starting a "Local First" development session |
 | `/verify-standards` | `.agent/workflows/verify-standards.md` | Audits the consistency of the agentic system (Skills and Workflows) against the master standard. |
 <!-- WORKFLOWS_TABLE_END -->
 
-Full index: `.agent/workflows/index.md`
+Full index: `.agent/workflows/index.md` (core) plus `.agent-state/workflows/` (QGIS domain pack).
 
 ---
 
@@ -369,7 +369,7 @@ export QGIS_LOG_FILE=qgis_debug.log
 
 ## 🛠️ Agent Skills
 
-Skills live in `.agent/skills/*/SKILL.md`. Read the relevant `SKILL.md` on demand; do not pre-load all of them.
+Skills live in `.agent/skills/*/SKILL.md` (framework) and `.agent-state/skills/*/SKILL.md` (project overlay). Read the relevant `SKILL.md` on demand; do not pre-load all of them.
 
 | Skill | Description | When to use |
 | :--- | :--- | :--- |
@@ -382,10 +382,11 @@ Skills live in `.agent/skills/*/SKILL.md`. Read the relevant `SKILL.md` on deman
 | [i18n-standards](.agent/skills/i18n-standards/SKILL.md) | Internationalization (i18n) standards and best practices. | User-facing strings, translation tools, triaging MISSING_I18N flags, `/i18n-maintenance`. |
 | [project-context](.agent-state/skills/project-context/SKILL.md) | Purpose, architecture, and structure of SecInterp. | Starting tasks, requesting summaries, explaining architecture. |
 | [qa-docker](.agent/skills/qa-docker/SKILL.md) | Dockerized testing and Mock-first QGIS testing. | Writing/executing tests, using mocks, Docker infrastructure. |
-| [qgis-core](.agent/skills/qgis-core/SKILL.md) | QGIS API, plugin structure, asynchronous `QgsTask`. | PyQGIS, layers, CRS, QgsTask. |
-| [qgis-migration-4x](.agent/skills/qgis-migration-4x/SKILL.md) | QGIS 4.x migration and agnostic API usage. | qgis.PyQt imports, Qt deprecation warnings, 4.x readiness. |
+| [qgis-core](.agent-state/skills/qgis-core/SKILL.md) | QGIS API, plugin structure, asynchronous `QgsTask`. | PyQGIS, layers, CRS, QgsTask. |
+| [qgis-migration-4x](.agent-state/skills/qgis-migration-4x/SKILL.md) | QGIS 4.x migration and agnostic API usage. | qgis.PyQt imports, Qt deprecation warnings, 4.x readiness. |
 | [release-management](.agent/skills/release-management/SKILL.md) | QGIS plugin release process with quality validation. | Releases, versioning, `/release-plugin`. |
-| [ui-framework](.agent/skills/ui-framework/SKILL.md) | Custom SecInterp UI (programmatic creation, premium aesthetics). | GUI widgets, layouts, CSS styles. |
+| [testing-standards](.agent/skills/testing-standards/SKILL.md) | Automated testing, CI/CD, and Mock usage standards. | Writing/running tests, CI pipelines, `/run-tests`. |
+| [ui-framework](.agent-state/skills/ui-framework/SKILL.md) | Custom SecInterp UI (programmatic creation, premium aesthetics). | GUI widgets, layouts, CSS styles. |
 
 ---
 
@@ -394,8 +395,8 @@ Skills live in `.agent/skills/*/SKILL.md`. Read the relevant `SKILL.md` on deman
 - **Architecture**: `docs/ARCHITECTURE_EN.md`
 - **Core Distinction**: `docs/CORE_DISTINCTION_GUIDE_EN.md`
 - **Agent Configuration**: this file (root `AGENTS.md`) — canonical
-- **Skills**: `.agent/skills/*/SKILL.md`
-- **Workflows**: `.agent/workflows/index.md`
+- **Skills**: `.agent/skills/*/SKILL.md` (framework) + `.agent-state/skills/*/SKILL.md` (project/QGIS overlay)
+- **Workflows**: `.agent/workflows/index.md` (core) + `.agent-state/workflows/` (QGIS domain pack)
 - **Agent State**: `.agent-state/` (memory, task board, `next_steps.md`); paths resolved via `forge.toml` + `.agent/tools/forge_paths.py`
 - **Development**: `README_DEV.md`
 

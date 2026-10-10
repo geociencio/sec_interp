@@ -40,7 +40,7 @@ Los hooks ejecutarán automáticamente:
 - **YAML/TOML Check**: Validación de sintaxis en archivos de configuración.
 
 ## Comandos de Desarrollo
-- **Métricas de Calidad (Higiene)**: `uv run ai-ctx analyze .`
+- **Métricas de Calidad (Higiene)**: `uv run ai-ctx analyze --path .`
   - Recomendado para mantenimiento diario y control de complejidad ciclomática.
 - **Auditoría de QGIS (Compliance)**: `uv run qgis-analyzer analyze .`
   - Específico para validar estándares de la comunidad QGIS (i18n, threading, metadatos).

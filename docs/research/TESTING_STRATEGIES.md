@@ -356,4 +356,4 @@ def test_renderer_displays_layers_on_canvas(self):
 **Referencias**:
 - [TESTING_IN_QGIS.md](TESTING_IN_QGIS.md) - Guía de ejecución
 - [.agent/workflows/run-tests.md](../../.agent/workflows/run-tests.md) - Workflow unittest
-- [.agent/workflows/run-tests-in-qgis.md](../../.agent/workflows/run-tests-in-qgis.md) - Workflow QGIS
+- [.agent-state/workflows/run-tests-in-qgis.md](../../.agent-state/workflows/run-tests-in-qgis.md) - Workflow QGIS

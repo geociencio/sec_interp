@@ -15,7 +15,7 @@
 - **Calidad**: `forge validate` verde en los tres; `pytest` 126 / 299 / 190 OK.
 - **Referencia**: `docs/maintenance/session_2026-10-08_unify_agentic_systems.md`.
 - **Pendiente / cómo reanudar**:
-  1. Gate cross-repo que confirme que los tres pinnean la misma versión del framework.
+  1. ~~Gate cross-repo que confirme que los tres pinnean la misma versión del framework.~~ ✅ **HECHO (2026-10-10)**: SecInterp subió el submódulo `a77548b` → `2de22cf` (`v1.2.0`); los tres repos alineados. Domain pack QGIS montado en `.agent-state/{skills,workflows}`.
   2. Promover `geological-logic` a `scaffold/geology` en agentic-forge.
   3. Los pendientes propios de SecInterp (tren v3.10.0/v3.11.0, `legend_widget.py`, bóveda)
      siguen abajo sin cambios.

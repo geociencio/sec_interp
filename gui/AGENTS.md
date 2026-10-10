@@ -2,7 +2,7 @@
 
 > **Scope**: All Python modules under `sec_interp/gui/`.
 > This file takes precedence over the root `AGENTS.md` for work done in this directory.
-> **Reference**: [Root AGENTS.md](../../.agent/AGENTS.md) | [ui-framework](../../.agent/skills/ui-framework/SKILL.md)
+> **Reference**: [Root AGENTS.md](../../.agent/AGENTS.md) | [ui-framework](../../.agent-state/skills/ui-framework/SKILL.md)
 
 ---
 
@@ -90,9 +90,9 @@ gui/
 
 | Task | Skill |
 |---|---|
-| Widget creation | [ui-framework](../../.agent/skills/ui-framework/SKILL.md) |
-| QGIS API usage | [qgis-core](../../.agent/skills/qgis-core/SKILL.md) |
-| Background tasks | [qgis-core](../../.agent/skills/qgis-core/SKILL.md) |
+| Widget creation | [ui-framework](../../.agent-state/skills/ui-framework/SKILL.md) |
+| QGIS API usage | [qgis-core](../../.agent-state/skills/qgis-core/SKILL.md) |
+| Background tasks | [qgis-core](../../.agent-state/skills/qgis-core/SKILL.md) |
 | Writing GUI tests | [qa-docker](../../.agent/skills/qa-docker/SKILL.md) |
 | i18n in UI strings | [i18n-standards](../../.agent/skills/i18n-standards/SKILL.md) |
 

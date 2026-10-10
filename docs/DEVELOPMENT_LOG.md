@@ -1,3 +1,23 @@
+## [2026-10-10] Session: agentic-forge v1.2.0 Migration (Submodule + QGIS Domain Pack)
+- **Achievement**: Aligned SecInterp's agentic system with the genericized `agentic-forge` **v1.2.0**, bumping the `.agent/` submodule `a77548b` (v1.1.0) → `2de22cf` (v1.2.0) — the same revision already pinned by `ai-context-core` and `qgis-plugin-manager`. The QGIS skills/workflows extracted upstream to `scaffold/qgis/` are now **mounted as a project overlay** (`.agent-state/`), so framework updates no longer drop them.
+- **Changes**:
+    - **Submodule**: `.agent` `a77548b` → `2de22cf` (`v1.2.0`, `git merge --ff-only origin/main`).
+    - **Overlay**: `.agent-state/skills/{qgis-core,qgis-migration-4x,ui-framework}` + `.agent-state/workflows/{audit-plugin,release-plugin,run-tests-in-qgis}.md`.
+    - **`opencode.json`**: `skills.paths` → `[".agent/skills", ".agent-state/skills"]` (restart required).
+    - **`AGENTS.md`**: 3 QGIS skills + 3 QGIS workflows repointed to `.agent-state/`; added `testing-standards`; clarified framework/overlay split.
+    - **Fixes**: `gui/AGENTS.md`, `core/AGENTS.md`, `docs/research/TESTING_STRATEGIES.md` paths; `ai-ctx analyze .` → `--path .` in `README_DEV.md` + `docs/docsec/DEVELOPMENT_GUIDE*.md`.
+- **Quality**: `forge validate` → 14 skills / 14 workflows, all pass · no dangling refs in living docs · no plugin code touched · `ai-ctx verify` fresh.
+- **Maintenance**: [session_2026-10-10_agentic_forge_v120_migration.md](maintenance/session_2026-10-10_agentic_forge_v120_migration.md).
+
+## [2026-10-10] Session: ai-context-core v5.0.1 Adoption
+- **Achievement**: Adopted `ai-context-core` **v5.0.1** ("Post-Release Cleanup"), a patch release that follows the v5.0.0 context-only contract with **no command or artifact contract change**. Internal consolidation only: `analyze` now uses a single `compile_context → render_context` path for every source, and upstream residue (`ContextAggregator` alias, `deprecations`, `graph_engine`, duplicate Halstead helpers) was removed.
+- **Changes**:
+    - **Dependency**: `ai-context-core>=5.0.0` → `>=5.0.1` (`pyproject.toml` + `uv.lock` via `uv lock --no-cache` + `uv sync --no-cache`).
+    - **Artifacts**: `AI_CONTEXT.md`, `PROJECT_SUMMARY.md`, `project_context.json`, `context_manifest.json` regenerated via `ai-ctx analyze --path . --no-cache` (source: external).
+    - **Metrics**: `agent_metrics.json` tool version `5.0.0` → `5.0.1`.
+- **Quality**: `ai-ctx verify` → `Context is fresh.` (exit 0) · context bundle **619 tokens** (structure 311 / metrics 90 / dependencies 40 / git 160) · quality score 56.9 (external, qgis-analyzer) · no `ai_context_core` imports in plugin runtime (CLI-only).
+- **Maintenance**: [session_2026-10-10_ai_context_core_v501.md](maintenance/session_2026-10-10_ai_context_core_v501.md).
+
 ## [2026-10-10] Session: ai-context-core v5.0.0 Adoption (Scoped)
 - **Achievement**: Adopted `ai-context-core` **v5.0.0**, a breaking major that repositions `ai-ctx` as a **context-only compiler** (`context` / `git` / `roadmap` / `verify` / `symbols`). The adoption is **scoped**: all quality gates (CC, i18n, module size, security, QGIS compliance) stay **single-sourced** in `qgis-plugin-analyzer`, resolving the documented "Multi-Tool Scope Mismatch".
 - **Changes**:
