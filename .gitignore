@@ -24,6 +24,8 @@ analyzer_config.json
 AI_CONTEXT.md
 PROJECT_SUMMARY.md
 project_context.json
+context_manifest.json
+symbols.json
 analysis_results/
 analysis_results_final/
 analysis_results_linting/

@@ -1,3 +1,13 @@
+## [2026-10-10] Session: ai-context-core v5.0.0 Adoption (Scoped)
+- **Achievement**: Adopted `ai-context-core` **v5.0.0**, a breaking major that repositions `ai-ctx` as a **context-only compiler** (`context` / `git` / `roadmap` / `verify` / `symbols`). The adoption is **scoped**: all quality gates (CC, i18n, module size, security, QGIS compliance) stay **single-sourced** in `qgis-plugin-analyzer`, resolving the documented "Multi-Tool Scope Mismatch".
+- **Changes**:
+    - **Dependency**: `ai-context-core>=4.1.1` → `>=5.0.0` (`pyproject.toml` + `uv.lock` via `uv lock` + `uv sync`).
+    - **Removed commands** (`audit`, `qgis`, `security`, `patterns`, `inspect`, `fix`, `scaffold`, `doctor`, `interactive`, `serve`, `full-scan`); **new** `health`, `verify`, `symbols`; `analyze`/`context` kept.
+    - **Artifacts**: `AI_CONTEXT.md`, `PROJECT_SUMMARY.md`, `project_context.json` regenerated via `ai-ctx analyze --path . --no-cache` (source: external) plus the new `context_manifest.json`; `.gitignore` updated.
+    - **Metrics**: `agent_metrics.json` tool version `4.1.1` → `5.0.0`; obsolete `ai_context` block (from removed `ai-ctx qgis`) replaced by a context-only block.
+- **Quality**: `ai-ctx verify` → `Context is fresh.` (exit 0) · context bundle **619 tokens** (structure 311 / metrics 90 / dependencies 40 / git 160) · `AI_CONTEXT.md` now context-only · no `ai_context_core` imports in plugin runtime (CLI-only).
+- **Maintenance**: [session_2026-10-10_ai_context_core_v500.md](maintenance/session_2026-10-10_ai_context_core_v500.md).
+
 ## [2026-10-08] Session: ai-context-core v4.1.1 Adoption
 - **Achievement**: Adopted `ai-context-core` **v4.1.1** ("Report Correctness Fixes"), resolving all five defects (F1–F5) from the v4.1.0 improvement report and removing the manual `ai-ctx clean` workaround. The cache is now versioned (`_meta`), security severities are real, intentional `__init__.py` re-exports are no longer flagged, git churn is code-scoped, and the generic Processing note is conditional. ai-ctx Quality Score unchanged at **68.2**.
 - **Changes**:
