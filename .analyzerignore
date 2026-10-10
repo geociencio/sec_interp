@@ -1,52 +1,42 @@
-# Focus: gui/ and sec_interp_plugin.py
-# Exclude technical core logic (which has no UI) and exporters
-core/
-exporters/
+# Analysis scope for SecInterp (shared by qgis-plugin-analyzer and ai-context-core).
+# Analyze ALL plugin code: core/, gui/, exporters/ and the plugin entry point.
+# Exclude only development tooling, generated artifacts and non-code files.
 
-# Exclude technical UI/Graphics managers, factories and orchestrators
-gui/preview_layer_factory.py
-gui/preview_legend_renderer.py
-gui/preview_axes_manager.py
-gui/preview_task_orchestrator.py
-gui/preview_renderer.py
-gui/ui_status_manager.py
-gui/dialog_tool_manager.py
-gui/dialog_state_manager.py
-
-# Ignore tests directory to avoid score degradation due to missing type hints
+# --- Development tooling / project state (not plugin code) ---
 tests/
-
-# Development and packaging artifacts
 scripts/
 docs/
+.agent/
+.agent-state/
+.ai-context/
 antigravity-framerepo/
 examples/
 venv/
 .venv/
-.ai-context/
-.agent/
 build/
 dist/
 *.egg-info/
+
+# --- Generated context artifacts (gitignored) ---
+AI_CONTEXT.md
+PROJECT_SUMMARY.md
+project_context.json
 logger_config.py
 reproduce_metadata_issue.py
-PROJECT_SUMMARY.md
-AI_CONTEXT.md
-project_context.json
 
-# QGIS specific non-code files
+# --- QGIS / i18n generated & non-code files ---
 i18n/*.qm
 i18n/*.ts
 metadata.txt
 resources/
 help/
+symbology-style.db
+dummy.qml
 LICENSE
 LICENSE-GPL-2.0.txt
 LICENSE-GPL-3.0.txt
-symbology-style.db
-dummy.qml
 
-# Config files
+# --- Root config files (not code) ---
 pyproject.toml
 requirements.txt
 Makefile
