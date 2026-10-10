@@ -40,10 +40,10 @@ Los hooks ejecutarán automáticamente:
 - **YAML/TOML Check**: Validación de sintaxis en archivos de configuración.
 
 ## Comandos de Desarrollo
-- **Métricas de Calidad (Higiene)**: `uv run ai-ctx analyze --path .`
-  - Recomendado para mantenimiento diario y control de complejidad ciclomática.
+- **Contexto para agentes (ai-ctx)**: `make context`
+  - Regenera `AI_CONTEXT.md` y refresca métricas. Es *context-only* (no emite score de calidad); ver "Context & Architecture Tooling" en `AGENTS.md`.
 - **Auditoría de QGIS (Compliance)**: `uv run qgis-analyzer analyze .`
-  - Específico para validar estándares de la comunidad QGIS (i18n, threading, metadatos).
+  - Fuente única de métricas y gates (CC, i18n, docstrings, tamaño de módulo, estándares QGIS).
 - **Linting Manual**: `uv run ruff check .`
 - **Formateo Manual**: `uv run ruff format .`
 - **Tests (unittest)**: `PYTHONPATH=.. uv run python3 -m unittest discover tests`

@@ -1,19 +1,22 @@
-[patterns.qgis_compliance]
-enabled = true
+# ai-context-core (ai-ctx) project configuration — v5 (context-only).
+#
+# ai-ctx compiles / renders / verifies developer context. Quality metrics are
+# single-sourced from qgis-plugin-analyzer (analysis_results/project_context.json).
+# Curated architecture notes live in .ai-context/architecture_notes.md and are
+# always embedded; the docs below are extra context.
 
-[patterns.i18n]
-scope = "gui_only"
+context_docs = ["docs/CORE_DISTINCTION_GUIDE_EN.md"]
 
-[analysis]
-exclude_patterns = [
-    "tests/**",
-    "scripts/**",
-    "docs/**",
-    "antigravity-framerepo/**",
-    "examples/**",
-    "venv/**",
-    ".venv/**",
-    "build/**",
-    "dist/**",
-    "*.egg-info/**"
-]
+[context]
+sections = ["structure", "metrics", "dependencies", "git"]
+
+# Keep the session bundle cheap (heuristic chars/4). Override with --max-tokens.
+[context.budget]
+max_tokens = 6000
+
+[context.budget.sections]
+structure = 2500
+dependencies = 2500
+
+[sources]
+source = "external"

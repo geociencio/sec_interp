@@ -288,6 +288,28 @@ Tests in `tests/core/` and `tests/gui/` should **never** require a real QGIS ins
 - Pre-commit hooks enforce formatting and commit message standards
 - Each commit should pass tests locally
 
+### 5. Context & Architecture Tooling (ai-context-core)
+`ai-context-core` (CLI `ai-ctx`) is a **context-only** compiler: it renders a
+token-efficient context bundle (`AI_CONTEXT.md`) and verifies its freshness.
+Quality metrics are **single-sourced** from `qgis-plugin-analyzer`; do not read
+ai-ctx's own `stats` score as a gate.
+
+- **At `/start-session`**, before reading `AI_CONTEXT.md`, refresh it:
+  `make context` (runs `qgis-analyzer analyze` + `ai-ctx context --source external --check`).
+  This keeps the bundle fresh and independent of how the previous session closed.
+- **Curated guidance** lives in `.ai-context/architecture_notes.md` (always
+  embedded) plus `context_docs` in `.ai-context/config.toml`.
+- **On demand** (see the root `Makefile`):
+  - `make context-deps` — circular dependencies + coupling (`ai-ctx deps`).
+  - `make context-git` — hotspots / churn.
+  - `make context-roadmap` — technical-debt prioritization (use in planning).
+  - `make context-graph` — Mermaid architecture diagram into `docs/structure/`.
+  - `make context-health` — context freshness / tokens / provenance.
+- `ai-ctx verify` (exit 1 when `.py` sources changed since the last render) is a
+  useful **close-time freshness gate**.
+- Analysis scope is defined by `.analyzerignore` (covers `core/`, `gui/`,
+  `exporters/`); it is shared with `qgis-plugin-analyzer`.
+
 ---
 
 ## 📊 Project Structure Overview

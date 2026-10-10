@@ -65,7 +65,10 @@ references to `ai-ctx full-scan` remain valid as history but are superseded by
 
 - The legacy tracked `.ai-context/` subsystem (dead: nothing imports
   `ai_workflow.py` / `context_manager.py`).
-- The `.agent/` framework workflows still invoke `ai-ctx analyze --path .`, which
-  remains valid in v5.0.0.
+- ~~The `.agent/` framework workflows still invoke `ai-ctx analyze --path .`~~
+  **Superseded (2026-10-10):** agentic-forge v1.2.0 removed every `ai-ctx` call
+  from the generic workflows; context generation/verification is now
+  **project-owned** via `make context` (see `AGENTS.md` → *Context & Architecture
+  Tooling*). See `implementation_plan_ai_context_core_value.md`.
 - `AI_CONTEXT.md` still lists the gitignored `antigravity-framerepo/` in its
   structure section (exclusion handling upstream in ai-context-core).

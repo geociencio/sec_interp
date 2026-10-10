@@ -178,6 +178,29 @@ docker-test: docker-build
 	docker run --rm -v $(CURDIR):/app/sec_interp sec_interp_test
 	python3 scripts/sync_metrics.py --testing-status
 
+# --- Context & architecture tooling (ai-context-core) ----------------------
+# Refresh ground-truth metrics (qgis-plugin-analyzer) and re-render the ai-ctx
+# context bundle. Run at the start of a session so AI_CONTEXT.md is never stale.
+.PHONY: context context-deps context-git context-roadmap context-graph context-health
+context:
+	uv run qgis-analyzer analyze . --max-cc 10
+	uv run ai-ctx context --path . --source external --check
+
+context-deps:
+	uv run ai-ctx deps --path . --cycles --metrics
+
+context-git:
+	uv run ai-ctx git --path .
+
+context-roadmap:
+	uv run ai-ctx roadmap --path .
+
+context-graph:
+	uv run ai-ctx graph --path . -o docs/structure/architecture.mmd
+
+context-health:
+	uv run ai-ctx health --path .
+
 .PHONY: apidoc docs docs-check docs-version docs-i18n docs-i18n-update docs-clean
 apidoc:
 	@chmod +x scripts/build_docs.sh
