@@ -1,4 +1,13 @@
-# Active Task Board (Updated 2026-10-04)
+# Active Task Board (Updated 2026-10-10)
+
+### Completed this session (2026-10-10 — ai-context-core Value Leverage)
+
+- [x] **Scope fix** `.analyzerignore` (**71 → 135 módulos**; cubre `core/`+`gui/`+`exporters/`).
+- [x] **Config v5** `.ai-context/config.toml` + **notas curadas** `.ai-context/architecture_notes.md`.
+- [x] **Frescura**: `make context` + `context-{deps,git,roadmap,graph,health}`; sección "Context & Architecture Tooling" en `AGENTS.md`.
+- [x] **Higiene**: `README_DEV.md`/v500 corregidos; 44 legacy `.ai-context/` y `antigravity-framerepo/` eliminados. Gates verdes (ruff/forge/docs/CC/i18n).
+- [ ] **Backlog (tras los releases)**: `module_size_gate=FAIL` (`core/controller.py` 428 > 400), 10 `MISSING_DOCSTRING`, 4 `NON_PYTHONIC_LOOP`, 2 `POTENTIAL_MISSING_SLOT`, +6 signal leaks.
+- Plan: `docs/plans/implementation_plan_ai_context_core_value.md`. Ref: `docs/maintenance/session_2026-10-10_ai_context_core_value.md`.
 
 ### Completed this session (2026-10-04 — Offline Help: User Guide only)
 

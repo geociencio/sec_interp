@@ -1,4 +1,28 @@
-# Next Steps (Updated 2026-10-08)
+# Next Steps (Updated 2026-10-10)
+
+## ✅ Session 2026-10-10 — ai-context-core Value Leverage (COMPLETADO)
+
+- **Qué se hizo**: `ai-context-core` pasó de artefacto stale a entrada de sesión
+  fresca y curada. La clave fue arreglar `.analyzerignore`, que scopeaba **tanto**
+  ai-ctx como `qgis-plugin-analyzer` solo a `gui/` → `core/` y `exporters/` quedaban
+  sin gate. Ahora **71 → 135 módulos**; contexto y gates ven la lógica de negocio.
+  - **Scope** `.analyzerignore`; **config v5** `.ai-context/config.toml`;
+    **notas curadas** `.ai-context/architecture_notes.md` (+ `context_docs`).
+  - **Frescura**: `make context` + `context-{deps,git,roadmap,graph,health}`;
+    sección "Context & Architecture Tooling" en `AGENTS.md`.
+  - **Higiene**: `README_DEV.md` y doc v500 corregidos; 44 ficheros legacy
+    `.ai-context/` eliminados; `antigravity-framerepo/` borrado.
+- **Calidad**: ruff/format limpios · `forge metrics validate` PASS · `check_docs`
+  PASS · CC/i18n PASS · `AI_CONTEXT.md` 2.639/6.000 tokens, 135 módulos.
+- **Plan**: `docs/plans/implementation_plan_ai_context_core_value.md`.
+- **Referencia**: `docs/maintenance/session_2026-10-10_ai_context_core_value.md`.
+- **Pendiente / cómo reanudar**:
+  1. **Backlog (tras los releases)**: `module_size_gate=FAIL` (`core/controller.py`
+     428 > 400), 10 `MISSING_DOCSTRING`, 4 `NON_PYTHONIC_LOOP`, 2
+     `POTENTIAL_MISSING_SLOT`, +6 signal leaks (preexistentes, aflorados por el scope).
+  2. **Release train**: v3.10.0 (11 oct) / v3.11.0 (18 oct) publican solos; al mergear
+     a `main` vigilar conflictos en `.ai-context/` y refs de docs; luego bóveda v3.11.0.
+  3. Deuda funcional: Goal 1.1 (symbology preview), selector multi-línea, Goal 1.5.
 
 ## ✅ Session 2026-10-08 — Unify Agentic Systems on agentic-forge (COMPLETADO)
 

@@ -1,3 +1,17 @@
+## [2026-10-10] Session: ai-context-core Value Leverage (Context as a First-Class Session Input)
+- **Achievement**: Turned `ai-context-core` from a stale, unused artifact into an always-fresh, curated session input. The keystone was fixing `.analyzerignore`, which scoped **both** `ai-ctx` and `qgis-plugin-analyzer` to `gui/` only — leaving `core/` and `exporters/` ungated. Scope now covers all plugin code: **71 → 135 modules**.
+- **Changes**:
+    - **Scope**: `.analyzerignore` rewritten (include `core/`, `gui/`, `exporters/`, `sec_interp_plugin.py`).
+    - **Config v5**: `.ai-context/config.toml` rewritten (`[sources] external`, `[context]`, `[context.budget]`, `context_docs`); dead v4 keys removed.
+    - **Curated context**: new `.ai-context/architecture_notes.md` + `docs/CORE_DISTINCTION_GUIDE_EN.md`; `AI_CONTEXT.md` = 2,639/6,000 tokens, 135 modules, no `antigravity-framerepo` leak.
+    - **Freshness**: `make context` (+ `context-deps/git/roadmap/graph/health`); new "Context & Architecture Tooling" section in `AGENTS.md`.
+    - **Wiring**: `docs/structure/architecture.mmd` (Mermaid) via `make context-graph`.
+    - **Hygiene**: `README_DEV.md` + v5.0.0 session doc corrected; 44 dead legacy `.ai-context/` files removed; local `antigravity-framerepo/` deleted.
+    - **Metrics**: `agent_metrics.json` re-synced (quality 56.9 → **57.9**, issues 4 → 16).
+- **Quality**: `ruff check`/`format` clean · `forge metrics validate` PASS · `check_docs` PASS (36 docs) · CC gate PASS · i18n PASS.
+- **Newly surfaced (backlog, deferred until after the release train)**: `module_size_gate=FAIL` (`core/controller.py` 428 > 400); 10 `MISSING_DOCSTRING`; 4 `NON_PYTHONIC_LOOP`; 2 `POTENTIAL_MISSING_SLOT`; +6 signal-leak heuristics.
+- **Maintenance**: [session_2026-10-10_ai_context_core_value.md](maintenance/session_2026-10-10_ai_context_core_value.md).
+
 ## [2026-10-10] Session: agentic-forge v1.2.0 Migration (Submodule + QGIS Domain Pack)
 - **Achievement**: Aligned SecInterp's agentic system with the genericized `agentic-forge` **v1.2.0**, bumping the `.agent/` submodule `a77548b` (v1.1.0) → `2de22cf` (v1.2.0) — the same revision already pinned by `ai-context-core` and `qgis-plugin-manager`. The QGIS skills/workflows extracted upstream to `scaffold/qgis/` are now **mounted as a project overlay** (`.agent-state/`), so framework updates no longer drop them.
 - **Changes**:
