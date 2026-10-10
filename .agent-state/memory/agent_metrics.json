@@ -7,7 +7,7 @@
         "last_updated_by": "close-phase v3.7.0 metric reconciliation",
         "tools": {
             "qgis-plugin-analyzer": "1.14.0",
-            "ai-context-core": "5.0.0"
+            "ai-context-core": "5.0.1"
         }
     },
     "summary": {
@@ -61,7 +61,7 @@
         },
         "ai_context": {
             "date": "2026-10-10",
-            "source": "AI_CONTEXT.md + context_manifest.json (ai-ctx 5.0.0, context-only)",
+            "source": "AI_CONTEXT.md + context_manifest.json (ai-ctx 5.0.1, context-only)",
             "provider": "external (qgis-analyzer)",
             "context_tokens": 619,
             "context_sections": [
@@ -70,7 +70,7 @@
                 "dependencies",
                 "git"
             ],
-            "note": "ai-ctx 5.0.0 is context-only: it no longer computes QGIS/i18n/security scores. Quality metrics are single-sourced from qgis-analyzer."
+            "note": "ai-ctx 5.0.1 is context-only: it no longer computes QGIS/i18n/security scores. Quality metrics are single-sourced from qgis-analyzer."
         },
         "sync_metrics": {
             "date": "2026-10-10",
