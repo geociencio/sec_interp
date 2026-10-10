@@ -9,10 +9,13 @@ context_docs = ["docs/CORE_DISTINCTION_GUIDE_EN.md"]
 
 [context]
 sections = ["structure", "metrics", "dependencies", "git"]
+# Compact, unstyled dependency diagram (v5.1.0 default); set true to emit the
+# classDef/class block, which dominates the artifact token count.
+mermaid_style = false
 
 # Keep the session bundle cheap (heuristic chars/4). Override with --max-tokens.
 [context.budget]
-max_tokens = 6000
+max_tokens = 8000
 
 [context.budget.sections]
 structure = 2500
