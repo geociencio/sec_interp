@@ -1,3 +1,12 @@
+## [2026-10-10] Session: ai-context-core v5.1.0 Adoption
+- **Achievement**: Adopted `ai-context-core` **v5.1.0** ("Context Alignment & Hardening"), a **backward-compatible** release (no command/artifact contract removed). It turns off the token-heavy Mermaid styling by default, ships a default token budget, drops the retired analysis domains from `project_context.json`, and makes the unused-import detector honor `# noqa`.
+- **Changes**:
+    - **Dependency**: `ai-context-core>=5.0.1` → `>=5.1.0` (`pyproject.toml` deps + dev; `uv.lock`).
+    - **Config**: `.ai-context/config.toml` aligned — `max_tokens` `6000` → `8000` + explicit `mermaid_style = false`.
+    - **Metrics**: `agent_metrics.json` tool version → `5.1.0`; `context_tokens` `619` → `2639` (was stale).
+- **Quality**: `ruff check`/`format` clean · `forge metrics validate` PASS · `unittest discover tests` **714 OK** · `make context` fresh (**2,639/8,000 tokens**).
+- **Maintenance**: [session_2026-10-10_ai_context_core_v510.md](maintenance/session_2026-10-10_ai_context_core_v510.md).
+
 ## [2026-10-10] Session: ai-context-core Value Leverage (Context as a First-Class Session Input)
 - **Achievement**: Turned `ai-context-core` from a stale, unused artifact into an always-fresh, curated session input. The keystone was fixing `.analyzerignore`, which scoped **both** `ai-ctx` and `qgis-plugin-analyzer` to `gui/` only — leaving `core/` and `exporters/` ungated. Scope now covers all plugin code: **71 → 135 modules**.
 - **Changes**:

@@ -1,5 +1,23 @@
 # Next Steps (Updated 2026-10-10)
 
+## ✅ Session 2026-10-10 — ai-context-core v5.1.0 Adoption (COMPLETADO)
+
+- **Qué se hizo**: se adoptó `ai-context-core` **v5.1.0** ("Context Alignment &
+  Hardening"), release **backward-compatible** (no quita comandos ni contratos).
+  Diagrama Mermaid compacto por defecto (`mermaid_style=false`), presupuesto de
+  tokens por defecto, dominios retirados (`security`/`qgis_compliance`/`patterns`/
+  `antipatterns`) fuera de `project_context.json`, y el detector de imports no usados
+  ahora honra `# noqa`.
+  - **Dependency**: `ai-context-core>=5.0.1` → `>=5.1.0` (`pyproject.toml` deps+dev, `uv.lock`).
+  - **Config**: `.ai-context/config.toml` `max_tokens` 6000 → 8000 + `mermaid_style=false`.
+  - **Metrics**: `agent_metrics.json` tool → 5.1.0; `context_tokens` 619 → 2639 (estaba stale).
+- **Calidad**: ruff/format limpios · `forge metrics validate` PASS · `unittest discover tests`
+  **714 OK** · `make context` fresco (**2.639/8.000 tokens, 33%**).
+- **Commit**: `ff6f5cfe`. **Referencia**: `docs/maintenance/session_2026-10-10_ai_context_core_v510.md`.
+- **Pendiente / cómo reanudar**: sin cambios respecto a abajo → backlog
+  (`module_size_gate` FAIL, docstrings, signal leaks) y **tren de release** v3.10.0 (11 oct) /
+  v3.11.0 (18 oct) + divergencia `legend_widget.py`.
+
 ## ✅ Session 2026-10-10 — ai-context-core Value Leverage (COMPLETADO)
 
 - **Qué se hizo**: `ai-context-core` pasó de artefacto stale a entrada de sesión

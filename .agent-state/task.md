@@ -1,5 +1,13 @@
 # Active Task Board (Updated 2026-10-10)
 
+### Completed this session (2026-10-10 — ai-context-core v5.1.0 Adoption)
+
+- [x] **Dependency**: `ai-context-core>=5.1.0` (`pyproject.toml` deps+dev, `uv.lock` 5.0.1 → 5.1.0).
+- [x] **Config**: `.ai-context/config.toml` `max_tokens` 6000 → 8000 + `mermaid_style=false` (default v5.1.0).
+- [x] **Metrics**: `agent_metrics.json` tool → 5.1.0; `context_tokens` 619 → 2639 (stale fix).
+- [x] Gates verdes: ruff · `forge metrics validate` · suite local OK (unittest discover) · `make context` fresco.
+- Commit: `ff6f5cfe`. Ref: `docs/maintenance/session_2026-10-10_ai_context_core_v510.md`.
+
 ### Completed this session (2026-10-10 — ai-context-core Value Leverage)
 
 - [x] **Scope fix** `.analyzerignore` (**71 → 135 módulos**; cubre `core/`+`gui/`+`exporters/`).

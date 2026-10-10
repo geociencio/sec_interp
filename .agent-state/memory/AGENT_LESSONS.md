@@ -15,6 +15,18 @@ See `.agent-state/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-10-10'
+    category: TOOLING
+    topic: a freshly published release can appear "unsatisfiable" via a stale index/PyPI JSON
+    lesson: Right after `ai-context-core` 5.1.0 hit PyPI, `uv lock --upgrade-package`
+      failed with "only ai-context-core<=5.0.1 is available", and the public JSON API
+      (pypi.org/pypi/.../json) still reported 5.0.1, even though the version was live;
+      `uv lock --upgrade-package ai-context-core --refresh` then resolved 5.1.0 from
+      `https://pypi.org/simple`.
+    action: When a just-published version is reported missing, do not trust the JSON
+      CDN — retry with `uv lock --upgrade-package <pkg> --refresh` (or `--no-cache`) and
+      confirm with `uv run <cli> --version` / `uv pip show <pkg>`.
+
   - date: '2026-10-04'
     category: TOOLING
     topic: Sphinx `root_doc` alone does not limit a build to a subset of documents

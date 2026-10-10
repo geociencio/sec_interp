@@ -7,7 +7,7 @@
         "last_updated_by": "close-phase v3.7.0 metric reconciliation",
         "tools": {
             "qgis-plugin-analyzer": "1.14.0",
-            "ai-context-core": "5.0.1"
+            "ai-context-core": "5.1.0"
         }
     },
     "summary": {
@@ -70,16 +70,16 @@
         },
         "ai_context": {
             "date": "2026-10-10",
-            "source": "AI_CONTEXT.md + context_manifest.json (ai-ctx 5.0.1, context-only)",
+            "source": "AI_CONTEXT.md + context_manifest.json (ai-ctx 5.1.0, context-only)",
             "provider": "external (qgis-analyzer)",
-            "context_tokens": 619,
+            "context_tokens": 2639,
             "context_sections": [
                 "structure",
                 "metrics",
                 "dependencies",
                 "git"
             ],
-            "note": "ai-ctx 5.0.1 is context-only: it no longer computes QGIS/i18n/security scores. Quality metrics are single-sourced from qgis-analyzer."
+            "note": "ai-ctx 5.1.0 is context-only: it no longer computes QGIS/i18n/security scores. Quality metrics are single-sourced from qgis-analyzer."
         },
         "sync_metrics": {
             "date": "2026-10-10",
@@ -96,10 +96,10 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-10-05",
-        "topic": "help_userguide_only",
+        "date": "2026-10-10",
+        "topic": "ai_context_core_v510",
         "tests_ok": 763,
-        "quality_score": 53.5,
+        "quality_score": 57.9,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
@@ -107,6 +107,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-10-05",
+            "tests_ok": 763,
+            "quality_score": 53.5,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "help_userguide_only"
+        },
         {
             "date": "2026-10-04",
             "tests_ok": 763,
