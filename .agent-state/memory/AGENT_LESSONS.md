@@ -17,6 +17,27 @@ lessons:
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-11'
     category: TOOLING
+    topic: ruff 0.17 formats Python code blocks inside Markdown files
+    lesson: After upgrading ruff to 0.17, `ruff format .` reported "383 files reformatted"
+      and rewrote 381 `.md` docs (plus root AGENTS.md), because 0.17 formats code fences in
+      Markdown. The project keeps docs/vault byte-stable via mirror gates, so a formatter
+      run silently touched documentation.
+    action: When upgrading a formatter, check it against non-code files; to keep Markdown
+      untouched add `**/*.md` to `[tool.ruff] exclude` (and remember `ruff format .` is not
+      limited to `.py`).
+
+  - date: '2026-10-11'
+    category: ENVIRONMENT
+    topic: a package-managed CLI cannot self-update and may lag the upstream distro
+    lesson: '`uv self update` failed with "uv was installed through an external package
+      manager". uv came from pacman on Manjaro, whose stable branch still served 0.12.10
+      while vanilla Arch already had 0.13.0 — so querying archlinux.org returned a version
+      the local distro did not ship.'
+    action: Before promising a CLI upgrade, detect the install source (`which` + package
+      manager) and query the ACTUAL distro repo (here the Manjaro mirror db), not upstream
+      Arch; update package-managed tools via the package manager, never self-update.
+  - date: '2026-10-11'
+    category: TOOLING
     topic: mypy path targets are ambiguous when the repo root is itself the package
     lesson: Running mypy from the repo root on `core exporters` reported every file twice
       (core.x vs sec_interp.core.x) because the repo root IS the `sec_interp` package (it

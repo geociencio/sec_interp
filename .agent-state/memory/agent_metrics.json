@@ -22,7 +22,7 @@
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
-        "type_hint_coverage_params": 96.4,
+        "type_hint_coverage_params": 97.0,
         "type_hint_coverage_returns": 99.7,
         "docstring_coverage": 98.9,
         "cyclomatic_complexity_gate": "PASS",
@@ -45,7 +45,7 @@
             },
             {
                 "path": "exporters/interpretation_3d_exporter.py",
-                "lines": 466
+                "lines": 472
             },
             {
                 "path": "gui/adapters/geometry.py",
@@ -113,9 +113,9 @@
     },
     "last_session": {
         "date": "2026-10-11",
-        "topic": "adoption_guides_and_manager_analysis",
+        "topic": "analyzer_1160_and_toolchain_refresh",
         "tests_ok": 763,
-        "quality_score": 57.9,
+        "quality_score": 56.2,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
@@ -123,6 +123,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-10-11",
+            "tests_ok": 763,
+            "quality_score": 57.9,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "adoption_guides_and_manager_analysis"
+        },
         {
             "date": "2026-10-11",
             "tests_ok": 763,
