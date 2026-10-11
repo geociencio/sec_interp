@@ -22,7 +22,9 @@
 - **Pendiente / cómo reanudar**:
   1. **Extender el gate**: `gui` tiene 338 hallazgos (fuera de alcance) — futura fase módulo a
      módulo, opcionalmente con un ratchet basado en `mypy-baseline`.
-  2. **Opcional**: `uv self update` (0.12.10 → 0.13.0).
+  2. **Pendiente (bloqueado)**: `uv` 0.12.10 → 0.13.0 — está vía **pacman** (Manjaro stable
+     aún sirve 0.12.10; `uv self update` no aplica). `pacman` lo subirá cuando se promueva;
+     comprobar con `pacman -Si uv`.
   3. El resto de pendientes (deuda por la cobertura 1.16.0, tren v3.10.0/v3.11.0,
      `legend_widget.py`, bóveda, Goal 1.1/1.5) siguen abajo sin cambios.
 
@@ -48,7 +50,9 @@
 - **Pendiente / cómo reanudar**:
   1. **Opcional**: cablear `mypy` a un target acotado (`mypy core exporters`) si debe
      ser gate — hoy `mypy .` revisa scripts/tests/docs y aborta pronto.
-  2. **Opcional**: `uv self update` (0.12.10 → 0.13.0).
+  2. **Pendiente (bloqueado)**: `uv` 0.12.10 → 0.13.0 — está vía **pacman** (Manjaro stable
+     aún sirve 0.12.10; `uv self update` no aplica). `pacman` lo subirá cuando se promueva;
+     comprobar con `pacman -Si uv`.
   3. El resto de pendientes (deuda por la cobertura 1.16.0, tren v3.10.0/v3.11.0,
      `legend_widget.py`, bóveda, Goal 1.1/1.5) siguen abajo sin cambios.
 
