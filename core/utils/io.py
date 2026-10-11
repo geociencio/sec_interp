@@ -98,7 +98,7 @@ def create_vector_writer(
     if writer.hasError() != QgsVectorFileWriter.WriterError.NoError:
         raise OSError(f"Error creating vector file {path}: {writer.errorMessage()}")
 
-    return cast("QgsVectorFileWriter", writer)
+    return cast(QgsVectorFileWriter, writer)
 
 
 def create_shapefile_writer(*args: Any, **kwargs: Any) -> QgsVectorFileWriter:

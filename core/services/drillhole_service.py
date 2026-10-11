@@ -82,7 +82,7 @@ class DrillholeService(IDrillholeService, TranslatableMixin):
             )
             if proj:
                 hole_id = proj.hole_id
-                point = cast("tuple[float, float]", collar.get("point"))
+                point = cast(tuple[float, float], collar.get("point"))
                 surveys = context.survey_data.get(hole_id, [])
                 intervals = context.interval_data.get(hole_id, [])
 

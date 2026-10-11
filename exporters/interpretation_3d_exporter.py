@@ -62,7 +62,7 @@ class Interpretation3DExporter(BaseExporter):
         # Calculate section azimuth and origin
         try:
             origin_x, origin_y, azimuth = self._calculate_section_geometry(
-                cast("QgsGeometry", section_line)
+                cast(QgsGeometry, section_line)
             )
         except Exception as e:
             raise ExportError(f"Failed to calculate section geometry: {e}") from e  # no-i18n
