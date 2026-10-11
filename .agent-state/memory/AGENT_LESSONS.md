@@ -16,6 +16,28 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-11'
+    category: AGENTIC_SYSTEM
+    topic: a published comparison/market doc goes stale fast — regenerate it from the registry
+    lesson: The internal competitor comparison (written at v3.9.1) listed 7 plugins and
+      claimed "QGIS 4 ahead of competitors"; one registry scan found ~30 relevant plugins,
+      a new direct competitor (OpenLog) and a QGIS-4-ready incumbent (Geoscience 2.0).
+    action: Before repeating any market/adoption claim, re-scan plugins.qgis.org (tags +
+      download counts) and the upstream repos; treat comparison docs as dated snapshots,
+      not living truth.
+
+  - date: '2026-10-11'
+    category: ARCHITECTURE
+    topic: structural attitude exports must capture dip direction explicitly, not assume RHR
+    lesson: SecInterp's StructureMeasurement keeps original_strike (a plain azimuth from
+      quadrant notation) and original_dip but drops the dip direction the source text
+      carries ("22 SW"). Deriving dip_dir = strike + 90 (RHR) would be wrong for the sample:
+      its RUMBO (345) and ECHADO direction (225) are not perpendicular, so strike cannot be
+      trusted to imply dip direction.
+    action: For any stereonet/attitude export, carry the dip direction from the source field
+      when present (parse_dip already extracts it) and use RHR only as a documented fallback;
+      validate the convention against a real dataset, never demo data.
+
+  - date: '2026-10-11'
     category: TOOLING
     topic: check the ecosystem before building a bespoke tool (adopt vs build)
     lesson: SecInterp's `exploration_qgis4_qa_mcp.md` proposed building a QGIS QA MCP from

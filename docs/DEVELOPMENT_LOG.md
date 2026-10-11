@@ -1,3 +1,12 @@
+## [2026-10-11] Session: Stereonet / 3D Interop Plan (Scoped & Deferred)
+- **Achievement**: Turned the ecosystem scan into a concrete, sample-data-validated **interoperability plan** — hand SecInterp's data to the specialist tools (qgSurf/mplstereonet for stereonets, QGIS's native 3D Map View for 3D) instead of building those crowded features. **No code written**; the plan is saved for a future session.
+- **Changes**:
+    - **`docs/plans/implementation_plan_interop_stereonet_3d.md`**: Phase A (attitudes export — `dip`/`dip_dir` primary + `strike` auxiliary, CSV + GeoPackage, `source_point` added to the core DTO) and Phase B (QGIS 3D Map View — B1 drillhole 3D `.qml`, B3 interpretation extrusion, B2 a **GUI scene action** with DEM terrain + vertical scale, B4 VE consistency). §9 holds a resume checklist.
+    - Grounded on verified extension points (`entities.py:46`, `structure_service.py:121→139`, `interpretation_3d_exporter.py:431`, `drillhole_3d_exporter.py`) and validated against `examples/sample_data` (MURALLA).
+- **Quality**: docs-only; `check_docs` PASS · `sync_vault_mirrors --check` clean · `validate_agent_system` PASS · ruff clean · `unittest discover tests` green.
+- **Follow-up**: implement in the planned order (B1 first) in a new session; the plan's §8 records the remaining decisions.
+- **Maintenance**: [session_2026-10-11_ecosystem_scan_and_interop_plan.md](maintenance/session_2026-10-11_ecosystem_scan_and_interop_plan.md).
+
 ## [2026-10-11] Session: Competitive Ecosystem Deep Scan & Report Refresh
 - **Achievement**: Widened the competitive analysis from 7 to **~30 relevant QGIS plugins** across five clusters (sections, drillholes, structural/stereonet, 3D modelling, geological mapping) and corrected outdated claims in the public comparison report.
 - **Changes**:

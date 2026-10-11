@@ -15,10 +15,11 @@
 - **Calidad**: dry-run `38151593980` **success** · publish `38151877186` **success** (tests Docker OK, help + package OK).
 - **Referencia**: `docs/maintenance/session_2026-10-11_release_train_v3.10.0.md`.
 - **Pendiente / cómo reanudar**:
-  1. **Subir el ZIP de v3.10.0 al portal de QGIS** (manual): `dist/sec_interp.3.10.0.zip`.
+  1. **v3.10.0 en el portal de QGIS**: ✅ **subido** — pendiente de **aprobación** del repositorio (verificar en https://plugins.qgis.org/plugins/sec_interp/).
   2. **v3.11.0 (18-oct)**: el cron debería publicarla; si no dispara, `gh workflow run scheduled-release.yml -f version=3.11.0`.
   3. **Merge final del tren → `main`** (tras v3.11.0): NO es `--ff-only` (main-only=65, train-only=26) →
      merge real; el diff de `.agent` (submódulo vs carpeta) y las versiones de `metadata/CHANGELOG` darán conflicto.
+  4. **Plan de interop estereonet/3D**: alcance **confirmado y guardado para implementación futura** — `docs/plans/implementation_plan_interop_stereonet_3d.md` (§9 checklist). B2 = acción GUI; empezar por **B1 (estilos 3D de sondeo)**.
 
 ## ✅ Session 2026-10-11 — QGIS MCP Integration (Fork + `qgis_driver`) (COMPLETADO)
 

@@ -1,5 +1,13 @@
 # Active Task Board (Updated 2026-10-11)
 
+### Completed this session (2026-10-11 — ecosystem scan + stereonet/3D interop plan)
+
+- [x] **Ecosystem scan**: ~30 relevant plugins mapped; report refreshed (`PLUGIN_REPORT_AND_COMPARISON_EN.md` → v3.10.0; +OpenLog, stereonet cluster, 3D modelling, adoption snapshot); internal note `.agent-state/history/ecosystem_comparison_2026-10-11.md`.
+- [x] **Interop plan** `docs/plans/implementation_plan_interop_stereonet_3d.md`: scope confirmed with the user and **deferred** (no code); §9 resume checklist; validated on `examples/sample_data`.
+- [x] v3.10.0 **subido al portal de QGIS** (pendiente de aprobación).
+- Ref: `docs/maintenance/session_2026-10-11_ecosystem_scan_and_interop_plan.md`.
+- [ ] **Implementar** el plan (§9): empezar por **B1** (estilos 3D de sondeo) → B3 → B2 → B4 → Fase A.
+
 ### Completed this session (2026-10-11 — QGIS MCP integration: fork + `qgis_driver`)
 
 - [x] **Fork vendorizado** `tools/qgis_mcp/` (`nkarasiak/qgis-mcp` v0.15.1, `55519eb`); puerto por defecto **9876 → 9877**; `PROVENANCE.md`.
