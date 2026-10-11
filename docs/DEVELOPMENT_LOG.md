@@ -1,3 +1,13 @@
+## [2026-10-11] Session: Dependency Refresh (uv "safe batch")
+- **Achievement**: Brought the `uv`-managed toolchain up to date with a deliberately **low-risk batch**, holding back the breaking upgrades. Adopted the ecosystem tool `qgis-manage` 0.9.0 → **0.9.2** (used by `make compile/deploy/package` and the release CI) plus a set of dev tools, with **no plugin-runtime impact**. `ruff`, `mypy` and `black` were intentionally left out (lint-rule/major-bump risk).
+- **Changes**:
+    - **Ecosystem**: `qgis-manage` 0.9.0 → 0.9.2; `qgis-stubs` 0.2.0.post1 → 0.5.0.
+    - **Dev tools**: `bandit` 1.9.3 → 1.9.4, `flake8` 7.3.0 → 7.4.1, `pre-commit` 4.5.1 → 4.6.2, `pytest` 9.0.2 → 9.1.1, `pytest-mock` 3.15.1 → 3.16.0, `networkx` 3.6.1 → 3.7, `setuptools` 80.10.1 → 84.0.0, `sphinx-intl` 2.3.2 → 2.4.0, `sphinxcontrib-mermaid` 2.0.0 → 2.1.1, `myst-parser` 5.0.0 → 5.1.0, `linkify-it-py` 2.0.3 → 2.2.0 (+ transitives: `markdown-it-py`, `mdit-py-plugins`, `pycodestyle`, `pyflakes`; dropped `uc-micro-py`).
+    - **Application**: `uv lock --upgrade-package …` (explicit list) via `--no-cache --refresh` + `uv sync`. `agent_metrics.json` untouched (no metric impact).
+- **Quality**: `ruff check`/`format` clean · `unittest discover tests` **763 OK** (Docker) · `qgis-manage 0.9.2` packaging **smoke-tested** (`sec_interp.3.9.1.zip` built to `/tmp`, exit 0, repo clean) · `forge metrics validate` PASS.
+- **Held back (deliberate)**: `ruff` 0.15.2 → 0.17.0 (new lint rules; must sync the pre-commit rev `v0.8.4` + CI + lock together) and `mypy` 1.19.1 → 2.4.0 (**major/breaking**). `black` is unused (`ruff format` is canonical) → candidate for removal.
+- **Follow-up**: `uv self update` (0.12.10 → 0.13.0).
+
 ## [2026-10-11] Session: qgis-plugin-analyzer 1.16.0 Upgrade (Module-Coverage Fix + Triage)
 - **Achievement**: Adopted `qgis-plugin-analyzer` **1.16.0** and, crucially, discovered that **1.15.2 was silently under-reporting module coverage**: the whole-project run analysed only **135** modules instead of the true **171** (the plugin's real `.py` count minus the 2 ignored root scripts). 1.16.0 fixed the discovery bug, so previously-ungated business logic (`core/validation/*`, `exporters/*`, `gui/adapters/*`, `gui/ui/pages/*`) is now analysed. All findings surfaced by the corrected coverage were triaged to keep the gates green.
 - **Changes**:

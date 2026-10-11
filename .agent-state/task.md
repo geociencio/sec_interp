@@ -1,5 +1,14 @@
 # Active Task Board (Updated 2026-10-11)
 
+### Completed this session (2026-10-11 — Dependency refresh, uv "safe batch")
+
+- [x] **Ecosystem**: `qgis-manage` 0.9.0 → **0.9.2** (build/release CI); `qgis-stubs` 0.2.0.post1 → 0.5.0.
+- [x] **Dev tools**: `bandit` 1.9.4 · `flake8` 7.4.1 · `pre-commit` 4.6.2 · `pytest` 9.1.1 · `pytest-mock` 3.16.0 · `networkx` 3.7 · `setuptools` 84.0.0 · `sphinx-intl` 2.4.0 · `sphinxcontrib-mermaid` 2.1.1 · `myst-parser` 5.1.0 · `linkify-it-py` 2.2.0.
+- [x] **Method**: `uv lock --upgrade-package …` + `uv sync`; `agent_metrics.json` unchanged.
+- [x] **Held back (deliberate)**: `ruff` 0.15.2 → 0.17.0 (lint rules + pre-commit/CI sync) and `mypy` 1.19.1 → 2.4.0 (major). `black` unused → removal candidate.
+- [x] Gates verdes: ruff · 763 OK (Docker) · `qgis-manage 0.9.2` packaging smoke (exit 0) · `forge metrics validate` PASS.
+- [ ] **Opcional**: `uv self update` (0.12.10 → 0.13.0).
+
 ### Completed this session (2026-10-11 — qgis-plugin-analyzer 1.16.0, coverage fix + triage)
 
 - [x] **Dependency**: `qgis-plugin-analyzer>=1.15.2` → `>=1.16.0` (`pyproject.toml` deps+dev; `uv.lock`).

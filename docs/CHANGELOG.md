@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Release packaging**: the distributed plugin ZIP now includes the in-plugin offline help (it was missing from the v3.9.1 build) and no longer ships the internal release-queue file.
 
+- **Tooling (dev)**: refreshed the `uv`-managed developer toolchain — `qgis-manage` 0.9.0 → **0.9.2**, `pre-commit` 4.6.2, `pytest` 9.1.1, `setuptools` 84.0.0, `sphinx-intl` 2.4.0, `sphinxcontrib-mermaid` 2.1.1 and others — with no plugin-runtime impact. `ruff` (0.15.2 → 0.17.0) and `mypy` (1.19.1 → 2.4.0) upgrades are deliberately held back pending a dedicated lint/type pass.
+
 ## [3.9.1] - 2026-10-04
 
 ### Added

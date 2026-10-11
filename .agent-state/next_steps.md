@@ -1,5 +1,31 @@
 # Next Steps (Updated 2026-10-11)
 
+## ✅ Session 2026-10-11 — Dependency Refresh (uv "safe batch") (COMPLETADO)
+
+- **Qué se hizo**: se actualizó la cadena de herramientas gestionada por `uv` con un
+  **lote de bajo riesgo**, dejando fuera a propósito las actualizaciones breaking.
+  **Sin impacto en el runtime del plugin**.
+  - **Ecosistema**: `qgis-manage` 0.9.0 → **0.9.2** (la usan `make compile/deploy/package`
+    y el CI de release); `qgis-stubs` 0.2.0.post1 → 0.5.0.
+  - **Dev tools**: `bandit` 1.9.4 · `flake8` 7.4.1 · `pre-commit` 4.6.2 · `pytest` 9.1.1 ·
+    `pytest-mock` 3.16.0 · `networkx` 3.7 · `setuptools` 84.0.0 · `sphinx-intl` 2.4.0 ·
+    `sphinxcontrib-mermaid` 2.1.1 · `myst-parser` 5.1.0 · `linkify-it-py` 2.2.0
+    (+ transitivas; baja `uc-micro-py`).
+  - **Método**: `uv lock --upgrade-package … --no-cache --refresh` + `uv sync`.
+    `agent_metrics.json` intacto (sin cambio de métricas).
+  - **Retenidas a propósito**: `ruff` 0.15.2 → 0.17.0 (reglas nuevas; hay que sincronizar
+    rev de pre-commit `v0.8.4` + CI + lock) y `mypy` 1.19.1 → 2.4.0 (**major**). `black`
+    no se usa (→ candidato a eliminar).
+- **Calidad**: ruff/format limpios · `unittest discover tests` **763 OK** (Docker) ·
+  **empaquetado smoke-test** con `qgis-manage 0.9.2` (`sec_interp.3.9.1.zip` a `/tmp`, exit 0) ·
+  `forge metrics validate` PASS.
+- **Pendiente / cómo reanudar**:
+  1. **Opcional**: `uv self update` (0.12.10 → 0.13.0).
+  2. **Opcional (fase propia)**: subir `ruff` 0.17 y `mypy` 2.x sincronizando
+     pre-commit/CI y arreglando el fallout; decidir si se elimina `black`.
+  3. El resto de pendientes (deuda por la cobertura 1.16.0, tren v3.10.0/v3.11.0,
+     `legend_widget.py`, bóveda, Goal 1.1/1.5) siguen abajo sin cambios.
+
 ## ✅ Session 2026-10-11 — qgis-plugin-analyzer 1.16.0 (Module-Coverage Fix + Triage) (COMPLETADO)
 
 - **Qué se hizo**: se adoptó `qgis-plugin-analyzer` **1.16.0** y se descubrió que **1.15.2
