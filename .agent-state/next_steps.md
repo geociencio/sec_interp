@@ -1,5 +1,42 @@
 # Next Steps (Updated 2026-10-11)
 
+## ✅ Session 2026-10-11 — qgis-plugin-analyzer 1.16.0 (Module-Coverage Fix + Triage) (COMPLETADO)
+
+- **Qué se hizo**: se adoptó `qgis-plugin-analyzer` **1.16.0** y se descubrió que **1.15.2
+  infrarreportaba la cobertura**: analizaba **135** módulos en proyecto-completo
+  cuando el plugin tiene **171** (`.py` reales − 2 scripts ignorados). 1.16.0 arregla
+  el bug de descubrimiento; el código antes sin gate (`core/validation/*`,
+  `exporters/*`, `gui/adapters/*`, `gui/ui/pages/*`) ahora se analiza. Se triajearon
+  los hallazgos para dejar los gates verdes.
+  - **Dependency**: `>=1.15.2` → `>=1.16.0` (`pyproject.toml` deps+dev; `uv.lock`
+    vía `uv lock --upgrade-package qgis-plugin-analyzer --no-cache --refresh`).
+  - **Cobertura 135 → 171**. Prueba de que era bug de 1.15.2: analizando
+    `core/validation` por separado veía los 12 módulos; en proyecto-completo solo 5.
+  - **i18n**: 1.16.0 emitió **167 `MISSING_I18N`** (todas en los 36 módulos nuevos;
+    0 en los ya cubiertos → la regla no cambió). Triaje a **0** =
+    `extra_ignore_calls` (`_stats_edit`, `_check_field`, ya traducidas) + **129
+    `# no-i18n`** (core es Qt-free; los mensajes de core son inglés por diseño →
+    deuda: traducir inyectando el traductor de la GUI).
+  - **CC**: refactorizadas las **3 funciones** >10 → `implausible_crs_reason`
+    (14→7), `export_topography` (12→5), `export_structures` (11→7). `cc_gate` PASS.
+  - **Metrics**: quality 57.9 → **56.2** · maintainability 99.9 · security 100.0 ·
+    issues 35 · i18n 0 · cc_gate PASS · `module_size_gate` FAIL (4 módulos).
+- **Calidad**: ruff/format limpios · `unittest discover tests` **763 OK** (Docker) ·
+  `forge metrics validate` PASS · `sync_metrics --validate` PASS · `make context`
+  fresco (**2.650/8.000 tokens**, 171 módulos).
+- **Referencia**: `docs/maintenance/session_2026-10-11_qgis_analyzer_1_16_0.md`.
+- **Pendiente / cómo reanudar**:
+  1. **Deuda SecInterp (aflorada por el fix de cobertura)**: `module_size_gate` FAIL
+     **4** módulos (`core/controller.py` 428, `exporters/interpretation_3d_exporter.py`
+     466, `gui/adapters/geometry.py` 598, `gui/preview_layer_factory.py` 511);
+     `GOD_OBJECT` 18 (la regla ahora también marca clases con >20 métodos);
+     i18n de core (mensajes user-facing en inglés).
+  2. **Upstream opcional (analyzer)**: la regla `MISSING_I18N` marca cadenas YA
+     traducidas vía helper (`_stats_edit`, `_check_field`) y docstrings atributo
+     (no solo el primero del módulo) → candidato a mejorar upstream.
+  3. El resto de pendientes (tren v3.10.0/v3.11.0, `legend_widget.py`, bóveda, Goal
+     1.1/1.5) siguen abajo sin cambios.
+
 ## ✅ Session 2026-10-11 — qgis-plugin-analyzer 1.15.2 (B102 fix) (COMPLETADO)
 
 - **Qué se hizo**: se adoptó `qgis-plugin-analyzer` **v1.15.2**, el fix upstream de los

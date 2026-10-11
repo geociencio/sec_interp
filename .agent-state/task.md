@@ -1,5 +1,15 @@
 # Active Task Board (Updated 2026-10-11)
 
+### Completed this session (2026-10-11 — qgis-plugin-analyzer 1.16.0, coverage fix + triage)
+
+- [x] **Dependency**: `qgis-plugin-analyzer>=1.15.2` → `>=1.16.0` (`pyproject.toml` deps+dev; `uv.lock`).
+- [x] **Root cause found**: 1.15.2 analysed **135** modules whole-project vs the true **171**; 1.16.0 fixes the discovery bug (verified: `core/validation` alone showed 12 in 1.15.2, but only 5 whole-project).
+- [x] **i18n triage**: 167 `MISSING_I18N` → **0** (`extra_ignore_calls` for `_stats_edit`/`_check_field` + 129 `# no-i18n`).
+- [x] **CC remediation**: 3 functions > 10 refactored (`implausible_crs_reason` 14→7, `export_topography` 12→5, `export_structures` 11→7) → `cc_gate` PASS.
+- [x] **Metrics**: `agent_metrics.json` re-synced (quality 56.2, maintainability 99.9, security 100.0, issues 35, i18n 0, tool 1.16.0). Gates verdes (ruff · forge · sync validate · 763 OK · `make context` fresco).
+- Ref: `docs/maintenance/session_2026-10-11_qgis_analyzer_1_16_0.md`.
+- [ ] **Backlog (aflorado)**: `module_size_gate` FAIL **4** módulos (+3 nuevos); `GOD_OBJECT` 18; i18n de core (mensajes user-facing en inglés).
+
 ### Completed this session (2026-10-11 — qgis-plugin-analyzer 1.15.2, B102 fix)
 
 - [x] **Dependency**: `qgis-plugin-analyzer>=1.15.1` → `>=1.15.2` (`pyproject.toml` deps+dev; `uv.lock` vía `--no-cache --refresh`).

@@ -6,7 +6,7 @@
         "last_updated": "2026-10-11",
         "last_updated_by": "close-phase v3.7.0 metric reconciliation",
         "tools": {
-            "qgis-plugin-analyzer": "1.15.2",
+            "qgis-plugin-analyzer": "1.16.0",
             "ai-context-core": "5.1.0"
         }
     },
@@ -18,30 +18,42 @@
         "avg_retries_per_session": 1.18,
         "tests_ok": 763,
         "tests_ok_note": "615 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
-        "quality_score_latest": 57.9,
+        "quality_score_latest": 56.2,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
-        "type_hint_coverage_params": 95.2,
-        "type_hint_coverage_returns": 99.5,
-        "docstring_coverage": 98.5,
+        "type_hint_coverage_params": 96.4,
+        "type_hint_coverage_returns": 99.7,
+        "docstring_coverage": 98.9,
         "cyclomatic_complexity_gate": "PASS",
         "i18n_issues_qgis_analyzer": 0,
         "i18n_note": "qgis-analyzer 1.15.2 MISSING_I18N rule (AST-based) reports 0 violations. PerformanceTimer timing labels are suppressed via pyproject.toml [tool.qgis-analyzer.profiles.default.rules.MISSING_I18N] extra_ignore_calls.",
-        "total_issues": 32,
+        "total_issues": 35,
         "i18n_hygiene_gate": "PASS",
         "issue_breakdown": {
-            "GOD_OBJECT": 15,
+            "GOD_OBJECT": 18,
             "MISSING_DOCSTRING": 10,
             "NON_PYTHONIC_LOOP": 4,
             "POTENTIAL_MISSING_SLOT": 2,
             "SPAGHETTI_CODE": 1
         },
-        "module_size_gate": "FAIL (1 modules > 400 lines)",
+        "module_size_gate": "FAIL (4 modules > 400 lines)",
         "large_modules": [
             {
                 "path": "core/controller.py",
                 "lines": 428
+            },
+            {
+                "path": "exporters/interpretation_3d_exporter.py",
+                "lines": 466
+            },
+            {
+                "path": "gui/adapters/geometry.py",
+                "lines": 598
+            },
+            {
+                "path": "gui/preview_layer_factory.py",
+                "lines": 511
             }
         ],
         "test_count": 763
@@ -52,18 +64,18 @@
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
-                "module_stability": 57.9,
+                "module_stability": 56.2,
                 "maintainability": 99.9,
                 "security": 100.0
             },
             "issues": {
-                "GOD_OBJECT": 15,
+                "GOD_OBJECT": 18,
                 "MISSING_DOCSTRING": 10,
                 "NON_PYTHONIC_LOOP": 4,
                 "POTENTIAL_MISSING_SLOT": 2,
                 "SPAGHETTI_CODE": 1,
                 "MISSING_I18N": 0,
-                "total": 32
+                "total": 35
             }
         },
         "tests_local": {

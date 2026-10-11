@@ -16,6 +16,32 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-11'
+    category: TOOLING
+    topic: a whole-project analyzer run can silently under-report modules; cross-check the count
+    lesson: qgis-plugin-analyzer 1.15.2 analysed only 135 modules on the whole project
+      although the plugin has 171 (its real .py count minus 2 ignored root scripts);
+      1.16.0 fixed the discovery bug. Analysing a sub-directory (core/validation)
+      already listed all 12 files, so the loss happened only in whole-project
+      aggregation, and every historical metric had been computed over ~79% of the code
+      while looking "clean".
+    action: After any analyzer run, sanity-check the reported module count against
+      find <pkg> -name '*.py' (minus ignore rules); if it disagrees, the run is not
+      trustworthy for gates. Re-baseline metrics when a tool version changes coverage.
+
+  - date: '2026-10-11'
+    category: TOOLING
+    topic: an i18n rule flagging literal args cannot follow translation done inside a helper
+    lesson: qgis-plugin-analyzer MISSING_I18N flagged strings that are already translated
+      (e.g. _stats_edit(tooltip) -> self.tr(tooltip), _check_field(..., "Collar ID") ->
+      self.tr(...).format(label)), and attribute docstrings such as the bare string after
+      a module-level type alias (only the first module string is recognised as a docstring).
+      All 167 new findings sat in the newly-covered modules, i.e. the rule did not change.
+    action: For helper-wrapped translations, add the helper call name to the profile's
+      rules.MISSING_I18N.extra_ignore_calls instead of tagging each string; keep in mind
+      that Qt-free layers (core/) cannot wrap with tr() and their user-facing messages
+      are English by design until a GUI-injected translator is wired.
+
+  - date: '2026-10-11'
     category: AGENTIC_SYSTEM
     topic: a docs-only push can surface a long-standing red CI, not a regression
     lesson: Pushing documentation-only commits to qgis-plugin-manager and
