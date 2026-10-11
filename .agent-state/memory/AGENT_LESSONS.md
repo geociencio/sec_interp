@@ -16,6 +16,16 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-11'
+    category: TOOLING
+    topic: a Latin-1 CSV misread as UTF-8 silently corrupts parsed structural strikes
+    lesson: The sample structural DB (`basedatosestruct.csv`) is Latin-1; reading it as
+      UTF-8 turns the `°` into U+FFFD, so `parse_strike("N 15° W")` falls back to the bare
+      number and returns 15 instead of 345 — a plausible-but-wrong azimuth with no error.
+    action: Declare/verify the encoding of text data before parsing degrees (Latin-1 vs
+      UTF-8); harden quadrant parsers to refuse a token that lost its E/W instead of
+      returning a bare-number fallback.
+
+  - date: '2026-10-11'
     category: AGENTIC_SYSTEM
     topic: a published comparison/market doc goes stale fast — regenerate it from the registry
     lesson: The internal competitor comparison (written at v3.9.1) listed 7 plugins and

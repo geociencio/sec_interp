@@ -51,6 +51,8 @@ any 3D modelling engine (GemPy/LoopStructural — model building, not visualizat
 | `export_structures` writes `structural_profile.csv` (`dist, apparent_dip`) + a vector file | `handlers/structures.py:53-81` |
 | `get_exporter` dispatches by **file extension** (`.csv`, `.gpkg`, `.shp`, `.dxf`…) | `exporters/__init__.py:54-81` |
 | Strike is parsed to an **azimuth 0–360** (quadrant notation supported) | `core/utils/parsing.py:9-40` |
+| `parse_dip` returns the **cardinal centre** for the dip direction (`22° SW → 225`), **not** the perpendicular (`255`) | observed via `parse_dip` on the sample |
+| The sample DB is **Latin-1**: misread as UTF-8 the `°` corrupts and `parse_strike` **silently returns the bare number** (`N 15° W → 15`, not `345`) | observed: latin-1 → 345, utf-8-replace → 15 |
 
 **Consequence**: Phase A needs only a small, non-breaking DTO/field extension.
 Phase B needs source map coordinates, which currently do **not** reach `core/` —
@@ -97,6 +99,14 @@ stays in QGIS.
     provides a numeric dip direction instead, use it directly.
   - ⚠️ the numeric `DIP` column in the sample (`45`) disagrees with `ECHADO` (`22`); the
     **text dip (`22`) is authoritative**.
+  - ⚠️ **Do not use `parse_dip`'s dip-direction azimuth** — it returns the **cardinal
+    centre** (`22° SW → 225`), not the perpendicular. Use the label only to choose the
+    `±90` side and compute `dip_dir` from the strike.
+  - ⚠️ **Encoding**: the sample `basedatosestruct.csv` is **Latin-1** (the `_clean` variant
+    has the `°` double-mangled to `ø`). Misread as UTF-8, `parse_strike` **silently
+    returns the wrong azimuth** (`N 15° W → 15` instead of `345`). The import must use the
+    correct encoding; consider hardening `parse_strike` to refuse a quadrant that lost its
+    E/W (or to strip U+FFFD).
 - Output a `dip_dir` + `dip` pair as the **primary** orientation (what a QGIS stereonet
   plugin plots), with `strike` kept as an auxiliary column.
 - Output **both** a CSV and a GeoPackage point layer (confirmed), with the same columns.
@@ -210,6 +220,7 @@ interfaces.
 | Risk | Mitigation |
 |---|---|
 | Strike/dip-direction sign (which side the label names) | Derive `dip_dir = strike ∓ 90` from the label; validate on a real dataset; document |
+| Silent wrong strike from CSV encoding mangling | Declare the encoding (Latin-1 vs UTF-8); harden `parse_strike` to refuse a quadrant that lost its E/W |
 | No rake/fault kinematics in the model | State the limitation; qgSurf fault plotting not covered in v1 |
 | GemPy/LoopStructural input drift across versions | Pin the documented columns; keep the CSV, not a bespoke binary format |
 | Scope creep into a real stereonet/3D engine | Explicit non-goals (§2); interop only |

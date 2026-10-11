@@ -89,3 +89,6 @@ antigravity-framerepo/
 
 # graphify code graph artifacts
 graphify-out/
+
+# LibreOffice lock files (transient)
+.~lock.*#
