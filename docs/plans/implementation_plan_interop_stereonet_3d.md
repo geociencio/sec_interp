@@ -78,14 +78,21 @@ a design decision (see §4 and §8-Q3).
 - Populate it in `structure_service._process_single_structure` (`:139`) from the
   `point` already in hand (`:121`).
 - Add `dip`, `strike`, `dip_dir` columns to `StructureVectorExporter._create_structure_fields`
-  (`:243-246`). **`dip_dir` handling (refined after inspecting the sample data)**:
-  `basedatosestruct_clean.csv` stores `STRIKE` as a plain azimuth (0–360) parsed from
-  quadrant notation (`N 15° W → 345`) and carries the **dip direction only in the text**
-  (`ECHADO = "22° SW"`). `parse_dip` already extracts that dip direction, but
-  `StructureMeasurement` drops it. So Phase A must **capture the dip direction when the
-  source provides it** (preferred) and fall back to RHR `dip_dir = (strike + 90) % 360`
-  only when absent — never assume RHR blindly.
+  (`:243-246`). **Semantics confirmed by the user (from `basedatosestruct_clean.csv`)**:
+  `RUMBO`/`STRIKE` = **strike azimuth** (`N 15° W → 345`); `ECHADO` = **dip + dip direction**
+  (`22° SW → dip 22, dip_dir 225`). So the orientation a stereonet consumes comes from the
+  dip field, and `parse_dip` already extracts `(dip, dip_dir)` — but `StructureMeasurement`
+  keeps only the angle and drops the direction. Phase A must therefore **carry the dip
+  direction from the source** (primary); RHR `dip_dir = (strike + 90) % 360` is a fallback
+  only.
+- Output a `dip_dir` + `dip` pair as the **primary** orientation (what qgSurf/mplstereonet
+  plot), with `strike` kept as an auxiliary column.
 - Output **both** a CSV and a GeoPackage point layer (confirmed), with the same columns.
+
+> ⚠️ **Open technical point**: for a plane, strike ⟂ dip-direction. Here `RUMBO 345` and
+> `ECHADO → 225` differ by ~120°, not 90° (a stereonet tool plots from **one** pair, so they
+> cannot both be fed). Need to confirm which is authoritative for this dataset — the dip
+> direction from `ECHADO` (recommended), or `RUMBO`.
 - Add a `structural_attitudes.csv` writer alongside `structural_profile.csv`
   (`handlers/structures.py`), with a header the tools map without renaming:
 
@@ -206,11 +213,11 @@ extension as Phase A, plus a GUI adapter for the geology interfaces.
 ## 8. Open questions (need approval before Phase A code)
 
 1. **Scope**: confirm **exports only** (interop), not a native stereonet preview.
-2. **Strike / dip-direction** — *answered 2026-10-11*: `STRIKE` is a plain azimuth
-   (`N15W→345`); the dip direction is only in the source text. Capture it when present;
-   RHR fallback otherwise. (⚠️ the sample data is fictitious and geometrically
-   inconsistent — `STRIKE 345` vs `ECHADO "SW"` are not perpendicular, and the numeric
-   `DIP` column disagrees with the text — so validate against a **real** dataset.)
+2. **Orientation semantics** — *confirmed by the user 2026-10-11*: `RUMBO N15W` → strike
+   345; `ECHADO 22 SW` → dip 22, **dip_dir 225**. The export uses **dip + dip_dir** as the
+   primary pair (strike kept as auxiliary). **Still open**: strike 345 and dip_dir 225 are
+   ~120° apart, not perpendicular (a plane needs 90°) → confirm which pair is
+   authoritative before plotting.
 3. **Source coords** — *answered 2026-10-11*: **extend the core DTO** with `source_point`.
 4. **Priority**: qgSurf/mplstereonet (stereonet) first — confirm. And within 3D, which
    of §4's candidate items matter most (3D QML for drillholes, scene setup, VE
