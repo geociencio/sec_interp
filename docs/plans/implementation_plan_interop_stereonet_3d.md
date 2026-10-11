@@ -1,4 +1,4 @@
-# Implementation Plan: External Interop — Stereonet Analysis & 3D Modelling
+# Implementation Plan: Result Hand-off — Structural Attitudes & 3D Map View (in QGIS)
 
 **Phase**: post-v3.10.0 backlog (candidate v3.11.x)
 **Status**: 📝 PLAN — **scope confirmed 2026-10-11, deferred for future implementation** (no code written)
@@ -16,21 +16,27 @@
 
 ## 0. Executive summary
 
-The 2026 ecosystem scan shows **stereonet analysis** (qgSurf ~83k, Stereonet ~19.6k,
-GeoStereonet, Stereoplot, GeoTrace…) and **3D geological modelling** (LoopStructural,
-GemPy) are **crowded and mature** markets, while SecInterp's defensible moat is its
-**integrated 2D section workflow**. Chasing either feature head-on is expensive and
-low-differentiation. This plan therefore adds **interoperation exports** — SecInterp
-keeps producing its section data and hands it to the specialist tools — rather than
-reimplementing a stereonet or a 3D modelling engine.
+**Visualization stays entirely within QGIS** — the 2D map canvas, QGIS's native **3D Map
+View**, and existing QGIS stereonet plugins (Stereonet, GeoStereonet, qgSurf). SecInterp's
+role is therefore to produce the right **layers and fields** so QGIS and its plugins can
+render the results — **not** to build a viewer, and **not** to depend on standalone
+external Python tools.
+
+The 2026 ecosystem scan shows stereonet analysis and 3D geological modelling are
+**crowded and mature** markets, while SecInterp's defensible moat is its **integrated 2D
+section workflow**. This plan therefore adds **interoperation exports** (QGIS layers) and
+a **3D scene hand-off**, rather than reimplementing a stereonet or a 3D modelling engine.
 
 Two deliverables:
 
-- **Phase A — Stereonet interop**: export the structural measurements (true dip +
-  strike/dip-direction) in a form `mplstereonet` and qgSurf consume directly.
-- **Phase B — QGIS 3D Map View hand-off**: make the Z-aware exports render correctly in QGIS's native **3D Map View** (the workflow actually in use) — 3D styling + scene setup — with external modelling (GemPy/LoopStructural) kept as an optional extra.
+- **Phase A — Structural attitude export**: emit the measurements (true dip + dip
+  direction, strike) as a **QGIS layer** (GeoPackage) + CSV, consumable by a QGIS
+  stereonet plugin. Visualization happens in QGIS.
+- **Phase B — QGIS 3D Map View hand-off**: make the Z-aware exports render correctly in
+  QGIS's native **3D Map View** — 3D styling + scene setup (terrain, vertical scale).
 
-**Out of scope**: an in-plugin stereonet viewer and any 3D modelling engine.
+**Out of scope**: an in-plugin stereonet viewer; external standalone visualization tools;
+any 3D modelling engine (GemPy/LoopStructural — model building, not visualization).
 
 ---
 
@@ -55,11 +61,11 @@ a design decision (see §4 and §8-Q3).
 ## 2. Scope
 
 **In scope**
-- A new **structural attitude export** (CSV and/or GeoPackage) with true dip,
-  strike and dip-direction, ready for `mplstereonet`/qgSurf.
-- **QGIS 3D Map View hand-off**: 3D styling (QML) and scene setup for the existing
-  Z-aware exports; optional GemPy/LoopStructural model inputs.
-- Documentation of the interoperability formats + tests.
+- A new **structural attitude export** (GeoPackage + CSV) with true dip, strike and
+  dip-direction, ready for a QGIS stereonet plugin.
+- **QGIS 3D Map View hand-off**: 3D styling (QML) and scene setup (terrain, vertical
+  scale) for the existing Z-aware exports.
+- Documentation of the formats + tests.
 
 **Out of scope**
 - An in-plugin stereonet renderer; fold-axis / kinematic analysis.
@@ -68,9 +74,11 @@ a design decision (see §4 and §8-Q3).
 
 ---
 
-## 3. Phase A — Stereonet interop export
+## 3. Phase A — Structural attitude export (feeds a QGIS stereonet plugin)
 
-**Goal**: one click produces the attitudes the specialist tools read.
+**Goal**: one click produces the attitudes as a **QGIS layer** (GeoPackage) + CSV that a
+QGIS stereonet plugin (Stereonet / GeoStereonet / qgSurf) reads directly. Visualization
+stays in QGIS.
 
 **Design**
 - Extend `StructureMeasurement` with an **optional** `source_point: tuple[float, float] | None = None`
@@ -85,8 +93,8 @@ a design decision (see §4 and §8-Q3).
   keeps only the angle and drops the direction. Phase A must therefore **carry the dip
   direction from the source** (primary); RHR `dip_dir = (strike + 90) % 360` is a fallback
   only.
-- Output a `dip_dir` + `dip` pair as the **primary** orientation (what qgSurf/mplstereonet
-  plot), with `strike` kept as an auxiliary column.
+- Output a `dip_dir` + `dip` pair as the **primary** orientation (what a QGIS stereonet
+  plugin plots), with `strike` kept as an auxiliary column.
 - Output **both** a CSV and a GeoPackage point layer (confirmed), with the same columns.
 
 > ⚠️ **Open technical point**: for a plane, strike ⟂ dip-direction. Here `RUMBO 345` and
@@ -98,9 +106,9 @@ a design decision (see §4 and §8-Q3).
 
   | Column | For | Meaning |
   |---|---|---|
-  | `dip_dir` | qgSurf (point layer) | Dip direction (azimuth, 0–360) |
-  | `dip` | both | True dip (0–90) |
-  | `strike` | mplstereonet | RHR strike (0–360) |
+  | `dip_dir` | QGIS stereonet plugin | Dip direction (azimuth, 0–360) |
+  | `dip` | QGIS stereonet plugin | True dip (0–90) |
+  | `strike` | auxiliary | Strike azimuth (0–360) |
   | `app_dip` | cross-check | Apparent dip on the section |
   | `dist`, `elev` | traceability | Section space |
   | `x`, `y` | traceability | Source coordinates (CRS = source layer) |
@@ -117,7 +125,7 @@ a design decision (see §4 and §8-Q3).
 - `tests/core/` — `StructureMeasurement` keeps `initializer` compatibility;
   `dip_dir` conversion.
 - `tests/exporters/` — the CSV/GeoPackage carries `dip_dir/dip/strike/x/y`.
-- A round-trip assertion: the emitted header matches the documented qgSurf/mplstereonet
+- A round-trip assertion: the emitted header matches the documented stereonet-plugin
   contract.
 
 ---
@@ -167,23 +175,23 @@ structures `pts.shp`, drillhole CSVs `DrillCollar/DrillsurveySummary/DillLith/�
 > `SaveVectorOptions(driverName="ESRI Shapefile")` and then delegates to
 > `create_vector_writer` (driver by extension) — dead code.
 
-### 4.1 Optional — External 3D modelling (GemPy / LoopStructural)
+### 4.1 Out of scope — External 3D modelling (GemPy / LoopStructural)
 
-If **building** models (not just viewing) is wanted later, emit GemPy/LoopStructural
-inputs (`orientations` `X, Y, Z, azimuth, dip, polarity`; `surface_points`
-`X, Y, Z, formation`) from the source data. That needs source map coordinates, which
-are dropped before `core/` (`structure_service.py:121`→`:139`) — the same `source_point`
-extension as Phase A, plus a GUI adapter for the geology interfaces.
-**Demoted to optional** because the workflow in use is the QGIS 3D View.
+**Not needed for visualization** (which stays in QGIS). Only if **building** models is
+wanted later: emit GemPy/LoopStructural inputs (`orientations` `X, Y, Z, azimuth, dip,
+polarity`; `surface_points` `X, Y, Z, formation`) from the source data. That needs source
+map coordinates, which are dropped before `core/` (`structure_service.py:121`→`:139`) —
+the same `source_point` extension as Phase A, plus a GUI adapter for the geology
+interfaces.
 
 ---
 
 ## 5. Phase C — optional (only if approved)
 
-- A **qgSurf field-mapping preset** and a short "export → open in tool X" checklist in
-  the UI/Help.
-- A **docs page** "Interoperability" listing the supported hand-offs (qgSurf,
-  mplstereonet, GemPy, LoopStructural) and their exact columns.
+- A **field-mapping note** and a short "export → open in the stereonet plugin" checklist
+  in the UI/Help.
+- A **docs page** "Interoperability" listing the supported hand-offs (QGIS stereonet
+  plugins; QGIS 3D Map View) and the exact columns/fields.
 - Round-trip note: what SecInterp can **import back** (nothing, for now).
 
 ---
@@ -212,7 +220,8 @@ extension as Phase A, plus a GUI adapter for the geology interfaces.
 
 ## 8. Open questions (need approval before Phase A code)
 
-1. **Scope**: confirm **exports only** (interop), not a native stereonet preview.
+1. **Scope** — *settled 2026-10-11*: visualization stays **entirely in QGIS** (canvas,
+   3D Map View, existing stereonet plugins); SecInterp only produces layers/fields.
 2. **Orientation semantics** — *confirmed by the user 2026-10-11*: `RUMBO N15W` → strike
    345; `ECHADO 22 SW` → dip 22, **dip_dir 225**. The export uses **dip + dip_dir** as the
    primary pair (strike kept as auxiliary). **Still open**: strike 345 and dip_dir 225 are
