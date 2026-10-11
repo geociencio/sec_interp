@@ -7,7 +7,14 @@ from typing import Any
 
 
 class ExportServiceCompatMixin:
-    """Mixin providing legacy ``_export_*`` wrappers for tests."""
+    """Mixin providing legacy ``_export_*`` wrappers for tests.
+
+    The concrete ``ExportService`` supplies ``controller`` and
+    ``access_control`` at runtime; they are declared here for type checking.
+    """
+
+    controller: Any
+    access_control: Any
 
     def _export_topography(
         self,
@@ -23,7 +30,7 @@ class ExportServiceCompatMixin:
 
         topo_h.export_topography(
             folder, data, crs, csv_exporter, msg, self.controller, settings, ext
-        )  # type: ignore[attr-defined]
+        )
 
     def _export_geology(
         self,
@@ -113,7 +120,7 @@ class ExportServiceCompatMixin:
             self.controller,
             settings,
             ext,
-            self.access_control,  # type: ignore[attr-defined]
+            self.access_control,
         )
 
     def _get_export_path(

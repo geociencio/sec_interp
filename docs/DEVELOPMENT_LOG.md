@@ -1,3 +1,12 @@
+## [2026-10-11] Session: Type-Check Gate (mypy wired)
+- **Achievement**: Wired `mypy` into the workflow as a **blocking gate** over the strict layers (`core` + `exporters`) and drove them to **0 errors** (32 → 0), cleaning up real typing debt.
+- **Changes**:
+    - **Invocation** — mypy must run from the parent directory (the package base) to resolve `sec_interp.*` without the `core` vs `sec_interp.core` ambiguity. New `make mypy` target runs it from `$(CURDIR)/..` with `--explicit-package-bases sec_interp/core sec_interp/exporters`; added `mypy` to `pre-release`.
+    - **CI** — new `typecheck` job in `.github/workflows/test.yml` (`UV_FROZEN=1 make mypy`).
+    - **Fixes** — missing annotations (`validation_helpers`, `io.create_shapefile_writer`, `interpretation_3d_exporter._write_shapefile`/`_handle_post_export_styles`, `orchestrator.topo_handler`, `svg_exporter.export`); `None` guards (`io.create_vector_writer` project, `path_resolver.get_profile_name`, 3D exporter data provider); precise types (`layer_validator`, `parsing`, `drillhole`); QGIS-stub workarounds (enum params typed `Any`, index-based `QgsFields` iteration, `cast` for `QgsVectorFileWriter.create` and the collar point); aligned the `BaseExporter.export` override contract (image/pdf/svg accept the `layer_name` slot; 3D exporter widens `output_path` to `str | Path`); declared `ExportServiceCompatMixin.controller`/`access_control`.
+- **Quality**: `make mypy` **Success: no issues found in 89 source files** · `ruff check`/`format` clean · `unittest discover tests` **763 OK** (Docker).
+- **Follow-up**: `gui` is out of scope (338 pre-existing findings) — a future phase could extend the gate module by module, optionally with a `mypy-baseline` ratchet.
+
 ## [2026-10-11] Session: Toolchain Modernization (ruff 0.17 + mypy 2.4, drop black)
 - **Achievement**: Completed the "lint/type" half of the toolchain refresh with the two upgrades deliberately held back from the safe batch: `ruff` 0.15.2 → **0.17.0** and `mypy` 1.19.1 → **2.4.0**, and removed the unused `black` dependency. No plugin-runtime impact.
 - **Changes**:

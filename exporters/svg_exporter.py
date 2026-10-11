@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from pathlib import Path  # noqa: E402
 
-from qgis.core import QgsMapRendererCustomPainterJob  # noqa: E402
+from qgis.core import QgsMapRendererCustomPainterJob, QgsMapSettings  # noqa: E402
 from qgis.PyQt.QtCore import QCoreApplication, QRectF, QSize  # noqa: E402
 from qgis.PyQt.QtGui import QPainter  # noqa: E402
 from qgis.PyQt.QtSvg import QSvgGenerator  # noqa: E402
@@ -25,12 +25,15 @@ class SVGExporter(BaseExporter):
         """Get supported SVG extension."""
         return [".svg"]
 
-    def export(self, output_path: Path, map_settings) -> bool:
+    def export(
+        self, output_path: Path, map_settings: QgsMapSettings, layer_name: str | None = None
+    ) -> bool:
         """Export map to SVG.
 
         Args:
             output_path: Output file path
             map_settings: QgsMapSettings instance configured for rendering
+            layer_name: Unused (kept for ``BaseExporter`` signature compatibility).
 
         Returns:
             True if export successful, False otherwise

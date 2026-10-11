@@ -50,7 +50,8 @@ def validate_layer_geometry(metadata: LayerMetadata, expected_type: str) -> tupl
 
     if metadata.geometry_type != expected_type:
         expected_name = _TYPE_NAMES.get(expected_type, f"Type {expected_type}")
-        actual_name = _TYPE_NAMES.get(metadata.geometry_type, metadata.geometry_type)
+        actual_key = metadata.geometry_type or ""
+        actual_name = _TYPE_NAMES.get(actual_key, actual_key)
 
         return (
             False,

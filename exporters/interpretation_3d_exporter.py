@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import math
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -45,7 +45,9 @@ class Interpretation3DExporter(BaseExporter):
         """Get supported extensions."""
         return [".shp", ".gpkg", ".dxf"]
 
-    def export(self, output_path: str, data: dict[str, Any], layer_name: str | None = None) -> bool:
+    def export(
+        self, output_path: str | Path, data: dict[str, Any], layer_name: str | None = None
+    ) -> bool:
         """Export interpretation data to a 3D Shapefile."""
         interpretations = data.get("interpretations", [])
         section_line = data.get("section_line")
@@ -59,7 +61,9 @@ class Interpretation3DExporter(BaseExporter):
 
         # Calculate section azimuth and origin
         try:
-            origin_x, origin_y, azimuth = self._calculate_section_geometry(section_line)
+            origin_x, origin_y, azimuth = self._calculate_section_geometry(
+                cast("QgsGeometry", section_line)
+            )
         except Exception as e:
             raise ExportError(f"Failed to calculate section geometry: {e}") from e  # no-i18n
 
@@ -98,7 +102,7 @@ class Interpretation3DExporter(BaseExporter):
         return True
 
     def _handle_post_export_styles(
-        self, output_path: str, interpretations: list, fields: list, crs: Any
+        self, output_path: str | Path, interpretations: list, fields: list, crs: Any
     ) -> None:
         """Handle style generation after successful export."""
         try:
@@ -131,7 +135,9 @@ class Interpretation3DExporter(BaseExporter):
 
         # Create a temporary layer to build the style (with Z support)
         layer = QgsVectorLayer(f"Polygon?crs={crs.authid()}&z=yes", "temp_style", "memory")
-        layer.dataProvider().addAttributes(fields)
+        provider = layer.dataProvider()
+        if provider is not None:
+            provider.addAttributes(fields)
         layer.updateFields()
 
         # 1. 2D Categorized Symbology
@@ -271,11 +277,11 @@ class Interpretation3DExporter(BaseExporter):
 
     def _write_shapefile(
         self,
-        path: str,
+        path: str | Path,
         features: list[QgsFeature],
         fields: list[QgsField],
-        wkb_type,
-        crs,
+        wkb_type: Any,
+        crs: Any,
         layer_name: str | None = None,
     ) -> bool:
         """Write shapefile (if not in BaseExporter)."""
@@ -410,7 +416,7 @@ class Interpretation3DExporter(BaseExporter):
         if not raw_list:
             return []
 
-        dedup = []
+        dedup: list[Any] = []
         for v in raw_list:
             if not dedup or v != dedup[-1]:
                 dedup.append(v)

@@ -7,7 +7,7 @@ interpolation — operating on a detached :class:`DrillholeContext`.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from sec_interp.core.domain import DrillholeProjection, GeologySegment
 from sec_interp.core.domain.task_inputs import DrillholeContext
@@ -82,7 +82,7 @@ class DrillholeService(IDrillholeService, TranslatableMixin):
             )
             if proj:
                 hole_id = proj.hole_id
-                point = collar.get("point")
+                point = cast("tuple[float, float]", collar.get("point"))
                 surveys = context.survey_data.get(hole_id, [])
                 intervals = context.interval_data.get(hole_id, [])
 

@@ -226,7 +226,7 @@ def interpolate_intervals_on_trajectory(
         List of tuples (attribute, points_2d, points_3d, points_3d_proj).
 
     """
-    geol_segments = []
+    geol_segments: list[Any] = []
     if not trajectory or not intervals:
         return geol_segments
 

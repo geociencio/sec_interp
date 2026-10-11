@@ -137,7 +137,7 @@ class ExportService(ExportServiceCompatMixin):
 
         csv_exporter = CSVExporter({})
 
-        def topo_handler(settings=export_settings, ext=format_ext) -> None:
+        def topo_handler(settings: Any = export_settings, ext: str = format_ext) -> None:
             topo_h.export_topography(
                 folder,
                 profile_data,

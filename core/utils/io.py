@@ -6,6 +6,7 @@ File I/O operations and user messaging.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any, cast
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -20,10 +21,10 @@ def create_vector_writer(
     output_path: str | Path,
     crs: QgsCoordinateReferenceSystem,
     fields: QgsFields,
-    geometry_type: QgsWkbTypes.GeometryType = QgsWkbTypes.Type.LineString,
+    geometry_type: Any = QgsWkbTypes.Type.LineString,
     layer_name: str | None = None,
     overwrite_layer: bool = True,
-    symbology_export: QgsVectorFileWriter.SymbologyExport = QgsVectorFileWriter.SymbologyExport.NoSymbology,
+    symbology_export: Any = QgsVectorFileWriter.SymbologyExport.NoSymbology,
 ) -> QgsVectorFileWriter:
     """Create and initialize a QgsVectorFileWriter for various vector formats.
 
@@ -81,21 +82,25 @@ def create_vector_writer(
         # unless we explicitly want CAD attributes (like 'Layer').
         effective_fields = QgsFields()
 
+    project = QgsProject.instance()
+    if project is None:
+        raise OSError("No QGIS project instance available for vector export")
+
     writer = QgsVectorFileWriter.create(
         str(path),
         effective_fields,
         geometry_type,
         crs,
-        QgsProject.instance().transformContext(),
+        project.transformContext(),
         options,
     )
 
     if writer.hasError() != QgsVectorFileWriter.WriterError.NoError:
         raise OSError(f"Error creating vector file {path}: {writer.errorMessage()}")
 
-    return writer
+    return cast("QgsVectorFileWriter", writer)
 
 
-def create_shapefile_writer(*args, **kwargs) -> QgsVectorFileWriter:
+def create_shapefile_writer(*args: Any, **kwargs: Any) -> QgsVectorFileWriter:
     """Delegate to create_vector_writer (deprecated shim)."""
     return create_vector_writer(*args, **kwargs)

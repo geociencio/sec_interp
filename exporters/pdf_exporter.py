@@ -24,12 +24,15 @@ class PDFExporter(BaseExporter):
         """Get supported PDF extension."""
         return [".pdf"]
 
-    def export(self, output_path: Path, map_settings: QgsMapSettings) -> bool:
+    def export(
+        self, output_path: Path, map_settings: QgsMapSettings, layer_name: str | None = None
+    ) -> bool:
         """Export map to PDF.
 
         Args:
             output_path: Output file path
             map_settings: QgsMapSettings instance configured for rendering
+            layer_name: Unused (kept for ``BaseExporter`` signature compatibility).
 
         Returns:
             True if export successful, False otherwise

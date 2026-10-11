@@ -24,12 +24,15 @@ class ImageExporter(BaseExporter):
         """Get supported image extensions."""
         return [".png", ".jpg", ".jpeg"]
 
-    def export(self, output_path: Path, map_settings: QgsMapSettings) -> bool:
+    def export(
+        self, output_path: Path, map_settings: QgsMapSettings, layer_name: str | None = None
+    ) -> bool:
         """Export map to raster image.
 
         Args:
             output_path: Output file path
             map_settings: QgsMapSettings instance configured for rendering
+            layer_name: Unused (kept for ``BaseExporter`` signature compatibility).
 
         Returns:
             True if export successful, False otherwise
@@ -65,7 +68,7 @@ class ImageExporter(BaseExporter):
 
             # Save image
 
-            return image.save(str(output_path))
+            return bool(image.save(str(output_path)))
 
         except Exception:
             logger.exception(f"Image export failed for {output_path}")

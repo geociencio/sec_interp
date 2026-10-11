@@ -104,7 +104,9 @@ class VectorExporter(BaseExporter):
                 feature.setGeometry(data["geometry"])
             if "attributes" in data:
                 attrs = data["attributes"]
-                feature.setAttributes([attrs.get(field.name()) for field in fields])
+                feature.setAttributes(
+                    [attrs.get(fields.at(i).name()) for i in range(fields.count())]
+                )
             writer.addFeature(feature)
 
     def _prepare_fields(self, features_data: list[dict[str, Any]]) -> QgsFields:

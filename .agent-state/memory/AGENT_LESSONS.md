@@ -17,6 +17,18 @@ lessons:
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-11'
     category: TOOLING
+    topic: mypy path targets are ambiguous when the repo root is itself the package
+    lesson: Running mypy from the repo root on `core exporters` reported every file twice
+      (core.x vs sec_interp.core.x) because the repo root IS the `sec_interp` package (it
+      has __init__.py), so both cwd and MYPYPATH offered a package base. The clean run is
+      from the PARENT directory; also, mypy 2.x refuses package mode (`-p pkg`) without a
+      py.typed marker.
+    action: For a plugin whose top-level folder is the package, run mypy from the parent dir
+      with `--explicit-package-bases` and path targets (and `--config-file
+      <repo>/pyproject.toml`); wire it as a Makefile target that cds there instead of
+      `mypy .` from the repo root.
+  - date: '2026-10-11'
+    category: TOOLING
     topic: a whole-project analyzer run can silently under-report modules; cross-check the count
     lesson: qgis-plugin-analyzer 1.15.2 analysed only 135 modules on the whole project
       although the plugin has 171 (its real .py count minus 2 ignored root scripts);

@@ -17,13 +17,11 @@ def get_profile_name(controller: Any | None) -> str:
 
     """
     profile_name = "profile"
-    has_sect = (
-        controller and hasattr(controller, "settings") and hasattr(controller.settings, "section")
-    )
-    if has_sect:
-        sect = controller.settings.section
-        if hasattr(sect, "layer_name") and sect.layer_name:
-            profile_name = sect.layer_name
+    if controller is not None and hasattr(controller, "settings"):
+        sect = getattr(controller.settings, "section", None)
+        layer_name = getattr(sect, "layer_name", None)
+        if layer_name:
+            profile_name = layer_name
     return profile_name.replace("/", "_").replace("\\", "_")
 
 

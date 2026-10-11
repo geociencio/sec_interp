@@ -51,13 +51,13 @@ class ValidationContext:
         self._errors: list[RichValidationError] = []
         self._warnings: list[RichValidationError] = []
 
-    def add_error(self, message: str, field_name: str | None = None, **kwargs) -> None:
+    def add_error(self, message: str, field_name: str | None = None, **kwargs: Any) -> None:
         """Add a hard error to the context."""
         self._errors.append(
             RichValidationError(message, field_name, severity="error", context=kwargs)
         )
 
-    def add_warning(self, message: str, field_name: str | None = None, **kwargs) -> None:
+    def add_warning(self, message: str, field_name: str | None = None, **kwargs: Any) -> None:
         """Add a warning (soft error) to the context."""
         self._warnings.append(
             RichValidationError(message, field_name, severity="warning", context=kwargs)

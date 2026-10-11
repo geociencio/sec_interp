@@ -26,6 +26,22 @@ jobs:
       - name: Run Ruff
         run: uv run --frozen ruff check .
 
+  typecheck:
+    name: Type Check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Run mypy (core + exporters)
+        run: UV_FROZEN=1 make mypy
+
   docs:
     name: Docs Consistency
     runs-on: ubuntu-latest

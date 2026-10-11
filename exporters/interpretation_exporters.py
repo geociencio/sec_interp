@@ -11,6 +11,7 @@ from pathlib import Path  # noqa: E402
 from typing import Any  # noqa: E402
 
 from qgis.core import (  # noqa: E402
+    QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsField,
     QgsFields,
@@ -64,7 +65,7 @@ class Interpretation2DExporter(BaseExporter):
             return False
 
         try:
-            crs = data.get("crs")
+            crs = data.get("crs") or QgsCoordinateReferenceSystem()
 
             fields, sorted_keys = self._prepare_fields(interpretations)
             writer = scu_io.create_vector_writer(

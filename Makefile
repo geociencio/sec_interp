@@ -285,7 +285,21 @@ qt6-fix:
 		ghcr.io/qgis/pyqgis4-checker:main-ubuntu \
 		pyqt5_to_pyqt6.py --logfile /workspace/pyqt6_checker.log .
 
-# Pre-release validation (includes security + Qt6 enum check)
+# Static type checking (strict scope: core + exporters).
+# mypy needs the parent directory as the package base to resolve ``sec_interp.*``;
+# run it from there while keeping the project environment.
+.PHONY: mypy
+mypy:
+	@echo
+	@echo "-------------------------------------"
+	@echo "Type check (mypy): core + exporters"
+	@echo "-------------------------------------"
+	@cd $(CURDIR)/.. && PYTHONPATH=. uv run --project $(CURDIR) mypy \
+		--config-file $(CURDIR)/pyproject.toml \
+		--explicit-package-bases sec_interp/core sec_interp/exporters
+	@echo "-------------------------------------"
+
+# Pre-release validation (includes type check + security + Qt6 enum check)
 .PHONY: pre-release
-pre-release: qt6-check security-scan docker-test
+pre-release: mypy qt6-check security-scan docker-test
 	@echo "✅ Pre-release validation complete"

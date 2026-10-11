@@ -20,7 +20,7 @@ def _record_written(msg: list[str], path: Path, folder: Path) -> None:
 
 def _export_profile_pair(
     folder: Path,
-    profile_name: str | None,
+    profile_name: str,
     pattern: str | None,
     stems: tuple[str, str],
     payloads: tuple[dict[str, Any], dict[str, Any]],

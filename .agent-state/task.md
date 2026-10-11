@@ -1,5 +1,13 @@
 # Active Task Board (Updated 2026-10-11)
 
+### Completed this session (2026-10-11 — Type-check gate: mypy wired)
+
+- [x] **`make mypy`** target (runs from `$(CURDIR)/..` con `--explicit-package-bases sec_interp/core sec_interp/exporters`); añadido a `pre-release`.
+- [x] **CI**: job `typecheck` en `.github/workflows/test.yml` (`UV_FROZEN=1 make mypy`).
+- [x] **32 → 0 errores** en `core` + `exporters` (anotaciones, guards `None`, tipos precisos, quirks de qgis-stubs, contrato `BaseExporter.export`, attrs del mixin).
+- [x] Gates verdes: `make mypy` **Success (89 files)** · ruff · **763 OK** (Docker).
+- [ ] **Futuro**: extender el gate a `gui` (338 hallazgos) módulo a módulo; opcional `mypy-baseline`.
+
 ### Completed this session (2026-10-11 — Toolchain modernization: ruff 0.17 + mypy 2.4)
 
 - [x] **ruff** 0.15.2 → **0.17.0** (`ruff>=0.17.0`; `.pre-commit-config.yaml` rev `v0.8.4` → `v0.17.0`).

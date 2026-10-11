@@ -1,5 +1,31 @@
 # Next Steps (Updated 2026-10-11)
 
+## ✅ Session 2026-10-11 — Type-Check Gate (mypy wired) (COMPLETADO)
+
+- **Qué se hizo**: se cableó **`mypy`** como gate **bloqueante** sobre las capas estrictas
+  (`core` + `exporters`) y se dejaron en **0 errores** (32 → 0). Sin cambios de comportamiento
+  (anotaciones, guards de `None`, `cast`/tipos precisos).
+  - **Invocación**: mypy debe correr desde el **directorio padre** (base del paquete) para
+    resolver `sec_interp.*` sin la ambigüedad `core` vs `sec_interp.core`. Nuevo target
+    **`make mypy`** (corre desde `$(CURDIR)/..` con `--explicit-package-bases
+    sec_interp/core sec_interp/exporters`); añadido a `pre-release`.
+  - **CI**: nuevo job **`typecheck`** en `.github/workflows/test.yml` (`UV_FROZEN=1 make mypy`).
+  - **Arreglos**: anotaciones faltantes (`validation_helpers`, `io.create_shapefile_writer`,
+    `interpretation_3d_exporter`, `orchestrator.topo_handler`, `svg_exporter`); guards
+    (`io.create_vector_writer`, `path_resolver.get_profile_name`, provider 3D); tipos
+    precisos (`layer_validator`, `parsing`, `drillhole`); quirks de qgis-stubs (enums como
+    `Any`, iteración de `QgsFields` por índice, `cast`); contrato de `BaseExporter.export`
+    alineado; atributos de `ExportServiceCompatMixin`.
+- **Calidad**: **`make mypy` → Success: no issues found in 89 source files** · ruff/format
+  limpios · `unittest discover tests` **763 OK** (Docker).
+- **Referencia**: `docs/DEVELOPMENT_LOG.md` (session 2026-10-11 Type-Check Gate).
+- **Pendiente / cómo reanudar**:
+  1. **Extender el gate**: `gui` tiene 338 hallazgos (fuera de alcance) — futura fase módulo a
+     módulo, opcionalmente con un ratchet basado en `mypy-baseline`.
+  2. **Opcional**: `uv self update` (0.12.10 → 0.13.0).
+  3. El resto de pendientes (deuda por la cobertura 1.16.0, tren v3.10.0/v3.11.0,
+     `legend_widget.py`, bóveda, Goal 1.1/1.5) siguen abajo sin cambios.
+
 ## ✅ Session 2026-10-11 — Toolchain Modernization (ruff 0.17 + mypy 2.4, drop black) (COMPLETADO)
 
 - **Qué se hizo**: se completó la mitad "lint/type" del refresco de toolchain, con las

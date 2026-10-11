@@ -207,7 +207,7 @@ def extract_feature_attributes(feature: Any) -> dict[str, Any]:
 
     names = feature.fields().names()
     raw_values = feature.attributes()
-    sanitized = {}
+    sanitized: dict[str, Any] = {}
 
     for name, val in zip(names, raw_values, strict=False):
         # Convert QVariant/NULL/etc to pure Python
