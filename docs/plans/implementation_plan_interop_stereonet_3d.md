@@ -50,7 +50,7 @@ any 3D modelling engine (GemPy/LoopStructural — model building, not visualizat
 | `StructureVectorExporter` writes only `app_dip`, `dist`, `elev` (+ original attrs) — **dip/strike are not exported** | `profile_exporters.py:243-246` |
 | `export_structures` writes `structural_profile.csv` (`dist, apparent_dip`) + a vector file | `handlers/structures.py:53-81` |
 | `get_exporter` dispatches by **file extension** (`.csv`, `.gpkg`, `.shp`, `.dxf`…) | `exporters/__init__.py:54-81` |
-| Strike is parsed to an **azimuth 0–360** (RHR/quadrant supported) | `core/utils/parsing.py:9-40` |
+| Strike is parsed to an **azimuth 0–360** (quadrant notation supported) | `core/utils/parsing.py:9-40` |
 
 **Consequence**: Phase A needs only a small, non-breaking DTO/field extension.
 Phase B needs source map coordinates, which currently do **not** reach `core/` —
@@ -86,21 +86,20 @@ stays in QGIS.
 - Populate it in `structure_service._process_single_structure` (`:139`) from the
   `point` already in hand (`:121`).
 - Add `dip`, `strike`, `dip_dir` columns to `StructureVectorExporter._create_structure_fields`
-  (`:243-246`). **Semantics confirmed by the user (from `basedatosestruct_clean.csv`)**:
-  `RUMBO`/`STRIKE` = **strike azimuth** (`N 15° W → 345`); `ECHADO` = **dip + dip direction**
-  (`22° SW → dip 22, dip_dir 225`). So the orientation a stereonet consumes comes from the
-  dip field, and `parse_dip` already extracts `(dip, dip_dir)` — but `StructureMeasurement`
-  keeps only the angle and drops the direction. Phase A must therefore **carry the dip
-  direction from the source** (primary); RHR `dip_dir = (strike + 90) % 360` is a fallback
-  only.
+  (`:243-246`). **Orientation rule confirmed by the user (2026-10-11, from
+  `basedatosestruct_clean.csv`)**:
+  - `RUMBO`/`STRIKE` = **strike azimuth** (`N 15° W → 345`).
+  - `ECHADO` = **dip angle + dip-direction label** (`22° SW → dip 22, on the SW side`).
+  - The **dip direction is perpendicular to the strike**: `dip_dir = strike ∓ 90`, picking
+    the sign so it lands on the side the label names —
+    `N15W (345) dipping SW → 345 − 90 = 255`; dipping NE → `345 + 90 = 75`.
+  - So `dip_dir` is **derived** from `strike` + the dip-direction label; when the source
+    provides a numeric dip direction instead, use it directly.
+  - ⚠️ the numeric `DIP` column in the sample (`45`) disagrees with `ECHADO` (`22`); the
+    **text dip (`22`) is authoritative**.
 - Output a `dip_dir` + `dip` pair as the **primary** orientation (what a QGIS stereonet
   plugin plots), with `strike` kept as an auxiliary column.
 - Output **both** a CSV and a GeoPackage point layer (confirmed), with the same columns.
-
-> ⚠️ **Open technical point**: for a plane, strike ⟂ dip-direction. Here `RUMBO 345` and
-> `ECHADO → 225` differ by ~120°, not 90° (a stereonet tool plots from **one** pair, so they
-> cannot both be fed). Need to confirm which is authoritative for this dataset — the dip
-> direction from `ECHADO` (recommended), or `RUMBO`.
 - Add a `structural_attitudes.csv` writer alongside `structural_profile.csv`
   (`handlers/structures.py`), with a header the tools map without renaming:
 
@@ -210,7 +209,7 @@ interfaces.
 
 | Risk | Mitigation |
 |---|---|
-| Strike convention ambiguity (RHR vs dip-direction) | Verify on real data; expose both `strike` and `dip_dir`; document |
+| Strike/dip-direction sign (which side the label names) | Derive `dip_dir = strike ∓ 90` from the label; validate on a real dataset; document |
 | No rake/fault kinematics in the model | State the limitation; qgSurf fault plotting not covered in v1 |
 | GemPy/LoopStructural input drift across versions | Pin the documented columns; keep the CSV, not a bespoke binary format |
 | Scope creep into a real stereonet/3D engine | Explicit non-goals (§2); interop only |
@@ -222,11 +221,11 @@ interfaces.
 
 1. **Scope** — *settled 2026-10-11*: visualization stays **entirely in QGIS** (canvas,
    3D Map View, existing stereonet plugins); SecInterp only produces layers/fields.
-2. **Orientation semantics** — *confirmed by the user 2026-10-11*: `RUMBO N15W` → strike
-   345; `ECHADO 22 SW` → dip 22, **dip_dir 225**. The export uses **dip + dip_dir** as the
-   primary pair (strike kept as auxiliary). **Still open**: strike 345 and dip_dir 225 are
-   ~120° apart, not perpendicular (a plane needs 90°) → confirm which pair is
-   authoritative before plotting.
+2. **Orientation semantics** — *resolved 2026-10-11*: `RUMBO N15W` → strike 345;
+   `ECHADO 22 SW` → dip 22. **Dip direction is perpendicular to strike**:
+   `dip_dir = strike − 90` on the SW side (`345 − 90 = 255`) or `strike + 90` on the NE
+   side (`= 75`), chosen by the label. Export uses **dip + dip_dir** as the primary pair
+   (strike auxiliary); the text dip is authoritative over the numeric column.
 3. **Source coords** — *answered 2026-10-11*: **extend the core DTO** with `source_point`.
 4. **Priority** — *settled 2026-10-11*: build the **3D Map View** items first
    (B1 → B3 → B2 → B4, see §9), then Phase A (stereonet). All four 3D items are wanted.
