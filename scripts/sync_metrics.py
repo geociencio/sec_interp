@@ -123,7 +123,7 @@ def run_qgis_analyzer() -> dict:
             continue
         if in_issues:
             if line.startswith("-") and ":" in line:
-                parts = line.strip("- ").split(":", 1)
+                parts = line.strip("- ").rsplit(":", 1)
                 if len(parts) == 2:
                     try:
                         issues[parts[0].strip()] = int(parts[1].strip())

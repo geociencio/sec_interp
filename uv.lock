@@ -761,11 +761,11 @@ wheels = [
 
 [[package]]
 name = "qgis-plugin-analyzer"
-version = "1.15.0"
+version = "1.15.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7b/93/2e9f9b79369470ef941f4df96244fbd49d34b6c5aa25493388a336e9a832/qgis_plugin_analyzer-1.15.0.tar.gz", hash = "sha256:81ce5930f004875ac300096ce61235a15f35b601d7f1c79be214407c8e97d0cb", size = 124648, upload-time = "2026-10-11T00:30:40.297Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/3f/1b65437c7b012104490ef58a6513457840071b5880c2a0f35b2b01d9034a/qgis_plugin_analyzer-1.15.1.tar.gz", hash = "sha256:3930464b730dfb2fc493edbb6ca7506df509a06c0bded906a30b714526cca909", size = 126548, upload-time = "2026-10-11T01:09:43.886Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/23/40/ed95490deb8e5af71d106693c20245b419637ca44785f20eb52109ad31e5/qgis_plugin_analyzer-1.15.0-py3-none-any.whl", hash = "sha256:9b564d74e5ef33d40a9381e4a83b16c01eb0dca298d29bccec980c2968e4a0d8", size = 121317, upload-time = "2026-10-11T00:30:38.869Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/32/6865750f76e20bc320d2e6f312c1e25a471c174b72b93569b89190691720/qgis_plugin_analyzer-1.15.1-py3-none-any.whl", hash = "sha256:58cd1765c61bf3b5ca5366de37c1f2ad4b4382f8092bcffb5b40d5229673ef82", size = 119515, upload-time = "2026-10-11T01:09:42.592Z" },
 ]
 
 [[package]]
@@ -882,7 +882,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ai-context-core", specifier = ">=5.1.0" },
-    { name = "qgis-plugin-analyzer", specifier = ">=1.15.0" },
+    { name = "qgis-plugin-analyzer", specifier = ">=1.15.1" },
     { name = "sphinx-intl", specifier = ">=2.3.2" },
 ]
 
@@ -904,7 +904,7 @@ dev = [
     { name = "pytest-mock", specifier = ">=3.15.1" },
     { name = "pytest-qt", specifier = ">=4.5.0" },
     { name = "qgis-manage", specifier = ">=0.9.0" },
-    { name = "qgis-plugin-analyzer", specifier = ">=1.15.0" },
+    { name = "qgis-plugin-analyzer", specifier = ">=1.15.1" },
     { name = "qgis-stubs", specifier = ">=0.2.0.post1" },
     { name = "ruff", specifier = ">=0.15.0" },
     { name = "setuptools", specifier = ">=70.0.0" },

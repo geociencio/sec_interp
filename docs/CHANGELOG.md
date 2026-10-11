@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **In-plugin offline help**: the manual shipped with the plugin now contains only the **User Guide** — a single document with clean navigation — instead of a landing page plus developer/API pages that linked to content removed from the offline build. The published documentation website is unchanged.
-- **Tooling**: upgraded `qgis-plugin-analyzer` 1.14.0 → 1.15.0 and refreshed static-analysis metrics. The new release adds anti-pattern detection, which surfaced 15 `GOD_OBJECT` and 1 `SPAGHETTI_CODE` findings; quality scores are unchanged. No functional impact on the plugin.
+- **Tooling**: upgraded `qgis-plugin-analyzer` 1.14.0 → 1.15.1 and refreshed static-analysis metrics. 1.15.0 added anti-pattern detection (15 `GOD_OBJECT`, 1 `SPAGHETTI_CODE`); 1.15.1 restored the security scanner (Security Score 80.0 — the two `B102` hits are false positives on Qt `QDialog.exec()`). No functional impact on the plugin.
 
 ### Fixed
 - **Release packaging**: the distributed plugin ZIP now includes the in-plugin offline help (it was missing from the v3.9.1 build) and no longer ships the internal release-queue file.

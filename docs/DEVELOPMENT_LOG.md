@@ -1,3 +1,14 @@
+## [2026-10-11] Session: qgis-plugin-analyzer 1.15.1 Upgrade (Security Scanning Restored)
+- **Achievement**: Adopted `qgis-plugin-analyzer` **1.15.1**, the upstream fix for the disconnected security registry reported in the deep-analysis report. Security scanning now runs again (analyzer + `qgis-plugin-manager`, which delegates to it); it also ships the recommended hardening (shared `rules/scopes.py`, dead-code removal, lower complexity).
+- **Changes**:
+    - **Dependency**: `qgis-plugin-analyzer>=1.15.0` → `>=1.15.1` (`pyproject.toml` deps + dev) via `uv lock --upgrade-package qgis-plugin-analyzer --refresh`; `uv.lock` regenerated.
+    - **Re-analysis**: `analyze . --max-cc 10` (175 files / 135 modules). Security Score 100.0 → **80.0** (scanner now executes); total issues 32 → 34 (+2 `SECURITY:B102`).
+    - **Triage**: both `B102` are **false positives** on Qt `QDialog.exec()` (`gui/dialog_interpretation_manager.py:83`, `plugin/lifecycle.py:105`); the rule matches attribute calls and `# noqa` does not suppress it → flagged for an upstream fix (1.15.2).
+    - **Parser fix**: `scripts/sync_metrics.py` now splits issue stats on the **last** colon, so the new `SECURITY:B102` rule-id is no longer dropped (`total_issues` was undercounted as 32).
+    - **Metrics**: `agent_metrics.json` re-synced (`security_score`, `issue_breakdown`, ground truth); tool → 1.15.1.
+- **Quality**: `ruff check`/`format` clean · `unittest discover tests` **714 OK** · `forge metrics validate` PASS · `sync_metrics --validate` PASS · `make context` fresh.
+- **Maintenance**: [session_2026-10-11_qgis_analyzer_1_15_1.md](maintenance/session_2026-10-11_qgis_analyzer_1_15_1.md).
+
 ## [2026-10-11] Session: qgis-plugin-analyzer 1.15.0 Upgrade
 - **Achievement**: Adopted `qgis-plugin-analyzer` **1.15.0** ("Repo Hygiene & Hardening") and refreshed ground-truth metrics. Tooling-only change (no plugin runtime code touched). The release adds anti-pattern detection (`GOD_OBJECT`, `SPAGHETTI_CODE`), Halstead metrics, module optimization suggestions, a transversal `# noqa`, `--workers N`, and a reliable ruff audit.
 - **Changes**:

@@ -6,7 +6,7 @@
         "last_updated": "2026-10-11",
         "last_updated_by": "close-phase v3.7.0 metric reconciliation",
         "tools": {
-            "qgis-plugin-analyzer": "1.15.0",
+            "qgis-plugin-analyzer": "1.15.1",
             "ai-context-core": "5.1.0"
         }
     },
@@ -21,20 +21,21 @@
         "quality_score_latest": 57.9,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
         "maintainability_score": 99.9,
-        "security_score": 100.0,
+        "security_score": 80.0,
         "type_hint_coverage_params": 95.2,
         "type_hint_coverage_returns": 99.5,
         "docstring_coverage": 98.5,
         "cyclomatic_complexity_gate": "PASS",
         "i18n_issues_qgis_analyzer": 0,
-        "i18n_note": "qgis-analyzer 1.15.0 MISSING_I18N rule (AST-based) reports 0 violations. PerformanceTimer timing labels are suppressed via pyproject.toml [tool.qgis-analyzer.profiles.default.rules.MISSING_I18N] extra_ignore_calls.",
-        "total_issues": 32,
+        "i18n_note": "qgis-analyzer 1.15.1 MISSING_I18N rule (AST-based) reports 0 violations. PerformanceTimer timing labels are suppressed via pyproject.toml [tool.qgis-analyzer.profiles.default.rules.MISSING_I18N] extra_ignore_calls.",
+        "total_issues": 34,
         "i18n_hygiene_gate": "PASS",
         "issue_breakdown": {
             "GOD_OBJECT": 15,
             "MISSING_DOCSTRING": 10,
             "NON_PYTHONIC_LOOP": 4,
             "POTENTIAL_MISSING_SLOT": 2,
+            "SECURITY:B102": 2,
             "SPAGHETTI_CODE": 1
         },
         "module_size_gate": "FAIL (1 modules > 400 lines)",
@@ -54,16 +55,17 @@
             "scores": {
                 "module_stability": 57.9,
                 "maintainability": 99.9,
-                "security": 100.0
+                "security": 80.0
             },
             "issues": {
                 "GOD_OBJECT": 15,
                 "MISSING_DOCSTRING": 10,
                 "NON_PYTHONIC_LOOP": 4,
                 "POTENTIAL_MISSING_SLOT": 2,
+                "SECURITY:B102": 2,
                 "SPAGHETTI_CODE": 1,
                 "MISSING_I18N": 0,
-                "total": 32
+                "total": 34
             }
         },
         "tests_local": {

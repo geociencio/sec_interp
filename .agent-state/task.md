@@ -1,5 +1,14 @@
 # Active Task Board (Updated 2026-10-11)
 
+### Completed this session (2026-10-11 — qgis-plugin-analyzer 1.15.1, Security Scanning Restored)
+
+- [x] **Dependency**: `qgis-plugin-analyzer>=1.15.0` → `>=1.15.1` (`pyproject.toml` deps+dev; `uv.lock`).
+- [x] **Re-analysis**: `analyze . --max-cc 10` (175 files / 135 modules). **Security Score 100.0 → 80.0** (scanner restaurado); issues 32 → 34 (+2 `SECURITY:B102`).
+- [x] **Triage**: los 2 `B102` son **falsos positivos** sobre `QDialog.exec()` (`gui/dialog_interpretation_manager.py:83`, `plugin/lifecycle.py:105`); `# noqa: B102` no los suprime → fix upstream pendiente (1.15.2).
+- [x] **Fix parser**: `scripts/sync_metrics.py` divide por el **último** `:` para no perder `SECURITY:B102` (subcontaba 32 vs 34).
+- [x] **Metrics**: `agent_metrics.json` re-sincronizado (security 80.0, breakdown, ground truth); tool → 1.15.1. Gates verdes (ruff · forge · sync validate · 714 OK · `make context` fresco).
+- Ref: `docs/maintenance/session_2026-10-11_qgis_analyzer_1_15_1.md`.
+
 ### Completed this session (2026-10-11 — qgis-plugin-analyzer 1.15.0 Adoption)
 
 - [x] **Dependency**: `qgis-plugin-analyzer>=1.14.0` → `>=1.15.0` (`pyproject.toml` deps+dev; `uv.lock` 1.14.0 → 1.15.0).

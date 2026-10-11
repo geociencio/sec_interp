@@ -1,5 +1,31 @@
 # Next Steps (Updated 2026-10-11)
 
+## ✅ Session 2026-10-11 — qgis-plugin-analyzer 1.15.1 (Security Scanning Restored) (COMPLETADO)
+
+- **Qué se hizo**: se adoptó `qgis-plugin-analyzer` **v1.15.1**, el fix upstream del
+  registro de seguridad desconectado reportado en el análisis profundo. El escaneo de
+  seguridad vuelve a ejecutarse (analyzer + `qgis-plugin-manager`, que delega en él) y
+  llega el hardening recomendado: `rules/scopes.py` compartido, borrado de código muerto
+  (`models/`, `modernization_rules`, `get_all_handlers`, `setup_output_dir`, helpers de
+  `validators`) y menor complejidad (`ProjectAnalyzer.run` 16→1, `visit_For` 18→1,
+  `visit_Constant` 17→8).
+  - **Dependency**: `>=1.15.0` → `>=1.15.1` (`pyproject.toml` deps+dev; `uv.lock`).
+  - **Re-análisis**: `analyze . --max-cc 10` (175 ficheros / 135 módulos). **Security
+    Score 100.0 → 80.0** (el scanner ahora corre); issues 32 → 34 (+2 `SECURITY:B102`).
+  - **Triage**: los 2 `B102` son **falsos positivos** sobre `QDialog.exec()`
+    (`gui/dialog_interpretation_manager.py:83`, `plugin/lifecycle.py:105`); la regla casa
+    llamadas de atributo y `# noqa: B102` no las suprime → **fix upstream pendiente**.
+  - **Fix parser**: `scripts/sync_metrics.py` divide por el **último** `:` → ya no pierde
+    `SECURITY:B102` (subcontaba `total_issues` como 32).
+- **Calidad**: ruff/format limpios · `unittest discover tests` **714 OK** ·
+  `forge metrics validate` PASS · `sync_metrics --validate` PASS · `make context` fresco.
+- **Referencia**: `docs/maintenance/session_2026-10-11_qgis_analyzer_1_15_1.md`.
+- **Pendiente / cómo reanudar**:
+  1. **Upstream (analyzer)**: restringir B102/B307 a `ast.Name` (builtins) para no marcar
+     `.exec()`/`.eval()` de Qt; hacer efectivo `# noqa: <RULE>` en findings de seguridad.
+  2. El resto de pendientes (tren v3.10.0/v3.11.0, `legend_widget.py`, bóveda, Goal
+     1.1/1.5, `module_size_gate`) siguen abajo sin cambios.
+
 ## ✅ Session 2026-10-11 — qgis-plugin-analyzer 1.15.0 Adoption (COMPLETADO)
 
 - **Qué se hizo**: se adoptó `qgis-plugin-analyzer` **v1.15.0** ("Repo Hygiene &

@@ -11,7 +11,7 @@ authors = [
 ]
 dependencies = [
     "ai-context-core>=5.1.0",
-    "qgis-plugin-analyzer>=1.15.0",
+    "qgis-plugin-analyzer>=1.15.1",
     "sphinx-intl>=2.3.2",
 ]
 
@@ -33,7 +33,7 @@ dev = [
     "mypy>=1.10",
     "networkx>=3.0",
     "ai-context-core>=5.1.0",
-    "qgis-plugin-analyzer>=1.15.0",
+    "qgis-plugin-analyzer>=1.15.1",
     "sphinx>=7.0",
     "sphinx-rtd-theme>=2.0",
     "sphinxcontrib-mermaid>=0.9.2",
