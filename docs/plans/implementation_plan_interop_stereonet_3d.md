@@ -121,19 +121,34 @@ QGIS's native **3D Map View**, not an external modeller. What exists today:
 
 **Goal**: make "SecInterp export → open 3D Map View" a one-step, coherent result.
 
-**Candidate work (to be scoped with the user)**
-1. **3D QML for drillholes** — generate a `.qml` with `QgsLine3DSymbol` (tube width)
-   for traces and intervals, per the intervals' `unit`, mirroring what the
-   interpretation exporter already does. (`DrillholeTrace3DExporter` /
-   `DrillholeInterval3DExporter` currently emit **no style**.)
-2. **3D scene setup** — a helper/scene (terrain from the DEM + the exported layers with
-   3D symbols + a sane vertical scale) so the user does not configure the 3D canvas by
-   hand every time.
-3. **Vertical-exaggeration consistency** — `Interpretation3DExporter` hardcodes
-   `vert_exag=1.0` (`_collect_projected_features`, `:385`); decide and document whether
-   the 3D export should honour the preview VE.
-4. **(Optional) extrusion thickness** for interpretation "slabs" — currently co-planar
-   on the section plane; a width option would make them read as 3D bodies.
+**Confirmed scope** (from the user, 2026-10-11: *both* layer types; missing = **styles,
+terrain, vertical scale**; extrusion **yes**):
+
+- **B1 — 3D styles.** Interpretations already ship a 3D `.qml`; give the **drillhole**
+  traces/intervals the same treatment — a `.qml` with `QgsLine3DSymbol` (tube width),
+  intervals coloured by `unit`. (`Drillhole*3DExporter` currently emit **no style**.)
+- **B2 — 3D scene setup.** Terrain from the project DEM + a defined **vertical scale**,
+  so the exported layers open in the 3D Map View without hand-configuring the canvas.
+  Design to confirm: a GUI action that builds/updates a `Qgs3DMapSettings` scene in the
+  current project (vs. shipping a `.qgz`/scene template).
+- **B3 — Extrusion thickness.** Give interpretation "slabs" a width so they read as 3D
+  bodies instead of co-planar section polygons.
+- **B4 — VE consistency.** `Interpretation3DExporter` hardcodes `vert_exag=1.0`
+  (`_collect_projected_features`, `:385`); align/document the interaction with B2's
+  vertical scale.
+
+**Acceptance criteria (validated on `examples/sample_data/`)**
+
+Project `MURALLA.qgs` (DEM `mdearea.tif`, line `secc1.shp`, geology `geologia.shp`,
+structures `pts.shp`, drillhole CSVs `DrillCollar/DrillsurveySummary/DillLith/…`):
+
+1. Drillhole 3D exports (traces + intervals, real and projected) come with a `.qml`
+   whose 3D symbol is a visible tube; intervals differ per `unit`.
+2. One action opens/shows a 3D Map View with `mdearea.tif` as terrain and the exported
+   layers, at the configured vertical scale.
+3. Interpretation 3D polygons render per-unit and (when enabled) carry the extrusion
+   thickness.
+4. `ruff`/`mypy`/`unittest` green; no `qgis` import added to `core/`.
 
 > Cleanup while here: `Interpretation3DExporter._write_shapefile` builds an unused
 > `SaveVectorOptions(driverName="ESRI Shapefile")` and then delegates to
@@ -193,8 +208,8 @@ extension as Phase A, plus a GUI adapter for the geology interfaces.
    consistency, extrusion)?
 5. **Deliverable format**: CSV only, or CSV **and** a GeoPackage point layer?
 6. **Version target**: v3.11.x, or fold into the next feature release?
-7. **3D workflow detail**: in the 3D Map View, what do you view (interpretation
-   polygons, drillhole traces/intervals) and what is missing today — styling, terrain,
-   scale, something else?
+7. **3D scope** — *answered 2026-10-11*: both layer types; missing = **styles, terrain,
+   vertical scale**; **extrusion wanted**. Remaining design choice: B2 as a **GUI action
+   that builds/updates the live 3D scene** vs. shipping a `.qgz`/scene template — which?
 
 > Per the @architect role, no code is written until these are answered and the plan is approved.
