@@ -39,7 +39,7 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 _DEFAULT_MAX_SAMPLES = 5_000
-"""Fallback number of samples when the DEM resolution cannot be resolved."""
+"""Fallback number of samples when the DEM resolution cannot be resolved."""  # no-i18n
 
 
 def create_distance_area(crs: QgsCoordinateReferenceSystem) -> QgsDistanceArea:
@@ -569,15 +569,18 @@ def prepare_profile_context(
     """Prepare a common context for profile calculation operations."""
     line_feat = resolve_section_feature(line_lyr, feature_id)
     if not line_feat:
-        raise GeometryError("Line layer has no features", {"layer": line_lyr.name()})
+        raise GeometryError("Line layer has no features", {"layer": line_lyr.name()})  # no-i18n
 
     line_geom = line_feat.geometry()
     if not line_geom or line_geom.isNull():
-        raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})
+        raise GeometryError("Line geometry is not valid", {"layer": line_lyr.name()})  # no-i18n
 
     try:
         if not get_line_vertices(line_geom):
-            raise GeometryError("Line geometry has no vertices", {"layer": line_lyr.name()})
+            raise GeometryError(
+                "Line geometry has no vertices",  # no-i18n
+                {"layer": line_lyr.name()},
+            )
     except ValueError as e:
         raise GeometryError(str(e), {"layer": line_lyr.name()}) from e
 

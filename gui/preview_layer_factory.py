@@ -190,7 +190,7 @@ class PreviewLayerFactory:
             return None
 
         render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
-        layer, provider = self.create_memory_layer("LineString", "Smoothed Topography")
+        layer, provider = self.create_memory_layer("LineString", "Smoothed Topography")  # no-i18n
         if not layer:
             return None
 

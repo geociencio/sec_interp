@@ -81,7 +81,7 @@ def read_plugin_metadata() -> dict[str, str]:
     metadata_path = Path(__file__).parent.parent.parent / "metadata.txt"
 
     if not metadata_path.exists():
-        msg = f"metadata.txt not found at {metadata_path}"
+        msg = f"metadata.txt not found at {metadata_path}"  # no-i18n
         logger.error(msg)
         raise FileNotFoundError(msg)
 
@@ -90,7 +90,7 @@ def read_plugin_metadata() -> dict[str, str]:
     try:
         parser.read(metadata_path, encoding="utf-8")
     except Exception as e:
-        msg = f"Failed to parse metadata.txt: {e}"
+        msg = f"Failed to parse metadata.txt: {e}"  # no-i18n
         logger.exception(msg)
         raise ValueError(msg) from e
 
@@ -102,7 +102,7 @@ def read_plugin_metadata() -> dict[str, str]:
         try:
             metadata[field] = parser.get("general", field)
         except Exception as e:
-            msg = f"Required field '{field}' missing in metadata.txt"
+            msg = f"Required field '{field}' missing in metadata.txt"  # no-i18n
             logger.exception(msg)
             raise ValueError(msg) from e
 

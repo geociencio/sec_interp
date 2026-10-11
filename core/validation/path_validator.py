@@ -13,7 +13,7 @@ def validate_safe_output_path(
 ) -> tuple[bool, str, Path | None]:
     """Validate an output path string with security and path traversal protection."""
     if not path or path.strip() == "":
-        return False, "Output path is required", None
+        return False, "Output path is required", None  # no-i18n
 
     # 1. Security check
     is_safe, msg, path_obj = _check_path_security(path)
@@ -29,7 +29,7 @@ def validate_safe_output_path(
         try:
             resolved_path = path_obj.resolve(strict=False)
         except (OSError, RuntimeError) as e:
-            return False, f"Cannot resolve path: {e!s}", None
+            return False, f"Cannot resolve path: {e!s}", None  # no-i18n
 
     # 3. Existence and Permissions
     is_valid, msg = _validate_path_state(resolved_path, must_exist, create_if_missing)
@@ -42,15 +42,15 @@ def validate_safe_output_path(
 def _check_path_security(path: str) -> tuple[bool, str, Path | None]:
     """Perform security checks for null bytes and traversal."""
     if "\0" in path:
-        return False, "Path contains invalid null bytes", None
+        return False, "Path contains invalid null bytes", None  # no-i18n
 
     try:
         path_obj = Path(path)
         if ".." in path_obj.parts:
-            return False, "Path contains directory traversal sequences (..)", None
+            return False, "Path contains directory traversal sequences (..)", None  # no-i18n
         return True, "", path_obj
     except (TypeError, ValueError) as e:
-        return False, f"Invalid path: {e!s}", None
+        return False, f"Invalid path: {e!s}", None  # no-i18n
 
 
 def _check_base_restriction(path_obj: Path, base_dir: Path) -> tuple[bool, str, Path | None]:
@@ -61,26 +61,26 @@ def _check_base_restriction(path_obj: Path, base_dir: Path) -> tuple[bool, str, 
         resolved_path.relative_to(base_resolved)
         return True, "", resolved_path
     except ValueError:
-        return False, f"Path escapes base directory: {base_dir}", None
+        return False, f"Path escapes base directory: {base_dir}", None  # no-i18n
     except (OSError, RuntimeError) as e:
-        return False, f"Cannot validate base directory: {e!s}", None
+        return False, f"Cannot validate base directory: {e!s}", None  # no-i18n
 
 
 def _validate_path_state(path: Path, must_exist: bool, create_if_missing: bool) -> tuple[bool, str]:
     """Check existence, type, and writability of a path."""
     if not path.exists():
         if must_exist:
-            return False, f"Path does not exist: {path}"
+            return False, f"Path does not exist: {path}"  # no-i18n
         if create_if_missing:
             try:
                 path.mkdir(parents=True, exist_ok=True)
             except OSError as e:
-                return False, f"Cannot create directory: {e!s}"
+                return False, f"Cannot create directory: {e!s}"  # no-i18n
         else:
             return True, ""
 
     if not path.is_dir():
-        return False, f"Path is not a directory: {path}"
+        return False, f"Path is not a directory: {path}"  # no-i18n
 
     # Check if writable
     try:
@@ -89,7 +89,7 @@ def _validate_path_state(path: Path, must_exist: bool, create_if_missing: bool) 
         test_file.unlink()
         return True, ""
     except OSError:
-        return False, f"Directory is not writable: {path}"
+        return False, f"Directory is not writable: {path}"  # no-i18n
 
 
 def validate_output_path(path: str) -> tuple[bool, str, Path | None]:

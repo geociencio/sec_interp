@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-"""Vector exporter module for Shapefile, GeoPackage and DXF data."""
+"""Vector exporter module for Shapefile, GeoPackage and DXF data."""  # no-i18n
 
 from pathlib import Path  # noqa: E402
 from typing import Any  # noqa: E402

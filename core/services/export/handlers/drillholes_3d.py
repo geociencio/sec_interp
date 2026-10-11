@@ -37,7 +37,7 @@ def export_drillholes_3d(
             DrillholeTrace3DExporter,
             "drillhole_traces_3d_real",
             False,
-            "3D Real",
+            "3D Real",  # no-i18n
         ),
         (
             "drill_3d_traces",
@@ -45,7 +45,7 @@ def export_drillholes_3d(
             DrillholeTrace3DExporter,
             "drillhole_traces_3d_projected",
             True,
-            "3D Proj",
+            "3D Proj",  # no-i18n
         ),
         (
             "drill_3d_intervals",
@@ -53,7 +53,7 @@ def export_drillholes_3d(
             DrillholeInterval3DExporter,
             "drillhole_intervals_3d_real",
             False,
-            "3D Real",
+            "3D Real",  # no-i18n
         ),
         (
             "drill_3d_intervals",
@@ -61,7 +61,7 @@ def export_drillholes_3d(
             DrillholeInterval3DExporter,
             "drillhole_intervals_3d_projected",
             True,
-            "3D Proj",
+            "3D Proj",  # no-i18n
         ),
     ]
 

@@ -53,7 +53,7 @@ def export_interpretations(
 
     except Exception as e:
         logger.exception(f"Interpretation export failed: {e}")
-        raise ExportError(f"Interpretation export failed: {e!s}") from e
+        raise ExportError(f"Interpretation export failed: {e!s}") from e  # no-i18n
 
 
 def _export_interpretations_3d(

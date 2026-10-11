@@ -104,7 +104,7 @@ class GeologyExtractor:
         band_number: int,
     ) -> None:
         """Validate input layers and parameters."""
-        for lyr, name in [(line_lyr, "Line layer"), (raster_lyr, "Raster layer")]:
+        for lyr, name in [(line_lyr, "Line layer"), (raster_lyr, "Raster layer")]:  # no-i18n
             if not lyr or not lyr.isValid():
                 raise DataMissingError(
                     self.tr("Invalid layer: {0}. Please check input layers.").format(name),
@@ -114,7 +114,7 @@ class GeologyExtractor:
         if outcrop_lyr and not outcrop_lyr.isValid():
             raise DataMissingError(
                 self.tr("Invalid layer: Outcrop layer. Please check input layers."),
-                {"layer": "Outcrop layer"},
+                {"layer": "Outcrop layer"},  # no-i18n
             )
 
         if band_number < 1:

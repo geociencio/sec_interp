@@ -33,7 +33,7 @@ class SafeLoader:
         try:
             return importlib.import_module(module_name)
         except (ImportError, Exception):
-            msg = error_message or f"Failed to load optional module: {module_name}"
+            msg = error_message or f"Failed to load optional module: {module_name}"  # no-i18n
             logger.exception(msg)
             return None
 

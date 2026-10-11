@@ -141,7 +141,10 @@ class PreviewAxesManager:
         if not extent:
             return None
 
-        layer = make_memory_layer("Point?field=label:string&field=quadrant:integer", "Axes Labels")
+        layer = make_memory_layer(
+            "Point?field=label:string&field=quadrant:integer",
+            "Axes Labels",  # no-i18n
+        )  # no-i18n
         if layer is None:
             return None
 

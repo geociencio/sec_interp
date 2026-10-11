@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-"""CSV exporter module for tabular data."""
+"""CSV exporter module for tabular data."""  # no-i18n
 
 import csv  # noqa: E402
 from pathlib import Path  # noqa: E402

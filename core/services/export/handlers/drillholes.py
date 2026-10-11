@@ -64,7 +64,7 @@ def export_drillholes(
 
     except (OSError, ValueError, TypeError, DataMissingError) as e:
         logger.exception(f"Drillhole export failed: {e}")
-        raise ExportError(f"Drillhole export failed: {e!s}") from e
+        raise ExportError(f"Drillhole export failed: {e!s}") from e  # no-i18n
     except Exception as e:
         logger.exception("Unexpected system error during drillhole export")
-        raise ExportError(f"Critical error exporting drillholes: {e}") from e
+        raise ExportError(f"Critical error exporting drillholes: {e}") from e  # no-i18n

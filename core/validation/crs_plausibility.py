@@ -66,33 +66,46 @@ def implausible_crs_reason(metadata: LayerMetadata | None) -> str:
     if extent is None:
         return ""
     xmin, ymin, xmax, ymax = extent
-
-    span_x = abs(xmax - xmin)
-    span_y = abs(ymax - ymin)
-    if span_x == 0 and span_y == 0:
+    if abs(xmax - xmin) == 0 and abs(ymax - ymin) == 0:
         return ""
 
     max_x = max(abs(xmin), abs(xmax))
     max_y = max(abs(ymin), abs(ymax))
-    within_geographic_bounds = max_x <= GEOGRAPHIC_X_LIMIT and max_y <= GEOGRAPHIC_Y_LIMIT
-
     if metadata.crs_is_geographic:
-        if max_x > GEOGRAPHIC_X_LIMIT or max_y > GEOGRAPHIC_Y_LIMIT:
-            return (
-                f"Layer '{metadata.name}' is declared with a geographic CRS but its "
-                f"coordinates exceed lon/lat bounds (x up to {max_x:.3g}, y up to "
-                f"{max_y:.3g}); the data may actually be projected."
-            )
+        return _geographic_out_of_bounds(metadata, max_x, max_y)
+    return _projected_maybe_geographic(metadata, extent)
+
+
+def _geographic_out_of_bounds(metadata: LayerMetadata, max_x: float, max_y: float) -> str:
+    """Return a message when a geographic CRS holds out-of-bounds coordinates."""
+    if max_x > GEOGRAPHIC_X_LIMIT or max_y > GEOGRAPHIC_Y_LIMIT:
+        return (
+            f"Layer '{metadata.name}' is declared with a geographic CRS but its "  # no-i18n
+            f"coordinates exceed lon/lat bounds (x up to {max_x:.3g}, y up to "  # no-i18n
+            f"{max_y:.3g}); the data may actually be projected."  # no-i18n
+        )
+    return ""
+
+
+def _projected_maybe_geographic(
+    metadata: LayerMetadata, extent: tuple[float, float, float, float]
+) -> str:
+    """Return a message when a projected CRS extent looks like degrees."""
+    xmin, ymin, xmax, ymax = extent
+    max_x = max(abs(xmin), abs(xmax))
+    max_y = max(abs(ymin), abs(ymax))
+    if max_x > GEOGRAPHIC_X_LIMIT or max_y > GEOGRAPHIC_Y_LIMIT:
         return ""
 
-    tiny_span = max(span_x, span_y) < MIN_PROJECTED_SPAN
+    span = max(abs(xmax - xmin), abs(ymax - ymin))
+    tiny_span = span < MIN_PROJECTED_SPAN
     tiny_pixel = (
         metadata.pixel_size_x is not None and 0 < metadata.pixel_size_x < MIN_PROJECTED_PIXEL
     )
-    if within_geographic_bounds and (tiny_span or tiny_pixel):
+    if tiny_span or tiny_pixel:
         return (
-            f"Layer '{metadata.name}' is declared with a projected CRS but its extent "
-            f"({xmin:.4g}, {ymin:.4g} : {xmax:.4g}, {ymax:.4g}) looks like degrees; "
+            f"Layer '{metadata.name}' is declared with a projected CRS but its extent "  # no-i18n
+            f"({xmin:.4g}, {ymin:.4g} : {xmax:.4g}, {ymax:.4g}) looks like degrees; "  # no-i18n
             "the data may be geographic (e.g. EPSG:4326) with a wrong CRS label. "
             "Fix it with 'Assign Projection' (not 'Reproject')."
         )

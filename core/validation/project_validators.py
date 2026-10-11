@@ -25,9 +25,9 @@ if TYPE_CHECKING:
     from .project_validator import ValidationParams
     from .validation_helpers import ValidationContext
 
-SECTION_TWO_POINT_ERROR = "Section line must have exactly 2 vertices (start and end)"
-SECTION_GEOGRAPHIC_CRS_ERROR = "Section line must use a projected CRS (metric units)"
-SECTION_ZERO_LENGTH_ERROR = "Section line has zero length"
+SECTION_TWO_POINT_ERROR = "Section line must have exactly 2 vertices (start and end)"  # no-i18n
+SECTION_GEOGRAPHIC_CRS_ERROR = "Section line must use a projected CRS (metric units)"  # no-i18n
+SECTION_ZERO_LENGTH_ERROR = "Section line has zero length"  # no-i18n
 SECTION_LINE_VERTEX_COUNT = 2
 
 
@@ -197,25 +197,25 @@ class DrillholeValidator(IValidator):
                 DependencyRule(
                     lambda: True,
                     lambda: bool(params.survey_id),
-                    "Survey ID field is required",
+                    "Survey ID field is required",  # no-i18n
                     "survey_id",
                 ),
                 DependencyRule(
                     lambda: True,
                     lambda: bool(params.survey_depth),
-                    "Survey Depth field is required",
+                    "Survey Depth field is required",  # no-i18n
                     "survey_depth",
                 ),
                 DependencyRule(
                     lambda: True,
                     lambda: bool(params.survey_azim),
-                    "Survey Azimuth field is required",
+                    "Survey Azimuth field is required",  # no-i18n
                     "survey_azim",
                 ),
                 DependencyRule(
                     lambda: True,
                     lambda: bool(params.survey_incl),
-                    "Survey Inclination field is required",
+                    "Survey Inclination field is required",  # no-i18n
                     "survey_incl",
                 ),
             ]
@@ -227,25 +227,25 @@ class DrillholeValidator(IValidator):
                 DependencyRule(
                     lambda: True,
                     lambda: bool(params.interval_id),
-                    "Interval ID field is required",
+                    "Interval ID field is required",  # no-i18n
                     "interval_id",
                 ),
                 DependencyRule(
                     lambda: True,
                     lambda: bool(params.interval_from),
-                    "Interval From field is required",
+                    "Interval From field is required",  # no-i18n
                     "interval_from",
                 ),
                 DependencyRule(
                     lambda: True,
                     lambda: bool(params.interval_to),
-                    "Interval To field is required",
+                    "Interval To field is required",  # no-i18n
                     "interval_to",
                 ),
                 DependencyRule(
                     lambda: True,
                     lambda: bool(params.interval_lith),
-                    "Interval Lithology field is required",
+                    "Interval Lithology field is required",  # no-i18n
                     "interval_lith",
                 ),
             ]

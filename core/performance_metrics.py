@@ -236,7 +236,7 @@ class PerformanceMonitor:
                 "duration_seconds": round(duration, 4),
                 "memory_mb": round(memory_diff, 2),
                 "memory_peak_mb": round(peak / 1024 / 1024, 2),
-                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),  # no-i18n
                 **metadata,
             }
 

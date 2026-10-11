@@ -17,27 +17,27 @@ StructurePoints = list[tuple[float, float]]
 
 # Settings and configuration
 SettingsDict = dict[str, Any]
-"""Dictionary of plugin settings and configuration values."""
+"""Dictionary of plugin settings and configuration values."""  # no-i18n
 
 ExportSettings = dict[str, Any]
-"""Dictionary of export configuration parameters."""
+"""Dictionary of export configuration parameters."""  # no-i18n
 
 # Validation results
 ValidationResult = tuple[bool, str]
-"""Tuple of (is_valid, error_message) from validation functions."""
+"""Tuple of (is_valid, error_message) from validation functions."""  # no-i18n
 
 # Point and Geometry Domain Types
 Point2D = tuple[float, float]
-"""A 2D point represented as (x, y) or (distance, elevation)."""
+"""A 2D point represented as (x, y) or (distance, elevation)."""  # no-i18n
 
 Point3D = tuple[float, float, float]
-"""A 3D point represented as (x, y, z)."""
+"""A 3D point represented as (x, y, z)."""  # no-i18n
 
 DomainGeometry = str
-"""A geometry represented in WKT (Well-Known Text) format."""
+"""A geometry represented in WKT (Well-Known Text) format."""  # no-i18n
 
 PointList = list[Point2D]
-"""List of 2D points."""
+"""List of 2D points."""  # no-i18n
 
 
 # --- Domain Models ---

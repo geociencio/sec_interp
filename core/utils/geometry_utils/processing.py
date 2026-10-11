@@ -6,7 +6,7 @@ import math
 from typing import Any
 
 MAX_DENSIFY_POINTS = 50_000
-"""Hard cap on generated vertices to prevent pathological densification.
+"""Hard cap on generated vertices to prevent pathological densification.  # no-i18n
 
 A tiny ``interval`` relative to the polyline extent (a common symptom of mixing
 a DEM pixel size expressed in a different CRS than the section line) would

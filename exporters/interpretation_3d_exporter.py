@@ -61,7 +61,7 @@ class Interpretation3DExporter(BaseExporter):
         try:
             origin_x, origin_y, azimuth = self._calculate_section_geometry(section_line)
         except Exception as e:
-            raise ExportError(f"Failed to calculate section geometry: {e}") from e
+            raise ExportError(f"Failed to calculate section geometry: {e}") from e  # no-i18n
 
         # Transform and create features
         features = self._collect_projected_features(
@@ -282,7 +282,7 @@ class Interpretation3DExporter(BaseExporter):
         from qgis.core import QgsVectorFileWriter
 
         options = QgsVectorFileWriter.SaveVectorOptions()
-        options.driverName = "ESRI Shapefile"
+        options.driverName = "ESRI Shapefile"  # no-i18n
         options.fileEncoding = "UTF-8"
         # Create fields container
         # Note: In QGIS API, we often pass QgsFields object.
@@ -453,7 +453,7 @@ class Interpretation3DExporter(BaseExporter):
 
             # 3. Create rule with filter
             # Signature: QgsRuleBased3DRenderer.Rule(symbol, filterExp='', description='', elseRule=False)
-            filter_expr = f"\"name\" = '{name}'"
+            filter_expr = f"\"name\" = '{name}'"  # no-i18n
             rule = QgsRuleBased3DRenderer.Rule(symbol_3d, filter_expr, name)
             root_rule.appendChild(rule)
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-"""Image exporter module for raster formats (PNG, JPG)."""
+"""Image exporter module for raster formats (PNG, JPG)."""  # no-i18n
 
 from pathlib import Path  # noqa: E402
 

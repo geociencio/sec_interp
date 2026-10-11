@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-"""PDF exporter module for PDF documents."""
+"""PDF exporter module for PDF documents."""  # no-i18n
 
 from pathlib import Path  # noqa: E402
 

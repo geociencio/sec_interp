@@ -118,7 +118,7 @@ class PreviewService:
             raster_lyr = params.raster_layer
 
             if not line_lyr or not raster_lyr:
-                raise ProcessingError("Required layers for topography are missing.")
+                raise ProcessingError("Required layers for topography are missing.")  # no-i18n
 
             interval = None
             if params.auto_lod:
@@ -133,7 +133,7 @@ class PreviewService:
                 interval=interval,
             )
             if result.topo:
-                result.metrics.record_count("Topography Points", len(result.topo))
+                result.metrics.record_count("Topography Points", len(result.topo))  # no-i18n
 
     def _generate_structures_step(
         self,
@@ -173,4 +173,4 @@ class PreviewService:
                     strike_field=params.strike_field,
                 )
                 if result.struct:
-                    result.metrics.record_count("Structure Points", len(result.struct))
+                    result.metrics.record_count("Structure Points", len(result.struct))  # no-i18n

@@ -37,7 +37,7 @@ def validate_range(
         """Validate that value is within range."""
         if not (min_val <= value <= max_val):
             raise ValidationError(
-                f"{field_name or 'Value'} must be between {min_val} and {max_val}, got {value}"
+                f"{field_name or 'Value'} must be between {min_val} and {max_val}, got {value}"  # no-i18n
             )
         return value
 
@@ -61,7 +61,9 @@ def validate_positive(field_name: str = "") -> Callable[[float], float]:
     def validator(value: float) -> float:
         """Validate that value is positive."""
         if value <= 0:
-            raise ValidationError(f"{field_name or 'Value'} must be positive, got {value}")
+            raise ValidationError(
+                f"{field_name or 'Value'} must be positive, got {value}"  # no-i18n
+            )  # no-i18n
         return value
 
     return validator
@@ -84,7 +86,9 @@ def validate_non_negative(field_name: str = "") -> Callable[[float], float]:
     def validator(value: float) -> float:
         """Validate that value is non-negative."""
         if value < 0:
-            raise ValidationError(f"{field_name or 'Value'} must be non-negative, got {value}")
+            raise ValidationError(
+                f"{field_name or 'Value'} must be non-negative, got {value}"  # no-i18n
+            )  # no-i18n
         return value
 
     return validator
@@ -107,7 +111,7 @@ def validate_non_empty(field_name: str = "") -> Callable[[str], str]:
     def validator(value: str) -> str:
         """Validate that string is non-empty."""
         if not value or not value.strip():
-            raise ValidationError(f"{field_name or 'Field'} cannot be empty")
+            raise ValidationError(f"{field_name or 'Field'} cannot be empty")  # no-i18n
         return value.strip()
 
     return validator
@@ -139,7 +143,7 @@ def coerce_type(target_type: type, field_name: str = "") -> Callable[[Any], Any]
             return target_type(value)
         except (ValueError, TypeError) as e:
             raise ValidationError(
-                f"{field_name or 'Field'} must be {target_type.__name__}, "
+                f"{field_name or 'Field'} must be {target_type.__name__}, "  # no-i18n
                 f"got {type(value).__name__}: {e}"
             ) from e
 

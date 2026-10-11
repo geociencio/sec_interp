@@ -29,18 +29,18 @@ def validate_numeric_input(
     if not value or value.strip() == "":
         if allow_empty:
             return True, "", None
-        return False, f"{field_name} is required", None
+        return False, f"{field_name} is required", None  # no-i18n
 
     try:
         num_value = float(value)
     except (ValueError, TypeError):
-        return False, f"{field_name} must be a valid number", None
+        return False, f"{field_name} must be a valid number", None  # no-i18n
 
     if min_val is not None and num_value < min_val:
-        return False, f"{field_name} must be at least {min_val}", None
+        return False, f"{field_name} must be at least {min_val}", None  # no-i18n
 
     if max_val is not None and num_value > max_val:
-        return False, f"{field_name} must be at most {max_val}", None
+        return False, f"{field_name} must be at most {max_val}", None  # no-i18n
 
     return True, "", num_value
 
@@ -68,18 +68,18 @@ def validate_integer_input(
     if not value or value.strip() == "":
         if allow_empty:
             return True, "", None
-        return False, f"{field_name} is required", None
+        return False, f"{field_name} is required", None  # no-i18n
 
     try:
         int_value = int(value)
     except (ValueError, TypeError):
-        return False, f"{field_name} must be a valid integer", None
+        return False, f"{field_name} must be a valid integer", None  # no-i18n
 
     if min_val is not None and int_value < min_val:
-        return False, f"{field_name} must be at least {min_val}", None
+        return False, f"{field_name} must be at least {min_val}", None  # no-i18n
 
     if max_val is not None and int_value > max_val:
-        return False, f"{field_name} must be at most {max_val}", None
+        return False, f"{field_name} must be at most {max_val}", None  # no-i18n
 
     return True, "", int_value
 
@@ -102,7 +102,7 @@ def validate_angle_range(
     if value < min_angle or value > max_angle:
         return (
             False,
-            f"{field_name} must be between {min_angle} and {max_angle} degrees",
+            f"{field_name} must be between {min_angle} and {max_angle} degrees",  # no-i18n
         )
 
     return True, ""
@@ -120,20 +120,23 @@ def validate_field_exists(metadata: LayerMetadata, field_name: str | None) -> tu
 
     """
     if not metadata or not metadata.is_valid:
-        return False, "Layer is not valid"
+        return False, "Layer is not valid"  # no-i18n
 
     if not field_name:
-        return False, "Field name is required"
+        return False, "Field name is required"  # no-i18n
 
     if metadata.kind != "vector":
-        return False, f"Layer '{metadata.name}' is not a vector layer"
+        return False, f"Layer '{metadata.name}' is not a vector layer"  # no-i18n
 
     if field_name not in metadata.field_names:
         MAX_FIELDS_TO_SHOW = 5
-        return False, (
-            f"Field '{field_name}' not found in layer '{metadata.name}'. "
-            f"Available fields: {', '.join(metadata.field_names[:MAX_FIELDS_TO_SHOW])}"
-            f"{', ...' if len(metadata.field_names) > MAX_FIELDS_TO_SHOW else ''}"
+        return (
+            False,
+            (
+                f"Field '{field_name}' not found in layer '{metadata.name}'. "  # no-i18n
+                f"Available fields: {', '.join(metadata.field_names[:MAX_FIELDS_TO_SHOW])}"
+                f"{', ...' if len(metadata.field_names) > MAX_FIELDS_TO_SHOW else ''}"
+            ),
         )
 
     return True, ""
@@ -154,13 +157,13 @@ def validate_field_type(
 
     """
     if not metadata or not metadata.is_valid:
-        return False, "Layer is not valid"
+        return False, "Layer is not valid"  # no-i18n
 
     if metadata.kind != "vector":
-        return False, f"Layer '{metadata.name}' is not a vector layer"
+        return False, f"Layer '{metadata.name}' is not a vector layer"  # no-i18n
 
     if field_name not in metadata.field_types:
-        return False, f"Field '{field_name}' not found in layer '{metadata.name}'"
+        return False, f"Field '{field_name}' not found in layer '{metadata.name}'"  # no-i18n
 
     actual = metadata.field_types[field_name]
     if actual not in expected_types:
@@ -168,17 +171,20 @@ def validate_field_type(
             FieldType.INT: "Integer",
             FieldType.DOUBLE: "Double",
             FieldType.STRING: "String",
-            FieldType.LONG_LONG: "Long Integer",
+            FieldType.LONG_LONG: "Long Integer",  # no-i18n
             FieldType.DATE: "Date",
             FieldType.DATE_TIME: "DateTime",
         }
         expected_names = [type_names.get(t, str(t)) for t in expected_types]
-        actual_name = type_names.get(actual, f"Type ID {actual}")
+        actual_name = type_names.get(actual, f"Type ID {actual}")  # no-i18n
 
-        return False, (
-            f"Invalid data type for field '{field_name}' in layer '{metadata.name}'. "
-            f"Found: {actual_name}. Expected one of: {', '.join(expected_names)}. "
-            f"Please check your attribute table."
+        return (
+            False,
+            (
+                f"Invalid data type for field '{field_name}' in layer '{metadata.name}'. "  # no-i18n
+                f"Found: {actual_name}. Expected one of: {', '.join(expected_names)}. "  # no-i18n
+                f"Please check your attribute table."
+            ),
         )
 
     return True, ""

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-"""Base exporter module for Sec Interp plugin."""
+"""Base exporter module for Sec Interp plugin."""  # no-i18n
 
 from abc import ABC, abstractmethod  # noqa: E402
 from pathlib import Path  # noqa: E402

@@ -46,7 +46,7 @@ def create_vector_writer(
     ext = path.suffix.lower()
 
     drivers = {
-        ".shp": "ESRI Shapefile",
+        ".shp": "ESRI Shapefile",  # no-i18n
         ".gpkg": "GPKG",
         ".dxf": "DXF",
     }

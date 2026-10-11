@@ -36,7 +36,7 @@ from .base_page import BasePage, set_combo_layer
 logger = get_logger(__name__)
 
 STATS_SAMPLE_SIZE = 250_000
-"""Bounded sample size for band statistics (avoids blocking on huge/remote DEMs)."""
+"""Bounded sample size for band statistics (avoids blocking on huge/remote DEMs)."""  # no-i18n
 
 
 def _all_band_statistics() -> Any:

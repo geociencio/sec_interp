@@ -13,6 +13,22 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 
+def _record_written(msg: list[str], path: Path, folder: Path) -> None:
+    """Append a written-file line to the export summary."""
+    msg.append(f"  - {path.relative_to(folder)}")
+
+
+def _resolve_raster_resolution(raster_layer: Any | None) -> float:
+    """Return a finite, positive raster resolution, or 1.0 as a safe fallback."""
+    if not raster_layer or not raster_layer.isValid():
+        return 1.0
+    candidate = raster_layer.rasterUnitsPerPixelX()
+    if isinstance(candidate, int | float) and math.isfinite(candidate) and candidate > 0:
+        return float(candidate)
+    logger.warning("Invalid raster resolution %r; using 1.0 for dip line length.", candidate)
+    return 1.0
+
+
 def export_structures(
     folder: Path,
     data: list[Any] | None,
@@ -39,30 +55,20 @@ def export_structures(
         csv_path, csv_layer = resolve_export_path(
             folder, "structural_profile", profile_name, pattern, ".csv"
         )
-        csv_ok = csv_exporter.export(
+        if csv_exporter.export(
             csv_path,
             {"headers": ["dist", "apparent_dip"], "rows": rows},
             layer_name=csv_layer,
-        )
-        if csv_ok:
-            msg.append(f"  - {csv_path.relative_to(folder)}")
+        ):
+            _record_written(msg, csv_path, folder)
 
-        raster_res = 1.0
-        if raster_layer and raster_layer.isValid():
-            candidate = raster_layer.rasterUnitsPerPixelX()
-            if isinstance(candidate, int | float) and math.isfinite(candidate) and candidate > 0:
-                raster_res = candidate
-            else:
-                logger.warning(
-                    "Invalid raster resolution %r; using 1.0 for dip line length.",
-                    candidate,
-                )
+        raster_res = _resolve_raster_resolution(raster_layer)
 
         vec_path, vec_layer = resolve_export_path(
             folder, "structural_measurements", profile_name, pattern, ext
         )
         vector_exporter = StructureVectorExporter({})
-        vec_ok = vector_exporter.export(
+        if vector_exporter.export(
             vec_path,
             {
                 "structural_data": data,
@@ -71,15 +77,14 @@ def export_structures(
                 "raster_res": raster_res,
             },
             layer_name=vec_layer,
-        )
-        if vec_ok:
-            msg.append(f"  - {vec_path.relative_to(folder)}")
+        ):
+            _record_written(msg, vec_path, folder)
         else:
             logger.warning(f"Failed to write vector structures to {vec_path}")
 
     except (OSError, ValueError, TypeError, DataMissingError) as e:
         logger.exception(f"Structure export failed: {e}")
-        raise ExportError(f"Structure export failed: {e!s}") from e
+        raise ExportError(f"Structure export failed: {e!s}") from e  # no-i18n
     except Exception as e:
         logger.exception("Unexpected system error during structure export")
-        raise ExportError(f"Critical error exporting structures: {e}") from e
+        raise ExportError(f"Critical error exporting structures: {e}") from e  # no-i18n

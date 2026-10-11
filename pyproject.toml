@@ -11,7 +11,7 @@ authors = [
 ]
 dependencies = [
     "ai-context-core>=5.1.0",
-    "qgis-plugin-analyzer>=1.15.2",
+    "qgis-plugin-analyzer>=1.16.0",
     "sphinx-intl>=2.3.2",
 ]
 
@@ -24,7 +24,11 @@ Tracker = "https://github.com/geociencio/sec_interp/issues"
 packages = ["core", "gui", "resources", "exporters", "i18n"]
 
 [tool.qgis-analyzer.profiles.default.rules.MISSING_I18N]
-extra_ignore_calls = ["PerformanceTimer"]
+# Calls whose string arguments are safe to ignore. ``PerformanceTimer`` is a
+# timing label; ``_stats_edit`` / ``_check_field`` receive user-facing text that
+# they translate internally via ``self.tr(...)`` (the analyzer cannot follow that
+# indirection, so the raw string would otherwise be a false positive).
+extra_ignore_calls = ["PerformanceTimer", "_stats_edit", "_check_field"]
 
 [dependency-groups]
 dev = [
@@ -33,7 +37,7 @@ dev = [
     "mypy>=1.10",
     "networkx>=3.0",
     "ai-context-core>=5.1.0",
-    "qgis-plugin-analyzer>=1.15.2",
+    "qgis-plugin-analyzer>=1.16.0",
     "sphinx>=7.0",
     "sphinx-rtd-theme>=2.0",
     "sphinxcontrib-mermaid>=0.9.2",

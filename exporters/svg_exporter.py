@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-"""SVG exporter module for vector graphics."""
+"""SVG exporter module for vector graphics."""  # no-i18n
 
 from pathlib import Path  # noqa: E402
 

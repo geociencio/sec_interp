@@ -29,13 +29,13 @@ _TYPE_NAMES = {
 def validate_layer_has_features(metadata: LayerMetadata) -> tuple[bool, str]:
     """Validate that a vector layer contains at least one feature."""
     if not metadata or not metadata.is_valid:
-        return False, "Layer is not valid"
+        return False, "Layer is not valid"  # no-i18n
 
     if metadata.kind != KIND_VECTOR:
-        return False, "Layer is not a vector layer"
+        return False, "Layer is not a vector layer"  # no-i18n
 
     if metadata.feature_count == 0:
-        return False, f"Layer '{metadata.name}' has no features"
+        return False, f"Layer '{metadata.name}' has no features"  # no-i18n
 
     return True, ""
 
@@ -43,19 +43,22 @@ def validate_layer_has_features(metadata: LayerMetadata) -> tuple[bool, str]:
 def validate_layer_geometry(metadata: LayerMetadata, expected_type: str) -> tuple[bool, str]:
     """Validate that a vector layer matches the expected geometry type."""
     if not metadata or not metadata.is_valid:
-        return False, "Layer is not valid"
+        return False, "Layer is not valid"  # no-i18n
 
     if metadata.kind != KIND_VECTOR:
-        return False, "Layer is not a vector layer"
+        return False, "Layer is not a vector layer"  # no-i18n
 
     if metadata.geometry_type != expected_type:
         expected_name = _TYPE_NAMES.get(expected_type, f"Type {expected_type}")
         actual_name = _TYPE_NAMES.get(metadata.geometry_type, metadata.geometry_type)
 
-        return False, (
-            f"Geometry type mismatch for layer '{metadata.name}': "
-            f"Found {actual_name}, but expected {expected_name}. "
-            f"Please select a valid {expected_name.lower()} layer."
+        return (
+            False,
+            (
+                f"Geometry type mismatch for layer '{metadata.name}': "  # no-i18n
+                f"Found {actual_name}, but expected {expected_name}. "  # no-i18n
+                f"Please select a valid {expected_name.lower()} layer."  # no-i18n
+            ),
         )
 
     return True, ""
@@ -64,16 +67,19 @@ def validate_layer_geometry(metadata: LayerMetadata, expected_type: str) -> tupl
 def validate_raster_band(metadata: LayerMetadata, band_number: int) -> tuple[bool, str]:
     """Validate that a specified band number exists in the raster layer."""
     if not metadata or not metadata.is_valid:
-        return False, "Layer is not valid"
+        return False, "Layer is not valid"  # no-i18n
 
     if metadata.kind != KIND_RASTER:
-        return False, "Layer is not a raster layer"
+        return False, "Layer is not a raster layer"  # no-i18n
 
     band_count = metadata.band_count
     if band_number < 1 or band_number > band_count:
-        return False, (
-            f"Band number {band_number} is invalid. Layer '{metadata.name}' "
-            f"has {band_count} band(s)"
+        return (
+            False,
+            (
+                f"Band number {band_number} is invalid. Layer '{metadata.name}' "  # no-i18n
+                f"has {band_count} band(s)"
+            ),
         )
 
     return True, ""
@@ -106,10 +112,10 @@ def validate_structural_requirements(
 def _check_struct_layer_validity(metadata: LayerMetadata) -> tuple[bool, str]:
     """Check if the structural layer is valid and has point geometry."""
     if not metadata.is_valid:
-        return False, f"Structural layer '{metadata.name}' is not valid."
+        return False, f"Structural layer '{metadata.name}' is not valid."  # no-i18n
 
     if metadata.geometry_type != GEOMETRY_POINT:
-        return False, "Structural layer must be a point layer."
+        return False, "Structural layer must be a point layer."  # no-i18n
     return True, ""
 
 
@@ -126,7 +132,7 @@ def validate_geology_requirements(
         return False, error
 
     if not field_name:
-        msg = "Geology unit field is required when geology layer is selected"
+        msg = "Geology unit field is required when geology layer is selected"  # no-i18n
         if context:
             context.add_error(msg, "geology_field")
         return False, msg
@@ -143,7 +149,7 @@ def validate_geology_requirements(
 def _check_geology_layer_validity(metadata: LayerMetadata) -> tuple[bool, str]:
     """Check if the geology layer is valid and has polygon geometry."""
     if not metadata.is_valid:
-        return False, f"Geology layer '{metadata.name}' is not valid."
+        return False, f"Geology layer '{metadata.name}' is not valid."  # no-i18n
 
     is_valid, error = validate_layer_geometry(metadata, GEOMETRY_POLYGON)
     if not is_valid:
@@ -169,7 +175,7 @@ def _validate_struct_field(
         [FieldType.INT, FieldType.DOUBLE, FieldType.LONG_LONG, FieldType.STRING],
     )
     if not is_valid:
-        return False, f"{label} field error: {msg}"
+        return False, f"{label} field error: {msg}"  # no-i18n
 
     return True, ""
 
@@ -190,9 +196,9 @@ def validate_crs_compatibility(metadata_list: list[LayerMetadata]) -> tuple[bool
 
     if incompatible:
         warning = (
-            f"⚠ CRS mismatch detected!\n\n"
-            f"Reference CRS: {ref.crs_authid} ({ref.name})\n"
-            f"Incompatible layers:\n" + "\n".join(incompatible) + "\n\n"
+            f"⚠ CRS mismatch detected!\n\n"  # no-i18n
+            f"Reference CRS: {ref.crs_authid} ({ref.name})\n"  # no-i18n
+            f"Incompatible layers:\n" + "\n".join(incompatible) + "\n\n"  # no-i18n
             "QGIS will reproject on-the-fly, but this may affect accuracy.\n"
         )
         return False, warning

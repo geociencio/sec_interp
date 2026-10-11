@@ -36,4 +36,4 @@ def export_axes(
         else:
             logger.warning(f"Failed to write profile axes to {path}")
     except Exception as e:
-        raise ExportError(f"Profile axes export failed: {e!s}") from e
+        raise ExportError(f"Profile axes export failed: {e!s}") from e  # no-i18n

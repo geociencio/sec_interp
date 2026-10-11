@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-"""Interpretation exporters for SecInterp.
+"""Interpretation exporters for SecInterp.  # no-i18n
 
 This module provides exporters for 2D interpretation data.
 """

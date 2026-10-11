@@ -13,6 +13,47 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 
+def _record_written(msg: list[str], path: Path, folder: Path) -> None:
+    """Append a written-file line to the export summary."""
+    msg.append(f"  - {path.relative_to(folder)}")
+
+
+def _export_profile_pair(
+    folder: Path,
+    profile_name: str | None,
+    pattern: str | None,
+    stems: tuple[str, str],
+    payloads: tuple[dict[str, Any], dict[str, Any]],
+    csv_exporter: Any,
+    vector_exporter: Any,
+    msg: list[str],
+    ext: str,
+) -> None:
+    """Export one CSV/vector pair and record the written files."""
+    csv_stem, vec_stem = stems
+    csv_payload, vec_payload = payloads
+
+    csv_path, csv_layer = resolve_export_path(folder, csv_stem, profile_name, pattern, ".csv")
+    if csv_exporter.export(csv_path, csv_payload, layer_name=csv_layer):
+        _record_written(msg, csv_path, folder)
+    else:
+        logger.warning(f"Failed to write CSV topography to {csv_path}")
+
+    vec_path, vec_layer = resolve_export_path(folder, vec_stem, profile_name, pattern, ext)
+    if vector_exporter.export(vec_path, vec_payload, layer_name=vec_layer):
+        _record_written(msg, vec_path, folder)
+    else:
+        logger.warning(f"Failed to write vector topography to {vec_path}")
+
+
+def _smoothed_topography(data: list[tuple], options: dict[str, Any]) -> list[tuple] | None:
+    """Return a distance-smoothed profile when smoothing is requested."""
+    window = float(options.get("smooth_window", 0) or 0)
+    if options.get("smooth") and window > 0 and data:
+        return smooth_profile_by_distance(data, window)
+    return None
+
+
 def export_topography(
     folder: Path,
     data: list[tuple],
@@ -31,59 +72,43 @@ def export_topography(
     try:
         profile_name = get_profile_name(controller)
         pattern = getattr(settings, "naming_pattern", None) if settings else None
-
-        csv_path, csv_layer = resolve_export_path(
-            folder, "topo_profile", profile_name, pattern, ".csv"
-        )
-        csv_ok = csv_exporter.export(
-            csv_path,
-            {"headers": ["dist", "elev"], "rows": data},
-            layer_name=csv_layer,
-        )
-        if csv_ok:
-            msg.append(f"  - {csv_path.relative_to(folder)}")
-        else:
-            logger.warning(f"Failed to write CSV topography to {csv_path}")
-
-        vec_path, vec_layer = resolve_export_path(
-            folder, "profile_line", profile_name, pattern, ext
-        )
         vector_exporter = ProfileLineVectorExporter({})
-        vec_ok = vector_exporter.export(
-            vec_path, {"profile_data": data, "crs": crs}, layer_name=vec_layer
+
+        _export_profile_pair(
+            folder,
+            profile_name,
+            pattern,
+            ("topo_profile", "profile_line"),
+            (
+                {"headers": ["dist", "elev"], "rows": data},
+                {"profile_data": data, "crs": crs},
+            ),
+            csv_exporter,
+            vector_exporter,
+            msg,
+            ext,
         )
-        if vec_ok:
-            msg.append(f"  - {vec_path.relative_to(folder)}")
-        else:
-            logger.warning(f"Failed to write vector topography to {vec_path}")
 
-        opts = options or {}
-        window = float(opts.get("smooth_window", 0) or 0)
-        if opts.get("smooth") and window > 0 and data:
-            smoothed = smooth_profile_by_distance(data, window)
-            sm_csv_path, sm_csv_layer = resolve_export_path(
-                folder, "topo_profile_smoothed", profile_name, pattern, ".csv"
+        smoothed = _smoothed_topography(data, options or {})
+        if smoothed:
+            _export_profile_pair(
+                folder,
+                profile_name,
+                pattern,
+                ("topo_profile_smoothed", "profile_line_smoothed"),
+                (
+                    {"headers": ["dist", "elev"], "rows": smoothed},
+                    {"profile_data": smoothed, "crs": crs},
+                ),
+                csv_exporter,
+                vector_exporter,
+                msg,
+                ext,
             )
-            if csv_exporter.export(
-                sm_csv_path,
-                {"headers": ["dist", "elev"], "rows": smoothed},
-                layer_name=sm_csv_layer,
-            ):
-                msg.append(f"  - {sm_csv_path.relative_to(folder)}")
-
-            sm_vec_path, sm_vec_layer = resolve_export_path(
-                folder, "profile_line_smoothed", profile_name, pattern, ext
-            )
-            if vector_exporter.export(
-                sm_vec_path,
-                {"profile_data": smoothed, "crs": crs},
-                layer_name=sm_vec_layer,
-            ):
-                msg.append(f"  - {sm_vec_path.relative_to(folder)}")
 
     except (OSError, ValueError, TypeError, DataMissingError) as e:
         logger.exception(f"Topography export failed: {e}")
-        raise ExportError(f"Topography export failed: {e!s}") from e
+        raise ExportError(f"Topography export failed: {e!s}") from e  # no-i18n
     except Exception as e:
         logger.exception("Unexpected system error during topography export")
-        raise ExportError(f"Critical error exporting topography: {e}") from e
+        raise ExportError(f"Critical error exporting topography: {e}") from e  # no-i18n
