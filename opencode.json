@@ -3,6 +3,23 @@
   "skills": {
     "paths": [".agent/skills", ".agent-state/skills"]
   },
+  "mcp": {
+    "secinterp_qgis": {
+      "type": "local",
+      "command": ["uv", "run", "src/qgis_mcp/server.py"],
+      "cwd": "tools/qgis_mcp",
+      "environment": {
+        "QGIS_MCP_PORT": "9877",
+        "QGIS_MCP_TOOL_MODE": "compound",
+        "QGIS_MCP_TRANSPORT": "stdio"
+      },
+      "timeout": 20000,
+      "enabled": true
+    }
+  },
+  "tools": {
+    "secinterp_qgis*": false
+  },
   "agent": {
     "architect": {
       "description": "SecInterp Senior Architect (@architect): protects Core/UI separation and designs features.",
@@ -21,6 +38,13 @@
       "mode": "subagent",
       "permission": { "edit": "deny" },
       "prompt": "You are the Agent Auditor (@auditor) for SecInterp. Act as a second pair of eyes and a 'Hallucination Hunter', verifying every file path and tool call. Read the root AGENTS.md for your full role definition. Allow no deviation from ruff format, uv, or architectural boundaries; perform a mandatory Reflection/Critique loop for every feature and refactor plan."
+    },
+    "qgis_driver": {
+      "description": "Drives a live QGIS session via the forked SecInterp QGIS-MCP server (open dialog, preview, export) for QGIS 4 smoke tests.",
+      "mode": "subagent",
+      "permission": { "edit": "deny" },
+      "tools": { "secinterp_qgis*": true },
+      "prompt": "You are the QGIS smoke-test driver for SecInterp. Use ONLY the secinterp_qgis MCP tools (compound `secinterp` group) to drive a live QGIS 4 session: ping/status first, then open the dialog, run the preview, assert readiness, read the results and export. Never run execute_code. Report raw tool output as evidence; do not claim success without it. See .agent-state/workflows/smoke-qgis4.md."
     }
   }
 }

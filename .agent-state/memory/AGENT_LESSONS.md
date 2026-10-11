@@ -17,6 +17,41 @@ lessons:
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-11'
     category: TOOLING
+    topic: check the ecosystem before building a bespoke tool (adopt vs build)
+    lesson: SecInterp's `exploration_qgis4_qa_mcp.md` proposed building a QGIS QA MCP from
+      scratch (socket + FastMCP). Web research showed that design already existed, matured,
+      was published on plugins.qgis.org and supported opencode — so the same plan was
+      fulfilled by adopting + forking + extending instead of reinventing it.
+    action: Before starting a "build from scratch" plan for generic tooling, spend one
+      research pass on the ecosystem (GitHub, plugin registries, MCP registry); if a mature
+      implementation exists, prefer adopt/extend and reserve the bespoke build for the
+      project-specific delta.
+
+  - date: '2026-10-11'
+    category: ARCHITECTURE
+    topic: QDialog.exec() in a socket-driven QGIS handler freezes the command server
+    lesson: A command that opens the SecInterp dialog had to use show() (not exec()).
+      exec() starts a nested Qt event loop, so the handler never returns while the window
+      is open; the fork's server guards against re-entrant dispatch, so every later command
+      would block until the dialog closed — useless for automation.
+    action: In MCP/socket handlers that drive a QGIS plugin, open windows non-modally
+      (show()) and mirror the plugin's own run() minus exec(); never call exec() from a
+      handler. The same applies to any modal QFileDialog — call the underlying export
+      method with an explicit path.
+
+  - date: '2026-10-11'
+    category: TESTING
+    topic: a forked suite that pins tool counts breaks the moment you extend the fork
+    lesson: Extending `nkarasiak/qgis-mcp` (TOOL_COUNT=125, COMPOUND_TOOL_COUNT=27) broke 4
+      upstream tests that hard-code those numbers, plus a compound-coverage invariant that
+      requires every granular command to be reachable in compound mode.
+    action: When forking a repo with count-pinning or parity tests, treat the constants as
+      part of your fork: update TOOL_COUNT/COMPOUND_TOOL_COUNT and add the new commands to
+      the compound group (satisfying the invariant) rather than deleting or xfail-ing the
+      tests — they are the cheapest guard that handler↔tool parity stays correct.
+
+  - date: '2026-10-11'
+    category: TOOLING
     topic: ruff 0.17 formats Python code blocks inside Markdown files
     lesson: After upgrading ruff to 0.17, `ruff format .` reported "383 files reformatted"
       and rewrote 381 `.md` docs (plus root AGENTS.md), because 0.17 formats code fences in

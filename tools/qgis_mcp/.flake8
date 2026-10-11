@@ -1,0 +1,20 @@
+# Mirrors the QGIS Plugin Repository's upload-time code-quality check so the
+# same issues are caught locally BEFORE upload. ruff (see pyproject.toml) does
+# not implement W503/W504, but the QGIS uploader enables W503 - run flake8 too.
+#
+#   flake8 qgis_mcp_plugin/
+#
+# W503 (line break before binary operator): the QGIS checker flags it even
+# though Black/ruff produce it. Resolve by refactoring the boolean onto fewer
+# lines (extract sub-expressions) rather than breaking across the operator.
+#
+# E203 (whitespace before ':'): `ruff format` writes `buf[4 : 4 + n]` whenever a
+# slice bound is an expression. Bind the bound to a name first (`buf[4:end]`) so
+# the formatter leaves it alone - that keeps `ruff format .` and this check from
+# fighting, which is why the plugin needs no formatter exclude.
+[flake8]
+max-line-length = 120
+extend-select = W503
+# D: flake8-docstrings nags - not part of the QGIS uploader check
+extend-ignore = E501,D
+exclude = .venv,build,dist,__pycache__

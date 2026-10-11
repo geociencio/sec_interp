@@ -5,6 +5,7 @@
 # --- Development tooling / project state (not plugin code) ---
 tests/
 scripts/
+tools/
 docs/
 .agent/
 .agent-state/

@@ -1,3 +1,13 @@
+## [2026-10-11] Session: QGIS MCP Integration (Vendored Fork + `qgis_driver`)
+- **Achievement**: SecInterp can now be **smoke-tested against a live QGIS session through the Model Context Protocol**. The exploration in `docs/plans/exploration_qgis4_qa_mcp.md` ("build a bespoke QGIS QA MCP") was superseded by research showing that design already exists, is published on `plugins.qgis.org` and supports `opencode`; we **adopted + forked + extended** `nkarasiak/qgis-mcp` instead of building from scratch.
+- **Changes**:
+    - **Fork** (`tools/qgis_mcp/`): vendored `nkarasiak/qgis-mcp` **v0.15.1** (`55519eb`); default port **9876 → 9877**; added `PROVENANCE.md` (upstream commit, changes, install, sync). Plugin `GPLv2+`, server `MIT` (compatible with `GPL-2.0-or-later`).
+    - **SecInterp extension** (no `execute_code`): `qgis_mcp_plugin/handlers/secinterp.py` (mixin) + six `secinterp_*` tools in `src/qgis_mcp/server.py` + a compound `secinterp` group. Commands: `status`, `open`, `run_preview`, `assert_preview_ready`, `read_results`, `export_preview`. `open` mirrors `run()` **minus `exec()`** (a nested Qt loop would freeze the socket server); `export_preview` calls `_execute_preview_export` directly (the public method opens a modal dialog).
+    - **opencode wiring**: `mcp.secinterp_qgis` (`cwd: tools/qgis_mcp`, compound, port 9877), `tools.secinterp_qgis*` disabled globally, and a new subagent **`qgis_driver`** that enables it.
+    - **Scope**: `tools/` is a `qgis-manage` `DEV_DIRECTORY` → the fork is never packaged (verified); `.analyzerignore` and `[tool.ruff] exclude` gained `tools`. New workflow `.agent-state/workflows/smoke-qgis4.md` (+ row in `AGENTS.md`).
+- **Quality**: fork suite **429 passed, 2 skipped** · `ruff check` clean (fork + root) · stdio handshake lists **131** granular / **28** compound tools · agent-system validator **14/14 PASS** · **live smoke on QGIS 4.2.1** green end-to-end (`ping` → `open` → `preview` → `ready` → `results` → `export`, PNG 2286×900 written).
+- **Maintenance**: [session_2026-10-11_qgis_mcp_integration.md](maintenance/session_2026-10-11_qgis_mcp_integration.md).
+
 ## [2026-10-11] Session: Type-Check Gate (mypy wired)
 - **Achievement**: Wired `mypy` into the workflow as a **blocking gate** over the strict layers (`core` + `exporters`) and drove them to **0 errors** (32 → 0), cleaning up real typing debt.
 - **Changes**:

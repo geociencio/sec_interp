@@ -1,5 +1,15 @@
 # Active Task Board (Updated 2026-10-11)
 
+### Completed this session (2026-10-11 — QGIS MCP integration: fork + `qgis_driver`)
+
+- [x] **Fork vendorizado** `tools/qgis_mcp/` (`nkarasiak/qgis-mcp` v0.15.1, `55519eb`); puerto por defecto **9876 → 9877**; `PROVENANCE.md`.
+- [x] **Extensión SecInterp**: `handlers/secinterp.py` + 6 tools `secinterp_*` (`src/qgis_mcp/server.py`) + grupo compound `secinterp`; sin `execute_code`. Paridad handler↔tool verificada por los tests del fork.
+- [x] **opencode**: `mcp.secinterp_qgis` (compound, 9877) deshabilitado globalmente + subagente **`qgis_driver`**; workflow `.agent-state/workflows/smoke-qgis4.md` (+ fila en `AGENTS.md`).
+- [x] **Scope**: `tools/` fuera del ZIP (verificado), de `.analyzerignore` y de `ruff`.
+- [x] **Smoke en vivo QGIS 4.2.1** verde (`ping`→`open`→`preview`→`ready`→`results`→`export`); PNG 2286×900. Fork suite **429 passed / 2 skipped**.
+- Ref: `docs/maintenance/session_2026-10-11_qgis_mcp_integration.md`.
+- [ ] **Mantener el fork sincronizado** con upstream (`PROVENANCE.md`); correr `diagnose` tras cada update.
+
 ### Completed this session (2026-10-11 — Type-check gate: mypy wired)
 
 - [x] **`make mypy`** target (runs from `$(CURDIR)/..` con `--explicit-package-bases sec_interp/core sec_interp/exporters`); añadido a `pre-release`.

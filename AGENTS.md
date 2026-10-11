@@ -52,6 +52,7 @@ When the user types `/name` (e.g. `/start-session`), read the corresponding work
 | `/release-plugin` | `.agent-state/workflows/release-plugin.md` | Unified Release Workflow (QGIS Release Flow) - Generation 8 Standard |
 | `/run-tests-in-qgis` | `.agent-state/workflows/run-tests-in-qgis.md` | How to run tests inside QGIS (integration testing) |
 | `/run-tests` | `.agent/workflows/run-tests.md` | How to run unit tests reliably |
+| `/smoke-qgis4` | `.agent-state/workflows/smoke-qgis4.md` | Drive a live QGIS session via MCP to smoke-test SecInterp (open, preview, export). |
 | `/start-phase` | `.agent/workflows/start-phase.md` | Formal procedure for starting a new major development phase |
 | `/start-session` | `.agent/workflows/start-session.md` | Standard and robust procedure for starting a "Local First" development session |
 | `/verify-standards` | `.agent/workflows/verify-standards.md` | Audits the consistency of the agentic system (Skills and Workflows) against the master standard. |

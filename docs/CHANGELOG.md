@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Developer tooling — QGIS smoke testing via MCP**: added a vendored fork of [`nkarasiak/qgis-mcp`](https://github.com/nkarasiak/qgis-mcp) under `tools/qgis_mcp/` with a `secinterp` tool group that drives the plugin's dialog over the Model Context Protocol (`status`, `open`, `preview`, `ready`, `results`, `export`). This lets an agent run the QGIS 4 smoke test (`/smoke-qgis4` workflow, `qgis_driver` subagent) programmatically instead of by hand. Dev-only: excluded from the plugin ZIP, static analysis and translation scopes; **no plugin-runtime impact**.
+
 ### Changed
 - **In-plugin offline help**: the manual shipped with the plugin now contains only the **User Guide** — a single document with clean navigation — instead of a landing page plus developer/API pages that linked to content removed from the offline build. The published documentation website is unchanged.
 - **Tooling**: upgraded `qgis-plugin-analyzer` 1.14.0 → 1.16.0 and refreshed static-analysis metrics. 1.15.0 added anti-pattern detection; 1.15.1 restored the security scanner; 1.15.2 removed the `B102` false positives on Qt `QDialog.exec()` (Security Score back to 100.0); 1.16.0 fixed a whole-project module-discovery bug (analysed modules 135 → **171**, the true plugin-wide count) and emits per-rule severities. The corrected coverage surfaced previously-ungated code: the resulting i18n and complexity findings were triaged in the same cycle (see Development Log). No functional impact on the plugin.

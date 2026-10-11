@@ -1,0 +1,40 @@
+[general]
+name=QGIS MCP
+qgisMinimumVersion=3.28
+qgisMaximumVersion=4.99
+supportsQt6=True
+description=Connect QGIS to any LLM through the Model Context Protocol (MCP)
+about=Socket server plugin that exposes QGIS operations to LLMs through the
+    Model Context Protocol. Any MCP client (Claude, Codex, Gemini CLI, Cursor,
+    VS Code, Windsurf, Zed, ...) can then drive QGIS: manage layers, edit
+    features, run processing algorithms, render maps, and more.
+
+    This plugin is only one half of the setup. You also need the qgis-mcp
+    MCP server, which your MCP client runs to talk to QGIS.
+    See https://github.com/nkarasiak/qgis-mcp for installation instructions.
+
+    Features:
+    - 118 MCP tools for layers, features, processing, rendering, layouts
+    - Diagnose tool for full stack health checks
+    - Plugin development tools: message log, plugin reload, layer tree
+    - Expression validation, project variables, settings access
+    - Non-blocking TCP socket server with length-prefixed framing
+    - Toolbar button with port configuration dropdown
+
+version=0.15.1
+author=Nicolas Karasiak
+email=nicart@gmail.com
+tags=mcp,ai,claude,llm,automation,socket,remote
+homepage=https://github.com/nkarasiak/qgis-mcp
+tracker=https://github.com/nkarasiak/qgis-mcp/issues
+repository=https://github.com/nkarasiak/qgis-mcp
+license=GPLv2+
+category=Plugins
+icon=icons/icon.png
+experimental=False
+deprecated=False
+changelog=0.15.1 : Tables added with add_layer_from_connection keep their geometry column (#53).
+    0.15.0 : Background processing jobs with no time limit, project checkpoints
+    to undo a run of changes, export_session to replay a session as a script.
+    Fewer silent errors: failed or partial results say why (#52). Inline QML (#42).
+    Earlier releases: https://github.com/nkarasiak/qgis-mcp/releases

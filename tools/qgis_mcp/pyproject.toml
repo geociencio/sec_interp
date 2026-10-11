@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qgis_mcp"]
+
+[tool.uv]
+package = true
+
+[project]
+name = "qgis-mcp"
+version = "0.15.1"
+description = "QGIS integration through the Model Context Protocol"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp[cli]>=1.20.0,<3",
+    "pydantic>=2.11,<3",
+]
+
+[project.scripts]
+qgis-mcp-server = "qgis_mcp.server:main"
+
+[dependency-groups]
+# ruff/flake8 pinned to the versions .github/workflows/tests.yml runs with uvx,
+# so a local lint and CI agree instead of drifting with the newest release.
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.23",
+    "anyio>=4,<5",
+    "ruff==0.16.0",
+    "flake8==7.3.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "C90"]
+ignore = [
+    "E501",    # line too long - handled by formatter
+    "RUF001",  # ambiguous unicode in strings - en dashes are intentional prose
+    "RUF002",  # ambiguous unicode in docstrings - en dashes are intentional prose
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+# The plugin runs inside QGIS's bundled interpreter, which is still Python 3.9
+# on releases well past the 3.28 minimum (QGIS 3.42 ships 3.9). Both rules below
+# push code toward 3.10-only constructs that raise TypeError at runtime there -
+# and the suite runs on 3.12, so CI never catches it. Use the tuple form of
+# isinstance and wire.zip_strict() instead.
+"qgis_mcp_plugin/*" = [
+    "UP038",  # `X | Y` in isinstance needs 3.10+
+    "B905",   # `zip(strict=)` needs 3.10+
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

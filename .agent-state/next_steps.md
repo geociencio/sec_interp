@@ -1,5 +1,35 @@
 # Next Steps (Updated 2026-10-11)
 
+## ✅ Session 2026-10-11 — QGIS MCP Integration (Fork + `qgis_driver`) (COMPLETADO)
+
+- **Qué se hizo**: se cerró la exploración `docs/plans/exploration_qgis4_qa_mcp.md`
+  **adoptando + forkeando + extendiendo** `nkarasiak/qgis-mcp` (publicado como "QGIS MCP")
+  en lugar de construir un MCP propio: ya existe, es QGIS 4-ready y soporta `opencode`.
+  Ahora SecInterp se **smoke-testea en vivo por MCP**.
+  - **Fork**: `tools/qgis_mcp/` = `nkarasiak/qgis-mcp` **v0.15.1** (`55519eb`); puerto por
+    defecto **9877**; `PROVENANCE.md` (commit upstream, cambios, install, sync).
+  - **Extensión SecInterp** (sin `execute_code`): handler `handlers/secinterp.py` + 6 tools
+    `secinterp_*` en `src/qgis_mcp/server.py` + grupo compound `secinterp`. `open` replica
+    `run()` **sin `exec()`** (evita el loop Qt anidado que congelaría el server).
+  - **opencode**: `mcp.secinterp_qgis` (compound, puerto 9877) **deshabilitado globalmente**
+    + subagente nuevo **`qgis_driver`** que lo habilita.
+  - **Scope**: `tools/` es `DEV_DIRECTORY` de `qgis-manage` → nunca entra al ZIP;
+    `.analyzerignore`/`ruff exclude` += `tools`; workflow `.agent-state/workflows/smoke-qgis4.md`
+    (+ fila en `AGENTS.md`).
+- **Calidad**: suite del fork **429 passed / 2 skipped** · ruff limpio (fork + root) ·
+  handshake stdio **131** (granular) / **28** (compound) · `validate_agent_system` **14/14** ·
+  **smoke en vivo QGIS 4.2.1** verde (`ping`→`open`→`preview`→`ready`→`results`→`export`,
+  PNG 2286×900).
+- **Referencia**: `docs/maintenance/session_2026-10-11_qgis_mcp_integration.md`.
+- **Pendiente / cómo reanudar**:
+  1. **Mantener el fork sincronizado** con upstream (procedimiento en `PROVENANCE.md`);
+     correr `diagnose` tras cada update (server ↔ plugin deben casar versión).
+  2. **Instalar el plugin del fork** en cada perfil QGIS que se use (symlink a
+     `.../QGIS4/profiles/default/python/plugins/qgis_mcp_plugin`) si no está ya.
+  3. Opcional: contribuir el grupo `secinterp` upstream, o recortar el fork al subconjunto usado.
+  4. El resto de pendientes (tren v3.10.0/v3.11.0, `legend_widget.py`, bóveda, Goal 1.1/1.5)
+     siguen abajo sin cambios.
+
 ## ✅ Session 2026-10-11 — Type-Check Gate (mypy wired) (COMPLETADO)
 
 - **Qué se hizo**: se cableó **`mypy`** como gate **bloqueante** sobre las capas estrictas

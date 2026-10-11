@@ -69,6 +69,7 @@ exclude = [
     "*.pyc",
     ".venv",
     "scripts",
+    "tools",
     ".agent",
     ".agent-state",
     "venv",

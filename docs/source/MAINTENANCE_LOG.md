@@ -1,6 +1,10 @@
 # SecInterp - Maintenance & Release Log
 
 
+## [2026-10-11] QGIS MCP INTEGRATION (VENDORED FORK + `qgis_driver` SUBAGENT)
+- **Changes**: Vendored a fork of `nkarasiak/qgis-mcp` (v0.15.1) under `tools/qgis_mcp/` and extended it with a `secinterp` tool group (six commands: status/open/preview/ready/results/export) that drives the SecInterp dialog over MCP. Default port moved to **9877**; added a **`qgis_driver`** subagent (MCP enabled only there, disabled globally), a `/smoke-qgis4` workflow, and packaging/analysis exclusions for `tools/`.
+- **Metrics/Impact**: A live QGIS 4 smoke (open → preview → assert → results → export) is now **programmatic** instead of manual, closing the mock↔real-QGIS gap. Fork suite **429 passed / 2 skipped**; verified end-to-end on QGIS 4.2.1. No plugin-runtime impact (dev-only tooling).
+
 ## [2026-09-12] PHASE CLOSURE v3.7.0 (I18N QUALITY GATE, UX & QT6/QGIS 4 ENUM MIGRATION)
 - **Achievements**: Two releases (v3.7.0 / v3.7.1). AST i18n hygiene gate (0 violations), 9 dialog titles wrapped in `self.tr()`, 79 analyzer flags triaged to 72 false positives. 114 flat enums migrated to scoped form for QGIS 4 (pyqgis4-checker 0 errors). Collapsible preview controls. Security patch (Bandit B110). ZIP reduced 25MB → 3.3MB.
 - **Reference**: [Phase Closure Document](../maintenance/phase_closure_v3.7.0.md)
