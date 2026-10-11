@@ -1,3 +1,13 @@
+## [2026-10-11] Session: qgis-plugin-analyzer 1.15.0 Upgrade
+- **Achievement**: Adopted `qgis-plugin-analyzer` **1.15.0** ("Repo Hygiene & Hardening") and refreshed ground-truth metrics. Tooling-only change (no plugin runtime code touched). The release adds anti-pattern detection (`GOD_OBJECT`, `SPAGHETTI_CODE`), Halstead metrics, module optimization suggestions, a transversal `# noqa`, `--workers N`, and a reliable ruff audit.
+- **Changes**:
+    - **Dependency**: `qgis-plugin-analyzer>=1.14.0` → `>=1.15.0` (`pyproject.toml` deps + dev) via `uv lock --upgrade-package qgis-plugin-analyzer --refresh`; `uv.lock` 1.14.0 → 1.15.0.
+    - **Re-analysis**: `qgis-analyzer analyze . --max-cc 10` (175 files / 135 modules). Scores unchanged (Stability 57.9, Maintainability 99.9, Security 100.0, type-hints 95.2/99.5%, docstrings 98.5%); **total issues 16 → 32** from the new rules (15 `GOD_OBJECT`, 1 `SPAGHETTI_CODE`).
+    - **Metrics**: `scripts/sync_metrics.py` refreshed `agent_metrics.json` (`issue_breakdown`, `ground_truth_sources`); `meta.tools.qgis-plugin-analyzer` → 1.15.0.
+- **Quality**: `ruff check`/`format` clean · `unittest discover tests` **714 OK** · `forge metrics validate` PASS · `sync_metrics --validate` PASS · `make context` fresh.
+- **Backlog (new, non-blocking)**: 15 `GOD_OBJECT` (GUI orchestrators > 15 attrs) + 1 `SPAGHETTI_CODE` (`drillhole_exporters.py::_write_traces`); `module_size_gate` still FAIL (`core/controller.py` 428 > 400).
+- **Maintenance**: [session_2026-10-11_qgis_analyzer_1_15_0.md](maintenance/session_2026-10-11_qgis_analyzer_1_15_0.md).
+
 ## [2026-10-10] Session: ai-context-core v5.1.0 Adoption
 - **Achievement**: Adopted `ai-context-core` **v5.1.0** ("Context Alignment & Hardening"), a **backward-compatible** release (no command/artifact contract removed). It turns off the token-heavy Mermaid styling by default, ships a default token budget, drops the retired analysis domains from `project_context.json`, and makes the unused-import detector honor `# noqa`.
 - **Changes**:

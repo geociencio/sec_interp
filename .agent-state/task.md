@@ -1,4 +1,13 @@
-# Active Task Board (Updated 2026-10-10)
+# Active Task Board (Updated 2026-10-11)
+
+### Completed this session (2026-10-11 — qgis-plugin-analyzer 1.15.0 Adoption)
+
+- [x] **Dependency**: `qgis-plugin-analyzer>=1.14.0` → `>=1.15.0` (`pyproject.toml` deps+dev; `uv.lock` 1.14.0 → 1.15.0).
+- [x] **Re-analysis**: `analyze . --max-cc 10` (175 files / 135 modules). Scores unchanged (57.9 / 99.9 / 100.0); **issues 16 → 32** (+15 `GOD_OBJECT`, +1 `SPAGHETTI_CODE`).
+- [x] **Metrics**: `sync_metrics.py` refreshed `agent_metrics.json`; tool → 1.15.0. Gates verdes (ruff · `forge metrics validate` · `sync_metrics --validate` · 714 OK · `make context` fresco).
+- Ref: `docs/maintenance/session_2026-10-11_qgis_analyzer_1_15_0.md`.
+- [ ] **Backlog (nuevo, no bloqueante)**: 15 `GOD_OBJECT` (orquestadores GUI), 1 `SPAGHETTI_CODE` (`drillhole_exporters.py::_write_traces`).
+
 
 ### Completed this session (2026-10-10 — ai-context-core v5.1.0 Adoption)
 

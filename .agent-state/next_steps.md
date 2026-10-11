@@ -1,4 +1,26 @@
-# Next Steps (Updated 2026-10-10)
+# Next Steps (Updated 2026-10-11)
+
+## ✅ Session 2026-10-11 — qgis-plugin-analyzer 1.15.0 Adoption (COMPLETADO)
+
+- **Qué se hizo**: se adoptó `qgis-plugin-analyzer` **v1.15.0** ("Repo Hygiene &
+  Hardening"), cambio **solo de tooling** (sin tocar el runtime del plugin). La release
+  añade detección de anti-patrones (`GOD_OBJECT`, `SPAGHETTI_CODE`), métricas Halstead,
+  sugerencias de optimización, `# noqa` transversal, `--workers N` y auditoría ruff fiable.
+  - **Dependency**: `>=1.14.0` → `>=1.15.0` (`pyproject.toml` deps+dev; `uv.lock` vía
+    `uv lock --upgrade-package qgis-plugin-analyzer --refresh`).
+  - **Re-análisis**: `analyze . --max-cc 10` (175 ficheros / 135 módulos). Scores
+    **sin cambios** (Stability 57.9 · Maintainability 99.9 · Security 100.0 · type-hints
+    95.2/99.5% · docstrings 98.5%); **issues 16 → 32** por las reglas nuevas (+15
+    `GOD_OBJECT`, +1 `SPAGHETTI_CODE`).
+  - **Metrics**: `sync_metrics.py` refrescó `agent_metrics.json` (`issue_breakdown`,
+    `ground_truth_sources`); `meta.tools.qgis-plugin-analyzer` → 1.15.0.
+- **Calidad**: ruff/format limpios · `unittest discover tests` **714 OK** ·
+  `forge metrics validate` PASS · `sync_metrics --validate` PASS · `make context` fresco.
+- **Referencia**: `docs/maintenance/session_2026-10-11_qgis_analyzer_1_15_0.md`.
+- **Pendiente / cómo reanudar**: backlog nuevo no bloqueante (15 `GOD_OBJECT` en
+  orquestadores GUI, 1 `SPAGHETTI_CODE`); `module_size_gate` sigue FAIL
+  (`core/controller.py` 428 > 400). El resto de pendientes (tren v3.10.0/v3.11.0,
+  `legend_widget.py`, bóveda, Goal 1.1/1.5) siguen abajo sin cambios.
 
 ## ✅ Session 2026-10-10 — ai-context-core v5.1.0 Adoption (COMPLETADO)
 
