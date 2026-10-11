@@ -92,3 +92,6 @@ graphify-out/
 
 # LibreOffice lock files (transient)
 .~lock.*#
+
+# Internal field data (not for the public repo)
+examples/sample_data/GGL4MFT751-08_V3TABLAESTRUCTURAL.ods
