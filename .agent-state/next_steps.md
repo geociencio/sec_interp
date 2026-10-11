@@ -19,7 +19,7 @@
   2. **v3.11.0 (18-oct)**: el cron debería publicarla; si no dispara, `gh workflow run scheduled-release.yml -f version=3.11.0`.
   3. **Merge final del tren → `main`** (tras v3.11.0): NO es `--ff-only` (main-only=65, train-only=26) →
      merge real; el diff de `.agent` (submódulo vs carpeta) y las versiones de `metadata/CHANGELOG` darán conflicto.
-  4. **Plan de interop estereonet/3D** aprobado pendiente de decisión: `docs/plans/implementation_plan_interop_stereonet_3d.md` (ver §8, 6 preguntas abiertas).
+  4. **Plan de interop estereonet/3D**: alcance **confirmado y guardado para implementación futura** — `docs/plans/implementation_plan_interop_stereonet_3d.md` (§9 checklist). B2 = acción GUI; empezar por **B1 (estilos 3D de sondeo)**.
 
 ## ✅ Session 2026-10-11 — QGIS MCP Integration (Fork + `qgis_driver`) (COMPLETADO)
 

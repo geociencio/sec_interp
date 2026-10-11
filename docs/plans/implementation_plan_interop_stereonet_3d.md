@@ -1,7 +1,7 @@
 # Implementation Plan: External Interop — Stereonet Analysis & 3D Modelling
 
 **Phase**: post-v3.10.0 backlog (candidate v3.11.x)
-**Status**: 📝 PLAN — pending architect/user approval (no code written)
+**Status**: 📝 PLAN — **scope confirmed 2026-10-11, deferred for future implementation** (no code written)
 **Created**: 2026-10-11
 **Origin**: ecosystem deep scan — `.agent-state/history/ecosystem_comparison_2026-10-11.md`
 **References (verified)**: `core/domain/entities.py:46-66` (`StructureMeasurement`),
@@ -142,8 +142,8 @@ terrain, vertical scale**; extrusion **yes**):
   intervals coloured by `unit`. (`Drillhole*3DExporter` currently emit **no style**.)
 - **B2 — 3D scene setup.** Terrain from the project DEM + a defined **vertical scale**,
   so the exported layers open in the 3D Map View without hand-configuring the canvas.
-  Design to confirm: a GUI action that builds/updates a `Qgs3DMapSettings` scene in the
-  current project (vs. shipping a `.qgz`/scene template).
+  **Design confirmed 2026-10-11 (option a)**: a **GUI action** that builds/updates a
+  `Qgs3DMapSettings` scene in the **current project** (not a `.qgz`/scene template).
 - **B3 — Extrusion thickness.** Give interpretation "slabs" a width so they read as 3D
   bodies instead of co-planar section polygons.
 - **B4 — VE consistency.** `Interpretation3DExporter` hardcodes `vert_exag=1.0`
@@ -219,13 +219,32 @@ extension as Phase A, plus a GUI adapter for the geology interfaces.
    ~120° apart, not perpendicular (a plane needs 90°) → confirm which pair is
    authoritative before plotting.
 3. **Source coords** — *answered 2026-10-11*: **extend the core DTO** with `source_point`.
-4. **Priority**: qgSurf/mplstereonet (stereonet) first — confirm. And within 3D, which
-   of §4's candidate items matter most (3D QML for drillholes, scene setup, VE
-   consistency, extrusion)?
+4. **Priority** — *settled 2026-10-11*: build the **3D Map View** items first
+   (B1 → B3 → B2 → B4, see §9), then Phase A (stereonet). All four 3D items are wanted.
 5. **Deliverable format** — *answered 2026-10-11*: **both** CSV and GeoPackage.
 6. **Version target**: v3.11.x, or fold into the next feature release?
 7. **3D scope** — *answered 2026-10-11*: both layer types; missing = **styles, terrain,
    vertical scale**; **extrusion wanted**. Remaining design choice: B2 as a **GUI action
    that builds/updates the live 3D scene** vs. shipping a `.qgz`/scene template — which?
 
-> Per the @architect role, no code is written until these are answered and the plan is approved.
+> Scope settled 2026-10-11; the plan is **saved for future implementation**. Per the
+> @architect role, no code is written until a session picks it up.
+
+---
+
+## 9. Resume checklist (future session)
+
+Suggested order when implementation starts (all 3D items wanted; stereonet after):
+
+1. **B1 — drillhole 3D styles** (smallest, no UI, testable): in
+   `exporters/drillhole_3d_exporter.py`, emit a `.qml` with `QgsLine3DSymbol` (tube
+   width); intervals coloured by `unit`. Validate on `examples/sample_data`.
+2. **B3 — interpretation extrusion thickness** (new export option).
+3. **B2 — 3D scene action** (GUI): terrain from the project DEM + vertical scale.
+4. **B4 — VE consistency** with B2.
+5. **Phase A — attitudes export**: `dip`/`dip_dir`, CSV + GeoPackage, `source_point`
+   added to the core DTO.
+
+Key entry points: `exporters/*_3d_exporter.py`,
+`core/services/export/handlers/{interpretations,drillholes_3d,structures}.py`,
+`get_exporter` (`exporters/__init__.py`). No `qgis` import in `core/`.
