@@ -1,5 +1,30 @@
 # Next Steps (Updated 2026-10-11)
 
+## ✅ Session 2026-10-11 — qgis-plugin-analyzer 1.15.2 (B102 fix) (COMPLETADO)
+
+- **Qué se hizo**: se adoptó `qgis-plugin-analyzer` **v1.15.2**, el fix upstream de los
+  falsos positivos `B102`/`B307` detectados en la adopción de 1.15.1 (sobre `QDialog.exec()`).
+  Cierra el bucle: en la misma sesión se arregló y publicó el analyzer 1.15.2.
+  - **Dependency**: `>=1.15.1` → `>=1.15.2` (`pyproject.toml` deps+dev; `uv.lock` vía
+    `uv lock --upgrade-package qgis-plugin-analyzer --no-cache --refresh` — el `--refresh`
+    solo no bastó por la caché del índice).
+  - **Re-análisis**: `analyze . --max-cc 10` (175 ficheros / 135 módulos). **Security
+    80.0 → 100.0**; issues 34 → 32 (`SECURITY:B102` eliminado); `security.findings` vacío.
+  - **Upstream (misma sesión)**: release **1.15.2** del analyzer — `check_exec_eval` ignora
+    llamadas de atributo/método; fix del CI `release.yml` para que PyPI se publique solo en
+    eventos `release`. GitHub release + PyPI (`qgis_plugin_analyzer-1.15.2`) vivos.
+- **Calidad**: ruff/format limpios · `unittest discover tests` **714 OK** ·
+  `forge metrics validate` PASS · `sync_metrics --validate` PASS · `make context` fresco.
+- **Referencia**: `docs/maintenance/session_2026-10-11_qgis_analyzer_1_15_2.md`.
+- **Pendiente / cómo reanudar**:
+  1. **Deuda SecInterp**: `module_size_gate` FAIL (`core/controller.py` 428 > 400), 15
+     `GOD_OBJECT`, 1 `SPAGHETTI_CODE`, 10 `MISSING_DOCSTRING`, 4 `NON_PYTHONIC_LOOP`, 2
+     `POTENTIAL_MISSING_SLOT`.
+  2. **Upstream opcional (analyzer)**: `B602` marca cualquier `.run(..., shell=True)` y
+     `B608` cualquier `.execute(...)` sin validar el receptor.
+  3. El resto de pendientes (tren v3.10.0/v3.11.0, `legend_widget.py`, bóveda, Goal
+     1.1/1.5) siguen abajo sin cambios.
+
 ## ✅ Session 2026-10-11 — qgis-plugin-analyzer 1.15.1 (Security Scanning Restored) (COMPLETADO)
 
 - **Qué se hizo**: se adoptó `qgis-plugin-analyzer` **v1.15.1**, el fix upstream del

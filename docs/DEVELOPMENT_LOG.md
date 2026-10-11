@@ -1,3 +1,13 @@
+## [2026-10-11] Session: qgis-plugin-analyzer 1.15.2 Upgrade (B102 False-Positive Fix)
+- **Achievement**: Adopted `qgis-plugin-analyzer` **1.15.2**, the upstream fix for the `B102`/`B307` false positives found on Qt `QDialog.exec()` during the 1.15.1 adoption. Security Score returns to 100.0 and the two spurious findings disappear.
+- **Changes**:
+    - **Dependency**: `qgis-plugin-analyzer>=1.15.1` → `>=1.15.2` (`pyproject.toml` deps + dev) via `uv lock --upgrade-package qgis-plugin-analyzer --no-cache --refresh` (stale-index workaround) + `uv sync`.
+    - **Re-analysis**: `analyze . --max-cc 10` (175 files / 135 modules). Security Score 80.0 → **100.0**; total issues 34 → 32 (`SECURITY:B102` gone); `security.findings` empty.
+    - **Metrics**: `agent_metrics.json` re-synced (`security_score`, `issue_breakdown`, ground truth); tool → 1.15.2.
+    - **Upstream (same session)**: released qgis-plugin-analyzer **1.15.2** — `check_exec_eval` now ignores attribute/method calls; `release.yml` fixed so PyPI auto-publishes on release.
+- **Quality**: `ruff check`/`format` clean · `unittest discover tests` **714 OK** · `forge metrics validate` PASS · `sync_metrics --validate` PASS · `make context` fresh.
+- **Maintenance**: [session_2026-10-11_qgis_analyzer_1_15_2.md](maintenance/session_2026-10-11_qgis_analyzer_1_15_2.md).
+
 ## [2026-10-11] Session: qgis-plugin-analyzer 1.15.1 Upgrade (Security Scanning Restored)
 - **Achievement**: Adopted `qgis-plugin-analyzer` **1.15.1**, the upstream fix for the disconnected security registry reported in the deep-analysis report. Security scanning now runs again (analyzer + `qgis-plugin-manager`, which delegates to it); it also ships the recommended hardening (shared `rules/scopes.py`, dead-code removal, lower complexity).
 - **Changes**:
