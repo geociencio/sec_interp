@@ -1,5 +1,25 @@
 # Next Steps (Updated 2026-10-11)
 
+## ✅ Session 2026-10-11 — Release Train Unblock & v3.10.0 (COMPLETADO)
+
+- **Qué se hizo**: el tren programado estaba **bloqueado**; se arregló y se **publicó v3.10.0**.
+  - **Dos desajustes main↔rama** (ramas cortadas el 27-sep, antes de cambios del 4/8-oct):
+    (1) `.agent` es **submódulo** en `main` y **carpeta** en las ramas → `git checkout` abortaba
+    (`d9b13ebe`: `git submodule deinit -f .agent && rm -rf .agent` antes del checkout);
+    (2) la ayuda offline necesita `conf.py` (modo help) + `help_index.rst` de `main`, no solo
+    `build_docs.sh` (`f202a083`: cachear y restaurar los tres).
+  - **v3.10.0 publicada**: tag `v3.10.0` en `release/v3.10.0`, release `2026-10-11T15:37Z`,
+    `sec_interp.3.10.0.zip` (**2.27 MiB**, ayuda 14 idiomas), *Latest*. Contenido: leyenda
+    interactiva en panel lateral (Goal 1.1 core), sondeos en leyenda, editor por unidad, + Qt6 `QgsRasterBandStats`.
+  - El selector ahora reporta `nothing_due` (v3.11.0 el **18-oct**); el mismo arreglo la cubre.
+- **Calidad**: dry-run `38151593980` **success** · publish `38151877186` **success** (tests Docker OK, help + package OK).
+- **Referencia**: `docs/maintenance/session_2026-10-11_release_train_v3.10.0.md`.
+- **Pendiente / cómo reanudar**:
+  1. **Subir el ZIP de v3.10.0 al portal de QGIS** (manual): `dist/sec_interp.3.10.0.zip`.
+  2. **v3.11.0 (18-oct)**: el cron debería publicarla; si no dispara, `gh workflow run scheduled-release.yml -f version=3.11.0`.
+  3. **Merge final del tren → `main`** (tras v3.11.0): NO es `--ff-only` (main-only=65, train-only=26) →
+     merge real; el diff de `.agent` (submódulo vs carpeta) y las versiones de `metadata/CHANGELOG` darán conflicto.
+
 ## ✅ Session 2026-10-11 — QGIS MCP Integration (Fork + `qgis_driver`) (COMPLETADO)
 
 - **Qué se hizo**: se cerró la exploración `docs/plans/exploration_qgis4_qa_mcp.md`

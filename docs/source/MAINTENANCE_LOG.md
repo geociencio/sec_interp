@@ -1,6 +1,10 @@
 # SecInterp - Maintenance & Release Log
 
 
+## [2026-10-11] RELEASE TRAIN UNBLOCK & v3.10.0 PUBLISHED
+- **Changes**: Fixed `scheduled-release.yml` for main↔branch tooling drift — `.agent` is a submodule on `main` but a directory on the train branches (clean it before checkout), and the offline-help build needs `main`'s `conf.py` + `help_index.rst`, not just `build_docs.sh`. Published **v3.10.0** (interactive preview legend / side panel).
+- **Metrics/Impact**: Scheduled publishing works again (dry-run `38151593980` success, publish `38151877186` success). `v3.10.0` live and *Latest*: `sec_interp.3.10.0.zip` (**2.27 MiB**, 14-language offline manual). Next: v3.11.0 (2026-10-18); then the final train→`main` merge (not `--ff-only`).
+
 ## [2026-10-11] QGIS MCP INTEGRATION (VENDORED FORK + `qgis_driver` SUBAGENT)
 - **Changes**: Vendored a fork of `nkarasiak/qgis-mcp` (v0.15.1) under `tools/qgis_mcp/` and extended it with a `secinterp` tool group (six commands: status/open/preview/ready/results/export) that drives the SecInterp dialog over MCP. Default port moved to **9877**; added a **`qgis_driver`** subagent (MCP enabled only there, disabled globally), a `/smoke-qgis4` workflow, and packaging/analysis exclusions for `tools/`.
 - **Metrics/Impact**: A live QGIS 4 smoke (open → preview → assert → results → export) is now **programmatic** instead of manual, closing the mock↔real-QGIS gap. Fork suite **429 passed / 2 skipped**; verified end-to-end on QGIS 4.2.1. No plugin-runtime impact (dev-only tooling).

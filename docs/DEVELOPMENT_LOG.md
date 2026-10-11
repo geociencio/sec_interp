@@ -1,3 +1,13 @@
+## [2026-10-11] Session: Release Train Unblock & v3.10.0 Publication
+- **Achievement**: Unblocked and published **v3.10.0** on the scheduled release train. The train branches (cut 2026-09-27) had drifted from `main`'s tooling, which made the scheduled publish fail twice; both blockers were fixed in `scheduled-release.yml` and the release went out.
+- **Changes**:
+    - **`.agent` submodule drift** (`d9b13ebe`): `main` tracks `.agent` as a submodule (since 2026-10-08) while the train branches track it as a regular directory, so `git checkout <branch>` aborted with "untracked working tree files would be overwritten". Added `git submodule deinit -f .agent && rm -rf .agent` before the checkout.
+    - **Offline-help toolchain drift** (`f202a083`): the workflow cached only `build_docs.sh`, but the help build needs `main`'s `conf.py` (help mode) and `help_index.rst`. Cache **and** restore all three from `main`.
+    - Applies to **v3.10.0 and v3.11.0** (workflow runs from `main`, checks out the branch).
+- **Quality**: dry-run `38151593980` **success** (Docker tests OK, help built, package built); publish `38151877186` **success**. **v3.10.0** released (`tag v3.10.0` on `release/v3.10.0`, `sec_interp.3.10.0.zip` 2.27 MiB, *Latest*); selector now `nothing_due`.
+- **Follow-up**: upload the ZIP to the QGIS plugins portal (manual); the final train→`main` merge (after v3.11.0, 2026-10-18) needs a real merge, not `--ff-only`.
+- **Maintenance**: [session_2026-10-11_release_train_v3.10.0.md](maintenance/session_2026-10-11_release_train_v3.10.0.md).
+
 ## [2026-10-11] Session: QGIS MCP Integration (Vendored Fork + `qgis_driver`)
 - **Achievement**: SecInterp can now be **smoke-tested against a live QGIS session through the Model Context Protocol**. The exploration in `docs/plans/exploration_qgis4_qa_mcp.md` ("build a bespoke QGIS QA MCP") was superseded by research showing that design already exists, is published on `plugins.qgis.org` and supports `opencode`; we **adopted + forked + extended** `nkarasiak/qgis-mcp` instead of building from scratch.
 - **Changes**:
