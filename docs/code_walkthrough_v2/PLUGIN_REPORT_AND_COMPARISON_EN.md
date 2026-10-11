@@ -1,7 +1,7 @@
 # SecInterp — Comprehensive Plugin Report & Competitive Analysis
 
 > **Technical Report: Features, Architecture, and Market Comparison**
-> SecInterp v3.9.1 | Report Date: 2026-10-04
+> SecInterp v3.10.0 | Report Date: 2026-10-11
 
 ---
 
@@ -34,7 +34,8 @@ Its key technical differentiator is a **Clean Architecture implementation** (rar
 | Attribute | Value |
 |-----------|-------|
 | **Name** | Sec Interp (SecInterp) |
-| **Version** | 3.9.1 |
+| **Version** | 3.10.0 |
+| **Portal downloads** | ~4,640 (portal, 2026-10; adoption proxy, not active use) |
 | **Author** | Juan M. Bernales |
 | **License** | GPL v3 |
 | **QGIS Minimum** | 3.28 LTR |
@@ -228,10 +229,15 @@ uv run qgis-analyzer analyze . --report   # Deep architectural audit
 
 ## 6. Competitive Landscape
 
-The QGIS geological cross-section niche has **6-8 notable plugins**. Here are the main competitors:
+The QGIS geological cross-section niche has grown to **~30 relevant plugins** across
+five clusters: geological sections, drillholes/boreholes, structural geology/stereonet,
+3D modelling, and geological mapping. The direct-profile competitors are §6.1–§6.8; the
+wider landscape added on 2026-10-11 follows in §6.9–§6.11. Download figures are the
+portal's cumulative counts and are an **adoption proxy**, not active use.
 
 ### 6.1 qProf (Mauro Alberti & Marco Zanieri)
 
+- **Adoption**: ~212,000 downloads (by far the most-used plugin in the niche)
 - **Maturity**: Oldest (2013), most established
 - **Strengths**: Multiple DEMs, GPX input, fold-axis projection, on-the-fly reprojection
 - **Weaknesses**: Requires straight 2-point section lines for geological projection; older UI; no drillhole support
@@ -239,10 +245,12 @@ The QGIS geological cross-section niche has **6-8 notable plugins**. Here are th
 
 ### 6.2 Geoscience Plugin (Roland Hill)
 
+- **Adoption**: ~124,500 downloads (the drillhole incumbent)
 - **Maturity**: Well-established, drilling-focused
 - **Strengths**: Professional drillhole desurveying, downhole data, section generation, QGIS project persistence
 - **Weaknesses**: Drillhole-centric (not full interpretation); sections in separate canvas; no interactive digitizing
 - **Architecture**: Traditional Python
+- **2026 update**: v2.0 (2026-08) is now **QGIS 4.0–4.99 ready**, and the project is **discontinued in favour of OpenLog** (funded, Oslandia) — see §6.9.
 
 ### 6.3 GeoProfile (Silver Piedra)
 
@@ -285,6 +293,47 @@ The QGIS geological cross-section niche has **6-8 notable plugins**. Here are th
 - **Strengths**: Simple elevation profiles from multiple layers
 - **Weaknesses**: Purely topographic; no geological features
 - **Architecture**: Legacy
+
+### 6.9 OpenLog (Apeiron, funded by Oslandia)
+
+> Added 2026-10-11 — the most significant new direct competitor.
+
+- **Adoption**: ~21,300 downloads, actively maintained (v2.0.1, 2026-09)
+- **Strengths**: High-performance **drillhole visualisation in 3D, cross-section and log views**; it is the declared successor to the Geoscience drill tools
+- **Weaknesses**: Drillhole/visualisation-centric; not a full map→section interpretation workflow
+- **Relevance**: Directly overlaps SecInterp's drillhole module and its "display" value proposition
+
+### 6.10 Structural geology & stereonet cluster
+
+> Added 2026-10-11 — the space where SecInterp has **no** feature.
+
+| Plugin | Downloads | Latest | Note |
+|--------|-----------|--------|------|
+| qgSurf (M. Alberti) | ~82,900 | 4.4.0 (2026-08) | Geological planes/surfaces + stereonet + best-fit |
+| Stereonet (D. Childs) | ~19,600 | 0.3 (2018) | Classic mplstereonet/Kamb |
+| GeoTrace / GeoTrace2 (Thiele/Grose) | ~20,600 / ~3,700 | 1.34 (2023) | Structural traces from rasters + stereonet |
+| Dip-Strike Tools | ~5,600 | 0.2.2 (2026) | Dip-strike digitising |
+| Stereoplot (UWA-CET) | ~940 | 1.0.1 (2026) | Interactive stereographic |
+| GeoStereonet (S. Mishra) | ~810 | 1.2.0 (2026) | Kamb, Fisher, eigenvector, rose, fold-axis |
+| GeolAttitude | ~410 | 0.2.13 (2026) | Attitude from DTMs + uncertainty |
+| Structural Families Mapper | ~290 | 1.0.1 (2026) | QA/QC + Rose/Schmidt/Wulff |
+
+SecInterp projects dip/strike but offers no stereonet or fold analysis; entering this
+space means competing with 6+ mature plugins, so the pragmatic path is **export/
+interoperation** (feed `mplstereonet`/qgSurf), not reimplementation.
+
+### 6.11 3D geological modelling
+
+> Added 2026-10-11 — SecInterp **exports** 3D but does not **model** 3D.
+
+- **LoopStructural** (Lachlan Grose, ~2,550 downloads): QGIS interface to the
+  LoopStructural implicit 3D modelling library (2026).
+- **GemPy** (Python library, ~1.3k stars): implicit 3D structural modelling; GIS data
+  is ingested via **GemGIS**.
+- **ForGEO** (BRGM, ~4,300) and **GeoCongo AI** (~280) also cover 3D geomodelling.
+
+These define the boundary of SecInterp's "3D" claim: it produces Z-aware exports, not
+3D geological models or a 3D scene view.
 
 ---
 
@@ -354,6 +403,25 @@ Legend: ✅ Full · ⚠️ Partial · ❌ None
 
 Legend: ●●● Full · ●● Good · ● Basic · ○ None
 
+### 7.5 Adoption snapshot (portal downloads, 2026-10)
+
+Feature matrices show capability, not reach. The portal's cumulative download counts
+(a crude adoption proxy) tell a different story and should temper any "market leader"
+claim:
+
+| Plugin | Downloads | Category |
+|--------|----------:|----------|
+| qProf | ~212,000 | Section/profile |
+| Geoscience | ~124,500 | Drillhole |
+| qgSurf | ~82,900 | Structural |
+| Midvatten | ~55,600 | Hydrogeology |
+| OpenLog | ~21,300 | Drillhole (3D) |
+| **SecInterp** | **~4,640** | **Integrated section** |
+
+SecInterp leads on **breadth and engineering**, not on adoption. The matrices above
+also predate the 2026 expansion of the ecosystem (§6.9–§6.11); treat the competitor
+columns as the direct-profile cluster only.
+
 ---
 
 ## 8. Differentiators & Positioning
@@ -361,13 +429,13 @@ Legend: ●●● Full · ●● Good · ● Basic · ○ None
 ### 8.1 Unique Selling Points (USPs)
 
 1. **Integrated Workflow**: The only plugin covering topography + geology + structure + drillholes + interpretation + export in ONE tool
-2. **3D Drillhole Support**: Only SecInterp and Geoscience offer full desurveying; only SecInterp combines it with interactive interpretation
-3. **3D Export (Z-aware)**: Unique GeoPackage/Shapefile Z export of interpretations and drillholes
+2. **3D Drillhole Support**: SecInterp, Geoscience and OpenLog desurvey drillholes; only SecInterp combines desurveying with interactive in-section interpretation.
+3. **3D Export (Z-aware)**: Unique Z-aware GeoPackage/Shapefile and CityJSON export of interpretations and drillholes. This is **export**, not 3D modelling (see §6.11).
 4. **Clean Architecture**: Only SecInterp uses Core/GUI separation among geological plugins
 5. **Async + LOD**: Only SecInterp offers both background processing and adaptive level-of-detail
 6. **14 Languages**: Widest i18n coverage in the niche
 7. **763 Tests**: Highest test coverage among competitors
-8. **QGIS 4.x Ready**: Ahead of most competitors on Qt6 migration
+8. **QGIS 4.x Ready**: SecInterp was early on Qt6; competitors have since caught up (Geoscience 2.0 is now QGIS 4-ready), so this is parity rather than a lead.
 9. **Interactive Drawing**: Only SecInterp + Parallel Folds offer in-profile polygon digitizing
 10. **DXF Export**: Unique CAD integration for mining/engineering workflows
 
@@ -393,7 +461,7 @@ Legend: ●●● Full · ●● Good · ● Basic · ○ None
                          ARCHITECTURE QUALITY
 ```
 
-SecInterp occupies the **top-right quadrant**: maximum feature breadth AND highest architectural quality.
+SecInterp occupies the **top-right quadrant**: maximum feature breadth AND highest architectural quality. (Breadth here refers to the direct-profile cluster; the wider 2026 ecosystem adds best-in-class single-purpose tools for stereonet and 3D modelling where SecInterp is absent — see §6.10–§6.11.)
 
 ---
 
@@ -435,9 +503,11 @@ SecInterp occupies the **top-right quadrant**: maximum feature breadth AND highe
 
 ### 10.2 Weaknesses
 
+- ❌ **Low adoption** (~4,640 downloads vs qProf's ~212,000) — best features, smallest installed base
 - ❌ **No GPX input** (qProf has it)
 - ❌ **No fold-axis projection** (qProf, Parallel Folds have it)
-- ❌ **No stereonet** (Parallel Folds has Schmidt projection)
+- ❌ **No stereonet** — and the space is crowded and mature (qgSurf, Stereonet, GeoStereonet, Stereoplot…; see §6.10)
+- ❌ **No native 3D modelling/scene** — it exports 3D, it does not build 3D models (LoopStructural/GemPy; see §6.11)
 - ❌ **Single section line** (qProf supports multiple profiles)
 - ❌ **No database layer support** (Geoscience limitation too)
 - ⚠️ **Complex UI** (many features → steeper learning curve)
@@ -456,8 +526,10 @@ SecInterp occupies the **top-right quadrant**: maximum feature breadth AND highe
 
 ### 10.4 Threats
 
-- 🔴 **Geoscience plugin** (strong drillhole incumbent)
-- 🔴 **qProf** (established, cited in literature)
+- 🔴 **OpenLog** (Apeiron/Oslandia) — funded, active successor to Geoscience's drill tools; may subsume drillhole + section display
+- 🔴 **Geoscience plugin** (still the drillhole incumbent, now QGIS 4-ready)
+- 🔴 **qProf** (established, cited in literature, ~45× the adoption)
+- 🔴 **LoopStructural / GemPy** — own the emerging 3D-modelling demand
 - 🔴 **QGIS native elevation profile** improvements (could absorb features)
 - 🔴 **Competitor i18n expansion**
 - 🔴 **Maintenance burden** of broad feature set
@@ -473,8 +545,9 @@ Based on the CHANGELOG trajectory and competitive gaps:
 
 | Priority | Feature | Rationale |
 |----------|---------|-----------|
-| High | **Stereonet analysis** | Match Parallel Folds; core structural geology |
+| High | **Stereonet (via interoperation)** | Export attitudes to `mplstereonet`/qgSurf instead of reimplementing; the space is crowded (§6.10) |
 | High | **Multi-section batch** | Enterprise workflow demand |
+| Medium | **3D bridge (feed LoopStructural/GemPy)** | Leverage existing Z-aware export into 3D modelling tools (§6.11) |
 | Medium | **GPX input** | Match qProf; field data |
 | Medium | **Fold-axis projection** | Match qProf; structural geology |
 | Medium | **Database layers** | PostGIS/SQLite for enterprise |
@@ -536,6 +609,21 @@ Its Clean Architecture, 763 tests, 14-language support, and QGIS 4.x readiness p
 - **Profile Interpreter**: https://gitlab.com/qgeomodel/qgis-profile-interpreter
 - **Elevation Profile**: https://github.com/junethtea/elevation-profile
 
+### Competitors added 2026-10-11 (wider landscape)
+- **OpenLog**: https://plugins.qgis.org/plugins/openlog/ (Apeiron/Oslandia; drillhole 3D/section/log)
+- **qgSurf**: https://plugins.qgis.org/plugins/qgSurf/ · https://github.com/mauroalberti/geocouche (planes/surfaces + stereonet)
+- **Stereonet**: https://plugins.qgis.org/plugins/qgis-stereonet/ (D. Childs)
+- **GeoStereonet**: https://github.com/mellow2334/GeoStereonet
+- **Stereoplot**: https://plugins.qgis.org/plugins/stereoplot/ (UWA-CET)
+- **GeoTrace**: https://github.com/lachlangrose/GeoTrace (Thiele/Grose)
+- **LoopStructural**: https://plugins.qgis.org/plugins/LoopStructural/ · https://github.com/Loop3D/LoopStructural
+- **GemPy**: https://www.gempy.org/ · https://github.com/gempy-project/gempy
+- **Midvatten**: https://plugins.qgis.org/plugins/midvatten/ (hydrogeology)
+- **Geology tools**: https://github.com/pinogcosentino/Geology-tools
+- **QGeoloGIS**: https://gitlab.com/Oslandia/qgis/QGeoloGIS
+- **Isoliner3D**: https://plugins.qgis.org/plugins/isoliner3d/ (3D bed bodies + boreholes)
+- **GEOL-QMAPS**: https://github.com/swaxi/GEOL-QMAPS (Perret et al. 2024, *Applied Computing and Geosciences*)
+
 ### Standards & Methodology
 - QGIS Plugin Repository: https://plugins.qgis.org/
 - QGIS Plugin Security Scanning: https://plugins.qgis.org/docs/security-scanning/
@@ -545,6 +633,6 @@ Its Clean Architecture, 763 tests, 14-language support, and QGIS 4.x readiness p
 
 ---
 
-*Report generated: 2026-10-04*
-*SecInterp version analyzed: 3.9.1*
+*Report generated: 2026-10-11*
+*SecInterp version analyzed: 3.10.0*
 *See also: `ARCHITECTURE_EN.md`, `ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md`, `PLUGIN_ANALYSIS.md`*

@@ -1,3 +1,12 @@
+## [2026-10-11] Session: Competitive Ecosystem Deep Scan & Report Refresh
+- **Achievement**: Widened the competitive analysis from 7 to **~30 relevant QGIS plugins** across five clusters (sections, drillholes, structural/stereonet, 3D modelling, geological mapping) and corrected outdated claims in the public comparison report.
+- **Changes**:
+    - **New internal document** (not published): `.agent-state/history/ecosystem_comparison_2026-10-11.md` — full inventory with portal download counts, per-cluster matrices and internal recommendations.
+    - **`docs/PLUGIN_REPORT_AND_COMPARISON_EN.md`** refreshed to v3.10.0 / 2026-10-11: added **OpenLog** (Apeiron/Oslandia — new direct competitor, Geoscience's successor), the **stereonet cluster** (§6.10), **3D modelling** (§6.11, LoopStructural/GemPy), an **adoption snapshot** (§7.5), and updated Geoscience (now QGIS 4-ready) and SWOT/roadmap. Vault v2 mirrors re-synced.
+- **Quality**: `check_docs` PASS (36 docs) · `sync_vault_mirrors --check` clean.
+- **Key finding (internal)**: SecInterp leads on breadth + engineering but not adoption (~4,640 downloads vs qProf ~212k, Geoscience ~124k, qgSurf ~83k); stereonet and 3D modelling are crowded/mature → prefer interoperation over reimplementation.
+- **Follow-up**: upload v3.10.0 to the QGIS portal (currently 3.9.1); decide whether to close the stereonet gap by interop or build.
+
 ## [2026-10-11] Session: Release Train Unblock & v3.10.0 Publication
 - **Achievement**: Unblocked and published **v3.10.0** on the scheduled release train. The train branches (cut 2026-09-27) had drifted from `main`'s tooling, which made the scheduled publish fail twice; both blockers were fixed in `scheduled-release.yml` and the release went out.
 - **Changes**:
