@@ -15,6 +15,42 @@ See `.agent-state/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-10-11'
+    category: TOOLING
+    topic: analyzer rule ids can contain a colon and break naive issue-stats parsers
+    lesson: qgis-plugin-analyzer 1.15.1 introduced security rule ids of the form
+      `SECURITY:B102` (a colon inside the id), printed with their count in the
+      "Issue Statistics" block. SecInterp's `scripts/sync_metrics.py` split each line on the
+      FIRST colon, so the numeric parse failed and the entry was dropped (total_issues 32
+      instead of 34).
+    action: When parsing key/value lines whose key may contain colons, split on the LAST
+      colon (`rsplit`, 1) or read the authoritative total line or the `--json` output.
+
+  - date: '2026-10-11'
+    category: AGENTIC_SYSTEM
+    topic: a GHA job that needs a conditionally-skipped job is skipped too, and release events use the tag-commit workflow
+    lesson: In release.yml, publish-pypi had a `needs` on draft-release, but draft-release
+      only runs on tag push; on a release-published event draft-release was skipped, which
+      transitively skipped publish-pypi, so PyPI was never published by CI (1.15.0/1.15.1 were
+      uploaded manually). Also, a release event evaluates the workflow file from the tagged
+      commit, not the default branch, so editing main did not change an already-published
+      release's behaviour.
+    action: Never put a `needs` on a job guarded by a mutually-exclusive `if`; remove the
+      dependency or split the workflows. To change release-event behaviour, fix the workflow in
+      the commit the tag points to (re-tag if needed) and verify with `gh run view` which jobs
+      actually ran.
+
+  - date: '2026-10-11'
+    category: TOOLING
+    topic: a Bandit-style exec/eval check keyed on the callee name flags Qt `.exec()` methods
+    lesson: qgis-plugin-analyzer 1.15.1 matched any call whose callee name was exec or eval,
+      so QDialog.exec() (e.g. dlg.exec(), self.dlg.exec()) was reported as builtin arbitrary
+      code execution, and an inline noqa for B102 did not suppress it. Fixed in 1.15.2 by
+      flagging only bare-name (`ast.Name`) calls and ignoring attribute/method calls.
+    action: For security rules that target builtins, match `ast.Name` (the global) and ignore
+      `ast.Attribute` calls; a method named like a builtin is not the builtin. Verify with a
+      probe of both a real builtin call and a same-named method call.
+
   - date: '2026-10-10'
     category: TOOLING
     topic: a freshly published release can appear "unsatisfiable" via a stale index/PyPI JSON
