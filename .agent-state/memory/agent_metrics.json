@@ -101,7 +101,7 @@
     },
     "last_session": {
         "date": "2026-10-11",
-        "topic": "qgis_analyzer_1_15_2",
+        "topic": "adoption_guides_and_manager_analysis",
         "tests_ok": 763,
         "quality_score": 57.9,
         "task_completion_rate": null,
@@ -111,6 +111,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-10-11",
+            "tests_ok": 763,
+            "quality_score": 57.9,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "qgis_analyzer_1_15_2"
+        },
         {
             "date": "2026-10-10",
             "tests_ok": 763,

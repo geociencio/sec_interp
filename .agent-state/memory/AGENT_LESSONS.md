@@ -16,6 +16,18 @@ lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-11'
+    category: AGENTIC_SYSTEM
+    topic: a docs-only push can surface a long-standing red CI, not a regression
+    lesson: Pushing documentation-only commits to qgis-plugin-manager and
+      qgis-plugin-analyzer triggered CI; the manager run failed on macOS/Windows while
+      ubuntu passed. The failure was pre-existing (a macOS /var -> /private/var
+      Path.resolve mismatch in tests/test_discovery.py) and present in every prior run on
+      main (all "failure"), so it was unrelated to the docs change.
+    action: Before attributing a CI failure to your change, list recent runs on the branch
+      (gh run list --branch main) and diff the failing jobs; if the same jobs failed before
+      your commit, it is pre-existing, not a regression.
+
+  - date: '2026-10-11'
     category: TOOLING
     topic: analyzer rule ids can contain a colon and break naive issue-stats parsers
     lesson: qgis-plugin-analyzer 1.15.1 introduced security rule ids of the form
