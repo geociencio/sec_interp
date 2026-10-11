@@ -53,7 +53,16 @@ jobs:
 
       - name: Checkout release branch
         if: ${{ steps.pick.outputs.version != '' }}
-        run: git checkout "${{ steps.pick.outputs.branch }}"
+        run: |
+          # The release-train branches predate the `.agent` submodule conversion
+          # on main (2026-10-08): there `.agent` is a regular directory, while the
+          # checkout above populated it as a submodule. Without clearing it,
+          # `git checkout` aborts with "untracked working tree files would be
+          # overwritten" and the release never publishes. `.agent` is dev-only and
+          # is never packaged, so materialising it from the branch is fine.
+          git submodule deinit -f .agent || true
+          rm -rf .agent
+          git checkout -f "${{ steps.pick.outputs.branch }}"
 
       - name: Run tests (Docker, QGIS headless)
         if: ${{ steps.pick.outputs.version != '' }}
