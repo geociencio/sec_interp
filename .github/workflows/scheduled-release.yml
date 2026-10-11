@@ -46,10 +46,17 @@ jobs:
         run: echo "No scheduled release is due."
 
       # Keep the optimized docs/help tooling from the default branch so release
-      # branches without the latest scripts still build an optimized manual.
-      - name: Cache main build_docs.sh
+      # branches cut before the offline-help rework still build the optimized
+      # manual. build_docs.sh alone is not enough: it drives main's conf.py
+      # (SECINTERP_DOCS_HELP exclusion) and root_doc=help_index, and neither
+      # conf.py nor help_index.rst exists on the older branches.
+      - name: Cache main docs tooling
         if: ${{ steps.pick.outputs.version != '' }}
-        run: cp scripts/build_docs.sh /tmp/build_docs.sh
+        run: |
+          mkdir -p /tmp/main_docs
+          cp scripts/build_docs.sh /tmp/build_docs.sh
+          cp docs/source/conf.py /tmp/main_docs/conf.py
+          cp docs/source/help_index.rst /tmp/main_docs/help_index.rst
 
       - name: Checkout release branch
         if: ${{ steps.pick.outputs.version != '' }}
@@ -63,6 +70,12 @@ jobs:
           git submodule deinit -f .agent || true
           rm -rf .agent
           git checkout -f "${{ steps.pick.outputs.branch }}"
+
+      - name: Restore main docs tooling
+        if: ${{ steps.pick.outputs.version != '' }}
+        run: |
+          cp /tmp/main_docs/conf.py docs/source/conf.py
+          cp /tmp/main_docs/help_index.rst docs/source/help_index.rst
 
       - name: Run tests (Docker, QGIS headless)
         if: ${{ steps.pick.outputs.version != '' }}
