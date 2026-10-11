@@ -78,8 +78,14 @@ a design decision (see §4 and §8-Q3).
 - Populate it in `structure_service._process_single_structure` (`:139`) from the
   `point` already in hand (`:121`).
 - Add `dip`, `strike`, `dip_dir` columns to `StructureVectorExporter._create_structure_fields`
-  (`:243-246`), where `dip_dir = (strike + 90) % 360` (RHR) — **verify the convention
-  on real data before shipping** (§8-Q2).
+  (`:243-246`). **`dip_dir` handling (refined after inspecting the sample data)**:
+  `basedatosestruct_clean.csv` stores `STRIKE` as a plain azimuth (0–360) parsed from
+  quadrant notation (`N 15° W → 345`) and carries the **dip direction only in the text**
+  (`ECHADO = "22° SW"`). `parse_dip` already extracts that dip direction, but
+  `StructureMeasurement` drops it. So Phase A must **capture the dip direction when the
+  source provides it** (preferred) and fall back to RHR `dip_dir = (strike + 90) % 360`
+  only when absent — never assume RHR blindly.
+- Output **both** a CSV and a GeoPackage point layer (confirmed), with the same columns.
 - Add a `structural_attitudes.csv` writer alongside `structural_profile.csv`
   (`handlers/structures.py`), with a header the tools map without renaming:
 
@@ -200,13 +206,16 @@ extension as Phase A, plus a GUI adapter for the geology interfaces.
 ## 8. Open questions (need approval before Phase A code)
 
 1. **Scope**: confirm **exports only** (interop), not a native stereonet preview.
-2. **Strike convention**: is the incoming strike right-hand-rule? (→ `dip_dir = strike + 90`.)
-3. **Source coords**: extend the core DTO with `source_point` (B1) vs a GUI-only
-   exporter (B2)?
+2. **Strike / dip-direction** — *answered 2026-10-11*: `STRIKE` is a plain azimuth
+   (`N15W→345`); the dip direction is only in the source text. Capture it when present;
+   RHR fallback otherwise. (⚠️ the sample data is fictitious and geometrically
+   inconsistent — `STRIKE 345` vs `ECHADO "SW"` are not perpendicular, and the numeric
+   `DIP` column disagrees with the text — so validate against a **real** dataset.)
+3. **Source coords** — *answered 2026-10-11*: **extend the core DTO** with `source_point`.
 4. **Priority**: qgSurf/mplstereonet (stereonet) first — confirm. And within 3D, which
    of §4's candidate items matter most (3D QML for drillholes, scene setup, VE
    consistency, extrusion)?
-5. **Deliverable format**: CSV only, or CSV **and** a GeoPackage point layer?
+5. **Deliverable format** — *answered 2026-10-11*: **both** CSV and GeoPackage.
 6. **Version target**: v3.11.x, or fold into the next feature release?
 7. **3D scope** — *answered 2026-10-11*: both layer types; missing = **styles, terrain,
    vertical scale**; **extrusion wanted**. Remaining design choice: B2 as a **GUI action
