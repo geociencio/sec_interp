@@ -28,8 +28,7 @@ Two deliverables:
 
 - **Phase A — Stereonet interop**: export the structural measurements (true dip +
   strike/dip-direction) in a form `mplstereonet` and qgSurf consume directly.
-- **Phase B — 3D model-input interop**: export GemPy/LoopStructural-ready inputs
-  (orientations + surface points) from SecInterp's source geology/structures.
+- **Phase B — QGIS 3D Map View hand-off**: make the Z-aware exports render correctly in QGIS's native **3D Map View** (the workflow actually in use) — 3D styling + scene setup — with external modelling (GemPy/LoopStructural) kept as an optional extra.
 
 **Out of scope**: an in-plugin stereonet viewer and any 3D modelling engine.
 
@@ -58,8 +57,8 @@ a design decision (see §4 and §8-Q3).
 **In scope**
 - A new **structural attitude export** (CSV and/or GeoPackage) with true dip,
   strike and dip-direction, ready for `mplstereonet`/qgSurf.
-- A new **3D model-input export** (CSV) with GemPy/LoopStructural-style
-  `orientations` and `surface_points`.
+- **QGIS 3D Map View hand-off**: 3D styling (QML) and scene setup for the existing
+  Z-aware exports; optional GemPy/LoopStructural model inputs.
 - Documentation of the interoperability formats + tests.
 
 **Out of scope**
@@ -110,37 +109,44 @@ a design decision (see §4 and §8-Q3).
 
 ---
 
-## 4. Phase B — 3D model-input interop (GemPy / LoopStructural)
+## 4. Phase B — QGIS 3D Map View hand-off
 
-**Goal**: emit the inputs a 3D modelling tool needs, from SecInterp's **source** data
-(not the section projection).
+**Context**: the 3D workflow actually in use is SecInterp's Z-aware export loaded in
+QGIS's native **3D Map View**, not an external modeller. What exists today:
 
-**Target formats**
+| Export | Geometry | Style | 3D Map View state |
+|---|---|---|---|
+| Interpretations (`Interpretation3DExporter`) | `PolygonZ` projected onto the section plane | `.qml` with a **rule-based 3D renderer** per unit | renders per-unit in 3D |
+| Drillhole traces / intervals (`Drillhole*3DExporter`) | `LineStringZ` (traces and intervals) | **no `.qml`** | thin default lines, no 3D symbol |
 
-| Tool | `orientations` (per measurement) | `surface_points` (per interface) |
-|---|---|---|
-| GemPy | `X, Y, Z, azimuth, dip, polarity` | `X, Y, Z, formation` |
-| LoopStructural | orientations + geological surfaces | surfaces |
+**Goal**: make "SecInterp export → open 3D Map View" a one-step, coherent result.
 
-**Design decision (the crux)**: the source map coordinates are available in
-`gui/adapters/` but are **dropped before `core/`**. Two options:
+**Candidate work (to be scoped with the user)**
+1. **3D QML for drillholes** — generate a `.qml` with `QgsLine3DSymbol` (tube width)
+   for traces and intervals, per the intervals' `unit`, mirroring what the
+   interpretation exporter already does. (`DrillholeTrace3DExporter` /
+   `DrillholeInterval3DExporter` currently emit **no style**.)
+2. **3D scene setup** — a helper/scene (terrain from the DEM + the exported layers with
+   3D symbols + a sane vertical scale) so the user does not configure the 3D canvas by
+   hand every time.
+3. **Vertical-exaggeration consistency** — `Interpretation3DExporter` hardcodes
+   `vert_exag=1.0` (`_collect_projected_features`, `:385`); decide and document whether
+   the 3D export should honour the preview VE.
+4. **(Optional) extrusion thickness** for interpretation "slabs" — currently co-planar
+   on the section plane; a width option would make them read as 3D bodies.
 
-- **B1 (preferred)**: extend the core DTOs to carry `source_point` (and `source_z`
-  from the sampled elevation) — as in Phase A — and put the exporter in `core/`
-  (QGIS-agnostic, CSV only). Cleanest for architecture and tests; requires threading
-  the point through the geology path too.
-- **B2**: implement the 3D-input export in a **GUI-layer adapter** that reads the
-  source layers directly (has `QgsProject`/geometry) and writes the files, keeping
-  `core/` untouched. Faster, but adds a QGIS-dependent exporter outside the factory.
+> Cleanup while here: `Interpretation3DExporter._write_shapefile` builds an unused
+> `SaveVectorOptions(driverName="ESRI Shapefile")` and then delegates to
+> `create_vector_writer` (driver by extension) — dead code.
 
-This plan recommends **B1** for the structures (already needed by Phase A) and a
-**GUI adapter for the geology interfaces** (polygon vertices/centroids in the source
-CRS), because geology sampling is inherently QGIS-side.
+### 4.1 Optional — External 3D modelling (GemPy / LoopStructural)
 
-**Verification (deliberate)**
-- The output is validated against a trivial GemPy model (two layers + one orientation)
-  in a **manual smoke**, documented — we do **not** add GemPy as a test dependency.
-- CRS/unit caveats documented (GemPy expects a single, consistent projected CRS).
+If **building** models (not just viewing) is wanted later, emit GemPy/LoopStructural
+inputs (`orientations` `X, Y, Z, azimuth, dip, polarity`; `surface_points`
+`X, Y, Z, formation`) from the source data. That needs source map coordinates, which
+are dropped before `core/` (`structure_service.py:121`→`:139`) — the same `source_point`
+extension as Phase A, plus a GUI adapter for the geology interfaces.
+**Demoted to optional** because the workflow in use is the QGIS 3D View.
 
 ---
 
@@ -182,8 +188,13 @@ CRS), because geology sampling is inherently QGIS-side.
 2. **Strike convention**: is the incoming strike right-hand-rule? (→ `dip_dir = strike + 90`.)
 3. **Source coords**: extend the core DTO with `source_point` (B1) vs a GUI-only
    exporter (B2)?
-4. **Priority**: qgSurf/mplstereonet first, then GemPy/LoopStructural — confirm.
+4. **Priority**: qgSurf/mplstereonet (stereonet) first — confirm. And within 3D, which
+   of §4's candidate items matter most (3D QML for drillholes, scene setup, VE
+   consistency, extrusion)?
 5. **Deliverable format**: CSV only, or CSV **and** a GeoPackage point layer?
 6. **Version target**: v3.11.x, or fold into the next feature release?
+7. **3D workflow detail**: in the 3D Map View, what do you view (interpretation
+   polygons, drillhole traces/intervals) and what is missing today — styling, terrain,
+   scale, something else?
 
 > Per the @architect role, no code is written until these are answered and the plan is approved.
