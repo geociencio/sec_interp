@@ -27,15 +27,16 @@ lessons:
 
   - date: '2026-10-11'
     category: ARCHITECTURE
-    topic: structural attitude exports must capture dip direction explicitly, not assume RHR
-    lesson: SecInterp's StructureMeasurement keeps original_strike (a plain azimuth from
-      quadrant notation) and original_dip but drops the dip direction the source text
-      carries ("22 SW"). Deriving dip_dir = strike + 90 (RHR) would be wrong for the sample:
-      its RUMBO (345) and ECHADO direction (225) are not perpendicular, so strike cannot be
-      trusted to imply dip direction.
-    action: For any stereonet/attitude export, carry the dip direction from the source field
-      when present (parse_dip already extracts it) and use RHR only as a documented fallback;
-      validate the convention against a real dataset, never demo data.
+    topic: dip direction is strike ± 90, chosen by the source's dip-direction label
+    lesson: SecInterp's StructureMeasurement keeps original_strike (an azimuth from quadrant
+      notation) and original_dip but drops the dip direction the source text carries
+      ("22 SW"). The dip direction is perpendicular to the strike: dip_dir = strike − 90 for
+      the SW side (N15W -> 255) or strike + 90 for the NE side (-> 75). The cardinal label
+      only names the side, so it is approximate, not an exact azimuth — reading "SW" as 225
+      was wrong.
+    action: For any stereonet/attitude export, derive dip_dir = strike ± 90 from the source
+      dip-direction label (or use a numeric dip-direction field when provided); never treat
+      the cardinal label as an exact azimuth, and validate on a real dataset — not demo data.
 
   - date: '2026-10-11'
     category: TOOLING
