@@ -110,6 +110,8 @@ stays in QGIS.
 - Output a `dip_dir` + `dip` pair as the **primary** orientation (what a QGIS stereonet
   plugin plots), with `strike` kept as an auxiliary column.
 - Output **both** a CSV and a GeoPackage point layer (confirmed), with the same columns.
+- **Depends on** `docs/plans/implementation_plan_structural_parser.md` (full notation coverage:
+  quadrants, numeric dip/dip-dir, encoding) — Phase A consumes what that parser produces.
 - Add a `structural_attitudes.csv` writer alongside `structural_profile.csv`
   (`handlers/structures.py`), with a header the tools map without renaming:
 

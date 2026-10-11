@@ -20,6 +20,7 @@
   3. **Merge final del tren → `main`** (tras v3.11.0): NO es `--ff-only` (main-only=65, train-only=26) →
      merge real; el diff de `.agent` (submódulo vs carpeta) y las versiones de `metadata/CHANGELOG` darán conflicto.
   4. **Plan de interop estereonet/3D**: alcance **confirmado y guardado para implementación futura** — `docs/plans/implementation_plan_interop_stereonet_3d.md` (§9 checklist). B2 = acción GUI; empezar por **B1 (estilos 3D de sondeo)**.
+  5. **Plan del parser de notaciones estructurales** (cobertura de todas las variantes, planos; convención `strike_dip` por defecto): `docs/plans/implementation_plan_structural_parser.md` (guardado, sin implementar).
 
 ## ✅ Session 2026-10-11 — QGIS MCP Integration (Fork + `qgis_driver`) (COMPLETADO)
 
