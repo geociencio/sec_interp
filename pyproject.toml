@@ -32,9 +32,8 @@ extra_ignore_calls = ["PerformanceTimer", "_stats_edit", "_check_field"]
 
 [dependency-groups]
 dev = [
-    "ruff>=0.15.0",
-    "black==26.1.0",
-    "mypy>=1.10",
+    "ruff>=0.17.0",
+    "mypy>=2.4.0",
     "networkx>=3.0",
     "ai-context-core>=5.1.0",
     "qgis-plugin-analyzer>=1.16.0",
@@ -87,6 +86,7 @@ exclude = [
     "**/migrations/**",
     "**/test*.py",
     "**/*test.py",
+    "**/*.md",
     "tests/",
     "research/",
     ".gemini-temp",

@@ -1,5 +1,15 @@
 # Active Task Board (Updated 2026-10-11)
 
+### Completed this session (2026-10-11 — Toolchain modernization: ruff 0.17 + mypy 2.4)
+
+- [x] **ruff** 0.15.2 → **0.17.0** (`ruff>=0.17.0`; `.pre-commit-config.yaml` rev `v0.8.4` → `v0.17.0`).
+- [x] **New rules fixed**: `ISC004` (3 mensajes con paréntesis explícitos en `validation_helpers.py`); `PLR0917` (`# noqa` ampliado en `drillhole_extractor.py`).
+- [x] **Markdown**: excluded `**/*.md` from `[tool.ruff]` (0.17 formatea bloques Markdown → doc/churn evitados).
+- [x] **mypy** 1.19.1 → **2.4.0** (`mypy>=2.4.0`): sin hallazgos nuevos en el plugin.
+- [x] **black** eliminado (no se usa).
+- [x] Gates verdes: ruff `--frozen` (CI parity) · pre-commit · **763 OK** (Docker).
+- [ ] Opcional: cablear `mypy` a un target acotado; `uv self update` (0.12.10 → 0.13.0).
+
 ### Completed this session (2026-10-11 — Dependency refresh, uv "safe batch")
 
 - [x] **Ecosystem**: `qgis-manage` 0.9.0 → **0.9.2** (build/release CI); `qgis-stubs` 0.2.0.post1 → 0.5.0.

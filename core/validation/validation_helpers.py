@@ -149,13 +149,15 @@ def _validate_vert_exag(value: Any) -> list[str]:
         MIN_VE_THRESHOLD = 0.1
         if val > MAX_VE_THRESHOLD:
             return [
-                f"⚠ Vertical exaggeration ({val}) is very high. "  # no-i18n
-                f"Values > {MAX_VE_THRESHOLD} may distort the profile significantly."  # no-i18n
+                (
+                    f"⚠ Vertical exaggeration ({val}) is very high. "  # no-i18n
+                    f"Values > {MAX_VE_THRESHOLD} may distort the profile significantly."  # no-i18n
+                )
             ]
         if val < MIN_VE_THRESHOLD:
             return [
                 f"⚠ Vertical exaggeration ({val}) is very low. Profile may appear flattened."  # no-i18n
-            ]  # no-i18n
+            ]
         if val <= 0:
             return [f"❌ Vertical exaggeration ({val}) must be positive."]  # no-i18n
     except (ValueError, TypeError):
@@ -170,8 +172,10 @@ def _validate_buffer(value: Any) -> list[str]:
         MAX_BUFFER_DIST = 5000
         if val > MAX_BUFFER_DIST:
             return [
-                f"⚠ Buffer distance ({val}m) is very large. "  # no-i18n
-                f"This may include distant structures not relevant to the section."
+                (
+                    f"⚠ Buffer distance ({val}m) is very large. "  # no-i18n
+                    f"This may include distant structures not relevant to the section."
+                )
             ]
         if val < 0:
             return [f"❌ Buffer distance ({val}m) cannot be negative."]  # no-i18n
@@ -187,8 +191,10 @@ def _validate_dip_scale(value: Any) -> list[str]:
         MAX_DIP_SCALE = 5
         if val > MAX_DIP_SCALE:
             return [
-                f"⚠ Dip scale ({val}) is very high. "  # no-i18n
-                f"Dip symbols may overlap and obscure the profile."
+                (
+                    f"⚠ Dip scale ({val}) is very high. "  # no-i18n
+                    f"Dip symbols may overlap and obscure the profile."
+                )
             ]
         if val <= 0:
             return [f"❌ Dip scale ({val}) must be positive."]  # no-i18n

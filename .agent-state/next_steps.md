@@ -1,5 +1,31 @@
 # Next Steps (Updated 2026-10-11)
 
+## ✅ Session 2026-10-11 — Toolchain Modernization (ruff 0.17 + mypy 2.4, drop black) (COMPLETADO)
+
+- **Qué se hizo**: se completó la mitad "lint/type" del refresco de toolchain, con las
+  dos actualizaciones que se habían retenido a propósito. **Sin impacto en el runtime**.
+  - **ruff** 0.15.2 → **0.17.0**: `pyproject.toml` `ruff>=0.17.0`; `.pre-commit-config.yaml`
+    `ruff-pre-commit` `v0.8.4` → `v0.17.0` (estaban divergentes). Reglas nuevas:
+    `ISC004` (concatenación implícita en colección) — paréntesis explícitos en los 3
+    mensajes de `core/validation/validation_helpers.py`; `PLR0917` (demasiados
+    posicionales) — `# noqa` ampliado en `gui/adapters/drillhole_extractor.py`.
+  - **Markdown**: ruff 0.17 formatea los bloques Python **dentro de Markdown** (quería
+    reescribir 381 `.md`). Se añadió `**/*.md` al `exclude` de `[tool.ruff]` para no
+    tocar docs ni romper los gates de bóveda/mirrors.
+  - **mypy** 1.19.1 → **2.4.0** (`mypy>=2.4.0`): mismo baseline (15 hallazgos, todos en
+    `scripts/`/`tests/`/`docs/`; **0 nuevos en el plugin**).
+  - **black** eliminado (no se usa; `ruff format` es canónico).
+- **Calidad**: `ruff check`/`format --check` limpios · `uv run --frozen ruff check .`
+  (paridad CI) PASS · `pre-commit run ruff/ruff-format --all-files` PASS · `unittest
+  discover tests` **763 OK** (Docker).
+- **Referencia**: `docs/DEVELOPMENT_LOG.md` (session 2026-10-11 Toolchain Modernization).
+- **Pendiente / cómo reanudar**:
+  1. **Opcional**: cablear `mypy` a un target acotado (`mypy core exporters`) si debe
+     ser gate — hoy `mypy .` revisa scripts/tests/docs y aborta pronto.
+  2. **Opcional**: `uv self update` (0.12.10 → 0.13.0).
+  3. El resto de pendientes (deuda por la cobertura 1.16.0, tren v3.10.0/v3.11.0,
+     `legend_widget.py`, bóveda, Goal 1.1/1.5) siguen abajo sin cambios.
+
 ## ✅ Session 2026-10-11 — Dependency Refresh (uv "safe batch") (COMPLETADO)
 
 - **Qué se hizo**: se actualizó la cadena de herramientas gestionada por `uv` con un
@@ -13,16 +39,18 @@
     (+ transitivas; baja `uc-micro-py`).
   - **Método**: `uv lock --upgrade-package … --no-cache --refresh` + `uv sync`.
     `agent_metrics.json` intacto (sin cambio de métricas).
-  - **Retenidas a propósito**: `ruff` 0.15.2 → 0.17.0 (reglas nuevas; hay que sincronizar
-    rev de pre-commit `v0.8.4` + CI + lock) y `mypy` 1.19.1 → 2.4.0 (**major**). `black`
-    no se usa (→ candidato a eliminar).
+  - **Retenidas a propósito (HECHO después, misma fecha)**: `ruff` 0.15.2 → 0.17.0 y
+    `mypy` 1.19.1 → 2.4.0, y `black` eliminado → ver la sesión "Toolchain Modernization"
+    más arriba.
 - **Calidad**: ruff/format limpios · `unittest discover tests` **763 OK** (Docker) ·
   **empaquetado smoke-test** con `qgis-manage 0.9.2` (`sec_interp.3.9.1.zip` a `/tmp`, exit 0) ·
   `forge metrics validate` PASS.
 - **Pendiente / cómo reanudar**:
   1. **Opcional**: `uv self update` (0.12.10 → 0.13.0).
-  2. **Opcional (fase propia)**: subir `ruff` 0.17 y `mypy` 2.x sincronizando
-     pre-commit/CI y arreglando el fallout; decidir si se elimina `black`.
+  2. ~~**Opcional (fase propia)**: subir `ruff` 0.17 y `mypy` 2.x sincronizando
+     pre-commit/CI y arreglando el fallout; decidir si se elimina `black`.~~ ✅ **HECHO
+     (2026-10-11)**: sesión "Toolchain Modernization" (ruff 0.17.0 + mypy 2.4.0, `black`
+     eliminado).
   3. El resto de pendientes (deuda por la cobertura 1.16.0, tren v3.10.0/v3.11.0,
      `legend_widget.py`, bóveda, Goal 1.1/1.5) siguen abajo sin cambios.
 

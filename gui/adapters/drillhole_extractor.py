@@ -48,7 +48,7 @@ class DrillholeExtractor:
         """Translate a message using QCoreApplication."""
         return QCoreApplication.translate("DrillholeExtractor", message)  # type: ignore[no-any-return]
 
-    def extract_context(  # noqa: PLR0913
+    def extract_context(  # noqa: PLR0913, PLR0917
         self,
         line_layer: QgsVectorLayer,
         buffer_width: float,

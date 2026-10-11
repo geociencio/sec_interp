@@ -1,3 +1,13 @@
+## [2026-10-11] Session: Toolchain Modernization (ruff 0.17 + mypy 2.4, drop black)
+- **Achievement**: Completed the "lint/type" half of the toolchain refresh with the two upgrades deliberately held back from the safe batch: `ruff` 0.15.2 → **0.17.0** and `mypy` 1.19.1 → **2.4.0**, and removed the unused `black` dependency. No plugin-runtime impact.
+- **Changes**:
+    - **ruff**: `pyproject.toml` `ruff>=0.15.0` → `>=0.17.0`; `.pre-commit-config.yaml` `ruff-pre-commit` `v0.8.4` → `v0.17.0` (the project ruff and the hook had diverged). 0.17 adds `ISC004` (implicit string concatenation in a collection) and `PLR0917` (too many positional arguments): wrapped the 3 multi-line messages in `core/validation/validation_helpers.py` in explicit parentheses and extended the `# noqa` in `gui/adapters/drillhole_extractor.py`.
+    - **Markdown**: ruff 0.17 now formats Python code blocks inside Markdown (it wanted to rewrite 381 `.md` docs). Added `**/*.md` to `[tool.ruff] exclude` so docs — and the vault/mirror gates — stay byte-stable.
+    - **mypy**: `pyproject.toml` `mypy>=1.10` → `>=2.4.0`. `mypy .` reports the same 15 pre-existing findings (all in `scripts/`, `tests/`, `docs/`; none in plugin code) — no new errors from the major bump.
+    - **black**: removed from the dev dependencies (unused; `ruff format` is canonical).
+- **Quality**: `ruff check`/`format --check` clean · `uv run --frozen ruff check .` (CI parity) PASS · `pre-commit run ruff/ruff-format --all-files` PASS · `unittest discover tests` **763 OK** (Docker).
+- **Follow-up**: `mypy` is not wired into CI and is mis-scoped (`mypy .` checks `scripts/`/`tests/`/`docs/` and bails early); consider a scoped `mypy core exporters` target if it should become a gate. `uv self update` (0.12.10 → 0.13.0) still pending.
+
 ## [2026-10-11] Session: Dependency Refresh (uv "safe batch")
 - **Achievement**: Brought the `uv`-managed toolchain up to date with a deliberately **low-risk batch**, holding back the breaking upgrades. Adopted the ecosystem tool `qgis-manage` 0.9.0 → **0.9.2** (used by `make compile/deploy/package` and the release CI) plus a set of dev tools, with **no plugin-runtime impact**. `ruff`, `mypy` and `black` were intentionally left out (lint-rule/major-bump risk).
 - **Changes**:
