@@ -70,6 +70,9 @@ project_context.json
 ARCHITECTURE.mmd
 skills-lock.json
 .release-queue.json
+context_manifest.json
+forge.toml
+.gitmodules
 
 # Testing, linting, and QA tools
 tests/
@@ -129,6 +132,9 @@ gui_analysis.json
 help/html/.doctrees/
 help/html/_static/fonts/
 help/html/_static/css/fonts/
+
+# Local code-graph output (graphify; generated, git-ignored)
+graphify-out/
 
 # Qt6 / QGIS 4 checker artifacts
 pyqt6_checker.log
