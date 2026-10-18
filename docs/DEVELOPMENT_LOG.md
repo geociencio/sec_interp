@@ -1,3 +1,16 @@
+## [2026-10-18] Session: Dependency Refresh, Security Scope, Packaging Hygiene & Local Deploy
+- **Achievement**: refreshed the `uv`-managed toolchain (safe batch + four major bumps, each verified against its consumer), committed the pending `.agent` submodule update, fixed two **pre-existing** scope leaks found while verifying (bandit scanning dev tooling; `.qgisignore` shipping `graphify-out`), and deployed **v3.11.0** to the local QGIS 4 profile.
+- **Changes**:
+    - **Submodule** (`96a70d9` + pointer `d7963cc7`): the QGIS `release-plugin` workflow validated a stale `763` test count → `792`; pushed to Codeberg so the pointer resolves for other clones.
+    - **Deps (safe batch)**: `ruff` 0.17.1, `pre-commit` 4.7.0, `pytest-mock` 3.17.0 + 19 patch/minor transitive updates (click, requests, urllib3, platformdirs, stevedore, …).
+    - **Deps (majors)**: `rich` 15 (ai-ctx/bandit CLI), `virtualenv` 21 + `filelock` 4 (+ `python-discovery`; pre-commit envs rebuilt from scratch) and `imagesize` 2 (Sphinx). `docutils` held at 0.22.4 — Sphinx 9.1/myst cap it.
+    - **Security** (`b4c150d0`): `.bandit` now excludes `.agent` and `tools`; the gate was red on 15 findings from dev tooling that never ships.
+    - **Packaging** (`a2193112`): `.qgisignore` excludes `graphify-out/` (23 MB), `forge.toml`, `context_manifest.json` and `.gitmodules`, closing the same leak in local `make zip` and `qgis-manage deploy`.
+    - **Local deploy**: `qgis-manage deploy --no-compile --qgis-version 4` installed 3.11.0; post-deploy cleanup of preserved dev artifacts took the install from 30 MB to 4.9 MB.
+- **Quality**: ruff/format clean · `make mypy` 89 files · pre-commit hooks (clean cache) · `make context` fresh (2,641/8,000 tokens) · Sphinx build OK · security scan PASS · Docker **728 executed OK** (792 discovered) · test package **311 files, identical name set to the published ZIP**.
+- **Maintenance**: [session_2026-10-18_deps_refresh_packaging.md](maintenance/session_2026-10-18_deps_refresh_packaging.md).
+- **Follow-up**: confirm portal approval for v3.11.0; `uv` 0.13.0 waits for pacman; `module_size_gate` still FAIL on 5 modules; next feature work starts with the interop plan §9 **B1**.
+
 ## [2026-10-18] Session: v3.11.0 Train Merge, Vault Refresh & Portal Upload
 - **Achievement**: Closed the release train — merged **v3.11.0** into `main` (still at 3.9.1) after the scheduled publication, refreshed the bilingual Code Walkthrough v2 vault to v3.11.0, and prepared/uploaded the release ZIP. `main` is now 3.11.0.
 - **Changes**:

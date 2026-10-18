@@ -1,5 +1,47 @@
 # Next Steps (Updated 2026-10-18)
 
+## ✅ Session 2026-10-18 — Dependency Refresh, Security Scope, Packaging & Local Deploy (COMPLETADO)
+
+- **Qué se hizo**: refresco del toolchain Python en dos lotes (seguro + mayores), commit del
+  cambio pendiente en el submódulo `.agent`, corrección de **dos fugas de scope
+  preexistentes** detectadas al verificar, y deploy local de v3.11.0. **Sin impacto en el
+  runtime del plugin**.
+  - **Submódulo** (`96a70d9` + puntero `d7963cc7`): el workflow QGIS `release-plugin.md`
+    validaba `763` tests → `792`. Pusheado a Codeberg; el tag `v1.2.0` sigue en `2de22cf`.
+  - **Deps seguro**: `ruff` **0.17.1**, `pre-commit` **4.7.0**, `pytest-mock` **3.17.0** + 19
+    transitivas patch/minor (click, requests, urllib3, platformdirs, stevedore, …).
+    Mínimos de las herramientas con gate subidos y `ruff-pre-commit` → `v0.17.1`.
+  - **Deps mayores** (probadas contra su consumidor): `rich` **15** (CLI de ai-ctx/bandit),
+    `virtualenv` **21** + `filelock` **4** (+ `python-discovery`; envs de pre-commit
+    recreados desde cero), `imagesize` **2** (Sphinx). `docutils` se queda en 0.22.4:
+    Sphinx 9.1 / myst-parser lo limitan a `<0.23`.
+  - **Security** (`b4c150d0`): `.bandit` excluye `.agent` y `tools`; estaba **rojo antes**
+    por 15 hallazgos en tooling de desarrollo que no viaja en el ZIP.
+  - **Packaging** (`a2193112`): `.qgisignore` excluye `graphify-out/` (23 MB), `forge.toml`,
+    `context_manifest.json` y `.gitmodules`. Ojo: `deploy` **preserva** en destino lo que
+    coincide con un ignore, así que la basura ya instalada hay que borrarla a mano.
+  - **Deploy local**: QGIS 4 → **3.11.0** (`--no-compile`, seguro: `resources/` sin cambios
+    desde el 27-sep); limpieza posterior 30 MB → 4.9 MB; backup
+    `sec_interp.bak.20261018170158`. La ayuda offline sigue siendo la del build v3.9.1.
+- **Calidad**: ruff/format limpios · `make mypy` **89 ficheros** · pre-commit con caché limpia
+  · `make context` fresco (2.641/8.000 tokens) · build Sphinx OK · security PASS · Docker
+  **728 ejecutados OK** (792 descubiertos) · paquete de prueba **311 ficheros = mismo set de
+  nombres que el ZIP publicado** · `forge metrics validate` PASS.
+- **Commits**: `96a70d9` · `d7963cc7` · `0a9156c8` · `b4c150d0` · `a2193112` (este último
+  cierre documental).
+- **Referencia**: `docs/maintenance/session_2026-10-18_deps_refresh_packaging.md`.
+- **Pendiente / cómo reanudar**:
+  1. **Portal QGIS**: v3.11.0 sigue **pendiente de aprobación**.
+  2. **`module_size_gate` FAIL** (5 módulos): `gui/adapters/geometry.py` 598,
+     `gui/preview_layer_factory.py` 535, `exporters/interpretation_3d_exporter.py` 472,
+     `gui/preview_renderer.py` 439, `core/controller.py` 428. La spec del 2026-09-20 está
+     desactualizada → hace falta una ronda nueva.
+  3. **`uv` 0.12.10 → 0.13.0**: bloqueado por pacman (Manjaro stable sirve 0.12.10).
+  4. **Planes guardados sin código**: interop §9 (empezar por **B1**) y parser de
+     notaciones estructurales.
+  5. **Opcional**: `make deploy` (sin `--no-compile`) para refrescar `help/html` a v3.11.0;
+     smoke en vivo con el workflow `smoke-qgis4`.
+
 ## ✅ Session 2026-10-18 — v3.11.0 Train Merge, Vault Refresh & Portal (COMPLETADO)
 
 - **Qué se hizo**: se cerró el tren de release mergeando **v3.11.0** en `main` (que seguía en
@@ -27,8 +69,9 @@
   1. **Portal QGIS**: v3.11.0 **pendiente de aprobación**; la página aún muestra 3.10.0.
      Verificar en *My plugins* / correo.
   2. **Opcional**: borrar la rama de seguridad `backup/main-pre-v3.11.0` cuando se valide
-     `main`; el submódulo `.agent` tiene un cambio local no versionado (contador del
-     workflow `release-plugin.md`, 763 → 792) exigido por `forge metrics validate`.
+     `main`; ~~el submódulo `.agent` tiene un cambio local no versionado (contador del
+     workflow `release-plugin.md`, 763 → 792)~~ ✅ **HECHO (2026-10-18)**: commit `96a70d9`
+     + puntero `d7963cc7`, pusheado a Codeberg.
   3. **Backlog**: `module_size_gate` FAIL (4 módulos: `core/controller.py` 428,
      `exporters/interpretation_3d_exporter.py` 472, `gui/adapters/geometry.py` 598,
      `gui/preview_layer_factory.py` 511), 20 `GOD_OBJECT`, 9 `MISSING_DOCSTRING`, i18n de

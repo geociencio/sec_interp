@@ -1,5 +1,18 @@
 # Active Task Board (Updated 2026-10-18)
 
+### Completed this session (2026-10-18 — deps refresh + packaging + local deploy)
+
+- [x] **Submodule `.agent` committed and pushed**: `96a70d9` (`docs(qgis): refresh the release-plugin test count to 792`) + superproject pointer `d7963cc7`.
+- [x] **Deps safe batch**: ruff 0.17.1 · pre-commit 4.7.0 · pytest-mock 3.17.0 · +19 patch/minor transitive.
+- [x] **Deps majors (verified per consumer)**: rich 15 · virtualenv 21 · filelock 4 (+ python-discovery) · imagesize 2. `docutils` held at 0.22.4 (Sphinx/myst cap).
+- [x] **Security scope** (`b4c150d0`): `.bandit` excludes `.agent` + `tools` → `make security-scan` PASS (was failing on 15 dev-tooling findings).
+- [x] **Packaging scope** (`a2193112`): `.qgisignore` excludes `graphify-out/` (23 MB), `forge.toml`, `context_manifest.json`, `.gitmodules`; test package = **311 files, same name set as the published 3.11.0 ZIP**.
+- [x] **Local deploy**: QGIS 4 profile now on **3.11.0** (`qgis-manage deploy --no-compile --qgis-version 4`); post-deploy cleanup 30 MB → 4.9 MB; 0 syntax errors.
+- Ref: `docs/maintenance/session_2026-10-18_deps_refresh_packaging.md`.
+- [ ] **Portal**: confirm v3.11.0 approval (page still lists 3.10.0).
+- [ ] **`module_size_gate`**: 5 modules > 400 lines (geometry 598, preview_layer_factory 535, interpretation_3d_exporter 472, preview_renderer 439, controller 428).
+- [ ] **`uv` 0.12.10 → 0.13.0**: blocked by pacman (Manjaro stable still serves 0.12.10).
+
 ### Completed this session (2026-10-18 — v3.11.0 merge + vault + portal)
 
 - [x] **Merge `release/v3.11.0` → `main`** (`03310c45`): 26 train / 83 main commits; `.agent` submodule preserved (prep commit `5cb954cc`), changelog/dev-log unions, `legend_widget` removed, duplicated Qt6 helper removed.

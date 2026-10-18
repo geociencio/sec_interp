@@ -17,6 +17,37 @@ lessons:
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-18'
     category: TOOLING
+    topic: qgis-manage deploy never prunes ignored entries, so dev artifacts stay installed forever
+    lesson: "`deploy` and `package` share `.qgisignore`, and `_cleanup_destination` explicitly
+      preserves destination entries that match an ignore pattern. Anything that once slipped
+      through the ignore list (here `graphify-out/`, 23 MB) keeps being copied/preserved, so a
+      local install silently bloats to 30 MB while the CI-built ZIP looks clean."
+    action: "Before deploying, check `git status --ignored --short` against `.qgisignore`; after
+      adding a new generated directory to the repo, add it to `.qgisignore` in the same commit
+      and delete leftovers from existing QGIS profile installs by hand."
+
+  - date: '2026-10-18'
+    category: TOOLING
+    topic: a dev directory must be excluded in three separate scopes, not one
+    lesson: "`tools/` and `.agent/` were excluded from ruff, the analyzer and the ZIP, but
+      `.bandit` kept scanning them, so `make security-scan` was red on 15 findings that never
+      ship (fatal B404/B603/B108 in `install.py`). The three scope files (`.analyzerignore`,
+      `[tool.ruff] exclude`, `.bandit` `exclude_dirs`) drift independently."
+    action: "When adding a dev-only directory, update all three scope files plus `.qgisignore`
+      and run `make security-scan`, not just `ruff check`."
+
+  - date: '2026-10-18'
+    category: TOOLING
+    topic: a major dependency bump is only validated by exercising its consumer
+    lesson: "`uv sync` succeeding says nothing about behaviour. virtualenv 21 only proved itself
+      after `pre-commit clean` + a full hook reinstall, rich 15 after `ai-ctx`/`bandit` ran,
+      and imagesize 2 after a real Sphinx build."
+    action: "For each major bump, name the consumer and run it once (pre-commit clean+run,
+      `make context`, Sphinx build) before committing; `docutils` 0.23 is not installable
+      because Sphinx 9.1/myst cap it at <0.23."
+
+  - date: '2026-10-18'
+    category: TOOLING
     topic: a 3-way merge silently duplicates a helper when both branches applied the same fix
     lesson: The v3.11.0 train and main each cherry-picked the same Qt6 fix into
       `gui/ui/pages/dem_page.py`, so the 3-way merge (base without the fix) kept both copies
